@@ -4,6 +4,8 @@
 
 The Smart Village App will be a mobile app made with React Native.
 
+&nbsp;
+
 This mobile app is one main part of the whole Smart Village App project. For more information visit https://github.com/ikuseiGmbH/smart-village-app.
 
 ## Overview
