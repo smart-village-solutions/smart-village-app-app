@@ -1,6 +1,13 @@
+# Smart Village App - Mobile App <img src="./.github/background-gradient.png" width="150" align="left">
+
 [![Maintainability](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/maintainability)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/test_coverage)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/test_coverage)
 
-# smart-village-app-app
-Repo for the actual app
+The Smart Village App will be a mobile app made with React Native.
 
-Mehr Infos unter https://github.com/ikuseiGmbH/smart-village-app
+This mobile app is one main part of the whole Smart Village App project. For more information visit https://github.com/ikuseiGmbH/smart-village-app.
+
+## Overview
+
+The following screens are showing a prototyped layout for an intro slider and the home screen.
+
+<img alt="Prototype Intro and home screen" src="./.github/intro-home.png">
