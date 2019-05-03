@@ -1,9 +1,9 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
+about: Suggest an idea for this mobile app
 title: ''
-labels: ''
-assignees: ''
+labels: enhancement
+assignees: donni106
 
 ---
 
