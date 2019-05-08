@@ -7,12 +7,26 @@ export default class DetailScreen extends React.Component {
 
     return {
       title: `Detail #${itemId}`,
-      headerRight: (
+      headerLeft: (
         <Button
-          title="Share"
-          onPress={() => alert('Share')}
+          title="Back"
+          onPress={() => navigation.goBack()}
           color={Platform.OS === 'ios' ? '#fff' : '#08743c'}
         />
+      ),
+      headerRight: (
+        <View style={{ flexDirection: 'row' }}>
+          <Button
+            title="Share"
+            onPress={() => alert('Share')}
+            color={Platform.OS === 'ios' ? '#fff' : '#08743c'}
+          />
+          <Button
+            title="="
+            onPress={() => navigation.openDrawer()}
+            color={Platform.OS === 'ios' ? '#fff' : '#08743c'}
+          />
+        </View>
       )
     };
   };

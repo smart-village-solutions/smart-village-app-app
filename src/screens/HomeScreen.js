@@ -8,7 +8,12 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text>Open up App.js to start working on your app!</Text>
-        <Button title="Go to Index" onPress={() => navigation.navigate('Index')} color="#08743c" />
+        <Button title="Go to news" onPress={() => navigation.navigate('News')} color="#08743c" />
+        <Button
+          title="Go to events"
+          onPress={() => navigation.navigate('Events')}
+          color="#08743c"
+        />
       </View>
     );
   }

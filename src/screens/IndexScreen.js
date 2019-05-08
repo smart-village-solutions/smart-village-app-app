@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, Platform, StyleSheet, Text, View } from 'react-native';
 
 // data coming later from API
 const items = [
@@ -30,6 +30,21 @@ const items = [
 ];
 
 export default class IndexScreen extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    const itemId = navigation.getParam('itemId', 0);
+
+    return {
+      title: `Detail #${itemId}`,
+      headerLeft: (
+        <Button
+          title="Home"
+          onPress={() => navigation.navigate('Home')}
+          color={Platform.OS === 'ios' ? '#fff' : '#08743c'}
+        />
+      )
+    };
+  };
+
   render() {
     const { navigation } = this.props;
 
