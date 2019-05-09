@@ -1,15 +1,17 @@
 import React from 'react';
 import { Button, Platform, View } from 'react-native';
 
+import { colors } from '../config';
+
 export const defaultStackNavigatorConfig = (initialRouteName) => {
   return {
     initialRouteName,
     URIPrefix: 'smart-village-app://',
     defaultNavigationOptions: ({ navigation }) => ({
       headerStyle: {
-        backgroundColor: '#08743c'
+        backgroundColor: colors.primary
       },
-      headerTintColor: '#fff',
+      headerTintColor: colors.lightestText,
       headerTitleStyle: {
         fontWeight: 'bold'
       },
@@ -18,7 +20,7 @@ export const defaultStackNavigatorConfig = (initialRouteName) => {
           <Button
             title="="
             onPress={() => navigation.openDrawer()}
-            color={Platform.OS === 'ios' ? '#fff' : '#08743c'}
+            color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
           />
         </View>
       )

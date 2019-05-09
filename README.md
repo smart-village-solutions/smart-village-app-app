@@ -12,4 +12,12 @@ This mobile app is one main part of the whole Smart Village App project. For mor
 
 The following screens are showing a prototyped layout for an intro slider and the home screen.
 
-<img alt="Prototype Intro and home screen" src="./intro-home.png">
+<img alt="Prototype intro and home screen" src="./intro-home.png">
+
+## Colors
+
+Currently used colors in the mobile app:
+
+<img alt="Currently used color scheme" src="./color_scheme-08743c-bbbe64-222222-26798e-ffffff.png" width="420">
+
+https://coolors.co/08743c-bbbe64-222222-26798e-ffffff

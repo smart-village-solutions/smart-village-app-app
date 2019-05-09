@@ -1,15 +1,16 @@
 import React from 'react';
 import { Button, Platform, StyleSheet, Text, View } from 'react-native';
 
+import { colors, texts } from '../config';
+
 export default class StaticScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: 'Static',
       headerLeft: (
         <Button
-          title="Home"
+          title={texts.button.home}
           onPress={() => navigation.navigate('Home')}
-          color={Platform.OS === 'ios' ? '#fff' : '#08743c'}
+          color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
         />
       )
     };
@@ -29,7 +30,6 @@ export default class StaticScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center'
   }

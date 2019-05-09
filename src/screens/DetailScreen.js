@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, Platform, StyleSheet, Text, View } from 'react-native';
 
+import { colors, texts } from '../config';
+
 export default class DetailScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const itemId = navigation.getParam('itemId', 0);
@@ -9,22 +11,22 @@ export default class DetailScreen extends React.Component {
       title: `Detail #${itemId}`,
       headerLeft: (
         <Button
-          title="Back"
+          title={texts.button.back}
           onPress={() => navigation.goBack()}
-          color={Platform.OS === 'ios' ? '#fff' : '#08743c'}
+          color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
         />
       ),
       headerRight: (
         <View style={{ flexDirection: 'row' }}>
           <Button
-            title="Share"
-            onPress={() => alert('Share')}
-            color={Platform.OS === 'ios' ? '#fff' : '#08743c'}
+            title={texts.button.share}
+            onPress={() => alert(texts.button.share)}
+            color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
           />
           <Button
             title="="
             onPress={() => navigation.openDrawer()}
-            color={Platform.OS === 'ios' ? '#fff' : '#08743c'}
+            color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
           />
         </View>
       )
@@ -50,7 +52,6 @@ export default class DetailScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center'
   }

@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button, Platform, StyleSheet, Text, View } from 'react-native';
 
-// data coming later from API
+import { colors, texts } from '../config';
+
+// TODO: data coming later from API
 const items = [
   {
     itemId: 1,
@@ -31,15 +33,12 @@ const items = [
 
 export default class IndexScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
-    const itemId = navigation.getParam('itemId', 0);
-
     return {
-      title: `Detail #${itemId}`,
       headerLeft: (
         <Button
-          title="Home"
+          title={texts.button.home}
           onPress={() => navigation.navigate('Home')}
-          color={Platform.OS === 'ios' ? '#fff' : '#08743c'}
+          color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
         />
       )
     };
@@ -58,7 +57,7 @@ export default class IndexScreen extends React.Component {
             // on press navigate to Detail route (DetailScreen) with the following params,
             // that we use in that screen
             onPress={() => navigation.navigate('Detail', item)}
-            color="#08743c"
+            color={colors.primary}
           />
         ))}
       </View>
@@ -69,7 +68,6 @@ export default class IndexScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center'
   }

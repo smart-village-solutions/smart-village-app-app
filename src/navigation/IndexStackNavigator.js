@@ -7,10 +7,7 @@ import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
 export const IndexStackNavigator = createStackNavigator(
   {
     Index: {
-      screen: IndexScreen,
-      navigationOptions: ({ navigation }) => ({
-        title: 'Index'
-      })
+      screen: IndexScreen
     },
     Detail: {
       screen: DetailScreen

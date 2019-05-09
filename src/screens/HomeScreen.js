@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 
+import { colors } from '../config';
+
 export default class HomeScreen extends React.Component {
   render() {
     const { navigation } = this.props;
@@ -8,11 +10,15 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text>Open up App.js to start working on your app!</Text>
-        <Button title="Go to news" onPress={() => navigation.navigate('News')} color="#08743c" />
+        <Button
+          title="Go to news"
+          onPress={() => navigation.navigate('News')}
+          color={colors.primary}
+        />
         <Button
           title="Go to events"
           onPress={() => navigation.navigate('Events')}
-          color="#08743c"
+          color={colors.primary}
         />
       </View>
     );
@@ -22,7 +28,6 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center'
   }
