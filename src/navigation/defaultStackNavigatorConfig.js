@@ -16,13 +16,11 @@ export const defaultStackNavigatorConfig = (initialRouteName) => {
         fontWeight: 'bold'
       },
       headerRight: (
-        <View style={{ flexDirection: 'row' }}>
-          <Button
-            title="="
-            onPress={() => navigation.openDrawer()}
-            color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
-          />
-        </View>
+        <Button
+          title="="
+          onPress={() => navigation.openDrawer()}
+          color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
+        />
       )
     })
   };

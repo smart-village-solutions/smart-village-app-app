@@ -5,7 +5,17 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "eject": "expo eject",
+    "test": "jest",
     "enable-rn-hooks": "cp -R scripts/rn-renderer/* node_modules/react-native/Libraries/Renderer"
+  },
+  "jest": {
+    "preset": "react-native",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(react-native|react-navigation)/)"
+    ],
+    "setupFiles": [
+      "./jest-setup.js"
+    ]
   },
   "dependencies": {
     "expo": "^32.0.0",
@@ -14,6 +24,8 @@
     "react-navigation": "^3.9.1"
   },
   "devDependencies": {
-    "babel-preset-expo": "^5.0.0"
+    "babel-preset-expo": "^5.0.0",
+    "jest": "^24.8.0",
+    "react-test-renderer": "16.8.6"
   }
 }
