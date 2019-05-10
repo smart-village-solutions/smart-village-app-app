@@ -10,25 +10,25 @@ import { texts } from '../config';
 const drawerRoutes = {
   News: {
     screen: IndexStackNavigator,
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: () => ({
       title: texts.screenTitles.news
     })
   },
   Events: {
     screen: IndexStackNavigator,
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: () => ({
       title: texts.screenTitles.events
     })
   },
   Policy: {
     screen: StaticStackNavigator,
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: () => ({
       title: texts.screenTitles.policy
     })
   },
   Impress: {
     screen: StaticStackNavigator,
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: () => ({
       title: texts.screenTitles.impress
     })
   }
@@ -38,7 +38,7 @@ export const AppDrawerNavigator = createDrawerNavigator(
   {
     HomeStack: {
       screen: HomeStackNavigator,
-      navigationOptions: ({ navigation }) => ({
+      navigationOptions: () => ({
         title: texts.screenTitles.home
       })
     },

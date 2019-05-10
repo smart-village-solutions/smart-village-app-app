@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Platform, View } from 'react-native';
+import { Button, Platform } from 'react-native';
 
 import { colors } from '../config';
 

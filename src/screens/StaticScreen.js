@@ -17,8 +17,6 @@ export default class StaticScreen extends React.Component {
   };
 
   render() {
-    const { navigation } = this.props;
-
     return (
       <View style={styles.container}>
         <Text>Static Screen</Text>

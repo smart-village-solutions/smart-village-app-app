@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 
@@ -32,3 +33,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 });
+
+HomeScreen.propTypes = {
+  navigation: PropTypes.object.isRequired
+};
