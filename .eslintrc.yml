@@ -1,0 +1,59 @@
+env:
+  browser: true
+  es6: true
+  jest: true
+  node: true
+extends:
+  - 'eslint:recommended'
+  - 'plugin:react/recommended'
+globals:
+  Atomics: readonly
+  SharedArrayBuffer: readonly
+parser: 'babel-eslint'
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: 2018
+  sourceType: module
+plugins:
+  - react
+  - react-native
+rules:
+  arrow-parens:
+    - error
+    - always
+  comma-dangle:
+    - error
+    - never
+  complexity:
+    - error
+    - 11
+  func-names:
+    - error
+    - as-needed
+  indent:
+    - error
+    - 2
+  linebreak-style:
+    - error
+    - unix
+  no-console:
+    - error
+    - allow:
+      - warn
+      - error
+  quotes:
+    - error
+    - single
+  semi:
+    - error
+    - always
+  react-native/no-unused-styles:
+    - error
+  react-native/no-inline-styles:
+    - error
+  react-native/no-color-literals:
+    - error
+settings:
+  react:
+    version: detect
