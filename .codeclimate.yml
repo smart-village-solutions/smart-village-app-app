@@ -1,0 +1,33 @@
+---
+plugins:
+  duplication:
+    enabled: true
+  eslint:
+    enabled: true
+    channel: "eslint-5"
+  fixme:
+    enabled: true
+  nodesecurity:
+    enabled: true
+ratings:
+  paths:
+  - "**.js"
+  - "**.jsx"
+  - "**.md"
+exclude_paths:
+- .expo/
+- .github/
+- assets/
+- coverage/
+- docs/
+- node_modules/
+- scripts/
+- .codeclimate.yml
+- .eslintrc
+- .gitignore
+- .nvmrc
+- .yvmrc
+- babel.config.js
+- "*.png"
+- jest-setup.js
+- yarn.lock

@@ -1,0 +1,36 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "android": "expo start --android",
+    "eject": "expo eject",
+    "enable-rn-hooks": "cp -R scripts/rn-renderer/* node_modules/react-native/Libraries/Renderer",
+    "ios": "expo start --ios",
+    "lint": "./node_modules/.bin/eslint __tests__ src",
+    "start": "expo start",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "react-native",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(react-native|react-navigation)/)"
+    ],
+    "setupFiles": [
+      "./jest-setup.js"
+    ]
+  },
+  "dependencies": {
+    "expo": "^32.0.0",
+    "react": "16.8.6",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
+    "react-navigation": "^3.9.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "babel-preset-expo": "^5.0.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-react": "^7.13.0",
+    "eslint-plugin-react-native": "^3.7.0",
+    "jest": "^24.8.0",
+    "react-test-renderer": "16.8.6"
+  }
+}
