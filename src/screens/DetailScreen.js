@@ -35,14 +35,14 @@ export default class DetailScreen extends React.Component {
 
   render() {
     const { navigation } = this.props;
-    const itemId = navigation.getParam('itemId', 0);
-    const otherParam = navigation.getParam('otherParam', 'otherParam fallback');
+    const title = navigation.getParam('title', 0);
+    const subtitle = navigation.getParam('subtitle', 'otherParam fallback');
     const notAvailable = navigation.getParam('notAvailable', '');
 
     return (
       <View style={styles.container}>
-        <Text>Detail Screen #{itemId}</Text>
-        {!!otherParam && <Text>{otherParam}</Text>}
+        <Text>{subtitle}</Text>
+        {!!subtitle && <Text>{title}</Text>}
         {!!notAvailable && <Text>{notAvailable}</Text>}
       </View>
     );
