@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Icon, ListItem } from 'react-native-elements';
 import { FlatList, TouchableHighlight } from 'react-native';
-import { Divider, ListTitle, ListSubtitle } from './styles';
+import { Divider, ListTitle, ListSubtitle } from '../styles/ListElements';
 import { colors, texts } from '../config';
 
 // TODO: data coming later from API
