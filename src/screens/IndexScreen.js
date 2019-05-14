@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button, Platform, StyleSheet, Text, View } from 'react-native';
+import { Button, Platform, View } from 'react-native';
 
-import { colors, texts, ScreenTitle } from '../config';
+import { colors, texts } from '../config';
+import { ScreenTitle } from '../styles/ScreenTitle';
 import ListItems from '../componets/ListItems';
 
 export default class IndexScreen extends React.Component {

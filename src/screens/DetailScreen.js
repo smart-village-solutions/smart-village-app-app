@@ -1,5 +1,11 @@
 import React from 'react';
-import { Button, Platform, StyleSheet, Text, View } from 'react-native';
+import { Button, Platform, StyleSheet, ScrollView, Text, View } from 'react-native';
+
+import ContenText from '../componets/ContenText';
+import Link from '../componets/Link';
+import LogoSubtitle from '../componets/LogoSubtitle';
+import TopVisual from '../componets/TopVisual';
+import SvgShape from '../componets/SvgShape';
 
 import { colors, texts } from '../config';
 
@@ -35,24 +41,27 @@ export default class DetailScreen extends React.Component {
 
   render() {
     const { navigation } = this.props;
-    const title = navigation.getParam('title', 0);
-    const subtitle = navigation.getParam('subtitle', 'otherParam fallback');
     const notAvailable = navigation.getParam('notAvailable', '');
 
     return (
-      <View style={styles.container}>
-        <Text>{subtitle}</Text>
-        {!!subtitle && <Text>{title}</Text>}
-        {!!notAvailable && <Text>{notAvailable}</Text>}
-      </View>
+      <ScrollView>
+        <View style={styles.container}>
+          <TopVisual />
+          <SvgShape navigation={navigation} />
+          {!!notAvailable && <Text>{notAvailable}</Text>}
+          <LogoSubtitle navigation={navigation} />
+          <ContenText />
+          <Link />
+        </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
