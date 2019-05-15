@@ -1,6 +1,6 @@
 # Smart Village App - Mobile App <img src="./background-gradient.png" width="150" align="left">
 
-![Project version](https://img.shields.io/badge/version-0.1.0-informational.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/maintainability)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/test_coverage)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/test_coverage) ![Node version](https://img.shields.io/badge/node-11.3.0-informational.svg) ![Yarn version](https://img.shields.io/badge/yarn-1.16.0-informational.svg)
+![Project version](https://img.shields.io/badge/version-0.2.0-informational.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/maintainability)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/test_coverage)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/test_coverage) ![Node version](https://img.shields.io/badge/node-11.3.0-informational.svg) ![Yarn version](https://img.shields.io/badge/yarn-1.16.0-informational.svg)
 
 The Smart Village App will be a mobile app made with React Native.
 
@@ -36,4 +36,4 @@ Information about currently used packages and their versions:
 Have a look at the [changelog](./CHANGELOG.md) to be up to date with the development process.
 
 ---
-###### Version: 0.1.0
+###### Version: 0.2.0
