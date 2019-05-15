@@ -10,7 +10,7 @@ export default class Link extends Component {
   render() {
     return (
       <TouchableOpacity onPress={() => Linking.openURL('https://google.com')}>
-        <View>
+        <View style={{ alignSelf: 'center' }}>
           <LinkStyle>Weiterlesen auf maz-online.de</LinkStyle>
           <Icon name="share" type="material-community" color={colors.secondary} />
         </View>

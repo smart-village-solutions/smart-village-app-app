@@ -4,9 +4,11 @@ import { View, Image } from 'react-native';
 export default class TopVisual extends Component {
   render() {
     return (
-      <View>
-        <Image style={{ width: 400, height: 200 }} source={require('./badBelzig.jpg')} />
-      </View>
+      <Image
+        style={{ width: '100%', height: 250, alignSelf: 'center' }}
+        source={require('./badBelzig.jpg')}
+      />
     );
   }
 }
+//alignSelf it's placing the single element at the center of the screen

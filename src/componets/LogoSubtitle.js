@@ -2,19 +2,22 @@ import React, { Component } from 'react';
 
 import { Image, View, Text } from 'react-native';
 
-import { ListSubtitle } from '../styles/ListElements';
-
 export default class LogoSubtitle extends Component {
   render() {
-    const { navigation } = this.props;
-    const subtitle = navigation.getParam('subtitle', 'otherParam fallback');
     return (
-      <View>
-        <Image style={{ height: 100 }} source={require('./maerkische-allgemeine.jpg')} />
-        {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
-      </View>
+      <Image
+        style={{
+          width: '100%',
+          height: 50,
+          alignSelf: 'center',
+          marginTop: 10,
+          marginBottom: 10
+        }}
+        source={require('./maerkische-allgemeine.jpg')}
+      />
     );
   }
 }
 
 // tryed with { Tile } from 'react-native-elements' but it seams still not good for size of pic
+//  resizeMode: 'contain',

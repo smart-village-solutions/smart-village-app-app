@@ -13,12 +13,12 @@ export default class SvgShape extends React.Component {
     const { navigation } = this.props;
     const title = navigation.getParam('title', 0);
     return (
-      <View>
+      <View style={{ borderWidth: 3, borderColor: 'red' }}>
         <Svg
-          width="500"
-          height="482.42"
+          width="100%"
+          height="100%"
           version="1.1"
-          viewBox="17053026e-20 -3126388e-19 500 482.4193"
+          viewBox="0 0 500 482.4193"
           xmlns="http://www.w3.org/2000/Svg"
         >
           <Defs>
@@ -47,3 +47,8 @@ export default class SvgShape extends React.Component {
 }
 
 // how to place text on top of svg https://stackoverflow.com/questions/5546346/how-to-place-and-center-text-in-an-svg-rectangle
+/** width="500"
+          height="482.42"
+          version="1.1"
+          viewBox="17053026e-20 -3126388e-19 500 482.4193" : The ‘viewBox’ attribute, in conjunction with the ‘preserveAspectRatio’ attribute, provides the capability to stretch an SVG viewport to fit a particular container element.
+          xmlns="http://www.w3.org/2000/Svg" */
