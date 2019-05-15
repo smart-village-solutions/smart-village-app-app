@@ -7,7 +7,10 @@ import ListItems from '../componets/ListItems';
 
 export default class IndexScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
+    const title = navigation.getParam('title', 0);
+
     return {
+      headerTitle: <ScreenTitle>{title}</ScreenTitle>,
       headerLeft: (
         <Button
           title={texts.button.home}
@@ -23,9 +26,10 @@ export default class IndexScreen extends React.Component {
 
     return (
       <View>
-        <ScreenTitle>{texts.screenTitles.news}</ScreenTitle>
         <ListItems navigation={navigation} />
       </View>
     );
   }
 }
+
+//
