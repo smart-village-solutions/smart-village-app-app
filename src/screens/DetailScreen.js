@@ -5,8 +5,8 @@ import ContenText from '../componets/ContenText';
 import Link from '../componets/Link';
 import LogoSubtitle from '../componets/LogoSubtitle';
 import TopVisual from '../componets/TopVisual';
-import SvgShape from '../componets/SvgShape';
 
+import { ListSubtitle } from '../styles/ListElements';
 import { colors, texts } from '../config';
 
 export default class DetailScreen extends React.Component {
@@ -42,14 +42,15 @@ export default class DetailScreen extends React.Component {
   render() {
     const { navigation } = this.props;
     const notAvailable = navigation.getParam('notAvailable', '');
+    const subtitle = navigation.getParam('subtitle', 'otherParam fallback');
 
     return (
       <ScrollView>
+        {!!notAvailable && <Text>{notAvailable}</Text>}
         <View style={styles.container}>
           <TopVisual />
-          <SvgShape navigation={navigation} />
-          {!!notAvailable && <Text>{notAvailable}</Text>}
           <LogoSubtitle navigation={navigation} />
+          {!!subtitle && <ListSubtitle style={{ alignSelf: 'center' }}>{subtitle}</ListSubtitle>}
           <ContenText />
           <Link />
         </View>
@@ -58,6 +59,7 @@ export default class DetailScreen extends React.Component {
   }
 }
 
+//
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
