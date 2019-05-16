@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Dimensions } from 'react-native';
 import HTML from 'react-native-render-html';
-import { ContenTextStyle } from '../styles/ContenTextStyle';
+import html from '../config/html';
 
 const htmlContent = `
     <h4>This is going to be the header of the article or whatever , default is h2 Bold, but is possible to customize it   </h4>
@@ -12,12 +12,14 @@ const htmlContent = `
 export default class ContenText extends Component {
   render() {
     return (
-      <View style={{ borderWidth: 1, textAlign: 'center' }}>
-        <HTML html={htmlContent} imagesMaxWidth={Dimensions.get('window').width} />
-      </View>
+      <HTML html={htmlContent} tagsStyles={html} imagesMaxWidth={Dimensions.get('window').width} />
     );
   }
 }
 
 //STYLE COMPONENT not supported
 // textAlign: 'justify',
+//style={{ borderWidth: 1, textAlign: 'center' }}
+
+// FINISCI DI POSIZIONARE , IL TESTO DA SINISTRA CON PADDING , DESTRA NON C'IMPORTA PER ORA
+// aggiungi gradient
