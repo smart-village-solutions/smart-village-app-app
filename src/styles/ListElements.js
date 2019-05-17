@@ -7,7 +7,7 @@ export const ListTitle = styled.Text`
 `;
 
 export const ListSubtitle = styled(ListTitle)`
-  color: ${colors.lighterText};
+  color: ${colors.primary};
   font-weight: 100;
 `;
 export const Divider = styled.View`
