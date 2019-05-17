@@ -62,3 +62,5 @@ export default class ListItems extends React.Component {
     return <FlatList keyExtractor={this.keyExtractor} data={items} renderItem={this.renderItem} />;
   }
 }
+
+//lista deve avere un padding , deve essere spazio tutt'intorno,  lavorare solo sul divider oppore tutta la lista ?

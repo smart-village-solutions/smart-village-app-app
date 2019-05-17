@@ -19,5 +19,4 @@ export default class LogoSubtitle extends Component {
   }
 }
 
-// tryed with { Tile } from 'react-native-elements' but it seams still not good for size of pic
 //  resizeMode: 'contain',

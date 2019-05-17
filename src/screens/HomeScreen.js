@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../config';
+import Gradient from '../componets/Gradient';
 
 export default class HomeScreen extends React.Component {
   render() {
@@ -9,6 +10,7 @@ export default class HomeScreen extends React.Component {
 
     return (
       <View style={styles.container}>
+        <Gradient />
         <Text>Open up App.js to start working on your app!</Text>
         <Button
           title="Go to news"
@@ -32,3 +34,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 });
+
+//COSTRUISCI HOME PAGE
