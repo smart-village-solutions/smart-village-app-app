@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.2.0]
+
+Setup Apollo GraphQL client with cache persisting
+
+### Added
+
+- setup Apollo GraphQL client: https://www.apollographql.com/docs/react/
+  - a local development address is given for the GraphQL server uri
+- implemented cache persisting with https://github.com/apollographql/apollo-cache-persist
+  to AsyncStorage
+- made first queries
+  - on HomeScreen querying data from locally connected main server
+  - on IndexScreen querying data from the client store
+  - for `fetchPolicy`s see https://www.apollographql.com/docs/react/api/react-apollo#graphql-config-options-fetchPolicy
+
 ## [v0.1.0]
 
 Initial React Native app setup with Expo and React Navigation
