@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.3.0]
+
+Setup styled-components and react-native-elements
+
+### Added
+
+- as a guide used https://react-native-training.github.io/react-native-elements/docs/listitem.html
+- as a guide used https://www.styled-components.com/docs/basics#react-native
+
 ## [v0.2.0]
 
 Setup Apollo GraphQL client with cache persisting
