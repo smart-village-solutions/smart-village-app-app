@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Image, View, Text } from 'react-native';
 
-export default class LogoSubtitle extends Component {
+export class Logo extends Component {
   render() {
     return (
       <Image

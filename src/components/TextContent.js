@@ -4,12 +4,12 @@ import HTML from 'react-native-render-html';
 import html from '../config/html';
 
 const htmlContent = `
-    <h4>This is going to be the header of the article or whatever , default is h2 Bold, but is possible to customize it   </h4>
+    <h3>This is going to be the header of the article or whatever , default is h2 Bold, but is possible to customize it   </h3>
     <p >Enjoy a webview-free and blazing fast applicationEnjoy a webview-free and blazing. Fast applicatio Enjoy a webview-free and blazing fast applicationEnjoy a webview-free and blazing fast applicationEnjoy a webview-free and blazing fast application. Enjoy a webview-free and blazing fast applicationEnjoy a webview-free and blazing fast application</ContenTextStyle>
     <em style="textAlign: center;"> here some closing text, maybe INFO  </em>
 `;
 
-export default class ContenText extends Component {
+export class TextContent extends Component {
   render() {
     return (
       <HTML html={htmlContent} tagsStyles={html} imagesMaxWidth={Dimensions.get('window').width} />

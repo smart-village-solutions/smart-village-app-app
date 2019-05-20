@@ -1,12 +1,7 @@
 import React from 'react';
 import { Button, Platform, StyleSheet, ScrollView, Text, View } from 'react-native';
 
-import ContenText from '../componets/ContenText';
-import Link from '../componets/Link';
-import LogoSubtitle from '../componets/LogoSubtitle';
-import TopVisual from '../componets/TopVisual';
-
-import { ListSubtitle } from '../styles/ListElements';
+import { Divider, TextContent, Link, ListSubtitle, TextList, Logo, TopVisual } from '../components';
 import { colors, texts } from '../config';
 
 export default class DetailScreen extends React.Component {
@@ -49,9 +44,9 @@ export default class DetailScreen extends React.Component {
         {!!notAvailable && <Text>{notAvailable}</Text>}
         <View style={styles.container}>
           <TopVisual />
-          <LogoSubtitle navigation={navigation} />
-          {!!subtitle && <ListSubtitle style={{ alignSelf: 'center' }}>{subtitle}</ListSubtitle>}
-          <ContenText />
+          <Logo navigation={navigation} />
+          {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
+          <TextContent />
           <Link />
         </View>
       </ScrollView>

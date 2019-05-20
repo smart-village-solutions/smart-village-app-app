@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import { Icon } from 'react-native-elements';
 import { Linking, TouchableOpacity, View } from 'react-native';
-import { LinkStyle } from '../styles/LinkStyle';
+import styled, { css } from 'styled-components/native';
+
 import { colors, texts } from '../config';
 
 const data = [{ url: 'https://google.com', linktext: 'Weiterlesen auf maz-online.de' }];
 
-export default class Link extends Component {
+const LinkStyle = styled.Text`
+  color: ${colors.secondary};
+  font-weight: bold;
+`;
+
+export class Link extends Component {
   render() {
     return (
       <TouchableOpacity onPress={() => Linking.openURL('https://google.com')}>
@@ -18,10 +24,3 @@ export default class Link extends Component {
     );
   }
 }
-
-/** console.warn(linktext)
- *  const linktext = this.props.data;
-    const url = this.props.data;
- *  I still can't master the props...
- * can't get url, linktext
- */

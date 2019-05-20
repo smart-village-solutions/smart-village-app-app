@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { colors, texts } from '../config';
 
-export default class Gradient extends Component {
+export class Gradient extends Component {
   render() {
     return (
       <LinearGradient
@@ -12,7 +12,7 @@ export default class Gradient extends Component {
         end={{ x: 1, y: 0 }}
         style={styles.gradient}
       >
-        <Text>Title</Text>
+        <Text>Welcome to Bad Belzig</Text>
       </LinearGradient>
     );
   }
@@ -24,7 +24,7 @@ var styles = StyleSheet.create({
     width: '100%',
     padding: 10,
     borderColor: 'black',
-    borderRadius: 5
+    borderRadius: 0
   }
 });
 //   buttonText: {

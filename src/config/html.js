@@ -1,16 +1,20 @@
 import { colors } from '../config';
 
 export default {
-  p: {
-    color: colors.lighterText,
-    fontWeight: '400',
-    marginTop: 0,
-    textAlign: 'justify'
+  h3: {
+    color: colors.darkText,
+    fontWeight: '600',
+    textAlign: 'left',
+    marginRight: 15,
+    marginLeft: 15
   },
-  h4: {
+  p: {
     color: colors.darkText,
     fontWeight: '400',
-    textAlign: 'center'
+    marginLeft: 15,
+    marginRight: 15,
+    textAlign: 'left',
+    marginTop: 15
   },
   a: {
     color: colors.red,
@@ -19,40 +23,14 @@ export default {
   },
   h1: {
     color: colors.red,
-    fontWeight: '400',
-    fontSize: ''
+    fontWeight: '400'
+  },
+  h4: {
+    color: colors.darkText,
+    fontWeight: '400'
   },
   h2: {
     color: colors.darkText,
-    fontWeight: '400',
-    fontSize: ''
-  },
-  h3: {
-    color: colors.black,
-    fontWeight: '400',
-    fontSize: ''
-  },
-
-  h5: {
-    color: colors.black,
-    fontWeight: '400',
-    fontSize: ''
-  },
-  h6: {
-    color: colors.black,
-    fontWeight: '400',
-    fontSize: ''
-  },
-  b: {
-    fontWeight: '800'
-  },
-  strong: {
-    fontWeight: '800'
-  },
-  ul: {
-    marginBottom: 0
-  },
-  ol: {
-    marginBottom: 0
+    fontWeight: '400'
   }
 };
