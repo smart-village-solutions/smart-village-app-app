@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, ScrollView, StyleSheet, View } from 'react-native';
 
-import { Gradient, TextList, TopVisual } from '../components';
+import { CardList, Title, TitleContainer, TextList, TopVisual } from '../components';
 import { colors } from '../config';
 
 // TODO: data coming later from API
@@ -22,30 +22,43 @@ const items = [
     subtitle: '22.04.88|Terranova'
   }
 ];
+const cards = [
+  {
+    name: 'Burg Eisenhardt Bad Belzig',
+    kategorie: 'Museum',
+    url: 'https://api.tmb.pixelpoint.biz/api/asset/91380/thumbnail/593/365.jpg'
+  },
+  {
+    name: 'Heimatstube Wiesenburg',
+    kategorie: 'Museum',
+    url: 'https://api.tmb.pixelpoint.biz/api/asset/80032/thumbnail/593/365.jpg'
+  },
+
+  {
+    name: 'Roger Loewig Haus czvgubhzuzgizbi  hjvuhbuz',
+    kategorie: 'Wellness',
+    url: 'https://api.tmb.pixelpoint.biz/api/asset/88671/thumbnail/593/365.jpg'
+  }
+];
 
 export default class HomeScreen extends React.Component {
   render() {
     const { navigation } = this.props;
 
     return (
-      <View>
-        <ScrollView>
-          <TopVisual />
-          <Gradient />
-          <Button
-            title="Go to news"
-            onPress={() => navigation.navigate('News')}
-            color={colors.primary}
-          />
-          <TextList navigation={navigation} data={items} />
-          <Button
-            title="Go to events"
-            onPress={() => navigation.navigate('Events')}
-            color={colors.primary}
-          />
-          <TextList navigation={navigation} data={items} />
-        </ScrollView>
-      </View>
+      <ScrollView>
+        <TopVisual />
+        <TitleContainer>
+          <Title>nachrichten</Title>
+        </TitleContainer>
+        <TextList navigation={navigation} data={items} />
+        <Title>orte & routen</Title>
+        <CardList data={cards} />
+        <Title>veranstaltungen</Title>
+        <TextList navigation={navigation} data={items} second={true} />
+        <Title>service</Title>
+        <TextList navigation={navigation} data={items} listService={true} />
+      </ScrollView>
     );
   }
 }
