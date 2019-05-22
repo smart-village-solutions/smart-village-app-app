@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, Platform, StyleSheet, ScrollView, Text, View } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 import { Divider, TextContent, Link, ListSubtitle, TextList, Logo, TopVisual } from '../components';
 import { colors, texts } from '../config';
@@ -12,23 +13,29 @@ export default class DetailScreen extends React.Component {
     return {
       title: `Detail #${itemId}`,
       headerLeft: (
-        <Button
-          title={texts.button.back}
-          onPress={() => navigation.goBack()}
-          color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
-        />
+        <View>
+          <Icon
+            name="angle-left"
+            type="font-awesome"
+            color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
+            onPress={() => navigation.goBack()}
+          />
+        </View>
       ),
       headerRight: (
         <View style={styles.rowContainer}>
-          <Button
-            title={texts.button.share}
+          <Icon
+            name="share"
+            type="foundation"
+            color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
             onPress={() => alert(texts.button.share)}
-            color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
           />
-          <Button
-            title="="
-            onPress={() => navigation.openDrawer()}
+
+          <Icon
+            name="menu"
+            type="material"
             color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
+            onPress={() => navigation.openDrawer()}
           />
         </View>
       )
