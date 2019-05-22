@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.5.0]
+
+Create 10 new components
+
+### Added
+
+- which are making up the layout of the main screens like `Home`, `Index` and `Detail`
+- `config` now contains not just colors and texts
+  - also object of html tags in order to style the text in `TextContent`
+
 ## [v0.4.0]
 
 Create a custom drawer navigator
