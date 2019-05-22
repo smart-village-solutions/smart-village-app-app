@@ -12,6 +12,12 @@ export const Title = styled.Text`
 //experimentig with the shadow ,
 //it seams that titles on homepage are inside of a box witch has a shadow
 // I need to recrate the effect of having a shadow from the line
-export const TitleContainer = styled.View`
-  box-shadow: 0 6px 6px black;
+export const TitleContainer = styled.View``;
+
+// fake shadow for now as workaround with border bottom
+export const TitleShadow = styled.View`
+  border-bottom-width: 2px;
+  border-bottom-color: gray;
+  border-style: solid;
+  opacity: 0.2;
 `;

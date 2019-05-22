@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, ScrollView, StyleSheet, View } from 'react-native';
 
-import { CardList, Title, TitleContainer, TextList, TopVisual } from '../components';
+import { CardList, TextList, Title, TitleContainer, TitleShadow, TopVisual } from '../components';
 import { colors } from '../config';
 
 // TODO: data coming later from API
@@ -48,16 +48,30 @@ export default class HomeScreen extends React.Component {
     return (
       <ScrollView>
         <TopVisual />
+        <TitleShadow />
         <TitleContainer>
           <Title>nachrichten</Title>
         </TitleContainer>
+        <TitleShadow />
         <TextList navigation={navigation} data={items} />
-        <Title>orte & routen</Title>
+        <TitleShadow />
+        <TitleContainer>
+          <Title>orte & routen</Title>
+        </TitleContainer>
+        <TitleShadow />
         <CardList data={cards} />
-        <Title>veranstaltungen</Title>
-        <TextList navigation={navigation} data={items} second={true} />
-        <Title>service</Title>
-        <TextList navigation={navigation} data={items} listService={true} />
+        <TitleShadow />
+        <TitleContainer>
+          <Title>veranstaltungen</Title>
+        </TitleContainer>
+        <TitleShadow />
+        <TextList navigation={navigation} data={items} alternativeLayout={true} />
+        <TitleShadow />
+        <TitleContainer>
+          <Title>service</Title>
+        </TitleContainer>
+        <TitleShadow />
+        <TextList navigation={navigation} data={items} noSubtitle={true} />
       </ScrollView>
     );
   }
