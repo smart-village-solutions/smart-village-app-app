@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.4.0]
+
+Create a custom drawer navigator
+
+### Added
+
+- created custom drawer and custom drawer items components based on the original ones from React
+  Navigation
+  - needed to set a gradient background
+  - needed to change the navigation behaviour with popToTop() in stacks
+  - needed to add an close icon on the top right
+  - conditionally use drawerType depending on platform
+    - on iOS `slide` is more common
+  - changed fontWeight depending on `focused`
+    - `bold` when active, otherwise `normal`
+- created a DiagonalGradient component to use everywhere needed
+- created device config holding different values needed in some screens, like platform or dimensions
+- added StatusBar to set the bar style to `light-content`, as we want to have white text on our
+  gradient header
+- updated colors to new shades of green and blue
+
 ## [v0.3.0]
 
 Setup styled-components and react-native-elements
