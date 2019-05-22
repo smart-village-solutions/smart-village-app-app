@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button, Platform, StyleSheet, ScrollView, Text, View } from 'react-native';
+import { Button, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { Divider, TextContent, Link, ListSubtitle, TextList, Logo, TopVisual } from '../components';
+import { HtmlView, Link, ListSubtitle, Logo, TopVisual } from '../components';
 import { colors, texts } from '../config';
 
-export default class DetailScreen extends React.Component {
+export class DetailScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const itemId = navigation.getParam('itemId', 0);
 
@@ -41,13 +41,13 @@ export default class DetailScreen extends React.Component {
     const subtitle = navigation.getParam('subtitle', 'otherParam fallback');
 
     return (
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.container}>
         {!!notAvailable && <Text>{notAvailable}</Text>}
         <View style={styles.container}>
           <TopVisual />
           <Logo navigation={navigation} />
           {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
-          <TextContent />
+          <HtmlView />
           <Link />
         </View>
       </ScrollView>
@@ -55,12 +55,10 @@ export default class DetailScreen extends React.Component {
   }
 }
 
-//
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    paddingVertical: 10
   },
   rowContainer: {
     flexDirection: 'row'

@@ -3,7 +3,7 @@ import { Button, Platform, StyleSheet, Text, View } from 'react-native';
 
 import { colors, texts } from '../config';
 
-export default class StaticScreen extends React.Component {
+export class StaticScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerLeft: (

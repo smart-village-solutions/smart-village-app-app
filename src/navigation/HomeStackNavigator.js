@@ -1,6 +1,6 @@
 import { createStackNavigator } from 'react-navigation';
 
-import HomeScreen from '../screens/HomeScreen';
+import { HomeScreen, HtmlScreen } from '../screens';
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
 
 import { texts } from '../config';
@@ -12,6 +12,9 @@ export const HomeStackNavigator = createStackNavigator(
       navigationOptions: () => ({
         title: texts.screenTitles.home
       })
+    },
+    Html: {
+      screen: HtmlScreen
     }
   },
   defaultStackNavigatorConfig('Home')

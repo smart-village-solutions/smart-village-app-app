@@ -1,7 +1,6 @@
 import { createStackNavigator } from 'react-navigation';
 
-import IndexScreen from '../screens/IndexScreen';
-import DetailScreen from '../screens/DetailScreen';
+import { DetailScreen, HtmlScreen, IndexScreen } from '../screens';
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
 
 export const IndexStackNavigator = createStackNavigator(
@@ -11,6 +10,9 @@ export const IndexStackNavigator = createStackNavigator(
     },
     Detail: {
       screen: DetailScreen
+    },
+    Html: {
+      screen: HtmlScreen
     }
   },
   defaultStackNavigatorConfig('Index')
