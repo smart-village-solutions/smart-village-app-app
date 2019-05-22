@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, AsyncStorage, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, AsyncStorage, StatusBar, StyleSheet, View } from 'react-native';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import { HttpLink } from 'apollo-link-http';
@@ -74,6 +74,7 @@ export const App = () => {
 
   return (
     <ApolloProvider client={client}>
+      <StatusBar barStyle="light-content" />
       <AppContainer />
     </ApolloProvider>
   );
