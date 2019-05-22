@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { Button, Platform, StyleSheet, ScrollView, Text, View } from 'react-native';
 
@@ -18,7 +19,7 @@ export default class DetailScreen extends React.Component {
         />
       ),
       headerRight: (
-        <View style={{ flexDirection: 'row' }}>
+        <View style={styles.rowContainer}>
           <Button
             title={texts.button.share}
             onPress={() => alert(texts.button.share)}
@@ -57,8 +58,15 @@ export default class DetailScreen extends React.Component {
 //
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  rowContainer: {
+    flexDirection: 'row'
   }
 });
+
+DetailScreen.propTypes = {
+  navigation: PropTypes.object.isRequired
+};

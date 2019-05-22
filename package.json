@@ -1,12 +1,13 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
     "android": "expo start --android",
-    "ios": "expo start --ios",
     "eject": "expo eject",
-    "test": "jest",
-    "enable-rn-hooks": "cp -R scripts/rn-renderer/* node_modules/react-native/Libraries/Renderer"
+    "enable-rn-hooks": "cp -R scripts/rn-renderer/* node_modules/react-native/Libraries/Renderer",
+    "ios": "expo start --ios",
+    "lint": "./node_modules/.bin/eslint __tests__ src",
+    "start": "expo start",
+    "test": "jest"
   },
   "jest": {
     "preset": "react-native",
@@ -18,8 +19,15 @@
     ]
   },
   "dependencies": {
+    "apollo-cache-inmemory": "^1.5.1",
+    "apollo-cache-persist": "^0.1.1",
+    "apollo-client": "^2.5.1",
+    "apollo-link-http": "^1.5.14",
     "expo": "^32.0.0",
+    "graphql": "^14.3.0",
+    "graphql-tag": "^2.10.1",
     "react": "16.8.6",
+    "react-apollo": "^2.5.5",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-elements": "^1.1.0",
     "react-native-linear-gradient": "^2.5.4",
@@ -28,7 +36,11 @@
     "styled-components": "^4.2.0"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.1",
     "babel-preset-expo": "^5.0.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-react": "^7.13.0",
+    "eslint-plugin-react-native": "^3.7.0",
     "jest": "^24.8.0",
     "react-test-renderer": "16.8.6"
   }

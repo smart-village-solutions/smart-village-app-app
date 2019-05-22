@@ -5,13 +5,14 @@ import IndexScreen from '../../src/screens/IndexScreen';
 import { texts } from '../../src/config';
 
 describe('IndexScreen', () => {
+  const navigation = { navigate: jest.fn() };
+
   it('renders correctly', () => {
-    const tree = renderer.create(<IndexScreen />).toJSON();
+    const tree = renderer.create(<IndexScreen navigation={navigation} />).toJSON();
     expect(tree).toBeTruthy();
   });
 
   it('must contain a left header element (for going home)', () => {
-    const navigation = { navigate: jest.fn(), getParam: jest.fn((param) => param) };
     const navigationOptions = IndexScreen.navigationOptions({ navigation });
     const leftHeaderElement = navigationOptions.headerLeft;
 

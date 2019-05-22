@@ -9,7 +9,7 @@ export const HomeStackNavigator = createStackNavigator(
   {
     Home: {
       screen: HomeScreen,
-      navigationOptions: ({ navigation }) => ({
+      navigationOptions: () => ({
         title: texts.screenTitles.home
       })
     }
