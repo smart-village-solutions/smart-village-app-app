@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 import { Icon, ListItem } from 'react-native-elements';
-import { FlatList, ScrollView, TouchableHighlight } from 'react-native';
+import { FlatList } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
-import { colors, texts } from '../config';
+import { colors } from '../config';
 
 export const ListTitle = styled.Text`
   color: ${colors.darkText};
@@ -55,6 +55,7 @@ export class TextList extends React.Component {
         }
         rightIcon={<Icon name="angle-right" type="font-awesome" color={colors.primary} />}
         onPress={() => navigation.navigate('Detail', item)}
+        delayPressIn={0}
       />
     );
   };
@@ -63,7 +64,7 @@ export class TextList extends React.Component {
 
     return (
       <FlatList
-        scrollEnabled="false"
+        scrollEnabled={false}
         keyExtractor={this.keyExtractor}
         data={data}
         renderItem={this.renderItem}

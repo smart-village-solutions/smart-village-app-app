@@ -30,18 +30,18 @@ const cards = [
   {
     name: 'Burg Eisenhardt Bad Belzig',
     kategorie: 'Museum',
-    url: 'https://api.tmb.pixelpoint.biz/api/asset/91380/thumbnail/593/365.jpg'
+    url: 'http://api.tmb.pixelpoint.biz/api/asset/91380/thumbnail/593/365.jpg'
   },
   {
     name: 'Heimatstube Wiesenburg',
     kategorie: 'Museum',
-    url: 'https://api.tmb.pixelpoint.biz/api/asset/80032/thumbnail/593/365.jpg'
+    url: 'http://api.tmb.pixelpoint.biz/api/asset/80032/thumbnail/593/365.jpg'
   },
 
   {
     name: 'Roger Loewig Haus czvgubhzuzgizbi  hjvuhbuz',
     kategorie: 'Wellness',
-    url: 'https://api.tmb.pixelpoint.biz/api/asset/88671/thumbnail/593/365.jpg'
+    url: 'http://api.tmb.pixelpoint.biz/api/asset/88671/thumbnail/593/365.jpg'
   }
 ];
 
@@ -66,25 +66,25 @@ export default class HomeScreen extends React.Component {
         <TopVisual />
         <TitleShadow />
         <TitleContainer>
-          <Title>nachrichten</Title>
+          <Title>{'Nachrichten'.toUpperCase()}</Title>
         </TitleContainer>
         <TitleShadow />
         <TextList navigation={navigation} data={items} />
         <TitleShadow />
         <TitleContainer>
-          <Title>orte & routen</Title>
+          <Title>{'Orte & Routen'.toUpperCase()}</Title>
         </TitleContainer>
         <TitleShadow />
         <CardList data={cards} />
         <TitleShadow />
         <TitleContainer>
-          <Title>veranstaltungen</Title>
+          <Title>{'Veranstaltungen'.toUpperCase()}</Title>
         </TitleContainer>
         <TitleShadow />
         <TextList navigation={navigation} data={items} alternativeLayout={true} />
         <TitleShadow />
         <TitleContainer>
-          <Title>service</Title>
+          <Title>{'Service'.toUpperCase()}</Title>
         </TitleContainer>
         <TitleShadow />
         <TextList navigation={navigation} data={items} noSubtitle={true} />

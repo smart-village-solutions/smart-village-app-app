@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.5.1]
+
+Update Android version with fixes for working as iOS version
+
+### Changed
+
+- some components were not working as expected on Android, as the development was focusing for iOS
+- updated some packages
+- removed some unnecessary imports
+- changed image urls to http, as https links of this specific files from that domain were not
+  rendering on Android
+- added `delayPressIn={0}` to avoid bugs on developing with remote debugger turned on
+- changed value for `scrollEnabled` to boolean as a red screen was arguing with
+- added workaround for the sidebar from right being not effected everywhere on the screen but
+  only on the edge of 20 from right
+- style textTransform uppercase is not working for Android, which will be fixed with
+  React Native 0.59.x
+  - meanwhile we uppercase per JS
+
 ## [v0.5.0]
 
 Create 10 new components

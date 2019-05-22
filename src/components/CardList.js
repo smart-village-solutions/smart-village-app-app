@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Card } from 'react-native-elements';
-import { Image, Dimensions, StyleSheet, FlatList, Text, View } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, FlatList } from 'react-native';
+import { Image } from 'react-native-elements';
 
+import { device } from '../config';
 import { ListSubtitle, ListTitle } from './TextList';
 
 export class CardList extends Component {
@@ -10,16 +12,25 @@ export class CardList extends Component {
   renderItem = ({ item }) => {
     return (
       <Card
-        containerStyle={{
-          shadowColor: 'transparent',
-          padding: 0,
-          borderWidth: 0,
-          width: Dimensions.get('window').width * 0.7
-        }}
+        containerStyle={[
+          Platform.select({
+            android: {
+              elevation: 0
+            },
+            ios: {
+              shadowColor: 'transparent'
+            }
+          }),
+          styles.container
+        ]}
       >
-        <Image style={styles.image} source={{ uri: item.url }} />
+        <Image
+          style={styles.image}
+          source={{ uri: item.url }}
+          PlaceholderContent={<ActivityIndicator />}
+        />
         <ListSubtitle>{item.kategorie}</ListSubtitle>
-        <ListTitle style={{ marginBottom: 10 }}>{item.name}</ListTitle>
+        <ListTitle style={styles.listTitle}>{item.name}</ListTitle>
       </Card>
     );
   };
@@ -40,10 +51,17 @@ export class CardList extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    borderWidth: 0,
+    padding: 0,
+    width: device.width * 0.7
+  },
   image: {
-    width: '100%',
-    height: 200,
     borderRadius: 5,
+    height: 200,
+    marginBottom: 10
+  },
+  listTitle: {
     marginBottom: 10
   }
 });
