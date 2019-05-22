@@ -14,12 +14,3 @@ export const texts = {
     policy: 'Datenschutz'
   }
 };
-
-import styled, { css } from 'styled-components/native';
-import { colors } from './colors';
-
-export const ScreenTitle = styled.Text`
-  color: ${colors.darkText};
-  font-weight: bold;
-  text-align: center;
-`;

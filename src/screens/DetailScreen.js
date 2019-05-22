@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button, Platform, StyleSheet, Text, View } from 'react-native';
+import { Button, Platform, StyleSheet, ScrollView, Text, View } from 'react-native';
 
+import { Divider, TextContent, Link, ListSubtitle, TextList, Logo, TopVisual } from '../components';
 import { colors, texts } from '../config';
 
 export default class DetailScreen extends React.Component {
@@ -36,20 +37,25 @@ export default class DetailScreen extends React.Component {
 
   render() {
     const { navigation } = this.props;
-    const itemId = navigation.getParam('itemId', 0);
-    const otherParam = navigation.getParam('otherParam', 'otherParam fallback');
     const notAvailable = navigation.getParam('notAvailable', '');
+    const subtitle = navigation.getParam('subtitle', 'otherParam fallback');
 
     return (
-      <View style={styles.container}>
-        <Text>Detail Screen #{itemId}</Text>
-        {!!otherParam && <Text>{otherParam}</Text>}
+      <ScrollView>
         {!!notAvailable && <Text>{notAvailable}</Text>}
-      </View>
+        <View style={styles.container}>
+          <TopVisual />
+          <Logo navigation={navigation} />
+          {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
+          <TextContent />
+          <Link />
+        </View>
+      </ScrollView>
     );
   }
 }
 
+//
 const styles = StyleSheet.create({
   container: {
     flex: 1,
