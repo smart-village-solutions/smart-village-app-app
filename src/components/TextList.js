@@ -10,7 +10,7 @@ import { colors, texts } from '../config';
 export const ListTitle = styled.Text`
   color: ${colors.darkText};
   ${(props) =>
-    props.second &&
+    props.alternativeLayout &&
     css`
       font-weight: bold;
     `};
@@ -29,7 +29,7 @@ export const ListSubtitle = styled(ListTitle)`
       color: ${colors.lightestText};
     `};
   ${(props) =>
-    props.second &&
+    props.alternativeLayout &&
     css`
       color: ${colors.darkText};
     `};
@@ -39,18 +39,20 @@ export class TextList extends React.Component {
   keyExtractor = (item, index) => item + index;
 
   renderItem = ({ item }) => {
-    const { navigation, second, listService } = this.props;
+    const { navigation, alternativeLayout, noSubtitle } = this.props;
 
     return (
       <ListItem
         title={
-          <ListSubtitle second={second} listService={listService}>
-            {item.subtitle}
-          </ListSubtitle>
+          noSubtitle ? null : (
+            <ListSubtitle second={alternativeLayout}>{item.subtitle}</ListSubtitle>
+          )
         }
-        subtitle={<ListTitle second={second}>{item.title}</ListTitle>}
+        subtitle={<ListTitle second={alternativeLayout}>{item.title}</ListTitle>}
         bottomDivider={true}
-        containerStyle={second ? { backgroundColor: '#ddf2f3', borderBottomColor: '#fff' } : null}
+        containerStyle={
+          alternativeLayout ? { backgroundColor: '#ddf2f3', borderBottomColor: '#fff' } : null
+        }
         rightIcon={<Icon name="angle-right" type="font-awesome" color={colors.primary} />}
         onPress={() => navigation.navigate('Detail', item)}
       />
