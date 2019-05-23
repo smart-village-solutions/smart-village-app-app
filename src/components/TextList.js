@@ -9,25 +9,18 @@ import { colors } from '../config';
 
 export const ListTitle = styled.Text`
   color: ${colors.darkText};
+
   ${(props) =>
-    props.alternativeLayout &&
+    (props.alternativeLayout || props.noSubtitle) &&
     css`
-      font-weight: bold;
+      font-weight: 600;
     `};
 `;
 
-export const ListSubtitle = styled(ListTitle)`
+export const ListSubtitle = styled.Text`
   color: ${colors.primary};
   margin-bottom: 10;
-  font-weight: 100;
 
-  ${(props) =>
-    props.listService &&
-    css`
-      margin-bottom: 0;
-      font-size: 1;
-      color: ${colors.lightestText};
-    `};
   ${(props) =>
     props.alternativeLayout &&
     css`
@@ -44,11 +37,15 @@ export class TextList extends React.Component {
     return (
       <ListItem
         title={
-          noSubtitle ? null : (
-            <ListSubtitle second={alternativeLayout}>{item.subtitle}</ListSubtitle>
+          noSubtitle || !item.subtitle ? null : (
+            <ListSubtitle alternativeLayout={alternativeLayout}>{item.subtitle}</ListSubtitle>
           )
         }
-        subtitle={<ListTitle second={alternativeLayout}>{item.title}</ListTitle>}
+        subtitle={
+          <ListTitle alternativeLayout={alternativeLayout} noSubtitle={noSubtitle}>
+            {item.title}
+          </ListTitle>
+        }
         bottomDivider={true}
         containerStyle={
           alternativeLayout ? { backgroundColor: '#ddf2f3', borderBottomColor: '#fff' } : null
@@ -72,3 +69,15 @@ export class TextList extends React.Component {
     );
   }
 }
+
+TextList.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
+  alternativeLayout: PropTypes.bool,
+  noSubtitle: PropTypes.bool
+};
+
+TextList.defaultProps = {
+  alternativeLayout: false,
+  noSubtitle: false
+};

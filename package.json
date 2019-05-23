@@ -12,7 +12,7 @@
   "jest": {
     "preset": "react-native",
     "transformIgnorePatterns": [
-      "node_modules/(?!(react-native|react-navigation)/)"
+      "node_modules/(?!(react-native|react-navigation|react-native-elements|react-native-status-bar-height|react-native-vector-icons|expo-font|expo-constants|expo-core|expo-react-native-adapter)/)"
     ],
     "setupFiles": [
       "./jest-setup.js"
@@ -26,6 +26,7 @@
     "expo": "^32.0.0",
     "graphql": "^14.3.0",
     "graphql-tag": "^2.10.1",
+    "lodash": "^4.17.11",
     "react": "16.8.6",
     "react-apollo": "^2.5.6",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
@@ -37,11 +38,13 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.8.0",
     "babel-preset-expo": "^5.0.0",
     "eslint": "^5.16.0",
     "eslint-plugin-react": "^7.13.0",
     "eslint-plugin-react-native": "^3.7.0",
     "jest": "^24.8.0",
+    "jest-expo": "^32.0.1",
     "react-test-renderer": "16.8.6"
   }
 }
