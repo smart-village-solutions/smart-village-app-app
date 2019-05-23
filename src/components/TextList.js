@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { Icon, ListItem } from 'react-native-elements';
-import { FlatList, ScrollView, TouchableHighlight } from 'react-native';
+import { ListItem } from 'react-native-elements';
+import { Image, FlatList, ScrollView, TouchableHighlight } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
 import { colors, texts } from '../config';
@@ -53,7 +53,7 @@ export class TextList extends React.Component {
         containerStyle={
           alternativeLayout ? { backgroundColor: '#ddf2f3', borderBottomColor: '#fff' } : null
         }
-        rightIcon={<Icon name="angle-right" type="font-awesome" color={colors.primary} />}
+        rightIcon={<Image source={require('../green-arrow.png')} />}
         onPress={() => navigation.navigate('Detail', item)}
       />
     );

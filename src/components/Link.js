@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Icon } from 'react-native-elements';
-import { Linking, TouchableOpacity, View } from 'react-native';
+
+import { Image, Linking, TouchableOpacity, View } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
 import { colors, texts } from '../config';
+// import {  } from '../components';
 
 const data = [{ url: 'https://google.com', linktext: 'Weiterlesen auf maz-online.de' }];
 
@@ -18,9 +19,10 @@ export class Link extends Component {
       <TouchableOpacity onPress={() => Linking.openURL('https://google.com')}>
         <View style={{ alignSelf: 'center' }}>
           <LinkStyle>Weiterlesen auf maz-online.de</LinkStyle>
-          <Icon name="share" type="material-community" color={colors.secondary} />
         </View>
       </TouchableOpacity>
     );
   }
 }
+
+// <Icon name="share" type="material-community" color={colors.secondary} />

@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button, Platform, StyleSheet, ScrollView, Text, View } from 'react-native';
+import { Image, Platform, StyleSheet, ScrollView, Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 
-import { Divider, TextContent, Link, ListSubtitle, TextList, Logo, TopVisual } from '../components';
+import { TextContent, Link, ListSubtitle, Logo, TopVisual } from '../components';
 import { colors, texts } from '../config';
 
 export default class DetailScreen extends React.Component {
@@ -23,19 +23,16 @@ export default class DetailScreen extends React.Component {
         </View>
       ),
       headerRight: (
-        <View style={styles.rowContainer}>
-          <Icon
-            name="share"
-            type="foundation"
+        <View>
+          <Image
+            source={require('../share.png')}
             color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
             onPress={() => alert(texts.button.share)}
           />
-
-          <Icon
-            name="menu"
-            type="material"
+          <Image
             color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
             onPress={() => navigation.openDrawer()}
+            source={require('../drower-menu.png')}
           />
         </View>
       )
@@ -56,22 +53,23 @@ export default class DetailScreen extends React.Component {
           {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
           <TextContent />
           <Link />
+          <Image source={require('../link.png')} />
         </View>
       </ScrollView>
     );
   }
 }
 
-//
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  rowContainer: {
-    flexDirection: 'row'
   }
+  //   rowContainer: {
+  //     flexDirection: 'row',
+  //     justifyContent: 'space-around'
+  //   }
 });
 
 DetailScreen.propTypes = {
