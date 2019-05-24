@@ -52,19 +52,6 @@ const GET_CACHE_ITEMS = gql`
 `;
 
 export default class IndexScreen extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: 'Index',
-      headerLeft: (
-        <Button
-          title={texts.button.home}
-          onPress={() => navigation.navigate('Home')}
-          color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
-        />
-      )
-    };
-  };
-
   render() {
     const { navigation } = this.props;
 
