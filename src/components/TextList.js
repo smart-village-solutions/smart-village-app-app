@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-
-import { Icon, ListItem } from 'react-native-elements';
 import { FlatList } from 'react-native';
+import { Icon, ListItem } from 'react-native-elements';
 import styled, { css } from 'styled-components/native';
 
 import { colors } from '../config';
@@ -46,16 +45,24 @@ export class TextList extends React.Component {
             {item.title}
           </ListTitle>
         }
-        bottomDivider={true}
+        bottomDivider
         containerStyle={
-          alternativeLayout ? { backgroundColor: '#ddf2f3', borderBottomColor: '#fff' } : null
+          alternativeLayout
+            ? { backgroundColor: colors.lighterText, borderBottomColor: colors.lightestText }
+            : null
         }
         rightIcon={<Icon name="angle-right" type="font-awesome" color={colors.primary} />}
-        onPress={() => navigation.navigate('Detail', item)}
+        onPress={() =>
+          navigation.navigate({
+            routeName: item.routeName,
+            params: { ...item.params }
+          })
+        }
         delayPressIn={0}
       />
     );
   };
+
   render() {
     const { data } = this.props;
 

@@ -15,3 +15,20 @@ export const GET_POINTS_OF_INTEREST = gql`
     }
   }
 `;
+
+export const GET_POINT_OF_INTEREST = gql`
+  query PointOfInterest($id: ID!) {
+    pointOfInterest(id: $id) {
+      id
+      createdAt
+      name
+      category: categoryName
+      mediaContents {
+        contentType
+        sourceUrl {
+          url
+        }
+      }
+    }
+  }
+`;

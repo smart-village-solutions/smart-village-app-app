@@ -10,22 +10,23 @@ import _reduce from 'lodash/reduce';
 
 import { colors, device, texts } from './config';
 import { GET_PUBLIC_JSON_FILE } from './queries';
-import {
-  HomeStackNavigator,
-  HtmlStackNavigator,
-  IndexStackNavigator
-} from './navigation/stackNavigators';
+import AppStackNavigator from './navigation/AppStackNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 
 export const App = () => {
   const [client, setClient] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [drawerRoutes, setDrawerRoutes] = useState({
-    HomeStack: {
-      screen: HomeStackNavigator,
+    AppStack: {
+      screen: AppStackNavigator,
       navigationOptions: () => ({
         title: texts.screenTitles.home
-      })
+      }),
+      params: {
+        title: texts.screenTitles.home,
+        screen: 'Home',
+        rootRouteName: 'AppStack'
+      }
     }
   });
 
@@ -78,27 +79,16 @@ export const App = () => {
       data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
 
     if (publicJsonFileContent) {
-      const getScreen = (drawerRoute) => {
-        switch (drawerRoute.screen) {
-        case 'IndexStackNavigator':
-          return IndexStackNavigator;
-        case 'HtmlStackNavigator':
-          return HtmlStackNavigator;
-        default:
-          return drawerRoute.screen;
-        }
-      };
-
       setDrawerRoutes(
         _reduce(
           publicJsonFileContent,
           (result, value, key) => {
             result[key] = {
-              screen: getScreen(value),
+              screen: value.screen,
               navigationOptions: () => ({
                 title: value.title
               }),
-              params: { ...value }
+              params: { ...value, rootRouteName: key }
             };
 
             return result;
@@ -130,14 +120,14 @@ export const App = () => {
   }
 
   const AppDrawerNavigator = createDrawerNavigator(drawerRoutes, {
-    initialRouteName: 'HomeStack',
+    initialRouteName: 'AppStack',
     drawerPosition: 'right',
     drawerType: device.platform === 'ios' ? 'slide' : 'front',
     drawerWidth: device.width * 0.8,
     // workaround with minus value for android until new version of react-native-gesture-handler is
     // included: https://github.com/react-navigation/drawer/issues/49
     edgeWidth: device.platform === 'android' ? 20 - device.width * 0.8 : 20,
-    contentComponent: (props) => CustomDrawerContentComponent(props),
+    contentComponent: CustomDrawerContentComponent,
     contentContainerStyle: {
       shadowColor: colors.darkText,
       shadowOffset: { height: 0, width: 2 },

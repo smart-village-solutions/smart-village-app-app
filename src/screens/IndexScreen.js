@@ -48,8 +48,8 @@ export class IndexScreen extends React.Component {
             data[query] &&
             data[query].map((textListItem) => ({
               id: textListItem.id,
-              title: textListItem.contentBlocks[0].title,
-              subtitle: textListItem.contentBlocks[0].subtitle // TODO: beautify date
+              subtitle: textListItem.subtitle, // TODO: beautify date
+              title: textListItem.contentBlocks[0].title
             }))
         );
       case 'pointsOfInterest':
