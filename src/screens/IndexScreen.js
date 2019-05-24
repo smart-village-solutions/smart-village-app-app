@@ -51,7 +51,7 @@ const GET_CACHE_ITEMS = gql`
   }
 `;
 
-export default class IndexScreen extends React.Component {
+export class IndexScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: 'Index',
@@ -127,9 +127,8 @@ export default class IndexScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    paddingVertical: 10
   }
 });
 

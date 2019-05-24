@@ -5,7 +5,7 @@ export * from './Link';
 export * from './Logo';
 export * from './StandardButton';
 export * from './SvgShape';
-export * from './TextContent';
+export * from './HtmlView';
 export * from './TextList';
 export * from './Title';
 export * from './TopVisual';

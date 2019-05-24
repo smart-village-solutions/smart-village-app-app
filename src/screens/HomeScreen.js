@@ -1,11 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, Button, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 
 import { CardList, TextList, Title, TitleContainer, TitleShadow, TopVisual } from '../components';
-import { colors } from '../config';
 
 // TODO: data coming later from API
 const items = [
@@ -57,7 +63,7 @@ const GET_ALL_NEWS_ITEMS = gql`
   }
 `;
 
-export default class HomeScreen extends React.Component {
+export class HomeScreen extends React.Component {
   render() {
     const { navigation } = this.props;
 
@@ -99,7 +105,7 @@ export default class HomeScreen extends React.Component {
             }
 
             return (
-              <View style={styles.container}>
+              <ScrollView contentContainerStyle={styles.container}>
                 {!!data &&
                   !!data.allNewsItems &&
                   data.allNewsItems.map((newsItem, index) => (
@@ -107,20 +113,24 @@ export default class HomeScreen extends React.Component {
                       <Text>{newsItem.contentBlocks[0].title}</Text>
                     </View>
                   ))}
-                <Button
-                  title="Go to news"
-                  onPress={() => navigation.navigate('News')}
-                  color={colors.primary}
-                />
-                <Button
-                  title="Go to events"
-                  onPress={() => navigation.navigate('Events')}
-                  color={colors.primary}
-                />
-              </View>
+              </ScrollView>
             );
           }}
         </Query>
+        {publicFilesItems.map((publicFile, index) => (
+          <View style={styles.container} key={index + publicFile.name}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate({
+                  routeName: publicFile.screen,
+                  params: { name: publicFile.name }
+                })
+              }
+            >
+              <Text>{publicFile.title}</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
       </ScrollView>
     );
   }
@@ -128,12 +138,29 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    paddingVertical: 10
   }
 });
 
 HomeScreen.propTypes = {
   navigation: PropTypes.object.isRequired
 };
+
+const publicFilesItems = [
+  {
+    name: 'privacy',
+    title: 'Datenschutz',
+    screen: 'Html'
+  },
+  {
+    name: 'impress',
+    title: 'Impressum',
+    screen: 'Html'
+  },
+  {
+    name: 'faq',
+    title: 'Häufige Fragen',
+    screen: 'Html'
+  }
+];

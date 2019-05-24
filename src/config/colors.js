@@ -1,8 +1,9 @@
 export const colors = {
-  primary: '#0c5819',
-  secondary: '#09483b',
+  primary: 'rgb(16, 120, 33)',
+  darkerPrimary: 'rgb(15,70,24)',
+  secondary: 'rgb(9,72,60)',
 
-  darkText: '#222222',
-  lighterText: '#bbbe64',
+  darkText: '#000000',
+  lighterText: 'rgb(221,242,243)',
   lightestText: '#FFFFFF'
 };
