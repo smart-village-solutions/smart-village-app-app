@@ -1,43 +1,32 @@
 import React from 'react';
-import { Image, Platform } from 'react-native';
-import { LinearGradient } from 'expo';
+import { Platform, View, TouchableOpacity } from 'react-native';
+
 import { colors } from '../config';
+import { DiagonalGradient, Icon } from '../components';
+import { drawerMenu } from '../icons';
 
 export const defaultStackNavigatorConfig = (initialRouteName) => {
   return {
     initialRouteName,
     URIPrefix: 'smart-village-app://',
     defaultNavigationOptions: ({ navigation }) => ({
-      headerBackground: (
-        <LinearGradient
-          colors={[colors.primary, colors.secondary]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={{ flex: 1 }}
-        />
-      ),
+      //header gradient https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
+      headerBackground: <DiagonalGradient />,
       headerTitleStyle: {
-        fontWeight: '200',
-        color: colors.lightestText
+        color: colors.lightestText,
+        fontWeight: '400'
       },
       headerRight: (
-        <Image
-          source={require('../drower-menu.png')}
-          color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
-          onPress={() => navigation.openDrawer()}
-        />
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
+          <Icon icon={drawerMenu(colors.lightestText)} style={{ padding: 10 }} />
+        </TouchableOpacity>
       ),
-      headerRightContainerStyle: {
-        marginRight: '5%'
-      },
-      headerLeftContainerStyle: {
-        marginLeft: '3%'
-      }
+      headerRightContainerStyle: {},
+      headerLeftContainerStyle: {}
     })
   };
 };
 
-// header gradient from here  https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
 // for some wird reason i can't position menu and share icons in detail screen!!!!
 // plan for tomorrow :
 // -understand how props for stacknavigation work.

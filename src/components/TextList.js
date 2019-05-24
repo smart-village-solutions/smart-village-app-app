@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 
 import { ListItem } from 'react-native-elements';
-import { Image, FlatList, ScrollView, TouchableHighlight } from 'react-native';
+import { FlatList } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
-import { colors, texts } from '../config';
+import { Icon } from '../components';
+import { colors } from '../config';
+import { arrowRight } from '../icons';
 
 export const ListTitle = styled.Text`
   color: ${colors.darkText};
@@ -53,7 +54,7 @@ export class TextList extends React.Component {
         containerStyle={
           alternativeLayout ? { backgroundColor: '#ddf2f3', borderBottomColor: '#fff' } : null
         }
-        rightIcon={<Image source={require('../green-arrow.png')} />}
+        rightIcon={<Icon icon={arrowRight(colors.primary)} />}
         onPress={() => navigation.navigate('Detail', item)}
       />
     );
@@ -63,7 +64,7 @@ export class TextList extends React.Component {
 
     return (
       <FlatList
-        scrollEnabled="false"
+        scrollEnabled={false}
         keyExtractor={this.keyExtractor}
         data={data}
         renderItem={this.renderItem}
