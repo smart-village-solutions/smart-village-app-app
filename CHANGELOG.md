@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.5.2]
+
+Render html contents fetched per GraphQL query
+
+### Changed
+
+- refactored TextContent to HtmlView
+- refactored config files
+  - added new folder for different styles configs
+  - added html styles for HtmlView
+  - added normalization file for texts
+- created helpers folder for files containing methods that are useful all over the project
+  - added linkHelper for opening external links
+  - added htmlView helper for preparing and cleaning fetched contents
+
 ## [v0.5.1]
 
 Update Android version with fixes for working as iOS version
