@@ -2,45 +2,37 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import {
   ActivityIndicator,
-  Button,
-  Platform,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View
 } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { colors, texts } from '../config';
-import { HtmlView, Link, ListSubtitle, ListTitle, Logo, TopVisual } from '../components';
+import { HtmlView, Icon, Link, ListSubtitle, ListTitle, Logo, TopVisual } from '../components';
 import { GET_EVENT_RECORD, GET_NEWS_ITEM, GET_POINT_OF_INTEREST } from '../queries';
+import { arrowLeft, drawerMenu, share } from '../icons';
 
 export class DetailScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
-    const item = navigation.getParam('item', null);
-    const title = item ? item.headerTitle : '';
-
     return {
-      title,
       headerLeft: (
-        <Button
-          title={texts.button.back}
-          onPress={() => navigation.goBack()}
-          color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
-        />
+        <View>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon icon={arrowLeft(colors.lightestText)} />
+          </TouchableOpacity>
+        </View>
       ),
       headerRight: (
-        <View style={styles.rowContainer}>
-          <Button
-            title={texts.button.share}
-            onPress={() => alert(texts.button.share)}
-            color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
-          />
-          <Button
-            title="="
-            onPress={() => navigation.openDrawer()}
-            color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
-          />
+        <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity onPress={() => alert(texts.button.share)}>
+            <Icon icon={share(colors.lightestText)} style={{ padding: 10 }} />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.openDrawer()}>
+            <Icon icon={drawerMenu(colors.lightestText)} style={{ padding: 10 }} />
+          </TouchableOpacity>
         </View>
       )
     };
@@ -104,11 +96,9 @@ export class DetailScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: 'center',
-    paddingVertical: 10
-  },
-  rowContainer: {
-    flexDirection: 'row'
+    justifyContent: 'center'
   }
 });
 

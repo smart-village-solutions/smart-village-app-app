@@ -1,21 +1,22 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, Button, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
-import { CardList, TextList } from '../components';
-import { colors, texts } from '../config';
+import { colors } from '../config';
+import { CardList, Icon, TextList } from '../components';
 import { GET_EVENT_RECORDS, GET_NEWS_ITEMS, GET_POINTS_OF_INTEREST } from '../queries';
+import { arrowLeft } from '../icons';
 
 export class IndexScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerLeft: (
-        <Button
-          title={texts.button.home}
-          onPress={() => navigation.navigate('Home')}
-          color={Platform.OS === 'ios' ? colors.lightestText : colors.primary}
-        />
+        <View>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon icon={arrowLeft(colors.lightestText)} />
+          </TouchableOpacity>
+        </View>
       )
     };
   };

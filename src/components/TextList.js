@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { ListItem } from 'react-native-elements';
 import { FlatList } from 'react-native';
-import { Icon, ListItem } from 'react-native-elements';
 import styled, { css } from 'styled-components/native';
 
+import { Icon } from '../components';
 import { colors } from '../config';
+import { arrowRight } from '../icons';
 
 export const ListTitle = styled.Text`
   color: ${colors.darkText};
@@ -51,11 +53,11 @@ export class TextList extends React.Component {
             ? { backgroundColor: colors.lighterText, borderBottomColor: colors.lightestText }
             : null
         }
-        rightIcon={<Icon name="angle-right" type="font-awesome" color={colors.primary} />}
+        rightIcon={<Icon icon={arrowRight(colors.primary)} />}
         onPress={() =>
           navigation.navigate({
             routeName: item.routeName,
-            params: { ...item.params }
+            params: item.params
           })
         }
         delayPressIn={0}

@@ -55,6 +55,7 @@ export const HomeScreen = ({ navigation }) => (
             title: 'Alle Nachrichten anzeigen',
             routeName: 'Index',
             params: {
+              title: 'Nachrichten',
               query: 'newsItems',
               queryVariables: {},
               rootRouteName: 'NewsItems'
@@ -100,6 +101,7 @@ export const HomeScreen = ({ navigation }) => (
                 title: 'Alle Orte & Routen anzeigen',
                 routeName: 'Index',
                 params: {
+                  title: 'Orte & Routen',
                   rootRouteName: 'PointsOfInterest'
                 }
               }
@@ -150,6 +152,7 @@ export const HomeScreen = ({ navigation }) => (
             title: 'Alle Veranstaltungen anzeigen',
             routeName: 'Index',
             params: {
+              title: 'Veranstaltungen',
               query: 'eventRecords',
               queryVariables: {},
               rootRouteName: 'EventRecords'
