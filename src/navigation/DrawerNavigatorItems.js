@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { StackActions } from 'react-navigation';
+import { NavigationActions, StackActions } from 'react-navigation';
 import { Divider } from 'react-native-elements';
 
 import { colors, device } from '../config';
@@ -49,8 +49,16 @@ const DrawerNavigatorItems = ({
       navigation.closeDrawer();
     } else {
       navigation.navigate({
-        routeName: route.routeName,
-        action: StackActions.popToTop()
+        routeName: route.routeName, // navigate to the stack
+        action: StackActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({
+              routeName: 'Index', // navigate to the Index route inside the stack
+              params: { ...route.params }
+            })
+          ]
+        })
       });
     }
   };
@@ -102,13 +110,6 @@ const DrawerNavigatorItems = ({
   );
 };
 
-DrawerNavigatorItems.defaultProps = {
-  activeTintColor: colors.lightestText,
-  activeBackgroundColor: 'transparent',
-  inactiveTintColor: colors.lightestText,
-  inactiveBackgroundColor: 'transparent'
-};
-
 const styles = StyleSheet.create({
   item: {
     alignItems: 'center',
@@ -141,6 +142,13 @@ DrawerNavigatorItems.propTypes = {
   inactiveLabelStyle: PropTypes.object,
   drawerPosition: PropTypes.string.isRequired,
   navigation: PropTypes.object.isRequired
+};
+
+DrawerNavigatorItems.defaultProps = {
+  activeTintColor: colors.lightestText,
+  activeBackgroundColor: 'transparent',
+  inactiveTintColor: colors.lightestText,
+  inactiveBackgroundColor: 'transparent'
 };
 
 export default DrawerNavigatorItems;

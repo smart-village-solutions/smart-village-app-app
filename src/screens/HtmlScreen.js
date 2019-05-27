@@ -2,47 +2,43 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
 
 import { HtmlView } from '../components';
 import { trimNewLines } from '../helpers';
+import { GET_PUBLIC_HTML_FILE } from '../queries';
 
-const GET_PUBLIC_HTML_FILE = gql`
-  query PublicHtmlFile($name: String!) {
-    publicHtmlFile(name: $name) {
-      content
-    }
-  }
-`;
+export const HtmlScreen = (props) => {
+  const { navigation } = props;
+  const queryVariables = navigation.getParam('queryVariables', '');
 
-export class HtmlScreen extends React.Component {
-  render() {
-    const { navigation } = this.props;
-    const name = navigation.getParam('name', '');
+  if (!queryVariables || !queryVariables.name) return null;
 
-    return (
-      <Query query={GET_PUBLIC_HTML_FILE} variables={{ name }} fetchPolicy="cache-and-network">
-        {({ data, loading }) => {
-          if (loading) {
-            return (
-              <View style={styles.container}>
-                <ActivityIndicator />
-              </View>
-            );
-          }
-
+  return (
+    <Query
+      query={GET_PUBLIC_HTML_FILE}
+      variables={{ name: queryVariables.name }}
+      fetchPolicy="cache-and-network"
+    >
+      {({ data, loading }) => {
+        if (loading) {
           return (
-            <ScrollView contentContainerStyle={styles.container}>
-              {!!data && !!data.publicHtmlFile && (
-                <HtmlView html={trimNewLines(data.publicHtmlFile.content)} />
-              )}
-            </ScrollView>
+            <View style={styles.container}>
+              <ActivityIndicator />
+            </View>
           );
-        }}
-      </Query>
-    );
-  }
-}
+        }
+
+        if (!data || !data.publicHtmlFile || !data.publicHtmlFile.content) return null;
+
+        return (
+          <ScrollView contentContainerStyle={styles.container}>
+            <HtmlView html={trimNewLines(data.publicHtmlFile.content)} />
+          </ScrollView>
+        );
+      }}
+    </Query>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

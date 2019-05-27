@@ -1,18 +1,15 @@
 import { createStackNavigator } from 'react-navigation';
 
-import { DetailScreen, IndexScreen } from '../screens';
+import { HtmlScreen } from '../screens';
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
 
-export const IndexStackNavigator = createStackNavigator(
+export const HtmlStackNavigator = createStackNavigator(
   {
     Index: {
-      screen: IndexScreen,
+      screen: HtmlScreen,
       navigationOptions: (props) => ({
         title: props.navigation.getParam('title', '') // dynamic title depending on the route params
       })
-    },
-    Detail: {
-      screen: DetailScreen
     }
   },
   defaultStackNavigatorConfig('Index')
