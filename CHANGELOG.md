@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.6.1]
+
+Refactor to one main app stack navigator and get data on detail screens
+
+- we do not need to have multiple stack navigators
+  - removed stack navigators
+  - renamed HomeStackNavigator to AppStackNavigator
+- with one main app stack navigator we have better navigation with transitions between
+  screens and the ability to go back from everywhere
+  - this was not possible with navigating through different stacks
+- added navigation in detail screens
+- implemented queries on detail screens
+
 ## [v0.6.0]
 
 Fetch navigation configs from server and create Drawer items
