@@ -1,6 +1,5 @@
 export * from './CardList';
 export * from './DiagonalGradient';
-export * from './Gradient';
 export * from './HtmlView';
 export * from './Icon';
 export * from './Link';
