@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.6.0]
+
+Fetch navigation configs from server and create Drawer items
+
+### Changed
+
+- needed to put the creation of the Drawer in the index.js to be able to connect the
+  Apollo client to the navigator
+  - we need to fetch the data prior to creating the routes
+  - there was no option to pass the client in the Drawer creation
+  - opened GitHub issues and StackOverflow question:
+    - https://github.com/react-navigation/react-navigation/issues/5935
+    - https://github.com/apollographql/react-apollo/issues/3069
+    - https://stackoverflow.com/q/56292801/9956365
+- created a folder for queries
+  - created single query files exporting the needed queries as constants
+- needed to pass down the data to the different StackNavigators correctly using `params`
+- updated components to work dynamically depending on passed data
+- needed to rename every initial route to 'Index', so it is always clear where to navigate to in
+  each Stack from Drawer
+- implemented querying components for lists in HomeScreen and IndexScreen
+- removed hard coded objects
+- removed unnecessary StaticStackNavigator stuff
+
 ## [v0.5.2]
 
 Render html contents fetched per GraphQL query
