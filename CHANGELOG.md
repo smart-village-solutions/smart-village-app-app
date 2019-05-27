@@ -5,9 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.6.2]
+
+Update header component on every screen
+
+### Updated
+
+- Icon component
+  - is transforming and rendering my svg files with series of style props
+  - is wrapped in to a `TouchableOpacity` in order to be used for navigating
+- LinearGradient component
+  - is working in a similar way, has a `defaultProps` with color and direction of the gradient
+  - but is can also accept new props and children optional not required
+  - in order to make the linear background work on my header, it must be used within
+    `headerBackground` props, positioned in my `defaultStackNavigatorConfig`
+
 ## [v0.6.1]
 
 Refactor to one main app stack navigator and get data on detail screens
+
+### Changed
 
 - we do not need to have multiple stack navigators
   - removed stack navigators
