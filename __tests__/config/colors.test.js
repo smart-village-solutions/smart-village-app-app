@@ -5,6 +5,10 @@ describe('color', () => {
     expect(colors.primary).toBeTruthy();
   });
 
+  it('darkerPrimary is defined', () => {
+    expect(colors.darkerPrimary).toBeTruthy();
+  });
+
   it('secondary is defined', () => {
     expect(colors.secondary).toBeTruthy();
   });

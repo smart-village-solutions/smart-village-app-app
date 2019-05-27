@@ -1,8 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import IndexScreen from '../../src/screens/IndexScreen';
-import { texts } from '../../src/config';
+import { IndexScreen } from '../../src/screens';
 
 describe('IndexScreen', () => {
   const navigation = { navigate: jest.fn() };
@@ -12,10 +11,17 @@ describe('IndexScreen', () => {
     expect(tree).toBeTruthy();
   });
 
-  it('must contain a left header element (for going home)', () => {
+  it('must contain a left header element (for going back)', () => {
     const navigationOptions = IndexScreen.navigationOptions({ navigation });
     const leftHeaderElement = navigationOptions.headerLeft;
 
-    expect(leftHeaderElement.props.title).toBe(texts.button.home);
+    expect(leftHeaderElement).toBeTruthy();
+  });
+
+  it('must contain a right header element (drawer menu)', () => {
+    const navigationOptions = IndexScreen.navigationOptions({ navigation });
+    const rightHeaderElement = navigationOptions.headerRight;
+
+    expect(rightHeaderElement).toBeTruthy();
   });
 });
