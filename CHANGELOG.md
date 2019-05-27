@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.6.3]
+
+Update items for navigation to details
+
+### Added
+
+- added DiagonalGradient.defaultProps
+  - use React defaultProps instead of own defaultProps const
+- added params on index items for correct navigation to details
+- added onPress to Card items for navigation to their details
+
 ## [v0.6.2]
 
 Update header component on every screen
