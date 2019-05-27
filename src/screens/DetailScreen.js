@@ -1,12 +1,21 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
+import { Query } from 'react-apollo';
 
-import { Icon, TextContent, Link, ListSubtitle, Logo, TopVisual } from '../components';
 import { colors, texts } from '../config';
-import { arrowLeft, drawerMenu, link, share } from '../icons';
+import { HtmlView, Icon, Link, ListSubtitle, ListTitle, Logo, TopVisual } from '../components';
+import { GET_EVENT_RECORD, GET_NEWS_ITEM, GET_POINT_OF_INTEREST } from '../queries';
+import { arrowLeft, drawerMenu, share } from '../icons';
 
-export default class DetailScreen extends React.Component {
+export class DetailScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
       headerLeft: (
@@ -31,19 +40,55 @@ export default class DetailScreen extends React.Component {
 
   render() {
     const { navigation } = this.props;
-    const notAvailable = navigation.getParam('notAvailable', '');
-    const subtitle = navigation.getParam('subtitle', 'otherParam fallback');
+    const query = navigation.getParam('query', '');
+    const queryVariables = navigation.getParam('queryVariables', {});
+
+    if (!query) return null;
+
+    const getQuery = (query) => {
+      switch (query) {
+      case 'eventRecord':
+        return GET_EVENT_RECORD;
+      case 'newsItem':
+        return GET_NEWS_ITEM;
+      case 'pointOfInterest':
+        return GET_POINT_OF_INTEREST;
+      }
+    };
 
     return (
       <ScrollView>
-        {!!notAvailable && <Text>{notAvailable}</Text>}
-        <View style={styles.container}>
-          <TopVisual />
-          <Logo navigation={navigation} />
-          {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
-          <TextContent />
-          <Link />
-        </View>
+        <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
+          {({ data, loading }) => {
+            if (loading) {
+              return (
+                <View style={styles.container}>
+                  <ActivityIndicator />
+                </View>
+              );
+            }
+
+            const page = data && data[query];
+
+            if (!page) return null;
+
+            const { createdAt, title, body, description } = page;
+
+            return (
+              <View>
+                <TopVisual />
+                <Logo navigation={navigation} />
+                {!!createdAt && <ListSubtitle>{createdAt}</ListSubtitle>}
+                {/*TODO: map contentBlocks and so on */}
+                {!!title && <ListTitle noSubtitle>{title}</ListTitle>}
+                {!!body && <Text>{body}</Text>}
+                {!!description && <Text>{description}</Text>}
+                <HtmlView />
+                <Link />
+              </View>
+            );
+          }}
+        </Query>
       </ScrollView>
     );
   }
@@ -55,10 +100,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   }
-  //   rowContainer: {
-  //     flexDirection: 'row',
-  //     justifyContent: 'space-around'
-  //   }
 });
 
 DetailScreen.propTypes = {

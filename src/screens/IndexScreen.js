@@ -1,109 +1,116 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
-import gql from 'graphql-tag';
 
-import { TextList } from '../components';
-import { colors, texts } from '../config';
+import { colors } from '../config';
+import { CardList, Icon, TextList } from '../components';
+import { GET_EVENT_RECORDS, GET_NEWS_ITEMS, GET_POINTS_OF_INTEREST } from '../queries';
+import { arrowLeft } from '../icons';
 
-// TODO: data coming later from API
-const items = [
-  {
-    itemId: 1,
-    title: 'China kündigt Vergeltungsmaßnahmen an',
-    subtitle: '22.04.88|Polizei Brandeburg'
-  },
-  {
-    itemId: 2,
-    title: 'Die Führung in Peking reagiert auf Donald Trumps jüngste Maßnahmen. Zum 1. ',
-    subtitle: '22.04.88|Coconat'
-  },
-  {
-    itemId: 3,
-    title: 'In der Nacht zum Freitag setzten die Amerikaner ',
-    subtitle: '22.04.88|Terranova'
-  },
-  {
-    itemId: 4,
-    title: 'Wert von 200 Milliarden Dollar in Kraft.',
-    subtitle: '22.04.88|Rathaus Bad Belsig'
-  },
-  {
-    itemId: 5,
-    title:
-      'Handelsprotektionismus“, so die Behörden in Peking weiter. China hoffe, dass die Vereinigten Staaten im Sinne gegenseitigen Respekts zur bilateralen wirtschaftlichen Zusammenarbeit zurückkehrten.',
-    subtitle: '22.04.88|Polizei Brandeburg'
-  },
-  {
-    itemId: 6,
-    title: ' bei 25 Prozent',
-    subtitle: '22.04.88|Coconat'
-  }
-];
+export class IndexScreen extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      headerLeft: (
+        <View>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Icon icon={arrowLeft(colors.lightestText)} />
+          </TouchableOpacity>
+        </View>
+      )
+    };
+  };
 
-const GET_CACHE_ITEMS = gql`
-  {
-    cacheItems @client {
-      itemId
-      otherParam
-    }
-  }
-`;
-
-export default class IndexScreen extends React.Component {
   render() {
     const { navigation } = this.props;
+    const query = navigation.getParam('query', '');
+    const queryVariables = navigation.getParam('queryVariables', {});
+
+    if (!query) return null;
+
+    const getQuery = (query) => {
+      switch (query) {
+      case 'eventRecords':
+        return GET_EVENT_RECORDS;
+      case 'newsItems':
+        return GET_NEWS_ITEMS;
+      case 'pointsOfInterest':
+        return GET_POINTS_OF_INTEREST;
+      }
+    };
+
+    const getListItems = (query, data) => {
+      switch (query) {
+      case 'eventRecords':
+        return data && data[query];
+      case 'newsItems':
+        return (
+          data &&
+            data[query] &&
+            data[query].map((textListItem) => ({
+              id: textListItem.id,
+              subtitle: textListItem.subtitle, // TODO: beautify date
+              title: textListItem.contentBlocks[0].title
+            }))
+        );
+      case 'pointsOfInterest':
+        return (
+          data &&
+            data[query] &&
+            data[query].map((pointOfInterest) => ({
+              id: pointOfInterest.id,
+              name: pointOfInterest.name,
+              category: pointOfInterest.category,
+              image: pointOfInterest.mediaContents[0].sourceUrl.url // TODO: only if .contentType == "image"
+            }))
+        );
+      }
+    };
+
+    const getComponent = (query) => {
+      switch (query) {
+      case 'eventRecords':
+        return TextList;
+      case 'newsItems':
+        return TextList;
+      case 'pointsOfInterest':
+        return CardList;
+      }
+    };
+
+    const isAlternativeLayout = (query) => {
+      switch (query) {
+      case 'eventRecords':
+        return true;
+      default:
+        return false;
+      }
+    };
 
     return (
       <ScrollView>
-        <TextList navigation={navigation} data={items} />
-        <Query query={GET_CACHE_ITEMS} fetchPolicy="cache-only">
-          {({ data, client }) => {
-            const { cacheItems } = data;
+        <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
+          {({ data, loading }) => {
+            if (loading) {
+              return (
+                <View style={styles.container}>
+                  <ActivityIndicator />
+                </View>
+              );
+            }
+
+            const listItems = getListItems(query, data);
+
+            if (!listItems || !listItems.length) return null;
+
+            const Component = getComponent(query);
 
             return (
-              <View style={styles.container}>
-                <Text>Index Screen</Text>
-                {!!cacheItems &&
-                  cacheItems.map((item) => (
-                    <Button
-                      key={`key${item.itemId}`}
-                      title={`Got to Detail #${item.itemId}`}
-                      // on press navigate to Detail route (DetailScreen) with the following params,
-                      // that we use in that screen
-                      onPress={() => navigation.navigate('Detail', item)}
-                      color={colors.primary}
-                    />
-                  ))}
-                <Button
-                  title="Add element"
-                  onPress={() => {
-                    const lastItem = cacheItems ? cacheItems.slice(-1)[0] : null;
-
-                    client.writeData({
-                      data: {
-                        cacheItems: [
-                          ...(cacheItems || []),
-                          {
-                            __typename: 'CacheItem',
-                            itemId: (lastItem ? lastItem.itemId : 0) + 1,
-                            otherParam: `${(lastItem ? lastItem.itemId : 0) + 1}thing you want here`
-                          }
-                        ]
-                      }
-                    });
-                  }}
-                  color={colors.secondary}
-                />
-                <Button
-                  title="Reset cache"
-                  onPress={() => {
-                    client.resetStore();
-                  }}
-                  color={colors.secondary}
-                />
-              </View>
+              <Component
+                navigation={navigation}
+                data={listItems}
+                alternativeLayout={isAlternativeLayout(query)}
+              />
             );
           }}
         </Query>
@@ -114,9 +121,8 @@ export default class IndexScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    paddingVertical: 10
   }
 });
 

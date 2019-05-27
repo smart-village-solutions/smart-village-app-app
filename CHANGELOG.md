@@ -5,6 +5,77 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.6.1]
+
+Refactor to one main app stack navigator and get data on detail screens
+
+- we do not need to have multiple stack navigators
+  - removed stack navigators
+  - renamed HomeStackNavigator to AppStackNavigator
+- with one main app stack navigator we have better navigation with transitions between
+  screens and the ability to go back from everywhere
+  - this was not possible with navigating through different stacks
+- added navigation in detail screens
+- implemented queries on detail screens
+
+## [v0.6.0]
+
+Fetch navigation configs from server and create Drawer items
+
+### Changed
+
+- needed to put the creation of the Drawer in the index.js to be able to connect the
+  Apollo client to the navigator
+  - we need to fetch the data prior to creating the routes
+  - there was no option to pass the client in the Drawer creation
+  - opened GitHub issues and StackOverflow question:
+    - https://github.com/react-navigation/react-navigation/issues/5935
+    - https://github.com/apollographql/react-apollo/issues/3069
+    - https://stackoverflow.com/q/56292801/9956365
+- created a folder for queries
+  - created single query files exporting the needed queries as constants
+- needed to pass down the data to the different StackNavigators correctly using `params`
+- updated components to work dynamically depending on passed data
+- needed to rename every initial route to 'Index', so it is always clear where to navigate to in
+  each Stack from Drawer
+- implemented querying components for lists in HomeScreen and IndexScreen
+- removed hard coded objects
+- removed unnecessary StaticStackNavigator stuff
+
+## [v0.5.2]
+
+Render html contents fetched per GraphQL query
+
+### Changed
+
+- refactored TextContent to HtmlView
+- refactored config files
+  - added new folder for different styles configs
+  - added html styles for HtmlView
+  - added normalization file for texts
+- created helpers folder for files containing methods that are useful all over the project
+  - added linkHelper for opening external links
+  - added htmlView helper for preparing and cleaning fetched contents
+
+## [v0.5.1]
+
+Update Android version with fixes for working as iOS version
+
+### Changed
+
+- some components were not working as expected on Android, as the development was focusing for iOS
+- updated some packages
+- removed some unnecessary imports
+- changed image urls to http, as https links of this specific files from that domain were not
+  rendering on Android
+- added `delayPressIn={0}` to avoid bugs on developing with remote debugger turned on
+- changed value for `scrollEnabled` to boolean as a red screen was arguing with
+- added workaround for the sidebar from right being not effected everywhere on the screen but
+  only on the edge of 20 from right
+- style textTransform uppercase is not working for Android, which will be fixed with
+  React Native 0.59.x
+  - meanwhile we uppercase per JS
+
 ## [v0.5.0]
 
 Create 10 new components

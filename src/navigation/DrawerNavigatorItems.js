@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { StackActions } from 'react-navigation';
 import { Divider } from 'react-native-elements';
 
 import { colors, device } from '../config';
@@ -21,7 +20,6 @@ import { colors, device } from '../config';
  */
 const DrawerNavigatorItems = ({
   items,
-  activeItemKey,
   activeTintColor,
   activeBackgroundColor,
   inactiveTintColor,
@@ -41,24 +39,35 @@ const DrawerNavigatorItems = ({
    * based on:
    *   https://github.com/react-navigation/drawer/blob/c5954d744f463e7f1c67941b8eb6914c0101e56c/src/views/DrawerSidebar.tsx#L67
    *
-   * but we want to navigate always to the root of each stack and do not remember the earlier
-   * navigations inside a stack
+   * but we want to navigate always inside our single app stack
    */
   const handleItemPress = ({ route, focused }) => {
-    if (focused) {
-      navigation.closeDrawer();
-    } else {
+    if (!focused) {
       navigation.navigate({
-        routeName: route.routeName,
-        action: StackActions.popToTop()
+        routeName: route.params.screen,
+        params: { ...route.params }
       });
     }
+    navigation.closeDrawer();
+  };
+
+  // thx to https://stackoverflow.com/questions/53040094/how-to-get-current-route-name-in-react-navigation
+  const getActiveRoute = (route) => {
+    if (!route.routes || !route.routes.length || route.index >= route.routes.length) {
+      return route;
+    }
+
+    const childActiveRoute = route.routes[route.index];
+    return getActiveRoute(childActiveRoute);
   };
 
   return (
     <View style={[styles.container, itemsContainerStyle]}>
       {items.map((route, index) => {
-        const focused = activeItemKey === route.key;
+        const activeRoute = getActiveRoute(navigation.state);
+        const focused =
+          (activeRoute && activeRoute.params ? activeRoute.params.rootRouteName : 'AppStack') ===
+          route.params.rootRouteName;
         const color = focused ? activeTintColor : inactiveTintColor;
         const fontWeight = focused ? 'bold' : 'normal';
         const backgroundColor = focused ? activeBackgroundColor : inactiveBackgroundColor;
@@ -102,13 +111,6 @@ const DrawerNavigatorItems = ({
   );
 };
 
-DrawerNavigatorItems.defaultProps = {
-  activeTintColor: colors.lightestText,
-  activeBackgroundColor: 'transparent',
-  inactiveTintColor: colors.lightestText,
-  inactiveBackgroundColor: 'transparent'
-};
-
 const styles = StyleSheet.create({
   item: {
     alignItems: 'center',
@@ -128,7 +130,6 @@ const styles = StyleSheet.create({
 
 DrawerNavigatorItems.propTypes = {
   items: PropTypes.array.isRequired,
-  activeItemKey: PropTypes.string,
   activeTintColor: PropTypes.string,
   activeBackgroundColor: PropTypes.string,
   inactiveTintColor: PropTypes.string,
@@ -141,6 +142,13 @@ DrawerNavigatorItems.propTypes = {
   inactiveLabelStyle: PropTypes.object,
   drawerPosition: PropTypes.string.isRequired,
   navigation: PropTypes.object.isRequired
+};
+
+DrawerNavigatorItems.defaultProps = {
+  activeTintColor: colors.lightestText,
+  activeBackgroundColor: 'transparent',
+  inactiveTintColor: colors.lightestText,
+  inactiveBackgroundColor: 'transparent'
 };
 
 export default DrawerNavigatorItems;

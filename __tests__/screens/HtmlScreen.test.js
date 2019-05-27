@@ -1,18 +1,18 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import StaticScreen from '../../src/screens/StaticScreen';
+import { HtmlScreen } from '../../src/screens';
 import { texts } from '../../src/config';
 
-describe('StaticScreen', () => {
+describe('HtmlScreen', () => {
   it('renders correctly', () => {
-    const tree = renderer.create(<StaticScreen />).toJSON();
+    const tree = renderer.create(<HtmlScreen />).toJSON();
     expect(tree).toBeTruthy();
   });
 
   it('must contain a left header element (for going home)', () => {
     const navigation = { navigate: jest.fn(), getParam: jest.fn((param) => param) };
-    const navigationOptions = StaticScreen.navigationOptions({ navigation });
+    const navigationOptions = HtmlScreen.navigationOptions({ navigation });
     const leftHeaderElement = navigationOptions.headerLeft;
 
     expect(leftHeaderElement.props.title).toBe(texts.button.home);

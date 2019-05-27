@@ -14,5 +14,5 @@ Icon.propTypes = {
   icon: PropTypes.string.isRequired,
   width: PropTypes.string,
   height: PropTypes.string,
-  style: PropTypes.string
+  style: PropTypes.object
 };

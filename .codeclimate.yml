@@ -22,6 +22,7 @@ exclude_paths:
 - docs/
 - node_modules/
 - scripts/
+- src/config/normalize.js
 - .codeclimate.yml
 - .eslintrc
 - .gitignore
