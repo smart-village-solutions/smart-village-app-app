@@ -3,7 +3,7 @@ import React from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { Query } from 'react-apollo';
 
-import { CardList, TextList, Title, TitleContainer, TitleShadow, TopVisual } from '../components';
+import { CardList, Image, TextList, Title, TitleContainer, TitleShadow } from '../components';
 import {
   GET_EVENT_RECORDS,
   GET_NEWS_ITEMS,
@@ -13,7 +13,7 @@ import {
 
 export const HomeScreen = ({ navigation }) => (
   <ScrollView>
-    <TopVisual />
+    <Image source={require('../../assets/images/home.jpg')} />
     <TitleShadow />
     <TitleContainer>
       <Title>{'Nachrichten'.toUpperCase()}</Title>
@@ -112,6 +112,8 @@ export const HomeScreen = ({ navigation }) => (
                   routeName: 'Index',
                   params: {
                     title: 'Orte & Routen',
+                    query: 'pointsOfInterest',
+                    queryVariables: {},
                     rootRouteName: 'PointsOfInterest'
                   }
                 }

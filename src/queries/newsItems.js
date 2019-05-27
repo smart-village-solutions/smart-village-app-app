@@ -20,6 +20,20 @@ export const GET_NEWS_ITEM = gql`
       contentBlocks {
         title
         body
+        mediaContents {
+          sourceUrl {
+            url
+          }
+        }
+      }
+      sourceUrl {
+        url
+      }
+      dataProvider {
+        logo {
+          url
+        }
+        name
       }
     }
   }

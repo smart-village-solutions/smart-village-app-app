@@ -17,6 +17,17 @@ export const GET_EVENT_RECORD = gql`
       createdAt
       title
       description
+      mediaContents {
+        sourceUrl {
+          url
+        }
+      }
+      dataProvider {
+        logo {
+          url
+        }
+        name
+      }
     }
   }
 `;

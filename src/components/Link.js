@@ -1,28 +1,28 @@
-import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import { Linking, TouchableOpacity, View } from 'react-native';
-import styled, { css } from 'styled-components/native';
+import styled from 'styled-components/native';
 
 import { link } from '../icons';
 import { colors } from '../config';
-import { Icon } from '../components';
-
-const data = [{ url: 'https://google.com', linktext: 'Weiterlesen auf maz-online.de' }];
+import { Icon } from './Icon';
 
 const LinkStyle = styled.Text`
   color: ${colors.secondary};
   font-weight: bold;
 `;
 
-export class Link extends Component {
-  render() {
-    return (
-      <TouchableOpacity onPress={() => Linking.openURL('https://google.com')}>
-        <View style={{ flexDirection: 'row' }}>
-          <LinkStyle>Weiterlesen auf maz-online.de</LinkStyle>
-          <Icon icon={link(colors.secondary)} style={{ marginLeft: 5 }} />
-        </View>
-      </TouchableOpacity>
-    );
-  }
-}
+export const Link = ({ url, title }) => (
+  <TouchableOpacity onPress={() => Linking.openURL(url)}>
+    <View style={{ flexDirection: 'row' }}>
+      <LinkStyle>{title}</LinkStyle>
+      <Icon icon={link(colors.secondary)} style={{ marginLeft: 5 }} />
+    </View>
+  </TouchableOpacity>
+);
+
+Link.propTypes = {
+  url: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired
+};

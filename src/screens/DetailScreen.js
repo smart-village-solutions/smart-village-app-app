@@ -1,17 +1,20 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
-import { colors, texts } from '../config';
-import { HtmlView, Icon, Link, ListSubtitle, ListTitle, Logo, TopVisual } from '../components';
+import { colors, normalize } from '../config';
+import {
+  HtmlView,
+  Icon,
+  Image,
+  Link,
+  ListSubtitle,
+  ListTitle,
+  Logo,
+  Wrapper,
+  WrapperRow
+} from '../components';
 import { GET_EVENT_RECORD, GET_NEWS_ITEM, GET_POINT_OF_INTEREST } from '../queries';
 import { arrowLeft, drawerMenu, share } from '../icons';
 
@@ -26,14 +29,14 @@ export class DetailScreen extends React.Component {
         </View>
       ),
       headerRight: (
-        <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity onPress={() => alert(texts.button.share)}>
-            <Icon icon={share(colors.lightestText)} style={{ padding: 10 }} />
+        <WrapperRow>
+          <TouchableOpacity onPress={() => alert('Share')}>
+            <Icon icon={share(colors.lightestText)} style={styles.padding} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <Icon icon={drawerMenu(colors.lightestText)} style={{ padding: 10 }} />
+            <Icon icon={drawerMenu(colors.lightestText)} style={styles.padding} />
           </TouchableOpacity>
-        </View>
+        </WrapperRow>
       )
     };
   };
@@ -56,6 +59,46 @@ export class DetailScreen extends React.Component {
       }
     };
 
+    const getPage = (query, data) => {
+      switch (query) {
+      case 'eventRecord': {
+        const { createdAt, title, description, mediaContents, dataProvider } = data;
+
+        return {
+          createdAt,
+          title,
+          body: description,
+          image: mediaContents[0].sourceUrl.url,
+          logo: dataProvider.logo.url
+        };
+      }
+      case 'newsItem': {
+        const { createdAt, contentBlocks, sourceUrl, dataProvider } = data;
+
+        return {
+          createdAt,
+          title: contentBlocks[0].title,
+          body: contentBlocks[0].body,
+          image: contentBlocks[0].mediaContents[0].sourceUrl.url,
+          link: sourceUrl.url,
+          logo: dataProvider.logo.url
+        };
+      }
+      case 'pointOfInterest': {
+        const { createdAt, name, description, category, mediaContents, dataProvider } = data;
+
+        return {
+          createdAt,
+          title: name,
+          body: description,
+          category,
+          image: mediaContents[0].sourceUrl.url,
+          logo: dataProvider.logo.url
+        };
+      }
+      }
+    };
+
     return (
       <ScrollView>
         <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
@@ -68,23 +111,25 @@ export class DetailScreen extends React.Component {
               );
             }
 
-            const page = data && data[query];
+            if (!data || !data[query]) return null;
+
+            const page = getPage(query, data[query]);
 
             if (!page) return null;
 
-            const { createdAt, title, body, description } = page;
+            const { createdAt, title, body, image, link, logo } = page;
 
             return (
               <View>
-                <TopVisual />
-                <Logo navigation={navigation} />
-                {!!createdAt && <ListSubtitle>{createdAt}</ListSubtitle>}
-                {/*TODO: map contentBlocks and so on */}
-                {!!title && <ListTitle noSubtitle>{title}</ListTitle>}
-                {!!body && <Text>{body}</Text>}
-                {!!description && <Text>{description}</Text>}
-                <HtmlView />
-                <Link />
+                {!!image && <Image source={{ uri: image }} />}
+                <Wrapper>
+                  {!!logo && <Logo navigation={navigation} /* TODO: source={{ uri: logo}} */ />}
+                  {!!createdAt && <ListSubtitle>{createdAt}</ListSubtitle>}
+                  {/*TODO: map multiple contentBlocks */}
+                  {!!title && <ListTitle noSubtitle>{title}</ListTitle>}
+                  {!!body && <HtmlView html={body} />}
+                  {!!link && <Link url={link} title={'Weiterlesen'} />}
+                </Wrapper>
               </View>
             );
           }}
@@ -99,6 +144,9 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  padding: {
+    padding: normalize(10)
   }
 });
 
