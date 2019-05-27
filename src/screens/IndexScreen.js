@@ -42,15 +42,34 @@ export class IndexScreen extends React.Component {
     const getListItems = (query, data) => {
       switch (query) {
       case 'eventRecords':
-        return data && data[query];
+        return (
+          data &&
+            data[query].map((eventRecord) => ({
+              ...eventRecord,
+              routeName: 'Detail',
+              params: {
+                title: 'Veranstaltung',
+                query: 'eventRecord',
+                queryVariables: { id: `${eventRecord.id}` },
+                rootRouteName: 'EventRecords'
+              }
+            }))
+        );
       case 'newsItems':
         return (
           data &&
             data[query] &&
-            data[query].map((textListItem) => ({
-              id: textListItem.id,
-              subtitle: textListItem.subtitle, // TODO: beautify date
-              title: textListItem.contentBlocks[0].title
+            data[query].map((newsItem) => ({
+              id: newsItem.id,
+              subtitle: newsItem.subtitle, // TODO: beautify date
+              title: newsItem.contentBlocks[0].title,
+              routeName: 'Detail',
+              params: {
+                title: 'Nachricht',
+                query: 'newsItem',
+                queryVariables: { id: `${newsItem.id}` },
+                rootRouteName: 'NewsItems'
+              }
             }))
         );
       case 'pointsOfInterest':
@@ -61,7 +80,14 @@ export class IndexScreen extends React.Component {
               id: pointOfInterest.id,
               name: pointOfInterest.name,
               category: pointOfInterest.category,
-              image: pointOfInterest.mediaContents[0].sourceUrl.url // TODO: only if .contentType == "image"
+              image: pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: only if .contentType == "image"
+              routeName: 'Detail',
+              params: {
+                title: 'Ort',
+                query: 'pointOfInterest',
+                queryVariables: { id: `${pointOfInterest.id}` },
+                rootRouteName: 'PointsOfInterest'
+              }
             }))
         );
       }
