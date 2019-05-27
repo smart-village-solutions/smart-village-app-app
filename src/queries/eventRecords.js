@@ -9,3 +9,14 @@ export const GET_EVENT_RECORDS = gql`
     }
   }
 `;
+
+export const GET_EVENT_RECORD = gql`
+  query EventRecord($id: ID!) {
+    eventRecord(id: $id) {
+      id
+      createdAt
+      title
+      description
+    }
+  }
+`;
