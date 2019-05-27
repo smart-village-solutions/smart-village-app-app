@@ -41,13 +41,11 @@ const DrawerNavigatorItems = ({
    *
    * but we want to navigate always inside our single app stack
    */
-  const handleItemPress = ({ route, focused }) => {
-    if (!focused) {
-      navigation.navigate({
-        routeName: route.params.screen,
-        params: { ...route.params }
-      });
-    }
+  const handleItemPress = ({ route }) => {
+    navigation.navigate({
+      routeName: route.params.screen,
+      params: { ...route.params }
+    });
     navigation.closeDrawer();
   };
 
