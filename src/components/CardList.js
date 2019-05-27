@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Card } from 'react-native-elements';
-import { ActivityIndicator, Platform, StyleSheet, FlatList } from 'react-native';
+import { ActivityIndicator, FlatList, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'react-native-elements';
 
 import { device } from '../config';
@@ -11,28 +11,39 @@ export class CardList extends React.Component {
   keyExtractor = (item, index) => item + index;
 
   renderItem = ({ item }) => {
+    const { navigation } = this.props;
+
     return (
-      <Card
-        containerStyle={[
-          Platform.select({
-            android: {
-              elevation: 0
-            },
-            ios: {
-              shadowColor: 'transparent'
-            }
-          }),
-          stylesWithProps(this.props).container
-        ]}
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate({
+            routeName: item.routeName,
+            params: item.params
+          })
+        }
       >
-        <Image
-          style={styles.image}
-          source={{ uri: item.image }}
-          PlaceholderContent={<ActivityIndicator />}
-        />
-        <ListSubtitle>{item.category}</ListSubtitle>
-        <ListTitle style={styles.listTitle}>{item.name}</ListTitle>
-      </Card>
+        <Card
+          containerStyle={[
+            Platform.select({
+              android: {
+                elevation: 0
+              },
+              ios: {
+                shadowColor: 'transparent'
+              }
+            }),
+            stylesWithProps(this.props).container
+          ]}
+        >
+          <Image
+            style={styles.image}
+            source={{ uri: item.image }}
+            PlaceholderContent={<ActivityIndicator />}
+          />
+          <ListSubtitle>{item.category}</ListSubtitle>
+          <ListTitle style={styles.listTitle}>{item.name}</ListTitle>
+        </Card>
+      </TouchableOpacity>
     );
   };
 
@@ -75,6 +86,7 @@ const stylesWithProps = (props) =>
 /* eslint-enable react-native/no-unused-styles */
 
 CardList.propTypes = {
+  navigation: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
   horizontal: PropTypes.bool
 };

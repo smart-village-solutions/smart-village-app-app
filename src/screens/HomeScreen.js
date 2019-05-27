@@ -80,35 +80,45 @@ export const HomeScreen = ({ navigation }) => (
           );
         }
 
-        const pointsOfInterest = data && data.pointsOfInterest;
-        data.pointsOfInterest.map((pointOfInterest) => ({
-          id: pointOfInterest.id,
-          name: pointOfInterest.name,
-          category: pointOfInterest.category,
-          image: pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: only if .contentType == "image"
-          __typename: pointOfInterest.__typename
-        }));
+        const pointsOfInterest =
+          data &&
+          data.pointsOfInterest &&
+          data.pointsOfInterest.map((pointOfInterest) => ({
+            id: pointOfInterest.id,
+            name: pointOfInterest.name,
+            category: pointOfInterest.category,
+            image: pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: only if .contentType == "image"
+            routeName: 'Detail',
+            params: {
+              title: 'Ort',
+              query: 'pointOfInterest',
+              queryVariables: { id: `${pointOfInterest.id}` },
+              rootRouteName: 'PointsOfInterest'
+            },
+            __typename: pointOfInterest.__typename
+          }));
 
         if (!pointsOfInterest.length) return null;
 
-        return [
-          <CardList data={pointsOfInterest} horizontal key="cardList" />,
-          <TextList
-            navigation={navigation}
-            data={[
-              {
-                id: '-1',
-                title: 'Alle Orte & Routen anzeigen',
-                routeName: 'Index',
-                params: {
-                  title: 'Orte & Routen',
-                  rootRouteName: 'PointsOfInterest'
+        return (
+          <View>
+            <CardList navigation={navigation} data={pointsOfInterest} horizontal />
+            <TextList
+              navigation={navigation}
+              data={[
+                {
+                  id: '-1',
+                  title: 'Alle Orte & Routen anzeigen',
+                  routeName: 'Index',
+                  params: {
+                    title: 'Orte & Routen',
+                    rootRouteName: 'PointsOfInterest'
+                  }
                 }
-              }
-            ]}
-            key="textList"
-          />
-        ];
+              ]}
+            />
+          </View>
+        );
       }}
     </Query>
     <TitleShadow />
