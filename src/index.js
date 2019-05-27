@@ -13,7 +13,7 @@ import { GET_PUBLIC_JSON_FILE } from './queries';
 import AppStackNavigator from './navigation/AppStackNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 
-export const App = () => {
+export const MainApp = () => {
   const [client, setClient] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [drawerRoutes, setDrawerRoutes] = useState({

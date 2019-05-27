@@ -10,7 +10,11 @@ export const HtmlView = (props) => (
     {...props}
     tagsStyles={{ ...styles.html, ...props.tagsStyles }}
     emSize={normalize(16)}
-    baseFontStyle={{ color: colors.darkText, fontSize: normalize(16) }}
+    baseFontStyle={{
+      color: colors.darkText,
+      fontFamily: 'titillium-web-regular',
+      fontSize: normalize(16)
+    }}
     imagesMaxWidth={device.width}
     staticContentMaxWidth={device.width}
     onLinkPress={(evt, href) => openLink(href)}

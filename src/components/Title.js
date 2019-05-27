@@ -3,7 +3,7 @@ import { colors } from '../config';
 
 export const Title = styled.Text`
   color: ${colors.primary};
-  font-weight: bold;
+  font-family: titillium-web-bold;
   font-size: 20;
   padding: 10px;
   text-transform: uppercase;

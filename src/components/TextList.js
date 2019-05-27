@@ -9,16 +9,19 @@ import { colors } from '../config';
 import { arrowRight } from '../icons';
 
 export const ListTitle = styled.Text`
+  font-family: titillium-web-regular;
   color: ${colors.darkText};
 
   ${(props) =>
     (props.alternativeLayout || props.noSubtitle) &&
     css`
+      font-family: titillium-web-bold;
       font-weight: 600;
     `};
 `;
 
 export const ListSubtitle = styled.Text`
+  font-family: titillium-web-regular;
   color: ${colors.primary};
   margin-bottom: 10;
 

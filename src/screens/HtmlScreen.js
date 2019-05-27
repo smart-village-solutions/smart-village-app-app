@@ -46,7 +46,7 @@ export class HtmlScreen extends React.Component {
           if (!data || !data.publicHtmlFile || !data.publicHtmlFile.content) return null;
 
           return (
-            <ScrollView contentContainerStyle={styles.container}>
+            <ScrollView>
               <HtmlView html={trimNewLines(data.publicHtmlFile.content)} />
             </ScrollView>
           );
@@ -58,8 +58,9 @@ export class HtmlScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: 'center',
-    paddingVertical: 10
+    justifyContent: 'center'
   }
 });
 

@@ -9,25 +9,28 @@ export const html = {
   },
   a: {
     color: colors.primary,
+    fontFamily: 'titillium-web-bold',
     fontWeight: '600',
     textDecorationLine: 'none'
   },
   h1: {
     color: colors.darkText,
-    fontWeight: '600',
+    fontFamily: 'titillium-web-bold',
     fontSize: normalize(24),
-    lineHeight: normalize(22),
+    fontWeight: '600',
+    lineHeight: normalize(30),
     marginBottom: normalize(24)
   },
   h2: {
     color: colors.darkText,
-    fontWeight: '400',
-    fontSize: normalize(20)
+    fontSize: normalize(20),
+    fontWeight: '400'
   },
   h3: {
     color: colors.darkText,
-    fontWeight: '600',
-    fontSize: normalize(18)
+    fontFamily: 'titillium-web-bold',
+    fontSize: normalize(18),
+    fontWeight: '600'
   },
   h4: {
     color: colors.darkText,
@@ -36,18 +39,20 @@ export const html = {
   },
   h5: {
     color: colors.darkText,
-    fontWeight: '400',
-    fontSize: normalize(16)
+    fontSize: normalize(16),
+    fontWeight: '400'
   },
   h6: {
     color: colors.darkText,
-    fontWeight: '400',
-    fontSize: normalize(14)
+    fontSize: normalize(14),
+    fontWeight: '400'
   },
   b: {
+    fontFamily: 'titillium-web-bold',
     fontWeight: '600'
   },
   strong: {
+    fontFamily: 'titillium-web-bold',
     fontWeight: '600'
   },
   ul: {

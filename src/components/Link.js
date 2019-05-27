@@ -11,7 +11,7 @@ const data = [{ url: 'https://google.com', linktext: 'Weiterlesen auf maz-online
 
 const LinkStyle = styled.Text`
   color: ${colors.secondary};
-  font-weight: bold;
+  font-family: titillium-web-bold;
 `;
 
 export class Link extends Component {

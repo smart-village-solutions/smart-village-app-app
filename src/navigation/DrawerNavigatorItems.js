@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   label: {
+    fontFamily: 'titillium-web-regular',
     fontSize: 16,
     paddingHorizontal: 15,
     paddingVertical: 20
