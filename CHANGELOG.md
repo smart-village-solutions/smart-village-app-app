@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.6.5]
+
+Implement custom font Titillium Web from Google Fonts
+
+### Added
+
+- downloaded from https://fonts.google.com/specimen/Titillium+Web?selection.family=Titillium+Web
+- implemented following the expo way:
+  https://docs.expo.io/versions/latest/guides/using-custom-fonts/
+  - font must be loaded in App before MainApp renders
+- added new font family everywhere there is some text
+
 ## [v0.6.4]
 
 Update screen layouts and render more detail screen data
