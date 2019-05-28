@@ -17,6 +17,7 @@ import {
 } from '../components';
 import { GET_EVENT_RECORD, GET_NEWS_ITEM, GET_POINT_OF_INTEREST } from '../queries';
 import { arrowLeft, drawerMenu, share } from '../icons';
+import { momentFormat } from '../helpers';
 
 export class DetailScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -62,10 +63,11 @@ export class DetailScreen extends React.Component {
     const getPage = (query, data) => {
       switch (query) {
       case 'eventRecord': {
-        const { createdAt, title, description, mediaContents, dataProvider } = data;
+        const { createdAt, dates, title, description, mediaContents, dataProvider } = data;
 
         return {
-          createdAt,
+          subtitle: `${momentFormat(createdAt)} | ${dataProvider && dataProvider.name}`,
+          dates, // TODO: need to use dates instead of createdAt in rendering
           title,
           body: description,
           image: mediaContents[0].sourceUrl.url,
@@ -76,7 +78,7 @@ export class DetailScreen extends React.Component {
         const { createdAt, contentBlocks, sourceUrl, dataProvider } = data;
 
         return {
-          createdAt,
+          subtitle: `${momentFormat(createdAt)} | ${dataProvider && dataProvider.name}`,
           title: contentBlocks[0].title,
           body: contentBlocks[0].body,
           image: contentBlocks[0].mediaContents[0].sourceUrl.url,
@@ -85,10 +87,9 @@ export class DetailScreen extends React.Component {
         };
       }
       case 'pointOfInterest': {
-        const { createdAt, name, description, category, mediaContents, dataProvider } = data;
+        const { name, description, category, mediaContents, dataProvider } = data;
 
         return {
-          createdAt,
           title: name,
           body: description,
           category,
@@ -117,14 +118,14 @@ export class DetailScreen extends React.Component {
 
             if (!page) return null;
 
-            const { createdAt, title, body, image, link, logo } = page;
+            const { subtitle, title, body, image, link, logo } = page;
 
             return (
               <View>
                 {!!image && <Image source={{ uri: image }} />}
                 <Wrapper>
                   {!!logo && <Logo navigation={navigation} /* TODO: source={{ uri: logo}} */ />}
-                  {!!createdAt && <ListSubtitle>{createdAt}</ListSubtitle>}
+                  {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
                   {/*TODO: map multiple contentBlocks */}
                   {!!title && <ListTitle noSubtitle>{title}</ListTitle>}
                   {!!body && <HtmlView html={body} />}

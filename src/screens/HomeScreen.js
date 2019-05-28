@@ -10,6 +10,7 @@ import {
   GET_POINTS_OF_INTEREST,
   GET_PUBLIC_JSON_FILE
 } from '../queries';
+import { momentFormat } from '../helpers';
 
 export const HomeScreen = ({ navigation }) => (
   <ScrollView>
@@ -34,7 +35,8 @@ export const HomeScreen = ({ navigation }) => (
           data.newsItems &&
           data.newsItems.map((newsItem) => ({
             id: newsItem.id,
-            subtitle: newsItem.subtitle, // TODO: beautify date
+            subtitle: `${momentFormat(newsItem.createdAt)} | ${newsItem.dataProvider &&
+              newsItem.dataProvider.name}`,
             title: newsItem.contentBlocks[0].title,
             routeName: 'Detail',
             params: {
@@ -143,7 +145,8 @@ export const HomeScreen = ({ navigation }) => (
           data.eventRecords &&
           data.eventRecords.map((eventRecord) => ({
             id: eventRecord.id,
-            subtitle: eventRecord.subtitle, // TODO: beautify date
+            subtitle: `${momentFormat(eventRecord.createdAt)} | ${eventRecord.dataProvider &&
+              eventRecord.dataProvider.name}`,
             title: eventRecord.title,
             routeName: 'Detail',
             params: {

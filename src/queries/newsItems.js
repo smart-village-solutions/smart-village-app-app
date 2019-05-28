@@ -4,9 +4,12 @@ export const GET_NEWS_ITEMS = gql`
   query NewsItems($limit: Int) {
     newsItems(limit: $limit) {
       id
-      subtitle: createdAt
+      createdAt
       contentBlocks {
         title
+      }
+      dataProvider {
+        name
       }
     }
   }

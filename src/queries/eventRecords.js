@@ -5,7 +5,10 @@ export const GET_EVENT_RECORDS = gql`
     eventRecords(limit: $limit) {
       id
       title
-      subtitle: createdAt
+      createdAt
+      dataProvider {
+        name
+      }
     }
   }
 `;
@@ -15,6 +18,12 @@ export const GET_EVENT_RECORD = gql`
     eventRecord(id: $id) {
       id
       createdAt
+      dates {
+        dateStart
+        dateEnd
+        timeStart
+        timeEnd
+      }
       title
       description
       mediaContents {
