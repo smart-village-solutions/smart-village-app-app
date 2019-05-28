@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.6.4]
+
+Update screen layouts and render more detail screen data
+
+### Added
+
+- implemented moment for beautifying dates and times
+  - installed http://momentjs.com
+  - for optimizing package size we could follow these instructions:
+    http://momentjs.com/docs/#/use-it/webpack/
+  - created a helper method to format dates and times
+  - built subtitles from date time and data provider name to use everywhere
+  - TODO: use dates object for event records instead of createdAt
+
+### Changed
+
+- added new image for home screen
+- updated renderings with conditions
+- added wrapper for screen paddings
+- updated prop types and default props
+- created universal Image component with handling props
+- made Logo component universal with handling props
+- added data renderings in DetailScreen depending on query type
+- fix drawer edgeWidth for Android
+  - the drawer was swiped in to much from the middle
+- fixed drawer navigation
+  - navigate always, not only if not focused, so we are sure that inside of a Detail screen
+    we reach the Index screen
+- updated test suite
+  - there is a bug with `import glyphMap from './vendor/react-native-vector-icons/glyphmaps/Zocial.json'``
+    so somehow the render component tests fail
+
+### Removed
+
+- removed unused component Gradient and fix require cycle in TextList
+
 ## [v0.6.3]
 
 Update items for navigation to details
@@ -20,7 +56,7 @@ Update items for navigation to details
 
 Update header component on every screen
 
-### Updated
+### Changed
 
 - Icon component
   - is transforming and rendering my svg files with series of style props
