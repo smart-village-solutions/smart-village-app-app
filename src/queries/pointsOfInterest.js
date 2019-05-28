@@ -40,6 +40,18 @@ export const GET_POINT_OF_INTEREST = gql`
         }
         name
       }
+      addresses {
+        city
+        street
+        zip
+      }
+      contact {
+        email
+        phone
+        webUrls {
+          url
+        }
+      }
     }
   }
 `;
