@@ -14,6 +14,7 @@ export const defaultStackNavigatorConfig = (initialRouteName) => {
       headerBackground: <DiagonalGradient />,
       headerTitleStyle: {
         color: colors.lightestText,
+        fontFamily: 'titillium-web-regular',
         fontWeight: '400'
       },
       headerRight: (

@@ -60,8 +60,9 @@ export class HtmlScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: 'center',
-    paddingVertical: 10
+    justifyContent: 'center'
   }
 });
 

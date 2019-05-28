@@ -10,7 +10,7 @@ import { Icon } from './Icon';
 
 const LinkStyle = styled.Text`
   color: ${colors.secondary};
-  font-weight: bold;
+  font-family: titillium-web-bold;
 `;
 
 export const Link = ({ url, title }) => (
