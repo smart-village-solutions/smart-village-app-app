@@ -126,7 +126,7 @@ export const App = () => {
     drawerWidth: device.width * 0.8,
     // workaround with minus value for android until new version of react-native-gesture-handler is
     // included: https://github.com/react-navigation/drawer/issues/49
-    edgeWidth: device.platform === 'android' ? 20 - device.width * 0.8 : 20,
+    edgeWidth: device.platform === 'android' ? 20 - device.width : 20,
     contentComponent: CustomDrawerContentComponent,
     contentContainerStyle: {
       shadowColor: colors.darkText,

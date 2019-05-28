@@ -1,18 +1,19 @@
-import styled, { css } from 'styled-components/native';
-import { colors } from '../config';
+import styled from 'styled-components/native';
+import { colors, normalize } from '../config';
 
 export const Title = styled.Text`
   color: ${colors.primary};
   font-weight: bold;
   font-size: 20;
-  padding: 10px;
   text-transform: uppercase;
 `;
 
 //experimentig with the shadow ,
 //it seams that titles on homepage are inside of a box witch has a shadow
 // I need to recrate the effect of having a shadow from the line
-export const TitleContainer = styled.View``;
+export const TitleContainer = styled.View`
+  padding: ${normalize(14)}px;
+`;
 
 // fake shadow for now as workaround with border bottom
 export const TitleShadow = styled.View`

@@ -23,11 +23,18 @@ export const GET_POINT_OF_INTEREST = gql`
       createdAt
       name
       category: categoryName
+      description
       mediaContents {
         contentType
         sourceUrl {
           url
         }
+      }
+      dataProvider {
+        logo {
+          url
+        }
+        name
       }
     }
   }

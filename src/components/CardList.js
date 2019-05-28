@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Card } from 'react-native-elements';
-import { ActivityIndicator, FlatList, Platform, StyleSheet, TouchableOpacity } from 'react-native';
-import { Image } from 'react-native-elements';
+import { FlatList, Platform, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { device } from '../config';
+import { device, normalize } from '../config';
+import { Image } from './Image';
 import { ListSubtitle, ListTitle } from './TextList';
 
 export class CardList extends React.Component {
@@ -35,11 +35,9 @@ export class CardList extends React.Component {
             stylesWithProps(this.props).container
           ]}
         >
-          <Image
-            style={styles.image}
-            source={{ uri: item.image }}
-            PlaceholderContent={<ActivityIndicator />}
-          />
+          {!!item.image && (
+            <Image source={{ uri: item.image }} style={stylesWithProps(this.props).image} />
+          )}
           <ListSubtitle>{item.category}</ListSubtitle>
           <ListTitle style={styles.listTitle}>{item.name}</ListTitle>
         </Card>
@@ -63,24 +61,35 @@ export class CardList extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  image: {
-    borderRadius: 5,
-    height: 200,
-    marginBottom: 10
-  },
   listTitle: {
     marginBottom: 10
   }
 });
 
+const imageHeight = (horizontal) => {
+  const imageWidth = horizontal ? device.width * 0.7 : device.width;
+  // image aspect ratio is 360x180, so for accurate ratio in our view we need to calculate
+  // a factor with our current device with for the image, to set a correct height
+  const factor = imageWidth / 360;
+  const imageHeight = 180 * factor;
+
+  return imageHeight;
+};
+
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = (props) =>
+const stylesWithProps = ({ horizontal }) =>
   StyleSheet.create({
     container: {
       borderWidth: 0,
-      padding: 0,
-      width: props.horizontal ? device.width * 0.7 : device.width * 0.9
+      margin: 0,
+      padding: normalize(14)
+    },
+    image: {
+      borderRadius: 5,
+      marginBottom: 10,
+      height: imageHeight(horizontal),
+      width: horizontal ? device.width * 0.7 : device.width
     }
   });
 /* eslint-enable react-native/no-unused-styles */

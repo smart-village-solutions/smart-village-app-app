@@ -1,5 +1,5 @@
 import React from 'react';
-import { Platform, View, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 import { colors } from '../config';
 import { DiagonalGradient, Icon } from '../components';
@@ -26,10 +26,3 @@ export const defaultStackNavigatorConfig = (initialRouteName) => {
     })
   };
 };
-
-// for some wird reason i can't position menu and share icons in detail screen!!!!
-// plan for tomorrow :
-// -understand how props for stacknavigation work.
-// why can't I style all about header just in this file ?
-// what is this static navigation option in detail screen? it doen't aloud me to
-// style headerRightContainerStyle in it

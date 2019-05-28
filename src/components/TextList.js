@@ -4,9 +4,9 @@ import { ListItem } from 'react-native-elements';
 import { FlatList } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
-import { Icon } from '../components';
 import { colors } from '../config';
 import { arrowRight } from '../icons';
+import { Icon } from './Icon';
 
 export const ListTitle = styled.Text`
   color: ${colors.darkText};

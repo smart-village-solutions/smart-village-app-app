@@ -12,7 +12,11 @@ export const DiagonalGradient = (props) =>
   );
 
 DiagonalGradient.propTypes = {
-  children: PropTypes.object
+  children: PropTypes.object,
+  colors: PropTypes.array,
+  start: PropTypes.object,
+  end: PropTypes.object,
+  style: PropTypes.object
 };
 
 DiagonalGradient.defaultProps = {

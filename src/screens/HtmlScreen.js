@@ -4,7 +4,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } fro
 import { Query } from 'react-apollo';
 
 import { colors } from '../config';
-import { HtmlView, Icon } from '../components';
+import { HtmlView, Icon, Wrapper } from '../components';
 import { trimNewLines } from '../helpers';
 import { GET_PUBLIC_HTML_FILE } from '../queries';
 import { arrowLeft } from '../icons';
@@ -46,8 +46,10 @@ export class HtmlScreen extends React.Component {
           if (!data || !data.publicHtmlFile || !data.publicHtmlFile.content) return null;
 
           return (
-            <ScrollView contentContainerStyle={styles.container}>
-              <HtmlView html={trimNewLines(data.publicHtmlFile.content)} />
+            <ScrollView>
+              <Wrapper>
+                <HtmlView html={trimNewLines(data.publicHtmlFile.content)} />
+              </Wrapper>
             </ScrollView>
           );
         }}

@@ -7,6 +7,7 @@ import { colors } from '../config';
 import { CardList, Icon, TextList } from '../components';
 import { GET_EVENT_RECORDS, GET_NEWS_ITEMS, GET_POINTS_OF_INTEREST } from '../queries';
 import { arrowLeft } from '../icons';
+import { momentFormat } from '../helpers';
 
 export class IndexScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -46,6 +47,8 @@ export class IndexScreen extends React.Component {
           data &&
             data[query].map((eventRecord) => ({
               ...eventRecord,
+              subtitle: `${momentFormat(eventRecord.createdAt)} | ${eventRecord.dataProvider &&
+                eventRecord.dataProvider.name}`,
               routeName: 'Detail',
               params: {
                 title: 'Veranstaltung',
@@ -61,7 +64,8 @@ export class IndexScreen extends React.Component {
             data[query] &&
             data[query].map((newsItem) => ({
               id: newsItem.id,
-              subtitle: newsItem.subtitle, // TODO: beautify date
+              subtitle: `${momentFormat(newsItem.createdAt)} | ${newsItem.dataProvider &&
+                newsItem.dataProvider.name}`,
               title: newsItem.contentBlocks[0].title,
               routeName: 'Detail',
               params: {
