@@ -13,6 +13,7 @@ import {
   ListSubtitle,
   ListTitle,
   Logo,
+  PointOfInterest,
   Wrapper,
   WrapperRow
 } from '../components';
@@ -89,20 +90,15 @@ export class DetailScreen extends React.PureComponent {
           logo: dataProvider && dataProvider.logo && dataProvider.logo.url
         };
       }
-      case 'pointOfInterest': {
-        const { name, description, category, mediaContents, dataProvider } = data;
-
-        return {
-          title: name,
-          body: description,
-          subtitle: !!category && category.name,
-          image: mediaContents.length && mediaContents[0].sourceUrl.url,
-          logo: dataProvider && dataProvider.logo && dataProvider.logo.url
-        };
-      }
       }
     };
-    /* eslint-enable complexity */
+
+    const renderScreenComponent = (query, data) => {
+      switch (query) {
+      case 'pointOfInterest':
+        return <PointOfInterest data={data} />;
+      }
+    };
 
     return (
       <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
@@ -117,6 +113,11 @@ export class DetailScreen extends React.PureComponent {
 
           if (!data || !data[query]) return null;
 
+          if (query === 'pointOfInterest') {
+            return renderScreenComponent(query, data[query]);
+          }
+
+          // TODO: put everything in own screen components like PointOfInterest
           const page = getPage(query, data[query]);
 
           if (!page) return null;
@@ -139,6 +140,7 @@ export class DetailScreen extends React.PureComponent {
         }}
       </Query>
     );
+    /* eslint-enable complexity */
   }
 }
 

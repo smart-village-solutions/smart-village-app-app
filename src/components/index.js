@@ -6,6 +6,7 @@ export * from './Icon';
 export * from './Image';
 export * from './Link';
 export * from './Logo';
+export * from './screens/PointOfInterest';
 export * from './StandardButton';
 export * from './TextList';
 export * from './Title';
