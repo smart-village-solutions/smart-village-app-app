@@ -7,7 +7,9 @@
     "ios": "expo start --ios",
     "lint": "./node_modules/.bin/eslint __tests__ src",
     "start": "expo start",
-    "test": "jest"
+    "test": "jest",
+    "build:android": "expo build:android",
+    "build:ios": "expo build:ios"
   },
   "jest": {
     "preset": "react-native",
