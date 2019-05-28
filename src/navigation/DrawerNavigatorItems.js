@@ -69,7 +69,7 @@ const DrawerNavigatorItems = ({
           (activeRoute && activeRoute.params ? activeRoute.params.rootRouteName : 'AppStack') ===
           route.params.rootRouteName;
         const color = focused ? activeTintColor : inactiveTintColor;
-        const fontWeight = focused ? 'bold' : 'normal';
+        const fontFamily = focused ? 'titillium-web-bold' : 'titillium-web-regular';
         const backgroundColor = focused ? activeBackgroundColor : inactiveBackgroundColor;
         const scene = { route, index, focused, tintColor: color };
         const label = getLabel(scene);
@@ -94,7 +94,7 @@ const DrawerNavigatorItems = ({
               >
                 {typeof label === 'string' ? (
                   <Text
-                    style={[styles.label, { color }, { fontWeight }, labelStyle, extraLabelStyle]}
+                    style={[styles.label, { color }, { fontFamily }, labelStyle, extraLabelStyle]}
                   >
                     {label}
                   </Text>

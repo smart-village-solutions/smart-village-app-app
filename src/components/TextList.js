@@ -16,7 +16,6 @@ export const ListTitle = styled.Text`
     (props.alternativeLayout || props.noSubtitle) &&
     css`
       font-family: titillium-web-bold;
-      font-weight: 600;
     `};
 `;
 
