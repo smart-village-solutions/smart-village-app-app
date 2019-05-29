@@ -35,7 +35,7 @@ export const HomeScreen = ({ navigation }) => (
           data.newsItems &&
           data.newsItems.map((newsItem) => ({
             id: newsItem.id,
-            subtitle: `${momentFormat(newsItem.createdAt)} | ${newsItem.dataProvider &&
+            subtitle: `${momentFormat(newsItem.publishedAt)} | ${newsItem.dataProvider &&
               newsItem.dataProvider.name}`,
             title: newsItem.contentBlocks[0].title,
             routeName: 'Detail',

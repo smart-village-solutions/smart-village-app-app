@@ -77,11 +77,10 @@ export class DetailScreen extends React.Component {
         };
       }
       case 'newsItem': {
-        const { createdAt, contentBlocks, sourceUrl, dataProvider } = data;
-        // TODO: need to use publishedAt instead of createdAt
+        const { publishedAt, contentBlocks, sourceUrl, dataProvider } = data;
 
         return {
-          subtitle: `${momentFormat(createdAt)} | ${dataProvider && dataProvider.name}`,
+          subtitle: `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`,
           title: contentBlocks && contentBlocks.length && contentBlocks[0].title,
           body: contentBlocks && contentBlocks.length && contentBlocks[0].body,
           image:
