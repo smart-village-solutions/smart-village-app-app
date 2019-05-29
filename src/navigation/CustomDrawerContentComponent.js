@@ -4,7 +4,7 @@ import { Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-
 import { Icon } from 'react-native-elements';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import { colors } from '../config';
+import { colors, normalize } from '../config';
 import { DiagonalGradient } from '../components';
 import DrawerNavigatorItems from './DrawerNavigatorItems';
 
@@ -44,7 +44,8 @@ const styles = StyleSheet.create({
   },
   headerContainer: Platform.select({
     android: {
-      elevation: 4
+      backgroundColor: colors.darkText,
+      elevation: 2
     },
     ios: {
       shadowColor: colors.darkText,
@@ -67,7 +68,7 @@ const styles = StyleSheet.create({
     paddingTop: getStatusBarHeight()
   },
   icon: {
-    paddingHorizontal: 10
+    paddingHorizontal: normalize(14)
   }
 });
 
