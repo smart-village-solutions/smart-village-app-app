@@ -12,3 +12,15 @@ export const WrapperRow = styled.View`
   flex: 1;
   flex-direction: row;
 `;
+export const WrapperMargin = styled.View`
+  flex: 1;
+  flex-direction: row;
+  margin-top: 10px;
+`;
+
+export const WrapperPreice = styled.View`
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: ${normalize(14)}px;
+`;
