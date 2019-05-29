@@ -1,7 +1,8 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator';
 
-import { colors } from '../config';
+import { colors, normalize } from '../config';
 import { DiagonalGradient, Icon } from '../components';
 import { drawerMenu } from '../icons';
 
@@ -19,11 +20,20 @@ export const defaultStackNavigatorConfig = (initialRouteName) => {
       },
       headerRight: (
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <Icon icon={drawerMenu(colors.lightestText)} style={{ padding: 10 }} />
+          <Icon icon={drawerMenu(colors.lightestText)} style={styles.icon} />
         </TouchableOpacity>
-      ),
-      headerRightContainerStyle: {},
-      headerLeftContainerStyle: {}
+      )
+    }),
+    transitionConfig: () => ({
+      screenInterpolator: (sceneProps) => {
+        return CardStackStyleInterpolator.forHorizontal(sceneProps);
+      }
     })
   };
 };
+
+const styles = StyleSheet.create({
+  icon: {
+    paddingHorizontal: normalize(14)
+  }
+});
