@@ -25,17 +25,17 @@ export class DetailScreen extends React.Component {
       headerLeft: (
         <View>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon icon={arrowLeft(colors.lightestText)} />
+            <Icon icon={arrowLeft(colors.lightestText)} style={styles.icon} />
           </TouchableOpacity>
         </View>
       ),
       headerRight: (
         <WrapperRow>
           <TouchableOpacity onPress={() => alert('Share')}>
-            <Icon icon={share(colors.lightestText)} style={styles.padding} />
+            <Icon icon={share(colors.lightestText)} style={styles.iconLeft} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <Icon icon={drawerMenu(colors.lightestText)} style={styles.padding} />
+            <Icon icon={drawerMenu(colors.lightestText)} style={styles.iconRight} />
           </TouchableOpacity>
         </WrapperRow>
       )
@@ -60,6 +60,8 @@ export class DetailScreen extends React.Component {
       }
     };
 
+    /* eslint-disable complexity */
+    /* TODO: refactoring to single components */
     const getPage = (query, data) => {
       switch (query) {
       case 'eventRecord': {
@@ -70,20 +72,26 @@ export class DetailScreen extends React.Component {
           dates, // TODO: need to use dates instead of createdAt in rendering
           title,
           body: description,
-          image: mediaContents[0].sourceUrl.url,
-          logo: dataProvider.logo.url
+          image: mediaContents && mediaContents.length && mediaContents[0].sourceUrl.url,
+          logo: dataProvider && dataProvider.logo && dataProvider.logo.url
         };
       }
       case 'newsItem': {
         const { createdAt, contentBlocks, sourceUrl, dataProvider } = data;
+        // TODO: need to use publishedAt instead of createdAt
 
         return {
           subtitle: `${momentFormat(createdAt)} | ${dataProvider && dataProvider.name}`,
-          title: contentBlocks[0].title,
-          body: contentBlocks[0].body,
-          image: contentBlocks[0].mediaContents[0].sourceUrl.url,
+          title: contentBlocks && contentBlocks.length && contentBlocks[0].title,
+          body: contentBlocks && contentBlocks.length && contentBlocks[0].body,
+          image:
+              contentBlocks &&
+              contentBlocks.length &&
+              contentBlocks[0].mediaContents &&
+              contentBlocks[0].mediaContents.length &&
+              contentBlocks[0].mediaContents[0].sourceUrl.url,
           link: sourceUrl.url,
-          logo: dataProvider.logo.url
+          logo: dataProvider && dataProvider.logo && dataProvider.logo.url
         };
       }
       case 'pointOfInterest': {
@@ -93,61 +101,68 @@ export class DetailScreen extends React.Component {
           title: name,
           body: description,
           category,
-          image: mediaContents[0].sourceUrl.url,
-          logo: dataProvider.logo.url
+          image: mediaContents.length && mediaContents[0].sourceUrl.url,
+          logo: dataProvider && dataProvider.logo && dataProvider.logo.url
         };
       }
       }
     };
+    /* eslint-enable complexity */
 
     return (
-      <ScrollView>
-        <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
-          {({ data, loading }) => {
-            if (loading) {
-              return (
-                <View style={styles.container}>
-                  <ActivityIndicator />
-                </View>
-              );
-            }
-
-            if (!data || !data[query]) return null;
-
-            const page = getPage(query, data[query]);
-
-            if (!page) return null;
-
-            const { subtitle, title, body, image, link, logo } = page;
-
+      <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
+        {({ data, loading }) => {
+          if (loading) {
             return (
-              <View>
-                {!!image && <Image source={{ uri: image }} />}
-                <Wrapper>
-                  {!!logo && <Logo navigation={navigation} /* TODO: source={{ uri: logo}} */ />}
-                  {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
-                  {/*TODO: map multiple contentBlocks */}
-                  {!!title && <ListTitle noSubtitle>{title}</ListTitle>}
-                  {!!body && <HtmlView html={body} />}
-                  {!!link && <Link url={link} title={'Weiterlesen'} />}
-                </Wrapper>
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator />
               </View>
             );
-          }}
-        </Query>
-      </ScrollView>
+          }
+
+          if (!data || !data[query]) return null;
+
+          const page = getPage(query, data[query]);
+
+          if (!page) return null;
+
+          const { subtitle, title, body, image, link, logo } = page;
+
+          return (
+            <ScrollView>
+              {!!image && <Image source={{ uri: image }} />}
+              <Wrapper>
+                {!!logo && <Logo source={{ uri: logo }} />}
+                {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
+                {/*TODO: map multiple contentBlocks */}
+                {!!title && <ListTitle noSubtitle>{title}</ListTitle>}
+                {!!body && <HtmlView html={body} />}
+                {!!link && <Link url={link} title={'Weiterlesen'} />}
+              </Wrapper>
+            </ScrollView>
+          );
+        }}
+      </Query>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  loadingContainer: {
     alignItems: 'center',
+    flex: 1,
     justifyContent: 'center'
   },
-  padding: {
-    padding: normalize(10)
+  icon: {
+    paddingHorizontal: normalize(14)
+  },
+  iconLeft: {
+    paddingLeft: normalize(14),
+    paddingRight: normalize(7)
+  },
+  iconRight: {
+    paddingLeft: normalize(7),
+    paddingRight: normalize(14)
   }
 });
 

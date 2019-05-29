@@ -3,7 +3,7 @@ import React from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
-import { colors } from '../config';
+import { colors, normalize } from '../config';
 import { HtmlView, Icon, Wrapper } from '../components';
 import { trimNewLines } from '../helpers';
 import { GET_PUBLIC_HTML_FILE } from '../queries';
@@ -15,7 +15,7 @@ export class HtmlScreen extends React.Component {
       headerLeft: (
         <View>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon icon={arrowLeft(colors.lightestText)} />
+            <Icon icon={arrowLeft(colors.lightestText)} style={styles.icon} />
           </TouchableOpacity>
         </View>
       )
@@ -37,7 +37,7 @@ export class HtmlScreen extends React.Component {
         {({ data, loading }) => {
           if (loading) {
             return (
-              <View style={styles.container}>
+              <View style={styles.loadingContainer}>
                 <ActivityIndicator />
               </View>
             );
@@ -59,10 +59,13 @@ export class HtmlScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  loadingContainer: {
     alignItems: 'center',
+    flex: 1,
     justifyContent: 'center'
+  },
+  icon: {
+    paddingHorizontal: normalize(14)
   }
 });
 

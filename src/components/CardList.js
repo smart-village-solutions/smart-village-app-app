@@ -1,9 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Card } from 'react-native-elements';
-import { FlatList, Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  FlatList,
+  Platform,
+  StyleSheet,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+  View
+} from 'react-native';
 
-import { device, normalize } from '../config';
+import { colors, device, normalize } from '../config';
 import { Image } from './Image';
 import { ListSubtitle, ListTitle } from './TextList';
 
@@ -12,9 +19,10 @@ export class CardList extends React.Component {
 
   renderItem = ({ item }) => {
     const { navigation } = this.props;
+    const Touchable = device.platform === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
 
     return (
-      <TouchableOpacity
+      <Touchable
         onPress={() =>
           navigation.navigate({
             routeName: item.routeName,
@@ -29,19 +37,21 @@ export class CardList extends React.Component {
                 elevation: 0
               },
               ios: {
-                shadowColor: 'transparent'
+                shadowColor: colors.transparent
               }
             }),
             stylesWithProps(this.props).container
           ]}
         >
-          {!!item.image && (
-            <Image source={{ uri: item.image }} style={stylesWithProps(this.props).image} />
-          )}
-          <ListSubtitle>{item.category}</ListSubtitle>
-          <ListTitle style={styles.listTitle}>{item.name}</ListTitle>
+          <View>
+            {!!item.image && (
+              <Image source={{ uri: item.image }} style={stylesWithProps(this.props).image} />
+            )}
+            {!!item.category && <ListSubtitle>{item.category}</ListSubtitle>}
+            {!!item.name && <ListTitle>{item.name}</ListTitle>}
+          </View>
         </Card>
-      </TouchableOpacity>
+      </Touchable>
     );
   };
 
@@ -60,12 +70,6 @@ export class CardList extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
-  listTitle: {
-    marginBottom: 10
-  }
-});
-
 const imageHeight = (horizontal) => {
   const imageWidth = horizontal ? device.width * 0.7 : device.width;
   // image aspect ratio is 360x180, so for accurate ratio in our view we need to calculate
@@ -81,15 +85,16 @@ const imageHeight = (horizontal) => {
 const stylesWithProps = ({ horizontal }) =>
   StyleSheet.create({
     container: {
+      backgroundColor: colors.transparent,
       borderWidth: 0,
       margin: 0,
       padding: normalize(14)
     },
     image: {
       borderRadius: 5,
-      marginBottom: 10,
+      marginBottom: normalize(7),
       height: imageHeight(horizontal),
-      width: horizontal ? device.width * 0.7 : device.width
+      width: horizontal ? device.width * 0.7 : device.width - 2 * normalize(14)
     }
   });
 /* eslint-enable react-native/no-unused-styles */

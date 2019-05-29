@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, device } from '../config';
+import { colors, device, normalize } from '../config';
 
 /**
  * Component that renders the navigation list in the drawer.
@@ -116,14 +116,14 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: 'titillium-web-regular',
-    fontSize: 16,
-    paddingHorizontal: 15,
-    paddingVertical: 20
+    fontSize: normalize(16),
+    paddingHorizontal: normalize(15),
+    paddingVertical: normalize(12)
   },
   divider: {
     backgroundColor: colors.lightestText,
     height: StyleSheet.hairlineWidth,
-    opacity: 0.4
+    opacity: 0.3
   }
 });
 

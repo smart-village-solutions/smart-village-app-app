@@ -4,6 +4,11 @@ export const colors = {
   secondary: 'rgb(9,72,60)',
 
   darkText: '#000000',
-  lighterText: 'rgb(221,242,243)',
-  lightestText: '#FFFFFF'
+  lighterText: 'rgba(221, 242, 243, 0.6)',
+  lightestText: '#FFFFFF',
+
+  shadow: '#bcbbc1',
+  shadowRgba: 'rgba(188, 187, 193, 0.4)',
+
+  transparent: 'transparent'
 };

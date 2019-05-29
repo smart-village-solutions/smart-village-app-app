@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ListItem } from 'react-native-elements';
-import { FlatList } from 'react-native';
+import { FlatList, TouchableNativeFeedback, TouchableOpacity } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
-import { colors } from '../config';
+import { colors, device, normalize } from '../config';
 import { arrowRight } from '../icons';
 import { Icon } from './Icon';
 
 export const ListTitle = styled.Text`
+  font-size: ${normalize(16)};
   font-family: titillium-web-regular;
   color: ${colors.darkText};
 
@@ -19,15 +20,16 @@ export const ListTitle = styled.Text`
     `};
 `;
 
-export const ListSubtitle = styled.Text`
-  font-family: titillium-web-regular;
+export const ListSubtitle = styled(ListTitle)`
+  font-size: ${normalize(14)};
   color: ${colors.primary};
-  margin-bottom: 10;
+  margin-bottom: ${normalize(7)};
 
   ${(props) =>
     props.alternativeLayout &&
     css`
       color: ${colors.darkText};
+      font-family: titillium-web-regular;
     `};
 `;
 
@@ -36,6 +38,7 @@ export class TextList extends React.Component {
 
   renderItem = ({ item }) => {
     const { navigation, alternativeLayout, noSubtitle } = this.props;
+    const Touchable = device.platform === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
 
     return (
       <ListItem
@@ -49,12 +52,21 @@ export class TextList extends React.Component {
             {item.title}
           </ListTitle>
         }
-        bottomDivider
-        containerStyle={
+        bottomDivider={item.bottomDivider !== undefined ? item.bottomDivider : true}
+        topDivider={item.topDivider !== undefined ? item.topDivider : false}
+        containerStyle={[
+          {
+            paddingVertical: normalize(12)
+          },
           alternativeLayout
-            ? { backgroundColor: colors.lighterText, borderBottomColor: colors.lightestText }
-            : null
-        }
+            ? {
+              backgroundColor: colors.lighterText,
+              borderBottomColor: colors.lightestText
+            }
+            : {
+              backgroundColor: colors.transparent
+            }
+        ]}
         rightIcon={<Icon icon={arrowRight(colors.primary)} />}
         onPress={() =>
           navigation.navigate({
@@ -63,6 +75,7 @@ export class TextList extends React.Component {
           })
         }
         delayPressIn={0}
+        Component={Touchable}
       />
     );
   };

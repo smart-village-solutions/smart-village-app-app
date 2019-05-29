@@ -3,6 +3,7 @@ import React from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, View } from 'react-native';
 import { Query } from 'react-apollo';
 
+import { device, normalize } from '../config';
 import { CardList, Image, TextList, Title, TitleContainer, TitleShadow } from '../components';
 import {
   GET_EVENT_RECORDS,
@@ -15,16 +16,15 @@ import { momentFormat } from '../helpers';
 export const HomeScreen = ({ navigation }) => (
   <ScrollView>
     <Image source={require('../../assets/images/home.jpg')} />
-    <TitleShadow />
     <TitleContainer>
       <Title>{'Nachrichten'.toUpperCase()}</Title>
     </TitleContainer>
-    <TitleShadow />
+    {device.platform === 'ios' && <TitleShadow />}
     <Query query={GET_NEWS_ITEMS} variables={{ limit: 3 }} fetchPolicy="cache-and-network">
       {({ data, loading }) => {
         if (loading) {
           return (
-            <View style={styles.container}>
+            <View style={styles.loadingContainer}>
               <ActivityIndicator />
             </View>
           );
@@ -61,22 +61,22 @@ export const HomeScreen = ({ navigation }) => (
               query: 'newsItems',
               queryVariables: {},
               rootRouteName: 'NewsItems'
-            }
+            },
+            bottomDivider: false
           });
 
         return <TextList navigation={navigation} data={newsItems} />;
       }}
     </Query>
-    <TitleShadow />
     <TitleContainer>
       <Title>{'Orte & Routen'.toUpperCase()}</Title>
     </TitleContainer>
-    <TitleShadow />
+    {device.platform === 'ios' && <TitleShadow />}
     <Query query={GET_POINTS_OF_INTEREST} variables={{ limit: 3 }} fetchPolicy="cache-and-network">
       {({ data, loading }) => {
         if (loading) {
           return (
-            <View style={styles.container}>
+            <View style={styles.loadingContainer}>
               <ActivityIndicator />
             </View>
           );
@@ -117,7 +117,9 @@ export const HomeScreen = ({ navigation }) => (
                     query: 'pointsOfInterest',
                     queryVariables: {},
                     rootRouteName: 'PointsOfInterest'
-                  }
+                  },
+                  bottomDivider: false,
+                  topDivider: true
                 }
               ]}
             />
@@ -125,16 +127,15 @@ export const HomeScreen = ({ navigation }) => (
         );
       }}
     </Query>
-    <TitleShadow />
     <TitleContainer>
       <Title>{'Veranstaltungen'.toUpperCase()}</Title>
     </TitleContainer>
-    <TitleShadow />
+    {device.platform === 'ios' && <TitleShadow />}
     <Query query={GET_EVENT_RECORDS} variables={{ limit: 3 }} fetchPolicy="cache-and-network">
       {({ data, loading }) => {
         if (loading) {
           return (
-            <View style={styles.container}>
+            <View style={styles.loadingContainer}>
               <ActivityIndicator />
             </View>
           );
@@ -171,17 +172,17 @@ export const HomeScreen = ({ navigation }) => (
               query: 'eventRecords',
               queryVariables: {},
               rootRouteName: 'EventRecords'
-            }
+            },
+            bottomDivider: false
           });
 
         return <TextList navigation={navigation} data={eventRecords} alternativeLayout />;
       }}
     </Query>
-    <TitleShadow />
     <TitleContainer>
       <Title>{'Service'.toUpperCase()}</Title>
     </TitleContainer>
-    <TitleShadow />
+    {device.platform === 'ios' && <TitleShadow />}
     <Query
       query={GET_PUBLIC_JSON_FILE}
       variables={{ name: 'homeRoutes' }}
@@ -190,7 +191,7 @@ export const HomeScreen = ({ navigation }) => (
       {({ data, loading }) => {
         if (loading) {
           return (
-            <View style={styles.container}>
+            <View style={styles.loadingContainer}>
               <ActivityIndicator />
             </View>
           );
@@ -208,9 +209,11 @@ export const HomeScreen = ({ navigation }) => (
 );
 
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     alignItems: 'center',
-    paddingVertical: 10
+    flex: 1,
+    justifyContent: 'center',
+    padding: normalize(14)
   }
 });
 

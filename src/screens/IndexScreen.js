@@ -3,7 +3,7 @@ import React from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
-import { colors } from '../config';
+import { colors, normalize } from '../config';
 import { CardList, Icon, TextList } from '../components';
 import { GET_EVENT_RECORDS, GET_NEWS_ITEMS, GET_POINTS_OF_INTEREST } from '../queries';
 import { arrowLeft } from '../icons';
@@ -15,7 +15,7 @@ export class IndexScreen extends React.Component {
       headerLeft: (
         <View>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon icon={arrowLeft(colors.lightestText)} />
+            <Icon icon={arrowLeft(colors.lightestText)} style={styles.icon} />
           </TouchableOpacity>
         </View>
       )
@@ -118,41 +118,45 @@ export class IndexScreen extends React.Component {
     };
 
     return (
-      <ScrollView>
-        <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
-          {({ data, loading }) => {
-            if (loading) {
-              return (
-                <View style={styles.container}>
-                  <ActivityIndicator />
-                </View>
-              );
-            }
-
-            const listItems = getListItems(query, data);
-
-            if (!listItems || !listItems.length) return null;
-
-            const Component = getComponent(query);
-
+      <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
+        {({ data, loading }) => {
+          if (loading) {
             return (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator />
+              </View>
+            );
+          }
+
+          const listItems = getListItems(query, data);
+
+          if (!listItems || !listItems.length) return null;
+
+          const Component = getComponent(query);
+
+          return (
+            <ScrollView>
               <Component
                 navigation={navigation}
                 data={listItems}
                 alternativeLayout={isAlternativeLayout(query)}
               />
-            );
-          }}
-        </Query>
-      </ScrollView>
+            </ScrollView>
+          );
+        }}
+      </Query>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     alignItems: 'center',
-    paddingVertical: 10
+    flex: 1,
+    justifyContent: 'center'
+  },
+  icon: {
+    paddingHorizontal: normalize(14)
   }
 });
 

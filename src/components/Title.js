@@ -1,24 +1,41 @@
-import styled from 'styled-components/native';
-import { colors, normalize } from '../config';
+import styled, { css } from 'styled-components/native';
+
+import { colors, device, normalize } from '../config';
 
 export const Title = styled.Text`
   color: ${colors.primary};
   font-family: titillium-web-bold;
-  font-size: 20;
+  font-size: ${normalize(20)};
   text-transform: uppercase;
 `;
 
-//experimentig with the shadow ,
-//it seams that titles on homepage are inside of a box witch has a shadow
-// I need to recrate the effect of having a shadow from the line
+// need to set a background color for shadow applying to the View instead of Text inside it
+// thx to https://github.com/styled-components/styled-components/issues/709#issuecomment-377968412
 export const TitleContainer = styled.View`
-  padding: ${normalize(14)}px;
+  background-color: ${colors.lightestText};
+  padding: ${normalize(7)}px ${normalize(14)}px;
+
+  ${() =>
+    device.platform === 'ios'
+      ? css`
+          shadow-color: ${colors.shadow};
+          shadow-offset: 0px 0px;
+          shadow-opacity: 0.7;
+          shadow-radius: 3px;
+        `
+      : css`
+          border-top-width: 2px;
+          border-top-color: ${colors.shadowRgba};
+          border-style: solid;
+          elevation: 2;
+        `};
 `;
 
-// fake shadow for now as workaround with border bottom
+// dummy bottom shadow container for iOS
 export const TitleShadow = styled.View`
-  border-bottom-width: 2px;
-  border-bottom-color: gray;
-  border-style: solid;
-  opacity: 0.2;
+  background-color: ${colors.lightestText};
+  shadow-color: ${colors.shadow};
+  shadow-offset: 0px 1px;
+  shadow-opacity: 0.7;
+  shadow-radius: 3px;
 `;

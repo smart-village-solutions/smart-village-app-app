@@ -17,7 +17,6 @@ export const html = {
     color: colors.darkText,
     fontFamily: 'titillium-web-bold',
     fontSize: normalize(24),
-
     lineHeight: normalize(30),
     marginBottom: normalize(24)
   },
@@ -25,7 +24,9 @@ export const html = {
     color: colors.darkText,
     fontFamily: 'titillium-web-regular',
     fontSize: normalize(20),
-    fontWeight: '400'
+    fontWeight: '400',
+    lineHeight: normalize(24),
+    marginBottom: normalize(14)
   },
   h3: {
     color: colors.darkText,

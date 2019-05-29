@@ -11,10 +11,10 @@ Logo.propTypes = {
 };
 
 Logo.defaultProps = {
-  source: require('../../assets/images/maerkische-allgemeine.jpg'),
   style: {
     height: 80,
     marginBottom: 10,
+    resizeMode: 'contain',
     width: 'auto'
   }
 };

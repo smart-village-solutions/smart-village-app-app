@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.6.6]
+
+Adjust layouts and renderings prior to release
+
+### Added
+
+- show SplashScreen until app is fully initialized
+- Android stack navigation transition slides in from right
+  - with arrows on list items to navigate we indicate something to/from the right, so it is more
+    user friendly to navigate in this direction
+    - this is default on iOS
+
+### Changed
+
+- used TouchableNativeFeedback on Android and TouchableOpacity on iOS everywhere
+- used normalize to calculate sizes
+- updated paddings for cleaner layout
+- changed logo image style to `resizeMode: 'contain'` because we do not know how big pictures are
+  - with this they always fit in the 80 height container
+- added checks to render data only if they are present to prevent app crashes for undefined actions
+- centered ActivityIndicator everywhere correctly on screen
+- fixed shadow of TitleContainer for iOS
+  - render additional TitleShadow component only on iOS and only after the TitleContainer
+  - this is not needed for Android, as it is not working
+    - for Android there is a workaround with top border
+- fixed shadow in drawer for Android
+
 ## [v0.6.5]
 
 Implement custom font Titillium Web from Google Fonts

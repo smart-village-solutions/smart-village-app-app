@@ -116,7 +116,7 @@ export const MainApp = () => {
 
   if (!loaded) {
     return (
-      <View style={styles.container}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator />
       </View>
     );
@@ -150,9 +150,9 @@ export const MainApp = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  loadingContainer: {
     alignItems: 'center',
+    flex: 1,
     justifyContent: 'center'
   }
 });
