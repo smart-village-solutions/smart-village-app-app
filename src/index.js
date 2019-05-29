@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, AsyncStorage, StatusBar, StyleSheet, View } from 'react-native';
+import { SplashScreen } from 'expo';
 import { createAppContainer, createDrawerNavigator } from 'react-navigation';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
@@ -100,6 +101,8 @@ export const MainApp = () => {
 
     setClient(client);
     setLoaded(true);
+
+    SplashScreen.hide();
   };
 
   // we can provide an empty array as second argument to the effect hook to avoid activating

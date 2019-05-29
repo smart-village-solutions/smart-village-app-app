@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Font } from 'expo';
+import { Font, SplashScreen } from 'expo';
 
 import { MainApp } from './src';
 
@@ -7,6 +7,8 @@ const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
+    SplashScreen.preventAutoHide();
+
     Font.loadAsync({
       'titillium-web-bold': require('./assets/fonts/TitilliumWeb-Bold.ttf'),
       'titillium-web-bold-italic': require('./assets/fonts/TitilliumWeb-BoldItalic.ttf'),
