@@ -1,6 +1,6 @@
 import { createStackNavigator } from 'react-navigation';
 
-import { DetailScreen, HomeScreen, HtmlScreen, IndexScreen } from '../screens';
+import { DetailScreen, HomeScreen, HtmlScreen, IndexScreen, WebScreen } from '../screens';
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
 
 import { texts } from '../config';
@@ -27,6 +27,12 @@ const AppStackNavigator = createStackNavigator(
     },
     Html: {
       screen: HtmlScreen,
+      navigationOptions: (props) => ({
+        title: props.navigation.getParam('title', '')
+      })
+    },
+    Web: {
+      screen: WebScreen,
       navigationOptions: (props) => ({
         title: props.navigation.getParam('title', '')
       })

@@ -4,7 +4,7 @@ import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } fro
 import { Query } from 'react-apollo';
 
 import { colors, normalize } from '../config';
-import { HtmlView, Icon, Wrapper } from '../components';
+import { Button, HtmlView, Icon, Wrapper } from '../components';
 import { trimNewLines } from '../helpers';
 import { GET_PUBLIC_HTML_FILE } from '../queries';
 import { arrowLeft } from '../icons';
@@ -25,6 +25,8 @@ export class HtmlScreen extends React.Component {
   render() {
     const { navigation } = this.props;
     const queryVariables = navigation.getParam('queryVariables', '');
+    const title = navigation.getParam('title', '');
+    const webUrl = navigation.getParam('webUrl', '');
 
     if (!queryVariables || !queryVariables.name) return null;
 
@@ -49,6 +51,20 @@ export class HtmlScreen extends React.Component {
             <ScrollView>
               <Wrapper>
                 <HtmlView html={trimNewLines(data.publicHtmlFile.content)} />
+                {!!webUrl && (
+                  <Button
+                    title={`${title} öffnen`}
+                    onPress={() =>
+                      navigation.navigate({
+                        routeName: 'Web',
+                        params: {
+                          title,
+                          webUrl
+                        }
+                      })
+                    }
+                  />
+                )}
               </Wrapper>
             </ScrollView>
           );
