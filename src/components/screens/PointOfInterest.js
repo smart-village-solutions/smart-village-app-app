@@ -15,6 +15,7 @@ import {
 import { mail, location, phone as phoneIcon, url as urlIcon } from '../../icons';
 import { colors, normalize } from '../../config';
 import { PriceCard } from './PriceCard';
+import { OpeningTime } from './OpeningTime';
 export const PointOfInterest = ({ data }) => {
   const [page, setPage] = useState({});
 
@@ -39,8 +40,8 @@ export const PointOfInterest = ({ data }) => {
       image: mediaContents[0].sourceUrl.url,
       address: `${street}, ${zip} ${city}`,
       phone: `${phone}`,
-      email: `${email}`,
-      url: `${webUrls[0].url}`
+      email: `${email}`
+      // url: `${webUrls[0].url}`
     });
   }, []);
 
@@ -92,6 +93,7 @@ export const PointOfInterest = ({ data }) => {
         <Title>{'öffnungszeiten'.toUpperCase()}</Title>
       </TitleContainer>
       <TitleShadow />
+      <OpeningTime />
 
       <TitleShadow />
       <TitleContainer>
