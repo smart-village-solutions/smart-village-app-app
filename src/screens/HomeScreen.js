@@ -5,13 +5,8 @@ import { Query } from 'react-apollo';
 
 import { device, normalize } from '../config';
 import { CardList, Image, TextList, Title, TitleContainer, TitleShadow } from '../components';
-import {
-  GET_EVENT_RECORDS,
-  GET_NEWS_ITEMS,
-  GET_POINTS_OF_INTEREST,
-  GET_PUBLIC_JSON_FILE
-} from '../queries';
-import { momentFormat } from '../helpers';
+import { getQuery } from '../queries';
+import { momentFormat, shareMessage } from '../helpers';
 
 export const HomeScreen = ({ navigation }) => (
   <ScrollView>
@@ -20,7 +15,7 @@ export const HomeScreen = ({ navigation }) => (
       <Title>{'Nachrichten'.toUpperCase()}</Title>
     </TitleContainer>
     {device.platform === 'ios' && <TitleShadow />}
-    <Query query={GET_NEWS_ITEMS} variables={{ limit: 3 }} fetchPolicy="cache-and-network">
+    <Query query={getQuery('newsItems')} variables={{ limit: 3 }} fetchPolicy="cache-and-network">
       {({ data, loading }) => {
         if (loading) {
           return (
@@ -43,7 +38,10 @@ export const HomeScreen = ({ navigation }) => (
               title: 'Nachricht',
               query: 'newsItem',
               queryVariables: { id: `${newsItem.id}` },
-              rootRouteName: 'NewsItems'
+              rootRouteName: 'NewsItems',
+              shareContent: {
+                message: shareMessage(newsItem, 'newsItem')
+              }
             },
             __typename: newsItem.__typename
           }));
@@ -72,7 +70,11 @@ export const HomeScreen = ({ navigation }) => (
       <Title>{'Orte & Routen'.toUpperCase()}</Title>
     </TitleContainer>
     {device.platform === 'ios' && <TitleShadow />}
-    <Query query={GET_POINTS_OF_INTEREST} variables={{ limit: 3 }} fetchPolicy="cache-and-network">
+    <Query
+      query={getQuery('pointsOfInterest')}
+      variables={{ limit: 3 }}
+      fetchPolicy="cache-and-network"
+    >
       {({ data, loading }) => {
         if (loading) {
           return (
@@ -95,12 +97,15 @@ export const HomeScreen = ({ navigation }) => (
               title: 'Ort',
               query: 'pointOfInterest',
               queryVariables: { id: `${pointOfInterest.id}` },
-              rootRouteName: 'PointsOfInterest'
+              rootRouteName: 'PointsOfInterest',
+              shareContent: {
+                message: shareMessage(pointOfInterest, 'pointOfInterest')
+              }
             },
             __typename: pointOfInterest.__typename
           }));
 
-        if (!pointsOfInterest.length) return null;
+        if (!pointsOfInterest || !pointsOfInterest.length) return null;
 
         return (
           <View>
@@ -131,7 +136,11 @@ export const HomeScreen = ({ navigation }) => (
       <Title>{'Veranstaltungen'.toUpperCase()}</Title>
     </TitleContainer>
     {device.platform === 'ios' && <TitleShadow />}
-    <Query query={GET_EVENT_RECORDS} variables={{ limit: 3 }} fetchPolicy="cache-and-network">
+    <Query
+      query={getQuery('eventRecords')}
+      variables={{ limit: 3 }}
+      fetchPolicy="cache-and-network"
+    >
       {({ data, loading }) => {
         if (loading) {
           return (
@@ -154,7 +163,10 @@ export const HomeScreen = ({ navigation }) => (
               title: 'Veranstaltung',
               query: 'eventRecord',
               queryVariables: { id: `${eventRecord.id}` },
-              rootRouteName: 'EventRecords'
+              rootRouteName: 'EventRecords',
+              shareContent: {
+                message: shareMessage(eventRecord, 'eventRecord')
+              }
             },
             __typename: eventRecord.__typename
           }));
@@ -184,7 +196,7 @@ export const HomeScreen = ({ navigation }) => (
     </TitleContainer>
     {device.platform === 'ios' && <TitleShadow />}
     <Query
-      query={GET_PUBLIC_JSON_FILE}
+      query={getQuery('publicJsonFile')}
       variables={{ name: 'homeRoutes' }}
       fetchPolicy="cache-and-network"
     >

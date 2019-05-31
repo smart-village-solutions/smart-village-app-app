@@ -15,12 +15,14 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
-import { GET_EVENT_RECORD, GET_NEWS_ITEM, GET_POINT_OF_INTEREST } from '../queries';
+import { getQuery } from '../queries';
 import { arrowLeft, drawerMenu, share } from '../icons';
-import { momentFormat } from '../helpers';
+import { momentFormat, openShare, trimNewLines } from '../helpers';
 
 export class DetailScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
+    const shareContent = navigation.getParam('shareContent', '');
+
     return {
       headerLeft: (
         <View>
@@ -31,7 +33,7 @@ export class DetailScreen extends React.Component {
       ),
       headerRight: (
         <WrapperRow>
-          <TouchableOpacity onPress={() => alert('Share')}>
+          <TouchableOpacity onPress={() => shareContent && openShare(shareContent)}>
             <Icon icon={share(colors.lightestText)} style={styles.iconLeft} />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.openDrawer()}>
@@ -48,17 +50,6 @@ export class DetailScreen extends React.Component {
     const queryVariables = navigation.getParam('queryVariables', {});
 
     if (!query) return null;
-
-    const getQuery = (query) => {
-      switch (query) {
-      case 'eventRecord':
-        return GET_EVENT_RECORD;
-      case 'newsItem':
-        return GET_NEWS_ITEM;
-      case 'pointOfInterest':
-        return GET_POINT_OF_INTEREST;
-      }
-    };
 
     /* eslint-disable complexity */
     /* TODO: refactoring to single components */
@@ -135,8 +126,8 @@ export class DetailScreen extends React.Component {
                 {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
                 {/*TODO: map multiple contentBlocks */}
                 {!!title && <ListTitle noSubtitle>{title}</ListTitle>}
-                {!!body && <HtmlView html={body} />}
-                {!!link && <Link url={link} title={'Weiterlesen'} />}
+                {!!body && <HtmlView html={trimNewLines(body)} />}
+                {!!link && <Link url={link} title={'Im Browser öffnen'} />}
               </Wrapper>
             </ScrollView>
           );
