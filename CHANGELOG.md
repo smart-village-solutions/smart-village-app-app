@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.6.9]
+
+Implement WebView component for external services
+
+### Added
+
+- created new route `Web` for navigating to a `WebView`
+- created a `WebScreen` for rendering a `WebView` with loading indicator
+- updated the `HtmlScreen` with adding a `Button` if a `webUrl` is given in navigation params
+- created a `Button` component based on React Native Elements Button:
+  https://react-native-training.github.io/react-native-elements/docs/button.html
+
 ## [v0.6.8]
 
 Implement simple share function of detail screens
