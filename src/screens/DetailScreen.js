@@ -3,6 +3,7 @@ import React from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
+import { auth } from '../auth';
 import { colors, normalize } from '../config';
 import {
   HtmlView,
@@ -19,7 +20,7 @@ import { getQuery } from '../queries';
 import { arrowLeft, drawerMenu, share } from '../icons';
 import { momentFormat, openShare, trimNewLines } from '../helpers';
 
-export class DetailScreen extends React.Component {
+export class DetailScreen extends React.PureComponent {
   static navigationOptions = ({ navigation }) => {
     const shareContent = navigation.getParam('shareContent', '');
 
@@ -43,6 +44,10 @@ export class DetailScreen extends React.Component {
       )
     };
   };
+
+  componentDidMount() {
+    auth();
+  }
 
   render() {
     const { navigation } = this.props;

@@ -22,6 +22,10 @@ Currently used colors in the mobile app:
 
 https://coolors.co/08743c-bbbe64-222222-26798e-ffffff
 
+## Documentation
+
+For detailed documentation see the [docs](./docs/INDEX.md).
+
 ## Tech Stack
 
 Information about currently used packages and their versions:
