@@ -5,9 +5,9 @@ import { Query } from 'react-apollo';
 
 import { colors, normalize } from '../config';
 import { CardList, Icon, TextList } from '../components';
-import { GET_EVENT_RECORDS, GET_NEWS_ITEMS, GET_POINTS_OF_INTEREST } from '../queries';
+import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
-import { momentFormat } from '../helpers';
+import { momentFormat, shareMessage } from '../helpers';
 
 export class IndexScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -29,17 +29,6 @@ export class IndexScreen extends React.Component {
 
     if (!query) return null;
 
-    const getQuery = (query) => {
-      switch (query) {
-      case 'eventRecords':
-        return GET_EVENT_RECORDS;
-      case 'newsItems':
-        return GET_NEWS_ITEMS;
-      case 'pointsOfInterest':
-        return GET_POINTS_OF_INTEREST;
-      }
-    };
-
     const getListItems = (query, data) => {
       switch (query) {
       case 'eventRecords':
@@ -54,7 +43,10 @@ export class IndexScreen extends React.Component {
                 title: 'Veranstaltung',
                 query: 'eventRecord',
                 queryVariables: { id: `${eventRecord.id}` },
-                rootRouteName: 'EventRecords'
+                rootRouteName: 'EventRecords',
+                shareContent: {
+                  message: shareMessage(eventRecord, query)
+                }
               }
             }))
         );
@@ -72,7 +64,10 @@ export class IndexScreen extends React.Component {
                 title: 'Nachricht',
                 query: 'newsItem',
                 queryVariables: { id: `${newsItem.id}` },
-                rootRouteName: 'NewsItems'
+                rootRouteName: 'NewsItems',
+                shareContent: {
+                  message: shareMessage(newsItem, query)
+                }
               }
             }))
         );
@@ -90,7 +85,10 @@ export class IndexScreen extends React.Component {
                 title: 'Ort',
                 query: 'pointOfInterest',
                 queryVariables: { id: `${pointOfInterest.id}` },
-                rootRouteName: 'PointsOfInterest'
+                rootRouteName: 'PointsOfInterest',
+                shareContent: {
+                  message: shareMessage(pointOfInterest, query)
+                }
               }
             }))
         );
