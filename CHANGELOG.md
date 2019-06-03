@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.6.8]
+
+Implement simple share function of detail screens
+
+### Added
+
+- https://docs.expo.io/versions/v32.0.0/react-native/share
+- created share helper function
+- added params for shareContent to navigation params, that will be used for share dialog
+  opened from DetailScreen
+- created `shareMessage()` helper to build the message to share
+- added missing line trimming of HtmlView in DetailScreen
+
+### Changed
+
+- refactored `getQuery` to `/queries/index.js` to use everywhere from one place
+
 ## [v0.6.7]
 
 Use publishedAt for newsItems instead of createdAt
