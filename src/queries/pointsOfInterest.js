@@ -52,6 +52,24 @@ export const GET_POINT_OF_INTEREST = gql`
       webUrls {
         url
       }
+      prices {
+        name
+        groupPrice
+        amount
+        ageFrom
+        ageTo
+        category
+        description
+        maxChildrenCount
+        maxAdultCount
+        minAdultCount
+        minChildrenCount
+      }
+      openingHours {
+        weekday
+        timeFrom
+        timeTo
+      }
     }
   }
 `;
