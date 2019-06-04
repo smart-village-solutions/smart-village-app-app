@@ -17,3 +17,9 @@ export const WrapperMargin = styled.View`
   flex-direction: row;
   margin-top: 10px;
 `;
+export const WrapperPrice = styled.View`
+  justify-content: space-between;
+  flex-direction: row;
+  width: 100%;
+  flex-wrap: wrap;
+`;
