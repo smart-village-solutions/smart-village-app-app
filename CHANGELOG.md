@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.7.2]
+
+Show 10 points of interest on home screen
+
+### Changed
+
+- the points of interest on home screen is a horizontal slider
+  - sliding only three elements makes not much sense, so we can use more there
+- increased the amount of points of interest on home screen from 3 to 10
+
+## [v0.7.1]
+
+Fix category queries for name
+
+### Fixed
+
+- there is a new CategoryType now where we can get the name for a category from
+- updated screens to render the data correctly
+
+### Changed
+
+- changed CardList Component to PureComponent because it is stateless
+
 ## [v0.7.0]
 
 Implement OAuth2 per client credentials flow
