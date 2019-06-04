@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.7.0]
+
+Implement OAuth2 per client credentials flow
+
+### Added
+
+- see https://github.com/doorkeeper-gem/doorkeeper/wiki/Client-Credentials-flow
+- using .gitignore secrets file with credentials
+  - info in /docs/AUTH.md
+- added authentication on startup before creating the apollo client
+  - the access token is needed for creating it
+  - save it in SecureStore https://docs.expo.io/versions/v32.0.0/sdk/securestore/
+- added authentication refresh on screen component mounts
+- added more docs
+
+### Changed
+
+- changed Component to PureComponent in screens because they are stateless
+- updated usage of `getQuery` where missing
+
 ## [v0.6.9]
 
 Implement WebView component for external services
