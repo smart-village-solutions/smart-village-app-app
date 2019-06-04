@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Linking, View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { Linking, TouchableOpacity, Text, ScrollView, StyleSheet } from 'react-native';
 
 import {
   HtmlView,
@@ -16,6 +16,7 @@ import { mail, location, phone as phoneIcon, url as urlIcon } from '../../icons'
 import { colors, normalize } from '../../config';
 import { PriceCard } from './PriceCard';
 import { OpeningTime } from './OpeningTime';
+
 export const PointOfInterest = ({ data }) => {
   const [page, setPage] = useState({});
 
@@ -28,7 +29,9 @@ export const PointOfInterest = ({ data }) => {
       dataProvider,
       addresses,
       contact,
-      webUrls
+      webUrls,
+      prices,
+      openingHours
     } = data;
     const { city, street, zip } = addresses[0];
     const { phone, email } = contact;
@@ -40,15 +43,17 @@ export const PointOfInterest = ({ data }) => {
       image: mediaContents[0].sourceUrl.url,
       address: `${street}, ${zip} ${city}`,
       phone: `${phone}`,
-      email: `${email}`
+      email: `${email}`,
       // url: `${webUrls[0].url}`
+      prices,
+      openingHours
     });
   }, []);
 
-  const { phone, email, url, title, body, image, address } = page;
+  const { phone, email, url, title, body, image, address, prices, openingHours } = page;
 
   return (
-    <View>
+    <ScrollView>
       {!!image && <Image source={{ uri: image }} />}
 
       <TitleShadow />
@@ -56,6 +61,7 @@ export const PointOfInterest = ({ data }) => {
         <Title>{!!title && title.toUpperCase()}</Title>
       </TitleContainer>
       <TitleShadow />
+
       <Wrapper>
         <WrapperMargin>
           {!!address && <Icon icon={location(colors.primary)} style={styles.padding} />}
@@ -100,7 +106,7 @@ export const PointOfInterest = ({ data }) => {
         <Title>{'preise'.toUpperCase()}</Title>
       </TitleContainer>
       <TitleShadow />
-      <PriceCard />
+      <PriceCard prices={prices} />
 
       <TitleShadow />
       <TitleContainer>
@@ -108,7 +114,7 @@ export const PointOfInterest = ({ data }) => {
       </TitleContainer>
       <TitleShadow />
       <Wrapper>{!!body && <HtmlView html={body} />}</Wrapper>
-    </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
