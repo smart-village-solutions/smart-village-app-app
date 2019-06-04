@@ -1,48 +1,62 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
 
 import { device, colors, normalize } from '../../config';
-import { DiagonalGradient, WrapperRow } from '../../components';
+import { DiagonalGradient, WrapperPrice } from '../../components';
 
 const PreiceBox = styled.View`
-  width: ${device.width * 0.5 - normalize(14) * 1.5};
-  height: 100;
   background-color: #3f745f;
+  width: ${device.width * 0.5 - normalize(14) * 1.5};
+  margin-bottom: ${normalize(14)};
+  flex-direction: column;
+  padding: ${normalize(7)}px;
 `;
-const PreiceText = styled.Text`
+
+const BoldText = styled.Text`
   color: ${colors.lightestText};
   font-family: titillium-web-bold;
-  font-size: ${normalize(15)};
-  margin-left: 10;
+  font-size: ${normalize(14)};
 `;
-const DescriptionText = styled(PreiceText)`
+
+const RegularText = styled(BoldText)`
   font-family: titillium-web-regular;
 `;
-export const PriceCard = () => (
+
+export const PriceCard = ({ prices }) => (
   <DiagonalGradient style={{ padding: normalize(14) }}>
-    <WrapperRow style={{ justifyContent: 'space-between', marginBottom: normalize(14) }}>
-      <PreiceBox>
-        <PreiceText>Erwachsene</PreiceText>
-        <PreiceText>EUR 2,50</PreiceText>
-      </PreiceBox>
-      <PreiceBox>
-        <PreiceText>Ermäßigung</PreiceText>
-        <PreiceText>EUR 1,50</PreiceText>
-      </PreiceBox>
-    </WrapperRow>
+    <WrapperPrice>
+      {!!prices &&
+        prices.map((item, index) => {
+          const {
+            name,
+            ageFrom,
+            ageTo,
+            category,
+            amount,
+            description,
+            maxChildrenCount,
+            maxAdultCount,
+            minAdultCount,
+            minChildrenCount,
+            groupPrice
+          } = item;
 
-    <WrapperRow style={{ justifyContent: 'space-between' }}>
-      <PreiceBox>
-        <PreiceText>Familien</PreiceText>
-        <DescriptionText>2 Erwachsene, 3 Kinder, 5 – 17 J.</DescriptionText>
-        <PreiceText>EUR 6,50</PreiceText>
-      </PreiceBox>
-
-      <PreiceBox>
-        <PreiceText>Kurzbesuch</PreiceText>
-        <DescriptionText>nur Turm, ohne Museum</DescriptionText>
-        <PreiceText>EUR 1,00</PreiceText>
-      </PreiceBox>
-    </WrapperRow>
+          return (
+            <PreiceBox key={index}>
+              {!!category && <BoldText>{category}</BoldText>}
+              {!!description && <RegularText>{description}</RegularText>}
+              {!!maxAdultCount && <RegularText>{maxAdultCount} Erwachsene</RegularText>}
+              {!!maxChildrenCount && <RegularText>{maxChildrenCount} Kinder</RegularText>}
+              {!!amount && <BoldText>EUR {amount}</BoldText>}
+              {!!groupPrice && <BoldText>EUR {groupPrice}</BoldText>}
+            </PreiceBox>
+          );
+        })}
+    </WrapperPrice>
   </DiagonalGradient>
 );
+
+PriceCard.propTypes = {
+  prices: PropTypes.array
+};
