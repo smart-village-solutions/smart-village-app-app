@@ -3,13 +3,14 @@ import React from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
+import { auth } from '../auth';
 import { colors, normalize } from '../config';
 import { CardList, Icon, TextList } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
 import { momentFormat, shareMessage } from '../helpers';
 
-export class IndexScreen extends React.Component {
+export class IndexScreen extends React.PureComponent {
   static navigationOptions = ({ navigation }) => {
     return {
       headerLeft: (
@@ -21,6 +22,10 @@ export class IndexScreen extends React.Component {
       )
     };
   };
+
+  componentDidMount() {
+    auth();
+  }
 
   render() {
     const { navigation } = this.props;

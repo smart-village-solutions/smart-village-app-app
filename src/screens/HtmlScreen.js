@@ -3,13 +3,14 @@ import React from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
+import { auth } from '../auth';
 import { colors, normalize } from '../config';
 import { Button, HtmlView, Icon, Wrapper } from '../components';
 import { trimNewLines } from '../helpers';
-import { GET_PUBLIC_HTML_FILE } from '../queries';
+import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
 
-export class HtmlScreen extends React.Component {
+export class HtmlScreen extends React.PureComponent {
   static navigationOptions = ({ navigation }) => {
     return {
       headerLeft: (
@@ -22,6 +23,10 @@ export class HtmlScreen extends React.Component {
     };
   };
 
+  componentDidMount() {
+    auth();
+  }
+
   render() {
     const { navigation } = this.props;
     const queryVariables = navigation.getParam('queryVariables', '');
@@ -32,7 +37,7 @@ export class HtmlScreen extends React.Component {
 
     return (
       <Query
-        query={GET_PUBLIC_HTML_FILE}
+        query={getQuery('publicHtmlFile')}
         variables={{ name: queryVariables.name }}
         fetchPolicy="cache-and-network"
       >

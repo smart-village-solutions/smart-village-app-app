@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, AsyncStorage, StatusBar, StyleSheet, View } from 'react-native';
-import { SplashScreen } from 'expo';
+import { SecureStore, SplashScreen } from 'expo';
 import { createAppContainer, createDrawerNavigator } from 'react-navigation';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
-import { HttpLink } from 'apollo-link-http';
+import { createHttpLink } from 'apollo-link-http';
+import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';
 import _reduce from 'lodash/reduce';
 
-import { colors, device, texts } from './config';
-import { GET_PUBLIC_JSON_FILE } from './queries';
+import { auth } from './auth';
+import { colors, device, secrets, texts } from './config';
+import { getQuery } from './queries';
 import AppStackNavigator from './navigation/AppStackNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 
@@ -32,7 +34,23 @@ export const MainApp = () => {
   });
 
   const setupApolloClient = async () => {
-    const link = new HttpLink({ uri: 'http://192.168.1.36:3000/graphql' });
+    // https://www.apollographql.com/docs/react/recipes/authentication/#header
+    const httpLink = createHttpLink({
+      uri: `${secrets.serverUrl}${secrets.graphqlEndpoint}`
+    });
+    const authLink = setContext(async (_, { headers }) => {
+      // get the authentication token from local SecureStore if it exists
+      const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+
+      // return the headers to the context so httpLink can read them
+      return {
+        headers: {
+          ...headers,
+          authorization: accessToken ? `Bearer ${accessToken}` : ''
+        }
+      };
+    });
+    const link = authLink.concat(httpLink);
     const cache = new InMemoryCache();
     const storage = AsyncStorage;
 
@@ -71,7 +89,7 @@ export const MainApp = () => {
     client.onResetStore(() => cache.writeData({ data: initialCache }));
 
     const { data } = await client.query({
-      query: GET_PUBLIC_JSON_FILE,
+      query: getQuery('publicJsonFile'),
       variables: { name: 'navigation' },
       fetchPolicy: 'network-only'
     });
@@ -111,7 +129,7 @@ export const MainApp = () => {
   // if an effect depends on a variable (..., [variable]), it is triggered everytime it changes.
   // provide different effects for different contexts.
   useEffect(() => {
-    setupApolloClient();
+    auth(setupApolloClient);
   }, []);
 
   if (!loaded) {
