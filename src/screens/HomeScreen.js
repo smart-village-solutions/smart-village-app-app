@@ -72,7 +72,7 @@ export const HomeScreen = ({ navigation }) => (
     {device.platform === 'ios' && <TitleShadow />}
     <Query
       query={getQuery('pointsOfInterest')}
-      variables={{ limit: 3 }}
+      variables={{ limit: 10 }}
       fetchPolicy="cache-and-network"
     >
       {({ data, loading }) => {
