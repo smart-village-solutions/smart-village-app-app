@@ -14,7 +14,7 @@ import { colors, device, normalize } from '../config';
 import { Image } from './Image';
 import { ListSubtitle, ListTitle } from './TextList';
 
-export class CardList extends React.Component {
+export class CardList extends React.PureComponent {
   keyExtractor = (item, index) => item + index;
 
   renderItem = ({ item }) => {

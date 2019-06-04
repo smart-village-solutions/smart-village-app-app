@@ -83,7 +83,7 @@ export class IndexScreen extends React.PureComponent {
             data[query].map((pointOfInterest) => ({
               id: pointOfInterest.id,
               name: pointOfInterest.name,
-              category: pointOfInterest.category,
+              category: !!pointOfInterest.category && pointOfInterest.category.name,
               image: pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: only if .contentType == "image"
               routeName: 'Detail',
               params: {

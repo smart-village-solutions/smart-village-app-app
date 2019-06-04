@@ -5,7 +5,9 @@ export const GET_POINTS_OF_INTEREST = gql`
     pointsOfInterest(limit: $limit) {
       id
       name
-      category: categoryName
+      category {
+        name
+      }
       mediaContents {
         contentType
         sourceUrl {
@@ -22,7 +24,9 @@ export const GET_POINT_OF_INTEREST = gql`
       id
       createdAt
       name
-      category: categoryName
+      category {
+        name
+      }
       description
       mediaContents {
         contentType

@@ -90,7 +90,7 @@ export const HomeScreen = ({ navigation }) => (
           data.pointsOfInterest.map((pointOfInterest) => ({
             id: pointOfInterest.id,
             name: pointOfInterest.name,
-            category: pointOfInterest.category,
+            category: !!pointOfInterest.category && pointOfInterest.category.name,
             image: pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: only if .contentType == "image"
             routeName: 'Detail',
             params: {
