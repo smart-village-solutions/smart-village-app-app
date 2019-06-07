@@ -13,9 +13,10 @@ import {
   WrapperMargin
 } from '../../components';
 import { mail, location, phone as phoneIcon, url as urlIcon } from '../../icons';
-import { colors, normalize } from '../../config';
+import { colors } from '../../config';
 import { PriceCard } from './PriceCard';
-import { OpeningTime } from './OpeningTime';
+import { TimeCard } from './TimeCard';
+import { momentFormat } from '../../helpers';
 
 export const PointOfInterest = ({ data }) => {
   const [page, setPage] = useState({});
@@ -45,8 +46,8 @@ export const PointOfInterest = ({ data }) => {
       phone: `${phone}`,
       email: `${email}`,
       // url: `${webUrls[0].url}`
-      prices,
-      openingHours
+      openingHours,
+      prices
     });
   }, []);
 
@@ -99,7 +100,7 @@ export const PointOfInterest = ({ data }) => {
         <Title>{'öffnungszeiten'.toUpperCase()}</Title>
       </TitleContainer>
       <TitleShadow />
-      <OpeningTime />
+      <TimeCard openingHours={openingHours} />
 
       <TitleShadow />
       <TitleContainer>

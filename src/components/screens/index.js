@@ -1,2 +1,2 @@
 export * from './PriceCard';
-export * from './OpeningTime';
+export * from './TimeCard';

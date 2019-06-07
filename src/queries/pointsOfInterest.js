@@ -69,6 +69,7 @@ export const GET_POINT_OF_INTEREST = gql`
         weekday
         timeFrom
         timeTo
+        description
       }
     }
   }
