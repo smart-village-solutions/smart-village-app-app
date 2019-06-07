@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components/native';
 
 import { device, colors, normalize } from '../../config';
 import { DiagonalGradient, WrapperPrice } from '../../components';
@@ -13,13 +13,19 @@ const PreiceBox = styled.View`
   padding: ${normalize(7)}px;
 `;
 
-const BoldText = styled.Text`
+export const BoldText = styled.Text`
   color: ${colors.lightestText};
   font-family: titillium-web-bold;
   font-size: ${normalize(14)};
+
+  ${(props) =>
+    props.onTimeCard &&
+    css`
+      color: ${colors.darkText};
+    `};
 `;
 
-const RegularText = styled(BoldText)`
+export const RegularText = styled(BoldText)`
   font-family: titillium-web-regular;
 `;
 
@@ -58,5 +64,10 @@ export const PriceCard = ({ prices }) => (
 );
 
 PriceCard.propTypes = {
-  prices: PropTypes.array
+  prices: PropTypes.array,
+  onTimeCard: PropTypes.bool
+};
+
+PriceCard.defaultProps = {
+  onTimeCard: false
 };
