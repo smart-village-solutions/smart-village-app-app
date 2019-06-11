@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.7.4]
+
+Update point of interest detail screen
+
+### Added
+
+- added InfoCard to render general data for a PointOfInterest
+- added PriceCard with price information
+
+### Changed
+
+- refactored Text components to use them more globally
+- moved hard coded strings to config file
+
+## [v0.7.3]
+
+Update html helper to remove whitespaces after self-closing tags
+
 ## [v0.7.2]
 
 Show 10 points of interest on home screen
