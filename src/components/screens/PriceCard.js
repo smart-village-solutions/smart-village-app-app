@@ -1,34 +1,20 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import styled, { css } from 'styled-components/native';
+import styled from 'styled-components/native';
 
-import { device, colors, normalize } from '../../config';
+import { device, normalize } from '../../config';
 import { DiagonalGradient, WrapperPrice } from '../../components';
+import { PriceText } from '../Text';
 
 const PreiceBox = styled.View`
   background-color: #3f745f;
-  width: ${device.width * 0.5 - normalize(14) * 1.5};
-  margin-bottom: ${normalize(14)};
   flex-direction: column;
+  margin-bottom: ${normalize(14)};
   padding: ${normalize(7)}px;
+  width: ${device.width * 0.5 - normalize(14) * 1.5};
 `;
 
-export const BoldText = styled.Text`
-  color: ${colors.lightestText};
-  font-family: titillium-web-bold;
-  font-size: ${normalize(14)};
-
-  ${(props) =>
-    props.onTimeCard &&
-    css`
-      color: ${colors.darkText};
-    `};
-`;
-
-export const RegularText = styled(BoldText)`
-  font-family: titillium-web-regular;
-`;
-
+// TODO: add missing data and format amounts
 export const PriceCard = ({ prices }) => (
   <DiagonalGradient style={{ padding: normalize(14) }}>
     <WrapperPrice>
@@ -50,12 +36,12 @@ export const PriceCard = ({ prices }) => (
 
           return (
             <PreiceBox key={index}>
-              {!!category && <BoldText>{category}</BoldText>}
-              {!!description && <RegularText>{description}</RegularText>}
-              {!!maxAdultCount && <RegularText>{maxAdultCount} Erwachsene</RegularText>}
-              {!!maxChildrenCount && <RegularText>{maxChildrenCount} Kinder</RegularText>}
-              {!!amount && <BoldText>EUR {amount}</BoldText>}
-              {!!groupPrice && <BoldText>EUR {groupPrice}</BoldText>}
+              {!!category && <PriceText bold>{category}</PriceText>}
+              {!!description && <PriceText>{description}</PriceText>}
+              {!!maxAdultCount && <PriceText>{maxAdultCount} Erwachsene</PriceText>}
+              {!!maxChildrenCount && <PriceText>{maxChildrenCount} Kinder</PriceText>}
+              {!!amount && <PriceText bold>EUR {amount}</PriceText>}
+              {!!groupPrice && <PriceText bold>EUR {groupPrice}</PriceText>}
             </PreiceBox>
           );
         })}
@@ -64,10 +50,5 @@ export const PriceCard = ({ prices }) => (
 );
 
 PriceCard.propTypes = {
-  prices: PropTypes.array,
-  onTimeCard: PropTypes.bool
-};
-
-PriceCard.defaultProps = {
-  onTimeCard: false
+  prices: PropTypes.array
 };

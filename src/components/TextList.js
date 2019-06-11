@@ -7,12 +7,9 @@ import styled, { css } from 'styled-components/native';
 import { colors, device, normalize } from '../config';
 import { arrowRight } from '../icons';
 import { Icon } from './Icon';
+import { RegularText } from './Text';
 
-export const ListTitle = styled.Text`
-  font-size: ${normalize(16)};
-  font-family: titillium-web-regular;
-  color: ${colors.darkText};
-
+export const ListTitle = styled(RegularText)`
   ${(props) =>
     (props.alternativeLayout || props.noSubtitle) &&
     css`
@@ -21,8 +18,8 @@ export const ListTitle = styled.Text`
 `;
 
 export const ListSubtitle = styled(ListTitle)`
-  font-size: ${normalize(14)};
   color: ${colors.primary};
+  font-size: ${normalize(14)};
   margin-bottom: ${normalize(7)};
 
   ${(props) =>

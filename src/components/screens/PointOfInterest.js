@@ -1,23 +1,19 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Linking, TouchableOpacity, Text, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
-import {
-  HtmlView,
-  Icon,
-  Image,
-  Title,
-  TitleContainer,
-  TitleShadow,
-  Wrapper,
-  WrapperMargin
-} from '../../components';
-import { mail, location, phone as phoneIcon, url as urlIcon } from '../../icons';
-import { colors } from '../../config';
+import { device, texts } from '../../config';
+import { HtmlView } from '../HtmlView';
+import { Image } from '../Image';
+import { Title, TitleContainer, TitleShadow } from '../Title';
+import { Wrapper } from '../Wrapper';
 import { PriceCard } from './PriceCard';
 import { TimeCard } from './TimeCard';
-import { momentFormat } from '../../helpers';
+import { InfoCard } from './InfoCard';
+import { ListSubtitle } from '../TextList';
 
+/* eslint-disable complexity */
+/* TODO: refactoring? */
 export const PointOfInterest = ({ data }) => {
   const [page, setPage] = useState({});
 
@@ -27,102 +23,89 @@ export const PointOfInterest = ({ data }) => {
       description,
       category,
       mediaContents,
-      dataProvider,
       addresses,
       contact,
       webUrls,
-      prices,
-      openingHours
+      openingHours,
+      prices
     } = data;
-    const { city, street, zip } = addresses[0];
-    const { phone, email } = contact;
 
     setPage({
       title: name,
       body: description,
       category,
-      image: mediaContents[0].sourceUrl.url,
-      address: `${street}, ${zip} ${city}`,
-      phone: `${phone}`,
-      email: `${email}`,
-      // url: `${webUrls[0].url}`
+      image: mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
+      addresses,
+      contact,
+      webUrls,
       openingHours,
       prices
     });
   }, []);
 
-  const { phone, email, url, title, body, image, address, prices, openingHours } = page;
+  const { title, body, category, image, addresses, contact, webUrls, openingHours, prices } = page;
 
   return (
     <ScrollView>
       {!!image && <Image source={{ uri: image }} />}
 
-      <TitleShadow />
-      <TitleContainer>
-        <Title>{!!title && title.toUpperCase()}</Title>
-      </TitleContainer>
-      <TitleShadow />
+      {!!title && (
+        <View>
+          <TitleContainer>
+            <Title>{title.toUpperCase()}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+        </View>
+      )}
+      <InfoCard addresses={addresses} contact={contact} webUrls={webUrls} />
 
-      <Wrapper>
-        <WrapperMargin>
-          {!!address && <Icon icon={location(colors.primary)} style={styles.padding} />}
-          <Text>{address}</Text>
-        </WrapperMargin>
+      {/* TODO: map stuff for location */}
+      {/* {!!location && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.pointOfInterest.location.toUpperCase()}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+        </View>
+      )} */}
 
-        <WrapperMargin>
-          {!!phone && <Icon icon={phoneIcon(colors.primary)} style={styles.padding} />}
-          <Text>{phone}</Text>
-        </WrapperMargin>
+      {/* TODO: layout check with data */}
+      {/* {!!openingHours && !!openingHours.length && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.pointOfInterest.openingTime.toUpperCase()}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <TimeCard openingHours={openingHours} />
+        </View>
+      )} */}
 
-        <WrapperMargin>
-          {!!email && <Icon icon={mail(colors.primary)} style={styles.padding} />}
-          <TouchableOpacity onPress={() => Linking.openURL(url)}>
-            <Text>{email}</Text>
-          </TouchableOpacity>
-        </WrapperMargin>
+      {!!prices && !!prices.length && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.pointOfInterest.prices.toUpperCase()}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <PriceCard prices={prices} />
+        </View>
+      )}
 
-        <WrapperMargin>
-          {!!url && <Icon icon={urlIcon(colors.primary)} style={styles.padding} />}
-          <TouchableOpacity onPress={() => Linking.openURL(url)}>
-            <Text>{url}</Text>
-          </TouchableOpacity>
-        </WrapperMargin>
-      </Wrapper>
-
-      <TitleShadow />
-      <TitleContainer>
-        <Title>{'anfahrt'.toUpperCase()}</Title>
-      </TitleContainer>
-
-      <TitleShadow />
-      <TitleShadow />
-      <TitleContainer>
-        <Title>{'öffnungszeiten'.toUpperCase()}</Title>
-      </TitleContainer>
-      <TitleShadow />
-      <TimeCard openingHours={openingHours} />
-
-      <TitleShadow />
-      <TitleContainer>
-        <Title>{'preise'.toUpperCase()}</Title>
-      </TitleContainer>
-      <TitleShadow />
-      <PriceCard prices={prices} />
-
-      <TitleShadow />
-      <TitleContainer>
-        <Title>{'beschreibung'.toUpperCase()}</Title>
-      </TitleContainer>
-      <TitleShadow />
-      <Wrapper>{!!body && <HtmlView html={body} />}</Wrapper>
+      {!!body && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.pointOfInterest.description.toUpperCase()}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Wrapper>
+            {!!category && !!category.name && <ListSubtitle>{category.name}</ListSubtitle>}
+            {!!body && <HtmlView html={body} />}
+          </Wrapper>
+        </View>
+      )}
     </ScrollView>
   );
 };
-const styles = StyleSheet.create({
-  padding: {
-    marginRight: 15
-  }
-});
+/* eslint-enable complexity */
 
 PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired
