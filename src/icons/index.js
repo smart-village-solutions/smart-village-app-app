@@ -4,4 +4,8 @@ export * from './arrowRight';
 export * from './arrowUp';
 export * from './drawerMenu';
 export * from './link';
+export * from './location';
+export * from './mail';
 export * from './share';
+export * from './phone';
+export * from './url';

@@ -40,6 +40,37 @@ export const GET_POINT_OF_INTEREST = gql`
         }
         name
       }
+      addresses {
+        city
+        street
+        zip
+      }
+      contact {
+        email
+        phone
+      }
+      webUrls {
+        url
+      }
+      prices {
+        name
+        groupPrice
+        amount
+        ageFrom
+        ageTo
+        category
+        description
+        maxChildrenCount
+        maxAdultCount
+        minAdultCount
+        minChildrenCount
+      }
+      openingHours {
+        weekday
+        timeFrom
+        timeTo
+        description
+      }
     }
   }
 `;
