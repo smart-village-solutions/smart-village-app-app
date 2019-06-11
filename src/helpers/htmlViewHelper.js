@@ -10,8 +10,8 @@ function squeezeSpaces(text) {
 
 function removeSpacesAroundTags(text) {
   if (!text) return;
-  // remove whitespaces after opening tags
-  let pattern = /(<[\w+\s*\w*]+[=*"*\w*"\s*]*>)\s+/;
+  // remove whitespaces after opening and self-closing tags
+  let pattern = /(<[\w+\s*\w*]+[=*"*\w*"\s*]*[/]*>)\s+/;
   let regexp = new RegExp(pattern, 'gm');
   text = text.replace(regexp, '$1');
   // remove whitespaces before closing tags
