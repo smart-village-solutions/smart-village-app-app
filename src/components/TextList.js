@@ -67,6 +67,7 @@ export class TextList extends React.Component {
         rightIcon={<Icon icon={arrowRight(colors.primary)} />}
         onPress={() =>
           navigation.navigate({
+            key: item.params.title,
             routeName: item.routeName,
             params: item.params
           })

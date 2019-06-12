@@ -43,8 +43,9 @@ const DrawerNavigatorItems = ({
    */
   const handleItemPress = ({ route }) => {
     navigation.navigate({
+      key: route.params.title,
       routeName: route.params.screen,
-      params: { ...route.params }
+      params: route.params
     });
     navigation.closeDrawer();
   };
