@@ -3,7 +3,6 @@
   "scripts": {
     "android": "expo start --android",
     "eject": "expo eject",
-    "enable-rn-hooks": "cp -R scripts/rn-renderer/* node_modules/react-native/Libraries/Renderer",
     "ios": "expo start --ios",
     "lint": "./node_modules/.bin/eslint __tests__ src",
     "start": "expo start",
