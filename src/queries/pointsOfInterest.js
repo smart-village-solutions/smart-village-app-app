@@ -48,6 +48,7 @@ export const GET_POINT_OF_INTEREST = gql`
       contact {
         email
         phone
+        lastName
       }
       webUrls {
         url
