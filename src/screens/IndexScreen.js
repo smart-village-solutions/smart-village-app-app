@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Query } from 'react-apollo';
 
 import { auth } from '../auth';
@@ -138,13 +145,15 @@ export class IndexScreen extends React.PureComponent {
           const Component = getComponent(query);
 
           return (
-            <ScrollView>
-              <Component
-                navigation={navigation}
-                data={listItems}
-                alternativeLayout={isAlternativeLayout(query)}
-              />
-            </ScrollView>
+            <SafeAreaView>
+              <ScrollView>
+                <Component
+                  navigation={navigation}
+                  data={listItems}
+                  alternativeLayout={isAlternativeLayout(query)}
+                />
+              </ScrollView>
+            </SafeAreaView>
           );
         }}
       </Query>

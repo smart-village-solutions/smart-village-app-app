@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Query } from 'react-apollo';
 
 import { auth } from '../auth';
@@ -125,17 +132,19 @@ export class DetailScreen extends React.PureComponent {
           const { subtitle, title, body, image, link, logo } = page;
 
           return (
-            <ScrollView>
-              {!!image && <Image source={{ uri: image }} />}
-              <Wrapper>
-                {!!logo && <Logo source={{ uri: logo }} />}
-                {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
-                {/*TODO: map multiple contentBlocks */}
-                {!!title && <ListTitle noSubtitle>{title}</ListTitle>}
-                {!!body && <HtmlView html={trimNewLines(body)} />}
-                {!!link && <Link url={link} title={'Im Browser öffnen'} />}
-              </Wrapper>
-            </ScrollView>
+            <SafeAreaView>
+              <ScrollView>
+                {!!image && <Image source={{ uri: image }} />}
+                <Wrapper>
+                  {!!logo && <Logo source={{ uri: logo }} />}
+                  {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
+                  {/*TODO: map multiple contentBlocks */}
+                  {!!title && <ListTitle noSubtitle>{title}</ListTitle>}
+                  {!!body && <HtmlView html={trimNewLines(body)} />}
+                  {!!link && <Link url={link} title={'Im Browser öffnen'} />}
+                </Wrapper>
+              </ScrollView>
+            </SafeAreaView>
           );
         }}
       </Query>

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { colors, normalize } from '../config';
@@ -27,15 +27,17 @@ export class WebScreen extends React.PureComponent {
     if (!webUrl) return null;
 
     return (
-      <WebView
-        source={{ uri: webUrl }}
-        startInLoadingState
-        renderLoading={() => (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator />
-          </View>
-        )}
-      />
+      <SafeAreaView>
+        <WebView
+          source={{ uri: webUrl }}
+          startInLoadingState
+          renderLoading={() => (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator />
+            </View>
+          )}
+        />
+      </SafeAreaView>
     );
   }
 }
