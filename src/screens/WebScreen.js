@@ -27,7 +27,7 @@ export class WebScreen extends React.PureComponent {
     if (!webUrl) return null;
 
     return (
-      <SafeAreaView>
+      <SafeAreaView style={styles.safeContainer}>
         <WebView
           source={{ uri: webUrl }}
           startInLoadingState
@@ -43,6 +43,9 @@ export class WebScreen extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
+  safeContainer: {
+    flex: 1
+  },
   icon: {
     paddingHorizontal: normalize(14)
   },
