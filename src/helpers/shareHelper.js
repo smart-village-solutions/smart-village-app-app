@@ -47,6 +47,5 @@ export const shareMessage = (data, query) => {
     }
   };
 
-  // TODO: real deep link instead of test
-  return `[${appJson.expo.name}] ${buildMessage(query)}\n\n${appJson.expo.slug}://test`;
+  return `[${appJson.expo.name}] ${buildMessage(query)}\n\nQuelle: ${appJson.expo.name}`;
 };
