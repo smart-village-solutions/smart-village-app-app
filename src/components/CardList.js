@@ -43,7 +43,7 @@ export class CardList extends React.PureComponent {
             stylesWithProps(this.props).container
           ]}
         >
-          <View>
+          <View style={stylesWithProps(this.props).contentContainer}>
             {!!item.image && (
               <Image source={{ uri: item.image }} style={stylesWithProps(this.props).image} />
             )}
@@ -90,11 +90,13 @@ const stylesWithProps = ({ horizontal }) =>
       margin: 0,
       padding: normalize(14)
     },
+    contentContainer: {
+      width: horizontal ? device.width * 0.7 : device.width - 2 * normalize(14)
+    },
     image: {
       borderRadius: 5,
       marginBottom: normalize(7),
-      height: imageHeight(horizontal),
-      width: horizontal ? device.width * 0.7 : device.width - 2 * normalize(14)
+      height: imageHeight(horizontal)
     }
   });
 /* eslint-enable react-native/no-unused-styles */
