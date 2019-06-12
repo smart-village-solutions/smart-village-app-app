@@ -68,7 +68,7 @@ export const HomeScreen = ({ navigation }) => (
         }}
       </Query>
       <TitleContainer>
-        <Title>{'Orte & Routen'}</Title>
+        <Title>{'Orte und Touren'}</Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
       <Query
@@ -116,10 +116,10 @@ export const HomeScreen = ({ navigation }) => (
                 data={[
                   {
                     id: '-1',
-                    title: 'Alle Orte & Routen anzeigen',
+                    title: 'Alle Orte und Touren anzeigen',
                     routeName: 'Index',
                     params: {
-                      title: 'Orte & Routen',
+                      title: 'Orte und Touren',
                       query: 'pointsOfInterest',
                       queryVariables: {},
                       rootRouteName: 'PointsOfInterest'
