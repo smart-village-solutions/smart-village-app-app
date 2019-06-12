@@ -10,7 +10,6 @@ import { Wrapper } from '../Wrapper';
 import { PriceCard } from './PriceCard';
 import { TimeCard } from './TimeCard';
 import { InfoCard } from './InfoCard';
-import { ListSubtitle } from '../TextList';
 
 /* eslint-disable complexity */
 /* TODO: refactoring? */
