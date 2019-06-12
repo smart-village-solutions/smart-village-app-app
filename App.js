@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Font, SplashScreen } from 'expo';
+import { SplashScreen } from 'expo';
+import * as Font from 'expo-font';
 
 import { MainApp } from './src';
 

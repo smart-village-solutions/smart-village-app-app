@@ -30,9 +30,9 @@ For detailed documentation see the [docs](./docs/INDEX.md).
 
 Information about currently used packages and their versions:
 
-- React Native (0.57.1): https://github.com/facebook/react-native
-- React (16.8.6): https://github.com/facebook/react
-- React Navigation (3.9.1): https://github.com/react-navigation/react-navigation
+- React Native (0.59.8): https://github.com/facebook/react-native
+- React (16.8.3): https://github.com/facebook/react
+- React Navigation (3.11.0): https://github.com/react-navigation/react-navigation
 - Jest (24.8.0): https://github.com/facebook/jest
 
 ## Changelog

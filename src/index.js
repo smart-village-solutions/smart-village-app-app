@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, AsyncStorage, StatusBar, StyleSheet, View } from 'react-native';
-import { SecureStore, SplashScreen } from 'expo';
+import { SplashScreen } from 'expo';
+import * as SecureStore from 'expo-secure-store';
 import { createAppContainer, createDrawerNavigator } from 'react-navigation';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
@@ -145,9 +146,6 @@ export const MainApp = () => {
     drawerPosition: 'right',
     drawerType: device.platform === 'ios' ? 'slide' : 'front',
     drawerWidth: device.width * 0.8,
-    // workaround with minus value for android until new version of react-native-gesture-handler is
-    // included: https://github.com/react-navigation/drawer/issues/49
-    edgeWidth: device.platform === 'android' ? 20 - device.width : 20,
     contentComponent: CustomDrawerContentComponent,
     contentContainerStyle: {
       shadowColor: colors.darkText,

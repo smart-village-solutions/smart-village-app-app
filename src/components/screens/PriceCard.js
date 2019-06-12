@@ -3,7 +3,8 @@ import React from 'react';
 import styled from 'styled-components/native';
 
 import { device, normalize } from '../../config';
-import { DiagonalGradient, WrapperPrice } from '../../components';
+import { DiagonalGradient } from '../DiagonalGradient';
+import { WrapperPrice } from '../Wrapper';
 import { PriceText } from '../Text';
 
 const PreiceBox = styled.View`

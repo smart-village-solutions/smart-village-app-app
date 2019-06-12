@@ -12,7 +12,7 @@ export const HomeScreen = ({ navigation }) => (
   <ScrollView>
     <Image source={require('../../assets/images/home.jpg')} />
     <TitleContainer>
-      <Title>{'Nachrichten'.toUpperCase()}</Title>
+      <Title>{'Nachrichten'}</Title>
     </TitleContainer>
     {device.platform === 'ios' && <TitleShadow />}
     <Query query={getQuery('newsItems')} variables={{ limit: 3 }} fetchPolicy="cache-and-network">
@@ -67,7 +67,7 @@ export const HomeScreen = ({ navigation }) => (
       }}
     </Query>
     <TitleContainer>
-      <Title>{'Orte & Routen'.toUpperCase()}</Title>
+      <Title>{'Orte & Routen'}</Title>
     </TitleContainer>
     {device.platform === 'ios' && <TitleShadow />}
     <Query
@@ -133,7 +133,7 @@ export const HomeScreen = ({ navigation }) => (
       }}
     </Query>
     <TitleContainer>
-      <Title>{'Veranstaltungen'.toUpperCase()}</Title>
+      <Title>{'Veranstaltungen'}</Title>
     </TitleContainer>
     {device.platform === 'ios' && <TitleShadow />}
     <Query
@@ -192,7 +192,7 @@ export const HomeScreen = ({ navigation }) => (
       }}
     </Query>
     <TitleContainer>
-      <Title>{'Service'.toUpperCase()}</Title>
+      <Title>{'Service'}</Title>
     </TitleContainer>
     {device.platform === 'ios' && <TitleShadow />}
     <Query
