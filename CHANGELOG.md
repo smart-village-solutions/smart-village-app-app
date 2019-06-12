@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.8.1]
+
+Updates on several screens and small bugfixes
+
+### Added
+
+- wrapped every screen with a SafeAreaView
+- added missing package for react-native-webview
+  - expo install react-native-webview
+
+### Changed
+
+- updated InfoCard with contact and category
+- changed link in app from share message to source with app name
+  - `Quelle: ${app name}`
+- updated width for CardList content container
+  - not only the image should be 70% of the screen in horizontal appearance but also
+    the corresponding text
+- renamed `Orte & Routen` to `Orte und Touren`
+- updated navigation title for home screen in Drawer
+
+### Fixed
+
+- fixed bug in navigation from drawer inside html screens
+  - added key to have unique references for screens, otherwise there was a
+    bug navigating from Drawer, that was not rendering a fresh screen
+    everytime because the reference did not change
+
 ## [v0.8.0]
 
 Update Expo SDK from 32.0.0 to 33.0.0
