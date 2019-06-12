@@ -5,6 +5,55 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.8.0]
+
+Update Expo SDK from 32.0.0 to 33.0.0
+
+Steps done for upgrading the app:
+https://blog.expo.io/expo-sdk-v33-0-0-is-now-available-52d1c99dfe4c#c0d2
+
+## Breaking
+
+You need to remove `node_modules` and install your packages again.
+
+`rm -rf node_modules/ && yarn cache clean && yarn`
+
+#### Full changelog for Expo 33.0.0
+
+https://github.com/expo/expo/blob/master/CHANGELOG.md#3300
+
+#### Changelog for React Native 0.59
+SDK 33 uses React Native 0.59.8, while SDK 32 uses React Native 0.57.1.
+Most of the changes were bug fixes.
+Here is the changelog from React Native: https://github.com/react-native-community/releases/blob/master/CHANGELOG.md
+
+### Changed
+
+- changed expo packages from 'expo' to modularized expo packages,
+  as the previous way of importing is deprecated now
+- changed WebView from react-native to react-native-webview,
+  as it is deprecated in react-native
+  - this seems to also fix a bug with the size of the rendered page
+    inside the WebView
+- updated versions of React and React Navigation as stated in the changelog
+- updated `resizeMode` in app.json as mentioned as breaking change
+  in the changelog:
+  - "The behavior that was previously called cover is now properly called
+    contain and vice versa. You may need to switch this setting in your
+    app.json."
+- fixed import cycle in PriceCard
+
+### Removed
+
+- removed workaround for Android drawer edge gesture,
+  as it now ships with updated react-native-gesture-handler
+- removed `toUpperCase` because `textTransform uppercase` for Android is
+  working now with updated React Native
+- removed temporary script for enabling React hooks
+  - with Expo SDK 33 a new version of React is used, with hooks
+  - removed scripts files
+  - removed yarn script for running the script with `yarn enable-rn-hooks`
+
 ## [v0.7.4]
 
 Update point of interest detail screen
