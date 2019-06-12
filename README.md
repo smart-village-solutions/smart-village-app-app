@@ -33,6 +33,7 @@ Information about currently used packages and their versions:
 - React Native (0.59.8): https://github.com/facebook/react-native
 - React (16.8.3): https://github.com/facebook/react
 - React Navigation (3.11.0): https://github.com/react-navigation/react-navigation
+- React Native WebView (5.8.2): https://github.com/react-native-community/react-native-webview
 - Jest (24.8.0): https://github.com/facebook/jest
 
 ## Changelog
