@@ -1,6 +1,9 @@
 import appJson from '../../app.json';
 
 export const texts = {
+  navigationTitles: {
+    home: 'Übersicht'
+  },
   screenTitles: {
     home: appJson.expo.name
   },

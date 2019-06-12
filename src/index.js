@@ -24,7 +24,7 @@ export const MainApp = () => {
     AppStack: {
       screen: AppStackNavigator,
       navigationOptions: () => ({
-        title: texts.screenTitles.home
+        title: texts.navigationTitles.home
       }),
       params: {
         title: texts.screenTitles.home,
