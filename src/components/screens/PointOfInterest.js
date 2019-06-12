@@ -52,7 +52,7 @@ export const PointOfInterest = ({ data }) => {
       {!!title && (
         <View>
           <TitleContainer>
-            <Title>{title.toUpperCase()}</Title>
+            <Title>{title}</Title>
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}
         </View>
@@ -63,7 +63,7 @@ export const PointOfInterest = ({ data }) => {
       {/* {!!location && (
         <View>
           <TitleContainer>
-            <Title>{texts.pointOfInterest.location.toUpperCase()}</Title>
+            <Title>{texts.pointOfInterest.location}</Title>
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}
         </View>
@@ -73,7 +73,7 @@ export const PointOfInterest = ({ data }) => {
       {/* {!!openingHours && !!openingHours.length && (
         <View>
           <TitleContainer>
-            <Title>{texts.pointOfInterest.openingTime.toUpperCase()}</Title>
+            <Title>{texts.pointOfInterest.openingTime}</Title>
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}
           <TimeCard openingHours={openingHours} />
@@ -83,7 +83,7 @@ export const PointOfInterest = ({ data }) => {
       {!!prices && !!prices.length && (
         <View>
           <TitleContainer>
-            <Title>{texts.pointOfInterest.prices.toUpperCase()}</Title>
+            <Title>{texts.pointOfInterest.prices}</Title>
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}
           <PriceCard prices={prices} />
@@ -93,7 +93,7 @@ export const PointOfInterest = ({ data }) => {
       {!!body && (
         <View>
           <TitleContainer>
-            <Title>{texts.pointOfInterest.description.toUpperCase()}</Title>
+            <Title>{texts.pointOfInterest.description}</Title>
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}
           <Wrapper>

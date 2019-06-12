@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, TouchableOpacity, View, WebView } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { WebView } from 'react-native-webview';
 
 import { colors, normalize } from '../config';
 import { Icon } from '../components';
