@@ -57,7 +57,7 @@ export const PointOfInterest = ({ data }) => {
           {device.platform === 'ios' && <TitleShadow />}
         </View>
       )}
-      <InfoCard addresses={addresses} contact={contact} webUrls={webUrls} />
+      <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
 
       {/* TODO: map stuff for location */}
       {/* {!!location && (
@@ -96,10 +96,7 @@ export const PointOfInterest = ({ data }) => {
             <Title>{texts.pointOfInterest.description}</Title>
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}
-          <Wrapper>
-            {!!category && !!category.name && <ListSubtitle>{category.name}</ListSubtitle>}
-            {!!body && <HtmlView html={body} />}
-          </Wrapper>
+          <Wrapper>{!!body && <HtmlView html={body} />}</Wrapper>
         </View>
       )}
     </ScrollView>

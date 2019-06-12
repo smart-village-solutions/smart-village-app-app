@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Icon as RNEIcon } from 'react-native-elements';
 import PropTypes from 'prop-types';
 
 import { colors, normalize } from '../../config';
@@ -16,8 +17,20 @@ const InfoBox = styled.View`
   margin-bottom: ${normalize(5)}px;
 `;
 
-export const InfoCard = ({ addresses, contact, webUrls }) => (
+export const InfoCard = ({ addresses, category, contact, webUrls }) => (
   <Wrapper>
+    {!!category && !!category.name && (
+      <InfoBox>
+        <RNEIcon
+          name="list"
+          type="material"
+          color={colors.primary}
+          iconStyle={{ marginRight: normalize(10) }}
+        />
+        <RegularText>{category.name}</RegularText>
+      </InfoBox>
+    )}
+
     {!!addresses &&
       addresses.map((item, index) => {
         const { city, street, zip } = item;
@@ -44,8 +57,19 @@ export const InfoCard = ({ addresses, contact, webUrls }) => (
         );
       })}
 
-    {!!contact && (!!contact.phone || !!contact.email) && (
+    {!!contact && (!!contact.lastName || !!contact.phone || !!contact.email) && (
       <View>
+        {!!contact.lastName && (
+          <InfoBox>
+            <RNEIcon
+              name="person"
+              type="material"
+              color={colors.primary}
+              iconStyle={{ marginRight: normalize(10) }}
+            />
+            <RegularText>{contact.lastName}</RegularText>
+          </InfoBox>
+        )}
         {!!contact.phone && (
           <InfoBox>
             <Icon icon={phoneIcon(colors.primary)} style={styles.margin} />
@@ -89,6 +113,8 @@ const styles = StyleSheet.create({
 
 InfoCard.propTypes = {
   addresses: PropTypes.array,
+  category: PropTypes.object,
+
   contact: PropTypes.object,
   webUrls: PropTypes.array
 };
