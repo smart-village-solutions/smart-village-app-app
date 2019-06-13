@@ -12,6 +12,12 @@ export const RegularText = styled.Text`
     css`
       font-size: ${normalize(14)};
     `};
+
+  ${(props) =>
+    props.link &&
+    css`
+      color: ${colors.primary};
+    `};
 `;
 
 export const BoldText = styled(RegularText)`

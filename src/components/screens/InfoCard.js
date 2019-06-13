@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 import { colors, normalize } from '../../config';
 import { mail, location, phone as phoneIcon, url as urlIcon } from '../../icons';
-import { openLink } from '../../helpers';
+import { openLink, locationLink, locationString } from '../../helpers';
 import { RegularText } from '../Text';
 import { Icon } from '../Icon';
 import { Wrapper } from '../Wrapper';
@@ -17,6 +17,15 @@ const InfoBox = styled.View`
   margin-bottom: ${normalize(5)}px;
 `;
 
+const addressOnPress = (address) => {
+  const mapsString = locationString(address);
+  const mapsLink = locationLink(mapsString);
+
+  openLink(mapsLink);
+};
+
+/* eslint-disable complexity */
+/* TODO: refactoring? */
 export const InfoCard = ({ addresses, category, contact, webUrls }) => (
   <Wrapper>
     {!!category && !!category.name && (
@@ -52,7 +61,9 @@ export const InfoCard = ({ addresses, category, contact, webUrls }) => (
         return (
           <InfoBox key={index}>
             <Icon icon={location(colors.primary)} style={styles.margin} />
-            <RegularText>{address}</RegularText>
+            <TouchableOpacity onPress={() => addressOnPress(address)}>
+              <RegularText link>{address}</RegularText>
+            </TouchableOpacity>
           </InfoBox>
         );
       })}
@@ -73,14 +84,16 @@ export const InfoCard = ({ addresses, category, contact, webUrls }) => (
         {!!contact.phone && (
           <InfoBox>
             <Icon icon={phoneIcon(colors.primary)} style={styles.margin} />
-            <RegularText>{contact.phone}</RegularText>
+            <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
+              <RegularText link>{contact.phone}</RegularText>
+            </TouchableOpacity>
           </InfoBox>
         )}
         {!!contact.email && (
           <InfoBox>
             <Icon icon={mail(colors.primary)} style={styles.margin} />
             <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
-              <RegularText>{contact.email}</RegularText>
+              <RegularText link>{contact.email}</RegularText>
             </TouchableOpacity>
           </InfoBox>
         )}
@@ -97,13 +110,14 @@ export const InfoCard = ({ addresses, category, contact, webUrls }) => (
           <InfoBox key={index}>
             <Icon icon={urlIcon(colors.primary)} style={styles.margin} />
             <TouchableOpacity onPress={() => openLink(url)}>
-              <RegularText>{url}</RegularText>
+              <RegularText link>{url}</RegularText>
             </TouchableOpacity>
           </InfoBox>
         );
       })}
   </Wrapper>
 );
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   margin: {

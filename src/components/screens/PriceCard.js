@@ -6,9 +6,10 @@ import { device, normalize } from '../../config';
 import { DiagonalGradient } from '../DiagonalGradient';
 import { WrapperWrap } from '../Wrapper';
 import { PriceText } from '../Text';
+import { priceFormat } from '../../helpers';
 
 const PriceBox = styled.View`
-  background-color: #3f745f;
+  background-color: rgba(15, 70, 24, 0.6);
   flex-direction: column;
   margin-bottom: ${normalize(14)};
   padding: ${normalize(7)}px;
@@ -38,11 +39,11 @@ export const PriceCard = ({ prices }) => (
           return (
             <PriceBox key={index}>
               {!!category && <PriceText bold>{category}</PriceText>}
+              {!!amount && <PriceText bold>{priceFormat(amount)}</PriceText>}
+              {!!groupPrice && <PriceText bold>{priceFormat(groupPrice)}</PriceText>}
               {!!description && <PriceText>{description}</PriceText>}
               {!!maxAdultCount && <PriceText>{maxAdultCount} Erwachsene</PriceText>}
               {!!maxChildrenCount && <PriceText>{maxChildrenCount} Kinder</PriceText>}
-              {!!amount && <PriceText bold>EUR {amount}</PriceText>}
-              {!!groupPrice && <PriceText bold>EUR {groupPrice}</PriceText>}
             </PriceBox>
           );
         })}
