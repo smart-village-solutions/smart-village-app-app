@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 import { colors, normalize } from '../../config';
 import { mail, location, phone as phoneIcon, url as urlIcon } from '../../icons';
-import { openLink } from '../../helpers';
+import { openLink, locationLink, locationString } from '../../helpers';
 import { RegularText } from '../Text';
 import { Icon } from '../Icon';
 import { Wrapper } from '../Wrapper';
@@ -16,6 +16,13 @@ const InfoBox = styled.View`
   flex-direction: row;
   margin-bottom: ${normalize(5)}px;
 `;
+
+const _onPress = (address) => {
+  const mapsString = locationString(address);
+  const mapsLink = locationLink(mapsString);
+
+  openLink(mapsLink);
+};
 
 export const InfoCard = ({ addresses, category, contact, webUrls }) => (
   <Wrapper>
@@ -52,7 +59,9 @@ export const InfoCard = ({ addresses, category, contact, webUrls }) => (
         return (
           <InfoBox key={index}>
             <Icon icon={location(colors.primary)} style={styles.margin} />
-            <RegularText>{address}</RegularText>
+            <TouchableOpacity onPress={() => _onPress(address)}>
+              <RegularText linkText>{address}</RegularText>
+            </TouchableOpacity>
           </InfoBox>
         );
       })}
@@ -73,14 +82,16 @@ export const InfoCard = ({ addresses, category, contact, webUrls }) => (
         {!!contact.phone && (
           <InfoBox>
             <Icon icon={phoneIcon(colors.primary)} style={styles.margin} />
-            <RegularText>{contact.phone}</RegularText>
+            <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
+              <RegularText linkText>{contact.phone}</RegularText>
+            </TouchableOpacity>
           </InfoBox>
         )}
         {!!contact.email && (
           <InfoBox>
             <Icon icon={mail(colors.primary)} style={styles.margin} />
             <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
-              <RegularText>{contact.email}</RegularText>
+              <RegularText linkText>{contact.email}</RegularText>
             </TouchableOpacity>
           </InfoBox>
         )}
@@ -97,7 +108,7 @@ export const InfoCard = ({ addresses, category, contact, webUrls }) => (
           <InfoBox key={index}>
             <Icon icon={urlIcon(colors.primary)} style={styles.margin} />
             <TouchableOpacity onPress={() => openLink(url)}>
-              <RegularText>{url}</RegularText>
+              <RegularText linkText>{url}</RegularText>
             </TouchableOpacity>
           </InfoBox>
         );

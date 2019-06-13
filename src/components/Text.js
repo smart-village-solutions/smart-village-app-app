@@ -7,6 +7,11 @@ export const RegularText = styled.Text`
   flex: 1;
   font-family: titillium-web-regular;
   font-size: ${normalize(16)};
+  ${(props) =>
+    props.linkText &&
+    css`
+      color: ${colors.primary};
+    `};
 `;
 
 export const BoldText = styled(RegularText)`
