@@ -12,6 +12,20 @@ import { Divider } from 'react-native-elements';
 
 import { colors, device, normalize } from '../config';
 
+// thx to https://stackoverflow.com/questions/53040094/how-to-get-current-route-name-in-react-navigation
+const getActiveRoute = (navigationState) => {
+  if (
+    !navigationState.routes ||
+    !navigationState.routes.length ||
+    navigationState.index >= navigationState.routes.length
+  ) {
+    return navigationState;
+  }
+
+  const childActiveRoute = navigationState.routes[navigationState.index];
+  return getActiveRoute(childActiveRoute);
+};
+
 /**
  * Component that renders the navigation list in the drawer.
  *
@@ -43,21 +57,10 @@ const DrawerNavigatorItems = ({
    */
   const handleItemPress = ({ route }) => {
     navigation.navigate({
-      key: route.params.title,
       routeName: route.params.screen,
       params: route.params
     });
     navigation.closeDrawer();
-  };
-
-  // thx to https://stackoverflow.com/questions/53040094/how-to-get-current-route-name-in-react-navigation
-  const getActiveRoute = (route) => {
-    if (!route.routes || !route.routes.length || route.index >= route.routes.length) {
-      return route;
-    }
-
-    const childActiveRoute = route.routes[route.index];
-    return getActiveRoute(childActiveRoute);
   };
 
   return (
@@ -80,7 +83,7 @@ const DrawerNavigatorItems = ({
             <Touchable
               accessible
               accessibilityLabel={accessibilityLabel}
-              onPress={() => handleItemPress({ route, focused })}
+              onPress={() => handleItemPress({ route })}
               delayPressIn={0}
             >
               <SafeAreaView

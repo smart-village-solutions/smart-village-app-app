@@ -29,6 +29,8 @@ export const MainApp = () => {
       params: {
         title: texts.screenTitles.home,
         screen: 'Home',
+        query: '',
+        queryVariables: {},
         rootRouteName: 'AppStack'
       }
     }

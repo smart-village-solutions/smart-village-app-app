@@ -12,31 +12,27 @@ import DrawerNavigatorItems from './DrawerNavigatorItems';
  * based on the default content component from React Navigation:
  *   https://github.com/react-navigation/drawer/blob/c5954d744f463e7f1c67941b8eb6914c0101e56c/src/navigators/createDrawerNavigator.tsx
  */
-export const CustomDrawerContentComponent = (props) => {
-  const { navigation } = props;
-
-  return (
-    <DiagonalGradient>
-      <ScrollView alwaysBounceVertical={false} style={styles.fullHeight}>
-        <View style={styles.headerContainer}>
-          <DiagonalGradient>
-            <View style={styles.header}>
-              <TouchableOpacity onPress={() => navigation.closeDrawer()} delayPressIn={0}>
-                <Icon
-                  name="ios-close"
-                  type="ionicon"
-                  color={colors.lightestText}
-                  containerStyle={styles.icon}
-                />
-              </TouchableOpacity>
-            </View>
-          </DiagonalGradient>
-        </View>
-        <DrawerNavigatorItems {...props} />
-      </ScrollView>
-    </DiagonalGradient>
-  );
-};
+export const CustomDrawerContentComponent = (props) => (
+  <DiagonalGradient>
+    <ScrollView alwaysBounceVertical={false} style={styles.fullHeight}>
+      <View style={styles.headerContainer}>
+        <DiagonalGradient>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => props.navigation.closeDrawer()} delayPressIn={0}>
+              <Icon
+                name="ios-close"
+                type="ionicon"
+                color={colors.lightestText}
+                containerStyle={styles.icon}
+              />
+            </TouchableOpacity>
+          </View>
+        </DiagonalGradient>
+      </View>
+      <DrawerNavigatorItems {...props} />
+    </ScrollView>
+  </DiagonalGradient>
+);
 
 const styles = StyleSheet.create({
   fullHeight: {

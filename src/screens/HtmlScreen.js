@@ -70,10 +70,7 @@ export class HtmlScreen extends React.PureComponent {
                       onPress={() =>
                         navigation.navigate({
                           routeName: 'Web',
-                          params: {
-                            title,
-                            webUrl
-                          }
+                          params: { title, webUrl }
                         })
                       }
                     />
