@@ -3,8 +3,20 @@ import React from 'react';
 import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { Query } from 'react-apollo';
 
-import { device, normalize } from '../config';
-import { CardList, Image, TextList, Title, TitleContainer, TitleShadow } from '../components';
+import { device, normalize, texts } from '../config';
+import {
+  CardList,
+  DiagonalGradient,
+  Image,
+  LightestText,
+  ServiceBox,
+  TextList,
+  Title,
+  TitleContainer,
+  TitleShadow,
+  Touchable,
+  WrapperWrap
+} from '../components';
 import { getQuery } from '../queries';
 import { momentFormat, shareMessage } from '../helpers';
 
@@ -13,7 +25,7 @@ export const HomeScreen = ({ navigation }) => (
     <ScrollView>
       <Image source={require('../../assets/images/home.jpg')} />
       <TitleContainer>
-        <Title>{'Nachrichten'}</Title>
+        <Title>{texts.homeTitles.news}</Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
       <Query query={getQuery('newsItems')} variables={{ limit: 3 }} fetchPolicy="cache-and-network">
@@ -68,7 +80,7 @@ export const HomeScreen = ({ navigation }) => (
         }}
       </Query>
       <TitleContainer>
-        <Title>{'Orte und Touren'}</Title>
+        <Title>{texts.homeTitles.pointsOfInterest}</Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
       <Query
@@ -97,7 +109,7 @@ export const HomeScreen = ({ navigation }) => (
               params: {
                 title: 'Ort',
                 query: 'pointOfInterest',
-                queryVariables: { id: `${pointOfInterest.id}` },
+                queryVariables: { id: '76' },
                 rootRouteName: 'PointsOfInterest',
                 shareContent: {
                   message: shareMessage(pointOfInterest, 'pointOfInterest')
@@ -134,7 +146,7 @@ export const HomeScreen = ({ navigation }) => (
         }}
       </Query>
       <TitleContainer>
-        <Title>{'Veranstaltungen'}</Title>
+        <Title>{texts.homeTitles.events}</Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
       <Query
@@ -193,12 +205,60 @@ export const HomeScreen = ({ navigation }) => (
         }}
       </Query>
       <TitleContainer>
-        <Title>{'Service'}</Title>
+        <Title>{texts.homeTitles.service}</Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
       <Query
         query={getQuery('publicJsonFile')}
-        variables={{ name: 'homeRoutes' }}
+        variables={{ name: 'homeService' }}
+        fetchPolicy="cache-and-network"
+      >
+        {({ data, loading }) => {
+          if (loading) {
+            return (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator />
+              </View>
+            );
+          }
+
+          let publicJsonFileContent =
+            data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
+
+          if (publicJsonFileContent) {
+            return (
+              <DiagonalGradient style={{ padding: normalize(14) }}>
+                <WrapperWrap>
+                  {publicJsonFileContent.map((item, index) => {
+                    return (
+                      <ServiceBox key={index + item.title}>
+                        <Touchable
+                          onPress={() =>
+                            navigation.navigate({
+                              routeName: item.routeName,
+                              params: item.params
+                            })
+                          }
+                        >
+                          <Image source={{ uri: item.icon }} style={styles.serviceImage} />
+                          <LightestText bold>{item.title}</LightestText>
+                        </Touchable>
+                      </ServiceBox>
+                    );
+                  })}
+                </WrapperWrap>
+              </DiagonalGradient>
+            );
+          }
+        }}
+      </Query>
+      <TitleContainer>
+        <Title>{texts.homeTitles.about}</Title>
+      </TitleContainer>
+      {device.platform === 'ios' && <TitleShadow />}
+      <Query
+        query={getQuery('publicJsonFile')}
+        variables={{ name: 'homeAbout' }}
         fetchPolicy="cache-and-network"
       >
         {({ data, loading }) => {
@@ -228,6 +288,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: normalize(14)
+  },
+  serviceImage: {
+    alignSelf: 'center',
+    height: normalize(40),
+    marginBottom: normalize(7),
+    width: normalize(40)
   }
 });
 

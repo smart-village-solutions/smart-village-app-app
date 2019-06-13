@@ -4,10 +4,10 @@ import styled from 'styled-components/native';
 
 import { device, normalize } from '../../config';
 import { DiagonalGradient } from '../DiagonalGradient';
-import { WrapperPrice } from '../Wrapper';
+import { WrapperWrap } from '../Wrapper';
 import { PriceText } from '../Text';
 
-const PreiceBox = styled.View`
+const PriceBox = styled.View`
   background-color: #3f745f;
   flex-direction: column;
   margin-bottom: ${normalize(14)};
@@ -18,7 +18,7 @@ const PreiceBox = styled.View`
 // TODO: add missing data and format amounts
 export const PriceCard = ({ prices }) => (
   <DiagonalGradient style={{ padding: normalize(14) }}>
-    <WrapperPrice>
+    <WrapperWrap>
       {!!prices &&
         prices.map((item, index) => {
           const {
@@ -36,17 +36,17 @@ export const PriceCard = ({ prices }) => (
           } = item;
 
           return (
-            <PreiceBox key={index}>
+            <PriceBox key={index}>
               {!!category && <PriceText bold>{category}</PriceText>}
               {!!description && <PriceText>{description}</PriceText>}
               {!!maxAdultCount && <PriceText>{maxAdultCount} Erwachsene</PriceText>}
               {!!maxChildrenCount && <PriceText>{maxChildrenCount} Kinder</PriceText>}
               {!!amount && <PriceText bold>EUR {amount}</PriceText>}
               {!!groupPrice && <PriceText bold>EUR {groupPrice}</PriceText>}
-            </PreiceBox>
+            </PriceBox>
           );
         })}
-    </WrapperPrice>
+    </WrapperWrap>
   </DiagonalGradient>
 );
 

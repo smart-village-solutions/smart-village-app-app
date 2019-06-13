@@ -12,7 +12,7 @@ export const WrapperRow = styled.View`
   flex-direction: row;
 `;
 
-export const WrapperPrice = styled.View`
+export const WrapperWrap = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
