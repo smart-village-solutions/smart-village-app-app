@@ -144,7 +144,7 @@ export const HomeScreen = ({ navigation }) => (
               params: {
                 title: 'Ort',
                 query: 'pointOfInterest',
-                queryVariables: { id: '76' },
+                queryVariables: { id: `${pointOfInterest.id}` },
                 rootRouteName: 'PointsOfInterest',
                 shareContent: {
                   message: shareMessage(pointOfInterest, 'pointOfInterest')
