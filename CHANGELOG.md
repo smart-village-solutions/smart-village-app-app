@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.8.3]
+
+Update layouts on detail screens
+
+### Added
+
+- added correct price formating in point of interest screen
+- added linking for address to native maps app and phone number in point of interest screen
+
+### Changed
+
+- updated title layouts in news and events
+  - titles look like the same now all over the app
+
 ## [v0.8.2]
 
 Update home screen with different area for service and about
