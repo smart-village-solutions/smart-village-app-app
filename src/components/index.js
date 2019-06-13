@@ -10,4 +10,5 @@ export * from './screens/PointOfInterest';
 export * from './StandardButton';
 export * from './TextList';
 export * from './Title';
+export * from './Touchable';
 export * from './Wrapper';

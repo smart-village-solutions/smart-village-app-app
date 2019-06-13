@@ -1,16 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, device, normalize } from '../config';
+import { colors, normalize } from '../config';
+import { Touchable } from '../components';
 
 // thx to https://stackoverflow.com/questions/53040094/how-to-get-current-route-name-in-react-navigation
 const getActiveRoute = (navigationState) => {
@@ -47,8 +41,6 @@ const DrawerNavigatorItems = ({
   drawerPosition,
   navigation
 }) => {
-  const Touchable = device.platform === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
-
   /**
    * based on:
    *   https://github.com/react-navigation/drawer/blob/c5954d744f463e7f1c67941b8eb6914c0101e56c/src/views/DrawerSidebar.tsx#L67

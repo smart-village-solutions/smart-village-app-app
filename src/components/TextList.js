@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ListItem } from 'react-native-elements';
-import { FlatList, TouchableNativeFeedback, TouchableOpacity } from 'react-native';
+import { FlatList } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
-import { colors, device, normalize } from '../config';
+import { colors, normalize } from '../config';
 import { arrowRight } from '../icons';
 import { Icon } from './Icon';
 import { RegularText } from './Text';
+import { Touchable } from './Touchable';
 
 export const ListTitle = styled(RegularText)`
   ${(props) =>
@@ -35,7 +36,6 @@ export class TextList extends React.Component {
 
   renderItem = ({ item }) => {
     const { navigation, alternativeLayout, noSubtitle } = this.props;
-    const Touchable = device.platform === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
 
     return (
       <ListItem
@@ -67,7 +67,6 @@ export class TextList extends React.Component {
         rightIcon={<Icon icon={arrowRight(colors.primary)} />}
         onPress={() =>
           navigation.navigate({
-            key: item.params.title,
             routeName: item.routeName,
             params: item.params
           })

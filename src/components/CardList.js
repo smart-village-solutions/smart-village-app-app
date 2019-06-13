@@ -1,25 +1,18 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Card } from 'react-native-elements';
-import {
-  FlatList,
-  Platform,
-  StyleSheet,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
 import { colors, device, normalize } from '../config';
 import { Image } from './Image';
 import { ListSubtitle, ListTitle } from './TextList';
+import { Touchable } from './Touchable';
 
 export class CardList extends React.PureComponent {
   keyExtractor = (item, index) => item + index;
 
   renderItem = ({ item }) => {
     const { navigation } = this.props;
-    const Touchable = device.platform === 'ios' ? TouchableOpacity : TouchableNativeFeedback;
 
     return (
       <Touchable
