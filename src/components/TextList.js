@@ -21,7 +21,6 @@ export const ListTitle = styled(RegularText)`
 export const ListSubtitle = styled(ListTitle)`
   color: ${colors.primary};
   font-size: ${normalize(14)};
-  margin-bottom: ${normalize(7)};
 
   ${(props) =>
     props.alternativeLayout &&
