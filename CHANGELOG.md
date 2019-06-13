@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.8.2]
+
+Update home screen with different area for service and about
+
+### Added
+
+- added new are for service boxes
+  - now we have services and about pages separately
+
+### Fixed
+
+- fixed bug with navigating to Home screen from Drawer
+  - screen was pushed instead of navigating to the existing one in the stack because of
+    different keys
+
 ## [v0.8.1]
 
 Updates on several screens and small bugfixes
