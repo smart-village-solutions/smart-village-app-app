@@ -1,32 +1,28 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  ActivityIndicator,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { auth } from '../auth';
-import { colors, normalize } from '../config';
+import { colors, device, normalize } from '../config';
 import {
   HtmlView,
   Icon,
   Image,
-  Link,
   ListSubtitle,
-  ListTitle,
   Logo,
   PointOfInterest,
+  ScrollWrapper,
+  Title,
+  TitleContainer,
+  TitleShadow,
+  Touchable,
   Wrapper,
   WrapperRow
 } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft, drawerMenu, share } from '../icons';
-import { momentFormat, openShare, trimNewLines } from '../helpers';
+import { momentFormat, openLink, openShare, trimNewLines } from '../helpers';
 
 export class DetailScreen extends React.PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -133,17 +129,29 @@ export class DetailScreen extends React.PureComponent {
 
           return (
             <SafeAreaView>
-              <ScrollView>
+              <ScrollWrapper>
                 {!!image && <Image source={{ uri: image }} />}
+                {!!title && !!link ? (
+                  <TitleContainer>
+                    <Touchable onPress={() => openLink(link)}>
+                      <Title>{title}</Title>
+                    </Touchable>
+                  </TitleContainer>
+                ) : (
+                  !!title && (
+                    <TitleContainer>
+                      <Title>{title}</Title>
+                    </TitleContainer>
+                  )
+                )}
+                {device.platform === 'ios' && <TitleShadow />}
                 <Wrapper>
                   {!!logo && <Logo source={{ uri: logo }} />}
                   {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
                   {/*TODO: map multiple contentBlocks */}
-                  {!!title && <ListTitle noSubtitle>{title}</ListTitle>}
                   {!!body && <HtmlView html={trimNewLines(body)} />}
-                  {!!link && <Link url={link} title={'Im Browser öffnen'} />}
                 </Wrapper>
-              </ScrollView>
+              </ScrollWrapper>
             </SafeAreaView>
           );
         }}

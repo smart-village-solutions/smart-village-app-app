@@ -7,6 +7,10 @@ export const Wrapper = styled.View`
   padding: ${normalize(14)}px;
 `;
 
+export const ScrollWrapper = styled.ScrollView`
+  height: 100%;
+`;
+
 export const WrapperRow = styled.View`
   flex: 1;
   flex-direction: row;

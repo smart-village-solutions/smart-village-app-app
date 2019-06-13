@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Query } from 'react-apollo';
 
 import { device, normalize, texts } from '../config';
@@ -25,7 +32,21 @@ export const HomeScreen = ({ navigation }) => (
     <ScrollView>
       <Image source={require('../../assets/images/home.jpg')} />
       <TitleContainer>
-        <Title>{texts.homeTitles.news}</Title>
+        <Touchable
+          onPress={() =>
+            navigation.navigate({
+              routeName: 'Index',
+              params: {
+                title: 'Nachrichten',
+                query: 'newsItems',
+                queryVariables: {},
+                rootRouteName: 'NewsItems'
+              }
+            })
+          }
+        >
+          <Title>{texts.homeTitles.news}</Title>
+        </Touchable>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
       <Query query={getQuery('newsItems')} variables={{ limit: 3 }} fetchPolicy="cache-and-network">
@@ -80,7 +101,21 @@ export const HomeScreen = ({ navigation }) => (
         }}
       </Query>
       <TitleContainer>
-        <Title>{texts.homeTitles.pointsOfInterest}</Title>
+        <Touchable
+          onPress={() =>
+            navigation.navigate({
+              routeName: 'Index',
+              params: {
+                title: 'Orte und Touren',
+                query: 'pointsOfInterest',
+                queryVariables: {},
+                rootRouteName: 'PointsOfInterest'
+              }
+            })
+          }
+        >
+          <Title>{texts.homeTitles.pointsOfInterest}</Title>
+        </Touchable>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
       <Query
@@ -146,7 +181,21 @@ export const HomeScreen = ({ navigation }) => (
         }}
       </Query>
       <TitleContainer>
-        <Title>{texts.homeTitles.events}</Title>
+        <Touchable
+          onPress={() =>
+            navigation.navigate({
+              routeName: 'Index',
+              params: {
+                title: 'Veranstaltungen',
+                query: 'eventRecords',
+                queryVariables: {},
+                rootRouteName: 'EventRecords'
+              }
+            })
+          }
+        >
+          <Title>{texts.homeTitles.events}</Title>
+        </Touchable>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
       <Query
@@ -232,7 +281,7 @@ export const HomeScreen = ({ navigation }) => (
                   {publicJsonFileContent.map((item, index) => {
                     return (
                       <ServiceBox key={index + item.title}>
-                        <Touchable
+                        <TouchableOpacity
                           onPress={() =>
                             navigation.navigate({
                               routeName: item.routeName,
@@ -240,9 +289,17 @@ export const HomeScreen = ({ navigation }) => (
                             })
                           }
                         >
-                          <Image source={{ uri: item.icon }} style={styles.serviceImage} />
-                          <LightestText bold>{item.title}</LightestText>
-                        </Touchable>
+                          <View>
+                            <Image
+                              source={{ uri: item.icon }}
+                              style={styles.serviceImage}
+                              PlaceholderContent={null}
+                            />
+                            <LightestText bold small>
+                              {item.title}
+                            </LightestText>
+                          </View>
+                        </TouchableOpacity>
                       </ServiceBox>
                     );
                   })}

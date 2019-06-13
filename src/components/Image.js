@@ -13,9 +13,9 @@ const imageHeight = 180 * factor;
 
 export const Image = (props) => (
   <RNEImage
-    {...props}
     PlaceholderContent={<ActivityIndicator />}
-    placeholderStyle={{ backgroundColor: colors.lightestText }}
+    placeholderStyle={{ backgroundColor: colors.transparent }}
+    {...props}
   />
 );
 

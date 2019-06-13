@@ -6,6 +6,12 @@ export const RegularText = styled.Text`
   color: ${colors.darkText};
   font-family: titillium-web-regular;
   font-size: ${normalize(16)};
+
+  ${(props) =>
+    props.small &&
+    css`
+      font-size: ${normalize(14)};
+    `};
 `;
 
 export const BoldText = styled(RegularText)`
