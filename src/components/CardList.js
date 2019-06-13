@@ -5,7 +5,7 @@ import { FlatList, Platform, StyleSheet, View } from 'react-native';
 
 import { colors, device, normalize } from '../config';
 import { Image } from './Image';
-import { ListSubtitle, ListTitle } from './TextList';
+import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 
 export class CardList extends React.PureComponent {
@@ -40,8 +40,8 @@ export class CardList extends React.PureComponent {
             {!!item.image && (
               <Image source={{ uri: item.image }} style={stylesWithProps(this.props).image} />
             )}
-            {!!item.category && <ListSubtitle>{item.category}</ListSubtitle>}
-            {!!item.name && <ListTitle>{item.name}</ListTitle>}
+            {!!item.category && <RegularText small>{item.category}</RegularText>}
+            {!!item.name && <BoldText>{item.name}</BoldText>}
           </View>
         </Card>
       </Touchable>

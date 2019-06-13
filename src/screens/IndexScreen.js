@@ -118,15 +118,6 @@ export class IndexScreen extends React.PureComponent {
       }
     };
 
-    const isAlternativeLayout = (query) => {
-      switch (query) {
-      case 'eventRecords':
-        return true;
-      default:
-        return false;
-      }
-    };
-
     return (
       <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
         {({ data, loading }) => {
@@ -147,11 +138,7 @@ export class IndexScreen extends React.PureComponent {
           return (
             <SafeAreaView>
               <ScrollView>
-                <Component
-                  navigation={navigation}
-                  data={listItems}
-                  alternativeLayout={isAlternativeLayout(query)}
-                />
+                <Component navigation={navigation} data={listItems} />
               </ScrollView>
             </SafeAreaView>
           );

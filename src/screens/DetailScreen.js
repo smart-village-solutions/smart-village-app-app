@@ -9,7 +9,7 @@ import {
   HtmlView,
   Icon,
   Image,
-  ListSubtitle,
+  RegularText,
   Logo,
   PointOfInterest,
   ScrollWrapper,
@@ -146,8 +146,8 @@ export class DetailScreen extends React.PureComponent {
                 )}
                 {device.platform === 'ios' && <TitleShadow />}
                 <Wrapper>
+                  {!!subtitle && <RegularText small>{subtitle}</RegularText>}
                   {!!logo && <Logo source={{ uri: logo }} />}
-                  {!!subtitle && <ListSubtitle>{subtitle}</ListSubtitle>}
                   {/*TODO: map multiple contentBlocks */}
                   {!!body && <HtmlView html={trimNewLines(body)} />}
                 </Wrapper>

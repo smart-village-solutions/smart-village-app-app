@@ -15,7 +15,7 @@ import {
   CardList,
   DiagonalGradient,
   Image,
-  LightestText,
+  BoldText,
   ServiceBox,
   TextList,
   Title,
@@ -250,7 +250,7 @@ export const HomeScreen = ({ navigation }) => (
               bottomDivider: false
             });
 
-          return <TextList navigation={navigation} data={eventRecords} alternativeLayout />;
+          return <TextList navigation={navigation} data={eventRecords} />;
         }}
       </Query>
       <TitleContainer>
@@ -295,9 +295,7 @@ export const HomeScreen = ({ navigation }) => (
                               style={styles.serviceImage}
                               PlaceholderContent={null}
                             />
-                            <LightestText bold small>
-                              {item.title}
-                            </LightestText>
+                            <BoldText light>{item.title}</BoldText>
                           </View>
                         </TouchableOpacity>
                       </ServiceBox>
