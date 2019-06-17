@@ -12,7 +12,7 @@ export const DiagonalGradient = (props) =>
   );
 
 DiagonalGradient.propTypes = {
-  children: PropTypes.object,
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   colors: PropTypes.array,
   start: PropTypes.object,
   end: PropTypes.object,

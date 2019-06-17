@@ -4,26 +4,23 @@ import { StyleSheet } from 'react-native';
 import { Button as RNEButton } from 'react-native-elements';
 
 import { colors } from '../config';
+import { DiagonalGradient } from './DiagonalGradient';
 
 export const Button = ({ title, onPress }) => {
   return (
     <RNEButton
-      type="outline"
       onPress={onPress}
       title={title}
       titleStyle={styles.titleStyle}
-      buttonStyle={styles.buttonStyle}
+      ViewComponent={DiagonalGradient}
     />
   );
 };
 
 const styles = StyleSheet.create({
   titleStyle: {
-    color: colors.primary,
+    color: colors.lightestText,
     fontFamily: 'titillium-web-bold'
-  },
-  buttonStyle: {
-    borderColor: colors.primary
   }
 });
 
