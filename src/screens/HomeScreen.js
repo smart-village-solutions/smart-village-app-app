@@ -79,34 +79,32 @@ export const HomeScreen = ({ navigation }) => (
                   message: shareMessage(newsItem, 'newsItem')
                 }
               },
-              bottomDivider: index === data.newsItems.length - 1 ? false : true,
+              bottomDivider: index === data.newsItems.length - 1,
               __typename: newsItem.__typename
             }));
 
-          if (!newsItems.length) return null;
+          if (!newsItems || !newsItems.length) return null;
 
           return (
             <View>
               <TextList navigation={navigation} data={newsItems} />
 
-              {!!newsItems && (
-                <Wrapper>
-                  <Button
-                    title="Alle Nachrichten anzeigen"
-                    onPress={() =>
-                      navigation.navigate({
-                        routeName: 'Index',
-                        params: {
-                          title: 'Nachrichten',
-                          query: 'newsItems',
-                          queryVariables: {},
-                          rootRouteName: 'NewsItems'
-                        }
-                      })
-                    }
-                  />
-                </Wrapper>
-              )}
+              <Wrapper>
+                <Button
+                  title="Alle Nachrichten anzeigen"
+                  onPress={() =>
+                    navigation.navigate({
+                      routeName: 'Index',
+                      params: {
+                        title: 'Nachrichten',
+                        query: 'newsItems',
+                        queryVariables: {},
+                        rootRouteName: 'NewsItems'
+                      }
+                    })
+                  }
+                />
+              </Wrapper>
             </View>
           );
         }}
@@ -171,24 +169,22 @@ export const HomeScreen = ({ navigation }) => (
             <View>
               <CardList navigation={navigation} data={pointsOfInterest} horizontal />
 
-              {!!pointsOfInterest && (
-                <Wrapper>
-                  <Button
-                    title="Alle Orte und Touren anzeigen"
-                    onPress={() =>
-                      navigation.navigate({
-                        routeName: 'Index',
-                        params: {
-                          title: 'Orte und Touren',
-                          query: 'pointsOfInterest',
-                          queryVariables: {},
-                          rootRouteName: 'PointsOfInterest'
-                        }
-                      })
-                    }
-                  />
-                </Wrapper>
-              )}
+              <Wrapper>
+                <Button
+                  title="Alle Orte und Touren anzeigen"
+                  onPress={() =>
+                    navigation.navigate({
+                      routeName: 'Index',
+                      params: {
+                        title: 'Orte und Touren',
+                        query: 'pointsOfInterest',
+                        queryVariables: {},
+                        rootRouteName: 'PointsOfInterest'
+                      }
+                    })
+                  }
+                />
+              </Wrapper>
             </View>
           );
         }}
@@ -243,34 +239,32 @@ export const HomeScreen = ({ navigation }) => (
                   message: shareMessage(eventRecord, 'eventRecord')
                 }
               },
-              bottomDivider: index === data.eventRecords.length - 1 ? false : true,
+              bottomDivider: index === data.eventRecords.length - 1,
               __typename: eventRecord.__typename
             }));
 
-          if (!eventRecords.length) return null;
+          if (!eventRecords || !eventRecords.length) return null;
 
           return (
             <View>
               <TextList navigation={navigation} data={eventRecords} />
 
-              {!!eventRecords && (
-                <Wrapper>
-                  <Button
-                    title="Alle Veranstaltungen anzeigen"
-                    onPress={() =>
-                      navigation.navigate({
-                        routeName: 'Index',
-                        params: {
-                          title: 'Veranstaltungen',
-                          query: 'eventRecords',
-                          queryVariables: {},
-                          rootRouteName: 'EventRecords'
-                        }
-                      })
-                    }
-                  />
-                </Wrapper>
-              )}
+              <Wrapper>
+                <Button
+                  title="Alle Veranstaltungen anzeigen"
+                  onPress={() =>
+                    navigation.navigate({
+                      routeName: 'Index',
+                      params: {
+                        title: 'Veranstaltungen',
+                        query: 'eventRecords',
+                        queryVariables: {},
+                        rootRouteName: 'EventRecords'
+                      }
+                    })
+                  }
+                />
+              </Wrapper>
             </View>
           );
         }}
