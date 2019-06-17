@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.8.4]
+
+Update layouts in list screens and header title
+
+### Added
+
+- added Button with linear gradient on HomeScreen after teaser lists
+
+### Changed
+
+- updated all lists to look the same
+- updated spacings
+- updated button style on HTML screens with action to web view
+- updated screen header title to bold for iOS devices
+
 ## [v0.8.3]
 
 Update layouts on detail screens
