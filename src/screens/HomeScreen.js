@@ -79,7 +79,7 @@ export const HomeScreen = ({ navigation }) => (
                   message: shareMessage(newsItem, 'newsItem')
                 }
               },
-              bottomDivider: index === data.newsItems.length - 1,
+              bottomDivider: index !== data.newsItems.length - 1,
               __typename: newsItem.__typename
             }));
 
@@ -239,7 +239,7 @@ export const HomeScreen = ({ navigation }) => (
                   message: shareMessage(eventRecord, 'eventRecord')
                 }
               },
-              bottomDivider: index === data.eventRecords.length - 1,
+              bottomDivider: index !== data.eventRecords.length - 1,
               __typename: eventRecord.__typename
             }));
 
