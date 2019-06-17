@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator';
 
-import { colors, normalize } from '../config';
+import { colors, device, normalize } from '../config';
 import { DiagonalGradient, Icon } from '../components';
 import { drawerMenu } from '../icons';
 
@@ -15,8 +15,8 @@ export const defaultStackNavigatorConfig = (initialRouteName) => {
       headerBackground: <DiagonalGradient />,
       headerTitleStyle: {
         color: colors.lightestText,
-        fontFamily: 'titillium-web-regular',
-        fontWeight: '400'
+        fontFamily: device.platform === 'ios' ? 'titillium-web-bold' : 'titillium-web-regular',
+        fontWeight: device.platform === 'ios' ? '600' : '400'
       },
       headerRight: (
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
