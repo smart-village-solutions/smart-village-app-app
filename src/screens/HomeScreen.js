@@ -15,13 +15,15 @@ import {
   CardList,
   DiagonalGradient,
   Image,
-  LightestText,
+  BoldText,
+  Button,
   ServiceBox,
   TextList,
   Title,
   TitleContainer,
   TitleShadow,
   Touchable,
+  Wrapper,
   WrapperWrap
 } from '../components';
 import { getQuery } from '../queries';
@@ -62,7 +64,7 @@ export const HomeScreen = ({ navigation }) => (
           const newsItems =
             data &&
             data.newsItems &&
-            data.newsItems.map((newsItem) => ({
+            data.newsItems.map((newsItem, index) => ({
               id: newsItem.id,
               subtitle: `${momentFormat(newsItem.publishedAt)} | ${newsItem.dataProvider &&
                 newsItem.dataProvider.name}`,
@@ -77,29 +79,37 @@ export const HomeScreen = ({ navigation }) => (
                   message: shareMessage(newsItem, 'newsItem')
                 }
               },
+              bottomDivider: index === data.newsItems.length - 1,
               __typename: newsItem.__typename
             }));
 
-          if (!newsItems.length) return null;
+          if (!newsItems || !newsItems.length) return null;
 
-          // add index element, if not already present - check for the element with id: '-1'
-          newsItems.map((newsItem) => newsItem.id).indexOf('-1') < 0 &&
-            newsItems.push({
-              id: '-1',
-              title: 'Alle Nachrichten anzeigen',
-              routeName: 'Index',
-              params: {
-                title: 'Nachrichten',
-                query: 'newsItems',
-                queryVariables: {},
-                rootRouteName: 'NewsItems'
-              },
-              bottomDivider: false
-            });
+          return (
+            <View>
+              <TextList navigation={navigation} data={newsItems} />
 
-          return <TextList navigation={navigation} data={newsItems} />;
+              <Wrapper>
+                <Button
+                  title="Alle Nachrichten anzeigen"
+                  onPress={() =>
+                    navigation.navigate({
+                      routeName: 'Index',
+                      params: {
+                        title: 'Nachrichten',
+                        query: 'newsItems',
+                        queryVariables: {},
+                        rootRouteName: 'NewsItems'
+                      }
+                    })
+                  }
+                />
+              </Wrapper>
+            </View>
+          );
         }}
       </Query>
+
       <TitleContainer>
         <Touchable
           onPress={() =>
@@ -158,24 +168,23 @@ export const HomeScreen = ({ navigation }) => (
           return (
             <View>
               <CardList navigation={navigation} data={pointsOfInterest} horizontal />
-              <TextList
-                navigation={navigation}
-                data={[
-                  {
-                    id: '-1',
-                    title: 'Alle Orte und Touren anzeigen',
-                    routeName: 'Index',
-                    params: {
-                      title: 'Orte und Touren',
-                      query: 'pointsOfInterest',
-                      queryVariables: {},
-                      rootRouteName: 'PointsOfInterest'
-                    },
-                    bottomDivider: false,
-                    topDivider: true
+
+              <Wrapper>
+                <Button
+                  title="Alle Orte und Touren anzeigen"
+                  onPress={() =>
+                    navigation.navigate({
+                      routeName: 'Index',
+                      params: {
+                        title: 'Orte und Touren',
+                        query: 'pointsOfInterest',
+                        queryVariables: {},
+                        rootRouteName: 'PointsOfInterest'
+                      }
+                    })
                   }
-                ]}
-              />
+                />
+              </Wrapper>
             </View>
           );
         }}
@@ -215,7 +224,7 @@ export const HomeScreen = ({ navigation }) => (
           const eventRecords =
             data &&
             data.eventRecords &&
-            data.eventRecords.map((eventRecord) => ({
+            data.eventRecords.map((eventRecord, index) => ({
               id: eventRecord.id,
               subtitle: `${momentFormat(eventRecord.createdAt)} | ${eventRecord.dataProvider &&
                 eventRecord.dataProvider.name}`,
@@ -230,27 +239,34 @@ export const HomeScreen = ({ navigation }) => (
                   message: shareMessage(eventRecord, 'eventRecord')
                 }
               },
+              bottomDivider: index === data.eventRecords.length - 1,
               __typename: eventRecord.__typename
             }));
 
-          if (!eventRecords.length) return null;
+          if (!eventRecords || !eventRecords.length) return null;
 
-          // add index element, if not already present - check for the element with id: '-1'
-          eventRecords.map((eventRecord) => eventRecord.id).indexOf('-1') < 0 &&
-            eventRecords.push({
-              id: '-1',
-              title: 'Alle Veranstaltungen anzeigen',
-              routeName: 'Index',
-              params: {
-                title: 'Veranstaltungen',
-                query: 'eventRecords',
-                queryVariables: {},
-                rootRouteName: 'EventRecords'
-              },
-              bottomDivider: false
-            });
+          return (
+            <View>
+              <TextList navigation={navigation} data={eventRecords} />
 
-          return <TextList navigation={navigation} data={eventRecords} alternativeLayout />;
+              <Wrapper>
+                <Button
+                  title="Alle Veranstaltungen anzeigen"
+                  onPress={() =>
+                    navigation.navigate({
+                      routeName: 'Index',
+                      params: {
+                        title: 'Veranstaltungen',
+                        query: 'eventRecords',
+                        queryVariables: {},
+                        rootRouteName: 'EventRecords'
+                      }
+                    })
+                  }
+                />
+              </Wrapper>
+            </View>
+          );
         }}
       </Query>
       <TitleContainer>
@@ -295,9 +311,7 @@ export const HomeScreen = ({ navigation }) => (
                               style={styles.serviceImage}
                               PlaceholderContent={null}
                             />
-                            <LightestText bold small>
-                              {item.title}
-                            </LightestText>
+                            <BoldText light>{item.title}</BoldText>
                           </View>
                         </TouchableOpacity>
                       </ServiceBox>
