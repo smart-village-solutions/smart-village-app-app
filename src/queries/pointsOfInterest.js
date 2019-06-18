@@ -67,9 +67,14 @@ export const GET_POINT_OF_INTEREST = gql`
         minChildrenCount
       }
       openingHours {
+        id
+        sortNumber
         weekday
         timeFrom
         timeTo
+        open
+        dateFrom
+        dateTo
         description
       }
     }

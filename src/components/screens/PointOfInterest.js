@@ -8,7 +8,7 @@ import { Image } from '../Image';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper } from '../Wrapper';
 import { PriceCard } from './PriceCard';
-import { TimeCard } from './TimeCard';
+import { OpeningTimesCard } from './OpeningTimesCard';
 import { InfoCard } from './InfoCard';
 
 /* eslint-disable complexity */
@@ -69,15 +69,15 @@ export const PointOfInterest = ({ data }) => {
       )} */}
 
       {/* TODO: layout check with data */}
-      {/* {!!openingHours && !!openingHours.length && (
+      {!!openingHours && !!openingHours.length && (
         <View>
           <TitleContainer>
             <Title>{texts.pointOfInterest.openingTime}</Title>
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}
-          <TimeCard openingHours={openingHours} />
+          <OpeningTimesCard openingHours={openingHours} />
         </View>
-      )} */}
+      )}
 
       {!!prices && !!prices.length && (
         <View>
