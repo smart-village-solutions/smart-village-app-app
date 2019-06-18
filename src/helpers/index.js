@@ -1,3 +1,4 @@
+export * from './dateTimeHelper';
 export * from './htmlViewHelper';
 export * from './linkHelper';
 export * from './mapHelper';

@@ -1,6 +1,10 @@
 import appJson from '../../app.json';
 
 export const texts = {
+  eventRecord: {
+    prices: 'Preise',
+    description: 'Beschreibung'
+  },
   homeTitles: {
     news: 'Nachrichten',
     pointsOfInterest: 'Orte und Touren',

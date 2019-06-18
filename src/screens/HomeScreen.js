@@ -27,7 +27,7 @@ import {
   WrapperWrap
 } from '../components';
 import { getQuery } from '../queries';
-import { momentFormat, shareMessage } from '../helpers';
+import { eventDate, momentFormat, shareMessage } from '../helpers';
 
 export const HomeScreen = ({ navigation }) => (
   <SafeAreaView>
@@ -226,8 +226,11 @@ export const HomeScreen = ({ navigation }) => (
             data.eventRecords &&
             data.eventRecords.map((eventRecord, index) => ({
               id: eventRecord.id,
-              subtitle: `${momentFormat(eventRecord.createdAt)} | ${eventRecord.dataProvider &&
-                eventRecord.dataProvider.name}`,
+              subtitle: `${eventRecord.dates[0] &&
+                eventDate(
+                  eventRecord.dates[0].dateStart,
+                  eventRecord.dates[0].dateEnd
+                )} | ${eventRecord.dataProvider && eventRecord.dataProvider.name}`, // TODO: refactor eventRecord.dates[0]
               title: eventRecord.title,
               routeName: 'Detail',
               params: {
