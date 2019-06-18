@@ -5,9 +5,14 @@ export const GET_EVENT_RECORDS = gql`
     eventRecords(limit: $limit) {
       id
       title
-      createdAt
       dataProvider {
         name
+      }
+      dates {
+        dateStart
+        dateEnd
+        timeStart
+        timeEnd
       }
     }
   }
@@ -17,7 +22,9 @@ export const GET_EVENT_RECORD = gql`
   query EventRecord($id: ID!) {
     eventRecord(id: $id) {
       id
-      createdAt
+      category {
+        name
+      }
       dates {
         dateStart
         dateEnd
@@ -31,11 +38,37 @@ export const GET_EVENT_RECORD = gql`
           url
         }
       }
+      addresses {
+        city
+        street
+        zip
+      }
+      contacts {
+        email
+        phone
+        lastName
+      }
+      webUrls: urls {
+        url
+      }
       dataProvider {
         logo {
           url
         }
         name
+      }
+      prices: priceInformations {
+        name
+        groupPrice
+        amount
+        ageFrom
+        ageTo
+        category
+        description
+        maxChildrenCount
+        maxAdultCount
+        minAdultCount
+        minChildrenCount
       }
     }
   }

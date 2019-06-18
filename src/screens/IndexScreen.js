@@ -15,7 +15,7 @@ import { colors, normalize } from '../config';
 import { CardList, Icon, TextList } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
-import { momentFormat, shareMessage } from '../helpers';
+import { eventDate, momentFormat, shareMessage } from '../helpers';
 
 export class IndexScreen extends React.PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -48,8 +48,11 @@ export class IndexScreen extends React.PureComponent {
           data &&
             data[query].map((eventRecord) => ({
               ...eventRecord,
-              subtitle: `${momentFormat(eventRecord.createdAt)} | ${eventRecord.dataProvider &&
-                eventRecord.dataProvider.name}`,
+              subtitle: `${eventRecord.dates[0] &&
+                eventDate(
+                  eventRecord.dates[0].dateStart,
+                  eventRecord.dates[0].dateEnd
+                )} | ${eventRecord.dataProvider && eventRecord.dataProvider.name}`, // TODO: refactor eventRecord.dates[0]
               routeName: 'Detail',
               params: {
                 title: 'Veranstaltung',

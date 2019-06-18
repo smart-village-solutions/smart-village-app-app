@@ -6,12 +6,13 @@ import { Query } from 'react-apollo';
 import { auth } from '../auth';
 import { colors, device, normalize } from '../config';
 import {
+  EventRecord,
   HtmlView,
   Icon,
   Image,
-  RegularText,
   Logo,
   PointOfInterest,
+  RegularText,
   ScrollWrapper,
   Title,
   TitleContainer,
@@ -64,18 +65,6 @@ export class DetailScreen extends React.PureComponent {
     /* TODO: refactoring to single components */
     const getPage = (query, data) => {
       switch (query) {
-      case 'eventRecord': {
-        const { createdAt, dates, title, description, mediaContents, dataProvider } = data;
-
-        return {
-          subtitle: `${momentFormat(createdAt)} | ${dataProvider && dataProvider.name}`,
-          dates, // TODO: need to use dates instead of createdAt in rendering
-          title,
-          body: description,
-          image: mediaContents && mediaContents.length && mediaContents[0].sourceUrl.url,
-          logo: dataProvider && dataProvider.logo && dataProvider.logo.url
-        };
-      }
       case 'newsItem': {
         const { publishedAt, contentBlocks, sourceUrl, dataProvider } = data;
 
@@ -98,6 +87,8 @@ export class DetailScreen extends React.PureComponent {
 
     const renderScreenComponent = (query, data) => {
       switch (query) {
+      case 'eventRecord':
+        return <EventRecord data={data} />;
       case 'pointOfInterest':
         return <PointOfInterest data={data} />;
       }
@@ -116,7 +107,7 @@ export class DetailScreen extends React.PureComponent {
 
           if (!data || !data[query]) return null;
 
-          if (query === 'pointOfInterest') {
+          if (query === 'eventRecord' || query === 'pointOfInterest') {
             return renderScreenComponent(query, data[query]);
           }
 
