@@ -67,7 +67,6 @@ export const GET_POINT_OF_INTEREST = gql`
         minChildrenCount
       }
       openingHours {
-        id
         sortNumber
         weekday
         timeFrom
@@ -76,6 +75,28 @@ export const GET_POINT_OF_INTEREST = gql`
         dateFrom
         dateTo
         description
+      }
+      operatingCompany {
+        name
+        address {
+          id
+          kind
+          addition
+          street
+          zip
+          city
+        }
+        contact {
+          firstName
+          lastName
+          phone
+          email
+          fax
+          webUrls {
+            description
+            url
+          }
+        }
       }
     }
   }
