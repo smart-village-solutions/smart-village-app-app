@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import styled from 'styled-components';
 
 import { normalize, colors } from '../../config';
@@ -20,7 +20,8 @@ const DateBox = styled(TimeBox)`
   justify-content: center;
   align-items: center;
 `;
-
+/* eslint-disable complexity */
+/* TODO: refactoring? */
 export const OpeningTimesCard = ({ openingHours }) => (
   <Wrapper>
     {!!openingHours &&
@@ -30,15 +31,16 @@ export const OpeningTimesCard = ({ openingHours }) => (
         const returnFormatDate = 'DD.MM.YYYY';
 
         return weekday ? (
-          <View key={index}>
-            <View style={{ flex: 1, marginBottom: 7 }}>
-              <BoldText>{weekday}</BoldText>
+          <View key={index} style={styles.divider}>
+            <View>
+              <BoldText style={{ marginBottom: normalize(3) }}>{weekday}</BoldText>
             </View>
-            <WrapperRow style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <WrapperRow style={{ justifyContent: 'space-between' }}>
               {(!!timeFrom || !!timeTo) && (
                 <TimeBox>
-                  {!!timeFrom && <RegularText>{momentFormat(timeFrom, returnFormat)} </RegularText>}
-                  {!!timeTo && <BoldText>-</BoldText>}
+                  {!!timeFrom && (
+                    <RegularText>{momentFormat(timeFrom, returnFormat)} -</RegularText>
+                  )}
                   {!!timeTo && <RegularText> {momentFormat(timeTo, returnFormat)} </RegularText>}
                 </TimeBox>
               )}
@@ -46,14 +48,14 @@ export const OpeningTimesCard = ({ openingHours }) => (
                 <DateBox>
                   {!!dateFrom && (
                     <RegularText>
-                      <BoldText small>von </BoldText>
+                      <RegularText small>von </RegularText>
                       {momentFormat(dateFrom, returnFormatDate)}{' '}
                     </RegularText>
                   )}
 
                   {!!dateTo && (
                     <RegularText>
-                      <BoldText small>bis </BoldText>
+                      <RegularText small>bis </RegularText>
                       {momentFormat(dateTo, returnFormatDate)}{' '}
                     </RegularText>
                   )}
@@ -63,29 +65,46 @@ export const OpeningTimesCard = ({ openingHours }) => (
             {!!description && <RegularText>{description}</RegularText>}
           </View>
         ) : (
-          <Wrapper key={index}>
+          <WrapperRow key={index}>
             {(!!timeFrom || !!timeTo) && (
               <TimeBox>
-                {!!timeFrom && <RegularText>{momentFormat(timeFrom, returnFormat)} </RegularText>}
-                {!!timeTo && <BoldText>-</BoldText>}
+                {!!timeFrom && <RegularText>{momentFormat(timeFrom, returnFormat)} -</RegularText>}
                 {!!timeTo && <RegularText> {momentFormat(timeTo, returnFormat)} </RegularText>}
               </TimeBox>
             )}
             {(!!dateFrom || !!dateTo) && (
               <DateBox>
                 {!!dateFrom && (
-                  <RegularText>{momentFormat(dateFrom, returnFormatDate)} </RegularText>
+                  <RegularText>
+                    <RegularText small>von </RegularText>
+                    {momentFormat(dateFrom, returnFormatDate)}{' '}
+                  </RegularText>
                 )}
-                {!!dateTo && <BoldText>/</BoldText>}
-                {!!dateTo && <RegularText>{momentFormat(dateTo, returnFormatDate)} </RegularText>}
+
+                {!!dateTo && (
+                  <RegularText>
+                    <RegularText small>bis </RegularText>
+                    {momentFormat(dateTo, returnFormatDate)}{' '}
+                  </RegularText>
+                )}
               </DateBox>
             )}
             {!!description && <BoldText>{description}</BoldText>}
-          </Wrapper>
+          </WrapperRow>
         );
       })}
   </Wrapper>
 );
+/* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  divider: {
+    flex: 1,
+    marginBottom: normalize(5),
+    borderBottomWidth: 1,
+    borderBottomColor: colors.primary
+  }
+});
 
 OpeningTimesCard.propTypes = {
   openingHours: PropTypes.array
