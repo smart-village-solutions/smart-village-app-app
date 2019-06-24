@@ -59,7 +59,6 @@ export const OpeningTimesCard = ({ openingHours }) => (
                   )}
                 </DateBox>
               )}
-              {!!open === false && <RegularText>Geschlossen</RegularText>}
               {!!description && <RegularText>{description}</RegularText>}
             </WrapperRow>
           </View>
