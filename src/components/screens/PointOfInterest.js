@@ -6,7 +6,7 @@ import { device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper } from '../Wrapper';
+import { WrapperNoFlex } from '../Wrapper';
 import { PriceCard } from './PriceCard';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { InfoCard } from './InfoCard';
@@ -109,7 +109,7 @@ export const PointOfInterest = ({ data }) => {
               <Title>{texts.pointOfInterest.description}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>{<HtmlView html={body} />}</Wrapper>
+            <WrapperNoFlex>{!!body && <HtmlView html={body} />}</WrapperNoFlex>
           </View>
         )}
 

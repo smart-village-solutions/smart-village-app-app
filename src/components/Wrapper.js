@@ -28,3 +28,11 @@ export const WrapperWrap = styled.View`
   justify-content: space-between;
   width: 100%;
 `;
+
+export const WrapperNoFlex = styled.View`
+  padding: ${normalize(14)}px;
+`;
+
+export const WrapperRowNoFlex = styled.View`
+  flex-direction: row;
+`;
