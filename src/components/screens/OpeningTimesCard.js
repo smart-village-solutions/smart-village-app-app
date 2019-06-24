@@ -20,6 +20,7 @@ const DateBox = styled(TimeBox)`
   flex-direction: row;
   justify-content: center;
 `;
+
 /* eslint-disable complexity */
 /* TODO: refactoring? */
 export const OpeningTimesCard = ({ openingHours }) => (
@@ -27,7 +28,6 @@ export const OpeningTimesCard = ({ openingHours }) => (
     {!!openingHours &&
       openingHours.map((item, index) => {
         const { weekday, timeFrom, timeTo, dateFrom, dateTo, description, open } = item;
-        const returnFormat = 'HH:mm';
         const returnFormatDate = 'DD.MM.YYYY';
 
         return weekday ? (
@@ -37,9 +37,9 @@ export const OpeningTimesCard = ({ openingHours }) => (
             <WrapperRow space>
               {(!!timeFrom || !!timeTo) && (
                 <TimeBox>
-                  {!!timeFrom && <RegularText>{momentFormat(timeFrom, returnFormat)}</RegularText>}
+                  {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
                   {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
-                  {!!timeTo && <RegularText> {momentFormat(timeTo, returnFormat)}</RegularText>}
+                  {!!timeTo && <RegularText> {timeTo}</RegularText>}
                 </TimeBox>
               )}
               {(!!dateFrom || !!dateTo) && (
@@ -67,9 +67,9 @@ export const OpeningTimesCard = ({ openingHours }) => (
           <WrapperRow key={index}>
             {(!!timeFrom || !!timeTo) && (
               <TimeBox>
-                {!!timeFrom && <RegularText>{momentFormat(timeFrom, returnFormat)}</RegularText>}
+                {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
                 {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
-                {!!timeTo && <RegularText> {momentFormat(timeTo, returnFormat)}</RegularText>}
+                {!!timeTo && <RegularText> {timeTo}</RegularText>}
               </TimeBox>
             )}
             {(!!dateFrom || !!dateTo) && (
