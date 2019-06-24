@@ -31,7 +31,7 @@ export const OpeningTimesCard = ({ openingHours }) => (
         const returnFormatDate = 'DD.MM.YYYY';
 
         return weekday ? (
-          <View key={index} style={styles.divider}>
+          <View key={index} style={index !== openingHours.length - 1 ? styles.divider : null}>
             <BoldText style={styles.marginBottom}>{weekday}</BoldText>
 
             <WrapperRow space>
