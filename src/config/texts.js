@@ -16,7 +16,7 @@ export const texts = {
     openingTime: 'Öffnungszeiten',
     prices: 'Preise',
     description: 'Beschreibung',
-    operatingCompany: 'Anbiter'
+    operatingCompany: 'Anbieter'
   },
   screenTitles: {
     home: appJson.expo.name

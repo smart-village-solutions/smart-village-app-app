@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, SafeAreaView } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import { device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
@@ -83,7 +83,6 @@ export const PointOfInterest = ({ data }) => {
         </View>
       )} */}
 
-        {/* TODO: layout check with data */}
         {!!openingHours && !!openingHours.length && (
           <View>
             <TitleContainer>
@@ -110,7 +109,7 @@ export const PointOfInterest = ({ data }) => {
               <Title>{texts.pointOfInterest.description}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>{!!body && <HtmlView html={body} />}</Wrapper>
+            <Wrapper>{<HtmlView html={body} />}</Wrapper>
           </View>
         )}
 

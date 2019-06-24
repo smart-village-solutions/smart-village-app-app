@@ -9,16 +9,16 @@ import { BoldText, RegularText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
 
 const TimeBox = styled.View`
-  flex: 1;
   flex-direction: row;
   flex-wrap: wrap;
+  flex: 1;
   margin-bottom: 5;
 `;
 
 const DateBox = styled(TimeBox)`
+  align-items: center;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
 `;
 /* eslint-disable complexity */
 /* TODO: refactoring? */
@@ -26,22 +26,20 @@ export const OpeningTimesCard = ({ openingHours }) => (
   <Wrapper>
     {!!openingHours &&
       openingHours.map((item, index) => {
-        const { weekday, timeFrom, timeTo, dateFrom, dateTo, description } = item;
+        const { weekday, timeFrom, timeTo, dateFrom, dateTo, description, open } = item;
         const returnFormat = 'HH:mm';
         const returnFormatDate = 'DD.MM.YYYY';
 
         return weekday ? (
           <View key={index} style={styles.divider}>
-            <View>
-              <BoldText style={{ marginBottom: normalize(3) }}>{weekday}</BoldText>
-            </View>
-            <WrapperRow style={{ justifyContent: 'space-between' }}>
+            <BoldText style={styles.marginBottom}>{weekday}</BoldText>
+
+            <WrapperRow space>
               {(!!timeFrom || !!timeTo) && (
                 <TimeBox>
-                  {!!timeFrom && (
-                    <RegularText>{momentFormat(timeFrom, returnFormat)} -</RegularText>
-                  )}
-                  {!!timeTo && <RegularText> {momentFormat(timeTo, returnFormat)} </RegularText>}
+                  {!!timeFrom && <RegularText>{momentFormat(timeFrom, returnFormat)}</RegularText>}
+                  {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
+                  {!!timeTo && <RegularText> {momentFormat(timeTo, returnFormat)}</RegularText>}
                 </TimeBox>
               )}
               {(!!dateFrom || !!dateTo) && (
@@ -49,27 +47,29 @@ export const OpeningTimesCard = ({ openingHours }) => (
                   {!!dateFrom && (
                     <RegularText>
                       <RegularText small>von </RegularText>
-                      {momentFormat(dateFrom, returnFormatDate)}{' '}
+                      {momentFormat(dateFrom, returnFormatDate)}
                     </RegularText>
                   )}
 
                   {!!dateTo && (
                     <RegularText>
                       <RegularText small>bis </RegularText>
-                      {momentFormat(dateTo, returnFormatDate)}{' '}
+                      {momentFormat(dateTo, returnFormatDate)}
                     </RegularText>
                   )}
                 </DateBox>
               )}
+              {!!open === false && <RegularText>Geschlossen</RegularText>}
+              {!!description && <RegularText>{description}</RegularText>}
             </WrapperRow>
-            {!!description && <RegularText>{description}</RegularText>}
           </View>
         ) : (
           <WrapperRow key={index}>
             {(!!timeFrom || !!timeTo) && (
               <TimeBox>
-                {!!timeFrom && <RegularText>{momentFormat(timeFrom, returnFormat)} -</RegularText>}
-                {!!timeTo && <RegularText> {momentFormat(timeTo, returnFormat)} </RegularText>}
+                {!!timeFrom && <RegularText>{momentFormat(timeFrom, returnFormat)}</RegularText>}
+                {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
+                {!!timeTo && <RegularText> {momentFormat(timeTo, returnFormat)}</RegularText>}
               </TimeBox>
             )}
             {(!!dateFrom || !!dateTo) && (
@@ -77,14 +77,14 @@ export const OpeningTimesCard = ({ openingHours }) => (
                 {!!dateFrom && (
                   <RegularText>
                     <RegularText small>von </RegularText>
-                    {momentFormat(dateFrom, returnFormatDate)}{' '}
+                    {momentFormat(dateFrom, returnFormatDate)}
                   </RegularText>
                 )}
 
                 {!!dateTo && (
                   <RegularText>
                     <RegularText small>bis </RegularText>
-                    {momentFormat(dateTo, returnFormatDate)}{' '}
+                    {momentFormat(dateTo, returnFormatDate)}
                   </RegularText>
                 )}
               </DateBox>
@@ -99,10 +99,13 @@ export const OpeningTimesCard = ({ openingHours }) => (
 
 const styles = StyleSheet.create({
   divider: {
-    flex: 1,
-    marginBottom: normalize(5),
+    borderBottomColor: colors.primary,
     borderBottomWidth: 1,
-    borderBottomColor: colors.primary
+    flex: 1,
+    marginBottom: normalize(5)
+  },
+  marginBottom: {
+    marginBottom: normalize(3)
   }
 });
 

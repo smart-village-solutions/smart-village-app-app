@@ -68,7 +68,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
           !!contact.email ||
           !!contact.fax) && (
         <View>
-          {!!contact.lastName && (
+          {(!!contact.firstName || !!contact.lastName) && (
             <InfoBox>
               <RNEIcon
                 name="person"
@@ -76,8 +76,8 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
                 color={colors.primary}
                 iconStyle={{ marginRight: normalize(10) }}
               />
-              <RegularText>{contact.firstName}</RegularText>
-              <RegularText>{contact.lastName}</RegularText>
+              {!!contact.firstName && <RegularText>{contact.firstName}</RegularText>}
+              {!!contact.lastName && <RegularText>{contact.lastName}</RegularText>}
             </InfoBox>
           )}
           {!!contact.phone && (
@@ -98,10 +98,13 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
           )}
           {!!contact.fax && (
             <InfoBox>
-              <Icon icon={mail(colors.primary)} style={styles.margin} />
-              <TouchableOpacity onPress={() => openLink(`mailto:${contact.fax}`)}>
-                <RegularText link>{contact.fax}</RegularText>
-              </TouchableOpacity>
+              <RNEIcon
+                name="print"
+                type="material"
+                color={colors.primary}
+                iconStyle={{ marginRight: normalize(10) }}
+              />
+              <RegularText link>{contact.fax}</RegularText>
             </InfoBox>
           )}
         </View>

@@ -14,7 +14,6 @@ import { Wrapper } from '../Wrapper';
 const InfoBox = styled.View`
   flex: 1;
   flex-direction: row;
-
   margin-bottom: ${normalize(5)}px;
 `;
 

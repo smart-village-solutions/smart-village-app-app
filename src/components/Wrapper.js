@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components/native';
 
 import { normalize } from '../config';
 
@@ -14,6 +14,12 @@ export const ScrollWrapper = styled.ScrollView`
 export const WrapperRow = styled.View`
   flex: 1;
   flex-direction: row;
+
+  ${(props) =>
+    props.space &&
+    css`
+      justify-content: space-between;
+    `};
 `;
 
 export const WrapperWrap = styled.View`
