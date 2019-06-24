@@ -1,26 +1,29 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { Linking, TouchableOpacity, View } from 'react-native';
-import styled from 'styled-components/native';
-
+import { colors, normalize } from '../config';
+import { openLink } from '../helpers';
 import { link } from '../icons';
-import { colors } from '../config';
 import { Icon } from './Icon';
-
-const LinkStyle = styled.Text`
-  color: ${colors.secondary};
-  font-family: titillium-web-bold;
-`;
+import { RegularText } from './Text';
+import { WrapperRowNoFlex } from './Wrapper';
 
 export const Link = ({ url, title }) => (
-  <TouchableOpacity onPress={() => Linking.openURL(url)}>
-    <View style={{ flexDirection: 'row' }}>
-      <LinkStyle>{title}</LinkStyle>
-      <Icon icon={link(colors.secondary)} style={{ marginLeft: 5 }} />
-    </View>
+  <TouchableOpacity onPress={() => openLink(url)}>
+    <WrapperRowNoFlex>
+      <Icon icon={link(colors.secondary)} style={styles.icon} />
+      <RegularText link>{title}</RegularText>
+    </WrapperRowNoFlex>
   </TouchableOpacity>
 );
+
+const styles = StyleSheet.create({
+  icon: {
+    marginRight: normalize(5),
+    marginTop: normalize(3)
+  }
+});
 
 Link.propTypes = {
   url: PropTypes.string.isRequired,
