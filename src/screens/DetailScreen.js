@@ -72,7 +72,11 @@ export class DetailScreen extends React.PureComponent {
           dates, // TODO: need to use dates instead of createdAt in rendering
           title,
           body: description,
-          image: mediaContents && mediaContents.length && mediaContents[0].sourceUrl.url,
+          image:
+              mediaContents &&
+              mediaContents.length &&
+              mediaContents[0].sourceUrl &&
+              mediaContents[0].sourceUrl.url,
           logo: dataProvider && dataProvider.logo && dataProvider.logo.url
         };
       }
@@ -88,8 +92,9 @@ export class DetailScreen extends React.PureComponent {
               contentBlocks.length &&
               contentBlocks[0].mediaContents &&
               contentBlocks[0].mediaContents.length &&
+              contentBlocks[0].mediaContents[0].sourceUrl &&
               contentBlocks[0].mediaContents[0].sourceUrl.url,
-          link: sourceUrl.url,
+          link: sourceUrl && sourceUrl.url,
           logo: dataProvider && dataProvider.logo && dataProvider.logo.url
         };
       }
