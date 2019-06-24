@@ -15,9 +15,10 @@ export const texts = {
     location: 'Anfahrt',
     openingTime: 'Öffnungszeiten',
     prices: 'Preise',
-    description: 'Beschreibung'
+    description: 'Beschreibung',
+    operatingCompany: 'Anbieter'
   },
   screenTitles: {
     home: appJson.expo.name
-  },
+  }
 };
