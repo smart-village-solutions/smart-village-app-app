@@ -102,7 +102,7 @@ export const EventRecord = ({ data }) => {
           </View>
         )}
 
-        {!!prices && !!prices.length && (
+        {!!prices && !!prices.length && !!prices[0].description && (
           <View>
             <TitleContainer>
               <Title>{texts.eventRecord.prices}</Title>
