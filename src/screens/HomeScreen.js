@@ -367,7 +367,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: normalize(40),
     marginBottom: normalize(7),
-    width: normalize(40)
+    resizeMode: 'contain',
+    width: '100%'
   }
 });
 

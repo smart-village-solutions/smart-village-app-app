@@ -77,8 +77,9 @@ export class DetailScreen extends React.PureComponent {
               contentBlocks.length &&
               contentBlocks[0].mediaContents &&
               contentBlocks[0].mediaContents.length &&
+              contentBlocks[0].mediaContents[0].sourceUrl &&
               contentBlocks[0].mediaContents[0].sourceUrl.url,
-          link: sourceUrl.url,
+          link: sourceUrl && sourceUrl.url,
           logo: dataProvider && dataProvider.logo && dataProvider.logo.url
         };
       }

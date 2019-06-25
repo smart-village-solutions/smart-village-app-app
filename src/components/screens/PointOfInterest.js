@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import { device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper } from '../Wrapper';
+import { WrapperNoFlex } from '../Wrapper';
 import { PriceCard } from './PriceCard';
-import { TimeCard } from './TimeCard';
+import { OpeningTimesCard } from './OpeningTimesCard';
 import { InfoCard } from './InfoCard';
+import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 
 /* eslint-disable complexity */
 /* TODO: refactoring? */
@@ -26,7 +27,8 @@ export const PointOfInterest = ({ data }) => {
       contact,
       webUrls,
       openingHours,
-      prices
+      prices,
+      operatingCompany
     } = data;
 
     setPage({
@@ -38,28 +40,41 @@ export const PointOfInterest = ({ data }) => {
       contact,
       webUrls,
       openingHours,
-      prices
+      prices,
+      operatingCompany
     });
   }, []);
 
-  const { title, body, category, image, addresses, contact, webUrls, openingHours, prices } = page;
+  const {
+    title,
+    body,
+    category,
+    image,
+    addresses,
+    contact,
+    webUrls,
+    openingHours,
+    prices,
+    operatingCompany
+  } = page;
 
   return (
-    <ScrollView>
-      {!!image && <Image source={{ uri: image }} />}
+    <SafeAreaView>
+      <ScrollView>
+        {!!image && <Image source={{ uri: image }} />}
 
-      {!!title && (
-        <View>
-          <TitleContainer>
-            <Title>{title}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </View>
-      )}
-      <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
+        {!!title && (
+          <View>
+            <TitleContainer>
+              <Title>{title}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+          </View>
+        )}
+        <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
 
-      {/* TODO: map stuff for location */}
-      {/* {!!location && (
+        {/* TODO: map stuff for location */}
+        {/* {!!location && (
         <View>
           <TitleContainer>
             <Title>{texts.pointOfInterest.location}</Title>
@@ -68,37 +83,52 @@ export const PointOfInterest = ({ data }) => {
         </View>
       )} */}
 
-      {/* TODO: layout check with data */}
-      {/* {!!openingHours && !!openingHours.length && (
-        <View>
-          <TitleContainer>
-            <Title>{texts.pointOfInterest.openingTime}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-          <TimeCard openingHours={openingHours} />
-        </View>
-      )} */}
+        {!!openingHours && !!openingHours.length && (
+          <View>
+            <TitleContainer>
+              <Title>{texts.pointOfInterest.openingTime}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            <OpeningTimesCard openingHours={openingHours} />
+          </View>
+        )}
 
-      {!!prices && !!prices.length && (
-        <View>
-          <TitleContainer>
-            <Title>{texts.pointOfInterest.prices}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-          <PriceCard prices={prices} />
-        </View>
-      )}
+        {!!prices && !!prices.length && (
+          <View>
+            <TitleContainer>
+              <Title>{texts.pointOfInterest.prices}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            <PriceCard prices={prices} />
+          </View>
+        )}
 
-      {!!body && (
-        <View>
-          <TitleContainer>
-            <Title>{texts.pointOfInterest.description}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-          <Wrapper>{!!body && <HtmlView html={body} />}</Wrapper>
-        </View>
-      )}
-    </ScrollView>
+        {!!body && (
+          <View>
+            <TitleContainer>
+              <Title>{texts.pointOfInterest.description}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            <WrapperNoFlex>{!!body && <HtmlView html={body} />}</WrapperNoFlex>
+          </View>
+        )}
+
+        {!!operatingCompany && (
+          <View>
+            <TitleContainer>
+              <Title>{texts.pointOfInterest.operatingCompany}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            <OperatingCompanyInfo
+              name={operatingCompany.name}
+              address={operatingCompany.address}
+              contact={operatingCompany.contact}
+              webUrls={operatingCompany.contact.webUrls}
+            />
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 /* eslint-enable complexity */

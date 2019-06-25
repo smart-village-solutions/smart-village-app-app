@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.8.6]
+
+Fixes for upcoming release
+
+### Fixed
+
+- fixed bug with missing source url for news item which crashed the app
+
+### Removed
+
+- removed momentFormat for times
+  - timeFrom and timeTo are already formatted in the data so we can directly render them
+- removed showing `Geschlossen`
+  - the data from the server are not ready yet to be used
+- removed divider from last opening time
+
+## [v0.8.5]
+
+Update point of interest detail screens
+
+### Added
+
+- added info about operating company
+
+### Changed
+
+- wrapped with a SafeAreaView
+- updated presentation of opening times
+
+### Fixed
+
+- fixed issue with long street names
+  - added a line break
+
 ## [v0.8.4]
 
 Update layouts in list screens and header title
