@@ -25,11 +25,13 @@ export const GET_EVENT_RECORD = gql`
       category {
         name
       }
-      dates {
-        dateStart
-        dateEnd
-        timeStart
-        timeEnd
+      openingHours: dates {
+        weekday
+        dateFrom: dateStart
+        dateTo: dateEnd
+        timeFrom: timeStart
+        timeTo: timeEnd
+        description: timeDescription
       }
       title
       description
@@ -43,7 +45,7 @@ export const GET_EVENT_RECORD = gql`
         street
         zip
       }
-      contacts {
+      contact: contacts {
         email
         phone
         lastName
@@ -69,6 +71,26 @@ export const GET_EVENT_RECORD = gql`
         maxAdultCount
         minAdultCount
         minChildrenCount
+      }
+      operatingCompany: organizer {
+        address {
+          id
+          kind
+          addition
+          street
+          zip
+          city
+        }
+        contact {
+          firstName
+          lastName
+          phone
+          email
+          fax
+          webUrls {
+            url
+          }
+        }
       }
     }
   }

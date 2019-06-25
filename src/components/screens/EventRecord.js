@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, View } from 'react-native';
 
 import { device, texts } from '../../config';
-import { eventDate } from '../../helpers';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Logo } from '../Logo';
@@ -12,6 +11,8 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { ScrollWrapper, Wrapper } from '../Wrapper';
 import { PriceCard } from './PriceCard';
 import { InfoCard } from './InfoCard';
+import { OperatingCompanyInfo } from './OperatingCompanyInfo';
+import { OpeningTimesCard } from './OpeningTimesCard';
 
 /* eslint-disable complexity */
 /* TODO: refactoring? */
@@ -24,22 +25,14 @@ export const EventRecord = ({ data }) => {
       category,
       contacts,
       dataProvider,
-      dates,
       description,
       mediaContents,
       prices,
       title,
-      webUrls
+      webUrls,
+      operatingCompany,
+      openingHours
     } = data;
-    const {
-      dateEnd,
-      dateStart,
-      timeDescription,
-      timeEnd,
-      timeStart,
-      useOnlyTimeDescription,
-      weekday
-    } = dates[0]; // TODO: show every date not only first
 
     setPage({
       contact: contacts && contacts.length && contacts[0], // TODO: show every contact not only first
@@ -47,12 +40,19 @@ export const EventRecord = ({ data }) => {
       category,
       dataProvider: dataProvider && ` | ${dataProvider.name}`,
       description,
-      eventRecordDate: eventDate(dateStart, dateEnd),
-      image: mediaContents && mediaContents.length && mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
+
+      image:
+        mediaContents &&
+        mediaContents.length &&
+        mediaContents[0].sourceUrl &&
+        mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
       logo: dataProvider && dataProvider.logo && dataProvider.logo.url,
       prices,
       title,
-      webUrls
+      webUrls,
+      operatingCompany,
+      priceInformations,
+      openingHours
     });
   }, []);
 
@@ -67,7 +67,10 @@ export const EventRecord = ({ data }) => {
     logo,
     prices,
     title,
-    webUrls
+    webUrls,
+    operatingCompany,
+    priceInformations,
+    openingHours
   } = page;
 
   return (
@@ -89,6 +92,16 @@ export const EventRecord = ({ data }) => {
         </Wrapper>
         <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
 
+        {!!openingHours && !!openingHours.length && (
+          <View>
+            <TitleContainer>
+              <Title>{texts.pointOfInterest.openingTime}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            <OpeningTimesCard openingHours={openingHours} />
+          </View>
+        )}
+
         {!!prices && !!prices.length && (
           <View>
             <TitleContainer>
@@ -107,6 +120,20 @@ export const EventRecord = ({ data }) => {
             {device.platform === 'ios' && <TitleShadow />}
             {/* TODO: map multiple contentBlocks? */}
             <Wrapper>{!!description && <HtmlView html={description} />}</Wrapper>
+          </View>
+        )}
+
+        {!!operatingCompany && (
+          <View>
+            <TitleContainer>
+              <Title>{texts.pointOfInterest.operatingCompany}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            <OperatingCompanyInfo
+              address={operatingCompany.address}
+              contact={operatingCompany.contact}
+              webUrls={operatingCompany.contact.webUrls}
+            />
           </View>
         )}
       </ScrollWrapper>
