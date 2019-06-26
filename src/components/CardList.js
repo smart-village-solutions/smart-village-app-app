@@ -1,25 +1,30 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Card } from 'react-native-elements';
-import { FlatList, Platform, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, Platform, StyleSheet, View } from 'react-native';
 
 import { colors, device, normalize } from '../config';
 import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 
-export class CardList extends React.PureComponent {
-  keyExtractor = (item, index) => item + index;
+export class CardList extends React.Component {
+  state = {
+    listEndReached: false
+  };
+
+  keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
   renderItem = ({ item }) => {
     const { navigation } = this.props;
+    const { routeName, params, image, category, name } = item;
 
     return (
       <Touchable
         onPress={() =>
           navigation.navigate({
-            routeName: item.routeName,
-            params: item.params
+            routeName,
+            params
           })
         }
       >
@@ -37,11 +42,9 @@ export class CardList extends React.PureComponent {
           ]}
         >
           <View style={stylesWithProps(this.props).contentContainer}>
-            {!!item.image && (
-              <Image source={{ uri: item.image }} style={stylesWithProps(this.props).image} />
-            )}
-            {!!item.category && <RegularText small>{item.category}</RegularText>}
-            {!!item.name && <BoldText>{item.name}</BoldText>}
+            {!!image && <Image source={{ uri: image }} style={stylesWithProps(this.props).image} />}
+            {!!category && <RegularText small>{category}</RegularText>}
+            {!!name && <BoldText>{name}</BoldText>}
           </View>
         </Card>
       </Touchable>
@@ -49,15 +52,21 @@ export class CardList extends React.PureComponent {
   };
 
   render() {
+    const { listEndReached } = this.state;
     const { data, horizontal } = this.props;
 
     return (
       <FlatList
-        showsHorizontalScrollIndicator={false}
-        horizontal={horizontal}
         keyExtractor={this.keyExtractor}
         data={data}
         renderItem={this.renderItem}
+        ListFooterComponent={
+          data.length > 10 &&
+          !listEndReached && <ActivityIndicator style={{ margin: normalize(14) }} />
+        }
+        onEndReached={() => this.setState({ listEndReached: true })}
+        showsHorizontalScrollIndicator={!horizontal}
+        horizontal={horizontal}
       />
     );
   }
