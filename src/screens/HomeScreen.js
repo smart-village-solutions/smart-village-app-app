@@ -318,7 +318,9 @@ export const HomeScreen = ({ navigation }) => (
                               style={styles.serviceImage}
                               PlaceholderContent={null}
                             />
-                            <BoldText light>{item.title}</BoldText>
+                            <BoldText small light>
+                              {item.title}
+                            </BoldText>
                           </View>
                         </TouchableOpacity>
                       </ServiceBox>
