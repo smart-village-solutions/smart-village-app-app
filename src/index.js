@@ -19,7 +19,6 @@ import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentCo
 
 export const MainApp = () => {
   const [client, setClient] = useState(null);
-  const [loaded, setLoaded] = useState(false);
   const [drawerRoutes, setDrawerRoutes] = useState({
     AppStack: {
       screen: AppStackNavigator,
@@ -121,7 +120,6 @@ export const MainApp = () => {
     }
 
     setClient(client);
-    setLoaded(true);
 
     SplashScreen.hide();
   };
@@ -135,7 +133,7 @@ export const MainApp = () => {
     auth(setupApolloClient);
   }, []);
 
-  if (!loaded) {
+  if (!client) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator />
