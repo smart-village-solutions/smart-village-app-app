@@ -149,7 +149,11 @@ export const HomeScreen = ({ navigation }) => (
               id: pointOfInterest.id,
               name: pointOfInterest.name,
               category: !!pointOfInterest.category && pointOfInterest.category.name,
-              image: pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: only if .contentType == "image"
+              image:
+                !!pointOfInterest.mediaContents &&
+                !!pointOfInterest.mediaContents.length &&
+                !!pointOfInterest.mediaContents[0].sourceUrl &&
+                pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
               routeName: 'Detail',
               params: {
                 title: 'Ort',

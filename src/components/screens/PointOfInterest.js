@@ -35,7 +35,11 @@ export const PointOfInterest = ({ data }) => {
       title: name,
       body: description,
       category,
-      image: mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
+      image:
+        !!mediaContents &&
+        !!mediaContents.length &&
+        !!mediaContents[0].sourceUrl &&
+        mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
       addresses,
       contact,
       webUrls,
