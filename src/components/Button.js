@@ -13,6 +13,7 @@ export const Button = ({ title, onPress }) => {
       title={title}
       titleStyle={styles.titleStyle}
       ViewComponent={DiagonalGradient}
+      useForeground
     />
   );
 };
