@@ -65,6 +65,7 @@ export class CardList extends React.Component {
           !listEndReached && <ActivityIndicator style={{ margin: normalize(14) }} />
         }
         onEndReached={() => this.setState({ listEndReached: true })}
+        removeClippedSubviews
         showsHorizontalScrollIndicator={!horizontal}
         horizontal={horizontal}
       />

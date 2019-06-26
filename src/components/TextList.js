@@ -57,6 +57,7 @@ export class TextList extends React.Component {
           !listEndReached && <ActivityIndicator style={{ margin: normalize(14) }} />
         }
         onEndReached={() => this.setState({ listEndReached: true })}
+        removeClippedSubviews
         scrollEnabled={false}
       />
     );
