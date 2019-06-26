@@ -24,8 +24,9 @@ const addressOnPress = (address) => {
 
   openLink(mapsLink);
 };
+
 /* eslint-disable complexity */
-/* TODO: refactoring? */
+/* NOTE: we need to check a lot for presence, so this is that complex */
 export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
   const { city, street, zip } = address;
 

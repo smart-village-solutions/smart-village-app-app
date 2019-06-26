@@ -13,7 +13,7 @@ import { InfoCard } from './InfoCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 
 /* eslint-disable complexity */
-/* TODO: refactoring? */
+/* NOTE: we need to check a lot for presence, so this is that complex */
 export const PointOfInterest = ({ data }) => {
   const {
     name,
@@ -55,7 +55,7 @@ export const PointOfInterest = ({ data }) => {
         )}
         <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
 
-        {/* TODO: map stuff for location */}
+        {/* TODO: show map for location */}
         {/* {!!location && (
         <View>
           <TitleContainer>

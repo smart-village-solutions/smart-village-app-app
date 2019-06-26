@@ -61,7 +61,7 @@ export class DetailScreen extends React.PureComponent {
   }
 
   /* eslint-disable complexity */
-  /* TODO: refactoring to single components */
+  /* NOTE: we need to check a lot for presence, so this is that complex */
   getPage(query, data) {
     switch (query) {
     case 'eventRecord': {
@@ -69,7 +69,7 @@ export class DetailScreen extends React.PureComponent {
 
       return {
         subtitle: `${momentFormat(createdAt)} | ${dataProvider && dataProvider.name}`,
-        dates, // TODO: need to use dates instead of createdAt in rendering
+        dates,
         title,
         body: description,
         image:
@@ -114,7 +114,7 @@ export class DetailScreen extends React.PureComponent {
     if (!query) return null;
 
     /* eslint-disable complexity */
-    /* TODO: refactoring? */
+    /* NOTE: we need to check a lot for presence, so this is that complex */
     return (
       <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
         {({ data, loading }) => {

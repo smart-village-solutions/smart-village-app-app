@@ -16,23 +16,17 @@ const PriceBox = styled.View`
   width: ${device.width * 0.5 - normalize(14) * 1.5};
 `;
 
-// TODO: add missing data and format amounts
 export const PriceCard = ({ prices }) => (
   <DiagonalGradient style={{ padding: normalize(14) }}>
     <WrapperWrap>
       {!!prices &&
         prices.map((item, index) => {
           const {
-            name,
-            ageFrom,
-            ageTo,
             category,
             amount,
             description,
             maxChildrenCount,
             maxAdultCount,
-            minAdultCount,
-            minChildrenCount,
             groupPrice
           } = item;
 

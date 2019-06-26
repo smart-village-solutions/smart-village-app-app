@@ -67,17 +67,12 @@ export const GET_POINT_OF_INTEREST = gql`
         url
       }
       prices {
-        name
-        groupPrice
-        amount
-        ageFrom
-        ageTo
         category
+        amount
         description
         maxChildrenCount
         maxAdultCount
-        minAdultCount
-        minChildrenCount
+        groupPrice
       }
       openingHours {
         sortNumber
