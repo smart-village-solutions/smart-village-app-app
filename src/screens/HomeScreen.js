@@ -77,7 +77,8 @@ export const HomeScreen = ({ navigation }) => (
                 rootRouteName: 'NewsItems',
                 shareContent: {
                   message: shareMessage(newsItem, 'newsItem')
-                }
+                },
+                details: newsItem
               },
               bottomDivider: index !== data.newsItems.length - 1,
               __typename: newsItem.__typename
@@ -162,7 +163,8 @@ export const HomeScreen = ({ navigation }) => (
                 rootRouteName: 'PointsOfInterest',
                 shareContent: {
                   message: shareMessage(pointOfInterest, 'pointOfInterest')
-                }
+                },
+                details: pointOfInterest
               },
               __typename: pointOfInterest.__typename
             }));
@@ -241,7 +243,8 @@ export const HomeScreen = ({ navigation }) => (
                 rootRouteName: 'EventRecords',
                 shareContent: {
                   message: shareMessage(eventRecord, 'eventRecord')
-                }
+                },
+                details: eventRecord
               },
               bottomDivider: index !== data.eventRecords.length - 1,
               __typename: eventRecord.__typename

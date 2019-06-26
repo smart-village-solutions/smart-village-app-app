@@ -47,9 +47,10 @@ export class IndexScreen extends React.PureComponent {
         return (
           data &&
             data[query].map((eventRecord) => ({
-              ...eventRecord,
+              id: eventRecord.id,
               subtitle: `${momentFormat(eventRecord.createdAt)} | ${eventRecord.dataProvider &&
                 eventRecord.dataProvider.name}`,
+              title: eventRecord.title,
               routeName: 'Detail',
               params: {
                 title: 'Veranstaltung',
@@ -58,7 +59,8 @@ export class IndexScreen extends React.PureComponent {
                 rootRouteName: 'EventRecords',
                 shareContent: {
                   message: shareMessage(eventRecord, query)
-                }
+                },
+                details: eventRecord
               }
             }))
         );
@@ -79,7 +81,8 @@ export class IndexScreen extends React.PureComponent {
                 rootRouteName: 'NewsItems',
                 shareContent: {
                   message: shareMessage(newsItem, query)
-                }
+                },
+                details: newsItem
               }
             }))
         );
@@ -91,7 +94,11 @@ export class IndexScreen extends React.PureComponent {
               id: pointOfInterest.id,
               name: pointOfInterest.name,
               category: !!pointOfInterest.category && pointOfInterest.category.name,
-              image: pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: only if .contentType == "image"
+              image:
+                !!pointOfInterest.mediaContents &&
+                !!pointOfInterest.mediaContents.length &&
+                !!pointOfInterest.mediaContents[0].sourceUrl &&
+                pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
               routeName: 'Detail',
               params: {
                 title: 'Ort',
@@ -100,7 +107,8 @@ export class IndexScreen extends React.PureComponent {
                 rootRouteName: 'PointsOfInterest',
                 shareContent: {
                   message: shareMessage(pointOfInterest, query)
-                }
+                },
+                details: pointOfInterest
               }
             }))
         );

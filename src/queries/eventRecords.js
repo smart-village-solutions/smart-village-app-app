@@ -4,9 +4,24 @@ export const GET_EVENT_RECORDS = gql`
   query EventRecords($limit: Int) {
     eventRecords(limit: $limit) {
       id
-      title
       createdAt
+      dates {
+        dateStart
+        dateEnd
+        timeStart
+        timeEnd
+      }
+      title
+      description
+      mediaContents {
+        sourceUrl {
+          url
+        }
+      }
       dataProvider {
+        logo {
+          url
+        }
         name
       }
     }
