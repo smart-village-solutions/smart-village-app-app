@@ -3,7 +3,8 @@ import React from 'react';
 import { Card } from 'react-native-elements';
 import { ActivityIndicator, FlatList, Platform, StyleSheet, View } from 'react-native';
 
-import { colors, device, normalize } from '../config';
+import { colors, normalize } from '../config';
+import { imageHeight, imageWidth } from '../helpers';
 import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
@@ -73,16 +74,6 @@ export class CardList extends React.Component {
   }
 }
 
-const imageHeight = (horizontal) => {
-  const imageWidth = horizontal ? device.width * 0.7 : device.width;
-  // image aspect ratio is 360x180, so for accurate ratio in our view we need to calculate
-  // a factor with our current device with for the image, to set a correct height
-  const factor = imageWidth / 360;
-  const imageHeight = 180 * factor;
-
-  return imageHeight;
-};
-
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({ horizontal }) =>
@@ -94,7 +85,7 @@ const stylesWithProps = ({ horizontal }) =>
       padding: normalize(14)
     },
     contentContainer: {
-      width: horizontal ? device.width * 0.7 : device.width - 2 * normalize(14)
+      width: horizontal ? imageWidth(horizontal) : imageWidth() - 2 * normalize(14)
     },
     image: {
       borderRadius: 5,

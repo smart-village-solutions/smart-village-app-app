@@ -4,13 +4,8 @@ import { ActivityIndicator } from 'react-native';
 import { CacheManager } from 'react-native-expo-image-cache';
 import { Image as RNEImage } from 'react-native-elements';
 
-import { colors, device } from '../config';
-
-const imageWidth = device.width;
-// image aspect ratio is 360x180, so for accurate ratio in our view we need to calculate
-// a factor with our current device with for the image, to set a correct height
-const factor = imageWidth / 360;
-const imageHeight = 180 * factor;
+import { colors } from '../config';
+import { imageHeight, imageWidth } from '../helpers';
 
 export const Image = ({ source, style, PlaceholderContent }) => {
   const [uri, setUri] = useState(null);
@@ -53,8 +48,8 @@ Image.propTypes = {
 Image.defaultProps = {
   style: {
     alignSelf: 'center',
-    height: imageHeight,
-    width: imageWidth
+    height: imageHeight(),
+    width: imageWidth()
   },
   PlaceholderContent: <ActivityIndicator />
 };

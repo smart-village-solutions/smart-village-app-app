@@ -61,5 +61,8 @@ export const html = {
   },
   ol: {
     marginBottom: 0
+  },
+  img: {
+    alignSelf: 'center'
   }
 };
