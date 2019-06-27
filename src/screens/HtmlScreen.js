@@ -10,10 +10,11 @@ import {
 } from 'react-native';
 import { Query } from 'react-apollo';
 
+import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, normalize } from '../config';
 import { Button, HtmlView, Icon, Wrapper } from '../components';
-import { trimNewLines } from '../helpers';
+import { graphqlFetchPolicy, trimNewLines } from '../helpers';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
 
@@ -30,8 +31,12 @@ export class HtmlScreen extends React.PureComponent {
     };
   };
 
+  static contextType = NetworkContext;
+
   componentDidMount() {
-    auth();
+    const isConnected = this.context.isConnected;
+
+    isConnected && auth();
   }
 
   render() {
@@ -42,11 +47,14 @@ export class HtmlScreen extends React.PureComponent {
 
     if (!queryVariables || !queryVariables.name) return null;
 
+    const isConnected = this.context.isConnected;
+    const fetchPolicy = graphqlFetchPolicy(isConnected);
+
     return (
       <Query
         query={getQuery('publicHtmlFile')}
         variables={{ name: queryVariables.name }}
-        fetchPolicy="cache-and-network"
+        fetchPolicy={fetchPolicy}
       >
         {({ data, loading }) => {
           if (loading) {

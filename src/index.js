@@ -13,7 +13,9 @@ import _reduce from 'lodash/reduce';
 
 import { auth } from './auth';
 import { colors, device, secrets, texts } from './config';
+import { netInfoForGraphqlFetchPolicy } from './helpers';
 import { getQuery } from './queries';
+import { NetworkProvider } from './NetworkProvider';
 import AppStackNavigator from './navigation/AppStackNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 
@@ -90,10 +92,12 @@ export const MainApp = () => {
 
     client.onResetStore(() => cache.writeData({ data: initialCache }));
 
+    const fetchPolicy = await netInfoForGraphqlFetchPolicy();
+
     const { data } = await client.query({
       query: getQuery('publicJsonFile'),
       variables: { name: 'navigation' },
-      fetchPolicy: 'network-only'
+      fetchPolicy
     });
 
     let publicJsonFileContent =
@@ -160,7 +164,9 @@ export const MainApp = () => {
   return (
     <ApolloProvider client={client}>
       <StatusBar barStyle="light-content" />
-      <AppContainer />
+      <NetworkProvider>
+        <AppContainer />
+      </NetworkProvider>
     </ApolloProvider>
   );
 };

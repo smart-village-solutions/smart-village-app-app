@@ -10,12 +10,13 @@ import {
 } from 'react-native';
 import { Query } from 'react-apollo';
 
+import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, normalize } from '../config';
 import { CardList, Icon, TextList } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
-import { momentFormat, shareMessage } from '../helpers';
+import { graphqlFetchPolicy, momentFormat, shareMessage } from '../helpers';
 
 export class IndexScreen extends React.PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -30,8 +31,97 @@ export class IndexScreen extends React.PureComponent {
     };
   };
 
+  static contextType = NetworkContext;
+
   componentDidMount() {
-    auth();
+    const isConnected = this.context.isConnected;
+
+    isConnected && auth();
+  }
+
+  getListItems(query, data) {
+    switch (query) {
+    case 'eventRecords':
+      return (
+        data &&
+          data[query].map((eventRecord) => ({
+            id: eventRecord.id,
+            subtitle: `${momentFormat(eventRecord.createdAt)} | ${eventRecord.dataProvider &&
+              eventRecord.dataProvider.name}`,
+            title: eventRecord.title,
+            routeName: 'Detail',
+            params: {
+              title: 'Veranstaltung',
+              query: 'eventRecord',
+              queryVariables: { id: `${eventRecord.id}` },
+              rootRouteName: 'EventRecords',
+              shareContent: {
+                message: shareMessage(eventRecord, query)
+              },
+              details: eventRecord
+            }
+          }))
+      );
+    case 'newsItems':
+      return (
+        data &&
+          data[query] &&
+          data[query].map((newsItem) => ({
+            id: newsItem.id,
+            subtitle: `${momentFormat(newsItem.publishedAt)} | ${newsItem.dataProvider &&
+              newsItem.dataProvider.name}`,
+            title: newsItem.contentBlocks[0].title,
+            routeName: 'Detail',
+            params: {
+              title: 'Nachricht',
+              query: 'newsItem',
+              queryVariables: { id: `${newsItem.id}` },
+              rootRouteName: 'NewsItems',
+              shareContent: {
+                message: shareMessage(newsItem, query)
+              },
+              details: newsItem
+            }
+          }))
+      );
+    case 'pointsOfInterest':
+      return (
+        data &&
+          data[query] &&
+          data[query].map((pointOfInterest) => ({
+            id: pointOfInterest.id,
+            name: pointOfInterest.name,
+            category: !!pointOfInterest.category && pointOfInterest.category.name,
+            image:
+              !!pointOfInterest.mediaContents &&
+              !!pointOfInterest.mediaContents.length &&
+              !!pointOfInterest.mediaContents[0].sourceUrl &&
+              pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
+            routeName: 'Detail',
+            params: {
+              title: 'Ort',
+              query: 'pointOfInterest',
+              queryVariables: { id: `${pointOfInterest.id}` },
+              rootRouteName: 'PointsOfInterest',
+              shareContent: {
+                message: shareMessage(pointOfInterest, query)
+              },
+              details: pointOfInterest
+            }
+          }))
+      );
+    }
+  }
+
+  getComponent(query) {
+    switch (query) {
+    case 'eventRecords':
+      return TextList;
+    case 'newsItems':
+      return TextList;
+    case 'pointsOfInterest':
+      return CardList;
+    }
   }
 
   render() {
@@ -41,93 +131,11 @@ export class IndexScreen extends React.PureComponent {
 
     if (!query) return null;
 
-    const getListItems = (query, data) => {
-      switch (query) {
-      case 'eventRecords':
-        return (
-          data &&
-            data[query].map((eventRecord) => ({
-              id: eventRecord.id,
-              subtitle: `${momentFormat(eventRecord.createdAt)} | ${eventRecord.dataProvider &&
-                eventRecord.dataProvider.name}`,
-              title: eventRecord.title,
-              routeName: 'Detail',
-              params: {
-                title: 'Veranstaltung',
-                query: 'eventRecord',
-                queryVariables: { id: `${eventRecord.id}` },
-                rootRouteName: 'EventRecords',
-                shareContent: {
-                  message: shareMessage(eventRecord, query)
-                },
-                details: eventRecord
-              }
-            }))
-        );
-      case 'newsItems':
-        return (
-          data &&
-            data[query] &&
-            data[query].map((newsItem) => ({
-              id: newsItem.id,
-              subtitle: `${momentFormat(newsItem.publishedAt)} | ${newsItem.dataProvider &&
-                newsItem.dataProvider.name}`,
-              title: newsItem.contentBlocks[0].title,
-              routeName: 'Detail',
-              params: {
-                title: 'Nachricht',
-                query: 'newsItem',
-                queryVariables: { id: `${newsItem.id}` },
-                rootRouteName: 'NewsItems',
-                shareContent: {
-                  message: shareMessage(newsItem, query)
-                },
-                details: newsItem
-              }
-            }))
-        );
-      case 'pointsOfInterest':
-        return (
-          data &&
-            data[query] &&
-            data[query].map((pointOfInterest) => ({
-              id: pointOfInterest.id,
-              name: pointOfInterest.name,
-              category: !!pointOfInterest.category && pointOfInterest.category.name,
-              image:
-                !!pointOfInterest.mediaContents &&
-                !!pointOfInterest.mediaContents.length &&
-                !!pointOfInterest.mediaContents[0].sourceUrl &&
-                pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
-              routeName: 'Detail',
-              params: {
-                title: 'Ort',
-                query: 'pointOfInterest',
-                queryVariables: { id: `${pointOfInterest.id}` },
-                rootRouteName: 'PointsOfInterest',
-                shareContent: {
-                  message: shareMessage(pointOfInterest, query)
-                },
-                details: pointOfInterest
-              }
-            }))
-        );
-      }
-    };
-
-    const getComponent = (query) => {
-      switch (query) {
-      case 'eventRecords':
-        return TextList;
-      case 'newsItems':
-        return TextList;
-      case 'pointsOfInterest':
-        return CardList;
-      }
-    };
+    const isConnected = this.context.isConnected;
+    const fetchPolicy = graphqlFetchPolicy(isConnected);
 
     return (
-      <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
+      <Query query={getQuery(query)} variables={queryVariables} fetchPolicy={fetchPolicy}>
         {({ data, loading }) => {
           if (loading) {
             return (
@@ -137,11 +145,11 @@ export class IndexScreen extends React.PureComponent {
             );
           }
 
-          const listItems = getListItems(query, data);
+          const listItems = this.getListItems(query, data);
 
           if (!listItems || !listItems.length) return null;
 
-          const Component = getComponent(query);
+          const Component = this.getComponent(query);
 
           return (
             <SafeAreaView>

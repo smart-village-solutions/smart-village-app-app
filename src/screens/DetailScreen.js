@@ -3,6 +3,7 @@ import React from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
+import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, device, normalize } from '../config';
 import {
@@ -22,7 +23,7 @@ import {
 } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft, drawerMenu, share } from '../icons';
-import { momentFormat, openLink, openShare, trimNewLines } from '../helpers';
+import { graphqlFetchPolicy, momentFormat, openLink, openShare, trimNewLines } from '../helpers';
 
 export class DetailScreen extends React.PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -49,8 +50,12 @@ export class DetailScreen extends React.PureComponent {
     };
   };
 
+  static contextType = NetworkContext;
+
   componentDidMount() {
-    auth();
+    const isConnected = this.context.isConnected;
+
+    isConnected && auth();
   }
 
   renderScreenComponent(query, data) {
@@ -113,10 +118,13 @@ export class DetailScreen extends React.PureComponent {
 
     if (!query) return null;
 
+    const isConnected = this.context.isConnected;
+    const fetchPolicy = graphqlFetchPolicy(isConnected);
+
     /* eslint-disable complexity */
     /* NOTE: we need to check a lot for presence, so this is that complex */
     return (
-      <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
+      <Query query={getQuery(query)} variables={queryVariables} fetchPolicy={fetchPolicy}>
         {({ data, loading }) => {
           if (loading) {
             return (
