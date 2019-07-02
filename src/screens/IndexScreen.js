@@ -46,11 +46,8 @@ export class IndexScreen extends React.PureComponent {
         data &&
           data[query].map((eventRecord) => ({
             id: eventRecord.id,
-            subtitle: `${eventRecord.dates[0] &&
-              eventDate(
-                eventRecord.dates[0].dateStart,
-                eventRecord.dates[0].dateEnd
-              )} | ${eventRecord.dataProvider && eventRecord.dataProvider.name}`, // TODO: refactor eventRecord.dates[0]
+            subtitle: `${eventDate(eventRecord.listDate)} | ${eventRecord.dataProvider &&
+              eventRecord.dataProvider.name}`,
             title: eventRecord.title,
             routeName: 'Detail',
             params: {

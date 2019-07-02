@@ -1,18 +1,21 @@
 import gql from 'graphql-tag';
 
 export const GET_EVENT_RECORDS = gql`
-  query EventRecords($limit: Int) {
-    eventRecords(limit: $limit) {
+  query EventRecords($limit: Int, $order: EventRecordsOrder) {
+    eventRecords(limit: $limit, order: $order) {
       id
       category {
         name
       }
       dates {
-        dateStart
-        dateEnd
-        timeStart
-        timeEnd
+        weekday
+        dateFrom: dateStart
+        dateTo: dateEnd
+        timeFrom: timeStart
+        timeTo: timeEnd
+        description: timeDescription
       }
+      listDate
       title
       description
       mediaContents {
@@ -37,7 +40,7 @@ export const GET_EVENT_RECORD = gql`
       category {
         name
       }
-      openingHours: dates {
+      dates {
         weekday
         dateFrom: dateStart
         dateTo: dateEnd
@@ -45,6 +48,7 @@ export const GET_EVENT_RECORD = gql`
         timeTo: timeEnd
         description: timeDescription
       }
+      listDate
       title
       description
       mediaContents {

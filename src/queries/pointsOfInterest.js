@@ -66,7 +66,7 @@ export const GET_POINT_OF_INTEREST = gql`
       webUrls {
         url
       }
-      prices {
+      priceInformations {
         category
         amount
         description

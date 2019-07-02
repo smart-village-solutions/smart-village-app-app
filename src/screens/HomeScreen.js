@@ -212,7 +212,7 @@ export class HomeScreen extends React.PureComponent {
                   params: {
                     title: 'Veranstaltungen',
                     query: 'eventRecords',
-                    queryVariables: {},
+                    queryVariables: { order: 'listDate_DESC' },
                     rootRouteName: 'EventRecords'
                   }
                 })
@@ -241,11 +241,8 @@ export class HomeScreen extends React.PureComponent {
                 data.eventRecords &&
                 data.eventRecords.map((eventRecord, index) => ({
                   id: eventRecord.id,
-                  subtitle: `${eventRecord.dates[0] &&
-                    eventDate(
-                      eventRecord.dates[0].dateStart,
-                      eventRecord.dates[0].dateEnd
-                    )} | ${eventRecord.dataProvider && eventRecord.dataProvider.name}`, // TODO: refactor eventRecord.dates[0]
+                  subtitle: `${eventDate(eventRecord.listDate)} | ${eventRecord.dataProvider &&
+                    eventRecord.dataProvider.name}`,
                   title: eventRecord.title,
                   routeName: 'Detail',
                   params: {
@@ -276,7 +273,7 @@ export class HomeScreen extends React.PureComponent {
                           params: {
                             title: 'Veranstaltungen',
                             query: 'eventRecords',
-                            queryVariables: {},
+                            queryVariables: { order: 'listDate_DESC' },
                             rootRouteName: 'EventRecords'
                           }
                         })

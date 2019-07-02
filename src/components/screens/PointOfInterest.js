@@ -23,7 +23,7 @@ export const PointOfInterest = ({ data }) => {
     mediaContents,
     openingHours,
     operatingCompany,
-    prices,
+    priceInformations,
     title,
     webUrls
   } = data;
@@ -69,13 +69,13 @@ export const PointOfInterest = ({ data }) => {
           </View>
         )}
 
-        {!!prices && !!prices.length && (
+        {!!priceInformations && !!priceInformations.length && (
           <View>
             <TitleContainer>
               <Title>{texts.pointOfInterest.prices}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
-            <PriceCard prices={prices} />
+            <PriceCard prices={priceInformations} />
           </View>
         )}
 
