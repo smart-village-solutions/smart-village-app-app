@@ -183,6 +183,7 @@ export class HomeScreen extends React.PureComponent {
               return (
                 <View>
                   <CardList navigation={navigation} data={pointsOfInterest} horizontal />
+                  {/* <CardList navigation={navigation} data={Tour} horizontal /> */}
 
                   <Wrapper>
                     <Button
