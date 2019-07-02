@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.9.2]
+
+Update to latest server changes
+
+### Added
+
+- added version number to the bottom of the HomeScreen
+
+### Changed
+
+- changed `prices` to `priceInformations` for points of interest
+- sort event records on `listDate`
+- render `listDate` in event record teasers on index screens
+
+## [v0.9.1]
+
+Update event record detail screens
+
+### Fixed
+
+- using ScrollView instead of ScrollWrapper in EventRecord to get rid
+  of strange layout spacings on first render
+
+### Added
+
+- added more detail data to event detail screen
+- added different titles for event dates and organizer
+- added smaller adjustments to queries
+
+### Changed
+
+- created EventRecord and updated rendering without useEffect
+  - we can directly render the data
+
 ## [v0.9.0]
 
 Performance optimizations and fixes
