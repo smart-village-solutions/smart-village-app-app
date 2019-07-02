@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.9.0]
+
+Performance optimizations and fixes
+
+### Fixed
+
+- fixed app not loading offline with explicitly handling fetch policies according to online/offline
+  network status
+- fixed sharing content for points of interest
+- more smaller fixes
+
+### Added
+
+- added image caching based on https://github.com/wcandillon/react-native-expo-image-cache
+- added a ActivityIndicator logic to CardList and TextList to indicate
+  loading/processing while scrolling
+
+### Changed
+
+- updated packages
+- refactored code for performance optimizations
+- adjusted headerTitleStyle for iOS a bit larger
+
 ## [v0.8.6]
 
 Fixes for upcoming release
