@@ -8,11 +8,25 @@ export const GET_POINTS_OF_INTEREST = gql`
       category {
         name
       }
+      description
       mediaContents {
         contentType
         sourceUrl {
           url
         }
+      }
+      addresses {
+        city
+        street
+        zip
+      }
+      contact {
+        email
+        phone
+        lastName
+      }
+      webUrls {
+        url
       }
     }
   }
@@ -22,7 +36,6 @@ export const GET_POINT_OF_INTEREST = gql`
   query PointOfInterest($id: ID!) {
     pointOfInterest(id: $id) {
       id
-      createdAt
       name
       category {
         name
@@ -54,17 +67,12 @@ export const GET_POINT_OF_INTEREST = gql`
         url
       }
       prices {
-        name
-        groupPrice
-        amount
-        ageFrom
-        ageTo
         category
+        amount
         description
         maxChildrenCount
         maxAdultCount
-        minAdultCount
-        minChildrenCount
+        groupPrice
       }
       openingHours {
         sortNumber

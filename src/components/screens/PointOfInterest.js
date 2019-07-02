@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
 import { device, texts } from '../../config';
@@ -13,50 +13,32 @@ import { InfoCard } from './InfoCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 
 /* eslint-disable complexity */
-/* TODO: refactoring? */
+/* NOTE: we need to check a lot for presence, so this is that complex */
 export const PointOfInterest = ({ data }) => {
-  const [page, setPage] = useState({});
-
-  useEffect(() => {
-    const {
-      name,
-      description,
-      category,
-      mediaContents,
-      addresses,
-      contact,
-      webUrls,
-      openingHours,
-      prices,
-      operatingCompany
-    } = data;
-
-    setPage({
-      title: name,
-      body: description,
-      category,
-      image: mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
-      addresses,
-      contact,
-      webUrls,
-      openingHours,
-      prices,
-      operatingCompany
-    });
-  }, []);
-
   const {
-    title,
-    body,
+    name,
+    description,
     category,
-    image,
+    mediaContents,
     addresses,
     contact,
     webUrls,
     openingHours,
     prices,
     operatingCompany
-  } = page;
+  } = data;
+
+  const page = {
+    title: name,
+    body: description,
+    image:
+      !!mediaContents &&
+      !!mediaContents.length &&
+      !!mediaContents[0].sourceUrl &&
+      mediaContents[0].sourceUrl.url // TODO: some logic to get the first image/thumbnail
+  };
+
+  const { title, body, image } = page;
 
   return (
     <SafeAreaView>
@@ -73,7 +55,7 @@ export const PointOfInterest = ({ data }) => {
         )}
         <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
 
-        {/* TODO: map stuff for location */}
+        {/* TODO: show map for location */}
         {/* {!!location && (
         <View>
           <TitleContainer>

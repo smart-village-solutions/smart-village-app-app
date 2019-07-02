@@ -25,8 +25,9 @@ const addressOnPress = (address) => {
 };
 
 /* eslint-disable complexity */
-/* TODO: refactoring? */
-/* TODO: add a logic to display info category and url that fit the screen even if long text (not jet a problem)  */
+/* NOTE: we need to check a lot for presence, so this is that complex */
+/* TODO: add a logic to display info category and url that fit the screen even if long text
+         (not yet a problem) */
 export const InfoCard = ({ addresses, category, contact, webUrls }) => (
   <Wrapper>
     {!!category && !!category.name && (

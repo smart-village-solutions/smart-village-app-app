@@ -7,8 +7,20 @@ export const GET_NEWS_ITEMS = gql`
       publishedAt
       contentBlocks {
         title
+        body
+        mediaContents {
+          sourceUrl {
+            url
+          }
+        }
+      }
+      sourceUrl {
+        url
       }
       dataProvider {
+        logo {
+          url
+        }
         name
       }
     }

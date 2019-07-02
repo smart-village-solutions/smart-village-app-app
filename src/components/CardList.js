@@ -1,25 +1,31 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Card } from 'react-native-elements';
-import { FlatList, Platform, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, Platform, StyleSheet, View } from 'react-native';
 
-import { colors, device, normalize } from '../config';
+import { colors, normalize } from '../config';
+import { imageHeight, imageWidth } from '../helpers';
 import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 
-export class CardList extends React.PureComponent {
-  keyExtractor = (item, index) => item + index;
+export class CardList extends React.Component {
+  state = {
+    listEndReached: false
+  };
+
+  keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
   renderItem = ({ item }) => {
     const { navigation } = this.props;
+    const { routeName, params, image, category, name } = item;
 
     return (
       <Touchable
         onPress={() =>
           navigation.navigate({
-            routeName: item.routeName,
-            params: item.params
+            routeName,
+            params
           })
         }
       >
@@ -37,11 +43,9 @@ export class CardList extends React.PureComponent {
           ]}
         >
           <View style={stylesWithProps(this.props).contentContainer}>
-            {!!item.image && (
-              <Image source={{ uri: item.image }} style={stylesWithProps(this.props).image} />
-            )}
-            {!!item.category && <RegularText small>{item.category}</RegularText>}
-            {!!item.name && <BoldText>{item.name}</BoldText>}
+            {!!image && <Image source={{ uri: image }} style={stylesWithProps(this.props).image} />}
+            {!!category && <RegularText small>{category}</RegularText>}
+            {!!name && <BoldText>{name}</BoldText>}
           </View>
         </Card>
       </Touchable>
@@ -49,29 +53,26 @@ export class CardList extends React.PureComponent {
   };
 
   render() {
+    const { listEndReached } = this.state;
     const { data, horizontal } = this.props;
 
     return (
       <FlatList
-        showsHorizontalScrollIndicator={false}
-        horizontal={horizontal}
         keyExtractor={this.keyExtractor}
         data={data}
         renderItem={this.renderItem}
+        ListFooterComponent={
+          data.length > 10 &&
+          !listEndReached && <ActivityIndicator style={{ margin: normalize(14) }} />
+        }
+        onEndReached={() => this.setState({ listEndReached: true })}
+        removeClippedSubviews
+        showsHorizontalScrollIndicator={!horizontal}
+        horizontal={horizontal}
       />
     );
   }
 }
-
-const imageHeight = (horizontal) => {
-  const imageWidth = horizontal ? device.width * 0.7 : device.width;
-  // image aspect ratio is 360x180, so for accurate ratio in our view we need to calculate
-  // a factor with our current device with for the image, to set a correct height
-  const factor = imageWidth / 360;
-  const imageHeight = 180 * factor;
-
-  return imageHeight;
-};
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
@@ -84,7 +85,7 @@ const stylesWithProps = ({ horizontal }) =>
       padding: normalize(14)
     },
     contentContainer: {
-      width: horizontal ? device.width * 0.7 : device.width - 2 * normalize(14)
+      width: horizontal ? imageWidth(horizontal) : imageWidth() - 2 * normalize(14)
     },
     image: {
       borderRadius: 5,

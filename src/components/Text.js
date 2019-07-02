@@ -6,6 +6,7 @@ export const RegularText = styled.Text`
   color: ${colors.darkText};
   font-family: titillium-web-regular;
   font-size: ${normalize(16)};
+  line-height: ${normalize(22)};
 
   ${(props) =>
     props.small &&
@@ -27,7 +28,6 @@ export const BoldText = styled(RegularText)`
     props.light &&
     css`
       color: ${colors.lightestText};
-      font-size: ${normalize(14)};
     `};
 `;
 

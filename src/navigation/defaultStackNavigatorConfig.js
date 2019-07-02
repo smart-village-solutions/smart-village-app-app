@@ -11,12 +11,15 @@ export const defaultStackNavigatorConfig = (initialRouteName) => {
     initialRouteName,
     URIPrefix: 'smart-village-app://',
     defaultNavigationOptions: ({ navigation }) => ({
-      //header gradient https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
+      // header gradient:
+      // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
       headerBackground: <DiagonalGradient />,
       headerTitleStyle: {
         color: colors.lightestText,
         fontFamily: device.platform === 'ios' ? 'titillium-web-bold' : 'titillium-web-regular',
-        fontWeight: device.platform === 'ios' ? '600' : '400'
+        fontSize: normalize(20),
+        fontWeight: '400',
+        lineHeight: normalize(29)
       },
       headerRight: (
         <TouchableOpacity onPress={() => navigation.openDrawer()}>

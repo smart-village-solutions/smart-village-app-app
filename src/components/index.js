@@ -8,7 +8,6 @@ export * from './Icon';
 export * from './Image';
 export * from './Link';
 export * from './Logo';
-export * from './StandardButton';
 export * from './Text';
 export * from './TextList';
 export * from './Title';

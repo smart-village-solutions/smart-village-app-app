@@ -4,13 +4,11 @@ import { normalize } from '../normalize';
 export const html = {
   p: {
     color: colors.darkText,
-    lineHeight: normalize(22),
     marginBottom: normalize(16)
   },
   a: {
     color: colors.primary,
     fontFamily: 'titillium-web-bold',
-
     textDecorationLine: 'none'
   },
   h1: {
@@ -25,18 +23,21 @@ export const html = {
     fontFamily: 'titillium-web-regular',
     fontSize: normalize(20),
     fontWeight: '400',
-    lineHeight: normalize(24),
+    lineHeight: normalize(26),
     marginBottom: normalize(14)
   },
   h3: {
     color: colors.darkText,
     fontFamily: 'titillium-web-bold',
-    fontSize: normalize(18)
+    fontSize: normalize(18),
+    lineHeight: normalize(24)
   },
   h4: {
     color: colors.darkText,
+    fontFamily: 'titillium-web-regular',
+    fontSize: normalize(18),
     fontWeight: '400',
-    fontSize: normalize(18)
+    lineHeight: normalize(24)
   },
   h5: {
     color: colors.darkText,
@@ -61,5 +62,8 @@ export const html = {
   },
   ol: {
     marginBottom: 0
+  },
+  img: {
+    alignSelf: 'center'
   }
 };

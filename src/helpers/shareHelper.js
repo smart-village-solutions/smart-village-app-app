@@ -42,10 +42,10 @@ export const shareMessage = (data, query) => {
     case 'newsItem':
       return `${momentFormat(data.publishedAt)} | ${data.dataProvider &&
           data.dataProvider.name}: ${data.contentBlocks[0].title}`;
-    case 'pointsOfInterest':
-      return data.name;
+    case 'pointOfInterest':
+      return `${data.name}\n\n${data.description}`;
     }
   };
 
-  return `[${appJson.expo.name}] ${buildMessage(query)}\n\nQuelle: ${appJson.expo.name}`;
+  return `${buildMessage(query)}\n\nQuelle: ${appJson.expo.name}`;
 };

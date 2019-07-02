@@ -11,7 +11,7 @@ import {
 import { WebView } from 'react-native-webview';
 
 import { colors, device, normalize, styles } from '../config';
-import { openLink } from '../helpers';
+import { openLink, imageWidth } from '../helpers';
 
 const tableCssRules =
   cssRulesFromSpecs({
@@ -60,7 +60,7 @@ export const HtmlView = (props) => (
     tagsStyles={{ ...styles.html, ...props.tagsStyles }}
     emSize={normalize(16)}
     baseFontStyle={styles.baseFontStyle}
-    imagesMaxWidth={device.width}
+    imagesMaxWidth={imageWidth() - 2 * normalize(14)}
     staticContentMaxWidth={device.width}
     onLinkPress={(evt, href) => openLink(href)}
   />

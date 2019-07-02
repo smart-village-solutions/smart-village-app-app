@@ -3,6 +3,7 @@ import React from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
+import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, device, normalize } from '../config';
 import {
@@ -22,7 +23,7 @@ import {
 } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft, drawerMenu, share } from '../icons';
-import { momentFormat, openLink, openShare, trimNewLines } from '../helpers';
+import { graphqlFetchPolicy, momentFormat, openLink, openShare, trimNewLines } from '../helpers';
 
 export class DetailScreen extends React.PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -49,67 +50,81 @@ export class DetailScreen extends React.PureComponent {
     };
   };
 
+  static contextType = NetworkContext;
+
   componentDidMount() {
-    auth();
+    const isConnected = this.context.isConnected;
+
+    isConnected && auth();
   }
+
+  renderScreenComponent(query, data) {
+    switch (query) {
+    case 'pointOfInterest':
+      return <PointOfInterest data={data} />;
+    }
+  }
+
+  /* eslint-disable complexity */
+  /* NOTE: we need to check a lot for presence, so this is that complex */
+  getPage(query, data) {
+    switch (query) {
+    case 'eventRecord': {
+      const { createdAt, dates, title, description, mediaContents, dataProvider } = data;
+
+      return {
+        subtitle: `${momentFormat(createdAt)} | ${dataProvider && dataProvider.name}`,
+        dates,
+        title,
+        body: description,
+        image:
+            mediaContents &&
+            mediaContents.length &&
+            mediaContents[0].sourceUrl &&
+            mediaContents[0].sourceUrl.url,
+        logo: dataProvider && dataProvider.logo && dataProvider.logo.url
+      };
+    }
+    case 'newsItem': {
+      const { publishedAt, contentBlocks, sourceUrl, dataProvider } = data;
+
+      return {
+        subtitle: `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`,
+        title: contentBlocks && contentBlocks.length && contentBlocks[0].title,
+        body:
+            contentBlocks &&
+            contentBlocks.length &&
+            contentBlocks.map((contentBlock) => contentBlock.body).join(),
+        image:
+            contentBlocks &&
+            contentBlocks.length &&
+            contentBlocks[0].mediaContents &&
+            contentBlocks[0].mediaContents.length &&
+            contentBlocks[0].mediaContents[0].sourceUrl &&
+            contentBlocks[0].mediaContents[0].sourceUrl.url,
+        link: sourceUrl && sourceUrl.url,
+        logo: dataProvider && dataProvider.logo && dataProvider.logo.url
+      };
+    }
+    }
+  }
+  /* eslint-enable complexity */
 
   render() {
     const { navigation } = this.props;
     const query = navigation.getParam('query', '');
     const queryVariables = navigation.getParam('queryVariables', {});
+    const details = navigation.getParam('details', {});
 
     if (!query) return null;
 
+    const isConnected = this.context.isConnected;
+    const fetchPolicy = graphqlFetchPolicy(isConnected);
+
     /* eslint-disable complexity */
-    /* TODO: refactoring to single components */
-    const getPage = (query, data) => {
-      switch (query) {
-      case 'eventRecord': {
-        const { createdAt, dates, title, description, mediaContents, dataProvider } = data;
-
-        return {
-          subtitle: `${momentFormat(createdAt)} | ${dataProvider && dataProvider.name}`,
-          dates, // TODO: need to use dates instead of createdAt in rendering
-          title,
-          body: description,
-          image:
-              mediaContents &&
-              mediaContents.length &&
-              mediaContents[0].sourceUrl &&
-              mediaContents[0].sourceUrl.url,
-          logo: dataProvider && dataProvider.logo && dataProvider.logo.url
-        };
-      }
-      case 'newsItem': {
-        const { publishedAt, contentBlocks, sourceUrl, dataProvider } = data;
-
-        return {
-          subtitle: `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`,
-          title: contentBlocks && contentBlocks.length && contentBlocks[0].title,
-          body: contentBlocks && contentBlocks.length && contentBlocks[0].body,
-          image:
-              contentBlocks &&
-              contentBlocks.length &&
-              contentBlocks[0].mediaContents &&
-              contentBlocks[0].mediaContents.length &&
-              contentBlocks[0].mediaContents[0].sourceUrl &&
-              contentBlocks[0].mediaContents[0].sourceUrl.url,
-          link: sourceUrl && sourceUrl.url,
-          logo: dataProvider && dataProvider.logo && dataProvider.logo.url
-        };
-      }
-      }
-    };
-
-    const renderScreenComponent = (query, data) => {
-      switch (query) {
-      case 'pointOfInterest':
-        return <PointOfInterest data={data} />;
-      }
-    };
-
+    /* NOTE: we need to check a lot for presence, so this is that complex */
     return (
-      <Query query={getQuery(query)} variables={queryVariables} fetchPolicy="cache-and-network">
+      <Query query={getQuery(query)} variables={queryVariables} fetchPolicy={fetchPolicy}>
         {({ data, loading }) => {
           if (loading) {
             return (
@@ -119,14 +134,16 @@ export class DetailScreen extends React.PureComponent {
             );
           }
 
-          if (!data || !data[query]) return null;
+          // we can have `data` from GraphQL or `details` from the previous list view.
+          // if there is no cached `data` or network fetched `data` we fallback to the `details`.
+          if ((!data || !data[query]) && !details) return null;
 
           if (query === 'pointOfInterest') {
-            return renderScreenComponent(query, data[query]);
+            return this.renderScreenComponent(query, (data && data[query]) || details);
           }
 
           // TODO: put everything in own screen components like PointOfInterest
-          const page = getPage(query, data[query]);
+          const page = this.getPage(query, (data && data[query]) || details);
 
           if (!page) return null;
 
@@ -153,7 +170,6 @@ export class DetailScreen extends React.PureComponent {
                 <Wrapper>
                   {!!subtitle && <RegularText small>{subtitle}</RegularText>}
                   {!!logo && <Logo source={{ uri: logo }} />}
-                  {/*TODO: map multiple contentBlocks */}
                   {!!body && <HtmlView html={trimNewLines(body)} />}
                 </Wrapper>
               </ScrollWrapper>

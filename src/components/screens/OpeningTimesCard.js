@@ -22,7 +22,7 @@ const DateBox = styled(TimeBox)`
 `;
 
 /* eslint-disable complexity */
-/* TODO: refactoring? */
+/* NOTE: we need to check a lot for presence, so this is that complex */
 export const OpeningTimesCard = ({ openingHours }) => (
   <Wrapper>
     {!!openingHours &&
