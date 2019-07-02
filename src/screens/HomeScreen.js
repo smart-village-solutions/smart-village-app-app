@@ -306,39 +306,39 @@ export class HomeScreen extends React.PureComponent {
               let publicJsonFileContent =
                 data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
 
-              if (publicJsonFileContent) {
-                return (
-                  <DiagonalGradient style={{ padding: normalize(14) }}>
-                    <WrapperWrap>
-                      {publicJsonFileContent.map((item, index) => {
-                        return (
-                          <ServiceBox key={index + item.title}>
-                            <TouchableOpacity
-                              onPress={() =>
-                                navigation.navigate({
-                                  routeName: item.routeName,
-                                  params: item.params
-                                })
-                              }
-                            >
-                              <View>
-                                <Image
-                                  source={{ uri: item.icon }}
-                                  style={styles.serviceImage}
-                                  PlaceholderContent={null}
-                                />
-                                <BoldText small light>
-                                  {item.title}
-                                </BoldText>
-                              </View>
-                            </TouchableOpacity>
-                          </ServiceBox>
-                        );
-                      })}
-                    </WrapperWrap>
-                  </DiagonalGradient>
-                );
-              }
+              if (!publicJsonFileContent) return null;
+
+              return (
+                <DiagonalGradient style={{ padding: normalize(14) }}>
+                  <WrapperWrap>
+                    {publicJsonFileContent.map((item, index) => {
+                      return (
+                        <ServiceBox key={index + item.title}>
+                          <TouchableOpacity
+                            onPress={() =>
+                              navigation.navigate({
+                                routeName: item.routeName,
+                                params: item.params
+                              })
+                            }
+                          >
+                            <View>
+                              <Image
+                                source={{ uri: item.icon }}
+                                style={styles.serviceImage}
+                                PlaceholderContent={null}
+                              />
+                              <BoldText small light>
+                                {item.title}
+                              </BoldText>
+                            </View>
+                          </TouchableOpacity>
+                        </ServiceBox>
+                      );
+                    })}
+                  </WrapperWrap>
+                </DiagonalGradient>
+              );
             }}
           </Query>
           <TitleContainer>
@@ -362,9 +362,9 @@ export class HomeScreen extends React.PureComponent {
               let publicJsonFileContent =
                 data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
 
-              if (publicJsonFileContent) {
-                return <TextList navigation={navigation} data={publicJsonFileContent} noSubtitle />;
-              }
+              if (!publicJsonFileContent) return null;
+
+              return <TextList navigation={navigation} data={publicJsonFileContent} noSubtitle />;
             }}
           </Query>
         </ScrollView>
