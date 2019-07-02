@@ -32,13 +32,13 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
 
   let companyAddress = '';
 
-  if (!city && !street && !zip) {
+  if (!!city || !!street || !!zip) {
     // build the address in multiple steps to check every data before rendering
     if (street) {
-      companyAddress += `${street}, `;
+      companyAddress += `${street},${'\n'}`;
     }
     if (zip) {
-      companyAddress += `${zip} ${'\n'} `;
+      companyAddress += `${zip} `;
     }
     if (city) {
       companyAddress += city;

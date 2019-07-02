@@ -36,7 +36,7 @@ export const GET_POINT_OF_INTEREST = gql`
   query PointOfInterest($id: ID!) {
     pointOfInterest(id: $id) {
       id
-      name
+      title: name
       category {
         name
       }
@@ -101,7 +101,6 @@ export const GET_POINT_OF_INTEREST = gql`
           email
           fax
           webUrls {
-            description
             url
           }
         }

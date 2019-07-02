@@ -28,7 +28,7 @@ import {
   WrapperWrap
 } from '../components';
 import { getQuery } from '../queries';
-import { graphqlFetchPolicy, momentFormat, shareMessage } from '../helpers';
+import { eventDate, graphqlFetchPolicy, momentFormat, shareMessage } from '../helpers';
 
 export class HomeScreen extends React.PureComponent {
   static contextType = NetworkContext;
@@ -241,8 +241,11 @@ export class HomeScreen extends React.PureComponent {
                 data.eventRecords &&
                 data.eventRecords.map((eventRecord, index) => ({
                   id: eventRecord.id,
-                  subtitle: `${momentFormat(eventRecord.createdAt)} | ${eventRecord.dataProvider &&
-                    eventRecord.dataProvider.name}`,
+                  subtitle: `${eventRecord.dates[0] &&
+                    eventDate(
+                      eventRecord.dates[0].dateStart,
+                      eventRecord.dates[0].dateEnd
+                    )} | ${eventRecord.dataProvider && eventRecord.dataProvider.name}`, // TODO: refactor eventRecord.dates[0]
                   title: eventRecord.title,
                   routeName: 'Detail',
                   params: {
@@ -252,8 +255,7 @@ export class HomeScreen extends React.PureComponent {
                     rootRouteName: 'EventRecords',
                     shareContent: {
                       message: shareMessage(eventRecord, 'eventRecord')
-                    },
-                    details: eventRecord
+                    }
                   },
                   bottomDivider: index !== data.eventRecords.length - 1,
                   __typename: eventRecord.__typename

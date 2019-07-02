@@ -7,12 +7,13 @@ import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, device, normalize } from '../config';
 import {
+  EventRecord,
   HtmlView,
   Icon,
   Image,
-  RegularText,
   Logo,
   PointOfInterest,
+  RegularText,
   ScrollWrapper,
   Title,
   TitleContainer,
@@ -60,6 +61,8 @@ export class DetailScreen extends React.PureComponent {
 
   renderScreenComponent(query, data) {
     switch (query) {
+    case 'eventRecord':
+      return <EventRecord data={data} />;
     case 'pointOfInterest':
       return <PointOfInterest data={data} />;
     }
@@ -69,22 +72,6 @@ export class DetailScreen extends React.PureComponent {
   /* NOTE: we need to check a lot for presence, so this is that complex */
   getPage(query, data) {
     switch (query) {
-    case 'eventRecord': {
-      const { createdAt, dates, title, description, mediaContents, dataProvider } = data;
-
-      return {
-        subtitle: `${momentFormat(createdAt)} | ${dataProvider && dataProvider.name}`,
-        dates,
-        title,
-        body: description,
-        image:
-            mediaContents &&
-            mediaContents.length &&
-            mediaContents[0].sourceUrl &&
-            mediaContents[0].sourceUrl.url,
-        logo: dataProvider && dataProvider.logo && dataProvider.logo.url
-      };
-    }
     case 'newsItem': {
       const { publishedAt, contentBlocks, sourceUrl, dataProvider } = data;
 
@@ -138,7 +125,7 @@ export class DetailScreen extends React.PureComponent {
           // if there is no cached `data` or network fetched `data` we fallback to the `details`.
           if ((!data || !data[query]) && !details) return null;
 
-          if (query === 'pointOfInterest') {
+          if (query === 'eventRecord' || query === 'pointOfInterest') {
             return this.renderScreenComponent(query, (data && data[query]) || details);
           }
 

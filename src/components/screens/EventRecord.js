@@ -5,8 +5,9 @@ import { SafeAreaView, ScrollView, View } from 'react-native';
 import { device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
+import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { WrapperNoFlex } from '../Wrapper';
+import { Wrapper, WrapperNoFlex } from '../Wrapper';
 import { PriceCard } from './PriceCard';
 import { InfoCard } from './InfoCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
@@ -14,24 +15,26 @@ import { OpeningTimesCard } from './OpeningTimesCard';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PointOfInterest = ({ data }) => {
+export const EventRecord = ({ data }) => {
   const {
     addresses,
     category,
-    contact,
+    contacts,
+    dataProvider,
+    dates,
     description,
     mediaContents,
-    openingHours,
     operatingCompany,
-    prices,
+    priceInformations,
     title,
     webUrls
   } = data;
 
+  const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const image =
-    !!mediaContents &&
-    !!mediaContents.length &&
-    !!mediaContents[0].sourceUrl &&
+    mediaContents &&
+    mediaContents.length &&
+    mediaContents[0].sourceUrl &&
     mediaContents[0].sourceUrl.url; // TODO: some logic to get the first image/thumbnail
 
   return (
@@ -47,42 +50,34 @@ export const PointOfInterest = ({ data }) => {
             {device.platform === 'ios' && <TitleShadow />}
           </View>
         )}
-        <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
+        <Wrapper>{!!logo && <Logo source={{ uri: logo }} />}</Wrapper>
+        <InfoCard category={category} addresses={addresses} contacts={contacts} webUrls={webUrls} />
 
-        {/* TODO: show map for location */}
-        {/* {!!location && (
-        <View>
-          <TitleContainer>
-            <Title>{texts.pointOfInterest.location}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </View>
-      )} */}
-
-        {!!openingHours && !!openingHours.length && (
+        {!!dates && !!dates.length && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.openingTime}</Title>
+              <Title>{texts.eventRecord.appointments}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
-            <OpeningTimesCard openingHours={openingHours} />
+            <OpeningTimesCard openingHours={dates} />
           </View>
         )}
 
-        {!!prices && !!prices.length && (
+        {/* temporary logic in order to show PriceCard just when description is present for the first index */}
+        {!!priceInformations && !!priceInformations.length && !!priceInformations[0].description && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.prices}</Title>
+              <Title>{texts.eventRecord.prices}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
-            <PriceCard prices={prices} />
+            <PriceCard prices={priceInformations} />
           </View>
         )}
 
         {!!description && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.description}</Title>
+              <Title>{texts.eventRecord.description}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <WrapperNoFlex>{!!description && <HtmlView html={description} />}</WrapperNoFlex>
@@ -92,7 +87,7 @@ export const PointOfInterest = ({ data }) => {
         {!!operatingCompany && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.operatingCompany}</Title>
+              <Title>{texts.eventRecord.operatingCompany}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <OperatingCompanyInfo
@@ -109,6 +104,6 @@ export const PointOfInterest = ({ data }) => {
 };
 /* eslint-enable complexity */
 
-PointOfInterest.propTypes = {
+EventRecord.propTypes = {
   data: PropTypes.object.isRequired
 };

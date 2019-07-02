@@ -24,11 +24,43 @@ const addressOnPress = (address) => {
   openLink(mapsLink);
 };
 
+const contactView = (contact) => (
+  <View>
+    {!!contact.lastName && (
+      <InfoBox>
+        <RNEIcon
+          name="person"
+          type="material"
+          color={colors.primary}
+          iconStyle={{ marginRight: normalize(10) }}
+        />
+        <RegularText>{contact.lastName}</RegularText>
+      </InfoBox>
+    )}
+    {!!contact.phone && (
+      <InfoBox>
+        <Icon icon={phoneIcon(colors.primary)} style={styles.margin} />
+        <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
+          <RegularText link>{contact.phone}</RegularText>
+        </TouchableOpacity>
+      </InfoBox>
+    )}
+    {!!contact.email && (
+      <InfoBox>
+        <Icon icon={mail(colors.primary)} style={styles.margin} />
+        <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
+          <RegularText link>{contact.email}</RegularText>
+        </TouchableOpacity>
+      </InfoBox>
+    )}
+  </View>
+);
+
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 /* TODO: add a logic to display info category and url that fit the screen even if long text
          (not yet a problem) */
-export const InfoCard = ({ addresses, category, contact, webUrls }) => (
+export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) => (
   <Wrapper>
     {!!category && !!category.name && (
       <InfoBox>
@@ -41,7 +73,6 @@ export const InfoCard = ({ addresses, category, contact, webUrls }) => (
         <RegularText>{category.name}</RegularText>
       </InfoBox>
     )}
-
     {!!addresses &&
       addresses.map((item, index) => {
         const { city, street, zip } = item;
@@ -70,37 +101,18 @@ export const InfoCard = ({ addresses, category, contact, webUrls }) => (
         );
       })}
 
-    {!!contact && (!!contact.lastName || !!contact.phone || !!contact.email) && (
-      <View>
-        {!!contact.lastName && (
-          <InfoBox>
-            <RNEIcon
-              name="person"
-              type="material"
-              color={colors.primary}
-              iconStyle={{ marginRight: normalize(10) }}
-            />
-            <RegularText>{contact.lastName}</RegularText>
-          </InfoBox>
-        )}
-        {!!contact.phone && (
-          <InfoBox>
-            <Icon icon={phoneIcon(colors.primary)} style={styles.margin} />
-            <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
-              <RegularText link>{contact.phone}</RegularText>
-            </TouchableOpacity>
-          </InfoBox>
-        )}
-        {!!contact.email && (
-          <InfoBox>
-            <Icon icon={mail(colors.primary)} style={styles.margin} />
-            <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
-              <RegularText link>{contact.email}</RegularText>
-            </TouchableOpacity>
-          </InfoBox>
-        )}
-      </View>
-    )}
+    {!!contact &&
+      (!!contact.lastName || !!contact.phone || !!contact.email) &&
+      contactView(contact)}
+
+    {!!contacts &&
+      contacts.map((contact, index) => {
+        if (!!contact.lastName || !!contact.phone || !!contact.email) {
+          return <View key={`index${index}-id${contact.id}`}>{contactView(contact)}</View>;
+        } else {
+          return null;
+        }
+      })}
 
     {!!webUrls &&
       webUrls.map((item, index) => {
@@ -130,7 +142,7 @@ const styles = StyleSheet.create({
 InfoCard.propTypes = {
   addresses: PropTypes.array,
   category: PropTypes.object,
-
   contact: PropTypes.object,
+  contacts: PropTypes.array,
   webUrls: PropTypes.array
 };
