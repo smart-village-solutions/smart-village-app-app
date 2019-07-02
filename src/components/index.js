@@ -12,4 +12,5 @@ export * from './Text';
 export * from './TextList';
 export * from './Title';
 export * from './Touchable';
+export * from './VersionNumber';
 export * from './Wrapper';

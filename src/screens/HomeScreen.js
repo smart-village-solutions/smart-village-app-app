@@ -24,6 +24,7 @@ import {
   TitleContainer,
   TitleShadow,
   Touchable,
+  VersionNumber,
   Wrapper,
   WrapperWrap
 } from '../components';
@@ -366,6 +367,7 @@ export class HomeScreen extends React.PureComponent {
               return <TextList navigation={navigation} data={publicJsonFileContent} noSubtitle />;
             }}
           </Query>
+          <VersionNumber />
         </ScrollView>
       </SafeAreaView>
     );
