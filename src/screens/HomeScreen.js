@@ -236,7 +236,7 @@ export const HomeScreen = ({ navigation }) => (
               params: {
                 title: 'Veranstaltung',
                 query: 'eventRecord',
-                queryVariables: { id: `${eventRecord.id}` },
+                queryVariables: { id: 100 }, //`${eventRecord.id}`
                 rootRouteName: 'EventRecords',
                 shareContent: {
                   message: shareMessage(eventRecord, 'eventRecord')

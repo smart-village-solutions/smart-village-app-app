@@ -3,7 +3,9 @@ import appJson from '../../app.json';
 export const texts = {
   eventRecord: {
     prices: 'Preise',
-    description: 'Beschreibung'
+    description: 'Beschreibung',
+    openingTime: 'Termine',
+    operatingCompany: 'Veranstalter'
   },
   homeTitles: {
     news: 'Nachrichten',
@@ -22,6 +24,7 @@ export const texts = {
     description: 'Beschreibung',
     operatingCompany: 'Anbieter'
   },
+
   screenTitles: {
     home: appJson.expo.name
   }

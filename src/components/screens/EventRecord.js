@@ -95,7 +95,7 @@ export const EventRecord = ({ data }) => {
         {!!openingHours && !!openingHours.length && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.openingTime}</Title>
+              <Title>{texts.eventRecord.openingTime}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <OpeningTimesCard openingHours={openingHours} />
@@ -126,7 +126,7 @@ export const EventRecord = ({ data }) => {
         {!!operatingCompany && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.operatingCompany}</Title>
+              <Title>{texts.eventRecord.operatingCompany}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <OperatingCompanyInfo
