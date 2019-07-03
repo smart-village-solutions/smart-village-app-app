@@ -2,8 +2,9 @@ import gql from 'graphql-tag';
 
 export const GET_TOURS = gql`
   query Tours($limit: Int) {
-    Tours(limit: $limit) {
+    tours(limit: $limit) {
       id
+      name
       category {
         name
       }
@@ -25,7 +26,7 @@ export const GET_TOURS = gql`
 
 export const GET_TOUR = gql`
   query Tour($id: ID!) {
-    Tour(id: $id) {
+    tour(id: $id) {
       id
       title: name
       category {

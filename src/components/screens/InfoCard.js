@@ -37,6 +37,7 @@ const contactView = (contact) => (
         <RegularText>{contact.lastName}</RegularText>
       </InfoBox>
     )}
+
     {!!contact.phone && (
       <InfoBox>
         <Icon icon={phoneIcon(colors.primary)} style={styles.margin} />
@@ -60,7 +61,7 @@ const contactView = (contact) => (
 /* NOTE: we need to check a lot for presence, so this is that complex */
 /* TODO: add a logic to display info category and url that fit the screen even if long text
          (not yet a problem) */
-export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) => (
+export const InfoCard = ({ addresses, category, contact, contacts, lengthKm, webUrls }) => (
   <Wrapper>
     {!!category && !!category.name && (
       <InfoBox>
@@ -73,6 +74,18 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) =>
         <RegularText>{category.name}</RegularText>
       </InfoBox>
     )}
+    {!!lengthKm && (
+      <InfoBox>
+        <RNEIcon
+          name="map"
+          type="material"
+          color={colors.primary}
+          iconStyle={{ marginRight: normalize(10) }}
+        />
+        <RegularText>{lengthKm} Km</RegularText>
+      </InfoBox>
+    )}
+
     {!!addresses &&
       addresses.map((item, index) => {
         const { city, street, zip } = item;
@@ -144,5 +157,6 @@ InfoCard.propTypes = {
   category: PropTypes.object,
   contact: PropTypes.object,
   contacts: PropTypes.array,
+  lengthKm: PropTypes.number,
   webUrls: PropTypes.array
 };

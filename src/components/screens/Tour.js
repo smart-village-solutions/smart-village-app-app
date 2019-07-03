@@ -52,19 +52,13 @@ export const Tour = ({ data }) => {
           </View>
         )}
         <Wrapper>{!!logo && <Logo source={{ uri: logo }} />}</Wrapper>
-        <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
-
-        {!!lengthKm && (
-          <InfoBox>
-            <RNEIcon
-              name="list"
-              type="material"
-              color={colors.primary}
-              iconStyle={{ marginRight: normalize(10) }}
-            />
-            <RegularText>{lengthKm} Km</RegularText>
-          </InfoBox>
-        )}
+        <InfoCard
+          category={category}
+          lengthKm={lengthKm}
+          addresses={addresses}
+          contact={contact}
+          webUrls={webUrls}
+        />
 
         {!!description && (
           <View>
