@@ -127,9 +127,9 @@ export class HomeScreen extends React.PureComponent {
                   routeName: 'Index',
                   params: {
                     title: 'Orte und Touren',
-                    query: 'pointsOfInterest',
+                    query: 'pointsOfInterestAndTours',
                     queryVariables: {},
-                    rootRouteName: 'PointsOfInterest'
+                    rootRouteName: 'pointsOfInterestAndTours'
                   }
                 })
               }
@@ -139,7 +139,7 @@ export class HomeScreen extends React.PureComponent {
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}
           <Query
-            query={getQuery('pointsOfInterest')}
+            query={getQuery('pointsOfInterestAndTours')}
             variables={{ limit: 10 }}
             fetchPolicy={fetchPolicy}
           >
@@ -178,12 +178,39 @@ export class HomeScreen extends React.PureComponent {
                   __typename: pointOfInterest.__typename
                 }));
 
-              if (!pointsOfInterest || !pointsOfInterest.length) return null;
+              const tours =
+                data &&
+                data.tours &&
+                data.tours.map((tour) => ({
+                  id: tour.id,
+                  name: tour.name,
+                  category: !!tour.category && tour.category.name,
+                  image:
+                    !!tour.mediaContents &&
+                    !!tour.mediaContents.length &&
+                    !!tour.mediaContents[0].sourceUrl &&
+                    tour.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
+                  routeName: 'Detail',
+                  params: {
+                    title: 'Touren',
+                    query: 'tour',
+                    queryVariables: { id: `${tour.id}` },
+                    rootRouteName: 'Tours',
+                    shareContent: {
+                      message: shareMessage(tour, 'tour')
+                    },
+                    details: tour
+                  },
+                  __typename: tour.__typename
+                }));
 
               return (
                 <View>
-                  <CardList navigation={navigation} data={pointsOfInterest} horizontal />
-                  {/* <CardList navigation={navigation} data={Tour} horizontal /> */}
+                  <CardList
+                    navigation={navigation}
+                    data={[...pointsOfInterest, ...tours]}
+                    horizontal
+                  />
 
                   <Wrapper>
                     <Button
@@ -193,9 +220,9 @@ export class HomeScreen extends React.PureComponent {
                           routeName: 'Index',
                           params: {
                             title: 'Orte und Touren',
-                            query: 'pointsOfInterest',
+                            query: 'pointsOfInterestAndTours',
                             queryVariables: {},
-                            rootRouteName: 'PointsOfInterest'
+                            rootRouteName: 'pointsOfInterestAndTours'
                           }
                         })
                       }
