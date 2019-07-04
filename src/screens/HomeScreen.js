@@ -9,6 +9,7 @@ import {
   View
 } from 'react-native';
 import { Query } from 'react-apollo';
+import _shuffle from 'lodash/shuffle';
 
 import { NetworkContext } from '../NetworkProvider';
 import { device, normalize, texts } from '../config';
@@ -140,7 +141,7 @@ export class HomeScreen extends React.PureComponent {
           {device.platform === 'ios' && <TitleShadow />}
           <Query
             query={getQuery('pointsOfInterestAndTours')}
-            variables={{ limit: 10 }}
+            variables={{ limit: 10, order: 'RAND' }}
             fetchPolicy={fetchPolicy}
           >
             {({ data, loading }) => {
@@ -208,7 +209,7 @@ export class HomeScreen extends React.PureComponent {
                 <View>
                   <CardList
                     navigation={navigation}
-                    data={[...pointsOfInterest, ...tours]}
+                    data={_shuffle([...(pointsOfInterest || []), ...(tours || [])])}
                     horizontal
                   />
 
