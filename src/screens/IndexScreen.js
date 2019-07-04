@@ -191,10 +191,25 @@ export class IndexScreen extends React.PureComponent {
               details: tour
             }
           }));
+      const mix = [...(pointsOfInterest || []), ...(tours || [])];
 
-      return [...pointsOfInterest, ...tours];
+      return mix.sort(function(a, b) {
+        var nameA = a.name.toUpperCase();
+        var nameB = b.name.toUpperCase();
+
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+
+        // i nomi devono essere uguali
+        return 0;
+      });
     }
   }
+
   /* eslint-enable complexity */
 
   getComponent(query) {
