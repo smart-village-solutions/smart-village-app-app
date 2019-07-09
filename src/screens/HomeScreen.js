@@ -9,6 +9,8 @@ import {
   View
 } from 'react-native';
 import { Query } from 'react-apollo';
+import _filter from 'lodash/filter';
+import _take from 'lodash/take';
 
 import { NetworkContext } from '../NetworkProvider';
 import { device, normalize, texts } from '../config';
@@ -29,7 +31,13 @@ import {
   WrapperWrap
 } from '../components';
 import { getQuery } from '../queries';
-import { eventDate, graphqlFetchPolicy, momentFormat, shareMessage } from '../helpers';
+import {
+  eventDate,
+  graphqlFetchPolicy,
+  isUpcomingEvent,
+  momentFormat,
+  shareMessage
+} from '../helpers';
 
 export class HomeScreen extends React.PureComponent {
   static contextType = NetworkContext;
@@ -213,7 +221,7 @@ export class HomeScreen extends React.PureComponent {
                   params: {
                     title: 'Veranstaltungen',
                     query: 'eventRecords',
-                    queryVariables: { order: 'listDate_DESC' },
+                    queryVariables: { order: 'listDate_ASC' },
                     rootRouteName: 'EventRecords'
                   }
                 })
@@ -225,7 +233,7 @@ export class HomeScreen extends React.PureComponent {
           {device.platform === 'ios' && <TitleShadow />}
           <Query
             query={getQuery('eventRecords')}
-            variables={{ limit: 3 }}
+            variables={{ order: 'listDate_ASC' }}
             fetchPolicy={fetchPolicy}
           >
             {({ data, loading }) => {
@@ -237,27 +245,31 @@ export class HomeScreen extends React.PureComponent {
                 );
               }
 
-              const eventRecords =
+              const upcomingEventRecords =
                 data &&
                 data.eventRecords &&
-                data.eventRecords.map((eventRecord, index) => ({
-                  id: eventRecord.id,
-                  subtitle: `${eventDate(eventRecord.listDate)} | ${eventRecord.dataProvider &&
-                    eventRecord.dataProvider.name}`,
-                  title: eventRecord.title,
-                  routeName: 'Detail',
-                  params: {
-                    title: 'Veranstaltung',
-                    query: 'eventRecord',
-                    queryVariables: { id: `${eventRecord.id}` },
-                    rootRouteName: 'EventRecords',
-                    shareContent: {
-                      message: shareMessage(eventRecord, 'eventRecord')
-                    }
-                  },
-                  bottomDivider: index !== data.eventRecords.length - 1,
-                  __typename: eventRecord.__typename
-                }));
+                _filter(data.eventRecords, (eventRecord) => isUpcomingEvent(eventRecord.listDate));
+
+              if (!upcomingEventRecords || !upcomingEventRecords.length) return null;
+
+              const eventRecords = _take(upcomingEventRecords, 3).map((eventRecord, index) => ({
+                id: eventRecord.id,
+                subtitle: `${eventDate(eventRecord.listDate)} | ${eventRecord.dataProvider &&
+                  eventRecord.dataProvider.name}`,
+                title: eventRecord.title,
+                routeName: 'Detail',
+                params: {
+                  title: 'Veranstaltung',
+                  query: 'eventRecord',
+                  queryVariables: { id: `${eventRecord.id}` },
+                  rootRouteName: 'EventRecords',
+                  shareContent: {
+                    message: shareMessage(eventRecord, 'eventRecord')
+                  }
+                },
+                bottomDivider: index !== data.eventRecords.length - 1,
+                __typename: eventRecord.__typename
+              }));
 
               if (!eventRecords || !eventRecords.length) return null;
 
@@ -274,7 +286,7 @@ export class HomeScreen extends React.PureComponent {
                           params: {
                             title: 'Veranstaltungen',
                             query: 'eventRecords',
-                            queryVariables: { order: 'listDate_DESC' },
+                            queryVariables: { order: 'listDate_ASC' },
                             rootRouteName: 'EventRecords'
                           }
                         })
