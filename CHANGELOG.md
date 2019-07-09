@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.9.3]
+
+Show only upcoming events
+
+### Added
+
+- added check for upcoming event based on the `listDate` of a event record
+- used `moment` helper for determining, if an event is in the past
+- used lodash `filter` to filter data and reject past events on HomeScreen and IndexScreen
+  - still render only the next 3 events on the HomeScreen
+  - used lodash `take` for it
+
+### Changed
+
+- now we request always all events and filter afterwards
+  - this could lead to worse performance than before
+
 ## [v0.9.2]
 
 Update to latest server changes
