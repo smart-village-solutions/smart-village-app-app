@@ -24,8 +24,12 @@ export const texts = {
     operatingCompany: 'Anbieter',
     prices: 'Preise'
   },
-
   screenTitles: {
     home: appJson.expo.name
+  },
+  tour: {
+    tour: 'Tourverlauf',
+    start: 'Tourbeginn',
+    end: 'Tourende'
   }
 };

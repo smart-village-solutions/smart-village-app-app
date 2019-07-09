@@ -1,8 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Icon as RNEIcon } from 'react-native-elements';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import styled from 'styled-components';
+import { Icon as RNEIcon } from 'react-native-elements';
+import _filter from 'lodash/filter';
 
 import { colors, normalize } from '../../config';
 import { mail, location, phone as phoneIcon, url as urlIcon } from '../../icons';
@@ -28,15 +29,11 @@ const contactView = (contact) => (
   <View>
     {!!contact.lastName && (
       <InfoBox>
-        <RNEIcon
-          name="person"
-          type="material"
-          color={colors.primary}
-          iconStyle={{ marginRight: normalize(10) }}
-        />
+        <RNEIcon name="person" type="material" color={colors.primary} iconStyle={styles.margin} />
         <RegularText>{contact.lastName}</RegularText>
       </InfoBox>
     )}
+
     {!!contact.phone && (
       <InfoBox>
         <Icon icon={phoneIcon(colors.primary)} style={styles.margin} />
@@ -45,6 +42,7 @@ const contactView = (contact) => (
         </TouchableOpacity>
       </InfoBox>
     )}
+
     {!!contact.email && (
       <InfoBox>
         <Icon icon={mail(colors.primary)} style={styles.margin} />
@@ -64,17 +62,13 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) =>
   <Wrapper>
     {!!category && !!category.name && (
       <InfoBox>
-        <RNEIcon
-          name="list"
-          type="material"
-          color={colors.primary}
-          iconStyle={{ marginRight: normalize(10) }}
-        />
+        <RNEIcon name="list" type="material" color={colors.primary} iconStyle={styles.margin} />
         <RegularText>{category.name}</RegularText>
       </InfoBox>
     )}
+
     {!!addresses &&
-      addresses.map((item, index) => {
+      _filter(addresses, (address) => address.kind === 'default').map((item, index) => {
         const { city, street, zip } = item;
         let address = '';
 

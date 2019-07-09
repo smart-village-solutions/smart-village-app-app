@@ -5,33 +5,35 @@ import { SafeAreaView, ScrollView, View } from 'react-native';
 import { device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
+import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { WrapperNoFlex } from '../Wrapper';
-import { PriceCard } from './PriceCard';
+import { Wrapper, WrapperNoFlex } from '../Wrapper';
+
 import { InfoCard } from './InfoCard';
+import { TourCard } from './TourCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
-import { OpeningTimesCard } from './OpeningTimesCard';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PointOfInterest = ({ data }) => {
+export const Tour = ({ data }) => {
   const {
     addresses,
     category,
     contact,
+    dataProvider,
     description,
+    lengthKm,
     mediaContents,
-    openingHours,
     operatingCompany,
-    priceInformations,
     title,
     webUrls
   } = data;
 
+  const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const image =
-    !!mediaContents &&
-    !!mediaContents.length &&
-    !!mediaContents[0].sourceUrl &&
+    mediaContents &&
+    mediaContents.length &&
+    mediaContents[0].sourceUrl &&
     mediaContents[0].sourceUrl.url; // TODO: some logic to get the first image/thumbnail
 
   return (
@@ -48,42 +50,20 @@ export const PointOfInterest = ({ data }) => {
           </View>
         )}
 
+        {!!logo && (
+          <Wrapper>
+            <Logo source={{ uri: logo }} />
+          </Wrapper>
+        )}
+
         <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
 
-        {/* TODO: show map for location */}
-        {/* {!!location && (
-        <View>
-          <TitleContainer>
-            <Title>{texts.pointOfInterest.location}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </View>
-      )} */}
-
-        {!!openingHours && !!openingHours.length && (
-          <View>
-            <TitleContainer>
-              <Title>{texts.pointOfInterest.openingTime}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <OpeningTimesCard openingHours={openingHours} />
-          </View>
-        )}
-
-        {!!priceInformations && !!priceInformations.length && (
-          <View>
-            <TitleContainer>
-              <Title>{texts.pointOfInterest.prices}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <PriceCard prices={priceInformations} />
-          </View>
-        )}
+        <TourCard lengthKm={lengthKm} addresses={addresses} />
 
         {!!description && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.description}</Title>
+              <Title>{texts.eventRecord.description}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <WrapperNoFlex>{!!description && <HtmlView html={description} />}</WrapperNoFlex>
@@ -93,7 +73,7 @@ export const PointOfInterest = ({ data }) => {
         {!!operatingCompany && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.operatingCompany}</Title>
+              <Title>{texts.eventRecord.operatingCompany}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <OperatingCompanyInfo
@@ -110,6 +90,6 @@ export const PointOfInterest = ({ data }) => {
 };
 /* eslint-enable complexity */
 
-PointOfInterest.propTypes = {
+Tour.propTypes = {
   data: PropTypes.object.isRequired
 };

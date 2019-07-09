@@ -46,6 +46,8 @@ export class IndexScreen extends React.PureComponent {
     isConnected && auth();
   }
 
+  /* eslint-disable complexity */
+  /* NOTE: we need to check a lot for presence, so this is that complex */
   getListItems(query, data) {
     switch (query) {
     case 'eventRecords':
@@ -120,8 +122,103 @@ export class IndexScreen extends React.PureComponent {
             }
           }))
       );
+    case 'tours':
+      return (
+        data &&
+          data[query] &&
+          data[query].map((tour) => ({
+            id: tour.id,
+            name: tour.name,
+            category: !!tour.category && tour.category.name,
+            image:
+              !!tour.mediaContents &&
+              !!tour.mediaContents.length &&
+              !!tour.mediaContents[0].sourceUrl &&
+              tour.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
+            routeName: 'Detail',
+            params: {
+              title: 'Tour',
+              query: 'tour',
+              queryVariables: { id: `${tour.id}` },
+              rootRouteName: 'Tours',
+              shareContent: {
+                message: shareMessage(tour, query)
+              },
+              details: tour
+            }
+          }))
+      );
+
+    case 'pointsOfInterestAndTours': {
+      const pointsOfInterest =
+          data &&
+          data.pointsOfInterest &&
+          data.pointsOfInterest.map((pointOfInterest) => ({
+            id: pointOfInterest.id,
+            name: pointOfInterest.name,
+            category: !!pointOfInterest.category && pointOfInterest.category.name,
+            image:
+              !!pointOfInterest.mediaContents &&
+              !!pointOfInterest.mediaContents.length &&
+              !!pointOfInterest.mediaContents[0].sourceUrl &&
+              pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
+            routeName: 'Detail',
+            params: {
+              title: 'Ort',
+              query: 'pointOfInterest',
+              queryVariables: { id: `${pointOfInterest.id}` },
+              rootRouteName: 'PointsOfInterest',
+              shareContent: {
+                message: shareMessage(pointOfInterest, 'pointOfInterest')
+              },
+              details: pointOfInterest
+            }
+          }));
+
+      const tours =
+          data &&
+          data.tours &&
+          data.tours.map((tour) => ({
+            id: tour.id,
+            name: tour.name,
+            category: !!tour.category && tour.category.name,
+            image:
+              !!tour.mediaContents &&
+              !!tour.mediaContents.length &&
+              !!tour.mediaContents[0].sourceUrl &&
+              tour.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
+            routeName: 'Detail',
+            params: {
+              title: 'Tour',
+              query: 'tour',
+              queryVariables: { id: `${tour.id}` },
+              rootRouteName: 'Tours',
+              shareContent: {
+                message: shareMessage(tour, 'tour')
+              },
+              details: tour
+            }
+          }));
+
+      const pointsOfInterestAndTours = [...(pointsOfInterest || []), ...(tours || [])];
+
+      return pointsOfInterestAndTours.sort(function sortAlphabetically(a, b) {
+        var nameA = a.name.toUpperCase();
+        var nameB = b.name.toUpperCase();
+
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+
+        return 0;
+      });
+    }
     }
   }
+  /* eslint-enable complexity */
 
   getComponent(query) {
     switch (query) {
@@ -130,6 +227,10 @@ export class IndexScreen extends React.PureComponent {
     case 'newsItems':
       return TextList;
     case 'pointsOfInterest':
+      return CardList;
+    case 'tours':
+      return CardList;
+    case 'pointsOfInterestAndTours':
       return CardList;
     }
   }

@@ -19,6 +19,7 @@ import {
   TitleContainer,
   TitleShadow,
   Touchable,
+  Tour,
   Wrapper,
   WrapperRow
 } from '../components';
@@ -65,6 +66,8 @@ export class DetailScreen extends React.PureComponent {
       return <EventRecord data={data} />;
     case 'pointOfInterest':
       return <PointOfInterest data={data} />;
+    case 'tour':
+      return <Tour data={data} />;
     }
   }
 
@@ -125,7 +128,7 @@ export class DetailScreen extends React.PureComponent {
           // if there is no cached `data` or network fetched `data` we fallback to the `details`.
           if ((!data || !data[query]) && !details) return null;
 
-          if (query === 'eventRecord' || query === 'pointOfInterest') {
+          if (query === 'eventRecord' || query === 'pointOfInterest' || query === 'tour') {
             return this.renderScreenComponent(query, (data && data[query]) || details);
           }
 

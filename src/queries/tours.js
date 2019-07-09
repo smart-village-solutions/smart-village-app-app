@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
-export const GET_POINTS_OF_INTEREST = gql`
-  query PointsOfInterest($limit: Int, $order: PointsOfInterestOrder) {
-    pointsOfInterest(limit: $limit, order: $order) {
+export const GET_TOURS = gql`
+  query Tours($limit: Int, $order: ToursOrder) {
+    tours(limit: $limit, order: $order) {
       id
       name
       category {
@@ -10,7 +10,6 @@ export const GET_POINTS_OF_INTEREST = gql`
       }
       description
       mediaContents {
-        contentType
         sourceUrl {
           url
         }
@@ -20,33 +19,6 @@ export const GET_POINTS_OF_INTEREST = gql`
         street
         zip
         kind
-      }
-      contact {
-        email
-        phone
-        lastName
-      }
-      webUrls {
-        url
-      }
-    }
-  }
-`;
-
-export const GET_POINT_OF_INTEREST = gql`
-  query PointOfInterest($id: ID!) {
-    pointOfInterest(id: $id) {
-      id
-      title: name
-      category {
-        name
-      }
-      description
-      mediaContents {
-        contentType
-        sourceUrl {
-          url
-        }
       }
       dataProvider {
         logo {
@@ -54,6 +26,24 @@ export const GET_POINT_OF_INTEREST = gql`
         }
         name
       }
+    }
+  }
+`;
+
+export const GET_TOUR = gql`
+  query Tour($id: ID!) {
+    tour(id: $id) {
+      id
+      title: name
+      category {
+        name
+      }
+      description
+      mediaContents {
+        sourceUrl {
+          url
+        }
+      }
       addresses {
         city
         street
@@ -68,23 +58,12 @@ export const GET_POINT_OF_INTEREST = gql`
       webUrls {
         url
       }
-      priceInformations {
-        category
-        amount
-        description
-        maxChildrenCount
-        maxAdultCount
-        groupPrice
-      }
-      openingHours {
-        sortNumber
-        weekday
-        timeFrom
-        timeTo
-        open
-        dateFrom
-        dateTo
-        description
+      lengthKm
+      dataProvider {
+        logo {
+          url
+        }
+        name
       }
       operatingCompany {
         name
