@@ -1,8 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Icon as RNEIcon } from 'react-native-elements';
 import PropTypes from 'prop-types';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import styled from 'styled-components';
+import { Icon as RNEIcon } from 'react-native-elements';
+import _filter from 'lodash/filter';
 
 import { colors, normalize } from '../../config';
 import { mail, location, phone as phoneIcon, url as urlIcon } from '../../icons';
@@ -57,7 +58,7 @@ const contactView = (contact) => (
 /* NOTE: we need to check a lot for presence, so this is that complex */
 /* TODO: add a logic to display info category and url that fit the screen even if long text
          (not yet a problem) */
-export const InfoCard = ({ addresses, category, contact, contacts, lengthKm, webUrls }) => (
+export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) => (
   <Wrapper>
     {!!category && !!category.name && (
       <InfoBox>
@@ -66,15 +67,8 @@ export const InfoCard = ({ addresses, category, contact, contacts, lengthKm, web
       </InfoBox>
     )}
 
-    {!!lengthKm && (
-      <InfoBox>
-        <RNEIcon name="map" type="material" color={colors.primary} iconStyle={styles.margin} />
-        <RegularText>{lengthKm} km</RegularText>
-      </InfoBox>
-    )}
-
     {!!addresses &&
-      addresses.map((item, index) => {
+      _filter(addresses, (address) => address.kind === 'default').map((item, index) => {
         const { city, street, zip } = item;
         let address = '';
 
@@ -144,6 +138,5 @@ InfoCard.propTypes = {
   category: PropTypes.object,
   contact: PropTypes.object,
   contacts: PropTypes.array,
-  lengthKm: PropTypes.number,
   webUrls: PropTypes.array
 };

@@ -23,6 +23,7 @@ export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
         city
         street
         zip
+        kind
       }
       contact {
         email
@@ -45,6 +46,12 @@ export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
         sourceUrl {
           url
         }
+      }
+      addresses {
+        city
+        street
+        zip
+        kind
       }
       dataProvider {
         logo {

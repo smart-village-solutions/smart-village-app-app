@@ -10,6 +10,7 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperNoFlex } from '../Wrapper';
 
 import { InfoCard } from './InfoCard';
+import { TourCard } from './TourCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 
 /* eslint-disable complexity */
@@ -48,14 +49,16 @@ export const Tour = ({ data }) => {
             {device.platform === 'ios' && <TitleShadow />}
           </View>
         )}
-        <Wrapper>{!!logo && <Logo source={{ uri: logo }} />}</Wrapper>
-        <InfoCard
-          category={category}
-          lengthKm={lengthKm}
-          addresses={addresses}
-          contact={contact}
-          webUrls={webUrls}
-        />
+
+        {!!logo && (
+          <Wrapper>
+            <Logo source={{ uri: logo }} />
+          </Wrapper>
+        )}
+
+        <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
+
+        <TourCard lengthKm={lengthKm} addresses={addresses} />
 
         {!!description && (
           <View>

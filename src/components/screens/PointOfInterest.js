@@ -47,6 +47,7 @@ export const PointOfInterest = ({ data }) => {
             {device.platform === 'ios' && <TitleShadow />}
           </View>
         )}
+
         <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
 
         {/* TODO: show map for location */}

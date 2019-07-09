@@ -14,6 +14,12 @@ export const GET_TOURS = gql`
           url
         }
       }
+      addresses {
+        city
+        street
+        zip
+        kind
+      }
       dataProvider {
         logo {
           url
@@ -42,6 +48,7 @@ export const GET_TOUR = gql`
         city
         street
         zip
+        kind
       }
       contact {
         email

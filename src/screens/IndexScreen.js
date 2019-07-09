@@ -38,6 +38,7 @@ export class IndexScreen extends React.PureComponent {
 
     isConnected && auth();
   }
+
   /* eslint-disable complexity */
   /* NOTE: we need to check a lot for presence, so this is that complex */
   getListItems(query, data) {

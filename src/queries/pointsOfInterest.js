@@ -19,6 +19,7 @@ export const GET_POINTS_OF_INTEREST = gql`
         city
         street
         zip
+        kind
       }
       contact {
         email
@@ -57,6 +58,7 @@ export const GET_POINT_OF_INTEREST = gql`
         city
         street
         zip
+        kind
       }
       contact {
         email
