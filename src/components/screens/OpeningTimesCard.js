@@ -16,9 +16,8 @@ const TimeBox = styled.View`
 `;
 
 const DateBox = styled(TimeBox)`
-  align-items: center;
-  flex-direction: row;
-  justify-content: center;
+  align-items: flex-end;
+  flex-direction: column;
 `;
 
 /* eslint-disable complexity */
@@ -30,66 +29,50 @@ export const OpeningTimesCard = ({ openingHours }) => (
         const { weekday, timeFrom, timeTo, dateFrom, dateTo, description, open } = item;
         const returnFormatDate = 'DD.MM.YYYY';
 
-        return weekday ? (
+        return (
           <View key={index} style={index !== openingHours.length - 1 ? styles.divider : null}>
-            <BoldText style={styles.marginBottom}>{weekday}</BoldText>
+            {weekday && <BoldText style={styles.marginBottom}>{weekday}</BoldText>}
 
-            <WrapperRow space>
-              {(!!timeFrom || !!timeTo) && (
-                <TimeBox>
-                  {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
-                  {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
-                  {!!timeTo && <RegularText> {timeTo}</RegularText>}
-                </TimeBox>
-              )}
-              {(!!dateFrom || !!dateTo) && (
-                <DateBox>
-                  {!!dateFrom && (
-                    <RegularText>
-                      <RegularText small>von </RegularText>
-                      {momentFormat(dateFrom, returnFormatDate)}
-                    </RegularText>
-                  )}
+            {(!!timeFrom || !!timeTo || !!dateFrom || !!dateTo) && (
+              <WrapperRow>
+                {(open === undefined || open === true) && (!!timeFrom || !!timeTo) && (
+                  <TimeBox>
+                    {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
+                    {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
+                    {!!timeTo && <RegularText> {timeTo}</RegularText>}
+                  </TimeBox>
+                )}
+                {open === false && (
+                  <TimeBox>
+                    <RegularText>geschlossen</RegularText>
+                  </TimeBox>
+                )}
+                {(!!dateFrom || !!dateTo) && (
+                  <DateBox>
+                    {!!dateFrom && (
+                      <RegularText>
+                        <RegularText small />
+                        {momentFormat(dateFrom, returnFormatDate)}
+                      </RegularText>
+                    )}
 
-                  {!!dateTo && (
-                    <RegularText>
-                      <RegularText small>bis </RegularText>
-                      {momentFormat(dateTo, returnFormatDate)}
-                    </RegularText>
-                  )}
-                </DateBox>
-              )}
-              {!!description && <RegularText>{description}</RegularText>}
-            </WrapperRow>
+                    {!!dateTo && dateTo !== dateFrom && (
+                      <RegularText>
+                        <RegularText small>bis </RegularText>
+                        {momentFormat(dateTo, returnFormatDate)}
+                      </RegularText>
+                    )}
+                  </DateBox>
+                )}
+              </WrapperRow>
+            )}
+
+            {!!description && (
+              <WrapperRow>
+                <RegularText>{description}</RegularText>
+              </WrapperRow>
+            )}
           </View>
-        ) : (
-          <WrapperRow key={index}>
-            {(!!timeFrom || !!timeTo) && (
-              <TimeBox>
-                {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
-                {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
-                {!!timeTo && <RegularText> {timeTo}</RegularText>}
-              </TimeBox>
-            )}
-            {(!!dateFrom || !!dateTo) && (
-              <DateBox>
-                {!!dateFrom && (
-                  <RegularText>
-                    <RegularText small>von </RegularText>
-                    {momentFormat(dateFrom, returnFormatDate)}
-                  </RegularText>
-                )}
-
-                {!!dateTo && (
-                  <RegularText>
-                    <RegularText small>bis </RegularText>
-                    {momentFormat(dateTo, returnFormatDate)}
-                  </RegularText>
-                )}
-              </DateBox>
-            )}
-            {!!description && <BoldText>{description}</BoldText>}
-          </WrapperRow>
         );
       })}
   </Wrapper>
