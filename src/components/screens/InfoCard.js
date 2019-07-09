@@ -28,12 +28,7 @@ const contactView = (contact) => (
   <View>
     {!!contact.lastName && (
       <InfoBox>
-        <RNEIcon
-          name="person"
-          type="material"
-          color={colors.primary}
-          iconStyle={{ marginRight: normalize(10) }}
-        />
+        <RNEIcon name="person" type="material" color={colors.primary} iconStyle={styles.margin} />
         <RegularText>{contact.lastName}</RegularText>
       </InfoBox>
     )}
@@ -46,6 +41,7 @@ const contactView = (contact) => (
         </TouchableOpacity>
       </InfoBox>
     )}
+
     {!!contact.email && (
       <InfoBox>
         <Icon icon={mail(colors.primary)} style={styles.margin} />
@@ -65,24 +61,15 @@ export const InfoCard = ({ addresses, category, contact, contacts, lengthKm, web
   <Wrapper>
     {!!category && !!category.name && (
       <InfoBox>
-        <RNEIcon
-          name="list"
-          type="material"
-          color={colors.primary}
-          iconStyle={{ marginRight: normalize(10) }}
-        />
+        <RNEIcon name="list" type="material" color={colors.primary} iconStyle={styles.margin} />
         <RegularText>{category.name}</RegularText>
       </InfoBox>
     )}
+
     {!!lengthKm && (
       <InfoBox>
-        <RNEIcon
-          name="map"
-          type="material"
-          color={colors.primary}
-          iconStyle={{ marginRight: normalize(10) }}
-        />
-        <RegularText>{lengthKm} Km</RegularText>
+        <RNEIcon name="map" type="material" color={colors.primary} iconStyle={styles.margin} />
+        <RegularText>{lengthKm} km</RegularText>
       </InfoBox>
     )}
 

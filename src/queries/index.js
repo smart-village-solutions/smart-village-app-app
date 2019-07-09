@@ -14,22 +14,20 @@ export const getQuery = (query) => {
     return GET_EVENT_RECORD;
   case 'eventRecords':
     return GET_EVENT_RECORDS;
-  case 'newsItems':
-    return GET_NEWS_ITEMS;
   case 'newsItem':
     return GET_NEWS_ITEM;
-
-  case 'tours':
-    return GET_TOURS;
+  case 'newsItems':
+    return GET_NEWS_ITEMS;
   case 'tour':
     return GET_TOUR;
+  case 'tours':
+    return GET_TOURS;
   case 'pointOfInterest':
     return GET_POINT_OF_INTEREST;
   case 'pointsOfInterest':
     return GET_POINTS_OF_INTEREST;
   case 'pointsOfInterestAndTours':
     return GET_POINTS_OF_INTEREST_AND_TOURS;
-
   case 'publicHtmlFile':
     return GET_PUBLIC_HTML_FILE;
   case 'publicJsonFile':

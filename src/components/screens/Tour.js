@@ -1,14 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { SafeAreaView, ScrollView, View } from 'react-native';
-import { Icon as RNEIcon } from 'react-native-elements';
 
-import { device, texts, colors, normalize } from '../../config';
+import { device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Logo } from '../Logo';
-import { RegularText } from '../Text';
-import { InfoBox } from './InfoCard';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperNoFlex } from '../Wrapper';
 

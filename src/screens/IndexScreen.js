@@ -141,7 +141,7 @@ export class IndexScreen extends React.PureComponent {
           }))
       );
 
-    case 'pointsOfInterestAndTours':
+    case 'pointsOfInterestAndTours': {
       const pointsOfInterest =
           data &&
           data.pointsOfInterest &&
@@ -191,9 +191,10 @@ export class IndexScreen extends React.PureComponent {
               details: tour
             }
           }));
-      const mix = [...(pointsOfInterest || []), ...(tours || [])];
 
-      return mix.sort(function(a, b) {
+      const pointsOfInterestAndTours = [...(pointsOfInterest || []), ...(tours || [])];
+
+      return pointsOfInterestAndTours.sort(function sortAlphabetically(a, b) {
         var nameA = a.name.toUpperCase();
         var nameB = b.name.toUpperCase();
 
@@ -204,12 +205,11 @@ export class IndexScreen extends React.PureComponent {
           return 1;
         }
 
-        // i nomi devono essere uguali
         return 0;
       });
     }
+    }
   }
-
   /* eslint-enable complexity */
 
   getComponent(query) {
