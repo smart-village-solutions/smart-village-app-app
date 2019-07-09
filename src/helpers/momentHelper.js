@@ -15,3 +15,20 @@ export const momentFormat = (
   returnFormat = 'DD.MM.YYYY',
   dateTimeFormat = 'YYYY-MM-DD HH:mm:ss Z'
 ) => moment(dateTime, dateTimeFormat).format(returnFormat);
+
+/**
+ * Check if a given event date is today or in the future. We will check that with moment `isBefore`.
+ *  https://momentjs.com/docs/#/query/is-before/
+ *
+ * If a date is not before today, it is upcoming.
+ *
+ * @param {string} eventDate a date
+ *
+ * @return {bool} true if the eventDate is today or in the future, false if in the past
+ */
+export const isUpcomingEvent = (eventDate) => {
+  if (!eventDate) return false;
+
+  // "using day will check for year, month and day"
+  return !moment(eventDate).isBefore(moment(), 'day');
+};

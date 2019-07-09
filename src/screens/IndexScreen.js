@@ -9,6 +9,7 @@ import {
   View
 } from 'react-native';
 import { Query } from 'react-apollo';
+import _filter from 'lodash/filter';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
@@ -16,7 +17,13 @@ import { colors, normalize } from '../config';
 import { CardList, Icon, TextList } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
-import { eventDate, graphqlFetchPolicy, momentFormat, shareMessage } from '../helpers';
+import {
+  eventDate,
+  graphqlFetchPolicy,
+  isUpcomingEvent,
+  momentFormat,
+  shareMessage
+} from '../helpers';
 
 export class IndexScreen extends React.PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -44,23 +51,26 @@ export class IndexScreen extends React.PureComponent {
     case 'eventRecords':
       return (
         data &&
-          data[query].map((eventRecord) => ({
-            id: eventRecord.id,
-            subtitle: `${eventDate(eventRecord.listDate)} | ${eventRecord.dataProvider &&
-              eventRecord.dataProvider.name}`,
-            title: eventRecord.title,
-            routeName: 'Detail',
-            params: {
-              title: 'Veranstaltung',
-              query: 'eventRecord',
-              queryVariables: { id: `${eventRecord.id}` },
-              rootRouteName: 'EventRecords',
-              shareContent: {
-                message: shareMessage(eventRecord, query)
-              },
-              details: eventRecord
-            }
-          }))
+          data[query] &&
+          _filter(data[query], (eventRecord) => isUpcomingEvent(eventRecord.listDate)).map(
+            (eventRecord) => ({
+              id: eventRecord.id,
+              subtitle: `${eventDate(eventRecord.listDate)} | ${eventRecord.dataProvider &&
+                eventRecord.dataProvider.name}`,
+              title: eventRecord.title,
+              routeName: 'Detail',
+              params: {
+                title: 'Veranstaltung',
+                query: 'eventRecord',
+                queryVariables: { id: `${eventRecord.id}` },
+                rootRouteName: 'EventRecords',
+                shareContent: {
+                  message: shareMessage(eventRecord, query)
+                },
+                details: eventRecord
+              }
+            })
+          )
       );
     case 'newsItems':
       return (
