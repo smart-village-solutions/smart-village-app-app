@@ -141,7 +141,7 @@ export class HomeScreen extends React.PureComponent {
           {device.platform === 'ios' && <TitleShadow />}
           <Query
             query={getQuery('pointsOfInterestAndTours')}
-            variables={{ limit: 10, order: 'RAND' }}
+            variables={{ limit: 10, orderPoi: 'RAND', orderTour: 'RAND' }}
             fetchPolicy={fetchPolicy}
           >
             {({ data, loading }) => {
