@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.9.4]
+
+Add tours to list of points of interest and create tour detail screens
+
+### Added
+
+- added a new logic in order display tour and point of interest in the same list
+- added queries for tours
+- added combined query for points of interest and tours to present them both in the same list
+- added detail screen for tours with a special tour section
+  - render only addresses with kind `start` and `end` in this TourCard
+- added query for kind in all addresses queries
+- added logic for `open` for openingHours of points of interest
+  - need to have that (somehow strange) check for `(open === undefined || open === true)`,
+    because we use this component for PointOfInterest and EventRecord but event records
+    have no `open` data
+
+### Changed
+
+- updated lists of points of interest and tours to be ordered alphabetically on index screen
+- list 10 points of interest and 10 tours randomly shuffled on the home screen
+- render only addresses with kind `default` in InfoCard
+
+### Fixed
+
+- fixed rendering of opening times and event dates when there is time, date AND description
+  - the layout was broken so now we render the description in an extra row below the time and date
+
 ## [v0.9.3]
 
 Show only upcoming events
