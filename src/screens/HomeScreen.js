@@ -284,7 +284,7 @@ export class HomeScreen extends React.PureComponent {
               const eventRecords = _take(upcomingEventRecords, 3).map((eventRecord, index) => ({
                 id: eventRecord.id,
                 subtitle: `${eventDate(eventRecord.listDate)} | ${eventRecord.addresses &&
-                  eventRecord.addresses.city}`,
+                  eventRecord.addresses[0].city}`,
                 title: eventRecord.title,
                 routeName: 'Detail',
                 params: {

@@ -57,8 +57,8 @@ export class IndexScreen extends React.PureComponent {
           _filter(data[query], (eventRecord) => isUpcomingEvent(eventRecord.listDate)).map(
             (eventRecord) => ({
               id: eventRecord.id,
-              subtitle: `${eventDate(eventRecord.listDate)} | ${eventRecord.dataProvider &&
-                eventRecord.dataProvider.name}`,
+              subtitle: `${eventDate(eventRecord.listDate)} | ${eventRecord.addresses &&
+                eventRecord.addresses[0].city}`,
               title: eventRecord.title,
               routeName: 'Detail',
               params: {
