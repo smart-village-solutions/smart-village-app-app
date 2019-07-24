@@ -57,8 +57,9 @@ export class IndexScreen extends React.PureComponent {
           _filter(data[query], (eventRecord) => isUpcomingEvent(eventRecord.listDate)).map(
             (eventRecord) => ({
               id: eventRecord.id,
-              subtitle: `${eventDate(eventRecord.listDate)} | ${eventRecord.dataProvider &&
-                eventRecord.dataProvider.name}`,
+              subtitle: `${eventDate(eventRecord.listDate)} | ${!!eventRecord.addresses &&
+                !!eventRecord.addresses.length &&
+                eventRecord.addresses[0].city}`,
               title: eventRecord.title,
               routeName: 'Detail',
               params: {
@@ -80,9 +81,12 @@ export class IndexScreen extends React.PureComponent {
           data[query] &&
           data[query].map((newsItem) => ({
             id: newsItem.id,
-            subtitle: `${momentFormat(newsItem.publishedAt)} | ${newsItem.dataProvider &&
+            subtitle: `${momentFormat(newsItem.publishedAt)} | ${!!newsItem.dataProvider &&
               newsItem.dataProvider.name}`,
-            title: newsItem.contentBlocks[0].title,
+            title:
+              !!newsItem.contentBlocks &&
+              !!newsItem.contentBlocks.length &&
+              newsItem.contentBlocks[0].title,
             routeName: 'Detail',
             params: {
               title: 'Nachricht',

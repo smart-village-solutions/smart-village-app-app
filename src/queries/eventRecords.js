@@ -29,6 +29,9 @@ export const GET_EVENT_RECORDS = gql`
         }
         name
       }
+      addresses {
+        city
+      }
     }
   }
 `;
@@ -60,6 +63,7 @@ export const GET_EVENT_RECORD = gql`
         city
         street
         zip
+        kind
       }
       contacts {
         id
