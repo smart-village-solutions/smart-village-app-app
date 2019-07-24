@@ -142,7 +142,7 @@ export class HomeScreen extends React.PureComponent {
                     title: 'Orte und Touren',
                     query: 'pointsOfInterestAndTours',
                     queryVariables: {},
-                    rootRouteName: 'pointsOfInterestAndTours'
+                    rootRouteName: 'PointsOfInterestAndTours'
                   }
                 })
               }
@@ -235,7 +235,7 @@ export class HomeScreen extends React.PureComponent {
                             title: 'Orte und Touren',
                             query: 'pointsOfInterestAndTours',
                             queryVariables: {},
-                            rootRouteName: 'pointsOfInterestAndTours'
+                            rootRouteName: 'PointsOfInterestAndTours'
                           }
                         })
                       }
