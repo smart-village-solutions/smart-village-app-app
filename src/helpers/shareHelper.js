@@ -32,20 +32,27 @@ export const openShare = async ({ message, title, url }) => {
   }
 };
 
+/* eslint-disable complexity */
+/* NOTE: we need to check a lot for presence, so this is that complex */
 export const shareMessage = (data, query) => {
   const buildMessage = (query) => {
     switch (query) {
     case 'eventRecord':
-      return `${momentFormat(data.createdAt)} | ${data.dataProvider && data.dataProvider.name}: ${
-        data.title
-      }`;
+      return `${momentFormat(data.listDate)} | ${data.addresses &&
+          data.addresses.length &&
+          data.addresses[0].city}: ${data.title}`;
     case 'newsItem':
       return `${momentFormat(data.publishedAt)} | ${data.dataProvider &&
-          data.dataProvider.name}: ${data.contentBlocks[0].title}`;
+          data.dataProvider.name}: ${data.contentBlocks &&
+          data.contentBlocks.length &&
+          data.contentBlocks[0].title}`;
     case 'pointOfInterest':
-      return `${data.name}\n\n${data.description}`;
+      return `${data.category && data.category.name}: ${data.name}`;
+    case 'tour':
+      return `${data.category && data.category.name}: ${data.name}`;
     }
   };
 
   return `${buildMessage(query)}\n\nQuelle: ${appJson.expo.name}`;
 };
+/* eslint-enable complexity */

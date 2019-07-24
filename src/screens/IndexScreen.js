@@ -67,7 +67,7 @@ export class IndexScreen extends React.PureComponent {
                 queryVariables: { id: `${eventRecord.id}` },
                 rootRouteName: 'EventRecords',
                 shareContent: {
-                  message: shareMessage(eventRecord, query)
+                  message: shareMessage(eventRecord, 'eventRecord')
                 },
                 details: eventRecord
               }
@@ -90,7 +90,7 @@ export class IndexScreen extends React.PureComponent {
               queryVariables: { id: `${newsItem.id}` },
               rootRouteName: 'NewsItems',
               shareContent: {
-                message: shareMessage(newsItem, query)
+                message: shareMessage(newsItem, 'newsItem')
               },
               details: newsItem
             }
@@ -116,7 +116,7 @@ export class IndexScreen extends React.PureComponent {
               queryVariables: { id: `${pointOfInterest.id}` },
               rootRouteName: 'PointsOfInterest',
               shareContent: {
-                message: shareMessage(pointOfInterest, query)
+                message: shareMessage(pointOfInterest, 'pointOfInterest')
               },
               details: pointOfInterest
             }
@@ -142,7 +142,7 @@ export class IndexScreen extends React.PureComponent {
               queryVariables: { id: `${tour.id}` },
               rootRouteName: 'Tours',
               shareContent: {
-                message: shareMessage(tour, query)
+                message: shareMessage(tour, 'tour')
               },
               details: tour
             }
