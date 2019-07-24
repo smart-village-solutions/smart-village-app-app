@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v0.9.5]
+
+Fix and update share messages + subtitle
+
+### Changed
+
+- updated contents of share messages
+  - we cannot use the description for pois and tours anymore, because they are HTML
+    and not plain text
+- updated subtitles of event records to city location instead of provider name
+
+### Fixed
+
+- fixed query parameter in IndexScreen for share messages
+  - needs to be singular for a certain item and not the `query` variable available,
+    because that is plural
+
 ## [v0.9.4]
 
 Add tours to list of points of interest and create tour detail screens
