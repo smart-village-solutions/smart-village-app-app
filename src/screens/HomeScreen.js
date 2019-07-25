@@ -19,6 +19,7 @@ import {
   CardList,
   DiagonalGradient,
   Image,
+  ImagesCarousel,
   BoldText,
   Button,
   ServiceBox,
@@ -51,7 +52,7 @@ export class HomeScreen extends React.PureComponent {
     return (
       <SafeAreaView>
         <ScrollView>
-          <Image source={require('../../assets/images/home.jpg')} />
+          <ImagesCarousel source={require('../../assets/images/home.jpg')} />
           <TitleContainer>
             <Touchable
               onPress={() =>
