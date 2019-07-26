@@ -41,6 +41,14 @@ import {
   shareMessage
 } from '../helpers';
 
+const BBImages = [
+  { picture: require('../../assets/images/home.jpg') },
+  { picture: require('../../assets/images/_MG_0013-1.jpg') },
+  { picture: require('../../assets/images/_MG_0017_1.jpg') },
+  { picture: require('../../assets/images/_MG_0043-1.jpg') },
+  { picture: require('../../assets/images/_MG_0061_1.jpg') }
+];
+
 export class HomeScreen extends React.PureComponent {
   static contextType = NetworkContext;
 
@@ -52,7 +60,7 @@ export class HomeScreen extends React.PureComponent {
     return (
       <SafeAreaView>
         <ScrollView>
-          <ImagesCarousel source={require('../../assets/images/home.jpg')} />
+          <ImagesCarousel data={_shuffle(BBImages)} />
           <TitleContainer>
             <Touchable
               onPress={() =>

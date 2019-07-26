@@ -32,7 +32,12 @@ export const PointOfInterest = ({ data }) => {
     !!mediaContents &&
     !!mediaContents.length &&
     !!mediaContents[0].sourceUrl &&
-    mediaContents[0].sourceUrl.url; // TODO: some logic to get the first image/thumbnail
+    mediaContents[0].sourceUrl.url;
+
+  // TODO: some logic to get the first image/thumbnail {!!addresses &&
+  // TODO: from priceCard _filter(addresses, (address) => address.kind === 'start' || address.kind === 'end').map((item, index) => {
+  // TODO: scrivi una logica che posso filtrare per categorie mediaContents : image/thumbnail e mostrare solo url
+  // TODO:il carosello non sarà random
 
   return (
     <SafeAreaView>
