@@ -23,14 +23,15 @@ export const GET_EVENT_RECORDS = gql`
           url
         }
       }
-      dataProvider {
-        logo {
-          url
-        }
-        name
-      }
       addresses {
         city
+        street
+        zip
+        kind
+      }
+      priceInformations {
+        name
+        amount
       }
     }
   }
@@ -78,7 +79,6 @@ export const GET_EVENT_RECORD = gql`
         logo {
           url
         }
-        name
       }
       priceInformations {
         name

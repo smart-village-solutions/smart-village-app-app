@@ -298,7 +298,8 @@ export class HomeScreen extends React.PureComponent {
                   rootRouteName: 'EventRecords',
                   shareContent: {
                     message: shareMessage(eventRecord, 'eventRecord')
-                  }
+                  },
+                  details: eventRecord
                 },
                 bottomDivider: index !== data.eventRecords.length - 1,
                 __typename: eventRecord.__typename
