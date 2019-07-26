@@ -30,10 +30,15 @@ For detailed documentation see the [docs](./docs/INDEX.md).
 
 Information about currently used packages and their versions:
 
+- Expo (33.0.7): https://github.com/expo/expo
 - React Native (0.59.8): https://github.com/facebook/react-native
 - React (16.8.3): https://github.com/facebook/react
-- React Navigation (3.11.0): https://github.com/react-navigation/react-navigation
+- React Navigation (3.11.1): https://github.com/react-navigation/react-navigation
 - React Native WebView (5.8.2): https://github.com/react-native-community/react-native-webview
+- React Native Elements (1.1.0): https://github.com/react-native-training/react-native-elements
+- Apollo Client (2.6.3): https://github.com/apollographql/apollo-client
+- GraphQL (14.4.2): https://github.com/graphql/graphql-js
+- styled-components (4.3.2): https://github.com/styled-components/styled-components
 - Jest (24.8.0): https://github.com/facebook/jest
 
 ## Changelog
