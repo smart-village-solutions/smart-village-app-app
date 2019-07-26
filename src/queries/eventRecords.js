@@ -28,6 +28,7 @@ export const GET_EVENT_RECORDS = gql`
         street
         zip
         kind
+        addition
       }
       priceInformations {
         name
@@ -65,6 +66,7 @@ export const GET_EVENT_RECORD = gql`
         street
         zip
         kind
+        addition
       }
       contacts {
         id
