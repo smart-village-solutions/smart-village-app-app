@@ -6,7 +6,7 @@ import { device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { WrapperNoFlex } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 import { PriceCard } from './PriceCard';
 import { InfoCard } from './InfoCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
@@ -48,7 +48,9 @@ export const PointOfInterest = ({ data }) => {
           </View>
         )}
 
-        <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
+        <Wrapper>
+          <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
+        </Wrapper>
 
         {/* TODO: show map for location */}
         {/* {!!location && (
@@ -86,7 +88,9 @@ export const PointOfInterest = ({ data }) => {
               <Title>{texts.pointOfInterest.description}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
-            <WrapperNoFlex>{!!description && <HtmlView html={description} />}</WrapperNoFlex>
+            <Wrapper>
+              <HtmlView html={description} />
+            </Wrapper>
           </View>
         )}
 

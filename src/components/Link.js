@@ -7,14 +7,14 @@ import { openLink } from '../helpers';
 import { link } from '../icons';
 import { Icon } from './Icon';
 import { RegularText } from './Text';
-import { WrapperRowNoFlex } from './Wrapper';
+import { WrapperRow } from './Wrapper';
 
 export const Link = ({ url, title }) => (
   <TouchableOpacity onPress={() => openLink(url)}>
-    <WrapperRowNoFlex>
+    <WrapperRow>
       <Icon icon={link(colors.secondary)} style={styles.icon} />
       <RegularText link>{title}</RegularText>
-    </WrapperRowNoFlex>
+    </WrapperRow>
   </TouchableOpacity>
 );
 

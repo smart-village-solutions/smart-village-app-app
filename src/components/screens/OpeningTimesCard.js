@@ -12,7 +12,7 @@ const TimeBox = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
   flex: 1;
-  margin-bottom: 5;
+  margin-bottom: ${normalize(5)}px;
 `;
 
 const DateBox = styled(TimeBox)`

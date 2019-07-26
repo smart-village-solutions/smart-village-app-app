@@ -7,7 +7,7 @@ import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperNoFlex } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 import { InfoCard } from './InfoCard';
 import { TourCard } from './TourCard';
@@ -50,13 +50,11 @@ export const Tour = ({ data }) => {
           </View>
         )}
 
-        {!!logo && (
-          <Wrapper>
-            <Logo source={{ uri: logo }} />
-          </Wrapper>
-        )}
+        <Wrapper>
+          {!!logo && <Logo source={{ uri: logo }} />}
 
-        <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
+          <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
+        </Wrapper>
 
         <TourCard lengthKm={lengthKm} addresses={addresses} />
 
@@ -66,7 +64,9 @@ export const Tour = ({ data }) => {
               <Title>{texts.eventRecord.description}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
-            <WrapperNoFlex>{!!description && <HtmlView html={description} />}</WrapperNoFlex>
+            <Wrapper>
+              <HtmlView html={description} />
+            </Wrapper>
           </View>
         )}
 

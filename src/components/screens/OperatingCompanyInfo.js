@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon as RNEIcon } from 'react-native-elements';
 import PropTypes from 'prop-types';
@@ -9,14 +8,7 @@ import { mail, location, phone as phoneIcon, url as urlIcon } from '../../icons'
 import { openLink, locationLink, locationString } from '../../helpers';
 import { RegularText } from '../Text';
 import { Icon } from '../Icon';
-import { Wrapper } from '../Wrapper';
-
-const InfoBox = styled.View`
-  flex: 1;
-  flex-direction: row;
-  flex-wrap: wrap;
-  margin-bottom: ${normalize(5)}px;
-`;
+import { InfoBox, Wrapper } from '../Wrapper';
 
 const addressOnPress = (address) => {
   const mapsString = locationString(address);
@@ -140,7 +132,6 @@ const styles = StyleSheet.create({
 OperatingCompanyInfo.propTypes = {
   address: PropTypes.object,
   name: PropTypes.string,
-
   contact: PropTypes.object,
   webUrls: PropTypes.array
 };

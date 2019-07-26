@@ -10,13 +10,7 @@ import { mail, location, phone as phoneIcon, url as urlIcon } from '../../icons'
 import { openLink, locationLink, locationString } from '../../helpers';
 import { RegularText } from '../Text';
 import { Icon } from '../Icon';
-import { Wrapper } from '../Wrapper';
-
-const InfoBox = styled.View`
-  flex: 1;
-  flex-direction: row;
-  margin-bottom: ${normalize(5)}px;
-`;
+import { InfoBox } from '../Wrapper';
 
 const addressOnPress = (address) => {
   const mapsString = locationString(address);
@@ -59,7 +53,7 @@ const contactView = (contact) => (
 /* TODO: add a logic to display info category and url that fit the screen even if long text
          (not yet a problem) */
 export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) => (
-  <Wrapper>
+  <View>
     {!!category && !!category.name && (
       <InfoBox>
         <RNEIcon name="list" type="material" color={colors.primary} iconStyle={styles.margin} />
@@ -123,7 +117,7 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) =>
           </InfoBox>
         );
       })}
-  </Wrapper>
+  </View>
 );
 /* eslint-enable complexity */
 

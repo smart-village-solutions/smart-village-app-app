@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import styled from 'styled-components';
 import { Icon as RNEIcon } from 'react-native-elements';
 import _filter from 'lodash/filter';
 
@@ -11,13 +10,7 @@ import { openLink, locationLink, locationString } from '../../helpers';
 import { RegularText } from '../Text';
 import { Icon } from '../Icon';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { WrapperNoFlex } from '../Wrapper';
-
-const InfoBox = styled.View`
-  flex: 1;
-  flex-direction: row;
-  margin-bottom: ${normalize(5)}px;
-`;
+import { InfoBox, Wrapper } from '../Wrapper';
 
 const addressOnPress = (address) => {
   const mapsString = locationString(address);
@@ -34,7 +27,7 @@ export const TourCard = ({ addresses, lengthKm }) => (
       <Title>{texts.tour.tour}</Title>
     </TitleContainer>
     {device.platform === 'ios' && <TitleShadow />}
-    <WrapperNoFlex>
+    <Wrapper>
       {!!lengthKm && (
         <InfoBox>
           <RNEIcon name="map" type="material" color={colors.primary} iconStyle={styles.margin} />
@@ -74,7 +67,7 @@ export const TourCard = ({ addresses, lengthKm }) => (
             );
           }
         )}
-    </WrapperNoFlex>
+    </Wrapper>
   </View>
 );
 /* eslint-enable complexity */
