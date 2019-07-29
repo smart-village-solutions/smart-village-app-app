@@ -19,7 +19,7 @@ import { NetworkProvider } from './NetworkProvider';
 import AppStackNavigator from './navigation/AppStackNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 
-export const MainApp = () => {
+const MainAppWithApolloProvider = () => {
   const [client, setClient] = useState(null);
   const [drawerRoutes, setDrawerRoutes] = useState({
     AppStack: {
@@ -156,9 +156,7 @@ export const MainApp = () => {
   return (
     <ApolloProvider client={client}>
       <StatusBar barStyle="light-content" />
-      <NetworkProvider>
-        <AppContainer />
-      </NetworkProvider>
+      <AppContainer />
     </ApolloProvider>
   );
 };
@@ -170,3 +168,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 });
+
+export const MainApp = () => (
+  <NetworkProvider>
+    <MainAppWithApolloProvider />
+  </NetworkProvider>
+);
