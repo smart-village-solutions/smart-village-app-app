@@ -58,12 +58,6 @@ export const MainApp = () => {
     const cache = new InMemoryCache();
     const storage = AsyncStorage;
 
-    const initialCache = {
-      cacheItems: []
-    };
-
-    cache.writeData({ data: initialCache });
-
     try {
       // await before instantiating ApolloClient,
       // else queries might run before the cache is persisted
@@ -89,8 +83,6 @@ export const MainApp = () => {
       // (https://github.com/apollographql/apollo-client/pull/4499).
       resolvers: {}
     });
-
-    client.onResetStore(() => cache.writeData({ data: initialCache }));
 
     const fetchPolicy = await netInfoForGraphqlFetchPolicy();
 
