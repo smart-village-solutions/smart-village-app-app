@@ -21,5 +21,5 @@ export const auth = (callback) => {
     .then((json) => {
       SecureStore.setItemAsync('ACCESS_TOKEN', json.access_token);
     })
-    .then(() => callback && callback());
+    .finally(() => callback && callback());
 };
