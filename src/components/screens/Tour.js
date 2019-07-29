@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { SafeAreaView, ScrollView, View } from 'react-native';
+import _filter from 'lodash/filter';
 
 import { device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
@@ -12,6 +13,7 @@ import { Wrapper } from '../Wrapper';
 import { InfoCard } from './InfoCard';
 import { TourCard } from './TourCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
+import { ImagesCarousel } from './home/ImagesCarousel';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -30,16 +32,27 @@ export const Tour = ({ data }) => {
   } = data;
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
-  const image =
-    mediaContents &&
-    mediaContents.length &&
-    mediaContents[0].sourceUrl &&
-    mediaContents[0].sourceUrl.url; // TODO: some logic to get the first image/thumbnail
+  let images = [];
+  console.log(mediaContents);
+  !!mediaContents &&
+    !!mediaContents.length &&
+    _filter(
+      mediaContents,
+      (mediaContent) =>
+        mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
+    ).map((item) => {
+      console.log();
+
+      !!item.sourceUrl &&
+        !!item.sourceUrl.url &&
+        images.push({ picture: { uri: item.sourceUrl.url } });
+    });
 
   return (
     <SafeAreaView>
       <ScrollView>
-        {!!image && <Image source={{ uri: image }} />}
+        {!!images && images.length > 1 && <ImagesCarousel data={images} />}
+        {!!images && images.length === 1 && <Image source={images[0].picture} />}
 
         {!!title && (
           <View>

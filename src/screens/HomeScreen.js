@@ -42,11 +42,27 @@ import {
 } from '../helpers';
 
 const BBImages = [
-  { picture: require('../../assets/images/home.jpg') },
-  { picture: require('../../assets/images/_MG_0013-1.jpg') },
-  { picture: require('../../assets/images/_MG_0017_1.jpg') },
-  { picture: require('../../assets/images/_MG_0043-1.jpg') },
-  { picture: require('../../assets/images/_MG_0061_1.jpg') }
+  { picture: require('../../assets/images/1.jpg') },
+  { picture: require('../../assets/images/2.jpg') },
+  { picture: require('../../assets/images/3.jpg') },
+  { picture: require('../../assets/images/4.jpg') },
+  { picture: require('../../assets/images/5.jpg') },
+  { picture: require('../../assets/images/6.jpg') },
+  { picture: require('../../assets/images/8.jpg') },
+  { picture: require('../../assets/images/10.jpg') },
+  { picture: require('../../assets/images/11.jpg') },
+  { picture: require('../../assets/images/14.jpg') },
+  { picture: require('../../assets/images/15.jpg') },
+  { picture: require('../../assets/images/16.jpg') },
+  { picture: require('../../assets/images/17.jpg') },
+  { picture: require('../../assets/images/18.jpg') },
+  { picture: require('../../assets/images/19.jpg') },
+  { picture: require('../../assets/images/20.jpg') },
+  { picture: require('../../assets/images/22.jpg') },
+  { picture: require('../../assets/images/23.jpg') },
+  { picture: require('../../assets/images/24.jpg') },
+  { picture: require('../../assets/images/25.jpg') },
+  { picture: require('../../assets/images/26.jpg') }
 ];
 
 export class HomeScreen extends React.PureComponent {

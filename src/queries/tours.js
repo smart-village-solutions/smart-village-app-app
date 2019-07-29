@@ -10,6 +10,7 @@ export const GET_TOURS = gql`
       }
       description
       mediaContents {
+        contentType
         sourceUrl {
           url
         }
@@ -40,6 +41,7 @@ export const GET_TOUR = gql`
       }
       description
       mediaContents {
+        contentType
         sourceUrl {
           url
         }
