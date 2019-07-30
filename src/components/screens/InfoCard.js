@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import styled from 'styled-components';
 import { Icon as RNEIcon } from 'react-native-elements';
 import _filter from 'lodash/filter';
 
