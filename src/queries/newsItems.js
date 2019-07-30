@@ -9,6 +9,7 @@ export const GET_NEWS_ITEMS = gql`
         title
         body
         mediaContents {
+          contentType
           sourceUrl {
             url
           }
@@ -36,6 +37,7 @@ export const GET_NEWS_ITEM = gql`
         title
         body
         mediaContents {
+          contentType
           sourceUrl {
             url
           }

@@ -9,6 +9,7 @@ import {
   View
 } from 'react-native';
 import { Query } from 'react-apollo';
+import _filter from 'lodash/filter';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
@@ -18,6 +19,7 @@ import {
   HtmlView,
   Icon,
   Image,
+  ImagesCarousel,
   Logo,
   PointOfInterest,
   RegularText,
@@ -90,14 +92,7 @@ export class DetailScreen extends React.PureComponent {
         body:
             contentBlocks &&
             contentBlocks.length &&
-            contentBlocks.map((contentBlock) => contentBlock.body).join(),
-        image:
-            contentBlocks &&
-            contentBlocks.length &&
-            contentBlocks[0].mediaContents &&
-            contentBlocks[0].mediaContents.length &&
-            contentBlocks[0].mediaContents[0].sourceUrl &&
-            contentBlocks[0].mediaContents[0].sourceUrl.url,
+            contentBlocks.map((contentBlock) => contentBlock.body).join(''),
         link: sourceUrl && sourceUrl.url,
         logo: dataProvider && dataProvider.logo && dataProvider.logo.url
       };
@@ -143,33 +138,53 @@ export class DetailScreen extends React.PureComponent {
 
           if (!page) return null;
 
-          const { subtitle, title, body, image, link, logo } = page;
+          const { subtitle, title, body, link, logo } = page;
+          const contentBlocks =
+            data && data[query] ? data[query].contentBlocks : details.contentBlocks;
+
+          let images = [];
+
+          !!contentBlocks &&
+            !!contentBlocks.length &&
+            contentBlocks.map((contentBlock) => {
+              !!contentBlock.mediaContents &&
+                !!contentBlock.mediaContents.length &&
+                _filter(
+                  contentBlock.mediaContents,
+                  (mediaContent) =>
+                    mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
+                ).map((mediaContent) => {
+                  !!mediaContent.sourceUrl &&
+                    !!mediaContent.sourceUrl.url &&
+                    images.push({ picture: { uri: mediaContent.sourceUrl.url } });
+                });
+            });
 
           return (
-            <SafeAreaView>
-              <ScrollView>
-                {!!image && <Image source={{ uri: image }} />}
-                {!!title && !!link ? (
+            <ScrollView>
+              {!!images && images.length > 1 && <ImagesCarousel data={images} />}
+              {!!images && images.length === 1 && <Image source={images[0].picture} />}
+
+              {!!title && !!link ? (
+                <TitleContainer>
+                  <Touchable onPress={() => openLink(link)}>
+                    <Title>{title}</Title>
+                  </Touchable>
+                </TitleContainer>
+              ) : (
+                !!title && (
                   <TitleContainer>
-                    <Touchable onPress={() => openLink(link)}>
-                      <Title>{title}</Title>
-                    </Touchable>
+                    <Title>{title}</Title>
                   </TitleContainer>
-                ) : (
-                  !!title && (
-                    <TitleContainer>
-                      <Title>{title}</Title>
-                    </TitleContainer>
-                  )
-                )}
-                {device.platform === 'ios' && <TitleShadow />}
-                <Wrapper>
-                  {!!subtitle && <RegularText small>{subtitle}</RegularText>}
-                  {!!logo && <Logo source={{ uri: logo }} />}
-                  {!!body && <HtmlView html={trimNewLines(body)} />}
-                </Wrapper>
-              </ScrollView>
-            </SafeAreaView>
+                )
+              )}
+              {device.platform === 'ios' && <TitleShadow />}
+              <Wrapper>
+                {!!subtitle && <RegularText small>{subtitle}</RegularText>}
+                {!!logo && <Logo source={{ uri: logo }} />}
+                {!!body && <HtmlView html={trimNewLines(body)} />}
+              </Wrapper>
+            </ScrollView>
           );
         }}
       </Query>
