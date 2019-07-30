@@ -12,7 +12,7 @@ import { PriceCard } from './PriceCard';
 import { InfoCard } from './InfoCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 import { OpeningTimesCard } from './OpeningTimesCard';
-import { ImagesCarousel } from './home/ImagesCarousel';
+import { ImagesCarousel } from '../ImagesCarousel';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */

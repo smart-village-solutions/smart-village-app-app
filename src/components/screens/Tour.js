@@ -13,7 +13,7 @@ import { Wrapper } from '../Wrapper';
 import { InfoCard } from './InfoCard';
 import { TourCard } from './TourCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
-import { ImagesCarousel } from './home/ImagesCarousel';
+import { ImagesCarousel } from '../ImagesCarousel';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -33,7 +33,7 @@ export const Tour = ({ data }) => {
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   let images = [];
-  console.log(mediaContents);
+
   !!mediaContents &&
     !!mediaContents.length &&
     _filter(
@@ -41,8 +41,6 @@ export const Tour = ({ data }) => {
       (mediaContent) =>
         mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
     ).map((item) => {
-      console.log();
-
       !!item.sourceUrl &&
         !!item.sourceUrl.url &&
         images.push({ picture: { uri: item.sourceUrl.url } });

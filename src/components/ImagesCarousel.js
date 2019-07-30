@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import Carousel from 'react-native-snap-carousel';
 import React from 'react';
 
-import { device } from '../../../config';
-import { Image } from '../../Image';
+import { device } from '../config';
+import { Image } from './Image';
 
 export class ImagesCarousel extends React.Component {
   renderItem({ item }) {
