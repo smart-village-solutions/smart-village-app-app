@@ -105,7 +105,7 @@ export class IndexScreen extends React.PureComponent {
               !!pointOfInterest.mediaContents &&
               !!pointOfInterest.mediaContents.length &&
               !!pointOfInterest.mediaContents[0].sourceUrl &&
-              pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
+              pointOfInterest.mediaContents[0].sourceUrl.url,
             routeName: 'Detail',
             params: {
               title: 'Ort',

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import _filter from 'lodash/filter';
 
 import { device, texts } from '../../config';
@@ -45,26 +45,25 @@ export const PointOfInterest = ({ data }) => {
     });
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        {!!images && images.length > 1 && <ImagesCarousel data={images} />}
-        {!!images && images.length === 1 && <Image source={images[0].picture} />}
+    <View>
+      {!!images && images.length > 1 && <ImagesCarousel data={images} />}
+      {!!images && images.length === 1 && <Image source={images[0].picture} />}
 
-        {!!title && (
-          <View>
-            <TitleContainer>
-              <Title>{title}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-          </View>
-        )}
+      {!!title && (
+        <View>
+          <TitleContainer>
+            <Title>{title}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+        </View>
+      )}
 
-        <Wrapper>
-          <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
-        </Wrapper>
+      <Wrapper>
+        <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
+      </Wrapper>
 
-        {/* TODO: show map for location */}
-        {/* {!!location && (
+      {/* TODO: show map for location */}
+      {/* {!!location && (
         <View>
           <TitleContainer>
             <Title>{texts.pointOfInterest.location}</Title>
@@ -73,54 +72,53 @@ export const PointOfInterest = ({ data }) => {
         </View>
       )} */}
 
-        {!!openingHours && !!openingHours.length && (
-          <View>
-            <TitleContainer>
-              <Title>{texts.pointOfInterest.openingTime}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <OpeningTimesCard openingHours={openingHours} />
-          </View>
-        )}
+      {!!openingHours && !!openingHours.length && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.pointOfInterest.openingTime}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <OpeningTimesCard openingHours={openingHours} />
+        </View>
+      )}
 
-        {!!priceInformations && !!priceInformations.length && (
-          <View>
-            <TitleContainer>
-              <Title>{texts.pointOfInterest.prices}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <PriceCard prices={priceInformations} />
-          </View>
-        )}
+      {!!priceInformations && !!priceInformations.length && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.pointOfInterest.prices}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <PriceCard prices={priceInformations} />
+        </View>
+      )}
 
-        {!!description && (
-          <View>
-            <TitleContainer>
-              <Title>{texts.pointOfInterest.description}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>
-              <HtmlView html={description} />
-            </Wrapper>
-          </View>
-        )}
+      {!!description && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.pointOfInterest.description}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Wrapper>
+            <HtmlView html={description} />
+          </Wrapper>
+        </View>
+      )}
 
-        {!!operatingCompany && (
-          <View>
-            <TitleContainer>
-              <Title>{texts.pointOfInterest.operatingCompany}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <OperatingCompanyInfo
-              name={operatingCompany.name}
-              address={operatingCompany.address}
-              contact={operatingCompany.contact}
-              webUrls={operatingCompany.contact.webUrls}
-            />
-          </View>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+      {!!operatingCompany && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.pointOfInterest.operatingCompany}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <OperatingCompanyInfo
+            name={operatingCompany.name}
+            address={operatingCompany.address}
+            contact={operatingCompany.contact}
+            webUrls={operatingCompany.contact.webUrls}
+          />
+        </View>
+      )}
+    </View>
   );
 };
 /* eslint-enable complexity */

@@ -9,31 +9,14 @@ import {
   View
 } from 'react-native';
 import { Query } from 'react-apollo';
-import _filter from 'lodash/filter';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
-import { colors, device, normalize } from '../config';
-import {
-  EventRecord,
-  HtmlView,
-  Icon,
-  Image,
-  ImagesCarousel,
-  Logo,
-  PointOfInterest,
-  RegularText,
-  Title,
-  TitleContainer,
-  TitleShadow,
-  Touchable,
-  Tour,
-  Wrapper,
-  WrapperRow
-} from '../components';
+import { colors, normalize } from '../config';
+import { EventRecord, Icon, NewsItem, PointOfInterest, Tour, WrapperRow } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft, drawerMenu, share } from '../icons';
-import { graphqlFetchPolicy, momentFormat, openLink, openShare, trimNewLines } from '../helpers';
+import { graphqlFetchPolicy, openShare } from '../helpers';
 
 export class DetailScreen extends React.PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -68,38 +51,18 @@ export class DetailScreen extends React.PureComponent {
     isConnected && auth();
   }
 
-  renderScreenComponent(query, data) {
+  getComponent(query) {
     switch (query) {
+    case 'newsItem':
+      return NewsItem;
     case 'eventRecord':
-      return <EventRecord data={data} />;
+      return EventRecord;
     case 'pointOfInterest':
-      return <PointOfInterest data={data} />;
+      return PointOfInterest;
     case 'tour':
-      return <Tour data={data} />;
+      return Tour;
     }
   }
-
-  /* eslint-disable complexity */
-  /* NOTE: we need to check a lot for presence, so this is that complex */
-  getPage(query, data) {
-    switch (query) {
-    case 'newsItem': {
-      const { publishedAt, contentBlocks, sourceUrl, dataProvider } = data;
-
-      return {
-        subtitle: `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`,
-        title: contentBlocks && contentBlocks.length && contentBlocks[0].title,
-        body:
-            contentBlocks &&
-            contentBlocks.length &&
-            contentBlocks.map((contentBlock) => contentBlock.body).join(''),
-        link: sourceUrl && sourceUrl.url,
-        logo: dataProvider && dataProvider.logo && dataProvider.logo.url
-      };
-    }
-    }
-  }
-  /* eslint-enable complexity */
 
   render() {
     const { navigation } = this.props;
@@ -129,62 +92,14 @@ export class DetailScreen extends React.PureComponent {
           // if there is no cached `data` or network fetched `data` we fallback to the `details`.
           if ((!data || !data[query]) && !details) return null;
 
-          if (query === 'eventRecord' || query === 'pointOfInterest' || query === 'tour') {
-            return this.renderScreenComponent(query, (data && data[query]) || details);
-          }
-
-          // TODO: put everything in own screen components like PointOfInterest
-          const page = this.getPage(query, (data && data[query]) || details);
-
-          if (!page) return null;
-
-          const { subtitle, title, body, link, logo } = page;
-          const contentBlocks =
-            data && data[query] ? data[query].contentBlocks : details.contentBlocks;
-
-          let images = [];
-
-          !!contentBlocks &&
-            !!contentBlocks.length &&
-            contentBlocks.map((contentBlock) => {
-              !!contentBlock.mediaContents &&
-                !!contentBlock.mediaContents.length &&
-                _filter(
-                  contentBlock.mediaContents,
-                  (mediaContent) =>
-                    mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-                ).map((mediaContent) => {
-                  !!mediaContent.sourceUrl &&
-                    !!mediaContent.sourceUrl.url &&
-                    images.push({ picture: { uri: mediaContent.sourceUrl.url } });
-                });
-            });
+          const Component = this.getComponent(query);
 
           return (
-            <ScrollView>
-              {!!images && images.length > 1 && <ImagesCarousel data={images} />}
-              {!!images && images.length === 1 && <Image source={images[0].picture} />}
-
-              {!!title && !!link ? (
-                <TitleContainer>
-                  <Touchable onPress={() => openLink(link)}>
-                    <Title>{title}</Title>
-                  </Touchable>
-                </TitleContainer>
-              ) : (
-                !!title && (
-                  <TitleContainer>
-                    <Title>{title}</Title>
-                  </TitleContainer>
-                )
-              )}
-              {device.platform === 'ios' && <TitleShadow />}
-              <Wrapper>
-                {!!subtitle && <RegularText small>{subtitle}</RegularText>}
-                {!!logo && <Logo source={{ uri: logo }} />}
-                {!!body && <HtmlView html={trimNewLines(body)} />}
-              </Wrapper>
-            </ScrollView>
+            <SafeAreaView>
+              <ScrollView>
+                <Component data={(data && data[query]) || details} />
+              </ScrollView>
+            </SafeAreaView>
           );
         }}
       </Query>

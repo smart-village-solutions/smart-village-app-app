@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import { View } from 'react-native';
 import _filter from 'lodash/filter';
 
 import { device, texts } from '../../config';
@@ -48,80 +48,73 @@ export const EventRecord = ({ data }) => {
     });
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        {!!images && images.length > 1 && <ImagesCarousel data={images} />}
-        {!!images && images.length === 1 && <Image source={images[0].picture} />}
+    <View>
+      {!!images && images.length > 1 && <ImagesCarousel data={images} />}
+      {!!images && images.length === 1 && <Image source={images[0].picture} />}
 
-        {!!title && (
-          <View>
-            <TitleContainer>
-              <Title>{title}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-          </View>
-        )}
+      {!!title && (
+        <View>
+          <TitleContainer>
+            <Title>{title}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+        </View>
+      )}
 
-        <Wrapper>
-          {!!logo && <Logo source={{ uri: logo }} />}
+      <Wrapper>
+        {!!logo && <Logo source={{ uri: logo }} />}
 
-          <InfoCard
-            category={category}
-            addresses={addresses}
-            contacts={contacts}
-            webUrls={webUrls}
+        <InfoCard category={category} addresses={addresses} contacts={contacts} webUrls={webUrls} />
+      </Wrapper>
+
+      {!!dates && !!dates.length && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.eventRecord.appointments}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <OpeningTimesCard openingHours={dates} />
+        </View>
+      )}
+
+      {/* temporary logic in order to show PriceCard just when description is present for the first index */}
+      {!!priceInformations && !!priceInformations.length && !!priceInformations[0].description && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.eventRecord.prices}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <PriceCard prices={priceInformations} />
+        </View>
+      )}
+
+      {!!description && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.eventRecord.description}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Wrapper>
+            <HtmlView html={description} />
+          </Wrapper>
+        </View>
+      )}
+
+      {!!operatingCompany && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.eventRecord.operatingCompany}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <OperatingCompanyInfo
+            name={operatingCompany.name}
+            address={operatingCompany.address}
+            contact={operatingCompany.contact}
+            webUrls={operatingCompany.contact.webUrls}
           />
-        </Wrapper>
-
-        {!!dates && !!dates.length && (
-          <View>
-            <TitleContainer>
-              <Title>{texts.eventRecord.appointments}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <OpeningTimesCard openingHours={dates} />
-          </View>
-        )}
-
-        {/* temporary logic in order to show PriceCard just when description is present for the first index */}
-        {!!priceInformations && !!priceInformations.length && !!priceInformations[0].description && (
-          <View>
-            <TitleContainer>
-              <Title>{texts.eventRecord.prices}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <PriceCard prices={priceInformations} />
-          </View>
-        )}
-
-        {!!description && (
-          <View>
-            <TitleContainer>
-              <Title>{texts.eventRecord.description}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>
-              <HtmlView html={description} />
-            </Wrapper>
-          </View>
-        )}
-
-        {!!operatingCompany && (
-          <View>
-            <TitleContainer>
-              <Title>{texts.eventRecord.operatingCompany}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <OperatingCompanyInfo
-              name={operatingCompany.name}
-              address={operatingCompany.address}
-              contact={operatingCompany.contact}
-              webUrls={operatingCompany.contact.webUrls}
-            />
-          </View>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+        </View>
+      )}
+    </View>
   );
 };
 /* eslint-enable complexity */
