@@ -2,6 +2,7 @@ export * from './screens';
 
 export * from './Button';
 export * from './CardList';
+export * from './CategoryList';
 export * from './DiagonalGradient';
 export * from './HtmlView';
 export * from './Icon';

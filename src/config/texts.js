@@ -1,6 +1,14 @@
 import appJson from '../../app.json';
 
 export const texts = {
+  categoryList: {
+    intro:
+      'In Bad Belzig und Umgebung gibt es viel zu entdecken. Wer sich gezielt auf den Weg machen möchte, findet hier eine Übersicht der schönsten Orte und Touren in der Region.'
+  },
+  categoryTitles: {
+    pointsOfInterest: 'Orte',
+    tours: 'Touren'
+  },
   eventRecord: {
     appointments: 'Termine',
     description: 'Beschreibung',

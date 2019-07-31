@@ -3,11 +3,13 @@ import React from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 import _filter from 'lodash/filter';
+import _groupBy from 'lodash/groupBy';
+import _keys from 'lodash/keys';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, normalize } from '../config';
-import { CardList, Icon, TextList } from '../components';
+import { CardList, CategoryList, Icon, TextList } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
 import {
@@ -105,7 +107,7 @@ export class IndexScreen extends React.PureComponent {
               !!pointOfInterest.mediaContents &&
               !!pointOfInterest.mediaContents.length &&
               !!pointOfInterest.mediaContents[0].sourceUrl &&
-              pointOfInterest.mediaContents[0].sourceUrl.url,
+              pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
             routeName: 'Detail',
             params: {
               title: 'Ort',
@@ -147,71 +149,54 @@ export class IndexScreen extends React.PureComponent {
       );
 
     case 'pointsOfInterestAndTours': {
+      const pointsOfInterestByCategories =
+          data &&
+          data.pointsOfInterest &&
+          _groupBy(
+            data.pointsOfInterest,
+            (pointOfInterest) => !!pointOfInterest.category && pointOfInterest.category.name
+          );
+      const pointsOfInterestCategories = _keys(pointsOfInterestByCategories).sort();
+
       const pointsOfInterest =
           data &&
           data.pointsOfInterest &&
-          data.pointsOfInterest.map((pointOfInterest) => ({
-            id: pointOfInterest.id,
-            name: pointOfInterest.name,
-            category: !!pointOfInterest.category && pointOfInterest.category.name,
-            image:
-              !!pointOfInterest.mediaContents &&
-              !!pointOfInterest.mediaContents.length &&
-              !!pointOfInterest.mediaContents[0].sourceUrl &&
-              pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
-            routeName: 'Detail',
+          pointsOfInterestCategories.map((category, index) => ({
+            title: category,
+            routeName: 'Index',
             params: {
-              title: 'Ort',
-              query: 'pointOfInterest',
-              queryVariables: { id: `${pointOfInterest.id}` },
-              rootRouteName: 'PointsOfInterest',
-              shareContent: {
-                message: shareMessage(pointOfInterest, 'pointOfInterest')
-              },
-              details: pointOfInterest
-            }
+              title: category,
+              query: 'pointsOfInterest',
+              queryVariables: { category: `${category}` },
+              rootRouteName: 'PointsOfInterest'
+            },
+            bottomDivider: index !== pointsOfInterestCategories.length - 1
           }));
+
+      const toursByCategories =
+          data &&
+          data.tours &&
+          _groupBy(data.tours, (tour) => !!tour.category && tour.category.name);
+      const toursCategories = _keys(toursByCategories).sort();
 
       const tours =
           data &&
           data.tours &&
-          data.tours.map((tour) => ({
-            id: tour.id,
-            name: tour.name,
-            category: !!tour.category && tour.category.name,
-            image:
-              !!tour.mediaContents &&
-              !!tour.mediaContents.length &&
-              !!tour.mediaContents[0].sourceUrl &&
-              tour.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
-            routeName: 'Detail',
+          toursCategories.map((category, index) => ({
+            title: category,
+            routeName: 'Index',
             params: {
-              title: 'Tour',
-              query: 'tour',
-              queryVariables: { id: `${tour.id}` },
-              rootRouteName: 'Tours',
-              shareContent: {
-                message: shareMessage(tour, 'tour')
-              },
-              details: tour
-            }
+              title: category,
+              query: 'tours',
+              queryVariables: { category: `${category}` },
+              rootRouteName: 'Tours'
+            },
+            bottomDivider: index !== toursCategories.length - 1
           }));
 
       const pointsOfInterestAndTours = [...(pointsOfInterest || []), ...(tours || [])];
 
-      return pointsOfInterestAndTours.sort(function sortAlphabetically(a, b) {
-        var nameA = a.name.toUpperCase();
-        var nameB = b.name.toUpperCase();
-
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameA > nameB) {
-          return 1;
-        }
-
-        return 0;
-      });
+      return pointsOfInterestAndTours;
     }
     }
   }
@@ -228,7 +213,7 @@ export class IndexScreen extends React.PureComponent {
     case 'tours':
       return CardList;
     case 'pointsOfInterestAndTours':
-      return CardList;
+      return CategoryList;
     }
   }
 
