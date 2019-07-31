@@ -288,7 +288,7 @@ export class HomeScreen extends React.PureComponent {
                 id: eventRecord.id,
                 subtitle: `${eventDate(eventRecord.listDate)} | ${!!eventRecord.addresses &&
                   !!eventRecord.addresses.length &&
-                  eventRecord.addresses[0].city}`,
+                  (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)}`,
                 title: eventRecord.title,
                 routeName: 'Detail',
                 params: {
@@ -298,7 +298,8 @@ export class HomeScreen extends React.PureComponent {
                   rootRouteName: 'EventRecords',
                   shareContent: {
                     message: shareMessage(eventRecord, 'eventRecord')
-                  }
+                  },
+                  details: eventRecord
                 },
                 bottomDivider: index !== data.eventRecords.length - 1,
                 __typename: eventRecord.__typename

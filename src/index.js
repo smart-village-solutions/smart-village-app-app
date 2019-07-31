@@ -19,7 +19,7 @@ import { NetworkProvider } from './NetworkProvider';
 import AppStackNavigator from './navigation/AppStackNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 
-export const MainApp = () => {
+const MainAppWithApolloProvider = () => {
   const [client, setClient] = useState(null);
   const [drawerRoutes, setDrawerRoutes] = useState({
     AppStack: {
@@ -58,12 +58,6 @@ export const MainApp = () => {
     const cache = new InMemoryCache();
     const storage = AsyncStorage;
 
-    const initialCache = {
-      cacheItems: []
-    };
-
-    cache.writeData({ data: initialCache });
-
     try {
       // await before instantiating ApolloClient,
       // else queries might run before the cache is persisted
@@ -89,8 +83,6 @@ export const MainApp = () => {
       // (https://github.com/apollographql/apollo-client/pull/4499).
       resolvers: {}
     });
-
-    client.onResetStore(() => cache.writeData({ data: initialCache }));
 
     const fetchPolicy = await netInfoForGraphqlFetchPolicy();
 
@@ -164,9 +156,7 @@ export const MainApp = () => {
   return (
     <ApolloProvider client={client}>
       <StatusBar barStyle="light-content" />
-      <NetworkProvider>
-        <AppContainer />
-      </NetworkProvider>
+      <AppContainer />
     </ApolloProvider>
   );
 };
@@ -178,3 +168,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   }
 });
+
+export const MainApp = () => (
+  <NetworkProvider>
+    <MainAppWithApolloProvider />
+  </NetworkProvider>
+);

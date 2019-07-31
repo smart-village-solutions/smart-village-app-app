@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
@@ -14,7 +21,6 @@ import {
   Logo,
   PointOfInterest,
   RegularText,
-  ScrollWrapper,
   Title,
   TitleContainer,
   TitleShadow,
@@ -141,7 +147,7 @@ export class DetailScreen extends React.PureComponent {
 
           return (
             <SafeAreaView>
-              <ScrollWrapper>
+              <ScrollView>
                 {!!image && <Image source={{ uri: image }} />}
                 {!!title && !!link ? (
                   <TitleContainer>
@@ -162,7 +168,7 @@ export class DetailScreen extends React.PureComponent {
                   {!!logo && <Logo source={{ uri: logo }} />}
                   {!!body && <HtmlView html={trimNewLines(body)} />}
                 </Wrapper>
-              </ScrollWrapper>
+              </ScrollView>
             </SafeAreaView>
           );
         }}

@@ -1,13 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  ActivityIndicator,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 import _filter from 'lodash/filter';
 
@@ -59,7 +52,7 @@ export class IndexScreen extends React.PureComponent {
               id: eventRecord.id,
               subtitle: `${eventDate(eventRecord.listDate)} | ${!!eventRecord.addresses &&
                 !!eventRecord.addresses.length &&
-                eventRecord.addresses[0].city}`,
+                (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)}`,
               title: eventRecord.title,
               routeName: 'Detail',
               params: {
@@ -268,9 +261,7 @@ export class IndexScreen extends React.PureComponent {
 
           return (
             <SafeAreaView>
-              <ScrollView>
-                <Component navigation={navigation} data={listItems} />
-              </ScrollView>
+              <Component navigation={navigation} data={listItems} />
             </SafeAreaView>
           );
         }}

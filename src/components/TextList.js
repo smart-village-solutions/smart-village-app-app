@@ -58,7 +58,6 @@ export class TextList extends React.Component {
         }
         onEndReached={() => this.setState({ listEndReached: true })}
         removeClippedSubviews
-        scrollEnabled={false}
       />
     );
   }

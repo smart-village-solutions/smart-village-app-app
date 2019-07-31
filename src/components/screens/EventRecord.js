@@ -7,7 +7,7 @@ import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperNoFlex } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 import { PriceCard } from './PriceCard';
 import { InfoCard } from './InfoCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
@@ -50,8 +50,17 @@ export const EventRecord = ({ data }) => {
             {device.platform === 'ios' && <TitleShadow />}
           </View>
         )}
-        <Wrapper>{!!logo && <Logo source={{ uri: logo }} />}</Wrapper>
-        <InfoCard category={category} addresses={addresses} contacts={contacts} webUrls={webUrls} />
+
+        <Wrapper>
+          {!!logo && <Logo source={{ uri: logo }} />}
+
+          <InfoCard
+            category={category}
+            addresses={addresses}
+            contacts={contacts}
+            webUrls={webUrls}
+          />
+        </Wrapper>
 
         {!!dates && !!dates.length && (
           <View>
@@ -80,7 +89,9 @@ export const EventRecord = ({ data }) => {
               <Title>{texts.eventRecord.description}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
-            <WrapperNoFlex>{!!description && <HtmlView html={description} />}</WrapperNoFlex>
+            <Wrapper>
+              <HtmlView html={description} />
+            </Wrapper>
           </View>
         )}
 

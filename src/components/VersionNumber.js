@@ -4,15 +4,15 @@ import { StyleSheet } from 'react-native';
 import appJson from '../../app.json';
 import { colors, normalize } from '../config';
 import { RegularText } from './Text.js';
-import { WrapperNoFlex } from './Wrapper.js';
+import { Wrapper } from './Wrapper.js';
 
 export const VersionNumber = () => {
   return (
-    <WrapperNoFlex>
+    <Wrapper>
       <RegularText small style={styles.version}>
         Version: {appJson.expo.version}
       </RegularText>
-    </WrapperNoFlex>
+    </Wrapper>
   );
 };
 

@@ -11,7 +11,7 @@ import { priceFormat } from '../../helpers';
 const PriceBox = styled.View`
   background-color: rgba(15, 70, 24, 0.6);
   flex-direction: column;
-  margin-bottom: ${normalize(14)};
+  margin-bottom: ${normalize(14)}px;
   padding: ${normalize(7)}px;
   width: ${device.width * 0.5 - normalize(14) * 1.5};
 `;

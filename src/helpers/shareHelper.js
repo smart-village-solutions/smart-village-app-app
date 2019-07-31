@@ -40,7 +40,7 @@ export const shareMessage = (data, query) => {
     case 'eventRecord':
       return `${momentFormat(data.listDate)} | ${data.addresses &&
           data.addresses.length &&
-          data.addresses[0].city}: ${data.title}`;
+          (data.addresses[0].addition || data.addresses[0].city)}: ${data.title}`;
     case 'newsItem':
       return `${momentFormat(data.publishedAt)} | ${data.dataProvider &&
           data.dataProvider.name}: ${data.contentBlocks &&
