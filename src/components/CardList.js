@@ -9,7 +9,7 @@ import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 
-export class CardList extends React.Component {
+export class CardList extends React.PureComponent {
   state = {
     listEndReached: false
   };
@@ -17,7 +17,7 @@ export class CardList extends React.Component {
   keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
   renderItem = ({ item }) => {
-    const { navigation } = this.props;
+    const { navigation, horizontal } = this.props;
     const { routeName, params, image, category, name } = item;
 
     return (
@@ -45,7 +45,11 @@ export class CardList extends React.Component {
           <View style={stylesWithProps(this.props).contentContainer}>
             {!!image && <Image source={{ uri: image }} style={stylesWithProps(this.props).image} />}
             {!!category && <RegularText small>{category}</RegularText>}
-            {!!name && <BoldText>{name}</BoldText>}
+            {!!name && (
+              <BoldText>
+                {horizontal ? (name.length > 60 ? name.substring(0, 60) + '...' : name) : name}
+              </BoldText>
+            )}
           </View>
         </Card>
       </Touchable>
