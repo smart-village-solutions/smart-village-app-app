@@ -5,6 +5,71 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.0] :rocket: :100:
+
+Finalize the app with new feature and fixes
+
+### Added
+
+- added screen for categories selection to navigate to certain points of interest and tours
+  - added CategoryList based on TextList but with sections and an intro text
+  - added categories query
+  - added option for category filter in tours and pointsOfInterest queries
+  - updated query for all tours and points of interest on HomeScreen
+  - renamed every "Orte und Touren" to "Touren und Orte" because we
+    show them in that order on the category screen
+    - there are less tours, and showing the points of interest first would
+      fill the whole screen, so one can only reach and see tours on scrolling
+  - exchanged `pointsOfInterestAndTours` case on IndexScreen with `categories`
+    - we have now real categories data to deal with easier
+  - render the count of points of interest or tours in CategoryList behind the category name
+  - added a `key` for navigation in CategoryList, because it is still an Index route but we
+    want to push it anyway with animation instead of only changing screen content, what
+    would happen with same routeName and same implicit key
+  - added a condition to not show a bottom divider after last tour because it would
+    add an ugly line before the "Orte" section header
+- added image carousel on home screen and in detail screen if there are more than one image
+- added NewsItem and refactor it out of DetailScreen
+- added bottom margin for Buttons for better visual sectioning
+
+### Changed
+
+- improved offline usability
+  - use finally promise method to ensure triggering of callback
+  - in <MainAppWithApolloProvider /> we setup the apollo client regardless of the network
+    connection right now...so if the app is offline, our fetch will fail and the callback is
+    never fired
+    - this led to a never running app when opening it offline
+    - hope this fix makes the app also start up without network connection
+- show address addition in event record subtitle and share message instead of city
+- wrapped NetworkProvider around the whole app
+  - this makes it possible to handle network changes inside of `<MainAppWithApolloProvider />`
+- updated horizontal CardList with shortening the titles
+  - if more than 60 characters, we trim and add '...'
+  - so we always have a maximum of two lines there
+
+### Fixed
+
+- added prefetched data for event records from list screens to details
+- fixed strange behaviour with broken layouts on first opening of a detail screen
+  - it seems like this was a result of badly used `flex: 1` in different components
+  - removed `flex: 1`s
+  - merged wrapper
+  - deleted superfluous wrapper
+- get rid of FlatList inside of ScrollView, which is bad practice
+  - removed wrapping ScrollView in IndexScreen
+  - removed hacky `scrollEnabled={false}` in TextList
+- fixed sizes of images and iframe in HTML renderer
+  - thx to https://github.com/archriss/react-native-render-html/issues/86
+    and https://github.com/archriss/react-native-render-html/issues/134
+  - we need to ignore and remove the given width and heights in the html to let the magic happen
+  - added height for iframe in html styles because otherwise it has not the right format
+
+### Removed
+
+- old and unused files and images
+
+
 ## [v0.9.5]
 
 Fix and update share messages + subtitle
