@@ -1,6 +1,8 @@
 import { colors } from '../colors';
 import { normalize } from '../normalize';
 
+import { imageHeight, imageWidth } from '../../helpers';
+
 export const html = {
   p: {
     color: colors.darkText,
@@ -65,5 +67,9 @@ export const html = {
   },
   img: {
     alignSelf: 'center'
+  },
+  iframe: {
+    alignSelf: 'center',
+    height: imageHeight()
   }
 };
