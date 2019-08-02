@@ -2,10 +2,12 @@ export * from './screens';
 
 export * from './Button';
 export * from './CardList';
+export * from './CategoryList';
 export * from './DiagonalGradient';
 export * from './HtmlView';
 export * from './Icon';
 export * from './Image';
+export * from './ImagesCarousel';
 export * from './Link';
 export * from './Logo';
 export * from './Text';

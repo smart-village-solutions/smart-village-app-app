@@ -7,7 +7,7 @@ import _filter from 'lodash/filter';
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, normalize } from '../config';
-import { CardList, Icon, TextList } from '../components';
+import { CardList, CategoryList, Icon, TextList } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
 import {
@@ -146,72 +146,24 @@ export class IndexScreen extends React.PureComponent {
           }))
       );
 
-    case 'pointsOfInterestAndTours': {
-      const pointsOfInterest =
-          data &&
-          data.pointsOfInterest &&
-          data.pointsOfInterest.map((pointOfInterest) => ({
-            id: pointOfInterest.id,
-            name: pointOfInterest.name,
-            category: !!pointOfInterest.category && pointOfInterest.category.name,
-            image:
-              !!pointOfInterest.mediaContents &&
-              !!pointOfInterest.mediaContents.length &&
-              !!pointOfInterest.mediaContents[0].sourceUrl &&
-              pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
-            routeName: 'Detail',
+    case 'categories': {
+      return (
+        data &&
+          data[query] &&
+          data[query].map((category) => ({
+            id: category.id,
+            title: category.name,
+            pointsOfInterestCount: category.pointsOfInterestCount,
+            toursCount: category.toursCount,
+            routeName: 'Index',
             params: {
-              title: 'Ort',
-              query: 'pointOfInterest',
-              queryVariables: { id: `${pointOfInterest.id}` },
-              rootRouteName: 'PointsOfInterest',
-              shareContent: {
-                message: shareMessage(pointOfInterest, 'pointOfInterest')
-              },
-              details: pointOfInterest
+              title: category.name,
+              query: category.pointsOfInterestCount > 0 ? 'pointsOfInterest' : 'tours',
+              queryVariables: { order: 'name_ASC', category: `${category.name}` },
+              rootRouteName: category.pointsOfInterestCount > 0 ? 'PointsOfInterest' : 'Tours'
             }
-          }));
-
-      const tours =
-          data &&
-          data.tours &&
-          data.tours.map((tour) => ({
-            id: tour.id,
-            name: tour.name,
-            category: !!tour.category && tour.category.name,
-            image:
-              !!tour.mediaContents &&
-              !!tour.mediaContents.length &&
-              !!tour.mediaContents[0].sourceUrl &&
-              tour.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
-            routeName: 'Detail',
-            params: {
-              title: 'Tour',
-              query: 'tour',
-              queryVariables: { id: `${tour.id}` },
-              rootRouteName: 'Tours',
-              shareContent: {
-                message: shareMessage(tour, 'tour')
-              },
-              details: tour
-            }
-          }));
-
-      const pointsOfInterestAndTours = [...(pointsOfInterest || []), ...(tours || [])];
-
-      return pointsOfInterestAndTours.sort(function sortAlphabetically(a, b) {
-        var nameA = a.name.toUpperCase();
-        var nameB = b.name.toUpperCase();
-
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameA > nameB) {
-          return 1;
-        }
-
-        return 0;
-      });
+          }))
+      );
     }
     }
   }
@@ -227,8 +179,8 @@ export class IndexScreen extends React.PureComponent {
       return CardList;
     case 'tours':
       return CardList;
-    case 'pointsOfInterestAndTours':
-      return CardList;
+    case 'categories':
+      return CategoryList;
     }
   }
 

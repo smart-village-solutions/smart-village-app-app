@@ -10,7 +10,7 @@ import {
 } from 'react-native-render-html-table-bridge';
 import { WebView } from 'react-native-webview';
 
-import { colors, device, normalize, styles } from '../config';
+import { colors, normalize, styles } from '../config';
 import { openLink, imageWidth } from '../helpers';
 
 const tableCssRules =
@@ -57,12 +57,21 @@ export const HtmlView = (props) => (
   <HTML
     {...props}
     {...htmlConfig}
+    onLinkPress={(evt, href) => openLink(href)}
     tagsStyles={{ ...styles.html, ...props.tagsStyles }}
     emSize={normalize(16)}
     baseFontStyle={styles.baseFontStyle}
+    ignoredStyles={['width', 'height']}
     imagesMaxWidth={imageWidth() - 2 * normalize(14)}
-    staticContentMaxWidth={device.width}
-    onLinkPress={(evt, href) => openLink(href)}
+    staticContentMaxWidth={imageWidth() - 2 * normalize(14)}
+    alterChildren={(node) => {
+      if (node.name === 'img' || node.name === 'iframe') {
+        delete node.attribs.width;
+        delete node.attribs.height;
+      }
+
+      return node.children;
+    }}
   />
 );
 

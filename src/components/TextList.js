@@ -9,7 +9,7 @@ import { Icon } from './Icon';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 
-export class TextList extends React.Component {
+export class TextList extends React.PureComponent {
   state = {
     listEndReached: false
   };

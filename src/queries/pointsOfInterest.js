@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const GET_POINTS_OF_INTEREST = gql`
-  query PointsOfInterest($limit: Int, $order: PointsOfInterestOrder) {
-    pointsOfInterest(limit: $limit, order: $order) {
+  query PointsOfInterest($limit: Int, $order: PointsOfInterestOrder, $category: String) {
+    pointsOfInterest(limit: $limit, order: $order, category: $category) {
       id
       name
       category {

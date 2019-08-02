@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import { View } from 'react-native';
+import _filter from 'lodash/filter';
 
 import { device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
@@ -12,6 +13,7 @@ import { Wrapper } from '../Wrapper';
 import { InfoCard } from './InfoCard';
 import { TourCard } from './TourCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
+import { ImagesCarousel } from '../ImagesCarousel';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -30,62 +32,69 @@ export const Tour = ({ data }) => {
   } = data;
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
-  const image =
-    mediaContents &&
-    mediaContents.length &&
-    mediaContents[0].sourceUrl &&
-    mediaContents[0].sourceUrl.url; // TODO: some logic to get the first image/thumbnail
+  let images = [];
+
+  !!mediaContents &&
+    !!mediaContents.length &&
+    _filter(
+      mediaContents,
+      (mediaContent) =>
+        mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
+    ).map((item) => {
+      !!item.sourceUrl &&
+        !!item.sourceUrl.url &&
+        images.push({ picture: { uri: item.sourceUrl.url } });
+    });
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        {!!image && <Image source={{ uri: image }} />}
+    <View>
+      {!!images && images.length > 1 && <ImagesCarousel data={images} />}
+      {!!images && images.length === 1 && <Image source={images[0].picture} />}
 
-        {!!title && (
-          <View>
-            <TitleContainer>
-              <Title>{title}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-          </View>
-        )}
+      {!!title && (
+        <View>
+          <TitleContainer>
+            <Title>{title}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+        </View>
+      )}
 
-        <Wrapper>
-          {!!logo && <Logo source={{ uri: logo }} />}
+      <Wrapper>
+        {!!logo && <Logo source={{ uri: logo }} />}
 
-          <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
-        </Wrapper>
+        <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
+      </Wrapper>
 
-        <TourCard lengthKm={lengthKm} addresses={addresses} />
+      <TourCard lengthKm={lengthKm} addresses={addresses} />
 
-        {!!description && (
-          <View>
-            <TitleContainer>
-              <Title>{texts.eventRecord.description}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>
-              <HtmlView html={description} />
-            </Wrapper>
-          </View>
-        )}
+      {!!description && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.eventRecord.description}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Wrapper>
+            <HtmlView html={description} />
+          </Wrapper>
+        </View>
+      )}
 
-        {!!operatingCompany && (
-          <View>
-            <TitleContainer>
-              <Title>{texts.eventRecord.operatingCompany}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <OperatingCompanyInfo
-              name={operatingCompany.name}
-              address={operatingCompany.address}
-              contact={operatingCompany.contact}
-              webUrls={operatingCompany.contact.webUrls}
-            />
-          </View>
-        )}
-      </ScrollView>
-    </SafeAreaView>
+      {!!operatingCompany && (
+        <View>
+          <TitleContainer>
+            <Title>{texts.eventRecord.operatingCompany}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <OperatingCompanyInfo
+            name={operatingCompany.name}
+            address={operatingCompany.address}
+            contact={operatingCompany.contact}
+            webUrls={operatingCompany.contact.webUrls}
+          />
+        </View>
+      )}
+    </View>
   );
 };
 /* eslint-enable complexity */
