@@ -3,8 +3,6 @@ import React from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 import _filter from 'lodash/filter';
-import _groupBy from 'lodash/groupBy';
-import _keys from 'lodash/keys';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
@@ -148,55 +146,24 @@ export class IndexScreen extends React.PureComponent {
           }))
       );
 
-    case 'pointsOfInterestAndTours': {
-      const pointsOfInterestByCategories =
-          data &&
-          data.pointsOfInterest &&
-          _groupBy(
-            data.pointsOfInterest,
-            (pointOfInterest) => !!pointOfInterest.category && pointOfInterest.category.name
-          );
-      const pointsOfInterestCategories = _keys(pointsOfInterestByCategories).sort();
-
-      const pointsOfInterest =
-          data &&
-          data.pointsOfInterest &&
-          pointsOfInterestCategories.map((category, index) => ({
-            title: category,
+    case 'categories': {
+      return (
+        data &&
+          data[query] &&
+          data[query].map((category) => ({
+            id: category.id,
+            title: category.name,
+            pointsOfInterestCount: category.pointsOfInterestCount,
+            toursCount: category.toursCount,
             routeName: 'Index',
             params: {
-              title: category,
-              query: 'pointsOfInterest',
-              queryVariables: { category: `${category}` },
-              rootRouteName: 'PointsOfInterest'
-            },
-            bottomDivider: index !== pointsOfInterestCategories.length - 1
-          }));
-
-      const toursByCategories =
-          data &&
-          data.tours &&
-          _groupBy(data.tours, (tour) => !!tour.category && tour.category.name);
-      const toursCategories = _keys(toursByCategories).sort();
-
-      const tours =
-          data &&
-          data.tours &&
-          toursCategories.map((category, index) => ({
-            title: category,
-            routeName: 'Index',
-            params: {
-              title: category,
-              query: 'tours',
-              queryVariables: { category: `${category}` },
-              rootRouteName: 'Tours'
-            },
-            bottomDivider: index !== toursCategories.length - 1
-          }));
-
-      const pointsOfInterestAndTours = [...(pointsOfInterest || []), ...(tours || [])];
-
-      return pointsOfInterestAndTours;
+              title: category.name,
+              query: category.pointsOfInterestCount > 0 ? 'pointsOfInterest' : 'tours',
+              queryVariables: { order: 'name_ASC', category: `${category.name}` },
+              rootRouteName: category.pointsOfInterestCount > 0 ? 'PointsOfInterest' : 'Tours'
+            }
+          }))
+      );
     }
     }
   }
@@ -212,7 +179,7 @@ export class IndexScreen extends React.PureComponent {
       return CardList;
     case 'tours':
       return CardList;
-    case 'pointsOfInterestAndTours':
+    case 'categories':
       return CategoryList;
     }
   }

@@ -1,3 +1,4 @@
+import { GET_CATEGORIES } from './categories';
 import { GET_EVENT_RECORD, GET_EVENT_RECORDS } from './eventRecords';
 import { GET_NEWS_ITEM, GET_NEWS_ITEMS } from './newsItems';
 import { GET_POINT_OF_INTEREST, GET_POINTS_OF_INTEREST } from './pointsOfInterest';
@@ -10,6 +11,8 @@ import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const getQuery = (query) => {
   switch (query) {
+  case 'categories':
+    return GET_CATEGORIES;
   case 'eventRecord':
     return GET_EVENT_RECORD;
   case 'eventRecords':

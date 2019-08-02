@@ -164,8 +164,8 @@ export class HomeScreen extends React.PureComponent {
                 navigation.navigate({
                   routeName: 'Index',
                   params: {
-                    title: 'Orte und Touren',
-                    query: 'pointsOfInterestAndTours',
+                    title: 'Touren und Orte',
+                    query: 'categories',
                     queryVariables: {},
                     rootRouteName: 'PointsOfInterestAndTours'
                   }
@@ -252,13 +252,13 @@ export class HomeScreen extends React.PureComponent {
 
                   <Wrapper>
                     <Button
-                      title="Alle Orte und Touren anzeigen"
+                      title="Alle Touren und Orte anzeigen"
                       onPress={() =>
                         navigation.navigate({
                           routeName: 'Index',
                           params: {
-                            title: 'Orte und Touren',
-                            query: 'pointsOfInterestAndTours',
+                            title: 'Touren und Orte',
+                            query: 'categories',
                             queryVariables: {},
                             rootRouteName: 'PointsOfInterestAndTours'
                           }
