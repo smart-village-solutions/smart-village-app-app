@@ -17,13 +17,14 @@ import { RegularText } from '../Text';
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewsItem = ({ data }) => {
-  const { dataProvider, contentBlocks, title, publishedAt, sourceUrl } = data;
+  const { dataProvider, contentBlocks, publishedAt, sourceUrl } = data;
 
   const subtitle = `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`;
+  const title = !!contentBlocks && !!contentBlocks.length && contentBlocks[0].title;
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const body =
-    contentBlocks &&
-    contentBlocks.length &&
+    !!contentBlocks &&
+    !!contentBlocks.length &&
     contentBlocks.map((contentBlock) => contentBlock.body).join('');
   const link = sourceUrl && sourceUrl.url;
   let images = [];
