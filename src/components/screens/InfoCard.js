@@ -62,12 +62,15 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) =>
 
     {!!addresses &&
       _filter(addresses, (address) => address.kind === 'default').map((item, index) => {
-        const { city, street, zip } = item;
+        const { city, street, zip, addition } = item;
         let address = '';
 
-        if (!city && !street && !zip) return null;
+        if (!city && !street && !zip && !addition) return null;
 
         // build the address in multiple steps to check every data before rendering
+        if (addition) {
+          address += `${addition}${'\n'}`;
+        }
         if (street) {
           address += `${street},${'\n'}`;
         }

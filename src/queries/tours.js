@@ -51,6 +51,7 @@ export const GET_TOUR = gql`
         street
         zip
         kind
+        addition
       }
       contact {
         email
