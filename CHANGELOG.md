@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.1]
+
+Small update for tours, points of interest and news
+
+### Added
+
+- added location addition to address in tours and points of interest
+
+### Fixed
+
+- fixed title in news, which accidentally disappeared after refactoring
+
 ## [v1.0.0] :rocket: :100:
 
 Finalize the app with new feature and fixes
