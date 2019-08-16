@@ -28,6 +28,10 @@ Update performance of lists
   - with casting to boolean we will be more safe on checking for presence of weekday data
   - otherwise an empty string would be tried to render which results in app crash
 - fixed warnings for 'Require cycle:' with correcting imports
+- fixed Android 9 lag bug with images carousel
+  - removed images from app
+  - query for images from the main server
+  - with this the urls are web urls instead of in-app images which seems to work smoothly
 
 ## [v1.0.1]
 
