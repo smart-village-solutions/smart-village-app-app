@@ -1,4 +1,5 @@
-import { device } from '../config';
+import { device } from '../config/device';
+
 /**
  * Formatting floating-point numbers from data in to prices (1.2 => 1,20 EUR)
  *

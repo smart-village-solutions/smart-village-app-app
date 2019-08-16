@@ -1,4 +1,4 @@
-import { device } from '../config';
+import { device } from '../config/device';
 
 export function locationString(address) {
   if (!address) return '';
