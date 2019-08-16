@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.2]
+
+Update performance of lists
+
+### Changed
+
+- refactored the `renderItem` methods of TextList, CardList and CategoryList to their
+  own *Item PureComponent
+  - this is given as advice best practice for better performance
+  - in local tests the responsivness of the lists increased
+- removed `removeClippedSubviews` from lists because it can behave buggy:
+  https://facebook.github.io/react-native/docs/flatlist#removeclippedsubviews
+- added conditional rendering of CardList
+- if it is a horizontal CardList we do not need a `ListFooterComponent` and the `onEndReached` logic
+- on the other hand, if it is not a horizontal CardList we do not need
+ `showsHorizontalScrollIndicator` and `horizontal` props
+
+### Fixed
+
+- fixed check for weekday in OpeningTimesCard
+  - with casting to boolean we will be more safe on checking for presence of weekday data
+  - otherwise an empty string would be tried to render which results in app crash
+- fixed warnings for 'Require cycle:' with correcting imports
+
 ## [v1.0.1]
 
 Small update for tours, points of interest and news
