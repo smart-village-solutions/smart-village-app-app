@@ -16,6 +16,20 @@ export class CardList extends React.PureComponent {
     const { listEndReached } = this.state;
     const { data, navigation, horizontal } = this.props;
 
+    if (horizontal) {
+      return (
+        <FlatList
+          keyExtractor={this.keyExtractor}
+          data={data}
+          renderItem={({ item }) => (
+            <CardListItem navigation={navigation} horizontal={horizontal} item={item} />
+          )}
+          showsHorizontalScrollIndicator={false}
+          horizontal
+        />
+      );
+    }
+
     return (
       <FlatList
         keyExtractor={this.keyExtractor}
@@ -28,8 +42,6 @@ export class CardList extends React.PureComponent {
           !listEndReached && <ActivityIndicator style={{ margin: normalize(14) }} />
         }
         onEndReached={() => this.setState({ listEndReached: true })}
-        showsHorizontalScrollIndicator={!horizontal}
-        horizontal={horizontal}
       />
     );
   }
