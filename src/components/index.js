@@ -2,7 +2,9 @@ export * from './screens';
 
 export * from './Button';
 export * from './CardList';
+export * from './CardListItem';
 export * from './CategoryList';
+export * from './CategoryListItem';
 export * from './DiagonalGradient';
 export * from './HtmlView';
 export * from './Icon';
@@ -12,6 +14,7 @@ export * from './Link';
 export * from './Logo';
 export * from './Text';
 export * from './TextList';
+export * from './TextListItem';
 export * from './Title';
 export * from './Touchable';
 export * from './VersionNumber';
