@@ -31,7 +31,7 @@ export const OpeningTimesCard = ({ openingHours }) => (
 
         return (
           <View key={index} style={index !== openingHours.length - 1 ? styles.divider : null}>
-            {weekday && <BoldText style={styles.marginBottom}>{weekday}</BoldText>}
+            {!!weekday && <BoldText style={styles.marginBottom}>{weekday}</BoldText>}
 
             {(!!timeFrom || !!timeTo || !!dateFrom || !!dateTo) && (
               <WrapperRow>
