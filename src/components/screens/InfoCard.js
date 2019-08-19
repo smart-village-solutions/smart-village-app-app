@@ -44,6 +44,13 @@ const contactView = (contact) => (
         </TouchableOpacity>
       </InfoBox>
     )}
+
+    {!!contact.fax && (
+      <InfoBox>
+        <RNEIcon name="print" type="material" color={colors.primary} iconStyle={styles.margin} />
+        <RegularText link>{contact.fax}</RegularText>
+      </InfoBox>
+    )}
   </View>
 );
 
@@ -92,12 +99,12 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) =>
       })}
 
     {!!contact &&
-      (!!contact.lastName || !!contact.phone || !!contact.email) &&
+      (!!contact.lastName || !!contact.phone || !!contact.email || !!contact.fax) &&
       contactView(contact)}
 
     {!!contacts &&
       contacts.map((contact, index) => {
-        if (!!contact.lastName || !!contact.phone || !!contact.email) {
+        if (!!contact.lastName || !!contact.phone || !!contact.email || !!contact.fax) {
           return <View key={`index${index}-id${contact.id}`}>{contactView(contact)}</View>;
         } else {
           return null;
