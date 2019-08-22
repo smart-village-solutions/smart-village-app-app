@@ -75,9 +75,11 @@ export const GET_EVENT_RECORD = gql`
         email
         phone
         lastName
+        firstName
       }
       webUrls: urls {
         url
+        description
       }
       dataProvider {
         logo {
