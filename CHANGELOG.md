@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.3]
+
+Update detail screens
+
+### Added
+
+- added showing first names of contacts in detail screens if present
+- added showing link titles of urls in detail screens if present
+
 ## [v1.0.2]
 
 Update performance of lists

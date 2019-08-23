@@ -1,6 +1,6 @@
 # Smart Village App - Mobile App <img src="./background-gradient.png" width="150" align="left">
 
-![Project version](https://img.shields.io/badge/version-1.0.2-informational.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/maintainability)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/test_coverage)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/test_coverage) ![Node version](https://img.shields.io/badge/node-11.3.0-informational.svg) ![Yarn version](https://img.shields.io/badge/yarn-1.16.0-informational.svg)
+![Project version](https://img.shields.io/badge/version-1.0.3-informational.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/maintainability)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/test_coverage)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/test_coverage) ![Node version](https://img.shields.io/badge/node-12.7.0-informational.svg) ![Yarn version](https://img.shields.io/badge/yarn-1.16.0-informational.svg)
 
 The Smart Village App will be a mobile app made with React Native.
 
@@ -36,7 +36,7 @@ Information about currently used packages and their versions:
 - React Navigation (3.11.1): https://github.com/react-navigation/react-navigation
 - React Native WebView (5.8.2): https://github.com/react-native-community/react-native-webview
 - React Native Elements (1.1.0): https://github.com/react-native-training/react-native-elements
-- Apollo Client (2.6.3): https://github.com/apollographql/apollo-client
+- Apollo Client (2.6.4): https://github.com/apollographql/apollo-client
 - GraphQL (14.4.2): https://github.com/graphql/graphql-js
 - styled-components (4.3.2): https://github.com/styled-components/styled-components
 - Jest (24.8.0): https://github.com/facebook/jest
@@ -47,4 +47,4 @@ Have a look at the [changelog](./CHANGELOG.md) to be up to date with the develop
 
 ---
 
-###### Version: 1.0.2
+###### Version: 1.0.3
