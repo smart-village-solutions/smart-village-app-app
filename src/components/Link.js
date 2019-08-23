@@ -9,11 +9,11 @@ import { Icon } from './Icon';
 import { RegularText } from './Text';
 import { WrapperRow } from './Wrapper';
 
-export const Link = ({ url, title }) => (
+export const Link = ({ url, description }) => (
   <TouchableOpacity onPress={() => openLink(url)}>
     <WrapperRow>
       <Icon icon={link(colors.secondary)} style={styles.icon} />
-      <RegularText link>{title}</RegularText>
+      <RegularText link>{description}</RegularText>
     </WrapperRow>
   </TouchableOpacity>
 );
@@ -27,5 +27,5 @@ const styles = StyleSheet.create({
 
 Link.propTypes = {
   url: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired
+  description: PropTypes.string.isRequired
 };

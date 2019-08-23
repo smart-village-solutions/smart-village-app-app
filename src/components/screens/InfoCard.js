@@ -20,10 +20,11 @@ const addressOnPress = (address) => {
 
 const contactView = (contact) => (
   <View>
-    {!!contact.lastName && (
+    {(!!contact.lastName || !!contact.firstName) && (
       <InfoBox>
         <RNEIcon name="person" type="material" color={colors.primary} iconStyle={styles.margin} />
-        <RegularText>{contact.lastName}</RegularText>
+        {!!contact.firstName && <RegularText>{contact.firstName} </RegularText>}
+        {!!contact.lastName && <RegularText>{contact.lastName}</RegularText>}
       </InfoBox>
     )}
 
@@ -99,12 +100,22 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) =>
       })}
 
     {!!contact &&
-      (!!contact.lastName || !!contact.phone || !!contact.email || !!contact.fax) &&
+      (!!contact.firstName ||
+        !!contact.lastName ||
+        !!contact.phone ||
+        !!contact.email ||
+        !!contact.fax) &&
       contactView(contact)}
 
     {!!contacts &&
       contacts.map((contact, index) => {
-        if (!!contact.lastName || !!contact.phone || !!contact.email || !!contact.fax) {
+        if (
+          !!contact.firstName ||
+          !!contact.lastName ||
+          !!contact.phone ||
+          !!contact.email ||
+          !!contact.fax
+        ) {
           return <View key={`index${index}-id${contact.id}`}>{contactView(contact)}</View>;
         } else {
           return null;
@@ -113,15 +124,18 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) =>
 
     {!!webUrls &&
       webUrls.map((item, index) => {
-        const { url } = item;
+        const { url, description } = item;
 
-        if (!url) return null;
+        if (!url) {
+          return null;
+        }
 
         return (
           <InfoBox key={index}>
             <Icon icon={urlIcon(colors.primary)} style={styles.margin} />
             <TouchableOpacity onPress={() => openLink(url)}>
-              <RegularText link>{url}</RegularText>
+              {!description && <RegularText link>{url}</RegularText>}
+              {!!description && <RegularText link>{description}</RegularText>}
             </TouchableOpacity>
           </InfoBox>
         );

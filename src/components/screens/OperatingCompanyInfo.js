@@ -20,12 +20,15 @@ const addressOnPress = (address) => {
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
-  const { city, street, zip } = address;
+  const { addition, city, street, zip } = address;
 
   let companyAddress = '';
 
-  if (!!city || !!street || !!zip) {
+  if (!!addition || !!city || !!street || !!zip) {
     // build the address in multiple steps to check every data before rendering
+    if (addition) {
+      companyAddress += `${addition}${'\n'}`;
+    }
     if (street) {
       companyAddress += `${street},${'\n'}`;
     }
@@ -69,7 +72,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
                 color={colors.primary}
                 iconStyle={{ marginRight: normalize(10) }}
               />
-              {!!contact.firstName && <RegularText>{contact.firstName}</RegularText>}
+              {!!contact.firstName && <RegularText>{contact.firstName} </RegularText>}
               {!!contact.lastName && <RegularText>{contact.lastName}</RegularText>}
             </InfoBox>
           )}
