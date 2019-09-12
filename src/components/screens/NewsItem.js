@@ -9,46 +9,123 @@ import { Image } from '../Image';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
-import { Wrapper } from '../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { momentFormat, openLink, trimNewLines } from '../../helpers';
-import { RegularText } from '../Text';
+import { BoldText, RegularText } from '../Text';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewsItem = ({ data }) => {
-  const { dataProvider, contentBlocks, publishedAt, sourceUrl } = data;
+  const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl } = data;
 
-  const subtitle = `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`;
-  const title = !!contentBlocks && !!contentBlocks.length && contentBlocks[0].title;
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
-  const body =
-    !!contentBlocks &&
-    !!contentBlocks.length &&
-    contentBlocks.map((contentBlock) => contentBlock.body).join('');
   const link = sourceUrl && sourceUrl.url;
-  let images = [];
+  const subtitle = `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`;
+  // the title of a news item is either a given main title or the title from the first content block
+  const title = mainTitle || (!!contentBlocks && !!contentBlocks.length && contentBlocks[0].title);
 
+  // the images from the first content block will be present in the main image carousel
+  let mainImages = [];
   !!contentBlocks &&
     !!contentBlocks.length &&
-    contentBlocks.map((contentBlock) => {
+    !!contentBlocks[0].mediaContents &&
+    !!contentBlocks[0].mediaContents.length &&
+    _filter(
+      contentBlocks[0].mediaContents,
+      (mediaContent) =>
+        mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
+    ).map((mediaContent) => {
+      !!mediaContent.sourceUrl &&
+        !!mediaContent.sourceUrl.url &&
+        mainImages.push({ picture: { uri: mediaContent.sourceUrl.url } });
+    });
+
+  // the story is a map of all available content blocks
+  // each content block can have multiple media
+  let story = [];
+  if (!!contentBlocks && !!contentBlocks.length) {
+    contentBlocks.map((contentBlock, index) => {
+      let section = [];
+      let sectionImages = [];
+
+      // skip the title for the first content block because it is used as the main title
+      if (index > 0) {
+        !!contentBlock.title &&
+          section.push(
+            <Wrapper key={`${index}-${contentBlock.id}-title`}>
+              <BoldText>{contentBlock.title}</BoldText>
+            </Wrapper>
+          );
+      }
+
+      !!contentBlock.intro &&
+        section.push(
+          <WrapperHorizontal key={`${index}-${contentBlock.id}-intro`}>
+            <HtmlView
+              html={trimNewLines(`<div>${contentBlock.intro}</div>`)}
+              tagsStyles={{ div: { fontFamily: 'titillium-web-bold' } }}
+            />
+          </WrapperHorizontal>
+        );
+
+      // skip images for the first content block because they are rendered as main images
+      if (index > 0) {
+        !!contentBlock.mediaContents &&
+          !!contentBlock.mediaContents.length &&
+          _filter(
+            contentBlock.mediaContents,
+            (mediaContent) =>
+              mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
+          ).map((mediaContent) => {
+            !!mediaContent.sourceUrl &&
+              !!mediaContent.sourceUrl.url &&
+              sectionImages.push({ picture: { uri: mediaContent.sourceUrl.url } });
+          });
+      }
+
+      !!sectionImages &&
+        sectionImages.length > 1 &&
+        section.push(
+          <ImagesCarousel data={sectionImages} key={`${index}-${contentBlock.id}-imagesCarousel`} />
+        );
+      !!sectionImages &&
+        sectionImages.length === 1 &&
+        section.push(
+          <Image source={sectionImages[0].picture} key={`${index}-${contentBlock.id}-image`} />
+        );
+
+      !!contentBlock.body &&
+        section.push(
+          <WrapperHorizontal key={`${index}-${contentBlock.id}-body`}>
+            <HtmlView html={trimNewLines(contentBlock.body)} />
+          </WrapperHorizontal>
+        );
+
       !!contentBlock.mediaContents &&
         !!contentBlock.mediaContents.length &&
         _filter(
           contentBlock.mediaContents,
           (mediaContent) =>
-            mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
+            mediaContent.contentType === 'video' || mediaContent.contentType === 'audio'
         ).map((mediaContent) => {
           !!mediaContent.sourceUrl &&
             !!mediaContent.sourceUrl.url &&
-            images.push({ picture: { uri: mediaContent.sourceUrl.url } });
+            section.push(
+              <WrapperHorizontal key={`${index}-${contentBlock.id}-mediaContent${mediaContent.id}`}>
+                <HtmlView html={trimNewLines(mediaContent.sourceUrl.url)} />
+              </WrapperHorizontal>
+            );
         });
+
+      story.push(<View key={`${index}-${contentBlock.id}`}>{section}</View>);
     });
+  }
 
   return (
     <View>
-      {!!images && images.length > 1 && <ImagesCarousel data={images} />}
-      {!!images && images.length === 1 && <Image source={images[0].picture} />}
+      {!!mainImages && mainImages.length > 1 && <ImagesCarousel data={mainImages} />}
+      {!!mainImages && mainImages.length === 1 && <Image source={mainImages[0].picture} />}
 
       {!!title && !!link ? (
         <TitleContainer>
@@ -67,8 +144,9 @@ export const NewsItem = ({ data }) => {
       <Wrapper>
         {!!subtitle && <RegularText small>{subtitle}</RegularText>}
         {!!logo && <Logo source={{ uri: logo }} />}
-        {!!body && <HtmlView html={trimNewLines(body)} />}
       </Wrapper>
+
+      {!!story && story}
     </View>
   );
 };
