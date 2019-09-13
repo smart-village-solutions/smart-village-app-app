@@ -19,6 +19,7 @@ export const GET_EVENT_RECORDS = gql`
       title
       description
       mediaContents {
+        id
         contentType
         sourceUrl {
           url
@@ -58,6 +59,7 @@ export const GET_EVENT_RECORD = gql`
       title
       description
       mediaContents {
+        id
         contentType
         sourceUrl {
           url
