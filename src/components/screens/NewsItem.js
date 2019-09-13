@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { WebView } from 'react-native-webview';
 import _filter from 'lodash/filter';
 
-import { device } from '../../config';
+import { device, normalize } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Logo } from '../Logo';
@@ -13,6 +14,16 @@ import { Wrapper, WrapperHorizontal } from '../Wrapper';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { momentFormat, openLink, trimNewLines } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
+
+// necessary hacky way of implementing iframe in webview with correct zoom level
+// thx to: https://stackoverflow.com/a/55780430
+const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
+  const meta = document.createElement('meta');
+  meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=0.99, user-scalable=0');
+  meta.setAttribute('name', 'viewport');
+  document.getElementsByTagName('head')[0].appendChild(meta);
+  true;
+`;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -113,7 +124,19 @@ export const NewsItem = ({ data }) => {
             !!mediaContent.sourceUrl.url &&
             section.push(
               <WrapperHorizontal key={`${index}-${contentBlock.id}-mediaContent${mediaContent.id}`}>
-                <HtmlView html={trimNewLines(mediaContent.sourceUrl.url)} />
+                <WebView
+                  source={{ html: trimNewLines(mediaContent.sourceUrl.url) }}
+                  style={styles.iframeWebView}
+                  scrollEnabled={false}
+                  bounces={false}
+                  injectedJavaScript={INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW}
+                  startInLoadingState
+                  renderLoading={() => (
+                    <View style={styles.loadingContainer}>
+                      <ActivityIndicator />
+                    </View>
+                  )}
+                />
               </WrapperHorizontal>
             );
         });
@@ -151,6 +174,19 @@ export const NewsItem = ({ data }) => {
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  iframeWebView: {
+    height: normalize(210),
+    width: '100%'
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    flex: 1,
+    justifyContent: 'center',
+    padding: normalize(14)
+  }
+});
 
 NewsItem.propTypes = {
   data: PropTypes.object.isRequired
