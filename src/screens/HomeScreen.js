@@ -374,7 +374,7 @@ export class HomeScreen extends React.PureComponent {
               let publicJsonFileContent =
                 data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
 
-              if (!publicJsonFileContent) return null;
+              if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
 
               return (
                 <DiagonalGradient style={{ padding: normalize(14) }}>

@@ -41,18 +41,20 @@ export class HtmlScreen extends React.PureComponent {
 
   render() {
     const { navigation } = this.props;
+    const query = navigation.getParam('query', '');
     const queryVariables = navigation.getParam('queryVariables', '');
     const title = navigation.getParam('title', '');
-    const webUrl = navigation.getParam('webUrl', '');
+    const rootRouteName = navigation.getParam('rootRouteName', '');
+    const subQuery = navigation.getParam('subQuery', '');
 
-    if (!queryVariables || !queryVariables.name) return null;
+    if (!query || !queryVariables || !queryVariables.name) return null;
 
     const isConnected = this.context.isConnected;
     const fetchPolicy = graphqlFetchPolicy(isConnected);
 
     return (
       <Query
-        query={getQuery('publicHtmlFile')}
+        query={getQuery(query)}
         variables={{ name: queryVariables.name }}
         fetchPolicy={fetchPolicy}
       >
@@ -72,13 +74,17 @@ export class HtmlScreen extends React.PureComponent {
               <ScrollView>
                 <Wrapper>
                   <HtmlView html={trimNewLines(data.publicHtmlFile.content)} />
-                  {!!webUrl && (
+                  {!!subQuery && !!subQuery.routeName && (
                     <Button
-                      title={`${title} öffnen`}
+                      title={subQuery.buttonTitle || `${title} öffnen`}
                       onPress={() =>
                         navigation.navigate({
-                          routeName: 'Web',
-                          params: { title, webUrl }
+                          routeName: subQuery.routeName,
+                          params: {
+                            title,
+                            webUrl: subQuery.webUrl,
+                            rootRouteName
+                          }
                         })
                       }
                     />
