@@ -353,86 +353,76 @@ export class HomeScreen extends React.PureComponent {
               );
             }}
           </Query>
-          <TitleContainer>
-            <Title>{texts.homeTitles.service}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
           <Query
             query={getQuery('publicJsonFile')}
             variables={{ name: 'homeService' }}
             fetchPolicy={fetchPolicy}
           >
-            {({ data, loading }) => {
-              if (loading) {
-                return (
-                  <View style={styles.loadingContainer}>
-                    <ActivityIndicator />
-                  </View>
-                );
-              }
-
+            {({ data }) => {
               let publicJsonFileContent =
                 data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
 
-              if (!publicJsonFileContent) return null;
+              if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
 
               return (
-                <DiagonalGradient style={{ padding: normalize(14) }}>
-                  <WrapperWrap>
-                    {publicJsonFileContent.map((item, index) => {
-                      return (
-                        <ServiceBox key={index + item.title}>
-                          <TouchableOpacity
-                            onPress={() =>
-                              navigation.navigate({
-                                routeName: item.routeName,
-                                params: item.params
-                              })
-                            }
-                          >
-                            <View>
-                              <Image
-                                source={{ uri: item.icon }}
-                                style={styles.serviceImage}
-                                PlaceholderContent={null}
-                              />
-                              <BoldText small light>
-                                {item.title}
-                              </BoldText>
-                            </View>
-                          </TouchableOpacity>
-                        </ServiceBox>
-                      );
-                    })}
-                  </WrapperWrap>
-                </DiagonalGradient>
+                <View>
+                  <TitleContainer>
+                    <Title>{texts.homeTitles.service}</Title>
+                  </TitleContainer>
+                  {device.platform === 'ios' && <TitleShadow />}
+                  <DiagonalGradient style={{ padding: normalize(14) }}>
+                    <WrapperWrap>
+                      {publicJsonFileContent.map((item, index) => {
+                        return (
+                          <ServiceBox key={index + item.title}>
+                            <TouchableOpacity
+                              onPress={() =>
+                                navigation.navigate({
+                                  routeName: item.routeName,
+                                  params: item.params
+                                })
+                              }
+                            >
+                              <View>
+                                <Image
+                                  source={{ uri: item.icon }}
+                                  style={styles.serviceImage}
+                                  PlaceholderContent={null}
+                                />
+                                <BoldText small light>
+                                  {item.title}
+                                </BoldText>
+                              </View>
+                            </TouchableOpacity>
+                          </ServiceBox>
+                        );
+                      })}
+                    </WrapperWrap>
+                  </DiagonalGradient>
+                </View>
               );
             }}
           </Query>
-          <TitleContainer>
-            <Title>{texts.homeTitles.about}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
           <Query
             query={getQuery('publicJsonFile')}
             variables={{ name: 'homeAbout' }}
             fetchPolicy={fetchPolicy}
           >
-            {({ data, loading }) => {
-              if (loading) {
-                return (
-                  <View style={styles.loadingContainer}>
-                    <ActivityIndicator />
-                  </View>
-                );
-              }
-
+            {({ data }) => {
               let publicJsonFileContent =
                 data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
 
-              if (!publicJsonFileContent) return null;
+              if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
 
-              return <TextList navigation={navigation} data={publicJsonFileContent} noSubtitle />;
+              return (
+                <View>
+                  <TitleContainer>
+                    <Title>{texts.homeTitles.about}</Title>
+                  </TitleContainer>
+                  {device.platform === 'ios' && <TitleShadow />}
+                  <TextList navigation={navigation} data={publicJsonFileContent} noSubtitle />
+                </View>
+              );
             }}
           </Query>
           <VersionNumber />
