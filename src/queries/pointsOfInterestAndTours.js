@@ -43,6 +43,7 @@ export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
       }
       description
       mediaContents {
+        contentType
         sourceUrl {
           url
         }

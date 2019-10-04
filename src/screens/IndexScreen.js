@@ -14,6 +14,7 @@ import {
   eventDate,
   graphqlFetchPolicy,
   isUpcomingEvent,
+  mainImageOfMediaContents,
   momentFormat,
   shareMessage
 } from '../helpers';
@@ -101,11 +102,7 @@ export class IndexScreen extends React.PureComponent {
             id: pointOfInterest.id,
             name: pointOfInterest.name,
             category: !!pointOfInterest.category && pointOfInterest.category.name,
-            image:
-              !!pointOfInterest.mediaContents &&
-              !!pointOfInterest.mediaContents.length &&
-              !!pointOfInterest.mediaContents[0].sourceUrl &&
-              pointOfInterest.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
+            image: mainImageOfMediaContents(pointOfInterest.mediaContents),
             routeName: 'Detail',
             params: {
               title: 'Ort',
@@ -127,11 +124,7 @@ export class IndexScreen extends React.PureComponent {
             id: tour.id,
             name: tour.name,
             category: !!tour.category && tour.category.name,
-            image:
-              !!tour.mediaContents &&
-              !!tour.mediaContents.length &&
-              !!tour.mediaContents[0].sourceUrl &&
-              tour.mediaContents[0].sourceUrl.url, // TODO: some logic to get the first image/thumbnail
+            image: mainImageOfMediaContents(tour.mediaContents),
             routeName: 'Detail',
             params: {
               title: 'Tour',
