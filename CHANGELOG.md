@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.4]
+
+Optimize news screen
+
+### Added
+
+- added iterative rendering of content blocks and media contents for news
+- added rendering of audio and video as html contents (iframe) in a WebView
+
 ## [v1.0.3]
 
 Update detail screens
