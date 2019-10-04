@@ -95,7 +95,7 @@ const MainAppWithApolloProvider = () => {
     let publicJsonFileContent =
       data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
 
-    if (publicJsonFileContent && publicJsonFileContent.length) {
+    if (publicJsonFileContent) {
       setDrawerRoutes(
         _reduce(
           publicJsonFileContent,
