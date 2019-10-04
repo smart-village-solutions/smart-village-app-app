@@ -6,6 +6,11 @@ export const Wrapper = styled.View`
   padding: ${normalize(14)}px;
 `;
 
+export const WrapperHorizontal = styled.View`
+  padding-left: ${normalize(14)}px;
+  padding-right: ${normalize(14)}px;
+`;
+
 export const WrapperRow = styled.View`
   flex-direction: row;
 `;

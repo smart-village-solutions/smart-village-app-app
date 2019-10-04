@@ -13,7 +13,6 @@ Logo.propTypes = {
 Logo.defaultProps = {
   style: {
     height: 80,
-    marginBottom: 10,
     resizeMode: 'contain',
     width: 'auto'
   }
