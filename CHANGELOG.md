@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.5]
+
+Add ability to restrict news according to settings
+
+### Added
+
+- added logics to display only intro and a button if settings say
+  - button links to the source url
+  - otherwise still render the body content
+- added opening of the source of news in a WebView instead of linking external
+
 ## [v1.0.4]
 
 Optimize news screen
