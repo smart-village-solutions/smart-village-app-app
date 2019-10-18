@@ -12,8 +12,9 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
 import { ImagesCarousel } from '../ImagesCarousel';
-import { momentFormat, openLink, trimNewLines } from '../../helpers';
+import { momentFormat, trimNewLines } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
+import { Button } from '../Button';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
 // thx to: https://stackoverflow.com/a/55780430
@@ -27,14 +28,24 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const NewsItem = ({ data }) => {
-  const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl } = data;
+export const NewsItem = ({ data, navigation }) => {
+  const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings } = data;
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const link = sourceUrl && sourceUrl.url;
   const subtitle = `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`;
   // the title of a news item is either a given main title or the title from the first content block
   const title = mainTitle || (!!contentBlocks && !!contentBlocks.length && contentBlocks[0].title);
+  // action to open source urls
+  const openWebScreen = () =>
+    navigation.navigate({
+      routeName: 'Web',
+      params: {
+        title,
+        webUrl: link,
+        rootRouteName: 'NewsItems'
+      }
+    });
 
   // the images from the first content block will be present in the main image carousel
   let mainImages = [];
@@ -106,7 +117,9 @@ export const NewsItem = ({ data }) => {
           <Image source={sectionImages[0].picture} key={`${index}-${contentBlock.id}-image`} />
         );
 
-      !!contentBlock.body &&
+      (!settings ||
+        (!!settings && !!settings.displayOnlySummary && settings.displayOnlySummary == 'false')) &&
+        !!contentBlock.body &&
         section.push(
           <WrapperHorizontal key={`${index}-${contentBlock.id}-body`}>
             <HtmlView html={trimNewLines(contentBlock.body)} />
@@ -141,6 +154,16 @@ export const NewsItem = ({ data }) => {
             );
         });
 
+      !!settings &&
+        !!settings.displayOnlySummary &&
+        settings.displayOnlySummary == 'true' &&
+        !!settings.onlySummaryLinkText &&
+        section.push(
+          <WrapperHorizontal key={`${index}-${contentBlock.id}-onlySummaryLinkText`}>
+            <Button title={settings.onlySummaryLinkText} onPress={openWebScreen} />
+          </WrapperHorizontal>
+        );
+
       story.push(<View key={`${index}-${contentBlock.id}`}>{section}</View>);
     });
   }
@@ -152,7 +175,7 @@ export const NewsItem = ({ data }) => {
 
       {!!title && !!link ? (
         <TitleContainer>
-          <Touchable onPress={() => openLink(link)}>
+          <Touchable onPress={openWebScreen}>
             <Title>{title}</Title>
           </Touchable>
         </TitleContainer>
@@ -189,5 +212,6 @@ const styles = StyleSheet.create({
 });
 
 NewsItem.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired
 };

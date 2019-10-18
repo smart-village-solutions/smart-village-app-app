@@ -28,6 +28,10 @@ export const GET_NEWS_ITEMS = gql`
         }
         name
       }
+      settings {
+        displayOnlySummary
+        onlySummaryLinkText
+      }
     }
   }
 `;
@@ -59,6 +63,10 @@ export const GET_NEWS_ITEM = gql`
           url
         }
         name
+      }
+      settings {
+        displayOnlySummary
+        onlySummaryLinkText
       }
     }
   }
