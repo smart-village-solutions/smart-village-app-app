@@ -14,6 +14,7 @@ import { Wrapper, WrapperHorizontal } from '../Wrapper';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { momentFormat, openLink, trimNewLines } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
+import { Button } from '../Button';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
 // thx to: https://stackoverflow.com/a/55780430
@@ -28,7 +29,7 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewsItem = ({ data }) => {
-  const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl } = data;
+  const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings } = data;
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const link = sourceUrl && sourceUrl.url;
@@ -106,7 +107,10 @@ export const NewsItem = ({ data }) => {
           <Image source={sectionImages[0].picture} key={`${index}-${contentBlock.id}-image`} />
         );
 
-      !!contentBlock.body &&
+      !!settings &&
+        !!settings.displayOnlySummary &&
+        settings.displayOnlySummary == 'false' &&
+        !!contentBlock.body &&
         section.push(
           <WrapperHorizontal key={`${index}-${contentBlock.id}-body`}>
             <HtmlView html={trimNewLines(contentBlock.body)} />
@@ -140,6 +144,16 @@ export const NewsItem = ({ data }) => {
               </WrapperHorizontal>
             );
         });
+
+      !!settings &&
+        !!settings.displayOnlySummary &&
+        settings.displayOnlySummary == 'true' &&
+        !!settings.onlySummaryLinkText &&
+        section.push(
+          <WrapperHorizontal key={`${index}-${contentBlock.id}-onlySummaryLinkText`}>
+            <Button title={settings.onlySummaryLinkText} onPress={() => openLink(link)} />
+          </WrapperHorizontal>
+        );
 
       story.push(<View key={`${index}-${contentBlock.id}`}>{section}</View>);
     });
