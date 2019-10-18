@@ -31,6 +31,7 @@ export class WebScreen extends React.PureComponent {
         <WebView
           source={{ uri: webUrl }}
           startInLoadingState
+          mediaPlaybackRequiresUserAction
           renderLoading={() => (
             <View style={styles.loadingContainer}>
               <ActivityIndicator />
