@@ -12,7 +12,7 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
 import { ImagesCarousel } from '../ImagesCarousel';
-import { momentFormat, openLink, trimNewLines } from '../../helpers';
+import { momentFormat, trimNewLines } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 import { Button } from '../Button';
 
@@ -28,7 +28,7 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const NewsItem = ({ data }) => {
+export const NewsItem = ({ data, navigation }) => {
   const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings } = data;
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
@@ -151,7 +151,19 @@ export const NewsItem = ({ data }) => {
         !!settings.onlySummaryLinkText &&
         section.push(
           <WrapperHorizontal key={`${index}-${contentBlock.id}-onlySummaryLinkText`}>
-            <Button title={settings.onlySummaryLinkText} onPress={() => openLink(link)} />
+            <Button
+              title={settings.onlySummaryLinkText}
+              onPress={() =>
+                navigation.navigate({
+                  routeName: 'Web',
+                  params: {
+                    title,
+                    webUrl: link,
+                    rootRouteName: 'NewsItems'
+                  }
+                })
+              }
+            />
           </WrapperHorizontal>
         );
 
@@ -166,7 +178,18 @@ export const NewsItem = ({ data }) => {
 
       {!!title && !!link ? (
         <TitleContainer>
-          <Touchable onPress={() => openLink(link)}>
+          <Touchable
+            onPress={() =>
+              navigation.navigate({
+                routeName: 'Web',
+                params: {
+                  title,
+                  webUrl: link,
+                  rootRouteName: 'NewsItems'
+                }
+              })
+            }
+          >
             <Title>{title}</Title>
           </Touchable>
         </TitleContainer>
@@ -203,5 +226,6 @@ const styles = StyleSheet.create({
 });
 
 NewsItem.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired
 };

@@ -97,7 +97,7 @@ export class DetailScreen extends React.PureComponent {
           return (
             <SafeAreaView>
               <ScrollView>
-                <Component data={(data && data[query]) || details} />
+                <Component data={(data && data[query]) || details} navigation={navigation} />
               </ScrollView>
             </SafeAreaView>
           );
