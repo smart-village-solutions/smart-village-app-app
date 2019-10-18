@@ -36,6 +36,16 @@ export const NewsItem = ({ data, navigation }) => {
   const subtitle = `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`;
   // the title of a news item is either a given main title or the title from the first content block
   const title = mainTitle || (!!contentBlocks && !!contentBlocks.length && contentBlocks[0].title);
+  // action to open source urls
+  const openWebScreen = () =>
+    navigation.navigate({
+      routeName: 'Web',
+      params: {
+        title,
+        webUrl: link,
+        rootRouteName: 'NewsItems'
+      }
+    });
 
   // the images from the first content block will be present in the main image carousel
   let mainImages = [];
@@ -151,19 +161,7 @@ export const NewsItem = ({ data, navigation }) => {
         !!settings.onlySummaryLinkText &&
         section.push(
           <WrapperHorizontal key={`${index}-${contentBlock.id}-onlySummaryLinkText`}>
-            <Button
-              title={settings.onlySummaryLinkText}
-              onPress={() =>
-                navigation.navigate({
-                  routeName: 'Web',
-                  params: {
-                    title,
-                    webUrl: link,
-                    rootRouteName: 'NewsItems'
-                  }
-                })
-              }
-            />
+            <Button title={settings.onlySummaryLinkText} onPress={openWebScreen} />
           </WrapperHorizontal>
         );
 
@@ -178,18 +176,7 @@ export const NewsItem = ({ data, navigation }) => {
 
       {!!title && !!link ? (
         <TitleContainer>
-          <Touchable
-            onPress={() =>
-              navigation.navigate({
-                routeName: 'Web',
-                params: {
-                  title,
-                  webUrl: link,
-                  rootRouteName: 'NewsItems'
-                }
-              })
-            }
-          >
+          <Touchable onPress={openWebScreen}>
             <Title>{title}</Title>
           </Touchable>
         </TitleContainer>
