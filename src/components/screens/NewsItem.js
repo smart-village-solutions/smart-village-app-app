@@ -117,9 +117,8 @@ export const NewsItem = ({ data, navigation }) => {
           <Image source={sectionImages[0].picture} key={`${index}-${contentBlock.id}-image`} />
         );
 
-      !!settings &&
-        !!settings.displayOnlySummary &&
-        settings.displayOnlySummary == 'false' &&
+      (!settings ||
+        (!!settings && !!settings.displayOnlySummary && settings.displayOnlySummary == 'false')) &&
         !!contentBlock.body &&
         section.push(
           <WrapperHorizontal key={`${index}-${contentBlock.id}-body`}>
