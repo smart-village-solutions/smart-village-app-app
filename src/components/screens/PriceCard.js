@@ -2,14 +2,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components/native';
 
-import { device, normalize } from '../../config';
+import { colors, device, normalize } from '../../config';
 import { DiagonalGradient } from '../DiagonalGradient';
 import { WrapperWrap } from '../Wrapper';
 import { LightestText, BoldText } from '../Text';
 import { priceFormat } from '../../helpers';
 
 const PriceBox = styled.View`
-  background-color: rgba(15, 70, 24, 0.6);
+  background-color: ${colors.darkerPrimaryRgba};
   flex-direction: column;
   margin-bottom: ${normalize(14)}px;
   padding: ${normalize(7)}px;
