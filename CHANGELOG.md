@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.6]
+
+Add color variable in price card
+
+### Added
+
+- added a color variable for maintainability
+  - used the darker parimary color with opacity
+- changed hardcoded color to new variable in PriceCard
+
 ## [v1.0.5]
 
 Add ability to restrict news according to settings
