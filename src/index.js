@@ -11,6 +11,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';
 import _reduce from 'lodash/reduce';
 
+import appJson from '../app.json';
 import { auth } from './auth';
 import { colors, device, secrets, texts } from './config';
 import { netInfoForGraphqlFetchPolicy } from './helpers';
@@ -38,9 +39,11 @@ const MainAppWithApolloProvider = () => {
   });
 
   const setupApolloClient = async () => {
+    const namespace = appJson.expo.slug;
+
     // https://www.apollographql.com/docs/react/recipes/authentication/#header
     const httpLink = createHttpLink({
-      uri: `${secrets.serverUrl}${secrets.graphqlEndpoint}`
+      uri: `${secrets[namespace].serverUrl}${secrets[namespace].graphqlEndpoint}`
     });
     const authLink = setContext(async (_, { headers }) => {
       // get the authentication token from local SecureStore if it exists
