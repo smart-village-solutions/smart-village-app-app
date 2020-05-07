@@ -1,19 +1,21 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  ActivityIndicator,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, normalize } from '../config';
-import { EventRecord, Icon, NewsItem, PointOfInterest, Tour, WrapperRow } from '../components';
+import {
+  EventRecord,
+  Icon,
+  LoadingContainer,
+  NewsItem,
+  PointOfInterest,
+  SafeAreaViewFlex,
+  Tour,
+  WrapperRow
+} from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft, drawerMenu, share } from '../icons';
 import { graphqlFetchPolicy, openShare } from '../helpers';
@@ -53,14 +55,14 @@ export class DetailScreen extends React.PureComponent {
 
   getComponent(query) {
     switch (query) {
-    case 'newsItem':
-      return NewsItem;
-    case 'eventRecord':
-      return EventRecord;
-    case 'pointOfInterest':
-      return PointOfInterest;
-    case 'tour':
-      return Tour;
+      case 'newsItem':
+        return NewsItem;
+      case 'eventRecord':
+        return EventRecord;
+      case 'pointOfInterest':
+        return PointOfInterest;
+      case 'tour':
+        return Tour;
     }
   }
 
@@ -82,9 +84,9 @@ export class DetailScreen extends React.PureComponent {
         {({ data, loading }) => {
           if (loading) {
             return (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator />
-              </View>
+              <LoadingContainer>
+                <ActivityIndicator color={colors.accent} />
+              </LoadingContainer>
             );
           }
 
@@ -95,11 +97,11 @@ export class DetailScreen extends React.PureComponent {
           const Component = this.getComponent(query);
 
           return (
-            <SafeAreaView>
+            <SafeAreaViewFlex>
               <ScrollView>
                 <Component data={(data && data[query]) || details} navigation={navigation} />
               </ScrollView>
-            </SafeAreaView>
+            </SafeAreaViewFlex>
           );
         }}
       </Query>
@@ -109,11 +111,6 @@ export class DetailScreen extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
-  loadingContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center'
-  },
   icon: {
     paddingHorizontal: normalize(14)
   },

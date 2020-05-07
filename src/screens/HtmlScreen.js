@@ -1,19 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  ActivityIndicator,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, normalize } from '../config';
-import { Button, HtmlView, Icon, Wrapper } from '../components';
+import { Button, HtmlView, Icon, LoadingContainer, SafeAreaViewFlex, Wrapper } from '../components';
 import { graphqlFetchPolicy, trimNewLines } from '../helpers';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
@@ -61,16 +54,16 @@ export class HtmlScreen extends React.PureComponent {
         {({ data, loading }) => {
           if (loading) {
             return (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator />
-              </View>
+              <LoadingContainer>
+                <ActivityIndicator color={colors.accent} />
+              </LoadingContainer>
             );
           }
 
           if (!data || !data.publicHtmlFile || !data.publicHtmlFile.content) return null;
 
           return (
-            <SafeAreaView>
+            <SafeAreaViewFlex>
               <ScrollView>
                 <Wrapper>
                   <HtmlView html={trimNewLines(data.publicHtmlFile.content)} />
@@ -91,7 +84,7 @@ export class HtmlScreen extends React.PureComponent {
                   )}
                 </Wrapper>
               </ScrollView>
-            </SafeAreaView>
+            </SafeAreaViewFlex>
           );
         }}
       </Query>
@@ -100,11 +93,6 @@ export class HtmlScreen extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
-  loadingContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center'
-  },
   icon: {
     paddingHorizontal: normalize(14)
   }

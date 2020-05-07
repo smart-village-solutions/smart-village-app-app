@@ -1,13 +1,20 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 import _filter from 'lodash/filter';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, normalize } from '../config';
-import { CardList, CategoryList, Icon, TextList } from '../components';
+import {
+  CardList,
+  CategoryList,
+  Icon,
+  LoadingContainer,
+  SafeAreaViewFlex,
+  TextList
+} from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
 import {
@@ -44,16 +51,18 @@ export class IndexScreen extends React.PureComponent {
   /* NOTE: we need to check a lot for presence, so this is that complex */
   getListItems(query, data) {
     switch (query) {
-    case 'eventRecords':
-      return (
-        data &&
+      case 'eventRecords':
+        return (
+          data &&
           data[query] &&
           _filter(data[query], (eventRecord) => isUpcomingEvent(eventRecord.listDate)).map(
             (eventRecord) => ({
               id: eventRecord.id,
-              subtitle: `${eventDate(eventRecord.listDate)} | ${!!eventRecord.addresses &&
+              subtitle: `${eventDate(eventRecord.listDate)} | ${
+                !!eventRecord.addresses &&
                 !!eventRecord.addresses.length &&
-                (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)}`,
+                (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
+              }`,
               title: eventRecord.title,
               routeName: 'Detail',
               params: {
@@ -68,15 +77,16 @@ export class IndexScreen extends React.PureComponent {
               }
             })
           )
-      );
-    case 'newsItems':
-      return (
-        data &&
+        );
+      case 'newsItems':
+        return (
+          data &&
           data[query] &&
           data[query].map((newsItem) => ({
             id: newsItem.id,
-            subtitle: `${momentFormat(newsItem.publishedAt)} | ${!!newsItem.dataProvider &&
-              newsItem.dataProvider.name}`,
+            subtitle: `${momentFormat(newsItem.publishedAt)} | ${
+              !!newsItem.dataProvider && newsItem.dataProvider.name
+            }`,
             title:
               !!newsItem.contentBlocks &&
               !!newsItem.contentBlocks.length &&
@@ -93,10 +103,10 @@ export class IndexScreen extends React.PureComponent {
               details: newsItem
             }
           }))
-      );
-    case 'pointsOfInterest':
-      return (
-        data &&
+        );
+      case 'pointsOfInterest':
+        return (
+          data &&
           data[query] &&
           data[query].map((pointOfInterest) => ({
             id: pointOfInterest.id,
@@ -115,10 +125,10 @@ export class IndexScreen extends React.PureComponent {
               details: pointOfInterest
             }
           }))
-      );
-    case 'tours':
-      return (
-        data &&
+        );
+      case 'tours':
+        return (
+          data &&
           data[query] &&
           data[query].map((tour) => ({
             id: tour.id,
@@ -137,11 +147,11 @@ export class IndexScreen extends React.PureComponent {
               details: tour
             }
           }))
-      );
+        );
 
-    case 'categories': {
-      return (
-        data &&
+      case 'categories': {
+        return (
+          data &&
           data[query] &&
           data[query].map((category) => ({
             id: category.id,
@@ -156,24 +166,24 @@ export class IndexScreen extends React.PureComponent {
               rootRouteName: category.pointsOfInterestCount > 0 ? 'PointsOfInterest' : 'Tours'
             }
           }))
-      );
-    }
+        );
+      }
     }
   }
   /* eslint-enable complexity */
 
   getComponent(query) {
     switch (query) {
-    case 'eventRecords':
-      return TextList;
-    case 'newsItems':
-      return TextList;
-    case 'pointsOfInterest':
-      return CardList;
-    case 'tours':
-      return CardList;
-    case 'categories':
-      return CategoryList;
+      case 'eventRecords':
+        return TextList;
+      case 'newsItems':
+        return TextList;
+      case 'pointsOfInterest':
+        return CardList;
+      case 'tours':
+        return CardList;
+      case 'categories':
+        return CategoryList;
     }
   }
 
@@ -192,9 +202,9 @@ export class IndexScreen extends React.PureComponent {
         {({ data, loading }) => {
           if (loading) {
             return (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator />
-              </View>
+              <LoadingContainer>
+                <ActivityIndicator color={colors.accent} />
+              </LoadingContainer>
             );
           }
 
@@ -205,9 +215,9 @@ export class IndexScreen extends React.PureComponent {
           const Component = this.getComponent(query);
 
           return (
-            <SafeAreaView>
+            <SafeAreaViewFlex>
               <Component navigation={navigation} data={listItems} />
-            </SafeAreaView>
+            </SafeAreaViewFlex>
           );
         }}
       </Query>
@@ -216,11 +226,6 @@ export class IndexScreen extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
-  loadingContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center'
-  },
   icon: {
     paddingHorizontal: normalize(14)
   }

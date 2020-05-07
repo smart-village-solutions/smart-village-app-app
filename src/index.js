@@ -19,6 +19,7 @@ import { getQuery } from './queries';
 import { NetworkProvider } from './NetworkProvider';
 import AppStackNavigator from './navigation/AppStackNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
+import { LoadingContainer } from './components';
 
 const MainAppWithApolloProvider = () => {
   const [client, setClient] = useState(null);
@@ -134,9 +135,9 @@ const MainAppWithApolloProvider = () => {
 
   if (!client) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator />
-      </View>
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
     );
   }
 
@@ -163,14 +164,6 @@ const MainAppWithApolloProvider = () => {
     </ApolloProvider>
   );
 };
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center'
-  }
-});
 
 export const MainApp = () => (
   <NetworkProvider>

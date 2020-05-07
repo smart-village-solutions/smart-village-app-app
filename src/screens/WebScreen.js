@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { colors, normalize } from '../config';
-import { Icon } from '../components';
+import { Icon, LoadingContainer, SafeAreaViewFlex } from '../components';
 import { arrowLeft } from '../icons';
 
 export class WebScreen extends React.PureComponent {
@@ -27,33 +27,25 @@ export class WebScreen extends React.PureComponent {
     if (!webUrl) return null;
 
     return (
-      <SafeAreaView style={styles.safeContainer}>
+      <SafeAreaViewFlex>
         <WebView
           source={{ uri: webUrl }}
           startInLoadingState
           mediaPlaybackRequiresUserAction
           renderLoading={() => (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator />
-            </View>
+            <LoadingContainer>
+              <ActivityIndicator color={colors.accent} />
+            </LoadingContainer>
           )}
         />
-      </SafeAreaView>
+      </SafeAreaViewFlex>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  safeContainer: {
-    flex: 1
-  },
   icon: {
     paddingHorizontal: normalize(14)
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center'
   }
 });
 

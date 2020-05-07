@@ -3,6 +3,7 @@ export const colors = {
   darkerPrimary: 'rgb(15, 70, 24)',
   darkerPrimaryRgba: 'rgba(15, 70, 24, 0.6)',
   secondary: 'rgb(9, 72, 60)',
+  accent: 'rgb(15, 70, 24)',
 
   darkText: '#000000',
   lighterText: 'rgba(221, 242, 243, 0.6)',

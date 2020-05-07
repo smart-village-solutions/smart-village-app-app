@@ -7,6 +7,7 @@ import _filter from 'lodash/filter';
 import { device, normalize, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
+import { LoadingContainer } from '../LoadingContainer';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
@@ -78,9 +79,9 @@ export const EventRecord = ({ data }) => {
               injectedJavaScript={INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW}
               startInLoadingState
               renderLoading={() => (
-                <View style={styles.loadingContainer}>
-                  <ActivityIndicator />
-                </View>
+                <LoadingContainer>
+                  <ActivityIndicator color={colors.accent} />
+                </LoadingContainer>
               )}
             />
           </WrapperHorizontal>
@@ -165,12 +166,6 @@ const styles = StyleSheet.create({
   iframeWebView: {
     height: normalize(210),
     width: '100%'
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    padding: normalize(14)
   }
 });
 

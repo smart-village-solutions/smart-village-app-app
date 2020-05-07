@@ -1,27 +1,22 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  ActivityIndicator,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 import _filter from 'lodash/filter';
 import _take from 'lodash/take';
 import _shuffle from 'lodash/shuffle';
 
 import { NetworkContext } from '../NetworkProvider';
-import { device, normalize, texts } from '../config';
+import { colors, device, normalize, texts } from '../config';
 import {
+  BoldText,
+  Button,
   CardList,
   DiagonalGradient,
   Image,
   ImagesCarousel,
-  BoldText,
-  Button,
+  LoadingContainer,
+  SafeAreaViewFlex,
   ServiceBox,
   TextList,
   Title,
@@ -51,7 +46,7 @@ export class HomeScreen extends React.PureComponent {
     const fetchPolicy = graphqlFetchPolicy(isConnected);
 
     return (
-      <SafeAreaView>
+      <SafeAreaViewFlex>
         <ScrollView>
           <Query
             query={getQuery('publicJsonFile')}
@@ -61,9 +56,9 @@ export class HomeScreen extends React.PureComponent {
             {({ data, loading }) => {
               if (loading) {
                 return (
-                  <View style={styles.loadingContainer}>
-                    <ActivityIndicator />
-                  </View>
+                  <LoadingContainer>
+                    <ActivityIndicator color={colors.accent} />
+                  </LoadingContainer>
                 );
               }
 
@@ -97,9 +92,9 @@ export class HomeScreen extends React.PureComponent {
             {({ data, loading }) => {
               if (loading) {
                 return (
-                  <View style={styles.loadingContainer}>
-                    <ActivityIndicator />
-                  </View>
+                  <LoadingContainer>
+                    <ActivityIndicator color={colors.accent} />
+                  </LoadingContainer>
                 );
               }
 
@@ -108,8 +103,9 @@ export class HomeScreen extends React.PureComponent {
                 data.newsItems &&
                 data.newsItems.map((newsItem, index) => ({
                   id: newsItem.id,
-                  subtitle: `${momentFormat(newsItem.publishedAt)} | ${!!newsItem.dataProvider &&
-                    newsItem.dataProvider.name}`,
+                  subtitle: `${momentFormat(newsItem.publishedAt)} | ${
+                    !!newsItem.dataProvider && newsItem.dataProvider.name
+                  }`,
                   title:
                     !!newsItem.contentBlocks &&
                     !!newsItem.contentBlocks.length &&
@@ -182,9 +178,9 @@ export class HomeScreen extends React.PureComponent {
             {({ data, loading }) => {
               if (loading) {
                 return (
-                  <View style={styles.loadingContainer}>
-                    <ActivityIndicator />
-                  </View>
+                  <LoadingContainer>
+                    <ActivityIndicator color={colors.accent} />
+                  </LoadingContainer>
                 );
               }
 
@@ -286,9 +282,9 @@ export class HomeScreen extends React.PureComponent {
             {({ data, loading }) => {
               if (loading) {
                 return (
-                  <View style={styles.loadingContainer}>
-                    <ActivityIndicator />
-                  </View>
+                  <LoadingContainer>
+                    <ActivityIndicator color={colors.accent} />
+                  </LoadingContainer>
                 );
               }
 
@@ -301,9 +297,11 @@ export class HomeScreen extends React.PureComponent {
 
               const eventRecords = _take(upcomingEventRecords, 3).map((eventRecord, index) => ({
                 id: eventRecord.id,
-                subtitle: `${eventDate(eventRecord.listDate)} | ${!!eventRecord.addresses &&
+                subtitle: `${eventDate(eventRecord.listDate)} | ${
+                  !!eventRecord.addresses &&
                   !!eventRecord.addresses.length &&
-                  (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)}`,
+                  (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
+                }`,
                 title: eventRecord.title,
                 routeName: 'Detail',
                 params: {
@@ -420,18 +418,12 @@ export class HomeScreen extends React.PureComponent {
           </Query>
           <VersionNumber />
         </ScrollView>
-      </SafeAreaView>
+      </SafeAreaViewFlex>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  loadingContainer: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    padding: normalize(14)
-  },
   serviceImage: {
     alignSelf: 'center',
     height: normalize(40),
