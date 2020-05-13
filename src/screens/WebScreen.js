@@ -33,7 +33,7 @@ export class WebScreen extends React.PureComponent {
           startInLoadingState
           mediaPlaybackRequiresUserAction
           renderLoading={() => (
-            <LoadingContainer>
+            <LoadingContainer web>
               <ActivityIndicator color={colors.accent} />
             </LoadingContainer>
           )}

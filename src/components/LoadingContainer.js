@@ -4,8 +4,8 @@ import { StyleSheet, View } from 'react-native';
 
 import { normalize } from '../config';
 
-export const LoadingContainer = ({ children }) => (
-  <View style={styles.loadingContainer}>{children}</View>
+export const LoadingContainer = ({ children, web }) => (
+  <View style={[styles.loadingContainer, web && styles.webPosition]}>{children}</View>
 );
 
 const styles = StyleSheet.create({
@@ -14,6 +14,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: normalize(14)
+  },
+  // for WebView an additional style is necessary currently
+  // https://github.com/react-native-community/react-native-webview/issues/1031
+  webPosition: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%'
   }
 });
 

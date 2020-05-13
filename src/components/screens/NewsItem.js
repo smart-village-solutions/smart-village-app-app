@@ -146,7 +146,7 @@ export const NewsItem = ({ data, navigation }) => {
                   injectedJavaScript={INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW}
                   startInLoadingState
                   renderLoading={() => (
-                    <LoadingContainer>
+                    <LoadingContainer web>
                       <ActivityIndicator color={colors.accent} />
                     </LoadingContainer>
                   )}
