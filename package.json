@@ -33,7 +33,7 @@
     "expo-linear-gradient": "~6.0.0",
     "expo-secure-store": "~6.0.0",
     "graphql": "14.6.0",
-    "graphql-tag": "^2.10.1",
+    "graphql-tag": "2.10.3",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "react": "16.8.3",
