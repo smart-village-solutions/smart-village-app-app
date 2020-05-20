@@ -45,11 +45,12 @@
     "react-native-reanimated": "~1.1.0",
     "react-native-render-html": "4.2.0",
     "react-native-render-html-table-bridge": "^0.3.1",
+    "react-native-screens": "2.7.0",
     "react-native-snap-carousel": "3.9.0",
     "react-native-svg": "~9.5.1",
     "react-native-svg-uri": "^1.2.3",
     "react-native-webview": "~5.12.0",
-    "react-navigation": "^3.11.1",
+    "react-navigation": "3.13.0",
     "styled-components": "^4.3.2"
   },
   "devDependencies": {
