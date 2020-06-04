@@ -19,24 +19,20 @@ export const RegularText = styled.Text`
     css`
       color: ${colors.primary};
     `};
-`;
-
-export const BoldText = styled(RegularText)`
-  font-family: titillium-web-bold;
 
   ${(props) =>
-    props.light &&
+    props.lighter &&
+    css`
+      color: ${colors.lighterText};
+    `};
+
+  ${(props) =>
+    props.lightest &&
     css`
       color: ${colors.lightestText};
     `};
 `;
 
-export const LightestText = styled(RegularText)`
-  color: ${colors.lightestText};
-
-  ${(props) =>
-    props.bold &&
-    css`
-      font-family: titillium-web-bold;
-    `};
+export const BoldText = styled(RegularText)`
+  font-family: titillium-web-bold;
 `;

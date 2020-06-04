@@ -5,7 +5,7 @@ import styled from 'styled-components/native';
 import { colors, device, normalize } from '../../config';
 import { DiagonalGradient } from '../DiagonalGradient';
 import { WrapperWrap } from '../Wrapper';
-import { LightestText, BoldText } from '../Text';
+import { RegularText, BoldText } from '../Text';
 import { priceFormat } from '../../helpers';
 
 const PriceBox = styled.View`
@@ -33,23 +33,35 @@ export const PriceCard = ({ prices }) => (
           return (
             <PriceBox key={index}>
               {!!category && (
-                <BoldText small light>
+                <BoldText small lightest>
                   {category}
                 </BoldText>
               )}
               {!!amount && (
-                <BoldText small light>
+                <BoldText small lightest>
                   {priceFormat(amount)}
                 </BoldText>
               )}
               {!!groupPrice && (
-                <BoldText small light>
+                <BoldText small lightest>
                   {priceFormat(groupPrice)}
                 </BoldText>
               )}
-              {!!description && <LightestText small>{description}</LightestText>}
-              {!!maxAdultCount && <LightestText small>{maxAdultCount} Erwachsene</LightestText>}
-              {!!maxChildrenCount && <LightestText small>{maxChildrenCount} Kinder</LightestText>}
+              {!!description && (
+                <RegularText small lightest>
+                  {description}
+                </RegularText>
+              )}
+              {!!maxAdultCount && (
+                <RegularText small lightest>
+                  {maxAdultCount} Erwachsene
+                </RegularText>
+              )}
+              {!!maxChildrenCount && (
+                <RegularText small lightest>
+                  {maxChildrenCount} Kinder
+                </RegularText>
+              )}
             </PriceBox>
           );
         })}

@@ -380,7 +380,7 @@ export class HomeScreen extends React.PureComponent {
                                   style={styles.serviceImage}
                                   PlaceholderContent={null}
                                 />
-                                <BoldText small light>
+                                <BoldText small lightest>
                                   {item.title}
                                 </BoldText>
                               </View>
