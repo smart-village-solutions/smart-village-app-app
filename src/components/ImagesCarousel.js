@@ -1,30 +1,34 @@
 import PropTypes from 'prop-types';
 import Carousel from 'react-native-snap-carousel';
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
 
 import { device } from '../config';
 import { Image } from './Image';
-import { Touchable } from './Touchable';
 
 export class ImagesCarousel extends React.Component {
-
   renderItem = ({ item }) => {
     const { navigation } = this.props;
     const { routeName, params } = item.picture;
 
     if (!!routeName && !!params) {
-      return <Touchable
-        onPress={() =>
-          navigation.navigate({
-            routeName,
-            params
-          })}>
-        <Image source={item.picture} />
-      </Touchable>;
+      return (
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate({
+              routeName,
+              params
+            })
+          }
+          activeOpacity={0.8}
+        >
+          <Image source={item.picture} />
+        </TouchableOpacity>
+      );
     } else {
       return <Image source={item.picture} />;
     }
-  }
+  };
 
   render() {
     const { data } = this.props;
