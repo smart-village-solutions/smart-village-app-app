@@ -67,8 +67,13 @@ export class HomeScreen extends React.PureComponent {
 
               if (!carouselImages) return null;
 
-              return <ImagesCarousel navigation={navigation} data={_shuffle(carouselImages)} />;
-
+              return (
+                <ImagesCarousel
+                  navigation={navigation}
+                  data={_shuffle(carouselImages)}
+                  fetchPolicy={fetchPolicy}
+                />
+              );
             }}
           </Query>
           <TitleContainer>
