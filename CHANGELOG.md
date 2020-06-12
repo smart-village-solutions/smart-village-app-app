@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.9]
+
+Add possibility to navigate from ImageCarousel by pressing an image
+
+### Added
+
+- added Query inside of an item of the carousel, if there should be a navigation to
+  a detail screen, as we need additional data for that case
+
+## [v1.0.8]
+
+Updated expo sdk to 34.0.0 and bumped different packages to be more up to date
+
+- Read about that step in: https://blog.expo.io/expo-sdk-34-is-now-available-4f7825239319
+
 ## [v1.0.7]
 
 Add namespace to secrets for multiple domains
