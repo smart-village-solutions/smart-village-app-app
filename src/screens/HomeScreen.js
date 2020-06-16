@@ -7,6 +7,7 @@ import _take from 'lodash/take';
 import _shuffle from 'lodash/shuffle';
 
 import { NetworkContext } from '../NetworkProvider';
+import { auth } from '../auth';
 import { colors, device, normalize, texts } from '../config';
 import {
   BoldText,
@@ -39,6 +40,12 @@ import {
 
 export class HomeScreen extends React.PureComponent {
   static contextType = NetworkContext;
+
+  componentDidMount() {
+    const isConnected = this.context.isConnected;
+
+    isConnected && auth();
+  }
 
   render() {
     const { navigation } = this.props;
