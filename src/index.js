@@ -89,12 +89,19 @@ const MainAppWithApolloProvider = () => {
     });
 
     const fetchPolicy = await netInfoForGraphqlFetchPolicy();
+    let data;
 
-    const { data } = await client.query({
-      query: getQuery('publicJsonFile'),
-      variables: { name: 'navigation' },
-      fetchPolicy
-    });
+    try {
+      const response = await client.query({
+        query: getQuery('publicJsonFile'),
+        variables: { name: 'navigation' },
+        fetchPolicy
+      });
+
+      data = response.data;
+    } catch (errors) {
+      console.warn('errors', errors);
+    }
 
     let publicJsonFileContent =
       data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
