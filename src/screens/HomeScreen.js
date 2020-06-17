@@ -382,7 +382,9 @@ export class HomeScreen extends React.PureComponent {
             variables={{ name: 'homeService' }}
             fetchPolicy={fetchPolicy}
           >
-            {({ data }) => {
+            {({ data, loading }) => {
+              if (loading) return null;
+
               let publicJsonFileContent =
                 data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
 
@@ -433,7 +435,9 @@ export class HomeScreen extends React.PureComponent {
             variables={{ name: 'homeAbout' }}
             fetchPolicy={fetchPolicy}
           >
-            {({ data }) => {
+            {({ data, loading }) => {
+              if (loading) return null;
+
               let publicJsonFileContent =
                 data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
 
