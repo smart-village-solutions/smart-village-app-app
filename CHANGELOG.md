@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.10]
+
+Add check for validity of access token
+
+### Added
+
+- added a method for checking the validity of the access token with the expire date, so that new
+  tokens will be requested only if the old one has expired
+- added call of auth method on did mount of HomeScreen, which was missing in this component
+- added error catching on first query, which results in empty screens instead of endless loading
+  indicator
+
 ## [v1.0.9]
 
 Add possibility to navigate from ImageCarousel by pressing an image
@@ -75,7 +87,7 @@ Update performance of lists
 ### Changed
 
 - refactored the `renderItem` methods of TextList, CardList and CategoryList to their
-  own *Item PureComponent
+  own \*Item PureComponent
   - this is given as advice best practice for better performance
   - in local tests the responsivness of the lists increased
 - removed `removeClippedSubviews` from lists because it can behave buggy:
@@ -83,7 +95,7 @@ Update performance of lists
 - added conditional rendering of CardList
 - if it is a horizontal CardList we do not need a `ListFooterComponent` and the `onEndReached` logic
 - on the other hand, if it is not a horizontal CardList we do not need
- `showsHorizontalScrollIndicator` and `horizontal` props
+  `showsHorizontalScrollIndicator` and `horizontal` props
 
 ### Fixed
 
@@ -171,7 +183,6 @@ Finalize the app with new feature and fixes
 ### Removed
 
 - old and unused files and images
-
 
 ## [v0.9.5]
 
@@ -416,6 +427,7 @@ You need to remove `node_modules` and install your packages again.
 https://github.com/expo/expo/blob/master/CHANGELOG.md#3300
 
 #### Changelog for React Native 0.59
+
 SDK 33 uses React Native 0.59.8, while SDK 32 uses React Native 0.57.1.
 Most of the changes were bug fixes.
 Here is the changelog from React Native: https://github.com/react-native-community/releases/blob/master/CHANGELOG.md
