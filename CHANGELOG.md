@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.11]
+
+Add constants and conditions for rendering sections on HomeScreen
+
+### Added
+
+- added fix boolean constants that decides rendering of the main sections on the HomeScreen
+  - default: true
+- later there can be more logic around that, with setting the constants dynamically from queries
+  for example
+
 ## [v1.0.10]
 
 Add check for validity of access token
