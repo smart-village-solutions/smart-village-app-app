@@ -54,5 +54,8 @@ export const texts = {
     tour: 'Tourverlauf',
     start: 'Tourbeginn',
     end: 'Tourende'
+  },
+  categoryFilter: {
+    label: 'Datenquelle'
   }
 };

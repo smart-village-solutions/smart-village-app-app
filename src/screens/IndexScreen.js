@@ -5,14 +5,16 @@ import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
-import { colors, normalize } from '../config';
+import { colors, normalize, texts } from '../config';
 import {
   CardList,
   CategoryList,
+  DropdownSelect,
   Icon,
   LoadingContainer,
   SafeAreaViewFlex,
-  TextList
+  TextList,
+  Wrapper
 } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
@@ -182,6 +184,39 @@ export class IndexScreen extends React.PureComponent {
       return CategoryList;
     }
   }
+  getListHeaderComponent(query, listItems) {
+    switch (query) {
+    case 'newsItems': {
+      //querying newsItems, listItems holds every newsItems, that can be filtered for dataproviders
+      // const dataProviders = listItems.filter((dataProvider) => {
+      //   return dataProvider.name;
+      // });
+      const dummy = [{
+        'dataProvider':
+            { 'name': 'Aktivität' },
+        'dataProvider':
+            { 'name': 'Heira' },
+        'dataProvider':
+            { 'name': 'Musik' }
+      }];
+
+
+      const dataProviders = dummy.map((item) => ({
+        data: item.dataProvider.name
+      })
+      );
+      console.log(dataProviders);
+
+
+      return (
+        <Wrapper>
+          {/* <DropdownSelect data={filtered dataProviders from newsItems} setData={() => {}} label={a text label for the dropdown element from texts...} /> */}
+          <DropdownSelect data={dataProviders} setData={() => { }} label={texts.categoryFilter.label} />
+        </Wrapper>
+      );
+    }
+    }
+  }
 
   render() {
     const { navigation } = this.props;
@@ -230,6 +265,8 @@ export class IndexScreen extends React.PureComponent {
               }
             });
 
+          const ListHeaderComponent = this.getListHeaderComponent(query, listItems);
+
           return (
             <SafeAreaViewFlex>
               <Component
@@ -237,6 +274,7 @@ export class IndexScreen extends React.PureComponent {
                 data={listItems}
                 query={query}
                 fetchMoreData={isConnected ? fetchMoreData : null}
+                ListHeaderComponent={ListHeaderComponent}
               />
             </SafeAreaViewFlex>
           );
