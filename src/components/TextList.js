@@ -28,10 +28,11 @@ export class TextList extends React.PureComponent {
 
   render() {
     const { listEndReached } = this.state;
-    const { data, navigation, noSubtitle } = this.props;
+    const { data, navigation, noSubtitle, ListHeaderComponent } = this.props;
 
     return (
       <FlatList
+        ListHeaderComponent={ListHeaderComponent}
         keyExtractor={this.keyExtractor}
         data={data}
         renderItem={({ item }) => (
@@ -55,7 +56,8 @@ TextList.propTypes = {
   data: PropTypes.array.isRequired,
   noSubtitle: PropTypes.bool,
   query: PropTypes.string,
-  fetchMoreData: PropTypes.func
+  fetchMoreData: PropTypes.func,
+  ListHeaderComponent: PropTypes.bool
 };
 
 TextList.defaultProps = {
