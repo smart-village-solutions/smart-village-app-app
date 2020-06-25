@@ -191,27 +191,54 @@ export class IndexScreen extends React.PureComponent {
       // const dataProviders = listItems.filter((dataProvider) => {
       //   return dataProvider.name;
       // });
-      const dummy = [{
-        'dataProvider':
-            { 'name': 'Aktivität' },
-        'dataProvider':
-            { 'name': 'Heira' },
-        'dataProvider':
-            { 'name': 'Musik' }
-      }];
+      const dummy = [
+        {
+          id: 0,
+          value: '- Bitte wählen -',
+          selected: true
+        },
+        {
+          id: 1,
+          value: 'Aktivität',
+          selected: false
+        },
+        {
+          id: 2,
+          value: 'Heirat und Partnerschaft',
+          selected: false
+        },
+        {
+          id: 3,
+          value: 'Musik',
+          selected: false
+        },
+        {
+          id: 4,
+          value: 'Sport',
+          selected: false
+        },
+        {
+          id: 5,
+          value: 'Tanz',
+          selected: false
+        },
+        {
+          id: 6,
+          value: 'Zeit',
+          selected: false
+        }
+      ];
 
-
-      const dataProviders = dummy.map((item) => ({
-        data: item.dataProvider.name
-      })
-      );
-      console.log(dataProviders);
-
+      // const dataProviders = dummy.map((item) => ({
+      //   name: item.value
+      // })
+      // );
+      // console.log(dataProviders);
 
       return (
         <Wrapper>
           {/* <DropdownSelect data={filtered dataProviders from newsItems} setData={() => {}} label={a text label for the dropdown element from texts...} /> */}
-          <DropdownSelect data={dataProviders} setData={() => { }} label={texts.categoryFilter.label} />
+          <DropdownSelect data={dummy} setData={() => {}} label={texts.categoryFilter.label} />
         </Wrapper>
       );
     }
