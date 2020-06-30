@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.12]
+
+Updated expo sdk to 35.0.0 and bumped different packages to be more up to date
+
+- Read about that step in: https://blog.expo.io/expo-sdk-35-is-now-available-beee0dfafbf4
+
 ## [v1.0.11]
 
 Add constants and conditions for rendering sections on HomeScreen
