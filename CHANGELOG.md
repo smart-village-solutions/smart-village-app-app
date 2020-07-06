@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.0.13]
+
+Do not show bottom divider for last event record on home screen
+
+### Fixed
+
+- corrected condition for `bottomDivider`
+
 ## [v1.0.12]
 
 Updated expo sdk to 35.0.0 and bumped different packages to be more up to date

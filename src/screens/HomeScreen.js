@@ -317,7 +317,7 @@ export class HomeScreen extends React.PureComponent {
                   );
                 }
 
-                const upcomingEventRecords =
+                let upcomingEventRecords =
                   data &&
                   data.eventRecords &&
                   _filter(data.eventRecords, (eventRecord) =>
@@ -326,7 +326,9 @@ export class HomeScreen extends React.PureComponent {
 
                 if (!upcomingEventRecords || !upcomingEventRecords.length) return null;
 
-                const eventRecords = _take(upcomingEventRecords, 3).map((eventRecord, index) => ({
+                upcomingEventRecords = _take(upcomingEventRecords, 3);
+
+                const eventRecords = upcomingEventRecords.map((eventRecord, index) => ({
                   id: eventRecord.id,
                   subtitle: `${eventDate(eventRecord.listDate)} | ${
                     !!eventRecord.addresses &&
@@ -345,7 +347,7 @@ export class HomeScreen extends React.PureComponent {
                     },
                     details: eventRecord
                   },
-                  bottomDivider: index !== data.eventRecords.length - 1,
+                  bottomDivider: index !== upcomingEventRecords.length - 1,
                   __typename: eventRecord.__typename
                 }));
 
