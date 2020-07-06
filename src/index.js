@@ -13,16 +13,18 @@ import _reduce from 'lodash/reduce';
 
 import appJson from '../app.json';
 import { auth } from './auth';
-import { colors, device, secrets, texts } from './config';
-import { netInfoForGraphqlFetchPolicy } from './helpers';
+import { colors, consts, device, secrets, texts } from './config';
+import { netInfoForGraphqlFetchPolicy, storageHelper } from './helpers';
 import { getQuery } from './queries';
 import { NetworkProvider } from './NetworkProvider';
+import { GlobalSettingsProvider } from './GlobalSettingsProvider';
 import AppStackNavigator from './navigation/AppStackNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 import { LoadingContainer } from './components';
 
 const MainAppWithApolloProvider = () => {
   const [client, setClient] = useState(null);
+  const [globalState, setGlobalState] = useState({});
   const [drawerRoutes, setDrawerRoutes] = useState({
     AppStack: {
       screen: AppStackNavigator,
@@ -39,6 +41,8 @@ const MainAppWithApolloProvider = () => {
     }
   });
 
+  /* eslint-disable complexity */
+  /* NOTE: we need to check a lot for presence, so this is that complex */
   const setupApolloClient = async () => {
     const namespace = appJson.expo.slug;
 
@@ -89,47 +93,89 @@ const MainAppWithApolloProvider = () => {
     });
 
     const fetchPolicy = await netInfoForGraphqlFetchPolicy();
-    let data;
+    let navigationData;
+    let globalSettingsData;
+
+    // rehydrate data from the async storage to the global state
+    let globalSettings = await storageHelper.globalSettings();
+
+    if (!globalSettings) {
+      globalSettings = {
+        navigation: consts.DRAWER
+      };
+    }
 
     try {
       const response = await client.query({
         query: getQuery('publicJsonFile'),
-        variables: { name: 'navigation' },
+        variables: { name: 'globalSettings' },
         fetchPolicy
       });
 
-      data = response.data;
+      globalSettingsData = response.data;
     } catch (errors) {
       console.warn('errors', errors);
     }
 
-    let publicJsonFileContent =
-      data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
+    const globalSettingsPublicJsonFileContent =
+      globalSettingsData &&
+      globalSettingsData.publicJsonFile &&
+      JSON.parse(globalSettingsData.publicJsonFile.content);
 
-    if (publicJsonFileContent) {
-      setDrawerRoutes(
-        _reduce(
-          publicJsonFileContent,
-          (result, value, key) => {
-            result[key] = {
-              screen: value.screen,
-              navigationOptions: () => ({
-                title: value.title
-              }),
-              params: { ...value, rootRouteName: key }
-            };
+    if (globalSettingsPublicJsonFileContent) {
+      globalSettings = globalSettingsPublicJsonFileContent;
+      storageHelper.setGlobalSettings(globalSettings);
+      setGlobalState({
+        ...globalState,
+        globalSettings
+      });
+    }
 
-            return result;
-          },
-          drawerRoutes
-        )
-      );
+    if (globalSettings.navigation === consts.DRAWER) {
+      // setup drawer routes for navigation
+      try {
+        const response = await client.query({
+          query: getQuery('publicJsonFile'),
+          variables: { name: 'navigation' },
+          fetchPolicy
+        });
+
+        navigationData = response.data;
+      } catch (errors) {
+        console.warn('errors', errors);
+      }
+
+      let publicJsonFileContent =
+        navigationData &&
+        navigationData.publicJsonFile &&
+        JSON.parse(navigationData.publicJsonFile.content);
+
+      if (publicJsonFileContent) {
+        setDrawerRoutes(
+          _reduce(
+            publicJsonFileContent,
+            (result, value, key) => {
+              result[key] = {
+                screen: value.screen,
+                navigationOptions: () => ({
+                  title: value.title
+                }),
+                params: { ...value, rootRouteName: key }
+              };
+
+              return result;
+            },
+            drawerRoutes
+          )
+        );
+      }
     }
 
     setClient(client);
 
     SplashScreen.hide();
   };
+  /* eslint-enable complexity */
 
   // we can provide an empty array as second argument to the effect hook to avoid activating
   // it on component updates but only for the mounting of the component.
@@ -148,26 +194,33 @@ const MainAppWithApolloProvider = () => {
     );
   }
 
-  const AppDrawerNavigator = createDrawerNavigator(drawerRoutes, {
-    initialRouteName: 'AppStack',
-    drawerPosition: 'right',
-    drawerType: device.platform === 'ios' ? 'slide' : 'front',
-    drawerWidth: device.width * 0.8,
-    contentComponent: CustomDrawerContentComponent,
-    contentContainerStyle: {
-      shadowColor: colors.darkText,
-      shadowOffset: { height: 0, width: 2 },
-      shadowOpacity: 0.5,
-      shadowRadius: 3
-    }
-  });
+  let AppContainer = () => null;
 
-  const AppContainer = createAppContainer(AppDrawerNavigator);
+  if (globalState.globalSettings.navigation === consts.DRAWER) {
+    // use drawer for navigation for the app
+    const AppDrawerNavigator = createDrawerNavigator(drawerRoutes, {
+      initialRouteName: 'AppStack',
+      drawerPosition: 'right',
+      drawerType: device.platform === 'ios' ? 'slide' : 'front',
+      drawerWidth: device.width * 0.8,
+      contentComponent: CustomDrawerContentComponent,
+      contentContainerStyle: {
+        shadowColor: colors.darkText,
+        shadowOffset: { height: 0, width: 2 },
+        shadowOpacity: 0.5,
+        shadowRadius: 3
+      }
+    });
+
+    AppContainer = createAppContainer(AppDrawerNavigator);
+  }
 
   return (
     <ApolloProvider client={client}>
-      <StatusBar barStyle="light-content" />
-      <AppContainer />
+      <GlobalSettingsProvider globalState={globalState}>
+        <StatusBar barStyle="light-content" />
+        <AppContainer />
+      </GlobalSettingsProvider>
     </ApolloProvider>
   );
 };
