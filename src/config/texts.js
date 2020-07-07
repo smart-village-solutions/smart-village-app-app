@@ -20,7 +20,8 @@ export const texts = {
     events: 'Veranstaltungen',
     news: 'Nachrichten',
     pointsOfInterest: 'Touren und Orte',
-    service: 'Service'
+    service: 'Service',
+    company: 'Städtische Unternehmen'
   },
   navigationTitles: {
     home: 'Übersicht'
@@ -33,7 +34,16 @@ export const texts = {
     prices: 'Preise'
   },
   screenTitles: {
-    home: appJson.expo.name
+    home: appJson.expo.name,
+    service: appJson.expo.name,
+    company: appJson.expo.name,
+    about: appJson.expo.name
+  },
+  tabBarLabel: {
+    home: 'Übersicht',
+    service: 'Service',
+    company: 'Unternehmen',
+    about: 'Mehr'
   },
   tour: {
     tour: 'Tourverlauf',

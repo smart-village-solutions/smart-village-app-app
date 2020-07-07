@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, AsyncStorage, StatusBar, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, AsyncStorage, StatusBar } from 'react-native';
 import { SplashScreen } from 'expo';
 import * as SecureStore from 'expo-secure-store';
 import { createAppContainer, createDrawerNavigator } from 'react-navigation';
@@ -19,6 +19,7 @@ import { getQuery } from './queries';
 import { NetworkProvider } from './NetworkProvider';
 import { GlobalSettingsProvider } from './GlobalSettingsProvider';
 import AppStackNavigator from './navigation/AppStackNavigator';
+import MainTabNavigator from './navigation/MainTabNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 import { LoadingContainer } from './components';
 
@@ -27,7 +28,7 @@ const MainAppWithApolloProvider = () => {
   const [globalState, setGlobalState] = useState({});
   const [drawerRoutes, setDrawerRoutes] = useState({
     AppStack: {
-      screen: AppStackNavigator,
+      screen: AppStackNavigator(),
       navigationOptions: () => ({
         title: texts.navigationTitles.home
       }),
@@ -213,6 +214,10 @@ const MainAppWithApolloProvider = () => {
     });
 
     AppContainer = createAppContainer(AppDrawerNavigator);
+  }
+
+  if (globalState.globalSettings.navigation === consts.TABS) {
+    AppContainer = createAppContainer(MainTabNavigator);
   }
 
   return (

@@ -6,7 +6,7 @@ import { colors, device, normalize } from '../config';
 import { DiagonalGradient, Icon } from '../components';
 import { drawerMenu } from '../icons';
 
-export const defaultStackNavigatorConfig = (initialRouteName) => {
+export const defaultStackNavigatorConfig = (initialRouteName, headerRight = true) => {
   return {
     initialRouteName,
     URIPrefix: 'smart-village-app://',
@@ -21,7 +21,7 @@ export const defaultStackNavigatorConfig = (initialRouteName) => {
         fontWeight: '400',
         lineHeight: normalize(29)
       },
-      headerRight: (
+      headerRight: headerRight && (
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
           <Icon icon={drawerMenu(colors.lightestText)} style={styles.icon} />
         </TouchableOpacity>
