@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
@@ -17,98 +17,67 @@ import {
   WrapperRow
 } from '../components';
 import { getQuery } from '../queries';
-import { arrowLeft, drawerMenu, share } from '../icons';
+import { arrowLeft, share } from '../icons';
 import { graphqlFetchPolicy, openShare } from '../helpers';
 
-export class DetailScreen extends React.PureComponent {
-  static navigationOptions = ({ navigation }) => {
-    const shareContent = navigation.getParam('shareContent', '');
+const getComponent = (query) => {
+  switch (query) {
+    case 'newsItem':
+      return NewsItem;
+    case 'eventRecord':
+      return EventRecord;
+    case 'pointOfInterest':
+      return PointOfInterest;
+    case 'tour':
+      return Tour;
+  }
+};
 
-    return {
-      headerLeft: (
-        <View>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon icon={arrowLeft(colors.lightestText)} style={styles.icon} />
-          </TouchableOpacity>
-        </View>
-      ),
-      headerRight: (
-        <WrapperRow>
-          <TouchableOpacity onPress={() => shareContent && openShare(shareContent)}>
-            <Icon icon={share(colors.lightestText)} style={styles.iconLeft} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.openDrawer()}>
-            <Icon icon={drawerMenu(colors.lightestText)} style={styles.iconRight} />
-          </TouchableOpacity>
-        </WrapperRow>
-      )
-    };
-  };
+export const DetailScreen = ({ navigation }) => {
+  const { isConnected } = useContext(NetworkContext);
+  const query = navigation.getParam('query', '');
+  const queryVariables = navigation.getParam('queryVariables', {});
+  const details = navigation.getParam('details', {});
 
-  static contextType = NetworkContext;
-
-  componentDidMount() {
-    const isConnected = this.context.isConnected;
-
+  useEffect(() => {
     isConnected && auth();
-  }
+  }, []);
 
-  getComponent(query) {
-    switch (query) {
-      case 'newsItem':
-        return NewsItem;
-      case 'eventRecord':
-        return EventRecord;
-      case 'pointOfInterest':
-        return PointOfInterest;
-      case 'tour':
-        return Tour;
-    }
-  }
+  if (!query) return null;
 
-  render() {
-    const { navigation } = this.props;
-    const query = navigation.getParam('query', '');
-    const queryVariables = navigation.getParam('queryVariables', {});
-    const details = navigation.getParam('details', {});
+  const fetchPolicy = graphqlFetchPolicy(isConnected);
 
-    if (!query) return null;
-
-    const isConnected = this.context.isConnected;
-    const fetchPolicy = graphqlFetchPolicy(isConnected);
-
-    /* eslint-disable complexity */
-    /* NOTE: we need to check a lot for presence, so this is that complex */
-    return (
-      <Query query={getQuery(query)} variables={queryVariables} fetchPolicy={fetchPolicy}>
-        {({ data, loading }) => {
-          if (loading) {
-            return (
-              <LoadingContainer>
-                <ActivityIndicator color={colors.accent} />
-              </LoadingContainer>
-            );
-          }
-
-          // we can have `data` from GraphQL or `details` from the previous list view.
-          // if there is no cached `data` or network fetched `data` we fallback to the `details`.
-          if ((!data || !data[query]) && !details) return null;
-
-          const Component = this.getComponent(query);
-
+  /* eslint-disable complexity */
+  /* NOTE: we need to check a lot for presence, so this is that complex */
+  return (
+    <Query query={getQuery(query)} variables={queryVariables} fetchPolicy={fetchPolicy}>
+      {({ data, loading }) => {
+        if (loading) {
           return (
-            <SafeAreaViewFlex>
-              <ScrollView>
-                <Component data={(data && data[query]) || details} navigation={navigation} />
-              </ScrollView>
-            </SafeAreaViewFlex>
+            <LoadingContainer>
+              <ActivityIndicator color={colors.accent} />
+            </LoadingContainer>
           );
-        }}
-      </Query>
-    );
-    /* eslint-enable complexity */
-  }
-}
+        }
+
+        // we can have `data` from GraphQL or `details` from the previous list view.
+        // if there is no cached `data` or network fetched `data` we fallback to the `details`.
+        if ((!data || !data[query]) && !details) return null;
+
+        const Component = getComponent(query);
+
+        return (
+          <SafeAreaViewFlex>
+            <ScrollView>
+              <Component data={(data && data[query]) || details} navigation={navigation} />
+            </ScrollView>
+          </SafeAreaViewFlex>
+        );
+      }}
+    </Query>
+  );
+  /* eslint-enable complexity */
+};
 
 const styles = StyleSheet.create({
   icon: {
@@ -123,6 +92,34 @@ const styles = StyleSheet.create({
     paddingRight: normalize(14)
   }
 });
+
+DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
+  const shareContent = navigation.getParam('shareContent', '');
+  const { headerRight } = navigationOptions;
+
+  return {
+    headerLeft: (
+      <View>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon icon={arrowLeft(colors.lightestText)} style={styles.icon} />
+        </TouchableOpacity>
+      </View>
+    ),
+    headerRight: (
+      <WrapperRow>
+        {shareContent && (
+          <TouchableOpacity onPress={() => openShare(shareContent)}>
+            <Icon
+              icon={share(colors.lightestText)}
+              style={headerRight ? styles.iconLeft : styles.iconRight}
+            />
+          </TouchableOpacity>
+        )}
+        {!!headerRight && headerRight}
+      </WrapperRow>
+    )
+  };
+};
 
 DetailScreen.propTypes = {
   navigation: PropTypes.object.isRequired
