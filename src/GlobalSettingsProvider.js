@@ -1,40 +1,15 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import PropTypes from 'prop-types';
+import React, { createContext } from 'react';
 
-import { storageHelper } from './helpers/storageHelper';
+export const GlobalSettingsContext = createContext({});
 
-const GlobalSettingsContext = createContext();
+export const GlobalSettingsProvider = ({ globalSettings, children }) => (
+  <GlobalSettingsContext.Provider value={{ ...globalSettings }}>
+    {children}
+  </GlobalSettingsContext.Provider>
+);
 
-const globalSettingsReducer = (globalSettings, action) => {
-  switch (action.type) {
-    case 'setGlobalSettings': {
-      // save to async storage
-      storageHelper.setGlobalSettings(action.payload);
-
-      return {
-        ...globalSettings,
-        ...action.payload
-      };
-    }
-    default:
-      throw new Error(`Unhandled action type: ${action.type}`);
-  }
-};
-
-export const GlobalSettingsProvider = ({ initialState, children }) => {
-  const [globalSettings, dispatch] = useReducer(globalSettingsReducer, initialState);
-
-  return (
-    <GlobalSettingsContext.Provider value={{ globalSettings, dispatch }}>
-      {children}
-    </GlobalSettingsContext.Provider>
-  );
-};
-
-export const useGlobalSettings = () => {
-  const { globalSettings, dispatch } = useContext(GlobalSettingsContext);
-
-  return {
-    globalSettings: globalSettings.globalSettings,
-    setGlobalSettings: (payload) => dispatch({ type: 'setGlobalSettings', payload })
-  };
+GlobalSettingsProvider.propTypes = {
+  globalSettings: PropTypes.object.isRequired,
+  children: PropTypes.array.isRequired
 };

@@ -7,7 +7,7 @@ const resetStore = async () => await AsyncStorage.clear();
 
 export const storageHelper = {
   globalSettings: () => readFromStore('globalSettings'),
-  setGlobalSettings: (value) => addToStore('globalSettings', { ...value })
+  setGlobalSettings: (globalSettings) => addToStore('globalSettings', globalSettings)
 };
 
 export const logCurrentStorage = (withoutApollo = false) => {

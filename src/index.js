@@ -25,7 +25,7 @@ import { LoadingContainer } from './components';
 
 const MainAppWithApolloProvider = () => {
   const [client, setClient] = useState(null);
-  const [globalState, setGlobalState] = useState({});
+  const [globalSettingsState, setGlobalSettingsState] = useState({});
   const [drawerRoutes, setDrawerRoutes] = useState({
     AppStack: {
       screen: AppStackNavigator(),
@@ -126,9 +126,9 @@ const MainAppWithApolloProvider = () => {
     if (globalSettingsPublicJsonFileContent) {
       globalSettings = globalSettingsPublicJsonFileContent;
       storageHelper.setGlobalSettings(globalSettings);
-      setGlobalState({
-        ...globalState,
-        globalSettings
+      setGlobalSettingsState({
+        ...globalSettingsState,
+        ...globalSettings
       });
     }
 
@@ -197,7 +197,7 @@ const MainAppWithApolloProvider = () => {
 
   let AppContainer = () => null;
 
-  if (globalState.globalSettings.navigation === consts.DRAWER) {
+  if (globalSettingsState.navigation === consts.DRAWER) {
     // use drawer for navigation for the app
     const AppDrawerNavigator = createDrawerNavigator(drawerRoutes, {
       initialRouteName: 'AppStack',
@@ -216,13 +216,13 @@ const MainAppWithApolloProvider = () => {
     AppContainer = createAppContainer(AppDrawerNavigator);
   }
 
-  if (globalState.globalSettings.navigation === consts.TABS) {
+  if (globalSettingsState.navigation === consts.TABS) {
     AppContainer = createAppContainer(MainTabNavigator);
   }
 
   return (
     <ApolloProvider client={client}>
-      <GlobalSettingsProvider globalState={globalState}>
+      <GlobalSettingsProvider globalSettings={globalSettingsState}>
         <StatusBar barStyle="light-content" />
         <AppContainer />
       </GlobalSettingsProvider>
