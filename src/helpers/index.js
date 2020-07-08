@@ -8,3 +8,4 @@ export * from './momentHelper';
 export * from './networkHelper';
 export * from './priceHelper';
 export * from './shareHelper';
+export * from './storageHelper';

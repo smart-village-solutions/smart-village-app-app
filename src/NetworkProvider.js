@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { createContext } from 'react';
 import NetInfo from '@react-native-community/netinfo';
 
 import { isConnected } from './helpers';
 
-export const NetworkContext = React.createContext({ isConnected: false });
+export const NetworkContext = createContext({ isConnected: false });
 
 export class NetworkProvider extends React.PureComponent {
   state = {
