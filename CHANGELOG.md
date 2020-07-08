@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.1.0] :rocket:
+
+This is the first minor version upgrade - great!
+
+Implement global settings for optional navigator
+
+### Added
+
+- the app can listen to server side configurations as global settings
+- the first optional setting is the way of navigation for the app
+  - drawer (default and fallback)
+  - tabs
+
 ## [v1.0.13]
 
 Do not show bottom divider for last event record on home screen
