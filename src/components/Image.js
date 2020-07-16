@@ -34,11 +34,9 @@ export const Image = ({ source, style, PlaceholderContent }) => {
   // console.log('source', source);
   // console.log('uri', uri);
 
-  if (!uri) return null;
-
   return (
     <RNEImage
-      source={source.uri ? { uri } : uri}
+      source={uri ? (source.uri ? { uri } : uri) : null}
       style={style}
       PlaceholderContent={PlaceholderContent}
       placeholderStyle={{ backgroundColor: colors.transparent }}
@@ -58,5 +56,5 @@ Image.defaultProps = {
     height: imageHeight(),
     width: imageWidth()
   },
-  PlaceholderContent: <ActivityIndicator />
+  PlaceholderContent: <ActivityIndicator color={colors.accent} />
 };
