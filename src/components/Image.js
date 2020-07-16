@@ -22,12 +22,19 @@ export const Image = ({ source, style, PlaceholderContent }) => {
 
     source.uri
       ? CacheManager.get(source.uri)
-        .getPath()
-        .then((path) => mounted && setUri(path))
+          .getPath()
+          .then((path) => mounted && setUri(path))
       : mounted && setUri(source);
 
     return () => (mounted = false);
   }, []);
+
+  // TODO: is there a performance issue here? when logging here, there is a lot going on even
+  //       when nothing is done in the app by the user
+  // console.log('source', source);
+  // console.log('uri', uri);
+
+  if (!uri) return null;
 
   return (
     <RNEImage
