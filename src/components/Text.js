@@ -12,6 +12,7 @@ export const RegularText = styled.Text`
     props.small &&
     css`
       font-size: ${normalize(14)};
+      line-height: ${normalize(16)};
     `};
 
   ${(props) =>
@@ -30,6 +31,18 @@ export const RegularText = styled.Text`
     props.lightest &&
     css`
       color: ${colors.lightestText};
+    `};
+
+  ${(props) =>
+    props.darker &&
+    css`
+      color: ${colors.darkerPrimary};
+    `};
+
+  ${(props) =>
+    props.center &&
+    css`
+      text-align: center;
     `};
 `;
 

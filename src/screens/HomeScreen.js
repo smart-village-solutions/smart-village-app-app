@@ -416,7 +416,7 @@ export const HomeScreen = ({ navigation }) => {
                                     style={styles.serviceImage}
                                     PlaceholderContent={null}
                                   />
-                                  <BoldText small lightest>
+                                  <BoldText small lightest center>
                                     {item.title}
                                   </BoldText>
                                 </View>

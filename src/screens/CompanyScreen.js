@@ -84,7 +84,7 @@ export const CompanyScreen = ({ navigation }) => {
                                 PlaceholderContent={null}
                               />
                             )}
-                            <BoldText small primary>
+                            <BoldText small primary center>
                               {item.title}
                             </BoldText>
                           </View>
