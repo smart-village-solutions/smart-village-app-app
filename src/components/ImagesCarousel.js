@@ -33,7 +33,7 @@ TouchableImage.propTypes = {
   item: PropTypes.object.isRequired
 };
 
-export class ImagesCarousel extends React.Component {
+export class ImagesCarousel extends React.PureComponent {
   renderItem = ({ item }) => {
     const { navigation, fetchPolicy } = this.props;
     const { routeName, params } = item.picture;
