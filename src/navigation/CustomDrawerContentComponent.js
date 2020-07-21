@@ -14,7 +14,7 @@ import DrawerNavigatorItems from './DrawerNavigatorItems';
  */
 export const CustomDrawerContentComponent = (props) => (
   <DiagonalGradient>
-    <ScrollView alwaysBounceVertical={false} style={styles.fullHeight}>
+    <ScrollView bounces={false} style={styles.fullHeight}>
       <View style={styles.headerContainer}>
         <DiagonalGradient>
           <View style={styles.header}>
