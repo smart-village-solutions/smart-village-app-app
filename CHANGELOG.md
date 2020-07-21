@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.1.2]
+
+Updated expo sdk to 37.0.0 and bumped different packages to be more up to date
+
+- Read about that step in: https://blog.expo.io/expo-sdk-37-is-now-available-dd5770f066a6
+
 ## [v1.1.1]
 
 Updated expo sdk to 36.0.0 and bumped different packages to be more up to date
