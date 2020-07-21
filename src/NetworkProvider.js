@@ -1,33 +1,23 @@
 import PropTypes from 'prop-types';
-import React, { createContext } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import NetInfo from '@react-native-community/netinfo';
-
-import { isConnected } from './helpers';
 
 export const NetworkContext = createContext({ isConnected: false });
 
-export class NetworkProvider extends React.PureComponent {
-  state = {
-    isConnected: false
-  };
+export const NetworkProvider = ({ children }) => {
+  const [connected, setConnected] = useState(false);
 
-  componentDidMount() {
-    NetInfo.addEventListener('connectionChange', this.handleConnectivityChange);
-  }
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => setConnected(state.isConnected));
 
-  componentWillUnmount() {
-    NetInfo.removeEventListener('connectionChange', this.handleConnectivityChange);
-  }
+    // returned function will be called on component unmount
+    return () => unsubscribe();
+  }, []);
 
-  handleConnectivityChange = (connectionInfo) =>
-    this.setState({ isConnected: isConnected(connectionInfo) });
-
-  render() {
-    return (
-      <NetworkContext.Provider value={this.state}>{this.props.children}</NetworkContext.Provider>
-    );
-  }
-}
+  return (
+    <NetworkContext.Provider value={{ isConnected: connected }}>{children}</NetworkContext.Provider>
+  );
+};
 
 NetworkProvider.propTypes = {
   children: PropTypes.object.isRequired

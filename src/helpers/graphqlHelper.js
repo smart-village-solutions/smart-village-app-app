@@ -1,7 +1,5 @@
 import NetInfo from '@react-native-community/netinfo';
 
-import { isConnected } from './networkHelper';
-
 /**
  * Fetch the current network status and determine a fetch policy for graphql queries.
  * If offline, only cache should be used.
@@ -12,9 +10,9 @@ import { isConnected } from './networkHelper';
  * @return {string} a graphql fetch policy depending on the online/offline status
  */
 export const netInfoForGraphqlFetchPolicy = async () => {
-  const connectionInfo = await NetInfo.getConnectionInfo();
+  const connectionInfo = await NetInfo.fetch();
 
-  return graphqlFetchPolicy(isConnected(connectionInfo));
+  return graphqlFetchPolicy(connectionInfo.isConnected);
 };
 
 /**

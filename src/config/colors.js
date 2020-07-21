@@ -12,5 +12,7 @@ export const colors = {
   shadow: '#bcbbc1',
   shadowRgba: 'rgba(188, 187, 193, 0.4)',
 
+  overlayRgba: 'rgba(20, 20, 20, 0.7)',
+
   transparent: 'transparent'
 };
