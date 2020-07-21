@@ -48,7 +48,6 @@
     "react-native-screens": "~2.2.0",
     "react-native-snap-carousel": "~3.9.0",
     "react-native-svg": "11.0.1",
-    "react-native-svg-uri": "~1.2.3",
     "react-native-webview": "8.1.1",
     "react-navigation": "~3.13.0",
     "styled-components": "~4.3.2"
