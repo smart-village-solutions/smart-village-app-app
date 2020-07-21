@@ -210,7 +210,8 @@ const MainAppWithApolloProvider = () => {
         shadowOffset: { height: 0, width: 2 },
         shadowOpacity: 0.5,
         shadowRadius: 3
-      }
+      },
+      overlayColor: colors.overlayRgba
     });
 
     AppContainer = createAppContainer(AppDrawerNavigator);
@@ -223,7 +224,7 @@ const MainAppWithApolloProvider = () => {
   return (
     <ApolloProvider client={client}>
       <GlobalSettingsProvider globalSettings={globalSettingsState}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
         <AppContainer />
       </GlobalSettingsProvider>
     </ApolloProvider>

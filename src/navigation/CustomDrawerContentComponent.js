@@ -56,11 +56,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height:
       Platform.select({
-        android: 56,
-        default: 44
+        android: normalize(56),
+        default: normalize(44)
       }) + getStatusBarHeight(),
     justifyContent: 'flex-end',
-    paddingLeft: 10,
+    paddingLeft: normalize(10),
     paddingTop: getStatusBarHeight()
   },
   icon: {
