@@ -8832,6 +8832,12 @@ react-native-gesture-handler@~1.6.0:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+"react-native-modal-dropdown@https://github.com/siemiatj/react-native-modal-dropdown":
+  version "0.7.5"
+  resolved "https://github.com/siemiatj/react-native-modal-dropdown#498f0711655616360a61b1e620576571582588aa"
+  dependencies:
+    prop-types "^15.6.0"
+
 react-native-ratings@^6.3.0:
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/react-native-ratings/-/react-native-ratings-6.5.0.tgz#a1606ccba3c5b54eec8e6cfa4765a45cf0e4ab8d"
