@@ -40,8 +40,8 @@ import TabBarIcon from '../components/TabBarIcon';
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const HomeScreen = ({ navigation }) => {
-  const { isConnected } = useContext(NetworkContext);
-  const fetchPolicy = graphqlFetchPolicy(isConnected);
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const globalSettings = useContext(GlobalSettingsContext);
   const { sections = {} } = globalSettings;
   const {

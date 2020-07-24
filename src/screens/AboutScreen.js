@@ -19,8 +19,8 @@ import { getQuery } from '../queries';
 import { graphqlFetchPolicy } from '../helpers';
 
 export const AboutScreen = ({ navigation }) => {
-  const { isConnected } = useContext(NetworkContext);
-  const fetchPolicy = graphqlFetchPolicy(isConnected);
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const globalSettings = useContext(GlobalSettingsContext);
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
