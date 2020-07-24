@@ -190,8 +190,8 @@ export class IndexScreen extends React.PureComponent {
 
     if (!query) return null;
 
-    const isConnected = this.context.isConnected;
-    const fetchPolicy = graphqlFetchPolicy(isConnected);
+    const { isConnected, isMainserverUp } = this.context;
+    const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
     return (
       <Query query={getQuery(query)} variables={queryVariables} fetchPolicy={fetchPolicy}>
