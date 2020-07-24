@@ -2,8 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
-import _filter from 'lodash/filter';
-import _take from 'lodash/take';
 import _shuffle from 'lodash/shuffle';
 
 import { NetworkContext } from '../NetworkProvider';
@@ -33,7 +31,6 @@ import { getQuery } from '../queries';
 import {
   eventDate,
   graphqlFetchPolicy,
-  isUpcomingEvent,
   mainImageOfMediaContents,
   momentFormat,
   shareMessage
@@ -303,7 +300,7 @@ export const HomeScreen = ({ navigation }) => {
         {showEvents && (
           <Query
             query={getQuery('eventRecords')}
-            variables={{ order: 'listDate_ASC' }}
+            variables={{ limit: 3, order: 'listDate_ASC' }}
             fetchPolicy={fetchPolicy}
           >
             {({ data, loading }) => {
@@ -315,37 +312,31 @@ export const HomeScreen = ({ navigation }) => {
                 );
               }
 
-              let upcomingEventRecords =
+              const eventRecords =
                 data &&
                 data.eventRecords &&
-                _filter(data.eventRecords, (eventRecord) => isUpcomingEvent(eventRecord.listDate));
-
-              if (!upcomingEventRecords || !upcomingEventRecords.length) return null;
-
-              upcomingEventRecords = _take(upcomingEventRecords, 3);
-
-              const eventRecords = upcomingEventRecords.map((eventRecord, index) => ({
-                id: eventRecord.id,
-                subtitle: `${eventDate(eventRecord.listDate)} | ${
-                  !!eventRecord.addresses &&
-                  !!eventRecord.addresses.length &&
-                  (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
-                }`,
-                title: eventRecord.title,
-                routeName: 'Detail',
-                params: {
-                  title: 'Veranstaltung',
-                  query: 'eventRecord',
-                  queryVariables: { id: `${eventRecord.id}` },
-                  rootRouteName: 'EventRecords',
-                  shareContent: {
-                    message: shareMessage(eventRecord, 'eventRecord')
+                data.eventRecords.map((eventRecord, index) => ({
+                  id: eventRecord.id,
+                  subtitle: `${eventDate(eventRecord.listDate)} | ${
+                    !!eventRecord.addresses &&
+                    !!eventRecord.addresses.length &&
+                    (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
+                  }`,
+                  title: eventRecord.title,
+                  routeName: 'Detail',
+                  params: {
+                    title: 'Veranstaltung',
+                    query: 'eventRecord',
+                    queryVariables: { id: `${eventRecord.id}` },
+                    rootRouteName: 'EventRecords',
+                    shareContent: {
+                      message: shareMessage(eventRecord, 'eventRecord')
+                    },
+                    details: eventRecord
                   },
-                  details: eventRecord
-                },
-                bottomDivider: index !== upcomingEventRecords.length - 1,
-                __typename: eventRecord.__typename
-              }));
+                  bottomDivider: index !== data.eventRecords.length - 1,
+                  __typename: eventRecord.__typename
+                }));
 
               if (!eventRecords || !eventRecords.length) return null;
 
