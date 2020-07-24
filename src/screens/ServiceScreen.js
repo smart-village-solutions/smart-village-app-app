@@ -25,8 +25,8 @@ export class ServiceScreen extends React.PureComponent {
 
   render() {
     const { navigation } = this.props;
-    const isConnected = this.context.isConnected;
-    const fetchPolicy = graphqlFetchPolicy(isConnected);
+    const { isConnected, isMainserverUp } = this.context;
+    const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
     return (
       <SafeAreaViewFlex>

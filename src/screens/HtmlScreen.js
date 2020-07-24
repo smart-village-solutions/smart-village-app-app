@@ -42,8 +42,8 @@ export class HtmlScreen extends React.PureComponent {
 
     if (!query || !queryVariables || !queryVariables.name) return null;
 
-    const isConnected = this.context.isConnected;
-    const fetchPolicy = graphqlFetchPolicy(isConnected);
+    const { isConnected, isMainserverUp } = this.context;
+    const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
     return (
       <Query

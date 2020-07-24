@@ -11,8 +11,9 @@ import NetInfo from '@react-native-community/netinfo';
  */
 export const netInfoForGraphqlFetchPolicy = async () => {
   const connectionInfo = await NetInfo.fetch();
+  const { isConnected, isInternetReachable: isMainserverUp } = connectionInfo;
 
-  return graphqlFetchPolicy(connectionInfo.isConnected);
+  return graphqlFetchPolicy({ isConnected, isMainserverUp });
 };
 
 /**
@@ -24,12 +25,12 @@ export const netInfoForGraphqlFetchPolicy = async () => {
  *
  * @return {string} a graphql fetch policy depending on the network status
  */
-export const graphqlFetchPolicy = (isConnected) => {
-  if (isConnected) {
-    // online, use network data
+export const graphqlFetchPolicy = ({ isConnected, isMainserverUp }) => {
+  if (isConnected && isMainserverUp) {
+    // online and server up, use network data to fetch from server
     return 'network-only';
   }
 
-  // offline, use cached data
+  // offline or server down, use cached data from phone
   return 'cache-only';
 };

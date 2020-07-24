@@ -34,7 +34,7 @@ const getComponent = (query) => {
 };
 
 export const DetailScreen = ({ navigation }) => {
-  const { isConnected } = useContext(NetworkContext);
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', {});
   const details = navigation.getParam('details', {});
@@ -45,7 +45,7 @@ export const DetailScreen = ({ navigation }) => {
 
   if (!query) return null;
 
-  const fetchPolicy = graphqlFetchPolicy(isConnected);
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
   /* eslint-disable complexity */
   /* NOTE: we need to check a lot for presence, so this is that complex */
