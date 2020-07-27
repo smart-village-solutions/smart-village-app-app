@@ -73,7 +73,7 @@ export class CompanyScreen extends React.PureComponent {
                                 style={styles.serviceImage}
                                 PlaceholderContent={null}
                               />
-                              <BoldText small link>
+                              <BoldText small primary>
                                 {item.title}
                               </BoldText>
                             </View>

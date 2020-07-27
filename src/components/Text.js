@@ -15,7 +15,7 @@ export const RegularText = styled.Text`
     `};
 
   ${(props) =>
-    props.link &&
+    props.primary &&
     css`
       color: ${colors.primary};
     `};

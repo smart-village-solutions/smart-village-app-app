@@ -60,7 +60,7 @@ export const TourCard = ({ addresses, lengthKm }) => (
                 <View>
                   <RegularText>{kind === 'start' ? texts.tour.start : texts.tour.end}</RegularText>
                   <TouchableOpacity onPress={() => addressOnPress(address)}>
-                    <RegularText link>{address}</RegularText>
+                    <RegularText primary>{address}</RegularText>
                   </TouchableOpacity>
                 </View>
               </InfoBox>
