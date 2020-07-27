@@ -52,7 +52,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
         <InfoBox>
           <Icon icon={location(colors.primary)} style={styles.margin} />
           <TouchableOpacity onPress={() => addressOnPress(companyAddress)}>
-            <RegularText link>{companyAddress}</RegularText>
+            <RegularText primary>{companyAddress}</RegularText>
           </TouchableOpacity>
         </InfoBox>
       )}
@@ -80,7 +80,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
             <InfoBox>
               <Icon icon={phoneIcon(colors.primary)} style={styles.margin} />
               <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
-                <RegularText link>{contact.phone}</RegularText>
+                <RegularText primary>{contact.phone}</RegularText>
               </TouchableOpacity>
             </InfoBox>
           )}
@@ -88,7 +88,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
             <InfoBox>
               <Icon icon={mail(colors.primary)} style={styles.margin} />
               <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
-                <RegularText link>{contact.email}</RegularText>
+                <RegularText primary>{contact.email}</RegularText>
               </TouchableOpacity>
             </InfoBox>
           )}
@@ -100,7 +100,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
                 color={colors.primary}
                 iconStyle={{ marginRight: normalize(10) }}
               />
-              <RegularText link>{contact.fax}</RegularText>
+              <RegularText primary>{contact.fax}</RegularText>
             </InfoBox>
           )}
         </View>
@@ -116,7 +116,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
             <InfoBox key={index}>
               <Icon icon={urlIcon(colors.primary)} style={styles.margin} />
               <TouchableOpacity onPress={() => openLink(url)}>
-                <RegularText link>{url}</RegularText>
+                <RegularText primary>{url}</RegularText>
               </TouchableOpacity>
             </InfoBox>
           );

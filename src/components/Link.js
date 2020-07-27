@@ -13,7 +13,7 @@ export const Link = ({ url, description }) => (
   <TouchableOpacity onPress={() => openLink(url)}>
     <WrapperRow>
       <Icon icon={link(colors.secondary)} style={styles.icon} />
-      <RegularText link>{description}</RegularText>
+      <RegularText primary>{description}</RegularText>
     </WrapperRow>
   </TouchableOpacity>
 );
