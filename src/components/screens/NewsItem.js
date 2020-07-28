@@ -42,7 +42,7 @@ export const NewsItem = ({ data, navigation }) => {
     navigation.navigate({
       routeName: 'Web',
       params: {
-        title: 'Nachrichte',
+        title: 'Nachricht',
         webUrl: link,
         rootRouteName: 'NewsItems'
       }
