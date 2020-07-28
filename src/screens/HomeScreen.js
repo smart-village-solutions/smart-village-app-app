@@ -235,7 +235,7 @@ export const HomeScreen = ({ navigation }) => {
                   image: mainImageOfMediaContents(tour.mediaContents),
                   routeName: 'Detail',
                   params: {
-                    title: 'Touren',
+                    title: 'Tour',
                     query: 'tour',
                     queryVariables: { id: `${tour.id}` },
                     rootRouteName: 'Tours',
