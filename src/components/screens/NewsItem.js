@@ -30,19 +30,17 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewsItem = ({ data, navigation }) => {
-  const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings } = data;
+  const { dataProvider, contentBlocks, publishedAt, sourceUrl, settings } = data;
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const link = sourceUrl && sourceUrl.url;
   const subtitle = `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`;
-  // the title of a news item is either a given main title or the title from the first content block
-  const title = mainTitle || (!!contentBlocks && !!contentBlocks.length && contentBlocks[0].title);
   // action to open source urls
   const openWebScreen = () =>
     navigation.navigate({
       routeName: 'Web',
       params: {
-        title,
+        title: 'Nachrichte',
         webUrl: link,
         rootRouteName: 'NewsItems'
       }
