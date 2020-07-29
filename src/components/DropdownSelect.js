@@ -12,6 +12,8 @@ import { Touchable } from './Touchable';
 import { Label } from './Label';
 
 export const DropdownSelect = memo(({ data, setData, label }) => {
+  if (!data || !data.length) return null;
+
   const [arrow, setArrow] = useState('down');
   const selectedData = data.find((entry) => entry.selected);
   const selectedIndex = data.findIndex((entry) => entry.selected);
@@ -51,15 +53,10 @@ export const DropdownSelect = memo(({ data, setData, label }) => {
           // only trigger onPress if a new selection is made
           if (selectedData.value === value) return;
 
-          const updatedData = data.map((entry) => {
-            if (entry.value === value) {
-              entry.selected = true;
-            } else {
-              entry.selected = false;
-            }
-
-            return entry;
-          });
+          const updatedData = data.map((entry) => ({
+            ...entry,
+            selected: entry.value === value
+          }));
 
           setData(updatedData);
         }}
