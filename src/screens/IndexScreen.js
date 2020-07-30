@@ -184,6 +184,11 @@ export class IndexScreen extends React.PureComponent {
       return CategoryList;
     }
   }
+
+  //__________________________________filter______________________
+
+  // const [getListHeaderComponent, setListHeaderComponent] = useState(dummy);
+
   getListHeaderComponent(query, listItems) {
     switch (query) {
     case 'newsItems': {
@@ -191,6 +196,7 @@ export class IndexScreen extends React.PureComponent {
       // const dataProviders = listItems.filter((dataProvider) => {
       //   return dataProvider.name;
       // });
+
       const dummy = [
         {
           id: 0,
@@ -229,16 +235,19 @@ export class IndexScreen extends React.PureComponent {
         }
       ];
 
-      // const dataProviders = dummy.map((item) => ({
-      //   name: item.value
-      // })
-      // );
-      // console.log(dataProviders);
+      const setListHeaderComponent = ((onSelect) => {
+        // here setting the state
+        // here every entry in the array (data) will be updated with the correct boolean value for selected
+      });
 
       return (
         <Wrapper>
           {/* <DropdownSelect data={filtered dataProviders from newsItems} setData={() => {}} label={a text label for the dropdown element from texts...} /> */}
-          <DropdownSelect data={dummy} setData={() => {}} label={texts.categoryFilter.label} />
+          <DropdownSelect
+            data={dummy}
+            setData={setListHeaderComponent}
+            label={texts.categoryFilter.label}
+          />
         </Wrapper>
       );
     }
