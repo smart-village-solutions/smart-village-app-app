@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.1.3]
+
+Specific changes for header title, status bar and upcoming events
+
+### Added
+
+- set explicit colors for Android status bar while splash screen is visible
+  - the configuration in app.json needs to be done for every individual branch
+
+### Changed
+
+- updated header titles for detail screens and web views
+  - they reflect the type of the content in singular now
+- renamed prop `link` to `primary` in Text component
+
+### Removed
+
+- removed js logics for upcoming events, as they are queried directly from the server
+
 ## [v1.1.2]
 
 Updated expo sdk to 37.0.0 and bumped different packages to be more up to date
