@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
-import { colors, device, normalize, texts } from '../config';
+import { colors, consts, device, normalize, texts } from '../config';
 import {
   BoldText,
   Image,
@@ -17,89 +17,104 @@ import {
   WrapperWrap
 } from '../components';
 import { getQuery } from '../queries';
-import { graphqlFetchPolicy } from '../helpers';
+import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
 import TabBarIcon from '../components/TabBarIcon';
 
-export class CompanyScreen extends React.PureComponent {
-  static contextType = NetworkContext;
+export const CompanyScreen = ({ navigation }) => {
+  const [refreshTime, setRefreshTime] = useState();
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
-  render() {
-    const { navigation } = this.props;
-    const { isConnected, isMainserverUp } = this.context;
-    const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  useEffect(() => {
+    const getRefreshTime = async () => {
+      const time = await refreshTimeFor('publicJsonFile-homeCompanies', consts.STATIC_CONTENT);
 
+      setRefreshTime(time);
+    };
+
+    getRefreshTime();
+  }, []);
+
+  if (!refreshTime) {
     return (
-      <SafeAreaViewFlex>
-        <Query
-          query={getQuery('publicJsonFile')}
-          variables={{ name: 'homeCompanies' }}
-          fetchPolicy={fetchPolicy}
-        >
-          {({ data, loading }) => {
-            if (loading) {
-              return (
-                <LoadingContainer>
-                  <ActivityIndicator color={colors.accent} />
-                </LoadingContainer>
-              );
-            }
-
-            let publicJsonFileContent =
-              data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
-
-            if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
-
-            return (
-              <ScrollView>
-                <TitleContainer>
-                  <Title>{texts.homeTitles.company}</Title>
-                </TitleContainer>
-                {device.platform === 'ios' && <TitleShadow />}
-                <View style={{ padding: normalize(14) }}>
-                  <WrapperWrap>
-                    {publicJsonFileContent.map((item, index) => {
-                      return (
-                        <ServiceBox key={index + item.title}>
-                          <TouchableOpacity
-                            onPress={() =>
-                              navigation.navigate({
-                                routeName: item.routeName,
-                                params: item.params
-                              })
-                            }
-                          >
-                            <View>
-                              {item.iconName ? (
-                                <TabBarIcon
-                                  name={item.iconName}
-                                  size={30}
-                                  style={styles.serviceIcon}
-                                />
-                              ) : (
-                                <Image
-                                  source={{ uri: item.icon }}
-                                  style={styles.serviceImage}
-                                  PlaceholderContent={null}
-                                />
-                              )}
-                              <BoldText small primary>
-                                {item.title}
-                              </BoldText>
-                            </View>
-                          </TouchableOpacity>
-                        </ServiceBox>
-                      );
-                    })}
-                  </WrapperWrap>
-                </View>
-              </ScrollView>
-            );
-          }}
-        </Query>
-      </SafeAreaViewFlex>
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
     );
   }
-}
+
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+
+  return (
+    <SafeAreaViewFlex>
+      <Query
+        query={getQuery('publicJsonFile')}
+        variables={{ name: 'homeCompanies' }}
+        fetchPolicy={fetchPolicy}
+      >
+        {({ data, loading }) => {
+          if (loading) {
+            return (
+              <LoadingContainer>
+                <ActivityIndicator color={colors.accent} />
+              </LoadingContainer>
+            );
+          }
+
+          let publicJsonFileContent =
+            data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
+
+          if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
+
+          return (
+            <ScrollView>
+              <TitleContainer>
+                <Title>{texts.homeTitles.company}</Title>
+              </TitleContainer>
+              {device.platform === 'ios' && <TitleShadow />}
+              <View style={{ padding: normalize(14) }}>
+                <WrapperWrap>
+                  {publicJsonFileContent.map((item, index) => {
+                    return (
+                      <ServiceBox key={index + item.title}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            navigation.navigate({
+                              routeName: item.routeName,
+                              params: item.params
+                            })
+                          }
+                        >
+                          <View>
+                            {item.iconName ? (
+                              <TabBarIcon
+                                name={item.iconName}
+                                size={30}
+                                style={styles.serviceIcon}
+                              />
+                            ) : (
+                              <Image
+                                source={{ uri: item.icon }}
+                                style={styles.serviceImage}
+                                PlaceholderContent={null}
+                              />
+                            )}
+                            <BoldText small primary>
+                              {item.title}
+                            </BoldText>
+                          </View>
+                        </TouchableOpacity>
+                      </ServiceBox>
+                    );
+                  })}
+                </WrapperWrap>
+              </View>
+            </ScrollView>
+          );
+        }}
+      </Query>
+    </SafeAreaViewFlex>
+  );
+};
 
 const styles = StyleSheet.create({
   serviceIcon: {
