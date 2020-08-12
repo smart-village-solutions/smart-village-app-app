@@ -18,6 +18,7 @@ import {
 } from '../components';
 import { getQuery } from '../queries';
 import { graphqlFetchPolicy } from '../helpers';
+import TabBarIcon from '../components/TabBarIcon';
 
 export class CompanyScreen extends React.PureComponent {
   static contextType = NetworkContext;
@@ -68,11 +69,19 @@ export class CompanyScreen extends React.PureComponent {
                             }
                           >
                             <View>
-                              <Image
-                                source={{ uri: item.icon }}
-                                style={styles.serviceImage}
-                                PlaceholderContent={null}
-                              />
+                              {item.iconName ? (
+                                <TabBarIcon
+                                  name={item.iconName}
+                                  size={30}
+                                  style={styles.serviceIcon}
+                                />
+                              ) : (
+                                <Image
+                                  source={{ uri: item.icon }}
+                                  style={styles.serviceImage}
+                                  PlaceholderContent={null}
+                                />
+                              )}
                               <BoldText small primary>
                                 {item.title}
                               </BoldText>
@@ -93,6 +102,12 @@ export class CompanyScreen extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
+  serviceIcon: {
+    alignSelf: 'center',
+    height: normalize(40),
+    paddingVertical: normalize(7),
+    marginBottom: normalize(7)
+  },
   serviceImage: {
     alignSelf: 'center',
     height: normalize(40),
