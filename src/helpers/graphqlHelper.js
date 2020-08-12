@@ -25,9 +25,20 @@ export const netInfoForGraphqlFetchPolicy = async () => {
  *
  * @return {string} a graphql fetch policy depending on the network status
  */
-export const graphqlFetchPolicy = ({ isConnected, isMainserverUp }) => {
+export const graphqlFetchPolicy = ({ isConnected, isMainserverUp, refreshTime }) => {
   if (isConnected && isMainserverUp) {
-    // online and server up, use network data to fetch from server
+    // online and server up
+
+    if (refreshTime) {
+      const now = parseInt(Date.now() / 1000, 10); // in seconds from 01.01.1970 00:00:00 UTC
+
+      if (now < refreshTime) {
+        // use cached data from phone depending on update interval
+        return 'cache-first';
+      }
+    }
+
+    // use network data to fetch new data from server
     return 'network-only';
   }
 
