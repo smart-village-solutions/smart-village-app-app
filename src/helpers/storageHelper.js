@@ -1,9 +1,10 @@
 import { AsyncStorage } from 'react-native';
 
 // thx to: https://stackoverflow.com/a/35629507/9956365
-const addToStore = async (key, value) => await AsyncStorage.setItem(key, JSON.stringify(value));
-const readFromStore = async (key) => JSON.parse(await AsyncStorage.getItem(key));
-const resetStore = async () => await AsyncStorage.clear();
+export const addToStore = async (key, value) =>
+  await AsyncStorage.setItem(key, JSON.stringify(value));
+export const readFromStore = async (key) => JSON.parse(await AsyncStorage.getItem(key));
+export const resetStore = async () => await AsyncStorage.clear();
 
 export const storageHelper = {
   globalSettings: () => readFromStore('globalSettings'),
