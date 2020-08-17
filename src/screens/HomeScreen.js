@@ -42,9 +42,17 @@ export const HomeScreen = ({ navigation }) => {
   const { isConnected } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy(isConnected);
   const globalSettings = useContext(GlobalSettingsContext);
-  const showNews = true;
-  const showPointsOfInterestAndTours = true;
-  const showEvents = true;
+  const { sections } = globalSettings;
+  const {
+    showNews = true,
+    showPointsOfInterestAndTours = true,
+    showEvents = true,
+    headlineNews = texts.homeTitles.news,
+    headlinePointsOfInterestAndTours = texts.homeTitles.pointsOfInterest,
+    headlineEvents = texts.homeTitles.events,
+    headlineService = texts.homeTitles.service,
+    headlineAbout = texts.homeTitles.about
+  } = sections;
 
   useEffect(() => {
     isConnected && auth();
@@ -97,7 +105,7 @@ export const HomeScreen = ({ navigation }) => {
                 })
               }
             >
-              <Title>{texts.homeTitles.news}</Title>
+              <Title>{headlineNews}</Title>
             </Touchable>
           </TitleContainer>
         )}
@@ -183,7 +191,7 @@ export const HomeScreen = ({ navigation }) => {
                 })
               }
             >
-              <Title>{texts.homeTitles.pointsOfInterest}</Title>
+              <Title>{headlinePointsOfInterestAndTours}</Title>
             </Touchable>
           </TitleContainer>
         )}
@@ -292,7 +300,7 @@ export const HomeScreen = ({ navigation }) => {
                 })
               }
             >
-              <Title>{texts.homeTitles.events}</Title>
+              <Title>{headlineEvents}</Title>
             </Touchable>
           </TitleContainer>
         )}
@@ -383,10 +391,12 @@ export const HomeScreen = ({ navigation }) => {
 
                 return (
                   <View>
-                    <TitleContainer>
-                      <Title>{texts.homeTitles.service}</Title>
-                    </TitleContainer>
-                    {device.platform === 'ios' && <TitleShadow />}
+                    {!!headlineService && (
+                      <TitleContainer>
+                        <Title>{headlineService}</Title>
+                      </TitleContainer>
+                    )}
+                    {!!headlineService && device.platform === 'ios' && <TitleShadow />}
                     <DiagonalGradient style={{ padding: normalize(14) }}>
                       <WrapperWrap>
                         {publicJsonFileContent.map((item, index) => {
@@ -436,9 +446,12 @@ export const HomeScreen = ({ navigation }) => {
 
                 return (
                   <View>
-                    <TitleContainer>
-                      <Title>{texts.homeTitles.about}</Title>
-                    </TitleContainer>
+                    {!!headlineAbout && (
+                      <TitleContainer>
+                        <Title>{headlineAbout}</Title>
+                      </TitleContainer>
+                    )}
+                    {!!headlineAbout && device.platform === 'ios' && <TitleShadow />}
                     {device.platform === 'ios' && <TitleShadow />}
                     <TextList navigation={navigation} data={publicJsonFileContent} noSubtitle />
                   </View>

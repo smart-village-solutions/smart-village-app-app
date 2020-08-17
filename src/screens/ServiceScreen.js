@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
+import { GlobalSettingsContext } from '../GlobalSettingsProvider';
 import { colors, device, normalize, texts } from '../config';
 import {
   BoldText,
@@ -20,86 +21,86 @@ import { getQuery } from '../queries';
 import { graphqlFetchPolicy } from '../helpers';
 import TabBarIcon from '../components/TabBarIcon';
 
-export class ServiceScreen extends React.PureComponent {
-  static contextType = NetworkContext;
+export const ServiceScreen = ({ navigation }) => {
+  const { isConnected } = useContext(NetworkContext);
+  const fetchPolicy = graphqlFetchPolicy(isConnected);
+  const globalSettings = useContext(GlobalSettingsContext);
+  const { sections } = globalSettings;
+  const { headlineService = texts.homeTitles.service } = sections;
 
-  render() {
-    const { navigation } = this.props;
-    const isConnected = this.context.isConnected;
-    const fetchPolicy = graphqlFetchPolicy(isConnected);
+  return (
+    <SafeAreaViewFlex>
+      <Query
+        query={getQuery('publicJsonFile')}
+        variables={{ name: 'homeService' }}
+        fetchPolicy={fetchPolicy}
+      >
+        {({ data, loading }) => {
+          if (loading) {
+            return (
+              <LoadingContainer>
+                <ActivityIndicator color={colors.accent} />
+              </LoadingContainer>
+            );
+          }
 
-    return (
-      <SafeAreaViewFlex>
-        <Query
-          query={getQuery('publicJsonFile')}
-          variables={{ name: 'homeService' }}
-          fetchPolicy={fetchPolicy}
-        >
-          {({ data, loading }) => {
-            if (loading) {
-              return (
-                <LoadingContainer>
-                  <ActivityIndicator color={colors.accent} />
-                </LoadingContainer>
-              );
-            }
-
-            let publicJsonFileContent =
+          let publicJsonFileContent =
               data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
 
-            if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
+          if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
 
-            return (
-              <ScrollView>
+          return (
+            <ScrollView>
+              {!!headlineService && (
                 <TitleContainer>
-                  <Title>{texts.homeTitles.service}</Title>
+                  <Title>{headlineService}</Title>
                 </TitleContainer>
-                {device.platform === 'ios' && <TitleShadow />}
-                <View style={{ padding: normalize(14) }}>
-                  <WrapperWrap>
-                    {publicJsonFileContent.map((item, index) => {
-                      return (
-                        <ServiceBox key={index + item.title}>
-                          <TouchableOpacity
-                            onPress={() =>
-                              navigation.navigate({
-                                routeName: item.routeName,
-                                params: item.params
-                              })
-                            }
-                          >
-                            <View>
-                              {item.iconName ? (
-                                <TabBarIcon
-                                  name={item.iconName}
-                                  size={30}
-                                  style={styles.serviceIcon}
-                                />
-                              ) : (
-                                <Image
-                                  source={{ uri: item.icon }}
-                                  style={styles.serviceImage}
-                                  PlaceholderContent={null}
-                                />
-                              )}
-                              <BoldText small primary>
-                                {item.title}
-                              </BoldText>
-                            </View>
-                          </TouchableOpacity>
-                        </ServiceBox>
-                      );
-                    })}
-                  </WrapperWrap>
-                </View>
-              </ScrollView>
-            );
-          }}
-        </Query>
-      </SafeAreaViewFlex>
-    );
-  }
-}
+              )}
+              {!!headlineService && device.platform === 'ios' && <TitleShadow />}
+              <View style={{ padding: normalize(14) }}>
+                <WrapperWrap>
+                  {publicJsonFileContent.map((item, index) => {
+                    return (
+                      <ServiceBox key={index + item.title}>
+                        <TouchableOpacity
+                          onPress={() =>
+                            navigation.navigate({
+                              routeName: item.routeName,
+                              params: item.params
+                            })
+                          }
+                        >
+                          <View>
+                            {item.iconName ? (
+                              <TabBarIcon
+                                name={item.iconName}
+                                size={30}
+                                style={styles.serviceIcon}
+                              />
+                            ) : (
+                              <Image
+                                source={{ uri: item.icon }}
+                                style={styles.serviceImage}
+                                PlaceholderContent={null}
+                              />
+                            )}
+                            <BoldText small primary>
+                              {item.title}
+                            </BoldText>
+                          </View>
+                        </TouchableOpacity>
+                      </ServiceBox>
+                    );
+                  })}
+                </WrapperWrap>
+              </View>
+            </ScrollView>
+          );
+        }}
+      </Query>
+    </SafeAreaViewFlex>
+  );
+};
 
 const styles = StyleSheet.create({
   serviceIcon: {
