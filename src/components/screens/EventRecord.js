@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import _filter from 'lodash/filter';
 
-import { device, normalize, texts } from '../../config';
+import { colors, device, normalize, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { LoadingContainer } from '../LoadingContainer';
