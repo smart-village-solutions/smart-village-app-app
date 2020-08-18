@@ -36,14 +36,25 @@ export class HtmlScreen extends React.PureComponent {
     const { navigation } = this.props;
     const query = navigation.getParam('query', '');
     const queryVariables = navigation.getParam('queryVariables', '');
-    const title = navigation.getParam('title', '');
-    const rootRouteName = navigation.getParam('rootRouteName', '');
-    const subQuery = navigation.getParam('subQuery', '');
 
     if (!query || !queryVariables || !queryVariables.name) return null;
 
+    const title = navigation.getParam('title', '');
+    const rootRouteName = navigation.getParam('rootRouteName', '');
+    const subQuery = navigation.getParam('subQuery', '');
     const isConnected = this.context.isConnected;
     const fetchPolicy = graphqlFetchPolicy(isConnected);
+    // action to open source urls
+    const openWebScreen = (webUrl) => {
+      return navigation.navigate({
+        routeName: 'Web',
+        params: {
+          title,
+          webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : subQuery.webUrl,
+          rootRouteName
+        }
+      });
+    };
 
     return (
       <Query
@@ -66,20 +77,15 @@ export class HtmlScreen extends React.PureComponent {
             <SafeAreaViewFlex>
               <ScrollView>
                 <Wrapper>
-                  <HtmlView html={trimNewLines(data.publicHtmlFile.content)} />
+                  <HtmlView
+                    html={trimNewLines(data.publicHtmlFile.content)}
+                    openWebScreen={openWebScreen}
+                    navigation={navigation}
+                  />
                   {!!subQuery && !!subQuery.routeName && (
                     <Button
                       title={subQuery.buttonTitle || `${title} öffnen`}
-                      onPress={() =>
-                        navigation.navigate({
-                          routeName: subQuery.routeName,
-                          params: {
-                            title,
-                            webUrl: subQuery.webUrl,
-                            rootRouteName
-                          }
-                        })
-                      }
+                      onPress={openWebScreen}
                     />
                   )}
                 </Wrapper>

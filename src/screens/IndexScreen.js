@@ -186,7 +186,7 @@ export class IndexScreen extends React.PureComponent {
   render() {
     const { navigation } = this.props;
     const query = navigation.getParam('query', '');
-    const queryVariables = navigation.getParam('queryVariables', {});
+    const queryVariables = navigation.getParam('queryVariables', '');
 
     if (!query) return null;
 

@@ -53,12 +53,12 @@ const htmlConfig = {
   ignoredTags: IGNORED_TAGS
 };
 
-export const HtmlView = (props) => (
+export const HtmlView = ({ html, tagsStyles, openWebScreen }) => (
   <HTML
-    {...props}
+    html={html}
     {...htmlConfig}
-    onLinkPress={(evt, href) => openLink(href)}
-    tagsStyles={{ ...styles.html, ...props.tagsStyles }}
+    onLinkPress={(evt, href) => openLink(href, openWebScreen)}
+    tagsStyles={{ ...styles.html, ...tagsStyles }}
     emSize={normalize(16)}
     baseFontStyle={styles.baseFontStyle}
     ignoredStyles={['width', 'height']}
@@ -76,7 +76,9 @@ export const HtmlView = (props) => (
 );
 
 HtmlView.propTypes = {
-  tagsStyles: PropTypes.object
+  html: PropTypes.string,
+  tagsStyles: PropTypes.object,
+  openWebScreen: PropTypes.func
 };
 
 HtmlView.defaultProps = {

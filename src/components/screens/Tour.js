@@ -17,7 +17,7 @@ import { ImagesCarousel } from '../ImagesCarousel';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const Tour = ({ data }) => {
+export const Tour = ({ data, navigation }) => {
   const {
     addresses,
     category,
@@ -30,6 +30,17 @@ export const Tour = ({ data }) => {
     title,
     webUrls
   } = data;
+  const rootRouteName = navigation.getParam('rootRouteName', '');
+  // action to open source urls
+  const openWebScreen = (webUrl) =>
+    navigation.navigate({
+      routeName: 'Web',
+      params: {
+        title: 'Tour',
+        webUrl,
+        rootRouteName
+      }
+    });
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   let images = [];
@@ -75,7 +86,7 @@ export const Tour = ({ data }) => {
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}
           <Wrapper>
-            <HtmlView html={description} />
+            <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
         </View>
       )}
@@ -100,5 +111,6 @@ export const Tour = ({ data }) => {
 /* eslint-enable complexity */
 
 Tour.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  navigation: PropTypes.object
 };
