@@ -23,15 +23,30 @@ function ensureProtocol(link) {
   return linkWithProtocol;
 }
 
+/**
+ * Check if a given link is a web page.
+ *
+ * @param {string} linkWithProtocol
+ *
+ * @return true if linkWithProtocol is a web page
+ */
+function isWeb(linkWithProtocol) {
+  return linkWithProtocol.match(/^https?:/);
+}
+
 // https://facebook.github.io/react-native/docs/linking.html#opening-external-links
-export function openLink(link) {
+export function openLink(link, openWebScreen) {
   const linkWithProtocol = ensureProtocol(link);
 
   Linking.canOpenURL(linkWithProtocol)
     .then((canOpen) => {
       if (!canOpen) {
-        alert('Can\'t handle: ' + linkWithProtocol);
+        alert(`Can't handle: ${linkWithProtocol}`);
       } else {
+        if (isWeb(linkWithProtocol) && openWebScreen) {
+          return openWebScreen(linkWithProtocol);
+        }
+
         return Linking.openURL(linkWithProtocol);
       }
     })

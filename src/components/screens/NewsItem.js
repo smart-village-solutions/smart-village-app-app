@@ -37,14 +37,15 @@ export const NewsItem = ({ data, navigation }) => {
   const subtitle = `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`;
   // the title of a news item is either a given main title or the title from the first content block
   const title = mainTitle || (!!contentBlocks && !!contentBlocks.length && contentBlocks[0].title);
+  const rootRouteName = navigation.getParam('rootRouteName', '');
   // action to open source urls
-  const openWebScreen = () =>
+  const openWebScreen = (webUrl) =>
     navigation.navigate({
       routeName: 'Web',
       params: {
         title: 'Nachricht',
-        webUrl: link,
-        rootRouteName: 'NewsItems'
+        webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
+        rootRouteName
       }
     });
 
@@ -93,6 +94,7 @@ export const NewsItem = ({ data, navigation }) => {
             <HtmlView
               html={trimNewLines(`<div>${contentBlock.intro}</div>`)}
               tagsStyles={{ div: { fontFamily: 'titillium-web-bold' } }}
+              openWebScreen={openWebScreen}
             />
           </WrapperHorizontal>
         );
@@ -133,7 +135,7 @@ export const NewsItem = ({ data, navigation }) => {
         !!contentBlock.body &&
         section.push(
           <WrapperHorizontal key={`${index}-${contentBlock.id}-body`}>
-            <HtmlView html={trimNewLines(contentBlock.body)} />
+            <HtmlView html={trimNewLines(contentBlock.body)} openWebScreen={openWebScreen} />
           </WrapperHorizontal>
         );
 

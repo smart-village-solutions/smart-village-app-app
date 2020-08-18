@@ -59,7 +59,7 @@ const contactView = (contact) => (
 /* NOTE: we need to check a lot for presence, so this is that complex */
 /* TODO: add a logic to display info category and url that fit the screen even if long text
          (not yet a problem) */
-export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) => (
+export const InfoCard = ({ addresses, category, contact, contacts, webUrls, openWebScreen }) => (
   <View>
     {!!category && !!category.name && (
       <InfoBox>
@@ -133,7 +133,7 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls }) =>
         return (
           <InfoBox key={index}>
             <Icon icon={urlIcon(colors.primary)} style={styles.margin} />
-            <TouchableOpacity onPress={() => openLink(url)}>
+            <TouchableOpacity onPress={() => openLink(url, openWebScreen)}>
               {!description && <RegularText primary>{url}</RegularText>}
               {!!description && <RegularText primary>{description}</RegularText>}
             </TouchableOpacity>
@@ -155,5 +155,6 @@ InfoCard.propTypes = {
   category: PropTypes.object,
   contact: PropTypes.object,
   contacts: PropTypes.array,
-  webUrls: PropTypes.array
+  webUrls: PropTypes.array,
+  openWebScreen: PropTypes.func
 };

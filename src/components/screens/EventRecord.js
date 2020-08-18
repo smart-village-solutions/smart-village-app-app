@@ -10,6 +10,7 @@ import { Image } from '../Image';
 import { LoadingContainer } from '../LoadingContainer';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
+import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
 import { PriceCard } from './PriceCard';
 import { InfoCard } from './InfoCard';
@@ -30,7 +31,7 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const EventRecord = ({ data }) => {
+export const EventRecord = ({ data, navigation }) => {
   const {
     addresses,
     category,
@@ -44,6 +45,18 @@ export const EventRecord = ({ data }) => {
     title,
     webUrls
   } = data;
+  const link = webUrls && webUrls.length && webUrls[0].url;
+  const rootRouteName = navigation.getParam('rootRouteName', '');
+  // action to open source urls
+  const openWebScreen = (webUrl) =>
+    navigation.navigate({
+      routeName: 'Web',
+      params: {
+        title: 'Veranstaltung',
+        webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
+        rootRouteName
+      }
+    });
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   let images = [];
@@ -98,19 +111,30 @@ export const EventRecord = ({ data }) => {
       {!!images && images.length > 1 && <ImagesCarousel data={images} />}
       {!!images && images.length === 1 && <Image source={images[0].picture} />}
 
-      {!!title && (
-        <View>
+      {!!title && !!link ? (
+        <TitleContainer>
+          <Touchable onPress={openWebScreen}>
+            <Title>{title}</Title>
+          </Touchable>
+        </TitleContainer>
+      ) : (
+        !!title && (
           <TitleContainer>
             <Title>{title}</Title>
           </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </View>
+        )
       )}
-
+      {device.platform === 'ios' && <TitleShadow />}
       <Wrapper>
         {!!logo && <Logo source={{ uri: logo }} />}
 
-        <InfoCard category={category} addresses={addresses} contacts={contacts} webUrls={webUrls} />
+        <InfoCard
+          category={category}
+          addresses={addresses}
+          contacts={contacts}
+          webUrls={webUrls}
+          openWebScreen={openWebScreen}
+        />
       </Wrapper>
 
       {!!dates && !!dates.length && (
@@ -141,7 +165,7 @@ export const EventRecord = ({ data }) => {
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}
           <Wrapper>
-            <HtmlView html={description} />
+            <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
         </View>
       )}
@@ -159,6 +183,7 @@ export const EventRecord = ({ data }) => {
             address={operatingCompany.address}
             contact={operatingCompany.contact}
             webUrls={operatingCompany.contact.webUrls}
+            openWebScreen={openWebScreen}
           />
         </View>
       )}
@@ -175,5 +200,6 @@ const styles = StyleSheet.create({
 });
 
 EventRecord.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  navigation: PropTypes.object
 };

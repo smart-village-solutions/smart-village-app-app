@@ -16,7 +16,7 @@ import { ImagesCarousel } from '../ImagesCarousel';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PointOfInterest = ({ data }) => {
+export const PointOfInterest = ({ data, navigation }) => {
   const {
     addresses,
     category,
@@ -29,6 +29,17 @@ export const PointOfInterest = ({ data }) => {
     title,
     webUrls
   } = data;
+  const rootRouteName = navigation.getParam('rootRouteName', '');
+  // action to open source urls
+  const openWebScreen = (webUrl) =>
+    navigation.navigate({
+      routeName: 'Web',
+      params: {
+        title: 'Ort',
+        webUrl,
+        rootRouteName
+      }
+    });
 
   let images = [];
 
@@ -104,7 +115,7 @@ export const PointOfInterest = ({ data }) => {
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}
           <Wrapper>
-            <HtmlView html={description} />
+            <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
         </View>
       )}
@@ -129,5 +140,6 @@ export const PointOfInterest = ({ data }) => {
 /* eslint-enable complexity */
 
 PointOfInterest.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  navigation: PropTypes.object
 };

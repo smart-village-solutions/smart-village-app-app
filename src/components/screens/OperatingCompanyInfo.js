@@ -19,7 +19,7 @@ const addressOnPress = (address) => {
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
+export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebScreen }) => {
   const { addition, city, street, zip } = address;
 
   let companyAddress = '';
@@ -115,7 +115,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls }) => {
           return (
             <InfoBox key={index}>
               <Icon icon={urlIcon(colors.primary)} style={styles.margin} />
-              <TouchableOpacity onPress={() => openLink(url)}>
+              <TouchableOpacity onPress={() => openLink(url, openWebScreen)}>
                 <RegularText primary>{url}</RegularText>
               </TouchableOpacity>
             </InfoBox>
@@ -136,5 +136,6 @@ OperatingCompanyInfo.propTypes = {
   address: PropTypes.object,
   name: PropTypes.string,
   contact: PropTypes.object,
-  webUrls: PropTypes.array
+  webUrls: PropTypes.array,
+  openWebScreen: PropTypes.func
 };
