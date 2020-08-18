@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
 import { GlobalSettingsContext } from '../GlobalSettingsProvider';
-import { colors, device, texts } from '../config';
+import { colors, consts, device, texts } from '../config';
 import {
   LoadingContainer,
   SafeAreaViewFlex,
@@ -16,11 +16,31 @@ import {
   VersionNumber
 } from '../components';
 import { getQuery } from '../queries';
-import { graphqlFetchPolicy } from '../helpers';
+import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
 
 export const AboutScreen = ({ navigation }) => {
+  const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+
+  useEffect(() => {
+    const getRefreshTime = async () => {
+      const time = await refreshTimeFor('publicJsonFile-homeAbout', consts.STATIC_CONTENT);
+
+      setRefreshTime(time);
+    };
+
+    getRefreshTime();
+  }, []);
+
+  if (!refreshTime) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
+
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
   const globalSettings = useContext(GlobalSettingsContext);
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
