@@ -1,113 +1,125 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
-import { colors, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
 import { Button, HtmlView, Icon, LoadingContainer, SafeAreaViewFlex, Wrapper } from '../components';
-import { graphqlFetchPolicy, trimNewLines } from '../helpers';
+import { graphqlFetchPolicy, refreshTimeFor, trimNewLines } from '../helpers';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
 
-export class HtmlScreen extends React.PureComponent {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerLeft: (
-        <View>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon icon={arrowLeft(colors.lightestText)} style={styles.icon} />
-          </TouchableOpacity>
-        </View>
-      )
+export const HtmlScreen = ({ navigation }) => {
+  const [refreshTime, setRefreshTime] = useState();
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const query = navigation.getParam('query', '');
+  const queryVariables = navigation.getParam('queryVariables', '');
+
+  if (!query || !queryVariables || !queryVariables.name) return null;
+
+  useEffect(() => {
+    const getRefreshTime = async () => {
+      const time = await refreshTimeFor(`${query}-${queryVariables.name}`, consts.STATIC_CONTENT);
+
+      setRefreshTime(time);
     };
-  };
 
-  static contextType = NetworkContext;
+    getRefreshTime();
+  }, []);
 
-  componentDidMount() {
-    const isConnected = this.context.isConnected;
-
+  useEffect(() => {
     isConnected && auth();
+  }, []);
+
+  if (!refreshTime) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
   }
 
-  render() {
-    const { navigation } = this.props;
-    const query = navigation.getParam('query', '');
-    const queryVariables = navigation.getParam('queryVariables', '');
-
-    if (!query || !queryVariables || !queryVariables.name) return null;
-
-    const title = navigation.getParam('title', '');
-    const rootRouteName = navigation.getParam('rootRouteName', '');
-    const subQuery = navigation.getParam('subQuery', '');
-    const { isConnected, isMainserverUp } = this.context;
-    const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-    // action to open source urls
-    const openWebScreen = (webUrl) => {
-      if (!!webUrl && typeof webUrl === 'string') {
-        return navigation.navigate({
-          routeName: 'Web',
-          params: {
-            title,
-            webUrl,
-            rootRouteName
-          }
-        });
-      }
-
+  const title = navigation.getParam('title', '');
+  const rootRouteName = navigation.getParam('rootRouteName', '');
+  const subQuery = navigation.getParam('subQuery', '');
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+  // action to open source urls
+  const openWebScreen = (webUrl) => {
+    if (!!webUrl && typeof webUrl === 'string') {
       return navigation.navigate({
-        routeName: subQuery.routeName,
+        routeName: 'Web',
         params: {
           title,
-          webUrl: subQuery.webUrl,
+          webUrl,
           rootRouteName
         }
       });
-    };
+    }
 
-    return (
-      <Query
-        query={getQuery(query)}
-        variables={{ name: queryVariables.name }}
-        fetchPolicy={fetchPolicy}
-      >
-        {({ data, loading }) => {
-          if (loading) {
-            return (
-              <LoadingContainer>
-                <ActivityIndicator color={colors.accent} />
-              </LoadingContainer>
-            );
-          }
+    return navigation.navigate({
+      routeName: subQuery.routeName,
+      params: {
+        title,
+        webUrl: subQuery.webUrl,
+        rootRouteName
+      }
+    });
+  };
 
-          if (!data || !data.publicHtmlFile || !data.publicHtmlFile.content) return null;
-
+  return (
+    <Query
+      query={getQuery(query)}
+      variables={{ name: queryVariables.name }}
+      fetchPolicy={fetchPolicy}
+    >
+      {({ data, loading }) => {
+        if (loading) {
           return (
-            <SafeAreaViewFlex>
-              <ScrollView>
-                <Wrapper>
-                  <HtmlView
-                    html={trimNewLines(data.publicHtmlFile.content)}
-                    openWebScreen={openWebScreen}
-                    navigation={navigation}
-                  />
-                  {!!subQuery && !!subQuery.routeName && (
-                    <Button
-                      title={subQuery.buttonTitle || `${title} öffnen`}
-                      onPress={openWebScreen}
-                    />
-                  )}
-                </Wrapper>
-              </ScrollView>
-            </SafeAreaViewFlex>
+            <LoadingContainer>
+              <ActivityIndicator color={colors.accent} />
+            </LoadingContainer>
           );
-        }}
-      </Query>
-    );
-  }
-}
+        }
+
+        if (!data || !data.publicHtmlFile || !data.publicHtmlFile.content) return null;
+
+        return (
+          <SafeAreaViewFlex>
+            <ScrollView>
+              <Wrapper>
+                <HtmlView
+                  html={trimNewLines(data.publicHtmlFile.content)}
+                  openWebScreen={openWebScreen}
+                  navigation={navigation}
+                />
+                {!!subQuery && !!subQuery.routeName && (
+                  <Button
+                    title={subQuery.buttonTitle || `${title} öffnen`}
+                    onPress={openWebScreen}
+                  />
+                )}
+              </Wrapper>
+            </ScrollView>
+          </SafeAreaViewFlex>
+        );
+      }}
+    </Query>
+  );
+};
+
+HtmlScreen.navigationOptions = ({ navigation }) => {
+  return {
+    headerLeft: (
+      <View>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon icon={arrowLeft(colors.lightestText)} style={styles.icon} />
+        </TouchableOpacity>
+      </View>
+    )
+  };
+};
 
 const styles = StyleSheet.create({
   icon: {
