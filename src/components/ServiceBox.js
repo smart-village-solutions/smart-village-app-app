@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
 
-import { normalize } from '../../../config';
+import { normalize } from '../config';
 
 export const ServiceBox = styled.View`
   align-items: center;
