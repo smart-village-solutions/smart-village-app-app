@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ActivityIndicator, FlatList } from 'react-native';
 
-import { normalize } from '../config';
+import { colors, normalize } from '../config';
 import { TextListItem } from './TextListItem';
 
 export class TextList extends React.PureComponent {
@@ -25,7 +25,9 @@ export class TextList extends React.PureComponent {
         )}
         ListFooterComponent={
           data.length > 10 &&
-          !listEndReached && <ActivityIndicator style={{ margin: normalize(14) }} />
+          !listEndReached && (
+            <ActivityIndicator color={colors.accent} style={{ margin: normalize(14) }} />
+          )
         }
         onEndReached={() => this.setState({ listEndReached: true })}
       />
