@@ -21,6 +21,7 @@ import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
 export const AboutScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const globalSettings = useContext(GlobalSettingsContext);
 
   useEffect(() => {
     const getRefreshTime = async () => {
@@ -41,7 +42,6 @@ export const AboutScreen = ({ navigation }) => {
   }
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
-  const globalSettings = useContext(GlobalSettingsContext);
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
 
