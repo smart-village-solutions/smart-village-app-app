@@ -24,6 +24,7 @@ import TabBarIcon from '../components/TabBarIcon';
 export const ServiceScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const globalSettings = useContext(GlobalSettingsContext);
 
   useEffect(() => {
     const getRefreshTime = async () => {
@@ -44,7 +45,6 @@ export const ServiceScreen = ({ navigation }) => {
   }
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
-  const globalSettings = useContext(GlobalSettingsContext);
   const { sections = {} } = globalSettings;
   const { headlineService = texts.homeTitles.service } = sections;
 
