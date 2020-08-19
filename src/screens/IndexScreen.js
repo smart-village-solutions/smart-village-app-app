@@ -49,9 +49,9 @@ export class IndexScreen extends React.PureComponent {
   /* NOTE: we need to check a lot for presence, so this is that complex */
   getListItems(query, data) {
     switch (query) {
-      case 'eventRecords':
-        return (
-          data &&
+    case 'eventRecords':
+      return (
+        data &&
           data[query] &&
           data[query].map((eventRecord) => ({
             id: eventRecord.id,
@@ -73,10 +73,10 @@ export class IndexScreen extends React.PureComponent {
               details: eventRecord
             }
           }))
-        );
-      case 'newsItems':
-        return (
-          data &&
+      );
+    case 'newsItems':
+      return (
+        data &&
           data[query] &&
           data[query].map((newsItem) => ({
             id: newsItem.id,
@@ -99,10 +99,10 @@ export class IndexScreen extends React.PureComponent {
               details: newsItem
             }
           }))
-        );
-      case 'pointsOfInterest':
-        return (
-          data &&
+      );
+    case 'pointsOfInterest':
+      return (
+        data &&
           data[query] &&
           data[query].map((pointOfInterest) => ({
             id: pointOfInterest.id,
@@ -121,10 +121,10 @@ export class IndexScreen extends React.PureComponent {
               details: pointOfInterest
             }
           }))
-        );
-      case 'tours':
-        return (
-          data &&
+      );
+    case 'tours':
+      return (
+        data &&
           data[query] &&
           data[query].map((tour) => ({
             id: tour.id,
@@ -143,11 +143,11 @@ export class IndexScreen extends React.PureComponent {
               details: tour
             }
           }))
-        );
+      );
 
-      case 'categories': {
-        return (
-          data &&
+    case 'categories': {
+      return (
+        data &&
           data[query] &&
           data[query].map((category) => ({
             id: category.id,
@@ -162,40 +162,49 @@ export class IndexScreen extends React.PureComponent {
               rootRouteName: category.pointsOfInterestCount > 0 ? 'PointsOfInterest' : 'Tours'
             }
           }))
-        );
-      }
+      );
+    }
     }
   }
   /* eslint-enable complexity */
 
   getComponent(query) {
     switch (query) {
-      case 'eventRecords':
-        return TextList;
-      case 'newsItems':
-        return TextList;
-      case 'pointsOfInterest':
-        return CardList;
-      case 'tours':
-        return CardList;
-      case 'categories':
-        return CategoryList;
+    case 'eventRecords':
+      return TextList;
+    case 'newsItems':
+      return TextList;
+    case 'pointsOfInterest':
+      return CardList;
+    case 'tours':
+      return CardList;
+    case 'categories':
+      return CategoryList;
     }
   }
 
   render() {
     const { navigation } = this.props;
     const query = navigation.getParam('query', '');
-    const queryVariables = navigation.getParam('queryVariables', '');
 
     if (!query) return null;
 
     const { isConnected, isMainserverUp } = this.context;
     const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+    let queryVariables = navigation.getParam('queryVariables', {});
+
+    // if offline, pagination with partially fetching data is not possible, so we cannot pass
+    // a probably given `limit` variable. remove that `limit` with destructing, like in this
+    // example: https://stackoverflow.com/a/51478664/9956365
+    if (!isConnected) {
+      const { limit, ...queryVariablesWithoutLimit } = queryVariables;
+
+      queryVariables = queryVariablesWithoutLimit;
+    }
 
     return (
       <Query query={getQuery(query)} variables={queryVariables} fetchPolicy={fetchPolicy}>
-        {({ data, loading }) => {
+        {({ data, loading, fetchMore }) => {
           if (loading) {
             return (
               <LoadingContainer>
@@ -209,10 +218,26 @@ export class IndexScreen extends React.PureComponent {
           if (!listItems || !listItems.length) return null;
 
           const Component = this.getComponent(query);
+          const fetchMoreData = () =>
+            fetchMore({
+              variables: {
+                offset: listItems.length
+              },
+              updateQuery: (prevResult, { fetchMoreResult }) => {
+                if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
+
+                return { [query]: [...prevResult[query], ...fetchMoreResult[query]] };
+              }
+            });
 
           return (
             <SafeAreaViewFlex>
-              <Component navigation={navigation} data={listItems} />
+              <Component
+                navigation={navigation}
+                data={listItems}
+                query={query}
+                fetchMoreData={isConnected ? fetchMoreData : null}
+              />
             </SafeAreaViewFlex>
           );
         }}
