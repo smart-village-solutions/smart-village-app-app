@@ -12,6 +12,20 @@ export class TextList extends React.PureComponent {
 
   keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
+  onEndReached = async () => {
+    const { query, fetchMoreData } = this.props;
+
+    if (fetchMoreData) {
+      // if there is a pagination, the end of the list is reached, when no more data is returned
+      // from partially fetching, so we need to check the the data to determine the lists end
+      const { data: moreData } = await fetchMoreData();
+
+      this.setState({ listEndReached: !moreData[query].length });
+    } else {
+      this.setState({ listEndReached: true });
+    }
+  };
+
   render() {
     const { listEndReached } = this.state;
     const { data, navigation, noSubtitle } = this.props;
@@ -29,7 +43,8 @@ export class TextList extends React.PureComponent {
             <ActivityIndicator color={colors.accent} style={{ margin: normalize(14) }} />
           )
         }
-        onEndReached={() => this.setState({ listEndReached: true })}
+        onEndReachedThreshold={0.5}
+        onEndReached={this.onEndReached}
       />
     );
   }
@@ -38,7 +53,9 @@ export class TextList extends React.PureComponent {
 TextList.propTypes = {
   navigation: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
-  noSubtitle: PropTypes.bool
+  noSubtitle: PropTypes.bool,
+  query: PropTypes.string,
+  fetchMoreData: PropTypes.func
 };
 
 TextList.defaultProps = {
