@@ -14,6 +14,7 @@ export * from './Link';
 export * from './LoadingContainer';
 export * from './Logo';
 export * from './SafeAreaViewFlex';
+export * from './ServiceBox';
 export * from './Text';
 export * from './TextList';
 export * from './TextListItem';
