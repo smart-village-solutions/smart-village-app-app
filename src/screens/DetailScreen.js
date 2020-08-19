@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
-import { colors, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
 import {
   EventRecord,
   Icon,
@@ -18,39 +18,69 @@ import {
 } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft, share } from '../icons';
-import { graphqlFetchPolicy, openShare } from '../helpers';
+import { graphqlFetchPolicy, openShare, refreshTimeFor } from '../helpers';
 
 const getComponent = (query) => {
   switch (query) {
-    case 'newsItem':
-      return NewsItem;
-    case 'eventRecord':
-      return EventRecord;
-    case 'pointOfInterest':
-      return PointOfInterest;
-    case 'tour':
-      return Tour;
+  case 'newsItem':
+    return NewsItem;
+  case 'eventRecord':
+    return EventRecord;
+  case 'pointOfInterest':
+    return PointOfInterest;
+  case 'tour':
+    return Tour;
+  }
+};
+
+const getRefreshInterval = (query) => {
+  switch (query) {
+  case 'newsItem':
+    return consts.NEWS;
+  case 'eventRecord':
+    return consts.EVENTS;
+  case 'pointOfInterest':
+    return consts.POINTS_OF_INTEREST;
+  case 'tour':
+    return consts.TOURS;
   }
 };
 
 export const DetailScreen = ({ navigation }) => {
+  const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', {});
-  const details = navigation.getParam('details', {});
+
+  if (!query || !queryVariables || !queryVariables.id) return null;
+
+  useEffect(() => {
+    const getRefreshTime = async () => {
+      const time = await refreshTimeFor(`${query}-${queryVariables.id}`, getRefreshInterval(query));
+
+      setRefreshTime(time);
+    };
+
+    getRefreshTime();
+  }, []);
 
   useEffect(() => {
     isConnected && auth();
   }, []);
 
-  if (!query) return null;
+  if (!refreshTime) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
 
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const details = navigation.getParam('details', {});
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
-  /* eslint-disable complexity */
-  /* NOTE: we need to check a lot for presence, so this is that complex */
   return (
-    <Query query={getQuery(query)} variables={queryVariables} fetchPolicy={fetchPolicy}>
+    <Query query={getQuery(query)} variables={{ id: queryVariables.id }} fetchPolicy={fetchPolicy}>
       {({ data, loading }) => {
         if (loading) {
           return (
@@ -76,7 +106,6 @@ export const DetailScreen = ({ navigation }) => {
       }}
     </Query>
   );
-  /* eslint-enable complexity */
 };
 
 const styles = StyleSheet.create({
