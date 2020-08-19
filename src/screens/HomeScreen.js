@@ -69,7 +69,7 @@ export const HomeScreen = ({ navigation }) => {
                     params: {
                       title: 'Nachrichten',
                       query: 'newsItems',
-                      queryVariables: {},
+                      queryVariables: { limit: 15 },
                       rootRouteName: 'NewsItems'
                     }
                   })
@@ -131,7 +131,7 @@ export const HomeScreen = ({ navigation }) => {
                             params: {
                               title: 'Nachrichten',
                               query: 'newsItems',
-                              queryVariables: {},
+                              queryVariables: { limit: 15 },
                               rootRouteName: 'NewsItems'
                             }
                           })
@@ -264,7 +264,7 @@ export const HomeScreen = ({ navigation }) => {
                     params: {
                       title: 'Veranstaltungen',
                       query: 'eventRecords',
-                      queryVariables: { order: 'listDate_ASC' },
+                      queryVariables: { limit: 15, order: 'listDate_ASC' },
                       rootRouteName: 'EventRecords'
                     }
                   })
@@ -329,7 +329,7 @@ export const HomeScreen = ({ navigation }) => {
                             params: {
                               title: 'Veranstaltungen',
                               query: 'eventRecords',
-                              queryVariables: { order: 'listDate_ASC' },
+                              queryVariables: { limit: 15, order: 'listDate_ASC' },
                               rootRouteName: 'EventRecords'
                             }
                           })
