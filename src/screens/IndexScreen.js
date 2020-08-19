@@ -186,16 +186,25 @@ export class IndexScreen extends React.PureComponent {
   render() {
     const { navigation } = this.props;
     const query = navigation.getParam('query', '');
-    const queryVariables = navigation.getParam('queryVariables', {});
 
     if (!query) return null;
 
     const { isConnected, isMainserverUp } = this.context;
     const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+    let queryVariables = navigation.getParam('queryVariables', {});
+
+    // if offline, pagination with partially fetching data is not possible, so we cannot pass
+    // a probably given `limit` variable. remove that `limit` with destructing, like in this
+    // example: https://stackoverflow.com/a/51478664/9956365
+    if (!isConnected) {
+      const { limit, ...queryVariablesWithoutLimit } = queryVariables;
+
+      queryVariables = queryVariablesWithoutLimit;
+    }
 
     return (
       <Query query={getQuery(query)} variables={queryVariables} fetchPolicy={fetchPolicy}>
-        {({ data, loading }) => {
+        {({ data, loading, fetchMore }) => {
           if (loading) {
             return (
               <LoadingContainer>
@@ -209,10 +218,26 @@ export class IndexScreen extends React.PureComponent {
           if (!listItems || !listItems.length) return null;
 
           const Component = this.getComponent(query);
+          const fetchMoreData = () =>
+            fetchMore({
+              variables: {
+                offset: listItems.length
+              },
+              updateQuery: (prevResult, { fetchMoreResult }) => {
+                if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
+
+                return { [query]: [...prevResult[query], ...fetchMoreResult[query]] };
+              }
+            });
 
           return (
             <SafeAreaViewFlex>
-              <Component navigation={navigation} data={listItems} />
+              <Component
+                navigation={navigation}
+                data={listItems}
+                query={query}
+                fetchMoreData={isConnected ? fetchMoreData : null}
+              />
             </SafeAreaViewFlex>
           );
         }}
