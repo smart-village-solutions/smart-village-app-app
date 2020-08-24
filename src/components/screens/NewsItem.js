@@ -61,7 +61,12 @@ export const NewsItem = ({ data, navigation }) => {
     ).map((mediaContent) => {
       !!mediaContent.sourceUrl &&
         !!mediaContent.sourceUrl.url &&
-        mainImages.push({ picture: { uri: mediaContent.sourceUrl.url } });
+        mainImages.push({
+          picture: {
+            uri: mediaContent.sourceUrl.url,
+            copyright: mediaContent.copyright
+          }
+        });
     });
 
   // the story is a map of all available content blocks
@@ -103,7 +108,12 @@ export const NewsItem = ({ data, navigation }) => {
           ).map((mediaContent) => {
             !!mediaContent.sourceUrl &&
               !!mediaContent.sourceUrl.url &&
-              sectionImages.push({ picture: { uri: mediaContent.sourceUrl.url } });
+              sectionImages.push({
+                picture: {
+                  uri: mediaContent.sourceUrl.url,
+                  copyright: mediaContent.copyright
+                }
+              });
           });
       }
 

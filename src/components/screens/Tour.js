@@ -43,7 +43,12 @@ export const Tour = ({ data }) => {
     ).map((item) => {
       !!item.sourceUrl &&
         !!item.sourceUrl.url &&
-        images.push({ picture: { uri: item.sourceUrl.url } });
+        images.push({
+          picture: {
+            uri: item.sourceUrl.url,
+            copyright: item.copyright
+          }
+        });
     });
 
   return (
