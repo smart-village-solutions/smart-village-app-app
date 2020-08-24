@@ -1,14 +1,17 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { CacheManager } from 'react-native-expo-image-cache';
 import { Image as RNEImage } from 'react-native-elements';
 
 import { colors } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
+import { GlobalSettingsContext } from '../GlobalSettingsProvider';
+import { ImageRights } from './ImageRights';
 
 export const Image = ({ source, style, PlaceholderContent }) => {
   const [uri, setUri] = useState(null);
+  const globalSettings = useContext(GlobalSettingsContext);
 
   // if there is a source.uri to fetch, do it with the CacheManager and set the local path to show.
   // if there is no uri, the source itself should be already a local path, so set it immediately.
@@ -29,18 +32,27 @@ export const Image = ({ source, style, PlaceholderContent }) => {
     return () => (mounted = false);
   }, []);
 
-  // TODO: is there a performance issue here? when logging here, there is a lot going on even
-  //       when nothing is done in the app by the user
-  // console.log('source', source);
-  // console.log('uri', uri);
+  if (!globalSettings.showImageRights || !source.copyright) {
+    return (
+      <RNEImage
+        source={uri ? (source.uri ? { uri } : uri) : null}
+        style={style}
+        PlaceholderContent={PlaceholderContent}
+        placeholderStyle={{ backgroundColor: colors.transparent }}
+      />
+    );
+  }
 
   return (
-    <RNEImage
-      source={uri ? (source.uri ? { uri } : uri) : null}
-      style={style}
-      PlaceholderContent={PlaceholderContent}
-      placeholderStyle={{ backgroundColor: colors.transparent }}
-    />
+    <>
+      <RNEImage
+        source={uri ? (source.uri ? { uri } : uri) : null}
+        style={style}
+        PlaceholderContent={PlaceholderContent}
+        placeholderStyle={{ backgroundColor: colors.transparent }}
+      />
+      <ImageRights imageRights={source.copyright} />
+    </>
   );
 };
 
