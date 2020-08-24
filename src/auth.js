@@ -19,9 +19,15 @@ const isTokenValid = async () => {
   return now < expires;
 };
 
-export const auth = async (callback) => {
+/**
+ * Requests the server to authenticate the mobile app with the main server.
+ *
+ * @param {requestCallback} callback the callback that needs authentication
+ * @param {boolean} forceNewToken trigger to force request for new token, default `false`
+ */
+export const auth = async (callback, forceNewToken = false) => {
   // if the token is still valid, just run the callback, if one exists
-  if (await isTokenValid()) return callback && callback();
+  if (!forceNewToken && await isTokenValid()) return callback && callback();
 
   // otherwise fetch a new access token and expire time
   const namespace = appJson.expo.slug;
