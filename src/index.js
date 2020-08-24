@@ -41,6 +41,7 @@ const MainAppWithApolloProvider = () => {
       }
     }
   });
+  const [authRetried, setAuthRetried] = useState(false);
 
   /* eslint-disable complexity */
   /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -114,8 +115,15 @@ const MainAppWithApolloProvider = () => {
       });
 
       globalSettingsData = response.data;
-    } catch (errors) {
-      console.warn('errors', errors);
+    } catch (error) {
+      console.warn('error', error);
+
+      if (error.message.includes('Network error')) {
+        // try once to authenticate with forcing a fresh token request
+        !authRetried && auth(setupApolloClient, true);
+        // set flag `true` to prevent endless loops
+        setAuthRetried(true);
+      }
     }
 
     const globalSettingsPublicJsonFileContent =
