@@ -21,6 +21,7 @@ export const GET_EVENT_RECORDS = gql`
       mediaContents {
         id
         contentType
+        copyright
         sourceUrl {
           url
         }
@@ -61,6 +62,7 @@ export const GET_EVENT_RECORD = gql`
       mediaContents {
         id
         contentType
+        copyright
         sourceUrl {
           url
         }

@@ -11,6 +11,7 @@ export const GET_POINTS_OF_INTEREST = gql`
       description
       mediaContents {
         contentType
+        copyright
         sourceUrl {
           url
         }
@@ -44,6 +45,7 @@ export const GET_POINT_OF_INTEREST = gql`
       description
       mediaContents {
         contentType
+        copyright
         sourceUrl {
           url
         }

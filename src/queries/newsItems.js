@@ -14,6 +14,7 @@ export const GET_NEWS_ITEMS = gql`
         mediaContents {
           id
           contentType
+          copyright
           sourceUrl {
             url
           }
@@ -50,6 +51,7 @@ export const GET_NEWS_ITEM = gql`
         mediaContents {
           id
           contentType
+          copyright
           sourceUrl {
             url
           }

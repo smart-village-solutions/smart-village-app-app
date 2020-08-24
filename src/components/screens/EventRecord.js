@@ -58,7 +58,12 @@ export const EventRecord = ({ data }) => {
     ).map((mediaContent) => {
       !!mediaContent.sourceUrl &&
         !!mediaContent.sourceUrl.url &&
-        images.push({ picture: { uri: mediaContent.sourceUrl.url } });
+        images.push({
+          picture: {
+            uri: mediaContent.sourceUrl.url,
+            copyright: mediaContent.copyright
+          }
+        });
     });
 
   !!mediaContents &&
