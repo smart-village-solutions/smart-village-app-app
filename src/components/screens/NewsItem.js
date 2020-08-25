@@ -83,7 +83,7 @@ export const NewsItem = ({ data, navigation }) => {
         !!contentBlock.title &&
           section.push(
             <Wrapper key={`${index}-${contentBlock.id}-title`}>
-              <BoldText>{contentBlock.title}</BoldText>
+              <BoldText>{trimNewLines(contentBlock.title)}</BoldText>
             </Wrapper>
           );
       }
@@ -195,13 +195,13 @@ export const NewsItem = ({ data, navigation }) => {
       {!!title && !!link ? (
         <TitleContainer>
           <Touchable onPress={openWebScreen}>
-            <Title>{title}</Title>
+            <Title>{trimNewLines(title)}</Title>
           </Touchable>
         </TitleContainer>
       ) : (
         !!title && (
           <TitleContainer>
-            <Title>{title}</Title>
+            <Title>{trimNewLines(title)}</Title>
           </TitleContainer>
         )
       )}

@@ -7,6 +7,7 @@ import { arrowRight } from '../icons';
 import { Icon } from './Icon';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
+import { trimNewLines } from '../helpers';
 
 export class TextListItem extends React.PureComponent {
   render() {
@@ -16,7 +17,7 @@ export class TextListItem extends React.PureComponent {
     return (
       <ListItem
         title={noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
-        subtitle={<BoldText noSubtitle={noSubtitle}>{title}</BoldText>}
+        subtitle={<BoldText noSubtitle={noSubtitle}>{trimNewLines(title)}</BoldText>}
         bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
         topDivider={topDivider !== undefined ? topDivider : false}
         containerStyle={{
