@@ -4,7 +4,7 @@ import { Icon as RNEIcon } from 'react-native-elements';
 import PropTypes from 'prop-types';
 
 import { colors, normalize } from '../../config';
-import { mail, location, phone as phoneIcon, url as urlIcon } from '../../icons';
+import { mail, link, location, phone as phoneIcon, url as urlIcon } from '../../icons';
 import { openLink, locationLink, locationString } from '../../helpers';
 import { RegularText } from '../Text';
 import { Icon } from '../Icon';
@@ -20,25 +20,37 @@ const addressOnPress = (address) => {
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebScreen }) => {
-  const { addition, city, street, zip } = address;
-
+  const contactPresent =
+    !!contact &&
+    (!!contact.firstName ||
+      !!contact.lastName ||
+      !!contact.phone ||
+      !!contact.email ||
+      !!contact.fax ||
+      !!contact.www);
   let companyAddress = '';
 
-  if (!!addition || !!city || !!street || !!zip) {
-    // build the address in multiple steps to check every data before rendering
-    if (addition) {
-      companyAddress += `${addition}${'\n'}`;
-    }
-    if (street) {
-      companyAddress += `${street},${'\n'}`;
-    }
-    if (zip) {
-      companyAddress += `${zip} `;
-    }
-    if (city) {
-      companyAddress += city;
+  if (address) {
+    const { addition, city, street, zip } = address;
+
+    if (!!addition || !!city || !!street || !!zip) {
+      // build the address in multiple steps to check every data before rendering
+      if (addition) {
+        companyAddress += `${addition}${'\n'}`;
+      }
+      if (street) {
+        companyAddress += `${street},${'\n'}`;
+      }
+      if (zip) {
+        companyAddress += `${zip} `;
+      }
+      if (city) {
+        companyAddress += city;
+      }
     }
   }
+
+  if (!name && !companyAddress && !contactPresent && !webUrls) return null;
 
   return (
     <Wrapper>
@@ -57,12 +69,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
         </InfoBox>
       )}
 
-      {!!contact &&
-        (!!contact.firstName ||
-          !!contact.lastName ||
-          !!contact.phone ||
-          !!contact.email ||
-          !!contact.fax) && (
+      {contactPresent && (
         <View>
           {(!!contact.firstName || !!contact.lastName) && (
             <InfoBox>
@@ -103,6 +110,14 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
               <RegularText primary>{contact.fax}</RegularText>
             </InfoBox>
           )}
+          {!!contact.www && (
+            <InfoBox>
+              <Icon icon={link(colors.primary)} style={styles.marginWww} />
+              <TouchableOpacity onPress={() => openWebScreen(contact.www)}>
+                <RegularText primary>{contact.www}</RegularText>
+              </TouchableOpacity>
+            </InfoBox>
+          )}
         </View>
       )}
 
@@ -129,6 +144,10 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
 const styles = StyleSheet.create({
   margin: {
     marginRight: normalize(10)
+  },
+  marginWww: {
+    marginLeft: normalize(3),
+    marginRight: normalize(7)
   }
 });
 
