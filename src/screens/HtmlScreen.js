@@ -46,11 +46,22 @@ export class HtmlScreen extends React.PureComponent {
     const fetchPolicy = graphqlFetchPolicy(isConnected);
     // action to open source urls
     const openWebScreen = (webUrl) => {
+      if (!!webUrl && typeof webUrl === 'string') {
+        return navigation.navigate({
+          routeName: 'Web',
+          params: {
+            title,
+            webUrl,
+            rootRouteName
+          }
+        });
+      }
+
       return navigation.navigate({
-        routeName: 'Web',
+        routeName: subQuery.routeName,
         params: {
           title,
-          webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : subQuery.webUrl,
+          webUrl: subQuery.webUrl,
           rootRouteName
         }
       });
