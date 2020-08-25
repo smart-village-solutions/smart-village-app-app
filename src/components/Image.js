@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { CacheManager } from 'react-native-expo-image-cache';
 import { Image as RNEImage } from 'react-native-elements';
 
@@ -25,8 +25,8 @@ export const Image = ({ source, style, PlaceholderContent }) => {
 
     source.uri
       ? CacheManager.get(source.uri)
-          .getPath()
-          .then((path) => mounted && setUri(path))
+        .getPath()
+        .then((path) => mounted && setUri(path))
       : mounted && setUri(source);
 
     return () => (mounted = false);
@@ -44,7 +44,7 @@ export const Image = ({ source, style, PlaceholderContent }) => {
   }
 
   return (
-    <>
+    <View>
       <RNEImage
         source={uri ? (source.uri ? { uri } : uri) : null}
         style={style}
@@ -52,7 +52,7 @@ export const Image = ({ source, style, PlaceholderContent }) => {
         placeholderStyle={{ backgroundColor: colors.transparent }}
       />
       <ImageRights imageRights={source.copyright} />
-    </>
+    </View>
   );
 };
 
