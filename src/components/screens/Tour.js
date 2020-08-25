@@ -107,6 +107,7 @@ export const Tour = ({ data, navigation }) => {
             address={operatingCompany.address}
             contact={operatingCompany.contact}
             webUrls={operatingCompany.contact.webUrls}
+            openWebScreen={openWebScreen}
           />
         </View>
       )}

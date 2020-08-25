@@ -113,7 +113,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
           {!!contact.www && (
             <InfoBox>
               <Icon icon={link(colors.primary)} style={styles.marginWww} />
-              <TouchableOpacity onPress={() => openWebScreen(contact.www)}>
+              <TouchableOpacity onPress={() => openLink(contact.www, openWebScreen)}>
                 <RegularText primary>{contact.www}</RegularText>
               </TouchableOpacity>
             </InfoBox>
