@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.1.4]
+
+Copyright for images, open all links in the app and variable headlines
+
+### Added
+
+- added component to render copyright texts over `Image`s
+- added functionality to open all links in internal web view instead of in the external browser app
+- added variable titles for sections
+  - can be set on the main server
+  - headline texts for news, points of interests and tours, events
+  - headline texts for service, company, about
+- added logic on network error while `auth()` on app start to retry the authentication with
+  a forced fresh token request
+
+### Fixed
+
+- added two missing `colors` imports for `ActivityIndicator`s
+
 ## [v1.1.3]
 
 Specific changes for header title, status bar and upcoming events
