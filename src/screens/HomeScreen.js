@@ -42,7 +42,7 @@ export const HomeScreen = ({ navigation }) => {
   const { isConnected } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy(isConnected);
   const globalSettings = useContext(GlobalSettingsContext);
-  const { sections } = globalSettings;
+  const { sections = {} } = globalSettings;
   const {
     showNews = true,
     showPointsOfInterestAndTours = true,

@@ -25,7 +25,7 @@ export const ServiceScreen = ({ navigation }) => {
   const { isConnected } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy(isConnected);
   const globalSettings = useContext(GlobalSettingsContext);
-  const { sections } = globalSettings;
+  const { sections = {} } = globalSettings;
   const { headlineService = texts.homeTitles.service } = sections;
 
   return (

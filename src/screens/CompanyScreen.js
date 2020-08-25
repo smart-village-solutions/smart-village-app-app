@@ -25,7 +25,7 @@ export const CompanyScreen = ({ navigation }) => {
   const { isConnected } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy(isConnected);
   const globalSettings = useContext(GlobalSettingsContext);
-  const { sections } = globalSettings;
+  const { sections = {} } = globalSettings;
   const { headlineCompany = texts.homeTitles.company } = sections;
 
   return (
