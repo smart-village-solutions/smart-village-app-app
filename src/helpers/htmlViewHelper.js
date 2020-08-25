@@ -58,3 +58,10 @@ export function spaceNewLines(text) {
   text = beforeAction(text).replace(/(\r\n|\n|\r)/gm, ' ');
   return afterAction(text);
 }
+
+export function containsHtml(text) {
+  if (!text) return false;
+  const pattern = /<\/?[a-z][\s\S]*>/; // thx to: https://stackoverflow.com/a/15458987
+  const regexp = new RegExp(pattern, 'gm');
+  return regexp.test(text);
+}

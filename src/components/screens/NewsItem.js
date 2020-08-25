@@ -13,7 +13,7 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
 import { ImagesCarousel } from '../ImagesCarousel';
-import { momentFormat, trimNewLines } from '../../helpers';
+import { containsHtml, momentFormat, trimNewLines } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 import { Button } from '../Button';
 
@@ -92,7 +92,13 @@ export const NewsItem = ({ data, navigation }) => {
         section.push(
           <WrapperHorizontal key={`${index}-${contentBlock.id}-intro`}>
             <HtmlView
-              html={trimNewLines(`<div>${contentBlock.intro}</div>`)}
+              html={trimNewLines(
+                `<div>${
+                  containsHtml(contentBlock.intro)
+                    ? contentBlock.intro
+                    : `<p>${contentBlock.intro}</p>`
+                }</div>`
+              )}
               tagsStyles={{ div: { fontFamily: 'titillium-web-bold' } }}
               openWebScreen={openWebScreen}
             />
