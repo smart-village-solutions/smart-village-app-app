@@ -105,9 +105,7 @@ export const ServiceScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   serviceIcon: {
     alignSelf: 'center',
-    height: normalize(40),
-    paddingVertical: normalize(7),
-    marginBottom: normalize(7)
+    paddingVertical: normalize(7.5)
   },
   serviceImage: {
     alignSelf: 'center',

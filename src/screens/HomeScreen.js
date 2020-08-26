@@ -35,6 +35,7 @@ import {
   momentFormat,
   shareMessage
 } from '../helpers';
+import TabBarIcon from '../components/TabBarIcon';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -411,11 +412,19 @@ export const HomeScreen = ({ navigation }) => {
                                 }
                               >
                                 <View>
-                                  <Image
-                                    source={{ uri: item.icon }}
-                                    style={styles.serviceImage}
-                                    PlaceholderContent={null}
-                                  />
+                                  {item.iconName ? (
+                                    <TabBarIcon
+                                      name={item.iconName}
+                                      size={30}
+                                      style={styles.serviceIcon}
+                                    />
+                                  ) : (
+                                    <Image
+                                      source={{ uri: item.icon }}
+                                      style={styles.serviceImage}
+                                      PlaceholderContent={null}
+                                    />
+                                  )}
                                   <BoldText small lightest center>
                                     {item.title}
                                   </BoldText>
@@ -468,6 +477,10 @@ export const HomeScreen = ({ navigation }) => {
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  serviceIcon: {
+    alignSelf: 'center',
+    paddingVertical: normalize(7.5)
+  },
   serviceImage: {
     alignSelf: 'center',
     height: normalize(40),
