@@ -14,17 +14,18 @@ export const ImageRights = ({ imageRights }) => (
 
 const styles = StyleSheet.create({
   containerStyle: {
+    alignItems: 'center',
     backgroundColor: colors.shadowRgba,
     bottom: 0,
     flexDirection: 'row',
-    paddingHorizontal: normalize(3),
+    paddingHorizontal: normalize(4),
     position: 'absolute',
-    right: 0,
-    textAlign: 'right'
+    right: 0
   },
   copyrightStyle: {
-    paddingTop: normalize(1.5),
-    paddingRight: normalize(1.5)
+    lineHeight: normalize(22), // needs the same line height as `textStyle`
+    paddingRight: normalize(1.5),
+    paddingTop: normalize(1.5)
   },
   textStyle :{
     fontSize: normalize(10)
