@@ -102,6 +102,7 @@ const MainAppWithApolloProvider = () => {
     let globalSettings = await storageHelper.globalSettings();
 
     if (!globalSettings) {
+      // if there are no global settings yet, add a navigation fallback
       globalSettings = {
         navigation: consts.DRAWER
       };
@@ -134,11 +135,12 @@ const MainAppWithApolloProvider = () => {
     if (globalSettingsPublicJsonFileContent) {
       globalSettings = globalSettingsPublicJsonFileContent;
       storageHelper.setGlobalSettings(globalSettings);
-      setGlobalSettingsState({
-        ...globalSettingsState,
-        ...globalSettings
-      });
     }
+
+    setGlobalSettingsState({
+      ...globalSettingsState,
+      ...globalSettings
+    });
 
     if (globalSettings.navigation === consts.DRAWER) {
       // setup drawer routes for navigation
