@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.2.0] :rocket:
+
+This is the second minor version upgrade - with improvements for user experience!
+
+Offline usage, refresh intervals and pagination
+
+### Added
+
+- added pagination for lists of all news and events
+  - this increases the response time og the index screens a lot
+- added logic for fetch policy and re-fetching data in intervals
+  - we do not need every data always fresh from the server
+  - most data is up to date for at least a day
+  - added refresh intervals for different content types to decide whether to request
+    new data or rely on the cache
+- added more texts to global settings, which can be edited on the main server
+
+### Changed
+
+- smarter usage of network status
+  - added `NetInfo.configure` to setup the mainserver as endpoint for availability check of
+    network connection, instead of using the default https://clients3.google.com/generate_204
+    - see: https://github.com/react-native-community/react-native-netinfo#netinfoconfiguration
+    - if the mainserver is down, `isInternetReachable` gets false now and we can react to
+      that information
+      - the `graphqlFetchPolicy` depends now also on the information of the uptime of the mainserver
+      - if the mainserver is down, the app needs to use cached date
+  - added `isMainserverUp` to the NetworkContext, which will be available next to `isConnected`
+    across the app
+    - added `isMainserverUp` in addition to `isConnected` in every component that uses
+      the `graphqlFetchPolicy`-helper to determine the fetch policy depending on the network state
+
 ## [v1.1.4]
 
 Copyright for images, open all links in the app and variable headlines
