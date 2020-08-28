@@ -15,6 +15,11 @@ export const texts = {
     operatingCompany: 'Veranstalter',
     prices: 'Preise'
   },
+  homeButtons: {
+    events: 'Alle Veranstaltungen anzeigen',
+    news: 'Alle Nachrichten anzeigen',
+    pointsOfInterest: 'Alle Touren und Orte anzeigen'
+  },
   homeTitles: {
     about: 'Über die App',
     events: 'Veranstaltungen',

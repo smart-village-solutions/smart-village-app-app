@@ -46,8 +46,11 @@ export const HomeScreen = ({ navigation }) => {
     showPointsOfInterestAndTours = true,
     showEvents = true,
     headlineNews = texts.homeTitles.news,
+    buttonNews = texts.homeButtons.news,
     headlinePointsOfInterestAndTours = texts.homeTitles.pointsOfInterest,
-    headlineEvents = texts.homeTitles.events
+    buttonPointsOfInterestAndTours = texts.homeButtons.pointsOfInterest,
+    headlineEvents = texts.homeTitles.events,
+    buttonEvents = texts.homeButtons.events
   } = sections;
 
   useEffect(() => {
@@ -124,7 +127,7 @@ export const HomeScreen = ({ navigation }) => {
 
                     <Wrapper>
                       <Button
-                        title="Alle Nachrichten anzeigen"
+                        title={buttonNews}
                         onPress={() =>
                           navigation.navigate({
                             routeName: 'Index',
@@ -233,7 +236,7 @@ export const HomeScreen = ({ navigation }) => {
 
                     <Wrapper>
                       <Button
-                        title="Alle Touren und Orte anzeigen"
+                        title={buttonPointsOfInterestAndTours}
                         onPress={() =>
                           navigation.navigate({
                             routeName: 'Index',
@@ -322,7 +325,7 @@ export const HomeScreen = ({ navigation }) => {
 
                     <Wrapper>
                       <Button
-                        title="Alle Veranstaltungen anzeigen"
+                        title={buttonEvents}
                         onPress={() =>
                           navigation.navigate({
                             routeName: 'Index',
