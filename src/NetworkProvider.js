@@ -1,27 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { createContext, useEffect, useState } from 'react';
-import NetInfo from '@react-native-community/netinfo';
 
-import appJson from '../app.json';
-import { secrets } from './config';
+import NetInfo from './NetInfo';
 
 const defaultIsConnected = false;
-const defaultIsMainserverUp = false;
+const defaultIsMainserverUp = null;
 
 export const NetworkContext = createContext({
   isConnected: defaultIsConnected,
   isMainserverUp: defaultIsMainserverUp
-});
-
-const namespace = appJson.expo.slug;
-
-// https://github.com/react-native-community/react-native-netinfo#netinfoconfiguration
-NetInfo.configure({
-  reachabilityUrl: `${secrets[namespace].serverUrl}/generate_204`,
-  reachabilityTest: async (response) => response.status === 204,
-  reachabilityLongTimeout: 60 * 1000, // 60s
-  reachabilityShortTimeout: 15 * 1000, // 15s
-  reachabilityRequestTimeout: 10 * 1000 // 10s
 });
 
 export const NetworkProvider = ({ children }) => {
