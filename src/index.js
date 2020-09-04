@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, AsyncStorage, StatusBar } from 'react-native';
 import { SplashScreen } from 'expo';
 import * as SecureStore from 'expo-secure-store';
@@ -14,9 +14,9 @@ import _reduce from 'lodash/reduce';
 import appJson from '../app.json';
 import { auth } from './auth';
 import { colors, consts, device, secrets, texts } from './config';
-import { netInfoForGraphqlFetchPolicy, storageHelper } from './helpers';
+import { graphqlFetchPolicy, storageHelper } from './helpers';
 import { getQuery } from './queries';
-import { NetworkProvider } from './NetworkProvider';
+import { NetworkContext, NetworkProvider } from './NetworkProvider';
 import { GlobalSettingsProvider } from './GlobalSettingsProvider';
 import AppStackNavigator from './navigation/AppStackNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
@@ -24,8 +24,10 @@ import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentCo
 import { LoadingContainer } from './components';
 
 const MainAppWithApolloProvider = () => {
-  const [client, setClient] = useState(null);
-  const [globalSettingsState, setGlobalSettingsState] = useState({});
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const [loading, setLoading] = useState(true);
+  const [client, setClient] = useState();
+  const [globalSettingsState, setGlobalSettingsState] = useState();
   const [drawerRoutes, setDrawerRoutes] = useState({
     AppStack: {
       screen: AppStackNavigator(),
@@ -43,8 +45,6 @@ const MainAppWithApolloProvider = () => {
   });
   const [authRetried, setAuthRetried] = useState(false);
 
-  /* eslint-disable complexity */
-  /* NOTE: we need to check a lot for presence, so this is that complex */
   const setupApolloClient = async () => {
     const namespace = appJson.expo.slug;
 
@@ -94,9 +94,22 @@ const MainAppWithApolloProvider = () => {
       resolvers: {}
     });
 
-    const fetchPolicy = await netInfoForGraphqlFetchPolicy();
-    let navigationData;
-    let globalSettingsData;
+    setClient(client);
+  };
+
+  // we can provide an empty array as second argument to the effect hook to avoid activating
+  // it on component updates but only for the mounting of the component.
+  // this effect depend on no variables, so it is only triggered when the component mounts.
+  // if an effect depends on a variable (..., [variable]), it is triggered everytime it changes.
+  // provide different effects for different contexts.
+  useEffect(() => {
+    // wait for NetInfo to check for main server reachability, which is made when `isMainserverUp`
+    // becomes `true` or `false` and is not `null` anymore
+    isMainserverUp !== null && auth(setupApolloClient);
+  }, [isMainserverUp]);
+
+  const setupGlobalSettings = async () => {
+    const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
     // rehydrate data from the async storage to the global state
     let globalSettings = await storageHelper.globalSettings();
@@ -107,6 +120,8 @@ const MainAppWithApolloProvider = () => {
         navigation: consts.DRAWER
       };
     }
+
+    let globalSettingsData;
 
     try {
       const response = await client.query({
@@ -137,12 +152,18 @@ const MainAppWithApolloProvider = () => {
       storageHelper.setGlobalSettings(globalSettings);
     }
 
-    setGlobalSettingsState({
-      ...globalSettingsState,
-      ...globalSettings
-    });
+    setGlobalSettingsState(globalSettings);
+  };
 
-    if (globalSettings.navigation === consts.DRAWER) {
+  useEffect(() => {
+    client && setupGlobalSettings();
+  }, [client]);
+
+  const setupNavigationDrawer = async () => {
+    if (globalSettingsState.navigation === consts.DRAWER) {
+      const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+      let navigationData;
+
       // setup drawer routes for navigation
       try {
         const response = await client.query({
@@ -156,15 +177,15 @@ const MainAppWithApolloProvider = () => {
         console.warn('errors', errors);
       }
 
-      let publicJsonFileContent =
+      let navigationPublicJsonFileContent =
         navigationData &&
         navigationData.publicJsonFile &&
         JSON.parse(navigationData.publicJsonFile.content);
 
-      if (publicJsonFileContent) {
+      if (navigationPublicJsonFileContent) {
         setDrawerRoutes(
           _reduce(
-            publicJsonFileContent,
+            navigationPublicJsonFileContent,
             (result, value, key) => {
               result[key] = {
                 screen: value.screen,
@@ -182,22 +203,19 @@ const MainAppWithApolloProvider = () => {
       }
     }
 
-    setClient(client);
-
-    SplashScreen.hide();
+    // this is currently the last point where something was done, so the app startup is done
+    setLoading(false);
   };
-  /* eslint-enable complexity */
 
-  // we can provide an empty array as second argument to the effect hook to avoid activating
-  // it on component updates but only for the mounting of the component.
-  // this effect depend on no variables, so it is only triggered when the component mounts.
-  // if an effect depends on a variable (..., [variable]), it is triggered everytime it changes.
-  // provide different effects for different contexts.
   useEffect(() => {
-    auth(setupApolloClient);
-  }, []);
+    globalSettingsState && client && setupNavigationDrawer();
+  }, [globalSettingsState]);
 
-  if (!client) {
+  useEffect(() => {
+    !loading && SplashScreen.hide();
+  }, [loading]);
+
+  if (loading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
