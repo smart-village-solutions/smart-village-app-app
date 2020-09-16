@@ -37,6 +37,48 @@ export const GET_NEWS_ITEMS = gql`
   }
 `;
 
+export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
+  query NewsItems($limit: Int, $offset: Int) {
+    newsItems(limit: $limit, skip: $offset) {
+      id
+      mainTitle: title
+      publishedAt
+      contentBlocks {
+        id
+        title
+        intro
+        body
+        mediaContents {
+          id
+          contentType
+          copyright
+          sourceUrl {
+            url
+          }
+        }
+      }
+      sourceUrl {
+        url
+      }
+      dataProvider {
+        logo {
+          url
+        }
+        name
+      }
+      settings {
+        displayOnlySummary
+        onlySummaryLinkText
+      }
+    }
+    dataProviders: newsItems {
+      dataProvider {
+        name
+      }
+    }
+  }
+`;
+
 export const GET_NEWS_ITEM = gql`
   query NewsItem($id: ID!) {
     newsItem(id: $id) {
