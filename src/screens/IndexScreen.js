@@ -40,6 +40,10 @@ export class IndexScreen extends React.PureComponent {
 
   static contextType = NetworkContext;
 
+  state = {
+    queryVariables: this.props.navigation.getParam('queryVariables', {})
+  };
+
   componentDidMount() {
     const isConnected = this.context.isConnected;
 
@@ -184,14 +188,17 @@ export class IndexScreen extends React.PureComponent {
     }
   }
 
-  getListHeaderComponent(query, data) {
+  getListHeaderComponent(query, queryVariables, data, updateListData) {
     switch (query) {
     case 'newsItems':
-      return <ListHeader data={data} />;
+      return (
+        <ListHeader queryVariables={queryVariables} data={data} updateListData={updateListData} />
+      );
     }
   }
 
   render() {
+    let { queryVariables } = this.state;
     const { navigation } = this.props;
     const query = navigation.getParam('query', '');
 
@@ -199,7 +206,6 @@ export class IndexScreen extends React.PureComponent {
 
     const { isConnected, isMainserverUp } = this.context;
     const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-    let queryVariables = navigation.getParam('queryVariables', {});
 
     // if offline, pagination with partially fetching data is not possible, so we cannot pass
     // a probably given `limit` variable. remove that `limit` with destructing, like in this
@@ -243,7 +249,25 @@ export class IndexScreen extends React.PureComponent {
               }
             });
 
-          const ListHeaderComponent = this.getListHeaderComponent(query, data);
+          const updateListData = (selectedDataProvider) => {
+            const { dataProvider, ...queryVariablesWithoutDataProvider } = queryVariables;
+
+            this.setState({
+              queryVariables: selectedDataProvider
+                ? {
+                  ...queryVariables,
+                  dataProvider: selectedDataProvider
+                }
+                : queryVariablesWithoutDataProvider
+            });
+          };
+
+          const ListHeaderComponent = this.getListHeaderComponent(
+            query,
+            queryVariables,
+            data,
+            updateListData
+          );
 
           return (
             <SafeAreaViewFlex>
