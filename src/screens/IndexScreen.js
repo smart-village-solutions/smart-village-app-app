@@ -16,7 +16,7 @@ import {
   TextList,
   Wrapper
 } from '../components';
-import { getQuery } from '../queries';
+import { getQuery, getFetchMoreQuery } from '../queries';
 import { arrowLeft } from '../icons';
 import {
   eventDate,
@@ -291,13 +291,18 @@ export class IndexScreen extends React.PureComponent {
           const Component = this.getComponent(query);
           const fetchMoreData = () =>
             fetchMore({
+              query: getFetchMoreQuery(query),
               variables: {
+                ...queryVariables,
                 offset: listItems.length
               },
               updateQuery: (prevResult, { fetchMoreResult }) => {
                 if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
 
-                return { [query]: [...prevResult[query], ...fetchMoreResult[query]] };
+                return {
+                  ...prevResult,
+                  [query]: [...prevResult[query], ...fetchMoreResult[query]]
+                };
               }
             });
 
