@@ -57,7 +57,7 @@ TextList.propTypes = {
   noSubtitle: PropTypes.bool,
   query: PropTypes.string,
   fetchMoreData: PropTypes.func,
-  ListHeaderComponent: PropTypes.bool
+  ListHeaderComponent: PropTypes.object
 };
 
 TextList.defaultProps = {
