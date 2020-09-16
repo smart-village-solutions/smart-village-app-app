@@ -5,16 +5,15 @@ import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
-import { colors, normalize, texts } from '../config';
+import { colors, normalize } from '../config';
 import {
   CardList,
   CategoryList,
-  DropdownSelect,
   Icon,
+  ListHeader,
   LoadingContainer,
   SafeAreaViewFlex,
-  TextList,
-  Wrapper
+  TextList
 } from '../components';
 import { getQuery, getFetchMoreQuery } from '../queries';
 import { arrowLeft } from '../icons';
@@ -185,72 +184,10 @@ export class IndexScreen extends React.PureComponent {
     }
   }
 
-  //__________________________________filter______________________
-
-  // const [getListHeaderComponent, setListHeaderComponent] = useState(dummy);
-
-  getListHeaderComponent(query, listItems) {
+  getListHeaderComponent(query, data) {
     switch (query) {
-    case 'newsItems': {
-      //querying newsItems, listItems holds every newsItems, that can be filtered for dataproviders
-      // const dataProviders = listItems.filter((dataProvider) => {
-      //   return dataProvider.name;
-      // });
-
-      const dummy = [
-        {
-          id: 0,
-          value: '- Bitte wählen -',
-          selected: true
-        },
-        {
-          id: 1,
-          value: 'Aktivität',
-          selected: false
-        },
-        {
-          id: 2,
-          value: 'Heirat und Partnerschaft',
-          selected: false
-        },
-        {
-          id: 3,
-          value: 'Musik',
-          selected: false
-        },
-        {
-          id: 4,
-          value: 'Sport',
-          selected: false
-        },
-        {
-          id: 5,
-          value: 'Tanz',
-          selected: false
-        },
-        {
-          id: 6,
-          value: 'Zeit',
-          selected: false
-        }
-      ];
-
-      const setListHeaderComponent = ((onSelect) => {
-        // here setting the state
-        // here every entry in the array (data) will be updated with the correct boolean value for selected
-      });
-
-      return (
-        <Wrapper>
-          {/* <DropdownSelect data={filtered dataProviders from newsItems} setData={() => {}} label={a text label for the dropdown element from texts...} /> */}
-          <DropdownSelect
-            data={dummy}
-            setData={setListHeaderComponent}
-            label={texts.categoryFilter.label}
-          />
-        </Wrapper>
-      );
-    }
+    case 'newsItems':
+      return <ListHeader data={data} />;
     }
   }
 
@@ -306,7 +243,7 @@ export class IndexScreen extends React.PureComponent {
               }
             });
 
-          const ListHeaderComponent = this.getListHeaderComponent(query, listItems);
+          const ListHeaderComponent = this.getListHeaderComponent(query, data);
 
           return (
             <SafeAreaViewFlex>

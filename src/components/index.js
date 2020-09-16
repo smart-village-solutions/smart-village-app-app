@@ -13,6 +13,7 @@ export * from './Image';
 export * from './ImagesCarousel';
 export * from './Label';
 export * from './Link';
+export * from './ListHeader';
 export * from './LoadingContainer';
 export * from './Logo';
 export * from './SafeAreaViewFlex';
