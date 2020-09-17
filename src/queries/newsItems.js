@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const GET_NEWS_ITEMS = gql`
-  query NewsItems($limit: Int, $offset: Int) {
-    newsItems(limit: $limit, skip: $offset) {
+  query NewsItems($limit: Int, $offset: Int, $dataProvider: String) {
+    newsItems(limit: $limit, skip: $offset, dataProvider: $dataProvider) {
       id
       mainTitle: title
       publishedAt
@@ -38,8 +38,8 @@ export const GET_NEWS_ITEMS = gql`
 `;
 
 export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
-  query NewsItems($limit: Int, $offset: Int) {
-    newsItems(limit: $limit, skip: $offset) {
+  query NewsItems($limit: Int, $offset: Int, $dataProvider: String) {
+    newsItems(limit: $limit, skip: $offset, dataProvider: $dataProvider) {
       id
       mainTitle: title
       publishedAt
@@ -71,10 +71,8 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
         onlySummaryLinkText
       }
     }
-    dataProviders: newsItems {
-      dataProvider {
-        name
-      }
+    dataProviders: newsItemsDataProviders {
+      name
     }
   }
 `;
