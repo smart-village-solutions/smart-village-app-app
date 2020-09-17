@@ -8,7 +8,6 @@ import { RegularText } from './Text';
 import { Wrapper, WrapperRow, WrapperHorizontal } from './Wrapper';
 import { Icon } from './Icon';
 import { arrowDown, arrowUp } from '../icons';
-import { Touchable } from './Touchable';
 import { Label } from './Label';
 
 export const DropdownSelect = memo(({ data, setData, label }) => {
@@ -40,11 +39,9 @@ export const DropdownSelect = memo(({ data, setData, label }) => {
           marginTop: device.platform === 'android' ? -normalize(24) : 0
         })}
         renderRow={(rowData, rowID, highlighted) => (
-          <Touchable>
-            <Wrapper>
-              <RegularText placeholder={highlighted}>{rowData}</RegularText>
-            </Wrapper>
-          </Touchable>
+          <Wrapper style={styles.dropdownRowWrapper}>
+            <RegularText primary={highlighted}>{rowData}</RegularText>
+          </Wrapper>
         )}
         renderSeparator={() => <View style={styles.dropdownSeparator} />}
         onDropdownWillShow={() => setArrow('up')}
@@ -93,6 +90,9 @@ const styles = StyleSheet.create({
     fontFamily: 'titillium-web-regular',
     fontSize: normalize(16),
     lineHeight: normalize(22)
+  },
+  dropdownRowWrapper: {
+    backgroundColor: colors.lightestText
   },
   dropdownSeparator: {
     backgroundColor: colors.borderRgba,
