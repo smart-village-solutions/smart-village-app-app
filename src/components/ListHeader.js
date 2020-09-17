@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
-import _sortBy from 'lodash/sortBy';
-import _uniq from 'lodash/uniq';
 
 import { texts } from '../config';
 import { DropdownSelect } from './DropdownSelect';
@@ -11,12 +9,10 @@ export const ListHeader = ({ queryVariables, data, updateListData }) => {
   const dataProviders =
     data &&
     data.dataProviders &&
-    _sortBy(_uniq(data.dataProviders.map((item) => item.dataProvider.name)), (item) =>
-      item.toUpperCase()
-    ).map((dataProvider, index) => ({
+    data.dataProviders.map((dataProvider, index) => ({
       id: index + 1,
-      value: dataProvider,
-      selected: dataProvider === queryVariables.dataProvider
+      value: dataProvider.name,
+      selected: dataProvider.name === queryVariables.dataProvider
     }));
 
   const [dropdownData, setDropdownData] = useState([
