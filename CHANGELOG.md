@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.2.2]
+
+Updated Expo SDK to 38.0.0 and bumped different packages to be more up to date
+
+- Read about that step in: https://dev.to/expo/expo-sdk-38-is-now-available-5aa0
+
 ## [v1.2.1]
 
 Implement filter for news in IndexScreen
@@ -92,13 +98,13 @@ Specific changes for header title, status bar and upcoming events
 
 ## [v1.1.2]
 
-Updated expo sdk to 37.0.0 and bumped different packages to be more up to date
+Updated Expo SDK to 37.0.0 and bumped different packages to be more up to date
 
 - Read about that step in: https://blog.expo.io/expo-sdk-37-is-now-available-dd5770f066a6
 
 ## [v1.1.1]
 
-Updated expo sdk to 36.0.0 and bumped different packages to be more up to date
+Updated Expo SDK to 36.0.0 and bumped different packages to be more up to date
 
 - Read about that step in: https://blog.expo.io/expo-sdk-36-is-now-available-b91897b437fe
 
@@ -125,7 +131,7 @@ Do not show bottom divider for last event record on home screen
 
 ## [v1.0.12]
 
-Updated expo sdk to 35.0.0 and bumped different packages to be more up to date
+Updated Expo SDK to 35.0.0 and bumped different packages to be more up to date
 
 - Read about that step in: https://blog.expo.io/expo-sdk-35-is-now-available-beee0dfafbf4
 
@@ -163,7 +169,7 @@ Add possibility to navigate from ImageCarousel by pressing an image
 
 ## [v1.0.8]
 
-Updated expo sdk to 34.0.0 and bumped different packages to be more up to date
+Updated Expo SDK to 34.0.0 and bumped different packages to be more up to date
 
 - Read about that step in: https://blog.expo.io/expo-sdk-34-is-now-available-4f7825239319
 
