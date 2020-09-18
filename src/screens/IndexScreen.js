@@ -222,8 +222,12 @@ export const IndexScreen = ({ navigation }) => {
   };
 
   return (
-    <Query query={getQuery(query)} variables={getQueryVariables()} fetchPolicy={fetchPolicy}>
-      {({ data, loading, fetchMore }) => {
+    <Query
+      query={getQuery(query, { showNewsFilter })}
+      variables={getQueryVariables()}
+      fetchPolicy={fetchPolicy}
+    >
+      {({ data, error, loading, fetchMore }) => {
         if (loading) {
           return (
             <LoadingContainer>
@@ -238,7 +242,7 @@ export const IndexScreen = ({ navigation }) => {
 
         const fetchMoreData = () =>
           fetchMore({
-            query: getFetchMoreQuery(query),
+            query: getFetchMoreQuery(query, { showNewsFilter }),
             variables: {
               ...queryVariables,
               offset: listItems.length
@@ -256,12 +260,7 @@ export const IndexScreen = ({ navigation }) => {
         let ListHeaderComponent = null;
 
         if (showNewsFilter) {
-          ListHeaderComponent = getListHeaderComponent(
-            query,
-            queryVariables,
-            data,
-            updateListData
-          );
+          ListHeaderComponent = getListHeaderComponent(query, queryVariables, data, updateListData);
         }
 
         return (
