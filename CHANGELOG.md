@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.2.1]
+
+Implement filter for news in IndexScreen
+
+### Added
+
+- added a list header component for the list on the index screen for having a dropdown
+  with data providers to filter the news
+  - the news filter is optional and can be de-/activated per global settings
+
+### Changed
+
+- updated `IndexScreen` to functional component with using hooks
+
+
 ## [v1.2.0] :rocket:
 
 This is the second minor version upgrade - with improvements for user experience!
