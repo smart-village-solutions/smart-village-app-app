@@ -1,6 +1,11 @@
 import { GET_CATEGORIES } from './categories';
 import { GET_EVENT_RECORD, GET_EVENT_RECORDS } from './eventRecords';
-import { GET_NEWS_ITEM, GET_NEWS_ITEMS, GET_NEWS_ITEMS_AND_DATA_PROVIDERS } from './newsItems';
+import {
+  GET_NEWS_ITEM,
+  GET_NEWS_ITEMS,
+  GET_FILTERED_NEWS_ITEMS,
+  GET_FILTERED_NEWS_ITEMS_AND_DATA_PROVIDERS
+} from './newsItems';
 import { GET_POINT_OF_INTEREST, GET_POINTS_OF_INTEREST } from './pointsOfInterest';
 import { GET_TOUR, GET_TOURS } from './tours';
 import { GET_POINTS_OF_INTEREST_AND_TOURS } from './pointsOfInterestAndTours';
@@ -9,7 +14,7 @@ import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const getQuery = (query) => {
+export const getQuery = (query, filterOptions = {}) => {
   switch (query) {
   case 'categories':
     return GET_CATEGORIES;
@@ -20,7 +25,9 @@ export const getQuery = (query) => {
   case 'newsItem':
     return GET_NEWS_ITEM;
   case 'newsItems':
-    return GET_NEWS_ITEMS_AND_DATA_PROVIDERS;
+    return filterOptions.showNewsFilter
+      ? GET_FILTERED_NEWS_ITEMS_AND_DATA_PROVIDERS
+      : GET_NEWS_ITEMS;
   case 'tour':
     return GET_TOUR;
   case 'tours':
@@ -39,11 +46,11 @@ export const getQuery = (query) => {
 };
 /* eslint-enable complexity */
 
-export const getFetchMoreQuery = (query) => {
+export const getFetchMoreQuery = (query, filterOptions = {}) => {
   switch (query) {
   case 'eventRecords':
     return GET_EVENT_RECORDS;
   case 'newsItems':
-    return GET_NEWS_ITEMS;
+    return filterOptions.showNewsFilter ? GET_FILTERED_NEWS_ITEMS : GET_NEWS_ITEMS;
   }
 };
