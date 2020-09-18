@@ -45,19 +45,34 @@ export const HtmlScreen = ({ navigation }) => {
   const rootRouteName = navigation.getParam('rootRouteName', '');
   const subQuery = navigation.getParam('subQuery', '');
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+
   // action to open source urls
-  const openWebScreen = (webUrl) => {
-    if (!!webUrl && typeof webUrl === 'string') {
+  const openWebScreen = (param) => {
+    // if the `param` is a string, it is directly the web url to call
+    if (!!param && typeof param === 'string') {
       return navigation.navigate({
         routeName: 'Web',
         params: {
           title,
-          webUrl,
+          webUrl: param,
           rootRouteName
         }
       });
     }
 
+    // if the `param` is an object, it contains a `routeName` and a `webUrl`
+    if (!!param && typeof param === 'object') {
+      return navigation.navigate({
+        routeName: param.routeName,
+        params: {
+          title,
+          webUrl: param.webUrl,
+          rootRouteName
+        }
+      });
+    }
+
+    // if there is no `param`, use the main `subQuery` values for `routeName` and a `webUrl`
     return navigation.navigate({
       routeName: subQuery.routeName,
       params: {
@@ -94,12 +109,23 @@ export const HtmlScreen = ({ navigation }) => {
                   openWebScreen={openWebScreen}
                   navigation={navigation}
                 />
-                {!!subQuery && !!subQuery.routeName && (
+                {!!subQuery && !!subQuery.routeName && !!subQuery.webUrl && (
                   <Button
                     title={subQuery.buttonTitle || `${title} öffnen`}
-                    onPress={openWebScreen}
+                    onPress={() => openWebScreen()}
                   />
                 )}
+                {!!subQuery &&
+                  !!subQuery.buttons &&
+                  subQuery.buttons.map((button, index) => (
+                    <Button
+                      key={`${index}-${button.webUrl}`}
+                      title={button.buttonTitle || `${title} öffnen`}
+                      onPress={() =>
+                        openWebScreen({ routeName: button.routeName, webUrl: button.webUrl })
+                      }
+                    />
+                  ))}
               </Wrapper>
             </ScrollView>
           </SafeAreaViewFlex>
