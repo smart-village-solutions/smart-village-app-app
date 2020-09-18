@@ -4,6 +4,7 @@ import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-nat
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
+import { GlobalSettingsContext } from '../GlobalSettingsProvider';
 import { auth } from '../auth';
 import { colors, normalize } from '../config';
 import {
@@ -184,6 +185,9 @@ export const IndexScreen = ({ navigation }) => {
   }, []);
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const globalSettings = useContext(GlobalSettingsContext);
+  const { filter = {} } = globalSettings;
+  const { news: showNewsFilter = false } = filter;
 
   // if offline, pagination with partially fetching data is not possible, so we cannot pass
   // a probably given `limit` variable. remove that `limit` with destructing, like in this
@@ -249,12 +253,16 @@ export const IndexScreen = ({ navigation }) => {
             }
           });
 
-        const ListHeaderComponent = getListHeaderComponent(
-          query,
-          queryVariables,
-          data,
-          updateListData
-        );
+        let ListHeaderComponent = null;
+
+        if (showNewsFilter) {
+          ListHeaderComponent = getListHeaderComponent(
+            query,
+            queryVariables,
+            data,
+            updateListData
+          );
+        }
 
         return (
           <SafeAreaViewFlex>
