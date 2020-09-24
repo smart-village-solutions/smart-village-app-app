@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, AsyncStorage, StatusBar } from 'react-native';
 import { SplashScreen } from 'expo';
 import * as SecureStore from 'expo-secure-store';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { createAppContainer, createDrawerNavigator } from 'react-navigation';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
@@ -236,6 +237,9 @@ const MainAppWithApolloProvider = () => {
 
   useEffect(() => {
     !loading && SplashScreen.hide();
+
+    // set orientation to "default", to allow both portrait and landscape
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
   }, [loading]);
 
   if (loading) {
