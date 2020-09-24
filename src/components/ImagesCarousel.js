@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types';
 import Carousel from 'react-native-snap-carousel';
-import React from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Query } from 'react-apollo';
 
-import { colors, device } from '../config';
+import { colors } from '../config';
 import { shareMessage } from '../helpers';
 import { getQuery } from '../queries';
 import { Image } from './Image';
 import { LoadingContainer } from './LoadingContainer';
+import { OrientationContext } from '../OrientationProvider';
 
 const TouchableImage = ({ navigation, item }) => {
   const { routeName, params } = item.picture;
@@ -35,6 +36,8 @@ TouchableImage.propTypes = {
 
 
 export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
+  const { dimensions } = useContext(OrientationContext);
+
   const renderItem = ({ item }) => {
     const { routeName, params } = item.picture;
 
@@ -87,8 +90,8 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
     <Carousel
       data={data}
       renderItem={renderItem}
-      sliderWidth={device.width}
-      itemWidth={device.width}
+      sliderWidth={dimensions.width}
+      itemWidth={dimensions.width}
       inactiveSlideScale={1}
       autoplay
       loop
