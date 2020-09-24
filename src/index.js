@@ -19,6 +19,7 @@ import { graphqlFetchPolicy, storageHelper } from './helpers';
 import { getQuery, QUERY_TYPES } from './queries';
 import { NetworkProvider } from './NetworkProvider';
 import NetInfo from './NetInfo';
+import { OrientationProvider } from './OrientationProvider';
 import { GlobalSettingsProvider } from './GlobalSettingsProvider';
 import AppStackNavigator from './navigation/AppStackNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
@@ -288,6 +289,8 @@ const MainAppWithApolloProvider = () => {
 
 export const MainApp = () => (
   <NetworkProvider>
-    <MainAppWithApolloProvider />
+    <OrientationProvider>
+      <MainAppWithApolloProvider />
+    </OrientationProvider>
   </NetworkProvider>
 );
