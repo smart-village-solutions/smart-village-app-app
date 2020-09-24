@@ -65,7 +65,7 @@ Image.propTypes = {
 Image.defaultProps = {
   style: {
     alignSelf: 'center',
-    height: imageHeight(),
+    height: imageHeight(imageWidth()),
     width: imageWidth()
   },
   PlaceholderContent: <ActivityIndicator color={colors.accent} />

@@ -53,27 +53,31 @@ const htmlConfig = {
   ignoredTags: IGNORED_TAGS
 };
 
-export const HtmlView = ({ html, tagsStyles, openWebScreen }) => (
-  <HTML
-    html={html}
-    {...htmlConfig}
-    onLinkPress={(evt, href) => openLink(href, openWebScreen)}
-    tagsStyles={{ ...styles.html, ...tagsStyles }}
-    emSize={normalize(16)}
-    baseFontStyle={styles.baseFontStyle}
-    ignoredStyles={['width', 'height']}
-    imagesMaxWidth={imageWidth() - 2 * normalize(14)}
-    staticContentMaxWidth={imageWidth() - 2 * normalize(14)}
-    alterChildren={(node) => {
-      if (node.name === 'img' || node.name === 'iframe') {
-        delete node.attribs.width;
-        delete node.attribs.height;
-      }
+export const HtmlView = ({ html, tagsStyles, openWebScreen }) => {
+  const maxWidth = imageWidth() - 2 * normalize(14); // width of an image minus paddings
 
-      return node.children;
-    }}
-  />
-);
+  return (
+    <HTML
+      html={html}
+      {...htmlConfig}
+      onLinkPress={(evt, href) => openLink(href, openWebScreen)}
+      tagsStyles={{ ...styles.html, ...tagsStyles }}
+      emSize={normalize(16)}
+      baseFontStyle={styles.baseFontStyle}
+      ignoredStyles={['width', 'height']}
+      imagesMaxWidth={maxWidth}
+      staticContentMaxWidth={maxWidth}
+      alterChildren={(node) => {
+        if (node.name === 'img' || node.name === 'iframe') {
+          delete node.attribs.width;
+          delete node.attribs.height;
+        }
+
+        return node.children;
+      }}
+    />
+  );
+};
 
 HtmlView.propTypes = {
   html: PropTypes.string,

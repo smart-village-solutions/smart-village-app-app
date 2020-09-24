@@ -53,8 +53,11 @@ export class CardListItem extends React.PureComponent {
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ horizontal }) =>
-  StyleSheet.create({
+const stylesWithProps = ({ horizontal }) => {
+  // image width should be only 70% when rendering horizontal cards, otherwise substract paddings
+  const width = horizontal ? imageWidth() * 0.7 : imageWidth() - 2 * normalize(14);
+
+  return StyleSheet.create({
     container: {
       backgroundColor: colors.transparent,
       borderWidth: 0,
@@ -62,14 +65,15 @@ const stylesWithProps = ({ horizontal }) =>
       padding: normalize(14)
     },
     contentContainer: {
-      width: horizontal ? imageWidth(horizontal) : imageWidth() - 2 * normalize(14)
+      width
     },
     image: {
       borderRadius: 5,
       marginBottom: normalize(7),
-      height: imageHeight(horizontal)
+      height: imageHeight(width)
     }
   });
+};
 /* eslint-enable react-native/no-unused-styles */
 
 CardListItem.propTypes = {

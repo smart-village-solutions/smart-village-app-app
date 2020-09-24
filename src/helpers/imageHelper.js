@@ -1,14 +1,13 @@
 import _filter from 'lodash/filter';
 
-import { device } from '../config/device';
+import { Dimensions } from 'react-native';
 
-// for horizontal CardList the cards are only 70% of the screen width
-export const imageWidth = (horizontal = false) => (horizontal ? device.width * 0.7 : device.width);
+export const imageWidth = () => Dimensions.get('window').width;
 
-export const imageHeight = (horizontal = false) => {
+export const imageHeight = (width) => {
   // image aspect ratio is 360x180, so for accurate ratio in our view we need to calculate
-  // a factor with our current device with for the image, to set a correct height
-  const factor = imageWidth(horizontal) / 360;
+  // a factor with our current device width for the image, to set a correct height
+  const factor = width / 360;
 
   return 180 * factor;
 };
