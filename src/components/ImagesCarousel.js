@@ -5,13 +5,13 @@ import { ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { colors } from '../config';
-import { shareMessage } from '../helpers';
+import { imageHeight, shareMessage } from '../helpers';
 import { getQuery } from '../queries';
 import { Image } from './Image';
 import { LoadingContainer } from './LoadingContainer';
 import { OrientationContext } from '../OrientationProvider';
 
-const TouchableImage = ({ navigation, item }) => {
+const TouchableImage = ({ navigation, item, children }) => {
   const { routeName, params } = item.picture;
 
   return (
@@ -24,22 +24,29 @@ const TouchableImage = ({ navigation, item }) => {
       }
       activeOpacity={0.8}
     >
-      <Image source={item.picture} />
+      {children}
     </TouchableOpacity>
   );
 };
 
 TouchableImage.propTypes = {
   navigation: PropTypes.object.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  children: PropTypes.object.isRequired
 };
 
-
 export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
-  const { dimensions } = useContext(OrientationContext);
+  const { orientation, dimensions } = useContext(OrientationContext);
 
   const renderItem = ({ item }) => {
     const { routeName, params } = item.picture;
+
+    // special image width for carousel, to be not full width on landscape
+    const width = orientation === 'landscape' ? dimensions.height : dimensions.width;
+    const imageStyle = {
+      height: imageHeight(width),
+      width
+    };
 
     if (routeName && params) {
       // params are available, but missing `shareContent` and `details`
@@ -74,15 +81,23 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
                 }
               };
 
-              return <TouchableImage navigation={navigation} item={item} />;
+              return (
+                <TouchableImage navigation={navigation} item={item}>
+                  <Image source={item.picture} style={imageStyle} />
+                </TouchableImage>
+              );
             }}
           </Query>
         );
       } else {
-        return <TouchableImage navigation={navigation} item={item} />;
+        return <TouchableImage navigation={navigation} item={item}>
+          <Image source={item.picture} style={imageStyle} />
+        </TouchableImage>;
       }
     } else {
-      return <Image source={item.picture} />;
+      return (
+        <Image source={item.picture} style={imageStyle} />
+      );
     }
   };
 
@@ -91,7 +106,7 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
       data={data}
       renderItem={renderItem}
       sliderWidth={dimensions.width}
-      itemWidth={dimensions.width}
+      itemWidth={orientation === 'landscape' ? dimensions.height : dimensions.width}
       inactiveSlideScale={1}
       autoplay
       loop
