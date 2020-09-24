@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { createContext, useEffect, useState } from 'react';
 import { Dimensions } from 'react-native';
 
-// TODO: import orientation package
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 const defaultDimensions = {
   height: Dimensions.get('window').height,
@@ -17,10 +17,17 @@ export const OrientationProvider = ({ children }) => {
   const [dimensions, setDimensions] = useState(defaultDimensions);
 
   useEffect(() => {
-    // TODO: on orientation change set new dimensions
+    ScreenOrientation.addOrientationChangeListener(() => {
+      // https://docs.expo.io/versions/latest/sdk/screen-orientation/#screenorientationaddorientationchangelistenerlistener
+      setDimensions({
+        height: Dimensions.get('window').height,
+        width: Dimensions.get('window').width
+      });
+    });
 
     // returned function will be called on component unmount
-    // TODO: return () => unsubscribe();
+    // https://docs.expo.io/versions/latest/sdk/screen-orientation/#screenorientationremoveorientationchangelisteners
+    return () => ScreenOrientation.removeOrientationChangeListeners();
   }, []);
 
   return (
