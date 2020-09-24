@@ -70,6 +70,6 @@ export const html = {
   },
   iframe: {
     alignSelf: 'center',
-    height: imageHeight()
+    height: imageHeight(imageWidth())
   }
 };
