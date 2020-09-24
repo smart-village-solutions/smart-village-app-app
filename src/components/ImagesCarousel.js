@@ -33,9 +33,9 @@ TouchableImage.propTypes = {
   item: PropTypes.object.isRequired
 };
 
-export class ImagesCarousel extends React.PureComponent {
-  renderItem = ({ item }) => {
-    const { navigation, fetchPolicy } = this.props;
+
+export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
+  const renderItem = ({ item }) => {
     const { routeName, params } = item.picture;
 
     if (routeName && params) {
@@ -83,24 +83,20 @@ export class ImagesCarousel extends React.PureComponent {
     }
   };
 
-  render() {
-    const { data } = this.props;
-
-    return (
-      <Carousel
-        data={data}
-        renderItem={this.renderItem}
-        sliderWidth={device.width}
-        itemWidth={device.width}
-        inactiveSlideScale={1}
-        autoplay
-        loop
-        autoplayDelay={0}
-        autoplayInterval={4000}
-      />
-    );
-  }
-}
+  return (
+    <Carousel
+      data={data}
+      renderItem={renderItem}
+      sliderWidth={device.width}
+      itemWidth={device.width}
+      inactiveSlideScale={1}
+      autoplay
+      loop
+      autoplayDelay={0}
+      autoplayInterval={4000}
+    />
+  );
+};
 
 ImagesCarousel.propTypes = {
   data: PropTypes.array.isRequired,
