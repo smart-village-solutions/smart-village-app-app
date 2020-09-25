@@ -148,7 +148,11 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
   return {
     headerLeft: (
       <View>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          accessibilityLabel="Zurück Taste"
+          accessibilityHint="Navigieren zurück zur vorherigen Seite"
+        >
           <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
         </TouchableOpacity>
       </View>
@@ -156,7 +160,11 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
     headerRight: (
       <WrapperRow>
         {shareContent && (
-          <TouchableOpacity onPress={() => openShare(shareContent)}>
+          <TouchableOpacity
+            onPress={() => openShare(shareContent)}
+            accessibilityLabel="Teilen Taste"
+            accessibilityHint="Inhalte auf der Seite teilen"
+          >
             <Icon
               xml={share(colors.lightestText)}
               style={headerRight ? styles.iconLeft : styles.iconRight}

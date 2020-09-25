@@ -88,10 +88,14 @@ export const ServiceScreen = ({ navigation }) => {
 
           if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
 
+          // TODO accessibility not working on Title
           return (
             <>
               {!!headlineService && (
-                <TitleContainer>
+                <TitleContainer
+                  accessible={true}
+                  accessibilityLabel="Kopfzeile des Service-Abschnitts"
+                >
                   <Title>{headlineService}</Title>
                 </TitleContainer>
               )}

@@ -36,7 +36,11 @@ WebScreen.navigationOptions = ({ navigation }) => {
   return {
     headerLeft: (
       <View>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          accessibilityLabel="Zurück Taste"
+          accessibilityHint="Navigieren zurück zur vorherigen Seite"
+          onPress={() => navigation.goBack()}
+        >
           <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
         </TouchableOpacity>
       </View>

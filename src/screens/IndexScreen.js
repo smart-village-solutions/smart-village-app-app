@@ -294,7 +294,11 @@ IndexScreen.navigationOptions = ({ navigation }) => {
   return {
     headerLeft: (
       <View>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          accessibilityLabel="Zurück Taste"
+          accessibilityHint="Navigieren zurück zur vorherigen Seite"
+        >
           <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
         </TouchableOpacity>
       </View>
