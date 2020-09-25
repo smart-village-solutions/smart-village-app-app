@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect } from 'react';
-import { ActivityIndicator, ScrollView, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
 import { Query } from 'react-apollo';
 import _shuffle from 'lodash/shuffle';
 
@@ -52,14 +52,36 @@ export const HomeScreen = ({ navigation }) => {
     headlineEvents = texts.homeTitles.events,
     buttonEvents = texts.homeButtons.events
   } = sections;
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     isConnected && auth();
   }, []);
 
+  const refresh = () => {
+    setRefreshing(true);
+    // for refetching data on the home screen we need to re-render the whole screen,
+    // in order to re-run every existing query.
+    // there is no solution to call the Apollo `refetch` for every `Query` component.
+    // we simulate state change of `refreshing` with setting it to `true` first and after
+    // a timeout to `false` again, which will result in a re-rendering of the screen.
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 500);
+  };
+
   return (
     <SafeAreaViewFlex>
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={refresh}
+            colors={[colors.accent]}
+            tintColor={colors.accent}
+          />
+        }
+      >
         <Carousel navigation={navigation} />
 
         {showNews && (
@@ -348,8 +370,8 @@ export const HomeScreen = ({ navigation }) => {
 
         {globalSettings.navigation === consts.DRAWER && (
           <>
-            <Service navigation={navigation} />
-            <About navigation={navigation} />
+            <Service navigation={navigation} refreshing={refreshing} />
+            <About navigation={navigation} refreshing={refreshing} />
             <VersionNumber />
           </>
         )}

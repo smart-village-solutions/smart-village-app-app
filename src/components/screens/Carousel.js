@@ -11,7 +11,7 @@ import { LoadingContainer } from '../LoadingContainer';
 import { getQuery } from '../../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 
-export const Carousel = ({ navigation }) => {
+export const Carousel = ({ navigation, refreshing }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
@@ -41,7 +41,10 @@ export const Carousel = ({ navigation }) => {
       variables={{ name: 'homeCarousel' }}
       fetchPolicy={fetchPolicy}
     >
-      {({ data, loading }) => {
+      {({ data, loading, refetch }) => {
+        // call the refetch method of Apollo after `refreshing` is given with `true`, which happens
+        // when pull to refresh is used in the parent component
+        if (refreshing) refetch();
         if (loading) {
           return (
             <LoadingContainer>
@@ -67,5 +70,10 @@ export const Carousel = ({ navigation }) => {
 };
 
 Carousel.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  refreshing: PropTypes.bool
+};
+
+Carousel.defaultProps = {
+  refreshing: false
 };

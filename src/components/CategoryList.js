@@ -22,7 +22,7 @@ export class CategoryList extends React.PureComponent {
   );
 
   render() {
-    const { data, navigation, noSubtitle } = this.props;
+    const { data, navigation, noSubtitle, refreshControl } = this.props;
 
     const sectionedData = [
       {
@@ -56,6 +56,7 @@ export class CategoryList extends React.PureComponent {
           </Wrapper>
         }
         stickySectionHeadersEnabled
+        refreshControl={refreshControl}
       />
     );
   }
@@ -64,7 +65,8 @@ export class CategoryList extends React.PureComponent {
 CategoryList.propTypes = {
   navigation: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
-  noSubtitle: PropTypes.bool
+  noSubtitle: PropTypes.bool,
+  refreshControl: PropTypes.object
 };
 
 CategoryList.defaultProps = {
