@@ -11,7 +11,7 @@ import { TextList } from '../TextList';
 import { getQuery } from '../../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 
-export const About = ({ navigation }) => {
+export const About = ({ navigation, refreshing }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const globalSettings = useContext(GlobalSettingsContext);
@@ -38,7 +38,10 @@ export const About = ({ navigation }) => {
       variables={{ name: 'homeAbout' }}
       fetchPolicy={fetchPolicy}
     >
-      {({ data, loading }) => {
+      {({ data, loading, refetch }) => {
+        // call the refetch method of Apollo after `refreshing` is given with `true`, which happens
+        // when pull to refresh is used in the parent component
+        if (refreshing) refetch();
         if (loading) return null;
 
         let publicJsonFileContent =
@@ -63,5 +66,10 @@ export const About = ({ navigation }) => {
 };
 
 About.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  refreshing: PropTypes.bool
+};
+
+About.defaultProps = {
+  refreshing: false
 };

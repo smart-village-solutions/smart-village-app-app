@@ -28,7 +28,7 @@ export class TextList extends React.PureComponent {
 
   render() {
     const { listEndReached } = this.state;
-    const { data, navigation, noSubtitle, ListHeaderComponent } = this.props;
+    const { data, navigation, noSubtitle, ListHeaderComponent, refreshControl } = this.props;
 
     return (
       <FlatList
@@ -46,6 +46,7 @@ export class TextList extends React.PureComponent {
         }
         onEndReachedThreshold={0.5}
         onEndReached={this.onEndReached}
+        refreshControl={refreshControl}
       />
     );
   }
@@ -57,7 +58,8 @@ TextList.propTypes = {
   noSubtitle: PropTypes.bool,
   query: PropTypes.string,
   fetchMoreData: PropTypes.func,
-  ListHeaderComponent: PropTypes.object
+  ListHeaderComponent: PropTypes.object,
+  refreshControl: PropTypes.object
 };
 
 TextList.defaultProps = {

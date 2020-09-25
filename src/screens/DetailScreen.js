@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
@@ -51,6 +58,7 @@ export const DetailScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', {});
+  const [refreshing, setRefreshing] = useState(false);
 
   if (!query || !queryVariables || !queryVariables.id) return null;
 
@@ -76,12 +84,18 @@ export const DetailScreen = ({ navigation }) => {
     );
   }
 
+  const refresh = async (refetch) => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+
   const details = navigation.getParam('details', {});
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
   return (
     <Query query={getQuery(query)} variables={{ id: queryVariables.id }} fetchPolicy={fetchPolicy}>
-      {({ data, loading }) => {
+      {({ data, loading, refetch }) => {
         if (loading) {
           return (
             <LoadingContainer>
@@ -98,7 +112,16 @@ export const DetailScreen = ({ navigation }) => {
 
         return (
           <SafeAreaViewFlex>
-            <ScrollView>
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => refresh(refetch)}
+                  colors={[colors.accent]}
+                  tintColor={colors.accent}
+                />
+              }
+            >
               <Component data={(data && data[query]) || details} navigation={navigation} />
             </ScrollView>
           </SafeAreaViewFlex>

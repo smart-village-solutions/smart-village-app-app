@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView } from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
@@ -22,6 +22,7 @@ export const AboutScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const globalSettings = useContext(GlobalSettingsContext);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const getRefreshTime = async () => {
@@ -41,6 +42,12 @@ export const AboutScreen = ({ navigation }) => {
     );
   }
 
+  const refresh = async (refetch) => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
@@ -52,7 +59,7 @@ export const AboutScreen = ({ navigation }) => {
         variables={{ name: 'homeAbout' }}
         fetchPolicy={fetchPolicy}
       >
-        {({ data, loading }) => {
+        {({ data, loading, refetch }) => {
           if (loading) {
             return (
               <LoadingContainer>
@@ -67,16 +74,27 @@ export const AboutScreen = ({ navigation }) => {
           if (!publicJsonFileContent || !publicJsonFileContent.length) return <VersionNumber />;
 
           return (
-            <ScrollView>
+            <>
               {!!headlineAbout && (
                 <TitleContainer>
                   <Title>{headlineAbout}</Title>
                 </TitleContainer>
               )}
               {!!headlineAbout && device.platform === 'ios' && <TitleShadow />}
-              <TextList navigation={navigation} data={publicJsonFileContent} noSubtitle />
-              <VersionNumber />
-            </ScrollView>
+              <ScrollView
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => refresh(refetch)}
+                    colors={[colors.accent]}
+                    tintColor={colors.accent}
+                  />
+                }
+              >
+                <TextList navigation={navigation} data={publicJsonFileContent} noSubtitle />
+                <VersionNumber />
+              </ScrollView>
+            </>
           );
         }}
       </Query>
