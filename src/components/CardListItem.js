@@ -12,6 +12,7 @@ import { Touchable } from './Touchable';
 export const CardListItem = memo(({ navigation, horizontal, item, orientation, dimensions }) => {
   const { routeName, params, image, category, name } = item;
 
+  // TODO: accessibility logic needs to be implemented
   return (
     <Touchable
       onPress={() =>

@@ -31,7 +31,11 @@ const contactView = (contact) => (
     {!!contact.phone && (
       <InfoBox>
         <Icon xml={phoneIcon(colors.primary)} style={styles.margin} />
-        <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
+        <TouchableOpacity
+          accessibilityLabel="Telefonnummer"
+          accessibilityHint="Navigieren zu anruf option"
+          onPress={() => openLink(`tel:${contact.phone}`)}
+        >
           <RegularText primary>{contact.phone}</RegularText>
         </TouchableOpacity>
       </InfoBox>
@@ -40,7 +44,11 @@ const contactView = (contact) => (
     {!!contact.email && (
       <InfoBox>
         <Icon xml={mail(colors.primary)} style={styles.margin} />
-        <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
+        <TouchableOpacity
+          onPress={() => openLink(`mailto:${contact.email}`)}
+          accessibilityLabel="E-mail-Adresse"
+          accessibilityHint="Navigieren zur E-mail-App"
+        >
           <RegularText primary>{contact.email}</RegularText>
         </TouchableOpacity>
       </InfoBox>
@@ -92,7 +100,11 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
         return (
           <InfoBox key={index}>
             <Icon xml={location(colors.primary)} style={styles.margin} />
-            <TouchableOpacity onPress={() => addressOnPress(address)}>
+            <TouchableOpacity
+              accessibilityLabel="Adresse"
+              accessibilityHint="Navigieren zur Karten-App"
+              onPress={() => addressOnPress(address)}
+            >
               <RegularText primary>{address}</RegularText>
             </TouchableOpacity>
           </InfoBox>
@@ -133,7 +145,11 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
         return (
           <InfoBox key={index}>
             <Icon xml={urlIcon(colors.primary)} style={styles.margin} />
-            <TouchableOpacity onPress={() => openLink(url, openWebScreen)}>
+            <TouchableOpacity
+              onPress={() => openLink(url, openWebScreen)}
+              accessibilityLabel="Webseite"
+              accessibilityHint="Navigieren zur Webseite"
+            >
               {!description && <RegularText primary>{url}</RegularText>}
               {!!description && <RegularText primary>{description}</RegularText>}
             </TouchableOpacity>

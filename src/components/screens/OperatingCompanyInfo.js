@@ -63,7 +63,11 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
       {!!companyAddress && (
         <InfoBox>
           <Icon xml={location(colors.primary)} style={styles.margin} />
-          <TouchableOpacity onPress={() => addressOnPress(companyAddress)}>
+          <TouchableOpacity
+            onPress={() => addressOnPress(companyAddress)}
+            accessibilityLabel="Adresse"
+            accessibilityHint="Navigieren zur Karten-App"
+          >
             <RegularText primary>{companyAddress}</RegularText>
           </TouchableOpacity>
         </InfoBox>
@@ -86,7 +90,11 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
           {!!contact.phone && (
             <InfoBox>
               <Icon xml={phoneIcon(colors.primary)} style={styles.margin} />
-              <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
+              <TouchableOpacity
+                onPress={() => openLink(`tel:${contact.phone}`)}
+                accessibilityLabel="Telefonnummer"
+                accessibilityHint="Navigieren zu anruf option"
+              >
                 <RegularText primary>{contact.phone}</RegularText>
               </TouchableOpacity>
             </InfoBox>
@@ -94,26 +102,36 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
           {!!contact.email && (
             <InfoBox>
               <Icon xml={mail(colors.primary)} style={styles.margin} />
-              <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
+              <TouchableOpacity
+                onPress={() => openLink(`mailto:${contact.email}`)}
+                accessibilityLabel="E-mail-Adresse"
+                accessibilityHint="Navigieren zur E-mail-App"
+              >
                 <RegularText primary>{contact.email}</RegularText>
               </TouchableOpacity>
             </InfoBox>
           )}
           {!!contact.fax && (
-            <InfoBox>
+            <InfoBox accessible={true}>
               <RNEIcon
                 name="print"
                 type="material"
                 color={colors.primary}
                 iconStyle={{ marginRight: normalize(10) }}
               />
-              <RegularText primary>{contact.fax}</RegularText>
+              <RegularText primary accessibilityLabel="Fax-nummer">
+                {contact.fax}
+              </RegularText>
             </InfoBox>
           )}
           {!!contact.www && (
             <InfoBox>
               <Icon xml={link(colors.primary)} style={styles.marginWww} />
-              <TouchableOpacity onPress={() => openLink(contact.www, openWebScreen)}>
+              <TouchableOpacity
+                onPress={() => openLink(contact.www, openWebScreen)}
+                accessibilityLabel="Webseite"
+                accessibilityHint="Navigieren zur Webseite"
+              >
                 <RegularText primary>{contact.www}</RegularText>
               </TouchableOpacity>
             </InfoBox>
@@ -130,7 +148,11 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
           return (
             <InfoBox key={index}>
               <Icon xml={urlIcon(colors.primary)} style={styles.margin} />
-              <TouchableOpacity onPress={() => openLink(url, openWebScreen)}>
+              <TouchableOpacity
+                onPress={() => openLink(url, openWebScreen)}
+                accessibilityLabel="Webseite"
+                accessibilityHint="Navigieren zur Webseite"
+              >
                 <RegularText primary>{url}</RegularText>
               </TouchableOpacity>
             </InfoBox>

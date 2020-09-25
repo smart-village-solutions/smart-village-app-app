@@ -117,7 +117,11 @@ export const HomeScreen = ({ navigation }) => {
         {showNews && (
           <>
             <TitleContainer>
-              <Touchable onPress={() => navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX)}>
+              <Touchable
+                accessibilityLabel="Kopfzeile der Vorschau der Nachrichtenliste"
+                accessibilityHint="Navigiert zur Nachrichtenliste"
+                onPress={() => navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX)}
+              >
                 <Title>{headlineNews}</Title>
               </Touchable>
             </TitleContainer>
@@ -185,7 +189,11 @@ export const HomeScreen = ({ navigation }) => {
         {showPointsOfInterestAndTours && (
           <>
             <TitleContainer>
-              <Touchable onPress={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}>
+              <Touchable
+                accessibilityLabel="Kopfzeile der Vorschau der Touren- und Orteliste"
+                accessibilityHint="Navigiert zur Touren- und Orteliste"
+                onPress={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}
+              >
                 <Title>{headlinePointsOfInterestAndTours}</Title>
               </Touchable>
             </TitleContainer>
@@ -272,7 +280,11 @@ export const HomeScreen = ({ navigation }) => {
         {showEvents && (
           <>
             <TitleContainer>
-              <Touchable onPress={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}>
+              <Touchable
+                accessibilityLabel="Kopfzeile der Vorschau der Veranstaltungsliste"
+                accessibilityHint="Navigiert zur Veranstaltungsliste"
+                onPress={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}
+              >
                 <Title>{headlineEvents}</Title>
               </Touchable>
             </TitleContainer>

@@ -20,7 +20,12 @@ export const CustomDrawerContentComponent = (props) => {
     <DiagonalGradient>
       <View style={styles.headerContainer}>
         <View style={stylesWithProps({ orientation }).header}>
-          <TouchableOpacity onPress={() => props.navigation.closeDrawer()} delayPressIn={0}>
+          <TouchableOpacity
+            accessibilityLabel="Schließen Taste"
+            accessibilityHint="Menü schließen"
+            onPress={() => props.navigation.closeDrawer()}
+            delayPressIn={0}
+          >
             <Icon
               name="ios-close"
               type="ionicon"
