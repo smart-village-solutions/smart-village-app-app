@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
@@ -16,6 +23,7 @@ export const HtmlScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', '');
+  const [refreshing, setRefreshing] = useState(false);
 
   if (!query || !queryVariables || !queryVariables.name) return null;
 
@@ -40,6 +48,12 @@ export const HtmlScreen = ({ navigation }) => {
       </LoadingContainer>
     );
   }
+
+  const refresh = async (refetch) => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   const title = navigation.getParam('title', '');
   const rootRouteName = navigation.getParam('rootRouteName', '');
@@ -89,7 +103,7 @@ export const HtmlScreen = ({ navigation }) => {
       variables={{ name: queryVariables.name }}
       fetchPolicy={fetchPolicy}
     >
-      {({ data, loading }) => {
+      {({ data, loading, refetch }) => {
         if (loading) {
           return (
             <LoadingContainer>
@@ -102,7 +116,16 @@ export const HtmlScreen = ({ navigation }) => {
 
         return (
           <SafeAreaViewFlex>
-            <ScrollView>
+            <ScrollView
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => refresh(refetch)}
+                  colors={[colors.accent]}
+                  tintColor={colors.accent}
+                />
+              }
+            >
               <Wrapper>
                 <HtmlView
                   html={trimNewLines(data.publicHtmlFile.content)}

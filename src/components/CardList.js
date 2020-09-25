@@ -14,7 +14,7 @@ export class CardList extends React.PureComponent {
 
   render() {
     const { listEndReached } = this.state;
-    const { data, navigation, horizontal } = this.props;
+    const { data, navigation, horizontal, refreshControl } = this.props;
 
     if (horizontal) {
       return (
@@ -44,6 +44,7 @@ export class CardList extends React.PureComponent {
           )
         }
         onEndReached={() => this.setState({ listEndReached: true })}
+        refreshControl={refreshControl}
       />
     );
   }
@@ -52,7 +53,8 @@ export class CardList extends React.PureComponent {
 CardList.propTypes = {
   navigation: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
-  horizontal: PropTypes.bool
+  horizontal: PropTypes.bool,
+  refreshControl: PropTypes.object
 };
 
 CardList.defaultProps = {

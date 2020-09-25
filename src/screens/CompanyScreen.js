@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
@@ -25,6 +32,7 @@ export const CompanyScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const globalSettings = useContext(GlobalSettingsContext);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     const getRefreshTime = async () => {
@@ -44,6 +52,12 @@ export const CompanyScreen = ({ navigation }) => {
     );
   }
 
+  const refresh = async (refetch) => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
   const { sections = {} } = globalSettings;
   const { headlineCompany = texts.homeTitles.company } = sections;
@@ -55,7 +69,7 @@ export const CompanyScreen = ({ navigation }) => {
         variables={{ name: 'homeCompanies' }}
         fetchPolicy={fetchPolicy}
       >
-        {({ data, loading }) => {
+        {({ data, loading, refetch }) => {
           if (loading) {
             return (
               <LoadingContainer>
@@ -70,51 +84,62 @@ export const CompanyScreen = ({ navigation }) => {
           if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
 
           return (
-            <ScrollView>
+            <>
               {!!headlineCompany && (
                 <TitleContainer>
                   <Title>{headlineCompany}</Title>
                 </TitleContainer>
               )}
               {!!headlineCompany && device.platform === 'ios' && <TitleShadow />}
-              <View style={{ padding: normalize(14) }}>
-                <WrapperWrap>
-                  {publicJsonFileContent.map((item, index) => {
-                    return (
-                      <ServiceBox key={index + item.title}>
-                        <TouchableOpacity
-                          onPress={() =>
-                            navigation.navigate({
-                              routeName: item.routeName,
-                              params: item.params
-                            })
-                          }
-                        >
-                          <View>
-                            {item.iconName ? (
-                              <TabBarIcon
-                                name={item.iconName}
-                                size={30}
-                                style={styles.serviceIcon}
-                              />
-                            ) : (
-                              <Image
-                                source={{ uri: item.icon }}
-                                style={styles.serviceImage}
-                                PlaceholderContent={null}
-                              />
-                            )}
-                            <BoldText small primary center>
-                              {item.title}
-                            </BoldText>
-                          </View>
-                        </TouchableOpacity>
-                      </ServiceBox>
-                    );
-                  })}
-                </WrapperWrap>
-              </View>
-            </ScrollView>
+              <ScrollView
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => refresh(refetch)}
+                    colors={[colors.accent]}
+                    tintColor={colors.accent}
+                  />
+                }
+              >
+                <View style={{ padding: normalize(14) }}>
+                  <WrapperWrap>
+                    {publicJsonFileContent.map((item, index) => {
+                      return (
+                        <ServiceBox key={index + item.title}>
+                          <TouchableOpacity
+                            onPress={() =>
+                              navigation.navigate({
+                                routeName: item.routeName,
+                                params: item.params
+                              })
+                            }
+                          >
+                            <View>
+                              {item.iconName ? (
+                                <TabBarIcon
+                                  name={item.iconName}
+                                  size={30}
+                                  style={styles.serviceIcon}
+                                />
+                              ) : (
+                                <Image
+                                  source={{ uri: item.icon }}
+                                  style={styles.serviceImage}
+                                  PlaceholderContent={null}
+                                />
+                              )}
+                              <BoldText small primary center>
+                                {item.title}
+                              </BoldText>
+                            </View>
+                          </TouchableOpacity>
+                        </ServiceBox>
+                      );
+                    })}
+                  </WrapperWrap>
+                </View>
+              </ScrollView>
+            </>
           );
         }}
       </Query>

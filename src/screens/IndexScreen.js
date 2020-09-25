@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  RefreshControl,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
@@ -177,12 +183,19 @@ export const IndexScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = navigation.getParam('query', '');
   const [queryVariables, setQueryVariables] = useState(navigation.getParam('queryVariables', {}));
+  const [refreshing, setRefreshing] = useState(false);
 
   if (!query) return null;
 
   useEffect(() => {
     isConnected && auth();
   }, []);
+
+  const refresh = async (refetch) => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const globalSettings = useContext(GlobalSettingsContext);
@@ -227,7 +240,7 @@ export const IndexScreen = ({ navigation }) => {
       variables={getQueryVariables()}
       fetchPolicy={fetchPolicy}
     >
-      {({ data, error, loading, fetchMore }) => {
+      {({ data, loading, fetchMore, refetch }) => {
         if (loading) {
           return (
             <LoadingContainer>
@@ -271,6 +284,14 @@ export const IndexScreen = ({ navigation }) => {
               query={query}
               fetchMoreData={isConnected ? fetchMoreData : null}
               ListHeaderComponent={ListHeaderComponent}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => refresh(refetch)}
+                  colors={[colors.accent]}
+                  tintColor={colors.accent}
+                />
+              }
             />
           </SafeAreaViewFlex>
         );
