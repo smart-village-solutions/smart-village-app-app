@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { colors, normalize } from '../config';
 
+//TODO refactor TabBarIcon to be a function component that can use OrientationContext
 export default function TabBarIcon(props) {
   return (
     <Ionicons

@@ -15,7 +15,7 @@ import {
 
 import AppStackNavigator from './AppStackNavigator';
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
-import { colors, device, texts } from '../config';
+import { colors, device, normalize, texts } from '../config';
 
 const HomeStack = AppStackNavigator(false);
 
@@ -132,7 +132,12 @@ const MainTabNavigator = createBottomTabNavigator(
     AboutStack
   },
   {
-    tabBarOptions: { activeTintColor: colors.accent, inactiveTintColor: colors.primary }
+    tabBarOptions: {
+      activeTintColor: colors.accent,
+      inactiveTintColor: colors.primary,
+      tabStyle: { marginTop: normalize(5) },
+      labelStyle: { margin: normalize(3) }
+    }
   }
 );
 
