@@ -19,7 +19,7 @@ import {
 } from '../components';
 import { getQuery } from '../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
-import TabBarIcon from '../components/TabBarIcon';
+import { TabBarIcon } from '../components/TabBarIcon';
 
 export const CompanyScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();

@@ -14,7 +14,7 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { WrapperWrap } from '../Wrapper';
 import { getQuery } from '../../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
-import TabBarIcon from '../TabBarIcon';
+import { TabBarIcon } from '../TabBarIcon';
 
 export const Service = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
