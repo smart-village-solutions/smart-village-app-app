@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
-import TabBarIcon from '../components/TabBarIcon';
+import { TabBarIcon } from '../components/TabBarIcon';
 import { home, service } from '../icons';
 import { Icon } from '../components';
 import {
@@ -124,6 +124,7 @@ AboutStack.navigationOptions = {
   )
 };
 
+// TODO: labelStyle needs a logic to apply some left margin to text label just on landscape mode
 const MainTabNavigator = createBottomTabNavigator(
   {
     HomeStack,
@@ -135,8 +136,7 @@ const MainTabNavigator = createBottomTabNavigator(
     tabBarOptions: {
       activeTintColor: colors.accent,
       inactiveTintColor: colors.primary,
-      tabStyle: { marginTop: normalize(5) },
-      labelStyle: { margin: normalize(3) }
+      tabStyle: { marginTop: normalize(5) }
     }
   }
 );
