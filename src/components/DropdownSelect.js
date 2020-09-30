@@ -60,7 +60,7 @@ export const DropdownSelect = memo(({ data, setData, label }) => {
       >
         <WrapperRow style={styles.dropdownTextWrapper}>
           <RegularText>{selectedData.value}</RegularText>
-          <Icon icon={arrow == 'down' ? arrowDown(colors.primary) : arrowUp(colors.primary)} />
+          <Icon xml={arrow == 'down' ? arrowDown(colors.primary) : arrowUp(colors.primary)} />
         </WrapperRow>
       </Dropdown>
     </View>

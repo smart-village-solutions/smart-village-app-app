@@ -30,7 +30,7 @@ const contactView = (contact) => (
 
     {!!contact.phone && (
       <InfoBox>
-        <Icon icon={phoneIcon(colors.primary)} style={styles.margin} />
+        <Icon xml={phoneIcon(colors.primary)} style={styles.margin} />
         <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
           <RegularText primary>{contact.phone}</RegularText>
         </TouchableOpacity>
@@ -39,7 +39,7 @@ const contactView = (contact) => (
 
     {!!contact.email && (
       <InfoBox>
-        <Icon icon={mail(colors.primary)} style={styles.margin} />
+        <Icon xml={mail(colors.primary)} style={styles.margin} />
         <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
           <RegularText primary>{contact.email}</RegularText>
         </TouchableOpacity>
@@ -91,7 +91,7 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
 
         return (
           <InfoBox key={index}>
-            <Icon icon={location(colors.primary)} style={styles.margin} />
+            <Icon xml={location(colors.primary)} style={styles.margin} />
             <TouchableOpacity onPress={() => addressOnPress(address)}>
               <RegularText primary>{address}</RegularText>
             </TouchableOpacity>
@@ -132,7 +132,7 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
 
         return (
           <InfoBox key={index}>
-            <Icon icon={urlIcon(colors.primary)} style={styles.margin} />
+            <Icon xml={urlIcon(colors.primary)} style={styles.margin} />
             <TouchableOpacity onPress={() => openLink(url, openWebScreen)}>
               {!description && <RegularText primary>{url}</RegularText>}
               {!!description && <RegularText primary>{description}</RegularText>}

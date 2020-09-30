@@ -8,6 +8,7 @@ import { GlobalSettingsContext } from '../GlobalSettingsProvider';
 import { colors, consts, device, normalize, texts } from '../config';
 import {
   BoldText,
+  Icon,
   Image,
   LoadingContainer,
   SafeAreaViewFlex,
@@ -19,7 +20,6 @@ import {
 } from '../components';
 import { getQuery } from '../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
-import TabBarIcon from '../components/TabBarIcon';
 
 export const ServiceScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
@@ -65,7 +65,7 @@ export const ServiceScreen = ({ navigation }) => {
           }
 
           let publicJsonFileContent =
-              data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
+            data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
 
           if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
 
@@ -92,7 +92,7 @@ export const ServiceScreen = ({ navigation }) => {
                         >
                           <View>
                             {item.iconName ? (
-                              <TabBarIcon
+                              <Icon
                                 name={item.iconName}
                                 size={30}
                                 style={styles.serviceIcon}
