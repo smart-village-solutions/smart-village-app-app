@@ -123,8 +123,6 @@ AboutStack.navigationOptions = {
     <TabBarIcon focused={focused} name={device.patform === 'ios' ? 'ios-menu' : 'md-menu'} />
   )
 };
-
-// TODO: labelStyle needs a logic to apply some left margin to text label just on landscape mode
 const MainTabNavigator = createBottomTabNavigator(
   {
     HomeStack,

@@ -7,12 +7,12 @@ import { SvgXml } from 'react-native-svg';
 import { normalize } from '../config';
 import { OrientationContext } from '../OrientationProvider';
 
-export const Icon = ({ icon, width, height, style }) => {
+export const Icon = ({ icon, width, height, style, landscapeStyle }) => {
   const { orientation } = useContext(OrientationContext);
-  const landscapeStyle = orientation === 'landscape' ? style : null;
+  // const landscapeStyle = orientation === 'landscape' ? style : null;
 
   return (
-    <View style={landscapeStyle}>
+    <View style={[style, orientation === 'landscape' && landscapeStyle]}>
       <SvgXml width={width} height={height} xml={icon} />
     </View>
   );
@@ -28,11 +28,12 @@ Icon.propTypes = {
   icon: PropTypes.string.isRequired,
   width: PropTypes.number,
   height: PropTypes.number,
-  style: PropTypes.object
+  style: PropTypes.object,
+  landscapeStyle: PropTypes.object
 };
 
 Icon.defaultProps = {
   width: normalize(24),
   height: normalize(24),
-  style: styles.marginIcon
+  landscapeStyle: styles.marginIcon
 };
