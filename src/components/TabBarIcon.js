@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
 
 TabBarIcon.propTypes = {
   name: PropTypes.string.isRequired,
-  focused: PropTypes.object,
+  focused: PropTypes.bool,
   style: PropTypes.object
 };
 
