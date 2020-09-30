@@ -12,7 +12,7 @@ import { WrapperRow } from './Wrapper';
 export const Link = ({ url, description, openWebScreen }) => (
   <TouchableOpacity onPress={() => openLink(url, openWebScreen)}>
     <WrapperRow>
-      <Icon icon={link(colors.secondary)} style={styles.icon} />
+      <Icon xml={link(colors.secondary)} style={styles.icon} />
       <RegularText primary>{description}</RegularText>
     </WrapperRow>
   </TouchableOpacity>

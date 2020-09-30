@@ -56,7 +56,7 @@ export const TourCard = ({ addresses, lengthKm }) => (
 
             return (
               <InfoBox key={index}>
-                <Icon icon={location(colors.primary)} style={styles.margin} />
+                <Icon xml={location(colors.primary)} style={styles.margin} />
                 <View>
                   <RegularText>{kind === 'start' ? texts.tour.start : texts.tour.end}</RegularText>
                   <TouchableOpacity onPress={() => addressOnPress(address)}>

@@ -15,6 +15,7 @@ import { GlobalSettingsContext } from '../GlobalSettingsProvider';
 import { colors, consts, device, normalize, texts } from '../config';
 import {
   BoldText,
+  Icon,
   Image,
   LoadingContainer,
   SafeAreaViewFlex,
@@ -26,7 +27,6 @@ import {
 } from '../components';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
-import { TabBarIcon } from '../components/TabBarIcon';
 
 export const CompanyScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
@@ -119,7 +119,7 @@ export const CompanyScreen = ({ navigation }) => {
                           >
                             <View>
                               {item.iconName ? (
-                                <TabBarIcon
+                                <Icon
                                   name={item.iconName}
                                   size={30}
                                   style={styles.serviceIcon}
