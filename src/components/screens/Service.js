@@ -13,8 +13,8 @@ import { BoldText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { WrapperWrap } from '../Wrapper';
 import { getQuery, QUERY_TYPES } from '../../queries';
+import { Icon } from '../Icon';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
-import { TabBarIcon } from '../TabBarIcon';
 
 export const Service = ({ navigation, refreshing }) => {
   const [refreshTime, setRefreshTime] = useState();
@@ -80,7 +80,7 @@ export const Service = ({ navigation, refreshing }) => {
                       >
                         <View>
                           {item.iconName ? (
-                            <TabBarIcon name={item.iconName} size={30} style={styles.serviceIcon} />
+                            <Icon name={item.iconName} size={30} style={styles.serviceIcon} />
                           ) : (
                             <Image
                               source={{ uri: item.icon }}

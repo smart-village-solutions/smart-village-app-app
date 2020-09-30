@@ -40,7 +40,7 @@ export class CategoryListItem extends React.PureComponent {
           backgroundColor: colors.transparent,
           paddingVertical: normalize(12)
         }}
-        rightIcon={<Icon icon={arrowRight(colors.primary)} />}
+        rightIcon={<Icon xml={arrowRight(colors.primary)} />}
         onPress={() =>
           navigation.navigate({
             routeName,

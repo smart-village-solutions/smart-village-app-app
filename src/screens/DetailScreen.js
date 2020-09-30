@@ -149,7 +149,7 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
     headerLeft: (
       <View>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon icon={arrowLeft(colors.lightestText)} style={styles.icon} />
+          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
         </TouchableOpacity>
       </View>
     ),
@@ -158,7 +158,7 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
         {shareContent && (
           <TouchableOpacity onPress={() => openShare(shareContent)}>
             <Icon
-              icon={share(colors.lightestText)}
+              xml={share(colors.lightestText)}
               style={headerRight ? styles.iconLeft : styles.iconRight}
             />
           </TouchableOpacity>

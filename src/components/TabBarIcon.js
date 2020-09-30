@@ -1,35 +1,73 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet } from 'react-native';
 
-import { colors, normalize } from '../config';
+import { device, normalize } from '../config';
 import { OrientationContext } from '../OrientationProvider';
+import { Icon } from './Icon';
 
-//TODO refactor TabBarIcon to be a function component that can use OrientationContext
-export const TabBarIcon = ({ name, focused, style }) => {
+/**
+ * Smart icon component for the tab bar, which adds logics to styling based on orientation and
+ * platform. It is a wrapper and renders the main Icon component.
+ */
+export const TabBarIcon = ({ xml, width, height, name, size, focused, style, landscapeStyle }) => {
   const { orientation } = useContext(OrientationContext);
-  const size = orientation === 'landscape' ? normalize(28) : normalize(26);
-  const landscapeStyle = orientation === 'landscape' ? style : null;
+  let iconStyle;
 
-  return (
-    <View style={landscapeStyle}>
-      <Ionicons name={name} size={size} color={focused ? colors.accent : colors.primary} />
-    </View>
-  );
+  if (orientation === 'landscape' && device.platform == 'ios') {
+    style = {
+      ...style,
+      ...landscapeStyle
+    };
+
+    // need to decrease the icon size on iOS for landscape, because the whole tab bar shrinks in
+    // height for landscape
+    width = width * 0.75;
+    height = height * 0.75;
+    size = size * 0.75;
+
+    // need to increase the space between icon and text on iOS landscape
+    iconStyle = { width, ...styles.marginIcon };
+  }
+
+  return <Icon {...{ xml, width, height, name, size, focused, style, iconStyle }} />;
 };
+
 const styles = StyleSheet.create({
   marginIcon: {
     marginRight: normalize(10)
   }
 });
 
+// thx to: https://stackoverflow.com/a/49682510/9956365
+const isRequired = (props, propName, componentName) => {
+  // ensure, that one of 'xml' or 'name' is given
+  if (!props.xml && !props.name) {
+    return new Error(`One of 'xml' or 'name' is required by '${componentName}' component.`);
+  }
+
+  // ensure, that only one of 'xml' or 'name' is passed at a time
+  if (props.xml && props.name) {
+    return new Error(`Only one of 'xml' or 'name' is required by '${componentName}' component.`);
+  }
+};
+
 TabBarIcon.propTypes = {
-  name: PropTypes.string.isRequired,
+  xml: isRequired,
+  width: PropTypes.number,
+  height: PropTypes.number,
+  name: isRequired,
+  size: PropTypes.number,
   focused: PropTypes.bool,
-  style: PropTypes.object
+  style: PropTypes.object,
+  landscapeStyle: PropTypes.object
 };
 
 TabBarIcon.defaultProps = {
-  style: styles.marginIcon
+  // width & height marks the size for svg
+  width: normalize(24),
+  height: normalize(24),
+  // size is for font icon
+  size: normalize(26),
+  focused: false
 };

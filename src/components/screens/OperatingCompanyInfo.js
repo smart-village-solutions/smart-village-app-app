@@ -62,7 +62,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
 
       {!!companyAddress && (
         <InfoBox>
-          <Icon icon={location(colors.primary)} style={styles.margin} />
+          <Icon xml={location(colors.primary)} style={styles.margin} />
           <TouchableOpacity onPress={() => addressOnPress(companyAddress)}>
             <RegularText primary>{companyAddress}</RegularText>
           </TouchableOpacity>
@@ -85,7 +85,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
           )}
           {!!contact.phone && (
             <InfoBox>
-              <Icon icon={phoneIcon(colors.primary)} style={styles.margin} />
+              <Icon xml={phoneIcon(colors.primary)} style={styles.margin} />
               <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
                 <RegularText primary>{contact.phone}</RegularText>
               </TouchableOpacity>
@@ -93,7 +93,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
           )}
           {!!contact.email && (
             <InfoBox>
-              <Icon icon={mail(colors.primary)} style={styles.margin} />
+              <Icon xml={mail(colors.primary)} style={styles.margin} />
               <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
                 <RegularText primary>{contact.email}</RegularText>
               </TouchableOpacity>
@@ -112,7 +112,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
           )}
           {!!contact.www && (
             <InfoBox>
-              <Icon icon={link(colors.primary)} style={styles.marginWww} />
+              <Icon xml={link(colors.primary)} style={styles.marginWww} />
               <TouchableOpacity onPress={() => openLink(contact.www, openWebScreen)}>
                 <RegularText primary>{contact.www}</RegularText>
               </TouchableOpacity>
@@ -129,7 +129,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
 
           return (
             <InfoBox key={index}>
-              <Icon icon={urlIcon(colors.primary)} style={styles.margin} />
+              <Icon xml={urlIcon(colors.primary)} style={styles.margin} />
               <TouchableOpacity onPress={() => openLink(url, openWebScreen)}>
                 <RegularText primary>{url}</RegularText>
               </TouchableOpacity>

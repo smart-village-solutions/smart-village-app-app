@@ -23,7 +23,7 @@ export const defaultStackNavigatorConfig = (initialRouteName, headerRight = true
       },
       headerRight: headerRight && (
         <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <Icon icon={drawerMenu(colors.lightestText)} style={styles.icon} />
+          <Icon xml={drawerMenu(colors.lightestText)} style={styles.icon} />
         </TouchableOpacity>
       )
     }),
