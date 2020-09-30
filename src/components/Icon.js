@@ -1,39 +1,55 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
-
-import { StyleSheet, View } from 'react-native';
+import React from 'react';
+import { View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
+import { Ionicons } from '@expo/vector-icons';
 
-import { normalize } from '../config';
-import { OrientationContext } from '../OrientationProvider';
+import { colors, normalize } from '../config';
 
-export const Icon = ({ icon, width, height, style, landscapeStyle }) => {
-  const { orientation } = useContext(OrientationContext);
-  // const landscapeStyle = orientation === 'landscape' ? style : null;
+/**
+ * Smart icon component which can handle SVGs passed as `xml` prop or icon fonts, which are
+ * rendered with a given `name` prop.
+ */
+export const Icon = ({ xml, width, height, name, size, focused, style, iconStyle }) => {
+  const color = focused ? colors.accent : colors.primary;
 
   return (
-    <View style={[style, orientation === 'landscape' && landscapeStyle]}>
-      <SvgXml width={width} height={height} xml={icon} />
+    <View style={style}>
+      {xml && <SvgXml xml={xml} width={width} height={height} style={iconStyle} />}
+      {name && <Ionicons name={name} size={size} color={color} style={iconStyle} />}
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  marginIcon: {
-    marginRight: normalize(10)
+// thx to: https://stackoverflow.com/a/49682510/9956365
+const isRequired = (props, propName, componentName) => {
+  // ensure, that one of 'xml' or 'name' is given
+  if (!props.xml && !props.name) {
+    return new Error(`One of 'xml' or 'name' is required by '${componentName}' component.`);
   }
-});
+
+  // ensure, that only one of 'xml' or 'name' is passed at a time
+  if (props.xml && props.name) {
+    return new Error(`Only one of 'xml' or 'name' is required by '${componentName}' component.`);
+  }
+};
 
 Icon.propTypes = {
-  icon: PropTypes.string.isRequired,
+  xml: isRequired,
   width: PropTypes.number,
   height: PropTypes.number,
+  name: isRequired,
+  size: PropTypes.number,
+  focused: PropTypes.bool,
   style: PropTypes.object,
-  landscapeStyle: PropTypes.object
+  iconStyle: PropTypes.object
 };
 
 Icon.defaultProps = {
+  // width & height marks the size for svg
   width: normalize(24),
   height: normalize(24),
-  landscapeStyle: styles.marginIcon
+  // size is for font icon
+  size: normalize(26),
+  focused: false
 };

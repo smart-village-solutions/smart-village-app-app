@@ -13,7 +13,7 @@ export class WebScreen extends React.PureComponent {
       headerLeft: (
         <View>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon icon={arrowLeft(colors.lightestText)} style={styles.icon} />
+            <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
           </TouchableOpacity>
         </View>
       )
