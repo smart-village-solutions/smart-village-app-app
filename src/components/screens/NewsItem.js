@@ -59,7 +59,7 @@ export const NewsItem = ({ data, navigation }) => {
       contentBlocks[0].mediaContents,
       (mediaContent) =>
         mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-    ).map((mediaContent) => {
+    ).forEach((mediaContent) => {
       !!mediaContent.sourceUrl &&
         !!mediaContent.sourceUrl.url &&
         mainImages.push({
@@ -74,7 +74,7 @@ export const NewsItem = ({ data, navigation }) => {
   // each content block can have multiple media
   let story = [];
   if (!!contentBlocks && !!contentBlocks.length) {
-    contentBlocks.map((contentBlock, index) => {
+    contentBlocks.forEach((contentBlock, index) => {
       let section = [];
       let sectionImages = [];
 
@@ -113,7 +113,7 @@ export const NewsItem = ({ data, navigation }) => {
             contentBlock.mediaContents,
             (mediaContent) =>
               mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-          ).map((mediaContent) => {
+          ).forEach((mediaContent) => {
             !!mediaContent.sourceUrl &&
               !!mediaContent.sourceUrl.url &&
               sectionImages.push({
@@ -151,7 +151,7 @@ export const NewsItem = ({ data, navigation }) => {
           contentBlock.mediaContents,
           (mediaContent) =>
             mediaContent.contentType === 'video' || mediaContent.contentType === 'audio'
-        ).map((mediaContent) => {
+        ).forEach((mediaContent) => {
           !!mediaContent.sourceUrl &&
             !!mediaContent.sourceUrl.url &&
             section.push(
