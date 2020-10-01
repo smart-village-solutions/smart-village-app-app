@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.2.4]
+
+Refactorings and bugfixes
+
+### Changed
+
+- added check for `isConnected` before calling `refetch` method when using pull to refresh
+  - if offline, refetch cannot be fulfilled and should not be triggered
+- removed `NetworkContext` in `HomeScreen` to eliminate the behavior of reloading the whole app container when network connectivity changes
+  - changed usage to get network information to `NetInfo.fetch()`, which get called in a loop until main server reachability is set
+
+### Refactored
+
+- for the refactorings, please have a look at the [commits and their messages](https://github.com/ikuseiGmbH/smart-village-app-app/compare/v1.2.3...v1.2.4) for this version
+
+### Fixed
+
+- removed the condition for `queryVariables` in ÌndexScreen` to ensure, that the cache can return data when going offline
+  - if online and offline has different `queryVariables`, they also have different cache values and the offline data would be always undefined, because data is only fetched and cached when online
+
 ## [v1.2.3]
 
 Add pull to refresh and processing of a new `buttons` key in `subQuery`
