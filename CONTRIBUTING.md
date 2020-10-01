@@ -13,15 +13,17 @@ cd smart-village-app-app
 yarn
 ```
 
-2. To run the app in a local iOS simulator, run `yarn ios`.
+2. To start the package manager and expo environment, run `yarn start`.
 
-3. Check if the test suite is running properly with `yarn test`.
+3. To run the app in a local iOS simulator, run `yarn ios`.
 
-4. Develop your part of the mobile app, create tests and run them.
+4. Check if the test suite is running properly with `yarn test`.
 
-5. Lint your code with `yarn lint`.
+5. Develop your part of the mobile app, create tests and run them.
 
-6. Push to your repo and submit a pull request.
+6. Lint your code with `yarn lint`.
+
+7. Push to your repo and submit a pull request.
 
 ---
 
