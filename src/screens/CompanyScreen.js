@@ -57,7 +57,7 @@ export const CompanyScreen = ({ navigation }) => {
 
   const refresh = async (refetch) => {
     setRefreshing(true);
-    await refetch();
+    isConnected && await refetch();
     setRefreshing(false);
   };
 
