@@ -201,22 +201,6 @@ export const IndexScreen = ({ navigation }) => {
   const globalSettings = useContext(GlobalSettingsContext);
   const { filter = {} } = globalSettings;
   const { news: showNewsFilter = false } = filter;
-
-  // if offline, pagination with partially fetching data is not possible, so we cannot pass
-  // a probably given `limit` variable. remove that `limit` with destructing, like in this
-  // example: https://stackoverflow.com/a/51478664/9956365
-  const getQueryVariables = () => {
-    if (!isConnected) {
-      /* NOTE: remove `limit`, which is super easy with spread operator */
-      /* eslint-disable-next-line no-unused-vars */
-      const { limit, ...queryVariablesWithoutLimit } = queryVariables;
-
-      return queryVariablesWithoutLimit;
-    }
-
-    return queryVariables;
-  };
-
   const Component = getComponent(query);
 
   const updateListData = (selectedDataProvider) => {
@@ -237,7 +221,7 @@ export const IndexScreen = ({ navigation }) => {
   return (
     <Query
       query={getQuery(query, { showNewsFilter })}
-      variables={getQueryVariables()}
+      variables={queryVariables}
       fetchPolicy={fetchPolicy}
     >
       {({ data, loading, fetchMore, refetch }) => {
