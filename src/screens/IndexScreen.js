@@ -159,18 +159,15 @@ const getListItems = (query, data) => {
 /* eslint-enable complexity */
 
 const getComponent = (query) => {
-  switch (query) {
-  case QUERY_TYPES.EVENT_RECORDS:
-    return TextList;
-  case QUERY_TYPES.NEWS_ITEMS:
-    return TextList;
-  case QUERY_TYPES.POINTS_OF_INTEREST:
-    return CardList;
-  case QUERY_TYPES.TOURS:
-    return CardList;
-  case QUERY_TYPES.CATEGORIES:
-    return CategoryList;
-  }
+  const COMPONENTS = {
+    [QUERY_TYPES.EVENT_RECORDS]: TextList,
+    [QUERY_TYPES.NEWS_ITEMS]: TextList,
+    [QUERY_TYPES.POINTS_OF_INTEREST]: CardList,
+    [QUERY_TYPES.TOURS]: CardList,
+    [QUERY_TYPES.CATEGORIES]: CategoryList
+  };
+
+  return COMPONENTS[query];
 };
 
 const getListHeaderComponent = (query, queryVariables, data, updateListData) => {
