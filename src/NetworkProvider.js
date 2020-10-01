@@ -22,13 +22,9 @@ export const NetworkProvider = ({ children }) => {
       setInternetReachable(state.isInternetReachable);
     });
 
-    // returned function will be called on component unmount
+    // returned function will be called when component unmounts
     return () => unsubscribe();
   }, []);
-
-  // TODO: remove logs
-  // console.log('NetworkProvider isConnected', connected);
-  // console.log('NetworkProvider isMainserverUp', internetReachable);
 
   return (
     <NetworkContext.Provider value={{ isConnected: connected, isMainserverUp: internetReachable }}>
