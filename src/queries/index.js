@@ -11,36 +11,39 @@ import { GET_TOUR, GET_TOURS } from './tours';
 import { GET_POINTS_OF_INTEREST_AND_TOURS } from './pointsOfInterestAndTours';
 import { GET_PUBLIC_HTML_FILE } from './publicHtmlFiles';
 import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
+import { QUERY_TYPES } from './types';
+
+export * from './types';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const getQuery = (query, filterOptions = {}) => {
   switch (query) {
-  case 'categories':
+  case QUERY_TYPES.CATEGORIES:
     return GET_CATEGORIES;
-  case 'eventRecord':
+  case QUERY_TYPES.EVENT_RECORD:
     return GET_EVENT_RECORD;
-  case 'eventRecords':
+  case QUERY_TYPES.EVENT_RECORDS:
     return GET_EVENT_RECORDS;
-  case 'newsItem':
+  case QUERY_TYPES.NEWS_ITEM:
     return GET_NEWS_ITEM;
-  case 'newsItems':
+  case QUERY_TYPES.NEWS_ITEMS:
     return filterOptions.showNewsFilter
       ? GET_FILTERED_NEWS_ITEMS_AND_DATA_PROVIDERS
       : GET_NEWS_ITEMS;
-  case 'tour':
+  case QUERY_TYPES.TOUR:
     return GET_TOUR;
-  case 'tours':
+  case QUERY_TYPES.TOURS:
     return GET_TOURS;
-  case 'pointOfInterest':
+  case QUERY_TYPES.POINT_OF_INTEREST:
     return GET_POINT_OF_INTEREST;
-  case 'pointsOfInterest':
+  case QUERY_TYPES.POINTS_OF_INTEREST:
     return GET_POINTS_OF_INTEREST;
-  case 'pointsOfInterestAndTours':
+  case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
     return GET_POINTS_OF_INTEREST_AND_TOURS;
-  case 'publicHtmlFile':
+  case QUERY_TYPES.PUBLIC_HTML_FILE:
     return GET_PUBLIC_HTML_FILE;
-  case 'publicJsonFile':
+  case QUERY_TYPES.PUBLIC_JSON_FILE:
     return GET_PUBLIC_JSON_FILE;
   }
 };
@@ -48,9 +51,9 @@ export const getQuery = (query, filterOptions = {}) => {
 
 export const getFetchMoreQuery = (query, filterOptions = {}) => {
   switch (query) {
-  case 'eventRecords':
+  case QUERY_TYPES.EVENT_RECORDS:
     return GET_EVENT_RECORDS;
-  case 'newsItems':
+  case QUERY_TYPES.NEWS_ITEMS:
     return filterOptions.showNewsFilter ? GET_FILTERED_NEWS_ITEMS : GET_NEWS_ITEMS;
   }
 };

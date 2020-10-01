@@ -24,7 +24,7 @@ import {
   TitleShadow,
   WrapperWrap
 } from '../components';
-import { getQuery } from '../queries';
+import { getQuery, QUERY_TYPES } from '../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
 import TabBarIcon from '../components/TabBarIcon';
 
@@ -65,7 +65,7 @@ export const ServiceScreen = ({ navigation }) => {
   return (
     <SafeAreaViewFlex>
       <Query
-        query={getQuery('publicJsonFile')}
+        query={getQuery(QUERY_TYPES.PUBLIC_JSON_FILE)}
         variables={{ name: 'homeService' }}
         fetchPolicy={fetchPolicy}
       >
