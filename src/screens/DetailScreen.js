@@ -28,29 +28,25 @@ import { arrowLeft, share } from '../icons';
 import { graphqlFetchPolicy, openShare, refreshTimeFor } from '../helpers';
 
 const getComponent = (query) => {
-  switch (query) {
-  case QUERY_TYPES.NEWS_ITEM:
-    return NewsItem;
-  case QUERY_TYPES.EVENT_RECORD:
-    return EventRecord;
-  case QUERY_TYPES.POINT_OF_INTEREST:
-    return PointOfInterest;
-  case QUERY_TYPES.TOUR:
-    return Tour;
-  }
+  const COMPONENTS = {
+    [QUERY_TYPES.NEWS_ITEM]: NewsItem,
+    [QUERY_TYPES.EVENT_RECORD]: EventRecord,
+    [QUERY_TYPES.POINT_OF_INTEREST]: PointOfInterest,
+    [QUERY_TYPES.TOUR]: Tour
+  };
+
+  return COMPONENTS[query];
 };
 
 const getRefreshInterval = (query) => {
-  switch (query) {
-  case QUERY_TYPES.NEWS_ITEM:
-    return consts.NEWS;
-  case QUERY_TYPES.EVENT_RECORD:
-    return consts.EVENTS;
-  case QUERY_TYPES.POINT_OF_INTEREST:
-    return consts.POINTS_OF_INTEREST;
-  case QUERY_TYPES.TOUR:
-    return consts.TOURS;
-  }
+  const REFRESH_INTERVALS = {
+    [QUERY_TYPES.NEWS_ITEM]: consts.NEWS,
+    [QUERY_TYPES.EVENT_RECORD]: consts.EVENTS,
+    [QUERY_TYPES.POINT_OF_INTEREST]: consts.POINTS_OF_INTEREST,
+    [QUERY_TYPES.TOUR]: consts.TOURS
+  };
+
+  return REFRESH_INTERVALS[query];
 };
 
 export const DetailScreen = ({ navigation }) => {
