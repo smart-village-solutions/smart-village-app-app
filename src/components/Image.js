@@ -27,6 +27,7 @@ export const Image = ({ source, style, PlaceholderContent }) => {
       ? CacheManager.get(source.uri)
         .getPath()
         .then((path) => mounted && setUri(path))
+        .catch((err) => console.warn('An error occurred with cache management for an image', err))
       : mounted && setUri(source);
 
     return () => (mounted = false);
