@@ -36,7 +36,10 @@ export const CompanyScreen = ({ navigation }) => {
 
   useEffect(() => {
     const getRefreshTime = async () => {
-      const time = await refreshTimeFor('publicJsonFile-homeCompanies', consts.STATIC_CONTENT);
+      const time = await refreshTimeFor(
+        'publicJsonFile-homeCompanies',
+        consts.REFRESH_INTERVALS.STATIC_CONTENT
+      );
 
       setRefreshTime(time);
     };

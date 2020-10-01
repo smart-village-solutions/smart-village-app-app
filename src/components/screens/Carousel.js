@@ -17,7 +17,10 @@ export const Carousel = ({ navigation, refreshing }) => {
 
   useEffect(() => {
     const getRefreshTime = async () => {
-      const time = await refreshTimeFor('publicJsonFile-homeCarousel', consts.STATIC_CONTENT);
+      const time = await refreshTimeFor(
+        'publicJsonFile-homeCarousel',
+        consts.REFRESH_INTERVALS.STATIC_CONTENT
+      );
 
       setRefreshTime(time);
     };
