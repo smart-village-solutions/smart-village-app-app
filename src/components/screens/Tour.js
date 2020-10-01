@@ -51,7 +51,7 @@ export const Tour = ({ data, navigation }) => {
       mediaContents,
       (mediaContent) =>
         mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-    ).map((item) => {
+    ).forEach((item) => {
       !!item.sourceUrl &&
         !!item.sourceUrl.url &&
         images.push({

@@ -68,7 +68,7 @@ export const EventRecord = ({ data, navigation }) => {
       mediaContents,
       (mediaContent) =>
         mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-    ).map((mediaContent) => {
+    ).forEach((mediaContent) => {
       !!mediaContent.sourceUrl &&
         !!mediaContent.sourceUrl.url &&
         images.push({
@@ -84,7 +84,7 @@ export const EventRecord = ({ data, navigation }) => {
     _filter(
       mediaContents,
       (mediaContent) => mediaContent.contentType === 'video' || mediaContent.contentType === 'audio'
-    ).map((mediaContent) => {
+    ).forEach((mediaContent) => {
       !!mediaContent.sourceUrl &&
         !!mediaContent.sourceUrl.url &&
         media.push(
