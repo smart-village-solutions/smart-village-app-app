@@ -18,7 +18,10 @@ export const About = ({ navigation, refreshing }) => {
 
   useEffect(() => {
     const getRefreshTime = async () => {
-      const time = await refreshTimeFor('publicJsonFile-homeAbout', consts.STATIC_CONTENT);
+      const time = await refreshTimeFor(
+        'publicJsonFile-homeAbout',
+        consts.REFRESH_INTERVALS.STATIC_CONTENT
+      );
 
       setRefreshTime(time);
     };

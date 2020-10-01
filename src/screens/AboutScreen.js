@@ -26,7 +26,10 @@ export const AboutScreen = ({ navigation }) => {
 
   useEffect(() => {
     const getRefreshTime = async () => {
-      const time = await refreshTimeFor('publicJsonFile-homeAbout', consts.STATIC_CONTENT);
+      const time = await refreshTimeFor(
+        'publicJsonFile-homeAbout',
+        consts.REFRESH_INTERVALS.STATIC_CONTENT
+      );
 
       setRefreshTime(time);
     };
@@ -69,7 +72,7 @@ export const AboutScreen = ({ navigation }) => {
           }
 
           let publicJsonFileContent =
-              data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
+            data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
 
           if (!publicJsonFileContent || !publicJsonFileContent.length) return <VersionNumber />;
 

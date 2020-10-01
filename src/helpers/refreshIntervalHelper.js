@@ -25,7 +25,7 @@ export const refreshTimeFor = async (refreshTimeKey, refreshInterval) => {
       : refreshIntervals[refreshTimeKey];
 
   switch (refreshInterval) {
-  case consts.ONCE_A_DAY: {
+  case consts.REFRESH_INTERVALS.ONCE_A_DAY: {
     const endOfDay = moment().endOf('day').unix();
 
     if (endOfDay > refreshTime) {
