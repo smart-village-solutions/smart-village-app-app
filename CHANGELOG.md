@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.2.3]
+
+Add pull to refresh and processing of a new `buttons` key in `subQuery`
+
+### Added
+
+- pull to refresh in every screen to refetch data manually  without respecting the
+  refresh time logic
+  - the solution is a combination of https://reactnative.dev/docs/refreshcontrol
+    with https://www.apollographql.com/docs/react/v2.6/data/queries/#refetching
+- there can be new data in `subQuery` at a `buttons` key with an array
+  of objects, that contain information about navigations to web links
+  to be presented as multiple buttons on the screen
+
 ## [v1.2.2]
 
 Updated Expo SDK to 38.0.0 and bumped different packages to be more up to date
@@ -13,7 +27,7 @@ Updated Expo SDK to 38.0.0 and bumped different packages to be more up to date
 
 ## [v1.2.1]
 
-Implement filter for news in IndexScreen
+Implement filter for news in `IndexScreen`
 
 ### Added
 
