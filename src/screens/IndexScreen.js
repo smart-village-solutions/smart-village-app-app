@@ -22,7 +22,7 @@ import {
   SafeAreaViewFlex,
   TextList
 } from '../components';
-import { getQuery, getFetchMoreQuery } from '../queries';
+import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
 import { arrowLeft } from '../icons';
 import {
   eventDate,
@@ -36,7 +36,7 @@ import {
 /* NOTE: we need to check a lot for presence, so this is that complex */
 const getListItems = (query, data) => {
   switch (query) {
-  case 'eventRecords':
+  case QUERY_TYPES.EVENT_RECORDS:
     return (
       data &&
         data[query] &&
@@ -51,17 +51,17 @@ const getListItems = (query, data) => {
           routeName: 'Detail',
           params: {
             title: 'Veranstaltung',
-            query: 'eventRecord',
+            query: QUERY_TYPES.EVENT_RECORD,
             queryVariables: { id: `${eventRecord.id}` },
             rootRouteName: 'EventRecords',
             shareContent: {
-              message: shareMessage(eventRecord, 'eventRecord')
+              message: shareMessage(eventRecord, QUERY_TYPES.EVENT_RECORD)
             },
             details: eventRecord
           }
         }))
     );
-  case 'newsItems':
+  case QUERY_TYPES.NEWS_ITEMS:
     return (
       data &&
         data[query] &&
@@ -77,17 +77,17 @@ const getListItems = (query, data) => {
           routeName: 'Detail',
           params: {
             title: 'Nachricht',
-            query: 'newsItem',
+            query: QUERY_TYPES.NEWS_ITEM,
             queryVariables: { id: `${newsItem.id}` },
             rootRouteName: 'NewsItems',
             shareContent: {
-              message: shareMessage(newsItem, 'newsItem')
+              message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM)
             },
             details: newsItem
           }
         }))
     );
-  case 'pointsOfInterest':
+  case QUERY_TYPES.POINTS_OF_INTEREST:
     return (
       data &&
         data[query] &&
@@ -99,17 +99,17 @@ const getListItems = (query, data) => {
           routeName: 'Detail',
           params: {
             title: 'Ort',
-            query: 'pointOfInterest',
+            query: QUERY_TYPES.POINT_OF_INTEREST,
             queryVariables: { id: `${pointOfInterest.id}` },
             rootRouteName: 'PointsOfInterest',
             shareContent: {
-              message: shareMessage(pointOfInterest, 'pointOfInterest')
+              message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
             },
             details: pointOfInterest
           }
         }))
     );
-  case 'tours':
+  case QUERY_TYPES.TOURS:
     return (
       data &&
         data[query] &&
@@ -121,18 +121,18 @@ const getListItems = (query, data) => {
           routeName: 'Detail',
           params: {
             title: 'Tour',
-            query: 'tour',
+            query: QUERY_TYPES.TOUR,
             queryVariables: { id: `${tour.id}` },
             rootRouteName: 'Tours',
             shareContent: {
-              message: shareMessage(tour, 'tour')
+              message: shareMessage(tour, QUERY_TYPES.TOUR)
             },
             details: tour
           }
         }))
     );
 
-  case 'categories': {
+  case QUERY_TYPES.CATEGORIES: {
     return (
       data &&
         data[query] &&
@@ -144,7 +144,10 @@ const getListItems = (query, data) => {
           routeName: 'Index',
           params: {
             title: category.name,
-            query: category.pointsOfInterestCount > 0 ? 'pointsOfInterest' : 'tours',
+            query:
+              category.pointsOfInterestCount > 0
+                ? QUERY_TYPES.POINTS_OF_INTEREST
+                : QUERY_TYPES.TOURS,
             queryVariables: { order: 'name_ASC', category: `${category.name}` },
             rootRouteName: category.pointsOfInterestCount > 0 ? 'PointsOfInterest' : 'Tours'
           }
@@ -157,22 +160,22 @@ const getListItems = (query, data) => {
 
 const getComponent = (query) => {
   switch (query) {
-  case 'eventRecords':
+  case QUERY_TYPES.EVENT_RECORDS:
     return TextList;
-  case 'newsItems':
+  case QUERY_TYPES.NEWS_ITEMS:
     return TextList;
-  case 'pointsOfInterest':
+  case QUERY_TYPES.POINTS_OF_INTEREST:
     return CardList;
-  case 'tours':
+  case QUERY_TYPES.TOURS:
     return CardList;
-  case 'categories':
+  case QUERY_TYPES.CATEGORIES:
     return CategoryList;
   }
 };
 
 const getListHeaderComponent = (query, queryVariables, data, updateListData) => {
   switch (query) {
-  case 'newsItems':
+  case QUERY_TYPES.NEWS_ITEMS:
     return (
       <ListHeader queryVariables={queryVariables} data={data} updateListData={updateListData} />
     );

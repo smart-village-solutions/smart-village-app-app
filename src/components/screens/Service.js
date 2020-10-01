@@ -12,7 +12,7 @@ import { ServiceBox } from '../ServiceBox';
 import { BoldText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { WrapperWrap } from '../Wrapper';
-import { getQuery } from '../../queries';
+import { getQuery, QUERY_TYPES } from '../../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 import TabBarIcon from '../TabBarIcon';
 
@@ -39,7 +39,7 @@ export const Service = ({ navigation, refreshing }) => {
 
   return (
     <Query
-      query={getQuery('publicJsonFile')}
+      query={getQuery(QUERY_TYPES.PUBLIC_JSON_FILE)}
       variables={{ name: 'homeService' }}
       fetchPolicy={fetchPolicy}
     >

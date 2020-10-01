@@ -8,7 +8,7 @@ import { GlobalSettingsContext } from '../../GlobalSettingsProvider';
 import { consts, device, texts } from '../../config';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { TextList } from '../TextList';
-import { getQuery } from '../../queries';
+import { getQuery, QUERY_TYPES } from '../../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 
 export const About = ({ navigation, refreshing }) => {
@@ -34,7 +34,7 @@ export const About = ({ navigation, refreshing }) => {
 
   return (
     <Query
-      query={getQuery('publicJsonFile')}
+      query={getQuery(QUERY_TYPES.PUBLIC_JSON_FILE)}
       variables={{ name: 'homeAbout' }}
       fetchPolicy={fetchPolicy}
     >

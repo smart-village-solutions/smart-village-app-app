@@ -15,7 +15,7 @@ import appJson from '../app.json';
 import { auth } from './auth';
 import { colors, consts, device, secrets, texts } from './config';
 import { graphqlFetchPolicy, storageHelper } from './helpers';
-import { getQuery } from './queries';
+import { getQuery, QUERY_TYPES } from './queries';
 import { NetworkProvider } from './NetworkProvider';
 import NetInfo from './NetInfo';
 import { GlobalSettingsProvider } from './GlobalSettingsProvider';
@@ -148,7 +148,7 @@ const MainAppWithApolloProvider = () => {
 
     try {
       const response = await client.query({
-        query: getQuery('publicJsonFile'),
+        query: getQuery(QUERY_TYPES.PUBLIC_JSON_FILE),
         variables: { name: 'globalSettings' },
         fetchPolicy
       });
@@ -190,7 +190,7 @@ const MainAppWithApolloProvider = () => {
       // setup drawer routes for navigation
       try {
         const response = await client.query({
-          query: getQuery('publicJsonFile'),
+          query: getQuery(QUERY_TYPES.PUBLIC_JSON_FILE),
           variables: { name: 'navigation' },
           fetchPolicy
         });
