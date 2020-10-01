@@ -31,7 +31,10 @@ export const HtmlScreen = ({ navigation }) => {
 
   useEffect(() => {
     const getRefreshTime = async () => {
-      const time = await refreshTimeFor(`${query}-${queryVariables.name}`, consts.STATIC_CONTENT);
+      const time = await refreshTimeFor(
+        `${query}-${queryVariables.name}`,
+        consts.REFRESH_INTERVALS.STATIC_CONTENT
+      );
 
       setRefreshTime(time);
     };

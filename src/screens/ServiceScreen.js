@@ -28,7 +28,10 @@ export const ServiceScreen = ({ navigation }) => {
 
   useEffect(() => {
     const getRefreshTime = async () => {
-      const time = await refreshTimeFor('publicJsonFile-homeService', consts.STATIC_CONTENT);
+      const time = await refreshTimeFor(
+        'publicJsonFile-homeService',
+        consts.REFRESH_INTERVALS.STATIC_CONTENT
+      );
 
       setRefreshTime(time);
     };
