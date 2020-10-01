@@ -70,6 +70,36 @@ export const HomeScreen = ({ navigation }) => {
     }, 500);
   };
 
+  const NAVIGATION = {
+    CATEGORIES_INDEX: {
+      routeName: 'Index',
+      params: {
+        title: 'Touren und Orte',
+        query: QUERY_TYPES.CATEGORIES,
+        queryVariables: {},
+        rootRouteName: 'PointsOfInterestAndTours'
+      }
+    },
+    EVENT_RECORDS_INDEX: {
+      routeName: 'Index',
+      params: {
+        title: 'Veranstaltungen',
+        query: QUERY_TYPES.EVENT_RECORDS,
+        queryVariables: { limit: 15, order: 'listDate_ASC' },
+        rootRouteName: 'EventRecords'
+      }
+    },
+    NEWS_ITEMS_INDEX: {
+      routeName: 'Index',
+      params: {
+        title: 'Nachrichten',
+        query: QUERY_TYPES.NEWS_ITEMS,
+        queryVariables: { limit: 15 },
+        rootRouteName: 'NewsItems'
+      }
+    }
+  };
+
   return (
     <SafeAreaViewFlex>
       <ScrollView
@@ -87,19 +117,7 @@ export const HomeScreen = ({ navigation }) => {
         {showNews && (
           <>
             <TitleContainer>
-              <Touchable
-                onPress={() =>
-                  navigation.navigate({
-                    routeName: 'Index',
-                    params: {
-                      title: 'Nachrichten',
-                      query: QUERY_TYPES.NEWS_ITEMS,
-                      queryVariables: { limit: 15 },
-                      rootRouteName: 'NewsItems'
-                    }
-                  })
-                }
-              >
+              <Touchable onPress={() => navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX)}>
                 <Title>{headlineNews}</Title>
               </Touchable>
             </TitleContainer>
@@ -154,17 +172,7 @@ export const HomeScreen = ({ navigation }) => {
                     <Wrapper>
                       <Button
                         title={buttonNews}
-                        onPress={() =>
-                          navigation.navigate({
-                            routeName: 'Index',
-                            params: {
-                              title: 'Nachrichten',
-                              query: QUERY_TYPES.NEWS_ITEMS,
-                              queryVariables: { limit: 15 },
-                              rootRouteName: 'NewsItems'
-                            }
-                          })
-                        }
+                        onPress={() => navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX)}
                       />
                     </Wrapper>
                   </View>
@@ -177,19 +185,7 @@ export const HomeScreen = ({ navigation }) => {
         {showPointsOfInterestAndTours && (
           <>
             <TitleContainer>
-              <Touchable
-                onPress={() =>
-                  navigation.navigate({
-                    routeName: 'Index',
-                    params: {
-                      title: 'Touren und Orte',
-                      query: QUERY_TYPES.CATEGORIES,
-                      queryVariables: {},
-                      rootRouteName: 'PointsOfInterestAndTours'
-                    }
-                  })
-                }
-              >
+              <Touchable onPress={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}>
                 <Title>{headlinePointsOfInterestAndTours}</Title>
               </Touchable>
             </TitleContainer>
@@ -263,17 +259,7 @@ export const HomeScreen = ({ navigation }) => {
                     <Wrapper>
                       <Button
                         title={buttonPointsOfInterestAndTours}
-                        onPress={() =>
-                          navigation.navigate({
-                            routeName: 'Index',
-                            params: {
-                              title: 'Touren und Orte',
-                              query: QUERY_TYPES.CATEGORIES,
-                              queryVariables: {},
-                              rootRouteName: 'PointsOfInterestAndTours'
-                            }
-                          })
-                        }
+                        onPress={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}
                       />
                     </Wrapper>
                   </View>
@@ -286,19 +272,7 @@ export const HomeScreen = ({ navigation }) => {
         {showEvents && (
           <>
             <TitleContainer>
-              <Touchable
-                onPress={() =>
-                  navigation.navigate({
-                    routeName: 'Index',
-                    params: {
-                      title: 'Veranstaltungen',
-                      query: QUERY_TYPES.EVENT_RECORDS,
-                      queryVariables: { limit: 15, order: 'listDate_ASC' },
-                      rootRouteName: 'EventRecords'
-                    }
-                  })
-                }
-              >
+              <Touchable onPress={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}>
                 <Title>{headlineEvents}</Title>
               </Touchable>
             </TitleContainer>
@@ -352,17 +326,7 @@ export const HomeScreen = ({ navigation }) => {
                     <Wrapper>
                       <Button
                         title={buttonEvents}
-                        onPress={() =>
-                          navigation.navigate({
-                            routeName: 'Index',
-                            params: {
-                              title: 'Veranstaltungen',
-                              query: QUERY_TYPES.EVENT_RECORDS,
-                              queryVariables: { limit: 15, order: 'listDate_ASC' },
-                              rootRouteName: 'EventRecords'
-                            }
-                          })
-                        }
+                        onPress={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}
                       />
                     </Wrapper>
                   </View>
