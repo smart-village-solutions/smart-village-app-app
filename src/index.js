@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, AsyncStorage, StatusBar } from 'react-native';
 import { SplashScreen } from 'expo';
 import * as SecureStore from 'expo-secure-store';
@@ -16,7 +16,8 @@ import { auth } from './auth';
 import { colors, consts, device, secrets, texts } from './config';
 import { graphqlFetchPolicy, storageHelper } from './helpers';
 import { getQuery } from './queries';
-import { NetworkContext, NetworkProvider } from './NetworkProvider';
+import { NetworkProvider } from './NetworkProvider';
+import NetInfo from './NetInfo';
 import { GlobalSettingsProvider } from './GlobalSettingsProvider';
 import AppStackNavigator from './navigation/AppStackNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
@@ -24,7 +25,6 @@ import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentCo
 import { LoadingContainer } from './components';
 
 const MainAppWithApolloProvider = () => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [loading, setLoading] = useState(true);
   const [client, setClient] = useState();
   const [globalSettingsState, setGlobalSettingsState] = useState();
@@ -44,6 +44,12 @@ const MainAppWithApolloProvider = () => {
     }
   });
   const [authRetried, setAuthRetried] = useState(false);
+  const [netInfo, setNetInfo] = useState({
+    isConnected: null,
+    isMainserverUp: null,
+    netInfoCounter: 0
+  });
+  const { isConnected, isMainserverUp, netInfoCounter } = netInfo;
 
   const setupApolloClient = async () => {
     const namespace = appJson.expo.slug;
@@ -100,13 +106,30 @@ const MainAppWithApolloProvider = () => {
   // we can provide an empty array as second argument to the effect hook to avoid activating
   // it on component updates but only for the mounting of the component.
   // this effect depend on no variables, so it is only triggered when the component mounts.
-  // if an effect depends on a variable (..., [variable]), it is triggered everytime it changes.
+  // if an effect depends on a variable (..., [variable]), it is triggered every time it changes.
   // provide different effects for different contexts.
+  //
+  // we wait for NetInfo to check for main server reachability, which is made when `isMainserverUp`
+  // becomes `true` or `false` and is not `null` anymore. with the `netInfoCounter` that gets
+  // updated every time the main server was not checked for reachability, we trigger the the
+  // effect again until NetInfo has finished.
   useEffect(() => {
-    // wait for NetInfo to check for main server reachability, which is made when `isMainserverUp`
-    // becomes `true` or `false` and is not `null` anymore
-    isMainserverUp !== null && auth(setupApolloClient);
-  }, [isMainserverUp]);
+    const updateNetInfo = async () => {
+      const updatedNetInfo = await NetInfo.fetch();
+
+      setNetInfo({
+        isConnected: updatedNetInfo.isConnected,
+        isMainserverUp: updatedNetInfo.isInternetReachable,
+        netInfoCounter: updatedNetInfo.isInternetReachable === null && netInfoCounter + 1
+      });
+    };
+
+    // re-run NetInfo
+    isMainserverUp === null && updateNetInfo();
+
+    // setup the apollo client if NetInfo finished and if there is no client existing already
+    isMainserverUp !== null && !client && auth(setupApolloClient);
+  }, [netInfoCounter]);
 
   const setupGlobalSettings = async () => {
     const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
