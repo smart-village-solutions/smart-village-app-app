@@ -17,7 +17,9 @@ const App = () => {
       'titillium-web-italic': require('./assets/fonts/TitilliumWeb-Italic.ttf'),
       'titillium-web-light': require('./assets/fonts/TitilliumWeb-Light.ttf'),
       'titillium-web-light-italic': require('./assets/fonts/TitilliumWeb-LightItalic.ttf')
-    }).then(() => setFontLoaded(true));
+    })
+      .then(() => setFontLoaded(true))
+      .catch((err) => console.warn('An error occurred with loading the fonts', err));
   }, []);
 
   return fontLoaded ? <MainApp /> : null;
