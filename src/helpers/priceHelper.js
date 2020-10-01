@@ -17,6 +17,7 @@ export const priceFormat = (price) => {
   }
 
   // Error with Intl.NumberFormat for Android: `Can't find variable: Intl`,
-  // so we need a workaround here
-  return `${price.toFixed(2)}`.replace('.', ',') + ' EUR';
+  // so we need a workaround here and format the number with replacing `.` with `,`
+  // deepcode ignore GlobalReplacementRegex: there is just one `.` in floating-point numbers
+  return `${price.toFixed(2).replace('.', ',')} EUR`;
 };
