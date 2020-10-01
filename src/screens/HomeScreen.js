@@ -24,7 +24,7 @@ import {
   VersionNumber,
   Wrapper
 } from '../components';
-import { getQuery } from '../queries';
+import { getQuery, QUERY_TYPES } from '../queries';
 import {
   eventDate,
   graphqlFetchPolicy,
@@ -93,7 +93,7 @@ export const HomeScreen = ({ navigation }) => {
                     routeName: 'Index',
                     params: {
                       title: 'Nachrichten',
-                      query: 'newsItems',
+                      query: QUERY_TYPES.NEWS_ITEMS,
                       queryVariables: { limit: 15 },
                       rootRouteName: 'NewsItems'
                     }
@@ -104,7 +104,11 @@ export const HomeScreen = ({ navigation }) => {
               </Touchable>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
-            <Query query={getQuery('newsItems')} variables={{ limit: 3 }} fetchPolicy={fetchPolicy}>
+            <Query
+              query={getQuery(QUERY_TYPES.NEWS_ITEMS)}
+              variables={{ limit: 3 }}
+              fetchPolicy={fetchPolicy}
+            >
               {({ data, loading }) => {
                 if (loading) {
                   return (
@@ -129,11 +133,11 @@ export const HomeScreen = ({ navigation }) => {
                     routeName: 'Detail',
                     params: {
                       title: 'Nachricht',
-                      query: 'newsItem',
+                      query: QUERY_TYPES.NEWS_ITEM,
                       queryVariables: { id: `${newsItem.id}` },
                       rootRouteName: 'NewsItems',
                       shareContent: {
-                        message: shareMessage(newsItem, 'newsItem')
+                        message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM)
                       },
                       details: newsItem
                     },
@@ -155,7 +159,7 @@ export const HomeScreen = ({ navigation }) => {
                             routeName: 'Index',
                             params: {
                               title: 'Nachrichten',
-                              query: 'newsItems',
+                              query: QUERY_TYPES.NEWS_ITEMS,
                               queryVariables: { limit: 15 },
                               rootRouteName: 'NewsItems'
                             }
@@ -179,7 +183,7 @@ export const HomeScreen = ({ navigation }) => {
                     routeName: 'Index',
                     params: {
                       title: 'Touren und Orte',
-                      query: 'categories',
+                      query: QUERY_TYPES.CATEGORIES,
                       queryVariables: {},
                       rootRouteName: 'PointsOfInterestAndTours'
                     }
@@ -191,7 +195,7 @@ export const HomeScreen = ({ navigation }) => {
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Query
-              query={getQuery('pointsOfInterestAndTours')}
+              query={getQuery(QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS)}
               variables={{ limit: 10, orderPoi: 'RAND', orderTour: 'RAND' }}
               fetchPolicy={fetchPolicy}
             >
@@ -215,11 +219,11 @@ export const HomeScreen = ({ navigation }) => {
                     routeName: 'Detail',
                     params: {
                       title: 'Ort',
-                      query: 'pointOfInterest',
+                      query: QUERY_TYPES.POINT_OF_INTEREST,
                       queryVariables: { id: `${pointOfInterest.id}` },
                       rootRouteName: 'PointsOfInterest',
                       shareContent: {
-                        message: shareMessage(pointOfInterest, 'pointOfInterest')
+                        message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
                       },
                       details: pointOfInterest
                     },
@@ -237,11 +241,11 @@ export const HomeScreen = ({ navigation }) => {
                     routeName: 'Detail',
                     params: {
                       title: 'Tour',
-                      query: 'tour',
+                      query: QUERY_TYPES.TOUR,
                       queryVariables: { id: `${tour.id}` },
                       rootRouteName: 'Tours',
                       shareContent: {
-                        message: shareMessage(tour, 'tour')
+                        message: shareMessage(tour, QUERY_TYPES.TOUR)
                       },
                       details: tour
                     },
@@ -264,7 +268,7 @@ export const HomeScreen = ({ navigation }) => {
                             routeName: 'Index',
                             params: {
                               title: 'Touren und Orte',
-                              query: 'categories',
+                              query: QUERY_TYPES.CATEGORIES,
                               queryVariables: {},
                               rootRouteName: 'PointsOfInterestAndTours'
                             }
@@ -288,7 +292,7 @@ export const HomeScreen = ({ navigation }) => {
                     routeName: 'Index',
                     params: {
                       title: 'Veranstaltungen',
-                      query: 'eventRecords',
+                      query: QUERY_TYPES.EVENT_RECORDS,
                       queryVariables: { limit: 15, order: 'listDate_ASC' },
                       rootRouteName: 'EventRecords'
                     }
@@ -300,7 +304,7 @@ export const HomeScreen = ({ navigation }) => {
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Query
-              query={getQuery('eventRecords')}
+              query={getQuery(QUERY_TYPES.EVENT_RECORDS)}
               variables={{ limit: 3, order: 'listDate_ASC' }}
               fetchPolicy={fetchPolicy}
             >
@@ -327,11 +331,11 @@ export const HomeScreen = ({ navigation }) => {
                     routeName: 'Detail',
                     params: {
                       title: 'Veranstaltung',
-                      query: 'eventRecord',
+                      query: QUERY_TYPES.EVENT_RECORD,
                       queryVariables: { id: `${eventRecord.id}` },
                       rootRouteName: 'EventRecords',
                       shareContent: {
-                        message: shareMessage(eventRecord, 'eventRecord')
+                        message: shareMessage(eventRecord, QUERY_TYPES.EVENT_RECORD)
                       },
                       details: eventRecord
                     },
@@ -353,7 +357,7 @@ export const HomeScreen = ({ navigation }) => {
                             routeName: 'Index',
                             params: {
                               title: 'Veranstaltungen',
-                              query: 'eventRecords',
+                              query: QUERY_TYPES.EVENT_RECORDS,
                               queryVariables: { limit: 15, order: 'listDate_ASC' },
                               rootRouteName: 'EventRecords'
                             }

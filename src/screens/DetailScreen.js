@@ -23,32 +23,32 @@ import {
   Tour,
   WrapperRow
 } from '../components';
-import { getQuery } from '../queries';
+import { getQuery, QUERY_TYPES } from '../queries';
 import { arrowLeft, share } from '../icons';
 import { graphqlFetchPolicy, openShare, refreshTimeFor } from '../helpers';
 
 const getComponent = (query) => {
   switch (query) {
-  case 'newsItem':
+  case QUERY_TYPES.NEWS_ITEM:
     return NewsItem;
-  case 'eventRecord':
+  case QUERY_TYPES.EVENT_RECORD:
     return EventRecord;
-  case 'pointOfInterest':
+  case QUERY_TYPES.POINT_OF_INTEREST:
     return PointOfInterest;
-  case 'tour':
+  case QUERY_TYPES.TOUR:
     return Tour;
   }
 };
 
 const getRefreshInterval = (query) => {
   switch (query) {
-  case 'newsItem':
+  case QUERY_TYPES.NEWS_ITEM:
     return consts.NEWS;
-  case 'eventRecord':
+  case QUERY_TYPES.EVENT_RECORD:
     return consts.EVENTS;
-  case 'pointOfInterest':
+  case QUERY_TYPES.POINT_OF_INTEREST:
     return consts.POINTS_OF_INTEREST;
-  case 'tour':
+  case QUERY_TYPES.TOUR:
     return consts.TOURS;
   }
 };

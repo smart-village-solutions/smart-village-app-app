@@ -8,7 +8,7 @@ import { NetworkContext } from '../../NetworkProvider';
 import { colors, consts } from '../../config';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { LoadingContainer } from '../LoadingContainer';
-import { getQuery } from '../../queries';
+import { getQuery, QUERY_TYPES } from '../../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 
 export const Carousel = ({ navigation, refreshing }) => {
@@ -37,7 +37,7 @@ export const Carousel = ({ navigation, refreshing }) => {
 
   return (
     <Query
-      query={getQuery('publicJsonFile')}
+      query={getQuery(QUERY_TYPES.PUBLIC_JSON_FILE)}
       variables={{ name: 'homeCarousel' }}
       fetchPolicy={fetchPolicy}
     >

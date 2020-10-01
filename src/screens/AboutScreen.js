@@ -15,7 +15,7 @@ import {
   TitleShadow,
   VersionNumber
 } from '../components';
-import { getQuery } from '../queries';
+import { getQuery, QUERY_TYPES } from '../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
 
 export const AboutScreen = ({ navigation }) => {
@@ -55,7 +55,7 @@ export const AboutScreen = ({ navigation }) => {
   return (
     <SafeAreaViewFlex>
       <Query
-        query={getQuery('publicJsonFile')}
+        query={getQuery(QUERY_TYPES.PUBLIC_JSON_FILE)}
         variables={{ name: 'homeAbout' }}
         fetchPolicy={fetchPolicy}
       >
