@@ -16,7 +16,7 @@ export const Button = ({ title, onPress }) => {
       titleStyle={styles.titleStyle}
       containerStyle={styles.containerStyle}
       ViewComponent={DiagonalGradient}
-      buttonStyle={orientation === 'landscape' ? styles.buttonStyle : {}}
+      buttonStyle={orientation === 'landscape' && styles.buttonStyleLandscape}
       useForeground
     />
   );
@@ -27,9 +27,9 @@ const styles = StyleSheet.create({
     color: colors.lightestText,
     fontFamily: 'titillium-web-bold'
   },
-  buttonStyle: {
-    width: '60%',
-    alignSelf: 'center'
+  buttonStyleLandscape: {
+    alignSelf: 'center',
+    width: '60%'
   },
   containerStyle: {
     marginBottom: normalize(21)
