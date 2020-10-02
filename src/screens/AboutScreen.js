@@ -76,12 +76,12 @@ export const AboutScreen = ({ navigation }) => {
 
           if (!publicJsonFileContent || !publicJsonFileContent.length) return <VersionNumber />;
 
-          // TODO accessibility not working on Title
+          // TODO Title is not accessible here, why ?
           return (
             <>
               {!!headlineAbout && (
-                <TitleContainer accessible={true}>
-                  <Title accessibilityHint="Kopfzeile der Über die App Liste">
+                <TitleContainer>
+                  <Title accessible={true} accessibilityLabel={`${headlineAbout} (Überschrift)`}>
                     {headlineAbout}
                   </Title>
                 </TitleContainer>

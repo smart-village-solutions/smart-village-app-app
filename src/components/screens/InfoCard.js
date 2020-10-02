@@ -32,8 +32,7 @@ const contactView = (contact) => (
       <InfoBox>
         <Icon xml={phoneIcon(colors.primary)} style={styles.margin} />
         <TouchableOpacity
-          accessibilityLabel="Telefonnummer"
-          accessibilityHint="Navigieren zu anruf option"
+          accessibilityLabel={`(Telefonnummer) (${contact.phone}) (Taste) (Wechselt zur Telefon-App)`}
           onPress={() => openLink(`tel:${contact.phone}`)}
         >
           <RegularText primary>{contact.phone}</RegularText>
@@ -46,8 +45,7 @@ const contactView = (contact) => (
         <Icon xml={mail(colors.primary)} style={styles.margin} />
         <TouchableOpacity
           onPress={() => openLink(`mailto:${contact.email}`)}
-          accessibilityLabel="E-mail-Adresse"
-          accessibilityHint="Navigieren zur E-mail-App"
+          accessibilityLabel={`(E-mail) (${contact.email}) (Taste) (Wechselt zur E-Mail-App)`}
         >
           <RegularText primary>{contact.email}</RegularText>
         </TouchableOpacity>
@@ -71,8 +69,17 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
   <View>
     {!!category && !!category.name && (
       <InfoBox>
-        <RNEIcon name="list" type="material" color={colors.primary} iconStyle={styles.margin} />
-        <RegularText>{category.name}</RegularText>
+        <RNEIcon
+          accessible={true}
+          accessibilityLabel="Menü icon"
+          name="list"
+          type="material"
+          color={colors.primary}
+          iconStyle={styles.margin}
+        />
+        <RegularText accessible={true} accessibilityLabel={`(Kategorie) (${category.name}`}>
+          {category.name}
+        </RegularText>
       </InfoBox>
     )}
 
@@ -101,8 +108,7 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
           <InfoBox key={index}>
             <Icon xml={location(colors.primary)} style={styles.margin} />
             <TouchableOpacity
-              accessibilityLabel="Adresse"
-              accessibilityHint="Navigieren zur Karten-App"
+              accessibilityLabel={`(Adresse) (${address}) (Taste) (Wechselt zur Karten-App)`}
               onPress={() => addressOnPress(address)}
             >
               <RegularText primary>{address}</RegularText>
@@ -147,8 +153,7 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
             <Icon xml={urlIcon(colors.primary)} style={styles.margin} />
             <TouchableOpacity
               onPress={() => openLink(url, openWebScreen)}
-              accessibilityLabel="Webseite"
-              accessibilityHint="Navigieren zur Webseite"
+              accessibilityLabel={`(Webseite) (${description}) (Taste) (Öffnet Webseite in der aktuellen App)`}
             >
               {!description && <RegularText primary>{url}</RegularText>}
               {!!description && <RegularText primary>{description}</RegularText>}

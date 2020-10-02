@@ -12,8 +12,7 @@ import { WrapperRow } from './Wrapper';
 export const Link = ({ url, description, openWebScreen }) => (
   <TouchableOpacity
     onPress={() => openLink(url, openWebScreen)}
-    accessibilityLabel="Link"
-    accessibilityHint="Navigieren zur Link"
+    accessibilityLabel={`${description} (Taste)`}
   >
     <WrapperRow>
       <Icon xml={link(colors.secondary)} style={styles.icon} />

@@ -32,8 +32,8 @@ export class CategoryListItem extends React.PureComponent {
           bottomDivider !== undefined
             ? bottomDivider
             : item.toursCount > 0
-              ? index < section.data.length - 1 // do not show a bottomDivider after last tours entry
-              : true
+            ? index < section.data.length - 1 // do not show a bottomDivider after last tours entry
+            : true
         }
         topDivider={topDivider !== undefined ? topDivider : false}
         containerStyle={{
@@ -50,6 +50,7 @@ export class CategoryListItem extends React.PureComponent {
         }
         delayPressIn={0}
         Component={Touchable}
+        accessibilityLabel={`${title} (Anzahl verfügbarer Einträge ${count}) (Taste)`}
       />
     );
   }

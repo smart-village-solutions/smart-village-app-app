@@ -9,7 +9,12 @@ import { Wrapper } from './Wrapper.js';
 export const VersionNumber = () => {
   return (
     <Wrapper>
-      <RegularText small style={styles.version}>
+      <RegularText
+        small
+        style={styles.version}
+        accessible={true}
+        accessibilityLabel={`(App version:) ${appJson.expo.version} `}
+      >
         Version: {appJson.expo.version}
       </RegularText>
     </Wrapper>

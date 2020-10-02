@@ -57,7 +57,7 @@ export const ServiceScreen = ({ navigation }) => {
 
   const refresh = async (refetch) => {
     setRefreshing(true);
-    isConnected && await refetch();
+    isConnected && (await refetch());
     setRefreshing(false);
   };
 
@@ -86,15 +86,14 @@ export const ServiceScreen = ({ navigation }) => {
 
           if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
 
-          // TODO accessibility not working on Title
+          // TODO: elements are not accessible here, why?
           return (
             <>
               {!!headlineService && (
-                <TitleContainer
-                  accessible={true}
-                  accessibilityLabel="Kopfzeile des Service-Abschnitts"
-                >
-                  <Title>{headlineService}</Title>
+                <TitleContainer>
+                  <Title accessible={true} accessibilityLabel={`${headlineService} (Überschrift)`}>
+                    {headlineService}
+                  </Title>
                 </TitleContainer>
               )}
               {!!headlineService && device.platform === 'ios' && <TitleShadow />}
@@ -123,11 +122,7 @@ export const ServiceScreen = ({ navigation }) => {
                           >
                             <View>
                               {item.iconName ? (
-                                <Icon
-                                  name={item.iconName}
-                                  size={30}
-                                  style={styles.serviceIcon}
-                                />
+                                <Icon name={item.iconName} size={30} style={styles.serviceIcon} />
                               ) : (
                                 <Image
                                   source={{ uri: item.icon }}
@@ -135,7 +130,13 @@ export const ServiceScreen = ({ navigation }) => {
                                   PlaceholderContent={null}
                                 />
                               )}
-                              <BoldText small primary center>
+                              <BoldText
+                                small
+                                primary
+                                center
+                                accessible={true}
+                                accessibilityLabel={`${item.title} (Taste)`}
+                              >
                                 {item.title}
                               </BoldText>
                             </View>

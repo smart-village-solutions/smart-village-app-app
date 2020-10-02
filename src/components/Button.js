@@ -20,6 +20,7 @@ export const Button = ({ title, onPress }) => {
       containerStyle={[styles.containerStyle, needLandscapeStyle && styles.containerStyleLandscape]}
       ViewComponent={DiagonalGradient}
       useForeground
+      accessibilityLabel={`${title} (Taste)`}
     />
   );
 };
