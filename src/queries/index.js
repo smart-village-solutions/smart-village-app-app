@@ -11,6 +11,7 @@ import { GET_TOUR, GET_TOURS } from './tours';
 import { GET_POINTS_OF_INTEREST_AND_TOURS } from './pointsOfInterestAndTours';
 import { GET_PUBLIC_HTML_FILE } from './publicHtmlFiles';
 import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
+import { CREATE_APP_USER_CONTENT } from './appUserContent';
 import { QUERY_TYPES } from './types';
 
 export * from './types';
@@ -30,7 +31,8 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.POINTS_OF_INTEREST]: GET_POINTS_OF_INTEREST,
     [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: GET_POINTS_OF_INTEREST_AND_TOURS,
     [QUERY_TYPES.PUBLIC_HTML_FILE]: GET_PUBLIC_HTML_FILE,
-    [QUERY_TYPES.PUBLIC_JSON_FILE]: GET_PUBLIC_JSON_FILE
+    [QUERY_TYPES.PUBLIC_JSON_FILE]: GET_PUBLIC_JSON_FILE,
+    [QUERY_TYPES.APP_USER_CONTENT]: CREATE_APP_USER_CONTENT
   };
 
   return QUERIES[query];
