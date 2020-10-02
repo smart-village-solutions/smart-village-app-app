@@ -33,8 +33,7 @@ export class TextListItem extends React.PureComponent {
         }
         delayPressIn={0}
         Component={Touchable}
-        accessibilityLabel="Listeneintrag"
-        accessibilityHint="Navigiert zum Article"
+        accessibilityLabel={`${title} (Taste)`}
       />
     );
   }

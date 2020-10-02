@@ -118,8 +118,7 @@ export const HomeScreen = ({ navigation }) => {
           <>
             <TitleContainer>
               <Touchable
-                accessibilityLabel="Kopfzeile der Vorschau der Nachrichtenliste"
-                accessibilityHint="Navigiert zur Nachrichtenliste"
+                accessibilityLabel={`${headlineNews} (Überschrift) (Taste)`}
                 onPress={() => navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX)}
               >
                 <Title>{headlineNews}</Title>
@@ -190,8 +189,7 @@ export const HomeScreen = ({ navigation }) => {
           <>
             <TitleContainer>
               <Touchable
-                accessibilityLabel="Kopfzeile der Vorschau der Touren- und Orteliste"
-                accessibilityHint="Navigiert zur Touren- und Orteliste"
+                accessibilityLabel={`${headlinePointsOfInterestAndTours} (Überschrift) (Taste)`}
                 onPress={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}
               >
                 <Title>{headlinePointsOfInterestAndTours}</Title>
@@ -281,8 +279,7 @@ export const HomeScreen = ({ navigation }) => {
           <>
             <TitleContainer>
               <Touchable
-                accessibilityLabel="Kopfzeile der Vorschau der Veranstaltungsliste"
-                accessibilityHint="Navigiert zur Veranstaltungsliste"
+                accessibilityLabel={`${headlineEvents} (Überschrift) (Taste)`}
                 onPress={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}
               >
                 <Title>{headlineEvents}</Title>

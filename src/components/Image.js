@@ -40,10 +40,12 @@ export const Image = ({ source, style, PlaceholderContent }) => {
         style={style}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}
+        accessible={true}
+        accessibilityLabel={`${PlaceholderContent}`}
       />
     );
   }
-
+  // TODO Image is not accessible here, why ?
   return (
     <View>
       <RNEImage
@@ -51,6 +53,8 @@ export const Image = ({ source, style, PlaceholderContent }) => {
         style={style}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}
+        accessible={true}
+        accessibilityLabel={`${PlaceholderContent}`}
       />
       <ImageRights imageRights={source.copyright} />
     </View>

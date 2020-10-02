@@ -12,9 +12,10 @@ import { Touchable } from './Touchable';
 export const CardListItem = memo(({ navigation, horizontal, item, orientation, dimensions }) => {
   const { routeName, params, image, category, name } = item;
 
-  // TODO: accessibility logic needs to be implemented
+  // TODO: count articles logic could to be implemented
   return (
     <Touchable
+      accessibilityLabel={`(${category}) ${name} (Taste)`}
       onPress={() =>
         navigation.navigate({
           routeName,
