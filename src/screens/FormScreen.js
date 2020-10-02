@@ -4,7 +4,7 @@ import { Alert, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from
 import { CheckBox } from 'react-native-elements';
 import { Mutation } from 'react-apollo';
 
-import { getQuery, QUERY_TYPES } from '../queries';
+import { createQuery, QUERY_TYPES } from '../queries';
 import { colors, normalize } from '../config';
 import { BoldText, Button, Icon, SafeAreaViewFlex } from '../components';
 import { arrowLeft } from '../icons';
@@ -58,7 +58,7 @@ export const FormScreen = () => {
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        <Mutation mutation={getQuery(QUERY_TYPES.APP_USER_CONTENT)}>
+        <Mutation mutation={createQuery(QUERY_TYPES.APP_USER_CONTENT)}>
           {(createAppUserContent) => (
             <View style={{ padding: normalize(14) }}>
               <BoldText>Name</BoldText>
