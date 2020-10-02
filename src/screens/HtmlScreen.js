@@ -135,7 +135,7 @@ export const HtmlScreen = ({ navigation }) => {
                   openWebScreen={openWebScreen}
                   navigation={navigation}
                 />
-                {!!subQuery && !!subQuery.routeName && !!subQuery.webUrl && (
+                {!!subQuery && !!subQuery.routeName && (
                   <Button
                     title={subQuery.buttonTitle || `${title} öffnen`}
                     onPress={() => openWebScreen()}
