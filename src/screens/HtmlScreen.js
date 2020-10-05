@@ -13,10 +13,19 @@ import { Query } from 'react-apollo';
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, consts, normalize } from '../config';
-import { Button, HtmlView, Icon, LoadingContainer, SafeAreaViewFlex, Wrapper } from '../components';
+import {
+  Button,
+  HtmlView,
+  Icon,
+  LoadingContainer,
+  SafeAreaViewFlex,
+  Wrapper,
+  WrapperLandscape
+} from '../components';
 import { graphqlFetchPolicy, refreshTimeFor, trimNewLines } from '../helpers';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
+import { OrientationContext } from '../OrientationProvider';
 
 export const HtmlScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
@@ -62,6 +71,7 @@ export const HtmlScreen = ({ navigation }) => {
   const rootRouteName = navigation.getParam('rootRouteName', '');
   const subQuery = navigation.getParam('subQuery', '');
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+  const { orientation } = useContext(OrientationContext);
 
   // action to open source urls
   const openWebScreen = (param) => {
@@ -100,6 +110,7 @@ export const HtmlScreen = ({ navigation }) => {
     });
   };
 
+  /* eslint-disable complexity */
   return (
     <Query
       query={getQuery(query)}
@@ -127,32 +138,58 @@ export const HtmlScreen = ({ navigation }) => {
                   colors={[colors.accent]}
                   tintColor={colors.accent}
                 />
-              }
-            >
-              <Wrapper>
-                <HtmlView
-                  html={trimNewLines(data.publicHtmlFile.content)}
-                  openWebScreen={openWebScreen}
-                  navigation={navigation}
-                />
-                {!!subQuery && !!subQuery.routeName && (
-                  <Button
-                    title={subQuery.buttonTitle || `${title} öffnen`}
-                    onPress={() => openWebScreen()}
+              }>
+              {orientation === 'landscape' ? (
+                <WrapperLandscape>
+                  <HtmlView
+                    html={trimNewLines(data.publicHtmlFile.content)}
+                    openWebScreen={openWebScreen}
+                    navigation={navigation}
                   />
-                )}
-                {!!subQuery &&
-                  !!subQuery.buttons &&
-                  subQuery.buttons.map((button, index) => (
+                  {!!subQuery && !!subQuery.routeName && !!subQuery.webUrl && (
                     <Button
-                      key={`${index}-${button.webUrl}`}
-                      title={button.buttonTitle || `${title} öffnen`}
-                      onPress={() =>
-                        openWebScreen({ routeName: button.routeName, webUrl: button.webUrl })
-                      }
+                      title={subQuery.buttonTitle || `${title} öffnen`}
+                      onPress={() => openWebScreen()}
                     />
-                  ))}
-              </Wrapper>
+                  )}
+                  {!!subQuery &&
+                    !!subQuery.buttons &&
+                    subQuery.buttons.map((button, index) => (
+                      <Button
+                        key={`${index}-${button.webUrl}`}
+                        title={button.buttonTitle || `${title} öffnen`}
+                        onPress={() =>
+                          openWebScreen({ routeName: button.routeName, webUrl: button.webUrl })
+                        }
+                      />
+                    ))}
+                </WrapperLandscape>
+              ) : (
+                <Wrapper>
+                  <HtmlView
+                    html={trimNewLines(data.publicHtmlFile.content)}
+                    openWebScreen={openWebScreen}
+                    navigation={navigation}
+                  />
+                  {!!subQuery && !!subQuery.routeName && !!subQuery.webUrl && (
+                    <Button
+                      title={subQuery.buttonTitle || `${title} öffnen`}
+                      onPress={() => openWebScreen()}
+                    />
+                  )}
+                  {!!subQuery &&
+                    !!subQuery.buttons &&
+                    subQuery.buttons.map((button, index) => (
+                      <Button
+                        key={`${index}-${button.webUrl}`}
+                        title={button.buttonTitle || `${title} öffnen`}
+                        onPress={() =>
+                          openWebScreen({ routeName: button.routeName, webUrl: button.webUrl })
+                        }
+                      />
+                    ))}
+                </Wrapper>
+              )}
             </ScrollView>
           </SafeAreaViewFlex>
         );
@@ -160,7 +197,7 @@ export const HtmlScreen = ({ navigation }) => {
     </Query>
   );
 };
-
+/* eslint-enable complexity */
 HtmlScreen.navigationOptions = ({ navigation }) => {
   return {
     headerLeft: (
