@@ -14,11 +14,13 @@ import {
   PointOfInterest,
   SafeAreaViewFlex,
   Tour,
-  WrapperRow
+  WrapperRow,
+  WrapperLandscape
 } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft, share } from '../icons';
 import { graphqlFetchPolicy, openShare, refreshTimeFor } from '../helpers';
+import { OrientationContext } from '../OrientationProvider';
 
 const getComponent = (query) => {
   switch (query) {
@@ -95,14 +97,26 @@ export const DetailScreen = ({ navigation }) => {
         if ((!data || !data[query]) && !details) return null;
 
         const Component = getComponent(query);
+        const { orientation } = useContext(OrientationContext);
 
-        return (
-          <SafeAreaViewFlex>
-            <ScrollView>
-              <Component data={(data && data[query]) || details} navigation={navigation} />
-            </ScrollView>
-          </SafeAreaViewFlex>
-        );
+        if (orientation === 'landscape')
+          return (
+            <SafeAreaViewFlex>
+              <ScrollView>
+                <WrapperLandscape>
+                  <Component data={(data && data[query]) || details} navigation={navigation} />
+                </WrapperLandscape>
+              </ScrollView>
+            </SafeAreaViewFlex>
+          );
+        else
+          return (
+            <SafeAreaViewFlex>
+              <ScrollView>
+                <Component data={(data && data[query]) || details} navigation={navigation} />
+              </ScrollView>
+            </SafeAreaViewFlex>
+          );
       }}
     </Query>
   );
