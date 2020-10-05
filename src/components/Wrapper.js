@@ -11,6 +11,10 @@ export const WrapperHorizontal = styled.View`
   padding-right: ${normalize(14)}px;
 `;
 
+export const WrapperLandscape = styled.View`
+  padding-left: ${normalize(150)}px;
+  padding-right: ${normalize(150)}px;
+`;
 export const WrapperRow = styled.View`
   flex-direction: row;
 `;

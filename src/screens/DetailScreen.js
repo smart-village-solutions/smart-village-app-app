@@ -21,11 +21,13 @@ import {
   PointOfInterest,
   SafeAreaViewFlex,
   Tour,
-  WrapperRow
+  WrapperRow,
+  WrapperLandscape
 } from '../components';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { arrowLeft, share } from '../icons';
 import { graphqlFetchPolicy, openShare, refreshTimeFor } from '../helpers';
+import { OrientationContext } from '../OrientationProvider';
 
 const getComponent = (query) => {
   const COMPONENTS = {
@@ -82,7 +84,7 @@ export const DetailScreen = ({ navigation }) => {
 
   const refresh = async (refetch) => {
     setRefreshing(true);
-    isConnected && await refetch();
+    isConnected && (await refetch());
     setRefreshing(false);
   };
 
@@ -105,23 +107,44 @@ export const DetailScreen = ({ navigation }) => {
         if ((!data || !data[query]) && !details) return null;
 
         const Component = getComponent(query);
+        const { orientation } = useContext(OrientationContext);
 
-        return (
-          <SafeAreaViewFlex>
-            <ScrollView
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={() => refresh(refetch)}
-                  colors={[colors.accent]}
-                  tintColor={colors.accent}
-                />
-              }
-            >
-              <Component data={(data && data[query]) || details} navigation={navigation} />
-            </ScrollView>
-          </SafeAreaViewFlex>
-        );
+        if (orientation === 'landscape')
+          return (
+            <SafeAreaViewFlex>
+              <ScrollView
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => refresh(refetch)}
+                    colors={[colors.accent]}
+                    tintColor={colors.accent}
+                  />
+                }
+              >
+                <WrapperLandscape>
+                  <Component data={(data && data[query]) || details} navigation={navigation} />
+                </WrapperLandscape>
+              </ScrollView>
+            </SafeAreaViewFlex>
+          );
+        else
+          return (
+            <SafeAreaViewFlex>
+              <ScrollView
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => refresh(refetch)}
+                    colors={[colors.accent]}
+                    tintColor={colors.accent}
+                  />
+                }
+              >
+                <Component data={(data && data[query]) || details} navigation={navigation} />
+              </ScrollView>
+            </SafeAreaViewFlex>
+          );
       }}
     </Query>
   );
