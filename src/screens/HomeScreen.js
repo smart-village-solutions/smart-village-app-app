@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
 import { Query } from 'react-apollo';
 import _shuffle from 'lodash/shuffle';
@@ -46,8 +46,14 @@ export const HomeScreen = ({ navigation }) => {
     showNews = true,
     showPointsOfInterestAndTours = true,
     showEvents = true,
-    headlineNews = texts.homeTitles.news,
-    buttonNews = texts.homeButtons.news,
+    categoriesNews = [
+      {
+        categoryId: texts.homeCategoriesNews.categoryId,
+        categoryTitle: texts.homeCategoriesNews.categoryTitle,
+        categoryTitleDetail: texts.homeCategoriesNews.categoryTitleDetail,
+        categoryButton: texts.homeButtons.news
+      }
+    ],
     headlinePointsOfInterestAndTours = texts.homeTitles.pointsOfInterest,
     buttonPointsOfInterestAndTours = texts.homeButtons.pointsOfInterest,
     headlineEvents = texts.homeTitles.events,
@@ -90,15 +96,15 @@ export const HomeScreen = ({ navigation }) => {
         rootRouteName: 'EventRecords'
       }
     },
-    NEWS_ITEMS_INDEX: {
+    NEWS_ITEMS_INDEX: (categoryId, categoryTitle) => ({
       routeName: 'Index',
       params: {
-        title: 'Nachrichten',
+        title: categoryTitle,
         query: QUERY_TYPES.NEWS_ITEMS,
-        queryVariables: { limit: 15 },
+        queryVariables: { limit: 15, categoryId },
         rootRouteName: 'NewsItems'
       }
-    }
+    })
   };
 
   return (
@@ -115,76 +121,87 @@ export const HomeScreen = ({ navigation }) => {
       >
         <HomeCarousel navigation={navigation} />
 
-        {showNews && (
-          <>
-            <TitleContainer>
-              <Touchable onPress={() => navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX)}>
-                <Title accessibilityLabel={`${headlineNews} (Überschrift) (Taste)`}>
-                  {headlineNews}
-                </Title>
-              </Touchable>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Query
-              query={getQuery(QUERY_TYPES.NEWS_ITEMS)}
-              variables={{ limit: 3 }}
-              fetchPolicy={fetchPolicy}
-            >
-              {({ data, loading }) => {
-                if (loading) {
-                  return (
-                    <LoadingContainer>
-                      <ActivityIndicator color={colors.accent} />
-                    </LoadingContainer>
-                  );
-                }
+        {showNews &&
+          categoriesNews.map(
+            ({ categoryId, categoryTitle, categoryTitleDetail, categoryButton }, index) => (
+              <Fragment key={`${index}-${categoryId}`}>
+                <TitleContainer>
+                  <Touchable
+                    onPress={() =>
+                      navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX(categoryId, categoryTitle))
+                    }
+                  >
+                    <Title accessibilityLabel={`${categoryTitle} (Überschrift) (Taste)`}>
+                      {categoryTitle}
+                    </Title>
+                  </Touchable>
+                </TitleContainer>
+                {device.platform === 'ios' && <TitleShadow />}
+                <Query
+                  query={getQuery(QUERY_TYPES.NEWS_ITEMS)}
+                  variables={{ limit: 3, categoryId }}
+                  fetchPolicy={fetchPolicy}
+                >
+                  {({ data, loading }) => {
+                    if (loading) {
+                      return (
+                        <LoadingContainer>
+                          <ActivityIndicator color={colors.accent} />
+                        </LoadingContainer>
+                      );
+                    }
 
-                const newsItems =
-                  data &&
-                  data.newsItems &&
-                  data.newsItems.map((newsItem, index) => ({
-                    id: newsItem.id,
-                    subtitle: subtitle(
-                      momentFormat(newsItem.publishedAt),
-                      !!newsItem.dataProvider && newsItem.dataProvider.name
-                    ),
-                    title:
-                      !!newsItem.contentBlocks &&
-                      !!newsItem.contentBlocks.length &&
-                      newsItem.contentBlocks[0].title,
-                    routeName: 'Detail',
-                    params: {
-                      title: 'Nachricht',
-                      query: QUERY_TYPES.NEWS_ITEM,
-                      queryVariables: { id: `${newsItem.id}` },
-                      rootRouteName: 'NewsItems',
-                      shareContent: {
-                        message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM)
-                      },
-                      details: newsItem
-                    },
-                    bottomDivider: index !== data.newsItems.length - 1,
-                    __typename: newsItem.__typename
-                  }));
+                    const newsItems =
+                      data &&
+                      data.newsItems &&
+                      data.newsItems.map((newsItem, index) => ({
+                        id: newsItem.id,
+                        subtitle: subtitle(
+                          momentFormat(newsItem.publishedAt),
+                          !!newsItem.dataProvider && newsItem.dataProvider.name
+                        ),
+                        title:
+                          !!newsItem.contentBlocks &&
+                          !!newsItem.contentBlocks.length &&
+                          newsItem.contentBlocks[0].title,
+                        routeName: 'Detail',
+                        params: {
+                          title: categoryTitleDetail,
+                          query: QUERY_TYPES.NEWS_ITEM,
+                          queryVariables: { id: `${newsItem.id}` },
+                          rootRouteName: 'NewsItems',
+                          shareContent: {
+                            message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM)
+                          },
+                          details: newsItem
+                        },
+                        bottomDivider: index !== data.newsItems.length - 1,
+                        __typename: newsItem.__typename
+                      }));
 
-                if (!newsItems || !newsItems.length) return null;
+                    if (!newsItems || !newsItems.length) return null;
 
-                return (
-                  <View>
-                    <TextList navigation={navigation} data={newsItems} />
+                    return (
+                      <View>
+                        <TextList navigation={navigation} data={newsItems} />
 
-                    <Wrapper>
-                      <Button
-                        title={buttonNews}
-                        onPress={() => navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX)}
-                      />
-                    </Wrapper>
-                  </View>
-                );
-              }}
-            </Query>
-          </>
-        )}
+                        <Wrapper>
+                          <Button
+                            title={categoryButton}
+                            onPress={() =>
+                              navigation.navigate(
+                                NAVIGATION.NEWS_ITEMS_INDEX(categoryId, categoryTitle)
+                              )
+                            }
+                          />
+                        </Wrapper>
+                      </View>
+                    );
+                  }}
+                </Query>
+              </Fragment>
+            )
+          )}
 
         {showPointsOfInterestAndTours && (
           <>

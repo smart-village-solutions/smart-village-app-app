@@ -23,10 +23,14 @@ export const texts = {
   homeTitles: {
     about: 'Über die App',
     events: 'Veranstaltungen',
-    news: 'Nachrichten',
     pointsOfInterest: 'Touren und Orte',
     service: 'Service',
     company: 'Städtische Unternehmen'
+  },
+  homeCategoriesNews: {
+    categoryId: '47',
+    categoryTitle: 'Nachrichten',
+    categoryTitleDetail: 'Nachricht'
   },
   navigationTitles: {
     home: 'Übersicht'
