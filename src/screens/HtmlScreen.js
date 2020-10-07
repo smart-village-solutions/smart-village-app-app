@@ -20,7 +20,7 @@ import {
   LoadingContainer,
   SafeAreaViewFlex,
   Wrapper,
-  WrapperLandscape
+  WrapperWithOrientation
 } from '../components';
 import { graphqlFetchPolicy, refreshTimeFor, trimNewLines } from '../helpers';
 import { getQuery } from '../queries';
@@ -63,7 +63,7 @@ export const HtmlScreen = ({ navigation }) => {
 
   const refresh = async (refetch) => {
     setRefreshing(true);
-    isConnected && await refetch();
+    isConnected && (await refetch());
     setRefreshing(false);
   };
 
@@ -110,7 +110,6 @@ export const HtmlScreen = ({ navigation }) => {
     });
   };
 
-  /* eslint-disable complexity */
   return (
     <Query
       query={getQuery(query)}
@@ -138,33 +137,9 @@ export const HtmlScreen = ({ navigation }) => {
                   colors={[colors.accent]}
                   tintColor={colors.accent}
                 />
-              }>
-              {orientation === 'landscape' ? (
-                <WrapperLandscape>
-                  <HtmlView
-                    html={trimNewLines(data.publicHtmlFile.content)}
-                    openWebScreen={openWebScreen}
-                    navigation={navigation}
-                  />
-                  {!!subQuery && !!subQuery.routeName && !!subQuery.webUrl && (
-                    <Button
-                      title={subQuery.buttonTitle || `${title} öffnen`}
-                      onPress={() => openWebScreen()}
-                    />
-                  )}
-                  {!!subQuery &&
-                    !!subQuery.buttons &&
-                    subQuery.buttons.map((button, index) => (
-                      <Button
-                        key={`${index}-${button.webUrl}`}
-                        title={button.buttonTitle || `${title} öffnen`}
-                        onPress={() =>
-                          openWebScreen({ routeName: button.routeName, webUrl: button.webUrl })
-                        }
-                      />
-                    ))}
-                </WrapperLandscape>
-              ) : (
+              }
+            >
+              <WrapperWithOrientation orientation={orientation}>
                 <Wrapper>
                   <HtmlView
                     html={trimNewLines(data.publicHtmlFile.content)}
@@ -189,7 +164,7 @@ export const HtmlScreen = ({ navigation }) => {
                       />
                     ))}
                 </Wrapper>
-              )}
+              </WrapperWithOrientation>
             </ScrollView>
           </SafeAreaViewFlex>
         );
@@ -197,7 +172,7 @@ export const HtmlScreen = ({ navigation }) => {
     </Query>
   );
 };
-/* eslint-enable complexity */
+
 HtmlScreen.navigationOptions = ({ navigation }) => {
   return {
     headerLeft: (

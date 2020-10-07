@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+import React from 'react';
 import styled from 'styled-components/native';
 
 import { normalize } from '../config';
@@ -12,9 +14,10 @@ export const WrapperHorizontal = styled.View`
 `;
 
 export const WrapperLandscape = styled.View`
-  padding-left: ${normalize(150)}px;
-  padding-right: ${normalize(150)}px;
+  padding-left: 15%;
+  padding-right: 15%;
 `;
+
 export const WrapperRow = styled.View`
   flex-direction: row;
 `;
@@ -28,3 +31,15 @@ export const WrapperWrap = styled(WrapperRow)`
 export const InfoBox = styled(WrapperRow)`
   margin-bottom: ${normalize(5)}px;
 `;
+
+export const WrapperWithOrientation = ({ orientation, children }) => {
+  if (orientation === 'landscape') {
+    return <WrapperLandscape>{children}</WrapperLandscape>;
+  }
+  return children;
+};
+
+WrapperWithOrientation.propTypes = {
+  orientation: PropTypes.string.isRequired,
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired
+};
