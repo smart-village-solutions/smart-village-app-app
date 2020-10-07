@@ -9,7 +9,7 @@ const defaultDimensions = {
 };
 
 // default orientation should be portrait up, because we defined that in the expo configs. but we
-// want to be sure with checking the devive dimension.
+// want to be sure with checking the device dimension.
 const defaultOrientation =
   defaultDimensions.width < defaultDimensions.height ? 'portrait' : 'landscape';
 
