@@ -15,7 +15,7 @@ import {
   SafeAreaViewFlex,
   Tour,
   WrapperRow,
-  WrapperLandscape
+  WrapperWithOrientation
 } from '../components';
 import { getQuery } from '../queries';
 import { arrowLeft, share } from '../icons';
@@ -24,33 +24,34 @@ import { OrientationContext } from '../OrientationProvider';
 
 const getComponent = (query) => {
   switch (query) {
-  case 'newsItem':
-    return NewsItem;
-  case 'eventRecord':
-    return EventRecord;
-  case 'pointOfInterest':
-    return PointOfInterest;
-  case 'tour':
-    return Tour;
+    case 'newsItem':
+      return NewsItem;
+    case 'eventRecord':
+      return EventRecord;
+    case 'pointOfInterest':
+      return PointOfInterest;
+    case 'tour':
+      return Tour;
   }
 };
 
 const getRefreshInterval = (query) => {
   switch (query) {
-  case 'newsItem':
-    return consts.NEWS;
-  case 'eventRecord':
-    return consts.EVENTS;
-  case 'pointOfInterest':
-    return consts.POINTS_OF_INTEREST;
-  case 'tour':
-    return consts.TOURS;
+    case 'newsItem':
+      return consts.NEWS;
+    case 'eventRecord':
+      return consts.EVENTS;
+    case 'pointOfInterest':
+      return consts.POINTS_OF_INTEREST;
+    case 'tour':
+      return consts.TOURS;
   }
 };
 
 export const DetailScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { orientation } = useContext(OrientationContext);
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', {});
 
@@ -97,26 +98,16 @@ export const DetailScreen = ({ navigation }) => {
         if ((!data || !data[query]) && !details) return null;
 
         const Component = getComponent(query);
-        const { orientation } = useContext(OrientationContext);
 
-        if (orientation === 'landscape')
-          return (
-            <SafeAreaViewFlex>
-              <ScrollView>
-                <WrapperLandscape>
-                  <Component data={(data && data[query]) || details} navigation={navigation} />
-                </WrapperLandscape>
-              </ScrollView>
-            </SafeAreaViewFlex>
-          );
-        else
-          return (
-            <SafeAreaViewFlex>
-              <ScrollView>
+        return (
+          <SafeAreaViewFlex>
+            <ScrollView>
+              <WrapperWithOrientation orientation={orientation}>
                 <Component data={(data && data[query]) || details} navigation={navigation} />
-              </ScrollView>
-            </SafeAreaViewFlex>
-          );
+              </WrapperWithOrientation>
+            </ScrollView>
+          </SafeAreaViewFlex>
+        );
       }}
     </Query>
   );
