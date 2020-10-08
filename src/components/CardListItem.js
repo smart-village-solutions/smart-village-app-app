@@ -11,7 +11,7 @@ import { Touchable } from './Touchable';
 
 export class CardListItem extends React.PureComponent {
   render() {
-    const { navigation, horizontal, item } = this.props;
+    const { navigation, horizontal, item, orientation } = this.props;
     const { routeName, params, image, category, name } = item;
 
     return (
@@ -53,9 +53,14 @@ export class CardListItem extends React.PureComponent {
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ horizontal }) => {
+const stylesWithProps = ({ horizontal, orientation }) => {
   // image width should be only 70% when rendering horizontal cards, otherwise substract paddings
-  const width = horizontal ? imageWidth() * 0.7 : imageWidth() - 2 * normalize(14);
+  // when orientation image width should be device width + double padding TODO: need a fix
+  const width = horizontal
+    ? imageWidth() * 0.7
+    : orientation
+    ? imageWidth() - 2 * normalize(30)
+    : imageWidth() - 2 * normalize(14);
 
   return StyleSheet.create({
     container: {
@@ -79,7 +84,8 @@ const stylesWithProps = ({ horizontal }) => {
 CardListItem.propTypes = {
   navigation: PropTypes.object.isRequired,
   item: PropTypes.object.isRequired,
-  horizontal: PropTypes.bool
+  horizontal: PropTypes.bool,
+  orientation: PropTypes.string
 };
 
 CardListItem.defaultProps = {
