@@ -14,9 +14,10 @@ export const Button = ({ title, onPress }) => {
       onPress={onPress}
       title={title}
       titleStyle={styles.titleStyle}
-      containerStyle={styles.containerStyle}
+      containerStyle={
+        orientation === 'landscape' ? styles.containerStyleLandscape : styles.containerStyle
+      }
       ViewComponent={DiagonalGradient}
-      buttonStyle={orientation === 'landscape' && styles.buttonStyleLandscape}
       useForeground
     />
   );
@@ -27,9 +28,10 @@ const styles = StyleSheet.create({
     color: colors.lightestText,
     fontFamily: 'titillium-web-bold'
   },
-  buttonStyleLandscape: {
-    alignSelf: 'center',
-    width: '60%'
+  containerStyleLandscape: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: normalize(21)
   },
   containerStyle: {
     marginBottom: normalize(21)
