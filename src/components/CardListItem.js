@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Card } from 'react-native-elements';
 import { Platform, StyleSheet, View } from 'react-native';
 
@@ -8,6 +8,8 @@ import { imageHeight, imageWidth } from '../helpers';
 import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
+import { WrapperWithOrientation } from './Wrapper';
+import { OrientationContext } from '../OrientationProvider';
 
 export class CardListItem extends React.PureComponent {
   render() {
@@ -37,13 +39,17 @@ export class CardListItem extends React.PureComponent {
           ]}
         >
           <View style={stylesWithProps(this.props).contentContainer}>
-            {!!image && <Image source={{ uri: image }} style={stylesWithProps(this.props).image} />}
-            {!!category && <RegularText small>{category}</RegularText>}
-            {!!name && (
-              <BoldText>
-                {horizontal ? (name.length > 60 ? name.substring(0, 60) + '...' : name) : name}
-              </BoldText>
-            )}
+            <WrapperWithOrientation orientation={orientation}>
+              {!!image && (
+                <Image source={{ uri: image }} style={stylesWithProps(this.props).image} />
+              )}
+              {!!category && <RegularText small>{category}</RegularText>}
+              {!!name && (
+                <BoldText>
+                  {horizontal ? (name.length > 60 ? name.substring(0, 60) + '...' : name) : name}
+                </BoldText>
+              )}
+            </WrapperWithOrientation>
           </View>
         </Card>
       </Touchable>
@@ -53,13 +59,14 @@ export class CardListItem extends React.PureComponent {
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ horizontal, orientation }) => {
+export const stylesWithProps = ({ horizontal }) => {
+  const { orientation } = useContext(OrientationContext);
   // image width should be only 70% when rendering horizontal cards, otherwise substract paddings
   // when orientation image width should be device width + double padding TODO: need a fix
   const width = horizontal
     ? imageWidth() * 0.7
-    : orientation
-    ? imageWidth() - 2 * normalize(30)
+    : orientation === 'landscape'
+    ? imageWidth() * 0.5
     : imageWidth() - 2 * normalize(14);
 
   return StyleSheet.create({
