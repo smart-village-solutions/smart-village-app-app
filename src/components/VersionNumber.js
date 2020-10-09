@@ -12,8 +12,8 @@ export const VersionNumber = () => {
       <RegularText
         small
         style={styles.version}
-        accessible={true}
-        accessibilityLabel={`(App version:) ${appJson.expo.version} `}
+        accessible
+        accessibilityLabel={`App version: ${appJson.expo.version}`}
       >
         Version: {appJson.expo.version}
       </RegularText>

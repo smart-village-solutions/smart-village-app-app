@@ -93,7 +93,7 @@ export const ServiceScreen = ({ navigation }) => {
             <>
               {!!headlineService && (
                 <TitleContainer>
-                  <Title accessible={true} accessibilityLabel={`${headlineService} (Überschrift)`}>
+                  <Title accessible accessibilityLabel={`${headlineService} (Überschrift)`}>
                     {headlineService}
                   </Title>
                 </TitleContainer>
@@ -140,7 +140,7 @@ export const ServiceScreen = ({ navigation }) => {
                                 small
                                 primary
                                 center
-                                accessible={true}
+                                accessible
                                 accessibilityLabel={`${item.title} (Taste)`}
                               >
                                 {item.title}
