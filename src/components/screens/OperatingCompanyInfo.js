@@ -65,7 +65,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
           <Icon xml={location(colors.primary)} style={styles.margin} />
           <TouchableOpacity
             onPress={() => addressOnPress(companyAddress)}
-            accessibilityLabel={`(Adresse) (${companyAddress}) (Taste) (Wechselt zur Karten-App)`}
+            accessibilityLabel={`(Adresse) ${companyAddress} (Taste) (Wechselt zur Karten-App)`}
           >
             <RegularText primary>{companyAddress}</RegularText>
           </TouchableOpacity>
@@ -91,7 +91,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
               <Icon xml={phoneIcon(colors.primary)} style={styles.margin} />
               <TouchableOpacity
                 onPress={() => openLink(`tel:${contact.phone}`)}
-                accessibilityLabel={`(Telefonnummer) (${contact.phone}) (Taste) (Wechselt zur Telefon-App)`}
+                accessibilityLabel={`(Telefonnummer) ${contact.phone} (Taste) (Wechselt zur Telefon-App)`}
               >
                 <RegularText primary>{contact.phone}</RegularText>
               </TouchableOpacity>
@@ -102,7 +102,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
               <Icon xml={mail(colors.primary)} style={styles.margin} />
               <TouchableOpacity
                 onPress={() => openLink(`mailto:${contact.email}`)}
-                accessibilityLabel={`(E-mail-Adresse) (${contact.email}) (Taste) (Wechselt zur Email-App)`}
+                accessibilityLabel={`(E-mail-Adresse) ${contact.email} (Taste) (Wechselt zur Email-App)`}
               >
                 <RegularText primary>{contact.email}</RegularText>
               </TouchableOpacity>
@@ -116,7 +116,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
                 color={colors.primary}
                 iconStyle={{ marginRight: normalize(10) }}
               />
-              <RegularText primary accessible={true} accessibilityLabel={`(Fax) (${contact.fax}`}>
+              <RegularText primary accessible accessibilityLabel={`(Fax) ${contact.fax}`}>
                 {contact.fax}
               </RegularText>
             </InfoBox>
@@ -126,7 +126,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
               <Icon xml={link(colors.primary)} style={styles.marginWww} />
               <TouchableOpacity
                 onPress={() => openLink(contact.www, openWebScreen)}
-                accessibilityLabel={`(Webseite) (${contact.www}) (Taste) (Öffnet Webseite in der aktuellen App)`}
+                accessibilityLabel={`(Webseite) ${contact.www} (Taste) (Öffnet Webseite in der aktuellen App)`}
               >
                 <RegularText primary>{contact.www}</RegularText>
               </TouchableOpacity>
@@ -146,7 +146,7 @@ export const OperatingCompanyInfo = ({ address, contact, name, webUrls, openWebS
               <Icon xml={urlIcon(colors.primary)} style={styles.margin} />
               <TouchableOpacity
                 onPress={() => openLink(url, openWebScreen)}
-                accessibilityLabel={`(Webseite) (${url}) (Taste) (Öffnet Webseite in der aktuellen App)`}
+                accessibilityLabel={`(Webseite) ${url} (Taste) (Öffnet Webseite in der aktuellen App)`}
               >
                 <RegularText primary>{url}</RegularText>
               </TouchableOpacity>

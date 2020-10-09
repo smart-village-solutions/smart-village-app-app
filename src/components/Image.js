@@ -40,7 +40,7 @@ export const Image = ({ source, style, PlaceholderContent }) => {
         style={style}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}
-        accessible={true}
+        accessible
         accessibilityLabel={`${PlaceholderContent}`}
       />
     );
@@ -53,7 +53,7 @@ export const Image = ({ source, style, PlaceholderContent }) => {
         style={style}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}
-        accessible={true}
+        accessible
         accessibilityLabel={`${PlaceholderContent}`}
       />
       <ImageRights imageRights={source.copyright} />
