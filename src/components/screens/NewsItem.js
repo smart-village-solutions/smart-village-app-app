@@ -31,7 +31,7 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewsItem = ({ data, navigation }) => {
-  const { orientation } = useContext(OrientationContext);
+  const { orientation, dimensions } = useContext(OrientationContext);
   const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings } = data;
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
@@ -103,6 +103,8 @@ export const NewsItem = ({ data, navigation }) => {
               )}
               tagsStyles={{ div: { fontFamily: 'titillium-web-bold' } }}
               openWebScreen={openWebScreen}
+              orientation={orientation}
+              dimensions={dimensions}
             />
           </WrapperHorizontal>
         );
@@ -143,7 +145,12 @@ export const NewsItem = ({ data, navigation }) => {
         !!contentBlock.body &&
         section.push(
           <WrapperHorizontal key={`${index}-${contentBlock.id}-body`}>
-            <HtmlView html={trimNewLines(contentBlock.body)} openWebScreen={openWebScreen} />
+            <HtmlView
+              html={trimNewLines(contentBlock.body)}
+              openWebScreen={openWebScreen}
+              orientation={orientation}
+              dimensions={dimensions}
+            />
           </WrapperHorizontal>
         );
 

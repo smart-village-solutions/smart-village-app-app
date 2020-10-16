@@ -30,7 +30,7 @@ import { OrientationContext } from '../OrientationProvider';
 export const HtmlScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { orientation } = useContext(OrientationContext);
+  const { orientation, dimensions } = useContext(OrientationContext);
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', '');
   const [refreshing, setRefreshing] = useState(false);
@@ -145,6 +145,8 @@ export const HtmlScreen = ({ navigation }) => {
                     html={trimNewLines(data.publicHtmlFile.content)}
                     openWebScreen={openWebScreen}
                     navigation={navigation}
+                    orientation={orientation}
+                    dimensions={dimensions}
                   />
                   {!!subQuery && !!subQuery.routeName && !!subQuery.webUrl && (
                     <Button
