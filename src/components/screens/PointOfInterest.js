@@ -18,7 +18,7 @@ import { OrientationContext } from '../../OrientationProvider';
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const PointOfInterest = ({ data, navigation }) => {
-  const { orientation } = useContext(OrientationContext);
+  const { orientation, dimensions } = useContext(OrientationContext);
   const {
     addresses,
     category,
@@ -119,7 +119,12 @@ export const PointOfInterest = ({ data, navigation }) => {
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Wrapper>
-              <HtmlView html={description} openWebScreen={openWebScreen} />
+              <HtmlView
+                html={description}
+                openWebScreen={openWebScreen}
+                orientation={orientation}
+                dimensions={dimensions}
+              />
             </Wrapper>
           </View>
         )}
