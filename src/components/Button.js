@@ -9,14 +9,16 @@ import { OrientationContext } from '../OrientationProvider';
 
 export const Button = ({ title, onPress }) => {
   const { orientation } = useContext(OrientationContext);
+
   return (
     <RNEButton
       onPress={onPress}
       title={title}
-      titleStyle={styles.titleStyle}
-      containerStyle={
-        orientation === 'landscape' ? styles.containerStyleLandscape : styles.containerStyle
-      }
+      titleStyle={[styles.titleStyle, orientation === 'landscape' && styles.titleStyleLandscape]}
+      containerStyle={[
+        styles.containerStyle,
+        orientation === 'landscape' && styles.containerStyleLandscape
+      ]}
       ViewComponent={DiagonalGradient}
       useForeground
     />
@@ -28,13 +30,15 @@ const styles = StyleSheet.create({
     color: colors.lightestText,
     fontFamily: 'titillium-web-bold'
   },
-  containerStyleLandscape: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: normalize(21)
+  titleStyleLandscape: {
+    paddingHorizontal: normalize(14)
   },
   containerStyle: {
     marginBottom: normalize(21)
+  },
+  containerStyleLandscape: {
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });
 
