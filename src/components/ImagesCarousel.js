@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import Carousel from 'react-native-snap-carousel';
 import React, { useContext } from 'react';
-import { ActivityIndicator, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { colors } from '../config';
@@ -90,14 +90,14 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
           </Query>
         );
       } else {
-        return <TouchableImage navigation={navigation} item={item}>
-          <Image source={item.picture} style={imageStyle} />
-        </TouchableImage>;
+        return (
+          <TouchableImage navigation={navigation} item={item}>
+            <Image source={item.picture} style={imageStyle} />
+          </TouchableImage>
+        );
       }
     } else {
-      return (
-        <Image source={item.picture} style={imageStyle} />
-      );
+      return <Image source={item.picture} style={imageStyle} />;
     }
   };
 
@@ -112,9 +112,16 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
       loop
       autoplayDelay={0}
       autoplayInterval={4000}
+      containerCustomStyle={styles.center}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  center: {
+    alignSelf: 'center'
+  }
+});
 
 ImagesCarousel.propTypes = {
   data: PropTypes.array.isRequired,
