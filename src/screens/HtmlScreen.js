@@ -23,6 +23,7 @@ import { OrientationContext } from '../OrientationProvider';
 export const HtmlScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { orientation } = useContext(OrientationContext);
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', '');
 
@@ -54,7 +55,6 @@ export const HtmlScreen = ({ navigation }) => {
   const rootRouteName = navigation.getParam('rootRouteName', '');
   const subQuery = navigation.getParam('subQuery', '');
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
-  const { orientation } = useContext(OrientationContext);
 
   // action to open source urls
   const openWebScreen = (param) => {
