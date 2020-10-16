@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { View } from 'react-native';
 import _filter from 'lodash/filter';
 
@@ -8,16 +8,17 @@ import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper } from '../Wrapper';
-
+import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { InfoCard } from './InfoCard';
 import { TourCard } from './TourCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 import { ImagesCarousel } from '../ImagesCarousel';
+import { OrientationContext } from '../../OrientationProvider';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const Tour = ({ data, navigation }) => {
+  const { orientation } = useContext(OrientationContext);
   const {
     addresses,
     category,
@@ -65,52 +66,55 @@ export const Tour = ({ data, navigation }) => {
   return (
     <View>
       {!!images && images.length > 1 && <ImagesCarousel data={images} />}
-      {!!images && images.length === 1 && <Image source={images[0].picture} />}
 
-      {!!title && (
-        <View>
-          <TitleContainer>
-            <Title>{title}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </View>
-      )}
+      <WrapperWithOrientation orientation={orientation}>
+        {!!images && images.length === 1 && <Image source={images[0].picture} />}
 
-      <Wrapper>
-        {!!logo && <Logo source={{ uri: logo }} />}
+        {!!title && (
+          <View>
+            <TitleContainer>
+              <Title>{title}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+          </View>
+        )}
 
-        <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
-      </Wrapper>
+        <Wrapper>
+          {!!logo && <Logo source={{ uri: logo }} />}
 
-      <TourCard lengthKm={lengthKm} addresses={addresses} />
+          <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
+        </Wrapper>
 
-      {!!description && (
-        <View>
-          <TitleContainer>
-            <Title>{texts.eventRecord.description}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-          <Wrapper>
-            <HtmlView html={description} openWebScreen={openWebScreen} />
-          </Wrapper>
-        </View>
-      )}
+        <TourCard lengthKm={lengthKm} addresses={addresses} />
 
-      {!!operatingCompany && (
-        <View>
-          <TitleContainer>
-            <Title>{texts.eventRecord.operatingCompany}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-          <OperatingCompanyInfo
-            name={operatingCompany.name}
-            address={operatingCompany.address}
-            contact={operatingCompany.contact}
-            webUrls={operatingCompany.contact.webUrls}
-            openWebScreen={openWebScreen}
-          />
-        </View>
-      )}
+        {!!description && (
+          <View>
+            <TitleContainer>
+              <Title>{texts.eventRecord.description}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            <Wrapper>
+              <HtmlView html={description} openWebScreen={openWebScreen} />
+            </Wrapper>
+          </View>
+        )}
+
+        {!!operatingCompany && (
+          <View>
+            <TitleContainer>
+              <Title>{texts.eventRecord.operatingCompany}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            <OperatingCompanyInfo
+              name={operatingCompany.name}
+              address={operatingCompany.address}
+              contact={operatingCompany.contact}
+              webUrls={operatingCompany.contact.webUrls}
+              openWebScreen={openWebScreen}
+            />
+          </View>
+        )}
+      </WrapperWithOrientation>
     </View>
   );
 };

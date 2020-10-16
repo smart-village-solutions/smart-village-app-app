@@ -21,13 +21,11 @@ import {
   PointOfInterest,
   SafeAreaViewFlex,
   Tour,
-  WrapperRow,
-  WrapperWithOrientation
+  WrapperRow
 } from '../components';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { arrowLeft, share } from '../icons';
 import { graphqlFetchPolicy, openShare, refreshTimeFor } from '../helpers';
-import { OrientationContext } from '../OrientationProvider';
 
 const getComponent = (query) => {
   const COMPONENTS = {
@@ -54,7 +52,6 @@ const getRefreshInterval = (query) => {
 export const DetailScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { orientation } = useContext(OrientationContext);
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', {});
   const [refreshing, setRefreshing] = useState(false);
@@ -121,9 +118,7 @@ export const DetailScreen = ({ navigation }) => {
                 />
               }
             >
-              <WrapperWithOrientation orientation={orientation}>
-                <Component data={(data && data[query]) || details} navigation={navigation} />
-              </WrapperWithOrientation>
+              <Component data={(data && data[query]) || details} navigation={navigation} />
             </ScrollView>
           </SafeAreaViewFlex>
         );
