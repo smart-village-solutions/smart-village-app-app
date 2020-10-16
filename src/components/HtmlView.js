@@ -53,8 +53,10 @@ const htmlConfig = {
   ignoredTags: IGNORED_TAGS
 };
 
-export const HtmlView = ({ html, tagsStyles, openWebScreen }) => {
-  const maxWidth = imageWidth() - 2 * normalize(14); // width of an image minus paddings
+export const HtmlView = ({ html, tagsStyles, openWebScreen, orientation, dimensions }) => {
+  // size images correctly on landscape
+  const width = orientation === 'landscape' ? dimensions.height : dimensions.width;
+  const maxWidth = width - 2 * normalize(14); // width of an image minus paddings
 
   return (
     <HTML
@@ -82,7 +84,9 @@ export const HtmlView = ({ html, tagsStyles, openWebScreen }) => {
 HtmlView.propTypes = {
   html: PropTypes.string,
   tagsStyles: PropTypes.object,
-  openWebScreen: PropTypes.func
+  openWebScreen: PropTypes.func,
+  orientation: PropTypes.string.isRequired,
+  dimensions: PropTypes.string.isRequired
 };
 
 HtmlView.defaultProps = {
