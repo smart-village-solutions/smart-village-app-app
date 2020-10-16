@@ -5,6 +5,7 @@ import { ActivityIndicator, FlatList } from 'react-native';
 import { colors, normalize } from '../config';
 import { CardListItem } from './CardListItem';
 
+// TODO in order to implement landscape logic CardList needs to become a function component
 export class CardList extends React.PureComponent {
   state = {
     listEndReached: false

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import _filter from 'lodash/filter';
@@ -11,11 +11,12 @@ import { LoadingContainer } from '../LoadingContainer';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperHorizontal } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { containsHtml, momentFormat, trimNewLines } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 import { Button } from '../Button';
+import { OrientationContext } from '../../OrientationProvider';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
 // thx to: https://stackoverflow.com/a/55780430
@@ -30,6 +31,7 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewsItem = ({ data, navigation }) => {
+  const { orientation, dimensions } = useContext(OrientationContext);
   const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings } = data;
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
@@ -101,6 +103,8 @@ export const NewsItem = ({ data, navigation }) => {
               )}
               tagsStyles={{ div: { fontFamily: 'titillium-web-bold' } }}
               openWebScreen={openWebScreen}
+              orientation={orientation}
+              dimensions={dimensions}
             />
           </WrapperHorizontal>
         );
@@ -141,7 +145,12 @@ export const NewsItem = ({ data, navigation }) => {
         !!contentBlock.body &&
         section.push(
           <WrapperHorizontal key={`${index}-${contentBlock.id}-body`}>
-            <HtmlView html={trimNewLines(contentBlock.body)} openWebScreen={openWebScreen} />
+            <HtmlView
+              html={trimNewLines(contentBlock.body)}
+              openWebScreen={openWebScreen}
+              orientation={orientation}
+              dimensions={dimensions}
+            />
           </WrapperHorizontal>
         );
 
@@ -190,28 +199,31 @@ export const NewsItem = ({ data, navigation }) => {
   return (
     <View>
       {!!mainImages && mainImages.length > 1 && <ImagesCarousel data={mainImages} />}
-      {!!mainImages && mainImages.length === 1 && <Image source={mainImages[0].picture} />}
 
-      {!!title && !!link ? (
-        <TitleContainer>
-          <Touchable onPress={openWebScreen}>
-            <Title>{trimNewLines(title)}</Title>
-          </Touchable>
-        </TitleContainer>
-      ) : (
-        !!title && (
+      <WrapperWithOrientation orientation={orientation}>
+        {!!mainImages && mainImages.length === 1 && <Image source={mainImages[0].picture} />}
+
+        {!!title && !!link ? (
           <TitleContainer>
-            <Title>{trimNewLines(title)}</Title>
+            <Touchable onPress={openWebScreen}>
+              <Title>{trimNewLines(title)}</Title>
+            </Touchable>
           </TitleContainer>
-        )
-      )}
-      {device.platform === 'ios' && <TitleShadow />}
-      <Wrapper>
-        {!!subtitle && <RegularText small>{subtitle}</RegularText>}
-        {!!logo && <Logo source={{ uri: logo }} />}
-      </Wrapper>
+        ) : (
+          !!title && (
+            <TitleContainer>
+              <Title>{trimNewLines(title)}</Title>
+            </TitleContainer>
+          )
+        )}
+        {device.platform === 'ios' && <TitleShadow />}
+        <Wrapper>
+          {!!subtitle && <RegularText small>{subtitle}</RegularText>}
+          {!!logo && <Logo source={{ uri: logo }} />}
+        </Wrapper>
 
-      {!!story && story}
+        {!!story && story}
+      </WrapperWithOrientation>
     </View>
   );
 };

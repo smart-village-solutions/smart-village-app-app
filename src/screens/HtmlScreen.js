@@ -6,14 +6,24 @@ import { Query } from 'react-apollo';
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, consts, normalize } from '../config';
-import { Button, HtmlView, Icon, LoadingContainer, SafeAreaViewFlex, Wrapper } from '../components';
+import {
+  Button,
+  HtmlView,
+  Icon,
+  LoadingContainer,
+  SafeAreaViewFlex,
+  Wrapper,
+  WrapperWithOrientation
+} from '../components';
 import { graphqlFetchPolicy, refreshTimeFor, trimNewLines } from '../helpers';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
+import { OrientationContext } from '../OrientationProvider';
 
 export const HtmlScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { orientation, dimensions } = useContext(OrientationContext);
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', '');
 
@@ -83,6 +93,7 @@ export const HtmlScreen = ({ navigation }) => {
     });
   };
 
+  /* eslint-disable complexity */
   return (
     <Query
       query={getQuery(query)}
@@ -103,30 +114,34 @@ export const HtmlScreen = ({ navigation }) => {
         return (
           <SafeAreaViewFlex>
             <ScrollView>
-              <Wrapper>
-                <HtmlView
-                  html={trimNewLines(data.publicHtmlFile.content)}
-                  openWebScreen={openWebScreen}
-                  navigation={navigation}
-                />
-                {!!subQuery && !!subQuery.routeName && !!subQuery.webUrl && (
-                  <Button
-                    title={subQuery.buttonTitle || `${title} öffnen`}
-                    onPress={() => openWebScreen()}
+              <WrapperWithOrientation orientation={orientation}>
+                <Wrapper>
+                  <HtmlView
+                    html={trimNewLines(data.publicHtmlFile.content)}
+                    openWebScreen={openWebScreen}
+                    navigation={navigation}
+                    orientation={orientation}
+                    dimensions={dimensions}
                   />
-                )}
-                {!!subQuery &&
-                  !!subQuery.buttons &&
-                  subQuery.buttons.map((button, index) => (
+                  {!!subQuery && !!subQuery.routeName && !!subQuery.webUrl && (
                     <Button
-                      key={`${index}-${button.webUrl}`}
-                      title={button.buttonTitle || `${title} öffnen`}
-                      onPress={() =>
-                        openWebScreen({ routeName: button.routeName, webUrl: button.webUrl })
-                      }
+                      title={subQuery.buttonTitle || `${title} öffnen`}
+                      onPress={() => openWebScreen()}
                     />
-                  ))}
-              </Wrapper>
+                  )}
+                  {!!subQuery &&
+                    !!subQuery.buttons &&
+                    subQuery.buttons.map((button, index) => (
+                      <Button
+                        key={`${index}-${button.webUrl}`}
+                        title={button.buttonTitle || `${title} öffnen`}
+                        onPress={() =>
+                          openWebScreen({ routeName: button.routeName, webUrl: button.webUrl })
+                        }
+                      />
+                    ))}
+                </Wrapper>
+              </WrapperWithOrientation>
             </ScrollView>
           </SafeAreaViewFlex>
         );
@@ -134,7 +149,7 @@ export const HtmlScreen = ({ navigation }) => {
     </Query>
   );
 };
-
+/* eslint-enable complexity */
 HtmlScreen.navigationOptions = ({ navigation }) => {
   return {
     headerLeft: (
