@@ -33,6 +33,7 @@ import {
   shareMessage,
   subtitle
 } from '../helpers';
+import useMatomo from '../Matomo/useMatomo';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -59,9 +60,11 @@ export const HomeScreen = ({ navigation }) => {
     buttonEvents = texts.homeButtons.events
   } = sections;
   const [refreshing, setRefreshing] = useState(false);
+  const { trackScreenView } = useMatomo();
 
   useEffect(() => {
     isConnected && auth();
+    trackScreenView('Home');
   }, []);
 
   const refresh = () => {

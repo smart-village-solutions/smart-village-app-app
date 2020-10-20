@@ -57,6 +57,7 @@ const MainAppWithApolloProvider = () => {
     netInfoCounter: 0
   });
   const { isConnected, isMainserverUp, netInfoCounter } = netInfo;
+  const { trackAppStart } = useMatomo();
 
   const setupApolloClient = async () => {
     // https://www.apollographql.com/docs/react/recipes/authentication/#header
@@ -233,6 +234,7 @@ const MainAppWithApolloProvider = () => {
 
     // this is currently the last point where something was done, so the app startup is done
     setLoading(false);
+    trackAppStart();
   };
 
   useEffect(() => {
