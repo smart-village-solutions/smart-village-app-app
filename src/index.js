@@ -25,6 +25,11 @@ import AppStackNavigator from './navigation/AppStackNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 import { LoadingContainer } from './components';
+import MatomoTracker from './Matomo/MatomoTracker';
+import { MatomoProvider } from './Matomo/MatomoProvider';
+import useMatomo from './Matomo/useMatomo';
+
+const namespace = appJson.expo.slug;
 
 const MainAppWithApolloProvider = () => {
   const [loading, setLoading] = useState(true);
@@ -54,8 +59,6 @@ const MainAppWithApolloProvider = () => {
   const { isConnected, isMainserverUp, netInfoCounter } = netInfo;
 
   const setupApolloClient = async () => {
-    const namespace = appJson.expo.slug;
-
     // https://www.apollographql.com/docs/react/recipes/authentication/#header
     const httpLink = createHttpLink({
       uri: `${secrets[namespace].serverUrl}${secrets[namespace].graphqlEndpoint}`
@@ -287,11 +290,25 @@ const MainAppWithApolloProvider = () => {
     </ApolloProvider>
   );
 };
+export const MainApp = () => {
+  const instance = new MatomoTracker({
+    urlBase: secrets[namespace].matomoUrl,
+    // trackerUrl: 'https://LINK.TO.DOMAIN/tracking.php', // optional, default value: `${urlBase}matomo.php`
+    siteId: secrets[namespace].matomoSiteId,
+    disabled: __DEV__,
+    log: __DEV__
+    // userId: 'UID76903202', // optional, default value: `undefined`.
+    // disabled: false, // optional, false by default. Makes all tracking calls no-ops if set to true.
+    // log: false // optional, false by default. Enables some logs.
+  });
 
-export const MainApp = () => (
-  <NetworkProvider>
-    <OrientationProvider>
-      <MainAppWithApolloProvider />
-    </OrientationProvider>
-  </NetworkProvider>
-);
+  return (
+    <NetworkProvider>
+      <MatomoProvider instance={instance}>
+        <OrientationProvider>
+          <MainAppWithApolloProvider />
+        </OrientationProvider>
+      </MatomoProvider>
+    </NetworkProvider>
+  );
+};
