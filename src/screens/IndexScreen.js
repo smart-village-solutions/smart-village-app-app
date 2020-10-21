@@ -261,7 +261,7 @@ export const IndexScreen = ({ navigation }) => {
         }
 
         return (
-          <SafeAreaViewFlex>
+          <SafeAreaViewFlex style={styles.center}>
             <Component
               navigation={navigation}
               data={listItems}
@@ -286,8 +286,11 @@ export const IndexScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   icon: {
-    paddingHorizontal: normalize(14)
-  }
+    paddingHorizontal: normalize(14),
+  },
+  center: {
+    alignSelf: 'center',
+  },
 });
 
 IndexScreen.navigationOptions = ({ navigation }) => {
