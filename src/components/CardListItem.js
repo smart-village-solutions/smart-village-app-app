@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React from 'react';
 import { Card } from 'react-native-elements';
 import { Platform, StyleSheet, View } from 'react-native';
 
@@ -8,12 +8,9 @@ import { imageHeight, imageWidth } from '../helpers';
 import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
-import { WrapperWithOrientation } from './Wrapper';
-import { OrientationContext } from '../OrientationProvider';
 
-export const CardListItem = ({ navigation, horizontal, item }) => {
+export const CardListItem = ({ navigation, horizontal, item, orientation, dimensions }) => {
   const { routeName, params, image, category, name } = item;
-  const { orientation } = useContext(OrientationContext);
 
   return (
     <Touchable
@@ -24,31 +21,34 @@ export const CardListItem = ({ navigation, horizontal, item }) => {
         })
       }
     >
-      <WrapperWithOrientation orientation={orientation}>
-        <Card
-          containerStyle={[
-            Platform.select({
-              android: {
-                elevation: 0
-              },
-              ios: {
-                shadowColor: colors.transparent
-              }
-            }),
-            stylesWithProps(this.props).container
-          ]}
-        >
-          <View style={stylesWithProps(this.props).contentContainer}>
-            {!!image && <Image source={{ uri: image }} style={stylesWithProps(this.props).image} />}
-            {!!category && <RegularText small>{category}</RegularText>}
-            {!!name && (
-              <BoldText>
-                {horizontal ? (name.length > 60 ? name.substring(0, 60) + '...' : name) : name}
-              </BoldText>
-            )}
-          </View>
-        </Card>
-      </WrapperWithOrientation>
+      <Card
+        containerStyle={[
+          Platform.select({
+            android: {
+              elevation: 0,
+            },
+            ios: {
+              shadowColor: colors.transparent,
+            },
+          }),
+          stylesWithProps({ horizontal, orientation, dimensions }).container,
+        ]}
+      >
+        <View style={stylesWithProps({ horizontal, orientation, dimensions }).contentContainer}>
+          {!!image && (
+            <Image
+              source={{ uri: image }}
+              style={stylesWithProps({ horizontal, orientation, dimensions }).image}
+            />
+          )}
+          {!!category && <RegularText small>{category}</RegularText>}
+          {!!name && (
+            <BoldText>
+              {horizontal ? (name.length > 60 ? name.substring(0, 60) + '...' : name) : name}
+            </BoldText>
+          )}
+        </View>
+      </Card>
     </Touchable>
   );
 };
@@ -56,12 +56,14 @@ export const CardListItem = ({ navigation, horizontal, item }) => {
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 
-export const stylesWithProps = () => {
-  const { orientation, dimensions } = useContext(OrientationContext);
+const stylesWithProps = ({ horizontal, orientation, dimensions }) => {
   // image width should be only 70% when rendering horizontal cards, otherwise substract paddings
-  // deleted horizontal logic momentarily because gives a red screen "undefined it's not an object"
 
-  const width = orientation === 'landscape' ? dimensions.height : imageWidth() - 2 * normalize(14);
+  const width = horizontal
+    ? imageWidth() * 0.7
+    : orientation === 'landscape'
+    ? dimensions.height
+    : imageWidth() - 2 * normalize(14);
 
   return StyleSheet.create({
     container: {
@@ -86,7 +88,8 @@ CardListItem.propTypes = {
   navigation: PropTypes.object.isRequired,
   item: PropTypes.object.isRequired,
   horizontal: PropTypes.bool,
-  orientation: PropTypes.string
+  orientation: PropTypes.string.isRequired,
+  dimensions: PropTypes.object.isRequired,
 };
 
 CardListItem.defaultProps = {
