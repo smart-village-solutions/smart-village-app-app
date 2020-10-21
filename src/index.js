@@ -11,6 +11,7 @@ import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';
 import _reduce from 'lodash/reduce';
+import MatomoTracker, { MatomoProvider, useMatomo } from 'matomo-tracker-react-native';
 
 import appJson from '../app.json';
 import { auth } from './auth';
@@ -25,9 +26,6 @@ import AppStackNavigator from './navigation/AppStackNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 import { LoadingContainer } from './components';
-import MatomoTracker from './Matomo/MatomoTracker';
-import { MatomoProvider } from './Matomo/MatomoProvider';
-import useMatomo from './Matomo/useMatomo';
 
 const namespace = appJson.expo.slug;
 

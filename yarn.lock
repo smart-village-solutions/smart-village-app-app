@@ -7132,6 +7132,11 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
+matomo-tracker-react-native@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/matomo-tracker-react-native/-/matomo-tracker-react-native-0.2.1.tgz#9e8c95b64b1c67b8dd1426251fa736d55ce42603"
+  integrity sha512-ybMEqlcDz8WLDln6S8tjYlq9/Z8ZflF/6t+tS4aZoOHba3DqX1Y4AU+74wPu/1CKKrTybSh/h9EPyZcSLVzycg==
+
 md5-file@^3.2.3:
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/md5-file/-/md5-file-3.2.3.tgz#f9bceb941eca2214a4c0727f5e700314e770f06f"
