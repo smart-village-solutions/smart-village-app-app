@@ -86,7 +86,7 @@ HtmlView.propTypes = {
   tagsStyles: PropTypes.object,
   openWebScreen: PropTypes.func,
   orientation: PropTypes.string.isRequired,
-  dimensions: PropTypes.string.isRequired
+  dimensions: PropTypes.object.isRequired
 };
 
 HtmlView.defaultProps = {
