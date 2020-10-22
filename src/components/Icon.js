@@ -10,7 +10,7 @@ import { colors, normalize } from '../config';
  * Smart icon component which can handle SVGs passed as `xml` prop or icon fonts, which are
  * rendered with a given `name` prop.
  *
- * @return SvgXml or Ionicons, depending on having `xml` or `name`
+ * @return {ReactElement} SvgXml or Ionicons, depending on having `xml` or `name`
  */
 export const Icon = ({ xml, width, height, name, size, focused, style, iconStyle }) => {
   const color = focused ? colors.accent : colors.primary;
