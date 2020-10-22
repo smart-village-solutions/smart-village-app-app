@@ -14,5 +14,5 @@ const styles = StyleSheet.create({
 
 SafeAreaViewFlex.propTypes = {
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-  style: PropTypes.object,
+  style: PropTypes.object
 };

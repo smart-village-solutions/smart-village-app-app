@@ -11,7 +11,7 @@ import {
 import { WebView } from 'react-native-webview';
 
 import { colors, normalize, styles } from '../config';
-import { openLink, imageWidth } from '../helpers';
+import { openLink } from '../helpers';
 
 const tableCssRules =
   cssRulesFromSpecs({
