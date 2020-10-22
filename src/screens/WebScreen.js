@@ -9,14 +9,14 @@ import { arrowLeft } from '../icons';
 import { OrientationContext } from '../OrientationProvider';
 
 export const WebScreen = ({ navigation }) => {
-  const { orientation } = useContext(OrientationContext);
+  const { orientation, dimensions } = useContext(OrientationContext);
   const webUrl = navigation.getParam('webUrl', '');
 
   if (!webUrl) return null;
 
   return (
     <SafeAreaViewFlex>
-      <WrapperWithOrientation orientation={orientation}>
+      <WrapperWithOrientation orientation={orientation} dimensions={dimensions}>
         <WebView
           source={{ uri: webUrl }}
           startInLoadingState

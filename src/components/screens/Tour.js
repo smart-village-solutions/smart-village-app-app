@@ -67,7 +67,7 @@ export const Tour = ({ data, navigation }) => {
     <View>
       {!!images && images.length > 1 && <ImagesCarousel data={images} />}
 
-      <WrapperWithOrientation orientation={orientation}>
+      <WrapperWithOrientation orientation={orientation} dimensions={dimensions}>
         {!!images && images.length === 1 && <Image source={images[0].picture} />}
 
         {!!title && (
