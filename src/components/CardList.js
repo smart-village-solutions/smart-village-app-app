@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, FlatList } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 
 import { colors, normalize } from '../config';
 import { CardListItem } from './CardListItem';
@@ -55,10 +55,17 @@ export const CardList = ({ data, navigation, horizontal, refreshControl }) => {
         }
         onEndReached={() => setListEndReached(true)}
         refreshControl={refreshControl}
+        style={styles.center}
       />
     </WrapperWithOrientation>
   );
 };
+
+const styles = StyleSheet.create({
+  center: {
+    alignSelf: 'center'
+  }
+});
 
 CardList.propTypes = {
   navigation: PropTypes.object.isRequired,
