@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { memo } from 'react';
 import { Card } from 'react-native-elements';
 import { Platform, StyleSheet, View } from 'react-native';
 
-import { colors, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 
-export const CardListItem = ({ navigation, horizontal, item, orientation, dimensions }) => {
+export const CardListItem = memo(({ navigation, horizontal, item, orientation, dimensions }) => {
   const { routeName, params, image, category, name } = item;
 
   return (
@@ -39,7 +39,7 @@ export const CardListItem = ({ navigation, horizontal, item, orientation, dimens
       </Card>
     </Touchable>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -61,25 +61,42 @@ const styles = StyleSheet.create({
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({ horizontal, orientation, dimensions }) => {
-  // image width should be only 70% when rendering horizontal cards, otherwise substract paddings
-  const width = horizontal
-    ? imageWidth() * 0.7
-    : orientation === 'landscape' || (orientation === 'portrait' && dimensions.width > 450)
-      ? dimensions.height
-      : imageWidth() - 2 * normalize(14);
+  let width = imageWidth();
+
+  if (horizontal || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
+    // image width should be only 70% when rendering horizontal cards or on wider screens,
+    // as there are 15% padding on each side
+    width = width * 0.7;
+  }
+
+  if (orientation === 'landscape') {
+    // image width should be smaller than full width on landscape, so take the device height,
+    // which is the same as the device width in portrait
+    width = dimensions.height;
+
+    // if the device is in landscape mode but the device height is larger than our max for full
+    // screen, we want to also apply 70% to have not too large images
+    if (dimensions.height > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
+      width = dimensions.height * 0.7;
+    }
+  }
+
+  const maxWidth = width - 2 * normalize(14); // width of an image minus paddings
 
   return StyleSheet.create({
     contentContainer: {
-      width
+      width: maxWidth
     },
     image: {
       borderRadius: 5,
       marginBottom: normalize(7),
-      height: imageHeight(width)
+      height: imageHeight(maxWidth)
     }
   });
 };
 /* eslint-enable react-native/no-unused-styles */
+
+CardListItem.displayName = 'CardListItem';
 
 CardListItem.propTypes = {
   navigation: PropTypes.object.isRequired,

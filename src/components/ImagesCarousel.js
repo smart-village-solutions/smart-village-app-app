@@ -38,16 +38,18 @@ TouchableImage.propTypes = {
 export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
 
+  // special image width for carousel, to be not full width on landscape
+  let itemWidth = dimensions.width;
+  const needLandscapeWidth = orientation === 'landscape';
+
+  if (needLandscapeWidth) {
+    // image width should be smaller than full width on landscape, so take the device height,
+    // which is the same as the device width in portrait
+    itemWidth = dimensions.height;
+  }
+
   const renderItem = ({ item }) => {
     const { routeName, params } = item.picture;
-
-    // special image width for carousel, to be not full width on landscape
-    // TODO: tablet portrait?
-    const width = orientation === 'landscape' ? dimensions.height : dimensions.width;
-    const imageStyle = {
-      height: imageHeight(width),
-      width
-    };
 
     if (routeName && params) {
       // params are available, but missing `shareContent` and `details`
@@ -84,7 +86,7 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
 
               return (
                 <TouchableImage navigation={navigation} item={item}>
-                  <Image source={item.picture} style={imageStyle} />
+                  <Image source={item.picture} style={stylesForImage(itemWidth).size} />
                 </TouchableImage>
               );
             }}
@@ -93,12 +95,12 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
       } else {
         return (
           <TouchableImage navigation={navigation} item={item}>
-            <Image source={item.picture} style={imageStyle} />
+            <Image source={item.picture} style={stylesForImage(itemWidth).size} />
           </TouchableImage>
         );
       }
     } else {
-      return <Image source={item.picture} style={imageStyle} />;
+      return <Image source={item.picture} style={stylesForImage(itemWidth).size} />;
     }
   };
 
@@ -107,7 +109,7 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
       data={data}
       renderItem={renderItem}
       sliderWidth={dimensions.width}
-      itemWidth={orientation === 'landscape' ? dimensions.height : dimensions.width}
+      itemWidth={itemWidth}
       inactiveSlideScale={1}
       autoplay
       loop
@@ -123,6 +125,17 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   }
 });
+
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
+const stylesForImage = (width) =>
+  StyleSheet.create({
+    size: {
+      height: imageHeight(width),
+      width
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
 
 ImagesCarousel.propTypes = {
   data: PropTypes.array.isRequired,

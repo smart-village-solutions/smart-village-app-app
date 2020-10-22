@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { memo } from 'react';
 import styled from 'styled-components/native';
 
-import { normalize } from '../config';
+import { consts, normalize } from '../config';
 
 export const Wrapper = styled.View`
   padding: ${normalize(14)}px;
@@ -33,12 +33,18 @@ export const InfoBox = styled(WrapperRow)`
   margin-bottom: ${normalize(5)}px;
 `;
 
-export const WrapperWithOrientation = ({ orientation, dimensions, children }) => {
-  if (orientation === 'landscape' || (orientation === 'portrait' && dimensions.width > 450)) {
+export const WrapperWithOrientation = memo(({ orientation, dimensions, children }) => {
+  const needLandscapeWrapper =
+    orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
+
+  if (needLandscapeWrapper) {
     return <WrapperLandscape>{children}</WrapperLandscape>;
   }
+
   return children;
-};
+});
+
+WrapperWithOrientation.displayName = 'WrapperWithOrientation';
 
 WrapperWithOrientation.propTypes = {
   orientation: PropTypes.string.isRequired,

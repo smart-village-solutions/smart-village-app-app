@@ -13,5 +13,10 @@ export const consts = {
     EVENTS: ONCE_A_DAY,
     POINTS_OF_INTEREST: ONCE_A_DAY,
     TOURS: ONCE_A_DAY
+  },
+
+  DIMENSIONS: {
+    // the max screen size we want to render full screen
+    FULL_SCREEN_MAX_WIDTH: 414
   }
 };

@@ -3,24 +3,21 @@ import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { Button as RNEButton } from 'react-native-elements';
 
-import { colors, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
 import { DiagonalGradient } from './DiagonalGradient';
 import { OrientationContext } from '../OrientationProvider';
 
 export const Button = ({ title, onPress }) => {
-  // TODO: dimensions
-  const { orientation } = useContext(OrientationContext);
+  const { orientation, dimensions } = useContext(OrientationContext);
+  const needLandscapeStyle =
+    orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 
-  // TODO: tablet portrait?
   return (
     <RNEButton
       onPress={onPress}
       title={title}
-      titleStyle={[styles.titleStyle, orientation === 'landscape' && styles.titleStyleLandscape]}
-      containerStyle={[
-        styles.containerStyle,
-        orientation === 'landscape' && styles.containerStyleLandscape
-      ]}
+      titleStyle={[styles.titleStyle, needLandscapeStyle && styles.titleStyleLandscape]}
+      containerStyle={[styles.containerStyle, needLandscapeStyle && styles.containerStyleLandscape]}
       ViewComponent={DiagonalGradient}
       useForeground
     />
