@@ -8,7 +8,9 @@ import { Icon } from './Icon';
 
 /**
  * Smart icon component for the tab bar, which adds logics to styling based on orientation and
- * platform. It is a wrapper and renders the main Icon component.
+ * platform. It is a wrapper and renders the main `Icon` component.
+ *
+ * @return Icon - main `Icon` component
  */
 export const TabBarIcon = ({ xml, width, height, name, size, focused, style, landscapeStyle }) => {
   const { orientation } = useContext(OrientationContext);
