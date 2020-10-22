@@ -21,19 +21,7 @@ export const CardListItem = ({ navigation, horizontal, item, orientation, dimens
         })
       }
     >
-      <Card
-        containerStyle={[
-          Platform.select({
-            android: {
-              elevation: 0,
-            },
-            ios: {
-              shadowColor: colors.transparent,
-            },
-          }),
-          stylesWithProps({ horizontal, orientation, dimensions }).container,
-        ]}
-      >
+      <Card containerStyle={styles.container}>
         <View style={stylesWithProps({ horizontal, orientation, dimensions }).contentContainer}>
           {!!image && (
             <Image
@@ -53,25 +41,35 @@ export const CardListItem = ({ navigation, horizontal, item, orientation, dimens
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.transparent,
+    borderWidth: 0,
+    margin: 0,
+    padding: normalize(14),
+    ...Platform.select({
+      android: {
+        elevation: 0
+      },
+      ios: {
+        shadowColor: colors.transparent
+      }
+    })
+  }
+});
+
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-
 const stylesWithProps = ({ horizontal, orientation, dimensions }) => {
   // image width should be only 70% when rendering horizontal cards, otherwise substract paddings
 
   const width = horizontal
     ? imageWidth() * 0.7
     : orientation === 'landscape'
-    ? dimensions.height
-    : imageWidth() - 2 * normalize(14);
+      ? dimensions.height
+      : imageWidth() - 2 * normalize(14);
 
   return StyleSheet.create({
-    container: {
-      backgroundColor: colors.transparent,
-      borderWidth: 0,
-      margin: 0,
-      padding: normalize(14)
-    },
     contentContainer: {
       width
     },
@@ -89,7 +87,7 @@ CardListItem.propTypes = {
   item: PropTypes.object.isRequired,
   horizontal: PropTypes.bool,
   orientation: PropTypes.string.isRequired,
-  dimensions: PropTypes.object.isRequired,
+  dimensions: PropTypes.object.isRequired
 };
 
 CardListItem.defaultProps = {
