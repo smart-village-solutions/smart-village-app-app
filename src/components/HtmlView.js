@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { memo } from 'react';
 import HTML from 'react-native-render-html';
 import {
   IGNORED_TAGS,
@@ -10,7 +10,7 @@ import {
 } from 'react-native-render-html-table-bridge';
 import { WebView } from 'react-native-webview';
 
-import { colors, normalize, styles } from '../config';
+import { colors, consts, normalize, styles } from '../config';
 import { openLink } from '../helpers';
 
 const tableCssRules =
@@ -53,10 +53,17 @@ const htmlConfig = {
   ignoredTags: IGNORED_TAGS
 };
 
-export const HtmlView = ({ html, tagsStyles, openWebScreen, orientation, dimensions }) => {
-  // size images correctly on landscape
-  // TODO: tablet portrait?
-  const width = orientation === 'landscape' ? dimensions.height : dimensions.width;
+export const HtmlView = memo(({ html, tagsStyles, openWebScreen, orientation, dimensions }) => {
+  let width = dimensions.width;
+
+  const needLandscapeWidth =
+    orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
+
+  if (needLandscapeWidth) {
+    // image width should be only 70% on wider screens, as there are 15% padding on each side
+    width = width * 0.7;
+  }
+
   const maxWidth = width - 2 * normalize(14); // width of an image minus paddings
 
   return (
@@ -80,7 +87,9 @@ export const HtmlView = ({ html, tagsStyles, openWebScreen, orientation, dimensi
       }}
     />
   );
-};
+});
+
+HtmlView.displayName = 'HtmlView';
 
 HtmlView.propTypes = {
   html: PropTypes.string,

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { memo, useContext } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { device, normalize } from '../config';
+import { consts, device, normalize } from '../config';
 import { OrientationContext } from '../OrientationProvider';
 import { Icon } from './Icon';
 
@@ -12,30 +12,34 @@ import { Icon } from './Icon';
  *
  * @return {ReactElement} Icon - main `Icon` component
  */
-export const TabBarIcon = ({ xml, width, height, name, size, focused, style, landscapeStyle }) => {
-  // TODO: dimensions?
-  const { orientation } = useContext(OrientationContext);
-  let iconStyle;
+export const TabBarIcon = memo(
+  ({ xml, width, height, name, size, focused, style, landscapeStyle }) => {
+    const { orientation, dimensions } = useContext(OrientationContext);
+    let iconStyle;
 
-  // TODO: tablet portrait?
-  if (orientation === 'landscape' && device.platform == 'ios') {
-    style = {
-      ...style,
-      ...landscapeStyle
-    };
+    const needLandscapeStyle =
+      orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 
-    // need to decrease the icon size on iOS for landscape, because the whole tab bar shrinks in
-    // height for landscape
-    width = width * 0.75;
-    height = height * 0.75;
-    size = size * 0.75;
+    // we need adjustments only on iOS, because Android
+    if (needLandscapeStyle && device.platform == 'ios') {
+      style = {
+        ...style,
+        ...landscapeStyle
+      };
 
-    // need to increase the space between icon and text on iOS landscape
-    iconStyle = { width, ...styles.marginIcon };
+      // need to decrease the icon size on iOS for landscape, because the whole tab bar shrinks in
+      // height for landscape
+      width = width * 0.75;
+      height = height * 0.75;
+      size = size * 0.75;
+
+      // need to increase the space between icon and text on iOS landscape
+      iconStyle = { width, ...styles.marginIcon };
+    }
+
+    return <Icon {...{ xml, width, height, name, size, focused, style, iconStyle }} />;
   }
-
-  return <Icon {...{ xml, width, height, name, size, focused, style, iconStyle }} />;
-};
+);
 
 const styles = StyleSheet.create({
   marginIcon: {
@@ -55,6 +59,8 @@ const isRequired = (props, propName, componentName) => {
     return new Error(`Only one of 'xml' or 'name' is required by '${componentName}' component.`);
   }
 };
+
+TabBarIcon.displayName = 'TabBarIcon';
 
 TabBarIcon.propTypes = {
   xml: isRequired,
