@@ -286,11 +286,8 @@ export const IndexScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   icon: {
-    paddingHorizontal: normalize(14),
-  },
-  center: {
-    alignSelf: 'center',
-  },
+    paddingHorizontal: normalize(14)
+  }
 });
 
 IndexScreen.navigationOptions = ({ navigation }) => {
