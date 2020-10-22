@@ -117,7 +117,7 @@ export const HtmlScreen = ({ navigation }) => {
         return (
           <SafeAreaViewFlex>
             <ScrollView>
-              <WrapperWithOrientation orientation={orientation}>
+              <WrapperWithOrientation orientation={orientation} dimensions={dimensions}>
                 <Wrapper>
                   <HtmlView
                     html={trimNewLines(data.publicHtmlFile.content)}

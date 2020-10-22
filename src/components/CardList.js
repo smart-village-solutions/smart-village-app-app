@@ -34,7 +34,7 @@ export const CardList = ({ data, navigation, horizontal }) => {
   }
 
   return (
-    <WrapperWithOrientation orientation={orientation}>
+    <WrapperWithOrientation orientation={orientation} dimensions={dimensions}>
       <FlatList
         keyExtractor={keyExtractor}
         data={data}

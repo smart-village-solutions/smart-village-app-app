@@ -61,7 +61,7 @@ const stylesWithProps = ({ horizontal, orientation, dimensions }) => {
 
   const width = horizontal
     ? imageWidth() * 0.7
-    : orientation === 'landscape'
+    : orientation === 'landscape' || (orientation === 'portrait' && dimensions.width > 450)
     ? dimensions.height
     : imageWidth() - 2 * normalize(14);
 
