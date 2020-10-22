@@ -51,9 +51,11 @@ export const texts = {
     about: 'Mehr'
   },
   tour: {
-    tour: 'Tourverlauf',
+    description: 'Beschreibung',
+    end: 'Tourende',
+    operatingCompany: 'Veranstalter',
     start: 'Tourbeginn',
-    end: 'Tourende'
+    tour: 'Tourverlauf'
   },
   categoryFilter: {
     label: 'Datenquelle'
