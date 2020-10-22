@@ -259,7 +259,8 @@ const MainAppWithApolloProvider = () => {
       initialRouteName: 'AppStack',
       drawerPosition: 'right',
       drawerType: device.platform === 'ios' ? 'slide' : 'front',
-      drawerWidth: device.width * 0.8,
+      // drawer width should always be 80% of the shorter screen side size
+      drawerWidth: device.width > device.height ? device.height * 0.8 : device.width * 0.8,
       contentComponent: CustomDrawerContentComponent,
       contentContainerStyle: {
         shadowColor: colors.darkText,
