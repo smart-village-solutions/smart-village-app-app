@@ -1,33 +1,22 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { colors, normalize } from '../config';
-import { Icon, LoadingContainer, SafeAreaViewFlex } from '../components';
+import { Icon, LoadingContainer, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
 import { arrowLeft } from '../icons';
+import { OrientationContext } from '../OrientationProvider';
 
-export class WebScreen extends React.PureComponent {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      headerLeft: (
-        <View>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-          </TouchableOpacity>
-        </View>
-      )
-    };
-  };
+export const WebScreen = ({ navigation }) => {
+  const { orientation } = useContext(OrientationContext);
+  const webUrl = navigation.getParam('webUrl', '');
 
-  render() {
-    const { navigation } = this.props;
-    const webUrl = navigation.getParam('webUrl', '');
+  if (!webUrl) return null;
 
-    if (!webUrl) return null;
-
-    return (
-      <SafeAreaViewFlex>
+  return (
+    <SafeAreaViewFlex>
+      <WrapperWithOrientation orientation={orientation}>
         <WebView
           source={{ uri: webUrl }}
           startInLoadingState
@@ -38,10 +27,22 @@ export class WebScreen extends React.PureComponent {
             </LoadingContainer>
           )}
         />
-      </SafeAreaViewFlex>
-    );
-  }
-}
+      </WrapperWithOrientation>
+    </SafeAreaViewFlex>
+  );
+};
+
+WebScreen.navigationOptions = ({ navigation }) => {
+  return {
+    headerLeft: (
+      <View>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
+        </TouchableOpacity>
+      </View>
+    )
+  };
+};
 
 const styles = StyleSheet.create({
   icon: {
