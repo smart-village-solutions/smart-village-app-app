@@ -14,6 +14,7 @@ export const WrapperHorizontal = styled.View`
 `;
 
 export const WrapperLandscape = styled.View`
+  flex: 1;
   padding-left: 15%;
   padding-right: 15%;
 `;
