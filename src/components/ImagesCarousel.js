@@ -42,6 +42,7 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
     const { routeName, params } = item.picture;
 
     // special image width for carousel, to be not full width on landscape
+    // TODO: tablet portrait?
     const width = orientation === 'landscape' ? dimensions.height : dimensions.width;
     const imageStyle = {
       height: imageHeight(width),

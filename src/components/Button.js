@@ -8,8 +8,10 @@ import { DiagonalGradient } from './DiagonalGradient';
 import { OrientationContext } from '../OrientationProvider';
 
 export const Button = ({ title, onPress }) => {
+  // TODO: dimensions
   const { orientation } = useContext(OrientationContext);
 
+  // TODO: tablet portrait?
   return (
     <RNEButton
       onPress={onPress}

@@ -13,9 +13,11 @@ import { Icon } from './Icon';
  * @return {ReactElement} Icon - main `Icon` component
  */
 export const TabBarIcon = ({ xml, width, height, name, size, focused, style, landscapeStyle }) => {
+  // TODO: dimensions?
   const { orientation } = useContext(OrientationContext);
   let iconStyle;
 
+  // TODO: tablet portrait?
   if (orientation === 'landscape' && device.platform == 'ios') {
     style = {
       ...style,

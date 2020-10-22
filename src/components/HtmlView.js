@@ -55,6 +55,7 @@ const htmlConfig = {
 
 export const HtmlView = ({ html, tagsStyles, openWebScreen, orientation, dimensions }) => {
   // size images correctly on landscape
+  // TODO: tablet portrait?
   const width = orientation === 'landscape' ? dimensions.height : dimensions.width;
   const maxWidth = width - 2 * normalize(14); // width of an image minus paddings
 
