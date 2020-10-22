@@ -11,7 +11,7 @@ import { LoadingContainer } from '../LoadingContainer';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 
-export const Carousel = ({ navigation, refreshing }) => {
+export const HomeCarousel = ({ navigation, refreshing }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
@@ -72,11 +72,11 @@ export const Carousel = ({ navigation, refreshing }) => {
   );
 };
 
-Carousel.propTypes = {
+HomeCarousel.propTypes = {
   navigation: PropTypes.object.isRequired,
   refreshing: PropTypes.bool
 };
 
-Carousel.defaultProps = {
+HomeCarousel.defaultProps = {
   refreshing: false
 };

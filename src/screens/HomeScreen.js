@@ -12,7 +12,7 @@ import {
   About,
   Button,
   CardList,
-  Carousel,
+  HomeCarousel,
   LoadingContainer,
   SafeAreaViewFlex,
   Service,
@@ -112,7 +112,7 @@ export const HomeScreen = ({ navigation }) => {
           />
         }
       >
-        <Carousel navigation={navigation} />
+        <HomeCarousel navigation={navigation} />
 
         {showNews && (
           <>
