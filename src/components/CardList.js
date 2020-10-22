@@ -22,9 +22,9 @@ export const CardList = ({ data, navigation, horizontal, refreshControl }) => {
           <CardListItem
             navigation={navigation}
             horizontal={horizontal}
+            item={item}
             orientation={orientation}
             dimensions={dimensions}
-            item={item}
           />
         )}
         showsHorizontalScrollIndicator={false}
