@@ -16,7 +16,7 @@ export const FormScreen = () => {
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [consent, setConsent] = useState(false);
-  const { orientation } = useContext(OrientationContext);
+  const { orientation, dimensions } = useContext(OrientationContext);
 
   const resetForm = () => {
     setName('');
@@ -60,7 +60,7 @@ export const FormScreen = () => {
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        <WrapperWithOrientation orientation={orientation}>
+        <WrapperWithOrientation orientation={orientation} dimensions={dimensions}>
           <Mutation mutation={createQuery(QUERY_TYPES.APP_USER_CONTENT)}>
             {(createAppUserContent) => (
               <View style={{ padding: normalize(14) }}>

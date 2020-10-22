@@ -62,10 +62,9 @@ const styles = StyleSheet.create({
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({ horizontal, orientation, dimensions }) => {
   // image width should be only 70% when rendering horizontal cards, otherwise substract paddings
-
   const width = horizontal
     ? imageWidth() * 0.7
-    : orientation === 'landscape'
+    : orientation === 'landscape' || (orientation === 'portrait' && dimensions.width > 450)
       ? dimensions.height
       : imageWidth() - 2 * normalize(14);
 
