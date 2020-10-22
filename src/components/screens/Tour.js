@@ -90,7 +90,7 @@ export const Tour = ({ data, navigation }) => {
         {!!description && (
           <View>
             <TitleContainer>
-              <Title>{texts.eventRecord.description}</Title>
+              <Title>{texts.tour.description}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Wrapper>
@@ -107,7 +107,7 @@ export const Tour = ({ data, navigation }) => {
         {!!operatingCompany && (
           <View>
             <TitleContainer>
-              <Title>{texts.eventRecord.operatingCompany}</Title>
+              <Title>{texts.tour.operatingCompany}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <OperatingCompanyInfo
