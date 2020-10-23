@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.3.3]
+
+Updated Expo SDK to 39.0.3
+
+- Read about that step in: https://dev.to/expo/expo-sdk-39-is-now-available-1lm8
+
 ## [v1.3.2]
 
 Made a big step on accessibility

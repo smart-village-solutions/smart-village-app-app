@@ -51,4 +51,4 @@ Have a look at the [changelog](./CHANGELOG.md) to be up to date with the develop
 
 ---
 
-###### Version: 1.3.2
+###### Version: 1.3.3
