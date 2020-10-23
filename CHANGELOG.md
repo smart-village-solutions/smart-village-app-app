@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.3.2]
+
+Made a big step on accessibility
+
+### Added
+
+- added accessibility labels across the app
+- most important elements are now accessible across the app
+
 ## [v1.3.1]
 
 Update sizing for `ServiceBox`es on orientation change
