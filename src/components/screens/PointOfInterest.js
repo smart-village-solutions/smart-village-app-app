@@ -87,7 +87,9 @@ export const PointOfInterest = ({ data, navigation }) => {
         {/* {!!location && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.pointOfInterest.location} (Überschrift)`}>{texts.pointOfInterest.location}</Title>
+              <Title accessibilityLabel={`${texts.pointOfInterest.location} (Überschrift)`}>
+                {texts.pointOfInterest.location}
+              </Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
           </View>
