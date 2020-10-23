@@ -11,6 +11,7 @@ import {
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
+import { OrientationContext } from '../OrientationProvider';
 import { GlobalSettingsContext } from '../GlobalSettingsProvider';
 import { colors, consts, device, normalize, texts } from '../config';
 import {
@@ -31,6 +32,7 @@ import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
 export const ServiceScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { orientation, dimensions } = useContext(OrientationContext);
   const globalSettings = useContext(GlobalSettingsContext);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -57,7 +59,7 @@ export const ServiceScreen = ({ navigation }) => {
 
   const refresh = async (refetch) => {
     setRefreshing(true);
-    isConnected && await refetch();
+    isConnected && (await refetch());
     setRefreshing(false);
   };
 
@@ -108,7 +110,11 @@ export const ServiceScreen = ({ navigation }) => {
                   <WrapperWrap>
                     {publicJsonFileContent.map((item, index) => {
                       return (
-                        <ServiceBox key={index + item.title}>
+                        <ServiceBox
+                          key={index + item.title}
+                          orientation={orientation}
+                          dimensions={dimensions}
+                        >
                           <TouchableOpacity
                             onPress={() =>
                               navigation.navigate({
@@ -119,11 +125,7 @@ export const ServiceScreen = ({ navigation }) => {
                           >
                             <View>
                               {item.iconName ? (
-                                <Icon
-                                  name={item.iconName}
-                                  size={30}
-                                  style={styles.serviceIcon}
-                                />
+                                <Icon name={item.iconName} size={30} style={styles.serviceIcon} />
                               ) : (
                                 <Image
                                   source={{ uri: item.icon }}
