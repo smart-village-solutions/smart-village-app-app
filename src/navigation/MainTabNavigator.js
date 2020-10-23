@@ -144,7 +144,8 @@ const MainTabNavigator = createBottomTabNavigator(
     tabBarOptions: {
       activeTintColor: colors.accent,
       inactiveTintColor: colors.primary,
-      tabStyle: { marginTop: normalize(0) }
+      tabStyle: { marginTop: normalize(0) },
+      keyboardHidesTabBar: device.platform === 'android'
     }
   }
 );

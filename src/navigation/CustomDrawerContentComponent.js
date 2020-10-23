@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   })
 });
 
-const getHeaderHeight = (orientation) =>
+export const getHeaderHeight = (orientation) =>
   // Android always 56
   // iOS:
   //   portrait: 44
@@ -60,17 +60,17 @@ const getHeaderHeight = (orientation) =>
     ios: orientation === 'landscape' ? (!Platform.isPad ? 32 : 66) : 44
   });
 
+export const statusBarHeight = (orientation) =>
+  device.platform === 'android'
+    ? getStatusBarHeight()
+    : orientation === 'portrait'
+      ? getStatusBarHeight()
+      : 0;
+
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({ orientation }) => {
-  const statusBarHeight =
-    device.platform === 'android'
-      ? getStatusBarHeight()
-      : orientation === 'portrait'
-        ? getStatusBarHeight()
-        : 0;
-
-  const height = getHeaderHeight(orientation) + statusBarHeight;
+  const height = getHeaderHeight(orientation) + statusBarHeight(orientation);
 
   return StyleSheet.create({
     header: {
