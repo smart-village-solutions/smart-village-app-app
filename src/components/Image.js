@@ -34,24 +34,18 @@ export const Image = ({ source, style, PlaceholderContent }) => {
   }, []);
 
   if (!globalSettings.showImageRights || !source.copyright) {
-    // TODO: how to make an image accessible? is the accessibilityLabel working? maybe put it at the surrounding View?
     return (
       <RNEImage
         source={uri ? (source.uri ? { uri } : uri) : null}
         style={style}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}
-        // TODO: is accessible needed?
-        accessible
-        // TODO: needs correct label. we want to ue a captionText here, which needs to come as a prop from outside
-        //       only apply that caption text to accessibilityLabel if there is one
-        // the captionText can be available per source.captionText
-        accessibilityLabel={`${PlaceholderContent}`}
+        accessible={!!source.captionText}
+        accessibilityLabel={source.captionText}
       />
     );
   }
 
-  // TODO: how to make an image accessible? is the accessibilityLabel working? maybe put it at the surrounding View?
   return (
     <View>
       <RNEImage
@@ -59,12 +53,8 @@ export const Image = ({ source, style, PlaceholderContent }) => {
         style={style}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}
-        // TODO: is accessible needed?
-        accessible
-        // TODO: needs correct label. we want to ue a captionText here, which needs to come as a prop from outside
-        //       only apply that caption text to accessibilityLabel if there is one
-        // the captionText can be available per source.captionText
-        accessibilityLabel={`${PlaceholderContent}`}
+        accessible={!!source.captionText}
+        accessibilityLabel={source.captionText}
       />
       <ImageRights imageRights={source.copyright} />
     </View>
