@@ -4,6 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../../NetworkProvider';
+import { OrientationContext } from '../../OrientationProvider';
 import { GlobalSettingsContext } from '../../GlobalSettingsProvider';
 import { consts, device, normalize, texts } from '../../config';
 import { DiagonalGradient } from '../DiagonalGradient';
@@ -19,6 +20,7 @@ import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 export const Service = ({ navigation, refreshing }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { orientation, dimensions } = useContext(OrientationContext);
   const globalSettings = useContext(GlobalSettingsContext);
 
   useEffect(() => {
@@ -69,7 +71,11 @@ export const Service = ({ navigation, refreshing }) => {
               <WrapperWrap>
                 {publicJsonFileContent.map((item, index) => {
                   return (
-                    <ServiceBox key={index + item.title}>
+                    <ServiceBox
+                      key={index + item.title}
+                      orientation={orientation}
+                      dimensions={dimensions}
+                    >
                       <TouchableOpacity
                         onPress={() =>
                           navigation.navigate({
