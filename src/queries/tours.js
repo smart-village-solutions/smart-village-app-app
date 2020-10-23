@@ -11,6 +11,7 @@ export const GET_TOURS = gql`
       description
       mediaContents {
         contentType
+        captionText
         copyright
         sourceUrl {
           url
@@ -43,6 +44,7 @@ export const GET_TOUR = gql`
       description
       mediaContents {
         contentType
+        captionText
         copyright
         sourceUrl {
           url
