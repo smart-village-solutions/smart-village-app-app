@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.3.1]
+
+Update sizing for `ServiceBox`es on orientation change
+
+### Added
+
+- added conditions for landscape mode and based on dimensions with re-rendering
+  on orientation change
+
 ## [v1.3.0] :rocket:
 
 This is the third minor version upgrade - with further improvements for user experience!
