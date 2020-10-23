@@ -74,7 +74,7 @@ export const Tour = ({ data, navigation }) => {
         {!!title && (
           <View>
             <TitleContainer>
-              <Title>{title}</Title>
+              <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
           </View>
@@ -91,7 +91,9 @@ export const Tour = ({ data, navigation }) => {
         {!!description && (
           <View>
             <TitleContainer>
-              <Title>{texts.tour.description}</Title>
+              <Title accessibilityLabel={`${texts.tour.description} (Überschrift)`}>
+                {texts.tour.description}
+              </Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Wrapper>
@@ -108,7 +110,9 @@ export const Tour = ({ data, navigation }) => {
         {!!operatingCompany && (
           <View>
             <TitleContainer>
-              <Title>{texts.tour.operatingCompany}</Title>
+              <Title accessibilityLabel={`${texts.tour.operatingCompany} (Überschrift)`}>
+                {texts.tour.operatingCompany}
+              </Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <OperatingCompanyInfo

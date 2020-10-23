@@ -63,7 +63,9 @@ export const Service = ({ navigation, refreshing }) => {
           <View>
             {!!headlineService && (
               <TitleContainer>
-                <Title>{headlineService}</Title>
+                <Title accessibilityLabel={`${headlineService} (Überschrift)`}>
+                  {headlineService}
+                </Title>
               </TitleContainer>
             )}
             {!!headlineService && device.platform === 'ios' && <TitleShadow />}
@@ -94,7 +96,12 @@ export const Service = ({ navigation, refreshing }) => {
                               PlaceholderContent={null}
                             />
                           )}
-                          <BoldText small lightest center>
+                          <BoldText
+                            small
+                            lightest
+                            center
+                            accessibilityLabel={`${item.title} (Taste)`}
+                          >
                             {item.title}
                           </BoldText>
                         </View>

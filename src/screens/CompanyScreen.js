@@ -135,7 +135,12 @@ export const CompanyScreen = ({ navigation }) => {
                                   PlaceholderContent={null}
                                 />
                               )}
-                              <BoldText small primary center>
+                              <BoldText
+                                small
+                                primary
+                                center
+                                accessibilityLabel={`${item.title} (Taste)`}
+                              >
                                 {item.title}
                               </BoldText>
                             </View>

@@ -15,7 +15,7 @@ export class CategoryList extends React.PureComponent {
   renderSectionHeader = ({ section: { title } }) => (
     <View>
       <TitleContainer>
-        <Title>{title}</Title>
+        <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
     </View>
