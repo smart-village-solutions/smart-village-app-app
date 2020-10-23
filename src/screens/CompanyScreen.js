@@ -90,7 +90,9 @@ export const CompanyScreen = ({ navigation }) => {
             <>
               {!!headlineCompany && (
                 <TitleContainer>
-                  <Title>{headlineCompany}</Title>
+                  <Title accessibilityLabel={`${headlineCompany} (Überschrift)`}>
+                    {headlineCompany}
+                  </Title>
                 </TitleContainer>
               )}
               {!!headlineCompany && device.platform === 'ios' && <TitleShadow />}
@@ -119,11 +121,7 @@ export const CompanyScreen = ({ navigation }) => {
                           >
                             <View>
                               {item.iconName ? (
-                                <Icon
-                                  name={item.iconName}
-                                  size={30}
-                                  style={styles.serviceIcon}
-                                />
+                                <Icon name={item.iconName} size={30} style={styles.serviceIcon} />
                               ) : (
                                 <Image
                                   source={{ uri: item.icon }}

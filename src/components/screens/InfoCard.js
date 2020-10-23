@@ -31,11 +31,13 @@ const contactView = (contact) => (
     {!!contact.phone && (
       <InfoBox>
         <Icon xml={phoneIcon(colors.primary)} style={styles.margin} />
-        <TouchableOpacity
-          accessibilityLabel={`(Telefonnummer) ${contact.phone} (Taste) (Wechselt zur Telefon-App)`}
-          onPress={() => openLink(`tel:${contact.phone}`)}
-        >
-          <RegularText primary>{contact.phone}</RegularText>
+        <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
+          <RegularText
+            primary
+            accessibilityLabel={`(Telefonnummer) ${contact.phone} (Taste) (Wechselt zur Telefon-App)`}
+          >
+            {contact.phone}
+          </RegularText>
         </TouchableOpacity>
       </InfoBox>
     )}
@@ -43,11 +45,13 @@ const contactView = (contact) => (
     {!!contact.email && (
       <InfoBox>
         <Icon xml={mail(colors.primary)} style={styles.margin} />
-        <TouchableOpacity
-          onPress={() => openLink(`mailto:${contact.email}`)}
-          accessibilityLabel={`(E-mail) ${contact.email} (Taste) (Wechselt zur E-Mail-App)`}
-        >
-          <RegularText primary>{contact.email}</RegularText>
+        <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
+          <RegularText
+            primary
+            accessibilityLabel={`(E-Mail) ${contact.email} (Taste) (Wechselt zur E-Mail-App)`}
+          >
+            {contact.email}
+          </RegularText>
         </TouchableOpacity>
       </InfoBox>
     )}
@@ -55,7 +59,7 @@ const contactView = (contact) => (
     {!!contact.fax && (
       <InfoBox>
         <RNEIcon name="print" type="material" color={colors.primary} iconStyle={styles.margin} />
-        <RegularText primary accessible accessibilityLabel={`(Fax) ${contact.fax}`}>
+        <RegularText primary accessibilityLabel={`(Fax) ${contact.fax}`}>
           {contact.fax}
         </RegularText>
       </InfoBox>
@@ -71,15 +75,8 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
   <View>
     {!!category && !!category.name && (
       <InfoBox>
-        <RNEIcon
-          accessible
-          accessibilityLabel="Menü icon"
-          name="list"
-          type="material"
-          color={colors.primary}
-          iconStyle={styles.margin}
-        />
-        <RegularText accessible accessibilityLabel={`(Kategorie) ${category.name}`}>
+        <RNEIcon name="list" type="material" color={colors.primary} iconStyle={styles.margin} />
+        <RegularText accessibilityLabel={`(Kategorie) ${category.name}`}>
           {category.name}
         </RegularText>
       </InfoBox>
@@ -109,11 +106,13 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
         return (
           <InfoBox key={index}>
             <Icon xml={location(colors.primary)} style={styles.margin} />
-            <TouchableOpacity
-              accessibilityLabel={`(Adresse) ${address} (Taste) (Wechselt zur Karten-App)`}
-              onPress={() => addressOnPress(address)}
-            >
-              <RegularText primary>{address}</RegularText>
+            <TouchableOpacity onPress={() => addressOnPress(address)}>
+              <RegularText
+                primary
+                accessibilityLabel={`(Adresse) ${address} (Taste) (Wechselt zur Karten-App)`}
+              >
+                {address}
+              </RegularText>
             </TouchableOpacity>
           </InfoBox>
         );
@@ -154,8 +153,10 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
           <InfoBox key={index}>
             <Icon xml={urlIcon(colors.primary)} style={styles.margin} />
             <TouchableOpacity
+              accessibilityLabel={`(Webseite) ${
+                description || url
+              } (Taste) (Öffnet Webseite in der aktuellen App)`}
               onPress={() => openLink(url, openWebScreen)}
-              accessibilityLabel={`(Webseite) ${description} (Taste) (Öffnet Webseite in der aktuellen App)`}
             >
               {!description && <RegularText primary>{url}</RegularText>}
               {!!description && <RegularText primary>{description}</RegularText>}

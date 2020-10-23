@@ -76,12 +76,11 @@ export const AboutScreen = ({ navigation }) => {
 
           if (!publicJsonFileContent || !publicJsonFileContent.length) return <VersionNumber />;
 
-          // TODO Title is not accessible here, why ?
           return (
             <>
               {!!headlineAbout && (
                 <TitleContainer>
-                  <Title accessible accessibilityLabel={`${headlineAbout} (Überschrift)`}>
+                  <Title accessibilityLabel={`${headlineAbout} (Überschrift)`}>
                     {headlineAbout}
                   </Title>
                 </TitleContainer>
