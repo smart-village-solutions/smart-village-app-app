@@ -117,11 +117,10 @@ export const HomeScreen = ({ navigation }) => {
         {showNews && (
           <>
             <TitleContainer>
-              <Touchable
-                accessibilityLabel={`${headlineNews} (Überschrift) (Taste)`}
-                onPress={() => navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX)}
-              >
-                <Title>{headlineNews}</Title>
+              <Touchable onPress={() => navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX)}>
+                <Title accessibilityLabel={`${headlineNews} (Überschrift) (Taste)`}>
+                  {headlineNews}
+                </Title>
               </Touchable>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
@@ -188,11 +187,12 @@ export const HomeScreen = ({ navigation }) => {
         {showPointsOfInterestAndTours && (
           <>
             <TitleContainer>
-              <Touchable
-                accessibilityLabel={`${headlinePointsOfInterestAndTours} (Überschrift) (Taste)`}
-                onPress={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}
-              >
-                <Title>{headlinePointsOfInterestAndTours}</Title>
+              <Touchable onPress={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}>
+                <Title
+                  accessibilityLabel={`${headlinePointsOfInterestAndTours} (Überschrift) (Taste)`}
+                >
+                  {headlinePointsOfInterestAndTours}
+                </Title>
               </Touchable>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
@@ -278,11 +278,10 @@ export const HomeScreen = ({ navigation }) => {
         {showEvents && (
           <>
             <TitleContainer>
-              <Touchable
-                accessibilityLabel={`${headlineEvents} (Überschrift) (Taste)`}
-                onPress={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}
-              >
-                <Title>{headlineEvents}</Title>
+              <Touchable onPress={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}>
+                <Title accessibilityLabel={`${headlineEvents} (Überschrift) (Taste)`}>
+                  {headlineEvents}
+                </Title>
               </Touchable>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}

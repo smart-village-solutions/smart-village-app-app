@@ -117,18 +117,14 @@ export const EventRecord = ({ data, navigation }) => {
 
         {!!title && !!link ? (
           <TitleContainer>
-            <Touchable
-              onPress={openWebScreen}
-              accessibilityLabel="Webseite"
-              accessibilityHint="Navigieren zur Webseite"
-            >
-              <Title>{title}</Title>
+            <Touchable onPress={openWebScreen}>
+              <Title accessibilityLabel={`${title} (Überschrift) (Taste)`}>{title}</Title>
             </Touchable>
           </TitleContainer>
         ) : (
           !!title && (
             <TitleContainer>
-              <Title>{title}</Title>
+              <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
             </TitleContainer>
           )
         )}

@@ -92,7 +92,9 @@ export const CompanyScreen = ({ navigation }) => {
             <>
               {!!headlineCompany && (
                 <TitleContainer>
-                  <Title>{headlineCompany}</Title>
+                  <Title accessibilityLabel={`${headlineCompany} (Überschrift)`}>
+                    {headlineCompany}
+                  </Title>
                 </TitleContainer>
               )}
               {!!headlineCompany && device.platform === 'ios' && <TitleShadow />}

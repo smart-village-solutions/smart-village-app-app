@@ -88,12 +88,11 @@ export const ServiceScreen = ({ navigation }) => {
 
           if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
 
-          // TODO: elements are not accessible here, why?
           return (
             <>
               {!!headlineService && (
                 <TitleContainer>
-                  <Title accessible accessibilityLabel={`${headlineService} (Überschrift)`}>
+                  <Title accessibilityLabel={`${headlineService} (Überschrift)`}>
                     {headlineService}
                   </Title>
                 </TitleContainer>
