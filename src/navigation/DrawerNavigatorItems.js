@@ -56,8 +56,6 @@ const DrawerNavigatorItems = memo(
       navigation.closeDrawer();
     };
 
-    console.warn('drawer');
-
     return (
       <ScrollView bounces={false} style={itemsContainerStyle}>
         {items.map((route, index) => {
