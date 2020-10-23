@@ -1,14 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { Mutation } from 'react-apollo';
 
 import { createQuery, QUERY_TYPES } from '../queries';
-import { colors, normalize } from '../config';
+import { colors, device, normalize } from '../config';
 import { BoldText, Button, Icon, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
 import { arrowLeft } from '../icons';
 import { OrientationContext } from '../OrientationProvider';
+import { getHeaderHeight, statusBarHeight } from '../navigation/CustomDrawerContentComponent';
 
 export const FormScreen = () => {
   const [name, setName] = useState('');
@@ -59,60 +68,69 @@ export const FormScreen = () => {
   // TODO: texts are hardcoded because they will come from the API later somewhen
   return (
     <SafeAreaViewFlex>
-      <ScrollView>
-        <WrapperWithOrientation orientation={orientation} dimensions={dimensions}>
-          <Mutation mutation={createQuery(QUERY_TYPES.APP_USER_CONTENT)}>
-            {(createAppUserContent) => (
-              <View style={{ padding: normalize(14) }}>
-                <BoldText>Name</BoldText>
-                <TextInput
-                  onChangeText={(text) => {
-                    setName(text);
-                  }}
-                  value={name}
-                  style={styles.inputField}
-                />
-                <BoldText>E-Mail</BoldText>
-                <TextInput
-                  onChangeText={(text) => {
-                    setEmail(text);
-                  }}
-                  value={email}
-                  style={styles.inputField}
-                  keyboardType="email-address"
-                />
-                <BoldText>Telefon</BoldText>
-                <TextInput
-                  onChangeText={(text) => {
-                    setPhone(text);
-                  }}
-                  value={phone}
-                  style={styles.inputField}
-                />
-                <BoldText>Ihre Mitteilung</BoldText>
-                <TextInput
-                  onChangeText={(text) => {
-                    setMessage(text);
-                  }}
-                  value={message}
-                  style={styles.textArea}
-                  multiline
-                  textAlignVertical="top"
-                />
-                <CheckBox
-                  checked={consent}
-                  onPress={() => setConsent(!consent)}
-                  title="Ich bin mit dem Speichern meiner Daten einverstanden?"
-                  checkedColor={colors.accent}
-                  containerStyle={styles.checkboxContainerStyle}
-                  textStyle={styles.checkboxTextStyle}
-                />
-                <Button title="Senden" onPress={() => submitForm(createAppUserContent)}></Button>
-              </View>
-            )}
-          </Mutation>
-        </WrapperWithOrientation>
-      </ScrollView>
+      <KeyboardAvoidingView
+        enabled={device.platform === 'ios'}
+        behavior={device.platform === 'ios' && 'padding'}
+        keyboardVerticalOffset={
+          device.platform === 'ios' && getHeaderHeight(orientation) + statusBarHeight(orientation)
+        }
+        style={styles.flex}
+      >
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <WrapperWithOrientation orientation={orientation} dimensions={dimensions}>
+            <Mutation mutation={createQuery(QUERY_TYPES.APP_USER_CONTENT)}>
+              {(createAppUserContent) => (
+                <View style={{ padding: normalize(14) }}>
+                  <BoldText>Name</BoldText>
+                  <TextInput
+                    onChangeText={(text) => {
+                      setName(text);
+                    }}
+                    value={name}
+                    style={styles.inputField}
+                  />
+                  <BoldText>E-Mail</BoldText>
+                  <TextInput
+                    onChangeText={(text) => {
+                      setEmail(text);
+                    }}
+                    value={email}
+                    style={styles.inputField}
+                    keyboardType="email-address"
+                  />
+                  <BoldText>Telefon</BoldText>
+                  <TextInput
+                    onChangeText={(text) => {
+                      setPhone(text);
+                    }}
+                    value={phone}
+                    style={styles.inputField}
+                  />
+                  <BoldText>Ihre Mitteilung</BoldText>
+                  <TextInput
+                    onChangeText={(text) => {
+                      setMessage(text);
+                    }}
+                    value={message}
+                    style={styles.textArea}
+                    multiline
+                    textAlignVertical="top"
+                  />
+                  <CheckBox
+                    checked={consent}
+                    onPress={() => setConsent(!consent)}
+                    title="Ich bin mit dem Speichern meiner Daten einverstanden?"
+                    checkedColor={colors.accent}
+                    containerStyle={styles.checkboxContainerStyle}
+                    textStyle={styles.checkboxTextStyle}
+                  />
+                  <Button title="Senden" onPress={() => submitForm(createAppUserContent)}></Button>
+                </View>
+              )}
+            </Mutation>
+          </WrapperWithOrientation>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };
@@ -134,6 +152,9 @@ FormScreen.navigationOptions = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1
+  },
   inputField: {
     borderColor: colors.shadow,
     borderWidth: 1,
