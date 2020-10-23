@@ -208,13 +208,13 @@ export const NewsItem = ({ data, navigation }) => {
         {!!title && !!link ? (
           <TitleContainer>
             <Touchable onPress={openWebScreen}>
-              <Title>{trimNewLines(title)}</Title>
+              <Title accessibilityLabel={`${title} (Überschrift)`}>{trimNewLines(title)}</Title>
             </Touchable>
           </TitleContainer>
         ) : (
           !!title && (
             <TitleContainer>
-              <Title>{trimNewLines(title)}</Title>
+              <Title accessibilityLabel={`${title} (Überschrift)`}>{trimNewLines(title)}</Title>
             </TitleContainer>
           )
         )}

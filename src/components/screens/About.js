@@ -56,7 +56,7 @@ export const About = ({ navigation, refreshing }) => {
           <View>
             {!!headlineAbout && (
               <TitleContainer>
-                <Title>{headlineAbout}</Title>
+                <Title accessibilityLabel={`${headlineAbout} (Überschrift)`}>{headlineAbout}</Title>
               </TitleContainer>
             )}
             {!!headlineAbout && device.platform === 'ios' && <TitleShadow />}

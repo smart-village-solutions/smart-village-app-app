@@ -145,7 +145,9 @@ export const EventRecord = ({ data, navigation }) => {
         {!!dates && !!dates.length && (
           <View>
             <TitleContainer>
-              <Title>{texts.eventRecord.appointments}</Title>
+              <Title accessibilityLabel={`${texts.eventRecord.appointments} (Überschrift) `}>
+                {texts.eventRecord.appointments}
+              </Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <OpeningTimesCard openingHours={dates} />
@@ -156,7 +158,9 @@ export const EventRecord = ({ data, navigation }) => {
         {!!priceInformations && !!priceInformations.length && !!priceInformations[0].description && (
           <View>
             <TitleContainer>
-              <Title>{texts.eventRecord.prices}</Title>
+              <Title accessibilityLabel={`${texts.eventRecord.prices} (Überschrift)`}>
+                {texts.eventRecord.prices}
+              </Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <PriceCard prices={priceInformations} />
@@ -166,7 +170,9 @@ export const EventRecord = ({ data, navigation }) => {
         {!!description && (
           <View>
             <TitleContainer>
-              <Title>{texts.eventRecord.description}</Title>
+              <Title accessibilityLabel={`${texts.eventRecord.description} (Überschrift)`}>
+                {texts.eventRecord.description}
+              </Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Wrapper>
@@ -185,7 +191,9 @@ export const EventRecord = ({ data, navigation }) => {
         {!!operatingCompany && (
           <View>
             <TitleContainer>
-              <Title>{texts.eventRecord.operatingCompany}</Title>
+              <Title accessibilityLabel={`${texts.eventRecord.operatingCompany} (Überschrift)`}>
+                {texts.eventRecord.operatingCompany}
+              </Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <OperatingCompanyInfo

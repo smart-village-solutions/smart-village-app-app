@@ -73,7 +73,7 @@ export const PointOfInterest = ({ data, navigation }) => {
         {!!title && (
           <View>
             <TitleContainer>
-              <Title>{title}</Title>
+              <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
           </View>
@@ -87,7 +87,7 @@ export const PointOfInterest = ({ data, navigation }) => {
         {/* {!!location && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.location}</Title>
+              <Title accessibilityLabel={`${texts.pointOfInterest.location} (Überschrift)`}>{texts.pointOfInterest.location}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
           </View>
@@ -96,7 +96,9 @@ export const PointOfInterest = ({ data, navigation }) => {
         {!!openingHours && !!openingHours.length && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.openingTime}</Title>
+              <Title accessibilityLabel={`${texts.pointOfInterest.openingTime} (Überschrift)`}>
+                {texts.pointOfInterest.openingTime}
+              </Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <OpeningTimesCard openingHours={openingHours} />
@@ -106,7 +108,9 @@ export const PointOfInterest = ({ data, navigation }) => {
         {!!priceInformations && !!priceInformations.length && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.prices}</Title>
+              <Title accessibilityLabel={`${texts.pointOfInterest.prices} (Überschrift)`}>
+                {texts.pointOfInterest.prices}
+              </Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <PriceCard prices={priceInformations} />
@@ -116,7 +120,9 @@ export const PointOfInterest = ({ data, navigation }) => {
         {!!description && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.description}</Title>
+              <Title accessibilityLabel={`${texts.pointOfInterest.description} (Überschrift)`}>
+                {texts.pointOfInterest.description}
+              </Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Wrapper>
@@ -133,7 +139,9 @@ export const PointOfInterest = ({ data, navigation }) => {
         {!!operatingCompany && (
           <View>
             <TitleContainer>
-              <Title>{texts.pointOfInterest.operatingCompany}</Title>
+              <Title accessibilityLabel={`${texts.pointOfInterest.operatingCompany} (Überschrift)`}>
+                {texts.pointOfInterest.operatingCompany}
+              </Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <OperatingCompanyInfo
