@@ -58,7 +58,8 @@ export const Tour = ({ data, navigation }) => {
         images.push({
           picture: {
             uri: item.sourceUrl.url,
-            copyright: item.copyright
+            copyright: item.copyright,
+            captionText: item.captionText
           }
         });
     });

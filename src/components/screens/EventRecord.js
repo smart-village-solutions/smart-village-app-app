@@ -76,7 +76,8 @@ export const EventRecord = ({ data, navigation }) => {
         images.push({
           picture: {
             uri: mediaContent.sourceUrl.url,
-            copyright: mediaContent.copyright
+            copyright: mediaContent.copyright,
+            captionText: mediaContent.captionText
           }
         });
     });

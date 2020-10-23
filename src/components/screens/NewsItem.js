@@ -67,7 +67,8 @@ export const NewsItem = ({ data, navigation }) => {
         mainImages.push({
           picture: {
             uri: mediaContent.sourceUrl.url,
-            copyright: mediaContent.copyright
+            copyright: mediaContent.copyright,
+            captionText: mediaContent.captionText
           }
         });
     });
@@ -123,7 +124,8 @@ export const NewsItem = ({ data, navigation }) => {
               sectionImages.push({
                 picture: {
                   uri: mediaContent.sourceUrl.url,
-                  copyright: mediaContent.copyright
+                  copyright: mediaContent.copyright,
+                  captionText: mediaContent.captionText
                 }
               });
           });
