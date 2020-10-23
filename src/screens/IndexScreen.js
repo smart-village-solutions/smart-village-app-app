@@ -105,7 +105,10 @@ const getListItems = (query, data) => {
             shareContent: {
               message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
             },
-            details: pointOfInterest
+            details: {
+              ...pointOfInterest,
+              title: pointOfInterest.name
+            }
           }
         }))
     );
@@ -127,7 +130,10 @@ const getListItems = (query, data) => {
             shareContent: {
               message: shareMessage(tour, QUERY_TYPES.TOUR)
             },
-            details: tour
+            details: {
+              ...tour,
+              title: tour.name
+            }
           }
         }))
     );

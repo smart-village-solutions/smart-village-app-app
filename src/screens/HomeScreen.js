@@ -221,7 +221,10 @@ export const HomeScreen = ({ navigation }) => {
                       shareContent: {
                         message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
                       },
-                      details: pointOfInterest
+                      details: {
+                        ...pointOfInterest,
+                        title: pointOfInterest.name
+                      }
                     },
                     __typename: pointOfInterest.__typename
                   }));
@@ -243,7 +246,10 @@ export const HomeScreen = ({ navigation }) => {
                       shareContent: {
                         message: shareMessage(tour, QUERY_TYPES.TOUR)
                       },
-                      details: tour
+                      details: {
+                        ...tour,
+                        title: tour.name
+                      }
                     },
                     __typename: tour.__typename
                   }));
