@@ -9,3 +9,4 @@ export * from './priceHelper';
 export * from './refreshIntervalHelper';
 export * from './shareHelper';
 export * from './storageHelper';
+export * from './textHelper';
