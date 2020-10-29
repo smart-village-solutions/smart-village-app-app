@@ -29,7 +29,8 @@ import {
   graphqlFetchPolicy,
   mainImageOfMediaContents,
   momentFormat,
-  shareMessage
+  shareMessage,
+  subtitle
 } from '../helpers';
 
 /* eslint-disable complexity */
@@ -42,11 +43,12 @@ const getListItems = (query, data) => {
         data[query] &&
         data[query].map((eventRecord) => ({
           id: eventRecord.id,
-          subtitle: `${eventDate(eventRecord.listDate)} | ${
+          subtitle: subtitle(
+            eventDate(eventRecord.listDate),
             !!eventRecord.addresses &&
-            !!eventRecord.addresses.length &&
-            (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
-          }`,
+              !!eventRecord.addresses.length &&
+              (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
+          ),
           title: eventRecord.title,
           routeName: 'Detail',
           params: {
@@ -67,9 +69,10 @@ const getListItems = (query, data) => {
         data[query] &&
         data[query].map((newsItem) => ({
           id: newsItem.id,
-          subtitle: `${momentFormat(newsItem.publishedAt)} | ${
+          subtitle: subtitle(
+            momentFormat(newsItem.publishedAt),
             !!newsItem.dataProvider && newsItem.dataProvider.name
-          }`,
+          ),
           title:
             !!newsItem.contentBlocks &&
             !!newsItem.contentBlocks.length &&
