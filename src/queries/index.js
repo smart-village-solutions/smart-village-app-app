@@ -3,7 +3,11 @@ import { QUERY_TYPES } from './types';
 
 // IMPORT GET QUERIES
 import { GET_CATEGORIES } from './categories';
-import { GET_EVENT_RECORD, GET_EVENT_RECORDS } from './eventRecords';
+import {
+  GET_EVENT_RECORD,
+  GET_EVENT_RECORDS,
+  GET_EVENT_RECORDS_AND_CATEGORIES
+} from './eventRecords';
 import {
   GET_NEWS_ITEM,
   GET_NEWS_ITEMS,
@@ -27,7 +31,9 @@ export const getQuery = (query, filterOptions = {}) => {
   const QUERIES = {
     [QUERY_TYPES.CATEGORIES]: GET_CATEGORIES,
     [QUERY_TYPES.EVENT_RECORD]: GET_EVENT_RECORD,
-    [QUERY_TYPES.EVENT_RECORDS]: GET_EVENT_RECORDS,
+    [QUERY_TYPES.EVENT_RECORDS]: filterOptions.showEventsFilter
+      ? GET_EVENT_RECORDS_AND_CATEGORIES
+      : GET_EVENT_RECORDS,
     [QUERY_TYPES.NEWS_ITEM]: GET_NEWS_ITEM,
     [QUERY_TYPES.NEWS_ITEMS]: filterOptions.showNewsFilter
       ? GET_FILTERED_NEWS_ITEMS_AND_DATA_PROVIDERS
@@ -47,6 +53,7 @@ export const getQuery = (query, filterOptions = {}) => {
 export const getFetchMoreQuery = (query, filterOptions = {}) => {
   const FETCH_MORE_QUERIES = {
     [QUERY_TYPES.EVENT_RECORDS]: GET_EVENT_RECORDS,
+    // TODO: check if GET_NEWS_ITEMS would be enough here, as the query gets a dataProvider param or not, but the rest is the same (like for event records)
     [QUERY_TYPES.NEWS_ITEMS]: filterOptions.showNewsFilter
       ? GET_FILTERED_NEWS_ITEMS
       : GET_NEWS_ITEMS

@@ -179,15 +179,6 @@ const getComponent = (query) => {
   return COMPONENTS[query];
 };
 
-const getListHeaderComponent = (query, queryVariables, data, updateListData) => {
-  switch (query) {
-  case QUERY_TYPES.NEWS_ITEMS:
-    return (
-      <ListHeader queryVariables={queryVariables} data={data} updateListData={updateListData} />
-    );
-  }
-};
-
 export const IndexScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = navigation.getParam('query', '');
@@ -209,27 +200,39 @@ export const IndexScreen = ({ navigation }) => {
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const globalSettings = useContext(GlobalSettingsContext);
   const { filter = {} } = globalSettings;
-  const { news: showNewsFilter = false } = filter;
+  const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const Component = getComponent(query);
+  const showFilter = {
+    [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
+    [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
+  }[query];
+  const queryVariableForQuery = {
+    [QUERY_TYPES.EVENT_RECORDS]: 'category',
+    [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
+  }[query];
 
-  const updateListData = (selectedDataProvider) => {
-    if (selectedDataProvider) {
+  const updateListData = (selectedValue) => {
+    if (selectedValue) {
       setQueryVariables({
         ...queryVariables,
-        dataProvider: selectedDataProvider
+        [queryVariableForQuery]: selectedValue
       });
     } else {
-      /* NOTE: remove `dataProvider`, which is super easy with spread operator */
-      /* eslint-disable-next-line no-unused-vars */
-      const { dataProvider, ...queryVariablesWithoutDataProvider } = queryVariables;
+      /* NOTE: remove `queryVariableForQuery`, which is super easy with spread operator */
+      /* eslint-disable no-unused-vars */
+      const {
+        queryVariableForQuery,
+        ...queryVariablesWithoutQueryVariableForQuery
+      } = queryVariables;
+      /* eslint-enable-next-line no-unused-vars */
 
-      setQueryVariables(queryVariablesWithoutDataProvider);
+      setQueryVariables(queryVariablesWithoutQueryVariableForQuery);
     }
   };
 
   return (
     <Query
-      query={getQuery(query, { showNewsFilter })}
+      query={getQuery(query, { showNewsFilter, showEventsFilter })}
       variables={queryVariables}
       fetchPolicy={fetchPolicy}
     >
@@ -248,7 +251,7 @@ export const IndexScreen = ({ navigation }) => {
 
         const fetchMoreData = () =>
           fetchMore({
-            query: getFetchMoreQuery(query, { showNewsFilter }),
+            query: getFetchMoreQuery(query, { showNewsFilter, showEventsFilter }),
             variables: {
               ...queryVariables,
               offset: listItems.length
@@ -265,8 +268,8 @@ export const IndexScreen = ({ navigation }) => {
 
         let ListHeaderComponent = null;
 
-        if (showNewsFilter) {
-          ListHeaderComponent = getListHeaderComponent(query, queryVariables, data, updateListData);
+        if (showFilter) {
+          ListHeaderComponent = <ListHeader {...{ query, queryVariables, data, updateListData }} />;
         }
 
         return (
