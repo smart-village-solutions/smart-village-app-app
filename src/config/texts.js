@@ -61,6 +61,7 @@ export const texts = {
     tour: 'Tourverlauf'
   },
   categoryFilter: {
-    label: 'Datenquelle'
+    dataProvider: 'Datenquelle',
+    category: 'Kategorie'
   }
 };
