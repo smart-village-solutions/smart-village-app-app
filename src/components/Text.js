@@ -12,7 +12,7 @@ export const RegularText = styled.Text`
     props.small &&
     css`
       font-size: ${normalize(14)};
-      line-height: ${normalize(16)};
+      line-height: ${normalize(18)};
     `};
 
   ${(props) =>
