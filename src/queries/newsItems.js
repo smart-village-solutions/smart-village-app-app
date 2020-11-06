@@ -2,9 +2,7 @@ import gql from 'graphql-tag';
 
 export const GET_NEWS_ITEMS = gql`
   query NewsItems($limit: Int, $offset: Int, $categoryId: ID) {
-    # TODO: ", categoryId: $categoryId" to filter on a category
-    #       main server PR necessary: https://github.com/ikuseiGmbH/smart-village-app-mainserver/pull/158
-    newsItems(limit: $limit, skip: $offset) {
+    newsItems(limit: $limit, skip: $offset, categoryId: $categoryId) {
       id
       mainTitle: title
       publishedAt
@@ -42,9 +40,7 @@ export const GET_NEWS_ITEMS = gql`
 
 export const GET_FILTERED_NEWS_ITEMS = gql`
   query NewsItems($limit: Int, $offset: Int, $dataProvider: String, $categoryId: ID) {
-    # TODO: ", categoryId: $categoryId" to filter on a category
-    #       main server PR necessary: https://github.com/ikuseiGmbH/smart-village-app-mainserver/pull/158
-    newsItems(limit: $limit, skip: $offset, dataProvider: $dataProvider) {
+    newsItems(limit: $limit, skip: $offset, dataProvider: $dataProvider, categoryId: $categoryId) {
       id
       mainTitle: title
       publishedAt
@@ -82,9 +78,7 @@ export const GET_FILTERED_NEWS_ITEMS = gql`
 
 export const GET_FILTERED_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
   query NewsItems($limit: Int, $offset: Int, $dataProvider: String, $categoryId: ID) {
-    # TODO: ", categoryId: $categoryId" to filter on a category
-    #       main server PR necessary: https://github.com/ikuseiGmbH/smart-village-app-mainserver/pull/158
-    newsItems(limit: $limit, skip: $offset, dataProvider: $dataProvider) {
+    newsItems(limit: $limit, skip: $offset, dataProvider: $dataProvider, categoryId: $categoryId) {
       id
       mainTitle: title
       publishedAt
