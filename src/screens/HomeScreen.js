@@ -48,7 +48,6 @@ export const HomeScreen = ({ navigation }) => {
     showEvents = true,
     categoriesNews = [
       {
-        categoryId: texts.homeCategoriesNews.categoryId,
         categoryTitle: texts.homeCategoriesNews.categoryTitle,
         categoryTitleDetail: texts.homeCategoriesNews.categoryTitleDetail,
         categoryButton: texts.homeButtons.news
@@ -96,12 +95,12 @@ export const HomeScreen = ({ navigation }) => {
         rootRouteName: 'EventRecords'
       }
     },
-    NEWS_ITEMS_INDEX: (categoryId, categoryTitle) => ({
+    NEWS_ITEMS_INDEX: ({ categoryId, categoryTitle }) => ({
       routeName: 'Index',
       params: {
         title: categoryTitle,
         query: QUERY_TYPES.NEWS_ITEMS,
-        queryVariables: { limit: 15, categoryId },
+        queryVariables: { limit: 15, ...{ categoryId } },
         rootRouteName: 'NewsItems'
       }
     })
@@ -124,11 +123,13 @@ export const HomeScreen = ({ navigation }) => {
         {showNews &&
           categoriesNews.map(
             ({ categoryId, categoryTitle, categoryTitleDetail, categoryButton }, index) => (
-              <Fragment key={`${index}-${categoryId}`}>
+              <Fragment key={`${index}-${categoryTitle}`}>
                 <TitleContainer>
                   <Touchable
                     onPress={() =>
-                      navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX(categoryId, categoryTitle))
+                      navigation.navigate(
+                        NAVIGATION.NEWS_ITEMS_INDEX({ categoryId, categoryTitle })
+                      )
                     }
                   >
                     <Title accessibilityLabel={`${categoryTitle} (Überschrift) (Taste)`}>
@@ -139,7 +140,7 @@ export const HomeScreen = ({ navigation }) => {
                 {device.platform === 'ios' && <TitleShadow />}
                 <Query
                   query={getQuery(QUERY_TYPES.NEWS_ITEMS)}
-                  variables={{ limit: 3, categoryId }}
+                  variables={{ limit: 3, ...{ categoryId } }}
                   fetchPolicy={fetchPolicy}
                 >
                   {({ data, loading }) => {
@@ -190,7 +191,7 @@ export const HomeScreen = ({ navigation }) => {
                             title={categoryButton}
                             onPress={() =>
                               navigation.navigate(
-                                NAVIGATION.NEWS_ITEMS_INDEX(categoryId, categoryTitle)
+                                NAVIGATION.NEWS_ITEMS_INDEX({ categoryId, categoryTitle })
                               )
                             }
                           />

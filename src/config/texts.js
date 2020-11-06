@@ -28,7 +28,6 @@ export const texts = {
     company: 'Städtische Unternehmen'
   },
   homeCategoriesNews: {
-    categoryId: 77,
     categoryTitle: 'Nachrichten',
     categoryTitleDetail: 'Nachricht'
   },
