@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.3.4]
+
+Fix displaying appointments in events
+
+### Fixed
+
+- corrected line height of `Text` component with `small` prop set
+
 ## [v1.3.3]
 
 Updated Expo SDK to 39.0.3
