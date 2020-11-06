@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
 import { Query } from 'react-apollo';
 import _shuffle from 'lodash/shuffle';
+import _filter from 'lodash/filter';
 
 import { NetworkContext } from '../NetworkProvider';
 import { GlobalSettingsContext } from '../GlobalSettingsProvider';
@@ -152,6 +153,19 @@ export const HomeScreen = ({ navigation }) => {
                       !!newsItem.contentBlocks &&
                       !!newsItem.contentBlocks.length &&
                       newsItem.contentBlocks[0].title,
+                    picture: {
+                      url:
+                        !!newsItem.contentBlocks &&
+                        !!newsItem.contentBlocks.length &&
+                        !!newsItem.contentBlocks[0].mediaContents &&
+                        !!newsItem.contentBlocks[0].mediaContents.length &&
+                        _filter(
+                          newsItem.contentBlocks[0].mediaContents,
+                          (mediaContent) =>
+                            mediaContent.contentType === 'image' ||
+                            mediaContent.contentType === 'thumbnail'
+                        )[0].sourceUrl.url,
+                    },
                     routeName: 'Detail',
                     params: {
                       title: 'Nachricht',

@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { colors, normalize } from '../config';
 import { arrowRight } from '../icons';
 import { Icon } from './Icon';
+import { Image } from './Image';
+
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 import { trimNewLines } from '../helpers';
@@ -12,7 +15,7 @@ import { trimNewLines } from '../helpers';
 export class TextListItem extends React.PureComponent {
   render() {
     const { navigation, noSubtitle, item } = this.props;
-    const { routeName, params, subtitle, title, bottomDivider, topDivider } = item;
+    const { routeName, params, subtitle, title, bottomDivider, topDivider, picture } = item;
 
     return (
       <ListItem
@@ -25,6 +28,7 @@ export class TextListItem extends React.PureComponent {
           paddingVertical: normalize(12)
         }}
         rightIcon={<Icon xml={arrowRight(colors.primary)} />}
+        leftIcon={!!picture && <Image style={styles.smallImage} source={picture.url} />}
         onPress={() =>
           navigation.navigate({
             routeName,
@@ -38,6 +42,14 @@ export class TextListItem extends React.PureComponent {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  smallImage: {
+    alignSelf: 'flex-start',
+    height: normalize(30),
+    width: normalize(30),
+  },
+});
 
 TextListItem.propTypes = {
   navigation: PropTypes.object.isRequired,
