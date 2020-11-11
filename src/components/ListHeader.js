@@ -19,7 +19,7 @@ export const ListHeader = ({ query, queryVariables, data, updateListData }) => {
         data &&
           data.categories &&
           data.categories
-            .filter((category) => !!category.eventRecordsCount) // TODO: pre-filter results on server?
+            .filter((category) => !!category.eventRecordsCount)
             .map((category, index) => ({
               id: index + 1,
               value: category.name,
