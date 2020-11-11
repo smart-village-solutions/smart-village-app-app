@@ -8,12 +8,7 @@ import {
   GET_EVENT_RECORDS,
   GET_EVENT_RECORDS_AND_CATEGORIES
 } from './eventRecords';
-import {
-  GET_NEWS_ITEM,
-  GET_NEWS_ITEMS,
-  GET_FILTERED_NEWS_ITEMS,
-  GET_FILTERED_NEWS_ITEMS_AND_DATA_PROVIDERS
-} from './newsItems';
+import { GET_NEWS_ITEM, GET_NEWS_ITEMS, GET_NEWS_ITEMS_AND_DATA_PROVIDERS } from './newsItems';
 import { GET_POINT_OF_INTEREST, GET_POINTS_OF_INTEREST } from './pointsOfInterest';
 import { GET_TOUR, GET_TOURS } from './tours';
 import { GET_POINTS_OF_INTEREST_AND_TOURS } from './pointsOfInterestAndTours';
@@ -36,7 +31,7 @@ export const getQuery = (query, filterOptions = {}) => {
       : GET_EVENT_RECORDS,
     [QUERY_TYPES.NEWS_ITEM]: GET_NEWS_ITEM,
     [QUERY_TYPES.NEWS_ITEMS]: filterOptions.showNewsFilter
-      ? GET_FILTERED_NEWS_ITEMS_AND_DATA_PROVIDERS
+      ? GET_NEWS_ITEMS_AND_DATA_PROVIDERS
       : GET_NEWS_ITEMS,
     [QUERY_TYPES.TOUR]: GET_TOUR,
     [QUERY_TYPES.TOURS]: GET_TOURS,
@@ -50,13 +45,10 @@ export const getQuery = (query, filterOptions = {}) => {
   return QUERIES[query];
 };
 
-export const getFetchMoreQuery = (query, filterOptions = {}) => {
+export const getFetchMoreQuery = (query) => {
   const FETCH_MORE_QUERIES = {
     [QUERY_TYPES.EVENT_RECORDS]: GET_EVENT_RECORDS,
-    // TODO: check if GET_NEWS_ITEMS would be enough here, as the query gets a dataProvider param or not, but the rest is the same (like for event records)
-    [QUERY_TYPES.NEWS_ITEMS]: filterOptions.showNewsFilter
-      ? GET_FILTERED_NEWS_ITEMS
-      : GET_NEWS_ITEMS
+    [QUERY_TYPES.NEWS_ITEMS]: GET_NEWS_ITEMS
   };
 
   return FETCH_MORE_QUERIES[query];

@@ -251,7 +251,7 @@ export const IndexScreen = ({ navigation }) => {
 
         const fetchMoreData = () =>
           fetchMore({
-            query: getFetchMoreQuery(query, { showNewsFilter, showEventsFilter }),
+            query: getFetchMoreQuery(query),
             variables: {
               ...queryVariables,
               offset: listItems.length
