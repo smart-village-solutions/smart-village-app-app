@@ -19,11 +19,12 @@ export const ListHeader = ({ query, queryVariables, data, updateListData }) => {
         data &&
           data.categories &&
           data.categories
-            .filter((category) => !!category.eventRecordsCount)
+            .filter((category) => !!category.upcomingEventRecordsCount)
             .map((category, index) => ({
-              id: index + 1,
+              index: index + 1,
+              id: category.id,
               value: category.name,
-              selected: category.name === queryVariables.category
+              selected: category.id === queryVariables.categoryId
             }))
       );
     case QUERY_TYPES.NEWS_ITEMS:
@@ -31,7 +32,7 @@ export const ListHeader = ({ query, queryVariables, data, updateListData }) => {
         data &&
           data.dataProviders &&
           data.dataProviders.map((dataProvider, index) => ({
-            id: index + 1,
+            index: index + 1,
             value: dataProvider.name,
             selected: dataProvider.name === queryVariables.dataProvider
           }))
@@ -42,13 +43,17 @@ export const ListHeader = ({ query, queryVariables, data, updateListData }) => {
   // check if there is something set in the certain `queryVariables`
   // if not, - Alle - will be selected in the `dropdownData`
   const selectedInitial = {
-    [QUERY_TYPES.EVENT_RECORDS]: !queryVariables.category,
+    [QUERY_TYPES.EVENT_RECORDS]: !queryVariables.categoryId,
     [QUERY_TYPES.NEWS_ITEMS]: !queryVariables.dataProvider
+  }[query];
+  const selectedKey = {
+    [QUERY_TYPES.EVENT_RECORDS]: 'id',
+    [QUERY_TYPES.NEWS_ITEMS]: 'value'
   }[query];
 
   const [dropdownData, setDropdownData] = useState([
     {
-      id: 0,
+      index: 0,
       value: '- Alle -',
       selected: selectedInitial
     },
@@ -66,9 +71,9 @@ export const ListHeader = ({ query, queryVariables, data, updateListData }) => {
     if (initialRender.current) {
       initialRender.current = false;
     } else {
-      // do not pass the value, if the id is 0, because we do not want to use "- Alle -" inside of
-      // updateListData
-      updateListData(!!selectedDropdownData.id && selectedDropdownData.value);
+      // do not pass the value, if the index is 0, because we do not want to use "- Alle -"
+      // inside of updateListData
+      updateListData(!!selectedDropdownData.index && selectedDropdownData[selectedKey]);
     }
   }, [selectedDropdownData.value]);
 

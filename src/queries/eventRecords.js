@@ -82,8 +82,9 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
       }
     }
     categories {
+      id
       name
-      eventRecordsCount
+      upcomingEventRecordsCount
     }
   }
 `;
