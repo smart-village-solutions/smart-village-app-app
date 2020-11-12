@@ -207,26 +207,28 @@ export const IndexScreen = ({ navigation }) => {
     [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
   }[query];
   const queryVariableForQuery = {
-    [QUERY_TYPES.EVENT_RECORDS]: 'category',
+    [QUERY_TYPES.EVENT_RECORDS]: 'categoryId',
     [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
   }[query];
 
   const updateListData = (selectedValue) => {
     if (selectedValue) {
+      // remove a refetch key if present, which was necessary for the "- Alle -" selection
+      delete queryVariables.refetch;
+
       setQueryVariables({
         ...queryVariables,
         [queryVariableForQuery]: selectedValue
       });
     } else {
-      /* NOTE: remove `queryVariableForQuery`, which is super easy with spread operator */
-      /* eslint-disable no-unused-vars */
-      const {
-        queryVariableForQuery,
-        ...queryVariablesWithoutQueryVariableForQuery
-      } = queryVariables;
-      /* eslint-enable-next-line no-unused-vars */
-
-      setQueryVariables(queryVariablesWithoutQueryVariableForQuery);
+      setQueryVariables((prevQueryVariables) => {
+        // remove the filter key for the specific query, when selecting "- Alle -"
+        delete prevQueryVariables[queryVariableForQuery];
+        // need to spread the `prevQueryVariables` into a new object with additional refetch key
+        // to force the Query component to update the data, otherwise it is not fired somehow
+        // because the state variable wouldn't change
+        return { ...prevQueryVariables, refetch: true };
+      });
     }
   };
 
