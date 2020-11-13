@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.3.5]
+
+Updates considering categories
+
+### Added
+
+- added ability to have different sections for news items for various categories
+  on the home screen
+- added category filter on index screen for event records
+
 ## [v1.3.4]
 
 Fix displaying appointments in events
