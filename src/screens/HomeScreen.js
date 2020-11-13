@@ -155,8 +155,7 @@ export const HomeScreen = ({ navigation }) => {
                       newsItem.contentBlocks[0].title,
                     picture: {
                       url:
-                        !!newsItem.contentBlocks &&
-                        !!newsItem.contentBlocks.length &&
+                        !!newsItem.contentBlocks[0] &&
                         !!newsItem.contentBlocks[0].mediaContents &&
                         !!newsItem.contentBlocks[0].mediaContents.length &&
                         _filter(
@@ -333,6 +332,19 @@ export const HomeScreen = ({ navigation }) => {
                         (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
                     ),
                     title: eventRecord.title,
+                    picture: {
+                      url:
+                        !!eventRecord.mediaContents &&
+                        !!eventRecord.mediaContents.length &&
+                        _filter(
+                          eventRecord.mediaContents,
+                          (mediaContent) =>
+                            mediaContent.contentType === 'image' ||
+                            mediaContent.contentType === 'thumbnail'
+                        )[0] &&
+                        !!eventRecord.mediaContents[0].sourceUrl &&
+                        !!eventRecord.mediaContents[0].sourceUrl.url,
+                    },
                     routeName: 'Detail',
                     params: {
                       title: 'Veranstaltung',
