@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Query } from 'react-apollo';
 import { useMatomo } from 'matomo-tracker-react-native';
+import _filter from 'lodash/filter';
 
 import { NetworkContext } from '../NetworkProvider';
 import { GlobalSettingsContext } from '../GlobalSettingsProvider';
@@ -81,6 +82,18 @@ const getListItems = (query, data) => {
             !!newsItem.contentBlocks &&
             !!newsItem.contentBlocks.length &&
             newsItem.contentBlocks[0].title,
+          picture: {
+            url:
+              !!newsItem.contentBlocks &&
+              !!newsItem.contentBlocks.length &&
+              !!newsItem.contentBlocks[0].mediaContents &&
+              !!newsItem.contentBlocks[0].mediaContents.length &&
+              _filter(
+                newsItem.contentBlocks[0].mediaContents,
+                (mediaContent) =>
+                  mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
+              )[0].sourceUrl.url
+          },
           routeName: 'Detail',
           params: {
             title: 'Nachricht',
