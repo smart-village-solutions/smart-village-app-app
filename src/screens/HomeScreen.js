@@ -366,6 +366,19 @@ export const HomeScreen = ({ navigation }) => {
                         (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
                     ),
                     title: eventRecord.title,
+                    picture: {
+                      url:
+                        !!eventRecord.mediaContents &&
+                        !!eventRecord.mediaContents.length &&
+                        _filter(
+                          eventRecord.mediaContents,
+                          (mediaContent) =>
+                            mediaContent.contentType === 'image' ||
+                            mediaContent.contentType === 'thumbnail'
+                        )[0] &&
+                        !!eventRecord.mediaContents[0].sourceUrl &&
+                        !!eventRecord.mediaContents[0].sourceUrl.url
+                    },
                     routeName: 'Detail',
                     params: {
                       title: 'Veranstaltung',

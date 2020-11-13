@@ -25,15 +25,18 @@ export class TextListItem extends React.PureComponent {
         topDivider={topDivider !== undefined ? topDivider : false}
         containerStyle={{
           backgroundColor: colors.transparent,
-          paddingVertical: normalize(12)
+          paddingVertical: normalize(12),
         }}
         rightIcon={<Icon xml={arrowRight(colors.primary)} />}
-        leftIcon={!!picture && <Image style={styles.smallImage} source={picture.url} />}
+        leftIcon={
+          !!picture &&
+          !!picture.url && <Image style={styles.smallImage} source={{ uri: picture.url }} />
+        }
         onPress={() =>
           navigation &&
           navigation.navigate({
             routeName,
-            params
+            params,
           })
         }
         disabled={!navigation}
@@ -48,17 +51,17 @@ export class TextListItem extends React.PureComponent {
 const styles = StyleSheet.create({
   smallImage: {
     alignSelf: 'flex-start',
-    height: normalize(30),
-    width: normalize(30),
+    height: normalize(33),
+    width: normalize(66),
   },
 });
 
 TextListItem.propTypes = {
   navigation: PropTypes.object,
   item: PropTypes.object.isRequired,
-  noSubtitle: PropTypes.bool
+  noSubtitle: PropTypes.bool,
 };
 
 TextListItem.defaultProps = {
-  noSubtitle: false
+  noSubtitle: false,
 };
