@@ -45,6 +45,7 @@
     "react-native-elements": "1.1.0",
     "react-native-expo-image-cache": "4.1.0",
     "react-native-gesture-handler": "~1.7.0",
+    "react-native-get-random-values": "^1.5.0",
     "react-native-modal-dropdown": "https://github.com/siemiatj/react-native-modal-dropdown",
     "react-native-reanimated": "~1.13.0",
     "react-native-render-html": "4.2.3",
