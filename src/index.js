@@ -13,10 +13,9 @@ import { persistCache } from 'apollo-cache-persist';
 import _reduce from 'lodash/reduce';
 import MatomoTracker, { MatomoProvider, useMatomo } from 'matomo-tracker-react-native';
 
-import appJson from '../app.json';
 import { auth } from './auth';
-import { colors, consts, device, secrets, texts } from './config';
 import { graphqlFetchPolicy, storageHelper } from './helpers';
+import { colors, consts, device, namespace, secrets, texts } from './config';
 import { getQuery, QUERY_TYPES } from './queries';
 import { NetworkProvider } from './NetworkProvider';
 import NetInfo from './NetInfo';
@@ -26,8 +25,6 @@ import AppStackNavigator from './navigation/AppStackNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 import { LoadingContainer } from './components';
-
-const namespace = appJson.expo.slug;
 
 const MainAppWithApolloProvider = () => {
   const [loading, setLoading] = useState(true);
