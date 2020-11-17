@@ -33,7 +33,7 @@ const App = () => {
   const [matomoInstance, setMatomoInstance] = useState();
 
   useEffect(() => {
-    SplashScreen.preventAutoHide();
+    SplashScreen.preventAutoHideAsync();
 
     matomoSettings()
       .then((settings) =>

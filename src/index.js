@@ -236,7 +236,7 @@ const MainAppWithApolloProvider = () => {
   }, [globalSettingsState]);
 
   useEffect(() => {
-    !loading && SplashScreen.hide();
+    !loading && SplashScreen.hideAsync();
 
     // set orientation to "default", to allow both portrait and landscape
     ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
