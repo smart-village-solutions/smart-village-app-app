@@ -56,6 +56,9 @@
     "styled-components": "~4.3.2"
   },
   "devDependencies": {
+    "@types/react": "^16.9.56",
+    "@types/react-dom": "^16.9.9",
+    "@types/react-native": "^0.63.35",
     "babel-eslint": "10.1.0",
     "babel-jest": "25.5.1",
     "babel-preset-expo": "^8.3.0",
@@ -67,6 +70,7 @@
     "jest-expo": "^39.0.0",
     "mixin-deep": "^1.3.2",
     "react-test-renderer": "16.11.0",
-    "set-value": "^2.0.1"
+    "set-value": "^2.0.1",
+    "typescript": "^4.0.5"
   }
 }
