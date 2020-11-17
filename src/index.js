@@ -11,11 +11,10 @@ import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';
 import _reduce from 'lodash/reduce';
-import MatomoTracker, { MatomoProvider, useMatomo } from 'matomo-tracker-react-native';
 
 import { auth } from './auth';
-import { graphqlFetchPolicy, storageHelper } from './helpers';
 import { colors, consts, device, namespace, secrets, texts } from './config';
+import { graphqlFetchPolicy, storageHelper } from './helpers';
 import { getQuery, QUERY_TYPES } from './queries';
 import { NetworkProvider } from './NetworkProvider';
 import NetInfo from './NetInfo';
@@ -52,7 +51,6 @@ const MainAppWithApolloProvider = () => {
     netInfoCounter: 0
   });
   const { isConnected, isMainserverUp, netInfoCounter } = netInfo;
-  const { trackAppStart } = useMatomo();
 
   const setupApolloClient = async () => {
     // https://www.apollographql.com/docs/react/recipes/authentication/#header
@@ -179,6 +177,7 @@ const MainAppWithApolloProvider = () => {
     setGlobalSettingsState(globalSettings);
   };
 
+  // setup global settings if apollo client setup finished
   useEffect(() => {
     client && setupGlobalSettings();
   }, [client]);
@@ -229,9 +228,9 @@ const MainAppWithApolloProvider = () => {
 
     // this is currently the last point where something was done, so the app startup is done
     setLoading(false);
-    trackAppStart();
   };
 
+  // setup navigation drawer if global settings setup finished
   useEffect(() => {
     globalSettingsState && client && setupNavigationDrawer();
   }, [globalSettingsState]);
@@ -287,25 +286,11 @@ const MainAppWithApolloProvider = () => {
     </ApolloProvider>
   );
 };
-export const MainApp = () => {
-  const instance = new MatomoTracker({
-    urlBase: secrets[namespace].matomoUrl,
-    // trackerUrl: 'https://LINK.TO.DOMAIN/tracking.php', // optional, default value: `${urlBase}matomo.php`
-    siteId: secrets[namespace].matomoSiteId,
-    disabled: __DEV__,
-    log: __DEV__
-    // userId: 'UID76903202', // optional, default value: `undefined`.
-    // disabled: false, // optional, false by default. Makes all tracking calls no-ops if set to true.
-    // log: false // optional, false by default. Enables some logs.
-  });
 
-  return (
-    <NetworkProvider>
-      <MatomoProvider instance={instance}>
-        <OrientationProvider>
-          <MainAppWithApolloProvider />
-        </OrientationProvider>
-      </MatomoProvider>
-    </NetworkProvider>
-  );
-};
+export const MainApp = () => (
+  <NetworkProvider>
+    <OrientationProvider>
+      <MainAppWithApolloProvider />
+    </OrientationProvider>
+  </NetworkProvider>
+);

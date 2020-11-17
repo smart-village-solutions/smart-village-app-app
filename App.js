@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
+import MatomoTracker, { MatomoProvider, useMatomo } from 'matomo-tracker-react-native';
 
 import { MainApp } from './src';
+import { namespace, secrets } from './src/config';
+import { matomoSettings } from './src/helpers';
 
-const App = () => {
+const AppWithFonts = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
+  const { trackAppStart } = useMatomo();
 
   useEffect(() => {
-    SplashScreen.preventAutoHide();
+    trackAppStart();
 
     Font.loadAsync({
       'titillium-web-bold': require('./assets/fonts/TitilliumWeb-Bold.ttf'),
@@ -18,11 +22,39 @@ const App = () => {
       'titillium-web-light': require('./assets/fonts/TitilliumWeb-Light.ttf'),
       'titillium-web-light-italic': require('./assets/fonts/TitilliumWeb-LightItalic.ttf')
     })
-      .then(() => setFontLoaded(true))
-      .catch((err) => console.warn('An error occurred with loading the fonts', err));
+      .catch((error) => console.warn('An error occurred with loading the fonts', error))
+      .finally(() => setFontLoaded(true));
   }, []);
 
   return fontLoaded ? <MainApp /> : null;
+};
+
+const App = () => {
+  const [matomoInstance, setMatomoInstance] = useState();
+
+  useEffect(() => {
+    SplashScreen.preventAutoHide();
+
+    matomoSettings()
+      .then((settings) =>
+        setMatomoInstance(
+          new MatomoTracker({
+            urlBase: secrets[namespace].matomoUrl,
+            siteId: secrets[namespace].matomoSiteId,
+            userId: settings.userId,
+            disabled: !settings.consent || __DEV__,
+            log: __DEV__
+          })
+        )
+      )
+      .catch((error) => console.warn('An error occurred with setup Matomo tracking', error));
+  }, []);
+
+  return matomoInstance ? (
+    <MatomoProvider instance={matomoInstance}>
+      <AppWithFonts />
+    </MatomoProvider>
+  ) : null;
 };
 
 export default App;
