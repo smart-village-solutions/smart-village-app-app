@@ -1,9 +1,6 @@
 import NetInfo from '@react-native-community/netinfo';
 
-import appJson from '../app.json';
-import { secrets } from './config';
-
-const namespace = appJson.expo.slug;
+import { namespace, secrets } from './config';
 
 // https://github.com/react-native-community/react-native-netinfo#netinfoconfiguration
 NetInfo.configure({
