@@ -7,10 +7,13 @@ import { colors, normalize } from '../config';
 import { Icon, LoadingContainer, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
 import { arrowLeft } from '../icons';
 import { OrientationContext } from '../OrientationProvider';
+import { useMatomoTrackScreenView } from '../hooks';
 
 export const WebScreen = ({ navigation }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const webUrl = navigation.getParam('webUrl', '');
+
+  useMatomoTrackScreenView(`Web / ${webUrl}`);
 
   if (!webUrl) return null;
 
