@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Fragment, useContext, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
 import { Query } from 'react-apollo';
 import _shuffle from 'lodash/shuffle';
@@ -33,6 +33,9 @@ import {
   shareMessage,
   subtitle
 } from '../helpers';
+import { usePushNotifications } from '../hooks/PushNotification';
+
+const notificationHandler = (notification) => console.log(notification);
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -59,6 +62,20 @@ export const HomeScreen = ({ navigation }) => {
     buttonEvents = texts.homeButtons.events
   } = sections;
   const [refreshing, setRefreshing] = useState(false);
+
+  const responseHandler = useCallback((response) => {
+    // navigate to the newsItem
+    navigation.navigate({
+      routeName: 'Detail',
+      params: {
+        query: QUERY_TYPES.NEWS_ITEM,
+        queryVariables: { id: '4003' }
+      }
+    }
+    );
+  }, [navigation]);
+  
+  usePushNotifications(notificationHandler, responseHandler);
 
   useEffect(() => {
     isConnected && auth();

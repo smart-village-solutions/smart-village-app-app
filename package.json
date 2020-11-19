@@ -31,6 +31,8 @@
     "expo-blur": "~8.2.0",
     "expo-font": "~8.3.0",
     "expo-linear-gradient": "~8.3.0",
+    "expo-notifications": "~0.7.2",
+    "expo-permissions": "~9.3.0",
     "expo-screen-orientation": "~2.0.0",
     "expo-secure-store": "~9.2.0",
     "expo-splash-screen": "~0.6.1",
