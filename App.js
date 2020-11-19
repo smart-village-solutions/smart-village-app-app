@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
-import MatomoTracker, { MatomoProvider } from 'matomo-tracker-react-native';
+import MatomoTracker, { MatomoProvider, useMatomo } from 'matomo-tracker-react-native';
 
 import { MainApp } from './src';
 import { namespace, secrets } from './src/config';
 import { matomoSettings } from './src/helpers';
-import { useMatomoTrackAppStart } from './src/hooks';
 
 const AppWithFonts = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
+  const { trackAppStart } = useMatomo();
 
-  useMatomoTrackAppStart();
+  trackAppStart();
 
   useEffect(() => {
     Font.loadAsync({

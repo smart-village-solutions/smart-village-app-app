@@ -1,16 +1,6 @@
 import { useEffect } from 'react';
 import { useMatomo } from 'matomo-tracker-react-native';
 
-/**
- * Tracks app start as action with prefixed 'App' category
- */
-export const useMatomoTrackAppStart = () => {
-  const { trackAppStart } = useMatomo();
-
-  useEffect(() => {
-    trackAppStart();
-  }, []);
-};
 
 /**
  * Tracks screen view as action with prefixed 'Screen' category
