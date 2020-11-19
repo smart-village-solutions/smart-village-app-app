@@ -8,7 +8,7 @@ const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   useEffect(() => {
-    SplashScreen.preventAutoHide();
+    SplashScreen.preventAutoHideAsync();
 
     Font.loadAsync({
       'titillium-web-bold': require('./assets/fonts/TitilliumWeb-Bold.ttf'),
