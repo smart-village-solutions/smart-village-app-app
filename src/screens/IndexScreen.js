@@ -85,15 +85,15 @@ const getListItems = (query, data) => {
         data[query] &&
         data[query].map((newsItem) => ({
           id: newsItem.id,
-          category: subtitle(
+          subtitle: subtitle(
             momentFormat(newsItem.publishedAt),
             !!newsItem.dataProvider && newsItem.dataProvider.name
           ),
-          name:
+          title:
             !!newsItem.contentBlocks &&
             !!newsItem.contentBlocks.length &&
             newsItem.contentBlocks[0].title,
-          image: {
+          picture: {
             url:
               !!newsItem.contentBlocks &&
               !!newsItem.contentBlocks.length &&
@@ -149,9 +149,11 @@ const getListItems = (query, data) => {
         data[query] &&
         data[query].map((tour) => ({
           id: tour.id,
-          name: tour.name,
-          category: !!tour.category && tour.category.name,
-          image: mainImageOfMediaContents(tour.mediaContents),
+          title: tour.name,
+          subtitle: !!tour.category && tour.category.name,
+          picture: {
+            url: mainImageOfMediaContents(tour.mediaContents),
+          },
           routeName: 'Detail',
           params: {
             title: 'Tour',
@@ -198,7 +200,7 @@ const getListItems = (query, data) => {
 const getComponent = (query) => {
   const COMPONENTS = {
     [QUERY_TYPES.EVENT_RECORDS]: TextList,
-    [QUERY_TYPES.NEWS_ITEMS]: CardList,
+    [QUERY_TYPES.NEWS_ITEMS]: TextList,
     [QUERY_TYPES.POINTS_OF_INTEREST]: CardList,
     [QUERY_TYPES.TOURS]: CardList,
     [QUERY_TYPES.CATEGORIES]: CategoryList,
