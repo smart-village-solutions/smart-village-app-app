@@ -230,9 +230,11 @@ export const HomeScreen = ({ navigation }) => {
                   data.pointsOfInterest &&
                   data.pointsOfInterest.map((pointOfInterest) => ({
                     id: pointOfInterest.id,
-                    name: pointOfInterest.name,
-                    category: !!pointOfInterest.category && pointOfInterest.category.name,
-                    image: mainImageOfMediaContents(pointOfInterest.mediaContents),
+                    title: pointOfInterest.name,
+                    subtitle: !!pointOfInterest.category && pointOfInterest.category.name,
+                    picture: {
+                      url: mainImageOfMediaContents(pointOfInterest.mediaContents),
+                    },
                     routeName: 'Detail',
                     params: {
                       title: 'Ort',
@@ -255,9 +257,11 @@ export const HomeScreen = ({ navigation }) => {
                   data.tours &&
                   data.tours.map((tour) => ({
                     id: tour.id,
-                    name: tour.name,
-                    category: !!tour.category && tour.category.name,
-                    image: mainImageOfMediaContents(tour.mediaContents),
+                    title: tour.name,
+                    subtitle: !!tour.category && tour.category.name,
+                    picture: {
+                      url: mainImageOfMediaContents(tour.mediaContents),
+                    },
                     routeName: 'Detail',
                     params: {
                       title: 'Tour',
@@ -341,8 +345,8 @@ export const HomeScreen = ({ navigation }) => {
                           (mediaContent) =>
                             mediaContent.contentType === 'image' ||
                             mediaContent.contentType === 'thumbnail'
-                        )[0].sourceUrl &&
-                        !!eventRecord.mediaContents[0].sourceUrl.url,
+                        ).sourceUrl &&
+                        !!eventRecord.mediaContents.sourceUrl.url,
                     },
                     routeName: 'Detail',
                     params: {
