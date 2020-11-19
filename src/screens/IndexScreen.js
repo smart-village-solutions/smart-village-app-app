@@ -51,6 +51,17 @@ const getListItems = (query, data) => {
               (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
           ),
           title: eventRecord.title,
+          picture: {
+            url:
+              !!eventRecord.mediaContents &&
+              !!eventRecord.mediaContents.length &&
+              _filter(
+                eventRecord.mediaContents,
+                (mediaContent) =>
+                  mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
+              )[0].sourceUrl &&
+              !!eventRecord.mediaContents[0].sourceUrl.url,
+          },
           routeName: 'Detail',
           params: {
             title: 'Veranstaltung',
@@ -70,15 +81,15 @@ const getListItems = (query, data) => {
         data[query] &&
         data[query].map((newsItem) => ({
           id: newsItem.id,
-          subtitle: subtitle(
+          category: subtitle(
             momentFormat(newsItem.publishedAt),
             !!newsItem.dataProvider && newsItem.dataProvider.name
           ),
-          title:
+          name:
             !!newsItem.contentBlocks &&
             !!newsItem.contentBlocks.length &&
             newsItem.contentBlocks[0].title,
-          picture: {
+          image: {
             url:
               !!newsItem.contentBlocks[0] &&
               !!newsItem.contentBlocks[0].mediaContents &&
@@ -182,10 +193,10 @@ const getListItems = (query, data) => {
 const getComponent = (query) => {
   const COMPONENTS = {
     [QUERY_TYPES.EVENT_RECORDS]: TextList,
-    [QUERY_TYPES.NEWS_ITEMS]: TextList,
+    [QUERY_TYPES.NEWS_ITEMS]: CardList,
     [QUERY_TYPES.POINTS_OF_INTEREST]: CardList,
     [QUERY_TYPES.TOURS]: CardList,
-    [QUERY_TYPES.CATEGORIES]: CategoryList
+    [QUERY_TYPES.CATEGORIES]: CategoryList,
   };
 
   return COMPONENTS[query];
