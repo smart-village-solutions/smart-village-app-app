@@ -47,14 +47,20 @@ const App = () => {
           })
         )
       )
-      .catch((error) => console.warn('An error occurred with setup Matomo tracking', error));
+      .catch((error) => {
+        console.warn('An error occurred with setup Matomo tracking', error);
+        setMatomoInstance({ error: true });
+      });
   }, []);
 
-  return matomoInstance ? (
+  if (!matomoInstance) return null;
+  if (matomoInstance && matomoInstance.error) return <AppWithFonts />;
+
+  return (
     <MatomoProvider instance={matomoInstance}>
       <AppWithFonts />
     </MatomoProvider>
-  ) : null;
+  );
 };
 
 export default App;
