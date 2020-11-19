@@ -17,6 +17,7 @@ export class TextListItem extends React.PureComponent {
     const { navigation, noSubtitle, item } = this.props;
     const { routeName, params, subtitle, title, bottomDivider, topDivider, picture } = item;
 
+    let leftImage = false;
     return (
       <ListItem
         title={noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
@@ -29,6 +30,7 @@ export class TextListItem extends React.PureComponent {
         }}
         rightIcon={<Icon xml={arrowRight(colors.primary)} />}
         leftIcon={
+          leftImage &&
           !!picture &&
           !!picture.url && <Image style={styles.smallImage} source={{ uri: picture.url }} />
         }

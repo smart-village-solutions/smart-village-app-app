@@ -375,8 +375,7 @@ export const HomeScreen = ({ navigation }) => {
                           (mediaContent) =>
                             mediaContent.contentType === 'image' ||
                             mediaContent.contentType === 'thumbnail'
-                        )[0] &&
-                        !!eventRecord.mediaContents[0].sourceUrl &&
+                        )[0].sourceUrl &&
                         !!eventRecord.mediaContents[0].sourceUrl.url
                     },
                     routeName: 'Detail',
