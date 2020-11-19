@@ -28,6 +28,7 @@ import {
 } from '../components';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
+import { useMatomoTrackScreenView } from '../hooks';
 
 export const CompanyScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
@@ -35,12 +36,13 @@ export const CompanyScreen = ({ navigation }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const globalSettings = useContext(GlobalSettingsContext);
   const [refreshing, setRefreshing] = useState(false);
+  const { MATOMO_TRACKING, REFRESH_INTERVALS } = consts;
 
   useEffect(() => {
     const getRefreshTime = async () => {
       const time = await refreshTimeFor(
         'publicJsonFile-homeCompanies',
-        consts.REFRESH_INTERVALS.STATIC_CONTENT
+        REFRESH_INTERVALS.STATIC_CONTENT
       );
 
       setRefreshTime(time);
@@ -66,6 +68,8 @@ export const CompanyScreen = ({ navigation }) => {
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
   const { sections = {} } = globalSettings;
   const { headlineCompany = texts.homeTitles.company } = sections;
+
+  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.COMPANY);
 
   return (
     <SafeAreaViewFlex>

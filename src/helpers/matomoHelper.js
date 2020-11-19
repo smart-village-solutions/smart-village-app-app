@@ -36,7 +36,6 @@ export const createMatomoUserId = async () => {
   }
 };
 
-
 export const removeMatomoUserId = async () => {
   let settings = await storageHelper.matomoSettings();
 
@@ -45,3 +44,13 @@ export const removeMatomoUserId = async () => {
     storageHelper.setMatomoSettings(settings);
   }
 };
+
+/**
+ * Build the tracking string with filtering null values out, as the data provider or categories
+ * could be empty.
+ *
+ * @param {Array} entries - containing the screen and maybe data provider, categories and others
+ *
+ * @return {String} joined present entries separated by /
+ */
+export const matomoTrackingString = (entries) => entries.filter((entry) => !!entry).join(' / ');

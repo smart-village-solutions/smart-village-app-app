@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import _filter from 'lodash/filter';
 
-import { colors, device, normalize } from '../../config';
+import { colors, consts, device, normalize } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { LoadingContainer } from '../LoadingContainer';
@@ -13,10 +13,11 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
 import { ImagesCarousel } from '../ImagesCarousel';
-import { containsHtml, momentFormat, trimNewLines } from '../../helpers';
+import { containsHtml, matomoTrackingString, momentFormat, trimNewLines } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 import { Button } from '../Button';
 import { OrientationContext } from '../../OrientationProvider';
+import { useMatomoTrackScreenView } from '../../hooks';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
 // thx to: https://stackoverflow.com/a/55780430
@@ -32,7 +33,15 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewsItem = ({ data, navigation }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
-  const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings } = data;
+  const {
+    dataProvider,
+    mainTitle,
+    contentBlocks,
+    publishedAt,
+    sourceUrl,
+    settings,
+    categories
+  } = data;
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const link = sourceUrl && sourceUrl.url;
@@ -50,6 +59,9 @@ export const NewsItem = ({ data, navigation }) => {
         rootRouteName
       }
     });
+  const { MATOMO_TRACKING } = consts;
+  // the categories of a news item can be nested and we need the map of all names of all categories
+  const categoryNames = categories && categories.map((category) => category.name).join(' / ');
 
   // the images from the first content block will be present in the main image carousel
   let mainImages = [];
@@ -197,6 +209,15 @@ export const NewsItem = ({ data, navigation }) => {
       story.push(<View key={`${index}-${contentBlock.id}`}>{section}</View>);
     });
   }
+
+  useMatomoTrackScreenView(
+    matomoTrackingString([
+      MATOMO_TRACKING.SCREEN_VIEW.NEWS_ITEMS,
+      dataProvider && dataProvider.name,
+      categoryNames,
+      title
+    ])
+  );
 
   return (
     <View>
