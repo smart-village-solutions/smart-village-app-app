@@ -8,11 +8,12 @@ import {
   View
 } from 'react-native';
 import { Query } from 'react-apollo';
+import { useMatomo } from 'matomo-tracker-react-native';
 
 import { NetworkContext } from '../NetworkProvider';
 import { GlobalSettingsContext } from '../GlobalSettingsProvider';
 import { auth } from '../auth';
-import { colors, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
 import {
   CardList,
   CategoryList,
@@ -28,6 +29,7 @@ import {
   eventDate,
   graphqlFetchPolicy,
   mainImageOfMediaContents,
+  matomoTrackingString,
   momentFormat,
   shareMessage,
   subtitle
@@ -182,14 +184,46 @@ const getComponent = (query) => {
 export const IndexScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = navigation.getParam('query', '');
+  const title = navigation.getParam('title', '');
   const [queryVariables, setQueryVariables] = useState(navigation.getParam('queryVariables', {}));
   const [refreshing, setRefreshing] = useState(false);
+  const { trackScreenView } = useMatomo();
+  const { MATOMO_TRACKING } = consts;
 
   if (!query) return null;
 
   useEffect(() => {
     isConnected && auth();
   }, []);
+
+  useEffect(() => {
+    // we want to ensure when changing from one index screen to another, for example from
+    // news to events, that the query variables are taken freshly. otherwise the mounted screen can
+    // have query variables from the previous screen, that does not work. this can result in an
+    // empty screen because the query is not retuning anything.
+    setQueryVariables(navigation.getParam('queryVariables', {}));
+
+    const MATOMO_TRACKING_SCREEN = {
+      [QUERY_TYPES.EVENT_RECORDS]: MATOMO_TRACKING.SCREEN_VIEW.EVENT_RECORDS,
+      [QUERY_TYPES.NEWS_ITEMS]: MATOMO_TRACKING.SCREEN_VIEW.NEWS_ITEMS,
+      [QUERY_TYPES.POINTS_OF_INTEREST]: MATOMO_TRACKING.SCREEN_VIEW.POINTS_OF_INTEREST,
+      [QUERY_TYPES.TOURS]: MATOMO_TRACKING.SCREEN_VIEW.TOURS,
+      [QUERY_TYPES.CATEGORIES]: MATOMO_TRACKING.SCREEN_VIEW.POINTS_OF_INTEREST_AND_TOURS
+    }[query];
+
+    // in some cases we want to apply more information to the tracking string
+    const MATOMO_TRACKING_CATEGORY = {
+      [QUERY_TYPES.EVENT_RECORDS]: null,
+      [QUERY_TYPES.NEWS_ITEMS]: title, // the title should be the category of news
+      [QUERY_TYPES.POINTS_OF_INTEREST]: null,
+      [QUERY_TYPES.TOURS]: null,
+      [QUERY_TYPES.CATEGORIES]: null
+    }[query];
+
+    // we cannot use the `useMatomoTrackScreenView` hook here, as we need the `query` dependency
+    isConnected &&
+      trackScreenView(matomoTrackingString([MATOMO_TRACKING_SCREEN, MATOMO_TRACKING_CATEGORY]));
+  }, [query]);
 
   const refresh = async (refetch) => {
     setRefreshing(true);

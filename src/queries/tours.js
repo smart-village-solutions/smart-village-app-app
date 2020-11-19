@@ -41,6 +41,9 @@ export const GET_TOUR = gql`
       category {
         name
       }
+      categories {
+        name
+      }
       description
       mediaContents {
         contentType

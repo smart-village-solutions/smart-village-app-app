@@ -60,12 +60,11 @@ export const HomeScreen = ({ navigation }) => {
     buttonEvents = texts.homeButtons.events
   } = sections;
   const [refreshing, setRefreshing] = useState(false);
+  const { DRAWER, MATOMO_TRACKING } = consts;
 
   useEffect(() => {
     isConnected && auth();
   }, []);
-
-  useMatomoTrackScreenView('Home');
 
   const refresh = () => {
     setRefreshing(true);
@@ -108,6 +107,8 @@ export const HomeScreen = ({ navigation }) => {
       }
     })
   };
+
+  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
   return (
     <SafeAreaViewFlex>
@@ -374,7 +375,7 @@ export const HomeScreen = ({ navigation }) => {
           </>
         )}
 
-        {globalSettings.navigation === consts.DRAWER && (
+        {globalSettings.navigation === DRAWER && (
           <>
             <Service navigation={navigation} refreshing={refreshing} />
             <About navigation={navigation} refreshing={refreshing} />

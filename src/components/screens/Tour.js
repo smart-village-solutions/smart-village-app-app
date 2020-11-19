@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { View } from 'react-native';
 import _filter from 'lodash/filter';
 
-import { device, texts } from '../../config';
+import { consts, device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Logo } from '../Logo';
@@ -14,6 +14,8 @@ import { TourCard } from './TourCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { OrientationContext } from '../../OrientationProvider';
+import { useMatomoTrackScreenView } from '../../hooks';
+import { matomoTrackingString } from '../../helpers';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -22,6 +24,7 @@ export const Tour = ({ data, navigation }) => {
   const {
     addresses,
     category,
+    categories,
     contact,
     dataProvider,
     description,
@@ -44,8 +47,11 @@ export const Tour = ({ data, navigation }) => {
     });
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
-  let images = [];
+  const { MATOMO_TRACKING } = consts;
+  // the categories of a news item can be nested and we need the map of all names of all categories
+  const categoryNames = categories && categories.map((category) => category.name).join(' / ');
 
+  let images = [];
   !!mediaContents &&
     !!mediaContents.length &&
     _filter(
@@ -63,6 +69,15 @@ export const Tour = ({ data, navigation }) => {
           }
         });
     });
+
+  useMatomoTrackScreenView(
+    matomoTrackingString([
+      MATOMO_TRACKING.SCREEN_VIEW.TOURS,
+      dataProvider && dataProvider.name,
+      categoryNames,
+      title
+    ])
+  );
 
   return (
     <View>

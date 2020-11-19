@@ -18,5 +18,22 @@ export const consts = {
   DIMENSIONS: {
     // the max screen size we want to render full screen
     FULL_SCREEN_MAX_WIDTH: 414
+  },
+
+  MATOMO_TRACKING: {
+    SCREEN_VIEW: {
+      HOME: 'Home',
+      NEWS_ITEMS: 'News',
+      EVENT_RECORDS: 'Events',
+      POINTS_OF_INTEREST: 'Points of interest',
+      TOURS: 'Tours',
+      POINTS_OF_INTEREST_AND_TOURS: 'Points of interest and tours',
+      SERVICE: 'Service',
+      COMPANY: 'Company',
+      WEB: 'Web',
+      FEEDBACK: 'Feedback',
+      HTML: 'Content',
+      MORE: 'More'
+    }
   }
 };
