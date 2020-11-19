@@ -10,12 +10,12 @@ import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 
 export const CardListItem = memo(({ navigation, horizontal, item, orientation, dimensions }) => {
-  const { routeName, params, image, category, name } = item;
+  const { routeName, params, picture, subtitle, title } = item;
 
   // TODO: count articles logic could to be implemented
   return (
     <Touchable
-      accessibilityLabel={`(${category}) ${name} (Taste)`}
+      accessibilityLabel={`(${subtitle}) ${title} (Taste)`}
       onPress={() =>
         navigation &&
         navigation.navigate({
@@ -27,16 +27,16 @@ export const CardListItem = memo(({ navigation, horizontal, item, orientation, d
     >
       <Card containerStyle={styles.container}>
         <View style={stylesWithProps({ horizontal, orientation, dimensions }).contentContainer}>
-          {!!image && (
+          {!!picture && !!picture.url && (
             <Image
-              source={{ uri: image }}
+              source={{ uri: picture.url }}
               style={stylesWithProps({ horizontal, orientation, dimensions }).image}
             />
           )}
-          {!!category && <RegularText small>{category}</RegularText>}
-          {!!name && (
+          {!!subtitle && <RegularText small>{subtitle}</RegularText>}
+          {!!title && (
             <BoldText>
-              {horizontal ? (name.length > 60 ? name.substring(0, 60) + '...' : name) : name}
+              {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
             </BoldText>
           )}
         </View>
