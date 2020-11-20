@@ -56,15 +56,7 @@ const getListItems = (query, data) => {
           ),
           title: eventRecord.title,
           picture: {
-            url:
-              !!eventRecord.mediaContents &&
-              !!eventRecord.mediaContents.length &&
-              _filter(
-                eventRecord.mediaContents,
-                (mediaContent) =>
-                  mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-              )[0].sourceUrl &&
-              !!eventRecord.mediaContents[0].sourceUrl.url,
+            url: mainImageOfMediaContents(eventRecord.mediaContents),
           },
           routeName: 'Detail',
           params: {
@@ -124,9 +116,11 @@ const getListItems = (query, data) => {
         data[query] &&
         data[query].map((pointOfInterest) => ({
           id: pointOfInterest.id,
-          name: pointOfInterest.name,
-          category: !!pointOfInterest.category && pointOfInterest.category.name,
-          image: mainImageOfMediaContents(pointOfInterest.mediaContents),
+          title: pointOfInterest.name,
+          subtitle: !!pointOfInterest.category && pointOfInterest.category.name,
+          picture: {
+            url: mainImageOfMediaContents(pointOfInterest.mediaContents),
+          },
           routeName: 'Detail',
           params: {
             title: 'Ort',

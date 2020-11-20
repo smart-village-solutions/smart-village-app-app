@@ -12,11 +12,6 @@ export const imageHeight = (width) => {
   return 180 * factor;
 };
 
-// TODO: image aspect ratio based on image height
-// export const imageWidtht = (height) => { const factor = height / 360;
-// return 180 * factor;
-// };
-
 export const mainImageOfMediaContents = (mediaContents) => {
   if (!mediaContents || !mediaContents.length) return null;
 
