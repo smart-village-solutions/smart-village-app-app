@@ -5,6 +5,8 @@ import { ActivityIndicator, FlatList } from 'react-native';
 import { colors, normalize } from '../config';
 import { TextListItem } from './TextListItem';
 
+const keyExtractor = (item, index) => `index${index}-id${item.id}`;
+
 export const TextList = ({
   data,
   navigation,
@@ -15,8 +17,6 @@ export const TextList = ({
   refreshControl
 }) => {
   const [listEndReached, setListEndReached] = useState(false);
-
-  const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
   const onEndReached = async () => {
     if (fetchMoreData) {
