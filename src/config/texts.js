@@ -42,10 +42,12 @@ export const texts = {
     prices: 'Preise'
   },
   pushNotifications: {
-    greetingTitle: 'Willkommen',
-    greetingBody: 'Damit dich wichtige Mitteilungen erreichen, würden wir dir gerne Benachrichtigungen schicken können. Du kannst diese Einstellung jederzeit in deinem persönlichen Bereich ändern.',
     approve: 'Jetzt einschalten',
-    decline: 'Vielleicht später'
+    decline: 'Vielleicht später',
+    greetingBody: 'Damit dich wichtige Mitteilungen erreichen, würden wir dir gerne Benachrichtigungen schicken können. Du kannst diese Einstellung jederzeit in deinem persönlichen Bereich ändern.',
+    greetingTitle: 'Willkommen',
+    permissionMissingBody: 'Bitte überprüfe deine Benachrichtigungseinstellungen im System.',
+    permissionMissingTitle: 'Hinweis'
   },
   screenTitles: {
     home: appJson.expo.name,
