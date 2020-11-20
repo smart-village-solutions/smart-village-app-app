@@ -1,8 +1,8 @@
 import * as Permissions from 'expo-permissions';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import { Alert, Platform } from 'react-native';
-import { useEffect, useRef } from 'react';
+import { Alert, AppState, AppStateStatus, Platform } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Subscription } from '@unimodules/react-native-adapter'
 import { addToStore, readFromStore } from '../helpers';
 import { PermissionStatus } from 'expo-permissions';
@@ -26,24 +26,28 @@ export const setInAppPermission = async (newValue: boolean) => {
         if(newValue) {
             const hasPermission = await handleSystemPermissions();
             
-                if(!hasPermission) {
-                    showSystemPermissionMissingDialog();
-                } else {
-                    registerForPushNotificationsAsync()
-                        .then(handleIncomingToken);
-                }
+            if(!hasPermission) {
+                showSystemPermissionMissingDialog();
+            } else {
+                registerForPushNotificationsAsync()
+                    .then(handleIncomingToken);
             }
+        } else {
+            // remove token from store and notify server
+            handleIncomingToken();
+        }
     }
 }
 
 const initialize = async () => {
     const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION)
     await inAppPermission && handleSystemPermissions()
-        .then(registerForPushNotificationsAsync)
+        .then((hasPermission) => {
+            if(hasPermission) return registerForPushNotificationsAsync()
+        })
         .then(handleIncomingToken)
     inAppPermission ?? showInitialPushAlert();
 }
-
 
 export const usePushNotifications = (
         notificationHandler: NotificationHandler,
@@ -54,8 +58,27 @@ export const usePushNotifications = (
     const notificationListener = useRef<Subscription>();
     const responseListener = useRef<Subscription>();
 
+    const [currentAppState, setCurrentAppState] = useState<AppStateStatus>();
+
+    const onGetActive = useCallback(async (nextState: AppStateStatus) => {
+        if (currentAppState != nextState) {
+            setCurrentAppState(nextState);
+            const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+            if (nextState === 'active' && inAppPermission) {
+                handleSystemPermissions()
+                    .then((hasPermission) => {
+                        if (hasPermission) {
+                            registerForPushNotificationsAsync().then(handleIncomingToken)
+                        }
+                    })
+            }
+        }
+    }, []); // empty dependencies because it will only used once in the "mountEffect" below
+
     useEffect(() => {
         initialize();
+
+        AppState.addEventListener('change', onGetActive)
 
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current
@@ -83,6 +106,7 @@ export const usePushNotifications = (
                 && Notifications.removeNotificationSubscription(notificationListener.current);
             responseListener.current
                 && Notifications.removeNotificationSubscription(responseListener.current);
+            AppState.removeEventListener('change', onGetActive)
         };
     }, [])
 
