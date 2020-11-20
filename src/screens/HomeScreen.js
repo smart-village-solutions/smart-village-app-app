@@ -337,16 +337,7 @@ export const HomeScreen = ({ navigation }) => {
                     ),
                     title: eventRecord.title,
                     picture: {
-                      url:
-                        !!eventRecord.mediaContents &&
-                        !!eventRecord.mediaContents.length &&
-                        _filter(
-                          eventRecord.mediaContents,
-                          (mediaContent) =>
-                            mediaContent.contentType === 'image' ||
-                            mediaContent.contentType === 'thumbnail'
-                        ).sourceUrl &&
-                        !!eventRecord.mediaContents.sourceUrl.url,
+                      url: mainImageOfMediaContents(eventRecord.mediaContents),
                     },
                     routeName: 'Detail',
                     params: {

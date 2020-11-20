@@ -17,7 +17,10 @@ export class TextListItem extends React.PureComponent {
     const { navigation, noSubtitle, item } = this.props;
     const { routeName, params, subtitle, title, bottomDivider, topDivider, picture } = item;
 
-    let leftImage = false;
+    // temporary boolean variable, information for showing the left image needs to come from props,
+    // which will be based on the user preference.
+    const leftImage = false;
+
     return (
       <ListItem
         title={noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
