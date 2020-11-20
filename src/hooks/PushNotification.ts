@@ -42,7 +42,6 @@ const initialize = async () => {
         .then(registerForPushNotificationsAsync)
         .then(handleIncomingToken)
     inAppPermission ?? showInitialPushAlert();
-    showSystemPermissionMissingDialog();
 }
 
 
