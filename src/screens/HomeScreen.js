@@ -35,6 +35,8 @@ import {
 } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 
+const { DRAWER, MATOMO_TRACKING } = consts;
+
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 /* TODO: refactor news, pois & tours and events in single components */
@@ -60,7 +62,8 @@ export const HomeScreen = ({ navigation }) => {
     buttonEvents = texts.homeButtons.events
   } = sections;
   const [refreshing, setRefreshing] = useState(false);
-  const { DRAWER, MATOMO_TRACKING } = consts;
+
+  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
   useEffect(() => {
     isConnected && auth();
@@ -107,8 +110,6 @@ export const HomeScreen = ({ navigation }) => {
       }
     })
   };
-
-  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
   return (
     <SafeAreaViewFlex>

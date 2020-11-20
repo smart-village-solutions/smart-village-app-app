@@ -29,6 +29,8 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
   true;
 `;
 
+const { MATOMO_TRACKING } = consts;
+
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewsItem = ({ data, navigation }) => {
@@ -59,9 +61,17 @@ export const NewsItem = ({ data, navigation }) => {
         rootRouteName
       }
     });
-  const { MATOMO_TRACKING } = consts;
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
+
+  useMatomoTrackScreenView(
+    matomoTrackingString([
+      MATOMO_TRACKING.SCREEN_VIEW.NEWS_ITEMS,
+      dataProvider && dataProvider.name,
+      categoryNames,
+      title
+    ])
+  );
 
   // the images from the first content block will be present in the main image carousel
   let mainImages = [];
@@ -209,15 +219,6 @@ export const NewsItem = ({ data, navigation }) => {
       story.push(<View key={`${index}-${contentBlock.id}`}>{section}</View>);
     });
   }
-
-  useMatomoTrackScreenView(
-    matomoTrackingString([
-      MATOMO_TRACKING.SCREEN_VIEW.NEWS_ITEMS,
-      dataProvider && dataProvider.name,
-      categoryNames,
-      title
-    ])
-  );
 
   return (
     <View>

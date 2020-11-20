@@ -20,6 +20,8 @@ import { OrientationContext } from '../OrientationProvider';
 import { getHeaderHeight, statusBarHeight } from '../navigation/CustomDrawerContentComponent';
 import { useMatomoTrackScreenView } from '../hooks';
 
+const { MATOMO_TRACKING } = consts;
+
 export const FormScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -27,7 +29,8 @@ export const FormScreen = () => {
   const [message, setMessage] = useState('');
   const [consent, setConsent] = useState(false);
   const { orientation, dimensions } = useContext(OrientationContext);
-  const { MATOMO_TRACKING } = consts;
+
+  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.FEEDBACK);
 
   const resetForm = () => {
     setName('');
@@ -66,8 +69,6 @@ export const FormScreen = () => {
       Alert.alert('Feedback', 'Bitte alle Felder prüfen.', [{ text: 'OK' }], { cancelable: false });
     }
   };
-
-  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.FEEDBACK);
 
   // TODO: texts are hardcoded because they will come from the API later somewhen
   return (

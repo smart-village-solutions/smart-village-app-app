@@ -19,12 +19,15 @@ import { getQuery, QUERY_TYPES } from '../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 
+const { MATOMO_TRACKING, REFRESH_INTERVALS } = consts;
+
 export const AboutScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const globalSettings = useContext(GlobalSettingsContext);
   const [refreshing, setRefreshing] = useState(false);
-  const { MATOMO_TRACKING, REFRESH_INTERVALS } = consts;
+
+  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.MORE);
 
   useEffect(() => {
     const getRefreshTime = async () => {
@@ -56,8 +59,6 @@ export const AboutScreen = ({ navigation }) => {
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
-
-  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.MORE);
 
   return (
     <SafeAreaViewFlex>

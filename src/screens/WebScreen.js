@@ -9,10 +9,11 @@ import { arrowLeft } from '../icons';
 import { OrientationContext } from '../OrientationProvider';
 import { useMatomoTrackScreenView } from '../hooks';
 
+const { MATOMO_TRACKING } = consts;
+
 export const WebScreen = ({ navigation }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const webUrl = navigation.getParam('webUrl', '');
-  const { MATOMO_TRACKING } = consts;
 
   if (!webUrl) return null;
 
