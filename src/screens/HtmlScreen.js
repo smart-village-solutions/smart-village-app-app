@@ -61,7 +61,7 @@ export const HtmlScreen = ({ navigation }) => {
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `title` dependency
   useEffect(() => {
-    isConnected && trackScreenView(`${MATOMO_TRACKING.SCREEN_VIEW.HTML} / ${title}`);
+    isConnected && title && trackScreenView(`${MATOMO_TRACKING.SCREEN_VIEW.HTML} / ${title}`);
   }, [title]);
 
   if (!refreshTime) {
