@@ -16,9 +16,8 @@ enum PushNotificationStorageKeys {
     IN_APP_PERMISSION = "IN_APP_PERMISSION",
 }
 
-const setInAppPermission = async (newValue: boolean) => {
+export const setInAppPermission = async (newValue: boolean) => {
     const oldValue = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION)
-    console.log(oldValue, newValue)
     if(newValue !== oldValue) {
 
         // FIXME error handling: sync with server failed, etc
@@ -90,7 +89,7 @@ export const usePushNotifications = (
 
 }
 
-export const handleSystemPermissions = async (): Promise<boolean> => {
+const handleSystemPermissions = async (): Promise<boolean> => {
 
     if(!Constants.isDevice) return false;
 
