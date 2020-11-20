@@ -28,6 +28,8 @@ import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
 import { OrientationContext } from '../OrientationProvider';
 
+const { MATOMO_TRACKING, REFRESH_INTERVALS } = consts;
+
 export const HtmlScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -37,7 +39,6 @@ export const HtmlScreen = ({ navigation }) => {
   const title = navigation.getParam('title', '');
   const [refreshing, setRefreshing] = useState(false);
   const { trackScreenView } = useMatomo();
-  const { MATOMO_TRACKING, REFRESH_INTERVALS } = consts;
 
   if (!query || !queryVariables || !queryVariables.name) return null;
 

@@ -35,6 +35,8 @@ import {
   subtitle
 } from '../helpers';
 
+const { MATOMO_TRACKING } = consts;
+
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 const getListItems = (query, data) => {
@@ -188,7 +190,6 @@ export const IndexScreen = ({ navigation }) => {
   const [queryVariables, setQueryVariables] = useState(navigation.getParam('queryVariables', {}));
   const [refreshing, setRefreshing] = useState(false);
   const { trackScreenView } = useMatomo();
-  const { MATOMO_TRACKING } = consts;
 
   if (!query) return null;
 

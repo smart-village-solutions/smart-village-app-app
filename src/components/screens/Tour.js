@@ -17,6 +17,8 @@ import { OrientationContext } from '../../OrientationProvider';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { matomoTrackingString } from '../../helpers';
 
+const { MATOMO_TRACKING } = consts;
+
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const Tour = ({ data, navigation }) => {
@@ -47,9 +49,17 @@ export const Tour = ({ data, navigation }) => {
     });
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
-  const { MATOMO_TRACKING } = consts;
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
+
+  useMatomoTrackScreenView(
+    matomoTrackingString([
+      MATOMO_TRACKING.SCREEN_VIEW.TOURS,
+      dataProvider && dataProvider.name,
+      categoryNames,
+      title
+    ])
+  );
 
   let images = [];
   !!mediaContents &&
@@ -69,15 +79,6 @@ export const Tour = ({ data, navigation }) => {
           }
         });
     });
-
-  useMatomoTrackScreenView(
-    matomoTrackingString([
-      MATOMO_TRACKING.SCREEN_VIEW.TOURS,
-      dataProvider && dataProvider.name,
-      categoryNames,
-      title
-    ])
-  );
 
   return (
     <View>
