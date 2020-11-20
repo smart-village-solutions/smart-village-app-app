@@ -7,6 +7,7 @@ import { Subscription } from '@unimodules/react-native-adapter'
 import { addToStore, readFromStore } from '../helpers';
 import { PermissionStatus } from 'expo-permissions';
 import { texts } from '../config';
+import * as SecureStore from 'expo-secure-store';
 
 type NotificationHandler = (arg: Notifications.Notification) => void;
 type ResponseHandler = (arg: Notifications.NotificationResponse) => void;
@@ -145,10 +146,10 @@ const registerForPushNotificationsAsync = async (): Promise<string | undefined> 
 const handleIncomingToken = async (token?: string) => {
     console.log(token); // remove for production
 
-    await readFromStore(PushNotificationStorageKeys.PUSH_TOKEN).then(result => {
+    await getTokenFromStorage().then(result => {
         if (result != token) {
             // update token on server
-            addToStore(PushNotificationStorageKeys.PUSH_TOKEN, token);
+            storeTokenSecurely(token);
         }
     });
 }
@@ -182,4 +183,47 @@ const showInitialPushAlert = (): void=> {
         ],
         { cancelable: false }
     );
+}
+
+const removeTokenFromServer = async (token: string) => {
+    // get the authentication token from local SecureStore if it exists
+    const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+
+    if (accessToken) fetch('/auth', {
+        method: 'PUSH',
+        headers: {
+            'Authorization': accessToken,
+        },
+        body: JSON.stringify({
+            token,
+        })
+    });
+}
+
+const addTokenToServer = async (token: string) => {
+    // get the authentication token from local SecureStore if it exists
+    const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+
+    if (accessToken) fetch('/auth', {
+        method: 'PUSH',
+        headers: {
+            'Authorization': accessToken,
+        },
+        body: JSON.stringify({
+            token,
+            os: Platform.OS
+        })
+    });
+}
+
+const storeTokenSecurely = async (token?: string) => {
+    if (token) {
+        return SecureStore.setItemAsync(PushNotificationStorageKeys.PUSH_TOKEN, token);
+    } else {
+        return SecureStore.deleteItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
+    }
+}
+
+const getTokenFromStorage = async () => {
+    return SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
 }
