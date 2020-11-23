@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import _filter from 'lodash/filter';
 
-import { colors, device, normalize, texts } from '../../config';
+import { colors, consts, device, normalize, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { LoadingContainer } from '../LoadingContainer';
@@ -17,8 +17,9 @@ import { InfoCard } from './InfoCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { ImagesCarousel } from '../ImagesCarousel';
-import { trimNewLines } from '../../helpers';
+import { matomoTrackingString, trimNewLines } from '../../helpers';
 import { OrientationContext } from '../../OrientationProvider';
+import { useMatomoTrackScreenView } from '../../hooks';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
 // thx to: https://stackoverflow.com/a/55780430
@@ -30,6 +31,8 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
   true;
 `;
 
+const { MATOMO_TRACKING } = consts;
+
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const EventRecord = ({ data, navigation }) => {
@@ -37,6 +40,7 @@ export const EventRecord = ({ data, navigation }) => {
   const {
     addresses,
     category,
+    categories,
     contacts,
     dataProvider,
     dates,
@@ -59,6 +63,17 @@ export const EventRecord = ({ data, navigation }) => {
         rootRouteName
       }
     });
+  // the categories of a news item can be nested and we need the map of all names of all categories
+  const categoryNames = categories && categories.map((category) => category.name).join(' / ');
+
+  useMatomoTrackScreenView(
+    matomoTrackingString([
+      MATOMO_TRACKING.SCREEN_VIEW.EVENT_RECORDS,
+      dataProvider && dataProvider.name,
+      categoryNames,
+      title
+    ])
+  );
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   let images = [];

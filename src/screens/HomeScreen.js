@@ -34,6 +34,9 @@ import {
   subtitle
 } from '../helpers';
 import { usePushNotifications } from '../hooks/PushNotification';
+import { useMatomoTrackScreenView } from '../hooks';
+
+const { DRAWER, MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -82,6 +85,7 @@ export const HomeScreen = ({ navigation }) => {
   }, [navigation]);
   
   usePushNotifications(undefined, interactionHandler);
+  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
   useEffect(() => {
     isConnected && auth();
@@ -394,7 +398,7 @@ export const HomeScreen = ({ navigation }) => {
           </>
         )}
 
-        {globalSettings.navigation === consts.DRAWER && (
+        {globalSettings.navigation === DRAWER && (
           <>
             <Service navigation={navigation} refreshing={refreshing} />
             <About navigation={navigation} refreshing={refreshing} />

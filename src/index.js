@@ -12,9 +12,8 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';
 import _reduce from 'lodash/reduce';
 
-import appJson from '../app.json';
 import { auth } from './auth';
-import { colors, consts, device, secrets, texts } from './config';
+import { colors, consts, device, namespace, secrets, texts } from './config';
 import { graphqlFetchPolicy, storageHelper } from './helpers';
 import { getQuery, QUERY_TYPES } from './queries';
 import { NetworkProvider } from './NetworkProvider';
@@ -55,8 +54,6 @@ const MainAppWithApolloProvider = () => {
   const { isConnected, isMainserverUp, netInfoCounter } = netInfo;
 
   const setupApolloClient = async () => {
-    const namespace = appJson.expo.slug;
-
     // https://www.apollographql.com/docs/react/recipes/authentication/#header
     const httpLink = createHttpLink({
       uri: `${secrets[namespace].serverUrl}${secrets[namespace].graphqlEndpoint}`
@@ -181,6 +178,7 @@ const MainAppWithApolloProvider = () => {
     setGlobalSettingsState(globalSettings);
   };
 
+  // setup global settings if apollo client setup finished
   useEffect(() => {
     client && setupGlobalSettings();
   }, [client]);
@@ -233,6 +231,7 @@ const MainAppWithApolloProvider = () => {
     setLoading(false);
   };
 
+  // setup navigation drawer if global settings setup finished
   useEffect(() => {
     globalSettingsState && client && setupNavigationDrawer();
   }, [globalSettingsState]);

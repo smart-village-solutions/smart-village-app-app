@@ -1,7 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 
-import appJson from '../app.json';
-import { secrets } from './config';
+import { namespace, secrets } from './config';
 
 /**
  * Check if a auth token is expired or still valid.
@@ -30,7 +29,6 @@ export const auth = async (callback, forceNewToken = false) => {
   if (!forceNewToken && await isTokenValid()) return callback && callback();
 
   // otherwise fetch a new access token and expire time
-  const namespace = appJson.expo.slug;
   const fetchObj = {
     method: 'POST',
     headers: {

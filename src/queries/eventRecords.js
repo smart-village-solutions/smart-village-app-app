@@ -96,6 +96,9 @@ export const GET_EVENT_RECORD = gql`
       category {
         name
       }
+      categories {
+        name
+      }
       dates {
         weekday
         dateFrom: dateStart
@@ -138,6 +141,7 @@ export const GET_EVENT_RECORD = gql`
         logo {
           url
         }
+        name
       }
       priceInformations {
         name

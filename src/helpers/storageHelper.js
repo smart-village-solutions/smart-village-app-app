@@ -8,7 +8,9 @@ export const resetStore = async () => await AsyncStorage.clear();
 
 export const storageHelper = {
   globalSettings: () => readFromStore('globalSettings'),
-  setGlobalSettings: (globalSettings) => addToStore('globalSettings', globalSettings)
+  setGlobalSettings: (globalSettings) => addToStore('globalSettings', globalSettings),
+  matomoSettings: () => readFromStore('matomoSettings'),
+  setMatomoSettings: (matomoSettings) => addToStore('matomoSettings', matomoSettings)
 };
 
 export const logCurrentStorage = (withoutApollo = false) => {

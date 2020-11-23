@@ -9,6 +9,7 @@ import {
   View
 } from 'react-native';
 import { Query } from 'react-apollo';
+import { useMatomo } from 'matomo-tracker-react-native';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
@@ -27,13 +28,17 @@ import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
 import { OrientationContext } from '../OrientationProvider';
 
+const { MATOMO_TRACKING, REFRESH_INTERVALS } = consts;
+
 export const HtmlScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', '');
+  const title = navigation.getParam('title', '');
   const [refreshing, setRefreshing] = useState(false);
+  const { trackScreenView } = useMatomo();
 
   if (!query || !queryVariables || !queryVariables.name) return null;
 
@@ -41,7 +46,7 @@ export const HtmlScreen = ({ navigation }) => {
     const getRefreshTime = async () => {
       const time = await refreshTimeFor(
         `${query}-${queryVariables.name}`,
-        consts.REFRESH_INTERVALS.STATIC_CONTENT
+        REFRESH_INTERVALS.STATIC_CONTENT
       );
 
       setRefreshTime(time);
@@ -53,6 +58,11 @@ export const HtmlScreen = ({ navigation }) => {
   useEffect(() => {
     isConnected && auth();
   }, []);
+
+  // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `title` dependency
+  useEffect(() => {
+    isConnected && title && trackScreenView(`${MATOMO_TRACKING.SCREEN_VIEW.HTML} / ${title}`);
+  }, [title]);
 
   if (!refreshTime) {
     return (
@@ -67,8 +77,6 @@ export const HtmlScreen = ({ navigation }) => {
     isConnected && (await refetch());
     setRefreshing(false);
   };
-
-  const title = navigation.getParam('title', '');
   const rootRouteName = navigation.getParam('rootRouteName', '');
   const subQuery = navigation.getParam('subQuery', '');
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });

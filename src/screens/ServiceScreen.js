@@ -28,6 +28,9 @@ import {
 } from '../components';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
+import { useMatomoTrackScreenView } from '../hooks';
+
+const { MATOMO_TRACKING, REFRESH_INTERVALS } = consts;
 
 export const ServiceScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
@@ -36,11 +39,13 @@ export const ServiceScreen = ({ navigation }) => {
   const globalSettings = useContext(GlobalSettingsContext);
   const [refreshing, setRefreshing] = useState(false);
 
+  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SERVICE);
+
   useEffect(() => {
     const getRefreshTime = async () => {
       const time = await refreshTimeFor(
         'publicJsonFile-homeService',
-        consts.REFRESH_INTERVALS.STATIC_CONTENT
+        REFRESH_INTERVALS.STATIC_CONTENT
       );
 
       setRefreshTime(time);

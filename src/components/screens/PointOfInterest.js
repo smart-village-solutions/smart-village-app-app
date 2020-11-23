@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { View } from 'react-native';
 import _filter from 'lodash/filter';
 
-import { device, texts } from '../../config';
+import { consts, device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Title, TitleContainer, TitleShadow } from '../Title';
@@ -14,6 +14,10 @@ import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { OrientationContext } from '../../OrientationProvider';
+import { useMatomoTrackScreenView } from '../../hooks';
+import { matomoTrackingString } from '../../helpers';
+
+const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -22,7 +26,9 @@ export const PointOfInterest = ({ data, navigation }) => {
   const {
     addresses,
     category,
+    categories,
     contact,
+    dataProvider,
     description,
     mediaContents,
     openingHours,
@@ -42,9 +48,19 @@ export const PointOfInterest = ({ data, navigation }) => {
         rootRouteName
       }
     });
+  // the categories of a news item can be nested and we need the map of all names of all categories
+  const categoryNames = categories && categories.map((category) => category.name).join(' / ');
+
+  useMatomoTrackScreenView(
+    matomoTrackingString([
+      MATOMO_TRACKING.SCREEN_VIEW.POINTS_OF_INTEREST,
+      dataProvider && dataProvider.name,
+      categoryNames,
+      title
+    ])
+  );
 
   let images = [];
-
   !!mediaContents &&
     !!mediaContents.length &&
     _filter(

@@ -109,6 +109,9 @@ export const GET_NEWS_ITEM = gql`
         }
         name
       }
+      categories {
+        name
+      }
       settings {
         displayOnlySummary
         onlySummaryLinkText
