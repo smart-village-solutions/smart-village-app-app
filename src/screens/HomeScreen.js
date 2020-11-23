@@ -24,10 +24,9 @@ import {
   VersionNumber,
   Wrapper
 } from '../components';
-import { getQuery, QUERY_TYPES } from '../queries';
+import { getQuery, getQueryType, QUERY_TYPES } from '../queries';
 import {
   eventDate,
-  getQueryType,
   graphqlFetchPolicy,
   mainImageOfMediaContents,
   momentFormat,
