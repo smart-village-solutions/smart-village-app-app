@@ -27,6 +27,7 @@ import {
 import { getQuery, QUERY_TYPES } from '../queries';
 import {
   eventDate,
+  getQueryType,
   graphqlFetchPolicy,
   mainImageOfMediaContents,
   momentFormat,
@@ -34,8 +35,6 @@ import {
   subtitle
 } from '../helpers';
 import { usePushNotifications } from '../hooks/PushNotification';
-
-const notificationHandler = (notification) => console.log(notification);
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -63,19 +62,27 @@ export const HomeScreen = ({ navigation }) => {
   } = sections;
   const [refreshing, setRefreshing] = useState(false);
 
-  const responseHandler = useCallback((response) => {
-    // navigate to the newsItem
-    navigation.navigate({
-      routeName: 'Detail',
-      params: {
-        query: QUERY_TYPES.NEWS_ITEM,
-        queryVariables: { id: '4003' }
-      }
+  const interactionHandler = useCallback((response) => {
+    const data = response?.notification?.request?.content?.data;
+    const queryType = data?.query_type 
+      ? getQueryType(data.query_type) 
+      : undefined;
+
+    if (data?.id 
+      && queryType
+    ) {
+      // navigate to the newsItem
+      navigation.navigate({
+        routeName: 'Detail',
+        params: {
+          query: QUERY_TYPES.NEWS_ITEM,
+          queryVariables: { id: data.id }
+        }
+      });
     }
-    );
   }, [navigation]);
   
-  usePushNotifications(notificationHandler, responseHandler);
+  usePushNotifications(undefined, interactionHandler);
 
   useEffect(() => {
     isConnected && auth();

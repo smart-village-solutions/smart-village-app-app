@@ -54,8 +54,8 @@ const initialize = async () => {
 }
 
 export const usePushNotifications = (
-        notificationHandler: NotificationHandler,
-        interactionHandler: ResponseHandler,
+        notificationHandler?: NotificationHandler,
+        interactionHandler?: ResponseHandler,
         behavior?: Notifications.NotificationBehavior
     ) : void => {
 
@@ -86,14 +86,14 @@ export const usePushNotifications = (
 
         // This listener is fired whenever a notification is received while the app is foregrounded
         notificationListener.current
-            = Notifications.addNotificationReceivedListener(notification => {
+            = notificationHandler && Notifications.addNotificationReceivedListener(notification => {
                 notificationHandler(notification);
             });
 
         // This listener is fired whenever a user taps on or interacts with a notification
         // (works when app is foregrounded, backgrounded, or killed)
         responseListener.current
-            = Notifications.addNotificationResponseReceivedListener(response => {
+            = interactionHandler && Notifications.addNotificationResponseReceivedListener(response => {
                 interactionHandler(response)
             });
 

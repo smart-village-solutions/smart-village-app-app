@@ -1,3 +1,6 @@
+import * as _ from 'lodash';
+import { QUERY_TYPES } from '../queries';
+
 /**
  * Determine a fetch policy for graphql queries depending on the network status.
  * If offline, only cache should be used.
@@ -26,4 +29,18 @@ export const graphqlFetchPolicy = ({ isConnected, isMainserverUp, refreshTime })
 
   // offline or server down, use cached data from phone
   return 'cache-only';
+};
+
+/**
+ * Parse a query type from json string if one matches.
+ * @argument {string} input
+ * @return {string | undefined}
+ */
+export const getQueryType = (input) => {
+  const camelCaseInput = _.camelCase(input);
+  const availableTypes = [QUERY_TYPES.TOUR,
+    QUERY_TYPES.POINTS_OF_INTEREST,
+    QUERY_TYPES.NEWS_ITEM,
+    QUERY_TYPES.EVENT_RECORD];
+  return availableTypes.find((type) => type === camelCaseInput);
 };
