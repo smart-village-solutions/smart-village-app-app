@@ -39,12 +39,12 @@ export const initializePushPermissions = async () => {
 }
 
 const registerForPushNotificationsAsync = async (): Promise<string | undefined> => {
-    const token = (await Notifications.getExpoPushTokenAsync()).data;
+    const { data: token } = await Notifications.getExpoPushTokenAsync();
 
     if (Platform.OS === 'android') {
         Notifications.setNotificationChannelAsync('default', {
             name: 'default',
-            importance: Notifications.AndroidImportance.MAX,
+            importance: Notifications.AndroidImportance.MAX, // FIXME: check for reasonable value
             vibrationPattern: [0, 250, 250, 250],
             lightColor: '#FF231F7C',
         });

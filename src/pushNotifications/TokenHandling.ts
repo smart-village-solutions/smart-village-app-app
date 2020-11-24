@@ -26,7 +26,7 @@ export const handleIncomingToken = async (token?: string) => {
 
 const removeTokenFromServer = async (token: string) => {
     const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
-    const requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesRegister;
+    const requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesDelete;
     const fetchObj = {
         method: 'DELETE',
         headers: {
@@ -44,7 +44,7 @@ const removeTokenFromServer = async (token: string) => {
 
 const addTokenToServer = async (token: string) => {
     const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
-    const requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesRegister
+    const requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesRegister;
     const os = Platform.OS === 'ios' || Platform.OS === 'android' ? Platform.OS : 'undefined';
 
     const fetchObj = {
