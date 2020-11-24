@@ -28,19 +28,21 @@ export const matomoSettings = async () => {
 };
 
 export const createMatomoUserId = async () => {
-  let settings = await storageHelper.matomoSettings();
+  const settings = await storageHelper.matomoSettings();
 
   if (settings) {
     settings.userId = uuid();
+    settings.consent = true;
     storageHelper.setMatomoSettings(settings);
   }
 };
 
 export const removeMatomoUserId = async () => {
-  let settings = await storageHelper.matomoSettings();
+  const settings = await storageHelper.matomoSettings();
 
   if (settings && settings.userId) {
     delete settings.userId;
+    settings.consent = false;
     storageHelper.setMatomoSettings(settings);
   }
 };
