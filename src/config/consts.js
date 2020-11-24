@@ -33,7 +33,8 @@ export const consts = {
       WEB: 'Web',
       FEEDBACK: 'Feedback',
       HTML: 'Content',
-      MORE: 'More'
+      MORE: 'More',
+      SETTINGS: 'Settings'
     }
   },
 

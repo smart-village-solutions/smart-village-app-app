@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { RefreshControl, SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { OrientationContext } from '../OrientationProvider';
-import { colors, device, normalize, texts } from '../config';
+import { colors, consts, device, normalize, texts } from '../config';
 import {
   Icon,
   RegularText,
@@ -18,6 +18,9 @@ import { arrowLeft } from '../icons';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { storageHelper } from '../helpers';
+import { useMatomoTrackScreenView } from '../hooks';
+
+const { MATOMO_TRACKING } = consts;
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
@@ -42,6 +45,8 @@ export const SettingsScreen = () => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const { listTypesSettings, setListTypesSettings } = useContext(SettingsContext);
   const [refreshing, setRefreshing] = useState(false);
+
+  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
 
   const refresh = () => {
     setRefreshing(true);
