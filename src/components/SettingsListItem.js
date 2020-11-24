@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
@@ -22,25 +22,40 @@ const previewListItem = {
 // TODO: snack bar / toast als nutzerinfo
 // TODO: overlay for selecting text list type: https://reactnativeelements.com/docs/1.2.0/overlay
 export const SettingsListItem = ({ item, index, section, orientation, dimensions }) => {
-  const { title, bottomDivider, topDivider, type, listSelection, Component } = item;
+  const {
+    title,
+    bottomDivider,
+    topDivider,
+    type,
+    listSelection,
+    Component,
+    value,
+    onActivate,
+    onDeactivate
+  } = item;
 
   const [loading, setLoading] = useState(false);
-  // TODO: initial value from global settings
-  const [switchValue, setSwitchValue] = useState(false);
+  const [switchValue, setSwitchValue] = useState(value);
 
-  const toggleSwitch = () => setSwitchValue((previousState) => !previousState);
-
-  // TODO: make loading state depend on real action
-  useEffect(() => {
+  const toggleSwitch = async (newSwitchValue) => {
     setLoading(true);
-    // imitate a short duration of something taking action
+
+    setSwitchValue(newSwitchValue);
+
+    if (newSwitchValue && onActivate) {
+      await onActivate(() => setSwitchValue(false));
+    } else if (!newSwitchValue && onDeactivate) {
+      await onDeactivate(() => setSwitchValue(true));
+    }
+
+    // imitate a short duration of toggling taking action
     setTimeout(() => {
       setLoading(false);
-    }, 500);
-  }, [switchValue]);
+    }, 300);
+  };
 
   const onPress = () =>
-    type === 'toggle' ? toggleSwitch() : console.warn(`${title} - ${listSelection}`);
+    type === 'toggle' ? toggleSwitch(!switchValue) : console.warn(`${title} - ${listSelection}`);
 
   return (
     <ListItem
@@ -79,7 +94,7 @@ export const SettingsListItem = ({ item, index, section, orientation, dimensions
         type === 'toggle' ? (
           <WrapperRow>
             {loading && <ActivityIndicator color={colors.accent} style={styles.marginRight} />}
-            <Switch switchValue={switchValue} setSwitchValue={setSwitchValue} />
+            <Switch switchValue={switchValue} toggleSwitch={toggleSwitch} />
           </WrapperRow>
         ) : (
           <Icon name="md-create" size={22} style={styles.rightContentContainer} />

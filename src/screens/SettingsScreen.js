@@ -4,7 +4,6 @@ import { RefreshControl, SectionList, StyleSheet, TouchableOpacity, View } from 
 
 import { NetworkContext } from '../NetworkProvider';
 import { OrientationContext } from '../OrientationProvider';
-import { GlobalSettingsContext } from '../GlobalSettingsProvider';
 import { colors, device, normalize, texts } from '../config';
 import {
   CardListItem,
@@ -23,7 +22,6 @@ import { arrowLeft } from '../icons';
 export const SettingsScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
-  const globalSettings = useContext(GlobalSettingsContext);
   const [refreshing, setRefreshing] = useState(false);
 
   const keyExtractor = (item, index) => `index${index}-id${item.id}`;
@@ -47,9 +45,6 @@ export const SettingsScreen = ({ navigation }) => {
       setRefreshing(false);
     }, 500);
   };
-
-  // TODO: get data from global settings
-  const { sections = {} } = globalSettings;
 
   const sectionedData = [
     {

@@ -16,17 +16,17 @@ const thumbColorEnabled = Platform.select({
   ios: colors.lightestText
 });
 
-export const Switch = ({ switchValue, setSwitchValue }) => (
+export const Switch = ({ switchValue, toggleSwitch }) => (
   <RNSwitch
     trackColor={trackColor}
     thumbColor={switchValue ? thumbColorEnabled : thumbColor}
     ios_backgroundColor={colors.shadow}
-    onValueChange={setSwitchValue}
+    onValueChange={toggleSwitch}
     value={switchValue}
   />
 );
 
 Switch.propTypes = {
   switchValue: PropTypes.bool.isRequired,
-  setSwitchValue: PropTypes.func.isRequired
+  toggleSwitch: PropTypes.func.isRequired
 };
