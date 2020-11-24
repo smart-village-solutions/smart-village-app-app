@@ -163,7 +163,6 @@ export const HomeScreen = ({ navigation }) => {
         }
       >
         <HomeCarousel navigation={navigation} />
-
         {showNews &&
           categoriesNews.map(
             ({ categoryId, categoryTitle, categoryTitleDetail, categoryButton }, index) => (
