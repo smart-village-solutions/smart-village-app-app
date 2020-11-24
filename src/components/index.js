@@ -18,6 +18,7 @@ export * from './LoadingContainer';
 export * from './Logo';
 export * from './SafeAreaViewFlex';
 export * from './ServiceBox';
+export * from './Switch';
 export * from './TabBarIcon';
 export * from './Text';
 export * from './TextList';

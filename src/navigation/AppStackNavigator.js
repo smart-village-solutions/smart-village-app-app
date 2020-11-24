@@ -1,6 +1,13 @@
 import { createStackNavigator } from 'react-navigation';
 
-import { DetailScreen, HomeScreen, HtmlScreen, IndexScreen, WebScreen } from '../screens';
+import {
+  DetailScreen,
+  HomeScreen,
+  HtmlScreen,
+  IndexScreen,
+  SettingsScreen,
+  WebScreen
+} from '../screens';
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
 
 import { texts } from '../config';
@@ -36,6 +43,12 @@ const AppStackNavigator = (headerRight = true) =>
         screen: WebScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', '')
+        })
+      },
+      Settings: {
+        screen: SettingsScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', texts.screenTitles.settings)
         })
       }
     },

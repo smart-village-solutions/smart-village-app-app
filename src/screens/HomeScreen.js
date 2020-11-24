@@ -1,18 +1,27 @@
 import PropTypes from 'prop-types';
 import React, { Fragment, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Query } from 'react-apollo';
 import _shuffle from 'lodash/shuffle';
 
 import { NetworkContext } from '../NetworkProvider';
 import { GlobalSettingsContext } from '../GlobalSettingsProvider';
 import { auth } from '../auth';
-import { colors, consts, device, texts } from '../config';
+import { colors, consts, device, normalize, texts } from '../config';
 import {
   About,
   Button,
   CardList,
   HomeCarousel,
+  Icon,
   LoadingContainer,
   SafeAreaViewFlex,
   Service,
@@ -22,7 +31,8 @@ import {
   TitleShadow,
   Touchable,
   VersionNumber,
-  Wrapper
+  Wrapper,
+  WrapperRow
 } from '../components';
 import { getQuery, QUERY_TYPES } from '../queries';
 import {
@@ -388,6 +398,44 @@ export const HomeScreen = ({ navigation }) => {
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  iconLeft: {
+    paddingLeft: normalize(14),
+    paddingRight: normalize(7)
+  },
+  iconRight: {
+    paddingLeft: normalize(7),
+    paddingRight: normalize(14)
+  }
+});
+
+HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
+  const { headerRight } = navigationOptions;
+
+  return {
+    headerRight: (
+      <WrapperRow>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Settings')}
+          accessibilityLabel="Einstellungen (Taste)"
+          accessibilityHint="Zu den Einstellungen wechseln"
+        >
+          <Icon
+            name={Platform.select({
+              android: 'md-settings',
+              ios: 'ios-settings'
+            })}
+            size={26}
+            iconColor={colors.lightestText}
+            style={headerRight ? styles.iconLeft : styles.iconRight}
+          />
+        </TouchableOpacity>
+        {!!headerRight && headerRight}
+      </WrapperRow>
+    )
+  };
+};
 
 HomeScreen.propTypes = {
   navigation: PropTypes.object.isRequired
