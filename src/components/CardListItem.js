@@ -17,11 +17,13 @@ export const CardListItem = memo(({ navigation, horizontal, item, orientation, d
     <Touchable
       accessibilityLabel={`(${category}) ${name} (Taste)`}
       onPress={() =>
+        navigation &&
         navigation.navigate({
           routeName,
           params
         })
       }
+      disabled={!navigation}
     >
       <Card containerStyle={styles.container}>
         <View style={stylesWithProps({ horizontal, orientation, dimensions }).contentContainer}>
@@ -101,7 +103,7 @@ const stylesWithProps = ({ horizontal, orientation, dimensions }) => {
 CardListItem.displayName = 'CardListItem';
 
 CardListItem.propTypes = {
-  navigation: PropTypes.object.isRequired,
+  navigation: PropTypes.object,
   item: PropTypes.object.isRequired,
   horizontal: PropTypes.bool,
   orientation: PropTypes.string.isRequired,
