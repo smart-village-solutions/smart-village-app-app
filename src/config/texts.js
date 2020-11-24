@@ -48,6 +48,14 @@ export const texts = {
     about: appJson.expo.name,
     settings: 'Einstellungen'
   },
+  settingsContents: {
+    analytics: {
+      onActivate:
+        'Soll Matomo Analytics aktiviert werden? Dies trägt zur Verbesserung der App bei. Matomo Analytics wird nach der Aktivierung mit dem nächsten Neustart der App wirksam.',
+      onDeactivate:
+        'Soll Matomo Analytics deaktiviert werden? Die Deaktivierung von Matomo Analytics wird mit dem nächsten Neustart der App wirksam.'
+    }
+  },
   settingsScreen: {
     intro:
       'Enim veniam exercitation elit excepteur ullamco dolore nisi sit ad irure cillum ut velit nulla. Dolore ex consequat id ex magna amet nostrud tempor cupidatat laboris est voluptate.'
