@@ -8,9 +8,10 @@ import { TextListItem } from './TextListItem';
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
 export const TextList = ({
-  data,
   navigation,
+  data,
   noSubtitle,
+  leftImage,
   query,
   fetchMoreData,
   ListHeaderComponent,
@@ -35,9 +36,7 @@ export const TextList = ({
       ListHeaderComponent={ListHeaderComponent}
       keyExtractor={keyExtractor}
       data={data}
-      renderItem={({ item }) => (
-        <TextListItem navigation={navigation} noSubtitle={noSubtitle} item={item} />
-      )}
+      renderItem={({ item }) => <TextListItem {...{ navigation, item, noSubtitle, leftImage }} />}
       ListFooterComponent={
         data.length > 10 &&
         !listEndReached && (
@@ -55,6 +54,7 @@ TextList.propTypes = {
   navigation: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
   noSubtitle: PropTypes.bool,
+  leftImage: PropTypes.bool,
   query: PropTypes.string,
   fetchMoreData: PropTypes.func,
   ListHeaderComponent: PropTypes.object,
@@ -62,5 +62,6 @@ TextList.propTypes = {
 };
 
 TextList.defaultProps = {
-  noSubtitle: false
+  noSubtitle: false,
+  leftImage: false
 };
