@@ -13,7 +13,9 @@ const previewListItem = {
   title: 'Proident tempor aliqua',
   name: 'Id duis nisi reprehenderit ut',
   category: 'Lorem ipsum',
-  image: 'https://via.placeholder.com/400.png/bcbbc1/fff?text=Lorem+ipsum',
+  picture: {
+    url: 'https://via.placeholder.com/400.png/bcbbc1/fff?text=Lorem+ipsum'
+  },
   topDivider: true
 };
 
