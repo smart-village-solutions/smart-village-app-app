@@ -23,6 +23,7 @@ import {
   CardList,
   HomeCarousel,
   Icon,
+  ImageTextList,
   LoadingContainer,
   SafeAreaViewFlex,
   Service,
@@ -46,7 +47,14 @@ import {
 } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 
-const { DRAWER, MATOMO_TRACKING } = consts;
+const { DRAWER, LIST_TYPES, MATOMO_TRACKING } = consts;
+
+const getListComponent = (listType) =>
+  ({
+    [LIST_TYPES.TEXT_LIST]: TextList,
+    [LIST_TYPES.IMAGE_TEXT_LIST]: ImageTextList,
+    [LIST_TYPES.CARD_LIST]: CardList
+  }[listType]);
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -54,7 +62,7 @@ const { DRAWER, MATOMO_TRACKING } = consts;
 export const HomeScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { globalSettings } = useContext(GlobalSettingsContext);
+  const { globalSettings, listTypesSettings } = useContext(GlobalSettingsContext);
   const { sections = {} } = globalSettings;
   const {
     showNews = true,
@@ -211,9 +219,17 @@ export const HomeScreen = ({ navigation }) => {
 
                     if (!newsItems || !newsItems.length) return null;
 
+                    const newsItemsListType = listTypesSettings[QUERY_TYPES.NEWS_ITEMS];
+                    const ListComponent = getListComponent(newsItemsListType);
+
                     return (
                       <View>
-                        <TextList navigation={navigation} data={newsItems} />
+                        <ListComponent
+                          navigation={navigation}
+                          data={newsItems}
+                          leftImage={newsItemsListType === LIST_TYPES.IMAGE_TEXT_LIST}
+                          horizontal={newsItemsListType === LIST_TYPES.CARD_LIST}
+                        />
 
                         <Wrapper>
                           <Button
@@ -313,12 +329,17 @@ export const HomeScreen = ({ navigation }) => {
                     __typename: tour.__typename
                   }));
 
+                const pointsOfInterestAndToursListType =
+                  listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS];
+                const ListComponent = getListComponent(pointsOfInterestAndToursListType);
+
                 return (
                   <View>
-                    <CardList
+                    <ListComponent
                       navigation={navigation}
                       data={_shuffle([...(pointsOfInterest || []), ...(tours || [])])}
-                      horizontal
+                      leftImage={pointsOfInterestAndToursListType === LIST_TYPES.IMAGE_TEXT_LIST}
+                      horizontal={pointsOfInterestAndToursListType === LIST_TYPES.CARD_LIST}
                     />
 
                     <Wrapper>
@@ -390,9 +411,17 @@ export const HomeScreen = ({ navigation }) => {
 
                 if (!eventRecords || !eventRecords.length) return null;
 
+                const eventRecordsListType = listTypesSettings[QUERY_TYPES.EVENT_RECORDS];
+                const ListComponent = getListComponent(eventRecordsListType);
+
                 return (
                   <View>
-                    <TextList navigation={navigation} data={eventRecords} />
+                    <ListComponent
+                      navigation={navigation}
+                      data={eventRecords}
+                      leftImage={eventRecordsListType === LIST_TYPES.IMAGE_TEXT_LIST}
+                      horizontal={eventRecordsListType === LIST_TYPES.CARD_LIST}
+                    />
 
                     <Wrapper>
                       <Button

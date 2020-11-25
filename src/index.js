@@ -25,10 +25,13 @@ import MainTabNavigator from './navigation/MainTabNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 import { LoadingContainer } from './components';
 
+const { LIST_TYPES } = consts;
+
 const MainAppWithApolloProvider = () => {
   const [loading, setLoading] = useState(true);
   const [client, setClient] = useState();
   const [initialGlobalSettings, setInitialGlobalSettings] = useState({});
+  const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [drawerRoutes, setDrawerRoutes] = useState({
     AppStack: {
       screen: AppStackNavigator(),
@@ -138,6 +141,12 @@ const MainAppWithApolloProvider = () => {
     let globalSettings = (await storageHelper.globalSettings()) || {
       navigation: consts.DRAWER
     };
+    // if there are no list type settings yet, set the defaults as fallback
+    const listTypesSettings = (await storageHelper.listTypesSettings()) || {
+      [QUERY_TYPES.NEWS_ITEMS]: LIST_TYPES.TEXT_LIST,
+      [QUERY_TYPES.EVENT_RECORDS]: LIST_TYPES.TEXT_LIST,
+      [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: LIST_TYPES.CARD_LIST
+    };
 
     let globalSettingsData;
 
@@ -171,6 +180,7 @@ const MainAppWithApolloProvider = () => {
     }
 
     setInitialGlobalSettings(globalSettings);
+    setInitialListTypesSettings(listTypesSettings);
   };
 
   // setup global settings if apollo client setup finished
@@ -275,7 +285,7 @@ const MainAppWithApolloProvider = () => {
 
   return (
     <ApolloProvider client={client}>
-      <GlobalSettingsProvider {...{ initialGlobalSettings }}>
+      <GlobalSettingsProvider {...{ initialGlobalSettings, initialListTypesSettings }}>
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
         <AppContainer />
       </GlobalSettingsProvider>

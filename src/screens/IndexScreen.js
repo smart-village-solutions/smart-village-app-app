@@ -19,6 +19,7 @@ import {
   CardList,
   CategoryList,
   Icon,
+  ImageTextList,
   ListHeader,
   LoadingContainer,
   SafeAreaViewFlex,
@@ -36,7 +37,7 @@ import {
   subtitle
 } from '../helpers';
 
-const { MATOMO_TRACKING } = consts;
+const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -191,12 +192,23 @@ const getListItems = (query, data) => {
 };
 /* eslint-enable complexity */
 
-const getComponent = (query) => {
+const getListComponent = (listType) =>
+  ({
+    [LIST_TYPES.TEXT_LIST]: TextList,
+    [LIST_TYPES.IMAGE_TEXT_LIST]: ImageTextList,
+    [LIST_TYPES.CARD_LIST]: CardList
+  }[listType]);
+
+const getComponent = (query, listTypesSettings) => {
   const COMPONENTS = {
-    [QUERY_TYPES.EVENT_RECORDS]: TextList,
-    [QUERY_TYPES.NEWS_ITEMS]: TextList,
-    [QUERY_TYPES.POINTS_OF_INTEREST]: CardList,
-    [QUERY_TYPES.TOURS]: CardList,
+    [QUERY_TYPES.NEWS_ITEMS]: getListComponent(listTypesSettings[QUERY_TYPES.NEWS_ITEMS]),
+    [QUERY_TYPES.EVENT_RECORDS]: getListComponent(listTypesSettings[QUERY_TYPES.EVENT_RECORDS]),
+    [QUERY_TYPES.POINTS_OF_INTEREST]: getListComponent(
+      listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]
+    ),
+    [QUERY_TYPES.TOURS]: getListComponent(
+      listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]
+    ),
     [QUERY_TYPES.CATEGORIES]: CategoryList
   };
 
@@ -205,6 +217,7 @@ const getComponent = (query) => {
 
 export const IndexScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { listTypesSettings } = useContext(GlobalSettingsContext);
   const query = navigation.getParam('query', '');
   const title = navigation.getParam('title', '');
   const [queryVariables, setQueryVariables] = useState(navigation.getParam('queryVariables', {}));
@@ -259,7 +272,7 @@ export const IndexScreen = ({ navigation }) => {
   const { globalSettings } = useContext(GlobalSettingsContext);
   const { filter = {} } = globalSettings;
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
-  const Component = getComponent(query);
+  const Component = getComponent(query, listTypesSettings);
   const showFilter = {
     [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
     [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
