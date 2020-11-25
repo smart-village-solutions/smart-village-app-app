@@ -99,12 +99,12 @@ const showInitialPushAlert = (): void => {
     [
       {
         text: decline,
-        onPress: () => setInAppPermission(false)
+        onPress: () => setInAppPermission(false),
+        style: 'cancel'
       },
       {
         text: approve,
-        onPress: () => setInAppPermission(true),
-        style: 'cancel'
+        onPress: () => setInAppPermission(true)
       }
     ],
     { cancelable: false }
