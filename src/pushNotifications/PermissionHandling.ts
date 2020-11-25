@@ -1,9 +1,9 @@
+import { Alert } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import { Alert } from 'react-native';
+
 import { addToStore, readFromStore } from '../helpers';
-import { PermissionStatus } from 'expo-permissions';
 import { device, texts } from '../config';
 import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandling';
 
@@ -63,12 +63,12 @@ const handleSystemPermissions = async (): Promise<boolean> => {
 
   let finalStatus = existingStatus;
 
-  if (existingStatus === PermissionStatus.UNDETERMINED) {
+  if (existingStatus === Permissions.PermissionStatus.UNDETERMINED) {
     const { status: askedStatus } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
     finalStatus = askedStatus;
   }
 
-  return finalStatus === PermissionStatus.GRANTED;
+  return finalStatus === Permissions.PermissionStatus.GRANTED;
 };
 
 export const updatePushToken = async () => {
