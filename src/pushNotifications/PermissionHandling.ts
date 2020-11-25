@@ -4,7 +4,7 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
 import { addToStore, readFromStore } from '../helpers';
-import { device, texts } from '../config';
+import { colors, device, texts } from '../config';
 import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandling';
 
 const setInAppPermission = async (newValue: boolean) => {
@@ -45,9 +45,9 @@ const registerForPushNotificationsAsync = async (): Promise<string | undefined> 
   if (device.platform === 'android') {
     Notifications.setNotificationChannelAsync('default', {
       name: 'default',
-      importance: Notifications.AndroidImportance.MAX, // FIXME: check for reasonable value
+      importance: Notifications.AndroidImportance.DEFAULT,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C'
+      lightColor: colors.primary
     });
   }
 
