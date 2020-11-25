@@ -17,7 +17,7 @@ export const handleIncomingToken = async (token?: string) => {
   console.log(token); // FIXME remove for production
 
   await getTokenFromStorage().then((result) => {
-    if (result != (token ?? null)) {
+    if (result !== (token ?? null)) {
       if (result) removeTokenFromServer(result);
       if (token) addTokenToServer(token);
       storeTokenSecurely(token);

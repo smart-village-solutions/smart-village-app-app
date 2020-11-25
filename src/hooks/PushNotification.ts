@@ -20,7 +20,7 @@ export const usePushNotifications = (
   const [currentAppState, setCurrentAppState] = useState<AppStateStatus>();
 
   const onGetActive = useCallback(async (nextState: AppStateStatus) => {
-    if (currentAppState != nextState) {
+    if (currentAppState !== nextState) {
       setCurrentAppState(nextState);
       const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
       if (nextState === 'active') {
