@@ -29,7 +29,7 @@ export class TextListItem extends React.PureComponent {
         topDivider={topDivider !== undefined ? topDivider : false}
         containerStyle={{
           backgroundColor: colors.transparent,
-          paddingVertical: normalize(12),
+          paddingVertical: normalize(12)
         }}
         rightIcon={<Icon xml={arrowRight(colors.primary)} />}
         leftIcon={
@@ -41,7 +41,7 @@ export class TextListItem extends React.PureComponent {
           navigation &&
           navigation.navigate({
             routeName,
-            params,
+            params
           })
         }
         disabled={!navigation}
@@ -57,16 +57,16 @@ const styles = StyleSheet.create({
   smallImage: {
     alignSelf: 'flex-start',
     height: normalize(33),
-    width: normalize(66),
-  },
+    width: normalize(66)
+  }
 });
 
 TextListItem.propTypes = {
   navigation: PropTypes.object,
   item: PropTypes.object.isRequired,
-  noSubtitle: PropTypes.bool,
+  noSubtitle: PropTypes.bool
 };
 
 TextListItem.defaultProps = {
-  noSubtitle: false,
+  noSubtitle: false
 };

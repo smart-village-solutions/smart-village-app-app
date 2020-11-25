@@ -56,7 +56,7 @@ const getListItems = (query, data) => {
           ),
           title: eventRecord.title,
           picture: {
-            url: mainImageOfMediaContents(eventRecord.mediaContents),
+            url: mainImageOfMediaContents(eventRecord.mediaContents)
           },
           routeName: 'Detail',
           params: {
@@ -119,7 +119,7 @@ const getListItems = (query, data) => {
           title: pointOfInterest.name,
           subtitle: !!pointOfInterest.category && pointOfInterest.category.name,
           picture: {
-            url: mainImageOfMediaContents(pointOfInterest.mediaContents),
+            url: mainImageOfMediaContents(pointOfInterest.mediaContents)
           },
           routeName: 'Detail',
           params: {
@@ -146,7 +146,7 @@ const getListItems = (query, data) => {
           title: tour.name,
           subtitle: !!tour.category && tour.category.name,
           picture: {
-            url: mainImageOfMediaContents(tour.mediaContents),
+            url: mainImageOfMediaContents(tour.mediaContents)
           },
           routeName: 'Detail',
           params: {
@@ -197,7 +197,7 @@ const getComponent = (query) => {
     [QUERY_TYPES.NEWS_ITEMS]: TextList,
     [QUERY_TYPES.POINTS_OF_INTEREST]: CardList,
     [QUERY_TYPES.TOURS]: CardList,
-    [QUERY_TYPES.CATEGORIES]: CategoryList,
+    [QUERY_TYPES.CATEGORIES]: CategoryList
   };
 
   return COMPONENTS[query];
@@ -251,7 +251,7 @@ export const IndexScreen = ({ navigation }) => {
 
   const refresh = async (refetch) => {
     setRefreshing(true);
-    isConnected && await refetch();
+    isConnected && (await refetch());
     setRefreshing(false);
   };
 
