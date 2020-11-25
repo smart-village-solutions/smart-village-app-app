@@ -10,6 +10,9 @@ export enum PushNotificationStorageKeys {
   IN_APP_PERMISSION = 'IN_APP_PERMISSION',
 }
 
+// will check if the incoming token is different from the stored one
+// if it is different it will remove the old one from the server, if there was one present
+// if it is different it will add the new one to the server if it is present
 export const handleIncomingToken = async (token?: string) => {
   await getTokenFromStorage().then((result) => {
     if (result !== (token ?? null)) {
