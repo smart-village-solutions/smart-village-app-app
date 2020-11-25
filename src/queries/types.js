@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import _camelCase from 'lodash/camelCase';
 
 export const QUERY_TYPES = {
   APP_USER_CONTENT: 'appUserContent',
@@ -18,11 +18,11 @@ export const QUERY_TYPES = {
 
 /**
  * Parse a query type from json string if one matches.
- * @argument {string} input
+ * @param {string} input
  * @return {string | undefined}
  */
 export const getQueryType = (input) => {
-  const camelCaseInput = _.camelCase(input);
+  const camelCaseInput = _camelCase(input);
   const availableTypes = [QUERY_TYPES.TOUR,
     QUERY_TYPES.POINTS_OF_INTEREST,
     QUERY_TYPES.NEWS_ITEM,

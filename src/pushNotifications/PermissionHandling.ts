@@ -1,10 +1,10 @@
 import * as Permissions from 'expo-permissions';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import { Alert, Platform } from 'react-native';
+import { Alert } from 'react-native';
 import { addToStore, readFromStore } from '../helpers';
 import { PermissionStatus } from 'expo-permissions';
-import { texts } from '../config';
+import { device, texts } from '../config';
 import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandling';
 
 const setInAppPermission = async (newValue: boolean) => {
@@ -41,7 +41,7 @@ export const initializePushPermissions = async () => {
 const registerForPushNotificationsAsync = async (): Promise<string | undefined> => {
   const { data: token } = await Notifications.getExpoPushTokenAsync();
 
-  if (Platform.OS === 'android') {
+  if (device.platform === 'android') {
     Notifications.setNotificationChannelAsync('default', {
       name: 'default',
       importance: Notifications.AndroidImportance.MAX, // FIXME: check for reasonable value
@@ -55,6 +55,7 @@ const registerForPushNotificationsAsync = async (): Promise<string | undefined> 
 
 const handleSystemPermissions = async (): Promise<boolean> => {
 
+  // Push notifications do not work properly with simulators/emulators
   if (!Constants.isDevice) return false;
 
   const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);

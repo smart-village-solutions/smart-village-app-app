@@ -1,9 +1,7 @@
-import { Platform } from 'react-native';
-
-import { secrets } from '../config';
 import * as SecureStore from 'expo-secure-store';
-import * as appJson from '../../app.json';
 
+import { device, secrets } from '../config';
+import * as appJson from '../../app.json';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 
@@ -46,7 +44,8 @@ const removeTokenFromServer = async (token: string) => {
 const addTokenToServer = async (token: string) => {
   const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
   const requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesRegister;
-  const os = Platform.OS === 'ios' || Platform.OS === 'android' ? Platform.OS : 'undefined';
+  const os = device.platform === 'ios' || device.platform === 'android' 
+    ? device.platform : 'undefined';
 
   const fetchObj = {
     method: 'POST',
