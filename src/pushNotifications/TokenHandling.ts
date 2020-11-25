@@ -6,14 +6,11 @@ import * as appJson from '../../app.json';
 const namespace = appJson.expo.slug as keyof typeof secrets;
 
 export enum PushNotificationStorageKeys {
-    PUSH_TOKEN = 'PUSH_TOKEN',
-    IN_APP_PERMISSION = 'IN_APP_PERMISSION',
+  PUSH_TOKEN = 'PUSH_TOKEN',
+  IN_APP_PERMISSION = 'IN_APP_PERMISSION',
 }
 
 export const handleIncomingToken = async (token?: string) => {
-  // eslint-disable-next-line no-console
-  console.log(token); // FIXME remove for production
-
   await getTokenFromStorage().then((result) => {
     if (result !== (token ?? null)) {
       if (result) removeTokenFromServer(result);

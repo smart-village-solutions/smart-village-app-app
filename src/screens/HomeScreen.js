@@ -70,9 +70,7 @@ export const HomeScreen = ({ navigation }) => {
       ? getQueryType(data.query_type) 
       : undefined;
 
-    if (data?.id 
-      && queryType
-    ) {
+    if (data?.id && queryType) {
       // navigate to the newsItem
       navigation.navigate({
         routeName: 'Detail',

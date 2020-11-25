@@ -13,7 +13,6 @@ export const usePushNotifications = (
   interactionHandler?: ResponseHandler,
   behavior?: Notifications.NotificationBehavior
 ) : void => {
-
   const notificationListener = useRef<Subscription>();
   const responseListener = useRef<Subscription>();
 
@@ -22,7 +21,9 @@ export const usePushNotifications = (
   const onGetActive = useCallback(async (nextState: AppStateStatus) => {
     if (currentAppState !== nextState) {
       setCurrentAppState(nextState);
+
       const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+
       if (nextState === 'active') {
         inAppPermission && updatePushToken();
       }
@@ -35,15 +36,15 @@ export const usePushNotifications = (
     AppState.addEventListener('change', onGetActive);
 
     // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current
-      = notificationHandler && Notifications.addNotificationReceivedListener((notification) => {
+    notificationListener.current =
+      notificationHandler && Notifications.addNotificationReceivedListener((notification) => {
         notificationHandler(notification);
       });
 
     // This listener is fired whenever a user taps on or interacts with a notification
     // (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current
-      = interactionHandler && Notifications.addNotificationResponseReceivedListener((response) => {
+    responseListener.current = 
+      interactionHandler && Notifications.addNotificationResponseReceivedListener((response) => {
         interactionHandler(response);
       });
 

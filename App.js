@@ -12,7 +12,7 @@ const AppWithFonts = () => {
   const { trackAppStart } = useMatomo();
 
   trackAppStart();
-    
+
   useEffect(() => {
     Font.loadAsync({
       'titillium-web-bold': require('./assets/fonts/TitilliumWeb-Bold.ttf'),

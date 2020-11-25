@@ -9,8 +9,8 @@ import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandlin
 
 const setInAppPermission = async (newValue: boolean) => {
   const oldValue = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
-  if (newValue !== oldValue) {
 
+  if (newValue !== oldValue) {
     // FIXME error handling: sync with server failed, etc
     addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
 
@@ -32,6 +32,7 @@ const setInAppPermission = async (newValue: boolean) => {
 
 export const initializePushPermissions = async () => {
   const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+
   inAppPermission && updatePushToken();
 
   // this will only show the alert if inAppPermission is undefined (or null), but not if it is false
@@ -61,9 +62,10 @@ const handleSystemPermissions = async (): Promise<boolean> => {
   const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
 
   let finalStatus = existingStatus;
+
   if (existingStatus === PermissionStatus.UNDETERMINED) {
-    const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-    finalStatus = status;
+    const { status: askedStatus } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+    finalStatus = askedStatus;
   }
 
   return finalStatus === PermissionStatus.GRANTED;
@@ -90,6 +92,7 @@ const showSystemPermissionMissingDialog = () => {
 
 const showInitialPushAlert = (): void => {
   const { greetingBody, greetingTitle, approve, decline } = texts.pushNotifications;
+
   Alert.alert(
     greetingTitle,
     greetingBody,
