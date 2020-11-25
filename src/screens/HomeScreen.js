@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Fragment, useContext, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
 import { Query } from 'react-apollo';
 import _shuffle from 'lodash/shuffle';
@@ -24,7 +24,7 @@ import {
   VersionNumber,
   Wrapper
 } from '../components';
-import { getQuery, QUERY_TYPES } from '../queries';
+import { getQuery, getQueryType, QUERY_TYPES } from '../queries';
 import {
   eventDate,
   graphqlFetchPolicy,
@@ -33,6 +33,7 @@ import {
   shareMessage,
   subtitle
 } from '../helpers';
+import { usePushNotifications } from '../hooks/PushNotification';
 import { useMatomoTrackScreenView } from '../hooks';
 
 const { DRAWER, MATOMO_TRACKING } = consts;
@@ -63,6 +64,25 @@ export const HomeScreen = ({ navigation }) => {
   } = sections;
   const [refreshing, setRefreshing] = useState(false);
 
+  const interactionHandler = useCallback((response) => {
+    const data = response?.notification?.request?.content?.data;
+    const queryType = data?.query_type 
+      ? getQueryType(data.query_type) 
+      : undefined;
+
+    if (data?.id && queryType) {
+      // navigate to the newsItem
+      navigation.navigate({
+        routeName: 'Detail',
+        params: {
+          query: QUERY_TYPES.NEWS_ITEM,
+          queryVariables: { id: data.id }
+        }
+      });
+    }
+  }, [navigation]);
+  
+  usePushNotifications(undefined, interactionHandler);
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
   useEffect(() => {

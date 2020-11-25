@@ -27,6 +27,7 @@ import { LoadingContainer } from './components';
 
 const MainAppWithApolloProvider = () => {
   const [loading, setLoading] = useState(true);
+  const [isSplashScreenVisible, setIsSplashScreenVisible] = useState(true);
   const [client, setClient] = useState();
   const [globalSettingsState, setGlobalSettingsState] = useState();
   const [drawerRoutes, setDrawerRoutes] = useState({
@@ -236,13 +237,16 @@ const MainAppWithApolloProvider = () => {
   }, [globalSettingsState]);
 
   useEffect(() => {
-    !loading && SplashScreen.hideAsync();
-
-    // set orientation to "default", to allow both portrait and landscape
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
+    !loading && SplashScreen.hideAsync().then(
+      (result) => {
+        setIsSplashScreenVisible(!result);
+        // set orientation to "default", to allow both portrait and landscape
+        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
+      }
+    );
   }, [loading]);
 
-  if (loading) {
+  if (loading || isSplashScreenVisible) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
