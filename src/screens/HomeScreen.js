@@ -1,18 +1,27 @@
 import PropTypes from 'prop-types';
 import React, { Fragment, useCallback, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Query } from 'react-apollo';
 import _shuffle from 'lodash/shuffle';
 
 import { NetworkContext } from '../NetworkProvider';
 import { GlobalSettingsContext } from '../GlobalSettingsProvider';
 import { auth } from '../auth';
-import { colors, consts, device, texts } from '../config';
+import { colors, consts, device, normalize, texts } from '../config';
 import {
   About,
   Button,
   CardList,
   HomeCarousel,
+  Icon,
   LoadingContainer,
   SafeAreaViewFlex,
   Service,
@@ -22,7 +31,8 @@ import {
   TitleShadow,
   Touchable,
   VersionNumber,
-  Wrapper
+  Wrapper,
+  WrapperRow
 } from '../components';
 import { getQuery, getQueryType, QUERY_TYPES } from '../queries';
 import {
@@ -64,24 +74,25 @@ export const HomeScreen = ({ navigation }) => {
   } = sections;
   const [refreshing, setRefreshing] = useState(false);
 
-  const interactionHandler = useCallback((response) => {
-    const data = response?.notification?.request?.content?.data;
-    const queryType = data?.query_type 
-      ? getQueryType(data.query_type) 
-      : undefined;
+  const interactionHandler = useCallback(
+    (response) => {
+      const data = response?.notification?.request?.content?.data;
+      const queryType = data?.query_type ? getQueryType(data.query_type) : undefined;
 
-    if (data?.id && queryType) {
-      // navigate to the newsItem
-      navigation.navigate({
-        routeName: 'Detail',
-        params: {
-          query: QUERY_TYPES.NEWS_ITEM,
-          queryVariables: { id: data.id }
-        }
-      });
-    }
-  }, [navigation]);
-  
+      if (data?.id && queryType) {
+        // navigate to the newsItem
+        navigation.navigate({
+          routeName: 'Detail',
+          params: {
+            query: QUERY_TYPES.NEWS_ITEM,
+            queryVariables: { id: data.id }
+          }
+        });
+      }
+    },
+    [navigation]
+  );
+
   usePushNotifications(undefined, interactionHandler);
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
@@ -408,6 +419,44 @@ export const HomeScreen = ({ navigation }) => {
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  iconLeft: {
+    paddingLeft: normalize(14),
+    paddingRight: normalize(7)
+  },
+  iconRight: {
+    paddingLeft: normalize(7),
+    paddingRight: normalize(14)
+  }
+});
+
+HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
+  const { headerRight } = navigationOptions;
+
+  return {
+    headerRight: (
+      <WrapperRow>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Settings')}
+          accessibilityLabel="Einstellungen (Taste)"
+          accessibilityHint="Zu den Einstellungen wechseln"
+        >
+          <Icon
+            name={Platform.select({
+              android: 'md-settings',
+              ios: 'ios-settings'
+            })}
+            size={26}
+            iconColor={colors.lightestText}
+            style={headerRight ? styles.iconLeft : styles.iconRight}
+          />
+        </TouchableOpacity>
+        {!!headerRight && headerRight}
+      </WrapperRow>
+    )
+  };
+};
 
 HomeScreen.propTypes = {
   navigation: PropTypes.object.isRequired

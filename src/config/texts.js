@@ -53,7 +53,23 @@ export const texts = {
     home: appJson.expo.name,
     service: appJson.expo.name,
     company: appJson.expo.name,
-    about: appJson.expo.name
+    about: appJson.expo.name,
+    settings: 'Einstellungen'
+  },
+  settingsScreen: {
+    intro:
+      'Enim veniam exercitation elit excepteur ullamco dolore nisi sit ad irure cillum ut velit nulla. Dolore ex consequat id ex magna amet nostrud tempor cupidatat laboris est voluptate.'
+  },
+  settingsTitles: {
+    analytics: 'Matomo Analytics',
+    listLayouts: {
+      eventRecordsTitle: 'Veranstaltungen',
+      newsItemsTitle: 'Nachrichten',
+      pointsOfInterestTitle: 'Orte',
+      sectionTitle: 'Listen-Layouts',
+      toursTitle: 'Touren'
+    },
+    pushNotifications: 'Push-Benachrichtigungen'
   },
   tabBarLabel: {
     home: 'Übersicht',

@@ -12,8 +12,8 @@ import { colors, normalize } from '../config';
  *
  * @return {ReactElement} SvgXml or Ionicons, depending on having `xml` or `name`
  */
-export const Icon = ({ xml, width, height, name, size, focused, style, iconStyle }) => {
-  const color = focused ? colors.accent : colors.primary;
+export const Icon = ({ xml, width, height, name, size, focused, iconColor, style, iconStyle }) => {
+  const color = iconColor || (focused ? colors.accent : colors.primary);
 
   return (
     <View style={style}>
@@ -43,6 +43,7 @@ Icon.propTypes = {
   name: isRequired,
   size: PropTypes.number,
   focused: PropTypes.bool,
+  iconColor: PropTypes.string,
   style: PropTypes.object,
   iconStyle: PropTypes.object
 };

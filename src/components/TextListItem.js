@@ -26,11 +26,13 @@ export class TextListItem extends React.PureComponent {
         }}
         rightIcon={<Icon xml={arrowRight(colors.primary)} />}
         onPress={() =>
+          navigation &&
           navigation.navigate({
             routeName,
             params
           })
         }
+        disabled={!navigation}
         delayPressIn={0}
         Component={Touchable}
         accessibilityLabel={`${title} (Taste)`}
@@ -40,7 +42,7 @@ export class TextListItem extends React.PureComponent {
 }
 
 TextListItem.propTypes = {
-  navigation: PropTypes.object.isRequired,
+  navigation: PropTypes.object,
   item: PropTypes.object.isRequired,
   noSubtitle: PropTypes.bool
 };

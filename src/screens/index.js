@@ -6,4 +6,5 @@ export * from './HomeScreen';
 export * from './HtmlScreen';
 export * from './IndexScreen';
 export * from './ServiceScreen';
+export * from './SettingsScreen';
 export * from './WebScreen';
