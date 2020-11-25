@@ -85,7 +85,7 @@ export const SettingsListItem = ({ item, index, section, orientation, dimensions
         // do not show a bottomDivider after last entry
         bottomDivider !== undefined || index < section.data.length - 1
       }
-      topDivider={topDivider !== undefined ? topDivider : false}
+      topDivider={topDivider ?? false}
       containerStyle={{
         backgroundColor: colors.transparent,
         paddingVertical: normalize(12)
