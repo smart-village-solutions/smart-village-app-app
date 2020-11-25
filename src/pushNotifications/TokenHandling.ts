@@ -66,6 +66,6 @@ const storeTokenSecurely = (token?: string) => {
   }
 };
 
-const getTokenFromStorage = async () => {
-  return SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
-};
+const getTokenFromStorage = () =>
+  SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
+
