@@ -58,11 +58,11 @@ const addTokenToServer = async (token: string) => {
   if (accessToken) fetch(requestPath, fetchObj);
 };
 
-const storeTokenSecurely = async (token?: string) => {
+const storeTokenSecurely = (token?: string) => {
   if (token) {
-    return SecureStore.setItemAsync(PushNotificationStorageKeys.PUSH_TOKEN, token);
+    SecureStore.setItemAsync(PushNotificationStorageKeys.PUSH_TOKEN, token);
   } else {
-    return SecureStore.deleteItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
+    SecureStore.deleteItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
   }
 };
 
