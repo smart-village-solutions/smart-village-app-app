@@ -24,7 +24,7 @@ const { MATOMO_TRACKING, REFRESH_INTERVALS } = consts;
 export const AboutScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const globalSettings = useContext(GlobalSettingsContext);
+  const { globalSettings } = useContext(GlobalSettingsContext);
   const [refreshing, setRefreshing] = useState(false);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.MORE);

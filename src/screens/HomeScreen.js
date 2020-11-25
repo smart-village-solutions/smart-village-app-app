@@ -54,7 +54,7 @@ const { DRAWER, MATOMO_TRACKING } = consts;
 export const HomeScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const globalSettings = useContext(GlobalSettingsContext);
+  const { globalSettings } = useContext(GlobalSettingsContext);
   const { sections = {} } = globalSettings;
   const {
     showNews = true,

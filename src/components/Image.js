@@ -11,7 +11,7 @@ import { ImageRights } from './ImageRights';
 
 export const Image = ({ source, style, PlaceholderContent }) => {
   const [uri, setUri] = useState(null);
-  const globalSettings = useContext(GlobalSettingsContext);
+  const { globalSettings } = useContext(GlobalSettingsContext);
 
   // if there is a source.uri to fetch, do it with the CacheManager and set the local path to show.
   // if there is no uri, the source itself should be already a local path, so set it immediately.
