@@ -35,5 +35,11 @@ export const consts = {
       HTML: 'Content',
       MORE: 'More'
     }
+  },
+
+  LIST_TYPES: {
+    TEXT_LIST: 'textList',
+    IMAGE_TEXT_LIST: 'imageTextList',
+    CARD_LIST: 'cardList'
   }
 };
