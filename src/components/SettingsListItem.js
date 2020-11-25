@@ -1,74 +1,119 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import { ListItem, Overlay } from 'react-native-elements';
 
-import { colors, normalize } from '../config';
+import { colors, consts, normalize, texts } from '../config';
+import { CardListItem } from './CardListItem';
 import { Icon } from './Icon';
+import { Radiobutton } from './Radiobutton';
 import { BoldText, RegularText } from './Text';
+import { TextListItem } from './TextListItem';
 import { Touchable } from './Touchable';
 import { WrapperHorizontal, WrapperRow } from './Wrapper';
 
+const { LIST_TYPES } = consts;
+
 const previewListItem = {
-  title: 'Proident tempor aliqua',
-  name: 'Id duis nisi reprehenderit ut',
-  category: 'Lorem ipsum',
+  title: 'Überschrift',
+  subtitle: 'Kategorie',
   picture: {
-    url: 'https://via.placeholder.com/400.png/bcbbc1/fff?text=Lorem+ipsum'
+    url: 'https://via.placeholder.com/400.png/bcbbc1/fff?text=Bild'
   },
   topDivider: true
 };
 
 // TODO: snack bar / toast als nutzerinfo
-// TODO: overlay for selecting text list type: https://reactnativeelements.com/docs/1.2.0/overlay
 export const SettingsListItem = ({ item, index, section, orientation, dimensions }) => {
-  const { title, bottomDivider, topDivider, listSelection, Component, value } = item;
+  const { title, bottomDivider, topDivider, listSelection, onPress } = item;
+  const Component = {
+    [LIST_TYPES.TEXT_LIST]: TextListItem,
+    [LIST_TYPES.IMAGE_TEXT_LIST]: TextListItem,
+    [LIST_TYPES.CARD_LIST]: CardListItem
+  }[listSelection];
 
-  const onPress = () => console.warn(`${title} - ${listSelection}`);
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  const [selectedListType, setSelectedListType] = useState(listSelection);
 
   return (
-    <ListItem
-      title={
-        title && (
-          <View>
-            <WrapperRow>
-              <BoldText>{title}</BoldText>
-              <RegularText> - </RegularText>
-              <RegularText>{listSelection}</RegularText>
-            </WrapperRow>
-            <RegularText small></RegularText>
-            <WrapperHorizontal>
-              <Component
-                item={previewListItem}
-                horizontal
-                orientation={orientation}
-                dimensions={dimensions}
-              />
-            </WrapperHorizontal>
-          </View>
-        )
-      }
-      bottomDivider={
-        // do not show a bottomDivider after last entry
-        bottomDivider !== undefined || index < section.data.length - 1
-      }
-      topDivider={topDivider ?? false}
-      containerStyle={{
-        backgroundColor: colors.transparent,
-        paddingVertical: normalize(12)
-      }}
-      rightIcon={<Icon name="md-create" size={22} style={styles.rightContentContainer} />}
-      onPress={onPress}
-      delayPressIn={0}
-      Component={Touchable}
-      accessibilityLabel={`${title} (Taste)`}
-    />
+    <>
+      <ListItem
+        title={
+          title && (
+            <View>
+              <WrapperRow>
+                <BoldText>{title}</BoldText>
+                <RegularText> - </RegularText>
+                <RegularText>{texts.settingsTitles.listLayouts[listSelection]}</RegularText>
+              </WrapperRow>
+              <RegularText small></RegularText>
+              <WrapperHorizontal>
+                <Component
+                  item={previewListItem}
+                  leftImage={listSelection === LIST_TYPES.IMAGE_TEXT_LIST}
+                  horizontal
+                  orientation={orientation}
+                  dimensions={dimensions}
+                />
+              </WrapperHorizontal>
+            </View>
+          )
+        }
+        bottomDivider={
+          // do not show a bottomDivider after last entry
+          bottomDivider !== undefined || index < section.data.length - 1
+        }
+        topDivider={topDivider ?? false}
+        containerStyle={{
+          backgroundColor: colors.transparent,
+          paddingVertical: normalize(12)
+        }}
+        rightIcon={<Icon name="md-create" size={22} style={styles.rightContentContainer} />}
+        onPress={() => setIsOverlayVisible(true)}
+        delayPressIn={0}
+        Component={Touchable}
+        accessibilityLabel={`${title} (Taste)`}
+      />
+      <Overlay
+        isVisible={isOverlayVisible}
+        onBackdropPress={() => setIsOverlayVisible(false)}
+        windowBackgroundColor={colors.overlayRgba}
+        overlayStyle={styles.overlay}
+        width="auto"
+        height="auto"
+        borderRadius={0}
+        supportedOrientations={['portrait', 'landscape']}
+      >
+        <>
+          <BoldText>{title}</BoldText>
+          <RegularText small></RegularText>
+          {Object.values(LIST_TYPES).map((listType) => (
+            <Radiobutton
+              key={listType}
+              title={texts.settingsTitles.listLayouts[listType]}
+              onPress={async () => {
+                if (listType !== selectedListType) {
+                  setSelectedListType(listType);
+                  // call the onPress callback for that setting list item if present
+                  onPress && (await onPress(listType));
+                }
+                setIsOverlayVisible(false);
+              }}
+              selected={listType === selectedListType}
+            />
+          ))}
+        </>
+      </Overlay>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   rightContentContainer: {
     alignSelf: 'flex-start'
+  },
+  overlay: {
+    padding: normalize(30)
   }
 });
 

@@ -55,11 +55,13 @@ export const texts = {
   settingsTitles: {
     analytics: 'Matomo Analytics',
     listLayouts: {
+      cardList: 'Liste mit großen Bildern',
       eventRecordsTitle: 'Veranstaltungen',
+      imageTextList: 'Liste mit kleinen Bildern',
       newsItemsTitle: 'Nachrichten',
-      pointsOfInterestTitle: 'Orte',
+      pointsOfInterestAndToursTitle: 'Touren und Orte',
       sectionTitle: 'Listen-Layouts',
-      toursTitle: 'Touren'
+      textList: 'Textliste'
     },
     pushNotifications: 'Push-Benachrichtigungen'
   },
