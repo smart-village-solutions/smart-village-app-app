@@ -14,6 +14,7 @@ import {
   Title,
   TitleContainer,
   TitleShadow,
+  ToggleListItem,
   Wrapper
 } from '../components';
 import { SettingsListItem } from '../components/SettingsListItem';
@@ -29,6 +30,13 @@ const renderSectionHeader = ({ section: { title } }) =>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
     </View>
+  );
+
+const renderItem = ({ item, index, section, orientation, dimensions }) =>
+  item.type === 'toggle' ? (
+    <ToggleListItem {...{ item, index, section }} />
+  ) : (
+    <SettingsListItem {...{ item, index, section, orientation, dimensions }} />
   );
 
 export const SettingsScreen = ({ navigation }) => {
@@ -104,9 +112,9 @@ export const SettingsScreen = ({ navigation }) => {
       <SectionList
         keyExtractor={keyExtractor}
         sections={sectionedData}
-        renderItem={({ item, index, section }) => (
-          <SettingsListItem {...{ navigation, item, index, section, orientation, dimensions }} />
-        )}
+        renderItem={({ item, index, section }) =>
+          renderItem({ item, index, section, orientation, dimensions })
+        }
         renderSectionHeader={renderSectionHeader}
         ListHeaderComponent={
           <Wrapper>
