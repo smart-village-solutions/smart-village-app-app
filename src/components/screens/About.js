@@ -14,7 +14,7 @@ import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 export const About = ({ navigation, refreshing }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const globalSettings = useContext(GlobalSettingsContext);
+  const { globalSettings } = useContext(GlobalSettingsContext);
 
   useEffect(() => {
     const getRefreshTime = async () => {

@@ -256,7 +256,7 @@ export const IndexScreen = ({ navigation }) => {
   };
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const globalSettings = useContext(GlobalSettingsContext);
+  const { globalSettings } = useContext(GlobalSettingsContext);
   const { filter = {} } = globalSettings;
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const Component = getComponent(query);
