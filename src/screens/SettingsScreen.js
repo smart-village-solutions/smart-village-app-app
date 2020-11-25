@@ -1,24 +1,23 @@
-import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
 import { RefreshControl, SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { NetworkContext } from '../NetworkProvider';
 import { OrientationContext } from '../OrientationProvider';
 import { colors, device, normalize, texts } from '../config';
 import {
-  CardListItem,
   Icon,
   RegularText,
   SafeAreaViewFlex,
-  TextListItem,
+  SettingsListItem,
   Title,
   TitleContainer,
   TitleShadow,
   ToggleListItem,
   Wrapper
 } from '../components';
-import { SettingsListItem } from '../components/SettingsListItem';
 import { arrowLeft } from '../icons';
+import { QUERY_TYPES } from '../queries';
+import { GlobalSettingsContext } from '../GlobalSettingsProvider';
+import { storageHelper } from '../helpers';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
@@ -39,9 +38,9 @@ const renderItem = ({ item, index, section, orientation, dimensions }) =>
     <SettingsListItem {...{ item, index, section, orientation, dimensions }} />
   );
 
-export const SettingsScreen = ({ navigation }) => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+export const SettingsScreen = () => {
   const { orientation, dimensions } = useContext(OrientationContext);
+  const { listTypesSettings, setListTypesSettings } = useContext(GlobalSettingsContext);
   const [refreshing, setRefreshing] = useState(false);
 
   const refresh = () => {
@@ -53,6 +52,18 @@ export const SettingsScreen = ({ navigation }) => {
       setRefreshing(false);
     }, 500);
   };
+
+  const onPress = async (selectedListType, queryType) =>
+    setListTypesSettings((previousListTypes) => {
+      const updatedListTypesSettings = {
+        ...previousListTypes,
+        [queryType]: selectedListType
+      };
+
+      storageHelper.setListTypesSettings(updatedListTypesSettings);
+
+      return updatedListTypesSettings;
+    });
 
   const sectionedData = [
     {
@@ -81,26 +92,20 @@ export const SettingsScreen = ({ navigation }) => {
         {
           title: texts.settingsTitles.listLayouts.newsItemsTitle,
           type: 'listLayout',
-          listSelection: 'Textliste',
-          Component: TextListItem
+          listSelection: listTypesSettings[QUERY_TYPES.NEWS_ITEMS],
+          onPress: (listType) => onPress(listType, QUERY_TYPES.NEWS_ITEMS)
         },
         {
           title: texts.settingsTitles.listLayouts.eventRecordsTitle,
           type: 'listLayout',
-          listSelection: 'Textliste',
-          Component: TextListItem
+          listSelection: listTypesSettings[QUERY_TYPES.EVENT_RECORDS],
+          onPress: (listType) => onPress(listType, QUERY_TYPES.EVENT_RECORDS)
         },
         {
-          title: texts.settingsTitles.listLayouts.toursTitle,
+          title: texts.settingsTitles.listLayouts.pointsOfInterestAndToursTitle,
           type: 'listLayout',
-          listSelection: 'Liste mit großen Bildern',
-          Component: CardListItem
-        },
-        {
-          title: texts.settingsTitles.listLayouts.pointsOfInterestTitle,
-          type: 'listLayout',
-          listSelection: 'Liste mit großen Bildern',
-          Component: CardListItem,
+          listSelection: listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS],
+          onPress: (listType) => onPress(listType, QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS),
           bottomDivider: true
         }
       ]
@@ -156,7 +161,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(14)
   }
 });
-
-SettingsScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
-};
