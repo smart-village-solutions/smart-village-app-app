@@ -163,7 +163,7 @@ export const HomeScreen = ({ navigation }) => {
                           (mediaContent) =>
                             mediaContent.contentType === 'image' ||
                             mediaContent.contentType === 'thumbnail'
-                        )[0].sourceUrl.url,
+                        )[0].sourceUrl.url
                     },
                     routeName: 'Detail',
                     params: {
@@ -233,7 +233,7 @@ export const HomeScreen = ({ navigation }) => {
                     title: pointOfInterest.name,
                     subtitle: !!pointOfInterest.category && pointOfInterest.category.name,
                     picture: {
-                      url: mainImageOfMediaContents(pointOfInterest.mediaContents),
+                      url: mainImageOfMediaContents(pointOfInterest.mediaContents)
                     },
                     routeName: 'Detail',
                     params: {
@@ -260,7 +260,7 @@ export const HomeScreen = ({ navigation }) => {
                     title: tour.name,
                     subtitle: !!tour.category && tour.category.name,
                     picture: {
-                      url: mainImageOfMediaContents(tour.mediaContents),
+                      url: mainImageOfMediaContents(tour.mediaContents)
                     },
                     routeName: 'Detail',
                     params: {
@@ -337,7 +337,7 @@ export const HomeScreen = ({ navigation }) => {
                     ),
                     title: eventRecord.title,
                     picture: {
-                      url: mainImageOfMediaContents(eventRecord.mediaContents),
+                      url: mainImageOfMediaContents(eventRecord.mediaContents)
                     },
                     routeName: 'Detail',
                     params: {
