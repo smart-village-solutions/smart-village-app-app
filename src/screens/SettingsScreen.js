@@ -19,22 +19,22 @@ import {
 import { SettingsListItem } from '../components/SettingsListItem';
 import { arrowLeft } from '../icons';
 
+const keyExtractor = (item, index) => `index${index}-id${item.id}`;
+
+const renderSectionHeader = ({ section: { title } }) =>
+  !!title && (
+    <View>
+      <TitleContainer>
+        <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
+      </TitleContainer>
+      {device.platform === 'ios' && <TitleShadow />}
+    </View>
+  );
+
 export const SettingsScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const [refreshing, setRefreshing] = useState(false);
-
-  const keyExtractor = (item, index) => `index${index}-id${item.id}`;
-
-  const renderSectionHeader = ({ section: { title } }) =>
-    !!title && (
-      <View>
-        <TitleContainer>
-          <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
-        </TitleContainer>
-        {device.platform === 'ios' && <TitleShadow />}
-      </View>
-    );
 
   const refresh = () => {
     setRefreshing(true);
