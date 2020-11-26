@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { createContext, useState } from 'react';
 
-export const GlobalSettingsContext = createContext({});
+export const SettingsContext = createContext({});
 
-export const GlobalSettingsProvider = ({
+export const SettingsProvider = ({
   initialGlobalSettings,
   initialListTypesSettings,
   children
@@ -12,15 +12,15 @@ export const GlobalSettingsProvider = ({
   const [listTypesSettings, setListTypesSettings] = useState(initialListTypesSettings);
 
   return (
-    <GlobalSettingsContext.Provider
+    <SettingsContext.Provider
       value={{ globalSettings, setGlobalSettings, listTypesSettings, setListTypesSettings }}
     >
       {children}
-    </GlobalSettingsContext.Provider>
+    </SettingsContext.Provider>
   );
 };
 
-GlobalSettingsProvider.propTypes = {
+SettingsProvider.propTypes = {
   initialGlobalSettings: PropTypes.object.isRequired,
   initialListTypesSettings: PropTypes.object.isRequired,
   children: PropTypes.array.isRequired

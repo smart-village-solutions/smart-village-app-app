@@ -12,7 +12,7 @@ import { useMatomo } from 'matomo-tracker-react-native';
 import _filter from 'lodash/filter';
 
 import { NetworkContext } from '../NetworkProvider';
-import { GlobalSettingsContext } from '../GlobalSettingsProvider';
+import { SettingsContext } from '../SettingsProvider';
 import { auth } from '../auth';
 import { colors, consts, normalize } from '../config';
 import {
@@ -217,7 +217,7 @@ const getComponent = (query, listTypesSettings) => {
 
 export const IndexScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { listTypesSettings } = useContext(GlobalSettingsContext);
+  const { listTypesSettings } = useContext(SettingsContext);
   const query = navigation.getParam('query', '');
   const title = navigation.getParam('title', '');
   const [queryVariables, setQueryVariables] = useState(navigation.getParam('queryVariables', {}));
@@ -269,7 +269,7 @@ export const IndexScreen = ({ navigation }) => {
   };
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { globalSettings } = useContext(GlobalSettingsContext);
+  const { globalSettings } = useContext(SettingsContext);
   const { filter = {} } = globalSettings;
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const Component = getComponent(query, listTypesSettings);

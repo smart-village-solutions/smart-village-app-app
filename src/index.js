@@ -19,7 +19,7 @@ import { getQuery, QUERY_TYPES } from './queries';
 import { NetworkProvider } from './NetworkProvider';
 import NetInfo from './NetInfo';
 import { OrientationProvider } from './OrientationProvider';
-import { GlobalSettingsProvider } from './GlobalSettingsProvider';
+import { SettingsProvider } from './SettingsProvider';
 import AppStackNavigator from './navigation/AppStackNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
@@ -285,10 +285,10 @@ const MainAppWithApolloProvider = () => {
 
   return (
     <ApolloProvider client={client}>
-      <GlobalSettingsProvider {...{ initialGlobalSettings, initialListTypesSettings }}>
+      <SettingsProvider {...{ initialGlobalSettings, initialListTypesSettings }}>
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
         <AppContainer />
-      </GlobalSettingsProvider>
+      </SettingsProvider>
     </ApolloProvider>
   );
 };

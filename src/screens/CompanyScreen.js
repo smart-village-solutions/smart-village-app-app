@@ -12,7 +12,7 @@ import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
 import { OrientationContext } from '../OrientationProvider';
-import { GlobalSettingsContext } from '../GlobalSettingsProvider';
+import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, device, normalize, texts } from '../config';
 import {
   BoldText,
@@ -36,7 +36,7 @@ export const CompanyScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
-  const { globalSettings } = useContext(GlobalSettingsContext);
+  const { globalSettings } = useContext(SettingsContext);
   const [refreshing, setRefreshing] = useState(false);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.COMPANY);
