@@ -11,9 +11,9 @@ const AppWithFonts = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
   const { trackAppStart } = useMatomo();
 
-  trackAppStart();
-
   useEffect(() => {
+    trackAppStart();
+
     Font.loadAsync({
       'titillium-web-bold': require('./assets/fonts/TitilliumWeb-Bold.ttf'),
       'titillium-web-bold-italic': require('./assets/fonts/TitilliumWeb-BoldItalic.ttf'),

@@ -19,17 +19,20 @@ import { getQuery, QUERY_TYPES } from './queries';
 import { NetworkProvider } from './NetworkProvider';
 import NetInfo from './NetInfo';
 import { OrientationProvider } from './OrientationProvider';
-import { GlobalSettingsProvider } from './GlobalSettingsProvider';
+import { SettingsProvider } from './SettingsProvider';
 import AppStackNavigator from './navigation/AppStackNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 import { LoadingContainer } from './components';
 
+const { LIST_TYPES } = consts;
+
 const MainAppWithApolloProvider = () => {
   const [loading, setLoading] = useState(true);
   const [isSplashScreenVisible, setIsSplashScreenVisible] = useState(true);
   const [client, setClient] = useState();
-  const [globalSettingsState, setGlobalSettingsState] = useState();
+  const [initialGlobalSettings, setInitialGlobalSettings] = useState({});
+  const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [drawerRoutes, setDrawerRoutes] = useState({
     AppStack: {
       screen: AppStackNavigator(),
@@ -131,18 +134,20 @@ const MainAppWithApolloProvider = () => {
     isMainserverUp !== null && !client && auth(setupApolloClient);
   }, [netInfoCounter]);
 
-  const setupGlobalSettings = async () => {
+  const setupInitialGlobalSettings = async () => {
     const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
     // rehydrate data from the async storage to the global state
-    let globalSettings = await storageHelper.globalSettings();
-
-    if (!globalSettings) {
-      // if there are no global settings yet, add a navigation fallback
-      globalSettings = {
-        navigation: consts.DRAWER
-      };
-    }
+    // if there are no general settings yet, add a navigation fallback
+    let globalSettings = (await storageHelper.globalSettings()) || {
+      navigation: consts.DRAWER
+    };
+    // if there are no list type settings yet, set the defaults as fallback
+    const listTypesSettings = (await storageHelper.listTypesSettings()) || {
+      [QUERY_TYPES.NEWS_ITEMS]: LIST_TYPES.TEXT_LIST,
+      [QUERY_TYPES.EVENT_RECORDS]: LIST_TYPES.TEXT_LIST,
+      [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: LIST_TYPES.CARD_LIST
+    };
 
     let globalSettingsData;
 
@@ -175,16 +180,17 @@ const MainAppWithApolloProvider = () => {
       storageHelper.setGlobalSettings(globalSettings);
     }
 
-    setGlobalSettingsState(globalSettings);
+    setInitialGlobalSettings(globalSettings);
+    setInitialListTypesSettings(listTypesSettings);
   };
 
   // setup global settings if apollo client setup finished
   useEffect(() => {
-    client && setupGlobalSettings();
+    client && setupInitialGlobalSettings();
   }, [client]);
 
   const setupNavigationDrawer = async () => {
-    if (globalSettingsState.navigation === consts.DRAWER) {
+    if (initialGlobalSettings.navigation === consts.DRAWER) {
       const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
       let navigationData;
 
@@ -233,8 +239,8 @@ const MainAppWithApolloProvider = () => {
 
   // setup navigation drawer if global settings setup finished
   useEffect(() => {
-    globalSettingsState && client && setupNavigationDrawer();
-  }, [globalSettingsState]);
+    initialGlobalSettings && client && setupNavigationDrawer();
+  }, [initialGlobalSettings]);
 
   useEffect(() => {
     !loading && SplashScreen.hideAsync().then(
@@ -256,7 +262,7 @@ const MainAppWithApolloProvider = () => {
 
   let AppContainer = () => null;
 
-  if (globalSettingsState.navigation === consts.DRAWER) {
+  if (initialGlobalSettings.navigation === consts.DRAWER) {
     // use drawer for navigation for the app
     const AppDrawerNavigator = createDrawerNavigator(drawerRoutes, {
       initialRouteName: 'AppStack',
@@ -277,16 +283,16 @@ const MainAppWithApolloProvider = () => {
     AppContainer = createAppContainer(AppDrawerNavigator);
   }
 
-  if (globalSettingsState.navigation === consts.TABS) {
+  if (initialGlobalSettings.navigation === consts.TABS) {
     AppContainer = createAppContainer(MainTabNavigator);
   }
 
   return (
     <ApolloProvider client={client}>
-      <GlobalSettingsProvider globalSettings={globalSettingsState}>
+      <SettingsProvider {...{ initialGlobalSettings, initialListTypesSettings }}>
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
         <AppContainer />
-      </GlobalSettingsProvider>
+      </SettingsProvider>
     </ApolloProvider>
   );
 };

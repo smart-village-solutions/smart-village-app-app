@@ -1,25 +1,36 @@
-import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
-import { RefreshControl, SectionList, StyleSheet, TouchableOpacity, View } from 'react-native';
-
-import { NetworkContext } from '../NetworkProvider';
-import { OrientationContext } from '../OrientationProvider';
-import { colors, device, normalize, texts } from '../config';
+import React, { useContext, useEffect, useState } from 'react';
 import {
-  CardListItem,
+  ActivityIndicator,
+  Alert,
+  RefreshControl,
+  SectionList,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
+
+import { OrientationContext } from '../OrientationProvider';
+import { SettingsContext } from '../SettingsProvider';
+import { colors, consts, device, normalize, texts } from '../config';
+import {
   Icon,
+  LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
-  TextListItem,
+  SettingsListItem,
   Title,
   TitleContainer,
   TitleShadow,
   ToggleListItem,
   Wrapper
 } from '../components';
-import { SettingsListItem } from '../components/SettingsListItem';
 import { arrowLeft } from '../icons';
 import { setInAppPermission } from '../pushNotifications';
+import { QUERY_TYPES } from '../queries';
+import { createMatomoUserId, removeMatomoUserId, storageHelper } from '../helpers';
+import { useMatomoTrackScreenView } from '../hooks';
+
+const { MATOMO_TRACKING } = consts;
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
@@ -48,10 +59,128 @@ const onDeactivatePushNotifications = (revert) => {
   setInAppPermission(false).then((success) => !success && revert());
 };
 
-export const SettingsScreen = ({ navigation }) => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+export const SettingsScreen = () => {
   const { orientation, dimensions } = useContext(OrientationContext);
+  const { globalSettings, listTypesSettings, setListTypesSettings } = useContext(SettingsContext);
   const [refreshing, setRefreshing] = useState(false);
+  const [sectionedData, setSectionedData] = useState([]);
+
+  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
+
+  useEffect(() => {
+    const onListTypePress = (selectedListType, queryType) =>
+      setListTypesSettings((previousListTypes) => {
+        const updatedListTypesSettings = {
+          ...previousListTypes,
+          [queryType]: selectedListType
+        };
+
+        storageHelper.setListTypesSettings(updatedListTypesSettings);
+
+        return updatedListTypesSettings;
+      });
+
+    const updateSectionedData = async () => {
+      const { settings = { matomo: false } } = globalSettings;
+      const { consent: matomoValue } = await storageHelper.matomoSettings();
+
+      setSectionedData((initialSectionedData) => {
+        // settings should always contain push notifications
+        const additionalSectionedData = [
+          {
+            data: [
+              {
+                title: texts.settingsTitles.pushNotifications,
+                topDivider: true,
+                type: 'toggle',
+                value: false, // FIXME: add proper value
+                onActivate: onActivatePushNotifications,
+                onDeactivate: onDeactivatePushNotifications
+              }
+            ]
+          }
+        ];
+        // settings should sometimes contain matomo analytics next, depending on server settings
+        if (settings.matomo) {
+          additionalSectionedData.push({
+            data: [
+              {
+                title: texts.settingsTitles.analytics,
+                topDivider: true,
+                type: 'toggle',
+                value: matomoValue,
+                onActivate: (revert) =>
+                  Alert.alert(
+                    texts.settingsTitles.analytics,
+                    texts.settingsContents.analytics.onActivate,
+                    [
+                      {
+                        text: texts.settingsContents.analytics.no,
+                        onPress: revert,
+                        style: 'cancel'
+                      },
+                      {
+                        text: texts.settingsContents.analytics.yes,
+                        onPress: createMatomoUserId
+                      }
+                    ],
+                    { cancelable: false }
+                  ),
+                onDeactivate: (revert) =>
+                  Alert.alert(
+                    texts.settingsTitles.analytics,
+                    texts.settingsContents.analytics.onDeactivate,
+                    [
+                      {
+                        text: texts.settingsContents.analytics.no,
+                        onPress: revert,
+                        style: 'cancel'
+                      },
+                      {
+                        text: texts.settingsContents.analytics.yes,
+                        onPress: removeMatomoUserId
+                      }
+                    ],
+                    { cancelable: false }
+                  )
+              }
+            ]
+          });
+        }
+
+        // settings should always contain list layouts last
+        additionalSectionedData.push({
+          title: texts.settingsTitles.listLayouts.sectionTitle,
+          data: [
+            {
+              title: texts.settingsTitles.listLayouts.newsItemsTitle,
+              type: 'listLayout',
+              listSelection: listTypesSettings[QUERY_TYPES.NEWS_ITEMS],
+              onPress: (listType) => onListTypePress(listType, QUERY_TYPES.NEWS_ITEMS)
+            },
+            {
+              title: texts.settingsTitles.listLayouts.eventRecordsTitle,
+              type: 'listLayout',
+              listSelection: listTypesSettings[QUERY_TYPES.EVENT_RECORDS],
+              onPress: (listType) => onListTypePress(listType, QUERY_TYPES.EVENT_RECORDS)
+            },
+            {
+              title: texts.settingsTitles.listLayouts.pointsOfInterestAndToursTitle,
+              type: 'listLayout',
+              listSelection: listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS],
+              onPress: (listType) =>
+                onListTypePress(listType, QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS),
+              bottomDivider: true
+            }
+          ]
+        });
+
+        return [...initialSectionedData, ...additionalSectionedData];
+      });
+    };
+
+    updateSectionedData();
+  }, []);
 
   const refresh = () => {
     setRefreshing(true);
@@ -63,60 +192,13 @@ export const SettingsScreen = ({ navigation }) => {
     }, 500);
   };
 
-  const sectionedData = [
-    {
-      data: [
-        {
-          title: texts.settingsTitles.pushNotifications,
-          topDivider: true,
-          type: 'toggle',
-          value: false, // FIXME: add proper value
-          onActivate: onActivatePushNotifications,
-          onDeactivate: onDeactivatePushNotifications
-        }
-      ]
-    },
-    {
-      data: [
-        {
-          title: texts.settingsTitles.analytics,
-          topDivider: true,
-          type: 'toggle',
-          value: true
-        }
-      ]
-    },
-    {
-      title: texts.settingsTitles.listLayouts.sectionTitle,
-      data: [
-        {
-          title: texts.settingsTitles.listLayouts.newsItemsTitle,
-          type: 'listLayout',
-          listSelection: 'Textliste',
-          Component: TextListItem
-        },
-        {
-          title: texts.settingsTitles.listLayouts.eventRecordsTitle,
-          type: 'listLayout',
-          listSelection: 'Textliste',
-          Component: TextListItem
-        },
-        {
-          title: texts.settingsTitles.listLayouts.toursTitle,
-          type: 'listLayout',
-          listSelection: 'Liste mit großen Bildern',
-          Component: CardListItem
-        },
-        {
-          title: texts.settingsTitles.listLayouts.pointsOfInterestTitle,
-          type: 'listLayout',
-          listSelection: 'Liste mit großen Bildern',
-          Component: CardListItem,
-          bottomDivider: true
-        }
-      ]
-    }
-  ];
+  if (!sectionedData.length) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
 
   return (
     <SafeAreaViewFlex>
@@ -128,9 +210,11 @@ export const SettingsScreen = ({ navigation }) => {
         }
         renderSectionHeader={renderSectionHeader}
         ListHeaderComponent={
-          <Wrapper>
-            <RegularText>{texts.settingsScreen.intro}</RegularText>
-          </Wrapper>
+          !!texts.settingsScreen.intro && (
+            <Wrapper>
+              <RegularText>{texts.settingsScreen.intro}</RegularText>
+            </Wrapper>
+          )
         }
         stickySectionHeadersEnabled
         refreshControl={
@@ -167,7 +251,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(14)
   }
 });
-
-SettingsScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
-};

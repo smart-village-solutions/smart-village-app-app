@@ -33,7 +33,14 @@ export const consts = {
       WEB: 'Web',
       FEEDBACK: 'Feedback',
       HTML: 'Content',
-      MORE: 'More'
+      MORE: 'More',
+      SETTINGS: 'Settings'
     }
+  },
+
+  LIST_TYPES: {
+    TEXT_LIST: 'textList',
+    IMAGE_TEXT_LIST: 'imageTextList',
+    CARD_LIST: 'cardList'
   }
 };

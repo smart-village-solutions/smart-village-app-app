@@ -56,18 +56,29 @@ export const texts = {
     about: appJson.expo.name,
     settings: 'Einstellungen'
   },
+  settingsContents: {
+    analytics: {
+      no: 'Nein',
+      onActivate:
+        'Soll Matomo Analytics aktiviert werden? Dies trägt zur Verbesserung der App bei. Matomo Analytics wird nach der Aktivierung mit dem nächsten Neustart der App wirksam.',
+      onDeactivate:
+        'Soll Matomo Analytics deaktiviert werden? Die Deaktivierung von Matomo Analytics wird mit dem nächsten Neustart der App wirksam.',
+      yes: 'Ja'
+    }
+  },
   settingsScreen: {
-    intro:
-      'Enim veniam exercitation elit excepteur ullamco dolore nisi sit ad irure cillum ut velit nulla. Dolore ex consequat id ex magna amet nostrud tempor cupidatat laboris est voluptate.'
+    intro: ''
   },
   settingsTitles: {
     analytics: 'Matomo Analytics',
     listLayouts: {
+      cardList: 'Liste mit großen Bildern',
       eventRecordsTitle: 'Veranstaltungen',
+      imageTextList: 'Liste mit kleinen Bildern',
       newsItemsTitle: 'Nachrichten',
-      pointsOfInterestTitle: 'Orte',
+      pointsOfInterestAndToursTitle: 'Touren und Orte',
       sectionTitle: 'Listen-Layouts',
-      toursTitle: 'Touren'
+      textList: 'Textliste'
     },
     pushNotifications: 'Push-Benachrichtigungen'
   },

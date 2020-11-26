@@ -27,20 +27,41 @@ export const matomoSettings = async () => {
   return settings;
 };
 
+/**
+ * Create a Matomo user id and add the consent to be tracked.
+ */
 export const createMatomoUserId = async () => {
-  let settings = await storageHelper.matomoSettings();
+  const settings = await storageHelper.matomoSettings();
 
   if (settings) {
     settings.userId = uuid();
+    settings.consent = true;
     storageHelper.setMatomoSettings(settings);
   }
 };
 
+/**
+ * Remove a Matomo user id and the consent to be tracked.
+ */
 export const removeMatomoUserId = async () => {
-  let settings = await storageHelper.matomoSettings();
+  const settings = await storageHelper.matomoSettings();
 
   if (settings && settings.userId) {
     delete settings.userId;
+    settings.consent = false;
+    storageHelper.setMatomoSettings(settings);
+  }
+};
+
+/**
+ * Save the user interaction with the Matomo alert on app startup, because the alert should only
+ * be shown once.
+ */
+export const setMatomoHandledOnStartup = async () => {
+  const settings = await storageHelper.matomoSettings();
+
+  if (settings) {
+    settings.matomoHandledOnStartup = true;
     storageHelper.setMatomoSettings(settings);
   }
 };
