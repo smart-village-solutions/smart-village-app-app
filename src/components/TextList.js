@@ -51,8 +51,8 @@ export const TextList = ({
 };
 
 TextList.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  data: PropTypes.array.isRequired,
+  navigation: PropTypes.object,
+  data: PropTypes.array,
   noSubtitle: PropTypes.bool,
   leftImage: PropTypes.bool,
   query: PropTypes.string,
