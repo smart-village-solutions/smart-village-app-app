@@ -98,7 +98,7 @@ export const SettingsScreen = () => {
                     [
                       {
                         text: 'Nein',
-                        onPress: () => revert(),
+                        onPress: revert,
                         style: 'cancel'
                       },
                       { text: 'Ja', onPress: createMatomoUserId }
@@ -114,7 +114,7 @@ export const SettingsScreen = () => {
                     [
                       {
                         text: 'Nein',
-                        onPress: () => revert(),
+                        onPress: revert,
                         style: 'cancel'
                       },
                       { text: 'Ja', onPress: removeMatomoUserId }
