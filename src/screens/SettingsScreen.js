@@ -156,11 +156,20 @@ export const SettingsScreen = () => {
       }
 
       // settings should always contain list layouts last
+      const { sections = {} } = globalSettings;
+      const {
+        categoriesNews = [
+          {
+            categoryTitle: texts.settingsTitles.listLayouts.newsItemsTitle
+          }
+        ]
+      } = sections;
+
       additionalSectionedData.push({
         title: texts.settingsTitles.listLayouts.sectionTitle,
         data: [
           {
-            title: texts.settingsTitles.listLayouts.newsItemsTitle,
+            title: categoriesNews.map((categoryNews) => categoryNews.categoryTitle).join(', '),
             type: 'listLayout',
             listSelection: listTypesSettings[QUERY_TYPES.NEWS_ITEMS],
             onPress: (listType) => onListTypePress(listType, QUERY_TYPES.NEWS_ITEMS)

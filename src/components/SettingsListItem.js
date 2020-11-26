@@ -10,7 +10,7 @@ import { Radiobutton } from './Radiobutton';
 import { BoldText, RegularText } from './Text';
 import { TextListItem } from './TextListItem';
 import { Touchable } from './Touchable';
-import { WrapperHorizontal, WrapperRow } from './Wrapper';
+import { WrapperHorizontal } from './Wrapper';
 
 const { LIST_TYPES } = consts;
 
@@ -41,11 +41,8 @@ export const SettingsListItem = ({ item, index, section, orientation, dimensions
         title={
           title && (
             <View>
-              <WrapperRow>
-                <BoldText>{title}</BoldText>
-                <RegularText> - </RegularText>
-                <RegularText>{texts.settingsTitles.listLayouts[listSelection]}</RegularText>
-              </WrapperRow>
+              <BoldText>{title}</BoldText>
+              <RegularText>{texts.settingsTitles.listLayouts[listSelection]}:</RegularText>
               <RegularText small></RegularText>
               <WrapperHorizontal>
                 <Component
