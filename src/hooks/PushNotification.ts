@@ -23,11 +23,15 @@ export const usePushNotifications = (
     if (currentAppState !== nextState) {
       setCurrentAppState(nextState);
 
-      const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
-
-      if (nextState === 'active') {
-        inAppPermission && updatePushToken();
-      }
+      // timeout is needed due to ios system push permission popup triggering appstate change
+      // no timeout causes the onGetActive to fire an additional request to our server
+      setTimeout(async () => {
+        const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+        
+        if (nextState === 'active') {
+          inAppPermission && updatePushToken();
+        }
+      }, 3000);
     }
   }, []); // empty dependencies because it will only used once in the "mountEffect" below
 
