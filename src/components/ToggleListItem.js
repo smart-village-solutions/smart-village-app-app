@@ -16,15 +16,15 @@ export const ToggleListItem = ({ item, index, section }) => {
   const [loading, setLoading] = useState(false);
   const [switchValue, setSwitchValue] = useState(value);
 
-  const toggleSwitch = async (newSwitchValue) => {
+  const toggleSwitch = (newSwitchValue) => {
     setLoading(true);
 
     setSwitchValue(newSwitchValue);
 
     if (newSwitchValue && onActivate) {
-      await onActivate(() => setSwitchValue(false));
+      onActivate(() => setSwitchValue(false));
     } else if (!newSwitchValue && onDeactivate) {
-      await onDeactivate(() => setSwitchValue(true));
+      onDeactivate(() => setSwitchValue(true));
     }
 
     // imitate a short duration of toggling taking action
