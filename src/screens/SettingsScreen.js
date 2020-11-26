@@ -85,103 +85,101 @@ export const SettingsScreen = () => {
       const { consent: matomoValue } = await storageHelper.matomoSettings();
       const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
-      setSectionedData((initialSectionedData) => {
-        // settings should always contain push notifications
-        const additionalSectionedData = [
-          {
-            data: [
-              {
-                title: texts.settingsTitles.pushNotifications,
-                topDivider: true,
-                type: 'toggle',
-                value: pushPermission,
-                onActivate: onActivatePushNotifications,
-                onDeactivate: onDeactivatePushNotifications
-              }
-            ]
-          }
-        ];
-        // settings should sometimes contain matomo analytics next, depending on server settings
-        if (settings.matomo) {
-          additionalSectionedData.push({
-            data: [
-              {
-                title: texts.settingsTitles.analytics,
-                topDivider: true,
-                type: 'toggle',
-                value: matomoValue,
-                onActivate: (revert) =>
-                  Alert.alert(
-                    texts.settingsTitles.analytics,
-                    texts.settingsContents.analytics.onActivate,
-                    [
-                      {
-                        text: texts.settingsContents.analytics.no,
-                        onPress: revert,
-                        style: 'cancel'
-                      },
-                      {
-                        text: texts.settingsContents.analytics.yes,
-                        onPress: createMatomoUserId
-                      }
-                    ],
-                    { cancelable: false }
-                  ),
-                onDeactivate: (revert) =>
-                  Alert.alert(
-                    texts.settingsTitles.analytics,
-                    texts.settingsContents.analytics.onDeactivate,
-                    [
-                      {
-                        text: texts.settingsContents.analytics.no,
-                        onPress: revert,
-                        style: 'cancel'
-                      },
-                      {
-                        text: texts.settingsContents.analytics.yes,
-                        onPress: removeMatomoUserId
-                      }
-                    ],
-                    { cancelable: false }
-                  )
-              }
-            ]
-          });
-        }
-
-        // settings should always contain list layouts last
-        additionalSectionedData.push({
-          title: texts.settingsTitles.listLayouts.sectionTitle,
+      // settings should always contain push notifications
+      const additionalSectionedData = [
+        {
           data: [
             {
-              title: texts.settingsTitles.listLayouts.newsItemsTitle,
-              type: 'listLayout',
-              listSelection: listTypesSettings[QUERY_TYPES.NEWS_ITEMS],
-              onPress: (listType) => onListTypePress(listType, QUERY_TYPES.NEWS_ITEMS)
-            },
+              title: texts.settingsTitles.pushNotifications,
+              topDivider: true,
+              type: 'toggle',
+              value: pushPermission,
+              onActivate: onActivatePushNotifications,
+              onDeactivate: onDeactivatePushNotifications
+            }
+          ]
+        }
+      ];
+      // settings should sometimes contain matomo analytics next, depending on server settings
+      if (settings.matomo) {
+        additionalSectionedData.push({
+          data: [
             {
-              title: texts.settingsTitles.listLayouts.eventRecordsTitle,
-              type: 'listLayout',
-              listSelection: listTypesSettings[QUERY_TYPES.EVENT_RECORDS],
-              onPress: (listType) => onListTypePress(listType, QUERY_TYPES.EVENT_RECORDS)
-            },
-            {
-              title: texts.settingsTitles.listLayouts.pointsOfInterestAndToursTitle,
-              type: 'listLayout',
-              listSelection: listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS],
-              onPress: (listType) =>
-                onListTypePress(listType, QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS),
-              bottomDivider: true
+              title: texts.settingsTitles.analytics,
+              topDivider: true,
+              type: 'toggle',
+              value: matomoValue,
+              onActivate: (revert) =>
+                Alert.alert(
+                  texts.settingsTitles.analytics,
+                  texts.settingsContents.analytics.onActivate,
+                  [
+                    {
+                      text: texts.settingsContents.analytics.no,
+                      onPress: revert,
+                      style: 'cancel'
+                    },
+                    {
+                      text: texts.settingsContents.analytics.yes,
+                      onPress: createMatomoUserId
+                    }
+                  ],
+                  { cancelable: false }
+                ),
+              onDeactivate: (revert) =>
+                Alert.alert(
+                  texts.settingsTitles.analytics,
+                  texts.settingsContents.analytics.onDeactivate,
+                  [
+                    {
+                      text: texts.settingsContents.analytics.no,
+                      onPress: revert,
+                      style: 'cancel'
+                    },
+                    {
+                      text: texts.settingsContents.analytics.yes,
+                      onPress: removeMatomoUserId
+                    }
+                  ],
+                  { cancelable: false }
+                )
             }
           ]
         });
+      }
 
-        return [...initialSectionedData, ...additionalSectionedData];
+      // settings should always contain list layouts last
+      additionalSectionedData.push({
+        title: texts.settingsTitles.listLayouts.sectionTitle,
+        data: [
+          {
+            title: texts.settingsTitles.listLayouts.newsItemsTitle,
+            type: 'listLayout',
+            listSelection: listTypesSettings[QUERY_TYPES.NEWS_ITEMS],
+            onPress: (listType) => onListTypePress(listType, QUERY_TYPES.NEWS_ITEMS)
+          },
+          {
+            title: texts.settingsTitles.listLayouts.eventRecordsTitle,
+            type: 'listLayout',
+            listSelection: listTypesSettings[QUERY_TYPES.EVENT_RECORDS],
+            onPress: (listType) => onListTypePress(listType, QUERY_TYPES.EVENT_RECORDS)
+          },
+          {
+            title: texts.settingsTitles.listLayouts.pointsOfInterestAndToursTitle,
+            type: 'listLayout',
+            listSelection: listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS],
+            onPress: (listType) =>
+              onListTypePress(listType, QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS),
+            bottomDivider: true
+          }
+        ]
       });
+
+      setSectionedData(additionalSectionedData);
     };
 
     updateSectionedData();
-  }, []);
+  }, [listTypesSettings]);
 
   const refresh = () => {
     setRefreshing(true);
