@@ -1,8 +1,8 @@
+import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  RefreshControl,
   SectionList,
   StyleSheet,
   TouchableOpacity,
@@ -62,7 +62,6 @@ const onDeactivatePushNotifications = (revert) => {
 export const SettingsScreen = () => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const { globalSettings, listTypesSettings, setListTypesSettings } = useContext(SettingsContext);
-  const [refreshing, setRefreshing] = useState(false);
   const [sectionedData, setSectionedData] = useState([]);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
@@ -181,16 +180,6 @@ export const SettingsScreen = () => {
     updateSectionedData();
   }, [listTypesSettings]);
 
-  const refresh = () => {
-    setRefreshing(true);
-    // TODO: do we need pull to refresh on the settings screen?
-    // we simulate state change of `refreshing` with setting it to `true` first and after
-    // a timeout to `false` again, which will result in a re-rendering of the screen.
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 500);
-  };
-
   if (!sectionedData.length) {
     return (
       <LoadingContainer>
@@ -216,14 +205,6 @@ export const SettingsScreen = () => {
           )
         }
         stickySectionHeadersEnabled
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => refresh()}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
-          />
-        }
       />
     </SafeAreaViewFlex>
   );
