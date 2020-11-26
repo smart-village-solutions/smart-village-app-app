@@ -53,7 +53,7 @@ export const SettingsScreen = () => {
     }, 500);
   };
 
-  const onPress = async (selectedListType, queryType) =>
+  const onListTypePress = async (selectedListType, queryType) =>
     setListTypesSettings((previousListTypes) => {
       const updatedListTypesSettings = {
         ...previousListTypes,
@@ -93,19 +93,20 @@ export const SettingsScreen = () => {
           title: texts.settingsTitles.listLayouts.newsItemsTitle,
           type: 'listLayout',
           listSelection: listTypesSettings[QUERY_TYPES.NEWS_ITEMS],
-          onPress: (listType) => onPress(listType, QUERY_TYPES.NEWS_ITEMS)
+          onPress: (listType) => onListTypePress(listType, QUERY_TYPES.NEWS_ITEMS)
         },
         {
           title: texts.settingsTitles.listLayouts.eventRecordsTitle,
           type: 'listLayout',
           listSelection: listTypesSettings[QUERY_TYPES.EVENT_RECORDS],
-          onPress: (listType) => onPress(listType, QUERY_TYPES.EVENT_RECORDS)
+          onPress: (listType) => onListTypePress(listType, QUERY_TYPES.EVENT_RECORDS)
         },
         {
           title: texts.settingsTitles.listLayouts.pointsOfInterestAndToursTitle,
           type: 'listLayout',
           listSelection: listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS],
-          onPress: (listType) => onPress(listType, QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS),
+          onPress: (listType) =>
+            onListTypePress(listType, QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS),
           bottomDivider: true
         }
       ]
