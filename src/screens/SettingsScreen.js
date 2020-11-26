@@ -25,9 +25,9 @@ import {
   Wrapper
 } from '../components';
 import { arrowLeft } from '../icons';
-import { setInAppPermission } from '../pushNotifications';
+import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
 import { QUERY_TYPES } from '../queries';
-import { createMatomoUserId, removeMatomoUserId, storageHelper } from '../helpers';
+import { createMatomoUserId, readFromStore, removeMatomoUserId, storageHelper } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 
 const { MATOMO_TRACKING } = consts;
@@ -83,6 +83,7 @@ export const SettingsScreen = () => {
     const updateSectionedData = async () => {
       const { settings = { matomo: false } } = globalSettings;
       const { consent: matomoValue } = await storageHelper.matomoSettings();
+      const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
       setSectionedData((initialSectionedData) => {
         // settings should always contain push notifications
@@ -93,7 +94,7 @@ export const SettingsScreen = () => {
                 title: texts.settingsTitles.pushNotifications,
                 topDivider: true,
                 type: 'toggle',
-                value: false, // FIXME: add proper value
+                value: pushPermission,
                 onActivate: onActivatePushNotifications,
                 onDeactivate: onDeactivatePushNotifications
               }
