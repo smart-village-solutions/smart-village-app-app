@@ -222,7 +222,7 @@ export const HomeScreen = ({ navigation }) => {
                               (mediaContent) =>
                                 mediaContent.contentType === 'image' ||
                                 mediaContent.contentType === 'thumbnail'
-                            )[0].sourceUrl.url
+                            )[0]?.sourceUrl?.url
                         },
                         routeName: 'Detail',
                         params: {

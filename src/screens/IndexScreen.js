@@ -96,7 +96,7 @@ const getListItems = (query, data) => {
                 newsItem.contentBlocks[0].mediaContents,
                 (mediaContent) =>
                   mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-              )[0].sourceUrl.url
+              )[0]?.sourceUrl?.url
           },
           routeName: 'Detail',
           params: {
