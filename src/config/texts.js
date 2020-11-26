@@ -57,8 +57,7 @@ export const texts = {
     }
   },
   settingsScreen: {
-    intro:
-      'Enim veniam exercitation elit excepteur ullamco dolore nisi sit ad irure cillum ut velit nulla. Dolore ex consequat id ex magna amet nostrud tempor cupidatat laboris est voluptate.'
+    intro: ''
   },
   settingsTitles: {
     analytics: 'Matomo Analytics',
