@@ -45,7 +45,7 @@ import {
   shareMessage,
   subtitle
 } from '../helpers';
-import { useMatomoTrackScreenView } from '../hooks';
+import { useMatomoAlertOnStartUp, useMatomoTrackScreenView } from '../hooks';
 
 const { DRAWER, LIST_TYPES, MATOMO_TRACKING } = consts;
 
@@ -82,6 +82,7 @@ export const HomeScreen = ({ navigation }) => {
   } = sections;
   const [refreshing, setRefreshing] = useState(false);
 
+  useMatomoAlertOnStartUp();
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
   useEffect(() => {
