@@ -51,6 +51,14 @@ const renderItem = ({ item, index, section, orientation, dimensions }) =>
     <SettingsListItem {...{ item, index, section, orientation, dimensions }} />
   );
 
+renderItem.propTypes = {
+  item: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired,
+  section: PropTypes.object.isRequired,
+  orientation: PropTypes.string.isRequired,
+  dimensions: PropTypes.object.isRequired
+};
+
 const onActivatePushNotifications = (revert) => {
   setInAppPermission(true).then((success) => !success && revert());
 };
