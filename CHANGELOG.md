@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.4.0] :rocket:
+
+The fourth minor version upgrade comes with push notifications, Matomo analytics and list type
+settings
+
+### Added
+
+- there is a new settings area that can be reached from the home screen
+  - contains settings for push notifications, can contain setting for Matomo analytics (
+    depends on server setting) and provides the ability to change list layouts for the three
+    different data types (`newsItems`, `eventRecords` and `pointsOfInteresAndTours`)
+- with push notifications activated, users can receive push notifications triggered by the server
+  - the registration and usage is setup with expo, https://docs.expo.io/push-notifications/overview
+- Matomo analytics can be included to track screen views across the app for helping
+  Smart Village App operators to get to know the usage behaviors of the users
+- with different list types, users can customize their Smart Village App and change list views
+  to their own preference
+
 ## [v1.3.5]
 
 Updates considering categories
