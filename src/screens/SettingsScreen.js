@@ -53,7 +53,7 @@ export const SettingsScreen = () => {
     }, 500);
   };
 
-  const onListTypePress = async (selectedListType, queryType) =>
+  const onListTypePress = (selectedListType, queryType) =>
     setListTypesSettings((previousListTypes) => {
       const updatedListTypesSettings = {
         ...previousListTypes,

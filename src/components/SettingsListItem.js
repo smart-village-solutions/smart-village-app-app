@@ -91,11 +91,11 @@ export const SettingsListItem = ({ item, index, section, orientation, dimensions
             <Radiobutton
               key={listType}
               title={texts.settingsTitles.listLayouts[listType]}
-              onPress={async () => {
+              onPress={() => {
                 if (listType !== selectedListType) {
                   setSelectedListType(listType);
                   // call the onPress callback for that setting list item if present
-                  onPress && (await onPress(listType));
+                  onPress && onPress(listType);
                 }
                 setIsOverlayVisible(false);
               }}
