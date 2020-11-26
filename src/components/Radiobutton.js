@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 import { CheckBox as RNECheckbox, normalize } from 'react-native-elements';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { colors } from '../config';
 import { baseFontStyle } from '../config/styles/baseFontStyle';
@@ -20,7 +19,6 @@ export const Radiobutton = ({ title, disabled, selected, onPress }) => (
       selected && styles.textStyleSelected,
       disabled && styles.textStyleDisabled
     ]}
-    Component={TouchableOpacity}
     checkedIcon={
       <Icon
         name={Platform.select({
@@ -60,6 +58,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     ...baseFontStyle,
+    fontWeight: '400',
     marginLeft: normalize(7),
     marginRight: 'auto'
   },
