@@ -19,6 +19,7 @@ import {
 } from '../components';
 import { SettingsListItem } from '../components/SettingsListItem';
 import { arrowLeft } from '../icons';
+import { setInAppPermission } from '../pushNotifications';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
@@ -38,6 +39,14 @@ const renderItem = ({ item, index, section, orientation, dimensions }) =>
   ) : (
     <SettingsListItem {...{ item, index, section, orientation, dimensions }} />
   );
+
+const onActivatePushNotifications = (revert) => {
+  setInAppPermission(true).then((success) => !success && revert());
+};
+
+const onDeactivatePushNotifications = (revert) => {
+  setInAppPermission(false).then((success) => !success && revert());
+};
 
 export const SettingsScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -61,7 +70,9 @@ export const SettingsScreen = ({ navigation }) => {
           title: texts.settingsTitles.pushNotifications,
           topDivider: true,
           type: 'toggle',
-          value: false
+          value: false, // FIXME: add proper value
+          onActivate: onActivatePushNotifications,
+          onDeactivate: onDeactivatePushNotifications
         }
       ]
     },

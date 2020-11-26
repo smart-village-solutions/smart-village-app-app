@@ -7,11 +7,10 @@ import { addToStore, readFromStore } from '../helpers';
 import { colors, device, texts } from '../config';
 import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandling';
 
-const setInAppPermission = async (newValue: boolean) => {
+export const setInAppPermission = async (newValue: boolean) => {
   const oldValue = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
   if (newValue !== oldValue) {
-    // FIXME error handling: sync with server failed, etc
     addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
 
     if (newValue) {
@@ -19,14 +18,17 @@ const setInAppPermission = async (newValue: boolean) => {
 
       if (!hasPermission) {
         showSystemPermissionMissingDialog();
+        return true;
       } else {
-        registerForPushNotificationsAsync()
+        return registerForPushNotificationsAsync()
           .then(handleIncomingToken);
       }
     } else {
       // remove token from store and notify server
-      handleIncomingToken();
+      return handleIncomingToken();
     }
+  } else {
+    return true;
   }
 };
 
@@ -39,7 +41,7 @@ export const initializePushPermissions = async () => {
   inAppPermission ?? showInitialPushAlert();
 };
 
-const registerForPushNotificationsAsync = async (): Promise<string | undefined> => {
+const registerForPushNotificationsAsync = async () => {
   const { data: token } = await Notifications.getExpoPushTokenAsync();
 
   if (device.platform === 'android') {

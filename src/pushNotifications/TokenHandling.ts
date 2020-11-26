@@ -13,14 +13,24 @@ export enum PushNotificationStorageKeys {
 // will check if the incoming token is different from the stored one
 // if it is different it will remove the old one from the server, if there was one present
 // if it is different it will add the new one to the server if it is present
+// in theory the token should be persistent, so we should never have
+//  two defined values that are distinct.
 export const handleIncomingToken = async (token?: string) => {
-  await getTokenFromStorage().then((result) => {
-    if (result !== (token ?? null)) {
-      if (result) removeTokenFromServer(result);
-      if (token) addTokenToServer(token);
-      storeTokenSecurely(token);
-    }
-  });
+  const storedToken = await getTokenFromStorage();
+
+  if (storedToken !== (token ?? null)) {
+    let successfullyRemoved = false;
+    let successfullyAdded = false;
+
+    if (storedToken) successfullyRemoved = await removeTokenFromServer(storedToken);
+    if (token) successfullyAdded = await addTokenToServer(token);
+    storeTokenSecurely(token);
+    // if we want to remove the token (token === undefined) then return if we did. 
+    // otherwise it is sufficient for the app to know that the new token has arrived on the server.
+    return (!token && successfullyRemoved) || successfullyAdded;
+  }
+  // if the stored token and the new token coincide then there is nothing to do
+  return true;
 };
 
 const removeTokenFromServer = async (token: string) => {
@@ -38,7 +48,13 @@ const removeTokenFromServer = async (token: string) => {
     })
   };
 
-  if (accessToken) fetch(requestPath, fetchObj);
+  if (accessToken) 
+    // 204 means that it was a success on the server
+    // 404 means that the token was already not on the server and can be treated
+    //  as a success
+    return fetch(requestPath, fetchObj)
+      .then((response) => response.status === 204 || response.status === 404);
+  return false;
 };
 
 const addTokenToServer = async (token: string) => {
@@ -58,7 +74,8 @@ const addTokenToServer = async (token: string) => {
       'notification_device': { 'token': token, 'device_type': os }
     })
   };
-  if (accessToken) fetch(requestPath, fetchObj);
+  if (accessToken) return fetch(requestPath, fetchObj).then((response) => response.status === 201);
+  return false;
 };
 
 const storeTokenSecurely = (token?: string) => {
