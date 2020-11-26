@@ -14,7 +14,7 @@ import _shuffle from 'lodash/shuffle';
 import _filter from 'lodash/filter';
 
 import { NetworkContext } from '../NetworkProvider';
-import { GlobalSettingsContext } from '../GlobalSettingsProvider';
+import { SettingsContext } from '../SettingsProvider';
 import { auth } from '../auth';
 import { colors, consts, device, normalize, texts } from '../config';
 import {
@@ -62,7 +62,7 @@ const getListComponent = (listType) =>
 export const HomeScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { globalSettings, listTypesSettings } = useContext(GlobalSettingsContext);
+  const { globalSettings, listTypesSettings } = useContext(SettingsContext);
   const { sections = {} } = globalSettings;
   const {
     showNews = true,

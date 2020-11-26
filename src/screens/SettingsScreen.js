@@ -16,7 +16,7 @@ import {
 } from '../components';
 import { arrowLeft } from '../icons';
 import { QUERY_TYPES } from '../queries';
-import { GlobalSettingsContext } from '../GlobalSettingsProvider';
+import { SettingsContext } from '../SettingsProvider';
 import { storageHelper } from '../helpers';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
@@ -40,7 +40,7 @@ const renderItem = ({ item, index, section, orientation, dimensions }) =>
 
 export const SettingsScreen = () => {
   const { orientation, dimensions } = useContext(OrientationContext);
-  const { listTypesSettings, setListTypesSettings } = useContext(GlobalSettingsContext);
+  const { listTypesSettings, setListTypesSettings } = useContext(SettingsContext);
   const [refreshing, setRefreshing] = useState(false);
 
   const refresh = () => {

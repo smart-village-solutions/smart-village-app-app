@@ -5,7 +5,7 @@ import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
-import { GlobalSettingsContext } from '../../GlobalSettingsProvider';
+import { SettingsContext } from '../../SettingsProvider';
 import { consts, device, normalize, texts } from '../../config';
 import { DiagonalGradient } from '../DiagonalGradient';
 import { Image } from '../Image';
@@ -21,7 +21,7 @@ export const Service = ({ navigation, refreshing }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
-  const { globalSettings } = useContext(GlobalSettingsContext);
+  const { globalSettings } = useContext(SettingsContext);
 
   useEffect(() => {
     const getRefreshTime = async () => {

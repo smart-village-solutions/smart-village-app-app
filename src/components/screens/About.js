@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../../NetworkProvider';
-import { GlobalSettingsContext } from '../../GlobalSettingsProvider';
+import { SettingsContext } from '../../SettingsProvider';
 import { consts, device, texts } from '../../config';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { TextList } from '../TextList';
@@ -14,7 +14,7 @@ import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 export const About = ({ navigation, refreshing }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { globalSettings } = useContext(GlobalSettingsContext);
+  const { globalSettings } = useContext(SettingsContext);
 
   useEffect(() => {
     const getRefreshTime = async () => {
