@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import { OrientationContext } from '../OrientationProvider';
+import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, device, normalize, texts } from '../config';
 import {
   Icon,
@@ -25,7 +26,6 @@ import { arrowLeft } from '../icons';
 import { QUERY_TYPES } from '../queries';
 import { createMatomoUserId, removeMatomoUserId, storageHelper } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
-import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -50,9 +50,21 @@ const renderItem = ({ item, index, section, orientation, dimensions }) =>
 
 export const SettingsScreen = () => {
   const { orientation, dimensions } = useContext(OrientationContext);
-  const { listTypesSettings, setListTypesSettings } = useContext(SettingsContext);
+  const { globalSettings, listTypesSettings, setListTypesSettings } = useContext(SettingsContext);
   const [refreshing, setRefreshing] = useState(false);
-  const [sectionedData, setSectionedData] = useState([]);
+  // settings should always contain push notifications
+  const [sectionedData, setSectionedData] = useState([
+    {
+      data: [
+        {
+          title: texts.settingsTitles.pushNotifications,
+          topDivider: true,
+          type: 'toggle',
+          value: false
+        }
+      ]
+    }
+  ]);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
 
@@ -70,28 +82,22 @@ export const SettingsScreen = () => {
       });
 
     const updateSectionedData = async () => {
+      const { settings = { matomo: false } } = globalSettings;
       const { consent: matomoValue } = await storageHelper.matomoSettings();
 
-      setSectionedData([
-        {
-          data: [
-            {
-              title: texts.settingsTitles.pushNotifications,
-              topDivider: true,
-              type: 'toggle',
-              value: false
-            }
-          ]
-        },
-        {
-          data: [
-            {
-              title: texts.settingsTitles.analytics,
-              topDivider: true,
-              type: 'toggle',
-              value: matomoValue,
-              onActivate: (revert) =>
-                setTimeout(() => {
+      setSectionedData((initialSectionedData) => {
+        const additionalSectionedData = [];
+
+        // settings should sometimes contain matomo analytics next, depending on server settings
+        if (settings.matomo) {
+          additionalSectionedData.push({
+            data: [
+              {
+                title: texts.settingsTitles.analytics,
+                topDivider: true,
+                type: 'toggle',
+                value: matomoValue,
+                onActivate: (revert) =>
                   Alert.alert(
                     texts.settingsTitles.analytics,
                     texts.settingsContents.analytics.onActivate,
@@ -104,10 +110,8 @@ export const SettingsScreen = () => {
                       { text: 'Ja', onPress: createMatomoUserId }
                     ],
                     { cancelable: false }
-                  );
-                }, 300),
-              onDeactivate: (revert) =>
-                setTimeout(() => {
+                  ),
+                onDeactivate: (revert) =>
                   Alert.alert(
                     texts.settingsTitles.analytics,
                     texts.settingsContents.analytics.onDeactivate,
@@ -120,12 +124,14 @@ export const SettingsScreen = () => {
                       { text: 'Ja', onPress: removeMatomoUserId }
                     ],
                     { cancelable: false }
-                  );
-                }, 300)
-            }
-          ]
-        },
-        {
+                  )
+              }
+            ]
+          });
+        }
+
+        // settings should always contain list layouts last
+        additionalSectionedData.push({
           title: texts.settingsTitles.listLayouts.sectionTitle,
           data: [
             {
@@ -149,8 +155,10 @@ export const SettingsScreen = () => {
               bottomDivider: true
             }
           ]
-        }
-      ]);
+        });
+
+        return [...initialSectionedData, ...additionalSectionedData];
+      });
     };
 
     updateSectionedData();
@@ -176,9 +184,11 @@ export const SettingsScreen = () => {
         }
         renderSectionHeader={renderSectionHeader}
         ListHeaderComponent={
-          <Wrapper>
-            <RegularText>{texts.settingsScreen.intro}</RegularText>
-          </Wrapper>
+          !!texts.settingsScreen.intro && (
+            <Wrapper>
+              <RegularText>{texts.settingsScreen.intro}</RegularText>
+            </Wrapper>
+          )
         }
         stickySectionHeadersEnabled
         refreshControl={
