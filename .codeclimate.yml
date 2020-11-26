@@ -4,7 +4,7 @@ plugins:
     enabled: true
   eslint:
     enabled: true
-    channel: "eslint-5"
+    channel: "eslint-7"
   fixme:
     enabled: true
   nodesecurity:
