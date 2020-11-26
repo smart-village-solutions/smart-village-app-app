@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   RefreshControl,
   SectionList,
@@ -13,6 +14,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, device, normalize, texts } from '../config';
 import {
   Icon,
+  LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
   SettingsListItem,
@@ -52,19 +54,7 @@ export const SettingsScreen = () => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const { globalSettings, listTypesSettings, setListTypesSettings } = useContext(SettingsContext);
   const [refreshing, setRefreshing] = useState(false);
-  // settings should always contain push notifications
-  const [sectionedData, setSectionedData] = useState([
-    {
-      data: [
-        {
-          title: texts.settingsTitles.pushNotifications,
-          topDivider: true,
-          type: 'toggle',
-          value: false
-        }
-      ]
-    }
-  ]);
+  const [sectionedData, setSectionedData] = useState([]);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
 
@@ -86,8 +76,19 @@ export const SettingsScreen = () => {
       const { consent: matomoValue } = await storageHelper.matomoSettings();
 
       setSectionedData((initialSectionedData) => {
-        const additionalSectionedData = [];
-
+        // settings should always contain push notifications
+        const additionalSectionedData = [
+          {
+            data: [
+              {
+                title: texts.settingsTitles.pushNotifications,
+                topDivider: true,
+                type: 'toggle',
+                value: false
+              }
+            ]
+          }
+        ];
         // settings should sometimes contain matomo analytics next, depending on server settings
         if (settings.matomo) {
           additionalSectionedData.push({
@@ -179,6 +180,14 @@ export const SettingsScreen = () => {
       setRefreshing(false);
     }, 500);
   };
+
+  if (!sectionedData.length) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
 
   return (
     <SafeAreaViewFlex>
