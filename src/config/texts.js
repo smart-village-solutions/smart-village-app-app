@@ -50,10 +50,12 @@ export const texts = {
   },
   settingsContents: {
     analytics: {
+      no: 'Nein',
       onActivate:
         'Soll Matomo Analytics aktiviert werden? Dies trägt zur Verbesserung der App bei. Matomo Analytics wird nach der Aktivierung mit dem nächsten Neustart der App wirksam.',
       onDeactivate:
-        'Soll Matomo Analytics deaktiviert werden? Die Deaktivierung von Matomo Analytics wird mit dem nächsten Neustart der App wirksam.'
+        'Soll Matomo Analytics deaktiviert werden? Die Deaktivierung von Matomo Analytics wird mit dem nächsten Neustart der App wirksam.',
+      yes: 'Ja'
     }
   },
   settingsScreen: {

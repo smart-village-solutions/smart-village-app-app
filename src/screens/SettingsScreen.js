@@ -103,11 +103,14 @@ export const SettingsScreen = () => {
                     texts.settingsContents.analytics.onActivate,
                     [
                       {
-                        text: 'Nein',
+                        text: texts.settingsContents.analytics.no,
                         onPress: revert,
                         style: 'cancel'
                       },
-                      { text: 'Ja', onPress: createMatomoUserId }
+                      {
+                        text: texts.settingsContents.analytics.yes,
+                        onPress: createMatomoUserId
+                      }
                     ],
                     { cancelable: false }
                   ),
@@ -117,11 +120,14 @@ export const SettingsScreen = () => {
                     texts.settingsContents.analytics.onDeactivate,
                     [
                       {
-                        text: 'Nein',
+                        text: texts.settingsContents.analytics.no,
                         onPress: revert,
                         style: 'cancel'
                       },
-                      { text: 'Ja', onPress: removeMatomoUserId }
+                      {
+                        text: texts.settingsContents.analytics.yes,
+                        onPress: removeMatomoUserId
+                      }
                     ],
                     { cancelable: false }
                   )
