@@ -159,7 +159,7 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
     ),
     headerRight: (
       <WrapperRow>
-        {shareContent && (
+        {!!shareContent && (
           <TouchableOpacity
             onPress={() => openShare(shareContent)}
             accessibilityLabel="Teilen Taste"

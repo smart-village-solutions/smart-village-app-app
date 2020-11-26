@@ -1,18 +1,29 @@
 import PropTypes from 'prop-types';
-import React, { Fragment, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, View } from 'react-native';
+import React, { Fragment, useCallback, useContext, useEffect, useState } from 'react';
+import {
+  ActivityIndicator,
+  Platform,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { Query } from 'react-apollo';
 import _shuffle from 'lodash/shuffle';
+import _filter from 'lodash/filter';
 
 import { NetworkContext } from '../NetworkProvider';
-import { GlobalSettingsContext } from '../GlobalSettingsProvider';
+import { SettingsContext } from '../SettingsProvider';
 import { auth } from '../auth';
-import { colors, consts, device, texts } from '../config';
+import { colors, consts, device, normalize, texts } from '../config';
 import {
   About,
   Button,
   CardList,
   HomeCarousel,
+  Icon,
+  ImageTextList,
   LoadingContainer,
   SafeAreaViewFlex,
   Service,
@@ -22,9 +33,10 @@ import {
   TitleShadow,
   Touchable,
   VersionNumber,
-  Wrapper
+  Wrapper,
+  WrapperRow
 } from '../components';
-import { getQuery, QUERY_TYPES } from '../queries';
+import { getQuery, getQueryType, QUERY_TYPES } from '../queries';
 import {
   eventDate,
   graphqlFetchPolicy,
@@ -33,9 +45,17 @@ import {
   shareMessage,
   subtitle
 } from '../helpers';
-import { useMatomoTrackScreenView } from '../hooks';
+import { usePushNotifications } from '../hooks/PushNotification';
+import { useMatomoAlertOnStartUp, useMatomoTrackScreenView } from '../hooks';
 
-const { DRAWER, MATOMO_TRACKING } = consts;
+const { DRAWER, LIST_TYPES, MATOMO_TRACKING } = consts;
+
+const getListComponent = (listType) =>
+  ({
+    [LIST_TYPES.TEXT_LIST]: TextList,
+    [LIST_TYPES.IMAGE_TEXT_LIST]: ImageTextList,
+    [LIST_TYPES.CARD_LIST]: CardList
+  }[listType]);
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -43,7 +63,7 @@ const { DRAWER, MATOMO_TRACKING } = consts;
 export const HomeScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const globalSettings = useContext(GlobalSettingsContext);
+  const { globalSettings, listTypesSettings } = useContext(SettingsContext);
   const { sections = {} } = globalSettings;
   const {
     showNews = true,
@@ -63,6 +83,27 @@ export const HomeScreen = ({ navigation }) => {
   } = sections;
   const [refreshing, setRefreshing] = useState(false);
 
+  const interactionHandler = useCallback(
+    (response) => {
+      const data = response?.notification?.request?.content?.data;
+      const queryType = data?.query_type ? getQueryType(data.query_type) : undefined;
+
+      if (data?.id && queryType) {
+        // navigate to the newsItem
+        navigation.navigate({
+          routeName: 'Detail',
+          params: {
+            query: QUERY_TYPES.NEWS_ITEM,
+            queryVariables: { id: data.id }
+          }
+        });
+      }
+    },
+    [navigation]
+  );
+
+  usePushNotifications(undefined, interactionHandler);
+  useMatomoAlertOnStartUp();
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
   useEffect(() => {
@@ -170,6 +211,19 @@ export const HomeScreen = ({ navigation }) => {
                           !!newsItem.contentBlocks &&
                           !!newsItem.contentBlocks.length &&
                           newsItem.contentBlocks[0].title,
+                        picture: {
+                          url:
+                            !!newsItem.contentBlocks &&
+                            !!newsItem.contentBlocks.length &&
+                            !!newsItem.contentBlocks[0].mediaContents &&
+                            !!newsItem.contentBlocks[0].mediaContents.length &&
+                            _filter(
+                              newsItem.contentBlocks[0].mediaContents,
+                              (mediaContent) =>
+                                mediaContent.contentType === 'image' ||
+                                mediaContent.contentType === 'thumbnail'
+                            )[0].sourceUrl.url
+                        },
                         routeName: 'Detail',
                         params: {
                           title: categoryTitleDetail,
@@ -187,9 +241,17 @@ export const HomeScreen = ({ navigation }) => {
 
                     if (!newsItems || !newsItems.length) return null;
 
+                    const newsItemsListType = listTypesSettings[QUERY_TYPES.NEWS_ITEMS];
+                    const ListComponent = getListComponent(newsItemsListType);
+
                     return (
                       <View>
-                        <TextList navigation={navigation} data={newsItems} />
+                        <ListComponent
+                          navigation={navigation}
+                          data={newsItems}
+                          leftImage={newsItemsListType === LIST_TYPES.IMAGE_TEXT_LIST}
+                          horizontal={newsItemsListType === LIST_TYPES.CARD_LIST}
+                        />
 
                         <Wrapper>
                           <Button
@@ -240,9 +302,11 @@ export const HomeScreen = ({ navigation }) => {
                   data.pointsOfInterest &&
                   data.pointsOfInterest.map((pointOfInterest) => ({
                     id: pointOfInterest.id,
-                    name: pointOfInterest.name,
-                    category: !!pointOfInterest.category && pointOfInterest.category.name,
-                    image: mainImageOfMediaContents(pointOfInterest.mediaContents),
+                    title: pointOfInterest.name,
+                    subtitle: !!pointOfInterest.category && pointOfInterest.category.name,
+                    picture: {
+                      url: mainImageOfMediaContents(pointOfInterest.mediaContents)
+                    },
                     routeName: 'Detail',
                     params: {
                       title: 'Ort',
@@ -265,9 +329,11 @@ export const HomeScreen = ({ navigation }) => {
                   data.tours &&
                   data.tours.map((tour) => ({
                     id: tour.id,
-                    name: tour.name,
-                    category: !!tour.category && tour.category.name,
-                    image: mainImageOfMediaContents(tour.mediaContents),
+                    title: tour.name,
+                    subtitle: !!tour.category && tour.category.name,
+                    picture: {
+                      url: mainImageOfMediaContents(tour.mediaContents)
+                    },
                     routeName: 'Detail',
                     params: {
                       title: 'Tour',
@@ -285,12 +351,17 @@ export const HomeScreen = ({ navigation }) => {
                     __typename: tour.__typename
                   }));
 
+                const pointsOfInterestAndToursListType =
+                  listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS];
+                const ListComponent = getListComponent(pointsOfInterestAndToursListType);
+
                 return (
                   <View>
-                    <CardList
+                    <ListComponent
                       navigation={navigation}
                       data={_shuffle([...(pointsOfInterest || []), ...(tours || [])])}
-                      horizontal
+                      leftImage={pointsOfInterestAndToursListType === LIST_TYPES.IMAGE_TEXT_LIST}
+                      horizontal={pointsOfInterestAndToursListType === LIST_TYPES.CARD_LIST}
                     />
 
                     <Wrapper>
@@ -342,6 +413,9 @@ export const HomeScreen = ({ navigation }) => {
                         (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
                     ),
                     title: eventRecord.title,
+                    picture: {
+                      url: mainImageOfMediaContents(eventRecord.mediaContents)
+                    },
                     routeName: 'Detail',
                     params: {
                       title: 'Veranstaltung',
@@ -359,9 +433,17 @@ export const HomeScreen = ({ navigation }) => {
 
                 if (!eventRecords || !eventRecords.length) return null;
 
+                const eventRecordsListType = listTypesSettings[QUERY_TYPES.EVENT_RECORDS];
+                const ListComponent = getListComponent(eventRecordsListType);
+
                 return (
                   <View>
-                    <TextList navigation={navigation} data={eventRecords} />
+                    <ListComponent
+                      navigation={navigation}
+                      data={eventRecords}
+                      leftImage={eventRecordsListType === LIST_TYPES.IMAGE_TEXT_LIST}
+                      horizontal={eventRecordsListType === LIST_TYPES.CARD_LIST}
+                    />
 
                     <Wrapper>
                       <Button
@@ -388,6 +470,44 @@ export const HomeScreen = ({ navigation }) => {
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  iconLeft: {
+    paddingLeft: normalize(14),
+    paddingRight: normalize(7)
+  },
+  iconRight: {
+    paddingLeft: normalize(7),
+    paddingRight: normalize(14)
+  }
+});
+
+HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
+  const { headerRight } = navigationOptions;
+
+  return {
+    headerRight: (
+      <WrapperRow>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Settings')}
+          accessibilityLabel="Einstellungen (Taste)"
+          accessibilityHint="Zu den Einstellungen wechseln"
+        >
+          <Icon
+            name={Platform.select({
+              android: 'md-settings',
+              ios: 'ios-settings'
+            })}
+            size={26}
+            iconColor={colors.lightestText}
+            style={headerRight ? styles.iconLeft : styles.iconRight}
+          />
+        </TouchableOpacity>
+        {!!headerRight && headerRight}
+      </WrapperRow>
+    )
+  };
+};
 
 HomeScreen.propTypes = {
   navigation: PropTypes.object.isRequired

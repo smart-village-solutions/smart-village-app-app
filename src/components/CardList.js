@@ -6,11 +6,31 @@ import { colors, consts, normalize } from '../config';
 import { CardListItem } from './CardListItem';
 import { OrientationContext } from '../OrientationProvider';
 
-export const CardList = ({ data, navigation, horizontal, refreshControl }) => {
+const keyExtractor = (item, index) => `index${index}-id${item.id}`;
+
+export const CardList = ({
+  navigation,
+  data,
+  horizontal,
+  query,
+  fetchMoreData,
+  ListHeaderComponent,
+  refreshControl
+}) => {
   const [listEndReached, setListEndReached] = useState(false);
   const { orientation, dimensions } = useContext(OrientationContext);
 
-  const keyExtractor = (item, index) => `index${index}-id${item.id}`;
+  const onEndReached = async () => {
+    if (fetchMoreData) {
+      // if there is a pagination, the end of the list is reached, when no more data is returned
+      // from partially fetching, so we need to check the the data to determine the lists end
+      const { data: moreData } = await fetchMoreData();
+
+      setListEndReached(!moreData[query].length);
+    } else {
+      setListEndReached(true);
+    }
+  };
 
   if (horizontal) {
     return (
@@ -34,6 +54,7 @@ export const CardList = ({ data, navigation, horizontal, refreshControl }) => {
 
   return (
     <FlatList
+      ListHeaderComponent={ListHeaderComponent}
       keyExtractor={keyExtractor}
       data={data}
       renderItem={({ item }) => (
@@ -51,7 +72,8 @@ export const CardList = ({ data, navigation, horizontal, refreshControl }) => {
           <ActivityIndicator color={colors.accent} style={{ margin: normalize(14) }} />
         )
       }
-      onEndReached={() => setListEndReached(true)}
+      onEndReachedThreshold={0.5}
+      onEndReached={onEndReached}
       refreshControl={refreshControl}
       style={stylesWithProps({ orientation, dimensions }).wrapper}
       contentContainerStyle={styles.center}
@@ -91,6 +113,9 @@ CardList.propTypes = {
   navigation: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
   horizontal: PropTypes.bool,
+  query: PropTypes.string,
+  fetchMoreData: PropTypes.func,
+  ListHeaderComponent: PropTypes.object,
   refreshControl: PropTypes.object
 };
 

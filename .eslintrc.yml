@@ -10,7 +10,7 @@ globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
   __DEV__: true
-parser: 'babel-eslint'
+parser: '@typescript-eslint/parser'
 parserOptions:
   ecmaFeatures:
     jsx: true
@@ -19,6 +19,7 @@ parserOptions:
 plugins:
   - react
   - react-native
+  - '@typescript-eslint'
 rules:
   arrow-parens:
     - error
@@ -43,6 +44,8 @@ rules:
     - allow:
       - warn
       - error
+  no-unused-vars:
+    - 0
   quotes:
     - error
     - single
@@ -55,6 +58,8 @@ rules:
     - error
   react-native/no-color-literals:
     - error
+  '@typescript-eslint/no-unused-vars': 
+    - 2
 settings:
   react:
     version: detect

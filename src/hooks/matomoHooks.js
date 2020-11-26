@@ -1,7 +1,10 @@
 import { useContext, useEffect } from 'react';
 import { useMatomo } from 'matomo-tracker-react-native';
 
+import { texts } from '../config';
 import { NetworkContext } from '../NetworkProvider';
+import { createMatomoUserId, setMatomoHandledOnStartup, storageHelper } from '../helpers';
+import { Alert } from 'react-native';
 
 /**
  * Tracks screen view as action with prefixed 'Screen' category on mounting the component, which
@@ -17,5 +20,35 @@ export const useMatomoTrackScreenView = (name) => {
 
   useEffect(() => {
     isConnected && trackScreenView(name);
+  }, []);
+};
+
+export const useMatomoAlertOnStartUp = () => {
+  useEffect(() => {
+    const showMatomoAlert = async () => {
+      const settings = await storageHelper.matomoSettings();
+
+      if (!settings.matomoHandledOnStartup) {
+        Alert.alert(
+          texts.settingsTitles.analytics,
+          texts.settingsContents.analytics.onActivate,
+          [
+            {
+              text: texts.settingsContents.analytics.no,
+              style: 'cancel'
+            },
+            {
+              text: texts.settingsContents.analytics.yes,
+              onPress: createMatomoUserId
+            }
+          ],
+          { cancelable: false }
+        );
+
+        setMatomoHandledOnStartup();
+      }
+    };
+
+    showMatomoAlert();
   }, []);
 };
