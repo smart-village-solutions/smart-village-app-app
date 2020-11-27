@@ -243,13 +243,12 @@ const MainAppWithApolloProvider = () => {
   }, [initialGlobalSettings]);
 
   useEffect(() => {
-    !loading && SplashScreen.hideAsync().then(
-      (result) => {
-        setIsSplashScreenVisible(!result);
+    !loading &&
+      SplashScreen.hideAsync().then(() => {
+        setIsSplashScreenVisible(false);
         // set orientation to "default", to allow both portrait and landscape
         ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
-      }
-    );
+      });
   }, [loading]);
 
   if (loading || isSplashScreenVisible) {
