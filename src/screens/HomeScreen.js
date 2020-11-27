@@ -45,8 +45,7 @@ import {
   shareMessage,
   subtitle
 } from '../helpers';
-import { usePushNotifications } from '../hooks/PushNotification';
-import { useMatomoAlertOnStartUp, useMatomoTrackScreenView } from '../hooks';
+import { useMatomoAlertOnStartUp, useMatomoTrackScreenView, usePushNotifications } from '../hooks';
 
 const { DRAWER, LIST_TYPES, MATOMO_TRACKING } = consts;
 
