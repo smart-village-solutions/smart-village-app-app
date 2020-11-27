@@ -12,7 +12,7 @@ import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
-import { colors, consts, normalize } from '../config';
+import { colors, consts, device, normalize } from '../config';
 import {
   EventRecord,
   Icon,
@@ -165,10 +165,19 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
             accessibilityLabel="Teilen Taste"
             accessibilityHint="Inhalte auf der Seite teilen"
           >
-            <Icon
-              xml={share(colors.lightestText)}
-              style={headerRight ? styles.iconLeft : styles.iconRight}
-            />
+            {device.platform === 'ios' ? (
+              <Icon
+                name="ios-share"
+                size={26}
+                iconColor={colors.lightestText}
+                style={headerRight ? styles.iconLeft : styles.iconRight}
+              />
+            ) : (
+              <Icon
+                xml={share(colors.lightestText)}
+                style={headerRight ? styles.iconLeft : styles.iconRight}
+              />
+            )}
           </TouchableOpacity>
         )}
         {!!headerRight && headerRight}
