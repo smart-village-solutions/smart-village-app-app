@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { Fragment, useCallback, useContext, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -493,10 +492,7 @@ HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
           accessibilityHint="Zu den Einstellungen wechseln"
         >
           <Icon
-            name={Platform.select({
-              android: 'md-settings',
-              ios: 'ios-settings'
-            })}
+            name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'}
             size={26}
             iconColor={colors.lightestText}
             style={headerRight ? styles.iconLeft : styles.iconRight}

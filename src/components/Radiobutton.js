@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { CheckBox as RNECheckbox, normalize } from 'react-native-elements';
 
-import { colors } from '../config';
+import { colors, device } from '../config';
 import { baseFontStyle } from '../config/styles/baseFontStyle';
 import { Icon } from './Icon';
 
@@ -21,10 +21,7 @@ export const Radiobutton = ({ title, disabled, selected, onPress }) => (
     ]}
     checkedIcon={
       <Icon
-        name={Platform.select({
-          android: 'md-radio-button-on',
-          ios: 'ios-radio-button-on'
-        })}
+        name={device.platform === 'ios' ? 'ios-radio-button-on' : 'md-radio-button-on'}
         size={22}
         iconColor={colors.primary}
         style={styles.rightContentContainer}
@@ -32,10 +29,7 @@ export const Radiobutton = ({ title, disabled, selected, onPress }) => (
     }
     uncheckedIcon={
       <Icon
-        name={Platform.select({
-          android: 'md-radio-button-off',
-          ios: 'ios-radio-button-off'
-        })}
+        name={device.platform === 'ios' ? 'ios-radio-button-off' : 'md-radio-button-off'}
         size={22}
         iconColor={colors.darkText}
         style={styles.rightContentContainer}
