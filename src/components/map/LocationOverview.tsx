@@ -32,21 +32,23 @@ const mapToMapMarkers = (data: any) => {
 };
 
 export const LocationOverview = ({ navigation }: Props) => {
-  // FIXME add own query for selected POI to get the other data fields as well
-  const [selectedLocation, setSelectedLocation] = useState<any>();
+  const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
   const overviewQuery = getQuery(QUERY_TYPES.POINTS_OF_INTEREST);
-  const { data, loading } = useQuery(overviewQuery, { variables: { limit: 10, orderPoi: 'RAND', orderTour: 'RAND' } });
+  const { data: overviewData, loading } =
+    useQuery(overviewQuery, { variables: { limit: 10, orderPoi: 'RAND', orderTour: 'RAND' } });
+
+  const detailsQuery = getQuery(QUERY_TYPES.POINT_OF_INTEREST);
+  const { data: detailsData, loading: detailsLoading } =
+    useQuery(detailsQuery, { variables: { id: selectedPointOfInterest } });
 
   const onMessageReceived = useCallback((message: WebviewLeafletMessage) => {
     if (message.event === 'onMapMarkerClicked') {
-      setSelectedLocation(
-        data?.[QUERY_TYPES.POINTS_OF_INTEREST]?.find((item: any) => item.id === message.payload?.mapMarkerID)
-      );
+      setSelectedPointOfInterest(message.payload?.mapMarkerID);
     }
-  }, [setSelectedLocation, data]);
+  }, [setSelectedPointOfInterest, overviewData]);
 
-  if (loading || !data?.[QUERY_TYPES.POINTS_OF_INTEREST]) {
+  if (loading || !overviewData?.[QUERY_TYPES.POINTS_OF_INTEREST]) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
@@ -58,12 +60,19 @@ export const LocationOverview = ({ navigation }: Props) => {
     <SafeAreaViewFlex>
       <ScrollView>
         <WebViewMap
-          locations={mapToMapMarkers(data)}
+          locations={mapToMapMarkers(overviewData)}
           onMessageReceived={onMessageReceived}
           style={styles.map}
+          zoom={10}
         />
         <View style={styles.details}>
-          {!!selectedLocation && <PointOfInterest data={selectedLocation} navigation={navigation} hideMap />}
+          {detailsLoading && <ActivityIndicator />}
+          {!!detailsData?.[QUERY_TYPES.POINT_OF_INTEREST] &&
+            <PointOfInterest
+              data={detailsData[QUERY_TYPES.POINT_OF_INTEREST]}
+              navigation={navigation}
+              hideMap
+            />}
         </View>
       </ScrollView>
     </SafeAreaViewFlex>
@@ -72,11 +81,9 @@ export const LocationOverview = ({ navigation }: Props) => {
 
 const styles = StyleSheet.create({
   map: {
-    width: '100%',
     height: normalize(200)
   },
   details: {
-    flex: 1,
-    width: '100%'
+    marginTop: normalize(12)
   }
 });
