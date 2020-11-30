@@ -2,8 +2,8 @@
 import React, { useCallback } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { MapMarker, WebViewLeaflet, WebviewLeafletMessage } from 'react-native-webview-leaflet';
-import { colors } from '../config';
-import { location as locationMarker } from '../icons';
+import { colors } from '../../config';
+import { location as locationMarker } from '../../icons';
 
 type Props = {
   locations: Array<MapMarker>,
@@ -20,7 +20,7 @@ export const WebViewMap = ({ locations, mapCenterPosition, onMessageReceived, st
 
   const messageHandler = useCallback((message) => {
     onMessageReceived?.(message);
-  },[onMessageReceived]);
+  }, [onMessageReceived]);
 
   const mapCenterPos = mapCenterPosition ?? locations?.[0].position;
 
@@ -32,7 +32,7 @@ export const WebViewMap = ({ locations, mapCenterPosition, onMessageReceived, st
         mapLayers={[
           {
             attribution:
-                        '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+              '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             baseLayerIsChecked: true,
             baseLayerName: 'OpenStreetMap.Mapnik',
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
@@ -41,10 +41,11 @@ export const WebViewMap = ({ locations, mapCenterPosition, onMessageReceived, st
         mapMarkers={[
           ...locations.map((location) => {
             return {
-              id: location?.id,
-              position: location.position,
-              icon: locationMarker(colors.primary),
-              iconAnchor: {x: 9, y:20}
+              ...{
+                icon: locationMarker(colors.primary),
+                iconAnchor: { x: 9, y: 20 }
+              },
+              ...location
             };
           })
         ]}
