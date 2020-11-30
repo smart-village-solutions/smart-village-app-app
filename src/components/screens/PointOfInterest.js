@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { View } from 'react-native';
 import _filter from 'lodash/filter';
 
-import { consts, device, texts } from '../../config';
+import { consts, device, normalize, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Title, TitleContainer, TitleShadow } from '../Title';
@@ -16,12 +16,13 @@ import { ImagesCarousel } from '../ImagesCarousel';
 import { OrientationContext } from '../../OrientationProvider';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { matomoTrackingString } from '../../helpers';
+import { WebViewMap } from '../map';
 
 const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PointOfInterest = ({ data, navigation }) => {
+export const PointOfInterest = ({ data, navigation, hideMap }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const {
     addresses,
@@ -30,6 +31,7 @@ export const PointOfInterest = ({ data, navigation }) => {
     contact,
     dataProvider,
     description,
+    location,
     mediaContents,
     openingHours,
     operatingCompany,
@@ -37,6 +39,10 @@ export const PointOfInterest = ({ data, navigation }) => {
     title,
     webUrls
   } = data;
+
+  const latitude = location?.geoLocation?.latitude;
+  const longitude = location?.geoLocation?.longitude;
+
   const rootRouteName = navigation.getParam('rootRouteName', '');
   // action to open source urls
   const openWebScreen = (webUrl) =>
@@ -99,17 +105,19 @@ export const PointOfInterest = ({ data, navigation }) => {
           <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
         </Wrapper>
 
-        {/* TODO: show map for location */}
-        {/* {!!location && (
+        {!hideMap && !!latitude && !!longitude && (
           <View>
             <TitleContainer>
               <Title accessibilityLabel={`${texts.pointOfInterest.location} (Überschrift)`}>
                 {texts.pointOfInterest.location}
               </Title>
             </TitleContainer>
+            <WebViewMap locations={[{ position: { lat: latitude, lng: longitude } }]}
+              style={{ height: normalize(200) }}
+            />
             {device.platform === 'ios' && <TitleShadow />}
           </View>
-        )} */}
+        )}
 
         {!!openingHours && !!openingHours.length && (
           <View>
@@ -179,5 +187,6 @@ export const PointOfInterest = ({ data, navigation }) => {
 
 PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired,
+  hideMap: PropTypes.bool,
   navigation: PropTypes.object
 };

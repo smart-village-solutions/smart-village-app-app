@@ -25,5 +25,6 @@ const styles = StyleSheet.create({
 });
 
 LoadingContainer.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object])
+  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  web: PropTypes.bool
 };

@@ -28,6 +28,12 @@ export const GET_POINTS_OF_INTEREST = gql`
         phone
         lastName
       }
+      location {
+        geoLocation {
+          latitude
+          longitude
+        }
+      }
       webUrls {
         url
       }
@@ -69,6 +75,12 @@ export const GET_POINT_OF_INTEREST = gql`
         email
         phone
         lastName
+      }
+      location {
+        geoLocation {
+          latitude
+          longitude
+        }
       }
       webUrls {
         url

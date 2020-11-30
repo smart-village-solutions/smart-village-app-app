@@ -1,3 +1,4 @@
+export * from './map';
 export * from './screens';
 
 export * from './Button';
@@ -30,5 +31,4 @@ export * from './Title';
 export * from './ToggleListItem';
 export * from './Touchable';
 export * from './VersionNumber';
-export * from './WebViewMap';
 export * from './Wrapper';

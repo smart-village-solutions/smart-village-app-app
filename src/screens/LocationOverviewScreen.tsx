@@ -1,32 +1,19 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Icon } from '../components';
+import { NavigationScreenProps } from 'react-navigation';
 
-import { LocationOverview } from '../components/LocationOverview';
+import { Icon, LocationOverview } from '../components';
 import { colors, normalize } from '../config';
 import { arrowLeft } from '../icons';
 
-const locations = [
-  {
-    lat: 53.61241201890862,
-    lng: 9.900906974592688,
-    name: 'Julian\'s home'
-  },
-  {
-    lat: 53.61230409968637,
-    lng: 9.899137616157534,
-    name: 'Someone else\'s home'
-  }
-];
-
-export const LocationOverviewScreen = () => {
+export const LocationOverviewScreen = ({ navigation }: { navigation: NavigationScreenProps }) => {
   return (
-    <LocationOverview locations={locations} />
+    <LocationOverview navigation={navigation} />
   );
 };
 
 // navigation will be overhauled soon with the upgrade to eact navigation 5
-LocationOverviewScreen.navigationOptions = ({ navigation }: {navigation: any}) => {
+LocationOverviewScreen.navigationOptions = ({ navigation }: { navigation: any }) => {
   return {
     headerLeft: (
       <View>
