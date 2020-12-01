@@ -31,7 +31,7 @@ export const Image = ({ source, style, PlaceholderContent }) => {
       : mounted && setUri(source);
 
     return () => (mounted = false);
-  }, []);
+  }, [source, setUri]);
 
   if (!globalSettings.showImageRights || !source.copyright) {
     return (
