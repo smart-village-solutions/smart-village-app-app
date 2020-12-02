@@ -9,217 +9,33 @@ import {
 } from 'react-native';
 import { Query } from 'react-apollo';
 import { useMatomo } from 'matomo-tracker-react-native';
-import _filter from 'lodash/filter';
 
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { auth } from '../auth';
 import { colors, consts, normalize } from '../config';
 import {
-  CardList,
-  CategoryList,
   Icon,
-  ImageTextList,
   DropdownHeader,
   LoadingContainer,
   SafeAreaViewFlex,
-  TextList,
   LocationOverview,
   MapSwitchHeader
 } from '../components';
 import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
 import { arrowLeft } from '../icons';
 import {
-  eventDate,
   graphqlFetchPolicy,
-  mainImageOfMediaContents,
   matomoTrackingString,
-  momentFormat,
-  shareMessage,
-  subtitle
+  parseListItemsFromQuery
 } from '../helpers';
+import { ListComponent } from '../components/ListComponent';
 
-const { LIST_TYPES, MATOMO_TRACKING } = consts;
-
-/* eslint-disable complexity */
-/* NOTE: we need to check a lot for presence, so this is that complex */
-const getListItems = (query, data) => {
-  switch (query) {
-  case QUERY_TYPES.EVENT_RECORDS:
-    return (
-      data &&
-        data[query] &&
-        data[query].map((eventRecord) => ({
-          id: eventRecord.id,
-          subtitle: subtitle(
-            eventDate(eventRecord.listDate),
-            !!eventRecord.addresses &&
-              !!eventRecord.addresses.length &&
-              (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
-          ),
-          title: eventRecord.title,
-          picture: {
-            url: mainImageOfMediaContents(eventRecord.mediaContents)
-          },
-          routeName: 'Detail',
-          params: {
-            title: 'Veranstaltung',
-            query: QUERY_TYPES.EVENT_RECORD,
-            queryVariables: { id: `${eventRecord.id}` },
-            rootRouteName: 'EventRecords',
-            shareContent: {
-              message: shareMessage(eventRecord, QUERY_TYPES.EVENT_RECORD)
-            },
-            details: eventRecord
-          }
-        }))
-    );
-  case QUERY_TYPES.NEWS_ITEMS:
-    return (
-      data &&
-        data[query] &&
-        data[query].map((newsItem) => ({
-          id: newsItem.id,
-          subtitle: subtitle(
-            momentFormat(newsItem.publishedAt),
-            !!newsItem.dataProvider && newsItem.dataProvider.name
-          ),
-          title:
-            !!newsItem.contentBlocks &&
-            !!newsItem.contentBlocks.length &&
-            newsItem.contentBlocks[0].title,
-          picture: {
-            url:
-              !!newsItem.contentBlocks &&
-              !!newsItem.contentBlocks.length &&
-              !!newsItem.contentBlocks[0].mediaContents &&
-              !!newsItem.contentBlocks[0].mediaContents.length &&
-              _filter(
-                newsItem.contentBlocks[0].mediaContents,
-                (mediaContent) =>
-                  mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-              )[0]?.sourceUrl?.url
-          },
-          routeName: 'Detail',
-          params: {
-            title: 'Nachricht',
-            query: QUERY_TYPES.NEWS_ITEM,
-            queryVariables: { id: `${newsItem.id}` },
-            rootRouteName: 'NewsItems',
-            shareContent: {
-              message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM)
-            },
-            details: newsItem
-          }
-        }))
-    );
-  case QUERY_TYPES.POINTS_OF_INTEREST:
-    return (
-      data &&
-        data[query] &&
-        data[query].map((pointOfInterest) => ({
-          id: pointOfInterest.id,
-          title: pointOfInterest.name,
-          subtitle: !!pointOfInterest.category && pointOfInterest.category.name,
-          picture: {
-            url: mainImageOfMediaContents(pointOfInterest.mediaContents)
-          },
-          routeName: 'Detail',
-          params: {
-            title: 'Ort',
-            query: QUERY_TYPES.POINT_OF_INTEREST,
-            queryVariables: { id: `${pointOfInterest.id}` },
-            rootRouteName: 'PointsOfInterest',
-            shareContent: {
-              message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
-            },
-            details: {
-              ...pointOfInterest,
-              title: pointOfInterest.name
-            }
-          }
-        }))
-    );
-  case QUERY_TYPES.TOURS:
-    return (
-      data &&
-        data[query] &&
-        data[query].map((tour) => ({
-          id: tour.id,
-          title: tour.name,
-          subtitle: !!tour.category && tour.category.name,
-          picture: {
-            url: mainImageOfMediaContents(tour.mediaContents)
-          },
-          routeName: 'Detail',
-          params: {
-            title: 'Tour',
-            query: QUERY_TYPES.TOUR,
-            queryVariables: { id: `${tour.id}` },
-            rootRouteName: 'Tours',
-            shareContent: {
-              message: shareMessage(tour, QUERY_TYPES.TOUR)
-            },
-            details: {
-              ...tour,
-              title: tour.name
-            }
-          }
-        }))
-    );
-
-  case QUERY_TYPES.CATEGORIES: {
-    return (
-      data &&
-        data[query] &&
-        data[query].map((category) => ({
-          id: category.id,
-          title: category.name,
-          pointsOfInterestCount: category.pointsOfInterestCount,
-          toursCount: category.toursCount,
-          routeName: 'Index',
-          params: {
-            title: category.name,
-            query:
-              category.pointsOfInterestCount > 0
-                ? QUERY_TYPES.POINTS_OF_INTEREST
-                : QUERY_TYPES.TOURS,
-            queryVariables: { order: 'name_ASC', category: `${category.name}` },
-            rootRouteName: category.pointsOfInterestCount > 0 ? 'PointsOfInterest' : 'Tours'
-          }
-        }))
-    );
-  }
-  }
-};
-/* eslint-enable complexity */
-
-const getListComponent = (listType) =>
-  ({
-    [LIST_TYPES.TEXT_LIST]: TextList,
-    [LIST_TYPES.IMAGE_TEXT_LIST]: ImageTextList,
-    [LIST_TYPES.CARD_LIST]: CardList
-  }[listType]);
-
-const getComponent = (query, listTypesSettings) => {
-  const COMPONENTS = {
-    [QUERY_TYPES.NEWS_ITEMS]: getListComponent(listTypesSettings[QUERY_TYPES.NEWS_ITEMS]),
-    [QUERY_TYPES.EVENT_RECORDS]: getListComponent(listTypesSettings[QUERY_TYPES.EVENT_RECORDS]),
-    [QUERY_TYPES.POINTS_OF_INTEREST]: getListComponent(
-      listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]
-    ),
-    [QUERY_TYPES.TOURS]: getListComponent(
-      listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]
-    ),
-    [QUERY_TYPES.CATEGORIES]: CategoryList
-  };
-
-  return COMPONENTS[query];
-};
+const { MATOMO_TRACKING } = consts;
 
 export const IndexScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { listTypesSettings, globalSettings } = useContext(SettingsContext);
+  const { globalSettings } = useContext(SettingsContext);
   const { filter = {} } = globalSettings;
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const [queryVariables, setQueryVariables] = useState(navigation.getParam('queryVariables', {}));
@@ -301,8 +117,6 @@ export const IndexScreen = ({ navigation }) => {
 
   if (!query) return null;
 
-  const Component = getComponent(query, listTypesSettings);
-
   const showFilter = {
     [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
     [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
@@ -336,7 +150,7 @@ export const IndexScreen = ({ navigation }) => {
               );
             }
 
-            const listItems = getListItems(query, data);
+            const listItems = parseListItemsFromQuery(query, data);
 
             if (!listItems || !listItems.length) return null;
 
@@ -366,7 +180,7 @@ export const IndexScreen = ({ navigation }) => {
             }
 
             return (
-              <Component
+              <ListComponent
                 navigation={navigation}
                 data={listItems}
                 query={query}

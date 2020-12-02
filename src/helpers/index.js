@@ -7,6 +7,7 @@ export * from './mapHelper';
 export * from './matomoHelper';
 export * from './momentHelper';
 export * from './priceHelper';
+export * from './queryDataParser';
 export * from './refreshIntervalHelper';
 export * from './shareHelper';
 export * from './storageHelper';
