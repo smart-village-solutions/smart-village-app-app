@@ -23,7 +23,8 @@ import {
   DropDownHeader,
   LoadingContainer,
   SafeAreaViewFlex,
-  TextList
+  TextList,
+  LocationOverview
 } from '../components';
 import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
 import { arrowLeft } from '../icons';
@@ -36,6 +37,7 @@ import {
   shareMessage,
   subtitle
 } from '../helpers';
+import { MapSwitchHeader } from '../components/MapSwitchHeader';
 
 const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
@@ -222,6 +224,7 @@ export const IndexScreen = ({ navigation }) => {
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const [queryVariables, setQueryVariables] = useState(navigation.getParam('queryVariables', {}));
   const [refreshing, setRefreshing] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const { trackScreenView } = useMatomo();
 
   const query = navigation.getParam('query', '');
@@ -305,50 +308,55 @@ export const IndexScreen = ({ navigation }) => {
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
-  return (
-    <Query
-      query={getQuery(query, { showNewsFilter, showEventsFilter })}
-      variables={queryVariables}
-      fetchPolicy={fetchPolicy}
-    >
-      {({ data, loading, fetchMore, refetch }) => {
-        if (loading) {
+  return (<SafeAreaViewFlex style={styles.center}>
+    {query === QUERY_TYPES.POINTS_OF_INTEREST ?
+      <MapSwitchHeader setShowMap={setShowMap} showMap={showMap} /> :
+      null
+    }
+    {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ?
+      <LocationOverview navigation={navigation} category={queryVariables.category} /> :
+      <Query
+        query={getQuery(query, { showNewsFilter, showEventsFilter })}
+        variables={queryVariables}
+        fetchPolicy={fetchPolicy}
+      >
+        {({ data, loading, fetchMore, refetch }) => {
+          if (loading) {
+            return (
+              <LoadingContainer>
+                <ActivityIndicator color={colors.accent} />
+              </LoadingContainer>
+            );
+          }
+
+          const listItems = getListItems(query, data);
+
+          if (!listItems || !listItems.length) return null;
+
+          const fetchMoreData = () =>
+            fetchMore({
+              query: getFetchMoreQuery(query),
+              variables: {
+                ...queryVariables,
+                offset: listItems.length
+              },
+              updateQuery: (prevResult, { fetchMoreResult }) => {
+                if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
+
+                return {
+                  ...prevResult,
+                  [query]: [...prevResult[query], ...fetchMoreResult[query]]
+                };
+              }
+            });
+
+          let ListHeaderComponent = null;
+
+          if (showFilter) {
+            ListHeaderComponent = <DropDownHeader {...{ query, queryVariables, data, updateListData }} />;
+          }
+
           return (
-            <LoadingContainer>
-              <ActivityIndicator color={colors.accent} />
-            </LoadingContainer>
-          );
-        }
-
-        const listItems = getListItems(query, data);
-
-        if (!listItems || !listItems.length) return null;
-
-        const fetchMoreData = () =>
-          fetchMore({
-            query: getFetchMoreQuery(query),
-            variables: {
-              ...queryVariables,
-              offset: listItems.length
-            },
-            updateQuery: (prevResult, { fetchMoreResult }) => {
-              if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
-
-              return {
-                ...prevResult,
-                [query]: [...prevResult[query], ...fetchMoreResult[query]]
-              };
-            }
-          });
-
-        let ListHeaderComponent = null;
-
-        if (showFilter) {
-          ListHeaderComponent = <DropDownHeader {...{ query, queryVariables, data, updateListData }} />;
-        }
-
-        return (
-          <SafeAreaViewFlex style={styles.center}>
             <Component
               navigation={navigation}
               data={listItems}
@@ -364,10 +372,10 @@ export const IndexScreen = ({ navigation }) => {
                 />
               }
             />
-          </SafeAreaViewFlex>
-        );
-      }}
-    </Query>
+          );
+        }}
+      </Query>}
+  </SafeAreaViewFlex>
   );
 };
 

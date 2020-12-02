@@ -12,6 +12,7 @@ import { PointOfInterest } from '../screens/PointOfInterest';
 import { WebViewMap } from './WebViewMap';
 
 type Props = {
+  category: string,
   navigation: NavigationScreenProps
 }
 
@@ -31,12 +32,12 @@ const mapToMapMarkers = (data: any) => {
   );
 };
 
-export const LocationOverview = ({ navigation }: Props) => {
+export const LocationOverview = ({ navigation, category }: Props) => {
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
   const overviewQuery = getQuery(QUERY_TYPES.POINTS_OF_INTEREST);
   const { data: overviewData, loading } =
-    useQuery(overviewQuery);
+    useQuery(overviewQuery, { variables: { category } });
 
   const detailsQuery = getQuery(QUERY_TYPES.POINT_OF_INTEREST);
   const { data: detailsData, loading: detailsLoading } =
@@ -65,7 +66,7 @@ export const LocationOverview = ({ navigation }: Props) => {
           style={styles.map}
           zoom={10}
         />
-        <View style={styles.details}>
+        <View>
           {detailsLoading ? <ActivityIndicator />
             : !!detailsData?.[QUERY_TYPES.POINT_OF_INTEREST] &&
             <PointOfInterest
@@ -81,9 +82,7 @@ export const LocationOverview = ({ navigation }: Props) => {
 
 const styles = StyleSheet.create({
   map: {
-    height: normalize(200)
-  },
-  details: {
-    marginTop: normalize(12)
+    height: normalize(200),
+    marginVertical: normalize(12)
   }
 });

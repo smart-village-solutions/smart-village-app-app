@@ -11,7 +11,6 @@ import {
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
 
 import { texts } from '../config';
-import { LocationOverviewScreen } from '../screens/LocationOverviewScreen';
 
 const AppStackNavigator = (headerRight = true) =>
   createStackNavigator(
@@ -36,12 +35,6 @@ const AppStackNavigator = (headerRight = true) =>
       },
       Html: {
         screen: HtmlScreen,
-        navigationOptions: (props) => ({
-          title: props.navigation.getParam('title', '')
-        })
-      },
-      LocationOverview: {
-        screen: LocationOverviewScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', '')
         })
