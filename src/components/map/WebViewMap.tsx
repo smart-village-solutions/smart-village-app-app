@@ -6,7 +6,7 @@ import { colors } from '../../config';
 import { location as locationMarker } from '../../icons';
 
 type Props = {
-  locations: Array<MapMarker>,
+  locations: MapMarker[],
   mapCenterPosition?: {
     lat: number,
     lng: number
