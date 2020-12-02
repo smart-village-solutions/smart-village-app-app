@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   RefreshControl,
@@ -20,7 +20,7 @@ import {
   CategoryList,
   Icon,
   ImageTextList,
-  ListHeader,
+  DropDownHeader,
   LoadingContainer,
   SafeAreaViewFlex,
   TextList
@@ -52,8 +52,8 @@ const getListItems = (query, data) => {
           subtitle: subtitle(
             eventDate(eventRecord.listDate),
             !!eventRecord.addresses &&
-              !!eventRecord.addresses.length &&
-              (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
+            !!eventRecord.addresses.length &&
+            (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
           ),
           title: eventRecord.title,
           picture: {
@@ -217,12 +217,42 @@ const getComponent = (query, listTypesSettings) => {
 
 export const IndexScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { listTypesSettings } = useContext(SettingsContext);
-  const query = navigation.getParam('query', '');
-  const title = navigation.getParam('title', '');
+  const { listTypesSettings, globalSettings } = useContext(SettingsContext);
+  const { filter = {} } = globalSettings;
+  const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const [queryVariables, setQueryVariables] = useState(navigation.getParam('queryVariables', {}));
   const [refreshing, setRefreshing] = useState(false);
   const { trackScreenView } = useMatomo();
+
+  const query = navigation.getParam('query', '');
+  const title = navigation.getParam('title', '');
+
+  const refresh = useCallback(async (refetch) => {
+    setRefreshing(true);
+    isConnected && (await refetch());
+    setRefreshing(false);
+  }, [isConnected, setRefreshing]);
+
+  const updateListData = useCallback((selectedValue) => {
+    if (selectedValue) {
+      // remove a refetch key if present, which was necessary for the "- Alle -" selection
+      delete queryVariables.refetch;
+
+      setQueryVariables({
+        ...queryVariables,
+        [queryVariableForQuery]: selectedValue
+      });
+    } else {
+      setQueryVariables((prevQueryVariables) => {
+        // remove the filter key for the specific query, when selecting "- Alle -"
+        delete prevQueryVariables[queryVariableForQuery];
+        // need to spread the `prevQueryVariables` into a new object with additional refetch key
+        // to force the Query component to update the data, otherwise it is not fired somehow
+        // because the state variable wouldn't change
+        return { ...prevQueryVariables, refetch: true };
+      });
+    }
+  }, [setQueryVariables, queryVariables]);
 
   useEffect(() => {
     isConnected && auth();
@@ -262,17 +292,8 @@ export const IndexScreen = ({ navigation }) => {
 
   if (!query) return null;
 
-  const refresh = async (refetch) => {
-    setRefreshing(true);
-    isConnected && (await refetch());
-    setRefreshing(false);
-  };
-
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { globalSettings } = useContext(SettingsContext);
-  const { filter = {} } = globalSettings;
-  const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const Component = getComponent(query, listTypesSettings);
+
   const showFilter = {
     [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
     [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
@@ -282,26 +303,7 @@ export const IndexScreen = ({ navigation }) => {
     [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
   }[query];
 
-  const updateListData = (selectedValue) => {
-    if (selectedValue) {
-      // remove a refetch key if present, which was necessary for the "- Alle -" selection
-      delete queryVariables.refetch;
-
-      setQueryVariables({
-        ...queryVariables,
-        [queryVariableForQuery]: selectedValue
-      });
-    } else {
-      setQueryVariables((prevQueryVariables) => {
-        // remove the filter key for the specific query, when selecting "- Alle -"
-        delete prevQueryVariables[queryVariableForQuery];
-        // need to spread the `prevQueryVariables` into a new object with additional refetch key
-        // to force the Query component to update the data, otherwise it is not fired somehow
-        // because the state variable wouldn't change
-        return { ...prevQueryVariables, refetch: true };
-      });
-    }
-  };
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
   return (
     <Query
@@ -342,7 +344,7 @@ export const IndexScreen = ({ navigation }) => {
         let ListHeaderComponent = null;
 
         if (showFilter) {
-          ListHeaderComponent = <ListHeader {...{ query, queryVariables, data, updateListData }} />;
+          ListHeaderComponent = <DropDownHeader {...{ query, queryVariables, data, updateListData }} />;
         }
 
         return (
