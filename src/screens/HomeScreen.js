@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import { Query } from 'react-apollo';
 import _shuffle from 'lodash/shuffle';
-import _filter from 'lodash/filter';
 
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
@@ -19,14 +18,12 @@ import { colors, consts, device, normalize, texts } from '../config';
 import {
   About,
   Button,
-  CardList,
   HomeCarousel,
   Icon,
-  ImageTextList,
+  ListComponent,
   LoadingContainer,
   SafeAreaViewFlex,
   Service,
-  TextList,
   Title,
   TitleContainer,
   TitleShadow,
@@ -35,25 +32,11 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
-import { getQuery, getQueryType, QUERY_TYPES } from '../queries';
-import {
-  eventDate,
-  graphqlFetchPolicy,
-  mainImageOfMediaContents,
-  momentFormat,
-  shareMessage,
-  subtitle
-} from '../helpers';
+import { graphqlFetchPolicy, parseEventRecords, parseNewsItems, parsePointOfInterest, parseTours } from '../helpers';
 import { useMatomoAlertOnStartUp, useMatomoTrackScreenView, usePushNotifications } from '../hooks';
+import { getQuery, getQueryType, QUERY_TYPES } from '../queries';
 
 const { DRAWER, LIST_TYPES, MATOMO_TRACKING } = consts;
-
-const getListComponent = (listType) =>
-  ({
-    [LIST_TYPES.TEXT_LIST]: TextList,
-    [LIST_TYPES.IMAGE_TEXT_LIST]: ImageTextList,
-    [LIST_TYPES.CARD_LIST]: CardList
-  }[listType]);
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -166,7 +149,7 @@ export const HomeScreen = ({ navigation }) => {
 
         {showNews &&
           categoriesNews.map(
-            ({ categoryId, categoryTitle, categoryTitleDetail, categoryButton }, index) => (
+            ({ categoryId, categoryTitle, categoryButton }, index) => (
               <Fragment key={`${index}-${categoryTitle}`}>
                 <TitleContainer>
                   <Touchable
@@ -196,58 +179,18 @@ export const HomeScreen = ({ navigation }) => {
                       );
                     }
 
-                    const newsItems =
-                      data &&
-                      data.newsItems &&
-                      data.newsItems.map((newsItem, index) => ({
-                        id: newsItem.id,
-                        subtitle: subtitle(
-                          momentFormat(newsItem.publishedAt),
-                          !!newsItem.dataProvider && newsItem.dataProvider.name
-                        ),
-                        title:
-                          !!newsItem.contentBlocks &&
-                          !!newsItem.contentBlocks.length &&
-                          newsItem.contentBlocks[0].title,
-                        picture: {
-                          url:
-                            !!newsItem.contentBlocks &&
-                            !!newsItem.contentBlocks.length &&
-                            !!newsItem.contentBlocks[0].mediaContents &&
-                            !!newsItem.contentBlocks[0].mediaContents.length &&
-                            _filter(
-                              newsItem.contentBlocks[0].mediaContents,
-                              (mediaContent) =>
-                                mediaContent.contentType === 'image' ||
-                                mediaContent.contentType === 'thumbnail'
-                            )[0]?.sourceUrl?.url
-                        },
-                        routeName: 'Detail',
-                        params: {
-                          title: categoryTitleDetail,
-                          query: QUERY_TYPES.NEWS_ITEM,
-                          queryVariables: { id: `${newsItem.id}` },
-                          rootRouteName: 'NewsItems',
-                          shareContent: {
-                            message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM)
-                          },
-                          details: newsItem
-                        },
-                        bottomDivider: index !== data.newsItems.length - 1,
-                        __typename: newsItem.__typename
-                      }));
+                    const newsItems = parseNewsItems(data?.[QUERY_TYPES.NEWS_ITEMS], true);
 
                     if (!newsItems || !newsItems.length) return null;
 
                     const newsItemsListType = listTypesSettings[QUERY_TYPES.NEWS_ITEMS];
-                    const ListComponent = getListComponent(newsItemsListType);
 
                     return (
                       <View>
                         <ListComponent
                           navigation={navigation}
                           data={newsItems}
-                          leftImage={newsItemsListType === LIST_TYPES.IMAGE_TEXT_LIST}
+                          query={QUERY_TYPES.NEWS_ITEMS}
                           horizontal={newsItemsListType === LIST_TYPES.CARD_LIST}
                         />
 
@@ -295,70 +238,19 @@ export const HomeScreen = ({ navigation }) => {
                   );
                 }
 
-                const pointsOfInterest =
-                  data &&
-                  data.pointsOfInterest &&
-                  data.pointsOfInterest.map((pointOfInterest) => ({
-                    id: pointOfInterest.id,
-                    title: pointOfInterest.name,
-                    subtitle: !!pointOfInterest.category && pointOfInterest.category.name,
-                    picture: {
-                      url: mainImageOfMediaContents(pointOfInterest.mediaContents)
-                    },
-                    routeName: 'Detail',
-                    params: {
-                      title: 'Ort',
-                      query: QUERY_TYPES.POINT_OF_INTEREST,
-                      queryVariables: { id: `${pointOfInterest.id}` },
-                      rootRouteName: 'PointsOfInterest',
-                      shareContent: {
-                        message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
-                      },
-                      details: {
-                        ...pointOfInterest,
-                        title: pointOfInterest.name
-                      }
-                    },
-                    __typename: pointOfInterest.__typename
-                  }));
+                const pointsOfInterest = parsePointOfInterest(data?.[QUERY_TYPES.POINTS_OF_INTEREST]);
 
-                const tours =
-                  data &&
-                  data.tours &&
-                  data.tours.map((tour) => ({
-                    id: tour.id,
-                    title: tour.name,
-                    subtitle: !!tour.category && tour.category.name,
-                    picture: {
-                      url: mainImageOfMediaContents(tour.mediaContents)
-                    },
-                    routeName: 'Detail',
-                    params: {
-                      title: 'Tour',
-                      query: QUERY_TYPES.TOUR,
-                      queryVariables: { id: `${tour.id}` },
-                      rootRouteName: 'Tours',
-                      shareContent: {
-                        message: shareMessage(tour, QUERY_TYPES.TOUR)
-                      },
-                      details: {
-                        ...tour,
-                        title: tour.name
-                      }
-                    },
-                    __typename: tour.__typename
-                  }));
+                const tours = parseTours(data?.[QUERY_TYPES.TOURS]);
 
                 const pointsOfInterestAndToursListType =
                   listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS];
-                const ListComponent = getListComponent(pointsOfInterestAndToursListType);
 
                 return (
                   <View>
                     <ListComponent
                       navigation={navigation}
                       data={_shuffle([...(pointsOfInterest || []), ...(tours || [])])}
-                      leftImage={pointsOfInterestAndToursListType === LIST_TYPES.IMAGE_TEXT_LIST}
+                      query={QUERY_TYPES.POINTS_OF_INTEREST}
                       horizontal={pointsOfInterestAndToursListType === LIST_TYPES.CARD_LIST}
                     />
 
@@ -399,47 +291,18 @@ export const HomeScreen = ({ navigation }) => {
                   );
                 }
 
-                const eventRecords =
-                  data &&
-                  data.eventRecords &&
-                  data.eventRecords.map((eventRecord, index) => ({
-                    id: eventRecord.id,
-                    subtitle: subtitle(
-                      eventDate(eventRecord.listDate),
-                      !!eventRecord.addresses &&
-                        !!eventRecord.addresses.length &&
-                        (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
-                    ),
-                    title: eventRecord.title,
-                    picture: {
-                      url: mainImageOfMediaContents(eventRecord.mediaContents)
-                    },
-                    routeName: 'Detail',
-                    params: {
-                      title: 'Veranstaltung',
-                      query: QUERY_TYPES.EVENT_RECORD,
-                      queryVariables: { id: `${eventRecord.id}` },
-                      rootRouteName: 'EventRecords',
-                      shareContent: {
-                        message: shareMessage(eventRecord, QUERY_TYPES.EVENT_RECORD)
-                      },
-                      details: eventRecord
-                    },
-                    bottomDivider: index !== data.eventRecords.length - 1,
-                    __typename: eventRecord.__typename
-                  }));
+                const eventRecords = parseEventRecords(data?.[QUERY_TYPES.EVENT_RECORDS]);
 
                 if (!eventRecords || !eventRecords.length) return null;
 
                 const eventRecordsListType = listTypesSettings[QUERY_TYPES.EVENT_RECORDS];
-                const ListComponent = getListComponent(eventRecordsListType);
 
                 return (
                   <View>
                     <ListComponent
                       navigation={navigation}
                       data={eventRecords}
-                      leftImage={eventRecordsListType === LIST_TYPES.IMAGE_TEXT_LIST}
+                      query={QUERY_TYPES.EVENT_RECORDS}
                       horizontal={eventRecordsListType === LIST_TYPES.CARD_LIST}
                     />
 
