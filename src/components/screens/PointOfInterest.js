@@ -16,7 +16,7 @@ import { ImagesCarousel } from '../ImagesCarousel';
 import { OrientationContext } from '../../OrientationProvider';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { matomoTrackingString } from '../../helpers';
-import { WebViewMap } from '../map';
+import { WebViewMap } from '../map/WebViewMap';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -105,20 +105,6 @@ export const PointOfInterest = ({ data, navigation, hideMap }) => {
           <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
         </Wrapper>
 
-        {!hideMap && !!latitude && !!longitude && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`${texts.pointOfInterest.location} (Überschrift)`}>
-                {texts.pointOfInterest.location}
-              </Title>
-            </TitleContainer>
-            <WebViewMap locations={[{ position: { lat: latitude, lng: longitude } }]}
-              style={{ height: normalize(200) }}
-            />
-            {device.platform === 'ios' && <TitleShadow />}
-          </View>
-        )}
-
         {!!openingHours && !!openingHours.length && (
           <View>
             <TitleContainer>
@@ -159,6 +145,20 @@ export const PointOfInterest = ({ data, navigation, hideMap }) => {
                 dimensions={dimensions}
               />
             </Wrapper>
+          </View>
+        )}
+
+        {!hideMap && !!latitude && !!longitude && (
+          <View>
+            <TitleContainer>
+              <Title accessibilityLabel={`${texts.pointOfInterest.location} (Überschrift)`}>
+                {texts.pointOfInterest.location}
+              </Title>
+            </TitleContainer>
+            <WebViewMap locations={[{ position: { lat: latitude, lng: longitude } }]}
+              style={{ height: normalize(200) }}
+            />
+            {device.platform === 'ios' && <TitleShadow />}
           </View>
         )}
 
