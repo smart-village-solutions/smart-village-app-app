@@ -8,7 +8,7 @@ import { colors, normalize } from '../../config';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { LoadingContainer } from '../LoadingContainer';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
-import { PointOfInterest } from '../screens';
+import { PointOfInterest } from '../screens/PointOfInterest';
 import { WebViewMap } from './WebViewMap';
 
 type Props = {
@@ -36,7 +36,7 @@ export const LocationOverview = ({ navigation }: Props) => {
 
   const overviewQuery = getQuery(QUERY_TYPES.POINTS_OF_INTEREST);
   const { data: overviewData, loading } =
-    useQuery(overviewQuery, { variables: { limit: 10, orderPoi: 'RAND', orderTour: 'RAND' } });
+    useQuery(overviewQuery);
 
   const detailsQuery = getQuery(QUERY_TYPES.POINT_OF_INTEREST);
   const { data: detailsData, loading: detailsLoading } =
@@ -66,8 +66,8 @@ export const LocationOverview = ({ navigation }: Props) => {
           zoom={10}
         />
         <View style={styles.details}>
-          {detailsLoading && <ActivityIndicator />}
-          {!!detailsData?.[QUERY_TYPES.POINT_OF_INTEREST] &&
+          {detailsLoading ? <ActivityIndicator />
+            : !!detailsData?.[QUERY_TYPES.POINT_OF_INTEREST] &&
             <PointOfInterest
               data={detailsData[QUERY_TYPES.POINT_OF_INTEREST]}
               navigation={navigation}
