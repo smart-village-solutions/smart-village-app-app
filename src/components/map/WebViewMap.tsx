@@ -50,7 +50,7 @@ export const WebViewMap = ({ locations, mapCenterPosition, onMessageReceived, st
           })
         ]}
         mapCenterPosition={mapCenterPos}
-        zoom={zoom ?? 14}
+        zoom={zoom}
       />
     </View>
   );
