@@ -15,13 +15,13 @@ import { SettingsContext } from '../SettingsProvider';
 import { auth } from '../auth';
 import { colors, consts, normalize } from '../config';
 import {
-  Icon,
   DropdownHeader,
+  Icon,
+  ListComponent,
   LoadingContainer,
-  SafeAreaViewFlex,
   LocationOverview,
   MapSwitchHeader,
-  ListComponent
+  SafeAreaViewFlex
 } from '../components';
 import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
 import { arrowLeft } from '../icons';
