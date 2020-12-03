@@ -9,7 +9,7 @@ import { momentFormat } from './momentHelper';
 import { shareMessage } from './shareHelper';
 import { subtitle } from './textHelper';
 
-export const parseEventRecords = (data) => {
+export const parseEventRecords = (data, skipLastDivider = false) => {
   return (
     data.map((eventRecord, index) => ({
       id: eventRecord.id,
@@ -32,7 +32,7 @@ export const parseEventRecords = (data) => {
         },
         details: eventRecord
       },
-      bottomDivider: index !== data.length - 1
+      bottomDivider: skipLastDivider ? index !== data.length - 1 : undefined
     }))
   );
 };
@@ -72,9 +72,9 @@ export const parseNewsItems = (data, skipLastDivider = false) => {
   );
 };
 
-export const parsePointOfInterest = (data) => {
+export const parsePointOfInterest = (data, skipLastDivider = false) => {
   return (
-    data?.map((pointOfInterest) => ({
+    data?.map((pointOfInterest, index) => ({
       id: pointOfInterest.id,
       title: pointOfInterest.name,
       subtitle: pointOfInterest.category?.name,
@@ -94,14 +94,15 @@ export const parsePointOfInterest = (data) => {
           ...pointOfInterest,
           title: pointOfInterest.name
         }
-      }
+      },
+      bottomDivider: skipLastDivider ? index !== data.length - 1 : undefined
     }))
   );
 };
 
-export const parseTours = (data) => {
+export const parseTours = (data, skipLastDivider = false) => {
   return (
-    data?.map((tour) => ({
+    data?.map((tour, index) => ({
       id: tour.id,
       title: tour.name,
       subtitle: tour.category?.name,
@@ -121,14 +122,15 @@ export const parseTours = (data) => {
           ...tour,
           title: tour.name
         }
-      }
+      },
+      bottomDivider: skipLastDivider ? index !== data.length - 1 : undefined
     }))
   );
 };
 
-const parseCategories = (data) => {
+const parseCategories = (data, skipLastDivider = false) => {
   return (
-    data?.map((category) => ({
+    data?.map((category, index) => ({
       id: category.id,
       title: category.name,
       pointsOfInterestCount: category.pointsOfInterestCount,
@@ -142,7 +144,8 @@ const parseCategories = (data) => {
             : QUERY_TYPES.TOURS,
         queryVariables: { order: 'name_ASC', category: `${category.name}` },
         rootRouteName: category.pointsOfInterestCount > 0 ? 'PointsOfInterest' : 'Tours'
-      }
+      },
+      bottomDivider: skipLastDivider ? index !== data.length - 1 : undefined
     }))
   );
 };
