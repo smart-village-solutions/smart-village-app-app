@@ -155,7 +155,8 @@ export const PointOfInterest = ({ data, navigation, hideMap }) => {
                 {texts.pointOfInterest.location}
               </Title>
             </TitleContainer>
-            <WebViewMap locations={[{ position: { lat: latitude, lng: longitude } }]}
+            <WebViewMap
+              locations={[{ position: { lat: latitude, lng: longitude } }]}
               style={{ height: normalize(200) }}
             />
             {device.platform === 'ios' && <TitleShadow />}

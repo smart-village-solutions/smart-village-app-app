@@ -6,21 +6,29 @@ import { colors } from '../../config';
 import { location as locationMarker } from '../../icons';
 
 type Props = {
-  locations: MapMarker[],
+  locations: MapMarker[];
   mapCenterPosition?: {
-    lat: number,
-    lng: number
-  },
-  onMessageReceived?: (message: WebviewLeafletMessage) => void,
-  style?: StyleProp<ViewStyle>,
-  zoom?: number
-}
+    lat: number;
+    lng: number;
+  };
+  onMessageReceived?: (message: WebviewLeafletMessage) => void;
+  style?: StyleProp<ViewStyle>;
+  zoom?: number;
+};
 
-export const WebViewMap = ({ locations, mapCenterPosition, onMessageReceived, style, zoom }: Props) => {
-
-  const messageHandler = useCallback((message) => {
-    onMessageReceived?.(message);
-  }, [onMessageReceived]);
+export const WebViewMap = ({
+  locations,
+  mapCenterPosition,
+  onMessageReceived,
+  style,
+  zoom
+}: Props) => {
+  const messageHandler = useCallback(
+    (message) => {
+      onMessageReceived?.(message);
+    },
+    [onMessageReceived]
+  );
 
   const mapCenterPos = mapCenterPosition ?? locations?.[0].position;
 
@@ -31,8 +39,7 @@ export const WebViewMap = ({ locations, mapCenterPosition, onMessageReceived, st
         onMessageReceived={messageHandler}
         mapLayers={[
           {
-            attribution:
-              '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+            attribution: '© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
             baseLayerIsChecked: true,
             baseLayerName: 'OpenStreetMap.Mapnik',
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'

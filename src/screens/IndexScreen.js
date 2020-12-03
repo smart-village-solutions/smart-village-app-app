@@ -54,8 +54,8 @@ const getListItems = (query, data) => {
           subtitle: subtitle(
             eventDate(eventRecord.listDate),
             !!eventRecord.addresses &&
-            !!eventRecord.addresses.length &&
-            (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
+              !!eventRecord.addresses.length &&
+              (eventRecord.addresses[0].addition || eventRecord.addresses[0].city)
           ),
           title: eventRecord.title,
           picture: {
@@ -230,32 +230,38 @@ export const IndexScreen = ({ navigation }) => {
   const query = navigation.getParam('query', '');
   const title = navigation.getParam('title', '');
 
-  const refresh = useCallback(async (refetch) => {
-    setRefreshing(true);
-    isConnected && (await refetch());
-    setRefreshing(false);
-  }, [isConnected, setRefreshing]);
+  const refresh = useCallback(
+    async (refetch) => {
+      setRefreshing(true);
+      isConnected && (await refetch());
+      setRefreshing(false);
+    },
+    [isConnected, setRefreshing]
+  );
 
-  const updateListData = useCallback((selectedValue) => {
-    if (selectedValue) {
-      // remove a refetch key if present, which was necessary for the "- Alle -" selection
-      delete queryVariables.refetch;
+  const updateListData = useCallback(
+    (selectedValue) => {
+      if (selectedValue) {
+        // remove a refetch key if present, which was necessary for the "- Alle -" selection
+        delete queryVariables.refetch;
 
-      setQueryVariables({
-        ...queryVariables,
-        [queryVariableForQuery]: selectedValue
-      });
-    } else {
-      setQueryVariables((prevQueryVariables) => {
-        // remove the filter key for the specific query, when selecting "- Alle -"
-        delete prevQueryVariables[queryVariableForQuery];
-        // need to spread the `prevQueryVariables` into a new object with additional refetch key
-        // to force the Query component to update the data, otherwise it is not fired somehow
-        // because the state variable wouldn't change
-        return { ...prevQueryVariables, refetch: true };
-      });
-    }
-  }, [setQueryVariables, queryVariables]);
+        setQueryVariables({
+          ...queryVariables,
+          [queryVariableForQuery]: selectedValue
+        });
+      } else {
+        setQueryVariables((prevQueryVariables) => {
+          // remove the filter key for the specific query, when selecting "- Alle -"
+          delete prevQueryVariables[queryVariableForQuery];
+          // need to spread the `prevQueryVariables` into a new object with additional refetch key
+          // to force the Query component to update the data, otherwise it is not fired somehow
+          // because the state variable wouldn't change
+          return { ...prevQueryVariables, refetch: true };
+        });
+      }
+    },
+    [setQueryVariables, queryVariables]
+  );
 
   useEffect(() => {
     isConnected && auth();
@@ -308,74 +314,78 @@ export const IndexScreen = ({ navigation }) => {
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
-  return (<SafeAreaViewFlex style={styles.center}>
-    {query === QUERY_TYPES.POINTS_OF_INTEREST ?
-      <MapSwitchHeader setShowMap={setShowMap} showMap={showMap} /> :
-      null
-    }
-    {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ?
-      <LocationOverview navigation={navigation} category={queryVariables.category} /> :
-      <Query
-        query={getQuery(query, { showNewsFilter, showEventsFilter })}
-        variables={queryVariables}
-        fetchPolicy={fetchPolicy}
-      >
-        {({ data, loading, fetchMore, refetch }) => {
-          if (loading) {
+  return (
+    <SafeAreaViewFlex style={styles.center}>
+      {query === QUERY_TYPES.POINTS_OF_INTEREST ? (
+        <MapSwitchHeader setShowMap={setShowMap} showMap={showMap} />
+      ) : null}
+      {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
+        <LocationOverview navigation={navigation} category={queryVariables.category} />
+      ) : (
+        <Query
+          query={getQuery(query, { showNewsFilter, showEventsFilter })}
+          variables={queryVariables}
+          fetchPolicy={fetchPolicy}
+        >
+          {({ data, loading, fetchMore, refetch }) => {
+            if (loading) {
+              return (
+                <LoadingContainer>
+                  <ActivityIndicator color={colors.accent} />
+                </LoadingContainer>
+              );
+            }
+
+            const listItems = getListItems(query, data);
+
+            if (!listItems || !listItems.length) return null;
+
+            const fetchMoreData = () =>
+              fetchMore({
+                query: getFetchMoreQuery(query),
+                variables: {
+                  ...queryVariables,
+                  offset: listItems.length
+                },
+                updateQuery: (prevResult, { fetchMoreResult }) => {
+                  if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
+
+                  return {
+                    ...prevResult,
+                    [query]: [...prevResult[query], ...fetchMoreResult[query]]
+                  };
+                }
+              });
+
+            let ListHeaderComponent = null;
+
+            if (showFilter) {
+              ListHeaderComponent = (
+                <DropDownHeader {...{ query, queryVariables, data, updateListData }} />
+              );
+            }
+
             return (
-              <LoadingContainer>
-                <ActivityIndicator color={colors.accent} />
-              </LoadingContainer>
+              <Component
+                navigation={navigation}
+                data={listItems}
+                query={query}
+                fetchMoreData={isConnected ? fetchMoreData : null}
+                ListHeaderComponent={ListHeaderComponent}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => refresh(refetch)}
+                    colors={[colors.accent]}
+                    tintColor={colors.accent}
+                  />
+                }
+              />
             );
-          }
-
-          const listItems = getListItems(query, data);
-
-          if (!listItems || !listItems.length) return null;
-
-          const fetchMoreData = () =>
-            fetchMore({
-              query: getFetchMoreQuery(query),
-              variables: {
-                ...queryVariables,
-                offset: listItems.length
-              },
-              updateQuery: (prevResult, { fetchMoreResult }) => {
-                if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
-
-                return {
-                  ...prevResult,
-                  [query]: [...prevResult[query], ...fetchMoreResult[query]]
-                };
-              }
-            });
-
-          let ListHeaderComponent = null;
-
-          if (showFilter) {
-            ListHeaderComponent = <DropDownHeader {...{ query, queryVariables, data, updateListData }} />;
-          }
-
-          return (
-            <Component
-              navigation={navigation}
-              data={listItems}
-              query={query}
-              fetchMoreData={isConnected ? fetchMoreData : null}
-              ListHeaderComponent={ListHeaderComponent}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={() => refresh(refetch)}
-                  colors={[colors.accent]}
-                  tintColor={colors.accent}
-                />
-              }
-            />
-          );
-        }}
-      </Query>}
-  </SafeAreaViewFlex>
+          }}
+        </Query>
+      )}
+    </SafeAreaViewFlex>
   );
 };
 
