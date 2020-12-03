@@ -1,7 +1,9 @@
 import React, { useCallback } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { colors, normalize } from '../config';
+
+import { ListSwitchItem, ListSwitchItemBorder, ListSwitchWrapper } from './ListSwitchItem';
 import { BoldText } from './Text';
+import { Touchable } from './Touchable';
+import { WrapperHorizontal } from './Wrapper';
 
 type Props = {
   setShowMap: (newValue: boolean) => void;
@@ -13,38 +15,23 @@ export const MapSwitchHeader = ({ setShowMap, showMap }: Props) => {
   const onPressShowList = useCallback(() => setShowMap(false), [setShowMap]);
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={onPressShowList} style={styles.button}>
-        <View style={!showMap ? styles.textWrapperSelected : undefined}>
-          <BoldText style={styles.text}>Listenansicht</BoldText>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={onPressShowMap} style={styles.button}>
-        <View style={showMap ? styles.textWrapperSelected : undefined}>
-          <BoldText style={styles.text}>Kartenansicht</BoldText>
-        </View>
-      </TouchableOpacity>
-    </View>
+    <ListSwitchWrapper>
+      <Touchable onPress={onPressShowList}>
+        <WrapperHorizontal big>
+          <ListSwitchItem>
+            <BoldText small>Listenansicht</BoldText>
+            {!showMap && <ListSwitchItemBorder />}
+          </ListSwitchItem>
+        </WrapperHorizontal>
+      </Touchable>
+      <Touchable onPress={onPressShowMap}>
+        <WrapperHorizontal big>
+          <ListSwitchItem>
+            <BoldText small>Kartenansicht</BoldText>
+            {showMap && <ListSwitchItemBorder />}
+          </ListSwitchItem>
+        </WrapperHorizontal>
+      </Touchable>
+    </ListSwitchWrapper>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: normalize(8)
-  },
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  text: {
-    fontSize: normalize(18),
-    textAlign: 'center'
-  },
-  textWrapperSelected: {
-    borderBottomWidth: 2,
-    borderBottomColor: colors.primary
-  }
-});
