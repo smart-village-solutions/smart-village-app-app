@@ -291,7 +291,7 @@ export const HomeScreen = ({ navigation }) => {
                   );
                 }
 
-                const eventRecords = parseEventRecords(data?.[QUERY_TYPES.EVENT_RECORDS]);
+                const eventRecords = parseEventRecords(data?.[QUERY_TYPES.EVENT_RECORDS], true);
 
                 if (!eventRecords || !eventRecords.length) return null;
 
