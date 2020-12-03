@@ -18,8 +18,8 @@ const getListComponent = (listType) =>
     [LIST_TYPES.CARD_LIST]: CardList
   }[listType]);
 
-const getComponent = (query, listTypesSettings) => {
-  const COMPONENTS = {
+const getComponent = (query, listTypesSettings) =>
+  ({
     [QUERY_TYPES.NEWS_ITEMS]: getListComponent(listTypesSettings[QUERY_TYPES.NEWS_ITEMS]),
     [QUERY_TYPES.EVENT_RECORDS]: getListComponent(listTypesSettings[QUERY_TYPES.EVENT_RECORDS]),
     [QUERY_TYPES.POINTS_OF_INTEREST]: getListComponent(
@@ -29,10 +29,7 @@ const getComponent = (query, listTypesSettings) => {
       listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]
     ),
     [QUERY_TYPES.CATEGORIES]: CategoryList
-  };
-
-  return COMPONENTS[query];
-};
+  }[query]);
 
 export const ListComponent = ({
   navigation,
@@ -63,12 +60,12 @@ export const ListComponent = ({
 };
 
 ListComponent.propTypes = {
+  navigation: PropTypes.object,
   data: PropTypes.array,
+  noSubtitle: PropTypes.bool,
+  query: PropTypes.string.isRequired,
   fetchMoreData: PropTypes.func,
   horizontal: PropTypes.bool,
   ListHeaderComponent: PropTypes.object,
-  navigation: PropTypes.object,
-  noSubtitle: PropTypes.bool,
-  query: PropTypes.string.isRequired,
   refreshControl: PropTypes.object
 };
