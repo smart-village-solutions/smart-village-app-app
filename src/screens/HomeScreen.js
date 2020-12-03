@@ -32,7 +32,13 @@ import {
   Wrapper,
   WrapperRow
 } from '../components';
-import { graphqlFetchPolicy, parseEventRecords, parseNewsItems, parsePointOfInterest, parseTours } from '../helpers';
+import {
+  graphqlFetchPolicy,
+  parseEventRecords,
+  parseNewsItems,
+  parsePointOfInterest,
+  parseTours
+} from '../helpers';
 import { useMatomoAlertOnStartUp, useMatomoTrackScreenView, usePushNotifications } from '../hooks';
 import { getQuery, getQueryType, QUERY_TYPES } from '../queries';
 
@@ -148,69 +154,65 @@ export const HomeScreen = ({ navigation }) => {
         <HomeCarousel navigation={navigation} />
 
         {showNews &&
-          categoriesNews.map(
-            ({ categoryId, categoryTitle, categoryButton }, index) => (
-              <Fragment key={`${index}-${categoryTitle}`}>
-                <TitleContainer>
-                  <Touchable
-                    onPress={() =>
-                      navigation.navigate(
-                        NAVIGATION.NEWS_ITEMS_INDEX({ categoryId, categoryTitle })
-                      )
-                    }
-                  >
-                    <Title accessibilityLabel={`${categoryTitle} (Überschrift) (Taste)`}>
-                      {categoryTitle}
-                    </Title>
-                  </Touchable>
-                </TitleContainer>
-                {device.platform === 'ios' && <TitleShadow />}
-                <Query
-                  query={getQuery(QUERY_TYPES.NEWS_ITEMS)}
-                  variables={{ limit: 3, ...{ categoryId } }}
-                  fetchPolicy={fetchPolicy}
+          categoriesNews.map(({ categoryId, categoryTitle, categoryButton }, index) => (
+            <Fragment key={`${index}-${categoryTitle}`}>
+              <TitleContainer>
+                <Touchable
+                  onPress={() =>
+                    navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX({ categoryId, categoryTitle }))
+                  }
                 >
-                  {({ data, loading }) => {
-                    if (loading) {
-                      return (
-                        <LoadingContainer>
-                          <ActivityIndicator color={colors.accent} />
-                        </LoadingContainer>
-                      );
-                    }
-
-                    const newsItems = parseNewsItems(data?.[QUERY_TYPES.NEWS_ITEMS], true);
-
-                    if (!newsItems || !newsItems.length) return null;
-
-                    const newsItemsListType = listTypesSettings[QUERY_TYPES.NEWS_ITEMS];
-
+                  <Title accessibilityLabel={`${categoryTitle} (Überschrift) (Taste)`}>
+                    {categoryTitle}
+                  </Title>
+                </Touchable>
+              </TitleContainer>
+              {device.platform === 'ios' && <TitleShadow />}
+              <Query
+                query={getQuery(QUERY_TYPES.NEWS_ITEMS)}
+                variables={{ limit: 3, ...{ categoryId } }}
+                fetchPolicy={fetchPolicy}
+              >
+                {({ data, loading }) => {
+                  if (loading) {
                     return (
-                      <View>
-                        <ListComponent
-                          navigation={navigation}
-                          data={newsItems}
-                          query={QUERY_TYPES.NEWS_ITEMS}
-                          horizontal={newsItemsListType === LIST_TYPES.CARD_LIST}
-                        />
-
-                        <Wrapper>
-                          <Button
-                            title={categoryButton}
-                            onPress={() =>
-                              navigation.navigate(
-                                NAVIGATION.NEWS_ITEMS_INDEX({ categoryId, categoryTitle })
-                              )
-                            }
-                          />
-                        </Wrapper>
-                      </View>
+                      <LoadingContainer>
+                        <ActivityIndicator color={colors.accent} />
+                      </LoadingContainer>
                     );
-                  }}
-                </Query>
-              </Fragment>
-            )
-          )}
+                  }
+
+                  const newsItems = parseNewsItems(data?.[QUERY_TYPES.NEWS_ITEMS], true);
+
+                  if (!newsItems || !newsItems.length) return null;
+
+                  const newsItemsListType = listTypesSettings[QUERY_TYPES.NEWS_ITEMS];
+
+                  return (
+                    <View>
+                      <ListComponent
+                        navigation={navigation}
+                        data={newsItems}
+                        query={QUERY_TYPES.NEWS_ITEMS}
+                        horizontal={newsItemsListType === LIST_TYPES.CARD_LIST}
+                      />
+
+                      <Wrapper>
+                        <Button
+                          title={categoryButton}
+                          onPress={() =>
+                            navigation.navigate(
+                              NAVIGATION.NEWS_ITEMS_INDEX({ categoryId, categoryTitle })
+                            )
+                          }
+                        />
+                      </Wrapper>
+                    </View>
+                  );
+                }}
+              </Query>
+            </Fragment>
+          ))}
 
         {showPointsOfInterestAndTours && (
           <>
@@ -238,7 +240,9 @@ export const HomeScreen = ({ navigation }) => {
                   );
                 }
 
-                const pointsOfInterest = parsePointOfInterest(data?.[QUERY_TYPES.POINTS_OF_INTEREST]);
+                const pointsOfInterest = parsePointOfInterest(
+                  data?.[QUERY_TYPES.POINTS_OF_INTEREST]
+                );
 
                 const tours = parseTours(data?.[QUERY_TYPES.TOURS]);
 

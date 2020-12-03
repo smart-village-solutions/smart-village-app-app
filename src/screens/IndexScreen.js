@@ -20,7 +20,8 @@ import {
   LoadingContainer,
   SafeAreaViewFlex,
   LocationOverview,
-  MapSwitchHeader
+  MapSwitchHeader,
+  ListComponent
 } from '../components';
 import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
 import { arrowLeft } from '../icons';
@@ -29,7 +30,6 @@ import {
   matomoTrackingString,
   parseListItemsFromQuery
 } from '../helpers';
-import { ListComponent } from '../components/ListComponent';
 
 const { MATOMO_TRACKING } = consts;
 

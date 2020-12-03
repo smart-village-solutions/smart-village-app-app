@@ -48,16 +48,18 @@ export const ListComponent = ({
 
   const Component = getComponent(query, listTypesSettings);
 
-  return <Component
-    data={data}
-    fetchMoreData={fetchMoreData}
-    horizontal={horizontal}
-    ListHeaderComponent={ListHeaderComponent}
-    navigation={navigation}
-    noSubtitle={noSubtitle}
-    query={query}
-    refreshControl={refreshControl}
-  />;
+  return (
+    <Component
+      data={data}
+      fetchMoreData={fetchMoreData}
+      horizontal={horizontal}
+      ListHeaderComponent={ListHeaderComponent}
+      navigation={navigation}
+      noSubtitle={noSubtitle}
+      query={query}
+      refreshControl={refreshControl}
+    />
+  );
 };
 
 ListComponent.propTypes = {
