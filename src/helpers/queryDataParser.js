@@ -9,7 +9,7 @@ import { shareMessage } from './shareHelper';
 import { subtitle } from './textHelper';
 
 export const parseEventRecords = (data, skipLastDivider = false) => {
-  return data.map((eventRecord, index) => ({
+  return data?.map((eventRecord, index) => ({
     id: eventRecord.id,
     subtitle: subtitle(
       eventDate(eventRecord.listDate),
@@ -135,6 +135,7 @@ const parseCategories = (data, skipLastDivider = false) => {
 
 export const parseListItemsFromQuery = (query, data) => {
   if (!(data && data[query])) return;
+
   switch (query) {
   case QUERY_TYPES.EVENT_RECORDS:
     return parseEventRecords(data[query]);
