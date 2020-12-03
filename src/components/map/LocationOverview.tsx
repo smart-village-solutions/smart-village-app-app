@@ -69,7 +69,9 @@ export const LocationOverview = ({ navigation, category }: Props) => {
         />
         <View>
           {detailsLoading ? (
-            <ActivityIndicator />
+            <LoadingContainer>
+              <ActivityIndicator color={colors.accent} />
+            </LoadingContainer>
           ) : (
             !!detailsData?.[QUERY_TYPES.POINT_OF_INTEREST] && (
               <PointOfInterest
@@ -87,7 +89,6 @@ export const LocationOverview = ({ navigation, category }: Props) => {
 
 const styles = StyleSheet.create({
   map: {
-    height: normalize(200),
-    marginVertical: normalize(12)
+    height: normalize(200)
   }
 });
