@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react';
-import { useMatomo } from 'matomo-tracker-react-native';
+import { MatomoContext, useMatomo } from 'matomo-tracker-react-native';
 
 import { texts } from '../config';
 import { NetworkContext } from '../NetworkProvider';
@@ -24,6 +24,8 @@ export const useMatomoTrackScreenView = (name) => {
 };
 
 export const useMatomoAlertOnStartUp = () => {
+  const { disabled } = useContext(MatomoContext);
+
   useEffect(() => {
     const showMatomoAlert = async () => {
       const settings = await storageHelper.matomoSettings();
@@ -49,6 +51,6 @@ export const useMatomoAlertOnStartUp = () => {
       }
     };
 
-    showMatomoAlert();
+    !disabled && showMatomoAlert();
   }, []);
 };
