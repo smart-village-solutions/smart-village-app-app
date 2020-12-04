@@ -31,7 +31,6 @@ export const PointOfInterest = ({ data, navigation, hideMap }) => {
     contact,
     dataProvider,
     description,
-    location,
     mediaContents,
     openingHours,
     operatingCompany,
@@ -40,8 +39,8 @@ export const PointOfInterest = ({ data, navigation, hideMap }) => {
     webUrls
   } = data;
 
-  const latitude = location?.geoLocation?.latitude;
-  const longitude = location?.geoLocation?.longitude;
+  const latitude = addresses?.[0]?.geoLocation?.latitude;
+  const longitude = addresses?.[0]?.geoLocation?.longitude;
 
   const rootRouteName = navigation.getParam('rootRouteName', '');
   // action to open source urls

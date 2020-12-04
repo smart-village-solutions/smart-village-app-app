@@ -22,17 +22,15 @@ export const GET_POINTS_OF_INTEREST = gql`
         street
         zip
         kind
+        geoLocation {
+          latitude
+          longitude
+        }
       }
       contact {
         email
         phone
         lastName
-      }
-      location {
-        geoLocation {
-          latitude
-          longitude
-        }
       }
       webUrls {
         url
@@ -70,17 +68,15 @@ export const GET_POINT_OF_INTEREST = gql`
         zip
         kind
         addition
+        geoLocation {
+          latitude
+          longitude
+        }
       }
       contact {
         email
         phone
         lastName
-      }
-      location {
-        geoLocation {
-          latitude
-          longitude
-        }
       }
       webUrls {
         url
