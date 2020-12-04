@@ -22,19 +22,21 @@ export const consts = {
 
   MATOMO_TRACKING: {
     SCREEN_VIEW: {
-      HOME: 'Home',
-      NEWS_ITEMS: 'News',
-      EVENT_RECORDS: 'Events',
-      POINTS_OF_INTEREST: 'Points of interest',
-      TOURS: 'Tours',
-      POINTS_OF_INTEREST_AND_TOURS: 'Points of interest and tours',
-      SERVICE: 'Service',
+      BOOKMARK_CATEGORY: 'Bookmark Category',
+      BOOKMARKS: 'Bookmarks',
       COMPANY: 'Company',
-      WEB: 'Web',
+      EVENT_RECORDS: 'Events',
       FEEDBACK: 'Feedback',
+      HOME: 'Home',
       HTML: 'Content',
       MORE: 'More',
-      SETTINGS: 'Settings'
+      NEWS_ITEMS: 'News',
+      POINTS_OF_INTEREST_AND_TOURS: 'Points of interest and tours',
+      POINTS_OF_INTEREST: 'Points of interest',
+      SERVICE: 'Service',
+      SETTINGS: 'Settings',
+      TOURS: 'Tours',
+      WEB: 'Web'
     }
   },
 

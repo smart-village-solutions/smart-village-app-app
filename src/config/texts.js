@@ -1,6 +1,9 @@
 import appJson from '../../app.json';
 
 export const texts = {
+  bookmarks: {
+    showAll: 'Alle anzeigen'
+  },
   categoryList: {
     intro:
       'Enim veniam exercitation elit excepteur ullamco dolore nisi sit ad irure cillum ut velit nulla. Dolore ex consequat id ex magna amet nostrud tempor cupidatat laboris est voluptate.'
