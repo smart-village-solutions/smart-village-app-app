@@ -30,8 +30,6 @@ export const WebViewMap = ({
     [onMessageReceived]
   );
 
-  const mapCenterPos = mapCenterPosition ?? locations?.[0].position;
-
   return (
     <View style={style}>
       <WebViewLeaflet
@@ -56,7 +54,7 @@ export const WebViewMap = ({
             };
           })
         ]}
-        mapCenterPosition={mapCenterPos}
+        mapCenterPosition={mapCenterPosition ?? locations?.[0]?.position}
         zoom={zoom}
       />
     </View>
