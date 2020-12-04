@@ -6,7 +6,7 @@ import { QUERY_TYPES } from '../queries';
 import { DropdownSelect } from './DropdownSelect';
 import { Wrapper } from './Wrapper';
 
-export const DropDownHeader = ({ query, queryVariables, data, updateListData }) => {
+export const DropdownHeader = ({ query, queryVariables, data, updateListData }) => {
   const dropdownLabel = {
     [QUERY_TYPES.EVENT_RECORDS]: texts.categoryFilter.category,
     [QUERY_TYPES.NEWS_ITEMS]: texts.categoryFilter.dataProvider
@@ -84,7 +84,7 @@ export const DropDownHeader = ({ query, queryVariables, data, updateListData }) 
   );
 };
 
-DropDownHeader.propTypes = {
+DropdownHeader.propTypes = {
   query: PropTypes.string.isRequired,
   queryVariables: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,

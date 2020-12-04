@@ -15,7 +15,7 @@ export * from './ImagesCarousel';
 export * from './ImageTextList';
 export * from './Label';
 export * from './Link';
-export * from './DropDownHeader';
+export * from './DropdownHeader';
 export * from './ListSwitchItem';
 export * from './LoadingContainer';
 export * from './Logo';

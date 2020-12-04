@@ -20,7 +20,7 @@ import {
   CategoryList,
   Icon,
   ImageTextList,
-  DropDownHeader,
+  DropdownHeader,
   LoadingContainer,
   SafeAreaViewFlex,
   TextList,
@@ -361,7 +361,7 @@ export const IndexScreen = ({ navigation }) => {
 
             if (showFilter) {
               ListHeaderComponent = (
-                <DropDownHeader {...{ query, queryVariables, data, updateListData }} />
+                <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
               );
             }
 
