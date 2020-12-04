@@ -8,7 +8,7 @@ import { momentFormat } from './momentHelper';
 import { shareMessage } from './shareHelper';
 import { subtitle } from './textHelper';
 
-export const parseEventRecords = (data, skipLastDivider = false) => {
+export const parseEventRecords = (data, skipLastDivider) => {
   return data?.map((eventRecord, index) => ({
     id: eventRecord.id,
     subtitle: subtitle(
@@ -30,11 +30,11 @@ export const parseEventRecords = (data, skipLastDivider = false) => {
       },
       details: eventRecord
     },
-    bottomDivider: skipLastDivider ? index !== data.length - 1 : undefined
+    bottomDivider: skipLastDivider && index !== data.length - 1
   }));
 };
 
-export const parseNewsItems = (data, skipLastDivider = false) => {
+export const parseNewsItems = (data, skipLastDivider) => {
   return data?.map((newsItem, index) => ({
     id: newsItem.id,
     subtitle: subtitle(momentFormat(newsItem.publishedAt), newsItem.dataProvider?.name),
@@ -59,11 +59,11 @@ export const parseNewsItems = (data, skipLastDivider = false) => {
       },
       details: newsItem
     },
-    bottomDivider: skipLastDivider ? index !== data.length - 1 : undefined
+    bottomDivider: skipLastDivider && index !== data.length - 1
   }));
 };
 
-export const parsePointOfInterest = (data, skipLastDivider = false) => {
+export const parsePointOfInterest = (data, skipLastDivider) => {
   return data?.map((pointOfInterest, index) => ({
     id: pointOfInterest.id,
     title: pointOfInterest.name,
@@ -85,11 +85,11 @@ export const parsePointOfInterest = (data, skipLastDivider = false) => {
         title: pointOfInterest.name
       }
     },
-    bottomDivider: skipLastDivider ? index !== data.length - 1 : undefined
+    bottomDivider: skipLastDivider && index !== data.length - 1
   }));
 };
 
-export const parseTours = (data, skipLastDivider = false) => {
+export const parseTours = (data, skipLastDivider) => {
   return data?.map((tour, index) => ({
     id: tour.id,
     title: tour.name,
@@ -111,11 +111,11 @@ export const parseTours = (data, skipLastDivider = false) => {
         title: tour.name
       }
     },
-    bottomDivider: skipLastDivider ? index !== data.length - 1 : undefined
+    bottomDivider: skipLastDivider && index !== data.length - 1
   }));
 };
 
-const parseCategories = (data, skipLastDivider = false) => {
+const parseCategories = (data, skipLastDivider) => {
   return data?.map((category, index) => ({
     id: category.id,
     title: category.name,
@@ -129,7 +129,7 @@ const parseCategories = (data, skipLastDivider = false) => {
       queryVariables: { order: 'name_ASC', category: `${category.name}` },
       rootRouteName: category.pointsOfInterestCount > 0 ? 'PointsOfInterest' : 'Tours'
     },
-    bottomDivider: skipLastDivider ? index !== data.length - 1 : undefined
+    bottomDivider: skipLastDivider && index !== data.length - 1
   }));
 };
 
