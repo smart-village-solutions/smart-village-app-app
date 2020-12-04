@@ -22,7 +22,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PointOfInterest = ({ data, navigation, hideMap }) => {
+export const PointOfInterest = ({ data, hideMap, navigation }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const {
     addresses,
