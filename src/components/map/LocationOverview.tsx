@@ -18,8 +18,9 @@ type Props = {
 
 const mapToMapMarkers = (data: any) => {
   return data?.[QUERY_TYPES.POINTS_OF_INTEREST]?.map((item: any) => {
-    const { latitude, longitude } = item.location.geoLocation;
+    const { latitude, longitude } = item.addresses?.[0]?.geoLocation;
 
+    if(!latitude || !longitude) return undefined;
     return {
       id: item.id,
       position: {
@@ -27,7 +28,7 @@ const mapToMapMarkers = (data: any) => {
         lng: longitude
       }
     };
-  });
+  }).filter((item: any) => item !== undefined);
 };
 
 export const LocationOverview = ({ navigation, category }: Props) => {
