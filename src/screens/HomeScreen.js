@@ -361,11 +361,13 @@ export const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   iconLeft: {
     paddingLeft: normalize(14),
-    paddingRight: normalize(7)
+    paddingRight: normalize(7),
+    paddingVertical: normalize(4)
   },
   iconRight: {
     paddingLeft: normalize(7),
-    paddingRight: normalize(14)
+    paddingRight: normalize(14),
+    paddingVertical: normalize(4)
   }
 });
 
@@ -376,7 +378,7 @@ HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
     headerRight: (
       <WrapperRow>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Settings')}
+          onPress={() => navigation.navigate('Bookmarks')}
           accessibilityLabel="Einstellungen (Taste)"
           accessibilityHint="Zu den Einstellungen wechseln"
         >
