@@ -14,6 +14,7 @@ import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, consts, device, normalize } from '../config';
 import {
+  BookmarkHeader,
   EventRecord,
   Icon,
   LoadingContainer,
@@ -125,21 +126,31 @@ export const DetailScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   icon: {
-    paddingHorizontal: normalize(14)
+    paddingHorizontal: normalize(14),
+    paddingVertical: normalize(4)
   },
   iconLeft: {
     paddingLeft: normalize(14),
-    paddingRight: normalize(7)
+    paddingRight: normalize(7),
+    paddingVertical: normalize(4)
   },
   iconRight: {
     paddingLeft: normalize(7),
-    paddingRight: normalize(14)
+    paddingRight: normalize(14),
+    paddingVertical: normalize(4)
   }
 });
 
 DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
   const shareContent = navigation.getParam('shareContent', '');
+  const query = navigation.getParam('query', '');
+  const queryVariables = navigation.getParam('queryVariables', {});
+
   const { headerRight } = navigationOptions;
+
+  const StyledBookmarkHeader = query && queryVariables?.id ?
+    <BookmarkHeader query={query} id={queryVariables.id} style={styles.iconLeft} />:
+    null;
 
   return {
     headerLeft: (
@@ -155,6 +166,7 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
     ),
     headerRight: (
       <WrapperRow>
+        {StyledBookmarkHeader}
         {!!shareContent && (
           <TouchableOpacity
             onPress={() => openShare(shareContent)}

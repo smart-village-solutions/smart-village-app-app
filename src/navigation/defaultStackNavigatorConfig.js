@@ -41,6 +41,7 @@ export const defaultStackNavigatorConfig = (initialRouteName, headerRight = true
 
 const styles = StyleSheet.create({
   icon: {
-    paddingHorizontal: normalize(14)
+    paddingHorizontal: normalize(14),
+    paddingVertical: normalize(4)
   }
 });
