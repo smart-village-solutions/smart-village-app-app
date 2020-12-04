@@ -1,14 +1,15 @@
 import React, { useCallback, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { WebviewLeafletMessage } from 'react-native-webview-leaflet';
 import { NavigationScreenProps, ScrollView } from 'react-navigation';
 
-import { colors, normalize } from '../../config';
+import { colors } from '../../config';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { LoadingContainer } from '../LoadingContainer';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { PointOfInterest } from '../screens/PointOfInterest';
+import {  WrapperWithOrientation } from '../Wrapper';
 import { WebViewMap } from './WebViewMap';
 
 type Props = {
@@ -62,34 +63,28 @@ export const LocationOverview = ({ navigation, category }: Props) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        <WebViewMap
-          locations={mapToMapMarkers(overviewData)}
-          onMessageReceived={onMessageReceived}
-          style={styles.map}
-          zoom={10}
-        />
-        <View>
-          {detailsLoading ? (
-            <LoadingContainer>
-              <ActivityIndicator color={colors.accent} />
-            </LoadingContainer>
-          ) : (
-            !!detailsData?.[QUERY_TYPES.POINT_OF_INTEREST] && (
-              <PointOfInterest
-                data={detailsData[QUERY_TYPES.POINT_OF_INTEREST]}
-                navigation={navigation}
-                hideMap
-              />
-            )
-          )}
-        </View>
+        <WrapperWithOrientation>
+          <WebViewMap
+            locations={mapToMapMarkers(overviewData)}
+            onMessageReceived={onMessageReceived}
+          />
+          <View>
+            {detailsLoading ? (
+              <LoadingContainer>
+                <ActivityIndicator color={colors.accent} />
+              </LoadingContainer>
+            ) : (
+              !!detailsData?.[QUERY_TYPES.POINT_OF_INTEREST] && (
+                <PointOfInterest
+                  data={detailsData[QUERY_TYPES.POINT_OF_INTEREST]}
+                  navigation={navigation}
+                  hideMap
+                />
+              )
+            )}
+          </View>
+        </WrapperWithOrientation>
       </ScrollView>
     </SafeAreaViewFlex>
   );
 };
-
-const styles = StyleSheet.create({
-  map: {
-    height: normalize(200)
-  }
-});
