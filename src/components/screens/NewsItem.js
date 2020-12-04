@@ -224,7 +224,7 @@ export const NewsItem = ({ data, navigation }) => {
     <View>
       {!!mainImages && mainImages.length > 1 && <ImagesCarousel data={mainImages} />}
 
-      <WrapperWithOrientation orientation={orientation} dimensions={dimensions}>
+      <WrapperWithOrientation>
         {!!mainImages && mainImages.length === 1 && <Image source={mainImages[0].picture} />}
 
         {!!title && !!link ? (

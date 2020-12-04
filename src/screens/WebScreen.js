@@ -8,13 +8,11 @@ import { colors, consts, normalize } from '../config';
 import { Icon, LoadingContainer, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
 import { arrowLeft } from '../icons';
 import { NetworkContext } from '../NetworkProvider';
-import { OrientationContext } from '../OrientationProvider';
 
 const { MATOMO_TRACKING } = consts;
 
 export const WebScreen = ({ navigation }) => {
   const { isConnected } = useContext(NetworkContext);
-  const { orientation, dimensions } = useContext(OrientationContext);
   const { trackScreenView } = useMatomo();
   const webUrl = navigation.getParam('webUrl', '');
 
@@ -28,7 +26,7 @@ export const WebScreen = ({ navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <WrapperWithOrientation orientation={orientation} dimensions={dimensions}>
+      <WrapperWithOrientation>
         <WebView
           source={{ uri: webUrl }}
           startInLoadingState

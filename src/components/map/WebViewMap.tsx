@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-color-literals */
 import React, { useCallback } from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { MapMarker, WebViewLeaflet, WebviewLeafletMessage } from 'react-native-webview-leaflet';
 import { colors } from '../../config';
 import { location as locationMarker } from '../../icons';
@@ -31,7 +31,7 @@ export const WebViewMap = ({
   );
 
   return (
-    <View style={style}>
+    <View style={[styles.map, style]}>
       <WebViewLeaflet
         backgroundColor={'gray'}
         onMessageReceived={messageHandler}
@@ -60,3 +60,10 @@ export const WebViewMap = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  map: {
+    aspectRatio: 16 / 9,
+    width: '100%'
+  }
+});

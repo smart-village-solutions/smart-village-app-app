@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { View } from 'react-native';
 import _filter from 'lodash/filter';
 
-import { consts, device, normalize, texts } from '../../config';
+import { consts, device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Title, TitleContainer, TitleShadow } from '../Title';
@@ -88,7 +88,7 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
     <View>
       {!!images && images.length > 1 && <ImagesCarousel data={images} />}
 
-      <WrapperWithOrientation orientation={orientation} dimensions={dimensions}>
+      <WrapperWithOrientation>
         {!!images && images.length === 1 && <Image source={images[0].picture} />}
 
         {!!title && (
@@ -156,7 +156,6 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
             </TitleContainer>
             <WebViewMap
               locations={[{ position: { lat: latitude, lng: longitude } }]}
-              style={{ height: normalize(200) }}
             />
             {device.platform === 'ios' && <TitleShadow />}
           </View>

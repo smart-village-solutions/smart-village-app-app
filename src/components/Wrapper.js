@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components/native';
 
 import { consts, normalize } from '../config';
+import { OrientationContext } from '../OrientationProvider';
 
 export const Wrapper = styled.View`
   padding: ${normalize(14)}px;
@@ -33,7 +34,8 @@ export const InfoBox = styled(WrapperRow)`
   margin-bottom: ${normalize(5)}px;
 `;
 
-export const WrapperWithOrientation = memo(({ orientation, dimensions, children }) => {
+export const WrapperWithOrientation = ({children}) => {
+  const {orientation, dimensions} = useContext(OrientationContext);
   const needLandscapeWrapper =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 
@@ -42,12 +44,10 @@ export const WrapperWithOrientation = memo(({ orientation, dimensions, children 
   }
 
   return children;
-});
+};
 
 WrapperWithOrientation.displayName = 'WrapperWithOrientation';
 
 WrapperWithOrientation.propTypes = {
-  orientation: PropTypes.string.isRequired,
-  dimensions: PropTypes.object.isRequired,
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired
 };

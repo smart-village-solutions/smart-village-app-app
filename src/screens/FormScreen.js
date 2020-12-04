@@ -28,7 +28,7 @@ export const FormScreen = () => {
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [consent, setConsent] = useState(false);
-  const { orientation, dimensions } = useContext(OrientationContext);
+  const { orientation } = useContext(OrientationContext);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.FEEDBACK);
 
@@ -82,7 +82,7 @@ export const FormScreen = () => {
         style={styles.flex}
       >
         <ScrollView keyboardShouldPersistTaps="handled">
-          <WrapperWithOrientation orientation={orientation} dimensions={dimensions}>
+          <WrapperWithOrientation>
             <Mutation mutation={createQuery(QUERY_TYPES.APP_USER_CONTENT)}>
               {(createAppUserContent) => (
                 <View style={{ padding: normalize(14) }}>

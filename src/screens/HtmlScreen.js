@@ -147,7 +147,7 @@ export const HtmlScreen = ({ navigation }) => {
                 />
               }
             >
-              <WrapperWithOrientation orientation={orientation} dimensions={dimensions}>
+              <WrapperWithOrientation>
                 <Wrapper>
                   <HtmlView
                     html={trimNewLines(data.publicHtmlFile.content)}
