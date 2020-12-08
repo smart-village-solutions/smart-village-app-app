@@ -11,6 +11,7 @@ import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';
 import _reduce from 'lodash/reduce';
+import _isEmpty from 'lodash/isEmpty';
 
 import { auth } from './auth';
 import { colors, consts, device, namespace, secrets, texts } from './config';
@@ -139,9 +140,13 @@ const MainAppWithApolloProvider = () => {
 
     // rehydrate data from the async storage to the global state
     // if there are no general settings yet, add a navigation fallback
-    let globalSettings = (await storageHelper.globalSettings()) || {
-      navigation: consts.DRAWER
-    };
+    let globalSettings = await storageHelper.globalSettings();
+    if (_isEmpty(globalSettings)) {
+      globalSettings = {
+        navigation: consts.DRAWER
+      };
+    }
+
     // if there are no list type settings yet, set the defaults as fallback
     const listTypesSettings = (await storageHelper.listTypesSettings()) || {
       [QUERY_TYPES.NEWS_ITEMS]: LIST_TYPES.TEXT_LIST,
@@ -175,7 +180,7 @@ const MainAppWithApolloProvider = () => {
       globalSettingsData.publicJsonFile &&
       JSON.parse(globalSettingsData.publicJsonFile.content);
 
-    if (globalSettingsPublicJsonFileContent) {
+    if (!_isEmpty(globalSettingsPublicJsonFileContent)) {
       globalSettings = globalSettingsPublicJsonFileContent;
       storageHelper.setGlobalSettings(globalSettings);
     }
@@ -212,7 +217,7 @@ const MainAppWithApolloProvider = () => {
         navigationData.publicJsonFile &&
         JSON.parse(navigationData.publicJsonFile.content);
 
-      if (navigationPublicJsonFileContent) {
+      if (!_isEmpty(navigationPublicJsonFileContent)) {
         setDrawerRoutes(
           _reduce(
             navigationPublicJsonFileContent,
