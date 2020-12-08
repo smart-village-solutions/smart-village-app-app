@@ -66,7 +66,9 @@ export const FormScreen = () => {
         { cancelable: false }
       );
     } else {
-      Alert.alert('Feedback', 'Bitte alle Felder prüfen.', [{ text: 'OK' }], { cancelable: false });
+      Alert.alert('Feedback', 'Bitte alle Felder prüfen.', [{ text: 'OK' }], {
+        cancelable: false
+      });
     }
   };
 

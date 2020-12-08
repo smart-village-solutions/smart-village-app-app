@@ -14,9 +14,9 @@ export const DropdownHeader = ({ query, queryVariables, data, updateListData }) 
 
   const dropdownInitialData = (query) => {
     switch (query) {
-    case QUERY_TYPES.EVENT_RECORDS:
-      return (
-        data &&
+      case QUERY_TYPES.EVENT_RECORDS:
+        return (
+          data &&
           data.categories &&
           data.categories
             .filter((category) => !!category.upcomingEventRecordsCount)
@@ -26,17 +26,17 @@ export const DropdownHeader = ({ query, queryVariables, data, updateListData }) 
               value: category.name,
               selected: category.id === queryVariables.categoryId
             }))
-      );
-    case QUERY_TYPES.NEWS_ITEMS:
-      return (
-        data &&
+        );
+      case QUERY_TYPES.NEWS_ITEMS:
+        return (
+          data &&
           data.dataProviders &&
           data.dataProviders.map((dataProvider, index) => ({
             index: index + 1,
             value: dataProvider.name,
             selected: dataProvider.name === queryVariables.dataProvider
           }))
-      );
+        );
     }
   };
 

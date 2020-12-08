@@ -6,6 +6,9 @@ env:
 extends:
   - 'eslint:recommended'
   - 'plugin:react/recommended'
+  - 'plugin:@typescript-eslint/recommended'
+  - 'prettier/@typescript-eslint'
+  - 'plugin:prettier/recommended'
 globals:
   Atomics: readonly
   SharedArrayBuffer: readonly
@@ -33,9 +36,6 @@ rules:
   func-names:
     - error
     - as-needed
-  indent:
-    - error
-    - 2
   linebreak-style:
     - error
     - unix
@@ -58,8 +58,10 @@ rules:
     - error
   react-native/no-color-literals:
     - error
-  '@typescript-eslint/no-unused-vars': 
+  '@typescript-eslint/no-unused-vars':
     - 2
+  '@typescript-eslint/explicit-module-boundary-types':
+    - 0
 settings:
   react:
     version: detect

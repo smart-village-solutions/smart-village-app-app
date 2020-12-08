@@ -5,7 +5,7 @@ import { MapMarker, WebViewLeaflet, WebviewLeafletMessage } from 'react-native-w
 import { colors } from '../../config';
 
 type Props = {
-  locations: MapMarker[];
+  locations?: MapMarker[];
   mapCenterPosition?: {
     lat: number;
     lng: number;
@@ -58,8 +58,7 @@ const width = Dimensions.get('window').width;
 WebViewMap.defaultProps = {
   style: {
     alignSelf: 'center',
-    height: 9/16 * width,
+    height: (9 / 16) * width,
     width
   }
 };
-

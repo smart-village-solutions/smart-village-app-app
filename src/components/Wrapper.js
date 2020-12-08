@@ -34,8 +34,8 @@ export const InfoBox = styled(WrapperRow)`
   margin-bottom: ${normalize(5)}px;
 `;
 
-export const WrapperWithOrientation = ({children}) => {
-  const {orientation, dimensions} = useContext(OrientationContext);
+export const WrapperWithOrientation = ({ children }) => {
+  const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeWrapper =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 

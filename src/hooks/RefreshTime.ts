@@ -10,10 +10,7 @@ export const useRefreshTime = (
   const [refreshTime, setRefreshTime] = useState<number>();
 
   const getRefreshTime = useCallback(async () => {
-    const time = await refreshTimeFor(
-      refreshTimeKey,
-      refreshInterval
-    );
+    const time = await refreshTimeFor(refreshTimeKey, refreshInterval);
 
     setRefreshTime(time);
   }, [refreshTimeKey, setRefreshTime]);

@@ -32,8 +32,8 @@ export class CategoryListItem extends React.PureComponent {
           bottomDivider !== undefined
             ? bottomDivider
             : item.toursCount > 0
-              ? index < section.data.length - 1 // do not show a bottomDivider after last entry
-              : true
+            ? index < section.data.length - 1 // do not show a bottomDivider after last entry
+            : true
         }
         topDivider={topDivider !== undefined ? topDivider : false}
         containerStyle={{

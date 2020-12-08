@@ -4,7 +4,11 @@ import * as Notifications from 'expo-notifications';
 import { Subscription } from '@unimodules/react-native-adapter';
 
 import { readFromStore } from '../helpers';
-import { initializePushPermissions, PushNotificationStorageKeys, updatePushToken } from '../pushNotifications';
+import {
+  initializePushPermissions,
+  PushNotificationStorageKeys,
+  updatePushToken
+} from '../pushNotifications';
 
 type NotificationHandler = (arg: Notifications.Notification) => void;
 type ResponseHandler = (arg: Notifications.NotificationResponse) => void;
@@ -13,7 +17,7 @@ export const usePushNotifications = (
   notificationHandler?: NotificationHandler,
   interactionHandler?: ResponseHandler,
   behavior?: Notifications.NotificationBehavior
-) : void => {
+): void => {
   const notificationListener = useRef<Subscription>();
   const responseListener = useRef<Subscription>();
 
@@ -27,7 +31,7 @@ export const usePushNotifications = (
       // no timeout causes the onGetActive to fire an additional request to our server
       setTimeout(async () => {
         const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
-        
+
         if (nextState === 'active') {
           inAppPermission && updatePushToken();
         }
@@ -42,32 +46,34 @@ export const usePushNotifications = (
 
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current =
-      notificationHandler && Notifications.addNotificationReceivedListener((notification) => {
+      notificationHandler &&
+      Notifications.addNotificationReceivedListener((notification) => {
         notificationHandler(notification);
       });
 
     // This listener is fired whenever a user taps on or interacts with a notification
     // (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current = 
-      interactionHandler && Notifications.addNotificationResponseReceivedListener((response) => {
+    responseListener.current =
+      interactionHandler &&
+      Notifications.addNotificationResponseReceivedListener((response) => {
         interactionHandler(response);
       });
 
     Notifications.setNotificationHandler({
-      handleNotification: async () => (behavior ?? {
-        shouldShowAlert: true,
-        shouldPlaySound: false,
-        shouldSetBadge: false
-      })
+      handleNotification: async () =>
+        behavior ?? {
+          shouldShowAlert: true,
+          shouldPlaySound: false,
+          shouldSetBadge: false
+        }
     });
 
     return () => {
-      notificationListener.current
-                && Notifications.removeNotificationSubscription(notificationListener.current);
-      responseListener.current
-                && Notifications.removeNotificationSubscription(responseListener.current);
+      notificationListener.current &&
+        Notifications.removeNotificationSubscription(notificationListener.current);
+      responseListener.current &&
+        Notifications.removeNotificationSubscription(responseListener.current);
       AppState.removeEventListener('change', onGetActive);
     };
   }, []);
-
 };

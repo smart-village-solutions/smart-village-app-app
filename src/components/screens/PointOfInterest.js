@@ -156,13 +156,13 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
               </Title>
             </TitleContainer>
             <WebViewMap
-              locations={
-                [{
+              locations={[
+                {
                   icon: location(colors.primary),
                   iconAnchor: locationIconAnchor,
                   position: { lat: latitude, lng: longitude }
-                }]
-              }
+                }
+              ]}
             />
             {device.platform === 'ios' && <TitleShadow />}
           </View>

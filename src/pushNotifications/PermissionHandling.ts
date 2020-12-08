@@ -20,8 +20,7 @@ export const setInAppPermission = async (newValue: boolean) => {
         showSystemPermissionMissingDialog();
         return true;
       } else {
-        return registerForPushNotificationsAsync()
-          .then(handleIncomingToken);
+        return registerForPushNotificationsAsync().then(handleIncomingToken);
       }
     } else {
       // remove token from store and notify server
@@ -57,7 +56,6 @@ const registerForPushNotificationsAsync = async () => {
 };
 
 const handleSystemPermissions = async (): Promise<boolean> => {
-
   // Push notifications do not work properly with simulators/emulators
   if (!Constants.isDevice) return false;
 
@@ -84,12 +82,9 @@ export const updatePushToken = async () => {
 const showSystemPermissionMissingDialog = () => {
   const { permissionMissingBody, permissionMissingTitle } = texts.pushNotifications;
 
-  Alert.alert(
-    permissionMissingTitle,
-    permissionMissingBody,
-    undefined,
-    { cancelable: false }
-  );
+  Alert.alert(permissionMissingTitle, permissionMissingBody, undefined, {
+    cancelable: false
+  });
 };
 
 const showInitialPushAlert = (): void => {

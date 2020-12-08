@@ -136,15 +136,15 @@ export const parseListItemsFromQuery = (query, data, titleDetail) => {
   if (!(data && data[query])) return;
 
   switch (query) {
-  case QUERY_TYPES.EVENT_RECORDS:
-    return parseEventRecords(data[query]);
-  case QUERY_TYPES.NEWS_ITEMS:
-    return parseNewsItems(data[query], false, titleDetail);
-  case QUERY_TYPES.POINTS_OF_INTEREST:
-    return parsePointOfInterest(data[query]);
-  case QUERY_TYPES.TOURS:
-    return parseTours(data[query]);
-  case QUERY_TYPES.CATEGORIES:
-    return parseCategories(data[query]);
+    case QUERY_TYPES.EVENT_RECORDS:
+      return parseEventRecords(data[query]);
+    case QUERY_TYPES.NEWS_ITEMS:
+      return parseNewsItems(data[query], false, titleDetail);
+    case QUERY_TYPES.POINTS_OF_INTEREST:
+      return parsePointOfInterest(data[query]);
+    case QUERY_TYPES.TOURS:
+      return parseTours(data[query]);
+    case QUERY_TYPES.CATEGORIES:
+      return parseCategories(data[query]);
   }
 };

@@ -7,7 +7,9 @@ import { RegularText } from './Text';
 
 export const ImageRights = ({ imageRights }) => (
   <View style={styles.containerStyle}>
-    <RegularText small style={styles.copyrightStyle}>©</RegularText>
+    <RegularText small style={styles.copyrightStyle}>
+      ©
+    </RegularText>
     <RegularText style={styles.textStyle}>{imageRights}</RegularText>
   </View>
 );
@@ -27,7 +29,7 @@ const styles = StyleSheet.create({
     paddingRight: normalize(1.5),
     paddingTop: normalize(1.5)
   },
-  textStyle :{
+  textStyle: {
     fontSize: normalize(10)
   }
 });

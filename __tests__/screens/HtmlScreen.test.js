@@ -11,7 +11,10 @@ describe('HtmlScreen', () => {
   });
 
   it('must contain a left header element (for going back)', () => {
-    const navigation = { navigate: jest.fn(), getParam: jest.fn((param) => param) };
+    const navigation = {
+      navigate: jest.fn(),
+      getParam: jest.fn((param) => param)
+    };
     const navigationOptions = HtmlScreen.navigationOptions({ navigation });
     const leftHeaderElement = navigationOptions.headerLeft;
 

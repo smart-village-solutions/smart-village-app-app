@@ -10,7 +10,9 @@ describe('defaultStackNavigatorConfig', () => {
   });
 
   it('must contain a right header element (for opening the drawer menu)', () => {
-    const defaultNavigationOptions = defaultConfig.defaultNavigationOptions({ navigation });
+    const defaultNavigationOptions = defaultConfig.defaultNavigationOptions({
+      navigation
+    });
     const rightHeaderElement = defaultNavigationOptions.headerRight;
 
     expect(rightHeaderElement).toBeTruthy();

@@ -69,8 +69,8 @@ export const statusBarHeight = (orientation) =>
   device.platform === 'android'
     ? getStatusBarHeight()
     : orientation === 'portrait'
-      ? getStatusBarHeight()
-      : 0;
+    ? getStatusBarHeight()
+    : 0;
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */

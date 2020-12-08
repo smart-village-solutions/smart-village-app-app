@@ -79,7 +79,11 @@ export const DetailScreen = ({ navigation }) => {
   };
 
   const details = navigation.getParam('details', {});
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+  const fetchPolicy = graphqlFetchPolicy({
+    isConnected,
+    isMainserverUp,
+    refreshTime
+  });
 
   return (
     <Query query={getQuery(query)} variables={{ id: queryVariables.id }} fetchPolicy={fetchPolicy}>

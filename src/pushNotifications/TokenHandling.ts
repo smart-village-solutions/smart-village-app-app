@@ -7,7 +7,7 @@ const namespace = appJson.expo.slug as keyof typeof secrets;
 
 export enum PushNotificationStorageKeys {
   PUSH_TOKEN = 'PUSH_TOKEN',
-  IN_APP_PERMISSION = 'IN_APP_PERMISSION',
+  IN_APP_PERMISSION = 'IN_APP_PERMISSION'
 }
 
 // will check if the incoming token is different from the stored one
@@ -25,7 +25,7 @@ export const handleIncomingToken = async (token?: string) => {
     if (storedToken) successfullyRemoved = await removeTokenFromServer(storedToken);
     if (token) successfullyAdded = await addTokenToServer(token);
     storeTokenSecurely(token);
-    // if we want to remove the token (token === undefined) then return if we did. 
+    // if we want to remove the token (token === undefined) then return if we did.
     // otherwise it is sufficient for the app to know that the new token has arrived on the server.
     return (!token && successfullyRemoved) || successfullyAdded;
   }
@@ -48,20 +48,21 @@ const removeTokenFromServer = async (token: string) => {
     })
   };
 
-  if (accessToken) 
+  if (accessToken)
     // 204 means that it was a success on the server
     // 404 means that the token was already not on the server and can be treated
     //  as a success
-    return fetch(requestPath, fetchObj)
-      .then((response) => response.status === 204 || response.status === 404);
+    return fetch(requestPath, fetchObj).then(
+      (response) => response.status === 204 || response.status === 404
+    );
   return false;
 };
 
 const addTokenToServer = async (token: string) => {
   const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
   const requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesRegister;
-  const os = device.platform === 'ios' || device.platform === 'android' 
-    ? device.platform : 'undefined';
+  const os =
+    device.platform === 'ios' || device.platform === 'android' ? device.platform : 'undefined';
 
   const fetchObj = {
     method: 'POST',
@@ -71,7 +72,7 @@ const addTokenToServer = async (token: string) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      'notification_device': { 'token': token, 'device_type': os }
+      notification_device: { token: token, device_type: os }
     })
   };
   if (accessToken) return fetch(requestPath, fetchObj).then((response) => response.status === 201);
@@ -86,6 +87,4 @@ const storeTokenSecurely = (token?: string) => {
   }
 };
 
-const getTokenFromStorage = () =>
-  SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
-
+const getTokenFromStorage = () => SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);

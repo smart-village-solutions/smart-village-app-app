@@ -26,7 +26,7 @@ const isTokenValid = async () => {
  */
 export const auth = async (callback, forceNewToken = false) => {
   // if the token is still valid, just run the callback, if one exists
-  if (!forceNewToken && await isTokenValid()) return callback && callback();
+  if (!forceNewToken && (await isTokenValid())) return callback && callback();
 
   // otherwise fetch a new access token and expire time
   const fetchObj = {

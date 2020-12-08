@@ -27,7 +27,11 @@ export const Service = ({ navigation, refreshing }) => {
 
   if (!refreshTime) return null;
 
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+  const fetchPolicy = graphqlFetchPolicy({
+    isConnected,
+    isMainserverUp,
+    refreshTime
+  });
   const { sections = {} } = globalSettings;
   const { headlineService = texts.homeTitles.service } = sections;
 

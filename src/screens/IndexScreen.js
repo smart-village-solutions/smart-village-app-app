@@ -25,11 +25,7 @@ import {
 } from '../components';
 import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
 import { arrowLeft } from '../icons';
-import {
-  graphqlFetchPolicy,
-  matomoTrackingString,
-  parseListItemsFromQuery
-} from '../helpers';
+import { graphqlFetchPolicy, matomoTrackingString, parseListItemsFromQuery } from '../helpers';
 
 const { MATOMO_TRACKING } = consts;
 
