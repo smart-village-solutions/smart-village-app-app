@@ -3,17 +3,18 @@ import React, { createContext, useState } from 'react';
 
 export const SettingsContext = createContext({});
 
-export const SettingsProvider = ({
-  initialGlobalSettings,
-  initialListTypesSettings,
-  children
-}) => {
+export const SettingsProvider = ({ initialGlobalSettings, initialListTypesSettings, children }) => {
   const [globalSettings, setGlobalSettings] = useState(initialGlobalSettings);
   const [listTypesSettings, setListTypesSettings] = useState(initialListTypesSettings);
 
   return (
     <SettingsContext.Provider
-      value={{ globalSettings, setGlobalSettings, listTypesSettings, setListTypesSettings }}
+      value={{
+        globalSettings,
+        setGlobalSettings,
+        listTypesSettings,
+        setListTypesSettings
+      }}
     >
       {children}
     </SettingsContext.Provider>

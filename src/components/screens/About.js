@@ -20,7 +20,11 @@ export const About = ({ navigation, refreshing }) => {
 
   if (!refreshTime) return null;
 
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+  const fetchPolicy = graphqlFetchPolicy({
+    isConnected,
+    isMainserverUp,
+    refreshTime
+  });
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
 

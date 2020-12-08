@@ -4,7 +4,10 @@ import renderer from 'react-test-renderer';
 import { DetailScreen } from '../../src/screens';
 
 describe('DetailScreen', () => {
-  const navigation = { navigate: jest.fn(), getParam: jest.fn((param) => param) };
+  const navigation = {
+    navigate: jest.fn(),
+    getParam: jest.fn((param) => param)
+  };
   const navigationOptions = DetailScreen.navigationOptions({ navigation });
 
   it('renders correctly', () => {

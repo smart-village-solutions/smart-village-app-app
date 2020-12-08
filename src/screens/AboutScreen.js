@@ -40,11 +40,15 @@ export const AboutScreen = ({ navigation }) => {
 
   const refresh = async (refetch) => {
     setRefreshing(true);
-    isConnected && await refetch();
+    isConnected && (await refetch());
     setRefreshing(false);
   };
 
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+  const fetchPolicy = graphqlFetchPolicy({
+    isConnected,
+    isMainserverUp,
+    refreshTime
+  });
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
 

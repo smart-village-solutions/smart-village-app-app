@@ -68,7 +68,11 @@ export const HtmlScreen = ({ navigation }) => {
   };
   const rootRouteName = navigation.getParam('rootRouteName', '');
   const subQuery = navigation.getParam('subQuery', '');
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+  const fetchPolicy = graphqlFetchPolicy({
+    isConnected,
+    isMainserverUp,
+    refreshTime
+  });
 
   // action to open source urls
   const openWebScreen = (param) => {
@@ -158,7 +162,10 @@ export const HtmlScreen = ({ navigation }) => {
                         key={`${index}-${button.webUrl}`}
                         title={button.buttonTitle || `${title} öffnen`}
                         onPress={() =>
-                          openWebScreen({ routeName: button.routeName, webUrl: button.webUrl })
+                          openWebScreen({
+                            routeName: button.routeName,
+                            webUrl: button.webUrl
+                          })
                         }
                       />
                     ))}

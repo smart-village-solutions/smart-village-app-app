@@ -25,18 +25,21 @@ export const refreshTimeFor = async (refreshTimeKey, refreshInterval) => {
       : refreshIntervals[refreshTimeKey];
 
   switch (refreshInterval) {
-  case consts.REFRESH_INTERVALS.ONCE_A_DAY: {
-    const endOfDay = moment().endOf('day').unix();
+    case consts.REFRESH_INTERVALS.ONCE_A_DAY: {
+      const endOfDay = moment().endOf('day').unix();
 
-    if (endOfDay > refreshTime) {
-      // store or update refresh time in AsyncStorage
-      addToStore('refresh-intervals', { ...refreshIntervals, [refreshTimeKey]: endOfDay });
+      if (endOfDay > refreshTime) {
+        // store or update refresh time in AsyncStorage
+        addToStore('refresh-intervals', {
+          ...refreshIntervals,
+          [refreshTimeKey]: endOfDay
+        });
+      }
+
+      break;
     }
-
-    break;
-  }
-  default:
-    break;
+    default:
+      break;
   }
 
   return refreshTime;
