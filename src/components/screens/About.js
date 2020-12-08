@@ -1,33 +1,22 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { View } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { consts, device, texts } from '../../config';
+import { device, texts } from '../../config';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { TextList } from '../TextList';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
+import { graphqlFetchPolicy } from '../../helpers';
+import { useRefreshTime } from '../../hooks';
 
 export const About = ({ navigation, refreshing }) => {
-  const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
 
-  useEffect(() => {
-    const getRefreshTime = async () => {
-      const time = await refreshTimeFor(
-        'publicJsonFile-homeAbout',
-        consts.REFRESH_INTERVALS.STATIC_CONTENT
-      );
-
-      setRefreshTime(time);
-    };
-
-    getRefreshTime();
-  }, []);
+  const refreshTime = useRefreshTime('publicJsonFile-homeAbout');
 
   if (!refreshTime) return null;
 

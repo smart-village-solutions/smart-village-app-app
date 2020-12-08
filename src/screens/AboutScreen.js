@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 import { Query } from 'react-apollo';
 
@@ -16,31 +16,19 @@ import {
   VersionNumber
 } from '../components';
 import { getQuery, QUERY_TYPES } from '../queries';
-import { graphqlFetchPolicy, refreshTimeFor } from '../helpers';
-import { useMatomoTrackScreenView } from '../hooks';
+import { graphqlFetchPolicy } from '../helpers';
+import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
 
-const { MATOMO_TRACKING, REFRESH_INTERVALS } = consts;
+const { MATOMO_TRACKING } = consts;
 
 export const AboutScreen = ({ navigation }) => {
-  const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const [refreshing, setRefreshing] = useState(false);
 
+  const refreshTime = useRefreshTime('publicJsonFile-homeAbout');
+
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.MORE);
-
-  useEffect(() => {
-    const getRefreshTime = async () => {
-      const time = await refreshTimeFor(
-        'publicJsonFile-homeAbout',
-        REFRESH_INTERVALS.STATIC_CONTENT
-      );
-
-      setRefreshTime(time);
-    };
-
-    getRefreshTime();
-  }, []);
 
   if (!refreshTime) {
     return (

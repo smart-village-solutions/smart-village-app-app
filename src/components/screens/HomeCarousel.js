@@ -1,32 +1,21 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { Query } from 'react-apollo';
 import _shuffle from 'lodash/shuffle';
 
 import { NetworkContext } from '../../NetworkProvider';
-import { colors, consts } from '../../config';
+import { colors } from '../../config';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { LoadingContainer } from '../LoadingContainer';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
+import { graphqlFetchPolicy } from '../../helpers';
+import { useRefreshTime } from '../../hooks';
 
 export const HomeCarousel = ({ navigation, refreshing }) => {
-  const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
-  useEffect(() => {
-    const getRefreshTime = async () => {
-      const time = await refreshTimeFor(
-        'publicJsonFile-homeCarousel',
-        consts.REFRESH_INTERVALS.STATIC_CONTENT
-      );
-
-      setRefreshTime(time);
-    };
-
-    getRefreshTime();
-  }, []);
+  const refreshTime = useRefreshTime('publicJsonFile-homeCarousel');
 
   if (!refreshTime) {
     return (
