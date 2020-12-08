@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.4.1]
+
+Optimization for image component, startup logics and share icon
+
+### Added
+
+- added different share icon for iOS
+
+### Fixed
+
+- fixed re-render logic for `Image`
+- corrected logics on startup for brand new apps
+- avoided matomo alert on startup if matomo is disabled
+
 ## [v1.4.0] :rocket:
 
 The fourth minor version upgrade comes with push notifications, Matomo analytics and list type
