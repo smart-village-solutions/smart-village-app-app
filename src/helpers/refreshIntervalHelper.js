@@ -10,11 +10,11 @@ import { addToStore, readFromStore } from './storageHelper';
  * for queries.
  * If there is already a refresh time stored, than return this, otherwise the current time.
  * Store a new refresh time in AsyncStorage to relate to in future renderings.
- *
+ * @async
  * @param {string} refreshTimeKey the unique key of the screen to set the refresh time for
  * @param {string} refreshInterval the refresh interval to apply
  *
- * @return {number} refresh time in seconds from 01.01.1970 00:00:00 UTC
+ * @return {Promise<number>} refresh time in seconds from 01.01.1970 00:00:00 UTC
  */
 export const refreshTimeFor = async (refreshTimeKey, refreshInterval) => {
   const refreshIntervals = await readFromStore('refresh-intervals');

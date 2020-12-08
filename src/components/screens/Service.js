@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { colors, consts, device, normalize, texts } from '../../config';
+import { colors, device, normalize, texts } from '../../config';
 import { DiagonalGradient } from '../DiagonalGradient';
 import { Image } from '../Image';
 import { ServiceBox } from '../ServiceBox';
@@ -15,26 +15,15 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { WrapperWrap } from '../Wrapper';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
-import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
+import { graphqlFetchPolicy } from '../../helpers';
+import { useRefreshTime } from '../../hooks';
 
 export const Service = ({ navigation, refreshing }) => {
-  const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const { globalSettings } = useContext(SettingsContext);
 
-  useEffect(() => {
-    const getRefreshTime = async () => {
-      const time = await refreshTimeFor(
-        'publicJsonFile-homeService',
-        consts.REFRESH_INTERVALS.STATIC_CONTENT
-      );
-
-      setRefreshTime(time);
-    };
-
-    getRefreshTime();
-  }, []);
+  const refreshTime = useRefreshTime('publicJsonFile-homeService');
 
   if (!refreshTime) return null;
 

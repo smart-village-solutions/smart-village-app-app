@@ -25,7 +25,8 @@ import {
 } from '../components';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { arrowLeft, share } from '../icons';
-import { graphqlFetchPolicy, openShare, refreshTimeFor } from '../helpers';
+import { graphqlFetchPolicy, openShare } from '../helpers';
+import { useRefreshTime } from '../hooks';
 
 const getComponent = (query) => {
   const COMPONENTS = {
@@ -50,7 +51,6 @@ const getRefreshInterval = (query) => {
 };
 
 export const DetailScreen = ({ navigation }) => {
-  const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', {});
@@ -58,15 +58,7 @@ export const DetailScreen = ({ navigation }) => {
 
   if (!query || !queryVariables || !queryVariables.id) return null;
 
-  useEffect(() => {
-    const getRefreshTime = async () => {
-      const time = await refreshTimeFor(`${query}-${queryVariables.id}`, getRefreshInterval(query));
-
-      setRefreshTime(time);
-    };
-
-    getRefreshTime();
-  }, []);
+  const refreshTime = useRefreshTime(`${query}-${queryVariables.id}`, getRefreshInterval(query));
 
   useEffect(() => {
     isConnected && auth();

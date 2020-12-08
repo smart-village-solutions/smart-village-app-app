@@ -23,15 +23,15 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../components';
-import { graphqlFetchPolicy, refreshTimeFor, trimNewLines } from '../helpers';
+import { graphqlFetchPolicy, trimNewLines } from '../helpers';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
 import { OrientationContext } from '../OrientationProvider';
+import { useRefreshTime } from '../hooks';
 
-const { MATOMO_TRACKING, REFRESH_INTERVALS } = consts;
+const { MATOMO_TRACKING } = consts;
 
 export const HtmlScreen = ({ navigation }) => {
-  const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const query = navigation.getParam('query', '');
@@ -42,18 +42,7 @@ export const HtmlScreen = ({ navigation }) => {
 
   if (!query || !queryVariables || !queryVariables.name) return null;
 
-  useEffect(() => {
-    const getRefreshTime = async () => {
-      const time = await refreshTimeFor(
-        `${query}-${queryVariables.name}`,
-        REFRESH_INTERVALS.STATIC_CONTENT
-      );
-
-      setRefreshTime(time);
-    };
-
-    getRefreshTime();
-  }, []);
+  const refreshTime = useRefreshTime(`${query}-${queryVariables.name}`);
 
   useEffect(() => {
     isConnected && auth();
