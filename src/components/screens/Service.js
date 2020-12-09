@@ -6,7 +6,7 @@ import { Query } from 'react-apollo';
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { consts, device, normalize, texts } from '../../config';
+import { colors, consts, device, normalize, texts } from '../../config';
 import { DiagonalGradient } from '../DiagonalGradient';
 import { Image } from '../Image';
 import { ServiceBox } from '../ServiceBox';
@@ -88,7 +88,12 @@ export const Service = ({ navigation, refreshing }) => {
                       >
                         <View>
                           {item.iconName ? (
-                            <Icon name={item.iconName} size={30} style={styles.serviceIcon} />
+                            <Icon
+                              name={item.iconName}
+                              size={30}
+                              style={styles.serviceIcon}
+                              iconColor={colors.lightestText}
+                            />
                           ) : (
                             <Image
                               source={{ uri: item.icon }}
