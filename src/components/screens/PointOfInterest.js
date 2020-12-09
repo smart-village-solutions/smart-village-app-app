@@ -16,7 +16,7 @@ import { ImagesCarousel } from '../ImagesCarousel';
 import { OrientationContext } from '../../OrientationProvider';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { matomoTrackingString } from '../../helpers';
-import { WebViewMap } from '../map';
+import { WebViewMap } from '../map/WebViewMap';
 import { location, locationIconAnchor } from '../../icons';
 
 const { MATOMO_TRACKING } = consts;
