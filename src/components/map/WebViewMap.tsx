@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-color-literals */
 import React, { useCallback } from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { Dimensions, StyleProp, View, ViewStyle } from 'react-native';
 import { MapMarker, WebViewLeaflet, WebviewLeafletMessage } from 'react-native-webview-leaflet';
 
 type Props = {
@@ -29,7 +29,7 @@ export const WebViewMap = ({
   );
 
   return (
-    <View style={[styles.map, style]}>
+    <View style={style}>
       <WebViewLeaflet
         backgroundColor={'gray'}
         onMessageReceived={messageHandler}
@@ -49,9 +49,16 @@ export const WebViewMap = ({
   );
 };
 
-const styles = StyleSheet.create({
-  map: {
-    aspectRatio: 16 / 9,
-    width: '100%'
+// this will only be set at the start of the app, so this will be the width of portrait mode
+// needs to be done due to react native 0.63 bug for android
+// https://github.com/facebook/react-native/issues/29451
+const width = Dimensions.get('window').width;
+
+WebViewMap.defaultProps = {
+  style: {
+    alignSelf: 'center',
+    height: 9/16 * width,
+    width
   }
-});
+};
+
