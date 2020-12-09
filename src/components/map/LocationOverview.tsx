@@ -5,6 +5,7 @@ import { WebviewLeafletMessage } from 'react-native-webview-leaflet';
 import { NavigationScreenProps, ScrollView } from 'react-navigation';
 
 import { colors } from '../../config';
+import { location, locationIconAnchor } from '../../icons';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { LoadingContainer } from '../LoadingContainer';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
@@ -23,6 +24,8 @@ const mapToMapMarkers = (data: any) => {
 
     if(!latitude || !longitude) return undefined;
     return {
+      icon: location(colors.primary),
+      iconAnchor: locationIconAnchor,
       id: item.id,
       position: {
         lat: latitude,

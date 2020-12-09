@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { View } from 'react-native';
 import _filter from 'lodash/filter';
 
-import { consts, device, texts } from '../../config';
+import { colors, consts, device, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { Title, TitleContainer, TitleShadow } from '../Title';
@@ -16,7 +16,8 @@ import { ImagesCarousel } from '../ImagesCarousel';
 import { OrientationContext } from '../../OrientationProvider';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { matomoTrackingString } from '../../helpers';
-import { WebViewMap } from '../map/WebViewMap';
+import { WebViewMap } from '../map';
+import { location, locationIconAnchor } from '../../icons';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -155,7 +156,13 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
               </Title>
             </TitleContainer>
             <WebViewMap
-              locations={[{ position: { lat: latitude, lng: longitude } }]}
+              locations={
+                [{
+                  icon: location(colors.primary),
+                  iconAnchor: locationIconAnchor,
+                  position: { lat: latitude, lng: longitude }
+                }]
+              }
             />
             {device.platform === 'ios' && <TitleShadow />}
           </View>

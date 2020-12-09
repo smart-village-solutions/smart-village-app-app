@@ -2,8 +2,6 @@
 import React, { useCallback } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { MapMarker, WebViewLeaflet, WebviewLeafletMessage } from 'react-native-webview-leaflet';
-import { colors } from '../../config';
-import { location as locationMarker } from '../../icons';
 
 type Props = {
   locations: MapMarker[];
@@ -43,17 +41,7 @@ export const WebViewMap = ({
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           }
         ]}
-        mapMarkers={[
-          ...locations.map((location) => {
-            return {
-              ...{
-                icon: locationMarker(colors.primary),
-                iconAnchor: { x: 9, y: 20 }
-              },
-              ...location
-            };
-          })
-        ]}
+        mapMarkers={locations}
         mapCenterPosition={mapCenterPosition ?? locations?.[0]?.position}
         zoom={zoom}
       />

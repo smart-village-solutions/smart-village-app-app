@@ -10,3 +10,5 @@ export const location = (color) => `
     </g>
   </svg>
 `;
+
+export const locationIconAnchor = { x: 9, y: 20 };
