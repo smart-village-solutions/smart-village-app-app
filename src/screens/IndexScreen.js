@@ -24,7 +24,8 @@ import {
   LoadingContainer,
   SafeAreaViewFlex,
   TextList,
-  LocationOverview
+  LocationOverview,
+  MapSwitchHeader
 } from '../components';
 import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
 import { arrowLeft } from '../icons';
@@ -37,7 +38,6 @@ import {
   shareMessage,
   subtitle
 } from '../helpers';
-import { MapSwitchHeader } from '../components/MapSwitchHeader';
 
 const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
