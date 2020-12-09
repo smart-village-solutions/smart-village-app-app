@@ -1,7 +1,7 @@
-/* eslint-disable react-native/no-color-literals */
 import React, { useCallback } from 'react';
 import { Dimensions, StyleProp, View, ViewStyle } from 'react-native';
 import { MapMarker, WebViewLeaflet, WebviewLeafletMessage } from 'react-native-webview-leaflet';
+import { colors } from '../../config';
 
 type Props = {
   locations: MapMarker[];
@@ -31,7 +31,7 @@ export const WebViewMap = ({
   return (
     <View style={style}>
       <WebViewLeaflet
-        backgroundColor={'gray'}
+        backgroundColor={colors.lightestText}
         onMessageReceived={messageHandler}
         mapLayers={[
           {
