@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { Dimensions, StyleProp, View, ViewStyle } from 'react-native';
 import { MapMarker, WebViewLeaflet, WebviewLeafletMessage } from 'react-native-webview-leaflet';
+
 import { colors } from '../../config';
 
 type Props = {
