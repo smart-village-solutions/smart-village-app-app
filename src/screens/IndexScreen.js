@@ -45,6 +45,7 @@ export const IndexScreen = ({ navigation }) => {
 
   const query = navigation.getParam('query', '');
   const title = navigation.getParam('title', '');
+  const titleDetail = navigation.getParam('titleDetail', '');
 
   const refresh = useCallback(
     async (refetch) => {
@@ -150,7 +151,7 @@ export const IndexScreen = ({ navigation }) => {
               );
             }
 
-            const listItems = parseListItemsFromQuery(query, data);
+            const listItems = parseListItemsFromQuery(query, data, titleDetail);
 
             if (!listItems || !listItems.length) return null;
 

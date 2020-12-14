@@ -1,5 +1,4 @@
 import _filter from 'lodash/filter';
-import { texts } from '../config';
 
 import { QUERY_TYPES } from '../queries';
 import { eventDate } from './dateTimeHelper';
@@ -34,7 +33,7 @@ export const parseEventRecords = (data, skipLastDivider) => {
   }));
 };
 
-export const parseNewsItems = (data, skipLastDivider) => {
+export const parseNewsItems = (data, skipLastDivider, titleDetail) => {
   return data?.map((newsItem, index) => ({
     id: newsItem.id,
     subtitle: subtitle(momentFormat(newsItem.publishedAt), newsItem.dataProvider?.name),
@@ -50,7 +49,7 @@ export const parseNewsItems = (data, skipLastDivider) => {
     },
     routeName: 'Detail',
     params: {
-      title: texts.homeCategoriesNews.categoryTitleDetail,
+      title: titleDetail,
       query: QUERY_TYPES.NEWS_ITEM,
       queryVariables: { id: `${newsItem.id}` },
       rootRouteName: 'NewsItems',
@@ -133,14 +132,14 @@ const parseCategories = (data, skipLastDivider) => {
   }));
 };
 
-export const parseListItemsFromQuery = (query, data) => {
+export const parseListItemsFromQuery = (query, data, titleDetail) => {
   if (!(data && data[query])) return;
 
   switch (query) {
   case QUERY_TYPES.EVENT_RECORDS:
     return parseEventRecords(data[query]);
   case QUERY_TYPES.NEWS_ITEMS:
-    return parseNewsItems(data[query]);
+    return parseNewsItems(data[query], false, titleDetail);
   case QUERY_TYPES.POINTS_OF_INTEREST:
     return parsePointOfInterest(data[query]);
   case QUERY_TYPES.TOURS:

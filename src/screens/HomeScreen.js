@@ -128,10 +128,11 @@ export const HomeScreen = ({ navigation }) => {
         rootRouteName: 'EventRecords'
       }
     },
-    NEWS_ITEMS_INDEX: ({ categoryId, categoryTitle }) => ({
+    NEWS_ITEMS_INDEX: ({ categoryId, categoryTitle, categoryTitleDetail }) => ({
       routeName: 'Index',
       params: {
         title: categoryTitle,
+        titleDetail: categoryTitleDetail,
         query: QUERY_TYPES.NEWS_ITEMS,
         queryVariables: { limit: 15, ...{ categoryId } },
         rootRouteName: 'NewsItems'
@@ -154,65 +155,81 @@ export const HomeScreen = ({ navigation }) => {
         <HomeCarousel navigation={navigation} />
 
         {showNews &&
-          categoriesNews.map(({ categoryId, categoryTitle, categoryButton }, index) => (
-            <Fragment key={`${index}-${categoryTitle}`}>
-              <TitleContainer>
-                <Touchable
-                  onPress={() =>
-                    navigation.navigate(NAVIGATION.NEWS_ITEMS_INDEX({ categoryId, categoryTitle }))
-                  }
+          categoriesNews.map(
+            ({ categoryId, categoryTitle, categoryTitleDetail, categoryButton }, index) => (
+              <Fragment key={`${index}-${categoryTitle}`}>
+                <TitleContainer>
+                  <Touchable
+                    onPress={() =>
+                      navigation.navigate(
+                        NAVIGATION.NEWS_ITEMS_INDEX({
+                          categoryId,
+                          categoryTitle,
+                          categoryTitleDetail
+                        })
+                      )
+                    }
+                  >
+                    <Title accessibilityLabel={`${categoryTitle} (Überschrift) (Taste)`}>
+                      {categoryTitle}
+                    </Title>
+                  </Touchable>
+                </TitleContainer>
+                {device.platform === 'ios' && <TitleShadow />}
+                <Query
+                  query={getQuery(QUERY_TYPES.NEWS_ITEMS)}
+                  variables={{ limit: 3, ...{ categoryId } }}
+                  fetchPolicy={fetchPolicy}
                 >
-                  <Title accessibilityLabel={`${categoryTitle} (Überschrift) (Taste)`}>
-                    {categoryTitle}
-                  </Title>
-                </Touchable>
-              </TitleContainer>
-              {device.platform === 'ios' && <TitleShadow />}
-              <Query
-                query={getQuery(QUERY_TYPES.NEWS_ITEMS)}
-                variables={{ limit: 3, ...{ categoryId } }}
-                fetchPolicy={fetchPolicy}
-              >
-                {({ data, loading }) => {
-                  if (loading) {
-                    return (
-                      <LoadingContainer>
-                        <ActivityIndicator color={colors.accent} />
-                      </LoadingContainer>
+                  {({ data, loading }) => {
+                    if (loading) {
+                      return (
+                        <LoadingContainer>
+                          <ActivityIndicator color={colors.accent} />
+                        </LoadingContainer>
+                      );
+                    }
+
+                    const newsItems = parseNewsItems(
+                      data?.[QUERY_TYPES.NEWS_ITEMS],
+                      true,
+                      categoryTitleDetail
                     );
-                  }
 
-                  const newsItems = parseNewsItems(data?.[QUERY_TYPES.NEWS_ITEMS], true);
+                    if (!newsItems || !newsItems.length) return null;
 
-                  if (!newsItems || !newsItems.length) return null;
+                    const newsItemsListType = listTypesSettings[QUERY_TYPES.NEWS_ITEMS];
 
-                  const newsItemsListType = listTypesSettings[QUERY_TYPES.NEWS_ITEMS];
-
-                  return (
-                    <View>
-                      <ListComponent
-                        navigation={navigation}
-                        data={newsItems}
-                        query={QUERY_TYPES.NEWS_ITEMS}
-                        horizontal={newsItemsListType === LIST_TYPES.CARD_LIST}
-                      />
-
-                      <Wrapper>
-                        <Button
-                          title={categoryButton}
-                          onPress={() =>
-                            navigation.navigate(
-                              NAVIGATION.NEWS_ITEMS_INDEX({ categoryId, categoryTitle })
-                            )
-                          }
+                    return (
+                      <View>
+                        <ListComponent
+                          navigation={navigation}
+                          data={newsItems}
+                          query={QUERY_TYPES.NEWS_ITEMS}
+                          horizontal={newsItemsListType === LIST_TYPES.CARD_LIST}
                         />
-                      </Wrapper>
-                    </View>
-                  );
-                }}
-              </Query>
-            </Fragment>
-          ))}
+
+                        <Wrapper>
+                          <Button
+                            title={categoryButton}
+                            onPress={() =>
+                              navigation.navigate(
+                                NAVIGATION.NEWS_ITEMS_INDEX({
+                                  categoryId,
+                                  categoryTitle,
+                                  categoryTitleDetail
+                                })
+                              )
+                            }
+                          />
+                        </Wrapper>
+                      </View>
+                    );
+                  }}
+                </Query>
+              </Fragment>
+            )
+          )}
 
         {showPointsOfInterestAndTours && (
           <>
