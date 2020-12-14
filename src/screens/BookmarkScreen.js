@@ -78,9 +78,9 @@ export const BookmarkScreen = ({ navigation }) => {
       <ScrollView>
         {categoriesNews?.map(({ categoryId, categoryTitle }) =>
           getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, categoryId))}
-        {getSection(QUERY_TYPES.POINTS_OF_INTEREST)}
-        {getSection(QUERY_TYPES.TOURS)}
-        {getSection(QUERY_TYPES.EVENT_RECORDS)}
+        {getSection(QUERY_TYPES.POINTS_OF_INTEREST, texts.categoryTitles.pointsOfInterest)}
+        {getSection(QUERY_TYPES.TOURS, texts.categoryTitles.tours)}
+        {getSection(QUERY_TYPES.EVENT_RECORDS, texts.homeTitles.events)}
       </ScrollView>
     </SafeAreaViewFlex>
   );
