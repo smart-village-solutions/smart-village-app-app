@@ -5,7 +5,7 @@ import { refreshTimeFor } from '../helpers';
 
 export const useRefreshTime = (
   refreshTimeKey: string,
-  refreshInterval = consts.REFRESH_INTERVALS.STATIC_CONTENT
+  refreshInterval = consts.REFRESH_INTERVALS.ONCE_A_DAY
 ) => {
   const [refreshTime, setRefreshTime] = useState<number>();
 
