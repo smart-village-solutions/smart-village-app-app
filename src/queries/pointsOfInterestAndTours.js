@@ -2,12 +2,14 @@ import gql from 'graphql-tag';
 
 export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
   query PointsOfInterestAndTours(
+    $idsTour: [ID]
+    $idsPoi: [ID]
     $limit: Int
     $offset: Int
     $orderPoi: PointsOfInterestOrder
     $orderTour: ToursOrder
   ) {
-    pointsOfInterest(limit: $limit, skip: $offset, order: $orderPoi) {
+    pointsOfInterest(ids: $idsPoi, limit: $limit, skip: $offset, order: $orderPoi) {
       id
       name
       category {
@@ -38,7 +40,7 @@ export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
       }
     }
 
-    tours(limit: $limit, order: $orderTour) {
+    tours(ids: $idsTour, limit: $limit, order: $orderTour) {
       id
       name
       category {

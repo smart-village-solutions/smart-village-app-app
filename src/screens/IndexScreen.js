@@ -147,7 +147,7 @@ export const IndexScreen = ({ navigation }) => {
               );
             }
 
-            const listItems = parseListItemsFromQuery(query, data, titleDetail);
+            const listItems = parseListItemsFromQuery(query, data, false, titleDetail);
 
             if (!listItems || !listItems.length) return null;
 

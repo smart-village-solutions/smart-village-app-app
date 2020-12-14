@@ -1,30 +1,30 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, normalize } from '../config';
-import { getBookmarkedStatus, toggleBookmark } from '../helpers/bookmarkHelpers';
-import { starEmpty } from '../icons/starEmpty';
-import { starFilled } from '../icons/starFilled';
-import { QUERY_TYPES } from '../queries';
-import { Icon } from './Icon';
+import { colors, normalize } from '../../config';
+import { getBookmarkedStatus, toggleBookmark } from '../../helpers/bookmarkHelpers';
+import { starEmpty } from '../../icons/starEmpty';
+import { starFilled } from '../../icons/starFilled';
+import { QUERY_TYPES } from '../../queries';
+import { Icon } from '../Icon';
 
 type Props = {
   id: string;
+  categoryId: number
   query: keyof typeof QUERY_TYPES;
   style: object | undefined;
 }
 
-export const BookmarkHeader = ({ id, query, style }: Props) => {
-
+export const BookmarkHeader = ({ id, categoryId, query, style }: Props) => {
   const [isBookmarked, setIsBookmarked] = useState<boolean>();
 
   const onPress = useCallback(() => {
-    toggleBookmark(query, id);
+    toggleBookmark(query, id, categoryId);
     setIsBookmarked((value) => !value);
   }, [id, query, setIsBookmarked]);
 
   const updateBookmarkedStatus = useCallback(async () => {
-    setIsBookmarked(await getBookmarkedStatus(query, id));
+    setIsBookmarked(await getBookmarkedStatus(query, id, categoryId));
   }, [setIsBookmarked]);
 
   useEffect(() => {
