@@ -53,6 +53,7 @@ export const parseNewsItems = (data, skipLastDivider, titleDetail) => {
     routeName: 'Detail',
     params: {
       title: titleDetail,
+      categoryId: newsItem.categories?.[0]?.id,
       query: QUERY_TYPES.NEWS_ITEM,
       queryVariables: { id: `${newsItem.id}` },
       rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS,
@@ -135,19 +136,19 @@ const parseCategories = (data, skipLastDivider) => {
   }));
 };
 
-export const parseListItemsFromQuery = (query, data, titleDetail) => {
+export const parseListItemsFromQuery = (query, data, skipLastDivider, titleDetail) => {
   if (!(data && data[query])) return;
 
   switch (query) {
     case QUERY_TYPES.EVENT_RECORDS:
-      return parseEventRecords(data[query]);
+      return parseEventRecords(data[query], skipLastDivider);
     case QUERY_TYPES.NEWS_ITEMS:
-      return parseNewsItems(data[query], false, titleDetail);
+      return parseNewsItems(data[query], skipLastDivider, titleDetail);
     case QUERY_TYPES.POINTS_OF_INTEREST:
-      return parsePointOfInterest(data[query]);
+      return parsePointOfInterest(data[query], skipLastDivider);
     case QUERY_TYPES.TOURS:
-      return parseTours(data[query]);
+      return parseTours(data[query], skipLastDivider);
     case QUERY_TYPES.CATEGORIES:
-      return parseCategories(data[query]);
+      return parseCategories(data[query], skipLastDivider);
   }
 };
