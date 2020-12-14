@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.4.2]
+
+Integration of a map for points of interests
+
+### Added
+
+- added open street maps for points of interests index
+  - added osm via react-native-webview-leaflet, own fork to align webview versions
+- added a map also on the detail screen of a point of interest
+
+### Changed
+
+- refactored list components
+  - extracted parsing logic from `IndexScreen` and `HomeScreen`
+  - added `ListComponent` to handle selection by settings and query type
+  - replaced `getComponent` structure in `IndexScreen` by `ListComponent`
+  - replaced `getListComponent` structure in `HomeScreen` by `ListComponent`
+- refactored refresh time intervals to an own hook
+
 ## [v1.4.1]
 
 Optimization for image component, startup logics and share icon

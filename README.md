@@ -2,7 +2,7 @@
 
 # Smart Village App - Mobile App
 
-![Project version](https://img.shields.io/badge/version-1.4.1-informational.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/maintainability)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/test_coverage)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/test_coverage) ![Node version](https://img.shields.io/badge/node-14.3.0-informational.svg) ![Yarn version](https://img.shields.io/badge/yarn-1.22.4-informational.svg) ![Expo version](https://img.shields.io/badge/expo-38.0.10-informational.svg)
+![Project version](https://img.shields.io/badge/version-1.4.2-informational.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/maintainability)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/test_coverage)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/test_coverage) ![Node version](https://img.shields.io/badge/node-14.3.0-informational.svg) ![Yarn version](https://img.shields.io/badge/yarn-1.22.4-informational.svg) ![Expo version](https://img.shields.io/badge/expo-38.0.10-informational.svg)
 
 The Smart Village App is a open source mobile app for villages, communities and counties. It is made with React Native for Android and iOS.
 
@@ -51,4 +51,4 @@ Have a look at the [changelog](./CHANGELOG.md) to be up to date with the develop
 
 ---
 
-###### Version: 1.4.1
+###### Version: 1.4.2
