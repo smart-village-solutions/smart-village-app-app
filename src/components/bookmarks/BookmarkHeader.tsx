@@ -3,8 +3,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, normalize } from '../../config';
 import { getBookmarkedStatus, toggleBookmark } from '../../helpers/bookmarkHelpers';
-import { starEmpty } from '../../icons/starEmpty';
-import { starFilled } from '../../icons/starFilled';
+import { heartEmpty, heartFilled } from '../../icons';
 import { QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
 
@@ -41,7 +40,13 @@ export const BookmarkHeader = ({ id, categoryId, query, style }: Props) => {
       accessibilityLabel="Merkliste (Taste)"
       accessibilityHint="Zu der Merkliste hinzufügen"
     >
-      <Icon xml={isBookmarked ? starFilled(colors.lightestText) : starEmpty(colors.lightestText)} style={{...styles.icon, ...style}} />
+      <Icon
+        size={22}
+        xml={isBookmarked ?
+          heartFilled(colors.lightestText) :
+          heartEmpty(colors.lightestText)}
+        style={{...styles.icon, ...style}}
+      />
     </TouchableOpacity>
   );
 };

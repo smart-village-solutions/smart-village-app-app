@@ -42,6 +42,7 @@ import {
 } from '../helpers';
 import { useMatomoAlertOnStartUp, useMatomoTrackScreenView, usePushNotifications } from '../hooks';
 import { getQuery, getQueryType, QUERY_TYPES } from '../queries';
+import { favSettings } from '../icons';
 
 const { DRAWER, LIST_TYPES, MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
@@ -375,7 +376,7 @@ HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
   const { headerRight } = navigationOptions;
 
   return {
-    headerRight: (
+    headerLeft: (
       <WrapperRow>
         <TouchableOpacity
           onPress={() => navigation.navigate('Bookmarks')}
@@ -383,13 +384,11 @@ HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
           accessibilityHint="Zu den Einstellungen wechseln"
         >
           <Icon
-            name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'}
             size={26}
-            iconColor={colors.lightestText}
             style={headerRight ? styles.iconLeft : styles.iconRight}
+            xml={favSettings(colors.lightestText)}
           />
         </TouchableOpacity>
-        {!!headerRight && headerRight}
       </WrapperRow>
     )
   };
