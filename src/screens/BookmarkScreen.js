@@ -8,12 +8,14 @@ import {
   View
 } from 'react-native';
 
-import { colors, consts, device, normalize } from '../config';
+import { colors, consts, device, normalize, texts } from '../config';
 import {
   BookmarkSection,
   Icon,
   LoadingContainer,
+  RegularText,
   SafeAreaViewFlex,
+  Wrapper,
   WrapperRow
 } from '../components';
 import { getKeyFromTypeAndCategory } from '../helpers';
@@ -23,6 +25,15 @@ import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
+
+const getBookmarkCount = (bookmarks) => {
+  let count = 0;
+
+  for(let key in bookmarks) {
+    count += bookmarks[key]?.length ?? 0;
+  }
+  return count;
+};
 
 export const BookmarkScreen = ({ navigation }) => {
   const bookmarks = useBookmarks();
@@ -60,14 +71,19 @@ export const BookmarkScreen = ({ navigation }) => {
     );
   }
 
-  console.log({bookmarks});
-
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-
+        {getBookmarkCount(bookmarks) === 0 ?
+          <Wrapper>
+            <RegularText>
+              {texts.bookmarks.noBookmarksYet}
+            </RegularText>
+          </Wrapper>:
+          null
+        }
         {categoriesNews?.map(({ categoryId, categoryTitle }) =>
-          getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, categoryId))        }
+          getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, categoryId))}
         {getSection(QUERY_TYPES.POINTS_OF_INTEREST)}
         {getSection(QUERY_TYPES.TOURS)}
         {getSection(QUERY_TYPES.EVENT_RECORDS)}
