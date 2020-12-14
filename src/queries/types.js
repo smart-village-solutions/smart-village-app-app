@@ -23,9 +23,11 @@ export const QUERY_TYPES = {
  */
 export const getQueryType = (input) => {
   const camelCaseInput = _camelCase(input);
-  const availableTypes = [QUERY_TYPES.TOUR,
+  const availableTypes = [
+    QUERY_TYPES.TOUR,
     QUERY_TYPES.POINTS_OF_INTEREST,
     QUERY_TYPES.NEWS_ITEM,
-    QUERY_TYPES.EVENT_RECORD];
+    QUERY_TYPES.EVENT_RECORD
+  ];
   return availableTypes.find((type) => type === camelCaseInput);
 };
