@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext } from 'react';
 import {
-  ActivityIndicator,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -12,7 +11,6 @@ import { colors, consts, device, normalize, texts } from '../config';
 import {
   BookmarkSection,
   Icon,
-  LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
   Wrapper,
@@ -27,6 +25,8 @@ import { SettingsContext } from '../SettingsProvider';
 const { MATOMO_TRACKING } = consts;
 
 const getBookmarkCount = (bookmarks) => {
+  if(!bookmarks) return 0;
+
   let count = 0;
 
   for(let key in bookmarks) {
@@ -63,25 +63,19 @@ export const BookmarkScreen = ({ navigation }) => {
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BOOKMARKS);
 
-  if (!bookmarks) {
+  if (!bookmarks || getBookmarkCount(bookmarks) === 0) {
     return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
-      </LoadingContainer>
+      <Wrapper>
+        <RegularText>
+          {texts.bookmarks.noBookmarksYet}
+        </RegularText>
+      </Wrapper>
     );
   }
 
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        {getBookmarkCount(bookmarks) === 0 ?
-          <Wrapper>
-            <RegularText>
-              {texts.bookmarks.noBookmarksYet}
-            </RegularText>
-          </Wrapper>:
-          null
-        }
         {categoriesNews?.map(({ categoryId, categoryTitle }) =>
           getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, categoryId))}
         {getSection(QUERY_TYPES.POINTS_OF_INTEREST)}
