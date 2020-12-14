@@ -126,7 +126,7 @@ const parseCategories = (data, skipLastDivider) => {
       title: category.name,
       query:
         category.pointsOfInterestCount > 0 ? QUERY_TYPES.POINTS_OF_INTEREST : QUERY_TYPES.TOURS,
-      queryVariables: { order: 'name_ASC', category: `${category.name}` },
+      queryVariables: { limit: 15, order: 'name_ASC', category: `${category.name}` },
       rootRouteName: category.pointsOfInterestCount > 0 ? 'PointsOfInterest' : 'Tours'
     },
     bottomDivider: skipLastDivider && index !== data.length - 1

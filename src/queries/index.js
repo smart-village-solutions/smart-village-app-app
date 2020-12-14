@@ -48,7 +48,9 @@ export const getQuery = (query, filterOptions = {}) => {
 export const getFetchMoreQuery = (query) => {
   const FETCH_MORE_QUERIES = {
     [QUERY_TYPES.EVENT_RECORDS]: GET_EVENT_RECORDS,
-    [QUERY_TYPES.NEWS_ITEMS]: GET_NEWS_ITEMS
+    [QUERY_TYPES.NEWS_ITEMS]: GET_NEWS_ITEMS,
+    [QUERY_TYPES.POINTS_OF_INTEREST]: GET_POINTS_OF_INTEREST,
+    [QUERY_TYPES.TOURS]: GET_TOURS
   };
 
   return FETCH_MORE_QUERIES[query];
