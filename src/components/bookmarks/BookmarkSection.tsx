@@ -71,7 +71,8 @@ export const BookmarkSection = ({categoryId, ids, navigation, query, sectionTitl
   const { loading, data } = useQuery(getQuery(query), { variables: { ids, limit: 3 } });
 
   const onPressShowMore = useCallback(() =>
-    navigation.navigate('BookmarkCategory', { categoryId , query }), [navigation, categoryId]);
+    navigation.navigate('BookmarkCategory', { categoryId, query, title: sectionTitle }),
+  [navigation, categoryId]);
 
   if (loading) {
     return (
