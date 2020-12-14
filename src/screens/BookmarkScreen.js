@@ -1,69 +1,49 @@
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import {
   ActivityIndicator,
+  ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View
 } from 'react-native';
 
-import { colors, consts, device, normalize, texts } from '../config';
+import { colors, consts, device, normalize } from '../config';
 import {
-  Button,
+  BookmarkSection,
   Icon,
   LoadingContainer,
   SafeAreaViewFlex,
-  Title,
   WrapperRow
 } from '../components';
+import { getKeyFromTypeAndCategory } from '../helpers';
 import { useBookmarks, useMatomoTrackScreenView } from '../hooks';
 import { arrowLeft } from '../icons';
 import { QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
-const getTitle = (category) => {
-  switch (category) {
-  case QUERY_TYPES.NEWS_ITEM:
-    return texts.homeCategoriesNews.categoryTitle;
-  case QUERY_TYPES.POINT_OF_INTEREST:
-    return texts.categoryTitles.pointsOfInterest;
-  case QUERY_TYPES.TOUR:
-    return texts.categoryTitles.tours;
-  case QUERY_TYPES.EVENT_RECORD:
-    return texts.homeTitles.events;
-  default:
-    return category;
-  }
-};
-
-const ListHeaderComponent = ({ category }) => <Title>{getTitle(category)}</Title>;
-
 export const BookmarkScreen = ({ navigation }) => {
   const bookmarks = useBookmarks();
+  const { globalSettings } = useContext(SettingsContext);
+  const { sections = {} } = globalSettings;
+  const { categoriesNews } = sections;
 
-  const getSection = useCallback((category) => {
-    // useQuery for the first three bookmarks
+  const getSection = useCallback((itemType, categoryTitle, categoryId) => {
+    const key = getKeyFromTypeAndCategory(itemType, categoryId);
 
-    if (!bookmarks[category]?.length) return null;
+    if (!bookmarks[key]?.length) return null;
 
-    // TODO: FetchMoreData
     return (
-      <View>
-        {<ListHeaderComponent category={category} />}
-        <Text>{JSON.stringify(bookmarks[category])}</Text>
-        {/* <ListComponent
+      <View key={key}>
+        <BookmarkSection
+          categoryId={categoryId}
+          ids={bookmarks[key]}
           navigation={navigation}
-          data={bookmarks[category]}
-          query={category}
-          ListHeaderComponent={ListHeaderComponent}
-        /> */}
-        {bookmarks[category].length > 3 ?
-          (<Button title={texts.bookmarks.showAll}
-            onPress={() => navigation.navigate('BookmarkCategory', { category })}
-          />) : null
-        }
+          query={itemType}
+          sectionTitle={categoryTitle}
+        />
       </View>
     );
     // if there are more than three of that category, show "show all" button
@@ -80,12 +60,18 @@ export const BookmarkScreen = ({ navigation }) => {
     );
   }
 
+  console.log({bookmarks});
+
   return (
     <SafeAreaViewFlex>
-      {getSection(QUERY_TYPES.NEWS_ITEM)}
-      {getSection(QUERY_TYPES.POINT_OF_INTEREST)}
-      {getSection(QUERY_TYPES.TOUR)}
-      {getSection(QUERY_TYPES.EVENT_RECORD)}
+      <ScrollView>
+
+        {categoriesNews?.map(({ categoryId, categoryTitle }) =>
+          getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, categoryId))        }
+        {getSection(QUERY_TYPES.POINTS_OF_INTEREST)}
+        {getSection(QUERY_TYPES.TOURS)}
+        {getSection(QUERY_TYPES.EVENT_RECORDS)}
+      </ScrollView>
     </SafeAreaViewFlex>
   );
 };
@@ -144,8 +130,4 @@ BookmarkScreen.navigationOptions = ({ navigation, navigationOptions }) => {
 
 BookmarkScreen.propTypes = {
   navigation: PropTypes.object.isRequired
-};
-
-ListHeaderComponent.propTypes = {
-  category: PropTypes.string
 };

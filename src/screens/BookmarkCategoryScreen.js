@@ -6,7 +6,6 @@ import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-nat
 import { Icon, ListComponent, LoadingContainer, SafeAreaViewFlex } from '../components';
 import { colors, consts, normalize } from '../config';
 import { parseListItemsFromQuery } from '../helpers';
-import { mapCategoryToListQueryType } from '../helpers/bookmarkHelpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { useBookmarks } from '../hooks/Bookmarks';
 import { arrowLeft } from '../icons';
@@ -15,14 +14,15 @@ import { getQuery } from '../queries';
 const { MATOMO_TRACKING } = consts;
 
 export const BookmarkCategoryScreen = ({ navigation }) => {
-  const category = navigation.getParam('category');
-  const bookmarks = useBookmarks(category);
+  const query = navigation.getParam('query');
+  const categoryId = navigation.getParam('categoryId');
+  const bookmarks = useBookmarks(query, categoryId);
 
-  const query = mapCategoryToListQueryType(category);
-  // dummy data
-  const { loading, data } = useQuery(getQuery(query), {
-    variables: { limit: 3 }
-  });
+  const variables = { ids: bookmarks };
+
+  // skipping if no bookmark ids results in no additional "unfiltered" queries
+  // while bookmarks are loading
+  const { loading, data } = useQuery(getQuery(query), { variables , skip: !bookmarks?.length });
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BOOKMARK_CATEGORY);
 
@@ -43,12 +43,6 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
         data={listItems}
         query={query}
       />
-      {/* <ListComponent
-        navigation={navigation}
-        data={data}
-        query={category}
-        horizontal={listType === LIST_TYPES.CARD_LIST}
-      /> */}
     </SafeAreaViewFlex>
   );
 

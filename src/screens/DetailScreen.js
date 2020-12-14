@@ -143,13 +143,19 @@ const styles = StyleSheet.create({
 
 DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
   const shareContent = navigation.getParam('shareContent', '');
+  const categoryId = navigation.getParam('categoryId', '');
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', {});
 
   const { headerRight } = navigationOptions;
 
   const StyledBookmarkHeader = query && queryVariables?.id ?
-    <BookmarkHeader query={query} id={queryVariables.id} style={styles.iconLeft} />:
+    <BookmarkHeader
+      id={queryVariables.id}
+      categoryId={categoryId}
+      query={query}
+      style={styles.iconLeft}
+    /> :
     null;
 
   return {

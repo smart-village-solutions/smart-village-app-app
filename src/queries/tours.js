@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const GET_TOURS = gql`
-  query Tours($limit: Int, $offset: Int, $order: ToursOrder, $category: String) {
-    tours(limit: $limit, skip: $offset, order: $order, category: $category) {
+  query Tours($ids: [ID], $limit: Int, $offset: Int, $order: ToursOrder, $category: String) {
+    tours(ids: $ids, limit: $limit, skip: $offset, order: $order, category: $category) {
       id
       name
       category {
