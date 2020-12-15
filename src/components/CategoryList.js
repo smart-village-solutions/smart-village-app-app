@@ -12,14 +12,18 @@ import { CategoryListItem } from './CategoryListItem';
 export class CategoryList extends React.PureComponent {
   keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
-  renderSectionHeader = ({ section: { title } }) => (
-    <View>
-      <TitleContainer>
-        <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
-    </View>
-  );
+  renderSectionHeader = ({ section: { title, data } }) => {
+    if (!data?.length) return null;
+
+    return (
+      <View>
+        <TitleContainer>
+          <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
+        </TitleContainer>
+        {device.platform === 'ios' && <TitleShadow />}
+      </View>
+    );
+  };
 
   render() {
     const { data, navigation, noSubtitle, refreshControl } = this.props;
@@ -51,9 +55,11 @@ export class CategoryList extends React.PureComponent {
         )}
         renderSectionHeader={this.renderSectionHeader}
         ListHeaderComponent={
-          <Wrapper>
-            <RegularText>{texts.categoryList.intro}</RegularText>
-          </Wrapper>
+          !!texts.categoryList.intro && (
+            <Wrapper>
+              <RegularText>{texts.categoryList.intro}</RegularText>
+            </Wrapper>
+          )
         }
         stickySectionHeadersEnabled
         refreshControl={refreshControl}
