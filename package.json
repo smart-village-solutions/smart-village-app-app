@@ -28,6 +28,7 @@
     "apollo-link-http": "1.5.17",
     "apollo-link-rest": "~0.7.3",
     "expo": "^40.0.0",
+    "expo-asset": "^8.2.1",
     "expo-blur": "~8.2.2",
     "expo-font": "~8.4.0",
     "expo-linear-gradient": "~8.4.0",
@@ -55,8 +56,8 @@
     "react-native-screens": "~2.15.0",
     "react-native-snap-carousel": "~3.9.0",
     "react-native-svg": "12.1.0",
-    "react-native-webview": "^10.7.0",
-    "react-native-webview-leaflet": "https://github.com/digorath/react-native-webview-leaflet#6d44453f4381414410f29f261339954535cdf6d0",
+    "react-native-webview": "11.0.0",
+    "react-native-webview-leaflet": "https://github.com/digorath/react-native-webview-leaflet#d358a18c99cc0d9d9ea57de224b3917c4ad2a58f",
     "react-navigation": "~3.13.0",
     "styled-components": "~4.3.2"
   },
