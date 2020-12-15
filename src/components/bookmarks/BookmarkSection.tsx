@@ -21,6 +21,7 @@ type HeaderProps = {
 
 type Props = {
   categoryId?: number;
+  categoryTitleDetail?: string;
   ids: string[];
   navigation: NavigationScreenProp<any>;
   query: string;
@@ -66,12 +67,19 @@ const isHorizontal = (query: string, listTypesSettings: any) => {
   }
 };
 
-export const BookmarkSection = ({categoryId, ids, navigation, query, sectionTitle}: Props) => {
+export const BookmarkSection = ({
+  categoryId,
+  categoryTitleDetail,
+  ids,
+  navigation,
+  query,
+  sectionTitle
+}: Props) => {
   const { listTypesSettings } = useContext(SettingsContext);
   const { loading, data } = useQuery(getQuery(query), { variables: { ids, limit: 3 } });
 
   const onPressShowMore = useCallback(() =>
-    navigation.navigate('BookmarkCategory', { categoryId, query, title: sectionTitle }),
+    navigation.navigate('BookmarkCategory', { categoryId, query, title: sectionTitle, categoryTitleDetail }),
   [navigation, categoryId]);
 
   if (loading) {
@@ -82,7 +90,7 @@ export const BookmarkSection = ({categoryId, ids, navigation, query, sectionTitl
     );
   }
 
-  const listData = parseListItemsFromQuery(query, data, true);
+  const listData = parseListItemsFromQuery(query, data, true, categoryTitleDetail);
 
   const horizontal = isHorizontal(query, listTypesSettings);
 
