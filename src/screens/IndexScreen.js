@@ -126,7 +126,7 @@ export const IndexScreen = ({ navigation }) => {
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
   return (
-    <SafeAreaViewFlex style={styles.center}>
+    <SafeAreaViewFlex>
       {query === QUERY_TYPES.POINTS_OF_INTEREST ? (
         <MapSwitchHeader setShowMap={setShowMap} showMap={showMap} />
       ) : null}
