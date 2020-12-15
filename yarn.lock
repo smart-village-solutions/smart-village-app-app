@@ -5214,7 +5214,7 @@ expo-asset@^7.0.0:
     path-browserify "^1.0.0"
     url-parse "^1.4.4"
 
-expo-asset@~8.2.1:
+expo-asset@^8.2.1, expo-asset@~8.2.1:
   version "8.2.1"
   resolved "https://registry.yarnpkg.com/expo-asset/-/expo-asset-8.2.1.tgz#1b69724f29ca4260805f2e6368c4428d8ad90cc6"
   integrity sha512-M97jZU83Gm6wWGkrCwTzDVlufQCmnrCbmW4AMOH6xl3XhwOpgsQ6m6xrwT0Sq1tto7JUuL0tPbB9vb9L7yLfyg==
@@ -9313,9 +9313,9 @@ react-native-tab-view@^1.4.1:
   dependencies:
     prop-types "^15.6.1"
 
-"react-native-webview-leaflet@https://github.com/digorath/react-native-webview-leaflet#6d44453f4381414410f29f261339954535cdf6d0":
+"react-native-webview-leaflet@https://github.com/digorath/react-native-webview-leaflet#d358a18c99cc0d9d9ea57de224b3917c4ad2a58f":
   version "5.0.2"
-  resolved "https://github.com/digorath/react-native-webview-leaflet#6d44453f4381414410f29f261339954535cdf6d0"
+  resolved "https://github.com/digorath/react-native-webview-leaflet#d358a18c99cc0d9d9ea57de224b3917c4ad2a58f"
   dependencies:
     expo-asset "^7.0.0"
     expo-asset-utils "^1.2.0"
@@ -9324,12 +9324,12 @@ react-native-tab-view@^1.4.1:
     lodash.isequal "^4.5.0"
     react-dom "^16.10.2"
     react-leaflet "^2.6.1"
-    react-native-webview "^10.7.0"
+    react-native-webview "11.0.0"
 
-react-native-webview@^10.7.0:
-  version "10.10.2"
-  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-10.10.2.tgz#13208aef17c9ccfd28355363688f4cbe2143f10a"
-  integrity sha512-98Dh7q1gEflicFZ8KNL3nK5XRjx50OZXqw87jHofVjKfjbK0LKmvI5X8ymgUMGg61JVgI3AF+g8qpDvqjgQsfg==
+react-native-webview@11.0.0:
+  version "11.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.0.0.tgz#d667cbcc772e963fe88a4156290d25fe47ed43b0"
+  integrity sha512-gzID5ebCFVNkxreuabClymo6QkJbXCLEtiIUY9QAhxY58HsDUp8x0YzDVEROYyEJ4ghL71koAOeQRDNAgNnh1w==
   dependencies:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
