@@ -41,7 +41,7 @@ export const BookmarkScreen = ({ navigation }) => {
   const { sections = {} } = globalSettings;
   const { categoriesNews } = sections;
 
-  const getSection = useCallback((itemType, categoryTitle, categoryId) => {
+  const getSection = useCallback((itemType, categoryTitle, categoryId, categoryTitleDetail) => {
     const key = getKeyFromTypeAndCategory(itemType, categoryId);
 
     if (!bookmarks[key]?.length) return null;
@@ -50,6 +50,7 @@ export const BookmarkScreen = ({ navigation }) => {
       <View key={key}>
         <BookmarkSection
           categoryId={categoryId}
+          categoryTitleDetail={categoryTitleDetail}
           ids={bookmarks[key]}
           navigation={navigation}
           query={itemType}
@@ -76,8 +77,8 @@ export const BookmarkScreen = ({ navigation }) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        {categoriesNews?.map(({ categoryId, categoryTitle }) =>
-          getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, categoryId))}
+        {categoriesNews?.map(({ categoryId, categoryTitle, categoryTitleDetail }) =>
+          getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, categoryId, categoryTitleDetail))}
         {getSection(QUERY_TYPES.POINTS_OF_INTEREST, texts.categoryTitles.pointsOfInterest)}
         {getSection(QUERY_TYPES.TOURS, texts.categoryTitles.tours)}
         {getSection(QUERY_TYPES.EVENT_RECORDS, texts.homeTitles.events)}
