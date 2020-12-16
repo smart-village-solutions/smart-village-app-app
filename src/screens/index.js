@@ -11,4 +11,5 @@ export * from './HtmlScreen';
 export * from './IndexScreen';
 export * from './ServiceScreen';
 export * from './SettingsScreen';
+export * from './WeatherScreen';
 export * from './WebScreen';
