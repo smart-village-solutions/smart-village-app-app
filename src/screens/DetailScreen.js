@@ -125,6 +125,9 @@ export const DetailScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  headerRight: {
+    alignItems: 'center'
+  },
   icon: {
     paddingHorizontal: normalize(14),
     paddingVertical: normalize(4)
@@ -171,7 +174,7 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
       </View>
     ),
     headerRight: (
-      <WrapperRow>
+      <WrapperRow style={styles.headerRight}>
         {StyledBookmarkHeader}
         {!!shareContent && (
           <TouchableOpacity
@@ -182,7 +185,7 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
             {device.platform === 'ios' ? (
               <Icon
                 name="ios-share"
-                size={26}
+                size={normalize(26)}
                 iconColor={colors.lightestText}
                 style={headerRight ? styles.iconLeft : styles.iconRight}
               />
