@@ -8,6 +8,7 @@ import {
   HtmlScreen,
   IndexScreen,
   SettingsScreen,
+  WeatherScreen,
   WebScreen
 } from '../screens';
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
@@ -53,16 +54,22 @@ const AppStackNavigator = (headerRight = true) =>
           title: props.navigation.getParam('title', '')
         })
       },
-      Web: {
-        screen: WebScreen,
-        navigationOptions: (props) => ({
-          title: props.navigation.getParam('title', '')
-        })
-      },
       Settings: {
         screen: SettingsScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', texts.screenTitles.settings)
+        })
+      },
+      Weather: {
+        screen: WeatherScreen,
+        navigationOptions: () => ({
+          title: 'Wetter'
+        })
+      },
+      Web: {
+        screen: WebScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
         })
       }
     },

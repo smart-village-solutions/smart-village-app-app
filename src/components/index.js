@@ -1,5 +1,6 @@
 export * from './map';
 export * from './screens';
+export * from './weather';
 export * from './widgets';
 
 export * from './Button';
