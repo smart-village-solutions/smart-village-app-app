@@ -1,10 +1,11 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
-import { EventWidget } from './EventWidget';
-
-import { WrapperRow } from '../Wrapper';
 
 import { ConstructionSiteWidget } from './ConstructionSiteWidget';
+import { EventWidget } from './EventWidget';
+import { WeatherWidget } from './WeatherWidget';
+import { WrapperRow } from '../Wrapper';
+
 
 type Props = {
   navigation: NavigationScreenProp<never>;
@@ -15,7 +16,8 @@ const EXISTING_WIDGETS: {
   [key: string]: React.FC<{ navigation: NavigationScreenProp<never> }>;
 } = {
   constructionSite: ConstructionSiteWidget,
-  event: EventWidget
+  event: EventWidget,
+  weather: WeatherWidget
 };
 
 const getExistingWidgets = (widgets: string[]) => {
