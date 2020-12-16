@@ -88,6 +88,9 @@ export const BookmarkScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  headerRight: {
+    alignItems: 'center'
+  },
   icon: {
     paddingHorizontal: normalize(14),
     paddingVertical: normalize(4)
@@ -120,7 +123,7 @@ BookmarkScreen.navigationOptions = ({ navigation, navigationOptions }) => {
       </View>
     ),
     headerRight: (
-      <WrapperRow>
+      <WrapperRow style={styles.headerRight}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Settings')}
           accessibilityLabel="Einstellungen (Taste)"
@@ -128,7 +131,7 @@ BookmarkScreen.navigationOptions = ({ navigation, navigationOptions }) => {
         >
           <Icon
             name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'}
-            size={26}
+            size={normalize(26)}
             iconColor={colors.lightestText}
             style={headerRight ? styles.iconLeft : styles.iconRight}
           />

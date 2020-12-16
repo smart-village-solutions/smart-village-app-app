@@ -41,7 +41,7 @@ export const BookmarkHeader = ({ id, categoryId, query, style }: Props) => {
       accessibilityHint="Zu der Merkliste hinzufügen"
     >
       <Icon
-        size={22}
+        size={normalize(22)}
         xml={isBookmarked ?
           heartFilled(colors.lightestText) :
           heartEmpty(colors.lightestText)}
