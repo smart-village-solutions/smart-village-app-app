@@ -1,4 +1,4 @@
-export * from './bookmarkHelpers';
+export * from './bookmarkHelper';
 export * from './dateTimeHelper';
 export * from './graphqlHelper';
 export * from './htmlViewHelper';

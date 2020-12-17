@@ -23,7 +23,7 @@ export const consts = {
 
   MATOMO_TRACKING: {
     SCREEN_VIEW: {
-      BOOKMARK_CATEGORY: 'Bookmark Category',
+      BOOKMARK_CATEGORY: 'Bookmark category',
       BOOKMARKS: 'Bookmarks',
       COMPANY: 'Company',
       EVENT_RECORDS: 'Events',

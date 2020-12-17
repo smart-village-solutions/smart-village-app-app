@@ -1,7 +1,7 @@
+export * from './bookmarks';
 export * from './map';
 export * from './screens';
 
-export * from './bookmarks';
 export * from './Button';
 export * from './CardList';
 export * from './CardListItem';
