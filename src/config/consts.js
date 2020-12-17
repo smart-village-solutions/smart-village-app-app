@@ -8,6 +8,7 @@ export const consts = {
     // refresh intervals per time:
     ONCE_A_DAY: ONCE_A_DAY,
     // refresh intervals per type:
+    BOOKMARKS: ONCE_A_DAY,
     STATIC_CONTENT: ONCE_A_DAY,
     NEWS: ONCE_A_DAY,
     EVENTS: ONCE_A_DAY,

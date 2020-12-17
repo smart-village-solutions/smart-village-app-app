@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { Icon, ListComponent, LoadingContainer, SafeAreaViewFlex } from '../components';
-import { colors, consts, normalize } from '../config';
-import { parseListItemsFromQuery } from '../helpers';
-import { useMatomoTrackScreenView } from '../hooks';
+import { Icon, ListComponent, LoadingContainer, RegularText, SafeAreaViewFlex } from '../components';
+import { colors, consts, normalize, texts } from '../config';
+import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
+import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
 import { useBookmarks } from '../hooks/Bookmarks';
 import { arrowLeft } from '../icons';
+import { NetworkContext } from '../NetworkProvider';
 import { getQuery } from '../queries';
 
 const { MATOMO_TRACKING } = consts;
@@ -21,9 +22,15 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
 
   const variables = { ids: bookmarks };
 
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+
+  const refreshTime = useRefreshTime('bookmarks', consts.REFRESH_INTERVALS.BOOKMARKS);
+
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+
   // skipping if no bookmark ids results in no additional "unfiltered" queries
   // while bookmarks are loading
-  const { loading, data } = useQuery(getQuery(query), { variables , skip: !bookmarks?.length });
+  const { loading, data } = useQuery(getQuery(query), { fetchPolicy, variables , skip: !bookmarks?.length });
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BOOKMARK_CATEGORY);
 
@@ -35,6 +42,13 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
     );
   }
 
+  if(!data) {
+    return (
+      <SafeAreaViewFlex>
+        <RegularText>{texts.errors.noData}</RegularText>
+      </SafeAreaViewFlex>
+    );
+  }
   const listItems = parseListItemsFromQuery(query, data, false, categoryTitleDetail);
 
   return (

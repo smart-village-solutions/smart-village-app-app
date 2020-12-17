@@ -5,7 +5,7 @@
  *
  * https://medium.com/@galen.corey/understanding-apollo-fetch-policies-705b5ad71980
  *
- * @return {string} a graphql fetch policy depending on the network status
+ * @return {'cache-first' | 'network-only' | 'cache-only'} a graphql fetch policy depending on the network status
  */
 export const graphqlFetchPolicy = ({ isConnected, isMainserverUp, refreshTime }) => {
   if (isConnected && isMainserverUp) {

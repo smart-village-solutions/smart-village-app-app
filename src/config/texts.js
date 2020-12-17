@@ -14,6 +14,9 @@ export const texts = {
     pointsOfInterest: 'Orte',
     tours: 'Touren'
   },
+  errors: {
+    noData: 'Bitte überprüfen sie ihre Internetverbindung.'
+  },
   eventRecord: {
     appointments: 'Termine',
     description: 'Beschreibung',
