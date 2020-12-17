@@ -3,6 +3,8 @@ import appJson from '../../app.json';
 export const texts = {
   bookmarks: {
     bookmarks: 'Lesezeichen',
+    noBookmarksinCategory:
+      'In dieser Kategorie wurden noch keine Einträge für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     noBookmarksYet:
       'Es wurden noch keine Beiträge, Touren oder Orte für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     showAll: 'Alle anzeigen'
