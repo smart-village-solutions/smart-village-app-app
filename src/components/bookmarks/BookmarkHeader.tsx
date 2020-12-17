@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, normalize } from '../../config';
-import { getBookmarkedStatus, toggleBookmark } from '../../helpers/bookmarkHelpers';
+import { getBookmarkedStatus, toggleBookmark } from '../../helpers';
 import { heartEmpty, heartFilled } from '../../icons';
 import { QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';

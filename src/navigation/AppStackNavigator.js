@@ -1,6 +1,7 @@
 import { createStackNavigator } from 'react-navigation';
 
 import {
+  BookmarkCategoryScreen,
   BookmarkScreen,
   DetailScreen,
   HomeScreen,
@@ -12,7 +13,6 @@ import {
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
 
 import { texts } from '../config';
-import { BookmarkCategoryScreen } from '../screens/BookmarkCategoryScreen';
 
 const AppStackNavigator = (headerRight = true) =>
   createStackNavigator(

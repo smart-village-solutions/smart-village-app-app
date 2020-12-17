@@ -1,5 +1,6 @@
 export * from './AboutScreen';
 export * from './BookmarkScreen';
+export * from './BookmarkCategoryScreen';
 export * from './CompanyScreen';
 export * from './DetailScreen';
 export * from './FormScreen';
