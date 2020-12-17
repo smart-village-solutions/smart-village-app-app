@@ -4,7 +4,9 @@ import { ActivityIndicator, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, consts, texts } from '../../config';
-import { parseListItemsFromQuery } from '../../helpers';
+import { graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
+import { useRefreshTime } from '../../hooks';
+import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
 import { Button } from '../Button';
@@ -76,10 +78,21 @@ export const BookmarkSection = ({
   sectionTitle
 }: Props) => {
   const { listTypesSettings } = useContext(SettingsContext);
-  const { loading, data } = useQuery(getQuery(query), { variables: { ids, limit: 3 } });
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+
+  const refreshTime = useRefreshTime('bookmarks', consts.REFRESH_INTERVALS.BOOKMARKS);
+
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
+
+  // slice the first 3 entries off of the bookmark ids, to get the 3 most recently bookmarked items
+  const { loading, data } = useQuery(
+    getQuery(query), { fetchPolicy, variables: { ids: ids.slice(0, 3) }}
+  );
 
   const onPressShowMore = useCallback(() =>
-    navigation.navigate('BookmarkCategory', { categoryId, query, title: sectionTitle, categoryTitleDetail }),
+    navigation.navigate(
+      'BookmarkCategory', { categoryId, query, title: sectionTitle, categoryTitleDetail }
+    ),
   [navigation, categoryId]);
 
   if (loading) {
@@ -89,6 +102,8 @@ export const BookmarkSection = ({
       </LoadingContainer>
     );
   }
+
+  if (!data) return null;
 
   const listData = parseListItemsFromQuery(query, data, true, categoryTitleDetail);
 
