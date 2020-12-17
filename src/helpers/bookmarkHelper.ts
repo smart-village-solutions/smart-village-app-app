@@ -1,13 +1,13 @@
 import { QUERY_TYPES } from '../queries';
 import { addToStore, readFromStore } from './storageHelper';
 
-const storeKey = 'BOOKMARKED_ITEMS';
+export const BOOKMARKS_STORE_KEY = 'BOOKMARKED_ITEMS';
 
 export type BookmarkList = {
   [key: string]: string[];
 }
 
-const getListQueryType = (singleItemType: string) => {
+export const getListQueryType = (singleItemType: string) => {
   switch (singleItemType) {
   case (QUERY_TYPES.EVENT_RECORD): return QUERY_TYPES.EVENT_RECORDS;
   case (QUERY_TYPES.NEWS_ITEM): return QUERY_TYPES.NEWS_ITEMS;
@@ -23,29 +23,8 @@ const getListQueryType = (singleItemType: string) => {
 export const getKeyFromTypeAndCategory = (itemType: string, category?: number) =>
   category ? `${itemType}-${category}` : itemType;
 
-export const getBookmarkedItems = async (itemType?: string, category?: number) => {
-  const bookmarks = await readFromStore(storeKey);
-
-  if(itemType) {
-    const key = getKeyFromTypeAndCategory(itemType, category);
-    return bookmarks?.[key] as string[];
-  }
-  return (bookmarks) as BookmarkList | undefined;
-};
-
-export const getBookmarkedStatus = async (itemType: string, id: string, category?: number) => {
-  const bookmarks: BookmarkList | undefined = await readFromStore(storeKey);
-
-  const key = getKeyFromTypeAndCategory(
-    getListQueryType(itemType),
-    category
-  );
-
-  return !!bookmarks?.[key]?.find((item) => item === id);
-};
-
 export const toggleBookmark = async (itemType: string, id: string, category?: number) => {
-  const bookmarks: BookmarkList | undefined = await readFromStore(storeKey);
+  const bookmarks: BookmarkList | undefined = await readFromStore(BOOKMARKS_STORE_KEY);
   const listQueryType = getListQueryType(itemType);
 
   // FIXME: add error handling
@@ -61,7 +40,8 @@ export const toggleBookmark = async (itemType: string, id: string, category?: nu
   // if there is no entry yet, create one
   if (!bookmarks) {
     newBookmarkList = { [key]: [id] };
-    return addToStore(storeKey, newBookmarkList);
+    addToStore(BOOKMARKS_STORE_KEY, newBookmarkList);
+    return newBookmarkList;
   }
 
   newBookmarkList = {...bookmarks};
@@ -80,5 +60,6 @@ export const toggleBookmark = async (itemType: string, id: string, category?: nu
     newBookmarkList[key] = newCategory;
   }
 
-  return addToStore(storeKey, newBookmarkList);
+  addToStore(BOOKMARKS_STORE_KEY, newBookmarkList);
+  return newBookmarkList;
 };
