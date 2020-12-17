@@ -25,6 +25,7 @@ import AppStackNavigator from './navigation/AppStackNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 import { LoadingContainer } from './components';
+import { BookmarkProvider } from './BookmarkProvider';
 
 const { LIST_TYPES } = consts;
 
@@ -304,7 +305,9 @@ const MainAppWithApolloProvider = () => {
 export const MainApp = () => (
   <NetworkProvider>
     <OrientationProvider>
-      <MainAppWithApolloProvider />
+      <BookmarkProvider>
+        <MainAppWithApolloProvider />
+      </BookmarkProvider>
     </OrientationProvider>
   </NetworkProvider>
 );

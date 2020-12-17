@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
+import { BookmarkContext } from '../../BookmarkProvider';
 
 import { colors, normalize } from '../../config';
-import { getBookmarkedStatus, toggleBookmark } from '../../helpers';
+import { useBookmarkedStatus } from '../../hooks';
 import { heartEmpty, heartFilled } from '../../icons';
 import { QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
@@ -15,24 +16,12 @@ type Props = {
 }
 
 export const BookmarkHeader = ({ id, categoryId, query, style }: Props) => {
-  const [isBookmarked, setIsBookmarked] = useState<boolean>();
+  const { toggleBookmark } = useContext(BookmarkContext);
+  const isBookmarked = useBookmarkedStatus(query, id, categoryId);
 
   const onPress = useCallback(() => {
     toggleBookmark(query, id, categoryId);
-    setIsBookmarked((value) => !value);
-  }, [id, query, setIsBookmarked]);
-
-  const updateBookmarkedStatus = useCallback(async () => {
-    setIsBookmarked(await getBookmarkedStatus(query, id, categoryId));
-  }, [setIsBookmarked]);
-
-  useEffect(() => {
-    updateBookmarkedStatus();
-  }, [updateBookmarkedStatus]);
-
-  if(isBookmarked === undefined) {
-    return null;
-  }
+  }, [categoryId, id, query]);
 
   return (
     <TouchableOpacity

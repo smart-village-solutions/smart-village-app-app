@@ -1,17 +1,26 @@
-import { useCallback, useEffect, useState } from 'react';
-import { BookmarkList, getBookmarkedItems } from '../helpers';
+import { useContext } from 'react';
+import { BookmarkContext } from '../BookmarkProvider';
+import { getKeyFromTypeAndCategory, getListQueryType } from '../helpers';
 
 
 export const useBookmarks = (itemType?: string, category?: number) => {
-  const [bookmarks, setBookmarks] = useState<BookmarkList | string[] | undefined>();
+  const { bookmarks } = useContext(BookmarkContext);
 
-  const loadBookmarks = useCallback(async () => {
-    setBookmarks(await getBookmarkedItems(itemType, category));
-  }, [itemType, setBookmarks]);
-
-  useEffect(() => {
-    loadBookmarks();
-  }, [loadBookmarks]);
+  if (itemType && bookmarks) {
+    const key = getKeyFromTypeAndCategory(itemType, category);
+    return bookmarks[key];
+  }
 
   return bookmarks;
+};
+
+export const useBookmarkedStatus = (itemType: string, id: string, category?: number) => {
+  const { bookmarks } = useContext(BookmarkContext);
+
+  const key = getKeyFromTypeAndCategory(
+    getListQueryType(itemType),
+    category
+  );
+
+  return !!bookmarks?.[key]?.find((item) => item === id);
 };

@@ -42,6 +42,17 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
     );
   }
 
+  // this should only ever be reached when one navigates to the category overview screen
+  // and removes all the bookmarks from that category by navigating to each detail screen
+  // and toggling the bookmark status through the header
+  if(bookmarks.length === 0) {
+    return (
+      <SafeAreaViewFlex>
+        <RegularText>{texts.bookmarks.noBookmarksinCategory}</RegularText>
+      </SafeAreaViewFlex>
+    );
+  }
+
   if(!data) {
     return (
       <SafeAreaViewFlex>
