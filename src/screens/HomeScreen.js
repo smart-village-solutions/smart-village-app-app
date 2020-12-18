@@ -80,7 +80,7 @@ export const HomeScreen = ({ navigation }) => {
         navigation.navigate({
           routeName: 'Detail',
           params: {
-            query: QUERY_TYPES.NEWS_ITEM,
+            query: queryType,
             queryVariables: { id: data.id }
           }
         });
