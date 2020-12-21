@@ -1,8 +1,14 @@
 import gql from 'graphql-tag';
 
 export const GET_EVENT_RECORDS = gql`
-  query EventRecords($limit: Int, $offset: Int, $order: EventRecordsOrder, $categoryId: ID) {
-    eventRecords(limit: $limit, skip: $offset, order: $order, categoryId: $categoryId) {
+  query EventRecords(
+    $ids: [ID],
+    $limit: Int,
+    $offset: Int,
+    $order: EventRecordsOrder,
+    $categoryId: ID
+  ) {
+    eventRecords(ids: $ids, limit: $limit, skip: $offset, order: $order, categoryId: $categoryId) {
       id
       category {
         name
