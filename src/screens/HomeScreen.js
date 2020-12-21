@@ -54,7 +54,7 @@ export const HomeScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings, listTypesSettings } = useContext(SettingsContext);
-  const { sections = {}, widgets } = globalSettings;
+  const { sections = {}, widgets = ['event'] } = globalSettings;
   const {
     showNews = true,
     showPointsOfInterestAndTours = true,

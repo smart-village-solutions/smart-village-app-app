@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
+import { EventWidget } from './EventWidget';
 
 import { WrapperRow } from '../Wrapper';
 
@@ -10,7 +11,9 @@ type Props = {
 
 const EXISTING_WIDGETS: {
   [key: string]: React.FC<{ navigation: NavigationScreenProp<never> }>;
-} = {};
+} = {
+  event: EventWidget
+};
 
 const getExistingWidgets = (widgets: string[]) => {
   const existingWidgets = widgets.map((widget) => EXISTING_WIDGETS[widget]);

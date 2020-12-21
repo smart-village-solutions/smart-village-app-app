@@ -149,7 +149,7 @@ export const IndexScreen = ({ navigation }) => {
 
             const listItems = parseListItemsFromQuery(query, data, false, titleDetail);
 
-            if (!listItems || !listItems.length) return null;
+            if (!listItems) return null;
 
             const fetchMoreData = () =>
               fetchMore({
@@ -168,30 +168,26 @@ export const IndexScreen = ({ navigation }) => {
                 }
               });
 
-            let ListHeaderComponent = null;
-
-            if (showFilter) {
-              ListHeaderComponent = (
-                <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
-              );
-            }
-
             return (
-              <ListComponent
-                navigation={navigation}
-                data={listItems}
-                query={query}
-                fetchMoreData={isConnected ? fetchMoreData : null}
-                ListHeaderComponent={ListHeaderComponent}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={() => refresh(refetch)}
-                    colors={[colors.accent]}
-                    tintColor={colors.accent}
-                  />
-                }
-              />
+              <View>
+                {showFilter ? (
+                  <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
+                ) : null}
+                <ListComponent
+                  navigation={navigation}
+                  data={listItems}
+                  query={query}
+                  fetchMoreData={isConnected ? fetchMoreData : null}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={() => refresh(refetch)}
+                      colors={[colors.accent]}
+                      tintColor={colors.accent}
+                    />
+                  }
+                />
+              </View>
             );
           }}
         </Query>
