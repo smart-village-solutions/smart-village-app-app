@@ -1,8 +1,20 @@
 import gql from 'graphql-tag';
 
 export const GET_EVENT_RECORDS = gql`
-  query EventRecords($limit: Int, $offset: Int, $order: EventRecordsOrder, $categoryId: ID) {
-    eventRecords(limit: $limit, skip: $offset, order: $order, categoryId: $categoryId) {
+  query EventRecords(
+    $limit: Int
+    $offset: Int
+    $order: EventRecordsOrder
+    $categoryId: ID
+    $dateRange: [String]
+  ) {
+    eventRecords(
+      limit: $limit
+      skip: $offset
+      order: $order
+      categoryId: $categoryId
+      dateRange: $dateRange
+    ) {
       id
       category {
         name
@@ -43,8 +55,20 @@ export const GET_EVENT_RECORDS = gql`
 `;
 
 export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
-  query EventRecords($limit: Int, $offset: Int, $order: EventRecordsOrder, $categoryId: ID) {
-    eventRecords(limit: $limit, skip: $offset, order: $order, categoryId: $categoryId) {
+  query EventRecords(
+    $limit: Int
+    $offset: Int
+    $order: EventRecordsOrder
+    $categoryId: ID
+    $dateRange: [String]
+  ) {
+    eventRecords(
+      limit: $limit
+      skip: $offset
+      order: $order
+      categoryId: $categoryId
+      dateRange: $dateRange
+    ) {
       id
       category {
         name
