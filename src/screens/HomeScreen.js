@@ -29,6 +29,7 @@ import {
   TitleShadow,
   Touchable,
   VersionNumber,
+  Widgets,
   Wrapper,
   WrapperRow
 } from '../components';
@@ -53,7 +54,7 @@ export const HomeScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings, listTypesSettings } = useContext(SettingsContext);
-  const { sections = {} } = globalSettings;
+  const { sections = {}, widgets } = globalSettings;
   const {
     showNews = true,
     showPointsOfInterestAndTours = true,
@@ -159,6 +160,7 @@ export const HomeScreen = ({ navigation }) => {
         }
       >
         <HomeCarousel navigation={navigation} />
+        <Widgets navigation={navigation} widgets={widgets} />
 
         {showNews &&
           categoriesNews.map(
