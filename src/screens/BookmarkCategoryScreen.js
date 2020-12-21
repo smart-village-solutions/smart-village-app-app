@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { Icon, ListComponent, LoadingContainer, RegularText, SafeAreaViewFlex } from '../components';
+import { Icon, ListComponent, LoadingContainer, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
 import { colors, consts, normalize, texts } from '../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
 import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
@@ -47,17 +47,17 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
   // and toggling the bookmark status through the header
   if(bookmarks.length === 0) {
     return (
-      <SafeAreaViewFlex>
+      <Wrapper>
         <RegularText>{texts.bookmarks.noBookmarksinCategory}</RegularText>
-      </SafeAreaViewFlex>
+      </Wrapper>
     );
   }
 
   if(!data) {
     return (
-      <SafeAreaViewFlex>
+      <Wrapper>
         <RegularText>{texts.errors.noData}</RegularText>
-      </SafeAreaViewFlex>
+      </Wrapper>
     );
   }
   const listItems = parseListItemsFromQuery(query, data, false, categoryTitleDetail);
