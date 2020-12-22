@@ -1,11 +1,13 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, View } from 'react-native';
 import { WebviewLeafletMessage } from 'react-native-webview-leaflet';
 import { NavigationScreenProps, ScrollView } from 'react-navigation';
 
 import { colors } from '../../config';
+import { graphqlFetchPolicy } from '../../helpers';
 import { location, locationIconAnchor } from '../../icons';
+import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { LoadingContainer } from '../LoadingContainer';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
@@ -36,14 +38,21 @@ const mapToMapMarkers = (data: any) => {
 };
 
 export const LocationOverview = ({ navigation, category }: Props) => {
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime: undefined});
+
   const overviewQuery = getQuery(QUERY_TYPES.POINTS_OF_INTEREST);
-  const { data: overviewData, loading } = useQuery(overviewQuery, { variables: { category } });
+  const { data: overviewData, loading } = useQuery(
+    overviewQuery, { fetchPolicy, variables: { category } }
+  );
 
   const detailsQuery = getQuery(QUERY_TYPES.POINT_OF_INTEREST);
   const { data: detailsData, loading: detailsLoading } = useQuery(detailsQuery, {
-    variables: { id: selectedPointOfInterest }
+    fetchPolicy,
+    variables: { id: selectedPointOfInterest },
+    skip: !selectedPointOfInterest
   });
 
   const onMessageReceived = useCallback(
