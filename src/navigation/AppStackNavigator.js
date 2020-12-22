@@ -3,6 +3,8 @@ import { createStackNavigator } from 'react-navigation';
 import {
   BookmarkCategoryScreen,
   BookmarkScreen,
+  ConstructionSiteDetailScreen,
+  ConstructionSiteOverviewScreen,
   DetailScreen,
   HomeScreen,
   HtmlScreen,
@@ -33,6 +35,18 @@ const AppStackNavigator = (headerRight = true) =>
         screen: BookmarkCategoryScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', '')
+        })
+      },
+      ConstructionSiteDetail: {
+        screen: ConstructionSiteDetailScreen,
+        navigationOptions: () => ({
+          title: texts.screenTitles.constructionSite
+        })
+      },
+      ConstructionSiteOverview: {
+        screen: ConstructionSiteOverviewScreen,
+        navigationOptions: () => ({
+          title: texts.screenTitles.constructionSite
         })
       },
       Index: {

@@ -72,6 +72,7 @@ export const texts = {
     service: appJson.expo.name,
     company: appJson.expo.name,
     about: appJson.expo.name,
+    constructionSite: 'Baustellen',
     settings: 'Einstellungen'
   },
   settingsContents: {
