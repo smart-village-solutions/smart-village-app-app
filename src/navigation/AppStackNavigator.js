@@ -1,6 +1,8 @@
 import { createStackNavigator } from 'react-navigation';
 
 import {
+  ConstructionSiteDetailScreen,
+  ConstructionSiteOverviewScreen,
   DetailScreen,
   HomeScreen,
   HtmlScreen,
@@ -19,6 +21,18 @@ const AppStackNavigator = (headerRight = true) =>
         screen: HomeScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', texts.screenTitles.home)
+        })
+      },
+      ConstructionSiteDetail: {
+        screen: ConstructionSiteDetailScreen,
+        navigationOptions: () => ({
+          title: texts.screenTitles.constructionSite
+        })
+      },
+      ConstructionSiteOverview: {
+        screen: ConstructionSiteOverviewScreen,
+        navigationOptions: () => ({
+          title: texts.screenTitles.constructionSite
         })
       },
       Index: {
