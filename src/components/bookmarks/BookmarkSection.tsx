@@ -58,9 +58,6 @@ const SectionHeader = ({ categoryTitle, onPress }: HeaderProps) => {
 const isHorizontal = (query: string, listTypesSettings: Record<string, unknown>) => {
   switch (query) {
     case QUERY_TYPES.TOURS:
-      return (
-        listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS] === consts.LIST_TYPES.CARD_LIST
-      );
     case QUERY_TYPES.POINTS_OF_INTEREST:
       return (
         listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS] === consts.LIST_TYPES.CARD_LIST
