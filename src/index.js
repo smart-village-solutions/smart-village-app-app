@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, AsyncStorage, StatusBar } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SecureStore from 'expo-secure-store';
@@ -15,7 +15,7 @@ import _isEmpty from 'lodash/isEmpty';
 
 import { auth } from './auth';
 import { colors, consts, device, namespace, secrets, texts } from './config';
-import { graphqlFetchPolicy, storageHelper } from './helpers';
+import { filterForValidConstructionSites, graphqlFetchPolicy, storageHelper } from './helpers';
 import { getQuery, QUERY_TYPES } from './queries';
 import { NetworkProvider } from './NetworkProvider';
 import NetInfo from './NetInfo';
@@ -25,10 +25,12 @@ import AppStackNavigator from './navigation/AppStackNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
 import { LoadingContainer } from './components';
+import { ConstructionSiteContext, ConstructionSiteProvider } from './ConstructionSiteProvider';
 
 const { LIST_TYPES } = consts;
 
 const MainAppWithApolloProvider = () => {
+  const { setConstructionSites } = useContext(ConstructionSiteContext);
   const [loading, setLoading] = useState(true);
   const [isSplashScreenVisible, setIsSplashScreenVisible] = useState(true);
   const [client, setClient] = useState();
@@ -189,9 +191,33 @@ const MainAppWithApolloProvider = () => {
     setInitialListTypesSettings(listTypesSettings);
   };
 
+  const fetchConstructionSites = useCallback(async () => {
+    const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+
+    let constructionSites;
+
+    try {
+      const response = await client.query({
+        query: getQuery(QUERY_TYPES.PUBLIC_JSON_FILE),
+        variables: { name: 'constructionSites' },
+        fetchPolicy
+      });
+
+      constructionSites = response.data;
+    } catch (error) {
+      console.warn('error', error);
+    }
+
+    const constructionSitesPublicJsonFileContent =
+      constructionSites?.publicJsonFile && JSON.parse(constructionSites.publicJsonFile.content);
+
+    setConstructionSites(filterForValidConstructionSites(constructionSitesPublicJsonFileContent));
+  }, [client, isConnected, isMainserverUp, setConstructionSites]);
+
   // setup global settings if apollo client setup finished
   useEffect(() => {
     client && setupInitialGlobalSettings();
+    client && fetchConstructionSites();
   }, [client]);
 
   const setupNavigationDrawer = async () => {
@@ -304,7 +330,9 @@ const MainAppWithApolloProvider = () => {
 export const MainApp = () => (
   <NetworkProvider>
     <OrientationProvider>
-      <MainAppWithApolloProvider />
+      <ConstructionSiteProvider>
+        <MainAppWithApolloProvider />
+      </ConstructionSiteProvider>
     </OrientationProvider>
   </NetworkProvider>
 );
