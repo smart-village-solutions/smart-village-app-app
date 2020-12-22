@@ -3,11 +3,13 @@ import { StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
 type Props = {
-  navigation: NavigationScreenProp<any>;
+  navigation: NavigationScreenProp<never>;
   widgets?: string[];
-}
+};
 
-const EXISTING_WIDGETS: {[key: string]: React.FC<{navigation: NavigationScreenProp<any>}>} = {};
+const EXISTING_WIDGETS: {
+  [key: string]: React.FC<{ navigation: NavigationScreenProp<never> }>;
+} = {};
 
 const getExistingWidgets = (widgets: Array<string>) => {
   const existingWidgets = widgets.map((widget) => EXISTING_WIDGETS[widget]);
@@ -15,23 +17,17 @@ const getExistingWidgets = (widgets: Array<string>) => {
 };
 
 export const Widgets = ({ navigation, widgets }: Props) => {
-  if(!widgets) return null;
+  if (!widgets) return null;
 
   const filteredWidgets = getExistingWidgets(widgets);
 
   if (!filteredWidgets?.length) return null;
 
-  const widgetComponents = filteredWidgets.map(
-    (Component, index) => {
-      return <Component key={index} navigation={navigation} />;
-    }
-  );
+  const widgetComponents = filteredWidgets.map((Component, index) => {
+    return <Component key={index} navigation={navigation} />;
+  });
 
-  return (
-    <View style={styles.container}>
-      {widgetComponents}
-    </View>
-  );
+  return <View style={styles.container}>{widgetComponents}</View>;
 };
 
 const styles = StyleSheet.create({
