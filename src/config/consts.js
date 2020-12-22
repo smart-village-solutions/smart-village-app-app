@@ -26,6 +26,8 @@ export const consts = {
       BOOKMARK_CATEGORY: 'Bookmark category',
       BOOKMARKS: 'Bookmarks',
       COMPANY: 'Company',
+      CONSTRUCTION_SITE_DETAIL: 'Construction site detail',
+      CONSTRUCTION_SITE_OVERVIEW: 'Construction site overview',
       EVENT_RECORDS: 'Events',
       FEEDBACK: 'Feedback',
       HOME: 'Home',
