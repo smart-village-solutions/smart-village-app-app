@@ -72,7 +72,7 @@ const addTokenToServer = async (token: string) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      notification_device: { token: token, device_type: os }
+      notification_device: { token, device_type: os }
     })
   };
   if (accessToken) return fetch(requestPath, fetchObj).then((response) => response.status === 201);
