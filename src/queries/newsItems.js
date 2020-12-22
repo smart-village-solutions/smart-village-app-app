@@ -1,8 +1,14 @@
 import gql from 'graphql-tag';
 
 export const GET_NEWS_ITEMS = gql`
-    query NewsItems($ids: [ID], $limit: Int, $offset: Int, $dataProvider: String, $categoryId: ID) {
-    newsItems(ids: $ids, limit: $limit, skip: $offset, dataProvider: $dataProvider, categoryId: $categoryId) {
+  query NewsItems($ids: [ID], $limit: Int, $offset: Int, $dataProvider: String, $categoryId: ID) {
+    newsItems(
+      ids: $ids
+      limit: $limit
+      skip: $offset
+      dataProvider: $dataProvider
+      categoryId: $categoryId
+    ) {
       id
       mainTitle: title
       publishedAt

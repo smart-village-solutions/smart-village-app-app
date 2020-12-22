@@ -10,10 +10,10 @@ import { Icon } from '../Icon';
 
 type Props = {
   id: string;
-  categoryId: number
+  categoryId: number;
   query: keyof typeof QUERY_TYPES;
-  style: object | undefined;
-}
+  style: Record<string, unknown> | undefined;
+};
 
 export const BookmarkHeader = ({ id, categoryId, query, style }: Props) => {
   const { toggleBookmark } = useContext(BookmarkContext);
@@ -31,10 +31,8 @@ export const BookmarkHeader = ({ id, categoryId, query, style }: Props) => {
     >
       <Icon
         size={normalize(22)}
-        xml={isBookmarked ?
-          heartFilled(colors.lightestText) :
-          heartEmpty(colors.lightestText)}
-        style={{...styles.icon, ...style}}
+        xml={isBookmarked ? heartFilled(colors.lightestText) : heartEmpty(colors.lightestText)}
+        style={{ ...styles.icon, ...style }}
       />
     </TouchableOpacity>
   );

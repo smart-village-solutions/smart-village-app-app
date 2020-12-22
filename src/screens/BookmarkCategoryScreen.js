@@ -3,7 +3,14 @@ import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { Icon, ListComponent, LoadingContainer, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
+import {
+  Icon,
+  ListComponent,
+  LoadingContainer,
+  RegularText,
+  SafeAreaViewFlex,
+  Wrapper
+} from '../components';
 import { colors, consts, normalize, texts } from '../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
 import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
@@ -30,7 +37,11 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
 
   // skipping if no bookmark ids results in no additional "unfiltered" queries
   // while bookmarks are loading
-  const { loading, data } = useQuery(getQuery(query), { fetchPolicy, variables , skip: !bookmarks?.length });
+  const { loading, data } = useQuery(getQuery(query), {
+    fetchPolicy,
+    variables,
+    skip: !bookmarks?.length
+  });
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BOOKMARK_CATEGORY);
 
@@ -45,7 +56,7 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
   // this should only ever be reached when one navigates to the category overview screen
   // and removes all the bookmarks from that category by navigating to each detail screen
   // and toggling the bookmark status through the header
-  if(bookmarks.length === 0) {
+  if (bookmarks.length === 0) {
     return (
       <Wrapper>
         <RegularText>{texts.bookmarks.noBookmarksinCategory}</RegularText>
@@ -53,7 +64,7 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
     );
   }
 
-  if(!data) {
+  if (!data) {
     return (
       <Wrapper>
         <RegularText>{texts.errors.noData}</RegularText>
@@ -64,14 +75,9 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <ListComponent
-        navigation={navigation}
-        data={listItems}
-        query={query}
-      />
+      <ListComponent navigation={navigation} data={listItems} query={query} />
     </SafeAreaViewFlex>
   );
-
 };
 
 const styles = StyleSheet.create({
