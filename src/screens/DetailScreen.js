@@ -152,14 +152,15 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
 
   const { headerRight } = navigationOptions;
 
-  const StyledBookmarkHeader = query && queryVariables?.id ?
-    <BookmarkHeader
-      id={queryVariables.id}
-      categoryId={categoryId}
-      query={query}
-      style={styles.iconLeft}
-    /> :
-    null;
+  const StyledBookmarkHeader =
+    query && queryVariables?.id ? (
+      <BookmarkHeader
+        id={queryVariables.id}
+        categoryId={categoryId}
+        query={query}
+        style={styles.iconLeft}
+      />
+    ) : null;
 
   return {
     headerLeft: (
