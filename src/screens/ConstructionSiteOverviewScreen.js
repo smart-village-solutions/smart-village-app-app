@@ -47,7 +47,11 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <FlatList data={constructionSites} renderItem={renderItem} />
+      <FlatList
+        data={constructionSites}
+        keyExtractor={(item, index) => index + item.title + item.startDate}
+        renderItem={renderItem}
+      />
     </SafeAreaViewFlex>
   );
 };
