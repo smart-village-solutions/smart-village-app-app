@@ -1,10 +1,14 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
+import { useQuery } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, normalize } from '../../config';
 import { ConstructionSiteContext } from '../../ConstructionSiteProvider';
+import { filterForValidConstructionSites, graphqlFetchPolicy } from '../../helpers';
 import { constructionSite } from '../../icons';
+import { NetworkContext } from '../../NetworkProvider';
+import { getQuery, QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
@@ -15,11 +19,29 @@ type Props = {
 };
 
 export const ConstructionSiteWidget = ({ navigation }: Props) => {
-  const { constructionSites } = useContext(ConstructionSiteContext);
+  const { constructionSites, setConstructionSites } = useContext(ConstructionSiteContext);
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime: undefined });
+
+  const { data } = useQuery(getQuery(QUERY_TYPES.PUBLIC_JSON_FILE), {
+    variables: { name: 'constructionSites' },
+    fetchPolicy,
+    skip: !isConnected || !isMainserverUp
+  });
 
   const onPress = useCallback(() => {
     if (constructionSites.length) navigation.navigate('ConstructionSiteOverview');
   }, [constructionSites, navigation]);
+
+  useEffect(() => {
+    if (data) {
+      const constructionSitesPublicJsonFileContent =
+        data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
+
+      setConstructionSites(filterForValidConstructionSites(constructionSitesPublicJsonFileContent));
+    }
+  }, [data, setConstructionSites]);
 
   return (
     <Touchable onPress={onPress}>
