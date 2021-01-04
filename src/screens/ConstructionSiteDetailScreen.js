@@ -6,6 +6,7 @@ import { colors, consts, normalize } from '../config';
 import {
   BoldText,
   Icon,
+  Image,
   RegularText,
   SafeAreaViewFlex,
   Title,
@@ -53,6 +54,7 @@ export const ConstructionSiteDetailScreen = ({ navigation }) => {
     description,
     direction,
     endDate,
+    imageUri,
     location,
     locationDescription,
     restrictions,
@@ -67,6 +69,7 @@ export const ConstructionSiteDetailScreen = ({ navigation }) => {
     <SafeAreaViewFlex>
       <ScrollView keyboardShouldPersistTaps="handled">
         <WrapperWithOrientation>
+          {!!imageUri && <Image source={{ uri: imageUri }} />}
           <TitleContainer>
             <Title>{extendedTitle}</Title>
           </TitleContainer>
