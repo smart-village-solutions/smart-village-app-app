@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { BoldText, RegularText } from '../Text';
 import { Title, TitleContainer } from '../Title';
-import { WrapperHorizontal } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 type Props = {
   description: string;
@@ -19,13 +19,13 @@ export const WeatherAlert = ({ description, end, event, start }: Props) => {
       <TitleContainer>
         <Title>Wetterwarnungen</Title>
       </TitleContainer>
-      <WrapperHorizontal>
+      <Wrapper>
         <BoldText>{event}</BoldText>
         <RegularText>
           Zwischen {start} und {end}
         </RegularText>
         <RegularText>{description}</RegularText>
-      </WrapperHorizontal>
+      </Wrapper>
     </View>
   );
 };
