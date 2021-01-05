@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import {
   DailyWeather,
@@ -46,27 +47,30 @@ export const WeatherScreen = ({ navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <WeatherAlert
-        description="Might rumble a times"
-        end={1337}
-        event="slight meteor shower"
-        start={42}
-      />
-      <TitleContainer>
-        <Title>Aktuelles Wetter</Title>
-      </TitleContainer>
-      <View>
-        <FlatList
-          data={dummyData}
-          horizontal
-          keyExtractor={hourlyKeyExtractor}
-          renderItem={renderHourlyWeather}
+      <ScrollView>
+        <WeatherAlert
+          description="Might rumble a times"
+          end={1337}
+          event="slight meteor shower"
+          start={42}
         />
-      </View>
-      <TitleContainer>
-        <Title>Wetter der Nächsten Tage</Title>
-      </TitleContainer>
-      <DailyWeather icon={'10d'} temperatures={temperatures} />
+        <TitleContainer>
+          <Title>Aktuelles Wetter</Title>
+        </TitleContainer>
+        <View>
+          <FlatList
+            data={dummyData}
+            horizontal
+            keyExtractor={hourlyKeyExtractor}
+            renderItem={renderHourlyWeather}
+          />
+        </View>
+        <TitleContainer>
+          <Title>Wetter der Nächsten Tage</Title>
+        </TitleContainer>
+        <DailyWeather icon={'10d'} temperatures={temperatures} />
+        <DailyWeather icon={'10d'} temperatures={temperatures} />
+      </ScrollView>
     </SafeAreaViewFlex>
   );
 };

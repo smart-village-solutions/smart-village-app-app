@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { normalize } from '../../config';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
-import { WrapperHorizontal } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 type Props = {
   icon: string;
@@ -21,9 +21,9 @@ export const DailyWeather = ({ icon, temperatures }: Props) => {
   const { day, eve, max, min, morn, night } = temperatures;
   return (
     <View style={styles.dayContainer}>
-      <WrapperHorizontal>
+      <Wrapper>
         {/* TODO: add date/weekday */}
-        <BoldText>Datum/Wochentag</BoldText>
+        <BoldText>Montag - 04.01.2021</BoldText>
         <View style={styles.dailyForecastContainer}>
           <View style={styles.iconContainer}>
             <Image
@@ -32,31 +32,37 @@ export const DailyWeather = ({ icon, temperatures }: Props) => {
             />
           </View>
           <View style={styles.infoContainer}>
-            <RegularText style={styles.text}>Temperaturen zwischen</RegularText>
-            <RegularText style={styles.text}>
-              {min}°C und {max}°C
-            </RegularText>
             <View style={styles.daytimeWrapper}>
               <View style={styles.dayTimeEntry}>
+                <RegularText>Min:</RegularText>
+                <RegularText>{min.toFixed(1)}°C</RegularText>
+              </View>
+              <View style={styles.dayTimeEntry}>
                 <RegularText>Morgens</RegularText>
-                <RegularText>{morn}°C</RegularText>
+                <RegularText>{morn.toFixed(1)}°C</RegularText>
               </View>
               <View style={styles.dayTimeEntry}>
                 <RegularText>Mittags</RegularText>
-                <RegularText>{day}°C</RegularText>
+                <RegularText>{day.toFixed(1)}°C</RegularText>
+              </View>
+            </View>
+            <View style={styles.daytimeWrapper}>
+              <View style={styles.dayTimeEntry}>
+                <RegularText>Max:</RegularText>
+                <RegularText>{max.toFixed(1)}°C</RegularText>
               </View>
               <View style={styles.dayTimeEntry}>
                 <RegularText>Abends</RegularText>
-                <RegularText>{eve}°C</RegularText>
+                <RegularText>{eve.toFixed(1)}°C</RegularText>
               </View>
               <View style={styles.dayTimeEntry}>
                 <RegularText>Nachts</RegularText>
-                <RegularText>{night}°C</RegularText>
+                <RegularText>{night.toFixed(1)}°C</RegularText>
               </View>
             </View>
           </View>
         </View>
-      </WrapperHorizontal>
+      </Wrapper>
     </View>
   );
 };
@@ -87,8 +93,5 @@ const styles = StyleSheet.create({
   infoContainer: {
     flex: 1,
     paddingHorizontal: normalize(14)
-  },
-  text: {
-    textAlign: 'center'
   }
 });
