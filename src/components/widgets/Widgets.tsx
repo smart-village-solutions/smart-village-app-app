@@ -11,7 +11,7 @@ const EXISTING_WIDGETS: {
   [key: string]: React.FC<{ navigation: NavigationScreenProp<never> }>;
 } = {};
 
-const getExistingWidgets = (widgets: Array<string>) => {
+const getExistingWidgets = (widgets: string[]) => {
   const existingWidgets = widgets.map((widget) => EXISTING_WIDGETS[widget]);
   return existingWidgets.filter((item) => item !== undefined);
 };
