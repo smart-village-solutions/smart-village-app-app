@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import styled from 'styled-components/native';
+import styled, { css } from 'styled-components/native';
 
 import { consts, normalize } from '../config';
 import { OrientationContext } from '../OrientationProvider';
@@ -22,6 +22,18 @@ export const WrapperLandscape = styled.View`
 
 export const WrapperRow = styled.View`
   flex-direction: row;
+
+  ${(props) =>
+    props.center &&
+    css`
+      justify-content: center;
+    `};
+
+  ${(props) =>
+    props.spaceBetween &&
+    css`
+      justify-content: space-between;
+    `};
 `;
 
 export const WrapperWrap = styled(WrapperRow)`
