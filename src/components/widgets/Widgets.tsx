@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
+
+import { WrapperRow } from '../Wrapper';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
@@ -27,12 +28,5 @@ export const Widgets = ({ navigation, widgets }: Props) => {
     return <Component key={index} navigation={navigation} />;
   });
 
-  return <View style={styles.container}>{widgetComponents}</View>;
+  return <WrapperRow spaceBetween>{widgetComponents}</WrapperRow>;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  }
-});
