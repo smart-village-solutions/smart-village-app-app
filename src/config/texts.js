@@ -24,7 +24,7 @@ export const texts = {
     tour: 'Tour'
   },
   errors: {
-    noData: 'Bitte überprüfen sie ihre Internetverbindung.'
+    noData: 'Bitte überprüfen Sie Ihre Internetverbindung.'
   },
   eventRecord: {
     appointments: 'Termine',
