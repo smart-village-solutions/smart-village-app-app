@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.4.3]
+
+Updated Expo SDK to 40.0.0
+
+- Read about that step in: https://dev.to/expo/expo-sdk-40-is-now-available-1in0
+
 ## [v1.4.2]
 
 Integration of a map for points of interests
