@@ -9,7 +9,8 @@ import {
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
-  Wrapper
+  Wrapper,
+  WrapperWithOrientation
 } from '../components';
 import { colors, consts, normalize, texts } from '../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
@@ -58,17 +59,21 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
   // and toggling the bookmark status through the header
   if (bookmarks.length === 0) {
     return (
-      <Wrapper>
-        <RegularText>{texts.bookmarks.noBookmarksinCategory}</RegularText>
-      </Wrapper>
+      <WrapperWithOrientation>
+        <Wrapper>
+          <RegularText>{texts.bookmarks.noBookmarksinCategory}</RegularText>
+        </Wrapper>
+      </WrapperWithOrientation>
     );
   }
 
   if (!data) {
     return (
-      <Wrapper>
-        <RegularText>{texts.errors.noData}</RegularText>
-      </Wrapper>
+      <WrapperWithOrientation>
+        <Wrapper>
+          <RegularText>{texts.errors.noData}</RegularText>
+        </Wrapper>
+      </WrapperWithOrientation>
     );
   }
   const listItems = parseListItemsFromQuery(query, data, false, categoryTitleDetail);
