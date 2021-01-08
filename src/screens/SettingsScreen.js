@@ -17,6 +17,7 @@ import {
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
+  SettingsDataProvider,
   SettingsListItem,
   Title,
   TitleContainer,
@@ -44,12 +45,19 @@ const renderSectionHeader = ({ section: { title } }) =>
     </View>
   );
 
-const renderItem = ({ item, index, section, orientation, dimensions }) =>
-  item.type === 'toggle' ? (
-    <ToggleListItem {...{ item, index, section }} />
-  ) : (
-    <SettingsListItem {...{ item, index, section, orientation, dimensions }} />
-  );
+const renderItem = ({ item, index, section, orientation, dimensions }) => {
+  if (item.type === 'toggle') {
+    return <ToggleListItem {...{ item, index, section }} />;
+  }
+
+  if (item.type === 'listLayout') {
+    return <SettingsListItem {...{ item, index, section, orientation, dimensions }} />;
+  }
+
+  if (item.type === 'dataProvider') {
+    return <SettingsDataProvider {...{ item }} />;
+  }
+};
 
 renderItem.propTypes = {
   item: PropTypes.object.isRequired,
@@ -97,7 +105,7 @@ export const SettingsScreen = () => {
       });
 
     const updateSectionedData = async () => {
-      const { settings = { matomo: false, contrast: false } } = globalSettings;
+      const { settings = { matomo: false, contrast: false, dataProvider: false } } = globalSettings;
       const { consent: matomoValue } = await storageHelper.matomoSettings();
       const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
       const contrastSetting = await storageHelper.contrastSetting();
@@ -177,6 +185,19 @@ export const SettingsScreen = () => {
               value: contrastSetting,
               onActivate: onActivateContrast,
               onDeactivate: onDeactivateContrast
+            }
+          ]
+        });
+      }
+
+      // settings should sometimes contain data provider settings next, depending on server settings
+      if (settings.dataProvider) {
+        additionalSectionedData.push({
+          data: [
+            {
+              title: texts.settingsTitles.dataProvider,
+              topDivider: true,
+              type: 'dataProvider'
             }
           ]
         });

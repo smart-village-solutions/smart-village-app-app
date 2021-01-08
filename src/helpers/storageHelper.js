@@ -14,7 +14,10 @@ export const storageHelper = {
   listTypesSettings: () => readFromStore('listTypesSettings'),
   setListTypesSettings: (listTypesSettings) => addToStore('listTypesSettings', listTypesSettings),
   contrastSetting: () => readFromStore('contrastSetting'),
-  setContrastSetting: (contrastSetting) => addToStore('contrastSetting', contrastSetting)
+  setContrastSetting: (contrastSetting) => addToStore('contrastSetting', contrastSetting),
+  ignoredDataProvider: () => readFromStore('ignoredDataProvider'),
+  setIgnoredDataProvider: (ignoredDataProvider) =>
+    addToStore('ignoredDataProvider', ignoredDataProvider)
 };
 
 export const logCurrentStorage = (withoutApollo = false) => {
