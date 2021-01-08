@@ -9,7 +9,8 @@ import {
   RegularText,
   SafeAreaViewFlex,
   Wrapper,
-  WrapperRow
+  WrapperRow,
+  WrapperWithOrientation
 } from '../components';
 import { getKeyFromTypeAndCategory } from '../helpers';
 import { useBookmarks, useMatomoTrackScreenView } from '../hooks';
@@ -77,9 +78,11 @@ export const BookmarkScreen = ({ navigation }) => {
 
   if (!bookmarks || getBookmarkCount(bookmarks) === 0) {
     return (
-      <Wrapper>
-        <RegularText>{texts.bookmarks.noBookmarksYet}</RegularText>
-      </Wrapper>
+      <WrapperWithOrientation>
+        <Wrapper>
+          <RegularText>{texts.bookmarks.noBookmarksYet}</RegularText>
+        </Wrapper>
+      </WrapperWithOrientation>
     );
   }
 
