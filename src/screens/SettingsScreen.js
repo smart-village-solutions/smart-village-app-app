@@ -67,6 +67,15 @@ const onDeactivatePushNotifications = (revert) => {
   setInAppPermission(false).then((success) => !success && revert());
 };
 
+const onActivateContrast = () => {
+  storageHelper.setContrastSetting(true);
+  // TODO: react to the change with some provider / theming stuff
+};
+
+const onDeactivateContrast = () => {
+  storageHelper.setContrastSetting(false);
+};
+
 export const SettingsScreen = () => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const { globalSettings, listTypesSettings, setListTypesSettings } = useContext(SettingsContext);
@@ -88,9 +97,10 @@ export const SettingsScreen = () => {
       });
 
     const updateSectionedData = async () => {
-      const { settings = { matomo: false } } = globalSettings;
+      const { settings = { matomo: false, contrast: false } } = globalSettings;
       const { consent: matomoValue } = await storageHelper.matomoSettings();
       const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+      const contrastSetting = await storageHelper.contrastSetting();
 
       // settings should always contain push notifications
       const additionalSectionedData = [
@@ -107,6 +117,7 @@ export const SettingsScreen = () => {
           ]
         }
       ];
+
       // settings should sometimes contain matomo analytics next, depending on server settings
       if (settings.matomo) {
         additionalSectionedData.push({
@@ -150,6 +161,22 @@ export const SettingsScreen = () => {
                   ],
                   { cancelable: false }
                 )
+            }
+          ]
+        });
+      }
+
+      // settings should sometimes contain contrast switch next, depending on server settings
+      if (settings.contrast) {
+        additionalSectionedData.push({
+          data: [
+            {
+              title: texts.settingsTitles.contrast,
+              topDivider: true,
+              type: 'toggle',
+              value: contrastSetting,
+              onActivate: onActivateContrast,
+              onDeactivate: onDeactivateContrast
             }
           ]
         });

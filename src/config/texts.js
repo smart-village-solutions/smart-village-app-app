@@ -72,6 +72,7 @@ export const texts = {
   },
   settingsTitles: {
     analytics: 'Matomo Analytics',
+    contrast: 'Kontrastansicht',
     listLayouts: {
       cardList: 'Liste mit großen Bildern',
       eventRecordsTitle: 'Veranstaltungen',
