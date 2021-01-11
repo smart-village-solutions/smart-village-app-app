@@ -35,7 +35,7 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
       return (
         <ListItem
           onPress={onPress}
-          rightIcon={<Icon xml={arrowRight(colors.darkText)} />}
+          rightIcon={<Icon xml={arrowRight(colors.primary)} />}
           subtitle={<RegularText>{formattedDates}</RegularText>}
           title={<BoldText>{extendedTitle}</BoldText>}
           topDivider
