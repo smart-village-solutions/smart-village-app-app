@@ -1,5 +1,6 @@
 import _isArray from 'lodash/isArray';
 import _isObjectLike from 'lodash/isObjectLike';
+
 import { ConstructionSite } from '../types';
 
 const isStringOrUndefined = (value: unknown): value is string | undefined => {
