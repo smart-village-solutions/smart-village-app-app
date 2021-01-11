@@ -89,6 +89,7 @@ const stylesWithProps = ({ horizontal, orientation, dimensions }) => {
 
   return StyleSheet.create({
     contentContainer: {
+      alignSelf: 'center',
       width: maxWidth
     },
     image: {
