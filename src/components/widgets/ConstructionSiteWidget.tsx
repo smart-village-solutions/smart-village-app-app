@@ -3,7 +3,7 @@ import { useQuery } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { colors, normalize } from '../../config';
+import { colors, normalize, texts } from '../../config';
 import { ConstructionSiteContext } from '../../ConstructionSiteProvider';
 import { filterForValidConstructionSites, graphqlFetchPolicy } from '../../helpers';
 import { constructionSite } from '../../icons';
@@ -50,7 +50,7 @@ export const ConstructionSiteWidget = ({ navigation }: Props) => {
           <Icon style={styles.icon} xml={constructionSite(colors.primary)} />
           <BoldText style={styles.count}>{constructionSites.length}</BoldText>
         </View>
-        <RegularText style={styles.text}>Baustellen</RegularText>
+        <RegularText style={styles.text}>{texts.screenTitles.constructionSites}</RegularText>
       </Wrapper>
     </Touchable>
   );
@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   count: {
+    // TODO: change this after update with event widget
     color: colors.primary,
     fontSize: normalize(20),
     paddingTop: normalize(4)
