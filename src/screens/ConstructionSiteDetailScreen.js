@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import React, { useContext } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -19,7 +20,6 @@ import { arrowLeft, locationIconAnchor, location as locationIcon } from '../icon
 import { useMatomoTrackScreenView } from '../hooks';
 import { ConstructionSiteContext } from '../ConstructionSiteProvider';
 import { momentFormat } from '../helpers';
-import moment from 'moment';
 
 const { MATOMO_TRACKING } = consts;
 
