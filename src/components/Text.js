@@ -16,6 +16,13 @@ export const RegularText = styled.Text`
     `};
 
   ${(props) =>
+    props.big &&
+    css`
+      font-size: ${normalize(20)};
+      line-height: ${normalize(26)};
+    `};
+
+  ${(props) =>
     props.primary &&
     css`
       color: ${colors.primary};

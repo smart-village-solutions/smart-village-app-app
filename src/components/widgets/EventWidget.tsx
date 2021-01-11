@@ -51,7 +51,7 @@ export const EventWidget = ({ navigation }: Props) => {
       <Wrapper>
         <WrapperRow center>
           <Icon style={styles.icon} xml={calendar(colors.primary)} />
-          <BoldText primary style={styles.count}>
+          <BoldText primary big>
             {loading ? ' ' : eventCount}
           </BoldText>
         </WrapperRow>
@@ -64,10 +64,6 @@ export const EventWidget = ({ navigation }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  count: {
-    fontSize: normalize(20),
-    paddingTop: normalize(4)
-  },
   icon: {
     paddingHorizontal: normalize(8)
   }
