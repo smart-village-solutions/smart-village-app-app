@@ -23,7 +23,6 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
 
       const { category, endDate, startDate, title } = item;
 
-      const extendedTitle = (category ? `${category} - ` : '') + title;
       const formattedStartDate = momentFormat(startDate);
 
       const formattedEndDate = endDate ? momentFormat(endDate) : undefined;
@@ -36,8 +35,8 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
         <ListItem
           onPress={onPress}
           rightIcon={<Icon xml={arrowRight(colors.primary)} />}
-          subtitle={<RegularText>{formattedDates}</RegularText>}
-          title={<BoldText>{extendedTitle}</BoldText>}
+          title={<RegularText>{formattedDates + (category ? ` | ${category}` : '')}</RegularText>}
+          subtitle={<BoldText>{title}</BoldText>}
           topDivider
         />
       );
