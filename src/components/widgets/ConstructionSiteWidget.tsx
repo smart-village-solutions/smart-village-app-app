@@ -26,8 +26,7 @@ export const ConstructionSiteWidget = ({ navigation }: Props) => {
 
   const { data } = useQuery(getQuery(QUERY_TYPES.PUBLIC_JSON_FILE), {
     variables: { name: 'constructionSites' },
-    fetchPolicy,
-    skip: !isConnected || !isMainserverUp
+    fetchPolicy
   });
 
   const onPress = useCallback(() => {
