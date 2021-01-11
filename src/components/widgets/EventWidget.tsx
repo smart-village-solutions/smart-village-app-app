@@ -11,7 +11,7 @@ import { calendar } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
-import { BoldText, RegularText } from '../Text';
+import { BoldText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow } from '../Wrapper';
 
@@ -55,7 +55,9 @@ export const EventWidget = ({ navigation }: Props) => {
             {loading ? ' ' : eventCount}
           </BoldText>
         </WrapperRow>
-        <RegularText primary>{texts.homeTitles.events}</RegularText>
+        <BoldText primary small>
+          {texts.homeTitles.events}
+        </BoldText>
       </Wrapper>
     </Touchable>
   );
