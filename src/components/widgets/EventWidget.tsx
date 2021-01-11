@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, consts, normalize, texts } from '../../config';
@@ -13,7 +13,7 @@ import { getQuery, QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper } from '../Wrapper';
+import { Wrapper, WrapperRow } from '../Wrapper';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
@@ -49,30 +49,24 @@ export const EventWidget = ({ navigation }: Props) => {
   return (
     <Touchable onPress={onPress}>
       <Wrapper>
-        <View style={styles.container}>
+        <WrapperRow center>
           <Icon style={styles.icon} xml={calendar(colors.primary)} />
-          <BoldText style={styles.count}>{loading ? ' ' : eventCount}</BoldText>
-        </View>
-        <RegularText style={styles.text}>{texts.homeTitles.events}</RegularText>
+          <BoldText primary style={styles.count}>
+            {loading ? ' ' : eventCount}
+          </BoldText>
+        </WrapperRow>
+        <RegularText primary>{texts.homeTitles.events}</RegularText>
       </Wrapper>
     </Touchable>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
   count: {
-    color: colors.primary,
     fontSize: normalize(20),
     paddingTop: normalize(4)
   },
   icon: {
     paddingHorizontal: normalize(8)
-  },
-  text: {
-    color: colors.primary
   }
 });
