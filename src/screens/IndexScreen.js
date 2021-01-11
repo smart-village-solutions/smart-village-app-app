@@ -169,25 +169,25 @@ export const IndexScreen = ({ navigation }) => {
               });
 
             return (
-              <View>
-                {showFilter ? (
-                  <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
-                ) : null}
-                <ListComponent
-                  navigation={navigation}
-                  data={listItems}
-                  query={query}
-                  fetchMoreData={isConnected ? fetchMoreData : null}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={() => refresh(refetch)}
-                      colors={[colors.accent]}
-                      tintColor={colors.accent}
-                    />
-                  }
-                />
-              </View>
+              <ListComponent
+                ListHeaderComponent={
+                  showFilter ? (
+                    <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
+                  ) : null
+                }
+                navigation={navigation}
+                data={listItems}
+                query={query}
+                fetchMoreData={isConnected ? fetchMoreData : null}
+                refreshControl={
+                  <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={() => refresh(refetch)}
+                    colors={[colors.accent]}
+                    tintColor={colors.accent}
+                  />
+                }
+              />
             );
           }}
         </Query>
