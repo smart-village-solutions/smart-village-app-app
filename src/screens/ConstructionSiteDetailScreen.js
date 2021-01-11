@@ -106,7 +106,7 @@ export const ConstructionSiteDetailScreen = ({ navigation }) => {
               <View style={styles.verticalPadding}>
                 <BoldText>Aktuelle Einschränkungen: </BoldText>
                 {restrictions.map((restriction) => (
-                  <RegularText key={'restriction-' + index}>- {restriction}</RegularText>
+                  <RegularText key={`restriction-${index}`}>- {restriction}</RegularText>
                 ))}
               </View>
             )}
