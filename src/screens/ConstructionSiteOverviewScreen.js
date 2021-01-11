@@ -33,11 +33,11 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
 
       return (
         <ListItem
+          bottomDivider
           onPress={onPress}
           rightIcon={<Icon xml={arrowRight(colors.primary)} />}
-          title={<RegularText>{formattedDates + (category ? ` | ${category}` : '')}</RegularText>}
           subtitle={<BoldText>{title}</BoldText>}
-          topDivider
+          title={<RegularText>{formattedDates + (category ? ` | ${category}` : '')}</RegularText>}
         />
       );
     },
