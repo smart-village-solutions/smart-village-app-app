@@ -83,7 +83,8 @@ export const CardList = ({
 
 const styles = StyleSheet.create({
   center: {
-    alignSelf: 'center'
+    alignSelf: 'center',
+    width: '100%'
   }
 });
 
