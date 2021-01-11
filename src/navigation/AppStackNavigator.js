@@ -32,7 +32,7 @@ const AppStackNavigator = (headerRight = true) =>
       ConstructionSiteOverview: {
         screen: ConstructionSiteOverviewScreen,
         navigationOptions: () => ({
-          title: texts.screenTitles.constructionSite
+          title: texts.screenTitles.constructionSites
         })
       },
       Index: {
