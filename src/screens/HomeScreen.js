@@ -37,12 +37,13 @@ import {
   parseEventRecords,
   parseNewsItems,
   parsePointOfInterest,
-  parseTours
+  parseTours,
+  rootRouteName
 } from '../helpers';
 import { useMatomoAlertOnStartUp, useMatomoTrackScreenView, usePushNotifications } from '../hooks';
 import { getQuery, getQueryType, QUERY_TYPES } from '../queries';
 
-const { DRAWER, LIST_TYPES, MATOMO_TRACKING } = consts;
+const { DRAWER, LIST_TYPES, MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -80,8 +81,12 @@ export const HomeScreen = ({ navigation }) => {
         navigation.navigate({
           routeName: 'Detail',
           params: {
+            title: texts.detailTitles[queryType],
             query: queryType,
-            queryVariables: { id: data.id }
+            queryVariables: { id: data.id },
+            rootRouteName: rootRouteName(queryType),
+            shareContent: null,
+            details: null
           }
         });
       }
@@ -116,7 +121,7 @@ export const HomeScreen = ({ navigation }) => {
         title: 'Touren und Orte',
         query: QUERY_TYPES.CATEGORIES,
         queryVariables: {},
-        rootRouteName: 'PointsOfInterestAndTours'
+        rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
       }
     },
     EVENT_RECORDS_INDEX: {
@@ -125,7 +130,7 @@ export const HomeScreen = ({ navigation }) => {
         title: 'Veranstaltungen',
         query: QUERY_TYPES.EVENT_RECORDS,
         queryVariables: { limit: 15, order: 'listDate_ASC' },
-        rootRouteName: 'EventRecords'
+        rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
       }
     },
     NEWS_ITEMS_INDEX: ({ categoryId, categoryTitle, categoryTitleDetail }) => ({
@@ -135,7 +140,7 @@ export const HomeScreen = ({ navigation }) => {
         titleDetail: categoryTitleDetail,
         query: QUERY_TYPES.NEWS_ITEMS,
         queryVariables: { limit: 15, ...{ categoryId } },
-        rootRouteName: 'NewsItems'
+        rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS
       }
     })
   };

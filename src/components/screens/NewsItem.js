@@ -51,12 +51,13 @@ export const NewsItem = ({ data, navigation }) => {
   // the title of a news item is either a given main title or the title from the first content block
   const title = mainTitle || (!!contentBlocks && !!contentBlocks.length && contentBlocks[0].title);
   const rootRouteName = navigation.getParam('rootRouteName', '');
+  const headerTitle = navigation.getParam('title', '');
   // action to open source urls
   const openWebScreen = (webUrl) =>
     navigation.navigate({
       routeName: 'Web',
       params: {
-        title: 'Nachricht',
+        title: headerTitle,
         webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
         rootRouteName
       }

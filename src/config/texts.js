@@ -9,6 +9,12 @@ export const texts = {
     pointsOfInterest: 'Orte',
     tours: 'Touren'
   },
+  detailTitles: {
+    eventRecord: 'Veranstaltung',
+    newsItem: 'Nachricht',
+    pointOfInterest: 'Ort',
+    tour: 'Tour'
+  },
   eventRecord: {
     appointments: 'Termine',
     description: 'Beschreibung',

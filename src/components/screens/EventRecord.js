@@ -53,12 +53,13 @@ export const EventRecord = ({ data, navigation }) => {
   } = data;
   const link = webUrls && webUrls.length && webUrls[0].url;
   const rootRouteName = navigation.getParam('rootRouteName', '');
+  const headerTitle = navigation.getParam('title', '');
   // action to open source urls
   const openWebScreen = (webUrl) =>
     navigation.navigate({
       routeName: 'Web',
       params: {
-        title: 'Veranstaltung',
+        title: headerTitle,
         webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
         rootRouteName
       }
