@@ -7,7 +7,7 @@
  *
  * @return {'cache-first' | 'cache-only' | 'network-only'} a graphql fetch policy depending on the network status
  */
-export const graphqlFetchPolicy = ({ isConnected, isMainserverUp, refreshTime }) => {
+export const graphqlFetchPolicy = ({ isConnected, isMainserverUp, refreshTime = undefined }) => {
   if (isConnected && isMainserverUp) {
     // online and server up
 

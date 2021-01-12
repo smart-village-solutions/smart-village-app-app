@@ -26,6 +26,9 @@ export const texts = {
   errors: {
     noData: 'Bitte überprüfen Sie Ihre Internetverbindung.'
   },
+  constructionSites: {
+    noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
+  },
   eventRecord: {
     appointments: 'Termine',
     description: 'Beschreibung',
