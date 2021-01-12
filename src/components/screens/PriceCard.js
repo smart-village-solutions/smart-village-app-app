@@ -18,7 +18,7 @@ const PriceBox = styled.View`
 
 export const PriceCard = ({ prices }) => (
   <DiagonalGradient style={{ padding: normalize(14) }}>
-    <WrapperWrap>
+    <WrapperWrap spaceBetween>
       {!!prices &&
         prices.map((item, index) => {
           const {

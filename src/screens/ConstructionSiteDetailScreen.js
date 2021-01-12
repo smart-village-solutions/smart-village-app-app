@@ -15,7 +15,8 @@ import {
   TitleContainer,
   WebViewMap,
   Wrapper,
-  WrapperWithOrientation
+  WrapperWithOrientation,
+  WrapperWrap
 } from '../components';
 import { arrowLeft, locationIconAnchor, location as locationIcon } from '../icons';
 import { useMatomoTrackScreenView } from '../hooks';
@@ -75,27 +76,27 @@ export const ConstructionSiteDetailScreen = ({ navigation }) => {
             <Title>{extendedTitle}</Title>
           </TitleContainer>
           <Wrapper>
-            <View style={styles.informationContainer}>
+            <WrapperWrap>
               <BoldText>{endDate ? 'Gesamtzeitraum: ' : 'Datum: '}</BoldText>
               <RegularText>{formattedDates}</RegularText>
-            </View>
+            </WrapperWrap>
             {!!locationDescription && (
-              <View style={styles.informationContainer}>
+              <WrapperWrap>
                 <BoldText>Standort: </BoldText>
                 <RegularText>{locationDescription}</RegularText>
-              </View>
+              </WrapperWrap>
             )}
             {!!direction && (
-              <View style={styles.informationContainer}>
+              <WrapperWrap>
                 <BoldText>Richtung: </BoldText>
                 <RegularText>{direction}</RegularText>
-              </View>
+              </WrapperWrap>
             )}
             {!!cause && (
-              <View style={styles.informationContainer}>
+              <WrapperWrap>
                 <BoldText>Ursache: </BoldText>
                 <RegularText>{cause}</RegularText>
-              </View>
+              </WrapperWrap>
             )}
             {!!description && (
               <View style={styles.verticalPadding}>
@@ -146,10 +147,6 @@ ConstructionSiteDetailScreen.navigationOptions = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  informationContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap'
-  },
   icon: {
     paddingHorizontal: normalize(14)
   },

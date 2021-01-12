@@ -44,8 +44,13 @@ export const WrapperRow = styled.View`
 
 export const WrapperWrap = styled(WrapperRow)`
   flex-wrap: wrap;
-  justify-content: space-between;
   width: 100%;
+
+  ${(props) =>
+    props.spaceBetween &&
+    css`
+      justify-content: space-between;
+    `};
 `;
 
 export const InfoBox = styled(WrapperRow)`
