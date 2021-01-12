@@ -23,7 +23,7 @@ export const consts = {
   MATOMO_TRACKING: {
     SCREEN_VIEW: {
       CONSTRUCTION_SITE_DETAIL: 'Construction site detail',
-      CONSTRUCTION_SITE_OVERVIEW: 'Construction site overview',
+      CONSTRUCTION_SITES: 'Construction site overview',
       HOME: 'Home',
       NEWS_ITEMS: 'News',
       EVENT_RECORDS: 'Events',
