@@ -4,7 +4,7 @@ import 'moment/locale/de';
 /**
  * Format data strings of date and/or time with momentjs to a beautiful human readable string.
  *
- * @param {string} dateTime the required data string to format
+ * @param {string | number} dateTime the required data string or timestamp to format
  * @param {string} returnFormat the optional data format of the resulting data string
  * @param {string} dateTimeFormat the optional data format of the passed data string
  *
