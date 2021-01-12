@@ -37,12 +37,13 @@ export const Tour = ({ data, navigation }) => {
     webUrls
   } = data;
   const rootRouteName = navigation.getParam('rootRouteName', '');
+  const headerTitle = navigation.getParam('title', '');
   // action to open source urls
   const openWebScreen = (webUrl) =>
     navigation.navigate({
       routeName: 'Web',
       params: {
-        title: 'Tour',
+        title: headerTitle,
         webUrl,
         rootRouteName
       }

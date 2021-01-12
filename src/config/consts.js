@@ -42,5 +42,13 @@ export const consts = {
     TEXT_LIST: 'textList',
     IMAGE_TEXT_LIST: 'imageTextList',
     CARD_LIST: 'cardList'
+  },
+
+  ROOT_ROUTE_NAMES: {
+    EVENT_RECORDS: 'EventRecords',
+    NEWS_ITEMS: 'NewsItems',
+    POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours',
+    POINTS_OF_INTEREST: 'PointsOfInterest',
+    TOURS: 'Tours'
   }
 };

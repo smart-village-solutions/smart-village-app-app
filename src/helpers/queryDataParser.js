@@ -1,11 +1,14 @@
 import _filter from 'lodash/filter';
 
+import { consts, texts } from '../config';
 import { QUERY_TYPES } from '../queries';
 import { eventDate } from './dateTimeHelper';
 import { mainImageOfMediaContents } from './imageHelper';
 import { momentFormat } from './momentHelper';
 import { shareMessage } from './shareHelper';
 import { subtitle } from './textHelper';
+
+const { ROOT_ROUTE_NAMES } = consts;
 
 export const parseEventRecords = (data, skipLastDivider) => {
   return data?.map((eventRecord, index) => ({
@@ -20,10 +23,10 @@ export const parseEventRecords = (data, skipLastDivider) => {
     },
     routeName: 'Detail',
     params: {
-      title: 'Veranstaltung',
+      title: texts.detailTitles.eventRecord,
       query: QUERY_TYPES.EVENT_RECORD,
       queryVariables: { id: `${eventRecord.id}` },
-      rootRouteName: 'EventRecords',
+      rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
       shareContent: {
         message: shareMessage(eventRecord, QUERY_TYPES.EVENT_RECORD)
       },
@@ -52,7 +55,7 @@ export const parseNewsItems = (data, skipLastDivider, titleDetail) => {
       title: titleDetail,
       query: QUERY_TYPES.NEWS_ITEM,
       queryVariables: { id: `${newsItem.id}` },
-      rootRouteName: 'NewsItems',
+      rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS,
       shareContent: {
         message: shareMessage(newsItem, QUERY_TYPES.NEWS_ITEM)
       },
@@ -72,10 +75,10 @@ export const parsePointOfInterest = (data, skipLastDivider) => {
     },
     routeName: 'Detail',
     params: {
-      title: 'Ort',
+      title: texts.detailTitles.pointOfInterest,
       query: QUERY_TYPES.POINT_OF_INTEREST,
       queryVariables: { id: `${pointOfInterest.id}` },
-      rootRouteName: 'PointsOfInterest',
+      rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS,
       shareContent: {
         message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
       },
@@ -98,10 +101,10 @@ export const parseTours = (data, skipLastDivider) => {
     },
     routeName: 'Detail',
     params: {
-      title: 'Tour',
+      title: texts.detailTitles.tour,
       query: QUERY_TYPES.TOUR,
       queryVariables: { id: `${tour.id}` },
-      rootRouteName: 'Tours',
+      rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS,
       shareContent: {
         message: shareMessage(tour, QUERY_TYPES.TOUR)
       },
@@ -126,7 +129,7 @@ const parseCategories = (data, skipLastDivider) => {
       query:
         category.pointsOfInterestCount > 0 ? QUERY_TYPES.POINTS_OF_INTEREST : QUERY_TYPES.TOURS,
       queryVariables: { limit: 15, order: 'name_ASC', category: `${category.name}` },
-      rootRouteName: category.pointsOfInterestCount > 0 ? 'PointsOfInterest' : 'Tours'
+      rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
     },
     bottomDivider: skipLastDivider && index !== data.length - 1
   }));
