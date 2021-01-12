@@ -30,6 +30,12 @@ export const WrapperRow = styled.View`
     `};
 
   ${(props) =>
+    props.spaceAround &&
+    css`
+      justify-content: space-around;
+    `};
+
+  ${(props) =>
     props.spaceBetween &&
     css`
       justify-content: space-between;
