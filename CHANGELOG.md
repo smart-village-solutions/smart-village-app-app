@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.4.4]
+
+Refactorings and bugfixes
+
+### Added
+
+- added params for navigation from push notification
+  - now there is always a title for a detail screen and in a drawer a corresponding root route
+    would be marked as bold as well
+- added fetch policy for location overview query
+  - so that we use caching here and do not fire a query while being offline either
+- add checks for data and intro text for category list
+  - added check for section data to return no section header if there is no data
+  - added check for intro text to render no text and wrapper if there is no text
+
+### Changed
+
+- changed `.` instead of `?` in the label for the checkbox in the feedback form
+- removed unnecessary offset option for points of interest in points of interest and tours query
+  - this query is used in the home screen, where no fetch more is used so we do not need the offset
+    option
+
 ## [v1.4.3]
 
 Updated Expo SDK to 40.0.0
