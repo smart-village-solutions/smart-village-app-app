@@ -63,7 +63,7 @@ export const Service = ({ navigation, refreshing }) => {
             )}
             {!!headlineService && device.platform === 'ios' && <TitleShadow />}
             <DiagonalGradient style={{ padding: normalize(14) }}>
-              <WrapperWrap>
+              <WrapperWrap spaceBetween>
                 {publicJsonFileContent.map((item, index) => {
                   return (
                     <ServiceBox
