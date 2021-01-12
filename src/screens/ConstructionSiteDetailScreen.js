@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, normalize } from '../config';
+
 import {
   BoldText,
   Icon,
@@ -44,8 +45,6 @@ export const ConstructionSiteDetailScreen = ({ navigation }) => {
 
   const index = navigation.getParam('index');
 
-  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITE_DETAIL);
-
   if (typeof index !== 'number') return null;
 
   const {
@@ -61,6 +60,8 @@ export const ConstructionSiteDetailScreen = ({ navigation }) => {
     startDate,
     title
   } = constructionSites[index];
+
+  useMatomoTrackScreenView(`${MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITE_DETAIL} / ${title}`);
 
   const extendedTitle = (category ? `${category} - ` : '') + title;
   const formattedDates = formatDates(startDate, endDate);
