@@ -34,5 +34,9 @@ export const Widgets = ({ navigation, widgets }: Props) => {
     return <Component key={index} navigation={navigation} />;
   });
 
-  return <WrapperRow spaceBetween>{widgetComponents}</WrapperRow>;
+  return (
+    <WrapperRow spaceBetween={filteredWidgets.length > 2} spaceAround={filteredWidgets.length <= 2}>
+      {widgetComponents}
+    </WrapperRow>
+  );
 };
