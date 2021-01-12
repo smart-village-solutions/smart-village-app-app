@@ -111,7 +111,7 @@ export const CompanyScreen = ({ navigation }) => {
                 }
               >
                 <View style={{ padding: normalize(14) }}>
-                  <WrapperWrap>
+                  <WrapperWrap spaceBetween>
                     {publicJsonFileContent.map((item, index) => {
                       return (
                         <ServiceBox
