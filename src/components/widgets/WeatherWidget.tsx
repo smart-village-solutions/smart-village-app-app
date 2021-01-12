@@ -1,11 +1,11 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
-import { colors, normalize } from '../../config';
+import { normalize } from '../../config';
 import { Image } from '../Image';
-import { BoldText, RegularText } from '../Text';
+import { BoldText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper } from '../Wrapper';
+import { Wrapper, WrapperRow } from '../Wrapper';
 
 // type WeatherData = {
 //   icon: string;
@@ -75,12 +75,12 @@ export const WeatherWidget = ({ navigation }: { navigation: NavigationScreenProp
   const temperature = 12.5;
 
   return (
-    <Wrapper>
-      <Touchable
-        onPress={() => navigation?.navigate('Weather', { weatherData: { icon, temperature } })}
-        style={styles.widget}
-      >
-        <View style={styles.container}>
+    <Touchable
+      onPress={() => navigation?.navigate('Weather', { weatherData: { icon, temperature } })}
+      style={styles.widget}
+    >
+      <Wrapper>
+        <WrapperRow center>
           <View style={styles.iconContainer}>
             <Image
               source={{ uri: `http://openweathermap.org/img/wn/${icon}@2x.png` }}
@@ -88,31 +88,28 @@ export const WeatherWidget = ({ navigation }: { navigation: NavigationScreenProp
             />
           </View>
           <View>
-            <RegularText style={styles.text}>{temperature}°C</RegularText>
-            <BoldText style={styles.text}>Wetter</BoldText>
+            <BoldText primary big>
+              {temperature}°C
+            </BoldText>
+            <BoldText primary small>
+              Wetter
+            </BoldText>
           </View>
-        </View>
-      </Touchable>
-    </Wrapper>
+        </WrapperRow>
+      </Wrapper>
+    </Touchable>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
   icon: {
     aspectRatio: 1,
     resizeMode: 'contain',
-    width: normalize(50)
+    width: normalize(44)
   },
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center'
-  },
-  text: {
-    color: colors.primary
   },
   widget: {
     alignItems: 'center'
