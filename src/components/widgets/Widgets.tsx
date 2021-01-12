@@ -6,7 +6,6 @@ import { EventWidget } from './EventWidget';
 import { WeatherWidget } from './WeatherWidget';
 import { WrapperRow } from '../Wrapper';
 
-
 type Props = {
   navigation: NavigationScreenProp<never>;
   widgets?: string[];
