@@ -9,6 +9,9 @@ export const texts = {
     pointsOfInterest: 'Orte',
     tours: 'Touren'
   },
+  constructionSites: {
+    noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
+  },
   eventRecord: {
     appointments: 'Termine',
     description: 'Beschreibung',

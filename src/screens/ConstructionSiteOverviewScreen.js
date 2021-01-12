@@ -3,8 +3,15 @@ import React, { useCallback, useContext } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { BoldText, Icon, RegularText, SafeAreaViewFlex } from '../components';
-import { colors, consts, normalize } from '../config';
+import {
+  BoldText,
+  Icon,
+  RegularText,
+  SafeAreaViewFlex,
+  Wrapper,
+  WrapperWithOrientation
+} from '../components';
+import { colors, consts, normalize, texts } from '../config';
 import { ConstructionSiteContext } from '../ConstructionSiteProvider';
 import { momentFormat } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
@@ -15,7 +22,7 @@ const { MATOMO_TRACKING } = consts;
 export const ConstructionSiteOverviewScreen = ({ navigation }) => {
   const { constructionSites } = useContext(ConstructionSiteContext);
 
-  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITE_OVERVIEW);
+  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITES);
 
   const renderItem = useCallback(
     ({ index, item }) => {
@@ -43,6 +50,18 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
     },
     [navigation]
   );
+
+  if (!constructionSites.length) {
+    return (
+      <SafeAreaViewFlex>
+        <WrapperWithOrientation>
+          <Wrapper>
+            <RegularText>{texts.constructionSites.noInformationGiven}</RegularText>
+          </Wrapper>
+        </WrapperWithOrientation>
+      </SafeAreaViewFlex>
+    );
+  }
 
   return (
     <SafeAreaViewFlex>

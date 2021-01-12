@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, normalize, texts } from '../../config';
@@ -10,9 +10,9 @@ import { constructionSite } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
-import { BoldText, RegularText } from '../Text';
+import { BoldText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper } from '../Wrapper';
+import { Wrapper, WrapperRow } from '../Wrapper';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
@@ -22,7 +22,7 @@ export const ConstructionSiteWidget = ({ navigation }: Props) => {
   const { constructionSites, setConstructionSites } = useContext(ConstructionSiteContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime: undefined });
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
   const { data } = useQuery(getQuery(QUERY_TYPES.PUBLIC_JSON_FILE), {
     variables: { name: 'constructionSites' },
@@ -30,7 +30,7 @@ export const ConstructionSiteWidget = ({ navigation }: Props) => {
   });
 
   const onPress = useCallback(() => {
-    if (constructionSites.length) navigation.navigate('ConstructionSiteOverview');
+    navigation.navigate('ConstructionSiteOverview');
   }, [constructionSites, navigation]);
 
   useEffect(() => {
@@ -45,31 +45,22 @@ export const ConstructionSiteWidget = ({ navigation }: Props) => {
   return (
     <Touchable onPress={onPress}>
       <Wrapper>
-        <View style={styles.container}>
+        <WrapperRow center>
           <Icon style={styles.icon} xml={constructionSite(colors.primary)} />
-          <BoldText style={styles.count}>{constructionSites.length}</BoldText>
-        </View>
-        <RegularText style={styles.text}>{texts.screenTitles.constructionSites}</RegularText>
+          <BoldText primary big>
+            {constructionSites.length}
+          </BoldText>
+        </WrapperRow>
+        <BoldText primary small>
+          {texts.screenTitles.constructionSites}
+        </BoldText>
       </Wrapper>
     </Touchable>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  count: {
-    // TODO: change this after update with event widget
-    color: colors.primary,
-    fontSize: normalize(20),
-    paddingTop: normalize(4)
-  },
   icon: {
     paddingHorizontal: normalize(8)
-  },
-  text: {
-    color: colors.primary
   }
 });
