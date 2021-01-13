@@ -21,7 +21,7 @@ const { MATOMO_TRACKING } = consts;
 
 const getInitialConnectionState = (categoriesNews) => {
   let initialState = {};
-  categoriesNews.map(({ categoryId }) => {
+  categoriesNews.forEach(({ categoryId }) => {
     initialState[getKeyFromTypeAndCategory(QUERY_TYPES.NEWS_ITEMS, categoryId)] = true;
   });
   initialState[QUERY_TYPES.EVENT_RECORDS] = true;
