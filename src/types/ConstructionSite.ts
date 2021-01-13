@@ -4,7 +4,7 @@ export type ConstructionSite = {
   description?: string;
   direction?: string;
   endDate?: string;
-  imageUri: string;
+  imageUri?: string;
   location?: {
     lat: number;
     lon: number;
