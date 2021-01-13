@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, device, normalize, texts } from '../config';
@@ -19,6 +19,19 @@ import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
+const getInitialConnectionState = (categoriesNews) => {
+  let initialState = {};
+  categoriesNews.map(
+    ({ categoryId }) =>
+      (initialState[getKeyFromTypeAndCategory(QUERY_TYPES.NEWS_ITEMS, categoryId)] = true)
+  );
+  initialState[QUERY_TYPES.EVENT_RECORDS] = true;
+  initialState[QUERY_TYPES.POINTS_OF_INTEREST] = true;
+  initialState[QUERY_TYPES.TOURS] = true;
+
+  return initialState;
+};
+
 const getBookmarkCount = (bookmarks) => {
   if (!bookmarks) return 0;
 
@@ -35,6 +48,7 @@ export const BookmarkScreen = ({ navigation }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { sections = {} } = globalSettings;
   const { categoriesNews } = sections;
+  const [connectionState, setConnectionState] = useState(getInitialConnectionState(categoriesNews));
 
   const getSection = useCallback(
     (itemType, categoryTitle, categoryId, categoryTitleDetail) => {
@@ -43,20 +57,20 @@ export const BookmarkScreen = ({ navigation }) => {
       if (!bookmarks[key]?.length) return null;
 
       return (
-        <View key={key}>
-          <BookmarkSection
-            categoryId={categoryId}
-            categoryTitleDetail={categoryTitleDetail}
-            ids={bookmarks[key]}
-            navigation={navigation}
-            query={itemType}
-            sectionTitle={categoryTitle}
-          />
-        </View>
+        <BookmarkSection
+          categoryId={categoryId}
+          categoryTitleDetail={categoryTitleDetail}
+          ids={bookmarks[key]}
+          key={key}
+          navigation={navigation}
+          query={itemType}
+          sectionTitle={categoryTitle}
+          setConnectionState={setConnectionState}
+        />
       );
       // if there are more than three of that category, show "show all" button
     },
-    [navigation, bookmarks]
+    [navigation, bookmarks, setConnectionState]
   );
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BOOKMARKS);
@@ -65,6 +79,20 @@ export const BookmarkScreen = ({ navigation }) => {
     return (
       <Wrapper>
         <RegularText>{texts.bookmarks.noBookmarksYet}</RegularText>
+      </Wrapper>
+    );
+  }
+
+  const noConnection = Object.keys(connectionState).reduce(
+    (previousValue, currentValue) =>
+      connectionState[previousValue] || connectionState[currentValue],
+    false
+  );
+
+  if (!noConnection) {
+    return (
+      <Wrapper>
+        <RegularText>{texts.errors.noData}</RegularText>
       </Wrapper>
     );
   }
