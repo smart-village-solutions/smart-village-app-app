@@ -21,10 +21,9 @@ const { MATOMO_TRACKING } = consts;
 
 const getInitialConnectionState = (categoriesNews) => {
   let initialState = {};
-  categoriesNews.map(
-    ({ categoryId }) =>
-      (initialState[getKeyFromTypeAndCategory(QUERY_TYPES.NEWS_ITEMS, categoryId)] = true)
-  );
+  categoriesNews.map(({ categoryId }) => {
+    initialState[getKeyFromTypeAndCategory(QUERY_TYPES.NEWS_ITEMS, categoryId)] = true;
+  });
   initialState[QUERY_TYPES.EVENT_RECORDS] = true;
   initialState[QUERY_TYPES.POINTS_OF_INTEREST] = true;
   initialState[QUERY_TYPES.TOURS] = true;
@@ -52,16 +51,17 @@ export const BookmarkScreen = ({ navigation }) => {
 
   const getSection = useCallback(
     (itemType, categoryTitle, categoryId, categoryTitleDetail) => {
-      const key = getKeyFromTypeAndCategory(itemType, categoryId);
+      const bookmarkKey = getKeyFromTypeAndCategory(itemType, categoryId);
 
-      if (!bookmarks[key]?.length) return null;
+      if (!bookmarks[bookmarkKey]?.length) return null;
 
       return (
         <BookmarkSection
+          bookmarkKey={bookmarkKey}
           categoryId={categoryId}
           categoryTitleDetail={categoryTitleDetail}
-          ids={bookmarks[key]}
-          key={key}
+          ids={bookmarks[bookmarkKey]}
+          key={bookmarkKey}
           navigation={navigation}
           query={itemType}
           sectionTitle={categoryTitle}
@@ -83,23 +83,20 @@ export const BookmarkScreen = ({ navigation }) => {
     );
   }
 
-  const noConnection = Object.keys(connectionState).reduce(
+  const connection = Object.keys(connectionState).reduce(
     (previousValue, currentValue) =>
-      connectionState[previousValue] || connectionState[currentValue],
-    false
+      previousValue && (connectionState[currentValue] || !bookmarks[currentValue]?.length),
+    true
   );
-
-  if (!noConnection) {
-    return (
-      <Wrapper>
-        <RegularText>{texts.errors.noData}</RegularText>
-      </Wrapper>
-    );
-  }
 
   return (
     <SafeAreaViewFlex>
       <ScrollView>
+        {!connection && (
+          <Wrapper>
+            <RegularText>{texts.errors.noData}</RegularText>
+          </Wrapper>
+        )}
         {categoriesNews?.map(({ categoryId, categoryTitle, categoryTitleDetail }) =>
           getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, categoryId, categoryTitleDetail)
         )}

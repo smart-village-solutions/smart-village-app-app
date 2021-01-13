@@ -25,7 +25,7 @@ type Props = {
   categoryId?: number;
   categoryTitleDetail?: string;
   ids: string[];
-  key: string;
+  bookmarkKey: string;
   navigation: NavigationScreenProp<never>;
   query: string;
   sectionTitle?: string;
@@ -73,7 +73,7 @@ export const BookmarkSection = ({
   categoryId,
   categoryTitleDetail,
   ids,
-  key,
+  bookmarkKey,
   navigation,
   query,
   sectionTitle,
@@ -107,10 +107,10 @@ export const BookmarkSection = ({
     if (!loading)
       setConnectionState((state) => {
         const newState = { ...state };
-        newState[key] = !!data;
+        newState[bookmarkKey] = !!data;
         return newState;
       });
-  }, [data, key, loading, setConnectionState]);
+  }, [data, bookmarkKey, loading, setConnectionState]);
 
   if (loading) {
     return (
