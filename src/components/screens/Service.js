@@ -47,8 +47,13 @@ export const Service = ({ navigation, refreshing }) => {
         if (refreshing) refetch();
         if (loading) return null;
 
-        let publicJsonFileContent =
-          data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
+        let publicJsonFileContent = [];
+
+        try {
+          publicJsonFileContent = JSON.parse(data?.publicJsonFile?.content);
+        } catch (error) {
+          console.warn(error, data);
+        }
 
         if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
 

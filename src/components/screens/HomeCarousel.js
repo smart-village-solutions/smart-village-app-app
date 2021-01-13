@@ -49,9 +49,15 @@ export const HomeCarousel = ({ navigation, refreshing }) => {
           );
         }
 
-        let carouselImages = data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
+        let carouselImages = [];
 
-        if (!carouselImages) return null;
+        try {
+          carouselImages = JSON.parse(data?.publicJsonFile?.content);
+        } catch (error) {
+          console.warn(error, data);
+        }
+
+        if (!carouselImages || !carouselImages.length) return null;
 
         return (
           <ImagesCarousel

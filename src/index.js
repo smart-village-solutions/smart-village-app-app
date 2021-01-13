@@ -175,10 +175,13 @@ const MainAppWithApolloProvider = () => {
       }
     }
 
-    const globalSettingsPublicJsonFileContent =
-      globalSettingsData &&
-      globalSettingsData.publicJsonFile &&
-      JSON.parse(globalSettingsData.publicJsonFile.content);
+    let globalSettingsPublicJsonFileContent = [];
+
+    try {
+      globalSettingsPublicJsonFileContent = JSON.parse(globalSettingsData?.publicJsonFile?.content);
+    } catch (error) {
+      console.warn(error, globalSettingsData);
+    }
 
     if (!_isEmpty(globalSettingsPublicJsonFileContent)) {
       globalSettings = globalSettingsPublicJsonFileContent;
@@ -212,10 +215,13 @@ const MainAppWithApolloProvider = () => {
         console.warn('errors', errors);
       }
 
-      let navigationPublicJsonFileContent =
-        navigationData &&
-        navigationData.publicJsonFile &&
-        JSON.parse(navigationData.publicJsonFile.content);
+      let navigationPublicJsonFileContent = [];
+
+      try {
+        navigationPublicJsonFileContent = JSON.parse(navigationData?.publicJsonFile?.content);
+      } catch (error) {
+        console.warn(error, navigationData);
+      }
 
       if (!_isEmpty(navigationPublicJsonFileContent)) {
         setDrawerRoutes(

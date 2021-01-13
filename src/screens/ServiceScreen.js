@@ -80,8 +80,13 @@ export const ServiceScreen = ({ navigation }) => {
             );
           }
 
-          let publicJsonFileContent =
-            data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
+          let publicJsonFileContent = [];
+
+          try {
+            publicJsonFileContent = JSON.parse(data?.publicJsonFile?.content);
+          } catch (error) {
+            console.warn(error, data);
+          }
 
           if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
 
