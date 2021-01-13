@@ -4,6 +4,10 @@ export const consts = {
   DRAWER: 'drawer',
   TABS: 'tabs',
 
+  POLL_INTERVALS: {
+    WEATHER: 3600000
+  },
+
   REFRESH_INTERVALS: {
     // refresh intervals per time:
     ONCE_A_DAY: ONCE_A_DAY,
@@ -39,6 +43,7 @@ export const consts = {
       SERVICE: 'Service',
       SETTINGS: 'Settings',
       TOURS: 'Tours',
+      WEATHER: 'Weather',
       WEB: 'Web'
     }
   },

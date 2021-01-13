@@ -13,7 +13,7 @@ export type HourlyWeatherData = {
 };
 
 export const HourlyWeather = ({ icon, temperature, time, isNow }: HourlyWeatherData) => {
-  const formattedTime = momentFormat(time, 'HH:mm', 'x');
+  const formattedTime = momentFormat(time * 1000, 'HH:mm', 'x');
 
   return (
     <View
@@ -24,7 +24,7 @@ export const HourlyWeather = ({ icon, temperature, time, isNow }: HourlyWeatherD
         source={{ uri: `http://openweathermap.org/img/wn/${icon}@2x.png` }}
         style={styles.icon}
       />
-      <RegularText>{temperature}°C</RegularText>
+      <RegularText>{temperature.toFixed(1)}°C</RegularText>
     </View>
   );
 };
@@ -37,6 +37,6 @@ const styles = StyleSheet.create({
   },
   container: {
     alignItems: 'center',
-    paddingVertical: normalize(7)
+    padding: normalize(7)
   }
 });

@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
+import { useQuery } from 'react-apollo';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native';
 
@@ -12,78 +12,97 @@ import {
   TitleContainer,
   WeatherAlert
 } from '../components';
-import { colors, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
+import { graphqlFetchPolicy } from '../helpers';
+import { useMatomoTrackScreenView } from '../hooks';
 import { arrowLeft } from '../icons';
+import { hasDailyWeather, hasHourlyWeather, parseValidAlerts } from '../jsonValidation';
+import { NetworkContext } from '../NetworkProvider';
+import { getQuery, QUERY_TYPES } from '../queries';
 
-// const { MATOMO_TRACKING } = consts;
-
-const hourlyKeyExtractor = (item) => JSON.stringify(item.time);
+const hourlyKeyExtractor = (item) => JSON.stringify(item.dt);
 
 const renderHourlyWeather = ({ item }) => {
   return (
     <HourlyWeather
-      icon={item.icon}
+      icon={item.weather[0].icon}
       isNow={item.isNow}
-      temperature={item.temperature}
-      time={item.time}
+      temperature={item.temp}
+      time={item.dt}
     />
   );
 };
 
-const markNow = (dummyData) => {
+const markNow = (data) => {
   const now = new Date().getTime();
-  const idx = dummyData.findIndex((item) => item.time > now);
+  const idx = data.findIndex((item) => item.dt * 1000 > now);
 
   // mark the data set that has the latest time that has not passed yet as current
-  dummyData[Math.max(0, idx - 1)].isNow = true;
+  data[Math.max(0, idx - 1)].isNow = true;
+  return data;
 };
 
 export const WeatherScreen = () => {
-  const temperatures = {
-    day: 6.27,
-    eve: 4.82,
-    max: 7.95,
-    min: 2.87,
-    morn: 3.33,
-    night: 3.41
-  };
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const { data, loading } = useQuery(getQuery(QUERY_TYPES.WEATHER_MAP), {
+    fetchPolicy,
+    pollInterval: consts.POLL_INTERVALS.WEATHER
+  });
 
-  const dummyData = [
-    { icon: '13d', temperature: 12, time: new Date().getTime() - 3600000 },
-    { icon: '03d', temperature: 2, time: new Date().getTime() },
-    { icon: '11d', temperature: 32, time: new Date().getTime() + 3600000 }
-  ];
+  useMatomoTrackScreenView(consts.MATOMO_TRACKING.SCREEN_VIEW.WEATHER);
 
-  markNow(dummyData);
+  if (!data?.weatherMap || loading) return null;
 
-  // TODO: Add tracking
-  // useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.MORE);
+  const { weatherMap } = data;
+  const alerts = parseValidAlerts(weatherMap);
 
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        <WeatherAlert
-          description="Might rumble a times"
-          end={1337}
-          event="slight meteor shower"
-          start={42}
-        />
-        <TitleContainer>
-          <Title>Aktuelles Wetter</Title>
-        </TitleContainer>
-        <View>
-          <FlatList
-            data={dummyData}
-            horizontal
-            keyExtractor={hourlyKeyExtractor}
-            renderItem={renderHourlyWeather}
-          />
-        </View>
-        <TitleContainer>
-          <Title>Wetter der Nächsten Tage</Title>
-        </TitleContainer>
-        <DailyWeather icon={'10d'} temperatures={temperatures} />
-        <DailyWeather icon={'10d'} temperatures={temperatures} />
+        {!!alerts?.length && (
+          <TitleContainer>
+            <Title>Wetterwarnungen</Title>
+          </TitleContainer>
+        )}
+        {!!alerts?.length &&
+          alerts.map((alert, index) => (
+            <WeatherAlert
+              key={index}
+              description={alert.description}
+              event={alert.event}
+              start={alert.start}
+              end={alert.end}
+            />
+          ))}
+        {hasHourlyWeather(weatherMap) && (
+          <View>
+            <TitleContainer>
+              <Title>Aktuelles Wetter</Title>
+            </TitleContainer>
+            <FlatList
+              data={markNow(weatherMap.hourly)}
+              horizontal
+              keyExtractor={hourlyKeyExtractor}
+              renderItem={renderHourlyWeather}
+            />
+          </View>
+        )}
+        {hasDailyWeather(weatherMap) && (
+          <View>
+            <TitleContainer>
+              <Title>Wetter der Nächsten Tage</Title>
+            </TitleContainer>
+            {weatherMap.daily.map((day, index) => (
+              <DailyWeather
+                key={index}
+                icon={day.weather[0].icon}
+                temperatures={day.temp}
+                date={day.dt}
+              />
+            ))}
+          </View>
+        )}
       </ScrollView>
     </SafeAreaViewFlex>
   );

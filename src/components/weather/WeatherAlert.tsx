@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
+import { momentFormat } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
-import { Title, TitleContainer } from '../Title';
 import { Wrapper } from '../Wrapper';
 
 type Props = {
@@ -12,17 +12,13 @@ type Props = {
 };
 
 export const WeatherAlert = ({ description, end, event, start }: Props) => {
-  // TODO: proper date format
-
   return (
     <View>
-      <TitleContainer>
-        <Title>Wetterwarnungen</Title>
-      </TitleContainer>
       <Wrapper>
         <BoldText>{event}</BoldText>
         <RegularText>
-          Zwischen {start} und {end}
+          Zwischen {momentFormat(start * 1000, 'DD.MM.YYYY HH:mm', 'x')} Uhr und{' '}
+          {momentFormat(end * 1000, 'DD.MM.YYYY HH:mm', 'x')} Uhr.
         </RegularText>
         <RegularText>{description}</RegularText>
       </Wrapper>
