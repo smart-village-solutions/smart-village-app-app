@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
@@ -25,9 +25,11 @@ type Props = {
   categoryId?: number;
   categoryTitleDetail?: string;
   ids: string[];
+  key: string;
   navigation: NavigationScreenProp<never>;
   query: string;
   sectionTitle?: string;
+  setConnectionState: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
 };
 
 const getTitle = (itemType: string) => {
@@ -71,9 +73,11 @@ export const BookmarkSection = ({
   categoryId,
   categoryTitleDetail,
   ids,
+  key,
   navigation,
   query,
-  sectionTitle
+  sectionTitle,
+  setConnectionState
 }: Props) => {
   const { listTypesSettings } = useContext(SettingsContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -98,6 +102,15 @@ export const BookmarkSection = ({
       }),
     [navigation, categoryId]
   );
+
+  useEffect(() => {
+    if (!loading)
+      setConnectionState((state) => {
+        const newState = { ...state };
+        newState[key] = !!data;
+        return newState;
+      });
+  }, [data, key, loading, setConnectionState]);
 
   if (loading) {
     return (
