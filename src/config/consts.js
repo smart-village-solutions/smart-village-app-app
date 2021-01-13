@@ -4,6 +4,10 @@ export const consts = {
   DRAWER: 'drawer',
   TABS: 'tabs',
 
+  POLL_INTERVALS: {
+    WEATHER: 3600000
+  },
+
   REFRESH_INTERVALS: {
     // refresh intervals per time:
     ONCE_A_DAY: ONCE_A_DAY,
@@ -22,21 +26,22 @@ export const consts = {
 
   MATOMO_TRACKING: {
     SCREEN_VIEW: {
+      COMPANY: 'Company',
       CONSTRUCTION_SITE_DETAIL: 'Construction',
       CONSTRUCTION_SITES: 'Constructions',
-      HOME: 'Home',
-      NEWS_ITEMS: 'News',
       EVENT_RECORDS: 'Events',
-      POINTS_OF_INTEREST: 'Points of interest',
-      TOURS: 'Tours',
-      POINTS_OF_INTEREST_AND_TOURS: 'Points of interest and tours',
-      SERVICE: 'Service',
-      COMPANY: 'Company',
-      WEB: 'Web',
       FEEDBACK: 'Feedback',
+      HOME: 'Home',
       HTML: 'Content',
       MORE: 'More',
-      SETTINGS: 'Settings'
+      NEWS_ITEMS: 'News',
+      POINTS_OF_INTEREST_AND_TOURS: 'Points of interest and tours',
+      POINTS_OF_INTEREST: 'Points of interest',
+      SERVICE: 'Service',
+      SETTINGS: 'Settings',
+      TOURS: 'Tours',
+      WEATHER: 'Weather',
+      WEB: 'Web'
     }
   },
 
