@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.4.5]
+
+Implement bookmarks
+
+### Added
+
+- added functionality to bookmark several data from detail screens and view them all
+  in a bookmark section that can be accessed from the home screen header per icon
+  "bookmarks and settings"
+  - the settings button is now accessible per icon "settings" inside there
+
+### Fixed
+
+- added try/catch for every `JSON.parse` of random public json content
+  from main server, which can have format issues, to ensure that the
+  app does not crash
+
 ## [v1.4.4]
 
 Refactorings and bugfixes
