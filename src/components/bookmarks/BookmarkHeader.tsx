@@ -26,8 +26,8 @@ export const BookmarkHeader = ({ id, categoryId, query, style }: Props) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      accessibilityLabel="Merkliste (Taste)"
-      accessibilityHint="Zu der Merkliste hinzufügen"
+      accessibilityLabel="Lesezeichenliste (Taste)"
+      accessibilityHint="Zu der Lesezeichenliste hinzufügen"
     >
       <Icon
         size={normalize(22)}
