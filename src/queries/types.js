@@ -13,7 +13,9 @@ export const QUERY_TYPES = {
   PUBLIC_HTML_FILE: 'publicHtmlFile',
   PUBLIC_JSON_FILE: 'publicJsonFile',
   TOUR: 'tour',
-  TOURS: 'tours'
+  TOURS: 'tours',
+  WEATHER_MAP: 'weatherMap',
+  WEATHER_MAP_CURRENT: 'weatherMapCurrent'
 };
 
 /**

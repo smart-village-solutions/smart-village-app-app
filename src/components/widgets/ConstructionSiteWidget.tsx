@@ -5,8 +5,9 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, normalize, texts } from '../../config';
 import { ConstructionSiteContext } from '../../ConstructionSiteProvider';
-import { filterForValidConstructionSites, graphqlFetchPolicy } from '../../helpers';
+import { graphqlFetchPolicy } from '../../helpers';
 import { constructionSite } from '../../icons';
+import { filterForValidConstructionSites } from '../../jsonValidation';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
