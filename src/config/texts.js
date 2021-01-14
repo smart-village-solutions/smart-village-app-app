@@ -60,7 +60,8 @@ export const texts = {
     about: appJson.expo.name,
     constructionSite: 'Baustelle',
     constructionSites: 'Baustellen',
-    settings: 'Einstellungen'
+    settings: 'Einstellungen',
+    weather: 'Wetter'
   },
   settingsContents: {
     analytics: {

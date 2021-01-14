@@ -63,7 +63,7 @@ const AppStackNavigator = (headerRight = true) =>
       Weather: {
         screen: WeatherScreen,
         navigationOptions: () => ({
-          title: 'Wetter'
+          title: texts.screenTitles.weather
         })
       },
       Web: {
