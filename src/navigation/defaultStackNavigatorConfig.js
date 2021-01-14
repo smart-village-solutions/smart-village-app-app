@@ -21,6 +21,10 @@ export const defaultStackNavigatorConfig = (initialRouteName, headerRight = true
         fontWeight: '400',
         lineHeight: normalize(29)
       },
+      headerTitleContainerStyle: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
+      },
       headerRight: headerRight && (
         <TouchableOpacity
           onPress={() => navigation.openDrawer()}
