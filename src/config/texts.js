@@ -104,5 +104,10 @@ export const texts = {
   categoryFilter: {
     dataProvider: 'Datenquelle',
     category: 'Kategorie'
+  },
+  weather: {
+    alertsHeadline: 'Wetterwarnungen',
+    currentHeadline: 'Aktuelles Wetter',
+    nextDaysHeadline: 'Wetter der nächsten Tage'
   }
 };
