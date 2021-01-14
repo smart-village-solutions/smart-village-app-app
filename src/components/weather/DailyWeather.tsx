@@ -1,11 +1,12 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
+
 import { normalize } from '../../config';
 import { momentFormat } from '../../helpers';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
-import { WrapperRow } from '../Wrapper';
+import { WrapperHorizontal, WrapperRow } from '../Wrapper';
 
 type Props = {
   date: number;
@@ -22,10 +23,11 @@ type Props = {
 
 export const DailyWeather = ({ date, icon, temperatures }: Props) => {
   const { day, eve, max, min, morn, night } = temperatures;
+
   return (
     <View>
       <View style={styles.dayContainer}>
-        <View style={styles.infoContainer}>
+        <WrapperHorizontal>
           <WrapperRow>
             <BoldText>{momentFormat(date * 1000, 'dddd', 'x')}</BoldText>
             <RegularText>{momentFormat(date * 1000, ' DD.MM.YYYY', 'x')}</RegularText>
@@ -37,9 +39,9 @@ export const DailyWeather = ({ date, icon, temperatures }: Props) => {
                 style={styles.icon}
               />
             </View>
-            <View style={styles.dayTimeEntry}>
+            <View style={[styles.maxMinContainer, styles.dayTimeEntry]}>
               <BoldText big>{max.toFixed(1)}°C</BoldText>
-              <RegularText big>{min.toFixed(1)}°C</RegularText>
+              <RegularText>{min.toFixed(1)}°C</RegularText>
             </View>
           </WrapperRow>
           <RegularText />
@@ -61,7 +63,7 @@ export const DailyWeather = ({ date, icon, temperatures }: Props) => {
               <RegularText>{night.toFixed(1)}°C</RegularText>
             </View>
           </WrapperRow>
-        </View>
+        </WrapperHorizontal>
       </View>
       <Divider />
     </View>
@@ -70,7 +72,7 @@ export const DailyWeather = ({ date, icon, temperatures }: Props) => {
 
 const styles = StyleSheet.create({
   dayContainer: {
-    paddingVertical: normalize(7)
+    paddingVertical: normalize(14)
   },
   dayTimeEntry: {
     alignItems: 'center'
@@ -83,10 +85,9 @@ const styles = StyleSheet.create({
   iconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: '10%'
+    marginRight: normalize(44)
   },
-  infoContainer: {
-    flex: 1,
-    paddingHorizontal: normalize(14)
+  maxMinContainer: {
+    justifyContent: 'center'
   }
 });
