@@ -1,24 +1,29 @@
 import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
-import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native';
 
 import {
   DailyWeather,
   HourlyWeather,
   Icon,
+  LoadingContainer,
   SafeAreaViewFlex,
   Title,
   TitleContainer,
-  WeatherAlert
+  TitleShadow,
+  WeatherAlert,
+  WrapperWithOrientation
 } from '../components';
-import { colors, consts, normalize } from '../config';
+import { colors, consts, device, normalize, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { arrowLeft } from '../icons';
 import { hasDailyWeather, hasHourlyWeather, parseValidAlerts } from '../jsonValidation';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
+
+const { MATOMO_TRACKING, POLL_INTERVALS } = consts;
 
 const hourlyKeyExtractor = (item) => JSON.stringify(item.dt);
 
@@ -47,12 +52,20 @@ export const WeatherScreen = () => {
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { data, loading } = useQuery(getQuery(QUERY_TYPES.WEATHER_MAP), {
     fetchPolicy,
-    pollInterval: consts.POLL_INTERVALS.WEATHER
+    pollInterval: POLL_INTERVALS.WEATHER
   });
 
-  useMatomoTrackScreenView(consts.MATOMO_TRACKING.SCREEN_VIEW.WEATHER);
+  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.WEATHER);
 
-  if (!data?.weatherMap || loading) return null;
+  if (loading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
+
+  if (!data?.weatherMap) return null;
 
   const { weatherMap } = data;
   const alerts = parseValidAlerts(weatherMap);
@@ -61,25 +74,30 @@ export const WeatherScreen = () => {
     <SafeAreaViewFlex>
       <ScrollView>
         {!!alerts?.length && (
-          <TitleContainer>
-            <Title>Wetterwarnungen</Title>
-          </TitleContainer>
+          <WrapperWithOrientation>
+            <TitleContainer accessibilityLabel={`${texts.weather.alertsHeadline} (Überschrift)`}>
+              <Title>{texts.weather.alertsHeadline}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            {alerts.map((alert, index) => (
+              <WeatherAlert
+                key={index}
+                description={alert.description}
+                event={alert.event}
+                start={alert.start}
+                end={alert.end}
+              />
+            ))}
+          </WrapperWithOrientation>
         )}
-        {!!alerts?.length &&
-          alerts.map((alert, index) => (
-            <WeatherAlert
-              key={index}
-              description={alert.description}
-              event={alert.event}
-              start={alert.start}
-              end={alert.end}
-            />
-          ))}
         {hasHourlyWeather(weatherMap) && (
           <View>
-            <TitleContainer>
-              <Title>Aktuelles Wetter</Title>
-            </TitleContainer>
+            <WrapperWithOrientation>
+              <TitleContainer accessibilityLabel={`${texts.weather.currentHeadline} (Überschrift)`}>
+                <Title>{texts.weather.currentHeadline}</Title>
+              </TitleContainer>
+              {device.platform === 'ios' && <TitleShadow />}
+            </WrapperWithOrientation>
             <FlatList
               data={markNow(weatherMap.hourly)}
               horizontal
@@ -89,10 +107,11 @@ export const WeatherScreen = () => {
           </View>
         )}
         {hasDailyWeather(weatherMap) && (
-          <View>
-            <TitleContainer>
-              <Title>Wetter der Nächsten Tage</Title>
+          <WrapperWithOrientation>
+            <TitleContainer accessibilityLabel={`${texts.weather.nextDaysHeadline} (Überschrift)`}>
+              <Title>{texts.weather.nextDaysHeadline}</Title>
             </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
             {weatherMap.daily.map((day, index) => (
               <DailyWeather
                 key={index}
@@ -101,7 +120,7 @@ export const WeatherScreen = () => {
                 date={day.dt}
               />
             ))}
-          </View>
+          </WrapperWithOrientation>
         )}
       </ScrollView>
     </SafeAreaViewFlex>
