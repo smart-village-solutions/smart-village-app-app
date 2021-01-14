@@ -16,9 +16,7 @@ export const HourlyWeather = ({ icon, temperature, time, isNow }: HourlyWeatherD
   const formattedTime = momentFormat(time * 1000, 'HH:mm', 'x');
 
   return (
-    <View
-      style={{ ...styles.container, backgroundColor: isNow ? colors.lighterPrimary : undefined }}
-    >
+    <View style={[styles.container, isNow && { backgroundColor: colors.lighterPrimary }]}>
       <RegularText>{formattedTime}</RegularText>
       <Image
         source={{ uri: `https://openweathermap.org/img/wn/${icon}@2x.png` }}
