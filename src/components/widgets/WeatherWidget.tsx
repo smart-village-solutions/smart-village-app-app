@@ -31,7 +31,7 @@ export const WeatherWidget = ({ navigation }: { navigation: NavigationScreenProp
         <WrapperRow center>
           <View style={styles.iconContainer}>
             <Image
-              source={{ uri: `http://openweathermap.org/img/wn/${icon}@2x.png` }}
+              source={{ uri: `https://openweathermap.org/img/wn/${icon}@2x.png` }}
               style={styles.icon}
             />
           </View>
