@@ -37,6 +37,7 @@ export * from './Logo';
 export * from './MapSwitchHeader';
 export * from './MediaSection';
 export * from './Offer';
+export * from './PreviewSection';
 export * from './Radiobutton';
 export * from './SafeAreaViewFlex';
 export * from './SectionHeader';

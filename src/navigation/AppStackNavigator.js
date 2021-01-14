@@ -12,6 +12,7 @@ import {
   HtmlScreen,
   IndexScreen,
   LunchScreen,
+  OParlDetailScreen,
   SettingsScreen,
   WasteCollectionScreen,
   WeatherScreen,
@@ -106,6 +107,12 @@ const AppStackNavigator = (headerRight = true) =>
         screen: LunchScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', texts.widgets.lunch)
+        })
+      },
+      OParlDetail: {
+        screen: OParlDetailScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
         })
       },
       Settings: {

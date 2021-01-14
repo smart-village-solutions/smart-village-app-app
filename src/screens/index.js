@@ -11,6 +11,7 @@ export * from './HomeScreen';
 export * from './HtmlScreen';
 export * from './IndexScreen';
 export * from './LunchScreen';
+export * from './OParlDetailScreen';
 export * from './WasteCollectionScreen';
 export * from './WasteReminderScreen';
 export * from './ServiceScreen';

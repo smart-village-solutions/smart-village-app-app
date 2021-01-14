@@ -85,6 +85,12 @@ export const RegularText = styled(Text)`
     css`
       text-align: center;
     `};
+
+  ${(props) =>
+    props.lineThrough &&
+    css`
+      text-decoration: line-through;
+    `};
 `;
 
 export const BoldText = styled(RegularText)`

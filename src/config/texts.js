@@ -111,6 +111,62 @@ export const texts = {
   navigationTitles: {
     home: 'Übersicht'
   },
+  oparl: {
+    agendaItem: {
+      agendaItem: 'Tagesordnungspunkt',
+      auxiliaryFile: 'Dateianhänge: ',
+      isPublic: 'Ja',
+      isNotPublic: 'Nein',
+      meeting: 'Teil folgender Sitzung: ',
+      name: 'Bezeichnung: ',
+      number: 'Tagesordnungsnummer: ',
+      public: 'Öffentlich: ',
+      resolutionFile: 'Beschluss (Datei): ',
+      resolutionText: 'Beschluss: ',
+      result: 'Ergebnis: '
+    },
+    dateSection: {
+      ended: 'Endete am: ',
+      ends: 'Endet am: ',
+      started: 'Begann am: ',
+      starts: 'Beginnt am: '
+    },
+    file: {
+      accessUrl: 'Zugangs-URL: ',
+      agendaItems: 'Zugehörige Tagesordnungspunkte: ',
+      date: 'Assoziiertes Datum: ',
+      derivativeFile: 'Abgeleitete Dateien: ',
+      downloadUrl: 'Download-URL: ',
+      externalServiceUrl: 'Externer-URL: ',
+      masterFile: 'Ursprungsdatei: ',
+      meetings: 'Zugehörige Sitzungen: ',
+      mimeType: 'Dateityp: ',
+      sha1Checksum: 'SHA1-Prüfsumme: ',
+      size: 'Dateigröße',
+      text: 'Textrepräsentation: '
+    },
+    keywords: 'Schlüsselworte: ',
+    legislativeTerm: {
+      name: 'Bezeichnung: ',
+      title: 'Wahlperiode'
+    },
+    licenseSection: {
+      license: 'Lizens: '
+    },
+    meeting: 'Sitzung',
+    modifiedSection: {
+      created: 'Erstellt am: ',
+      modified: 'Zuletzt bearbeitet am: ',
+      deleted:
+        'Dieses Dokument wurde als gelöscht markiert und enthält somit möglicherweise nicht mehr alle oder keine Daten.'
+    },
+    name: 'Name: ',
+    paper: {
+      paper: 'Drucksache'
+    },
+    partOfBody: 'Körperschaft: ',
+    webRepresentation: 'Webversion dieses Dokuments: '
+  },
   pointOfInterest: {
     description: 'Beschreibung',
     location: 'Anfahrt',

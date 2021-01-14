@@ -9269,6 +9269,13 @@ react-native-calendars@^1.1129.0:
     react-native-swipe-gestures "^1.0.5"
     xdate "^0.8.0"
 
+react-native-collapsible@^1.5.3:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/react-native-collapsible/-/react-native-collapsible-1.5.3.tgz#d6bc7274ae8f40f7688cca23ededa263e6c81c63"
+  integrity sha512-Ciuy3yF8wcHeLxXFtx9vxoyrq8l+9EJqLM/ADw54gVwzTQc1/e2ojhQbVFPlxhDA+Pba2qezkaKfv5ifxg8hoQ==
+  dependencies:
+    prop-types "^15.6.2"
+
 react-native-elements@~1.2.0:
   version "1.2.7"
   resolved "https://registry.yarnpkg.com/react-native-elements/-/react-native-elements-1.2.7.tgz#1eca2db715c41722aeb67aea62bd2a4621adb134"

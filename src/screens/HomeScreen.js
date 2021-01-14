@@ -155,6 +155,16 @@ export const HomeScreen = ({ navigation }) => {
         />
         <Widgets navigation={navigation} widgetConfigs={widgetConfigs} />
 
+        <TouchableOpacity
+          style={{ height: 40, backgroundColor: 'red' }}
+          onPress={() =>
+            navigation.navigate('OParlDetail', {
+              canonicalUrl:
+                'https://sdnetrim.kdvz-frechen.de/rim4883/webservice/oparl/v1.1/body/1/meeting'
+            })
+          }
+        />
+
         {showNews &&
           categoriesNews.map(
             ({ categoryButton, categoryId, categoryTitle, categoryTitleDetail }, index) => (
