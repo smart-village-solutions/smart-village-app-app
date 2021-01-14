@@ -50,10 +50,11 @@ const markNow = (data) => {
 export const WeatherScreen = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { data, loading } = useQuery(getQuery(QUERY_TYPES.WEATHER_MAP), {
-    fetchPolicy,
-    pollInterval: POLL_INTERVALS.WEATHER
-  });
+  const queryVariables =
+    fetchPolicy === 'network-only'
+      ? { fetchPolicy, pollInterval: POLL_INTERVALS.WEATHER }
+      : { fetchPolicy };
+  const { data, loading } = useQuery(getQuery(QUERY_TYPES.WEATHER_MAP), queryVariables);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.WEATHER);
 

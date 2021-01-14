@@ -11,13 +11,16 @@ import { BoldText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow } from '../Wrapper';
 
+const { POLL_INTERVALS } = consts;
+
 export const WeatherWidget = ({ navigation }: { navigation: NavigationScreenProp<never> }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { data } = useQuery(getQuery(QUERY_TYPES.WEATHER_MAP_CURRENT), {
-    pollInterval: consts.POLL_INTERVALS.WEATHER,
-    fetchPolicy
-  });
+  const queryVariables =
+    fetchPolicy === 'network-only'
+      ? { fetchPolicy, pollInterval: POLL_INTERVALS.WEATHER }
+      : { fetchPolicy };
+  const { data } = useQuery(getQuery(QUERY_TYPES.WEATHER_MAP_CURRENT), queryVariables);
 
   const icon = data?.weatherMap?.current?.weather?.[0]?.icon ?? '02d';
   const temperature = data?.weatherMap?.current?.temp;
