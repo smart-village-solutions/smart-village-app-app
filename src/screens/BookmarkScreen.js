@@ -5,6 +5,7 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { colors, consts, device, normalize, texts } from '../config';
 import {
   BookmarkSection,
+  HeaderLeft,
   Icon,
   RegularText,
   SafeAreaViewFlex,
@@ -14,7 +15,6 @@ import {
 } from '../components';
 import { getKeyFromTypeAndCategory } from '../helpers';
 import { useBookmarks, useMatomoTrackScreenView } from '../hooks';
-import { arrowLeft } from '../icons';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
@@ -133,17 +133,7 @@ BookmarkScreen.navigationOptions = ({ navigation, navigationOptions }) => {
   const { headerRight } = navigationOptions;
 
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Zurück (Taste)"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    ),
+    headerLeft: <HeaderLeft navigation={navigation} />,
     headerRight: (
       <WrapperRow style={styles.headerRight}>
         <TouchableOpacity

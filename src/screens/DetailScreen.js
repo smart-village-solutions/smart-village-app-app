@@ -5,8 +5,7 @@ import {
   RefreshControl,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
-  View
+  TouchableOpacity
 } from 'react-native';
 import { Query } from 'react-apollo';
 
@@ -16,6 +15,7 @@ import { colors, consts, device, normalize } from '../config';
 import {
   BookmarkHeader,
   EventRecord,
+  HeaderLeft,
   Icon,
   LoadingContainer,
   NewsItem,
@@ -25,7 +25,7 @@ import {
   WrapperRow
 } from '../components';
 import { getQuery, QUERY_TYPES } from '../queries';
-import { arrowLeft, share } from '../icons';
+import { share } from '../icons';
 import { graphqlFetchPolicy, openShare } from '../helpers';
 import { useRefreshTime } from '../hooks';
 
@@ -128,10 +128,6 @@ const styles = StyleSheet.create({
   headerRight: {
     alignItems: 'center'
   },
-  icon: {
-    paddingHorizontal: normalize(14),
-    paddingVertical: normalize(4)
-  },
   iconLeft: {
     paddingLeft: normalize(14),
     paddingRight: normalize(7)
@@ -161,17 +157,7 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
     ) : null;
 
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Zurück Taste"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    ),
+    headerLeft: <HeaderLeft navigation={navigation} />,
     headerRight: (
       <WrapperRow style={styles.headerRight}>
         {StyledBookmarkHeader}

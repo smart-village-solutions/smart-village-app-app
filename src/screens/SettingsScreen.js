@@ -1,19 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  SectionList,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ActivityIndicator, Alert, SectionList, View } from 'react-native';
 
 import { OrientationContext } from '../OrientationProvider';
 import { SettingsContext } from '../SettingsProvider';
-import { colors, consts, device, normalize, texts } from '../config';
+import { colors, consts, device, texts } from '../config';
 import {
-  Icon,
+  HeaderLeft,
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
@@ -24,7 +17,6 @@ import {
   ToggleListItem,
   Wrapper
 } from '../components';
-import { arrowLeft } from '../icons';
 import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
 import { QUERY_TYPES } from '../queries';
 import { createMatomoUserId, readFromStore, removeMatomoUserId, storageHelper } from '../helpers';
@@ -231,22 +223,6 @@ export const SettingsScreen = () => {
 
 SettingsScreen.navigationOptions = ({ navigation }) => {
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Zurück (Taste)"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    )
+    headerLeft: <HeaderLeft navigation={navigation} />
   };
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(14)
-  }
-});

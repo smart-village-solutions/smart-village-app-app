@@ -1,22 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  RefreshControl,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ActivityIndicator, RefreshControl } from 'react-native';
 import { Query } from 'react-apollo';
 import { useMatomo } from 'matomo-tracker-react-native';
 
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { auth } from '../auth';
-import { colors, consts, normalize } from '../config';
+import { colors, consts } from '../config';
 import {
   DropdownHeader,
-  Icon,
+  HeaderLeft,
   ListComponent,
   LoadingContainer,
   LocationOverview,
@@ -24,7 +18,6 @@ import {
   SafeAreaViewFlex
 } from '../components';
 import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
-import { arrowLeft } from '../icons';
 import { graphqlFetchPolicy, matomoTrackingString, parseListItemsFromQuery } from '../helpers';
 
 const { MATOMO_TRACKING } = consts;
@@ -196,25 +189,9 @@ export const IndexScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(14)
-  }
-});
-
 IndexScreen.navigationOptions = ({ navigation }) => {
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Zurück Taste"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    )
+    headerLeft: <HeaderLeft navigation={navigation} />
   };
 };
 

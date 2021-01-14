@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 
 import {
-  Icon,
+  HeaderLeft,
   ListComponent,
   LoadingContainer,
   RegularText,
@@ -12,11 +12,10 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../components';
-import { colors, consts, normalize, texts } from '../config';
+import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
 import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
 import { useBookmarks } from '../hooks/Bookmarks';
-import { arrowLeft } from '../icons';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery } from '../queries';
 
@@ -85,25 +84,9 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(14)
-  }
-});
-
 BookmarkCategoryScreen.navigationOptions = ({ navigation }) => {
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Zurück (Taste)"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    )
+    headerLeft: <HeaderLeft navigation={navigation} />
   };
 };
 
