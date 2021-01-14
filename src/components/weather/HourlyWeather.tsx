@@ -21,7 +21,7 @@ export const HourlyWeather = ({ icon, temperature, time, isNow }: HourlyWeatherD
     >
       <RegularText>{formattedTime}</RegularText>
       <Image
-        source={{ uri: `http://openweathermap.org/img/wn/${icon}@2x.png` }}
+        source={{ uri: `https://openweathermap.org/img/wn/${icon}@2x.png` }}
         style={styles.icon}
       />
       <RegularText>{temperature.toFixed(1)}°C</RegularText>
