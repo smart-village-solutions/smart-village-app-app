@@ -50,12 +50,13 @@ export const LocationOverview = ({ navigation, category }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime: undefined});
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime: undefined });
 
   const overviewQuery = getQuery(QUERY_TYPES.POINTS_OF_INTEREST);
-  const { data: overviewData, loading } = useQuery(
-    overviewQuery, { fetchPolicy, variables: { category } }
-  );
+  const { data: overviewData, loading } = useQuery(overviewQuery, {
+    fetchPolicy,
+    variables: { category }
+  });
 
   const detailsQuery = getQuery(QUERY_TYPES.POINT_OF_INTEREST);
   const { data: detailsData, loading: detailsLoading } = useQuery(detailsQuery, {
