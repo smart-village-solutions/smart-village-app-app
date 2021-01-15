@@ -70,9 +70,7 @@ export const hasDailyWeather = (data: unknown): data is { daily: DailyWeatherDat
 };
 
 export const parseValidAlerts = (data: unknown): WeatherAlert[] | undefined => {
-  if (!_isArray((data as WeatherMap).alerts)) {
-    return undefined;
-  } else {
+  if (_isArray((data as WeatherMap).alerts)) {
     return (data as WeatherMap).alerts?.filter((alert) => validateAlert(alert));
   }
 };
