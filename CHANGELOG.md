@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.5.0] :rocket:
+
+The fifth minor version upgrade comes with widgets on the home screen
+
+### Added
+
+- added ability to present certain information as widgets on the home screen after the carousel
+  - there are three types of widgets implemented yet:
+    1: weather - presents current temperature with an corresponding icon
+    2: events - presents number of events that are taking place on the current day
+    3: constructions - presents number of constructions that are existing currently
+- added weather detail screen, which can be accessed through weather widget
+- added constructions overview list and detail pages with further information, wich can be accessed
+  through the constructions widget
+
+### Changed
+
+- left aligned header title on iOS
+  - this is now necessary as we have 3 header right icons
+
+### Fixed
+
+- adjust wording for a11y button at bookmarks
+- hide POI map in offline to prevent rendering a white rectangle
+
 ## [v1.4.5]
 
 Implement bookmarks
