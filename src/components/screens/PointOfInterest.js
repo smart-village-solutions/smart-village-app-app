@@ -18,12 +18,14 @@ import { useMatomoTrackScreenView } from '../../hooks';
 import { matomoTrackingString } from '../../helpers';
 import { WebViewMap } from '../map/WebViewMap';
 import { location, locationIconAnchor } from '../../icons';
+import { NetworkContext } from '../../NetworkProvider';
 
 const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const PointOfInterest = ({ data, hideMap, navigation }) => {
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const {
     addresses,
@@ -148,7 +150,18 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
           </View>
         )}
 
-        {!hideMap && !!latitude && !!longitude && (
+        {/* There are several connection states that can happen
+         * a) We are connected to a wifi and our mainserver is up (and reachable)
+         *   a.1) OSM is reachable -> everything is fine
+         *   a.2) OSM is not reachable -> white rectangle is shown
+         * b) We are connected to a wifi and our mainserver is not reachable
+         *   b.1) OSM is reachable -> we don't know and do not show the map for the cached data
+         *   b.2) OSM is not reachable -> everything is fine
+         *
+         * we can also not check for isMainserverUp here, but then we would only verify that we are
+         * connected to a network with no information of internet connectivity.
+         */}
+        {!hideMap && !!latitude && !!longitude && isConnected && isMainserverUp && (
           <View>
             <TitleContainer>
               <Title accessibilityLabel={`${texts.pointOfInterest.location} (Überschrift)`}>
