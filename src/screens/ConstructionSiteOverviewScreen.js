@@ -8,6 +8,7 @@ import {
   Icon,
   RegularText,
   SafeAreaViewFlex,
+  Touchable,
   Wrapper,
   WrapperWithOrientation
 } from '../components';
@@ -18,6 +19,8 @@ import { useMatomoTrackScreenView } from '../hooks';
 import { arrowLeft, arrowRight } from '../icons';
 
 const { MATOMO_TRACKING } = consts;
+
+const keyExtractor = (item, index) => index + item.title + item.startDate;
 
 export const ConstructionSiteOverviewScreen = ({ navigation }) => {
   const { constructionSites } = useContext(ConstructionSiteContext);
@@ -40,11 +43,14 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
 
       return (
         <ListItem
-          bottomDivider
-          onPress={onPress}
-          rightIcon={<Icon xml={arrowRight(colors.primary)} />}
-          subtitle={<BoldText>{title}</BoldText>}
           title={<RegularText>{formattedDates + (category ? ` | ${category}` : '')}</RegularText>}
+          subtitle={<BoldText>{title}</BoldText>}
+          bottomDivider
+          rightIcon={<Icon xml={arrowRight(colors.primary)} />}
+          onPress={onPress}
+          delayPressIn={0}
+          Component={Touchable}
+          accessibilityLabel={`${title} (Taste)`}
         />
       );
     },
@@ -65,11 +71,7 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <FlatList
-        data={constructionSites}
-        keyExtractor={(item, index) => index + item.title + item.startDate}
-        renderItem={renderItem}
-      />
+      <FlatList data={constructionSites} keyExtractor={keyExtractor} renderItem={renderItem} />
     </SafeAreaViewFlex>
   );
 };
