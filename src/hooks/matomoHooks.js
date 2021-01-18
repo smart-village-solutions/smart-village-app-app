@@ -1,10 +1,11 @@
 import { useContext, useEffect } from 'react';
-import { MatomoContext, useMatomo } from 'matomo-tracker-react-native';
+import { Alert } from 'react-native';
+import { useMatomo } from 'matomo-tracker-react-native';
 
 import { texts } from '../config';
 import { NetworkContext } from '../NetworkProvider';
+import { SettingsContext } from '../SettingsProvider';
 import { createMatomoUserId, setMatomoHandledOnStartup, storageHelper } from '../helpers';
-import { Alert } from 'react-native';
 
 /**
  * Tracks screen view as action with prefixed 'Screen' category on mounting the component, which
@@ -15,7 +16,7 @@ import { Alert } from 'react-native';
  *                        Feedback will create the Action Feedback in the category Help.
  */
 export const useMatomoTrackScreenView = (name) => {
-  const { isConnected } = useContext(NetworkContext);
+  const { isConnected } = useContext(SettingsContext);
   const { trackScreenView } = useMatomo();
 
   useEffect(() => {
@@ -24,13 +25,13 @@ export const useMatomoTrackScreenView = (name) => {
 };
 
 export const useMatomoAlertOnStartUp = () => {
-  const { disabled } = useContext(MatomoContext);
+  const { globalSettings } = useContext(SettingsContext);
 
   useEffect(() => {
     const showMatomoAlert = async () => {
       const settings = await storageHelper.matomoSettings();
 
-      if (!settings.matomoHandledOnStartup) {
+      if (!settings?.matomoHandledOnStartup) {
         Alert.alert(
           texts.settingsTitles.analytics,
           texts.settingsContents.analytics.onActivate,
@@ -51,6 +52,6 @@ export const useMatomoAlertOnStartUp = () => {
       }
     };
 
-    !disabled && showMatomoAlert();
+    !!globalSettings?.settings?.matomo && showMatomoAlert();
   }, []);
 };

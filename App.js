@@ -39,10 +39,10 @@ const App = () => {
       .then((settings) =>
         setMatomoInstance(
           new MatomoTracker({
-            urlBase: secrets[namespace].matomoUrl,
-            siteId: secrets[namespace].matomoSiteId,
-            userId: settings.userId,
-            disabled: !settings.consent || __DEV__,
+            urlBase: secrets[namespace]?.matomoUrl,
+            siteId: secrets[namespace]?.matomoSiteId,
+            userId: settings?.userId,
+            disabled: !settings?.consent || __DEV__,
             log: __DEV__
           })
         )

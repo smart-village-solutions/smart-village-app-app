@@ -89,7 +89,6 @@ export const SettingsScreen = () => {
 
     const updateSectionedData = async () => {
       const { settings = { matomo: false } } = globalSettings;
-      const { consent: matomoValue } = await storageHelper.matomoSettings();
       const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
       // settings should always contain push notifications
@@ -107,8 +106,11 @@ export const SettingsScreen = () => {
           ]
         }
       ];
+
       // settings should sometimes contain matomo analytics next, depending on server settings
       if (settings.matomo) {
+        const { consent: matomoValue = false } = await storageHelper.matomoSettings();
+
         additionalSectionedData.push({
           data: [
             {

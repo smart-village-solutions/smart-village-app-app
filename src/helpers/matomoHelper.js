@@ -13,12 +13,12 @@ export const matomoSettings = async () => {
   }
 
   // if a consent is given and there is no user ID yet, create it
-  if (settings.consent && !settings.userId) {
+  if (settings?.consent && !settings?.userId) {
     settings.userId = uuid();
   }
 
   // if a consent is not given and there is an old user ID, remove it
-  else if (!settings.consent && settings.userId) {
+  else if (!settings?.consent && settings?.userId) {
     delete settings.userId;
   }
 
@@ -29,6 +29,8 @@ export const matomoSettings = async () => {
 
 /**
  * Create a Matomo user id and add the consent to be tracked.
+ * The automatic Matomo startup dialog should also not be presented on next app start, as
+ * the user already consented manually.
  */
 export const createMatomoUserId = async () => {
   const settings = await storageHelper.matomoSettings();
@@ -36,6 +38,7 @@ export const createMatomoUserId = async () => {
   if (settings) {
     settings.userId = uuid();
     settings.consent = true;
+    settings.matomoHandledOnStartup = true;
     storageHelper.setMatomoSettings(settings);
   }
 };
@@ -46,7 +49,7 @@ export const createMatomoUserId = async () => {
 export const removeMatomoUserId = async () => {
   const settings = await storageHelper.matomoSettings();
 
-  if (settings && settings.userId) {
+  if (settings?.userId) {
     delete settings.userId;
     settings.consent = false;
     storageHelper.setMatomoSettings(settings);
