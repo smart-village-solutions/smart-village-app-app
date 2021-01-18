@@ -1,5 +1,4 @@
 import _filter from 'lodash/filter';
-
 import { Dimensions } from 'react-native';
 
 export const imageWidth = () => Dimensions.get('window').width;

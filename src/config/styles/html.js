@@ -1,7 +1,6 @@
 import { colors } from '../colors';
 import { normalize } from '../normalize';
-
-import { imageHeight, imageWidth } from '../../helpers';
+import { imageHeight, imageWidth } from '../../helpers/imageHelper';
 
 export const html = {
   p: {
