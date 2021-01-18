@@ -170,7 +170,7 @@ captures/
 .externalNativeBuild
 
 # Google Services (e.g. APIs or Firebase)
-google-services.json
+# google-services.json -> we need it in source control because of different release branches
 
 # Freeline
 freeline.py

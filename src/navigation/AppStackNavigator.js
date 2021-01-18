@@ -13,6 +13,11 @@ import {
   WeatherScreen,
   WebScreen
 } from '../screens';
+import {
+  DetailScreen as BBBUSDetailScreen,
+  IndexScreen as BBBUSIndexScreen
+} from '../screens/BB-BUS';
+
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
 
 import { texts } from '../config';
@@ -20,10 +25,16 @@ import { texts } from '../config';
 const AppStackNavigator = (headerRight = true) =>
   createStackNavigator(
     {
-      Home: {
-        screen: HomeScreen,
+      BBBUSIndex: {
+        screen: BBBUSIndexScreen,
         navigationOptions: (props) => ({
-          title: props.navigation.getParam('title', texts.screenTitles.home)
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      BBBUSDetail: {
+        screen: BBBUSDetailScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
         })
       },
       Bookmarks: {
@@ -50,20 +61,26 @@ const AppStackNavigator = (headerRight = true) =>
           title: texts.screenTitles.constructionSites
         })
       },
-      Index: {
-        screen: IndexScreen,
-        navigationOptions: (props) => ({
-          title: props.navigation.getParam('title', '')
-        })
-      },
       Detail: {
         screen: DetailScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', '')
         })
       },
+      Home: {
+        screen: HomeScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', texts.screenTitles.home)
+        })
+      },
       Html: {
         screen: HtmlScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      Index: {
+        screen: IndexScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', '')
         })

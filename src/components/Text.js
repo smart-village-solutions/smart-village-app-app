@@ -16,6 +16,12 @@ export const RegularText = styled.Text`
     `};
 
   ${(props) =>
+    props.smallest &&
+    css`
+      font-size: ${normalize(12)};
+    `};
+
+  ${(props) =>
     props.big &&
     css`
       font-size: ${normalize(20)};
@@ -38,6 +44,12 @@ export const RegularText = styled.Text`
     props.lightest &&
     css`
       color: ${colors.lightestText};
+    `};
+
+  ${(props) =>
+    props.placeholder &&
+    css`
+      color: ${colors.placeholder};
     `};
 
   ${(props) =>

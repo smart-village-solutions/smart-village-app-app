@@ -8,6 +8,13 @@ export const Title = styled.Text`
   font-size: ${normalize(20)};
   line-height: ${normalize(26)};
   text-transform: uppercase;
+
+  ${(props) =>
+    props.small &&
+    css`
+      font-size: ${normalize(16)};
+      line-height: ${normalize(19)};
+    `};
 `;
 
 // need to set a background color for shadow applying to the View instead of Text inside it

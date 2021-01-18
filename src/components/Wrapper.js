@@ -12,12 +12,29 @@ export const Wrapper = styled.View`
 export const WrapperHorizontal = styled.View`
   padding-left: ${normalize(14)}px;
   padding-right: ${normalize(14)}px;
+
+  ${(props) =>
+    props.big &&
+    css`
+      padding-left: ${normalize(17)}px;
+      padding-right: ${normalize(17)}px;
+    `};
+`;
+
+export const WrapperVertical = styled.View`
+  padding-bottom: ${normalize(14)}px;
+  padding-top: ${normalize(14)}px;
 `;
 
 export const WrapperLandscape = styled.View`
-  flex: 1;
   padding-left: 15%;
   padding-right: 15%;
+
+  ${(props) =>
+    !props.noFlex &&
+    css`
+      flex: 1;
+    `};
 `;
 
 export const WrapperRow = styled.View`
@@ -51,13 +68,14 @@ export const InfoBox = styled(WrapperRow)`
   margin-bottom: ${normalize(5)}px;
 `;
 
-export const WrapperWithOrientation = ({ children }) => {
+export const WrapperWithOrientation = ({ noFlex, children }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
+
   const needLandscapeWrapper =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 
   if (needLandscapeWrapper) {
-    return <WrapperLandscape>{children}</WrapperLandscape>;
+    return <WrapperLandscape noFlex={noFlex}>{children}</WrapperLandscape>;
   }
 
   return children;
@@ -66,5 +84,10 @@ export const WrapperWithOrientation = ({ children }) => {
 WrapperWithOrientation.displayName = 'WrapperWithOrientation';
 
 WrapperWithOrientation.propTypes = {
+  noFlex: PropTypes.bool,
   children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired
+};
+
+WrapperWithOrientation.defaultProps = {
+  noFlex: false
 };

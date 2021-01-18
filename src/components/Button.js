@@ -7,10 +7,31 @@ import { colors, consts, normalize } from '../config';
 import { DiagonalGradient } from './DiagonalGradient';
 import { OrientationContext } from '../OrientationProvider';
 
-export const Button = ({ title, onPress }) => {
+export const Button = ({ title, onPress, invert }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeStyle =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
+
+  if (invert) {
+    return (
+      <RNEButton
+        type="outline"
+        onPress={onPress}
+        title={title}
+        titleStyle={[
+          styles.titleStyle,
+          styles.titleStyleInvert,
+          needLandscapeStyle && styles.titleStyleLandscape
+        ]}
+        buttonStyle={styles.buttonStyleInvert}
+        containerStyle={[
+          styles.containerStyle,
+          needLandscapeStyle && styles.containerStyleLandscape
+        ]}
+        accessibilityLabel={`${title} (Taste)`}
+      />
+    );
+  }
 
   return (
     <RNEButton
@@ -36,6 +57,14 @@ const styles = StyleSheet.create({
   containerStyle: {
     marginBottom: normalize(21)
   },
+  titleStyleInvert: {
+    color: colors.primary
+  },
+  buttonStyleInvert: {
+    borderColor: colors.primary,
+    borderStyle: 'solid',
+    borderWidth: 2
+  },
   containerStyleLandscape: {
     alignItems: 'center',
     justifyContent: 'center'
@@ -44,5 +73,10 @@ const styles = StyleSheet.create({
 
 Button.propTypes = {
   title: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired
+  onPress: PropTypes.func.isRequired,
+  invert: PropTypes.bool
+};
+
+Button.defaultProps = {
+  invert: false
 };

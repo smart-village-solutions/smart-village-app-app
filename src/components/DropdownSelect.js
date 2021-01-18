@@ -10,62 +10,68 @@ import { Icon } from './Icon';
 import { arrowDown, arrowUp } from '../icons';
 import { Label } from './Label';
 
-export const DropdownSelect = memo(({ data, setData, label }) => {
-  if (!data || !data.length) return null;
+export const DropdownSelect = memo(
+  ({ data, setData, label, showSearch, searchInputStyle, renderSearch, searchPlaceholder }) => {
+    if (!data || !data.length) return null;
 
-  const [arrow, setArrow] = useState('down');
-  const selectedData = data.find((entry) => entry.selected);
-  const selectedIndex = data.findIndex((entry) => entry.selected);
-  const preselect = (index) => this[`dropdown${label}`].select(index);
+    const [arrow, setArrow] = useState('down');
+    const selectedData = data.find((entry) => entry.selected);
+    const selectedIndex = data.findIndex((entry) => entry.selected);
+    const preselect = (index) => this[`dropdown${label}`].select(index);
 
-  useEffect(() => {
-    preselect(selectedIndex);
-  }, [selectedData]);
+    useEffect(() => {
+      preselect(selectedIndex);
+    }, [selectedData]);
 
-  return (
-    <View>
-      <WrapperHorizontal>
-        <Label>{label}</Label>
-      </WrapperHorizontal>
-      <Dropdown
-        ref={(ref) => (this[`dropdown${label}`] = ref)}
-        options={data.map((entry) => entry.value)}
-        dropdownStyle={styles.dropdownDropdown}
-        dropdownTextStyle={styles.dropdownDropdownText}
-        adjustFrame={(styles) => ({
-          ...styles,
-          height: styles.height + normalize(36), // space for four entries
-          left: normalize(14),
-          marginTop: device.platform === 'android' ? -normalize(24) : 0
-        })}
-        renderRow={(rowData, rowID, highlighted) => (
-          <Wrapper style={styles.dropdownRowWrapper}>
-            <RegularText primary={highlighted}>{rowData}</RegularText>
-          </Wrapper>
-        )}
-        renderSeparator={() => <View style={styles.dropdownSeparator} />}
-        onDropdownWillShow={() => setArrow('up')}
-        onDropdownWillHide={() => setArrow('down')}
-        onSelect={(index, value) => {
-          // only trigger onPress if a new selection is made
-          if (selectedData.value === value) return;
+    return (
+      <View>
+        <WrapperHorizontal>
+          <Label>{label}</Label>
+        </WrapperHorizontal>
+        <Dropdown
+          ref={(ref) => (this[`dropdown${label}`] = ref)}
+          options={data.map((entry) => entry.value)}
+          dropdownStyle={styles.dropdownDropdown}
+          dropdownTextStyle={styles.dropdownDropdownText}
+          adjustFrame={(styles) => ({
+            ...styles,
+            height: styles.height + normalize(36), // space for four entries
+            left: normalize(14),
+            marginTop: device.platform === 'android' ? -normalize(24) : 0
+          })}
+          renderRow={(rowData, rowID, highlighted) => (
+            <Wrapper style={styles.dropdownRowWrapper}>
+              <RegularText primary={highlighted}>{rowData}</RegularText>
+            </Wrapper>
+          )}
+          renderSeparator={() => <View style={styles.dropdownSeparator} />}
+          onDropdownWillShow={() => setArrow('up')}
+          onDropdownWillHide={() => setArrow('down')}
+          onSelect={(index, value) => {
+            // only trigger onPress if a new selection is made
+            if (selectedData.value === value) return;
 
-          const updatedData = data.map((entry) => ({
-            ...entry,
-            selected: entry.value === value
-          }));
+            const updatedData = data.map((entry) => ({
+              ...entry,
+              selected: entry.value === value
+            }));
 
-          setData(updatedData);
-        }}
-      >
-        <WrapperRow style={styles.dropdownTextWrapper}>
-          <RegularText>{selectedData.value}</RegularText>
-          <Icon xml={arrow == 'down' ? arrowDown(colors.primary) : arrowUp(colors.primary)} />
-        </WrapperRow>
-      </Dropdown>
-    </View>
-  );
-});
+            setData(updatedData);
+          }}
+          showSearch={showSearch}
+          searchInputStyle={searchInputStyle}
+          renderSearch={renderSearch}
+          searchPlaceholder={searchPlaceholder}
+        >
+          <WrapperRow style={styles.dropdownTextWrapper}>
+            <RegularText>{selectedData.value}</RegularText>
+            <Icon xml={arrow == 'down' ? arrowDown(colors.primary) : arrowUp(colors.primary)} />
+          </WrapperRow>
+        </Dropdown>
+      </View>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   dropdownTextWrapper: {
@@ -104,5 +110,9 @@ DropdownSelect.displayName = 'DropdownSelect';
 DropdownSelect.propTypes = {
   data: PropTypes.array,
   setData: PropTypes.func,
-  label: PropTypes.string
+  label: PropTypes.string,
+  showSearch: PropTypes.bool,
+  searchInputStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),
+  renderSearch: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+  searchPlaceholder: PropTypes.string
 };

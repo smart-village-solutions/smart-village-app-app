@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { ActivityIndicator, FlatList } from 'react-native';
 
 import { colors, normalize } from '../config';
 import { TextListItem } from './TextListItem';
+import { BackToTop } from './BackToTop';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
@@ -15,8 +16,10 @@ export const TextList = ({
   query,
   fetchMoreData,
   ListHeaderComponent,
+  showBackToTop,
   refreshControl
 }) => {
+  const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
 
   const onEndReached = async () => {
@@ -33,16 +36,35 @@ export const TextList = ({
 
   return (
     <FlatList
-      ListHeaderComponent={ListHeaderComponent}
+      ref={flatListRef}
       keyExtractor={keyExtractor}
       data={data}
       renderItem={({ item }) => <TextListItem {...{ navigation, item, noSubtitle, leftImage }} />}
-      ListFooterComponent={
-        data.length > 10 &&
-        !listEndReached && (
-          <ActivityIndicator color={colors.accent} style={{ margin: normalize(14) }} />
-        )
-      }
+      ListHeaderComponent={ListHeaderComponent}
+      ListFooterComponent={() => {
+        if (data.length > 10) {
+          if (!listEndReached) {
+            return <ActivityIndicator color={colors.accent} style={{ margin: normalize(14) }} />;
+          } else if (listEndReached && showBackToTop) {
+            return (
+              <BackToTop
+                onPress={() =>
+                  flatListRef.current.scrollToIndex({
+                    index: 0,
+                    viewPosition: 1,
+                    animated: true
+                  })
+                }
+              />
+            );
+          } else {
+            return null;
+          }
+        } else {
+          return null;
+        }
+      }}
+      initialNumToRender={data.length < 20 ? data.length : 20}
       onEndReachedThreshold={0.5}
       onEndReached={onEndReached}
       refreshControl={refreshControl}
@@ -54,10 +76,11 @@ TextList.propTypes = {
   navigation: PropTypes.object,
   data: PropTypes.array,
   noSubtitle: PropTypes.bool,
+  ListHeaderComponent: PropTypes.object,
+  showBackToTop: PropTypes.bool,
   leftImage: PropTypes.bool,
   query: PropTypes.string,
   fetchMoreData: PropTypes.func,
-  ListHeaderComponent: PropTypes.object,
   refreshControl: PropTypes.object
 };
 
