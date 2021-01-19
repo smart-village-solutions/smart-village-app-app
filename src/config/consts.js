@@ -25,6 +25,12 @@ export const consts = {
     FULL_SCREEN_MAX_WIDTH: 414
   },
 
+  IMAGE_ASPECT_RATIO: {
+    // default image aspect ratio is 2:1
+    HEIGHT: 1,
+    WIDTH: 2
+  },
+
   MATOMO_TRACKING: {
     SCREEN_VIEW: {
       BOOKMARK_CATEGORY: 'Bookmark category',

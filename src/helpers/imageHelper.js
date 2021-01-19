@@ -1,14 +1,18 @@
 import _filter from 'lodash/filter';
 import { Dimensions } from 'react-native';
 
+import { consts } from '../config';
+
+const { IMAGE_ASPECT_RATIO } = consts;
+
 export const imageWidth = () => Dimensions.get('window').width;
 
 export const imageHeight = (width) => {
-  // image aspect ratio is 360x180, so for accurate ratio in our view we need to calculate
-  // a factor with our current device width for the image, to set a correct height
-  const factor = width / 360;
+  // for accurate ratio in our view we need to calculate a factor with our current device
+  // width for the image, to set a correct height
+  const factor = width / IMAGE_ASPECT_RATIO.WIDTH;
 
-  return 180 * factor;
+  return IMAGE_ASPECT_RATIO.HEIGHT * factor;
 };
 
 export const mainImageOfMediaContents = (mediaContents) => {
