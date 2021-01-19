@@ -25,6 +25,8 @@ export const consts = {
     FULL_SCREEN_MAX_WIDTH: 414
   },
 
+  // the image aspect ratio can be overwritten by a global setting `imageAspectRatio`
+  // from the server in src/index.js
   IMAGE_ASPECT_RATIO: {
     // default image aspect ratio is 2:1
     HEIGHT: 1,

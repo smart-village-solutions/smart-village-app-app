@@ -15,7 +15,7 @@ import _isEmpty from 'lodash/isEmpty';
 
 import { auth } from './auth';
 import { colors, consts, device, namespace, secrets, texts } from './config';
-import { graphqlFetchPolicy, storageHelper } from './helpers';
+import { graphqlFetchPolicy, parsedImageAspectRatio, storageHelper } from './helpers';
 import { getQuery, QUERY_TYPES } from './queries';
 import { NetworkProvider } from './NetworkProvider';
 import NetInfo from './NetInfo';
@@ -297,6 +297,10 @@ const MainAppWithApolloProvider = () => {
 
   if (initialGlobalSettings.navigation === consts.TABS) {
     AppContainer = createAppContainer(MainTabNavigator);
+  }
+
+  if (initialGlobalSettings.imageAspectRatio) {
+    consts.IMAGE_ASPECT_RATIO = parsedImageAspectRatio(initialGlobalSettings.imageAspectRatio);
   }
 
   return (
