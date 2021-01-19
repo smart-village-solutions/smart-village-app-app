@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react';
-import { Dimensions, StyleProp, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { MapMarker, WebViewLeaflet, WebviewLeafletMessage } from 'react-native-webview-leaflet';
 
 import { colors } from '../../config';
+import { imageHeight, imageWidth } from '../../helpers';
 
 type Props = {
   locations?: MapMarker[];
@@ -30,7 +31,7 @@ export const WebViewMap = ({
   );
 
   return (
-    <View style={style}>
+    <View style={style || stylesForMap().defaultStyle}>
       <WebViewLeaflet
         backgroundColor={colors.lightestText}
         onMessageReceived={messageHandler}
@@ -50,15 +51,18 @@ export const WebViewMap = ({
   );
 };
 
-// this will only be set at the start of the app, so this will be the width of portrait mode
-// needs to be done due to react native 0.63 bug for android
-// https://github.com/facebook/react-native/issues/29451
-const width = Dimensions.get('window').width;
-
-WebViewMap.defaultProps = {
-  style: {
-    alignSelf: 'center',
-    height: (9 / 16) * width,
-    width
-  }
-};
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that eslint warning */
+// the map should have the same aspect ratio as images.
+// we need to call the default styles in a method to ensure correct defaults for image aspect ratio,
+// which could be overwritten bei server global settings. otherwise (as default prop) the style
+// would be set before the overwriting occurred.
+const stylesForMap = () =>
+  StyleSheet.create({
+    defaultStyle: {
+      alignSelf: 'center',
+      height: imageHeight(imageWidth()),
+      width: imageWidth()
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
