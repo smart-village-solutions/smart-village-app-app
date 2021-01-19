@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
+import _uniqBy from 'lodash/uniqBy';
 
 import { texts } from '../config';
 import { QUERY_TYPES } from '../queries';
@@ -16,9 +17,8 @@ export const DropdownHeader = ({ query, queryVariables, data, updateListData }) 
     switch (query) {
       case QUERY_TYPES.EVENT_RECORDS:
         return (
-          data &&
-          data.categories &&
-          data.categories
+          data?.categories?.length &&
+          _uniqBy(data.categories, 'name')
             .filter((category) => !!category.upcomingEventRecordsCount)
             .map((category, index) => ({
               index: index + 1,
@@ -29,9 +29,8 @@ export const DropdownHeader = ({ query, queryVariables, data, updateListData }) 
         );
       case QUERY_TYPES.NEWS_ITEMS:
         return (
-          data &&
-          data.dataProviders &&
-          data.dataProviders.map((dataProvider, index) => ({
+          data?.dataProviders?.length &&
+          _uniqBy(data.dataProviders, 'name').map((dataProvider, index) => ({
             index: index + 1,
             value: dataProvider.name,
             selected: dataProvider.name === queryVariables.dataProvider
