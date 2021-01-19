@@ -35,7 +35,7 @@ TouchableImage.propTypes = {
   children: PropTypes.object.isRequired
 };
 
-export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
+export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
 
   // special image width for carousel, to be not full width on landscape
@@ -86,7 +86,10 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
 
               return (
                 <TouchableImage navigation={navigation} item={item}>
-                  <Image source={item.picture} style={stylesForImage(itemWidth).size} />
+                  <Image
+                    source={item.picture}
+                    style={stylesForImage(itemWidth, aspectRatio).size}
+                  />
                 </TouchableImage>
               );
             }}
@@ -95,12 +98,12 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy }) => {
       } else {
         return (
           <TouchableImage navigation={navigation} item={item}>
-            <Image source={item.picture} style={stylesForImage(itemWidth).size} />
+            <Image source={item.picture} style={stylesForImage(itemWidth, aspectRatio).size} />
           </TouchableImage>
         );
       }
     } else {
-      return <Image source={item.picture} style={stylesForImage(itemWidth).size} />;
+      return <Image source={item.picture} style={stylesForImage(itemWidth, aspectRatio).size} />;
     }
   };
 
@@ -127,11 +130,11 @@ const styles = StyleSheet.create({
 });
 
 /* eslint-disable react-native/no-unused-styles */
-/* this works properly, we do not want that warning */
-const stylesForImage = (width) =>
+/* this works properly, we do not want that eslint warning */
+const stylesForImage = (width, aspectRatio) =>
   StyleSheet.create({
     size: {
-      height: imageHeight(width),
+      height: imageHeight(width, aspectRatio),
       width
     }
   });
@@ -140,5 +143,6 @@ const stylesForImage = (width) =>
 ImagesCarousel.propTypes = {
   data: PropTypes.array.isRequired,
   navigation: PropTypes.object,
-  fetchPolicy: PropTypes.string
+  fetchPolicy: PropTypes.string,
+  aspectRatio: PropTypes.object
 };

@@ -5,15 +5,17 @@ import { Query } from 'react-apollo';
 import _shuffle from 'lodash/shuffle';
 
 import { NetworkContext } from '../../NetworkProvider';
+import { SettingsContext } from '../../SettingsProvider';
 import { colors } from '../../config';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { LoadingContainer } from '../LoadingContainer';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { graphqlFetchPolicy } from '../../helpers';
+import { graphqlFetchPolicy, parsedImageAspectRatio } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 
 export const HomeCarousel = ({ navigation, refreshing }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { globalSettings } = useContext(SettingsContext);
 
   const refreshTime = useRefreshTime('publicJsonFile-homeCarousel');
 
@@ -64,6 +66,7 @@ export const HomeCarousel = ({ navigation, refreshing }) => {
             navigation={navigation}
             data={_shuffle(carouselImages)}
             fetchPolicy={fetchPolicy}
+            aspectRatio={parsedImageAspectRatio(globalSettings?.homeCarousel?.imageAspectRatio)}
           />
         );
       }}
