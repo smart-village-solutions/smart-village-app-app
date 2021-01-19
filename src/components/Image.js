@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { CacheManager } from 'react-native-expo-image-cache';
 import { Image as RNEImage } from 'react-native-elements';
 
@@ -33,33 +33,37 @@ export const Image = ({ source, style, PlaceholderContent }) => {
     return () => (mounted = false);
   }, [source, setUri]);
 
-  if (!globalSettings.showImageRights || !source.copyright) {
-    return (
-      <RNEImage
-        source={uri ? (source.uri ? { uri } : uri) : null}
-        style={style}
-        PlaceholderContent={PlaceholderContent}
-        placeholderStyle={{ backgroundColor: colors.transparent }}
-        accessible={!!source.captionText}
-        accessibilityLabel={source.captionText}
-      />
-    );
-  }
-
   return (
-    <View>
+    <>
       <RNEImage
         source={uri ? (source.uri ? { uri } : uri) : null}
-        style={style}
+        style={style || stylesForImage().defaultStyle}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}
-        accessible={!!source.captionText}
-        accessibilityLabel={source.captionText}
+        accessible={!!source?.captionText}
+        accessibilityLabel={source?.captionText}
       />
-      <ImageRights imageRights={source.copyright} />
-    </View>
+      {globalSettings?.showImageRights && source?.copyright && (
+        <ImageRights imageRights={source.copyright} />
+      )}
+    </>
   );
 };
+
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that eslint warning */
+// we need to call the default styles in a method to ensure correct defaults for image aspect ratio,
+// which could be overwritten bei server global settings. otherwise (as default prop) the style
+// would be set before the overwriting occurred.
+const stylesForImage = () =>
+  StyleSheet.create({
+    defaultStyle: {
+      alignSelf: 'center',
+      height: imageHeight(imageWidth()),
+      width: imageWidth()
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
 
 Image.propTypes = {
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
@@ -68,10 +72,5 @@ Image.propTypes = {
 };
 
 Image.defaultProps = {
-  style: {
-    alignSelf: 'center',
-    height: imageHeight(imageWidth()),
-    width: imageWidth()
-  },
   PlaceholderContent: <ActivityIndicator color={colors.accent} />
 };

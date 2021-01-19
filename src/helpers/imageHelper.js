@@ -8,14 +8,16 @@ import { consts } from '../config';
 
 export const imageWidth = () => Dimensions.get('window').width;
 
-export const imageHeight = (width) => {
+export const imageHeight = (width, aspectRatio) => {
   const { IMAGE_ASPECT_RATIO } = consts;
+
+  if (!aspectRatio) aspectRatio = IMAGE_ASPECT_RATIO;
 
   // for accurate ratio in our view we need to calculate a factor with our current device
   // width for the image, to set a correct height
-  const factor = width / IMAGE_ASPECT_RATIO.WIDTH;
+  const factor = width / aspectRatio.WIDTH;
 
-  return IMAGE_ASPECT_RATIO.HEIGHT * factor;
+  return aspectRatio.HEIGHT * factor;
 };
 
 export const mainImageOfMediaContents = (mediaContents) => {
