@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { CacheManager } from 'react-native-expo-image-cache';
 import { Image as RNEImage } from 'react-native-elements';
 
@@ -34,7 +34,7 @@ export const Image = ({ source, style, PlaceholderContent }) => {
   }, [source, setUri]);
 
   return (
-    <>
+    <View>
       <RNEImage
         source={uri ? (source.uri ? { uri } : uri) : null}
         style={style || stylesForImage().defaultStyle}
@@ -46,7 +46,7 @@ export const Image = ({ source, style, PlaceholderContent }) => {
       {globalSettings?.showImageRights && source?.copyright && (
         <ImageRights imageRights={source.copyright} />
       )}
-    </>
+    </View>
   );
 };
 
