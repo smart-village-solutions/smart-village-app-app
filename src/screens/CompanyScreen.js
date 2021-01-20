@@ -135,6 +135,7 @@ export const CompanyScreen = ({ navigation }) => {
                                   source={{ uri: item.icon }}
                                   style={styles.serviceImage}
                                   PlaceholderContent={null}
+                                  resizeMode="contain"
                                 />
                               )}
                               <BoldText
@@ -170,7 +171,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: normalize(40),
     marginBottom: normalize(7),
-    resizeMode: 'contain',
     width: '100%'
   }
 });

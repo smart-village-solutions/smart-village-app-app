@@ -7,13 +7,14 @@ export const Logo = (props) => <Image {...props} />;
 
 Logo.propTypes = {
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
-  style: PropTypes.object
+  style: PropTypes.object,
+  resizeMode: PropTypes.string
 };
 
 Logo.defaultProps = {
   style: {
     height: 80,
-    resizeMode: 'contain',
     width: 'auto'
-  }
+  },
+  resizeMode: 'contain'
 };

@@ -21,6 +21,7 @@ export const HourlyWeather = ({ icon, temperature, time, isNow }: HourlyWeatherD
       <Image
         source={{ uri: `https://openweathermap.org/img/wn/${icon}@2x.png` }}
         style={styles.icon}
+        resizeMode="contain"
       />
       <RegularText>{temperature.toFixed(1)}°C</RegularText>
     </View>
@@ -30,7 +31,6 @@ export const HourlyWeather = ({ icon, temperature, time, isNow }: HourlyWeatherD
 const styles = StyleSheet.create({
   icon: {
     aspectRatio: 1,
-    resizeMode: 'contain',
     width: normalize(50)
   },
   container: {

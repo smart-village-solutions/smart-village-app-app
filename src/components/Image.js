@@ -9,7 +9,7 @@ import { imageHeight, imageWidth } from '../helpers';
 import { SettingsContext } from '../SettingsProvider';
 import { ImageRights } from './ImageRights';
 
-export const Image = ({ source, style, PlaceholderContent }) => {
+export const Image = ({ source, style, PlaceholderContent, resizeMode, borderRadius }) => {
   const [uri, setUri] = useState(null);
   const { globalSettings } = useContext(SettingsContext);
 
@@ -42,6 +42,8 @@ export const Image = ({ source, style, PlaceholderContent }) => {
         placeholderStyle={{ backgroundColor: colors.transparent }}
         accessible={!!source?.captionText}
         accessibilityLabel={source?.captionText}
+        resizeMode={resizeMode}
+        borderRadius={borderRadius}
       />
       {globalSettings?.showImageRights && source?.copyright && (
         <ImageRights imageRights={source.copyright} />
@@ -68,9 +70,13 @@ const stylesForImage = () =>
 Image.propTypes = {
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
   style: PropTypes.object,
-  PlaceholderContent: PropTypes.object
+  PlaceholderContent: PropTypes.object,
+  resizeMode: PropTypes.string,
+  borderRadius: PropTypes.number
 };
 
 Image.defaultProps = {
-  PlaceholderContent: <ActivityIndicator color={colors.accent} />
+  PlaceholderContent: <ActivityIndicator color={colors.accent} />,
+  resizeMode: 'cover',
+  borderRadius: 0
 };

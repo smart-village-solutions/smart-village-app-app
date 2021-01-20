@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
+
 import { consts, normalize } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
@@ -36,6 +37,7 @@ export const WeatherWidget = ({ navigation }: { navigation: NavigationScreenProp
             <Image
               source={{ uri: `https://openweathermap.org/img/wn/${icon}@2x.png` }}
               style={styles.icon}
+              resizeMode="contain"
             />
           </View>
           <View>
@@ -55,7 +57,6 @@ export const WeatherWidget = ({ navigation }: { navigation: NavigationScreenProp
 const styles = StyleSheet.create({
   icon: {
     aspectRatio: 1,
-    resizeMode: 'contain',
     width: normalize(44)
   },
   iconContainer: {
