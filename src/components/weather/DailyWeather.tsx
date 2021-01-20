@@ -37,6 +37,7 @@ export const DailyWeather = ({ date, icon, temperatures }: Props) => {
               <Image
                 source={{ uri: `https://openweathermap.org/img/wn/${icon}@2x.png` }}
                 style={styles.icon}
+                resizeMode="contain"
               />
             </View>
             <View style={[styles.maxMinContainer, styles.dayTimeEntry]}>
@@ -79,7 +80,6 @@ const styles = StyleSheet.create({
   },
   icon: {
     aspectRatio: 1,
-    resizeMode: 'contain',
     width: normalize(64)
   },
   iconContainer: {

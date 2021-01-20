@@ -31,6 +31,7 @@ export const CardListItem = memo(({ navigation, horizontal, item, orientation, d
             <Image
               source={{ uri: picture.url }}
               style={stylesWithProps({ horizontal, orientation, dimensions }).image}
+              borderRadius={5}
             />
           )}
           {!!subtitle && <RegularText small>{subtitle}</RegularText>}
@@ -93,7 +94,6 @@ const stylesWithProps = ({ horizontal, orientation, dimensions }) => {
       width: maxWidth
     },
     image: {
-      borderRadius: 5,
       marginBottom: normalize(7),
       height: imageHeight(maxWidth)
     }

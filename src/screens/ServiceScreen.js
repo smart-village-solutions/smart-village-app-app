@@ -135,13 +135,13 @@ export const ServiceScreen = ({ navigation }) => {
                                   source={{ uri: item.icon }}
                                   style={styles.serviceImage}
                                   PlaceholderContent={null}
+                                  resizeMode="contain"
                                 />
                               )}
                               <BoldText
                                 small
                                 primary
                                 center
-                                accessible
                                 accessibilityLabel={`${item.title} (Taste)`}
                               >
                                 {item.title}
@@ -171,7 +171,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: normalize(40),
     marginBottom: normalize(7),
-    resizeMode: 'contain',
     width: '100%'
   }
 });
