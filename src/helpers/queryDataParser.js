@@ -32,7 +32,7 @@ export const parseEventRecords = (data, skipLastDivider) => {
       },
       details: eventRecord
     },
-    bottomDivider: skipLastDivider && index !== data.length - 1
+    bottomDivider: !skipLastDivider || index !== data.length - 1
   }));
 };
 
@@ -62,7 +62,7 @@ export const parseNewsItems = (data, skipLastDivider, titleDetail) => {
       },
       details: newsItem
     },
-    bottomDivider: skipLastDivider && index !== data.length - 1
+    bottomDivider: !skipLastDivider || index !== data.length - 1
   }));
 };
 
@@ -88,7 +88,7 @@ export const parsePointOfInterest = (data, skipLastDivider) => {
         title: pointOfInterest.name
       }
     },
-    bottomDivider: skipLastDivider && index !== data.length - 1
+    bottomDivider: !skipLastDivider || index !== data.length - 1
   }));
 };
 
@@ -114,7 +114,7 @@ export const parseTours = (data, skipLastDivider) => {
         title: tour.name
       }
     },
-    bottomDivider: skipLastDivider && index !== data.length - 1
+    bottomDivider: !skipLastDivider || index !== data.length - 1
   }));
 };
 
@@ -132,7 +132,7 @@ const parseCategories = (data, skipLastDivider) => {
       queryVariables: { limit: 15, order: 'name_ASC', category: `${category.name}` },
       rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
     },
-    bottomDivider: skipLastDivider && index !== data.length - 1
+    bottomDivider: !skipLastDivider || index !== data.length - 1
   }));
 };
 
