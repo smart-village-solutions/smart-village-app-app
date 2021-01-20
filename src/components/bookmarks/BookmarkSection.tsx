@@ -122,7 +122,7 @@ export const BookmarkSection = ({
 
   if (!data) return null;
 
-  const listData = parseListItemsFromQuery(query, data, true, categoryTitleDetail);
+  const listData = parseListItemsFromQuery(query, data, ids.length > 3, categoryTitleDetail);
 
   const horizontal = isHorizontal(query, listTypesSettings);
 
