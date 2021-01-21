@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.5.1]
+
+Customizable image aspect ratios and upgrade react-native-elements
+
+### Added
+
+- added global settings for `imageAspectRatio` and `homeCarousel.imageAspectRatio` to be able to
+  vary image aspect ratios across the app
+
+### Fixed
+
+- fixed image loading spinner on Android with upgrading react-native-elements
+  - problem: https://github.com/react-native-elements/react-native-elements/issues/2000
+  - latest v1 is 1.2.7: https://github.com/react-native-elements/react-native-elements/blob/next/CHANGELOG.md#v127
+  - when updating like this, we needed to make changes where using Image not all styles will be
+    applied anymore, you need to change styles to props we had the need of moving `resizeMode` and
+    `borderRadius` from inside of style prop to be props itself default for `resizeMode` was `cover``
+    before in the code of react-native-elements, as it is the default for React Native `Image`
+    component https://reactnative.dev/docs/image#resizemode
+
 ## [v1.5.0] :rocket:
 
 The fifth minor version upgrade comes with widgets on the home screen
@@ -242,7 +262,6 @@ Implement filter for news in `IndexScreen`
 ### Changed
 
 - updated `IndexScreen` to functional component with using hooks
-
 
 ## [v1.2.0] :rocket:
 
