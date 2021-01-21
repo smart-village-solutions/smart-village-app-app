@@ -7,11 +7,21 @@ import { Image as RNEImage } from 'react-native-elements';
 import { colors } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 import { SettingsContext } from '../SettingsProvider';
+import { OrientationContext } from '../OrientationProvider';
 import { ImageRights } from './ImageRights';
 
-export const Image = ({ source, style, PlaceholderContent, resizeMode, borderRadius }) => {
+export const Image = ({
+  source,
+  style,
+  containerStyle,
+  PlaceholderContent,
+  aspectRatio,
+  resizeMode,
+  borderRadius
+}) => {
   const [uri, setUri] = useState(null);
   const { globalSettings } = useContext(SettingsContext);
+  const { orientation, dimensions } = useContext(OrientationContext);
 
   // if there is a source.uri to fetch, do it with the CacheManager and set the local path to show.
   // if there is no uri, the source itself should be already a local path, so set it immediately.
@@ -37,7 +47,8 @@ export const Image = ({ source, style, PlaceholderContent, resizeMode, borderRad
     <View>
       <RNEImage
         source={uri ? (source.uri ? { uri } : uri) : null}
-        style={style || stylesForImage().defaultStyle}
+        style={style || stylesForImage(orientation, dimensions, aspectRatio).defaultStyle}
+        containerStyle={containerStyle}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}
         accessible={!!source?.captionText}
@@ -57,20 +68,24 @@ export const Image = ({ source, style, PlaceholderContent, resizeMode, borderRad
 // we need to call the default styles in a method to ensure correct defaults for image aspect ratio,
 // which could be overwritten bei server global settings. otherwise (as default prop) the style
 // would be set before the overwriting occurred.
-const stylesForImage = () =>
-  StyleSheet.create({
+const stylesForImage = (orientation, dimensions, aspectRatio) => {
+  const width = imageWidth(orientation, dimensions);
+
+  return StyleSheet.create({
     defaultStyle: {
-      alignSelf: 'center',
-      height: imageHeight(imageWidth()),
-      width: imageWidth()
+      height: imageHeight(width, aspectRatio),
+      width
     }
   });
+};
 /* eslint-enable react-native/no-unused-styles */
 
 Image.propTypes = {
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
+  containerStyle: PropTypes.object,
   style: PropTypes.object,
   PlaceholderContent: PropTypes.object,
+  aspectRatio: PropTypes.object,
   resizeMode: PropTypes.string,
   borderRadius: PropTypes.number
 };

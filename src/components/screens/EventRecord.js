@@ -130,7 +130,9 @@ export const EventRecord = ({ data, navigation }) => {
       {!!images && images.length > 1 && <ImagesCarousel data={images} />}
 
       <WrapperWithOrientation>
-        {!!images && images.length === 1 && <Image source={images[0].picture} />}
+        {!!images && images.length === 1 && (
+          <Image source={images[0].picture} containerStyle={styles.imageContainer} />
+        )}
 
         {!!title && !!link ? (
           <TitleContainer>
@@ -231,6 +233,9 @@ const styles = StyleSheet.create({
   iframeWebView: {
     height: normalize(210),
     width: '100%'
+  },
+  imageContainer: {
+    alignSelf: 'center'
   }
 });
 

@@ -6,7 +6,23 @@ import { Dimensions } from 'react-native';
 
 import { consts } from '../config';
 
-export const imageWidth = () => Dimensions.get('window').width;
+export const imageWidth = (orientation, dimensions) => {
+  if (orientation && dimensions) {
+    let width = dimensions.width;
+
+    const needLandscapeWidth = orientation === 'landscape';
+
+    if (needLandscapeWidth) {
+      // image width should be smaller than full width on landscape, so take the device height,
+      // which is the same as the device width in portrait
+      width = dimensions.height;
+    }
+
+    return width;
+  }
+
+  return Dimensions.get('window').width;
+};
 
 export const imageHeight = (width, aspectRatio) => {
   const { IMAGE_ASPECT_RATIO } = consts;
