@@ -13,6 +13,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';
 import _reduce from 'lodash/reduce';
 import _isEmpty from 'lodash/isEmpty';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { auth } from './auth';
 import { colors, consts, device, namespace, secrets, texts } from './config';
@@ -323,7 +324,9 @@ export const MainApp = () => (
     <OrientationProvider>
       <BookmarkProvider>
         <ConstructionSiteProvider>
-          <MainAppWithApolloProvider />
+          <SafeAreaProvider>
+            <MainAppWithApolloProvider />
+          </SafeAreaProvider>
         </ConstructionSiteProvider>
       </BookmarkProvider>
     </OrientationProvider>
