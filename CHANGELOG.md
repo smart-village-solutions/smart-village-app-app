@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.5.2]
+
+Integrate BUS-BB parts
+
+### Added
+
+- added code base with several components for BUS-BB module
+  - the `areaId` for a city for BUS-BB data needs to be added to the local secrets file
+
 ## [v1.5.1]
 
 Customizable image aspect ratios and upgrade react-native-elements
