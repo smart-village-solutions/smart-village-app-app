@@ -223,7 +223,7 @@ export const DetailScreen = ({ navigation }) => {
 
           return (
             <View key={type.id}>
-              {!!name && (
+              {!!name && (!!text || !!externalLinks?.length) && (
                 <ListItem
                   title={<Title small>{name}</Title>}
                   bottomDivider={
@@ -252,7 +252,7 @@ export const DetailScreen = ({ navigation }) => {
                         dimensions={dimensions}
                       />
                     )}
-                    {!!externalLinks &&
+                    {!!externalLinks?.length &&
                       externalLinks.map((externalLink) => {
                         // fix for multi nested result form Directus API
                         if (externalLink.externalLink) externalLink = externalLink.externalLink;
