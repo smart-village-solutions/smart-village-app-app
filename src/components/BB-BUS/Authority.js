@@ -124,6 +124,7 @@ export const Authority = ({
                   <BoldText>{texts.bbBus.authority.openingTime}:</BoldText>
                   <HtmlView
                     html={trimNewLines(openingHours)}
+                    openWebScreen={openWebScreen}
                     orientation={orientation}
                     dimensions={dimensions}
                   />

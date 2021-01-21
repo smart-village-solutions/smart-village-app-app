@@ -70,20 +70,20 @@ const TEXT_BLOCKS_SORTER = {
 
 export const DetailScreen = ({ navigation }) => {
   const scrollViewRef = useRef();
-  const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
+  const [refreshTime, setRefreshTime] = useState();
   const [accordion, setAccordion] = useState({});
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const rootRouteName = navigation.getParam('rootRouteName', '');
-  const details = navigation.getParam('data', '');
-  const title = navigation.getParam('title', '');
-  const id = details.id;
   const [refreshing, setRefreshing] = useState(false);
+  const rootRouteName = navigation.getParam('rootRouteName', '');
+  const headerTitle = navigation.getParam('title', '');
+  const details = navigation.getParam('data', '');
+  const id = details.id;
 
   if (!id) return null;
 
-  useMatomoTrackScreenView(matomoTrackingString([MATOMO_TRACKING.SCREEN_VIEW.BB_BUS, title]));
+  useMatomoTrackScreenView(matomoTrackingString([MATOMO_TRACKING.SCREEN_VIEW.BB_BUS, headerTitle]));
 
   useEffect(() => {
     const getRefreshTime = async () => {
@@ -221,6 +221,17 @@ export const DetailScreen = ({ navigation }) => {
 
           const isKurztext = name.toUpperCase() === 'KURZTEXT';
 
+          // action to open source urls
+          const openWebScreen = (webUrl) =>
+            navigation.navigate({
+              routeName: 'Web',
+              params: {
+                title: headerTitle,
+                webUrl,
+                rootRouteName
+              }
+            });
+
           return (
             <View key={type.id}>
               {!!name && (!!text || !!externalLinks?.length) && (
@@ -248,6 +259,7 @@ export const DetailScreen = ({ navigation }) => {
                     {!!text && (
                       <HtmlView
                         html={trimNewLines(text)}
+                        openWebScreen={openWebScreen}
                         orientation={orientation}
                         dimensions={dimensions}
                       />
@@ -260,6 +272,7 @@ export const DetailScreen = ({ navigation }) => {
                         return (
                           <Link
                             url={externalLink.url}
+                            openWebScreen={openWebScreen}
                             description={`Link: ${externalLink.name}`}
                             key={externalLink.url}
                           />
@@ -273,6 +286,7 @@ export const DetailScreen = ({ navigation }) => {
         };
 
         // action to open source urls
+        // TODO: refactor multiple methods for `openWebScreen` in this file
         const openWebScreen = (webUrl) =>
           navigation.navigate({
             routeName: 'Web',
