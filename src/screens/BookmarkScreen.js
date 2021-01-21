@@ -155,7 +155,6 @@ BookmarkScreen.navigationOptions = ({ navigation, navigationOptions }) => {
         >
           <Icon
             name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'}
-            size={normalize(26)}
             iconColor={colors.lightestText}
             style={headerRight ? styles.iconLeft : styles.iconRight}
           />

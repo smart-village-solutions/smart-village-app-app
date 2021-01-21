@@ -386,7 +386,6 @@ HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
           accessibilityHint="Zu den Einstellungen wechseln"
         >
           <Icon
-            size={normalize(26)}
             style={headerRight ? styles.iconLeft : styles.iconRight}
             xml={favSettings(colors.lightestText)}
           />

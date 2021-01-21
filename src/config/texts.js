@@ -1,6 +1,31 @@
 import appJson from '../../app.json';
 
 export const texts = {
+  backToTop: 'zurück nach oben',
+  bbBus: {
+    authority: {
+      elevator: 'Aufzug vorhanden',
+      openingTime: 'Öffnungszeiten',
+      wheelchairAccessible: 'Rollstuhlgerecht'
+    },
+    categoryFilter: {
+      label: 'Lebenslage'
+    },
+    employees: 'Ansprechpartner',
+    initialFilter: {
+      aToZ: 'A-Z',
+      top10: 'Meistgesucht',
+      search: 'Suche'
+    },
+    locationFilter: {
+      label: 'Ort',
+      searchPlaceholder: 'Suche'
+    },
+    textSearch: {
+      label: 'Dienstleistung',
+      placeholder: 'Was suchen Sie?'
+    }
+  },
   bookmarks: {
     bookmarks: 'Lesezeichen',
     noBookmarksinCategory:
@@ -9,13 +34,19 @@ export const texts = {
       'Es wurden noch keine Beiträge, Touren oder Orte für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     showAll: 'Alle anzeigen'
   },
+  categoryFilter: {
+    dataProvider: 'Datenquelle',
+    category: 'Kategorie'
+  },
   categoryList: {
-    intro:
-      'Enim veniam exercitation elit excepteur ullamco dolore nisi sit ad irure cillum ut velit nulla. Dolore ex consequat id ex magna amet nostrud tempor cupidatat laboris est voluptate.'
+    intro: ''
   },
   categoryTitles: {
     pointsOfInterest: 'Orte',
     tours: 'Touren'
+  },
+  constructionSites: {
+    noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
   },
   detailTitles: {
     eventRecord: 'Veranstaltung',
@@ -25,9 +56,6 @@ export const texts = {
   },
   errors: {
     noData: 'Bitte überprüfen Sie Ihre Internetverbindung.'
-  },
-  constructionSites: {
-    noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
   },
   eventRecord: {
     appointments: 'Termine',
@@ -118,10 +146,6 @@ export const texts = {
     operatingCompany: 'Veranstalter',
     start: 'Tourbeginn',
     tour: 'Tourverlauf'
-  },
-  categoryFilter: {
-    dataProvider: 'Datenquelle',
-    category: 'Kategorie'
   },
   weather: {
     alertsHeadline: 'Wetterwarnungen',

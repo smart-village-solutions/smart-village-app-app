@@ -6,6 +6,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import { createAppContainer, createDrawerNavigator } from 'react-navigation';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import { InMemoryCache } from 'apollo-cache-inmemory';
@@ -76,7 +77,11 @@ const MainAppWithApolloProvider = () => {
         }
       };
     });
-    const link = authLink.concat(httpLink);
+    // Note: httpLink is terminating so must be last, while retry & error wrap the links to their right
+    //       state & context links should happen before (to the left of) restLink.
+    //       https://www.apollographql.com/docs/link/links/rest/#link-order
+    // const link = ApolloLink.from([authLink, restLink, errorLink, retryLink, httpLink]);
+    const link = ApolloLink.from([authLink, httpLink]);
     const cache = new InMemoryCache();
     const storage = AsyncStorage;
 

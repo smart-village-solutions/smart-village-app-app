@@ -12,11 +12,12 @@ export const consts = {
     // refresh intervals per time:
     ONCE_A_DAY: ONCE_A_DAY,
     // refresh intervals per type:
+    BB_BUS: ONCE_A_DAY,
     BOOKMARKS: ONCE_A_DAY,
-    STATIC_CONTENT: ONCE_A_DAY,
-    NEWS: ONCE_A_DAY,
     EVENTS: ONCE_A_DAY,
+    NEWS: ONCE_A_DAY,
     POINTS_OF_INTEREST: ONCE_A_DAY,
+    STATIC_CONTENT: ONCE_A_DAY,
     TOURS: ONCE_A_DAY
   },
 
@@ -35,6 +36,7 @@ export const consts = {
 
   MATOMO_TRACKING: {
     SCREEN_VIEW: {
+      BB_BUS: 'Bürger- und Unternehmensservice',
       BOOKMARK_CATEGORY: 'Bookmark category',
       BOOKMARKS: 'Bookmarks',
       COMPANY: 'Company',
@@ -57,9 +59,9 @@ export const consts = {
   },
 
   LIST_TYPES: {
-    TEXT_LIST: 'textList',
+    CARD_LIST: 'cardList',
     IMAGE_TEXT_LIST: 'imageTextList',
-    CARD_LIST: 'cardList'
+    TEXT_LIST: 'textList'
   },
 
   ROOT_ROUTE_NAMES: {

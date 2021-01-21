@@ -10,9 +10,12 @@ export const colors = {
   lighterText: 'rgba(221, 242, 243, 0.6)',
   lightestText: '#FFFFFF',
 
-  shadow: '#bcbbc1',
+  shadow: '#BCBBC1',
   shadowRgba: 'rgba(188, 187, 193, 0.4)',
 
+  backgroundRgba: 'rgba(162, 162, 162, 0.08)',
+  borderRgba: 'rgba(162, 162, 162, 0.75)',
+  placeholder: '#A2A2A2',
   overlayRgba: 'rgba(20, 20, 20, 0.7)',
 
   transparent: 'transparent'

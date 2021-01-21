@@ -4,6 +4,7 @@ export * from './screens';
 export * from './weather';
 export * from './widgets';
 
+export * from './BackToTop';
 export * from './Button';
 export * from './CardList';
 export * from './CardListItem';
@@ -23,7 +24,6 @@ export * from './ListComponent';
 export * from './ListSwitchItem';
 export * from './LoadingContainer';
 export * from './Logo';
-export * from './map';
 export * from './MapSwitchHeader';
 export * from './Radiobutton';
 export * from './SafeAreaViewFlex';

@@ -186,7 +186,6 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
             {device.platform === 'ios' ? (
               <Icon
                 name="ios-share"
-                size={normalize(26)}
                 iconColor={colors.lightestText}
                 style={headerRight ? styles.iconLeft : styles.iconRight}
               />
