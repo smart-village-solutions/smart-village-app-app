@@ -162,7 +162,11 @@ export const NewsItem = ({ data, navigation }) => {
       !!sectionImages &&
         sectionImages.length === 1 &&
         section.push(
-          <Image source={sectionImages[0].picture} key={`${index}-${contentBlock.id}-image`} />
+          <Image
+            source={sectionImages[0].picture}
+            containerStyle={styles.imageContainer}
+            key={`${index}-${contentBlock.id}-image`}
+          />
         );
 
       (!settings ||
@@ -226,7 +230,9 @@ export const NewsItem = ({ data, navigation }) => {
       {!!mainImages && mainImages.length > 1 && <ImagesCarousel data={mainImages} />}
 
       <WrapperWithOrientation>
-        {!!mainImages && mainImages.length === 1 && <Image source={mainImages[0].picture} />}
+        {!!mainImages && mainImages.length === 1 && (
+          <Image source={mainImages[0].picture} containerStyle={styles.imageContainer} />
+        )}
 
         {!!title && !!link ? (
           <TitleContainer>
@@ -262,6 +268,9 @@ const styles = StyleSheet.create({
   iframeWebView: {
     height: normalize(210),
     width: '100%'
+  },
+  imageContainer: {
+    alignSelf: 'center'
   }
 });
 

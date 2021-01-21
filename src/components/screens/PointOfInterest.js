@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import _filter from 'lodash/filter';
 
 import { colors, consts, device, texts } from '../../config';
@@ -92,7 +92,9 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
       {!!images && images.length > 1 && <ImagesCarousel data={images} />}
 
       <WrapperWithOrientation>
-        {!!images && images.length === 1 && <Image source={images[0].picture} />}
+        {!!images && images.length === 1 && (
+          <Image source={images[0].picture} containerStyle={styles.imageContainer} />
+        )}
 
         {!!title && (
           <View>
@@ -203,6 +205,12 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  imageContainer: {
+    alignSelf: 'center'
+  }
+});
 
 PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired,

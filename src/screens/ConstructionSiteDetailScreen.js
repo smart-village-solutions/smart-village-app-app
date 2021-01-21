@@ -71,7 +71,9 @@ export const ConstructionSiteDetailScreen = ({ navigation }) => {
     <SafeAreaViewFlex>
       <ScrollView keyboardShouldPersistTaps="handled">
         <WrapperWithOrientation>
-          {!!imageUri && <Image source={{ uri: imageUri }} />}
+          {!!imageUri && (
+            <Image source={{ uri: imageUri }} containerStyle={styles.imageContainer} />
+          )}
           <TitleContainer>
             <Title>{extendedTitle}</Title>
           </TitleContainer>
@@ -152,6 +154,9 @@ const styles = StyleSheet.create({
   },
   verticalPadding: {
     paddingTop: normalize(14)
+  },
+  imageContainer: {
+    alignSelf: 'center'
   }
 });
 

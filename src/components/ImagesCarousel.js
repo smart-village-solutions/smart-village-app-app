@@ -5,7 +5,7 @@ import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { colors } from '../config';
-import { imageHeight, shareMessage } from '../helpers';
+import { shareMessage } from '../helpers';
 import { getQuery } from '../queries';
 import { Image } from './Image';
 import { LoadingContainer } from './LoadingContainer';
@@ -88,7 +88,8 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
                 <TouchableImage navigation={navigation} item={item}>
                   <Image
                     source={item.picture}
-                    style={stylesForImage(itemWidth, aspectRatio).size}
+                    containerStyle={styles.imageContainer}
+                    aspectRatio={aspectRatio}
                   />
                 </TouchableImage>
               );
@@ -98,12 +99,22 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
       } else {
         return (
           <TouchableImage navigation={navigation} item={item}>
-            <Image source={item.picture} style={stylesForImage(itemWidth, aspectRatio).size} />
+            <Image
+              source={item.picture}
+              containerStyle={styles.imageContainer}
+              aspectRatio={aspectRatio}
+            />
           </TouchableImage>
         );
       }
     } else {
-      return <Image source={item.picture} style={stylesForImage(itemWidth, aspectRatio).size} />;
+      return (
+        <Image
+          source={item.picture}
+          containerStyle={styles.imageContainer}
+          aspectRatio={aspectRatio}
+        />
+      );
     }
   };
 
@@ -126,19 +137,11 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
 const styles = StyleSheet.create({
   center: {
     alignSelf: 'center'
+  },
+  imageContainer: {
+    alignSelf: 'center'
   }
 });
-
-/* eslint-disable react-native/no-unused-styles */
-/* this works properly, we do not want that eslint warning */
-const stylesForImage = (width, aspectRatio) =>
-  StyleSheet.create({
-    size: {
-      height: imageHeight(width, aspectRatio),
-      width
-    }
-  });
-/* eslint-enable react-native/no-unused-styles */
 
 ImagesCarousel.propTypes = {
   data: PropTypes.array.isRequired,

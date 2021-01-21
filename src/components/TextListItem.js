@@ -26,7 +26,13 @@ export const TextListItem = memo(({ navigation, item, noSubtitle, leftImage }) =
       leftIcon={
         leftImage &&
         !!picture &&
-        !!picture.url && <Image style={styles.smallImage} source={{ uri: picture.url }} />
+        !!picture.url && (
+          <Image
+            source={{ uri: picture.url }}
+            style={styles.smallImage}
+            containerStyle={styles.smallImageContainer}
+          />
+        )
       }
       onPress={() =>
         navigation &&
@@ -49,9 +55,11 @@ const styles = StyleSheet.create({
     paddingVertical: normalize(12)
   },
   smallImage: {
-    alignSelf: 'flex-start',
     height: normalize(33),
     width: normalize(66)
+  },
+  smallImageContainer: {
+    alignSelf: 'flex-start'
   }
 });
 

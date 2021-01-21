@@ -31,6 +31,7 @@ export const CardListItem = memo(({ navigation, horizontal, item, orientation, d
             <Image
               source={{ uri: picture.url }}
               style={stylesWithProps({ horizontal, orientation, dimensions }).image}
+              containerStyle={styles.imageContainer}
               borderRadius={5}
             />
           )}
@@ -60,30 +61,21 @@ const styles = StyleSheet.create({
         shadowColor: colors.transparent
       }
     })
+  },
+  imageContainer: {
+    alignSelf: 'center'
   }
 });
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({ horizontal, orientation, dimensions }) => {
-  let width = imageWidth();
+  let width = imageWidth(orientation, dimensions);
 
-  if (horizontal || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
+  if (horizontal || width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
     // image width should be only 70% when rendering horizontal cards or on wider screens,
     // as there are 15% padding on each side
     width = width * 0.7;
-  }
-
-  if (orientation === 'landscape') {
-    // image width should be smaller than full width on landscape, so take the device height,
-    // which is the same as the device width in portrait
-    width = dimensions.height;
-
-    // if the device is in landscape mode but the device height is larger than our max for full
-    // screen, we want to also apply 70% to have not too large images
-    if (dimensions.height > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
-      width = dimensions.height * 0.7;
-    }
   }
 
   const maxWidth = width - 2 * normalize(14); // width of an image minus paddings
