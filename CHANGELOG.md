@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.5.3]
+
+Fixes for Image renderings and safe-area-insets concerning new devices
+
+### Fixed
+
+- with updated react-native-elements image component the `alignSelf` was missing in some cases
+  - this needs to be a `containerStyle` with the newer version
+- adjusted every usage of `Image`
+- the map also needed adjustments concerning height & width
+- we could simplify the logic for correct image width with using the min value of dimensions
+  height and width
+  - this made it possible to get rid of `orientation` and `dimensions` props in several components
+    without changing render results
+  - this also made it possible to get rid of `OrientationContext` in some components
+- added missing `width` in `CardListItem` because with latest update of RNE Image
+  component we need to set width and height
+- forcefully upgraded react-native-safe-area-view to support iPhone 12
+  - https://www.npmjs.com/package/react-native-safe-area-view (2.0.0)
+
 ## [v1.5.2]
 
 Integrate BUS-BB parts
