@@ -87,7 +87,8 @@ const stylesWithProps = ({ horizontal }) => {
     },
     image: {
       marginBottom: normalize(7),
-      height: imageHeight(maxWidth)
+      height: imageHeight(maxWidth),
+      width: maxWidth
     }
   });
 };
