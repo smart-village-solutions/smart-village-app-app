@@ -3,7 +3,7 @@ import { ScrollView } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { HeaderLeft, SafeAreaViewFlex } from '../components';
-import { File, LegislativeTerm } from '../components/oParl';
+import { Consultation, File, LegislativeTerm } from '../components/oParl';
 import { FileData, OParlObjectData, OParlObjectType } from '../types';
 
 type Props = {
@@ -50,6 +50,8 @@ moreDummyFileData.push(data);
 
 const getComponent = (data: OParlObjectData, navigation: NavigationScreenProp<never>) => {
   switch (data.type) {
+    case OParlObjectType.Consultation:
+      return <Consultation data={data} navigation={navigation} />;
     case OParlObjectType.LegislativeTerm:
       return <LegislativeTerm data={data} navigation={navigation} />;
     case OParlObjectType.File:

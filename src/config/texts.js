@@ -125,6 +125,19 @@ export const texts = {
       resolutionText: 'Beschluss: ',
       result: 'Ergebnis: '
     },
+    consultation: {
+      agendaItem: 'Tagesordungspunkt: ',
+      authoritative: 'Beschluss wird/wurde gefasst: ',
+      consultation: 'Beratung',
+      consultationLong: 'Beratung einer Drucksache',
+      isAuthoritative: 'Ja',
+      isNotAuthoritative: 'Nein',
+      meeting: 'Sitzung: ',
+      organization: 'Gremium',
+      organizations: 'Gremien',
+      paper: 'Drucksache: ',
+      role: 'Rolle oder Funktion der Beratung: '
+    },
     dateSection: {
       ended: 'Endete am: ',
       ends: 'Endet am: ',

@@ -13,6 +13,7 @@ export enum OParlObjectType {
 
 export type OParlObjectData =
   | AgendaItemData
+  | ConsultationData
   | FileData
   | LegislativeTermData
   | MeetingData
