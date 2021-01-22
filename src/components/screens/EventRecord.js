@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import _filter from 'lodash/filter';
@@ -18,7 +18,6 @@ import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { matomoTrackingString, trimNewLines } from '../../helpers';
-import { OrientationContext } from '../../OrientationProvider';
 import { useMatomoTrackScreenView } from '../../hooks';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
@@ -36,7 +35,6 @@ const { MATOMO_TRACKING } = consts;
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const EventRecord = ({ data, navigation }) => {
-  const { orientation, dimensions } = useContext(OrientationContext);
   const {
     addresses,
     category,
@@ -194,12 +192,7 @@ export const EventRecord = ({ data, navigation }) => {
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Wrapper>
-              <HtmlView
-                html={description}
-                openWebScreen={openWebScreen}
-                orientation={orientation}
-                dimensions={dimensions}
-              />
+              <HtmlView html={description} openWebScreen={openWebScreen} />
             </Wrapper>
           </View>
         )}

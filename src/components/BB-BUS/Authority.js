@@ -15,15 +15,7 @@ import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const Authority = ({
-  data,
-  accordion,
-  onPress,
-  bottomDivider,
-  openWebScreen,
-  orientation,
-  dimensions
-}) => {
+export const Authority = ({ data, accordion, onPress, bottomDivider, openWebScreen }) => {
   const {
     id,
     name,
@@ -122,12 +114,7 @@ export const Authority = ({
               {!!openingHours && (
                 <View>
                   <BoldText>{texts.bbBus.authority.openingTime}:</BoldText>
-                  <HtmlView
-                    html={trimNewLines(openingHours)}
-                    openWebScreen={openWebScreen}
-                    orientation={orientation}
-                    dimensions={dimensions}
-                  />
+                  <HtmlView html={trimNewLines(openingHours)} openWebScreen={openWebScreen} />
                 </View>
               )}
               {elevator !== undefined && (
@@ -171,7 +158,5 @@ Authority.propTypes = {
   accordion: PropTypes.object.isRequired,
   onPress: PropTypes.func.isRequired,
   bottomDivider: PropTypes.bool.isRequired,
-  openWebScreen: PropTypes.func.isRequired,
-  orientation: PropTypes.string.isRequired,
-  dimensions: PropTypes.object.isRequired
+  openWebScreen: PropTypes.func.isRequired
 };

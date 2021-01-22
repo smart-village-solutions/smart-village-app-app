@@ -256,14 +256,7 @@ export const DetailScreen = ({ navigation }) => {
               {isOpenSection(type.id, isKurztext) && (
                 <WrapperWithOrientation noFlex>
                   <Wrapper>
-                    {!!text && (
-                      <HtmlView
-                        html={trimNewLines(text)}
-                        openWebScreen={openWebScreen}
-                        orientation={orientation}
-                        dimensions={dimensions}
-                      />
-                    )}
+                    {!!text && <HtmlView html={trimNewLines(text)} openWebScreen={openWebScreen} />}
                     {!!externalLinks?.length &&
                       externalLinks.map((externalLink) => {
                         // fix for multi nested result form Directus API
@@ -338,8 +331,6 @@ export const DetailScreen = ({ navigation }) => {
                       !!accordion[authority.authority.id] || index == authorities.length - 1
                     }
                     openWebScreen={openWebScreen}
-                    orientation={orientation}
-                    dimensions={dimensions}
                   />
                 ))}
 

@@ -4,24 +4,15 @@ import _isString from 'lodash/isString';
 import _isInteger from 'lodash/isInteger';
 import { Dimensions } from 'react-native';
 
-import { consts } from '../config';
+import { consts } from '../config/consts';
 
-export const imageWidth = (orientation, dimensions) => {
-  if (orientation && dimensions) {
-    let width = dimensions.width;
+export const imageWidth = () => {
+  // image width should be smaller than full width on landscape, so take the device height,
+  // which is the same as the device width in portrait.
+  // this can be done implicitly with using the lower value of dimensions height and width.
+  const { height, width } = Dimensions.get('window');
 
-    const needLandscapeWidth = orientation === 'landscape';
-
-    if (needLandscapeWidth) {
-      // image width should be smaller than full width on landscape, so take the device height,
-      // which is the same as the device width in portrait
-      width = dimensions.height;
-    }
-
-    return width;
-  }
-
-  return Dimensions.get('window').width;
+  return Math.min(height, width);
 };
 
 export const imageHeight = (width, aspectRatio) => {

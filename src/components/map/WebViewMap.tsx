@@ -1,10 +1,9 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { MapMarker, WebViewLeaflet, WebviewLeafletMessage } from 'react-native-webview-leaflet';
 
 import { colors } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
-import { OrientationContext } from '../../OrientationProvider';
 
 type Props = {
   locations?: MapMarker[];
@@ -24,7 +23,6 @@ export const WebViewMap = ({
   style,
   zoom
 }: Props) => {
-  const { orientation, dimensions } = useContext(OrientationContext);
   const messageHandler = useCallback(
     (message) => {
       onMessageReceived?.(message);
@@ -33,7 +31,7 @@ export const WebViewMap = ({
   );
 
   return (
-    <View style={style || stylesForMap(orientation, dimensions).defaultStyle}>
+    <View style={style || stylesForMap().defaultStyle}>
       <WebViewLeaflet
         backgroundColor={colors.lightestText}
         onMessageReceived={messageHandler}
@@ -59,8 +57,8 @@ export const WebViewMap = ({
 // we need to call the default styles in a method to ensure correct defaults for image aspect ratio,
 // which could be overwritten bei server global settings. otherwise (as default prop) the style
 // would be set before the overwriting occurred.
-const stylesForMap = (orientation: any, dimensions: any) => {
-  const width = imageWidth(orientation, dimensions);
+const stylesForMap = () => {
+  const width = imageWidth();
 
   return StyleSheet.create({
     defaultStyle: {

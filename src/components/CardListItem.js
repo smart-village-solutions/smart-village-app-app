@@ -9,7 +9,7 @@ import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 
-export const CardListItem = memo(({ navigation, horizontal, item, orientation, dimensions }) => {
+export const CardListItem = memo(({ navigation, horizontal, item }) => {
   const { routeName, params, picture, subtitle, title } = item;
 
   // TODO: count articles logic could to be implemented
@@ -26,11 +26,11 @@ export const CardListItem = memo(({ navigation, horizontal, item, orientation, d
       disabled={!navigation}
     >
       <Card containerStyle={styles.container}>
-        <View style={stylesWithProps({ horizontal, orientation, dimensions }).contentContainer}>
+        <View style={stylesWithProps({ horizontal }).contentContainer}>
           {!!picture && !!picture.url && (
             <Image
               source={{ uri: picture.url }}
-              style={stylesWithProps({ horizontal, orientation, dimensions }).image}
+              style={stylesWithProps({ horizontal }).image}
               containerStyle={styles.imageContainer}
               borderRadius={5}
             />
@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ horizontal, orientation, dimensions }) => {
-  let width = imageWidth(orientation, dimensions);
+const stylesWithProps = ({ horizontal }) => {
+  let width = imageWidth();
 
   if (horizontal || width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
     // image width should be only 70% when rendering horizontal cards or on wider screens,

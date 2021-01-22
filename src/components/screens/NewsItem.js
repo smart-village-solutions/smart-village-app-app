@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import _filter from 'lodash/filter';
@@ -16,7 +16,6 @@ import { ImagesCarousel } from '../ImagesCarousel';
 import { containsHtml, matomoTrackingString, momentFormat, trimNewLines } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 import { Button } from '../Button';
-import { OrientationContext } from '../../OrientationProvider';
 import { useMatomoTrackScreenView } from '../../hooks';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
@@ -34,7 +33,6 @@ const { MATOMO_TRACKING } = consts;
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewsItem = ({ data, navigation }) => {
-  const { orientation, dimensions } = useContext(OrientationContext);
   const {
     dataProvider,
     mainTitle,
@@ -127,8 +125,6 @@ export const NewsItem = ({ data, navigation }) => {
               )}
               tagsStyles={{ div: { fontFamily: 'titillium-web-bold' } }}
               openWebScreen={openWebScreen}
-              orientation={orientation}
-              dimensions={dimensions}
             />
           </WrapperHorizontal>
         );
@@ -174,12 +170,7 @@ export const NewsItem = ({ data, navigation }) => {
         !!contentBlock.body &&
         section.push(
           <WrapperHorizontal key={`${index}-${contentBlock.id}-body`}>
-            <HtmlView
-              html={trimNewLines(contentBlock.body)}
-              openWebScreen={openWebScreen}
-              orientation={orientation}
-              dimensions={dimensions}
-            />
+            <HtmlView html={trimNewLines(contentBlock.body)} openWebScreen={openWebScreen} />
           </WrapperHorizontal>
         );
 
