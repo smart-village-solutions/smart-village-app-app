@@ -38,13 +38,7 @@ export const CardList = ({
         keyExtractor={keyExtractor}
         data={data}
         renderItem={({ item }) => (
-          <CardListItem
-            navigation={navigation}
-            horizontal={horizontal}
-            item={item}
-            orientation={orientation}
-            dimensions={dimensions}
-          />
+          <CardListItem navigation={navigation} horizontal={horizontal} item={item} />
         )}
         showsHorizontalScrollIndicator={false}
         horizontal
@@ -58,13 +52,7 @@ export const CardList = ({
       keyExtractor={keyExtractor}
       data={data}
       renderItem={({ item }) => (
-        <CardListItem
-          navigation={navigation}
-          horizontal={horizontal}
-          item={item}
-          orientation={orientation}
-          dimensions={dimensions}
-        />
+        <CardListItem navigation={navigation} horizontal={horizontal} item={item} />
       )}
       ListFooterComponent={
         data.length > 10 &&

@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import _filter from 'lodash/filter';
 
@@ -13,7 +13,6 @@ import { InfoCard } from './InfoCard';
 import { TourCard } from './TourCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 import { ImagesCarousel } from '../ImagesCarousel';
-import { OrientationContext } from '../../OrientationProvider';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { matomoTrackingString } from '../../helpers';
 
@@ -22,7 +21,6 @@ const { MATOMO_TRACKING } = consts;
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const Tour = ({ data, navigation }) => {
-  const { orientation, dimensions } = useContext(OrientationContext);
   const {
     addresses,
     category,
@@ -116,12 +114,7 @@ export const Tour = ({ data, navigation }) => {
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Wrapper>
-              <HtmlView
-                html={description}
-                openWebScreen={openWebScreen}
-                orientation={orientation}
-                dimensions={dimensions}
-              />
+              <HtmlView html={description} openWebScreen={openWebScreen} />
             </Wrapper>
           </View>
         )}

@@ -11,7 +11,7 @@ import {
 import { WebView } from 'react-native-webview';
 
 import { colors, consts, normalize, styles } from '../config';
-import { openLink } from '../helpers';
+import { imageWidth, openLink } from '../helpers';
 
 const tableCssRules =
   cssRulesFromSpecs({
@@ -53,13 +53,10 @@ const htmlConfig = {
   ignoredTags: IGNORED_TAGS
 };
 
-export const HtmlView = memo(({ html, tagsStyles, openWebScreen, orientation, dimensions }) => {
-  let width = dimensions.width;
+export const HtmlView = memo(({ html, tagsStyles, openWebScreen }) => {
+  let width = imageWidth();
 
-  const needLandscapeWidth =
-    orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
-
-  if (needLandscapeWidth) {
+  if (width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
     // image width should be only 70% on wider screens, as there are 15% padding on each side
     width = width * 0.7;
   }
@@ -94,9 +91,7 @@ HtmlView.displayName = 'HtmlView';
 HtmlView.propTypes = {
   html: PropTypes.string,
   tagsStyles: PropTypes.object,
-  openWebScreen: PropTypes.func,
-  orientation: PropTypes.string.isRequired,
-  dimensions: PropTypes.object.isRequired
+  openWebScreen: PropTypes.func
 };
 
 HtmlView.defaultProps = {

@@ -1,6 +1,7 @@
 import { colors } from '../colors';
 import { normalize } from '../normalize';
-import { imageHeight, imageWidth } from '../../helpers/imageHelper';
+import { imageHeight } from '../../helpers/imageHelper';
+import { Dimensions } from 'react-native';
 
 export const html = {
   p: {
@@ -69,6 +70,6 @@ export const html = {
   },
   iframe: {
     alignSelf: 'center',
-    height: imageHeight(imageWidth())
+    height: imageHeight(Dimensions.get('window').width)
   }
 };

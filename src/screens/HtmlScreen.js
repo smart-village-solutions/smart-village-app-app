@@ -26,14 +26,12 @@ import {
 import { graphqlFetchPolicy, trimNewLines } from '../helpers';
 import { getQuery } from '../queries';
 import { arrowLeft } from '../icons';
-import { OrientationContext } from '../OrientationProvider';
 import { useRefreshTime } from '../hooks';
 
 const { MATOMO_TRACKING } = consts;
 
 export const HtmlScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { orientation, dimensions } = useContext(OrientationContext);
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', '');
   const title = navigation.getParam('title', '');
@@ -146,8 +144,6 @@ export const HtmlScreen = ({ navigation }) => {
                     html={trimNewLines(data.publicHtmlFile.content)}
                     openWebScreen={openWebScreen}
                     navigation={navigation}
-                    orientation={orientation}
-                    dimensions={dimensions}
                   />
                   {!!subQuery && !!subQuery.routeName && !!subQuery.webUrl && (
                     <Button

@@ -13,7 +13,6 @@ import { InfoCard } from './InfoCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { ImagesCarousel } from '../ImagesCarousel';
-import { OrientationContext } from '../../OrientationProvider';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { matomoTrackingString } from '../../helpers';
 import { WebViewMap } from '../map/WebViewMap';
@@ -26,7 +25,6 @@ const { MATOMO_TRACKING } = consts;
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const PointOfInterest = ({ data, hideMap, navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { orientation, dimensions } = useContext(OrientationContext);
   const {
     addresses,
     category,
@@ -142,12 +140,7 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Wrapper>
-              <HtmlView
-                html={description}
-                openWebScreen={openWebScreen}
-                orientation={orientation}
-                dimensions={dimensions}
-              />
+              <HtmlView html={description} openWebScreen={openWebScreen} />
             </Wrapper>
           </View>
         )}
