@@ -163,7 +163,5 @@ Persons.propTypes = {
   data: PropTypes.object.isRequired,
   accordion: PropTypes.object.isRequired,
   onPress: PropTypes.func.isRequired,
-  openWebScreen: PropTypes.func.isRequired,
-  orientation: PropTypes.string.isRequired,
-  dimensions: PropTypes.object.isRequired
+  openWebScreen: PropTypes.func.isRequired
 };

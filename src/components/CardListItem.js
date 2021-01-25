@@ -99,9 +99,7 @@ CardListItem.displayName = 'CardListItem';
 CardListItem.propTypes = {
   navigation: PropTypes.object,
   item: PropTypes.object.isRequired,
-  horizontal: PropTypes.bool,
-  orientation: PropTypes.string.isRequired,
-  dimensions: PropTypes.object.isRequired
+  horizontal: PropTypes.bool
 };
 
 CardListItem.defaultProps = {
