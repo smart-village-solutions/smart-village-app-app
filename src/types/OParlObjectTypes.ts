@@ -1,5 +1,6 @@
 export enum OParlObjectType {
   AgendaItem = 'https://schema.oparl.org/1.0/AgendaItem',
+  Body = 'https://schema.oparl.org/1.0/Body',
   Consultation = 'https://schema.oparl.org/1.0/Consultation',
   File = 'https://schema.oparl.org/1.0/File',
   LegislativeTerm = 'https://schema.oparl.org/1.0/LegislativeTerm',
@@ -39,6 +40,38 @@ export type AgendaItemData = {
   result?: string;
   web?: string;
 } & AgendaItemPreviewData;
+
+export type BodyPreviewData = {
+  id: string;
+  type: OParlObjectType.Body;
+  deleted?: boolean;
+  name: string;
+  shortName?: string;
+};
+
+export type BodyData = {
+  ags?: string;
+  classification?: string;
+  contactEmail?: string;
+  contactName?: string;
+  created?: Date;
+  equivalent?: string[];
+  keyword?: string[];
+  legislativeTerm: LegislativeTermPreviewData[];
+  license?: string;
+  licenseValidSince?: Date;
+  location?: LocationPreviewData;
+  meeting: MeetingPreviewData[];
+  modified?: Date;
+  oparlSince?: Date;
+  organization: OrganizationPreviewData[];
+  paper: PaperPreviewData[];
+  person: PersonPreviewData[];
+  rgs?: string;
+  system?: any;
+  web?: string;
+  website?: string;
+} & BodyPreviewData;
 
 export type ConsultationPreviewData = {
   id: string;
@@ -80,15 +113,19 @@ export type FileData = {
   web?: string;
 } & FilePreviewData;
 
-export type LegislativeTermData = {
+export type LegislativeTermPreviewData = {
+  id: string;
   type: OParlObjectType.LegislativeTerm;
-  body?: any;
   endDate?: Date;
-  keyword?: string[];
   name?: string;
   startDate?: Date;
-  web?: string;
 };
+
+export type LegislativeTermData = {
+  body?: BodyPreviewData;
+  keyword?: string[];
+  web?: string;
+} & LegislativeTermPreviewData;
 
 export type LocationPreviewData = {
   id: string;
@@ -101,7 +138,7 @@ export type LocationPreviewData = {
 };
 
 export type LocationData = {
-  bodies?: any[];
+  bodies?: BodyPreviewData[];
   created?: Date;
   description?: string;
   geoJson?: any; // https://en.wikipedia.org/wiki/GeoJSON
@@ -130,7 +167,7 @@ export type MeetingData = {
   end?: Date;
   invitation?: FilePreviewData;
   keyword: string[];
-  location?: any;
+  location?: LocationPreviewData;
   meetingState?: string;
   modified?: Date;
   organization?: OrganizationPreviewData[];
@@ -167,12 +204,12 @@ export type OrganizationPreviewData = {
 };
 
 export type OrganizationData = {
-  body?: any;
+  body?: BodyPreviewData;
   created?: Date;
   endDate?: Date;
-  externalBody?: any;
+  externalBody?: BodyPreviewData;
   keyword?: string[];
-  location?: any;
+  location?: LocationPreviewData;
   meeting?: MeetingPreviewData[];
   membership?: MembershipPreviewData[];
   modified?: Date;
@@ -194,12 +231,12 @@ export type PaperPreviewData = {
 
 export type PaperData = {
   auxiliaryFile?: FilePreviewData[];
-  body?: any;
+  body?: BodyPreviewData;
   consultation?: ConsultationPreviewData[];
   created?: Date;
   date?: Date;
   keyword?: string[];
-  location?: any[];
+  location?: LocationPreviewData[];
   mainFile?: FilePreviewData;
   modified?: Date;
   originatorOrganization?: OrganizationPreviewData[];
@@ -225,14 +262,14 @@ export type PersonPreviewData = {
 };
 
 export type PersonData = {
-  body?: any;
+  body?: BodyPreviewData;
   created?: Date;
   email?: string[];
   gender?: string;
   keyword?: string[];
   life?: string;
   lifeSource?: string;
-  location?: any;
+  location?: LocationPreviewData;
   membership?: MembershipPreviewData[];
   modified?: Date;
   phone?: string[];

@@ -5,7 +5,7 @@ import { Button } from './Button';
 import { Wrapper } from './Wrapper';
 
 type Props<T> = {
-  data: T[];
+  data?: T[];
   header?: JSX.Element;
   limit?: number;
   renderItem: (props: T, key: number) => JSX.Element;
@@ -15,6 +15,10 @@ export const PreviewSection = <T,>({ data, header, limit = 3, renderItem }: Prop
   const [collapsed, setCollapsed] = useState(true);
 
   const onPress = useCallback(() => setCollapsed((value) => !value), [setCollapsed]);
+
+  if (!data) {
+    return null;
+  }
 
   return (
     <>

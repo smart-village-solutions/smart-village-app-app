@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import React, { useCallback } from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
@@ -6,7 +5,8 @@ import { texts } from '../../config';
 import { AgendaItemData, FilePreviewData } from '../../types';
 import { PreviewSection } from '../PreviewSection';
 import { BoldText, RegularText } from '../Text';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
+import { LineEntry } from './LineEntry';
 import { ConsultationPreview, FilePreview, MeetingPreview } from './previews';
 import { DateSection, KeywordSection, WebRepresentation } from './sections';
 
@@ -35,44 +35,33 @@ export const AgendaItem = ({ data, navigation }: Props) => {
   } = data;
 
   const renderFilePreview = useCallback(
-    (item: FilePreviewData, key: number) => (
-      <FilePreview {...item} key={key} navigation={navigation} />
+    (data: FilePreviewData, key: number) => (
+      <FilePreview data={data} key={key} navigation={navigation} />
     ),
     [navigation]
   );
 
   return (
     <Wrapper>
-      {!!name?.length && (
-        <WrapperRow>
-          <BoldText>{agendaItemTexts.name}</BoldText>
-          <RegularText>{name}</RegularText>
-        </WrapperRow>
-      )}
+      <LineEntry left={agendaItemTexts.name} right={name} />
       {!!meeting && (
         <>
           <BoldText>{agendaItemTexts.meeting}</BoldText>
-          <MeetingPreview {...meeting} navigation={navigation} />
+          <MeetingPreview data={meeting} navigation={navigation} />
         </>
       )}
-      {!!number?.length && (
-        <WrapperRow>
-          <BoldText>{agendaItemTexts.number}</BoldText>
-          <RegularText>{number}</RegularText>
-        </WrapperRow>
-      )}
+      <LineEntry left={agendaItemTexts.number} right={number} />
       <DateSection endDate={end} startDate={start} withTime />
       {typeof isPublic !== undefined && (
-        <WrapperRow>
-          <BoldText>{agendaItemTexts.public}</BoldText>
-          <RegularText>
-            {isPublic ? agendaItemTexts.isPublic : agendaItemTexts.isNotPublic}
-          </RegularText>
-        </WrapperRow>
+        <LineEntry
+          left={agendaItemTexts.public}
+          right={isPublic ? agendaItemTexts.isPublic : agendaItemTexts.isNotPublic}
+        />
       )}
       {!!consultation && (
         <>
-          <ConsultationPreview {...consultation} navigation={navigation} />
+          <BoldText>{agendaItemTexts.consultation}</BoldText>
+          <ConsultationPreview data={consultation} navigation={navigation} />
         </>
       )}
       {!!auxilaryFile?.length && (
@@ -82,16 +71,11 @@ export const AgendaItem = ({ data, navigation }: Props) => {
           renderItem={renderFilePreview}
         />
       )}
-      {!!result?.length && (
-        <WrapperRow>
-          <BoldText>{agendaItemTexts.result}</BoldText>
-          <RegularText>{result}</RegularText>
-        </WrapperRow>
-      )}
+      <LineEntry left={agendaItemTexts.result} right={result} />
       {!!resolutionFile && (
         <>
           <BoldText>{agendaItemTexts.resolutionFile}</BoldText>
-          <FilePreview {...resolutionFile} navigation={navigation} />
+          <FilePreview data={resolutionFile} navigation={navigation} />
         </>
       )}
       {!!resolutionText?.length && (

@@ -7,7 +7,7 @@ import { Touchable } from '../../Touchable';
 import { WrapperRow } from '../../Wrapper';
 
 type Props = {
-  name: string;
+  name?: string;
   navigation: NavigationScreenProp<never>;
   web?: string;
 };
@@ -30,7 +30,9 @@ export const WebRepresentation = ({ name, navigation, web }: Props) => {
     <WrapperRow>
       <BoldText>{texts.oparl.webRepresentation}</BoldText>
       <Touchable onPress={onPress}>
-        <RegularText primary>{web}</RegularText>
+        <RegularText numberOfLines={1} primary>
+          {web}
+        </RegularText>
       </Touchable>
     </WrapperRow>
   );

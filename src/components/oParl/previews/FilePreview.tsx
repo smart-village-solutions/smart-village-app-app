@@ -7,17 +7,14 @@ import { RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
 import { OParlItemPreview } from './OParlItemPreview';
 
-type Props = { navigation: NavigationScreenProp<never> } & FilePreviewData;
+type Props = {
+  data: FilePreviewData;
+  navigation: NavigationScreenProp<never>;
+};
 
-export const FilePreview = ({
-  id,
-  accessUrl,
-  fileName,
-  mimeType,
-  name,
-  navigation,
-  size
-}: Props) => {
+export const FilePreview = ({ data, navigation }: Props) => {
+  const { id, accessUrl, fileName, mimeType, name, size } = data;
+
   return (
     <OParlItemPreview id={id} navigation={navigation}>
       <RegularText numberOfLines={1} primary>

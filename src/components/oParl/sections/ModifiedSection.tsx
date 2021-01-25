@@ -5,9 +5,9 @@ import { BoldText, RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
 
 type Props = {
-  created: Date;
-  modified: Date;
-  deleted: boolean;
+  created?: Date;
+  modified?: Date;
+  deleted?: boolean;
 };
 
 const { modifiedSection } = texts.oparl;

@@ -1,15 +1,16 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
-import { texts } from '../../../config';
 
+import { texts } from '../../../config';
 import { MembershipPreviewData, OrganizationPreviewData, PersonPreviewData } from '../../../types';
 import { RegularText } from '../../Text';
 import { OParlItemPreview } from './OParlItemPreview';
 
 type Props = {
+  data: MembershipPreviewData;
   navigation: NavigationScreenProp<never>;
   withPerson?: boolean;
-} & MembershipPreviewData;
+};
 
 const getFullName = (person?: PersonPreviewData) => {
   if (!person) return texts.oparl.person.person;
@@ -31,14 +32,9 @@ const getOrganizationNameString = (organization?: OrganizationPreviewData) => {
 // withPerson === true means that it is shown as part of an organization
 // and we want to give information about the corresponding person in the preview
 // withPerson === false means the opposite, so we want to show the information of the organization
-export const MembershipPreview = ({
-  id,
-  navigation,
-  onBehalfOf,
-  organization,
-  person,
-  withPerson
-}: Props) => {
+export const MembershipPreview = ({ data, navigation, withPerson }: Props) => {
+  const { id, onBehalfOf, organization, person } = data;
+
   const nameString = person?.name ?? getFullName(person);
   const textWithPerson = onBehalfOf
     ? `${nameString} (${getOrganizationNameString(onBehalfOf)})`

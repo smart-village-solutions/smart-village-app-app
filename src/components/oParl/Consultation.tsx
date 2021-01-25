@@ -6,6 +6,7 @@ import { ConsultationData, OrganizationPreviewData } from '../../types';
 import { PreviewSection } from '../PreviewSection';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
+import { LineEntry } from './LineEntry';
 import { AgendaItemPreview, MeetingPreview, OrganizationPreview, PaperPreview } from './previews';
 import { KeywordSection, WebRepresentation } from './sections';
 
@@ -20,8 +21,8 @@ export const Consultation = ({ data, navigation }: Props) => {
   const { agendaItem, authoritative, keyword, meeting, organization, paper, role, web } = data;
 
   const renderOrganization = useCallback(
-    (item: OrganizationPreviewData, key: number) => (
-      <OrganizationPreview {...item} key={key} navigation={navigation} />
+    (data: OrganizationPreviewData, key: number) => (
+      <OrganizationPreview data={data} key={key} navigation={navigation} />
     ),
     [navigation]
   );
@@ -37,38 +38,36 @@ export const Consultation = ({ data, navigation }: Props) => {
         </>
       )}
       {typeof authoritative !== undefined && (
-        <WrapperRow>
-          <BoldText>{consultationTexts.authoritative}</BoldText>
-          <RegularText>
-            {authoritative
-              ? consultationTexts.isAuthoritative
-              : consultationTexts.isNotAuthoritative}
-          </RegularText>
-        </WrapperRow>
+        <LineEntry
+          left={consultationTexts.authoritative}
+          right={
+            authoritative ? consultationTexts.isAuthoritative : consultationTexts.isNotAuthoritative
+          }
+        />
       )}
       {!!meeting && (
         <>
           <BoldText>{consultationTexts.meeting}</BoldText>
-          <MeetingPreview {...meeting} navigation={navigation} />
+          <MeetingPreview data={meeting} navigation={navigation} />
         </>
       )}
       {!!agendaItem && (
         <>
           <BoldText>{consultationTexts.agendaItem}</BoldText>
-          <AgendaItemPreview {...agendaItem} navigation={navigation} />
+          <AgendaItemPreview data={agendaItem} navigation={navigation} />
         </>
       )}
       {!!paper && (
         <>
           <BoldText>{consultationTexts.paper}</BoldText>
-          <PaperPreview {...paper} navigation={navigation} />
+          <PaperPreview data={paper} navigation={navigation} />
         </>
       )}
       {!!organization &&
         (organization.length === 1 ? (
           <>
             <BoldText>{consultationTexts.organization}</BoldText>
-            <OrganizationPreview {...organization[0]} navigation={navigation} />
+            <OrganizationPreview data={organization[0]} navigation={navigation} />
           </>
         ) : (
           <PreviewSection

@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
+
 import { texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
 import { AgendaItemPreviewData } from '../../../types';
@@ -9,18 +10,14 @@ import { WrapperRow } from '../../Wrapper';
 import { OParlItemPreview } from './OParlItemPreview';
 
 type Props = {
+  data: AgendaItemPreviewData;
   navigation: NavigationScreenProp<never>;
   withNumberAndTime?: boolean;
-} & AgendaItemPreviewData;
+};
 
-export const AgendaItemPreview = ({
-  id,
-  name,
-  navigation,
-  number,
-  start,
-  withNumberAndTime
-}: Props) => {
+export const AgendaItemPreview = ({ data, navigation, withNumberAndTime }: Props) => {
+  const { id, name, number, start } = data;
+
   const formatString = withNumberAndTime ? 'HH:mm' : 'DD.MM.YYYY';
 
   const dateString = start ? momentFormat(start.valueOf(), formatString, 'x') : '';

@@ -1,27 +1,25 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
-import { texts } from '../../../config';
 
+import { texts } from '../../../config';
 import { LocationPreviewData } from '../../../types';
 import { RegularText } from '../../Text';
 import { OParlItemPreview } from './OParlItemPreview';
 
-type Props = { navigation: NavigationScreenProp<never> } & LocationPreviewData;
+type Props = {
+  data: LocationPreviewData;
+  navigation: NavigationScreenProp<never>;
+};
 
-export const LocationPreview = ({
-  deleted,
-  id,
-  locality,
-  navigation,
-  room,
-  streetAddress,
-  subLocality
-}: Props) => {
+export const LocationPreview = ({ data, navigation }: Props) => {
+  const { deleted, id, locality, room, streetAddress, subLocality } = data;
+
   let localityString = texts.oparl.location.location;
 
   if (locality?.length) {
     localityString = subLocality?.length ? `${locality} (${subLocality})` : locality;
   }
+
   const addressString = streetAddress?.length ? streetAddress : localityString;
 
   return (

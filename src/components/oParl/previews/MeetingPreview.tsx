@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
+
 import { texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
 import { MeetingPreviewData } from '../../../types';
@@ -7,9 +8,14 @@ import { MeetingPreviewData } from '../../../types';
 import { RegularText } from '../../Text';
 import { OParlItemPreview } from './OParlItemPreview';
 
-type Props = { navigation: NavigationScreenProp<never> } & MeetingPreviewData;
+type Props = {
+  data: MeetingPreviewData;
+  navigation: NavigationScreenProp<never>;
+};
 
-export const MeetingPreview = ({ id, cancelled, name, navigation, start }: Props) => {
+export const MeetingPreview = ({ data, navigation }: Props) => {
+  const { id, cancelled, name, start } = data;
+
   const dateString = start ? momentFormat(start.valueOf(), 'DD.MM.YYYY', 'x') : '';
 
   return (
