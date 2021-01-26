@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext } from 'react';
 import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { ListItem } from 'react-native-elements';
 
 import {
-  BoldText,
   Icon,
   RegularText,
   SafeAreaViewFlex,
-  Touchable,
+  TextListItem,
   Wrapper,
   WrapperWithOrientation
 } from '../components';
@@ -16,7 +14,7 @@ import { colors, consts, normalize, texts } from '../config';
 import { ConstructionSiteContext } from '../ConstructionSiteProvider';
 import { momentFormat } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
-import { arrowLeft, arrowRight } from '../icons';
+import { arrowLeft } from '../icons';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -29,8 +27,6 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
 
   const renderItem = useCallback(
     ({ index, item }) => {
-      const onPress = () => navigation.navigate('ConstructionSiteDetail', { index });
-
       const { category, endDate, startDate, title } = item;
 
       const formattedStartDate = momentFormat(startDate);
@@ -41,18 +37,14 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
           ? formattedStartDate
           : `${formattedStartDate} - ${formattedEndDate}`;
 
-      return (
-        <ListItem
-          title={<RegularText>{formattedDates + (category ? ` | ${category}` : '')}</RegularText>}
-          subtitle={<BoldText>{title}</BoldText>}
-          bottomDivider
-          rightIcon={<Icon xml={arrowRight(colors.primary)} />}
-          onPress={onPress}
-          delayPressIn={0}
-          Component={Touchable}
-          accessibilityLabel={`${title} (Taste)`}
-        />
-      );
+      const propItem = {
+        title,
+        subtitle: formattedDates + (category ? ` | ${category}` : ''),
+        params: { index },
+        routeName: 'ConstructionSiteDetail'
+      };
+
+      return <TextListItem item={propItem} navigation={navigation} />;
     },
     [navigation]
   );
