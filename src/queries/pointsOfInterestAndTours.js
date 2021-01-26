@@ -30,12 +30,19 @@ export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
         kind
       }
       contact {
-        email
-        phone
+        firstName
         lastName
+        phone
+        email
+        fax
+        webUrls {
+          url
+          description
+        }
       }
       webUrls {
         url
+        description
       }
     }
 
@@ -59,6 +66,21 @@ export const GET_POINTS_OF_INTEREST_AND_TOURS = gql`
         street
         zip
         kind
+      }
+      contact {
+        firstName
+        lastName
+        phone
+        email
+        fax
+        webUrls {
+          url
+          description
+        }
+      }
+      webUrls {
+        url
+        description
       }
       dataProvider {
         logo {

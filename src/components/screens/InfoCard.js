@@ -67,6 +67,24 @@ const contactView = (contact) => (
   </View>
 );
 
+const mergeWebUrls = ({ webUrls, contact, contacts }) => {
+  const mergedWebUrls = [...webUrls];
+
+  // merge a `contact`s `webUrls` to `webUrls`
+  if (contact?.webUrls?.length) {
+    mergedWebUrls.push(...contact.webUrls);
+  }
+
+  // iterate all `contacts` and merge every `contact`s `webUrls` to `webUrls`
+  contacts?.forEach((contact) => {
+    if (contact?.webUrls?.length) {
+      mergedWebUrls.push(...contact.webUrls);
+    }
+  });
+
+  return mergedWebUrls;
+};
+
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 /* TODO: add a logic to display info category and url that fit the screen even if long text
@@ -141,29 +159,28 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
         }
       })}
 
-    {!!webUrls &&
-      webUrls.map((item, index) => {
-        const { url, description } = item;
+    {mergeWebUrls({ webUrls, contact, contacts }).map((item, index) => {
+      const { url, description } = item;
 
-        if (!url) {
-          return null;
-        }
+      if (!url) {
+        return null;
+      }
 
-        return (
-          <InfoBox key={index}>
-            <Icon xml={urlIcon(colors.primary)} style={styles.margin} />
-            <TouchableOpacity
-              accessibilityLabel={`(Webseite) ${
-                description || url
-              } (Taste) (Öffnet Webseite in der aktuellen App)`}
-              onPress={() => openLink(url, openWebScreen)}
-            >
-              {!description && <RegularText primary>{url}</RegularText>}
-              {!!description && <RegularText primary>{description}</RegularText>}
-            </TouchableOpacity>
-          </InfoBox>
-        );
-      })}
+      return (
+        <InfoBox key={index}>
+          <Icon xml={urlIcon(colors.primary)} style={styles.margin} />
+          <TouchableOpacity
+            accessibilityLabel={`(Webseite) ${
+              description || url
+            } (Taste) (Öffnet Webseite in der aktuellen App)`}
+            onPress={() => openLink(url, openWebScreen)}
+          >
+            {!description && <RegularText primary>{url}</RegularText>}
+            {!!description && <RegularText primary>{description}</RegularText>}
+          </TouchableOpacity>
+        </InfoBox>
+      );
+    })}
   </View>
 );
 /* eslint-enable complexity */

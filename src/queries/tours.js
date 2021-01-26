@@ -23,6 +23,21 @@ export const GET_TOURS = gql`
         zip
         kind
       }
+      contact {
+        firstName
+        lastName
+        phone
+        email
+        fax
+        webUrls {
+          url
+          description
+        }
+      }
+      webUrls {
+        url
+        description
+      }
       dataProvider {
         logo {
           url
@@ -61,12 +76,19 @@ export const GET_TOUR = gql`
         addition
       }
       contact {
-        email
-        phone
+        firstName
         lastName
+        phone
+        email
+        fax
+        webUrls {
+          url
+          description
+        }
       }
       webUrls {
         url
+        description
       }
       lengthKm
       dataProvider {
@@ -93,6 +115,7 @@ export const GET_TOUR = gql`
           fax
           webUrls {
             url
+            description
           }
         }
       }
