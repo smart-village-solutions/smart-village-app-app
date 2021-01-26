@@ -175,8 +175,11 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
             } (Taste) (Öffnet Webseite in der aktuellen App)`}
             onPress={() => openLink(url, openWebScreen)}
           >
-            {!description && <RegularText primary>{url}</RegularText>}
-            {!!description && <RegularText primary>{description}</RegularText>}
+            {!description || !!description?.startsWith('url') ? (
+              <RegularText primary>{url}</RegularText>
+            ) : (
+              <RegularText primary>{description}</RegularText>
+            )}
           </TouchableOpacity>
         </InfoBox>
       );
