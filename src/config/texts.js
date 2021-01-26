@@ -255,7 +255,22 @@ export const texts = {
       underDirectionOf: 'Federführung: '
     },
     person: {
-      person: 'Person: '
+      affix: 'Namenszusatz: ',
+      body: 'Körperschaft: ',
+      email: 'Emailadressen: ',
+      familyName: 'Familienname: ',
+      formOfAddress: 'Anrede: ',
+      gender: 'Geschlecht: ',
+      givenName: 'Vorname: ',
+      life: 'Leben: ',
+      lifeSource: 'Quelle zu Lebensangaben: ',
+      location: 'Ort: ',
+      membership: 'Mitgliedschaften: ',
+      name: 'Vollständiger Name:',
+      person: 'Person: ',
+      phone: 'Telefonnummern: ',
+      status: 'Status: ',
+      title: 'Titel: '
     },
     system: {
       body: 'Körperschaften: ',
