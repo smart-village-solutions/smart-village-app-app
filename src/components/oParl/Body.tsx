@@ -88,36 +88,36 @@ export const Body = ({ data, navigation }: Props) => {
   );
 
   const renderLegislativeTermPreview = useCallback(
-    (data: LegislativeTermPreviewData, index) => (
-      <LegislativeTermPreview data={data} key={index} navigation={navigation} />
+    (data: LegislativeTermPreviewData, key: number) => (
+      <LegislativeTermPreview data={data} key={key} navigation={navigation} />
     ),
     [navigation]
   );
 
   const renderMeetingPreview = useCallback(
-    (data: MeetingPreviewData, index) => (
-      <MeetingPreview data={data} key={index} navigation={navigation} />
+    (data: MeetingPreviewData, key: number) => (
+      <MeetingPreview data={data} key={key} navigation={navigation} />
     ),
     [navigation]
   );
 
   const renderPaperPreview = useCallback(
-    (data: PaperPreviewData, index) => (
-      <PaperPreview data={data} key={index} navigation={navigation} />
+    (data: PaperPreviewData, key: number) => (
+      <PaperPreview data={data} key={key} navigation={navigation} />
     ),
     [navigation]
   );
 
   const renderOrganizationPreview = useCallback(
-    (data: OrganizationPreviewData, index) => (
-      <OrganizationPreview data={data} key={index} navigation={navigation} />
+    (data: OrganizationPreviewData, key: number) => (
+      <OrganizationPreview data={data} key={key} navigation={navigation} />
     ),
     [navigation]
   );
 
   const renderPersonPreview = useCallback(
-    (data: PersonPreviewData, index) => (
-      <PersonPreview data={data} key={index} navigation={navigation} />
+    (data: PersonPreviewData, key: number) => (
+      <PersonPreview data={data} key={key} navigation={navigation} />
     ),
     [navigation]
   );

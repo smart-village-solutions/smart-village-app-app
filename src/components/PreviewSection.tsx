@@ -17,7 +17,7 @@ export const PreviewSection = <T,>({ data, header, limit = 3, renderItem }: Prop
 
   const onPress = useCallback(() => setCollapsed((value) => !value), [setCollapsed]);
 
-  if (!data) {
+  if (!data?.length) {
     return null;
   }
 

@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { NavigationScreenProp } from 'react-navigation';
-import { texts } from '../../config';
 
+import { texts } from '../../config';
 import { AgendaItemData, FilePreviewData } from '../../types';
 import { PreviewSection } from '../PreviewSection';
 import { BoldText, RegularText } from '../Text';
@@ -64,13 +64,11 @@ export const AgendaItem = ({ data, navigation }: Props) => {
           <ConsultationPreview data={consultation} navigation={navigation} />
         </>
       )}
-      {!!auxilaryFile?.length && (
-        <PreviewSection
-          data={auxilaryFile}
-          header={agendaItemTexts.auxiliaryFile}
-          renderItem={renderFilePreview}
-        />
-      )}
+      <PreviewSection
+        data={auxilaryFile}
+        header={agendaItemTexts.auxiliaryFile}
+        renderItem={renderFilePreview}
+      />
       <LineEntry left={agendaItemTexts.result} right={result} />
       {!!resolutionFile && (
         <>

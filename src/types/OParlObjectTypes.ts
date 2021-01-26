@@ -167,7 +167,7 @@ export type MeetingPreviewData = {
 };
 
 export type MeetingData = {
-  agendaItem?: AgendaItemPreviewData;
+  agendaItem?: AgendaItemPreviewData[];
   auxiliaryFile?: FilePreviewData[];
   created?: Date;
   deleted?: boolean;

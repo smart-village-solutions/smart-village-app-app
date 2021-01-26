@@ -21,7 +21,7 @@ export const MeetingPreview = ({ data, navigation }: Props) => {
   return (
     <OParlItemPreview id={id} navigation={navigation}>
       <RegularText lineThrough={cancelled} numberOfLines={1} primary>
-        {name?.length ? name : texts.oparl.meeting}
+        {name?.length ? name : texts.oparl.meeting.meeting}
       </RegularText>
       <RegularText>{dateString}</RegularText>
     </OParlItemPreview>

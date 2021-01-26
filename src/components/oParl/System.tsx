@@ -56,15 +56,15 @@ export const System = ({ data, navigation }: Props) => {
   ]);
 
   const renderBodyPreview = useCallback(
-    (data: BodyPreviewData, index) => (
-      <BodyPreview data={data} key={index} navigation={navigation} />
+    (data: BodyPreviewData, key: number) => (
+      <BodyPreview data={data} key={key} navigation={navigation} />
     ),
     [navigation]
   );
 
   const renderSystemPreview = useCallback(
-    (data: SystemPreviewData, index) => (
-      <SystemPreview data={data} key={index} navigation={navigation} />
+    (data: SystemPreviewData, key: number) => (
+      <SystemPreview data={data} key={key} navigation={navigation} />
     ),
     [navigation]
   );

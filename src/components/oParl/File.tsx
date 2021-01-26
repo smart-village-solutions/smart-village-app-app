@@ -70,27 +70,21 @@ export const File = ({ data, navigation }: Props) => {
       <LineEntry left={fileTexts.downloadUrl} right={downloadUrl} />
       <LineEntry left={fileTexts.externalServiceUrl} right={externalServiceUrl} />
       {!!masterFile && <FilePreview data={masterFile} navigation={navigation} />}
-      {!!derivativeFile?.length && (
-        <PreviewSection
-          data={derivativeFile}
-          header={fileTexts.derivativeFile}
-          renderItem={renderFilePreview}
-        />
-      )}
-      {!!meeting?.length && (
-        <PreviewSection
-          data={meeting}
-          header={fileTexts.meetings}
-          renderItem={renderMeetingPreview}
-        />
-      )}
-      {!!agendaItem?.length && (
-        <PreviewSection
-          data={agendaItem}
-          header={fileTexts.agendaItems}
-          renderItem={renderAgendaItemPreview}
-        />
-      )}
+      <PreviewSection
+        data={derivativeFile}
+        header={fileTexts.derivativeFile}
+        renderItem={renderFilePreview}
+      />
+      <PreviewSection
+        data={meeting}
+        header={fileTexts.meetings}
+        renderItem={renderMeetingPreview}
+      />
+      <PreviewSection
+        data={agendaItem}
+        header={fileTexts.agendaItems}
+        renderItem={renderAgendaItemPreview}
+      />
       <LineEntry left={fileTexts.license} right={fileLicense} selectable />
       <LineEntry
         left={fileTexts.date}

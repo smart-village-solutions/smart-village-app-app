@@ -193,7 +193,20 @@ export const texts = {
     location: {
       location: 'Ort'
     },
-    meeting: 'Sitzung',
+    meeting: {
+      agendaItem: 'Tagesordnungspunkte: ',
+      auxiliaryFile: 'Dateianhänge: ',
+      cancelled: 'Diese Sitzung wurde abgesagt.',
+      invitation: 'Einladung: ',
+      location: 'Sitzungsort: ',
+      meeting: 'Sitzung',
+      meetingState: 'Status: ',
+      name: 'Name: ',
+      organization: 'Gruppierungen: ',
+      participant: 'Teilnehmer: ',
+      resultsProtocol: 'Ergebnisprotokoll: ',
+      verbatimProtocol: 'Wortprotokoll: '
+    },
     modifiedSection: {
       created: 'Erstellt am: ',
       modified: 'Zuletzt bearbeitet am: ',
