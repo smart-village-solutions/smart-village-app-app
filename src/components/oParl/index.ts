@@ -4,4 +4,7 @@ export * from './Consultation';
 export * from './File';
 export * from './LegislativeTerm';
 export * from './Meeting';
+export * from './Membership';
+export * from './Organization';
+export * from './Paper';
 export * from './System';

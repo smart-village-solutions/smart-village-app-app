@@ -173,12 +173,12 @@ export const Body = ({ data, navigation }: Props) => {
         left={bodyTexts.oparlSince}
         right={oparlSince && momentFormat(oparlSince.valueOf(), undefined, 'x')}
       />
-      <KeywordSection keyword={keyword} />
       <PreviewSection
         data={equivalent}
         renderItem={renderEquivalentItem}
         header={bodyTexts.equivalent}
       />
+      <KeywordSection keyword={keyword} />
       <WebRepresentation name={name ?? bodyTexts.body} navigation={navigation} web={web} />
       <ModifiedSection created={created} deleted={deleted} modified={modified} />
     </WrapperHorizontal>

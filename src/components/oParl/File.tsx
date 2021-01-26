@@ -16,7 +16,7 @@ type Props = {
   navigation: NavigationScreenProp<never>;
 };
 
-const { file: fileTexts } = texts.oparl;
+const fileTexts = texts.oparl.file;
 
 export const File = ({ data, navigation }: Props) => {
   const {
@@ -38,7 +38,6 @@ export const File = ({ data, navigation }: Props) => {
     web
   } = data;
 
-  // TODO Types of renderPreview functions
   const renderFilePreview = useCallback(
     (data: FilePreviewData, key: number) => (
       <FilePreview data={data} key={key} navigation={navigation} />

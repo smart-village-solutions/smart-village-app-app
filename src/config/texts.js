@@ -237,7 +237,22 @@ export const texts = {
       website: 'Website: '
     },
     paper: {
-      paper: 'Drucksache'
+      auxiliaryFile: 'Weitere Dateien: ',
+      body: 'Körperschaft: ',
+      consultation: 'Beratungen: ',
+      date: 'Assoziiertes Datum: ',
+      location: 'Orte: ',
+      mainFile: 'Hauptdatei: ',
+      name: 'Name: ',
+      originatorOrganization: 'Urheberorganizationen: ',
+      originatorPerson: 'Urheber: ',
+      paper: 'Drucksache',
+      paperType: 'Art der Drucksache: ',
+      reference: 'Referenz',
+      relatedPaper: 'Inhaltich verwandt: ',
+      subOrdinatedPaper: 'Untergeordnete Drucksachen: ',
+      superOrdinatedPaper: 'Übergeordnete Drucksachen: ',
+      underDirectionOf: 'Federführung: '
     },
     person: {
       person: 'Person: '
