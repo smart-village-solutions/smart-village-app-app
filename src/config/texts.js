@@ -224,7 +224,17 @@ export const texts = {
         'Dieses Dokument wurde als gelöscht markiert und enthält somit möglicherweise nicht mehr alle oder keine Daten.'
     },
     organization: {
-      organization: 'Gruppierung: '
+      body: 'Teil der Körperschaft: ',
+      classification: 'Art der Gruppierung: ',
+      externalBody: 'Entspricht der Körperschaft: ',
+      location: 'Ort: ',
+      meeting: 'Sitzungen: ',
+      name: 'Name: ',
+      organization: 'Gruppierung: ',
+      organizationType: 'Kategorie: ',
+      post: 'Vorgesehene Positionen: ',
+      subOrganizationOf: 'Untergruppierung von: ',
+      website: 'Website: '
     },
     paper: {
       paper: 'Drucksache'
