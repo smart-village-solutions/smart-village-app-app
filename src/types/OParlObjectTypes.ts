@@ -199,7 +199,7 @@ export type MembershipData = {
   startDate?: Date;
   votingRight?: boolean;
   web?: string;
-} & MeetingPreviewData;
+} & MembershipPreviewData;
 
 export type OrganizationPreviewData = {
   id: string;

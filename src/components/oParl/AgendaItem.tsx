@@ -52,7 +52,7 @@ export const AgendaItem = ({ data, navigation }: Props) => {
       )}
       <LineEntry left={agendaItemTexts.number} right={number} />
       <DateSection endDate={end} startDate={start} withTime />
-      {typeof isPublic !== undefined && (
+      {isPublic !== undefined && (
         <LineEntry
           left={agendaItemTexts.public}
           right={isPublic ? agendaItemTexts.isPublic : agendaItemTexts.isNotPublic}

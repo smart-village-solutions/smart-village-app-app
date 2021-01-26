@@ -37,7 +37,7 @@ export const Consultation = ({ data, navigation }: Props) => {
           <RegularText>{role}</RegularText>
         </>
       )}
-      {typeof authoritative !== undefined && (
+      {authoritative !== undefined && (
         <LineEntry
           left={consultationTexts.authoritative}
           right={
