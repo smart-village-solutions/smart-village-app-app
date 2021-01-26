@@ -102,6 +102,22 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
         kind
         addition
       }
+      contacts {
+        id
+        firstName
+        lastName
+        phone
+        email
+        fax
+        webUrls {
+          url
+          description
+        }
+      }
+      webUrls: urls {
+        url
+        description
+      }
       priceInformations {
         name
         amount
@@ -154,10 +170,15 @@ export const GET_EVENT_RECORD = gql`
       }
       contacts {
         id
-        email
-        phone
-        lastName
         firstName
+        lastName
+        phone
+        email
+        fax
+        webUrls {
+          url
+          description
+        }
       }
       webUrls: urls {
         url

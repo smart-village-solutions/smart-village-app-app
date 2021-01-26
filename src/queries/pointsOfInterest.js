@@ -34,12 +34,19 @@ export const GET_POINTS_OF_INTEREST = gql`
         }
       }
       contact {
-        email
-        phone
+        firstName
         lastName
+        phone
+        email
+        fax
+        webUrls {
+          url
+          description
+        }
       }
       webUrls {
         url
+        description
       }
     }
   }
@@ -80,12 +87,19 @@ export const GET_POINT_OF_INTEREST = gql`
         }
       }
       contact {
-        email
-        phone
+        firstName
         lastName
+        phone
+        email
+        fax
+        webUrls {
+          url
+          description
+        }
       }
       webUrls {
         url
+        description
       }
       priceInformations {
         category
@@ -123,6 +137,7 @@ export const GET_POINT_OF_INTEREST = gql`
           fax
           webUrls {
             url
+            description
           }
         }
       }
