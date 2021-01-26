@@ -8,7 +8,8 @@ import {
   LegislativeTermPreviewData,
   MeetingPreviewData,
   OrganizationPreviewData,
-  PaperPreviewData
+  PaperPreviewData,
+  PersonPreviewData
 } from '../../types';
 import { PreviewSection } from '../PreviewSection';
 
@@ -21,8 +22,10 @@ import {
   LocationPreview,
   MeetingPreview,
   OrganizationPreview,
-  PaperPreview
+  PaperPreview,
+  PersonPreview
 } from './previews';
+import { SystemPreview } from './previews/SystemPreview';
 import { ContactSection, KeywordSection, ModifiedSection, WebRepresentation } from './sections';
 
 type Props = {
@@ -52,17 +55,17 @@ export const Body = ({ data, navigation }: Props) => {
     oparlSince,
     organization,
     paper,
-    // TODO: person,
+    person,
     rgs,
     shortName,
-    // TODO: system,
+    system,
     web,
     website
   } = data;
 
   const onPressLicense = useCallback(() => navigation.push('Web', { webUrl: license }), [
     navigation,
-    website
+    license
   ]);
 
   const onPressWebsite = useCallback(() => navigation.push('Web', { webUrl: website }), [
@@ -112,6 +115,13 @@ export const Body = ({ data, navigation }: Props) => {
     [navigation]
   );
 
+  const renderPersonPreview = useCallback(
+    (data: PersonPreviewData, index) => (
+      <PersonPreview data={data} key={index} navigation={navigation} />
+    ),
+    [navigation]
+  );
+
   return (
     <WrapperHorizontal>
       <LineEntry left={bodyTexts.name} right={shortName ? `${shortName} (${name})` : name} />
@@ -125,26 +135,18 @@ export const Body = ({ data, navigation }: Props) => {
       <ContactSection contactEmail={contactEmail} contactName={contactName} />
       <PreviewSection
         data={legislativeTerm}
-        header={<BoldText>{bodyTexts.legislativeTerm}</BoldText>}
+        header={bodyTexts.legislativeTerm}
         renderItem={renderLegislativeTermPreview}
       />
-      <PreviewSection
-        data={meeting}
-        header={<BoldText>{bodyTexts.meeting}</BoldText>}
-        renderItem={renderMeetingPreview}
-      />
-      <PreviewSection
-        data={paper}
-        header={<BoldText>{bodyTexts.paper}</BoldText>}
-        renderItem={renderPaperPreview}
-      />
+      <PreviewSection data={meeting} header={bodyTexts.meeting} renderItem={renderMeetingPreview} />
+      <PreviewSection data={paper} header={bodyTexts.paper} renderItem={renderPaperPreview} />
       <PreviewSection
         data={organization}
-        header={<BoldText>{bodyTexts.organization}</BoldText>}
+        header={bodyTexts.organization}
         renderItem={renderOrganizationPreview}
       />
+      <PreviewSection data={person} header={bodyTexts.person} renderItem={renderPersonPreview} />
       {/*
-        <PersonSection />
         <PaperSection />
       */}
       <LineEntry left={bodyTexts.classification} right={classification} />
@@ -160,7 +162,12 @@ export const Body = ({ data, navigation }: Props) => {
       />
       <LineEntry fullText left={bodyTexts.ags} right={ags} />
       <LineEntry fullText left={bodyTexts.rgs} right={rgs} />
-      {/* <SystemPreview system={system} /> */}
+      {!!system && (
+        <>
+          <BoldText>{bodyTexts.system}</BoldText>
+          <SystemPreview data={system} navigation={navigation} />
+        </>
+      )}
       <LineEntry
         fullText
         left={bodyTexts.oparlSince}
@@ -170,9 +177,9 @@ export const Body = ({ data, navigation }: Props) => {
       <PreviewSection
         data={equivalent}
         renderItem={renderEquivalentItem}
-        header={<BoldText>{bodyTexts.equivalent}</BoldText>}
+        header={bodyTexts.equivalent}
       />
-      <WebRepresentation name={name} navigation={navigation} web={web} />
+      <WebRepresentation name={name ?? bodyTexts.body} navigation={navigation} web={web} />
       <ModifiedSection created={created} deleted={deleted} modified={modified} />
     </WrapperHorizontal>
   );

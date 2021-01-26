@@ -140,6 +140,7 @@ export const texts = {
       oparlSince: 'Nutzt OParl seit: ',
       organization: 'Gruppierungen: ',
       paper: 'Drucksachen: ',
+      person: 'Personen: ',
       rgs: 'Regionalschlüssel: ',
       system: 'OParl System: ',
       website: 'Website: '
@@ -207,6 +208,17 @@ export const texts = {
     },
     person: {
       person: 'Person: '
+    },
+    system: {
+      body: 'Körperschaften: ',
+      license: 'Lizens: ',
+      name: 'Name: ',
+      oparlVersion: 'OParl Version: ',
+      otherOparlVersion: 'Andere OParl Versionen: ',
+      product: 'Server Software: ',
+      system: 'OParl System',
+      vendor: 'Softwareanbieter: ',
+      website: 'Website: '
     },
     webRepresentation: 'Webversion dieses Dokuments: '
   },

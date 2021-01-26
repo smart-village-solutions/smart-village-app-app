@@ -9,16 +9,23 @@ export enum OParlObjectType {
   Membership = 'https://schema.oparl.org/1.0/Membership',
   Organization = 'https://schema.oparl.org/1.0/Organization',
   Paper = 'https://schema.oparl.org/1.0/Paper',
-  Person = 'https://schema.oparl.org/1.0/Person'
+  Person = 'https://schema.oparl.org/1.0/Person',
+  System = 'https://schema.oparl.org/1.0/System'
 }
 
 export type OParlObjectData =
   | AgendaItemData
+  | BodyData
   | ConsultationData
   | FileData
   | LegislativeTermData
+  | LocationData
   | MeetingData
-  | PaperData;
+  | MembershipData
+  | OrganizationData
+  | PaperData
+  | PersonData
+  | SystemData;
 
 export type AgendaItemPreviewData = {
   id: string;
@@ -68,7 +75,7 @@ export type BodyData = {
   paper: PaperPreviewData[];
   person: PersonPreviewData[];
   rgs?: string;
-  system?: any;
+  system?: SystemPreviewData;
   web?: string;
   website?: string;
 } & BodyPreviewData;
@@ -219,7 +226,7 @@ export type OrganizationData = {
   subOrganizationOf?: OrganizationPreviewData;
   web?: string;
   website?: string;
-};
+} & OrganizationPreviewData;
 
 export type PaperPreviewData = {
   id: string;
@@ -276,3 +283,25 @@ export type PersonData = {
   status?: string[];
   web?: string;
 } & PersonPreviewData;
+
+export type SystemPreviewData = {
+  id: string;
+  type: OParlObjectType.System;
+  deleted?: boolean;
+  name?: string;
+  oparlVersion: string;
+};
+
+export type SystemData = {
+  body: BodyPreviewData[];
+  contactEmail?: string;
+  contactName?: string;
+  created?: Date;
+  license?: string;
+  modified?: Date;
+  otherOparlVersion?: SystemPreviewData[]; // TODO: check this is as we want it
+  product?: string;
+  vendor?: string;
+  web?: string;
+  website?: string;
+} & SystemPreviewData;

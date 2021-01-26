@@ -2,11 +2,12 @@ import React, { useCallback, useState } from 'react';
 import Collapsible from 'react-native-collapsible';
 
 import { Button } from './Button';
+import { BoldText } from './Text';
 import { Wrapper } from './Wrapper';
 
 type Props<T> = {
   data?: T[];
-  header?: JSX.Element;
+  header?: JSX.Element | string;
   limit?: number;
   renderItem: (props: T, key: number) => JSX.Element;
 };
@@ -22,7 +23,7 @@ export const PreviewSection = <T,>({ data, header, limit = 3, renderItem }: Prop
 
   return (
     <>
-      {header}
+      {typeof header === 'string' ? <BoldText>{header}</BoldText> : header}
       {data.slice(0, limit).map(renderItem)}
       {data.length > limit && (
         <>

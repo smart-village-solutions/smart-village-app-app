@@ -8,3 +8,4 @@ export * from './MeetingPreview';
 export * from './MembershipPreview';
 export * from './OrganizationPreview';
 export * from './PaperPreview';
+export * from './PersonPreview';

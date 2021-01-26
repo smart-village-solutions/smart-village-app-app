@@ -67,7 +67,7 @@ export const AgendaItem = ({ data, navigation }: Props) => {
       {!!auxilaryFile?.length && (
         <PreviewSection
           data={auxilaryFile}
-          header={<BoldText>{agendaItemTexts.auxiliaryFile}</BoldText>}
+          header={agendaItemTexts.auxiliaryFile}
           renderItem={renderFilePreview}
         />
       )}

@@ -5,7 +5,7 @@ import { texts } from '../../config';
 import { ConsultationData, OrganizationPreviewData } from '../../types';
 import { PreviewSection } from '../PreviewSection';
 import { BoldText, RegularText } from '../Text';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
 import { AgendaItemPreview, MeetingPreview, OrganizationPreview, PaperPreview } from './previews';
 import { KeywordSection, WebRepresentation } from './sections';
@@ -73,7 +73,7 @@ export const Consultation = ({ data, navigation }: Props) => {
           <PreviewSection
             data={organization}
             renderItem={renderOrganization}
-            header={<BoldText>{consultationTexts.organizations}</BoldText>}
+            header={consultationTexts.organizations}
           />
         ))}
       <KeywordSection keyword={keyword} />

@@ -2,7 +2,8 @@ import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
-import { MembershipPreviewData, OrganizationPreviewData, PersonPreviewData } from '../../../types';
+import { getFullName } from '../../../helpers';
+import { MembershipPreviewData, OrganizationPreviewData } from '../../../types';
 import { RegularText } from '../../Text';
 import { OParlItemPreview } from './OParlItemPreview';
 
@@ -10,15 +11,6 @@ type Props = {
   data: MembershipPreviewData;
   navigation: NavigationScreenProp<never>;
   withPerson?: boolean;
-};
-
-const getFullName = (person?: PersonPreviewData) => {
-  if (!person) return texts.oparl.person.person;
-  const { affix, familyName, formOfAddress, givenName, title } = person;
-  const affixString = affix?.length ? `(${affix})` : undefined;
-  return [formOfAddress, title, givenName, familyName, affixString]
-    .filter((item) => !!item?.length)
-    .join(' ');
 };
 
 const getOrganizationNameString = (organization?: OrganizationPreviewData) => {
@@ -35,7 +27,7 @@ const getOrganizationNameString = (organization?: OrganizationPreviewData) => {
 export const MembershipPreview = ({ data, navigation, withPerson }: Props) => {
   const { id, onBehalfOf, organization, person } = data;
 
-  const nameString = person?.name ?? getFullName(person);
+  const nameString = getFullName(texts.oparl.person.person, person);
   const textWithPerson = onBehalfOf
     ? `${nameString} (${getOrganizationNameString(onBehalfOf)})`
     : nameString;

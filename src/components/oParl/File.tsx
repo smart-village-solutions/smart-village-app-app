@@ -73,21 +73,21 @@ export const File = ({ data, navigation }: Props) => {
       {!!derivativeFile?.length && (
         <PreviewSection
           data={derivativeFile}
-          header={<BoldText>{fileTexts.derivativeFile}</BoldText>}
+          header={fileTexts.derivativeFile}
           renderItem={renderFilePreview}
         />
       )}
       {!!meeting?.length && (
         <PreviewSection
           data={meeting}
-          header={<BoldText>{fileTexts.meetings}</BoldText>}
+          header={fileTexts.meetings}
           renderItem={renderMeetingPreview}
         />
       )}
       {!!agendaItem?.length && (
         <PreviewSection
           data={agendaItem}
-          header={<BoldText>{fileTexts.agendaItems}</BoldText>}
+          header={fileTexts.agendaItems}
           renderItem={renderAgendaItemPreview}
         />
       )}
