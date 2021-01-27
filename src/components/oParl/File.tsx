@@ -1,15 +1,14 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { formatSize, momentFormat } from '../../helpers';
-import { AgendaItemPreviewData, FileData, FilePreviewData, MeetingPreviewData } from '../../types';
-import { PreviewSection } from '../PreviewSection';
+import { FileData } from '../../types';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { AgendaItemPreview, FilePreview, MeetingPreview } from './previews';
-import { WebRepresentation } from './sections';
+import { FilePreview } from './previews';
+import { OParlPreviewSection, WebRepresentation } from './sections';
 
 type Props = {
   data: FileData;
@@ -38,27 +37,6 @@ export const File = ({ data, navigation }: Props) => {
     web
   } = data;
 
-  const renderFilePreview = useCallback(
-    (data: FilePreviewData, key: number) => (
-      <FilePreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderAgendaItemPreview = useCallback(
-    (data: AgendaItemPreviewData, key: number) => (
-      <AgendaItemPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderMeetingPreview = useCallback(
-    (data: MeetingPreviewData, key: number) => (
-      <MeetingPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
   return (
     <Wrapper>
       <LineEntry left={fileTexts.name} right={name} />
@@ -69,20 +47,16 @@ export const File = ({ data, navigation }: Props) => {
       <LineEntry left={fileTexts.downloadUrl} right={downloadUrl} />
       <LineEntry left={fileTexts.externalServiceUrl} right={externalServiceUrl} />
       {!!masterFile && <FilePreview data={masterFile} navigation={navigation} />}
-      <PreviewSection
+      <OParlPreviewSection
         data={derivativeFile}
         header={fileTexts.derivativeFile}
-        renderItem={renderFilePreview}
+        navigation={navigation}
       />
-      <PreviewSection
-        data={meeting}
-        header={fileTexts.meetings}
-        renderItem={renderMeetingPreview}
-      />
-      <PreviewSection
+      <OParlPreviewSection data={meeting} header={fileTexts.meetings} navigation={navigation} />
+      <OParlPreviewSection
         data={agendaItem}
         header={fileTexts.agendaItems}
-        renderItem={renderAgendaItemPreview}
+        navigation={navigation}
       />
       <LineEntry left={fileTexts.license} right={fileLicense} selectable />
       <LineEntry

@@ -191,7 +191,16 @@ export const texts = {
       title: 'Wahlperiode'
     },
     location: {
-      location: 'Ort'
+      bodies: 'Körperschaften: ',
+      description: 'Beschreibung: ',
+      locality: 'Ort: ',
+      location: 'Ort',
+      meeting: 'Sitzungen: ',
+      organization: 'Gruppierungen: ',
+      papers: 'Drucksachen: ',
+      postalCode: 'Postleitzahl: ',
+      room: 'Raum: ',
+      streetAddress: 'Straße/Nr.: '
     },
     meeting: {
       agendaItem: 'Tagesordnungspunkte: ',

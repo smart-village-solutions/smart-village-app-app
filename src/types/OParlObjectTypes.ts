@@ -27,6 +27,20 @@ export type OParlObjectData =
   | PersonData
   | SystemData;
 
+export type OParlObjectPreviewData =
+  | AgendaItemPreviewData
+  | BodyPreviewData
+  | ConsultationPreviewData
+  | FilePreviewData
+  | LegislativeTermPreviewData
+  | LocationPreviewData
+  | MeetingPreviewData
+  | MembershipPreviewData
+  | OrganizationPreviewData
+  | PaperPreviewData
+  | PersonPreviewData
+  | SystemPreviewData;
+
 export type AgendaItemPreviewData = {
   id: string;
   type: OParlObjectType.AgendaItem;

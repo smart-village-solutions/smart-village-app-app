@@ -2,19 +2,18 @@ import React, { useCallback } from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
-import { MeetingPreviewData, MembershipPreviewData, OrganizationData } from '../../types';
-import { PreviewSection } from '../PreviewSection';
+import { OrganizationData } from '../../types';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
+import { BodyPreview, LocationPreview, OrganizationPreview } from './previews';
 import {
-  BodyPreview,
-  LocationPreview,
-  MeetingPreview,
-  MembershipPreview,
-  OrganizationPreview
-} from './previews';
-import { DateSection, KeywordSection, ModifiedSection, WebRepresentation } from './sections';
+  DateSection,
+  KeywordSection,
+  ModifiedSection,
+  OParlPreviewSection,
+  WebRepresentation
+} from './sections';
 
 type Props = {
   data: OrganizationData;
@@ -50,20 +49,6 @@ export const Organization = ({ data, navigation }: Props) => {
     navigation,
     website
   ]);
-
-  const renderMeetingPreview = useCallback(
-    (data: MeetingPreviewData, key: number) => (
-      <MeetingPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderMembershipPreview = useCallback(
-    (data: MembershipPreviewData, key: number) => (
-      <MembershipPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
 
   let nameString: string | undefined;
 
@@ -113,15 +98,15 @@ export const Organization = ({ data, navigation }: Props) => {
           <LocationPreview data={location} navigation={navigation} />
         </>
       )}
-      <PreviewSection
+      <OParlPreviewSection
         data={meeting}
         header={organizationTexts.meeting}
-        renderItem={renderMeetingPreview}
+        navigation={navigation}
       />
-      <PreviewSection
+      <OParlPreviewSection
         data={membership}
         header={organizationTexts.meeting}
-        renderItem={renderMembershipPreview}
+        navigation={navigation}
       />
       <DateSection endDate={endDate} startDate={startDate} />
       <KeywordSection keyword={keyword} />

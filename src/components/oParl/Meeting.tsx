@@ -1,26 +1,20 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
-import {
-  AgendaItemPreviewData,
-  FilePreviewData,
-  MeetingData,
-  OrganizationPreviewData,
-  PersonPreviewData
-} from '../../types';
-import { PreviewSection } from '../PreviewSection';
+import { MeetingData } from '../../types';
+
 import { BoldText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
+import { FilePreview, LocationPreview } from './previews';
 import {
-  AgendaItemPreview,
-  FilePreview,
-  LocationPreview,
-  OrganizationPreview,
-  PersonPreview
-} from './previews';
-import { DateSection, KeywordSection, ModifiedSection, WebRepresentation } from './sections';
+  DateSection,
+  KeywordSection,
+  ModifiedSection,
+  OParlPreviewSection,
+  WebRepresentation
+} from './sections';
 
 type Props = {
   data: MeetingData;
@@ -51,44 +45,17 @@ export const Meeting = ({ data, navigation }: Props) => {
     web
   } = data;
 
-  const renderAgendaItemPreview = useCallback(
-    (data: AgendaItemPreviewData, key: number) => (
-      <AgendaItemPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderFilePreview = useCallback(
-    (data: FilePreviewData, key: number) => (
-      <FilePreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderOrganizationPreview = useCallback(
-    (data: OrganizationPreviewData, key: number) => (
-      <OrganizationPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderPersonPreview = useCallback(
-    (data: PersonPreviewData, key: number) => (
-      <PersonPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
   return (
     <Wrapper>
       {cancelled && <BoldText>{meetingTexts.cancelled}</BoldText>}
       <LineEntry left={meetingTexts.name} right={name} />
       <LineEntry left={meetingTexts.meetingState} right={meetingState} />
       <DateSection endDate={end} startDate={start} withTime />
-      <PreviewSection
+      <OParlPreviewSection
         data={agendaItem}
         header={meetingTexts.agendaItem}
-        renderItem={renderAgendaItemPreview}
+        navigation={navigation}
+        additionalProps={{ withNumberAndTime: true }}
       />
       {!!location && (
         <>
@@ -114,20 +81,20 @@ export const Meeting = ({ data, navigation }: Props) => {
           <FilePreview data={verbatimProtocol} navigation={navigation} />
         </>
       )}
-      <PreviewSection
+      <OParlPreviewSection
         data={auxiliaryFile}
         header={meetingTexts.auxiliaryFile}
-        renderItem={renderFilePreview}
+        navigation={navigation}
       />
-      <PreviewSection
+      <OParlPreviewSection
         data={organization}
         header={meetingTexts.organization}
-        renderItem={renderOrganizationPreview}
+        navigation={navigation}
       />
-      <PreviewSection
+      <OParlPreviewSection
         data={participant}
         header={meetingTexts.participant}
-        renderItem={renderPersonPreview}
+        navigation={navigation}
       />
       <KeywordSection keyword={keyword} />
       <WebRepresentation

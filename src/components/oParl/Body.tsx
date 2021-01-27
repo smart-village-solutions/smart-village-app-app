@@ -3,30 +3,22 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
-import {
-  BodyData,
-  LegislativeTermPreviewData,
-  MeetingPreviewData,
-  OrganizationPreviewData,
-  PaperPreviewData,
-  PersonPreviewData
-} from '../../types';
+import { BodyData } from '../../types';
 import { PreviewSection } from '../PreviewSection';
 
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { WrapperHorizontal } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import {
-  LegislativeTermPreview,
-  LocationPreview,
-  MeetingPreview,
-  OrganizationPreview,
-  PaperPreview,
-  PersonPreview
-} from './previews';
+import { LocationPreview } from './previews';
 import { SystemPreview } from './previews/SystemPreview';
-import { ContactSection, KeywordSection, ModifiedSection, WebRepresentation } from './sections';
+import {
+  ContactSection,
+  KeywordSection,
+  ModifiedSection,
+  OParlPreviewSection,
+  WebRepresentation
+} from './sections';
 
 type Props = {
   data: BodyData;
@@ -87,41 +79,6 @@ export const Body = ({ data, navigation }: Props) => {
     [name, navigation, shortName]
   );
 
-  const renderLegislativeTermPreview = useCallback(
-    (data: LegislativeTermPreviewData, key: number) => (
-      <LegislativeTermPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderMeetingPreview = useCallback(
-    (data: MeetingPreviewData, key: number) => (
-      <MeetingPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderPaperPreview = useCallback(
-    (data: PaperPreviewData, key: number) => (
-      <PaperPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderOrganizationPreview = useCallback(
-    (data: OrganizationPreviewData, key: number) => (
-      <OrganizationPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderPersonPreview = useCallback(
-    (data: PersonPreviewData, key: number) => (
-      <PersonPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
   return (
     <WrapperHorizontal>
       <LineEntry left={bodyTexts.name} right={shortName ? `${shortName} (${name})` : name} />
@@ -133,22 +90,19 @@ export const Body = ({ data, navigation }: Props) => {
       )}
       <LineEntry left={bodyTexts.website} onPress={onPressWebsite} right={website} />
       <ContactSection contactEmail={contactEmail} contactName={contactName} />
-      <PreviewSection
+      <OParlPreviewSection
         data={legislativeTerm}
         header={bodyTexts.legislativeTerm}
-        renderItem={renderLegislativeTermPreview}
+        navigation={navigation}
       />
-      <PreviewSection data={meeting} header={bodyTexts.meeting} renderItem={renderMeetingPreview} />
-      <PreviewSection data={paper} header={bodyTexts.paper} renderItem={renderPaperPreview} />
-      <PreviewSection
+      <OParlPreviewSection data={meeting} header={bodyTexts.meeting} navigation={navigation} />
+      <OParlPreviewSection data={paper} header={bodyTexts.paper} navigation={navigation} />
+      <OParlPreviewSection
         data={organization}
         header={bodyTexts.organization}
-        renderItem={renderOrganizationPreview}
+        navigation={navigation}
       />
-      <PreviewSection data={person} header={bodyTexts.person} renderItem={renderPersonPreview} />
-      {/*
-        <PaperSection />
-      */}
+      <OParlPreviewSection data={person} header={bodyTexts.person} navigation={navigation} />
       <LineEntry left={bodyTexts.classification} right={classification} />
       <LineEntry left={bodyTexts.license} onPress={onPressLicense} right={license} />
       <LineEntry

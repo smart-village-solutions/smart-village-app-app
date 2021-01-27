@@ -2,13 +2,15 @@ import React, { useCallback } from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
-import { BodyPreviewData, SystemData, SystemPreviewData } from '../../types';
-import { PreviewSection } from '../PreviewSection';
+import { SystemData } from '../../types';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { BodyPreview } from './previews';
-import { SystemPreview } from './previews/SystemPreview';
-import { ContactSection, ModifiedSection, WebRepresentation } from './sections';
+import {
+  ContactSection,
+  ModifiedSection,
+  OParlPreviewSection,
+  WebRepresentation
+} from './sections';
 
 type Props = {
   data: SystemData;
@@ -55,34 +57,20 @@ export const System = ({ data, navigation }: Props) => {
     website
   ]);
 
-  const renderBodyPreview = useCallback(
-    (data: BodyPreviewData, key: number) => (
-      <BodyPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderSystemPreview = useCallback(
-    (data: SystemPreviewData, key: number) => (
-      <SystemPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
   return (
     <Wrapper>
       <LineEntry left={systemTexts.name} right={name} />
       <LineEntry left={systemTexts.oparlVersion} right={oparlVersion} />
       <LineEntry left={systemTexts.license} right={license} onPress={onPressLicense} />
-      <PreviewSection data={body} header={systemTexts.body} renderItem={renderBodyPreview} />
+      <OParlPreviewSection data={body} header={systemTexts.body} navigation={navigation} />
       <LineEntry left={systemTexts.product} right={product} onPress={onPressProduct} />
       <LineEntry left={systemTexts.vendor} right={vendor} onPress={onPressVendor} />
       <LineEntry left={systemTexts.website} right={website} onPress={onPressWebsite} />
       <ContactSection contactEmail={contactEmail} contactName={contactName} />
-      <PreviewSection
+      <OParlPreviewSection
         data={otherOparlVersion}
         header={systemTexts.otherOparlVersion}
-        renderItem={renderSystemPreview}
+        navigation={navigation}
       />
       <WebRepresentation name={name ?? systemTexts.system} navigation={navigation} web={web} />
       <ModifiedSection created={created} deleted={deleted} modified={modified} />

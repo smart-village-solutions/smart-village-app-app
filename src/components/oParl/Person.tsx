@@ -1,14 +1,18 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
-import { MembershipPreviewData, PersonData } from '../../types';
-import { PreviewSection } from '../PreviewSection';
+import { PersonData } from '../../types';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { BodyPreview, LocationPreview, MembershipPreview } from './previews';
-import { KeywordSection, ModifiedSection, WebRepresentation } from './sections';
+import { BodyPreview, LocationPreview } from './previews';
+import {
+  KeywordSection,
+  ModifiedSection,
+  OParlPreviewSection,
+  WebRepresentation
+} from './sections';
 
 type Props = {
   data: PersonData;
@@ -40,13 +44,6 @@ export const Person = ({ data, navigation }: Props) => {
     title,
     web
   } = data;
-
-  const renderMembershipPreview = useCallback(
-    (data: MembershipPreviewData, key: number) => (
-      <MembershipPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
 
   return (
     <Wrapper>
@@ -98,10 +95,10 @@ export const Person = ({ data, navigation }: Props) => {
           <BodyPreview data={body} navigation={navigation} />
         </>
       )}
-      <PreviewSection
+      <OParlPreviewSection
         data={membership}
         header={personTexts.membership}
-        renderItem={renderMembershipPreview}
+        navigation={navigation}
       />
       {!!life && (
         <>

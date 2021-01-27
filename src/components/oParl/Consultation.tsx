@@ -1,14 +1,13 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
-import { ConsultationData, OrganizationPreviewData } from '../../types';
-import { PreviewSection } from '../PreviewSection';
+import { ConsultationData } from '../../types';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
 import { AgendaItemPreview, MeetingPreview, OrganizationPreview, PaperPreview } from './previews';
-import { KeywordSection, WebRepresentation } from './sections';
+import { KeywordSection, OParlPreviewSection, WebRepresentation } from './sections';
 
 type Props = {
   data: ConsultationData;
@@ -19,13 +18,6 @@ const consultationTexts = texts.oparl.consultation;
 
 export const Consultation = ({ data, navigation }: Props) => {
   const { agendaItem, authoritative, keyword, meeting, organization, paper, role, web } = data;
-
-  const renderOrganization = useCallback(
-    (data: OrganizationPreviewData, key: number) => (
-      <OrganizationPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
 
   return (
     <Wrapper>
@@ -70,10 +62,10 @@ export const Consultation = ({ data, navigation }: Props) => {
             <OrganizationPreview data={organization[0]} navigation={navigation} />
           </>
         ) : (
-          <PreviewSection
+          <OParlPreviewSection
             data={organization}
-            renderItem={renderOrganization}
             header={consultationTexts.organizations}
+            navigation={navigation}
           />
         ))}
       <KeywordSection keyword={keyword} />

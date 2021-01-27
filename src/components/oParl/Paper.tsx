@@ -1,31 +1,19 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
-import {
-  ConsultationPreviewData,
-  FilePreviewData,
-  LocationPreviewData,
-  OrganizationPreviewData,
-  PaperData,
-  PaperPreviewData,
-  PersonPreviewData
-} from '../../types';
-import { PreviewSection } from '../PreviewSection';
+import { PaperData } from '../../types';
 import { BoldText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
+import { BodyPreview, FilePreview } from './previews';
 import {
-  BodyPreview,
-  ConsultationPreview,
-  FilePreview,
-  LocationPreview,
-  OrganizationPreview,
-  PaperPreview,
-  PersonPreview
-} from './previews';
-import { KeywordSection, ModifiedSection, WebRepresentation } from './sections';
+  KeywordSection,
+  ModifiedSection,
+  OParlPreviewSection,
+  WebRepresentation
+} from './sections';
 
 type Props = {
   data: PaperData;
@@ -58,48 +46,6 @@ export const Paper = ({ data, navigation }: Props) => {
     web
   } = data;
 
-  const renderConsultationPreview = useCallback(
-    (data: ConsultationPreviewData, key: number) => (
-      <ConsultationPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderFilePreview = useCallback(
-    (data: FilePreviewData, key: number) => (
-      <FilePreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderLocationPreview = useCallback(
-    (data: LocationPreviewData, key: number) => (
-      <LocationPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderOrganizationPreview = useCallback(
-    (data: OrganizationPreviewData, key: number) => (
-      <OrganizationPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderPaperPreview = useCallback(
-    (data: PaperPreviewData, key: number) => (
-      <PaperPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
-  const renderPersonPreview = useCallback(
-    (data: PersonPreviewData, key: number) => (
-      <PersonPreview data={data} key={key} navigation={navigation} />
-    ),
-    [navigation]
-  );
-
   return (
     <Wrapper>
       <LineEntry left={paperTexts.name} right={name} />
@@ -109,25 +55,26 @@ export const Paper = ({ data, navigation }: Props) => {
         left={paperTexts.date}
         right={date ? momentFormat(date.valueOf(), undefined, 'x') : undefined}
       />
-      <PreviewSection
+      <OParlPreviewSection
         data={consultation}
         header={paperTexts.consultation}
-        renderItem={renderConsultationPreview}
+        navigation={navigation}
+        additionalProps={{ withAgendaItem: true }}
       />
-      <PreviewSection
+      <OParlPreviewSection
         data={relatedPaper}
         header={paperTexts.relatedPaper}
-        renderItem={renderPaperPreview}
+        navigation={navigation}
       />
-      <PreviewSection
+      <OParlPreviewSection
         data={subordinatedPaper}
         header={paperTexts.subOrdinatedPaper}
-        renderItem={renderPaperPreview}
+        navigation={navigation}
       />
-      <PreviewSection
+      <OParlPreviewSection
         data={superordinatedPaper}
         header={paperTexts.superOrdinatedPaper}
-        renderItem={renderPaperPreview}
+        navigation={navigation}
       />
       {!!mainFile && (
         <>
@@ -135,31 +82,27 @@ export const Paper = ({ data, navigation }: Props) => {
           <FilePreview data={mainFile} navigation={navigation} />
         </>
       )}
-      <PreviewSection
+      <OParlPreviewSection
         data={auxiliaryFile}
         header={paperTexts.auxiliaryFile}
-        renderItem={renderFilePreview}
+        navigation={navigation}
       />
-      <PreviewSection
+      <OParlPreviewSection
         data={underDirectionOf}
         header={paperTexts.underDirectionOf}
-        renderItem={renderOrganizationPreview}
+        navigation={navigation}
       />
-      <PreviewSection
+      <OParlPreviewSection
         data={originatorPerson}
         header={paperTexts.originatorPerson}
-        renderItem={renderPersonPreview}
+        navigation={navigation}
       />
-      <PreviewSection
+      <OParlPreviewSection
         data={originatorOrganization}
         header={paperTexts.originatorOrganization}
-        renderItem={renderOrganizationPreview}
+        navigation={navigation}
       />
-      <PreviewSection
-        data={location}
-        header={paperTexts.location}
-        renderItem={renderLocationPreview}
-      />
+      <OParlPreviewSection data={location} header={paperTexts.location} navigation={navigation} />
       {!!body && (
         <>
           <BoldText>{paperTexts.body}</BoldText>
