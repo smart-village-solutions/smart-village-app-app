@@ -6,6 +6,7 @@ import {
   ConstructionSiteDetailScreen,
   ConstructionSiteOverviewScreen,
   DetailScreen,
+  FormScreen,
   HomeScreen,
   HtmlScreen,
   IndexScreen,
@@ -63,6 +64,12 @@ const AppStackNavigator = (headerRight = true) =>
       },
       Detail: {
         screen: DetailScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      Form: {
+        screen: FormScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', '')
         })
