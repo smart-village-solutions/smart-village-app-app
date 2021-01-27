@@ -159,7 +159,7 @@ export const HomeScreen = ({ navigation }) => {
           />
         }
       >
-        <HomeCarousel navigation={navigation} />
+        <HomeCarousel navigation={navigation} refreshing={refreshing} />
         <Widgets navigation={navigation} widgets={widgets} />
 
         {showNews &&
