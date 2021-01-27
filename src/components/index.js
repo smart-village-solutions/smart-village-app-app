@@ -17,6 +17,7 @@ export * from './HtmlView';
 export * from './Icon';
 export * from './Image';
 export * from './ImagesCarousel';
+export * from './ImagesCarouselItem';
 export * from './ImageTextList';
 export * from './Label';
 export * from './Link';
