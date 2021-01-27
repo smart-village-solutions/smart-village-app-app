@@ -1,61 +1,30 @@
 import PropTypes from 'prop-types';
 import Carousel from 'react-native-snap-carousel';
-import React, { useContext } from 'react';
-import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useCallback, useContext } from 'react';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { colors } from '../config';
-import { shareMessage } from '../helpers';
+import { imageWidth, shareMessage } from '../helpers';
 import { getQuery } from '../queries';
-import { Image } from './Image';
+import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
 import { OrientationContext } from '../OrientationProvider';
 
-const TouchableImage = ({ navigation, item, children }) => {
-  const { routeName, params } = item.picture;
-
-  return (
-    <TouchableOpacity
-      onPress={() =>
-        navigation.navigate({
-          routeName,
-          params
-        })
-      }
-      activeOpacity={0.8}
-    >
-      {children}
-    </TouchableOpacity>
-  );
-};
-
-TouchableImage.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  item: PropTypes.object.isRequired,
-  children: PropTypes.object.isRequired
-};
-
 export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) => {
-  const { orientation, dimensions } = useContext(OrientationContext);
+  const { dimensions } = useContext(OrientationContext);
+  const itemWidth = imageWidth();
 
-  // special image width for carousel, to be not full width on landscape
-  let itemWidth = dimensions.width;
-  const needLandscapeWidth = orientation === 'landscape';
+  const renderItem = useCallback(
+    ({ item }) => {
+      if (!item) return null;
 
-  if (needLandscapeWidth) {
-    // image width should be smaller than full width on landscape, so take the device height,
-    // which is the same as the device width in portrait
-    itemWidth = dimensions.height;
-  }
+      const { routeName, params } = item.picture || {};
 
-  const renderItem = ({ item }) => {
-    const { routeName, params } = item.picture;
-
-    if (routeName && params) {
       // params are available, but missing `shareContent` and `details`
       // -> we want to add `shareContent` and `details` to the `params`,
       // if we have `queryVariables` with an `id`
-      if (params.query && params.queryVariables && params.queryVariables.id) {
+      if (routeName && params?.query && params?.queryVariables?.id) {
         const id = params.queryVariables.id;
         const query = params.query;
 
@@ -85,38 +54,35 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
               };
 
               return (
-                <TouchableImage navigation={navigation} item={item}>
-                  <Image
-                    source={item.picture}
-                    containerStyle={styles.imageContainer}
-                    aspectRatio={aspectRatio}
-                  />
-                </TouchableImage>
+                <ImagesCarouselItem
+                  navigation={navigation}
+                  source={item.picture}
+                  containerStyle={styles.imageContainer}
+                  aspectRatio={aspectRatio}
+                />
               );
             }}
           </Query>
         );
-      } else {
-        return (
-          <TouchableImage navigation={navigation} item={item}>
-            <Image
-              source={item.picture}
-              containerStyle={styles.imageContainer}
-              aspectRatio={aspectRatio}
-            />
-          </TouchableImage>
-        );
       }
-    } else {
+
       return (
-        <Image
+        <ImagesCarouselItem
+          navigation={navigation}
           source={item.picture}
           containerStyle={styles.imageContainer}
           aspectRatio={aspectRatio}
         />
       );
-    }
-  };
+    },
+    [navigation, fetchPolicy, aspectRatio]
+  );
+
+  // if there is one entry in the data, we do not want to render a whole carousel, we than just
+  // need the one item to render
+  if (data.length === 1) {
+    return renderItem({ item: data[0] });
+  }
 
   return (
     <Carousel
