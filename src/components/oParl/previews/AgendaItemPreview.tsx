@@ -25,7 +25,7 @@ export const AgendaItemPreview = ({ data, navigation, withNumberAndTime }: Props
   return (
     <OParlItemPreview id={id} navigation={navigation}>
       <WrapperRow>
-        {withNumberAndTime && !!number && <RegularText>{number}</RegularText>}
+        {withNumberAndTime && !!number && <RegularText>{`${number} `}</RegularText>}
         <RegularText numberOfLines={1} primary>
           {name?.length ? name : texts.oparl.agendaItem.agendaItem}
         </RegularText>

@@ -1,8 +1,9 @@
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { WrapperRow } from '../Wrapper';
+import { WrapperRow, WrapperWrap } from '../Wrapper';
 
 type Props = {
   fullText?: boolean;
@@ -18,19 +19,29 @@ export const LineEntry = ({ fullText, left, lineThrough, onPress, right, selecta
     return null;
   }
 
+  const SelectedWrapper = fullText ? WrapperWrap : WrapperRow;
+
   const innerComponent = (
-    <WrapperRow>
+    <SelectedWrapper>
       <BoldText>{left}</BoldText>
-      <RegularText
-        numberOfLines={fullText ? undefined : 1}
-        lineThrough={lineThrough}
-        primary={!!onPress}
-        selectable={selectable}
-      >
-        {right}
-      </RegularText>
-    </WrapperRow>
+      <View style={styles.shrink}>
+        <RegularText
+          numberOfLines={fullText ? undefined : 1}
+          lineThrough={lineThrough}
+          primary={!!onPress}
+          selectable={selectable}
+        >
+          {right}
+        </RegularText>
+      </View>
+    </SelectedWrapper>
   );
 
   return onPress ? <Touchable onPress={onPress}>{innerComponent}</Touchable> : innerComponent;
 };
+
+const styles = StyleSheet.create({
+  shrink: {
+    flexShrink: 1
+  }
+});
