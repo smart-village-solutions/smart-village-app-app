@@ -18,6 +18,7 @@ import { matomoTrackingString } from '../../helpers';
 import { WebViewMap } from '../map/WebViewMap';
 import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
+import { TMBNotice } from '../TMB/Notice';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -193,6 +194,8 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
             />
           </View>
         )}
+
+        <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
       </WrapperWithOrientation>
     </View>
   );

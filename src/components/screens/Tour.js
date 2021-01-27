@@ -15,6 +15,7 @@ import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { matomoTrackingString } from '../../helpers';
+import { TMBNotice } from '../TMB/Notice';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -136,6 +137,8 @@ export const Tour = ({ data, navigation }) => {
             />
           </View>
         )}
+
+        <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
       </WrapperWithOrientation>
     </View>
   );

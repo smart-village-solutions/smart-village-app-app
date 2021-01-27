@@ -71,5 +71,8 @@ export const html = {
   iframe: {
     alignSelf: 'center',
     height: imageHeight(Dimensions.get('window').width)
+  },
+  em: {
+    fontFamily: 'titillium-web-italic'
   }
 };

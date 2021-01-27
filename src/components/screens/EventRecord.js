@@ -19,6 +19,7 @@ import { OpeningTimesCard } from './OpeningTimesCard';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { matomoTrackingString, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView } from '../../hooks';
+import { TMBNotice } from '../TMB/Notice';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
 // thx to: https://stackoverflow.com/a/55780430
@@ -216,6 +217,8 @@ export const EventRecord = ({ data, navigation }) => {
             />
           </View>
         )}
+
+        <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
       </WrapperWithOrientation>
     </View>
   );
