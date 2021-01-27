@@ -68,7 +68,7 @@ const contactView = (contact) => (
 );
 
 const mergeWebUrls = ({ webUrls, contact, contacts }) => {
-  const mergedWebUrls = [...webUrls];
+  const mergedWebUrls = webUrls ? [...webUrls] : [];
 
   // merge a `contact`s `webUrls` to `webUrls`
   if (contact?.webUrls?.length) {
