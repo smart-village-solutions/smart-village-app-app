@@ -120,7 +120,7 @@ export const HomeScreen = ({ navigation }) => {
     CATEGORIES_INDEX: {
       routeName: 'Index',
       params: {
-        title: 'Touren und Orte',
+        title: 'Orte und Touren',
         query: QUERY_TYPES.CATEGORIES,
         queryVariables: {},
         rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
