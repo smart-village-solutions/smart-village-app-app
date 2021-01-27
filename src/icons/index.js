@@ -10,6 +10,7 @@ export * from './heartEmpty';
 export * from './heartFilled';
 export * from './home';
 export * from './link';
+export * from './lunch';
 export * from './location';
 export * from './mail';
 export * from './phone';

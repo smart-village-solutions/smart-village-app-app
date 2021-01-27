@@ -2,6 +2,7 @@ export * from './About';
 export * from './EventRecord';
 export * from './HomeCarousel';
 export * from './InfoCard';
+export * from './LunchSection';
 export * from './NewsItem';
 export * from './OpeningTimesCard';
 export * from './OperatingCompanyInfo';

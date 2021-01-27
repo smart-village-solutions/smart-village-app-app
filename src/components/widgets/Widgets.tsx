@@ -5,6 +5,7 @@ import { ConstructionSiteWidget } from './ConstructionSiteWidget';
 import { EventWidget } from './EventWidget';
 import { WeatherWidget } from './WeatherWidget';
 import { WrapperRow } from '../Wrapper';
+import { LunchWidget } from './LunchWidget';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
@@ -16,6 +17,7 @@ const EXISTING_WIDGETS: {
 } = {
   constructionSite: ConstructionSiteWidget,
   event: EventWidget,
+  lunch: LunchWidget,
   weather: WeatherWidget
 };
 
@@ -30,6 +32,9 @@ export const Widgets = ({ navigation, widgets }: Props) => {
   const filteredWidgets = getExistingWidgets(widgets);
 
   if (!filteredWidgets?.length) return null;
+
+  // TODO: Remove and fix widget styling
+  filteredWidgets.reverse();
 
   const widgetComponents = filteredWidgets.map((Component, index) => {
     return <Component key={index} navigation={navigation} />;

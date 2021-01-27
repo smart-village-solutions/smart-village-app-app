@@ -10,6 +10,7 @@ import {
   HomeScreen,
   HtmlScreen,
   IndexScreen,
+  LunchScreen,
   SettingsScreen,
   WeatherScreen,
   WebScreen
@@ -88,6 +89,12 @@ const AppStackNavigator = (headerRight = true) =>
       },
       Index: {
         screen: IndexScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      Lunch: {
+        screen: LunchScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', '')
         })

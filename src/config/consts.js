@@ -47,6 +47,7 @@ export const consts = {
       HOME: 'Home',
       HTML: 'Content',
       MORE: 'More',
+      LUNCH: 'Lunch',
       NEWS_ITEMS: 'News',
       POINTS_OF_INTEREST_AND_TOURS: 'Points of interest and tours',
       POINTS_OF_INTEREST: 'Points of interest',
