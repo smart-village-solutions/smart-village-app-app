@@ -31,7 +31,7 @@ export const texts = {
     noBookmarksinCategory:
       'In dieser Kategorie wurden noch keine Einträge für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     noBookmarksYet:
-      'Es wurden noch keine Beiträge, Touren oder Orte für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
+      'Es wurden noch keine Beiträge, Orte oder Touren für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     showAll: 'Alle anzeigen'
   },
   categoryFilter: {
@@ -66,12 +66,12 @@ export const texts = {
   homeButtons: {
     events: 'Alle Veranstaltungen anzeigen',
     news: 'Alle Nachrichten anzeigen',
-    pointsOfInterest: 'Alle Touren und Orte anzeigen'
+    pointsOfInterest: 'Alle Orte und Touren anzeigen'
   },
   homeTitles: {
     about: 'Über die App',
     events: 'Veranstaltungen',
-    pointsOfInterest: 'Touren und Orte',
+    pointsOfInterest: 'Orte und Touren',
     service: 'Service',
     company: 'Städtische Unternehmen'
   },
@@ -128,7 +128,7 @@ export const texts = {
       eventRecordsTitle: 'Veranstaltungen',
       imageTextList: 'Liste mit kleinen Bildern',
       newsItemsTitle: 'Nachrichten',
-      pointsOfInterestAndToursTitle: 'Touren und Orte',
+      pointsOfInterestAndToursTitle: 'Orte und Touren',
       sectionTitle: 'Listen-Layouts',
       textList: 'Textliste'
     },
