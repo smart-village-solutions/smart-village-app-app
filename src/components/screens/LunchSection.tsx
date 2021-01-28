@@ -201,7 +201,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.darkText
+    borderColor: colors.darkText,
+    paddingVertical: normalize(4)
   },
   divider: {
     backgroundColor: colors.darkText
