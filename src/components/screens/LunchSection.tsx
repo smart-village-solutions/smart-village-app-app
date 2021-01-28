@@ -13,7 +13,10 @@ import { BoldText, RegularText } from '../Text';
 import { InfoBox, Wrapper } from '../Wrapper';
 
 type Props = {
-  lunchOffers: { name: string; price: string }[];
+  lunchOfferData: {
+    additionalText?: string;
+    lunchOffers?: { name: string; price: string }[];
+  };
   navigation: NavigationScreenProp<never>;
 };
 
@@ -110,6 +113,12 @@ const lunchOffersDummy = [
   { name: 'Best Day of Your Life Burger', price: '7 EUR' }
 ];
 
+const lunchOfferDummyData = {
+  additionalText:
+    'Auch in diesen schweren Zeiten sollt ihr die besten Burger bekommen. Bestellt einfach telefonisch und holt sie euch im Anschluss zur Wunschzeit ab!',
+  lunchOffers: lunchOffersDummy
+};
+
 const LunchOffer = ({ name, price }: { name: string; price: string }) => (
   <View style={styles.container}>
     <View style={styles.nameContainer}>
@@ -121,7 +130,9 @@ const LunchOffer = ({ name, price }: { name: string; price: string }) => (
   </View>
 );
 
-export const LunchSection = ({ lunchOffers = lunchOffersDummy, navigation }: Props) => {
+// eslint-disable-next-line complexity
+export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
+  const { additionalText, lunchOffers } = lunchOfferData ?? lunchOfferDummyData;
   const { addresses, contact, contacts, dataProvider, title } = data;
 
   const onPress = useCallback(
@@ -144,7 +155,7 @@ export const LunchSection = ({ lunchOffers = lunchOffersDummy, navigation }: Pro
     [navigation]
   );
 
-  if (!lunchOffers.length) {
+  if (!lunchOffers?.length && !additionalText?.length) {
     return null;
   }
 
@@ -181,10 +192,20 @@ export const LunchSection = ({ lunchOffers = lunchOffersDummy, navigation }: Pro
         </TouchableOpacity>
       )}
       <RegularText />
+      {!!additionalText && (
+        <>
+          <RegularText>{additionalText}</RegularText>
+          <RegularText />
+        </>
+      )}
+      {!!lunchOffers && (
+        <>
+          {lunchOffers.map((item, index) => (
+            <LunchOffer key={index} name={item.name} price={item.price} />
+          ))}
+        </>
+      )}
       <Divider style={styles.divider} />
-      {lunchOffers.map((item, index) => (
-        <LunchOffer key={index} name={item.name} price={item.price} />
-      ))}
     </Wrapper>
   );
 };
@@ -200,7 +221,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     justifyContent: 'space-between',
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderTopWidth: StyleSheet.hairlineWidth,
     borderColor: colors.darkText,
     paddingVertical: normalize(4)
   },
