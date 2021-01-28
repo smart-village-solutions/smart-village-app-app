@@ -5,7 +5,7 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { colors } from '../config';
-import { imageWidth, shareMessage } from '../helpers';
+import { imageWidth, isActive, shareMessage } from '../helpers';
 import { getQuery } from '../queries';
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
@@ -17,8 +17,6 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
 
   const renderItem = useCallback(
     ({ item }) => {
-      if (!item) return null;
-
       const { routeName, params } = item.picture || {};
 
       // params are available, but missing `shareContent` and `details`
@@ -80,15 +78,18 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
     [navigation, fetchPolicy, aspectRatio]
   );
 
+  // filter data for present items and items with active date/time periods
+  const carouselData = data.filter((item) => item && isActive(item));
+
   // if there is one entry in the data, we do not want to render a whole carousel, we than just
   // need the one item to render
-  if (data.length === 1) {
-    return renderItem({ item: data[0] });
+  if (carouselData.length === 1) {
+    return renderItem({ item: carouselData[0] });
   }
 
   return (
     <Carousel
-      data={data}
+      data={carouselData}
       renderItem={renderItem}
       sliderWidth={dimensions.width}
       itemWidth={itemWidth}

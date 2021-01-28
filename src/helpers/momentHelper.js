@@ -32,3 +32,76 @@ export const isUpcomingEvent = (eventDate) => {
   // "using day will check for year, month and day"
   return !moment(eventDate).isBefore(moment(), 'day');
 };
+
+const isDateActive = (now, dateStart, dateEnd) => {
+  const dateStartBeforeToday = moment(dateStart).startOf('day').isBefore(now, 'day');
+  const dateEndAfterToday = moment(dateEnd).endOf('day').isAfter(now, 'day');
+
+  if (
+    // active if only start date is present and smaller than current date
+    (dateStartBeforeToday && !dateEnd) ||
+    // active if only end date is present and bigger than current date
+    (!dateStart && dateEndAfterToday) ||
+    // active if current date is in between start date and end date
+    (dateStartBeforeToday && dateEndAfterToday)
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+const isTimeActive = (now, timeStart, timeEnd) => {
+  const timeStartBeforeNow = moment(timeStart, 'HH:mm').isBefore(now, 'HH:mm');
+  const timeEndAfterNow = moment(timeEnd, 'HH:mm').isAfter(now, 'HH:mm');
+
+  if (
+    // active if start time is present and smaller than current time
+    (timeStartBeforeNow && !timeEnd) ||
+    // active if end time is present and bigger than current time
+    (!timeStart && timeEndAfterNow) ||
+    // active if current time is in between start time and end time
+    (timeStartBeforeNow && timeEndAfterNow)
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ *
+ * Check date/time periods for being active compared to now.
+ *
+ * @param {object} item an object with `dates`
+ *
+ * @return {bool} true if today and now is in the date and time range of the item and also
+ * true if there are no `dates` information, because we want to show items without given
+ * `dates` data
+ */
+export const isActive = (item) => {
+  const { dates } = item;
+
+  if (dates?.length) {
+    let active = false;
+    const now = moment();
+
+    dates.forEach((date) => {
+      const { dateStart, dateEnd, timeStart, timeEnd } = date;
+
+      // examine the date period first, because it is more explicit than the time period
+      active = isDateActive(now, dateStart, dateEnd);
+
+      // th time period is checked, if there are no dates at all or if the date period is active
+      // and only if one of start time or end time is present
+      if (((!dateStart && !dateEnd) || active) && (timeStart || timeEnd)) {
+        // determine the time situation last, because it can depend on the date
+        active = isTimeActive(now, timeStart, timeEnd);
+      }
+    });
+
+    return active;
+  }
+
+  return true;
+};
