@@ -51,20 +51,20 @@ export const HomeCarousel = ({ navigation, refreshing }) => {
           );
         }
 
-        let carouselImages = [];
+        let homeCarouselData = [];
 
         try {
-          carouselImages = JSON.parse(data?.publicJsonFile?.content);
+          homeCarouselData = JSON.parse(data?.publicJsonFile?.content);
         } catch (error) {
           console.warn(error, data);
         }
 
-        if (!carouselImages || !carouselImages.length) return null;
+        if (!homeCarouselData || !homeCarouselData.length) return null;
 
         return (
           <ImagesCarousel
             navigation={navigation}
-            data={_shuffle(carouselImages)}
+            data={_shuffle(homeCarouselData)}
             fetchPolicy={fetchPolicy}
             aspectRatio={parsedImageAspectRatio(globalSettings?.homeCarousel?.imageAspectRatio)}
           />
