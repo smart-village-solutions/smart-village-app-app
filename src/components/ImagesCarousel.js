@@ -57,6 +57,7 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
                 <ImagesCarouselItem
                   navigation={navigation}
                   source={item.picture}
+                  message={item.message}
                   containerStyle={styles.imageContainer}
                   aspectRatio={aspectRatio}
                 />
@@ -70,6 +71,7 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
         <ImagesCarouselItem
           navigation={navigation}
           source={item.picture}
+          message={item.message}
           containerStyle={styles.imageContainer}
           aspectRatio={aspectRatio}
         />

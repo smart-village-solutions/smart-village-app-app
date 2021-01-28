@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { memo } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Image } from './Image';
@@ -10,26 +10,31 @@ import { Image } from './Image';
  *
  * @return {ReactElement} `Image` or an `Image` wrapped in a `TouchableOpacity`
  */
-export const ImagesCarouselItem = ({ navigation, source, containerStyle, aspectRatio }) => {
-  const { routeName, params } = source;
+export const ImagesCarouselItem = memo(
+  ({ navigation, source, message, containerStyle, aspectRatio }) => {
+    const { routeName, params } = source;
 
-  if (routeName && params) {
-    return (
-      <TouchableOpacity
-        onPress={() => navigation.navigate({ routeName, params })}
-        activeOpacity={0.8}
-      >
-        <Image {...{ source, containerStyle, aspectRatio }} />
-      </TouchableOpacity>
-    );
+    if (routeName && params) {
+      return (
+        <TouchableOpacity
+          onPress={() => navigation.navigate({ routeName, params })}
+          activeOpacity={0.8}
+        >
+          <Image {...{ source, message, containerStyle, aspectRatio }} />
+        </TouchableOpacity>
+      );
+    }
+
+    return <Image {...{ source, message, containerStyle, aspectRatio }} />;
   }
+);
 
-  return <Image {...{ source, containerStyle, aspectRatio }} />;
-};
+ImagesCarouselItem.displayName = 'ImagesCarouselItem';
 
 ImagesCarouselItem.propTypes = {
   navigation: PropTypes.object,
   source: PropTypes.object.isRequired,
+  message: PropTypes.string,
   containerStyle: PropTypes.object,
   aspectRatio: PropTypes.object
 };
