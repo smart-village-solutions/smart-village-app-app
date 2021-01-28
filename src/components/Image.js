@@ -7,10 +7,12 @@ import { Image as RNEImage } from 'react-native-elements';
 import { colors } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 import { SettingsContext } from '../SettingsProvider';
+import { ImageMessage } from './ImageMessage';
 import { ImageRights } from './ImageRights';
 
 export const Image = ({
   source,
+  message,
   style,
   containerStyle,
   PlaceholderContent,
@@ -54,6 +56,7 @@ export const Image = ({
         resizeMode={resizeMode}
         borderRadius={borderRadius}
       />
+      {!!message && <ImageMessage message={message} />}
       {globalSettings?.showImageRights && source?.copyright && (
         <ImageRights imageRights={source.copyright} />
       )}
@@ -80,6 +83,7 @@ const stylesForImage = (aspectRatio) => {
 
 Image.propTypes = {
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
+  message: PropTypes.string,
   containerStyle: PropTypes.object,
   style: PropTypes.object,
   PlaceholderContent: PropTypes.object,
