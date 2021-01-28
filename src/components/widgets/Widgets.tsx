@@ -33,16 +33,9 @@ export const Widgets = ({ navigation, widgets }: Props) => {
 
   if (!filteredWidgets?.length) return null;
 
-  // TODO: Remove and fix widget styling
-  filteredWidgets.reverse();
-
   const widgetComponents = filteredWidgets.map((Component, index) => {
     return <Component key={index} navigation={navigation} />;
   });
 
-  return (
-    <WrapperRow spaceBetween={filteredWidgets.length > 2} spaceAround={filteredWidgets.length <= 2}>
-      {widgetComponents}
-    </WrapperRow>
-  );
+  return <WrapperRow spaceAround>{widgetComponents}</WrapperRow>;
 };

@@ -80,6 +80,9 @@ export const texts = {
     categoryTitle: 'Nachrichten',
     categoryTitleDetail: 'Nachricht'
   },
+  lunch: {
+    noOffers: 'Für dieses Datum sind derzeit keine Angebote verfügbar.'
+  },
   navigationTitles: {
     home: 'Übersicht'
   },
@@ -105,7 +108,6 @@ export const texts = {
     company: appJson.expo.name,
     about: appJson.expo.name,
     constructionSite: 'Baustelle',
-    constructionSites: 'Baustellen',
     settings: 'Einstellungen',
     weather: 'Wetter'
   },
@@ -156,5 +158,11 @@ export const texts = {
     alertsHeadline: 'Wetterwarnungen',
     currentHeadline: 'Aktuelles Wetter',
     nextDaysHeadline: 'Wetter der nächsten Tage'
+  },
+  widgets: {
+    constructionSites: 'Baustellen',
+    events: 'Events',
+    lunch: 'Gastro',
+    weather: 'Wetter'
   }
 };

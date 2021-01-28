@@ -1,13 +1,9 @@
 import React, { useCallback } from 'react';
-import { StyleSheet } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { colors, normalize, texts } from '../../config';
+import { colors, texts } from '../../config';
 import { lunch } from '../../icons';
-import { Icon } from '../Icon';
-import { BoldText } from '../Text';
-import { Touchable } from '../Touchable';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { DefaultWidget } from './DefaultWidget';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
@@ -23,30 +19,16 @@ export const LunchWidget = ({ navigation }: Props) => {
   //   variables: queryVariables
   // });
 
-  const onPress = useCallback(
-    () => navigation.navigate('Lunch', { title: texts.homeTitles.lunch }),
-    [navigation]
-  );
+  const onPress = useCallback(() => navigation.navigate('Lunch', { title: texts.widgets.lunch }), [
+    navigation
+  ]);
 
   return (
-    <Touchable onPress={onPress}>
-      <Wrapper>
-        <WrapperRow center>
-          <Icon style={styles.icon} xml={lunch(colors.primary)} />
-          <BoldText primary big>
-            0
-          </BoldText>
-        </WrapperRow>
-        <BoldText primary small>
-          {texts.homeTitles.lunch}
-        </BoldText>
-      </Wrapper>
-    </Touchable>
+    <DefaultWidget
+      icon={lunch(colors.primary)}
+      number={0}
+      onPress={onPress}
+      text={texts.widgets.lunch}
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(8)
-  }
-});

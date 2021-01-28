@@ -1,20 +1,16 @@
 import moment from 'moment';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
-import { StyleSheet } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { colors, consts, normalize, texts } from '../../config';
+import { colors, consts, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
 import { calendar } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { Icon } from '../Icon';
-import { BoldText } from '../Text';
-import { Touchable } from '../Touchable';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { DefaultWidget } from './DefaultWidget';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
@@ -31,9 +27,10 @@ export const EventWidget = ({ navigation }: Props) => {
     dateRange: [currentDate, currentDate]
   };
 
-  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
+  const { data, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
     fetchPolicy,
-    variables: queryVariables
+    variables: queryVariables,
+    skip: !refreshTime
   });
 
   const onPress = useCallback(() => {
@@ -50,24 +47,11 @@ export const EventWidget = ({ navigation }: Props) => {
   const eventCount = data?.eventRecords?.length;
 
   return (
-    <Touchable onPress={onPress}>
-      <Wrapper>
-        <WrapperRow center>
-          <Icon style={styles.icon} xml={calendar(colors.primary)} />
-          <BoldText primary big>
-            {loading ? ' ' : eventCount}
-          </BoldText>
-        </WrapperRow>
-        <BoldText primary small>
-          {texts.homeTitles.events}
-        </BoldText>
-      </Wrapper>
-    </Touchable>
+    <DefaultWidget
+      icon={calendar(colors.primary)}
+      number={eventCount}
+      onPress={onPress}
+      text={texts.widgets.events}
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(8)
-  }
-});

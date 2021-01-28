@@ -1,9 +1,8 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
-import { StyleSheet } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { colors, normalize, texts } from '../../config';
+import { colors, texts } from '../../config';
 import { ConstructionSiteContext } from '../../ConstructionSiteProvider';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
@@ -11,10 +10,7 @@ import { constructionSite } from '../../icons';
 import { filterForValidConstructionSites } from '../../jsonValidation';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { Icon } from '../Icon';
-import { BoldText } from '../Text';
-import { Touchable } from '../Touchable';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { DefaultWidget } from './DefaultWidget';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
@@ -47,24 +43,11 @@ export const ConstructionSiteWidget = ({ navigation }: Props) => {
   }, [data, setConstructionSites]);
 
   return (
-    <Touchable onPress={onPress}>
-      <Wrapper>
-        <WrapperRow center>
-          <Icon style={styles.icon} xml={constructionSite(colors.primary)} />
-          <BoldText primary big>
-            {constructionSites.length}
-          </BoldText>
-        </WrapperRow>
-        <BoldText primary small>
-          {texts.screenTitles.constructionSites}
-        </BoldText>
-      </Wrapper>
-    </Touchable>
+    <DefaultWidget
+      icon={constructionSite(colors.primary)}
+      number={constructionSites.length}
+      onPress={onPress}
+      text={texts.widgets.constructionSites}
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(8)
-  }
-});

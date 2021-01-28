@@ -60,7 +60,7 @@ const AppStackNavigator = (headerRight = true) =>
       ConstructionSiteOverview: {
         screen: ConstructionSiteOverviewScreen,
         navigationOptions: () => ({
-          title: texts.screenTitles.constructionSites
+          title: texts.widgets.constructionSites
         })
       },
       Detail: {
