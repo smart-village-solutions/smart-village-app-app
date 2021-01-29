@@ -134,13 +134,11 @@ const styles = StyleSheet.create({
   },
   iconLeft: {
     paddingLeft: normalize(14),
-    paddingRight: normalize(7),
-    paddingVertical: normalize(4)
+    paddingRight: normalize(7)
   },
   iconRight: {
     paddingLeft: normalize(7),
-    paddingRight: normalize(14),
-    paddingVertical: normalize(4)
+    paddingRight: normalize(14)
   }
 });
 

@@ -16,7 +16,7 @@ export const Icon = ({ xml, width, height, name, size, focused, iconColor, style
   const color = iconColor || (focused ? colors.accent : colors.primary);
 
   return (
-    <View style={style}>
+    <View style={style} hitSlop={{ top: 12, bottom: 12 }}>
       {xml && <SvgXml xml={xml} width={width} height={height} style={iconStyle} />}
       {name && <Ionicons name={name} size={size} color={color} style={iconStyle} />}
     </View>
