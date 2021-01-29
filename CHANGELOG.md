@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.5.4]
+
+Time and day dependent slider elements and smaller adjustments
+
+### Added
+
+- added time control for images carousel items
+- added rendering of an items message onto an image in the images carousel
+- added Form to AppStackNavigator to be able to navigate to the form screen with drawer mode apps
+- added a notice at the bottom of TMB contents
+- added missing `refreshing` prop from home screen to force refetch of data
+
+### Changed
+
+- created a method to merge all available web urls to render in `InfoCard` for events,
+  points of interest and tours
+  - added a check for descriptions starting with "url" because we do not want to present web urls
+    behind an "url" or "urlInformation" or "urlVideo" or "urlVideoPreview"
+    - in that case, we render the just the `url` instead of the `description`
+- switched the sections for the list on the category list screen, to have points of interest
+  first and tours last
+- renamed every "Touren und/oder Orte" to "Orte und/oder Touren" because we show them in that order
+  on the category screen now
+- optimized code for carousel items
+
 ## [v1.5.3]
 
 Fixes for Image renderings and safe-area-insets concerning new devices
