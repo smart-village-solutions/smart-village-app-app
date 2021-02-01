@@ -28,6 +28,13 @@ export const isGeoLocationOrUndefined = (
   );
 };
 
+export const isNumberArray = (value: unknown): value is number[] => {
+  if (_isArray(value)) {
+    return value.reduce((accumulated, current) => accumulated && typeof current === 'number', true);
+  }
+  return false;
+};
+
 export const isStringArrayOrUndefined = (value: unknown): value is string[] | undefined => {
   if (value === undefined) return true;
 

@@ -162,7 +162,7 @@ export type LocationData = {
   bodies?: BodyPreviewData[];
   created?: Date;
   description?: string;
-  geoJson?: any; // https://en.wikipedia.org/wiki/GeoJSON
+  geoJson?: unknown; // https://en.wikipedia.org/wiki/GeoJSON
   keyword?: string[];
   meeting?: MeetingPreviewData[];
   modified?: Date;

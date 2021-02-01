@@ -1,8 +1,12 @@
 import React from 'react';
+import { MapMarker } from 'react-native-webview-leaflet';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { texts } from '../../config';
+import { colors, texts } from '../../config';
+import { location, locationIconAnchor } from '../../icons';
+import { isFeature, isFeatureCollection, isMultiPoint, isPoint } from '../../jsonValidation';
 import { LocationData } from '../../types';
+import { WebViewMap } from '../map';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
@@ -20,13 +24,50 @@ type Props = {
 
 const locationTexts = texts.oparl.location;
 
+const getMapMarkers = (geoJson: unknown): MapMarker[] => {
+  if (isPoint(geoJson) && geoJson.coordinates.length > 1) {
+    return [
+      {
+        icon: location(colors.primary),
+        iconAnchor: locationIconAnchor,
+        position: {
+          lat: geoJson.coordinates[1],
+          lng: geoJson.coordinates[0]
+        }
+      }
+    ];
+  } else if (isMultiPoint(geoJson) && geoJson.coordinates.length) {
+    const { coordinates } = geoJson;
+
+    return coordinates
+      .filter((entry) => entry.length > 1)
+      .map((entry) => ({
+        icon: location(colors.primary),
+        iconAnchor: locationIconAnchor,
+        position: {
+          lat: entry[1],
+          lng: entry[0]
+        }
+      }));
+  } else if (isFeature(geoJson)) {
+    return getMapMarkers(geoJson.geometry);
+  } else if (isFeatureCollection(geoJson)) {
+    return geoJson.features.reduce(
+      (accumulated: MapMarker[], current) => accumulated.concat(getMapMarkers(current)),
+      []
+    );
+  } else {
+    return [];
+  }
+};
+
 export const Location = ({ data, navigation }: Props) => {
   const {
     bodies,
     created,
     deleted,
     description,
-    // TODO: geoJson,
+    geoJson,
     keyword,
     locality,
     meeting,
@@ -52,8 +93,11 @@ export const Location = ({ data, navigation }: Props) => {
     localityString = subLocality;
   }
 
+  const mapMarkers = getMapMarkers(geoJson);
+
   return (
     <Wrapper>
+      {!!mapMarkers.length && <WebViewMap locations={mapMarkers} />}
       <>
         <BoldText>{locationTexts.streetAddress}</BoldText>
         <RegularText>{streetAddress}</RegularText>
