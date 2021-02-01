@@ -187,7 +187,7 @@ export type MeetingData = {
   deleted?: boolean;
   end?: Date;
   invitation?: FilePreviewData;
-  keyword: string[];
+  keyword?: string[];
   location?: LocationPreviewData;
   meetingState?: string;
   modified?: Date;
