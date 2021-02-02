@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { normalize } from '../../config';
 import { Icon } from '../Icon';
 import { BoldText, RegularText } from '../Text';
-import { Touchable } from '../Touchable';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 
 export const DefaultWidget = ({ icon, count, onPress, text }: Props) => {
   return (
-    <Touchable onPress={onPress}>
+    <TouchableOpacity onPress={onPress}>
       <WrapperVertical style={styles.container}>
         <WrapperRow center>
           <Icon style={styles.icon} xml={icon} />
@@ -28,7 +28,7 @@ export const DefaultWidget = ({ icon, count, onPress, text }: Props) => {
           {text}
         </RegularText>
       </WrapperVertical>
-    </Touchable>
+    </TouchableOpacity>
   );
 };
 

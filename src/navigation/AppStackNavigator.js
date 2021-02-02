@@ -59,8 +59,8 @@ const AppStackNavigator = (headerRight = true) =>
       },
       ConstructionSiteOverview: {
         screen: ConstructionSiteOverviewScreen,
-        navigationOptions: () => ({
-          title: texts.widgets.constructionSites
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', texts.widgets.constructionSites)
         })
       },
       Detail: {
@@ -96,7 +96,7 @@ const AppStackNavigator = (headerRight = true) =>
       Lunch: {
         screen: LunchScreen,
         navigationOptions: (props) => ({
-          title: props.navigation.getParam('title', '')
+          title: props.navigation.getParam('title', texts.widgets.lunch)
         })
       },
       Settings: {
@@ -107,8 +107,8 @@ const AppStackNavigator = (headerRight = true) =>
       },
       Weather: {
         screen: WeatherScreen,
-        navigationOptions: () => ({
-          title: texts.screenTitles.weather
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', texts.screenTitles.weather)
         })
       },
       Web: {

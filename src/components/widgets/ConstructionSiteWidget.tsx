@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, texts } from '../../config';
 import { ConstructionSiteContext } from '../../ConstructionSiteProvider';
@@ -10,13 +9,10 @@ import { constructionSite } from '../../icons';
 import { filterForValidConstructionSites } from '../../jsonValidation';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
+import { WidgetProps } from '../../types';
 import { DefaultWidget } from './DefaultWidget';
 
-type Props = {
-  navigation: NavigationScreenProp<never>;
-};
-
-export const ConstructionSiteWidget = ({ navigation }: Props) => {
+export const ConstructionSiteWidget = ({ navigation, text }: WidgetProps) => {
   const { constructionSites, setConstructionSites } = useContext(ConstructionSiteContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
@@ -28,7 +24,9 @@ export const ConstructionSiteWidget = ({ navigation }: Props) => {
   });
 
   const onPress = useCallback(() => {
-    navigation.navigate('ConstructionSiteOverview');
+    navigation.navigate('ConstructionSiteOverview', {
+      title: text ?? texts.widgets.constructionSites
+    });
   }, [constructionSites, navigation]);
 
   useHomeRefresh(refetch);
@@ -47,7 +45,7 @@ export const ConstructionSiteWidget = ({ navigation }: Props) => {
       icon={constructionSite(colors.primary)}
       count={constructionSites.length}
       onPress={onPress}
-      text={texts.widgets.constructionSites}
+      text={text ?? texts.widgets.constructionSites}
     />
   );
 };

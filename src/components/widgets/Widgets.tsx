@@ -6,14 +6,22 @@ import { EventWidget } from './EventWidget';
 import { WeatherWidget } from './WeatherWidget';
 import { WrapperRow } from '../Wrapper';
 import { LunchWidget } from './LunchWidget';
+import { WidgetProps } from '../../types';
+
+type WidgetConfig =
+  | {
+      widgetName: string;
+      text?: string;
+    }
+  | string;
 
 type Props = {
   navigation: NavigationScreenProp<never>;
-  widgets?: string[];
+  widgetConfigs?: WidgetConfig[];
 };
 
 const EXISTING_WIDGETS: {
-  [key: string]: React.FC<{ navigation: NavigationScreenProp<never> }>;
+  [key: string]: React.FC<WidgetProps> | undefined;
 } = {
   constructionSite: ConstructionSiteWidget,
   event: EventWidget,
@@ -21,21 +29,25 @@ const EXISTING_WIDGETS: {
   weather: WeatherWidget
 };
 
-const getExistingWidgets = (widgets: string[]) => {
-  const existingWidgets = widgets.map((widget) => EXISTING_WIDGETS[widget]);
-  return existingWidgets.filter((item) => item !== undefined);
-};
+export const Widgets = ({ navigation, widgetConfigs }: Props) => {
+  if (!widgetConfigs) return null;
 
-export const Widgets = ({ navigation, widgets }: Props) => {
-  if (!widgets) return null;
+  const widgetComponents = widgetConfigs.map((widgetConfig, index) => {
+    const widgetName = typeof widgetConfig === 'string' ? widgetConfig : widgetConfig.widgetName;
+    const widgetText = typeof widgetConfig === 'string' ? undefined : widgetConfig.text;
 
-  const filteredWidgets = getExistingWidgets(widgets);
+    const Component = EXISTING_WIDGETS[widgetName];
 
-  if (!filteredWidgets?.length) return null;
+    if (!Component) {
+      return null;
+    }
 
-  const widgetComponents = filteredWidgets.map((Component, index) => {
-    return <Component key={index} navigation={navigation} />;
+    return <Component key={index} navigation={navigation} text={widgetText} />;
   });
 
-  return <WrapperRow spaceAround>{widgetComponents}</WrapperRow>;
+  const filteredWidgetComponents = widgetComponents.filter((component) => !!component);
+
+  if (!filteredWidgetComponents.length) return null;
+
+  return <WrapperRow spaceAround>{filteredWidgetComponents}</WrapperRow>;
 };

@@ -1,7 +1,6 @@
 import moment from 'moment';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, consts, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
@@ -10,16 +9,12 @@ import { useHomeRefresh } from '../../hooks/HomeRefresh';
 import { lunch } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
+import { WidgetProps } from '../../types';
 import { DefaultWidget } from './DefaultWidget';
 
-type Props = {
-  navigation: NavigationScreenProp<never>;
-};
-
-export const LunchWidget = ({ navigation }: Props) => {
+export const LunchWidget = ({ navigation, text }: WidgetProps) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const refreshTime = useRefreshTime('lunch-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
-
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
   const currentDate = moment().format('YYYY-MM-DD');
@@ -36,16 +31,17 @@ export const LunchWidget = ({ navigation }: Props) => {
 
   useHomeRefresh(refetch);
 
-  const onPress = useCallback(() => navigation.navigate('Lunch', { title: texts.widgets.lunch }), [
-    navigation
-  ]);
+  const onPress = useCallback(
+    () => navigation.navigate('Lunch', { title: text ?? texts.widgets.lunch }),
+    [navigation]
+  );
 
   return (
     <DefaultWidget
       icon={lunch(colors.primary)}
       count={data?.[QUERY_TYPES.LUNCHES]?.length}
       onPress={onPress}
-      text={texts.widgets.lunch}
+      text={text ?? texts.widgets.lunch}
     />
   );
 };
