@@ -12,7 +12,7 @@ type Props = {
 
 const { modifiedSection } = texts.oparl;
 
-const formatDate = (date: Date) => momentFormat(date.valueOf(), 'DD.MM.YYYY HH:mm:ss Uhr', 'x');
+const formatDate = (date: Date) => momentFormat(date.valueOf(), 'DD.MM.YYYY HH:mm:ss [Uhr]', 'x');
 
 export const ModifiedSection = ({ created, modified, deleted }: Props) => {
   if (!created && !modified) {

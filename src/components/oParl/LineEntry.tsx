@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { normalize } from '../../config';
 
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
@@ -22,7 +23,7 @@ export const LineEntry = ({ fullText, left, lineThrough, onPress, right, selecta
   const SelectedWrapper = fullText ? WrapperWrap : WrapperRow;
 
   const innerComponent = (
-    <SelectedWrapper>
+    <SelectedWrapper style={styles.marginTop}>
       <BoldText>{left}</BoldText>
       <View style={styles.shrink}>
         <RegularText
@@ -43,5 +44,8 @@ export const LineEntry = ({ fullText, left, lineThrough, onPress, right, selecta
 const styles = StyleSheet.create({
   shrink: {
     flexShrink: 1
+  },
+  marginTop: {
+    marginTop: normalize(12)
   }
 });

@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
+import { normalize } from '../../../config';
 
 import { OParlObjectPreviewData, OParlObjectType } from '../../../types';
 import { PreviewSection } from '../../PreviewSection';
@@ -22,6 +24,7 @@ type Props = {
   additionalProps?: {
     withAgendaItem?: boolean;
     withNumberAndTime?: boolean;
+    withPerson?: boolean;
   };
   data?: OParlObjectPreviewData[];
   header: JSX.Element | string;
@@ -32,6 +35,7 @@ type PreviewProps = {
   additionalProps?: {
     withAgendaItem?: boolean;
     withNumberAndTime?: boolean;
+    withPerson?: boolean;
   };
   data: OParlObjectPreviewData;
   navigation: NavigationScreenProp<never>;
@@ -67,7 +71,13 @@ const PreviewComponent = ({ additionalProps, data, navigation }: PreviewProps) =
     case OParlObjectType.Meeting:
       return <MeetingPreview data={data} navigation={navigation} />;
     case OParlObjectType.Membership:
-      return <MembershipPreview data={data} navigation={navigation} />;
+      return (
+        <MembershipPreview
+          data={data}
+          navigation={navigation}
+          withPerson={additionalProps?.withPerson}
+        />
+      );
     case OParlObjectType.Organization:
       return <OrganizationPreview data={data} navigation={navigation} />;
     case OParlObjectType.Paper:
@@ -96,5 +106,15 @@ export const OParlPreviewSection = ({ additionalProps, data, header, navigation 
     [navigation]
   );
 
-  return <PreviewSection data={data} header={header} renderItem={renderPreview} />;
+  return (
+    <View style={styles.marginTop}>
+      <PreviewSection data={data} header={header} renderItem={renderPreview} />
+    </View>
+  );
 };
+
+const styles = StyleSheet.create({
+  marginTop: {
+    marginTop: normalize(12)
+  }
+});

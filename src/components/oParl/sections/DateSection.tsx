@@ -18,7 +18,7 @@ export const DateSection = ({ endDate, startDate, withTime }: Props) => {
     return null;
   }
 
-  const formatString = withTime ? 'DD.MM.YYYY HH:mm:ss Uhr' : 'DD.MM.YYYY';
+  const formatString = withTime ? 'DD.MM.YYYY HH:mm:ss [Uhr]' : 'DD.MM.YYYY';
 
   const now = new Date().valueOf();
   const alreadyEnded = (endDate?.valueOf() || 0) < now;

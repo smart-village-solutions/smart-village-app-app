@@ -87,7 +87,7 @@ export const Organization = ({ data, navigation }: Props) => {
       <LineEntry left={organizationTexts.organizationType} right={organizationType} />
       {!!post?.length && (
         <>
-          <BoldText>{organizationTexts.externalBody}</BoldText>
+          <BoldText>{organizationTexts.post}</BoldText>
           <RegularText>{post.join(', ')}</RegularText>
         </>
       )}
@@ -104,8 +104,9 @@ export const Organization = ({ data, navigation }: Props) => {
         navigation={navigation}
       />
       <OParlPreviewSection
+        additionalProps={{ withPerson: true }}
         data={membership}
-        header={organizationTexts.meeting}
+        header={organizationTexts.membership}
         navigation={navigation}
       />
       <DateSection endDate={endDate} startDate={startDate} />

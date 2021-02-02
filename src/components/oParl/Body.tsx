@@ -8,7 +8,7 @@ import { PreviewSection } from '../PreviewSection';
 
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { WrapperHorizontal } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
 import { LocationPreview } from './previews';
 import { SystemPreview } from './previews/SystemPreview';
@@ -80,7 +80,7 @@ export const Body = ({ data, navigation }: Props) => {
   );
 
   return (
-    <WrapperHorizontal>
+    <Wrapper>
       <LineEntry left={bodyTexts.name} right={shortName ? `${shortName} (${name})` : name} />
       {!!location && (
         <>
@@ -135,6 +135,6 @@ export const Body = ({ data, navigation }: Props) => {
       <KeywordSection keyword={keyword} />
       <WebRepresentation name={name ?? bodyTexts.body} navigation={navigation} web={web} />
       <ModifiedSection created={created} deleted={deleted} modified={modified} />
-    </WrapperHorizontal>
+    </Wrapper>
   );
 };

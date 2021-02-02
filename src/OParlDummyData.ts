@@ -7,6 +7,7 @@ import {
   LocationData,
   MeetingData,
   MembershipData,
+  OParlObjectData,
   OParlObjectType,
   OrganizationData,
   PaperData,
@@ -133,7 +134,7 @@ const S1: SystemData = {
 
 AI1.auxilaryFile = [F1, F2];
 AI1.consultation = C1;
-AI1.end = new Date('14:00');
+AI1.end = new Date('2020-01-19T14:00');
 AI1.keyword = ['First', 'Important'];
 AI1.meeting = M1;
 AI1.name = 'Lunch';
@@ -142,28 +143,26 @@ AI1.public = false;
 AI1.resolutionFile = F1;
 AI1.resolutionText = 'Was Tasty';
 AI1.result = 'Empty plate.';
-AI1.start = new Date('12:00');
+AI1.start = new Date('2020-01-19T12:00');
 AI1.web = 'amazingBurgersEvery.where';
 
 AI2.id = 'AI2';
 AI2.type = OParlObjectType.AgendaItem;
-AI2.keyword = ['First', 'Important'];
+AI2.keyword = ['Second', 'Important'];
 AI2.meeting = M1;
 AI2.name = 'Dinner';
 AI2.number = '2.';
-AI2.resolutionText = 'Was Tasty';
 AI2.result = 'Empty plate.';
-AI2.start = new Date('17:45');
+AI2.start = new Date('2020-01-19T17:45');
 
 AI3.id = 'AI3';
 AI3.type = OParlObjectType.AgendaItem;
 AI3.keyword = ['Trial', 'Important'];
 AI3.meeting = M2;
-AI3.name = 'Dinner';
-AI3.number = '2.';
+AI3.number = 'I.';
 AI3.resolutionText = 'Judged as guilty.';
 AI3.result = 'Exiled Ganon.';
-AI3.start = new Date('17:45');
+AI3.start = new Date('2020-01-19T12:00');
 
 B1.legislativeTerm = [LT1];
 B1.meeting = [M1, M2];
@@ -182,7 +181,7 @@ B1.license = 'OpenTriforce';
 B1.licenseValidSince = new Date('February 21, 1986');
 B1.location = L1;
 B1.shortName = 'Hyrulers';
-B1.oparlSince = new Date();
+B1.oparlSince = new Date('February 21, 1986');
 B1.system = S1;
 B1.website = 'https://en.wikipedia.org/wiki/The_Legend_of_Zelda';
 
@@ -225,7 +224,7 @@ F2.accessUrl = 'access.me';
 F2.id = 'F2';
 F2.type = OParlObjectType.File;
 F2.meeting = [M2];
-F2.name = 'Trial= Ganon';
+F2.name = 'Trial: Ganon';
 F2.sha1Checksum = '42';
 F2.size = 13371337;
 F2.text = 'Judgement= Repeated defeat by hero.';
@@ -255,32 +254,29 @@ M1.created = new Date('2020-01-01');
 M1.deleted = true;
 M1.invitation = F1;
 M1.location = L1;
-M1.end = new Date('20:00');
+M1.end = new Date('2020-01-19T20:00');
 M1.meetingState = 'cancelled';
-M1.modified = new Date('2020-01-21');
+M1.modified = new Date('2020-01-19');
 M1.name = 'Eating like the princess.';
 M1.organization = [O1];
 M1.participant = [Pe1, Pe2];
 M1.resultsProtocol = F2;
-M1.start = new Date('12:00');
+M1.start = new Date('2020-01-19T12:00');
 M1.verbatimProtocol = F2;
 
 M2.id = 'M2';
 M2.type = OParlObjectType.Meeting;
 M2.agendaItem = [AI3];
 M2.auxiliaryFile = [F2];
-M2.cancelled = true;
-M2.created = new Date('08:00');
-M2.deleted = true;
+M2.created = new Date('2020-01-19');
 M2.invitation = F2;
 M2.location = L1;
-M2.modified = new Date('2020-01-21');
 // eslint-disable-next-line prettier/prettier
 M2.name= 'Ganon\'s trial.';
 M2.organization = [O1];
 M2.participant = [Pe1, Pe4];
 M2.resultsProtocol = F2;
-M2.start = new Date('12:00');
+M2.start = new Date('2020-01-19T12:00');
 M2.verbatimProtocol = F2;
 
 Me1.id = 'Me1';
@@ -386,17 +382,29 @@ Pe4.givenName = 'Ganon';
 Pe4.title = ['Calamity'];
 
 // TODO: Remove
-export const DummyData = {
-  [OParlObjectType.AgendaItem]: AI1,
-  [OParlObjectType.Body]: B1,
-  [OParlObjectType.Consultation]: C1,
-  [OParlObjectType.File]: F1,
-  [OParlObjectType.LegislativeTerm]: LT1,
-  [OParlObjectType.Location]: L1,
-  [OParlObjectType.Meeting]: M1,
-  [OParlObjectType.Membership]: Me1,
-  [OParlObjectType.Organization]: O1,
-  [OParlObjectType.Paper]: Pa1,
-  [OParlObjectType.Person]: Pe1,
-  [OParlObjectType.System]: S1
-};
+export const DummyData: OParlObjectData[] = [
+  AI1,
+  AI2,
+  AI3,
+  B1,
+  C1,
+  F1,
+  F2,
+  F2,
+  L1,
+  LT1,
+  M1,
+  M2,
+  Me1,
+  Me2,
+  Me3,
+  Me4,
+  O1,
+  O2,
+  Pa1,
+  Pe1,
+  Pe2,
+  Pe3,
+  Pe4,
+  S1
+];

@@ -238,6 +238,7 @@ export const texts = {
       externalBody: 'Entspricht der Körperschaft: ',
       location: 'Ort: ',
       meeting: 'Sitzungen: ',
+      membership: 'Mitgliedschaften',
       name: 'Name: ',
       organization: 'Gruppierung: ',
       organizationType: 'Kategorie: ',

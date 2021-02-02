@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { HeaderLeft, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
+import { HeaderLeft, RegularText, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
 import {
   AgendaItem,
   Body,
@@ -17,49 +17,12 @@ import {
   Person,
   System
 } from '../components/oParl';
-import { FileData, OParlObjectData, OParlObjectType } from '../types';
+import { DummyData } from '../OParlDummyData';
+import { OParlObjectData, OParlObjectType } from '../types';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
 };
-
-const startDate = new Date();
-startDate.setFullYear(2022);
-
-const endDate = new Date();
-endDate.setFullYear(2048);
-
-//---------------------------- DUMMY DATA -------------------------------------
-
-// const data: OParlObjectData = {
-//   type: OParlObjectType.LegislativeTerm,
-//   body: { id: 'asd', name: 'LookAtMyBody' },
-//   endDate,
-//   startDate,
-//   keyword: ['moon', 'emoji'],
-//   name: 'The force will be with you. Always.',
-//   web: 'https://github.com/digorath'
-// };
-
-const moreDummyFileData: ({ id: string } & FileData)[] = [];
-const data: { id: string } & FileData = {
-  id: 'asd',
-  accessUrl: 'accsessURL',
-  type: OParlObjectType.File,
-  date: new Date(),
-  derivativeFile: moreDummyFileData,
-  size: 12345678,
-  // name: 'NAme',
-  fileName: 'filename',
-  mimeType: 'pdf'
-};
-
-moreDummyFileData.push(data);
-moreDummyFileData.push(data);
-moreDummyFileData.push(data);
-moreDummyFileData.push(data);
-
-//------------------------ END OF DUMMY DATA ----------------------------------
 
 // eslint-disable-next-line complexity
 const getComponent = (data: OParlObjectData, navigation: NavigationScreenProp<never>) => {
@@ -96,9 +59,14 @@ const getComponent = (data: OParlObjectData, navigation: NavigationScreenProp<ne
 
 export const OParlDetailScreen = ({ navigation }: Props) => {
   // const oparlType = navigation.getParam('OParlType');
-  // const id = navigation.getParam('id');
+  const id = navigation.getParam('id');
 
   // const { data } = useQuery(getoparlquerywithparamsandstuff)
+
+  const data = DummyData.find((item) => item.id === (id ?? 'S1'));
+
+  // TODO: proper fallback
+  if (!data) return <RegularText>Unknown Id</RegularText>;
 
   return (
     <SafeAreaViewFlex>
