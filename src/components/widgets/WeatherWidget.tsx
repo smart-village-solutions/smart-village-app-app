@@ -1,21 +1,21 @@
 import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { consts, normalize, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
+import { WidgetProps } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
-import { Touchable } from '../Touchable';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 const { POLL_INTERVALS } = consts;
 
-export const WeatherWidget = ({ navigation }: { navigation: NavigationScreenProp<never> }) => {
+export const WeatherWidget = ({ navigation, text }: WidgetProps) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const queryVariables =
@@ -30,8 +30,8 @@ export const WeatherWidget = ({ navigation }: { navigation: NavigationScreenProp
   useHomeRefresh(refetch);
 
   return (
-    <Touchable
-      onPress={() => navigation?.navigate('Weather', { weatherData: { icon, temperature } })}
+    <TouchableOpacity
+      onPress={() => navigation?.navigate('Weather', { title: text ?? texts.screenTitles.weather })}
       style={styles.widget}
     >
       <WrapperVertical>
@@ -48,12 +48,12 @@ export const WeatherWidget = ({ navigation }: { navigation: NavigationScreenProp
               {temperature?.toFixed(1) ?? '—'}°C
             </BoldText>
             <RegularText primary small>
-              {texts.widgets.weather}
+              {text ?? texts.widgets.weather}
             </RegularText>
           </View>
         </WrapperRow>
       </WrapperVertical>
-    </Touchable>
+    </TouchableOpacity>
   );
 };
 

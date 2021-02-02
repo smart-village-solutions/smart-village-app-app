@@ -148,7 +148,7 @@ export const HomeScreen = ({ navigation }) => {
           publicJsonFile="homeCarousel"
           refreshTimeKey="publicJsonFile-homeCarousel"
         />
-        <Widgets navigation={navigation} widgets={widgets} />
+        <Widgets navigation={navigation} widgetConfigs={widgets} />
 
         {showNews &&
           categoriesNews.map(
