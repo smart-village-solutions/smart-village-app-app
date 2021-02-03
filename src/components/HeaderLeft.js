@@ -20,8 +20,7 @@ export const HeaderLeft = ({ navigation }) => (
 
 const styles = StyleSheet.create({
   icon: {
-    paddingHorizontal: normalize(14),
-    paddingVertical: normalize(4)
+    paddingHorizontal: normalize(14)
   }
 });
 

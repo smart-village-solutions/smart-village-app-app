@@ -21,6 +21,7 @@ import { colors, consts, device, normalize } from '../../config';
 import {
   BackToTop,
   Button,
+  HeaderLeft,
   HtmlView,
   Icon,
   Link,
@@ -32,7 +33,7 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../../components';
-import { arrowLeft, share } from '../../icons';
+import { share } from '../../icons';
 import {
   graphqlFetchPolicy,
   matomoTrackingString,
@@ -379,10 +380,6 @@ const styles = StyleSheet.create({
   headerRight: {
     alignItems: 'center'
   },
-  icon: {
-    paddingHorizontal: normalize(14),
-    paddingVertical: normalize(4)
-  },
   iconLeft: {
     paddingLeft: normalize(14),
     paddingRight: normalize(7)
@@ -408,13 +405,7 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
   const { headerRight } = navigationOptions;
 
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    ),
+    headerLeft: <HeaderLeft navigation={navigation} />,
     headerRight: (
       <WrapperRow style={styles.headerRight}>
         {!!shareContent && (

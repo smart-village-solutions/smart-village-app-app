@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import React, { useContext } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { colors, consts, normalize } from '../config';
 
 import {
   BoldText,
-  Icon,
+  HeaderLeft,
   Image,
   RegularText,
   SafeAreaViewFlex,
@@ -18,7 +18,7 @@ import {
   WrapperWithOrientation,
   WrapperWrap
 } from '../components';
-import { arrowLeft, locationIconAnchor, location as locationIcon } from '../icons';
+import { locationIconAnchor, location as locationIcon } from '../icons';
 import { useMatomoTrackScreenView } from '../hooks';
 import { ConstructionSiteContext } from '../ConstructionSiteProvider';
 import { momentFormat } from '../helpers';
@@ -134,24 +134,11 @@ export const ConstructionSiteDetailScreen = ({ navigation }) => {
 
 ConstructionSiteDetailScreen.navigationOptions = ({ navigation }) => {
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Zurück Taste"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    )
+    headerLeft: <HeaderLeft navigation={navigation} />
   };
 };
 
 const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(14)
-  },
   verticalPadding: {
     paddingTop: normalize(14)
   },

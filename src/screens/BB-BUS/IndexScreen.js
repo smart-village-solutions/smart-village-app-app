@@ -1,36 +1,28 @@
-import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  RefreshControl,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
-import { Query } from 'react-apollo';
+import deepRenameKeys from 'deep-rename-keys';
 import _filter from 'lodash/filter';
 import _memoize from 'lodash/memoize';
 import _sortBy from 'lodash/sortBy';
-import deepRenameKeys from 'deep-rename-keys';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useState } from 'react';
+import { Query } from 'react-apollo';
+import { ActivityIndicator, KeyboardAvoidingView, RefreshControl, StyleSheet } from 'react-native';
 
+import { HeaderLeft, LoadingContainer, SafeAreaViewFlex } from '../../components';
+import { IndexFilterWrapperAndList } from '../../components/BB-BUS/IndexFilterWrapperAndList';
+import { ServiceList } from '../../components/BB-BUS/ServiceList';
+import { colors, consts, device, namespace, secrets, texts } from '../../config';
+import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
+import { shareMessage } from '../../helpers/BB-BUS/shareHelper';
+import { useMatomoTrackScreenView } from '../../hooks';
+import { getHeaderHeight, statusBarHeight } from '../../navigation/CustomDrawerContentComponent';
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
-import { colors, consts, device, namespace, normalize, secrets, texts } from '../../config';
-import { Icon, LoadingContainer, SafeAreaViewFlex } from '../../components';
-import { arrowLeft } from '../../icons';
-import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 import {
   GET_COMMUNITIES_AND_TOP_10,
   GET_DIRECTUS,
   GET_SERVICES,
   GET_TOP_10_IDS
 } from '../../queries/BB-BUS/directus';
-import { shareMessage } from '../../helpers/BB-BUS/shareHelper';
-import { IndexFilterWrapperAndList } from '../../components/BB-BUS/IndexFilterWrapperAndList';
-import { ServiceList } from '../../components/BB-BUS/ServiceList';
-import { getHeaderHeight, statusBarHeight } from '../../navigation/CustomDrawerContentComponent';
-import { useMatomoTrackScreenView } from '../../hooks';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -291,21 +283,12 @@ export const IndexScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   flex: {
     flex: 1
-  },
-  icon: {
-    paddingHorizontal: normalize(14)
   }
 });
 
 IndexScreen.navigationOptions = ({ navigation }) => {
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    )
+    headerLeft: <HeaderLeft navigation={navigation} />
   };
 };
 

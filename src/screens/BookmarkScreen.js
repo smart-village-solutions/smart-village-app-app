@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, consts, device, normalize, texts } from '../config';
 import {
   BookmarkSection,
   HeaderLeft,
@@ -13,6 +12,7 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../components';
+import { colors, consts, device, normalize, texts } from '../config';
 import { getKeyFromTypeAndCategory } from '../helpers';
 import { useBookmarks, useMatomoTrackScreenView } from '../hooks';
 import { QUERY_TYPES } from '../queries';
@@ -114,10 +114,6 @@ export const BookmarkScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   headerRight: {
     alignItems: 'center'
-  },
-  icon: {
-    paddingHorizontal: normalize(14),
-    paddingVertical: normalize(4)
   },
   iconLeft: {
     paddingLeft: normalize(14),

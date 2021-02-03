@@ -1,20 +1,19 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext } from 'react';
-import { FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { FlatList } from 'react-native';
 
 import {
-  Icon,
+  HeaderLeft,
   RegularText,
   SafeAreaViewFlex,
   TextListItem,
   Wrapper,
   WrapperWithOrientation
 } from '../components';
-import { colors, consts, normalize, texts } from '../config';
+import { consts, texts } from '../config';
 import { ConstructionSiteContext } from '../ConstructionSiteProvider';
 import { momentFormat } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
-import { arrowLeft } from '../icons';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -68,25 +67,9 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(14)
-  }
-});
-
 ConstructionSiteOverviewScreen.navigationOptions = ({ navigation }) => {
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Zurück Taste"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    )
+    headerLeft: <HeaderLeft navigation={navigation} />
   };
 };
 
