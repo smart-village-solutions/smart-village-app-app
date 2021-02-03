@@ -90,7 +90,13 @@ const CategoryEntry = ({
   );
 };
 
-export const WasteNotificationSection = ({ data }: { data: WasteCollectionCalendarData }) => {
+export const WasteNotificationSection = ({
+  data,
+  street
+}: {
+  data: WasteCollectionCalendarData;
+  street: string;
+}) => {
   const [state, dispatch] = useReducer(reminderSettingsReducer, initialSettings);
   const [loading, setLoading] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -102,8 +108,9 @@ export const WasteNotificationSection = ({ data }: { data: WasteCollectionCalend
 
   const updateSettings = useCallback(async () => {
     // updateNotifications(updatedSettings, data); // TODO: outsource to backend push notifications
-    addToStore(SETTINGS_STORE_KEY, state);
-  }, [state]);
+    const oldSettings = (await readFromStore(SETTINGS_STORE_KEY)) ?? {};
+    addToStore(SETTINGS_STORE_KEY, { ...oldSettings, [street]: state });
+  }, [state, street]);
 
   const onAbortIOS = useCallback(() => {
     setShowDatePicker(false);
@@ -130,22 +137,26 @@ export const WasteNotificationSection = ({ data }: { data: WasteCollectionCalend
     [setLocalSelectedTime]
   );
 
-  const loadStoredSettings = useCallback(async () => {
-    const storedSettings = await readFromStore(SETTINGS_STORE_KEY);
-    const newSettings: ReminderSettings = storedSettings ?? initialSettings;
+  const loadStoredSettings = useCallback(
+    async (street) => {
+      const storedSettings = (await readFromStore(SETTINGS_STORE_KEY)) ?? {};
 
-    // constructing a new date is required here,
-    // as the value loaded from the store is missing the selector functions
-    newSettings.reminderTime = new Date(newSettings.reminderTime);
+      const newSettings: ReminderSettings = storedSettings[street] ?? initialSettings;
 
-    dispatch({ type: ReminderSettingsActionType.OVERWRITE, payload: newSettings });
+      // constructing a new date is required here,
+      // as the value loaded from the store is missing the selector functions
+      newSettings.reminderTime = new Date(newSettings.reminderTime);
 
-    setLoading(false);
-  }, [setLoading, dispatch]);
+      dispatch({ type: ReminderSettingsActionType.OVERWRITE, payload: newSettings });
+
+      setLoading(false);
+    },
+    [setLoading, dispatch]
+  );
 
   useEffect(() => {
-    loadStoredSettings();
-  }, [loadStoredSettings]);
+    loadStoredSettings(street);
+  }, [loadStoredSettings, street]);
 
   if (loading) return null;
 

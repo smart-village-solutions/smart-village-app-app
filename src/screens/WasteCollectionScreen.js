@@ -1,6 +1,6 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Keyboard, StyleSheet, View } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import { Calendar } from 'react-native-calendars';
@@ -64,7 +64,7 @@ const renderArrow = (direction) =>
     <Icon xml={arrowLeft(colors.primary)} style={styles.icon} />
   );
 
-const filterStreets = (currentInputValue) => {
+const filterStreets = (currentInputValue, streets) => {
   if (currentInputValue === '') return [];
 
   const regex = new RegExp(`${currentInputValue.trim()}`, 'i');
@@ -76,6 +76,8 @@ const filterStreets = (currentInputValue) => {
 
 export const WasteCollectionScreen = ({ navigation }) => {
   const [inputValue, setInputValue] = useState('');
+
+  // TODO: Get Street and WasteType info
 
   const renderSuggestion = useCallback(
     ({ item }) => (
@@ -91,12 +93,19 @@ export const WasteCollectionScreen = ({ navigation }) => {
     [setInputValue]
   );
 
-  const goToReminder = useCallback(() => navigation.navigate('WasteReminder', { data }), [
-    data,
-    navigation
-  ]);
+  const goToReminder = useCallback(
+    () => navigation.navigate('WasteReminder', { data, street: inputValue }),
+    [data, navigation, inputValue]
+  );
 
-  const filteredStreets = filterStreets(inputValue);
+  const filteredStreets = filterStreets(inputValue, streets);
+
+  useEffect(() => {
+    if (streets.find((item) => item === inputValue)) {
+      // request data
+      // set selected street?
+    }
+  }, [inputValue]);
 
   return (
     <SafeAreaViewFlex>
@@ -119,9 +128,11 @@ export const WasteCollectionScreen = ({ navigation }) => {
             />
             <WasteCalendarLegend data={data} />
           </View>
-          <Wrapper>
-            <Button title={texts.wasteCalendar.configureReminder} onPress={goToReminder} />
-          </Wrapper>
+          {!!data && ( // TODO: && selectedStreet ?
+            <Wrapper>
+              <Button title={texts.wasteCalendar.configureReminder} onPress={goToReminder} />
+            </Wrapper>
+          )}
         </WrapperWithOrientation>
       </ScrollView>
     </SafeAreaViewFlex>
