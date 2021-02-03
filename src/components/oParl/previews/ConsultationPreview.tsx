@@ -4,7 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../../config';
 import { ConsultationPreviewData } from '../../../types';
 import { RegularText } from '../../Text';
-import { OParlItemPreview } from './OParlItemPreview';
+import { OParlPreviewWrapper } from './OParlPreviewWrapper';
 
 type Props = {
   data: ConsultationPreviewData;
@@ -24,7 +24,7 @@ export const ConsultationPreview = ({ data, navigation, withAgendaItem }: Props)
   const textWithPaper = paper?.name ?? paper?.reference ?? texts.oparl.paper.paper;
 
   return (
-    <OParlItemPreview id={id} navigation={navigation}>
+    <OParlPreviewWrapper id={id} navigation={navigation}>
       {withAgendaItem ? (
         <RegularText lineThrough={meeting?.cancelled} numberOfLines={1} primary>
           {textWithAgendaItem}
@@ -32,6 +32,6 @@ export const ConsultationPreview = ({ data, navigation, withAgendaItem }: Props)
       ) : (
         <RegularText primary>{textWithPaper}</RegularText>
       )}
-    </OParlItemPreview>
+    </OParlPreviewWrapper>
   );
 };

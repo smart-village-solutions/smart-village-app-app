@@ -7,7 +7,7 @@ import { AgendaItemPreviewData } from '../../../types';
 
 import { RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
-import { OParlItemPreview } from './OParlItemPreview';
+import { OParlPreviewWrapper } from './OParlPreviewWrapper';
 
 type Props = {
   data: AgendaItemPreviewData;
@@ -23,7 +23,7 @@ export const AgendaItemPreview = ({ data, navigation, withNumberAndTime }: Props
   const dateString = start ? momentFormat(start.valueOf(), formatString, 'x') : '';
 
   return (
-    <OParlItemPreview id={id} navigation={navigation}>
+    <OParlPreviewWrapper id={id} navigation={navigation}>
       <WrapperRow>
         {withNumberAndTime && !!number && <RegularText>{`${number} `}</RegularText>}
         <RegularText numberOfLines={1} primary>
@@ -31,6 +31,6 @@ export const AgendaItemPreview = ({ data, navigation, withNumberAndTime }: Props
         </RegularText>
       </WrapperRow>
       <RegularText>{dateString}</RegularText>
-    </OParlItemPreview>
+    </OParlPreviewWrapper>
   );
 };

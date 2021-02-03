@@ -23,22 +23,24 @@ export const LineEntry = ({ fullText, left, lineThrough, onPress, right, selecta
   const SelectedWrapper = fullText ? WrapperWrap : WrapperRow;
 
   const innerComponent = (
-    <SelectedWrapper style={styles.marginTop}>
-      <BoldText>{left}</BoldText>
-      <View style={styles.shrink}>
-        <RegularText
-          numberOfLines={fullText ? undefined : 1}
-          lineThrough={lineThrough}
-          primary={!!onPress}
-          selectable={selectable}
-        >
-          {right}
-        </RegularText>
-      </View>
-    </SelectedWrapper>
+    <View style={styles.shrink}>
+      <RegularText
+        numberOfLines={fullText ? undefined : 1}
+        lineThrough={lineThrough}
+        primary={!!onPress}
+        selectable={selectable}
+      >
+        {right}
+      </RegularText>
+    </View>
   );
 
-  return onPress ? <Touchable onPress={onPress}>{innerComponent}</Touchable> : innerComponent;
+  return (
+    <SelectedWrapper style={styles.marginTop}>
+      <BoldText>{left}</BoldText>
+      {onPress ? <Touchable onPress={onPress}>{innerComponent}</Touchable> : innerComponent}
+    </SelectedWrapper>
+  );
 };
 
 const styles = StyleSheet.create({

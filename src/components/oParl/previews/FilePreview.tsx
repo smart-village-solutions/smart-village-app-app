@@ -5,7 +5,7 @@ import { formatSize } from '../../../helpers';
 import { FilePreviewData } from '../../../types';
 import { RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
-import { OParlItemPreview } from './OParlItemPreview';
+import { OParlPreviewWrapper } from './OParlPreviewWrapper';
 
 type Props = {
   data: FilePreviewData;
@@ -16,7 +16,7 @@ export const FilePreview = ({ data, navigation }: Props) => {
   const { id, accessUrl, fileName, mimeType, name, size } = data;
 
   return (
-    <OParlItemPreview id={id} navigation={navigation}>
+    <OParlPreviewWrapper id={id} navigation={navigation}>
       <RegularText numberOfLines={1} primary>
         {name || fileName || accessUrl}
       </RegularText>
@@ -24,6 +24,6 @@ export const FilePreview = ({ data, navigation }: Props) => {
         {!!mimeType && <RegularText>{`(${mimeType})`}</RegularText>}
         {!!size && <RegularText>{formatSize(size)}</RegularText>}
       </WrapperRow>
-    </OParlItemPreview>
+    </OParlPreviewWrapper>
   );
 };

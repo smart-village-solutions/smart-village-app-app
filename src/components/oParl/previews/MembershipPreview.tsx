@@ -5,7 +5,7 @@ import { texts } from '../../../config';
 import { getFullName } from '../../../helpers';
 import { MembershipPreviewData, OrganizationPreviewData } from '../../../types';
 import { RegularText } from '../../Text';
-import { OParlItemPreview } from './OParlItemPreview';
+import { OParlPreviewWrapper } from './OParlPreviewWrapper';
 
 type Props = {
   data: MembershipPreviewData;
@@ -35,10 +35,10 @@ export const MembershipPreview = ({ data, navigation, withPerson }: Props) => {
   const textWithoutPerson = getOrganizationNameString(organization);
 
   return (
-    <OParlItemPreview id={id} navigation={navigation}>
+    <OParlPreviewWrapper id={id} navigation={navigation}>
       <RegularText numberOfLines={1} primary>
         {withPerson ? textWithPerson : textWithoutPerson}
       </RegularText>
-    </OParlItemPreview>
+    </OParlPreviewWrapper>
   );
 };

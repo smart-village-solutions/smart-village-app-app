@@ -4,10 +4,8 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { PaperData } from '../../types';
-import { BoldText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { BodyPreview, FilePreview } from './previews';
 import {
   KeywordSection,
   ModifiedSection,
@@ -76,12 +74,7 @@ export const Paper = ({ data, navigation }: Props) => {
         header={paperTexts.superOrdinatedPaper}
         navigation={navigation}
       />
-      {!!mainFile && (
-        <>
-          <BoldText>{paperTexts.mainFile}</BoldText>
-          <FilePreview data={mainFile} navigation={navigation} />
-        </>
-      )}
+      <OParlPreviewSection data={mainFile} header={paperTexts.mainFile} navigation={navigation} />
       <OParlPreviewSection
         data={auxiliaryFile}
         header={paperTexts.auxiliaryFile}
@@ -103,12 +96,7 @@ export const Paper = ({ data, navigation }: Props) => {
         navigation={navigation}
       />
       <OParlPreviewSection data={location} header={paperTexts.location} navigation={navigation} />
-      {!!body && (
-        <>
-          <BoldText>{paperTexts.body}</BoldText>
-          <BodyPreview data={body} navigation={navigation} />
-        </>
-      )}
+      <OParlPreviewSection data={body} header={paperTexts.body} navigation={navigation} />
       <KeywordSection keyword={keyword} />
       <WebRepresentation name={name || paperTexts.paper} navigation={navigation} web={web} />
       <ModifiedSection created={created} deleted={deleted} modified={modified} />

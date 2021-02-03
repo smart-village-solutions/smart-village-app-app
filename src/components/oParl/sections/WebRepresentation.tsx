@@ -2,9 +2,7 @@ import React, { useCallback } from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
-import { BoldText, RegularText } from '../../Text';
-import { Touchable } from '../../Touchable';
-import { WrapperRow } from '../../Wrapper';
+import { LineEntry } from '../LineEntry';
 
 type Props = {
   name?: string;
@@ -26,14 +24,5 @@ export const WebRepresentation = ({ name, navigation, web }: Props) => {
     return null;
   }
 
-  return (
-    <WrapperRow>
-      <BoldText>{texts.oparl.webRepresentation}</BoldText>
-      <Touchable onPress={onPress}>
-        <RegularText numberOfLines={1} primary>
-          {web}
-        </RegularText>
-      </Touchable>
-    </WrapperRow>
-  );
+  return <LineEntry left={texts.oparl.webRepresentation} onPress={onPress} right={web} />;
 };

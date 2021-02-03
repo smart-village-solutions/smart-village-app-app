@@ -3,12 +3,9 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { AgendaItemData } from '../../types';
-import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { ConsultationPreview, FilePreview, MeetingPreview } from './previews';
-import { DateSection, KeywordSection, WebRepresentation } from './sections';
-import { OParlPreviewSection } from './sections';
+import { DateSection, KeywordSection, OParlPreviewSection, WebRepresentation } from './sections';
 
 type Props = {
   data: AgendaItemData;
@@ -37,12 +34,11 @@ export const AgendaItem = ({ data, navigation }: Props) => {
   return (
     <Wrapper>
       <LineEntry left={agendaItemTexts.name} right={name} />
-      {!!meeting && (
-        <>
-          <BoldText>{agendaItemTexts.meeting}</BoldText>
-          <MeetingPreview data={meeting} navigation={navigation} />
-        </>
-      )}
+      <OParlPreviewSection
+        data={meeting}
+        header={agendaItemTexts.meeting}
+        navigation={navigation}
+      />
       <LineEntry left={agendaItemTexts.number} right={number} />
       <DateSection endDate={end} startDate={start} withTime />
       {isPublic !== undefined && (
@@ -51,30 +47,23 @@ export const AgendaItem = ({ data, navigation }: Props) => {
           right={isPublic ? agendaItemTexts.isPublic : agendaItemTexts.isNotPublic}
         />
       )}
-      {!!consultation && (
-        <>
-          <BoldText>{agendaItemTexts.consultation}</BoldText>
-          <ConsultationPreview data={consultation} navigation={navigation} />
-        </>
-      )}
+      <OParlPreviewSection
+        data={consultation}
+        header={agendaItemTexts.consultation}
+        navigation={navigation}
+      />
       <OParlPreviewSection
         data={auxilaryFile}
         header={agendaItemTexts.auxiliaryFile}
         navigation={navigation}
       />
       <LineEntry left={agendaItemTexts.result} right={result} />
-      {!!resolutionFile && (
-        <>
-          <BoldText>{agendaItemTexts.resolutionFile}</BoldText>
-          <FilePreview data={resolutionFile} navigation={navigation} />
-        </>
-      )}
-      {!!resolutionText?.length && (
-        <>
-          <BoldText>{agendaItemTexts.resolutionText}</BoldText>
-          <RegularText>{resolutionText}</RegularText>
-        </>
-      )}
+      <OParlPreviewSection
+        data={resolutionFile}
+        header={agendaItemTexts.resolutionFile}
+        navigation={navigation}
+      />
+      <LineEntry left={agendaItemTexts.resolutionText} right={resolutionText} />
       <KeywordSection keyword={keyword} />
       <WebRepresentation
         name={name?.length ? name : agendaItemTexts.agendaItem}

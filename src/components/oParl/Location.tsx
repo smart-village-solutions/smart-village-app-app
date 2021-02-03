@@ -7,7 +7,6 @@ import { location, locationIconAnchor } from '../../icons';
 import { isFeature, isFeatureCollection, isMultiPoint, isPoint } from '../../jsonValidation';
 import { LocationData } from '../../types';
 import { WebViewMap } from '../map';
-import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
 import {
@@ -98,23 +97,12 @@ export const Location = ({ data, navigation }: Props) => {
   return (
     <Wrapper>
       {!!mapMarkers.length && <WebViewMap locations={mapMarkers} />}
-      <>
-        <BoldText>{locationTexts.streetAddress}</BoldText>
-        <RegularText>{streetAddress}</RegularText>
-      </>
-      <LineEntry left={locationTexts.postalCode} right={postalCode} />
-      <>
-        <BoldText>{locationTexts.locality}</BoldText>
-        <RegularText>{localityString}</RegularText>
-      </>
-      <LineEntry left={locationTexts.room} right={room} />
+      <LineEntry fullText left={locationTexts.streetAddress} right={streetAddress} />
+      <LineEntry fullText left={locationTexts.postalCode} right={postalCode} />
+      <LineEntry fullText left={locationTexts.locality} right={localityString} />
+      <LineEntry fullText left={locationTexts.room} right={room} />
       <OParlPreviewSection data={meeting} header={locationTexts.meeting} navigation={navigation} />
-      {!!description && (
-        <>
-          <BoldText>{locationTexts.description}</BoldText>
-          <RegularText>{description}</RegularText>
-        </>
-      )}
+      <LineEntry fullText left={locationTexts.description} right={description} />
       <OParlPreviewSection data={bodies} header={locationTexts.bodies} navigation={navigation} />
       <OParlPreviewSection
         data={organization}

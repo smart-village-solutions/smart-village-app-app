@@ -1,24 +1,13 @@
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
-import { normalize } from '../../../config';
+import _isArray from 'lodash/isArray';
 
-import { OParlObjectPreviewData, OParlObjectType } from '../../../types';
+import { normalize } from '../../../config';
+import { OParlObjectPreviewData } from '../../../types';
 import { PreviewSection } from '../../PreviewSection';
-import {
-  AgendaItemPreview,
-  BodyPreview,
-  ConsultationPreview,
-  FilePreview,
-  LegislativeTermPreview,
-  LocationPreview,
-  MeetingPreview,
-  MembershipPreview,
-  OrganizationPreview,
-  PaperPreview,
-  PersonPreview
-} from '../previews';
-import { SystemPreview } from '../previews/SystemPreview';
+import { OParlPreviewComponent } from '../previews/OParlPreviewComponent';
+import { OParlItemPreview } from '../previews/OParlItemPreview';
 
 type Props = {
   additionalProps?: {
@@ -26,76 +15,16 @@ type Props = {
     withNumberAndTime?: boolean;
     withPerson?: boolean;
   };
-  data?: OParlObjectPreviewData[];
+  data?: OParlObjectPreviewData[] | OParlObjectPreviewData;
   header: JSX.Element | string;
   navigation: NavigationScreenProp<never>;
-};
-
-type PreviewProps = {
-  additionalProps?: {
-    withAgendaItem?: boolean;
-    withNumberAndTime?: boolean;
-    withPerson?: boolean;
-  };
-  data: OParlObjectPreviewData;
-  navigation: NavigationScreenProp<never>;
-};
-
-// eslint-disable-next-line complexity
-const PreviewComponent = ({ additionalProps, data, navigation }: PreviewProps) => {
-  switch (data?.type) {
-    case OParlObjectType.AgendaItem:
-      return (
-        <AgendaItemPreview
-          data={data}
-          navigation={navigation}
-          withNumberAndTime={additionalProps?.withNumberAndTime}
-        />
-      );
-    case OParlObjectType.Body:
-      return <BodyPreview data={data} navigation={navigation} />;
-    case OParlObjectType.Consultation:
-      return (
-        <ConsultationPreview
-          data={data}
-          navigation={navigation}
-          withAgendaItem={additionalProps?.withAgendaItem}
-        />
-      );
-    case OParlObjectType.File:
-      return <FilePreview data={data} navigation={navigation} />;
-    case OParlObjectType.LegislativeTerm:
-      return <LegislativeTermPreview data={data} navigation={navigation} />;
-    case OParlObjectType.Location:
-      return <LocationPreview data={data} navigation={navigation} />;
-    case OParlObjectType.Meeting:
-      return <MeetingPreview data={data} navigation={navigation} />;
-    case OParlObjectType.Membership:
-      return (
-        <MembershipPreview
-          data={data}
-          navigation={navigation}
-          withPerson={additionalProps?.withPerson}
-        />
-      );
-    case OParlObjectType.Organization:
-      return <OrganizationPreview data={data} navigation={navigation} />;
-    case OParlObjectType.Paper:
-      return <PaperPreview data={data} navigation={navigation} />;
-    case OParlObjectType.Person:
-      return <PersonPreview data={data} navigation={navigation} />;
-    case OParlObjectType.System:
-      return <SystemPreview data={data} navigation={navigation} />;
-    default:
-      return null;
-  }
 };
 
 export const OParlPreviewSection = ({ additionalProps, data, header, navigation }: Props) => {
   const renderPreview = useCallback(
     (itemData: OParlObjectPreviewData, key: number) => {
       return (
-        <PreviewComponent
+        <OParlPreviewComponent
           data={itemData}
           key={key}
           navigation={navigation}
@@ -106,11 +35,22 @@ export const OParlPreviewSection = ({ additionalProps, data, header, navigation 
     [navigation]
   );
 
-  return (
-    <View style={styles.marginTop}>
-      <PreviewSection data={data} header={header} renderItem={renderPreview} />
-    </View>
-  );
+  if (_isArray(data)) {
+    return (
+      <View style={styles.marginTop}>
+        <PreviewSection data={data} header={header} renderItem={renderPreview} />
+      </View>
+    );
+  } else {
+    return (
+      <OParlItemPreview
+        data={data}
+        header={header}
+        navigation={navigation}
+        additionalProps={additionalProps}
+      />
+    );
+  }
 };
 
 const styles = StyleSheet.create({

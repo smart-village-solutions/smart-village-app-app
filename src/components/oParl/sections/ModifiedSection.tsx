@@ -1,5 +1,7 @@
 import React from 'react';
-import { texts } from '../../../config';
+import { StyleSheet, View } from 'react-native';
+
+import { normalize, texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
 import { BoldText, RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
@@ -20,7 +22,7 @@ export const ModifiedSection = ({ created, modified, deleted }: Props) => {
   }
 
   return (
-    <>
+    <View style={styles.marginTop}>
       {!!created && (
         <WrapperRow>
           <BoldText>{modifiedSection.created}</BoldText>
@@ -34,6 +36,12 @@ export const ModifiedSection = ({ created, modified, deleted }: Props) => {
         </WrapperRow>
       )}
       {deleted && <RegularText>{modifiedSection.deleted}</RegularText>}
-    </>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  marginTop: {
+    marginTop: normalize(12)
+  }
+});

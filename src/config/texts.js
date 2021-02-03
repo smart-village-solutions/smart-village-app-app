@@ -153,8 +153,8 @@ export const texts = {
       isAuthoritative: 'Ja',
       isNotAuthoritative: 'Nein',
       meeting: 'Sitzung: ',
-      organization: 'Gremium',
-      organizations: 'Gremien',
+      organization: 'Gremium: ',
+      organizations: 'Gremien: ',
       paper: 'Drucksache: ',
       role: 'Rolle oder Funktion der Beratung: '
     },

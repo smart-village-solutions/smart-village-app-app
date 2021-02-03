@@ -1,13 +1,10 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
-
 import { texts } from '../../config';
 import { MeetingData } from '../../types';
-
 import { BoldText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { FilePreview, LocationPreview } from './previews';
 import {
   DateSection,
   KeywordSection,
@@ -57,30 +54,22 @@ export const Meeting = ({ data, navigation }: Props) => {
         navigation={navigation}
         additionalProps={{ withNumberAndTime: true }}
       />
-      {!!location && (
-        <>
-          <BoldText>{meetingTexts.location}</BoldText>
-          <LocationPreview data={location} navigation={navigation} />
-        </>
-      )}
-      {!!invitation && (
-        <>
-          <BoldText>{meetingTexts.invitation}</BoldText>
-          <FilePreview data={invitation} navigation={navigation} />
-        </>
-      )}
-      {!!resultsProtocol && (
-        <>
-          <BoldText>{meetingTexts.resultsProtocol}</BoldText>
-          <FilePreview data={resultsProtocol} navigation={navigation} />
-        </>
-      )}
-      {!!verbatimProtocol && (
-        <>
-          <BoldText>{meetingTexts.verbatimProtocol}</BoldText>
-          <FilePreview data={verbatimProtocol} navigation={navigation} />
-        </>
-      )}
+      <OParlPreviewSection data={location} header={meetingTexts.location} navigation={navigation} />
+      <OParlPreviewSection
+        data={invitation}
+        header={meetingTexts.invitation}
+        navigation={navigation}
+      />
+      <OParlPreviewSection
+        data={resultsProtocol}
+        header={meetingTexts.resultsProtocol}
+        navigation={navigation}
+      />
+      <OParlPreviewSection
+        data={verbatimProtocol}
+        header={meetingTexts.verbatimProtocol}
+        navigation={navigation}
+      />
       <OParlPreviewSection
         data={auxiliaryFile}
         header={meetingTexts.auxiliaryFile}

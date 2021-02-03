@@ -5,7 +5,7 @@ import { texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
 import { LegislativeTermPreviewData } from '../../../types';
 import { RegularText } from '../../Text';
-import { OParlItemPreview } from './OParlItemPreview';
+import { OParlPreviewWrapper } from './OParlPreviewWrapper';
 
 type Props = {
   data: LegislativeTermPreviewData;
@@ -34,8 +34,8 @@ export const LegislativeTermPreview = ({ data, navigation }: Props) => {
   const previewString = `${name ?? legislativeTerm.title}${suffix}`;
 
   return (
-    <OParlItemPreview id={id} navigation={navigation}>
+    <OParlPreviewWrapper id={id} navigation={navigation}>
       <RegularText primary>{previewString}</RegularText>
-    </OParlItemPreview>
+    </OParlPreviewWrapper>
   );
 };

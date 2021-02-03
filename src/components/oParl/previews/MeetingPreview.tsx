@@ -6,7 +6,7 @@ import { momentFormat } from '../../../helpers';
 import { MeetingPreviewData } from '../../../types';
 
 import { RegularText } from '../../Text';
-import { OParlItemPreview } from './OParlItemPreview';
+import { OParlPreviewWrapper } from './OParlPreviewWrapper';
 
 type Props = {
   data: MeetingPreviewData;
@@ -19,11 +19,11 @@ export const MeetingPreview = ({ data, navigation }: Props) => {
   const dateString = start ? momentFormat(start.valueOf(), 'DD.MM.YYYY', 'x') : '';
 
   return (
-    <OParlItemPreview id={id} navigation={navigation}>
+    <OParlPreviewWrapper id={id} navigation={navigation}>
       <RegularText lineThrough={cancelled} numberOfLines={1} primary>
         {name?.length ? name : texts.oparl.meeting.meeting}
       </RegularText>
       <RegularText>{dateString}</RegularText>
-    </OParlItemPreview>
+    </OParlPreviewWrapper>
   );
 };

@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { texts } from '../../../config';
-import { BoldText, RegularText } from '../../Text';
-import { WrapperWrap } from '../../Wrapper';
+import { LineEntry } from '../LineEntry';
 
 export const KeywordSection = ({ keyword }: { keyword?: string[] }) => {
   if (!keyword || !keyword.length) {
@@ -11,12 +10,5 @@ export const KeywordSection = ({ keyword }: { keyword?: string[] }) => {
 
   const keywordString = keyword.join(', ');
 
-  return (
-    <>
-      <WrapperWrap>
-        <BoldText>{texts.oparl.keywords}</BoldText>
-        <RegularText>{keywordString}</RegularText>
-      </WrapperWrap>
-    </>
-  );
+  return <LineEntry fullText left={texts.oparl.keywords} right={keywordString} />;
 };

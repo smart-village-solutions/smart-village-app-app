@@ -223,6 +223,7 @@ F1.text = 'Fantastical Content';
 F2.accessUrl = 'access.me';
 F2.id = 'F2';
 F2.type = OParlObjectType.File;
+F2.masterFile = F1;
 F2.meeting = [M2];
 F2.name = 'Trial: Ganon';
 F2.sha1Checksum = '42';

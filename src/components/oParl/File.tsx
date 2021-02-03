@@ -4,10 +4,8 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { formatSize, momentFormat } from '../../helpers';
 import { FileData } from '../../types';
-import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { FilePreview } from './previews';
 import { OParlPreviewSection, WebRepresentation } from './sections';
 
 type Props = {
@@ -42,11 +40,15 @@ export const File = ({ data, navigation }: Props) => {
       <LineEntry left={fileTexts.name} right={name} />
       <LineEntry left={fileTexts.mimeType} right={mimeType} />
       <LineEntry left={fileTexts.size} right={size ? formatSize(size) : undefined} />
-      <LineEntry left={fileTexts.accessUrl} right={accessUrl} />
+      <LineEntry left={fileTexts.accessUrl} right={accessUrl} selectable />
       {/* TODO: URLs? */}
-      <LineEntry left={fileTexts.downloadUrl} right={downloadUrl} />
-      <LineEntry left={fileTexts.externalServiceUrl} right={externalServiceUrl} />
-      {!!masterFile && <FilePreview data={masterFile} navigation={navigation} />}
+      <LineEntry left={fileTexts.downloadUrl} right={downloadUrl} selectable />
+      <LineEntry left={fileTexts.externalServiceUrl} right={externalServiceUrl} selectable />
+      <OParlPreviewSection
+        data={masterFile}
+        header={fileTexts.masterFile}
+        navigation={navigation}
+      />
       <OParlPreviewSection
         data={derivativeFile}
         header={fileTexts.derivativeFile}
@@ -65,12 +67,7 @@ export const File = ({ data, navigation }: Props) => {
       />
       <LineEntry left={fileTexts.sha1Checksum} right={sha1Checksum} />
       <WebRepresentation name={name || fileName || accessUrl} navigation={navigation} web={web} />
-      {!!text && (
-        <>
-          <BoldText>{fileTexts.text}</BoldText>
-          <RegularText>{text}</RegularText>
-        </>
-      )}
+      <LineEntry fullText left={fileTexts.text} right={text} />
     </Wrapper>
   );
 };

@@ -5,13 +5,10 @@ import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { BodyData } from '../../types';
 import { PreviewSection } from '../PreviewSection';
-
-import { BoldText, RegularText } from '../Text';
+import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { LocationPreview } from './previews';
-import { SystemPreview } from './previews/SystemPreview';
 import {
   ContactSection,
   KeywordSection,
@@ -82,12 +79,7 @@ export const Body = ({ data, navigation }: Props) => {
   return (
     <Wrapper>
       <LineEntry left={bodyTexts.name} right={shortName ? `${shortName} (${name})` : name} />
-      {!!location && (
-        <>
-          <BoldText>{bodyTexts.location}</BoldText>
-          <LocationPreview data={location} navigation={navigation} />
-        </>
-      )}
+      <OParlPreviewSection data={location} header={bodyTexts.location} navigation={navigation} />
       <LineEntry left={bodyTexts.website} onPress={onPressWebsite} right={website} />
       <ContactSection contactEmail={contactEmail} contactName={contactName} />
       <OParlPreviewSection
@@ -116,12 +108,7 @@ export const Body = ({ data, navigation }: Props) => {
       />
       <LineEntry fullText left={bodyTexts.ags} right={ags} />
       <LineEntry fullText left={bodyTexts.rgs} right={rgs} />
-      {!!system && (
-        <>
-          <BoldText>{bodyTexts.system}</BoldText>
-          <SystemPreview data={system} navigation={navigation} />
-        </>
-      )}
+      <OParlPreviewSection data={system} header={bodyTexts.system} navigation={navigation} />
       <LineEntry
         fullText
         left={bodyTexts.oparlSince}

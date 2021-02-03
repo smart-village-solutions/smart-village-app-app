@@ -4,7 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../../config';
 import { LocationPreviewData } from '../../../types';
 import { RegularText } from '../../Text';
-import { OParlItemPreview } from './OParlItemPreview';
+import { OParlPreviewWrapper } from './OParlPreviewWrapper';
 
 type Props = {
   data: LocationPreviewData;
@@ -23,11 +23,11 @@ export const LocationPreview = ({ data, navigation }: Props) => {
   const addressString = streetAddress?.length ? streetAddress : localityString;
 
   return (
-    <OParlItemPreview id={id} navigation={navigation}>
+    <OParlPreviewWrapper id={id} navigation={navigation}>
       <RegularText numberOfLines={1} primary lineThrough={deleted}>
         {addressString}
       </RegularText>
       {!!room?.length && <RegularText primary>{`(${room})`}</RegularText>}
-    </OParlItemPreview>
+    </OParlPreviewWrapper>
   );
 };

@@ -3,10 +3,8 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { OrganizationData } from '../../types';
-import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { BodyPreview, LocationPreview, OrganizationPreview } from './previews';
 import {
   DateSection,
   KeywordSection,
@@ -66,38 +64,25 @@ export const Organization = ({ data, navigation }: Props) => {
     <Wrapper>
       <LineEntry left={organizationTexts.name} right={nameString} />
       <LineEntry left={organizationTexts.classification} right={classification} />
-      {!!body && (
-        <>
-          <BoldText>{organizationTexts.body}</BoldText>
-          <BodyPreview data={body} navigation={navigation} />
-        </>
-      )}
-      {!!externalBody && (
-        <>
-          <BoldText>{organizationTexts.externalBody}</BoldText>
-          <BodyPreview data={externalBody} navigation={navigation} />
-        </>
-      )}
-      {!!subOrganizationOf && (
-        <>
-          <BoldText>{organizationTexts.subOrganizationOf}</BoldText>
-          <OrganizationPreview data={subOrganizationOf} navigation={navigation} />
-        </>
-      )}
+      <OParlPreviewSection data={body} header={organizationTexts.body} navigation={navigation} />
+      <OParlPreviewSection
+        data={externalBody}
+        header={organizationTexts.externalBody}
+        navigation={navigation}
+      />
+      <OParlPreviewSection
+        data={subOrganizationOf}
+        header={organizationTexts.subOrganizationOf}
+        navigation={navigation}
+      />
       <LineEntry left={organizationTexts.organizationType} right={organizationType} />
-      {!!post?.length && (
-        <>
-          <BoldText>{organizationTexts.post}</BoldText>
-          <RegularText>{post.join(', ')}</RegularText>
-        </>
-      )}
+      <LineEntry left={organizationTexts.post} right={post?.length ? post.join(', ') : undefined} />
       <LineEntry left={organizationTexts.website} onPress={onPressWebsite} right={website} />
-      {!!location && (
-        <>
-          <BoldText>{organizationTexts.location}</BoldText>
-          <LocationPreview data={location} navigation={navigation} />
-        </>
-      )}
+      <OParlPreviewSection
+        data={location}
+        header={organizationTexts.location}
+        navigation={navigation}
+      />
       <OParlPreviewSection
         data={meeting}
         header={organizationTexts.meeting}

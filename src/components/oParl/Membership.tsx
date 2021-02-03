@@ -3,11 +3,9 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { MembershipData } from '../../types';
-import { BoldText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { OrganizationPreview, PersonPreview } from './previews';
-import { DateSection, KeywordSection, WebRepresentation } from './sections';
+import { DateSection, KeywordSection, OParlPreviewSection, WebRepresentation } from './sections';
 
 type Props = {
   data: MembershipData;
@@ -31,24 +29,17 @@ export const Membership = ({ data, navigation }: Props) => {
 
   return (
     <Wrapper>
-      {!!person && (
-        <>
-          <BoldText>{membershipTexts.person}</BoldText>
-          <PersonPreview data={person} navigation={navigation} />
-        </>
-      )}
-      {!!organization && (
-        <>
-          <BoldText>{membershipTexts.organization}</BoldText>
-          <OrganizationPreview data={organization} navigation={navigation} />
-        </>
-      )}
-      {!!onBehalfOf && (
-        <>
-          <BoldText>{membershipTexts.onBehalfOf}</BoldText>
-          <OrganizationPreview data={onBehalfOf} navigation={navigation} />
-        </>
-      )}
+      <OParlPreviewSection data={person} header={membershipTexts.person} navigation={navigation} />
+      <OParlPreviewSection
+        data={organization}
+        header={membershipTexts.organization}
+        navigation={navigation}
+      />
+      <OParlPreviewSection
+        data={onBehalfOf}
+        header={membershipTexts.onBehalfOf}
+        navigation={navigation}
+      />
       <LineEntry left={membershipTexts.role} right={role} />
       {votingRight !== undefined && (
         <LineEntry

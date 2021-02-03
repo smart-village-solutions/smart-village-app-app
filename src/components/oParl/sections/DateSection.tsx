@@ -1,6 +1,7 @@
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
-import { texts } from '../../../config';
+import { normalize, texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
 import { BoldText, RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
@@ -25,7 +26,7 @@ export const DateSection = ({ endDate, startDate, withTime }: Props) => {
   const alreadyStarted = (startDate?.valueOf() || 0) < now;
 
   return (
-    <>
+    <View style={styles.marginTop}>
       {!!startDate && (
         <WrapperRow>
           <BoldText>{alreadyStarted ? dateSection.started : dateSection.starts}</BoldText>
@@ -38,6 +39,12 @@ export const DateSection = ({ endDate, startDate, withTime }: Props) => {
           <RegularText>{momentFormat(endDate.valueOf(), formatString, 'x')}</RegularText>
         </WrapperRow>
       )}
-    </>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  marginTop: {
+    marginTop: normalize(12)
+  }
+});

@@ -1,21 +1,42 @@
-import React, { useCallback } from 'react';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { Touchable } from '../../Touchable';
-import { WrapperRow } from '../../Wrapper';
+import { normalize } from '../../../config';
+import { OParlObjectPreviewData } from '../../../types';
+import { BoldText } from '../../Text';
+import { OParlPreviewComponent } from './OParlPreviewComponent';
 
 type Props = {
-  children: React.ReactNode;
-  id: string;
+  additionalProps?: {
+    withAgendaItem?: boolean;
+    withNumberAndTime?: boolean;
+    withPerson?: boolean;
+  };
+  data?: OParlObjectPreviewData;
+  header: JSX.Element | string;
   navigation: NavigationScreenProp<never>;
 };
 
-export const OParlItemPreview = ({ children, id, navigation }: Props) => {
-  const onPress = useCallback(() => navigation.push('OParlDetail', { id }), [id, navigation]);
+export const OParlItemPreview = ({ data, header, navigation, additionalProps }: Props) => {
+  if (!data) {
+    return null;
+  }
 
   return (
-    <Touchable onPress={onPress}>
-      <WrapperRow spaceBetween>{children}</WrapperRow>
-    </Touchable>
+    <View style={styles.marginTop}>
+      <BoldText>{header}</BoldText>
+      <OParlPreviewComponent
+        data={data}
+        navigation={navigation}
+        additionalProps={additionalProps}
+      />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  marginTop: {
+    marginTop: normalize(12)
+  }
+});

@@ -6,7 +6,6 @@ import { PersonData } from '../../types';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { BodyPreview, LocationPreview } from './previews';
 import {
   KeywordSection,
   ModifiedSection,
@@ -65,53 +64,30 @@ export const Person = ({ data, navigation }: Props) => {
       <LineEntry left={personTexts.familyName} right={familyName} />
       <LineEntry left={personTexts.gender} right={gender} />
       {/* TODO: email mailto? */}
-      {!!email?.length && (
-        <>
-          <BoldText>{personTexts.email}</BoldText>
-          <RegularText>{email.join(', ')}</RegularText>
-        </>
-      )}
-      {!!phone?.length && (
-        <>
-          <BoldText>{personTexts.phone}</BoldText>
-          <RegularText>{phone.join(', ')}</RegularText>
-        </>
-      )}
-      {!!location && (
-        <>
-          <BoldText>{personTexts.location}</BoldText>
-          <LocationPreview data={location} navigation={navigation} />
-        </>
-      )}
-      {!!status?.length && (
-        <>
-          <BoldText>{personTexts.status}</BoldText>
-          <RegularText>{status.join(', ')}</RegularText>
-        </>
-      )}
-      {!!body && (
-        <>
-          <BoldText>{personTexts.body}</BoldText>
-          <BodyPreview data={body} navigation={navigation} />
-        </>
-      )}
+      <LineEntry
+        fullText
+        left={personTexts.email}
+        right={email?.length ? email.join(', ') : undefined}
+      />
+      <LineEntry
+        fullText
+        left={personTexts.phone}
+        right={phone?.length ? phone.join(', ') : undefined}
+      />
+      <OParlPreviewSection data={location} header={personTexts.location} navigation={navigation} />
+      <LineEntry
+        fullText
+        left={personTexts.status}
+        right={status?.length ? status.join(', ') : undefined}
+      />
+      <OParlPreviewSection data={body} header={personTexts.body} navigation={navigation} />
       <OParlPreviewSection
         data={membership}
         header={personTexts.membership}
         navigation={navigation}
       />
-      {!!life && (
-        <>
-          <BoldText>{personTexts.life}</BoldText>
-          <RegularText>{life}</RegularText>
-        </>
-      )}
-      {!!lifeSource && (
-        <>
-          <BoldText>{personTexts.lifeSource}</BoldText>
-          <RegularText>{lifeSource}</RegularText>
-        </>
-      )}
+      <LineEntry fullText left={personTexts.life} right={life} />
+      <LineEntry fullText left={personTexts.lifeSource} right={lifeSource} />
       <KeywordSection keyword={keyword} />
       <WebRepresentation name={name ?? personTexts.person} navigation={navigation} web={web} />
       <ModifiedSection created={created} deleted={deleted} modified={modified} />
