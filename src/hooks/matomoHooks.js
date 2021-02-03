@@ -3,7 +3,6 @@ import { Alert } from 'react-native';
 import { useMatomo } from 'matomo-tracker-react-native';
 
 import { texts } from '../config';
-import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { createMatomoUserId, setMatomoHandledOnStartup, storageHelper } from '../helpers';
 
