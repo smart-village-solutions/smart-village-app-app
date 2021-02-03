@@ -28,7 +28,8 @@ const mapToMapMarkers = (data: any): MapMarker[] | undefined => {
     data?.[QUERY_TYPES.POINTS_OF_INTEREST]
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ?.map((item: any) => {
-        const { latitude, longitude } = item.addresses?.[0]?.geoLocation;
+        const latitude = item.addresses?.[0]?.geoLocation?.latitude;
+        const longitude = item.addresses?.[0]?.geoLocation?.longitude;
 
         if (!latitude || !longitude) return undefined;
         return {
