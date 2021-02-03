@@ -1,24 +1,25 @@
+import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
-import _filter from 'lodash/filter';
 
 import { colors, consts, device, texts } from '../../config';
-import { HtmlView } from '../HtmlView';
-import { Image } from '../Image';
-import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
-import { PriceCard } from './PriceCard';
-import { InfoCard } from './InfoCard';
-import { OperatingCompanyInfo } from './OperatingCompanyInfo';
-import { OpeningTimesCard } from './OpeningTimesCard';
-import { ImagesCarousel } from '../ImagesCarousel';
-import { useMatomoTrackScreenView } from '../../hooks';
 import { matomoTrackingString } from '../../helpers';
-import { WebViewMap } from '../map/WebViewMap';
+import { useMatomoTrackScreenView } from '../../hooks';
 import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
+import { HtmlView } from '../HtmlView';
+import { Image } from '../Image';
+import { ImagesCarousel } from '../ImagesCarousel';
+import { Logo } from '../Logo';
+import { WebViewMap } from '../map/WebViewMap';
+import { Title, TitleContainer, TitleShadow } from '../Title';
 import { TMBNotice } from '../TMB/Notice';
+import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { InfoCard } from './InfoCard';
+import { OpeningTimesCard } from './OpeningTimesCard';
+import { OperatingCompanyInfo } from './OperatingCompanyInfo';
+import { PriceCard } from './PriceCard';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -55,6 +56,8 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
         rootRouteName
       }
     });
+
+  const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
 
@@ -105,6 +108,8 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
         )}
 
         <Wrapper>
+          {!!logo && <Logo source={{ uri: logo }} />}
+
           <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
         </Wrapper>
 
