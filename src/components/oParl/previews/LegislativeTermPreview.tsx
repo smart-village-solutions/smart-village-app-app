@@ -31,13 +31,12 @@ export const LegislativeTermPreview = ({ data, navigation }: Props) => {
     }
   }
 
-  const previewString = `${name ?? legislativeTerm.title}${suffix}`;
-
   return (
     <OParlPreviewWrapper id={id} navigation={navigation}>
       <RegularText lineThrough={deleted} primary>
-        {previewString}
+        {name ?? legislativeTerm.title}
       </RegularText>
+      <RegularText>{suffix}</RegularText>
     </OParlPreviewWrapper>
   );
 };

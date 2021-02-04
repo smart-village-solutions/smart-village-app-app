@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
-import { Button } from './Button';
 import { BoldText } from './Text';
-import { Wrapper } from './Wrapper';
+import { WrapperHorizontal } from './Wrapper';
 
 type Props<T> = {
   data?: T[];
@@ -31,11 +31,23 @@ export const PreviewSection = <T,>({ data, header, limit = 3, renderItem }: Prop
           <Collapsible collapsed={collapsed}>
             {data.slice(limit, data.length).map(renderItem)}
           </Collapsible>
-          <Wrapper>
-            <Button title={collapsed ? 'Alle anzeigen' : 'Weniger anzeigen'} onPress={onPress} />
-          </Wrapper>
+          <WrapperHorizontal>
+            <TouchableOpacity onPress={onPress} style={styles.touchable}>
+              <BoldText primary small>
+                {collapsed ? 'Alle anzeigen' : 'Weniger anzeigen'}
+              </BoldText>
+            </TouchableOpacity>
+          </WrapperHorizontal>
         </>
       )}
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  touchable: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center'
+  }
+});

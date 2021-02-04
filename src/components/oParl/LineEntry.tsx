@@ -38,7 +38,13 @@ export const LineEntry = ({ fullText, left, lineThrough, onPress, right, selecta
   return (
     <SelectedWrapper style={styles.marginTop}>
       <BoldText>{left}</BoldText>
-      {onPress ? <Touchable onPress={onPress}>{innerComponent}</Touchable> : innerComponent}
+      {onPress ? (
+        <Touchable style={styles.shrink} onPress={onPress}>
+          {innerComponent}
+        </Touchable>
+      ) : (
+        innerComponent
+      )}
     </SelectedWrapper>
   );
 };

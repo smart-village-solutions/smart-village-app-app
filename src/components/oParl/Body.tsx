@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { BodyData } from '../../types';
 import { PreviewSection } from '../PreviewSection';
@@ -131,16 +132,17 @@ export const Body = ({ data, navigation }: Props) => {
         left={bodyTexts.oparlSince}
         right={oparlSince && momentFormat(oparlSince.valueOf(), undefined, 'x')}
       />
-      <PreviewSection
-        data={equivalent}
-        renderItem={renderEquivalentItem}
-        header={bodyTexts.equivalent}
-      />
+      <View style={styles.marginTop}>
+        <PreviewSection
+          data={equivalent}
+          renderItem={renderEquivalentItem}
+          header={bodyTexts.equivalent}
+        />
+      </View>
       <KeywordSection keyword={keyword} />
       <LineEntry left={bodyTexts.license} onPress={onPressLicense} right={license} />
       <LineEntry
         left={bodyTexts.licenseValidSince}
-        onPress={onPressLicense}
         right={
           license?.length && licenseValidSince
             ? momentFormat(licenseValidSince?.valueOf(), undefined, 'x')
@@ -152,3 +154,9 @@ export const Body = ({ data, navigation }: Props) => {
     </Wrapper>
   );
 };
+
+const styles = StyleSheet.create({
+  marginTop: {
+    marginTop: normalize(12)
+  }
+});
