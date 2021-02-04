@@ -25,7 +25,7 @@ const getOrganizationNameString = (organization?: OrganizationPreviewData) => {
 // and we want to give information about the corresponding person in the preview
 // withPerson === false means the opposite, so we want to show the information of the organization
 export const MembershipPreview = ({ data, navigation, withPerson }: Props) => {
-  const { id, onBehalfOf, organization, person } = data;
+  const { id, deleted, onBehalfOf, organization, person } = data;
 
   const nameString = getFullName(texts.oparl.person.person, person);
   const textWithPerson = onBehalfOf
@@ -36,7 +36,7 @@ export const MembershipPreview = ({ data, navigation, withPerson }: Props) => {
 
   return (
     <OParlPreviewWrapper id={id} navigation={navigation}>
-      <RegularText numberOfLines={1} primary>
+      <RegularText lineThrough={deleted} numberOfLines={1} primary>
         {withPerson ? textWithPerson : textWithoutPerson}
       </RegularText>
     </OParlPreviewWrapper>

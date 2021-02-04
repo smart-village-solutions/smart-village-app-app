@@ -16,7 +16,7 @@ type Props = {
 // and we want to give information about the corresponding agendaItem in the preview
 // withAgendaItem === false means the opposite, so we want to show the information of the paper
 export const ConsultationPreview = ({ data, navigation, withAgendaItem }: Props) => {
-  const { id, agendaItem, meeting, paper } = data;
+  const { id, agendaItem, deleted, meeting, paper } = data;
 
   const agendaItemText = agendaItem?.name ?? agendaItem?.name ?? texts.oparl.agendaItem.agendaItem;
 
@@ -26,11 +26,13 @@ export const ConsultationPreview = ({ data, navigation, withAgendaItem }: Props)
   return (
     <OParlPreviewWrapper id={id} navigation={navigation}>
       {withAgendaItem ? (
-        <RegularText lineThrough={meeting?.cancelled} numberOfLines={1} primary>
+        <RegularText lineThrough={meeting?.cancelled || deleted} numberOfLines={1} primary>
           {textWithAgendaItem}
         </RegularText>
       ) : (
-        <RegularText primary>{textWithPaper}</RegularText>
+        <RegularText lineThrough={deleted} primary>
+          {textWithPaper}
+        </RegularText>
       )}
     </OParlPreviewWrapper>
   );

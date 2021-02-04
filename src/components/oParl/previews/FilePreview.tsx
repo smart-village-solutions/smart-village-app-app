@@ -13,11 +13,11 @@ type Props = {
 };
 
 export const FilePreview = ({ data, navigation }: Props) => {
-  const { id, accessUrl, fileName, mimeType, name, size } = data;
+  const { id, accessUrl, deleted, fileName, mimeType, name, size } = data;
 
   return (
     <OParlPreviewWrapper id={id} navigation={navigation}>
-      <RegularText numberOfLines={1} primary>
+      <RegularText lineThrough={deleted} numberOfLines={1} primary>
         {name || fileName || accessUrl}
       </RegularText>
       <WrapperRow>

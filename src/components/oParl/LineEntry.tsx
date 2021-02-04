@@ -11,12 +11,12 @@ type Props = {
   left: string;
   lineThrough?: boolean;
   onPress?: () => void;
-  right?: string;
+  right?: number | string;
   selectable?: boolean;
 };
 
 export const LineEntry = ({ fullText, left, lineThrough, onPress, right, selectable }: Props) => {
-  if (!right?.length) {
+  if (right === undefined || (typeof right === 'string' && !right?.length)) {
     return null;
   }
 

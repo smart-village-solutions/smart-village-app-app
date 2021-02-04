@@ -6,7 +6,12 @@ import { ConsultationData } from '../../types';
 import { BoldText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { KeywordSection, OParlPreviewSection, WebRepresentation } from './sections';
+import {
+  KeywordSection,
+  ModifiedSection,
+  OParlPreviewSection,
+  WebRepresentation
+} from './sections';
 
 type Props = {
   data: ConsultationData;
@@ -16,7 +21,20 @@ type Props = {
 const consultationTexts = texts.oparl.consultation;
 
 export const Consultation = ({ data, navigation }: Props) => {
-  const { agendaItem, authoritative, keyword, meeting, organization, paper, role, web } = data;
+  const {
+    agendaItem,
+    authoritative,
+    created,
+    deleted,
+    keyword,
+    license,
+    meeting,
+    modified,
+    organization,
+    paper,
+    role,
+    web
+  } = data;
 
   return (
     <Wrapper>
@@ -51,7 +69,9 @@ export const Consultation = ({ data, navigation }: Props) => {
         navigation={navigation}
       />
       <KeywordSection keyword={keyword} />
+      <LineEntry left={consultationTexts.license} right={license} />
       <WebRepresentation name={consultationTexts.consultation} navigation={navigation} web={web} />
+      <ModifiedSection created={created} deleted={deleted} modified={modified} />
     </Wrapper>
   );
 };

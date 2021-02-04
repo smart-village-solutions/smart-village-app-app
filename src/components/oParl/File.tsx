@@ -6,7 +6,7 @@ import { formatSize, momentFormat } from '../../helpers';
 import { FileData } from '../../types';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { OParlPreviewSection, WebRepresentation } from './sections';
+import { ModifiedSection, OParlPreviewSection, WebRepresentation } from './sections';
 
 type Props = {
   data: FileData;
@@ -19,17 +19,22 @@ export const File = ({ data, navigation }: Props) => {
   const {
     accessUrl,
     agendaItem,
+    created,
     date,
+    deleted,
     derivativeFile,
     downloadUrl,
     externalServiceUrl,
     fileLicense,
     fileName,
+    license,
     masterFile,
     meeting,
     mimeType,
+    modified,
     name,
     sha1Checksum,
+    sha512Checksum,
     size,
     text,
     web
@@ -60,14 +65,17 @@ export const File = ({ data, navigation }: Props) => {
         header={fileTexts.agendaItems}
         navigation={navigation}
       />
-      <LineEntry left={fileTexts.license} right={fileLicense} selectable />
       <LineEntry
         left={fileTexts.date}
         right={date ? momentFormat(date.valueOf(), 'DD.MM.YYYY', 'x') : undefined}
       />
       <LineEntry left={fileTexts.sha1Checksum} right={sha1Checksum} />
-      <WebRepresentation name={name || fileName || accessUrl} navigation={navigation} web={web} />
+      <LineEntry left={fileTexts.sha512Checksum} right={sha512Checksum} />
       <LineEntry fullText left={fileTexts.text} right={text} />
+      <LineEntry left={fileTexts.fileLicense} right={fileLicense} selectable />
+      <LineEntry left={fileTexts.license} right={license} />
+      <WebRepresentation name={name || fileName || accessUrl} navigation={navigation} web={web} />
+      <ModifiedSection created={created} modified={modified} deleted={deleted} />
     </Wrapper>
   );
 };

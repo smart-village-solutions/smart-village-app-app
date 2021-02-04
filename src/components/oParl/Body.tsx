@@ -26,19 +26,25 @@ const { body: bodyTexts } = texts.oparl;
 
 export const Body = ({ data, navigation }: Props) => {
   const {
+    agendaItem,
     ags,
     classification,
+    consultation,
     contactEmail,
     contactName,
     created,
     deleted,
     equivalent,
+    file,
     keyword,
     legislativeTerm,
+    legislativeTermList,
     license,
     licenseValidSince,
     location,
+    locationList,
     meeting,
+    membership,
     modified,
     name,
     oparlSince,
@@ -83,29 +89,40 @@ export const Body = ({ data, navigation }: Props) => {
       <LineEntry left={bodyTexts.website} onPress={onPressWebsite} right={website} />
       <ContactSection contactEmail={contactEmail} contactName={contactName} />
       <OParlPreviewSection
-        data={legislativeTerm}
+        data={legislativeTermList ?? legislativeTerm}
         header={bodyTexts.legislativeTerm}
         navigation={navigation}
       />
-      <OParlPreviewSection data={meeting} header={bodyTexts.meeting} navigation={navigation} />
-      <OParlPreviewSection data={paper} header={bodyTexts.paper} navigation={navigation} />
       <OParlPreviewSection
         data={organization}
         header={bodyTexts.organization}
         navigation={navigation}
       />
-      <OParlPreviewSection data={person} header={bodyTexts.person} navigation={navigation} />
-      <LineEntry left={bodyTexts.classification} right={classification} />
-      <LineEntry left={bodyTexts.license} onPress={onPressLicense} right={license} />
-      <LineEntry
-        left={bodyTexts.licenseValidSince}
-        onPress={onPressLicense}
-        right={
-          license?.length && licenseValidSince
-            ? momentFormat(licenseValidSince?.valueOf(), undefined, 'x')
-            : undefined
-        }
+      <OParlPreviewSection data={meeting} header={bodyTexts.meeting} navigation={navigation} />
+      <OParlPreviewSection data={paper} header={bodyTexts.paper} navigation={navigation} />
+      <OParlPreviewSection
+        data={agendaItem}
+        header={bodyTexts.agendaItem}
+        navigation={navigation}
       />
+      <OParlPreviewSection
+        data={consultation}
+        header={bodyTexts.consultation}
+        navigation={navigation}
+      />
+      <OParlPreviewSection data={file} header={bodyTexts.file} navigation={navigation} />
+      <OParlPreviewSection data={person} header={bodyTexts.person} navigation={navigation} />
+      <OParlPreviewSection
+        data={membership}
+        header={bodyTexts.memberships}
+        navigation={navigation}
+      />
+      <OParlPreviewSection
+        data={locationList}
+        header={bodyTexts.locationList}
+        navigation={navigation}
+      />
+      <LineEntry left={bodyTexts.classification} right={classification} />
       <LineEntry fullText left={bodyTexts.ags} right={ags} />
       <LineEntry fullText left={bodyTexts.rgs} right={rgs} />
       <OParlPreviewSection data={system} header={bodyTexts.system} navigation={navigation} />
@@ -120,6 +137,16 @@ export const Body = ({ data, navigation }: Props) => {
         header={bodyTexts.equivalent}
       />
       <KeywordSection keyword={keyword} />
+      <LineEntry left={bodyTexts.license} onPress={onPressLicense} right={license} />
+      <LineEntry
+        left={bodyTexts.licenseValidSince}
+        onPress={onPressLicense}
+        right={
+          license?.length && licenseValidSince
+            ? momentFormat(licenseValidSince?.valueOf(), undefined, 'x')
+            : undefined
+        }
+      />
       <WebRepresentation name={name ?? bodyTexts.body} navigation={navigation} web={web} />
       <ModifiedSection created={created} deleted={deleted} modified={modified} />
     </Wrapper>

@@ -5,7 +5,13 @@ import { texts } from '../../config';
 import { AgendaItemData } from '../../types';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { DateSection, KeywordSection, OParlPreviewSection, WebRepresentation } from './sections';
+import {
+  DateSection,
+  KeywordSection,
+  ModifiedSection,
+  OParlPreviewSection,
+  WebRepresentation
+} from './sections';
 
 type Props = {
   data: AgendaItemData;
@@ -17,12 +23,17 @@ const agendaItemTexts = texts.oparl.agendaItem;
 export const AgendaItem = ({ data, navigation }: Props) => {
   const {
     auxilaryFile,
+    created,
     consultation,
+    deleted,
     end,
     keyword,
+    license,
     meeting,
+    modified,
     name,
     number,
+    order,
     public: isPublic,
     resolutionFile,
     resolutionText,
@@ -40,6 +51,7 @@ export const AgendaItem = ({ data, navigation }: Props) => {
         navigation={navigation}
       />
       <LineEntry left={agendaItemTexts.number} right={number} />
+      <LineEntry left={agendaItemTexts.order} right={order} />
       <DateSection endDate={end} startDate={start} withTime />
       {isPublic !== undefined && (
         <LineEntry
@@ -63,13 +75,15 @@ export const AgendaItem = ({ data, navigation }: Props) => {
         header={agendaItemTexts.resolutionFile}
         navigation={navigation}
       />
-      <LineEntry left={agendaItemTexts.resolutionText} right={resolutionText} />
+      <LineEntry fullText left={agendaItemTexts.resolutionText} right={resolutionText} />
       <KeywordSection keyword={keyword} />
+      <LineEntry left={agendaItemTexts.license} right={license} />
       <WebRepresentation
         name={name?.length ? name : agendaItemTexts.agendaItem}
         navigation={navigation}
         web={web}
       />
+      <ModifiedSection created={created} modified={modified} deleted={deleted} />
     </Wrapper>
   );
 };

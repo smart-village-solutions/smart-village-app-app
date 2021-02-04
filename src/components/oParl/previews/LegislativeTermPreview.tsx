@@ -15,7 +15,7 @@ type Props = {
 const { legislativeTerm } = texts.oparl;
 
 export const LegislativeTermPreview = ({ data, navigation }: Props) => {
-  const { id, endDate, name, startDate } = data;
+  const { id, deleted, endDate, name, startDate } = data;
 
   let suffix = '';
 
@@ -35,7 +35,9 @@ export const LegislativeTermPreview = ({ data, navigation }: Props) => {
 
   return (
     <OParlPreviewWrapper id={id} navigation={navigation}>
-      <RegularText primary>{previewString}</RegularText>
+      <RegularText lineThrough={deleted} primary>
+        {previewString}
+      </RegularText>
     </OParlPreviewWrapper>
   );
 };

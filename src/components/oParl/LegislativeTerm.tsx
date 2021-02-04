@@ -5,7 +5,13 @@ import { texts } from '../../config';
 import { LegislativeTermData } from '../../types';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
-import { DateSection, KeywordSection, OParlPreviewSection, WebRepresentation } from './sections';
+import {
+  DateSection,
+  KeywordSection,
+  ModifiedSection,
+  OParlPreviewSection,
+  WebRepresentation
+} from './sections';
 
 type Props = {
   data: LegislativeTermData;
@@ -15,7 +21,18 @@ type Props = {
 const legislativeTermTexts = texts.oparl.legislativeTerm;
 
 export const LegislativeTerm = ({ data, navigation }: Props) => {
-  const { body, endDate, keyword, name, startDate, web } = data;
+  const {
+    body,
+    created,
+    deleted,
+    endDate,
+    keyword,
+    license,
+    modified,
+    name,
+    startDate,
+    web
+  } = data;
 
   return (
     <Wrapper>
@@ -27,11 +44,13 @@ export const LegislativeTerm = ({ data, navigation }: Props) => {
         navigation={navigation}
       />
       <KeywordSection keyword={keyword} />
+      <LineEntry left={legislativeTermTexts.license} right={license} />
       <WebRepresentation
         name={name ?? legislativeTermTexts.title}
         navigation={navigation}
         web={web}
       />
+      <ModifiedSection created={created} deleted={deleted} modified={modified} />
     </Wrapper>
   );
 };

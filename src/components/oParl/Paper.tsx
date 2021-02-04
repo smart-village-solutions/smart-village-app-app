@@ -29,6 +29,7 @@ export const Paper = ({ data, navigation }: Props) => {
     date,
     deleted,
     keyword,
+    license,
     location,
     mainFile,
     modified,
@@ -98,6 +99,7 @@ export const Paper = ({ data, navigation }: Props) => {
       <OParlPreviewSection data={location} header={paperTexts.location} navigation={navigation} />
       <OParlPreviewSection data={body} header={paperTexts.body} navigation={navigation} />
       <KeywordSection keyword={keyword} />
+      <LineEntry left={paperTexts.license} right={license} />
       <WebRepresentation name={name || paperTexts.paper} navigation={navigation} web={web} />
       <ModifiedSection created={created} deleted={deleted} modified={modified} />
     </Wrapper>

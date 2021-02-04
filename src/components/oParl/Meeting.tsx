@@ -30,6 +30,7 @@ export const Meeting = ({ data, navigation }: Props) => {
     end,
     invitation,
     keyword,
+    license,
     location,
     meetingState,
     modified,
@@ -86,6 +87,7 @@ export const Meeting = ({ data, navigation }: Props) => {
         navigation={navigation}
       />
       <KeywordSection keyword={keyword} />
+      <LineEntry left={meetingTexts.license} right={license} />
       <WebRepresentation
         name={name?.length ? name : meetingTexts.meeting}
         navigation={navigation}

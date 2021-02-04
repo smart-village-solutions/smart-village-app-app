@@ -68,11 +68,15 @@ export const Location = ({ data, navigation }: Props) => {
     description,
     geoJson,
     keyword,
+    license,
     locality,
     meeting,
+    meetings,
     modified,
     organization,
+    organizations,
     papers,
+    persons,
     postalCode,
     room,
     streetAddress,
@@ -101,16 +105,22 @@ export const Location = ({ data, navigation }: Props) => {
       <LineEntry fullText left={locationTexts.postalCode} right={postalCode} />
       <LineEntry fullText left={locationTexts.locality} right={localityString} />
       <LineEntry fullText left={locationTexts.room} right={room} />
-      <OParlPreviewSection data={meeting} header={locationTexts.meeting} navigation={navigation} />
+      <OParlPreviewSection
+        data={meetings ?? meeting}
+        header={locationTexts.meeting}
+        navigation={navigation}
+      />
       <LineEntry fullText left={locationTexts.description} right={description} />
       <OParlPreviewSection data={bodies} header={locationTexts.bodies} navigation={navigation} />
       <OParlPreviewSection
-        data={organization}
+        data={organizations ?? organization}
         header={locationTexts.organization}
         navigation={navigation}
       />
+      <OParlPreviewSection data={persons} header={locationTexts.persons} navigation={navigation} />
       <OParlPreviewSection data={papers} header={locationTexts.papers} navigation={navigation} />
       <KeywordSection keyword={keyword} />
+      <LineEntry fullText left={locationTexts.license} right={license} />
       <WebRepresentation name={locationTexts.location} navigation={navigation} web={web} />
       <ModifiedSection created={created} deleted={deleted} modified={modified} />
     </Wrapper>

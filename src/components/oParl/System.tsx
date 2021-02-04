@@ -61,7 +61,6 @@ export const System = ({ data, navigation }: Props) => {
     <Wrapper>
       <LineEntry left={systemTexts.name} right={name} />
       <LineEntry left={systemTexts.oparlVersion} right={oparlVersion} />
-      <LineEntry left={systemTexts.license} right={license} onPress={onPressLicense} />
       <OParlPreviewSection data={body} header={systemTexts.body} navigation={navigation} />
       <LineEntry left={systemTexts.product} right={product} onPress={onPressProduct} />
       <LineEntry left={systemTexts.vendor} right={vendor} onPress={onPressVendor} />
@@ -72,6 +71,7 @@ export const System = ({ data, navigation }: Props) => {
         header={systemTexts.otherOparlVersion}
         navigation={navigation}
       />
+      <LineEntry left={systemTexts.license} right={license} onPress={onPressLicense} />
       <WebRepresentation name={name ?? systemTexts.system} navigation={navigation} web={web} />
       <ModifiedSection created={created} deleted={deleted} modified={modified} />
     </Wrapper>

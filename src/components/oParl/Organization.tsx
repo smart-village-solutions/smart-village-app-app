@@ -24,11 +24,13 @@ export const Organization = ({ data, navigation }: Props) => {
   const {
     body,
     classification,
+    consultation,
     created,
     deleted,
     endDate,
     externalBody,
     keyword,
+    license,
     location,
     meeting,
     membership,
@@ -89,6 +91,11 @@ export const Organization = ({ data, navigation }: Props) => {
         navigation={navigation}
       />
       <OParlPreviewSection
+        data={consultation}
+        header={organizationTexts.consultation}
+        navigation={navigation}
+      />
+      <OParlPreviewSection
         additionalProps={{ withPerson: true }}
         data={membership}
         header={organizationTexts.membership}
@@ -96,6 +103,7 @@ export const Organization = ({ data, navigation }: Props) => {
       />
       <DateSection endDate={endDate} startDate={startDate} />
       <KeywordSection keyword={keyword} />
+      <LineEntry left={organizationTexts.license} right={license} />
       <WebRepresentation name={organizationTexts.organization} navigation={navigation} web={web} />
       <ModifiedSection created={created} deleted={deleted} modified={modified} />
     </Wrapper>
