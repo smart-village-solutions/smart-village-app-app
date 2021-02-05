@@ -8,6 +8,7 @@ import {
   GET_EVENT_RECORDS,
   GET_EVENT_RECORDS_AND_CATEGORIES
 } from './eventRecords';
+import { GET_LUNCHES } from './lunch';
 import { GET_NEWS_ITEM, GET_NEWS_ITEMS, GET_NEWS_ITEMS_AND_DATA_PROVIDERS } from './newsItems';
 import { GET_POINT_OF_INTEREST, GET_POINTS_OF_INTEREST } from './pointsOfInterest';
 import { GET_TOUR, GET_TOURS } from './tours';
@@ -30,6 +31,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.EVENT_RECORDS]: filterOptions.showEventsFilter
       ? GET_EVENT_RECORDS_AND_CATEGORIES
       : GET_EVENT_RECORDS,
+    [QUERY_TYPES.LUNCHES]: GET_LUNCHES,
     [QUERY_TYPES.NEWS_ITEM]: GET_NEWS_ITEM,
     [QUERY_TYPES.NEWS_ITEMS]: filterOptions.showNewsFilter
       ? GET_NEWS_ITEMS_AND_DATA_PROVIDERS

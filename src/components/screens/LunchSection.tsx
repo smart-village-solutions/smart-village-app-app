@@ -4,119 +4,62 @@ import { Divider } from 'react-native-elements';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, normalize, texts } from '../../config';
-import { formatAddress, openLink, shareMessage } from '../../helpers';
-import { location, phone as phoneIcon } from '../../icons';
+import { formatAddress, shareMessage } from '../../helpers';
+import { location } from '../../icons';
 import { QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
-import { Logo } from '../Logo';
 import { BoldText, RegularText } from '../Text';
 import { InfoBox, Wrapper } from '../Wrapper';
+import { InfoCard } from './InfoCard';
+
+type WebUrl = {
+  id: string;
+  url: string;
+  description?: string;
+};
+
+type Contact = {
+  email?: string;
+  fax?: string;
+  phone?: string;
+  webUrls: WebUrl[];
+};
+
+type Address = {
+  addition?: string;
+  city?: string;
+  kind?: string;
+  street?: string;
+  zip?: string;
+};
 
 type Props = {
   lunchOfferData: {
-    additionalText?: string;
+    id: string;
+    text?: string;
     lunchOffers?: { name: string; price: string }[];
+    pointOfInterest: {
+      id: string;
+      addresses?: Address[];
+      contact?: Contact;
+      name?: string;
+      webUrls?: WebUrl[];
+    };
+    pointOfInterestAttributes?: string;
   };
   navigation: NavigationScreenProp<never>;
 };
 
-const data = {
-  __typename: 'PointOfInterest',
-  addresses: [
-    {
-      __typename: 'Address',
-      city: 'Bad Belzig',
-      geoLocation: {
-        __typename: 'GeoLocation',
-        latitude: 52.136268226788,
-        longitude: 12.595159112766
-      },
-      kind: 'default',
-      street: 'Am Bahnhof 11',
-      zip: '14806'
-    }
-  ],
-  category: {
-    __typename: 'Category',
-    name: 'Gastronomie'
-  },
-  contact: {
-    __typename: 'Contact',
-    email: 'info@flaeming-bahnhof.de',
-    lastName: null,
-    phone: '033841-798553'
-  },
-  description:
-    '<div class="text">Belegte Brötchen, selbst gebackener Kuchen und ein warmes Tagesgericht - der Fläming-Bahnhof Bad Belzig versorgt nicht nur Zugreisende mit Leckereien. Hausgeschlachtete Wurstprodukte im Glas und weitere regionale Spezialitäten gibt es auch zum Mitnehmen im Shopbereich.</div>',
-  id: '62',
-  mediaContents: [
-    {
-      __typename: 'MediaContent',
-      captionText: 'Bistro im Fläming-Bahnhof, Foto: Bansen/Wittig',
-      contentType: 'thumbnail',
-      copyright: null,
-      sourceUrl: {
-        __typename: 'WebUrl',
-        url: 'http://backoffice2.reiseland-brandenburg.de/rpcServer/file/get/id/342310'
-      }
-    },
-    {
-      __typename: 'MediaContent',
-      captionText: 'Fläming-Bahnhof Bad Belzig, Foto: Bansen/Wittig',
-      contentType: 'image',
-      copyright: null,
-      sourceUrl: {
-        __typename: 'WebUrl',
-        url: 'http://backoffice2.reiseland-brandenburg.de/rpcServer/file/get/id/239225'
-      }
-    },
-    {
-      __typename: 'MediaContent',
-      captionText: 'Regionale Produkte im Fläming-Bahnhof, Foto: Bansen/Wittig',
-      contentType: 'image',
-      copyright: null,
-      sourceUrl: {
-        __typename: 'WebUrl',
-        url: 'http://backoffice2.reiseland-brandenburg.de/rpcServer/file/get/id/239226'
-      }
-    },
-    {
-      __typename: 'MediaContent',
-      captionText: 'Am Bahnhof starten verschiedene Wanderwege, Foto: Bansen/Wittig',
-      contentType: 'image',
-      copyright: null,
-      sourceUrl: {
-        __typename: 'WebUrl',
-        url: 'http://backoffice2.reiseland-brandenburg.de/rpcServer/file/get/id/239227'
-      }
-    },
-    {
-      __typename: 'MediaContent',
-      captionText: 'Vor dem Bahnhof fährt die Burgenlinie, Foto: Bansen/Wittig',
-      contentType: 'image',
-      copyright: null,
-      sourceUrl: {
-        __typename: 'WebUrl',
-        url: 'http://backoffice2.reiseland-brandenburg.de/rpcServer/file/get/id/239228'
-      }
-    }
-  ],
-  name: 'Bistro im Fläming-Bahnhof Bad Belzig',
-  title: 'Bistro im Fläming-Bahnhof Bad Belzig',
-  webUrls: []
-};
+const parseAttributes = (input?: string) => {
+  const attributes = input?.split(',');
 
-const lunchOffersDummy = [
-  { name: 'Tasty Burger', price: '2 EUR' },
-  { name: 'Very Tasty Burger', price: '3 EUR' },
-  { name: 'Immeasurably Tasty Burger', price: '5 EUR' },
-  { name: 'Best Day of Your Life Burger', price: '7 EUR' }
-];
-
-const lunchOfferDummyData = {
-  additionalText:
-    'Auch in diesen schweren Zeiten sollt ihr die besten Burger bekommen. Bestellt einfach telefonisch und holt sie euch im Anschluss zur Wunschzeit ab!',
-  lunchOffers: lunchOffersDummy
+  return {
+    contactEmail: attributes?.find((item) => item === 'contact.email'),
+    contactFax: attributes?.find((item) => item === 'contact.fax'),
+    contactPhone: attributes?.find((item) => item === 'contact.phone'),
+    contactWebUrls: attributes?.find((item) => item === 'contact.webUrls'),
+    webUrls: attributes?.find((item) => item === 'webUrls')
+  };
 };
 
 const LunchOffer = ({ name, price }: { name: string; price: string }) => (
@@ -132,8 +75,35 @@ const LunchOffer = ({ name, price }: { name: string; price: string }) => (
 
 // eslint-disable-next-line complexity
 export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
-  const { additionalText, lunchOffers } = lunchOfferData ?? lunchOfferDummyData;
-  const { addresses, contact, contacts, dataProvider, title } = data;
+  const { text, lunchOffers, pointOfInterest, pointOfInterestAttributes } = lunchOfferData;
+  const { addresses, contact, name, webUrls } = pointOfInterest;
+
+  const {
+    contactEmail,
+    contactFax,
+    contactPhone,
+    contactWebUrls,
+    webUrls: withWebUrls
+  } = parseAttributes(pointOfInterestAttributes);
+
+  const filteredContact = {
+    email: contactEmail ? contact?.email : undefined,
+    fax: contactFax ? contact?.fax : undefined,
+    phone: contactPhone ? contact?.phone : undefined,
+    webUrls: contactWebUrls ? contact?.webUrls : []
+  };
+
+  const openWebScreen = useCallback(
+    (webUrl: string) =>
+      navigation.navigate({
+        routeName: 'Web',
+        params: {
+          title: 'Ort',
+          webUrl
+        }
+      }),
+    [navigation]
+  );
 
   const onPress = useCallback(
     () =>
@@ -142,59 +112,50 @@ export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
         params: {
           title: texts.detailTitles.pointOfInterest,
           query: QUERY_TYPES.POINT_OF_INTEREST,
-          queryVariables: { id: `${data.id}` },
+          queryVariables: { id: `${pointOfInterest.id}` },
           shareContent: {
-            message: shareMessage(data, QUERY_TYPES.POINT_OF_INTEREST)
+            message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
           },
           details: {
-            ...data,
-            title: data.name
+            ...pointOfInterest,
+            title: pointOfInterest.name
           }
         }
       }),
     [navigation]
   );
 
-  if (!lunchOffers?.length && !additionalText?.length) {
+  if (!lunchOffers?.length && !text?.length) {
     return null;
   }
 
-  const address = formatAddress(addresses.find((address) => address.kind === 'default'));
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const phone = contact?.phone ?? contacts?.find((item: any) => !!item.phone);
+  const address = formatAddress(addresses?.find((address: Address) => address.kind === 'default'));
 
   return (
     <Wrapper>
-      {!!dataProvider?.logo?.url && <Logo source={{ uri: dataProvider.logo.url }} />}
-      {(!!address || !!title) && (
+      {/*
+      TODO: Logo
+      {!!dataProvider?.logo?.url && <Logo source={{ uri: dataProvider.logo.url }} />} */}
+      {(!!address || !!name) && (
         <TouchableOpacity accessibilityLabel="Anbieterinformationen (Taste)" onPress={onPress}>
           <InfoBox style={styles.addressContainer}>
             <Icon xml={location(colors.primary)} style={styles.margin} />
             <View style={styles.address}>
-              {!!title && <BoldText primary>{title}</BoldText>}
+              {!!name && <BoldText primary>{name}</BoldText>}
               {!!address && <RegularText primary>{address}</RegularText>}
             </View>
           </InfoBox>
         </TouchableOpacity>
       )}
-      {!!phone && (
-        <TouchableOpacity onPress={() => openLink(`tel:${phone}`)}>
-          <InfoBox>
-            <Icon xml={phoneIcon(colors.primary)} style={styles.margin} />
-            <RegularText
-              primary
-              accessibilityLabel={`(Telefonnummer) ${phone} (Taste) (Wechselt zur Telefon-App)`}
-            >
-              {contact.phone}
-            </RegularText>
-          </InfoBox>
-        </TouchableOpacity>
-      )}
+      <InfoCard
+        contact={filteredContact}
+        openWebScreen={openWebScreen}
+        webUrls={withWebUrls ? webUrls : undefined}
+      />
       <RegularText />
-      {!!additionalText && (
+      {!!text && (
         <>
-          <RegularText>{additionalText}</RegularText>
+          <RegularText>{text}</RegularText>
           <RegularText />
         </>
       )}

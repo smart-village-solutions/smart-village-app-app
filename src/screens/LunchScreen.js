@@ -1,21 +1,27 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, normalize } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import {
   BoldText,
   Icon,
   Image,
   ImagesCarousel,
+  LoadingContainer,
   LunchSection,
+  RegularText,
   SafeAreaViewFlex,
   Wrapper,
   WrapperWithOrientation
 } from '../components';
 import { arrowLeft } from '../icons';
 import { useMatomoTrackScreenView } from '../hooks';
-import { momentFormat } from '../helpers';
+import { graphqlFetchPolicy, momentFormat } from '../helpers';
+import moment from 'moment';
+import { NetworkContext } from '../NetworkProvider';
+import { useQuery } from 'react-apollo';
+import { getQuery, QUERY_TYPES } from '../queries';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -45,11 +51,26 @@ const images = [
 ];
 
 export const LunchScreen = ({ navigation }) => {
-  const [data, setData] = useState([]);
+  // TODO:  introduce day navigation
+  const [date, setDate] = useState(moment());
+
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+
+  const currentDate = moment(date).format('YYYY-MM-DD');
+
+  const variables = {
+    dateRange: [currentDate, currentDate]
+  };
+
+  const { data, loading } = useQuery(getQuery(QUERY_TYPES.LUNCHES), {
+    fetchPolicy,
+    variables
+  });
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.LUNCH);
 
-  const renderItem = () => <LunchSection navigation={navigation} />;
+  const renderItem = ({ item }) => <LunchSection lunchOfferData={item} navigation={navigation} />;
 
   const ListHeaderComponent = (
     <>
@@ -67,20 +88,29 @@ export const LunchScreen = ({ navigation }) => {
   );
 
   const ListEmptyComponent = (
-    <TouchableOpacity
-      onPress={() => setData([1, 5, 9])}
-      style={{ backgroundColor: 'red', height: 20 }}
-    />
+    <Wrapper>
+      <RegularText>{texts.lunch.noOffers}</RegularText>
+    </Wrapper>
   );
+
+  if (loading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
+
+  if (!data?.[QUERY_TYPES.LUNCHES]) return null;
 
   return (
     <SafeAreaViewFlex>
       <FlatList
-        data={data}
+        data={data[QUERY_TYPES.LUNCHES]}
         renderItem={renderItem}
         ListEmptyComponent={ListEmptyComponent}
         ListHeaderComponent={ListHeaderComponent}
-        keyExtractor={(item) => item.toString()}
+        keyExtractor={(item) => item.id}
       />
     </SafeAreaViewFlex>
   );
