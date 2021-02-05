@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useContext, useState } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 
 import { colors, consts, normalize, texts } from '../config';
 import {
@@ -8,16 +15,16 @@ import {
   Icon,
   Image,
   ImagesCarousel,
-  LoadingContainer,
   LunchSection,
   RegularText,
   SafeAreaViewFlex,
   Wrapper,
+  WrapperRow,
   WrapperWithOrientation
 } from '../components';
-import { arrowLeft } from '../icons';
+import { arrowLeft, arrowRight } from '../icons';
 import { useMatomoTrackScreenView } from '../hooks';
-import { graphqlFetchPolicy, momentFormat } from '../helpers';
+import { graphqlFetchPolicy } from '../helpers';
 import moment from 'moment';
 import { NetworkContext } from '../NetworkProvider';
 import { useQuery } from 'react-apollo';
@@ -51,7 +58,6 @@ const images = [
 ];
 
 export const LunchScreen = ({ navigation }) => {
-  // TODO:  introduce day navigation
   const [date, setDate] = useState(moment());
 
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -63,14 +69,25 @@ export const LunchScreen = ({ navigation }) => {
     dateRange: [currentDate, currentDate]
   };
 
-  const { data, loading } = useQuery(getQuery(QUERY_TYPES.LUNCHES), {
+  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.LUNCHES), {
     fetchPolicy,
     variables
   });
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.LUNCH);
 
-  const renderItem = ({ item }) => <LunchSection lunchOfferData={item} navigation={navigation} />;
+  const onPressNext = useCallback(() => {
+    setDate((oldDate) => moment(oldDate).add(1, 'day'));
+  }, [setDate]);
+
+  const onPressPrevious = useCallback(() => {
+    setDate((oldDate) => moment(oldDate).subtract(1, 'day'));
+  }, [setDate]);
+
+  const renderItem = useCallback(
+    ({ item }) => <LunchSection lunchOfferData={item} navigation={navigation} />,
+    [navigation]
+  );
 
   const ListHeaderComponent = (
     <>
@@ -81,7 +98,15 @@ export const LunchScreen = ({ navigation }) => {
           <Image source={images[0].picture} containerStyle={styles.imageContainer} />
         )}
         <Wrapper>
-          <BoldText big>{momentFormat(new Date().valueOf(), undefined, 'x')}</BoldText>
+          <WrapperRow>
+            <TouchableOpacity onPress={onPressPrevious} style={styles.left}>
+              <Icon xml={arrowLeft(colors.primary)} />
+            </TouchableOpacity>
+            <BoldText big>{date.format('DD.MM.YYYY')}</BoldText>
+            <TouchableOpacity onPress={onPressNext} style={styles.right}>
+              <Icon xml={arrowRight(colors.primary)} />
+            </TouchableOpacity>
+          </WrapperRow>
         </Wrapper>
       </WrapperWithOrientation>
     </>
@@ -93,22 +118,23 @@ export const LunchScreen = ({ navigation }) => {
     </Wrapper>
   );
 
-  if (loading) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
-      </LoadingContainer>
-    );
-  }
-
-  if (!data?.[QUERY_TYPES.LUNCHES]) return null;
-
   return (
     <SafeAreaViewFlex>
       <FlatList
-        data={data[QUERY_TYPES.LUNCHES]}
+        refreshControl={
+          <RefreshControl
+            onRefresh={() => {
+              refetch?.();
+            }}
+            colors={[colors.accent]}
+            tintColor={colors.accent}
+          />
+        }
+        data={!loading && data?.[QUERY_TYPES.LUNCHES]}
         renderItem={renderItem}
-        ListEmptyComponent={ListEmptyComponent}
+        ListEmptyComponent={
+          loading ? <ActivityIndicator color={colors.accent} /> : ListEmptyComponent
+        }
         ListHeaderComponent={ListHeaderComponent}
         keyExtractor={(item) => item.id}
       />
@@ -135,6 +161,15 @@ LunchScreen.navigationOptions = ({ navigation }) => {
 const styles = StyleSheet.create({
   icon: {
     paddingHorizontal: normalize(14)
+  },
+  left: {
+    flex: 1,
+    marginRight: normalize(12)
+  },
+  right: {
+    flex: 1,
+    alignItems: 'flex-end',
+    marginLeft: normalize(12)
   }
 });
 
