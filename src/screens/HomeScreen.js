@@ -1,59 +1,33 @@
 import PropTypes from 'prop-types';
-import React, { Fragment, useCallback, useContext, useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
-import { Query } from 'react-apollo';
-import _shuffle from 'lodash/shuffle';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { NetworkContext } from '../NetworkProvider';
-import { SettingsContext } from '../SettingsProvider';
 import { auth } from '../auth';
-import { colors, consts, device, normalize, texts } from '../config';
 import {
   About,
-  Button,
   HomeCarousel,
+  HomeSection,
   Icon,
-  ListComponent,
-  LoadingContainer,
   SafeAreaViewFlex,
   Service,
-  Title,
-  TitleContainer,
-  TitleShadow,
-  Touchable,
   VersionNumber,
   Widgets,
-  Wrapper,
   WrapperRow
 } from '../components';
-import {
-  graphqlFetchPolicy,
-  parseEventRecords,
-  parseNewsItems,
-  parsePointOfInterest,
-  parseTours,
-  rootRouteName
-} from '../helpers';
+import { colors, consts, normalize, texts } from '../config';
+import { graphqlFetchPolicy, parsePointsOfInterestAndTours, rootRouteName } from '../helpers';
 import { useMatomoAlertOnStartUp, useMatomoTrackScreenView, usePushNotifications } from '../hooks';
-import { getQuery, getQueryType, QUERY_TYPES } from '../queries';
 import { favSettings } from '../icons';
+import { NetworkContext } from '../NetworkProvider';
+import { getQueryType, QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 
-const { DRAWER, LIST_TYPES, MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
+const { DRAWER, MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
-/* eslint-disable complexity */
-/* NOTE: we need to check a lot for presence, so this is that complex */
-/* TODO: refactor news, pois & tours and events in single components */
 export const HomeScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { globalSettings, listTypesSettings } = useContext(SettingsContext);
+  const { globalSettings } = useContext(SettingsContext);
   const { sections = {}, widgets } = globalSettings;
   const {
     showNews = true,
@@ -164,188 +138,49 @@ export const HomeScreen = ({ navigation }) => {
 
         {showNews &&
           categoriesNews.map(
-            ({ categoryId, categoryTitle, categoryTitleDetail, categoryButton }, index) => (
-              <Fragment key={`${index}-${categoryTitle}`}>
-                <TitleContainer>
-                  <Touchable
-                    onPress={() =>
-                      navigation.navigate(
-                        NAVIGATION.NEWS_ITEMS_INDEX({
-                          categoryId,
-                          categoryTitle,
-                          categoryTitleDetail
-                        })
-                      )
-                    }
-                  >
-                    <Title accessibilityLabel={`${categoryTitle} (Überschrift) (Taste)`}>
-                      {categoryTitle}
-                    </Title>
-                  </Touchable>
-                </TitleContainer>
-                {device.platform === 'ios' && <TitleShadow />}
-                <Query
-                  query={getQuery(QUERY_TYPES.NEWS_ITEMS)}
-                  variables={{ limit: 3, ...{ categoryId } }}
-                  fetchPolicy={fetchPolicy}
-                >
-                  {({ data, loading }) => {
-                    if (loading) {
-                      return (
-                        <LoadingContainer>
-                          <ActivityIndicator color={colors.accent} />
-                        </LoadingContainer>
-                      );
-                    }
-
-                    const newsItems = parseNewsItems(
-                      data?.[QUERY_TYPES.NEWS_ITEMS],
-                      true,
-                      categoryTitleDetail
-                    );
-
-                    if (!newsItems || !newsItems.length) return null;
-
-                    const newsItemsListType = listTypesSettings[QUERY_TYPES.NEWS_ITEMS];
-
-                    return (
-                      <View>
-                        <ListComponent
-                          navigation={navigation}
-                          data={newsItems}
-                          query={QUERY_TYPES.NEWS_ITEMS}
-                          horizontal={newsItemsListType === LIST_TYPES.CARD_LIST}
-                        />
-
-                        <Wrapper>
-                          <Button
-                            title={categoryButton}
-                            onPress={() =>
-                              navigation.navigate(
-                                NAVIGATION.NEWS_ITEMS_INDEX({
-                                  categoryId,
-                                  categoryTitle,
-                                  categoryTitleDetail
-                                })
-                              )
-                            }
-                          />
-                        </Wrapper>
-                      </View>
-                    );
-                  }}
-                </Query>
-              </Fragment>
+            ({ categoryButton, categoryId, categoryTitle, categoryTitleDetail }, index) => (
+              <HomeSection
+                key={index}
+                categoryButton={categoryButton}
+                categoryId={categoryId}
+                categoryTitle={categoryTitle}
+                categoryTitleDetail={categoryTitleDetail}
+                fetchPolicy={fetchPolicy}
+                navigateToCategory={() =>
+                  navigation.navigate(
+                    NAVIGATION.NEWS_ITEMS_INDEX({ categoryId, categoryTitle, categoryTitleDetail })
+                  )
+                }
+                navigation={navigation}
+                query={QUERY_TYPES.NEWS_ITEMS}
+                queryVariables={{ limit: 3, ...{ categoryId } }}
+              />
             )
           )}
 
         {showPointsOfInterestAndTours && (
-          <>
-            <TitleContainer>
-              <Touchable onPress={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}>
-                <Title
-                  accessibilityLabel={`${headlinePointsOfInterestAndTours} (Überschrift) (Taste)`}
-                >
-                  {headlinePointsOfInterestAndTours}
-                </Title>
-              </Touchable>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Query
-              query={getQuery(QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS)}
-              variables={{ limit: 10, orderPoi: 'RAND', orderTour: 'RAND' }}
-              fetchPolicy={fetchPolicy}
-            >
-              {({ data, loading }) => {
-                if (loading) {
-                  return (
-                    <LoadingContainer>
-                      <ActivityIndicator color={colors.accent} />
-                    </LoadingContainer>
-                  );
-                }
-
-                const pointsOfInterest = parsePointOfInterest(
-                  data?.[QUERY_TYPES.POINTS_OF_INTEREST]
-                );
-
-                const tours = parseTours(data?.[QUERY_TYPES.TOURS]);
-
-                const pointsOfInterestAndToursListType =
-                  listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS];
-
-                return (
-                  <View>
-                    <ListComponent
-                      navigation={navigation}
-                      data={_shuffle([...(pointsOfInterest || []), ...(tours || [])])}
-                      query={QUERY_TYPES.POINTS_OF_INTEREST}
-                      horizontal={pointsOfInterestAndToursListType === LIST_TYPES.CARD_LIST}
-                    />
-
-                    <Wrapper>
-                      <Button
-                        title={buttonPointsOfInterestAndTours}
-                        onPress={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}
-                      />
-                    </Wrapper>
-                  </View>
-                );
-              }}
-            </Query>
-          </>
+          <HomeSection
+            categoryButton={buttonPointsOfInterestAndTours}
+            categoryTitle={headlinePointsOfInterestAndTours}
+            fetchPolicy={fetchPolicy}
+            navigateToCategory={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}
+            navigation={navigation}
+            query={QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS}
+            queryParser={parsePointsOfInterestAndTours}
+            queryVariables={{ limit: 10, orderPoi: 'RAND', orderTour: 'RAND' }}
+          />
         )}
 
         {showEvents && (
-          <>
-            <TitleContainer>
-              <Touchable onPress={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}>
-                <Title accessibilityLabel={`${headlineEvents} (Überschrift) (Taste)`}>
-                  {headlineEvents}
-                </Title>
-              </Touchable>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Query
-              query={getQuery(QUERY_TYPES.EVENT_RECORDS)}
-              variables={{ limit: 3, order: 'listDate_ASC' }}
-              fetchPolicy={fetchPolicy}
-            >
-              {({ data, loading }) => {
-                if (loading) {
-                  return (
-                    <LoadingContainer>
-                      <ActivityIndicator color={colors.accent} />
-                    </LoadingContainer>
-                  );
-                }
-
-                const eventRecords = parseEventRecords(data?.[QUERY_TYPES.EVENT_RECORDS], true);
-
-                if (!eventRecords || !eventRecords.length) return null;
-
-                const eventRecordsListType = listTypesSettings[QUERY_TYPES.EVENT_RECORDS];
-
-                return (
-                  <View>
-                    <ListComponent
-                      navigation={navigation}
-                      data={eventRecords}
-                      query={QUERY_TYPES.EVENT_RECORDS}
-                      horizontal={eventRecordsListType === LIST_TYPES.CARD_LIST}
-                    />
-
-                    <Wrapper>
-                      <Button
-                        title={buttonEvents}
-                        onPress={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}
-                      />
-                    </Wrapper>
-                  </View>
-                );
-              }}
-            </Query>
-          </>
+          <HomeSection
+            categoryButton={buttonEvents}
+            categoryTitle={headlineEvents}
+            navigateToCategory={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}
+            navigation={navigation}
+            query={QUERY_TYPES.EVENT_RECORDS}
+            queryVariables={{ limit: 3, order: 'listDate_ASC' }}
+            fetchPolicy={fetchPolicy}
+          />
         )}
 
         {globalSettings.navigation === DRAWER && (

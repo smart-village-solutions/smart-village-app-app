@@ -28,6 +28,9 @@ const getComponent = (query, listTypesSettings) =>
     [QUERY_TYPES.TOURS]: getListComponent(
       listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]
     ),
+    [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: getListComponent(
+      listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]
+    ),
     [QUERY_TYPES.CATEGORIES]: CategoryList
   }[query]);
 

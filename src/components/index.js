@@ -13,6 +13,7 @@ export * from './CategoryListItem';
 export * from './DiagonalGradient';
 export * from './DropdownHeader';
 export * from './DropdownSelect';
+export * from './HomeSection';
 export * from './HtmlView';
 export * from './Icon';
 export * from './Image';
