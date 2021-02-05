@@ -7,6 +7,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { colors, consts, normalize, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
+import { useHomeRefresh } from '../../hooks/HomeRefresh';
 import { calendar } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
@@ -30,7 +31,7 @@ export const EventWidget = ({ navigation }: Props) => {
     dateRange: [currentDate, currentDate]
   };
 
-  const { data, loading } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
+  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
     fetchPolicy,
     variables: queryVariables
   });
@@ -43,6 +44,8 @@ export const EventWidget = ({ navigation }: Props) => {
       rootRouteName: 'EventRecords'
     });
   }, [navigation]);
+
+  useHomeRefresh(refetch);
 
   const eventCount = data?.eventRecords?.length;
 

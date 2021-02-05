@@ -1,6 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  DeviceEventEmitter,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 
 import { auth } from '../auth';
 import {
@@ -17,6 +23,7 @@ import {
 import { colors, consts, normalize, texts } from '../config';
 import { graphqlFetchPolicy, parsePointsOfInterestAndTours, rootRouteName } from '../helpers';
 import { useMatomoAlertOnStartUp, useMatomoTrackScreenView, usePushNotifications } from '../hooks';
+import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
 import { favSettings } from '../icons';
 import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
@@ -80,9 +87,11 @@ export const HomeScreen = ({ navigation }) => {
 
   const refresh = () => {
     setRefreshing(true);
-    // for refetching data on the home screen we need to re-render the whole screen,
-    // in order to re-run every existing query.
-    // there is no solution to call the Apollo `refetch` for every `Query` component.
+
+    // this will trigger the onRefresh functions provided to the useHomeRefresh hook in other
+    // components.
+    DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
+
     // we simulate state change of `refreshing` with setting it to `true` first and after
     // a timeout to `false` again, which will result in a re-rendering of the screen.
     setTimeout(() => {
@@ -133,7 +142,7 @@ export const HomeScreen = ({ navigation }) => {
           />
         }
       >
-        <HomeCarousel navigation={navigation} refreshing={refreshing} />
+        <HomeCarousel navigation={navigation} />
         <Widgets navigation={navigation} widgets={widgets} />
 
         {showNews &&

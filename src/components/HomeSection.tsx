@@ -5,6 +5,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, consts, device } from '../config';
 import { parseListItemsFromQuery } from '../helpers';
+import { useHomeRefresh } from '../hooks/HomeRefresh';
 import { getQuery } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { Button } from './Button';
@@ -46,7 +47,12 @@ export const HomeSection = ({
   const { listTypesSettings } = useContext(SettingsContext);
   const listType = listTypesSettings[query];
 
-  const { data, loading } = useQuery(getQuery(query), { variables: queryVariables, fetchPolicy });
+  const { data, loading, refetch } = useQuery(getQuery(query), {
+    variables: queryVariables,
+    fetchPolicy
+  });
+
+  useHomeRefresh(refetch);
 
   if (loading) {
     return (
