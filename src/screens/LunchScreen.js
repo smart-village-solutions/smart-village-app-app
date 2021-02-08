@@ -11,6 +11,7 @@ import {
 import { colors, consts, normalize, texts } from '../config';
 import {
   BoldText,
+  Button,
   ConnectedImagesCarousel,
   HeaderLeft,
   Icon,
@@ -32,6 +33,8 @@ import { getQuery, QUERY_TYPES } from '../queries';
 const { MATOMO_TRACKING } = consts;
 
 export const LunchScreen = ({ navigation }) => {
+  const [poiId, setPoiId] = useState(navigation.getParam('poiId'));
+
   const [date, setDate] = useState(moment());
 
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -63,6 +66,12 @@ export const LunchScreen = ({ navigation }) => {
     [navigation]
   );
 
+  let lunchData = data?.[QUERY_TYPES.LUNCHES];
+
+  if (poiId) {
+    lunchData?.filter((item) => item?.pointOfInterest?.id === poiId);
+  }
+
   const ListHeaderComponent = (
     <>
       <ConnectedImagesCarousel
@@ -92,6 +101,12 @@ export const LunchScreen = ({ navigation }) => {
     </Wrapper>
   );
 
+  const ListFooterComponent = (
+    <Wrapper>
+      <Button title={texts.lunch.showAll} onPress={() => setPoiId(undefined)} />
+    </Wrapper>
+  );
+
   return (
     <SafeAreaViewFlex>
       <FlatList
@@ -104,13 +119,14 @@ export const LunchScreen = ({ navigation }) => {
             tintColor={colors.accent}
           />
         }
-        data={!loading && data?.[QUERY_TYPES.LUNCHES]}
+        data={!loading && lunchData}
         renderItem={renderItem}
         ListEmptyComponent={
           loading ? <ActivityIndicator color={colors.accent} /> : ListEmptyComponent
         }
         ListHeaderComponent={ListHeaderComponent}
         keyExtractor={(item) => item.id}
+        ListFooterComponent={poiId && ListFooterComponent}
       />
     </SafeAreaViewFlex>
   );

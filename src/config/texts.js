@@ -81,7 +81,8 @@ export const texts = {
     categoryTitleDetail: 'Nachricht'
   },
   lunch: {
-    noOffers: 'Für dieses Datum sind derzeit keine Angebote verfügbar.'
+    noOffers: 'Für dieses Datum sind derzeit keine Angebote verfügbar.',
+    showAll: 'Alle Mittagsangebote anzeigen'
   },
   navigationTitles: {
     home: 'Übersicht'
@@ -91,7 +92,8 @@ export const texts = {
     location: 'Anfahrt',
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
-    prices: 'Preise'
+    prices: 'Preise',
+    showLunches: 'Zum aktuellen Mittagsangebot'
   },
   pushNotifications: {
     approve: 'Jetzt einschalten',

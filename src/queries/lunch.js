@@ -27,6 +27,12 @@ export const GET_LUNCHES = gql`
           }
         }
         name
+        mediaContents {
+          contentType
+          sourceUrl {
+            url
+          }
+        }
         webUrls {
           id
           url

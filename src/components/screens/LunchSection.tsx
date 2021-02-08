@@ -8,6 +8,7 @@ import { formatAddress, shareMessage } from '../../helpers';
 import { location } from '../../icons';
 import { QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
+import { Logo } from '../Logo';
 import { BoldText, RegularText } from '../Text';
 import { InfoBox, Wrapper } from '../Wrapper';
 import { InfoCard } from './InfoCard';
@@ -33,20 +34,30 @@ type Address = {
   zip?: string;
 };
 
+type PointOfInterestData = {
+  id: string;
+  addresses?: Address[];
+  contact?: Contact;
+  mediaContents?: Array<{ contentType: string; sourceUrl?: { url?: string } }>;
+  name?: string;
+  webUrls?: WebUrl[];
+};
+
+export type LunchOfferEntry = {
+  name: string;
+  price: string;
+};
+
+export type LunchOfferData = {
+  id: string;
+  text?: string;
+  lunchOffers?: LunchOfferEntry[];
+  pointOfInterest: PointOfInterestData;
+  pointOfInterestAttributes?: string;
+};
+
 type Props = {
-  lunchOfferData: {
-    id: string;
-    text?: string;
-    lunchOffers?: Array<{ name: string; price: string }>;
-    pointOfInterest: {
-      id: string;
-      addresses?: Address[];
-      contact?: Contact;
-      name?: string;
-      webUrls?: WebUrl[];
-    };
-    pointOfInterestAttributes?: string;
-  };
+  lunchOfferData: LunchOfferData;
   navigation: NavigationScreenProp<never>;
 };
 
@@ -76,7 +87,9 @@ const LunchOffer = ({ name, price }: { name: string; price: string }) => (
 // eslint-disable-next-line complexity
 export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
   const { text, lunchOffers, pointOfInterest, pointOfInterestAttributes } = lunchOfferData;
-  const { addresses, contact, name, webUrls } = pointOfInterest;
+
+  // validation already filters out entries where pointOfInterest is null or undefined
+  const { addresses, contact, id, mediaContents, name, webUrls } = pointOfInterest;
 
   const {
     contactEmail,
@@ -105,25 +118,25 @@ export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
     [navigation]
   );
 
-  const onPress = useCallback(
-    () =>
-      navigation.navigate({
-        routeName: 'Detail',
-        params: {
-          title: texts.detailTitles.pointOfInterest,
-          query: QUERY_TYPES.POINT_OF_INTEREST,
-          queryVariables: { id: `${pointOfInterest.id}` },
-          shareContent: {
-            message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
-          },
-          details: {
-            ...pointOfInterest,
-            title: pointOfInterest.name
-          }
+  const onPress = useCallback(() => {
+    if (!id) return;
+
+    navigation.navigate({
+      routeName: 'Detail',
+      params: {
+        title: texts.detailTitles.pointOfInterest,
+        query: QUERY_TYPES.POINT_OF_INTEREST,
+        queryVariables: { id },
+        shareContent: {
+          message: shareMessage(pointOfInterest, QUERY_TYPES.POINT_OF_INTEREST)
+        },
+        details: {
+          ...(pointOfInterest as PointOfInterestData),
+          title: name
         }
-      }),
-    [navigation]
-  );
+      }
+    });
+  }, [id, name, navigation, pointOfInterest]);
 
   if (!lunchOffers?.length && !text?.length) {
     return null;
@@ -131,22 +144,22 @@ export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
 
   const address = formatAddress(addresses?.find((address: Address) => address.kind === 'default'));
 
+  const logo = mediaContents?.find((item) => item.contentType === 'logo')?.sourceUrl?.url;
+
   return (
     <Wrapper>
-      {/*
-      TODO: Logo
-      {!!dataProvider?.logo?.url && <Logo source={{ uri: dataProvider.logo.url }} />} */}
-      {(!!address || !!name) && (
-        <TouchableOpacity accessibilityLabel="Anbieterinformationen (Taste)" onPress={onPress}>
-          <InfoBox style={styles.addressContainer}>
-            <Icon xml={location(colors.primary)} style={styles.margin} />
-            <View style={styles.address}>
-              {!!name && <BoldText primary>{name}</BoldText>}
-              {!!address && <RegularText primary>{address}</RegularText>}
-            </View>
-          </InfoBox>
-        </TouchableOpacity>
-      )}
+      {!!logo && <Logo source={{ uri: logo }} />}
+
+      <TouchableOpacity accessibilityLabel="Anbieterinformationen (Taste)" onPress={onPress}>
+        <InfoBox style={styles.addressContainer}>
+          <Icon xml={location(colors.primary)} style={styles.margin} />
+          <View style={styles.address}>
+            <BoldText primary>{name}</BoldText>
+            {!!address && <RegularText primary>{address}</RegularText>}
+          </View>
+        </InfoBox>
+      </TouchableOpacity>
+
       <InfoCard
         contact={filteredContact}
         openWebScreen={openWebScreen}
