@@ -1,12 +1,11 @@
 import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, FlatList, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { ScrollView } from 'react-native';
+import { ActivityIndicator, FlatList, ScrollView, View } from 'react-native';
 
 import {
   DailyWeather,
+  HeaderLeft,
   HourlyWeather,
-  Icon,
   LoadingContainer,
   SafeAreaViewFlex,
   Title,
@@ -15,10 +14,9 @@ import {
   WeatherAlert,
   WrapperWithOrientation
 } from '../components';
-import { colors, consts, device, normalize, texts } from '../config';
+import { colors, consts, device, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
-import { arrowLeft } from '../icons';
 import { hasDailyWeather, hasHourlyWeather, parseValidAlerts } from '../jsonValidation';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
@@ -128,24 +126,8 @@ export const WeatherScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(14)
-  }
-});
-
 WeatherScreen.navigationOptions = ({ navigation }) => {
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Zurück Taste"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    )
+    headerLeft: <HeaderLeft navigation={navigation} />
   };
 };

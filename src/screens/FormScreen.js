@@ -1,21 +1,18 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import {
-  Alert,
-  KeyboardAvoidingView,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { Alert, KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { Mutation } from 'react-apollo';
 
 import { createQuery, QUERY_TYPES } from '../queries';
 import { colors, consts, device, normalize } from '../config';
-import { BoldText, Button, Icon, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
-import { arrowLeft } from '../icons';
+import {
+  BoldText,
+  Button,
+  HeaderLeft,
+  SafeAreaViewFlex,
+  WrapperWithOrientation
+} from '../components';
 import { OrientationContext } from '../OrientationProvider';
 import { getHeaderHeight, statusBarHeight } from '../navigation/CustomDrawerContentComponent';
 import { useMatomoTrackScreenView } from '../hooks';
@@ -144,17 +141,7 @@ export const FormScreen = () => {
 
 FormScreen.navigationOptions = ({ navigation }) => {
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Zurück Taste"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    )
+    headerLeft: <HeaderLeft navigation={navigation} />
   };
 };
 
@@ -185,9 +172,6 @@ const styles = StyleSheet.create({
   },
   checkboxTextStyle: {
     color: colors.darkText
-  },
-  icon: {
-    paddingHorizontal: normalize(14)
   }
 });
 

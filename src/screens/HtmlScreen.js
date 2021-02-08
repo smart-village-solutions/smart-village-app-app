@@ -1,23 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 import { Query } from 'react-apollo';
 import { useMatomo } from 'matomo-tracker-react-native';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
-import { colors, consts, normalize } from '../config';
+import { colors, consts } from '../config';
 import {
   Button,
+  HeaderLeft,
   HtmlView,
-  Icon,
   LoadingContainer,
   SafeAreaViewFlex,
   Wrapper,
@@ -25,7 +18,6 @@ import {
 } from '../components';
 import { graphqlFetchPolicy, trimNewLines } from '../helpers';
 import { getQuery } from '../queries';
-import { arrowLeft } from '../icons';
 import { useRefreshTime } from '../hooks';
 
 const { MATOMO_TRACKING } = consts;
@@ -177,25 +169,9 @@ export const HtmlScreen = ({ navigation }) => {
 
 HtmlScreen.navigationOptions = ({ navigation }) => {
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Zurück Taste"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    )
+    headerLeft: <HeaderLeft navigation={navigation} />
   };
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(14)
-  }
-});
 
 HtmlScreen.propTypes = {
   navigation: PropTypes.object.isRequired

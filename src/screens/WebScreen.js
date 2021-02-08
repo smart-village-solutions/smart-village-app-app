@@ -1,12 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
-import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useMatomo } from 'matomo-tracker-react-native';
 
-import { colors, consts, normalize } from '../config';
-import { Icon, LoadingContainer, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
-import { arrowLeft } from '../icons';
+import { colors, consts } from '../config';
+import {
+  HeaderLeft,
+  LoadingContainer,
+  SafeAreaViewFlex,
+  WrapperWithOrientation
+} from '../components';
 import { NetworkContext } from '../NetworkProvider';
 
 const { MATOMO_TRACKING } = consts;
@@ -44,25 +48,9 @@ export const WebScreen = ({ navigation }) => {
 
 WebScreen.navigationOptions = ({ navigation }) => {
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          accessibilityLabel="Zurück Taste"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-          onPress={() => navigation.goBack()}
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    )
+    headerLeft: <HeaderLeft navigation={navigation} />
   };
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(14)
-  }
-});
 
 WebScreen.propTypes = {
   navigation: PropTypes.object.isRequired

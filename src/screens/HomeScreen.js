@@ -226,8 +226,8 @@ HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
       <WrapperRow>
         <TouchableOpacity
           onPress={() => navigation.navigate('Bookmarks', { title: texts.bookmarks.bookmarks })}
-          accessibilityLabel="Einstellungen (Taste)"
-          accessibilityHint="Zu den Einstellungen wechseln"
+          accessibilityLabel="Einstellungen und Lesezeichen (Taste)"
+          accessibilityHint="Zu den Einstellungen und Lesezeichen wechseln"
         >
           <Icon
             style={headerRight ? styles.iconLeft : styles.iconRight}
