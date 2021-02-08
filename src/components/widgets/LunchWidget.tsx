@@ -5,6 +5,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
+import { useHomeRefresh } from '../../hooks/HomeRefresh';
 import { lunch } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
@@ -24,10 +25,12 @@ export const LunchWidget = ({ navigation }: Props) => {
     dateRange: [currentDate, currentDate]
   };
 
-  const { data } = useQuery(getQuery(QUERY_TYPES.LUNCHES), {
+  const { data, refetch } = useQuery(getQuery(QUERY_TYPES.LUNCHES), {
     fetchPolicy,
     variables
   });
+
+  useHomeRefresh(refetch);
 
   const onPress = useCallback(() => navigation.navigate('Lunch', { title: texts.widgets.lunch }), [
     navigation
