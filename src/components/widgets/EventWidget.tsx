@@ -49,7 +49,7 @@ export const EventWidget = ({ navigation }: Props) => {
   return (
     <DefaultWidget
       icon={calendar(colors.primary)}
-      number={eventCount}
+      count={eventCount}
       onPress={onPress}
       text={texts.widgets.events}
     />

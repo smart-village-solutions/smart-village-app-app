@@ -45,7 +45,7 @@ export const ConstructionSiteWidget = ({ navigation }: Props) => {
   return (
     <DefaultWidget
       icon={constructionSite(colors.primary)}
-      number={constructionSites.length}
+      count={constructionSites.length}
       onPress={onPress}
       text={texts.widgets.constructionSites}
     />

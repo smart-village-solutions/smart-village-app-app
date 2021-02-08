@@ -9,19 +9,19 @@ import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 type Props = {
   icon: string;
-  number?: number | string;
+  count?: number | string;
   onPress: () => void;
   text: string;
 };
 
-export const DefaultWidget = ({ icon, number, onPress, text }: Props) => {
+export const DefaultWidget = ({ icon, count, onPress, text }: Props) => {
   return (
     <Touchable onPress={onPress}>
       <WrapperVertical style={styles.container}>
         <WrapperRow center>
           <Icon style={styles.icon} xml={icon} />
           <BoldText primary big>
-            {number ?? ' '}
+            {count ?? ' '}
           </BoldText>
         </WrapperRow>
         <RegularText primary small>

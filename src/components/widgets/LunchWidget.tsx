@@ -36,7 +36,7 @@ export const LunchWidget = ({ navigation }: Props) => {
   return (
     <DefaultWidget
       icon={lunch(colors.primary)}
-      number={data?.[QUERY_TYPES.LUNCHES]?.length}
+      count={data?.[QUERY_TYPES.LUNCHES]?.length}
       onPress={onPress}
       text={texts.widgets.lunch}
     />

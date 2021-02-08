@@ -37,7 +37,7 @@ type Props = {
   lunchOfferData: {
     id: string;
     text?: string;
-    lunchOffers?: { name: string; price: string }[];
+    lunchOffers?: Array<{ name: string; price: string }>;
     pointOfInterest: {
       id: string;
       addresses?: Address[];
