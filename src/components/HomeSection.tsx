@@ -16,9 +16,9 @@ import { Touchable } from './Touchable';
 import { Wrapper } from './Wrapper';
 
 type Props = {
-  categoryTitle: string;
-  categoryTitleDetail?: string;
-  categoryButton: string;
+  title: string;
+  titleDetail?: string;
+  buttonTitle: string;
   fetchPolicy:
     | 'cache-first'
     | 'network-only'
@@ -26,7 +26,7 @@ type Props = {
     | 'no-cache'
     | 'standby'
     | 'cache-and-network';
-  navigateToCategory: () => void;
+  navigate: () => void;
   navigation: NavigationScreenProp<never>;
   query: string;
   queryParser?: (data: unknown) => unknown[];
@@ -34,11 +34,11 @@ type Props = {
 };
 
 export const HomeSection = ({
-  categoryButton,
-  categoryTitle,
-  categoryTitleDetail,
+  buttonTitle,
+  title,
+  titleDetail,
   fetchPolicy,
-  navigateToCategory,
+  navigate,
   navigation,
   query,
   queryParser,
@@ -63,17 +63,15 @@ export const HomeSection = ({
   }
 
   const items =
-    queryParser?.(data) ?? parseListItemsFromQuery(query, data, true, categoryTitleDetail ?? '');
+    queryParser?.(data) ?? parseListItemsFromQuery(query, data, true, titleDetail ?? '');
 
   if (!items || !items.length) return null;
 
   return (
     <>
       <TitleContainer>
-        <Touchable onPress={navigateToCategory}>
-          <Title accessibilityLabel={`${categoryTitle} (Überschrift) (Taste)`}>
-            {categoryTitle}
-          </Title>
+        <Touchable onPress={navigate}>
+          <Title accessibilityLabel={`${title} (Überschrift) (Taste)`}>{title}</Title>
         </Touchable>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
@@ -87,7 +85,7 @@ export const HomeSection = ({
         />
 
         <Wrapper>
-          <Button title={categoryButton} onPress={navigateToCategory} />
+          <Button title={buttonTitle} onPress={navigate} />
         </Wrapper>
       </View>
     </>

@@ -150,12 +150,12 @@ export const HomeScreen = ({ navigation }) => {
             ({ categoryButton, categoryId, categoryTitle, categoryTitleDetail }, index) => (
               <HomeSection
                 key={index}
-                categoryButton={categoryButton}
+                buttonTitle={categoryButton}
                 categoryId={categoryId}
-                categoryTitle={categoryTitle}
-                categoryTitleDetail={categoryTitleDetail}
+                title={categoryTitle}
+                titleDetail={categoryTitleDetail}
                 fetchPolicy={fetchPolicy}
-                navigateToCategory={() =>
+                navigate={() =>
                   navigation.navigate(
                     NAVIGATION.NEWS_ITEMS_INDEX({ categoryId, categoryTitle, categoryTitleDetail })
                   )
@@ -169,10 +169,10 @@ export const HomeScreen = ({ navigation }) => {
 
         {showPointsOfInterestAndTours && (
           <HomeSection
-            categoryButton={buttonPointsOfInterestAndTours}
-            categoryTitle={headlinePointsOfInterestAndTours}
+            buttonTitle={buttonPointsOfInterestAndTours}
+            title={headlinePointsOfInterestAndTours}
             fetchPolicy={fetchPolicy}
-            navigateToCategory={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}
+            navigate={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}
             navigation={navigation}
             query={QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS}
             queryParser={parsePointsOfInterestAndTours}
@@ -182,9 +182,9 @@ export const HomeScreen = ({ navigation }) => {
 
         {showEvents && (
           <HomeSection
-            categoryButton={buttonEvents}
-            categoryTitle={headlineEvents}
-            navigateToCategory={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}
+            buttonTitle={buttonEvents}
+            title={headlineEvents}
+            navigate={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}
             navigation={navigation}
             query={QUERY_TYPES.EVENT_RECORDS}
             queryVariables={{ limit: 3, order: 'listDate_ASC' }}
