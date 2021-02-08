@@ -12,9 +12,8 @@ import {
 import { colors, consts, normalize, texts } from '../config';
 import {
   BoldText,
+  ConnectedImagesCarousel,
   Icon,
-  Image,
-  ImagesCarousel,
   LunchSection,
   RegularText,
   SafeAreaViewFlex,
@@ -31,31 +30,6 @@ import { useQuery } from 'react-apollo';
 import { getQuery, QUERY_TYPES } from '../queries';
 
 const { MATOMO_TRACKING } = consts;
-
-// TODO: remove dummy images
-const images = [
-  {
-    picture: {
-      captionText: 'Rinder, Foto: Reiter- & Erlebnisbauernhof Groß Briesen',
-      copyright: null,
-      uri: 'http://backoffice2.reiseland-brandenburg.de/rpcServer/file/get/id/284434'
-    }
-  },
-  {
-    picture: {
-      captionText: 'Rinder, Foto: Reiter- & Erlebnisbauernhof Groß Briesen',
-      copyright: null,
-      uri: 'http://backoffice2.reiseland-brandenburg.de/rpcServer/file/get/id/128936'
-    }
-  },
-  {
-    picture: {
-      captionText: 'Hofansicht, Foto: Reiter- & Erlebnisbauernhof Groß Briesen',
-      copyright: null,
-      uri: 'http://backoffice2.reiseland-brandenburg.de/rpcServer/file/get/id/128935'
-    }
-  }
-];
 
 export const LunchScreen = ({ navigation }) => {
   const [date, setDate] = useState(moment());
@@ -91,12 +65,12 @@ export const LunchScreen = ({ navigation }) => {
 
   const ListHeaderComponent = (
     <>
-      {!!images && images.length > 1 && <ImagesCarousel data={images} />}
-
+      <ConnectedImagesCarousel
+        navigation={navigation}
+        publicJsonFile="lunchCarousel"
+        refreshTimeKey="publicJsonFile-lunchCarousel"
+      />
       <WrapperWithOrientation>
-        {!!images && images.length === 1 && (
-          <Image source={images[0].picture} containerStyle={styles.imageContainer} />
-        )}
         <Wrapper>
           <WrapperRow>
             <TouchableOpacity onPress={onPressPrevious} style={styles.left}>

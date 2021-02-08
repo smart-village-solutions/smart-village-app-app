@@ -10,6 +10,7 @@ export * from './CardList';
 export * from './CardListItem';
 export * from './CategoryList';
 export * from './CategoryListItem';
+export * from './ConnectedImagesCarousel';
 export * from './DiagonalGradient';
 export * from './DropdownHeader';
 export * from './DropdownSelect';
