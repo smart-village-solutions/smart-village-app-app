@@ -5,14 +5,14 @@ import {
   FlatList,
   RefreshControl,
   StyleSheet,
-  TouchableOpacity,
-  View
+  TouchableOpacity
 } from 'react-native';
 
 import { colors, consts, normalize, texts } from '../config';
 import {
   BoldText,
   ConnectedImagesCarousel,
+  HeaderLeft,
   Icon,
   LunchSection,
   RegularText,
@@ -118,24 +118,11 @@ export const LunchScreen = ({ navigation }) => {
 
 LunchScreen.navigationOptions = ({ navigation }) => {
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Zurück Taste"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    )
+    headerLeft: <HeaderLeft navigation={navigation} />
   };
 };
 
 const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(14)
-  },
   left: {
     flex: 1,
     marginRight: normalize(12)
