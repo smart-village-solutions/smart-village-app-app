@@ -1,4 +1,5 @@
 import _filter from 'lodash/filter';
+import _shuffle from 'lodash/shuffle';
 
 import { consts, texts } from '../config';
 import { QUERY_TYPES } from '../queries';
@@ -151,4 +152,12 @@ export const parseListItemsFromQuery = (query, data, skipLastDivider, titleDetai
     case QUERY_TYPES.CATEGORIES:
       return parseCategories(data[query], skipLastDivider);
   }
+};
+
+export const parsePointsOfInterestAndTours = (data) => {
+  const pointsOfInterest = parsePointOfInterest(data?.[QUERY_TYPES.POINTS_OF_INTEREST]);
+
+  const tours = parseTours(data?.[QUERY_TYPES.TOURS]);
+
+  return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };

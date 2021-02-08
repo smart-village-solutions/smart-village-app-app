@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { ActivityIndicator } from 'react-native';
-import { Query } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 import _shuffle from 'lodash/shuffle';
 
 import { NetworkContext } from '../../NetworkProvider';
@@ -12,20 +12,13 @@ import { LoadingContainer } from '../LoadingContainer';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { graphqlFetchPolicy, parsedImageAspectRatio } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
+import { useHomeRefresh } from '../../hooks/HomeRefresh';
 
-export const HomeCarousel = ({ navigation, refreshing }) => {
+export const HomeCarousel = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
 
   const refreshTime = useRefreshTime('publicJsonFile-homeCarousel');
-
-  if (!refreshTime) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
-      </LoadingContainer>
-    );
-  }
 
   const fetchPolicy = graphqlFetchPolicy({
     isConnected,
@@ -33,50 +26,44 @@ export const HomeCarousel = ({ navigation, refreshing }) => {
     refreshTime
   });
 
+  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.PUBLIC_JSON_FILE), {
+    variables: { name: 'homeCarousel' },
+    fetchPolicy,
+    skip: !refreshTime
+  });
+
+  useHomeRefresh(refetch);
+
+  if (!refreshTime || loading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
+
+  let homeCarouselData = [];
+
+  try {
+    homeCarouselData = JSON.parse(data?.publicJsonFile?.content);
+  } catch (error) {
+    console.warn(error, data);
+  }
+
+  if (!homeCarouselData || !homeCarouselData.length) return null;
+
   return (
-    <Query
-      query={getQuery(QUERY_TYPES.PUBLIC_JSON_FILE)}
-      variables={{ name: 'homeCarousel' }}
+    <ImagesCarousel
+      navigation={navigation}
+      data={_shuffle(homeCarouselData)}
       fetchPolicy={fetchPolicy}
-    >
-      {({ data, loading, refetch }) => {
-        // call the refetch method of Apollo after `refreshing` is given with `true`, which happens
-        // when pull to refresh is used in the parent component
-        if (refreshing) refetch();
-        if (loading) {
-          return (
-            <LoadingContainer>
-              <ActivityIndicator color={colors.accent} />
-            </LoadingContainer>
-          );
-        }
-
-        let homeCarouselData = [];
-
-        try {
-          homeCarouselData = JSON.parse(data?.publicJsonFile?.content);
-        } catch (error) {
-          console.warn(error, data);
-        }
-
-        if (!homeCarouselData || !homeCarouselData.length) return null;
-
-        return (
-          <ImagesCarousel
-            navigation={navigation}
-            data={_shuffle(homeCarouselData)}
-            fetchPolicy={fetchPolicy}
-            aspectRatio={parsedImageAspectRatio(globalSettings?.homeCarousel?.imageAspectRatio)}
-          />
-        );
-      }}
-    </Query>
+      aspectRatio={parsedImageAspectRatio(globalSettings?.homeCarousel?.imageAspectRatio)}
+    />
   );
 };
 
 HomeCarousel.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  refreshing: PropTypes.bool
+  navigation: PropTypes.object.isRequired
 };
 
 HomeCarousel.defaultProps = {

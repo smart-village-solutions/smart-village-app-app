@@ -6,6 +6,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { colors, normalize, texts } from '../../config';
 import { ConstructionSiteContext } from '../../ConstructionSiteProvider';
 import { graphqlFetchPolicy } from '../../helpers';
+import { useHomeRefresh } from '../../hooks/HomeRefresh';
 import { constructionSite } from '../../icons';
 import { filterForValidConstructionSites } from '../../jsonValidation';
 import { NetworkContext } from '../../NetworkProvider';
@@ -25,7 +26,7 @@ export const ConstructionSiteWidget = ({ navigation }: Props) => {
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
-  const { data } = useQuery(getQuery(QUERY_TYPES.PUBLIC_JSON_FILE), {
+  const { data, refetch } = useQuery(getQuery(QUERY_TYPES.PUBLIC_JSON_FILE), {
     variables: { name: 'constructionSites' },
     fetchPolicy
   });
@@ -33,6 +34,8 @@ export const ConstructionSiteWidget = ({ navigation }: Props) => {
   const onPress = useCallback(() => {
     navigation.navigate('ConstructionSiteOverview');
   }, [constructionSites, navigation]);
+
+  useHomeRefresh(refetch);
 
   useEffect(() => {
     if (data) {

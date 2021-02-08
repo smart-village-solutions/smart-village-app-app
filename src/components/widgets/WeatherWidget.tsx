@@ -5,6 +5,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { consts, normalize } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
+import { useHomeRefresh } from '../../hooks/HomeRefresh';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { Image } from '../Image';
@@ -21,10 +22,12 @@ export const WeatherWidget = ({ navigation }: { navigation: NavigationScreenProp
     fetchPolicy === 'network-only'
       ? { fetchPolicy, pollInterval: POLL_INTERVALS.WEATHER }
       : { fetchPolicy };
-  const { data } = useQuery(getQuery(QUERY_TYPES.WEATHER_MAP_CURRENT), queryVariables);
+  const { data, refetch } = useQuery(getQuery(QUERY_TYPES.WEATHER_MAP_CURRENT), queryVariables);
 
   const icon = data?.weatherMap?.current?.weather?.[0]?.icon ?? '02d';
   const temperature = data?.weatherMap?.current?.temp;
+
+  useHomeRefresh(refetch);
 
   return (
     <Touchable
