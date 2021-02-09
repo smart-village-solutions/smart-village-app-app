@@ -1,32 +1,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { WebView } from 'react-native-webview';
-import _filter from 'lodash/filter';
+import { View } from 'react-native';
 
-import { colors, consts, device, normalize } from '../../config';
-import { HtmlView } from '../HtmlView';
-import { Image } from '../Image';
-import { LoadingContainer } from '../LoadingContainer';
+import { consts, device } from '../../config';
+import { matomoTrackingString, momentFormat, trimNewLines } from '../../helpers';
+import { useMatomoTrackScreenView } from '../../hooks';
+import { ImageSection } from '../ImageSection';
 import { Logo } from '../Logo';
+import { StorySection } from '../StorySection';
+import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
-import { ImagesCarousel } from '../ImagesCarousel';
-import { containsHtml, matomoTrackingString, momentFormat, trimNewLines } from '../../helpers';
-import { BoldText, RegularText } from '../Text';
-import { Button } from '../Button';
-import { useMatomoTrackScreenView } from '../../hooks';
-
-// necessary hacky way of implementing iframe in webview with correct zoom level
-// thx to: https://stackoverflow.com/a/55780430
-const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
-  const meta = document.createElement('meta');
-  meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=0.99, user-scalable=0');
-  meta.setAttribute('name', 'viewport');
-  document.getElementsByTagName('head')[0].appendChild(meta);
-  true;
-`;
+import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -72,159 +57,12 @@ export const NewsItem = ({ data, navigation }) => {
     ])
   );
 
-  // the images from the first content block will be present in the main image carousel
-  let mainImages = [];
-  !!contentBlocks &&
-    !!contentBlocks.length &&
-    !!contentBlocks[0].mediaContents &&
-    !!contentBlocks[0].mediaContents.length &&
-    _filter(
-      contentBlocks[0].mediaContents,
-      (mediaContent) =>
-        mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-    ).forEach((mediaContent) => {
-      !!mediaContent.sourceUrl &&
-        !!mediaContent.sourceUrl.url &&
-        mainImages.push({
-          picture: {
-            uri: mediaContent.sourceUrl.url,
-            copyright: mediaContent.copyright,
-            captionText: mediaContent.captionText
-          }
-        });
-    });
-
-  // the story is a map of all available content blocks
-  // each content block can have multiple media
-  let story = [];
-  if (!!contentBlocks && !!contentBlocks.length) {
-    contentBlocks.forEach((contentBlock, index) => {
-      let section = [];
-      let sectionImages = [];
-
-      // skip the title for the first content block because it is used as the main title
-      if (index > 0) {
-        !!contentBlock.title &&
-          section.push(
-            <Wrapper key={`${index}-${contentBlock.id}-title`}>
-              <BoldText>{trimNewLines(contentBlock.title)}</BoldText>
-            </Wrapper>
-          );
-      }
-
-      !!contentBlock.intro &&
-        section.push(
-          <WrapperHorizontal key={`${index}-${contentBlock.id}-intro`}>
-            <HtmlView
-              html={trimNewLines(
-                `<div>${
-                  containsHtml(contentBlock.intro)
-                    ? contentBlock.intro
-                    : `<p>${contentBlock.intro}</p>`
-                }</div>`
-              )}
-              tagsStyles={{ div: { fontFamily: 'titillium-web-bold' } }}
-              openWebScreen={openWebScreen}
-            />
-          </WrapperHorizontal>
-        );
-
-      // skip images for the first content block because they are rendered as main images
-      if (index > 0) {
-        !!contentBlock.mediaContents &&
-          !!contentBlock.mediaContents.length &&
-          _filter(
-            contentBlock.mediaContents,
-            (mediaContent) =>
-              mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-          ).forEach((mediaContent) => {
-            !!mediaContent.sourceUrl &&
-              !!mediaContent.sourceUrl.url &&
-              sectionImages.push({
-                picture: {
-                  uri: mediaContent.sourceUrl.url,
-                  copyright: mediaContent.copyright,
-                  captionText: mediaContent.captionText
-                }
-              });
-          });
-      }
-
-      !!sectionImages &&
-        sectionImages.length > 1 &&
-        section.push(
-          <ImagesCarousel data={sectionImages} key={`${index}-${contentBlock.id}-imagesCarousel`} />
-        );
-      !!sectionImages &&
-        sectionImages.length === 1 &&
-        section.push(
-          <Image
-            source={sectionImages[0].picture}
-            containerStyle={styles.imageContainer}
-            key={`${index}-${contentBlock.id}-image`}
-          />
-        );
-
-      (!settings ||
-        (!!settings && !!settings.displayOnlySummary && settings.displayOnlySummary == 'false')) &&
-        !!contentBlock.body &&
-        section.push(
-          <WrapperHorizontal key={`${index}-${contentBlock.id}-body`}>
-            <HtmlView html={trimNewLines(contentBlock.body)} openWebScreen={openWebScreen} />
-          </WrapperHorizontal>
-        );
-
-      !!contentBlock.mediaContents &&
-        !!contentBlock.mediaContents.length &&
-        _filter(
-          contentBlock.mediaContents,
-          (mediaContent) =>
-            mediaContent.contentType === 'video' || mediaContent.contentType === 'audio'
-        ).forEach((mediaContent) => {
-          !!mediaContent.sourceUrl &&
-            !!mediaContent.sourceUrl.url &&
-            section.push(
-              <WrapperHorizontal key={`${index}-${contentBlock.id}-mediaContent${mediaContent.id}`}>
-                <WebView
-                  source={{ html: trimNewLines(mediaContent.sourceUrl.url) }}
-                  style={styles.iframeWebView}
-                  scrollEnabled={false}
-                  bounces={false}
-                  injectedJavaScript={INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW}
-                  startInLoadingState
-                  renderLoading={() => (
-                    <LoadingContainer web>
-                      <ActivityIndicator color={colors.accent} />
-                    </LoadingContainer>
-                  )}
-                />
-              </WrapperHorizontal>
-            );
-        });
-
-      !!settings &&
-        !!settings.displayOnlySummary &&
-        settings.displayOnlySummary == 'true' &&
-        !!settings.onlySummaryLinkText &&
-        section.push(
-          <WrapperHorizontal key={`${index}-${contentBlock.id}-onlySummaryLinkText`}>
-            <Button title={settings.onlySummaryLinkText} onPress={openWebScreen} />
-          </WrapperHorizontal>
-        );
-
-      story.push(<View key={`${index}-${contentBlock.id}`}>{section}</View>);
-    });
-  }
-
   return (
     <View>
-      {!!mainImages && mainImages.length > 1 && <ImagesCarousel data={mainImages} />}
+      {/* the images from the first content block will be present in the main image carousel */}
+      <ImageSection mediaContents={contentBlocks?.[0]?.mediaContents} />
 
       <WrapperWithOrientation>
-        {!!mainImages && mainImages.length === 1 && (
-          <Image source={mainImages[0].picture} containerStyle={styles.imageContainer} />
-        )}
-
         {!!title && !!link ? (
           <TitleContainer>
             <Touchable onPress={openWebScreen}>
@@ -248,22 +86,21 @@ export const NewsItem = ({ data, navigation }) => {
           {!!logo && <Logo source={{ uri: logo }} />}
         </Wrapper>
 
-        {!!story && story}
+        {!!contentBlocks?.length &&
+          contentBlocks.map((contentBlock, index) => (
+            <StorySection
+              key={`${contentBlock.id}-${index}`}
+              contentBlock={contentBlock}
+              index={index}
+              openWebScreen={openWebScreen}
+              settings={settings}
+            />
+          ))}
       </WrapperWithOrientation>
     </View>
   );
 };
 /* eslint-enable complexity */
-
-const styles = StyleSheet.create({
-  iframeWebView: {
-    height: normalize(210),
-    width: '100%'
-  },
-  imageContainer: {
-    alignSelf: 'center'
-  }
-});
 
 NewsItem.propTypes = {
   data: PropTypes.object.isRequired,
