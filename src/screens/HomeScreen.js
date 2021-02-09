@@ -194,8 +194,8 @@ export const HomeScreen = ({ navigation }) => {
 
         {globalSettings.navigation === DRAWER && (
           <>
-            <Service navigation={navigation} refreshing={refreshing} />
-            <About navigation={navigation} refreshing={refreshing} />
+            <Service navigation={navigation} />
+            <About navigation={navigation} />
             <VersionNumber />
           </>
         )}

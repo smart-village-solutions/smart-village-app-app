@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Query } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
@@ -17,108 +17,96 @@ import { getQuery, QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
+import { useHomeRefresh } from '../../hooks/HomeRefresh';
 
-export const Service = ({ navigation, refreshing }) => {
+export const Service = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const { globalSettings } = useContext(SettingsContext);
 
   const refreshTime = useRefreshTime('publicJsonFile-homeService');
 
-  if (!refreshTime) return null;
-
   const fetchPolicy = graphqlFetchPolicy({
     isConnected,
     isMainserverUp,
     refreshTime
   });
+
+  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.PUBLIC_JSON_FILE), {
+    variables: { name: 'homeService' },
+    fetchPolicy,
+    skip: !refreshTime
+  });
+
+  useHomeRefresh(refetch);
+
+  if (!refreshTime || loading) return null;
+
+  let publicJsonFileContent = [];
+
+  try {
+    publicJsonFileContent = JSON.parse(data?.publicJsonFile?.content);
+  } catch (error) {
+    console.warn(error, data);
+  }
+
+  if (!publicJsonFileContent?.length) return null;
+
   const { sections = {} } = globalSettings;
   const { headlineService = texts.homeTitles.service } = sections;
 
   return (
-    <Query
-      query={getQuery(QUERY_TYPES.PUBLIC_JSON_FILE)}
-      variables={{ name: 'homeService' }}
-      fetchPolicy={fetchPolicy}
-    >
-      {({ data, loading, refetch }) => {
-        // call the refetch method of Apollo after `refreshing` is given with `true`, which happens
-        // when pull to refresh is used in the parent component
-        if (refreshing) refetch();
-        if (loading) return null;
-
-        let publicJsonFileContent = [];
-
-        try {
-          publicJsonFileContent = JSON.parse(data?.publicJsonFile?.content);
-        } catch (error) {
-          console.warn(error, data);
-        }
-
-        if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
-
-        return (
-          <View>
-            {!!headlineService && (
-              <TitleContainer>
-                <Title accessibilityLabel={`${headlineService} (Überschrift)`}>
-                  {headlineService}
-                </Title>
-              </TitleContainer>
-            )}
-            {!!headlineService && device.platform === 'ios' && <TitleShadow />}
-            <DiagonalGradient style={{ padding: normalize(14) }}>
-              <WrapperWrap spaceBetween>
-                {publicJsonFileContent.map((item, index) => {
-                  return (
-                    <ServiceBox
-                      key={index + item.title}
-                      orientation={orientation}
-                      dimensions={dimensions}
-                    >
-                      <TouchableOpacity
-                        onPress={() =>
-                          navigation.navigate({
-                            routeName: item.routeName,
-                            params: item.params
-                          })
-                        }
-                      >
-                        <View>
-                          {item.iconName ? (
-                            <Icon
-                              name={item.iconName}
-                              size={30}
-                              style={styles.serviceIcon}
-                              iconColor={colors.lightestText}
-                            />
-                          ) : (
-                            <Image
-                              source={{ uri: item.icon }}
-                              style={styles.serviceImage}
-                              PlaceholderContent={null}
-                              resizeMode="contain"
-                            />
-                          )}
-                          <BoldText
-                            small
-                            lightest
-                            center
-                            accessibilityLabel={`${item.title} (Taste)`}
-                          >
-                            {item.title}
-                          </BoldText>
-                        </View>
-                      </TouchableOpacity>
-                    </ServiceBox>
-                  );
-                })}
-              </WrapperWrap>
-            </DiagonalGradient>
-          </View>
-        );
-      }}
-    </Query>
+    <View>
+      {!!headlineService && (
+        <TitleContainer>
+          <Title accessibilityLabel={`${headlineService} (Überschrift)`}>{headlineService}</Title>
+        </TitleContainer>
+      )}
+      {!!headlineService && device.platform === 'ios' && <TitleShadow />}
+      <DiagonalGradient style={{ padding: normalize(14) }}>
+        <WrapperWrap spaceBetween>
+          {publicJsonFileContent.map((item, index) => {
+            return (
+              <ServiceBox
+                key={index + item.title}
+                orientation={orientation}
+                dimensions={dimensions}
+              >
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate({
+                      routeName: item.routeName,
+                      params: item.params
+                    })
+                  }
+                >
+                  <View>
+                    {item.iconName ? (
+                      <Icon
+                        name={item.iconName}
+                        size={30}
+                        style={styles.serviceIcon}
+                        iconColor={colors.lightestText}
+                      />
+                    ) : (
+                      <Image
+                        source={{ uri: item.icon }}
+                        style={styles.serviceImage}
+                        PlaceholderContent={null}
+                        resizeMode="contain"
+                      />
+                    )}
+                    <BoldText small lightest center accessibilityLabel={`${item.title} (Taste)`}>
+                      {item.title}
+                    </BoldText>
+                  </View>
+                </TouchableOpacity>
+              </ServiceBox>
+            );
+          })}
+        </WrapperWrap>
+      </DiagonalGradient>
+    </View>
   );
 };
 
@@ -136,10 +124,5 @@ const styles = StyleSheet.create({
 });
 
 Service.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  refreshing: PropTypes.bool
-};
-
-Service.defaultProps = {
-  refreshing: false
+  navigation: PropTypes.object.isRequired
 };
