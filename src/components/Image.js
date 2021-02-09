@@ -57,7 +57,7 @@ export const Image = ({
         borderRadius={borderRadius}
       />
       {!!message && <ImageMessage message={message} />}
-      {globalSettings?.showImageRights && source?.copyright && (
+      {!!globalSettings?.showImageRights && !!source?.copyright && (
         <ImageRights imageRights={source.copyright} />
       )}
     </View>
