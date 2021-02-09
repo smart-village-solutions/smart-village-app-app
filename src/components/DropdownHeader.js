@@ -76,6 +76,9 @@ export const DropdownHeader = ({ query, queryVariables, data, updateListData }) 
     }
   }, [selectedDropdownData.value]);
 
+  // do not show a filter, if there is just one entry (Alle + Item = 2)
+  if (dropdownData.length <= 2) return null;
+
   return (
     <Wrapper>
       <DropdownSelect data={dropdownData} setData={setDropdownData} label={dropdownLabel} />
