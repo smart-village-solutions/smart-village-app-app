@@ -20,6 +20,7 @@ export * from './HomeSection';
 export * from './HtmlView';
 export * from './Icon';
 export * from './Image';
+export * from './ImageSection';
 export * from './ImagesCarousel';
 export * from './ImagesCarouselItem';
 export * from './ImageTextList';

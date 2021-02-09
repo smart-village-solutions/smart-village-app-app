@@ -1,21 +1,19 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import _filter from 'lodash/filter';
+import { View } from 'react-native';
 
 import { consts, device, texts } from '../../config';
+import { matomoTrackingString } from '../../helpers';
+import { useMatomoTrackScreenView } from '../../hooks';
 import { HtmlView } from '../HtmlView';
-import { Image } from '../Image';
+import { ImageSection } from '../ImageSection';
+import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
-import { TourCard } from './TourCard';
-import { ImagesCarousel } from '../ImagesCarousel';
-import { useMatomoTrackScreenView } from '../../hooks';
-import { matomoTrackingString } from '../../helpers';
 import { TMBNotice } from '../TMB/Notice';
-import { InfoCard } from '../infoCard';
+import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { OperatingCompany } from './OperatingCompany';
+import { TourCard } from './TourCard';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -61,34 +59,11 @@ export const Tour = ({ data, navigation }) => {
     ])
   );
 
-  let images = [];
-  !!mediaContents &&
-    !!mediaContents.length &&
-    _filter(
-      mediaContents,
-      (mediaContent) =>
-        mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-    ).forEach((item) => {
-      !!item.sourceUrl &&
-        !!item.sourceUrl.url &&
-        images.push({
-          picture: {
-            uri: item.sourceUrl.url,
-            copyright: item.copyright,
-            captionText: item.captionText
-          }
-        });
-    });
-
   return (
     <View>
-      {!!images && images.length > 1 && <ImagesCarousel data={images} />}
+      <ImageSection mediaContents={mediaContents} />
 
       <WrapperWithOrientation>
-        {!!images && images.length === 1 && (
-          <Image source={images[0].picture} containerStyle={styles.imageContainer} />
-        )}
-
         {!!title && (
           <View>
             <TitleContainer>
@@ -132,12 +107,6 @@ export const Tour = ({ data, navigation }) => {
   );
 };
 /* eslint-enable complexity */
-
-const styles = StyleSheet.create({
-  imageContainer: {
-    alignSelf: 'center'
-  }
-});
 
 Tour.propTypes = {
   data: PropTypes.object.isRequired,

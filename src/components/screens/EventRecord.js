@@ -6,7 +6,6 @@ import _filter from 'lodash/filter';
 
 import { colors, consts, device, normalize, texts } from '../../config';
 import { HtmlView } from '../HtmlView';
-import { Image } from '../Image';
 import { LoadingContainer } from '../LoadingContainer';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
@@ -14,10 +13,10 @@ import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
 import { PriceCard } from './PriceCard';
 import { OpeningTimesCard } from './OpeningTimesCard';
-import { ImagesCarousel } from '../ImagesCarousel';
 import { matomoTrackingString, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { TMBNotice } from '../TMB/Notice';
+import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { OperatingCompany } from './OperatingCompany';
 
@@ -76,26 +75,7 @@ export const EventRecord = ({ data, navigation }) => {
   );
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
-  let images = [];
   let media = [];
-
-  !!mediaContents &&
-    !!mediaContents.length &&
-    _filter(
-      mediaContents,
-      (mediaContent) =>
-        mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-    ).forEach((mediaContent) => {
-      !!mediaContent.sourceUrl &&
-        !!mediaContent.sourceUrl.url &&
-        images.push({
-          picture: {
-            uri: mediaContent.sourceUrl.url,
-            copyright: mediaContent.copyright,
-            captionText: mediaContent.captionText
-          }
-        });
-    });
 
   !!mediaContents &&
     !!mediaContents.length &&
@@ -126,13 +106,9 @@ export const EventRecord = ({ data, navigation }) => {
 
   return (
     <View>
-      {!!images && images.length > 1 && <ImagesCarousel data={images} />}
+      <ImageSection mediaContents={mediaContents} />
 
       <WrapperWithOrientation>
-        {!!images && images.length === 1 && (
-          <Image source={images[0].picture} containerStyle={styles.imageContainer} />
-        )}
-
         {!!title && !!link ? (
           <TitleContainer>
             <Touchable onPress={openWebScreen}>
@@ -217,9 +193,6 @@ const styles = StyleSheet.create({
   iframeWebView: {
     height: normalize(210),
     width: '100%'
-  },
-  imageContainer: {
-    alignSelf: 'center'
   }
 });
 
