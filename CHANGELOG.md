@@ -5,6 +5,49 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.5.5]
+
+Lunch widget and different optimizations
+
+### Added
+
+- added lunch widget and corresponding screen
+  - added left and right navigation for date header
+  - added hourly refresh times to both the widget and the screen
+- added option to customize widget texts serversided
+- added logo to points of interest
+  - the logo of the data provider is now visible on points of interest in the same way
+    as it is for tours
+- added reusable header left component to reduce duplication
+
+### Changed
+
+- refactored the homescreen to reduce code redundancy
+  - added `useHomeRefresh` hook to add to components that have internal functions that need to
+    be called when the pull-to-refresh is triggered
+  - added `useHomeRefresh` hook to widgets and new `HomeSection` component that was the result of
+    the refactoring
+- refactored HomeCarousel
+  - removed specifics to homeScreen from component
+  - used it on lunch screen as well
+- refactored widgets to use a DefaultWidget component
+- exchanged widget touchable with touchable opacity
+  - with no padding horizontally the touch shadow looked wrong on Android
+- do not show a filter when there is just one entry on list/index screens
+
+### Fixed
+
+- added parsing for number encoded character to custom text component
+  - replaced all other text components with custom component
+- fixed crashing on empty string for image copyrights
+  - the empty string is evaluated to false
+    - this caused it to be tried to to be rendered (outside of text component)
+- removed `paddingVertical` from icons in header to fix cut icons in some cases
+  - paddingVertical was apparently unnecessary and created a bug
+  - without it the bug does not occur and there is no break in all other devices
+  - added a new prop `hitSlop` which defines how far a touch event can start away from the view
+    resulting in a "smooth touch" experience
+
 ## [v1.5.4]
 
 Time and day dependent slider elements and smaller adjustments
