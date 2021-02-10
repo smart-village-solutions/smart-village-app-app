@@ -36,7 +36,7 @@ export const EventWidget = ({ navigation, text }: WidgetProps) => {
       queryVariables,
       rootRouteName: 'EventRecords'
     });
-  }, [navigation]);
+  }, [navigation, text, queryVariables]);
 
   useHomeRefresh(refetch);
 

@@ -29,12 +29,12 @@ export const LunchWidget = ({ navigation, text }: WidgetProps) => {
     skip: !refreshTime
   });
 
-  useHomeRefresh(refetch);
-
   const onPress = useCallback(
     () => navigation.navigate('Lunch', { title: text ?? texts.widgets.lunch }),
-    [navigation]
+    [navigation, text]
   );
+
+  useHomeRefresh(refetch);
 
   return (
     <DefaultWidget
