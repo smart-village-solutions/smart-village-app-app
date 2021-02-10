@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components/native';
 
 import { colors, normalize } from '../config';
 
+// example: S&#322;ubice -> Słubice
 function parseNumericCharacterReferences(text) {
   if (!text) return;
 

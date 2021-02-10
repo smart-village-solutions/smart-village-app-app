@@ -4,8 +4,8 @@ import { StyleSheet, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
 import { colors, normalize } from '../../config';
+import { Label } from '../Label';
 import { WrapperHorizontal } from '../Wrapper';
-import { Label } from './Label';
 
 export const TextSearch = memo(({ data, setData, label, placeholder }) => {
   return (
