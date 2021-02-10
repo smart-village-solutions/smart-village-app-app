@@ -1,8 +1,29 @@
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Text as RNText } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
 import { colors, normalize } from '../config';
 
-export const RegularText = styled.Text`
+function parseNumericCharacterReferences(text) {
+  if (!text) return;
+
+  const pattern = /&#\d+;/gm;
+
+  return text.replace(pattern, (match) =>
+    String.fromCharCode(parseInt(match.substr(2, match.length - 3)))
+  );
+}
+
+export const Text = ({ children, ...props }) => {
+  return (
+    <RNText {...props}>
+      {typeof children === 'string' ? parseNumericCharacterReferences(children) : children}
+    </RNText>
+  );
+};
+
+export const RegularText = styled(Text)`
   color: ${colors.darkText};
   font-family: titillium-web-regular;
   font-size: ${normalize(16)};
@@ -68,3 +89,7 @@ export const RegularText = styled.Text`
 export const BoldText = styled(RegularText)`
   font-family: titillium-web-bold;
 `;
+
+Text.propTypes = {
+  children: PropTypes.node.isRequired
+};

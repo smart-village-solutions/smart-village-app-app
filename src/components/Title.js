@@ -1,8 +1,9 @@
 import styled, { css } from 'styled-components/native';
 
 import { colors, device, normalize } from '../config';
+import { Text } from './Text';
 
-export const Title = styled.Text`
+export const Title = styled(Text)`
   color: ${colors.primary};
   font-family: titillium-web-bold;
   font-size: ${normalize(20)};
