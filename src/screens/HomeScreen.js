@@ -35,7 +35,7 @@ export const HomeScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings } = useContext(SettingsContext);
-  const { sections = {}, widgets } = globalSettings;
+  const { sections = {}, widgets: widgetConfigs } = globalSettings;
   const {
     showNews = true,
     showPointsOfInterestAndTours = true,
@@ -148,7 +148,7 @@ export const HomeScreen = ({ navigation }) => {
           publicJsonFile="homeCarousel"
           refreshTimeKey="publicJsonFile-homeCarousel"
         />
-        <Widgets navigation={navigation} widgetConfigs={widgets} />
+        <Widgets navigation={navigation} widgetConfigs={widgetConfigs} />
 
         {showNews &&
           categoriesNews.map(
