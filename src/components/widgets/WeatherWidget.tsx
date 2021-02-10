@@ -3,15 +3,15 @@ import { useQuery } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { consts, normalize } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { Image } from '../Image';
-import { BoldText } from '../Text';
+import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 const { POLL_INTERVALS } = consts;
 
@@ -34,7 +34,7 @@ export const WeatherWidget = ({ navigation }: { navigation: NavigationScreenProp
       onPress={() => navigation?.navigate('Weather', { weatherData: { icon, temperature } })}
       style={styles.widget}
     >
-      <Wrapper>
+      <WrapperVertical>
         <WrapperRow center>
           <View style={styles.iconContainer}>
             <Image
@@ -47,12 +47,12 @@ export const WeatherWidget = ({ navigation }: { navigation: NavigationScreenProp
             <BoldText primary big>
               {temperature?.toFixed(1) ?? '—'}°C
             </BoldText>
-            <BoldText primary small>
-              Wetter
-            </BoldText>
+            <RegularText primary small>
+              {texts.widgets.weather}
+            </RegularText>
           </View>
         </WrapperRow>
-      </Wrapper>
+      </WrapperVertical>
     </Touchable>
   );
 };

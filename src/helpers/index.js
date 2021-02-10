@@ -1,3 +1,4 @@
+export * from './addressHelper';
 export * from './bookmarkHelper';
 export * from './dateTimeHelper';
 export * from './graphqlHelper';

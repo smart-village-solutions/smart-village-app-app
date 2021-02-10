@@ -70,14 +70,18 @@ export const texts = {
   },
   homeTitles: {
     about: 'Über die App',
+    company: 'Städtische Unternehmen',
     events: 'Veranstaltungen',
     pointsOfInterest: 'Orte und Touren',
-    service: 'Service',
-    company: 'Städtische Unternehmen'
+    service: 'Service'
   },
   homeCategoriesNews: {
     categoryTitle: 'Nachrichten',
     categoryTitleDetail: 'Nachricht'
+  },
+  lunch: {
+    noOffers: 'Für dieses Datum sind derzeit keine Gerichte verfügbar.',
+    showAll: 'Alle Gastro-Angebote anzeigen'
   },
   navigationTitles: {
     home: 'Übersicht'
@@ -87,7 +91,8 @@ export const texts = {
     location: 'Anfahrt',
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
-    prices: 'Preise'
+    prices: 'Preise',
+    showLunches: 'Zum aktuellen Gastro-Angebot'
   },
   pushNotifications: {
     approve: 'Jetzt einschalten',
@@ -104,7 +109,6 @@ export const texts = {
     company: appJson.expo.name,
     about: appJson.expo.name,
     constructionSite: 'Baustelle',
-    constructionSites: 'Baustellen',
     settings: 'Einstellungen',
     weather: 'Wetter'
   },
@@ -155,5 +159,11 @@ export const texts = {
     alertsHeadline: 'Wetterwarnungen',
     currentHeadline: 'Aktuelles Wetter',
     nextDaysHeadline: 'Wetter der nächsten Tage'
+  },
+  widgets: {
+    constructionSites: 'Baustellen',
+    events: 'Events',
+    lunch: 'Gastro',
+    weather: 'Wetter'
   }
 };

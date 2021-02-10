@@ -5,6 +5,7 @@ import { ConstructionSiteWidget } from './ConstructionSiteWidget';
 import { EventWidget } from './EventWidget';
 import { WeatherWidget } from './WeatherWidget';
 import { WrapperRow } from '../Wrapper';
+import { LunchWidget } from './LunchWidget';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
@@ -16,6 +17,7 @@ const EXISTING_WIDGETS: {
 } = {
   constructionSite: ConstructionSiteWidget,
   event: EventWidget,
+  lunch: LunchWidget,
   weather: WeatherWidget
 };
 
@@ -35,9 +37,5 @@ export const Widgets = ({ navigation, widgets }: Props) => {
     return <Component key={index} navigation={navigation} />;
   });
 
-  return (
-    <WrapperRow spaceBetween={filteredWidgets.length > 2} spaceAround={filteredWidgets.length <= 2}>
-      {widgetComponents}
-    </WrapperRow>
-  );
+  return <WrapperRow spaceAround>{widgetComponents}</WrapperRow>;
 };

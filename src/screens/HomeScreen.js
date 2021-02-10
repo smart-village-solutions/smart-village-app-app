@@ -11,8 +11,8 @@ import {
 import { auth } from '../auth';
 import {
   About,
-  HomeCarousel,
   HomeSection,
+  ConnectedImagesCarousel,
   Icon,
   SafeAreaViewFlex,
   Service,
@@ -142,7 +142,12 @@ export const HomeScreen = ({ navigation }) => {
           />
         }
       >
-        <HomeCarousel navigation={navigation} />
+        <ConnectedImagesCarousel
+          alternateAspectRatio
+          navigation={navigation}
+          publicJsonFile="homeCarousel"
+          refreshTimeKey="publicJsonFile-homeCarousel"
+        />
         <Widgets navigation={navigation} widgets={widgets} />
 
         {showNews &&

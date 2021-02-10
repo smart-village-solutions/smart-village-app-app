@@ -7,7 +7,7 @@ import { colors, consts, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
-import { calendar } from '../../icons';
+import { lunch } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { DefaultWidget } from './DefaultWidget';
@@ -16,42 +16,36 @@ type Props = {
   navigation: NavigationScreenProp<never>;
 };
 
-export const EventWidget = ({ navigation }: Props) => {
-  const refreshTime = useRefreshTime('event-widget', consts.REFRESH_INTERVALS.ONCE_A_DAY);
+export const LunchWidget = ({ navigation }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const refreshTime = useRefreshTime('lunch-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
   const currentDate = moment().format('YYYY-MM-DD');
-  const queryVariables = {
+
+  const variables = {
     dateRange: [currentDate, currentDate]
   };
 
-  const { data, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
+  const { data, refetch } = useQuery(getQuery(QUERY_TYPES.LUNCHES), {
     fetchPolicy,
-    variables: queryVariables,
+    variables,
     skip: !refreshTime
   });
 
-  const onPress = useCallback(() => {
-    navigation.navigate('Index', {
-      title: 'Veranstaltungen',
-      query: QUERY_TYPES.EVENT_RECORDS,
-      queryVariables,
-      rootRouteName: 'EventRecords'
-    });
-  }, [navigation]);
-
   useHomeRefresh(refetch);
 
-  const eventCount = data?.eventRecords?.length;
+  const onPress = useCallback(() => navigation.navigate('Lunch', { title: texts.widgets.lunch }), [
+    navigation
+  ]);
 
   return (
     <DefaultWidget
-      icon={calendar(colors.primary)}
-      count={eventCount}
+      icon={lunch(colors.primary)}
+      count={data?.[QUERY_TYPES.LUNCHES]?.length}
       onPress={onPress}
-      text={texts.widgets.events}
+      text={texts.widgets.lunch}
     />
   );
 };

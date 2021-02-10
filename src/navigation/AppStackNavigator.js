@@ -10,6 +10,7 @@ import {
   HomeScreen,
   HtmlScreen,
   IndexScreen,
+  LunchScreen,
   SettingsScreen,
   WeatherScreen,
   WebScreen
@@ -59,7 +60,7 @@ const AppStackNavigator = (headerRight = true) =>
       ConstructionSiteOverview: {
         screen: ConstructionSiteOverviewScreen,
         navigationOptions: () => ({
-          title: texts.screenTitles.constructionSites
+          title: texts.widgets.constructionSites
         })
       },
       Detail: {
@@ -88,6 +89,12 @@ const AppStackNavigator = (headerRight = true) =>
       },
       Index: {
         screen: IndexScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      Lunch: {
+        screen: LunchScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', '')
         })

@@ -9,6 +9,7 @@ export * from './FormScreen';
 export * from './HomeScreen';
 export * from './HtmlScreen';
 export * from './IndexScreen';
+export * from './LunchScreen';
 export * from './ServiceScreen';
 export * from './SettingsScreen';
 export * from './WeatherScreen';

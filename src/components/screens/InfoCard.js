@@ -6,7 +6,7 @@ import _filter from 'lodash/filter';
 
 import { colors, normalize } from '../../config';
 import { mail, location, phone as phoneIcon, url as urlIcon } from '../../icons';
-import { openLink, locationLink, locationString } from '../../helpers';
+import { openLink, locationLink, locationString, formatAddress } from '../../helpers';
 import { RegularText } from '../Text';
 import { Icon } from '../Icon';
 import { InfoBox } from '../Wrapper';
@@ -102,24 +102,7 @@ export const InfoCard = ({ addresses, category, contact, contacts, webUrls, open
 
     {!!addresses &&
       _filter(addresses, (address) => address.kind === 'default').map((item, index) => {
-        const { city, street, zip, addition } = item;
-        let address = '';
-
-        if (!city && !street && !zip && !addition) return null;
-
-        // build the address in multiple steps to check every data before rendering
-        if (addition) {
-          address += `${addition}${'\n'}`;
-        }
-        if (street) {
-          address += `${street},${'\n'}`;
-        }
-        if (zip) {
-          address += `${zip} `;
-        }
-        if (city) {
-          address += city;
-        }
+        const address = formatAddress(item);
 
         return (
           <InfoBox key={index}>

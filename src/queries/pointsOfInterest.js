@@ -141,6 +141,9 @@ export const GET_POINT_OF_INTEREST = gql`
           }
         }
       }
+      lunches {
+        id
+      }
     }
   }
 `;

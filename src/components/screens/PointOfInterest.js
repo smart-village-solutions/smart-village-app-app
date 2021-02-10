@@ -8,6 +8,7 @@ import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
+import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { ImagesCarousel } from '../ImagesCarousel';
@@ -34,6 +35,8 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
     contact,
     dataProvider,
     description,
+    id,
+    lunches,
     mediaContents,
     openingHours,
     operatingCompany,
@@ -149,6 +152,15 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
               <HtmlView html={description} openWebScreen={openWebScreen} />
             </Wrapper>
           </View>
+        )}
+
+        {!!lunches?.length && (
+          <Wrapper>
+            <Button
+              title={texts.pointOfInterest.showLunches}
+              onPress={() => navigation.push('Lunch', { title: texts.widgets.lunch, poiId: id })}
+            />
+          </Wrapper>
         )}
 
         {/* There are several connection states that can happen
