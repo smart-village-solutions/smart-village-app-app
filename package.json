@@ -81,6 +81,7 @@
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-prettier": "^3.3.0",
     "eslint-plugin-react": "7.20.6",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-native": "3.9.1",
     "eslint-utils": "1.4.3",
     "jest": "25.5.4",
