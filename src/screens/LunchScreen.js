@@ -106,9 +106,11 @@ export const LunchScreen = ({ navigation }) => {
   );
 
   const ListEmptyComponent = (
-    <Wrapper>
-      <RegularText>{texts.lunch.noOffers}</RegularText>
-    </Wrapper>
+    <WrapperWithOrientation>
+      <Wrapper>
+        <RegularText>{texts.lunch.noOffers}</RegularText>
+      </Wrapper>
+    </WrapperWithOrientation>
   );
 
   const ListFooterComponent = (
