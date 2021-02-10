@@ -38,7 +38,7 @@ export const LunchScreen = ({ navigation }) => {
   const [date, setDate] = useState(moment());
 
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const refreshTime = useRefreshTime('lunch-widget');
+  const refreshTime = useRefreshTime('lunch-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
   const currentDate = moment(date).format('YYYY-MM-DD');

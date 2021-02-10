@@ -1,4 +1,5 @@
 const ONCE_A_DAY = 'ONCE_A_DAY';
+const ONCE_PER_HOUR = 'ONCE_PER_HOUR';
 
 export const consts = {
   DRAWER: 'drawer',
@@ -10,7 +11,8 @@ export const consts = {
 
   REFRESH_INTERVALS: {
     // refresh intervals per time:
-    ONCE_A_DAY: ONCE_A_DAY,
+    ONCE_A_DAY,
+    ONCE_PER_HOUR,
     // refresh intervals per type:
     BB_BUS: ONCE_A_DAY,
     BOOKMARKS: ONCE_A_DAY,

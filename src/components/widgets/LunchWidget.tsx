@@ -3,7 +3,7 @@ import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { colors, texts } from '../../config';
+import { colors, consts, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
@@ -18,7 +18,7 @@ type Props = {
 
 export const LunchWidget = ({ navigation }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const refreshTime = useRefreshTime('lunch-widget');
+  const refreshTime = useRefreshTime('lunch-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 

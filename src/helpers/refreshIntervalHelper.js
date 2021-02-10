@@ -38,6 +38,19 @@ export const refreshTimeFor = async (refreshTimeKey, refreshInterval) => {
 
       break;
     }
+    case consts.REFRESH_INTERVALS.ONCE_PER_HOUR: {
+      const nextHour = moment().add(1, 'hours').unix();
+
+      if (nextHour > refreshTime) {
+        // store or update refresh time in AsyncStorage
+        addToStore('refresh-intervals', {
+          ...refreshIntervals,
+          [refreshTimeKey]: nextHour
+        });
+      }
+
+      break;
+    }
     default:
       break;
   }
