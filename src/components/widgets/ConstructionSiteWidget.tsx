@@ -27,7 +27,7 @@ export const ConstructionSiteWidget = ({ navigation, text }: WidgetProps) => {
     navigation.navigate('ConstructionSiteOverview', {
       title: text ?? texts.widgets.constructionSites
     });
-  }, [constructionSites, navigation]);
+  }, [navigation, text]);
 
   useHomeRefresh(refetch);
 

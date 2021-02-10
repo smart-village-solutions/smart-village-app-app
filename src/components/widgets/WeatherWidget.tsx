@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -27,13 +27,15 @@ export const WeatherWidget = ({ navigation, text }: WidgetProps) => {
   const icon = data?.weatherMap?.current?.weather?.[0]?.icon ?? '02d';
   const temperature = data?.weatherMap?.current?.temp;
 
+  const onPress = useCallback(
+    () => navigation?.navigate('Weather', { title: text ?? texts.screenTitles.weather }),
+    [navigation, text]
+  );
+
   useHomeRefresh(refetch);
 
   return (
-    <TouchableOpacity
-      onPress={() => navigation?.navigate('Weather', { title: text ?? texts.screenTitles.weather })}
-      style={styles.widget}
-    >
+    <TouchableOpacity onPress={onPress} style={styles.widget}>
       <WrapperVertical>
         <WrapperRow center>
           <View style={styles.iconContainer}>
