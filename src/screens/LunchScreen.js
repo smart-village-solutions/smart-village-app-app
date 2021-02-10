@@ -23,7 +23,7 @@ import {
   WrapperWithOrientation
 } from '../components';
 import { arrowLeft, arrowRight } from '../icons';
-import { useMatomoTrackScreenView } from '../hooks';
+import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
 import { graphqlFetchPolicy } from '../helpers';
 import moment from 'moment';
 import { NetworkContext } from '../NetworkProvider';
@@ -38,7 +38,8 @@ export const LunchScreen = ({ navigation }) => {
   const [date, setDate] = useState(moment());
 
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const refreshTime = useRefreshTime('lunch-widget');
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
   const currentDate = moment(date).format('YYYY-MM-DD');
 
@@ -48,7 +49,8 @@ export const LunchScreen = ({ navigation }) => {
 
   const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.LUNCHES), {
     fetchPolicy,
-    variables
+    variables,
+    skip: !refreshTime
   });
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.LUNCH);
@@ -82,11 +84,19 @@ export const LunchScreen = ({ navigation }) => {
       <WrapperWithOrientation>
         <Wrapper>
           <WrapperRow>
-            <TouchableOpacity onPress={onPressPrevious} style={styles.left}>
+            <TouchableOpacity
+              hitSlop={{ bottom: 12, left: 12, right: 12, top: 12 }}
+              onPress={onPressPrevious}
+              style={styles.left}
+            >
               <Icon xml={arrowLeft(colors.primary)} />
             </TouchableOpacity>
             <BoldText big>{date.format('DD.MM.YYYY')}</BoldText>
-            <TouchableOpacity onPress={onPressNext} style={styles.right}>
+            <TouchableOpacity
+              hitSlop={{ bottom: 12, left: 12, right: 12, top: 12 }}
+              onPress={onPressNext}
+              style={styles.right}
+            >
               <Icon xml={arrowRight(colors.primary)} />
             </TouchableOpacity>
           </WrapperRow>
@@ -112,17 +122,18 @@ export const LunchScreen = ({ navigation }) => {
       <FlatList
         refreshControl={
           <RefreshControl
-            onRefresh={() => {
-              refetch?.();
-            }}
             colors={[colors.accent]}
+            onRefresh={() => refetch?.()}
+            // using this refreshing prop causes the loading spinner to animate in from top and
+            // push the list down, whenever we change the date
+            refreshing={false}
             tintColor={colors.accent}
           />
         }
         data={!loading && lunchData}
         renderItem={renderItem}
         ListEmptyComponent={
-          loading ? <ActivityIndicator color={colors.accent} /> : ListEmptyComponent
+          loading || !refreshTime ? <ActivityIndicator color={colors.accent} /> : ListEmptyComponent
         }
         ListHeaderComponent={ListHeaderComponent}
         keyExtractor={(item) => item.id}

@@ -23,6 +23,7 @@ export const GET_LUNCHES = gql`
           phone
           webUrls {
             id
+            description
             url
           }
         }
@@ -35,6 +36,7 @@ export const GET_LUNCHES = gql`
         }
         webUrls {
           id
+          description
           url
         }
       }

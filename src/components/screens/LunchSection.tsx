@@ -172,13 +172,10 @@ export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
           <RegularText />
         </>
       )}
-      {!!lunchOffers && (
-        <>
-          {lunchOffers.map((item, index) => (
-            <LunchOffer key={index} name={item.name} price={item.price} />
-          ))}
-        </>
-      )}
+      {!!lunchOffers &&
+        lunchOffers.map((item, index) => (
+          <LunchOffer key={index} name={item.name} price={item.price} />
+        ))}
       <Divider style={styles.divider} />
     </Wrapper>
   );

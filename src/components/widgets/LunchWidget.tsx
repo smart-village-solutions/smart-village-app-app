@@ -5,6 +5,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
+import { useRefreshTime } from '../../hooks';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
 import { lunch } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
@@ -17,7 +18,9 @@ type Props = {
 
 export const LunchWidget = ({ navigation }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const refreshTime = useRefreshTime('lunch-widget');
+
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
   const currentDate = moment().format('YYYY-MM-DD');
 
@@ -27,7 +30,8 @@ export const LunchWidget = ({ navigation }: Props) => {
 
   const { data, refetch } = useQuery(getQuery(QUERY_TYPES.LUNCHES), {
     fetchPolicy,
-    variables
+    variables,
+    skip: !refreshTime
   });
 
   useHomeRefresh(refetch);

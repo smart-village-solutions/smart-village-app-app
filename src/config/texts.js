@@ -72,7 +72,6 @@ export const texts = {
     about: 'Über die App',
     company: 'Städtische Unternehmen',
     events: 'Veranstaltungen',
-    lunch: 'Mittagstisch',
     pointsOfInterest: 'Orte und Touren',
     service: 'Service'
   },

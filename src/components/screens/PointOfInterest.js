@@ -16,7 +16,7 @@ import { Logo } from '../Logo';
 import { WebViewMap } from '../map/WebViewMap';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { TMBNotice } from '../TMB/Notice';
-import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { InfoCard } from './InfoCard';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompanyInfo } from './OperatingCompanyInfo';
@@ -155,12 +155,12 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
         )}
 
         {!!lunches?.length && (
-          <WrapperVertical>
+          <Wrapper>
             <Button
               title={texts.pointOfInterest.showLunches}
               onPress={() => navigation.push('Lunch', { title: texts.widgets.lunch, poiId: id })}
             />
-          </WrapperVertical>
+          </Wrapper>
         )}
 
         {/* There are several connection states that can happen

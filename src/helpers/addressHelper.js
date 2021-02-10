@@ -14,7 +14,7 @@ export const formatAddress = (address) => {
     readableAddress += `${street},${'\n'}`;
   }
   if (zip) {
-    address += `${zip} `;
+    readableAddress += `${zip} `;
   }
   if (city) {
     readableAddress += city;
