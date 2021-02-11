@@ -38,17 +38,27 @@ export const AddressSection = ({ address, addresses }: Props) => {
       {filteredAddresses.map((item, index) => {
         const address = formatAddress(item);
 
+        const isPressable = item.city?.length || item.street?.length || item.zip?.length;
+
+        const innerComponent = (
+          <RegularText
+            primary
+            accessibilityLabel={`(Adresse) ${address} (Taste) (Wechselt zur Karten-App)`}
+          >
+            {address}
+          </RegularText>
+        );
+
         return (
           <InfoBox key={index}>
             <Icon xml={location(colors.primary)} style={styles.margin} />
-            <TouchableOpacity onPress={() => addressOnPress(address)}>
-              <RegularText
-                primary
-                accessibilityLabel={`(Adresse) ${address} (Taste) (Wechselt zur Karten-App)`}
-              >
-                {address}
-              </RegularText>
-            </TouchableOpacity>
+            {isPressable ? (
+              <TouchableOpacity onPress={() => addressOnPress(address)}>
+                {innerComponent}
+              </TouchableOpacity>
+            ) : (
+              innerComponent
+            )}
           </InfoBox>
         );
       })}
