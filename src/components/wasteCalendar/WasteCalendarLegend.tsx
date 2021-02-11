@@ -2,13 +2,13 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { normalize } from '../../config';
 
-import { WasteCollectionCalendarData } from '../../types';
+import { WasteTypeData } from '../../types';
 import { RegularText } from '../Text';
 import { WrapperHorizontal, WrapperRow, WrapperWrap } from '../Wrapper';
 
 type EntryProps = {
   color: string;
-  name: string;
+  label: string;
   selectedColor: string;
 };
 
@@ -16,11 +16,11 @@ const Dot = ({ color }: { color: string }) => {
   return <View style={[styles.dot, { backgroundColor: color }]} />;
 };
 
-const WasteCalendarLegendEntry = ({ color, name, selectedColor }: EntryProps) => {
+const WasteCalendarLegendEntry = ({ color, label, selectedColor }: EntryProps) => {
   return (
     <WrapperHorizontal>
       <WrapperRow>
-        <RegularText small>{`${name} - `}</RegularText>
+        <RegularText small>{`${label} - `}</RegularText>
         <Dot color={color} />
         {color !== selectedColor && <Dot color={selectedColor} />}
       </WrapperRow>
@@ -28,7 +28,7 @@ const WasteCalendarLegendEntry = ({ color, name, selectedColor }: EntryProps) =>
   );
 };
 
-export const WasteCalendarLegend = ({ data }: { data?: WasteCollectionCalendarData }) => {
+export const WasteCalendarLegend = ({ data }: { data?: WasteTypeData }) => {
   if (!data) {
     return null;
   }
@@ -39,10 +39,10 @@ export const WasteCalendarLegend = ({ data }: { data?: WasteCollectionCalendarDa
         (key) =>
           data[key] && (
             <WasteCalendarLegendEntry
-              key={data[key].name}
-              color={data[key].dot.color}
-              selectedColor={data[key].dot.selectedColor}
-              name={data[key].name}
+              key={data[key].label}
+              color={data[key].color}
+              selectedColor={data[key].selected_color}
+              label={data[key].label}
             />
           )
       )}
@@ -53,9 +53,10 @@ export const WasteCalendarLegend = ({ data }: { data?: WasteCollectionCalendarDa
 const styles = StyleSheet.create({
   dot: {
     alignSelf: 'center',
-    borderRadius: 2,
-    height: 4,
-    width: 4
+    borderRadius: 3,
+    height: 6,
+    margin: normalize(2),
+    width: 6
   },
   marginBottom: {
     marginBottom: normalize(14)

@@ -15,7 +15,7 @@ import { Touchable } from '../Touchable';
 import { Radiobutton } from '../Radiobutton';
 import { Wrapper, WrapperRow } from '../Wrapper';
 import { device, texts } from '../../config';
-import { ReminderSettings, WasteCollectionCalendarData } from '../../types';
+import { ReminderSettings, WasteTypeData } from '../../types';
 import {
   ReminderSettingsAction,
   ReminderSettingsActionType,
@@ -91,15 +91,17 @@ const CategoryEntry = ({
 };
 
 export const WasteNotificationSection = ({
-  data,
+  types,
   street
 }: {
-  data: WasteCollectionCalendarData;
-  street: string;
+  types: WasteTypeData;
+  street: any;
 }) => {
   const [state, dispatch] = useReducer(reminderSettingsReducer, initialSettings);
   const [loading, setLoading] = useState(true);
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const streetName = street.street;
 
   const { onDayBefore, reminderTime } = state;
 
@@ -109,8 +111,8 @@ export const WasteNotificationSection = ({
   const updateSettings = useCallback(async () => {
     // updateNotifications(updatedSettings, data); // TODO: outsource to backend push notifications
     const oldSettings = (await readFromStore(SETTINGS_STORE_KEY)) ?? {};
-    addToStore(SETTINGS_STORE_KEY, { ...oldSettings, [street]: state });
-  }, [state, street]);
+    addToStore(SETTINGS_STORE_KEY, { ...oldSettings, [streetName]: state });
+  }, [state, streetName]);
 
   const onAbortIOS = useCallback(() => {
     setShowDatePicker(false);
@@ -154,9 +156,19 @@ export const WasteNotificationSection = ({
     [setLoading, dispatch]
   );
 
+  const onPressDayBefore = useCallback(
+    () => dispatch({ type: ReminderSettingsActionType.UPDATE_ON_DAY_BEFORE, payload: true }),
+    [dispatch]
+  );
+
+  const onPressDayOfCollection = useCallback(
+    () => dispatch({ type: ReminderSettingsActionType.UPDATE_ON_DAY_BEFORE, payload: false }),
+    [dispatch]
+  );
+
   useEffect(() => {
-    loadStoredSettings(street);
-  }, [loadStoredSettings, street]);
+    loadStoredSettings(streetName);
+  }, [loadStoredSettings, streetName]);
 
   if (loading) return null;
 
@@ -165,12 +177,12 @@ export const WasteNotificationSection = ({
       <Title>{texts.wasteCalendar.reminder}</Title>
       <BoldText>{texts.wasteCalendar.whichType}</BoldText>
       <FlatList
-        data={Object.keys(data)}
+        data={Object.keys(types)}
         renderItem={({ item }) => (
           <CategoryEntry
             active={state.activeTypes[item]}
             categoryKey={item}
-            categoryName={data[item].name}
+            categoryName={types[item].label}
             dispatch={dispatch}
           />
         )}
@@ -186,10 +198,8 @@ export const WasteNotificationSection = ({
         }
         bottomDivider
         Component={Touchable}
-        onPress={() =>
-          dispatch({ type: ReminderSettingsActionType.UPDATE_ON_DAY_BEFORE, payload: true })
-        }
-        rightIcon={<Radiobutton selected={onDayBefore} />}
+        onPress={onPressDayBefore}
+        rightIcon={<Radiobutton onPress={onPressDayBefore} selected={onDayBefore} />}
       />
       <ListItem
         title={
@@ -197,10 +207,8 @@ export const WasteNotificationSection = ({
         }
         bottomDivider
         Component={Touchable}
-        onPress={() =>
-          dispatch({ type: ReminderSettingsActionType.UPDATE_ON_DAY_BEFORE, payload: false })
-        }
-        rightIcon={<Radiobutton selected={!onDayBefore} />}
+        onPress={onPressDayOfCollection}
+        rightIcon={<Radiobutton onPress={onPressDayOfCollection} selected={!onDayBefore} />}
       />
       <RegularText />
       <BoldText>{texts.wasteCalendar.reminderTime}</BoldText>

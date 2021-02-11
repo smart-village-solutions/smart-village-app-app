@@ -1,6 +1,6 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Keyboard, StyleSheet, View } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import { Calendar } from 'react-native-calendars';
@@ -17,39 +17,38 @@ import {
 } from '../components';
 import { colors, device, normalize, texts } from '../config';
 import { arrowLeft, arrowRight } from '../icons';
+import { useQuery } from 'react-apollo';
+import { getQuery, QUERY_TYPES } from '../queries';
+import { useRefreshTime } from '../hooks';
+import { graphqlFetchPolicy } from '../helpers';
+import { NetworkContext } from '../NetworkProvider';
 
-const streets = ['AdamStreet', 'EveStreet'];
-
-const data = {
-  paper: {
-    dates: ['2021-01-24', '2021-01-14', '2021-01-19'],
-    dot: { key: 'paper', color: 'blue', selectedColor: 'blue' },
-    name: 'Papier'
-  },
-  recyclable: {
-    dates: ['2021-01-24', '2021-01-20'],
-    dot: { key: 'recyclable', color: 'yellow', selectedColor: 'yellow' },
-    name: 'Gelbe Tonne'
-  },
-  residual: {
-    dates: ['2021-01-24', '2021-01-20', '2021-01-03'],
-    dot: { key: 'residual', color: 'black', selectedColor: 'black' },
-    name: 'Restmüll'
-  }
-};
-
-const getMarkedDates = () => {
+const getMarkedDates = (types, streetData) => {
   let markedDates = {};
-  Object.keys(data).forEach((key) =>
-    data[key]?.dates?.map((date) => {
-      markedDates[date] = { dots: [...(markedDates[date]?.dots ?? []), data[key]?.dot] };
-    })
-  );
+
+  const wasteLocationTypes = streetData?.[QUERY_TYPES.WASTE_ADDRESSES]?.[0]?.wasteLocationTypes;
+
+  if (wasteLocationTypes && types) {
+    wasteLocationTypes.forEach((wasteLocationType) => {
+      // only add marked dates for known types
+      if (!types[wasteLocationType.wasteType]) {
+        return;
+      }
+
+      const { color, selected_color: selectedColor } = types[wasteLocationType.wasteType];
+      wasteLocationType?.listPickUpDates?.forEach((date) => {
+        markedDates[date] = {
+          dots: [...(markedDates[date]?.dots ?? []), { color, selectedColor }]
+        };
+      });
+    });
+  }
 
   const today = moment().format('YYYY-MM-DD');
 
+  // highlight today
   markedDates[today] = {
-    ...markedDates[today],
+    ...(markedDates[today] ?? {}),
     selected: true,
     selectedColor: colors.lighterPrimary
   };
@@ -64,48 +63,136 @@ const renderArrow = (direction) =>
     <Icon xml={arrowLeft(colors.primary)} style={styles.icon} />
   );
 
-const filterStreets = (currentInputValue, streets) => {
+// show streets that contain the string in it
+// return empty list on an exact match (except for capitalization)
+const filterStreets = (currentInputValue, streetData) => {
   if (currentInputValue === '') return [];
 
-  const regex = new RegExp(`${currentInputValue.trim()}`, 'i');
+  return streetData
+    .filter((street) =>
+      getStreetString(street).toLowerCase().includes(currentInputValue.toLowerCase())
+    )
+    .filter((street) => getStreetString(street) !== currentInputValue)
+    .slice(0, 5);
+};
 
-  return streets
-    .filter((street) => street.search(regex) >= 0)
-    .filter((street) => street !== currentInputValue);
+const getStreetString = (item) => {
+  return `${item.street} (${item.zip} ${item.city})`;
 };
 
 export const WasteCollectionScreen = ({ navigation }) => {
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [inputValue, setInputValue] = useState('');
+  const [selectedStreetId, setSelectedStreetId] = useState();
 
-  // TODO: Get Street and WasteType info
+  const addressesRefreshTime = useRefreshTime('waste-addresses');
+  const typesRefreshTime = useRefreshTime('waste-types');
+  const streetRefreshTime = useRefreshTime(`waste-${selectedStreetId}`);
+
+  const addressesFetchPolicy = graphqlFetchPolicy({
+    isConnected,
+    isMainserverUp,
+    refreshTime: addressesRefreshTime
+  });
+
+  const streetFetchPolicy = graphqlFetchPolicy({
+    isConnected,
+    isMainserverUp,
+    refreshTime: streetRefreshTime
+  });
+
+  const typesFetchPolicy = graphqlFetchPolicy({
+    isConnected,
+    isMainserverUp,
+    refreshTime: typesRefreshTime
+  });
+
+  const { data, loading } = useQuery(getQuery(QUERY_TYPES.WASTE_ADDRESSES), {
+    fetchPolicy: addressesFetchPolicy,
+    skip: !addressesRefreshTime
+  });
+
+  const { data: typesData, loading: typesLoading } = useQuery(
+    getQuery(QUERY_TYPES.PUBLIC_JSON_FILE),
+    {
+      variables: { name: 'wasteTypes' },
+      fetchPolicy: typesFetchPolicy,
+      skip: !typesRefreshTime
+    }
+  );
+
+  // only query if we have a street selected
+  const { data: streetData } = useQuery(getQuery(QUERY_TYPES.WASTE_STREET), {
+    variables: { ids: selectedStreetId },
+    fetchPolicy: streetFetchPolicy,
+    skip: !streetRefreshTime || !selectedStreetId
+  });
+
+  const addressesData = data?.wasteAddresses;
+
+  let parsedTypesData;
+  try {
+    if (typesData?.publicJsonFile?.content) {
+      parsedTypesData = JSON.parse(typesData.publicJsonFile.content);
+    }
+  } catch (error) {
+    console.warn(error, data);
+  }
+
+  let usedTypes = {};
+  streetData?.[QUERY_TYPES.WASTE_ADDRESSES]?.[0]?.wasteLocationTypes?.forEach(
+    (wasteLocationType) => {
+      if (parsedTypesData?.[wasteLocationType.wasteType])
+        usedTypes[wasteLocationType.wasteType] = parsedTypesData?.[wasteLocationType.wasteType];
+    }
+  );
 
   const renderSuggestion = useCallback(
     ({ item }) => (
       <TouchableOpacity
         onPress={() => {
-          setInputValue(item);
+          setInputValue(getStreetString(item));
           Keyboard.dismiss();
         }}
       >
-        <RegularText>{item}</RegularText>
+        <RegularText>{getStreetString(item)}</RegularText>
       </TouchableOpacity>
     ),
     [setInputValue]
   );
 
   const goToReminder = useCallback(
-    () => navigation.navigate('WasteReminder', { data, street: inputValue }),
-    [data, navigation, inputValue]
+    () => navigation.navigate('WasteReminder', { wasteTypes: usedTypes, streetData }),
+    [navigation, usedTypes, streetData]
   );
 
-  const filteredStreets = filterStreets(inputValue, streets);
-
   useEffect(() => {
-    if (streets.find((item) => item === inputValue)) {
-      // request data
-      // set selected street?
+    if (!addressesData) {
+      return;
     }
-  }, [inputValue]);
+
+    const item = addressesData.find(
+      (street) => getStreetString(street).toLowerCase() === inputValue.toLowerCase()
+    );
+
+    setSelectedStreetId(item?.id);
+  }, [inputValue, setSelectedStreetId, addressesData]);
+
+  // TODO: loading logic
+  if (loading || !data)
+    return (
+      <RegularText>
+        {JSON.stringify({
+          loading,
+          data: !!data,
+          typesLoading,
+          typesData: !!typesData,
+          typesRefreshTime
+        })}
+      </RegularText>
+    );
+
+  const filteredStreets = filterStreets(inputValue, addressesData);
 
   return (
     <SafeAreaViewFlex>
@@ -121,14 +208,14 @@ export const WasteCollectionScreen = ({ navigation }) => {
           />
           <View style={styles.topMarginContainer}>
             <Calendar
-              markedDates={getMarkedDates()}
+              markedDates={getMarkedDates(parsedTypesData, streetData)}
               markingType="multi-dot"
               renderArrow={renderArrow}
               theme={{ todayTextColor: colors.primary }}
             />
-            <WasteCalendarLegend data={data} />
+            <WasteCalendarLegend data={usedTypes} />
           </View>
-          {!!data && ( // TODO: && selectedStreet ?
+          {!!data && selectedStreetId && (
             <Wrapper>
               <Button title={texts.wasteCalendar.configureReminder} onPress={goToReminder} />
             </Wrapper>

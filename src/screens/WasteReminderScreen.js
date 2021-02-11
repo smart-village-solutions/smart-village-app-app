@@ -14,15 +14,15 @@ import { colors, normalize } from '../config';
 import { arrowLeft } from '../icons';
 
 export const WasteReminderScreen = ({ navigation }) => {
-  const data = navigation.getParam('data');
-  const street = navigation.getParam('street');
+  const wasteTypes = navigation.getParam('wasteTypes');
+  const street = navigation.getParam('streetData');
 
   return (
     <SafeAreaViewFlex>
       <ScrollView keyboardShouldPersistTaps="always">
         <WrapperWithOrientation>
           <Wrapper>
-            <WasteNotificationSection data={data} street={street} />
+            <WasteNotificationSection types={wasteTypes} street={street} />
           </Wrapper>
         </WrapperWithOrientation>
       </ScrollView>

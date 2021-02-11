@@ -4,10 +4,11 @@ export type ReminderSettings = {
   reminderTime: Date;
 };
 
-export type WasteCollectionCalendarData = {
+export type WasteTypeData = {
   [key: string]: {
-    dates: string[];
-    dot: { key: string; color: string; selectedColor: string };
-    name: string;
+    color: string;
+    icon: string;
+    label: string;
+    selected_color: string;
   };
 };
