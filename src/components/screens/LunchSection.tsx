@@ -8,10 +8,10 @@ import { formatAddress, shareMessage } from '../../helpers';
 import { location } from '../../icons';
 import { QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
+import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { BoldText, RegularText } from '../Text';
 import { InfoBox, Wrapper, WrapperWithOrientation } from '../Wrapper';
-import { InfoCard } from './InfoCard';
 
 type WebUrl = {
   id: string;

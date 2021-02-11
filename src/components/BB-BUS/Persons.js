@@ -2,11 +2,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { filter, pull } from 'lodash';
+import { pull } from 'lodash';
 
 import { colors, normalize, texts } from '../../config';
-import { InfoBox, OperatingCompanyInfo, RegularText, Title, Touchable, Wrapper } from '..';
+import { InfoBox, RegularText, Title, Touchable, Wrapper } from '..';
 import { WrapperWithOrientation } from '../Wrapper';
+import { getAddress, getContact } from './helpers';
+import { InfoCard } from '../infoCard';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -47,6 +49,9 @@ export const Persons = ({ data, accordion, onPress, openWebScreen }) => {
           // if the result came from Directus, there is no singular and we need the plural directly
           if (!communications) communications = person.person.communications;
 
+          const address = getAddress(addresses);
+          const contact = getContact(communications);
+
           const name = pull([title, firstName, lastName], undefined).join(' ');
 
           return (
@@ -75,71 +80,7 @@ export const Persons = ({ data, accordion, onPress, openWebScreen }) => {
                   )}
                 </Wrapper>
               )}
-              <OperatingCompanyInfo
-                address={(() => {
-                  if (!addresses || !addresses.length) return null;
-
-                  let address = addresses[0];
-
-                  if (address.address) address = address.address;
-
-                  const { street, houseNumber, zipcode, city } = address;
-
-                  return {
-                    street:
-                      (!!street || !!houseNumber) && `${address.street} ${address.houseNumber}`,
-                    zip: !!zipcode && zipcode,
-                    city: !!city && city
-                  };
-                })()}
-                contact={(() => {
-                  if (!communications || !communications.length) return null;
-
-                  let phone = filter(communications, (communication) => {
-                    // fix for multi nested result form Directus API
-                    if (communication.communication) communication = communication.communication;
-
-                    return communication.type.key === 'TELEFON';
-                  })[0];
-                  // fix for multi nested result form Directus API
-                  if (phone && phone.communication) phone = phone.communication;
-
-                  let fax = filter(communications, (communication) => {
-                    // fix for multi nested result form Directus API
-                    if (communication.communication) communication = communication.communication;
-
-                    return communication.type.key === 'FAX';
-                  })[0];
-                  // fix for multi nested result form Directus API
-                  if (fax && fax.communication) fax = fax.communication;
-
-                  let email = filter(communications, (communication) => {
-                    // fix for multi nested result form Directus API
-                    if (communication.communication) communication = communication.communication;
-
-                    return communication.type.key === 'EMAIL';
-                  })[0];
-                  // fix for multi nested result form Directus API
-                  if (email && email.communication) email = email.communication;
-
-                  let www = filter(communications, (communication) => {
-                    // fix for multi nested result form Directus API
-                    if (communication.communication) communication = communication.communication;
-
-                    return communication.type.key === 'WWW';
-                  })[0];
-                  // fix for multi nested result form Directus API
-                  if (www && www.communication) www = www.communication;
-
-                  return {
-                    phone: !!phone && phone.value,
-                    fax: !!fax && fax.value,
-                    email: !!email && email.value,
-                    www: !!www && www.value
-                  };
-                })()}
-                openWebScreen={openWebScreen}
-              />
+              <InfoCard address={address} contact={contact} openWebScreen={openWebScreen} />
             </WrapperWithOrientation>
           );
         })}

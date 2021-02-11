@@ -4,7 +4,7 @@ export const formatAddress = (address) => {
   const { city, street, zip, addition } = address;
   let readableAddress = '';
 
-  if (!city && !street && !zip && !addition) return null;
+  if (!city && !street && !zip && !addition) return;
 
   // build the address in multiple steps to check every data before rendering
   if (addition) {
