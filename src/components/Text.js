@@ -92,5 +92,5 @@ export const BoldText = styled(RegularText)`
 `;
 
 Text.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node
 };
