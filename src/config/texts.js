@@ -158,7 +158,9 @@ export const texts = {
   weather: {
     alertsHeadline: 'Wetterwarnungen',
     currentHeadline: 'Aktuelles Wetter',
-    nextDaysHeadline: 'Wetter der nächsten Tage'
+    nextDaysHeadline: 'Wetter der nächsten Tage',
+    noData:
+      'Beim Abrufen der Daten ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
   },
   widgets: {
     constructionSites: 'Baustellen',
