@@ -1,17 +1,19 @@
 import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, FlatList, ScrollView, View } from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, ScrollView, View } from 'react-native';
 
 import {
   DailyWeather,
   HeaderLeft,
   HourlyWeather,
   LoadingContainer,
+  RegularText,
   SafeAreaViewFlex,
   Title,
   TitleContainer,
   TitleShadow,
   WeatherAlert,
+  Wrapper,
   WrapperWithOrientation
 } from '../components';
 import { colors, consts, device, texts } from '../config';
@@ -52,11 +54,11 @@ export const WeatherScreen = () => {
     fetchPolicy === 'network-only'
       ? { fetchPolicy, pollInterval: POLL_INTERVALS.WEATHER }
       : { fetchPolicy };
-  const { data, loading } = useQuery(getQuery(QUERY_TYPES.WEATHER_MAP), queryVariables);
+  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.WEATHER_MAP), queryVariables);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.WEATHER);
 
-  if (loading) {
+  if (loading && !data?.weatherMap) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
@@ -64,14 +66,37 @@ export const WeatherScreen = () => {
     );
   }
 
-  if (!data?.weatherMap) return null;
+  const refreshControl = (
+    <RefreshControl
+      refreshing={loading}
+      onRefresh={refetch}
+      colors={[colors.accent]}
+      tintColor={colors.accent}
+    />
+  );
+
+  if (!data?.weatherMap)
+    return (
+      <SafeAreaViewFlex>
+        <ScrollView
+          refreshControl={
+            // when loading is true the previous early return should be applied
+            refreshControl
+          }
+        >
+          <Wrapper>
+            <RegularText>{texts.weather.noData}</RegularText>
+          </Wrapper>
+        </ScrollView>
+      </SafeAreaViewFlex>
+    );
 
   const { weatherMap } = data;
   const alerts = parseValidAlerts(weatherMap);
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView>
+      <ScrollView refreshControl={refreshControl}>
         {!!alerts?.length && (
           <WrapperWithOrientation>
             <TitleContainer accessibilityLabel={`${texts.weather.alertsHeadline} (Überschrift)`}>
