@@ -48,6 +48,22 @@ export const GET_EVENT_RECORDS = gql`
         kind
         addition
       }
+      contacts {
+        id
+        firstName
+        lastName
+        phone
+        email
+        fax
+        webUrls {
+          url
+          description
+        }
+      }
+      webUrls: urls {
+        url
+        description
+      }
       priceInformations {
         name
         amount
