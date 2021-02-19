@@ -3,7 +3,7 @@ import { QueryHookOptions, useQuery } from 'react-apollo';
 import { ActivityIndicator, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { colors, consts, device } from '../config';
+import { colors, consts } from '../config';
 import { parseListItemsFromQuery } from '../helpers';
 import { useHomeRefresh } from '../hooks/HomeRefresh';
 import { getQuery } from '../queries';
@@ -11,8 +11,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { Button } from './Button';
 import { ListComponent } from './ListComponent';
 import { LoadingContainer } from './LoadingContainer';
-import { Title, TitleContainer, TitleShadow } from './Title';
-import { Touchable } from './Touchable';
+import { SectionHeader } from './SectionHeader';
 import { Wrapper } from './Wrapper';
 
 type Props = {
@@ -69,13 +68,7 @@ export const HomeSection = ({
 
   return (
     <>
-      <TitleContainer>
-        <Touchable onPress={navigate}>
-          <Title accessibilityLabel={`${title} (Überschrift) (Taste)`}>{title}</Title>
-        </Touchable>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
-
+      <SectionHeader title={title} onPress={navigate} />
       <View>
         <ListComponent
           navigation={navigation}

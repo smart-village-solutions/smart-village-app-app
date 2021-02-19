@@ -12,14 +12,10 @@ import { SettingsContext } from '../../SettingsProvider';
 import { Button } from '../Button';
 import { ListComponent } from '../ListComponent';
 import { LoadingContainer } from '../LoadingContainer';
-import { Title, TitleContainer } from '../Title';
-import { Touchable } from '../Touchable';
+import { SectionHeader } from '../SectionHeader';
 import { Wrapper } from '../Wrapper';
 
-type HeaderProps = {
-  categoryTitle: string;
-  onPress: () => void;
-};
+const { LIST_TYPES, REFRESH_INTERVALS } = consts;
 
 type Props = {
   categoryId?: number;
@@ -47,25 +43,13 @@ const getTitle = (itemType: string) => {
   }
 };
 
-const SectionHeader = ({ categoryTitle, onPress }: HeaderProps) => {
-  return (
-    <TitleContainer>
-      <Touchable onPress={onPress}>
-        <Title accessibilityLabel={`${categoryTitle} (Überschrift) (Taste)`}>{categoryTitle}</Title>
-      </Touchable>
-    </TitleContainer>
-  );
-};
-
 const isHorizontal = (query: string, listTypesSettings: Record<string, unknown>) => {
   switch (query) {
     case QUERY_TYPES.TOURS:
     case QUERY_TYPES.POINTS_OF_INTEREST:
-      return (
-        listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS] === consts.LIST_TYPES.CARD_LIST
-      );
+      return listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS] === LIST_TYPES.CARD_LIST;
     default:
-      return listTypesSettings[query] === consts.LIST_TYPES.CARD_LIST;
+      return listTypesSettings[query] === LIST_TYPES.CARD_LIST;
   }
 };
 
@@ -82,7 +66,7 @@ export const BookmarkSection = ({
   const { listTypesSettings } = useContext(SettingsContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
-  const refreshTime = useRefreshTime('bookmarks', consts.REFRESH_INTERVALS.BOOKMARKS);
+  const refreshTime = useRefreshTime('bookmarks', REFRESH_INTERVALS.BOOKMARKS);
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
@@ -128,7 +112,7 @@ export const BookmarkSection = ({
 
   return (
     <View>
-      <SectionHeader categoryTitle={sectionTitle || getTitle(query)} onPress={onPressShowMore} />
+      <SectionHeader title={sectionTitle || getTitle(query)} onPress={onPressShowMore} />
       <ListComponent
         data={listData}
         navigation={navigation}
