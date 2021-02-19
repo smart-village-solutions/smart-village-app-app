@@ -31,6 +31,7 @@ const getComponent = (query, listTypesSettings) =>
     [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: getListComponent(
       listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]
     ),
+    [QUERY_TYPES.GENERIC_ITEMS]: TextList,
     [QUERY_TYPES.CATEGORIES]: CategoryList
   }[query]);
 

@@ -4,6 +4,7 @@ import _shuffle from 'lodash/shuffle';
 import { consts, texts } from '../config';
 import { QUERY_TYPES } from '../queries';
 import { eventDate } from './dateTimeHelper';
+import { getGenericItemDetailTitle, getGenericItemRootRouteName } from './genericTypeHelper';
 import { mainImageOfMediaContents } from './imageHelper';
 import { momentFormat } from './momentHelper';
 import { shareMessage } from './shareHelper';
@@ -32,6 +33,38 @@ export const parseEventRecords = (data, skipLastDivider) => {
         message: shareMessage(eventRecord, QUERY_TYPES.EVENT_RECORD)
       },
       details: eventRecord
+    },
+    bottomDivider: !skipLastDivider || index !== data.length - 1
+  }));
+};
+
+const parseGenericItems = (data, skipLastDivider) => {
+  return data?.map((genericItem, index) => ({
+    id: genericItem.id,
+    subtitle: subtitle(
+      momentFormat(genericItem.publishedAt ?? genericItem.createdAt),
+      genericItem.dataProvider?.name
+    ),
+    title: genericItem.title,
+    picture: {
+      url:
+        genericItem.contentBlocks?.[0]?.mediaContents?.length &&
+        _filter(
+          genericItem.contentBlocks[0].mediaContents,
+          (mediaContent) =>
+            mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
+        )[0]?.sourceUrl?.url
+    },
+    routeName: 'Detail',
+    params: {
+      title: getGenericItemDetailTitle(genericItem.genericType),
+      query: QUERY_TYPES.GENERIC_ITEM,
+      queryVariables: { id: `${genericItem.id}` },
+      rootRouteName: getGenericItemRootRouteName(genericItem.genericType),
+      shareContent: {
+        message: shareMessage(genericItem, QUERY_TYPES.GENERIC_ITEM)
+      },
+      details: genericItem
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1
   }));
@@ -143,6 +176,8 @@ export const parseListItemsFromQuery = (query, data, skipLastDivider, titleDetai
   switch (query) {
     case QUERY_TYPES.EVENT_RECORDS:
       return parseEventRecords(data[query], skipLastDivider);
+    case QUERY_TYPES.GENERIC_ITEMS:
+      return parseGenericItems(data[query], skipLastDivider);
     case QUERY_TYPES.NEWS_ITEMS:
       return parseNewsItems(data[query], skipLastDivider, titleDetail);
     case QUERY_TYPES.POINTS_OF_INTEREST:

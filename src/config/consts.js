@@ -41,6 +41,7 @@ export const consts = {
       BB_BUS: 'Bürger- und Unternehmensservice',
       BOOKMARK_CATEGORY: 'Bookmark category',
       BOOKMARKS: 'Bookmarks',
+      COMMERCIAL_OFFER: 'Commercial offer',
       COMPANY: 'Company',
       CONSTRUCTION_SITE_DETAIL: 'Construction',
       CONSTRUCTION_SITES: 'Constructions',
@@ -48,6 +49,7 @@ export const consts = {
       FEEDBACK: 'Feedback',
       HOME: 'Home',
       HTML: 'Content',
+      JOB_OFFER: 'Job offer',
       MORE: 'More',
       LUNCH: 'Lunch',
       NEWS_ITEMS: 'News',
@@ -68,7 +70,9 @@ export const consts = {
   },
 
   ROOT_ROUTE_NAMES: {
+    COMMERCIALS: 'Commercials',
     EVENT_RECORDS: 'EventRecords',
+    JOBS: 'Jobs',
     NEWS_ITEMS: 'NewsItems',
     POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours',
     POINTS_OF_INTEREST: 'PointsOfInterest',
