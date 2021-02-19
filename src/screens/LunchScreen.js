@@ -7,6 +7,8 @@ import {
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
+import { useQuery } from 'react-apollo';
+import moment from 'moment';
 
 import { colors, consts, normalize, texts } from '../config';
 import {
@@ -25,18 +27,14 @@ import {
 import { arrowLeft, arrowRight } from '../icons';
 import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
 import { graphqlFetchPolicy } from '../helpers';
-import moment from 'moment';
 import { NetworkContext } from '../NetworkProvider';
-import { useQuery } from 'react-apollo';
 import { getQuery, QUERY_TYPES } from '../queries';
 
 const { MATOMO_TRACKING } = consts;
 
 export const LunchScreen = ({ navigation }) => {
   const [poiId, setPoiId] = useState(navigation.getParam('poiId'));
-
   const [date, setDate] = useState(moment());
-
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const refreshTime = useRefreshTime('lunch-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
@@ -71,7 +69,7 @@ export const LunchScreen = ({ navigation }) => {
   let lunchData = data?.[QUERY_TYPES.LUNCHES];
 
   if (poiId) {
-    lunchData?.filter((item) => item?.pointOfInterest?.id === poiId);
+    lunchData = lunchData?.filter((item) => item?.pointOfInterest?.id === poiId);
   }
 
   const ListHeaderComponent = (
@@ -124,11 +122,11 @@ export const LunchScreen = ({ navigation }) => {
       <FlatList
         refreshControl={
           <RefreshControl
-            colors={[colors.accent]}
-            onRefresh={() => refetch?.()}
             // using this refreshing prop causes the loading spinner to animate in from top and
             // push the list down, whenever we change the date
             refreshing={false}
+            onRefresh={() => refetch?.()}
+            colors={[colors.accent]}
             tintColor={colors.accent}
           />
         }
