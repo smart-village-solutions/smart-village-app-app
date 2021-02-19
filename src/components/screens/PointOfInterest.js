@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { View } from 'react-native';
+import { useQuery } from 'react-apollo';
 
 import { colors, consts, device, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
@@ -19,12 +20,14 @@ import { TMBNotice } from '../TMB/Notice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { PriceCard } from './PriceCard';
+import { getQuery, QUERY_TYPES } from '../../queries';
+import { CrossDataSection } from '../CrossDataSection';
 
 const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PointOfInterest = ({ data, hideMap, navigation }) => {
+export const PointOfInterest = ({ data, hideMap, navigation, fetchPolicy }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const {
     addresses,
@@ -69,6 +72,25 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
       categoryNames,
       title
     ])
+  );
+
+  const businessAccount = dataProvider?.dataType === 'business_account';
+  const variables = {
+    dataProviderId: dataProvider?.id,
+    orderEventRecords: 'listDate_ASC',
+    limit: 3
+  };
+  const crossDataTypes = [QUERY_TYPES.NEWS_ITEMS, QUERY_TYPES.EVENT_RECORDS, QUERY_TYPES.TOURS];
+
+  // TODO: own `fetchPolicy` or from parent component?
+  // TODO: `refetch` depending on `refreshing` from parent component?
+  const { data: crossData, loading, refetch } = useQuery(
+    getQuery(QUERY_TYPES.POINT_OF_INTEREST_CROSS_DATA),
+    {
+      fetchPolicy,
+      variables,
+      skip: !businessAccount
+    }
   );
 
   return (
@@ -138,6 +160,17 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
           </Wrapper>
         )}
 
+        {!!businessAccount &&
+          !!crossDataTypes?.length &&
+          crossDataTypes.map((crossDataType, index) => (
+            <CrossDataSection
+              key={`${index}-${crossDataType}`}
+              sectionData={crossData?.[crossDataType]}
+              query={crossDataType}
+              navigation={navigation}
+            />
+          ))}
+
         {/* There are several connection states that can happen
          * a) We are connected to a wifi and our mainserver is up (and reachable)
          *   a.1) OSM is reachable -> everything is fine
@@ -185,5 +218,6 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
 PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired,
   hideMap: PropTypes.bool,
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  fetchPolicy: PropTypes.string
 };

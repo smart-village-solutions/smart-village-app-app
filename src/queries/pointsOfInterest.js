@@ -70,10 +70,12 @@ export const GET_POINT_OF_INTEREST = gql`
         }
       }
       dataProvider {
+        id
         logo {
           url
         }
         name
+        dataType
       }
       addresses {
         city
@@ -143,6 +145,82 @@ export const GET_POINT_OF_INTEREST = gql`
       }
       lunches {
         id
+      }
+    }
+  }
+`;
+
+// TODO: add newsItems and tours
+// TODO: which data is really necessary in each?
+export const GET_POINT_OF_INTEREST_CROSS_DATA = gql`
+  query PointOfInterestCrossData(
+    $ids: [ID]
+    $limit: Int
+    $offset: Int
+    $orderEventRecords: EventRecordsOrder
+    $dataProviderId: ID
+    $categoryId: ID
+    $dateRange: [String]
+  ) {
+    eventRecords(
+      ids: $ids
+      limit: $limit
+      skip: $offset
+      order: $orderEventRecords
+      dataProviderId: $dataProviderId
+      categoryId: $categoryId
+      dateRange: $dateRange
+    ) {
+      id
+      category {
+        name
+      }
+      dates {
+        weekday
+        dateFrom: dateStart
+        dateTo: dateEnd
+        timeFrom: timeStart
+        timeTo: timeEnd
+        description: timeDescription
+      }
+      listDate
+      title
+      description
+      mediaContents {
+        id
+        contentType
+        captionText
+        copyright
+        sourceUrl {
+          url
+        }
+      }
+      addresses {
+        city
+        street
+        zip
+        kind
+        addition
+      }
+      contacts {
+        id
+        firstName
+        lastName
+        phone
+        email
+        fax
+        webUrls {
+          url
+          description
+        }
+      }
+      webUrls: urls {
+        url
+        description
+      }
+      priceInformations {
+        name
+        amount
       }
     }
   }
