@@ -16,13 +16,7 @@ export const CardListItem = memo(({ navigation, horizontal, item }) => {
   return (
     <Touchable
       accessibilityLabel={`(${subtitle}) ${title} (Taste)`}
-      onPress={() =>
-        navigation &&
-        navigation.navigate({
-          routeName,
-          params
-        })
-      }
+      onPress={() => navigation && navigation.push(routeName, params)}
       disabled={!navigation}
     >
       <Card containerStyle={styles.container}>

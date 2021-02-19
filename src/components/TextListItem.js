@@ -34,13 +34,7 @@ export const TextListItem = memo(({ navigation, item, noSubtitle, leftImage }) =
           />
         )
       }
-      onPress={() =>
-        navigation &&
-        navigation.navigate({
-          routeName,
-          params
-        })
-      }
+      onPress={() => navigation && navigation.push(routeName, params)}
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}
