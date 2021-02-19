@@ -1,7 +1,6 @@
-import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 
 import { colors, consts, device, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
@@ -10,8 +9,7 @@ import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
-import { Image } from '../Image';
-import { ImagesCarousel } from '../ImagesCarousel';
+import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { WebViewMap } from '../map/WebViewMap';
@@ -73,34 +71,11 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
     ])
   );
 
-  let images = [];
-  !!mediaContents &&
-    !!mediaContents.length &&
-    _filter(
-      mediaContents,
-      (mediaContent) =>
-        mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
-    ).forEach((item) => {
-      !!item.sourceUrl &&
-        !!item.sourceUrl.url &&
-        images.push({
-          picture: {
-            uri: item.sourceUrl.url,
-            copyright: item.copyright,
-            captionText: item.captionText
-          }
-        });
-    });
-
   return (
     <View>
-      {!!images && images.length > 1 && <ImagesCarousel data={images} />}
+      <ImageSection mediaContents={mediaContents} />
 
       <WrapperWithOrientation>
-        {!!images && images.length === 1 && (
-          <Image source={images[0].picture} containerStyle={styles.imageContainer} />
-        )}
-
         {!!title && (
           <View>
             <TitleContainer>
@@ -206,12 +181,6 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
   );
 };
 /* eslint-enable complexity */
-
-const styles = StyleSheet.create({
-  imageContainer: {
-    alignSelf: 'center'
-  }
-});
 
 PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired,
