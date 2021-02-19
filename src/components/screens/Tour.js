@@ -9,13 +9,13 @@ import { Image } from '../Image';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
-import { InfoCard } from './InfoCard';
 import { TourCard } from './TourCard';
-import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { matomoTrackingString } from '../../helpers';
 import { TMBNotice } from '../TMB/Notice';
+import { InfoCard } from '../infoCard';
+import { OperatingCompany } from './OperatingCompany';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -120,23 +120,11 @@ export const Tour = ({ data, navigation }) => {
           </View>
         )}
 
-        {!!operatingCompany && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`${texts.tour.operatingCompany} (Überschrift)`}>
-                {texts.tour.operatingCompany}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <OperatingCompanyInfo
-              name={operatingCompany.name}
-              address={operatingCompany.address}
-              contact={operatingCompany.contact}
-              webUrls={operatingCompany.contact.webUrls}
-              openWebScreen={openWebScreen}
-            />
-          </View>
-        )}
+        <OperatingCompany
+          openWebScreen={openWebScreen}
+          operatingCompany={operatingCompany}
+          title={texts.tour.operatingCompany}
+        />
 
         <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
       </WrapperWithOrientation>

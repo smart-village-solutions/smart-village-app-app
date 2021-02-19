@@ -4,19 +4,19 @@ export const formatAddress = (address) => {
   const { city, street, zip, addition } = address;
   let readableAddress = '';
 
-  if (!city && !street && !zip && !addition) return null;
+  if (!city && !street && !zip && !addition) return;
 
   // build the address in multiple steps to check every data before rendering
-  if (addition) {
+  if (addition?.length) {
     readableAddress += `${addition}${'\n'}`;
   }
-  if (street) {
+  if (street?.length) {
     readableAddress += `${street},${'\n'}`;
   }
-  if (zip) {
+  if (zip?.length) {
     readableAddress += `${zip} `;
   }
-  if (city) {
+  if (city?.length) {
     readableAddress += city;
   }
 

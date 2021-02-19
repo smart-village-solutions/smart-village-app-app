@@ -12,14 +12,14 @@ import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { ImagesCarousel } from '../ImagesCarousel';
+import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { WebViewMap } from '../map/WebViewMap';
+import { OperatingCompany } from './OperatingCompany';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { TMBNotice } from '../TMB/Notice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
-import { InfoCard } from './InfoCard';
 import { OpeningTimesCard } from './OpeningTimesCard';
-import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 import { PriceCard } from './PriceCard';
 
 const { MATOMO_TRACKING } = consts;
@@ -194,23 +194,11 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
           </View>
         )}
 
-        {!!operatingCompany && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`${texts.pointOfInterest.operatingCompany} (Überschrift)`}>
-                {texts.pointOfInterest.operatingCompany}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <OperatingCompanyInfo
-              name={operatingCompany.name}
-              address={operatingCompany.address}
-              contact={operatingCompany.contact}
-              webUrls={operatingCompany.contact.webUrls}
-              openWebScreen={openWebScreen}
-            />
-          </View>
-        )}
+        <OperatingCompany
+          openWebScreen={openWebScreen}
+          operatingCompany={operatingCompany}
+          title={texts.pointOfInterest.operatingCompany}
+        />
 
         <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
       </WrapperWithOrientation>

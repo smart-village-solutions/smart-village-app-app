@@ -13,13 +13,13 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
 import { PriceCard } from './PriceCard';
-import { InfoCard } from './InfoCard';
-import { OperatingCompanyInfo } from './OperatingCompanyInfo';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { ImagesCarousel } from '../ImagesCarousel';
 import { matomoTrackingString, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { TMBNotice } from '../TMB/Notice';
+import { InfoCard } from '../infoCard';
+import { OperatingCompany } from './OperatingCompany';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
 // thx to: https://stackoverflow.com/a/55780430
@@ -200,23 +200,11 @@ export const EventRecord = ({ data, navigation }) => {
 
         {!!media.length && media}
 
-        {!!operatingCompany && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`${texts.eventRecord.operatingCompany} (Überschrift)`}>
-                {texts.eventRecord.operatingCompany}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <OperatingCompanyInfo
-              name={operatingCompany.name}
-              address={operatingCompany.address}
-              contact={operatingCompany.contact}
-              webUrls={operatingCompany.contact.webUrls}
-              openWebScreen={openWebScreen}
-            />
-          </View>
-        )}
+        <OperatingCompany
+          openWebScreen={openWebScreen}
+          operatingCompany={operatingCompany}
+          title={texts.eventRecord.operatingCompany}
+        />
 
         <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
       </WrapperWithOrientation>

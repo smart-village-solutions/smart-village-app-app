@@ -2,16 +2,16 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { filter } from 'lodash';
 
 import { colors, normalize, texts } from '../../config';
 import { trimNewLines } from '../../helpers';
 import { HtmlView } from '../HtmlView';
-import { OperatingCompanyInfo } from '../screens/OperatingCompanyInfo';
+import { InfoCard } from '../infoCard';
 import { BoldText, RegularText } from '../Text';
 import { Title } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { getAddress, getContact } from './helpers';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -25,6 +25,9 @@ export const Authority = ({ data, accordion, onPress, bottomDivider, openWebScre
     elevator,
     wheelchairAccessible
   } = data;
+
+  const address = getAddress(addresses);
+  const contact = getContact(communications);
 
   return (
     <View key={id}>
@@ -40,71 +43,7 @@ export const Authority = ({ data, accordion, onPress, bottomDivider, openWebScre
       />
       {!!accordion[id] && (
         <WrapperWithOrientation>
-          <OperatingCompanyInfo
-            address={(() => {
-              if (!addresses || !addresses.length) return null;
-
-              let address = addresses[0];
-
-              if (address.address) address = address.address;
-
-              const { street, houseNumber, zipcode, city } = address;
-
-              return {
-                street: (!!street || !!houseNumber) && `${address.street} ${address.houseNumber}`,
-                zip: !!zipcode && zipcode,
-                city: !!city && city
-              };
-            })()}
-            contact={(() => {
-              if (!communications || !communications.length) return null;
-
-              let phone = filter(communications, (communication) => {
-                // fix for multi nested result form Directus API
-                if (communication.communication) communication = communication.communication;
-
-                return communication.type.key === 'TELEFON';
-              })[0];
-              // fix for multi nested result form Directus API
-              if (phone && phone.communication) phone = phone.communication;
-
-              let fax = filter(communications, (communication) => {
-                // fix for multi nested result form Directus API
-                if (communication.communication) communication = communication.communication;
-
-                return communication.type.key === 'FAX';
-              })[0];
-              // fix for multi nested result form Directus API
-              if (fax && fax.communication) fax = fax.communication;
-
-              let email = filter(communications, (communication) => {
-                // fix for multi nested result form Directus API
-                if (communication.communication) communication = communication.communication;
-
-                return communication.type.key === 'EMAIL';
-              })[0];
-              // fix for multi nested result form Directus API
-              if (email && email.communication) email = email.communication;
-
-              let www = filter(communications, (communication) => {
-                // fix for multi nested result form Directus API
-                if (communication.communication) communication = communication.communication;
-
-                return communication.type.key === 'WWW';
-              })[0];
-
-              // fix for multi nested result form Directus API
-              if (www && www.communication) www = www.communication;
-
-              return {
-                phone: !!phone && phone.value,
-                fax: !!fax && fax.value,
-                email: !!email && email.value,
-                www: !!www && www.value
-              };
-            })()}
-            openWebScreen={openWebScreen}
-          />
+          <InfoCard address={address} contact={contact} openWebScreen={openWebScreen} />
         </WrapperWithOrientation>
       )}
       {!!accordion[id] &&
