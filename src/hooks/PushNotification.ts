@@ -16,8 +16,15 @@ type ResponseHandler = (arg: Notifications.NotificationResponse) => void;
 export const usePushNotifications = (
   notificationHandler?: NotificationHandler,
   interactionHandler?: ResponseHandler,
-  behavior?: Notifications.NotificationBehavior
+  behavior?: Notifications.NotificationBehavior,
+  active?: boolean
 ): void => {
+  // this causes the active state to never change between rerenders.
+  // like this enabling or disabling the pushNotifications requires an app restart.
+  const [isActive] = useState(active);
+
+  if (isActive === false) return;
+
   const notificationListener = useRef<Subscription>();
   const responseListener = useRef<Subscription>();
 

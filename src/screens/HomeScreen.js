@@ -77,7 +77,12 @@ export const HomeScreen = ({ navigation }) => {
     [navigation]
   );
 
-  usePushNotifications(undefined, interactionHandler);
+  usePushNotifications(
+    undefined,
+    interactionHandler,
+    undefined,
+    globalSettings?.settings?.pushNotifications
+  );
   useMatomoAlertOnStartUp();
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
