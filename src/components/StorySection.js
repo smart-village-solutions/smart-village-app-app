@@ -42,12 +42,12 @@ export const StorySection = ({ contentBlock, index, openWebScreen, settings }) =
           <ImageSection mediaContents={contentBlock.mediaContents} />
         )
       }
-      {!settings?.displayOnlySummary ||
-        (settings.displayOnlySummary === 'false' && !!contentBlock.body && (
+      {(!settings?.displayOnlySummary || settings.displayOnlySummary === 'false') &&
+        !!contentBlock.body && (
           <WrapperHorizontal>
             <HtmlView html={trimNewLines(contentBlock.body)} openWebScreen={openWebScreen} />
           </WrapperHorizontal>
-        ))}
+        )}
       <MediaSection mediaContents={contentBlock.mediaContents} />
       {!!settings?.displayOnlySummary &&
         settings.displayOnlySummary === 'true' &&
