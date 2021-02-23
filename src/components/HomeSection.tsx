@@ -1,13 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { QueryHookOptions, useQuery } from 'react-apollo';
 import { ActivityIndicator, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { colors, consts } from '../config';
+import { colors } from '../config';
 import { parseListItemsFromQuery } from '../helpers';
 import { useHomeRefresh } from '../hooks/HomeRefresh';
 import { getQuery } from '../queries';
-import { SettingsContext } from '../SettingsProvider';
 import { Button } from './Button';
 import { ListComponent } from './ListComponent';
 import { LoadingContainer } from './LoadingContainer';
@@ -43,9 +42,6 @@ export const HomeSection = ({
   queryParser,
   queryVariables
 }: Props) => {
-  const { listTypesSettings } = useContext(SettingsContext);
-  const listType = listTypesSettings[query];
-
   const { data, loading, refetch } = useQuery(getQuery(query), {
     variables: queryVariables,
     fetchPolicy
@@ -70,13 +66,7 @@ export const HomeSection = ({
     <>
       <SectionHeader title={title} onPress={navigate} />
       <View>
-        <ListComponent
-          navigation={navigation}
-          data={items}
-          query={query}
-          horizontal={listType === consts.LIST_TYPES.CARD_LIST}
-        />
-
+        <ListComponent navigation={navigation} data={items} query={query} />
         <Wrapper>
           <Button title={buttonTitle} onPress={navigate} />
         </Wrapper>

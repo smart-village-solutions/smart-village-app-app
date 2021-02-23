@@ -1,18 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { consts, texts } from '../config';
+import { texts } from '../config';
 import { parseListItemsFromQuery } from '../helpers';
 import { QUERY_TYPES } from '../queries';
-import { SettingsContext } from '../SettingsProvider';
 import { ListComponent } from './ListComponent';
 import { SectionHeader } from './SectionHeader';
 
-const { LIST_TYPES } = consts;
-
 type Props = {
-  sectionData: [];
+  sectionData: unknown[];
   sectionTitle?: string;
   sectionTitleDetail?: string;
   query: string;
@@ -35,17 +32,6 @@ const getTitle = (itemType: string) => {
   }
 };
 
-// TODO: copied from BookmarkSection -> avoid duplicate content
-const isHorizontal = (query: string, listTypesSettings: Record<string, unknown>) => {
-  switch (query) {
-    case QUERY_TYPES.TOURS:
-    case QUERY_TYPES.POINTS_OF_INTEREST:
-      return listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS] === LIST_TYPES.CARD_LIST;
-    default:
-      return listTypesSettings[query] === LIST_TYPES.CARD_LIST;
-  }
-};
-
 export const CrossDataSection = ({
   sectionData,
   sectionTitle,
@@ -53,8 +39,6 @@ export const CrossDataSection = ({
   query,
   navigation
 }: Props) => {
-  const { listTypesSettings } = useContext(SettingsContext);
-
   if (!sectionData) return null;
 
   const listData = parseListItemsFromQuery(
@@ -64,17 +48,10 @@ export const CrossDataSection = ({
     sectionTitleDetail
   );
 
-  const horizontal = isHorizontal(query, listTypesSettings);
-
   return (
     <View>
       <SectionHeader title={sectionTitle || getTitle(query)} />
-      <ListComponent
-        data={listData}
-        navigation={navigation}
-        query={query}
-        horizontal={horizontal}
-      />
+      <ListComponent data={listData} navigation={navigation} query={query} />
     </View>
   );
 };

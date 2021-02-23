@@ -8,14 +8,13 @@ import { graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { SettingsContext } from '../../SettingsProvider';
 import { Button } from '../Button';
 import { ListComponent } from '../ListComponent';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { Wrapper } from '../Wrapper';
 
-const { LIST_TYPES, REFRESH_INTERVALS } = consts;
+const { REFRESH_INTERVALS } = consts;
 
 type Props = {
   categoryId?: number;
@@ -43,16 +42,6 @@ const getTitle = (itemType: string) => {
   }
 };
 
-const isHorizontal = (query: string, listTypesSettings: Record<string, unknown>) => {
-  switch (query) {
-    case QUERY_TYPES.TOURS:
-    case QUERY_TYPES.POINTS_OF_INTEREST:
-      return listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS] === LIST_TYPES.CARD_LIST;
-    default:
-      return listTypesSettings[query] === LIST_TYPES.CARD_LIST;
-  }
-};
-
 export const BookmarkSection = ({
   categoryId,
   categoryTitleDetail,
@@ -63,7 +52,6 @@ export const BookmarkSection = ({
   sectionTitle,
   setConnectionState
 }: Props) => {
-  const { listTypesSettings } = useContext(SettingsContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
   const refreshTime = useRefreshTime('bookmarks', REFRESH_INTERVALS.BOOKMARKS);
@@ -108,17 +96,10 @@ export const BookmarkSection = ({
 
   const listData = parseListItemsFromQuery(query, data, ids.length > 3, categoryTitleDetail);
 
-  const horizontal = isHorizontal(query, listTypesSettings);
-
   return (
     <View>
       <SectionHeader title={sectionTitle || getTitle(query)} onPress={onPressShowMore} />
-      <ListComponent
-        data={listData}
-        navigation={navigation}
-        query={query}
-        horizontal={horizontal}
-      />
+      <ListComponent data={listData} navigation={navigation} query={query} />
       {ids.length > 3 ? (
         <Wrapper>
           <Button title={texts.bookmarks.showAll} onPress={onPressShowMore} />

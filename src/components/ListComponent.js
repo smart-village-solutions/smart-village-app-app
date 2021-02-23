@@ -34,6 +34,16 @@ const getComponent = (query, listTypesSettings) =>
     [QUERY_TYPES.CATEGORIES]: CategoryList
   }[query]);
 
+const isHorizontal = (query, listTypesSettings) => {
+  switch (query) {
+    case QUERY_TYPES.TOURS:
+    case QUERY_TYPES.POINTS_OF_INTEREST:
+      return listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS] === LIST_TYPES.CARD_LIST;
+    default:
+      return listTypesSettings[query] === LIST_TYPES.CARD_LIST;
+  }
+};
+
 export const ListComponent = ({
   navigation,
   data,
@@ -52,7 +62,7 @@ export const ListComponent = ({
     <Component
       data={data}
       fetchMoreData={fetchMoreData}
-      horizontal={horizontal}
+      horizontal={horizontal ?? isHorizontal(query, listTypesSettings)}
       ListHeaderComponent={ListHeaderComponent}
       navigation={navigation}
       noSubtitle={noSubtitle}

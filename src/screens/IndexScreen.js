@@ -170,6 +170,7 @@ export const IndexScreen = ({ navigation }) => {
                 }
                 navigation={navigation}
                 data={listItems}
+                horizontal={false}
                 query={query}
                 fetchMoreData={isConnected ? fetchMoreData : null}
                 refreshControl={
