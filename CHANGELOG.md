@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.5.6]
+
+Refresh interval for images
+
+### Added
+
+- added refresh interval for images to be able to control the cache behavior
+- added pull to refresh for weather screen
+- added useHomeRefresh to remaining components
+
+### Changed
+
+- extracted image parsing from media contents and the display of images from news items,
+  points of interest, tours and event records to `ImageSection`
+- extracted story section from `NewsItem` and used new `MediaSection` as well as the overall
+  extracted `ImageSection`
+- addresses are no longer clickable if not at least either the city, street or zip of it are present
+
+### Fixed
+
+- fixed error in the logic to handle the "display only summary" setting, that caused the body to
+  not show under certain circumstances
+
 ## [v1.5.5]
 
 Lunch widget and different optimizations
