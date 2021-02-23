@@ -9,6 +9,17 @@ import { imageHeight, imageWidth } from '../helpers';
 import { SettingsContext } from '../SettingsProvider';
 import { ImageMessage } from './ImageMessage';
 import { ImageRights } from './ImageRights';
+import { useInterval } from '../hooks';
+
+const addQueryParam = (url, param) => {
+  if (!url?.length) return;
+
+  if (url.endsWith('/')) {
+    url = url.slice(0, url.length - 1);
+  }
+
+  return url.includes('?') ? `${url}&${param}` : `${url}?${param}`;
+};
 
 export const Image = ({
   source,
@@ -18,11 +29,14 @@ export const Image = ({
   PlaceholderContent,
   aspectRatio,
   resizeMode,
-  borderRadius
+  borderRadius,
+  refreshInterval
 }) => {
   const [uri, setUri] = useState(null);
   const { globalSettings } = useContext(SettingsContext);
+  const refreshCount = useInterval(refreshInterval);
 
+  // only use cache when refreshInterval is undefined
   // if there is a source.uri to fetch, do it with the CacheManager and set the local path to show.
   // if there is no uri, the source itself should be already a local path, so set it immediately.
   useEffect(() => {
@@ -33,15 +47,22 @@ export const Image = ({
     // -> https://juliangaramendy.dev/use-promise-subscription/
     let mounted = true;
 
-    source.uri
-      ? CacheManager.get(source.uri)
-          .getPath()
-          .then((path) => mounted && setUri(path))
-          .catch((err) => console.warn('An error occurred with cache management for an image', err))
-      : mounted && setUri(source);
+    if (refreshInterval === undefined) {
+      source.uri
+        ? CacheManager.get(source.uri)
+            .getPath()
+            .then((path) => mounted && setUri(path))
+            .catch((err) =>
+              console.warn('An error occurred with cache management for an image', err)
+            )
+        : mounted && setUri(source);
+    } else {
+      // add an artificial query param to the end of the url to trigger a rerender and refetch
+      mounted && setUri(addQueryParam(source.uri ?? source, `svaRefreshCount=${refreshCount}`));
+    }
 
     return () => (mounted = false);
-  }, [source, setUri]);
+  }, [refreshCount, refreshInterval, source, setUri]);
 
   return (
     <View>
@@ -89,7 +110,8 @@ Image.propTypes = {
   PlaceholderContent: PropTypes.object,
   aspectRatio: PropTypes.object,
   resizeMode: PropTypes.string,
-  borderRadius: PropTypes.number
+  borderRadius: PropTypes.number,
+  refreshInterval: PropTypes.number
 };
 
 Image.defaultProps = {

@@ -58,6 +58,7 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
                   message={item.message}
                   containerStyle={styles.imageContainer}
                   aspectRatio={aspectRatio}
+                  refreshInterval={item.refreshInterval}
                 />
               );
             }}
@@ -72,6 +73,7 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
           message={item.message}
           containerStyle={styles.imageContainer}
           aspectRatio={aspectRatio}
+          refreshInterval={item.refreshInterval}
         />
       );
     },

@@ -11,7 +11,7 @@ import { Image } from './Image';
  * @return {ReactElement} `Image` or an `Image` wrapped in a `TouchableOpacity`
  */
 export const ImagesCarouselItem = memo(
-  ({ navigation, source, message, containerStyle, aspectRatio }) => {
+  ({ navigation, source, message, containerStyle, aspectRatio, refreshInterval }) => {
     const { routeName, params } = source;
 
     if (routeName && params) {
@@ -25,7 +25,7 @@ export const ImagesCarouselItem = memo(
       );
     }
 
-    return <Image {...{ source, message, containerStyle, aspectRatio }} />;
+    return <Image {...{ source, message, containerStyle, aspectRatio, refreshInterval }} />;
   }
 );
 
@@ -36,5 +36,6 @@ ImagesCarouselItem.propTypes = {
   source: PropTypes.object.isRequired,
   message: PropTypes.string,
   containerStyle: PropTypes.object,
-  aspectRatio: PropTypes.object
+  aspectRatio: PropTypes.object,
+  refreshInterval: PropTypes.number
 };
