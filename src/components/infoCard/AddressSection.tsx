@@ -38,6 +38,8 @@ export const AddressSection = ({ address, addresses }: Props) => {
       {filteredAddresses.map((item, index) => {
         const address = formatAddress(item);
 
+        if (!address?.length) return null;
+
         const isPressable = item.city?.length || item.street?.length || item.zip?.length;
 
         const innerComponent = (
