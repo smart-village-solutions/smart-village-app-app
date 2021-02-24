@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 export const GET_WEATHER = gql`
   query WeatherMap {
     weatherMap {
+      id
       current
       hourly
       daily
@@ -14,6 +15,7 @@ export const GET_WEATHER = gql`
 export const GET_WEATHER_CURRENT = gql`
   query WeatherMapCurrent {
     weatherMap {
+      id
       current
     }
   }

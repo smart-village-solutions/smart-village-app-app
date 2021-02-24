@@ -33,28 +33,23 @@ export const openShare = async ({ message, title, url }) => {
   }
 };
 
-/* eslint-disable complexity */
-/* NOTE: we need to check a lot for presence, so this is that complex */
 export const shareMessage = (data, query) => {
   const buildMessage = (query) => {
     switch (query) {
       case QUERY_TYPES.EVENT_RECORD:
         return `${momentFormat(data.listDate)} | ${
-          data.addresses &&
-          data.addresses.length &&
-          (data.addresses[0].addition || data.addresses[0].city)
+          data.addresses?.[0]?.addition || data.addresses?.[0]?.city
         }: ${data.title}`;
       case QUERY_TYPES.NEWS_ITEM:
-        return `${momentFormat(data.publishedAt)} | ${
-          data.dataProvider && data.dataProvider.name
-        }: ${data.contentBlocks && data.contentBlocks.length && data.contentBlocks[0].title}`;
+        return `${momentFormat(data.publishedAt)} | ${data.dataProvider?.name}: ${
+          data.contentBlocks?.[0]?.title
+        }`;
       case QUERY_TYPES.POINT_OF_INTEREST:
-        return `${data.category && data.category.name}: ${data.name}`;
+        return `${data.category?.name}: ${data.name}`;
       case QUERY_TYPES.TOUR:
-        return `${data.category && data.category.name}: ${data.name}`;
+        return `${data.category?.name}: ${data.name}`;
     }
   };
 
   return `${buildMessage(query)}\n\nQuelle: ${appJson.expo.name}`;
 };
-/* eslint-enable complexity */

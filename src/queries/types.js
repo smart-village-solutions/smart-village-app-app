@@ -11,7 +11,7 @@ export const QUERY_TYPES = {
   POINT_OF_INTEREST: 'pointOfInterest',
   POINTS_OF_INTEREST: 'pointsOfInterest',
   POINTS_OF_INTEREST_AND_TOURS: 'pointsOfInterestAndTours',
-  POINT_OF_INTEREST_CROSS_DATA: 'pointOfInterestCrossData',
+  CROSS_DATA: 'crossData',
   PUBLIC_HTML_FILE: 'publicHtmlFile',
   PUBLIC_JSON_FILE: 'publicJsonFile',
   TOUR: 'tour',

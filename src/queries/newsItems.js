@@ -26,15 +26,19 @@ export const GET_NEWS_ITEMS = gql`
           captionText
           copyright
           sourceUrl {
+            id
             url
           }
         }
       }
       sourceUrl {
+        id
         url
       }
       dataProvider {
+        id
         logo {
+          id
           url
         }
         name
@@ -72,10 +76,13 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
         }
       }
       sourceUrl {
+        id
         url
       }
       dataProvider {
+        id
         logo {
+          id
           url
         }
         name
@@ -86,6 +93,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
       }
     }
     dataProviders: newsItemsDataProviders(categoryId: $categoryId) {
+      id
       name
     }
   }
@@ -108,20 +116,25 @@ export const GET_NEWS_ITEM = gql`
           captionText
           copyright
           sourceUrl {
+            id
             url
           }
         }
       }
       sourceUrl {
+        id
         url
       }
       dataProvider {
+        id
         logo {
+          id
           url
         }
         name
       }
       categories {
+        id
         name
       }
       settings {

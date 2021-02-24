@@ -6,18 +6,21 @@ export const GET_LUNCHES = gql`
       id
       text
       lunchOffers {
+        id
         name
         price
       }
       pointOfInterest {
         id
         addresses {
+          id
           kind
           city
           street
           zip
         }
         contact {
+          id
           email
           fax
           phone
@@ -29,8 +32,10 @@ export const GET_LUNCHES = gql`
         }
         name
         mediaContents {
+          id
           contentType
           sourceUrl {
+            id
             url
           }
         }

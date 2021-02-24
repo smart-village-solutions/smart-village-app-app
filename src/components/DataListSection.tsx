@@ -13,15 +13,16 @@ import { Wrapper } from './Wrapper';
 
 type Props = {
   buttonTitle?: string;
+  horizontal?: boolean;
   limit?: number;
-  loading: boolean;
+  loading?: boolean;
   navigate?: () => void;
+  navigation: NavigationScreenProp<never>;
+  query: string;
   sectionData?: unknown[];
   sectionTitle?: string;
   sectionTitleDetail?: string;
   showButton?: boolean;
-  query: string;
-  navigation: NavigationScreenProp<never>;
 };
 
 const getTitle = (itemType: string) => {
@@ -41,15 +42,16 @@ const getTitle = (itemType: string) => {
 
 export const DataListSection = ({
   buttonTitle,
+  horizontal,
   limit = 3,
   loading,
   navigate,
+  navigation,
+  query,
   sectionData,
   sectionTitle,
   sectionTitleDetail,
-  showButton,
-  query,
-  navigation
+  showButton
 }: Props) => {
   if (loading) {
     return (
@@ -66,7 +68,12 @@ export const DataListSection = ({
   return (
     <View>
       <SectionHeader onPress={navigate} title={sectionTitle ?? getTitle(query)} />
-      <ListComponent data={listData.slice(0, limit)} navigation={navigation} query={query} />
+      <ListComponent
+        data={listData.slice(0, limit)}
+        horizontal={horizontal}
+        navigation={navigation}
+        query={query}
+      />
       {!!buttonTitle && !!navigate && showButton && (
         <Wrapper>
           <Button title={buttonTitle} onPress={navigate} />

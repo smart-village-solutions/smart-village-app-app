@@ -6,40 +6,49 @@ export const GET_TOURS = gql`
       id
       name
       category {
+        id
         name
       }
       description
       mediaContents {
+        id
         contentType
         captionText
         copyright
         sourceUrl {
+          id
           url
         }
       }
       addresses {
+        id
         city
         street
         zip
         kind
       }
       contact {
+        id
         firstName
         lastName
         phone
         email
         fax
         webUrls {
+          id
           url
           description
         }
       }
       webUrls {
+        id
         url
         description
       }
       dataProvider {
+        id
         logo {
+          id
           url
         }
         name
@@ -54,21 +63,26 @@ export const GET_TOUR = gql`
       id
       title: name
       category {
+        id
         name
       }
       categories {
+        id
         name
       }
       description
       mediaContents {
+        id
         contentType
         captionText
         copyright
         sourceUrl {
+          id
           url
         }
       }
       addresses {
+        id
         city
         street
         zip
@@ -76,28 +90,35 @@ export const GET_TOUR = gql`
         addition
       }
       contact {
+        id
         firstName
         lastName
         phone
         email
         fax
         webUrls {
+          id
           url
           description
         }
       }
       webUrls {
+        id
         url
         description
       }
       lengthKm
       dataProvider {
+        id
         logo {
+          id
           url
         }
         name
+        dataType
       }
       operatingCompany {
+        id
         name
         address {
           id
@@ -108,12 +129,14 @@ export const GET_TOUR = gql`
           city
         }
         contact {
+          id
           firstName
           lastName
           phone
           email
           fax
           webUrls {
+            id
             url
             description
           }

@@ -1,36 +1,32 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { ActivityIndicator, View } from 'react-native';
-import { useQuery } from 'react-apollo';
+import { View } from 'react-native';
 
 import { colors, consts, device, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
+import { QUERY_TYPES } from '../../queries';
 import { Button } from '../Button';
+import { CrossDataSection } from '../CrossDataSection';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { WebViewMap } from '../map/WebViewMap';
-import { OperatingCompany } from './OperatingCompany';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { TMBNotice } from '../TMB/Notice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { OpeningTimesCard } from './OpeningTimesCard';
+import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
-import { getQuery, QUERY_TYPES } from '../../queries';
-import { LoadingContainer } from '../LoadingContainer';
-import { DataListSection } from '../DataListSection';
 
 const { MATOMO_TRACKING } = consts;
 
-const crossDataTypes = [QUERY_TYPES.NEWS_ITEMS, QUERY_TYPES.EVENT_RECORDS, QUERY_TYPES.TOURS];
-
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PointOfInterest = ({ data, hideMap, navigation, fetchPolicy }) => {
+export const PointOfInterest = ({ data, hideMap, navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const {
     addresses,
@@ -78,22 +74,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, fetchPolicy }) => {
   );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
-  const variables = {
-    dataProviderId: dataProvider?.id,
-    orderEventRecords: 'listDate_ASC',
-    limit: 3
-  };
-
-  // TODO: own `fetchPolicy` or from parent component?
-  // TODO: `refetch` depending on `refreshing` from parent component?
-  const { data: crossData, loading, refetch } = useQuery(
-    getQuery(QUERY_TYPES.POINT_OF_INTEREST_CROSS_DATA),
-    {
-      fetchPolicy,
-      variables,
-      skip: !businessAccount
-    }
-  );
 
   return (
     <View>
@@ -162,21 +142,13 @@ export const PointOfInterest = ({ data, hideMap, navigation, fetchPolicy }) => {
           </Wrapper>
         )}
 
-        {!!businessAccount &&
-          (loading ? (
-            <LoadingContainer>
-              <ActivityIndicator color={colors.accent} />
-            </LoadingContainer>
-          ) : (
-            crossDataTypes.map((crossDataType, index) => (
-              <DataListSection
-                key={`${index}-${crossDataType}`}
-                sectionData={crossData}
-                query={crossDataType}
-                navigation={navigation}
-              />
-            ))
-          ))}
+        {!!businessAccount && (
+          <CrossDataSection
+            dataProviderId={dataProvider.id}
+            navigation={navigation}
+            query={QUERY_TYPES.POINTS_OF_INTEREST}
+          />
+        )}
 
         {/* There are several connection states that can happen
          * a) We are connected to a wifi and our mainserver is up (and reachable)
