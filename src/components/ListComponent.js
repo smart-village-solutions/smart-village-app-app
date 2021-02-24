@@ -44,6 +44,8 @@ const isHorizontal = (query, listTypesSettings) => {
   }
 };
 
+// the ListComponent will default to being horizontal for CardLists,
+// which can be overwritten by passing in the horizontal prop
 export const ListComponent = ({
   navigation,
   data,

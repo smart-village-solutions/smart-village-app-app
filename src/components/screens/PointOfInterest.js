@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { View } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { useQuery } from 'react-apollo';
 
 import { colors, consts, device, texts } from '../../config';
@@ -21,9 +21,12 @@ import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { PriceCard } from './PriceCard';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { CrossDataSection } from '../CrossDataSection';
+import { LoadingContainer } from '../LoadingContainer';
+import { DataListSection } from '../DataListSection';
 
 const { MATOMO_TRACKING } = consts;
+
+const crossDataTypes = [QUERY_TYPES.NEWS_ITEMS, QUERY_TYPES.EVENT_RECORDS, QUERY_TYPES.TOURS];
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -80,7 +83,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, fetchPolicy }) => {
     orderEventRecords: 'listDate_ASC',
     limit: 3
   };
-  const crossDataTypes = [QUERY_TYPES.NEWS_ITEMS, QUERY_TYPES.EVENT_RECORDS, QUERY_TYPES.TOURS];
 
   // TODO: own `fetchPolicy` or from parent component?
   // TODO: `refetch` depending on `refreshing` from parent component?
@@ -161,14 +163,19 @@ export const PointOfInterest = ({ data, hideMap, navigation, fetchPolicy }) => {
         )}
 
         {!!businessAccount &&
-          !!crossDataTypes?.length &&
-          crossDataTypes.map((crossDataType, index) => (
-            <CrossDataSection
-              key={`${index}-${crossDataType}`}
-              sectionData={crossData?.[crossDataType]}
-              query={crossDataType}
-              navigation={navigation}
-            />
+          (loading ? (
+            <LoadingContainer>
+              <ActivityIndicator color={colors.accent} />
+            </LoadingContainer>
+          ) : (
+            crossDataTypes.map((crossDataType, index) => (
+              <DataListSection
+                key={`${index}-${crossDataType}`}
+                sectionData={crossData}
+                query={crossDataType}
+                navigation={navigation}
+              />
+            ))
           ))}
 
         {/* There are several connection states that can happen

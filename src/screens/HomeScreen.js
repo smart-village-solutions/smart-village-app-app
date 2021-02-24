@@ -21,7 +21,7 @@ import {
   WrapperRow
 } from '../components';
 import { colors, consts, normalize, texts } from '../config';
-import { graphqlFetchPolicy, parsePointsOfInterestAndTours, rootRouteName } from '../helpers';
+import { graphqlFetchPolicy, rootRouteName } from '../helpers';
 import { useMatomoAlertOnStartUp, useMatomoTrackScreenView, usePushNotifications } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
 import { favSettings } from '../icons';
@@ -180,7 +180,6 @@ export const HomeScreen = ({ navigation }) => {
             navigate={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}
             navigation={navigation}
             query={QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS}
-            queryParser={parsePointsOfInterestAndTours}
             queryVariables={{ limit: 10, orderPoi: 'RAND', orderTour: 'RAND' }}
           />
         )}
