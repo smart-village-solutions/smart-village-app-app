@@ -10,18 +10,18 @@ import { Icon } from '../Icon';
 
 type Props = {
   id: string;
-  categoryId: number;
+  suffix?: number | string;
   query: keyof typeof QUERY_TYPES;
   style: Record<string, unknown> | undefined;
 };
 
-export const BookmarkHeader = ({ id, categoryId, query, style }: Props) => {
+export const BookmarkHeader = ({ id, suffix, query, style }: Props) => {
   const { toggleBookmark } = useContext(BookmarkContext);
-  const isBookmarked = useBookmarkedStatus(query, id, categoryId);
+  const isBookmarked = useBookmarkedStatus(query, id, suffix);
 
   const onPress = useCallback(() => {
-    toggleBookmark(query, id, categoryId);
-  }, [categoryId, id, query]);
+    toggleBookmark(query, id, suffix);
+  }, [suffix, id, query]);
 
   return (
     <TouchableOpacity

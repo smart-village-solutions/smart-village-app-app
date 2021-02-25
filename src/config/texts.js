@@ -46,7 +46,8 @@ export const texts = {
     tours: 'Touren'
   },
   commercial: {
-    commercial: 'Werbeanzeige'
+    commercial: 'Werbeanzeige',
+    commercials: 'Werbeanzeigen'
   },
   constructionSites: {
     noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
@@ -87,7 +88,8 @@ export const texts = {
     categoryTitleDetail: 'Nachricht'
   },
   job: {
-    job: 'Stellenanzeige'
+    job: 'Stellenanzeige',
+    jobs: 'Stellenanzeigen'
   },
   lunch: {
     noOffers: 'Für dieses Datum sind derzeit keine Gerichte verfügbar.',

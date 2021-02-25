@@ -105,7 +105,7 @@ export const IndexScreen = ({ navigation }) => {
       isConnected &&
         trackScreenView(matomoTrackingString([MATOMO_TRACKING_SCREEN, MATOMO_TRACKING_CATEGORY]));
     }
-  }, [query]);
+  }, [isConnected, navigation, query, setQueryVariables, trackScreenView]);
 
   if (!query) return null;
 

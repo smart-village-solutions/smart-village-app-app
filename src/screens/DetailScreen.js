@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
 
 DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
   const shareContent = navigation.getParam('shareContent', '');
-  const categoryId = navigation.getParam('categoryId', '');
+  const suffix = navigation.getParam('suffix', '');
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', {});
 
@@ -165,7 +165,7 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
     query && queryVariables?.id ? (
       <BookmarkHeader
         id={queryVariables.id}
-        categoryId={categoryId}
+        suffix={suffix}
         query={query}
         style={styles.iconLeft}
       />

@@ -13,19 +13,21 @@ import {
   WrapperWithOrientation
 } from '../components';
 import { colors, consts, device, normalize, texts } from '../config';
-import { getKeyFromTypeAndCategory } from '../helpers';
+import { getKeyFromTypeAndSuffix } from '../helpers';
 import { useBookmarks, useMatomoTrackScreenView } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
+import { GenericType } from '../types';
 
 const { MATOMO_TRACKING } = consts;
 
 const getInitialConnectionState = (categoriesNews) => {
   let initialState = {};
   categoriesNews.forEach(({ categoryId }) => {
-    initialState[getKeyFromTypeAndCategory(QUERY_TYPES.NEWS_ITEMS, categoryId)] = true;
+    initialState[getKeyFromTypeAndSuffix(QUERY_TYPES.NEWS_ITEMS, categoryId)] = true;
   });
-  initialState[QUERY_TYPES.EVENT_RECORDS] = true;
+  initialState[getKeyFromTypeAndSuffix(QUERY_TYPES.GENERIC_ITEMS, GenericType.Commercial)] = true;
+  initialState[getKeyFromTypeAndSuffix(QUERY_TYPES.GENERIC_ITEMS, GenericType.Job)] = true;
   initialState[QUERY_TYPES.POINTS_OF_INTEREST] = true;
   initialState[QUERY_TYPES.TOURS] = true;
 
@@ -51,15 +53,15 @@ export const BookmarkScreen = ({ navigation }) => {
   const [connectionState, setConnectionState] = useState(getInitialConnectionState(categoriesNews));
 
   const getSection = useCallback(
-    (itemType, categoryTitle, categoryId, categoryTitleDetail) => {
-      const bookmarkKey = getKeyFromTypeAndCategory(itemType, categoryId);
+    (itemType, categoryTitle, suffix, categoryTitleDetail) => {
+      const bookmarkKey = getKeyFromTypeAndSuffix(itemType, suffix);
 
       if (!bookmarks[bookmarkKey]?.length) return null;
 
       return (
         <BookmarkSection
           bookmarkKey={bookmarkKey}
-          categoryId={categoryId}
+          suffix={suffix}
           categoryTitleDetail={categoryTitleDetail}
           ids={bookmarks[bookmarkKey]}
           key={bookmarkKey}
@@ -106,6 +108,12 @@ export const BookmarkScreen = ({ navigation }) => {
         {getSection(QUERY_TYPES.POINTS_OF_INTEREST, texts.categoryTitles.pointsOfInterest)}
         {getSection(QUERY_TYPES.TOURS, texts.categoryTitles.tours)}
         {getSection(QUERY_TYPES.EVENT_RECORDS, texts.homeTitles.events)}
+        {getSection(
+          QUERY_TYPES.GENERIC_ITEMS,
+          texts.commercial.commercials,
+          GenericType.Commercial
+        )}
+        {getSection(QUERY_TYPES.GENERIC_ITEMS, texts.job.jobs, GenericType.Job)}
       </ScrollView>
     </SafeAreaViewFlex>
   );

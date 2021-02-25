@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 
 export const GET_GENERIC_ITEMS = gql`
   query GenericItems(
+    $ids: [ID]
     $limit: Int
     $offset: Int
     $dataProvider: String
@@ -9,6 +10,7 @@ export const GET_GENERIC_ITEMS = gql`
     $genericType: String
   ) {
     genericItems(
+      ids: $ids
       limit: $limit
       skip: $offset
       dataProvider: $dataProvider

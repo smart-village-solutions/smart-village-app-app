@@ -58,6 +58,7 @@ const parseGenericItems = (data, skipLastDivider) => {
     routeName: 'Detail',
     params: {
       title: getGenericItemDetailTitle(genericItem.genericType),
+      suffix: genericItem.genericType,
       query: QUERY_TYPES.GENERIC_ITEM,
       queryVariables: { id: `${genericItem.id}` },
       rootRouteName: getGenericItemRootRouteName(genericItem.genericType),
@@ -87,7 +88,7 @@ export const parseNewsItems = (data, skipLastDivider, titleDetail) => {
     routeName: 'Detail',
     params: {
       title: titleDetail,
-      categoryId: newsItem.categories?.[0]?.id,
+      suffix: newsItem.categories?.[0]?.id,
       query: QUERY_TYPES.NEWS_ITEM,
       queryVariables: { id: `${newsItem.id}` },
       rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS,

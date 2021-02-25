@@ -22,7 +22,7 @@ type HeaderProps = {
 };
 
 type Props = {
-  categoryId?: number;
+  suffix?: number | string;
   categoryTitleDetail?: string;
   ids: string[];
   bookmarkKey: string;
@@ -70,7 +70,7 @@ const isHorizontal = (query: string, listTypesSettings: Record<string, unknown>)
 };
 
 export const BookmarkSection = ({
-  categoryId,
+  suffix,
   categoryTitleDetail,
   ids,
   bookmarkKey,
@@ -95,12 +95,12 @@ export const BookmarkSection = ({
   const onPressShowMore = useCallback(
     () =>
       navigation.navigate('BookmarkCategory', {
-        categoryId,
+        suffix,
         query,
         title: sectionTitle,
         categoryTitleDetail
       }),
-    [navigation, categoryId]
+    [navigation, suffix]
   );
 
   useEffect(() => {

@@ -17,6 +17,8 @@ export const getListQueryType = (singleItemType: string) => {
       return QUERY_TYPES.TOURS;
     case QUERY_TYPES.POINT_OF_INTEREST:
       return QUERY_TYPES.POINTS_OF_INTEREST;
+    case QUERY_TYPES.GENERIC_ITEM:
+      return QUERY_TYPES.GENERIC_ITEMS;
     default:
       return singleItemType;
   }
@@ -25,17 +27,17 @@ export const getListQueryType = (singleItemType: string) => {
 // add category as a suffix to the itemType to avoid handling NewsItem different
 // than the other item types in every other component
 // this way the hierarchy in the storage remains flat and homogeneous
-export const getKeyFromTypeAndCategory = (itemType: string, category?: number) =>
-  category ? `${itemType}-${category}` : itemType;
+export const getKeyFromTypeAndSuffix = (itemType: string, suffix?: number | string) =>
+  suffix ? `${itemType}-${suffix}` : itemType;
 
-export const toggleBookmark = async (itemType: string, id: string, category?: number) => {
+export const toggleBookmark = async (itemType: string, id: string, suffix?: number | string) => {
   const bookmarks: BookmarkList | undefined = await readFromStore(BOOKMARKS_STORE_KEY);
   const listQueryType = getListQueryType(itemType);
 
   // FIXME: add error handling
   if (!listQueryType) return;
 
-  const key = getKeyFromTypeAndCategory(listQueryType, category);
+  const key = getKeyFromTypeAndSuffix(listQueryType, suffix);
 
   let newBookmarkList: BookmarkList;
 

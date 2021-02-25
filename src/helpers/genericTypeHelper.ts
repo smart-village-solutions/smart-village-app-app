@@ -7,6 +7,8 @@ export const getGenericItemDetailTitle = (genericType: GenericType): string => {
       return texts.commercial.commercial;
     case GenericType.Job:
       return texts.job.job;
+    default:
+      return '';
   }
 };
 
@@ -18,5 +20,7 @@ export const getGenericItemRootRouteName = (genericType: GenericType): string =>
       return ROOT_ROUTE_NAMES.COMMERCIALS;
     case GenericType.Job:
       return ROOT_ROUTE_NAMES.JOBS;
+    default:
+      return '';
   }
 };
