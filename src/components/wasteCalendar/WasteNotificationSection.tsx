@@ -95,7 +95,7 @@ export const WasteNotificationSection = ({
   street
 }: {
   types: WasteTypeData;
-  street: any;
+  street: { street: string };
 }) => {
   const [state, dispatch] = useReducer(reminderSettingsReducer, initialSettings);
   const [loading, setLoading] = useState(true);
