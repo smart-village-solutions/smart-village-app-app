@@ -12,7 +12,8 @@ import {
   SafeAreaViewFlex,
   WrapperWithOrientation,
   WasteCalendarLegend,
-  Wrapper
+  Wrapper,
+  HeaderLeft
 } from '../components';
 import { colors, device, normalize, texts } from '../config';
 import { arrowLeft, arrowRight } from '../icons';
@@ -259,17 +260,7 @@ const styles = StyleSheet.create({
 
 WasteCollectionScreen.navigationOptions = ({ navigation }) => {
   return {
-    headerLeft: (
-      <View>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          accessibilityLabel="Zurück Taste"
-          accessibilityHint="Navigieren zurück zur vorherigen Seite"
-        >
-          <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-        </TouchableOpacity>
-      </View>
-    )
+    headerLeft: <HeaderLeft navigation={navigation} />
   };
 };
 
