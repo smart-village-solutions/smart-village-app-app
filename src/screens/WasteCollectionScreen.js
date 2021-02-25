@@ -12,7 +12,6 @@ import {
   SafeAreaViewFlex,
   WrapperWithOrientation,
   WasteCalendarLegend,
-  Button,
   Wrapper
 } from '../components';
 import { colors, device, normalize, texts } from '../config';
@@ -80,7 +79,7 @@ const getStreetString = (item) => {
   return `${item.street} (${item.zip} ${item.city})`;
 };
 
-export const WasteCollectionScreen = ({ navigation }) => {
+export const WasteCollectionScreen = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [inputValue, setInputValue] = useState('');
   const [selectedStreetId, setSelectedStreetId] = useState();
@@ -161,10 +160,11 @@ export const WasteCollectionScreen = ({ navigation }) => {
     [setInputValue]
   );
 
-  const goToReminder = useCallback(
-    () => navigation.navigate('WasteReminder', { wasteTypes: usedTypes, streetData }),
-    [navigation, usedTypes, streetData]
-  );
+  // TODO: disabled until backend is ready
+  // const goToReminder = useCallback(
+  //   () => navigation.navigate('WasteReminder', { wasteTypes: usedTypes, streetData }),
+  //   [navigation, usedTypes, streetData]
+  // );
 
   useEffect(() => {
     if (!addressesData) {
@@ -215,11 +215,19 @@ export const WasteCollectionScreen = ({ navigation }) => {
             />
             <WasteCalendarLegend data={usedTypes} />
           </View>
+          {!selectedStreetId && (
+            <Wrapper>
+              <RegularText center>{texts.wasteCalendar.hint}</RegularText>
+            </Wrapper>
+          )}
+          {/*
+          TODO: disabled until backend is ready
           {!!data && selectedStreetId && (
             <Wrapper>
               <Button title={texts.wasteCalendar.configureReminder} onPress={goToReminder} />
             </Wrapper>
           )}
+          */}
         </WrapperWithOrientation>
       </ScrollView>
     </SafeAreaViewFlex>
