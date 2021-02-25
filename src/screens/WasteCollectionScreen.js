@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Keyboard, StyleSheet, View } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
-import { Calendar } from 'react-native-calendars';
+import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { ScrollView, TouchableOpacity } from 'react-native';
 
 import {
@@ -23,6 +23,41 @@ import { getQuery, QUERY_TYPES } from '../queries';
 import { useRefreshTime } from '../hooks';
 import { graphqlFetchPolicy } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
+
+LocaleConfig.locales['de'] = {
+  monthNames: [
+    'Januar',
+    'Februar',
+    'März',
+    'April',
+    'Mai',
+    'Juni',
+    'Juli',
+    'August',
+    'September',
+    'Oktober',
+    'November',
+    'Dezember'
+  ],
+  monthNamesShort: [
+    'Jan.',
+    'Feb.',
+    'Mär.',
+    'Apr.',
+    'Mai',
+    'Jun.',
+    'Jul.',
+    'Aug.',
+    'Sep.',
+    'Okt.',
+    'Nov.',
+    'Dez.'
+  ],
+  dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
+  dayNamesShort: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
+  today: 'Heute'
+};
+LocaleConfig.defaultLocale = 'de';
 
 const getMarkedDates = (types, streetData) => {
   let markedDates = {};

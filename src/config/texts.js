@@ -162,7 +162,7 @@ export const texts = {
   },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',
-    hint: 'Bitte wählen Sie eine Straße aus.',
+    hint: 'Bitte geben Sie Ihre Straße an.',
     onDayBeforeCollection: 'Am Vortag',
     onDayOfCollection: 'Am Tag der Abholung',
     reminder: 'Erinnerungen',
