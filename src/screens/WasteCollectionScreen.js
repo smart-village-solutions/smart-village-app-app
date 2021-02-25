@@ -1,7 +1,7 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Keyboard, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Keyboard, StyleSheet, View } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import { Calendar } from 'react-native-calendars';
 import { ScrollView, TouchableOpacity } from 'react-native';
@@ -13,7 +13,8 @@ import {
   WrapperWithOrientation,
   WasteCalendarLegend,
   Wrapper,
-  HeaderLeft
+  HeaderLeft,
+  LoadingContainer
 } from '../components';
 import { colors, device, normalize, texts } from '../config';
 import { arrowLeft, arrowRight } from '../icons';
@@ -69,7 +70,7 @@ const filterStreets = (currentInputValue, streetData) => {
   if (currentInputValue === '') return [];
 
   return streetData
-    .filter((street) =>
+    ?.filter((street) =>
       getStreetString(street).toLowerCase().includes(currentInputValue.toLowerCase())
     )
     .filter((street) => getStreetString(street) !== currentInputValue)
@@ -179,19 +180,13 @@ export const WasteCollectionScreen = () => {
     setSelectedStreetId(item?.id);
   }, [inputValue, setSelectedStreetId, addressesData]);
 
-  // TODO: loading logic
-  if (loading || !data)
+  if (loading || typesLoading) {
     return (
-      <RegularText>
-        {JSON.stringify({
-          loading,
-          data: !!data,
-          typesLoading,
-          typesData: !!typesData,
-          typesRefreshTime
-        })}
-      </RegularText>
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
     );
+  }
 
   const filteredStreets = filterStreets(inputValue, addressesData);
 
