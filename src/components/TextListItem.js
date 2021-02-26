@@ -18,7 +18,7 @@ export const TextListItem = memo(({ navigation, item, noSubtitle, leftImage }) =
   return (
     <ListItem
       title={noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
-      subtitle={<BoldText noSubtitle={noSubtitle}>{trimNewLines(title)}</BoldText>}
+      subtitle={<BoldText>{trimNewLines(title)}</BoldText>}
       bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
       topDivider={topDivider !== undefined ? topDivider : false}
       containerStyle={styles.container}
