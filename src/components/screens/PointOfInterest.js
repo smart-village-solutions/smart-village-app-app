@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { View } from 'react-native';
 
 import { colors, consts, device, texts } from '../../config';
@@ -7,9 +7,7 @@ import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
-import { QUERY_TYPES } from '../../queries';
 import { Button } from '../Button';
-import { CrossDataSection } from '../CrossDataSection';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
@@ -74,6 +72,19 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
   );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
+
+  const navigateToDataProvider = useCallback(
+    () =>
+      dataProvider &&
+      businessAccount &&
+      navigation.navigate('DataProvider', {
+        dataProviderId: dataProvider.id,
+        dataProviderName: dataProvider.name,
+        title: dataProvider.name
+      }),
+
+    [businessAccount, dataProvider, navigation]
+  );
 
   return (
     <View>
@@ -142,14 +153,6 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
           </Wrapper>
         )}
 
-        {!!businessAccount && (
-          <CrossDataSection
-            dataProviderId={dataProvider.id}
-            navigation={navigation}
-            query={QUERY_TYPES.POINTS_OF_INTEREST}
-          />
-        )}
-
         {/* There are several connection states that can happen
          * a) We are connected to a wifi and our mainserver is up (and reachable)
          *   a.1) OSM is reachable -> everything is fine
@@ -188,6 +191,15 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
         />
 
         <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
+
+        {!!businessAccount && (
+          <Wrapper>
+            <Button
+              title={`${texts.dataProvider.more} ${dataProvider.name}`}
+              onPress={navigateToDataProvider}
+            />
+          </Wrapper>
+        )}
       </WrapperWithOrientation>
     </View>
   );

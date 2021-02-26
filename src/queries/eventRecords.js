@@ -8,6 +8,8 @@ export const GET_EVENT_RECORDS = gql`
     $order: EventRecordsOrder
     $categoryId: ID
     $dateRange: [String]
+    $dataProvider: String
+    $dataProviderId: ID
   ) {
     eventRecords(
       ids: $ids
@@ -16,6 +18,8 @@ export const GET_EVENT_RECORDS = gql`
       order: $order
       categoryId: $categoryId
       dateRange: $dateRange
+      dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
     ) {
       id
       category {
@@ -86,6 +90,8 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
     $order: EventRecordsOrder
     $categoryId: ID
     $dateRange: [String]
+    $dataProvider: String
+    $dataProviderId: ID
   ) {
     eventRecords(
       limit: $limit
@@ -93,6 +99,8 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
       order: $order
       categoryId: $categoryId
       dateRange: $dateRange
+      dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
     ) {
       id
       category {

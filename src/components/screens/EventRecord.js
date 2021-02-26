@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import _filter from 'lodash/filter';
@@ -19,8 +19,7 @@ import { TMBNotice } from '../TMB/Notice';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { OperatingCompany } from './OperatingCompany';
-import { CrossDataSection } from '../CrossDataSection';
-import { QUERY_TYPES } from '../../queries';
+import { Button } from '../Button';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
 // thx to: https://stackoverflow.com/a/55780430
@@ -108,6 +107,19 @@ export const EventRecord = ({ data, navigation }) => {
 
   const businessAccount = dataProvider?.dataType === 'business_account';
 
+  const navigateToDataProvider = useCallback(
+    () =>
+      dataProvider &&
+      businessAccount &&
+      navigation.navigate('DataProvider', {
+        dataProviderId: dataProvider.id,
+        dataProviderName: dataProvider.name,
+        title: dataProvider.name
+      }),
+
+    [businessAccount, dataProvider, navigation]
+  );
+
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
@@ -180,14 +192,6 @@ export const EventRecord = ({ data, navigation }) => {
 
         {!!media.length && media}
 
-        {!!businessAccount && (
-          <CrossDataSection
-            dataProviderId={dataProvider.id}
-            navigation={navigation}
-            query={QUERY_TYPES.EVENT_RECORDS}
-          />
-        )}
-
         <OperatingCompany
           openWebScreen={openWebScreen}
           operatingCompany={operatingCompany}
@@ -195,6 +199,15 @@ export const EventRecord = ({ data, navigation }) => {
         />
 
         <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
+
+        {!!businessAccount && (
+          <Wrapper>
+            <Button
+              title={`${texts.dataProvider.more} ${dataProvider.name}`}
+              onPress={navigateToDataProvider}
+            />
+          </Wrapper>
+        )}
       </WrapperWithOrientation>
     </View>
   );

@@ -7,8 +7,18 @@ export const GET_POINTS_OF_INTEREST = gql`
     $offset: Int
     $order: PointsOfInterestOrder
     $category: String
+    $dataProvider: String
+    $dataProviderId: ID
   ) {
-    pointsOfInterest(ids: $ids, limit: $limit, skip: $offset, order: $order, category: $category) {
+    pointsOfInterest(
+      ids: $ids
+      limit: $limit
+      skip: $offset
+      order: $order
+      category: $category
+      dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
+    ) {
       id
       name
       category {

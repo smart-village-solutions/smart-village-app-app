@@ -124,7 +124,11 @@ export const IndexScreen = ({ navigation }) => {
         <MapSwitchHeader setShowMap={setShowMap} showMap={showMap} />
       ) : null}
       {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
-        <LocationOverview navigation={navigation} category={queryVariables.category} />
+        <LocationOverview
+          navigation={navigation}
+          category={queryVariables.category}
+          dataProviderName={queryVariables.dataProvider}
+        />
       ) : (
         <Query
           query={getQuery(query, { showNewsFilter, showEventsFilter })}

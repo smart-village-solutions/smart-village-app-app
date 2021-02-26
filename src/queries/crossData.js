@@ -27,6 +27,7 @@ export const GET_CROSS_DATA = gql`
         captionText
         copyright
         sourceUrl {
+          id
           url
         }
       }
@@ -59,6 +60,7 @@ export const GET_CROSS_DATA = gql`
           captionText
           copyright
           sourceUrl {
+            id
             url
           }
         }
@@ -85,6 +87,7 @@ export const GET_CROSS_DATA = gql`
         captionText
         copyright
         sourceUrl {
+          id
           url
         }
       }
@@ -110,6 +113,7 @@ export const GET_CROSS_DATA = gql`
         captionText
         copyright
         sourceUrl {
+          id
           url
         }
       }

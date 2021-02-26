@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View } from 'react-native';
 
 import { consts, device, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView } from '../../hooks';
+import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
@@ -59,6 +60,21 @@ export const Tour = ({ data, navigation }) => {
     ])
   );
 
+  const businessAccount = dataProvider?.dataType === 'business_account';
+
+  const navigateToDataProvider = useCallback(
+    () =>
+      dataProvider &&
+      businessAccount &&
+      navigation.navigate('DataProvider', {
+        dataProviderId: dataProvider.id,
+        dataProviderName: dataProvider.name,
+        title: dataProvider.name
+      }),
+
+    [businessAccount, dataProvider, navigation]
+  );
+
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
@@ -102,6 +118,15 @@ export const Tour = ({ data, navigation }) => {
         />
 
         <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
+
+        {!!businessAccount && (
+          <Wrapper>
+            <Button
+              title={`${texts.dataProvider.more} ${dataProvider.name}`}
+              onPress={navigateToDataProvider}
+            />
+          </Wrapper>
+        )}
       </WrapperWithOrientation>
     </View>
   );

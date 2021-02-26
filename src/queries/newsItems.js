@@ -1,12 +1,20 @@
 import gql from 'graphql-tag';
 
 export const GET_NEWS_ITEMS = gql`
-  query NewsItems($ids: [ID], $limit: Int, $offset: Int, $dataProvider: String, $categoryId: ID) {
+  query NewsItems(
+    $ids: [ID]
+    $limit: Int
+    $offset: Int
+    $dataProvider: String
+    $dataProviderId: ID
+    $categoryId: ID
+  ) {
     newsItems(
       ids: $ids
       limit: $limit
       skip: $offset
       dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
       categoryId: $categoryId
     ) {
       id
@@ -52,8 +60,20 @@ export const GET_NEWS_ITEMS = gql`
 `;
 
 export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
-  query NewsItems($limit: Int, $offset: Int, $dataProvider: String, $categoryId: ID) {
-    newsItems(limit: $limit, skip: $offset, dataProvider: $dataProvider, categoryId: $categoryId) {
+  query NewsItems(
+    $limit: Int
+    $offset: Int
+    $dataProvider: String
+    $dataProviderId: ID
+    $categoryId: ID
+  ) {
+    newsItems(
+      limit: $limit
+      skip: $offset
+      dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
+      categoryId: $categoryId
+    ) {
       id
       mainTitle: title
       publishedAt
