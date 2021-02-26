@@ -2,13 +2,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ScrollView } from 'react-native';
 
-import { HeaderLeft, RegularText, Wrapper } from '../components';
+import { HeaderLeft, Logo, RegularText, Wrapper } from '../components';
 import { CrossDataSection } from '../components/CrossDataSection';
 import { texts } from '../config';
 
 export const DataProviderScreen = ({ navigation }) => {
   const dataProviderId = navigation.getParam('dataProviderId');
   const dataProviderName = navigation.getParam('dataProviderName');
+  const logo = navigation.getParam('logo');
 
   if (!dataProviderId || !dataProviderName) {
     return (
@@ -20,6 +21,12 @@ export const DataProviderScreen = ({ navigation }) => {
 
   return (
     <ScrollView>
+      {!!logo && (
+        <Wrapper>
+          <Logo source={{ uri: logo }} />
+        </Wrapper>
+      )}
+
       <CrossDataSection
         dataProviderId={dataProviderId}
         dataProviderName={dataProviderName}

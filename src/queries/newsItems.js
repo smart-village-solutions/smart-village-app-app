@@ -152,6 +152,7 @@ export const GET_NEWS_ITEM = gql`
           url
         }
         name
+        dataType
       }
       categories {
         id

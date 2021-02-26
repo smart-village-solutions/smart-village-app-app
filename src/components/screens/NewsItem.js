@@ -67,10 +67,11 @@ export const NewsItem = ({ data, navigation }) => {
       navigation.navigate('DataProvider', {
         dataProviderId: dataProvider.id,
         dataProviderName: dataProvider.name,
+        logo,
         title: dataProvider.name
       }),
 
-    [businessAccount, dataProvider, navigation]
+    [businessAccount, dataProvider, logo, navigation]
   );
 
   return (
