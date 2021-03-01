@@ -7,14 +7,15 @@ import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { ScrollView, TouchableOpacity } from 'react-native';
 
 import {
+  HeaderLeft,
   Icon,
+  LoadingContainer,
+  NoTouchDay,
   RegularText,
   SafeAreaViewFlex,
-  WrapperWithOrientation,
   WasteCalendarLegend,
   Wrapper,
-  HeaderLeft,
-  LoadingContainer
+  WrapperWithOrientation
 } from '../components';
 import { colors, device, normalize, texts } from '../config';
 import { arrowLeft, arrowRight } from '../icons';
@@ -191,7 +192,9 @@ export const WasteCollectionScreen = () => {
           Keyboard.dismiss();
         }}
       >
-        <RegularText>{getStreetString(item)}</RegularText>
+        <Wrapper>
+          <RegularText>{getStreetString(item)}</RegularText>
+        </Wrapper>
       </TouchableOpacity>
     ),
     [setInputValue]
@@ -237,9 +240,12 @@ export const WasteCollectionScreen = () => {
             onChangeText={(text) => setInputValue(text)}
             placeholder="Straße"
             renderItem={renderSuggestion}
+            style={styles.autoCompleteInput}
+            listStyle={styles.autoCompleteList}
           />
           <View style={styles.topMarginContainer}>
             <Calendar
+              dayComponent={NoTouchDay}
               markedDates={getMarkedDates(parsedTypesData, streetData)}
               markingType="multi-dot"
               renderArrow={renderArrow}
@@ -278,6 +284,15 @@ const styles = StyleSheet.create({
           zIndex: 1
         }
       : {},
+  autoCompleteInput: {
+    color: colors.darkText,
+    fontFamily: 'titillium-web-regular',
+    fontSize: normalize(16),
+    padding: normalize(8)
+  },
+  autoCompleteList: {
+    margin: 0
+  },
   icon: {
     paddingHorizontal: normalize(14)
   },
