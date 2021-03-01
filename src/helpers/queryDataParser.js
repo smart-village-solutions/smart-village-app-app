@@ -3,7 +3,8 @@ import _shuffle from 'lodash/shuffle';
 
 import { consts, texts } from '../config';
 import { QUERY_TYPES } from '../queries';
-import { eventDate } from './dateTimeHelper';
+import { GenericType } from '../types';
+import { eventDate, isBeforeEndOfToday, isTodayOrLater } from './dateTimeHelper';
 import { getGenericItemDetailTitle, getGenericItemRootRouteName } from './genericTypeHelper';
 import { mainImageOfMediaContents } from './imageHelper';
 import { momentFormat } from './momentHelper';
@@ -11,6 +12,19 @@ import { shareMessage } from './shareHelper';
 import { subtitle } from './textHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
+
+const filterGenericItems = (item) => {
+  if (item?.genericType === GenericType.Job) {
+    const dateEnd = item?.dates?.[0]?.dateEnd;
+    const hasNotEnded = dateEnd ? isTodayOrLater(dateEnd) : true;
+
+    const publicationDate = item?.publicationDate;
+    const isPublished = publicationDate ? isBeforeEndOfToday(publicationDate) : true;
+
+    return hasNotEnded && isPublished;
+  }
+  return true;
+};
 
 export const parseEventRecords = (data, skipLastDivider) => {
   return data?.map((eventRecord, index) => ({
@@ -39,10 +53,13 @@ export const parseEventRecords = (data, skipLastDivider) => {
 };
 
 const parseGenericItems = (data, skipLastDivider) => {
-  return data?.map((genericItem, index) => ({
+  // this likely needs a rework in the future, but for now this is the place to filter items.
+  const filteredData = data?.filter(filterGenericItems);
+
+  return filteredData?.map((genericItem, index) => ({
     id: genericItem.id,
     subtitle: subtitle(
-      momentFormat(genericItem.publishedAt ?? genericItem.createdAt),
+      momentFormat(genericItem.publicationDate ?? genericItem.createdAt),
       genericItem.dataProvider?.name
     ),
     title: genericItem.title,
@@ -67,7 +84,7 @@ const parseGenericItems = (data, skipLastDivider) => {
       },
       details: genericItem
     },
-    bottomDivider: !skipLastDivider || index !== data.length - 1
+    bottomDivider: !skipLastDivider || index !== filteredData.length - 1
   }));
 };
 

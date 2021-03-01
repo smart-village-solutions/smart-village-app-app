@@ -14,13 +14,12 @@ import { auth } from '../auth';
 import { colors, consts, device, normalize } from '../config';
 import {
   BookmarkHeader,
-  CommercialOffer,
   EventRecord,
   HeaderLeft,
   Icon,
-  JobOffer,
   LoadingContainer,
   NewsItem,
+  Offer,
   PointOfInterest,
   SafeAreaViewFlex,
   Tour,
@@ -35,9 +34,8 @@ import { GenericType } from '../types';
 const getGenericComponent = (genericType) => {
   switch (genericType) {
     case GenericType.Commercial:
-      return CommercialOffer;
     case GenericType.Job:
-      return JobOffer;
+      return Offer;
   }
 };
 

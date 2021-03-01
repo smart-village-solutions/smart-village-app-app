@@ -50,6 +50,18 @@ export const GET_GENERIC_ITEMS = gql`
           }
         }
       }
+      contacts {
+        id
+        firstName
+        lastName
+        phone
+        email
+        webUrls {
+          id
+          url
+          description
+        }
+      }
       contentBlocks {
         id
         body
@@ -63,8 +75,21 @@ export const GET_GENERIC_ITEMS = gql`
           captionText
         }
       }
+      mediaContents {
+        id
+        captionText
+        contentType
+        copyright
+        sourceUrl {
+          id
+          url
+        }
+      }
+      dates {
+        id
+        dateEnd
+      }
       publicationDate
-      publishedAt
       payload
     }
   }

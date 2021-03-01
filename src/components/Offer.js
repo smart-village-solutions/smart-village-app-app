@@ -2,9 +2,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
 
-import { device, texts } from '../config';
-import { momentFormat, trimNewLines } from '../helpers';
-import { isContact } from '../jsonValidation';
+import { consts, device, texts } from '../config';
+import { matomoTrackingString, momentFormat, trimNewLines } from '../helpers';
+import { useMatomoTrackScreenView } from '../hooks';
+import { GenericType } from '../types';
 import { ImageSection } from './ImageSection';
 import { InfoCard } from './infoCard';
 import { Logo } from './Logo';
@@ -14,17 +15,34 @@ import { Title, TitleContainer, TitleShadow } from './Title';
 import { Touchable } from './Touchable';
 import { Wrapper, WrapperRow, WrapperWithOrientation, WrapperWrap } from './Wrapper';
 
+const { MATOMO_TRACKING } = consts;
+
+const isImage = (mediaContent) => mediaContent.contentType === 'image';
+
 // eslint-disable-next-line complexity
 export const Offer = ({ data, navigation }) => {
   const {
+    companies,
+    contacts,
     contentBlocks,
     dataProvider,
+    genericType,
+    mediaContents,
     payload,
-    pointOfInterestData,
-    publishedAt,
+    publicationDate,
     sourceUrl,
     title
   } = data;
+
+  useMatomoTrackScreenView(
+    matomoTrackingString([
+      genericType === GenericType.Job
+        ? MATOMO_TRACKING.SCREEN_VIEW.JOB_OFFER
+        : MATOMO_TRACKING.SCREEN_VIEW.COMMERCIAL_OFFER,
+      dataProvider && dataProvider.name,
+      title
+    ])
+  );
 
   const link = sourceUrl?.url;
   const rootRouteName = navigation.getParam('rootRouteName', '');
@@ -41,18 +59,16 @@ export const Offer = ({ data, navigation }) => {
       }
     });
 
-  const logo = pointOfInterestData?.mediaContents?.find(
-    (mediaContent) => mediaContent.itemType === 'logo'
-  ).sourceUrl?.url;
+  const logo = mediaContents?.find((mediaContent) => mediaContent.itemType === 'logo')?.sourceUrl
+    ?.url;
 
-  const operatingCompany = pointOfInterestData?.operatingCompany;
-  const contact = payload?.contact;
-  const expirationDate = payload?.expirationDate;
+  const operatingCompany = companies?.[0];
+  const contact = contacts?.[0];
 
   return (
     <View>
       {/* the images from the first content block will be present in the main image carousel */}
-      <ImageSection mediaContents={contentBlocks?.[0]?.mediaContents} />
+      <ImageSection mediaContents={mediaContents?.filter(isImage)} />
 
       <WrapperWithOrientation>
         {!!title && !!link ? (
@@ -88,20 +104,11 @@ export const Offer = ({ data, navigation }) => {
           </Wrapper>
         )}
 
-        {!!publishedAt && (
+        {!!publicationDate && (
           <Wrapper>
             <WrapperRow>
               <BoldText>{texts.job.publishedAt}</BoldText>
-              <RegularText>{momentFormat(publishedAt)}</RegularText>
-            </WrapperRow>
-          </Wrapper>
-        )}
-
-        {!!expirationDate && (
-          <Wrapper>
-            <WrapperRow>
-              <BoldText>{texts.job.expirationDate}</BoldText>
-              <RegularText>{momentFormat(expirationDate)}</RegularText>
+              <RegularText>{momentFormat(publicationDate)}</RegularText>
             </WrapperRow>
           </Wrapper>
         )}
@@ -117,7 +124,7 @@ export const Offer = ({ data, navigation }) => {
           );
         })}
 
-        {isContact(contact) && <InfoCard contact={contact} />}
+        {!!contact && <InfoCard contact={contact} />}
 
         {!!operatingCompany && (
           <>

@@ -151,7 +151,7 @@ export const IndexScreen = ({ navigation }) => {
                 query: getFetchMoreQuery(query),
                 variables: {
                   ...queryVariables,
-                  offset: listItems.length
+                  offset: data?.[query]?.length
                 },
                 updateQuery: (prevResult, { fetchMoreResult }) => {
                   if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
