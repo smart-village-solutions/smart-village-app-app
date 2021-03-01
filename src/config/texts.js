@@ -168,8 +168,8 @@ export const texts = {
     reminder: 'Erinnerungen',
     reminderTime: 'Zu welcher Uhrzeit möchten Sie benachrichtigt werden?',
     updateReminderSettings: 'Einstellungen aktualisieren',
-    whichDay: 'Möchten sie am Vortag oder am Tag der Abholung benachrichtigt werden?',
-    whichType: 'Für welche Müllsorten möchten sie Erinnerungen?'
+    whichDay: 'Möchten Sie am Vortag oder am Tag der Abholung benachrichtigt werden?',
+    whichType: 'Für welche Müllsorten möchten Sie Erinnerungen?'
   },
   weather: {
     alertsHeadline: 'Wetterwarnungen',
