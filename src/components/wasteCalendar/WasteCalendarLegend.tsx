@@ -53,10 +53,10 @@ export const WasteCalendarLegend = ({ data }: { data?: WasteTypeData }) => {
 const styles = StyleSheet.create({
   dot: {
     alignSelf: 'center',
-    borderRadius: 3,
-    height: 6,
+    borderRadius: normalize(6) / 2,
+    height: normalize(6),
     margin: normalize(2),
-    width: 6
+    width: normalize(6)
   },
   marginBottom: {
     marginBottom: normalize(14)

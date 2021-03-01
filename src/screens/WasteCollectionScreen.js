@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
   topMarginContainer:
     device.platform === 'android'
       ? {
-          marginTop: 40
+          marginTop: normalize(44)
         }
       : {}
 });
