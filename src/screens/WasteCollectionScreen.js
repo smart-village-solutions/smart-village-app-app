@@ -227,12 +227,13 @@ export const WasteCollectionScreen = () => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView keyboardShouldPersistTaps="always">
+      <ScrollView keyboardShouldPersistTaps="handled">
         <WrapperWithOrientation>
           <Autocomplete
             containerStyle={styles.autoCompleteContainer}
             data={filteredStreets}
             defaultValue={inputValue}
+            disableFullscreenUI
             onChangeText={(text) => setInputValue(text)}
             placeholder="Straße"
             renderItem={renderSuggestion}
