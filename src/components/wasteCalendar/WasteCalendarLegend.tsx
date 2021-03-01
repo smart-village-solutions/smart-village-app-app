@@ -20,7 +20,7 @@ const WasteCalendarLegendEntry = ({ color, label, selectedColor }: EntryProps) =
   return (
     <WrapperHorizontal>
       <WrapperRow>
-        <RegularText small>{`${label} - `}</RegularText>
+        <RegularText small>{`${label} `}</RegularText>
         <Dot color={color} />
         {color !== selectedColor && <Dot color={selectedColor} />}
       </WrapperRow>
