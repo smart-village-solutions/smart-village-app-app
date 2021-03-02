@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Dropdown from 'react-native-modal-dropdown';
 
@@ -21,6 +21,7 @@ export const DropdownSelect = ({
   renderSearch,
   searchPlaceholder
 }) => {
+  const dropdownRef = useRef();
   const { orientation } = useContext(OrientationContext);
 
   const marginHorizontal =
@@ -41,7 +42,7 @@ export const DropdownSelect = ({
   const [arrow, setArrow] = useState('down');
   const selectedData = data.find((entry) => entry.selected);
   const selectedIndex = data.findIndex((entry) => entry.selected);
-  const preselect = (index) => this[`dropdown${label}`].select(index);
+  const preselect = (index) => dropdownRef.current.select(index);
 
   useEffect(() => {
     preselect(selectedIndex);
@@ -53,7 +54,7 @@ export const DropdownSelect = ({
         <Label>{label}</Label>
       </WrapperHorizontal>
       <Dropdown
-        ref={(ref) => (this[`dropdown${label}`] = ref)}
+        ref={dropdownRef}
         options={data.map((entry) => entry.value)}
         dropdownStyle={[
           styles.dropdownDropdown,
