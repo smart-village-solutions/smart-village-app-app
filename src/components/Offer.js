@@ -8,7 +8,7 @@ import { useMatomoTrackScreenView } from '../hooks';
 import { GenericType } from '../types';
 import { ImageSection } from './ImageSection';
 import { InfoCard } from './infoCard';
-import { Logo } from './Logo';
+import { OperatingCompany } from './screens';
 import { StorySection } from './StorySection';
 import { BoldText, RegularText } from './Text';
 import { Title, TitleContainer, TitleShadow } from './Title';
@@ -59,7 +59,7 @@ export const Offer = ({ data, navigation }) => {
       }
     });
 
-  const logo = mediaContents?.find((mediaContent) => mediaContent.itemType === 'logo')?.sourceUrl
+  const logo = mediaContents?.find((mediaContent) => mediaContent.contentType === 'logo')?.sourceUrl
     ?.url;
 
   const operatingCompany = companies?.[0];
@@ -124,25 +124,18 @@ export const Offer = ({ data, navigation }) => {
           );
         })}
 
-        {!!contact && <InfoCard contact={contact} />}
-
-        {!!operatingCompany && (
-          <>
-            <TitleContainer>
-              <Title>{texts.pointOfInterest.operatingCompany}</Title>
-            </TitleContainer>
-            {!!logo && <Logo source={{ uri: logo }} />}
-            <Wrapper>
-              <InfoCard
-                name={operatingCompany.name}
-                address={operatingCompany.address}
-                contact={operatingCompany.contact}
-                webUrls={operatingCompany.contact.webUrls}
-                openWebScreen={openWebScreen}
-              />
-            </Wrapper>
-          </>
+        {!!contact && (
+          <Wrapper>
+            <InfoCard contact={contact} />
+          </Wrapper>
         )}
+
+        <OperatingCompany
+          title={texts.pointOfInterest.operatingCompany}
+          logo={logo}
+          operatingCompany={operatingCompany}
+          openWebScreen={openWebScreen}
+        />
       </WrapperWithOrientation>
     </View>
   );
