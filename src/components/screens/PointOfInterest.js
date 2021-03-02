@@ -164,6 +164,7 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
                   position: { lat: latitude, lng: longitude }
                 }
               ]}
+              zoom={14}
             />
             {device.platform === 'ios' && <TitleShadow />}
           </View>

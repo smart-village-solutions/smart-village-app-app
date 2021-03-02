@@ -21,7 +21,7 @@ export const WebViewMap = ({
   mapCenterPosition,
   onMessageReceived,
   style,
-  zoom
+  zoom = 10
 }: Props) => {
   const messageHandler = useCallback(
     (message) => {

@@ -79,6 +79,9 @@ export const texts = {
     categoryTitle: 'Nachrichten',
     categoryTitleDetail: 'Nachricht'
   },
+  locationOverview: {
+    noSelection: 'Bitte wählen Sie eine Markierung aus.'
+  },
   lunch: {
     noOffers: 'Für dieses Datum sind derzeit keine Gerichte verfügbar.',
     showAll: 'Alle Gastro-Angebote anzeigen'

@@ -4,7 +4,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { MapMarker, WebviewLeafletMessage } from 'react-native-webview-leaflet';
 import { NavigationScreenProps, ScrollView } from 'react-navigation';
 
-import { colors } from '../../config';
+import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
@@ -12,7 +12,8 @@ import { getQuery, QUERY_TYPES } from '../../queries';
 import { LoadingContainer } from '../LoadingContainer';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { PointOfInterest } from '../screens/PointOfInterest';
-import { WrapperWithOrientation } from '../Wrapper';
+import { RegularText } from '../Text';
+import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { WebViewMap } from './WebViewMap';
 
 type Props = {
@@ -92,6 +93,11 @@ export const LocationOverview = ({ navigation, category }: Props) => {
             onMessageReceived={onMessageReceived}
           />
           <View>
+            {!selectedPointOfInterest && (
+              <Wrapper>
+                <RegularText center>{texts.locationOverview.noSelection}</RegularText>
+              </Wrapper>
+            )}
             {detailsLoading ? (
               <LoadingContainer>
                 <ActivityIndicator color={colors.accent} />
