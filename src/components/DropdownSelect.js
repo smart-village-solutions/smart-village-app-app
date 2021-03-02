@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Dropdown from 'react-native-modal-dropdown';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, device, normalize } from '../config';
 import { RegularText } from './Text';
@@ -23,9 +24,9 @@ export const DropdownSelect = ({
 }) => {
   const dropdownRef = useRef();
   const { orientation } = useContext(OrientationContext);
+  const { left: safeAreaLeft } = useSafeAreaInsets();
 
-  const marginHorizontal =
-    orientation === 'portrait' ? normalize(14) : device.height * 0.15 + normalize(14);
+  const marginHorizontal = normalize(14) + safeAreaLeft;
 
   const adjustFrame = useCallback(
     (styles) => ({
