@@ -10,12 +10,11 @@ import { momentFormat } from './momentHelper';
  * @return the formated event date string in format 'DD.MM.YYYY'
  */
 export const eventDate = (dateStart?: string, dateEnd?: string) => {
-  if (!dateStart && !dateEnd) {
+  const dateToFormat = dateStart ?? dateEnd;
+  if (!dateToFormat) {
     return '';
   } else {
-    // by the previous check one of the two needs to be defined for moment format
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return momentFormat((dateStart || dateEnd)!);
+    return momentFormat(dateToFormat);
   }
 };
 
