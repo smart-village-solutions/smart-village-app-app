@@ -10,6 +10,7 @@ import { Icon } from './Icon';
 import { arrowDown, arrowUp } from '../icons';
 import { Label } from './Label';
 import { OrientationContext } from '../OrientationProvider';
+import { baseFontStyle } from '../config/styles/baseFontStyle';
 
 export const DropdownSelect = ({
   data,
@@ -113,12 +114,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3
   },
-  dropdownDropdownText: {
-    color: colors.darkText,
-    fontFamily: 'titillium-web-regular',
-    fontSize: normalize(16),
-    lineHeight: normalize(22)
-  },
+  dropdownDropdownText: baseFontStyle,
   dropdownRowWrapper: {
     backgroundColor: colors.lightestText
   },
