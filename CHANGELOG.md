@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.5.7]
+
+Fixes and adjustments
+
+### Changed
+
+- hide address entry if the string is empty
+
+### Fixed
+
+- corrected position of dropdown modal in landscape mode
+
+### Removed
+
+- removed unnecessary prop `noSubtitle` used for a `Text` component in `TextListItem`
+
 ## [v1.5.6]
 
 Refresh interval for images
