@@ -95,7 +95,7 @@ export const Offer = ({ data, navigation }) => {
           </Wrapper>
         )}
 
-        {typeof payload?.employmentType === 'string' && (
+        {typeof payload?.employmentType === 'string' && !!payload?.employmentType && (
           <Wrapper>
             <WrapperWrap>
               <BoldText>{texts.job.employmentType}</BoldText>
