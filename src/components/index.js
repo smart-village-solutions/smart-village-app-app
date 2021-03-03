@@ -2,6 +2,7 @@ export * from './bookmarks';
 export * from './infoCard';
 export * from './map';
 export * from './screens';
+export * from './wasteCalendar';
 export * from './weather';
 export * from './widgets';
 

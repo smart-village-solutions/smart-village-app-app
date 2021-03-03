@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "~3.1.5",
+    "@react-native-community/datetimepicker": "3.0.4",
     "@react-native-community/netinfo": "5.9.7",
     "apollo-cache-inmemory": "1.6.6",
     "apollo-cache-persist": "~0.1.1",
@@ -50,6 +51,8 @@
     "react": "16.13.1",
     "react-apollo": "~3.1.5",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.0.tar.gz",
+    "react-native-autocomplete-input": "^4.2.0",
+    "react-native-calendars": "^1.1129.0",
     "react-native-elements": "~1.2.0",
     "react-native-expo-image-cache": "4.1.0",
     "react-native-gesture-handler": "~1.8.0",

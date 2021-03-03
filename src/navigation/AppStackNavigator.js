@@ -12,8 +12,10 @@ import {
   IndexScreen,
   LunchScreen,
   SettingsScreen,
+  WasteCollectionScreen,
   WeatherScreen,
-  WebScreen
+  WebScreen,
+  WasteReminderScreen
 } from '../screens';
 import {
   DetailScreen as BBBUSDetailScreen,
@@ -103,6 +105,18 @@ const AppStackNavigator = (headerRight = true) =>
         screen: SettingsScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', texts.screenTitles.settings)
+        })
+      },
+      WasteCollection: {
+        screen: WasteCollectionScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', texts.screenTitles.wasteCollection)
+        })
+      },
+      WasteReminder: {
+        screen: WasteReminderScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', texts.screenTitles.wasteCollection)
         })
       },
       Weather: {

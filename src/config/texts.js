@@ -48,6 +48,10 @@ export const texts = {
   constructionSites: {
     noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
   },
+  dateTimePicker: {
+    cancel: 'Abbrechen',
+    ok: 'Ok'
+  },
   detailTitles: {
     eventRecord: 'Veranstaltung',
     newsItem: 'Nachricht',
@@ -110,6 +114,7 @@ export const texts = {
     about: appJson.expo.name,
     constructionSite: 'Baustelle',
     settings: 'Einstellungen',
+    wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
   },
   settingsContents: {
@@ -154,6 +159,17 @@ export const texts = {
     operatingCompany: 'Veranstalter',
     start: 'Tourbeginn',
     tour: 'Tourverlauf'
+  },
+  wasteCalendar: {
+    configureReminder: 'Erinnerungen einstellen',
+    hint: 'Bitte geben Sie Ihre Straße an.',
+    onDayBeforeCollection: 'Am Vortag',
+    onDayOfCollection: 'Am Tag der Abholung',
+    reminder: 'Erinnerungen',
+    reminderTime: 'Zu welcher Uhrzeit möchten Sie benachrichtigt werden?',
+    updateReminderSettings: 'Einstellungen aktualisieren',
+    whichDay: 'Möchten Sie am Vortag oder am Tag der Abholung benachrichtigt werden?',
+    whichType: 'Für welche Müllsorten möchten Sie Erinnerungen?'
   },
   weather: {
     alertsHeadline: 'Wetterwarnungen',

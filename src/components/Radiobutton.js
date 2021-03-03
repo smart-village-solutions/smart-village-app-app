@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
 });
 
 Radiobutton.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   disabled: PropTypes.bool,
   selected: PropTypes.bool,
   onPress: PropTypes.func
