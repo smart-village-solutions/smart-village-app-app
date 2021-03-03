@@ -1,5 +1,5 @@
 export type ReminderSettings = {
-  activeTypes: { [key: string]: boolean };
+  activeTypes: { [key: string]: { active: boolean; storeId?: number } };
   onDayBefore: boolean;
   reminderTime: Date;
 };

@@ -24,7 +24,7 @@ export const handleIncomingToken = async (token?: string) => {
 
     if (storedToken) successfullyRemoved = await removeTokenFromServer(storedToken);
     if (token) successfullyAdded = await addTokenToServer(token);
-    storeTokenSecurely(token);
+    if (token ?? successfullyRemoved) storeTokenSecurely(token);
     // if we want to remove the token (token === undefined) then return if we did.
     // otherwise it is sufficient for the app to know that the new token has arrived on the server.
     return (!token && successfullyRemoved) || successfullyAdded;
