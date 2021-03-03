@@ -31,8 +31,9 @@ export const OperatingCompany = ({ title, logo, operatingCompany, openWebScreen 
         <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
-      {!!logo && <Logo source={{ uri: logo }} />}
       <Wrapper>
+        {!!logo && <Logo source={{ uri: logo }} />}
+
         <InfoCard
           address={operatingCompany.address}
           contact={operatingCompany.contact}
