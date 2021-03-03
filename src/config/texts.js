@@ -100,7 +100,7 @@ export const texts = {
     greetingBody:
       'Damit Sie wichtige Mitteilungen aus Ihrer Kommune erreichen, würden wir Ihnen gerne Benachrichtigungen schicken. Sie können diese Einstellung jederzeit in Ihrem persönlichen Bereich ändern.',
     greetingTitle: 'Willkommen',
-    permissionMissingBody: 'Bitte überprüfe deine Benachrichtigungseinstellungen im System.',
+    permissionMissingBody: 'Bitte überprüfen Sie Ihre Benachrichtigungseinstellungen im System.',
     permissionMissingTitle: 'Hinweis'
   },
   screenTitles: {
