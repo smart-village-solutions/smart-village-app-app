@@ -33,7 +33,8 @@ const getNavigationFunction = (
     navigation.push('Index', {
       queryVariables: { dataProvider: dataProviderName },
       query,
-      title: getTitleForQuery(query)
+      title: getTitleForQuery(query),
+      showFilter: false
     });
 };
 
@@ -45,7 +46,7 @@ export const CrossDataSection = ({ dataProviderId, dataProviderName, navigation 
   const variables = {
     dataProviderId,
     orderEventRecords: 'listDate_ASC',
-    limit: 3
+    limit: 4
   };
 
   const { data, loading } = useQuery(getQuery(QUERY_TYPES.CROSS_DATA), {
@@ -65,13 +66,13 @@ export const CrossDataSection = ({ dataProviderId, dataProviderName, navigation 
   return crossDataTypes.map((crossDataType, index) => (
     <DataListSection
       key={`${index}-${crossDataType}`}
-      horizontal={false}
       query={crossDataType}
       sectionData={data}
+      limit={3}
       navigation={navigation}
       buttonTitle={texts.dataProvider.showAll}
       navigate={getNavigationFunction(navigation, dataProviderName, crossDataType)}
-      showButton
+      showButton={(data?.[crossDataType]?.length ?? 0) > 3}
     />
   ));
 };

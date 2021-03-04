@@ -145,7 +145,7 @@ const parsePointsOfInterestAndTours = (data) => {
 };
 
 const parseCrossData = (data) => {
-  const eventRecords = parseNewsItems(data?.[QUERY_TYPES.EVENT_RECORDS]);
+  const eventRecords = parseEventRecords(data?.[QUERY_TYPES.EVENT_RECORDS]);
   const newsItems = parseNewsItems(data?.[QUERY_TYPES.NEWS_ITEMS]);
   const pointsOfInterest = parsePointOfInterest(data?.[QUERY_TYPES.POINTS_OF_INTEREST]);
   const tours = parseTours(data?.[QUERY_TYPES.TOURS]);

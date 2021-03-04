@@ -35,6 +35,12 @@ export const IndexScreen = ({ navigation }) => {
   const query = navigation.getParam('query', '');
   const title = navigation.getParam('title', '');
   const titleDetail = navigation.getParam('titleDetail', '');
+  const showFilter =
+    navigation.getParam('showFilter', true) &&
+    {
+      [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
+      [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
+    }[query];
 
   const refresh = useCallback(
     async (refetch) => {
@@ -107,10 +113,10 @@ export const IndexScreen = ({ navigation }) => {
 
   if (!query) return null;
 
-  const showFilter = {
-    [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
-    [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
-  }[query];
+  // const showFilter = {
+  //   [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
+  //   [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
+  // }[query];
   const queryVariableForQuery = {
     [QUERY_TYPES.EVENT_RECORDS]: 'categoryId',
     [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
