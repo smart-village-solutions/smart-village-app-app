@@ -2,8 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ScrollView } from 'react-native';
 
-import { HeaderLeft, Logo, RegularText, Wrapper } from '../components';
-import { CrossDataSection } from '../components/CrossDataSection';
+import { CrossData, HeaderLeft, Logo, RegularText, Wrapper } from '../components';
 import { texts } from '../config';
 
 export const DataProviderScreen = ({ navigation }) => {
@@ -27,7 +26,7 @@ export const DataProviderScreen = ({ navigation }) => {
         </Wrapper>
       )}
 
-      <CrossDataSection
+      <CrossData
         dataProviderId={dataProviderId}
         dataProviderName={dataProviderName}
         navigation={navigation}

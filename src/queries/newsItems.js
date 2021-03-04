@@ -91,6 +91,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
           captionText
           copyright
           sourceUrl {
+            id
             url
           }
         }

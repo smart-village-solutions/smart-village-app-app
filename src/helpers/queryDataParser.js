@@ -144,20 +144,6 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
-const parseCrossData = (data) => {
-  const eventRecords = parseEventRecords(data?.[QUERY_TYPES.EVENT_RECORDS]);
-  const newsItems = parseNewsItems(data?.[QUERY_TYPES.NEWS_ITEMS]);
-  const pointsOfInterest = parsePointOfInterest(data?.[QUERY_TYPES.POINTS_OF_INTEREST]);
-  const tours = parseTours(data?.[QUERY_TYPES.TOURS]);
-
-  return {
-    [QUERY_TYPES.EVENT_RECORDS]: eventRecords,
-    [QUERY_TYPES.NEWS_ITEMS]: newsItems,
-    [QUERY_TYPES.POINTS_OF_INTEREST]: pointsOfInterest,
-    [QUERY_TYPES.TOURS]: tours
-  };
-};
-
 export const parseListItemsFromQuery = (query, data, skipLastDivider, titleDetail) => {
   if (!data) return;
 
@@ -174,7 +160,5 @@ export const parseListItemsFromQuery = (query, data, skipLastDivider, titleDetai
       return parseCategories(data[query], skipLastDivider);
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
-    case QUERY_TYPES.CROSS_DATA:
-      return parseCrossData(data);
   }
 };

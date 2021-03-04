@@ -113,10 +113,6 @@ export const IndexScreen = ({ navigation }) => {
 
   if (!query) return null;
 
-  // const showFilter = {
-  //   [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
-  //   [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
-  // }[query];
   const queryVariableForQuery = {
     [QUERY_TYPES.EVENT_RECORDS]: 'categoryId',
     [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
