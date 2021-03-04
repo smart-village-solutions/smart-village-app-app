@@ -65,13 +65,13 @@ export const CrossDataSection = ({ dataProviderId, dataProviderName, navigation 
 
   return crossDataTypes.map((crossDataType, index) => (
     <DataListSection
+      buttonTitle={texts.dataProvider.showAll}
       key={`${index}-${crossDataType}`}
+      limit={3}
+      navigate={getNavigationFunction(navigation, dataProviderName, crossDataType)}
+      navigation={navigation}
       query={crossDataType}
       sectionData={data}
-      limit={3}
-      navigation={navigation}
-      buttonTitle={texts.dataProvider.showAll}
-      navigate={getNavigationFunction(navigation, dataProviderName, crossDataType)}
       showButton={(data?.[crossDataType]?.length ?? 0) > 3}
     />
   ));

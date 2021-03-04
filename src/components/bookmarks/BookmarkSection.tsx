@@ -66,14 +66,14 @@ export const BookmarkSection = ({
 
   return (
     <DataListSection
+      buttonTitle={texts.bookmarks.showAll}
       loading={loading}
+      navigate={onPressShowMore}
       navigation={navigation}
       query={query}
-      buttonTitle={texts.bookmarks.showAll}
-      navigate={onPressShowMore}
       sectionData={data}
-      sectionTitleDetail={categoryTitleDetail}
       sectionTitle={sectionTitle}
+      sectionTitleDetail={categoryTitleDetail}
       showButton={ids.length > 3}
     />
   );

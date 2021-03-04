@@ -42,12 +42,12 @@ export const HomeSection = ({
 
   return (
     <DataListSection
+      buttonTitle={buttonTitle}
       loading={loading}
+      navigate={navigate}
       navigation={navigation}
       query={query}
-      buttonTitle={buttonTitle}
       sectionData={data}
-      navigate={navigate}
       sectionTitle={title}
       sectionTitleDetail={titleDetail}
       showButton
