@@ -88,6 +88,7 @@ export const texts = {
     categoryTitleDetail: 'Nachricht'
   },
   job: {
+    employmentType: 'Art der Anstellung: ',
     job: 'Stellenanzeige',
     jobs: 'Stellenanzeigen'
   },

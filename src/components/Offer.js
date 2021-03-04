@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View } from 'react-native';
 
 import { consts, device, texts } from '../config';
@@ -49,15 +49,18 @@ export const Offer = ({ data, navigation }) => {
   const headerTitle = navigation.getParam('title', '');
 
   // action to open source urls
-  const openWebScreen = (webUrl) =>
-    navigation.navigate({
-      routeName: 'Web',
-      params: {
-        title: headerTitle,
-        webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
-        rootRouteName
-      }
-    });
+  const openWebScreen = useCallback(
+    (webUrl) =>
+      navigation.navigate({
+        routeName: 'Web',
+        params: {
+          title: headerTitle,
+          webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
+          rootRouteName
+        }
+      }),
+    [headerTitle, link, navigation, rootRouteName]
+  );
 
   const logo = mediaContents?.find((mediaContent) => mediaContent.contentType === 'logo')?.sourceUrl
     ?.url;
@@ -95,7 +98,7 @@ export const Offer = ({ data, navigation }) => {
           </Wrapper>
         )}
 
-        {typeof payload?.employmentType === 'string' && !!payload?.employmentType && (
+        {typeof payload?.employmentType === 'string' && payload?.employmentType?.length && (
           <Wrapper>
             <WrapperWrap>
               <BoldText>{texts.job.employmentType}</BoldText>
@@ -126,7 +129,7 @@ export const Offer = ({ data, navigation }) => {
 
         {!!contact && (
           <Wrapper>
-            <InfoCard contact={contact} />
+            <InfoCard contact={contact} openWebScreen={openWebScreen} />
           </Wrapper>
         )}
 
