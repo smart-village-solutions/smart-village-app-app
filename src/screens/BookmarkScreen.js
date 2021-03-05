@@ -14,8 +14,7 @@ import {
 } from '../components';
 import { colors, consts, device, normalize, texts } from '../config';
 import { getKeyFromTypeAndCategory } from '../helpers';
-import { useBookmarks, useMatomoTrackScreenView } from '../hooks';
-import { useNewsCategories } from '../hooks/NewsCategories';
+import { useBookmarks, useMatomoTrackScreenView, useNewsCategories } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 
 const { MATOMO_TRACKING } = consts;

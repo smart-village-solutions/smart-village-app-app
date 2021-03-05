@@ -5,8 +5,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, texts } from '../config';
 import { getTitleForQuery, graphqlFetchPolicy } from '../helpers';
-import { useRefreshTime } from '../hooks';
-import { useNewsCategories } from '../hooks/NewsCategories';
+import { useNewsCategories, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { DataListSection } from './DataListSection';
