@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.6.0] :rocket:
+
+The sixth minor version upgrade adds more screens for specific data like jobs, ads and
+waste collections
+
+### Added
+
+- added screens for jobs and ads data (generic items)
+  - added new common component for jobs and ads `Offer`
+  - added bookmark logic for generic items
+- added `DataProviderScreen` for business accounts with all data of all corresponding
+  data types ("cross data")
+  - using new `CrossDataSection` to render the similar sections
+  - introduced reusable `DataListSection` to reduce code duplications
+- added `WasteCollectionScreen` for local waste collection with calendar (react-native-calendars)
+- added enabling/disabling push notifications through server settings
+
+### Changed
+
+- added `useNewsCategories` to separate logics that can be used in several components
+- better default zoom for map views
+  - added placeholder on overview if no marker is selected
+
 ## [v1.5.7]
 
 Fixes and adjustments
