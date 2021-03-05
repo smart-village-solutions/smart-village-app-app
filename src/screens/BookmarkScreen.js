@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
 import {
@@ -14,9 +14,8 @@ import {
 } from '../components';
 import { colors, consts, device, normalize, texts } from '../config';
 import { getKeyFromTypeAndCategory } from '../helpers';
-import { useBookmarks, useMatomoTrackScreenView } from '../hooks';
+import { useBookmarks, useMatomoTrackScreenView, useNewsCategories } from '../hooks';
 import { QUERY_TYPES } from '../queries';
-import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -45,9 +44,7 @@ const getBookmarkCount = (bookmarks) => {
 
 export const BookmarkScreen = ({ navigation }) => {
   const bookmarks = useBookmarks();
-  const { globalSettings } = useContext(SettingsContext);
-  const { sections = {} } = globalSettings;
-  const { categoriesNews } = sections;
+  const categoriesNews = useNewsCategories();
   const [connectionState, setConnectionState] = useState(getInitialConnectionState(categoriesNews));
 
   const getSection = useCallback(

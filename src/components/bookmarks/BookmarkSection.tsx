@@ -1,25 +1,15 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { colors, consts, texts } from '../../config';
-import { graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
+import { consts, texts } from '../../config';
+import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
-import { getQuery, QUERY_TYPES } from '../../queries';
-import { SettingsContext } from '../../SettingsProvider';
-import { Button } from '../Button';
-import { ListComponent } from '../ListComponent';
-import { LoadingContainer } from '../LoadingContainer';
-import { Title, TitleContainer } from '../Title';
-import { Touchable } from '../Touchable';
-import { Wrapper } from '../Wrapper';
+import { getQuery } from '../../queries';
+import { DataListSection } from '../DataListSection';
 
-type HeaderProps = {
-  categoryTitle: string;
-  onPress: () => void;
-};
+const { REFRESH_INTERVALS } = consts;
 
 type Props = {
   categoryId?: number;
@@ -32,43 +22,6 @@ type Props = {
   setConnectionState: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
 };
 
-const getTitle = (itemType: string) => {
-  switch (itemType) {
-    case QUERY_TYPES.NEWS_ITEMS:
-      return texts.homeCategoriesNews.categoryTitle;
-    case QUERY_TYPES.POINTS_OF_INTEREST:
-      return texts.categoryTitles.pointsOfInterest;
-    case QUERY_TYPES.TOURS:
-      return texts.categoryTitles.tours;
-    case QUERY_TYPES.EVENT_RECORDS:
-      return texts.homeTitles.events;
-    default:
-      return itemType;
-  }
-};
-
-const SectionHeader = ({ categoryTitle, onPress }: HeaderProps) => {
-  return (
-    <TitleContainer>
-      <Touchable onPress={onPress}>
-        <Title accessibilityLabel={`${categoryTitle} (Überschrift) (Taste)`}>{categoryTitle}</Title>
-      </Touchable>
-    </TitleContainer>
-  );
-};
-
-const isHorizontal = (query: string, listTypesSettings: Record<string, unknown>) => {
-  switch (query) {
-    case QUERY_TYPES.TOURS:
-    case QUERY_TYPES.POINTS_OF_INTEREST:
-      return (
-        listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS] === consts.LIST_TYPES.CARD_LIST
-      );
-    default:
-      return listTypesSettings[query] === consts.LIST_TYPES.CARD_LIST;
-  }
-};
-
 export const BookmarkSection = ({
   categoryId,
   categoryTitleDetail,
@@ -79,10 +32,9 @@ export const BookmarkSection = ({
   sectionTitle,
   setConnectionState
 }: Props) => {
-  const { listTypesSettings } = useContext(SettingsContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
-  const refreshTime = useRefreshTime('bookmarks', consts.REFRESH_INTERVALS.BOOKMARKS);
+  const refreshTime = useRefreshTime('bookmarks', REFRESH_INTERVALS.BOOKMARKS);
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
@@ -112,34 +64,17 @@ export const BookmarkSection = ({
       });
   }, [data, bookmarkKey, loading, setConnectionState]);
 
-  if (loading) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
-      </LoadingContainer>
-    );
-  }
-
-  if (!data) return null;
-
-  const listData = parseListItemsFromQuery(query, data, ids.length > 3, categoryTitleDetail);
-
-  const horizontal = isHorizontal(query, listTypesSettings);
-
   return (
-    <View>
-      <SectionHeader categoryTitle={sectionTitle || getTitle(query)} onPress={onPressShowMore} />
-      <ListComponent
-        data={listData}
-        navigation={navigation}
-        query={query}
-        horizontal={horizontal}
-      />
-      {ids.length > 3 ? (
-        <Wrapper>
-          <Button title={texts.bookmarks.showAll} onPress={onPressShowMore} />
-        </Wrapper>
-      ) : null}
-    </View>
+    <DataListSection
+      buttonTitle={texts.bookmarks.showAll}
+      loading={loading}
+      navigate={onPressShowMore}
+      navigation={navigation}
+      query={query}
+      sectionData={data}
+      sectionTitle={sectionTitle}
+      sectionTitleDetail={categoryTitleDetail}
+      showButton={ids.length > 3}
+    />
   );
 };

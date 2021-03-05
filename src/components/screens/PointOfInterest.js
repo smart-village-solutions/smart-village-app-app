@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { View } from 'react-native';
 
 import { colors, consts, device, texts } from '../../config';
@@ -13,11 +13,11 @@ import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { WebViewMap } from '../map/WebViewMap';
-import { OperatingCompany } from './OperatingCompany';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { TMBNotice } from '../TMB/Notice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { OpeningTimesCard } from './OpeningTimesCard';
+import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
 
 const { MATOMO_TRACKING } = consts;
@@ -69,6 +69,22 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
       categoryNames,
       title
     ])
+  );
+
+  const businessAccount = dataProvider?.dataType === 'business_account';
+
+  const navigateToDataProvider = useCallback(
+    () =>
+      dataProvider &&
+      businessAccount &&
+      navigation.navigate('DataProvider', {
+        dataProviderId: dataProvider.id,
+        dataProviderName: dataProvider.name,
+        logo,
+        title: dataProvider.name
+      }),
+
+    [businessAccount, dataProvider, logo, navigation]
   );
 
   return (
@@ -177,6 +193,15 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
         />
 
         <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
+
+        {!!businessAccount && (
+          <Wrapper>
+            <Button
+              title={`${texts.dataProvider.more} ${dataProvider.name}`}
+              onPress={navigateToDataProvider}
+            />
+          </Wrapper>
+        )}
       </WrapperWithOrientation>
     </View>
   );
@@ -186,5 +211,6 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
 PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired,
   hideMap: PropTypes.bool,
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  fetchPolicy: PropTypes.string
 };

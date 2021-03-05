@@ -18,6 +18,7 @@ import { WebViewMap } from './WebViewMap';
 
 type Props = {
   category: string;
+  dataProviderName?: string;
   navigation: NavigationScreenProps;
 };
 
@@ -48,7 +49,7 @@ const mapToMapMarkers = (data: any): MapMarker[] | undefined => {
   );
 };
 
-export const LocationOverview = ({ navigation, category }: Props) => {
+export const LocationOverview = ({ navigation, category, dataProviderName }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
@@ -57,7 +58,7 @@ export const LocationOverview = ({ navigation, category }: Props) => {
   const overviewQuery = getQuery(QUERY_TYPES.POINTS_OF_INTEREST);
   const { data: overviewData, loading } = useQuery(overviewQuery, {
     fetchPolicy,
-    variables: { category }
+    variables: { category, dataProvider: dataProviderName }
   });
 
   const detailsQuery = getQuery(QUERY_TYPES.POINT_OF_INTEREST);
@@ -76,7 +77,7 @@ export const LocationOverview = ({ navigation, category }: Props) => {
     [setSelectedPointOfInterest, overviewData]
   );
 
-  if (loading || !overviewData?.[QUERY_TYPES.POINTS_OF_INTEREST]) {
+  if (loading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
@@ -84,14 +85,21 @@ export const LocationOverview = ({ navigation, category }: Props) => {
     );
   }
 
+  const mapMarkers = mapToMapMarkers(overviewData);
+
+  if (!mapMarkers?.length) {
+    return (
+      <Wrapper>
+        <RegularText>{texts.map.noGeoLocations}</RegularText>
+      </Wrapper>
+    );
+  }
+
   return (
     <SafeAreaViewFlex>
       <ScrollView>
         <WrapperWithOrientation>
-          <WebViewMap
-            locations={mapToMapMarkers(overviewData)}
-            onMessageReceived={onMessageReceived}
-          />
+          <WebViewMap locations={mapMarkers} onMessageReceived={onMessageReceived} />
           <View>
             {!selectedPointOfInterest && (
               <Wrapper>

@@ -115,7 +115,11 @@ export const DetailScreen = ({ navigation }) => {
                 />
               }
             >
-              <Component data={(data && data[query]) || details} navigation={navigation} />
+              <Component
+                data={(data && data[query]) || details}
+                navigation={navigation}
+                fetchPolicy={fetchPolicy}
+              />
             </ScrollView>
           </SafeAreaViewFlex>
         );

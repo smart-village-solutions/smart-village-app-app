@@ -8,6 +8,8 @@ export const GET_EVENT_RECORDS = gql`
     $order: EventRecordsOrder
     $categoryId: ID
     $dateRange: [String]
+    $dataProvider: String
+    $dataProviderId: ID
   ) {
     eventRecords(
       ids: $ids
@@ -16,12 +18,16 @@ export const GET_EVENT_RECORDS = gql`
       order: $order
       categoryId: $categoryId
       dateRange: $dateRange
+      dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
     ) {
       id
       category {
+        id
         name
       }
       dates {
+        id
         weekday
         dateFrom: dateStart
         dateTo: dateEnd
@@ -38,10 +44,12 @@ export const GET_EVENT_RECORDS = gql`
         captionText
         copyright
         sourceUrl {
+          id
           url
         }
       }
       addresses {
+        id
         city
         street
         zip
@@ -56,15 +64,18 @@ export const GET_EVENT_RECORDS = gql`
         email
         fax
         webUrls {
+          id
           url
           description
         }
       }
       webUrls: urls {
+        id
         url
         description
       }
       priceInformations {
+        id
         name
         amount
       }
@@ -79,6 +90,8 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
     $order: EventRecordsOrder
     $categoryId: ID
     $dateRange: [String]
+    $dataProvider: String
+    $dataProviderId: ID
   ) {
     eventRecords(
       limit: $limit
@@ -86,12 +99,16 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
       order: $order
       categoryId: $categoryId
       dateRange: $dateRange
+      dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
     ) {
       id
       category {
+        id
         name
       }
       dates {
+        id
         weekday
         dateFrom: dateStart
         dateTo: dateEnd
@@ -108,10 +125,12 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
         captionText
         copyright
         sourceUrl {
+          id
           url
         }
       }
       addresses {
+        id
         city
         street
         zip
@@ -126,15 +145,18 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
         email
         fax
         webUrls {
+          id
           url
           description
         }
       }
       webUrls: urls {
+        id
         url
         description
       }
       priceInformations {
+        id
         name
         amount
       }
@@ -152,12 +174,15 @@ export const GET_EVENT_RECORD = gql`
     eventRecord(id: $id) {
       id
       category {
+        id
         name
       }
       categories {
+        id
         name
       }
       dates {
+        id
         weekday
         dateFrom: dateStart
         dateTo: dateEnd
@@ -174,10 +199,12 @@ export const GET_EVENT_RECORD = gql`
         captionText
         copyright
         sourceUrl {
+          id
           url
         }
       }
       addresses {
+        id
         city
         street
         zip
@@ -192,21 +219,27 @@ export const GET_EVENT_RECORD = gql`
         email
         fax
         webUrls {
+          id
           url
           description
         }
       }
       webUrls: urls {
+        id
         url
         description
       }
       dataProvider {
+        id
         logo {
+          id
           url
         }
         name
+        dataType
       }
       priceInformations {
+        id
         name
         groupPrice
         amount
@@ -220,6 +253,7 @@ export const GET_EVENT_RECORD = gql`
         minChildrenCount
       }
       operatingCompany: organizer {
+        id
         name
         address {
           id
@@ -230,12 +264,14 @@ export const GET_EVENT_RECORD = gql`
           city
         }
         contact {
+          id
           firstName
           lastName
           phone
           email
           fax
           webUrls {
+            id
             url
           }
         }

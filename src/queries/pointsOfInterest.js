@@ -7,44 +7,62 @@ export const GET_POINTS_OF_INTEREST = gql`
     $offset: Int
     $order: PointsOfInterestOrder
     $category: String
+    $dataProvider: String
+    $dataProviderId: ID
   ) {
-    pointsOfInterest(ids: $ids, limit: $limit, skip: $offset, order: $order, category: $category) {
+    pointsOfInterest(
+      ids: $ids
+      limit: $limit
+      skip: $offset
+      order: $order
+      category: $category
+      dataProvider: $dataProvider
+      dataProviderId: $dataProviderId
+    ) {
       id
       name
       category {
+        id
         name
       }
       description
       mediaContents {
+        id
         contentType
         captionText
         copyright
         sourceUrl {
+          id
           url
         }
       }
       addresses {
+        id
         city
         street
         zip
         kind
         geoLocation {
+          id
           latitude
           longitude
         }
       }
       contact {
+        id
         firstName
         lastName
         phone
         email
         fax
         webUrls {
+          id
           url
           description
         }
       }
       webUrls {
+        id
         url
         description
       }
@@ -58,50 +76,62 @@ export const GET_POINT_OF_INTEREST = gql`
       id
       title: name
       category {
+        id
         name
       }
       description
       mediaContents {
+        id
         contentType
         captionText
         copyright
         sourceUrl {
+          id
           url
         }
       }
       dataProvider {
+        id
         logo {
+          id
           url
         }
         name
+        dataType
       }
       addresses {
+        id
         city
         street
         zip
         kind
         addition
         geoLocation {
+          id
           latitude
           longitude
         }
       }
       contact {
+        id
         firstName
         lastName
         phone
         email
         fax
         webUrls {
+          id
           url
           description
         }
       }
       webUrls {
+        id
         url
         description
       }
       priceInformations {
+        id
         category
         amount
         description
@@ -110,6 +140,7 @@ export const GET_POINT_OF_INTEREST = gql`
         groupPrice
       }
       openingHours {
+        id
         sortNumber
         weekday
         timeFrom
@@ -120,6 +151,7 @@ export const GET_POINT_OF_INTEREST = gql`
         description
       }
       operatingCompany {
+        id
         name
         address {
           id
@@ -130,12 +162,14 @@ export const GET_POINT_OF_INTEREST = gql`
           city
         }
         contact {
+          id
           firstName
           lastName
           phone
           email
           fax
           webUrls {
+            id
             url
             description
           }

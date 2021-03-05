@@ -79,7 +79,7 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <ListComponent navigation={navigation} data={listItems} query={query} />
+      <ListComponent navigation={navigation} data={listItems} horizontal={false} query={query} />
     </SafeAreaViewFlex>
   );
 };
