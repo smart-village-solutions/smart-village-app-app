@@ -81,11 +81,14 @@ export const SettingsScreen = () => {
 
     const updateSectionedData = async () => {
       const { settings = { matomo: false } } = globalSettings;
-      const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
-      // settings should always contain push notifications
-      const additionalSectionedData = [
-        {
+      const additionalSectionedData = [];
+
+      // add push notification option if they are enabled
+      if (settings.pushNotifications !== false) {
+        const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+
+        additionalSectionedData.push({
           data: [
             {
               title: texts.settingsTitles.pushNotifications,
@@ -96,9 +99,8 @@ export const SettingsScreen = () => {
               onDeactivate: onDeactivatePushNotifications
             }
           ]
-        }
-      ];
-
+        });
+      }
       // settings should sometimes contain matomo analytics next, depending on server settings
       if (settings.matomo) {
         const { consent: matomoValue = false } = await storageHelper.matomoSettings();
