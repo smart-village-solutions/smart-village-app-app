@@ -22,7 +22,7 @@ export const isGeoLocationOrUndefined = (
   if (value === undefined) return true;
 
   return (
-    typeof _isObjectLike(value) &&
+    _isObjectLike(value) &&
     typeof (value as { lat: unknown }).lat === 'number' &&
     typeof (value as { lon: unknown }).lon === 'number'
   );

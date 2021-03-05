@@ -9,7 +9,7 @@ import {
 
 type BookmarkProviderValues = {
   bookmarks?: BookmarkList;
-  toggleBookmark: (itemType: string, id: string, category?: number) => Promise<void>;
+  toggleBookmark: (itemType: string, id: string, suffix?: number | string) => Promise<void>;
 };
 
 // if we try to toggle a bookmark, while the component is not wrapped
@@ -22,8 +22,8 @@ export const BookmarkProvider = ({ children }: { children?: React.ReactNode }) =
   const [bookmarks, setBookmarks] = useState<BookmarkList>();
 
   const toggleBookmark = useCallback(
-    async (itemType: string, id: string, category?: number) => {
-      setBookmarks(await toggleBookmarkHelper(itemType, id, category));
+    async (itemType: string, id: string, suffix?: number | string) => {
+      setBookmarks(await toggleBookmarkHelper(itemType, id, suffix));
     },
     [setBookmarks]
   );

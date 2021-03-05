@@ -45,6 +45,10 @@ export const texts = {
     pointsOfInterest: 'Orte',
     tours: 'Touren'
   },
+  commercial: {
+    commercial: 'Werbeanzeige',
+    commercials: 'Werbeanzeigen'
+  },
   constructionSites: {
     noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
   },
@@ -91,6 +95,11 @@ export const texts = {
   },
   locationOverview: {
     noSelection: 'Bitte wählen Sie eine Markierung aus.'
+  },
+  job: {
+    employmentType: 'Art der Anstellung: ',
+    job: 'Stellenanzeige',
+    jobs: 'Stellenanzeigen'
   },
   lunch: {
     noOffers: 'Für dieses Datum sind derzeit keine Gerichte verfügbar.',

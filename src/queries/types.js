@@ -5,6 +5,8 @@ export const QUERY_TYPES = {
   CATEGORIES: 'categories',
   EVENT_RECORD: 'eventRecord',
   EVENT_RECORDS: 'eventRecords',
+  GENERIC_ITEM: 'genericItem',
+  GENERIC_ITEMS: 'genericItems',
   LUNCHES: 'lunches',
   NEWS_ITEM: 'newsItem',
   NEWS_ITEMS: 'newsItems',

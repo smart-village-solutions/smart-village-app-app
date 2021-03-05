@@ -89,6 +89,7 @@ export const IndexScreen = ({ navigation }) => {
     if (query) {
       const MATOMO_TRACKING_SCREEN = {
         [QUERY_TYPES.EVENT_RECORDS]: MATOMO_TRACKING.SCREEN_VIEW.EVENT_RECORDS,
+        [QUERY_TYPES.GENERIC_ITEMS]: MATOMO_TRACKING.SCREEN_VIEW.GENERIC_ITEMS,
         [QUERY_TYPES.NEWS_ITEMS]: MATOMO_TRACKING.SCREEN_VIEW.NEWS_ITEMS,
         [QUERY_TYPES.POINTS_OF_INTEREST]: MATOMO_TRACKING.SCREEN_VIEW.POINTS_OF_INTEREST,
         [QUERY_TYPES.TOURS]: MATOMO_TRACKING.SCREEN_VIEW.TOURS,
@@ -98,6 +99,7 @@ export const IndexScreen = ({ navigation }) => {
       // in some cases we want to apply more information to the tracking string
       const MATOMO_TRACKING_CATEGORY = {
         [QUERY_TYPES.EVENT_RECORDS]: null,
+        [QUERY_TYPES.GENERIC_ITEMS]: title, // the title should be the type of the generic items
         [QUERY_TYPES.NEWS_ITEMS]: title, // the title should be the category of news
         [QUERY_TYPES.POINTS_OF_INTEREST]: null,
         [QUERY_TYPES.TOURS]: null,
@@ -109,7 +111,7 @@ export const IndexScreen = ({ navigation }) => {
       isConnected &&
         trackScreenView(matomoTrackingString([MATOMO_TRACKING_SCREEN, MATOMO_TRACKING_CATEGORY]));
     }
-  }, [query]);
+  }, [isConnected, navigation, query, setQueryVariables, trackScreenView]);
 
   if (!query) return null;
 
@@ -155,7 +157,7 @@ export const IndexScreen = ({ navigation }) => {
                 query: getFetchMoreQuery(query),
                 variables: {
                   ...queryVariables,
-                  offset: listItems.length
+                  offset: data?.[query]?.length
                 },
                 updateQuery: (prevResult, { fetchMoreResult }) => {
                   if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;

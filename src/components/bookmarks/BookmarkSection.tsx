@@ -12,7 +12,7 @@ import { DataListSection } from '../DataListSection';
 const { REFRESH_INTERVALS } = consts;
 
 type Props = {
-  categoryId?: number;
+  suffix?: number | string;
   categoryTitleDetail?: string;
   ids: string[];
   bookmarkKey: string;
@@ -23,7 +23,7 @@ type Props = {
 };
 
 export const BookmarkSection = ({
-  categoryId,
+  suffix,
   categoryTitleDetail,
   ids,
   bookmarkKey,
@@ -47,12 +47,12 @@ export const BookmarkSection = ({
   const onPressShowMore = useCallback(
     () =>
       navigation.navigate('BookmarkCategory', {
-        categoryId,
+        suffix,
         query,
         title: sectionTitle,
         categoryTitleDetail
       }),
-    [navigation, categoryId]
+    [navigation, suffix]
   );
 
   useEffect(() => {

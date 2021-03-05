@@ -19,6 +19,7 @@ import {
   Icon,
   LoadingContainer,
   NewsItem,
+  Offer,
   PointOfInterest,
   SafeAreaViewFlex,
   Tour,
@@ -28,11 +29,21 @@ import { getQuery, QUERY_TYPES } from '../queries';
 import { share } from '../icons';
 import { graphqlFetchPolicy, openShare } from '../helpers';
 import { useRefreshTime } from '../hooks';
+import { GenericType } from '../types';
 
-const getComponent = (query) => {
+const getGenericComponent = (genericType) => {
+  switch (genericType) {
+    case GenericType.Commercial:
+    case GenericType.Job:
+      return Offer;
+  }
+};
+
+const getComponent = (query, genericType) => {
   const COMPONENTS = {
     [QUERY_TYPES.NEWS_ITEM]: NewsItem,
     [QUERY_TYPES.EVENT_RECORD]: EventRecord,
+    [QUERY_TYPES.GENERIC_ITEM]: getGenericComponent(genericType),
     [QUERY_TYPES.POINT_OF_INTEREST]: PointOfInterest,
     [QUERY_TYPES.TOUR]: Tour
   };
@@ -101,7 +112,9 @@ export const DetailScreen = ({ navigation }) => {
         // if there is no cached `data` or network fetched `data` we fallback to the `details`.
         if ((!data || !data[query]) && !details) return null;
 
-        const Component = getComponent(query);
+        const Component = getComponent(query, data?.[query]?.genericType ?? details.genericType);
+
+        if (!Component) return null;
 
         return (
           <SafeAreaViewFlex>
@@ -144,7 +157,7 @@ const styles = StyleSheet.create({
 
 DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
   const shareContent = navigation.getParam('shareContent', '');
-  const categoryId = navigation.getParam('categoryId', '');
+  const suffix = navigation.getParam('suffix', '');
   const query = navigation.getParam('query', '');
   const queryVariables = navigation.getParam('queryVariables', {});
 
@@ -154,7 +167,7 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
     query && queryVariables?.id ? (
       <BookmarkHeader
         id={queryVariables.id}
-        categoryId={categoryId}
+        suffix={suffix}
         query={query}
         style={styles.iconLeft}
       />
