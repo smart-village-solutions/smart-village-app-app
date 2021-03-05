@@ -124,6 +124,7 @@ export const ConstructionSiteDetailScreen = ({ navigation }) => {
                   position: { lat: location.lat, lng: location.lon }
                 }
               ]}
+              zoom={14}
             />
           )}
         </WrapperWithOrientation>
