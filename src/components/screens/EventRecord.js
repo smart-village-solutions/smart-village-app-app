@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 import _filter from 'lodash/filter';
@@ -19,7 +19,7 @@ import { TMBNotice } from '../TMB/Notice';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { OperatingCompany } from './OperatingCompany';
-import { Button } from '../Button';
+import { DataProviderButton } from '../DataProviderButton';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
 // thx to: https://stackoverflow.com/a/55780430
@@ -107,20 +107,6 @@ export const EventRecord = ({ data, navigation }) => {
 
   const businessAccount = dataProvider?.dataType === 'business_account';
 
-  const navigateToDataProvider = useCallback(
-    () =>
-      dataProvider &&
-      businessAccount &&
-      navigation.navigate('DataProvider', {
-        dataProviderId: dataProvider.id,
-        dataProviderName: dataProvider.name,
-        logo,
-        title: dataProvider.name
-      }),
-
-    [businessAccount, dataProvider, logo, navigation]
-  );
-
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
@@ -202,12 +188,7 @@ export const EventRecord = ({ data, navigation }) => {
         <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
         {!!businessAccount && (
-          <Wrapper>
-            <Button
-              title={`${texts.dataProvider.more} ${dataProvider.name}`}
-              onPress={navigateToDataProvider}
-            />
-          </Wrapper>
+          <DataProviderButton dataProvider={dataProvider} navigation={navigation} />
         )}
       </WrapperWithOrientation>
     </View>

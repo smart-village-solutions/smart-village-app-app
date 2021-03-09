@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 
-import { consts, device, texts } from '../../config';
+import { consts, device } from '../../config';
 import { matomoTrackingString, momentFormat, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView } from '../../hooks';
-import { Button } from '../Button';
+import { DataProviderButton } from '../DataProviderButton';
 import { ImageSection } from '../ImageSection';
 import { Logo } from '../Logo';
 import { StorySection } from '../StorySection';
@@ -60,20 +60,6 @@ export const NewsItem = ({ data, navigation }) => {
 
   const businessAccount = dataProvider?.dataType === 'business_account';
 
-  const navigateToDataProvider = useCallback(
-    () =>
-      dataProvider &&
-      businessAccount &&
-      navigation.navigate('DataProvider', {
-        dataProviderId: dataProvider.id,
-        dataProviderName: dataProvider.name,
-        logo,
-        title: dataProvider.name
-      }),
-
-    [businessAccount, dataProvider, logo, navigation]
-  );
-
   return (
     <View>
       {/* the images from the first content block will be present in the main image carousel */}
@@ -115,12 +101,7 @@ export const NewsItem = ({ data, navigation }) => {
           ))}
 
         {!!businessAccount && (
-          <Wrapper>
-            <Button
-              title={`${texts.dataProvider.more} ${dataProvider.name}`}
-              onPress={navigateToDataProvider}
-            />
-          </Wrapper>
+          <DataProviderButton dataProvider={dataProvider} navigation={navigation} />
         )}
       </WrapperWithOrientation>
     </View>
