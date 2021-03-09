@@ -2,7 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 
 import { device, secrets, staticRestSuffix } from '../config';
 import * as appJson from '../../app.json';
-import { PushNotificationStorageKeys } from './TokenHandling';
+import { getPushTokenFromStorage, PushNotificationStorageKeys } from './TokenHandling';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 
@@ -24,7 +24,7 @@ export const updateReminderSettings = async ({
   zip
 }: SettingInfo) => {
   const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
-  const pushToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
+  const pushToken = await getPushTokenFromStorage();
   const requestPath = secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegistration;
   const os =
     device.platform === 'ios' || device.platform === 'android' ? device.platform : 'undefined';
@@ -49,7 +49,8 @@ export const updateReminderSettings = async ({
         token: pushToken,
         device_type: os
       }
-    })
+    }),
+    cache: 'no-cache'
   };
 
   if (accessToken && pushToken) {
@@ -76,7 +77,8 @@ export const getReminderSettings = async () => {
     headers: {
       Authorization: 'Bearer ' + accessToken,
       'Content-Type': 'application/json'
-    }
+    },
+    cache: 'no-cache'
   };
 
   if (accessToken && pushToken) {
@@ -96,7 +98,7 @@ export const getReminderSettings = async () => {
 
 export const deleteReminderSetting = async (id: number) => {
   const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
-  const pushToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
+  const pushToken = await getPushTokenFromStorage();
   const requestPath =
     secrets[namespace].serverUrl +
     staticRestSuffix.wasteReminderDeletion +
@@ -107,7 +109,8 @@ export const deleteReminderSetting = async (id: number) => {
     headers: {
       Authorization: 'Bearer ' + accessToken,
       'Content-Type': 'application/json'
-    }
+    },
+    cache: 'no-cache'
   };
 
   if (accessToken && pushToken) {
@@ -115,7 +118,8 @@ export const deleteReminderSetting = async (id: number) => {
       .then(() => {
         return true;
       })
-      .catch(() => {
+      .catch((error) => {
+        console.warn('An error occured while deleting a reminder setting:', error);
         return false;
       });
   }

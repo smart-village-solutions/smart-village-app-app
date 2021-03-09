@@ -16,7 +16,7 @@ export enum PushNotificationStorageKeys {
 // in theory the token should be persistent, so we should never have
 //  two defined values that are distinct.
 export const handleIncomingToken = async (token?: string) => {
-  const storedToken = await getTokenFromStorage();
+  const storedToken = await getPushTokenFromStorage();
 
   if (storedToken !== (token ?? null)) {
     let successfullyRemoved = false;
@@ -87,4 +87,5 @@ const storeTokenSecurely = (token?: string) => {
   }
 };
 
-const getTokenFromStorage = () => SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
+export const getPushTokenFromStorage = () =>
+  SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);

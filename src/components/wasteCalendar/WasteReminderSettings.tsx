@@ -174,30 +174,31 @@ export const WasteReminderSettings = ({
     const newState = { ...state };
     let errorOccured = false;
 
-    Object.keys(state.activeTypes).forEach(async (typeKey) => {
-      const entry = state.activeTypes[typeKey];
+    await Promise.all(
+      Object.keys(state.activeTypes).map(async (typeKey) => {
+        const entry = state.activeTypes[typeKey];
+        // delete inactive entries
+        if (!entry.active && entry.storeId) {
+          const success = await deleteReminderSetting(entry.storeId);
 
-      // delete inactive entries
-      if (!entry.active && entry.storeId) {
-        const success = await deleteReminderSetting(entry.storeId);
-        errorOccured ||= !success;
-      }
+          errorOccured ||= !success;
+        }
 
-      if (entry.active) {
-        // update setting
-        const id = await updateReminderSettings({
-          ...locationData,
-          onDayBefore: state.onDayBefore,
-          reminderTime: `${state.reminderTime.getHours()}:${state.reminderTime.getMinutes()}`,
-          wasteType: typeKey
-        });
-        // save new id
-        newState.activeTypes[typeKey].storeId = id;
-        errorOccured ||= id === undefined;
-      }
-    });
+        if (entry.active) {
+          // update setting
+          const id = await updateReminderSettings({
+            ...locationData,
+            onDayBefore: state.onDayBefore,
+            reminderTime: `${state.reminderTime.getHours()}:${state.reminderTime.getMinutes()}`,
+            wasteType: typeKey
+          });
 
-    errorOccured = true;
+          // save new id
+          newState.activeTypes[typeKey].storeId = id;
+          errorOccured ||= id === undefined;
+        }
+      })
+    );
 
     if (!errorOccured) {
       // update store state entries

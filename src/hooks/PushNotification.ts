@@ -5,6 +5,7 @@ import { Subscription } from '@unimodules/react-native-adapter';
 
 import { readFromStore } from '../helpers';
 import {
+  getPushTokenFromStorage,
   initializePushPermissions,
   PushNotificationStorageKeys,
   updatePushToken
@@ -38,9 +39,10 @@ export const usePushNotifications = (
       // no timeout causes the onGetActive to fire an additional request to our server
       setTimeout(async () => {
         const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+        const token = await getPushTokenFromStorage();
 
         if (nextState === 'active') {
-          inAppPermission && updatePushToken();
+          inAppPermission && !token && updatePushToken();
         }
       }, 3000);
     }
