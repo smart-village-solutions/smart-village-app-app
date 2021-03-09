@@ -46,8 +46,8 @@ export const texts = {
     tours: 'Touren'
   },
   commercial: {
-    commercial: 'Werbeanzeige',
-    commercials: 'Werbeanzeigen'
+    commercial: 'Angebot',
+    commercials: 'Angebote'
   },
   constructionSites: {
     noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'

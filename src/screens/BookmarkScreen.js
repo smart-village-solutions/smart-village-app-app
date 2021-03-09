@@ -14,6 +14,7 @@ import {
 } from '../components';
 import { colors, consts, device, normalize, texts } from '../config';
 import { getKeyFromTypeAndSuffix } from '../helpers';
+import { getGenericItemSectionTitle } from '../helpers/genericTypeHelper';
 import { useBookmarks, useMatomoTrackScreenView, useNewsCategories } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { GenericType } from '../types';
@@ -107,10 +108,14 @@ export const BookmarkScreen = ({ navigation }) => {
         {getSection(QUERY_TYPES.EVENT_RECORDS, texts.homeTitles.events)}
         {getSection(
           QUERY_TYPES.GENERIC_ITEMS,
-          texts.commercial.commercials,
+          getGenericItemSectionTitle(GenericType.Commercial),
           GenericType.Commercial
         )}
-        {getSection(QUERY_TYPES.GENERIC_ITEMS, texts.job.jobs, GenericType.Job)}
+        {getSection(
+          QUERY_TYPES.GENERIC_ITEMS,
+          getGenericItemSectionTitle(GenericType.Job),
+          GenericType.Job
+        )}
       </ScrollView>
     </SafeAreaViewFlex>
   );
