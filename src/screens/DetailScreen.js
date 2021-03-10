@@ -112,7 +112,7 @@ export const DetailScreen = ({ navigation }) => {
         // if there is no cached `data` or network fetched `data` we fallback to the `details`.
         if ((!data || !data[query]) && !details) return null;
 
-        const Component = getComponent(query, data?.[query]?.genericType ?? details.genericType);
+        const Component = getComponent(query, data?.[query]?.genericType ?? details?.genericType);
 
         if (!Component) return null;
 
