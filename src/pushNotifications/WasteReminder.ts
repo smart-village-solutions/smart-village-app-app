@@ -25,7 +25,7 @@ export const updateReminderSettings = async ({
 }: SettingInfo) => {
   const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
   const pushToken = await getPushTokenFromStorage();
-  const requestPath = secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegistration;
+  const requestPath = secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegister;
   const os =
     device.platform === 'ios' || device.platform === 'android' ? device.platform : 'undefined';
 
@@ -69,9 +69,7 @@ export const getReminderSettings = async () => {
   const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
   const pushToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
   const requestPath =
-    secrets[namespace].serverUrl +
-    staticRestSuffix.wasteReminderRegistration +
-    `?token=${pushToken}`;
+    secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegister + `?token=${pushToken}`;
 
   const fetchObj = {
     headers: {
@@ -101,7 +99,7 @@ export const deleteReminderSetting = async (id: number) => {
   const pushToken = await getPushTokenFromStorage();
   const requestPath =
     secrets[namespace].serverUrl +
-    staticRestSuffix.wasteReminderDeletion +
+    staticRestSuffix.wasteReminderDelete +
     `${id}.json?token=${pushToken}`;
 
   const fetchObj = {

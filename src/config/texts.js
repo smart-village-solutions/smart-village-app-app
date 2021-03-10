@@ -186,7 +186,7 @@ export const texts = {
   },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',
-    errorOnUpdateBody: 'Beim aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.',
+    errorOnUpdateBody: 'Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.',
     errorOnUpdateTitle: 'Fehler',
     hint: 'Bitte geben Sie Ihre Straße an.',
     onDayBeforeCollection: 'Am Vortag',
@@ -194,8 +194,8 @@ export const texts = {
     reminder: 'Erinnerungen',
     reminderTime: 'Zu welcher Uhrzeit möchten Sie benachrichtigt werden?',
     unableToLoad:
-      'Beim laden Ihrer Einstellungen ist ein Fehler aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
-    updateReminderSettings: 'Einstellungen aktualisieren',
+      'Beim Laden Ihrer Einstellungen ist ein Fehler aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
+    updateReminderSettings: 'Änderungen speichern',
     whichDay: 'Möchten Sie am Vortag oder am Tag der Abholung benachrichtigt werden?',
     whichType: 'Für welche Müllsorten möchten Sie Erinnerungen?'
   },

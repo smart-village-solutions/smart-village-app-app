@@ -1,7 +1,17 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
-import { Alert, FlatList, RefreshControl, ScrollView, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  FlatList,
+  Modal,
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Divider, ListItem } from 'react-native-elements';
+import { ListItem, normalize } from 'react-native-elements';
 
 import {
   deleteReminderSetting,
@@ -10,10 +20,9 @@ import {
 } from '../../pushNotifications';
 import { Switch } from '../Switch';
 import { BoldText, RegularText } from '../Text';
-import { Title } from '../Title';
 import { Touchable } from '../Touchable';
 import { Radiobutton } from '../Radiobutton';
-import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
 import { colors, device, texts } from '../../config';
 import { ReminderSettings, WasteTypeData } from '../../types';
 import {
@@ -23,6 +32,7 @@ import {
 } from './ReminderSettingsReducer';
 import { Button } from '../Button';
 import { areValidReminderSettings, parseReminderSettings } from '../../jsonValidation';
+import { SectionHeader } from '../SectionHeader';
 
 const showErrorAlert = () => {
   Alert.alert(texts.wasteCalendar.errorOnUpdateTitle, texts.wasteCalendar.errorOnUpdateBody);
@@ -64,9 +74,8 @@ const CategoryEntry = ({
   const [switchValue, setSwitchValue] = useState(active);
 
   const toggleSwitch = useCallback(
-    async (value) => {
+    (value) => {
       setSwitchValue(value);
-
       dispatch({
         type: ReminderSettingsActionType.UPDATE_ACTIVE_TYPE,
         payload: { key: categoryKey, value }
@@ -74,6 +83,10 @@ const CategoryEntry = ({
     },
     [categoryKey, dispatch, setSwitchValue]
   );
+
+  const onPress = useCallback(() => {
+    toggleSwitch(!switchValue);
+  }, [switchValue, toggleSwitch]);
 
   useEffect(() => {
     setSwitchValue(active);
@@ -84,6 +97,10 @@ const CategoryEntry = ({
       title={<RegularText>{categoryName}</RegularText>}
       bottomDivider
       rightIcon={<Switch switchValue={switchValue ?? false} toggleSwitch={toggleSwitch} />}
+      onPress={onPress}
+      delayPressIn={0}
+      Component={Touchable}
+      accessibilityLabel={`${categoryName} (Taste)`}
     />
   );
 };
@@ -126,6 +143,7 @@ export const WasteReminderSettings = ({
         });
 
         dispatch({ type: ReminderSettingsActionType.OVERWRITE, payload: newSettings });
+        setLocalSelectedTime(newSettings.reminderTime);
 
         setLoading(false);
       }
@@ -226,94 +244,118 @@ export const WasteReminderSettings = ({
         />
       }
     >
-      <WrapperWithOrientation>
+      {error ? (
         <Wrapper>
-          {error ? (
-            <RegularText>{texts.wasteCalendar.unableToLoad}</RegularText>
-          ) : (
-            <>
-              <Title>{texts.wasteCalendar.reminder}</Title>
-              <BoldText>{texts.wasteCalendar.whichType}</BoldText>
-              <FlatList
-                data={Object.keys(types)}
-                renderItem={({ item }) => (
-                  <CategoryEntry
-                    active={state.activeTypes[item]?.active}
-                    categoryKey={item}
-                    categoryName={types[item].label}
-                    dispatch={dispatch}
-                  />
-                )}
-                keyExtractor={keyExtractor}
-              />
-              <RegularText />
-              <BoldText>{texts.wasteCalendar.whichDay}</BoldText>
-              <ListItem
-                title={
-                  <RegularText primary={onDayBefore}>
-                    {texts.wasteCalendar.onDayBeforeCollection}
-                  </RegularText>
-                }
-                bottomDivider
-                Component={Touchable}
-                onPress={onPressDayBefore}
-                rightIcon={<Radiobutton onPress={onPressDayBefore} selected={onDayBefore} />}
-              />
-              <ListItem
-                title={
-                  <RegularText primary={!onDayBefore}>
-                    {texts.wasteCalendar.onDayOfCollection}
-                  </RegularText>
-                }
-                bottomDivider
-                Component={Touchable}
-                onPress={onPressDayOfCollection}
-                rightIcon={<Radiobutton onPress={onPressDayOfCollection} selected={!onDayBefore} />}
-              />
-              <RegularText />
-              <BoldText>{texts.wasteCalendar.reminderTime}</BoldText>
-              <Wrapper>
-                {(device.platform !== 'ios' || !showDatePicker) && (
-                  <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                    <RegularText center big primary>
-                      {formatTime(reminderTime)}
-                    </RegularText>
-                  </TouchableOpacity>
-                )}
-                {showDatePicker && (
-                  <View>
-                    {device.platform === 'ios' && (
-                      <View>
-                        <Divider />
-                        <WrapperRow spaceBetween>
-                          <TouchableOpacity onPress={onAbortIOS}>
-                            <RegularText primary>{texts.dateTimePicker.cancel}</RegularText>
-                          </TouchableOpacity>
-                          <TouchableOpacity onPress={onAcceptIOS}>
-                            <RegularText primary>{texts.dateTimePicker.ok}</RegularText>
-                          </TouchableOpacity>
-                        </WrapperRow>
-                        <Divider />
-                      </View>
-                    )}
-                    <DateTimePicker
-                      display={device.platform === 'ios' ? 'spinner' : 'default'}
-                      mode="time"
-                      onChange={onDatePickerChange}
-                      value={localSelectedTime || new Date()}
-                    />
-                  </View>
-                )}
-                <RegularText />
-                <Button
-                  title={texts.wasteCalendar.updateReminderSettings}
-                  onPress={updateSettings}
-                />
-              </Wrapper>
-            </>
-          )}
+          <RegularText>{texts.wasteCalendar.unableToLoad}</RegularText>
         </Wrapper>
-      </WrapperWithOrientation>
+      ) : (
+        <>
+          <SectionHeader title={texts.wasteCalendar.reminder} />
+          <Wrapper>
+            <BoldText>{texts.wasteCalendar.whichType}</BoldText>
+            <FlatList
+              data={Object.keys(types)}
+              renderItem={({ item }) => (
+                <CategoryEntry
+                  active={state.activeTypes[item]?.active}
+                  categoryKey={item}
+                  categoryName={types[item].label}
+                  dispatch={dispatch}
+                />
+              )}
+              keyExtractor={keyExtractor}
+            />
+            <RegularText />
+            <BoldText>{texts.wasteCalendar.whichDay}</BoldText>
+            <ListItem
+              title={
+                <RegularText primary={onDayBefore}>
+                  {texts.wasteCalendar.onDayBeforeCollection}
+                </RegularText>
+              }
+              bottomDivider
+              Component={Touchable}
+              onPress={onPressDayBefore}
+              rightIcon={<Radiobutton onPress={onPressDayBefore} selected={onDayBefore} />}
+            />
+            <ListItem
+              title={
+                <RegularText primary={!onDayBefore}>
+                  {texts.wasteCalendar.onDayOfCollection}
+                </RegularText>
+              }
+              bottomDivider
+              Component={Touchable}
+              onPress={onPressDayOfCollection}
+              rightIcon={<Radiobutton onPress={onPressDayOfCollection} selected={!onDayBefore} />}
+            />
+            <RegularText />
+            <BoldText>{texts.wasteCalendar.reminderTime}</BoldText>
+            <Wrapper>
+              <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                <RegularText center big primary>
+                  {formatTime(reminderTime)}
+                </RegularText>
+              </TouchableOpacity>
+              {device.platform === 'ios' && (
+                <Modal
+                  animationType="none"
+                  transparent={true}
+                  visible={showDatePicker}
+                  supportedOrientations={['landscape', 'portrait']}
+                >
+                  <View style={styles.modalContainer}>
+                    <View style={styles.dateTimePickerContainerIOS}>
+                      <SafeAreaView>
+                        <WrapperHorizontal style={styles.paddingTop}>
+                          <WrapperRow spaceBetween>
+                            <TouchableOpacity onPress={onAbortIOS}>
+                              <BoldText primary>{texts.dateTimePicker.cancel}</BoldText>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={onAcceptIOS}>
+                              <BoldText primary>{texts.dateTimePicker.ok}</BoldText>
+                            </TouchableOpacity>
+                          </WrapperRow>
+                        </WrapperHorizontal>
+
+                        <DateTimePicker
+                          display="spinner"
+                          mode="time"
+                          onChange={onDatePickerChange}
+                          value={localSelectedTime || new Date()}
+                        />
+                      </SafeAreaView>
+                    </View>
+                  </View>
+                </Modal>
+              )}
+              {device.platform === 'android' && showDatePicker && (
+                <DateTimePicker
+                  mode="time"
+                  onChange={onDatePickerChange}
+                  value={localSelectedTime || new Date()}
+                />
+              )}
+              <RegularText />
+              <Button title={texts.wasteCalendar.updateReminderSettings} onPress={updateSettings} />
+            </Wrapper>
+          </Wrapper>
+        </>
+      )}
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  dateTimePickerContainerIOS: {
+    backgroundColor: colors.surface
+  },
+  modalContainer: {
+    backgroundColor: colors.overlayRgba,
+    flex: 1,
+    justifyContent: 'flex-end'
+  },
+  paddingTop: {
+    paddingTop: normalize(14)
+  }
+});
