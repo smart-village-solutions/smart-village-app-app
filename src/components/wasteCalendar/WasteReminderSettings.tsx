@@ -274,9 +274,10 @@ export const WasteReminderSettings = ({
                 </RegularText>
               }
               bottomDivider
-              Component={Touchable}
-              onPress={onPressDayBefore}
               rightIcon={<Radiobutton onPress={onPressDayBefore} selected={onDayBefore} />}
+              onPress={onPressDayBefore}
+              delayPressIn={0}
+              Component={Touchable}
             />
             <ListItem
               title={
@@ -285,9 +286,10 @@ export const WasteReminderSettings = ({
                 </RegularText>
               }
               bottomDivider
-              Component={Touchable}
-              onPress={onPressDayOfCollection}
               rightIcon={<Radiobutton onPress={onPressDayOfCollection} selected={!onDayBefore} />}
+              onPress={onPressDayOfCollection}
+              delayPressIn={0}
+              Component={Touchable}
             />
             <RegularText />
             <BoldText>{texts.wasteCalendar.reminderTime}</BoldText>
