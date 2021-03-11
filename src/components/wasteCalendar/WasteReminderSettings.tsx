@@ -274,7 +274,13 @@ export const WasteReminderSettings = ({
                 </RegularText>
               }
               bottomDivider
-              rightIcon={<Radiobutton onPress={onPressDayBefore} selected={onDayBefore} />}
+              rightIcon={
+                <Radiobutton
+                  onPress={onPressDayBefore}
+                  selected={onDayBefore}
+                  containerStyle={styles.radioContainer}
+                />
+              }
               onPress={onPressDayBefore}
               delayPressIn={0}
               Component={Touchable}
@@ -286,7 +292,13 @@ export const WasteReminderSettings = ({
                 </RegularText>
               }
               bottomDivider
-              rightIcon={<Radiobutton onPress={onPressDayOfCollection} selected={!onDayBefore} />}
+              rightIcon={
+                <Radiobutton
+                  onPress={onPressDayOfCollection}
+                  selected={!onDayBefore}
+                  containerStyle={styles.radioContainer}
+                />
+              }
               onPress={onPressDayOfCollection}
               delayPressIn={0}
               Component={Touchable}
@@ -359,5 +371,8 @@ const styles = StyleSheet.create({
   },
   paddingTop: {
     paddingTop: normalize(14)
+  },
+  radioContainer: {
+    backgroundColor: colors.transparent
   }
 });

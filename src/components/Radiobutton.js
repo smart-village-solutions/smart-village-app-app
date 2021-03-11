@@ -7,13 +7,13 @@ import { colors, device } from '../config';
 import { baseFontStyle } from '../config/styles/baseFontStyle';
 import { Icon } from './Icon';
 
-export const Radiobutton = ({ title, disabled, selected, onPress }) => (
+export const Radiobutton = ({ title, disabled, selected, onPress, containerStyle }) => (
   <RNECheckbox
     title={title}
     checked={selected}
     onPress={onPress}
     size={normalize(24)}
-    containerStyle={styles.containerStyle}
+    containerStyle={[styles.containerStyle, containerStyle]}
     textStyle={[
       styles.textStyle,
       selected && styles.textStyleSelected,
@@ -68,7 +68,8 @@ Radiobutton.propTypes = {
   title: PropTypes.string,
   disabled: PropTypes.bool,
   selected: PropTypes.bool,
-  onPress: PropTypes.func
+  onPress: PropTypes.func,
+  containerStyle: PropTypes.object
 };
 
 Radiobutton.defaultProps = {
