@@ -6,11 +6,10 @@ import { CrossData, HeaderLeft, Logo, RegularText, Wrapper } from '../components
 import { texts } from '../config';
 
 export const DataProviderScreen = ({ navigation }) => {
-  const dataProviderId = navigation.getParam('dataProviderId');
   const dataProviderName = navigation.getParam('dataProviderName');
   const logo = navigation.getParam('logo');
 
-  if (!dataProviderId || !dataProviderName) {
+  if (!dataProviderName) {
     return (
       <Wrapper>
         <RegularText>{texts.errors.unexpected}</RegularText>
@@ -26,11 +25,7 @@ export const DataProviderScreen = ({ navigation }) => {
         </Wrapper>
       )}
 
-      <CrossData
-        dataProviderId={dataProviderId}
-        dataProviderName={dataProviderName}
-        navigation={navigation}
-      />
+      <CrossData dataProviderName={dataProviderName} navigation={navigation} />
     </ScrollView>
   );
 };

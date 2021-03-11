@@ -75,6 +75,11 @@ export const GET_GENERIC_ITEMS = gql`
           captionText
         }
       }
+      dataProvider {
+        id
+        name
+        dataType
+      }
       mediaContents {
         id
         captionText
@@ -155,6 +160,11 @@ export const GET_GENERIC_ITEM = gql`
           }
           captionText
         }
+      }
+      dataProvider {
+        id
+        name
+        dataType
       }
       mediaContents {
         id

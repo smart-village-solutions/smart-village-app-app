@@ -6,6 +6,7 @@ import { consts, device, texts } from '../config';
 import { matomoTrackingString, momentFormat, trimNewLines } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { GenericType } from '../types';
+import { DataProviderButton } from './DataProviderButton';
 import { ImageSection } from './ImageSection';
 import { InfoCard } from './infoCard';
 import { OperatingCompany } from './screens';
@@ -67,6 +68,8 @@ export const Offer = ({ data, navigation }) => {
 
   const operatingCompany = companies?.[0];
   const contact = contacts?.[0];
+
+  const businessAccount = dataProvider?.dataType === 'business_account';
 
   return (
     <View>
@@ -139,6 +142,9 @@ export const Offer = ({ data, navigation }) => {
           operatingCompany={operatingCompany}
           openWebScreen={openWebScreen}
         />
+        {!!businessAccount && (
+          <DataProviderButton dataProvider={dataProvider} navigation={navigation} />
+        )}
       </WrapperWithOrientation>
     </View>
   );

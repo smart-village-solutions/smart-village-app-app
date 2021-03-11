@@ -15,6 +15,7 @@ export * from './CategoryListItem';
 export * from './ConnectedImagesCarousel';
 export * from './CrossData';
 export * from './DataListSection';
+export * from './DataProviderButton';
 export * from './DiagonalGradient';
 export * from './DropdownHeader';
 export * from './DropdownSelect';

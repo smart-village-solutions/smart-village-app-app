@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext } from 'react';
+import React, { useContext } from 'react';
 import { View } from 'react-native';
 
 import { colors, consts, device, texts } from '../../config';
@@ -8,6 +8,7 @@ import { useMatomoTrackScreenView } from '../../hooks';
 import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { Button } from '../Button';
+import { DataProviderButton } from '../DataProviderButton';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
@@ -72,20 +73,6 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
   );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
-
-  const navigateToDataProvider = useCallback(
-    () =>
-      dataProvider &&
-      businessAccount &&
-      navigation.navigate('DataProvider', {
-        dataProviderId: dataProvider.id,
-        dataProviderName: dataProvider.name,
-        logo,
-        title: dataProvider.name
-      }),
-
-    [businessAccount, dataProvider, logo, navigation]
-  );
 
   return (
     <View>
@@ -195,12 +182,7 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
         <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
         {!!businessAccount && (
-          <Wrapper>
-            <Button
-              title={`${texts.dataProvider.more} ${dataProvider.name}`}
-              onPress={navigateToDataProvider}
-            />
-          </Wrapper>
+          <DataProviderButton dataProvider={dataProvider} navigation={navigation} />
         )}
       </WrapperWithOrientation>
     </View>

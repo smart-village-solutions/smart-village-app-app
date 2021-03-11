@@ -1,6 +1,17 @@
 import { consts, texts } from '../config';
 import { GenericType } from '../types';
 
+export const getGenericItemSectionTitle = (genericType: GenericType): string => {
+  switch (genericType) {
+    case GenericType.Commercial:
+      return texts.commercial.commercials;
+    case GenericType.Job:
+      return texts.job.jobs;
+    default:
+      return '';
+  }
+};
+
 export const getGenericItemDetailTitle = (genericType: GenericType): string => {
   switch (genericType) {
     case GenericType.Commercial:
