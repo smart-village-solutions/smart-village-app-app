@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.6.1]
+
+Waste collection with reminders and fix for push
+
+### Added
+
+- added waste reminder settings with its own screen and elements
+  - added rest api calls for reminder settings
+  - new keys for secrets are required! see #208
+- added jobs and ads to cross data screen of data provider
+
+### Changed
+
+- increased marking dot size in waste collection calendar to 6 (was 4)
+
+### Fixed
+
+- added missing optional chaining for details on detail screen
+  - this caused a crash with push notifications as details are null
+- nested message and imagerights to be inside of the image
+  - this way the absolute positioning is with respect to the image itself
+  - previously it was with respect to the container (which was wider in landscape)
+
 ## [v1.6.0] :rocket:
 
 The sixth minor version upgrade adds more screens for specific data like jobs, ads and
