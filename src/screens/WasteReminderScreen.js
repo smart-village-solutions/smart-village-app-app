@@ -1,28 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ScrollView } from 'react-native';
 
-import {
-  WasteNotificationSection,
-  SafeAreaViewFlex,
-  WrapperWithOrientation,
-  Wrapper,
-  HeaderLeft
-} from '../components';
+import { WasteReminderSettings, SafeAreaViewFlex, HeaderLeft } from '../components';
 
 export const WasteReminderScreen = ({ navigation }) => {
   const wasteTypes = navigation.getParam('wasteTypes');
-  const street = navigation.getParam('streetData');
+  const locationData = navigation.getParam('locationData');
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView keyboardShouldPersistTaps="always">
-        <WrapperWithOrientation>
-          <Wrapper>
-            <WasteNotificationSection types={wasteTypes} street={street} />
-          </Wrapper>
-        </WrapperWithOrientation>
-      </ScrollView>
+      <WasteReminderSettings types={wasteTypes} locationData={locationData} />
     </SafeAreaViewFlex>
   );
 };

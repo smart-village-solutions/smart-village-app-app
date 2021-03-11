@@ -120,13 +120,16 @@ export const texts = {
     showLunches: 'Zum aktuellen Gastro-Angebot'
   },
   pushNotifications: {
+    abort: 'Abbrechen',
     approve: 'Jetzt einschalten',
     decline: 'Vielleicht später',
     greetingBody:
       'Damit Sie wichtige Mitteilungen aus Ihrer Kommune erreichen, würden wir Ihnen gerne Benachrichtigungen schicken. Sie können diese Einstellung jederzeit in Ihrem persönlichen Bereich ändern.',
     greetingTitle: 'Willkommen',
     permissionMissingBody: 'Bitte überprüfen Sie Ihre Benachrichtigungseinstellungen im System.',
-    permissionMissingTitle: 'Hinweis'
+    permissionMissingTitle: 'Hinweis',
+    permissionRequiredBody:
+      'Diese Funktion benötigt die Berechtigung Ihnen Benachrichtigungen zu schicken.'
   },
   screenTitles: {
     home: appJson.expo.name,
@@ -183,12 +186,17 @@ export const texts = {
   },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',
+    errorOnUpdateBody: 'Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.',
+    errorOnUpdateTitle: 'Fehler',
     hint: 'Bitte geben Sie Ihre Straße an.',
     onDayBeforeCollection: 'Am Vortag',
     onDayOfCollection: 'Am Tag der Abholung',
     reminder: 'Erinnerungen',
     reminderTime: 'Zu welcher Uhrzeit möchten Sie benachrichtigt werden?',
-    updateReminderSettings: 'Einstellungen aktualisieren',
+    unableToLoad:
+      'Beim Laden Ihrer Einstellungen ist ein Fehler aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
+    updateReminderSettings: 'Änderungen speichern',
+    updateSuccess: 'Die Einstellungen wurden erfolgreich gespeichert.',
     whichDay: 'Möchten Sie am Vortag oder am Tag der Abholung benachrichtigt werden?',
     whichType: 'Für welche Müllsorten möchten Sie Erinnerungen?'
   },

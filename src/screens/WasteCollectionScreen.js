@@ -7,6 +7,7 @@ import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { ScrollView, TouchableOpacity } from 'react-native';
 
 import {
+  Button,
   HeaderLeft,
   Icon,
   LoadingContainer,
@@ -24,6 +25,7 @@ import { getQuery, QUERY_TYPES } from '../queries';
 import { useRefreshTime } from '../hooks';
 import { graphqlFetchPolicy } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
+import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifications';
 
 const dotSize = 6;
 
@@ -119,7 +121,7 @@ const getStreetString = (item) => {
   return `${item.street} (${item.zip} ${item.city})`;
 };
 
-export const WasteCollectionScreen = () => {
+export const WasteCollectionScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [inputValue, setInputValue] = useState('');
   const [selectedStreetId, setSelectedStreetId] = useState();
@@ -202,11 +204,23 @@ export const WasteCollectionScreen = () => {
     [setInputValue]
   );
 
-  // TODO: disabled until backend is ready
-  // const goToReminder = useCallback(
-  //   () => navigation.navigate('WasteReminder', { wasteTypes: usedTypes, streetData }),
-  //   [navigation, usedTypes, streetData]
-  // );
+  const goToReminder = useCallback(async () => {
+    const locationData = {
+      city: streetData?.wasteAddresses?.[0]?.city,
+      street: streetData?.wasteAddresses?.[0]?.street,
+      zip: streetData?.wasteAddresses?.[0]?.zip
+    };
+
+    const navigate = () =>
+      navigation.navigate('WasteReminder', { wasteTypes: usedTypes, locationData });
+
+    const inAppPushPermission = await getInAppPermission();
+    if (inAppPushPermission) {
+      navigate();
+    } else {
+      showPermissionRequiredAlert(navigate);
+    }
+  }, [navigation, usedTypes, streetData]);
 
   useEffect(() => {
     if (!addressesData) {
@@ -218,7 +232,7 @@ export const WasteCollectionScreen = () => {
     );
 
     setSelectedStreetId(item?.id);
-  }, [inputValue, setSelectedStreetId, addressesData]);
+  }, [addressesData, inputValue, setSelectedStreetId]);
 
   if (loading || typesLoading) {
     return (
@@ -267,14 +281,11 @@ export const WasteCollectionScreen = () => {
               <RegularText center>{texts.wasteCalendar.hint}</RegularText>
             </Wrapper>
           )}
-          {/*
-          TODO: disabled until backend is ready
-          {!!data && selectedStreetId && (
+          {!!streetData && !!usedTypes && (
             <Wrapper>
               <Button title={texts.wasteCalendar.configureReminder} onPress={goToReminder} />
             </Wrapper>
           )}
-          */}
         </WrapperWithOrientation>
       </ScrollView>
     </SafeAreaViewFlex>

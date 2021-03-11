@@ -18,5 +18,7 @@ export const colors = {
   placeholder: '#A2A2A2',
   overlayRgba: 'rgba(20, 20, 20, 0.7)',
 
+  surface: '#FFF',
+
   transparent: 'transparent'
 };

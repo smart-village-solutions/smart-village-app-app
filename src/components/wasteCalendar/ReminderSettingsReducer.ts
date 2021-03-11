@@ -43,7 +43,7 @@ export const reminderSettingsReducer: React.Reducer<ReminderSettings, ReminderSe
     case ReminderSettingsActionType.UPDATE_ACTIVE_TYPE: {
       const { key, value } = action.payload;
       const newState = { ...state };
-      newState.activeTypes[key] = value;
+      newState.activeTypes[key] = { ...newState.activeTypes[key], active: value };
       return newState;
     }
     case ReminderSettingsActionType.UPDATE_ON_DAY_BEFORE:

@@ -7,6 +7,10 @@ import { addToStore, readFromStore } from '../helpers';
 import { colors, device, texts } from '../config';
 import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandling';
 
+export const getInAppPermission = async (): Promise<boolean> => {
+  return (await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION)) ?? false;
+};
+
 export const setInAppPermission = async (newValue: boolean) => {
   const oldValue = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
@@ -82,12 +86,10 @@ export const updatePushToken = async () => {
 export const showSystemPermissionMissingDialog = () => {
   const { permissionMissingBody, permissionMissingTitle } = texts.pushNotifications;
 
-  Alert.alert(permissionMissingTitle, permissionMissingBody, undefined, {
-    cancelable: false
-  });
+  Alert.alert(permissionMissingTitle, permissionMissingBody, undefined);
 };
 
-const showInitialPushAlert = (): void => {
+const showInitialPushAlert = () => {
   const { greetingBody, greetingTitle, approve, decline } = texts.pushNotifications;
 
   Alert.alert(
@@ -106,4 +108,27 @@ const showInitialPushAlert = (): void => {
     ],
     { cancelable: false }
   );
+};
+
+export const showPermissionRequiredAlert = (approveCallback: () => void) => {
+  const {
+    abort,
+    approve,
+    permissionMissingTitle,
+    permissionRequiredBody
+  } = texts.pushNotifications;
+
+  Alert.alert(permissionMissingTitle, permissionRequiredBody, [
+    {
+      text: abort,
+      style: 'cancel'
+    },
+    {
+      text: approve,
+      onPress: async () => {
+        await setInAppPermission(true);
+        approveCallback();
+      }
+    }
+  ]);
 };
