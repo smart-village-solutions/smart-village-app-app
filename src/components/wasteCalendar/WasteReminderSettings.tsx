@@ -38,6 +38,10 @@ const showErrorAlert = () => {
   Alert.alert(texts.wasteCalendar.errorOnUpdateTitle, texts.wasteCalendar.errorOnUpdateBody);
 };
 
+const showSuccessAlert = () => {
+  Alert.alert(texts.wasteCalendar.updateSuccess);
+};
+
 const initialReminderTime = new Date();
 initialReminderTime.setHours(9);
 initialReminderTime.setMinutes(0);
@@ -220,6 +224,7 @@ export const WasteReminderSettings = ({
 
     if (!errorOccured) {
       // update store state entries
+      showSuccessAlert();
       dispatch({ type: ReminderSettingsActionType.OVERWRITE, payload: newState });
     } else {
       // show alert and refetch data to avoid incorrect local state

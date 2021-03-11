@@ -196,6 +196,7 @@ export const texts = {
     unableToLoad:
       'Beim Laden Ihrer Einstellungen ist ein Fehler aufgetreten. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
     updateReminderSettings: 'Änderungen speichern',
+    updateSuccess: 'Die Einstellungen wurden erfolgreich gespeichert.',
     whichDay: 'Möchten Sie am Vortag oder am Tag der Abholung benachrichtigt werden?',
     whichType: 'Für welche Müllsorten möchten Sie Erinnerungen?'
   },
