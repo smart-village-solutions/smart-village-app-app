@@ -14,7 +14,6 @@ import { DataListSection } from './DataListSection';
 import { LoadingContainer } from './LoadingContainer';
 
 type Props = {
-  dataProviderId: string;
   dataProviderName: string;
   navigation: NavigationScreenProp<never>;
 };
@@ -23,13 +22,13 @@ type SectionProps = {
   categoryId?: string;
   genericType?: GenericType;
   query: string;
-  titleDetail?: string;
-  titleSection?: string;
+  sectionTitle?: string;
+  sectionTitleDetail?: string;
 } & Props;
 
 type CrossDataQueryVariables = {
   categoryId?: string;
-  dataProviderId: string;
+  dataProvider: string;
   genericType?: GenericType;
   limit: number;
   order?: string;
@@ -53,23 +52,22 @@ const getNavigationFunction = (
 
 const CrossDataSection = ({
   categoryId,
-  dataProviderId,
   dataProviderName,
   genericType,
   navigation,
   query,
-  titleDetail,
-  titleSection
+  sectionTitle,
+  sectionTitleDetail
 }: SectionProps) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const refreshTime = useRefreshTime(
-    `crossData-${query}-${dataProviderId}-${categoryId}-${genericType}`
+    `crossData-${query}-${dataProviderName}-${categoryId}-${genericType}`
   );
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
   const variables: CrossDataQueryVariables = {
     categoryId,
-    dataProviderId,
+    dataProvider: dataProviderName,
     limit: 4
   };
 
@@ -103,66 +101,60 @@ const CrossDataSection = ({
         navigation,
         dataProviderName,
         query,
-        titleSection,
+        sectionTitle,
         categoryId
       )}
       navigation={navigation}
       query={query}
       sectionData={data}
-      sectionTitle={titleSection}
-      sectionTitleDetail={titleDetail}
+      sectionTitle={sectionTitle}
+      sectionTitleDetail={sectionTitleDetail}
       showButton={(data?.[query]?.length ?? 0) > 3}
     />
   );
 };
 
-export const CrossData = ({ dataProviderId, dataProviderName, navigation }: Props) => {
+export const CrossData = ({ dataProviderName, navigation }: Props) => {
   const categoriesNews = useNewsCategories();
 
   return (
     <View>
       <CrossDataSection
-        dataProviderId={dataProviderId}
         dataProviderName={dataProviderName}
         genericType={GenericType.Job}
         navigation={navigation}
         query={QUERY_TYPES.GENERIC_ITEMS}
-        titleSection={getGenericItemSectionTitle(GenericType.Job)}
+        sectionTitle={getGenericItemSectionTitle(GenericType.Job)}
       />
       <CrossDataSection
-        dataProviderId={dataProviderId}
         dataProviderName={dataProviderName}
         genericType={GenericType.Commercial}
         navigation={navigation}
         query={QUERY_TYPES.GENERIC_ITEMS}
-        titleSection={getGenericItemSectionTitle(GenericType.Commercial)}
+        sectionTitle={getGenericItemSectionTitle(GenericType.Commercial)}
       />
       {categoriesNews?.map(({ categoryId, categoryTitle, categoryTitleDetail }) => (
         <CrossDataSection
           categoryId={categoryId}
-          dataProviderId={dataProviderId}
           dataProviderName={dataProviderName}
           key={categoryId}
           navigation={navigation}
           query={QUERY_TYPES.NEWS_ITEMS}
-          titleDetail={categoryTitleDetail}
-          titleSection={categoryTitle}
+          sectionTitleDetail={categoryTitleDetail}
+          sectionTitle={categoryTitle}
         />
       ))}
       <CrossDataSection
-        dataProviderId={dataProviderId}
         dataProviderName={dataProviderName}
         navigation={navigation}
         query={QUERY_TYPES.POINTS_OF_INTEREST}
       />
       <CrossDataSection
-        dataProviderId={dataProviderId}
         dataProviderName={dataProviderName}
         navigation={navigation}
         query={QUERY_TYPES.TOURS}
       />
       <CrossDataSection
-        dataProviderId={dataProviderId}
         dataProviderName={dataProviderName}
         navigation={navigation}
         query={QUERY_TYPES.EVENT_RECORDS}
