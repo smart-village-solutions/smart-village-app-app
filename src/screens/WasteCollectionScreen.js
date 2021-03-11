@@ -25,6 +25,8 @@ import { useRefreshTime } from '../hooks';
 import { graphqlFetchPolicy } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 
+const dotSize = 6;
+
 LocaleConfig.locales['de'] = {
   monthNames: [
     'Januar',
@@ -249,7 +251,14 @@ export const WasteCollectionScreen = () => {
               markedDates={getMarkedDates(parsedTypesData, streetData)}
               markingType="multi-dot"
               renderArrow={renderArrow}
-              theme={{ todayTextColor: colors.primary }}
+              theme={{
+                todayTextColor: colors.primary,
+                dotStyle: {
+                  borderRadius: dotSize / 2,
+                  height: dotSize,
+                  width: dotSize
+                }
+              }}
             />
             <WasteCalendarLegend data={usedTypes} />
           </View>
