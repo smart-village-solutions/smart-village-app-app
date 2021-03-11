@@ -58,11 +58,11 @@ export const parseReminderSettings = (
   if (filteredData.length) {
     result.onDayBefore = filteredData[0].notify_days_before > 0;
     result.reminderTime = new Date(filteredData[0].notify_at);
-  }
 
-  filteredData.forEach((item) => {
-    result.activeTypes[item.notify_for_waste_type] = { active: true, storeId: item.id };
-  });
+    filteredData.forEach((item) => {
+      result.activeTypes[item.notify_for_waste_type] = { active: true, storeId: item.id };
+    });
+  }
 
   return result;
 };

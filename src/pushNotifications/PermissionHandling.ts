@@ -86,9 +86,7 @@ export const updatePushToken = async () => {
 export const showSystemPermissionMissingDialog = () => {
   const { permissionMissingBody, permissionMissingTitle } = texts.pushNotifications;
 
-  Alert.alert(permissionMissingTitle, permissionMissingBody, undefined, {
-    cancelable: false
-  });
+  Alert.alert(permissionMissingTitle, permissionMissingBody, undefined);
 };
 
 const showInitialPushAlert = () => {
@@ -122,15 +120,15 @@ export const showPermissionRequiredAlert = (approveCallback: () => void) => {
 
   Alert.alert(permissionMissingTitle, permissionRequiredBody, [
     {
+      text: abort,
+      style: 'cancel'
+    },
+    {
       text: approve,
       onPress: async () => {
         await setInAppPermission(true);
         approveCallback();
       }
-    },
-    {
-      text: abort,
-      style: 'cancel'
     }
   ]);
 };
