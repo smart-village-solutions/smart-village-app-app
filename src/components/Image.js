@@ -76,11 +76,12 @@ export const Image = ({
         accessibilityLabel={source?.captionText}
         resizeMode={resizeMode}
         borderRadius={borderRadius}
-      />
-      {!!message && <ImageMessage message={message} />}
-      {!!globalSettings?.showImageRights && !!source?.copyright && (
-        <ImageRights imageRights={source.copyright} />
-      )}
+      >
+        {!!message && <ImageMessage message={message} />}
+        {!!globalSettings?.showImageRights && !!source?.copyright && (
+          <ImageRights imageRights={source.copyright} />
+        )}
+      </RNEImage>
     </View>
   );
 };
