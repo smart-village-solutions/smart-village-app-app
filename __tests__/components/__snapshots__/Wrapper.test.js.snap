@@ -1,0 +1,131 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`testing Wrapper style component renders InfoBox 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "flexDirection": "row",
+        "marginBottom": 5.6000000000000005,
+      },
+    ]
+  }
+/>
+`;
+
+exports[`testing Wrapper style component renders WrapperHorizontal 1`] = `
+<View
+  big={true}
+  style={
+    Array [
+      Object {
+        "paddingLeft": 19.040000000000003,
+        "paddingRight": 19.040000000000003,
+      },
+    ]
+  }
+/>
+`;
+
+exports[`testing Wrapper style component renders WrapperLandscape 1`] = `
+<View
+  noFlex={true}
+  style={
+    Array [
+      Object {
+        "paddingLeft": "15%",
+        "paddingRight": "15%",
+      },
+    ]
+  }
+/>
+`;
+
+exports[`testing Wrapper style component renders WrapperRow 1`] = `
+<View
+  center={true}
+  style={
+    Array [
+      Object {
+        "flexDirection": "row",
+        "justifyContent": "center",
+      },
+    ]
+  }
+/>
+`;
+
+exports[`testing Wrapper style component renders WrapperRow 2`] = `
+<View
+  spaceAround={true}
+  style={
+    Array [
+      Object {
+        "flexDirection": "row",
+        "justifyContent": "space-around",
+      },
+    ]
+  }
+/>
+`;
+
+exports[`testing Wrapper style component renders WrapperVertical 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "paddingBottom": 15.680000000000001,
+        "paddingTop": 15.680000000000001,
+      },
+    ]
+  }
+/>
+`;
+
+exports[`testing Wrapper style component renders WrapperWithOrientation 1`] = `
+<View
+  noFlex={false}
+  style={
+    Array [
+      Object {
+        "flexBasis": 0,
+        "flexGrow": 1,
+        "flexShrink": 1,
+        "paddingLeft": "15%",
+        "paddingRight": "15%",
+      },
+    ]
+  }
+>
+  <View />
+</View>
+`;
+
+exports[`testing Wrapper style component renders WrapperWrap 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "flexDirection": "row",
+        "flexWrap": "wrap",
+        "width": "100%",
+      },
+    ]
+  }
+/>
+`;
+
+exports[`testing Wrapper style component renders a default Wrapper 1`] = `
+<View
+  style={
+    Array [
+      Object {
+        "paddingBottom": 15.680000000000001,
+        "paddingLeft": 15.680000000000001,
+        "paddingRight": 15.680000000000001,
+        "paddingTop": 15.680000000000001,
+      },
+    ]
+  }
+/>
+`;

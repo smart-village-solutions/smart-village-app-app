@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Icon renders a default Icon 1`] = `
+<View
+  hitSlop={
+    Object {
+      "bottom": 12,
+      "top": 12,
+    }
+  }
+>
+  <Text />
+</View>
+`;
