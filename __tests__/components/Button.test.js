@@ -8,7 +8,7 @@ describe('Button', () => {
     return;
   };
 
-  it('renders a landscape button', () => {
+  it('renders a button with Outline style', () => {
     const tree = renderer.create(<Button invert title="title" onPress={onPress} />);
     expect(tree).toMatchSnapshot();
   });

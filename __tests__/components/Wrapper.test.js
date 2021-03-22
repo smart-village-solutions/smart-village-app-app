@@ -36,12 +36,22 @@ describe('testing Wrapper style component', () => {
   });
 
   it('renders WrapperRow', async () => {
+    const tree = renderer.create(<WrapperRow />);
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('renders WrapperRow that centers items', async () => {
     const tree = renderer.create(<WrapperRow center />);
     expect(tree).toMatchSnapshot();
   });
 
-  it('renders WrapperRow', async () => {
+  it('renders WrapperRow that does spaceAround items', async () => {
     const tree = renderer.create(<WrapperRow spaceAround />);
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('renders WrapperRow that does spaceBetween items', async () => {
+    const tree = renderer.create(<WrapperRow spaceBetween />);
     expect(tree).toMatchSnapshot();
   });
 

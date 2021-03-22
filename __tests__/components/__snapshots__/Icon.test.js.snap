@@ -12,3 +12,42 @@ exports[`Icon renders a default Icon 1`] = `
   <Text />
 </View>
 `;
+
+exports[`Icon renders a focused Icon 1`] = `
+<View
+  hitSlop={
+    Object {
+      "bottom": 12,
+      "top": 12,
+    }
+  }
+>
+  <Text />
+</View>
+`;
+
+exports[`Icon renders an Icon with custom color 1`] = `
+<View
+  hitSlop={
+    Object {
+      "bottom": 12,
+      "top": 12,
+    }
+  }
+>
+  <Text />
+</View>
+`;
+
+exports[`Icon renders an Icon with custom style 1`] = `
+<View
+  hitSlop={
+    Object {
+      "bottom": 12,
+      "top": 12,
+    }
+  }
+>
+  <Text />
+</View>
+`;

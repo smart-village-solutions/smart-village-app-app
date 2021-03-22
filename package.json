@@ -14,6 +14,9 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "moduleNameMapper": {
+      "\\.svg": "<rootDir>/__mocks__/svgMock.js"
+    },
     "transformIgnorePatterns": [
       "node_modules/(?!(jest-)?react-native|react-navigation|react-native-elements|react-native-status-bar-height|react-native-vector-icons|expo-font|expo-constants|expo-core|expo-react-native-adapter|matomo-tracker-react-native|expo-notifications|@unimodules|expo-application|getExpoPushTokenAsync|DevicePushTokenAutoRegistration|expo-splash-screen|expo-asset|getExpoPushTokenAsync|DevicePushTokenAutoRegistration)/"
     ],

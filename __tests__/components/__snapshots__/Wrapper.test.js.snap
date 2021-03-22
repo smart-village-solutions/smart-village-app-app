@@ -43,6 +43,18 @@ exports[`testing Wrapper style component renders WrapperLandscape 1`] = `
 
 exports[`testing Wrapper style component renders WrapperRow 1`] = `
 <View
+  style={
+    Array [
+      Object {
+        "flexDirection": "row",
+      },
+    ]
+  }
+/>
+`;
+
+exports[`testing Wrapper style component renders WrapperRow that centers items 1`] = `
+<View
   center={true}
   style={
     Array [
@@ -55,7 +67,7 @@ exports[`testing Wrapper style component renders WrapperRow 1`] = `
 />
 `;
 
-exports[`testing Wrapper style component renders WrapperRow 2`] = `
+exports[`testing Wrapper style component renders WrapperRow that does spaceAround items 1`] = `
 <View
   spaceAround={true}
   style={
@@ -63,6 +75,20 @@ exports[`testing Wrapper style component renders WrapperRow 2`] = `
       Object {
         "flexDirection": "row",
         "justifyContent": "space-around",
+      },
+    ]
+  }
+/>
+`;
+
+exports[`testing Wrapper style component renders WrapperRow that does spaceBetween items 1`] = `
+<View
+  spaceBetween={true}
+  style={
+    Array [
+      Object {
+        "flexDirection": "row",
+        "justifyContent": "space-between",
       },
     ]
   }

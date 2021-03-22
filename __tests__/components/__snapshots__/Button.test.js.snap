@@ -1,5 +1,68 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Button renders a button with Outline style 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "borderRadius": 3,
+      "justifyContent": "center",
+      "marginBottom": 23.520000000000003,
+    }
+  }
+>
+  <View
+    accessibilityLabel="title (Taste)"
+    accessible={true}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "opacity": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "backgroundColor": "transparent",
+          "borderColor": "rgb(16, 120, 33)",
+          "borderRadius": 3,
+          "borderStyle": "solid",
+          "borderWidth": 2,
+          "flexDirection": "row",
+          "justifyContent": "center",
+          "padding": 8,
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "color": "rgb(16, 120, 33)",
+            "fontFamily": "titillium-web-bold",
+            "fontSize": 18,
+            "paddingBottom": 1,
+            "paddingHorizontal": 15.680000000000001,
+            "paddingTop": 2,
+            "textAlign": "center",
+          }
+        }
+      >
+        title
+      </Text>
+    </View>
+  </View>
+</View>
+`;
+
 exports[`Button renders a default button 1`] = `
 <View
   style={
@@ -75,69 +138,6 @@ exports[`Button renders a default button 1`] = `
         title
       </Text>
     </ViewManagerAdapter_ExpoLinearGradient>
-  </View>
-</View>
-`;
-
-exports[`Button renders a landscape button 1`] = `
-<View
-  style={
-    Object {
-      "alignItems": "center",
-      "borderRadius": 3,
-      "justifyContent": "center",
-      "marginBottom": 23.520000000000003,
-    }
-  }
->
-  <View
-    accessibilityLabel="title (Taste)"
-    accessible={true}
-    focusable={true}
-    onClick={[Function]}
-    onResponderGrant={[Function]}
-    onResponderMove={[Function]}
-    onResponderRelease={[Function]}
-    onResponderTerminate={[Function]}
-    onResponderTerminationRequest={[Function]}
-    onStartShouldSetResponder={[Function]}
-    style={
-      Object {
-        "opacity": 1,
-      }
-    }
-  >
-    <View
-      style={
-        Object {
-          "alignItems": "center",
-          "backgroundColor": "transparent",
-          "borderColor": "rgb(16, 120, 33)",
-          "borderRadius": 3,
-          "borderStyle": "solid",
-          "borderWidth": 2,
-          "flexDirection": "row",
-          "justifyContent": "center",
-          "padding": 8,
-        }
-      }
-    >
-      <Text
-        style={
-          Object {
-            "color": "rgb(16, 120, 33)",
-            "fontFamily": "titillium-web-bold",
-            "fontSize": 18,
-            "paddingBottom": 1,
-            "paddingHorizontal": 15.680000000000001,
-            "paddingTop": 2,
-            "textAlign": "center",
-          }
-        }
-      >
-        title
-      </Text>
-    </View>
   </View>
 </View>
 `;
