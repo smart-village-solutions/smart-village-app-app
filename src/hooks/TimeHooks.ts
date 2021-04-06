@@ -22,19 +22,26 @@ export const useRefreshTime = (
   return refreshTime;
 };
 
-// counts up a number on a set interval
+// max interval length at which the useInterval hook checks against the input ms
+const MAX_INTERVALL = 100;
+
+// updates a timestamp on a set interval
 export const useInterval = (ms?: number) => {
-  const [count, setCount] = useState(0);
+  const [timestamp, setTimestamp] = useState(new Date().valueOf());
 
   useEffect(() => {
     if (!ms) return;
 
     const id = setInterval(() => {
-      setCount((value) => value + 1);
-    }, ms);
+      const currentTime = new Date().valueOf();
+
+      if (currentTime - timestamp >= ms) {
+        setTimestamp(new Date().valueOf());
+      }
+    }, Math.min(ms, MAX_INTERVALL));
 
     return () => clearInterval(id);
-  }, [ms, setCount]);
+  }, [ms, setTimestamp, timestamp]);
 
-  return count;
+  return timestamp;
 };
