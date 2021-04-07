@@ -4,6 +4,7 @@ import { useMatomo } from 'matomo-tracker-react-native';
 
 import { texts } from '../config';
 import { SettingsContext } from '../SettingsProvider';
+import { NetworkContext } from '../NetworkProvider';
 import { createMatomoUserId, setMatomoHandledOnStartup, storageHelper } from '../helpers';
 
 /**
@@ -15,7 +16,7 @@ import { createMatomoUserId, setMatomoHandledOnStartup, storageHelper } from '..
  *                        Feedback will create the Action Feedback in the category Help.
  */
 export const useMatomoTrackScreenView = (name) => {
-  const { isConnected } = useContext(SettingsContext);
+  const { isConnected } = useContext(NetworkContext);
   const { trackScreenView } = useMatomo();
 
   useEffect(() => {
