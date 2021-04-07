@@ -34,7 +34,7 @@ export const Image = ({
 }) => {
   const [uri, setUri] = useState(null);
   const { globalSettings } = useContext(SettingsContext);
-  const refreshCount = useInterval(refreshInterval);
+  const timestamp = useInterval(refreshInterval);
 
   // only use cache when refreshInterval is undefined
   // if there is a source.uri to fetch, do it with the CacheManager and set the local path to show.
@@ -58,11 +58,11 @@ export const Image = ({
         : mounted && setUri(source);
     } else {
       // add an artificial query param to the end of the url to trigger a rerender and refetch
-      mounted && setUri(addQueryParam(source.uri ?? source, `svaRefreshCount=${refreshCount}`));
+      mounted && setUri(addQueryParam(source.uri ?? source, `svaRefreshCount=${timestamp}`));
     }
 
     return () => (mounted = false);
-  }, [refreshCount, refreshInterval, source, setUri]);
+  }, [timestamp, refreshInterval, source, setUri]);
 
   return (
     <View>
