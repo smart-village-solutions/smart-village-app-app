@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.6.2]
+
+Refactorings and bugfixes
+
+### Changed
+
+- bump ini from 1.3.5 to 1.3.8
+- bump y18n from 4.0.0 to 4.0.1
+
+### Fixed
+
+- corrected context for matomo tracking
+- corrected displaying of up to date image in image slider with interval
+
 ## [v1.6.1]
 
 Waste collection with reminders and fix for push
