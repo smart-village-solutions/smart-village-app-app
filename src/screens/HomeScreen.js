@@ -158,10 +158,7 @@ export const HomeScreen = ({ navigation }) => {
         <TouchableOpacity
           style={{ height: 40, backgroundColor: 'red' }}
           onPress={() =>
-            navigation.navigate('OParlDetail', {
-              canonicalUrl:
-                'https://sdnetrim.kdvz-frechen.de/rim4883/webservice/oparl/v1.1/body/1/meeting'
-            })
+            navigation.navigate('OParlOverview', { title: texts.oparl.overview.title })
           }
         />
 

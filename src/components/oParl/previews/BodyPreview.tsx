@@ -2,8 +2,7 @@ import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { BodyPreviewData } from '../../../types';
-import { RegularText } from '../../Text';
-import { OParlPreviewWrapper } from './OParlPreviewWrapper';
+import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: BodyPreviewData;
@@ -11,13 +10,14 @@ type Props = {
 };
 
 export const BodyPreview = ({ data, navigation }: Props) => {
-  const { deleted, id, name, shortName } = data;
+  const { id, type, name, shortName } = data;
 
   return (
-    <OParlPreviewWrapper id={id} navigation={navigation}>
-      <RegularText lineThrough={deleted} numberOfLines={1} primary>
-        {shortName ? `${shortName} (${name})` : name}
-      </RegularText>
-    </OParlPreviewWrapper>
+    <OParlPreviewEntry
+      id={id}
+      type={type}
+      title={shortName ? `${shortName} (${name})` : name}
+      navigation={navigation}
+    />
   );
 };

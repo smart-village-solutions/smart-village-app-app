@@ -3,8 +3,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { OrganizationPreviewData } from '../../../types';
-import { RegularText } from '../../Text';
-import { OParlPreviewWrapper } from './OParlPreviewWrapper';
+import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: OrganizationPreviewData;
@@ -12,13 +11,19 @@ type Props = {
 };
 
 export const OrganizationPreview = ({ data, navigation }: Props) => {
-  const { id, classification, deleted, name, shortName } = data;
+  const { id, type, classification, name, shortName } = data;
 
-  return (
-    <OParlPreviewWrapper id={id} navigation={navigation}>
-      <RegularText numberOfLines={1} primary lineThrough={deleted}>
-        {name || shortName || classification || texts.oparl.organization.organization}
-      </RegularText>
-    </OParlPreviewWrapper>
-  );
+  const title = name || shortName || classification || texts.oparl.organization.organization;
+
+  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
+
+  // return (
+  //   <OParlPreviewWrapper id={id} navigation={navigation}>
+  //     <Wrapper>
+  //       <RegularText numberOfLines={1} primary lineThrough={deleted}>
+  //         {name || shortName || classification || texts.oparl.organization.organization}
+  //       </RegularText>
+  //     </Wrapper>
+  //   </OParlPreviewWrapper>
+  // );
 };

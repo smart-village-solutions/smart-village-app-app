@@ -4,9 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
 import { MeetingPreviewData } from '../../../types';
-
-import { RegularText } from '../../Text';
-import { OParlPreviewWrapper } from './OParlPreviewWrapper';
+import { TextListItem } from '../../TextListItem';
 
 type Props = {
   data: MeetingPreviewData;
@@ -14,16 +12,16 @@ type Props = {
 };
 
 export const MeetingPreview = ({ data, navigation }: Props) => {
-  const { id, cancelled, deleted, name, start } = data;
+  const { id, type, name, start } = data;
 
-  const dateString = start ? momentFormat(start.valueOf(), 'DD.MM.YYYY', 'x') : '';
+  const subtitle = start ? momentFormat(start, 'HH:mm', 'x') : undefined;
 
-  return (
-    <OParlPreviewWrapper id={id} navigation={navigation}>
-      <RegularText lineThrough={cancelled || deleted} numberOfLines={1} primary>
-        {name?.length ? name : texts.oparl.meeting.meeting}
-      </RegularText>
-      <RegularText>{dateString}</RegularText>
-    </OParlPreviewWrapper>
-  );
+  const item = {
+    routeName: 'OParlDetail',
+    params: { id, type, title: 'Termin' },
+    subtitle,
+    title: name ?? texts.oparl.meeting.meeting
+  };
+
+  return <TextListItem navigation={navigation} item={item} />;
 };

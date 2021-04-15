@@ -366,7 +366,7 @@ Pe2.familyName = 'Hyrule';
 Pe2.formOfAddress = 'Her Majesty';
 Pe2.gender = 'female';
 Pe2.givenName = 'Zelda';
-Pe2.membership = [Me2];
+Pe2.membership = [Me2, Me4];
 Pe2.title = ['Princess'];
 
 Pe3.id = 'Pe3';

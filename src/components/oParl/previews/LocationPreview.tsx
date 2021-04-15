@@ -3,8 +3,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { LocationPreviewData } from '../../../types';
-import { RegularText } from '../../Text';
-import { OParlPreviewWrapper } from './OParlPreviewWrapper';
+import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: LocationPreviewData;
@@ -12,7 +11,7 @@ type Props = {
 };
 
 export const LocationPreview = ({ data, navigation }: Props) => {
-  const { deleted, id, locality, room, streetAddress, subLocality } = data;
+  const { id, type, locality, room, streetAddress, subLocality } = data;
 
   let localityString = texts.oparl.location.location;
 
@@ -22,12 +21,7 @@ export const LocationPreview = ({ data, navigation }: Props) => {
 
   const addressString = streetAddress?.length ? streetAddress : localityString;
 
-  return (
-    <OParlPreviewWrapper id={id} navigation={navigation}>
-      <RegularText numberOfLines={1} primary lineThrough={deleted}>
-        {addressString}
-      </RegularText>
-      {!!room?.length && <RegularText primary>{`(${room})`}</RegularText>}
-    </OParlPreviewWrapper>
-  );
+  const title = addressString + room?.length ? `(${room})` : '';
+
+  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
 };

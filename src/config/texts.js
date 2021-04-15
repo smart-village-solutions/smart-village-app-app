@@ -194,7 +194,7 @@ export const texts = {
       size: 'Dateigröße',
       text: 'Textrepräsentation: '
     },
-    keywords: 'Schlüsselworte: ',
+    keywords: 'Schlagworte: ',
     legislativeTerm: {
       license: 'Lizenz: ',
       name: 'Bezeichnung: ',
@@ -216,16 +216,16 @@ export const texts = {
       streetAddress: 'Straße/Nr.: '
     },
     meeting: {
-      agendaItem: 'Tagesordnungspunkte: ',
+      agendaItem: 'Tagesordnungspunkte',
       auxiliaryFile: 'Dateianhänge: ',
-      cancelled: 'Diese Sitzung wurde abgesagt.',
+      cancelled: 'Dieser Termin wurde abgesagt.',
       invitation: 'Einladung: ',
       license: 'Lizenz: ',
       location: 'Sitzungsort: ',
       meeting: 'Sitzung',
       meetingState: 'Status: ',
       name: 'Name: ',
-      organization: 'Gruppierungen: ',
+      organization: 'Gruppierungen',
       participant: 'Teilnehmer: ',
       resultsProtocol: 'Ergebnisprotokoll: ',
       verbatimProtocol: 'Wortprotokoll: '
@@ -263,6 +263,9 @@ export const texts = {
       subOrganizationOf: 'Untergruppierung von: ',
       website: 'Website: '
     },
+    overview: {
+      title: 'Rathausinfos'
+    },
     paper: {
       auxiliaryFile: 'Weitere Dateien: ',
       body: 'Körperschaft: ',
@@ -281,6 +284,9 @@ export const texts = {
       subOrdinatedPaper: 'Untergeordnete Drucksachen: ',
       superOrdinatedPaper: 'Übergeordnete Drucksachen: ',
       underDirectionOf: 'Federführung: '
+    },
+    people: {
+      chooseAnOrg: 'Organisation wählen'
     },
     person: {
       affix: 'Namenszusatz: ',

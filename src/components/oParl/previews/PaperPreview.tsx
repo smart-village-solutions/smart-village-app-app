@@ -3,8 +3,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { PaperPreviewData } from '../../../types';
-import { RegularText } from '../../Text';
-import { OParlPreviewWrapper } from './OParlPreviewWrapper';
+import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: PaperPreviewData;
@@ -12,13 +11,9 @@ type Props = {
 };
 
 export const PaperPreview = ({ data, navigation }: Props) => {
-  const { id, deleted, name, reference } = data;
+  const { id, type, name, reference } = data;
 
-  return (
-    <OParlPreviewWrapper id={id} navigation={navigation}>
-      <RegularText numberOfLines={1} primary lineThrough={deleted}>
-        {name || reference || texts.oparl.paper.paper}
-      </RegularText>
-    </OParlPreviewWrapper>
-  );
+  const title = name || reference || texts.oparl.paper.paper;
+
+  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
 };

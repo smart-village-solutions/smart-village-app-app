@@ -58,6 +58,7 @@ export type AgendaItemPreviewData = {
   type: OParlObjectType.AgendaItem | OParlObjectType.AgendaItem1;
   name?: string;
   number?: string;
+  order?: number;
   start?: Date;
 };
 
@@ -71,7 +72,6 @@ export type AgendaItemData = {
   license?: string;
   meeting?: MeetingPreviewData;
   modified?: Date;
-  order?: number;
   public?: boolean;
   resolutionFile?: FilePreviewData;
   resolutionText?: string;
@@ -189,6 +189,7 @@ export type LocationPreviewData = {
   type: OParlObjectType.Location | OParlObjectType.Location1;
   deleted?: boolean;
   locality?: string;
+  postalCode?: string;
   room?: string;
   streetAddress?: string;
   subLocality?: string;
@@ -208,7 +209,6 @@ export type LocationData = {
   organizations?: OrganizationPreviewData[];
   papers?: PaperPreviewData[];
   persons?: PersonPreviewData[];
-  postalCode?: string;
   web?: string;
 } & LocationPreviewData;
 
@@ -218,14 +218,14 @@ export type MeetingPreviewData = {
   cancelled?: boolean;
   deleted?: boolean;
   name?: string;
-  start?: Date;
+  start?: number; // Date
 };
 
 export type MeetingData = {
   agendaItem?: AgendaItemPreviewData[];
   auxiliaryFile?: FilePreviewData[];
   created?: Date;
-  end?: Date;
+  end?: number; // Date
   invitation?: FilePreviewData;
   keyword?: string[];
   license?: string;
@@ -246,16 +246,16 @@ export type MembershipPreviewData = {
   onBehalfOf?: OrganizationPreviewData;
   organization?: OrganizationPreviewData;
   person?: PersonPreviewData;
+  endDate?: Date;
+  startDate?: Date;
 };
 
 export type MembershipData = {
   created?: Date;
-  endDate?: Date;
   keyword?: string[];
   license?: string;
   modified?: Date;
   role?: string;
-  startDate?: Date;
   votingRight?: boolean;
   web?: string;
 } & MembershipPreviewData;
@@ -326,6 +326,7 @@ export type PersonPreviewData = {
   familyName?: string;
   formOfAddress?: string;
   givenName?: string;
+  membership?: MembershipPreviewData[];
   name?: string;
   title?: string[];
 };
@@ -340,7 +341,6 @@ export type PersonData = {
   life?: string;
   lifeSource?: string;
   location?: LocationPreviewData;
-  membership?: MembershipPreviewData[];
   modified?: Date;
   phone?: string[];
   status?: string[];

@@ -1,11 +1,8 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { formatSize } from '../../../helpers';
 import { FilePreviewData } from '../../../types';
-import { RegularText } from '../../Text';
-import { WrapperRow } from '../../Wrapper';
-import { OParlPreviewWrapper } from './OParlPreviewWrapper';
+import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: FilePreviewData;
@@ -13,17 +10,9 @@ type Props = {
 };
 
 export const FilePreview = ({ data, navigation }: Props) => {
-  const { id, accessUrl, deleted, fileName, mimeType, name, size } = data;
+  const { id, type, accessUrl, fileName, name } = data;
 
-  return (
-    <OParlPreviewWrapper id={id} navigation={navigation}>
-      <RegularText lineThrough={deleted} numberOfLines={1} primary>
-        {name || fileName || accessUrl}
-      </RegularText>
-      <WrapperRow>
-        {!!mimeType && <RegularText>{`(${mimeType})`}</RegularText>}
-        {!!size && <RegularText>{formatSize(size)}</RegularText>}
-      </WrapperRow>
-    </OParlPreviewWrapper>
-  );
+  const title = name || fileName || accessUrl;
+
+  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
 };

@@ -27,6 +27,7 @@ import {
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
 
 import { texts } from '../config';
+import { OParlPeopleScreen, OParlOverviewScreen, OParlCalendarScreen } from '../screens/OParl';
 
 const AppStackNavigator = (headerRight = true) =>
   createStackNavigator(
@@ -109,8 +110,26 @@ const AppStackNavigator = (headerRight = true) =>
           title: props.navigation.getParam('title', texts.widgets.lunch)
         })
       },
+      OParlCalendar: {
+        screen: OParlCalendarScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      OParlCategory: {
+        screen: OParlPeopleScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
       OParlDetail: {
         screen: OParlDetailScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      OParlOverview: {
+        screen: OParlOverviewScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', '')
         })

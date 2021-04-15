@@ -4,18 +4,17 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
 import { LegislativeTermPreviewData } from '../../../types';
-import { RegularText } from '../../Text';
-import { OParlPreviewWrapper } from './OParlPreviewWrapper';
+import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: LegislativeTermPreviewData;
-  navigation: NavigationScreenProp<never>;
+  navigation?: NavigationScreenProp<never>; // most other OParl types need navigation. this unifies their interfaces
 };
 
 const { legislativeTerm } = texts.oparl;
 
-export const LegislativeTermPreview = ({ data, navigation }: Props) => {
-  const { id, deleted, endDate, name, startDate } = data;
+export const LegislativeTermPreview = ({ data }: Props) => {
+  const { id, type, endDate, name, startDate } = data;
 
   let suffix = '';
 
@@ -31,12 +30,6 @@ export const LegislativeTermPreview = ({ data, navigation }: Props) => {
     }
   }
 
-  return (
-    <OParlPreviewWrapper id={id} navigation={navigation}>
-      <RegularText lineThrough={deleted} primary>
-        {name ?? legislativeTerm.title}
-      </RegularText>
-      <RegularText>{suffix}</RegularText>
-    </OParlPreviewWrapper>
-  );
+  const title = (name ?? legislativeTerm.title) + suffix;
+  return <OParlPreviewEntry id={id} type={type} title={title} />;
 };

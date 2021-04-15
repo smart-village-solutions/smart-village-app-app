@@ -1,36 +1,18 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
-import { texts } from '../../../config';
-import { momentFormat } from '../../../helpers';
 import { AgendaItemPreviewData } from '../../../types';
-
-import { RegularText } from '../../Text';
-import { WrapperRow } from '../../Wrapper';
-import { OParlPreviewWrapper } from './OParlPreviewWrapper';
+import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: AgendaItemPreviewData;
   navigation: NavigationScreenProp<never>;
-  withNumberAndTime?: boolean;
 };
 
-export const AgendaItemPreview = ({ data, navigation, withNumberAndTime }: Props) => {
-  const { id, name, number, start } = data;
+export const AgendaItemPreview = ({ data, navigation }: Props) => {
+  const { id, type, name, number } = data;
 
-  const formatString = withNumberAndTime ? 'HH:mm' : 'DD.MM.YYYY';
+  const title = (number ?? '•') + ' ' + (name ?? '');
 
-  const dateString = start ? momentFormat(start.valueOf(), formatString, 'x') : '';
-
-  return (
-    <OParlPreviewWrapper id={id} navigation={navigation}>
-      <WrapperRow>
-        {withNumberAndTime && !!number && <RegularText>{`${number} `}</RegularText>}
-        <RegularText numberOfLines={1} primary>
-          {name?.length ? name : texts.oparl.agendaItem.agendaItem}
-        </RegularText>
-      </WrapperRow>
-      <RegularText>{dateString}</RegularText>
-    </OParlPreviewWrapper>
-  );
+  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
 };

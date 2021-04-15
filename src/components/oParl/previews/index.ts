@@ -6,6 +6,7 @@ export * from './LegislativeTermPreview';
 export * from './LocationPreview';
 export * from './MeetingPreview';
 export * from './MembershipPreview';
+export * from './OParlPreviewComponent';
 export * from './OrganizationPreview';
 export * from './PaperPreview';
 export * from './PersonPreview';

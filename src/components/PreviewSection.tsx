@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import Collapsible from 'react-native-collapsible';
+import { SectionHeader } from './SectionHeader';
 
 import { BoldText } from './Text';
-import { WrapperHorizontal } from './Wrapper';
+import { Wrapper } from './Wrapper';
 
 type Props<T> = {
   data?: T[];
@@ -23,7 +24,7 @@ export const PreviewSection = <T,>({ data, header, limit = 3, renderItem }: Prop
 
   return (
     <>
-      {typeof header === 'string' ? <BoldText>{header}</BoldText> : header}
+      {typeof header === 'string' ? <SectionHeader title={header} /> : header}
       {data.slice(0, limit).map(renderItem)}
       {data.length > limit && (
         <>
@@ -31,13 +32,13 @@ export const PreviewSection = <T,>({ data, header, limit = 3, renderItem }: Prop
           <Collapsible collapsed={collapsed}>
             {data.slice(limit, data.length).map(renderItem)}
           </Collapsible>
-          <WrapperHorizontal>
+          <Wrapper>
             <TouchableOpacity onPress={onPress} style={styles.touchable}>
               <BoldText primary small>
                 {collapsed ? 'Alle anzeigen' : 'Weniger anzeigen'}
               </BoldText>
             </TouchableOpacity>
-          </WrapperHorizontal>
+          </Wrapper>
         </>
       )}
     </>

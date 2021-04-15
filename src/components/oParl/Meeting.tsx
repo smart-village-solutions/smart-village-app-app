@@ -1,17 +1,13 @@
+import { isNumber } from 'lodash';
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
-import { MeetingData } from '../../types';
-import { BoldText } from '../Text';
-import { Wrapper } from '../Wrapper';
-import { LineEntry } from './LineEntry';
-import {
-  DateSection,
-  KeywordSection,
-  ModifiedSection,
-  OParlPreviewSection,
-  WebRepresentation
-} from './sections';
+import { LocationPreviewData, MeetingData } from '../../types';
+import { SectionHeader } from '../SectionHeader';
+import { BoldText, RegularText } from '../Text';
+import { Wrapper, WrapperRow } from '../Wrapper';
+import { Line, LineEntry } from './LineEntry';
+import { DateSection, KeywordSection, ModifiedSection, OParlPreviewSection } from './sections';
 
 type Props = {
   data: MeetingData;
@@ -19,6 +15,26 @@ type Props = {
 };
 
 const meetingTexts = texts.oparl.meeting;
+
+const FormattedLocation = ({ location }: { location?: LocationPreviewData }) => {
+  if (location) {
+    return (
+      <>
+        <RegularText>{location.streetAddress}</RegularText>
+        <RegularText>
+          {(location.postalCode ? location.postalCode + ' ' : '') + (location.locality ?? '')}
+        </RegularText>
+        {!!location.room && (
+          <>
+            <RegularText />
+            <RegularText>{location.room}</RegularText>
+          </>
+        )}
+      </>
+    );
+  }
+  return null;
+};
 
 export const Meeting = ({ data, navigation }: Props) => {
   const {
@@ -39,23 +55,54 @@ export const Meeting = ({ data, navigation }: Props) => {
     participant,
     resultsProtocol,
     start,
-    verbatimProtocol,
-    web
+    verbatimProtocol
   } = data;
 
+  const sortedAgendaItems = agendaItem
+    ? [...agendaItem].sort((a, b) => {
+        if (isNumber(a.order) && isNumber(b.order)) return a.order - b.order;
+        if (a.number?.length && b.number?.length) {
+          return a.number < b.number ? -1 : 1;
+        }
+        return 0;
+      })
+    : undefined;
+
   return (
-    <Wrapper>
-      {cancelled && <BoldText>{meetingTexts.cancelled}</BoldText>}
-      <LineEntry left={meetingTexts.name} right={name} />
+    <>
+      <SectionHeader title={name ?? meetingTexts.meeting} />
+      {cancelled && (
+        <WrapperRow center>
+          <Wrapper>
+            <BoldText>{meetingTexts.cancelled}</BoldText>
+          </Wrapper>
+        </WrapperRow>
+      )}
+      <DateSection endDate={end} startDate={start} />
+      <Line
+        left={meetingTexts.location}
+        right={<FormattedLocation location={location} />}
+        onPress={() => {
+          navigation.push('OParlDetail', { type: location?.type, id: location?.id });
+        }}
+      />
       <LineEntry left={meetingTexts.meetingState} right={meetingState} />
-      <DateSection endDate={end} startDate={start} withTime />
       <OParlPreviewSection
-        data={agendaItem}
+        data={sortedAgendaItems}
         header={meetingTexts.agendaItem}
         navigation={navigation}
         additionalProps={{ withNumberAndTime: true }}
       />
-      <OParlPreviewSection data={location} header={meetingTexts.location} navigation={navigation} />
+      <OParlPreviewSection
+        data={organization}
+        header={meetingTexts.organization}
+        navigation={navigation}
+      />
+      <OParlPreviewSection
+        data={participant}
+        header={meetingTexts.participant}
+        navigation={navigation}
+      />
       <OParlPreviewSection
         data={invitation}
         header={meetingTexts.invitation}
@@ -76,24 +123,14 @@ export const Meeting = ({ data, navigation }: Props) => {
         header={meetingTexts.auxiliaryFile}
         navigation={navigation}
       />
-      <OParlPreviewSection
-        data={organization}
-        header={meetingTexts.organization}
-        navigation={navigation}
-      />
-      <OParlPreviewSection
-        data={participant}
-        header={meetingTexts.participant}
-        navigation={navigation}
-      />
       <KeywordSection keyword={keyword} />
       <LineEntry left={meetingTexts.license} right={license} />
-      <WebRepresentation
-        name={name?.length ? name : meetingTexts.meeting}
-        navigation={navigation}
-        web={web}
-      />
+      {/* <WebRepresentation
+          name={name?.length ? name : meetingTexts.meeting}
+          navigation={navigation}
+          web={web}
+        /> */}
       <ModifiedSection created={created} deleted={deleted} modified={modified} />
-    </Wrapper>
+    </>
   );
 };
