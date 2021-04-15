@@ -5,7 +5,7 @@ import { texts } from '../../config';
 import { LocationPreviewData, MeetingData } from '../../types';
 import { SectionHeader } from '../SectionHeader';
 import { BoldText, RegularText } from '../Text';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
 import { Line, LineEntry } from './LineEntry';
 import { DateSection, KeywordSection, ModifiedSection, OParlPreviewSection } from './sections';
 
@@ -86,7 +86,7 @@ export const Meeting = ({ data, navigation }: Props) => {
           navigation.push('OParlDetail', { type: location?.type, id: location?.id });
         }}
       />
-      <LineEntry left={meetingTexts.meetingState} right={meetingState} />
+      <Line left={meetingTexts.meetingState} right={meetingState} />
       <OParlPreviewSection
         data={sortedAgendaItems}
         header={meetingTexts.agendaItem}
@@ -123,14 +123,16 @@ export const Meeting = ({ data, navigation }: Props) => {
         header={meetingTexts.auxiliaryFile}
         navigation={navigation}
       />
-      <KeywordSection keyword={keyword} />
-      <LineEntry left={meetingTexts.license} right={license} />
-      {/* <WebRepresentation
+      <WrapperHorizontal>
+        <KeywordSection keyword={keyword} />
+        <LineEntry left={meetingTexts.license} right={license} />
+        {/* <WebRepresentation
           name={name?.length ? name : meetingTexts.meeting}
           navigation={navigation}
           web={web}
         /> */}
-      <ModifiedSection created={created} deleted={deleted} modified={modified} />
+        <ModifiedSection created={created} deleted={deleted} modified={modified} />
+      </WrapperHorizontal>
     </>
   );
 };

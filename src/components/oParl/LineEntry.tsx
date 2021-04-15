@@ -30,23 +30,27 @@ export const Line = ({
   topDivider?: true;
   leftWidth?: number;
   onPress?: () => void;
-}) => (
-  <Touchable onPress={onPress} disabled={!onPress}>
-    <WrapperRow style={topDivider ? styles.doubleLine : styles.line}>
-      <Wrapper style={[styles.left, { width: normalize(leftWidth) }]}>
-        <RegularText small>{left}</RegularText>
-      </Wrapper>
-      <Wrapper shrink style={styles.right}>
-        {typeof right === 'string' ? <RegularText numberOfLines={1}>{right}</RegularText> : right}
-      </Wrapper>
-      {!!onPress && (
-        <Wrapper style={styles.icon}>
-          <Icon xml={arrowRight(colors.primary)} />
+}) => {
+  if (!right) return null;
+
+  return (
+    <Touchable onPress={onPress} disabled={!onPress}>
+      <WrapperRow style={topDivider ? styles.doubleLine : styles.line}>
+        <Wrapper style={[styles.left, { width: normalize(leftWidth) }]}>
+          <RegularText small>{left}</RegularText>
         </Wrapper>
-      )}
-    </WrapperRow>
-  </Touchable>
-);
+        <Wrapper shrink style={styles.right}>
+          {typeof right === 'string' ? <RegularText numberOfLines={1}>{right}</RegularText> : right}
+        </Wrapper>
+        {!!onPress && (
+          <Wrapper style={styles.icon}>
+            <Icon xml={arrowRight(colors.primary)} />
+          </Wrapper>
+        )}
+      </WrapperRow>
+    </Touchable>
+  );
+};
 
 export const LineEntry = ({ fullText, left, lineThrough, onPress, right, selectable }: Props) => {
   if (!right || (typeof right === 'string' && !right?.length)) {

@@ -4,7 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { normalize } from '../../../config';
 import { OParlObjectPreviewData } from '../../../types';
-import { BoldText } from '../../Text';
+import { SectionHeader } from '../../SectionHeader';
 import { OParlPreviewComponent } from './OParlPreviewComponent';
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
     withPerson?: boolean;
   };
   data?: OParlObjectPreviewData;
-  header: JSX.Element | string;
+  header: string;
   navigation: NavigationScreenProp<never>;
 };
 
@@ -25,7 +25,7 @@ export const OParlItemPreview = ({ data, header, navigation, additionalProps }: 
 
   return (
     <View style={styles.marginTop}>
-      <BoldText>{header}</BoldText>
+      <SectionHeader title={header} />
       <OParlPreviewComponent
         data={data}
         navigation={navigation}

@@ -217,18 +217,18 @@ export const texts = {
     },
     meeting: {
       agendaItem: 'Tagesordnungspunkte',
-      auxiliaryFile: 'Dateianhänge: ',
+      auxiliaryFile: 'Dateianhänge',
       cancelled: 'Dieser Termin wurde abgesagt.',
-      invitation: 'Einladung: ',
-      license: 'Lizenz: ',
-      location: 'Sitzungsort: ',
+      invitation: 'Einladung',
+      license: 'Lizenz',
+      location: 'Sitzungsort',
       meeting: 'Sitzung',
-      meetingState: 'Status: ',
-      name: 'Name: ',
+      meetingState: 'Status',
+      name: 'Name',
       organization: 'Gruppierungen',
-      participant: 'Teilnehmer: ',
-      resultsProtocol: 'Ergebnisprotokoll: ',
-      verbatimProtocol: 'Wortprotokoll: '
+      participant: 'Teilnehmer',
+      resultsProtocol: 'Ergebnisprotokoll',
+      verbatimProtocol: 'Wortprotokoll'
     },
     membership: {
       hasNoVotingRight: 'Nein',
