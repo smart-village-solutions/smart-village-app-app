@@ -4,8 +4,9 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { PaperData } from '../../types';
+import { SectionHeader } from '../SectionHeader';
 import { Wrapper } from '../Wrapper';
-import { LineEntry } from './LineEntry';
+import { Line, LineEntry } from './LineEntry';
 import {
   KeywordSection,
   ModifiedSection,
@@ -46,11 +47,11 @@ export const Paper = ({ data, navigation }: Props) => {
   } = data;
 
   return (
-    <Wrapper>
-      <LineEntry left={paperTexts.name} right={name} />
-      <LineEntry left={paperTexts.reference} right={reference} />
-      <LineEntry left={paperTexts.paperType} right={paperType} />
-      <LineEntry
+    <>
+      <SectionHeader title={name ?? paperTexts.paper} />
+      <Line left={paperTexts.reference} right={reference} />
+      <Line left={paperTexts.paperType} right={paperType} />
+      <Line
         left={paperTexts.date}
         right={date ? momentFormat(date.valueOf(), undefined, 'x') : undefined}
       />
@@ -98,10 +99,12 @@ export const Paper = ({ data, navigation }: Props) => {
       />
       <OParlPreviewSection data={location} header={paperTexts.location} navigation={navigation} />
       <OParlPreviewSection data={body} header={paperTexts.body} navigation={navigation} />
-      <KeywordSection keyword={keyword} />
-      <LineEntry left={paperTexts.license} right={license} />
-      <WebRepresentation name={name || paperTexts.paper} navigation={navigation} web={web} />
-      <ModifiedSection created={created} deleted={deleted} modified={modified} />
-    </Wrapper>
+      <Wrapper>
+        <KeywordSection keyword={keyword} />
+        <LineEntry left={paperTexts.license} right={license} />
+        <WebRepresentation name={name || paperTexts.paper} navigation={navigation} web={web} />
+        <ModifiedSection created={created} deleted={deleted} modified={modified} />
+      </Wrapper>
+    </>
   );
 };

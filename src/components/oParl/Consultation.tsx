@@ -3,7 +3,6 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { ConsultationData } from '../../types';
-import { BoldText } from '../Text';
 import { Wrapper } from '../Wrapper';
 import { LineEntry } from './LineEntry';
 import {
@@ -37,10 +36,8 @@ export const Consultation = ({ data, navigation }: Props) => {
   } = data;
 
   return (
-    <Wrapper>
-      <BoldText>{consultationTexts.consultationLong}</BoldText>
-      <LineEntry left={consultationTexts.role} right={role} />
-      {authoritative !== undefined && (
+    <>
+      {authoritative != undefined && ( // also filter out null
         <LineEntry
           left={consultationTexts.authoritative}
           right={
@@ -48,6 +45,7 @@ export const Consultation = ({ data, navigation }: Props) => {
           }
         />
       )}
+      <LineEntry left={consultationTexts.role} right={role} />
       <OParlPreviewSection
         data={meeting}
         header={consultationTexts.meeting}
@@ -68,10 +66,16 @@ export const Consultation = ({ data, navigation }: Props) => {
         }
         navigation={navigation}
       />
-      <KeywordSection keyword={keyword} />
-      <LineEntry left={consultationTexts.license} right={license} />
-      <WebRepresentation name={consultationTexts.consultation} navigation={navigation} web={web} />
-      <ModifiedSection created={created} deleted={deleted} modified={modified} />
-    </Wrapper>
+      <Wrapper>
+        <KeywordSection keyword={keyword} />
+        <LineEntry left={consultationTexts.license} right={license} />
+        <WebRepresentation
+          name={consultationTexts.consultation}
+          navigation={navigation}
+          web={web}
+        />
+        <ModifiedSection created={created} deleted={deleted} modified={modified} />
+      </Wrapper>
+    </>
   );
 };

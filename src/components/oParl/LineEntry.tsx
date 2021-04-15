@@ -23,12 +23,14 @@ export const Line = ({
   right,
   topDivider,
   leftWidth = 100,
+  fullText,
   onPress
 }: {
   left: string;
   right?: string | JSX.Element;
   topDivider?: true;
   leftWidth?: number;
+  fullText?: boolean;
   onPress?: () => void;
 }) => {
   if (!right) return null;
@@ -36,11 +38,17 @@ export const Line = ({
   return (
     <Touchable onPress={onPress} disabled={!onPress}>
       <WrapperRow style={topDivider ? styles.doubleLine : styles.line}>
-        <Wrapper style={[styles.left, { width: normalize(leftWidth) }]}>
-          <RegularText small>{left}</RegularText>
+        <Wrapper shrink style={[styles.left, { width: normalize(leftWidth) }]}>
+          <RegularText small numberOfLines={1}>
+            {left}
+          </RegularText>
         </Wrapper>
         <Wrapper shrink style={styles.right}>
-          {typeof right === 'string' ? <RegularText numberOfLines={1}>{right}</RegularText> : right}
+          {typeof right === 'string' ? (
+            <RegularText numberOfLines={fullText ? undefined : 1}>{right}</RegularText>
+          ) : (
+            right
+          )}
         </Wrapper>
         {!!onPress && (
           <Wrapper style={styles.icon}>

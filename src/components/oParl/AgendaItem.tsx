@@ -3,8 +3,9 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { AgendaItemData } from '../../types';
+import { SectionHeader } from '../SectionHeader';
 import { Wrapper } from '../Wrapper';
-import { LineEntry } from './LineEntry';
+import { Line, LineEntry } from './LineEntry';
 import {
   DateSection,
   KeywordSection,
@@ -20,6 +21,8 @@ type Props = {
 
 const agendaItemTexts = texts.oparl.agendaItem;
 
+const leftWidth = 180;
+
 export const AgendaItem = ({ data, navigation }: Props) => {
   const {
     auxilaryFile,
@@ -33,7 +36,6 @@ export const AgendaItem = ({ data, navigation }: Props) => {
     modified,
     name,
     number,
-    order,
     public: isPublic,
     resolutionFile,
     resolutionText,
@@ -43,22 +45,29 @@ export const AgendaItem = ({ data, navigation }: Props) => {
   } = data;
 
   return (
-    <Wrapper>
-      <LineEntry left={agendaItemTexts.name} right={name} />
+    <>
+      <SectionHeader title={name?.length ? name : agendaItemTexts.agendaItem} />
+      <Line left={agendaItemTexts.number} right={number} leftWidth={leftWidth} />
+      {isPublic !== undefined && (
+        <Line
+          left={agendaItemTexts.public}
+          right={isPublic ? agendaItemTexts.isPublic : agendaItemTexts.isNotPublic}
+          leftWidth={leftWidth}
+        />
+      )}
+      <Line left={agendaItemTexts.result} right={result} leftWidth={leftWidth} fullText />
+      <Line
+        left={agendaItemTexts.resolutionText}
+        right={resolutionText}
+        leftWidth={leftWidth}
+        fullText
+      />
       <OParlPreviewSection
         data={meeting}
         header={agendaItemTexts.meeting}
         navigation={navigation}
       />
-      <LineEntry left={agendaItemTexts.number} right={number} />
-      <LineEntry left={agendaItemTexts.order} right={order} />
       <DateSection endDate={end} startDate={start} />
-      {isPublic !== undefined && (
-        <LineEntry
-          left={agendaItemTexts.public}
-          right={isPublic ? agendaItemTexts.isPublic : agendaItemTexts.isNotPublic}
-        />
-      )}
       <OParlPreviewSection
         data={consultation}
         header={agendaItemTexts.consultation}
@@ -69,21 +78,21 @@ export const AgendaItem = ({ data, navigation }: Props) => {
         header={agendaItemTexts.auxiliaryFile}
         navigation={navigation}
       />
-      <LineEntry left={agendaItemTexts.result} right={result} />
       <OParlPreviewSection
         data={resolutionFile}
         header={agendaItemTexts.resolutionFile}
         navigation={navigation}
       />
-      <LineEntry fullText left={agendaItemTexts.resolutionText} right={resolutionText} />
-      <KeywordSection keyword={keyword} />
-      <LineEntry left={agendaItemTexts.license} right={license} />
-      <WebRepresentation
-        name={name?.length ? name : agendaItemTexts.agendaItem}
-        navigation={navigation}
-        web={web}
-      />
-      <ModifiedSection created={created} modified={modified} deleted={deleted} />
-    </Wrapper>
+      <Wrapper>
+        <KeywordSection keyword={keyword} />
+        <LineEntry left={agendaItemTexts.license} right={license} />
+        <WebRepresentation
+          name={name?.length ? name : agendaItemTexts.agendaItem}
+          navigation={navigation}
+          web={web}
+        />
+        <ModifiedSection created={created} modified={modified} deleted={deleted} />
+      </Wrapper>
+    </>
   );
 };

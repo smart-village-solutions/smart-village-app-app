@@ -18,6 +18,7 @@ export const executeOParlQuery = async (
   variables?: any
 ) => {
   try {
+    console.log({ variables });
     const { data, errors } = await OParlClient.query({
       query: query[0],
       variables

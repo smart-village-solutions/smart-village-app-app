@@ -59,7 +59,7 @@ export type AgendaItemPreviewData = {
   name?: string;
   number?: string;
   order?: number;
-  start?: Date;
+  start?: number; // Date
 };
 
 export type AgendaItemData = {
@@ -67,7 +67,7 @@ export type AgendaItemData = {
   created?: Date;
   consultation?: ConsultationPreviewData;
   deleted?: boolean;
-  end?: Date;
+  end?: number; // Date
   keyword?: string[];
   license?: string;
   meeting?: MeetingPreviewData;

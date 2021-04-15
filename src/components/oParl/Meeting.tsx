@@ -7,7 +7,13 @@ import { SectionHeader } from '../SectionHeader';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
 import { Line, LineEntry } from './LineEntry';
-import { DateSection, KeywordSection, ModifiedSection, OParlPreviewSection } from './sections';
+import {
+  DateSection,
+  KeywordSection,
+  ModifiedSection,
+  OParlPreviewSection,
+  WebRepresentation
+} from './sections';
 
 type Props = {
   data: MeetingData;
@@ -55,7 +61,8 @@ export const Meeting = ({ data, navigation }: Props) => {
     participant,
     resultsProtocol,
     start,
-    verbatimProtocol
+    verbatimProtocol,
+    web
   } = data;
 
   const sortedAgendaItems = agendaItem
@@ -126,11 +133,11 @@ export const Meeting = ({ data, navigation }: Props) => {
       <WrapperHorizontal>
         <KeywordSection keyword={keyword} />
         <LineEntry left={meetingTexts.license} right={license} />
-        {/* <WebRepresentation
+        <WebRepresentation
           name={name?.length ? name : meetingTexts.meeting}
           navigation={navigation}
           web={web}
-        /> */}
+        />
         <ModifiedSection created={created} deleted={deleted} modified={modified} />
       </WrapperHorizontal>
     </>

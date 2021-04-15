@@ -1,4 +1,3 @@
-import gql from 'graphql-tag';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
@@ -7,9 +6,11 @@ import { DropdownSelect, HeaderLeft, SafeAreaViewFlex, Wrapper } from '../../com
 import { OParlPreviewComponent } from '../../components/oParl';
 import { colors, normalize, texts } from '../../config';
 import { executeOParlQuery } from '../../OParlProvider';
+import { getOParlQuery } from '../../queries/OParl';
 import {
   MembershipPreviewData,
   OParlObjectData,
+  OParlObjectType,
   OrganizationPreviewData,
   PersonPreviewData
 } from '../../types';
@@ -53,57 +54,6 @@ type Props = {
 
 // const labels = ['Organisationen', 'Personen'];
 
-const personsQuery = [
-  gql`
-    query persons {
-      oParlPersons {
-        id: externalId
-        type
-        affix
-        familyName
-        formOfAddress
-        givenName
-        membership {
-          organization {
-            name
-            shortName
-          }
-        }
-      }
-    }
-  `,
-  'oParlPersons'
-] as const;
-
-const organizationsQuery = [
-  gql`
-    query organizations {
-      oParlOrganizations {
-        id: externalId
-        name
-        shortName
-        membership {
-          person {
-            id: externalId
-            type
-            affix
-            familyName
-            formOfAddress
-            givenName
-            membership {
-              organization {
-                name
-                shortName
-              }
-            }
-          }
-        }
-      }
-    }
-  `,
-  'oParlOrganizations'
-] as const;
-
 export const OParlPeopleScreen = ({ navigation }: Props) => {
   // const [selected, setSelected] = useState(0);
   const [dropdownData, setDropdownData] = useState<
@@ -115,11 +65,13 @@ export const OParlPeopleScreen = ({ navigation }: Props) => {
   const [organizations, setOrganizations] = useState<any>();
 
   useEffect(() => {
-    executeOParlQuery(organizationsQuery, setOrganizations);
+    const query = getOParlQuery(OParlObjectType.Organization);
+    query && executeOParlQuery(query, setOrganizations);
   }, [setOrganizations]);
 
   useEffect(() => {
-    executeOParlQuery(personsQuery, setPersons);
+    const query = getOParlQuery(OParlObjectType.Person);
+    query && executeOParlQuery(query, setPersons);
   }, [setPersons]);
 
   useEffect(() => {
