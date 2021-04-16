@@ -290,20 +290,20 @@ export const texts = {
     },
     person: {
       affix: 'Namenszusatz: ',
-      body: 'Körperschaft: ',
-      email: 'Emailadressen: ',
-      familyName: 'Familienname: ',
-      formOfAddress: 'Anrede: ',
+      body: 'Körperschaft',
+      email: 'Email: ',
+      familyName: 'Familienname:',
+      formOfAddress: 'Anrede:',
       gender: 'Geschlecht: ',
       givenName: 'Vorname: ',
       license: 'Lizenz: ',
       life: 'Leben: ',
       lifeSource: 'Quelle zu Lebensangaben: ',
-      location: 'Ort: ',
-      membership: 'Mitgliedschaften: ',
-      name: 'Vollständiger Name:',
+      location: 'Ort',
+      membership: 'Mitgliedschaften',
+      name: 'Name:',
       person: 'Person: ',
-      phone: 'Telefonnummern: ',
+      phone: 'Telefon: ',
       status: 'Status: ',
       title: 'Titel: '
     },
@@ -318,7 +318,7 @@ export const texts = {
       vendor: 'Softwareanbieter: ',
       website: 'Website: '
     },
-    webRepresentation: 'Webversion dieses Dokuments: '
+    webRepresentation: 'Webversion: '
   },
   pointOfInterest: {
     description: 'Beschreibung',

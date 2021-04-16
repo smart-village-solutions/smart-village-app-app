@@ -39,7 +39,7 @@ export const Line = ({
     <Touchable onPress={onPress} disabled={!onPress}>
       <WrapperRow style={topDivider ? styles.doubleLine : styles.line}>
         <Wrapper shrink style={[styles.left, { width: normalize(leftWidth) }]}>
-          <RegularText small numberOfLines={1}>
+          <RegularText small numberOfLines={fullText ? undefined : 1}>
             {left}
           </RegularText>
         </Wrapper>
@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
     borderColor: RNEColors.divider
   },
   right: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'center'
   }
 });

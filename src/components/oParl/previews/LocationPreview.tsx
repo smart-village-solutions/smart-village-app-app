@@ -21,7 +21,7 @@ export const LocationPreview = ({ data, navigation }: Props) => {
 
   const addressString = streetAddress?.length ? streetAddress : localityString;
 
-  const title = addressString + room?.length ? `(${room})` : '';
+  const title = addressString + (room?.length ? `(${room})` : '');
 
   return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
 };

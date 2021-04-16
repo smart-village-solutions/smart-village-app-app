@@ -1,13 +1,11 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { getFullName, momentFormat } from '../../../helpers';
 import { MembershipPreviewData } from '../../../types';
-import { RegularText } from '../../Text';
 import { TextListItem } from '../../TextListItem';
-import { Touchable } from '../../Touchable';
+import { Line } from '../LineEntry';
 import { getOrganizationNameString } from '../oParlHelpers';
 
 type Props = {
@@ -36,23 +34,21 @@ export const MembershipPreview = ({ data, navigation, withPerson }: Props) => {
     title: titleWithPerson
   };
 
-  const startString = startDate ? momentFormat(startDate.getTime(), 'DD.MM.YYYY', 'x') : '';
-  const endString = endDate ? momentFormat(endDate.getTime(), 'DD.MM.YYYY', 'x') : '          ';
-  const dateString = (startDate || endDate) && `${startString} - ${endString}`;
+  const startString = startDate ? momentFormat(startDate, 'DD.MM.YYYY', 'x') : '';
+  const endString = endDate ? momentFormat(endDate, 'DD.MM.YYYY', 'x') : '          ';
+  const dateString = startDate || endDate ? `${startString} - ${endString}` : undefined;
 
   return withPerson ? (
     <TextListItem navigation={navigation} item={item} />
   ) : (
-    <Touchable style={styles.withoutPerson} onPress={() => navigation.push('OParlDetail', { id })}>
-      <RegularText>{organizationName}</RegularText>
-      <RegularText>{dateString}</RegularText>
-    </Touchable>
+    <>
+      <Line
+        left={organizationName}
+        right={dateString}
+        leftWidth={120}
+        fullText
+        onPress={() => navigation.push('OParlDetail', { id, type })}
+      />
+    </>
   );
 };
-
-const styles = StyleSheet.create({
-  withoutPerson: {
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  }
-});

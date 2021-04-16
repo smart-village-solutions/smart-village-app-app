@@ -7,6 +7,7 @@ import { OParlPreviewComponent } from '../../components/oParl';
 import { colors, normalize, texts } from '../../config';
 import { executeOParlQuery } from '../../OParlProvider';
 import { getOParlQuery } from '../../queries/OParl';
+import { personListQuery } from '../../queries/OParl/person';
 import {
   MembershipPreviewData,
   OParlObjectData,
@@ -70,8 +71,7 @@ export const OParlPeopleScreen = ({ navigation }: Props) => {
   }, [setOrganizations]);
 
   useEffect(() => {
-    const query = getOParlQuery(OParlObjectType.Person);
-    query && executeOParlQuery(query, setPersons);
+    executeOParlQuery(personListQuery, setPersons);
   }, [setPersons]);
 
   useEffect(() => {

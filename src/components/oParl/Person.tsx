@@ -3,9 +3,8 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { PersonData } from '../../types';
-import { BoldText, RegularText } from '../Text';
-import { Wrapper } from '../Wrapper';
-import { LineEntry } from './LineEntry';
+import { WrapperHorizontal } from '../Wrapper';
+import { Line, LineEntry } from './LineEntry';
 import {
   KeywordSection,
   ModifiedSection,
@@ -19,6 +18,8 @@ type Props = {
 };
 
 const personTexts = texts.oparl.person;
+
+const leftWidth = 120;
 
 export const Person = ({ data, navigation }: Props) => {
   const {
@@ -46,53 +47,48 @@ export const Person = ({ data, navigation }: Props) => {
   } = data;
 
   return (
-    <Wrapper>
-      {!!name && (
-        <>
-          <BoldText>{personTexts.name}</BoldText>
-          <RegularText>{name}</RegularText>
-        </>
-      )}
-      {!!title?.length && (
-        <>
-          <BoldText>{personTexts.title}</BoldText>
-          <RegularText>{title.join(', ')}</RegularText>
-        </>
-      )}
-      <LineEntry left={personTexts.affix} right={affix} />
-      <LineEntry left={personTexts.formOfAddress} right={formOfAddress} />
-      <LineEntry left={personTexts.givenName} right={givenName} />
-      <LineEntry left={personTexts.familyName} right={familyName} />
-      <LineEntry left={personTexts.gender} right={gender} />
+    <>
+      <Line left={personTexts.name} right={name} leftWidth={leftWidth} fullText />
+      <Line left={personTexts.title} right={title?.join(', ')} leftWidth={leftWidth} fullText />
+      <Line left={personTexts.affix} right={affix} leftWidth={leftWidth} />
+      <Line left={personTexts.formOfAddress} right={formOfAddress} leftWidth={leftWidth} />
+      <Line left={personTexts.givenName} right={givenName} leftWidth={leftWidth} />
+      <Line left={personTexts.familyName} right={familyName} leftWidth={leftWidth} />
+      <Line left={personTexts.gender} right={gender} leftWidth={leftWidth} />
       {/* TODO: email mailto? */}
-      <LineEntry
-        fullText
+      <Line
         left={personTexts.email}
         right={email?.length ? email.join(', ') : undefined}
-      />
-      <LineEntry
+        leftWidth={leftWidth}
         fullText
+      />
+      <Line
         left={personTexts.phone}
         right={phone?.length ? phone.join(', ') : undefined}
-      />
-      <OParlPreviewSection data={location} header={personTexts.location} navigation={navigation} />
-      <LineEntry
+        leftWidth={leftWidth}
         fullText
+      />
+      <Line
         left={personTexts.status}
         right={status?.length ? status.join(', ') : undefined}
+        leftWidth={leftWidth}
+        fullText
       />
+      <OParlPreviewSection data={location} header={personTexts.location} navigation={navigation} />
       <OParlPreviewSection data={body} header={personTexts.body} navigation={navigation} />
       <OParlPreviewSection
         data={membership}
         header={personTexts.membership}
         navigation={navigation}
       />
-      <LineEntry fullText left={personTexts.life} right={life} />
-      <LineEntry fullText left={personTexts.lifeSource} right={lifeSource} />
-      <KeywordSection keyword={keyword} />
-      <LineEntry left={personTexts.license} right={license} />
-      <WebRepresentation name={name ?? personTexts.person} navigation={navigation} web={web} />
-      <ModifiedSection created={created} deleted={deleted} modified={modified} />
-    </Wrapper>
+      <WrapperHorizontal>
+        <LineEntry fullText left={personTexts.life} right={life} />
+        <LineEntry fullText left={personTexts.lifeSource} right={lifeSource} />
+        <KeywordSection keyword={keyword} />
+        <LineEntry left={personTexts.license} right={license} />
+        <WebRepresentation name={name ?? personTexts.person} navigation={navigation} web={web} />
+        <ModifiedSection created={created} deleted={deleted} modified={modified} />
+      </WrapperHorizontal>
+    </>
   );
 };

@@ -246,8 +246,8 @@ export type MembershipPreviewData = {
   onBehalfOf?: OrganizationPreviewData;
   organization?: OrganizationPreviewData;
   person?: PersonPreviewData;
-  endDate?: Date;
-  startDate?: Date;
+  endDate?: number; // Date
+  startDate?: number; // Date
 };
 
 export type MembershipData = {
