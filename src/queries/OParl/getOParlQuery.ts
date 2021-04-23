@@ -3,6 +3,7 @@ import { agendaItemQuery } from './agendaItem';
 import { consultationQuery } from './consultation';
 import { fileQuery } from './file';
 import { meetingQuery } from './meeting';
+import { membershipQuery } from './membership';
 import { organizationQuery } from './organization';
 import { paperQuery } from './paper';
 import { personQuery } from './person';
@@ -22,6 +23,9 @@ export const getOParlQuery = (type: OParlObjectType) => {
     case OParlObjectType.Meeting:
     case OParlObjectType.Meeting1:
       return meetingQuery;
+    case OParlObjectType.Membership:
+    case OParlObjectType.Membership1:
+      return membershipQuery;
     case OParlObjectType.Organization:
     case OParlObjectType.Organization1:
       return organizationQuery;

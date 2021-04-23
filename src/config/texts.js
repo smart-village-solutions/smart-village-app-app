@@ -233,15 +233,17 @@ export const texts = {
       verbatimProtocol: 'Wortprotokoll'
     },
     membership: {
+      endDate: 'Ende:',
       hasNoVotingRight: 'Nein',
       hasVotingRight: 'Ja',
       license: 'Lizenz: ',
       membership: 'Mitgliedschaft',
-      onBehalfOf: 'Vertritt: ',
-      organization: 'Gruppierung: ',
-      person: 'Person: ',
-      role: 'Rolle: ',
-      votingRight: 'Stimmberechtigt: '
+      onBehalfOf: 'Vertritt:',
+      organization: 'Gruppierung:',
+      person: 'Person:',
+      role: 'Rolle:',
+      startDate: 'Beginn:',
+      votingRight: 'Stimmrecht:'
     },
     modifiedSection: {
       created: 'Erstellt am: ',
