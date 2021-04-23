@@ -7,8 +7,8 @@ import { location, locationIconAnchor } from '../../icons';
 import { isFeature, isFeatureCollection, isMultiPoint, isPoint } from '../../jsonValidation';
 import { LocationData } from '../../types';
 import { WebViewMap } from '../map';
-import { Wrapper } from '../Wrapper';
-import { LineEntry } from './LineEntry';
+import { WrapperHorizontal } from '../Wrapper';
+import { Line, LineEntry } from './LineEntry';
 import {
   KeywordSection,
   ModifiedSection,
@@ -99,18 +99,17 @@ export const Location = ({ data, navigation }: Props) => {
   const mapMarkers = getMapMarkers(geoJson);
 
   return (
-    <Wrapper>
+    <>
+      <Line fullText left={locationTexts.streetAddress} right={streetAddress} />
+      <Line fullText left={locationTexts.postalCode} right={postalCode} />
+      <Line fullText left={locationTexts.locality} right={localityString} />
+      <Line fullText left={locationTexts.room} right={room} />
       {!!mapMarkers.length && <WebViewMap locations={mapMarkers} />}
-      <LineEntry fullText left={locationTexts.streetAddress} right={streetAddress} />
-      <LineEntry fullText left={locationTexts.postalCode} right={postalCode} />
-      <LineEntry fullText left={locationTexts.locality} right={localityString} />
-      <LineEntry fullText left={locationTexts.room} right={room} />
       <OParlPreviewSection
         data={meetings ?? meeting}
         header={locationTexts.meeting}
         navigation={navigation}
       />
-      <LineEntry fullText left={locationTexts.description} right={description} />
       <OParlPreviewSection data={bodies} header={locationTexts.bodies} navigation={navigation} />
       <OParlPreviewSection
         data={organizations ?? organization}
@@ -119,10 +118,13 @@ export const Location = ({ data, navigation }: Props) => {
       />
       <OParlPreviewSection data={persons} header={locationTexts.persons} navigation={navigation} />
       <OParlPreviewSection data={papers} header={locationTexts.papers} navigation={navigation} />
-      <KeywordSection keyword={keyword} />
-      <LineEntry fullText left={locationTexts.license} right={license} />
-      <WebRepresentation name={locationTexts.location} navigation={navigation} web={web} />
-      <ModifiedSection created={created} deleted={deleted} modified={modified} />
-    </Wrapper>
+      <WrapperHorizontal>
+        <LineEntry fullText left={locationTexts.description} right={description} />
+        <KeywordSection keyword={keyword} />
+        <LineEntry fullText left={locationTexts.license} right={license} />
+        <WebRepresentation name={locationTexts.location} navigation={navigation} web={web} />
+        <ModifiedSection created={created} deleted={deleted} modified={modified} />
+      </WrapperHorizontal>
+    </>
   );
 };

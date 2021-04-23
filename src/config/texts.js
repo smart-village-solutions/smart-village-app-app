@@ -213,7 +213,7 @@ export const texts = {
       organization: 'Gruppierungen: ',
       papers: 'Drucksachen: ',
       persons: 'Personen: ',
-      postalCode: 'Postleitzahl: ',
+      postalCode: 'PLZ: ',
       room: 'Raum: ',
       streetAddress: 'Straße/Nr.: '
     },
