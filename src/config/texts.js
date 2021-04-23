@@ -179,20 +179,22 @@ export const texts = {
     file: {
       accessUrl: 'Zugangs-URL: ',
       agendaItems: 'Zugehörige Tagesordnungspunkte: ',
-      date: 'Assoziiertes Datum: ',
+      date: 'Datum: ',
       derivativeFile: 'Abgeleitete Dateien: ',
       downloadUrl: 'Download-URL: ',
       externalServiceUrl: 'Externer-URL: ',
+      file: 'Datei',
       fileLicense: 'Dateilizenz: ',
       license: 'Lizenz: ',
       masterFile: 'Ursprungsdatei: ',
       meetings: 'Zugehörige Sitzungen: ',
       mimeType: 'Dateityp: ',
-      name: 'Name: ',
+      name: 'Dateiname: ',
       sha1Checksum: 'SHA1-Prüfsumme: ',
       sha512Checksum: 'SHA512-Prüfsumme: ',
       size: 'Dateigröße',
-      text: 'Textrepräsentation: '
+      text: 'Textrepräsentation: ',
+      urls: 'URLs'
     },
     keywords: 'Schlagworte: ',
     legislativeTerm: {

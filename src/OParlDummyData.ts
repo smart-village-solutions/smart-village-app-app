@@ -22,7 +22,7 @@ const AI3: AgendaItemData = { type: OParlObjectType.AgendaItem, id: 'AI3' };
 const LT1: LegislativeTermData = {
   id: 'LT1',
   type: OParlObjectType.LegislativeTerm,
-  startDate: new Date('2020-12')
+  startDate: new Date('2020-12').valueOf()
 };
 
 const B1: BodyData = {
@@ -134,7 +134,7 @@ const S1: SystemData = {
 
 AI1.auxilaryFile = [F1, F2];
 AI1.consultation = C1;
-AI1.end = new Date('2020-01-19T14:00');
+AI1.end = new Date('2020-01-19T14:00').valueOf();
 AI1.keyword = ['First', 'Important'];
 AI1.meeting = M1;
 AI1.name = 'Lunch';
@@ -143,7 +143,7 @@ AI1.public = false;
 AI1.resolutionFile = F1;
 AI1.resolutionText = 'Was Tasty';
 AI1.result = 'Empty plate.';
-AI1.start = new Date('2020-01-19T12:00');
+AI1.start = new Date('2020-01-19T12:00').valueOf();
 AI1.web = 'amazingBurgersEvery.where';
 
 AI2.id = 'AI2';
@@ -153,7 +153,7 @@ AI2.meeting = M1;
 AI2.name = 'Dinner';
 AI2.number = '2.';
 AI2.result = 'Empty plate.';
-AI2.start = new Date('2020-01-19T17:45');
+AI2.start = new Date('2020-01-19T17:45').valueOf();
 
 AI3.id = 'AI3';
 AI3.type = OParlObjectType.AgendaItem;
@@ -162,7 +162,7 @@ AI3.meeting = M2;
 AI3.number = 'I.';
 AI3.resolutionText = 'Judged as guilty.';
 AI3.result = 'Exiled Ganon.';
-AI3.start = new Date('2020-01-19T12:00');
+AI3.start = new Date('2020-01-19T12:00').valueOf();
 
 B1.legislativeTerm = [LT1];
 B1.meeting = [M1, M2];
@@ -175,23 +175,23 @@ B1.ags = 'H';
 B1.classification = 'Council';
 B1.contactEmail = 'zelda@hyrule.hr';
 B1.contactName = 'Zelda Hyrule';
-B1.created = new Date('February 21, 1986');
+B1.created = new Date('February 21, 1986').valueOf();
 B1.equivalent = ['https://en.wikipedia.org/wiki/The_Legend_of_Zelda'];
 B1.license = 'OpenTriforce';
-B1.licenseValidSince = new Date('February 21, 1986');
+B1.licenseValidSince = new Date('February 21, 1986').valueOf();
 B1.location = L1;
 B1.shortName = 'Hyrulers';
-B1.oparlSince = new Date('February 21, 1986');
+B1.oparlSince = new Date('February 21, 1986').valueOf();
 B1.system = S1;
 B1.website = 'https://en.wikipedia.org/wiki/The_Legend_of_Zelda';
 
 LT1.id = 'LT1';
 LT1.type = OParlObjectType.LegislativeTerm;
 LT1.body = B1;
-LT1.endDate = new Date('2021-02');
+LT1.endDate = new Date('2021-02').valueOf();
 LT1.name = 'Ganon';
 LT1.keyword = ['Tyranny'];
-LT1.startDate = new Date('2020-12');
+LT1.startDate = new Date('2020-12').valueOf();
 
 C1.id = 'C1';
 C1.type = OParlObjectType.Consultation;
@@ -206,7 +206,7 @@ F1.accessUrl = 'access.me';
 F1.id = 'F1';
 F1.type = OParlObjectType.File;
 F1.agendaItem = [AI1, AI2];
-F1.date = new Date('2022-08-25');
+F1.date = new Date('2022-08-25').valueOf();
 F1.derivativeFile = [F2];
 F1.downloadUrl = 'download.me';
 F1.externalServiceUrl = 'exter.nal';
@@ -233,7 +233,7 @@ F2.text = 'Judgement= Repeated defeat by hero.';
 L1.id = 'L1';
 L1.type = OParlObjectType.Location;
 L1.bodies = [B1];
-L1.created = new Date('1999-10-2');
+L1.created = new Date('1999-10-2').valueOf();
 L1.description = 'Castle Hyrule';
 L1.geoJson = { type: 'Point', coordinates: [45.600167, 16.925141] };
 L1.keyword = ['Must see!'];
@@ -251,25 +251,25 @@ M1.type = OParlObjectType.Meeting;
 M1.agendaItem = [AI1, AI2];
 M1.auxiliaryFile = [F1];
 M1.cancelled = true;
-M1.created = new Date('2020-01-01');
+M1.created = new Date('2020-01-01').valueOf();
 M1.deleted = true;
 M1.invitation = F1;
 M1.location = L1;
-M1.end = new Date('2020-01-19T20:00');
+M1.end = new Date('2020-01-19T20:00').valueOf();
 M1.meetingState = 'cancelled';
-M1.modified = new Date('2020-01-19');
+M1.modified = new Date('2020-01-19').valueOf();
 M1.name = 'Eating like the princess.';
 M1.organization = [O1];
 M1.participant = [Pe1, Pe2];
 M1.resultsProtocol = F2;
-M1.start = new Date('2020-01-19T12:00');
+M1.start = new Date('2020-01-19T12:00').valueOf();
 M1.verbatimProtocol = F2;
 
 M2.id = 'M2';
 M2.type = OParlObjectType.Meeting;
 M2.agendaItem = [AI3];
 M2.auxiliaryFile = [F2];
-M2.created = new Date('2020-01-19');
+M2.created = new Date('2020-01-19').valueOf();
 M2.invitation = F2;
 M2.location = L1;
 // eslint-disable-next-line prettier/prettier
@@ -277,12 +277,12 @@ M2.name= 'Ganon\'s trial.';
 M2.organization = [O1];
 M2.participant = [Pe1, Pe4];
 M2.resultsProtocol = F2;
-M2.start = new Date('2020-01-19T12:00');
+M2.start = new Date('2020-01-19T12:00').valueOf();
 M2.verbatimProtocol = F2;
 
 Me1.id = 'Me1';
 Me1.type = OParlObjectType.Membership;
-Me1.startDate = new Date('1996-02-02');
+Me1.startDate = new Date('1996-02-02').valueOf();
 Me1.onBehalfOf = O2;
 Me1.organization = O1;
 Me1.person = Pe2;
@@ -291,7 +291,7 @@ Me1.votingRight = true;
 
 Me2.id = 'Me2';
 Me2.type = OParlObjectType.Membership;
-Me2.startDate = new Date('1996-02-02');
+Me2.startDate = new Date('1996-02-02').valueOf();
 Me2.organization = O1;
 Me2.person = Pe1;
 Me2.role = 'Royalty';
@@ -299,7 +299,7 @@ Me2.votingRight = true;
 
 Me3.id = 'Me3';
 Me3.type = OParlObjectType.Membership;
-Me3.startDate = new Date('1996-02-02');
+Me3.startDate = new Date('1996-02-02').valueOf();
 Me3.organization = O2;
 Me3.person = Pe3;
 Me3.role = 'Hero';
@@ -307,7 +307,7 @@ Me3.votingRight = false;
 
 Me4.id = 'Me4';
 Me4.type = OParlObjectType.Membership;
-Me4.startDate = new Date('1996-02-02');
+Me4.startDate = new Date('1996-02-02').valueOf();
 Me4.organization = O2;
 Me4.person = Pe2;
 Me4.role = 'Leadership';
@@ -317,7 +317,7 @@ O1.id = 'O1';
 O1.type = OParlObjectType.Organization;
 O1.body = B1;
 O1.classification = 'Faction';
-O1.created = new Date('1980');
+O1.created = new Date('1980').valueOf();
 O1.location = L1;
 O1.meeting = [M1, M2];
 O1.membership = [Me1, Me2];
@@ -329,7 +329,7 @@ O2.id = 'O2';
 O2.type = OParlObjectType.Organization;
 O2.body = B1;
 O2.classification = 'Faction';
-O2.created = new Date('1980');
+O2.created = new Date('1980').valueOf();
 O2.location = L1;
 O2.meeting = [M1, M2];
 O2.membership = [Me3, Me4];

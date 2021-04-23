@@ -18,7 +18,6 @@ import { SystemPreview } from './SystemPreview';
 type PreviewProps = {
   additionalProps?: {
     withAgendaItem?: boolean;
-    withNumberAndTime?: boolean;
     withPerson?: boolean;
   };
   data: OParlObjectPreviewData;
@@ -30,13 +29,7 @@ export const OParlPreviewComponent = ({ additionalProps, data, navigation }: Pre
   switch (data.type) {
     case OParlObjectType.AgendaItem:
     case OParlObjectType.AgendaItem1:
-      return (
-        <AgendaItemPreview
-          data={data}
-          navigation={navigation}
-          withNumberAndTime={additionalProps?.withNumberAndTime}
-        />
-      );
+      return <AgendaItemPreview data={data} navigation={navigation} />;
     case OParlObjectType.Body:
     case OParlObjectType.Body1:
       return <BodyPreview data={data} navigation={navigation} />;

@@ -4,9 +4,15 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { formatSize, momentFormat } from '../../helpers';
 import { FileData } from '../../types';
-import { Wrapper } from '../Wrapper';
-import { LineEntry } from './LineEntry';
-import { ModifiedSection, OParlPreviewSection, WebRepresentation } from './sections';
+import { SectionHeader } from '../SectionHeader';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
+import { Line, LineEntry } from './LineEntry';
+import {
+  KeywordSection,
+  ModifiedSection,
+  OParlPreviewSection,
+  WebRepresentation
+} from './sections';
 
 type Props = {
   data: FileData;
@@ -26,6 +32,7 @@ export const File = ({ data, navigation }: Props) => {
     downloadUrl,
     externalServiceUrl,
     fileLicense,
+    keyword,
     fileName,
     license,
     masterFile,
@@ -41,14 +48,18 @@ export const File = ({ data, navigation }: Props) => {
   } = data;
 
   return (
-    <Wrapper>
-      <LineEntry left={fileTexts.name} right={name} />
-      <LineEntry left={fileTexts.mimeType} right={mimeType} />
-      <LineEntry left={fileTexts.size} right={size ? formatSize(size) : undefined} />
-      <LineEntry left={fileTexts.accessUrl} right={accessUrl} selectable />
-      {/* TODO: URLs? */}
-      <LineEntry left={fileTexts.downloadUrl} right={downloadUrl} selectable />
-      <LineEntry left={fileTexts.externalServiceUrl} right={externalServiceUrl} selectable />
+    <>
+      <SectionHeader title={name?.length ? name : fileTexts.file} />
+      <Line left={fileTexts.name} right={fileName} />
+      <Line left={fileTexts.mimeType} right={mimeType} />
+      <Line left={fileTexts.size} right={size ? formatSize(size) : undefined} />
+      <Line
+        left={fileTexts.date}
+        right={date ? momentFormat(date, 'DD.MM.YYYY', 'x') : undefined}
+      />
+      <Line left={fileTexts.fileLicense} right={fileLicense} />
+      <Line left={fileTexts.text} right={text} fullText />
+
       <OParlPreviewSection
         data={masterFile}
         header={fileTexts.masterFile}
@@ -65,17 +76,36 @@ export const File = ({ data, navigation }: Props) => {
         header={fileTexts.agendaItems}
         navigation={navigation}
       />
-      <LineEntry
-        left={fileTexts.date}
-        right={date ? momentFormat(date.valueOf(), 'DD.MM.YYYY', 'x') : undefined}
-      />
-      <LineEntry left={fileTexts.sha1Checksum} right={sha1Checksum} />
-      <LineEntry left={fileTexts.sha512Checksum} right={sha512Checksum} />
-      <LineEntry fullText left={fileTexts.text} right={text} />
-      <LineEntry left={fileTexts.fileLicense} right={fileLicense} selectable />
-      <LineEntry left={fileTexts.license} right={license} />
-      <WebRepresentation name={name || fileName || accessUrl} navigation={navigation} web={web} />
-      <ModifiedSection created={created} modified={modified} deleted={deleted} />
-    </Wrapper>
+      <SectionHeader title={fileTexts.urls} />
+      {!!(accessUrl || downloadUrl || externalServiceUrl) && (
+        <Wrapper>
+          <LineEntry
+            left={fileTexts.accessUrl}
+            right={accessUrl !== downloadUrl ? accessUrl : undefined}
+            selectable
+            fullText
+          />
+          <LineEntry left={fileTexts.downloadUrl} right={downloadUrl} selectable fullText />
+          <LineEntry
+            left={fileTexts.externalServiceUrl}
+            right={externalServiceUrl}
+            selectable
+            fullText
+          />
+          <LineEntry left={fileTexts.sha1Checksum} right={sha1Checksum} fullText />
+          <LineEntry left={fileTexts.sha512Checksum} right={sha512Checksum} fullText />
+        </Wrapper>
+      )}
+      <WrapperHorizontal>
+        <KeywordSection keyword={keyword} />
+        <LineEntry left={fileTexts.license} right={license} />
+        <WebRepresentation
+          name={name?.length ? name : fileTexts.file}
+          navigation={navigation}
+          web={web}
+        />
+        <ModifiedSection created={created} deleted={deleted} modified={modified} />
+      </WrapperHorizontal>
+    </>
   );
 };

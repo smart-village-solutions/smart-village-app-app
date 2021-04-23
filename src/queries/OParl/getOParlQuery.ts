@@ -1,6 +1,7 @@
 import { OParlObjectType } from '../../types';
 import { agendaItemQuery } from './agendaItem';
 import { consultationQuery } from './consultation';
+import { fileQuery } from './file';
 import { meetingQuery } from './meeting';
 import { organizationQuery } from './organization';
 import { paperQuery } from './paper';
@@ -15,6 +16,9 @@ export const getOParlQuery = (type: OParlObjectType) => {
     case OParlObjectType.Consultation:
     case OParlObjectType.Consultation1:
       return consultationQuery;
+    case OParlObjectType.File:
+    case OParlObjectType.File1:
+      return fileQuery;
     case OParlObjectType.Meeting:
     case OParlObjectType.Meeting1:
       return meetingQuery;

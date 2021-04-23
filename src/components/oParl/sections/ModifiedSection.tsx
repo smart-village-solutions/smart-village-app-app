@@ -7,14 +7,14 @@ import { BoldText, RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
 
 type Props = {
-  created?: Date;
-  modified?: Date;
+  created?: number;
+  modified?: number;
   deleted?: boolean;
 };
 
 const { modifiedSection } = texts.oparl;
 
-const formatDate = (date: Date) => momentFormat(date.valueOf(), 'DD.MM.YYYY HH:mm:ss [Uhr]', 'x');
+const formatDate = (date: number) => momentFormat(date, 'DD.MM.YYYY HH:mm:ss [Uhr]', 'x');
 
 export const ModifiedSection = ({ created, modified, deleted }: Props) => {
   if (!created && !modified) {

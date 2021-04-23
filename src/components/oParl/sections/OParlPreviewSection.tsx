@@ -16,7 +16,7 @@ type Props = {
     withPerson?: boolean;
   };
   data?: OParlObjectPreviewData[] | OParlObjectPreviewData;
-  header: JSX.Element | string;
+  header: string;
   navigation: NavigationScreenProp<never>;
 };
 
