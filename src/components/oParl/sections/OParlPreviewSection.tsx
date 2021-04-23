@@ -32,7 +32,7 @@ export const OParlPreviewSection = ({ additionalProps, data, header, navigation 
         />
       );
     },
-    [navigation]
+    [additionalProps, navigation]
   );
 
   if (_isArray(data)) {

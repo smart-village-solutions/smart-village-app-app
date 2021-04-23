@@ -2,11 +2,12 @@ import { isNumber } from 'lodash';
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
-import { LocationPreviewData, MeetingData } from '../../types';
+import { MeetingData } from '../../types';
 import { SectionHeader } from '../SectionHeader';
-import { BoldText, RegularText } from '../Text';
+import { BoldText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
 import { Line, LineEntry } from './LineEntry';
+import { FormattedLocation } from './previews';
 import {
   DateSection,
   KeywordSection,
@@ -21,26 +22,6 @@ type Props = {
 };
 
 const meetingTexts = texts.oparl.meeting;
-
-const FormattedLocation = ({ location }: { location?: LocationPreviewData }) => {
-  if (location) {
-    return (
-      <>
-        <RegularText>{location.streetAddress}</RegularText>
-        <RegularText>
-          {(location.postalCode ? location.postalCode + ' ' : '') + (location.locality ?? '')}
-        </RegularText>
-        {!!location.room && (
-          <>
-            <RegularText />
-            <RegularText>{location.room}</RegularText>
-          </>
-        )}
-      </>
-    );
-  }
-  return null;
-};
 
 export const Meeting = ({ data, navigation }: Props) => {
   const {

@@ -4,7 +4,6 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../../config';
 import { getFullName, momentFormat } from '../../../helpers';
 import { MembershipPreviewData } from '../../../types';
-import { TextListItem } from '../../TextListItem';
 import { Line } from '../LineEntry';
 import { getOrganizationNameString } from '../oParlHelpers';
 
@@ -27,28 +26,26 @@ export const MembershipPreview = ({ data, navigation, withPerson }: Props) => {
     : nameString;
 
   const organizationName = getOrganizationNameString(organization);
-  const item = {
-    routeName: 'OParlDetail',
-    params: { id, type },
-    subtitle: organizationName,
-    title: titleWithPerson
-  };
 
   const startString = startDate ? momentFormat(startDate, 'DD.MM.YYYY', 'x') : '';
   const endString = endDate ? momentFormat(endDate, 'DD.MM.YYYY', 'x') : '          ';
   const dateString = startDate || endDate ? `${startString} - ${endString}` : undefined;
 
   return withPerson ? (
-    <TextListItem navigation={navigation} item={item} />
+    <Line
+      left={titleWithPerson}
+      right={dateString}
+      leftWidth={120}
+      fullText
+      onPress={() => navigation.push('OParlDetail', { id, type })}
+    />
   ) : (
-    <>
-      <Line
-        left={organizationName}
-        right={dateString}
-        leftWidth={120}
-        fullText
-        onPress={() => navigation.push('OParlDetail', { id, type })}
-      />
-    </>
+    <Line
+      left={organizationName}
+      right={dateString}
+      leftWidth={120}
+      fullText
+      onPress={() => navigation.push('OParlDetail', { id, type })}
+    />
   );
 };

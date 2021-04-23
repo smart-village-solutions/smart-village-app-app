@@ -16,14 +16,4 @@ export const OrganizationPreview = ({ data, navigation }: Props) => {
   const title = name || shortName || classification || texts.oparl.organization.organization;
 
   return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
-
-  // return (
-  //   <OParlPreviewWrapper id={id} navigation={navigation}>
-  //     <Wrapper>
-  //       <RegularText numberOfLines={1} primary lineThrough={deleted}>
-  //         {name || shortName || classification || texts.oparl.organization.organization}
-  //       </RegularText>
-  //     </Wrapper>
-  //   </OParlPreviewWrapper>
-  // );
 };

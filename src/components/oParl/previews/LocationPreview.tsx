@@ -3,6 +3,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { LocationPreviewData } from '../../../types';
+import { RegularText } from '../../Text';
 import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
@@ -10,8 +11,28 @@ type Props = {
   navigation: NavigationScreenProp<never>;
 };
 
-export const LocationPreview = ({ data, navigation }: Props) => {
-  const { id, type, locality, room, streetAddress, subLocality } = data;
+export const FormattedLocation = ({ location }: { location?: LocationPreviewData }) => {
+  if (location) {
+    return (
+      <>
+        <RegularText>{location.streetAddress}</RegularText>
+        <RegularText>
+          {(location.postalCode ? location.postalCode + ' ' : '') + (location.locality ?? '')}
+        </RegularText>
+        {!!location.room && (
+          <>
+            <RegularText />
+            <RegularText>{location.room}</RegularText>
+          </>
+        )}
+      </>
+    );
+  }
+  return null;
+};
+
+const getLocationPreviewText = (data: LocationPreviewData) => {
+  const { locality, room, streetAddress, subLocality } = data;
 
   let localityString = texts.oparl.location.location;
 
@@ -21,7 +42,18 @@ export const LocationPreview = ({ data, navigation }: Props) => {
 
   const addressString = streetAddress?.length ? streetAddress : localityString;
 
-  const title = addressString + (room?.length ? `(${room})` : '');
+  return addressString + (room?.length ? `(${room})` : '');
+};
 
-  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
+export const LocationPreview = ({ data, navigation }: Props) => {
+  const { id, type } = data;
+
+  return (
+    <OParlPreviewEntry
+      id={id}
+      type={type}
+      title={getLocationPreviewText(data)}
+      navigation={navigation}
+    />
+  );
 };

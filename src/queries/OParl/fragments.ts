@@ -95,6 +95,36 @@ export const personPreviewEntries = `
   title
 `;
 
+// used in membership to avoid cycle person <-> membership
+export const simplePersonEntries = `
+  id: externalId
+  type
+  affix
+  deleted
+  familyName
+  formOfAddress
+  givenName
+  name
+  title
+`;
+
+export const membershipPreviewEntries = `
+  id: externalId
+  type
+  deleted
+  onBehalfOf {
+    ${organizationPreviewEntries}
+  }
+  organization {
+    ${organizationPreviewEntries}
+  }
+  person {
+    ${simplePersonEntries}
+  }
+  endDate
+  startDate
+`;
+
 export const consultationPreviewEntries = `
   id: externalId
   type

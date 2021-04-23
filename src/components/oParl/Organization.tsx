@@ -2,11 +2,13 @@ import React, { useCallback } from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
+import { momentFormat } from '../../helpers';
 import { OrganizationData } from '../../types';
-import { Wrapper } from '../Wrapper';
-import { LineEntry } from './LineEntry';
+import { SectionHeader } from '../SectionHeader';
+import { WrapperHorizontal } from '../Wrapper';
+import { Line, LineEntry } from './LineEntry';
+import { FormattedLocation } from './previews';
 import {
-  DateSection,
   KeywordSection,
   ModifiedSection,
   OParlPreviewSection,
@@ -19,6 +21,8 @@ type Props = {
 };
 
 const organizationTexts = texts.oparl.organization;
+
+const leftWidth = 120;
 
 export const Organization = ({ data, navigation }: Props) => {
   const {
@@ -59,14 +63,40 @@ export const Organization = ({ data, navigation }: Props) => {
       nameString = name;
     }
   } else {
-    nameString = shortName;
+    nameString = shortName ?? organizationTexts.organization;
   }
 
   return (
-    <Wrapper>
-      <LineEntry left={organizationTexts.name} right={nameString} />
-      <LineEntry left={organizationTexts.classification} right={classification} />
-      <OParlPreviewSection data={body} header={organizationTexts.body} navigation={navigation} />
+    <>
+      <SectionHeader title={nameString} />
+      <Line
+        left={organizationTexts.startDate}
+        right={startDate ? momentFormat(startDate, 'DD.MM.YYYY', 'x') : undefined}
+        leftWidth={leftWidth}
+      />
+      <Line
+        left={organizationTexts.endDate}
+        right={endDate ? momentFormat(endDate, 'DD.MM.YYYY', 'x') : undefined}
+        leftWidth={leftWidth}
+      />
+      <Line left={organizationTexts.classification} right={classification} leftWidth={leftWidth} />
+      <Line
+        left={organizationTexts.organizationType}
+        right={organizationType}
+        leftWidth={leftWidth}
+      />
+      <Line
+        left={organizationTexts.body}
+        right={body?.name}
+        onPress={() => navigation.push('OParlDetail', { type: body?.type, id: body?.id })}
+        leftWidth={leftWidth}
+      />
+      <Line
+        left={organizationTexts.location}
+        right={<FormattedLocation location={location} />}
+        leftWidth={leftWidth}
+        onPress={() => navigation.push('OParlDetail', { type: location?.type, id: location?.id })}
+      />
       <OParlPreviewSection
         data={externalBody}
         header={organizationTexts.externalBody}
@@ -75,14 +105,6 @@ export const Organization = ({ data, navigation }: Props) => {
       <OParlPreviewSection
         data={subOrganizationOf}
         header={organizationTexts.subOrganizationOf}
-        navigation={navigation}
-      />
-      <LineEntry left={organizationTexts.organizationType} right={organizationType} />
-      <LineEntry left={organizationTexts.post} right={post?.length ? post.join(', ') : undefined} />
-      <LineEntry left={organizationTexts.website} onPress={onPressWebsite} right={website} />
-      <OParlPreviewSection
-        data={location}
-        header={organizationTexts.location}
         navigation={navigation}
       />
       <OParlPreviewSection
@@ -101,11 +123,22 @@ export const Organization = ({ data, navigation }: Props) => {
         header={organizationTexts.membership}
         navigation={navigation}
       />
-      <DateSection endDate={endDate} startDate={startDate} />
-      <KeywordSection keyword={keyword} />
-      <LineEntry left={organizationTexts.license} right={license} />
-      <WebRepresentation name={organizationTexts.organization} navigation={navigation} web={web} />
-      <ModifiedSection created={created} deleted={deleted} modified={modified} />
-    </Wrapper>
+      <WrapperHorizontal>
+        <LineEntry left={organizationTexts.website} onPress={onPressWebsite} right={website} />
+        <LineEntry
+          left={organizationTexts.post}
+          right={post?.length ? post.join(', ') : undefined}
+          fullText
+        />
+        <KeywordSection keyword={keyword} />
+        <LineEntry left={organizationTexts.license} right={license} />
+        <WebRepresentation
+          name={organizationTexts.organization}
+          navigation={navigation}
+          web={web}
+        />
+        <ModifiedSection created={created} deleted={deleted} modified={modified} />
+      </WrapperHorizontal>
+    </>
   );
 };

@@ -6,12 +6,11 @@ import { DropdownSelect, HeaderLeft, SafeAreaViewFlex, Wrapper } from '../../com
 import { OParlPreviewComponent } from '../../components/oParl';
 import { colors, normalize, texts } from '../../config';
 import { executeOParlQuery } from '../../OParlProvider';
-import { getOParlQuery } from '../../queries/OParl';
+import { organizationListQuery } from '../../queries/OParl';
 import { personListQuery } from '../../queries/OParl/person';
 import {
   MembershipPreviewData,
   OParlObjectData,
-  OParlObjectType,
   OrganizationPreviewData,
   PersonPreviewData
 } from '../../types';
@@ -66,8 +65,7 @@ export const OParlPeopleScreen = ({ navigation }: Props) => {
   const [organizations, setOrganizations] = useState<any>();
 
   useEffect(() => {
-    const query = getOParlQuery(OParlObjectType.Organization);
-    query && executeOParlQuery(query, setOrganizations);
+    executeOParlQuery(organizationListQuery, setOrganizations);
   }, [setOrganizations]);
 
   useEffect(() => {
