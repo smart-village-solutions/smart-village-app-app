@@ -302,7 +302,7 @@ export type PaperData = {
   body?: BodyPreviewData;
   consultation?: ConsultationPreviewData[];
   created?: Date;
-  date?: Date;
+  date?: number; // Date
   keyword?: string[];
   license?: string;
   location?: LocationPreviewData[];

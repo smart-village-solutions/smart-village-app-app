@@ -51,10 +51,7 @@ export const Paper = ({ data, navigation }: Props) => {
       <SectionHeader title={name ?? paperTexts.paper} />
       <Line left={paperTexts.reference} right={reference} />
       <Line left={paperTexts.paperType} right={paperType} />
-      <Line
-        left={paperTexts.date}
-        right={date ? momentFormat(date.valueOf(), undefined, 'x') : undefined}
-      />
+      <Line left={paperTexts.date} right={date ? momentFormat(date, undefined, 'x') : undefined} />
       <OParlPreviewSection
         data={consultation}
         header={paperTexts.consultation}
