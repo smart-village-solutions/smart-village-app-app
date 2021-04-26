@@ -13,7 +13,7 @@ type Props = {
 
 const { legislativeTerm } = texts.oparl;
 
-export const LegislativeTermPreview = ({ data }: Props) => {
+export const LegislativeTermPreview = ({ data, navigation }: Props) => {
   const { id, type, endDate, name, startDate } = data;
 
   let suffix = '';
@@ -31,5 +31,5 @@ export const LegislativeTermPreview = ({ data }: Props) => {
   }
 
   const title = (name ?? legislativeTerm.title) + suffix;
-  return <OParlPreviewEntry id={id} type={type} title={title} />;
+  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
 };

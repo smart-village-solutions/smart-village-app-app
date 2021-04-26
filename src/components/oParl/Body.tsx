@@ -6,10 +6,11 @@ import { normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { BodyData } from '../../types';
 import { PreviewSection } from '../PreviewSection';
+import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper } from '../Wrapper';
-import { LineEntry } from './LineEntry';
+import { WrapperHorizontal } from '../Wrapper';
+import { Line, LineEntry } from './LineEntry';
 import {
   ContactSection,
   KeywordSection,
@@ -84,10 +85,12 @@ export const Body = ({ data, navigation }: Props) => {
   );
 
   return (
-    <Wrapper>
-      <LineEntry left={bodyTexts.name} right={shortName ? `${shortName} (${name})` : name} />
+    <>
+      <SectionHeader title={shortName ? `${shortName} (${name})` : name} />
+      <Line left={bodyTexts.classification} right={classification} />
+      <Line fullText left={bodyTexts.ags} right={ags} />
+      <Line fullText left={bodyTexts.rgs} right={rgs} />
       <OParlPreviewSection data={location} header={bodyTexts.location} navigation={navigation} />
-      <LineEntry left={bodyTexts.website} onPress={onPressWebsite} right={website} />
       <ContactSection contactEmail={contactEmail} contactName={contactName} />
       <OParlPreviewSection
         data={legislativeTermList ?? legislativeTerm}
@@ -123,15 +126,7 @@ export const Body = ({ data, navigation }: Props) => {
         header={bodyTexts.locationList}
         navigation={navigation}
       />
-      <LineEntry left={bodyTexts.classification} right={classification} />
-      <LineEntry fullText left={bodyTexts.ags} right={ags} />
-      <LineEntry fullText left={bodyTexts.rgs} right={rgs} />
       <OParlPreviewSection data={system} header={bodyTexts.system} navigation={navigation} />
-      <LineEntry
-        fullText
-        left={bodyTexts.oparlSince}
-        right={oparlSince && momentFormat(oparlSince.valueOf(), undefined, 'x')}
-      />
       <View style={styles.marginTop}>
         <PreviewSection
           data={equivalent}
@@ -139,19 +134,27 @@ export const Body = ({ data, navigation }: Props) => {
           header={bodyTexts.equivalent}
         />
       </View>
-      <KeywordSection keyword={keyword} />
-      <LineEntry left={bodyTexts.license} onPress={onPressLicense} right={license} />
-      <LineEntry
-        left={bodyTexts.licenseValidSince}
-        right={
-          license?.length && licenseValidSince
-            ? momentFormat(licenseValidSince?.valueOf(), undefined, 'x')
-            : undefined
-        }
-      />
-      <WebRepresentation name={name ?? bodyTexts.body} navigation={navigation} web={web} />
-      <ModifiedSection created={created} deleted={deleted} modified={modified} />
-    </Wrapper>
+      <WrapperHorizontal>
+        <LineEntry
+          fullText
+          left={bodyTexts.oparlSince}
+          right={oparlSince && momentFormat(oparlSince.valueOf(), undefined, 'x')}
+        />
+        <LineEntry left={bodyTexts.website} onPress={onPressWebsite} right={website} />
+        <KeywordSection keyword={keyword} />
+        <LineEntry left={bodyTexts.license} onPress={onPressLicense} right={license} />
+        <LineEntry
+          left={bodyTexts.licenseValidSince}
+          right={
+            license?.length && licenseValidSince
+              ? momentFormat(licenseValidSince?.valueOf(), undefined, 'x')
+              : undefined
+          }
+        />
+        <WebRepresentation name={name ?? bodyTexts.body} navigation={navigation} web={web} />
+        <ModifiedSection created={created} deleted={deleted} modified={modified} />
+      </WrapperHorizontal>
+    </>
   );
 };
 

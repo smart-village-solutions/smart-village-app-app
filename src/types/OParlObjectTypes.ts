@@ -61,6 +61,7 @@ type Base = {
   deleted?: boolean;
   keyword?: string[];
   web?: string;
+  license?: string;
 };
 
 export type AgendaItemPreviewData = {
@@ -75,7 +76,6 @@ export type AgendaItemData = {
   auxilaryFile?: FilePreviewData[];
   consultation?: ConsultationPreviewData;
   end?: number; // Date
-  license?: string;
   meeting?: MeetingPreviewData;
   public?: boolean;
   resolutionFile?: FilePreviewData;
@@ -100,7 +100,6 @@ export type BodyData = {
   file?: FilePreviewData[];
   legislativeTerm: LegislativeTermPreviewData[];
   legislativeTermList?: LegislativeTermPreviewData[];
-  license?: string;
   licenseValidSince?: number; // Date
   location?: LocationPreviewData;
   locationList?: LocationPreviewData[];
@@ -124,7 +123,6 @@ export type ConsultationPreviewData = {
 
 export type ConsultationData = {
   authoritative?: boolean;
-  license?: string;
   organization?: OrganizationPreviewData[];
   role?: string;
 } & ConsultationPreviewData;
@@ -145,7 +143,6 @@ export type FileData = {
   downloadUrl?: string;
   externalServiceUrl?: string;
   fileLicense?: string;
-  license?: string;
   masterFile?: FileData;
   meeting?: MeetingPreviewData[];
   sha1Checksum?: string;
@@ -162,7 +159,6 @@ export type LegislativeTermPreviewData = {
 
 export type LegislativeTermData = {
   body?: BodyPreviewData;
-  license?: string;
 } & LegislativeTermPreviewData;
 
 export type LocationPreviewData = {
@@ -178,7 +174,6 @@ export type LocationData = {
   bodies?: BodyPreviewData[];
   description?: string;
   geoJson?: unknown; // https://en.wikipedia.org/wiki/GeoJSON
-  license?: string;
   meeting?: MeetingPreviewData[];
   meetings?: MeetingPreviewData[];
   organization?: OrganizationPreviewData[];
@@ -199,7 +194,6 @@ export type MeetingData = {
   auxiliaryFile?: FilePreviewData[];
   end?: number; // Date
   invitation?: FilePreviewData;
-  license?: string;
   location?: LocationPreviewData;
   meetingState?: string;
   organization?: OrganizationPreviewData[];
@@ -218,7 +212,6 @@ export type MembershipPreviewData = {
 } & Base;
 
 export type MembershipData = {
-  license?: string;
   role?: string;
   votingRight?: boolean;
 } & MembershipPreviewData;
@@ -235,7 +228,6 @@ export type OrganizationData = {
   consultation?: ConsultationPreviewData[];
   endDate?: number; // Date
   externalBody?: BodyPreviewData;
-  license?: string;
   location?: LocationPreviewData;
   meeting?: MeetingPreviewData[];
   membership?: MembershipPreviewData[];
@@ -257,7 +249,6 @@ export type PaperData = {
   body?: BodyPreviewData;
   consultation?: ConsultationPreviewData[];
   date?: number; // Date
-  license?: string;
   location?: LocationPreviewData[];
   mainFile?: FilePreviewData;
   originatorOrganization?: OrganizationPreviewData[];
@@ -284,7 +275,6 @@ export type PersonData = {
   body?: BodyPreviewData;
   email?: string[];
   gender?: string;
-  license?: string;
   life?: string;
   lifeSource?: string;
   location?: LocationPreviewData;
@@ -302,7 +292,6 @@ export type SystemData = {
   body: BodyPreviewData[];
   contactEmail?: string;
   contactName?: string;
-  license?: string;
   otherOparlVersion?: SystemPreviewData[]; // TODO: check this is as we want it
   product?: string;
   vendor?: string;

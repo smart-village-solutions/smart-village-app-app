@@ -7,12 +7,14 @@ import { Line } from '../LineEntry';
 
 type Props = {
   endDate?: number;
+  leftWidth?: number;
   startDate?: number;
+  topDivider?: boolean;
 };
 
 const { dateSection } = texts.oparl;
 
-export const DateSection = ({ endDate, startDate }: Props) => {
+export const DateSection = ({ endDate, leftWidth, startDate, topDivider = true }: Props) => {
   if (!endDate && !startDate) {
     return null;
   }
@@ -27,17 +29,24 @@ export const DateSection = ({ endDate, startDate }: Props) => {
 
   return (
     <View>
-      <Line left="Datum:" right={dateString} topDivider />
+      <Line
+        left="Datum:"
+        right={dateString}
+        topDivider={topDivider ?? true}
+        leftWidth={leftWidth}
+      />
       {!!startDate && (
         <Line
           left={alreadyStarted ? dateSection.started : dateSection.starts}
           right={momentFormat(startDate, timeFormatString, 'x')}
+          leftWidth={leftWidth}
         />
       )}
       {!!endDate && (
         <Line
           left={alreadyEnded ? dateSection.ended : dateSection.ends}
           right={momentFormat(endDate, timeFormatString, 'x')}
+          leftWidth={leftWidth}
         />
       )}
     </View>

@@ -1,7 +1,9 @@
 import { OParlObjectType } from '../../types';
 import { agendaItemQuery } from './agendaItem';
+import { bodyQuery } from './body';
 import { consultationQuery } from './consultation';
 import { fileQuery } from './file';
+import { legislativeTermQuery } from './legislativeTerm';
 import { locationQuery } from './location';
 import { meetingQuery } from './meeting';
 import { membershipQuery } from './membership';
@@ -15,12 +17,18 @@ export const getOParlQuery = (type: OParlObjectType) => {
     case OParlObjectType.AgendaItem:
     case OParlObjectType.AgendaItem1:
       return agendaItemQuery;
+    case OParlObjectType.Body:
+    case OParlObjectType.Body1:
+      return bodyQuery;
     case OParlObjectType.Consultation:
     case OParlObjectType.Consultation1:
       return consultationQuery;
     case OParlObjectType.File:
     case OParlObjectType.File1:
       return fileQuery;
+    case OParlObjectType.LegislativeTerm:
+    case OParlObjectType.LegislativeTerm1:
+      return legislativeTermQuery;
     case OParlObjectType.Location:
     case OParlObjectType.Location1:
       return locationQuery;

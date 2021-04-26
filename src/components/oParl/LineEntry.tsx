@@ -28,7 +28,7 @@ export const Line = ({
 }: {
   left: string;
   right?: string | JSX.Element;
-  topDivider?: true;
+  topDivider?: boolean;
   leftWidth?: number;
   fullText?: boolean;
   onPress?: () => void;
