@@ -52,12 +52,12 @@ export const Offer = ({ data, navigation }) => {
 
   // action to open source urls
   const openWebScreen = useCallback(
-    () =>
+    (webUrl) =>
       navigation.navigate({
         routeName: 'Web',
         params: {
           title: headerTitle,
-          webUrl: link,
+          webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
           rootRouteName
         }
       }),
