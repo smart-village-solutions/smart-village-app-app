@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.6.3]
+
+Replace provider name with logo
+
+### Changed
+
+- added dataprovider logo to generic item query
+- updated offer to use SectionHeader component
+
 ## [v1.6.2]
 
 Refactorings and bugfixes
