@@ -2,18 +2,18 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { View } from 'react-native';
 
-import { consts, device, texts } from '../config';
-import { matomoTrackingString, momentFormat, trimNewLines } from '../helpers';
+import { consts, texts } from '../config';
+import { matomoTrackingString, momentFormat } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { GenericType } from '../types';
 import { DataProviderButton } from './DataProviderButton';
 import { ImageSection } from './ImageSection';
 import { InfoCard } from './infoCard';
+import { Logo } from './Logo';
 import { OperatingCompany } from './screens';
+import { SectionHeader } from './SectionHeader';
 import { StorySection } from './StorySection';
 import { BoldText, RegularText } from './Text';
-import { Title, TitleContainer, TitleShadow } from './Title';
-import { Touchable } from './Touchable';
 import { Wrapper, WrapperRow, WrapperWithOrientation, WrapperWrap } from './Wrapper';
 
 const { MATOMO_TRACKING } = consts;
@@ -48,6 +48,7 @@ export const Offer = ({ data, navigation }) => {
   const link = sourceUrl?.url;
   const rootRouteName = navigation.getParam('rootRouteName', '');
   const headerTitle = navigation.getParam('title', '');
+  const dataProviderLogo = dataProvider?.logo?.url;
 
   // action to open source urls
   const openWebScreen = useCallback(
@@ -77,27 +78,10 @@ export const Offer = ({ data, navigation }) => {
       <ImageSection mediaContents={mediaContents?.filter(isImage)} />
 
       <WrapperWithOrientation>
-        {!!title && !!link ? (
-          <TitleContainer>
-            <Touchable onPress={openWebScreen}>
-              <Title accessibilityLabel={`${trimNewLines(title)} (Überschrift)`}>
-                {trimNewLines(title)}
-              </Title>
-            </Touchable>
-          </TitleContainer>
-        ) : (
-          !!title && (
-            <TitleContainer>
-              <Title accessibilityLabel={`${trimNewLines(title)} (Überschrift)`}>
-                {trimNewLines(title)}
-              </Title>
-            </TitleContainer>
-          )
-        )}
-        {device.platform === 'ios' && <TitleShadow />}
-        {!!dataProvider?.name && (
+        {!!title && <SectionHeader title={title} onPress={link ? openWebScreen : undefined} />}
+        {!!dataProviderLogo && (
           <Wrapper>
-            <RegularText small>{dataProvider.name}</RegularText>
+            <Logo source={{ uri: dataProviderLogo }} />
           </Wrapper>
         )}
 
