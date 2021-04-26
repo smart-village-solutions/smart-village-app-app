@@ -77,6 +77,10 @@ export const GET_GENERIC_ITEMS = gql`
       }
       dataProvider {
         id
+        logo {
+          id
+          url
+        }
         name
         dataType
       }
@@ -163,6 +167,10 @@ export const GET_GENERIC_ITEM = gql`
       }
       dataProvider {
         id
+        logo {
+          id
+          url
+        }
         name
         dataType
       }
