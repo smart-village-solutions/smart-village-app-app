@@ -1,8 +1,9 @@
 import gql from 'graphql-tag';
+import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
-import { Calendar, LocaleConfig, MultiDotMarking } from 'react-native-calendars';
+import { Calendar, DateObject, LocaleConfig, MultiDotMarking } from 'react-native-calendars';
 import { NavigationScreenProp, SectionList } from 'react-navigation';
 
 import {
@@ -132,24 +133,44 @@ const renderSectionHeader = ({
   return <SectionHeader title={title} />;
 };
 
+const getMonthLimits = (date?: DateObject) => {
+  const now = moment(date?.timestamp ?? new Date());
+
+  const startOfCurrentMonth = now.startOf('month');
+  const startOfNextMonth = moment(startOfCurrentMonth).add(1, 'M');
+
+  return {
+    after: startOfCurrentMonth.format('YYYY-MM-DD'),
+    before: startOfNextMonth.format('YYYY-MM-DD')
+  };
+};
+
 export const OParlCalendarScreen = ({ navigation }: Props) => {
-  const [limits, setLimits] = useState({ after: '2021-03-01', before: '2021-05-01' });
+  const [limits, setLimits] = useState(getMonthLimits);
   const [meetings, setMeetings] = useState([]);
 
+  // parse meetings into sections
+  const { markedDates, sections } = getSectionsAndDots(meetings);
+
+  const updateMonth = useCallback(
+    (date) => {
+      setLimits(getMonthLimits(date));
+    },
+    [setLimits]
+  );
+
+  // get meetings
   useEffect(() => {
     executeOParlQuery(meetingsQuery, setMeetings, limits);
   }, [limits]);
 
-  const { markedDates, sections } = getSectionsAndDots(meetings);
-  // get meetings
-  // parse meetings into sections
   return (
     <SafeAreaViewFlex>
       <ScrollView>
         <WrapperWithOrientation>
           <Calendar
             dayComponent={NoTouchDay}
-            onMonthChange={(date) => console.log(date.dateString)}
+            onMonthChange={updateMonth}
             markingType="multi-dot"
             markedDates={markedDates}
             renderArrow={renderArrow}
