@@ -66,10 +66,11 @@ export const System = ({ data, navigation }: Props) => {
       <LineEntry left={systemTexts.vendor} right={vendor} onPress={onPressVendor} />
       <LineEntry left={systemTexts.website} right={website} onPress={onPressWebsite} />
       <ContactSection contactEmail={contactEmail} contactName={contactName} />
-      <OParlPreviewSection
-        data={otherOparlVersion}
-        header={systemTexts.otherOparlVersion}
-        navigation={navigation}
+      <LineEntry
+        left={systemTexts.otherOparlVersion}
+        right={otherOparlVersion?.join(', ')}
+        selectable
+        fullText
       />
       <LineEntry left={systemTexts.license} right={license} onPress={onPressLicense} />
       <WebRepresentation name={name ?? systemTexts.system} navigation={navigation} web={web} />

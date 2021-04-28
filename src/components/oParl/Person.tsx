@@ -55,7 +55,6 @@ export const Person = ({ data, navigation }: Props) => {
       <Line left={personTexts.givenName} right={givenName} leftWidth={leftWidth} />
       <Line left={personTexts.familyName} right={familyName} leftWidth={leftWidth} />
       <Line left={personTexts.gender} right={gender} leftWidth={leftWidth} />
-      {/* TODO: email mailto? */}
       <Line
         left={personTexts.email}
         right={email?.length ? email.join(', ') : undefined}

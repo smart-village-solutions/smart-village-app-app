@@ -9,12 +9,12 @@ export const agendaItemPreviewEntries = `
   start
 `;
 
-// todo: add shortName
 export const bodyPreviewEntries = `
   id: externalId
   type
   deleted
   name
+  shortName
 `;
 
 export const filePreviewEntries = `

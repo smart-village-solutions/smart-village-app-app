@@ -292,7 +292,7 @@ export type SystemData = {
   body: BodyPreviewData[];
   contactEmail?: string;
   contactName?: string;
-  otherOparlVersion?: SystemPreviewData[]; // TODO: check this is as we want it
+  otherOparlVersion?: string[];
   product?: string;
   vendor?: string;
   website?: string;
