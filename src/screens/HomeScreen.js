@@ -155,13 +155,6 @@ export const HomeScreen = ({ navigation }) => {
         />
         <Widgets navigation={navigation} widgetConfigs={widgetConfigs} />
 
-        <TouchableOpacity
-          style={{ height: 40, backgroundColor: 'red' }}
-          onPress={() =>
-            navigation.navigate('OParlOverview', { title: texts.oparl.overview.title })
-          }
-        />
-
         {showNews &&
           categoriesNews.map(
             ({ categoryButton, categoryId, categoryTitle, categoryTitleDetail }, index) => (
