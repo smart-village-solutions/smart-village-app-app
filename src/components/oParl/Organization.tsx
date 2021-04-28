@@ -66,6 +66,8 @@ export const Organization = ({ data, navigation }: Props) => {
     nameString = shortName ?? organizationTexts.organization;
   }
 
+  const formattedLocation = location && <FormattedLocation location={location} />;
+
   return (
     <>
       <SectionHeader title={nameString} />
@@ -93,7 +95,7 @@ export const Organization = ({ data, navigation }: Props) => {
       />
       <Line
         left={organizationTexts.location}
-        right={<FormattedLocation location={location} />}
+        right={formattedLocation}
         leftWidth={leftWidth}
         onPress={() => navigation.push('OParlDetail', { type: location?.type, id: location?.id })}
       />

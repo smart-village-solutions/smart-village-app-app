@@ -56,6 +56,8 @@ export const Meeting = ({ data, navigation }: Props) => {
       })
     : undefined;
 
+  const formattedLocation = location && <FormattedLocation location={location} />;
+
   return (
     <>
       <SectionHeader title={name ?? meetingTexts.meeting} />
@@ -69,7 +71,7 @@ export const Meeting = ({ data, navigation }: Props) => {
       <DateSection endDate={end} startDate={start} />
       <Line
         left={meetingTexts.location}
-        right={<FormattedLocation location={location} />}
+        right={formattedLocation}
         onPress={() => {
           navigation.push('OParlDetail', { type: location?.type, id: location?.id });
         }}

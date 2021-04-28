@@ -11,24 +11,21 @@ type Props = {
   navigation: NavigationScreenProp<never>;
 };
 
-export const FormattedLocation = ({ location }: { location?: LocationPreviewData }) => {
-  if (location) {
-    return (
-      <>
-        <RegularText>{location.streetAddress}</RegularText>
-        <RegularText>
-          {(location.postalCode ? location.postalCode + ' ' : '') + (location.locality ?? '')}
-        </RegularText>
-        {!!location.room && (
-          <>
-            <RegularText />
-            <RegularText>{location.room}</RegularText>
-          </>
-        )}
-      </>
-    );
-  }
-  return null;
+export const FormattedLocation = ({ location }: { location: LocationPreviewData }) => {
+  return (
+    <>
+      <RegularText>{location.streetAddress}</RegularText>
+      <RegularText>
+        {(location.postalCode ? location.postalCode + ' ' : '') + (location.locality ?? '')}
+      </RegularText>
+      {!!location.room && (
+        <>
+          <RegularText />
+          <RegularText>{location.room}</RegularText>
+        </>
+      )}
+    </>
+  );
 };
 
 const getLocationPreviewText = (data: LocationPreviewData) => {
