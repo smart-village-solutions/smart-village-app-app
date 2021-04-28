@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { OParlObjectPreviewData, OParlObjectType } from '../../../types';
+import { AdditionalPreviewProps } from './additionalPreviewProps';
 import { AgendaItemPreview } from './AgendaItemPreview';
 import { BodyPreview } from './BodyPreview';
 import { ConsultationPreview } from './ConsultationPreview';
@@ -16,10 +17,7 @@ import { PersonPreview } from './PersonPreview';
 import { SystemPreview } from './SystemPreview';
 
 type PreviewProps = {
-  additionalProps?: {
-    withAgendaItem?: boolean;
-    withPerson?: boolean;
-  };
+  additionalProps?: AdditionalPreviewProps;
   data: OParlObjectPreviewData;
   navigation: NavigationScreenProp<never>;
 };

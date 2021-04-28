@@ -1,6 +1,5 @@
-import ApolloClient from 'apollo-client';
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
 import {
@@ -27,26 +26,12 @@ type TileProps = {
 
 const Tile = ({ logoUri, onPress, subtitle, title }: TileProps) => (
   <Touchable disabled={!onPress} onPress={onPress}>
-    <DiagonalGradient
-      style={{
-        borderRadius: 8,
-        margin: 12,
-        marginBottom: 0,
-        height: 160,
-        padding: 12,
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}
-    >
+    <DiagonalGradient style={styles.background}>
       <Logo
         source={{
           uri: logoUri
         }}
-        style={{
-          height: 60,
-          width: 60,
-          marginVertical: 12
-        }}
+        style={styles.logo}
       />
       <BoldText lightest>{title}</BoldText>
       <RegularText lightest>{subtitle}</RegularText>
@@ -87,3 +72,20 @@ OParlOverviewScreen.navigationOptions = ({ navigation }: Props) => {
     title: 'Test'
   };
 };
+
+const styles = StyleSheet.create({
+  background: {
+    borderRadius: 8,
+    margin: 12,
+    marginBottom: 0,
+    height: 160,
+    padding: 12,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  logo: {
+    height: 60,
+    width: 60,
+    marginVertical: 12
+  }
+});

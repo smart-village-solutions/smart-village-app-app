@@ -80,7 +80,6 @@ export const Meeting = ({ data, navigation }: Props) => {
         data={sortedAgendaItems}
         header={meetingTexts.agendaItem}
         navigation={navigation}
-        additionalProps={{ withNumberAndTime: true }}
       />
       <OParlPreviewSection
         data={organization}

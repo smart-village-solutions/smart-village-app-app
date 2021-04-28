@@ -8,13 +8,10 @@ import { OParlObjectPreviewData } from '../../../types';
 import { PreviewSection } from '../../PreviewSection';
 import { OParlPreviewComponent } from '../previews/OParlPreviewComponent';
 import { OParlItemPreview } from '../previews/OParlItemPreview';
+import { AdditionalPreviewProps } from '../previews/additionalPreviewProps';
 
 type Props = {
-  additionalProps?: {
-    withAgendaItem?: boolean;
-    withNumberAndTime?: boolean;
-    withPerson?: boolean;
-  };
+  additionalProps?: AdditionalPreviewProps;
   data?: OParlObjectPreviewData[] | OParlObjectPreviewData;
   header: string;
   navigation: NavigationScreenProp<never>;
@@ -55,6 +52,6 @@ export const OParlPreviewSection = ({ additionalProps, data, header, navigation 
 
 const styles = StyleSheet.create({
   marginTop: {
-    marginTop: normalize(12)
+    marginTop: normalize(14)
   }
 });
