@@ -9,7 +9,6 @@ import {
   WrapperWithOrientation
 } from '../../components';
 import { OParlComponent } from '../../components/oParl';
-import { DummyData } from '../../OParlDummyData';
 import { executeOParlQuery } from '../../OParlProvider';
 import { getOParlQuery } from '../../queries/OParl';
 import { OParlObjectData } from '../../types';
@@ -29,7 +28,7 @@ export const OParlDetailScreen = ({ navigation }: Props) => {
     query && executeOParlQuery(query, setOParlItem, { id });
   }, [id, oParlType, setOParlItem]);
 
-  const data = oParlItem?.[0] ?? DummyData.find((item) => item.id === (id ?? 'S1'));
+  const data = oParlItem?.[0];
 
   console.log({ id, oParlType });
 
