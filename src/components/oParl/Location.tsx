@@ -1,3 +1,4 @@
+import { isString } from 'lodash';
 import React from 'react';
 import { MapMarker } from 'react-native-webview-leaflet';
 import { NavigationScreenProp } from 'react-navigation';
@@ -96,7 +97,14 @@ export const Location = ({ data, navigation }: Props) => {
     localityString = subLocality;
   }
 
-  const mapMarkers = getMapMarkers(geoJson);
+  let mapMarkers: MapMarker[] = [];
+  try {
+    if (isString(geoJson)) {
+      mapMarkers = getMapMarkers(JSON.parse(geoJson));
+    }
+  } catch (e) {
+    console.warn('Error while parsing GeoJson:', e);
+  }
 
   return (
     <>
