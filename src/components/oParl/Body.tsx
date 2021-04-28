@@ -6,7 +6,6 @@ import { normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { BodyData } from '../../types';
 import { PreviewSection } from '../PreviewSection';
-import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { WrapperHorizontal } from '../Wrapper';
@@ -86,7 +85,7 @@ export const Body = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <SectionHeader title={shortName ? `${shortName} (${name})` : name} />
+      <Line left={bodyTexts.name} right={shortName ? `${shortName} (${name})` : name} />
       <Line left={bodyTexts.classification} right={classification} />
       <Line fullText left={bodyTexts.ags} right={ags} />
       <Line fullText left={bodyTexts.rgs} right={rgs} />

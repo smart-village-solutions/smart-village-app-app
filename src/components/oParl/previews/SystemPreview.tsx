@@ -19,5 +19,13 @@ export const SystemPreview = ({ data, navigation }: Props) => {
 
   const title = nameString + suffix;
 
-  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
+  return (
+    <OParlPreviewEntry
+      id={id}
+      type={type}
+      title={title}
+      navigation={navigation}
+      screenTitle={texts.oparl.system.system}
+    />
+  );
 };

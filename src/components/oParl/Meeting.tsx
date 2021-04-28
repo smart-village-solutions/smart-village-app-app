@@ -3,7 +3,6 @@ import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { MeetingData } from '../../types';
-import { SectionHeader } from '../SectionHeader';
 import { BoldText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
 import { Line, LineEntry } from './LineEntry';
@@ -60,7 +59,6 @@ export const Meeting = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <SectionHeader title={name ?? meetingTexts.meeting} />
       {cancelled && (
         <WrapperRow center>
           <Wrapper>
@@ -68,7 +66,8 @@ export const Meeting = ({ data, navigation }: Props) => {
           </Wrapper>
         </WrapperRow>
       )}
-      <DateSection endDate={end} startDate={start} />
+      <Line left={meetingTexts.name} right={name} fullText topDivider />
+      <DateSection endDate={end} startDate={start} topDivider={!name} />
       <Line
         left={meetingTexts.location}
         right={formattedLocation}

@@ -3,7 +3,6 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { AgendaItemData } from '../../types';
-import { SectionHeader } from '../SectionHeader';
 import { Wrapper } from '../Wrapper';
 import { Line, LineEntry } from './LineEntry';
 import {
@@ -46,7 +45,7 @@ export const AgendaItem = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <SectionHeader title={name?.length ? name : agendaItemTexts.agendaItem} />
+      <Line left={agendaItemTexts.name} right={name} leftWidth={leftWidth} fullText />
       <Line left={agendaItemTexts.number} right={number} leftWidth={leftWidth} />
       {isPublic !== undefined && (
         <Line

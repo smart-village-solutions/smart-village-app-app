@@ -90,14 +90,26 @@ export const Organization = ({ data, navigation }: Props) => {
       <Line
         left={organizationTexts.body}
         right={body?.name}
-        onPress={() => navigation.push('OParlDetail', { type: body?.type, id: body?.id })}
+        onPress={() =>
+          navigation.push('OParlDetail', {
+            type: body?.type,
+            id: body?.id,
+            title: texts.oparl.body.body
+          })
+        }
         leftWidth={leftWidth}
       />
       <Line
         left={organizationTexts.location}
         right={formattedLocation}
         leftWidth={leftWidth}
-        onPress={() => navigation.push('OParlDetail', { type: location?.type, id: location?.id })}
+        onPress={() =>
+          navigation.push('OParlDetail', {
+            type: location?.type,
+            id: location?.id,
+            title: texts.oparl.location.location
+          })
+        }
       />
       <OParlPreviewSection
         data={externalBody}

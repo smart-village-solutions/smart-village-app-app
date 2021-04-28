@@ -30,6 +30,14 @@ export const LegislativeTermPreview = ({ data, navigation }: Props) => {
     }
   }
 
-  const title = (name ?? legislativeTerm.title) + suffix;
-  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
+  const title = (name ?? legislativeTerm.legislativeTerm) + suffix;
+  return (
+    <OParlPreviewEntry
+      id={id}
+      type={type}
+      title={title}
+      navigation={navigation}
+      screenTitle={texts.oparl.legislativeTerm.legislativeTerm}
+    />
+  );
 };

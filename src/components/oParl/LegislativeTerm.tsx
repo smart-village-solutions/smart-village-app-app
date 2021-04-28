@@ -54,7 +54,7 @@ export const LegislativeTerm = ({ data, navigation }: Props) => {
         <KeywordSection keyword={keyword} />
         <LineEntry left={legislativeTermTexts.license} right={license} />
         <WebRepresentation
-          name={name ?? legislativeTermTexts.title}
+          name={name ?? legislativeTermTexts.legislativeTerm}
           navigation={navigation}
           web={web}
         />

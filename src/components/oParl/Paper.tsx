@@ -4,7 +4,6 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { PaperData } from '../../types';
-import { SectionHeader } from '../SectionHeader';
 import { Wrapper } from '../Wrapper';
 import { Line, LineEntry } from './LineEntry';
 import {
@@ -48,7 +47,7 @@ export const Paper = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <SectionHeader title={name ?? paperTexts.paper} />
+      <Line left={paperTexts.name} right={name} />
       <Line left={paperTexts.reference} right={reference} />
       <Line left={paperTexts.paperType} right={paperType} />
       <Line left={paperTexts.date} right={date ? momentFormat(date, undefined, 'x') : undefined} />

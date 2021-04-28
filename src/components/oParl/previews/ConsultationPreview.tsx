@@ -24,5 +24,13 @@ export const ConsultationPreview = ({ data, navigation, withAgendaItem }: Props)
 
   const title = withAgendaItem ? textWithAgendaItem : textWithPaper;
 
-  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
+  return (
+    <OParlPreviewEntry
+      id={id}
+      type={type}
+      title={title}
+      navigation={navigation}
+      screenTitle={texts.oparl.consultation.consultation}
+    />
+  );
 };

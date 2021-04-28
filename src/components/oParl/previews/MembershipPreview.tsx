@@ -31,13 +31,15 @@ export const MembershipPreview = ({ data, navigation, withPerson }: Props) => {
   const endString = endDate ? momentFormat(endDate, 'DD.MM.YYYY', 'x') : '          ';
   const dateString = startDate || endDate ? `${startString} - ${endString}` : undefined;
 
+  const params = { id, type, title: texts.oparl.membership.membership };
+
   return withPerson ? (
     <Line
       left={titleWithPerson}
       right={dateString}
       leftWidth={120}
       fullText
-      onPress={() => navigation.push('OParlDetail', { id, type })}
+      onPress={() => navigation.push('OParlDetail', params)}
     />
   ) : (
     <Line
@@ -45,7 +47,7 @@ export const MembershipPreview = ({ data, navigation, withPerson }: Props) => {
       right={dateString}
       leftWidth={120}
       fullText
-      onPress={() => navigation.push('OParlDetail', { id, type })}
+      onPress={() => navigation.push('OParlDetail', params)}
     />
   );
 };

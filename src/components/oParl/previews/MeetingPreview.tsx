@@ -18,7 +18,7 @@ export const MeetingPreview = ({ data, navigation }: Props) => {
 
   const item = {
     routeName: 'OParlDetail',
-    params: { id, type, title: 'Termin' },
+    params: { id, type, title: texts.oparl.meeting.meeting },
     subtitle,
     title: name ?? texts.oparl.meeting.meeting
   };

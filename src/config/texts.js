@@ -185,11 +185,12 @@ export const texts = {
       externalServiceUrl: 'Externer-URL: ',
       file: 'Datei',
       fileLicense: 'Dateilizenz: ',
+      fileName: 'Dateiname:',
       license: 'Lizenz: ',
       masterFile: 'Ursprungsdatei: ',
       meetings: 'Zugehörige Sitzungen: ',
       mimeType: 'Dateityp: ',
-      name: 'Dateiname: ',
+      name: 'Bezeichnung: ',
       sha1Checksum: 'SHA1-Prüfsumme: ',
       sha512Checksum: 'SHA512-Prüfsumme: ',
       size: 'Dateigröße',
@@ -201,7 +202,7 @@ export const texts = {
       license: 'Lizenz: ',
       name: 'Bezeichnung: ',
       partOfBody: 'Körperschaft: ',
-      title: 'Wahlperiode'
+      legislativeTerm: 'Wahlperiode'
     },
     location: {
       bodies: 'Körperschaften: ',
@@ -224,9 +225,9 @@ export const texts = {
       invitation: 'Einladung',
       license: 'Lizenz',
       location: 'Sitzungsort',
-      meeting: 'Sitzung',
+      meeting: 'Termin',
       meetingState: 'Status',
-      name: 'Name',
+      name: 'Name:',
       organization: 'Gruppierungen',
       participant: 'Teilnehmer',
       resultsProtocol: 'Ergebnisprotokoll',
@@ -308,7 +309,7 @@ export const texts = {
       location: 'Ort',
       membership: 'Mitgliedschaften',
       name: 'Name:',
-      person: 'Person: ',
+      person: 'Person',
       phone: 'Telefon: ',
       status: 'Status: ',
       title: 'Titel: '

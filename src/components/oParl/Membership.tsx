@@ -47,7 +47,13 @@ export const Membership = ({ data, navigation }: Props) => {
         right={fullName.length ? fullName : undefined}
         fullText
         leftWidth={leftWidth}
-        onPress={() => navigation.push('OParlDetail', { type: person?.type, id: person?.id })}
+        onPress={() =>
+          navigation.push('OParlDetail', {
+            type: person?.type,
+            id: person?.id,
+            title: texts.oparl.person.person
+          })
+        }
       />
       <Line left={membershipTexts.role} right={role} leftWidth={leftWidth} />
       {votingRight !== undefined && (
@@ -73,7 +79,11 @@ export const Membership = ({ data, navigation }: Props) => {
         fullText
         leftWidth={leftWidth}
         onPress={() =>
-          navigation.push('OParlDetail', { type: organization?.type, id: organization?.id })
+          navigation.push('OParlDetail', {
+            type: organization?.type,
+            id: organization?.id,
+            title: texts.oparl.organization.organization
+          })
         }
       />
       <Line
@@ -82,7 +92,11 @@ export const Membership = ({ data, navigation }: Props) => {
         fullText
         leftWidth={leftWidth}
         onPress={() =>
-          navigation.push('OParlDetail', { type: onBehalfOf?.type, id: onBehalfOf?.id })
+          navigation.push('OParlDetail', {
+            type: onBehalfOf?.type,
+            id: onBehalfOf?.id,
+            title: texts.oparl.organization.organization
+          })
         }
       />
       <WrapperHorizontal>

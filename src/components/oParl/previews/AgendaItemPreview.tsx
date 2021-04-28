@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
+import { texts } from '../../../config';
 
 import { AgendaItemPreviewData } from '../../../types';
 import { OParlPreviewEntry } from './OParlPreviewEntry';
@@ -14,5 +15,13 @@ export const AgendaItemPreview = ({ data, navigation }: Props) => {
 
   const title = (number ?? '•') + ' ' + (name ?? '');
 
-  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
+  return (
+    <OParlPreviewEntry
+      id={id}
+      type={type}
+      title={title}
+      navigation={navigation}
+      screenTitle={texts.oparl.agendaItem.agendaItem}
+    />
+  );
 };

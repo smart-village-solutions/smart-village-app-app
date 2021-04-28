@@ -35,9 +35,11 @@ export const PersonPreview = ({ data, navigation }: Props) => {
     3
   )?.join(', ');
 
+  const params = { id, type, title: texts.oparl.person.person };
+
   const item = {
     routeName: 'OParlDetail',
-    params: { id, type },
+    params,
     subtitle: membershipString,
     title: nameString
   };

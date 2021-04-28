@@ -15,5 +15,13 @@ export const PaperPreview = ({ data, navigation }: Props) => {
 
   const title = name || reference || texts.oparl.paper.paper;
 
-  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
+  return (
+    <OParlPreviewEntry
+      id={id}
+      type={type}
+      title={title}
+      navigation={navigation}
+      screenTitle={texts.oparl.paper.paper}
+    />
+  );
 };

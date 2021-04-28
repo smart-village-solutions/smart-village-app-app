@@ -86,7 +86,7 @@ export const Person = ({ data, navigation }: Props) => {
         <LineEntry fullText left={personTexts.lifeSource} right={lifeSource} />
         <KeywordSection keyword={keyword} />
         <LineEntry left={personTexts.license} right={license} />
-        <WebRepresentation name={name ?? personTexts.person} navigation={navigation} web={web} />
+        <WebRepresentation navigation={navigation} web={web} />
         <ModifiedSection created={created} deleted={deleted} modified={modified} />
       </WrapperHorizontal>
     </>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
+import { texts } from '../../../config';
 
 import { BodyPreviewData } from '../../../types';
 import { OParlPreviewEntry } from './OParlPreviewEntry';
@@ -18,6 +19,7 @@ export const BodyPreview = ({ data, navigation }: Props) => {
       type={type}
       title={shortName ? `${shortName} (${name})` : name}
       navigation={navigation}
+      screenTitle={texts.oparl.body.body}
     />
   );
 };

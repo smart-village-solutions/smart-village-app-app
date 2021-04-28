@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
+import { texts } from '../../../config';
 
 import { FilePreviewData } from '../../../types';
 import { OParlPreviewEntry } from './OParlPreviewEntry';
@@ -14,5 +15,13 @@ export const FilePreview = ({ data, navigation }: Props) => {
 
   const title = name || fileName || accessUrl;
 
-  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
+  return (
+    <OParlPreviewEntry
+      id={id}
+      type={type}
+      title={title}
+      navigation={navigation}
+      screenTitle={texts.oparl.file.file}
+    />
+  );
 };

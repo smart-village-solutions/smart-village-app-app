@@ -21,6 +21,8 @@ type Props = {
 
 const fileTexts = texts.oparl.file;
 
+const leftWidth = 110;
+
 export const File = ({ data, navigation }: Props) => {
   const {
     accessUrl,
@@ -49,16 +51,21 @@ export const File = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <SectionHeader title={name?.length ? name : fileTexts.file} />
-      <Line left={fileTexts.name} right={fileName} />
-      <Line left={fileTexts.mimeType} right={mimeType} />
-      <Line left={fileTexts.size} right={size ? formatSize(size) : undefined} />
+      <Line left={fileTexts.name} right={name} fullText leftWidth={leftWidth} />
+      <Line left={fileTexts.fileName} right={fileName} leftWidth={leftWidth} />
+      <Line left={fileTexts.mimeType} right={mimeType} leftWidth={leftWidth} />
+      <Line
+        left={fileTexts.size}
+        right={size ? formatSize(size) : undefined}
+        leftWidth={leftWidth}
+      />
       <Line
         left={fileTexts.date}
         right={date ? momentFormat(date, 'DD.MM.YYYY', 'x') : undefined}
+        leftWidth={leftWidth}
       />
-      <Line left={fileTexts.fileLicense} right={fileLicense} />
-      <Line left={fileTexts.text} right={text} fullText />
+      <Line left={fileTexts.fileLicense} right={fileLicense} leftWidth={leftWidth} />
+      <Line left={fileTexts.text} right={text} fullText leftWidth={leftWidth} />
 
       <OParlPreviewSection
         data={masterFile}

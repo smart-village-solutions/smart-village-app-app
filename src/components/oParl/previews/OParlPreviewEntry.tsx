@@ -15,16 +15,17 @@ type Props = {
   type: OParlObjectType;
   title: string;
   navigation?: NavigationScreenProp<never>;
+  screenTitle?: string;
 };
 
-export const OParlPreviewEntry = ({ id, type, title, navigation }: Props) => {
+export const OParlPreviewEntry = ({ id, type, title, navigation, screenTitle }: Props) => {
   return (
     <ListItem
       title={<RegularText>{title}</RegularText>}
       bottomDivider
       containerStyle={styles.container}
       rightIcon={navigation && <Icon xml={arrowRight(colors.primary)} />}
-      onPress={() => navigation?.push('OParlDetail', { id, type })}
+      onPress={() => navigation?.push('OParlDetail', { id, type, title: screenTitle ?? title })}
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}

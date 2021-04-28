@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
+import { texts } from '../../../config';
 
 import { OrganizationPreviewData } from '../../../types';
 import { getOrganizationNameString } from '../oParlHelpers';
@@ -15,5 +16,13 @@ export const OrganizationPreview = ({ data, navigation }: Props) => {
 
   const title = getOrganizationNameString(data);
 
-  return <OParlPreviewEntry id={id} type={type} title={title} navigation={navigation} />;
+  return (
+    <OParlPreviewEntry
+      id={id}
+      type={type}
+      title={title}
+      navigation={navigation}
+      screenTitle={texts.oparl.organization.organization}
+    />
+  );
 };

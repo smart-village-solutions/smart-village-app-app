@@ -51,6 +51,7 @@ export const LocationPreview = ({ data, navigation }: Props) => {
       type={type}
       title={getLocationPreviewText(data)}
       navigation={navigation}
+      screenTitle={texts.oparl.location.location}
     />
   );
 };
