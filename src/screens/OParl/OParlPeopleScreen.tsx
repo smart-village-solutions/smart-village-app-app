@@ -6,8 +6,7 @@ import { DropdownSelect, HeaderLeft, SafeAreaViewFlex, Wrapper } from '../../com
 import { OParlPreviewComponent } from '../../components/oParl';
 import { colors, normalize, texts } from '../../config';
 import { executeOParlQuery } from '../../OParlProvider';
-import { organizationListQuery } from '../../queries/OParl';
-import { personListQuery } from '../../queries/OParl/person';
+import { organizationListQuery, personListQuery } from '../../queries/OParl';
 import {
   MembershipPreviewData,
   OParlObjectData,

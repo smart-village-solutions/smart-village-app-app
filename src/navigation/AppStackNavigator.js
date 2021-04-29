@@ -17,7 +17,11 @@ import {
   WasteCollectionScreen,
   WeatherScreen,
   WebScreen,
-  WasteReminderScreen
+  WasteReminderScreen,
+  OParlCalendarScreen,
+  OParlPeopleScreen,
+  OParlOverviewScreen,
+  OParlSearchScreen
 } from '../screens';
 import {
   DetailScreen as BBBUSDetailScreen,
@@ -27,7 +31,6 @@ import {
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
 
 import { texts } from '../config';
-import { OParlPeopleScreen, OParlOverviewScreen, OParlCalendarScreen } from '../screens/OParl';
 
 const AppStackNavigator = (headerRight = true) =>
   createStackNavigator(
@@ -130,6 +133,12 @@ const AppStackNavigator = (headerRight = true) =>
       },
       OParlOverview: {
         screen: OParlOverviewScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      OParlSearch: {
+        screen: OParlSearchScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', '')
         })

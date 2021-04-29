@@ -12,6 +12,7 @@ import {
   Touchable,
   WrapperWithOrientation
 } from '../../components';
+import { texts } from '../../config';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
@@ -23,6 +24,8 @@ type TileProps = {
   subtitle?: string;
   title: string;
 };
+
+const overviewTexts = texts.oparl.overview;
 
 const Tile = ({ logoUri, onPress, subtitle, title }: TileProps) => (
   <Touchable disabled={!onPress} onPress={onPress}>
@@ -46,18 +49,19 @@ export const OParlOverviewScreen = ({ navigation }: Props) => {
         <WrapperWithOrientation>
           <Tile
             logoUri="https://server.bad-belzig.smart-village.app/mobile-app/assets/home-service/Maerker.png"
-            title="Schlagwort Suche"
+            title={overviewTexts.search}
+            onPress={() => navigation.navigate('OParlSearch', { title: 'Suche' })}
           />
           <Tile
             logoUri="https://server.bad-belzig.smart-village.app/mobile-app/assets/home-service/Maerker.png"
-            title="Termine"
-            subtitle="Sitzungen, Agendas, etc."
+            title={overviewTexts.calendarTitle}
+            subtitle={overviewTexts.calendarSubTitle}
             onPress={() => navigation.navigate('OParlCalendar', { title: 'Termine' })}
           />
           <Tile
             logoUri="https://server.bad-belzig.smart-village.app/mobile-app/assets/home-service/Maerker.png"
-            title="Beteiligte"
-            subtitle="Personen, Mitglieder, Organisationen"
+            title={overviewTexts.peopleTitle}
+            subtitle={overviewTexts.peopleSubTitle}
             onPress={() => navigation.navigate('OParlCategory', { title: 'Beteiligte' })}
           />
         </WrapperWithOrientation>

@@ -28,6 +28,19 @@ export const filePreviewEntries = `
   size
 `;
 
+export const legislativeTermPreviewEntries = `
+  id: externalId
+  type
+  created
+  modified
+  deleted
+  keyword
+  web
+  endDate
+  name
+  startDate
+`;
+
 export const locationPreviewEntries = `
   id: externalId
   type

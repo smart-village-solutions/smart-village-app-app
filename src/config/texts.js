@@ -114,6 +114,7 @@ export const texts = {
   oparl: {
     agendaItem: {
       agendaItem: 'Tagesordnungspunkt',
+      agendaItems: 'Tagesordnungspunkte',
       auxiliaryFile: 'Dateianhänge: ',
       consultation: 'Beratung: ',
       isPublic: 'Ja',
@@ -157,6 +158,7 @@ export const texts = {
       authoritative: 'Beschluss wird/wurde gefasst: ',
       consultation: 'Beratung',
       consultationLong: 'Beratung einer Drucksache',
+      consultations: 'Beratungen',
       isAuthoritative: 'Ja',
       isNotAuthoritative: 'Nein',
       license: 'Lizenz: ',
@@ -186,6 +188,7 @@ export const texts = {
       file: 'Datei',
       fileLicense: 'Dateilizenz: ',
       fileName: 'Dateiname:',
+      files: 'Dateien',
       license: 'Lizenz: ',
       masterFile: 'Ursprungsdatei: ',
       meetings: 'Zugehörige Sitzungen: ',
@@ -202,7 +205,8 @@ export const texts = {
       license: 'Lizenz: ',
       name: 'Bezeichnung: ',
       partOfBody: 'Körperschaft: ',
-      legislativeTerm: 'Wahlperiode'
+      legislativeTerm: 'Wahlperiode',
+      legislativeTerms: 'Wahlperioden'
     },
     location: {
       bodies: 'Körperschaften: ',
@@ -210,6 +214,7 @@ export const texts = {
       license: 'Lizenz: ',
       locality: 'Ort: ',
       location: 'Ort',
+      locations: 'Orte',
       meeting: 'Sitzungen: ',
       organization: 'Gruppierungen: ',
       papers: 'Drucksachen: ',
@@ -225,7 +230,8 @@ export const texts = {
       invitation: 'Einladung',
       license: 'Lizenz',
       location: 'Sitzungsort',
-      meeting: 'Termin',
+      meeting: 'Sitzung',
+      meetings: 'Sitzungen',
       meetingState: 'Status',
       name: 'Name:',
       organization: 'Gruppierungen',
@@ -239,6 +245,7 @@ export const texts = {
       hasVotingRight: 'Ja',
       license: 'Lizenz: ',
       membership: 'Mitgliedschaft',
+      memberships: 'Mitgliedschaften',
       onBehalfOf: 'Vertritt:',
       organization: 'Gruppierung:',
       person: 'Person:',
@@ -264,6 +271,7 @@ export const texts = {
       membership: 'Mitgliedschaften',
       name: 'Name: ',
       organization: 'Gruppierung',
+      organizations: 'Gruppierungen',
       organizationType: 'Kategorie: ',
       post: 'Vorgesehene Positionen: ',
       startDate: 'Gründung:',
@@ -271,6 +279,11 @@ export const texts = {
       website: 'Website: '
     },
     overview: {
+      calendarSubTitle: 'Sitzungen, Agendas, etc.',
+      calendarTitle: 'Termine',
+      peopleSubTitle: 'Personen, Mitgliedschaften, Organisationen',
+      peopleTitle: 'Beteiligte',
+      search: 'Schlagwort Suche',
       title: 'Rathausinfos'
     },
     paper: {
@@ -285,6 +298,7 @@ export const texts = {
       originatorOrganization: 'Urheberorganizationen: ',
       originatorPerson: 'Urheber',
       paper: 'Drucksache',
+      papers: 'Drucksachen',
       paperType: 'Art:',
       reference: 'Referenz:',
       relatedPaper: 'Inhaltich verwandt',
@@ -310,9 +324,13 @@ export const texts = {
       membership: 'Mitgliedschaften',
       name: 'Name:',
       person: 'Person',
+      persons: 'Personen',
       phone: 'Telefon: ',
       status: 'Status: ',
       title: 'Titel: '
+    },
+    search: {
+      searchTerm: 'Suchbegriff eingeben'
     },
     system: {
       body: 'Körperschaften: ',

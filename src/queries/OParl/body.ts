@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
 
+import { legislativeTermPreviewEntries } from './fragments';
+
 export const bodyQuery = [
   gql`
     query body($id: String!) {
@@ -19,16 +21,7 @@ export const bodyQuery = [
         contactName
         equivalent
         legislativeTerm {
-          id: externalId
-          type
-          created
-          modified
-          deleted
-          keyword
-          web
-          endDate
-          name
-          startDate
+          ${legislativeTermPreviewEntries}
         }
         license
         licenseValidSince
