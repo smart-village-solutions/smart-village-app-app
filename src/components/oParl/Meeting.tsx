@@ -5,7 +5,7 @@ import { texts } from '../../config';
 import { MeetingData } from '../../types';
 import { BoldText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
-import { Line, LineEntry } from './LineEntry';
+import { Row, SimpleRow } from './Row';
 import { FormattedLocation } from './previews';
 import {
   DateSection,
@@ -66,16 +66,16 @@ export const Meeting = ({ data, navigation }: Props) => {
           </Wrapper>
         </WrapperRow>
       )}
-      <Line left={meetingTexts.name} right={name} fullText topDivider />
+      <Row left={meetingTexts.name} right={name} fullText topDivider />
       <DateSection endDate={end} startDate={start} topDivider={!name} />
-      <Line
+      <Row
         left={meetingTexts.location}
         right={formattedLocation}
         onPress={() => {
           navigation.push('OParlDetail', { type: location?.type, id: location?.id });
         }}
       />
-      <Line left={meetingTexts.meetingState} right={meetingState} />
+      <Row left={meetingTexts.meetingState} right={meetingState} />
       <OParlPreviewSection
         data={sortedAgendaItems}
         header={meetingTexts.agendaItem}
@@ -113,12 +113,8 @@ export const Meeting = ({ data, navigation }: Props) => {
       />
       <WrapperHorizontal>
         <KeywordSection keyword={keyword} />
-        <LineEntry left={meetingTexts.license} right={license} />
-        <WebRepresentation
-          name={name?.length ? name : meetingTexts.meeting}
-          navigation={navigation}
-          web={web}
-        />
+        <SimpleRow left={meetingTexts.license} right={license} />
+        <WebRepresentation name={name || meetingTexts.meeting} navigation={navigation} web={web} />
         <ModifiedSection created={created} deleted={deleted} modified={modified} />
       </WrapperHorizontal>
     </>

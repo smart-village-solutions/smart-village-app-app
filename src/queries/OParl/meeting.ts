@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { agendaItemPreviewEntries, filePreviewEntries } from './fragments';
+import { agendaItemPreviewEntries, filePreviewEntries, meetingPreviewEntries } from './fragments';
 
 export const meetingQuery = [
   gql`
@@ -75,6 +75,17 @@ export const meetingQuery = [
           ${filePreviewEntries}
         }
         web
+      }
+    }
+  `,
+  'oParlMeetings'
+] as const;
+
+export const meetingListQuery = [
+  gql`
+    query meetings($before: String, $after: String) {
+      oParlMeetings(before: $before, after: $after) {
+        ${meetingPreviewEntries}
       }
     }
   `,

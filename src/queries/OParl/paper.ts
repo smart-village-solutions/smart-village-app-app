@@ -11,8 +11,8 @@ import {
 
 export const paperQuery = [
   gql`
-    query papers($ids: [String!]) {
-      oParlPapers(externalIds: $ids) {
+    query papers($id: String!) {
+      oParlPapers (externalIds: [$id]) {
         id: externalId
         type
         deleted

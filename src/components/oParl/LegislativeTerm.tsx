@@ -4,7 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { LegislativeTermData } from '../../types';
 import { WrapperHorizontal } from '../Wrapper';
-import { Line, LineEntry } from './LineEntry';
+import { Row, SimpleRow } from './Row';
 import {
   DateSection,
   KeywordSection,
@@ -38,7 +38,7 @@ export const LegislativeTerm = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Line left={legislativeTermTexts.name} right={name} leftWidth={leftWidth} fullText />
+      <Row left={legislativeTermTexts.name} right={name} leftWidth={leftWidth} fullText />
       <DateSection
         endDate={endDate}
         startDate={startDate}
@@ -52,9 +52,9 @@ export const LegislativeTerm = ({ data, navigation }: Props) => {
       />
       <WrapperHorizontal>
         <KeywordSection keyword={keyword} />
-        <LineEntry left={legislativeTermTexts.license} right={license} />
+        <SimpleRow left={legislativeTermTexts.license} right={license} />
         <WebRepresentation
-          name={name ?? legislativeTermTexts.legislativeTerm}
+          name={name || legislativeTermTexts.legislativeTerm}
           navigation={navigation}
           web={web}
         />

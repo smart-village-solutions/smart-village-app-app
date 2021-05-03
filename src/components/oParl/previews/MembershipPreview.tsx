@@ -4,7 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../../config';
 import { getFullName, momentFormat } from '../../../helpers';
 import { MembershipPreviewData } from '../../../types';
-import { Line } from '../LineEntry';
+import { Row } from '../Row';
 import { getOrganizationNameString } from '../oParlHelpers';
 
 type Props = {
@@ -34,19 +34,21 @@ export const MembershipPreview = ({ data, navigation, withPerson }: Props) => {
   const params = { id, type, title: texts.oparl.membership.membership };
 
   return withPerson ? (
-    <Line
+    <Row
       left={titleWithPerson}
       right={dateString}
-      leftWidth={120}
+      leftWidth={130}
       fullText
+      smallLeft={false}
       onPress={() => navigation.push('OParlDetail', params)}
     />
   ) : (
-    <Line
+    <Row
       left={organizationName}
       right={dateString}
-      leftWidth={120}
+      leftWidth={130}
       fullText
+      smallLeft={false}
       onPress={() => navigation.push('OParlDetail', params)}
     />
   );

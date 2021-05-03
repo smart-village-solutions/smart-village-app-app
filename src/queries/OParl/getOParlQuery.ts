@@ -10,6 +10,7 @@ import { membershipQuery } from './membership';
 import { organizationQuery } from './organization';
 import { paperQuery } from './paper';
 import { personQuery } from './person';
+import { systemQuery } from './system';
 
 // eslint-disable-next-line complexity
 export const getOParlQuery = (type: OParlObjectType) => {
@@ -47,5 +48,8 @@ export const getOParlQuery = (type: OParlObjectType) => {
     case OParlObjectType.Person:
     case OParlObjectType.Person1:
       return personQuery;
+    case OParlObjectType.System:
+    case OParlObjectType.System1:
+      return systemQuery;
   }
 };

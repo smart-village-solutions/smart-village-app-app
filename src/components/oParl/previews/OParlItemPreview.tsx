@@ -5,17 +5,23 @@ import { NavigationScreenProp } from 'react-navigation';
 import { normalize } from '../../../config';
 import { OParlObjectPreviewData } from '../../../types';
 import { SectionHeader } from '../../SectionHeader';
-import { AdditionalPreviewProps } from './additionalPreviewProps';
 import { OParlPreviewComponent } from './OParlPreviewComponent';
 
 type Props = {
-  additionalProps?: AdditionalPreviewProps;
   data?: OParlObjectPreviewData;
   header: string;
   navigation: NavigationScreenProp<never>;
+  withAgendaItem?: boolean;
+  withPerson?: boolean;
 };
 
-export const OParlItemPreview = ({ data, header, navigation, additionalProps }: Props) => {
+export const OParlItemPreview = ({
+  data,
+  header,
+  navigation,
+  withAgendaItem,
+  withPerson
+}: Props) => {
   if (!data) {
     return null;
   }
@@ -26,7 +32,8 @@ export const OParlItemPreview = ({ data, header, navigation, additionalProps }: 
       <OParlPreviewComponent
         data={data}
         navigation={navigation}
-        additionalProps={additionalProps}
+        withAgendaItem={withAgendaItem}
+        withPerson={withPerson}
       />
     </View>
   );

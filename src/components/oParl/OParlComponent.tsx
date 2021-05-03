@@ -58,7 +58,6 @@ export const OParlComponent = ({ data, navigation }: Props) => {
     case OParlObjectType.System:
     case OParlObjectType.System1:
       return <System data={data} navigation={navigation} />;
-    // TODO: add sensible fallback
     default:
       return null;
   }

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
-import { LineEntry } from '../LineEntry';
+import { SimpleRow } from '../Row';
 
 type Props = {
   name?: string;
@@ -24,5 +24,5 @@ export const WebRepresentation = ({ name, navigation, web }: Props) => {
     return null;
   }
 
-  return <LineEntry left={texts.oparl.webRepresentation} onPress={onPress} right={web} />;
+  return <SimpleRow left={texts.oparl.webRepresentation} onPress={onPress} right={web} />;
 };

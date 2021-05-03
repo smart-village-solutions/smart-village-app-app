@@ -2,7 +2,6 @@ import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { OParlObjectPreviewData, OParlObjectType } from '../../../types';
-import { AdditionalPreviewProps } from './additionalPreviewProps';
 import { AgendaItemPreview } from './AgendaItemPreview';
 import { BodyPreview } from './BodyPreview';
 import { ConsultationPreview } from './ConsultationPreview';
@@ -17,13 +16,19 @@ import { PersonPreview } from './PersonPreview';
 import { SystemPreview } from './SystemPreview';
 
 type PreviewProps = {
-  additionalProps?: AdditionalPreviewProps;
   data: OParlObjectPreviewData;
   navigation: NavigationScreenProp<never>;
+  withAgendaItem?: boolean;
+  withPerson?: boolean;
 };
 
 // eslint-disable-next-line complexity
-export const OParlPreviewComponent = ({ additionalProps, data, navigation }: PreviewProps) => {
+export const OParlPreviewComponent = ({
+  data,
+  navigation,
+  withAgendaItem,
+  withPerson
+}: PreviewProps) => {
   switch (data.type) {
     case OParlObjectType.AgendaItem:
     case OParlObjectType.AgendaItem1:
@@ -34,11 +39,7 @@ export const OParlPreviewComponent = ({ additionalProps, data, navigation }: Pre
     case OParlObjectType.Consultation:
     case OParlObjectType.Consultation1:
       return (
-        <ConsultationPreview
-          data={data}
-          navigation={navigation}
-          withAgendaItem={additionalProps?.withAgendaItem}
-        />
+        <ConsultationPreview data={data} navigation={navigation} withAgendaItem={withAgendaItem} />
       );
     case OParlObjectType.File:
     case OParlObjectType.File1:
@@ -54,13 +55,7 @@ export const OParlPreviewComponent = ({ additionalProps, data, navigation }: Pre
       return <MeetingPreview data={data} navigation={navigation} />;
     case OParlObjectType.Membership:
     case OParlObjectType.Membership1:
-      return (
-        <MembershipPreview
-          data={data}
-          navigation={navigation}
-          withPerson={additionalProps?.withPerson}
-        />
-      );
+      return <MembershipPreview data={data} navigation={navigation} withPerson={withPerson} />;
     case OParlObjectType.Organization:
     case OParlObjectType.Organization1:
       return <OrganizationPreview data={data} navigation={navigation} />;

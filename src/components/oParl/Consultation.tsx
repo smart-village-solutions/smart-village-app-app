@@ -4,7 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { ConsultationData } from '../../types';
 import { Wrapper } from '../Wrapper';
-import { LineEntry } from './LineEntry';
+import { SimpleRow } from './Row';
 import {
   KeywordSection,
   ModifiedSection,
@@ -37,15 +37,6 @@ export const Consultation = ({ data, navigation }: Props) => {
 
   return (
     <>
-      {authoritative != undefined && ( // also filter out null
-        <LineEntry
-          left={consultationTexts.authoritative}
-          right={
-            authoritative ? consultationTexts.isAuthoritative : consultationTexts.isNotAuthoritative
-          }
-        />
-      )}
-      <LineEntry left={consultationTexts.role} right={role} />
       <OParlPreviewSection
         data={meeting}
         header={consultationTexts.meeting}
@@ -67,8 +58,19 @@ export const Consultation = ({ data, navigation }: Props) => {
         navigation={navigation}
       />
       <Wrapper>
+        {authoritative != undefined && ( // also filter out null
+          <SimpleRow
+            left={consultationTexts.authoritative}
+            right={
+              authoritative
+                ? consultationTexts.isAuthoritative
+                : consultationTexts.isNotAuthoritative
+            }
+          />
+        )}
+        <SimpleRow left={consultationTexts.role} right={role} />
         <KeywordSection keyword={keyword} />
-        <LineEntry left={consultationTexts.license} right={license} />
+        <SimpleRow left={consultationTexts.license} right={license} />
         <WebRepresentation
           name={consultationTexts.consultation}
           navigation={navigation}

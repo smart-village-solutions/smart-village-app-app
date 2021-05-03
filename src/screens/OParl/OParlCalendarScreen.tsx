@@ -1,91 +1,38 @@
-import gql from 'graphql-tag';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Calendar, DateObject, LocaleConfig, MultiDotMarking } from 'react-native-calendars';
+import React, { useCallback, useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { Calendar, DateObject, MultiDotMarking } from 'react-native-calendars';
 import { NavigationScreenProp, SectionList } from 'react-navigation';
 
 import {
   HeaderLeft,
-  Icon,
   NoTouchDay,
+  RegularText,
+  renderArrow,
   SafeAreaViewFlex,
   SectionHeader,
+  Wrapper,
+  WrapperVertical,
   WrapperWithOrientation
 } from '../../components';
+import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { OParlPreviewComponent } from '../../components/oParl';
-import { colors, normalize } from '../../config';
-import { momentFormat } from '../../helpers';
-import { arrowLeft, arrowRight } from '../../icons';
-import { executeOParlQuery } from '../../OParlProvider';
+import { colors, texts } from '../../config';
+import { momentFormat, setupLocales } from '../../helpers';
+import { useOParlQuery } from '../../hooks';
+import { meetingListQuery } from '../../queries/OParl/meeting';
 import { MeetingPreviewData } from '../../types';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
 };
 
+setupLocales();
+
 const dotSize = 6;
 
-LocaleConfig.locales['de'] = {
-  monthNames: [
-    'Januar',
-    'Februar',
-    'März',
-    'April',
-    'Mai',
-    'Juni',
-    'Juli',
-    'August',
-    'September',
-    'Oktober',
-    'November',
-    'Dezember'
-  ],
-  monthNamesShort: [
-    'Jan.',
-    'Feb.',
-    'Mär.',
-    'Apr.',
-    'Mai',
-    'Jun.',
-    'Jul.',
-    'Aug.',
-    'Sep.',
-    'Okt.',
-    'Nov.',
-    'Dez.'
-  ],
-  dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
-  dayNamesShort: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
-  today: 'Heute'
-};
-LocaleConfig.defaultLocale = 'de';
-
 const dot = { key: 'dot', color: colors.primary };
-
-const renderArrow = (direction: 'left' | 'right') =>
-  direction === 'right' ? (
-    <Icon xml={arrowRight(colors.primary)} style={styles.icon} />
-  ) : (
-    <Icon xml={arrowLeft(colors.primary)} style={styles.icon} />
-  );
-
-const meetingsQuery = [
-  gql`
-    query meetings($before: String, $after: String) {
-      oParlMeetings(before: $before, after: $after) {
-        start
-        id: externalId
-        type
-        cancelled
-        deleted
-        name
-      }
-    }
-  `,
-  'oParlMeetings'
-] as const;
 
 const getSectionsAndDots = (meetings: MeetingPreviewData[]) => {
   const filteredMeetings = meetings.filter((meeting) => !!meeting.start) as (MeetingPreviewData & {
@@ -93,7 +40,7 @@ const getSectionsAndDots = (meetings: MeetingPreviewData[]) => {
   })[];
   filteredMeetings.sort((a, b) => a.start - b.start);
 
-  const o: Record<string, typeof filteredMeetings> = {};
+  const meetingsPerDate: Record<string, typeof filteredMeetings> = {};
 
   const markedDates: { [date: string]: MultiDotMarking } = {};
 
@@ -103,16 +50,16 @@ const getSectionsAndDots = (meetings: MeetingPreviewData[]) => {
 
     markedDates[markDateString] = { dots: [dot] };
 
-    if (o[startDateString]) {
-      o[startDateString].push(meeting);
+    if (meetingsPerDate[startDateString]) {
+      meetingsPerDate[startDateString].push(meeting);
     } else {
-      o[startDateString] = [meeting];
+      meetingsPerDate[startDateString] = [meeting];
     }
   });
 
-  const sections = Object.keys(o).map((date) => ({
+  const sections = Object.keys(meetingsPerDate).map((date) => ({
     title: date,
-    data: o[date]
+    data: meetingsPerDate[date]
   }));
 
   return { sections, markedDates };
@@ -145,9 +92,16 @@ const getMonthLimits = (date?: DateObject) => {
   };
 };
 
+const [query, queryName] = meetingListQuery;
+
 export const OParlCalendarScreen = ({ navigation }: Props) => {
   const [limits, setLimits] = useState(getMonthLimits);
-  const [meetings, setMeetings] = useState([]);
+
+  const { data, error, loading } = useOParlQuery<{ [queryName]: MeetingPreviewData[] }>(query, {
+    variables: limits
+  });
+
+  const meetings = data?.[queryName] ?? [];
 
   // parse meetings into sections
   const { markedDates, sections } = getSectionsAndDots(meetings);
@@ -159,46 +113,43 @@ export const OParlCalendarScreen = ({ navigation }: Props) => {
     [setLimits]
   );
 
-  // get meetings
-  useEffect(() => {
-    executeOParlQuery(meetingsQuery, setMeetings, limits);
-  }, [limits]);
-
   return (
     <SafeAreaViewFlex>
-      <ScrollView>
-        <WrapperWithOrientation>
-          <Calendar
-            dayComponent={NoTouchDay}
-            onMonthChange={updateMonth}
-            markingType="multi-dot"
-            markedDates={markedDates}
-            renderArrow={renderArrow}
-            theme={{
-              todayTextColor: colors.primary,
-              dotStyle: {
-                borderRadius: dotSize / 2,
-                height: dotSize,
-                width: dotSize
-              }
-            }}
-          />
-          <SectionList
-            sections={sections}
-            renderSectionHeader={renderSectionHeader}
-            renderItem={({ item }) => <OParlPreviewComponent data={item} navigation={navigation} />}
-          />
-        </WrapperWithOrientation>
-      </ScrollView>
+      <WrapperWithOrientation>
+        <SectionList
+          ListHeaderComponent={
+            <WrapperVertical style={styles.noPaddingTop}>
+              <Calendar
+                dayComponent={NoTouchDay}
+                onMonthChange={updateMonth}
+                markingType="multi-dot"
+                markedDates={markedDates}
+                renderArrow={renderArrow}
+                theme={{
+                  todayTextColor: colors.primary,
+                  dotStyle: {
+                    borderRadius: dotSize / 2,
+                    height: dotSize,
+                    width: dotSize
+                  }
+                }}
+              />
+              {!!error && (
+                <Wrapper>
+                  <RegularText>{texts.errors.noData}</RegularText>
+                </Wrapper>
+              )}
+            </WrapperVertical>
+          }
+          ListFooterComponent={<LoadingSpinner loading={loading} />}
+          sections={sections}
+          renderSectionHeader={renderSectionHeader}
+          renderItem={({ item }) => <OParlPreviewComponent data={item} navigation={navigation} />}
+        />
+      </WrapperWithOrientation>
     </SafeAreaViewFlex>
   );
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(14)
-  }
-});
 
 OParlCalendarScreen.navigationOptions = ({ navigation }: Props) => {
   return {
@@ -209,3 +160,9 @@ OParlCalendarScreen.navigationOptions = ({ navigation }: Props) => {
 OParlCalendarScreen.propTypes = {
   navigation: PropTypes.object.isRequired
 };
+
+const styles = StyleSheet.create({
+  noPaddingTop: {
+    paddingTop: 0
+  }
+});

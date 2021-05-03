@@ -4,9 +4,8 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { OrganizationData } from '../../types';
-import { SectionHeader } from '../SectionHeader';
 import { WrapperHorizontal } from '../Wrapper';
-import { Line, LineEntry } from './LineEntry';
+import { Row, SimpleRow } from './Row';
 import { FormattedLocation } from './previews';
 import {
   KeywordSection,
@@ -70,24 +69,29 @@ export const Organization = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <SectionHeader title={nameString} />
-      <Line
+      <Row
+        left={organizationTexts.name}
+        right={name || shortName ? nameString : undefined}
+        fullText
+        leftWidth={leftWidth}
+      />
+      <Row
         left={organizationTexts.startDate}
         right={startDate ? momentFormat(startDate, 'DD.MM.YYYY', 'x') : undefined}
         leftWidth={leftWidth}
       />
-      <Line
+      <Row
         left={organizationTexts.endDate}
         right={endDate ? momentFormat(endDate, 'DD.MM.YYYY', 'x') : undefined}
         leftWidth={leftWidth}
       />
-      <Line left={organizationTexts.classification} right={classification} leftWidth={leftWidth} />
-      <Line
+      <Row left={organizationTexts.classification} right={classification} leftWidth={leftWidth} />
+      <Row
         left={organizationTexts.organizationType}
         right={organizationType}
         leftWidth={leftWidth}
       />
-      <Line
+      <Row
         left={organizationTexts.body}
         right={body?.name}
         onPress={() =>
@@ -99,7 +103,7 @@ export const Organization = ({ data, navigation }: Props) => {
         }
         leftWidth={leftWidth}
       />
-      <Line
+      <Row
         left={organizationTexts.location}
         right={formattedLocation}
         leftWidth={leftWidth}
@@ -132,20 +136,20 @@ export const Organization = ({ data, navigation }: Props) => {
         navigation={navigation}
       />
       <OParlPreviewSection
-        additionalProps={{ withPerson: true }}
         data={membership}
         header={organizationTexts.membership}
         navigation={navigation}
+        withPerson
       />
       <WrapperHorizontal>
-        <LineEntry left={organizationTexts.website} onPress={onPressWebsite} right={website} />
-        <LineEntry
+        <SimpleRow left={organizationTexts.website} onPress={onPressWebsite} right={website} />
+        <SimpleRow
           left={organizationTexts.post}
           right={post?.length ? post.join(', ') : undefined}
           fullText
         />
         <KeywordSection keyword={keyword} />
-        <LineEntry left={organizationTexts.license} right={license} />
+        <SimpleRow left={organizationTexts.license} right={license} />
         <WebRepresentation
           name={organizationTexts.organization}
           navigation={navigation}

@@ -18,13 +18,14 @@ type Props = {
   selectable?: boolean;
 };
 
-export const Line = ({
+export const Row = ({
   left,
   right,
   topDivider,
   leftWidth = 100,
   fullText,
-  onPress
+  onPress,
+  smallLeft = true
 }: {
   left: string;
   right?: string | JSX.Element;
@@ -32,6 +33,7 @@ export const Line = ({
   leftWidth?: number;
   fullText?: boolean;
   onPress?: () => void;
+  smallLeft?: boolean;
 }) => {
   if (!right) return null;
 
@@ -39,7 +41,7 @@ export const Line = ({
     <Touchable onPress={onPress} disabled={!onPress}>
       <WrapperRow style={topDivider ? styles.doubleLine : styles.line}>
         <Wrapper shrink style={[styles.left, { width: normalize(leftWidth) }]}>
-          <RegularText small numberOfLines={fullText ? undefined : 1}>
+          <RegularText small={smallLeft} numberOfLines={fullText ? undefined : 1}>
             {left}
           </RegularText>
         </Wrapper>
@@ -60,7 +62,7 @@ export const Line = ({
   );
 };
 
-export const LineEntry = ({ fullText, left, lineThrough, onPress, right, selectable }: Props) => {
+export const SimpleRow = ({ fullText, left, lineThrough, onPress, right, selectable }: Props) => {
   if (!right || (typeof right === 'string' && !right?.length)) {
     return null;
   }
@@ -107,7 +109,8 @@ const styles = StyleSheet.create({
     borderColor: RNEColors.divider
   },
   icon: {
-    justifyContent: 'center'
+    justifyContent: 'center',
+    paddingLeft: 0
   },
   left: {
     justifyContent: 'center'

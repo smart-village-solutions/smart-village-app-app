@@ -6,7 +6,7 @@ import { formatSize, momentFormat } from '../../helpers';
 import { FileData } from '../../types';
 import { SectionHeader } from '../SectionHeader';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
-import { Line, LineEntry } from './LineEntry';
+import { Row, SimpleRow } from './Row';
 import {
   KeywordSection,
   ModifiedSection,
@@ -51,21 +51,21 @@ export const File = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Line left={fileTexts.name} right={name} fullText leftWidth={leftWidth} />
-      <Line left={fileTexts.fileName} right={fileName} leftWidth={leftWidth} />
-      <Line left={fileTexts.mimeType} right={mimeType} leftWidth={leftWidth} />
-      <Line
+      <Row left={fileTexts.name} right={name} fullText leftWidth={leftWidth} />
+      <Row left={fileTexts.fileName} right={fileName} leftWidth={leftWidth} />
+      <Row left={fileTexts.mimeType} right={mimeType} leftWidth={leftWidth} />
+      <Row
         left={fileTexts.size}
         right={size ? formatSize(size) : undefined}
         leftWidth={leftWidth}
       />
-      <Line
+      <Row
         left={fileTexts.date}
         right={date ? momentFormat(date, 'DD.MM.YYYY', 'x') : undefined}
         leftWidth={leftWidth}
       />
-      <Line left={fileTexts.fileLicense} right={fileLicense} leftWidth={leftWidth} />
-      <Line left={fileTexts.text} right={text} fullText leftWidth={leftWidth} />
+      <Row left={fileTexts.fileLicense} right={fileLicense} leftWidth={leftWidth} />
+      <Row left={fileTexts.text} right={text} fullText leftWidth={leftWidth} />
 
       <OParlPreviewSection
         data={masterFile}
@@ -86,31 +86,27 @@ export const File = ({ data, navigation }: Props) => {
       <SectionHeader title={fileTexts.urls} />
       {!!(accessUrl || downloadUrl || externalServiceUrl) && (
         <Wrapper>
-          <LineEntry
+          <SimpleRow
             left={fileTexts.accessUrl}
             right={accessUrl !== downloadUrl ? accessUrl : undefined}
             selectable
             fullText
           />
-          <LineEntry left={fileTexts.downloadUrl} right={downloadUrl} selectable fullText />
-          <LineEntry
+          <SimpleRow left={fileTexts.downloadUrl} right={downloadUrl} selectable fullText />
+          <SimpleRow
             left={fileTexts.externalServiceUrl}
             right={externalServiceUrl}
             selectable
             fullText
           />
-          <LineEntry left={fileTexts.sha1Checksum} right={sha1Checksum} fullText />
-          <LineEntry left={fileTexts.sha512Checksum} right={sha512Checksum} fullText />
         </Wrapper>
       )}
       <WrapperHorizontal>
+        <SimpleRow left={fileTexts.sha1Checksum} right={sha1Checksum} fullText />
+        <SimpleRow left={fileTexts.sha512Checksum} right={sha512Checksum} fullText />
         <KeywordSection keyword={keyword} />
-        <LineEntry left={fileTexts.license} right={license} />
-        <WebRepresentation
-          name={name?.length ? name : fileTexts.file}
-          navigation={navigation}
-          web={web}
-        />
+        <SimpleRow left={fileTexts.license} right={license} />
+        <WebRepresentation name={name || fileTexts.file} navigation={navigation} web={web} />
         <ModifiedSection created={created} deleted={deleted} modified={modified} />
       </WrapperHorizontal>
     </>

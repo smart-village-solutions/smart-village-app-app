@@ -6,30 +6,20 @@ import {
   locationPreviewEntries,
   meetingPreviewEntries,
   membershipPreviewEntries,
-  organizationPreviewEntries
+  organizationPreviewEntries,
+  personPreviewEntries
 } from './fragments';
 
 export const organizationListQuery = [
   gql`
-    query organizations {
+    query organizationPeople {
       oParlOrganizations {
         id: externalId
         name
         shortName
         membership {
           person {
-            id: externalId
-            type
-            affix
-            familyName
-            formOfAddress
-            givenName
-            membership {
-              organization {
-                name
-                shortName
-              }
-            }
+            ${personPreviewEntries}
           }
         }
       }

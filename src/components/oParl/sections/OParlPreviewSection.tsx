@@ -8,16 +8,22 @@ import { OParlObjectPreviewData } from '../../../types';
 import { PreviewSection } from '../../PreviewSection';
 import { OParlPreviewComponent } from '../previews/OParlPreviewComponent';
 import { OParlItemPreview } from '../previews/OParlItemPreview';
-import { AdditionalPreviewProps } from '../previews/additionalPreviewProps';
 
 type Props = {
-  additionalProps?: AdditionalPreviewProps;
   data?: OParlObjectPreviewData[] | OParlObjectPreviewData;
   header: string;
   navigation: NavigationScreenProp<never>;
+  withAgendaItem?: boolean;
+  withPerson?: boolean;
 };
 
-export const OParlPreviewSection = ({ additionalProps, data, header, navigation }: Props) => {
+export const OParlPreviewSection = ({
+  data,
+  header,
+  navigation,
+  withAgendaItem,
+  withPerson
+}: Props) => {
   const renderPreview = useCallback(
     (itemData: OParlObjectPreviewData, key: number) => {
       return (
@@ -25,11 +31,12 @@ export const OParlPreviewSection = ({ additionalProps, data, header, navigation 
           data={itemData}
           key={key}
           navigation={navigation}
-          additionalProps={additionalProps}
+          withAgendaItem={withAgendaItem}
+          withPerson={withPerson}
         />
       );
     },
-    [additionalProps, navigation]
+    [navigation, withAgendaItem, withPerson]
   );
 
   if (_isArray(data)) {
@@ -44,7 +51,8 @@ export const OParlPreviewSection = ({ additionalProps, data, header, navigation 
         data={data}
         header={header}
         navigation={navigation}
-        additionalProps={additionalProps}
+        withAgendaItem={withAgendaItem}
+        withPerson={withPerson}
       />
     );
   }

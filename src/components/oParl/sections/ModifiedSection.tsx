@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { normalize, texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
 import { BoldText, RegularText } from '../../Text';
-import { WrapperRow } from '../../Wrapper';
+import { WrapperWrap } from '../../Wrapper';
 
 type Props = {
   created?: number;
@@ -24,16 +24,16 @@ export const ModifiedSection = ({ created, modified, deleted }: Props) => {
   return (
     <View style={styles.marginTop}>
       {!!created && (
-        <WrapperRow>
+        <WrapperWrap>
           <BoldText>{modifiedSection.created}</BoldText>
           <RegularText>{formatDate(created)}</RegularText>
-        </WrapperRow>
+        </WrapperWrap>
       )}
       {!!modified && (
-        <WrapperRow>
+        <WrapperWrap>
           <BoldText>{modifiedSection.modified}</BoldText>
           <RegularText>{formatDate(modified)}</RegularText>
-        </WrapperRow>
+        </WrapperWrap>
       )}
       {deleted && <RegularText>{modifiedSection.deleted}</RegularText>}
     </View>

@@ -5,7 +5,7 @@ import { texts } from '../../config';
 import { getFullName, momentFormat } from '../../helpers';
 import { MembershipData } from '../../types';
 import { WrapperHorizontal } from '../Wrapper';
-import { Line, LineEntry } from './LineEntry';
+import { Row, SimpleRow } from './Row';
 import { getOrganizationNameString } from './oParlHelpers';
 import { KeywordSection, ModifiedSection, WebRepresentation } from './sections';
 
@@ -42,7 +42,7 @@ export const Membership = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Line
+      <Row
         left={membershipTexts.person}
         right={fullName.length ? fullName : undefined}
         fullText
@@ -55,25 +55,25 @@ export const Membership = ({ data, navigation }: Props) => {
           })
         }
       />
-      <Line left={membershipTexts.role} right={role} leftWidth={leftWidth} />
+      <Row left={membershipTexts.role} right={role} leftWidth={leftWidth} />
       {votingRight !== undefined && (
-        <Line
+        <Row
           left={membershipTexts.votingRight}
           right={votingRight ? membershipTexts.hasVotingRight : membershipTexts.hasNoVotingRight}
           leftWidth={leftWidth}
         />
       )}
-      <Line
+      <Row
         left={membershipTexts.startDate}
         right={startDate ? momentFormat(startDate, 'DD.MM.YYYY', 'x') : undefined}
         leftWidth={leftWidth}
       />
-      <Line
+      <Row
         left={membershipTexts.endDate}
         right={endDate ? momentFormat(endDate, 'DD.MM.YYYY', 'x') : undefined}
         leftWidth={leftWidth}
       />
-      <Line
+      <Row
         left={membershipTexts.organization}
         right={orgName}
         fullText
@@ -86,7 +86,7 @@ export const Membership = ({ data, navigation }: Props) => {
           })
         }
       />
-      <Line
+      <Row
         left={membershipTexts.onBehalfOf}
         right={onBehalfOfName}
         fullText
@@ -101,7 +101,7 @@ export const Membership = ({ data, navigation }: Props) => {
       />
       <WrapperHorizontal>
         <KeywordSection keyword={keyword} />
-        <LineEntry left={membershipTexts.license} right={license} />
+        <SimpleRow left={membershipTexts.license} right={license} />
         <WebRepresentation name={membershipTexts.membership} navigation={navigation} web={web} />
         <ModifiedSection created={created} deleted={deleted} modified={modified} />
       </WrapperHorizontal>

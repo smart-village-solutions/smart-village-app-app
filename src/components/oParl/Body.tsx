@@ -9,7 +9,8 @@ import { PreviewSection } from '../PreviewSection';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { WrapperHorizontal } from '../Wrapper';
-import { Line, LineEntry } from './LineEntry';
+import { FormattedLocation } from './previews';
+import { Row, SimpleRow } from './Row';
 import {
   ContactSection,
   KeywordSection,
@@ -85,12 +86,13 @@ export const Body = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Line left={bodyTexts.name} right={shortName ? `${shortName} (${name})` : name} />
-      <Line left={bodyTexts.classification} right={classification} />
-      <Line fullText left={bodyTexts.ags} right={ags} />
-      <Line fullText left={bodyTexts.rgs} right={rgs} />
-      <OParlPreviewSection data={location} header={bodyTexts.location} navigation={navigation} />
-      <ContactSection contactEmail={contactEmail} contactName={contactName} />
+      <Row left={bodyTexts.name} right={shortName ? `${shortName} (${name})` : name} />
+      <Row left={bodyTexts.classification} right={classification} />
+      <Row left={bodyTexts.ags} right={ags} fullText />
+      <Row left={bodyTexts.rgs} right={rgs} fullText />
+      {!!location && (
+        <Row left={bodyTexts.location} right={<FormattedLocation location={location} />} />
+      )}
       <OParlPreviewSection
         data={legislativeTermList ?? legislativeTerm}
         header={bodyTexts.legislativeTerm}
@@ -134,15 +136,16 @@ export const Body = ({ data, navigation }: Props) => {
         />
       </View>
       <WrapperHorizontal>
-        <LineEntry
+        <ContactSection contactEmail={contactEmail} contactName={contactName} />
+        <SimpleRow
           fullText
           left={bodyTexts.oparlSince}
           right={oparlSince && momentFormat(oparlSince.valueOf(), undefined, 'x')}
         />
-        <LineEntry left={bodyTexts.website} onPress={onPressWebsite} right={website} />
+        <SimpleRow left={bodyTexts.website} onPress={onPressWebsite} right={website} />
         <KeywordSection keyword={keyword} />
-        <LineEntry left={bodyTexts.license} onPress={onPressLicense} right={license} />
-        <LineEntry
+        <SimpleRow left={bodyTexts.license} onPress={onPressLicense} right={license} />
+        <SimpleRow
           left={bodyTexts.licenseValidSince}
           right={
             license?.length && licenseValidSince
@@ -150,7 +153,7 @@ export const Body = ({ data, navigation }: Props) => {
               : undefined
           }
         />
-        <WebRepresentation name={name ?? bodyTexts.body} navigation={navigation} web={web} />
+        <WebRepresentation name={name || bodyTexts.body} navigation={navigation} web={web} />
         <ModifiedSection created={created} deleted={deleted} modified={modified} />
       </WrapperHorizontal>
     </>

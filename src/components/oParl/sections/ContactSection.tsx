@@ -1,6 +1,6 @@
 import React from 'react';
 import { texts } from '../../../config';
-import { LineEntry } from '../LineEntry';
+import { SimpleRow } from '../Row';
 
 type Props = {
   contactEmail?: string;
@@ -12,8 +12,8 @@ const { contactSection: sectionTexts } = texts.oparl;
 export const ContactSection = ({ contactEmail, contactName }: Props) => {
   return (
     <>
-      <LineEntry left={sectionTexts.name} right={contactName} />
-      <LineEntry fullText left={sectionTexts.email} right={contactEmail} selectable />
+      <SimpleRow left={sectionTexts.name} right={contactName} />
+      <SimpleRow left={sectionTexts.email} right={contactEmail} fullText selectable />
     </>
   );
 };

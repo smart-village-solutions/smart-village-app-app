@@ -8,6 +8,7 @@ export * from './widgets';
 
 export * from './BackToTop';
 export * from './Button';
+export * from './calendarArrows';
 export * from './CardList';
 export * from './CardListItem';
 export * from './CategoryList';

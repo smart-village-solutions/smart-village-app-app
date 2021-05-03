@@ -4,7 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { AgendaItemData } from '../../types';
 import { Wrapper } from '../Wrapper';
-import { Line, LineEntry } from './LineEntry';
+import { Row, SimpleRow } from './Row';
 import {
   DateSection,
   KeywordSection,
@@ -20,7 +20,7 @@ type Props = {
 
 const agendaItemTexts = texts.oparl.agendaItem;
 
-const leftWidth = 180;
+const leftWidth = 140;
 
 export const AgendaItem = ({ data, navigation }: Props) => {
   const {
@@ -45,28 +45,28 @@ export const AgendaItem = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Line left={agendaItemTexts.name} right={name} leftWidth={leftWidth} fullText />
-      <Line left={agendaItemTexts.number} right={number} leftWidth={leftWidth} />
+      <Row left={agendaItemTexts.name} right={name} leftWidth={leftWidth} fullText />
+      <Row left={agendaItemTexts.number} right={number} leftWidth={leftWidth} />
       {isPublic !== undefined && (
-        <Line
+        <Row
           left={agendaItemTexts.public}
           right={isPublic ? agendaItemTexts.isPublic : agendaItemTexts.isNotPublic}
           leftWidth={leftWidth}
         />
       )}
-      <Line left={agendaItemTexts.result} right={result} leftWidth={leftWidth} fullText />
-      <Line
+      <Row left={agendaItemTexts.result} right={result} leftWidth={leftWidth} fullText />
+      <Row
         left={agendaItemTexts.resolutionText}
         right={resolutionText}
         leftWidth={leftWidth}
         fullText
       />
+      <DateSection endDate={end} startDate={start} topDivider={false} leftWidth={leftWidth} />
       <OParlPreviewSection
         data={meeting}
         header={agendaItemTexts.meeting}
         navigation={navigation}
       />
-      <DateSection endDate={end} startDate={start} />
       <OParlPreviewSection
         data={consultation}
         header={agendaItemTexts.consultation}
@@ -84,9 +84,9 @@ export const AgendaItem = ({ data, navigation }: Props) => {
       />
       <Wrapper>
         <KeywordSection keyword={keyword} />
-        <LineEntry left={agendaItemTexts.license} right={license} />
+        <SimpleRow left={agendaItemTexts.license} right={license} />
         <WebRepresentation
-          name={name?.length ? name : agendaItemTexts.agendaItem}
+          name={name || agendaItemTexts.agendaItem}
           navigation={navigation}
           web={web}
         />

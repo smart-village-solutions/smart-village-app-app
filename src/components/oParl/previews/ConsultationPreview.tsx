@@ -17,7 +17,7 @@ type Props = {
 export const ConsultationPreview = ({ data, navigation, withAgendaItem }: Props) => {
   const { id, type, agendaItem, meeting, paper } = data;
 
-  const agendaItemText = agendaItem?.name ?? agendaItem?.name ?? texts.oparl.agendaItem.agendaItem;
+  const agendaItemText = agendaItem?.name ?? texts.oparl.agendaItem.agendaItem;
 
   const textWithAgendaItem = meeting?.name ? `${meeting.name}: ${agendaItemText}` : agendaItemText;
   const textWithPaper = paper?.name ?? paper?.reference ?? texts.oparl.paper.paper;

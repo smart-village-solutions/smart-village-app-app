@@ -1,5 +1,6 @@
 export * from './addressHelper';
 export * from './bookmarkHelper';
+export * from './calendarHelpers';
 export * from './dateTimeHelper';
 export * from './fileSizeHelper';
 export * from './graphqlHelper';

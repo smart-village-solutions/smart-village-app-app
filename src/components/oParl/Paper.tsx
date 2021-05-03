@@ -5,7 +5,7 @@ import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { PaperData } from '../../types';
 import { Wrapper } from '../Wrapper';
-import { Line, LineEntry } from './LineEntry';
+import { Row, SimpleRow } from './Row';
 import {
   KeywordSection,
   ModifiedSection,
@@ -47,15 +47,15 @@ export const Paper = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Line left={paperTexts.name} right={name} />
-      <Line left={paperTexts.reference} right={reference} />
-      <Line left={paperTexts.paperType} right={paperType} />
-      <Line left={paperTexts.date} right={date ? momentFormat(date, undefined, 'x') : undefined} />
+      <Row left={paperTexts.name} right={name} fullText />
+      <Row left={paperTexts.reference} right={reference} />
+      <Row left={paperTexts.paperType} right={paperType} />
+      <Row left={paperTexts.date} right={date ? momentFormat(date, undefined, 'x') : undefined} />
       <OParlPreviewSection
         data={consultation}
         header={paperTexts.consultation}
         navigation={navigation}
-        additionalProps={{ withAgendaItem: true }}
+        withAgendaItem
       />
       <OParlPreviewSection
         data={relatedPaper}
@@ -97,7 +97,7 @@ export const Paper = ({ data, navigation }: Props) => {
       <OParlPreviewSection data={body} header={paperTexts.body} navigation={navigation} />
       <Wrapper>
         <KeywordSection keyword={keyword} />
-        <LineEntry left={paperTexts.license} right={license} />
+        <SimpleRow left={paperTexts.license} right={license} />
         <WebRepresentation name={name || paperTexts.paper} navigation={navigation} web={web} />
         <ModifiedSection created={created} deleted={deleted} modified={modified} />
       </Wrapper>

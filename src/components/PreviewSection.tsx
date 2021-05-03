@@ -28,7 +28,6 @@ export const PreviewSection = <T,>({ data, header, limit = 3, renderItem }: Prop
       {data.slice(0, limit).map(renderItem)}
       {data.length > limit && (
         <>
-          {}
           <Collapsible collapsed={collapsed}>
             {data.slice(limit, data.length).map(renderItem)}
           </Collapsible>

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import { texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
-import { Line } from '../LineEntry';
+import { Row } from '../Row';
 
 type Props = {
   endDate?: number;
@@ -29,21 +29,21 @@ export const DateSection = ({ endDate, leftWidth, startDate, topDivider = true }
 
   return (
     <View>
-      <Line
-        left="Datum:"
+      <Row
+        left={dateSection.date}
         right={dateString}
         topDivider={topDivider ?? true}
         leftWidth={leftWidth}
       />
       {!!startDate && (
-        <Line
+        <Row
           left={alreadyStarted ? dateSection.started : dateSection.starts}
           right={momentFormat(startDate, timeFormatString, 'x')}
           leftWidth={leftWidth}
         />
       )}
       {!!endDate && (
-        <Line
+        <Row
           left={alreadyEnded ? dateSection.ended : dateSection.ends}
           right={momentFormat(endDate, timeFormatString, 'x')}
           leftWidth={leftWidth}

@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
+import React from 'react';
+import { ActivityIndicator, ScrollView } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
 import {
   HeaderLeft,
+  LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
+  Wrapper,
   WrapperWithOrientation
 } from '../../components';
 import { OParlComponent } from '../../components/oParl';
-import { executeOParlQuery } from '../../OParlProvider';
+import { colors, texts } from '../../config';
+import { useOParlQuery } from '../../hooks';
 import { getOParlQuery } from '../../queries/OParl';
-import { OParlObjectData } from '../../types';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
@@ -21,24 +23,29 @@ export const OParlDetailScreen = ({ navigation }: Props) => {
   const oParlType = navigation.getParam('type');
   const id = navigation.getParam('id');
 
-  const [oParlItem, setOParlItem] = useState<OParlObjectData[]>();
+  const [query, queryName] = getOParlQuery(oParlType);
 
-  useEffect(() => {
-    const query = getOParlQuery(oParlType);
-    query && executeOParlQuery(query, setOParlItem, { id });
-  }, [id, oParlType, setOParlItem]);
+  const { data: queryData, loading, error } = useOParlQuery(query, {
+    variables: { id }
+  });
 
-  const data = oParlItem?.[0];
+  const data = queryData?.[queryName]?.[0];
 
-  console.log({ id, oParlType });
-
-  // TODO: proper fallback
-  if (!data)
+  if (loading) {
     return (
-      <>
-        <RegularText>Type: {oParlType} </RegularText>
-        <RegularText>Id: {id}</RegularText>
-      </>
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
+
+  if (error || !data)
+    return (
+      <WrapperWithOrientation>
+        <Wrapper>
+          <RegularText>{texts.errors.noData}</RegularText>
+        </Wrapper>
+      </WrapperWithOrientation>
     );
 
   return (

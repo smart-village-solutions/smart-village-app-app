@@ -9,7 +9,7 @@ import { isFeature, isFeatureCollection, isMultiPoint, isPoint } from '../../jso
 import { LocationData } from '../../types';
 import { WebViewMap } from '../map';
 import { WrapperHorizontal } from '../Wrapper';
-import { Line, LineEntry } from './LineEntry';
+import { Row, SimpleRow } from './Row';
 import {
   KeywordSection,
   ModifiedSection,
@@ -108,10 +108,10 @@ export const Location = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Line fullText left={locationTexts.streetAddress} right={streetAddress} />
-      <Line fullText left={locationTexts.postalCode} right={postalCode} />
-      <Line fullText left={locationTexts.locality} right={localityString} />
-      <Line fullText left={locationTexts.room} right={room} />
+      <Row fullText left={locationTexts.streetAddress} right={streetAddress} />
+      <Row fullText left={locationTexts.postalCode} right={postalCode} />
+      <Row fullText left={locationTexts.locality} right={localityString} />
+      <Row fullText left={locationTexts.room} right={room} />
       {!!mapMarkers.length && <WebViewMap locations={mapMarkers} />}
       <OParlPreviewSection
         data={meetings ?? meeting}
@@ -127,9 +127,9 @@ export const Location = ({ data, navigation }: Props) => {
       <OParlPreviewSection data={persons} header={locationTexts.persons} navigation={navigation} />
       <OParlPreviewSection data={papers} header={locationTexts.papers} navigation={navigation} />
       <WrapperHorizontal>
-        <LineEntry fullText left={locationTexts.description} right={description} />
+        <SimpleRow fullText left={locationTexts.description} right={description} />
         <KeywordSection keyword={keyword} />
-        <LineEntry fullText left={locationTexts.license} right={license} />
+        <SimpleRow fullText left={locationTexts.license} right={license} />
         <WebRepresentation name={locationTexts.location} navigation={navigation} web={web} />
         <ModifiedSection created={created} deleted={deleted} modified={modified} />
       </WrapperHorizontal>

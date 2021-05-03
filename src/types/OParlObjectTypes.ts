@@ -206,7 +206,7 @@ export type MembershipPreviewData = {
   type: OParlObjectType.Membership | OParlObjectType.Membership1;
   onBehalfOf?: OrganizationPreviewData;
   organization?: OrganizationPreviewData;
-  person?: PersonPreviewData;
+  person?: Omit<PersonPreviewData, 'membership'>;
   endDate?: number; // Date
   startDate?: number; // Date
 } & Base;
@@ -266,7 +266,7 @@ export type PersonPreviewData = {
   familyName?: string;
   formOfAddress?: string;
   givenName?: string;
-  membership?: MembershipPreviewData[];
+  membership?: Omit<MembershipPreviewData, 'person'>[];
   name?: string;
   title?: string[];
 } & Base;
@@ -297,3 +297,13 @@ export type SystemData = {
   vendor?: string;
   website?: string;
 } & SystemPreviewData;
+
+export type OrganizationPeopleData = {
+  id: string;
+  type: OParlObjectType.Organization | OParlObjectType.Organization1;
+  name?: string;
+  shortName?: string;
+  membership?: Array<{
+    person?: PersonPreviewData;
+  }>;
+};

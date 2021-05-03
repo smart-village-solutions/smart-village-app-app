@@ -4,7 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { PersonData } from '../../types';
 import { WrapperHorizontal } from '../Wrapper';
-import { Line, LineEntry } from './LineEntry';
+import { Row, SimpleRow } from './Row';
 import {
   KeywordSection,
   ModifiedSection,
@@ -48,26 +48,26 @@ export const Person = ({ data, navigation }: Props) => {
 
   return (
     <>
-      <Line left={personTexts.name} right={name} leftWidth={leftWidth} fullText />
-      <Line left={personTexts.title} right={title?.join(', ')} leftWidth={leftWidth} fullText />
-      <Line left={personTexts.affix} right={affix} leftWidth={leftWidth} />
-      <Line left={personTexts.formOfAddress} right={formOfAddress} leftWidth={leftWidth} />
-      <Line left={personTexts.givenName} right={givenName} leftWidth={leftWidth} />
-      <Line left={personTexts.familyName} right={familyName} leftWidth={leftWidth} />
-      <Line left={personTexts.gender} right={gender} leftWidth={leftWidth} />
-      <Line
+      <Row left={personTexts.name} right={name} leftWidth={leftWidth} fullText />
+      <Row left={personTexts.title} right={title?.join(', ')} leftWidth={leftWidth} fullText />
+      <Row left={personTexts.affix} right={affix} leftWidth={leftWidth} />
+      <Row left={personTexts.formOfAddress} right={formOfAddress} leftWidth={leftWidth} />
+      <Row left={personTexts.givenName} right={givenName} leftWidth={leftWidth} />
+      <Row left={personTexts.familyName} right={familyName} leftWidth={leftWidth} />
+      <Row left={personTexts.gender} right={gender} leftWidth={leftWidth} />
+      <Row
         left={personTexts.email}
         right={email?.length ? email.join(', ') : undefined}
         leftWidth={leftWidth}
         fullText
       />
-      <Line
+      <Row
         left={personTexts.phone}
         right={phone?.length ? phone.join(', ') : undefined}
         leftWidth={leftWidth}
         fullText
       />
-      <Line
+      <Row
         left={personTexts.status}
         right={status?.length ? status.join(', ') : undefined}
         leftWidth={leftWidth}
@@ -81,11 +81,11 @@ export const Person = ({ data, navigation }: Props) => {
         navigation={navigation}
       />
       <WrapperHorizontal>
-        <LineEntry fullText left={personTexts.life} right={life} />
-        <LineEntry fullText left={personTexts.lifeSource} right={lifeSource} />
+        <SimpleRow fullText left={personTexts.life} right={life} />
+        <SimpleRow fullText left={personTexts.lifeSource} right={lifeSource} />
         <KeywordSection keyword={keyword} />
-        <LineEntry left={personTexts.license} right={license} />
-        <WebRepresentation navigation={navigation} web={web} />
+        <SimpleRow left={personTexts.license} right={license} />
+        <WebRepresentation name={name || personTexts.person} navigation={navigation} web={web} />
         <ModifiedSection created={created} deleted={deleted} modified={modified} />
       </WrapperHorizontal>
     </>

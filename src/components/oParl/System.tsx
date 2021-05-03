@@ -4,7 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { SystemData } from '../../types';
 import { Wrapper } from '../Wrapper';
-import { LineEntry } from './LineEntry';
+import { Row, SimpleRow } from './Row';
 import {
   ContactSection,
   ModifiedSection,
@@ -59,21 +59,21 @@ export const System = ({ data, navigation }: Props) => {
 
   return (
     <Wrapper>
-      <LineEntry left={systemTexts.name} right={name} />
-      <LineEntry left={systemTexts.oparlVersion} right={oparlVersion} />
+      <Row left={systemTexts.name} right={name} />
+      <Row left={systemTexts.oparlVersion} right={oparlVersion} />
       <OParlPreviewSection data={body} header={systemTexts.body} navigation={navigation} />
-      <LineEntry left={systemTexts.product} right={product} onPress={onPressProduct} />
-      <LineEntry left={systemTexts.vendor} right={vendor} onPress={onPressVendor} />
-      <LineEntry left={systemTexts.website} right={website} onPress={onPressWebsite} />
+      <SimpleRow left={systemTexts.product} right={product} onPress={onPressProduct} />
+      <SimpleRow left={systemTexts.vendor} right={vendor} onPress={onPressVendor} />
+      <SimpleRow left={systemTexts.website} right={website} onPress={onPressWebsite} />
       <ContactSection contactEmail={contactEmail} contactName={contactName} />
-      <LineEntry
+      <SimpleRow
         left={systemTexts.otherOparlVersion}
         right={otherOparlVersion?.join(', ')}
         selectable
         fullText
       />
-      <LineEntry left={systemTexts.license} right={license} onPress={onPressLicense} />
-      <WebRepresentation name={name ?? systemTexts.system} navigation={navigation} web={web} />
+      <SimpleRow left={systemTexts.license} right={license} onPress={onPressLicense} />
+      <WebRepresentation name={name || systemTexts.system} navigation={navigation} web={web} />
       <ModifiedSection created={created} deleted={deleted} modified={modified} />
     </Wrapper>
   );
