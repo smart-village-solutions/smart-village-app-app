@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.7.0] :rocket:
+
+The seventh minor version upgrade introduces the possibility to browse [OParl data](https://dev.oparl.org/spezifikation/) provided by the [sva-apollo-server](https://github.com/ikuseiGmbH/sva-apollo-server).
+
+### Added
+
+- added screens for OParl
+  - Overview, People, Calendar, Search and Detail screens
+  - can handle OParl versions 1.0 and 1.1
+- added custom hook with independent apollo client for OParl queries
+
+### Changed
+- extracted reusable parts of the calendar component from the `WasteCollectionScreen`
+
 ## [v1.6.3]
 
 Replace provider name with logo
