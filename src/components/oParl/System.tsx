@@ -19,6 +19,8 @@ type Props = {
 
 const { system: systemTexts } = texts.oparl;
 
+const leftWidth = 120;
+
 export const System = ({ data, navigation }: Props) => {
   const {
     body,
@@ -58,23 +60,25 @@ export const System = ({ data, navigation }: Props) => {
   ]);
 
   return (
-    <Wrapper>
-      <Row left={systemTexts.name} right={name} />
-      <Row left={systemTexts.oparlVersion} right={oparlVersion} />
+    <>
+      <Row left={systemTexts.name} right={name} leftWidth={leftWidth} />
+      <Row left={systemTexts.oparlVersion} right={oparlVersion} leftWidth={leftWidth} />
       <OParlPreviewSection data={body} header={systemTexts.body} navigation={navigation} />
-      <SimpleRow left={systemTexts.product} right={product} onPress={onPressProduct} />
-      <SimpleRow left={systemTexts.vendor} right={vendor} onPress={onPressVendor} />
-      <SimpleRow left={systemTexts.website} right={website} onPress={onPressWebsite} />
-      <ContactSection contactEmail={contactEmail} contactName={contactName} />
-      <SimpleRow
-        left={systemTexts.otherOparlVersion}
-        right={otherOparlVersion?.join(', ')}
-        selectable
-        fullText
-      />
-      <SimpleRow left={systemTexts.license} right={license} onPress={onPressLicense} />
-      <WebRepresentation name={name || systemTexts.system} navigation={navigation} web={web} />
-      <ModifiedSection created={created} deleted={deleted} modified={modified} />
-    </Wrapper>
+      <Wrapper>
+        <SimpleRow left={systemTexts.product} right={product} onPress={onPressProduct} />
+        <SimpleRow left={systemTexts.vendor} right={vendor} onPress={onPressVendor} />
+        <SimpleRow left={systemTexts.website} right={website} onPress={onPressWebsite} />
+        <ContactSection contactEmail={contactEmail} contactName={contactName} />
+        <SimpleRow
+          left={systemTexts.otherOparlVersion}
+          right={otherOparlVersion?.join(', ')}
+          selectable
+          fullText
+        />
+        <SimpleRow left={systemTexts.license} right={license} onPress={onPressLicense} />
+        <WebRepresentation name={name || systemTexts.system} navigation={navigation} web={web} />
+        <ModifiedSection created={created} deleted={deleted} modified={modified} />
+      </Wrapper>
+    </>
   );
 };

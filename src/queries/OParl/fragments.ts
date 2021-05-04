@@ -121,6 +121,13 @@ export const simplePersonEntries = `
   title
 `;
 
+export const systemPreviewEntries = `
+  id: externalId
+  type
+  name
+  oparlVersion
+`;
+
 export const membershipPreviewEntries = `
   id: externalId
   type

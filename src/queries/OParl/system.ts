@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import { bodyPreviewEntries } from './fragments';
 
 export const systemQuery = [
   gql`
@@ -15,7 +16,7 @@ export const systemQuery = [
         name
         oparlVersion
         body {
-          ...bodyPreview
+          ${bodyPreviewEntries}
         }
         contactEmail
         contactName

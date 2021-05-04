@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-import { legislativeTermPreviewEntries } from './fragments';
+import { legislativeTermPreviewEntries, systemPreviewEntries } from './fragments';
 
 export const bodyQuery = [
   gql`
@@ -28,6 +28,9 @@ export const bodyQuery = [
         oparlSince
         rgs
         website
+        system {
+          ${systemPreviewEntries}
+        }
       }
     }
   `,
