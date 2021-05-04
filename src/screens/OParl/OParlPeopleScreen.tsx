@@ -105,7 +105,9 @@ export const OParlPeopleScreen = ({ navigation }: Props) => {
           />
         </Wrapper>
         <LoadingSpinner loading={orgaLoading || personLoading} />
-        {(!!personError || !!orgaError) && <RegularText>{texts.errors.unexpected}</RegularText>}
+        {(!!personError || !!orgaError) && (
+          <RegularText center>{texts.errors.unexpected}</RegularText>
+        )}
         {listData.map((item) => (
           <OParlPreviewComponent data={item} key={item.id} navigation={navigation} />
         ))}

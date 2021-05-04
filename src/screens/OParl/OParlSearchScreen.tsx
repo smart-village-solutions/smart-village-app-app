@@ -97,7 +97,7 @@ export const OParlSearchScreen = ({ navigation }: Props) => {
   if (!!errorKeyword || !!errorKeywordList)
     return (
       <Wrapper>
-        <RegularText>{texts.errors.unexpected}</RegularText>
+        <RegularText center>{texts.errors.unexpected}</RegularText>
       </Wrapper>
     );
 

@@ -43,7 +43,7 @@ export const OParlDetailScreen = ({ navigation }: Props) => {
     return (
       <WrapperWithOrientation>
         <Wrapper>
-          <RegularText>{texts.errors.noData}</RegularText>
+          <RegularText center>{texts.errors.noData}</RegularText>
         </Wrapper>
       </WrapperWithOrientation>
     );

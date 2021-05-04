@@ -136,7 +136,7 @@ export const OParlCalendarScreen = ({ navigation }: Props) => {
               />
               {!!error && (
                 <Wrapper>
-                  <RegularText>{texts.errors.noData}</RegularText>
+                  <RegularText center>{texts.errors.noData}</RegularText>
                 </Wrapper>
               )}
             </WrapperVertical>
