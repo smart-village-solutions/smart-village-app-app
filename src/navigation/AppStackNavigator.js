@@ -12,11 +12,16 @@ import {
   HtmlScreen,
   IndexScreen,
   LunchScreen,
+  OParlDetailScreen,
   SettingsScreen,
   WasteCollectionScreen,
   WeatherScreen,
   WebScreen,
-  WasteReminderScreen
+  WasteReminderScreen,
+  OParlCalendarScreen,
+  OParlPeopleScreen,
+  OParlOverviewScreen,
+  OParlSearchScreen
 } from '../screens';
 import {
   DetailScreen as BBBUSDetailScreen,
@@ -106,6 +111,36 @@ const AppStackNavigator = (headerRight = true) =>
         screen: LunchScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', texts.widgets.lunch)
+        })
+      },
+      OParlCalendar: {
+        screen: OParlCalendarScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      OParlCategory: {
+        screen: OParlPeopleScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      OParlDetail: {
+        screen: OParlDetailScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      OParlOverview: {
+        screen: OParlOverviewScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      OParlSearch: {
+        screen: OParlSearchScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
         })
       },
       Settings: {

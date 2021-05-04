@@ -2997,6 +2997,15 @@
   dependencies:
     "@types/react" "^16"
 
+"@types/react-native-calendars@^1.505.2":
+  version "1.505.2"
+  resolved "https://registry.yarnpkg.com/@types/react-native-calendars/-/react-native-calendars-1.505.2.tgz#69b4640d8eefa9f4f7a68b35cd79aa98c02c01b4"
+  integrity sha512-NjH/JGLPPDSZ2wiFBxEil7tAUEra08oZeasTe12hFQJzXTRRVnhlamdP/Ky2a79bQIcitJVscOu0FIXLTQvpyQ==
+  dependencies:
+    "@types/react" "*"
+    "@types/react-native" "*"
+    "@types/xdate" "*"
+
 "@types/react-native-vector-icons@^6.4.4":
   version "6.4.6"
   resolved "https://registry.yarnpkg.com/@types/react-native-vector-icons/-/react-native-vector-icons-6.4.6.tgz#848e3b14572def56212cafbf5cb1254b445bfb41"
@@ -3039,6 +3048,11 @@
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-1.0.1.tgz#0a851d3bd96498fa25c33ab7278ed3bd65f06c3e"
   integrity sha512-l42BggppR6zLmpfU6fq9HEa2oGPEI8yrSPL3GITjfRInppYFahObbIQOQK3UGxEnyQpltZLaPe75046NOZQikw==
+
+"@types/xdate@*":
+  version "0.8.31"
+  resolved "https://registry.yarnpkg.com/@types/xdate/-/xdate-0.8.31.tgz#7bec14a47c9bb30715d507f32bc82ab163149574"
+  integrity sha512-iZYRKKK8UZXoepNh2kwK6TPITMj/dwdv0NzNi9DFMt2foGkU7h+ncaCpGsdD2fp/CXMs9dxPAzV9uddFy7c4QA==
 
 "@types/yargs-parser@*":
   version "13.0.0"
@@ -9268,6 +9282,13 @@ react-native-calendars@^1.1129.0:
     prop-types "^15.5.10"
     react-native-swipe-gestures "^1.0.5"
     xdate "^0.8.0"
+
+react-native-collapsible@^1.5.3:
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/react-native-collapsible/-/react-native-collapsible-1.5.3.tgz#d6bc7274ae8f40f7688cca23ededa263e6c81c63"
+  integrity sha512-Ciuy3yF8wcHeLxXFtx9vxoyrq8l+9EJqLM/ADw54gVwzTQc1/e2ojhQbVFPlxhDA+Pba2qezkaKfv5ifxg8hoQ==
+  dependencies:
+    prop-types "^15.6.2"
 
 react-native-elements@~1.2.0:
   version "1.2.7"

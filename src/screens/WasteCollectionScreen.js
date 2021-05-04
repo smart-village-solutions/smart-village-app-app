@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Keyboard, StyleSheet, View } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
-import { Calendar, LocaleConfig } from 'react-native-calendars';
+import { Calendar } from 'react-native-calendars';
 import { ScrollView, TouchableOpacity } from 'react-native';
 
 import {
   Button,
   HeaderLeft,
-  Icon,
   LoadingContainer,
   NoTouchDay,
   RegularText,
@@ -19,50 +18,17 @@ import {
   WrapperWithOrientation
 } from '../components';
 import { colors, device, normalize, texts } from '../config';
-import { arrowLeft, arrowRight } from '../icons';
 import { useQuery } from 'react-apollo';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { useRefreshTime } from '../hooks';
-import { graphqlFetchPolicy } from '../helpers';
+import { graphqlFetchPolicy, setupLocales } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifications';
+import { renderArrow } from '../components';
 
 const dotSize = 6;
 
-LocaleConfig.locales['de'] = {
-  monthNames: [
-    'Januar',
-    'Februar',
-    'März',
-    'April',
-    'Mai',
-    'Juni',
-    'Juli',
-    'August',
-    'September',
-    'Oktober',
-    'November',
-    'Dezember'
-  ],
-  monthNamesShort: [
-    'Jan.',
-    'Feb.',
-    'Mär.',
-    'Apr.',
-    'Mai',
-    'Jun.',
-    'Jul.',
-    'Aug.',
-    'Sep.',
-    'Okt.',
-    'Nov.',
-    'Dez.'
-  ],
-  dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
-  dayNamesShort: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
-  today: 'Heute'
-};
-LocaleConfig.defaultLocale = 'de';
+setupLocales();
 
 const getMarkedDates = (types, streetData) => {
   let markedDates = {};
@@ -96,13 +62,6 @@ const getMarkedDates = (types, streetData) => {
 
   return markedDates;
 };
-
-const renderArrow = (direction) =>
-  direction === 'right' ? (
-    <Icon xml={arrowRight(colors.primary)} style={styles.icon} />
-  ) : (
-    <Icon xml={arrowLeft(colors.primary)} style={styles.icon} />
-  );
 
 // show streets that contain the string in it
 // return empty list on an exact match (except for capitalization)
@@ -312,9 +271,6 @@ const styles = StyleSheet.create({
   },
   autoCompleteList: {
     margin: 0
-  },
-  icon: {
-    paddingHorizontal: normalize(14)
   },
   topMarginContainer:
     device.platform === 'android'

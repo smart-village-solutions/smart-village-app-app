@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
+import React, { memo, NamedExoticComponent, Validator } from 'react';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
@@ -11,28 +11,53 @@ import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 import { trimNewLines } from '../helpers';
+import { NavigationScreenProp } from 'react-navigation';
 
-export const TextListItem = memo(({ navigation, item, noSubtitle, leftImage }) => {
+type ItemData = {
+  routeName: string;
+  params: Record<string, unknown>;
+  subtitle?: string;
+  title: string;
+  bottomDivider?: boolean;
+  topDivider?: boolean;
+  picture?: { url: string };
+};
+
+type Props = {
+  item: ItemData;
+  leftImage?: boolean | undefined;
+  navigation: NavigationScreenProp<never>;
+  noSubtitle?: boolean | undefined;
+};
+
+export const TextListItem: NamedExoticComponent<Props> & {
+  propTypes?: Record<string, Validator<any>>;
+} & {
+  defaultProps?: Partial<Props>;
+} = memo<{
+  item: ItemData;
+  leftImage?: boolean;
+  navigation: NavigationScreenProp<never>;
+  noSubtitle?: boolean;
+}>(({ navigation, item, noSubtitle, leftImage }) => {
   const { routeName, params, subtitle, title, bottomDivider, topDivider, picture } = item;
 
   return (
     <ListItem
-      title={noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
+      title={noSubtitle || !subtitle ? undefined : <RegularText small>{subtitle}</RegularText>}
       subtitle={<BoldText>{trimNewLines(title)}</BoldText>}
       bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
       topDivider={topDivider !== undefined ? topDivider : false}
       containerStyle={styles.container}
       rightIcon={<Icon xml={arrowRight(colors.primary)} />}
       leftIcon={
-        leftImage &&
-        !!picture &&
-        !!picture.url && (
+        leftImage && !!picture?.url ? (
           <Image
             source={{ uri: picture.url }}
             style={styles.smallImage}
             containerStyle={styles.smallImageContainer}
           />
-        )
+        ) : undefined
       }
       onPress={() => navigation && navigation.push(routeName, params)}
       disabled={!navigation}
