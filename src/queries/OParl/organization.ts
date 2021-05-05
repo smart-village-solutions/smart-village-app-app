@@ -12,8 +12,25 @@ import {
 
 export const organizationListQuery = [
   gql`
-    query organizationPeople {
+    query organizationList {
       oParlOrganizations {
+        id: externalId
+        classification
+        name
+        shortName
+        membership {
+          externalId
+        }
+      }
+    }
+  `,
+  'oParlOrganizations'
+] as const;
+
+export const organizationMembershipQuery = [
+  gql`
+    query organizationMembers($id: String!, $offset: Int, $pageSize: Int) {
+      oParlOrganizations(externalIds: [$id], offset: $offset, pageSize: $pageSize) {
         id: externalId
         name
         shortName

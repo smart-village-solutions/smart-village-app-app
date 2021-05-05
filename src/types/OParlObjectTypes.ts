@@ -307,3 +307,13 @@ export type OrganizationPeopleData = {
     person?: PersonPreviewData;
   }>;
 };
+
+export type OrganizationListData = OrganizationPreviewData & {
+  id: string;
+  type: OParlObjectType.Organization | OParlObjectType.Organization1;
+  name?: string;
+  shortName?: string;
+  membership?: Array<{
+    externalId: string;
+  }>;
+};
