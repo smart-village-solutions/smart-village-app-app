@@ -82,8 +82,8 @@ export const personQuery = [
 
 export const personListQuery = [
   gql`
-    query persons {
-      oParlPersons {
+    query persons($offset: Int, $pageSize: Int) {
+      oParlPersons(offset: $offset, pageSize: $pageSize) {
         id: externalId
         type
         affix
