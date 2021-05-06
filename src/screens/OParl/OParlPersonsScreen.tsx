@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { FlatList, NavigationScreenProp } from 'react-navigation';
 
@@ -29,7 +29,7 @@ type Props = {
   navigation: NavigationScreenProp<never>;
 };
 
-const pageSize = 20;
+const pageSize = 30;
 
 const [organizationMembersQuery, organizationMembersQueryName] = organizationMembershipQuery;
 const [orgaListQuery, orgaListQueryName] = simpleOrganizationListQuery;
@@ -84,6 +84,8 @@ const useListData = (
 };
 
 export const OParlPersonsScreen = ({ navigation }: Props) => {
+  const [fetchingMore, setFetchingMore] = useState(false);
+  const [finished, setFinished] = useState(false);
   const { data: orgaListData, loading: orgaListLoading, error: orgaListError } = useOParlQuery<{
     [orgaListQueryName]: OrganizationListData[];
   }>(orgaListQuery);
@@ -118,26 +120,24 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
 
   const listData = useListData(orgaData?.[organizationMembersQueryName][0], personData);
 
-  const onEndReached = useCallback(() => {
-    if (!selectedOrganization) {
-      personFetchMore({
-        variables: { pageSize, offset: personData?.[personQueryName]?.length },
-        updateQuery: (previousResult, { fetchMoreResult }) => {
-          const resultArray: PersonPreviewData[] = [];
+  const onEndReached = async () => {
+    if (fetchingMore) return;
 
-          if (previousResult[personQueryName].length) {
-            resultArray.push(...previousResult[personQueryName]);
-          }
-
-          if (fetchMoreResult?.[personQueryName].length) {
-            resultArray.push(...fetchMoreResult[personQueryName]);
-          }
-
-          return { [personQueryName]: resultArray };
+    setFetchingMore(true);
+    await personFetchMore({
+      variables: { pageSize, offset: personData?.[personQueryName]?.length },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult?.[personQueryName].length) {
+          setFinished(true);
+          return prev;
         }
-      });
-    }
-  }, [personData, personFetchMore, selectedOrganization]);
+        return Object.assign({}, prev, {
+          [personQueryName]: [...prev[personQueryName], ...fetchMoreResult[personQueryName]]
+        });
+      }
+    });
+    setFetchingMore(false);
+  };
 
   if (orgaListLoading) {
     return <LoadingSpinner loading />;
@@ -171,11 +171,13 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
             />
           </Wrapper>
         }
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={1.5}
         onEndReached={onEndReached}
         // this does currently not work as intended, until we upgrade our apollo client dependency
         // as of now the fetchmore function does not set the loading state to true
-        ListFooterComponent={<LoadingSpinner loading={personLoading || orgaLoading} />}
+        ListFooterComponent={
+          <LoadingSpinner loading={personLoading || orgaLoading || (!finished && fetchingMore)} />
+        }
       />
     </SafeAreaViewFlex>
   );

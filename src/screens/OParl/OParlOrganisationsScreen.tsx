@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, NavigationScreenProp } from 'react-navigation';
 
 import { HeaderLeft, RegularText, SafeAreaViewFlex, Wrapper } from '../../components';
@@ -13,7 +13,7 @@ type Props = {
   navigation: NavigationScreenProp<never>;
 };
 
-const pageSize = 20;
+const pageSize = 30;
 
 const [query, queryName] = organizationListQuery;
 
@@ -29,32 +29,32 @@ const useListData = (organizationData?: { [queryName]: OrganizationPreviewData[]
 };
 
 export const OParlOrganizationsScreen = ({ navigation }: Props) => {
+  const [fetchingMore, setFetchingMore] = useState(false);
+  const [finished, setFinished] = useState(false);
   const { data, loading, error, fetchMore } = useOParlQuery<{
     [queryName]: OrganizationPreviewData[];
   }>(query, { variables: { pageSize } });
 
   const listData = useListData(data);
 
-  const onEndReached = useCallback(() => {
-    fetchMore({
+  const onEndReached = async () => {
+    if (fetchingMore) return;
+
+    setFetchingMore(true);
+    await fetchMore({
       variables: { pageSize, offset: data?.[queryName]?.length },
-      updateQuery: (previousResult, { fetchMoreResult }) => {
-        const resultArray: OrganizationPreviewData[] = [];
-
-        if (!fetchMoreResult?.[queryName].length) return previousResult;
-
-        if (previousResult[queryName].length) {
-          resultArray.push(...previousResult[queryName]);
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult?.[queryName].length) {
+          setFinished(true);
+          return prev;
         }
-
-        if (fetchMoreResult?.[queryName].length) {
-          resultArray.push(...fetchMoreResult[queryName]);
-        }
-
-        return { [queryName]: resultArray };
+        return Object.assign({}, prev, {
+          [queryName]: [...prev[queryName], ...fetchMoreResult[queryName]]
+        });
       }
     });
-  }, [data, fetchMore]);
+    setFetchingMore(false);
+  };
 
   if (error) {
     return (
@@ -73,11 +73,11 @@ export const OParlOrganizationsScreen = ({ navigation }: Props) => {
         renderItem={({ item }) => (
           <OParlPreviewComponent data={item} key={item.id} navigation={navigation} />
         )}
-        onEndReachedThreshold={0.5}
+        onEndReachedThreshold={1.5}
         onEndReached={onEndReached}
         // this does currently not work as intended, until we upgrade our apollo client dependency
         // as of now the fetchmore function does not set the loading state to true
-        ListFooterComponent={<LoadingSpinner loading={loading} />}
+        ListFooterComponent={<LoadingSpinner loading={!finished && (loading || fetchingMore)} />}
       />
     </SafeAreaViewFlex>
   );
