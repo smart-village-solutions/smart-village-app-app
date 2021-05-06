@@ -4,10 +4,8 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import {
   BoldText,
-  DiagonalGradient,
   HeaderLeft,
   Logo,
-  RegularText,
   SafeAreaViewFlex,
   Touchable,
   WrapperWithOrientation
@@ -27,18 +25,15 @@ type TileProps = {
 
 const overviewTexts = texts.oparl.overview;
 
-const Tile = ({ logoUri, onPress, subtitle, title }: TileProps) => (
-  <Touchable disabled={!onPress} onPress={onPress}>
-    <DiagonalGradient style={styles.background}>
-      <Logo
-        source={{
-          uri: logoUri
-        }}
-        style={styles.logo}
-      />
-      <BoldText lightest>{title}</BoldText>
-      <RegularText lightest>{subtitle}</RegularText>
-    </DiagonalGradient>
+const Tile = ({ logoUri, onPress, title }: TileProps) => (
+  <Touchable style={styles.background} disabled={!onPress} onPress={onPress}>
+    <Logo
+      source={{
+        uri: logoUri
+      }}
+      style={styles.logo}
+    />
+    <BoldText primary>{title}</BoldText>
   </Touchable>
 );
 
@@ -50,19 +45,24 @@ export const OParlOverviewScreen = ({ navigation }: Props) => {
           <Tile
             logoUri="https://server.bad-belzig.smart-village.app/mobile-app/assets/home-service/Maerker.png"
             title={overviewTexts.search}
-            onPress={() => navigation.navigate('OParlSearch', { title: 'Suche' })}
+            onPress={() => navigation.navigate('OParlSearch', { title: overviewTexts.search })}
           />
           <Tile
             logoUri="https://server.bad-belzig.smart-village.app/mobile-app/assets/home-service/Maerker.png"
-            title={overviewTexts.calendarTitle}
-            subtitle={overviewTexts.calendarSubTitle}
-            onPress={() => navigation.navigate('OParlCalendar', { title: 'Termine' })}
+            title={overviewTexts.calendar}
+            onPress={() => navigation.navigate('OParlCalendar', { title: overviewTexts.calendar })}
           />
           <Tile
             logoUri="https://server.bad-belzig.smart-village.app/mobile-app/assets/home-service/Maerker.png"
-            title={overviewTexts.peopleTitle}
-            subtitle={overviewTexts.peopleSubTitle}
-            onPress={() => navigation.navigate('OParlCategory', { title: 'Beteiligte' })}
+            title={overviewTexts.persons}
+            onPress={() => navigation.navigate('OParlPersons', { title: overviewTexts.persons })}
+          />
+          <Tile
+            logoUri="https://server.bad-belzig.smart-village.app/mobile-app/assets/home-service/Maerker.png"
+            title={overviewTexts.organizations}
+            onPress={() =>
+              navigation.navigate('OParlOrganizations', { title: overviewTexts.organizations })
+            }
           />
         </WrapperWithOrientation>
       </ScrollView>

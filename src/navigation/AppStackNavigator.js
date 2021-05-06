@@ -12,16 +12,17 @@ import {
   HtmlScreen,
   IndexScreen,
   LunchScreen,
+  OParlCalendarScreen,
   OParlDetailScreen,
+  OParlOrganizationsScreen,
+  OParlOverviewScreen,
+  OParlPersonsScreen,
+  OParlSearchScreen,
   SettingsScreen,
   WasteCollectionScreen,
-  WeatherScreen,
-  WebScreen,
   WasteReminderScreen,
-  OParlCalendarScreen,
-  OParlPeopleScreen,
-  OParlOverviewScreen,
-  OParlSearchScreen
+  WeatherScreen,
+  WebScreen
 } from '../screens';
 import {
   DetailScreen as BBBUSDetailScreen,
@@ -119,20 +120,26 @@ const AppStackNavigator = (headerRight = true) =>
           title: props.navigation.getParam('title', '')
         })
       },
-      OParlCategory: {
-        screen: OParlPeopleScreen,
-        navigationOptions: (props) => ({
-          title: props.navigation.getParam('title', '')
-        })
-      },
       OParlDetail: {
         screen: OParlDetailScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', '')
         })
       },
+      OParlOrganizations: {
+        screen: OParlOrganizationsScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
       OParlOverview: {
         screen: OParlOverviewScreen,
+        navigationOptions: (props) => ({
+          title: props.navigation.getParam('title', '')
+        })
+      },
+      OParlPersons: {
+        screen: OParlPersonsScreen,
         navigationOptions: (props) => ({
           title: props.navigation.getParam('title', '')
         })

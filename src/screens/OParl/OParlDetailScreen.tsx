@@ -23,6 +23,8 @@ export const OParlDetailScreen = ({ navigation }: Props) => {
   const oParlType = navigation.getParam('type');
   const id = navigation.getParam('id');
 
+  console.log(id);
+
   const [query, queryName] = getOParlQuery(oParlType);
 
   const { data: queryData, loading, error } = useOParlQuery(query, {

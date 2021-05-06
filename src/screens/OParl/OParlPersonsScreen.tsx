@@ -14,7 +14,7 @@ import { OParlPreviewComponent } from '../../components/oParl';
 import { colors, normalize, texts } from '../../config';
 import { useOParlQuery } from '../../hooks';
 import {
-  organizationListQuery,
+  simpleOrganizationListQuery,
   organizationMembershipQuery,
   personListQuery
 } from '../../queries/OParl';
@@ -32,18 +32,18 @@ type Props = {
 const pageSize = 20;
 
 const [organizationMembersQuery, organizationMembersQueryName] = organizationMembershipQuery;
-const [orgaListQuery, orgaListQueryName] = organizationListQuery;
+const [orgaListQuery, orgaListQueryName] = simpleOrganizationListQuery;
 const [personQuery, personQueryName] = personListQuery;
 
 const useDropdownData = (orgaData?: { [organizationMembersQueryName]: OrganizationListData[] }) => {
   const [dropdownData, setDropdownData] = useState<
     Array<{ value: string; id: string; selected?: boolean }>
-  >([{ value: texts.oparl.people.chooseAnOrg, id: '', selected: true }]);
+  >([{ value: texts.oparl.personList.chooseAnOrg, id: '', selected: true }]);
 
   useEffect(() => {
     const organizations =
       orgaData?.[organizationMembersQueryName].filter((org) => org.membership?.length) ?? [];
-    const newData = [{ value: texts.oparl.people.chooseAnOrg, id: '', selected: true }];
+    const newData = [{ value: texts.oparl.personList.chooseAnOrg, id: '', selected: true }];
     newData.push(
       ...organizations.map((value: OrganizationPreviewData) => ({
         value: value.name ?? value.shortName ?? value.id,
@@ -83,7 +83,7 @@ const useListData = (
   return listData;
 };
 
-export const OParlPeopleScreen = ({ navigation }: Props) => {
+export const OParlPersonsScreen = ({ navigation }: Props) => {
   const { data: orgaListData, loading: orgaListLoading, error: orgaListError } = useOParlQuery<{
     [orgaListQueryName]: OrganizationListData[];
   }>(orgaListQuery);
@@ -181,7 +181,7 @@ export const OParlPeopleScreen = ({ navigation }: Props) => {
   );
 };
 
-OParlPeopleScreen.navigationOptions = ({ navigation }: Props) => {
+OParlPersonsScreen.navigationOptions = ({ navigation }: Props) => {
   return {
     headerLeft: <HeaderLeft navigation={navigation} />
   };

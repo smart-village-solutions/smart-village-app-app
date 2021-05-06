@@ -9,7 +9,7 @@ import { OParlPreviewComponent } from './OParlPreviewComponent';
 
 type Props = {
   data?: OParlObjectPreviewData;
-  header: string;
+  header?: string;
   navigation: NavigationScreenProp<never>;
   withAgendaItem?: boolean;
   withPerson?: boolean;
@@ -28,7 +28,7 @@ export const OParlItemPreview = ({
 
   return (
     <View style={styles.marginTop}>
-      <SectionHeader title={header} />
+      {!!header?.length && <SectionHeader title={header} />}
       <OParlPreviewComponent
         data={data}
         navigation={navigation}

@@ -10,7 +10,7 @@ import {
   personPreviewEntries
 } from './fragments';
 
-export const organizationListQuery = [
+export const simpleOrganizationListQuery = [
   gql`
     query organizationList {
       oParlOrganizations {
@@ -21,6 +21,17 @@ export const organizationListQuery = [
         membership {
           externalId
         }
+      }
+    }
+  `,
+  'oParlOrganizations'
+] as const;
+
+export const organizationListQuery = [
+  gql`
+    query organizationList($pageSize: Int, $offset: Int) {
+      oParlOrganizations(pageSize: $pageSize, offset: $offset) {
+        ${organizationPreviewEntries}
       }
     }
   `,
