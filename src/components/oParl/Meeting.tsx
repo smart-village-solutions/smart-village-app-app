@@ -48,9 +48,6 @@ export const Meeting = ({ data, navigation }: Props) => {
   const sortedAgendaItems = agendaItem
     ? [...agendaItem].sort((a, b) => {
         if (isNumber(a.order) && isNumber(b.order)) return a.order - b.order;
-        if (a.number?.length && b.number?.length) {
-          return a.number < b.number ? -1 : 1;
-        }
         return 0;
       })
     : undefined;
