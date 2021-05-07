@@ -6,8 +6,8 @@ import { colors, normalize } from '../../../config';
 import { arrowRight } from '../../../icons';
 
 import { OParlObjectType } from '../../../types';
+import { HtmlView } from '../../HtmlView';
 import { Icon } from '../../Icon';
-import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
 
 type Props = {
@@ -29,7 +29,7 @@ export const OParlPreviewEntry = ({
 }: Props) => {
   return (
     <ListItem
-      title={<RegularText>{title}</RegularText>}
+      title={<HtmlView html={title} />}
       bottomDivider={!topDivider}
       topDivider={topDivider}
       containerStyle={styles.container}
