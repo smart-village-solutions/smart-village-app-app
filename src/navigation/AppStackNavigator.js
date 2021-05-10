@@ -44,7 +44,7 @@ export const AppStackNavigator = (headerRight = true) => {
   return (
     <Stack.Navigator
       initialRouteName="Home"
-      // screenOptions={{headerLeft: }
+      // screenOptions={{headerLeft: } // FIXME: Nav
       screenOptions={defaultStackNavigatorScreenOptions(headerRight)}
     >
       <Stack.Screen name="BBBUSIndex" component={BBBUSIndexScreen} />
@@ -97,10 +97,16 @@ export const AppStackNavigator = (headerRight = true) => {
   );
 };
 
+// FIXME: Nav; why two styles?
 const styles = StyleSheet.create({
   iconLeft: {
     paddingLeft: normalize(14),
     paddingRight: normalize(7),
+    paddingVertical: normalize(4)
+  },
+  iconRight: {
+    paddingLeft: normalize(7),
+    paddingRight: normalize(14),
     paddingVertical: normalize(4)
   }
 });

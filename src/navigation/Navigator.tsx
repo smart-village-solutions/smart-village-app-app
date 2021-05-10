@@ -1,10 +1,10 @@
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import React, { useContext } from 'react';
-import { Text } from '../components';
+
 import { consts } from '../config';
 import { SettingsContext } from '../SettingsProvider';
 import { DrawerNavigator } from './DrawerNavigator';
-import { TabNavigator } from './TabNavigator';
+import { MainTabNavigator } from './MainTabNavigator';
 
 export const Navigator = () => {
   const { globalSettings } = useContext(SettingsContext);
@@ -16,11 +16,7 @@ export const Navigator = () => {
         colors: { ...DefaultTheme.colors, background: '#fff' }
       }}
     >
-      {globalSettings?.navigation === consts.DRAWER ? (
-        <DrawerNavigator config={globalSettings.navigation} />
-      ) : (
-        <TabNavigator config={globalSettings?.navigation ?? 'undefined'} />
-      )}
+      {globalSettings?.navigation === consts.DRAWER ? <DrawerNavigator /> : <MainTabNavigator />}
     </NavigationContainer>
   );
 };
