@@ -102,5 +102,7 @@ const stylesWithProps = ({ orientation }) => {
 /* eslint-enable react-native/no-unused-styles */
 
 CustomDrawerContentComponent.propTypes = {
-  navigation: PropTypes.object.isRequired
+  drawerRoutes: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
+  state: PropTypes.object.isRequired
 };

@@ -26,23 +26,7 @@ const getActiveRoute = (navigationState) => {
  *   https://github.com/react-navigation/drawer/blob/c5954d744f463e7f1c67941b8eb6914c0101e56c/src/views/DrawerNavigatorItems.tsx
  */
 // FIXME: Nav
-const DrawerNavigatorItems = ({
-  // items,
-  // activeTintColor,
-  // activeBackgroundColor,
-  // inactiveTintColor,
-  // inactiveBackgroundColor,
-  // getLabel,
-  // itemsContainerStyle,
-  // itemStyle,
-  // labelStyle,
-  // activeLabelStyle,
-  // inactiveLabelStyle,
-  // drawerPosition,
-  drawerRoutes,
-  navigation,
-  state
-}) => {
+const DrawerNavigatorItems = ({ drawerRoutes, navigation, state }) => {
   /**
    * based on:
    *   https://github.com/react-navigation/drawer/blob/c5954d744f463e7f1c67941b8eb6914c0101e56c/src/views/DrawerSidebar.tsx#L67
@@ -120,19 +104,9 @@ const styles = StyleSheet.create({
 DrawerNavigatorItems.displayName = 'DrawerNavigatorItems';
 
 DrawerNavigatorItems.propTypes = {
-  items: PropTypes.array.isRequired,
-  activeTintColor: PropTypes.string,
-  activeBackgroundColor: PropTypes.string,
-  inactiveTintColor: PropTypes.string,
-  inactiveBackgroundColor: PropTypes.string,
-  getLabel: PropTypes.func.isRequired,
-  itemsContainerStyle: PropTypes.object,
-  itemStyle: PropTypes.object,
-  labelStyle: PropTypes.object,
-  activeLabelStyle: PropTypes.object,
-  inactiveLabelStyle: PropTypes.object,
-  drawerPosition: PropTypes.string.isRequired,
-  navigation: PropTypes.object.isRequired
+  drawerRoutes: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
+  state: PropTypes.object.isRequired
 };
 
 DrawerNavigatorItems.defaultProps = {

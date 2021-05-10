@@ -5,7 +5,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet } from 'react-native';
 
-import { RegularText } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { colors, device, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
@@ -30,6 +29,16 @@ const defaultDrawerRoutes = {
   }
 };
 
+// FIXME: Nav; better types?
+type DrawerRoutes = Record<
+  string,
+  {
+    screen: string;
+    navigationOptions: () => Record<string, any>;
+    params: Record<string, any>;
+  }
+>;
+
 const useDrawerRoutes = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -37,11 +46,11 @@ const useDrawerRoutes = () => {
     variables: { name: 'navigation' },
     fetchPolicy
   });
-  const [drawerRoutes, setDrawerRoutes] = useState(defaultDrawerRoutes);
+  const [drawerRoutes, setDrawerRoutes] = useState<DrawerRoutes>(defaultDrawerRoutes);
 
   useEffect(() => {
-    // FIXME: Nav
-    let navigationPublicJsonFileContent = [];
+    // FIXME: Nav; better types?
+    let navigationPublicJsonFileContent: Array<Record<string, any>> = [];
 
     error && console.warn('error', error);
 
@@ -53,7 +62,6 @@ const useDrawerRoutes = () => {
     }
 
     if (!_isEmpty(navigationPublicJsonFileContent)) {
-      // FIXME: Nav
       setDrawerRoutes((currentRoutes) =>
         _reduce(
           navigationPublicJsonFileContent,
@@ -78,39 +86,32 @@ const useDrawerRoutes = () => {
 
 const Drawer = createDrawerNavigator();
 
-export const DrawerNavigator = ({ config }: { config: string }) => {
+export const DrawerNavigator = () => {
   const { loading, drawerRoutes } = useDrawerRoutes();
 
   if (loading) return <LoadingSpinner loading />;
 
-  if (config)
-    return (
-      <Drawer.Navigator
-        drawerContent={({ navigation, state }) => (
-          <CustomDrawerContentComponent
-            navigation={navigation}
-            state={state}
-            drawerRoutes={drawerRoutes}
-          />
-        )}
-        drawerPosition="right"
-        drawerStyle={styles.drawerContainer}
-        drawerType={device.platform === 'ios' ? 'slide' : 'front'}
-        initialRouteName="AppStack"
-      >
-        <Drawer.Screen name="AppStack" component={AppStackNavigator} />
-      </Drawer.Navigator>
-    );
-
-  return <RegularText>Config is missing</RegularText>; // FIXME: Nav
+  return (
+    <Drawer.Navigator
+      drawerContent={({ navigation, state }) => (
+        <CustomDrawerContentComponent
+          navigation={navigation}
+          state={state}
+          drawerRoutes={drawerRoutes}
+        />
+      )}
+      drawerPosition="right"
+      drawerStyle={styles.drawerContainer}
+      drawerType={device.platform === 'ios' ? 'slide' : 'front'}
+      initialRouteName="AppStack"
+    >
+      <Drawer.Screen name="AppStack" component={AppStackNavigator} />
+    </Drawer.Navigator>
+  );
 };
 
 const styles = StyleSheet.create({
   drawerContainer: {
-    shadowColor: colors.darkText,
-    shadowOffset: { height: 0, width: 2 },
-    shadowOpacity: 0.5,
-    shadowRadius: 3,
     width: device.width > device.height ? device.height * 0.8 : device.width * 0.8
   }
 });
