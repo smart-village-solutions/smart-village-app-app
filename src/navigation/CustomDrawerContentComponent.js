@@ -13,7 +13,8 @@ import { OrientationContext } from '../OrientationProvider';
  * based on the default content component from React Navigation:
  *   https://github.com/react-navigation/drawer/blob/c5954d744f463e7f1c67941b8eb6914c0101e56c/src/navigators/createDrawerNavigator.tsx
  */
-export const CustomDrawerContentComponent = (props) => {
+// FIXME: Nav
+export const CustomDrawerContentComponent = ({ navigation, drawerRoutes, state }) => {
   const { orientation } = useContext(OrientationContext);
 
   return (
@@ -23,7 +24,7 @@ export const CustomDrawerContentComponent = (props) => {
           <TouchableOpacity
             accessibilityLabel="Schließen Taste"
             accessibilityHint="Menü schließen"
-            onPress={() => props.navigation.closeDrawer()}
+            onPress={() => navigation.closeDrawer()}
             delayPressIn={0}
           >
             <Icon
@@ -35,7 +36,7 @@ export const CustomDrawerContentComponent = (props) => {
           </TouchableOpacity>
         </View>
       </View>
-      <DrawerNavigatorItems {...props} />
+      <DrawerNavigatorItems navigation={navigation} state={state} drawerRoutes={drawerRoutes} />
     </DiagonalGradient>
   );
 };

@@ -34,8 +34,10 @@ export const NewsItem = ({ data, navigation }) => {
   const subtitle = `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`;
   // the title of a news item is either a given main title or the title from the first content block
   const title = mainTitle || (!!contentBlocks && !!contentBlocks.length && contentBlocks[0].title);
-  const rootRouteName = navigation.getParam('rootRouteName', '');
-  const headerTitle = navigation.getParam('title', '');
+  const rootRouteName = 'asd' ?? navigation.getParam('rootRouteName', ''); // FIXME: Nav
+
+  const headerTitle = 'asd' ?? navigation.getParam('title', ''); // FIXME: Nav
+
   // action to open source urls
   const openWebScreen = (webUrl) =>
     navigation.navigate({

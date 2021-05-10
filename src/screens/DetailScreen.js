@@ -62,10 +62,12 @@ const getRefreshInterval = (query) => {
   return REFRESH_INTERVALS[query];
 };
 
-export const DetailScreen = ({ navigation }) => {
+export const DetailScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const query = navigation.getParam('query', '');
-  const queryVariables = navigation.getParam('queryVariables', {});
+  const query = route.params?.query ?? '';
+  const queryVariables = route.params?.queryVariables ?? {};
+  const details = route.params?.details ?? {};
+
   const [refreshing, setRefreshing] = useState(false);
 
   if (!query || !queryVariables || !queryVariables.id) return null;
@@ -90,7 +92,6 @@ export const DetailScreen = ({ navigation }) => {
     setRefreshing(false);
   };
 
-  const details = navigation.getParam('details', {});
   const fetchPolicy = graphqlFetchPolicy({
     isConnected,
     isMainserverUp,
@@ -155,55 +156,57 @@ const styles = StyleSheet.create({
   }
 });
 
-DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
-  const shareContent = navigation.getParam('shareContent', '');
-  const suffix = navigation.getParam('suffix', '');
-  const query = navigation.getParam('query', '');
-  const queryVariables = navigation.getParam('queryVariables', {});
+// FIXME: Nav
+// DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
+//   const shareContent = navigation.getParam('shareContent', '');
+//   const suffix = navigation.getParam('suffix', '');
+//   const query = navigation.getParam('query', '');
+//   const queryVariables = navigation.getParam('queryVariables', {});
 
-  const { headerRight } = navigationOptions;
+//   const { headerRight } = navigationOptions;
 
-  const StyledBookmarkHeader =
-    query && queryVariables?.id ? (
-      <BookmarkHeader
-        id={queryVariables.id}
-        suffix={suffix}
-        query={query}
-        style={styles.iconLeft}
-      />
-    ) : null;
+//   const StyledBookmarkHeader =
+//     query && queryVariables?.id ? (
+//       <BookmarkHeader
+//         id={queryVariables.id}
+//         suffix={suffix}
+//         query={query}
+//         style={styles.iconLeft}
+//       />
+//     ) : null;
 
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />,
-    headerRight: (
-      <WrapperRow style={styles.headerRight}>
-        {StyledBookmarkHeader}
-        {!!shareContent && (
-          <TouchableOpacity
-            onPress={() => openShare(shareContent)}
-            accessibilityLabel="Teilen Taste"
-            accessibilityHint="Inhalte auf der Seite teilen"
-          >
-            {device.platform === 'ios' ? (
-              <Icon
-                name="ios-share"
-                iconColor={colors.lightestText}
-                style={headerRight ? styles.iconLeft : styles.iconRight}
-              />
-            ) : (
-              <Icon
-                xml={share(colors.lightestText)}
-                style={headerRight ? styles.iconLeft : styles.iconRight}
-              />
-            )}
-          </TouchableOpacity>
-        )}
-        {!!headerRight && headerRight}
-      </WrapperRow>
-    )
-  };
-};
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//     headerRight: (
+//     <WrapperRow style={styles.headerRight}>
+//       {StyledBookmarkHeader}
+//       {!!shareContent && (
+//         <TouchableOpacity
+//           onPress={() => openShare(shareContent)}
+//           accessibilityLabel="Teilen Taste"
+//           accessibilityHint="Inhalte auf der Seite teilen"
+//         >
+//           {device.platform === 'ios' ? (
+//             <Icon
+//               name="ios-share"
+//               iconColor={colors.lightestText}
+//               style={headerRight ? styles.iconLeft : styles.iconRight}
+//             />
+//           ) : (
+//             <Icon
+//               xml={share(colors.lightestText)}
+//               style={headerRight ? styles.iconLeft : styles.iconRight}
+//             />
+//           )}
+//         </TouchableOpacity>
+//       )}
+//       {!!headerRight && headerRight}
+//     </WrapperRow>
+//     )
+//   };
+// };
 
 DetailScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, ScrollView } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
+// FIXME: Nav
 
 import {
   HeaderLeft,
@@ -16,7 +16,7 @@ import { useOParlQuery } from '../../hooks';
 import { getOParlQuery } from '../../queries/OParl';
 
 type Props = {
-  navigation: NavigationScreenProp<never>;
+  // navigation: NavigationScreenProp<never>; // FIXME: Nav
 };
 
 export const OParlDetailScreen = ({ navigation }: Props) => {

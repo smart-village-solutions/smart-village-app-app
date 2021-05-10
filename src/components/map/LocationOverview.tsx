@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { MapMarker, WebviewLeafletMessage } from 'react-native-webview-leaflet';
-import { NavigationScreenProps, ScrollView } from 'react-navigation';
+// import { NavigationScreenProps, ScrollView } from 'react-navigation';// FIXME: Nav
 
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
@@ -19,7 +19,7 @@ import { WebViewMap } from './WebViewMap';
 type Props = {
   category: string;
   dataProviderName?: string;
-  navigation: NavigationScreenProps;
+  // navigation: NavigationScreenProps;     // FIXME: Nav
 };
 
 // FIXME: with our current setup the data that we receive from a query is not typed

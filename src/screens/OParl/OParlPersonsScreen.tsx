@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { FlatList, NavigationScreenProp } from 'react-navigation';
+import React, { useCallback, useEffect, useState } from 'react';
+import { FlatList, StyleSheet } from 'react-native';
 
 import {
   DropdownSelect,
@@ -26,7 +25,7 @@ import {
 } from '../../types';
 
 type Props = {
-  navigation: NavigationScreenProp<never>;
+  // navigation: NavigationScreenProp<never>;// FIXME: Nav
 };
 
 const pageSize = 30;

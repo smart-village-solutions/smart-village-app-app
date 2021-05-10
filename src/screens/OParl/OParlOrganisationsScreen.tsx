@@ -10,7 +10,7 @@ import { organizationListQuery } from '../../queries/OParl';
 import { OrganizationPreviewData } from '../../types';
 
 type Props = {
-  navigation: NavigationScreenProp<never>;
+  // navigation: NavigationScreenProp<never>;
 };
 
 const pageSize = 30;

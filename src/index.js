@@ -3,7 +3,6 @@ import { ActivityIndicator, AsyncStorage, StatusBar } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SecureStore from 'expo-secure-store';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { createAppContainer, createDrawerNavigator } from 'react-navigation';
 import { ApolloProvider } from 'react-apollo';
 import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
@@ -23,12 +22,13 @@ import { NetworkProvider } from './NetworkProvider';
 import NetInfo from './NetInfo';
 import { OrientationProvider } from './OrientationProvider';
 import { SettingsProvider } from './SettingsProvider';
-import AppStackNavigator from './navigation/AppStackNavigator';
 import MainTabNavigator from './navigation/MainTabNavigator';
 import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
-import { LoadingContainer } from './components';
+import { LoadingContainer, RegularText } from './components';
 import { BookmarkProvider } from './BookmarkProvider';
 import { ConstructionSiteProvider } from './ConstructionSiteProvider';
+import { NavigationContainer } from '@react-navigation/native';
+import { Navigator } from './navigation/Navigator';
 
 const { LIST_TYPES } = consts;
 
@@ -38,21 +38,6 @@ const MainAppWithApolloProvider = () => {
   const [client, setClient] = useState();
   const [initialGlobalSettings, setInitialGlobalSettings] = useState({});
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
-  const [drawerRoutes, setDrawerRoutes] = useState({
-    AppStack: {
-      screen: AppStackNavigator(),
-      navigationOptions: () => ({
-        title: texts.navigationTitles.home
-      }),
-      params: {
-        title: texts.screenTitles.home,
-        screen: 'Home',
-        query: '',
-        queryVariables: {},
-        rootRouteName: 'AppStack'
-      }
-    }
-  });
   const [authRetried, setAuthRetried] = useState(false);
   const [netInfo, setNetInfo] = useState({
     isConnected: null,
@@ -205,6 +190,22 @@ const MainAppWithApolloProvider = () => {
     client && setupInitialGlobalSettings();
   }, [client]);
 
+  // FIXME: Nav
+  // const [drawerRoutes, setDrawerRoutes] = useState({
+  //   AppStack: {
+  //     screen: AppStackNavigator(),
+  //     navigationOptions: () => ({
+  //       title: texts.navigationTitles.home
+  //     }),
+  //     params: {
+  //       title: texts.screenTitles.home,
+  //       screen: 'Home',
+  //       query: '',
+  //       queryVariables: {},
+  //       rootRouteName: 'AppStack'
+  //     }
+  //   }
+  // });
   const setupNavigationDrawer = async () => {
     if (initialGlobalSettings.navigation === consts.DRAWER) {
       const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -232,23 +233,23 @@ const MainAppWithApolloProvider = () => {
       }
 
       if (!_isEmpty(navigationPublicJsonFileContent)) {
-        setDrawerRoutes(
-          _reduce(
-            navigationPublicJsonFileContent,
-            (result, value, key) => {
-              result[key] = {
-                screen: value.screen,
-                navigationOptions: () => ({
-                  title: value.title
-                }),
-                params: { ...value, rootRouteName: key }
-              };
-
-              return result;
-            },
-            drawerRoutes
-          )
-        );
+        // FIXME: Nav
+        // setDrawerRoutes(
+        //   _reduce(
+        //     navigationPublicJsonFileContent,
+        //     (result, value, key) => {
+        //       result[key] = {
+        //         screen: value.screen,
+        //         navigationOptions: () => ({
+        //           title: value.title
+        //         }),
+        //         params: { ...value, rootRouteName: key }
+        //       };
+        //       return result;
+        //     },
+        //     drawerRoutes
+        //   )
+        // );
       }
     }
 
@@ -277,32 +278,33 @@ const MainAppWithApolloProvider = () => {
       </LoadingContainer>
     );
   }
+  // FIXME: Nav
+  // let AppContainer = () => null;
 
-  let AppContainer = () => null;
+  // if (initialGlobalSettings.navigation === consts.DRAWER) {
+  //   // use drawer for navigation for the app
+  //   const AppDrawerNavigator = createDrawerNavigator(drawerRoutes, {
+  //     initialRouteName: 'AppStack',
+  //     drawerPosition: 'right',
+  //     drawerType: device.platform === 'ios' ? 'slide' : 'front',
+  //     // drawer width should always be 80% of the shorter screen side size
+  //     drawerWidth: device.width > device.height ? device.height * 0.8 : device.width * 0.8,
+  //     contentComponent: CustomDrawerContentComponent,
+  //     contentContainerStyle: {
+  //       shadowColor: colors.darkText,
+  //       shadowOffset: { height: 0, width: 2 },
+  //       shadowOpacity: 0.5,
+  //       shadowRadius: 3
+  //     },
+  //     overlayColor: colors.overlayRgba
+  //   });
 
-  if (initialGlobalSettings.navigation === consts.DRAWER) {
-    // use drawer for navigation for the app
-    const AppDrawerNavigator = createDrawerNavigator(drawerRoutes, {
-      initialRouteName: 'AppStack',
-      drawerPosition: 'right',
-      drawerType: device.platform === 'ios' ? 'slide' : 'front',
-      // drawer width should always be 80% of the shorter screen side size
-      drawerWidth: device.width > device.height ? device.height * 0.8 : device.width * 0.8,
-      contentComponent: CustomDrawerContentComponent,
-      contentContainerStyle: {
-        shadowColor: colors.darkText,
-        shadowOffset: { height: 0, width: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 3
-      },
-      overlayColor: colors.overlayRgba
-    });
-
-    AppContainer = createAppContainer(AppDrawerNavigator);
-  }
+  //   AppContainer = createAppContainer(AppDrawerNavigator);
+  // }
 
   if (initialGlobalSettings.navigation === consts.TABS) {
-    AppContainer = createAppContainer(MainTabNavigator);
+    // FIXME: Nav
+    // AppContainer = createAppContainer(MainTabNavigator);
   }
 
   if (initialGlobalSettings.imageAspectRatio) {
@@ -313,7 +315,7 @@ const MainAppWithApolloProvider = () => {
     <ApolloProvider client={client}>
       <SettingsProvider {...{ initialGlobalSettings, initialListTypesSettings }}>
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
-        <AppContainer />
+        <Navigator />
       </SettingsProvider>
     </ApolloProvider>
   );

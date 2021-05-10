@@ -1,9 +1,8 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import { ScrollView } from 'react-native';
 import { Calendar, DateObject, MultiDotMarking } from 'react-native-calendars';
-import { ScrollView } from 'react-native-gesture-handler';
-import { NavigationScreenProp } from 'react-navigation';
 
 import {
   HeaderLeft,
@@ -22,7 +21,7 @@ import { meetingListQuery } from '../../queries/OParl/meeting';
 import { MeetingPreviewData } from '../../types';
 
 type Props = {
-  navigation: NavigationScreenProp<never>;
+  // navigation: NavigationScreenProp<never>;// FIXME: Nav
 };
 
 setupLocales();

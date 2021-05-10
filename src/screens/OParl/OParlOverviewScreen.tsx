@@ -1,6 +1,5 @@
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
 
 import {
   BoldText,
@@ -15,7 +14,7 @@ import { colors, texts } from '../../config';
 import { oParlCalendar, oParlOrganizations, oParlPeople } from '../../icons';
 
 type Props = {
-  navigation: NavigationScreenProp<never>;
+  // navigation: NavigationScreenProp<never>;// FIXME: Nav
 };
 
 type TileProps = {

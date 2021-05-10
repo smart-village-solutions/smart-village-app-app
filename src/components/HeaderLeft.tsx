@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import { StackHeaderLeftButtonProps } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
@@ -6,10 +6,10 @@ import { colors, normalize } from '../config';
 import { arrowLeft } from '../icons';
 import { Icon } from './Icon';
 
-export const HeaderLeft = ({ navigation }) => (
+export const HeaderLeft = ({ onPress }: StackHeaderLeftButtonProps) => (
   <View>
     <TouchableOpacity
-      onPress={() => navigation.goBack()}
+      onPress={onPress}
       accessibilityLabel="Zurück Taste"
       accessibilityHint="Navigieren zurück zur vorherigen Seite"
     >
@@ -23,7 +23,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(14)
   }
 });
-
-HeaderLeft.propTypes = {
-  navigation: PropTypes.object.isRequired
-};
