@@ -286,11 +286,12 @@ const styles = StyleSheet.create({
   }
 });
 
-IndexScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// IndexScreen.navigationOptions = ({ navigation }) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };
 
 IndexScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

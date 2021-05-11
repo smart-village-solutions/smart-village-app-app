@@ -22,11 +22,11 @@ import { useRefreshTime } from '../hooks';
 
 const { MATOMO_TRACKING } = consts;
 
-export const HtmlScreen = ({ navigation }) => {
+export const HtmlScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const query = navigation.getParam('query', '');
-  const queryVariables = navigation.getParam('queryVariables', '');
-  const title = navigation.getParam('title', '');
+  const query = route.params?.query ?? '';
+  const queryVariables = route.params?.queryVariables ?? {};
+  const title = route.params?.title ?? '';
   const [refreshing, setRefreshing] = useState(false);
   const { trackScreenView } = useMatomo();
 
@@ -56,8 +56,8 @@ export const HtmlScreen = ({ navigation }) => {
     isConnected && (await refetch());
     setRefreshing(false);
   };
-  const rootRouteName = navigation.getParam('rootRouteName', '');
-  const subQuery = navigation.getParam('subQuery', '');
+  const subQuery = route.params?.subQuery ?? '';
+  const rootRouteName = route.params?.rootRouteName ?? '';
   const fetchPolicy = graphqlFetchPolicy({
     isConnected,
     isMainserverUp,
@@ -69,7 +69,7 @@ export const HtmlScreen = ({ navigation }) => {
     // if the `param` is a string, it is directly the web url to call
     if (!!param && typeof param === 'string') {
       return navigation.navigate({
-        routeName: 'Web',
+        name: 'Web',
         params: {
           title,
           webUrl: param,
@@ -167,12 +167,14 @@ export const HtmlScreen = ({ navigation }) => {
   );
 };
 
-HtmlScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// HtmlScreen.navigationOptions = ({ navigation }) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };
 
 HtmlScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

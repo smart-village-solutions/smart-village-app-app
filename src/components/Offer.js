@@ -21,7 +21,7 @@ const { MATOMO_TRACKING } = consts;
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
 // eslint-disable-next-line complexity
-export const Offer = ({ data, navigation }) => {
+export const Offer = ({ data, navigation, route }) => {
   const {
     companies,
     contacts,
@@ -46,15 +46,15 @@ export const Offer = ({ data, navigation }) => {
   );
 
   const link = sourceUrl?.url;
-  const rootRouteName = navigation.getParam('rootRouteName', '');
-  const headerTitle = navigation.getParam('title', '');
+  const rootRouteName = route.params?.rootRouteName ?? '';
+  const headerTitle = route.params?.headerTitle ?? '';
   const dataProviderLogo = dataProvider?.logo?.url;
 
   // action to open source urls
   const openWebScreen = useCallback(
     (webUrl) =>
       navigation.navigate({
-        routeName: 'Web',
+        name: 'Web',
         params: {
           title: headerTitle,
           webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
@@ -126,6 +126,7 @@ export const Offer = ({ data, navigation }) => {
           operatingCompany={operatingCompany}
           openWebScreen={openWebScreen}
         />
+        {/*FIXME: Nav*/}
         {!!businessAccount && (
           <DataProviderButton dataProvider={dataProvider} navigation={navigation} />
         )}
@@ -136,5 +137,6 @@ export const Offer = ({ data, navigation }) => {
 
 Offer.propTypes = {
   data: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

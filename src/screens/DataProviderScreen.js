@@ -5,9 +5,9 @@ import { ScrollView } from 'react-native';
 import { CrossData, HeaderLeft, Logo, RegularText, Wrapper } from '../components';
 import { texts } from '../config';
 
-export const DataProviderScreen = ({ navigation }) => {
-  const dataProviderName = navigation.getParam('dataProviderName');
-  const logo = navigation.getParam('logo');
+export const DataProviderScreen = ({ navigation, route }) => {
+  const dataProviderName = route.params?.dataProviderName ?? '';
+  const logo = route.params?.logo ?? '';
 
   if (!dataProviderName) {
     return (
@@ -30,12 +30,14 @@ export const DataProviderScreen = ({ navigation }) => {
   );
 };
 
-DataProviderScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// DataProviderScreen.navigationOptions = ({ navigation }) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };
 
 DataProviderScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

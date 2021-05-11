@@ -127,11 +127,12 @@ export const OParlSearchScreen = ({ navigation }: Props) => {
   );
 };
 
-OParlSearchScreen.navigationOptions = ({ navigation }: Props) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// OParlSearchScreen.navigationOptions = ({ navigation }: Props) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };
 
 const styles = StyleSheet.create({
   searchInput: {

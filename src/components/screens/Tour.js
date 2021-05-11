@@ -20,7 +20,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const Tour = ({ data, navigation }) => {
+export const Tour = ({ data, navigation, route }) => {
   const {
     addresses,
     category,
@@ -34,16 +34,14 @@ export const Tour = ({ data, navigation }) => {
     title,
     webUrls
   } = data;
-  const rootRouteName = navigation.getParam('rootRouteName', '');
-  const headerTitle = navigation.getParam('title', '');
   // action to open source urls
   const openWebScreen = (webUrl) =>
     navigation.navigate({
-      routeName: 'Web',
+      name: 'Web',
       params: {
-        title: headerTitle,
+        title: route.params?.title ?? '',
         webUrl,
-        rootRouteName
+        rootRouteName: route.params?.rootRouteName ?? ''
       }
     });
 
@@ -117,5 +115,6 @@ export const Tour = ({ data, navigation }) => {
 
 Tour.propTypes = {
   data: PropTypes.object.isRequired,
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  route: PropTypes.object.isRequired
 };

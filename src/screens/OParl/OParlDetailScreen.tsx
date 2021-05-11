@@ -19,9 +19,9 @@ type Props = {
   // navigation: NavigationScreenProp<never>; // FIXME: Nav
 };
 
-export const OParlDetailScreen = ({ navigation }: Props) => {
-  const oParlType = navigation.getParam('type');
-  const id = navigation.getParam('id');
+export const OParlDetailScreen = ({ navigation, route }: Props) => {
+  const oParlType = route.params?.oParlType ?? '';
+  const id = route.params?.id ?? '';
 
   const [query, queryName] = getOParlQuery(oParlType);
 
@@ -59,8 +59,9 @@ export const OParlDetailScreen = ({ navigation }: Props) => {
   );
 };
 
-OParlDetailScreen.navigationOptions = ({ navigation }: Props) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// OParlDetailScreen.navigationOptions = ({ navigation }: Props) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };

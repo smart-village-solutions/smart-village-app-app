@@ -67,11 +67,12 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
   );
 };
 
-ConstructionSiteOverviewScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// ConstructionSiteOverviewScreen.navigationOptions = ({ navigation }) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };
 
 ConstructionSiteOverviewScreen.propTypes = {
   navigation: PropTypes.object.isRequired

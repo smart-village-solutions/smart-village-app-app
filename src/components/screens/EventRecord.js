@@ -32,10 +32,11 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
 `;
 
 const { MATOMO_TRACKING } = consts;
-
+// FIXME: Nav
+// route.param is undefined
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const EventRecord = ({ data, navigation }) => {
+export const EventRecord = ({ data, navigation, route }) => {
   const {
     addresses,
     category,
@@ -51,12 +52,12 @@ export const EventRecord = ({ data, navigation }) => {
     webUrls
   } = data;
   const link = webUrls && webUrls.length && webUrls[0].url;
-  const rootRouteName = navigation.getParam('rootRouteName', '');
-  const headerTitle = navigation.getParam('title', '');
+  const rootRouteName = route.params?.rootRouteName ?? '';
+  const headerTitle = route.params?.headerTitle ?? '';
   // action to open source urls
   const openWebScreen = (webUrl) =>
     navigation.navigate({
-      routeName: 'Web',
+      name: 'Web',
       params: {
         title: headerTitle,
         webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
@@ -205,5 +206,6 @@ const styles = StyleSheet.create({
 
 EventRecord.propTypes = {
   data: PropTypes.object.isRequired,
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  route: PropTypes.object.isRequired
 };

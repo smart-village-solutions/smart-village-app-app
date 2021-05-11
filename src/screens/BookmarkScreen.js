@@ -135,29 +135,30 @@ const styles = StyleSheet.create({
   }
 });
 
-BookmarkScreen.navigationOptions = ({ navigation, navigationOptions }) => {
-  const { headerRight } = navigationOptions;
+// FIXME: Nav
+// BookmarkScreen.navigationOptions = ({ navigation, navigationOptions }) => {
+//   const { headerRight } = navigationOptions;
 
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />,
-    headerRight: (
-      <WrapperRow style={styles.headerRight}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Settings')}
-          accessibilityLabel="Einstellungen (Taste)"
-          accessibilityHint="Zu den Einstellungen wechseln"
-        >
-          <Icon
-            name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'}
-            iconColor={colors.lightestText}
-            style={headerRight ? styles.iconLeft : styles.iconRight}
-          />
-        </TouchableOpacity>
-        {!!headerRight && headerRight}
-      </WrapperRow>
-    )
-  };
-};
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />,
+//     headerRight: (
+//       <WrapperRow style={styles.headerRight}>
+//         <TouchableOpacity
+//           onPress={() => navigation.navigate('Settings')}
+//           accessibilityLabel="Einstellungen (Taste)"
+//           accessibilityHint="Zu den Einstellungen wechseln"
+//         >
+//           <Icon
+//             name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'}
+//             iconColor={colors.lightestText}
+//             style={headerRight ? styles.iconLeft : styles.iconRight}
+//           />
+//         </TouchableOpacity>
+//         {!!headerRight && headerRight}
+//       </WrapperRow>
+//     )
+//   };
+// };
 
 BookmarkScreen.propTypes = {
   navigation: PropTypes.object.isRequired

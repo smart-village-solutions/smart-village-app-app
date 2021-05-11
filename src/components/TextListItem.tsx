@@ -14,7 +14,7 @@ import { trimNewLines } from '../helpers';
 import { NavigationScreenProp } from 'react-navigation';
 
 type ItemData = {
-  routeName: string;
+  name: string;
   params: Record<string, unknown>;
   subtitle?: string;
   title: string;
@@ -40,7 +40,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
   navigation: NavigationScreenProp<never>;
   noSubtitle?: boolean;
 }>(({ navigation, item, noSubtitle, leftImage }) => {
-  const { routeName, params, subtitle, title, bottomDivider, topDivider, picture } = item;
+  const { routeName: name, params, subtitle, title, bottomDivider, topDivider, picture } = item;
 
   const titleText = <BoldText>{trimNewLines(title)}</BoldText>;
 
@@ -61,7 +61,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
           />
         ) : undefined
       }
-      onPress={() => navigation && navigation.push(routeName, params)}
+      onPress={() => navigation && navigation.push(name, params)}
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}

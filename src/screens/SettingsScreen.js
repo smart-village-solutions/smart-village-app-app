@@ -223,8 +223,9 @@ export const SettingsScreen = () => {
   );
 };
 
-SettingsScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// SettingsScreen.navigationOptions = ({ navigation }) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };

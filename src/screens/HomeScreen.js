@@ -191,7 +191,7 @@ export const HomeScreen = ({ navigation }) => {
             fetchPolicy={fetchPolicy}
           />
         )}
-
+        {/* FIXME: Nav */}
         {globalSettings.navigation === DRAWER && (
           <>
             <Service navigation={navigation} />

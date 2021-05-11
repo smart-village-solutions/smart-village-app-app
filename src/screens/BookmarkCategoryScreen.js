@@ -21,10 +21,10 @@ import { getQuery } from '../queries';
 
 const { MATOMO_TRACKING } = consts;
 
-export const BookmarkCategoryScreen = ({ navigation }) => {
-  const query = navigation.getParam('query');
-  const suffix = navigation.getParam('suffix');
-  const categoryTitleDetail = navigation.getParam('categoryTitleDetail');
+export const BookmarkCategoryScreen = ({ navigation, route }) => {
+  const query = route.params?.query ?? '';
+  const suffix = route.params?.suffix ?? '';
+  const categoryTitleDetail = route.params?.categoryTitleDetail ?? '';
   const bookmarks = useBookmarks(query, suffix);
 
   const variables = { ids: bookmarks };
@@ -84,12 +84,14 @@ export const BookmarkCategoryScreen = ({ navigation }) => {
   );
 };
 
-BookmarkCategoryScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// BookmarkCategoryScreen.navigationOptions = ({ navigation }) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };
 
 BookmarkCategoryScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

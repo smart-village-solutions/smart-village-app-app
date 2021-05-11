@@ -139,11 +139,12 @@ export const FormScreen = () => {
   );
 };
 
-FormScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// FormScreen.navigationOptions = ({ navigation }) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };
 
 const styles = StyleSheet.create({
   flex: {

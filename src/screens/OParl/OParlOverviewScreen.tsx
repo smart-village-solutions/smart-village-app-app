@@ -63,12 +63,13 @@ export const OParlOverviewScreen = ({ navigation }: Props) => {
   );
 };
 
-OParlOverviewScreen.navigationOptions = ({ navigation }: Props) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />,
-    title: 'Test'
-  };
-};
+// FIXME: Nav
+// OParlOverviewScreen.navigationOptions = ({ navigation }: Props) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />,
+//     title: 'Test'
+//   };
+// };
 
 const styles = StyleSheet.create({
   background: {

@@ -198,7 +198,7 @@ export const DetailScreen = ({ navigation }) => {
 
             const openWebScreen = () =>
               navigation.navigate({
-                routeName: 'Web',
+                name: 'Web',
                 params: {
                   title: name,
                   webUrl: url,
@@ -225,7 +225,7 @@ export const DetailScreen = ({ navigation }) => {
           // action to open source urls
           const openWebScreen = (webUrl) =>
             navigation.navigate({
-              routeName: 'Web',
+              name: 'Web',
               params: {
                 title: headerTitle,
                 webUrl,
@@ -283,7 +283,7 @@ export const DetailScreen = ({ navigation }) => {
         // TODO: refactor multiple methods for `openWebScreen` in this file
         const openWebScreen = (webUrl) =>
           navigation.navigate({
-            routeName: 'Web',
+            name: 'Web',
             params: {
               title: details.name,
               webUrl,

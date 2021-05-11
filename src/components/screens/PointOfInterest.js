@@ -25,7 +25,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PointOfInterest = ({ data, hideMap, navigation }) => {
+export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const {
     addresses,
@@ -47,15 +47,14 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
   const latitude = addresses?.[0]?.geoLocation?.latitude;
   const longitude = addresses?.[0]?.geoLocation?.longitude;
 
-  const rootRouteName = navigation.getParam('rootRouteName', '');
   // action to open source urls
   const openWebScreen = (webUrl) =>
     navigation.navigate({
-      routeName: 'Web',
+      name: 'Web',
       params: {
         title: 'Ort',
         webUrl,
-        rootRouteName
+        rootRouteName: route.params?.rootRouteName ?? ''
       }
     });
 
@@ -194,5 +193,6 @@ PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired,
   hideMap: PropTypes.bool,
   navigation: PropTypes.object,
-  fetchPolicy: PropTypes.string
+  fetchPolicy: PropTypes.string,
+  route: PropTypes.object.isRequired
 };

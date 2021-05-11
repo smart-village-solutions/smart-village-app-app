@@ -325,11 +325,12 @@ const styles = StyleSheet.create({
       : {}
 });
 
-WasteCollectionScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// WasteCollectionScreen.navigationOptions = ({ navigation }) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };
 
 WasteCollectionScreen.propTypes = {
   navigation: PropTypes.object.isRequired

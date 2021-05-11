@@ -22,25 +22,26 @@ import { graphqlFetchPolicy, matomoTrackingString, parseListItemsFromQuery } fro
 
 const { MATOMO_TRACKING } = consts;
 
-export const IndexScreen = ({ navigation }) => {
+export const IndexScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {} } = globalSettings;
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
-  const [queryVariables, setQueryVariables] = useState(navigation.getParam('queryVariables', {}));
+  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [refreshing, setRefreshing] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const { trackScreenView } = useMatomo();
 
-  const query = navigation.getParam('query', '');
-  const title = navigation.getParam('title', '');
-  const titleDetail = navigation.getParam('titleDetail', '');
-  const showFilter =
-    navigation.getParam('showFilter', true) &&
-    {
-      [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
-      [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
-    }[query];
+  const query = route.params?.query ?? '';
+  const title = route.params?.title ?? '';
+  const titleDetail = route.params?.titleDetail ?? '';
+  // FIXME: Nav
+  // const showFilter =
+  //   navigation.getParam('showFilter', true) &&
+  //   {
+  //     [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
+  //     [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
+  //   }[query];
 
   const refresh = useCallback(
     async (refetch) => {
@@ -205,5 +206,6 @@ IndexScreen.navigationOptions = ({ navigation }) => {
 };
 
 IndexScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

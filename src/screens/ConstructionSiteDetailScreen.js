@@ -133,11 +133,12 @@ export const ConstructionSiteDetailScreen = ({ navigation }) => {
   );
 };
 
-ConstructionSiteDetailScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// ConstructionSiteDetailScreen.navigationOptions = ({ navigation }) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };
 
 const styles = StyleSheet.create({
   verticalPadding: {

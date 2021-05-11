@@ -189,11 +189,12 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
   );
 };
 
-OParlPersonsScreen.navigationOptions = ({ navigation }: Props) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// OParlPeopleScreen.navigationOptions = ({ navigation }: Props) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };
 
 const styles = StyleSheet.create({
   noPaddingTop: { paddingTop: 0 },

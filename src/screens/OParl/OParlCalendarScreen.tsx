@@ -132,11 +132,12 @@ export const OParlCalendarScreen = ({ navigation }: Props) => {
   );
 };
 
-OParlCalendarScreen.navigationOptions = ({ navigation }: Props) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// OParlCalendarScreen.navigationOptions = ({ navigation }: Props) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };
 
 OParlCalendarScreen.propTypes = {
   navigation: PropTypes.object.isRequired

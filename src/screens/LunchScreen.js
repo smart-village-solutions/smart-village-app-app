@@ -32,8 +32,8 @@ import { getQuery, QUERY_TYPES } from '../queries';
 
 const { MATOMO_TRACKING } = consts;
 
-export const LunchScreen = ({ navigation }) => {
-  const [poiId, setPoiId] = useState(navigation.getParam('poiId'));
+export const LunchScreen = ({ navigation, route }) => {
+  const [poiId, setPoiId] = useState(route.params?.poiId ?? {});
   const [date, setDate] = useState(moment());
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const refreshTime = useRefreshTime('lunch-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
@@ -143,11 +143,12 @@ export const LunchScreen = ({ navigation }) => {
   );
 };
 
-LunchScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
+// FIXME: Nav
+// LunchScreen.navigationOptions = ({ navigation }) => {
+//   return {
+//     headerLeft: <HeaderLeft navigation={navigation} />
+//   };
+// };
 
 const styles = StyleSheet.create({
   left: {
@@ -162,5 +163,6 @@ const styles = StyleSheet.create({
 });
 
 LunchScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

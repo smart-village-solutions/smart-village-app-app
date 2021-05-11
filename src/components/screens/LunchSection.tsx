@@ -109,7 +109,7 @@ export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
   const openWebScreen = useCallback(
     (webUrl: string) =>
       navigation.navigate({
-        routeName: 'Web',
+        name: 'Web',
         params: {
           title: 'Ort',
           webUrl
@@ -122,7 +122,7 @@ export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
     if (!id) return;
 
     navigation.navigate({
-      routeName: 'Detail',
+      name: 'Detail',
       params: {
         title: texts.detailTitles.pointOfInterest,
         query: QUERY_TYPES.POINT_OF_INTEREST,
