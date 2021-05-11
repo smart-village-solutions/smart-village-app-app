@@ -6,7 +6,7 @@ import { useQuery } from 'react-apollo';
 import { StyleSheet } from 'react-native';
 
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { colors, device, texts } from '../config';
+import { device, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
@@ -29,7 +29,6 @@ const defaultDrawerRoutes = {
   }
 };
 
-// FIXME: Nav; better types?
 type DrawerRoutes = Record<
   string,
   {
@@ -49,7 +48,6 @@ const useDrawerRoutes = () => {
   const [drawerRoutes, setDrawerRoutes] = useState<DrawerRoutes>(defaultDrawerRoutes);
 
   useEffect(() => {
-    // FIXME: Nav; better types?
     let navigationPublicJsonFileContent: Array<Record<string, any>> = [];
 
     error && console.warn('error', error);

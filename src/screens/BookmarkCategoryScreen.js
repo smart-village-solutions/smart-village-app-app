@@ -84,13 +84,6 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
   );
 };
 
-// FIXME: Nav
-// BookmarkCategoryScreen.navigationOptions = ({ navigation }) => {
-//   return {
-//     headerLeft: <HeaderLeft navigation={navigation} />
-//   };
-// };
-
 BookmarkCategoryScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired

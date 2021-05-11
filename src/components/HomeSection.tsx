@@ -1,6 +1,6 @@
+import { NavigationProp } from '@react-navigation/core';
 import React from 'react';
 import { QueryHookOptions, useQuery } from 'react-apollo';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { useHomeRefresh } from '../hooks/HomeRefresh';
 import { getQuery } from '../queries';
@@ -18,7 +18,7 @@ type Props = {
     | 'standby'
     | 'cache-and-network';
   navigate: () => void;
-  navigation: NavigationScreenProp<never>;
+  navigation: NavigationProp<never>;
   query: string;
   queryVariables: QueryHookOptions;
 };

@@ -13,7 +13,6 @@ import { OrientationContext } from '../OrientationProvider';
  * based on the default content component from React Navigation:
  *   https://github.com/react-navigation/drawer/blob/c5954d744f463e7f1c67941b8eb6914c0101e56c/src/navigators/createDrawerNavigator.tsx
  */
-// FIXME: Nav
 export const CustomDrawerContentComponent = ({ navigation, drawerRoutes, state }) => {
   const { orientation } = useContext(OrientationContext);
 

@@ -126,7 +126,6 @@ export const Offer = ({ data, navigation, route }) => {
           operatingCompany={operatingCompany}
           openWebScreen={openWebScreen}
         />
-        {/*FIXME: Nav*/}
         {!!businessAccount && (
           <DataProviderButton dataProvider={dataProvider} navigation={navigation} />
         )}

@@ -5,12 +5,7 @@ import { WebView } from 'react-native-webview';
 import { useMatomo } from 'matomo-tracker-react-native';
 
 import { colors, consts } from '../config';
-import {
-  HeaderLeft,
-  LoadingContainer,
-  SafeAreaViewFlex,
-  WrapperWithOrientation
-} from '../components';
+import { LoadingContainer, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
 import { NetworkContext } from '../NetworkProvider';
 
 const { MATOMO_TRACKING } = consts;
@@ -46,13 +41,6 @@ export const WebScreen = ({ route }) => {
   );
 };
 
-// FIXME: Nav
-// WebScreen.navigationOptions = ({ navigation }) => {
-//   return {
-//     headerLeft: <HeaderLeft navigation={navigation} />
-//   };
-// };
-
 WebScreen.propTypes = {
-  route: PropTypes.object.isRequire
+  route: PropTypes.object.isRequired
 };

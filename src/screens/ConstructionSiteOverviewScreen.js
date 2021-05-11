@@ -3,7 +3,6 @@ import React, { useCallback, useContext } from 'react';
 import { FlatList } from 'react-native';
 
 import {
-  HeaderLeft,
   RegularText,
   SafeAreaViewFlex,
   TextListItem,
@@ -66,13 +65,6 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
     </SafeAreaViewFlex>
   );
 };
-
-// FIXME: Nav
-// ConstructionSiteOverviewScreen.navigationOptions = ({ navigation }) => {
-//   return {
-//     headerLeft: <HeaderLeft navigation={navigation} />
-//   };
-// };
 
 ConstructionSiteOverviewScreen.propTypes = {
   navigation: PropTypes.object.isRequired

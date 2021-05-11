@@ -122,7 +122,7 @@ export const CompanyScreen = ({ navigation }) => {
                           <TouchableOpacity
                             onPress={() =>
                               navigation.navigate({
-                                routeName: item.routeName,
+                                name: item.routeName,
                                 params: item.params
                               })
                             }

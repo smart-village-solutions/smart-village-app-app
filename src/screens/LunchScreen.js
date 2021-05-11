@@ -15,7 +15,6 @@ import {
   BoldText,
   Button,
   ConnectedImagesCarousel,
-  HeaderLeft,
   Icon,
   LunchSection,
   RegularText,
@@ -142,13 +141,6 @@ export const LunchScreen = ({ navigation, route }) => {
     </SafeAreaViewFlex>
   );
 };
-
-// FIXME: Nav
-// LunchScreen.navigationOptions = ({ navigation }) => {
-//   return {
-//     headerLeft: <HeaderLeft navigation={navigation} />
-//   };
-// };
 
 const styles = StyleSheet.create({
   left: {

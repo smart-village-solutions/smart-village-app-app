@@ -51,9 +51,9 @@ export const HomeScreen = ({ navigation }) => {
       const queryType = data?.query_type ? getQueryType(data.query_type) : undefined;
 
       if (data?.id && queryType) {
-        // navigate to the newsItem
+        // navigate to the referenced item
         navigation.navigate({
-          routeName: 'Detail',
+          name: 'Detail',
           params: {
             title: texts.detailTitles[queryType],
             query: queryType,
@@ -97,7 +97,7 @@ export const HomeScreen = ({ navigation }) => {
 
   const NAVIGATION = {
     CATEGORIES_INDEX: {
-      routeName: 'Index',
+      name: 'Index',
       params: {
         title: 'Orte und Touren',
         query: QUERY_TYPES.CATEGORIES,
@@ -106,7 +106,7 @@ export const HomeScreen = ({ navigation }) => {
       }
     },
     EVENT_RECORDS_INDEX: {
-      routeName: 'Index',
+      name: 'Index',
       params: {
         title: 'Veranstaltungen',
         query: QUERY_TYPES.EVENT_RECORDS,
@@ -115,7 +115,7 @@ export const HomeScreen = ({ navigation }) => {
       }
     },
     NEWS_ITEMS_INDEX: ({ categoryId, categoryTitle, categoryTitleDetail }) => ({
-      routeName: 'Index',
+      name: 'Index',
       params: {
         title: categoryTitle,
         titleDetail: categoryTitleDetail,
@@ -191,7 +191,6 @@ export const HomeScreen = ({ navigation }) => {
             fetchPolicy={fetchPolicy}
           />
         )}
-        {/* FIXME: Nav */}
         {globalSettings.navigation === DRAWER && (
           <>
             <Service navigation={navigation} />

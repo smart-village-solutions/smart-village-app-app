@@ -10,7 +10,6 @@ import { auth } from '../auth';
 import { colors, consts } from '../config';
 import {
   DropdownHeader,
-  HeaderLeft,
   ListComponent,
   LoadingContainer,
   LocationOverview,
@@ -35,13 +34,12 @@ export const IndexScreen = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
-  // FIXME: Nav
-  // const showFilter =
-  //   navigation.getParam('showFilter', true) &&
-  //   {
-  //     [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
-  //     [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
-  //   }[query];
+  const showFilter =
+    (route.params?.showFilter ?? true) &&
+    {
+      [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
+      [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
+    }[query];
 
   const refresh = useCallback(
     async (refetch) => {
@@ -85,7 +83,7 @@ export const IndexScreen = ({ navigation, route }) => {
     // news to events, that the query variables are taken freshly. otherwise the mounted screen can
     // have query variables from the previous screen, that does not work. this can result in an
     // empty screen because the query is not retuning anything.
-    setQueryVariables(navigation.getParam('queryVariables', {}));
+    setQueryVariables(route.params?.queryVariables ?? {});
 
     if (query) {
       const MATOMO_TRACKING_SCREEN = {
@@ -112,7 +110,7 @@ export const IndexScreen = ({ navigation, route }) => {
       isConnected &&
         trackScreenView(matomoTrackingString([MATOMO_TRACKING_SCREEN, MATOMO_TRACKING_CATEGORY]));
     }
-  }, [isConnected, navigation, query, setQueryVariables]);
+  }, [isConnected, query, route, setQueryVariables]);
 
   if (!query) return null;
 
@@ -131,6 +129,7 @@ export const IndexScreen = ({ navigation, route }) => {
       {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
         <LocationOverview
           navigation={navigation}
+          route={route}
           category={queryVariables.category}
           dataProviderName={queryVariables.dataProvider}
         />
@@ -197,12 +196,6 @@ export const IndexScreen = ({ navigation, route }) => {
       )}
     </SafeAreaViewFlex>
   );
-};
-
-IndexScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
 };
 
 IndexScreen.propTypes = {

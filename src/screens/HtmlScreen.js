@@ -1,24 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 import { Query } from 'react-apollo';
 import { useMatomo } from 'matomo-tracker-react-native';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
 import { colors, consts } from '../config';
-import {
-  Button,
-  HeaderLeft,
-  HtmlView,
-  LoadingContainer,
-  SafeAreaViewFlex,
-  Wrapper,
-  WrapperWithOrientation
-} from '../components';
+import { Button, HtmlView, SafeAreaViewFlex, Wrapper, WrapperWithOrientation } from '../components';
 import { graphqlFetchPolicy, trimNewLines } from '../helpers';
 import { getQuery } from '../queries';
 import { useRefreshTime } from '../hooks';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -30,7 +23,7 @@ export const HtmlScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const { trackScreenView } = useMatomo();
 
-  if (!query || !queryVariables || !queryVariables.name) return null;
+  if (!query || !queryVariables?.name) return null;
 
   const refreshTime = useRefreshTime(`${query}-${queryVariables.name}`);
 
@@ -44,11 +37,7 @@ export const HtmlScreen = ({ navigation, route }) => {
   }, [title]);
 
   if (!refreshTime) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
-      </LoadingContainer>
-    );
+    return <LoadingSpinner loading />;
   }
 
   const refresh = async (refetch) => {
@@ -81,7 +70,7 @@ export const HtmlScreen = ({ navigation, route }) => {
     // if the `param` is an object, it contains a `routeName` and a `webUrl`
     if (!!param && typeof param === 'object') {
       return navigation.navigate({
-        routeName: param.routeName,
+        name: param.routeName,
         params: {
           title,
           webUrl: param.webUrl,
@@ -92,7 +81,7 @@ export const HtmlScreen = ({ navigation, route }) => {
 
     // if there is no `param`, use the main `subQuery` values for `routeName` and a `webUrl`
     return navigation.navigate({
-      routeName: subQuery.routeName,
+      name: subQuery.routeName,
       params: {
         title,
         webUrl: subQuery.webUrl,
@@ -109,14 +98,10 @@ export const HtmlScreen = ({ navigation, route }) => {
     >
       {({ data, loading, refetch }) => {
         if (loading) {
-          return (
-            <LoadingContainer>
-              <ActivityIndicator color={colors.accent} />
-            </LoadingContainer>
-          );
+          return <LoadingSpinner loading />;
         }
 
-        if (!data || !data.publicHtmlFile || !data.publicHtmlFile.content) return null;
+        if (!data?.publicHtmlFile?.content) return null;
 
         return (
           <SafeAreaViewFlex>
@@ -166,13 +151,6 @@ export const HtmlScreen = ({ navigation, route }) => {
     </Query>
   );
 };
-
-// FIXME: Nav
-// HtmlScreen.navigationOptions = ({ navigation }) => {
-//   return {
-//     headerLeft: <HeaderLeft navigation={navigation} />
-//   };
-// };
 
 HtmlScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

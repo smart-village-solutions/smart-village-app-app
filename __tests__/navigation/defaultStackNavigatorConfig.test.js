@@ -1,4 +1,4 @@
-import { defaultStackNavigatorConfig } from '../../src/navigation/defaultStackNavigatorConfig';
+import { defaultStackNavigatorConfig } from '../../src/navigation/screenOptions';
 
 describe('defaultStackNavigatorConfig', () => {
   const navigation = { openDrawer: jest.fn() };

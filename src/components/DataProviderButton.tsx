@@ -1,5 +1,5 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../config';
 import { Button } from './Button';
@@ -10,7 +10,7 @@ type Props = {
     name: string;
     logo?: { url?: string };
   };
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 export const DataProviderButton = ({ dataProvider, navigation }: Props) => {

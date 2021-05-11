@@ -6,13 +6,7 @@ import { Mutation } from 'react-apollo';
 
 import { createQuery, QUERY_TYPES } from '../queries';
 import { colors, consts, device, normalize } from '../config';
-import {
-  BoldText,
-  Button,
-  HeaderLeft,
-  SafeAreaViewFlex,
-  WrapperWithOrientation
-} from '../components';
+import { BoldText, Button, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
 import { OrientationContext } from '../OrientationProvider';
 import { getHeaderHeight, statusBarHeight } from '../navigation/CustomDrawerContentComponent';
 import { useMatomoTrackScreenView } from '../hooks';
@@ -138,13 +132,6 @@ export const FormScreen = () => {
     </SafeAreaViewFlex>
   );
 };
-
-// FIXME: Nav
-// FormScreen.navigationOptions = ({ navigation }) => {
-//   return {
-//     headerLeft: <HeaderLeft navigation={navigation} />
-//   };
-// };
 
 const styles = StyleSheet.create({
   flex: {

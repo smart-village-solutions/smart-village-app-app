@@ -11,10 +11,10 @@ import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 import { trimNewLines } from '../helpers';
-import { NavigationScreenProp } from 'react-navigation';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 type ItemData = {
-  name: string;
+  routeName: string;
   params: Record<string, unknown>;
   subtitle?: string;
   title: string;
@@ -26,7 +26,7 @@ type ItemData = {
 type Props = {
   item: ItemData;
   leftImage?: boolean | undefined;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<Record<string, any>>;
   noSubtitle?: boolean | undefined;
 };
 
@@ -37,7 +37,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
 } = memo<{
   item: ItemData;
   leftImage?: boolean;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<Record<string, any>>;
   noSubtitle?: boolean;
 }>(({ navigation, item, noSubtitle, leftImage }) => {
   const { routeName: name, params, subtitle, title, bottomDivider, topDivider, picture } = item;

@@ -16,7 +16,6 @@ import { Calendar } from 'react-native-calendars';
 
 import {
   Button,
-  HeaderLeft,
   LoadingContainer,
   NoTouchDay,
   RegularText,
@@ -324,13 +323,6 @@ const styles = StyleSheet.create({
         }
       : {}
 });
-
-// FIXME: Nav
-// WasteCollectionScreen.navigationOptions = ({ navigation }) => {
-//   return {
-//     headerLeft: <HeaderLeft navigation={navigation} />
-//   };
-// };
 
 WasteCollectionScreen.propTypes = {
   navigation: PropTypes.object.isRequired

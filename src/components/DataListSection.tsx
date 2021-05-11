@@ -1,6 +1,6 @@
+import { NavigationProp } from '@react-navigation/core';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { colors } from '../config';
 import { getTitleForQuery, parseListItemsFromQuery } from '../helpers';
@@ -16,7 +16,7 @@ type Props = {
   limit?: number;
   loading?: boolean;
   navigate?: () => void;
-  navigation: NavigationScreenProp<never>;
+  navigation: NavigationProp<never>;
   query: string;
   sectionData?: unknown[];
   sectionTitle?: string;

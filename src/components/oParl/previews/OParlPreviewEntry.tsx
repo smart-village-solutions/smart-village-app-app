@@ -1,7 +1,7 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { NavigationScreenProp } from 'react-navigation';
 import { colors, normalize } from '../../../config';
 import { arrowRight } from '../../../icons';
 
@@ -14,7 +14,7 @@ type Props = {
   id: string;
   type: OParlObjectType;
   title: string;
-  navigation?: NavigationScreenProp<never>;
+  navigation?: StackNavigationProp<any>;
   screenTitle?: string;
   topDivider?: boolean;
 };

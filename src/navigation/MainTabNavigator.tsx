@@ -13,13 +13,13 @@ import {
 } from '../screens';
 
 import { AppStackNavigator } from './AppStackNavigator';
-import { defaultStackNavigatorScreenOptions } from './defaultStackNavigatorConfig';
+import { defaultStackNavigatorScreenOptions } from './screenOptions';
 import { colors, device, normalize, texts } from '../config';
 import { createStackNavigator } from '@react-navigation/stack';
 
 const HomeStack = () => AppStackNavigator(false);
 
-const Service = createStackNavigator();
+const Service = createStackNavigator<Record<string, { title: string } | undefined>>();
 
 const ServiceStack = () => (
   <Service.Navigator
@@ -30,7 +30,7 @@ const ServiceStack = () => (
       name="Service"
       component={ServiceScreen}
       options={({ route }) => ({
-        title: route.params?.title?.length ?? texts.screenTitles.service
+        title: route.params?.title?.length ? route.params?.title : texts.screenTitles.service
       })}
     />
     <Service.Screen name="Html" component={HtmlScreen} />
@@ -38,7 +38,7 @@ const ServiceStack = () => (
   </Service.Navigator>
 );
 
-const Company = createStackNavigator();
+const Company = createStackNavigator<Record<string, { title: string } | undefined>>();
 
 const CompanyStack = () => (
   <Company.Navigator
@@ -49,7 +49,7 @@ const CompanyStack = () => (
       name="Company"
       component={CompanyScreen}
       options={({ route }) => ({
-        title: route.params?.title?.length ?? texts.screenTitles.company
+        title: route.params?.title?.length ? route.params?.title : texts.screenTitles.company
       })}
     />
     <Company.Screen name="Html" component={HtmlScreen} />
@@ -57,7 +57,7 @@ const CompanyStack = () => (
   </Company.Navigator>
 );
 
-const About = createStackNavigator();
+const About = createStackNavigator<Record<string, { title: string } | undefined>>();
 
 const AboutStack = () => (
   <About.Navigator
@@ -68,7 +68,7 @@ const AboutStack = () => (
       name="About"
       component={AboutScreen}
       options={({ route }) => ({
-        title: route.params?.title?.length ?? texts.screenTitles.about
+        title: route.params?.title?.length ? route.params?.title : texts.screenTitles.about
       })}
     />
     <About.Screen name="Html" component={HtmlScreen} />
@@ -93,7 +93,7 @@ export const MainTabNavigator = () => (
       component={HomeStack}
       options={{
         tabBarLabel: texts.tabBarLabel.home,
-        tabBarIcon: ({ focused }) => (
+        tabBarIcon: ({ focused }: { focused: boolean }) => (
           <TabBarIcon xml={home(focused ? colors.accent : colors.primary)} />
         )
       }}
@@ -103,7 +103,7 @@ export const MainTabNavigator = () => (
       component={ServiceStack}
       options={{
         tabBarLabel: texts.tabBarLabel.service,
-        tabBarIcon: ({ focused }) => (
+        tabBarIcon: ({ focused }: { focused: boolean }) => (
           <TabBarIcon xml={service(focused ? colors.accent : colors.primary)} />
         )
       }}
@@ -113,9 +113,9 @@ export const MainTabNavigator = () => (
       component={CompanyStack}
       options={{
         tabBarLabel: texts.tabBarLabel.company,
-        tabBarIcon: ({ focused }) => (
+        tabBarIcon: ({ focused }: { focused: boolean }) => (
           <TabBarIcon
-            name={device.patform === 'ios' ? 'ios-briefcase' : 'md-briefcase'}
+            name={device.platform === 'ios' ? 'ios-briefcase' : 'md-briefcase'}
             style={{ marginTop: normalize(3) }}
             landscapeStyle={{ marginRight: -normalize(4), marginTop: 0 }}
             focused={focused}
@@ -128,9 +128,9 @@ export const MainTabNavigator = () => (
       component={AboutStack}
       options={{
         tabBarLabel: texts.tabBarLabel.about,
-        tabBarIcon: ({ focused }) => (
+        tabBarIcon: ({ focused }: { focused: boolean }) => (
           <TabBarIcon
-            name={device.patform === 'ios' ? 'ios-menu' : 'md-menu'}
+            name={device.platform === 'ios' ? 'ios-menu' : 'md-menu'}
             size={normalize(28)}
             style={{ marginTop: normalize(3) }}
             landscapeStyle={{ marginRight: -normalize(6) }}

@@ -1,9 +1,9 @@
+import { RouteProp } from '@react-navigation/core';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { ActivityIndicator, ScrollView } from 'react-native';
-// FIXME: Nav
 
 import {
-  HeaderLeft,
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
@@ -16,7 +16,8 @@ import { useOParlQuery } from '../../hooks';
 import { getOParlQuery } from '../../queries/OParl';
 
 type Props = {
-  // navigation: NavigationScreenProp<never>; // FIXME: Nav
+  navigation: StackNavigationProp<never>;
+  route: RouteProp<any, never>;
 };
 
 export const OParlDetailScreen = ({ navigation, route }: Props) => {
@@ -58,10 +59,3 @@ export const OParlDetailScreen = ({ navigation, route }: Props) => {
     </SafeAreaViewFlex>
   );
 };
-
-// FIXME: Nav
-// OParlDetailScreen.navigationOptions = ({ navigation }: Props) => {
-//   return {
-//     headerLeft: <HeaderLeft navigation={navigation} />
-//   };
-// };

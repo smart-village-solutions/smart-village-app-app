@@ -7,7 +7,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, KeyboardAvoidingView, RefreshControl, StyleSheet } from 'react-native';
 
-import { HeaderLeft, LoadingContainer, SafeAreaViewFlex } from '../../components';
+import { LoadingContainer, SafeAreaViewFlex } from '../../components';
 import { IndexFilterWrapperAndList } from '../../components/BB-BUS/IndexFilterWrapperAndList';
 import { ServiceList } from '../../components/BB-BUS/ServiceList';
 import { colors, consts, device, namespace, secrets, texts } from '../../config';
@@ -285,13 +285,6 @@ const styles = StyleSheet.create({
     flex: 1
   }
 });
-
-// FIXME: Nav
-// IndexScreen.navigationOptions = ({ navigation }) => {
-//   return {
-//     headerLeft: <HeaderLeft navigation={navigation} />
-//   };
-// };
 
 IndexScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

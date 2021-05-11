@@ -32,8 +32,7 @@ const INJECTED_JAVASCRIPT_FOR_IFRAME_WEBVIEW = `
 `;
 
 const { MATOMO_TRACKING } = consts;
-// FIXME: Nav
-// route.param is undefined
+
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const EventRecord = ({ data, navigation, route }) => {

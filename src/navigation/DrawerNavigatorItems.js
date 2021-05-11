@@ -16,7 +16,7 @@ const getActiveRoute = (navigationState) => {
   }
 
   const childActiveRoute = navigationState.routes[navigationState.index];
-  return getActiveRoute(childActiveRoute);
+  return getActiveRoute(childActiveRoute.state ?? childActiveRoute);
 };
 
 /**
@@ -25,7 +25,6 @@ const getActiveRoute = (navigationState) => {
  * based on:
  *   https://github.com/react-navigation/drawer/blob/c5954d744f463e7f1c67941b8eb6914c0101e56c/src/views/DrawerNavigatorItems.tsx
  */
-// FIXME: Nav
 const DrawerNavigatorItems = ({ drawerRoutes, navigation, state }) => {
   /**
    * based on:
@@ -34,7 +33,7 @@ const DrawerNavigatorItems = ({ drawerRoutes, navigation, state }) => {
    * but we want to navigate always inside our single app stack
    */
   const handleItemPress = (itemInfo) => {
-    navigation.navigate(itemInfo.screen, itemInfo);
+    navigation.navigate(itemInfo.screen, itemInfo.params);
     navigation.closeDrawer();
   };
   const activeRoute = getActiveRoute(state);

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ScrollView } from 'react-native';
 
-import { CrossData, HeaderLeft, Logo, RegularText, Wrapper } from '../components';
+import { CrossData, Logo, RegularText, Wrapper } from '../components';
 import { texts } from '../config';
 
 export const DataProviderScreen = ({ navigation, route }) => {
@@ -29,13 +29,6 @@ export const DataProviderScreen = ({ navigation, route }) => {
     </ScrollView>
   );
 };
-
-// FIXME: Nav
-// DataProviderScreen.navigationOptions = ({ navigation }) => {
-//   return {
-//     headerLeft: <HeaderLeft navigation={navigation} />
-//   };
-// };
 
 DataProviderScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
