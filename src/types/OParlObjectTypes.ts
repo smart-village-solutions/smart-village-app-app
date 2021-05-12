@@ -315,6 +315,7 @@ export type OrganizationListData = OrganizationPreviewData & {
   name?: string;
   shortName?: string;
   membership?: Array<{
-    externalId: string;
+    id: string;
+    endDate?: number; // Date;
   }>;
 };

@@ -19,7 +19,8 @@ export const simpleOrganizationListQuery = [
         name
         shortName
         membership {
-          externalId
+          id: externalId
+          endDate
         }
       }
     }

@@ -42,7 +42,10 @@ const useDropdownData = (orgaData?: { [organizationMembersQueryName]: Organizati
 
   useEffect(() => {
     const organizations =
-      orgaData?.[organizationMembersQueryName].filter((org) => org.membership?.length) ?? [];
+      orgaData?.[organizationMembersQueryName].filter(
+        (org) => org.membership?.filter((mem) => !mem.endDate).length
+      ) ?? [];
+
     const newData = [{ value: texts.oparl.personList.chooseAnOrg, id: '', selected: true }];
     newData.push(
       ...organizations.map((value: OrganizationPreviewData) => ({
@@ -84,6 +87,7 @@ const useListData = (
   return listData;
 };
 
+// eslint-disable-next-line complexity
 export const OParlPersonsScreen = ({ navigation }: Props) => {
   const [fetchingMore, setFetchingMore] = useState(false);
   const [finished, setFinished] = useState(false);
@@ -164,7 +168,7 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
           <OParlPreviewComponent data={item} key={item.id} navigation={navigation} />
         )}
         ListHeaderComponent={
-          <Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
             <DropdownSelect
               data={dropdownData}
               searchPlaceholder="Suche"
@@ -193,6 +197,7 @@ OParlPersonsScreen.navigationOptions = ({ navigation }: Props) => {
 };
 
 const styles = StyleSheet.create({
+  noPaddingTop: { paddingTop: 0 },
   searchInput: {
     borderColor: colors.borderRgba,
     borderWidth: 0,
