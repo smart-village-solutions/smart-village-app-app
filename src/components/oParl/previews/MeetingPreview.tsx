@@ -14,7 +14,7 @@ type Props = {
 export const MeetingPreview = ({ data, navigation }: Props) => {
   const { id, type, name, start } = data;
 
-  const subtitle = start ? momentFormat(start, 'HH:mm', 'x') : undefined;
+  const subtitle = start ? momentFormat(start, 'DD.MM.YYYY | HH:mm', 'x') : undefined;
 
   const item = {
     routeName: 'OParlDetail',

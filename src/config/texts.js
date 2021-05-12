@@ -279,12 +279,11 @@ export const texts = {
       website: 'Website: '
     },
     overview: {
-      calendarSubTitle: 'Sitzungen, Agendas, etc.',
-      calendarTitle: 'Termine',
-      peopleSubTitle: 'Personen, Mitgliedschaften, Organisationen',
-      peopleTitle: 'Beteiligte',
-      search: 'Schlagwortsuche',
-      title: 'Rathausinfos'
+      calendar: 'Termine',
+      title: 'Rathausinfos',
+      organizations: 'Organisationen',
+      persons: 'Personen',
+      search: 'Schlagwortsuche'
     },
     paper: {
       auxiliaryFile: 'Weitere Dateien',
@@ -306,7 +305,7 @@ export const texts = {
       superOrdinatedPaper: 'Übergeordnete Drucksachen',
       underDirectionOf: 'Federführung'
     },
-    people: {
+    personList: {
       chooseAnOrg: 'Organisation wählen'
     },
     person: {

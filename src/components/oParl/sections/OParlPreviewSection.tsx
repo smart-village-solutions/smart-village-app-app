@@ -5,13 +5,14 @@ import _isArray from 'lodash/isArray';
 
 import { normalize } from '../../../config';
 import { OParlObjectPreviewData } from '../../../types';
-import { PreviewSection } from '../../PreviewSection';
 import { OParlPreviewComponent } from '../previews/OParlPreviewComponent';
 import { OParlItemPreview } from '../previews/OParlItemPreview';
+import { SectionHeader } from '../../SectionHeader';
+import { Divider } from 'react-native-elements';
 
 type Props = {
   data?: OParlObjectPreviewData[] | OParlObjectPreviewData;
-  header: string;
+  header?: string;
   navigation: NavigationScreenProp<never>;
   withAgendaItem?: boolean;
   withPerson?: boolean;
@@ -25,11 +26,11 @@ export const OParlPreviewSection = ({
   withPerson
 }: Props) => {
   const renderPreview = useCallback(
-    (itemData: OParlObjectPreviewData, key: number) => {
+    (itemData: OParlObjectPreviewData) => {
       return (
         <OParlPreviewComponent
           data={itemData}
-          key={key}
+          key={itemData.id}
           navigation={navigation}
           withAgendaItem={withAgendaItem}
           withPerson={withPerson}
@@ -40,9 +41,12 @@ export const OParlPreviewSection = ({
   );
 
   if (_isArray(data)) {
+    if (!data.length) return null;
+
     return (
       <View style={styles.marginTop}>
-        <PreviewSection data={data} header={header} renderItem={renderPreview} />
+        {header?.length ? <SectionHeader title={header} /> : <Divider />}
+        {data.map((item) => renderPreview(item))}
       </View>
     );
   } else {

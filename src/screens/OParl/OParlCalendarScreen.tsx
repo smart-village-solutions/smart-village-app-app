@@ -1,9 +1,9 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
-import { StyleSheet } from 'react-native';
 import { Calendar, DateObject, MultiDotMarking } from 'react-native-calendars';
-import { NavigationScreenProp, SectionList } from 'react-navigation';
+import { ScrollView } from 'react-native-gesture-handler';
+import { NavigationScreenProp } from 'react-navigation';
 
 import {
   HeaderLeft,
@@ -11,13 +11,10 @@ import {
   RegularText,
   renderArrow,
   SafeAreaViewFlex,
-  SectionHeader,
   Wrapper,
-  WrapperVertical,
   WrapperWithOrientation
 } from '../../components';
-import { LoadingSpinner } from '../../components/LoadingSpinner';
-import { OParlPreviewComponent } from '../../components/oParl';
+import { OParlPreviewSection } from '../../components/oParl/sections';
 import { colors, texts } from '../../config';
 import { momentFormat, setupLocales } from '../../helpers';
 import { useOParlQuery } from '../../hooks';
@@ -34,17 +31,27 @@ const dotSize = 6;
 
 const dot = { key: 'dot', color: colors.primary };
 
-const getSectionsAndDots = (meetings: MeetingPreviewData[]) => {
+const filterAndSortMeetings = (
+  meetings: MeetingPreviewData[]
+): (MeetingPreviewData & {
+  start: number;
+})[] => {
   const filteredMeetings = meetings.filter((meeting) => !!meeting.start) as (MeetingPreviewData & {
     start: number;
   })[];
-  filteredMeetings.sort((a, b) => a.start - b.start);
+  return filteredMeetings.sort((a, b) => a.start - b.start);
+};
 
-  const meetingsPerDate: Record<string, typeof filteredMeetings> = {};
+const getSectionsAndDots = (
+  sortedAndfilteredMeetings: (MeetingPreviewData & {
+    start: number;
+  })[]
+) => {
+  const meetingsPerDate: Record<string, typeof sortedAndfilteredMeetings> = {};
 
   const markedDates: { [date: string]: MultiDotMarking } = {};
 
-  filteredMeetings.forEach((meeting) => {
+  sortedAndfilteredMeetings.forEach((meeting) => {
     const startDateString = momentFormat(meeting.start, 'DD.MM.YYYY', 'x');
     const markDateString = momentFormat(meeting.start, 'YYYY-MM-DD', 'x');
 
@@ -57,27 +64,7 @@ const getSectionsAndDots = (meetings: MeetingPreviewData[]) => {
     }
   });
 
-  const sections = Object.keys(meetingsPerDate).map((date) => ({
-    title: date,
-    data: meetingsPerDate[date]
-  }));
-
-  return { sections, markedDates };
-};
-
-const renderSectionHeader = ({
-  section: { title, data }
-}: {
-  section: {
-    title: string;
-    data: (MeetingPreviewData & {
-      start: number;
-    })[];
-  };
-}) => {
-  if (!data?.length) return null;
-
-  return <SectionHeader title={title} />;
+  return { markedDates };
 };
 
 const getMonthLimits = (date?: DateObject) => {
@@ -95,16 +82,18 @@ const getMonthLimits = (date?: DateObject) => {
 const [query, queryName] = meetingListQuery;
 
 export const OParlCalendarScreen = ({ navigation }: Props) => {
-  const [limits, setLimits] = useState(getMonthLimits);
+  const [limits, setLimits] = useState(getMonthLimits());
 
   const { data, error, loading } = useOParlQuery<{ [queryName]: MeetingPreviewData[] }>(query, {
     variables: limits
   });
 
-  const meetings = data?.[queryName] ?? [];
+  const meetings = (!loading ? data?.[queryName] : undefined) ?? [];
 
   // parse meetings into sections
-  const { markedDates, sections } = getSectionsAndDots(meetings);
+
+  const filteredAndSortedMeetings = filterAndSortMeetings(meetings);
+  const { markedDates } = getSectionsAndDots(filteredAndSortedMeetings);
 
   const updateMonth = useCallback(
     (date) => {
@@ -116,36 +105,29 @@ export const OParlCalendarScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaViewFlex>
       <WrapperWithOrientation>
-        <SectionList
-          ListHeaderComponent={
-            <WrapperVertical style={styles.noPaddingTop}>
-              <Calendar
-                dayComponent={NoTouchDay}
-                onMonthChange={updateMonth}
-                markingType="multi-dot"
-                markedDates={markedDates}
-                renderArrow={renderArrow}
-                theme={{
-                  todayTextColor: colors.primary,
-                  dotStyle: {
-                    borderRadius: dotSize / 2,
-                    height: dotSize,
-                    width: dotSize
-                  }
-                }}
-              />
-              {!!error && (
-                <Wrapper>
-                  <RegularText center>{texts.errors.noData}</RegularText>
-                </Wrapper>
-              )}
-            </WrapperVertical>
-          }
-          ListFooterComponent={<LoadingSpinner loading={loading} />}
-          sections={sections}
-          renderSectionHeader={renderSectionHeader}
-          renderItem={({ item }) => <OParlPreviewComponent data={item} navigation={navigation} />}
-        />
+        <ScrollView>
+          <Calendar
+            dayComponent={NoTouchDay}
+            onMonthChange={updateMonth}
+            markingType="multi-dot"
+            markedDates={markedDates}
+            renderArrow={renderArrow}
+            theme={{
+              todayTextColor: colors.primary,
+              dotStyle: {
+                borderRadius: dotSize / 2,
+                height: dotSize,
+                width: dotSize
+              }
+            }}
+          />
+          {!!error && (
+            <Wrapper>
+              <RegularText center>{texts.errors.noData}</RegularText>
+            </Wrapper>
+          )}
+          <OParlPreviewSection data={filteredAndSortedMeetings} navigation={navigation} />
+        </ScrollView>
       </WrapperWithOrientation>
     </SafeAreaViewFlex>
   );
@@ -160,9 +142,3 @@ OParlCalendarScreen.navigationOptions = ({ navigation }: Props) => {
 OParlCalendarScreen.propTypes = {
   navigation: PropTypes.object.isRequired
 };
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});
