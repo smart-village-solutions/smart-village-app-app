@@ -4,6 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { PersonData } from '../../types';
 import { WrapperHorizontal } from '../Wrapper';
+import { getOrganizationNameString } from './oParlHelpers';
 import { Row, SimpleRow } from './Row';
 import {
   KeywordSection,
@@ -46,6 +47,10 @@ export const Person = ({ data, navigation }: Props) => {
     web
   } = data;
 
+  const faction = membership?.find(
+    (membership) => membership.organization?.classification === 'Fraktion' && !membership.endDate
+  );
+
   return (
     <>
       <Row left={personTexts.name} right={name} leftWidth={leftWidth} fullText />
@@ -54,6 +59,18 @@ export const Person = ({ data, navigation }: Props) => {
       <Row left={personTexts.formOfAddress} right={formOfAddress} leftWidth={leftWidth} />
       <Row left={personTexts.givenName} right={givenName} leftWidth={leftWidth} />
       <Row left={personTexts.familyName} right={familyName} leftWidth={leftWidth} />
+      <Row
+        left={personTexts.faction}
+        right={faction?.organization && getOrganizationNameString(faction.organization)}
+        leftWidth={leftWidth}
+        onPress={() =>
+          navigation.push('OParlDetail', {
+            id: faction?.id,
+            type: faction?.type,
+            title: texts.oparl.membership.membership
+          })
+        }
+      />
       <Row left={personTexts.gender} right={gender} leftWidth={leftWidth} />
       <Row
         left={personTexts.email}

@@ -312,6 +312,7 @@ export const texts = {
       affix: 'Namenszusatz:',
       body: 'Körperschaft',
       email: 'Email:',
+      faction: 'Fraktion:',
       familyName: 'Familienname:',
       formOfAddress: 'Anrede:',
       gender: 'Geschlecht:',

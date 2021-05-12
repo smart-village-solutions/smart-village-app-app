@@ -92,6 +92,7 @@ export const personListQuery = [
         givenName
         membership {
           organization {
+            classification
             name
             shortName
           }

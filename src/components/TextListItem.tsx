@@ -42,10 +42,12 @@ export const TextListItem: NamedExoticComponent<Props> & {
 }>(({ navigation, item, noSubtitle, leftImage }) => {
   const { routeName, params, subtitle, title, bottomDivider, topDivider, picture } = item;
 
+  const titleText = <BoldText>{trimNewLines(title)}</BoldText>;
+
   return (
     <ListItem
-      title={noSubtitle || !subtitle ? undefined : <RegularText small>{subtitle}</RegularText>}
-      subtitle={<BoldText>{trimNewLines(title)}</BoldText>}
+      title={noSubtitle || !subtitle ? titleText : <RegularText small>{subtitle}</RegularText>}
+      subtitle={noSubtitle || !subtitle ? undefined : titleText}
       bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
       topDivider={topDivider !== undefined ? topDivider : false}
       containerStyle={styles.container}

@@ -304,6 +304,7 @@ export type OrganizationPeopleData = {
   name?: string;
   shortName?: string;
   membership?: Array<{
+    endDate?: number; // Date;
     person?: PersonPreviewData;
   }>;
 };

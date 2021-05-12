@@ -69,6 +69,7 @@ const useListData = (
     if (organization) {
       setListData(
         organization.membership
+          ?.filter((mem) => !mem.endDate)
           ?.map((membership) => membership.person)
           .filter<PersonPreviewData>(
             // we filter out the undefined values here, so the result is an array of PersonPreviews
@@ -124,18 +125,20 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
     if (fetchingMore) return;
 
     setFetchingMore(true);
-    await personFetchMore({
-      variables: { pageSize, offset: personData?.[personQueryName]?.length },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult?.[personQueryName].length) {
-          setFinished(true);
-          return prev;
+    if (!selectedOrganization?.id) {
+      await personFetchMore({
+        variables: { pageSize, offset: personData?.[personQueryName]?.length },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult?.[personQueryName].length) {
+            setFinished(true);
+            return prev;
+          }
+          return Object.assign({}, prev, {
+            [personQueryName]: [...prev[personQueryName], ...fetchMoreResult[personQueryName]]
+          });
         }
-        return Object.assign({}, prev, {
-          [personQueryName]: [...prev[personQueryName], ...fetchMoreResult[personQueryName]]
-        });
-      }
-    });
+      });
+    }
     setFetchingMore(false);
   };
 
@@ -156,7 +159,7 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaViewFlex>
       <FlatList
-        data={listData}
+        data={!orgaLoading ? listData : undefined}
         renderItem={({ item }) => (
           <OParlPreviewComponent data={item} key={item.id} navigation={navigation} />
         )}

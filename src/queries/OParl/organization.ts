@@ -46,6 +46,7 @@ export const organizationMembershipQuery = [
         name
         shortName
         membership {
+          endDate
           person {
             ${personPreviewEntries}
           }
