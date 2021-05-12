@@ -12,7 +12,7 @@ import {
   WrapperWithOrientation
 } from '../../components';
 import { colors, texts } from '../../config';
-import { oParlCalendar, oParlOrganizations, oParlPeople, oParlSearch } from '../../icons';
+import { oParlCalendar, oParlOrganizations, oParlPeople } from '../../icons';
 
 type Props = {
   navigation: NavigationScreenProp<never>;
@@ -39,11 +39,11 @@ export const OParlOverviewScreen = ({ navigation }: Props) => {
     <SafeAreaViewFlex>
       <ScrollView>
         <WrapperWithOrientation>
-          <Tile
+          {/* <Tile
             icon={<Icon xml={oParlSearch(colors.primary)} />}
             title={overviewTexts.search}
             onPress={() => navigation.navigate('OParlSearch', { title: overviewTexts.search })}
-          />
+          /> */}
           <Tile
             icon={<Icon xml={oParlCalendar(colors.primary)} />}
             title={overviewTexts.calendar}
