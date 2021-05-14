@@ -422,6 +422,7 @@ export const texts = {
     configureReminder: 'Erinnerungen einstellen',
     errorOnUpdateBody: 'Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.',
     errorOnUpdateTitle: 'Fehler',
+    exportCalendar: 'Kalender exportieren',
     hint: 'Bitte geben Sie Ihre Straße an.',
     onDayBeforeCollection: 'Am Vortag',
     onDayOfCollection: 'Am Tag der Abholung',
