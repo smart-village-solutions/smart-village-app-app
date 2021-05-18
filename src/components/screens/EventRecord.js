@@ -52,7 +52,7 @@ export const EventRecord = ({ data, navigation, route }) => {
   } = data;
   const link = webUrls && webUrls.length && webUrls[0].url;
   const rootRouteName = route.params?.rootRouteName ?? '';
-  const headerTitle = route.params?.headerTitle ?? '';
+  const headerTitle = route.params?.title ?? '';
   // action to open source urls
   const openWebScreen = (webUrl) =>
     navigation.navigate({

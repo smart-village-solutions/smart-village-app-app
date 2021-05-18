@@ -35,7 +35,7 @@ export const NewsItem = ({ data, navigation, route }) => {
   // the title of a news item is either a given main title or the title from the first content block
   const title = mainTitle || (!!contentBlocks && !!contentBlocks.length && contentBlocks[0].title);
   const rootRouteName = route.params?.rootRouteName ?? '';
-  const headerTitle = route.params?.headerTitle ?? '';
+  const headerTitle = route.params?.title ?? '';
 
   // action to open source urls
   const openWebScreen = (webUrl) =>

@@ -47,7 +47,7 @@ export const Offer = ({ data, navigation, route }) => {
 
   const link = sourceUrl?.url;
   const rootRouteName = route.params?.rootRouteName ?? '';
-  const headerTitle = route.params?.headerTitle ?? '';
+  const headerTitle = route.params?.title ?? '';
   const dataProviderLogo = dataProvider?.logo?.url;
 
   // action to open source urls

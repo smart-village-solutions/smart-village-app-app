@@ -21,7 +21,7 @@ type Props = {
 };
 
 export const OParlDetailScreen = ({ navigation, route }: Props) => {
-  const oParlType = route.params?.oParlType ?? '';
+  const oParlType = route.params?.type ?? '';
   const id = route.params?.id ?? '';
 
   const [query, queryName] = getOParlQuery(oParlType);
