@@ -17,7 +17,7 @@ import { SystemPreview } from './SystemPreview';
 
 type PreviewProps = {
   data: OParlObjectPreviewData;
-  navigation: StackNavigationProp<never>;
+  navigation: StackNavigationProp<any>;
   withAgendaItem?: boolean;
   withPerson?: boolean;
 };

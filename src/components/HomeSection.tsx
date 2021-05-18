@@ -1,4 +1,4 @@
-import { NavigationProp } from '@react-navigation/core';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { QueryHookOptions, useQuery } from 'react-apollo';
 
@@ -18,7 +18,7 @@ type Props = {
     | 'standby'
     | 'cache-and-network';
   navigate: () => void;
-  navigation: NavigationProp<never>;
+  navigation: StackNavigationProp<any>;
   query: string;
   queryVariables: QueryHookOptions;
 };

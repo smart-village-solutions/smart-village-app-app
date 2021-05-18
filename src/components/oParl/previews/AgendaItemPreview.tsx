@@ -7,7 +7,7 @@ import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: AgendaItemPreviewData;
-  navigation: StackNavigationProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 export const AgendaItemPreview = ({ data, navigation }: Props) => {

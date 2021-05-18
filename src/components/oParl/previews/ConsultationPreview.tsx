@@ -1,5 +1,5 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { ConsultationPreviewData } from '../../../types';
@@ -7,7 +7,7 @@ import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: ConsultationPreviewData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
   withAgendaItem?: boolean;
 };
 

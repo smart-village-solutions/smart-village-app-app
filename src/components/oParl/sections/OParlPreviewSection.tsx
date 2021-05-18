@@ -1,7 +1,7 @@
+import { StackNavigationProp } from '@react-navigation/stack';
+import _isArray from 'lodash/isArray';
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
-import _isArray from 'lodash/isArray';
 
 import { normalize } from '../../../config';
 import { OParlObjectPreviewData } from '../../../types';
@@ -13,7 +13,7 @@ import { Divider } from 'react-native-elements';
 type Props = {
   data?: OParlObjectPreviewData[] | OParlObjectPreviewData;
   header?: string;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
   withAgendaItem?: boolean;
   withPerson?: boolean;
 };

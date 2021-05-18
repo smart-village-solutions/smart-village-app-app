@@ -9,7 +9,7 @@ import { getOrganizationNameString } from '../oParlHelpers';
 
 type Props = {
   data: PersonPreviewData;
-  navigation: StackNavigationProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 export const PersonPreview = ({ data, navigation }: Props) => {

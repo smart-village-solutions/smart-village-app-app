@@ -4,7 +4,6 @@ import { useQuery } from 'react-apollo';
 import { ActivityIndicator } from 'react-native';
 
 import {
-  HeaderLeft,
   ListComponent,
   LoadingContainer,
   RegularText,

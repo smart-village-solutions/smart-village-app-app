@@ -1,5 +1,6 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
+
 import { OParlObjectData, OParlObjectType } from '../../types';
 import { AgendaItem } from './AgendaItem';
 import { Body } from './Body';
@@ -16,7 +17,7 @@ import { System } from './System';
 
 type Props = {
   data: OParlObjectData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 // eslint-disable-next-line complexity

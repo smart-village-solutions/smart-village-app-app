@@ -1,12 +1,12 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { SimpleRow } from '../Row';
 
 type Props = {
   name?: string;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
   web?: string;
 };
 

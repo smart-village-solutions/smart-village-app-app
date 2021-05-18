@@ -1,4 +1,4 @@
-import { NavigationProp } from '@react-navigation/core';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
@@ -16,7 +16,7 @@ type Props = {
   limit?: number;
   loading?: boolean;
   navigate?: () => void;
-  navigation: NavigationProp<never>;
+  navigation: StackNavigationProp<any>;
   query: string;
   sectionData?: unknown[];
   sectionTitle?: string;

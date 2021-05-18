@@ -1,7 +1,7 @@
+import { NavigationProp } from '@react-navigation/core';
 import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, normalize, texts } from '../../config';
 import { formatAddress, shareMessage } from '../../helpers';
@@ -58,7 +58,7 @@ export type LunchOfferData = {
 
 type Props = {
   lunchOfferData: LunchOfferData;
-  navigation: NavigationScreenProp<never>;
+  navigation: NavigationProp<any>;
 };
 
 const parseAttributes = (input?: string) => {

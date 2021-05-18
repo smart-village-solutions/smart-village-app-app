@@ -1,15 +1,15 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { getFullName, momentFormat } from '../../../helpers';
 import { MembershipPreviewData } from '../../../types';
-import { Row } from '../Row';
 import { getOrganizationNameString } from '../oParlHelpers';
+import { Row } from '../Row';
 
 type Props = {
   data: MembershipPreviewData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
   withPerson?: boolean;
 };
 

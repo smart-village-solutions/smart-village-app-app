@@ -8,7 +8,7 @@ import { TextListItem } from '../../TextListItem';
 
 type Props = {
   data: MeetingPreviewData;
-  navigation: StackNavigationProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 export const MeetingPreview = ({ data, navigation }: Props) => {

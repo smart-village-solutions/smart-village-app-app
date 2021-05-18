@@ -1,6 +1,6 @@
-import { NavigationScreenProp } from 'react-navigation';
+import { NavigationProp } from '@react-navigation/core';
 
 export type WidgetProps = {
-  navigation: NavigationScreenProp<never>;
+  navigation: NavigationProp<any>;
   text?: string;
 };
