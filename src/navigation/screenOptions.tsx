@@ -8,12 +8,14 @@ import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigatio
 import { RouteProp } from '@react-navigation/core';
 import { openShare } from '../helpers';
 
-export const homeScreenOptions = (
-  headerRight: boolean
-): ((props: {
+type OptionProps = {
   route: RouteProp<Record<string, any | undefined>, string>;
   navigation: any;
-}) => StackNavigationOptions) => ({ navigation, route }) => ({
+};
+
+export const homeScreenOptions = (
+  headerRight: boolean
+): ((props: OptionProps) => StackNavigationOptions) => ({ navigation, route }) => ({
   headerLeft: () => (
     <WrapperRow>
       <TouchableOpacity
@@ -33,10 +35,7 @@ export const homeScreenOptions = (
 
 export const defaultStackNavigatorScreenOptions = (
   headerRight: boolean
-): ((props: {
-  route: RouteProp<Record<string, any | undefined>, string>;
-  navigation: any;
-}) => StackNavigationOptions) => ({ navigation, route }) => ({
+): ((props: OptionProps) => StackNavigationOptions) => ({ navigation, route }) => ({
   // header gradient:
   // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
   headerBackground: () => <DiagonalGradient />,
@@ -70,10 +69,7 @@ export const defaultStackNavigatorScreenOptions = (
 // eslint-disable-next-line complexity
 export const detailScreenOptions = (
   headerRight: boolean
-): ((props: {
-  route: RouteProp<Record<string, any | undefined>, string>;
-  navigation: any;
-}) => StackNavigationOptions) => (props) => {
+): ((props: OptionProps) => StackNavigationOptions) => (props) => {
   const { route } = props;
   const shareContent = route.params?.shareContent ?? '';
   const suffix = route.params?.suffix ?? '';
@@ -126,10 +122,7 @@ export const detailScreenOptions = (
 
 export const screenOptionsWithSettings = (
   headerRight: boolean
-): ((props: {
-  route: RouteProp<Record<string, any | undefined>, string>;
-  navigation: any;
-}) => StackNavigationOptions) => (props) => {
+): ((props: OptionProps) => StackNavigationOptions) => (props) => {
   const { navigation } = props;
 
   const defaultOptions = defaultStackNavigatorScreenOptions(headerRight)(props);
@@ -158,10 +151,7 @@ export const screenOptionsWithSettings = (
 
 export const screenOptionsWithShare = (
   headerRight: boolean
-): ((props: {
-  route: RouteProp<Record<string, any | undefined>, string>;
-  navigation: any;
-}) => StackNavigationOptions) => (props) => {
+): ((props: OptionProps) => StackNavigationOptions) => (props) => {
   const { route } = props;
   const shareContent = route.params?.shareContent ?? '';
 
