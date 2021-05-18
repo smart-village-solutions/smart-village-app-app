@@ -2,11 +2,17 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, device, normalize, texts } from '../config';
-import { BookmarkHeader, DiagonalGradient, HeaderLeft, Icon, WrapperRow } from '../components';
-import { drawerMenu, favSettings, share } from '../icons';
+import {
+  BookmarkHeader,
+  DiagonalGradient,
+  HeaderLeft,
+  Icon,
+  ShareHeader,
+  WrapperRow
+} from '../components';
+import { drawerMenu, favSettings } from '../icons';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/core';
-import { openShare } from '../helpers';
 
 type OptionProps = {
   route: RouteProp<Record<string, any | undefined>, string>;
@@ -94,26 +100,7 @@ export const detailScreenOptions = (
     headerRight: () => (
       <WrapperRow style={styles.headerRight}>
         {StyledBookmarkHeader}
-        {!!shareContent && (
-          <TouchableOpacity
-            onPress={() => openShare(shareContent)}
-            accessibilityLabel="Teilen Taste"
-            accessibilityHint="Inhalte auf der Seite teilen"
-          >
-            {device.platform === 'ios' ? (
-              <Icon
-                name="ios-share"
-                iconColor={colors.lightestText}
-                style={headerRightOption ? styles.iconLeft : styles.iconRight}
-              />
-            ) : (
-              <Icon
-                xml={share(colors.lightestText)}
-                style={headerRightOption ? styles.iconLeft : styles.iconRight}
-              />
-            )}
-          </TouchableOpacity>
-        )}
+        <ShareHeader headerRight={headerRight} shareContent={shareContent} />
         {!!headerRightOption && headerRightOption({})}
       </WrapperRow>
     )
@@ -162,26 +149,7 @@ export const screenOptionsWithShare = (
     ...defaultOptions,
     headerRight: () => (
       <WrapperRow style={styles.headerRight}>
-        {!!shareContent && (
-          <TouchableOpacity
-            onPress={() => openShare(shareContent)}
-            accessibilityLabel="Teilen Taste"
-            accessibilityHint="Inhalte auf der Seite teilen"
-          >
-            {device.platform === 'ios' ? (
-              <Icon
-                name="ios-share"
-                iconColor={colors.lightestText}
-                style={headerRight ? styles.iconLeft : styles.iconRight}
-              />
-            ) : (
-              <Icon
-                xml={share(colors.lightestText)}
-                style={headerRight ? styles.iconLeft : styles.iconRight}
-              />
-            )}
-          </TouchableOpacity>
-        )}
+        <ShareHeader headerRight={headerRight} shareContent={shareContent} />
         {!!headerRightOption && headerRightOption({})}
       </WrapperRow>
     )
