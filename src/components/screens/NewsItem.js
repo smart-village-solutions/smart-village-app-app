@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 import { consts, device } from '../../config';
 import { matomoTrackingString, momentFormat, trimNewLines } from '../../helpers';
-import { useMatomoTrackScreenView } from '../../hooks';
+import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { DataProviderButton } from '../DataProviderButton';
 import { ImageSection } from '../ImageSection';
 import { Logo } from '../Logo';
@@ -18,7 +18,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const NewsItem = ({ data, navigation, route }) => {
+export const NewsItem = ({ data, route }) => {
   const {
     dataProvider,
     mainTitle,
@@ -38,15 +38,8 @@ export const NewsItem = ({ data, navigation, route }) => {
   const headerTitle = route.params?.title ?? '';
 
   // action to open source urls
-  const openWebScreen = (webUrl) =>
-    navigation.navigate({
-      name: 'Web',
-      params: {
-        title: headerTitle,
-        webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
-        rootRouteName
-      }
-    });
+  const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
+
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
 
@@ -101,9 +94,7 @@ export const NewsItem = ({ data, navigation, route }) => {
             />
           ))}
 
-        {!!businessAccount && (
-          <DataProviderButton dataProvider={dataProvider} navigation={navigation} />
-        )}
+        {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
       </WrapperWithOrientation>
     </View>
   );

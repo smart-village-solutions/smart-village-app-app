@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 
 import { consts, texts } from '../config';
 import { matomoTrackingString, momentFormat } from '../helpers';
-import { useMatomoTrackScreenView } from '../hooks';
+import { useMatomoTrackScreenView, useOpenWebScreen } from '../hooks';
 import { GenericType } from '../types';
 import { DataProviderButton } from './DataProviderButton';
 import { ImageSection } from './ImageSection';
@@ -21,7 +21,7 @@ const { MATOMO_TRACKING } = consts;
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
 // eslint-disable-next-line complexity
-export const Offer = ({ data, navigation, route }) => {
+export const Offer = ({ data, route }) => {
   const {
     companies,
     contacts,
@@ -51,18 +51,7 @@ export const Offer = ({ data, navigation, route }) => {
   const dataProviderLogo = dataProvider?.logo?.url;
 
   // action to open source urls
-  const openWebScreen = useCallback(
-    (webUrl) =>
-      navigation.navigate({
-        name: 'Web',
-        params: {
-          title: headerTitle,
-          webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
-          rootRouteName
-        }
-      }),
-    [headerTitle, link, navigation, rootRouteName]
-  );
+  const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
 
   const logo = mediaContents?.find((mediaContent) => mediaContent.contentType === 'logo')?.sourceUrl
     ?.url;
@@ -126,9 +115,7 @@ export const Offer = ({ data, navigation, route }) => {
           operatingCompany={operatingCompany}
           openWebScreen={openWebScreen}
         />
-        {!!businessAccount && (
-          <DataProviderButton dataProvider={dataProvider} navigation={navigation} />
-        )}
+        {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
       </WrapperWithOrientation>
     </View>
   );

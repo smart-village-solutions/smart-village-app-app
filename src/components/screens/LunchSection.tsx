@@ -5,6 +5,7 @@ import { Divider } from 'react-native-elements';
 
 import { colors, normalize, texts } from '../../config';
 import { formatAddress, shareMessage } from '../../helpers';
+import { useOpenWebScreen } from '../../hooks';
 import { location } from '../../icons';
 import { QUERY_TYPES } from '../../queries';
 import { Icon } from '../Icon';
@@ -106,17 +107,7 @@ export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
     webUrls: contactWebUrls ? contact?.webUrls : []
   };
 
-  const openWebScreen = useCallback(
-    (webUrl: string) =>
-      navigation.navigate({
-        name: 'Web',
-        params: {
-          title: 'Ort',
-          webUrl
-        }
-      }),
-    [navigation]
-  );
+  const openWebScreen = useOpenWebScreen('Ort');
 
   const onPress = useCallback(() => {
     if (!id) return;

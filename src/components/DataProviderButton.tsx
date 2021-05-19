@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 
@@ -10,10 +11,10 @@ type Props = {
     name: string;
     logo?: { url?: string };
   };
-  navigation: StackNavigationProp<any>;
 };
 
-export const DataProviderButton = ({ dataProvider, navigation }: Props) => {
+export const DataProviderButton = ({ dataProvider }: Props) => {
+  const navigation = useNavigation<StackNavigationProp<any>>();
   const navigateToDataProvider = useCallback(
     () =>
       navigation.push('DataProvider', {
