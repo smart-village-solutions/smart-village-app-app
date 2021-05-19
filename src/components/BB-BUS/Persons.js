@@ -66,7 +66,9 @@ export const Persons = ({ data, openWebScreen }) => {
                 )}
               </Wrapper>
             )}
-            <InfoCard address={address} contact={contact} openWebScreen={openWebScreen} />
+            <Wrapper>
+              <InfoCard address={address} contact={contact} openWebScreen={openWebScreen} />
+            </Wrapper>
           </WrapperWithOrientation>
         );
       })}

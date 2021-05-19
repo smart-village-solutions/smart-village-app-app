@@ -20,7 +20,9 @@ export const Authority = ({ data, bottomDivider, openWebScreen }) => {
   return (
     <Block title={name} bottomDivider={bottomDivider}>
       <WrapperWithOrientation>
-        <InfoCard address={address} contact={contact} openWebScreen={openWebScreen} />
+        <Wrapper>
+          <InfoCard address={address} contact={contact} openWebScreen={openWebScreen} />
+        </Wrapper>
       </WrapperWithOrientation>
       {(!!openingHours || elevator !== undefined || wheelchairAccessible !== undefined) && (
         <WrapperWithOrientation>
