@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/core';
 import moment from 'moment';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
@@ -12,7 +13,8 @@ import { getQuery, QUERY_TYPES } from '../../queries';
 import { WidgetProps } from '../../types';
 import { DefaultWidget } from './DefaultWidget';
 
-export const LunchWidget = ({ navigation, text }: WidgetProps) => {
+export const LunchWidget = ({ text }: WidgetProps) => {
+  const navigation = useNavigation();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const refreshTime = useRefreshTime('lunch-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });

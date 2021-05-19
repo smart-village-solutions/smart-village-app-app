@@ -1,4 +1,3 @@
-import { NavigationProp } from '@react-navigation/core';
 import React from 'react';
 
 import { WidgetProps } from '../../types';
@@ -16,7 +15,6 @@ type WidgetConfig =
   | string;
 
 type Props = {
-  navigation: NavigationProp<never>;
   widgetConfigs?: WidgetConfig[];
 };
 
@@ -29,7 +27,7 @@ const EXISTING_WIDGETS: {
   weather: WeatherWidget
 };
 
-export const Widgets = ({ navigation, widgetConfigs }: Props) => {
+export const Widgets = ({ widgetConfigs }: Props) => {
   if (!widgetConfigs) return null;
 
   const widgetComponents = widgetConfigs.map((widgetConfig, index) => {
@@ -42,7 +40,7 @@ export const Widgets = ({ navigation, widgetConfigs }: Props) => {
       return null;
     }
 
-    return <Component key={index} navigation={navigation} text={widgetText} />;
+    return <Component key={index} text={widgetText} />;
   });
 
   const filteredWidgetComponents = widgetComponents.filter((component) => !!component);

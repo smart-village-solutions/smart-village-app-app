@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
 
@@ -12,7 +13,8 @@ import { getQuery, QUERY_TYPES } from '../../queries';
 import { WidgetProps } from '../../types';
 import { DefaultWidget } from './DefaultWidget';
 
-export const ConstructionSiteWidget = ({ navigation, text }: WidgetProps) => {
+export const ConstructionSiteWidget = ({ text }: WidgetProps) => {
+  const navigation = useNavigation();
   const { constructionSites, setConstructionSites } = useContext(ConstructionSiteContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
