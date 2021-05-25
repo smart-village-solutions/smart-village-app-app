@@ -17,15 +17,15 @@ export const PersonPreview = ({ data, navigation }: Props) => {
 
   const title = getFullName(texts.oparl.person.person, data);
   const faction = membership?.find(
-    (membership) => membership.organization?.classification === 'Fraktion' && !membership.endDate
-  )?.organization;
+    (mem) => mem.organization?.classification === 'Fraktion' && !mem.endDate
+  );
 
   const params = { id, type, title: texts.oparl.person.person };
 
   const item = {
     routeName: 'OParlDetail',
     params,
-    subtitle: faction && getOrganizationNameString(faction),
+    subtitle: faction?.organization && getOrganizationNameString(faction.organization),
     title,
     topDivider: true,
     bottomDivider: false

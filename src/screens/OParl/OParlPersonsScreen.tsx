@@ -73,7 +73,7 @@ const useListData = (
       setListData(
         organization.membership
           ?.filter((mem) => !mem.endDate)
-          ?.map((membership) => membership.person)
+          ?.map((mem) => mem.person)
           .filter<PersonPreviewData>(
             // we filter out the undefined values here, so the result is an array of PersonPreviews
             (person): person is PersonPreviewData => !!person && !person.deleted

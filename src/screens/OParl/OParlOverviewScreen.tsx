@@ -39,11 +39,6 @@ export const OParlOverviewScreen = ({ navigation }: Props) => {
     <SafeAreaViewFlex>
       <ScrollView>
         <WrapperWithOrientation>
-          {/* <Tile
-            icon={<Icon xml={oParlSearch(colors.primary)} />}
-            title={overviewTexts.search}
-            onPress={() => navigation.navigate('OParlSearch', { title: overviewTexts.search })}
-          /> */}
           <Tile
             icon={<Icon xml={oParlCalendar(colors.primary)} />}
             title={overviewTexts.calendar}
