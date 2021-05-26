@@ -42,7 +42,10 @@ const useDropdownData = (orgaData?: { [organizationMembersQueryName]: Organizati
 
   useEffect(() => {
     const organizations =
-      orgaData?.[organizationMembersQueryName].filter((org) => org.membership?.length) ?? [];
+      orgaData?.[organizationMembersQueryName].filter(
+        (org) => org.membership?.filter((mem) => !mem.endDate).length
+      ) ?? [];
+
     const newData = [{ value: texts.oparl.personList.chooseAnOrg, id: '', selected: true }];
     newData.push(
       ...organizations.map((value: OrganizationPreviewData) => ({
@@ -69,7 +72,8 @@ const useListData = (
     if (organization) {
       setListData(
         organization.membership
-          ?.map((membership) => membership.person)
+          ?.filter((mem) => !mem.endDate)
+          ?.map((mem) => mem.person)
           .filter<PersonPreviewData>(
             // we filter out the undefined values here, so the result is an array of PersonPreviews
             (person): person is PersonPreviewData => !!person && !person.deleted
@@ -83,6 +87,7 @@ const useListData = (
   return listData;
 };
 
+// eslint-disable-next-line complexity
 export const OParlPersonsScreen = ({ navigation }: Props) => {
   const [fetchingMore, setFetchingMore] = useState(false);
   const [finished, setFinished] = useState(false);
@@ -124,18 +129,20 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
     if (fetchingMore) return;
 
     setFetchingMore(true);
-    await personFetchMore({
-      variables: { pageSize, offset: personData?.[personQueryName]?.length },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult?.[personQueryName].length) {
-          setFinished(true);
-          return prev;
+    if (!selectedOrganization?.id) {
+      await personFetchMore({
+        variables: { pageSize, offset: personData?.[personQueryName]?.length },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult?.[personQueryName].length) {
+            setFinished(true);
+            return prev;
+          }
+          return Object.assign({}, prev, {
+            [personQueryName]: [...prev[personQueryName], ...fetchMoreResult[personQueryName]]
+          });
         }
-        return Object.assign({}, prev, {
-          [personQueryName]: [...prev[personQueryName], ...fetchMoreResult[personQueryName]]
-        });
-      }
-    });
+      });
+    }
     setFetchingMore(false);
   };
 
@@ -156,12 +163,12 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaViewFlex>
       <FlatList
-        data={listData}
+        data={!orgaLoading ? listData : undefined}
         renderItem={({ item }) => (
           <OParlPreviewComponent data={item} key={item.id} navigation={navigation} />
         )}
         ListHeaderComponent={
-          <Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
             <DropdownSelect
               data={dropdownData}
               searchPlaceholder="Suche"
@@ -190,6 +197,7 @@ OParlPersonsScreen.navigationOptions = ({ navigation }: Props) => {
 };
 
 const styles = StyleSheet.create({
+  noPaddingTop: { paddingTop: 0 },
   searchInput: {
     borderColor: colors.borderRgba,
     borderWidth: 0,
