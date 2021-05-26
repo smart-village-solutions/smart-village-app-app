@@ -174,6 +174,24 @@ export const WasteCollectionScreen = ({ navigation }) => {
   );
 
   const triggerExport = useCallback(() => {
+    if (!isMainserverUp) {
+      return Alert.alert(
+        texts.wasteCalendar.exportAlertTitle,
+        texts.wasteCalendar.exportAlertMissingConnection,
+        [
+          {
+            onPress: () => {
+              setDownloadUrl('');
+            }
+          }
+        ],
+        {
+          onDismiss: () => {
+            setDownloadUrl('');
+          }
+        }
+      );
+    }
     const { street, zip, city } = getLocationData(streetData);
 
     const baseUrl = secrets[namespace].serverUrl + staticRestSuffix.wasteCalendarExport;
@@ -188,9 +206,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
       isMainserverUp && setDownloadUrl(combinedUrl);
       Alert.alert(
         texts.wasteCalendar.exportAlertTitle,
-        isMainserverUp
-          ? texts.wasteCalendar.exportAlertBody
-          : texts.wasteCalendar.exportAlertMissingConnection,
+        texts.wasteCalendar.exportAlertBody,
         [
           {
             onPress: () => {
