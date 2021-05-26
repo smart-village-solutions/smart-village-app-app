@@ -1,7 +1,8 @@
+import { RouteProp } from '@react-navigation/core';
+import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, device, normalize, texts } from '../config';
 import {
   BookmarkHeader,
   DiagonalGradient,
@@ -10,9 +11,8 @@ import {
   ShareHeader,
   WrapperRow
 } from '../components';
+import { colors, device, normalize, texts } from '../config';
 import { drawerMenu, favSettings } from '../icons';
-import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/core';
 
 type OptionProps = {
   route: RouteProp<Record<string, any | undefined>, string>;
@@ -153,15 +153,6 @@ export const screenOptionsWithShare = (
         {!!headerRightOption && headerRightOption({})}
       </WrapperRow>
     )
-  };
-};
-
-// FIXME: Nav
-export const defaultStackNavigatorConfig = (initialRouteName: string, headerRight = true) => {
-  return {
-    initialRouteName,
-    URIPrefix: 'smart-village-app://',
-    defaultNavigationOptions: defaultStackNavigatorScreenOptions(headerRight)
   };
 };
 

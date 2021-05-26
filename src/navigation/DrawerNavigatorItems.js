@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { colors, normalize } from '../config';
@@ -39,10 +39,7 @@ const DrawerNavigatorItems = ({ drawerRoutes, navigation, state }) => {
   const activeRoute = getActiveRoute(state);
 
   return (
-    <ScrollView
-      bounces={false}
-      // style={itemsContainerStyle} // FIXME: Nav
-    >
+    <ScrollView bounces={false}>
       {Object.keys(drawerRoutes).map((route) => {
         const itemInfo = drawerRoutes[route];
         const focused =
@@ -58,20 +55,9 @@ const DrawerNavigatorItems = ({ drawerRoutes, navigation, state }) => {
               onPress={() => handleItemPress(itemInfo)}
               delayPressIn={0}
             >
-              {/*
-              // FIXME: Nav
-              <SafeAreaView
-                // style={[{ backgroundColor }, styles.item, itemStyle]}
-                forceInset={{
-                  // [drawerPosition]: 'always',
-                  // [drawerPosition === 'left' ? 'right' : 'left']: 'never',
-                  vertical: 'never'
-                }}
-              > */}
               <Text style={[styles.label, { color: colors.lightestText }, { fontFamily }]}>
                 {itemInfo.params.title}
               </Text>
-              {/* </SafeAreaView> */}
             </Touchable>
             <Divider style={styles.divider} />
           </View>
@@ -82,10 +68,6 @@ const DrawerNavigatorItems = ({ drawerRoutes, navigation, state }) => {
 };
 
 const styles = StyleSheet.create({
-  item: {
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
   label: {
     fontFamily: 'titillium-web-regular',
     fontSize: normalize(16),
