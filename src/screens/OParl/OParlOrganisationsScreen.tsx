@@ -1,7 +1,8 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { FlatList, NavigationScreenProp } from 'react-navigation';
+import { FlatList } from 'react-native';
 
-import { HeaderLeft, RegularText, SafeAreaViewFlex, Wrapper } from '../../components';
+import { RegularText, SafeAreaViewFlex, Wrapper } from '../../components';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { OParlPreviewComponent } from '../../components/oParl';
 import { texts } from '../../config';
@@ -10,7 +11,7 @@ import { organizationListQuery } from '../../queries/OParl';
 import { OrganizationPreviewData } from '../../types';
 
 type Props = {
-  // navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<never>;
 };
 
 const pageSize = 30;
@@ -81,10 +82,4 @@ export const OParlOrganizationsScreen = ({ navigation }: Props) => {
       />
     </SafeAreaViewFlex>
   );
-};
-
-OParlOrganizationsScreen.navigationOptions = ({ navigation }: Props) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
 };
