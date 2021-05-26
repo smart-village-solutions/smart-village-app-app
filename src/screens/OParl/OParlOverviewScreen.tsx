@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { NavigationScreenProp } from 'react-navigation';
 
 import {
@@ -28,9 +28,11 @@ type TileProps = {
 const overviewTexts = texts.oparl.overview;
 
 const Tile = ({ icon, onPress, title }: TileProps) => (
-  <Touchable style={styles.background} disabled={!onPress} onPress={onPress}>
-    <Wrapper>{icon}</Wrapper>
-    <BoldText primary>{title}</BoldText>
+  <Touchable disabled={!onPress} onPress={onPress}>
+    <View style={styles.background}>
+      <Wrapper>{icon}</Wrapper>
+      <BoldText primary>{title}</BoldText>
+    </View>
   </Touchable>
 );
 
@@ -74,6 +76,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     margin: 12,
     marginBottom: 0,
+    minHeight: 140,
     padding: 12,
     justifyContent: 'center',
     alignItems: 'center'
