@@ -1,7 +1,7 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Keyboard, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Keyboard, StyleSheet, View } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import { Calendar } from 'react-native-calendars';
 import { ScrollView, TouchableOpacity } from 'react-native';
@@ -25,6 +25,7 @@ import { graphqlFetchPolicy, openLink, setupLocales } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifications';
 import { renderArrow } from '../components';
+import WebView from 'react-native-webview';
 
 const dotSize = 6;
 
@@ -92,6 +93,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [inputValue, setInputValue] = useState('');
   const [selectedStreetId, setSelectedStreetId] = useState();
+  const [downloadUrl, setDownloadUrl] = useState('');
 
   const addressesRefreshTime = useRefreshTime('waste-addresses');
   const typesRefreshTime = useRefreshTime('waste-types');
@@ -180,8 +182,32 @@ export const WasteCollectionScreen = ({ navigation }) => {
       zip
     )}&city=${encodeURIComponent(city)}`;
 
-    openLink(baseUrl + params);
-  }, [streetData]);
+    const combinedUrl = baseUrl + params;
+
+    if (device.platform === 'android') {
+      isMainserverUp && setDownloadUrl(combinedUrl);
+      Alert.alert(
+        texts.wasteCalendar.exportAlertTitle,
+        isMainserverUp
+          ? texts.wasteCalendar.exportAlertBody
+          : texts.wasteCalendar.exportAlertMissingConnection,
+        [
+          {
+            onPress: () => {
+              setDownloadUrl('');
+            }
+          }
+        ],
+        {
+          onDismiss: () => {
+            setDownloadUrl('');
+          }
+        }
+      );
+    } else {
+      openLink(combinedUrl);
+    }
+  }, [isMainserverUp, streetData]);
 
   const goToReminder = useCallback(async () => {
     const locationData = getLocationData(streetData);
@@ -262,6 +288,9 @@ export const WasteCollectionScreen = ({ navigation }) => {
               <Button title={texts.wasteCalendar.exportCalendar} onPress={triggerExport} />
             </Wrapper>
           )}
+          {!!downloadUrl.length && (
+            <WebView source={{ uri: downloadUrl }} style={styles.noHeight} />
+          )}
         </WrapperWithOrientation>
       </ScrollView>
     </SafeAreaViewFlex>
@@ -288,6 +317,9 @@ const styles = StyleSheet.create({
   },
   autoCompleteList: {
     margin: 0
+  },
+  noHeight: {
+    height: 0
   },
   topMarginContainer:
     device.platform === 'android'

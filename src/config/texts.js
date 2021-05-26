@@ -422,6 +422,11 @@ export const texts = {
     configureReminder: 'Erinnerungen einstellen',
     errorOnUpdateBody: 'Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.',
     errorOnUpdateTitle: 'Fehler',
+    exportAlertBody:
+      'Ein Download wurde gestartet.\nNachdem der Download abgeschlossen ist, können Sie die Termine durch öffnen der Datei in Ihren Kalender importieren.',
+    exportAlertMissingConnection:
+      'Es konnte keine Verbindung hergestellt werden. Bitte versuchen Sie es später erneut.',
+    exportAlertTitle: 'Abfallkalender',
     exportCalendar: 'Kalender exportieren',
     hint: 'Bitte geben Sie Ihre Straße an.',
     onDayBeforeCollection: 'Am Vortag',
