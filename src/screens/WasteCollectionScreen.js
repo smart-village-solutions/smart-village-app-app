@@ -1,10 +1,18 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Keyboard, StyleSheet, View } from 'react-native';
+import { useQuery } from 'react-apollo';
+import {
+  ActivityIndicator,
+  Alert,
+  Keyboard,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import { Calendar } from 'react-native-calendars';
-import { ScrollView, TouchableOpacity } from 'react-native';
 
 import {
   Button,
@@ -12,20 +20,18 @@ import {
   LoadingContainer,
   NoTouchDay,
   RegularText,
+  renderArrow,
   SafeAreaViewFlex,
   WasteCalendarLegend,
   Wrapper,
   WrapperWithOrientation
 } from '../components';
 import { colors, device, namespace, normalize, secrets, staticRestSuffix, texts } from '../config';
-import { useQuery } from 'react-apollo';
-import { getQuery, QUERY_TYPES } from '../queries';
-import { useRefreshTime } from '../hooks';
 import { graphqlFetchPolicy, openLink, setupLocales } from '../helpers';
+import { useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifications';
-import { renderArrow } from '../components';
-import WebView from 'react-native-webview';
+import { getQuery, QUERY_TYPES } from '../queries';
 
 const dotSize = 6;
 
@@ -93,7 +99,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [inputValue, setInputValue] = useState('');
   const [selectedStreetId, setSelectedStreetId] = useState();
-  const [downloadUrl, setDownloadUrl] = useState('');
 
   const addressesRefreshTime = useRefreshTime('waste-addresses');
   const typesRefreshTime = useRefreshTime('waste-types');
@@ -174,24 +179,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
   );
 
   const triggerExport = useCallback(() => {
-    if (!isMainserverUp) {
-      return Alert.alert(
-        texts.wasteCalendar.exportAlertTitle,
-        texts.wasteCalendar.exportAlertMissingConnection,
-        [
-          {
-            onPress: () => {
-              setDownloadUrl('');
-            }
-          }
-        ],
-        {
-          onDismiss: () => {
-            setDownloadUrl('');
-          }
-        }
-      );
-    }
     const { street, zip, city } = getLocationData(streetData);
 
     const baseUrl = secrets[namespace].serverUrl + staticRestSuffix.wasteCalendarExport;
@@ -203,20 +190,19 @@ export const WasteCollectionScreen = ({ navigation }) => {
     const combinedUrl = baseUrl + params;
 
     if (device.platform === 'android') {
-      isMainserverUp && setDownloadUrl(combinedUrl);
       Alert.alert(
         texts.wasteCalendar.exportAlertTitle,
         texts.wasteCalendar.exportAlertBody,
         [
           {
             onPress: () => {
-              setDownloadUrl('');
+              openLink(combinedUrl);
             }
           }
         ],
         {
           onDismiss: () => {
-            setDownloadUrl('');
+            openLink(combinedUrl);
           }
         }
       );
@@ -304,9 +290,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
               <Button title={texts.wasteCalendar.exportCalendar} onPress={triggerExport} />
             </Wrapper>
           )}
-          {!!downloadUrl.length && (
-            <WebView source={{ uri: downloadUrl }} style={styles.noHeight} />
-          )}
         </WrapperWithOrientation>
       </ScrollView>
     </SafeAreaViewFlex>
@@ -333,9 +316,6 @@ const styles = StyleSheet.create({
   },
   autoCompleteList: {
     margin: 0
-  },
-  noHeight: {
-    height: 0
   },
   topMarginContainer:
     device.platform === 'android'

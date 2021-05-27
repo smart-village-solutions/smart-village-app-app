@@ -423,9 +423,7 @@ export const texts = {
     errorOnUpdateBody: 'Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.',
     errorOnUpdateTitle: 'Fehler',
     exportAlertBody:
-      'Ein Download wurde gestartet.\nNachdem der Download abgeschlossen ist, können Sie die Termine durch öffnen der Datei in Ihren Kalender importieren.',
-    exportAlertMissingConnection:
-      'Es konnte keine Verbindung hergestellt werden. Bitte versuchen Sie es später erneut.',
+      'Ein Download wird in einem externen Browser gestartet.\nNachdem der Download abgeschlossen ist, können Sie die Termine durch Öffnen der Datei in Ihren Kalender importieren.',
     exportAlertTitle: 'Abfallkalender',
     exportCalendar: 'Kalender exportieren',
     hint: 'Bitte geben Sie Ihre Straße an.',
