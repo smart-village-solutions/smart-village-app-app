@@ -229,7 +229,7 @@ export const texts = {
       cancelled: 'Dieser Termin wurde abgesagt.',
       invitation: 'Einladung',
       license: 'Lizenz',
-      location: 'Sitzungsort',
+      location: 'Sitzungsort:',
       meeting: 'Sitzung',
       meetings: 'Sitzungen',
       meetingState: 'Status',
