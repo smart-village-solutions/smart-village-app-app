@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [v1.7.2]
 
-The seventh minor version upgrade introduces the possibility to browse [OParl data](https://dev.oparl.org/spezifikation/) provided by the [sva-apollo-server](https://github.com/ikuseiGmbH/sva-apollo-server).
+Updated OParl screens. Added waste calendar export.
 
 ### Added
 
