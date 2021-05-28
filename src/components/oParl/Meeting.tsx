@@ -69,7 +69,11 @@ export const Meeting = ({ data, navigation }: Props) => {
         left={meetingTexts.location}
         right={formattedLocation}
         onPress={() => {
-          navigation.push('OParlDetail', { type: location?.type, id: location?.id });
+          navigation.push('OParlDetail', {
+            type: location?.type,
+            id: location?.id,
+            title: texts.oparl.location.location
+          });
         }}
       />
       <Row left={meetingTexts.meetingState} right={meetingState} />
