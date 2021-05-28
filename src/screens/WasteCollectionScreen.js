@@ -1,10 +1,18 @@
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Keyboard, StyleSheet, View } from 'react-native';
+import { useQuery } from 'react-apollo';
+import {
+  ActivityIndicator,
+  Alert,
+  Keyboard,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import { Calendar } from 'react-native-calendars';
-import { ScrollView, TouchableOpacity } from 'react-native';
 
 import {
   Button,
@@ -12,19 +20,18 @@ import {
   LoadingContainer,
   NoTouchDay,
   RegularText,
+  renderArrow,
   SafeAreaViewFlex,
   WasteCalendarLegend,
   Wrapper,
   WrapperWithOrientation
 } from '../components';
-import { colors, device, normalize, texts } from '../config';
-import { useQuery } from 'react-apollo';
-import { getQuery, QUERY_TYPES } from '../queries';
+import { colors, device, namespace, normalize, secrets, staticRestSuffix, texts } from '../config';
+import { graphqlFetchPolicy, openLink, setupLocales } from '../helpers';
 import { useRefreshTime } from '../hooks';
-import { graphqlFetchPolicy, setupLocales } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifications';
-import { renderArrow } from '../components';
+import { getQuery, QUERY_TYPES } from '../queries';
 
 const dotSize = 6;
 
@@ -61,6 +68,14 @@ const getMarkedDates = (types, streetData) => {
   };
 
   return markedDates;
+};
+
+const getLocationData = (streetData) => {
+  return {
+    city: streetData?.wasteAddresses?.[0]?.city,
+    street: streetData?.wasteAddresses?.[0]?.street,
+    zip: streetData?.wasteAddresses?.[0]?.zip
+  };
 };
 
 // show streets that contain the string in it
@@ -163,12 +178,41 @@ export const WasteCollectionScreen = ({ navigation }) => {
     [setInputValue]
   );
 
+  const triggerExport = useCallback(() => {
+    const { street, zip, city } = getLocationData(streetData);
+
+    const baseUrl = secrets[namespace].serverUrl + staticRestSuffix.wasteCalendarExport;
+
+    const params = `street=${encodeURIComponent(street)}&zip=${encodeURIComponent(
+      zip
+    )}&city=${encodeURIComponent(city)}`;
+
+    const combinedUrl = baseUrl + params;
+
+    if (device.platform === 'android') {
+      Alert.alert(
+        texts.wasteCalendar.exportAlertTitle,
+        texts.wasteCalendar.exportAlertBody,
+        [
+          {
+            onPress: () => {
+              openLink(combinedUrl);
+            }
+          }
+        ],
+        {
+          onDismiss: () => {
+            openLink(combinedUrl);
+          }
+        }
+      );
+    } else {
+      openLink(combinedUrl);
+    }
+  }, [isMainserverUp, streetData]);
+
   const goToReminder = useCallback(async () => {
-    const locationData = {
-      city: streetData?.wasteAddresses?.[0]?.city,
-      street: streetData?.wasteAddresses?.[0]?.street,
-      zip: streetData?.wasteAddresses?.[0]?.zip
-    };
+    const locationData = getLocationData(streetData);
 
     const navigate = () =>
       navigation.navigate('WasteReminder', { wasteTypes: usedTypes, locationData });
@@ -243,6 +287,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
           {!!streetData && !!usedTypes && (
             <Wrapper>
               <Button title={texts.wasteCalendar.configureReminder} onPress={goToReminder} />
+              <Button title={texts.wasteCalendar.exportCalendar} onPress={triggerExport} />
             </Wrapper>
           )}
         </WrapperWithOrientation>
