@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.7.2]
+
+The seventh minor version upgrade introduces the possibility to browse [OParl data](https://dev.oparl.org/spezifikation/) provided by the [sva-apollo-server](https://github.com/ikuseiGmbH/sva-apollo-server).
+
+### Added
+
+- added export functionality for waste calendar
+
+### Changed
+
+- removed search functionality from oparl for now, as the used oparl systems do not provide keywords
+  - added organizations screen reachable through oparl overview screen instead
+
 ## [v1.7.1]
 
 Added pagination to person list on the `OParlPeopleScreen`
