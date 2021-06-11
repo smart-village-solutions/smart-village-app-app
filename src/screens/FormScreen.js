@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   inputField: {
     borderColor: colors.shadow,
     borderWidth: 1,
-    height: normalize(40),
+    height: normalize(44),
     marginBottom: normalize(30),
     paddingHorizontal: normalize(10)
   },

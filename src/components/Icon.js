@@ -53,6 +53,6 @@ Icon.defaultProps = {
   width: normalize(24),
   height: normalize(24),
   // size is for font icon
-  size: normalize(26),
+  size: normalize(44),
   focused: false
 };

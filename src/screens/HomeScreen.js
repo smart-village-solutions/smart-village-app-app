@@ -239,6 +239,7 @@ HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
           accessibilityHint="Zu den Einstellungen und Lesezeichen wechseln"
         >
           <Icon
+            size={normalize(44)}
             style={headerRight ? styles.iconLeft : styles.iconRight}
             xml={favSettings(colors.lightestText)}
           />

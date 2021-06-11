@@ -30,17 +30,9 @@ export const BookmarkHeader = ({ id, suffix, query, style }: Props) => {
       accessibilityHint="Zu der Lesezeichenliste hinzufügen"
     >
       <Icon
-        size={normalize(22)}
+        size={normalize(44)}
         xml={isBookmarked ? heartFilled(colors.lightestText) : heartEmpty(colors.lightestText)}
-        style={{ ...styles.icon, ...style }}
       />
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  icon: {
-    paddingHorizontal: normalize(7),
-    paddingVertical: normalize(4)
-  }
-});
