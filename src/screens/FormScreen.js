@@ -130,6 +130,7 @@ export const FormScreen = () => {
                     checked={consent}
                     onPress={() => setConsent(!consent)}
                     title="Ich bin mit dem Speichern meiner Daten einverstanden."
+                    uncheckedColor={colors.darkText}
                     checkedColor={colors.accent}
                     containerStyle={styles.checkboxContainerStyle}
                     textStyle={styles.checkboxTextStyle}

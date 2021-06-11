@@ -18,7 +18,7 @@ const previewListItem = {
   title: 'Überschrift',
   subtitle: 'Kategorie',
   picture: {
-    url: 'https://via.placeholder.com/400.png/bcbbc1/fff?text=Bild'
+    url: 'https://via.placeholder.com/400.png/5f1919/fff?text=Bild'
   },
   topDivider: true
 };
