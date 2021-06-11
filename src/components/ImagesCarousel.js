@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import Carousel from 'react-native-snap-carousel';
 import React, { useCallback, useContext } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { colors } from '../config';
@@ -67,14 +67,16 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
       }
 
       return (
-        <ImagesCarouselItem
-          navigation={navigation}
-          source={item.picture}
-          message={item.message}
-          containerStyle={styles.imageContainer}
-          aspectRatio={aspectRatio}
-          refreshInterval={item.refreshInterval}
-        />
+        <TouchableOpacity accessibilityLiveRegion="polite" accessibilityLabel="Bilderkarussell">
+          <ImagesCarouselItem
+            navigation={navigation}
+            source={item.picture}
+            message={item.message}
+            containerStyle={styles.imageContainer}
+            aspectRatio={aspectRatio}
+            refreshInterval={item.refreshInterval}
+          />
+        </TouchableOpacity>
       );
     },
     [navigation, fetchPolicy, aspectRatio]

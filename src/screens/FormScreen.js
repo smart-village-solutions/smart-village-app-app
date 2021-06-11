@@ -86,7 +86,9 @@ export const FormScreen = () => {
               {(createAppUserContent) => (
                 <View style={{ padding: normalize(14) }}>
                   <BoldText>Name</BoldText>
+                  <BoldText>Name</BoldText>
                   <TextInput
+                    accessibilityLabel={`(Geben Sie Ihren Namen ein) ${name}`}
                     onChangeText={(text) => {
                       setName(text);
                     }}
@@ -95,6 +97,7 @@ export const FormScreen = () => {
                   />
                   <BoldText>E-Mail</BoldText>
                   <TextInput
+                    accessibilityLabel={`(Geben Sie Ihren E-Mail addresse ein) ${email}`}
                     onChangeText={(text) => {
                       setEmail(text);
                     }}
@@ -104,6 +107,7 @@ export const FormScreen = () => {
                   />
                   <BoldText>Telefon</BoldText>
                   <TextInput
+                    accessibilityLabel={`(Geben Sie Ihren Telefon nummer ein) ${phone}`}
                     onChangeText={(text) => {
                       setPhone(text);
                     }}
@@ -112,6 +116,7 @@ export const FormScreen = () => {
                   />
                   <BoldText>Ihre Mitteilung</BoldText>
                   <TextInput
+                    accessibilityLabel={`(Geben Sie Ihren Nachricht ein) ${message}`}
                     onChangeText={(text) => {
                       setMessage(text);
                     }}
@@ -121,6 +126,7 @@ export const FormScreen = () => {
                     textAlignVertical="top"
                   />
                   <CheckBox
+                    accessibilityRole="checkbox"
                     checked={consent}
                     onPress={() => setConsent(!consent)}
                     title="Ich bin mit dem Speichern meiner Daten einverstanden."

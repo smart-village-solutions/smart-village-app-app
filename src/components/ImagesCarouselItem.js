@@ -17,6 +17,8 @@ export const ImagesCarouselItem = memo(
     if (routeName && params) {
       return (
         <TouchableOpacity
+          accessibilityRole="Link"
+          accessibilityLabel={`${!!routeName}`}
           onPress={() => navigation.navigate({ routeName, params })}
           activeOpacity={0.8}
         >
