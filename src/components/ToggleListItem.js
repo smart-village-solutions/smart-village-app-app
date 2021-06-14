@@ -4,6 +4,7 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { colors, normalize } from '../config';
+
 import { Switch } from './Switch';
 import { BoldText } from './Text';
 import { Touchable } from './Touchable';

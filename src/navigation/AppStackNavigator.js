@@ -1,5 +1,6 @@
 import { createStackNavigator } from 'react-navigation';
 
+import { texts } from '../config';
 import {
   BookmarkCategoryScreen,
   BookmarkScreen,
@@ -30,8 +31,6 @@ import {
 } from '../screens/BB-BUS';
 
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
-
-import { texts } from '../config';
 
 const AppStackNavigator = (headerRight = true) =>
   createStackNavigator(

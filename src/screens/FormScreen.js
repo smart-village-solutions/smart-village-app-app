@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
+import { Mutation } from 'react-apollo';
 import { Alert, KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { CheckBox } from 'react-native-elements';
-import { Mutation } from 'react-apollo';
 
-import { createQuery, QUERY_TYPES } from '../queries';
-import { colors, consts, device, normalize } from '../config';
 import {
   BoldText,
   Button,
@@ -13,9 +11,11 @@ import {
   SafeAreaViewFlex,
   WrapperWithOrientation
 } from '../components';
-import { OrientationContext } from '../OrientationProvider';
-import { getHeaderHeight, statusBarHeight } from '../navigation/CustomDrawerContentComponent';
+import { colors, consts, device, normalize } from '../config';
 import { useMatomoTrackScreenView } from '../hooks';
+import { getHeaderHeight, statusBarHeight } from '../navigation/CustomDrawerContentComponent';
+import { OrientationContext } from '../OrientationProvider';
+import { createQuery, QUERY_TYPES } from '../queries';
 
 const { MATOMO_TRACKING } = consts;
 

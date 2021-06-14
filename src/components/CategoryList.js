@@ -1,13 +1,14 @@
+import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { SectionList, View } from 'react-native';
-import _filter from 'lodash/filter';
 
 import { device, texts } from '../config';
+
+import { CategoryListItem } from './CategoryListItem';
 import { RegularText } from './Text';
 import { Title, TitleContainer, TitleShadow } from './Title';
 import { Wrapper } from './Wrapper';
-import { CategoryListItem } from './CategoryListItem';
 
 export class CategoryList extends React.PureComponent {
   keyExtractor = (item, index) => `index${index}-id${item.id}`;

@@ -3,10 +3,10 @@ import React from 'react';
 import styled from 'styled-components/native';
 
 import { colors, device, normalize } from '../../config';
-import { DiagonalGradient } from '../DiagonalGradient';
-import { WrapperWrap } from '../Wrapper';
-import { RegularText, BoldText } from '../Text';
 import { priceFormat } from '../../helpers';
+import { DiagonalGradient } from '../DiagonalGradient';
+import { RegularText, BoldText } from '../Text';
+import { WrapperWrap } from '../Wrapper';
 
 const PriceBox = styled.View`
   background-color: ${colors.darkerPrimaryRgba};

@@ -11,6 +11,7 @@ import { BoldText, RegularText } from '../Text';
 import { Title } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+
 import { getAddress, getContact } from './helpers';
 
 /* eslint-disable complexity */

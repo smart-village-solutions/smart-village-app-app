@@ -3,8 +3,8 @@ import React, { memo } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, normalize } from '../config';
 import { Text, Touchable } from '../components';
+import { colors, normalize } from '../config';
 
 // thx to https://stackoverflow.com/questions/53040094/how-to-get-current-route-name-in-react-navigation
 const getActiveRoute = (navigationState) => {

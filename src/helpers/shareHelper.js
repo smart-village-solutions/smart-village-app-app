@@ -2,6 +2,7 @@ import { Share } from 'react-native';
 
 import appJson from '../../app.json';
 import { QUERY_TYPES } from '../queries';
+
 import { momentFormat } from './momentHelper';
 
 // https://facebook.github.io/react-native/docs/share

@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
-import Carousel from 'react-native-snap-carousel';
 import React, { useCallback, useContext } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Query } from 'react-apollo';
+import { ActivityIndicator, StyleSheet } from 'react-native';
+import Carousel from 'react-native-snap-carousel';
 
 import { colors } from '../config';
 import { imageWidth, isActive, shareMessage } from '../helpers';
+import { OrientationContext } from '../OrientationProvider';
 import { getQuery } from '../queries';
+
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
-import { OrientationContext } from '../OrientationProvider';
 
 export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) => {
   const { dimensions } = useContext(OrientationContext);

@@ -2,14 +2,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList } from 'react-native';
 
+import { BoldText } from '../Text';
+import { Touchable } from '../Touchable';
+import { WrapperHorizontal } from '../Wrapper';
+
 import {
   IndexFilterElement,
   IndexFilterElementBorder,
   IndexFilterWrapper
 } from './IndexFilterElement';
-import { Touchable } from '../Touchable';
-import { WrapperHorizontal } from '../Wrapper';
-import { BoldText } from '../Text';
 
 export const IndexFilterWrapperAndList = ({ filter, selectedFilter, setFilter }) => (
   <IndexFilterWrapper>

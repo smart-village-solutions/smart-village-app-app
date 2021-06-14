@@ -1,7 +1,4 @@
-// IMPORT TYPES
-import { QUERY_TYPES } from './types';
-
-// IMPORT GET QUERIES
+import { CREATE_APP_USER_CONTENT } from './appUserContent';
 import { GET_CATEGORIES } from './categories';
 import {
   GET_EVENT_RECORD,
@@ -11,16 +8,14 @@ import {
 import { GET_GENERIC_ITEM, GET_GENERIC_ITEMS } from './genericItem';
 import { GET_LUNCHES } from './lunch';
 import { GET_NEWS_ITEM, GET_NEWS_ITEMS, GET_NEWS_ITEMS_AND_DATA_PROVIDERS } from './newsItems';
-import { GET_POINT_OF_INTEREST, GET_POINTS_OF_INTEREST } from './pointsOfInterest';
-import { GET_TOUR, GET_TOURS } from './tours';
+import { GET_POINTS_OF_INTEREST, GET_POINT_OF_INTEREST } from './pointsOfInterest';
 import { GET_POINTS_OF_INTEREST_AND_TOURS } from './pointsOfInterestAndTours';
 import { GET_PUBLIC_HTML_FILE } from './publicHtmlFiles';
 import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
+import { GET_TOUR, GET_TOURS } from './tours';
+import { QUERY_TYPES } from './types';
 import { WASTE_ADDRESSES, WASTE_STREET } from './waste';
 import { GET_WEATHER, GET_WEATHER_CURRENT } from './weather';
-
-// IMPORT CREATE QUERIES
-import { CREATE_APP_USER_CONTENT } from './appUserContent';
 
 // EXPORT TYPES
 export * from './types';

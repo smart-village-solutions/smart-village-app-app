@@ -4,10 +4,11 @@ import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import { colors, device } from '../config';
 import { DiagonalGradient } from '../components';
-import DrawerNavigatorItems from './DrawerNavigatorItems';
+import { colors, device } from '../config';
 import { OrientationContext } from '../OrientationProvider';
+
+import DrawerNavigatorItems from './DrawerNavigatorItems';
 
 /**
  * based on the default content component from React Navigation:

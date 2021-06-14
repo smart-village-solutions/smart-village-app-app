@@ -1,5 +1,10 @@
+import deepRenameKeys from 'deep-rename-keys';
+import _isEmpty from 'lodash/isEmpty';
+import _remove from 'lodash/remove';
+import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import { Query } from 'react-apollo';
 import {
   ActivityIndicator,
   RefreshControl,
@@ -9,15 +14,7 @@ import {
   View
 } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { Query } from 'react-apollo';
-import _isEmpty from 'lodash/isEmpty';
-import _sortBy from 'lodash/sortBy';
-import _remove from 'lodash/remove';
-import deepRenameKeys from 'deep-rename-keys';
 
-import { NetworkContext } from '../../NetworkProvider';
-import { OrientationContext } from '../../OrientationProvider';
-import { colors, consts, device, normalize } from '../../config';
 import {
   BackToTop,
   Button,
@@ -33,7 +30,9 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../../components';
-import { share } from '../../icons';
+import { Authority } from '../../components/BB-BUS/Authority';
+import { Persons } from '../../components/BB-BUS/Persons';
+import { colors, consts, device, normalize } from '../../config';
 import {
   graphqlFetchPolicy,
   matomoTrackingString,
@@ -41,10 +40,11 @@ import {
   refreshTimeFor,
   trimNewLines
 } from '../../helpers';
-import { GET_DIRECTUS, GET_SERVICE } from '../../queries/BB-BUS/directus';
-import { Authority } from '../../components/BB-BUS/Authority';
-import { Persons } from '../../components/BB-BUS/Persons';
 import { useMatomoTrackScreenView } from '../../hooks';
+import { share } from '../../icons';
+import { NetworkContext } from '../../NetworkProvider';
+import { OrientationContext } from '../../OrientationProvider';
+import { GET_DIRECTUS, GET_SERVICE } from '../../queries/BB-BUS/directus';
 
 const { MATOMO_TRACKING } = consts;
 

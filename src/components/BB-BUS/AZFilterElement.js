@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components/native';
 import { StyleSheet } from 'react-native';
+import styled, { css } from 'styled-components/native';
 
 import { colors, normalize } from '../../config';
 

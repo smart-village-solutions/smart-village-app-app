@@ -1,16 +1,16 @@
+import { useMatomo } from 'matomo-tracker-react-native';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
-import { useMatomo } from 'matomo-tracker-react-native';
 
-import { colors, consts } from '../config';
 import {
   HeaderLeft,
   LoadingContainer,
   SafeAreaViewFlex,
   WrapperWithOrientation
 } from '../components';
+import { colors, consts } from '../config';
 import { NetworkContext } from '../NetworkProvider';
 
 const { MATOMO_TRACKING } = consts;

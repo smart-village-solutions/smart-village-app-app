@@ -1,5 +1,7 @@
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
+import { useQuery } from 'react-apollo';
 import {
   ActivityIndicator,
   FlatList,
@@ -7,10 +9,7 @@ import {
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
-import { useQuery } from 'react-apollo';
-import moment from 'moment';
 
-import { colors, consts, normalize, texts } from '../config';
 import {
   BoldText,
   Button,
@@ -24,9 +23,10 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../components';
-import { arrowLeft, arrowRight } from '../icons';
-import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
+import { colors, consts, normalize, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
+import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
+import { arrowLeft, arrowRight } from '../icons';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 

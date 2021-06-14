@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { CacheManager } from 'react-native-expo-image-cache';
 import { Image as RNEImage } from 'react-native-elements';
+import { CacheManager } from 'react-native-expo-image-cache';
 
 import { colors } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
+import { useInterval } from '../hooks';
 import { SettingsContext } from '../SettingsProvider';
+
 import { ImageMessage } from './ImageMessage';
 import { ImageRights } from './ImageRights';
-import { useInterval } from '../hooks';
 
 const addQueryParam = (url, param) => {
   if (!url?.length) return;

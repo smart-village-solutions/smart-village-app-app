@@ -1,11 +1,11 @@
+import { useMatomo } from 'matomo-tracker-react-native';
 import { useContext, useEffect } from 'react';
 import { Alert } from 'react-native';
-import { useMatomo } from 'matomo-tracker-react-native';
 
 import { texts } from '../config';
-import { SettingsContext } from '../SettingsProvider';
-import { NetworkContext } from '../NetworkProvider';
 import { createMatomoUserId, setMatomoHandledOnStartup, storageHelper } from '../helpers';
+import { NetworkContext } from '../NetworkProvider';
+import { SettingsContext } from '../SettingsProvider';
 
 /**
  * Tracks screen view as action with prefixed 'Screen' category on mounting the component, which

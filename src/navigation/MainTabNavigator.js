@@ -1,8 +1,9 @@
 import React from 'react';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
-import { home, service } from '../icons';
 import { TabBarIcon } from '../components';
+import { colors, device, normalize, texts } from '../config';
+import { home, service } from '../icons';
 import {
   AboutScreen,
   CompanyScreen,
@@ -14,7 +15,6 @@ import {
 
 import AppStackNavigator from './AppStackNavigator';
 import { defaultStackNavigatorConfig } from './defaultStackNavigatorConfig';
-import { colors, device, normalize, texts } from '../config';
 
 const HomeStack = AppStackNavigator(false);
 

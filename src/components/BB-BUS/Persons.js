@@ -1,14 +1,15 @@
+import { pull } from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { pull } from 'lodash';
 
-import { colors, normalize, texts } from '../../config';
 import { InfoBox, RegularText, Title, Touchable, Wrapper } from '..';
-import { WrapperWithOrientation } from '../Wrapper';
-import { getAddress, getContact } from './helpers';
+import { colors, normalize, texts } from '../../config';
 import { InfoCard } from '../infoCard';
+import { WrapperWithOrientation } from '../Wrapper';
+
+import { getAddress, getContact } from './helpers';
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */

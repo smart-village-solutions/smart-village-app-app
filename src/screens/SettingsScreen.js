@@ -2,9 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList, View } from 'react-native';
 
-import { OrientationContext } from '../OrientationProvider';
-import { SettingsContext } from '../SettingsProvider';
-import { colors, consts, device, texts } from '../config';
 import {
   HeaderLeft,
   LoadingContainer,
@@ -17,10 +14,13 @@ import {
   ToggleListItem,
   Wrapper
 } from '../components';
-import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
-import { QUERY_TYPES } from '../queries';
+import { colors, consts, device, texts } from '../config';
 import { createMatomoUserId, readFromStore, removeMatomoUserId, storageHelper } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
+import { OrientationContext } from '../OrientationProvider';
+import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
+import { QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 

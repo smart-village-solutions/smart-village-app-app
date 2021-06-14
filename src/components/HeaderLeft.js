@@ -4,6 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, normalize } from '../config';
 import { arrowLeft } from '../icons';
+
 import { Icon } from './Icon';
 
 export const HeaderLeft = ({ navigation }) => (

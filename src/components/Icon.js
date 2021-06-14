@@ -1,8 +1,8 @@
+import { Ionicons } from '@expo/vector-icons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
 import { SvgXml } from 'react-native-svg';
-import { Ionicons } from '@expo/vector-icons';
 
 import { colors, normalize } from '../config';
 

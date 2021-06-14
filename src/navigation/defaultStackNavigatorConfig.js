@@ -2,8 +2,8 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator';
 
-import { colors, device, normalize } from '../config';
 import { DiagonalGradient, Icon } from '../components';
+import { colors, device, normalize } from '../config';
 import { drawerMenu } from '../icons';
 
 export const defaultStackNavigatorConfig = (initialRouteName, headerRight = true) => {

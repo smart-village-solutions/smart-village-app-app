@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
-import { Card } from 'react-native-elements';
 import { Platform, StyleSheet, View } from 'react-native';
+import { Card } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
+
 import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';

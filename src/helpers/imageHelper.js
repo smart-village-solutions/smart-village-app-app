@@ -1,7 +1,7 @@
 import _filter from 'lodash/filter';
 import _isArray from 'lodash/isArray';
-import _isString from 'lodash/isString';
 import _isInteger from 'lodash/isInteger';
+import _isString from 'lodash/isString';
 import { Dimensions } from 'react-native';
 
 import { consts } from '../config/consts';

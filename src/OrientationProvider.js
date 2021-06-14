@@ -1,7 +1,7 @@
+import * as ScreenOrientation from 'expo-screen-orientation';
 import PropTypes from 'prop-types';
 import React, { createContext, useEffect, useState } from 'react';
 import { Dimensions } from 'react-native';
-import * as ScreenOrientation from 'expo-screen-orientation';
 
 const defaultDimensions = {
   height: Dimensions.get('window').height,

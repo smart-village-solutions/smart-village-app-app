@@ -4,6 +4,7 @@ import { ListItem } from 'react-native-elements';
 
 import { colors, normalize } from '../config';
 import { arrowRight } from '../icons';
+
 import { Icon } from './Icon';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';

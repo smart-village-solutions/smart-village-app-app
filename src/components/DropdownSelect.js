@@ -5,13 +5,14 @@ import Dropdown from 'react-native-modal-dropdown';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, device, normalize } from '../config';
+import { baseFontStyle } from '../config/styles/baseFontStyle';
+import { arrowDown, arrowUp } from '../icons';
+import { OrientationContext } from '../OrientationProvider';
+
+import { Icon } from './Icon';
+import { Label } from './Label';
 import { RegularText } from './Text';
 import { Wrapper, WrapperRow, WrapperHorizontal } from './Wrapper';
-import { Icon } from './Icon';
-import { arrowDown, arrowUp } from '../icons';
-import { Label } from './Label';
-import { OrientationContext } from '../OrientationProvider';
-import { baseFontStyle } from '../config/styles/baseFontStyle';
 
 export const DropdownSelect = ({
   data,

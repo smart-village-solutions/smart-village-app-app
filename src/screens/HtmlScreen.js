@@ -1,12 +1,10 @@
+import { useMatomo } from 'matomo-tracker-react-native';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 import { Query } from 'react-apollo';
-import { useMatomo } from 'matomo-tracker-react-native';
+import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 
-import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
-import { colors, consts } from '../config';
 import {
   Button,
   HeaderLeft,
@@ -16,9 +14,11 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../components';
+import { colors, consts } from '../config';
 import { graphqlFetchPolicy, trimNewLines } from '../helpers';
-import { getQuery } from '../queries';
 import { useRefreshTime } from '../hooks';
+import { NetworkContext } from '../NetworkProvider';
+import { getQuery } from '../queries';
 
 const { MATOMO_TRACKING } = consts;
 

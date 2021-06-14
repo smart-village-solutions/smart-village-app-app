@@ -1,9 +1,7 @@
-import PropTypes from 'prop-types';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-
-import { colors, consts, normalize } from '../config';
 
 import {
   BoldText,
@@ -18,10 +16,11 @@ import {
   WrapperWithOrientation,
   WrapperWrap
 } from '../components';
-import { locationIconAnchor, location as locationIcon } from '../icons';
-import { useMatomoTrackScreenView } from '../hooks';
+import { colors, consts, normalize } from '../config';
 import { ConstructionSiteContext } from '../ConstructionSiteProvider';
 import { momentFormat } from '../helpers';
+import { useMatomoTrackScreenView } from '../hooks';
+import { locationIconAnchor, location as locationIcon } from '../icons';
 
 const { MATOMO_TRACKING } = consts;
 

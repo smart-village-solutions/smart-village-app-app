@@ -6,6 +6,7 @@ import { consts, texts } from '../config';
 import { matomoTrackingString, momentFormat } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { GenericType } from '../types';
+
 import { DataProviderButton } from './DataProviderButton';
 import { ImageSection } from './ImageSection';
 import { InfoCard } from './infoCard';

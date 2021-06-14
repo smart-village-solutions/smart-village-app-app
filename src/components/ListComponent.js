@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { consts } from '../config';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
+
 import { CardList } from './CardList';
 import { CategoryList } from './CategoryList';
 import { ImageTextList } from './ImageTextList';

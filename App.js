@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import MatomoTracker, { MatomoProvider, useMatomo } from 'matomo-tracker-react-native';
+import React, { useEffect, useState } from 'react';
 
 import { MainApp } from './src';
 import { namespace, secrets } from './src/config';

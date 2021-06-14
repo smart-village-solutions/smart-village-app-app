@@ -4,6 +4,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, normalize, texts } from '../config';
 import { arrowUp } from '../icons';
+
 import { Icon } from './Icon';
 import { BoldText } from './Text.js';
 import { Wrapper } from './Wrapper.js';
