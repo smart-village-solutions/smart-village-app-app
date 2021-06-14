@@ -56,9 +56,6 @@ rules:
   import/order:
     - error
     - newlines-between: always
-      alphabetize:
-        order: asc
-        caseInsensitive: true
   react-native/no-unused-styles:
     - error
   react-native/no-inline-styles:
