@@ -1,6 +1,8 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
+
 import { OParlObjectData, OParlObjectType } from '../../types';
+
 import { AgendaItem } from './AgendaItem';
 import { Body } from './Body';
 import { Consultation } from './Consultation';

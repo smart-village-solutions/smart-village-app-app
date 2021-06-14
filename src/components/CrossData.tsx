@@ -10,6 +10,7 @@ import { useNewsCategories, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { GenericType } from '../types';
+
 import { DataListSection } from './DataListSection';
 import { LoadingContainer } from './LoadingContainer';
 

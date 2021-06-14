@@ -4,6 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { useHomeRefresh } from '../hooks/HomeRefresh';
 import { getQuery } from '../queries';
+
 import { DataListSection } from './DataListSection';
 
 type Props = {

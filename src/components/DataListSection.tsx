@@ -4,6 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { colors } from '../config';
 import { getTitleForQuery, parseListItemsFromQuery } from '../helpers';
+
 import { Button } from './Button';
 import { ListComponent } from './ListComponent';
 import { LoadingContainer } from './LoadingContainer';

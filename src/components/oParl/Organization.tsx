@@ -5,6 +5,7 @@ import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { OrganizationData } from '../../types';
 import { WrapperHorizontal } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import { FormattedLocation } from './previews';
 import {

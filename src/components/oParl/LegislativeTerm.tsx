@@ -4,6 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { LegislativeTermData } from '../../types';
 import { WrapperHorizontal } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import {
   DateSection,

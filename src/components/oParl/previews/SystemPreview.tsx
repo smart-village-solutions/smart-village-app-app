@@ -3,6 +3,7 @@ import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { SystemPreviewData } from '../../../types';
+
 import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {

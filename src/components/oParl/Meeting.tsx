@@ -1,10 +1,12 @@
 import { isNumber } from 'lodash';
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
+
 import { texts } from '../../config';
 import { MeetingData } from '../../types';
 import { BoldText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import { FormattedLocation } from './previews';
 import {

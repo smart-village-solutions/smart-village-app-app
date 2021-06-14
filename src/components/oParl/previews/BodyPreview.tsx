@@ -1,8 +1,9 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
-import { texts } from '../../../config';
 
+import { texts } from '../../../config';
 import { BodyPreviewData } from '../../../types';
+
 import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {

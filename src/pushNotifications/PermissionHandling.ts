@@ -5,6 +5,7 @@ import Constants from 'expo-constants';
 
 import { addToStore, readFromStore } from '../helpers';
 import { colors, device, texts } from '../config';
+
 import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandling';
 
 export const getInAppPermission = async (): Promise<boolean> => {

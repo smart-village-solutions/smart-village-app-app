@@ -4,10 +4,12 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { InfoBox, RegularText, Title, Touchable, Wrapper } from '..';
 import { colors, normalize, texts } from '../../config';
 import { InfoCard } from '../infoCard';
-import { WrapperWithOrientation } from '../Wrapper';
+import { RegularText } from '../Text';
+import { Title } from '../Title';
+import { Touchable } from '../Touchable';
+import { InfoBox, Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { getAddress, getContact } from './helpers';
 

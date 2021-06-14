@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import Collapsible from 'react-native-collapsible';
-import { SectionHeader } from './SectionHeader';
 
+import { SectionHeader } from './SectionHeader';
 import { BoldText } from './Text';
 import { Wrapper } from './Wrapper';
 

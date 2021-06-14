@@ -10,6 +10,7 @@ import { lunch } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { WidgetProps } from '../../types';
+
 import { DefaultWidget } from './DefaultWidget';
 
 export const LunchWidget = ({ navigation, text }: WidgetProps) => {

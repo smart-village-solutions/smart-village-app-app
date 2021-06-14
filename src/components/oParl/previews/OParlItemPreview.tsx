@@ -5,6 +5,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { normalize } from '../../../config';
 import { OParlObjectPreviewData } from '../../../types';
 import { SectionHeader } from '../../SectionHeader';
+
 import { OParlPreviewComponent } from './OParlPreviewComponent';
 
 type Props = {

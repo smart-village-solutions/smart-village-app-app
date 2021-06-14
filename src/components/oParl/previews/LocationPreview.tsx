@@ -4,6 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../../config';
 import { LocationPreviewData } from '../../../types';
 import { RegularText } from '../../Text';
+
 import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {

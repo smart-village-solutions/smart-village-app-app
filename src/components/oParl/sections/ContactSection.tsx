@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { texts } from '../../../config';
 import { SimpleRow } from '../Row';
 

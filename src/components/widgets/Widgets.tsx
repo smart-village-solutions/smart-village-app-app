@@ -1,12 +1,13 @@
 import React from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
+import { WrapperRow } from '../Wrapper';
+import { WidgetProps } from '../../types';
+
 import { ConstructionSiteWidget } from './ConstructionSiteWidget';
 import { EventWidget } from './EventWidget';
 import { WeatherWidget } from './WeatherWidget';
-import { WrapperRow } from '../Wrapper';
 import { LunchWidget } from './LunchWidget';
-import { WidgetProps } from '../../types';
 
 type WidgetConfig =
   | {

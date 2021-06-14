@@ -4,6 +4,7 @@ import { NavigationScreenProp } from 'react-navigation';
 import { texts } from '../../config';
 import { PersonData } from '../../types';
 import { WrapperHorizontal } from '../Wrapper';
+
 import { getOrganizationNameString } from './oParlHelpers';
 import { Row, SimpleRow } from './Row';
 import {

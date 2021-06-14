@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../config';
+
 import { Button } from './Button';
 import { Wrapper } from './Wrapper';
 

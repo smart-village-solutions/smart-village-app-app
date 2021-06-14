@@ -10,6 +10,7 @@ import { filterForValidConstructionSites } from '../../jsonValidation';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { WidgetProps } from '../../types';
+
 import { DefaultWidget } from './DefaultWidget';
 
 export const ConstructionSiteWidget = ({ navigation, text }: WidgetProps) => {

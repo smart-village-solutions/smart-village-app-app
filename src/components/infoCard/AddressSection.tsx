@@ -3,7 +3,6 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, normalize } from '../../config';
-
 import { formatAddress, locationLink, locationString, openLink } from '../../helpers';
 import { location } from '../../icons';
 import { Address } from '../../types';

@@ -6,6 +6,7 @@ import { formatSize, momentFormat } from '../../helpers';
 import { FileData } from '../../types';
 import { SectionHeader } from '../SectionHeader';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import {
   KeywordSection,
