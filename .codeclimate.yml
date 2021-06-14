@@ -5,6 +5,12 @@ plugins:
   eslint:
     enabled: true
     channel: "eslint-7"
+    config:
+      extensions:
+      - .js
+      - .jsx
+      - .ts
+      - .tsx
   fixme:
     enabled: true
   nodesecurity:
