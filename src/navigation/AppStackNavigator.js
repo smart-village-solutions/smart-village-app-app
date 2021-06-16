@@ -21,6 +21,8 @@ import {
   OParlPersonsScreen,
   OParlSearchScreen,
   SettingsScreen,
+  SurveyDetailScreen,
+  SurveyOverviewScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
@@ -30,7 +32,6 @@ import {
   DetailScreen as BBBUSDetailScreen,
   IndexScreen as BBBUSIndexScreen
 } from '../screens/BB-BUS';
-import { SurveyOverviewScreen } from '../screens/SurveyOverviewScreen';
 import {
   defaultStackNavigatorScreenOptions,
   detailScreenOptions,
@@ -83,6 +84,11 @@ export const AppStackNavigator = (headerRight = true) => {
         name="Settings"
         component={SettingsScreen}
         options={{ title: texts.screenTitles.settings }}
+      />
+      <Stack.Screen
+        name="SurveyDetail"
+        component={SurveyDetailScreen}
+        options={{ title: texts.screenTitles.survey }}
       />
       <Stack.Screen
         name="SurveyOverview"
