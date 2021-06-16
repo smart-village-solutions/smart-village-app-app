@@ -176,7 +176,7 @@ const parseCategories = (data, skipLastDivider) => {
     title: category.name,
     pointsOfInterestCount: category.pointsOfInterestCount,
     toursCount: category.toursCount,
-    routeName: 'Index',
+    routeName: 'Category',
     params: {
       title: category.name,
       query:

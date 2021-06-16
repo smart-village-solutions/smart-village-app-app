@@ -44,8 +44,7 @@ export class CategoryListItem extends React.PureComponent {
         onPress={() =>
           navigation.navigate({
             name,
-            params,
-            key: 'Category'
+            params
           })
         }
         delayPressIn={0}

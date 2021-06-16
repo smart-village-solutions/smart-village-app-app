@@ -70,6 +70,7 @@ export const AppStackNavigator = (headerRight = true) => {
       <Stack.Screen name="Home" component={HomeScreen} options={homeScreenOptions(headerRight)} />
       <Stack.Screen name="Html" component={HtmlScreen} />
       <Stack.Screen name="Index" component={IndexScreen} />
+      <Stack.Screen name="Category" component={IndexScreen} />
       <Stack.Screen name="Lunch" component={LunchScreen} />
       <Stack.Screen name="OParlCalendar" component={OParlCalendarScreen} />
       <Stack.Screen name="OParlDetail" component={OParlDetailScreen} />
