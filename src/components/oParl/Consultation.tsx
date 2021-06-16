@@ -1,5 +1,5 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { ConsultationData } from '../../types';
@@ -14,7 +14,7 @@ import {
 
 type Props = {
   data: ConsultationData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const consultationTexts = texts.oparl.consultation;

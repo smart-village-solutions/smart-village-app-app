@@ -52,6 +52,8 @@ rules:
   semi:
     - error
     - always
+  react/display-name:
+    - off
   react-native/no-unused-styles:
     - error
   react-native/no-inline-styles:

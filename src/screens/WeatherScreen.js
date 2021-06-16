@@ -4,7 +4,6 @@ import { ActivityIndicator, FlatList, RefreshControl, ScrollView, View } from 'r
 
 import {
   DailyWeather,
-  HeaderLeft,
   HourlyWeather,
   LoadingContainer,
   RegularText,
@@ -149,10 +148,4 @@ export const WeatherScreen = () => {
       </ScrollView>
     </SafeAreaViewFlex>
   );
-};
-
-WeatherScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
 };

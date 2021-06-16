@@ -1,50 +1,38 @@
+import deepRenameKeys from 'deep-rename-keys';
+import _isEmpty from 'lodash/isEmpty';
+import _remove from 'lodash/remove';
+import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import {
-  ActivityIndicator,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
-import { ListItem } from 'react-native-elements';
 import { Query } from 'react-apollo';
-import _isEmpty from 'lodash/isEmpty';
-import _sortBy from 'lodash/sortBy';
-import _remove from 'lodash/remove';
-import deepRenameKeys from 'deep-rename-keys';
+import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { ListItem } from 'react-native-elements';
 
-import { NetworkContext } from '../../NetworkProvider';
-import { OrientationContext } from '../../OrientationProvider';
-import { colors, consts, device, normalize } from '../../config';
 import {
   BackToTop,
   Button,
-  HeaderLeft,
   HtmlView,
-  Icon,
   Link,
   LoadingContainer,
   SafeAreaViewFlex,
   Title,
   Touchable,
   Wrapper,
-  WrapperRow,
   WrapperWithOrientation
 } from '../../components';
-import { share } from '../../icons';
+import { Authority } from '../../components/BB-BUS/Authority';
+import { Persons } from '../../components/BB-BUS/Persons';
+import { colors, consts, device, normalize } from '../../config';
 import {
   graphqlFetchPolicy,
   matomoTrackingString,
-  openShare,
   refreshTimeFor,
   trimNewLines
 } from '../../helpers';
-import { GET_DIRECTUS, GET_SERVICE } from '../../queries/BB-BUS/directus';
-import { Authority } from '../../components/BB-BUS/Authority';
-import { Persons } from '../../components/BB-BUS/Persons';
 import { useMatomoTrackScreenView } from '../../hooks';
+import { NetworkContext } from '../../NetworkProvider';
+import { OrientationContext } from '../../OrientationProvider';
+import { GET_DIRECTUS, GET_SERVICE } from '../../queries/BB-BUS/directus';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -69,7 +57,7 @@ const TEXT_BLOCKS_SORTER = {
   'Zuständige Stelle': 15
 };
 
-export const DetailScreen = ({ navigation }) => {
+export const DetailScreen = ({ navigation, route }) => {
   const scrollViewRef = useRef();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
@@ -77,9 +65,9 @@ export const DetailScreen = ({ navigation }) => {
   const [accordion, setAccordion] = useState({});
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const rootRouteName = navigation.getParam('rootRouteName', '');
-  const headerTitle = navigation.getParam('title', '');
-  const details = navigation.getParam('data', '');
+  const rootRouteName = route.params?.rootRouteName ?? '';
+  const headerTitle = route.params?.title ?? '';
+  const details = route?.params?.data ?? '';
   const id = details.id;
 
   if (!id) return null;
@@ -198,7 +186,7 @@ export const DetailScreen = ({ navigation }) => {
 
             const openWebScreen = () =>
               navigation.navigate({
-                routeName: 'Web',
+                name: 'Web',
                 params: {
                   title: name,
                   webUrl: url,
@@ -225,7 +213,7 @@ export const DetailScreen = ({ navigation }) => {
           // action to open source urls
           const openWebScreen = (webUrl) =>
             navigation.navigate({
-              routeName: 'Web',
+              name: 'Web',
               params: {
                 title: headerTitle,
                 webUrl,
@@ -283,7 +271,7 @@ export const DetailScreen = ({ navigation }) => {
         // TODO: refactor multiple methods for `openWebScreen` in this file
         const openWebScreen = (webUrl) =>
           navigation.navigate({
-            routeName: 'Web',
+            name: 'Web',
             params: {
               title: details.name,
               webUrl,
@@ -377,17 +365,6 @@ export const DetailScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  headerRight: {
-    alignItems: 'center'
-  },
-  iconLeft: {
-    paddingLeft: normalize(14),
-    paddingRight: normalize(7)
-  },
-  iconRight: {
-    paddingLeft: normalize(7),
-    paddingRight: normalize(14)
-  },
   sectionTitle: {
     backgroundColor: colors.transparent,
     paddingHorizontal: normalize(14),
@@ -399,41 +376,7 @@ const styles = StyleSheet.create({
   }
 });
 
-DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
-  const shareContent = navigation.getParam('shareContent', '');
-
-  const { headerRight } = navigationOptions;
-
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />,
-    headerRight: (
-      <WrapperRow style={styles.headerRight}>
-        {!!shareContent && (
-          <TouchableOpacity
-            onPress={() => openShare(shareContent)}
-            accessibilityLabel="Teilen Taste"
-            accessibilityHint="Inhalte auf der Seite teilen"
-          >
-            {device.platform === 'ios' ? (
-              <Icon
-                name="ios-share"
-                iconColor={colors.lightestText}
-                style={headerRight ? styles.iconLeft : styles.iconRight}
-              />
-            ) : (
-              <Icon
-                xml={share(colors.lightestText)}
-                style={headerRight ? styles.iconLeft : styles.iconRight}
-              />
-            )}
-          </TouchableOpacity>
-        )}
-        {!!headerRight && headerRight}
-      </WrapperRow>
-    )
-  };
-};
-
 DetailScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

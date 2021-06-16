@@ -7,7 +7,6 @@ import { colors, consts, normalize } from '../config';
 
 import {
   BoldText,
-  HeaderLeft,
   Image,
   RegularText,
   SafeAreaViewFlex,
@@ -41,10 +40,10 @@ const formatDates = (startDate, endDate) => {
   return formattedEndDate ? `${formattedStartDate} - ${formattedEndDate}` : formattedStartDate;
 };
 
-export const ConstructionSiteDetailScreen = ({ navigation }) => {
+export const ConstructionSiteDetailScreen = ({ route }) => {
   const { constructionSites } = useContext(ConstructionSiteContext);
 
-  const index = navigation.getParam('index');
+  const index = route.params?.index;
 
   if (typeof index !== 'number') return null;
 
@@ -133,12 +132,6 @@ export const ConstructionSiteDetailScreen = ({ navigation }) => {
   );
 };
 
-ConstructionSiteDetailScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
-
 const styles = StyleSheet.create({
   verticalPadding: {
     paddingTop: normalize(14)
@@ -149,5 +142,5 @@ const styles = StyleSheet.create({
 });
 
 ConstructionSiteDetailScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  route: PropTypes.object.isRequired
 };

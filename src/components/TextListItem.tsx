@@ -11,7 +11,7 @@ import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 import { trimNewLines } from '../helpers';
-import { NavigationScreenProp } from 'react-navigation';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 type ItemData = {
   routeName: string;
@@ -26,7 +26,7 @@ type ItemData = {
 type Props = {
   item: ItemData;
   leftImage?: boolean | undefined;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<Record<string, any>>;
   noSubtitle?: boolean | undefined;
 };
 
@@ -37,10 +37,10 @@ export const TextListItem: NamedExoticComponent<Props> & {
 } = memo<{
   item: ItemData;
   leftImage?: boolean;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<Record<string, any>>;
   noSubtitle?: boolean;
 }>(({ navigation, item, noSubtitle, leftImage }) => {
-  const { routeName, params, subtitle, title, bottomDivider, topDivider, picture } = item;
+  const { routeName: name, params, subtitle, title, bottomDivider, topDivider, picture } = item;
 
   const titleText = <BoldText>{trimNewLines(title)}</BoldText>;
 
@@ -61,7 +61,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
           />
         ) : undefined
       }
-      onPress={() => navigation && navigation.push(routeName, params)}
+      onPress={() => navigation && navigation.push(name, params)}
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}

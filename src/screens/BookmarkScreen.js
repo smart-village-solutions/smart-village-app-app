@@ -1,18 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native';
 
 import {
   BookmarkSection,
-  HeaderLeft,
-  Icon,
   RegularText,
   SafeAreaViewFlex,
   Wrapper,
-  WrapperRow,
   WrapperWithOrientation
 } from '../components';
-import { colors, consts, device, normalize, texts } from '../config';
+import { consts, texts } from '../config';
 import { getKeyFromTypeAndSuffix } from '../helpers';
 import { getGenericItemSectionTitle } from '../helpers/genericTypeHelper';
 import { useBookmarks, useMatomoTrackScreenView, useNewsCategories } from '../hooks';
@@ -119,44 +116,6 @@ export const BookmarkScreen = ({ navigation }) => {
       </ScrollView>
     </SafeAreaViewFlex>
   );
-};
-
-const styles = StyleSheet.create({
-  headerRight: {
-    alignItems: 'center'
-  },
-  iconLeft: {
-    paddingLeft: normalize(14),
-    paddingRight: normalize(7)
-  },
-  iconRight: {
-    paddingLeft: normalize(7),
-    paddingRight: normalize(14)
-  }
-});
-
-BookmarkScreen.navigationOptions = ({ navigation, navigationOptions }) => {
-  const { headerRight } = navigationOptions;
-
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />,
-    headerRight: (
-      <WrapperRow style={styles.headerRight}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Settings')}
-          accessibilityLabel="Einstellungen (Taste)"
-          accessibilityHint="Zu den Einstellungen wechseln"
-        >
-          <Icon
-            name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'}
-            iconColor={colors.lightestText}
-            style={headerRight ? styles.iconLeft : styles.iconRight}
-          />
-        </TouchableOpacity>
-        {!!headerRight && headerRight}
-      </WrapperRow>
-    )
-  };
 };
 
 BookmarkScreen.propTypes = {

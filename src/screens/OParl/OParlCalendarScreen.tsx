@@ -1,12 +1,11 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import { ScrollView } from 'react-native';
 import { Calendar, DateObject, MultiDotMarking } from 'react-native-calendars';
-import { ScrollView } from 'react-native-gesture-handler';
-import { NavigationScreenProp } from 'react-navigation';
 
 import {
-  HeaderLeft,
   NoTouchDay,
   RegularText,
   renderArrow,
@@ -22,7 +21,7 @@ import { meetingListQuery } from '../../queries/OParl/meeting';
 import { MeetingPreviewData } from '../../types';
 
 type Props = {
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<never>;
 };
 
 setupLocales();
@@ -131,12 +130,6 @@ export const OParlCalendarScreen = ({ navigation }: Props) => {
       </WrapperWithOrientation>
     </SafeAreaViewFlex>
   );
-};
-
-OParlCalendarScreen.navigationOptions = ({ navigation }: Props) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
 };
 
 OParlCalendarScreen.propTypes = {

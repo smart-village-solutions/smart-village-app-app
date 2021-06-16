@@ -1,12 +1,11 @@
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
+import { WidgetProps } from '../../types';
+import { WrapperRow } from '../Wrapper';
 import { ConstructionSiteWidget } from './ConstructionSiteWidget';
 import { EventWidget } from './EventWidget';
-import { WeatherWidget } from './WeatherWidget';
-import { WrapperRow } from '../Wrapper';
 import { LunchWidget } from './LunchWidget';
-import { WidgetProps } from '../../types';
+import { WeatherWidget } from './WeatherWidget';
 
 type WidgetConfig =
   | {
@@ -16,7 +15,6 @@ type WidgetConfig =
   | string;
 
 type Props = {
-  navigation: NavigationScreenProp<never>;
   widgetConfigs?: WidgetConfig[];
 };
 
@@ -29,7 +27,7 @@ const EXISTING_WIDGETS: {
   weather: WeatherWidget
 };
 
-export const Widgets = ({ navigation, widgetConfigs }: Props) => {
+export const Widgets = ({ widgetConfigs }: Props) => {
   if (!widgetConfigs) return null;
 
   const widgetComponents = widgetConfigs.map((widgetConfig, index) => {
@@ -42,7 +40,7 @@ export const Widgets = ({ navigation, widgetConfigs }: Props) => {
       return null;
     }
 
-    return <Component key={index} navigation={navigation} text={widgetText} />;
+    return <Component key={index} text={widgetText} />;
   });
 
   const filteredWidgetComponents = widgetComponents.filter((component) => !!component);

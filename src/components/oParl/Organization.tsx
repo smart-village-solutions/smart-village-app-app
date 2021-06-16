@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
@@ -13,10 +12,11 @@ import {
   OParlPreviewSection,
   WebRepresentation
 } from './sections';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 type Props = {
   data: OrganizationData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const organizationTexts = texts.oparl.organization;

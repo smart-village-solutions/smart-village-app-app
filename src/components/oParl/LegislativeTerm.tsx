@@ -1,5 +1,5 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { LegislativeTermData } from '../../types';
@@ -15,7 +15,7 @@ import {
 
 type Props = {
   data: LegislativeTermData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const legislativeTermTexts = texts.oparl.legislativeTerm;

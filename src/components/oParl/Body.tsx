@@ -1,6 +1,6 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
@@ -21,7 +21,7 @@ import {
 
 type Props = {
   data: BodyData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const { body: bodyTexts } = texts.oparl;

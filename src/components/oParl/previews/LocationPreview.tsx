@@ -1,5 +1,5 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { LocationPreviewData } from '../../../types';
@@ -8,7 +8,7 @@ import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: LocationPreviewData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 export const FormattedLocation = ({ location }: { location: LocationPreviewData }) => {

@@ -1,7 +1,7 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, View } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, texts } from '../config';
 import { getTitleForQuery, graphqlFetchPolicy } from '../helpers';
@@ -15,7 +15,7 @@ import { LoadingContainer } from './LoadingContainer';
 
 type Props = {
   dataProviderName: string;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 type SectionProps = {
@@ -35,7 +35,7 @@ type CrossDataQueryVariables = {
 };
 
 const getNavigationFunction = (
-  navigation: NavigationScreenProp<never>,
+  navigation: StackNavigationProp<any>,
   dataProviderName: string,
   query: string,
   title?: string,

@@ -12,14 +12,11 @@ import { Image } from './Image';
  */
 export const ImagesCarouselItem = memo(
   ({ navigation, source, message, containerStyle, aspectRatio, refreshInterval }) => {
-    const { routeName, params } = source;
+    const { routeName: name, params } = source;
 
-    if (routeName && params) {
+    if (name && params) {
       return (
-        <TouchableOpacity
-          onPress={() => navigation.navigate({ routeName, params })}
-          activeOpacity={0.8}
-        >
+        <TouchableOpacity onPress={() => navigation.navigate({ name, params })} activeOpacity={0.8}>
           <Image {...{ source, message, containerStyle, aspectRatio }} />
         </TouchableOpacity>
       );

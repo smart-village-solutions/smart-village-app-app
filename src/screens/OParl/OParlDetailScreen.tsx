@@ -1,9 +1,9 @@
+import { RouteProp } from '@react-navigation/core';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { ActivityIndicator, ScrollView } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
 
 import {
-  HeaderLeft,
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
@@ -16,12 +16,13 @@ import { useOParlQuery } from '../../hooks';
 import { getOParlQuery } from '../../queries/OParl';
 
 type Props = {
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<never>;
+  route: RouteProp<any, never>;
 };
 
-export const OParlDetailScreen = ({ navigation }: Props) => {
-  const oParlType = navigation.getParam('type');
-  const id = navigation.getParam('id');
+export const OParlDetailScreen = ({ navigation, route }: Props) => {
+  const oParlType = route.params?.type ?? '';
+  const id = route.params?.id ?? '';
 
   const [query, queryName] = getOParlQuery(oParlType);
 
@@ -57,10 +58,4 @@ export const OParlDetailScreen = ({ navigation }: Props) => {
       </ScrollView>
     </SafeAreaViewFlex>
   );
-};
-
-OParlDetailScreen.navigationOptions = ({ navigation }: Props) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
 };

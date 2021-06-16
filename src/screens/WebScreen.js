@@ -5,20 +5,15 @@ import { WebView } from 'react-native-webview';
 import { useMatomo } from 'matomo-tracker-react-native';
 
 import { colors, consts } from '../config';
-import {
-  HeaderLeft,
-  LoadingContainer,
-  SafeAreaViewFlex,
-  WrapperWithOrientation
-} from '../components';
+import { LoadingContainer, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
 import { NetworkContext } from '../NetworkProvider';
 
 const { MATOMO_TRACKING } = consts;
 
-export const WebScreen = ({ navigation }) => {
+export const WebScreen = ({ route }) => {
   const { isConnected } = useContext(NetworkContext);
   const { trackScreenView } = useMatomo();
-  const webUrl = navigation.getParam('webUrl', '');
+  const webUrl = route.params?.webUrl ?? '';
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `webUrl`
   //       dependency
@@ -46,12 +41,6 @@ export const WebScreen = ({ navigation }) => {
   );
 };
 
-WebScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
-
 WebScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  route: PropTypes.object.isRequired
 };

@@ -1,30 +1,21 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import {
-  DeviceEventEmitter,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native';
+import { DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 
 import { auth } from '../auth';
 import {
   About,
-  HomeSection,
   ConnectedImagesCarousel,
-  Icon,
+  HomeSection,
   SafeAreaViewFlex,
   Service,
   VersionNumber,
-  Widgets,
-  WrapperRow
+  Widgets
 } from '../components';
-import { colors, consts, normalize, texts } from '../config';
+import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy, rootRouteName } from '../helpers';
 import { useMatomoAlertOnStartUp, useMatomoTrackScreenView, usePushNotifications } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
-import { favSettings } from '../icons';
 import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
@@ -60,9 +51,9 @@ export const HomeScreen = ({ navigation }) => {
       const queryType = data?.query_type ? getQueryType(data.query_type) : undefined;
 
       if (data?.id && queryType) {
-        // navigate to the newsItem
+        // navigate to the referenced item
         navigation.navigate({
-          routeName: 'Detail',
+          name: 'Detail',
           params: {
             title: texts.detailTitles[queryType],
             query: queryType,
@@ -106,7 +97,7 @@ export const HomeScreen = ({ navigation }) => {
 
   const NAVIGATION = {
     CATEGORIES_INDEX: {
-      routeName: 'Index',
+      name: 'Index',
       params: {
         title: 'Orte und Touren',
         query: QUERY_TYPES.CATEGORIES,
@@ -115,7 +106,7 @@ export const HomeScreen = ({ navigation }) => {
       }
     },
     EVENT_RECORDS_INDEX: {
-      routeName: 'Index',
+      name: 'Index',
       params: {
         title: 'Veranstaltungen',
         query: QUERY_TYPES.EVENT_RECORDS,
@@ -124,7 +115,7 @@ export const HomeScreen = ({ navigation }) => {
       }
     },
     NEWS_ITEMS_INDEX: ({ categoryId, categoryTitle, categoryTitleDetail }) => ({
-      routeName: 'Index',
+      name: 'Index',
       params: {
         title: categoryTitle,
         titleDetail: categoryTitleDetail,
@@ -153,7 +144,7 @@ export const HomeScreen = ({ navigation }) => {
           publicJsonFile="homeCarousel"
           refreshTimeKey="publicJsonFile-homeCarousel"
         />
-        <Widgets navigation={navigation} widgetConfigs={widgetConfigs} />
+        <Widgets widgetConfigs={widgetConfigs} />
 
         {showNews &&
           categoriesNews.map(
@@ -200,7 +191,6 @@ export const HomeScreen = ({ navigation }) => {
             fetchPolicy={fetchPolicy}
           />
         )}
-
         {globalSettings.navigation === DRAWER && (
           <>
             <Service navigation={navigation} />
@@ -213,40 +203,6 @@ export const HomeScreen = ({ navigation }) => {
   );
 };
 /* eslint-enable complexity */
-
-const styles = StyleSheet.create({
-  iconLeft: {
-    paddingLeft: normalize(14),
-    paddingRight: normalize(7),
-    paddingVertical: normalize(4)
-  },
-  iconRight: {
-    paddingLeft: normalize(7),
-    paddingRight: normalize(14),
-    paddingVertical: normalize(4)
-  }
-});
-
-HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
-  const { headerRight } = navigationOptions;
-
-  return {
-    headerLeft: (
-      <WrapperRow>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Bookmarks', { title: texts.bookmarks.bookmarks })}
-          accessibilityLabel="Einstellungen und Lesezeichen (Taste)"
-          accessibilityHint="Zu den Einstellungen und Lesezeichen wechseln"
-        >
-          <Icon
-            style={headerRight ? styles.iconLeft : styles.iconRight}
-            xml={favSettings(colors.lightestText)}
-          />
-        </TouchableOpacity>
-      </WrapperRow>
-    )
-  };
-};
 
 HomeScreen.propTypes = {
   navigation: PropTypes.object.isRequired

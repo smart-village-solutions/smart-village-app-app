@@ -10,7 +10,6 @@ import { auth } from '../auth';
 import { colors, consts } from '../config';
 import {
   DropdownHeader,
-  HeaderLeft,
   ListComponent,
   LoadingContainer,
   LocationOverview,
@@ -22,21 +21,21 @@ import { graphqlFetchPolicy, matomoTrackingString, parseListItemsFromQuery } fro
 
 const { MATOMO_TRACKING } = consts;
 
-export const IndexScreen = ({ navigation }) => {
+export const IndexScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {} } = globalSettings;
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
-  const [queryVariables, setQueryVariables] = useState(navigation.getParam('queryVariables', {}));
+  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [refreshing, setRefreshing] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const { trackScreenView } = useMatomo();
 
-  const query = navigation.getParam('query', '');
-  const title = navigation.getParam('title', '');
-  const titleDetail = navigation.getParam('titleDetail', '');
+  const query = route.params?.query ?? '';
+  const title = route.params?.title ?? '';
+  const titleDetail = route.params?.titleDetail ?? '';
   const showFilter =
-    navigation.getParam('showFilter', true) &&
+    (route.params?.showFilter ?? true) &&
     {
       [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
       [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
@@ -84,7 +83,7 @@ export const IndexScreen = ({ navigation }) => {
     // news to events, that the query variables are taken freshly. otherwise the mounted screen can
     // have query variables from the previous screen, that does not work. this can result in an
     // empty screen because the query is not retuning anything.
-    setQueryVariables(navigation.getParam('queryVariables', {}));
+    setQueryVariables(route.params?.queryVariables ?? {});
 
     if (query) {
       const MATOMO_TRACKING_SCREEN = {
@@ -111,7 +110,7 @@ export const IndexScreen = ({ navigation }) => {
       isConnected &&
         trackScreenView(matomoTrackingString([MATOMO_TRACKING_SCREEN, MATOMO_TRACKING_CATEGORY]));
     }
-  }, [isConnected, navigation, query, setQueryVariables]);
+  }, [isConnected, query, route, setQueryVariables]);
 
   if (!query) return null;
 
@@ -130,6 +129,7 @@ export const IndexScreen = ({ navigation }) => {
       {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
         <LocationOverview
           navigation={navigation}
+          route={route}
           category={queryVariables.category}
           dataProviderName={queryVariables.dataProvider}
         />
@@ -198,12 +198,7 @@ export const IndexScreen = ({ navigation }) => {
   );
 };
 
-IndexScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
-
 IndexScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 import { consts, device, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
-import { useMatomoTrackScreenView } from '../../hooks';
+import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { DataProviderButton } from '../DataProviderButton';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
@@ -20,7 +20,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const Tour = ({ data, navigation }) => {
+export const Tour = ({ data, route }) => {
   const {
     addresses,
     category,
@@ -34,18 +34,12 @@ export const Tour = ({ data, navigation }) => {
     title,
     webUrls
   } = data;
-  const rootRouteName = navigation.getParam('rootRouteName', '');
-  const headerTitle = navigation.getParam('title', '');
   // action to open source urls
-  const openWebScreen = (webUrl) =>
-    navigation.navigate({
-      routeName: 'Web',
-      params: {
-        title: headerTitle,
-        webUrl,
-        rootRouteName
-      }
-    });
+  const openWebScreen = useOpenWebScreen(
+    route.params?.title ?? '',
+    undefined,
+    route.params?.rootRouteName
+  );
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   // the categories of a news item can be nested and we need the map of all names of all categories
@@ -106,9 +100,7 @@ export const Tour = ({ data, navigation }) => {
 
         <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
-        {!!businessAccount && (
-          <DataProviderButton dataProvider={dataProvider} navigation={navigation} />
-        )}
+        {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
       </WrapperWithOrientation>
     </View>
   );
@@ -117,5 +109,6 @@ export const Tour = ({ data, navigation }) => {
 
 Tour.propTypes = {
   data: PropTypes.object.isRequired,
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  route: PropTypes.object.isRequired
 };

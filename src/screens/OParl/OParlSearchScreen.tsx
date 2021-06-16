@@ -1,10 +1,9 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { NavigationScreenProp, SectionList } from 'react-navigation';
+import { SectionList, StyleSheet } from 'react-native';
 
 import {
   DropdownSelect,
-  HeaderLeft,
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
@@ -18,7 +17,7 @@ import { keywordListQuery, keywordQuery } from '../../queries/OParl';
 import { OParlObjectData } from '../../types';
 
 type Props = {
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<never>;
 };
 
 const UNKNOWN = 'Unbekannt';
@@ -126,12 +125,6 @@ export const OParlSearchScreen = ({ navigation }: Props) => {
       />
     </SafeAreaViewFlex>
   );
-};
-
-OParlSearchScreen.navigationOptions = ({ navigation }: Props) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
 };
 
 const styles = StyleSheet.create({

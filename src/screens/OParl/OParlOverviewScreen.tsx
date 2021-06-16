@@ -1,10 +1,9 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
 
 import {
   BoldText,
-  HeaderLeft,
   Icon,
   SafeAreaViewFlex,
   Touchable,
@@ -15,7 +14,7 @@ import { colors, texts } from '../../config';
 import { oParlCalendar, oParlOrganizations, oParlPeople } from '../../icons';
 
 type Props = {
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<Record<string, { title: string }>>;
 };
 
 type TileProps = {
@@ -62,13 +61,6 @@ export const OParlOverviewScreen = ({ navigation }: Props) => {
       </ScrollView>
     </SafeAreaViewFlex>
   );
-};
-
-OParlOverviewScreen.navigationOptions = ({ navigation }: Props) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />,
-    title: 'Test'
-  };
 };
 
 const styles = StyleSheet.create({

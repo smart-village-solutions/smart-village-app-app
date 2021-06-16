@@ -44,6 +44,7 @@ export * from './SafeAreaViewFlex';
 export * from './SectionHeader';
 export * from './ServiceBox';
 export * from './SettingsListItem';
+export * from './ShareHeader';
 export * from './StorySection';
 export * from './Switch';
 export * from './TabBarIcon';

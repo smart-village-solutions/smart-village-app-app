@@ -10,13 +10,13 @@ import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 
 export const CardListItem = memo(({ navigation, horizontal, item }) => {
-  const { routeName, params, picture, subtitle, title } = item;
+  const { routeName: name, params, picture, subtitle, title } = item;
 
   // TODO: count articles logic could to be implemented
   return (
     <Touchable
       accessibilityLabel={`(${subtitle}) ${title} (Taste)`}
-      onPress={() => navigation && navigation.push(routeName, params)}
+      onPress={() => navigation && navigation.push(name, params)}
       disabled={!navigation}
     >
       <Card containerStyle={styles.container}>

@@ -1,14 +1,8 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { FlatList, NavigationScreenProp } from 'react-navigation';
+import { FlatList, StyleSheet } from 'react-native';
 
-import {
-  DropdownSelect,
-  HeaderLeft,
-  RegularText,
-  SafeAreaViewFlex,
-  Wrapper
-} from '../../components';
+import { DropdownSelect, RegularText, SafeAreaViewFlex, Wrapper } from '../../components';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { OParlPreviewComponent } from '../../components/oParl';
 import { colors, normalize, texts } from '../../config';
@@ -26,7 +20,7 @@ import {
 } from '../../types';
 
 type Props = {
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<never>;
 };
 
 const pageSize = 30;
@@ -188,12 +182,6 @@ export const OParlPersonsScreen = ({ navigation }: Props) => {
       />
     </SafeAreaViewFlex>
   );
-};
-
-OParlPersonsScreen.navigationOptions = ({ navigation }: Props) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
 };
 
 const styles = StyleSheet.create({

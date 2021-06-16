@@ -1,5 +1,5 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
@@ -15,7 +15,7 @@ import {
 
 type Props = {
   data: PaperData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const paperTexts = texts.oparl.paper;

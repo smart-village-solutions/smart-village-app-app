@@ -1,5 +1,5 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { SystemPreviewData } from '../../../types';
@@ -7,7 +7,7 @@ import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: SystemPreviewData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 export const SystemPreview = ({ data, navigation }: Props) => {

@@ -12,7 +12,7 @@ export class CategoryListItem extends React.PureComponent {
   render() {
     const { navigation, noSubtitle, item, index, section } = this.props;
     const {
-      routeName,
+      routeName: name,
       params,
       subtitle,
       title,
@@ -43,9 +43,8 @@ export class CategoryListItem extends React.PureComponent {
         rightIcon={<Icon xml={arrowRight(colors.primary)} />}
         onPress={() =>
           navigation.navigate({
-            routeName,
-            params,
-            key: 'Category'
+            name,
+            params
           })
         }
         delayPressIn={0}
