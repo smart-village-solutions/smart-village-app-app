@@ -372,6 +372,7 @@ export const texts = {
     about: appJson.expo.name,
     constructionSite: 'Baustelle',
     settings: 'Einstellungen',
+    surveys: 'Umfragen',
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
   },
