@@ -2,6 +2,28 @@ const ONCE_A_DAY = 'ONCE_A_DAY';
 const ONCE_PER_HOUR = 'ONCE_PER_HOUR';
 
 export const consts = {
+  accessibilityLabel: {
+    poiNumber: 'Anzahl verfügbarer Einträge:',
+    backIcon: 'Zurück Taste',
+    backIconHint: 'Navigieren zurück zur vorherigen Seite',
+    bookmarkList: 'Lesezeichenliste',
+    bookmarkListHint: 'Zu der Lesezeichenliste hinzufügen',
+    button: 'Taste',
+    textInput: 'Texteingabe',
+    address: 'Adresse',
+    mapHint: 'Wechselt zur Karten-App',
+    phoneNumber: 'Telefonnummer',
+    phoneAppHint: 'Wechselt zur Telefon-App',
+    mail: 'E-mail adresse',
+    website: 'Webseite',
+    webView: 'Öffnet Webseite in der aktuellen App',
+    openMenuIcon: 'Menü Taste',
+    closeMenuIcon: 'Schließen Taste',
+    settingsBookmarksIcon: 'Einstellungen und Lesezeichen (Taste)',
+    settingsBookmarksHint: 'Zu den Einstellungen und Lesezeichen wechseln',
+    shareIcon: 'Teilen Taste'
+  },
+
   DRAWER: 'drawer',
   TABS: 'tabs',
 
