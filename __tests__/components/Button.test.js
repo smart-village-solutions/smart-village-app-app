@@ -9,11 +9,11 @@ describe('Button', () => {
   };
 
   it('renders a button with Outline style', () => {
-    const tree = renderer.create(<Button invert title="title" onPress={onPress} />);
+    const tree = renderer.create(<Button invert title="title" onPress={onPress} />).toJSON();
     expect(tree).toMatchSnapshot();
   });
   it('renders a default button', () => {
-    const tree = renderer.create(<Button title="title" onPress={onPress} />);
+    const tree = renderer.create(<Button title="title" onPress={onPress} />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

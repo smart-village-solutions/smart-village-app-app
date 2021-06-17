@@ -16,61 +16,63 @@ import {
 
 describe('testing Wrapper style component', () => {
   it('renders a default Wrapper', async () => {
-    const tree = renderer.create(<Wrapper />);
+    const tree = renderer.create(<Wrapper />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders WrapperHorizontal', () => {
-    const tree = renderer.create(<WrapperHorizontal big />);
+    const tree = renderer.create(<WrapperHorizontal big />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders WrapperVertical', async () => {
-    const tree = renderer.create(<WrapperVertical />);
+    const tree = renderer.create(<WrapperVertical />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders WrapperLandscape', async () => {
-    const tree = renderer.create(<WrapperLandscape noFlex />);
+    const tree = renderer.create(<WrapperLandscape noFlex />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders WrapperRow', async () => {
-    const tree = renderer.create(<WrapperRow />);
+    const tree = renderer.create(<WrapperRow />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders WrapperRow that centers items', async () => {
-    const tree = renderer.create(<WrapperRow center />);
+    const tree = renderer.create(<WrapperRow center />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders WrapperRow that does spaceAround items', async () => {
-    const tree = renderer.create(<WrapperRow spaceAround />);
+    const tree = renderer.create(<WrapperRow spaceAround />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders WrapperRow that does spaceBetween items', async () => {
-    const tree = renderer.create(<WrapperRow spaceBetween />);
+    const tree = renderer.create(<WrapperRow spaceBetween />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders WrapperWrap', async () => {
-    const tree = renderer.create(<WrapperWrap />);
+    const tree = renderer.create(<WrapperWrap />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders InfoBox', async () => {
-    const tree = renderer.create(<InfoBox />);
+    const tree = renderer.create(<InfoBox />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders WrapperWithOrientation', async () => {
-    const tree = renderer.create(
-      <WrapperWithOrientation needLandscapeWrapper>
-        <View></View>
-      </WrapperWithOrientation>
-    );
+    const tree = renderer
+      .create(
+        <WrapperWithOrientation needLandscapeWrapper>
+          <View></View>
+        </WrapperWithOrientation>
+      )
+      .toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

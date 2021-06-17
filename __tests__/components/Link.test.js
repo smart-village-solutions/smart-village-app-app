@@ -9,14 +9,14 @@ describe('Link', () => {
   };
 
   it('renders a default Link', () => {
-    const tree = renderer.create(<Link description="description" url="url" />);
+    const tree = renderer.create(<Link description="description" url="url" />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders a Link that opens a WebScreen', () => {
-    const tree = renderer.create(
-      <Link description="description" url="url" openWebScreen={openWebScreen} />
-    );
+    const tree = renderer
+      .create(<Link description="description" url="url" openWebScreen={openWebScreen} />)
+      .toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

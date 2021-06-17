@@ -11,7 +11,7 @@ describe('CrossData', () => {
   });
 
   it('renders CrossData', () => {
-    const tree = renderer.create(<CrossData />);
+    const tree = renderer.create(<CrossData />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 });
