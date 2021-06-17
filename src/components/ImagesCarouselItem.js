@@ -41,3 +41,4 @@ ImagesCarouselItem.propTypes = {
   aspectRatio: PropTypes.object,
   refreshInterval: PropTypes.number
 };
+//Fix:Accessibility

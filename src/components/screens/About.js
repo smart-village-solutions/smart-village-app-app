@@ -5,7 +5,7 @@ import { useQuery } from 'react-apollo';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { device, texts } from '../../config';
+import { device, consts, texts } from '../../config';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { TextList } from '../TextList';
 import { getQuery, QUERY_TYPES } from '../../queries';
@@ -52,7 +52,9 @@ export const About = ({ navigation }) => {
     <View>
       {!!headlineAbout && (
         <TitleContainer>
-          <Title accessibilityLabel={`${headlineAbout} (Überschrift)`}>{headlineAbout}</Title>
+          <Title accessibilityLabel={(`${headlineAbout} `, consts.a11yLabel.heading)}>
+            {headlineAbout}
+          </Title>
         </TitleContainer>
       )}
       {!!headlineAbout && device.platform === 'ios' && <TitleShadow />}

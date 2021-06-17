@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import CardStackStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator';
 
-import { colors, device, normalize } from '../config';
+import { colors, consts, device, normalize } from '../config';
 import { DiagonalGradient, Icon } from '../components';
 import { drawerMenu } from '../icons';
 
@@ -28,8 +28,8 @@ export const defaultStackNavigatorConfig = (initialRouteName, headerRight = true
       headerRight: headerRight && (
         <TouchableOpacity
           onPress={() => navigation.openDrawer()}
-          accessibilityLabel="Menü Taste"
-          accessibilityHint="Navigiert zum Menü"
+          accessibilityLabel={consts.a11yLabel.openMenuIcon}
+          accessibilityHint={consts.a11yLabel.menuHint}
         >
           <Icon xml={drawerMenu(colors.lightestText)} style={styles.icon} />
         </TouchableOpacity>

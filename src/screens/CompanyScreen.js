@@ -94,7 +94,7 @@ export const CompanyScreen = ({ navigation }) => {
             <>
               {!!headlineCompany && (
                 <TitleContainer>
-                  <Title accessibilityLabel={`${headlineCompany} (Überschrift)`}>
+                  <Title accessibilityLabel={(`${headlineCompany}`, consts.a11yLabel.heading)}>
                     {headlineCompany}
                   </Title>
                 </TitleContainer>
@@ -142,7 +142,7 @@ export const CompanyScreen = ({ navigation }) => {
                                 small
                                 primary
                                 center
-                                accessibilityLabel={`${item.title} (Taste)`}
+                                accessibilityLabel={(`${item.title}`, consts.a11yLabel.button)}
                               >
                                 {item.title}
                               </BoldText>

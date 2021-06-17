@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon as RNEIcon } from 'react-native-elements';
 
-import { colors, normalize } from '../../config';
+import { colors, consts, normalize } from '../../config';
 import { openLink } from '../../helpers';
 import { mail, phone as phoneIcon } from '../../icons';
 import { Contact } from '../../types';
@@ -11,6 +11,8 @@ import { RegularText } from '../Text';
 import { InfoBox } from '../Wrapper';
 
 const ContactView = ({ contact }: { contact?: Contact }) => {
+  const a11yText = consts.a11yLabel;
+
   if (!contact) {
     return null;
   }
@@ -31,7 +33,9 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
           <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
             <RegularText
               primary
-              accessibilityLabel={`(Telefonnummer) ${contact.phone} (Taste) (Wechselt zur Telefon-App)`}
+              accessibilityLabel={
+                (a11yText.phoneNumber, `${contact.phone}`, a11yText.button, a11yText.phoneAppHint)
+              }
             >
               {contact.phone}
             </RegularText>
@@ -45,7 +49,9 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
           <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
             <RegularText
               primary
-              accessibilityLabel={`(E-Mail) ${contact.email} (Taste) (Wechselt zur E-Mail-App)`}
+              accessibilityLabel={
+                (a11yText.mail, `${contact.email}`, a11yText.button, a11yText.mailHint)
+              }
             >
               {contact.email}
             </RegularText>

@@ -106,7 +106,7 @@ export const EventRecord = ({ data, navigation }) => {
     });
 
   const businessAccount = dataProvider?.dataType === 'business_account';
-
+  const a11yText = consts.a11yLabel;
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
@@ -115,13 +115,15 @@ export const EventRecord = ({ data, navigation }) => {
         {!!title && !!link ? (
           <TitleContainer>
             <Touchable onPress={openWebScreen}>
-              <Title accessibilityLabel={`${title} (Überschrift) (Taste)`}>{title}</Title>
+              <Title accessibilityLabel={(`${title}`, a11yText.heading, a11yText.button)}>
+                {title}
+              </Title>
             </Touchable>
           </TitleContainer>
         ) : (
           !!title && (
             <TitleContainer>
-              <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
+              <Title accessibilityLabel={(`${title}`, a11yText.heading)}>{title}</Title>
             </TitleContainer>
           )
         )}
@@ -141,7 +143,7 @@ export const EventRecord = ({ data, navigation }) => {
         {!!dates && !!dates.length && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.eventRecord.appointments} (Überschrift) `}>
+              <Title accessibilityLabel={(`${texts.eventRecord.appointments}`, a11yText.heading)}>
                 {texts.eventRecord.appointments}
               </Title>
             </TitleContainer>
@@ -154,7 +156,7 @@ export const EventRecord = ({ data, navigation }) => {
         {!!priceInformations && !!priceInformations.length && !!priceInformations[0].description && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.eventRecord.prices} (Überschrift)`}>
+              <Title accessibilityLabel={(`${texts.eventRecord.prices}`, a11yText.heading)}>
                 {texts.eventRecord.prices}
               </Title>
             </TitleContainer>
@@ -166,7 +168,7 @@ export const EventRecord = ({ data, navigation }) => {
         {!!description && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.eventRecord.description} (Überschrift)`}>
+              <Title accessibilityLabel={(`${texts.eventRecord.description}`, a11yText.heading)}>
                 {texts.eventRecord.description}
               </Title>
             </TitleContainer>

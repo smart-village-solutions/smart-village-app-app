@@ -229,14 +229,15 @@ const styles = StyleSheet.create({
 
 HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
   const { headerRight } = navigationOptions;
+  const a11yText = consts.a11yLabel;
 
   return {
     headerLeft: (
       <WrapperRow>
         <TouchableOpacity
           onPress={() => navigation.navigate('Bookmarks', { title: texts.bookmarks.bookmarks })}
-          accessibilityLabel="Einstellungen und Lesezeichen (Taste)"
-          accessibilityHint="Zu den Einstellungen und Lesezeichen wechseln"
+          accessibilityLabel={a11yText.settingsBookmarksIcon}
+          accessibilityHint={a11yText.settingsBookmarksHint}
         >
           <Icon
             size={normalize(44)}

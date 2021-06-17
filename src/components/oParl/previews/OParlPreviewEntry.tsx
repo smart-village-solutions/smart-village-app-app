@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import { NavigationScreenProp } from 'react-navigation';
-import { colors, normalize } from '../../../config';
+import { colors, consts, normalize } from '../../../config';
 import { arrowRight } from '../../../icons';
 
 import { OParlObjectType } from '../../../types';
@@ -38,10 +38,11 @@ export const OParlPreviewEntry = ({
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}
-      accessibilityLabel={`${title} (Taste)`}
+      accessibilityLabel={(`${title}`, consts.a11yLabel.button)}
     />
   );
 };
+//Fix:accessibilityLabel
 
 const styles = StyleSheet.create({
   container: {

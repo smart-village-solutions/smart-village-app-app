@@ -2,7 +2,7 @@ import _filter from 'lodash/filter';
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, normalize } from '../../config';
+import { colors, consts, normalize } from '../../config';
 
 import { formatAddress, locationLink, locationString, openLink } from '../../helpers';
 import { location } from '../../icons';
@@ -24,6 +24,8 @@ const addressOnPress = (address?: string) => {
 };
 
 export const AddressSection = ({ address, addresses }: Props) => {
+  const a11yText = consts.a11yLabel;
+
   if (!address && !addresses?.length) {
     return null;
   }
@@ -45,7 +47,7 @@ export const AddressSection = ({ address, addresses }: Props) => {
         const innerComponent = (
           <RegularText
             primary
-            accessibilityLabel={`(Adresse) ${address} (Taste) (Wechselt zur Karten-App)`}
+            accessibilityLabel={(a11yText.address, `${address}`, a11yText.button, a11yText.mapHint)}
           >
             {address}
           </RegularText>

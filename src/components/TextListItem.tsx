@@ -3,7 +3,7 @@ import React, { memo, NamedExoticComponent, Validator } from 'react';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
 import { arrowRight } from '../icons';
 import { Icon } from './Icon';
 import { Image } from './Image';
@@ -65,11 +65,11 @@ export const TextListItem: NamedExoticComponent<Props> & {
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}
-      accessibilityLabel={`${title} (Taste)`}
+      accessibilityLabel={(`${title}`, consts.a11yLabel.button)}
     />
   );
 });
-
+//Fix:accessibilityLabel
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,

@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon as RNEIcon } from 'react-native-elements';
 import _filter from 'lodash/filter';
 
-import { colors, device, normalize, texts } from '../../config';
+import { colors, consts, device, normalize, texts } from '../../config';
 import { location } from '../../icons';
 import { openLink, locationLink, locationString } from '../../helpers';
 import { RegularText } from '../Text';
@@ -24,7 +24,9 @@ const addressOnPress = (address) => {
 export const TourCard = ({ addresses, lengthKm }) => (
   <View>
     <TitleContainer>
-      <Title accessibilityLabel={`${texts.tour.tour} (Überschrift)`}>{texts.tour.tour}</Title>
+      <Title accessibilityLabel={(`${texts.tour.tour}`, consts.a11yLabel.heading)}>
+        {texts.tour.tour}
+      </Title>
     </TitleContainer>
     {device.platform === 'ios' && <TitleShadow />}
     <Wrapper>

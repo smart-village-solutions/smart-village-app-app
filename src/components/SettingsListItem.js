@@ -69,7 +69,7 @@ export const SettingsListItem = ({ item, index, section, orientation, dimensions
         onPress={() => setIsOverlayVisible(true)}
         delayPressIn={0}
         Component={Touchable}
-        accessibilityLabel={`${title} (Taste)`}
+        accessibilityLabel={(`${title}`, consts.a11yLabel.button)}
       />
       <Overlay
         isVisible={isOverlayVisible}

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { device } from '../config';
+import { consts, device } from '../config';
 import { Title, TitleContainer, TitleShadow } from './Title';
 import { Touchable } from './Touchable';
 
@@ -10,8 +10,9 @@ type Props = {
 };
 
 export const SectionHeader = ({ title, onPress }: Props) => {
+  const a11yText = consts.a11yLabel;
   const innerComponent = (
-    <Title accessibilityLabel={`${title} (Überschrift) (Taste)`}>{title}</Title>
+    <Title accessibilityLabel={(`${title}`, a11yText.heading, a11yText.button)}>{title}</Title>
   );
 
   return (
@@ -23,3 +24,4 @@ export const SectionHeader = ({ title, onPress }: Props) => {
     </>
   );
 };
+//Fix:accessibilityLabel

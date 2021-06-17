@@ -6,7 +6,7 @@ import { useQuery } from 'react-apollo';
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { colors, device, normalize, texts } from '../../config';
+import { colors, consts, device, normalize, texts } from '../../config';
 import { DiagonalGradient } from '../DiagonalGradient';
 import { Image } from '../Image';
 import { ServiceBox } from '../ServiceBox';
@@ -59,7 +59,9 @@ export const Service = ({ navigation }) => {
     <View>
       {!!headlineService && (
         <TitleContainer>
-          <Title accessibilityLabel={`${headlineService} (Überschrift)`}>{headlineService}</Title>
+          <Title accessibilityLabel={(`${headlineService}`, consts.a11yLabel.heading)}>
+            {headlineService}
+          </Title>
         </TitleContainer>
       )}
       {!!headlineService && device.platform === 'ios' && <TitleShadow />}
@@ -96,7 +98,12 @@ export const Service = ({ navigation }) => {
                         resizeMode="contain"
                       />
                     )}
-                    <BoldText small lightest center accessibilityLabel={`${item.title} (Taste)`}>
+                    <BoldText
+                      small
+                      lightest
+                      center
+                      accessibilityLabel={(`${item.title}`, consts.a11yLabel.button)}
+                    >
                       {item.title}
                     </BoldText>
                   </View>

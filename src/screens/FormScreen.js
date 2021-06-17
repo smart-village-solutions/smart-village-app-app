@@ -69,6 +69,7 @@ export const FormScreen = () => {
     }
   };
 
+  const a11yText = consts.a11yLabel;
   // TODO: texts are hardcoded because they will come from the API later somewhen
   return (
     <SafeAreaViewFlex>
@@ -88,7 +89,7 @@ export const FormScreen = () => {
                   <BoldText>Name</BoldText>
                   <BoldText>Name</BoldText>
                   <TextInput
-                    accessibilityLabel={`(Geben Sie Ihren Namen ein) ${name}`}
+                    accessibilityLabel={(a11yText.textInput, `${name}`)}
                     onChangeText={(text) => {
                       setName(text);
                     }}
@@ -97,7 +98,7 @@ export const FormScreen = () => {
                   />
                   <BoldText>E-Mail</BoldText>
                   <TextInput
-                    accessibilityLabel={`(Geben Sie Ihren E-Mail addresse ein) ${email}`}
+                    accessibilityLabel={(a11yText.textInput, ` ${email}`)}
                     onChangeText={(text) => {
                       setEmail(text);
                     }}
@@ -107,7 +108,7 @@ export const FormScreen = () => {
                   />
                   <BoldText>Telefon</BoldText>
                   <TextInput
-                    accessibilityLabel={`(Geben Sie Ihren Telefon nummer ein) ${phone}`}
+                    accessibilityLabel={(a11yText.textInput, ` ${phone}`)}
                     onChangeText={(text) => {
                       setPhone(text);
                     }}
@@ -116,7 +117,7 @@ export const FormScreen = () => {
                   />
                   <BoldText>Ihre Mitteilung</BoldText>
                   <TextInput
-                    accessibilityLabel={`(Geben Sie Ihren Nachricht ein) ${message}`}
+                    accessibilityLabel={(a11yText.textInput, `${message}`)}
                     onChangeText={(text) => {
                       setMessage(text);
                     }}

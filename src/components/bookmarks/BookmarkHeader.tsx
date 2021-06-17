@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { BookmarkContext } from '../../BookmarkProvider';
 
-import { colors, normalize } from '../../config';
+import { colors, consts, normalize } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
 import { heartEmpty, heartFilled } from '../../icons';
 import { QUERY_TYPES } from '../../queries';
@@ -18,6 +18,7 @@ type Props = {
 export const BookmarkHeader = ({ id, suffix, query, style }: Props) => {
   const { toggleBookmark } = useContext(BookmarkContext);
   const isBookmarked = useBookmarkedStatus(query, id, suffix);
+  const a11yText = consts.a11yLabel;
 
   const onPress = useCallback(() => {
     toggleBookmark(query, id, suffix);
@@ -26,8 +27,8 @@ export const BookmarkHeader = ({ id, suffix, query, style }: Props) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      accessibilityLabel="Lesezeichenliste (Taste)"
-      accessibilityHint="Zu der Lesezeichenliste hinzufügen"
+      accessibilityLabel={a11yText.bookmarkList}
+      accessibilityHint={a11yText.bookmarkListHint}
     >
       <Icon
         size={normalize(44)}

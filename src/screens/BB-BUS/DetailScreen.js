@@ -411,8 +411,8 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
         {!!shareContent && (
           <TouchableOpacity
             onPress={() => openShare(shareContent)}
-            accessibilityLabel="Teilen Taste"
-            accessibilityHint="Inhalte auf der Seite teilen"
+            accessibilityLabel={consts.a11y.shareIcon}
+            accessibilityHint={consts.a11y.shareHint}
           >
             {device.platform === 'ios' ? (
               <Icon

@@ -4,7 +4,7 @@ import React, { useCallback, useContext } from 'react';
 import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { Query } from 'react-apollo';
 
-import { colors } from '../config';
+import { colors, consts } from '../config';
 import { imageWidth, isActive, shareMessage } from '../helpers';
 import { getQuery } from '../queries';
 import { ImagesCarouselItem } from './ImagesCarouselItem';
@@ -67,7 +67,10 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
       }
 
       return (
-        <TouchableOpacity accessibilityLiveRegion="polite" accessibilityLabel="Bilderkarussell">
+        <TouchableOpacity
+          accessibilityLiveRegion="polite"
+          accessibilityLabel={consts.a11yLabel.imageCarousel}
+        >
           <ImagesCarouselItem
             navigation={navigation}
             source={item.picture}

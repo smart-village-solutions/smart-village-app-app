@@ -137,6 +137,7 @@ const styles = StyleSheet.create({
 
 BookmarkScreen.navigationOptions = ({ navigation, navigationOptions }) => {
   const { headerRight } = navigationOptions;
+  const a11yText = consts.a11yLabel;
 
   return {
     headerLeft: <HeaderLeft navigation={navigation} />,
@@ -144,8 +145,8 @@ BookmarkScreen.navigationOptions = ({ navigation, navigationOptions }) => {
       <WrapperRow style={styles.headerRight}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Settings')}
-          accessibilityLabel="Einstellungen (Taste)"
-          accessibilityHint="Zu den Einstellungen wechseln"
+          accessibilityLabel={a11yText.settings}
+          accessibilityHint={a11yText.settingsHint}
         >
           <Icon
             name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'}

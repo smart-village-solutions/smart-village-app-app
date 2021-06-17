@@ -4,7 +4,7 @@ import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import { colors, device } from '../config';
+import { colors, consts, device } from '../config';
 import { DiagonalGradient } from '../components';
 import DrawerNavigatorItems from './DrawerNavigatorItems';
 import { OrientationContext } from '../OrientationProvider';
@@ -15,14 +15,14 @@ import { OrientationContext } from '../OrientationProvider';
  */
 export const CustomDrawerContentComponent = (props) => {
   const { orientation } = useContext(OrientationContext);
-
+  const a11yText = consts.a11yLabel;
   return (
     <DiagonalGradient>
       <View style={styles.headerContainer}>
         <View style={stylesWithProps({ orientation }).header}>
           <TouchableOpacity
-            accessibilityLabel="Schließen Taste"
-            accessibilityHint="Menü schließen"
+            accessibilityLabel={a11yText.closeMenuIcon}
+            accessibilityHint={a11yText.closeMenuHint}
             onPress={() => props.navigation.closeDrawer()}
             delayPressIn={0}
           >

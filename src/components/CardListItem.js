@@ -15,7 +15,7 @@ export const CardListItem = memo(({ navigation, horizontal, item }) => {
   // TODO: count articles logic could to be implemented
   return (
     <Touchable
-      accessibilityLabel={`(${subtitle}) ${title} (Taste)`}
+      accessibilityLabel={(`${subtitle},${title}`, consts.a11yLabel.button)}
       onPress={() => navigation && navigation.push(routeName, params)}
       disabled={!navigation}
     >
