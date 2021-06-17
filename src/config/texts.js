@@ -403,6 +403,9 @@ export const texts = {
     },
     pushNotifications: 'Push-Benachrichtigungen'
   },
+  survey: {
+    archive: 'Umfrage-Archiv'
+  },
   tabBarLabel: {
     home: 'Übersicht',
     service: 'Service',

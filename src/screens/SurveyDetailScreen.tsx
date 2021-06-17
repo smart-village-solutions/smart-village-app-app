@@ -166,13 +166,22 @@ const data: { active: Survey[]; archived: Survey[] } = {
   ]
 };
 
+// const useSurvey = (id?: string) => {
+//   const { data, loading, refetch } = useQuery<{ surveys: { all: Survey[] } }>(DETAILED_SURVEY, {
+//     fetchPolicy: 'cache-and-network',
+//     skip: !id?.length
+//   });
+
+//   return { loading, refetch, survey: data?.surveys.all[0] };
+// };
+
 export const SurveyDetailScreen = ({ route }: Props) => {
-  const id = route.params?.id;
+  // const { survey, loading, refetch } = useSurvey(route.params?.id);
   const languages = useSurveyLanguages();
 
-  // TODO: cache-and-network
-  // TODO: replace by query
-  const survey = data.active.find((s) => s.id === id) ?? data.archived.find((s) => s.id === id);
+  const survey =
+    data.active.find((s) => s.id === route.params?.id) ??
+    data.archived.find((s) => s.id === route.params?.id);
   const refetch = noop;
   const loading = false;
 

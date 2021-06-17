@@ -5,20 +5,18 @@ import React, { useCallback } from 'react';
 import { SectionList } from 'react-native';
 
 import { SectionHeader, TextListItem } from '../components';
+import { texts } from '../config';
 import { combineLanguages } from '../helpers';
 import { usePullToRefetch, useSurveyLanguages } from '../hooks';
 import { Survey } from '../types';
 
-// TODO: add and extract proper query
-// const SURVEYS = gql``;
-
 const useSurveySections = () => {
-  // const { data, loading, error, refetch } = useQuery<{ active: Survey[]; archived: Survey[] }>(
-  //   SURVEYS
-  // );
+  // const { data, loading, error, refetch } = useQuery<{
+  //   surveys: { active: Survey[]; archived: Survey[] };
+  // }>(SURVEYS, { fetchPolicy: 'cache-and-network' });
 
   // TOOD: replace dummy data by query data
-  const data: { active: Survey[]; archived: Survey[] } = {
+  const surveys: { active: Survey[]; archived: Survey[] } = {
     active: [
       {
         id: '1',
@@ -167,15 +165,15 @@ const useSurveySections = () => {
 
   const sectionData = [];
 
-  // TODO: double check optional chaining here
+  // const surveys = data?.surveys;
+
   // active should always be present if data is present
-  if (data?.active.length) {
-    sectionData.push({ data: data.active, key: 'active' });
+  if (surveys?.active.length) {
+    sectionData.push({ data: surveys?.active, key: 'active' });
   }
 
-  // TODO: double check optional chaining here
-  if (data?.archived.length) {
-    sectionData.push({ data: data.archived, key: 'archived', title: 'Umfrage-Archiv' });
+  if (surveys?.archived.length) {
+    sectionData.push({ data: surveys?.archived, key: 'archived', title: texts.survey.archive });
   }
 
   // return { surveySections: sectionData, loading, error, refetch };
