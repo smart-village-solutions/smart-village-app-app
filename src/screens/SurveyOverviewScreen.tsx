@@ -28,7 +28,7 @@ const useSurveySections = () => {
     sectionData.push({ data: surveys?.archived, key: 'archived', title: texts.survey.archive });
   }
 
-  return { surveySections: sectionData, loading, refetch };
+  return { loading, refetch, surveySections: sectionData };
 };
 
 const parseSurveyToItem = (survey: Survey, languages: string[]) => {
@@ -54,7 +54,7 @@ const renderSectionHeader = ({
 };
 
 export const SurveyOverviewScreen = () => {
-  const { surveySections, refetch, loading } = useSurveySections();
+  const { loading, refetch, surveySections } = useSurveySections();
   const RefreshControl = usePullToRefetch(loading, refetch);
   const languages = useSurveyLanguages();
   const navigation = useNavigation<StackNavigationProp<any>>();
