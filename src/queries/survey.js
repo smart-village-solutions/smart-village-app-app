@@ -3,9 +3,7 @@ import gql from 'graphql-tag';
 export const DETAILED_SURVEY = gql`
   query Surveys($id: ID!) {
     surveys(ids: [$id]) {
-      all {
-        ...surveyFields
-      }
+      ...surveyFields
     }
   }
 
@@ -24,13 +22,11 @@ export const DETAILED_SURVEY = gql`
 
 export const SURVEYS = gql`
   query Surveys {
-    surveys {
-      active {
-        ...surveyFields
-      }
-      archived {
-        ...surveyFields
-      }
+    archived: surveys(archived: true) {
+      ...surveyFields
+    }
+    ongoing: surveys(ongoing: true) {
+      ...surveyFields
     }
   }
 
