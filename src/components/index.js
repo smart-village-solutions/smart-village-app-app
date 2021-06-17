@@ -46,6 +46,7 @@ export * from './ServiceBox';
 export * from './SettingsListItem';
 export * from './ShareHeader';
 export * from './StorySection';
+export * from './SurveyAnswer';
 export * from './Switch';
 export * from './TabBarIcon';
 export * from './Text';

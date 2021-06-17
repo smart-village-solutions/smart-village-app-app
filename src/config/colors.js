@@ -6,6 +6,8 @@ export const colors = {
   secondary: 'rgb(9, 72, 60)',
   accent: 'rgb(15, 70, 24)',
 
+  error: 'rgb(174, 0, 29)',
+
   darkText: '#000000',
   lighterText: 'rgba(221, 242, 243, 0.6)',
   lightestText: '#FFFFFF',

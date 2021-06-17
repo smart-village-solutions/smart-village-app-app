@@ -1,3 +1,9 @@
+export type ResponseOption = {
+  id: string;
+  title: Record<string, string | undefined>;
+  votesCount: number;
+};
+
 export type Survey = {
   id: string;
   title?: Record<string, string | undefined>;
@@ -7,9 +13,5 @@ export type Survey = {
     dateStart: string;
     dateEnd: string;
   };
-  responseOptions: Array<{
-    id: string;
-    title: Record<string, string | undefined>;
-    votesCount: number;
-  }>;
+  responseOptions: ResponseOption[];
 };

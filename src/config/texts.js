@@ -404,7 +404,25 @@ export const texts = {
     pushNotifications: 'Push-Benachrichtigungen'
   },
   survey: {
-    archive: 'Umfrage-Archiv'
+    archive: 'Umfrage-Archiv',
+    dateEnd: {
+      de: 'Abschluss der Umfrage:',
+      pl: 'Wypełnienie ankiety:'
+    },
+    dateStart: {
+      de: 'Start der Umfrage:',
+      pl: 'Rozpocznij ankietę:'
+    },
+    hint: {
+      de:
+        'Die Umfrageergebnisse werden erst angezeigt, wenn Sie Ihre Stimme abgegeben haben oder die Umfrage beendet wurde.',
+      pl:
+        'Wyniki ankiety nie będą wyświetlane, dopóki nie oddasz głosu lub ankieta nie zostanie zakończona.'
+    },
+    submitAnswer: {
+      de: 'Antwort senden',
+      pl: 'wyślij odpowiedź'
+    }
   },
   tabBarLabel: {
     home: 'Übersicht',
