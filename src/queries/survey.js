@@ -12,6 +12,11 @@ export const DETAILED_SURVEY = gql`
     title
     questionTitle
     description
+    date {
+      id
+      dateEnd
+      dateStart
+    }
     responseOptions {
       id
       title

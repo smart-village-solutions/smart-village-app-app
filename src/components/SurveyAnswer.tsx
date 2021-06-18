@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors } from '../config';
+import { colors, texts } from '../config';
 import { useSurveyLanguages } from '../hooks';
 import { ResponseOption } from '../types';
 import { Radiobutton } from './Radiobutton';
@@ -14,6 +14,10 @@ type Props = {
   responseOption: ResponseOption;
   selected: boolean;
   setSelection: (id: string) => void;
+};
+
+const getAnswerLabel = (lang: 'de' | 'pl', index: number) => {
+  return `${texts.survey.answerLabelPrefix[lang]} ${String.fromCharCode(65 + index)}:`;
 };
 
 export const SurveyAnswer = ({ faded, index, responseOption, selected, setSelection }: Props) => {
@@ -32,10 +36,10 @@ export const SurveyAnswer = ({ faded, index, responseOption, selected, setSelect
             <Wrapper style={styles.radioButtonContainer}>
               <Radiobutton selected={selected} />
             </Wrapper>
-            <Wrapper>
-              <BoldText>Antwort {String.fromCharCode(65 + index)}:</BoldText>
+            <Wrapper style={styles.answerContainer}>
+              <BoldText>{getAnswerLabel('de', index)}</BoldText>
               <RegularText>{responseOption.title[languages[0]]}</RegularText>
-              <BoldText italic>Odpowiedź {String.fromCharCode(65 + index)}:</BoldText>
+              <BoldText italic>{getAnswerLabel('pl', index)}</BoldText>
               <RegularText italic>{responseOption.title[languages[0]]}</RegularText>
             </Wrapper>
           </WrapperRow>
@@ -46,6 +50,9 @@ export const SurveyAnswer = ({ faded, index, responseOption, selected, setSelect
 };
 
 const styles = StyleSheet.create({
+  answerContainer: {
+    flex: 1
+  },
   border: {
     borderColor: colors.darkText,
     borderWidth: 1

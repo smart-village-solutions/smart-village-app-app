@@ -9,7 +9,7 @@ export type Survey = {
   title?: Record<string, string | undefined>;
   questionTitle: Record<string, string | undefined>;
   description?: Record<string, string | undefined>;
-  dates: {
+  date: {
     dateStart: string;
     dateEnd: string;
   };

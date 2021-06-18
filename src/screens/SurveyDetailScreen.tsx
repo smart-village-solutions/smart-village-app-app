@@ -74,8 +74,8 @@ export const SurveyDetailScreen = ({ route }: Props) => {
       <ScrollView refreshControl={RefreshControl}>
         <WrapperWithOrientation>
           {!!shownTitle?.length && <SectionHeader title={shownTitle} />}
-          <DateComponent start date={survey.dates.dateStart} />
-          <DateComponent date={survey.dates.dateEnd} />
+          <DateComponent start date={survey.date.dateStart} />
+          <DateComponent date={survey.date.dateEnd} />
           {!!survey.description?.[languages[0]]?.length && (
             <Wrapper style={styles.noPaddingBottom}>
               <RegularText>{survey.description[languages[0]]}</RegularText>

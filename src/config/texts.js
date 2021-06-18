@@ -405,6 +405,10 @@ export const texts = {
   },
   survey: {
     archive: 'Umfrage-Archiv',
+    answerLabelPrefix: {
+      de: 'Antwort',
+      pl: 'Odpowiedź'
+    },
     dateEnd: {
       de: 'Abschluss der Umfrage:',
       pl: 'Wypełnienie ankiety:'
