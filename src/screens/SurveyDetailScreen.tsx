@@ -23,6 +23,7 @@ type Props = {
 const useSurvey = (id?: string) => {
   const { data, loading, refetch } = useQuery<{ surveys: Survey[] }>(DETAILED_SURVEY, {
     fetchPolicy: 'cache-and-network',
+    variables: { id },
     skip: !id?.length
   });
 
