@@ -40,6 +40,7 @@ export * from './MediaSection';
 export * from './Offer';
 export * from './PreviewSection';
 export * from './Radiobutton';
+export * from './Results';
 export * from './SafeAreaViewFlex';
 export * from './SectionHeader';
 export * from './ServiceBox';

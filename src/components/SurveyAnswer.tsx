@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { colors, texts } from '../config';
+import { colors } from '../config';
+import { getAnswerLabel } from '../helpers';
 import { useSurveyLanguages } from '../hooks';
 import { ResponseOption } from '../types';
 import { Radiobutton } from './Radiobutton';
@@ -14,10 +15,6 @@ type Props = {
   responseOption: ResponseOption;
   selected: boolean;
   setSelection: (id: string) => void;
-};
-
-const getAnswerLabel = (lang: 'de' | 'pl', index: number) => {
-  return `${texts.survey.answerLabelPrefix[lang]} ${String.fromCharCode(65 + index)}:`;
 };
 
 export const SurveyAnswer = ({ faded, index, responseOption, selected, setSelection }: Props) => {
