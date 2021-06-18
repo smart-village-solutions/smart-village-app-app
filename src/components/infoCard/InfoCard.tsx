@@ -72,7 +72,7 @@ export const InfoCard = ({
     {!!category && !!category.name && (
       <InfoBox>
         <RNEIcon name="list" type="material" color={colors.primary} iconStyle={styles.margin} />
-        <RegularText accessibilityLabel={(consts.a11yLabel.category, `${category.name}`)}>
+        <RegularText accessibilityLabel={`${consts.a11yLabel.category} (${category.name})`}>
           {category.name}
         </RegularText>
       </InfoBox>

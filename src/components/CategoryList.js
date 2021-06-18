@@ -18,7 +18,7 @@ export class CategoryList extends React.PureComponent {
     return (
       <View>
         <TitleContainer>
-          <Title accessibilityLabel={(`${title}`, consts.a11yLabel.heading)}>{title}</Title>
+          <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>{title}</Title>
         </TitleContainer>
         {device.platform === 'ios' && <TitleShadow />}
       </View>

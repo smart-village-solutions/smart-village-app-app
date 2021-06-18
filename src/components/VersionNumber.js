@@ -19,7 +19,7 @@ export const VersionNumber = () => {
     </Wrapper>
   );
 };
-
+//App-Version can be hardcoded ?
 const styles = StyleSheet.create({
   version: {
     color: colors.shadow,

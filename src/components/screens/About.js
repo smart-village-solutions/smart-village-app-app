@@ -52,7 +52,7 @@ export const About = ({ navigation }) => {
     <View>
       {!!headlineAbout && (
         <TitleContainer>
-          <Title accessibilityLabel={(`${headlineAbout} `, consts.a11yLabel.heading)}>
+          <Title accessibilityLabel={`(${headlineAbout}) ${consts.a11yLabel.heading}`}>
             {headlineAbout}
           </Title>
         </TitleContainer>

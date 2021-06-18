@@ -12,7 +12,7 @@ import { WrapperRow } from './Wrapper';
 export const Link = ({ url, description, openWebScreen }) => (
   <TouchableOpacity
     onPress={() => openLink(url, openWebScreen)}
-    accessibilityLabel={(`${description}`, consts.a11yLabel.button)}
+    accessibilityLabel={`(${description}) Link`}
   >
     <WrapperRow>
       <Icon xml={link(colors.secondary)} style={styles.icon} />
@@ -20,7 +20,6 @@ export const Link = ({ url, description, openWebScreen }) => (
     </WrapperRow>
   </TouchableOpacity>
 );
-
 const styles = StyleSheet.create({
   icon: {
     marginRight: normalize(5),

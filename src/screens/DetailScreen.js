@@ -181,8 +181,8 @@ DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
         {!!shareContent && (
           <TouchableOpacity
             onPress={() => openShare(shareContent)}
-            accessibilityLabel={consts.a11y.shareIcon}
-            accessibilityHint={consts.a11y.shareHint}
+            accessibilityLabel={consts.a11yLabel.shareIcon}
+            accessibilityHint={consts.a11yLabel.shareHint}
           >
             {device.platform === 'ios' ? (
               <Icon

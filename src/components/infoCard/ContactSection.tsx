@@ -33,9 +33,9 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
           <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
             <RegularText
               primary
-              accessibilityLabel={
-                (a11yText.phoneNumber, `${contact.phone}`, a11yText.button, a11yText.phoneAppHint)
-              }
+              accessibilityLabel={`${consts.a11yLabel.phoneNumber} (${contact.phone})
+            (${consts.a11yLabel.button})
+            (${consts.a11yLabel.phoneAppHint})`}
             >
               {contact.phone}
             </RegularText>

@@ -23,7 +23,6 @@ export class CategoryListItem extends React.PureComponent {
     } = item;
 
     const count = pointsOfInterestCount > 0 ? pointsOfInterestCount : toursCount;
-    const a11yText = consts.a11yLabel;
     return (
       <ListItem
         title={noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
@@ -50,7 +49,7 @@ export class CategoryListItem extends React.PureComponent {
         }
         delayPressIn={0}
         Component={Touchable}
-        accessibilityLabel={(`${title}`, a11yText.poiCount, a11yText.button)}
+        accessibilityLabel={`(${title}) ${consts.a11yLabel.poiCount} (${count}) ${consts.a11yLabel.button}`}
       />
     );
   }

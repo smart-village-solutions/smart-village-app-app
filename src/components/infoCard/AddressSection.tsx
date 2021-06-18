@@ -47,7 +47,9 @@ export const AddressSection = ({ address, addresses }: Props) => {
         const innerComponent = (
           <RegularText
             primary
-            accessibilityLabel={(a11yText.address, `${address}`, a11yText.button, a11yText.mapHint)}
+            accessibilityLabel={`${consts.a11yLabel.address} (${address})
+            (${consts.a11yLabel.button})
+            (${consts.a11yLabel.mapHint})`}
           >
             {address}
           </RegularText>

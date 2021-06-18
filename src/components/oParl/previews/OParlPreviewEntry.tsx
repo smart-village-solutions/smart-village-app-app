@@ -38,11 +38,10 @@ export const OParlPreviewEntry = ({
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}
-      accessibilityLabel={(`${title}`, consts.a11yLabel.button)}
+      accessibilityLabel={`(${title}) ${consts.a11yLabel.button} `}
     />
   );
 };
-//Fix:accessibilityLabel
 
 const styles = StyleSheet.create({
   container: {

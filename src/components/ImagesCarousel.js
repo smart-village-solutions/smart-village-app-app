@@ -67,19 +67,14 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
       }
 
       return (
-        <TouchableOpacity
-          accessibilityLiveRegion="polite"
-          accessibilityLabel={consts.a11yLabel.imageCarousel}
-        >
-          <ImagesCarouselItem
-            navigation={navigation}
-            source={item.picture}
-            message={item.message}
-            containerStyle={styles.imageContainer}
-            aspectRatio={aspectRatio}
-            refreshInterval={item.refreshInterval}
-          />
-        </TouchableOpacity>
+        <ImagesCarouselItem
+          navigation={navigation}
+          source={item.picture}
+          message={item.message}
+          containerStyle={styles.imageContainer}
+          aspectRatio={aspectRatio}
+          refreshInterval={item.refreshInterval}
+        />
       );
     },
     [navigation, fetchPolicy, aspectRatio]

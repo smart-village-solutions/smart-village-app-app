@@ -69,7 +69,7 @@ export const NewsItem = ({ data, navigation }) => {
         {!!title && !!link ? (
           <TitleContainer>
             <Touchable onPress={openWebScreen}>
-              <Title accessibilityLabel={(`${trimNewLines(title)}`, a11yText.heading)}>
+              <Title accessibilityLabel={`${trimNewLines(title)} ${a11yText.heading}`}>
                 {trimNewLines(title)}
               </Title>
             </Touchable>
@@ -77,7 +77,7 @@ export const NewsItem = ({ data, navigation }) => {
         ) : (
           !!title && (
             <TitleContainer>
-              <Title accessibilityLabel={(`${trimNewLines(title)}`, a11yText.heading)}>
+              <Title accessibilityLabel={`${trimNewLines(title)} ${a11yText.heading}`}>
                 {trimNewLines(title)}
               </Title>
             </TitleContainer>

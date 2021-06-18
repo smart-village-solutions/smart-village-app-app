@@ -27,9 +27,9 @@ export const UrlSection = ({ openWebScreen, webUrls }: Props) => (
         <InfoBox key={index}>
           <Icon xml={urlIcon(colors.primary)} style={styles.margin} />
           <TouchableOpacity
-            accessibilityLabel={
-              (a11yText.website, `${description || url}`, a11yText.button, a11yText.webViewHint)
-            }
+            accessibilityLabel={`
+              ${a11yText.website} (${description || url} ${a11yText.button} ${a11yText.webViewHint}
+            `}
             onPress={() => openLink(url, openWebScreen)}
           >
             {!description || !!description?.startsWith('url') ? (

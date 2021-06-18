@@ -11,7 +11,6 @@ export const Button = ({ title, onPress, invert }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeStyle =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
-  const a11yText = consts.a11yLabel;
 
   if (invert) {
     return (
@@ -29,7 +28,7 @@ export const Button = ({ title, onPress, invert }) => {
           styles.containerStyle,
           needLandscapeStyle && styles.containerStyleLandscape
         ]}
-        accessibilityLabel={(`${title}`, a11yText.button)}
+        accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
       />
     );
   }
@@ -42,7 +41,7 @@ export const Button = ({ title, onPress, invert }) => {
       containerStyle={[styles.containerStyle, needLandscapeStyle && styles.containerStyleLandscape]}
       ViewComponent={DiagonalGradient}
       useForeground
-      accessibilityLabel={(`${title}`, a11yText.button)}
+      accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
     />
   );
 };

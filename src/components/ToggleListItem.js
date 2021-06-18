@@ -56,7 +56,7 @@ export const ToggleListItem = ({ item, index, section }) => {
       onPress={onPress}
       delayPressIn={0}
       Component={Touchable}
-      accessibilityLabel={(`${title}`, consts.a11yLabel.button)}
+      accessibilityLabel={`(${title})${consts.a11yLabel.button}`}
     />
   );
 };

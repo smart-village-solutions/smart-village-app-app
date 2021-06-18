@@ -29,7 +29,7 @@ export const defaultStackNavigatorConfig = (initialRouteName, headerRight = true
         <TouchableOpacity
           onPress={() => navigation.openDrawer()}
           accessibilityLabel={consts.a11yLabel.openMenuIcon}
-          accessibilityHint={consts.a11yLabel.menuHint}
+          accessibilityHint={consts.a11yLabel.openMenuHint}
         >
           <Icon xml={drawerMenu(colors.lightestText)} style={styles.icon} />
         </TouchableOpacity>

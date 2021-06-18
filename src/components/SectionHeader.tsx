@@ -10,18 +10,23 @@ type Props = {
 };
 
 export const SectionHeader = ({ title, onPress }: Props) => {
-  const a11yText = consts.a11yLabel;
-  const innerComponent = (
-    <Title accessibilityLabel={(`${title}`, a11yText.heading, a11yText.button)}>{title}</Title>
-  );
+  const innerComponent = <Title>{title}</Title>;
 
   return (
     <>
       <TitleContainer>
-        {onPress ? <Touchable onPress={onPress}>{innerComponent}</Touchable> : innerComponent}
+        {onPress ? (
+          <Touchable
+            onPress={onPress}
+            accessibilityLabel={`${consts.a11yLabel.heading} ${consts.a11yLabel.button}(${title})`}
+          >
+            {innerComponent}
+          </Touchable>
+        ) : (
+          innerComponent
+        )}
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
     </>
   );
 };
-//Fix:accessibilityLabel
