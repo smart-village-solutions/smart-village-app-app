@@ -372,6 +372,8 @@ export const texts = {
     about: appJson.expo.name,
     constructionSite: 'Baustelle',
     settings: 'Einstellungen',
+    survey: 'Umfrage',
+    surveys: 'Umfragen',
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
   },
@@ -400,6 +402,9 @@ export const texts = {
       textList: 'Textliste'
     },
     pushNotifications: 'Push-Benachrichtigungen'
+  },
+  survey: {
+    archive: 'Umfrage-Archiv'
   },
   tabBarLabel: {
     home: 'Übersicht',

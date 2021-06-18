@@ -16,5 +16,7 @@ export * from './WasteCollectionScreen';
 export * from './WasteReminderScreen';
 export * from './ServiceScreen';
 export * from './SettingsScreen';
+export * from './SurveyDetailScreen';
+export * from './SurveyOverviewScreen';
 export * from './WeatherScreen';
 export * from './WebScreen';

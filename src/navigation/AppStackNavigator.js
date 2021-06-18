@@ -21,6 +21,8 @@ import {
   OParlPersonsScreen,
   OParlSearchScreen,
   SettingsScreen,
+  SurveyDetailScreen,
+  SurveyOverviewScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
@@ -58,6 +60,7 @@ export const AppStackNavigator = (headerRight = true) => {
         options={screenOptionsWithSettings(headerRight)}
       />
       <Stack.Screen name="BookmarkCategory" component={BookmarkCategoryScreen} />
+      <Stack.Screen name="Category" component={IndexScreen} />
       <Stack.Screen name="ConstructionSiteDetail" component={ConstructionSiteDetailScreen} />
       <Stack.Screen name="ConstructionSiteOverview" component={ConstructionSiteOverviewScreen} />
       <Stack.Screen name="DataProvider" component={DataProviderScreen} />
@@ -70,7 +73,6 @@ export const AppStackNavigator = (headerRight = true) => {
       <Stack.Screen name="Home" component={HomeScreen} options={homeScreenOptions(headerRight)} />
       <Stack.Screen name="Html" component={HtmlScreen} />
       <Stack.Screen name="Index" component={IndexScreen} />
-      <Stack.Screen name="Category" component={IndexScreen} />
       <Stack.Screen name="Lunch" component={LunchScreen} />
       <Stack.Screen name="OParlCalendar" component={OParlCalendarScreen} />
       <Stack.Screen name="OParlDetail" component={OParlDetailScreen} />
@@ -82,6 +84,16 @@ export const AppStackNavigator = (headerRight = true) => {
         name="Settings"
         component={SettingsScreen}
         options={{ title: texts.screenTitles.settings }}
+      />
+      <Stack.Screen
+        name="SurveyDetail"
+        component={SurveyDetailScreen}
+        options={{ title: texts.screenTitles.survey }}
+      />
+      <Stack.Screen
+        name="SurveyOverview"
+        component={SurveyOverviewScreen}
+        options={{ title: texts.screenTitles.surveys }}
       />
       <Stack.Screen
         name="WasteCollection"
