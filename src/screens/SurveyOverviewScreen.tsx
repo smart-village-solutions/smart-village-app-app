@@ -18,17 +18,17 @@ const useSurveySections = () => {
     archived: Survey[];
   }>(SURVEYS, { fetchPolicy: 'cache-and-network' });
 
-  const sectionData = [];
+  const surveySections = [];
 
   if (surveys?.ongoing.length) {
-    sectionData.push({ data: surveys?.ongoing, key: 'ongoing' });
+    surveySections.push({ data: surveys?.ongoing, key: 'ongoing' });
   }
 
   if (surveys?.archived.length) {
-    sectionData.push({ data: surveys?.archived, key: 'archived', title: texts.survey.archive });
+    surveySections.push({ data: surveys?.archived, key: 'archived', title: texts.survey.archive });
   }
 
-  return { loading, refetch, surveySections: sectionData };
+  return { loading, refetch, surveySections };
 };
 
 const parseSurveyToItem = (survey: Survey, languages: string[]) => {
