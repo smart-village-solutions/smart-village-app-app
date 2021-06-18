@@ -1,5 +1,4 @@
 import { RouteProp } from '@react-navigation/core';
-import { noop } from 'lodash';
 import React from 'react';
 import { useQuery } from 'react-apollo';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -53,10 +52,13 @@ const useSurvey = (id?: string) => {
   return { loading, refetch, survey: data?.surveys[0] };
 };
 
+// eslint-disable-next-line complexity
 export const SurveyDetailScreen = ({ route }: Props) => {
   const { loading, refetch, survey } = useSurvey(route.params?.id);
   const languages = useSurveyLanguages();
-  const { selection, setSelection } = useAnswerSelection(route.params?.id);
+  const { previousSubmission, selection, setSelection, submitSelection } = useAnswerSelection(
+    route.params?.id
+  );
 
   const RefreshControl = usePullToRefetch(loading, refetch);
 
@@ -68,6 +70,10 @@ export const SurveyDetailScreen = ({ route }: Props) => {
   const questionTitle = combineLanguages(languages, survey.questionTitle);
 
   const shownTitle = title?.length ? title : questionTitle;
+
+  const buttonText = previousSubmission
+    ? texts.survey.changeAnswer.de + '\n' + texts.survey.changeAnswer.pl
+    : texts.survey.submitAnswer.de + '\n' + texts.survey.submitAnswer.pl;
 
   return (
     <SafeAreaViewFlex>
@@ -110,8 +116,9 @@ export const SurveyDetailScreen = ({ route }: Props) => {
           </Wrapper>
           <Wrapper>
             <Button
-              title={texts.survey.submitAnswer.de + '\n' + texts.survey.submitAnswer.pl}
-              onPress={noop}
+              disabled={!selection || (!!previousSubmission && selection === previousSubmission)}
+              title={buttonText}
+              onPress={submitSelection}
             />
           </Wrapper>
         </WrapperWithOrientation>

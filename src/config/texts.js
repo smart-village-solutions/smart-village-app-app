@@ -409,6 +409,10 @@ export const texts = {
       de: 'Antwort',
       pl: 'Odpowiedź'
     },
+    changeAnswer: {
+      de: 'Antwort ändern',
+      pl: 'Zmień odpowiedź'
+    },
     dateEnd: {
       de: 'Abschluss der Umfrage:',
       pl: 'Wypełnienie ankiety:'
