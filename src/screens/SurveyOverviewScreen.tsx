@@ -4,7 +4,7 @@ import React, { useCallback } from 'react';
 import { useQuery } from 'react-apollo';
 import { SectionList } from 'react-native';
 
-import { SectionHeader, TextListItem } from '../components';
+import { SafeAreaViewFlex, SectionHeader, TextListItem } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { texts } from '../config';
 import { combineLanguages } from '../helpers';
@@ -73,11 +73,13 @@ export const SurveyOverviewScreen = () => {
   }
 
   return (
-    <SectionList
-      refreshControl={RefreshControl}
-      renderItem={renderSurvey}
-      renderSectionHeader={renderSectionHeader}
-      sections={surveySections}
-    />
+    <SafeAreaViewFlex>
+      <SectionList
+        refreshControl={RefreshControl}
+        renderItem={renderSurvey}
+        renderSectionHeader={renderSectionHeader}
+        sections={surveySections}
+      />
+    </SafeAreaViewFlex>
   );
 };
