@@ -32,7 +32,7 @@ const SingleResult = ({ option, selected, totalCount }: SingleProps) => {
   const width = percentString === '0%' ? barBorderRadius * 2 : percentString;
   return (
     <WrapperRow spaceBetween style={styles.container}>
-      <View>
+      <View style={styles.labelContainer}>
         <BoldText small>{getAnswerLabel('de', option.index)}</BoldText>
         <BoldText small>{getAnswerLabel('pl', option.index)}</BoldText>
       </View>
@@ -97,5 +97,12 @@ const styles = StyleSheet.create({
   container: {
     marginBottom: normalize(12)
   },
-  countContainer: { justifyContent: 'center' }
+  countContainer: {
+    position: 'absolute',
+    right: 0,
+    top: normalize(7)
+  },
+  labelContainer: {
+    width: 100
+  }
 });
