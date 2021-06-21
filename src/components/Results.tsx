@@ -59,6 +59,7 @@ export const Results = ({ responseOptions, selectedOption }: Props) => {
   const languages = useSurveyLanguages();
   const sortedOptions = responseOptions
     .map((option, index) => ({ ...option, index }))
+    // deepcode ignore NoZeroReturnedInSort: The callback provided to sort does return 0 implicitly if the compared values are equal.
     .sort((a, b) => -a.votesCount + b.votesCount);
 
   const totalCount = responseOptions.reduce(
@@ -88,7 +89,10 @@ export const Results = ({ responseOptions, selectedOption }: Props) => {
 const barBorderRadius = 4;
 
 const styles = StyleSheet.create({
-  barContainer: { flex: 1, justifyContent: 'center' },
+  barContainer: {
+    flex: 1,
+    justifyContent: 'center'
+  },
   baseBarStyle: {
     backgroundColor: colors.primary,
     borderRadius: 4,
@@ -103,6 +107,6 @@ const styles = StyleSheet.create({
     top: normalize(7)
   },
   labelContainer: {
-    width: 100
+    width: 100 // this fixes the width of the left labels, so that all bars start at a common line
   }
 });
