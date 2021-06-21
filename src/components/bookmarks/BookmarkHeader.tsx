@@ -31,9 +31,17 @@ export const BookmarkHeader = ({ id, suffix, query, style }: Props) => {
       accessibilityHint={a11yText.bookmarkListHint}
     >
       <Icon
-        size={normalize(44)}
+        size={normalize(22)}
         xml={isBookmarked ? heartFilled(colors.lightestText) : heartEmpty(colors.lightestText)}
+        style={{ ...styles.icon, ...style }}
       />
     </TouchableOpacity>
   );
 };
+
+const styles = StyleSheet.create({
+  icon: {
+    paddingHorizontal: normalize(7),
+    paddingVertical: normalize(4)
+  }
+});

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import Carousel from 'react-native-snap-carousel';
 import React, { useCallback, useContext } from 'react';
-import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Query } from 'react-apollo';
 
-import { colors, consts } from '../config';
+import { colors } from '../config';
 import { imageWidth, isActive, shareMessage } from '../helpers';
 import { getQuery } from '../queries';
 import { ImagesCarouselItem } from './ImagesCarouselItem';

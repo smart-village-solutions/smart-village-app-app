@@ -240,7 +240,6 @@ HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
           accessibilityHint={a11yText.settingsBookmarksHint}
         >
           <Icon
-            size={normalize(44)}
             style={headerRight ? styles.iconLeft : styles.iconRight}
             xml={favSettings(colors.lightestText)}
           />
@@ -249,7 +248,6 @@ HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
     )
   };
 };
-
 HomeScreen.propTypes = {
   navigation: PropTypes.object.isRequired
 };

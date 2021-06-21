@@ -15,8 +15,21 @@ import { colors, normalize } from '../config';
 export const Icon = ({ xml, width, height, name, size, focused, iconColor, style, iconStyle }) => {
   const color = iconColor || (focused ? colors.accent : colors.primary);
 
+  const hitSlopInicons = size || normalize(44) - size / 2;
+  const hitSlopSvg = width || normalize(44) - width / 2;
+
+  //to check the hitSlop values
+  console.warn(hitSlopInicons);
+  console.warn(hitSlopSvg);
+
   return (
-    <View style={style} hitSlop={{ top: 12, bottom: 12 }}>
+    <View
+      style={style}
+      hitSlop={{
+        top: size ? hitSlopInicons : hitSlopSvg,
+        bottom: size ? hitSlopInicons : hitSlopSvg
+      }}
+    >
       {xml && <SvgXml xml={xml} width={width} height={height} style={iconStyle} />}
       {name && <Ionicons name={name} size={size} color={color} style={iconStyle} />}
     </View>
@@ -53,6 +66,6 @@ Icon.defaultProps = {
   width: normalize(24),
   height: normalize(24),
   // size is for font icon
-  size: normalize(44),
+  size: normalize(26),
   focused: false
 };

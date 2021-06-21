@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, consts, normalize } from '../config';
+import { colors, normalize } from '../config';
 import { openLink } from '../helpers';
 import { link } from '../icons';
 import { Icon } from './Icon';
