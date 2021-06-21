@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useApolloClient } from 'react-apollo';
+import { Alert } from 'react-native';
 import { addToStore, readFromStore } from '../helpers';
+import { SUBMIT_SURVEY_RESPONSE } from '../queries/survey';
 
 // TODO: implement properly
 export const useSurveyLanguages = () => ['de', 'pl'];
 
 const SURVEY_ANSWERS_STORAGE_PREFIX = 'SVA_SURVEY_ANSWERS_';
-export const useAnswerSelection = (id?: string) => {
+
+export const useAnswerSelection = (id?: string, refetch?: () => void) => {
+  const client = useApolloClient();
   const [selection, setSelection] = useState<string | undefined>();
   const [previousSubmission, setPreviousSubmission] = useState<string | undefined>();
 
@@ -21,18 +26,29 @@ export const useAnswerSelection = (id?: string) => {
   }, []);
 
   const submitSelection = useCallback(async () => {
-    if (selection) {
-      // TODO: add mutation here
-      if (!previousSubmission) {
-        // add a vote to the selected answer
-      } else {
-        // decrement one counter
-        // increase the other
+    if (selection && previousSubmission !== selection) {
+      try {
+        const { data, errors } = await client.mutate({
+          mutation: SUBMIT_SURVEY_RESPONSE,
+          variables: { decreaseId: previousSubmission, increaseId: selection }
+        });
+
+        if (errors || data?.voteForSurvey?.statusCode !== 200) {
+          throw new Error();
+        }
+      } catch (e) {
+        Alert.alert(
+          'Fehler',
+          'Beim Abgeben der Stimme ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.'
+        );
+        return;
       }
+
       setPreviousSubmission(selection);
       await addToStore(SURVEY_ANSWERS_STORAGE_PREFIX + id, selection);
+      refetch?.();
     }
-  }, [id, selection]);
+  }, [client, id, previousSubmission, refetch, selection]);
 
   useEffect(() => {
     readPreviousSubmissionFromStore(id);

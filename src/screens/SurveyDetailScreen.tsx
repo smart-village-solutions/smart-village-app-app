@@ -57,7 +57,8 @@ export const SurveyDetailScreen = ({ route }: Props) => {
   const { loading, refetch, survey } = useSurvey(route.params?.id);
   const languages = useSurveyLanguages();
   const { previousSubmission, selection, setSelection, submitSelection } = useAnswerSelection(
-    route.params?.id
+    route.params?.id,
+    refetch
   );
 
   const RefreshControl = usePullToRefetch(loading, refetch);
