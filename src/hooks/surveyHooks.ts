@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useApolloClient } from 'react-apollo';
 import { Alert } from 'react-native';
+import { texts } from '../config';
 import { addToStore, readFromStore } from '../helpers';
 import { SUBMIT_SURVEY_RESPONSE } from '../queries/survey';
 
@@ -37,10 +38,7 @@ export const useAnswerSelection = (id?: string, refetch?: () => void) => {
           throw new Error();
         }
       } catch (e) {
-        Alert.alert(
-          'Fehler',
-          'Beim Abgeben der Stimme ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.'
-        );
+        Alert.alert(texts.survey.errors.submissionTitle, texts.survey.errors.submissionBody);
         return;
       }
 

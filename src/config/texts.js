@@ -421,6 +421,11 @@ export const texts = {
       de: 'Start der Umfrage:',
       pl: 'Rozpocznij ankietę:'
     },
+    errors: {
+      submissionBody:
+        'Beim Abgeben der Stimme ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      submissionTitle: 'Fehler'
+    },
     hint: {
       de:
         'Die Umfrageergebnisse werden erst angezeigt, wenn Sie Ihre Stimme abgegeben haben oder die Umfrage beendet wurde.',
