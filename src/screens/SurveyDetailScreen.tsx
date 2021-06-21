@@ -55,6 +55,7 @@ const useSurvey = (id?: string) => {
 
 // eslint-disable-next-line complexity
 export const SurveyDetailScreen = ({ route }: Props) => {
+  const archived = route.params?.archived;
   const { loading, refetch, survey } = useSurvey(route.params?.id);
   const languages = useSurveyLanguages();
   const { previousSubmission, selection, setSelection, submitSelection } = useAnswerSelection(
@@ -100,6 +101,7 @@ export const SurveyDetailScreen = ({ route }: Props) => {
           )}
           {survey.responseOptions.map((responseOption, index) => (
             <SurveyAnswer
+              archived={archived}
               faded={!!selection && selection !== responseOption.id}
               index={index}
               responseOption={responseOption}
@@ -108,23 +110,30 @@ export const SurveyDetailScreen = ({ route }: Props) => {
               key={responseOption.id}
             />
           ))}
-          <Wrapper>
-            <Button
-              disabled={!selection || (!!previousSubmission && selection === previousSubmission)}
-              title={buttonText}
-              onPress={submitSelection}
-            />
-          </Wrapper>
-          {!previousSubmission ? (
-            <Wrapper style={styles.noPaddingBottom}>
-              <RegularText error small>
-                {texts.survey.hint.de}
-              </RegularText>
-              <RegularText error italic small>
-                {texts.survey.hint.pl}
-              </RegularText>
-            </Wrapper>
-          ) : (
+          {!archived && (
+            <>
+              <Wrapper>
+                <Button
+                  disabled={
+                    !selection || (!!previousSubmission && selection === previousSubmission)
+                  }
+                  title={buttonText}
+                  onPress={submitSelection}
+                />
+              </Wrapper>
+              {!previousSubmission && (
+                <Wrapper style={styles.noPaddingBottom}>
+                  <RegularText error small>
+                    {texts.survey.hint.de}
+                  </RegularText>
+                  <RegularText error italic small>
+                    {texts.survey.hint.pl}
+                  </RegularText>
+                </Wrapper>
+              )}
+            </>
+          )}
+          {(previousSubmission || archived) && (
             <Results responseOptions={survey.responseOptions} selectedOption={previousSubmission} />
           )}
         </WrapperWithOrientation>
