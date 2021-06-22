@@ -58,7 +58,11 @@ export const AppStackNavigator = (headerRight = true) => {
         options={screenOptionsWithSettings(headerRight)}
       />
       <Stack.Screen name="BookmarkCategory" component={BookmarkCategoryScreen} />
-      <Stack.Screen name="ConstructionSiteDetail" component={ConstructionSiteDetailScreen} />
+      <Stack.Screen
+        name="ConstructionSiteDetail"
+        component={ConstructionSiteDetailScreen}
+        options={{ title: texts.screenTitles.constructionSite }}
+      />
       <Stack.Screen name="ConstructionSiteOverview" component={ConstructionSiteOverviewScreen} />
       <Stack.Screen name="DataProvider" component={DataProviderScreen} />
       <Stack.Screen
