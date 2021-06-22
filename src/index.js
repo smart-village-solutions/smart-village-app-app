@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';
 import { ApolloClient } from 'apollo-client';
@@ -10,7 +11,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import _isEmpty from 'lodash/isEmpty';
 import React, { useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
-import { ActivityIndicator, AsyncStorage, StatusBar } from 'react-native';
+import { ActivityIndicator, StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { auth } from './auth';
