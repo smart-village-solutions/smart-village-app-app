@@ -7,6 +7,7 @@ import {
   BoldText,
   Button,
   RegularText,
+  Results,
   SafeAreaViewFlex,
   SectionHeader,
   SurveyAnswer,
@@ -107,14 +108,6 @@ export const SurveyDetailScreen = ({ route }: Props) => {
               key={responseOption.id}
             />
           ))}
-          <Wrapper style={styles.noPaddingBottom}>
-            <RegularText error small>
-              {texts.survey.hint.de}
-            </RegularText>
-            <RegularText error italic small>
-              {texts.survey.hint.pl}
-            </RegularText>
-          </Wrapper>
           <Wrapper>
             <Button
               disabled={!selection || (!!previousSubmission && selection === previousSubmission)}
@@ -122,6 +115,18 @@ export const SurveyDetailScreen = ({ route }: Props) => {
               onPress={submitSelection}
             />
           </Wrapper>
+          {!previousSubmission ? (
+            <Wrapper style={styles.noPaddingBottom}>
+              <RegularText error small>
+                {texts.survey.hint.de}
+              </RegularText>
+              <RegularText error italic small>
+                {texts.survey.hint.pl}
+              </RegularText>
+            </Wrapper>
+          ) : (
+            <Results responseOptions={survey.responseOptions} selectedOption={previousSubmission} />
+          )}
         </WrapperWithOrientation>
       </ScrollView>
     </SafeAreaViewFlex>

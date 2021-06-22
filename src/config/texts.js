@@ -432,6 +432,10 @@ export const texts = {
       pl:
         'Wyniki ankiety nie będą wyświetlane, dopóki nie oddasz głosu lub ankieta nie zostanie zakończona.'
     },
+    result: {
+      de: 'Ergebnis',
+      pl: 'Wynik'
+    },
     submitAnswer: {
       de: 'Antwort senden',
       pl: 'wyślij odpowiedź'
