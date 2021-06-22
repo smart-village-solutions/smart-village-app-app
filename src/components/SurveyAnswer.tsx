@@ -10,6 +10,7 @@ import { Touchable } from './Touchable';
 import { Wrapper, WrapperRow } from './Wrapper';
 
 type Props = {
+  archived?: boolean;
   faded: boolean;
   index: number;
   responseOption: ResponseOption;
@@ -17,7 +18,14 @@ type Props = {
   setSelection: (id: string) => void;
 };
 
-export const SurveyAnswer = ({ faded, index, responseOption, selected, setSelection }: Props) => {
+export const SurveyAnswer = ({
+  archived,
+  faded,
+  index,
+  responseOption,
+  selected,
+  setSelection
+}: Props) => {
   const languages = useSurveyLanguages();
 
   const { id } = responseOption;
@@ -26,7 +34,7 @@ export const SurveyAnswer = ({ faded, index, responseOption, selected, setSelect
   const fadeStyle = { opacity: faded ? 0.5 : 1 };
 
   return (
-    <Touchable onPress={onPress}>
+    <Touchable disabled={archived} onPress={onPress}>
       <Wrapper style={[styles.noPaddingBottom, fadeStyle]}>
         <View style={styles.border}>
           <WrapperRow>

@@ -25,13 +25,17 @@ const useSurveySections = () => {
   }
 
   if (surveys?.archived.length) {
-    surveySections.push({ data: surveys?.archived, key: 'archived', title: texts.survey.archive });
+    surveySections.push({
+      data: surveys?.archived.map((survey) => ({ ...survey, archived: true })),
+      key: 'archived',
+      title: texts.survey.archive
+    });
   }
 
   return { loading, refetch, surveySections };
 };
 
-const parseSurveyToItem = (survey: Survey, languages: string[]) => {
+const parseSurveyToItem = (survey: Survey & { archived?: true }, languages: string[]) => {
   const langTitle = combineLanguages(languages, survey.title);
 
   // we know there will be at least one language for the question
@@ -40,7 +44,7 @@ const parseSurveyToItem = (survey: Survey, languages: string[]) => {
 
   const title = langTitle?.length ? langTitle : langQuestion;
 
-  return { title, routeName: 'SurveyDetail', params: { id: survey.id } };
+  return { title, routeName: 'SurveyDetail', params: { id: survey.id, archived: survey.archived } };
 };
 
 const renderSectionHeader = ({

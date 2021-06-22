@@ -9,7 +9,7 @@ import { ResponseOption } from '../types';
 import { BoldText } from './Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
 
-type Props = { responseOptions: ResponseOption[]; selectedOption: string };
+type Props = { responseOptions: ResponseOption[]; selectedOption?: string };
 type SingleProps = {
   option: ResponseOption & { index: number };
   selected: boolean;
