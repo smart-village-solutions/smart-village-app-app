@@ -1,7 +1,8 @@
+import { Dimensions } from 'react-native';
+
 import { colors } from '../colors';
 import { normalize } from '../normalize';
 import { imageHeight } from '../../helpers/imageHelper';
-import { Dimensions } from 'react-native';
 
 export const html = {
   p: {

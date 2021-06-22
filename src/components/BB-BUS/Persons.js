@@ -1,13 +1,14 @@
+import { pull } from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { pull } from 'lodash';
 
 import { InfoBox, RegularText, Wrapper } from '..';
-import { WrapperWithOrientation } from '../Wrapper';
-import { getAddress, getContact } from './helpers';
 import { InfoCard } from '../infoCard';
+import { WrapperWithOrientation } from '../Wrapper';
+
 import { Block } from './Block';
+import { getAddress, getContact } from './helpers';
 
 export const Persons = ({ data, openWebScreen }) => {
   const { persons } = data;

@@ -2,6 +2,7 @@ import * as SecureStore from 'expo-secure-store';
 
 import { device, secrets, staticRestSuffix } from '../config';
 import * as appJson from '../../app.json';
+
 import { getPushTokenFromStorage, PushNotificationStorageKeys } from './TokenHandling';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;

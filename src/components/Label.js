@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 
 import { colors, normalize } from '../config';
+
 import { Text } from './Text';
 
 export const Label = styled(Text)`

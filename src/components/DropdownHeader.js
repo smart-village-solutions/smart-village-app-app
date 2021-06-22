@@ -4,6 +4,7 @@ import _uniqBy from 'lodash/uniqBy';
 
 import { texts } from '../config';
 import { QUERY_TYPES } from '../queries';
+
 import { DropdownSelect } from './DropdownSelect';
 import { Wrapper } from './Wrapper';
 

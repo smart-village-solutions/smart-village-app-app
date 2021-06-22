@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+
 import { colors, normalize } from '../../config';
 import { momentFormat } from '../../helpers';
 import { Image } from '../Image';

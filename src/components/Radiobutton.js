@@ -5,6 +5,7 @@ import { CheckBox as RNECheckbox, normalize } from 'react-native-elements';
 
 import { colors, device } from '../config';
 import { baseFontStyle } from '../config/styles/baseFontStyle';
+
 import { Icon } from './Icon';
 
 export const Radiobutton = ({ title, disabled, selected, onPress, containerStyle }) => (

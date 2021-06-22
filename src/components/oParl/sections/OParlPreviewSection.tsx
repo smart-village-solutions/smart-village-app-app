@@ -2,13 +2,13 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import _isArray from 'lodash/isArray';
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Divider } from 'react-native-elements';
 
 import { normalize } from '../../../config';
 import { OParlObjectPreviewData } from '../../../types';
 import { OParlPreviewComponent } from '../previews/OParlPreviewComponent';
 import { OParlItemPreview } from '../previews/OParlItemPreview';
 import { SectionHeader } from '../../SectionHeader';
-import { Divider } from 'react-native-elements';
 
 type Props = {
   data?: OParlObjectPreviewData[] | OParlObjectPreviewData;

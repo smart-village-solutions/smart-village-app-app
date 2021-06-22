@@ -1,4 +1,5 @@
 import { OParlObjectType } from '../../types';
+
 import { agendaItemQuery } from './agendaItem';
 import { bodyQuery } from './body';
 import { consultationQuery } from './consultation';

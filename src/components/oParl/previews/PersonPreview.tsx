@@ -1,7 +1,7 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { texts } from '../../../config';
 
+import { texts } from '../../../config';
 import { getFullName } from '../../../helpers';
 import { PersonPreviewData } from '../../../types';
 import { TextListItem } from '../../TextListItem';

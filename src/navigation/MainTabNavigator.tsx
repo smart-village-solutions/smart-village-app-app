@@ -1,5 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import { home, service } from '../icons';
 import { TabBarIcon } from '../components';
@@ -11,11 +12,10 @@ import {
   ServiceScreen,
   WebScreen
 } from '../screens';
+import { colors, device, normalize, texts } from '../config';
 
 import { AppStackNavigator } from './AppStackNavigator';
 import { defaultStackNavigatorScreenOptions } from './screenOptions';
-import { colors, device, normalize, texts } from '../config';
-import { createStackNavigator } from '@react-navigation/stack';
 
 const HomeStack = () => AppStackNavigator(false);
 

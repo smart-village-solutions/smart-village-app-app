@@ -4,6 +4,7 @@ import { QueryHookOptions, useQuery } from 'react-apollo';
 
 import { useHomeRefresh } from '../hooks/HomeRefresh';
 import { getQuery } from '../queries';
+
 import { DataListSection } from './DataListSection';
 
 type Props = {

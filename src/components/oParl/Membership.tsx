@@ -1,13 +1,14 @@
 import React from 'react';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import { texts } from '../../config';
 import { getFullName, momentFormat } from '../../helpers';
 import { MembershipData } from '../../types';
 import { WrapperHorizontal } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import { getOrganizationNameString } from './oParlHelpers';
 import { KeywordSection, ModifiedSection, WebRepresentation } from './sections';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 type Props = {
   data: MembershipData;

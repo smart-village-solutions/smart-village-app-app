@@ -2,16 +2,16 @@ import PropTypes from 'prop-types';
 import React, { memo, NamedExoticComponent, Validator } from 'react';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import { colors, normalize } from '../config';
 import { arrowRight } from '../icons';
+import { trimNewLines } from '../helpers';
+
 import { Icon } from './Icon';
 import { Image } from './Image';
-
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
-import { trimNewLines } from '../helpers';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 type ItemData = {
   routeName: string;

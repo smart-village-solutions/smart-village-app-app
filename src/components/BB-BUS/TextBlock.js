@@ -1,9 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+
 import { trimNewLines } from '../../helpers';
 import { HtmlView } from '../HtmlView';
 import { Link } from '../Link';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+
 import { Block } from './Block';
 
 export const TextBlock = ({ bottomDivider, textBlock, openWebScreen }) => {

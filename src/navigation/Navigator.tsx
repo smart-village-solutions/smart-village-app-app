@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 
 import { consts } from '../config';
 import { SettingsContext } from '../SettingsProvider';
+
 import { DrawerNavigator } from './DrawerNavigator';
 import { MainTabNavigator } from './MainTabNavigator';
 

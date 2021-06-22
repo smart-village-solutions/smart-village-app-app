@@ -3,6 +3,7 @@ import React from 'react';
 
 import { texts } from '../../../config';
 import { SystemPreviewData } from '../../../types';
+
 import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {

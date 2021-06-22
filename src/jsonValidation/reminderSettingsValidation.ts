@@ -1,6 +1,7 @@
 import _isObjectLike from 'lodash/isObjectLike';
 
 import { ReminderSettings } from '../types';
+
 import { isArrayOfType } from './basicTypeValidation';
 
 type ReminderSettingJson = {
