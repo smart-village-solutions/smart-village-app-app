@@ -409,6 +409,10 @@ export const texts = {
       de: 'Antwort',
       pl: 'Odpowiedź'
     },
+    changeAnswer: {
+      de: 'Antwort ändern',
+      pl: 'Zmień odpowiedź'
+    },
     dateEnd: {
       de: 'Abschluss der Umfrage:',
       pl: 'Wypełnienie ankiety:'
@@ -416,6 +420,11 @@ export const texts = {
     dateStart: {
       de: 'Start der Umfrage:',
       pl: 'Rozpocznij ankietę:'
+    },
+    errors: {
+      submissionBody:
+        'Beim Abgeben der Stimme ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      submissionTitle: 'Fehler'
     },
     hint: {
       de:

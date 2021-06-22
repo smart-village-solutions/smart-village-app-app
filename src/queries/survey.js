@@ -41,3 +41,11 @@ export const SURVEYS = gql`
     questionTitle
   }
 `;
+
+export const SUBMIT_SURVEY_RESPONSE = gql`
+  mutation voteForSurvey($increaseId: ID, $decreaseId: ID) {
+    voteForSurvey(increaseId: $increaseId, decreaseId: $decreaseId) {
+      statusCode
+    }
+  }
+`;
