@@ -57,6 +57,7 @@ export const meetingQuery = [
             deleted
 
             organization {
+              id: externalId
               name
               shortName
             }
