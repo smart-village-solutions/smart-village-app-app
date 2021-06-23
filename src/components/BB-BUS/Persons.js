@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
-import { InfoBox, RegularText, Wrapper } from '..';
 import { InfoCard } from '../infoCard';
-import { WrapperWithOrientation } from '../Wrapper';
+import { RegularText } from '../Text';
+import { InfoBox, Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { Block } from './Block';
 import { getAddress, getContact } from './helpers';
