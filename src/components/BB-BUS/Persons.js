@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
+import { texts } from '../../config';
 import { InfoCard } from '../infoCard';
 import { RegularText } from '../Text';
 import { InfoBox, Wrapper, WrapperWithOrientation } from '../Wrapper';
@@ -14,7 +15,7 @@ export const Persons = ({ data, openWebScreen }) => {
   const { persons } = data;
 
   return (
-    <Block title={name}>
+    <Block title={texts.bbBus.employees}>
       {persons.map((person) => {
         if (person.object) person.person = person.object;
 
