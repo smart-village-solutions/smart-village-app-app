@@ -99,7 +99,7 @@ export const HomeScreen = ({ navigation }) => {
     CATEGORIES_INDEX: {
       name: 'Index',
       params: {
-        title: 'Orte und Touren',
+        title: headlinePointsOfInterestAndTours,
         query: QUERY_TYPES.CATEGORIES,
         queryVariables: {},
         rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
@@ -108,7 +108,7 @@ export const HomeScreen = ({ navigation }) => {
     EVENT_RECORDS_INDEX: {
       name: 'Index',
       params: {
-        title: 'Veranstaltungen',
+        title: headlineEvents,
         query: QUERY_TYPES.EVENT_RECORDS,
         queryVariables: { limit: 15, order: 'listDate_ASC' },
         rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
