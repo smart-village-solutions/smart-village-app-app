@@ -5,12 +5,13 @@ import { Divider } from 'react-native-elements';
 
 import { colors, normalize, texts } from '../../config';
 import { RegularText } from '../Text';
-import { IndexFilterWrapper } from './IndexFilterElement';
-import { AZFilter } from './AZFilter';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { DropdownSelect } from '../DropdownSelect';
-import { TextSearch } from './TextSearch';
 import { search } from '../../helpers';
+
+import { IndexFilterWrapper } from './IndexFilterElement';
+import { AZFilter } from './AZFilter';
+import { TextSearch } from './TextSearch';
 
 /* category filter initial data */
 const initialCategoryFilterData = [

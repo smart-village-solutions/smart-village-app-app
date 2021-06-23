@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 
 import { consts, device, normalize } from '../config';
 import { OrientationContext } from '../OrientationProvider';
+
 import { Icon } from './Icon';
 
 /**

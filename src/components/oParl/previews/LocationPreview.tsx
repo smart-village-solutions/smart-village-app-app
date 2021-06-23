@@ -4,6 +4,7 @@ import React from 'react';
 import { texts } from '../../../config';
 import { LocationPreviewData } from '../../../types';
 import { RegularText } from '../../Text';
+
 import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {

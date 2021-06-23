@@ -4,6 +4,7 @@ import React from 'react';
 import { texts } from '../../../config';
 import { OrganizationPreviewData } from '../../../types';
 import { getOrganizationNameString } from '../oParlHelpers';
+
 import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {

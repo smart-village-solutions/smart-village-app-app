@@ -11,15 +11,16 @@ import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
-import { PriceCard } from './PriceCard';
-import { OpeningTimesCard } from './OpeningTimesCard';
 import { matomoTrackingString, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { TMBNotice } from '../TMB/Notice';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
-import { OperatingCompany } from './OperatingCompany';
 import { DataProviderButton } from '../DataProviderButton';
+
+import { OperatingCompany } from './OperatingCompany';
+import { OpeningTimesCard } from './OpeningTimesCard';
+import { PriceCard } from './PriceCard';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
 // thx to: https://stackoverflow.com/a/55780430

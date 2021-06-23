@@ -13,6 +13,7 @@ import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { TMBNotice } from '../TMB/Notice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+
 import { OperatingCompany } from './OperatingCompany';
 import { TourCard } from './TourCard';
 

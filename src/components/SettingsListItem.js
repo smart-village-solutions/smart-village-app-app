@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { ListItem, Overlay } from 'react-native-elements';
 
 import { colors, consts, normalize, texts } from '../config';
+
 import { CardListItem } from './CardListItem';
 import { Icon } from './Icon';
 import { Radiobutton } from './Radiobutton';

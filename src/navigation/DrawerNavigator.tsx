@@ -10,6 +10,7 @@ import { device, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
+
 import { AppStackNavigator } from './AppStackNavigator';
 import { CustomDrawerContentComponent } from './CustomDrawerContentComponent';
 

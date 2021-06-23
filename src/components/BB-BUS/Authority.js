@@ -8,6 +8,7 @@ import { HtmlView } from '../HtmlView';
 import { InfoCard } from '../infoCard';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+
 import { Block } from './Block';
 import { getAddress, getContact } from './helpers';
 

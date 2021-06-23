@@ -7,6 +7,7 @@ import { colors, normalize } from '../../config';
 import { Address, Contact, WebUrl } from '../../types';
 import { RegularText } from '../Text';
 import { InfoBox } from '../Wrapper';
+
 import { AddressSection } from './AddressSection';
 import { ContactSection } from './ContactSection';
 import { UrlSection } from './UrlSection';

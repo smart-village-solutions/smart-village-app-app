@@ -1,7 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { BookmarkContext } from '../../BookmarkProvider';
 
+import { BookmarkContext } from '../../BookmarkProvider';
 import { colors, normalize } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
 import { heartEmpty, heartFilled } from '../../icons';

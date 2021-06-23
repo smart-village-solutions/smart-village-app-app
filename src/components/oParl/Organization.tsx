@@ -1,9 +1,11 @@
 import React, { useCallback } from 'react';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { OrganizationData } from '../../types';
 import { WrapperHorizontal } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import { FormattedLocation } from './previews';
 import {
@@ -12,7 +14,6 @@ import {
   OParlPreviewSection,
   WebRepresentation
 } from './sections';
-import { StackNavigationProp } from '@react-navigation/stack';
 
 type Props = {
   data: OrganizationData;

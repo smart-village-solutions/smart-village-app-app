@@ -5,6 +5,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { colors, normalize } from '../config';
 import { openLink } from '../helpers';
 import { link } from '../icons';
+
 import { Icon } from './Icon';
 import { RegularText } from './Text';
 import { WrapperRow } from './Wrapper';

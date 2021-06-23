@@ -3,6 +3,7 @@ import React, { memo } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
 
 import { BoldText } from '../Text';
+
 import { AZFilterElement } from './AZFilterElement';
 
 export const AZFilter = memo(({ data, setData }) => {

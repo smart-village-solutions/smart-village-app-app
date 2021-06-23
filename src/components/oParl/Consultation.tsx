@@ -4,6 +4,7 @@ import React from 'react';
 import { texts } from '../../config';
 import { ConsultationData } from '../../types';
 import { Wrapper } from '../Wrapper';
+
 import { SimpleRow } from './Row';
 import {
   KeywordSection,
