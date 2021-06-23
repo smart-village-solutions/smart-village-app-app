@@ -4,24 +4,24 @@ import renderer from 'react-test-renderer';
 import { DetailScreen } from '../../src/screens';
 
 describe('DetailScreen', () => {
-  const navigation = {
-    navigate: jest.fn(),
-    getParam: jest.fn((param) => param)
-  };
-  const navigationOptions = DetailScreen.navigationOptions({ navigation });
+  const navigation = { navigate: jest.fn() };
 
-  test.skip('renders correctly', () => {
-    const tree = renderer.create(<DetailScreen navigation={navigation} />).toJSON();
-    expect(tree).toBeTruthy();
+  it('renders correctly', () => {
+    const tree = renderer.create(<DetailScreen navigation={navigation} route={{}} />).toJSON();
+    expect(tree).toMatchSnapshot();
   });
 
-  test.skip('must contain a left header element (for going back)', () => {
+  it.skip('must contain a left header element (for going back)', () => {
+    // skipping because of `TypeError: _screens.DetailScreen.navigationOptions is not a function`
+    const navigationOptions = DetailScreen.navigationOptions({ navigation });
     const leftHeaderElement = navigationOptions.headerLeft;
 
     expect(leftHeaderElement).toBeTruthy();
   });
 
-  test.skip('must contain two right header elements (share and drawer menu)', () => {
+  it.skip('must contain two right header elements (share and drawer menu)', () => {
+    // skipping because of `TypeError: _screens.DetailScreen.navigationOptions is not a function`
+    const navigationOptions = DetailScreen.navigationOptions({ navigation });
     const rightHeaderElements = navigationOptions.headerRight.props.children;
 
     expect(rightHeaderElements.length).toBe(2);

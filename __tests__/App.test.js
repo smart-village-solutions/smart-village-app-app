@@ -4,8 +4,8 @@ import renderer from 'react-test-renderer';
 import App from '../App';
 
 describe('App', () => {
-  test.skip('renders correctly', () => {
+  it('renders correctly', () => {
     const tree = renderer.create(<App />).toJSON();
-    expect(tree).toBeTruthy();
+    expect(tree).toMatchSnapshot();
   });
 });

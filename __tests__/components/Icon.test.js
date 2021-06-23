@@ -28,7 +28,8 @@ describe('Icon', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test.skip('renders a svg Icon', () => {
+  it.skip('renders a svg Icon', () => {
+    // skipping because of `TypeError: Cannot read property 'push' of null`
     const tree = renderer.create(<Icon xml="xml" />).toJSON();
     expect(tree).toMatchSnapshot();
   });
