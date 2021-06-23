@@ -48,7 +48,7 @@ const DrawerNavigatorItems = ({ drawerRoutes, navigation, state }) => {
         const accessibilityLabel = itemInfo.params.title;
 
         return (
-          <View key={route.key}>
+          <View key={itemInfo.params.title}>
             <Touchable
               accessible
               accessibilityLabel={accessibilityLabel}
