@@ -48,6 +48,11 @@ const FormButton = ({ link, rootRouteName }) => {
   return <Button key={id} title={`${name} online`} onPress={openWebScreen} invert />;
 };
 
+FormButton.propTypes = {
+  link: PropTypes.object.isRequired,
+  rootRouteName: PropTypes.string.isRequired
+};
+
 const renderForm = (form, rootRouteName) => {
   // fix for multi nested result form Directus API
   if (form.forms) form = form.forms;
@@ -125,9 +130,7 @@ export const DetailScreen = ({ route }) => {
 
   useMatomoTrackScreenView(matomoTrackingString([MATOMO_TRACKING.SCREEN_VIEW.BB_BUS, headerTitle]));
 
-  // TODO: why are there two different names for the web screens?
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
-  const openWebScreenDetailName = useOpenWebScreen(details.name, undefined, rootRouteName);
 
   const refreshTime = useRefreshTime(`BBBUS-service-${id}`, consts.REFRESH_INTERVALS.BB_BUS);
 
@@ -175,7 +178,7 @@ export const DetailScreen = ({ route }) => {
           />
         }
       >
-        {!!forms && !!forms.length && (
+        {!!forms?.length && (
           <View style={styles.formContainer}>
             {forms.map((form) => renderForm(form, rootRouteName))}
           </View>
@@ -199,12 +202,12 @@ export const DetailScreen = ({ route }) => {
             key={authority.authority.id}
             data={authority.authority}
             bottomDivider={index == authorities.length - 1}
-            openWebScreen={openWebScreenDetailName}
+            openWebScreen={openWebScreen}
           />
         ))}
 
         {!!persons?.length && (
-          <Persons data={{ id: details.id, persons }} openWebScreen={openWebScreenDetailName} />
+          <Persons data={{ id: details.id, persons }} openWebScreen={openWebScreen} />
         )}
 
         {sortedTextBlocks?.map((textBlock, index) => {
@@ -245,9 +248,4 @@ const styles = StyleSheet.create({
 
 DetailScreen.propTypes = {
   route: PropTypes.object.isRequired
-};
-
-FormButton.propTypes = {
-  link: PropTypes.object.isRequired,
-  rootRouteName: PropTypes.string.isRequired
 };
