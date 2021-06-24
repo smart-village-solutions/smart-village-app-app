@@ -3,6 +3,7 @@ import React, { memo } from 'react';
 import { TouchableOpacity } from 'react-native';
 
 import { Image } from './Image';
+import { consts } from '../config';
 
 /**
  * Smart item component for `ImagesCarousel`, that renders an image or an image wrapped in a
@@ -13,12 +14,14 @@ import { Image } from './Image';
 export const ImagesCarouselItem = memo(
   ({ navigation, source, message, containerStyle, aspectRatio, refreshInterval }) => {
     const { routeName, params } = source;
-    console.warn(source.captionText);
+    //for testing
+    console.warn('capitation:', source.captionText);
+
     if (routeName && params) {
       return (
         <TouchableOpacity
-          accessibilityRole="Link"
-          accessibilityLabel={`${source.captionText}`}
+          accessibilityLabel={`(${source.captionText}) ${consts.a11yLabel.imageCarousel}`}
+          accessibilityHint={`${consts.a11yLabel.imageCarouselLinkHint}`}
           onPress={() => navigation.navigate({ routeName, params })}
           activeOpacity={0.8}
         >

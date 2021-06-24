@@ -87,7 +87,6 @@ export const FormScreen = () => {
               {(createAppUserContent) => (
                 <View style={{ padding: normalize(14) }}>
                   <BoldText>Name</BoldText>
-                  <BoldText>Name</BoldText>
                   <TextInput
                     accessibilityLabel={`${a11yText.textInput} ${name}`}
                     onChangeText={(text) => {
