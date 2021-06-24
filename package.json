@@ -5,7 +5,7 @@
     "eject": "expo eject",
     "ios": "expo start --ios",
     "lint": "./node_modules/.bin/eslint __tests__ src --ext .js,.jsx,.ts,.tsx",
-    "start": "expo start",
+    "start": "EXPO_NO_TYPESCRIPT_SETUP=1 expo start",
     "test": "./node_modules/.bin/jest",
     "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand",
     "test:coverage": "node_modules/.bin/jest --coverage",
