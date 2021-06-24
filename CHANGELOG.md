@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.8.0] :rocket:
+
+The eighth minor version upgrade includes the expo update 41, an update from react navigation version 3 to 5 and several minor fixes and dependency updates.
+
+- Read about the expo update step in: https://dev.to/expo/expo-sdk-41-1f2j
+
 ## [v1.7.2]
 
 Updated OParl screens. Added waste calendar export.
