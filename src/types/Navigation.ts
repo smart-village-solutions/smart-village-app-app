@@ -1,12 +1,15 @@
+import { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationOptions } from '@react-navigation/stack';
 
 export enum ScreenName {
+  About = 'About',
   BBBUSDetail = 'BBBUSDetail',
   BBBUSIndex = 'BBBUSIndex',
   BookmarkCategory = 'BookmarkCategory',
   Bookmarks = 'Bookmarks',
   Category = 'Category',
+  Company = 'Company',
   ConstructionSiteDetail = 'ConstructionSiteDetail',
   ConstructionSiteOverview = 'ConstructionSiteOverview',
   DataProvider = 'DataProvider',
@@ -22,6 +25,7 @@ export enum ScreenName {
   OParlOverview = 'OParlOverview',
   OParlPersons = 'OParlPersons',
   OParlSearch = 'OParlSearch',
+  Service = 'Service',
   Settings = 'Settings',
   WasteCollection = 'WasteCollection',
   WasteReminder = 'WasteReminder',
@@ -38,6 +42,15 @@ export type ScreenOptions =
     }) => StackNavigationOptions)
   | undefined;
 
+export type TabOptions =
+  | BottomTabNavigationOptions
+  | ((props: {
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      route: RouteProp<Record<string, object | undefined>, string>;
+      navigation: any;
+    }) => BottomTabNavigationOptions)
+  | undefined;
+
 export type ScreenConfig = {
   routeName: ScreenName;
   screenComponent: (props: { navigation: any; route: any }) => JSX.Element | null;
@@ -49,3 +62,16 @@ export type StackConfig = {
   screenOptions?: ScreenOptions;
   screenConfigs: ScreenConfig[];
 };
+
+export type TabConfig = {
+  stackConfig: StackConfig;
+  tabOptions: TabOptions;
+};
+
+export type TabNavigatorConfig = {
+  activeTintColor: string;
+  inactiveTintColor: string;
+  tabConfigs: TabConfig[];
+};
+
+export type NavigatorConfig = { type: 'drawer' } | { type: 'tab'; config: TabNavigatorConfig };

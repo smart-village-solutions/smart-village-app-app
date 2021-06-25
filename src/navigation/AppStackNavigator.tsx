@@ -6,8 +6,14 @@ import { ScreenName } from '../types';
 
 const Stack = createStackNavigator<Record<string, { title: string } | undefined>>();
 
-export const AppStackNavigator = (headerRight = true) => {
-  const stackConfig = defaultStackConfig({ initialRouteName: ScreenName.Home, headerRight });
+export const AppStackNavigator = ({
+  initialRouteName = ScreenName.Home,
+  headerRight = true
+}: {
+  initialRouteName?: ScreenName;
+  headerRight?: boolean;
+}) => {
+  const stackConfig = defaultStackConfig({ initialRouteName, headerRight });
 
   return (
     <Stack.Navigator

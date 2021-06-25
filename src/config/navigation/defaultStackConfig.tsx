@@ -6,8 +6,10 @@ import {
   screenOptionsWithShare
 } from '../../navigation/screenOptions';
 import {
+  AboutScreen,
   BookmarkCategoryScreen,
   BookmarkScreen,
+  CompanyScreen,
   ConstructionSiteDetailScreen,
   ConstructionSiteOverviewScreen,
   DataProviderScreen,
@@ -23,6 +25,7 @@ import {
   OParlOverviewScreen,
   OParlPersonsScreen,
   OParlSearchScreen,
+  ServiceScreen,
   SettingsScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
@@ -47,6 +50,11 @@ export const defaultStackConfig = ({
   screenOptions: defaultStackNavigatorScreenOptions(headerRight),
   screenConfigs: [
     {
+      routeName: ScreenName.About,
+      screenComponent: AboutScreen,
+      screenOptions: { title: texts.screenTitles.about }
+    },
+    {
       routeName: ScreenName.BBBUSIndex,
       screenComponent: BBBUSIndexScreen
     },
@@ -67,6 +75,11 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Category,
       screenComponent: IndexScreen
+    },
+    {
+      routeName: ScreenName.Company,
+      screenComponent: CompanyScreen,
+      screenOptions: { title: texts.screenTitles.company }
     },
     {
       routeName: ScreenName.ConstructionSiteDetail,
@@ -130,6 +143,11 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.OParlSearch,
       screenComponent: OParlSearchScreen
+    },
+    {
+      routeName: ScreenName.Service,
+      screenComponent: ServiceScreen,
+      screenOptions: { title: texts.screenTitles.service }
     },
     {
       routeName: ScreenName.Settings,
