@@ -26,6 +26,7 @@ export const AppStackNavigator = ({
           name={screenConfig.routeName}
           component={screenConfig.screenComponent}
           options={screenConfig.screenOptions}
+          initialParams={screenConfig.inititalParams}
         />
       ))}
     </Stack.Navigator>

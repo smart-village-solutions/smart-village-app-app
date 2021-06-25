@@ -9,12 +9,12 @@ import {
   AboutScreen,
   BookmarkCategoryScreen,
   BookmarkScreen,
-  CompanyScreen,
   ConstructionSiteDetailScreen,
   ConstructionSiteOverviewScreen,
   DataProviderScreen,
   DetailScreen,
   FormScreen,
+  getTilesScreen,
   HomeScreen,
   HtmlScreen,
   IndexScreen,
@@ -25,7 +25,6 @@ import {
   OParlOverviewScreen,
   OParlPersonsScreen,
   OParlSearchScreen,
-  ServiceScreen,
   SettingsScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
@@ -37,7 +36,10 @@ import {
   IndexScreen as BBBUSIndexScreen
 } from '../../screens/BB-BUS';
 import { ScreenName, StackConfig } from '../../types';
+import { consts } from '../consts';
 import { texts } from '../texts';
+
+const { MATOMO_TRACKING } = consts;
 
 export const defaultStackConfig = ({
   initialRouteName,
@@ -78,7 +80,12 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.Company,
-      screenComponent: CompanyScreen,
+      screenComponent: getTilesScreen({
+        matomoString: MATOMO_TRACKING.SCREEN_VIEW.COMPANY,
+        staticJsonName: 'homeCompanies',
+        titleFallback: texts.homeTitles.company,
+        titleKey: 'headlineCompany'
+      }),
       screenOptions: { title: texts.screenTitles.company }
     },
     {
@@ -146,7 +153,12 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.Service,
-      screenComponent: ServiceScreen,
+      screenComponent: getTilesScreen({
+        matomoString: MATOMO_TRACKING.SCREEN_VIEW.SERVICE,
+        staticJsonName: 'homeService',
+        titleFallback: texts.homeTitles.service,
+        titleKey: 'headlineService'
+      }),
       screenOptions: { title: texts.screenTitles.service }
     },
     {
