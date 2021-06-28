@@ -7,17 +7,18 @@ import { arrowLeft } from '../icons';
 
 import { Icon } from './Icon';
 
-export const HeaderLeft = ({ onPress }: StackHeaderLeftButtonProps) => (
-  <View>
-    <TouchableOpacity
-      onPress={onPress}
-      accessibilityLabel="Zurück Taste"
-      accessibilityHint="Navigieren zurück zur vorherigen Seite"
-    >
-      <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
-    </TouchableOpacity>
-  </View>
-);
+export const HeaderLeft = ({ onPress }: StackHeaderLeftButtonProps) =>
+  onPress ? (
+    <View>
+      <TouchableOpacity
+        onPress={onPress}
+        accessibilityLabel="Zurück Taste"
+        accessibilityHint="Navigieren zurück zur vorherigen Seite"
+      >
+        <Icon xml={arrowLeft(colors.lightestText)} style={styles.icon} />
+      </TouchableOpacity>
+    </View>
+  ) : null;
 
 const styles = StyleSheet.create({
   icon: {
