@@ -5,9 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v1.8.1]
+
+Fix header left showing on initial screens
+
+### Fixed
+
+- the back navigation header is currently shown on initial tab screens,
+  even if there is no option to navigate back.
+  - this change resolves that issue.
+
 ## [v1.8.0] :rocket:
 
-The eighth minor version upgrade includes the expo update 41, an update from react navigation version 3 to 5 and several minor fixes and dependency updates.
+The eighth minor version upgrade includes the expo update 41, an update from react navigation
+version 3 to 5 and several minor fixes and dependency updates.
 
 - Read about the expo update step in: https://dev.to/expo/expo-sdk-41-1f2j
 
@@ -27,13 +38,17 @@ Updated OParl screens. Added waste calendar export.
 ## [v1.7.1]
 
 Added pagination to person list on the `OParlPeopleScreen`
+
 ### Changed
+
 - reworked `OParlPeopleScreen` to use a flatlist with pagination
 - improved query for fetching organization list for the dropdown
 
 ## [v1.7.0] :rocket:
 
-The seventh minor version upgrade introduces the possibility to browse [OParl data](https://dev.oparl.org/spezifikation/) provided by the [sva-apollo-server](https://github.com/ikuseiGmbH/sva-apollo-server).
+The seventh minor version upgrade introduces the possibility to browse
+[OParl data](https://dev.oparl.org/spezifikation/) provided by the
+[sva-apollo-server](https://github.com/ikuseiGmbH/sva-apollo-server).
 
 ### Added
 
@@ -43,6 +58,7 @@ The seventh minor version upgrade introduces the possibility to browse [OParl da
 - added custom hook with independent apollo client for OParl queries
 
 ### Changed
+
 - extracted reusable parts of the calendar component from the `WasteCollectionScreen`
 
 ## [v1.6.3]
