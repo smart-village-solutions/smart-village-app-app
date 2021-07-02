@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.0.0] :t-rex:
+
+The second major version with configs for navigation and Expo SDK update to 42.0.0
+
+- Read about that step in: https://blog.expo.io/expo-sdk-42-579aee2348b6
+
 ## [v1.8.1]
 
 Fix header left showing on initial screens
@@ -12,8 +18,8 @@ Fix header left showing on initial screens
 ### Fixed
 
 - the back navigation header is currently shown on initial tab screens,
-  even if there is no option to navigate back.
-  - this change resolves that issue.
+  even if there is no option to navigate back
+  - this change resolves that issue
 
 ## [v1.8.0] :rocket:
 

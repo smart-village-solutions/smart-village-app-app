@@ -2,7 +2,7 @@
 
 # Smart Village App - Mobile App
 
-![Project version](https://img.shields.io/badge/version-1.8.1-informational.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/maintainability)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/maintainability) ![Node version](https://img.shields.io/badge/node-14.3.0-informational.svg) ![Yarn version](https://img.shields.io/badge/yarn-1.22.4-informational.svg) ![Expo version](https://img.shields.io/badge/expo-41.0.0-informational.svg)
+![Project version](https://img.shields.io/badge/version-2.0.0-informational.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/maintainability)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/maintainability) ![Node version](https://img.shields.io/badge/node-14.3.0-informational.svg) ![Yarn version](https://img.shields.io/badge/yarn-1.22.4-informational.svg) ![Expo version](https://img.shields.io/badge/expo-42.0.0-informational.svg)
 
 The Smart Village App is a open source mobile app for villages, communities and counties. It is made with React Native for Android and iOS.
 
@@ -34,11 +34,11 @@ For detailed documentation see the [docs](./docs/INDEX.md).
 
 Information about currently used packages and their versions:
 
-- Expo (41.0.0): https://github.com/expo/expo
+- Expo (42.0.0): https://github.com/expo/expo
 - React Native (0.63.2): https://github.com/facebook/react-native
 - React (16.13.1): https://github.com/facebook/react
 - React Navigation (5.15.3): https://github.com/react-navigation/react-navigation
-- React Native WebView (11.2.3): https://github.com/react-native-community/react-native-webview
+- React Native WebView (11.6.2): https://github.com/react-native-community/react-native-webview
 - React Native Elements (1.2.7): https://github.com/react-native-training/react-native-elements
 - React Native Calendars (1.1129.0): https://github.com/wix/react-native-calendars
 - Apollo Client (2.6.10): https://github.com/apollographql/apollo-client
@@ -52,4 +52,4 @@ Have a look at the [changelog](./CHANGELOG.md) to be up to date with the develop
 
 ---
 
-###### Version: 1.8.1
+###### Version: 2.0.0
