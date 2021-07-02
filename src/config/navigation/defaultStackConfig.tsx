@@ -63,7 +63,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.BBBUSDetail,
       screenComponent: BBBUSDetailScreen,
-      screenOptions: screenOptionsWithShare(true)
+      screenOptions: screenOptionsWithShare(headerRight)
     },
     {
       routeName: ScreenName.BookmarkCategory,
@@ -72,7 +72,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Bookmarks,
       screenComponent: BookmarkScreen,
-      screenOptions: screenOptionsWithSettings(true)
+      screenOptions: screenOptionsWithSettings(headerRight)
     },
     {
       routeName: ScreenName.Category,
@@ -104,7 +104,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Detail,
       screenComponent: DetailScreen,
-      screenOptions: detailScreenOptions(true)
+      screenOptions: detailScreenOptions(headerRight)
     },
     {
       routeName: ScreenName.Form,
@@ -113,7 +113,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Home,
       screenComponent: HomeScreen,
-      screenOptions: homeScreenOptions(true)
+      screenOptions: homeScreenOptions(headerRight)
     },
     {
       routeName: ScreenName.Html,
