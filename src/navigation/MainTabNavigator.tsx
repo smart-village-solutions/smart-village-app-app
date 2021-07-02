@@ -2,13 +2,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 
 import { device, normalize } from '../config';
-import { TabConfig, TabNavigatorConfig } from '../types';
+import { TabNavigatorConfig } from '../types';
 
-import { AppStackNavigator } from './AppStackNavigator';
-
-const component = (tabConfig: TabConfig) => {
-  return () => AppStackNavigator(tabConfig.stackConfig);
-};
+import { getStackNavigator } from './AppStackNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -29,7 +25,7 @@ export const MainTabNavigator = ({
       <Tab.Screen
         key={`Stack${index}`}
         name={`Stack${index}`}
-        component={component(tabConfig)}
+        component={getStackNavigator(tabConfig.stackConfig)}
         options={tabConfig.tabOptions}
       />
     ))}

@@ -7,11 +7,13 @@ import { StyleSheet } from 'react-native';
 
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { device, texts } from '../config';
+import { defaultStackConfig } from '../config/navigation/defaultStackConfig';
 import { graphqlFetchPolicy } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
+import { ScreenName } from '../types';
 
-import { AppStackNavigator } from './AppStackNavigator';
+import { getStackNavigator } from './AppStackNavigator';
 import { CustomDrawerContentComponent } from './CustomDrawerContentComponent';
 
 const defaultDrawerRoutes = {
@@ -82,6 +84,13 @@ const useDrawerRoutes = () => {
 
   return { loading, drawerRoutes };
 };
+
+const AppStackNavigator = getStackNavigator(
+  defaultStackConfig({
+    initialRouteName: ScreenName.Home,
+    headerRight: true
+  })
+);
 
 const Drawer = createDrawerNavigator();
 
