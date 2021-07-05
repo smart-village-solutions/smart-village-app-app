@@ -13,7 +13,6 @@ import {
   Widgets
 } from '../components';
 import { colors, consts, texts } from '../config';
-import { navigatorConfig } from '../config/navigation';
 import { graphqlFetchPolicy, rootRouteName } from '../helpers';
 import { useMatomoAlertOnStartUp, useMatomoTrackScreenView, usePushNotifications } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
@@ -23,7 +22,7 @@ import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
-export const HomeScreen = ({ navigation }) => {
+export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings } = useContext(SettingsContext);
@@ -192,7 +191,7 @@ export const HomeScreen = ({ navigation }) => {
             fetchPolicy={fetchPolicy}
           />
         )}
-        {navigatorConfig.type === 'drawer' && (
+        {route.params?.isDrawer && (
           <>
             <Service navigation={navigation} />
             <About navigation={navigation} />
@@ -206,5 +205,6 @@ export const HomeScreen = ({ navigation }) => {
 /* eslint-enable complexity */
 
 HomeScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

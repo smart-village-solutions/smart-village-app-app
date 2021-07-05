@@ -88,7 +88,7 @@ const useDrawerRoutes = () => {
 const AppStackNavigator = getStackNavigator(
   defaultStackConfig({
     initialRouteName: ScreenName.Home,
-    headerRight: true
+    isDrawer: true
   })
 );
 

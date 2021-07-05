@@ -43,13 +43,13 @@ const { MATOMO_TRACKING } = consts;
 
 export const defaultStackConfig = ({
   initialRouteName,
-  headerRight
+  isDrawer
 }: {
   initialRouteName: ScreenName;
-  headerRight: boolean;
+  isDrawer: boolean;
 }): StackConfig => ({
   initialRouteName,
-  screenOptions: defaultStackNavigatorScreenOptions(headerRight),
+  screenOptions: defaultStackNavigatorScreenOptions(isDrawer),
   screenConfigs: [
     {
       routeName: ScreenName.About,
@@ -63,7 +63,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.BBBUSDetail,
       screenComponent: BBBUSDetailScreen,
-      screenOptions: screenOptionsWithShare(headerRight)
+      screenOptions: screenOptionsWithShare(isDrawer)
     },
     {
       routeName: ScreenName.BookmarkCategory,
@@ -72,7 +72,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Bookmarks,
       screenComponent: BookmarkScreen,
-      screenOptions: screenOptionsWithSettings(headerRight)
+      screenOptions: screenOptionsWithSettings(isDrawer)
     },
     {
       routeName: ScreenName.Category,
@@ -104,7 +104,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Detail,
       screenComponent: DetailScreen,
-      screenOptions: detailScreenOptions(headerRight)
+      screenOptions: detailScreenOptions(isDrawer)
     },
     {
       routeName: ScreenName.Form,
@@ -113,7 +113,10 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Home,
       screenComponent: HomeScreen,
-      screenOptions: homeScreenOptions(headerRight)
+      screenOptions: homeScreenOptions(isDrawer),
+      inititalParams: {
+        isDrawer
+      }
     },
     {
       routeName: ScreenName.Html,

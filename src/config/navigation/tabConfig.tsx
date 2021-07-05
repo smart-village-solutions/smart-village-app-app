@@ -13,7 +13,7 @@ import { defaultStackConfig } from './defaultStackConfig';
 const homeTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.Home,
-    headerRight: false
+    isDrawer: false
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.home,
@@ -26,7 +26,7 @@ const homeTabConfig: TabConfig = {
 const serviceTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.Service,
-    headerRight: false
+    isDrawer: false
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.service,
@@ -39,7 +39,7 @@ const serviceTabConfig: TabConfig = {
 const companyTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.Company,
-    headerRight: false
+    isDrawer: false
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.company,
@@ -57,7 +57,7 @@ const companyTabConfig: TabConfig = {
 const aboutTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.About,
-    headerRight: false
+    isDrawer: false
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.about,
