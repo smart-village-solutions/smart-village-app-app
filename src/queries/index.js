@@ -1,6 +1,5 @@
 // IMPORT TYPES
 import { QUERY_TYPES } from './types';
-
 // IMPORT GET QUERIES
 import { GET_CATEGORIES } from './categories';
 import {
@@ -18,7 +17,6 @@ import { GET_PUBLIC_HTML_FILE } from './publicHtmlFiles';
 import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
 import { WASTE_ADDRESSES, WASTE_STREET } from './waste';
 import { GET_WEATHER, GET_WEATHER_CURRENT } from './weather';
-
 // IMPORT CREATE QUERIES
 import { CREATE_APP_USER_CONTENT } from './appUserContent';
 

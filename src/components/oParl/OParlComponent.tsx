@@ -2,6 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 
 import { OParlObjectData, OParlObjectType } from '../../types';
+
 import { AgendaItem } from './AgendaItem';
 import { Body } from './Body';
 import { Consultation } from './Consultation';

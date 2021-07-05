@@ -4,6 +4,7 @@ import { SectionList, View } from 'react-native';
 import _filter from 'lodash/filter';
 
 import { device, texts } from '../config';
+
 import { RegularText } from './Text';
 import { Title, TitleContainer, TitleShadow } from './Title';
 import { Wrapper } from './Wrapper';

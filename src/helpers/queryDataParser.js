@@ -4,6 +4,7 @@ import _shuffle from 'lodash/shuffle';
 import { consts, texts } from '../config';
 import { QUERY_TYPES } from '../queries';
 import { GenericType } from '../types';
+
 import { eventDate, isBeforeEndOfToday, isTodayOrLater } from './dateTimeHelper';
 import { getGenericItemDetailTitle, getGenericItemRootRouteName } from './genericTypeHelper';
 import { mainImageOfMediaContents } from './imageHelper';

@@ -1,8 +1,10 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
+
 import { colors, device, normalize } from '../config';
 import { openShare } from '../helpers';
 import { share } from '../icons';
+
 import { Icon } from './Icon';
 
 type Props = {

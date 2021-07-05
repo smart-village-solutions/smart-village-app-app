@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { normalize } from '../config';
+
 import { HtmlView } from './HtmlView';
 
 export const ImageMessage = ({ message }) => (

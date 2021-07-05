@@ -9,6 +9,7 @@ import { isFeature, isFeatureCollection, isMultiPoint, isPoint } from '../../jso
 import { LocationData } from '../../types';
 import { WebViewMap } from '../map';
 import { WrapperHorizontal } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import {
   KeywordSection,

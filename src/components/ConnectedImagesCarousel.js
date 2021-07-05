@@ -11,6 +11,7 @@ import { useHomeRefresh } from '../hooks/HomeRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
+
 import { ImagesCarousel } from './ImagesCarousel';
 import { LoadingContainer } from './LoadingContainer';
 

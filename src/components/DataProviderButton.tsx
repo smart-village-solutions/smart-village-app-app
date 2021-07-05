@@ -3,6 +3,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 
 import { texts } from '../config';
+
 import { Button } from './Button';
 import { Wrapper } from './Wrapper';
 

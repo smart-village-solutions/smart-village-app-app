@@ -4,6 +4,7 @@ import React from 'react';
 import { texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
 import { LegislativeTermPreviewData } from '../../../types';
+
 import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {

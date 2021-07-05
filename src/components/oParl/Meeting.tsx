@@ -6,6 +6,7 @@ import { texts } from '../../config';
 import { MeetingData } from '../../types';
 import { BoldText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
+
 import { FormattedLocation } from './previews';
 import { Row, SimpleRow } from './Row';
 import {

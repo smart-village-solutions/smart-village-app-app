@@ -15,6 +15,7 @@ import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { PointOfInterest } from '../screens/PointOfInterest';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+
 import { WebViewMap } from './WebViewMap';
 
 type Props = {

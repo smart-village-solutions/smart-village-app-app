@@ -20,6 +20,7 @@ parserOptions:
   ecmaVersion: 2018
   sourceType: module
 plugins:
+  - import
   - react
   - react-native
   - '@typescript-eslint'
@@ -54,6 +55,9 @@ rules:
     - always
   react/display-name:
     - off
+  import/order:
+    - error
+    - newlines-between: always
   react-native/no-unused-styles:
     - error
   react-native/no-inline-styles:
@@ -67,3 +71,12 @@ rules:
 settings:
   react:
     version: detect
+  import/extensions:
+    - .js
+    - .jsx
+    - .ts
+    - .tsx
+  import/parsers:
+    '@typescript-eslint/parser':
+      - .ts
+      - .tsx

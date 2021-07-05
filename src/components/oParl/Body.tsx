@@ -9,6 +9,7 @@ import { PreviewSection } from '../PreviewSection';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { WrapperHorizontal } from '../Wrapper';
+
 import { FormattedLocation } from './previews';
 import { Row, SimpleRow } from './Row';
 import {

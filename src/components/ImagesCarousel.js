@@ -7,9 +7,10 @@ import { Query } from 'react-apollo';
 import { colors } from '../config';
 import { imageWidth, isActive, shareMessage } from '../helpers';
 import { getQuery } from '../queries';
+import { OrientationContext } from '../OrientationProvider';
+
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
-import { OrientationContext } from '../OrientationProvider';
 
 export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) => {
   const { dimensions } = useContext(OrientationContext);

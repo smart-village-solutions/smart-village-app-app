@@ -1,8 +1,9 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { texts } from '../../../config';
 
+import { texts } from '../../../config';
 import { AgendaItemPreviewData } from '../../../types';
+
 import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {

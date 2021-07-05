@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 
 import { TextList } from '../TextList';
+
 import { IndexFilter } from './IndexFilter';
 
 export const ServiceList = ({

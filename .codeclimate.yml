@@ -5,6 +5,15 @@ plugins:
   eslint:
     enabled: true
     channel: "eslint-7"
+    config:
+      extensions:
+      - .js
+      - .jsx
+      - .ts
+      - .tsx
+    checks:
+      "@typescript-eslint/no-explicit-any":
+        enabled: false
   fixme:
     enabled: true
   nodesecurity:

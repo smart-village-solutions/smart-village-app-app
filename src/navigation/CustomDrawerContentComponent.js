@@ -6,8 +6,9 @@ import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import { colors, device } from '../config';
 import { DiagonalGradient } from '../components';
-import DrawerNavigatorItems from './DrawerNavigatorItems';
 import { OrientationContext } from '../OrientationProvider';
+
+import DrawerNavigatorItems from './DrawerNavigatorItems';
 
 /**
  * based on the default content component from React Navigation:
