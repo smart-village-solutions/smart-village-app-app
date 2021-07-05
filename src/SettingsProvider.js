@@ -1,12 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { createContext, useState } from 'react';
 
-import { consts } from './config';
-
 export const SettingsContext = createContext({
   globalSettings: {
     filter: {},
-    navigation: consts.DRAWER,
     sections: {}
   }
 });
