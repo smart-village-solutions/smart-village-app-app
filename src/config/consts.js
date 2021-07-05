@@ -2,9 +2,6 @@ const ONCE_A_DAY = 'ONCE_A_DAY';
 const ONCE_PER_HOUR = 'ONCE_PER_HOUR';
 
 export const consts = {
-  DRAWER: 'drawer',
-  TABS: 'tabs',
-
   POLL_INTERVALS: {
     WEATHER: 3600000
   },

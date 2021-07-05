@@ -1,7 +1,7 @@
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 
-import { navigatorConfig } from '../config/navigation/config';
+import { navigatorConfig } from '../config/navigation';
 
 import { DrawerNavigator } from './DrawerNavigator';
 import { MainTabNavigator } from './MainTabNavigator';

@@ -7,7 +7,7 @@ import { StyleSheet } from 'react-native';
 
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { device, texts } from '../config';
-import { defaultStackConfig } from '../config/navigation/defaultStackConfig';
+import { defaultStackConfig } from '../config/navigation';
 import { graphqlFetchPolicy } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';

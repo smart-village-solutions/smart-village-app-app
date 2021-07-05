@@ -131,11 +131,6 @@ const MainAppWithApolloProvider = () => {
     // rehydrate data from the async storage to the global state
     // if there are no general settings yet, add a navigation fallback
     let globalSettings = await storageHelper.globalSettings();
-    if (_isEmpty(globalSettings)) {
-      globalSettings = {
-        navigation: consts.DRAWER
-      };
-    }
 
     // if there are no list type settings yet, set the defaults as fallback
     const listTypesSettings = (await storageHelper.listTypesSettings()) || {
