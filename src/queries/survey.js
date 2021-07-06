@@ -3,24 +3,24 @@ import gql from 'graphql-tag';
 export const DETAILED_SURVEY = gql`
   query Surveys($id: ID!) {
     surveys(ids: [$id]) {
-      ...surveyFields
-    }
-  }
-
-  fragment surveyFields on SurveyPoll {
-    id
-    title
-    questionTitle
-    description
-    date {
-      id
-      dateEnd
-      dateStart
-    }
-    responseOptions {
       id
       title
-      votesCount
+      questionTitle
+      description
+      date {
+        id
+        dateEnd
+        dateStart
+      }
+      responseOptions {
+        id
+        title
+        votesCount
+      }
+      surveyComments {
+        id
+        message
+      }
     }
   }
 `;
@@ -45,6 +45,14 @@ export const SURVEYS = gql`
 export const SUBMIT_SURVEY_RESPONSE = gql`
   mutation voteForSurvey($increaseId: ID, $decreaseId: ID) {
     voteForSurvey(increaseId: $increaseId, decreaseId: $decreaseId) {
+      statusCode
+    }
+  }
+`;
+
+export const COMMENT_ON_SURVEY = gql`
+  mutation commentSurvey($surveyId: ID!, $message: String!) {
+    commentSurvey(surveyId: $surveyId, message: $message) {
       statusCode
     }
   }

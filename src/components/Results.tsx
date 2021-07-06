@@ -4,8 +4,9 @@ import { StyleSheet, View } from 'react-native';
 import { colors, normalize, texts } from '../config';
 import { combineLanguages, getAnswerLabel } from '../helpers';
 import { useSurveyLanguages } from '../hooks';
-import { SectionHeader } from './SectionHeader';
 import { ResponseOption } from '../types';
+
+import { SectionHeader } from './SectionHeader';
 import { BoldText } from './Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
 

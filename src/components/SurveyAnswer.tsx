@@ -1,9 +1,11 @@
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
+
 import { colors } from '../config';
 import { getAnswerLabel } from '../helpers';
 import { useSurveyLanguages } from '../hooks';
 import { ResponseOption } from '../types';
+
 import { Radiobutton } from './Radiobutton';
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
