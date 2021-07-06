@@ -1,4 +1,5 @@
 import { QUERY_TYPES } from '../queries';
+
 import { addToStore, readFromStore } from './storageHelper';
 
 export const BOOKMARKS_STORE_KEY = 'BOOKMARKED_ITEMS';

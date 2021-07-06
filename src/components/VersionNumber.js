@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 
 import appJson from '../../app.json';
 import { colors, normalize } from '../config';
+
 import { RegularText } from './Text.js';
 import { Wrapper } from './Wrapper.js';
 

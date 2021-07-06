@@ -5,6 +5,7 @@ import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { PaperData } from '../../types';
 import { Wrapper } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import {
   KeywordSection,

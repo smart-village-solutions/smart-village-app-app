@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { containsHtml, trimNewLines } from '../helpers';
+
 import { Button } from './Button';
 import { HtmlView } from './HtmlView';
 import { ImageSection } from './ImageSection';

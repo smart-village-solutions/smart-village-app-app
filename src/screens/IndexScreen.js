@@ -84,7 +84,9 @@ export const IndexScreen = ({ navigation, route }) => {
     // have query variables from the previous screen, that does not work. this can result in an
     // empty screen because the query is not retuning anything.
     setQueryVariables(route.params?.queryVariables ?? {});
+  }, [query]);
 
+  useEffect(() => {
     if (query) {
       const MATOMO_TRACKING_SCREEN = {
         [QUERY_TYPES.EVENT_RECORDS]: MATOMO_TRACKING.SCREEN_VIEW.EVENT_RECORDS,
@@ -110,7 +112,7 @@ export const IndexScreen = ({ navigation, route }) => {
       isConnected &&
         trackScreenView(matomoTrackingString([MATOMO_TRACKING_SCREEN, MATOMO_TRACKING_CATEGORY]));
     }
-  }, [isConnected, query, route, setQueryVariables]);
+  }, [isConnected, query]);
 
   if (!query) return null;
 

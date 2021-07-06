@@ -9,6 +9,8 @@ const removeCommunicationsNesting = (key, communications) => {
   })[0];
   // fix for multi nested result form Directus API
   if (result && result.communication) result = result.communication;
+
+  return result;
 };
 
 export const getAddress = (addresses) => {

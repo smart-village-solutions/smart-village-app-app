@@ -2,6 +2,7 @@ import React from 'react';
 
 import { WidgetProps } from '../../types';
 import { WrapperRow } from '../Wrapper';
+
 import { ConstructionSiteWidget } from './ConstructionSiteWidget';
 import { EventWidget } from './EventWidget';
 import { LunchWidget } from './LunchWidget';

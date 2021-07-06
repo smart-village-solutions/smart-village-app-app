@@ -1,5 +1,6 @@
 import _isObjectLike from 'lodash/isObjectLike';
 import _isArray from 'lodash/isArray';
+
 import { isNumberArray } from './basicTypeValidation';
 
 enum GeoJsonType {

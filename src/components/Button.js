@@ -4,8 +4,9 @@ import { StyleSheet } from 'react-native';
 import { Button as RNEButton } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
-import { DiagonalGradient } from './DiagonalGradient';
 import { OrientationContext } from '../OrientationProvider';
+
+import { DiagonalGradient } from './DiagonalGradient';
 
 export const Button = ({ title, onPress, invert, disabled }) => {
   const { orientation, dimensions } = useContext(OrientationContext);

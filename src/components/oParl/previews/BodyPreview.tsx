@@ -2,8 +2,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 
 import { texts } from '../../../config';
-
 import { BodyPreviewData } from '../../../types';
+
 import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {

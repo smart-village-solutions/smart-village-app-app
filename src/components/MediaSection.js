@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import WebView from 'react-native-webview';
+
 import { colors, normalize } from '../config';
 import { trimNewLines } from '../helpers';
+
 import { LoadingContainer } from './LoadingContainer';
 import { WrapperHorizontal } from './Wrapper';
 

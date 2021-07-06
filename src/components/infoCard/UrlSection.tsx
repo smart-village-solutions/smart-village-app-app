@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
+
 import { colors, normalize } from '../../config';
 import { openLink } from '../../helpers';
 import { url as urlIcon } from '../../icons';

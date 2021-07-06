@@ -40,7 +40,7 @@ const DrawerNavigatorItems = ({ drawerRoutes, navigation, state }) => {
 
   return (
     <ScrollView bounces={false}>
-      {Object.keys(drawerRoutes).map((route) => {
+      {Object.keys(drawerRoutes).map((route, index) => {
         const itemInfo = drawerRoutes[route];
         const focused =
           (activeRoute?.params?.rootRouteName ?? 'AppStack') === itemInfo.params.rootRouteName;
@@ -48,7 +48,8 @@ const DrawerNavigatorItems = ({ drawerRoutes, navigation, state }) => {
         const accessibilityLabel = itemInfo.params.title;
 
         return (
-          <View key={route.key}>
+          <View key={itemInfo.params.title}>
+            {index === 0 && <Divider style={styles.divider} />}
             <Touchable
               accessible
               accessibilityLabel={accessibilityLabel}

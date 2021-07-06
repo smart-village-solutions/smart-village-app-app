@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+
 import { texts } from '../config';
 import { SettingsContext } from '../SettingsProvider';
 

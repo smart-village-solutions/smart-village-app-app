@@ -4,6 +4,7 @@ import React from 'react';
 import { texts } from '../../config';
 import { AgendaItemData } from '../../types';
 import { Wrapper } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import {
   DateSection,

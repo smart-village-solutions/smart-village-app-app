@@ -2,6 +2,6 @@ import { CustomDrawerContentComponent } from '../../src/navigation/CustomDrawerC
 
 describe('CustomDrawerContentComponent', () => {
   it('creates correctly', () => {
-    expect(CustomDrawerContentComponent).toBeTruthy();
+    expect(CustomDrawerContentComponent).toMatchSnapshot();
   });
 });

@@ -1,4 +1,5 @@
 import _isArray from 'lodash/isArray';
+
 import { ConstructionSite } from '../types';
 
 import {

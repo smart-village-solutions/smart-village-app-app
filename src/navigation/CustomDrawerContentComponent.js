@@ -3,11 +3,13 @@ import React, { useContext } from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { colors, device } from '../config';
 import { DiagonalGradient } from '../components';
-import DrawerNavigatorItems from './DrawerNavigatorItems';
 import { OrientationContext } from '../OrientationProvider';
+
+import DrawerNavigatorItems from './DrawerNavigatorItems';
 
 /**
  * based on the default content component from React Navigation:
@@ -18,7 +20,7 @@ export const CustomDrawerContentComponent = ({ navigation, drawerRoutes, state }
 
   return (
     <DiagonalGradient>
-      <View style={styles.headerContainer}>
+      <SafeAreaView>
         <View style={stylesWithProps({ orientation }).header}>
           <TouchableOpacity
             accessibilityLabel="Schließen Taste"
@@ -34,26 +36,11 @@ export const CustomDrawerContentComponent = ({ navigation, drawerRoutes, state }
             />
           </TouchableOpacity>
         </View>
-      </View>
-      <DrawerNavigatorItems navigation={navigation} state={state} drawerRoutes={drawerRoutes} />
+        <DrawerNavigatorItems navigation={navigation} state={state} drawerRoutes={drawerRoutes} />
+      </SafeAreaView>
     </DiagonalGradient>
   );
 };
-
-const styles = StyleSheet.create({
-  headerContainer: Platform.select({
-    android: {
-      backgroundColor: colors.darkText,
-      elevation: 2
-    },
-    ios: {
-      shadowColor: colors.darkText,
-      shadowOffset: { height: 1, width: 0 },
-      shadowOpacity: 0.5,
-      shadowRadius: 3
-    }
-  })
-});
 
 export const getHeaderHeight = (orientation) =>
   // Android always 56
@@ -75,14 +62,10 @@ export const statusBarHeight = (orientation) =>
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({ orientation }) => {
-  const height = getHeaderHeight(orientation) + statusBarHeight(orientation);
-
   return StyleSheet.create({
     header: {
       alignItems: 'flex-end',
       flexDirection: 'row',
-      backgroundColor: colors.primary,
-      height,
       justifyContent: 'flex-end'
     },
     icon: {

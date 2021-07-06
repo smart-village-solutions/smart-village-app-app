@@ -4,7 +4,6 @@ import React, { useContext } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { colors, consts, normalize } from '../config';
-
 import {
   BoldText,
   Image,

@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';
 import { ApolloClient } from 'apollo-client';
@@ -10,7 +11,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import _isEmpty from 'lodash/isEmpty';
 import React, { useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
-import { ActivityIndicator, AsyncStorage, StatusBar } from 'react-native';
+import { ActivityIndicator, StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { auth } from './auth';
@@ -130,11 +131,6 @@ const MainAppWithApolloProvider = () => {
     // rehydrate data from the async storage to the global state
     // if there are no general settings yet, add a navigation fallback
     let globalSettings = await storageHelper.globalSettings();
-    if (_isEmpty(globalSettings)) {
-      globalSettings = {
-        navigation: consts.DRAWER
-      };
-    }
 
     // if there are no list type settings yet, set the defaults as fallback
     const listTypesSettings = (await storageHelper.listTypesSettings()) || {

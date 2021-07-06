@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { device } from '../config';
+
 import { Title, TitleContainer, TitleShadow } from './Title';
 import { Touchable } from './Touchable';
 

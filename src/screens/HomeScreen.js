@@ -20,9 +20,9 @@ import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
-const { DRAWER, MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
+const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
-export const HomeScreen = ({ navigation }) => {
+export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings } = useContext(SettingsContext);
@@ -99,7 +99,7 @@ export const HomeScreen = ({ navigation }) => {
     CATEGORIES_INDEX: {
       name: 'Index',
       params: {
-        title: 'Orte und Touren',
+        title: headlinePointsOfInterestAndTours,
         query: QUERY_TYPES.CATEGORIES,
         queryVariables: {},
         rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
@@ -108,7 +108,7 @@ export const HomeScreen = ({ navigation }) => {
     EVENT_RECORDS_INDEX: {
       name: 'Index',
       params: {
-        title: 'Veranstaltungen',
+        title: headlineEvents,
         query: QUERY_TYPES.EVENT_RECORDS,
         queryVariables: { limit: 15, order: 'listDate_ASC' },
         rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
@@ -191,7 +191,7 @@ export const HomeScreen = ({ navigation }) => {
             fetchPolicy={fetchPolicy}
           />
         )}
-        {globalSettings.navigation === DRAWER && (
+        {route.params?.isDrawer && (
           <>
             <Service navigation={navigation} />
             <About navigation={navigation} />
@@ -205,5 +205,6 @@ export const HomeScreen = ({ navigation }) => {
 /* eslint-enable complexity */
 
 HomeScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

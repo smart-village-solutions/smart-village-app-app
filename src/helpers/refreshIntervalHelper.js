@@ -2,6 +2,7 @@ import moment from 'moment';
 import _isEmpty from 'lodash/isEmpty';
 
 import { consts } from '../config/consts';
+
 import { addToStore, readFromStore } from './storageHelper';
 
 /**

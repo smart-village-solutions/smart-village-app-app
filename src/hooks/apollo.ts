@@ -1,4 +1,5 @@
 import { useQuery } from 'react-apollo';
+
 import { OParlClient } from '../OParlClient';
 
 export const useOParlQuery: typeof useQuery = (query, options) => {

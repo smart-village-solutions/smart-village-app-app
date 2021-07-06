@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // thx to: https://stackoverflow.com/a/35629507/9956365
 export const addToStore = async (key, value) =>

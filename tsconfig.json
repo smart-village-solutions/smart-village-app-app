@@ -4,19 +4,19 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "jsx": "react",
-    "lib": [
-      "es6"
-    ],
+    "jsx": "react-native",
+    // "lib": [
+    //   "ESNext"
+    // ],
     "moduleResolution": "node",
     "noEmit": true,
-    "strict": true,
-    "target": "esnext",
+    "resolveJsonModule": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true
+    "strict": true,
+    "target": "ES2020",
   },
   "exclude": [
     "./node_modules",
-    "babel.config.js",
-  ]
+    "babel.config.js"
+  ],
 }
