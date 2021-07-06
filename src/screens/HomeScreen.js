@@ -20,9 +20,9 @@ import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
-const { DRAWER, MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
+const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
-export const HomeScreen = ({ navigation }) => {
+export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings } = useContext(SettingsContext);
@@ -191,7 +191,7 @@ export const HomeScreen = ({ navigation }) => {
             fetchPolicy={fetchPolicy}
           />
         )}
-        {globalSettings.navigation === DRAWER && (
+        {route.params?.isDrawer && (
           <>
             <Service navigation={navigation} />
             <About navigation={navigation} />
@@ -205,5 +205,6 @@ export const HomeScreen = ({ navigation }) => {
 /* eslint-enable complexity */
 
 HomeScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };
