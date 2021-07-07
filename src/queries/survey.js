@@ -19,6 +19,7 @@ export const DETAILED_SURVEY = gql`
       }
       surveyComments {
         id
+        createdAt
         message
       }
     }

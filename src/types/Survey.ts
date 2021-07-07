@@ -16,6 +16,7 @@ export type Survey = {
   responseOptions: ResponseOption[];
   surveyComments: Array<{
     id: string;
+    createdAt: string;
     message: string;
   }>;
 };

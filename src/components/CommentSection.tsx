@@ -6,6 +6,7 @@ import { Alert, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { normalize } from 'react-native-elements';
 
 import { colors, device, texts } from '../config';
+import { momentFormat } from '../helpers';
 import { COMMENT_ON_SURVEY } from '../queries/survey';
 import { Survey } from '../types';
 
@@ -68,11 +69,12 @@ export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: 
           <Button title={buttonTitle} onPress={submitComment} />
         </Wrapper>
       )}
-      {comments.map((comment) => {
+      {[...comments].reverse().map((comment) => {
         return (
           <Wrapper key={comment.id}>
-            {/* TODO: add date here instead of comment id */}
-            <RegularText small>{typeof comment.id}</RegularText>
+            <RegularText smallest>
+              {momentFormat(comment.createdAt, ' DD.MM.YYYY HH:mm [Uhr:]')}
+            </RegularText>
             <RegularText>{comment.message}</RegularText>
           </Wrapper>
         );
