@@ -12,7 +12,7 @@ import { Survey } from '../types';
 
 import { Button } from './Button';
 import { RegularText } from './Text';
-import { Wrapper } from './Wrapper';
+import { Wrapper, WrapperWithOrientation } from './Wrapper';
 
 type Props = {
   archived?: boolean;
@@ -49,7 +49,7 @@ export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: 
   const buttonTitle = texts.survey.submitComment.de + '\n' + texts.survey.submitComment.pl;
 
   return (
-    <>
+    <WrapperWithOrientation>
       {(!archived || comments.length > 0) && (
         <Wrapper ref={refForPosition}>
           <RegularText big>{texts.survey.comments.de}</RegularText>
@@ -60,7 +60,7 @@ export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: 
       )}
       {!archived && (
         <>
-          <Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
             <TextInput
               maxLength={MAX_COMMENT_LENGTH}
               multiline
@@ -89,7 +89,7 @@ export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: 
           </Wrapper>
         );
       })}
-    </>
+    </WrapperWithOrientation>
   );
 };
 

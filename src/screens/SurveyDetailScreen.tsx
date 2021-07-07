@@ -144,13 +144,13 @@ export const SurveyDetailScreen = ({ route }: Props) => {
                 selectedOption={previousSubmission}
               />
             )}
-            <CommentSection
-              archived={archived}
-              comments={survey.surveyComments}
-              scrollViewRef={scrollViewRef}
-              surveyId={surveyId}
-            />
           </WrapperWithOrientation>
+          <CommentSection
+            archived={archived}
+            comments={survey.surveyComments}
+            scrollViewRef={scrollViewRef}
+            surveyId={surveyId}
+          />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
