@@ -30,11 +30,14 @@ export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: 
 
   const submitComment = useCallback(() => {
     Keyboard.dismiss();
-    setNewComment('');
-    sendComment({ variables: { surveyId, message: newComment } });
-    Alert.alert(
-      texts.survey.commentSubmissionAlert.de + '\n\n' + texts.survey.commentSubmissionAlert.pl
-    );
+
+    if (newComment.length) {
+      sendComment({ variables: { surveyId, message: newComment } });
+      setNewComment('');
+      Alert.alert(
+        texts.survey.commentSubmissionAlert.de + '\n\n' + texts.survey.commentSubmissionAlert.pl
+      );
+    }
   }, [newComment, sendComment, surveyId]);
 
   const onFocus = () => {
