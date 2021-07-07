@@ -71,7 +71,7 @@ export const Results = ({ responseOptions, selectedOption }: Props) => {
   const title = combineLanguages(languages, texts.survey.result);
 
   return (
-    <>
+    <Wrapper style={styles.noHorizontalPadding}>
       {!!title && <SectionHeader title={title} />}
       <Wrapper>
         {sortedOptions.map((option) => (
@@ -83,7 +83,7 @@ export const Results = ({ responseOptions, selectedOption }: Props) => {
           />
         ))}
       </Wrapper>
-    </>
+    </Wrapper>
   );
 };
 
@@ -109,5 +109,9 @@ const styles = StyleSheet.create({
   },
   labelContainer: {
     width: 100 // this fixes the width of the left labels, so that all bars start at a common line
+  },
+  noHorizontalPadding: {
+    paddingLeft: 0,
+    paddingRight: 0
   }
 });
