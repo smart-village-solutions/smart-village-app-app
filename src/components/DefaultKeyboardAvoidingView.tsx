@@ -25,6 +25,7 @@ const statusBarHeight = (orientation: string) =>
 
 export const DefaultKeyboardAvoidingView = ({ children }: { children: React.ReactNode }) => {
   const { orientation } = useContext(OrientationContext);
+
   return (
     <KeyboardAvoidingView
       enabled={device.platform === 'ios'}
