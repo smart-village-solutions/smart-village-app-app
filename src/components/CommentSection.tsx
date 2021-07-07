@@ -88,7 +88,7 @@ export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: 
         return (
           <Wrapper key={comment.id}>
             <RegularText smallest>
-              {momentFormat(comment.createdAt, ' DD.MM.YYYY HH:mm [Uhr:]')}
+              {momentFormat(comment.createdAt, 'DD.MM.YYYY HH:mm [Uhr:]')}
             </RegularText>
             <RegularText>{comment.message}</RegularText>
           </Wrapper>
