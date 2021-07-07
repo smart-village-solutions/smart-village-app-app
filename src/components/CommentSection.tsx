@@ -21,6 +21,8 @@ type Props = {
   surveyId: string;
 };
 
+const MAX_COMMENT_LENGTH = 5000;
+
 export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: Props) => {
   const refForPosition = useRef<View>(null);
   const [sendComment] = useMutation(COMMENT_ON_SURVEY);
@@ -57,17 +59,25 @@ export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: 
         </Wrapper>
       )}
       {!archived && (
-        <Wrapper>
-          <TextInput
-            onFocus={onFocus}
-            multiline
-            onChangeText={setNewComment}
-            style={styles.textArea}
-            textAlignVertical="top"
-            value={newComment}
-          />
-          <Button title={buttonTitle} onPress={submitComment} />
-        </Wrapper>
+        <>
+          <Wrapper>
+            <TextInput
+              maxLength={MAX_COMMENT_LENGTH}
+              multiline
+              onChangeText={setNewComment}
+              onFocus={onFocus}
+              style={styles.textArea}
+              textAlignVertical="top"
+              value={newComment}
+            />
+            <View style={styles.limitContainer}>
+              <RegularText smallest>{newComment.length + '/' + MAX_COMMENT_LENGTH}</RegularText>
+            </View>
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Button title={buttonTitle} onPress={submitComment} />
+          </Wrapper>
+        </>
       )}
       {[...comments].reverse().map((comment) => {
         return (
@@ -84,11 +94,16 @@ export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: 
 };
 
 const styles = StyleSheet.create({
+  limitContainer: {
+    alignItems: 'flex-end'
+  },
+  noPaddingTop: {
+    paddingTop: 0
+  },
   textArea: {
     borderColor: colors.shadow,
     borderWidth: 1,
     height: normalize(100),
-    marginBottom: normalize(30),
     padding: normalize(10)
   }
 });
