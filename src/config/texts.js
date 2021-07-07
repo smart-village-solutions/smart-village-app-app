@@ -422,6 +422,7 @@ export const texts = {
       pl:
         'Twój komentarz zostanie teraz sprawdzony redakcyjnie i opublikowany tak szybko, jak to możliwe.'
     },
+    commentSubmissionAlertTitle: 'Ihr Kommentar wird nun redaktionell geprüft',
     dateEnd: {
       de: 'Abschluss der Umfrage:',
       pl: 'Wypełnienie ankiety:'

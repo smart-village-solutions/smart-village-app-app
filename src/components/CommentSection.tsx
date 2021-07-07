@@ -35,6 +35,7 @@ export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: 
       sendComment({ variables: { surveyId, message: newComment } });
       setNewComment('');
       Alert.alert(
+        texts.survey.commentSubmissionAlertTitle,
         texts.survey.commentSubmissionAlert.de + '\n\n' + texts.survey.commentSubmissionAlert.pl
       );
     }
