@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useApolloClient } from 'react-apollo';
 import { Alert } from 'react-native';
+
 import { texts } from '../config';
 import { addToStore, readFromStore } from '../helpers';
 import { SUBMIT_SURVEY_RESPONSE } from '../queries/survey';

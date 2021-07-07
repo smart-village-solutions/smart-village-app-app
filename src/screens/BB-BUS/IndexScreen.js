@@ -5,18 +5,16 @@ import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { Query } from 'react-apollo';
-import { ActivityIndicator, KeyboardAvoidingView, RefreshControl, StyleSheet } from 'react-native';
+import { ActivityIndicator, RefreshControl } from 'react-native';
 
-import { LoadingContainer, SafeAreaViewFlex } from '../../components';
+import { DefaultKeyboardAvoidingView, LoadingContainer, SafeAreaViewFlex } from '../../components';
 import { IndexFilterWrapperAndList } from '../../components/BB-BUS/IndexFilterWrapperAndList';
 import { ServiceList } from '../../components/BB-BUS/ServiceList';
-import { colors, consts, device, namespace, secrets, texts } from '../../config';
+import { colors, consts, namespace, secrets, texts } from '../../config';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 import { shareMessage } from '../../helpers/BB-BUS/shareHelper';
 import { useMatomoTrackScreenView } from '../../hooks';
-import { getHeaderHeight, statusBarHeight } from '../../navigation/CustomDrawerContentComponent';
 import { NetworkContext } from '../../NetworkProvider';
-import { OrientationContext } from '../../OrientationProvider';
 import {
   GET_COMMUNITIES_AND_TOP_10,
   GET_DIRECTUS,
@@ -37,7 +35,6 @@ const initialFilter = [
 export const IndexScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { orientation } = useContext(OrientationContext);
   const [areaId, setAreaId] = useState(secrets[namespace]?.busBb?.areaId);
   const queryVariables = { areaId };
   const [filter, setFilter] = useState(initialFilter);
@@ -149,14 +146,7 @@ export const IndexScreen = ({ navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <KeyboardAvoidingView
-        enabled={device.platform === 'ios'}
-        behavior={device.platform === 'ios' && 'padding'}
-        keyboardVerticalOffset={
-          device.platform === 'ios' && getHeaderHeight(orientation) + statusBarHeight(orientation)
-        }
-        style={styles.flex}
-      >
+      <DefaultKeyboardAvoidingView>
         <Query query={GET_TOP_10_IDS} fetchPolicy={fetchPolicy}>
           {({ data, loading }) => {
             if (loading) {
@@ -275,16 +265,10 @@ export const IndexScreen = ({ navigation }) => {
             );
           }}
         </Query>
-      </KeyboardAvoidingView>
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: {
-    flex: 1
-  }
-});
 
 IndexScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

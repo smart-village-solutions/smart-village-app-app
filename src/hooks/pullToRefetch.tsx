@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { RefreshControl } from 'react-native';
+
 import { colors } from '../config';
 
 export const usePullToRefetch = (loading?: boolean, refetch?: () => void) => {

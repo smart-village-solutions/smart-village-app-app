@@ -413,6 +413,16 @@ export const texts = {
       de: 'Antwort ändern',
       pl: 'Zmień odpowiedź'
     },
+    comments: {
+      de: 'Kommentare',
+      pl: 'Komentarze'
+    },
+    commentSubmissionAlert: {
+      de: 'Ihr Kommentar wird nun redaktionell geprüft und schnellstmöglich veröffentlicht.',
+      pl:
+        'Twój komentarz zostanie teraz sprawdzony redakcyjnie i opublikowany tak szybko, jak to możliwe.'
+    },
+    commentSubmissionAlertTitle: 'Ihr Kommentar wird nun redaktionell geprüft',
     dateEnd: {
       de: 'Abschluss der Umfrage:',
       pl: 'Wypełnienie ankiety:'
@@ -438,7 +448,11 @@ export const texts = {
     },
     submitAnswer: {
       de: 'Antwort senden',
-      pl: 'wyślij odpowiedź'
+      pl: 'Wyślij odpowiedź'
+    },
+    submitComment: {
+      de: 'Kommentar senden',
+      pl: 'Wyślij komentarz'
     }
   },
   tabBarLabel: {

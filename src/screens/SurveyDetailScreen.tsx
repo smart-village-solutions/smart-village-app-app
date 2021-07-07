@@ -1,11 +1,13 @@
 import { RouteProp } from '@react-navigation/core';
-import React from 'react';
+import React, { useRef } from 'react';
 import { useQuery } from 'react-apollo';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   BoldText,
   Button,
+  CommentSection,
+  DefaultKeyboardAvoidingView,
   RegularText,
   Results,
   SafeAreaViewFlex,
@@ -55,11 +57,13 @@ const useSurvey = (id?: string) => {
 
 // eslint-disable-next-line complexity
 export const SurveyDetailScreen = ({ route }: Props) => {
+  const scrollViewRef = useRef<ScrollView>(null);
   const archived = route.params?.archived;
-  const { loading, refetch, survey } = useSurvey(route.params?.id);
+  const surveyId = route.params?.id;
+  const { loading, refetch, survey } = useSurvey(surveyId);
   const languages = useSurveyLanguages();
   const { previousSubmission, selection, setSelection, submitSelection } = useAnswerSelection(
-    route.params?.id,
+    surveyId,
     refetch
   );
 
@@ -80,64 +84,79 @@ export const SurveyDetailScreen = ({ route }: Props) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView refreshControl={RefreshControl}>
-        <WrapperWithOrientation>
-          {!!shownTitle?.length && <SectionHeader title={shownTitle} />}
-          <DateComponent start date={survey.date.dateStart} />
-          <DateComponent date={survey.date.dateEnd} />
-          {!!survey.description?.[languages[0]]?.length && (
-            <Wrapper style={styles.noPaddingBottom}>
-              <RegularText>{survey.description[languages[0]]}</RegularText>
-              {!!survey.description?.[languages[1]]?.length && (
-                <RegularText italic>{survey.description[languages[1]]}</RegularText>
-              )}
-            </Wrapper>
-          )}
-          {!!survey.questionTitle?.[languages[0]]?.length && !!title?.length && (
-            <Wrapper style={styles.noPaddingBottom}>
-              <BoldText>{survey.questionTitle?.[languages[0]]}</BoldText>
-              <BoldText italic>{survey.questionTitle?.[languages[1]]}</BoldText>
-            </Wrapper>
-          )}
-          {survey.responseOptions.map((responseOption, index) => (
-            <SurveyAnswer
-              archived={archived}
-              faded={!!selection && selection !== responseOption.id}
-              index={index}
-              responseOption={responseOption}
-              selected={selection === responseOption.id}
-              setSelection={setSelection}
-              key={responseOption.id}
-            />
-          ))}
-          {!archived && (
-            <>
-              <Wrapper>
-                <Button
-                  disabled={
-                    !selection || (!!previousSubmission && selection === previousSubmission)
-                  }
-                  title={buttonText}
-                  onPress={submitSelection}
-                />
+      <DefaultKeyboardAvoidingView>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          refreshControl={RefreshControl}
+          ref={scrollViewRef}
+        >
+          <WrapperWithOrientation>
+            {!!shownTitle?.length && <SectionHeader title={shownTitle} />}
+            <DateComponent start date={survey.date.dateStart} />
+            <DateComponent date={survey.date.dateEnd} />
+            {!!survey.description?.[languages[0]]?.length && (
+              <Wrapper style={styles.noPaddingBottom}>
+                <RegularText>{survey.description[languages[0]]}</RegularText>
+                {!!survey.description?.[languages[1]]?.length && (
+                  <RegularText italic>{survey.description[languages[1]]}</RegularText>
+                )}
               </Wrapper>
-              {!previousSubmission && (
-                <Wrapper style={styles.noPaddingBottom}>
-                  <RegularText error small>
-                    {texts.survey.hint.de}
-                  </RegularText>
-                  <RegularText error italic small>
-                    {texts.survey.hint.pl}
-                  </RegularText>
+            )}
+            {!!survey.questionTitle?.[languages[0]]?.length && !!title?.length && (
+              <Wrapper style={styles.noPaddingBottom}>
+                <BoldText>{survey.questionTitle?.[languages[0]]}</BoldText>
+                <BoldText italic>{survey.questionTitle?.[languages[1]]}</BoldText>
+              </Wrapper>
+            )}
+            {survey.responseOptions.map((responseOption, index) => (
+              <SurveyAnswer
+                archived={archived}
+                faded={!!selection && selection !== responseOption.id}
+                index={index}
+                responseOption={responseOption}
+                selected={selection === responseOption.id}
+                setSelection={setSelection}
+                key={responseOption.id}
+              />
+            ))}
+            {!archived && (
+              <>
+                <Wrapper>
+                  <Button
+                    disabled={
+                      !selection || (!!previousSubmission && selection === previousSubmission)
+                    }
+                    title={buttonText}
+                    onPress={submitSelection}
+                  />
                 </Wrapper>
-              )}
-            </>
-          )}
-          {(previousSubmission || archived) && (
-            <Results responseOptions={survey.responseOptions} selectedOption={previousSubmission} />
-          )}
-        </WrapperWithOrientation>
-      </ScrollView>
+                {!previousSubmission && (
+                  <Wrapper style={styles.noPaddingBottom}>
+                    <RegularText error small>
+                      {texts.survey.hint.de}
+                    </RegularText>
+                    <RegularText error italic small>
+                      {texts.survey.hint.pl}
+                    </RegularText>
+                  </Wrapper>
+                )}
+              </>
+            )}
+            {(previousSubmission || archived) && (
+              <Results
+                responseOptions={survey.responseOptions}
+                selectedOption={previousSubmission}
+              />
+            )}
+          </WrapperWithOrientation>
+          <CommentSection
+            archived={archived}
+            comments={survey.comments}
+            scrollViewRef={scrollViewRef}
+            surveyId={surveyId}
+          />
+        </ScrollView>
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };

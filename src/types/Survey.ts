@@ -14,4 +14,9 @@ export type Survey = {
     dateEnd: string;
   };
   responseOptions: ResponseOption[];
+  comments: Array<{
+    id: string;
+    createdAt: string;
+    message: string;
+  }>;
 };
