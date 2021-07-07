@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { RefObject } from 'react';
 import { useRef } from 'react';
 import { useMutation } from 'react-apollo';
-import { Alert, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Alert, Keyboard, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { normalize } from 'react-native-elements';
 
 import { colors, device, texts } from '../config';
@@ -29,6 +29,7 @@ export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: 
   const [newComment, setNewComment] = useState('');
 
   const submitComment = useCallback(() => {
+    Keyboard.dismiss();
     setNewComment('');
     sendComment({ variables: { surveyId, message: newComment } });
     Alert.alert(

@@ -85,7 +85,11 @@ export const SurveyDetailScreen = ({ route }: Props) => {
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
-        <ScrollView refreshControl={RefreshControl} ref={scrollViewRef}>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          refreshControl={RefreshControl}
+          ref={scrollViewRef}
+        >
           <WrapperWithOrientation>
             {!!shownTitle?.length && <SectionHeader title={shownTitle} />}
             <DateComponent start date={survey.date.dateStart} />
