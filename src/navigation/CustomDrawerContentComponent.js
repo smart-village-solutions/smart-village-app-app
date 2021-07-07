@@ -3,10 +3,9 @@ import React, { useContext } from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { colors, device } from '../config';
-import { DiagonalGradient } from '../components';
+import { DiagonalGradient, SafeAreaViewFlex } from '../components';
 import { OrientationContext } from '../OrientationProvider';
 
 import DrawerNavigatorItems from './DrawerNavigatorItems';
@@ -20,7 +19,7 @@ export const CustomDrawerContentComponent = ({ navigation, drawerRoutes, state }
 
   return (
     <DiagonalGradient>
-      <SafeAreaView>
+      <SafeAreaViewFlex>
         <View style={stylesWithProps({ orientation }).header}>
           <TouchableOpacity
             accessibilityLabel="Schließen Taste"
@@ -37,7 +36,7 @@ export const CustomDrawerContentComponent = ({ navigation, drawerRoutes, state }
           </TouchableOpacity>
         </View>
         <DrawerNavigatorItems navigation={navigation} state={state} drawerRoutes={drawerRoutes} />
-      </SafeAreaView>
+      </SafeAreaViewFlex>
     </DiagonalGradient>
   );
 };
