@@ -17,7 +17,7 @@ export const DETAILED_SURVEY = gql`
         title
         votesCount
       }
-      surveyComments {
+      comments: surveyComments {
         id
         createdAt
         message

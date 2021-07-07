@@ -151,7 +151,7 @@ export const SurveyDetailScreen = ({ route }: Props) => {
           </WrapperWithOrientation>
           <CommentSection
             archived={archived}
-            comments={survey.surveyComments}
+            comments={survey.comments}
             scrollViewRef={scrollViewRef}
             surveyId={surveyId}
           />

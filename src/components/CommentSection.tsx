@@ -16,7 +16,7 @@ import { Wrapper, WrapperWithOrientation } from './Wrapper';
 
 type Props = {
   archived?: boolean;
-  comments: Survey['surveyComments'];
+  comments: Survey['comments'];
   scrollViewRef: RefObject<ScrollView>;
   surveyId: string;
 };
