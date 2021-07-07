@@ -50,7 +50,7 @@ export const Button = ({ title, onPress, invert }) => {
 const styles = StyleSheet.create({
   titleStyle: {
     color: colors.lightestText,
-    fontFamily: 'titillium-web-bold'
+    fontFamily: 'bold'
   },
   titleStyleLandscape: {
     paddingHorizontal: normalize(14)

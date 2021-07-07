@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderBottomWidth: StyleSheet.hairlineWidth,
     color: colors.darkText,
-    fontFamily: 'titillium-web-regular',
+    fontFamily: 'regular',
     fontSize: normalize(16),
     justifyContent: 'space-between',
     lineHeight: normalize(22),

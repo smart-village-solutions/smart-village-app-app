@@ -15,12 +15,12 @@ const AppWithFonts = () => {
     trackAppStart();
 
     Font.loadAsync({
-      'titillium-web-bold': require('./assets/fonts/TitilliumWeb-Bold.ttf'),
-      'titillium-web-bold-italic': require('./assets/fonts/TitilliumWeb-BoldItalic.ttf'),
-      'titillium-web-regular': require('./assets/fonts/TitilliumWeb-Regular.ttf'),
-      'titillium-web-italic': require('./assets/fonts/TitilliumWeb-Italic.ttf'),
-      'titillium-web-light': require('./assets/fonts/TitilliumWeb-Light.ttf'),
-      'titillium-web-light-italic': require('./assets/fonts/TitilliumWeb-LightItalic.ttf')
+      bold: require('./assets/fonts/TitilliumWeb-Bold.ttf'),
+      'bold-italic': require('./assets/fonts/TitilliumWeb-BoldItalic.ttf'),
+      regular: require('./assets/fonts/TitilliumWeb-Regular.ttf'),
+      italic: require('./assets/fonts/TitilliumWeb-Italic.ttf'),
+      light: require('./assets/fonts/TitilliumWeb-Light.ttf'),
+      'light-italic': require('./assets/fonts/TitilliumWeb-LightItalic.ttf')
     })
       .catch((error) => console.warn('An error occurred with loading the fonts', error))
       .finally(() => setFontLoaded(true));

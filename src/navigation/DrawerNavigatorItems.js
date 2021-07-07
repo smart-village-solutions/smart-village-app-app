@@ -44,7 +44,7 @@ const DrawerNavigatorItems = ({ drawerRoutes, navigation, state }) => {
         const itemInfo = drawerRoutes[route];
         const focused =
           (activeRoute?.params?.rootRouteName ?? 'AppStack') === itemInfo.params.rootRouteName;
-        const fontFamily = focused ? 'titillium-web-bold' : 'titillium-web-regular';
+        const fontFamily = focused ? 'bold' : 'regular';
         const accessibilityLabel = itemInfo.params.title;
 
         return (
@@ -70,7 +70,7 @@ const DrawerNavigatorItems = ({ drawerRoutes, navigation, state }) => {
 
 const styles = StyleSheet.create({
   label: {
-    fontFamily: 'titillium-web-regular',
+    fontFamily: 'regular',
     fontSize: normalize(16),
     lineHeight: normalize(22),
     paddingHorizontal: normalize(15),

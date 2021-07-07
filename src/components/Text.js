@@ -26,7 +26,7 @@ export const Text = ({ children, ...props }) => {
 
 export const RegularText = styled(Text)`
   color: ${colors.darkText};
-  font-family: titillium-web-regular;
+  font-family: regular;
   font-size: ${normalize(16)};
   line-height: ${normalize(22)};
 
@@ -94,7 +94,7 @@ export const RegularText = styled(Text)`
 `;
 
 export const BoldText = styled(RegularText)`
-  font-family: titillium-web-bold;
+  font-family: bold;
 `;
 
 Text.propTypes = {

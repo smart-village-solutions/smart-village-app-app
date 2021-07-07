@@ -6,7 +6,7 @@ import { Text } from './Text';
 
 export const Title = styled(Text)`
   color: ${colors.primary};
-  font-family: titillium-web-bold;
+  font-family: bold;
   font-size: ${normalize(20)};
   line-height: ${normalize(26)};
   text-transform: uppercase;
