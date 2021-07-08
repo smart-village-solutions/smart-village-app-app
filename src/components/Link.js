@@ -20,6 +20,7 @@ export const Link = ({ url, description, openWebScreen }) => (
     </WrapperRow>
   </TouchableOpacity>
 );
+
 const styles = StyleSheet.create({
   icon: {
     marginRight: normalize(5),

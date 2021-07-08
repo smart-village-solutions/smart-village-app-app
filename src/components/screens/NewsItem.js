@@ -59,6 +59,7 @@ export const NewsItem = ({ data, navigation }) => {
   );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
+
   const a11yText = consts.a11yLabel;
   return (
     <View>

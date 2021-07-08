@@ -83,7 +83,7 @@ const LunchOffer = ({ name, price }: { name: string; price: string }) => (
       </RegularText>
     </View>
     <View style={styles.priceContainer}>
-      <RegularText accessibilityLabel={`${consts.a11yLabel.praice} (${name}): ${price}`}>
+      <RegularText accessibilityLabel={`${consts.a11yLabel.price} (${name}): ${price}`}>
         {price}
       </RegularText>
     </View>

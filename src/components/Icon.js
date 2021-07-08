@@ -15,17 +15,17 @@ import { colors, normalize } from '../config';
 export const Icon = ({ xml, width, height, name, size, focused, iconColor, style, iconStyle }) => {
   const color = iconColor || (focused ? colors.accent : colors.primary);
 
-  const hitSlop = (normalize(44) - size ?? width) / 2;
-
-  //for testing
-  console.warn(xml ? 'hitslopSvg:' : 'hitslopFont:', hitSlop);
+  const hitSlopLimit = size || width < normalize(44);
+  const hitSlop = hitSlopLimit ? (normalize(44) - size ?? width) / 2 : null;
 
   return (
     <View
       style={style}
       hitSlop={{
         top: hitSlop,
-        bottom: hitSlop
+        bottom: hitSlop,
+        left: hitSlop,
+        right: hitSlop
       }}
     >
       {xml && <SvgXml xml={xml} width={width} height={height} style={iconStyle} />}

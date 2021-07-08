@@ -14,13 +14,11 @@ import { consts } from '../config';
 export const ImagesCarouselItem = memo(
   ({ navigation, source, message, containerStyle, aspectRatio, refreshInterval }) => {
     const { routeName, params } = source;
-    //for testing
-    console.warn('capitation:', source.captionText);
 
     if (routeName && params) {
       return (
         <TouchableOpacity
-          accessibilityLabel={`(${source.captionText}) ${consts.a11yLabel.imageCarousel}`}
+          accessibilityLabel={`(${source?.captionText}) ${consts.a11yLabel.imageCarousel}`}
           accessibilityHint={`${consts.a11yLabel.imageCarouselLinkHint}`}
           onPress={() => navigation.navigate({ routeName, params })}
           activeOpacity={0.8}

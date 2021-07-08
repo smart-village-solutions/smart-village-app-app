@@ -65,7 +65,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}
-      accessibilityLabel={`(${title})${consts.a11yLabel.button}`}
+      accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
     />
   );
 });
