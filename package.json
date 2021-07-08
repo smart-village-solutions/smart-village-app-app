@@ -73,7 +73,7 @@
     "react-native-modal-dropdown": "https://github.com/donni106/react-native-modal-dropdown#feature/search-options",
     "react-native-reanimated": "~2.2.0",
     "react-native-render-html": "4.2.3",
-    "react-native-render-html-table-bridge": "~0.3.1",
+    "react-native-render-html-table-bridge": "~0.6.1",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
     "react-native-snap-carousel": "~3.9.0",

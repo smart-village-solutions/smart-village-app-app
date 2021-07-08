@@ -3852,10 +3852,10 @@
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
   integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
 
-"@types/prop-types@^15.7.1":
-  version "15.7.1"
-  resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.1.tgz#f1a11e7babb0c3cad68100be381d1e064c68f1f6"
-  integrity sha512-CFzn9idOEpHrgdw8JsoTkaDDyRWk1jrzIV8djzcgpq0y9tG4B4lFT+Nxh52DVpDXV+n4+NPNv7M1Dj5uMp6XFg==
+"@types/prop-types@^15.7.3":
+  version "15.7.4"
+  resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.4.tgz#fcf7205c25dff795ee79af1e30da2c9790808f11"
+  integrity sha512-rZ5drC/jWjrArrS8BR6SIr4cWpW09RNTYt9AMZo3Jwwif+iacXAqgVjm0B0Bv/S1jhDXKHqRVNCbACkJ89RAnQ==
 
 "@types/react-dom@~16.9.8":
   version "16.9.10"
@@ -10428,12 +10428,12 @@ react-native-reanimated@~2.2.0:
     mockdate "^3.0.2"
     string-hash-64 "^1.0.3"
 
-react-native-render-html-table-bridge@~0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/react-native-render-html-table-bridge/-/react-native-render-html-table-bridge-0.3.1.tgz#253bf29f7d9ea252d9a69a1f2e95318c77901dec"
-  integrity sha512-adKzoWiUF77GaFuUNGp5ZN6Vk96ZV6CzvTXEjS1SIJQPS9lDRs3H/Ph+30GBVF9sMYGRAN2OiiUcnOLeWAl/lQ==
+react-native-render-html-table-bridge@~0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/react-native-render-html-table-bridge/-/react-native-render-html-table-bridge-0.6.1.tgz#4a74e55758f36bebb819c088ba86bbc6e37e3a95"
+  integrity sha512-RVwFuVjdTL07JUfT/eVTxVppH9bWkTzZ6JofeViccF8SbrqX/X5tL5jmkaCyX/Vr7FXyRPzHbFonDBaelewmUw==
   dependencies:
-    "@types/prop-types" "^15.7.1"
+    "@types/prop-types" "^15.7.3"
     prop-types "^15.7.2"
     ramda "^0.26.1"
     stringify-entities "^2.0.0"
