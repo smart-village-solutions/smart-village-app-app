@@ -47,7 +47,7 @@ export const defaultStackNavigatorScreenOptions = (
   headerBackground: () => <DiagonalGradient />,
   headerTitleStyle: {
     color: colors.lightestText,
-    fontFamily: device.platform === 'ios' ? 'titillium-web-bold' : 'titillium-web-regular',
+    fontFamily: device.platform === 'ios' ? 'bold' : 'regular',
     fontSize: normalize(20),
     fontWeight: '400',
     lineHeight: normalize(29)

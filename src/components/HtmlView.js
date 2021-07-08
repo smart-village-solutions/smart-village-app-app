@@ -19,7 +19,7 @@ const tableCssRules =
     linkColor: colors.primary,
     // TODO: font family was not working at the moment with following implementation
     //       https://github.com/jsamr/react-native-render-html-table-bridge/blob/master/readme.md#how-to-load-custom-fonts
-    // fontFamily: 'titillium-web-regular',
+    // fontFamily: 'regular',
     thColor: colors.lightestText,
     trOddBackground: colors.lightestText,
     trOddColor: colors.darkText,

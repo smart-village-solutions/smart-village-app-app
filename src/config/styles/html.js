@@ -11,19 +11,19 @@ export const html = {
   },
   a: {
     color: colors.primary,
-    fontFamily: 'titillium-web-bold',
+    fontFamily: 'bold',
     textDecorationLine: 'none'
   },
   h1: {
     color: colors.darkText,
-    fontFamily: 'titillium-web-bold',
+    fontFamily: 'bold',
     fontSize: normalize(24),
     lineHeight: normalize(30),
     marginBottom: normalize(24)
   },
   h2: {
     color: colors.darkText,
-    fontFamily: 'titillium-web-regular',
+    fontFamily: 'regular',
     fontSize: normalize(20),
     fontWeight: '400',
     lineHeight: normalize(26),
@@ -31,34 +31,34 @@ export const html = {
   },
   h3: {
     color: colors.darkText,
-    fontFamily: 'titillium-web-bold',
+    fontFamily: 'bold',
     fontSize: normalize(18),
     lineHeight: normalize(24)
   },
   h4: {
     color: colors.darkText,
-    fontFamily: 'titillium-web-regular',
+    fontFamily: 'regular',
     fontSize: normalize(18),
     fontWeight: '400',
     lineHeight: normalize(24)
   },
   h5: {
     color: colors.darkText,
-    fontFamily: 'titillium-web-regular',
+    fontFamily: 'regular',
     fontSize: normalize(16),
     fontWeight: '400'
   },
   h6: {
     color: colors.darkText,
-    fontFamily: 'titillium-web-regular',
+    fontFamily: 'regular',
     fontSize: normalize(14),
     fontWeight: '400'
   },
   b: {
-    fontFamily: 'titillium-web-bold'
+    fontFamily: 'bold'
   },
   strong: {
-    fontFamily: 'titillium-web-bold'
+    fontFamily: 'bold'
   },
   ul: {
     marginBottom: 0
@@ -74,6 +74,6 @@ export const html = {
     height: imageHeight(Dimensions.get('window').width)
   },
   em: {
-    fontFamily: 'titillium-web-italic'
+    fontFamily: 'italic'
   }
 };

@@ -47,7 +47,7 @@ exports[`Button renders a button with Outline style 1`] = `
         style={
           Object {
             "color": "rgb(16, 120, 33)",
-            "fontFamily": "titillium-web-bold",
+            "fontFamily": "bold",
             "fontSize": 18,
             "paddingBottom": 1,
             "paddingHorizontal": 15.680000000000001,
@@ -126,7 +126,7 @@ exports[`Button renders a default button 1`] = `
         style={
           Object {
             "color": "#FFFFFF",
-            "fontFamily": "titillium-web-bold",
+            "fontFamily": "bold",
             "fontSize": 18,
             "paddingBottom": 1,
             "paddingHorizontal": 15.680000000000001,
