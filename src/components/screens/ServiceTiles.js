@@ -11,13 +11,12 @@ import {
 } from 'react-native';
 import { normalize } from 'react-native-elements';
 
-import { colors, device } from '../../config';
+import { colors, device, NewIcon } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { Icon } from '../Icon';
 import { Image } from '../Image';
 import { LoadingContainer } from '../LoadingContainer';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
@@ -116,7 +115,11 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
                           >
                             <View>
                               {item.iconName ? (
-                                <Icon name={item.iconName} size={30} style={styles.serviceIcon} />
+                                <NewIcon.NamedIcon
+                                  name={item.iconName}
+                                  size={30}
+                                  style={styles.serviceIcon}
+                                />
                               ) : (
                                 <Image
                                   source={{ uri: item.icon }}

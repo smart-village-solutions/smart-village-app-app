@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import { Icon } from '../../src/components';
+import { NewIcon } from '../../src/config';
 
 describe('Icon', () => {
   const iconStyle = {
@@ -9,28 +9,23 @@ describe('Icon', () => {
   };
 
   it('renders a default Icon', () => {
-    const tree = renderer.create(<Icon name="name" />).toJSON();
-    expect(tree).toMatchSnapshot();
-  });
-
-  it('renders a focused Icon', () => {
-    const tree = renderer.create(<Icon name="name" focused={true} />).toJSON();
+    const tree = renderer.create(<NewIcon.Close />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders an Icon with custom style', () => {
-    const tree = renderer.create(<Icon name="name" iconStyle={iconStyle} />).toJSON();
+    const tree = renderer.create(<NewIcon.Close style={iconStyle} />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders an Icon with custom color', () => {
-    const tree = renderer.create(<Icon name="name" iconColor="iconColor" />).toJSON();
+    const tree = renderer.create(<NewIcon.Close color="#123456" />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
-  it.skip('renders a svg Icon', () => {
+  it('renders a svg Icon', () => {
     // skipping because of `TypeError: Cannot read property 'push' of null`
-    const tree = renderer.create(<Icon xml="xml" />).toJSON();
+    const tree = renderer.create(<NewIcon.ArrowDown />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

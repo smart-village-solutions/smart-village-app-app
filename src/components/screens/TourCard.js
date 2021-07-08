@@ -1,14 +1,12 @@
+import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon as RNEIcon } from 'react-native-elements';
-import _filter from 'lodash/filter';
 
-import { colors, device, normalize, texts } from '../../config';
-import { location } from '../../icons';
-import { openLink, locationLink, locationString } from '../../helpers';
+import { colors, device, NewIcon, normalize, texts } from '../../config';
+import { locationLink, locationString, openLink } from '../../helpers';
 import { RegularText } from '../Text';
-import { Icon } from '../Icon';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { InfoBox, Wrapper } from '../Wrapper';
 
@@ -56,7 +54,7 @@ export const TourCard = ({ addresses, lengthKm }) => (
 
             return (
               <InfoBox key={index}>
-                <Icon xml={location(colors.primary)} style={styles.margin} />
+                <NewIcon.Location style={styles.margin} />
                 <View>
                   <RegularText>{kind === 'start' ? texts.tour.start : texts.tour.end}</RegularText>
                   <TouchableOpacity onPress={() => addressOnPress(address)}>

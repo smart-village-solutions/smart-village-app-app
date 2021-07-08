@@ -1,5 +1,7 @@
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
+import { useQuery } from 'react-apollo';
 import {
   ActivityIndicator,
   FlatList,
@@ -7,15 +9,11 @@ import {
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
-import { useQuery } from 'react-apollo';
-import moment from 'moment';
 
-import { colors, consts, normalize, texts } from '../config';
 import {
   BoldText,
   Button,
   ConnectedImagesCarousel,
-  Icon,
   LunchSection,
   RegularText,
   SafeAreaViewFlex,
@@ -23,9 +21,9 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../components';
-import { arrowLeft, arrowRight } from '../icons';
-import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
+import { colors, consts, NewIcon, normalize, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
+import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 
@@ -86,7 +84,7 @@ export const LunchScreen = ({ navigation, route }) => {
               onPress={onPressPrevious}
               style={styles.left}
             >
-              <Icon xml={arrowLeft(colors.primary)} />
+              <NewIcon.ArrowLeft />
             </TouchableOpacity>
             <BoldText big>{date.format('DD.MM.YYYY')}</BoldText>
             <TouchableOpacity
@@ -94,7 +92,7 @@ export const LunchScreen = ({ navigation, route }) => {
               onPress={onPressNext}
               style={styles.right}
             >
-              <Icon xml={arrowRight(colors.primary)} />
+              <NewIcon.ArrowRight />
             </TouchableOpacity>
           </WrapperRow>
         </Wrapper>

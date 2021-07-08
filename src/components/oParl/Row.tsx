@@ -2,9 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { colors as RNEColors } from 'react-native-elements';
 
-import { colors, normalize } from '../../config';
-import { arrowRight } from '../../icons';
-import { Icon } from '../Icon';
+import { NewIcon, normalize } from '../../config';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow, WrapperWrap } from '../Wrapper';
@@ -54,7 +52,7 @@ export const Row = ({
         </Wrapper>
         {!!onPress && (
           <Wrapper style={styles.icon}>
-            <Icon xml={arrowRight(colors.primary)} />
+            <NewIcon.ArrowRight />
           </Wrapper>
         )}
       </WrapperRow>

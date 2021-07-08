@@ -1,11 +1,8 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, device, normalize } from '../config';
+import { colors, NewIcon, normalize } from '../config';
 import { openShare } from '../helpers';
-import { share } from '../icons';
-
-import { Icon } from './Icon';
 
 type Props = {
   headerRight?: boolean;
@@ -29,18 +26,10 @@ export const ShareHeader = ({ headerRight, shareContent }: Props) => {
         accessibilityLabel="Teilen Taste"
         accessibilityHint="Inhalte auf der Seite teilen"
       >
-        {device.platform === 'ios' ? (
-          <Icon
-            name="ios-share"
-            iconColor={colors.lightestText}
-            style={headerRight ? styles.iconLeft : styles.iconRight}
-          />
-        ) : (
-          <Icon
-            xml={share(colors.lightestText)}
-            style={headerRight ? styles.iconLeft : styles.iconRight}
-          />
-        )}
+        <NewIcon.Share
+          color={colors.lightestText}
+          style={headerRight ? styles.iconLeft : styles.iconRight}
+        />
       </TouchableOpacity>
     )
   );
