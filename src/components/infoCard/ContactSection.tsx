@@ -33,9 +33,9 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
           <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
             <RegularText
               primary
-              accessibilityLabel={`${consts.a11yLabel.phoneNumber} (${contact.phone})
-            (${consts.a11yLabel.button})
-            (${consts.a11yLabel.phoneAppHint})`}
+              accessibilityLabel={`${consts.a11yLabel.phoneNumber} ${contact.phone}
+            ${consts.a11yLabel.button}`}
+              accessibilityHint={`${consts.a11yLabel.phoneAppHint}`}
             >
               {contact.phone}
             </RegularText>
@@ -49,9 +49,10 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
           <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
             <RegularText
               primary
-              accessibilityLabel={
-                (a11yText.mail, `${contact.email}`, a11yText.button, a11yText.mailHint)
-              }
+              accessibilityLabel={`
+                ${a11yText.mail} ${contact.email} ${a11yText.button}
+              `}
+              accessibilityHint={`${a11yText.mailHint}`}
             >
               {contact.email}
             </RegularText>

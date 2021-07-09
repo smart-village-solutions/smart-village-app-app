@@ -76,11 +76,7 @@ const parseAttributes = (input?: string) => {
 const LunchOffer = ({ name, price }: { name: string; price: string }) => (
   <View style={styles.container}>
     <View style={styles.nameContainer}>
-      <RegularText
-        accessibilityLabel={`${texts.eventRecord.description} ${consts.a11yLabel.lunch}`}
-      >
-        {name}
-      </RegularText>
+      <RegularText accessibilityLabel={`${consts.a11yLabel.lunch} (${name})`}>{name}</RegularText>
     </View>
     <View style={styles.priceContainer}>
       <RegularText accessibilityLabel={`${consts.a11yLabel.price} (${name}): ${price}`}>

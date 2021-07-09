@@ -14,19 +14,21 @@ import { colors, normalize } from '../config';
  */
 export const Icon = ({ xml, width, height, name, size, focused, iconColor, style, iconStyle }) => {
   const color = iconColor || (focused ? colors.accent : colors.primary);
-
-  const hitSlopLimit = size || width < normalize(44);
-  const hitSlop = hitSlopLimit ? (normalize(44) - size ?? width) / 2 : null;
+  const hitSlop = (44 - size ?? width) / 2;
 
   return (
     <View
       style={style}
-      hitSlop={{
-        top: hitSlop,
-        bottom: hitSlop,
-        left: hitSlop,
-        right: hitSlop
-      }}
+      hitSlop={
+        hitSlop > 0
+          ? {
+              top: hitSlop,
+              bottom: hitSlop,
+              left: hitSlop,
+              right: hitSlop
+            }
+          : undefined
+      }
     >
       {xml && <SvgXml xml={xml} width={width} height={height} style={iconStyle} />}
       {name && <Ionicons name={name} size={size} color={color} style={iconStyle} />}
