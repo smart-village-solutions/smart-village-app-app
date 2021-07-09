@@ -14,6 +14,7 @@ import {
   favSettings,
   heartEmpty,
   heartFilled,
+  home,
   link,
   location,
   lunch,
@@ -22,6 +23,7 @@ import {
   oParlOrganizations,
   oParlPeople,
   phone,
+  service,
   share,
   url
 } from '../icons';
@@ -69,15 +71,22 @@ const NamedIcon = ({
 };
 
 export const NewIcon = {
+  About: (props: IconProps) => (
+    <NamedIcon name={device.platform === 'ios' ? 'ios-menu' : 'md-menu'} {...props} />
+  ),
   ArrowDown: (props: IconProps) => <SvgIcon xml={arrowDown} {...props} />,
   ArrowLeft: (props: IconProps) => <SvgIcon xml={arrowLeft} {...props} />,
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
   Calendar: (props: IconProps) => <SvgIcon xml={calendar} {...props} />,
+  Company: (props: IconProps) => (
+    <NamedIcon name={device.platform === 'ios' ? 'ios-briefcase' : 'md-briefcase'} {...props} />
+  ),
   ConstructionSite: (props: IconProps) => <SvgIcon xml={constructionSite} {...props} />,
   DrawerMenu: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
   EditSetting: (props: IconProps) => <NamedIcon name="md-create" {...props} />,
   FavSettings: (props: IconProps) => <SvgIcon xml={favSettings} {...props} />,
+  Home: (props: IconProps) => <SvgIcon xml={home} {...props} />,
   NamedIcon,
   HeartEmpty: (props: IconProps) => <SvgIcon xml={heartEmpty} {...props} />,
   HeartFilled: (props: IconProps) => <SvgIcon xml={heartFilled} {...props} />,
@@ -101,6 +110,7 @@ export const NewIcon = {
       {...props}
     />
   ),
+  Service: (props: IconProps) => <SvgIcon xml={service} {...props} />,
   Settings: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'} {...props} />
   ),
