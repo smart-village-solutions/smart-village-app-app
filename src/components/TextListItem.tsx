@@ -4,7 +4,7 @@ import React, { memo, NamedExoticComponent, Validator } from 'react';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, NewIcon, normalize } from '../config';
+import { colors, Icon, normalize } from '../config';
 import { trimNewLines } from '../helpers';
 
 import { Image } from './Image';
@@ -49,7 +49,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
       bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
       topDivider={topDivider !== undefined ? topDivider : false}
       containerStyle={styles.container}
-      rightIcon={<NewIcon.ArrowRight />}
+      rightIcon={<Icon.ArrowRight />}
       leftIcon={
         leftImage && !!picture?.url ? (
           <Image

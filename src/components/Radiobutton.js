@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { CheckBox as RNECheckbox, normalize } from 'react-native-elements';
 
-import { colors, NewIcon } from '../config';
+import { colors, Icon } from '../config';
 import { baseFontStyle } from '../config/styles/baseFontStyle';
 
 export const Radiobutton = ({ title, disabled, selected, onPress, containerStyle }) => (
@@ -18,9 +18,9 @@ export const Radiobutton = ({ title, disabled, selected, onPress, containerStyle
       selected && styles.textStyleSelected,
       disabled && styles.textStyleDisabled
     ]}
-    checkedIcon={<NewIcon.RadioButtonFilled size={22} style={styles.rightContentContainer} />}
+    checkedIcon={<Icon.RadioButtonFilled size={22} style={styles.rightContentContainer} />}
     uncheckedIcon={
-      <NewIcon.RadioButtonEmpty
+      <Icon.RadioButtonEmpty
         size={22}
         color={colors.darkText}
         style={styles.rightContentContainer}

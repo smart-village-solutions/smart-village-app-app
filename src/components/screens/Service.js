@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, device, NewIcon, normalize, texts } from '../../config';
+import { colors, device, Icon, normalize, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
@@ -81,7 +81,7 @@ export const Service = ({ navigation }) => {
                 >
                   <View>
                     {item.iconName ? (
-                      <NewIcon.NamedIcon
+                      <Icon.NamedIcon
                         color={colors.lightestText}
                         name={item.iconName}
                         size={30}

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ListItem } from 'react-native-elements';
 
-import { colors, NewIcon, normalize } from '../config';
+import { colors, Icon, normalize } from '../config';
 
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
@@ -39,7 +39,7 @@ export class CategoryListItem extends React.PureComponent {
           backgroundColor: colors.transparent,
           paddingVertical: normalize(12)
         }}
-        rightIcon={<NewIcon.ArrowRight />}
+        rightIcon={<Icon.ArrowRight />}
         onPress={() =>
           navigation.navigate({
             name,

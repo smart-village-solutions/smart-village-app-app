@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, NewIcon, normalize } from '../config';
+import { colors, Icon, normalize } from '../config';
 import { openLink } from '../helpers';
 
 import { RegularText } from './Text';
@@ -14,7 +14,7 @@ export const Link = ({ url, description, openWebScreen }) => (
     accessibilityLabel={`${description} (Taste)`}
   >
     <WrapperRow>
-      <NewIcon.Link color={colors.secondary} style={styles.icon} />
+      <Icon.Link color={colors.secondary} style={styles.icon} />
       <RegularText primary>{description}</RegularText>
     </WrapperRow>
   </TouchableOpacity>

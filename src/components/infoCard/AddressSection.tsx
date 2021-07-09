@@ -2,7 +2,7 @@ import _filter from 'lodash/filter';
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { NewIcon, normalize } from '../../config';
+import { Icon, normalize } from '../../config';
 import { formatAddress, locationLink, locationString, openLink } from '../../helpers';
 import { Address } from '../../types';
 import { RegularText } from '../Text';
@@ -50,7 +50,7 @@ export const AddressSection = ({ address, addresses }: Props) => {
 
         return (
           <InfoBox key={index}>
-            <NewIcon.Location style={styles.margin} />
+            <Icon.Location style={styles.margin} />
             {isPressable ? (
               <TouchableOpacity onPress={() => addressOnPress(address)}>
                 {innerComponent}

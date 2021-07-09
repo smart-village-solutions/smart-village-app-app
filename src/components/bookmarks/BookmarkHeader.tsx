@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { BookmarkContext } from '../../BookmarkProvider';
-import { colors, NewIcon, normalize } from '../../config';
+import { colors, Icon, normalize } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 
@@ -28,9 +28,9 @@ export const BookmarkHeader = ({ id, suffix, query, style }: Props) => {
       accessibilityHint="Zu der Lesezeichenliste hinzufügen"
     >
       {isBookmarked ? (
-        <NewIcon.HeartFilled color={colors.lightestText} style={{ ...styles.icon, ...style }} />
+        <Icon.HeartFilled color={colors.lightestText} style={{ ...styles.icon, ...style }} />
       ) : (
-        <NewIcon.HeartEmpty color={colors.lightestText} style={{ ...styles.icon, ...style }} />
+        <Icon.HeartEmpty color={colors.lightestText} style={{ ...styles.icon, ...style }} />
       )}
     </TouchableOpacity>
   );

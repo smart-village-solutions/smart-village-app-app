@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ListItem, Overlay } from 'react-native-elements';
 
-import { colors, consts, NewIcon, normalize, texts } from '../config';
+import { colors, consts, Icon, normalize, texts } from '../config';
 
 import { CardListItem } from './CardListItem';
 import { Radiobutton } from './Radiobutton';
@@ -65,7 +65,7 @@ export const SettingsListItem = ({ item, index, section, orientation, dimensions
           backgroundColor: colors.transparent,
           paddingVertical: normalize(12)
         }}
-        rightIcon={<NewIcon.EditSetting size={22} style={styles.rightContentContainer} />}
+        rightIcon={<Icon.EditSetting size={22} style={styles.rightContentContainer} />}
         onPress={() => setIsOverlayVisible(true)}
         delayPressIn={0}
         Component={Touchable}

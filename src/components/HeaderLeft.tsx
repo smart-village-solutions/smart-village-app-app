@@ -2,7 +2,7 @@ import { StackHeaderLeftButtonProps } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, NewIcon, normalize } from '../config';
+import { colors, Icon, normalize } from '../config';
 
 export const HeaderLeft = ({ onPress }: StackHeaderLeftButtonProps) =>
   onPress ? (
@@ -12,7 +12,7 @@ export const HeaderLeft = ({ onPress }: StackHeaderLeftButtonProps) =>
         accessibilityLabel="Zurück Taste"
         accessibilityHint="Navigieren zurück zur vorherigen Seite"
       >
-        <NewIcon.ArrowLeft color={colors.lightestText} style={styles.icon} />
+        <Icon.ArrowLeft color={colors.lightestText} style={styles.icon} />
       </TouchableOpacity>
     </View>
   ) : null;

@@ -3,7 +3,7 @@ import moment from 'moment';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { consts, NewIcon, texts } from '../../config';
+import { consts, Icon, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
@@ -47,7 +47,7 @@ export const EventWidget = ({ text }: WidgetProps) => {
   return (
     <DefaultWidget
       count={eventCount}
-      Icon={NewIcon.Calendar}
+      Icon={Icon.Calendar}
       onPress={onPress}
       text={text ?? texts.widgets.events}
     />

@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { NewIcon, texts } from '../../config';
+import { Icon, texts } from '../../config';
 import { ConstructionSiteContext } from '../../ConstructionSiteProvider';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
@@ -45,7 +45,7 @@ export const ConstructionSiteWidget = ({ text }: WidgetProps) => {
   return (
     <DefaultWidget
       count={constructionSites.length}
-      Icon={NewIcon.ConstructionSite}
+      Icon={Icon.ConstructionSite}
       onPress={onPress}
       text={text ?? texts.widgets.constructionSites}
     />

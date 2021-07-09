@@ -21,7 +21,7 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../components';
-import { colors, consts, NewIcon, normalize, texts } from '../config';
+import { colors, consts, Icon, normalize, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
@@ -84,7 +84,7 @@ export const LunchScreen = ({ navigation, route }) => {
               onPress={onPressPrevious}
               style={styles.left}
             >
-              <NewIcon.ArrowLeft />
+              <Icon.ArrowLeft />
             </TouchableOpacity>
             <BoldText big>{date.format('DD.MM.YYYY')}</BoldText>
             <TouchableOpacity
@@ -92,7 +92,7 @@ export const LunchScreen = ({ navigation, route }) => {
               onPress={onPressNext}
               style={styles.right}
             >
-              <NewIcon.ArrowRight />
+              <Icon.ArrowRight />
             </TouchableOpacity>
           </WrapperRow>
         </Wrapper>

@@ -3,7 +3,7 @@ import moment from 'moment';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { consts, NewIcon, texts } from '../../config';
+import { consts, Icon, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
@@ -41,7 +41,7 @@ export const LunchWidget = ({ text }: WidgetProps) => {
   return (
     <DefaultWidget
       count={data?.[QUERY_TYPES.LUNCHES]?.length}
-      Icon={NewIcon.Lunch}
+      Icon={Icon.Lunch}
       onPress={onPress}
       text={text ?? texts.widgets.lunch}
     />

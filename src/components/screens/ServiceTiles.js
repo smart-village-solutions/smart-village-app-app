@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { normalize } from 'react-native-elements';
 
-import { colors, device, NewIcon } from '../../config';
+import { colors, device, Icon } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
@@ -115,7 +115,7 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
                           >
                             <View>
                               {item.iconName ? (
-                                <NewIcon.NamedIcon
+                                <Icon.NamedIcon
                                   name={item.iconName}
                                   size={30}
                                   style={styles.serviceIcon}

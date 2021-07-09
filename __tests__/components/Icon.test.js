@@ -1,7 +1,7 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import { NewIcon } from '../../src/config';
+import { Icon } from '../../src/config';
 
 describe('Icon', () => {
   const iconStyle = {
@@ -9,23 +9,23 @@ describe('Icon', () => {
   };
 
   it('renders a default Icon', () => {
-    const tree = renderer.create(<NewIcon.Close />).toJSON();
+    const tree = renderer.create(<Icon.EditSetting />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders an Icon with custom style', () => {
-    const tree = renderer.create(<NewIcon.Close style={iconStyle} />).toJSON();
+    const tree = renderer.create(<Icon.EditSetting style={iconStyle} />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders an Icon with custom color', () => {
-    const tree = renderer.create(<NewIcon.Close color="#123456" />).toJSON();
+    const tree = renderer.create(<Icon.EditSetting color="#123456" />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('renders a svg Icon', () => {
     // skipping because of `TypeError: Cannot read property 'push' of null`
-    const tree = renderer.create(<NewIcon.ArrowDown />).toJSON();
+    const tree = renderer.create(<Icon.ArrowDown />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 });

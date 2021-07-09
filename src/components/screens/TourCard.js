@@ -4,7 +4,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon as RNEIcon } from 'react-native-elements';
 
-import { colors, device, NewIcon, normalize, texts } from '../../config';
+import { colors, device, Icon, normalize, texts } from '../../config';
 import { locationLink, locationString, openLink } from '../../helpers';
 import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
@@ -54,7 +54,7 @@ export const TourCard = ({ addresses, lengthKm }) => (
 
             return (
               <InfoBox key={index}>
-                <NewIcon.Location style={styles.margin} />
+                <Icon.Location style={styles.margin} />
                 <View>
                   <RegularText>{kind === 'start' ? texts.tour.start : texts.tour.end}</RegularText>
                   <TouchableOpacity onPress={() => addressOnPress(address)}>

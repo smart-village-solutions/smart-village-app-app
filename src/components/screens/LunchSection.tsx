@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, NewIcon, normalize, texts } from '../../config';
+import { colors, Icon, normalize, texts } from '../../config';
 import { formatAddress, shareMessage } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
@@ -142,7 +142,7 @@ export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
 
         <TouchableOpacity accessibilityLabel="Anbieterinformationen (Taste)" onPress={onPress}>
           <InfoBox style={styles.addressContainer}>
-            <NewIcon.Location style={styles.margin} />
+            <Icon.Location style={styles.margin} />
             <View style={styles.address}>
               <BoldText primary>{name}</BoldText>
               {!!address && <RegularText primary>{address}</RegularText>}

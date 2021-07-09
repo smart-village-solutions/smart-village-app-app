@@ -9,7 +9,7 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../../components';
-import { NewIcon, texts } from '../../config';
+import { Icon, texts } from '../../config';
 
 type Props = {
   navigation: StackNavigationProp<Record<string, { title: string }>>;
@@ -39,17 +39,17 @@ export const OParlOverviewScreen = ({ navigation }: Props) => {
       <ScrollView>
         <WrapperWithOrientation>
           <Tile
-            icon={<NewIcon.OParlCalendar />}
+            icon={<Icon.OParlCalendar />}
             title={overviewTexts.calendar}
             onPress={() => navigation.navigate('OParlCalendar', { title: overviewTexts.calendar })}
           />
           <Tile
-            icon={<NewIcon.OParlPeople />}
+            icon={<Icon.OParlPeople />}
             title={overviewTexts.persons}
             onPress={() => navigation.navigate('OParlPersons', { title: overviewTexts.persons })}
           />
           <Tile
-            icon={<NewIcon.OParlOrganizations />}
+            icon={<Icon.OParlOrganizations />}
             title={overviewTexts.organizations}
             onPress={() =>
               navigation.navigate('OParlOrganizations', { title: overviewTexts.organizations })

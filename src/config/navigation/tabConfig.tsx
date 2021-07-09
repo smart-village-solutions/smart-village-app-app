@@ -4,7 +4,7 @@ import React from 'react';
 import { OrientationAwareIcon } from '../../components';
 import { ScreenName, TabConfig, TabNavigatorConfig } from '../../types';
 import { colors } from '../colors';
-import { NewIcon } from '../Icon';
+import { Icon } from '../Icon';
 import { normalize } from '../normalize';
 import { texts } from '../texts';
 
@@ -24,7 +24,7 @@ const homeTabConfig: TabConfig = {
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.home,
     tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon color={color} Icon={NewIcon.Home} size={normalize(24)} />
+      <OrientationAwareIcon color={color} Icon={Icon.Home} size={normalize(24)} />
     )
   }
 };
@@ -37,7 +37,7 @@ const serviceTabConfig: TabConfig = {
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.service,
     tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon color={color} Icon={NewIcon.Service} size={normalize(24)} />
+      <OrientationAwareIcon color={color} Icon={Icon.Service} size={normalize(24)} />
     )
   }
 };
@@ -52,7 +52,7 @@ const companyTabConfig: TabConfig = {
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={NewIcon.Company}
+        Icon={Icon.Company}
         landscapeStyle={{ marginRight: -normalize(4), marginTop: 0 }}
         size={normalize(26)}
         style={{ marginTop: normalize(3) }}
@@ -71,7 +71,7 @@ const aboutTabConfig: TabConfig = {
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={NewIcon.About}
+        Icon={Icon.About}
         landscapeStyle={{ marginRight: -normalize(6) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}

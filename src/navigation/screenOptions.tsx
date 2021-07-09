@@ -10,7 +10,7 @@ import {
   ShareHeader,
   WrapperRow
 } from '../components';
-import { colors, device, NewIcon, normalize, texts } from '../config';
+import { colors, device, Icon, normalize, texts } from '../config';
 
 type OptionProps = {
   route: RouteProp<Record<string, any | undefined>, string>;
@@ -27,7 +27,7 @@ export const homeScreenOptions = (
         accessibilityLabel="Einstellungen und Lesezeichen (Taste)"
         accessibilityHint="Zu den Einstellungen und Lesezeichen wechseln"
       >
-        <NewIcon.FavSettings
+        <Icon.FavSettings
           color={colors.lightestText}
           style={headerRight ? styles.iconLeft : styles.iconRight}
         />
@@ -62,7 +62,7 @@ export const defaultStackNavigatorScreenOptions = (
         accessibilityLabel="Menü Taste"
         accessibilityHint="Navigiert zum Menü"
       >
-        <NewIcon.DrawerMenu color={colors.lightestText} style={styles.icon} />
+        <Icon.DrawerMenu color={colors.lightestText} style={styles.icon} />
       </TouchableOpacity>
     ),
   headerLeft: HeaderLeft,
@@ -122,7 +122,7 @@ export const screenOptionsWithSettings = (
           accessibilityLabel="Einstellungen (Taste)"
           accessibilityHint="Zu den Einstellungen wechseln"
         >
-          <NewIcon.Settings
+          <Icon.Settings
             color={colors.lightestText}
             style={headerRight ? styles.iconLeft : styles.iconRight}
           />

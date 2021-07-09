@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { NewIcon, normalize } from '../../config';
+import { Icon, normalize } from '../../config';
 import { openLink } from '../../helpers';
 import { WebUrl } from '../../types';
 import { RegularText } from '../Text';
@@ -23,7 +23,7 @@ export const UrlSection = ({ openWebScreen, webUrls }: Props) => (
 
       return (
         <InfoBox key={index}>
-          <NewIcon.Url style={styles.margin} />
+          <Icon.Url style={styles.margin} />
           <TouchableOpacity
             accessibilityLabel={`(Webseite) ${
               description || url

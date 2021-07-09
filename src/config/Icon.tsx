@@ -70,7 +70,7 @@ const NamedIcon = ({
   );
 };
 
-export const NewIcon = {
+export const Icon = {
   About: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-menu' : 'md-menu'} {...props} />
   ),
