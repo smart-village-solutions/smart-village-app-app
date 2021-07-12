@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.0.2]
+
+Centralized icons and fonts. Fixed drawer layout for android devices.
+
+### Changed
+
+- Added a centralized point for icons, to allow for easy switching of icons
+- Specific names for used fonts are now removed from the components
+  - Instead only generic names describing the font weight and style are being used
+  - This allows for more easy switching of fonts
+
 ## [v2.0.1]
 
 Minor changes after navigation rework.
@@ -13,6 +24,7 @@ Minor changes after navigation rework.
 
 - removed navigation config related entries from global settings
 - reworked drawer component title to better respect screen insets on new devices
+
 ## [v2.0.0] :t-rex:
 
 The second major version with configs for navigation and Expo SDK update to 42.0.0
