@@ -156,7 +156,7 @@ export const EventRecord = ({ data, navigation }) => {
         {!!priceInformations && !!priceInformations.length && !!priceInformations[0].description && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.eventRecord.prices} ${a11yText.heading}`}>
+              <Title accessibilityLabel={`(${texts.eventRecord.prices}) ${a11yText.heading}`}>
                 {texts.eventRecord.prices}
               </Title>
             </TitleContainer>
@@ -168,7 +168,7 @@ export const EventRecord = ({ data, navigation }) => {
         {!!description && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.eventRecord.description} ${a11yText.heading}`}>
+              <Title accessibilityLabel={`(${texts.eventRecord.description}) ${a11yText.heading}`}>
                 {texts.eventRecord.description}
               </Title>
             </TitleContainer>

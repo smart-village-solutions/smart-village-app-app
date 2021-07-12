@@ -48,8 +48,8 @@ export const AddressSection = ({ address, addresses }: Props) => {
           <RegularText
             primary
             accessibilityLabel={`${consts.a11yLabel.address} (${address})
-            (${consts.a11yLabel.button})
-            (${consts.a11yLabel.mapHint})`}
+            ${consts.a11yLabel.button}
+            ${consts.a11yLabel.mapHint}`}
           >
             {address}
           </RegularText>

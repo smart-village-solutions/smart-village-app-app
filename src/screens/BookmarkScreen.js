@@ -145,7 +145,7 @@ BookmarkScreen.navigationOptions = ({ navigation, navigationOptions }) => {
       <WrapperRow style={styles.headerRight}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Settings')}
-          accessibilityLabel={a11yText.settings}
+          accessibilityLabel={a11yText.settingsIcon}
           accessibilityHint={a11yText.settingsHint}
         >
           <Icon

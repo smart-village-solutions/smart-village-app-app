@@ -82,7 +82,7 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
         {!!title && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${title} ${a11yText.heading}`}>{title}</Title>
+              <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
           </View>
@@ -98,7 +98,7 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
           <View>
             <TitleContainer>
               <Title
-                accessibilityLabel={`${texts.pointOfInterest.openingTime} ${a11yText.heading}`}
+                accessibilityLabel={`(${texts.pointOfInterest.openingTime}) ${a11yText.heading}`}
               >
                 {texts.pointOfInterest.openingTime}
               </Title>
@@ -111,7 +111,7 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
         {!!priceInformations && !!priceInformations.length && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.pointOfInterest.prices} ${a11yText.heading}`}>
+              <Title accessibilityLabel={`(${texts.pointOfInterest.prices}) ${a11yText.heading}`}>
                 {texts.pointOfInterest.prices}
               </Title>
             </TitleContainer>
@@ -124,7 +124,7 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
           <View>
             <TitleContainer>
               <Title
-                accessibilityLabel={`${texts.pointOfInterest.description} ${a11yText.heading}`}
+                accessibilityLabel={`(${texts.pointOfInterest.description}) ${a11yText.heading}`}
               >
                 {texts.pointOfInterest.description}
               </Title>
@@ -159,7 +159,7 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
         {!hideMap && !!latitude && !!longitude && isConnected && isMainserverUp && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.pointOfInterest.location} ${a11yText.heading}`}>
+              <Title accessibilityLabel={`(${texts.pointOfInterest.location}) ${a11yText.heading}`}>
                 {texts.pointOfInterest.location}
               </Title>
             </TitleContainer>

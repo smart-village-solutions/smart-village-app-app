@@ -59,7 +59,7 @@ export const Service = ({ navigation }) => {
     <View>
       {!!headlineService && (
         <TitleContainer>
-          <Title accessibilityLabel={`${headlineService} ${consts.a11yLabel.heading}`}>
+          <Title accessibilityLabel={`(${headlineService}) ${consts.a11yLabel.heading}`}>
             {headlineService}
           </Title>
         </TitleContainer>
@@ -102,7 +102,7 @@ export const Service = ({ navigation }) => {
                       small
                       lightest
                       center
-                      accessibilityLabel={`${item.title} ${consts.a11yLabel.button}`}
+                      accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
                     >
                       {item.title}
                     </BoldText>

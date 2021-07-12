@@ -33,9 +33,8 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
           <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
             <RegularText
               primary
-              accessibilityLabel={`${consts.a11yLabel.phoneNumber} ${contact.phone}
-            ${consts.a11yLabel.button}`}
-              accessibilityHint={`${consts.a11yLabel.phoneAppHint}`}
+              accessibilityLabel={`${consts.a11yLabel.phoneNumber} (${contact.phone})
+            ${consts.a11yLabel.button} ${consts.a11yLabel.phoneAppHint}`}
             >
               {contact.phone}
             </RegularText>
@@ -50,9 +49,8 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
             <RegularText
               primary
               accessibilityLabel={`
-                ${a11yText.mail} ${contact.email} ${a11yText.button}
+                ${a11yText.mail} (${contact.email}) ${a11yText.button} ${a11yText.mailHint}
               `}
-              accessibilityHint={`${a11yText.mailHint}`}
             >
               {contact.email}
             </RegularText>
@@ -63,7 +61,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
       {!!contact.fax && (
         <InfoBox>
           <RNEIcon name="print" type="material" color={colors.primary} iconStyle={styles.margin} />
-          <RegularText primary accessibilityLabel={`(Fax) ${contact.fax}`}>
+          <RegularText primary accessibilityLabel={`(${a11yText.fax} ${contact.fax}`}>
             {contact.fax}
           </RegularText>
         </InfoBox>

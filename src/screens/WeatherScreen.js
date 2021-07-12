@@ -100,7 +100,7 @@ export const WeatherScreen = () => {
         {!!alerts?.length && (
           <WrapperWithOrientation>
             <TitleContainer
-              accessibilityLabel={`${texts.weather.alertsHeadline} ${consts.a11yLabel.heading}`}
+              accessibilityLabel={`(${texts.weather.alertsHeadline}) ${consts.a11yLabel.heading}`}
             >
               <Title>{texts.weather.alertsHeadline}</Title>
             </TitleContainer>
@@ -120,7 +120,7 @@ export const WeatherScreen = () => {
           <View>
             <WrapperWithOrientation>
               <TitleContainer
-                accessibilityLabel={`${texts.weather.currentHeadline} ${consts.a11yLabel.heading}`}
+                accessibilityLabel={`(${texts.weather.currentHeadline}) ${consts.a11yLabel.heading}`}
               >
                 <Title>{texts.weather.currentHeadline}</Title>
               </TitleContainer>
@@ -137,7 +137,7 @@ export const WeatherScreen = () => {
         {hasDailyWeather(weatherMap) && (
           <WrapperWithOrientation>
             <TitleContainer
-              accessibilityLabel={`${texts.weather.nextDaysHeadline} ${consts.a11yLabel.heading}`}
+              accessibilityLabel={`(${texts.weather.nextDaysHeadline}) ${consts.a11yLabel.heading}`}
             >
               <Title>{texts.weather.nextDaysHeadline}</Title>
             </TitleContainer>

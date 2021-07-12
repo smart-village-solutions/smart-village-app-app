@@ -49,7 +49,7 @@ export class CategoryListItem extends React.PureComponent {
         }
         delayPressIn={0}
         Component={Touchable}
-        accessibilityLabel={`(${title}) ${consts.a11yLabel.poiCount} (${count}) ${consts.a11yLabel.button}`}
+        accessibilityLabel={`(${title}) ${consts.a11yLabel.poiCount} ${count} ${consts.a11yLabel.button}`}
       />
     );
   }

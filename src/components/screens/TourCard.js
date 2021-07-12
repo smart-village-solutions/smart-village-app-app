@@ -24,7 +24,7 @@ const addressOnPress = (address) => {
 export const TourCard = ({ addresses, lengthKm }) => (
   <View>
     <TitleContainer>
-      <Title accessibilityLabel={`${texts.tour.tour} ${consts.a11yLabel.heading}`}>
+      <Title accessibilityLabel={`(${texts.tour.tour}) ${consts.a11yLabel.heading}`}>
         {texts.tour.tour}
       </Title>
     </TitleContainer>

@@ -28,7 +28,7 @@ export const Button = ({ title, onPress, invert }) => {
           styles.containerStyle,
           needLandscapeStyle && styles.containerStyleLandscape
         ]}
-        accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
+        accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
       />
     );
   }
@@ -41,7 +41,7 @@ export const Button = ({ title, onPress, invert }) => {
       containerStyle={[styles.containerStyle, needLandscapeStyle && styles.containerStyleLandscape]}
       ViewComponent={DiagonalGradient}
       useForeground
-      accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
+      accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
     />
   );
 };

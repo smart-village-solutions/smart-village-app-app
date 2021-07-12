@@ -104,11 +104,10 @@ const CategoryEntry = ({
       onPress={onPress}
       delayPressIn={0}
       Component={Touchable}
-      accessibilityLabel={`${categoryName} ${consts.a11yLabel.button}`}
+      accessibilityLabel={`(${categoryName}) ${consts.a11yLabel.button}`}
     />
   );
 };
-
 
 export const WasteReminderSettings = ({
   types,

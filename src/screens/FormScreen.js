@@ -88,7 +88,7 @@ export const FormScreen = () => {
                 <View style={{ padding: normalize(14) }}>
                   <BoldText>Name</BoldText>
                   <TextInput
-                    accessibilityLabel={`${a11yText.textInput} ${name}`}
+                    accessibilityLabel={`${a11yText.textInput} (${name})`}
                     onChangeText={(text) => {
                       setName(text);
                     }}
@@ -97,7 +97,7 @@ export const FormScreen = () => {
                   />
                   <BoldText>E-Mail</BoldText>
                   <TextInput
-                    accessibilityLabel={`${a11yText.textInput} ${email}`}
+                    accessibilityLabel={`${a11yText.textInput} (${email})`}
                     onChangeText={(text) => {
                       setEmail(text);
                     }}
@@ -107,7 +107,7 @@ export const FormScreen = () => {
                   />
                   <BoldText>Telefon</BoldText>
                   <TextInput
-                    accessibilityLabel={`${a11yText.textInput} ${phone}`}
+                    accessibilityLabel={`${a11yText.textInput} (${phone})`}
                     onChangeText={(text) => {
                       setPhone(text);
                     }}
@@ -116,7 +116,7 @@ export const FormScreen = () => {
                   />
                   <BoldText>Ihre Mitteilung</BoldText>
                   <TextInput
-                    accessibilityLabel={`${a11yText.textInput} ${message}`}
+                    accessibilityLabel={`${a11yText.textInput} (${message})`}
                     onChangeText={(text) => {
                       setMessage(text);
                     }}
