@@ -2,10 +2,10 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import { colors, device } from '../config';
 import { DiagonalGradient, SafeAreaViewFlex } from '../components';
+import { colors } from '../config';
+import { getHeaderHeight, statusBarHeight } from '../helpers';
 import { OrientationContext } from '../OrientationProvider';
 
 import DrawerNavigatorItems from './DrawerNavigatorItems';
@@ -41,23 +41,6 @@ export const CustomDrawerContentComponent = ({ navigation, drawerRoutes, state }
   );
 };
 
-export const getHeaderHeight = (orientation) =>
-  // Android always 56
-  // iOS:
-  //   portrait: 44
-  //   landscape: tablet 66 / phone 32
-  Platform.select({
-    android: 56,
-    ios: orientation === 'landscape' ? (!Platform.isPad ? 32 : 66) : 44
-  });
-
-export const statusBarHeight = (orientation) =>
-  device.platform === 'android'
-    ? getStatusBarHeight()
-    : orientation === 'portrait'
-    ? getStatusBarHeight()
-    : 0;
-
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({ orientation }) => {
@@ -65,7 +48,11 @@ const stylesWithProps = ({ orientation }) => {
     header: {
       alignItems: 'flex-end',
       flexDirection: 'row',
-      justifyContent: 'flex-end'
+      justifyContent: 'flex-end',
+      height: Platform.select({
+        android: getHeaderHeight(orientation) + statusBarHeight(orientation),
+        ios: undefined
+      })
     },
     icon: {
       paddingHorizontal: 24,
