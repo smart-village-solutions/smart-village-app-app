@@ -1,6 +1,7 @@
 export * from './Address';
 export * from './ConstructionSite';
 export * from './Contact';
+export * from './GenericItem';
 export * from './GenericType';
 export * from './Navigation';
 export * from './OParlObjectTypes';

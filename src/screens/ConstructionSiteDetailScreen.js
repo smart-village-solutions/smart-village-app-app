@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import React, { useContext } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import React from 'react';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
 import { colors, consts, normalize } from '../config';
 import {
@@ -17,9 +17,9 @@ import {
   WrapperWrap
 } from '../components';
 import { locationIconAnchor, location as locationIcon } from '../icons';
-import { useMatomoTrackScreenView } from '../hooks';
-import { ConstructionSiteContext } from '../ConstructionSiteProvider';
+import { useConstructionSites, useMatomoTrackScreenView } from '../hooks';
 import { momentFormat } from '../helpers';
+import { LoadingSpinner } from '../components/LoadingSpinner';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -39,12 +39,14 @@ const formatDates = (startDate, endDate) => {
   return formattedEndDate ? `${formattedStartDate} - ${formattedEndDate}` : formattedStartDate;
 };
 
+// eslint-disable-next-line complexity
 export const ConstructionSiteDetailScreen = ({ route }) => {
-  const { constructionSites } = useContext(ConstructionSiteContext);
+  const id = route.params?.id;
+  const { constructionSites, loading, refresh, refreshing } = useConstructionSites(id);
 
-  const index = route.params?.index;
+  useMatomoTrackScreenView(`${MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITE_DETAIL} / ${id}`);
 
-  if (typeof index !== 'number') return null;
+  if (!id || !constructionSites.length) return null;
 
   const {
     category,
@@ -58,16 +60,28 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
     restrictions,
     startDate,
     title
-  } = constructionSites[index];
-
-  useMatomoTrackScreenView(`${MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITE_DETAIL} / ${title}`);
+  } = constructionSites[0];
 
   const extendedTitle = (category ? `${category} - ` : '') + title;
   const formattedDates = formatDates(startDate, endDate);
 
+  if (loading && !refreshing) {
+    return <LoadingSpinner loading />;
+  }
+
   return (
     <SafeAreaViewFlex>
-      <ScrollView keyboardShouldPersistTaps="handled">
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={refresh}
+            colors={[colors.accent]}
+            tintColor={colors.accent}
+          />
+        }
+      >
         <WrapperWithOrientation>
           {!!imageUri && (
             <Image source={{ uri: imageUri }} containerStyle={styles.imageContainer} />
@@ -107,7 +121,7 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
             {!!restrictions?.length && (
               <View style={styles.verticalPadding}>
                 <BoldText>Aktuelle Einschränkungen: </BoldText>
-                {restrictions.map((restriction) => (
+                {restrictions.map((restriction, index) => (
                   <RegularText key={`restriction-${index}`}>- {restriction}</RegularText>
                 ))}
               </View>

@@ -1,4 +1,5 @@
 export type ConstructionSite = {
+  id: string;
   category?: string;
   cause?: string;
   description?: string;

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext } from 'react';
-import { FlatList } from 'react-native';
+import React, { useCallback } from 'react';
+import { FlatList, RefreshControl } from 'react-native';
 
 import {
   RegularText,
@@ -9,22 +9,22 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../components';
-import { consts, texts } from '../config';
-import { ConstructionSiteContext } from '../ConstructionSiteProvider';
+import { LoadingSpinner } from '../components/LoadingSpinner';
+import { colors, consts, texts } from '../config';
 import { momentFormat } from '../helpers';
-import { useMatomoTrackScreenView } from '../hooks';
+import { useConstructionSites, useMatomoTrackScreenView } from '../hooks';
 
 const { MATOMO_TRACKING } = consts;
 
 const keyExtractor = (item, index) => index + item.title + item.startDate;
 
 export const ConstructionSiteOverviewScreen = ({ navigation }) => {
-  const { constructionSites } = useContext(ConstructionSiteContext);
+  const { constructionSites, loading, refresh, refreshing } = useConstructionSites(); // TODO: add refetch
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITES);
 
   const renderItem = useCallback(
-    ({ index, item }) => {
+    ({ item }) => {
       const { category, endDate, startDate, title } = item;
 
       const formattedStartDate = momentFormat(startDate);
@@ -36,9 +36,9 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
           : `${formattedStartDate} - ${formattedEndDate}`;
 
       const propItem = {
-        title,
+        title: title,
         subtitle: formattedDates + (category ? ` | ${category}` : ''),
-        params: { index },
+        params: { id: item.id },
         routeName: 'ConstructionSiteDetail'
       };
 
@@ -46,6 +46,10 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
     },
     [navigation]
   );
+
+  if (loading && !refreshing) {
+    return <LoadingSpinner loading />;
+  }
 
   if (!constructionSites.length) {
     return (
@@ -61,7 +65,19 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <FlatList data={constructionSites} keyExtractor={keyExtractor} renderItem={renderItem} />
+      <FlatList
+        data={constructionSites}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={refresh}
+            colors={[colors.accent]}
+            tintColor={colors.accent}
+          />
+        }
+      />
     </SafeAreaViewFlex>
   );
 };
