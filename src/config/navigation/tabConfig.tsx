@@ -1,14 +1,20 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 
-import { TabBarIcon } from '../../components';
-import { home, service } from '../../icons';
+import { OrientationAwareIcon } from '../../components';
 import { ScreenName, TabConfig, TabNavigatorConfig } from '../../types';
 import { colors } from '../colors';
-import { device } from '../device';
+import { Icon } from '../Icon';
 import { normalize } from '../normalize';
 import { texts } from '../texts';
 
 import { defaultStackConfig } from './defaultStackConfig';
+
+type TabBarIconProps = {
+  focused: boolean;
+  color: string;
+  size: number;
+};
 
 const homeTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
@@ -17,8 +23,8 @@ const homeTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.home,
-    tabBarIcon: ({ focused }: { focused: boolean }) => (
-      <TabBarIcon xml={home(focused ? colors.accent : colors.primary)} />
+    tabBarIcon: ({ color }: TabBarIconProps) => (
+      <OrientationAwareIcon color={color} Icon={Icon.Home} size={normalize(24)} />
     )
   }
 };
@@ -30,8 +36,8 @@ const serviceTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.service,
-    tabBarIcon: ({ focused }: { focused: boolean }) => (
-      <TabBarIcon xml={service(focused ? colors.accent : colors.primary)} />
+    tabBarIcon: ({ color }: TabBarIconProps) => (
+      <OrientationAwareIcon color={color} Icon={Icon.Service} size={normalize(24)} />
     )
   }
 };
@@ -43,12 +49,13 @@ const companyTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.company,
-    tabBarIcon: ({ focused }: { focused: boolean }) => (
-      <TabBarIcon
-        name={device.platform === 'ios' ? 'ios-briefcase' : 'md-briefcase'}
-        style={{ marginTop: normalize(3) }}
+    tabBarIcon: ({ color }: TabBarIconProps) => (
+      <OrientationAwareIcon
+        color={color}
+        Icon={Icon.Company}
         landscapeStyle={{ marginRight: -normalize(4), marginTop: 0 }}
-        focused={focused}
+        size={normalize(26)}
+        style={{ marginTop: normalize(3) }}
       />
     )
   }
@@ -61,13 +68,13 @@ const aboutTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.about,
-    tabBarIcon: ({ focused }: { focused: boolean }) => (
-      <TabBarIcon
-        name={device.platform === 'ios' ? 'ios-menu' : 'md-menu'}
+    tabBarIcon: ({ color }: TabBarIconProps) => (
+      <OrientationAwareIcon
+        color={color}
+        Icon={Icon.About}
+        landscapeStyle={{ marginRight: -normalize(6) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
-        landscapeStyle={{ marginRight: -normalize(6) }}
-        focused={focused}
       />
     )
   }

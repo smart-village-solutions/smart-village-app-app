@@ -1,16 +1,14 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
 import React, { memo, NamedExoticComponent, Validator } from 'react';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { StackNavigationProp } from '@react-navigation/stack';
 
-import { colors, normalize } from '../config';
-import { arrowRight } from '../icons';
+import { colors, Icon, normalize } from '../config';
 import { trimNewLines } from '../helpers';
 
-import { Icon } from './Icon';
 import { Image } from './Image';
-import { RegularText, BoldText } from './Text';
+import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
 type ItemData = {
@@ -51,7 +49,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
       bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
       topDivider={topDivider !== undefined ? topDivider : false}
       containerStyle={styles.container}
-      rightIcon={<Icon xml={arrowRight(colors.primary)} />}
+      rightIcon={<Icon.ArrowRight />}
       leftIcon={
         leftImage && !!picture?.url ? (
           <Image

@@ -3,11 +3,10 @@ import moment from 'moment';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { colors, consts, texts } from '../../config';
+import { consts, Icon, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
-import { lunch } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { WidgetProps } from '../../types';
@@ -41,8 +40,8 @@ export const LunchWidget = ({ text }: WidgetProps) => {
 
   return (
     <DefaultWidget
-      icon={lunch(colors.primary)}
       count={data?.[QUERY_TYPES.LUNCHES]?.length}
+      Icon={Icon.Lunch}
       onPress={onPress}
       text={text ?? texts.widgets.lunch}
     />

@@ -4,14 +4,12 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 import {
   BoldText,
-  Icon,
   SafeAreaViewFlex,
   Touchable,
   Wrapper,
   WrapperWithOrientation
 } from '../../components';
-import { colors, texts } from '../../config';
-import { oParlCalendar, oParlOrganizations, oParlPeople } from '../../icons';
+import { Icon, texts } from '../../config';
 
 type Props = {
   navigation: StackNavigationProp<Record<string, { title: string }>>;
@@ -41,17 +39,17 @@ export const OParlOverviewScreen = ({ navigation }: Props) => {
       <ScrollView>
         <WrapperWithOrientation>
           <Tile
-            icon={<Icon xml={oParlCalendar(colors.primary)} />}
+            icon={<Icon.OParlCalendar />}
             title={overviewTexts.calendar}
             onPress={() => navigation.navigate('OParlCalendar', { title: overviewTexts.calendar })}
           />
           <Tile
-            icon={<Icon xml={oParlPeople(colors.primary)} />}
+            icon={<Icon.OParlPeople />}
             title={overviewTexts.persons}
             onPress={() => navigation.navigate('OParlPersons', { title: overviewTexts.persons })}
           />
           <Tile
-            icon={<Icon xml={oParlOrganizations(colors.primary)} />}
+            icon={<Icon.OParlOrganizations />}
             title={overviewTexts.organizations}
             onPress={() =>
               navigation.navigate('OParlOrganizations', { title: overviewTexts.organizations })
