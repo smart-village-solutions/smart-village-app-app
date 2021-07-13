@@ -18,9 +18,9 @@ export const ImagesCarouselItem = memo(
     if (routeName && params) {
       return (
         <TouchableOpacity
-          accessibilityLabel={`
-          (${source.captionText}) ?? ${consts.a11yLabel.imageCarousel} ${consts.a11yLabel.button}
-          `}
+          accessibilityLabel={`${
+            source.captionText ? source.captionText : consts.a11yLabel.imageCarousel
+          } ${consts.a11yLabel.button}`}
           onPress={() => navigation.navigate({ routeName, params })}
           activeOpacity={0.8}
         >

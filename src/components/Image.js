@@ -73,7 +73,9 @@ export const Image = ({
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}
         accessible={!!source?.captionText}
-        accessibilityLabel={`(${source?.captionText}) ${consts.a11yLabel.image}`}
+        accessibilityLabel={`${source.captionText ? source.captionText : ''} ${
+          consts.a11yLabel.image
+        }`}
         resizeMode={resizeMode}
         borderRadius={borderRadius}
       >

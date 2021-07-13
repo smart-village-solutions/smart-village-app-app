@@ -13,7 +13,7 @@ export const SectionHeader = ({ title, onPress }: Props) => {
   const innerComponent = (
     <Title
       accessibilityLabel={`(${title}) ${consts.a11yLabel.heading} ${
-        onPress ? consts.a11yLabel.button : null
+        onPress ? consts.a11yLabel.button : ''
       } `}
     >
       {title}
