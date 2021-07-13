@@ -58,7 +58,7 @@
     "graphql-tag": "2.10.4",
     "lodash": "~4.17.21",
     "matomo-tracker-react-native": "^0.2.2",
-    "moment": "~2.24.0",
+    "moment": "~2.29.1",
     "qs": "^6.7.0",
     "react": "16.13.1",
     "react-apollo": "~3.1.5",
