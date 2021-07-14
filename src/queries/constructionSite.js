@@ -19,6 +19,8 @@ export const GET_CONSTRUCTION_SITES = gql`
         dataType
       }
       locations {
+        id
+        name
         geoLocation {
           latitude
           longitude

@@ -16,6 +16,7 @@ export type GenericItem<T = unknown> = {
   genericType?: string;
   id: string;
   locations?: Array<{
+    name?: string;
     geoLocation?: {
       latitude: number;
       longitude: number;

@@ -38,10 +38,12 @@ const checkConstructionSiteTypes = (item: unknown) => {
   );
 };
 
-export const filterForValidConstructionSites = (json: unknown): ConstructionSite[] => {
-  if (!_isArray(json)) return [];
+export const filterForValidConstructionSites = (
+  parsedGenericItems: unknown
+): ConstructionSite[] => {
+  if (!_isArray(parsedGenericItems)) return [];
 
-  return json.filter((item) => {
+  return parsedGenericItems.filter((item) => {
     if (!item) {
       return false;
     }

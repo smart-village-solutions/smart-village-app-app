@@ -42,7 +42,7 @@ const parseConstructionSite = (
     endDate: constructionSite.dates?.[0]?.dateEnd,
     imageUri: constructionSite.mediaContents?.[0]?.sourceUrl.url,
     location,
-    locationDescription: undefined, // TODO: add location description once it is available
+    locationDescription: constructionSite.locations?.[0].name,
     restrictions: constructionSite.payload.restrictions?.map((value) => value.description)
   };
 };
