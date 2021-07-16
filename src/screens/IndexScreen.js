@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 import { Query } from 'react-apollo';
-import { useMatomo } from 'matomo-tracker-react-native';
 
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
@@ -18,6 +17,7 @@ import {
 } from '../components';
 import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
 import { graphqlFetchPolicy, matomoTrackingString, parseListItemsFromQuery } from '../helpers';
+import { useTrackScreenViewAsync } from '../hooks';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -29,7 +29,7 @@ export const IndexScreen = ({ navigation, route }) => {
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [refreshing, setRefreshing] = useState(false);
   const [showMap, setShowMap] = useState(false);
-  const { trackScreenView } = useMatomo();
+  const trackScreenViewAsync = useTrackScreenViewAsync();
 
   const query = route.params?.query ?? '';
   const title = route.params?.title ?? '';
@@ -111,7 +111,9 @@ export const IndexScreen = ({ navigation, route }) => {
       // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `query`
       //       dependency
       isConnected &&
-        trackScreenView(matomoTrackingString([MATOMO_TRACKING_SCREEN, MATOMO_TRACKING_CATEGORY]));
+        trackScreenViewAsync(
+          matomoTrackingString([MATOMO_TRACKING_SCREEN, MATOMO_TRACKING_CATEGORY])
+        );
     }
   }, [isConnected, query]);
 

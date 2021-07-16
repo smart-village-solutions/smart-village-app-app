@@ -1,11 +1,41 @@
-import { useContext, useEffect } from 'react';
-import { Alert } from 'react-native';
+import Constants from 'expo-constants';
+import * as Localization from 'expo-localization';
 import { useMatomo } from 'matomo-tracker-react-native';
+import { useCallback, useContext, useEffect } from 'react';
+import { Alert } from 'react-native';
 
-import { texts } from '../config';
-import { SettingsContext } from '../SettingsProvider';
-import { NetworkContext } from '../NetworkProvider';
+import appJson from '../../app.json';
+import { device, texts } from '../config';
 import { createMatomoUserId, setMatomoHandledOnStartup, storageHelper } from '../helpers';
+import { NetworkContext } from '../NetworkProvider';
+import { SettingsContext } from '../SettingsProvider';
+
+export const useUserInfoAsync = () =>
+  useCallback(async () => {
+    const ua = await Constants.getWebViewUserAgentAsync();
+    const userInfo = {
+      _cvar: JSON.stringify({ 1: ['App-Version', appJson.expo.version] }),
+      lang: Localization.locale,
+      res: `${device.width}x${device.height}`,
+      ua
+    };
+
+    return userInfo;
+  }, []);
+
+export const useTrackScreenViewAsync = () => {
+  const { trackScreenView } = useMatomo();
+  const userInfoAsync = useUserInfoAsync();
+
+  return useCallback(
+    async (name) => {
+      const userInfo = await userInfoAsync();
+
+      trackScreenView({ name, userInfo });
+    },
+    [userInfoAsync]
+  );
+};
 
 /**
  * Tracks screen view as action with prefixed 'Screen' category on mounting the component, which
@@ -17,10 +47,10 @@ import { createMatomoUserId, setMatomoHandledOnStartup, storageHelper } from '..
  */
 export const useMatomoTrackScreenView = (name) => {
   const { isConnected } = useContext(NetworkContext);
-  const { trackScreenView } = useMatomo();
+  const trackScreenViewAsync = useTrackScreenViewAsync();
 
   useEffect(() => {
-    isConnected && trackScreenView(name);
+    isConnected && trackScreenViewAsync(name);
   }, []);
 };
 

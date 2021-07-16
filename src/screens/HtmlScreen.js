@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
 import { Query } from 'react-apollo';
-import { useMatomo } from 'matomo-tracker-react-native';
 
 import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
@@ -10,7 +9,7 @@ import { colors, consts } from '../config';
 import { Button, HtmlView, SafeAreaViewFlex, Wrapper, WrapperWithOrientation } from '../components';
 import { graphqlFetchPolicy, trimNewLines } from '../helpers';
 import { getQuery } from '../queries';
-import { useRefreshTime } from '../hooks';
+import { useRefreshTime, useTrackScreenViewAsync } from '../hooks';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 
 const { MATOMO_TRACKING } = consts;
@@ -21,7 +20,7 @@ export const HtmlScreen = ({ navigation, route }) => {
   const queryVariables = route.params?.queryVariables ?? {};
   const title = route.params?.title ?? '';
   const [refreshing, setRefreshing] = useState(false);
-  const { trackScreenView } = useMatomo();
+  const trackScreenViewAsync = useTrackScreenViewAsync();
 
   if (!query || !queryVariables?.name) return null;
 
@@ -33,7 +32,7 @@ export const HtmlScreen = ({ navigation, route }) => {
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `title` dependency
   useEffect(() => {
-    isConnected && title && trackScreenView(`${MATOMO_TRACKING.SCREEN_VIEW.HTML} / ${title}`);
+    isConnected && title && trackScreenViewAsync(`${MATOMO_TRACKING.SCREEN_VIEW.HTML} / ${title}`);
   }, [title]);
 
   if (!refreshTime) {

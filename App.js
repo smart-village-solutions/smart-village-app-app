@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import MatomoTracker, { MatomoProvider, useMatomo } from 'matomo-tracker-react-native';
@@ -6,13 +6,21 @@ import MatomoTracker, { MatomoProvider, useMatomo } from 'matomo-tracker-react-n
 import { MainApp } from './src';
 import { fontConfig, namespace, secrets } from './src/config';
 import { matomoSettings } from './src/helpers';
+import { useUserInfoAsync } from './src/hooks';
 
 const AppWithFonts = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
   const { trackAppStart } = useMatomo();
+  const userInfoAsync = useUserInfoAsync();
+
+  const trackAppStartAsync = useCallback(async () => {
+    const userInfo = await userInfoAsync();
+
+    trackAppStart({ userInfo });
+  }, [userInfoAsync]);
 
   useEffect(() => {
-    trackAppStart();
+    trackAppStartAsync();
 
     Font.loadAsync(fontConfig)
       .catch((error) => console.warn('An error occurred with loading the fonts', error))
