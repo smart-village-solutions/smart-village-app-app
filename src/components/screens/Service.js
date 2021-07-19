@@ -1,23 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-apollo';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
+import { colors, device, Icon, normalize, texts } from '../../config';
+import { graphqlFetchPolicy } from '../../helpers';
+import { useRefreshTime } from '../../hooks';
+import { useHomeRefresh } from '../../hooks/HomeRefresh';
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
+import { getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
-import { colors, device, normalize, texts } from '../../config';
 import { DiagonalGradient } from '../DiagonalGradient';
 import { Image } from '../Image';
 import { ServiceBox } from '../ServiceBox';
 import { BoldText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { WrapperWrap } from '../Wrapper';
-import { getQuery, QUERY_TYPES } from '../../queries';
-import { Icon } from '../Icon';
-import { graphqlFetchPolicy } from '../../helpers';
-import { useRefreshTime } from '../../hooks';
-import { useHomeRefresh } from '../../hooks/HomeRefresh';
 
 export const Service = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -82,11 +81,11 @@ export const Service = ({ navigation }) => {
                 >
                   <View>
                     {item.iconName ? (
-                      <Icon
+                      <Icon.NamedIcon
+                        color={colors.lightestText}
                         name={item.iconName}
                         size={30}
                         style={styles.serviceIcon}
-                        iconColor={colors.lightestText}
                       />
                     ) : (
                       <Image

@@ -2,11 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ListItem } from 'react-native-elements';
 
-import { colors, normalize } from '../config';
-import { arrowRight } from '../icons';
+import { colors, Icon, normalize } from '../config';
 
-import { Icon } from './Icon';
-import { RegularText, BoldText } from './Text';
+import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
 export class CategoryListItem extends React.PureComponent {
@@ -41,7 +39,7 @@ export class CategoryListItem extends React.PureComponent {
           backgroundColor: colors.transparent,
           paddingVertical: normalize(12)
         }}
-        rightIcon={<Icon xml={arrowRight(colors.primary)} />}
+        rightIcon={<Icon.ArrowRight />}
         onPress={() =>
           navigation.navigate({
             name,

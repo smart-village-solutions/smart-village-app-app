@@ -7,12 +7,10 @@ import {
   BookmarkHeader,
   DiagonalGradient,
   HeaderLeft,
-  Icon,
   ShareHeader,
   WrapperRow
 } from '../components';
-import { colors, device, normalize, texts } from '../config';
-import { drawerMenu, favSettings } from '../icons';
+import { colors, device, Icon, normalize, texts } from '../config';
 
 type OptionProps = {
   route: RouteProp<Record<string, any | undefined>, string>;
@@ -29,9 +27,9 @@ export const homeScreenOptions = (
         accessibilityLabel="Einstellungen und Lesezeichen (Taste)"
         accessibilityHint="Zu den Einstellungen und Lesezeichen wechseln"
       >
-        <Icon
+        <Icon.FavSettings
+          color={colors.lightestText}
           style={headerRight ? styles.iconLeft : styles.iconRight}
-          xml={favSettings(colors.lightestText)}
         />
       </TouchableOpacity>
     </WrapperRow>
@@ -47,7 +45,7 @@ export const defaultStackNavigatorScreenOptions = (
   headerBackground: () => <DiagonalGradient />,
   headerTitleStyle: {
     color: colors.lightestText,
-    fontFamily: device.platform === 'ios' ? 'titillium-web-bold' : 'titillium-web-regular',
+    fontFamily: device.platform === 'ios' ? 'bold' : 'regular',
     fontSize: normalize(20),
     fontWeight: '400',
     lineHeight: normalize(29)
@@ -64,7 +62,7 @@ export const defaultStackNavigatorScreenOptions = (
         accessibilityLabel="Menü Taste"
         accessibilityHint="Navigiert zum Menü"
       >
-        <Icon xml={drawerMenu(colors.lightestText)} style={styles.icon} />
+        <Icon.DrawerMenu color={colors.lightestText} style={styles.icon} />
       </TouchableOpacity>
     ),
   headerLeft: HeaderLeft,
@@ -124,9 +122,8 @@ export const screenOptionsWithSettings = (
           accessibilityLabel="Einstellungen (Taste)"
           accessibilityHint="Zu den Einstellungen wechseln"
         >
-          <Icon
-            name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'}
-            iconColor={colors.lightestText}
+          <Icon.Settings
+            color={colors.lightestText}
             style={headerRight ? styles.iconLeft : styles.iconRight}
           />
         </TouchableOpacity>

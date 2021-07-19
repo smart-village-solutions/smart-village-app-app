@@ -4,15 +4,13 @@ import { StyleSheet, View } from 'react-native';
 import Dropdown from 'react-native-modal-dropdown';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, device, normalize } from '../config';
-import { arrowDown, arrowUp } from '../icons';
-import { OrientationContext } from '../OrientationProvider';
+import { colors, device, Icon, normalize } from '../config';
 import { baseFontStyle } from '../config/styles/baseFontStyle';
+import { OrientationContext } from '../OrientationProvider';
 
-import { RegularText } from './Text';
-import { Wrapper, WrapperRow, WrapperHorizontal } from './Wrapper';
-import { Icon } from './Icon';
 import { Label } from './Label';
+import { RegularText } from './Text';
+import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
 
 export const DropdownSelect = ({
   data,
@@ -93,7 +91,7 @@ export const DropdownSelect = ({
       >
         <WrapperRow style={styles.dropdownTextWrapper}>
           <RegularText>{selectedData.value}</RegularText>
-          <Icon xml={arrow == 'down' ? arrowDown(colors.primary) : arrowUp(colors.primary)} />
+          {arrow === 'down' ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
         </WrapperRow>
       </Dropdown>
     </View>

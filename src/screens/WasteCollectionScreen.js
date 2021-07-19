@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
       : {},
   autoCompleteInput: {
     color: colors.darkText,
-    fontFamily: 'titillium-web-regular',
+    fontFamily: 'regular',
     fontSize: normalize(16),
     padding: normalize(8)
   },

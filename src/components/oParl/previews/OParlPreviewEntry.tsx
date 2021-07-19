@@ -3,11 +3,9 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, normalize } from '../../../config';
-import { arrowRight } from '../../../icons';
+import { colors, Icon, normalize } from '../../../config';
 import { OParlObjectType } from '../../../types';
 import { HtmlView } from '../../HtmlView';
-import { Icon } from '../../Icon';
 import { Touchable } from '../../Touchable';
 
 type Props = {
@@ -33,7 +31,7 @@ export const OParlPreviewEntry = ({
       bottomDivider={!topDivider}
       topDivider={topDivider}
       containerStyle={styles.container}
-      rightIcon={navigation && <Icon xml={arrowRight(colors.primary)} />}
+      rightIcon={navigation && <Icon.ArrowRight />}
       onPress={() => navigation?.push('OParlDetail', { id, type, title: screenTitle ?? title })}
       disabled={!navigation}
       delayPressIn={0}
