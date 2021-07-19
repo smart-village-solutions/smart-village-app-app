@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.1.0] :rocket:
+
+This minor version upgrade introduces the survey feature.
+
+### Added
+
+- added screens for survey
+- survey feature has been implemented with german and polish texts
+
 ## [v2.0.2]
 
 Centralized icons and fonts. Fixed drawer layout for android devices.
