@@ -12,6 +12,8 @@ export * from './IndexScreen';
 export * from './LunchScreen';
 export * from './OParl';
 export * from './SettingsScreen';
+export * from './SurveyDetailScreen';
+export * from './SurveyOverviewScreen';
 export * from './TilesScreen';
 export * from './WasteCollectionScreen';
 export * from './WasteReminderScreen';

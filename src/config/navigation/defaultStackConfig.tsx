@@ -26,6 +26,8 @@ import {
   OParlPersonsScreen,
   OParlSearchScreen,
   SettingsScreen,
+  SurveyDetailScreen,
+  SurveyOverviewScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
@@ -168,6 +170,16 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Settings,
       screenComponent: SettingsScreen,
       screenOptions: { title: texts.screenTitles.settings }
+    },
+    {
+      routeName: ScreenName.SurveyDetail,
+      screenComponent: SurveyDetailScreen,
+      screenOptions: { title: texts.screenTitles.survey }
+    },
+    {
+      routeName: ScreenName.SurveyOverview,
+      screenComponent: SurveyOverviewScreen,
+      screenOptions: { title: texts.screenTitles.surveys }
     },
     {
       routeName: ScreenName.WasteCollection,

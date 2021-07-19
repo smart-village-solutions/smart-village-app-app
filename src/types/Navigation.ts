@@ -27,6 +27,8 @@ export enum ScreenName {
   OParlSearch = 'OParlSearch',
   Service = 'Service',
   Settings = 'Settings',
+  SurveyDetail = 'SurveyDetail',
+  SurveyOverview = 'SurveyOverview',
   WasteCollection = 'WasteCollection',
   WasteReminder = 'WasteReminder',
   Weather = 'Weather',

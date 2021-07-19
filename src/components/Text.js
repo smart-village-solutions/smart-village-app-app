@@ -31,6 +31,12 @@ export const RegularText = styled(Text)`
   line-height: ${normalize(22)};
 
   ${(props) =>
+    props.italic &&
+    css`
+      font-family: italic;
+    `};
+
+  ${(props) =>
     props.small &&
     css`
       font-size: ${normalize(14)};
@@ -81,6 +87,12 @@ export const RegularText = styled(Text)`
     `};
 
   ${(props) =>
+    props.error &&
+    css`
+      color: ${colors.error};
+    `};
+
+  ${(props) =>
     props.center &&
     css`
       text-align: center;
@@ -95,6 +107,11 @@ export const RegularText = styled(Text)`
 
 export const BoldText = styled(RegularText)`
   font-family: bold;
+  ${(props) =>
+    props.italic &&
+    css`
+      font-family: bold-italic;
+    `};
 `;
 
 Text.propTypes = {

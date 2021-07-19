@@ -372,6 +372,8 @@ export const texts = {
     about: appJson.expo.name,
     constructionSite: 'Baustelle',
     settings: 'Einstellungen',
+    survey: 'Umfrage',
+    surveys: 'Umfragen',
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
   },
@@ -400,6 +402,58 @@ export const texts = {
       textList: 'Textliste'
     },
     pushNotifications: 'Push-Benachrichtigungen'
+  },
+  survey: {
+    archive: 'Umfrage-Archiv',
+    answerLabelPrefix: {
+      de: 'Antwort',
+      pl: 'Odpowiedź'
+    },
+    changeAnswer: {
+      de: 'Antwort ändern',
+      pl: 'Zmień odpowiedź'
+    },
+    comments: {
+      de: 'Kommentare',
+      pl: 'Komentarze'
+    },
+    commentSubmissionAlert: {
+      de: 'Ihr Kommentar wird nun redaktionell geprüft und schnellstmöglich veröffentlicht.',
+      pl:
+        'Twój komentarz zostanie teraz sprawdzony redakcyjnie i opublikowany tak szybko, jak to możliwe.'
+    },
+    commentSubmissionAlertTitle: 'Ihr Kommentar wird nun redaktionell geprüft',
+    dateEnd: {
+      de: 'Abschluss der Umfrage:',
+      pl: 'Wypełnienie ankiety:'
+    },
+    dateStart: {
+      de: 'Start der Umfrage:',
+      pl: 'Rozpocznij ankietę:'
+    },
+    errors: {
+      submissionBody:
+        'Beim Abgeben der Stimme ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      submissionTitle: 'Fehler'
+    },
+    hint: {
+      de:
+        'Die Umfrageergebnisse werden erst angezeigt, wenn Sie Ihre Stimme abgegeben haben oder die Umfrage beendet wurde.',
+      pl:
+        'Wyniki ankiety nie będą wyświetlane, dopóki nie oddasz głosu lub ankieta nie zostanie zakończona.'
+    },
+    result: {
+      de: 'Ergebnis',
+      pl: 'Wynik'
+    },
+    submitAnswer: {
+      de: 'Antwort senden',
+      pl: 'Wyślij odpowiedź'
+    },
+    submitComment: {
+      de: 'Kommentar senden',
+      pl: 'Wyślij komentarz'
+    }
   },
   tabBarLabel: {
     home: 'Übersicht',

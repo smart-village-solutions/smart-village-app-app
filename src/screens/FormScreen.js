@@ -1,14 +1,18 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
-import { Alert, KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { Mutation } from 'react-apollo';
 
 import { createQuery, QUERY_TYPES } from '../queries';
-import { colors, consts, device, normalize } from '../config';
-import { BoldText, Button, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
-import { OrientationContext } from '../OrientationProvider';
-import { getHeaderHeight, statusBarHeight } from '../navigation/CustomDrawerContentComponent';
+import { colors, consts, normalize } from '../config';
+import {
+  BoldText,
+  Button,
+  DefaultKeyboardAvoidingView,
+  SafeAreaViewFlex,
+  WrapperWithOrientation
+} from '../components';
 import { useMatomoTrackScreenView } from '../hooks';
 
 const { MATOMO_TRACKING } = consts;
@@ -19,7 +23,6 @@ export const FormScreen = () => {
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [consent, setConsent] = useState(false);
-  const { orientation } = useContext(OrientationContext);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.FEEDBACK);
 
@@ -66,14 +69,7 @@ export const FormScreen = () => {
   // TODO: texts are hardcoded because they will come from the API later somewhen
   return (
     <SafeAreaViewFlex>
-      <KeyboardAvoidingView
-        enabled={device.platform === 'ios'}
-        behavior={device.platform === 'ios' && 'padding'}
-        keyboardVerticalOffset={
-          device.platform === 'ios' && getHeaderHeight(orientation) + statusBarHeight(orientation)
-        }
-        style={styles.flex}
-      >
+      <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
           <WrapperWithOrientation>
             <Mutation mutation={createQuery(QUERY_TYPES.APP_USER_CONTENT)}>
@@ -128,15 +124,12 @@ export const FormScreen = () => {
             </Mutation>
           </WrapperWithOrientation>
         </ScrollView>
-      </KeyboardAvoidingView>
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };
 
 const styles = StyleSheet.create({
-  flex: {
-    flex: 1
-  },
   inputField: {
     borderColor: colors.shadow,
     borderWidth: 1,

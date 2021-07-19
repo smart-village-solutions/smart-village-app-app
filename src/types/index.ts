@@ -4,6 +4,7 @@ export * from './Contact';
 export * from './GenericType';
 export * from './Navigation';
 export * from './OParlObjectTypes';
+export * from './Survey';
 export * from './WasteCalendar';
 export * from './WeatherData';
 export * from './WebUrl';
