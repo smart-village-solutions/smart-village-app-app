@@ -10440,10 +10440,10 @@ react-native-render-html-table-bridge@~0.3.1:
     ramda "^0.26.1"
     stringify-entities "^2.0.0"
 
-react-native-render-html@4.2.3:
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/react-native-render-html/-/react-native-render-html-4.2.3.tgz#b1568cd727638f477b2238cc872e2bd675a2aa18"
-  integrity sha512-0zYXG+5RrvVbXwubIyMtbEmyKnY1TfQwRbJSSow/FITWyKvye/3DsLqvQNbkyqWhvNdofBqxGvyoM4Lf50imbg==
+react-native-render-html@4.2.5:
+  version "4.2.5"
+  resolved "https://registry.yarnpkg.com/react-native-render-html/-/react-native-render-html-4.2.5.tgz#6ca8419dab83357a886aba12db5bdf246eddb026"
+  integrity sha512-R8U+1loapq/dNRb6Vq1U1KFFwxMMsaew0Tm44p0SYZ9mITQJf8Gt4kCPXNmTWTF24tgWC2j6jWM1kqS0Xp1zUA==
   dependencies:
     buffer "^4.5.1"
     events "^1.1.0"

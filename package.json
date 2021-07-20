@@ -72,7 +72,7 @@
     "react-native-get-random-values": "~1.7.0",
     "react-native-modal-dropdown": "https://github.com/donni106/react-native-modal-dropdown#feature/search-options",
     "react-native-reanimated": "~2.2.0",
-    "react-native-render-html": "4.2.3",
+    "react-native-render-html": "4.2.5",
     "react-native-render-html-table-bridge": "~0.3.1",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
