@@ -19,8 +19,7 @@ const { MATOMO_TRACKING } = consts;
 const keyExtractor = (item, index) => index + item.title + item.startDate;
 
 export const ConstructionSiteOverviewScreen = ({ navigation }) => {
-  const { constructionSites, loading, refresh, refreshing } = useConstructionSites(); // TODO: add refetch
-
+  const { constructionSites, loading, refresh, refreshing } = useConstructionSites();
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITES);
 
   const renderItem = useCallback(
