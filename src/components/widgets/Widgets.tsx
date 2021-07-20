@@ -6,6 +6,7 @@ import { WrapperRow } from '../Wrapper';
 import { ConstructionSiteWidget } from './ConstructionSiteWidget';
 import { EventWidget } from './EventWidget';
 import { LunchWidget } from './LunchWidget';
+import { SurveyWidget } from './SurveyWidget';
 import { WeatherWidget } from './WeatherWidget';
 
 type WidgetConfig =
@@ -25,6 +26,7 @@ const EXISTING_WIDGETS: {
   constructionSite: ConstructionSiteWidget,
   event: EventWidget,
   lunch: LunchWidget,
+  survey: SurveyWidget,
   weather: WeatherWidget
 };
 

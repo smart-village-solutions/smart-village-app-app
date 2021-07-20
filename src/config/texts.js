@@ -503,6 +503,7 @@ export const texts = {
     constructionSites: 'Baustellen',
     events: 'Events',
     lunch: 'Gastro',
+    surveys: 'Umfragen',
     weather: 'Wetter'
   }
 };

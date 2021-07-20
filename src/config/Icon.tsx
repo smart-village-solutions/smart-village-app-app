@@ -120,5 +120,6 @@ export const Icon = {
     ) : (
       <SvgIcon xml={share} {...props} />
     ),
+  Surveys: (props: IconProps) => <NamedIcon name="stats-chart-outline" {...props} />,
   Url: (props: IconProps) => <SvgIcon xml={url} {...props} />
 };
