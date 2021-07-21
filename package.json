@@ -78,7 +78,7 @@
     "react-native-screens": "~3.4.0",
     "react-native-snap-carousel": "~3.9.0",
     "react-native-svg": "12.1.1",
-    "react-native-webview": "11.6.2",
+    "react-native-webview": "11.6.4",
     "react-native-webview-leaflet": "https://github.com/digorath/react-native-webview-leaflet#c7ca70134638330d1008d5c8a8c6abe4162bf29b",
     "styled-components": "~4.4.1"
   },
