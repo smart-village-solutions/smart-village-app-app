@@ -60,7 +60,7 @@
     "matomo-tracker-react-native": "^0.2.2",
     "moment": "~2.29.1",
     "qs": "^6.10.1",
-    "react": "16.13.1",
+    "react": "16.14.0",
     "react-apollo": "~3.1.5",
     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
     "react-native-autocomplete-input": "^4.2.0",
