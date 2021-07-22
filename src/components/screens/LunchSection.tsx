@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { colors, Icon, normalize, texts } from '../../config';
+import { colors, consts, Icon, normalize, texts } from '../../config';
 import { formatAddress, shareMessage } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
@@ -75,10 +75,12 @@ const parseAttributes = (input?: string) => {
 const LunchOffer = ({ name, price }: { name: string; price: string }) => (
   <View style={styles.container}>
     <View style={styles.nameContainer}>
-      <RegularText accessibilityLabel={`Mittagstisch (Gerichtname): ${name}`}>{name}</RegularText>
+      <RegularText accessibilityLabel={`${consts.a11yLabel.lunch} (${name})`}>{name}</RegularText>
     </View>
     <View style={styles.priceContainer}>
-      <RegularText accessibilityLabel={`Preis (${name}): ${price}`}>{price}</RegularText>
+      <RegularText accessibilityLabel={`${consts.a11yLabel.price} (${name}): ${price}`}>
+        {price}
+      </RegularText>
     </View>
   </View>
 );
@@ -140,7 +142,7 @@ export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
       <Wrapper>
         {!!logo && <Logo source={{ uri: logo }} />}
 
-        <TouchableOpacity accessibilityLabel="Anbieterinformationen (Taste)" onPress={onPress}>
+        <TouchableOpacity accessibilityLabel={consts.a11yLabel.infoProvider} onPress={onPress}>
           <InfoBox style={styles.addressContainer}>
             <Icon.Location style={styles.margin} />
             <View style={styles.address}>

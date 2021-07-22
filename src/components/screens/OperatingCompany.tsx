@@ -1,7 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 
-import { device } from '../../config';
+import { device, consts } from '../../config';
 import { Address, Contact, WebUrl } from '../../types';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
@@ -28,7 +28,7 @@ export const OperatingCompany = ({ title, logo, operatingCompany, openWebScreen 
   return (
     <View>
       <TitleContainer>
-        <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
+        <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>{title}</Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
       <Wrapper>

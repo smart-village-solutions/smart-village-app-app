@@ -23,7 +23,7 @@ import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Radiobutton } from '../Radiobutton';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
-import { colors, device, texts } from '../../config';
+import { colors, consts, device, texts } from '../../config';
 import { ReminderSettings, WasteTypeData } from '../../types';
 import { Button } from '../Button';
 import { areValidReminderSettings, parseReminderSettings } from '../../jsonValidation';
@@ -105,7 +105,7 @@ const CategoryEntry = ({
       onPress={onPress}
       delayPressIn={0}
       Component={Touchable}
-      accessibilityLabel={`${categoryName} (Taste)`}
+      accessibilityLabel={`(${categoryName}) ${consts.a11yLabel.button}`}
     />
   );
 };

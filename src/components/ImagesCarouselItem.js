@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { TouchableOpacity } from 'react-native';
 
+import { consts } from '../config';
+
 import { Image } from './Image';
 
 /**
@@ -16,7 +18,13 @@ export const ImagesCarouselItem = memo(
 
     if (name && params) {
       return (
-        <TouchableOpacity onPress={() => navigation.navigate({ name, params })} activeOpacity={0.8}>
+        <TouchableOpacity
+          accessibilityLabel={`${
+            source.captionText ? source.captionText : consts.a11yLabel.imageCarousel
+          } ${consts.a11yLabel.button}`}
+          onPress={() => navigation.navigate({ name, params })}
+          activeOpacity={0.8}
+        >
           <Image {...{ source, message, containerStyle, aspectRatio }} />
         </TouchableOpacity>
       );
@@ -36,3 +44,4 @@ ImagesCarouselItem.propTypes = {
   aspectRatio: PropTypes.object,
   refreshInterval: PropTypes.number
 };
+//Fix:Accessibility

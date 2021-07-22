@@ -2,15 +2,15 @@ import { StackHeaderLeftButtonProps } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, Icon, normalize } from '../config';
+import { colors, consts, Icon, normalize } from '../config';
 
 export const HeaderLeft = ({ onPress }: StackHeaderLeftButtonProps) =>
   onPress ? (
     <View>
       <TouchableOpacity
         onPress={onPress}
-        accessibilityLabel="Zurück Taste"
-        accessibilityHint="Navigieren zurück zur vorherigen Seite"
+        accessibilityLabel={consts.a11yLabel.backIcon}
+        accessibilityHint={consts.a11yLabel.backIconHint}
       >
         <Icon.ArrowLeft color={colors.lightestText} style={styles.icon} />
       </TouchableOpacity>

@@ -66,6 +66,7 @@ export const FormScreen = () => {
     }
   };
 
+  const a11yText = consts.a11yLabel;
   // TODO: texts are hardcoded because they will come from the API later somewhen
   return (
     <SafeAreaViewFlex>
@@ -77,6 +78,7 @@ export const FormScreen = () => {
                 <View style={{ padding: normalize(14) }}>
                   <BoldText>Name</BoldText>
                   <TextInput
+                    accessibilityLabel={`${a11yText.textInput} (${name})`}
                     onChangeText={(text) => {
                       setName(text);
                     }}
@@ -85,6 +87,7 @@ export const FormScreen = () => {
                   />
                   <BoldText>E-Mail</BoldText>
                   <TextInput
+                    accessibilityLabel={`${a11yText.textInput} (${email})`}
                     onChangeText={(text) => {
                       setEmail(text);
                     }}
@@ -94,6 +97,7 @@ export const FormScreen = () => {
                   />
                   <BoldText>Telefon</BoldText>
                   <TextInput
+                    accessibilityLabel={`${a11yText.textInput} (${phone})`}
                     onChangeText={(text) => {
                       setPhone(text);
                     }}
@@ -102,6 +106,7 @@ export const FormScreen = () => {
                   />
                   <BoldText>Ihre Mitteilung</BoldText>
                   <TextInput
+                    accessibilityLabel={`${a11yText.textInput} (${message})`}
                     onChangeText={(text) => {
                       setMessage(text);
                     }}
@@ -111,9 +116,11 @@ export const FormScreen = () => {
                     textAlignVertical="top"
                   />
                   <CheckBox
+                    accessibilityRole="checkbox"
                     checked={consent}
                     onPress={() => setConsent(!consent)}
                     title="Ich bin mit dem Speichern meiner Daten einverstanden."
+                    uncheckedColor={colors.darkText}
                     checkedColor={colors.accent}
                     containerStyle={styles.checkboxContainerStyle}
                     textStyle={styles.checkboxTextStyle}
@@ -133,7 +140,7 @@ const styles = StyleSheet.create({
   inputField: {
     borderColor: colors.shadow,
     borderWidth: 1,
-    height: normalize(40),
+    height: normalize(44),
     marginBottom: normalize(30),
     paddingHorizontal: normalize(10)
   },

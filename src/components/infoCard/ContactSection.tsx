@@ -2,13 +2,15 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon as RNEIcon } from 'react-native-elements';
 
-import { colors, Icon, normalize } from '../../config';
+import { colors, consts, Icon, normalize } from '../../config';
 import { openLink } from '../../helpers';
 import { Contact } from '../../types';
 import { RegularText } from '../Text';
 import { InfoBox } from '../Wrapper';
 
 const ContactView = ({ contact }: { contact?: Contact }) => {
+  const a11yText = consts.a11yLabel;
+
   if (!contact) {
     return null;
   }
@@ -29,7 +31,8 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
           <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
             <RegularText
               primary
-              accessibilityLabel={`(Telefonnummer) ${contact.phone} (Taste) (Wechselt zur Telefon-App)`}
+              accessibilityLabel={`${consts.a11yLabel.phoneNumber} (${contact.phone})
+            ${consts.a11yLabel.button} ${consts.a11yLabel.phoneAppHint}`}
             >
               {contact.phone}
             </RegularText>
@@ -43,7 +46,9 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
           <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
             <RegularText
               primary
-              accessibilityLabel={`(E-Mail) ${contact.email} (Taste) (Wechselt zur E-Mail-App)`}
+              accessibilityLabel={`
+                ${a11yText.mail} (${contact.email}) ${a11yText.button} ${a11yText.mailHint}
+              `}
             >
               {contact.email}
             </RegularText>
@@ -54,7 +59,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
       {!!contact.fax && (
         <InfoBox>
           <RNEIcon name="print" type="material" color={colors.primary} iconStyle={styles.margin} />
-          <RegularText primary accessibilityLabel={`(Fax) ${contact.fax}`}>
+          <RegularText primary accessibilityLabel={`(${a11yText.fax} ${contact.fax}`}>
             {contact.fax}
           </RegularText>
         </InfoBox>

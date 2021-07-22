@@ -29,7 +29,7 @@ export const Button = ({ title, onPress, invert, disabled }) => {
       containerStyle={[styles.containerStyle, needLandscapeStyle && styles.containerStyleLandscape]}
       ViewComponent={invert || disabled ? undefined : DiagonalGradient}
       useForeground={!invert}
-      accessibilityLabel={`${title} (Taste)`}
+      accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
       disabled={disabled}
     />
   );

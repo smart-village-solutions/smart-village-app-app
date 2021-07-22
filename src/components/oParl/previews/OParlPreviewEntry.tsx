@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, Icon, normalize } from '../../../config';
+import { colors, consts, Icon, normalize } from '../../../config';
 import { OParlObjectType } from '../../../types';
 import { HtmlView } from '../../HtmlView';
 import { Touchable } from '../../Touchable';
@@ -36,7 +36,7 @@ export const OParlPreviewEntry = ({
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}
-      accessibilityLabel={`${title} (Taste)`}
+      accessibilityLabel={`(${title}) ${consts.a11yLabel.button} `}
     />
   );
 };

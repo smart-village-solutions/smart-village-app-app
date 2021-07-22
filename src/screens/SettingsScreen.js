@@ -29,7 +29,7 @@ const renderSectionHeader = ({ section: { title } }) =>
   !!title && (
     <View>
       <TitleContainer>
-        <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
+        <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>{title}</Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
     </View>

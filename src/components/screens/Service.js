@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, device, Icon, normalize, texts } from '../../config';
+import { colors, consts, device, Icon, normalize, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
@@ -58,7 +58,9 @@ export const Service = ({ navigation }) => {
     <View>
       {!!headlineService && (
         <TitleContainer>
-          <Title accessibilityLabel={`${headlineService} (Überschrift)`}>{headlineService}</Title>
+          <Title accessibilityLabel={`(${headlineService}) ${consts.a11yLabel.heading}`}>
+            {headlineService}
+          </Title>
         </TitleContainer>
       )}
       {!!headlineService && device.platform === 'ios' && <TitleShadow />}
@@ -95,7 +97,12 @@ export const Service = ({ navigation }) => {
                         resizeMode="contain"
                       />
                     )}
-                    <BoldText small lightest center accessibilityLabel={`${item.title} (Taste)`}>
+                    <BoldText
+                      small
+                      lightest
+                      center
+                      accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
+                    >
                       {item.title}
                     </BoldText>
                   </View>

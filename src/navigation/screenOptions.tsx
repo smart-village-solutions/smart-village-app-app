@@ -10,12 +10,14 @@ import {
   ShareHeader,
   WrapperRow
 } from '../components';
-import { colors, device, Icon, normalize, texts } from '../config';
+import { colors, consts, device, Icon, normalize, texts } from '../config';
 
 type OptionProps = {
   route: RouteProp<Record<string, any | undefined>, string>;
   navigation: any;
 };
+
+const a11yText = consts.a11yLabel;
 
 export const homeScreenOptions = (
   headerRight: boolean
@@ -24,8 +26,8 @@ export const homeScreenOptions = (
     <WrapperRow>
       <TouchableOpacity
         onPress={() => navigation.navigate('Bookmarks', { title: texts.bookmarks.bookmarks })}
-        accessibilityLabel="Einstellungen und Lesezeichen (Taste)"
-        accessibilityHint="Zu den Einstellungen und Lesezeichen wechseln"
+        accessibilityLabel={a11yText.settingsBookmarksIcon}
+        accessibilityHint={a11yText.settingsBookmarksHint}
       >
         <Icon.FavSettings
           color={colors.lightestText}
@@ -59,8 +61,8 @@ export const defaultStackNavigatorScreenOptions = (
     headerRight && (
       <TouchableOpacity
         onPress={() => navigation.openDrawer()}
-        accessibilityLabel="Menü Taste"
-        accessibilityHint="Navigiert zum Menü"
+        accessibilityLabel={a11yText.openMenuIcon}
+        accessibilityHint={a11yText.openMenuHint}
       >
         <Icon.DrawerMenu color={colors.lightestText} style={styles.icon} />
       </TouchableOpacity>
@@ -119,8 +121,8 @@ export const screenOptionsWithSettings = (
       <WrapperRow style={styles.headerRight}>
         <TouchableOpacity
           onPress={() => navigation.navigate('Settings')}
-          accessibilityLabel="Einstellungen (Taste)"
-          accessibilityHint="Zu den Einstellungen wechseln"
+          accessibilityLabel={a11yText.settingsIcon}
+          accessibilityHint={a11yText.settingsIconHint}
         >
           <Icon.Settings
             color={colors.lightestText}

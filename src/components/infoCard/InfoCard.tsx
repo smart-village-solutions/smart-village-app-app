@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Icon as RNEIcon } from 'react-native-elements';
 
-import { colors, normalize } from '../../config';
+import { colors, consts, normalize } from '../../config';
 import { Address, Contact, WebUrl } from '../../types';
 import { RegularText } from '../Text';
 import { InfoBox } from '../Wrapper';
@@ -73,7 +73,7 @@ export const InfoCard = ({
     {!!category && !!category.name && (
       <InfoBox>
         <RNEIcon name="list" type="material" color={colors.primary} iconStyle={styles.margin} />
-        <RegularText accessibilityLabel={`(Kategorie) ${category.name}`}>
+        <RegularText accessibilityLabel={`${consts.a11yLabel.category} (${category.name})`}>
           {category.name}
         </RegularText>
       </InfoBox>

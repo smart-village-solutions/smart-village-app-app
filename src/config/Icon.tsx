@@ -40,7 +40,19 @@ export type IconProps = {
 };
 
 const IconSet = Ionicons;
-const hitSlops = { top: 12, bottom: 12 };
+
+const getHitSlops = (size: number) => {
+  const hitSlop = (44 - size) / 2;
+
+  return hitSlop > 0
+    ? {
+        top: hitSlop,
+        bottom: hitSlop,
+        left: hitSlop,
+        right: hitSlop
+      }
+    : undefined;
+};
 
 const SvgIcon = ({
   color = colors.primary,
@@ -50,7 +62,7 @@ const SvgIcon = ({
   xml
 }: IconProps & { xml: (color: string) => string }) => {
   return (
-    <View style={style} hitSlop={hitSlops}>
+    <View style={style} hitSlop={getHitSlops(size)}>
       <SvgXml xml={xml(color)} width={size} height={size} style={iconStyle} />
     </View>
   );
@@ -64,7 +76,7 @@ const NamedIcon = ({
   style
 }: IconProps & { name: ComponentProps<typeof IconSet>['name'] }) => {
   return (
-    <View style={style} hitSlop={hitSlops}>
+    <View style={style} hitSlop={getHitSlops(size)}>
       <IconSet name={name} size={size} color={color} style={iconStyle} />
     </View>
   );

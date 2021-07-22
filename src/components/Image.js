@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { CacheManager } from 'react-native-expo-image-cache';
 import { Image as RNEImage } from 'react-native-elements';
 
-import { colors } from '../config';
+import { consts, colors } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 import { SettingsContext } from '../SettingsProvider';
 import { useInterval } from '../hooks';
@@ -74,7 +74,9 @@ export const Image = ({
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}
         accessible={!!source?.captionText}
-        accessibilityLabel={source?.captionText}
+        accessibilityLabel={`${source.captionText ? source.captionText : ''} ${
+          consts.a11yLabel.image
+        }`}
         resizeMode={resizeMode}
         borderRadius={borderRadius}
       >

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, Icon, normalize } from '../config';
+import { colors, consts, Icon, normalize } from '../config';
 import { openShare } from '../helpers';
 
 type Props = {
@@ -23,8 +23,8 @@ export const ShareHeader = ({ headerRight, shareContent }: Props) => {
     !!shareContent && (
       <TouchableOpacity
         onPress={() => openShare(shareContent)}
-        accessibilityLabel="Teilen Taste"
-        accessibilityHint="Inhalte auf der Seite teilen"
+        accessibilityLabel={consts.a11yLabel.shareIcon}
+        accessibilityHint={consts.a11yLabel.shareHint}
       >
         <Icon.Share
           color={colors.lightestText}

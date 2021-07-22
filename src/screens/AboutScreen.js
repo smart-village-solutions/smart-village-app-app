@@ -82,7 +82,7 @@ export const AboutScreen = ({ navigation }) => {
             <>
               {!!headlineAbout && (
                 <TitleContainer>
-                  <Title accessibilityLabel={`${headlineAbout} (Überschrift)`}>
+                  <Title accessibilityLabel={`(${headlineAbout}) ${consts.a11yLabel.heading}`}>
                     {headlineAbout}
                   </Title>
                 </TitleContainer>

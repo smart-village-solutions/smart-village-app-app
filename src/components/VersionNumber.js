@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 
 import appJson from '../../app.json';
-import { colors, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
 
 import { RegularText } from './Text.js';
 import { Wrapper } from './Wrapper.js';
@@ -13,7 +13,7 @@ export const VersionNumber = () => {
       <RegularText
         small
         style={styles.version}
-        accessibilityLabel={`App-Version: ${appJson.expo.version}`}
+        accessibilityLabel={`${consts.a11yLabel.appVersion} ${appJson.expo.version}`}
       >
         Version: {appJson.expo.version}
       </RegularText>

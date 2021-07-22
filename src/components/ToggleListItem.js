@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, normalize } from '../config';
+import { colors, consts, normalize } from '../config';
 
 import { Switch } from './Switch';
 import { BoldText } from './Text';
@@ -57,7 +57,7 @@ export const ToggleListItem = ({ item, index, section }) => {
       onPress={onPress}
       delayPressIn={0}
       Component={Touchable}
-      accessibilityLabel={`${title} (Taste)`}
+      accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
     />
   );
 };

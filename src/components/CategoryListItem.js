@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ListItem } from 'react-native-elements';
 
-import { colors, Icon, normalize } from '../config';
+import { colors, consts, Icon, normalize } from '../config';
 
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
@@ -22,7 +22,6 @@ export class CategoryListItem extends React.PureComponent {
     } = item;
 
     const count = pointsOfInterestCount > 0 ? pointsOfInterestCount : toursCount;
-
     return (
       <ListItem
         title={noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
@@ -48,7 +47,7 @@ export class CategoryListItem extends React.PureComponent {
         }
         delayPressIn={0}
         Component={Touchable}
-        accessibilityLabel={`${title} (Anzahl verfügbarer Einträge: ${count}) (Taste)`}
+        accessibilityLabel={`(${title}) ${consts.a11yLabel.poiCount} ${count} ${consts.a11yLabel.button}`}
       />
     );
   }

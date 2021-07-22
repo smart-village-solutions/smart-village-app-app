@@ -56,7 +56,7 @@ export const Tour = ({ data, route }) => {
   );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
-
+  const a11yText = consts.a11yLabel;
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
@@ -65,7 +65,7 @@ export const Tour = ({ data, route }) => {
         {!!title && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
+              <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
           </View>
@@ -82,7 +82,7 @@ export const Tour = ({ data, route }) => {
         {!!description && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.tour.description} (Überschrift)`}>
+              <Title accessibilityLabel={`(${texts.tour.description}) ${a11yText.heading}`}>
                 {texts.tour.description}
               </Title>
             </TitleContainer>

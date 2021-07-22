@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { normalize } from 'react-native-elements';
 
-import { colors, device, Icon } from '../../config';
+import { colors, consts, device, Icon } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
@@ -82,7 +82,9 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
             <>
               {!!title && (
                 <TitleContainer>
-                  <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
+                  <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>
+                    {title}
+                  </Title>
                 </TitleContainer>
               )}
               {!!title && device.platform === 'ios' && <TitleShadow />}
@@ -132,7 +134,7 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
                                 small
                                 primary
                                 center
-                                accessibilityLabel={`${item.title} (Taste)`}
+                                accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
                               >
                                 {item.title}
                               </BoldText>

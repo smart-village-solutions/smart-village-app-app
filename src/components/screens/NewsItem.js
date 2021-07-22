@@ -54,6 +54,7 @@ export const NewsItem = ({ data, route }) => {
 
   const businessAccount = dataProvider?.dataType === 'business_account';
 
+  const a11yText = consts.a11yLabel;
   return (
     <View>
       {/* the images from the first content block will be present in the main image carousel */}
@@ -63,7 +64,7 @@ export const NewsItem = ({ data, route }) => {
         {!!title && !!link ? (
           <TitleContainer>
             <Touchable onPress={openWebScreen}>
-              <Title accessibilityLabel={`${trimNewLines(title)} (Überschrift)`}>
+              <Title accessibilityLabel={`${trimNewLines(title)} ${a11yText.heading}`}>
                 {trimNewLines(title)}
               </Title>
             </Touchable>
@@ -71,7 +72,7 @@ export const NewsItem = ({ data, route }) => {
         ) : (
           !!title && (
             <TitleContainer>
-              <Title accessibilityLabel={`${trimNewLines(title)} (Überschrift)`}>
+              <Title accessibilityLabel={`${trimNewLines(title)} ${a11yText.heading}`}>
                 {trimNewLines(title)}
               </Title>
             </TitleContainer>

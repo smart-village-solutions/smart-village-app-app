@@ -3,7 +3,7 @@ import React from 'react';
 import { SectionList, View } from 'react-native';
 import _filter from 'lodash/filter';
 
-import { device, texts } from '../config';
+import { device, consts, texts } from '../config';
 
 import { RegularText } from './Text';
 import { Title, TitleContainer, TitleShadow } from './Title';
@@ -19,7 +19,7 @@ export class CategoryList extends React.PureComponent {
     return (
       <View>
         <TitleContainer>
-          <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
+          <Title accessibilityLabel={`${title} ${consts.a11yLabel.heading}`}>{title}</Title>
         </TitleContainer>
         {device.platform === 'ios' && <TitleShadow />}
       </View>

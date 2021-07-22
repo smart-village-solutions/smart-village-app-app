@@ -65,7 +65,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
-
+  const a11yText = consts.a11yLabel;
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
@@ -74,7 +74,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         {!!title && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${title} (Überschrift)`}>{title}</Title>
+              <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
           </View>
@@ -89,7 +89,9 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         {!!openingHours && !!openingHours.length && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.pointOfInterest.openingTime} (Überschrift)`}>
+              <Title
+                accessibilityLabel={`(${texts.pointOfInterest.openingTime}) ${a11yText.heading}`}
+              >
                 {texts.pointOfInterest.openingTime}
               </Title>
             </TitleContainer>
@@ -101,7 +103,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         {!!priceInformations && !!priceInformations.length && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.pointOfInterest.prices} (Überschrift)`}>
+              <Title accessibilityLabel={`(${texts.pointOfInterest.prices}) ${a11yText.heading}`}>
                 {texts.pointOfInterest.prices}
               </Title>
             </TitleContainer>
@@ -113,7 +115,9 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         {!!description && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.pointOfInterest.description} (Überschrift)`}>
+              <Title
+                accessibilityLabel={`(${texts.pointOfInterest.description}) ${a11yText.heading}`}
+              >
                 {texts.pointOfInterest.description}
               </Title>
             </TitleContainer>
@@ -147,7 +151,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         {!hideMap && !!latitude && !!longitude && isConnected && isMainserverUp && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`${texts.pointOfInterest.location} (Überschrift)`}>
+              <Title accessibilityLabel={`(${texts.pointOfInterest.location}) ${a11yText.heading}`}>
                 {texts.pointOfInterest.location}
               </Title>
             </TitleContainer>
