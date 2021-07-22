@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { normalize } from '../../config';
 
+import { normalize } from '../../config';
 import { WasteTypeData } from '../../types';
 import { RegularText } from '../Text';
 import { WrapperHorizontal, WrapperRow, WrapperWrap } from '../Wrapper';

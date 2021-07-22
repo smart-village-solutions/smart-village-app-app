@@ -1,10 +1,11 @@
 import { Alert } from 'react-native';
-import * as Permissions from 'expo-permissions';
+import { PermissionStatus } from 'expo-permissions';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
 import { addToStore, readFromStore } from '../helpers';
 import { colors, device, texts } from '../config';
+
 import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandling';
 
 export const getInAppPermission = async (): Promise<boolean> => {
@@ -63,16 +64,16 @@ export const handleSystemPermissions = async (): Promise<boolean> => {
   // Push notifications do not work properly with simulators/emulators
   if (!Constants.isDevice) return false;
 
-  const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
 
   let finalStatus = existingStatus;
 
-  if (existingStatus === Permissions.PermissionStatus.UNDETERMINED) {
-    const { status: askedStatus } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+  if (existingStatus === PermissionStatus.UNDETERMINED) {
+    const { status: askedStatus } = await Notifications.requestPermissionsAsync();
     finalStatus = askedStatus;
   }
 
-  return finalStatus === Permissions.PermissionStatus.GRANTED;
+  return finalStatus === PermissionStatus.GRANTED;
 };
 
 export const updatePushToken = async () => {

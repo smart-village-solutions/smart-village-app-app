@@ -1,10 +1,11 @@
 import React, { useCallback } from 'react';
-import { NavigationScreenProp } from 'react-navigation';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import { texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { OrganizationData } from '../../types';
 import { WrapperHorizontal } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import { FormattedLocation } from './previews';
 import {
@@ -16,7 +17,7 @@ import {
 
 type Props = {
   data: OrganizationData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const organizationTexts = texts.oparl.organization;

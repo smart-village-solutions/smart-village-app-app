@@ -1,18 +1,20 @@
+import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { colors, texts } from '../../config';
+import { Icon, texts } from '../../config';
 import { ConstructionSiteContext } from '../../ConstructionSiteProvider';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
-import { constructionSite } from '../../icons';
 import { filterForValidConstructionSites } from '../../jsonValidation';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { WidgetProps } from '../../types';
+
 import { DefaultWidget } from './DefaultWidget';
 
-export const ConstructionSiteWidget = ({ navigation, text }: WidgetProps) => {
+export const ConstructionSiteWidget = ({ text }: WidgetProps) => {
+  const navigation = useNavigation();
   const { constructionSites, setConstructionSites } = useContext(ConstructionSiteContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
@@ -42,8 +44,8 @@ export const ConstructionSiteWidget = ({ navigation, text }: WidgetProps) => {
 
   return (
     <DefaultWidget
-      icon={constructionSite(colors.primary)}
       count={constructionSites.length}
+      Icon={Icon.ConstructionSite}
       onPress={onPress}
       text={text ?? texts.widgets.constructionSites}
     />

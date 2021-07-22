@@ -1,17 +1,15 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
 import React, { memo, NamedExoticComponent, Validator } from 'react';
 import { StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, normalize } from '../config';
-import { arrowRight } from '../icons';
-import { Icon } from './Icon';
-import { Image } from './Image';
-
-import { RegularText, BoldText } from './Text';
-import { Touchable } from './Touchable';
+import { colors, consts, Icon, normalize } from '../config';
 import { trimNewLines } from '../helpers';
-import { NavigationScreenProp } from 'react-navigation';
+
+import { Image } from './Image';
+import { BoldText, RegularText } from './Text';
+import { Touchable } from './Touchable';
 
 type ItemData = {
   routeName: string;
@@ -26,7 +24,7 @@ type ItemData = {
 type Props = {
   item: ItemData;
   leftImage?: boolean | undefined;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<Record<string, any>>;
   noSubtitle?: boolean | undefined;
 };
 
@@ -37,10 +35,10 @@ export const TextListItem: NamedExoticComponent<Props> & {
 } = memo<{
   item: ItemData;
   leftImage?: boolean;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<Record<string, any>>;
   noSubtitle?: boolean;
 }>(({ navigation, item, noSubtitle, leftImage }) => {
-  const { routeName, params, subtitle, title, bottomDivider, topDivider, picture } = item;
+  const { routeName: name, params, subtitle, title, bottomDivider, topDivider, picture } = item;
 
   const titleText = <BoldText>{trimNewLines(title)}</BoldText>;
 
@@ -51,7 +49,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
       bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
       topDivider={topDivider !== undefined ? topDivider : false}
       containerStyle={styles.container}
-      rightIcon={<Icon xml={arrowRight(colors.primary)} />}
+      rightIcon={<Icon.ArrowRight />}
       leftIcon={
         leftImage && !!picture?.url ? (
           <Image
@@ -61,7 +59,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
           />
         ) : undefined
       }
-      onPress={() => navigation && navigation.push(routeName, params)}
+      onPress={() => navigation && navigation.push(name, params)}
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}

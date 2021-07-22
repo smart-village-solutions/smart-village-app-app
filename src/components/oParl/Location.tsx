@@ -1,7 +1,7 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import { isString } from 'lodash';
 import React from 'react';
 import { MapMarker } from 'react-native-webview-leaflet';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { colors, texts } from '../../config';
 import { location, locationIconAnchor } from '../../icons';
@@ -9,6 +9,7 @@ import { isFeature, isFeatureCollection, isMultiPoint, isPoint } from '../../jso
 import { LocationData } from '../../types';
 import { WebViewMap } from '../map';
 import { WrapperHorizontal } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import {
   KeywordSection,
@@ -19,7 +20,7 @@ import {
 
 type Props = {
   data: LocationData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const locationTexts = texts.oparl.location;

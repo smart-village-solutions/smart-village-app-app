@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { containsHtml, trimNewLines } from '../helpers';
+
 import { Button } from './Button';
 import { HtmlView } from './HtmlView';
 import { ImageSection } from './ImageSection';
@@ -31,7 +32,7 @@ export const StorySection = ({ contentBlock, index, openWebScreen, settings }) =
                   : `<p>${contentBlock.intro}</p>`
               }</div>`
             )}
-            tagsStyles={{ div: { fontFamily: 'titillium-web-bold' } }}
+            tagsStyles={{ div: { fontFamily: 'bold' } }}
             openWebScreen={openWebScreen}
           />
         </WrapperHorizontal>

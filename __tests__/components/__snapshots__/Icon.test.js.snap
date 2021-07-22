@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Icon renders a default Icon 1`] = `
+<View
+  hitSlop={
+    Object {
+      "bottom": 12,
+      "top": 12,
+    }
+  }
+>
+  <Text />
+</View>
+`;
+
+exports[`Icon renders a svg Icon 1`] = `
+<View
+  hitSlop={
+    Object {
+      "bottom": 12,
+      "top": 12,
+    }
+  }
+>
+  <RNSVGSvgView
+    align="xMidYMid"
+    bbHeight={26.880000000000003}
+    bbWidth={26.880000000000003}
+    focusable={false}
+    height={26.880000000000003}
+    meetOrSlice={0}
+    minX={0}
+    minY={0}
+    style={
+      Array [
+        Object {
+          "backgroundColor": "transparent",
+          "borderWidth": 0,
+        },
+        Object {
+          "flex": 0,
+          "height": 26,
+          "width": 26,
+        },
+      ]
+    }
+    vbHeight={24}
+    vbWidth={24}
+    version={1.1}
+    width={26.880000000000003}
+    xml="
+  <?xml version=\\"1.0\\" encoding=\\"UTF-8\\"?>
+  <svg width=\\"24px\\" height=\\"24px\\" viewBox=\\"0 0 24 24\\" version=\\"1.1\\" xmlns=\\"http://www.w3.org/2000/svg\\" xmlns:xlink=\\"http://www.w3.org/1999/xlink\\">
+    <g stroke=\\"none\\" stroke-width=\\"1\\" fill=\\"none\\" fill-rule=\\"evenodd\\">
+      <polygon points=\\"17.333 8 11.999 13.999 6.665 8 4 8 11.999 17 19.999 8\\" fill=\\"rgb(16, 120, 33)\\"></polygon>
+    </g>
+  </svg>
+"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlnsXlink="http://www.w3.org/1999/xlink"
+  >
+    <RNSVGGroup>
+      <RNSVGGroup
+        fill={null}
+        fillRule={0}
+        propList={
+          Array [
+            "fill",
+            "fillRule",
+            "stroke",
+            "strokeWidth",
+          ]
+        }
+        stroke={null}
+        strokeWidth={1}
+      >
+        <RNSVGPath
+          d="M17.333 8 11.999 13.999 6.665 8 4 8 11.999 17 19.999 8z"
+          fill={4279269409}
+          propList={
+            Array [
+              "fill",
+            ]
+          }
+        />
+      </RNSVGGroup>
+    </RNSVGGroup>
+  </RNSVGSvgView>
+</View>
+`;
+
+exports[`Icon renders an Icon with custom color 1`] = `
+<View
+  hitSlop={
+    Object {
+      "bottom": 12,
+      "top": 12,
+    }
+  }
+>
+  <Text />
+</View>
+`;
+
+exports[`Icon renders an Icon with custom style 1`] = `
+<View
+  hitSlop={
+    Object {
+      "bottom": 12,
+      "top": 12,
+    }
+  }
+  style={
+    Object {
+      "style": [MockFunction],
+    }
+  }
+>
+  <Text />
+</View>
+`;

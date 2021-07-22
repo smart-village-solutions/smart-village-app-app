@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 
 import { consts, texts } from '../config';
 import { matomoTrackingString, momentFormat } from '../helpers';
-import { useMatomoTrackScreenView } from '../hooks';
+import { useMatomoTrackScreenView, useOpenWebScreen } from '../hooks';
 import { GenericType } from '../types';
+
 import { DataProviderButton } from './DataProviderButton';
 import { ImageSection } from './ImageSection';
 import { InfoCard } from './infoCard';
@@ -21,7 +22,7 @@ const { MATOMO_TRACKING } = consts;
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
 // eslint-disable-next-line complexity
-export const Offer = ({ data, navigation }) => {
+export const Offer = ({ data, route }) => {
   const {
     companies,
     contacts,
@@ -46,23 +47,12 @@ export const Offer = ({ data, navigation }) => {
   );
 
   const link = sourceUrl?.url;
-  const rootRouteName = navigation.getParam('rootRouteName', '');
-  const headerTitle = navigation.getParam('title', '');
+  const rootRouteName = route.params?.rootRouteName ?? '';
+  const headerTitle = route.params?.title ?? '';
   const dataProviderLogo = dataProvider?.logo?.url;
 
   // action to open source urls
-  const openWebScreen = useCallback(
-    (webUrl) =>
-      navigation.navigate({
-        routeName: 'Web',
-        params: {
-          title: headerTitle,
-          webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
-          rootRouteName
-        }
-      }),
-    [headerTitle, link, navigation, rootRouteName]
-  );
+  const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
 
   const logo = mediaContents?.find((mediaContent) => mediaContent.contentType === 'logo')?.sourceUrl
     ?.url;
@@ -126,9 +116,7 @@ export const Offer = ({ data, navigation }) => {
           operatingCompany={operatingCompany}
           openWebScreen={openWebScreen}
         />
-        {!!businessAccount && (
-          <DataProviderButton dataProvider={dataProvider} navigation={navigation} />
-        )}
+        {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
       </WrapperWithOrientation>
     </View>
   );
@@ -136,5 +124,6 @@ export const Offer = ({ data, navigation }) => {
 
 Offer.propTypes = {
   data: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

@@ -3,8 +3,9 @@ import React, { useContext, useState } from 'react';
 import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 
 import { colors, consts, normalize } from '../config';
-import { CardListItem } from './CardListItem';
 import { OrientationContext } from '../OrientationProvider';
+
+import { CardListItem } from './CardListItem';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 

@@ -11,15 +11,16 @@ import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
-import { PriceCard } from './PriceCard';
-import { OpeningTimesCard } from './OpeningTimesCard';
 import { matomoTrackingString, trimNewLines } from '../../helpers';
-import { useMatomoTrackScreenView } from '../../hooks';
+import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { TMBNotice } from '../TMB/Notice';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
-import { OperatingCompany } from './OperatingCompany';
 import { DataProviderButton } from '../DataProviderButton';
+
+import { OperatingCompany } from './OperatingCompany';
+import { OpeningTimesCard } from './OpeningTimesCard';
+import { PriceCard } from './PriceCard';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
 // thx to: https://stackoverflow.com/a/55780430
@@ -35,7 +36,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const EventRecord = ({ data, navigation }) => {
+export const EventRecord = ({ data, route }) => {
   const {
     addresses,
     category,
@@ -51,18 +52,12 @@ export const EventRecord = ({ data, navigation }) => {
     webUrls
   } = data;
   const link = webUrls && webUrls.length && webUrls[0].url;
-  const rootRouteName = navigation.getParam('rootRouteName', '');
-  const headerTitle = navigation.getParam('title', '');
+  const rootRouteName = route.params?.rootRouteName ?? '';
+  const headerTitle = route.params?.title ?? '';
+
   // action to open source urls
-  const openWebScreen = (webUrl) =>
-    navigation.navigate({
-      routeName: 'Web',
-      params: {
-        title: headerTitle,
-        webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
-        rootRouteName
-      }
-    });
+  const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
+
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
 
@@ -189,9 +184,7 @@ export const EventRecord = ({ data, navigation }) => {
 
         <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
-        {!!businessAccount && (
-          <DataProviderButton dataProvider={dataProvider} navigation={navigation} />
-        )}
+        {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
       </WrapperWithOrientation>
     </View>
   );
@@ -207,5 +200,6 @@ const styles = StyleSheet.create({
 
 EventRecord.propTypes = {
   data: PropTypes.object.isRequired,
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  route: PropTypes.object.isRequired
 };

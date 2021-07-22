@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+
 import { agendaItemPreviewEntries, filePreviewEntries, meetingPreviewEntries } from './fragments';
 
 export const meetingQuery = [
@@ -57,6 +58,7 @@ export const meetingQuery = [
             deleted
 
             organization {
+              id: externalId
               name
               shortName
             }

@@ -1,9 +1,10 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { QueryHookOptions, useQuery } from 'react-apollo';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { useHomeRefresh } from '../hooks/HomeRefresh';
 import { getQuery } from '../queries';
+
 import { DataListSection } from './DataListSection';
 
 type Props = {
@@ -18,7 +19,7 @@ type Props = {
     | 'standby'
     | 'cache-and-network';
   navigate: () => void;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
   query: string;
   queryVariables: QueryHookOptions;
 };

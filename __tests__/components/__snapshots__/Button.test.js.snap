@@ -1,0 +1,143 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button renders a button with Outline style 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "borderRadius": 3,
+      "justifyContent": "center",
+      "marginBottom": 23.520000000000003,
+    }
+  }
+>
+  <View
+    accessibilityLabel="title (Taste)"
+    accessible={true}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "opacity": 1,
+      }
+    }
+  >
+    <View
+      style={
+        Object {
+          "alignItems": "center",
+          "backgroundColor": "transparent",
+          "borderColor": "rgb(16, 120, 33)",
+          "borderRadius": 3,
+          "borderStyle": "solid",
+          "borderWidth": 2,
+          "flexDirection": "row",
+          "justifyContent": "center",
+          "padding": 8,
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "color": "rgb(16, 120, 33)",
+            "fontFamily": "bold",
+            "fontSize": 18,
+            "paddingBottom": 1,
+            "paddingHorizontal": 15.680000000000001,
+            "paddingTop": 2,
+            "textAlign": "center",
+          }
+        }
+      >
+        title
+      </Text>
+    </View>
+  </View>
+</View>
+`;
+
+exports[`Button renders a default button 1`] = `
+<View
+  style={
+    Object {
+      "alignItems": "center",
+      "borderRadius": 3,
+      "justifyContent": "center",
+      "marginBottom": 23.520000000000003,
+    }
+  }
+>
+  <View
+    accessibilityLabel="title (Taste)"
+    accessible={true}
+    focusable={true}
+    onClick={[Function]}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
+    style={
+      Object {
+        "opacity": 1,
+      }
+    }
+  >
+    <ViewManagerAdapter_ExpoLinearGradient
+      proxiedProperties={
+        Object {
+          "colors": Array [
+            4279269409,
+            4278798396,
+          ],
+          "endPoint": Array [
+            1,
+            1,
+          ],
+          "locations": undefined,
+          "startPoint": Array [
+            0,
+            0,
+          ],
+        }
+      }
+      style={
+        Object {
+          "alignItems": "center",
+          "backgroundColor": "#2089dc",
+          "borderColor": "#2089dc",
+          "borderRadius": 3,
+          "borderWidth": 0,
+          "flexDirection": "row",
+          "justifyContent": "center",
+          "padding": 8,
+        }
+      }
+    >
+      <Text
+        style={
+          Object {
+            "color": "#FFFFFF",
+            "fontFamily": "bold",
+            "fontSize": 18,
+            "paddingBottom": 1,
+            "paddingHorizontal": 15.680000000000001,
+            "paddingTop": 2,
+            "textAlign": "center",
+          }
+        }
+      >
+        title
+      </Text>
+    </ViewManagerAdapter_ExpoLinearGradient>
+  </View>
+</View>
+`;

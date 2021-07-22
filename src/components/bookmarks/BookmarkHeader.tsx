@@ -1,12 +1,10 @@
 import React, { useCallback, useContext } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { BookmarkContext } from '../../BookmarkProvider';
 
-import { colors, consts, normalize } from '../../config';
+import { BookmarkContext } from '../../BookmarkProvider';
+import { colors, consts, Icon, normalize } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
-import { heartEmpty, heartFilled } from '../../icons';
 import { QUERY_TYPES } from '../../queries';
-import { Icon } from '../Icon';
 
 type Props = {
   id: string;
@@ -30,11 +28,11 @@ export const BookmarkHeader = ({ id, suffix, query, style }: Props) => {
       accessibilityLabel={a11yText.bookmarkList}
       accessibilityHint={a11yText.bookmarkListHint}
     >
-      <Icon
-        size={normalize(22)}
-        xml={isBookmarked ? heartFilled(colors.lightestText) : heartEmpty(colors.lightestText)}
-        style={{ ...styles.icon, ...style }}
-      />
+      {isBookmarked ? (
+        <Icon.HeartFilled color={colors.lightestText} style={{ ...styles.icon, ...style }} />
+      ) : (
+        <Icon.HeartEmpty color={colors.lightestText} style={{ ...styles.icon, ...style }} />
+      )}
     </TouchableOpacity>
   );
 };

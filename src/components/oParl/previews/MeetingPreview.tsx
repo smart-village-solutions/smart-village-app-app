@@ -1,5 +1,5 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
@@ -8,7 +8,7 @@ import { TextListItem } from '../../TextListItem';
 
 type Props = {
   data: MeetingPreviewData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 export const MeetingPreview = ({ data, navigation }: Props) => {

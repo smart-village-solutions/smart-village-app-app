@@ -16,7 +16,6 @@ import { Calendar } from 'react-native-calendars';
 
 import {
   Button,
-  HeaderLeft,
   LoadingContainer,
   NoTouchDay,
   RegularText,
@@ -310,7 +309,7 @@ const styles = StyleSheet.create({
       : {},
   autoCompleteInput: {
     color: colors.darkText,
-    fontFamily: 'titillium-web-regular',
+    fontFamily: 'regular',
     fontSize: normalize(16),
     padding: normalize(8)
   },
@@ -324,12 +323,6 @@ const styles = StyleSheet.create({
         }
       : {}
 });
-
-WasteCollectionScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
 
 WasteCollectionScreen.propTypes = {
   navigation: PropTypes.object.isRequired

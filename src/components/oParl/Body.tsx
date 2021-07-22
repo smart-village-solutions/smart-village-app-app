@@ -1,6 +1,6 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
@@ -9,6 +9,7 @@ import { PreviewSection } from '../PreviewSection';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { WrapperHorizontal } from '../Wrapper';
+
 import { FormattedLocation } from './previews';
 import { Row, SimpleRow } from './Row';
 import {
@@ -21,7 +22,7 @@ import {
 
 type Props = {
   data: BodyData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const { body: bodyTexts } = texts.oparl;

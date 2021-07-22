@@ -1,11 +1,12 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { formatSize, momentFormat } from '../../helpers';
 import { FileData } from '../../types';
 import { SectionHeader } from '../SectionHeader';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import {
   KeywordSection,
@@ -16,7 +17,7 @@ import {
 
 type Props = {
   data: FileData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const fileTexts = texts.oparl.file;

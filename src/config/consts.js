@@ -40,10 +40,6 @@ export const consts = {
     website: '(Webseite)',
     webViewHint: '(Öffnet Webseite in der aktuellen App)'
   },
-
-  DRAWER: 'drawer',
-  TABS: 'tabs',
-
   POLL_INTERVALS: {
     WEATHER: 3600000
   },

@@ -1,34 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, AsyncStorage, StatusBar } from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
-import * as SecureStore from 'expo-secure-store';
-import * as ScreenOrientation from 'expo-screen-orientation';
-import { createAppContainer, createDrawerNavigator } from 'react-navigation';
-import { ApolloProvider } from 'react-apollo';
-import { ApolloClient } from 'apollo-client';
-import { ApolloLink } from 'apollo-link';
-import { createHttpLink } from 'apollo-link-http';
-import { setContext } from 'apollo-link-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { persistCache } from 'apollo-cache-persist';
-import _reduce from 'lodash/reduce';
+import { ApolloClient } from 'apollo-client';
+import { ApolloLink } from 'apollo-link';
+import { setContext } from 'apollo-link-context';
+import { createHttpLink } from 'apollo-link-http';
+import * as ScreenOrientation from 'expo-screen-orientation';
+import * as SecureStore from 'expo-secure-store';
+import * as SplashScreen from 'expo-splash-screen';
 import _isEmpty from 'lodash/isEmpty';
+import React, { useEffect, useState } from 'react';
+import { ApolloProvider } from 'react-apollo';
+import { ActivityIndicator, StatusBar } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { auth } from './auth';
-import { colors, consts, device, namespace, secrets, texts } from './config';
-import { graphqlFetchPolicy, parsedImageAspectRatio, storageHelper } from './helpers';
-import { getQuery, QUERY_TYPES } from './queries';
-import { NetworkProvider } from './NetworkProvider';
-import NetInfo from './NetInfo';
-import { OrientationProvider } from './OrientationProvider';
-import { SettingsProvider } from './SettingsProvider';
-import AppStackNavigator from './navigation/AppStackNavigator';
-import MainTabNavigator from './navigation/MainTabNavigator';
-import { CustomDrawerContentComponent } from './navigation/CustomDrawerContentComponent';
-import { LoadingContainer } from './components';
 import { BookmarkProvider } from './BookmarkProvider';
+import { LoadingContainer } from './components';
+import { colors, consts, namespace, secrets } from './config';
 import { ConstructionSiteProvider } from './ConstructionSiteProvider';
+import { graphqlFetchPolicy, parsedImageAspectRatio, storageHelper } from './helpers';
+import { Navigator } from './navigation/Navigator';
+import NetInfo from './NetInfo';
+import { NetworkProvider } from './NetworkProvider';
+import { OrientationProvider } from './OrientationProvider';
+import { getQuery, QUERY_TYPES } from './queries';
+import { SettingsProvider } from './SettingsProvider';
 
 const { LIST_TYPES } = consts;
 
@@ -38,21 +35,6 @@ const MainAppWithApolloProvider = () => {
   const [client, setClient] = useState();
   const [initialGlobalSettings, setInitialGlobalSettings] = useState({});
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
-  const [drawerRoutes, setDrawerRoutes] = useState({
-    AppStack: {
-      screen: AppStackNavigator(),
-      navigationOptions: () => ({
-        title: texts.navigationTitles.home
-      }),
-      params: {
-        title: texts.screenTitles.home,
-        screen: 'Home',
-        query: '',
-        queryVariables: {},
-        rootRouteName: 'AppStack'
-      }
-    }
-  });
   const [authRetried, setAuthRetried] = useState(false);
   const [netInfo, setNetInfo] = useState({
     isConnected: null,
@@ -149,11 +131,6 @@ const MainAppWithApolloProvider = () => {
     // rehydrate data from the async storage to the global state
     // if there are no general settings yet, add a navigation fallback
     let globalSettings = await storageHelper.globalSettings();
-    if (_isEmpty(globalSettings)) {
-      globalSettings = {
-        navigation: consts.DRAWER
-      };
-    }
 
     // if there are no list type settings yet, set the defaults as fallback
     const listTypesSettings = (await storageHelper.listTypesSettings()) || {
@@ -205,60 +182,9 @@ const MainAppWithApolloProvider = () => {
     client && setupInitialGlobalSettings();
   }, [client]);
 
-  const setupNavigationDrawer = async () => {
-    if (initialGlobalSettings.navigation === consts.DRAWER) {
-      const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-      let navigationData;
-
-      // setup drawer routes for navigation
-      try {
-        const response = await client.query({
-          query: getQuery(QUERY_TYPES.PUBLIC_JSON_FILE),
-          variables: { name: 'navigation' },
-          fetchPolicy
-        });
-
-        navigationData = response.data;
-      } catch (errors) {
-        console.warn('errors', errors);
-      }
-
-      let navigationPublicJsonFileContent = [];
-
-      try {
-        navigationPublicJsonFileContent = JSON.parse(navigationData?.publicJsonFile?.content);
-      } catch (error) {
-        console.warn(error, navigationData);
-      }
-
-      if (!_isEmpty(navigationPublicJsonFileContent)) {
-        setDrawerRoutes(
-          _reduce(
-            navigationPublicJsonFileContent,
-            (result, value, key) => {
-              result[key] = {
-                screen: value.screen,
-                navigationOptions: () => ({
-                  title: value.title
-                }),
-                params: { ...value, rootRouteName: key }
-              };
-
-              return result;
-            },
-            drawerRoutes
-          )
-        );
-      }
-    }
-
-    // this is currently the last point where something was done, so the app startup is done
-    setLoading(false);
-  };
-
-  // setup navigation drawer if global settings setup finished
   useEffect(() => {
-    initialGlobalSettings && client && setupNavigationDrawer();
+    // this is currently the last point where something was done, so the app startup is done
+    initialGlobalSettings && client && setLoading(false);
   }, [initialGlobalSettings]);
 
   useEffect(() => {
@@ -278,33 +204,6 @@ const MainAppWithApolloProvider = () => {
     );
   }
 
-  let AppContainer = () => null;
-
-  if (initialGlobalSettings.navigation === consts.DRAWER) {
-    // use drawer for navigation for the app
-    const AppDrawerNavigator = createDrawerNavigator(drawerRoutes, {
-      initialRouteName: 'AppStack',
-      drawerPosition: 'right',
-      drawerType: device.platform === 'ios' ? 'slide' : 'front',
-      // drawer width should always be 80% of the shorter screen side size
-      drawerWidth: device.width > device.height ? device.height * 0.8 : device.width * 0.8,
-      contentComponent: CustomDrawerContentComponent,
-      contentContainerStyle: {
-        shadowColor: colors.darkText,
-        shadowOffset: { height: 0, width: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 3
-      },
-      overlayColor: colors.overlayRgba
-    });
-
-    AppContainer = createAppContainer(AppDrawerNavigator);
-  }
-
-  if (initialGlobalSettings.navigation === consts.TABS) {
-    AppContainer = createAppContainer(MainTabNavigator);
-  }
-
   if (initialGlobalSettings.imageAspectRatio) {
     consts.IMAGE_ASPECT_RATIO = parsedImageAspectRatio(initialGlobalSettings.imageAspectRatio);
   }
@@ -313,7 +212,7 @@ const MainAppWithApolloProvider = () => {
     <ApolloProvider client={client}>
       <SettingsProvider {...{ initialGlobalSettings, initialListTypesSettings }}>
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
-        <AppContainer />
+        <Navigator />
       </SettingsProvider>
     </ApolloProvider>
   );

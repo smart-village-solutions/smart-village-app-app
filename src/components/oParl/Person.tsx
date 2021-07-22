@@ -1,9 +1,10 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { PersonData } from '../../types';
 import { WrapperHorizontal } from '../Wrapper';
+
 import { getOrganizationNameString } from './oParlHelpers';
 import { Row, SimpleRow } from './Row';
 import {
@@ -15,7 +16,7 @@ import {
 
 type Props = {
   data: PersonData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const personTexts = texts.oparl.person;

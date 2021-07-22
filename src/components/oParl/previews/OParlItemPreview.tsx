@@ -1,16 +1,17 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { normalize } from '../../../config';
 import { OParlObjectPreviewData } from '../../../types';
 import { SectionHeader } from '../../SectionHeader';
+
 import { OParlPreviewComponent } from './OParlPreviewComponent';
 
 type Props = {
   data?: OParlObjectPreviewData;
   header?: string;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
   withAgendaItem?: boolean;
   withPerson?: boolean;
 };

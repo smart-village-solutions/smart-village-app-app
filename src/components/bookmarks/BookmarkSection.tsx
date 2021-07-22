@@ -1,6 +1,6 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { consts, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
@@ -16,7 +16,7 @@ type Props = {
   categoryTitleDetail?: string;
   ids: string[];
   bookmarkKey: string;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
   query: string;
   sectionTitle?: string;
   setConnectionState: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;

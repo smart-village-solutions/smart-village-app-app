@@ -1,9 +1,10 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { colors } from '../config';
 import { getTitleForQuery, parseListItemsFromQuery } from '../helpers';
+
 import { Button } from './Button';
 import { ListComponent } from './ListComponent';
 import { LoadingContainer } from './LoadingContainer';
@@ -16,7 +17,7 @@ type Props = {
   limit?: number;
   loading?: boolean;
   navigate?: () => void;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
   query: string;
   sectionData?: unknown[];
   sectionTitle?: string;

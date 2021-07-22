@@ -1,17 +1,18 @@
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import { texts } from '../../config';
 import { getFullName, momentFormat } from '../../helpers';
 import { MembershipData } from '../../types';
 import { WrapperHorizontal } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import { getOrganizationNameString } from './oParlHelpers';
 import { KeywordSection, ModifiedSection, WebRepresentation } from './sections';
 
 type Props = {
   data: MembershipData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const membershipTexts = texts.oparl.membership;

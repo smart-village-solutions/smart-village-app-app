@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import { ActivityIndicator, FlatList } from 'react-native';
 
 import { colors, normalize } from '../config';
+
 import { TextListItem } from './TextListItem';
 import { BackToTop } from './BackToTop';
 

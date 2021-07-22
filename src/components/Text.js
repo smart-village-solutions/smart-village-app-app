@@ -26,9 +26,15 @@ export const Text = ({ children, ...props }) => {
 
 export const RegularText = styled(Text)`
   color: ${colors.darkText};
-  font-family: titillium-web-regular;
+  font-family: regular;
   font-size: ${normalize(16)};
   line-height: ${normalize(22)};
+
+  ${(props) =>
+    props.italic &&
+    css`
+      font-family: italic;
+    `};
 
   ${(props) =>
     props.small &&
@@ -81,6 +87,12 @@ export const RegularText = styled(Text)`
     `};
 
   ${(props) =>
+    props.error &&
+    css`
+      color: ${colors.error};
+    `};
+
+  ${(props) =>
     props.center &&
     css`
       text-align: center;
@@ -94,7 +106,12 @@ export const RegularText = styled(Text)`
 `;
 
 export const BoldText = styled(RegularText)`
-  font-family: titillium-web-bold;
+  font-family: bold;
+  ${(props) =>
+    props.italic &&
+    css`
+      font-family: bold-italic;
+    `};
 `;
 
 Text.propTypes = {

@@ -5,18 +5,19 @@ import { Platform, StyleSheet, View } from 'react-native';
 
 import { colors, consts, normalize } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
+
 import { Image } from './Image';
 import { RegularText, BoldText } from './Text';
 import { Touchable } from './Touchable';
 
 export const CardListItem = memo(({ navigation, horizontal, item }) => {
-  const { routeName, params, picture, subtitle, title } = item;
+  const { routeName: name, params, picture, subtitle, title } = item;
 
   // TODO: count articles logic could to be implemented
   return (
     <Touchable
       accessibilityLabel={`${subtitle} (${title}) ${consts.a11yLabel.button}`}
-      onPress={() => navigation && navigation.push(routeName, params)}
+      onPress={() => navigation && navigation.push(name, params)}
       disabled={!navigation}
     >
       <Card containerStyle={styles.container}>

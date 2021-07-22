@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
   inputStyle: {
     backgroundColor: colors.transparent,
     color: colors.darkText,
-    fontFamily: 'titillium-web-regular',
+    fontFamily: 'regular',
     fontSize: normalize(16)
   },
   marginLeft: {

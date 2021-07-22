@@ -1,14 +1,15 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../../config';
 import { momentFormat } from '../../../helpers';
 import { LegislativeTermPreviewData } from '../../../types';
+
 import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: LegislativeTermPreviewData;
-  navigation?: NavigationScreenProp<never>; // most other OParl types need navigation. this unifies their interfaces
+  navigation?: StackNavigationProp<any>;
 };
 
 const { legislativeTerm } = texts.oparl;

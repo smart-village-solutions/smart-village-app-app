@@ -4,7 +4,7 @@ import * as Font from 'expo-font';
 import MatomoTracker, { MatomoProvider, useMatomo } from 'matomo-tracker-react-native';
 
 import { MainApp } from './src';
-import { namespace, secrets } from './src/config';
+import { fontConfig, namespace, secrets } from './src/config';
 import { matomoSettings } from './src/helpers';
 
 const AppWithFonts = () => {
@@ -14,14 +14,7 @@ const AppWithFonts = () => {
   useEffect(() => {
     trackAppStart();
 
-    Font.loadAsync({
-      'titillium-web-bold': require('./assets/fonts/TitilliumWeb-Bold.ttf'),
-      'titillium-web-bold-italic': require('./assets/fonts/TitilliumWeb-BoldItalic.ttf'),
-      'titillium-web-regular': require('./assets/fonts/TitilliumWeb-Regular.ttf'),
-      'titillium-web-italic': require('./assets/fonts/TitilliumWeb-Italic.ttf'),
-      'titillium-web-light': require('./assets/fonts/TitilliumWeb-Light.ttf'),
-      'titillium-web-light-italic': require('./assets/fonts/TitilliumWeb-LightItalic.ttf')
-    })
+    Font.loadAsync(fontConfig)
       .catch((error) => console.warn('An error occurred with loading the fonts', error))
       .finally(() => setFontLoaded(true));
   }, []);

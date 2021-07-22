@@ -5,6 +5,58 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.1.0] :rocket:
+
+This minor version upgrade introduces the survey feature.
+
+### Added
+
+- added screens for survey
+- survey feature has been implemented with german and polish texts
+
+## [v2.0.2]
+
+Centralized icons and fonts. Fixed drawer layout for android devices.
+
+### Changed
+
+- Added a centralized point for icons, to allow for easy switching of icons
+- Specific names for used fonts are now removed from the components
+  - Instead only generic names describing the font weight and style are being used
+  - This allows for more easy switching of fonts
+
+## [v2.0.1]
+
+Minor changes after navigation rework.
+
+### Changed
+
+- removed navigation config related entries from global settings
+- reworked drawer component title to better respect screen insets on new devices
+
+## [v2.0.0] :t-rex:
+
+The second major version with configs for navigation and Expo SDK update to 42.0.0
+
+- Read about that step in: https://blog.expo.io/expo-sdk-42-579aee2348b6
+
+## [v1.8.1]
+
+Fix header left showing on initial screens
+
+### Fixed
+
+- the back navigation header is currently shown on initial tab screens,
+  even if there is no option to navigate back
+  - this change resolves that issue
+
+## [v1.8.0] :rocket:
+
+The eighth minor version upgrade includes the expo update 41, an update from react navigation
+version 3 to 5 and several minor fixes and dependency updates.
+
+- Read about the expo update step in: https://dev.to/expo/expo-sdk-41-1f2j
+
 ## [v1.7.2]
 
 Updated OParl screens. Added waste calendar export.
@@ -21,13 +73,17 @@ Updated OParl screens. Added waste calendar export.
 ## [v1.7.1]
 
 Added pagination to person list on the `OParlPeopleScreen`
+
 ### Changed
+
 - reworked `OParlPeopleScreen` to use a flatlist with pagination
 - improved query for fetching organization list for the dropdown
 
 ## [v1.7.0] :rocket:
 
-The seventh minor version upgrade introduces the possibility to browse [OParl data](https://dev.oparl.org/spezifikation/) provided by the [sva-apollo-server](https://github.com/ikuseiGmbH/sva-apollo-server).
+The seventh minor version upgrade introduces the possibility to browse
+[OParl data](https://dev.oparl.org/spezifikation/) provided by the
+[sva-apollo-server](https://github.com/ikuseiGmbH/sva-apollo-server).
 
 ### Added
 
@@ -37,6 +93,7 @@ The seventh minor version upgrade introduces the possibility to browse [OParl da
 - added custom hook with independent apollo client for OParl queries
 
 ### Changed
+
 - extracted reusable parts of the calendar component from the `WasteCollectionScreen`
 
 ## [v1.6.3]

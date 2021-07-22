@@ -1,9 +1,10 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { SystemData } from '../../types';
 import { Wrapper } from '../Wrapper';
+
 import { Row, SimpleRow } from './Row';
 import {
   ContactSection,
@@ -14,7 +15,7 @@ import {
 
 type Props = {
   data: SystemData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const { system: systemTexts } = texts.oparl;

@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { WasteReminderSettings, SafeAreaViewFlex, HeaderLeft } from '../components';
+import { WasteReminderSettings, SafeAreaViewFlex } from '../components';
 
-export const WasteReminderScreen = ({ navigation }) => {
-  const wasteTypes = navigation.getParam('wasteTypes');
-  const locationData = navigation.getParam('locationData');
+export const WasteReminderScreen = ({ route }) => {
+  const wasteTypes = route.params?.wasteTypes ?? {};
+  const locationData = route.params?.locationData ?? {};
 
   return (
     <SafeAreaViewFlex>
@@ -14,12 +14,6 @@ export const WasteReminderScreen = ({ navigation }) => {
   );
 };
 
-WasteReminderScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
-
 WasteReminderScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  route: PropTypes.object.isRequired
 };

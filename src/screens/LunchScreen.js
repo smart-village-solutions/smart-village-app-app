@@ -1,5 +1,7 @@
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
+import { useQuery } from 'react-apollo';
 import {
   ActivityIndicator,
   FlatList,
@@ -7,16 +9,11 @@ import {
   StyleSheet,
   TouchableOpacity
 } from 'react-native';
-import { useQuery } from 'react-apollo';
-import moment from 'moment';
 
-import { colors, consts, normalize, texts } from '../config';
 import {
   BoldText,
   Button,
   ConnectedImagesCarousel,
-  HeaderLeft,
-  Icon,
   LunchSection,
   RegularText,
   SafeAreaViewFlex,
@@ -24,16 +21,16 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../components';
-import { arrowLeft, arrowRight } from '../icons';
-import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
+import { colors, consts, Icon, normalize, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
+import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 
 const { MATOMO_TRACKING } = consts;
 
-export const LunchScreen = ({ navigation }) => {
-  const [poiId, setPoiId] = useState(navigation.getParam('poiId'));
+export const LunchScreen = ({ navigation, route }) => {
+  const [poiId, setPoiId] = useState(route.params?.poiId ?? {});
   const [date, setDate] = useState(moment());
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const refreshTime = useRefreshTime('lunch-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
@@ -87,7 +84,7 @@ export const LunchScreen = ({ navigation }) => {
               onPress={onPressPrevious}
               style={styles.left}
             >
-              <Icon xml={arrowLeft(colors.primary)} />
+              <Icon.ArrowLeft />
             </TouchableOpacity>
             <BoldText big>{date.format('DD.MM.YYYY')}</BoldText>
             <TouchableOpacity
@@ -95,7 +92,7 @@ export const LunchScreen = ({ navigation }) => {
               onPress={onPressNext}
               style={styles.right}
             >
-              <Icon xml={arrowRight(colors.primary)} />
+              <Icon.ArrowRight />
             </TouchableOpacity>
           </WrapperRow>
         </Wrapper>
@@ -143,12 +140,6 @@ export const LunchScreen = ({ navigation }) => {
   );
 };
 
-LunchScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
-};
-
 const styles = StyleSheet.create({
   left: {
     flex: 1,
@@ -162,5 +153,6 @@ const styles = StyleSheet.create({
 });
 
 LunchScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

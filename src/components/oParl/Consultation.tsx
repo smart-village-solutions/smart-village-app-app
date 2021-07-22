@@ -1,9 +1,10 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../../config';
 import { ConsultationData } from '../../types';
 import { Wrapper } from '../Wrapper';
+
 import { SimpleRow } from './Row';
 import {
   KeywordSection,
@@ -14,7 +15,7 @@ import {
 
 type Props = {
   data: ConsultationData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 const consultationTexts = texts.oparl.consultation;

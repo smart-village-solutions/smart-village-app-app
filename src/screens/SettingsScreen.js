@@ -6,7 +6,6 @@ import { OrientationContext } from '../OrientationProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, device, texts } from '../config';
 import {
-  HeaderLeft,
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
@@ -221,10 +220,4 @@ export const SettingsScreen = () => {
       />
     </SafeAreaViewFlex>
   );
-};
-
-SettingsScreen.navigationOptions = ({ navigation }) => {
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />
-  };
 };

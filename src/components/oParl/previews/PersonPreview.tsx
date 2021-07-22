@@ -1,7 +1,7 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
-import { texts } from '../../../config';
 
+import { texts } from '../../../config';
 import { getFullName } from '../../../helpers';
 import { PersonPreviewData } from '../../../types';
 import { TextListItem } from '../../TextListItem';
@@ -9,7 +9,7 @@ import { getOrganizationNameString } from '../oParlHelpers';
 
 type Props = {
   data: PersonPreviewData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 export const PersonPreview = ({ data, navigation }: Props) => {

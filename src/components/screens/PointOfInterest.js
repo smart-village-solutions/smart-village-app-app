@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 import { colors, consts, device, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
-import { useMatomoTrackScreenView } from '../../hooks';
+import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { Button } from '../Button';
@@ -17,6 +17,7 @@ import { WebViewMap } from '../map/WebViewMap';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { TMBNotice } from '../TMB/Notice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
@@ -25,7 +26,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PointOfInterest = ({ data, hideMap, navigation }) => {
+export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const {
     addresses,
@@ -47,17 +48,8 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
   const latitude = addresses?.[0]?.geoLocation?.latitude;
   const longitude = addresses?.[0]?.geoLocation?.longitude;
 
-  const rootRouteName = navigation.getParam('rootRouteName', '');
   // action to open source urls
-  const openWebScreen = (webUrl) =>
-    navigation.navigate({
-      routeName: 'Web',
-      params: {
-        title: 'Ort',
-        webUrl,
-        rootRouteName
-      }
-    });
+  const openWebScreen = useOpenWebScreen('Ort', undefined, route.params?.rootRouteName);
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   // the categories of a news item can be nested and we need the map of all names of all categories
@@ -185,9 +177,7 @@ export const PointOfInterest = ({ data, hideMap, navigation }) => {
 
         <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
-        {!!businessAccount && (
-          <DataProviderButton dataProvider={dataProvider} navigation={navigation} />
-        )}
+        {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
       </WrapperWithOrientation>
     </View>
   );
@@ -198,5 +188,6 @@ PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired,
   hideMap: PropTypes.bool,
   navigation: PropTypes.object,
-  fetchPolicy: PropTypes.string
+  fetchPolicy: PropTypes.string,
+  route: PropTypes.object.isRequired
 };

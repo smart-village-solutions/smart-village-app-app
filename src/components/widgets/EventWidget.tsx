@@ -1,18 +1,20 @@
+import { useNavigation } from '@react-navigation/core';
 import moment from 'moment';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { colors, consts, texts } from '../../config';
+import { consts, Icon, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
-import { calendar } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { WidgetProps } from '../../types';
+
 import { DefaultWidget } from './DefaultWidget';
 
-export const EventWidget = ({ navigation, text }: WidgetProps) => {
+export const EventWidget = ({ text }: WidgetProps) => {
+  const navigation = useNavigation();
   const refreshTime = useRefreshTime('event-widget', consts.REFRESH_INTERVALS.ONCE_A_DAY);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
@@ -44,8 +46,8 @@ export const EventWidget = ({ navigation, text }: WidgetProps) => {
 
   return (
     <DefaultWidget
-      icon={calendar(colors.primary)}
       count={eventCount}
+      Icon={Icon.Calendar}
       onPress={onPress}
       text={text ?? texts.widgets.events}
     />

@@ -2,12 +2,9 @@ import _filter from 'lodash/filter';
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, consts, normalize } from '../../config';
-
+import { consts, Icon, normalize } from '../../config';
 import { formatAddress, locationLink, locationString, openLink } from '../../helpers';
-import { location } from '../../icons';
 import { Address } from '../../types';
-import { Icon } from '../Icon';
 import { RegularText } from '../Text';
 import { InfoBox } from '../Wrapper';
 
@@ -47,9 +44,9 @@ export const AddressSection = ({ address, addresses }: Props) => {
         const innerComponent = (
           <RegularText
             primary
-            accessibilityLabel={`${consts.a11yLabel.address} (${address})
-            ${consts.a11yLabel.button}
-            ${consts.a11yLabel.mapHint}`}
+            accessibilityLabel={`${a11yText.address} (${address})
+            ${a11yText.button}
+            ${a11yText.mapHint}`}
           >
             {address}
           </RegularText>
@@ -57,7 +54,7 @@ export const AddressSection = ({ address, addresses }: Props) => {
 
         return (
           <InfoBox key={index}>
-            <Icon xml={location(colors.primary)} style={styles.margin} />
+            <Icon.Location style={styles.margin} />
             {isPressable ? (
               <TouchableOpacity onPress={() => addressOnPress(address)}>
                 {innerComponent}

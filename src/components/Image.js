@@ -7,9 +7,10 @@ import { Image as RNEImage } from 'react-native-elements';
 import { consts, colors } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 import { SettingsContext } from '../SettingsProvider';
+import { useInterval } from '../hooks';
+
 import { ImageMessage } from './ImageMessage';
 import { ImageRights } from './ImageRights';
-import { useInterval } from '../hooks';
 
 const addQueryParam = (url, param) => {
   if (!url?.length) return;

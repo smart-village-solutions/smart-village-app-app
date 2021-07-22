@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import styled from 'styled-components';
+import styled from 'styled-components/native';
 
 import { normalize, colors } from '../../config';
 import { momentFormat } from '../../helpers';

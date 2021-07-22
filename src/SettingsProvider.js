@@ -1,7 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { createContext, useState } from 'react';
 
-export const SettingsContext = createContext();
+export const SettingsContext = createContext({
+  globalSettings: {
+    filter: {},
+    sections: {}
+  }
+});
 
 export const SettingsProvider = ({ initialGlobalSettings, initialListTypesSettings, children }) => {
   const [globalSettings, setGlobalSettings] = useState(initialGlobalSettings);

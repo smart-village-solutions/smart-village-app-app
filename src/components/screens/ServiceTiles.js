@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
+import { Query } from 'react-apollo';
 import {
   ActivityIndicator,
   RefreshControl,
@@ -8,39 +9,28 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { Query } from 'react-apollo';
+import { normalize } from 'react-native-elements';
 
-import { NetworkContext } from '../NetworkProvider';
-import { OrientationContext } from '../OrientationProvider';
-import { SettingsContext } from '../SettingsProvider';
-import { colors, consts, device, normalize, texts } from '../config';
-import {
-  BoldText,
-  Icon,
-  Image,
-  LoadingContainer,
-  SafeAreaViewFlex,
-  ServiceBox,
-  Title,
-  TitleContainer,
-  TitleShadow,
-  WrapperWrap
-} from '../components';
-import { getQuery, QUERY_TYPES } from '../queries';
-import { graphqlFetchPolicy } from '../helpers';
-import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
+import { colors, consts, device, Icon } from '../../config';
+import { graphqlFetchPolicy } from '../../helpers';
+import { useRefreshTime } from '../../hooks';
+import { NetworkContext } from '../../NetworkProvider';
+import { OrientationContext } from '../../OrientationProvider';
+import { getQuery, QUERY_TYPES } from '../../queries';
+import { Image } from '../Image';
+import { LoadingContainer } from '../LoadingContainer';
+import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
+import { ServiceBox } from '../ServiceBox';
+import { BoldText } from '../Text';
+import { Title, TitleContainer, TitleShadow } from '../Title';
+import { WrapperWrap } from '../Wrapper';
 
-const { MATOMO_TRACKING } = consts;
-
-export const ServiceScreen = ({ navigation }) => {
+export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
-  const { globalSettings } = useContext(SettingsContext);
   const [refreshing, setRefreshing] = useState(false);
 
-  const refreshTime = useRefreshTime('publicJsonFile-homeService');
-
-  useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SERVICE);
+  const refreshTime = useRefreshTime(`publicJsonFile-${staticJsonName}`);
 
   if (!refreshTime) {
     return (
@@ -61,14 +51,12 @@ export const ServiceScreen = ({ navigation }) => {
     isMainserverUp,
     refreshTime
   });
-  const { sections = {} } = globalSettings;
-  const { headlineService = texts.homeTitles.service } = sections;
 
   return (
     <SafeAreaViewFlex>
       <Query
         query={getQuery(QUERY_TYPES.PUBLIC_JSON_FILE)}
-        variables={{ name: 'homeService' }}
+        variables={{ name: staticJsonName }}
         fetchPolicy={fetchPolicy}
       >
         {({ data, loading, refetch }) => {
@@ -92,14 +80,14 @@ export const ServiceScreen = ({ navigation }) => {
 
           return (
             <>
-              {!!headlineService && (
+              {!!title && (
                 <TitleContainer>
-                  <Title accessibilityLabel={`(${headlineService}) ${consts.a11yLabel.heading}`}>
-                    {headlineService}
+                  <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>
+                    {title}
                   </Title>
                 </TitleContainer>
               )}
-              {!!headlineService && device.platform === 'ios' && <TitleShadow />}
+              {!!title && device.platform === 'ios' && <TitleShadow />}
               <ScrollView
                 refreshControl={
                   <RefreshControl
@@ -122,14 +110,18 @@ export const ServiceScreen = ({ navigation }) => {
                           <TouchableOpacity
                             onPress={() =>
                               navigation.navigate({
-                                routeName: item.routeName,
+                                name: item.routeName,
                                 params: item.params
                               })
                             }
                           >
                             <View>
                               {item.iconName ? (
-                                <Icon name={item.iconName} size={30} style={styles.serviceIcon} />
+                                <Icon.NamedIcon
+                                  name={item.iconName}
+                                  size={30}
+                                  style={styles.serviceIcon}
+                                />
                               ) : (
                                 <Image
                                   source={{ uri: item.icon }}
@@ -175,6 +167,8 @@ const styles = StyleSheet.create({
   }
 });
 
-ServiceScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+ServiceTiles.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  staticJsonName: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired
 };

@@ -1,8 +1,9 @@
+import { RouteProp } from '@react-navigation/core';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { MapMarker, WebviewLeafletMessage } from 'react-native-webview-leaflet';
-import { NavigationScreenProps, ScrollView } from 'react-navigation';
 
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
@@ -14,12 +15,14 @@ import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { PointOfInterest } from '../screens/PointOfInterest';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+
 import { WebViewMap } from './WebViewMap';
 
 type Props = {
   category: string;
   dataProviderName?: string;
-  navigation: NavigationScreenProps;
+  navigation: StackNavigationProp<never>;
+  route: RouteProp<any, never>;
 };
 
 // FIXME: with our current setup the data that we receive from a query is not typed
@@ -49,7 +52,7 @@ const mapToMapMarkers = (data: any): MapMarker[] | undefined => {
   );
 };
 
-export const LocationOverview = ({ navigation, category, dataProviderName }: Props) => {
+export const LocationOverview = ({ navigation, route, category, dataProviderName }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
@@ -116,6 +119,7 @@ export const LocationOverview = ({ navigation, category, dataProviderName }: Pro
                   data={detailsData[QUERY_TYPES.POINT_OF_INTEREST]}
                   navigation={navigation}
                   hideMap
+                  route={route}
                 />
               )
             )}

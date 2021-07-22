@@ -1,14 +1,15 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
-import { texts } from '../../../config';
 
+import { texts } from '../../../config';
 import { OrganizationPreviewData } from '../../../types';
 import { getOrganizationNameString } from '../oParlHelpers';
+
 import { OParlPreviewEntry } from './OParlPreviewEntry';
 
 type Props = {
   data: OrganizationPreviewData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
 };
 
 export const OrganizationPreview = ({ data, navigation }: Props) => {

@@ -1,7 +1,8 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { OParlObjectPreviewData, OParlObjectType } from '../../../types';
+
 import { AgendaItemPreview } from './AgendaItemPreview';
 import { BodyPreview } from './BodyPreview';
 import { ConsultationPreview } from './ConsultationPreview';
@@ -17,7 +18,7 @@ import { SystemPreview } from './SystemPreview';
 
 type PreviewProps = {
   data: OParlObjectPreviewData;
-  navigation: NavigationScreenProp<never>;
+  navigation: StackNavigationProp<any>;
   withAgendaItem?: boolean;
   withPerson?: boolean;
 };

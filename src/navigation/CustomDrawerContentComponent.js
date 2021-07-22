@@ -2,28 +2,29 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import { colors, consts, device } from '../config';
-import { DiagonalGradient } from '../components';
-import DrawerNavigatorItems from './DrawerNavigatorItems';
+import { DiagonalGradient, SafeAreaViewFlex } from '../components';
+import { colors, consts } from '../config';
+import { getHeaderHeight, statusBarHeight } from '../helpers';
 import { OrientationContext } from '../OrientationProvider';
+
+import DrawerNavigatorItems from './DrawerNavigatorItems';
 
 /**
  * based on the default content component from React Navigation:
  *   https://github.com/react-navigation/drawer/blob/c5954d744f463e7f1c67941b8eb6914c0101e56c/src/navigators/createDrawerNavigator.tsx
  */
-export const CustomDrawerContentComponent = (props) => {
+export const CustomDrawerContentComponent = ({ navigation, drawerRoutes, state }) => {
   const { orientation } = useContext(OrientationContext);
   const a11yText = consts.a11yLabel;
   return (
     <DiagonalGradient>
-      <View style={styles.headerContainer}>
+      <SafeAreaViewFlex>
         <View style={stylesWithProps({ orientation }).header}>
           <TouchableOpacity
             accessibilityLabel={a11yText.closeMenuIcon}
             accessibilityHint={a11yText.closeMenuHint}
-            onPress={() => props.navigation.closeDrawer()}
+            onPress={() => navigation.closeDrawer()}
             delayPressIn={0}
           >
             <Icon
@@ -34,56 +35,24 @@ export const CustomDrawerContentComponent = (props) => {
             />
           </TouchableOpacity>
         </View>
-      </View>
-      <DrawerNavigatorItems {...props} />
+        <DrawerNavigatorItems navigation={navigation} state={state} drawerRoutes={drawerRoutes} />
+      </SafeAreaViewFlex>
     </DiagonalGradient>
   );
 };
 
-const styles = StyleSheet.create({
-  headerContainer: Platform.select({
-    android: {
-      backgroundColor: colors.darkText,
-      elevation: 2
-    },
-    ios: {
-      shadowColor: colors.darkText,
-      shadowOffset: { height: 1, width: 0 },
-      shadowOpacity: 0.5,
-      shadowRadius: 3
-    }
-  })
-});
-
-export const getHeaderHeight = (orientation) =>
-  // Android always 56
-  // iOS:
-  //   portrait: 44
-  //   landscape: tablet 66 / phone 32
-  Platform.select({
-    android: 56,
-    ios: orientation === 'landscape' ? (!Platform.isPad ? 32 : 66) : 44
-  });
-
-export const statusBarHeight = (orientation) =>
-  device.platform === 'android'
-    ? getStatusBarHeight()
-    : orientation === 'portrait'
-    ? getStatusBarHeight()
-    : 0;
-
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({ orientation }) => {
-  const height = getHeaderHeight(orientation) + statusBarHeight(orientation);
-
   return StyleSheet.create({
     header: {
       alignItems: 'flex-end',
       flexDirection: 'row',
-      backgroundColor: colors.primary,
-      height,
-      justifyContent: 'flex-end'
+      justifyContent: 'flex-end',
+      height: Platform.select({
+        android: getHeaderHeight(orientation) + statusBarHeight(orientation),
+        ios: undefined
+      })
     },
     icon: {
       paddingHorizontal: 24,
@@ -101,5 +70,7 @@ const stylesWithProps = ({ orientation }) => {
 /* eslint-enable react-native/no-unused-styles */
 
 CustomDrawerContentComponent.propTypes = {
-  navigation: PropTypes.object.isRequired
+  drawerRoutes: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
+  state: PropTypes.object.isRequired
 };

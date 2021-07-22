@@ -1,34 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native';
 import { Query } from 'react-apollo';
+import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 
-import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
-import { colors, consts, device, normalize } from '../config';
 import {
-  BookmarkHeader,
   EventRecord,
-  HeaderLeft,
-  Icon,
   LoadingContainer,
   NewsItem,
   Offer,
   PointOfInterest,
   SafeAreaViewFlex,
-  Tour,
-  WrapperRow
+  Tour
 } from '../components';
-import { getQuery, QUERY_TYPES } from '../queries';
-import { share } from '../icons';
-import { graphqlFetchPolicy, openShare } from '../helpers';
+import { colors, consts } from '../config';
+import { graphqlFetchPolicy } from '../helpers';
 import { useRefreshTime } from '../hooks';
+import { NetworkContext } from '../NetworkProvider';
+import { getQuery, QUERY_TYPES } from '../queries';
 import { GenericType } from '../types';
 
 const getGenericComponent = (genericType) => {
@@ -62,10 +51,12 @@ const getRefreshInterval = (query) => {
   return REFRESH_INTERVALS[query];
 };
 
-export const DetailScreen = ({ navigation }) => {
+export const DetailScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const query = navigation.getParam('query', '');
-  const queryVariables = navigation.getParam('queryVariables', {});
+  const query = route.params?.query ?? '';
+  const queryVariables = route.params?.queryVariables ?? {};
+  const details = route.params?.details ?? {};
+
   const [refreshing, setRefreshing] = useState(false);
 
   if (!query || !queryVariables || !queryVariables.id) return null;
@@ -90,7 +81,6 @@ export const DetailScreen = ({ navigation }) => {
     setRefreshing(false);
   };
 
-  const details = navigation.getParam('details', {});
   const fetchPolicy = graphqlFetchPolicy({
     isConnected,
     isMainserverUp,
@@ -132,6 +122,7 @@ export const DetailScreen = ({ navigation }) => {
                 data={(data && data[query]) || details}
                 navigation={navigation}
                 fetchPolicy={fetchPolicy}
+                route={route}
               />
             </ScrollView>
           </SafeAreaViewFlex>
@@ -141,69 +132,7 @@ export const DetailScreen = ({ navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  headerRight: {
-    alignItems: 'center'
-  },
-  iconLeft: {
-    paddingLeft: normalize(14),
-    paddingRight: normalize(7)
-  },
-  iconRight: {
-    paddingLeft: normalize(7),
-    paddingRight: normalize(14)
-  }
-});
-
-DetailScreen.navigationOptions = ({ navigation, navigationOptions }) => {
-  const shareContent = navigation.getParam('shareContent', '');
-  const suffix = navigation.getParam('suffix', '');
-  const query = navigation.getParam('query', '');
-  const queryVariables = navigation.getParam('queryVariables', {});
-
-  const { headerRight } = navigationOptions;
-
-  const StyledBookmarkHeader =
-    query && queryVariables?.id ? (
-      <BookmarkHeader
-        id={queryVariables.id}
-        suffix={suffix}
-        query={query}
-        style={styles.iconLeft}
-      />
-    ) : null;
-
-  return {
-    headerLeft: <HeaderLeft navigation={navigation} />,
-    headerRight: (
-      <WrapperRow style={styles.headerRight}>
-        {StyledBookmarkHeader}
-        {!!shareContent && (
-          <TouchableOpacity
-            onPress={() => openShare(shareContent)}
-            accessibilityLabel={consts.a11yLabel.shareIcon}
-            accessibilityHint={consts.a11yLabel.shareHint}
-          >
-            {device.platform === 'ios' ? (
-              <Icon
-                name="ios-share"
-                iconColor={colors.lightestText}
-                style={headerRight ? styles.iconLeft : styles.iconRight}
-              />
-            ) : (
-              <Icon
-                xml={share(colors.lightestText)}
-                style={headerRight ? styles.iconLeft : styles.iconRight}
-              />
-            )}
-          </TouchableOpacity>
-        )}
-        {!!headerRight && headerRight}
-      </WrapperRow>
-    )
-  };
-};
-
 DetailScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

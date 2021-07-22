@@ -25,14 +25,15 @@ import { Radiobutton } from '../Radiobutton';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
 import { colors, consts, device, texts } from '../../config';
 import { ReminderSettings, WasteTypeData } from '../../types';
+import { Button } from '../Button';
+import { areValidReminderSettings, parseReminderSettings } from '../../jsonValidation';
+import { SectionHeader } from '../SectionHeader';
+
 import {
   ReminderSettingsAction,
   ReminderSettingsActionType,
   reminderSettingsReducer
 } from './ReminderSettingsReducer';
-import { Button } from '../Button';
-import { areValidReminderSettings, parseReminderSettings } from '../../jsonValidation';
-import { SectionHeader } from '../SectionHeader';
 
 const showErrorAlert = () => {
   Alert.alert(texts.wasteCalendar.errorOnUpdateTitle, texts.wasteCalendar.errorOnUpdateBody);

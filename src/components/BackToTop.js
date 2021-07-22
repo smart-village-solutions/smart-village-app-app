@@ -2,9 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, normalize, texts } from '../config';
-import { arrowUp } from '../icons';
-import { Icon } from './Icon';
+import { colors, Icon, normalize, texts } from '../config';
+
 import { BoldText } from './Text.js';
 import { Wrapper } from './Wrapper.js';
 
@@ -12,7 +11,7 @@ export const BackToTop = ({ onPress }) => {
   return (
     <TouchableOpacity onPress={onPress}>
       <Wrapper>
-        <Icon xml={arrowUp(colors.primary)} style={styles.icon} />
+        <Icon.ArrowUp style={styles.icon} />
         <BoldText link style={styles.backToTop}>
           {texts.backToTop.toUpperCase()}
         </BoldText>

@@ -1,7 +1,9 @@
+import { useNavigation } from '@react-navigation/core';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
-import { NavigationScreenProp } from 'react-navigation';
 
 import { texts } from '../config';
+
 import { Button } from './Button';
 import { Wrapper } from './Wrapper';
 
@@ -10,10 +12,10 @@ type Props = {
     name: string;
     logo?: { url?: string };
   };
-  navigation: NavigationScreenProp<never>;
 };
 
-export const DataProviderButton = ({ dataProvider, navigation }: Props) => {
+export const DataProviderButton = ({ dataProvider }: Props) => {
+  const navigation = useNavigation<StackNavigationProp<any>>();
   const navigateToDataProvider = useCallback(
     () =>
       navigation.push('DataProvider', {

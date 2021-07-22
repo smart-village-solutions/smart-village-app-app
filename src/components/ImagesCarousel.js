@@ -7,9 +7,10 @@ import { Query } from 'react-apollo';
 import { colors } from '../config';
 import { imageWidth, isActive, shareMessage } from '../helpers';
 import { getQuery } from '../queries';
+import { OrientationContext } from '../OrientationProvider';
+
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
-import { OrientationContext } from '../OrientationProvider';
 
 export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) => {
   const { dimensions } = useContext(OrientationContext);
@@ -17,12 +18,12 @@ export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) =
 
   const renderItem = useCallback(
     ({ item }) => {
-      const { routeName, params } = item.picture || {};
+      const { routeName: name, params } = item.picture || {};
 
       // params are available, but missing `shareContent` and `details`
       // -> we want to add `shareContent` and `details` to the `params`,
       // if we have `queryVariables` with an `id`
-      if (routeName && params?.query && params?.queryVariables?.id) {
+      if (name && params?.query && params?.queryVariables?.id) {
         const id = params.queryVariables.id;
         const query = params.query;
 

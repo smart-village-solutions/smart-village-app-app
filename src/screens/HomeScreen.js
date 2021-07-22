@@ -1,37 +1,28 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import {
-  DeviceEventEmitter,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity
-} from 'react-native';
+import { DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
 
 import { auth } from '../auth';
 import {
   About,
-  HomeSection,
   ConnectedImagesCarousel,
-  Icon,
+  HomeSection,
   SafeAreaViewFlex,
   Service,
   VersionNumber,
-  Widgets,
-  WrapperRow
+  Widgets
 } from '../components';
-import { colors, consts, normalize, texts } from '../config';
+import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy, rootRouteName } from '../helpers';
 import { useMatomoAlertOnStartUp, useMatomoTrackScreenView, usePushNotifications } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
-import { favSettings } from '../icons';
 import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
-const { DRAWER, MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
+const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
-export const HomeScreen = ({ navigation }) => {
+export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings } = useContext(SettingsContext);
@@ -60,9 +51,9 @@ export const HomeScreen = ({ navigation }) => {
       const queryType = data?.query_type ? getQueryType(data.query_type) : undefined;
 
       if (data?.id && queryType) {
-        // navigate to the newsItem
+        // navigate to the referenced item
         navigation.navigate({
-          routeName: 'Detail',
+          name: 'Detail',
           params: {
             title: texts.detailTitles[queryType],
             query: queryType,
@@ -106,25 +97,25 @@ export const HomeScreen = ({ navigation }) => {
 
   const NAVIGATION = {
     CATEGORIES_INDEX: {
-      routeName: 'Index',
+      name: 'Index',
       params: {
-        title: 'Orte und Touren',
+        title: headlinePointsOfInterestAndTours,
         query: QUERY_TYPES.CATEGORIES,
         queryVariables: {},
         rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
       }
     },
     EVENT_RECORDS_INDEX: {
-      routeName: 'Index',
+      name: 'Index',
       params: {
-        title: 'Veranstaltungen',
+        title: headlineEvents,
         query: QUERY_TYPES.EVENT_RECORDS,
         queryVariables: { limit: 15, order: 'listDate_ASC' },
         rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
       }
     },
     NEWS_ITEMS_INDEX: ({ categoryId, categoryTitle, categoryTitleDetail }) => ({
-      routeName: 'Index',
+      name: 'Index',
       params: {
         title: categoryTitle,
         titleDetail: categoryTitleDetail,
@@ -153,7 +144,7 @@ export const HomeScreen = ({ navigation }) => {
           publicJsonFile="homeCarousel"
           refreshTimeKey="publicJsonFile-homeCarousel"
         />
-        <Widgets navigation={navigation} widgetConfigs={widgetConfigs} />
+        <Widgets widgetConfigs={widgetConfigs} />
 
         {showNews &&
           categoriesNews.map(
@@ -200,8 +191,7 @@ export const HomeScreen = ({ navigation }) => {
             fetchPolicy={fetchPolicy}
           />
         )}
-
-        {globalSettings.navigation === DRAWER && (
+        {route.params?.isDrawer && (
           <>
             <Service navigation={navigation} />
             <About navigation={navigation} />
@@ -214,40 +204,7 @@ export const HomeScreen = ({ navigation }) => {
 };
 /* eslint-enable complexity */
 
-const styles = StyleSheet.create({
-  iconLeft: {
-    paddingLeft: normalize(14),
-    paddingRight: normalize(7),
-    paddingVertical: normalize(4)
-  },
-  iconRight: {
-    paddingLeft: normalize(7),
-    paddingRight: normalize(14),
-    paddingVertical: normalize(4)
-  }
-});
-
-HomeScreen.navigationOptions = ({ navigation, navigationOptions }) => {
-  const { headerRight } = navigationOptions;
-  const a11yText = consts.a11yLabel;
-
-  return {
-    headerLeft: (
-      <WrapperRow>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Bookmarks', { title: texts.bookmarks.bookmarks })}
-          accessibilityLabel={a11yText.settingsBookmarksIcon}
-          accessibilityHint={a11yText.settingsBookmarksHint}
-        >
-          <Icon
-            style={headerRight ? styles.iconLeft : styles.iconRight}
-            xml={favSettings(colors.lightestText)}
-          />
-        </TouchableOpacity>
-      </WrapperRow>
-    )
-  };
-};
 HomeScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

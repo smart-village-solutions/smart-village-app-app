@@ -2,11 +2,9 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon as RNEIcon } from 'react-native-elements';
 
-import { colors, consts, normalize } from '../../config';
+import { colors, consts, Icon, normalize } from '../../config';
 import { openLink } from '../../helpers';
-import { mail, phone as phoneIcon } from '../../icons';
 import { Contact } from '../../types';
-import { Icon } from '../Icon';
 import { RegularText } from '../Text';
 import { InfoBox } from '../Wrapper';
 
@@ -29,7 +27,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
 
       {!!contact.phone && (
         <InfoBox>
-          <Icon xml={phoneIcon(colors.primary)} style={styles.margin} />
+          <Icon.Phone style={styles.margin} />
           <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
             <RegularText
               primary
@@ -44,7 +42,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
 
       {!!contact.email && (
         <InfoBox>
-          <Icon xml={mail(colors.primary)} style={styles.margin} />
+          <Icon.Mail style={styles.margin} />
           <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
             <RegularText
               primary
