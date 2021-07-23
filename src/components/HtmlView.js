@@ -24,14 +24,30 @@ const cssRules =
     trOddBackground: colors.lightestText,
     trOddColor: colors.darkText,
     trEvenBackground: colors.lightestText,
-    trEvenColor: colors.darkText,
-    outerBorderWidthPx: 1,
-    outerBorderColor: '#b5b5b5',
-    columnsBorderWidthPx: 1
+    trEvenColor: colors.darkText
   }) +
   `
 :root {
   font-size: ${normalize(13)}px;
+}
+th {
+  border-bottom: 0.25px solid ${'#3f5c7a'};
+  border-left: 0.25px solid ${'#3f5c7a'};
+  border-top: 0.25px solid ${'#3f5c7a'};
+}
+th:last-child {
+  border-right: 0.25px solid ${'#3f5c7a'};
+}
+td {
+  border-bottom: 0.25px solid ${'#b5b5b5'};
+  border-left: 0.25px solid ${'#b5b5b5'};
+  border-top: 0;
+}
+td:last-child {
+  border-right: 0.25px solid ${'#b5b5b5'};
+}
+table {
+  border-bottom: 0.25px solid ${'#b5b5b5'};
 }
 `;
 
