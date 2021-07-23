@@ -10511,6 +10511,14 @@ react-native-webview@11.6.2:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
 
+react-native-webview@11.6.5:
+  version "11.6.5"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.6.5.tgz#34e86a342c6a2cbcf109db98f639f7bb8f055da2"
+  integrity sha512-5U+hI8snkCrFeDy+bUTszwhzcJIenaaOy3ubhY77HZq7R0pFIZzRYWkT0YXe1ymRYW9mSU96nr6S0AVDk8qkMw==
+  dependencies:
+    escape-string-regexp "2.0.0"
+    invariant "2.2.4"
+
 "react-native@https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz":
   version "0.63.2"
   resolved "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz#1dae4e81714085100888571012f18b6b142b4773"
