@@ -8,6 +8,24 @@ import {
   isStringOrUndefined
 } from './basicTypeValidation';
 
+type ImageData = {
+  captionText?: string;
+  copyright?: string;
+  url?: string;
+};
+
+const isImageData = (image: unknown): image is ImageData => {
+  if (!image) {
+    return true;
+  }
+
+  const { captionText, copyright, url } = image as ImageData;
+
+  return (
+    isStringOrUndefined(captionText) && isStringOrUndefined(copyright) && isStringOrUndefined(url)
+  );
+};
+
 const checkConstructionSiteTypes = (item: unknown) => {
   const {
     category,
@@ -15,7 +33,7 @@ const checkConstructionSiteTypes = (item: unknown) => {
     description,
     direction,
     endDate,
-    imageUri,
+    image,
     location,
     locationDescription,
     restrictions,
@@ -31,7 +49,7 @@ const checkConstructionSiteTypes = (item: unknown) => {
     isStringOrUndefined(cause) &&
     isStringOrUndefined(direction) &&
     isStringOrUndefined(endDate) &&
-    isStringOrUndefined(imageUri) &&
+    isImageData(image) &&
     isStringOrUndefined(locationDescription) &&
     isStringArrayOrUndefined(restrictions) &&
     isGeoLocationOrUndefined(location)

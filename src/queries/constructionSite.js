@@ -13,11 +13,6 @@ export const GET_CONSTRUCTION_SITES = gql`
         id
         name
       }
-      dataProvider {
-        id
-        name
-        dataType
-      }
       locations {
         id
         name
@@ -40,9 +35,6 @@ export const GET_CONSTRUCTION_SITES = gql`
         id
         dateEnd
         dateStart
-        timeDescription
-        timeEnd
-        timeStart
       }
       payload
     }

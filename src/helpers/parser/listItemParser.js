@@ -1,16 +1,15 @@
 import _filter from 'lodash/filter';
 import _shuffle from 'lodash/shuffle';
 
-import { consts, texts } from '../config';
-import { QUERY_TYPES } from '../queries';
-import { GenericType } from '../types';
-
-import { eventDate, isBeforeEndOfToday, isTodayOrLater } from './dateTimeHelper';
-import { getGenericItemDetailTitle, getGenericItemRootRouteName } from './genericTypeHelper';
-import { mainImageOfMediaContents } from './imageHelper';
-import { momentFormat } from './momentHelper';
-import { shareMessage } from './shareHelper';
-import { subtitle } from './textHelper';
+import { consts, texts } from '../../config';
+import { QUERY_TYPES } from '../../queries';
+import { GenericType } from '../../types';
+import { eventDate, isBeforeEndOfToday, isTodayOrLater } from '../dateTimeHelper';
+import { getGenericItemDetailTitle, getGenericItemRootRouteName } from '../genericTypeHelper';
+import { mainImageOfMediaContents } from '../imageHelper';
+import { momentFormat } from '../momentHelper';
+import { shareMessage } from '../shareHelper';
+import { subtitle } from '../textHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
 

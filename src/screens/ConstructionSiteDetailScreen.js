@@ -3,7 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
-import { colors, consts, normalize } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import {
   BoldText,
   Image,
@@ -44,7 +44,11 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
   const id = route.params?.id;
   const { constructionSites, loading, refresh, refreshing } = useConstructionSites(id);
 
-  useMatomoTrackScreenView(`${MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITE_DETAIL} / ${id}`);
+  useMatomoTrackScreenView(
+    `${MATOMO_TRACKING.SCREEN_VIEW.CONSTRUCTION_SITE_DETAIL} / ${
+      id ?? texts.screenTitles.constructionSite
+    }`
+  );
 
   if (!id || !constructionSites.length) return null;
 
@@ -54,7 +58,7 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
     description,
     direction,
     endDate,
-    imageUri,
+    image,
     location,
     locationDescription,
     restrictions,
@@ -72,7 +76,6 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView
-        keyboardShouldPersistTaps="handled"
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -83,8 +86,15 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
         }
       >
         <WrapperWithOrientation>
-          {!!imageUri && (
-            <Image source={{ uri: imageUri }} containerStyle={styles.imageContainer} />
+          {!!image?.url && (
+            <Image
+              source={{
+                captionText: image.captionText,
+                imageRights: image.copyright,
+                uri: image.url
+              }}
+              containerStyle={styles.imageContainer}
+            />
           )}
           <TitleContainer>
             <Title>{extendedTitle}</Title>

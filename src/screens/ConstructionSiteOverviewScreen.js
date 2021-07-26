@@ -35,7 +35,7 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
           : `${formattedStartDate} - ${formattedEndDate}`;
 
       const propItem = {
-        title: title,
+        title,
         subtitle: formattedDates + (category ? ` | ${category}` : ''),
         params: { id: item.id },
         routeName: 'ConstructionSiteDetail'
