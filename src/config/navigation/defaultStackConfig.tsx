@@ -197,7 +197,8 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.Web,
-      screenComponent: WebScreen
+      screenComponent: WebScreen,
+      screenOptions: screenOptionsWithShare(isDrawer)
     }
   ]
 });

@@ -36,9 +36,10 @@ export const NewsItem = ({ data, route }) => {
   const title = mainTitle || (!!contentBlocks && !!contentBlocks.length && contentBlocks[0].title);
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
+  const shareContent = route.params?.shareContent;
 
   // action to open source urls
-  const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
+  const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName, shareContent);
 
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
