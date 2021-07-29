@@ -59,7 +59,7 @@
     "graphql-anywhere": "~4.2.4",
     "graphql-tag": "^2.12.5",
     "lodash": "~4.17.21",
-    "matomo-tracker-react-native": "^0.2.2",
+    "matomo-tracker-react-native": "^0.3.0",
     "moment": "~2.29.1",
     "qs": "^6.10.1",
     "react": "16.13.1",
