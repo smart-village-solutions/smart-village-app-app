@@ -42,7 +42,7 @@
     "apollo-link-http": "1.5.17",
     "apollo-link-rest": "~0.7.3",
     "deep-rename-keys": "~0.2.1",
-    "expo": "^42.0.0",
+    "expo": "^42.0.1",
     "expo-asset": "~8.3.2",
     "expo-blur": "~9.0.3",
     "expo-font": "~9.2.1",

@@ -4022,12 +4022,12 @@
   dependencies:
     compare-versions "^3.4.0"
 
-"@unimodules/react-native-adapter@~6.3.1":
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/@unimodules/react-native-adapter/-/react-native-adapter-6.3.1.tgz#7a7910d95ed7943e639824bd4b27a89815b3fa5f"
-  integrity sha512-gWHdLygtiTwBD+NJ/MxaU+XeFfwDqyIPr2HeJd7k5cg7SXWOpOUZw+OLUslfvqmTYjYN7HTIukAACo6ySm1Qzg==
+"@unimodules/react-native-adapter@~6.3.4":
+  version "6.3.5"
+  resolved "https://registry.yarnpkg.com/@unimodules/react-native-adapter/-/react-native-adapter-6.3.5.tgz#f9a2c65bc08e051aba6104fe75d43e51ff956bcc"
+  integrity sha512-2AuETbNMGp6EEiEKK31CTrkmS9QWuZNNvUN9g+nWN/mgIi+vZQI9RubV+a2r5rlS5QH9l7rk+sjkcGLJoFn4EA==
   dependencies:
-    expo-modules-autolinking "^0.0.2"
+    expo-modules-autolinking "^0.0.3"
     invariant "^2.2.4"
 
 "@wry/context@^0.4.0":
@@ -4714,10 +4714,10 @@ babel-preset-expo@8.3.0:
     babel-plugin-react-native-web "~0.13.6"
     metro-react-native-babel-preset "~0.59.0"
 
-babel-preset-expo@~8.4.0:
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/babel-preset-expo/-/babel-preset-expo-8.4.0.tgz#a05b6619fb74f6f785f0ae278f73bc8ac396da19"
-  integrity sha512-Hr2ZtAPpqafUsYttKsu1fkEzb3aQfxtpZwx9DJE1HwsNhHXXNCKvONHVgnS9mcVwlWxBeJvACEyAOtE+RjqWjA==
+babel-preset-expo@~8.4.1:
+  version "8.4.1"
+  resolved "https://registry.yarnpkg.com/babel-preset-expo/-/babel-preset-expo-8.4.1.tgz#fbe6a2439fe73bb6ec1eff8742310312f8d8c9b2"
+  integrity sha512-bfNX+GWhBCC8SzOzuF5VI5rKftv+E+Leyq83R9h3S+nTzDEtGSnMsRoPCqGHXDbleJApBVKXGZpxWXR5B91HlQ==
   dependencies:
     "@babel/plugin-proposal-decorators" "^7.6.0"
     "@babel/preset-env" "^7.6.3"
@@ -6360,6 +6360,17 @@ expo-asset@~8.3.2:
     path-browserify "^1.0.0"
     url-parse "^1.4.4"
 
+expo-asset@~8.3.3:
+  version "8.3.3"
+  resolved "https://registry.yarnpkg.com/expo-asset/-/expo-asset-8.3.3.tgz#b54ab9999efb3d2086329fc5b1bed04fede8f682"
+  integrity sha512-qCm5d14tzswY8DcmRJ+0WkY9tc3OiVikBAiw2hCMC+bFpK/bEdqy4Zwfd69MFIAJ0taJpHWhdUoBRO0byQLlfg==
+  dependencies:
+    blueimp-md5 "^2.10.0"
+    invariant "^2.2.4"
+    md5-file "^3.2.3"
+    path-browserify "^1.0.0"
+    url-parse "^1.4.4"
+
 expo-blur@~9.0.3:
   version "9.0.3"
   resolved "https://registry.yarnpkg.com/expo-blur/-/expo-blur-9.0.3.tgz#5095b5bd04d000f73b351d0e4736767b86b49bbd"
@@ -6423,10 +6434,10 @@ expo-linking@~2.3.1:
     qs "^6.5.0"
     url-parse "^1.4.4"
 
-expo-modules-autolinking@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/expo-modules-autolinking/-/expo-modules-autolinking-0.0.2.tgz#6015c4e0ba995144145ad29fb2a4b34deba73955"
-  integrity sha512-+tEosOIwQ1MlLbHoWNq9fu5C5itSbmrwzIX3KOoBCgEsHlE/xFJ1NoZCWIxCJ0K49Z4Gzab1wCpT0PhdidImnA==
+expo-modules-autolinking@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/expo-modules-autolinking/-/expo-modules-autolinking-0.0.3.tgz#45ba8cb1798f9339347ae35e96e9cc70eafb3727"
+  integrity sha512-azkCRYj/DxbK4udDuDxA9beYzQTwpJ5a9QA0bBgha2jHtWdFGF4ZZWSY+zNA5mtU3KqzYt8jWHfoqgSvKyu1Aw==
   dependencies:
     chalk "^4.1.0"
     commander "^7.2.0"
@@ -6483,20 +6494,20 @@ expo-splash-screen@~0.11.2:
     "@expo/configure-splash-screen" "0.5.0"
     "@expo/prebuild-config" "^2.0.0"
 
-expo@^42.0.0:
-  version "42.0.0"
-  resolved "https://registry.yarnpkg.com/expo/-/expo-42.0.0.tgz#edf55d1bab197aa6e6883b4b593de2bb87f18e14"
-  integrity sha512-m1/rPzh/Jgmy2Kx8I2wK7bjhMhwcp6oNJcYr3JqUphYYW4k+UgoKw/O5Dztt/Sy+vYAUH1tFAd+wLcMCmPUJbg==
+expo@^42.0.1:
+  version "42.0.3"
+  resolved "https://registry.yarnpkg.com/expo/-/expo-42.0.3.tgz#b92278bcac5c42def707cd1bab8ea2ef077f3120"
+  integrity sha512-m8gqCLIMGf/i7XVAicocHOCOWYlLBLUyufGTXZfPHZ4xstSQUTB5PekzMoXoX115zocNbiNASMzy3SFIJ/MP8A==
   dependencies:
     "@babel/runtime" "^7.1.2"
     "@expo/metro-config" "^0.1.70"
     "@expo/vector-icons" "^12.0.4"
     "@unimodules/core" "~7.1.1"
-    "@unimodules/react-native-adapter" "~6.3.1"
-    babel-preset-expo "~8.4.0"
+    "@unimodules/react-native-adapter" "~6.3.4"
+    babel-preset-expo "~8.4.1"
     cross-spawn "^6.0.5"
     expo-application "~3.2.0"
-    expo-asset "~8.3.2"
+    expo-asset "~8.3.3"
     expo-constants "~11.0.1"
     expo-error-recovery "~2.2.0"
     expo-file-system "~11.1.3"
