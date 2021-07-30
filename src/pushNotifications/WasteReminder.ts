@@ -30,7 +30,7 @@ export const updateReminderSettings = async ({
   const os =
     device.platform === 'ios' || device.platform === 'android' ? device.platform : 'undefined';
 
-  const fetchObj = {
+  const fetchObj: RequestInit = {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -72,7 +72,7 @@ export const getReminderSettings = async () => {
   const requestPath =
     secrets[namespace].serverUrl + staticRestSuffix.wasteReminderRegister + `?token=${pushToken}`;
 
-  const fetchObj = {
+  const fetchObj: RequestInit = {
     headers: {
       Authorization: 'Bearer ' + accessToken,
       'Content-Type': 'application/json'
@@ -103,7 +103,7 @@ export const deleteReminderSetting = async (id: number) => {
     staticRestSuffix.wasteReminderDelete +
     `${id}.json?token=${pushToken}`;
 
-  const fetchObj = {
+  const fetchObj: RequestInit = {
     method: 'DELETE',
     headers: {
       Authorization: 'Bearer ' + accessToken,
