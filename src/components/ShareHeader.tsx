@@ -1,17 +1,12 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { ShareContent, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, consts, Icon, normalize } from '../config';
 import { openShare } from '../helpers';
 
 type Props = {
   headerRight?: boolean;
-  // the type of shareContent should be react-native's ShareContent
-  shareContent?: {
-    message: string;
-    title: string;
-    url: string;
-  };
+  shareContent?: ShareContent;
 };
 
 export const ShareHeader = ({ headerRight, shareContent }: Props) => {
