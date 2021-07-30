@@ -55,7 +55,7 @@
     "expo-splash-screen": "~0.11.2",
     "graphql": "14.6.0",
     "graphql-anywhere": "~4.2.4",
-    "graphql-tag": "2.12.4",
+    "graphql-tag": "^2.12.5",
     "lodash": "~4.17.21",
     "matomo-tracker-react-native": "^0.2.2",
     "moment": "~2.24.0",
