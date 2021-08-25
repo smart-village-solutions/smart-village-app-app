@@ -34,6 +34,7 @@ export const IndexScreen = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
+  const bookmarkable = route.params?.bookmarkable;
   const showFilter =
     (route.params?.showFilter ?? true) &&
     {
@@ -150,7 +151,13 @@ export const IndexScreen = ({ navigation, route }) => {
               );
             }
 
-            const listItems = parseListItemsFromQuery(query, data, false, titleDetail);
+            const listItems = parseListItemsFromQuery(
+              query,
+              data,
+              false,
+              titleDetail,
+              bookmarkable
+            );
 
             if (!listItems) return null;
 

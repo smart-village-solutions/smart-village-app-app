@@ -33,6 +33,7 @@ export const ConstructionSiteNewsWidget = ({ text, additionalProps }: WidgetProp
       titleDetail: texts.screenTitles.constructionSite,
       query: QUERY_TYPES.NEWS_ITEMS,
       queryVariables,
+      bookmarkable: false,
       showFilter: false
     });
   }, [navigation, text, queryVariables]);
