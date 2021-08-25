@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.1.1]
+
+### Added
+
+- new widgets for construction sites as news items and surveys
+
+### Fixed
+
+- survey answer options were not properly displayed in both languages
+- other minor fixes
+
 ## [v2.1.0] :rocket:
 
 This minor version upgrade introduces the survey feature.
