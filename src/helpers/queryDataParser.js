@@ -89,7 +89,7 @@ const parseGenericItems = (data, skipLastDivider) => {
   }));
 };
 
-const parseNewsItems = (data, skipLastDivider, titleDetail) => {
+const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
   return data?.map((newsItem, index) => ({
     id: newsItem.id,
     subtitle: subtitle(momentFormat(newsItem.publishedAt), newsItem.dataProvider?.name),
@@ -105,6 +105,7 @@ const parseNewsItems = (data, skipLastDivider, titleDetail) => {
     },
     routeName: 'Detail',
     params: {
+      bookmarkable,
       title: titleDetail,
       suffix: newsItem.categories?.[0]?.id,
       query: QUERY_TYPES.NEWS_ITEM,
@@ -196,7 +197,13 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
-export const parseListItemsFromQuery = (query, data, skipLastDivider, titleDetail) => {
+export const parseListItemsFromQuery = (
+  query,
+  data,
+  skipLastDivider,
+  titleDetail,
+  bookmarkable
+) => {
   if (!data) return;
 
   switch (query) {
@@ -205,7 +212,7 @@ export const parseListItemsFromQuery = (query, data, skipLastDivider, titleDetai
     case QUERY_TYPES.GENERIC_ITEMS:
       return parseGenericItems(data[query], skipLastDivider);
     case QUERY_TYPES.NEWS_ITEMS:
-      return parseNewsItems(data[query], skipLastDivider, titleDetail);
+      return parseNewsItems(data[query], skipLastDivider, titleDetail, bookmarkable);
     case QUERY_TYPES.POINTS_OF_INTEREST:
       return parsePointOfInterest(data[query], skipLastDivider);
     case QUERY_TYPES.TOURS:
