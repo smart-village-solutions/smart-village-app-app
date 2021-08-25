@@ -33,7 +33,7 @@ export const SurveyWidget = ({ text }: WidgetProps) => {
   return (
     <DefaultWidget
       count={surveys?.ongoing.length}
-      Icon={Icon.Surveys}
+      Icon={(props) => <Icon.Surveys {...props} size={26} />}
       onPress={onPress}
       text={text ?? texts.widgets.surveys}
     />
