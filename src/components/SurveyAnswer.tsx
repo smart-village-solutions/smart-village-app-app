@@ -46,8 +46,12 @@ export const SurveyAnswer = ({
             <Wrapper style={styles.answerContainer}>
               <BoldText>{getAnswerLabel('de', index)}</BoldText>
               <RegularText>{responseOption.title[languages[0]]}</RegularText>
-              <BoldText italic>{getAnswerLabel('pl', index)}</BoldText>
-              <RegularText italic>{responseOption.title[languages[0]]}</RegularText>
+              {!!responseOption.title[languages[1]] && (
+                <>
+                  <BoldText italic>{getAnswerLabel('pl', index)}</BoldText>
+                  <RegularText italic>{responseOption.title[languages[1]]}</RegularText>
+                </>
+              )}
             </Wrapper>
           </WrapperRow>
         </View>
