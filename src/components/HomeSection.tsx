@@ -1,6 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { QueryHookOptions, useQuery } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 
 import { useHomeRefresh } from '../hooks/HomeRefresh';
 import { getQuery } from '../queries';
@@ -21,7 +21,7 @@ type Props = {
   navigate: () => void;
   navigation: StackNavigationProp<any>;
   query: string;
-  queryVariables: QueryHookOptions;
+  queryVariables: { limit?: number };
 };
 
 export const HomeSection = ({
@@ -44,6 +44,7 @@ export const HomeSection = ({
   return (
     <DataListSection
       buttonTitle={buttonTitle}
+      limit={queryVariables?.limit}
       loading={loading}
       navigate={navigate}
       navigation={navigation}
