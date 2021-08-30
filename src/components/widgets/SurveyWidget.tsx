@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useContext } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { consts, Icon, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
 import { useHomeRefresh } from '../../hooks/HomeRefresh';
@@ -33,7 +33,7 @@ export const SurveyWidget = ({ text }: WidgetProps) => {
   return (
     <DefaultWidget
       count={surveys?.ongoing.length}
-      Icon={(props) => <Icon.Surveys {...props} size={26} />}
+      Icon={(props) => <Icon.Surveys {...props} size={normalize(22)} />}
       onPress={onPress}
       text={text ?? texts.widgets.surveys}
     />
