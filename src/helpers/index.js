@@ -1,3 +1,5 @@
+export * from './parser';
+
 export * from './addressHelper';
 export * from './bookmarkHelper';
 export * from './calendarHelper';
@@ -13,7 +15,6 @@ export * from './matomoHelper';
 export * from './momentHelper';
 export * from './personNameHelper';
 export * from './priceHelper';
-export * from './queryDataParser';
 export * from './queryHelper';
 export * from './refreshIntervalHelper';
 export * from './searchHelper';

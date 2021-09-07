@@ -3,6 +3,7 @@ import _camelCase from 'lodash/camelCase';
 export const QUERY_TYPES = {
   APP_USER_CONTENT: 'appUserContent',
   CATEGORIES: 'categories',
+  CONSTRUCTION_SITES: 'constructionSites',
   EVENT_RECORD: 'eventRecord',
   EVENT_RECORDS: 'eventRecords',
   GENERIC_ITEM: 'genericItem',

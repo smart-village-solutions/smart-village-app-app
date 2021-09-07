@@ -18,7 +18,6 @@ import { auth } from './auth';
 import { BookmarkProvider } from './BookmarkProvider';
 import { LoadingContainer } from './components';
 import { colors, consts, namespace, secrets } from './config';
-import { ConstructionSiteProvider } from './ConstructionSiteProvider';
 import { graphqlFetchPolicy, parsedImageAspectRatio, storageHelper } from './helpers';
 import { Navigator } from './navigation/Navigator';
 import NetInfo from './NetInfo';
@@ -222,11 +221,9 @@ export const MainApp = () => (
   <NetworkProvider>
     <OrientationProvider>
       <BookmarkProvider>
-        <ConstructionSiteProvider>
-          <SafeAreaProvider>
-            <MainAppWithApolloProvider />
-          </SafeAreaProvider>
-        </ConstructionSiteProvider>
+        <SafeAreaProvider>
+          <MainAppWithApolloProvider />
+        </SafeAreaProvider>
       </BookmarkProvider>
     </OrientationProvider>
   </NetworkProvider>

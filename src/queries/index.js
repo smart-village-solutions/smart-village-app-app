@@ -2,6 +2,7 @@
 import { QUERY_TYPES } from './types';
 // IMPORT GET QUERIES
 import { GET_CATEGORIES } from './categories';
+import { GET_CONSTRUCTION_SITES } from './constructionSite';
 import {
   GET_EVENT_RECORD,
   GET_EVENT_RECORDS,
@@ -27,6 +28,7 @@ export * from './types';
 export const getQuery = (query, filterOptions = {}) => {
   const QUERIES = {
     [QUERY_TYPES.CATEGORIES]: GET_CATEGORIES,
+    [QUERY_TYPES.CONSTRUCTION_SITES]: GET_CONSTRUCTION_SITES,
     [QUERY_TYPES.EVENT_RECORD]: GET_EVENT_RECORD,
     [QUERY_TYPES.EVENT_RECORDS]: filterOptions.showEventsFilter
       ? GET_EVENT_RECORDS_AND_CATEGORIES
