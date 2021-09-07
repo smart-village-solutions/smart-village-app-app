@@ -1,15 +1,12 @@
 import { useNavigation } from '@react-navigation/core';
 import { useCallback } from 'react';
+import { ShareContent } from 'react-native';
 
 export const useOpenWebScreen = (
   title: string,
   link?: string,
   rootRouteName?: string,
-  shareContent?: {
-    message: string;
-    title: string;
-    url: string;
-  }
+  shareContent?: ShareContent
 ) => {
   const navigation = useNavigation();
 
