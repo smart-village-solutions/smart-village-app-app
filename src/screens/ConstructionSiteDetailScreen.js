@@ -69,7 +69,7 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
   const extendedTitle = (category ? `${category} - ` : '') + title;
   const formattedDates = formatDates(startDate, endDate);
 
-  if (loading && !refreshing) {
+  if (loading) {
     return <LoadingSpinner loading />;
   }
 
