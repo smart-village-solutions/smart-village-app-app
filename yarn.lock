@@ -6438,6 +6438,13 @@ expo-linking@~2.3.1:
     qs "^6.5.0"
     url-parse "^1.4.4"
 
+expo-localization@^10.2.0:
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/expo-localization/-/expo-localization-10.2.0.tgz#cf7e1eeea4593711e0be832888ae25a0cd89d341"
+  integrity sha512-fe72BnW3jGmgIqyfYoGAmG3o83+DJ6pQotsuIGzo+ZasqBw0ho6TPWRS64B0nt+8ZSLzJ9n1WxInH+Z8zYzb7w==
+  dependencies:
+    rtl-detect "^1.0.2"
+
 expo-modules-autolinking@^0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/expo-modules-autolinking/-/expo-modules-autolinking-0.0.2.tgz#6015c4e0ba995144145ad29fb2a4b34deba73955"
@@ -8865,10 +8872,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-matomo-tracker-react-native@^0.2.2:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/matomo-tracker-react-native/-/matomo-tracker-react-native-0.2.3.tgz#ce800bf5e31fc1099460f5c212cc54fb192edc32"
-  integrity sha512-VV1izaajMDAiEGMVdmyjvr2anqB98FycZBKhWYRLLt4T8wxL+O+bbHweHPmC41Bma/u5bHzXJPe5MSve107UfA==
+matomo-tracker-react-native@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/matomo-tracker-react-native/-/matomo-tracker-react-native-0.3.0.tgz#423b69eff93885b127f34a96f7c5233de06e4014"
+  integrity sha512-aZsAlZ1QquxtLiu7eU27PY1Gxedde9DhCJJSbCAOugc0pwUhnH74dJtG4S29FUnRZgsquPIoK1K4Zx+QwdZJ7w==
 
 md5-file@^3.2.3:
   version "3.2.3"
@@ -10923,6 +10930,11 @@ rsvp@^4.8.4:
   version "4.8.4"
   resolved "https://registry.yarnpkg.com/rsvp/-/rsvp-4.8.4.tgz#b50e6b34583f3dd89329a2f23a8a2be072845911"
   integrity sha512-6FomvYPfs+Jy9TfXmBpBuMWNH94SgCsZmJKcanySzgNNP6LjWxBvyLTa9KaMfDDM5oxRfrKDB0r/qeRsLwnBfA==
+
+rtl-detect@^1.0.2:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/rtl-detect/-/rtl-detect-1.0.4.tgz#40ae0ea7302a150b96bc75af7d749607392ecac6"
+  integrity sha512-EBR4I2VDSSYr7PkBmFy04uhycIpDKp+21p/jARYXlCSjQksTBQcJ0HFUPOO79EPPH5JS6VAhiIQbycf0O3JAxQ==
 
 run-async@^2.2.0:
   version "2.3.0"
