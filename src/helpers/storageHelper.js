@@ -27,6 +27,8 @@ export const logCurrentStorage = (withoutApollo = false) => {
         }
       }
 
+      // eslint-disable-next-line no-console
+      // this is intended to be logged if the method is called
       console.log('CURRENT STORAGE: ', myStorage);
     });
   });
