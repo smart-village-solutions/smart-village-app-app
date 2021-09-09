@@ -13,6 +13,7 @@ import {
   ConstructionSiteOverviewScreen,
   DataProviderScreen,
   DetailScreen,
+  EncounterHomeScreen,
   FormScreen,
   getTilesScreen,
   HomeScreen,
@@ -107,6 +108,11 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Detail,
       screenComponent: DetailScreen,
       screenOptions: detailScreenOptions(isDrawer)
+    },
+    {
+      routeName: ScreenName.EncounterHome,
+      screenComponent: EncounterHomeScreen,
+      screenOptions: { title: texts.screenTitles.encounterHome }
     },
     {
       routeName: ScreenName.Form,
