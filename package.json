@@ -31,7 +31,7 @@
     "@react-native-community/datetimepicker": "3.5.2",
     "@react-native-community/masked-view": "0.1.10",
     "@react-native-community/netinfo": "6.0.0",
-    "@react-navigation/bottom-tabs": "^5.11.13",
+    "@react-navigation/bottom-tabs": "5.11.15",
     "@react-navigation/drawer": "5.12.9",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
