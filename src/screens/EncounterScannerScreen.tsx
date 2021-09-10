@@ -16,7 +16,7 @@ import {
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { device, texts } from '../config';
 import { useCreateEncounter, useEncounterUser } from '../hooks';
-import { User } from '../types';
+import { ScreenName, User } from '../types';
 
 const showErrorAlert = () =>
   Alert.alert(texts.encounter.errorScanTitle, texts.encounter.errorScanBody);
@@ -38,9 +38,7 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
 
   const onCreationSuccess = useCallback(
     (data: User) => {
-      // TODO: add navigation here instead of console.log
-      // navigation.navigate(ScreenName.EncounterUserDetails, { data });
-      console.log(data);
+      navigation.navigate(ScreenName.EncounterUserDetail, { data });
     },
     [navigation]
   );

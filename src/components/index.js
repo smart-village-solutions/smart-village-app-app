@@ -22,6 +22,7 @@ export * from './DefaultKeyboardAvoidingView';
 export * from './DiagonalGradient';
 export * from './DropdownHeader';
 export * from './DropdownSelect';
+export * from './EncounterUserDetails';
 export * from './HeaderLeft';
 export * from './HomeSection';
 export * from './HtmlView';

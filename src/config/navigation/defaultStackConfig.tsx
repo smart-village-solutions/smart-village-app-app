@@ -1,3 +1,6 @@
+import React from 'react';
+
+import { HeaderLeft } from '../../components';
 import {
   defaultStackNavigatorScreenOptions,
   detailScreenOptions,
@@ -15,6 +18,7 @@ import {
   DetailScreen,
   EncounterHomeScreen,
   EncounterScannerScreen,
+  EncounterUserDetailScreen,
   FormScreen,
   getTilesScreen,
   HomeScreen,
@@ -119,6 +123,16 @@ export const defaultStackConfig = ({
       routeName: ScreenName.EncounterScanner,
       screenComponent: EncounterScannerScreen,
       screenOptions: { title: texts.screenTitles.encounterHome }
+    },
+    {
+      routeName: ScreenName.EncounterUserDetail,
+      screenComponent: EncounterUserDetailScreen,
+      screenOptions: ({ navigation }) => ({
+        title: texts.screenTitles.encounterHome,
+        headerLeft: () => (
+          <HeaderLeft onPress={() => navigation.navigate(ScreenName.EncounterHome)} />
+        )
+      })
     },
     {
       routeName: ScreenName.Form,
