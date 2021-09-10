@@ -17,9 +17,11 @@ import {
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { colors, device, Icon, normalize, texts } from '../config';
 import { useEncounterUser, useQRValue } from '../hooks';
+import { ScreenName } from '../types';
 
 // TODO: accesibility labels
-export const EncounterHomeScreen = () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const EncounterHomeScreen = ({ navigation }: any) => {
   const { loading: loadingQr, qrId } = useQRValue();
   const { loading: loadingUser, firstName, lastName, verified } = useEncounterUser();
 
@@ -65,7 +67,7 @@ export const EncounterHomeScreen = () => {
         <Wrapper>
           <Button
             onPress={() => {
-              // navigate to scanner
+              navigation.navigate(ScreenName.EncounterScanner);
             }}
             title={texts.encounter.newEncounter}
           />

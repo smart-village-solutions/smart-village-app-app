@@ -1,3 +1,5 @@
+export * from './encounter';
+
 export * from './Address';
 export * from './ConstructionSite';
 export * from './Contact';
