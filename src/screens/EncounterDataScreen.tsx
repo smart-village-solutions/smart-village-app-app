@@ -1,13 +1,28 @@
+import {
+  launchImageLibraryAsync,
+  MediaTypeOptions,
+  PermissionStatus,
+  requestMediaLibraryPermissionsAsync
+} from 'expo-image-picker';
 import { noop } from 'lodash';
-import React, { useState } from 'react';
-import { useEffect } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  Alert,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { normalize } from 'react-native-elements';
 
 import {
   Button,
   DateTimePicker,
   EncounterList,
+  ImageWithBadge,
+  LoadingSpinner,
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
@@ -15,8 +30,6 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../components';
-import { ImageWithBadge } from '../components/encounter/ImageWithBadge';
-import { LoadingSpinner } from '../components/LoadingSpinner';
 import { colors, Icon, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useEncounterUser } from '../hooks';
@@ -26,6 +39,7 @@ const Label = ({ value }: { value: string }) => <RegularText small>{value}</Regu
 // TODO: accesibility labels
 export const EncounterDataScreen = () => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+  const [imageUri, setImageUri] = useState<string>();
   const [givenName, setGivenName] = useState<string>();
   const [familyName, setFamilyName] = useState<string>();
   const [birthDate, setBirthDate] = useState<Date>();
@@ -35,6 +49,29 @@ export const EncounterDataScreen = () => {
 
   // TODO: implement
   const updateUserData = noop;
+
+  const selectImage = useCallback(async () => {
+    const { status } = await requestMediaLibraryPermissionsAsync();
+
+    if (status !== PermissionStatus.GRANTED) {
+      Alert.alert(
+        'Hinweis',
+        'Es fehlt die Berechtigung Bilder aus der Medienbibliothek auszuwählen.'
+      );
+      return;
+    }
+
+    const result = await launchImageLibraryAsync({
+      mediaTypes: MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1
+    });
+
+    if (!result.cancelled) {
+      setImageUri(result.uri);
+    }
+  }, []);
 
   useEffect(() => {
     if (userData.loading) {
@@ -67,10 +104,14 @@ export const EncounterDataScreen = () => {
               <View style={styles.editIconContainer}>
                 <Icon.EditSetting color={colors.transparent} />
               </View>
-              <ImageWithBadge imageUri={userData.imageUri} verified={userData.verified} />
-              <View style={styles.editIconContainer}>
+              <ImageWithBadge
+                imageUri={imageUri}
+                verified={userData.verified}
+                placeholder={userData.imageUri}
+              />
+              <TouchableOpacity onPress={selectImage} style={styles.editIconContainer}>
                 <Icon.EditSetting color={colors.placeholder} />
-              </View>
+              </TouchableOpacity>
             </WrapperRow>
           </Wrapper>
           <Wrapper>
@@ -104,7 +145,7 @@ export const EncounterDataScreen = () => {
                 editable={false}
                 placeholder={texts.encounter.birthDate}
                 style={styles.inputField}
-                value={momentFormat(birthDate?.valueOf() ?? 0, undefined, 'x')}
+                value={momentFormat(birthDate?.toISOString() ?? 0)}
               />
             </Pressable>
           </Wrapper>

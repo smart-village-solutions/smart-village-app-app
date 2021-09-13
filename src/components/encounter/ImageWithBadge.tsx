@@ -7,13 +7,21 @@ import { User } from '../../types';
 import { Image } from '../Image';
 
 import { ImageBadge } from './ImageBadge';
-type Props = Pick<User, 'imageUri' | 'verified'>;
-export const ImageWithBadge = ({ imageUri, verified }: Props) => {
+
+type PropsWithoutPlaceholder = Pick<User, 'imageUri' | 'verified'>;
+type Props =
+  | (PropsWithoutPlaceholder & { placeholder?: string })
+  | (Omit<PropsWithoutPlaceholder, 'imageUri'> &
+      Partial<Pick<PropsWithoutPlaceholder, 'imageUri'>> & { placeholder: string });
+
+export const ImageWithBadge = ({ verified, ...props }: Props) => {
+  const uri = props.imageUri !== undefined ? props.imageUri : props.placeholder;
+
   return (
     <View style={styles.container}>
       <View>
         <View style={styles.circle}>
-          <Image source={{ uri: imageUri }} resizeMode="contain" />
+          <Image source={{ uri }} resizeMode="contain" />
         </View>
         <ImageBadge verified={verified} />
       </View>

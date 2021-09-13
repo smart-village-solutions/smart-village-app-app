@@ -48,18 +48,27 @@ export const Image = ({
     // -> https://juliangaramendy.dev/use-promise-subscription/
     let mounted = true;
 
-    if (refreshInterval === undefined) {
-      source.uri
-        ? CacheManager.get(source.uri)
-            .getPath()
-            .then((path) => mounted && setUri(path))
-            .catch((err) =>
-              console.warn('An error occurred with cache management for an image', err)
-            )
-        : mounted && setUri(source);
-    } else {
-      // add an artificial query param to the end of the url to trigger a rerender and refetch
-      mounted && setUri(addQueryParam(source.uri ?? source, `svaRefreshCount=${timestamp}`));
+    effect: {
+      if (source.uri && source.uri.startsWith('file:///')) {
+        setUri(source.uri);
+
+        // we have a local image and can return immediately
+        break effect;
+      }
+
+      if (refreshInterval === undefined) {
+        source.uri
+          ? CacheManager.get(source.uri)
+              .getPath()
+              .then((path) => mounted && setUri(path))
+              .catch((err) =>
+                console.warn('An error occurred with cache management for an image', err)
+              )
+          : mounted && setUri(source);
+      } else {
+        // add an artificial query param to the end of the url to trigger a rerender and refetch
+        mounted && setUri(addQueryParam(source.uri ?? source, `svaRefreshCount=${timestamp}`));
+      }
     }
 
     return () => (mounted = false);
