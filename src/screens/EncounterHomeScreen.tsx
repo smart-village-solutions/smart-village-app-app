@@ -74,7 +74,7 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
           <Button
             invert
             onPress={() => {
-              // navigate to data and history
+              navigation.navigate(ScreenName.EncounterData);
             }}
             title={texts.encounter.myData}
           />

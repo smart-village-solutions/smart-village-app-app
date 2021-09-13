@@ -16,6 +16,7 @@ import {
   ConstructionSiteOverviewScreen,
   DataProviderScreen,
   DetailScreen,
+  EncounterDataScreen,
   EncounterHomeScreen,
   EncounterScannerScreen,
   EncounterUserDetailScreen,
@@ -113,6 +114,11 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Detail,
       screenComponent: DetailScreen,
       screenOptions: detailScreenOptions(isDrawer)
+    },
+    {
+      routeName: ScreenName.EncounterData,
+      screenComponent: EncounterDataScreen,
+      screenOptions: { title: texts.screenTitles.encounterHome }
     },
     {
       routeName: ScreenName.EncounterHome,
