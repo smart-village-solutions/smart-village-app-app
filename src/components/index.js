@@ -1,4 +1,5 @@
 export * from './bookmarks';
+export * from './encounter';
 export * from './infoCard';
 export * from './map';
 export * from './screens';
@@ -22,7 +23,6 @@ export * from './DefaultKeyboardAvoidingView';
 export * from './DiagonalGradient';
 export * from './DropdownHeader';
 export * from './DropdownSelect';
-export * from './EncounterUserDetails';
 export * from './HeaderLeft';
 export * from './HomeSection';
 export * from './HtmlView';
