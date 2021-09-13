@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { isUser } from '../../jsonValidation';
-import { User } from '../../types';
+import { Encounter, User } from '../../types';
 
 const createEncounterAsync = async (
   qrId: string,
@@ -55,4 +55,16 @@ export const useCreateEncounter = (
   }, []);
 
   return { createEncounter, loading };
+};
+
+const dummyEncounters: Encounter[] = [
+  { createdAt: new Date().toISOString(), encounterId: '32155' },
+  { createdAt: new Date().toISOString(), encounterId: '12125' },
+  { createdAt: new Date().toISOString(), encounterId: '92444' },
+  { createdAt: new Date().toISOString(), encounterId: '42185' }
+];
+
+export const useEncounterList = (): { loading: boolean; data: Encounter[] } => {
+  // TODO: implement api call
+  return { data: dummyEncounters, loading: false };
 };

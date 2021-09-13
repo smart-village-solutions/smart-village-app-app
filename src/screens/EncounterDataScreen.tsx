@@ -7,6 +7,7 @@ import { normalize } from 'react-native-elements';
 import {
   Button,
   DateTimePicker,
+  EncounterList,
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
@@ -139,21 +140,16 @@ export const EncounterDataScreen = () => {
             <Button onPress={updateUserData} title={texts.encounter.saveChanges} />
           </Wrapper>
         </WrapperWithOrientation>
-        <SectionHeader title={texts.encounter.history} />
-        <WrapperWithOrientation>
-          <Wrapper>
-            <RegularText>{texts.encounter.noHistoryYet}</RegularText>
-          </Wrapper>
-          <DateTimePicker
-            initialTime={birthDate}
-            mode="date"
-            onUpdate={(time) => {
-              setBirthDate(time);
-            }}
-            setVisible={setIsDatePickerVisible}
-            visible={isDatePickerVisible}
-          />
-        </WrapperWithOrientation>
+        <EncounterList />
+        <DateTimePicker
+          initialTime={birthDate}
+          mode="date"
+          onUpdate={(time) => {
+            setBirthDate(time);
+          }}
+          setVisible={setIsDatePickerVisible}
+          visible={isDatePickerVisible}
+        />
       </ScrollView>
     </SafeAreaViewFlex>
   );
