@@ -1,7 +1,8 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import { useCallback, useEffect, useState } from 'react';
 
 import { createEncounterAsync, getEncountersAsync } from '../../encounterApi';
-import { Encounter, User } from '../../types';
+import { Encounter, ScreenName, User } from '../../types';
 
 export const useCreateEncounter = (
   onSuccess: (user: User) => void,
@@ -51,4 +52,38 @@ export const useEncounterList = (): {
   }, []);
 
   return { loading, data };
+};
+
+const POLLING_INTERVAL = 1000;
+
+const dummy: User = {
+  birthDate: new Date(42).toISOString(),
+  firstName: 'Max',
+  imageUri: 'https://smart-village.solutions/wp-content/uploads/2020/01/Services.png',
+  lastName: 'Mustermann',
+  phone: '0123 123123',
+  verified: false
+};
+
+export const usePollingForEncounters = (navigation: StackNavigationProp<any>, qrId?: string) => {
+  useEffect(() => {
+    if (!qrId) {
+      return;
+    }
+
+    const intervalId = setInterval(() => {
+      // TODO: use API call here
+      // TODO: check if we need/want a "mounted" variable here
+      const testing = false;
+      const newScans = testing ? new Array<User>(Math.floor(Math.random() * 3)).fill(dummy) : [];
+
+      newScans.forEach((data) => {
+        navigation.push(ScreenName.EncounterUserDetail, { data, fromPoll: true });
+      });
+      // parse new data from result (createdAt filter for query?)
+      // navigation.push onto user detail screen when new data has been added (for each new set of data)
+    }, POLLING_INTERVAL);
+
+    return () => clearInterval(intervalId);
+  }, [navigation, qrId]);
 };

@@ -139,10 +139,19 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.EncounterUserDetail,
       screenComponent: EncounterUserDetailScreen,
-      screenOptions: ({ navigation }) => ({
+      screenOptions: ({ navigation, route }) => ({
         title: texts.screenTitles.encounterHome,
         headerLeft: () => (
-          <HeaderLeft onPress={() => navigation.navigate(ScreenName.EncounterHome)} />
+          <HeaderLeft
+            onPress={() => {
+              // @ts-expect-error we are lacking proper param types here
+              if (route.params?.fromPoll) {
+                navigation.goBack();
+              } else {
+                navigation.navigate(ScreenName.EncounterHome);
+              }
+            }}
+          />
         )
       })
     },
