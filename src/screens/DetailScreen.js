@@ -14,7 +14,7 @@ import {
   Tour
 } from '../components';
 import { colors, consts } from '../config';
-import { navigatorConfig } from '../config/navigation';
+import { navigatorConfig } from '../config/navigation/config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useRefreshTime } from '../hooks';
 import { screenOptionsWithShare } from '../navigation/screenOptions';
