@@ -22,8 +22,8 @@ import {
   DateTimePicker,
   EncounterList,
   ImageWithBadge,
+  Label,
   LoadingSpinner,
-  RegularText,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
@@ -33,8 +33,6 @@ import {
 import { colors, Icon, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useEncounterUser } from '../hooks';
-
-const Label = ({ value }: { value: string }) => <RegularText small>{value}</RegularText>;
 
 // TODO: accesibility labels
 export const EncounterDataScreen = () => {
@@ -54,10 +52,7 @@ export const EncounterDataScreen = () => {
     const { status } = await requestMediaLibraryPermissionsAsync();
 
     if (status !== PermissionStatus.GRANTED) {
-      Alert.alert(
-        'Hinweis',
-        'Es fehlt die Berechtigung Bilder aus der Medienbibliothek auszuwählen.'
-      );
+      Alert.alert(texts.errors.image.title, texts.errors.image.body);
       return;
     }
 
@@ -98,7 +93,7 @@ export const EncounterDataScreen = () => {
         <SectionHeader title={texts.encounter.dataTitle} />
         <WrapperWithOrientation>
           <Wrapper>
-            <Label value={texts.encounter.profilePhoto} />
+            <Label>{texts.encounter.profilePhoto}</Label>
             <WrapperRow spaceBetween>
               {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
               <View style={styles.editIconContainer}>
@@ -114,8 +109,8 @@ export const EncounterDataScreen = () => {
               </TouchableOpacity>
             </WrapperRow>
           </Wrapper>
-          <Wrapper>
-            <Label value={texts.encounter.givenName} />
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.givenName}</Label>
             <TextInput
               onChangeText={setGivenName}
               placeholder={texts.encounter.givenName}
@@ -123,8 +118,8 @@ export const EncounterDataScreen = () => {
               value={givenName}
             />
           </Wrapper>
-          <Wrapper>
-            <Label value={texts.encounter.familyName} />
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.familyName}</Label>
             <TextInput
               onChangeText={setFamilyName}
               placeholder={texts.encounter.familyName}
@@ -132,8 +127,8 @@ export const EncounterDataScreen = () => {
               value={familyName}
             />
           </Wrapper>
-          <Wrapper>
-            <Label value={texts.encounter.birthDate} />
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.birthDate}</Label>
             <Pressable
               onPress={() => {
                 setIsDatePickerVisible(false);
@@ -149,8 +144,8 @@ export const EncounterDataScreen = () => {
               />
             </Pressable>
           </Wrapper>
-          <Wrapper>
-            <Label value={texts.encounter.phone} />
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.phone}</Label>
             <TextInput
               keyboardType="phone-pad"
               onChangeText={setPhone}
@@ -159,18 +154,18 @@ export const EncounterDataScreen = () => {
               value={phone}
             />
           </Wrapper>
-          <Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
             {/* TODO: Add Info */}
-            <Label value={texts.encounter.verified} />
+            <Label>{texts.encounter.verified}</Label>
             <TextInput
               editable={false}
               style={[styles.inputField, styles.displayField]}
               value={userData.verified ? texts.encounter.verified : texts.encounter.notVerified}
             />
           </Wrapper>
-          <Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
             {/* TODO: Add Info */}
-            <Label value={texts.encounter.id} />
+            <Label>{texts.encounter.id}</Label>
             <TextInput
               editable={false}
               style={[styles.inputField, styles.displayField]}
@@ -212,5 +207,8 @@ const styles = StyleSheet.create({
     color: colors.darkText,
     paddingHorizontal: normalize(14),
     paddingVertical: normalize(8)
+  },
+  noPaddingTop: {
+    paddingTop: 0
   }
 });

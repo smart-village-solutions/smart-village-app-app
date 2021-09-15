@@ -94,6 +94,10 @@ export const texts = {
     verified: 'Verifiziert'
   },
   errors: {
+    image: {
+      body: 'Es fehlt die Berechtigung Bilder aus der Medienbibliothek auszuwählen.',
+      title: 'Hinweis'
+    },
     noData: 'Bitte überprüfen Sie Ihre Internetverbindung.',
     unexpected: 'Es ist ein unerwarteter Fehler aufgetreten.'
   },
