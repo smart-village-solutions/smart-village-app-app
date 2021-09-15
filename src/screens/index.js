@@ -7,6 +7,7 @@ export * from './DataProviderScreen';
 export * from './DetailScreen';
 export * from './EncounterDataScreen';
 export * from './EncounterHomeScreen';
+export * from './EncounterRegistrationScreen';
 export * from './EncounterScannerScreen';
 export * from './EncounterUserDetailScreen';
 export * from './FormScreen';
