@@ -23,7 +23,7 @@ const addQueryParam = (url, param) => {
 };
 
 export const Image = ({
-  source,
+  source: sourceProp,
   message,
   style,
   containerStyle,
@@ -33,7 +33,7 @@ export const Image = ({
   borderRadius,
   refreshInterval
 }) => {
-  const [uri, setUri] = useState(null);
+  const [source, setSource] = useState(null);
   const { globalSettings } = useContext(SettingsContext);
   const timestamp = useInterval(refreshInterval);
 
@@ -49,49 +49,59 @@ export const Image = ({
     let mounted = true;
 
     effect: {
-      if (source.uri && source.uri.startsWith('file:///')) {
-        setUri(source.uri);
+      // we do not want the refreshInterval or the caching to affect required static images or local images
+      if (!sourceProp.uri || sourceProp.uri.startsWith('file:///')) {
+        setSource(sourceProp);
 
-        // we have a local image and can return immediately
         break effect;
       }
 
-      if (refreshInterval === undefined) {
-        source.uri
-          ? CacheManager.get(source.uri)
-              .getPath()
-              .then((path) => mounted && setUri(path))
-              .catch((err) =>
-                console.warn('An error occurred with cache management for an image', err)
-              )
-          : mounted && setUri(source);
-      } else {
-        // add an artificial query param to the end of the url to trigger a rerender and refetch
-        mounted && setUri(addQueryParam(source.uri ?? source, `svaRefreshCount=${timestamp}`));
+      if (refreshInterval !== undefined) {
+        setSource({
+          uri: addQueryParam(sourceProp.uri, `svaRefreshCount=${timestamp}`)
+        });
+
+        // we do not want to use the cache when the refreshInterval is defined and can return immediately
+        break effect;
       }
+
+      sourceProp.uri
+        ? CacheManager.get(sourceProp.uri)
+            .getPath()
+            .then((path) => {
+              mounted && setSource({ uri: path });
+            })
+            .catch((err) =>
+              console.warn(
+                'An error occurred with cache management for an image',
+                sourceProp.uri,
+                err
+              )
+            )
+        : mounted && setSource(sourceProp);
     }
 
     return () => (mounted = false);
-  }, [timestamp, refreshInterval, source, setUri]);
+  }, [timestamp, refreshInterval, sourceProp, setSource]);
 
   return (
     <View>
       <RNEImage
-        source={uri ? (source.uri ? { uri } : uri) : null}
+        source={source}
         style={style || stylesForImage(aspectRatio).defaultStyle}
         containerStyle={containerStyle}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}
-        accessible={!!source?.captionText}
-        accessibilityLabel={`${source.captionText ? source.captionText : ''} ${
+        accessible={!!sourceProp?.captionText}
+        accessibilityLabel={`${sourceProp.captionText ? sourceProp.captionText : ''} ${
           consts.a11yLabel.image
         }`}
         resizeMode={resizeMode}
         borderRadius={borderRadius}
       >
         {!!message && <ImageMessage message={message} />}
-        {!!globalSettings?.showImageRights && !!source?.copyright && (
-          <ImageRights imageRights={source.copyright} />
+        {!!globalSettings?.showImageRights && !!sourceProp?.copyright && (
+          <ImageRights imageRights={sourceProp.copyright} />
         )}
       </RNEImage>
     </View>
