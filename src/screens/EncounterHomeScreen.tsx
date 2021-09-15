@@ -1,5 +1,5 @@
 import * as Linking from 'expo-linking';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import QRCode from 'react-native-qrcode-svg';
@@ -10,6 +10,7 @@ import {
   DiagonalGradient,
   RegularText,
   SectionHeader,
+  Touchable,
   Wrapper,
   WrapperRow,
   WrapperWithOrientation
@@ -17,6 +18,7 @@ import {
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { colors, device, Icon, normalize, texts } from '../config';
 import { useEncounterUser, useQRValue } from '../hooks';
+import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
 
 // TODO: accesibility labels
@@ -28,6 +30,14 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
   const loading = loadingQr || loadingUser;
 
   const qrValue = Linking.createURL('encounter', { queryParams: { qrId } });
+
+  const onPressInfo = useCallback(() => {
+    navigation.navigate(ScreenName.Html, {
+      title: texts.screenTitles.encounterHome,
+      query: QUERY_TYPES.PUBLIC_HTML_FILE,
+      queryVariables: { name: 'encounter-verification' }
+    });
+  }, [navigation]);
 
   if (loading) {
     return <LoadingSpinner loading />;
@@ -52,8 +62,9 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
                 <RegularText lightest small textAlign="bottom">
                   {texts.encounter.status}
                 </RegularText>
-                {/* TODO: add information */}
-                <Icon.Info color={colors.lightestText} size={normalize(18)} style={styles.icon} />
+                <Touchable onPress={onPressInfo}>
+                  <Icon.Info color={colors.lightestText} size={normalize(18)} style={styles.icon} />
+                </Touchable>
               </WrapperRow>
               <RegularText lightest>
                 {verified ? texts.encounter.verified : texts.encounter.notVerified}

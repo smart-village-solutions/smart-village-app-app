@@ -1,5 +1,6 @@
+import { StackScreenProps } from '@react-navigation/stack';
 import { noop } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { normalize } from 'react-native-elements';
 
@@ -12,6 +13,7 @@ import {
   LoadingSpinner,
   SafeAreaViewFlex,
   SectionHeader,
+  Touchable,
   Wrapper,
   WrapperRow,
   WrapperWithOrientation
@@ -19,21 +21,43 @@ import {
 import { colors, Icon, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useEncounterUser, useSelectImage } from '../hooks';
+import { QUERY_TYPES } from '../queries';
+import { ScreenName } from '../types';
 
 // TODO: accesibility labels
-export const EncounterDataScreen = () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [firstName, setFirstName] = useState<string>();
   const [lastName, setLastName] = useState<string>();
   const [birthDate, setBirthDate] = useState<Date>();
   const [phone, setPhone] = useState<string>();
+  const [userIdDisplayValue, setUserIdDisplayValue] = useState<string>();
 
   const { imageUri, selectImage } = useSelectImage();
 
   const userData = useEncounterUser();
 
+  const onPressInfoVerification = useCallback(() => {
+    navigation.navigate(ScreenName.Html, {
+      title: texts.screenTitles.encounterHome,
+      query: QUERY_TYPES.PUBLIC_HTML_FILE,
+      queryVariables: { name: 'encounter-verification' }
+    });
+  }, [navigation]);
+
+  const onPressInfoId = useCallback(() => {
+    navigation.navigate(ScreenName.Html, {
+      title: texts.screenTitles.encounterHome,
+      query: QUERY_TYPES.PUBLIC_HTML_FILE,
+      queryVariables: { name: 'encounter-user-id' }
+    });
+  }, [navigation]);
+
   // TODO: implement
   const updateUserData = noop;
+
+  const userIdInputRef = useRef<TextInput>(null);
 
   useEffect(() => {
     if (userData.loading) {
@@ -48,6 +72,7 @@ export const EncounterDataScreen = () => {
     setFirstName(userData.firstName);
     setLastName(userData.lastName);
     setPhone(userData.phone);
+    setUserIdDisplayValue(userData.userId);
   }, [userData]);
 
   if (userData.loading) {
@@ -122,8 +147,12 @@ export const EncounterDataScreen = () => {
             />
           </Wrapper>
           <Wrapper style={styles.noPaddingTop}>
-            {/* TODO: Add Info */}
-            <Label>{texts.encounter.verified}</Label>
+            <WrapperRow style={styles.infoLabelContainer}>
+              <Label>{texts.encounter.verified}</Label>
+              <Touchable onPress={onPressInfoVerification}>
+                <Icon.Info color={colors.darkText} size={normalize(18)} style={styles.icon} />
+              </Touchable>
+            </WrapperRow>
             <TextInput
               editable={false}
               style={[styles.inputField, styles.displayField]}
@@ -131,12 +160,20 @@ export const EncounterDataScreen = () => {
             />
           </Wrapper>
           <Wrapper style={styles.noPaddingTop}>
-            {/* TODO: Add Info */}
-            <Label>{texts.encounter.id}</Label>
+            <WrapperRow style={styles.infoLabelContainer}>
+              <Label>{texts.encounter.id}</Label>
+              <Touchable onPress={onPressInfoId}>
+                <Icon.Info color={colors.darkText} size={normalize(18)} style={styles.icon} />
+              </Touchable>
+            </WrapperRow>
             <TextInput
-              editable={false}
+              onChangeText={setUserIdDisplayValue}
+              onBlur={() => setUserIdDisplayValue(userData.userId)}
+              onTouchStart={() => userIdInputRef.current?.focus()}
+              ref={userIdInputRef}
+              selectTextOnFocus={true}
               style={[styles.inputField, styles.displayField]}
-              value={userData.userId}
+              value={userIdDisplayValue}
             />
           </Wrapper>
           <Wrapper>
@@ -167,6 +204,8 @@ const styles = StyleSheet.create({
     borderColor: colors.placeholder,
     borderWidth: 1
   },
+  icon: { marginLeft: normalize(8) },
+  infoLabelContainer: { alignItems: 'center' },
   inputField: {
     backgroundColor: colors.backgroundRgba,
     fontFamily: 'regular',

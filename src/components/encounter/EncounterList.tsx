@@ -19,7 +19,7 @@ const EncounterEntry = ({ encounter }: { encounter: Encounter }) => {
         <RegularText>{momentFormat(encounter.createdAt, 'HH:mm')}</RegularText>
       </Wrapper>
       <Wrapper>
-        <RegularText>{`${texts.encounter.id}: ${encounter.encounterId}`}</RegularText>
+        <RegularText selectable>{`${texts.encounter.id}: ${encounter.encounterId}`}</RegularText>
       </Wrapper>
     </WrapperRow>
   );
