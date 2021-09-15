@@ -33,8 +33,8 @@ import { useSelectImage } from '../hooks';
 // TODO: accesibility labels
 export const EncounterRegistrationScreen = () => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [givenName, setGivenName] = useState<string>();
-  const [familyName, setFamilyName] = useState<string>();
+  const [firstName, setFirstName] = useState<string>();
+  const [lastName, setLastName] = useState<string>();
   const [birthDate, setBirthDate] = useState<Date>();
   const [phone, setPhone] = useState<string>();
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
@@ -42,8 +42,8 @@ export const EncounterRegistrationScreen = () => {
   const { imageUri, selectImage } = useSelectImage();
 
   const checkValuesForSubmission = useCallback(() => {
-    return !!(givenName && familyName && birthDate && phone && imageUri && isPrivacyChecked);
-  }, [givenName, familyName, birthDate, phone, imageUri, isPrivacyChecked]);
+    return !!(firstName && lastName && birthDate && phone && imageUri && isPrivacyChecked);
+  }, [firstName, lastName, birthDate, phone, imageUri, isPrivacyChecked]);
 
   const onPressRegister = useCallback(() => {
     if (!checkValuesForSubmission()) {
@@ -66,21 +66,21 @@ export const EncounterRegistrationScreen = () => {
             <BoldText>{texts.encounter.registrationHint}</BoldText>
           </Wrapper>
           <Wrapper style={styles.noPaddingTop}>
-            <Label>{texts.encounter.givenName}</Label>
+            <Label>{texts.encounter.firstName}</Label>
             <TextInput
-              onChangeText={setGivenName}
-              placeholder={texts.encounter.givenName}
+              onChangeText={setFirstName}
+              placeholder={texts.encounter.firstName}
               style={styles.inputField}
-              value={givenName}
+              value={firstName}
             />
           </Wrapper>
           <Wrapper style={styles.noPaddingTop}>
-            <Label>{texts.encounter.familyName}</Label>
+            <Label>{texts.encounter.lastName}</Label>
             <TextInput
-              onChangeText={setFamilyName}
-              placeholder={texts.encounter.familyName}
+              onChangeText={setLastName}
+              placeholder={texts.encounter.lastName}
               style={styles.inputField}
-              value={familyName}
+              value={lastName}
             />
           </Wrapper>
           <Wrapper style={styles.noPaddingTop}>

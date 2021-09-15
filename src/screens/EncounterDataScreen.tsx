@@ -23,8 +23,8 @@ import { useEncounterUser, useSelectImage } from '../hooks';
 // TODO: accesibility labels
 export const EncounterDataScreen = () => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [givenName, setGivenName] = useState<string>();
-  const [familyName, setFamilyName] = useState<string>();
+  const [firstName, setFirstName] = useState<string>();
+  const [lastName, setLastName] = useState<string>();
   const [birthDate, setBirthDate] = useState<Date>();
   const [phone, setPhone] = useState<string>();
 
@@ -45,8 +45,8 @@ export const EncounterDataScreen = () => {
     } catch (e) {
       console.warn('error when parsing the birthdate of the encounter user');
     }
-    setGivenName(userData.firstName);
-    setFamilyName(userData.lastName);
+    setFirstName(userData.firstName);
+    setLastName(userData.lastName);
     setPhone(userData.phone);
   }, [userData]);
 
@@ -77,21 +77,21 @@ export const EncounterDataScreen = () => {
             </WrapperRow>
           </Wrapper>
           <Wrapper style={styles.noPaddingTop}>
-            <Label>{texts.encounter.givenName}</Label>
+            <Label>{texts.encounter.firstName}</Label>
             <TextInput
-              onChangeText={setGivenName}
-              placeholder={texts.encounter.givenName}
+              onChangeText={setFirstName}
+              placeholder={texts.encounter.firstName}
               style={styles.inputField}
-              value={givenName}
+              value={firstName}
             />
           </Wrapper>
           <Wrapper style={styles.noPaddingTop}>
-            <Label>{texts.encounter.familyName}</Label>
+            <Label>{texts.encounter.lastName}</Label>
             <TextInput
-              onChangeText={setFamilyName}
-              placeholder={texts.encounter.familyName}
+              onChangeText={setLastName}
+              placeholder={texts.encounter.lastName}
               style={styles.inputField}
-              value={familyName}
+              value={lastName}
             />
           </Wrapper>
           <Wrapper style={styles.noPaddingTop}>
