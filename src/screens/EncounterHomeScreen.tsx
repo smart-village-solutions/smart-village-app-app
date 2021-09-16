@@ -7,6 +7,7 @@ import QRCode from 'react-native-qrcode-svg';
 import {
   BoldText,
   Button,
+  CircularView,
   DiagonalGradient,
   RegularText,
   SectionHeader,
@@ -48,9 +49,9 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
       <SectionHeader title={texts.encounter.homeTitle} />
       <DiagonalGradient style={styles.gradient}>
         <View style={styles.container}>
-          <View style={styles.circle}>
+          <CircularView size={device.width / 2} style={styles.circle}>
             <QRCode value={qrValue} size={device.width / 3} quietZone={normalize(4)} />
-          </View>
+          </CircularView>
           <BoldText big lightest>
             {`${firstName} ${lastName}`.toUpperCase()}
           </BoldText>
@@ -97,13 +98,8 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
 
 const styles = StyleSheet.create({
   circle: {
-    alignItems: 'center',
-    aspectRatio: 1,
     backgroundColor: colors.surface,
-    borderRadius: device.width / 4,
-    justifyContent: 'center',
-    marginBottom: normalize(12),
-    width: device.width / 2
+    marginBottom: normalize(12)
   },
   container: {
     alignItems: 'center'

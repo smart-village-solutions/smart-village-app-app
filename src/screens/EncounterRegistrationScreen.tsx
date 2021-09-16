@@ -15,6 +15,7 @@ import { CheckBox, normalize } from 'react-native-elements';
 import {
   BoldText,
   Button,
+  CircularView,
   DateTimePicker,
   Image,
   Label,
@@ -117,7 +118,7 @@ export const EncounterRegistrationScreen = () => {
               <View style={styles.editIconContainer}>
                 <Icon.EditSetting color={colors.transparent} />
               </View>
-              <View style={styles.circle}>
+              <CircularView size={device.width / 2} style={styles.circle}>
                 {imageUri ? (
                   <Image source={{ uri: imageUri }} resizeMode="contain" />
                 ) : (
@@ -129,7 +130,7 @@ export const EncounterRegistrationScreen = () => {
                     <RegularText small>{texts.encounter.photoPlaceholder.second}</RegularText>
                   </>
                 )}
-              </View>
+              </CircularView>
               <TouchableOpacity onPress={selectImage} style={styles.editIconContainer}>
                 <Icon.EditSetting color={colors.shadow} />
               </TouchableOpacity>
@@ -177,13 +178,7 @@ export const EncounterRegistrationScreen = () => {
 
 const styles = StyleSheet.create({
   circle: {
-    alignItems: 'center',
-    aspectRatio: 1,
-    backgroundColor: colors.shadowRgba,
-    borderRadius: device.width / 4,
-    justifyContent: 'center',
-    overflow: 'hidden',
-    width: device.width / 2
+    backgroundColor: colors.shadowRgba
   },
   editIconContainer: {
     justifyContent: 'flex-end'

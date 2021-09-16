@@ -2,8 +2,9 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { View } from 'react-native';
 
-import { colors, device } from '../../config';
+import { device } from '../../config';
 import { User } from '../../types';
+import { CircularView } from '../CircularView';
 import { Image } from '../Image';
 
 import { ImageBadge } from './ImageBadge';
@@ -20,9 +21,9 @@ export const ImageWithBadge = ({ verified, ...props }: Props) => {
   return (
     <View style={styles.container}>
       <View>
-        <View style={styles.circle}>
+        <CircularView size={device.width / 2}>
           <Image source={{ uri }} resizeMode="contain" />
-        </View>
+        </CircularView>
         <ImageBadge verified={verified} />
       </View>
     </View>
@@ -30,14 +31,5 @@ export const ImageWithBadge = ({ verified, ...props }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  circle: {
-    alignItems: 'center',
-    aspectRatio: 1,
-    backgroundColor: colors.surface,
-    borderRadius: device.width / 4,
-    justifyContent: 'center',
-    overflow: 'hidden',
-    width: device.width / 2
-  },
   container: { alignItems: 'center' }
 });

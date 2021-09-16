@@ -14,6 +14,7 @@ export * from './CardList';
 export * from './CardListItem';
 export * from './CategoryList';
 export * from './CategoryListItem';
+export * from './CircularView';
 export * from './CommentSection';
 export * from './ConnectedImagesCarousel';
 export * from './CrossData';
