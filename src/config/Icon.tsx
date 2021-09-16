@@ -21,13 +21,15 @@ import {
   location,
   lunch,
   mail,
+  notVerifiedBadge,
   oParlCalendar,
   oParlOrganizations,
   oParlPeople,
   phone,
   service,
   share,
-  url
+  url,
+  verifiedBadge
 } from '../icons';
 
 import { colors } from './colors';
@@ -110,6 +112,7 @@ export const Icon = {
   Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
   Mail: (props: IconProps) => <SvgIcon xml={mail} {...props} />,
+  NotVerifiedBadge: (props: IconProps) => <SvgIcon xml={notVerifiedBadge} {...props} />,
   OParlCalendar: (props: IconProps) => <SvgIcon xml={oParlCalendar} {...props} />,
   OParlOrganizations: (props: IconProps) => <SvgIcon xml={oParlOrganizations} {...props} />,
   OParlPeople: (props: IconProps) => <SvgIcon xml={oParlPeople} {...props} />,
@@ -137,5 +140,6 @@ export const Icon = {
       <SvgIcon xml={share} {...props} />
     ),
   Surveys: (props: IconProps) => <NamedIcon name="stats-chart-outline" {...props} />,
-  Url: (props: IconProps) => <SvgIcon xml={url} {...props} />
+  Url: (props: IconProps) => <SvgIcon xml={url} {...props} />,
+  VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />
 };
