@@ -1,3 +1,4 @@
+export * from './addImage';
 export * from './arrowDown';
 export * from './arrowLeft';
 export * from './arrowRight';
@@ -9,6 +10,7 @@ export * from './favSettings';
 export * from './heartEmpty';
 export * from './heartFilled';
 export * from './home';
+export * from './info';
 export * from './link';
 export * from './lunch';
 export * from './location';

@@ -4,6 +4,7 @@ import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
 import {
+  addImage,
   arrowDown,
   arrowLeft,
   arrowRight,
@@ -15,6 +16,7 @@ import {
   heartEmpty,
   heartFilled,
   home,
+  info,
   link,
   location,
   lunch,
@@ -86,6 +88,7 @@ export const Icon = {
   About: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-menu' : 'md-menu'} {...props} />
   ),
+  AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
   ArrowDown: (props: IconProps) => <SvgIcon xml={arrowDown} {...props} />,
   ArrowLeft: (props: IconProps) => <SvgIcon xml={arrowLeft} {...props} />,
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
@@ -102,7 +105,7 @@ export const Icon = {
   NamedIcon,
   HeartEmpty: (props: IconProps) => <SvgIcon xml={heartEmpty} {...props} />,
   HeartFilled: (props: IconProps) => <SvgIcon xml={heartFilled} {...props} />,
-  Info: (props: IconProps) => <NamedIcon name="information-circle-outline" {...props} />,
+  Info: (props: IconProps) => <SvgIcon xml={info} {...props} />,
   Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
   Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,

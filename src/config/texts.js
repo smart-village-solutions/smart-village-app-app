@@ -85,6 +85,7 @@ export const texts = {
     noHistoryYet: 'Es gibt noch keine Fahrthistorie, du bist noch nicht gefahren.',
     notVerified: 'Nicht Verifiziert',
     phone: 'Telefon',
+    photoPlaceholder: { first: 'Foto', second: 'hochladen' },
     profilePhoto: 'Profilfoto',
     register: 'Registrieren',
     registrationAllFieldsRequiredBody:
