@@ -24,9 +24,15 @@ import { ScreenName } from '../types';
 // TODO: accesibility labels
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterHomeScreen = ({ navigation }: any) => {
-  const { loading: loadingQr, qrId } = useQRValue();
   const {
-    error,
+    loading: loadingQr,
+    qrValue: qrId,
+    error: errorQr,
+    refresh: refreshQr,
+    refreshing: refreshingQr
+  } = useQRValue();
+  const {
+    error: errorUser,
     loading: loadingUser,
     refresh: refreshUser,
     refreshing: refreshingUser,
@@ -34,6 +40,8 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
   } = useEncounterUser();
 
   const loading = loadingQr || loadingUser;
+  const error = errorQr || errorUser;
+  const refreshing = refreshingQr || refreshingUser;
 
   const qrValue = Linking.createURL('encounter', { queryParams: { qrId } });
 
@@ -44,6 +52,11 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
       queryVariables: { name: 'encounter-verification' }
     });
   }, [navigation]);
+
+  const refresh = useCallback(() => {
+    refreshQr();
+    refreshUser();
+  }, [refreshQr, refreshUser]);
 
   if (loading) {
     return <LoadingSpinner loading />;
@@ -64,9 +77,7 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
   const { firstName, lastName, verified } = user;
 
   return (
-    <ScrollView
-      refreshControl={<RefreshControl onRefresh={refreshUser} refreshing={refreshingUser} />}
-    >
+    <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
       <SectionHeader title={texts.encounter.homeTitle} />
       <DiagonalGradient style={styles.gradient}>
         <View style={styles.container}>
