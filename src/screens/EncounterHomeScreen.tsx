@@ -1,6 +1,6 @@
 import * as Linking from 'expo-linking';
 import React, { useCallback } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import QRCode from 'react-native-qrcode-svg';
 
@@ -25,7 +25,13 @@ import { ScreenName } from '../types';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterHomeScreen = ({ navigation }: any) => {
   const { loading: loadingQr, qrId } = useQRValue();
-  const { loading: loadingUser, firstName, lastName, verified } = useEncounterUser();
+  const {
+    error,
+    loading: loadingUser,
+    onRefresh: refreshUser,
+    refreshing: refreshingUser,
+    user
+  } = useEncounterUser();
 
   const loading = loadingQr || loadingUser;
 
@@ -43,8 +49,24 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
     return <LoadingSpinner loading />;
   }
 
+  if (!user || error) {
+    return (
+      <ScrollView
+        refreshControl={<RefreshControl onRefresh={refreshUser} refreshing={refreshingUser} />}
+      >
+        <Wrapper>
+          <RegularText center>{texts.encounter.errorLoadingUser}</RegularText>
+        </Wrapper>
+      </ScrollView>
+    );
+  }
+
+  const { firstName, lastName, verified } = user;
+
   return (
-    <ScrollView>
+    <ScrollView
+      refreshControl={<RefreshControl onRefresh={refreshUser} refreshing={refreshingUser} />}
+    >
       <SectionHeader title={texts.encounter.homeTitle} />
       <DiagonalGradient style={styles.gradient}>
         <View style={styles.container}>

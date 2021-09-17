@@ -1,7 +1,15 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import { noop } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View
+} from 'react-native';
 import { normalize } from 'react-native-elements';
 
 import {
@@ -11,6 +19,7 @@ import {
   ImageWithBadge,
   Label,
   LoadingSpinner,
+  RegularText,
   SafeAreaViewFlex,
   SectionHeader,
   Touchable,
@@ -36,7 +45,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
 
   const { imageUri, selectImage } = useSelectImage();
 
-  const userData = useEncounterUser();
+  const { error, loading, onRefresh, refreshing, user } = useEncounterUser();
 
   const onPressInfoVerification = useCallback(() => {
     navigation.navigate(ScreenName.Html, {
@@ -60,28 +69,38 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
   const userIdInputRef = useRef<TextInput>(null);
 
   useEffect(() => {
-    if (userData.loading) {
+    if (!user) {
       return;
     }
 
     try {
-      setBirthDate(new Date(userData.birthDate));
+      setBirthDate(new Date(user.birthDate));
     } catch (e) {
       console.warn('error when parsing the birthdate of the encounter user');
     }
-    setFirstName(userData.firstName);
-    setLastName(userData.lastName);
-    setPhone(userData.phone);
-    setUserIdDisplayValue(userData.userId);
-  }, [userData]);
+    setFirstName(user.firstName);
+    setLastName(user.lastName);
+    setPhone(user.phone);
+    setUserIdDisplayValue(user.userId);
+  }, [user]);
 
-  if (userData.loading) {
+  if (loading) {
     return <LoadingSpinner loading />;
+  }
+
+  if (!user || error) {
+    return (
+      <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} />}>
+        <Wrapper>
+          <RegularText center>{texts.encounter.errorLoadingUser}</RegularText>
+        </Wrapper>
+      </ScrollView>
+    );
   }
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView>
+      <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} />}>
         <SectionHeader title={texts.encounter.dataTitle} />
         <WrapperWithOrientation>
           <Wrapper>
@@ -93,8 +112,8 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
               </View>
               <ImageWithBadge
                 imageUri={imageUri}
-                verified={userData.verified}
-                placeholder={userData.imageUri}
+                verified={user.verified}
+                placeholder={user.imageUri}
               />
               <TouchableOpacity onPress={selectImage} style={styles.editIconContainer}>
                 <Icon.EditSetting color={colors.placeholder} />
@@ -156,7 +175,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             <TextInput
               editable={false}
               style={[styles.inputField, styles.displayField]}
-              value={userData.verified ? texts.encounter.verified : texts.encounter.notVerified}
+              value={user.verified ? texts.encounter.verified : texts.encounter.notVerified}
             />
           </Wrapper>
           <Wrapper style={styles.noPaddingTop}>
@@ -168,7 +187,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             </WrapperRow>
             <TextInput
               onChangeText={setUserIdDisplayValue}
-              onBlur={() => setUserIdDisplayValue(userData.userId)}
+              onBlur={() => setUserIdDisplayValue(user.userId)}
               onTouchStart={() => userIdInputRef.current?.focus()}
               ref={userIdInputRef}
               selectTextOnFocus={true}

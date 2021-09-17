@@ -1,19 +1,60 @@
+import { useCallback, useContext, useEffect, useState } from 'react';
+
+import { showUserAsync } from '../../encounterApi';
+import { getEncounterUserId } from '../../helpers';
+import { NetworkContext } from '../../NetworkProvider';
 import { User } from '../../types';
 
-const dummy = {
-  loading: false,
-  userId: 'userId',
-  firstName: 'Max',
-  imageUri: 'https://smart-village.solutions/wp-content/uploads/2020/01/Services.png',
-  lastName: 'Mustermann',
-  verified: false,
-  phone: '0123 123123',
-  birthDate: new Date('1999-12-10T23:00:00.000Z').toISOString(),
-  appOrigin: 'Utopia',
-  createdAt: new Date(1337).toISOString()
+const loadUser = async () => {
+  const userId = await getEncounterUserId();
+
+  if (userId) {
+    const user = await showUserAsync(userId);
+
+    if (user) {
+      return user;
+    }
+  }
+
+  throw new Error('Error wile loading user: ' + userId ?? 'Missing user id');
 };
 
-// TODO: implement api call / storage handling
-export const useEncounterUser = (): User & { loading: boolean } => {
-  return dummy;
+export const useEncounterUser = (): {
+  error: boolean;
+  loading: boolean;
+  onRefresh: () => void;
+  refreshing: boolean;
+  user?: User;
+} => {
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User>();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadUserCallback = useCallback(async () => {
+    setRefreshing(true);
+    setError(false);
+
+    try {
+      setUser(await loadUser());
+    } catch (e) {
+      console.warn(e);
+      setError(true);
+    }
+
+    setLoading(false);
+    setRefreshing(false);
+  }, []);
+
+  useEffect(() => {
+    if (isConnected && isMainserverUp && !user) {
+      loadUserCallback();
+    } else {
+      setLoading(false);
+      setError(true);
+    }
+  }, [isConnected, isMainserverUp, loadUserCallback]);
+
+  return { error, loading, onRefresh: loadUserCallback, refreshing, user };
 };

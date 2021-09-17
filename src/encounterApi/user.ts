@@ -1,6 +1,7 @@
 import { encounterApi } from '../config';
 import appJson from '../../app.json';
-import { CreateUserData } from '../types';
+import { CreateUserData, User } from '../types';
+import { parseUser } from '../jsonValidation';
 
 const url = encounterApi.serverUrl + encounterApi.version + encounterApi.user;
 
@@ -37,6 +38,19 @@ export const updateUserAsync = async () => {
   return;
 };
 
-export const showUserAsync = async () => {
-  return;
+export const showUserAsync = async (userId: string): Promise<User | undefined> => {
+  const response = await fetch(`${url}?user_id=${userId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  const json = await response.json();
+  const status = response.status;
+  const ok = response.ok;
+
+  if (ok && status === 200) {
+    return parseUser(json, userId);
+  }
 };
