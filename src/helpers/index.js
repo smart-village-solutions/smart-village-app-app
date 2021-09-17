@@ -4,6 +4,7 @@ export * from './addressHelper';
 export * from './bookmarkHelper';
 export * from './calendarHelper';
 export * from './dateTimeHelper';
+export * from './encounterHelper';
 export * from './fileSizeHelper';
 export * from './graphqlHelper';
 export * from './headerHelper';

@@ -90,6 +90,8 @@ export const texts = {
     registrationAllFieldsRequiredBody:
       'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
     registrationAllFieldsRequiredTitle: 'Hinweis',
+    registrationFailedBody: 'Bei der Registrierung ist ein Fehler aufgetreten.',
+    registrationFailedTitle: 'Fehler',
     registrationHint: 'Bitte gib deine persönlichen Daten an:',
     registrationPrivacyLink: 'Datenschutzerklärung.',
     registrationPrivacyText:

@@ -16,6 +16,6 @@ export const isUser = (json: unknown): json is User => {
     isString((json as User).phone) &&
     isString((json as User).userId) &&
     isBoolean((json as User).verified) &&
-    isString((json as User).village)
+    isString((json as User).appOrigin)
   );
 };

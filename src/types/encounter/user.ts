@@ -1,3 +1,13 @@
+export type CreateUserData = {
+  birthDate: string;
+  firstName: string;
+  imageUri: string;
+  lastName: string;
+  phone: string;
+};
+
+export type UpdateUserData = CreateUserData & { userId: string };
+
 export type User = {
   birthDate: string;
   createdAt: string;
@@ -7,5 +17,5 @@ export type User = {
   phone: string;
   userId: string;
   verified: boolean;
-  village: string;
+  appOrigin: string;
 };

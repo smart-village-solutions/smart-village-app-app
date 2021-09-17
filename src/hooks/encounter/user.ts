@@ -9,7 +9,7 @@ const dummy = {
   verified: false,
   phone: '0123 123123',
   birthDate: new Date('1999-12-10T23:00:00.000Z').toISOString(),
-  village: 'Utopia',
+  appOrigin: 'Utopia',
   createdAt: new Date(1337).toISOString()
 };
 
