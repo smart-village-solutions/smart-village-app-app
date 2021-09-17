@@ -22,7 +22,7 @@ const loadUser = async () => {
 export const useEncounterUser = (): {
   error: boolean;
   loading: boolean;
-  onRefresh: () => void;
+  refresh: () => void;
   refreshing: boolean;
   user?: User;
 } => {
@@ -56,5 +56,5 @@ export const useEncounterUser = (): {
     }
   }, [isConnected, isMainserverUp, loadUserCallback]);
 
-  return { error, loading, onRefresh: loadUserCallback, refreshing, user };
+  return { error, loading, refresh: loadUserCallback, refreshing, user };
 };

@@ -18,8 +18,7 @@ import { device, texts } from '../config';
 import { useCreateEncounter, useEncounterUser } from '../hooks';
 import { ScreenName, User } from '../types';
 
-const showErrorAlert = () =>
-  Alert.alert(texts.encounter.errorScanTitle, texts.encounter.errorScanBody);
+const showErrorAlert = () => Alert.alert(texts.errors.errorTitle, texts.encounter.errorScanBody);
 
 const parseQrCode = (data: string): string | undefined => {
   const result = Linking.parse(data);
@@ -32,7 +31,7 @@ const parseQrCode = (data: string): string | undefined => {
 // TODO: accesibility labels
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
-  const { loading: loadingUser, userId } = useEncounterUser();
+  const { loading: loadingUser, user } = useEncounterUser();
   const [isScanning, setIsScanning] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean>();
 
@@ -55,8 +54,8 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
 
     setIsScanning(false);
     const qrId = parseQrCode(data);
-    if (qrId) {
-      createEncounter(qrId, userId);
+    if (qrId && user?.userId) {
+      createEncounter(qrId, user.userId);
     } else {
       showErrorAlert();
     }

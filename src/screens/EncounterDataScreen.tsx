@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import { noop } from 'lodash';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -28,10 +28,23 @@ import {
   WrapperWithOrientation
 } from '../components';
 import { colors, Icon, texts } from '../config';
+import { updateUserAsync } from '../encounterApi';
 import { momentFormat } from '../helpers';
 import { useEncounterUser, useSelectImage } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
+
+const showChangeWarning = (onPressOk: () => void) =>
+  Alert.alert(texts.encounter.changeWarningTitle, texts.encounter.changeWarningBody, [
+    { style: 'cancel', text: texts.encounter.changeWarningAbort },
+    { style: 'destructive', text: texts.encounter.changeWarningOk, onPress: onPressOk }
+  ]);
+
+const showChangeErrorAlert = () =>
+  Alert.alert(texts.errors.errorTitle, texts.encounter.changeErrorBody);
+
+const showChangeSuccessAlert = () =>
+  Alert.alert(texts.encounter.changeSuccessTitle, texts.encounter.changeSuccessBody);
 
 // TODO: accesibility labels
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,7 +58,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
 
   const { imageUri, selectImage } = useSelectImage();
 
-  const { error, loading, onRefresh, refreshing, user } = useEncounterUser();
+  const { error, loading, refresh, refreshing, user } = useEncounterUser();
 
   const onPressInfoVerification = useCallback(() => {
     navigation.navigate(ScreenName.Html, {
@@ -64,7 +77,32 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
   }, [navigation]);
 
   // TODO: implement
-  const updateUserData = noop;
+  const updateUserData = async () => {
+    if (!(birthDate && firstName && lastName && phone && user?.userId)) {
+      // the button is disabled, if this is the case, and this should never be called.
+      console.warn('User update called with insufficient data');
+      return;
+    }
+    const result = await updateUserAsync({
+      birthDate: momentFormat(birthDate.valueOf(), 'yyyy-MM-DD', 'x'),
+      firstName,
+      imageUri: imageUri ?? user.imageUri,
+      lastName,
+      phone,
+      userId: user?.userId
+    });
+
+    if (result === user.userId) {
+      showChangeSuccessAlert();
+    } else {
+      showChangeErrorAlert();
+    }
+    refresh();
+  };
+
+  const onPressUpdate = () => {
+    user?.verified ? showChangeWarning(updateUserData) : updateUserData();
+  };
 
   const userIdInputRef = useRef<TextInput>(null);
 
@@ -90,7 +128,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
 
   if (!user || error) {
     return (
-      <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} />}>
+      <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
         <Wrapper>
           <RegularText center>{texts.encounter.errorLoadingUser}</RegularText>
         </Wrapper>
@@ -100,7 +138,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} />}>
+      <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
         <SectionHeader title={texts.encounter.dataTitle} />
         <WrapperWithOrientation>
           <Wrapper>
@@ -196,7 +234,11 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             />
           </Wrapper>
           <Wrapper>
-            <Button onPress={updateUserData} title={texts.encounter.saveChanges} />
+            <Button
+              onPress={onPressUpdate}
+              title={texts.encounter.saveChanges}
+              disabled={!(birthDate && firstName && lastName && phone && user?.userId)}
+            />
           </Wrapper>
         </WrapperWithOrientation>
         <EncounterList />

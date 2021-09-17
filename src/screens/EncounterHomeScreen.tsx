@@ -28,7 +28,7 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
   const {
     error,
     loading: loadingUser,
-    onRefresh: refreshUser,
+    refresh: refreshUser,
     refreshing: refreshingUser,
     user
   } = useEncounterUser();
