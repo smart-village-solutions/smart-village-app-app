@@ -1,32 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import { isUser } from '../../jsonValidation';
+import { createEncounterAsync } from '../../encounterApi';
 import { Encounter, User } from '../../types';
-
-const createEncounterAsync = async (
-  qrId: string,
-  userId: string
-): Promise<{ data?: User; error: boolean }> => {
-  // TODO: implement API Call
-  const res = {
-    birthDate: new Date(42).toISOString(),
-    createdAt: new Date(1337).toISOString(),
-    firstName: 'Max',
-    imageUri: 'https://smart-village.solutions/wp-content/uploads/2020/01/Services.png',
-    lastName: 'Mustermann',
-    phone: '0123 123123',
-    userId: 'userId',
-    verified: false,
-    village: 'Utopia'
-  };
-
-  const error = !isUser(res);
-
-  return {
-    data: error ? undefined : res,
-    error
-  };
-};
 
 export const useCreateEncounter = (
   onSuccess: (user: User) => void,
@@ -37,15 +12,15 @@ export const useCreateEncounter = (
 } => {
   const [loading, setLoading] = useState(false);
 
-  const createEncounter = useCallback(async (qrId: string, userId: string) => {
+  const createEncounter = useCallback(async (qrId: string) => {
     setLoading(true);
     try {
-      const res = await createEncounterAsync(qrId, userId);
+      const res = await createEncounterAsync(qrId);
 
-      if (!res.data || res.error) {
+      if (!res) {
         onError();
       } else {
-        onSuccess(res.data);
+        onSuccess(res);
       }
     } catch {
       onError();

@@ -11,25 +11,7 @@ type UserResponseType = {
   verified: boolean;
 };
 
-export const parseUser = (json: unknown, userId: string): User | undefined => {
-  if (!isObjectLike(json)) {
-    return;
-  }
-
-  const user = {
-    birthDate: (json as UserResponseType).birth_date,
-    firstName: (json as UserResponseType).first_name,
-    imageUri: (json as UserResponseType).image_uri,
-    lastName: (json as UserResponseType).last_name,
-    phone: (json as UserResponseType).phone,
-    userId,
-    verified: (json as UserResponseType).verified
-  };
-
-  return isUser(user) ? user : undefined;
-};
-
-export const isUser = (json: unknown): json is User => {
+const isUser = (json: unknown): json is Omit<User, 'userId'> => {
   if (!json) {
     return false;
   }
@@ -40,7 +22,27 @@ export const isUser = (json: unknown): json is User => {
     isString((json as User).imageUri) &&
     isString((json as User).lastName) &&
     isString((json as User).phone) &&
-    isString((json as User).userId) &&
     isBoolean((json as User).verified)
   );
+};
+
+export const parseUser = (json: unknown): User | undefined => {
+  if (!isObjectLike(json)) {
+    return;
+  }
+
+  const user = {
+    birthDate: (json as UserResponseType).birth_date,
+    firstName: (json as UserResponseType).first_name,
+    imageUri: (json as UserResponseType).image_uri,
+    lastName: (json as UserResponseType).last_name,
+    phone: (json as UserResponseType).phone,
+    verified: (json as UserResponseType).verified
+  };
+
+  if (!isUser(user)) {
+    return;
+  }
+
+  return user;
 };

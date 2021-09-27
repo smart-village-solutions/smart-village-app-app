@@ -1,6 +1,6 @@
 import { encounterApi } from '../config';
 import appJson from '../../app.json';
-import { CreateUserData, UpdateUserData, User } from '../types';
+import { CreateUserData, UpdateUserData, UserWithId } from '../types';
 import { parseUser } from '../jsonValidation';
 
 const url = encounterApi.serverUrl + encounterApi.version + encounterApi.user;
@@ -67,7 +67,7 @@ export const updateUserAsync = async (userData: UpdateUserData): Promise<string 
   return;
 };
 
-export const showUserAsync = async (userId: string): Promise<User | undefined> => {
+export const showUserAsync = async (userId: string): Promise<UserWithId | undefined> => {
   const response = await fetch(`${url}?user_id=${userId}`, {
     method: 'GET',
     headers: {
@@ -80,6 +80,15 @@ export const showUserAsync = async (userId: string): Promise<User | undefined> =
   const ok = response.ok;
 
   if (ok && status === 200) {
-    return parseUser(json, userId);
+    const user = parseUser(json);
+
+    if (!user) {
+      return;
+    }
+
+    user.userId = userId;
+
+    // we are setting the user id in the previous statement, so we know that this is always a user with id
+    return user as UserWithId;
   }
 };

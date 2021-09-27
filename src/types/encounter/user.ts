@@ -14,6 +14,8 @@ export type User = {
   imageUri: string;
   lastName: string;
   phone: string;
-  userId: string;
+  userId?: string;
   verified: boolean;
 };
+
+export type UserWithId = User & { userId: string };

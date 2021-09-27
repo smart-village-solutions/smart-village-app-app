@@ -3,7 +3,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { showUserAsync } from '../../encounterApi';
 import { getEncounterUserId } from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
-import { User } from '../../types';
+import { UserWithId } from '../../types';
 
 const loadUser = async () => {
   const userId = await getEncounterUserId();
@@ -16,7 +16,7 @@ const loadUser = async () => {
     }
   }
 
-  throw new Error('Error wile loading user: ' + userId ?? 'Missing user id');
+  throw new Error('Error while loading user: ' + userId ?? 'Missing user id');
 };
 
 export const useEncounterUser = (): {
@@ -24,12 +24,12 @@ export const useEncounterUser = (): {
   loading: boolean;
   refresh: () => void;
   refreshing: boolean;
-  user?: User;
+  user?: UserWithId;
 } => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<UserWithId>();
   const [refreshing, setRefreshing] = useState(false);
 
   const loadUserCallback = useCallback(async () => {
