@@ -17,7 +17,7 @@ import {
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { colors, device, Icon, normalize, texts } from '../config';
-import { useEncounterUser, usePollingForEncounters, useQRValue } from '../hooks';
+import { useEncounterPolling, useEncounterUser, useQRValue } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
 
@@ -39,6 +39,8 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
     user
   } = useEncounterUser();
 
+  useEncounterPolling(navigation, user?.userId, qrId);
+
   const loading = loadingQr || loadingUser;
   const error = errorQr || errorUser;
   const refreshing = refreshingQr || refreshingUser;
@@ -57,8 +59,6 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
     refreshQr();
     refreshUser();
   }, [refreshQr, refreshUser]);
-
-  usePollingForEncounters(navigation, qrId);
 
   if (loading) {
     return <LoadingSpinner loading />;
