@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { createEncounterAsync } from '../../encounterApi';
+import { createEncounterAsync, getEncountersAsync } from '../../encounterApi';
 import { Encounter, User } from '../../types';
 
 export const useCreateEncounter = (
@@ -32,14 +32,23 @@ export const useCreateEncounter = (
   return { createEncounter, loading };
 };
 
-const dummyEncounters: Encounter[] = [
-  { createdAt: new Date().toISOString(), encounterId: '32155' },
-  { createdAt: new Date().toISOString(), encounterId: '12125' },
-  { createdAt: new Date().toISOString(), encounterId: '92444' },
-  { createdAt: new Date().toISOString(), encounterId: '42185' }
-];
+export const useEncounterList = (): {
+  loading: boolean;
+  data?: Encounter[];
+} => {
+  const [data, setData] = useState<Encounter[]>();
+  const [loading, setLoading] = useState(true);
 
-export const useEncounterList = (): { loading: boolean; data: Encounter[] } => {
-  // TODO: implement api call
-  return { data: dummyEncounters, loading: false };
+  const getEncounters = useCallback(async () => {
+    const res = await getEncountersAsync();
+
+    setData(res);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    getEncounters();
+  }, []);
+
+  return { loading, data };
 };

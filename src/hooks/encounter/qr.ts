@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { createQrCodeAsync } from '../../encounterApi';
 
-// TODO: implement api call
 export const useQRValue = (): {
   error: boolean;
   loading: boolean;

@@ -1,6 +1,11 @@
-import { isBoolean, isObjectLike, isString } from 'lodash';
+import { isArray, isBoolean, isObjectLike, isString } from 'lodash';
 
-import { User } from '../types';
+import { Encounter, User } from '../types';
+
+type EncounterResponseType = {
+  encounter_uuid: string;
+  created_at: string;
+};
 
 type UserResponseType = {
   birth_date: string;
@@ -45,4 +50,35 @@ export const parseUser = (json: unknown): User | undefined => {
   }
 
   return user;
+};
+
+const isEncounter = (json: unknown): json is Encounter => {
+  return isString((json as Encounter).createdAt) && isString((json as Encounter).encounterId);
+};
+
+const parseEncounter = (json: unknown): Encounter | undefined => {
+  if (!isObjectLike(json)) {
+    return;
+  }
+
+  const encounter = {
+    createdAt: (json as EncounterResponseType).created_at,
+    encounterId: (json as EncounterResponseType).encounter_uuid
+  };
+
+  if (!isEncounter(encounter)) {
+    return;
+  }
+
+  return encounter;
+};
+
+export const parseEncounters = (json: unknown): Encounter[] => {
+  if (isArray(json)) {
+    return json
+      .map((value) => parseEncounter(value))
+      .filter((encounter): encounter is Encounter => !!encounter);
+  }
+
+  return [];
 };

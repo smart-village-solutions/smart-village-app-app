@@ -1,10 +1,9 @@
 import { encounterApi } from '../config';
 import { getEncounterUserId } from '../helpers';
-import { parseUser } from '../jsonValidation';
-
-const url = encounterApi.serverUrl + encounterApi.version + encounterApi.encounter.create;
+import { parseEncounters, parseUser } from '../jsonValidation';
 
 export const createEncounterAsync = async (qrId: string) => {
+  const url = encounterApi.serverUrl + encounterApi.version + encounterApi.encounter.create;
   const userId = await getEncounterUserId();
 
   if (!userId) {
@@ -35,5 +34,25 @@ export const pollEncountersAsync = async () => {
 };
 
 export const getEncountersAsync = async () => {
-  return;
+  const url = encounterApi.serverUrl + encounterApi.version + encounterApi.encounter.list;
+  const userId = await getEncounterUserId();
+
+  if (!userId) {
+    throw new Error('Error while loading encounter user id from storage.');
+  }
+
+  const response = await fetch(`${url}?user_id=${userId}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  const json = await response.json();
+  const status = response.status;
+  const ok = response.ok;
+
+  if (ok && status === 200) {
+    return parseEncounters(json) ?? [];
+  }
 };
