@@ -1,4 +1,3 @@
-import { noop } from 'lodash';
 import React, { useState } from 'react';
 import { useCallback } from 'react';
 import {
@@ -29,9 +28,12 @@ import {
 import { colors, device, Icon, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useSelectImage } from '../hooks';
+import { QUERY_TYPES } from '../queries';
+import { ScreenName } from '../types';
 
 // TODO: accesibility labels
-export const EncounterRegistrationScreen = () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const EncounterRegistrationScreen = ({ navigation }: any) => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [firstName, setFirstName] = useState<string>();
   const [lastName, setLastName] = useState<string>();
@@ -56,6 +58,14 @@ export const EncounterRegistrationScreen = () => {
 
     // TODO: implement API call
   }, [checkValuesForSubmission]);
+
+  const onPressInfo = useCallback(() => {
+    navigation.navigate(ScreenName.Html, {
+      title: texts.screenTitles.encounterHome,
+      query: QUERY_TYPES.PUBLIC_HTML_FILE,
+      queryVariables: { name: 'encounter-privacy' }
+    });
+  }, [navigation]);
 
   return (
     <SafeAreaViewFlex>
@@ -136,7 +146,7 @@ export const EncounterRegistrationScreen = () => {
               />
               <View style={styles.privacyTextContainer}>
                 <RegularText small>{texts.encounter.registrationPrivacyText}</RegularText>
-                <Touchable onPress={noop}>
+                <Touchable onPress={onPressInfo}>
                   <RegularText small underline>
                     {texts.encounter.registrationPrivacyLink}
                   </RegularText>
