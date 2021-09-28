@@ -7,7 +7,7 @@ export const useCreateEncounter = (
   onSuccess: (user: User) => void,
   onError: () => void
 ): {
-  createEncounter: (qrId: string, userId: string) => void;
+  createEncounter: (qrId: string) => void;
   loading: boolean;
 } => {
   const [loading, setLoading] = useState(false);

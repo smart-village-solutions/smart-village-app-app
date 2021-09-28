@@ -1,7 +1,7 @@
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 
-import { navigatorConfig } from '../config/navigation';
+import { linkingConfig, navigatorConfig } from '../config/navigation';
 
 import { DrawerNavigator } from './DrawerNavigator';
 import { MainTabNavigator } from './MainTabNavigator';
@@ -12,6 +12,7 @@ export const Navigator = () => (
       dark: DefaultTheme.dark,
       colors: { ...DefaultTheme.colors, background: '#fff' }
     }}
+    linking={linkingConfig}
   >
     {navigatorConfig.type === 'drawer' ? (
       <DrawerNavigator />

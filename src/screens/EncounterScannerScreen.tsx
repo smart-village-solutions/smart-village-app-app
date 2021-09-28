@@ -15,7 +15,7 @@ import {
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { device, texts } from '../config';
-import { useCreateEncounter, useEncounterUser } from '../hooks';
+import { useCreateEncounter } from '../hooks';
 import { ScreenName, User } from '../types';
 
 const showErrorAlert = () => Alert.alert(texts.errors.errorTitle, texts.encounter.errorScanBody);
@@ -31,7 +31,6 @@ const parseQrCode = (data: string): string | undefined => {
 // TODO: accesibility labels
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
-  const { loading: loadingUser, user } = useEncounterUser();
   const [isScanning, setIsScanning] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean>();
 
@@ -54,8 +53,8 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
 
     setIsScanning(false);
     const qrId = parseQrCode(data);
-    if (qrId && user?.userId) {
-      createEncounter(qrId, user.userId);
+    if (qrId) {
+      createEncounter(qrId);
     } else {
       showErrorAlert();
     }
@@ -72,7 +71,7 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
     })();
   }, []);
 
-  if (hasPermission === undefined || loadingUser || loadingCreateEncounter) {
+  if (hasPermission === undefined || loadingCreateEncounter) {
     return (
       <ScrollView>
         <SectionHeader title={texts.encounter.scannerTitle} />
