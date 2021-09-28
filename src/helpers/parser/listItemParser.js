@@ -13,8 +13,10 @@ import { subtitle } from '../textHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
+const dataFilteredGenericTypes = [GenericType.Job, GenericType.Commercial];
+
 const filterGenericItems = (item) => {
-  if (item?.genericType === GenericType.Job) {
+  if (dataFilteredGenericTypes.includes(item?.genericType)) {
     const dateEnd = item?.dates?.[0]?.dateEnd;
     const hasNotEnded = dateEnd ? isTodayOrLater(dateEnd) : true;
 
