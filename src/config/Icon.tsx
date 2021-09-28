@@ -102,6 +102,7 @@ export const Icon = {
   NamedIcon,
   HeartEmpty: (props: IconProps) => <SvgIcon xml={heartEmpty} {...props} />,
   HeartFilled: (props: IconProps) => <SvgIcon xml={heartFilled} {...props} />,
+  Info: (props: IconProps) => <NamedIcon name="information-circle-outline" {...props} />,
   Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
   Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,

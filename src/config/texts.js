@@ -67,6 +67,14 @@ export const texts = {
     pointOfInterest: 'Ort',
     tour: 'Tour'
   },
+  encounter: {
+    homeTitle: 'Hello, Welcome, Bienvenu',
+    myData: 'Meine Daten & Fahrthistorie',
+    newEncounter: 'Neue Fahrt',
+    notVerified: 'Nicht Verifiziert',
+    status: 'Status',
+    verified: 'Verifiziert'
+  },
   errors: {
     noData: 'Bitte überprüfen Sie Ihre Internetverbindung.',
     unexpected: 'Es ist ein unerwarteter Fehler aufgetreten.'
@@ -371,6 +379,7 @@ export const texts = {
     company: appJson.expo.name,
     about: appJson.expo.name,
     constructionSite: 'Baustelle',
+    encounterHome: 'Mitfahrbank',
     settings: 'Einstellungen',
     survey: 'Umfrage',
     surveys: 'Umfragen',

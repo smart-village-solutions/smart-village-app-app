@@ -9,6 +9,7 @@
     "version": "2.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "scheme": "smart-village-app",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",
