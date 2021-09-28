@@ -76,8 +76,10 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
   if (hasPermission === undefined || loadingUser || loadingCreateEncounter) {
     return (
       <ScrollView>
-        <SectionHeader title={texts.encounter.scannerTitle} />
-        <LoadingSpinner loading />
+        <WrapperWithOrientation>
+          <SectionHeader title={texts.encounter.scannerTitle} />
+          <LoadingSpinner loading />
+        </WrapperWithOrientation>
       </ScrollView>
     );
   }
@@ -85,8 +87,8 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
   if (!hasPermission) {
     return (
       <ScrollView>
-        <SectionHeader title={texts.encounter.scannerTitle} />
         <WrapperWithOrientation>
+          <SectionHeader title={texts.encounter.scannerTitle} />
           <Wrapper>
             <RegularText>{texts.encounter.cameraPermissionMissing}</RegularText>
           </Wrapper>
@@ -97,8 +99,8 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <ScrollView>
-      <SectionHeader title={texts.encounter.scannerTitle} />
       <WrapperWithOrientation>
+        <SectionHeader title={texts.encounter.scannerTitle} />
         <Wrapper>
           <BoldText>{texts.encounter.scannerSubTitle}</BoldText>
         </Wrapper>

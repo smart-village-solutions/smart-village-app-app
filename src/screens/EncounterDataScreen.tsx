@@ -82,8 +82,8 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        <SectionHeader title={texts.encounter.dataTitle} />
         <WrapperWithOrientation>
+          <SectionHeader title={texts.encounter.dataTitle} />
           <Wrapper>
             <Label>{texts.encounter.profilePhoto}</Label>
             <WrapperRow spaceBetween>

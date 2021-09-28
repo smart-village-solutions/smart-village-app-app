@@ -70,8 +70,8 @@ export const EncounterRegistrationScreen = ({ navigation }: any) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        <SectionHeader title={texts.encounter.registrationTitle} />
         <WrapperWithOrientation>
+          <SectionHeader title={texts.encounter.registrationTitle} />
           <Wrapper>
             <BoldText>{texts.encounter.registrationHint}</BoldText>
           </Wrapper>
