@@ -26,11 +26,12 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../components';
-import { colors, device, Icon, texts } from '../config';
+import { colors, consts, device, Icon, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useSelectImage } from '../hooks';
 
-// TODO: accesibility labels
+const a11yLabels = consts.a11yLabel;
+
 export const EncounterRegistrationScreen = () => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [firstName, setFirstName] = useState<string>();
@@ -68,6 +69,7 @@ export const EncounterRegistrationScreen = () => {
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.firstName}</Label>
             <TextInput
+              accessibilityLabel={`${a11yLabels.firstName} ${a11yLabels.textInput}: ${firstName}`}
               onChangeText={setFirstName}
               placeholder={texts.encounter.firstName}
               style={styles.inputField}
@@ -77,6 +79,7 @@ export const EncounterRegistrationScreen = () => {
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.lastName}</Label>
             <TextInput
+              accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
               onChangeText={setLastName}
               placeholder={texts.encounter.lastName}
               style={styles.inputField}
@@ -86,6 +89,10 @@ export const EncounterRegistrationScreen = () => {
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.birthDate}</Label>
             <Pressable
+              accessibilityLabel={`${a11yLabels.birthDate} ${a11yLabels.textInput}: ${
+                birthDate ? momentFormat(birthDate.toISOString()) : ''
+              }`}
+              accessibilityHint={a11yLabels.birthDateHint}
               onPress={() => {
                 setIsDatePickerVisible(false);
                 setIsDatePickerVisible(true);
@@ -103,6 +110,7 @@ export const EncounterRegistrationScreen = () => {
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.phone}</Label>
             <TextInput
+              accessibilityLabel={`${a11yLabels.phoneNumber} ${a11yLabels.textInput}: ${phone}`}
               keyboardType="phone-pad"
               onChangeText={setPhone}
               placeholder={texts.encounter.phone}
@@ -130,7 +138,11 @@ export const EncounterRegistrationScreen = () => {
                   </>
                 )}
               </View>
-              <TouchableOpacity onPress={selectImage} style={styles.editIconContainer}>
+              <TouchableOpacity
+                accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
+                onPress={selectImage}
+                style={styles.editIconContainer}
+              >
                 <Icon.EditSetting color={colors.shadow} />
               </TouchableOpacity>
             </WrapperRow>
@@ -145,7 +157,10 @@ export const EncounterRegistrationScreen = () => {
               />
               <View style={styles.privacyTextContainer}>
                 <RegularText small>{texts.encounter.registrationPrivacyText}</RegularText>
-                <Touchable onPress={noop}>
+                <Touchable
+                  accessibilityLabel={`${a11yLabels.privacy} ${a11yLabels.button}`}
+                  onPress={noop}
+                >
                   <RegularText small underline>
                     {texts.encounter.registrationPrivacyLink}
                   </RegularText>

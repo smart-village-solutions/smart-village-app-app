@@ -35,6 +35,7 @@ export const consts = {
     phoneNumber: '(Telefonnummer)',
     phoneAppHint: '(Wechselt zur Telefon-App)',
     price: '(Preis)',
+    privacy: 'Datenschutz',
     poiCount: '(Anzahl verfügbarer Einträge)',
     settingsIcon: 'Einstellungen (Taste)',
     settingsHint: 'Anpassen des Layouts von',
