@@ -66,7 +66,7 @@
     "react-apollo": "~3.1.5",
     "react-native": "https://github.com/expo/react-native/archive/sdk-42.0.0.tar.gz",
     "react-native-autocomplete-input": "^4.2.0",
-    "react-native-calendars": "^1.1265.0",
+    "react-native-calendars": "^1.1266.0",
     "react-native-collapsible": "^1.6.0",
     "react-native-elements": "~1.2.0",
     "react-native-expo-image-cache": "4.1.0",
