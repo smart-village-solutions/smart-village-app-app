@@ -7,7 +7,7 @@ import { Encounter } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
-import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperRow } from '../Wrapper';
 
 const EncounterEntry = ({ encounter }: { encounter: Encounter }) => {
   return (
@@ -32,11 +32,9 @@ export const EncounterList = () => {
     <>
       <SectionHeader title={texts.encounter.history} />
       {!loading && !data.length && (
-        <WrapperWithOrientation>
-          <Wrapper>
-            <RegularText>{texts.encounter.noHistoryYet}</RegularText>
-          </Wrapper>
-        </WrapperWithOrientation>
+        <Wrapper>
+          <RegularText>{texts.encounter.noHistoryYet}</RegularText>
+        </Wrapper>
       )}
       {data.map((encounter) => (
         <EncounterEntry key={encounter.encounterId} encounter={encounter} />
