@@ -4,7 +4,7 @@
  * If online, the graphql server should be queried.
  *
  * https://medium.com/@galen.corey/understanding-apollo-fetch-policies-705b5ad71980
- *
+ * @param  {{ isConnected: any, isMainserverUp: any, refreshTime: number | undefined }} arg
  * @return {'cache-first' | 'cache-only' | 'network-only'} a graphql fetch policy depending on the network status
  */
 export const graphqlFetchPolicy = ({ isConnected, isMainserverUp, refreshTime = undefined }) => {

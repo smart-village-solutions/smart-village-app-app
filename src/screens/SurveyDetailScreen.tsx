@@ -60,14 +60,14 @@ export const SurveyDetailScreen = ({ route }: Props) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const archived = route.params?.archived;
   const surveyId = route.params?.id;
-  const { loading, refetch, survey } = useSurvey(surveyId);
+  const { refetch, survey } = useSurvey(surveyId);
   const languages = useSurveyLanguages();
   const { previousSubmission, selection, setSelection, submitSelection } = useAnswerSelection(
     surveyId,
     refetch
   );
 
-  const RefreshControl = usePullToRefetch(loading, refetch);
+  const RefreshControl = usePullToRefetch(refetch);
 
   if (!survey) {
     return null;

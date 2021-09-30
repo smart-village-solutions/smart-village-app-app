@@ -8,6 +8,7 @@ import {
   BoldText,
   Button,
   DiagonalGradient,
+  EncounterWelcome,
   RegularText,
   SectionHeader,
   Touchable,
@@ -36,10 +37,11 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
     loading: loadingUser,
     refresh: refreshUser,
     refreshing: refreshingUser,
-    user
+    user,
+    userId
   } = useEncounterUser();
 
-  const loading = loadingQr || loadingUser;
+  const loading = (loadingQr && userId) || loadingUser;
   const error = errorQr || errorUser;
   const refreshing = refreshingQr || refreshingUser;
 
@@ -60,6 +62,10 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
 
   if (loading) {
     return <LoadingSpinner loading />;
+  }
+
+  if (!userId) {
+    return <EncounterWelcome navigation={navigation} />;
   }
 
   if (!user || error) {
