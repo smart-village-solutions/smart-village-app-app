@@ -1,6 +1,7 @@
 export * from './apollo';
 export * from './Bookmarks';
 export * from './constructionSites';
+export * from './locationHooks';
 export * from './matomoHooks';
 export * from './NewsCategories';
 export * from './openWebScreen';
