@@ -52,8 +52,8 @@ export const HtmlScreen = ({ navigation, route }) => {
     refreshTime
   });
 
-  // action to open source urls
-  const openWebScreen = (param) => {
+  // action to open source urls or navigate to sub screens
+  const navigate = (param) => {
     // if the `param` is a string, it is directly the web url to call
     if (!!param && typeof param === 'string') {
       return navigation.navigate({
@@ -78,13 +78,18 @@ export const HtmlScreen = ({ navigation, route }) => {
       });
     }
 
-    // if there is no `param`, use the main `subQuery` values for `routeName` and a `webUrl`
+    const subParams = { ...(subQuery.params ?? {}) };
+    delete subParams.routeName;
+
+    // if there is no `param`, use the main `subQuery` values for `routeName` and a `webUrl` or `params`
+    // if the params contain a webUrl as well, the webUrl property of the subQuery will be ignored
     return navigation.navigate({
       name: subQuery.routeName,
       params: {
         title,
         webUrl: subQuery.webUrl,
-        rootRouteName
+        rootRouteName,
+        ...subParams
       }
     });
   };
@@ -118,13 +123,13 @@ export const HtmlScreen = ({ navigation, route }) => {
                 <Wrapper>
                   <HtmlView
                     html={trimNewLines(data.publicHtmlFile.content)}
-                    openWebScreen={openWebScreen}
+                    openWebScreen={navigate}
                     navigation={navigation}
                   />
-                  {!!subQuery && !!subQuery.routeName && !!subQuery.webUrl && (
+                  {!!subQuery && !!subQuery.routeName && (!!subQuery.webUrl || subQuery.params) && (
                     <Button
                       title={subQuery.buttonTitle || `${title} öffnen`}
-                      onPress={() => openWebScreen()}
+                      onPress={() => navigate()}
                     />
                   )}
                   {!!subQuery &&
@@ -134,7 +139,7 @@ export const HtmlScreen = ({ navigation, route }) => {
                         key={`${index}-${button.webUrl}`}
                         title={button.buttonTitle || `${title} öffnen`}
                         onPress={() =>
-                          openWebScreen({
+                          navigate({
                             routeName: button.routeName,
                             webUrl: button.webUrl
                           })
