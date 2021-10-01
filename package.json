@@ -52,7 +52,7 @@
     "expo-localization": "^10.2.0",
     "expo-notifications": "~0.12.3",
     "expo-permissions": "~12.1.1",
-    "expo-screen-orientation": "~3.2.1",
+    "expo-screen-orientation": "~3.3.0",
     "expo-secure-store": "~10.2.0",
     "expo-splash-screen": "~0.11.2",
     "graphql": "14.7.0",
