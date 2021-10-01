@@ -41,10 +41,10 @@ export const IndexScreen = ({ navigation, route }) => {
 
   const query = route.params?.query ?? '';
 
-  // TODO: implement and use settings
+  // we currently only require the position for POIs
   const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST;
 
-  const { loading: loadingPosition, position } = usePosition(sortByDistance);
+  const { loading: loadingPosition, position } = usePosition(!sortByDistance);
 
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
