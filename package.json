@@ -48,7 +48,7 @@
     "expo-blur": "~9.0.3",
     "expo-font": "~9.2.1",
     "expo-linear-gradient": "~9.2.0",
-    "expo-linking": "~2.3.1",
+    "expo-linking": "~2.4.0",
     "expo-localization": "^10.2.0",
     "expo-notifications": "~0.12.3",
     "expo-permissions": "~12.1.1",
