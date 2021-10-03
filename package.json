@@ -44,7 +44,7 @@
     "apollo-link-rest": "~0.7.3",
     "deep-rename-keys": "~0.2.1",
     "expo": "^42.0.0",
-    "expo-asset": "~8.3.3",
+    "expo-asset": "~8.4.0",
     "expo-blur": "~9.0.3",
     "expo-font": "~9.2.1",
     "expo-linear-gradient": "~9.2.0",
