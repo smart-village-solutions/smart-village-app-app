@@ -34,10 +34,10 @@ const a11yLabels = consts.a11yLabel;
 
 export const EncounterRegistrationScreen = () => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [firstName, setFirstName] = useState<string>();
-  const [lastName, setLastName] = useState<string>();
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
   const [birthDate, setBirthDate] = useState<Date>();
-  const [phone, setPhone] = useState<string>();
+  const [phone, setPhone] = useState<string>('');
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
 
   const { imageUri, selectImage } = useSelectImage();
