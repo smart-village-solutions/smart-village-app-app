@@ -79,7 +79,6 @@ export const HtmlScreen = ({ navigation, route }) => {
     }
 
     const subParams = { ...(subQuery.params ?? {}) };
-    delete subParams.routeName;
 
     // if there is no `param`, use the main `subQuery` values for `routeName` and a `webUrl` or `params`
     // if the params contain a webUrl as well, the webUrl property of the subQuery will be ignored
@@ -127,10 +126,7 @@ export const HtmlScreen = ({ navigation, route }) => {
                     navigation={navigation}
                   />
                   {!!subQuery && !!subQuery.routeName && (!!subQuery.webUrl || subQuery.params) && (
-                    <Button
-                      title={subQuery.buttonTitle || `${title} öffnen`}
-                      onPress={() => navigate()}
-                    />
+                    <Button title={subQuery.buttonTitle || `${title} öffnen`} onPress={navigate} />
                   )}
                   {!!subQuery &&
                     !!subQuery.buttons &&
