@@ -30,7 +30,7 @@ import { getQuery, QUERY_TYPES } from '../queries';
 const { MATOMO_TRACKING } = consts;
 
 export const LunchScreen = ({ navigation, route }) => {
-  const [poiId, setPoiId] = useState(route.params?.poiId ?? {});
+  const [poiId, setPoiId] = useState(route.params?.poiId);
   const [date, setDate] = useState(moment());
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const refreshTime = useRefreshTime('lunch-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
