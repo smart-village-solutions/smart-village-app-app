@@ -126,7 +126,10 @@ export const HtmlScreen = ({ navigation, route }) => {
                     navigation={navigation}
                   />
                   {!!subQuery && !!subQuery.routeName && (!!subQuery.webUrl || subQuery.params) && (
-                    <Button title={subQuery.buttonTitle || `${title} öffnen`} onPress={navigate} />
+                    <Button
+                      title={subQuery.buttonTitle || `${title} öffnen`}
+                      onPress={() => navigate()}
+                    />
                   )}
                   {!!subQuery &&
                     !!subQuery.buttons &&
