@@ -5,6 +5,8 @@ import { SettingsContext } from '../SettingsProvider';
 import { storageHelper } from '../helpers';
 import { LocationSettings } from '../types';
 
+const LOCATION_TIMEOUT = 15000;
+
 const requestAndFetchPosition = async (
   setAndSyncLocationSettings: (arg: LocationSettings) => Promise<void>
 ) => {
@@ -13,7 +15,27 @@ const requestAndFetchPosition = async (
   await setAndSyncLocationSettings({ sortPOIs: status === Location.PermissionStatus.GRANTED });
 
   if (status === Location.PermissionStatus.GRANTED) {
-    return await Location.getCurrentPositionAsync({});
+    let location: Location.LocationObject | undefined;
+    try {
+      let done = false;
+      location = await Promise.race<Location.LocationObject | undefined>([
+        Location.getCurrentPositionAsync({}),
+        new Promise<void>((resolve) => {
+          setTimeout(() => {
+            resolve();
+          }, LOCATION_TIMEOUT);
+        }).then(() => {
+          !done && console.warn('Timeout while fetching position');
+          return undefined;
+        })
+      ]);
+      done = true;
+    } catch (e) {
+      console.warn(e);
+      location = undefined;
+    }
+
+    return location;
   }
 };
 
