@@ -3,8 +3,11 @@ type LatLon = {
   longitude: number;
 };
 
+// we are not interested in the actual distances in km, but only in relative distances to each other
+// this calculates an equirectangular approximation (https://www.movable-type.co.uk/scripts/latlong.html) that is sufficient for our case
+// the factor 0.63 was chosen as the average of the values for northern and southern germany (~0.58 and ~0.68 respectively)
 const calculateDistance = (a: LatLon, b: LatLon) =>
-  Math.sqrt(Math.pow(a.latitude - b.latitude, 2) + Math.pow(a.longitude - b.longitude, 2));
+  Math.sqrt(Math.pow(a.latitude - b.latitude, 2) + 0.63 * Math.pow(a.longitude - b.longitude, 2));
 
 const sortByDistancesFromPoint = <T>(
   inputArray: T[],

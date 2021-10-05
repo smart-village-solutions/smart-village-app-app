@@ -388,7 +388,7 @@ export const texts = {
     },
     locationService: {
       onSystemPermissionMissing:
-        'Um diese Einstellung zu aktivieren, muss zunächst die Berechtigung die Ortungsdienste ihres Gerätes zu verwenden in den Systemeinstellungen erteilt werden.'
+        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.'
     }
   },
   settingsScreen: {
