@@ -2,7 +2,7 @@
 
 exports[`Link renders a Link that opens a WebScreen 1`] = `
 <View
-  accessibilityLabel="description (Taste)"
+  accessibilityLabel="(description) (Link)"
   accessible={true}
   focusable={true}
   onClick={[Function]}
@@ -30,8 +30,10 @@ exports[`Link renders a Link that opens a WebScreen 1`] = `
     <View
       hitSlop={
         Object {
-          "bottom": 12,
-          "top": 12,
+          "bottom": 8.559999999999999,
+          "left": 8.559999999999999,
+          "right": 8.559999999999999,
+          "top": 8.559999999999999,
         }
       }
       style={
@@ -148,7 +150,7 @@ exports[`Link renders a Link that opens a WebScreen 1`] = `
 
 exports[`Link renders a default Link 1`] = `
 <View
-  accessibilityLabel="description (Taste)"
+  accessibilityLabel="(description) (Link)"
   accessible={true}
   focusable={true}
   onClick={[Function]}
@@ -176,8 +178,10 @@ exports[`Link renders a default Link 1`] = `
     <View
       hitSlop={
         Object {
-          "bottom": 12,
-          "top": 12,
+          "bottom": 8.559999999999999,
+          "left": 8.559999999999999,
+          "right": 8.559999999999999,
+          "top": 8.559999999999999,
         }
       }
       style={

@@ -4,8 +4,10 @@ exports[`Icon renders a default Icon 1`] = `
 <View
   hitSlop={
     Object {
-      "bottom": 12,
-      "top": 12,
+      "bottom": 7.439999999999998,
+      "left": 7.439999999999998,
+      "right": 7.439999999999998,
+      "top": 7.439999999999998,
     }
   }
 >
@@ -17,8 +19,10 @@ exports[`Icon renders a svg Icon 1`] = `
 <View
   hitSlop={
     Object {
-      "bottom": 12,
-      "top": 12,
+      "bottom": 8.559999999999999,
+      "left": 8.559999999999999,
+      "right": 8.559999999999999,
+      "top": 8.559999999999999,
     }
   }
 >
@@ -93,8 +97,10 @@ exports[`Icon renders an Icon with custom color 1`] = `
 <View
   hitSlop={
     Object {
-      "bottom": 12,
-      "top": 12,
+      "bottom": 7.439999999999998,
+      "left": 7.439999999999998,
+      "right": 7.439999999999998,
+      "top": 7.439999999999998,
     }
   }
 >
@@ -106,8 +112,10 @@ exports[`Icon renders an Icon with custom style 1`] = `
 <View
   hitSlop={
     Object {
-      "bottom": 12,
-      "top": 12,
+      "bottom": 7.439999999999998,
+      "left": 7.439999999999998,
+      "right": 7.439999999999998,
+      "top": 7.439999999999998,
     }
   }
   style={
