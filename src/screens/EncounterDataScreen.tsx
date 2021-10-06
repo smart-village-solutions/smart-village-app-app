@@ -56,6 +56,8 @@ export const EncounterDataScreen = () => {
       return;
     }
 
+    // this allows for proper selecting and cropping to 1:1 images (and not videos)
+    // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
     const result = await launchImageLibraryAsync({
       mediaTypes: MediaTypeOptions.Images,
       allowsEditing: true,
@@ -76,7 +78,7 @@ export const EncounterDataScreen = () => {
     try {
       setBirthDate(new Date(userData.birthDate));
     } catch (e) {
-      console.warn('error when parsing the birthdate of the encounter user');
+      console.warn('error when parsing the birth date of the encounter user');
     }
     setGivenName(userData.firstName);
     setFamilyName(userData.lastName);
@@ -131,6 +133,7 @@ export const EncounterDataScreen = () => {
             <Label>{texts.encounter.birthDate}</Label>
             <Pressable
               onPress={() => {
+                // without setting it to false first, it sometimes did not properly show
                 setIsDatePickerVisible(false);
                 setIsDatePickerVisible(true);
               }}
@@ -180,9 +183,7 @@ export const EncounterDataScreen = () => {
         <DateTimePicker
           initialTime={birthDate}
           mode="date"
-          onUpdate={(time) => {
-            setBirthDate(time);
-          }}
+          onUpdate={setBirthDate}
           setVisible={setIsDatePickerVisible}
           visible={isDatePickerVisible}
         />

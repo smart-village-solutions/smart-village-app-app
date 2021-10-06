@@ -66,16 +66,12 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
       <WrapperWithOrientation>
         <Wrapper>
           <Button
-            onPress={() => {
-              navigation.navigate(ScreenName.EncounterScanner);
-            }}
+            onPress={() => navigation.navigate(ScreenName.EncounterScanner)}
             title={texts.encounter.newEncounter}
           />
           <Button
             invert
-            onPress={() => {
-              navigation.navigate(ScreenName.EncounterData);
-            }}
+            onPress={() => navigation.navigate(ScreenName.EncounterData)}
             title={texts.encounter.myData}
           />
         </Wrapper>
