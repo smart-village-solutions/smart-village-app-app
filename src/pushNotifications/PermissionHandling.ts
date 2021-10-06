@@ -3,7 +3,7 @@ import { PermissionStatus } from 'expo-permissions';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
-import { addToStore, readFromStore } from '../helpers';
+import { addToStore, parseColorToHex, readFromStore } from '../helpers';
 import { colors, device, texts } from '../config';
 
 import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandling';
@@ -53,7 +53,7 @@ const registerForPushNotificationsAsync = async () => {
       name: 'default',
       importance: Notifications.AndroidImportance.DEFAULT,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: colors.primary
+      lightColor: parseColorToHex(colors.primary) ?? '#ffffff' // fall back to white if we can't make sense of the color value
     });
   }
 

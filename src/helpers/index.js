@@ -3,6 +3,7 @@ export * from './parser';
 export * from './addressHelper';
 export * from './bookmarkHelper';
 export * from './calendarHelper';
+export * from './colorHelper';
 export * from './dateTimeHelper';
 export * from './fileSizeHelper';
 export * from './graphqlHelper';
