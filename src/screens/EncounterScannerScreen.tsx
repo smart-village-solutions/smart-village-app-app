@@ -24,6 +24,8 @@ const showErrorAlert = () =>
 const parseQrCode = (data: string): string | undefined => {
   const result = Linking.parse(data);
 
+  // while we are developing with expo go, the qr codes we will generate will not start with the specified app scheme, but with expo instead
+  // so we need to also expect those when scanning while testing in dev mode
   if (result.scheme === (__DEV__ ? 'exp' : appJson.expo.scheme) && result.path === 'encounter') {
     return result.queryParams?.qrId;
   }
@@ -107,12 +109,7 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
       </WrapperWithOrientation>
       {isScanning ? (
         <Wrapper style={styles.scannerContainer}>
-          <Camera
-            ratio="1:1"
-            onBarCodeScanned={handleBarCodeScanned}
-            style={styles.scanner}
-            // barCodeTypes={['org.iso.QRCode']}
-          />
+          <Camera ratio="1:1" onBarCodeScanned={handleBarCodeScanned} style={styles.scanner} />
         </Wrapper>
       ) : (
         <WrapperWithOrientation>
