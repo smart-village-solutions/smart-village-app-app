@@ -1,21 +1,84 @@
-import { isBoolean, isString } from 'lodash';
+import { isArray, isBoolean, isObjectLike, isString } from 'lodash';
 
-import { User } from '../types';
+import { Encounter, User } from '../types';
 
-export const isUser = (json: unknown): json is User => {
+type EncounterResponseType = {
+  encounter_uuid: string;
+  created_at: string;
+};
+
+type UserResponseType = {
+  birth_date: string;
+  first_name: string;
+  image_uri: string;
+  last_name: string;
+  phone: string;
+  verified: boolean;
+};
+
+const isUser = (json: unknown): json is Omit<User, 'userId'> => {
   if (!json) {
     return false;
   }
 
   return (
     isString((json as User).birthDate) && // TODO: check for proper date string?
-    isString((json as User).createdAt) &&
     isString((json as User).firstName) &&
     isString((json as User).imageUri) &&
     isString((json as User).lastName) &&
     isString((json as User).phone) &&
-    isString((json as User).userId) &&
-    isBoolean((json as User).verified) &&
-    isString((json as User).village)
+    isBoolean((json as User).verified)
   );
+};
+
+export const parseUser = (json: unknown): User | undefined => {
+  if (!isObjectLike(json)) {
+    return;
+  }
+
+  const user = {
+    birthDate: (json as UserResponseType).birth_date,
+    firstName: (json as UserResponseType).first_name,
+    imageUri: (json as UserResponseType).image_uri,
+    lastName: (json as UserResponseType).last_name,
+    phone: (json as UserResponseType).phone,
+    verified: (json as UserResponseType).verified
+  };
+
+  if (!isUser(user)) {
+    return;
+  }
+
+  return user;
+};
+
+const isEncounter = (json: unknown): json is Encounter => {
+  return isString((json as Encounter).createdAt) && isString((json as Encounter).encounterId);
+};
+
+const parseEncounter = (json: unknown): Encounter | undefined => {
+  if (!isObjectLike(json)) {
+    return;
+  }
+
+  const encounter = {
+    createdAt: (json as EncounterResponseType).created_at,
+    encounterId: (json as EncounterResponseType).encounter_uuid
+  };
+
+  if (!isEncounter(encounter)) {
+    return;
+  }
+
+  return encounter;
+};
+
+export const parseEncounters = (json: unknown): Encounter[] => {
+  if (isArray(json)) {
+    return json
+      .map((value) => parseEncounter(value))
+      .filter((encounter): encounter is Encounter => !!encounter);
+  }
+
+  return [];
 };

@@ -39,7 +39,6 @@ export const EncounterUserDetails = ({ data }: Props) => {
         <>
           <EncounterDetailEntry left={texts.encounter.birthDate} right={data.birthDate} />
           <EncounterDetailEntry left={texts.encounter.phone} right={data.phone} />
-          <EncounterDetailEntry left={texts.encounter.id} right={data.userId} />
         </>
       )}
       <EncounterDetailEntry
