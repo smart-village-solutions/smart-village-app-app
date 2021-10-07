@@ -80,17 +80,18 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
-        <SectionHeader title={texts.encounter.homeTitle} />
-        <DiagonalGradient style={styles.gradient}>
-          <View style={styles.container}>
-            <View style={styles.circle}>
-              <QRCode value={qrValue} size={device.width / 3} quietZone={normalize(4)} />
+        <WrapperWithOrientation>
+          <SectionHeader title={texts.encounter.homeTitle} />
+          <DiagonalGradient style={styles.gradient}>
+            <View style={styles.container}>
+              <View style={styles.circle}>
+                <QRCode value={qrValue} size={device.width / 3} quietZone={normalize(4)} />
+              </View>
+              <BoldText big lightest>
+                {`${firstName} ${lastName}`.toUpperCase()}
+              </BoldText>
             </View>
-            <BoldText big lightest>
-              {`${firstName} ${lastName}`.toUpperCase()}
-            </BoldText>
-          </View>
-          <WrapperWithOrientation>
+
             <Wrapper>
               <WrapperRow spaceBetween>
                 <WrapperRow style={styles.statusTextContainer}>
@@ -111,9 +112,8 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
               </WrapperRow>
               <Divider style={styles.divider} />
             </Wrapper>
-          </WrapperWithOrientation>
-        </DiagonalGradient>
-        <WrapperWithOrientation>
+          </DiagonalGradient>
+
           <Wrapper>
             <Button
               onPress={() => {

@@ -1,5 +1,4 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import { noop } from 'lodash';
 import React, { useState } from 'react';
 import { useCallback } from 'react';
 import {
@@ -32,6 +31,7 @@ import { colors, device, Icon, texts } from '../config';
 import { createUserAsync } from '../encounterApi';
 import { momentFormat, storeEncounterUserId } from '../helpers';
 import { useSelectImage } from '../hooks';
+import { QUERY_TYPES } from '../queries';
 import { CreateUserData, ScreenName, User } from '../types';
 
 const isValidRegistrationData = (
@@ -87,11 +87,19 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
     }
   }, [birthDate, firstName, imageUri, lastName, navigation, phone, isPrivacyChecked]);
 
+  const onPressInfo = useCallback(() => {
+    navigation.navigate(ScreenName.Html, {
+      title: texts.screenTitles.encounterHome,
+      query: QUERY_TYPES.PUBLIC_HTML_FILE,
+      queryVariables: { name: 'encounter-privacy' }
+    });
+  }, [navigation]);
+
   return (
     <SafeAreaViewFlex>
       <ScrollView keyboardShouldPersistTaps="handled">
-        <SectionHeader title={texts.encounter.registrationTitle} />
         <WrapperWithOrientation>
+          <SectionHeader title={texts.encounter.registrationTitle} />
           <Wrapper>
             <BoldText>{texts.encounter.registrationHint}</BoldText>
           </Wrapper>
@@ -166,7 +174,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
               />
               <View style={styles.privacyTextContainer}>
                 <RegularText small>{texts.encounter.registrationPrivacyText}</RegularText>
-                <Touchable onPress={noop}>
+                <Touchable onPress={onPressInfo}>
                   <RegularText small underline>
                     {texts.encounter.registrationPrivacyLink}
                   </RegularText>

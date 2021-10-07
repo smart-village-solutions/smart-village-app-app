@@ -144,8 +144,8 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
         keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}
       >
-        <SectionHeader title={texts.encounter.dataTitle} />
         <WrapperWithOrientation>
+          <SectionHeader title={texts.encounter.dataTitle} />
           <Wrapper>
             <Label>{texts.encounter.profilePhoto}</Label>
             <WrapperRow spaceBetween>
