@@ -22,6 +22,8 @@ import { useEncounterUser, useQRValue } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
 
+const INFO_ICON_SIZE = normalize(16);
+
 // TODO: accesibility labels
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterHomeScreen = ({ navigation }: any) => {
@@ -94,14 +96,14 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
 
             <Wrapper>
               <WrapperRow spaceBetween>
-                <WrapperRow style={styles.statusTextContainer}>
+                <WrapperRow>
                   <RegularText lightest small textAlign="bottom">
                     {texts.encounter.status}
                   </RegularText>
                   <Touchable onPress={onPressInfo}>
                     <Icon.Info
                       color={colors.lightestText}
-                      size={normalize(18)}
+                      size={INFO_ICON_SIZE}
                       style={styles.icon}
                     />
                   </Touchable>
@@ -153,6 +155,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: normalize(24)
   },
-  icon: { marginLeft: normalize(8) },
-  statusTextContainer: { alignItems: 'flex-end' }
+  icon: { marginLeft: normalize(8) }
 });

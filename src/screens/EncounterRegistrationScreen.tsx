@@ -155,12 +155,21 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
               <View style={styles.editIconContainer}>
                 <Icon.EditSetting color={colors.transparent} />
               </View>
-              {/* TODO: add placeholder image */}
               <View style={styles.circle}>
-                <Image source={{ uri: imageUri }} resizeMode="contain" />
+                {imageUri ? (
+                  <Image source={{ uri: imageUri }} resizeMode="contain" />
+                ) : (
+                  <>
+                    <Wrapper>
+                      <Icon.AddImage color={colors.darkText} size={normalize(34)} />
+                    </Wrapper>
+                    <RegularText small>{texts.encounter.photoPlaceholder.first}</RegularText>
+                    <RegularText small>{texts.encounter.photoPlaceholder.second}</RegularText>
+                  </>
+                )}
               </View>
               <TouchableOpacity onPress={selectImage} style={styles.editIconContainer}>
-                <Icon.EditSetting color={colors.placeholder} />
+                <Icon.EditSetting color={colors.shadow} />
               </TouchableOpacity>
             </WrapperRow>
           </Wrapper>
@@ -208,7 +217,7 @@ const styles = StyleSheet.create({
   circle: {
     alignItems: 'center',
     aspectRatio: 1,
-    backgroundColor: colors.surface,
+    backgroundColor: colors.shadowRgba,
     borderRadius: device.width / 4,
     justifyContent: 'center',
     overflow: 'hidden',

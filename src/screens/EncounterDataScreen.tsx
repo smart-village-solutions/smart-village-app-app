@@ -34,6 +34,8 @@ import { useEncounterUser, useSelectImage } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
 
+const INFO_ICON_SIZE = normalize(14);
+
 const showChangeWarning = (onPressOk: () => void) =>
   Alert.alert(texts.encounter.changeWarningTitle, texts.encounter.changeWarningBody, [
     { style: 'cancel', text: texts.encounter.changeWarningAbort },
@@ -213,7 +215,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             <WrapperRow style={styles.infoLabelContainer}>
               <Label>{texts.encounter.verified}</Label>
               <Touchable onPress={onPressInfoVerification}>
-                <Icon.Info color={colors.darkText} size={normalize(18)} style={styles.icon} />
+                <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
               </Touchable>
             </WrapperRow>
             <TextInput
@@ -226,7 +228,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             <WrapperRow style={styles.infoLabelContainer}>
               <Label>{texts.encounter.id}</Label>
               <Touchable onPress={onPressInfoId}>
-                <Icon.Info color={colors.darkText} size={normalize(18)} style={styles.icon} />
+                <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
               </Touchable>
             </WrapperRow>
             <TextInput
