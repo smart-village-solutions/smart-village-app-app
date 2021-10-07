@@ -9,6 +9,7 @@ import {
   BoldText,
   Button,
   RegularText,
+  SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
   WrapperWithOrientation
@@ -79,10 +80,10 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
 
   if (hasPermission === undefined || loadingUser || loadingCreateEncounter) {
     return (
-      <ScrollView>
+      <SafeAreaViewFlex>
         <SectionHeader title={texts.encounter.scannerTitle} />
         <LoadingSpinner loading />
-      </ScrollView>
+      </SafeAreaViewFlex>
     );
   }
 
