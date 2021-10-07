@@ -1,8 +1,10 @@
+import { StackScreenProps } from '@react-navigation/stack';
 import { noop } from 'lodash';
 import React, { useState } from 'react';
 import { useCallback } from 'react';
 import {
   Alert,
+  Keyboard,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -27,35 +29,63 @@ import {
   WrapperWithOrientation
 } from '../components';
 import { colors, device, Icon, texts } from '../config';
-import { momentFormat } from '../helpers';
+import { createUserAsync } from '../encounterApi';
+import { momentFormat, storeEncounterUserId } from '../helpers';
 import { useSelectImage } from '../hooks';
+import { CreateUserData, ScreenName, User } from '../types';
+
+const isValidRegistrationData = (
+  data: Partial<User> & { isPrivacyChecked: boolean }
+): data is CreateUserData & { isPrivacyChecked: boolean } => {
+  const { birthDate, firstName, imageUri, isPrivacyChecked, lastName, phone } = data;
+  return !!(firstName && lastName && birthDate && phone && imageUri && isPrivacyChecked);
+};
+
+const showInvalidRegistrationDataAlert = () =>
+  Alert.alert(
+    texts.encounter.registrationAllFieldsRequiredTitle,
+    texts.encounter.registrationAllFieldsRequiredBody
+  );
+
+const showRegistrationFailAlert = () =>
+  Alert.alert(texts.encounter.registrationFailedTitle, texts.encounter.registrationFailedBody);
 
 // TODO: accesibility labels
-export const EncounterRegistrationScreen = () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any>) => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [givenName, setGivenName] = useState<string>();
-  const [familyName, setFamilyName] = useState<string>();
+  const [firstName, setFirstName] = useState<string>();
+  const [lastName, setLastName] = useState<string>();
   const [birthDate, setBirthDate] = useState<Date>();
   const [phone, setPhone] = useState<string>();
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
 
   const { imageUri, selectImage } = useSelectImage();
 
-  const checkValuesForSubmission = useCallback(() => {
-    return !!(givenName && familyName && birthDate && phone && imageUri && isPrivacyChecked);
-  }, [givenName, familyName, birthDate, phone, imageUri, isPrivacyChecked]);
+  const onPressRegister = useCallback(async () => {
+    const registrationData = {
+      birthDate: birthDate && momentFormat(birthDate.valueOf(), 'yyyy-MM-DD', 'x'),
+      firstName,
+      imageUri,
+      isPrivacyChecked,
+      lastName,
+      phone
+    };
 
-  const onPressRegister = useCallback(() => {
-    if (!checkValuesForSubmission()) {
-      Alert.alert(
-        texts.encounter.registrationAllFieldsRequiredTitle,
-        texts.encounter.registrationAllFieldsRequiredBody
-      );
-      return;
+    if (isValidRegistrationData(registrationData)) {
+      const userId = await createUserAsync(registrationData);
+
+      if (!userId?.length) {
+        showRegistrationFailAlert();
+        return;
+      }
+
+      await storeEncounterUserId(userId);
+      navigation.replace(ScreenName.EncounterHome);
+    } else {
+      showInvalidRegistrationDataAlert();
     }
-
-    // TODO: implement API call
-  }, [checkValuesForSubmission]);
+  }, [birthDate, firstName, imageUri, lastName, navigation, phone, isPrivacyChecked]);
 
   return (
     <SafeAreaViewFlex>
@@ -66,28 +96,28 @@ export const EncounterRegistrationScreen = () => {
             <BoldText>{texts.encounter.registrationHint}</BoldText>
           </Wrapper>
           <Wrapper style={styles.noPaddingTop}>
-            <Label>{texts.encounter.givenName}</Label>
+            <Label>{texts.encounter.firstName}</Label>
             <TextInput
-              onChangeText={setGivenName}
-              placeholder={texts.encounter.givenName}
+              onChangeText={setFirstName}
+              placeholder={texts.encounter.firstName}
               style={styles.inputField}
-              value={givenName}
+              value={firstName}
             />
           </Wrapper>
           <Wrapper style={styles.noPaddingTop}>
-            <Label>{texts.encounter.familyName}</Label>
+            <Label>{texts.encounter.lastName}</Label>
             <TextInput
-              onChangeText={setFamilyName}
-              placeholder={texts.encounter.familyName}
+              onChangeText={setLastName}
+              placeholder={texts.encounter.lastName}
               style={styles.inputField}
-              value={familyName}
+              value={lastName}
             />
           </Wrapper>
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.birthDate}</Label>
             <Pressable
               onPress={() => {
-                setIsDatePickerVisible(false);
+                Keyboard.dismiss();
                 setIsDatePickerVisible(true);
               }}
               onStartShouldSetResponderCapture={() => true}
