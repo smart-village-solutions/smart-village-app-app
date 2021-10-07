@@ -14,6 +14,7 @@ export enum ScreenName {
   ConstructionSiteOverview = 'ConstructionSiteOverview',
   DataProvider = 'DataProvider',
   Detail = 'Detail',
+  EncounterData = 'EncounterData',
   EncounterHome = 'EncounterHome',
   EncounterScanner = 'EncounterScanner',
   EncounterUserDetail = 'EncounterUserDetail',

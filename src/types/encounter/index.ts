@@ -1,1 +1,2 @@
-export * from './User';
+export * from './encounter';
+export * from './user';

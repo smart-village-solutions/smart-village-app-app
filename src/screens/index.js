@@ -5,6 +5,7 @@ export * from './ConstructionSiteDetailScreen';
 export * from './ConstructionSiteOverviewScreen';
 export * from './DataProviderScreen';
 export * from './DetailScreen';
+export * from './EncounterDataScreen';
 export * from './EncounterHomeScreen';
 export * from './EncounterScannerScreen';
 export * from './EncounterUserDetailScreen';
