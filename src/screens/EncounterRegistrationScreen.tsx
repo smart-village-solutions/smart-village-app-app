@@ -16,6 +16,7 @@ import { CheckBox, normalize } from 'react-native-elements';
 import {
   BoldText,
   Button,
+  CircularView,
   DateTimePicker,
   Image,
   Label,
@@ -164,7 +165,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
               <View style={styles.editIconContainer}>
                 <Icon.EditSetting color={colors.transparent} />
               </View>
-              <View style={styles.circle}>
+              <CircularView size={device.width / 2} style={styles.circle}>
                 {imageUri ? (
                   <Image source={{ uri: imageUri }} resizeMode="contain" />
                 ) : (
@@ -176,7 +177,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
                     <RegularText small>{texts.encounter.photoPlaceholder.second}</RegularText>
                   </>
                 )}
-              </View>
+              </CircularView>
               <TouchableOpacity
                 accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
                 onPress={selectImage}
@@ -231,13 +232,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
 
 const styles = StyleSheet.create({
   circle: {
-    alignItems: 'center',
-    aspectRatio: 1,
-    backgroundColor: colors.shadowRgba,
-    borderRadius: device.width / 4,
-    justifyContent: 'center',
-    overflow: 'hidden',
-    width: device.width / 2
+    backgroundColor: colors.shadowRgba
   },
   editIconContainer: {
     justifyContent: 'flex-end'
