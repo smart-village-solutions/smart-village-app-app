@@ -1,20 +1,6 @@
-import {
-  launchImageLibraryAsync,
-  MediaTypeOptions,
-  PermissionStatus,
-  requestMediaLibraryPermissionsAsync
-} from 'expo-image-picker';
 import { noop } from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import { normalize } from 'react-native-elements';
 
 import {
@@ -32,43 +18,22 @@ import {
 } from '../components';
 import { colors, Icon, texts } from '../config';
 import { momentFormat } from '../helpers';
-import { useEncounterUser } from '../hooks';
+import { useEncounterUser, useSelectImage } from '../hooks';
 
 // TODO: accesibility labels
 export const EncounterDataScreen = () => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [imageUri, setImageUri] = useState<string>();
   const [givenName, setGivenName] = useState<string>();
   const [familyName, setFamilyName] = useState<string>();
   const [birthDate, setBirthDate] = useState<Date>();
   const [phone, setPhone] = useState<string>();
 
+  const { imageUri, selectImage } = useSelectImage();
+
   const userData = useEncounterUser();
 
   // TODO: implement
   const updateUserData = noop;
-
-  const selectImage = useCallback(async () => {
-    const { status } = await requestMediaLibraryPermissionsAsync();
-
-    if (status !== PermissionStatus.GRANTED) {
-      Alert.alert(texts.errors.image.title, texts.errors.image.body);
-      return;
-    }
-
-    // this allows for proper selecting and cropping to 1:1 images (and not videos)
-    // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
-    const result = await launchImageLibraryAsync({
-      mediaTypes: MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1
-    });
-
-    if (!result.cancelled) {
-      setImageUri(result.uri);
-    }
-  }, []);
 
   useEffect(() => {
     if (userData.loading) {

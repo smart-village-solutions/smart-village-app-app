@@ -86,6 +86,15 @@ export const texts = {
     notVerified: 'Nicht Verifiziert',
     phone: 'Telefon',
     profilePhoto: 'Profilfoto',
+    register: 'Registrieren',
+    registrationAllFieldsRequiredBody:
+      'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
+    registrationAllFieldsRequiredTitle: 'Hinweis',
+    registrationHint: 'Bitte gib deine persönlichen Daten an:',
+    registrationPrivacyLink: 'Datenschutzerklärung.',
+    registrationPrivacyText:
+      'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
+    registrationTitle: 'Registrierung',
     saveChanges: 'Änderungen speichern',
     scanAgain: 'Erneut scannen',
     scannerSubTitle: 'Scanne den QR-Code deines Fahrers',
