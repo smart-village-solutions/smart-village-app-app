@@ -80,7 +80,7 @@ export const texts = {
     changeWarningTitle: 'Achtung',
     dataTitle: 'Meine Daten',
     detailTitle: 'Dein Mitfahrer',
-    errorLoadingUser: 'Beim Laden ihrer Daten ist ein Fehler aufgetreten.',
+    errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
     errorScanBody: 'Beim Scannen des QR-Codes ist ein Fehler aufgetreten.',
     firstName: 'Vorname',
     history: 'Fahrthistorie',
@@ -92,6 +92,7 @@ export const texts = {
     noHistoryYet: 'Es gibt noch keine Fahrthistorie, du bist noch nicht gefahren.',
     notVerified: 'Nicht Verifiziert',
     phone: 'Telefon',
+    photoPlaceholder: { first: 'Foto', second: 'hochladen' },
     profilePhoto: 'Profilfoto',
     register: 'Registrieren',
     registrationAllFieldsRequiredBody:

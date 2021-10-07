@@ -21,11 +21,12 @@ export const createEncounterAsync = async (qrId: string) => {
     body
   });
 
-  const json = await response.json();
   const status = response.status;
   const ok = response.ok;
 
   if (ok && status === 201) {
+    const json = await response.json();
+
     return parseUser(json);
   }
 };

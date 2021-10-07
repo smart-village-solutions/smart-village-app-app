@@ -23,7 +23,6 @@ const addQueryParam = (url, param) => {
 };
 
 export const Image = ({
-  source: sourceProp,
   message,
   style,
   containerStyle,
@@ -31,7 +30,8 @@ export const Image = ({
   aspectRatio,
   resizeMode,
   borderRadius,
-  refreshInterval
+  refreshInterval,
+  ...props
 }) => {
   const [source, setSource] = useState(null);
   const { globalSettings } = useContext(SettingsContext);
@@ -48,25 +48,26 @@ export const Image = ({
     // -> https://juliangaramendy.dev/use-promise-subscription/
     let mounted = true;
 
+    //  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/label#using_a_labeled_block_with_break
     effect: {
       // we do not want the refreshInterval or the caching to affect required static images or local images
-      if (!sourceProp.uri || sourceProp.uri.startsWith('file:///')) {
-        setSource(sourceProp);
+      if (!props.source.uri || props.source.uri.startsWith('file:///')) {
+        setSource(props.source);
 
         break effect;
       }
 
       if (refreshInterval !== undefined) {
         setSource({
-          uri: addQueryParam(sourceProp.uri, `svaRefreshCount=${timestamp}`)
+          uri: addQueryParam(props.source.uri, `svaRefreshCount=${timestamp}`)
         });
 
         // we do not want to use the cache when the refreshInterval is defined and can return immediately
         break effect;
       }
 
-      sourceProp.uri
-        ? CacheManager.get(sourceProp.uri)
+      props.source.uri
+        ? CacheManager.get(props.source.uri)
             .getPath()
             .then((path) => {
               mounted && setSource({ uri: path });
@@ -74,15 +75,15 @@ export const Image = ({
             .catch((err) =>
               console.warn(
                 'An error occurred with cache management for an image',
-                sourceProp.uri,
+                props.source.uri,
                 err
               )
             )
-        : mounted && setSource(sourceProp);
+        : mounted && setSource(props.source);
     }
 
     return () => (mounted = false);
-  }, [timestamp, refreshInterval, sourceProp, setSource]);
+  }, [timestamp, refreshInterval, props.source, setSource]);
 
   return (
     <View>
@@ -92,16 +93,16 @@ export const Image = ({
         containerStyle={containerStyle}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}
-        accessible={!!sourceProp?.captionText}
-        accessibilityLabel={`${sourceProp.captionText ? sourceProp.captionText : ''} ${
+        accessible={!!props.source?.captionText}
+        accessibilityLabel={`${props.source.captionText ? props.source.captionText : ''} ${
           consts.a11yLabel.image
         }`}
         resizeMode={resizeMode}
         borderRadius={borderRadius}
       >
         {!!message && <ImageMessage message={message} />}
-        {!!globalSettings?.showImageRights && !!sourceProp?.copyright && (
-          <ImageRights imageRights={sourceProp.copyright} />
+        {!!globalSettings?.showImageRights && !!props.source?.copyright && (
+          <ImageRights imageRights={props.source.copyright} />
         )}
       </RNEImage>
     </View>
