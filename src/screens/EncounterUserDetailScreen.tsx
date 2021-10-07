@@ -10,8 +10,8 @@ export const EncounterUserDetailScreen = ({ route }: any) => {
   return (
     <ScrollView>
       {/* TODO: soll hier tatsächlich gender logic hin? */}
-      <SectionHeader title={texts.encounter.detailTitle} />
       <WrapperWithOrientation>
+        <SectionHeader title={texts.encounter.detailTitle} />
         {route.params?.data && <EncounterUserDetails data={route.params.data} />}
       </WrapperWithOrientation>
     </ScrollView>

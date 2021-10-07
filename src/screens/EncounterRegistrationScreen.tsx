@@ -1,8 +1,9 @@
-import { noop } from 'lodash';
+import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useCallback } from 'react';
 import {
   Alert,
+  Keyboard,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -27,12 +28,33 @@ import {
   WrapperWithOrientation
 } from '../components';
 import { colors, consts, device, Icon, texts } from '../config';
-import { momentFormat } from '../helpers';
+import { createUserAsync } from '../encounterApi';
+import { momentFormat, storeEncounterUserId } from '../helpers';
 import { useSelectImage } from '../hooks';
+import { QUERY_TYPES } from '../queries';
+import { CreateUserData, ScreenName, User } from '../types';
+
+const isValidRegistrationData = (
+  data: Partial<User> & { isPrivacyChecked: boolean }
+): data is CreateUserData & { isPrivacyChecked: boolean } => {
+  const { birthDate, firstName, imageUri, isPrivacyChecked, lastName, phone } = data;
+  return !!(firstName && lastName && birthDate && phone && imageUri && isPrivacyChecked);
+};
+
+const showInvalidRegistrationDataAlert = () =>
+  Alert.alert(
+    texts.encounter.registrationAllFieldsRequiredTitle,
+    texts.encounter.registrationAllFieldsRequiredBody
+  );
+
+const showRegistrationFailAlert = () =>
+  Alert.alert(texts.encounter.registrationFailedTitle, texts.encounter.registrationFailedBody);
 
 const a11yLabels = consts.a11yLabel;
 
-export const EncounterRegistrationScreen = () => {
+// TODO: accesibility labels
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any>) => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
@@ -42,27 +64,44 @@ export const EncounterRegistrationScreen = () => {
 
   const { imageUri, selectImage } = useSelectImage();
 
-  const checkValuesForSubmission = useCallback(() => {
-    return !!(firstName && lastName && birthDate && phone && imageUri && isPrivacyChecked);
-  }, [firstName, lastName, birthDate, phone, imageUri, isPrivacyChecked]);
+  const onPressRegister = useCallback(async () => {
+    const registrationData = {
+      birthDate: birthDate && momentFormat(birthDate.valueOf(), 'yyyy-MM-DD', 'x'),
+      firstName,
+      imageUri,
+      isPrivacyChecked,
+      lastName,
+      phone
+    };
 
-  const onPressRegister = useCallback(() => {
-    if (!checkValuesForSubmission()) {
-      Alert.alert(
-        texts.encounter.registrationAllFieldsRequiredTitle,
-        texts.encounter.registrationAllFieldsRequiredBody
-      );
-      return;
+    if (isValidRegistrationData(registrationData)) {
+      const userId = await createUserAsync(registrationData);
+
+      if (!userId?.length) {
+        showRegistrationFailAlert();
+        return;
+      }
+
+      await storeEncounterUserId(userId);
+      navigation.replace(ScreenName.EncounterHome);
+    } else {
+      showInvalidRegistrationDataAlert();
     }
+  }, [birthDate, firstName, imageUri, lastName, navigation, phone, isPrivacyChecked]);
 
-    // TODO: implement API call
-  }, [checkValuesForSubmission]);
+  const onPressInfo = useCallback(() => {
+    navigation.navigate(ScreenName.Html, {
+      title: texts.screenTitles.encounterHome,
+      query: QUERY_TYPES.PUBLIC_HTML_FILE,
+      queryVariables: { name: 'encounter-privacy' }
+    });
+  }, [navigation]);
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView>
-        <SectionHeader title={texts.encounter.registrationTitle} />
+      <ScrollView keyboardShouldPersistTaps="handled">
         <WrapperWithOrientation>
+          <SectionHeader title={texts.encounter.registrationTitle} />
           <Wrapper>
             <BoldText>{texts.encounter.registrationHint}</BoldText>
           </Wrapper>
@@ -94,7 +133,7 @@ export const EncounterRegistrationScreen = () => {
               }`}
               accessibilityHint={a11yLabels.birthDateHint}
               onPress={() => {
-                setIsDatePickerVisible(false);
+                Keyboard.dismiss();
                 setIsDatePickerVisible(true);
               }}
               onStartShouldSetResponderCapture={() => true}
@@ -159,7 +198,7 @@ export const EncounterRegistrationScreen = () => {
                 <RegularText small>{texts.encounter.registrationPrivacyText}</RegularText>
                 <Touchable
                   accessibilityLabel={`${a11yLabels.privacy} ${a11yLabels.button}`}
-                  onPress={noop}
+                  onPress={onPressInfo}
                 >
                   <RegularText small underline>
                     {texts.encounter.registrationPrivacyLink}
