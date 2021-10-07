@@ -27,7 +27,7 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../components';
-import { colors, device, Icon, texts } from '../config';
+import { colors, consts, device, Icon, texts } from '../config';
 import { createUserAsync } from '../encounterApi';
 import { momentFormat, storeEncounterUserId } from '../helpers';
 import { useSelectImage } from '../hooks';
@@ -50,14 +50,16 @@ const showInvalidRegistrationDataAlert = () =>
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.encounter.registrationFailedTitle, texts.encounter.registrationFailedBody);
 
+const a11yLabels = consts.a11yLabel;
+
 // TODO: accesibility labels
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any>) => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [firstName, setFirstName] = useState<string>();
-  const [lastName, setLastName] = useState<string>();
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
   const [birthDate, setBirthDate] = useState<Date>();
-  const [phone, setPhone] = useState<string>();
+  const [phone, setPhone] = useState<string>('');
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
 
   const { imageUri, selectImage } = useSelectImage();
@@ -106,6 +108,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.firstName}</Label>
             <TextInput
+              accessibilityLabel={`${a11yLabels.firstName} ${a11yLabels.textInput}: ${firstName}`}
               onChangeText={setFirstName}
               placeholder={texts.encounter.firstName}
               style={styles.inputField}
@@ -115,6 +118,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.lastName}</Label>
             <TextInput
+              accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
               onChangeText={setLastName}
               placeholder={texts.encounter.lastName}
               style={styles.inputField}
@@ -124,6 +128,10 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.birthDate}</Label>
             <Pressable
+              accessibilityLabel={`${a11yLabels.birthDate} ${a11yLabels.textInput}: ${
+                birthDate ? momentFormat(birthDate.toISOString()) : ''
+              }`}
+              accessibilityHint={a11yLabels.birthDateHint}
               onPress={() => {
                 Keyboard.dismiss();
                 setIsDatePickerVisible(true);
@@ -141,6 +149,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.phone}</Label>
             <TextInput
+              accessibilityLabel={`${a11yLabels.phoneNumber} ${a11yLabels.textInput}: ${phone}`}
               keyboardType="phone-pad"
               onChangeText={setPhone}
               placeholder={texts.encounter.phone}
@@ -168,7 +177,11 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
                   </>
                 )}
               </View>
-              <TouchableOpacity onPress={selectImage} style={styles.editIconContainer}>
+              <TouchableOpacity
+                accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
+                onPress={selectImage}
+                style={styles.editIconContainer}
+              >
                 <Icon.EditSetting color={colors.shadow} />
               </TouchableOpacity>
             </WrapperRow>
@@ -183,7 +196,10 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
               />
               <View style={styles.privacyTextContainer}>
                 <RegularText small>{texts.encounter.registrationPrivacyText}</RegularText>
-                <Touchable onPress={onPressInfo}>
+                <Touchable
+                  accessibilityLabel={`${a11yLabels.privacy} ${a11yLabels.button}`}
+                  onPress={onPressInfo}
+                >
                   <RegularText small underline>
                     {texts.encounter.registrationPrivacyLink}
                   </RegularText>

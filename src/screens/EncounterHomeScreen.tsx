@@ -17,14 +17,15 @@ import {
   WrapperWithOrientation
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { colors, device, Icon, normalize, texts } from '../config';
+import { colors, consts, device, Icon, normalize, texts } from '../config';
 import { useEncounterUser, useQRValue } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
 
 const INFO_ICON_SIZE = normalize(16);
 
-// TODO: accesibility labels
+const a11yLabels = consts.a11yLabel;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterHomeScreen = ({ navigation }: any) => {
   const {
@@ -100,7 +101,10 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
                   <RegularText lightest small textAlign="bottom">
                     {texts.encounter.status}
                   </RegularText>
-                  <Touchable onPress={onPressInfo}>
+                  <Touchable
+                    accessibilityLabel={`${a11yLabels.verifiedInfo} ${a11yLabels.button}`}
+                    onPress={onPressInfo}
+                  >
                     <Icon.Info
                       color={colors.lightestText}
                       size={INFO_ICON_SIZE}
