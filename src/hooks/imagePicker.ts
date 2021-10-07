@@ -20,6 +20,8 @@ export const useSelectImage = () => {
       return;
     }
 
+    // this allows for proper selecting and cropping to 1:1 images (and not videos)
+    // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
     const result = await launchImageLibraryAsync({
       mediaTypes: MediaTypeOptions.Images,
       allowsEditing: true,
