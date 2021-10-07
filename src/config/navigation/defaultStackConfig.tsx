@@ -14,6 +14,7 @@ import {
   DataProviderScreen,
   DetailScreen,
   EncounterHomeScreen,
+  EncounterScannerScreen,
   FormScreen,
   getTilesScreen,
   HomeScreen,
@@ -112,6 +113,11 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.EncounterHome,
       screenComponent: EncounterHomeScreen,
+      screenOptions: { title: texts.screenTitles.encounterHome }
+    },
+    {
+      routeName: ScreenName.EncounterScanner,
+      screenComponent: EncounterScannerScreen,
       screenOptions: { title: texts.screenTitles.encounterHome }
     },
     {
