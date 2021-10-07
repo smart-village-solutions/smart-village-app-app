@@ -15,6 +15,7 @@ export * from './matomoHelper';
 export * from './momentHelper';
 export * from './personNameHelper';
 export * from './priceHelper';
+export * from './promiseHelper';
 export * from './queryHelper';
 export * from './refreshIntervalHelper';
 export * from './searchHelper';
