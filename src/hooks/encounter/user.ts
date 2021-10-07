@@ -1,12 +1,12 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 
-import { showUserAsync } from '../../encounterApi';
+import { getUserAsync } from '../../encounterApi';
 import { getEncounterUserId } from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
 import { User } from '../../types';
 
 const loadUser = async (userId: string) => {
-  const user = await showUserAsync(userId);
+  const user = await getUserAsync(userId);
 
   if (user) {
     return user;
@@ -35,11 +35,11 @@ export const useEncounterUser = (): {
     setError(false);
 
     try {
-      const storedId = await getEncounterUserId();
-      setUserId(storedId || undefined);
+      const storedEncounterUserId = await getEncounterUserId();
+      setUserId(storedEncounterUserId || undefined);
 
-      if (storedId) {
-        setUser(await loadUser(storedId));
+      if (storedEncounterUserId) {
+        setUser(await loadUser(storedEncounterUserId));
       }
     } catch (e) {
       console.warn(e);

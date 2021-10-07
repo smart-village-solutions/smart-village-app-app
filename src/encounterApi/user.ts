@@ -67,7 +67,7 @@ export const updateUserAsync = async (userData: UpdateUserData): Promise<string 
   return;
 };
 
-export const showUserAsync = async (userId: string): Promise<User | undefined> => {
+export const getUserAsync = async (userId: string): Promise<User | undefined> => {
   const response = await fetch(`${url}?user_id=${userId}`, {
     method: 'GET',
     headers: {

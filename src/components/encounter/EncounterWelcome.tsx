@@ -25,12 +25,12 @@ type StaticContentArgs<T = unknown> = {
   publicJsonFile: string;
   refreshTimeKey?: string;
   refreshInterval?: string;
-  parseJson?: (json: unknown) => T;
+  parseFromJson?: (json: unknown) => T;
 };
 
 const useStaticContent = <T,>({
   publicJsonFile,
-  parseJson,
+  parseFromJson,
   refreshInterval,
   refreshTimeKey
 }: StaticContentArgs<T>): {
@@ -68,17 +68,18 @@ const useStaticContent = <T,>({
     try {
       if (data) {
         const json = JSON.parse(data?.publicJsonFile?.content);
-        return parseJson ? parseJson(json) : json;
+
+        return parseFromJson ? parseFromJson(json) : json;
       }
     } catch (error) {
       setError(true);
       console.warn(error, data);
     }
-  }, [data, parseJson]);
+  }, [data, parseFromJson]);
 
   return {
     data: publicJsonFileData,
-    error: !!(queryError || error),
+    error: error || !!queryError,
     loading: loading || (!publicJsonFileData && !error),
     refetch: refetchCallback
   };
@@ -92,7 +93,7 @@ type Props = {
 export const EncounterWelcome = ({ navigation }: Props) => {
   const { data, error, loading, refetch } = useStaticContent({
     publicJsonFile: 'encounterWelcome',
-    parseJson: parseEncounterWelcome
+    parseFromJson: parseEncounterWelcome
   });
 
   const onPress = useCallback(() => {
