@@ -71,10 +71,17 @@ export const texts = {
     birthDate: 'Geburtsdatum',
     cameraPermissionMissing:
       'Zum Scannen eines QR-Codes wird die Berechtigung benötigt, die Kamera zu nutzen.',
+    changeErrorBody: 'Beim Speichern der Änderungen ist ein Fehler aufgetreten!',
+    changeSuccessBody: 'Das Speichern der Änderungen war erfolgreich!',
+    changeSuccessTitle: 'Erfolg',
+    changeWarningAbort: 'Abbrechen',
+    changeWarningBody: 'Wenn die Daten geändert werden, wird deine Verifizierung aufgehoben!',
+    changeWarningOk: 'Trotzdem ändern',
+    changeWarningTitle: 'Achtung',
     dataTitle: 'Meine Daten',
     detailTitle: 'Dein Mitfahrer',
+    errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
     errorScanBody: 'Beim Scannen des QR-Codes ist ein Fehler aufgetreten.',
-    errorScanTitle: 'Fehler',
     firstName: 'Vorname',
     history: 'Fahrthistorie',
     homeTitle: 'Hello, Welcome, Bienvenu',
@@ -91,6 +98,8 @@ export const texts = {
     registrationAllFieldsRequiredBody:
       'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
     registrationAllFieldsRequiredTitle: 'Hinweis',
+    registrationFailedBody: 'Bei der Registrierung ist ein Fehler aufgetreten.',
+    registrationFailedTitle: 'Fehler',
     registrationHint: 'Bitte gib deine persönlichen Daten an:',
     registrationPrivacyLink: 'Datenschutzerklärung.',
     registrationPrivacyText:
@@ -108,6 +117,7 @@ export const texts = {
       body: 'Es fehlt die Berechtigung Bilder aus der Medienbibliothek auszuwählen.',
       title: 'Hinweis'
     },
+    errorTitle: 'Fehler',
     noData: 'Bitte überprüfen Sie Ihre Internetverbindung.',
     unexpected: 'Es ist ein unerwarteter Fehler aufgetreten.'
   },
