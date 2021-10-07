@@ -68,14 +68,18 @@ export const texts = {
     tour: 'Tour'
   },
   encounter: {
+    birthDate: 'Geburtsdatum',
     cameraPermissionMissing:
       'Zum Scannen eines QR-Codes wird die Berechtigung benötigt, die Kamera zu nutzen.',
+    detailTitle: 'Dein Mitfahrer',
     errorScanBody: 'Beim Scannen des QR-Codes ist ein Fehler aufgetreten.',
     errorScanTitle: 'Fehler',
     homeTitle: 'Hello, Welcome, Bienvenu',
+    id: 'ID',
     myData: 'Meine Daten & Fahrthistorie',
     newEncounter: 'Neue Fahrt',
     notVerified: 'Nicht Verifiziert',
+    phone: 'Telefon',
     scanAgain: 'Erneut scannen',
     scannerSubTitle: 'Scanne den QR-Code deines Fahrers',
     scannerTitle: 'Neue Fahrt',

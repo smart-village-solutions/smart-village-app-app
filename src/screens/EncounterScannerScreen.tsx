@@ -18,7 +18,7 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { device, texts } from '../config';
 import { sleep } from '../helpers';
 import { useCreateEncounter, useEncounterUser } from '../hooks';
-import { User } from '../types';
+import { ScreenName, User } from '../types';
 
 const useOrientationLock = () =>
   useEffect(() => {
@@ -101,9 +101,7 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
 
   const onCreationSuccess = useCallback(
     (data: User) => {
-      // TODO: add navigation here instead of console.log
-      // navigation.navigate(ScreenName.EncounterUserDetails, { data });
-      console.log(data);
+      navigation.navigate(ScreenName.EncounterUserDetail, { data });
     },
     [navigation]
   );
