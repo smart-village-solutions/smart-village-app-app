@@ -128,11 +128,13 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
 
   if (!user || error) {
     return (
-      <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
-        <Wrapper>
-          <RegularText center>{texts.encounter.errorLoadingUser}</RegularText>
-        </Wrapper>
-      </ScrollView>
+      <SafeAreaViewFlex>
+        <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
+          <Wrapper>
+            <RegularText center>{texts.encounter.errorLoadingUser}</RegularText>
+          </Wrapper>
+        </ScrollView>
+      </SafeAreaViewFlex>
     );
   }
 

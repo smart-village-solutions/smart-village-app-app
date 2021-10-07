@@ -9,6 +9,7 @@ import {
   Button,
   DiagonalGradient,
   RegularText,
+  SafeAreaViewFlex,
   SectionHeader,
   Touchable,
   Wrapper,
@@ -77,54 +78,60 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
   const { firstName, lastName, verified } = user;
 
   return (
-    <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
-      <SectionHeader title={texts.encounter.homeTitle} />
-      <DiagonalGradient style={styles.gradient}>
-        <View style={styles.container}>
-          <View style={styles.circle}>
-            <QRCode value={qrValue} size={device.width / 3} quietZone={normalize(4)} />
+    <SafeAreaViewFlex>
+      <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
+        <SectionHeader title={texts.encounter.homeTitle} />
+        <DiagonalGradient style={styles.gradient}>
+          <View style={styles.container}>
+            <View style={styles.circle}>
+              <QRCode value={qrValue} size={device.width / 3} quietZone={normalize(4)} />
+            </View>
+            <BoldText big lightest>
+              {`${firstName} ${lastName}`.toUpperCase()}
+            </BoldText>
           </View>
-          <BoldText big lightest>
-            {`${firstName} ${lastName}`.toUpperCase()}
-          </BoldText>
-        </View>
+          <WrapperWithOrientation>
+            <Wrapper>
+              <WrapperRow spaceBetween>
+                <WrapperRow style={styles.statusTextContainer}>
+                  <RegularText lightest small textAlign="bottom">
+                    {texts.encounter.status}
+                  </RegularText>
+                  <Touchable onPress={onPressInfo}>
+                    <Icon.Info
+                      color={colors.lightestText}
+                      size={normalize(18)}
+                      style={styles.icon}
+                    />
+                  </Touchable>
+                </WrapperRow>
+                <RegularText lightest>
+                  {verified ? texts.encounter.verified : texts.encounter.notVerified}
+                </RegularText>
+              </WrapperRow>
+              <Divider style={styles.divider} />
+            </Wrapper>
+          </WrapperWithOrientation>
+        </DiagonalGradient>
         <WrapperWithOrientation>
           <Wrapper>
-            <WrapperRow spaceBetween>
-              <WrapperRow style={styles.statusTextContainer}>
-                <RegularText lightest small textAlign="bottom">
-                  {texts.encounter.status}
-                </RegularText>
-                <Touchable onPress={onPressInfo}>
-                  <Icon.Info color={colors.lightestText} size={normalize(18)} style={styles.icon} />
-                </Touchable>
-              </WrapperRow>
-              <RegularText lightest>
-                {verified ? texts.encounter.verified : texts.encounter.notVerified}
-              </RegularText>
-            </WrapperRow>
-            <Divider style={styles.divider} />
+            <Button
+              onPress={() => {
+                navigation.navigate(ScreenName.EncounterScanner);
+              }}
+              title={texts.encounter.newEncounter}
+            />
+            <Button
+              invert
+              onPress={() => {
+                navigation.navigate(ScreenName.EncounterData);
+              }}
+              title={texts.encounter.myData}
+            />
           </Wrapper>
         </WrapperWithOrientation>
-      </DiagonalGradient>
-      <WrapperWithOrientation>
-        <Wrapper>
-          <Button
-            onPress={() => {
-              navigation.navigate(ScreenName.EncounterScanner);
-            }}
-            title={texts.encounter.newEncounter}
-          />
-          <Button
-            invert
-            onPress={() => {
-              navigation.navigate(ScreenName.EncounterData);
-            }}
-            title={texts.encounter.myData}
-          />
-        </Wrapper>
-      </WrapperWithOrientation>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaViewFlex>
   );
 };
 
