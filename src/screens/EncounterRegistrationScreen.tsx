@@ -89,7 +89,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <SectionHeader title={texts.encounter.registrationTitle} />
         <WrapperWithOrientation>
           <Wrapper>

@@ -114,7 +114,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
     try {
       setBirthDate(new Date(user.birthDate));
     } catch (e) {
-      console.warn('error when parsing the birthdate of the encounter user');
+      console.warn('error when parsing the birth date of the encounter user');
     }
     setFirstName(user.firstName);
     setLastName(user.lastName);
@@ -140,7 +140,10 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}
+      >
         <SectionHeader title={texts.encounter.dataTitle} />
         <WrapperWithOrientation>
           <Wrapper>
@@ -182,6 +185,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             <Label>{texts.encounter.birthDate}</Label>
             <Pressable
               onPress={() => {
+                // without setting it to false first, it sometimes did not properly show
                 setIsDatePickerVisible(false);
                 setIsDatePickerVisible(true);
               }}
@@ -247,9 +251,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
         <DateTimePicker
           initialTime={birthDate}
           mode="date"
-          onUpdate={(time) => {
-            setBirthDate(time);
-          }}
+          onUpdate={setBirthDate}
           setVisible={setIsDatePickerVisible}
           visible={isDatePickerVisible}
         />
