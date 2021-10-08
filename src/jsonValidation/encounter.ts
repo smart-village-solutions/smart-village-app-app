@@ -52,6 +52,14 @@ export const parseUser = (json: unknown): User | undefined => {
   return user;
 };
 
+export const parseUsers = (json: unknown): User[] => {
+  if (isArray(json)) {
+    return json.map((value) => parseUser(value)).filter((user): user is User => !!user);
+  }
+
+  return [];
+};
+
 const isEncounter = (json: unknown): json is Encounter => {
   return isString((json as Encounter).createdAt) && isString((json as Encounter).encounterId);
 };
