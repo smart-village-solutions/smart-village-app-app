@@ -17,7 +17,7 @@ import {
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { device, texts } from '../config';
 import { sleep } from '../helpers';
-import { useCreateEncounter, useEncounterUser } from '../hooks';
+import { useCreateEncounter } from '../hooks';
 import { ScreenName, User } from '../types';
 
 const useOrientationLock = () =>
@@ -93,7 +93,6 @@ const getNumericalRatioFromAspectRatio = (ratioAsString: AcceptedRatio) => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
   const ref = useRef<Camera>(null);
-  const { loading: loadingUser, user } = useEncounterUser();
   const [isScanning, setIsScanning] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean>();
   const [cameraAspectRatio, setCameraAspectRatio] = useState<AcceptedRatio>('1:1');
@@ -117,8 +116,8 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
 
     setIsScanning(false);
     const qrId = parseQrCode(data);
-    if (qrId && user?.userId) {
-      createEncounter(qrId, user.userId);
+    if (qrId) {
+      createEncounter(qrId);
     } else {
       showErrorAlert();
     }
@@ -150,7 +149,7 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
   // changing the orientation has a bad performance and non square aspect ratios would need to be orientation aware
   useOrientationLock();
 
-  if (hasPermission === undefined || loadingUser || loadingCreateEncounter) {
+  if (hasPermission === undefined || loadingCreateEncounter) {
     return (
       <SafeAreaViewFlex>
         <ScrollView>

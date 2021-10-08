@@ -90,7 +90,7 @@ export const texts = {
     myData: 'Meine Daten & Fahrthistorie',
     newEncounter: 'Neue Fahrt',
     noHistoryYet: 'Es gibt noch keine Fahrthistorie, du bist noch nicht gefahren.',
-    notVerified: 'Nicht Verifiziert',
+    notVerified: 'Nicht verifiziert',
     phone: 'Telefon',
     photoPlaceholder: { first: 'Foto', second: 'hochladen' },
     profilePhoto: 'Profilfoto',

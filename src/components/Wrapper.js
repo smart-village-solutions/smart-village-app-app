@@ -97,7 +97,7 @@ WrapperWithOrientation.displayName = 'WrapperWithOrientation';
 
 WrapperWithOrientation.propTypes = {
   noFlex: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired
 };
 
 WrapperWithOrientation.defaultProps = {
