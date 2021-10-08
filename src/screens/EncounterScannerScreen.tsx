@@ -96,9 +96,11 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
   const [isScanning, setIsScanning] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean>();
   const [cameraAspectRatio, setCameraAspectRatio] = useState<AcceptedRatio>('1:1');
+  const [creationSuccess, setCreationSuccess] = useState(false);
 
   const onCreationSuccess = useCallback(
     (data: User) => {
+      setCreationSuccess(true);
       navigation.navigate(ScreenName.EncounterUserDetail, { data });
     },
     [navigation]
@@ -149,7 +151,8 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
   // changing the orientation has a bad performance and non square aspect ratios would need to be orientation aware
   useOrientationLock();
 
-  if (hasPermission === undefined || loadingCreateEncounter) {
+  // in case of a successful creation, we do not want to switch back to showing the "scan again" button during the navigation animation
+  if (hasPermission === undefined || loadingCreateEncounter || creationSuccess) {
     return (
       <SafeAreaViewFlex>
         <ScrollView>
