@@ -61,7 +61,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
 
   const { imageUri, selectImage } = useSelectImage();
 
-  const { error, loading, refresh, refreshing, user } = useEncounterUser();
+  const { error, loading, refresh, refreshing, user, userId } = useEncounterUser();
 
   const onPressInfoVerification = useCallback(() => {
     navigation.navigate(ScreenName.Html, {
@@ -81,7 +81,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
 
   // TODO: implement
   const updateUserData = async () => {
-    if (!(birthDate && firstName && lastName && phone && user?.userId)) {
+    if (!(birthDate && firstName && lastName && phone && user && userId)) {
       // the button is disabled, if this is the case, and this should never be called.
       console.warn('User update called with insufficient data');
       return;
@@ -92,10 +92,10 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
       imageUri: imageUri ?? user.imageUri,
       lastName,
       phone,
-      userId: user?.userId
+      userId: userId
     });
 
-    if (result === user.userId) {
+    if (result === userId) {
       showChangeSuccessAlert();
     } else {
       showChangeErrorAlert();
@@ -122,7 +122,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
     setFirstName(user.firstName);
     setLastName(user.lastName);
     setPhone(user.phone);
-    setUserIdDisplayValue(user.userId);
+    setUserIdDisplayValue(userId);
   }, [user]);
 
   if (loading) {
@@ -255,7 +255,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             <TextInput
               accessibilityLabel={`${a11yLabels.encounterId} (${userIdDisplayValue})`}
               onChangeText={setUserIdDisplayValue}
-              onBlur={() => setUserIdDisplayValue(user.userId)}
+              onBlur={() => setUserIdDisplayValue(userId)}
               onTouchStart={() => userIdInputRef.current?.focus()}
               ref={userIdInputRef}
               selectTextOnFocus={true}
@@ -267,7 +267,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             <Button
               onPress={onPressUpdate}
               title={texts.encounter.saveChanges}
-              disabled={!(birthDate && firstName && lastName && phone && user?.userId)}
+              disabled={!(birthDate && firstName && lastName && phone && user && userId)}
             />
           </Wrapper>
           <EncounterList />

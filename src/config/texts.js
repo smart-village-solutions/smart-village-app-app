@@ -95,6 +95,7 @@ export const texts = {
     photoPlaceholder: { first: 'Foto', second: 'hochladen' },
     profilePhoto: 'Profilfoto',
     register: 'Registrieren',
+    registerNow: 'Zur Registrierung',
     registrationAllFieldsRequiredBody:
       'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
     registrationAllFieldsRequiredTitle: 'Hinweis',

@@ -1,6 +1,6 @@
 import { isArray, isBoolean, isObjectLike, isString } from 'lodash';
 
-import { Encounter, User } from '../types';
+import { Encounter, User, WelcomeInfo } from '../types';
 
 type EncounterResponseType = {
   encounter_uuid: string;
@@ -89,4 +89,18 @@ export const parseEncounters = (json: unknown): Encounter[] => {
   }
 
   return [];
+};
+
+const isWelcomeInfo = (json: unknown): json is WelcomeInfo =>
+  isObjectLike(json) &&
+  isString((json as WelcomeInfo).imageUrl) &&
+  isString((json as WelcomeInfo).welcomeText) &&
+  isString((json as WelcomeInfo).welcomeTitle);
+
+export const parseEncounterWelcome = (json: unknown): WelcomeInfo => {
+  if (!isWelcomeInfo(json)) {
+    throw new Error('Error while parsing encounter welcome info');
+  }
+
+  return json;
 };
