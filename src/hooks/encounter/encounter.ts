@@ -1,7 +1,10 @@
+import { StackNavigationProp } from '@react-navigation/stack';
 import { useCallback, useEffect, useState } from 'react';
 
-import { createEncounterAsync, getEncountersAsync } from '../../encounterApi';
-import { Encounter, User } from '../../types';
+import { createEncounterAsync, getEncountersAsync, pollEncountersAsync } from '../../encounterApi';
+import { Encounter, ScreenName, User } from '../../types';
+
+const ENCOUNTER_POLL_INTERVAL = 1000;
 
 export const useCreateEncounter = (
   onSuccess: (user: User) => void,
@@ -51,4 +54,38 @@ export const useEncounterList = (): {
   }, []);
 
   return { loading, data };
+};
+
+export const useEncounterPolling = (
+  navigation: StackNavigationProp<any>,
+  userId?: string,
+  qrValue?: string
+) => {
+  useEffect(() => {
+    let mounted = true;
+    const intervalId = setInterval(() => {
+      const fetchNewEncounters = async () => {
+        if (userId && qrValue) {
+          const encounters = await pollEncountersAsync(userId, qrValue);
+
+          encounters.forEach((encounter, index) => {
+            setTimeout(() => {
+              mounted &&
+                navigation.push(ScreenName.EncounterUserDetail, {
+                  data: encounter,
+                  fromPoll: true
+                });
+            }, index);
+          });
+        }
+      };
+
+      fetchNewEncounters();
+    }, ENCOUNTER_POLL_INTERVAL);
+
+    return () => {
+      mounted = false;
+      clearInterval(intervalId);
+    };
+  }, [navigation, qrValue, userId]);
 };

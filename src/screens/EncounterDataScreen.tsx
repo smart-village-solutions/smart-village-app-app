@@ -27,12 +27,16 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../components';
-import { colors, Icon, texts } from '../config';
+import { colors, consts, Icon, texts } from '../config';
 import { updateUserAsync } from '../encounterApi';
 import { momentFormat } from '../helpers';
 import { useEncounterUser, useSelectImage } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
+
+const INFO_ICON_SIZE = normalize(14);
+
+const a11yLabels = consts.a11yLabel;
 
 const showChangeWarning = (onPressOk: () => void) =>
   Alert.alert(texts.encounter.changeWarningTitle, texts.encounter.changeWarningBody, [
@@ -46,8 +50,7 @@ const showChangeErrorAlert = () =>
 const showChangeSuccessAlert = () =>
   Alert.alert(texts.encounter.changeSuccessTitle, texts.encounter.changeSuccessBody);
 
-// TODO: accesibility labels
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line complexity, @typescript-eslint/no-explicit-any
 export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
   const [firstName, setFirstName] = useState<string>();
@@ -114,7 +117,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
     try {
       setBirthDate(new Date(user.birthDate));
     } catch (e) {
-      console.warn('error when parsing the birthdate of the encounter user');
+      console.warn('error when parsing the birth date of the encounter user');
     }
     setFirstName(user.firstName);
     setLastName(user.lastName);
@@ -128,19 +131,24 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
 
   if (!user || error) {
     return (
-      <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
-        <Wrapper>
-          <RegularText center>{texts.encounter.errorLoadingUser}</RegularText>
-        </Wrapper>
-      </ScrollView>
+      <SafeAreaViewFlex>
+        <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
+          <Wrapper>
+            <RegularText center>{texts.encounter.errorLoadingUser}</RegularText>
+          </Wrapper>
+        </ScrollView>
+      </SafeAreaViewFlex>
     );
   }
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
-        <SectionHeader title={texts.encounter.dataTitle} />
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}
+      >
         <WrapperWithOrientation>
+          <SectionHeader title={texts.encounter.dataTitle} />
           <Wrapper>
             <Label>{texts.encounter.profilePhoto}</Label>
             <WrapperRow spaceBetween>
@@ -153,7 +161,11 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
                 verified={user.verified}
                 placeholder={user.imageUri}
               />
-              <TouchableOpacity onPress={selectImage} style={styles.editIconContainer}>
+              <TouchableOpacity
+                accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
+                onPress={selectImage}
+                style={styles.editIconContainer}
+              >
                 <Icon.EditSetting color={colors.placeholder} />
               </TouchableOpacity>
             </WrapperRow>
@@ -161,6 +173,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.firstName}</Label>
             <TextInput
+              accessibilityLabel={`${a11yLabels.firstName} ${a11yLabels.textInput}: ${firstName}`}
               onChangeText={setFirstName}
               placeholder={texts.encounter.firstName}
               style={styles.inputField}
@@ -170,6 +183,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.lastName}</Label>
             <TextInput
+              accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
               onChangeText={setLastName}
               placeholder={texts.encounter.lastName}
               style={styles.inputField}
@@ -179,7 +193,12 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.birthDate}</Label>
             <Pressable
+              accessibilityLabel={`${a11yLabels.birthDate} ${a11yLabels.textInput}: ${
+                birthDate ? momentFormat(birthDate.toISOString()) : ''
+              }`}
+              accessibilityHint={a11yLabels.birthDateHint}
               onPress={() => {
+                // without setting it to false first, it sometimes did not properly show
                 setIsDatePickerVisible(false);
                 setIsDatePickerVisible(true);
               }}
@@ -196,6 +215,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
           <Wrapper style={styles.noPaddingTop}>
             <Label>{texts.encounter.phone}</Label>
             <TextInput
+              accessibilityLabel={`${a11yLabels.phoneNumber} ${a11yLabels.textInput}: ${phone}`}
               keyboardType="phone-pad"
               onChangeText={setPhone}
               placeholder={texts.encounter.phone}
@@ -206,11 +226,17 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
           <Wrapper style={styles.noPaddingTop}>
             <WrapperRow style={styles.infoLabelContainer}>
               <Label>{texts.encounter.verified}</Label>
-              <Touchable onPress={onPressInfoVerification}>
-                <Icon.Info color={colors.darkText} size={normalize(18)} style={styles.icon} />
+              <Touchable
+                accessibilityLabel={`${a11yLabels.verifiedInfo} ${a11yLabels.button}`}
+                onPress={onPressInfoVerification}
+              >
+                <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
               </Touchable>
             </WrapperRow>
             <TextInput
+              accessibilityLabel={`${a11yLabels.verified} (${
+                user.verified ? texts.encounter.verified : texts.encounter.notVerified
+              })`}
               editable={false}
               style={[styles.inputField, styles.displayField]}
               value={user.verified ? texts.encounter.verified : texts.encounter.notVerified}
@@ -219,11 +245,15 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
           <Wrapper style={styles.noPaddingTop}>
             <WrapperRow style={styles.infoLabelContainer}>
               <Label>{texts.encounter.id}</Label>
-              <Touchable onPress={onPressInfoId}>
-                <Icon.Info color={colors.darkText} size={normalize(18)} style={styles.icon} />
+              <Touchable
+                accessibilityLabel={`${a11yLabels.encounterIdInfo} ${a11yLabels.button}`}
+                onPress={onPressInfoId}
+              >
+                <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
               </Touchable>
             </WrapperRow>
             <TextInput
+              accessibilityLabel={`${a11yLabels.encounterId} (${userIdDisplayValue})`}
               onChangeText={setUserIdDisplayValue}
               onBlur={() => setUserIdDisplayValue(user.userId)}
               onTouchStart={() => userIdInputRef.current?.focus()}
@@ -240,14 +270,12 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
               disabled={!(birthDate && firstName && lastName && phone && user?.userId)}
             />
           </Wrapper>
+          <EncounterList />
         </WrapperWithOrientation>
-        <EncounterList />
         <DateTimePicker
           initialTime={birthDate}
           mode="date"
-          onUpdate={(time) => {
-            setBirthDate(time);
-          }}
+          onUpdate={setBirthDate}
           setVisible={setIsDatePickerVisible}
           visible={isDatePickerVisible}
         />

@@ -145,7 +145,7 @@ export const defaultStackConfig = ({
           <HeaderLeft
             onPress={() => {
               // @ts-expect-error we are lacking proper param types here
-              if (route.params?.qrId) {
+              if (route.params?.qrId || route.params?.fromPoll) {
                 navigation.goBack();
               } else {
                 navigation.navigate(ScreenName.EncounterHome);
