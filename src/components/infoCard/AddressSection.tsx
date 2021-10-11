@@ -48,7 +48,7 @@ const getBBNaviUrl = (baseUrl: string, address: Address) => {
 
 export const AddressSection = ({ address, addresses, openWebScreen }: Props) => {
   // @ts-expect-error global settings are not properly typed
-  const bbNaviBaseUrl = useContext(SettingsContext).globalSettings.settings?.['bb-navi'];
+  const bbNaviBaseUrl = useContext(SettingsContext).globalSettings.settings?.['bbnavi'];
 
   const a11yText = consts.a11yLabel;
 
