@@ -15,6 +15,7 @@ import { normalize } from 'react-native-elements';
 import {
   Button,
   DateTimePicker,
+  DefaultKeyboardAvoidingView,
   EncounterList,
   ImageWithBadge,
   Label,
@@ -144,143 +145,145 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}
-      >
-        <WrapperWithOrientation>
-          <SectionHeader title={texts.encounter.dataTitle} />
-          <Wrapper>
-            <Label>{texts.encounter.profilePhoto}</Label>
-            <WrapperRow spaceBetween>
-              {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
-              <View style={styles.editIconContainer}>
-                <Icon.EditSetting color={colors.transparent} />
-              </View>
-              <ImageWithBadge
-                imageUri={imageUri}
-                verified={user.verified}
-                placeholder={user.imageUri}
-              />
-              <TouchableOpacity
-                accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
-                onPress={selectImage}
-                style={styles.editIconContainer}
-              >
-                <Icon.EditSetting color={colors.placeholder} />
-              </TouchableOpacity>
-            </WrapperRow>
-          </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
-            <Label>{texts.encounter.firstName}</Label>
-            <TextInput
-              accessibilityLabel={`${a11yLabels.firstName} ${a11yLabels.textInput}: ${firstName}`}
-              onChangeText={setFirstName}
-              placeholder={texts.encounter.firstName}
-              style={styles.inputField}
-              value={firstName}
-            />
-          </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
-            <Label>{texts.encounter.lastName}</Label>
-            <TextInput
-              accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
-              onChangeText={setLastName}
-              placeholder={texts.encounter.lastName}
-              style={styles.inputField}
-              value={lastName}
-            />
-          </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
-            <Label>{texts.encounter.birthDate}</Label>
-            <Pressable
-              accessibilityLabel={`${a11yLabels.birthDate} ${a11yLabels.textInput}: ${
-                birthDate ? momentFormat(birthDate.toISOString()) : ''
-              }`}
-              accessibilityHint={a11yLabels.birthDateHint}
-              onPress={() => {
-                // without setting it to false first, it sometimes did not properly show
-                setIsDatePickerVisible(false);
-                setIsDatePickerVisible(true);
-              }}
-              onStartShouldSetResponderCapture={() => true}
-            >
+      <DefaultKeyboardAvoidingView>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}
+        >
+          <WrapperWithOrientation>
+            <SectionHeader title={texts.encounter.dataTitle} />
+            <Wrapper>
+              <Label>{texts.encounter.profilePhoto}</Label>
+              <WrapperRow spaceBetween>
+                {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
+                <View style={styles.editIconContainer}>
+                  <Icon.EditSetting color={colors.transparent} />
+                </View>
+                <ImageWithBadge
+                  imageUri={imageUri}
+                  verified={user.verified}
+                  placeholder={user.imageUri}
+                />
+                <TouchableOpacity
+                  accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
+                  onPress={selectImage}
+                  style={styles.editIconContainer}
+                >
+                  <Icon.EditSetting color={colors.placeholder} />
+                </TouchableOpacity>
+              </WrapperRow>
+            </Wrapper>
+            <Wrapper style={styles.noPaddingTop}>
+              <Label>{texts.encounter.firstName}</Label>
               <TextInput
-                editable={false}
-                placeholder={texts.encounter.birthDate}
+                accessibilityLabel={`${a11yLabels.firstName} ${a11yLabels.textInput}: ${firstName}`}
+                onChangeText={setFirstName}
+                placeholder={texts.encounter.firstName}
                 style={styles.inputField}
-                value={momentFormat(birthDate?.toISOString() ?? 0)}
+                value={firstName}
               />
-            </Pressable>
-          </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
-            <Label>{texts.encounter.phone}</Label>
-            <TextInput
-              accessibilityLabel={`${a11yLabels.phoneNumber} ${a11yLabels.textInput}: ${phone}`}
-              keyboardType="phone-pad"
-              onChangeText={setPhone}
-              placeholder={texts.encounter.phone}
-              style={styles.inputField}
-              value={phone}
-            />
-          </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
-            <WrapperRow style={styles.infoLabelContainer}>
-              <Label>{texts.encounter.verified}</Label>
-              <Touchable
-                accessibilityLabel={`${a11yLabels.verifiedInfo} ${a11yLabels.button}`}
-                onPress={onPressInfoVerification}
+            </Wrapper>
+            <Wrapper style={styles.noPaddingTop}>
+              <Label>{texts.encounter.lastName}</Label>
+              <TextInput
+                accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
+                onChangeText={setLastName}
+                placeholder={texts.encounter.lastName}
+                style={styles.inputField}
+                value={lastName}
+              />
+            </Wrapper>
+            <Wrapper style={styles.noPaddingTop}>
+              <Label>{texts.encounter.birthDate}</Label>
+              <Pressable
+                accessibilityLabel={`${a11yLabels.birthDate} ${a11yLabels.textInput}: ${
+                  birthDate ? momentFormat(birthDate.toISOString()) : ''
+                }`}
+                accessibilityHint={a11yLabels.birthDateHint}
+                onPress={() => {
+                  // without setting it to false first, it sometimes did not properly show
+                  setIsDatePickerVisible(false);
+                  setIsDatePickerVisible(true);
+                }}
+                onStartShouldSetResponderCapture={() => true}
               >
-                <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
-              </Touchable>
-            </WrapperRow>
-            <TextInput
-              accessibilityLabel={`${a11yLabels.verified} (${
-                user.verified ? texts.encounter.verified : texts.encounter.notVerified
-              })`}
-              editable={false}
-              style={[styles.inputField, styles.displayField]}
-              value={user.verified ? texts.encounter.verified : texts.encounter.notVerified}
-            />
-          </Wrapper>
-          <Wrapper style={styles.noPaddingTop}>
-            <WrapperRow style={styles.infoLabelContainer}>
-              <Label>{texts.encounter.id}</Label>
-              <Touchable
-                accessibilityLabel={`${a11yLabels.encounterIdInfo} ${a11yLabels.button}`}
-                onPress={onPressInfoId}
-              >
-                <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
-              </Touchable>
-            </WrapperRow>
-            <TextInput
-              accessibilityLabel={`${a11yLabels.encounterId} (${userIdDisplayValue})`}
-              onChangeText={setUserIdDisplayValue}
-              onBlur={() => setUserIdDisplayValue(userId)}
-              onTouchStart={() => userIdInputRef.current?.focus()}
-              ref={userIdInputRef}
-              selectTextOnFocus={true}
-              style={[styles.inputField, styles.displayField]}
-              value={userIdDisplayValue}
-            />
-          </Wrapper>
-          <Wrapper>
-            <Button
-              onPress={onPressUpdate}
-              title={texts.encounter.saveChanges}
-              disabled={!(birthDate && firstName && lastName && phone && user && userId)}
-            />
-          </Wrapper>
-          <EncounterList />
-        </WrapperWithOrientation>
-        <DateTimePicker
-          initialTime={birthDate}
-          mode="date"
-          onUpdate={setBirthDate}
-          setVisible={setIsDatePickerVisible}
-          visible={isDatePickerVisible}
-        />
-      </ScrollView>
+                <TextInput
+                  editable={false}
+                  placeholder={texts.encounter.birthDate}
+                  style={styles.inputField}
+                  value={momentFormat(birthDate?.toISOString() ?? 0)}
+                />
+              </Pressable>
+            </Wrapper>
+            <Wrapper style={styles.noPaddingTop}>
+              <Label>{texts.encounter.phone}</Label>
+              <TextInput
+                accessibilityLabel={`${a11yLabels.phoneNumber} ${a11yLabels.textInput}: ${phone}`}
+                keyboardType="phone-pad"
+                onChangeText={setPhone}
+                placeholder={texts.encounter.phone}
+                style={styles.inputField}
+                value={phone}
+              />
+            </Wrapper>
+            <Wrapper style={styles.noPaddingTop}>
+              <WrapperRow style={styles.infoLabelContainer}>
+                <Label>{texts.encounter.verified}</Label>
+                <Touchable
+                  accessibilityLabel={`${a11yLabels.verifiedInfo} ${a11yLabels.button}`}
+                  onPress={onPressInfoVerification}
+                >
+                  <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
+                </Touchable>
+              </WrapperRow>
+              <TextInput
+                accessibilityLabel={`${a11yLabels.verified} (${
+                  user.verified ? texts.encounter.verified : texts.encounter.notVerified
+                })`}
+                editable={false}
+                style={[styles.inputField, styles.displayField]}
+                value={user.verified ? texts.encounter.verified : texts.encounter.notVerified}
+              />
+            </Wrapper>
+            <Wrapper style={styles.noPaddingTop}>
+              <WrapperRow style={styles.infoLabelContainer}>
+                <Label>{texts.encounter.id}</Label>
+                <Touchable
+                  accessibilityLabel={`${a11yLabels.encounterIdInfo} ${a11yLabels.button}`}
+                  onPress={onPressInfoId}
+                >
+                  <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
+                </Touchable>
+              </WrapperRow>
+              <TextInput
+                accessibilityLabel={`${a11yLabels.encounterId} (${userIdDisplayValue})`}
+                onChangeText={setUserIdDisplayValue}
+                onBlur={() => setUserIdDisplayValue(userId)}
+                onTouchStart={() => userIdInputRef.current?.focus()}
+                ref={userIdInputRef}
+                selectTextOnFocus={true}
+                style={[styles.inputField, styles.displayField]}
+                value={userIdDisplayValue}
+              />
+            </Wrapper>
+            <Wrapper>
+              <Button
+                onPress={onPressUpdate}
+                title={texts.encounter.saveChanges}
+                disabled={!(birthDate && firstName && lastName && phone && user && userId)}
+              />
+            </Wrapper>
+            <EncounterList />
+          </WrapperWithOrientation>
+          <DateTimePicker
+            initialTime={birthDate}
+            mode="date"
+            onUpdate={setBirthDate}
+            setVisible={setIsDatePickerVisible}
+            visible={isDatePickerVisible}
+          />
+        </ScrollView>
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };
