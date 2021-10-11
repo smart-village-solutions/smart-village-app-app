@@ -33,23 +33,14 @@ export const getBestSupportedRatioWithRetry = async (cameraRef: Camera): Promise
 
   let result: AcceptedRatio = '1:1';
 
-  getBestValue: {
-    if (ratioArray?.includes('1:1')) {
-      result = '1:1';
-      break getBestValue;
-    }
-    if (ratioArray?.includes('4:3')) {
-      result = '4:3';
-      break getBestValue;
-    }
-    if (ratioArray?.includes('3:2')) {
-      result = '3:2';
-      break getBestValue;
-    }
-    if (ratioArray?.includes('16:9')) {
-      result = '16:9';
-      break getBestValue;
-    }
+  if (ratioArray?.includes('1:1')) {
+    result = '1:1';
+  } else if (ratioArray?.includes('4:3')) {
+    result = '4:3';
+  } else if (ratioArray?.includes('3:2')) {
+    result = '3:2';
+  } else if (ratioArray?.includes('16:9')) {
+    result = '16:9';
   }
 
   if (ratioArray?.length) {
