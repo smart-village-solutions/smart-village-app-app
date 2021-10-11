@@ -6,7 +6,10 @@ export type CreateUserData = {
   phone: string;
 };
 
-export type UpdateUserData = CreateUserData & { userId: string };
+export type UpdateUserData = Omit<CreateUserData, 'imageUri'> & {
+  imageUri?: string;
+  userId: string;
+};
 
 export type User = {
   birthDate: string;

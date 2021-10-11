@@ -86,13 +86,14 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
       console.warn('User update called with insufficient data');
       return;
     }
+
     const result = await updateUserAsync({
       birthDate: momentFormat(birthDate.valueOf(), 'yyyy-MM-DD', 'x'),
       firstName,
-      imageUri: imageUri ?? user.imageUri,
+      imageUri,
       lastName,
       phone,
-      userId: userId
+      userId
     });
 
     if (result === userId) {
