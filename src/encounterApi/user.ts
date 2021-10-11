@@ -12,14 +12,15 @@ export const createUserAsync = async (userData: CreateUserData): Promise<string 
   body.append('app_origin', appJson.expo.slug);
   body.append('birth_date', userData.birthDate);
   body.append('first_name', userData.firstName);
+  body.append('last_name', userData.lastName);
+  body.append('phone', userData.phone);
+
   body.append('image', {
     // @ts-expect-error FormData types are not correct in our setting
     uri: userData.imageUri,
     type: 'image/jpg',
     name: 'image.jpg'
   });
-  body.append('last_name', userData.lastName);
-  body.append('phone', userData.phone);
 
   const response = await fetch(url, {
     method: 'POST',
