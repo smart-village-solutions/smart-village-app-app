@@ -16,9 +16,9 @@ import {
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { device, texts } from '../config';
-import { sleep } from '../helpers';
+import { getBestSupportedRatioWithRetry, getNumericalRatioFromAspectRatio } from '../helpers';
 import { useCreateEncounter } from '../hooks';
-import { ScreenName, User } from '../types';
+import { AcceptedRatio, ScreenName, User } from '../types';
 
 const useOrientationLock = () =>
   useEffect(() => {
@@ -37,55 +37,6 @@ const parseQrCode = (data: string): string | undefined => {
   // so we need to also expect those when scanning while testing in dev mode
   if (result.scheme === (__DEV__ ? 'exp' : appJson.expo.scheme) && result.path === 'encounter') {
     return result.queryParams?.qrId;
-  }
-};
-
-// limit accepted aspect ratios to avoid unpredictable layouts. these aspect ratios should catch most devices
-type AcceptedRatio = '1:1' | '4:3' | '3:2' | '16:9';
-
-// a retry is needed because sometimes the device needs a short moment before the camera is fully launched.
-// if after there is still no result after the retries there might be another error, and we fall back to 1:1 instead of possibly retrying infinitely
-const getBestSupportedRatioWithRetry = async (cameraRef: Camera): Promise<AcceptedRatio> => {
-  let ratioArray: string[] | undefined = undefined;
-  let retryCount = 0;
-
-  while (retryCount < 3 && !ratioArray) {
-    try {
-      ratioArray = await cameraRef.getSupportedRatiosAsync();
-    } catch (e) {
-      console.warn(e);
-      sleep(50);
-      retryCount++;
-    }
-  }
-
-  if (ratioArray?.includes('1:1')) {
-    return '1:1';
-  }
-  if (ratioArray?.includes('4:3')) {
-    return '4:3';
-  }
-  if (ratioArray?.includes('3:2')) {
-    return '3:2';
-  }
-  if (ratioArray?.includes('16:9')) {
-    return '16:9';
-  }
-
-  // fall back to '1:1'
-  return '1:1';
-};
-
-const getNumericalRatioFromAspectRatio = (ratioAsString: AcceptedRatio) => {
-  switch (ratioAsString) {
-    case '16:9':
-      return 9 / 16;
-    case '3:2':
-      return 2 / 3;
-    case '4:3':
-      return 3 / 4;
-    default:
-      return 1;
   }
 };
 

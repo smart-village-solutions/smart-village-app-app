@@ -1,6 +1,7 @@
 export * from './encounter';
 
 export * from './Address';
+export * from './Camera';
 export * from './ConstructionSite';
 export * from './Contact';
 export * from './GenericItem';
