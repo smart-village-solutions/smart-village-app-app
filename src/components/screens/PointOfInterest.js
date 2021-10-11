@@ -83,7 +83,13 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         <Wrapper>
           {!!logo && <Logo source={{ uri: logo }} />}
 
-          <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
+          <InfoCard
+            category={category}
+            addresses={addresses}
+            contact={contact}
+            openWebScreen={openWebScreen}
+            webUrls={webUrls}
+          />
         </Wrapper>
 
         {!!openingHours && !!openingHours.length && (

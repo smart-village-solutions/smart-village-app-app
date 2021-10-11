@@ -1,9 +1,16 @@
 import _filter from 'lodash/filter';
-import React from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useContext } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { consts, Icon, normalize } from '../../config';
-import { formatAddress, locationLink, locationString, openLink } from '../../helpers';
+import { colors, consts, Icon, normalize } from '../../config';
+import {
+  formatAddress,
+  formatAddressSingleLine,
+  locationLink,
+  locationString,
+  openLink
+} from '../../helpers';
+import { SettingsContext } from '../../SettingsProvider';
 import { Address } from '../../types';
 import { RegularText } from '../Text';
 import { InfoBox } from '../Wrapper';
@@ -11,6 +18,7 @@ import { InfoBox } from '../Wrapper';
 type Props = {
   address?: Address;
   addresses?: Address[];
+  openWebScreen: (link: string) => void;
 };
 
 const addressOnPress = (address?: string) => {
@@ -20,7 +28,28 @@ const addressOnPress = (address?: string) => {
   openLink(mapsLink);
 };
 
-export const AddressSection = ({ address, addresses }: Props) => {
+const getBBNaviUrl = (baseUrl: string, address: Address) => {
+  // TODO: add location service, remove default, add proper type
+  const currentPosition: any = undefined;
+
+  const readableAddress = formatAddressSingleLine(address);
+
+  const currentParam =
+    currentPosition?.latitude && currentPosition?.longitude
+      ? encodeURIComponent(`${currentPosition.latitude},${currentPosition.longitude}`)
+      : '-';
+
+  const destinationParam = encodeURIComponent(
+    `${readableAddress}::${address.geoLocation?.latitude},${address.geoLocation?.longitude}`
+  );
+
+  return `${baseUrl}${currentParam}/${destinationParam}/`;
+};
+
+export const AddressSection = ({ address, addresses, openWebScreen }: Props) => {
+  // @ts-expect-error global settings are not properly typed
+  const bbNaviBaseUrl = useContext(SettingsContext).globalSettings.settings?.['bb-navi'];
+
   const a11yText = consts.a11yLabel;
 
   if (!address && !addresses?.length) {
@@ -53,16 +82,31 @@ export const AddressSection = ({ address, addresses }: Props) => {
         );
 
         return (
-          <InfoBox key={index}>
-            <Icon.Location style={styles.margin} />
-            {isPressable ? (
-              <TouchableOpacity onPress={() => addressOnPress(address)}>
-                {innerComponent}
-              </TouchableOpacity>
-            ) : (
-              innerComponent
-            )}
-          </InfoBox>
+          <View key={index}>
+            <InfoBox>
+              <Icon.Location style={styles.margin} />
+              {isPressable ? (
+                <TouchableOpacity onPress={() => addressOnPress(address)}>
+                  {innerComponent}
+                </TouchableOpacity>
+              ) : (
+                innerComponent
+              )}
+            </InfoBox>
+            {!!openWebScreen &&
+              bbNaviBaseUrl?.length &&
+              item.geoLocation?.latitude &&
+              item.geoLocation?.longitude && (
+                <InfoBox>
+                  <Icon.Location color={colors.transparent} style={styles.margin} />
+                  <TouchableOpacity
+                    onPress={() => openWebScreen(getBBNaviUrl(bbNaviBaseUrl, item))}
+                  >
+                    <RegularText primary>»Zur bbnavi-Routenplanung«</RegularText>
+                  </TouchableOpacity>
+                </InfoBox>
+              )}
+          </View>
         );
       })}
     </>

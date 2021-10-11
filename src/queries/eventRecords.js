@@ -210,6 +210,11 @@ export const GET_EVENT_RECORD = gql`
         zip
         kind
         addition
+        geoLocation {
+          id
+          latitude
+          longitude
+        }
       }
       contacts {
         id

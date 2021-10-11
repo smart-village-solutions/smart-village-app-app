@@ -79,7 +79,7 @@ export const InfoCard = ({
       </InfoBox>
     )}
 
-    <AddressSection address={address} addresses={addresses} />
+    <AddressSection address={address} addresses={addresses} openWebScreen={openWebScreen} />
 
     <ContactSection contact={contact} contacts={contacts} />
 
