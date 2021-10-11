@@ -6,20 +6,23 @@ import { parseUser } from '../jsonValidation';
 const url = encounterApi.serverUrl + encounterApi.version + encounterApi.user;
 
 export const createUserAsync = async (userData: CreateUserData): Promise<string | undefined> => {
-  const body = JSON.stringify({
-    app_origin: appJson.expo.slug,
-    birth_date: userData.birthDate,
-    first_name: userData.firstName,
-    image_uri: 'https://www.smurf.com/characters-smurfs/papa.png', // TODO: handle image upload
-    last_name: userData.lastName,
-    phone: userData.phone
+  // https://stackoverflow.com/a/40782729
+  const body = new FormData();
+
+  body.append('app_origin', appJson.expo.slug);
+  body.append('birth_date', userData.birthDate);
+  body.append('first_name', userData.firstName);
+  body.append('image', {
+    // @ts-expect-error FormData types are not correct in our setting
+    uri: userData.imageUri,
+    type: 'image/jpg',
+    name: 'image.jpg'
   });
+  body.append('last_name', userData.lastName);
+  body.append('phone', userData.phone);
 
   const response = await fetch(url, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
     body
   });
 
@@ -35,24 +38,28 @@ export const createUserAsync = async (userData: CreateUserData): Promise<string 
 };
 
 export const updateUserAsync = async (userData: UpdateUserData): Promise<string | undefined> => {
-  const body = JSON.stringify({
-    app_origin: appJson.expo.slug,
-    birth_date: userData.birthDate,
-    first_name: userData.firstName,
-    image_uri:
-      userData.firstName === 'Tina'
-        ? 'https://www.smurf.com/characters-smurfs/smurfette.png'
-        : 'https://www.smurf.com/characters-smurfs/papa.png', // TODO: handle image upload
-    last_name: userData.lastName,
-    phone: userData.phone,
-    user_id: userData.userId
-  });
+  // https://stackoverflow.com/a/40782729
+  const body = new FormData();
+
+  body.append('app_origin', appJson.expo.slug);
+  body.append('birth_date', userData.birthDate);
+  body.append('first_name', userData.firstName);
+  body.append('last_name', userData.lastName);
+  body.append('phone', userData.phone);
+  body.append('user_id', userData.userId);
+
+  // only update if we have a new image
+  if (userData.imageUri) {
+    body.append('image', {
+      // @ts-expect-error FormData types are not correct in our setting
+      uri: userData.imageUri,
+      type: 'image/jpg',
+      name: 'image.jpg'
+    });
+  }
 
   const response = await fetch(url, {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
     body
   });
 
