@@ -19,7 +19,6 @@ import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
-import { ScreenName } from '../types';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
@@ -157,7 +156,11 @@ export const HomeScreen = ({ navigation, route }) => {
                 title={categoryTitle}
                 titleDetail={categoryTitleDetail}
                 fetchPolicy={fetchPolicy}
-                navigate={() => navigation.navigate(ScreenName.EncounterRegistration)}
+                navigate={() =>
+                  navigation.navigate(
+                    NAVIGATION.NEWS_ITEMS_INDEX({ categoryId, categoryTitle, categoryTitleDetail })
+                  )
+                }
                 navigation={navigation}
                 query={QUERY_TYPES.NEWS_ITEMS}
                 queryVariables={{ limit: 3, ...{ categoryId } }}
