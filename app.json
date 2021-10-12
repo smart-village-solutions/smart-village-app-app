@@ -5,7 +5,10 @@
     "privacy": "public",
     "description": "An open source React Native app for smart villages merging regional offers and services in one place - in your pocket.",
     "githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "2.1.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,7 +21,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -26,6 +31,9 @@
       "barStyle": "dark-content",
       "translucent": true,
       "backgroundColor": "#00000000"
-    }
+    },
+    "plugins": [
+      "expo-image-picker"
+    ]
   }
 }
