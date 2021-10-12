@@ -5,7 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.1.2]
+
+Minor fixes and package updates under the hood
+
+### Added
+
+- filter commercials by date
+- improved sub queries for html screens
+  - added the possibility to pass in a params object instead of only a webUrl
+- added more device infos to tracking for matomo
+- added usage of construction sites from generic item
+
+### Fixed
+
+- added order to event widget query, which was missing to be the same as in the events index screen
+- passed query limit to data list section props, which before always rendered 3, instead of more if
+  requested
+- fixed Android notification channel color
+  - added color parsing for the Android notification channel color to result always in hex format
+- fixed wrong default for poiId for lunches
+  - during the react navigation upgrade a wrong default was added, resulting in wrong filtering
+    behavior
+- fixed require cycle in navigation config
+- fixed survey widget icon being too big
+
 ## [v2.1.1]
+
+New widgets and updates on surveys
 
 ### Added
 
