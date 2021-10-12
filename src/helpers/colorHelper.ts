@@ -1,0 +1,29 @@
+export const parseColorToHex = (color: string) => {
+  // check if it is already the correct format
+  if (color.match(/^#[0-9a-fA-F]{6}$/)) {
+    return color;
+  }
+
+  // check for format #fff
+  const shortFormatMatches = /^#([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/.exec(color);
+  if (shortFormatMatches) {
+    shortFormatMatches.shift();
+    shortFormatMatches.forEach((value, index) => (shortFormatMatches[index] = value + value));
+    return `#${shortFormatMatches.join('')}`;
+  }
+
+  // check for format rgb(r,g,b)
+  const rgbFormatMatches = /^rgb\(\s*(?<red>\d+)\s*,\s*(?<green>\d+)\s*,\s*(?<blue>\d+)\s*\)$/.exec(
+    color
+  );
+  if (rgbFormatMatches) {
+    rgbFormatMatches.shift();
+    const hexValues = rgbFormatMatches.map((value) => {
+      const hexValue = Number.parseInt(value);
+      return hexValue < 16 ? `0${hexValue.toString(16)}` : hexValue.toString(16);
+    });
+    return `#${hexValues.join('')}`;
+  }
+
+  return undefined;
+};
