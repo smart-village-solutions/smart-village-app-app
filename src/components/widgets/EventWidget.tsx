@@ -22,7 +22,8 @@ export const EventWidget = ({ text }: WidgetProps) => {
 
   const currentDate = moment().format('YYYY-MM-DD');
   const queryVariables = {
-    dateRange: [currentDate, currentDate]
+    dateRange: [currentDate, currentDate],
+    order: 'listDate_ASC'
   };
 
   const { data, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
