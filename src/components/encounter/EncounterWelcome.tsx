@@ -3,16 +3,6 @@ import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import {
-  Button,
-  Image,
-  LoadingSpinner,
-  RegularText,
-  SafeAreaViewFlex,
-  SectionHeader,
-  Wrapper,
-  WrapperWithOrientation
-} from '..';
 import { texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { usePullToRefetch, useRefreshTime } from '../../hooks';
@@ -20,6 +10,13 @@ import { parseEncounterWelcome } from '../../jsonValidation';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
+import { Button } from '../Button';
+import { Image } from '../Image';
+import { LoadingSpinner } from '../LoadingSpinner';
+import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
+import { SectionHeader } from '../SectionHeader';
+import { RegularText } from '../Text';
+import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 type StaticContentArgs<T = unknown> = {
   publicJsonFile: string;
