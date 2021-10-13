@@ -157,7 +157,6 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
               <TouchableOpacity
                 accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
                 onPress={selectImage}
-                style={styles.editIconContainer}
               >
                 <WrapperRow spaceBetween>
                   {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
@@ -169,7 +168,9 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
                     verified={user.verified}
                     placeholder={user.imageUri}
                   />
-                  <Icon.EditSetting color={colors.placeholder} />
+                  <View style={styles.editIconContainer}>
+                    <Icon.EditSetting color={colors.placeholder} />
+                  </View>
                 </WrapperRow>
               </TouchableOpacity>
             </Wrapper>

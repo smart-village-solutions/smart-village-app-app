@@ -172,7 +172,6 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
               <TouchableOpacity
                 accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
                 onPress={selectImage}
-                style={styles.editIconContainer}
               >
                 <WrapperRow spaceBetween>
                   {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
@@ -192,7 +191,9 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
                       </>
                     )}
                   </CircularView>
-                  <Icon.EditSetting color={colors.shadow} />
+                  <View style={styles.editIconContainer}>
+                    <Icon.EditSetting color={colors.shadow} />
+                  </View>
                 </WrapperRow>
               </TouchableOpacity>
             </Wrapper>
