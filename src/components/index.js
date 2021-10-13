@@ -38,6 +38,7 @@ export * from './Link';
 export * from './ListComponent';
 export * from './ListSwitchItem';
 export * from './LoadingContainer';
+export * from './LoadingModal';
 export * from './LoadingSpinner';
 export * from './Logo';
 export * from './MapSwitchHeader';

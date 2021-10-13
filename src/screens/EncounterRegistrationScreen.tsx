@@ -21,6 +21,7 @@ import {
   DefaultKeyboardAvoidingView,
   Image,
   Label,
+  LoadingModal,
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
@@ -63,6 +64,8 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
   const [birthDate, setBirthDate] = useState<Date>();
   const [phone, setPhone] = useState<string>('');
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
+  // globally disable the button, when loading after pressing register
+  const [registrationLoading, setRegistrationLoading] = useState(false);
 
   const { imageUri, selectImage } = useSelectImage();
 
@@ -76,17 +79,21 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
       phone
     };
 
+    // this condition should always be true
     if (isValidRegistrationData(registrationData)) {
+      setRegistrationLoading(true);
       const userId = await createUserAsync(registrationData);
 
       if (!userId?.length) {
         showRegistrationFailAlert();
+        setRegistrationLoading(false);
         return;
       }
 
       await storeEncounterUserId(userId);
       navigation.replace(ScreenName.EncounterHome);
     } else {
+      setRegistrationLoading(false);
       showInvalidRegistrationDataAlert();
     }
   }, [birthDate, firstName, imageUri, lastName, navigation, phone, isPrivacyChecked]);
@@ -214,7 +221,17 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
               <Button
                 onPress={onPressRegister}
                 title={texts.encounter.register}
-                disabled={!isPrivacyChecked}
+                disabled={
+                  registrationLoading ||
+                  !isValidRegistrationData({
+                    birthDate: birthDate && momentFormat(birthDate.valueOf(), 'yyyy-MM-DD', 'x'),
+                    firstName,
+                    imageUri,
+                    isPrivacyChecked,
+                    lastName,
+                    phone
+                  })
+                }
               />
             </Wrapper>
           </WrapperWithOrientation>
@@ -227,6 +244,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
             setVisible={setIsDatePickerVisible}
             visible={isDatePickerVisible}
           />
+          <LoadingModal loading={registrationLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
