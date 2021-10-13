@@ -181,24 +181,25 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             <SectionHeader title={texts.encounter.dataTitle} />
             <Wrapper>
               <Label>{texts.encounter.profilePhoto}</Label>
-              <WrapperRow spaceBetween>
-                {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
-                <View style={styles.editIconContainer}>
-                  <Icon.EditSetting color={colors.transparent} />
-                </View>
-                <ImageWithBadge
-                  imageUri={imageUri}
-                  verified={user.verified}
-                  placeholder={user.imageUri}
-                />
-                <TouchableOpacity
-                  accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
-                  onPress={selectImage}
-                  style={styles.editIconContainer}
-                >
-                  <Icon.EditSetting color={colors.placeholder} />
-                </TouchableOpacity>
-              </WrapperRow>
+              <TouchableOpacity
+                accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
+                onPress={selectImage}
+              >
+                <WrapperRow spaceBetween>
+                  {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
+                  <View style={styles.editIconContainer}>
+                    <Icon.EditSetting color={colors.transparent} />
+                  </View>
+                  <ImageWithBadge
+                    imageUri={imageUri}
+                    verified={user.verified}
+                    placeholder={user.imageUri}
+                  />
+                  <View style={styles.editIconContainer}>
+                    <Icon.EditSetting color={colors.placeholder} />
+                  </View>
+                </WrapperRow>
+              </TouchableOpacity>
             </Wrapper>
             <Wrapper style={styles.noPaddingTop}>
               <Label>{texts.encounter.firstName}</Label>

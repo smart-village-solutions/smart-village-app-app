@@ -21,6 +21,7 @@ import {
   DefaultKeyboardAvoidingView,
   Image,
   Label,
+  LoadingModal,
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
@@ -63,6 +64,8 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
   const [birthDate, setBirthDate] = useState<Date>();
   const [phone, setPhone] = useState<string>('');
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
+  // globally disable the button, when loading after pressing register
+  const [registrationLoading, setRegistrationLoading] = useState(false);
 
   const { imageUri, selectImage } = useSelectImage();
 
@@ -76,17 +79,23 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
       phone
     };
 
+    // this condition should always be true
     if (isValidRegistrationData(registrationData)) {
+      setRegistrationLoading(true);
       const userId = await createUserAsync(registrationData);
 
       if (!userId?.length) {
         showRegistrationFailAlert();
+        setRegistrationLoading(false);
         return;
       }
 
       await storeEncounterUserId(userId);
-      navigation.replace(ScreenName.EncounterHome);
+
+      // refreshUser param causes the home screen to update and no longer show the welcome component
+      navigation.navigate(ScreenName.EncounterHome, { refreshUser: new Date().valueOf() });
     } else {
+      setRegistrationLoading(false);
       showInvalidRegistrationDataAlert();
     }
   }, [birthDate, firstName, imageUri, lastName, navigation, phone, isPrivacyChecked]);
@@ -162,32 +171,33 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
             </Wrapper>
             <Wrapper style={styles.noPaddingTop}>
               <Label>{texts.encounter.profilePhoto}</Label>
-              <WrapperRow spaceBetween>
-                {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
-                <View style={styles.editIconContainer}>
-                  <Icon.EditSetting color={colors.transparent} />
-                </View>
-                <CircularView size={device.width / 2} style={styles.circle}>
-                  {imageUri ? (
-                    <Image source={{ uri: imageUri }} resizeMode="contain" />
-                  ) : (
-                    <>
-                      <Wrapper>
-                        <Icon.AddImage color={colors.darkText} size={normalize(34)} />
-                      </Wrapper>
-                      <RegularText small>{texts.encounter.photoPlaceholder.first}</RegularText>
-                      <RegularText small>{texts.encounter.photoPlaceholder.second}</RegularText>
-                    </>
-                  )}
-                </CircularView>
-                <TouchableOpacity
-                  accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
-                  onPress={selectImage}
-                  style={styles.editIconContainer}
-                >
-                  <Icon.EditSetting color={colors.shadow} />
-                </TouchableOpacity>
-              </WrapperRow>
+              <TouchableOpacity
+                accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
+                onPress={selectImage}
+              >
+                <WrapperRow spaceBetween>
+                  {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
+                  <View style={styles.editIconContainer}>
+                    <Icon.EditSetting color={colors.transparent} />
+                  </View>
+                  <CircularView size={device.width / 2} style={styles.circle}>
+                    {imageUri ? (
+                      <Image source={{ uri: imageUri }} resizeMode="contain" />
+                    ) : (
+                      <>
+                        <Wrapper>
+                          <Icon.AddImage color={colors.darkText} size={normalize(34)} />
+                        </Wrapper>
+                        <RegularText small>{texts.encounter.photoPlaceholder.first}</RegularText>
+                        <RegularText small>{texts.encounter.photoPlaceholder.second}</RegularText>
+                      </>
+                    )}
+                  </CircularView>
+                  <View style={styles.editIconContainer}>
+                    <Icon.EditSetting color={colors.shadow} />
+                  </View>
+                </WrapperRow>
+              </TouchableOpacity>
             </Wrapper>
             <Wrapper style={styles.noPaddingTop}>
               <WrapperRow style={styles.privacyContainer}>
@@ -214,7 +224,17 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
               <Button
                 onPress={onPressRegister}
                 title={texts.encounter.register}
-                disabled={!isPrivacyChecked}
+                disabled={
+                  registrationLoading ||
+                  !isValidRegistrationData({
+                    birthDate: birthDate && momentFormat(birthDate.valueOf(), 'yyyy-MM-DD', 'x'),
+                    firstName,
+                    imageUri,
+                    isPrivacyChecked,
+                    lastName,
+                    phone
+                  })
+                }
               />
             </Wrapper>
           </WrapperWithOrientation>
@@ -227,6 +247,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
             setVisible={setIsDatePickerVisible}
             visible={isDatePickerVisible}
           />
+          <LoadingModal loading={registrationLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

@@ -18,7 +18,7 @@ const loadUser = async (userId: string) => {
 export const useEncounterUser = (): {
   error: boolean;
   loading: boolean;
-  refresh: () => void;
+  refresh: () => Promise<void>;
   refreshing: boolean;
   user?: User;
   userId?: string;
