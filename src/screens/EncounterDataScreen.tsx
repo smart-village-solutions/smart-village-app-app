@@ -31,7 +31,7 @@ import {
 import { colors, consts, Icon, texts } from '../config';
 import { updateUserAsync } from '../encounterApi';
 import { momentFormat } from '../helpers';
-import { useEncounterUser, useSelectImage } from '../hooks';
+import { useEncounterUser, useSelectImage, useEncounterSupportId } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
 
@@ -58,11 +58,35 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
   const [lastName, setLastName] = useState<string>();
   const [birthDate, setBirthDate] = useState<Date>();
   const [phone, setPhone] = useState<string>();
-  const [userIdDisplayValue, setUserIdDisplayValue] = useState<string>();
+  const [supportIdDisplayValue, setSupportIdDisplayValue] = useState<string>();
 
   const { imageUri, selectImage } = useSelectImage();
 
-  const { error, loading, refresh, refreshing, user, userId } = useEncounterUser();
+  const {
+    error: errorSupportId,
+    loading: loadingSupportId,
+    refresh: refreshSupportId,
+    refreshing: refreshingSupportId,
+    supportId
+  } = useEncounterSupportId();
+
+  const {
+    error: errorUser,
+    loading: loadingUser,
+    refresh: refreshUser,
+    refreshing: refreshingUser,
+    user,
+    userId
+  } = useEncounterUser();
+
+  const refreshing = refreshingSupportId || refreshingUser;
+  const loading = loadingSupportId || loadingUser;
+  const error = errorSupportId || errorUser;
+
+  const refresh = useCallback(() => {
+    refreshSupportId();
+    refreshUser();
+  }, [refreshSupportId, refreshUser]);
 
   const onPressInfoVerification = useCallback(() => {
     navigation.navigate(ScreenName.Html, {
@@ -124,8 +148,11 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
     setFirstName(user.firstName);
     setLastName(user.lastName);
     setPhone(user.phone);
-    setUserIdDisplayValue(userId);
   }, [user]);
+
+  useEffect(() => {
+    setSupportIdDisplayValue(supportId);
+  }, [supportId]);
 
   if (loading) {
     return <LoadingSpinner loading />;
@@ -256,14 +283,14 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
                 </Touchable>
               </WrapperRow>
               <TextInput
-                accessibilityLabel={`${a11yLabels.encounterId} (${userIdDisplayValue})`}
-                onChangeText={setUserIdDisplayValue}
-                onBlur={() => setUserIdDisplayValue(userId)}
+                accessibilityLabel={`${a11yLabels.encounterId} (${supportIdDisplayValue})`}
+                onChangeText={setSupportIdDisplayValue}
+                onBlur={() => setSupportIdDisplayValue(supportId)}
                 onTouchStart={() => userIdInputRef.current?.focus()}
                 ref={userIdInputRef}
                 selectTextOnFocus={true}
                 style={[styles.inputField, styles.displayField]}
-                value={userIdDisplayValue}
+                value={supportIdDisplayValue}
               />
             </Wrapper>
             <Wrapper>
