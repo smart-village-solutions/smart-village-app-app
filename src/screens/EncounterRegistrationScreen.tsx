@@ -162,32 +162,32 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
             </Wrapper>
             <Wrapper style={styles.noPaddingTop}>
               <Label>{texts.encounter.profilePhoto}</Label>
-              <WrapperRow spaceBetween>
-                {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
-                <View style={styles.editIconContainer}>
-                  <Icon.EditSetting color={colors.transparent} />
-                </View>
-                <CircularView size={device.width / 2} style={styles.circle}>
-                  {imageUri ? (
-                    <Image source={{ uri: imageUri }} resizeMode="contain" />
-                  ) : (
-                    <>
-                      <Wrapper>
-                        <Icon.AddImage color={colors.darkText} size={normalize(34)} />
-                      </Wrapper>
-                      <RegularText small>{texts.encounter.photoPlaceholder.first}</RegularText>
-                      <RegularText small>{texts.encounter.photoPlaceholder.second}</RegularText>
-                    </>
-                  )}
-                </CircularView>
-                <TouchableOpacity
-                  accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
-                  onPress={selectImage}
-                  style={styles.editIconContainer}
-                >
+              <TouchableOpacity
+                accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
+                onPress={selectImage}
+                style={styles.editIconContainer}
+              >
+                <WrapperRow spaceBetween>
+                  {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
+                  <View style={styles.editIconContainer}>
+                    <Icon.EditSetting color={colors.transparent} />
+                  </View>
+                  <CircularView size={device.width / 2} style={styles.circle}>
+                    {imageUri ? (
+                      <Image source={{ uri: imageUri }} resizeMode="contain" />
+                    ) : (
+                      <>
+                        <Wrapper>
+                          <Icon.AddImage color={colors.darkText} size={normalize(34)} />
+                        </Wrapper>
+                        <RegularText small>{texts.encounter.photoPlaceholder.first}</RegularText>
+                        <RegularText small>{texts.encounter.photoPlaceholder.second}</RegularText>
+                      </>
+                    )}
+                  </CircularView>
                   <Icon.EditSetting color={colors.shadow} />
-                </TouchableOpacity>
-              </WrapperRow>
+                </WrapperRow>
+              </TouchableOpacity>
             </Wrapper>
             <Wrapper style={styles.noPaddingTop}>
               <WrapperRow style={styles.privacyContainer}>
