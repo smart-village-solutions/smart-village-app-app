@@ -1,5 +1,5 @@
 import * as Linking from 'expo-linking';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import QRCode from 'react-native-qrcode-svg';
@@ -29,7 +29,7 @@ const INFO_ICON_SIZE = normalize(16);
 const a11yLabels = consts.a11yLabel;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const EncounterHomeScreen = ({ navigation }: any) => {
+export const EncounterHomeScreen = ({ navigation, route }: any) => {
   const {
     loading: loadingQr,
     qrValue: qrId,
@@ -66,6 +66,9 @@ export const EncounterHomeScreen = ({ navigation }: any) => {
     refreshQr();
     refreshUser();
   }, [refreshQr, refreshUser]);
+
+  // refresh if the refreshUser param changed, which happens after registration
+  useEffect(refresh, [route.params?.refreshUser]);
 
   if (loading) {
     return <LoadingSpinner loading />;

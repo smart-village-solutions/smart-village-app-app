@@ -91,7 +91,9 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
       }
 
       await storeEncounterUserId(userId);
-      navigation.replace(ScreenName.EncounterHome);
+
+      // refreshUser param causes the home screen to update and no longer show the welcome component
+      navigation.navigate(ScreenName.EncounterHome, { refreshUser: new Date().valueOf() });
     } else {
       setRegistrationLoading(false);
       showInvalidRegistrationDataAlert();
