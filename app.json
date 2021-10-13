@@ -25,15 +25,23 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
+        "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes."
+      }
+    },
+    "android": {
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "androidStatusBar": {
       "barStyle": "dark-content",
       "translucent": true,
       "backgroundColor": "#00000000"
-    },
-    "plugins": [
-      "expo-image-picker"
-    ]
+    }
   }
 }

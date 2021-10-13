@@ -111,6 +111,7 @@ export const texts = {
     scannerSubTitle: 'Scanne den QR-Code deines Fahrers',
     scannerTitle: 'Neue Fahrt',
     status: 'Status',
+    supportId: 'Support-ID',
     verified: 'Verifiziert'
   },
   errors: {

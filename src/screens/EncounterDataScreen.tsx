@@ -275,7 +275,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             </Wrapper>
             <Wrapper style={styles.noPaddingTop}>
               <WrapperRow style={styles.infoLabelContainer}>
-                <Label>{texts.encounter.id}</Label>
+                <Label>{texts.encounter.supportId}</Label>
                 <Touchable
                   accessibilityLabel={`${a11yLabels.encounterIdInfo} ${a11yLabels.button}`}
                   onPress={onPressInfoId}
