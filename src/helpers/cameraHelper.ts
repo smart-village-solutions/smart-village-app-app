@@ -3,9 +3,7 @@ import { Camera } from 'expo-camera';
 import { AcceptedRatio } from '../types';
 
 import { sleep } from './promiseHelper';
-import { readFromStore } from './storageHelper';
-
-import { addToStore } from '.';
+import { addToStore, readFromStore } from './storageHelper';
 
 const SCANNER_ASPECT_RATIO = 'SCANNER_ASPECT_RATIO';
 
