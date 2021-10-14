@@ -9,7 +9,11 @@ import { Alert } from 'react-native';
 
 import { texts } from '../config';
 
-export const useSelectImage = () => {
+export const useSelectImage = (
+  onChange?: <T>(
+    setter: React.Dispatch<React.SetStateAction<T>>
+  ) => React.Dispatch<React.SetStateAction<T>>
+) => {
   const [imageUri, setImageUri] = useState<string>();
 
   const selectImage = useCallback(async () => {
@@ -30,9 +34,9 @@ export const useSelectImage = () => {
     });
 
     if (!result.cancelled) {
-      setImageUri(result.uri);
+      onChange ? onChange(setImageUri)(result.uri) : setImageUri(result.uri);
     }
-  }, []);
+  }, [onChange]);
 
   return { imageUri, selectImage };
 };
