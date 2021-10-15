@@ -1,10 +1,4 @@
-import {
-  defaultStackNavigatorScreenOptions,
-  detailScreenOptions,
-  homeScreenOptions,
-  screenOptionsWithSettings,
-  screenOptionsWithShare
-} from '../../navigation/screenOptions';
+import { getScreenOptions } from '../../navigation/screenOptions';
 import {
   AboutScreen,
   BookmarkCategoryScreen,
@@ -51,7 +45,7 @@ export const defaultStackConfig = ({
   isDrawer: boolean;
 }): StackConfig => ({
   initialRouteName,
-  screenOptions: defaultStackNavigatorScreenOptions(isDrawer),
+  screenOptions: getScreenOptions({ withDrawer: isDrawer }),
   screenConfigs: [
     {
       routeName: ScreenName.About,
@@ -65,7 +59,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.BBBUSDetail,
       screenComponent: BBBUSDetailScreen,
-      screenOptions: screenOptionsWithShare(isDrawer)
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withShare: true })
     },
     {
       routeName: ScreenName.BookmarkCategory,
@@ -74,7 +68,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Bookmarks,
       screenComponent: BookmarkScreen,
-      screenOptions: screenOptionsWithSettings(isDrawer)
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withSettings: true })
     },
     {
       routeName: ScreenName.Category,
@@ -106,7 +100,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Detail,
       screenComponent: DetailScreen,
-      screenOptions: detailScreenOptions(isDrawer)
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withBookmark: true, withShare: true })
     },
     {
       routeName: ScreenName.Form,
@@ -115,9 +109,10 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Home,
       screenComponent: HomeScreen,
-      screenOptions: homeScreenOptions(isDrawer),
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withFavSettings: true }),
       inititalParams: {
-        isDrawer
+        isDrawer,
+        title: texts.screenTitles.home
       }
     },
     {
@@ -198,7 +193,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Web,
       screenComponent: WebScreen,
-      screenOptions: screenOptionsWithShare(isDrawer)
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withShare: true })
     }
   ]
 });

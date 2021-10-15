@@ -14,10 +14,8 @@ import {
   Tour
 } from '../components';
 import { colors, consts } from '../config';
-import { navigatorConfig } from '../config/navigation/config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useRefreshTime } from '../hooks';
-import { screenOptionsWithShare } from '../navigation/screenOptions';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { GenericType } from '../types';
@@ -58,7 +56,6 @@ export const DetailScreen = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
   const details = route.params?.details ?? {};
-  const bookmarkable = route.params?.bookmarkable ?? true;
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -69,14 +66,6 @@ export const DetailScreen = ({ navigation, route }) => {
   useEffect(() => {
     isConnected && auth();
   }, []);
-
-  useEffect(() => {
-    const options = screenOptionsWithShare(navigatorConfig.type === 'drawer')({
-      navigation,
-      route
-    });
-    !bookmarkable && navigation.setOptions(options);
-  }, [bookmarkable]);
 
   if (!refreshTime) {
     return (
