@@ -5,7 +5,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { storageHelper } from '../helpers';
 import { LocationSettings } from '../types';
 
-const LOCATION_TIMEOUT = 15000;
+const LOCATION_TIMEOUT = 6000;
 
 const requestAndFetchPosition = async (
   setAndSyncLocationSettings: (arg: LocationSettings) => Promise<void>

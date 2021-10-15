@@ -93,8 +93,6 @@ export const IndexScreen = ({ navigation, route }) => {
   // this is not a big issue if we want to sort by distance, because getting the location usually takes longer than fetching all entries
   if (showMap || sortByDistance) {
     delete queryVariables.limit;
-  } else {
-    queryVariables.limit = route.params?.queryVariables?.limit ?? 15;
   }
 
   useEffect(() => {
