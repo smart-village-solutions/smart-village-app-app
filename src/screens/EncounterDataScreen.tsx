@@ -60,7 +60,21 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
   const [phone, setPhone] = useState<string>();
   const [supportIdDisplayValue, setSupportIdDisplayValue] = useState<string>();
 
-  const { imageUri, selectImage } = useSelectImage();
+  // only allow to submit changes, if at least one field was changed
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // wrapper for the setter functions to trigger an update to "hasChanges" on a change
+  const onChange = useCallback(
+    <T,>(
+      setter: React.Dispatch<React.SetStateAction<T>>
+    ): React.Dispatch<React.SetStateAction<T>> => (arg) => {
+      setHasChanges(true);
+      setter(arg);
+    },
+    []
+  );
+
+  const { imageUri, selectImage } = useSelectImage(onChange);
 
   const {
     error: errorSupportId,
@@ -106,7 +120,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
 
   // TODO: implement
   const updateUserData = async () => {
-    if (!(birthDate && firstName && lastName && phone && user && userId)) {
+    if (!(birthDate && firstName && lastName && phone && userId)) {
       // the button is disabled, if this is the case, and this should never be called.
       console.warn('User update called with insufficient data');
       return;
@@ -205,7 +219,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
               <Label>{texts.encounter.firstName}</Label>
               <TextInput
                 accessibilityLabel={`${a11yLabels.firstName} ${a11yLabels.textInput}: ${firstName}`}
-                onChangeText={setFirstName}
+                onChangeText={onChange(setFirstName)}
                 placeholder={texts.encounter.firstName}
                 style={styles.inputField}
                 value={firstName}
@@ -215,7 +229,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
               <Label>{texts.encounter.lastName}</Label>
               <TextInput
                 accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
-                onChangeText={setLastName}
+                onChangeText={onChange(setLastName)}
                 placeholder={texts.encounter.lastName}
                 style={styles.inputField}
                 value={lastName}
@@ -248,7 +262,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
               <TextInput
                 accessibilityLabel={`${a11yLabels.phoneNumber} ${a11yLabels.textInput}: ${phone}`}
                 keyboardType="phone-pad"
-                onChangeText={setPhone}
+                onChangeText={onChange(setPhone)}
                 placeholder={texts.encounter.phone}
                 style={styles.inputField}
                 value={phone}
@@ -298,7 +312,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
               <Button
                 onPress={onPressUpdate}
                 title={texts.encounter.saveChanges}
-                disabled={!(birthDate && firstName && lastName && phone && user && userId)}
+                disabled={!(birthDate && firstName && lastName && phone && userId) || !hasChanges}
               />
             </Wrapper>
             <EncounterList />
@@ -306,7 +320,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
           <DateTimePicker
             initialTime={birthDate}
             mode="date"
-            onUpdate={setBirthDate}
+            onUpdate={onChange(setBirthDate)}
             setVisible={setIsDatePickerVisible}
             visible={isDatePickerVisible}
           />
