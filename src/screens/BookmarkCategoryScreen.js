@@ -74,7 +74,7 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
       </WrapperWithOrientation>
     );
   }
-  const listItems = parseListItemsFromQuery(query, data, false, categoryTitleDetail);
+  const listItems = parseListItemsFromQuery(query, data, categoryTitleDetail);
 
   return (
     <SafeAreaViewFlex>
