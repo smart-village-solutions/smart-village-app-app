@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
 
 import {
+  BoldText,
   EncounterUserDetails,
   LoadingSpinner,
   RegularText,
@@ -38,6 +39,9 @@ export const EncounterUserDetailScreen = ({ route }: any) => {
         <SectionHeader title={texts.encounter.detailTitle} />
         <WrapperWithOrientation>
           {!!data && <EncounterUserDetails data={data} />}
+          <Wrapper>
+            <BoldText center>{texts.encounter.newEncounterSuccess}</BoldText>
+          </Wrapper>
         </WrapperWithOrientation>
       </ScrollView>
     );

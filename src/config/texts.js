@@ -89,6 +89,7 @@ export const texts = {
     lastName: 'Name',
     myData: 'Meine Daten & Fahrthistorie',
     newEncounter: 'Neue Fahrt',
+    newEncounterSuccess: 'Eine neue Fahrt wurde erfolgreich angelegt.',
     noHistoryYet: 'Es gibt noch keine Fahrthistorie, du bist noch nicht gefahren.',
     notVerified: 'Nicht verifiziert',
     phone: 'Telefonnummer',
