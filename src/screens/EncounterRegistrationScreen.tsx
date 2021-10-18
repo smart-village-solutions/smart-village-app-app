@@ -92,6 +92,9 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
 
       await storeEncounterUserId(userId);
 
+      // if we do not set the loading state to false, the modal "spills over" to the next screen, sometimes not disappearing at all
+      setRegistrationLoading(false);
+
       // refreshUser param causes the home screen to update and no longer show the welcome component
       navigation.navigate(ScreenName.EncounterHome, { refreshUser: new Date().valueOf() });
     } else {
