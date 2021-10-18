@@ -7,6 +7,7 @@ import { SettingsContext } from '../SettingsProvider';
 
 import { CardList } from './CardList';
 import { CategoryList } from './CategoryList';
+import { EventList } from './EventList';
 import { ImageTextList } from './ImageTextList';
 import { TextList } from './TextList';
 
@@ -55,12 +56,16 @@ export const ListComponent = ({
   query,
   fetchMoreData,
   horizontal,
+  sectionByDate,
   ListHeaderComponent,
   refreshControl
 }) => {
   const { listTypesSettings } = useContext(SettingsContext);
 
-  const Component = getComponent(query, listTypesSettings);
+  const Component =
+    QUERY_TYPES.EVENT_RECORDS === query && sectionByDate
+      ? EventList
+      : getComponent(query, listTypesSettings);
 
   return (
     <Component
@@ -83,6 +88,7 @@ ListComponent.propTypes = {
   query: PropTypes.string.isRequired,
   fetchMoreData: PropTypes.func,
   horizontal: PropTypes.bool,
+  sectionByDate: PropTypes.bool,
   ListHeaderComponent: PropTypes.object,
   refreshControl: PropTypes.object
 };

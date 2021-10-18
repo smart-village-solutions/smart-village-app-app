@@ -212,6 +212,7 @@ export const IndexScreen = ({ navigation, route }) => {
                 navigation={navigation}
                 data={listItems}
                 horizontal={false}
+                sectionByDate={true}
                 query={query}
                 fetchMoreData={isConnected ? fetchMoreData : null}
                 refreshControl={
