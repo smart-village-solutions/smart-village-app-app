@@ -283,7 +283,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
                   user.verified ? texts.encounter.verified : texts.encounter.notVerified
                 })`}
                 editable={false}
-                style={[styles.inputField, styles.displayField]}
+                style={styles.inputField}
                 value={user.verified ? texts.encounter.verified : texts.encounter.notVerified}
               />
             </Wrapper>
@@ -304,7 +304,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
                 onTouchStart={() => userIdInputRef.current?.focus()}
                 ref={userIdInputRef}
                 selectTextOnFocus={true}
-                style={[styles.inputField, styles.displayField]}
+                style={styles.inputField}
                 value={supportIdDisplayValue}
               />
             </Wrapper>
@@ -334,15 +334,12 @@ const styles = StyleSheet.create({
   editIconContainer: {
     justifyContent: 'flex-end'
   },
-  displayField: {
-    backgroundColor: colors.surface,
-    borderColor: colors.placeholder,
-    borderWidth: 1
-  },
   icon: { marginLeft: normalize(8) },
   infoLabelContainer: { alignItems: 'center' },
   inputField: {
-    backgroundColor: colors.backgroundRgba,
+    backgroundColor: colors.surface,
+    borderColor: colors.placeholder,
+    borderWidth: 1,
     fontFamily: 'regular',
     fontSize: normalize(16),
     color: colors.darkText,

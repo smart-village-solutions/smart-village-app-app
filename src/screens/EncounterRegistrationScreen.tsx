@@ -265,7 +265,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   inputField: {
-    backgroundColor: colors.backgroundRgba,
+    backgroundColor: colors.surface,
+    borderColor: colors.placeholder,
+    borderWidth: 1,
     fontFamily: 'regular',
     fontSize: normalize(16),
     color: colors.darkText,
