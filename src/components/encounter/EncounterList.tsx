@@ -1,7 +1,9 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Divider } from 'react-native-elements';
 
-import { texts } from '../../config';
+import { WrapperRow } from '..';
+import { colors, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { useEncounterList } from '../../hooks';
 import { Encounter } from '../../types';
@@ -12,19 +14,21 @@ import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 const EncounterEntry = ({ encounter }: { encounter: Encounter }) => {
   return (
-    <View style={styles.entryContainer}>
-      <Wrapper>
-        <RegularText>{momentFormat(encounter.createdAt)}</RegularText>
+    <>
+      <WrapperRow>
+        <Wrapper>
+          <RegularText>{momentFormat(encounter.createdAt)}</RegularText>
+        </Wrapper>
+        <Wrapper>
+          <RegularText>{momentFormat(encounter.createdAt, 'HH:mm')}</RegularText>
+        </Wrapper>
+      </WrapperRow>
+      <Wrapper shrink style={styles.noPaddingTop}>
+        <RegularText>{`${texts.encounter.encounterId}:`}</RegularText>
+        <RegularText small selectable>{`${encounter.encounterId}`}</RegularText>
       </Wrapper>
-      <Wrapper>
-        <RegularText>{momentFormat(encounter.createdAt, 'HH:mm')}</RegularText>
-      </Wrapper>
-      <Wrapper shrink>
-        <RegularText
-          selectable
-        >{`${texts.encounter.encounterId}: ${encounter.encounterId}`}</RegularText>
-      </Wrapper>
-    </View>
+      <Divider style={styles.divider} />
+    </>
   );
 };
 
@@ -48,9 +52,10 @@ export const EncounterList = () => {
 };
 
 const styles = StyleSheet.create({
-  entryContainer: {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    flexDirection: 'row'
+  divider: {
+    backgroundColor: colors.placeholder
+  },
+  noPaddingTop: {
+    paddingTop: 0
   }
 });
