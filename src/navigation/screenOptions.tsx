@@ -41,18 +41,8 @@ export const getScreenOptions = ({
     // header gradient:
     // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
     headerBackground: () => <DiagonalGradient />,
-    headerTitleStyle: {
-      color: colors.lightestText,
-      fontFamily: device.platform === 'ios' ? 'bold' : 'regular',
-      fontSize: normalize(20),
-      fontWeight: '400',
-      lineHeight: normalize(29)
-    },
-    headerTitleContainerStyle: {
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'flex-start'
-    },
+    headerTitleStyle: styles.headerTitleStyle,
+    headerTitleContainerStyle: styles.headerTitleContainerStyle,
     headerRight: () => (
       <WrapperRow style={styles.headerRight}>
         {withBookmark && <BookmarkHeader route={route} style={styles.icon} />}
@@ -73,6 +63,18 @@ const styles = StyleSheet.create({
   headerRight: {
     alignItems: 'center',
     paddingRight: normalize(7)
+  },
+  headerTitleStyle: {
+    color: colors.lightestText,
+    fontFamily: device.platform === 'ios' ? 'bold' : 'regular',
+    fontSize: normalize(20),
+    fontWeight: '400',
+    lineHeight: normalize(29)
+  },
+  headerTitleContainerStyle: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
   },
   icon: {
     paddingHorizontal: normalize(10)

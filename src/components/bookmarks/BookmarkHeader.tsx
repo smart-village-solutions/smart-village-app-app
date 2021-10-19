@@ -27,7 +27,7 @@ export const BookmarkHeader = ({ route, style }: Props) => {
     toggleBookmark(query, id, suffix);
   }, [suffix, id, query]);
 
-  if (!(bookmarkable && query && queryVariables?.id)) {
+  if (!(bookmarkable && query && id)) {
     return null;
   }
 
