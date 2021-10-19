@@ -1,26 +1,35 @@
+import { RouteProp } from '@react-navigation/core';
 import React, { useCallback, useContext } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { BookmarkContext } from '../../BookmarkProvider';
 import { colors, consts, Icon, normalize } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
-import { QUERY_TYPES } from '../../queries';
 
 type Props = {
-  id: string;
-  suffix?: number | string;
-  query: keyof typeof QUERY_TYPES;
-  style: Record<string, unknown> | undefined;
+  route: RouteProp<any, any>;
+  style: StyleProp<ViewStyle>;
 };
 
-export const BookmarkHeader = ({ id, suffix, query, style }: Props) => {
+export const BookmarkHeader = ({ route, style }: Props) => {
   const { toggleBookmark } = useContext(BookmarkContext);
-  const isBookmarked = useBookmarkedStatus(query, id, suffix);
   const a11yText = consts.a11yLabel;
+
+  const suffix = route.params?.suffix ?? '';
+  const query = route.params?.query ?? '';
+  const queryVariables = route.params?.queryVariables ?? {};
+  const id = queryVariables.id;
+  const bookmarkable = route.params?.bookmarkable ?? true;
+
+  const isBookmarked = useBookmarkedStatus(query, id, suffix);
 
   const onPress = useCallback(() => {
     toggleBookmark(query, id, suffix);
   }, [suffix, id, query]);
+
+  if (!(bookmarkable && query && id)) {
+    return null;
+  }
 
   return (
     <TouchableOpacity
@@ -29,9 +38,9 @@ export const BookmarkHeader = ({ id, suffix, query, style }: Props) => {
       accessibilityHint={a11yText.bookmarkListHint}
     >
       {isBookmarked ? (
-        <Icon.HeartFilled color={colors.lightestText} style={{ ...styles.icon, ...style }} />
+        <Icon.HeartFilled color={colors.lightestText} style={[styles.icon, style]} />
       ) : (
-        <Icon.HeartEmpty color={colors.lightestText} style={{ ...styles.icon, ...style }} />
+        <Icon.HeartEmpty color={colors.lightestText} style={[styles.icon, style]} />
       )}
     </TouchableOpacity>
   );
