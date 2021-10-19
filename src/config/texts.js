@@ -385,6 +385,10 @@ export const texts = {
       onDeactivate:
         'Soll Matomo Analytics deaktiviert werden? Die Deaktivierung von Matomo Analytics wird mit dem nächsten Neustart der App wirksam.',
       yes: 'Ja'
+    },
+    locationService: {
+      onSystemPermissionMissing:
+        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.'
     }
   },
   settingsScreen: {
@@ -401,6 +405,7 @@ export const texts = {
       sectionTitle: 'Listen-Layouts',
       textList: 'Textliste'
     },
+    locationService: 'Ortungsdienste',
     pushNotifications: 'Push-Benachrichtigungen'
   },
   survey: {

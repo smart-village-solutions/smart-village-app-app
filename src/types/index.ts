@@ -3,6 +3,7 @@ export * from './ConstructionSite';
 export * from './Contact';
 export * from './GenericItem';
 export * from './GenericType';
+export * from './LocationSettings';
 export * from './Navigation';
 export * from './OParlObjectTypes';
 export * from './Survey';

@@ -9,6 +9,8 @@ export const resetStore = async () => await AsyncStorage.clear();
 export const storageHelper = {
   globalSettings: () => readFromStore('globalSettings'),
   setGlobalSettings: (globalSettings) => addToStore('globalSettings', globalSettings),
+  locationSettings: () => readFromStore('locationSettings'),
+  setLocationSettings: (settings) => addToStore('locationSettings', settings),
   matomoSettings: () => readFromStore('matomoSettings'),
   setMatomoSettings: (matomoSettings) => addToStore('matomoSettings', matomoSettings),
   listTypesSettings: () => readFromStore('listTypesSettings'),
