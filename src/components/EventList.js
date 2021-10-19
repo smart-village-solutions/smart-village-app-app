@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { SectionList } from 'react-native';
 
 import { momentFormat } from '../helpers';
@@ -33,10 +33,7 @@ export const EventList = ({
     }
   };
 
-  const renderItem = useCallback(useRenderItem(QUERY_TYPES.EVENT_RECORDS, navigation, noSubtitle), [
-    navigation,
-    noSubtitle
-  ]);
+  const renderItem = useRenderItem(QUERY_TYPES.EVENT_RECORDS, navigation, { noSubtitle });
 
   const sectionedData = data.reduce((previous, current) => {
     if (previous[previous?.length - 1]?.title === current.params.details.listDate) {

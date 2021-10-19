@@ -3,8 +3,8 @@ import React, { useRef, useState } from 'react';
 import { ActivityIndicator, FlatList } from 'react-native';
 
 import { colors, normalize } from '../config';
+import { useRenderItem } from '../hooks/listHooks';
 
-import { TextListItem } from './TextListItem';
 import { BackToTop } from './BackToTop';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
@@ -13,7 +13,6 @@ export const TextList = ({
   navigation,
   data,
   noSubtitle,
-  leftImage,
   query,
   fetchMoreData,
   ListHeaderComponent,
@@ -22,6 +21,8 @@ export const TextList = ({
 }) => {
   const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
+
+  const renderItem = useRenderItem(query, navigation, { noSubtitle });
 
   const onEndReached = async () => {
     if (fetchMoreData) {
@@ -40,7 +41,7 @@ export const TextList = ({
       ref={flatListRef}
       keyExtractor={keyExtractor}
       data={data}
-      renderItem={({ item }) => <TextListItem {...{ navigation, item, noSubtitle, leftImage }} />}
+      renderItem={renderItem}
       ListHeaderComponent={ListHeaderComponent}
       ListFooterComponent={() => {
         if (data.length > 10) {
