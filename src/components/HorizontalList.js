@@ -23,8 +23,5 @@ export const HorizontalList = ({ navigation, data, query }) => {
 HorizontalList.propTypes = {
   navigation: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
-  query: PropTypes.string,
-  fetchMoreData: PropTypes.func,
-  ListHeaderComponent: PropTypes.object,
-  refreshControl: PropTypes.object
+  query: PropTypes.string
 };
