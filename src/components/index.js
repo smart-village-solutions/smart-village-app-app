@@ -53,7 +53,7 @@ export * from './StorySection';
 export * from './SurveyAnswer';
 export * from './Switch';
 export * from './Text';
-export * from './TextList';
+export * from './VerticalList';
 export * from './TextListItem';
 export * from './Title';
 export * from './ToggleListItem';

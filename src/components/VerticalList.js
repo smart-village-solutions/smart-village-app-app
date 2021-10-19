@@ -9,7 +9,7 @@ import { BackToTop } from './BackToTop';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
-export const TextList = ({
+export const VerticalList = ({
   navigation,
   data,
   noSubtitle,
@@ -74,7 +74,7 @@ export const TextList = ({
   );
 };
 
-TextList.propTypes = {
+VerticalList.propTypes = {
   navigation: PropTypes.object,
   data: PropTypes.array,
   noSubtitle: PropTypes.bool,
@@ -86,7 +86,7 @@ TextList.propTypes = {
   refreshControl: PropTypes.object
 };
 
-TextList.defaultProps = {
+VerticalList.defaultProps = {
   noSubtitle: false,
   leftImage: false
 };

@@ -8,7 +8,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { CategoryList } from './CategoryList';
 import { EventList } from './EventList';
 import { HorizontalList } from './HorizontalList';
-import { TextList } from './TextList';
+import { VerticalList } from './VerticalList';
 
 const { LIST_TYPES } = consts;
 
@@ -29,11 +29,11 @@ const getComponent = (query, horizontal, sectionByDate) => {
     case QUERY_TYPES.POINTS_OF_INTEREST:
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
     case QUERY_TYPES.TOURS:
-      return horizontal ? HorizontalList : TextList;
+      return horizontal ? HorizontalList : VerticalList;
     case QUERY_TYPES.EVENT_RECORDS:
-      return sectionByDate ? EventList : TextList;
+      return sectionByDate ? EventList : VerticalList;
     default:
-      return TextList;
+      return VerticalList;
   }
 };
 

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 
-import { TextList } from '../TextList';
+import { VerticalList } from '../VerticalList';
 
 import { IndexFilter } from './IndexFilter';
 
@@ -25,7 +25,7 @@ export const ServiceList = ({
   }, [results.length, selectedFilter]);
 
   return (
-    <TextList
+    <VerticalList
       navigation={navigation}
       data={listItems}
       noSubtitle
