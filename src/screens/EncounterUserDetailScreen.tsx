@@ -6,7 +6,6 @@ import {
   EncounterUserDetails,
   LoadingSpinner,
   RegularText,
-  SectionHeader,
   Wrapper,
   WrapperWithOrientation
 } from '../components';
@@ -35,13 +34,11 @@ export const EncounterUserDetailScreen = ({ route }: any) => {
   if (data) {
     return (
       <ScrollView>
-        {/* TODO: soll hier tatsächlich gender logic hin? */}
-        <SectionHeader title={texts.encounter.detailTitle} />
         <WrapperWithOrientation>
-          {!!data && <EncounterUserDetails data={data} />}
           <Wrapper>
             <BoldText center>{texts.encounter.newEncounterSuccess}</BoldText>
           </Wrapper>
+          {!!data && <EncounterUserDetails data={data} />}
         </WrapperWithOrientation>
       </ScrollView>
     );

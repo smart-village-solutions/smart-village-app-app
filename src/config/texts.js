@@ -79,7 +79,6 @@ export const texts = {
     changeWarningOk: 'Trotzdem ändern',
     changeWarningTitle: 'Achtung',
     dataTitle: 'Meine Daten',
-    detailTitle: 'Dein Mitfahrer',
     encounterId: 'Fahrten-ID',
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
     errorScanBody: 'Beim Scannen des QR-Codes ist ein Fehler aufgetreten.',
@@ -113,7 +112,7 @@ export const texts = {
     scannerTitle: 'Neue Fahrt',
     status: 'Verifikationsstatus',
     supportId: 'Support-ID',
-    verified: 'Verifiziert'
+    verified: 'Verifikationsstatus'
   },
   errors: {
     image: {
