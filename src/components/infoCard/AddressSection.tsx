@@ -2,7 +2,7 @@ import _filter from 'lodash/filter';
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, Icon, normalize } from '../../config';
+import { colors, consts, Icon, normalize, texts } from '../../config';
 import {
   formatAddress,
   formatAddressSingleLine,
@@ -98,11 +98,11 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
               item.geoLocation?.latitude &&
               item.geoLocation?.longitude && (
                 <InfoBox>
-                  <Icon.Location color={colors.transparent} style={styles.margin} />
+                  <Icon.RoutePlanner color={colors.primary} style={styles.margin} />
                   <TouchableOpacity
                     onPress={() => openWebScreen(getBBNaviUrl(bbNaviBaseUrl, item))}
                   >
-                    <RegularText primary>»Zur bbnavi-Routenplanung«</RegularText>
+                    <RegularText primary>{texts.pointOfInterest.routePlanner}</RegularText>
                   </TouchableOpacity>
                 </InfoBox>
               )}
