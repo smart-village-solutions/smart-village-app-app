@@ -41,6 +41,22 @@ const requestAndFetchPosition = async (
   }
 };
 
+const requestAndFetchLastKnownPosition = async (
+  setAndSyncLocationSettings: (arg: LocationSettings) => Promise<void>
+) => {
+  const { status } = await Location.requestForegroundPermissionsAsync();
+
+  await setAndSyncLocationSettings({ sortPOIs: status === Location.PermissionStatus.GRANTED });
+
+  if (status === Location.PermissionStatus.GRANTED) {
+    try {
+      return await Location.getLastKnownPositionAsync({});
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+};
+
 export const useLocationSettings = () => {
   // @ts-expect-error settings are not properly typed
   const { locationSettings, setLocationSettings } = useContext(SettingsContext);
@@ -68,6 +84,34 @@ export const usePosition = (skip?: boolean) => {
     if (shouldGetPosition) {
       setLoading(true);
       requestAndFetchPosition(setAndSyncLocationSettings)
+        .then((result) => {
+          if (mounted && result) {
+            setPosition(result);
+          }
+        })
+        .finally(() => setLoading(false));
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [shouldGetPosition]);
+
+  // actively return undefined as the position, to avoid using the position from when the in app setting was true
+  return { loading, position: shouldGetPosition ? position : undefined };
+};
+
+export const useLastKnownPosition = () => {
+  const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
+  const [position, setPosition] = useState<Location.LocationObject>();
+  const [loading, setLoading] = useState(false);
+
+  const shouldGetPosition = locationSettings.sortPOIs;
+
+  useEffect(() => {
+    let mounted = true;
+    if (shouldGetPosition) {
+      setLoading(true);
+      requestAndFetchLastKnownPosition(setAndSyncLocationSettings)
         .then((result) => {
           if (mounted && result) {
             setPosition(result);

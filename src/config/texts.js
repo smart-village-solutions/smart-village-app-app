@@ -352,7 +352,8 @@ export const texts = {
     operatingCompany: 'Anbieter',
     prices: 'Preise',
     routePlanner: 'Zum Stadtnavi',
-    showLunches: 'Zum aktuellen Gastro-Angebot'
+    showLunches: 'Zum aktuellen Gastro-Angebot',
+    yourPosition: 'Ihre Position'
   },
   pushNotifications: {
     abort: 'Abbrechen',
