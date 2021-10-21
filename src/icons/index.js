@@ -3,6 +3,7 @@ export * from './arrowLeft';
 export * from './arrowRight';
 export * from './arrowUp';
 export * from './calendar';
+export * from './clock';
 export * from './constructionSite';
 export * from './drawerMenu';
 export * from './favSettings';

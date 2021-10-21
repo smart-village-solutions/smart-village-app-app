@@ -87,6 +87,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
             category={category}
             addresses={addresses}
             contact={contact}
+            openingHours={openingHours}
             openWebScreen={openWebScreen}
             webUrls={webUrls}
           />
