@@ -122,6 +122,6 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
 
 const styles = StyleSheet.create({
   margin: {
-    marginRight: normalize(10)
+    marginRight: normalize(12)
   }
 });

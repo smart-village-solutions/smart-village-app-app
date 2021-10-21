@@ -45,6 +45,6 @@ export const UrlSection = ({ openWebScreen, webUrls }: Props) => (
 
 const styles = StyleSheet.create({
   margin: {
-    marginRight: normalize(10)
+    marginRight: normalize(12)
   }
 });
