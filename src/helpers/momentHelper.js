@@ -126,7 +126,7 @@ const isOpeningTimeForDate = (info, date) =>
   dateIsWithinTimeFrame(
     date,
     info.dateFrom ? moment(new Date(info.dateFrom)).startOf('day').toDate() : undefined,
-    info.dateEnd ? moment(new Date(info.dateEnd)).endOf('day').toDate() : undefined
+    info.dateTo ? moment(new Date(info.dateTo)).endOf('day').toDate() : undefined
   );
 
 /**
