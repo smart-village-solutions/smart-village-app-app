@@ -9,6 +9,8 @@ import { BackToTop } from './BackToTop';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
+const MAX_INITIAL_NUM_TO_RENDER = 20;
+
 export const VerticalList = ({
   navigation,
   data,
@@ -44,7 +46,7 @@ export const VerticalList = ({
       renderItem={renderItem}
       ListHeaderComponent={ListHeaderComponent}
       ListFooterComponent={() => {
-        if (data.length > 10) {
+        if (data.length > MAX_INITIAL_NUM_TO_RENDER) {
           if (!listEndReached) {
             return <ActivityIndicator color={colors.accent} style={{ margin: normalize(14) }} />;
           } else if (listEndReached && showBackToTop) {
@@ -66,7 +68,9 @@ export const VerticalList = ({
           return null;
         }
       }}
-      initialNumToRender={data.length < 20 ? data.length : 20}
+      initialNumToRender={
+        data.length < MAX_INITIAL_NUM_TO_RENDER ? data.length : MAX_INITIAL_NUM_TO_RENDER
+      }
       onEndReachedThreshold={0.5}
       onEndReached={onEndReached}
       refreshControl={refreshControl}

@@ -48,7 +48,8 @@ export const ListComponent = ({
   horizontal,
   sectionByDate,
   ListHeaderComponent,
-  refreshControl
+  refreshControl,
+  showBackToTop
 }) => {
   const { listTypesSettings } = useContext(SettingsContext);
 
@@ -67,6 +68,7 @@ export const ListComponent = ({
       noSubtitle={noSubtitle}
       query={query}
       refreshControl={refreshControl}
+      showBackToTop={showBackToTop}
     />
   );
 };
@@ -80,5 +82,6 @@ ListComponent.propTypes = {
   horizontal: PropTypes.bool,
   sectionByDate: PropTypes.bool,
   ListHeaderComponent: PropTypes.object,
-  refreshControl: PropTypes.object
+  refreshControl: PropTypes.object,
+  showBackToTop: PropTypes.bool
 };

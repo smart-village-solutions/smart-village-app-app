@@ -19,6 +19,13 @@ const getListType = (query, listTypesSettings) => {
   }
 };
 
+/** this hook creates a render item function wrapped in a useCallback depending on the given options,
+ * as well as on the listTypesSettings of the SettingsContext
+ * @param {string} query
+ * @param {any} navigation
+ * @param {{ horizontal?: boolean; noSubtitle?: boolean; }} options
+ * @returns renderItem function
+ */
 export const useRenderItem = (query, navigation, options = {}) => {
   const { listTypesSettings } = useContext(SettingsContext);
 

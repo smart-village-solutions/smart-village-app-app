@@ -223,6 +223,7 @@ export const IndexScreen = ({ navigation, route }) => {
                     tintColor={colors.accent}
                   />
                 }
+                showBackToTop
               />
             );
           }}

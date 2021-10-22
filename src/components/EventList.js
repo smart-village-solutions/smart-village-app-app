@@ -11,6 +11,8 @@ import { SectionHeader } from './SectionHeader';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
+const MAX_INITIAL_NUM_TO_RENDER = 20;
+
 export const EventList = ({
   data,
   fetchMoreData,
@@ -47,10 +49,12 @@ export const EventList = ({
 
   return (
     <SectionList
-      initialNumToRender={data.length < 20 ? data.length : 20}
+      initialNumToRender={
+        data.length < MAX_INITIAL_NUM_TO_RENDER ? data.length : MAX_INITIAL_NUM_TO_RENDER
+      }
       keyExtractor={keyExtractor}
       ListFooterComponent={() => {
-        if (data.length > 10) {
+        if (data.length >= MAX_INITIAL_NUM_TO_RENDER) {
           return <LoadingSpinner loading={!listEndReached} />;
         }
 
