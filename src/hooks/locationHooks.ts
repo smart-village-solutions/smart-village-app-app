@@ -50,7 +50,7 @@ const requestAndFetchLastKnownPosition = async (
 
   if (status === Location.PermissionStatus.GRANTED) {
     try {
-      return await Location.getLastKnownPositionAsync({});
+      return (await Location.getLastKnownPositionAsync({})) ?? undefined;
     } catch (e) {
       console.warn(e);
     }
@@ -72,7 +72,7 @@ export const useLocationSettings = () => {
   };
 };
 
-export const usePosition = (skip?: boolean) => {
+const usePos = (func: typeof requestAndFetchPosition, skip?: boolean) => {
   const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
   const [position, setPosition] = useState<Location.LocationObject>();
   const [loading, setLoading] = useState(false);
@@ -83,7 +83,7 @@ export const usePosition = (skip?: boolean) => {
     let mounted = true;
     if (shouldGetPosition) {
       setLoading(true);
-      requestAndFetchPosition(setAndSyncLocationSettings)
+      func(setAndSyncLocationSettings)
         .then((result) => {
           if (mounted && result) {
             setPosition(result);
@@ -100,30 +100,10 @@ export const usePosition = (skip?: boolean) => {
   return { loading, position: shouldGetPosition ? position : undefined };
 };
 
-export const useLastKnownPosition = () => {
-  const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
-  const [position, setPosition] = useState<Location.LocationObject>();
-  const [loading, setLoading] = useState(false);
+export const usePosition = (skip?: boolean) => {
+  return usePos(requestAndFetchPosition, skip);
+};
 
-  const shouldGetPosition = locationSettings.sortPOIs;
-
-  useEffect(() => {
-    let mounted = true;
-    if (shouldGetPosition) {
-      setLoading(true);
-      requestAndFetchLastKnownPosition(setAndSyncLocationSettings)
-        .then((result) => {
-          if (mounted && result) {
-            setPosition(result);
-          }
-        })
-        .finally(() => setLoading(false));
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [shouldGetPosition]);
-
-  // actively return undefined as the position, to avoid using the position from when the in app setting was true
-  return { loading, position: shouldGetPosition ? position : undefined };
+export const useLastKnownPosition = (skip?: boolean) => {
+  return usePos(requestAndFetchLastKnownPosition, skip);
 };
