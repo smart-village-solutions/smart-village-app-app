@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useCallback, useContext } from 'react';
+import { isArray } from 'lodash';
 
 import { consts } from '../config';
 import { SettingsContext } from '../SettingsProvider';
@@ -19,7 +20,8 @@ const getListType = (query, listTypesSettings) => {
   }
 };
 
-/** this hook creates a render item function wrapped in a useCallback depending on the given options,
+/**
+ * this hook creates a render item function wrapped in a useCallback depending on the given options,
  * as well as on the listTypesSettings of the SettingsContext
  * @param {string} query
  * @param {any} navigation
@@ -41,15 +43,28 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     case LIST_TYPES.IMAGE_TEXT_LIST: {
-      renderItem = ({ item }) => (
-        <TextListItem {...{ navigation, item, noSubtitle: options.noSubtitle, leftImage: true }} />
+      renderItem = ({ item, index, section }) => (
+        <TextListItem
+          item={{
+            ...item,
+            bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
+          }}
+          {...{ navigation, noSubtitle: options.noSubtitle, leftImage: true }}
+        />
       );
       break;
     }
     default: {
-      renderItem = ({ item }) => (
-        <TextListItem {...{ navigation, item, noSubtitle: options.noSubtitle }} />
+      renderItem = ({ item, index, section }) => (
+        <TextListItem
+          item={{
+            ...item,
+            bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
+          }}
+          {...{ navigation, noSubtitle: options.noSubtitle }}
+        />
       );
+
       break;
     }
   }
