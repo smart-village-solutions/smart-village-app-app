@@ -8,7 +8,7 @@ import { MapMarker, WebviewLeafletMessage } from 'react-native-webview-leaflet';
 
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
-import { location, locationIconAnchor } from '../../icons';
+import { location, locationIconAnchor, ownLocation, ownLocationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { LoadingContainer } from '../LoadingContainer';
@@ -100,8 +100,8 @@ export const LocationOverview = ({
 
   position &&
     mapMarkers?.push({
-      icon: location(colors.accent),
-      iconAnchor: locationIconAnchor,
+      icon: ownLocation(colors.accent),
+      iconAnchor: ownLocationIconAnchor,
       position: {
         lat: position.coords.latitude,
         lng: position.coords.longitude
