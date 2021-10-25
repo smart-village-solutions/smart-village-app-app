@@ -12,7 +12,9 @@ const requestAndFetchPosition = async (
 ) => {
   const { status } = await Location.requestForegroundPermissionsAsync();
 
-  await setAndSyncLocationSettings({ sortPOIs: status === Location.PermissionStatus.GRANTED });
+  await setAndSyncLocationSettings({
+    locationService: status === Location.PermissionStatus.GRANTED
+  });
 
   if (status === Location.PermissionStatus.GRANTED) {
     let location: Location.LocationObject | undefined;
@@ -59,7 +61,7 @@ export const usePosition = (skip?: boolean) => {
   const [position, setPosition] = useState<Location.LocationObject>();
   const [loading, setLoading] = useState(false);
 
-  const shouldGetPosition = !skip && locationSettings.sortPOIs;
+  const shouldGetPosition = !skip && locationSettings.locationService;
 
   useEffect(() => {
     let mounted = true;

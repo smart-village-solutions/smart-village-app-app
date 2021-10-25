@@ -176,8 +176,8 @@ const MainAppWithApolloProvider = () => {
 
     // if there are no locationSettings yet, set the defaults as fallback
     const locationSettings = globalSettings.settings.locationService
-      ? (await storageHelper.locationSettings()) || { sortPOIs: true }
-      : { sortPOIs: false };
+      ? (await storageHelper.locationSettings()) || { locationService: true }
+      : { locationService: false };
 
     setInitialGlobalSettings(globalSettings);
     setInitialListTypesSettings(listTypesSettings);
