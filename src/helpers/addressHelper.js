@@ -2,23 +2,27 @@ export const formatAddress = (address) => {
   if (!address) return;
 
   const { city, street, zip, addition } = address;
-  let readableAddress = '';
 
   if (!city && !street && !zip && !addition) return;
 
-  // build the address in multiple steps to check every data before rendering
-  if (addition?.length) {
-    readableAddress += `${addition}${'\n'}`;
-  }
-  if (street?.length) {
-    readableAddress += `${street},${'\n'}`;
-  }
-  if (zip?.length) {
-    readableAddress += `${zip} `;
-  }
-  if (city?.length) {
-    readableAddress += city;
-  }
+  // the city and zip are supposed to be in one line together
+  const cityPart = [zip, city].filter((s) => s?.length).join(' ');
 
-  return readableAddress;
+  // add an extra ',' to the street, if it is defined
+  return [addition, street?.length ? `${street},` : undefined, cityPart]
+    .filter((s) => s?.length)
+    .join('\n');
+};
+
+export const formatAddressSingleLine = (address) => {
+  if (!address) return;
+
+  const { city, street, zip, addition } = address;
+
+  if (!city && !street && !zip && !addition) return;
+
+  const streetPart = [addition, street].filter((s) => s?.length).join(' ');
+  const cityPart = [zip, city].filter((s) => s?.length).join(' ');
+
+  return [streetPart, cityPart].filter((s) => s?.length).join(', ');
 };

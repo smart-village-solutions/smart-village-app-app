@@ -23,6 +23,7 @@ import {
   oParlOrganizations,
   oParlPeople,
   phone,
+  routePlanner,
   service,
   share,
   url
@@ -122,6 +123,7 @@ export const Icon = {
       {...props}
     />
   ),
+  RoutePlanner: (props: IconProps) => <SvgIcon xml={routePlanner} {...props} />,
   Service: (props: IconProps) => <SvgIcon xml={service} {...props} />,
   Settings: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'} {...props} />

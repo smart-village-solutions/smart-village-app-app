@@ -19,6 +19,7 @@ export * from './oParlPeople';
 export * from './oParlSearch';
 export * from './ownLocation';
 export * from './phone';
+export * from './routePlanner';
 export * from './service';
 export * from './share';
 export * from './url';
