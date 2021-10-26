@@ -130,17 +130,11 @@ const isOpeningTimeForDate = (info, date) =>
   );
 
 /**
- * @param {Date} date
  * @param {string} time of the from "hh:mm"
  * @return {Date}
  */
-const getDateWithTime = (date, time) => {
-  const timeFrom = new Date(date);
-
-  timeFrom.setHours(time.split(':')[0]);
-  timeFrom.setMinutes(time.split(':')[1]);
-
-  return timeFrom;
+const getTodayWithTime = (time) => {
+  return moment(time, 'HH:mm').toDate();
 };
 
 /**
@@ -183,8 +177,8 @@ export const isOpen = (openingHours) => {
     // check if it is open right now
     const currentlyValidOpeningTimes = todaysTimes
       .map((info) => {
-        const timeFrom = info.timeFrom ? getDateWithTime(now, info.timeFrom) : undefined;
-        const timeTo = info.timeTo ? getDateWithTime(now, info.timeTo) : undefined;
+        const timeFrom = info.timeFrom ? getTodayWithTime(info.timeFrom) : undefined;
+        const timeTo = info.timeTo ? getTodayWithTime(info.timeTo) : undefined;
 
         return { timeFrom, timeTo };
       })
@@ -204,11 +198,9 @@ export const isOpen = (openingHours) => {
     // check if it will open again today
     const nextOpeningTimes = todaysTimes
       .map((info) => ({
-        timeFrom: info.timeFrom ? getDateWithTime(now, info.timeFrom) : undefined
+        timeFrom: info.timeFrom ? getTodayWithTime(info.timeFrom) : undefined
       }))
-      .filter(({ timeFrom }) => {
-        return !!timeFrom;
-      })
+      .filter(({ timeFrom }) => !!timeFrom)
       .filter(({ timeFrom }) => moment(now).isBefore(timeFrom));
 
     // if it will open again today, find out the closest time and return the time until opening in minutes
