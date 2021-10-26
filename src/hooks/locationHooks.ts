@@ -50,7 +50,9 @@ const requestAndFetchLastKnownPosition: RequestPermissionAndFetchFunction = asyn
 ) => {
   const { status } = await Location.requestForegroundPermissionsAsync();
 
-  await setAndSyncLocationSettings({ sortPOIs: status === Location.PermissionStatus.GRANTED });
+  await setAndSyncLocationSettings({
+    locationService: status === Location.PermissionStatus.GRANTED
+  });
 
   if (status === Location.PermissionStatus.GRANTED) {
     try {
