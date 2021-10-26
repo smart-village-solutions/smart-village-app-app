@@ -1,5 +1,6 @@
 import { RouteProp } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { LocationObject } from 'expo-location';
 import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
@@ -7,7 +8,7 @@ import { MapMarker, WebviewLeafletMessage } from 'react-native-webview-leaflet';
 
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
-import { location, locationIconAnchor } from '../../icons';
+import { location, locationIconAnchor, ownLocation, ownLocationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { LoadingContainer } from '../LoadingContainer';
@@ -21,6 +22,7 @@ import { WebViewMap } from './WebViewMap';
 type Props = {
   category: string;
   dataProviderName?: string;
+  position?: LocationObject;
   navigation: StackNavigationProp<never>;
   route: RouteProp<any, never>;
 };
@@ -52,7 +54,13 @@ const mapToMapMarkers = (data: any): MapMarker[] | undefined => {
   );
 };
 
-export const LocationOverview = ({ navigation, route, category, dataProviderName }: Props) => {
+export const LocationOverview = ({
+  navigation,
+  position,
+  route,
+  category,
+  dataProviderName
+}: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
@@ -89,6 +97,16 @@ export const LocationOverview = ({ navigation, route, category, dataProviderName
   }
 
   const mapMarkers = mapToMapMarkers(overviewData);
+
+  position &&
+    mapMarkers?.push({
+      icon: ownLocation(colors.accent),
+      iconAnchor: ownLocationIconAnchor,
+      position: {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      }
+    });
 
   if (!mapMarkers?.length) {
     return (

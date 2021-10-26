@@ -17,6 +17,7 @@ export * from './oParlCalendar';
 export * from './oParlOrganizations';
 export * from './oParlPeople';
 export * from './oParlSearch';
+export * from './ownLocation';
 export * from './phone';
 export * from './service';
 export * from './share';

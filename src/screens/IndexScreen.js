@@ -155,6 +155,7 @@ export const IndexScreen = ({ navigation, route }) => {
         <LocationOverview
           navigation={navigation}
           route={route}
+          position={position}
           category={queryVariables.category}
           dataProviderName={queryVariables.dataProvider}
         />
