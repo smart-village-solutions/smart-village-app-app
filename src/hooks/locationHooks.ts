@@ -5,9 +5,13 @@ import { SettingsContext } from '../SettingsProvider';
 import { storageHelper } from '../helpers';
 import { LocationSettings } from '../types';
 
+type RequestPermissionAndFetchFunction = (
+  setAndSyncLocationSettings: (arg: LocationSettings) => Promise<void>
+) => Promise<Location.LocationObject | undefined>;
+
 const LOCATION_TIMEOUT = 6000;
 
-const requestAndFetchPosition = async (
+const requestAndFetchPosition: RequestPermissionAndFetchFunction = async (
   setAndSyncLocationSettings: (arg: LocationSettings) => Promise<void>
 ) => {
   const { status } = await Location.requestForegroundPermissionsAsync();
@@ -41,6 +45,24 @@ const requestAndFetchPosition = async (
   }
 };
 
+const requestAndFetchLastKnownPosition: RequestPermissionAndFetchFunction = async (
+  setAndSyncLocationSettings: (arg: LocationSettings) => Promise<void>
+) => {
+  const { status } = await Location.requestForegroundPermissionsAsync();
+
+  await setAndSyncLocationSettings({
+    locationService: status === Location.PermissionStatus.GRANTED
+  });
+
+  if (status === Location.PermissionStatus.GRANTED) {
+    try {
+      return (await Location.getLastKnownPositionAsync({})) ?? undefined;
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+};
+
 export const useLocationSettings = () => {
   // @ts-expect-error settings are not properly typed
   const { locationSettings, setLocationSettings } = useContext(SettingsContext);
@@ -56,7 +78,7 @@ export const useLocationSettings = () => {
   };
 };
 
-export const usePosition = (skip?: boolean) => {
+const usePos = (func: RequestPermissionAndFetchFunction, skip?: boolean) => {
   const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
   const [position, setPosition] = useState<Location.LocationObject>();
   const [loading, setLoading] = useState(false);
@@ -67,7 +89,7 @@ export const usePosition = (skip?: boolean) => {
     let mounted = true;
     if (shouldGetPosition) {
       setLoading(true);
-      requestAndFetchPosition(setAndSyncLocationSettings)
+      func(setAndSyncLocationSettings)
         .then((result) => {
           if (mounted && result) {
             setPosition(result);
@@ -82,4 +104,12 @@ export const usePosition = (skip?: boolean) => {
 
   // actively return undefined as the position, to avoid using the position from when the in app setting was true
   return { loading, position: shouldGetPosition ? position : undefined };
+};
+
+export const usePosition = (skip?: boolean) => {
+  return usePos(requestAndFetchPosition, skip);
+};
+
+export const useLastKnownPosition = (skip?: boolean) => {
+  return usePos(requestAndFetchLastKnownPosition, skip);
 };

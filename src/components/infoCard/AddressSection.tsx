@@ -1,3 +1,4 @@
+import { LocationObject } from 'expo-location';
 import _filter from 'lodash/filter';
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -10,6 +11,7 @@ import {
   locationString,
   openLink
 } from '../../helpers';
+import { useLastKnownPosition, usePosition } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { Address } from '../../types';
 import { RegularText } from '../Text';
@@ -28,15 +30,14 @@ const addressOnPress = (address?: string) => {
   openLink(mapsLink);
 };
 
-const getBBNaviUrl = (baseUrl: string, address: Address) => {
-  // TODO: add location service, remove default, add proper type
-  const currentPosition: any = undefined;
-
+const getBBNaviUrl = (baseUrl: string, address: Address, currentPosition?: LocationObject) => {
   const readableAddress = formatAddressSingleLine(address);
 
   const currentParam =
-    currentPosition?.latitude && currentPosition?.longitude
-      ? encodeURIComponent(`${currentPosition.latitude},${currentPosition.longitude}`)
+    currentPosition?.coords.latitude && currentPosition?.coords.longitude
+      ? encodeURIComponent(
+          `${texts.pointOfInterest.yourPosition}::${currentPosition.coords.latitude},${currentPosition.coords.longitude}`
+        )
       : '-';
 
   const destinationParam = encodeURIComponent(
@@ -49,6 +50,8 @@ const getBBNaviUrl = (baseUrl: string, address: Address) => {
 export const AddressSection = ({ address, addresses, openWebScreen }: Props) => {
   // @ts-expect-error global settings are not properly typed
   const bbNaviBaseUrl = useContext(SettingsContext).globalSettings.settings?.['bbnavi'];
+  const { position } = usePosition();
+  const { position: lastKnownPosition } = useLastKnownPosition();
 
   const a11yText = consts.a11yLabel;
 
@@ -100,7 +103,11 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
                 <InfoBox>
                   <Icon.RoutePlanner color={colors.primary} style={styles.margin} />
                   <TouchableOpacity
-                    onPress={() => openWebScreen(getBBNaviUrl(bbNaviBaseUrl, item))}
+                    onPress={() =>
+                      openWebScreen(
+                        getBBNaviUrl(bbNaviBaseUrl, item, position ?? lastKnownPosition)
+                      )
+                    }
                   >
                     <RegularText primary>{texts.pointOfInterest.routePlanner}</RegularText>
                   </TouchableOpacity>
