@@ -28,11 +28,11 @@ const filterGenericItems = (item) => {
   return true;
 };
 
-const parseEventRecords = (data, skipLastDivider) => {
+const parseEventRecords = (data, skipLastDivider, withDate) => {
   return data?.map((eventRecord, index) => ({
     id: eventRecord.id,
     subtitle: subtitle(
-      eventDate(eventRecord.listDate),
+      withDate ? eventDate(eventRecord.listDate) : undefined,
       eventRecord.addresses?.[0]?.addition || eventRecord.addresses?.[0]?.city
     ),
     title: eventRecord.title,
@@ -198,18 +198,22 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
-export const parseListItemsFromQuery = (
-  query,
-  data,
-  skipLastDivider,
-  titleDetail,
-  bookmarkable
-) => {
+/**
+ * Parses list items from query a query result
+ * @param {string} query
+ * @param {any} data
+ * @param {string | undefined} titleDetail
+ * @param {{ bookmarkable?: boolean; skipLastDivider?: boolean; withDate?: boolean }} options
+ * @returns
+ */
+export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) => {
   if (!data) return;
+
+  const { bookmarkable = true, skipLastDivider = false, withDate = true } = options;
 
   switch (query) {
     case QUERY_TYPES.EVENT_RECORDS:
-      return parseEventRecords(data[query], skipLastDivider);
+      return parseEventRecords(data[query], skipLastDivider, withDate);
     case QUERY_TYPES.GENERIC_ITEMS:
       return parseGenericItems(data[query], skipLastDivider);
     case QUERY_TYPES.NEWS_ITEMS:

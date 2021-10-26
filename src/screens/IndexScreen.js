@@ -174,7 +174,10 @@ export const IndexScreen = ({ navigation, route }) => {
               );
             }
 
-            let listItems = parseListItemsFromQuery(query, data, false, titleDetail, bookmarkable);
+            let listItems = parseListItemsFromQuery(query, data, titleDetail, {
+              bookmarkable,
+              withDate: false
+            });
 
             if (!listItems) return null;
 
@@ -209,6 +212,7 @@ export const IndexScreen = ({ navigation, route }) => {
                 navigation={navigation}
                 data={listItems}
                 horizontal={false}
+                sectionByDate={true}
                 query={query}
                 fetchMoreData={isConnected ? fetchMoreData : null}
                 refreshControl={
@@ -219,6 +223,7 @@ export const IndexScreen = ({ navigation, route }) => {
                     tintColor={colors.accent}
                   />
                 }
+                showBackToTop
               />
             );
           }}

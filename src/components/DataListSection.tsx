@@ -46,7 +46,9 @@ export const DataListSection = ({
     );
   }
 
-  const listData = parseListItemsFromQuery(query, sectionData, true, sectionTitleDetail);
+  const listData = parseListItemsFromQuery(query, sectionData, sectionTitleDetail, {
+    skipLastDivider: true
+  });
 
   if (!listData?.length) return null;
 
