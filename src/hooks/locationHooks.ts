@@ -5,9 +5,13 @@ import { SettingsContext } from '../SettingsProvider';
 import { storageHelper } from '../helpers';
 import { LocationSettings } from '../types';
 
+type RequestPermissionAndFetchFunction = (
+  setAndSyncLocationSettings: (arg: LocationSettings) => Promise<void>
+) => Promise<Location.LocationObject | undefined>;
+
 const LOCATION_TIMEOUT = 6000;
 
-const requestAndFetchPosition = async (
+const requestAndFetchPosition: RequestPermissionAndFetchFunction = async (
   setAndSyncLocationSettings: (arg: LocationSettings) => Promise<void>
 ) => {
   const { status } = await Location.requestForegroundPermissionsAsync();
@@ -41,7 +45,7 @@ const requestAndFetchPosition = async (
   }
 };
 
-const requestAndFetchLastKnownPosition = async (
+const requestAndFetchLastKnownPosition: RequestPermissionAndFetchFunction = async (
   setAndSyncLocationSettings: (arg: LocationSettings) => Promise<void>
 ) => {
   const { status } = await Location.requestForegroundPermissionsAsync();
@@ -72,7 +76,7 @@ export const useLocationSettings = () => {
   };
 };
 
-const usePos = (func: typeof requestAndFetchPosition, skip?: boolean) => {
+const usePos = (func: RequestPermissionAndFetchFunction, skip?: boolean) => {
   const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
   const [position, setPosition] = useState<Location.LocationObject>();
   const [loading, setLoading] = useState(false);
