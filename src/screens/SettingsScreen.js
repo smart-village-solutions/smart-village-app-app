@@ -157,7 +157,7 @@ export const SettingsScreen = () => {
       if (settings.locationService) {
         const systemPermission = await Location.getForegroundPermissionsAsync();
 
-        const { sortPOIs = systemPermission.status !== Location.PermissionStatus.DENIED } =
+        const { locationService = systemPermission.status !== Location.PermissionStatus.DENIED } =
           locationSettings || {};
 
         additionalSectionedData.push({
@@ -166,12 +166,12 @@ export const SettingsScreen = () => {
               title: texts.settingsTitles.locationService,
               topDivider: true,
               type: 'toggle',
-              value: sortPOIs,
+              value: locationService,
               onActivate: (revert) => {
                 Location.getForegroundPermissionsAsync().then((response) => {
                   // if the system permission is granted, we can simply enable the sorting
                   if (response.status === Location.PermissionStatus.GRANTED) {
-                    const newSettings = { sortPOIs: true };
+                    const newSettings = { locationService: true };
                     setAndSyncLocationSettings(newSettings);
                     return;
                   }
@@ -186,7 +186,7 @@ export const SettingsScreen = () => {
                         if (response.status !== Location.PermissionStatus.GRANTED) {
                           revert();
                         } else {
-                          const newSettings = { sortPOIs: true };
+                          const newSettings = { locationService: true };
                           setAndSyncLocationSettings(newSettings);
                           return;
                         }
@@ -203,7 +203,7 @@ export const SettingsScreen = () => {
                   );
                 });
               },
-              onDeactivate: () => setAndSyncLocationSettings({ sortPOIs: false })
+              onDeactivate: () => setAndSyncLocationSettings({ locationService: false })
             }
           ]
         });
