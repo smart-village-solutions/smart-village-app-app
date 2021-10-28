@@ -88,6 +88,6 @@ export const ContactSection = ({
 
 const styles = StyleSheet.create({
   margin: {
-    marginRight: normalize(10)
+    marginRight: normalize(12)
   }
 });

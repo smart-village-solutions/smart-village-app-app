@@ -9,6 +9,7 @@ import {
   arrowRight,
   arrowUp,
   calendar,
+  clock,
   constructionSite,
   drawerMenu,
   favSettings,
@@ -92,6 +93,7 @@ export const Icon = {
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
   Calendar: (props: IconProps) => <SvgIcon xml={calendar} {...props} />,
+  Clock: (props: IconProps) => <SvgIcon xml={clock} {...props} />,
   Company: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-briefcase' : 'md-briefcase'} {...props} />
   ),
