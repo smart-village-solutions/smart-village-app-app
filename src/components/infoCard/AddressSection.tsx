@@ -23,9 +23,15 @@ type Props = {
   openWebScreen: (link: string) => void;
 };
 
-const addressOnPress = (address?: string) => {
+const addressOnPress = (
+  address?: string,
+  geoLocation?: {
+    latitude: number;
+    longitude: number;
+  }
+) => {
   const mapsString = locationString(address);
-  const mapsLink = locationLink(mapsString);
+  const mapsLink = locationLink(mapsString, geoLocation);
 
   openLink(mapsLink);
 };
@@ -89,7 +95,7 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
             <InfoBox>
               <Icon.Location style={styles.margin} />
               {isPressable ? (
-                <TouchableOpacity onPress={() => addressOnPress(address)}>
+                <TouchableOpacity onPress={() => addressOnPress(address, item.geoLocation)}>
                   {innerComponent}
                 </TouchableOpacity>
               ) : (
