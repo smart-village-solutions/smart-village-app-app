@@ -16,12 +16,13 @@ export function locationString(address) {
  * @returns
  */
 export function locationLink(mapsString, geoLocation) {
-  const coords = geoLocation ? `${geoLocation.latitude},${geoLocation.longitude}` : '0,0';
+  const coords = geoLocation ? `${geoLocation.latitude},${geoLocation.longitude}` : undefined;
+
   switch (device.platform) {
     case 'ios':
-      return `maps:${coords}?q=${mapsString}`;
+      return coords ? `maps:?q=${mapsString}&ll=${coords}` : `maps:?q=${mapsString}`;
     case 'android':
-      return `geo:${coords}?q=${mapsString}`;
+      return coords ? `geo:${coords}?q=${coords}(${mapsString})` : `geo:0,0?q=${mapsString}`;
     default:
       return `https://maps.google.com/?q=${mapsString}`;
   }
