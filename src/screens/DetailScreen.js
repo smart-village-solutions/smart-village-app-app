@@ -18,6 +18,7 @@ import { graphqlFetchPolicy } from '../helpers';
 import { useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
 
 const getGenericComponent = (genericType) => {
@@ -51,6 +52,25 @@ const getRefreshInterval = (query) => {
   return REFRESH_INTERVALS[query];
 };
 
+const useRootRouteByCategory = (details, navigation) => {
+  const categoriesNews = useContext(SettingsContext)?.globalSettings?.sections?.categoriesNews;
+  const id = details.categories?.[0]?.id;
+
+  useEffect(() => {
+    if (!id || !categoriesNews) {
+      return;
+    }
+
+    // the types (may) differ, so == is required over ===
+    const rootRouteNameByCategory = categoriesNews.find((category) => category.categoryId == id)
+      ?.rootRouteName;
+
+    if (rootRouteNameByCategory?.length) {
+      navigation.setParams({ rootRouteName: rootRouteNameByCategory });
+    }
+  }, [id, categoriesNews]);
+};
+
 export const DetailScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = route.params?.query ?? '';
@@ -66,6 +86,8 @@ export const DetailScreen = ({ navigation, route }) => {
   useEffect(() => {
     isConnected && auth();
   }, []);
+
+  useRootRouteByCategory(details, navigation);
 
   if (!refreshTime) {
     return (
