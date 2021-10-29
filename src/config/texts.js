@@ -351,7 +351,7 @@ export const texts = {
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
     prices: 'Preise',
-    routePlanner: 'Zum Stadtnavi',
+    routePlanner: 'Zum Routenplaner',
     showLunches: 'Zum aktuellen Gastro-Angebot',
     yourPosition: 'Ihre Position'
   },
