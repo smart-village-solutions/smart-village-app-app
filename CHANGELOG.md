@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.1.3]
+
+Added usage of location services.
+
+### Added
+
+- added location services
+  - added corresponding global setting "locationService"
+  - added new option in the settings screen
+  - when enabled the POIs will be sorted by distance to the current position
+  - when enabled the own location will be added to the location overview map
+- added bb-navi link to POIs
+  - when location services are enabled, the current (or last known) position will be used as the starting location
+- added handling of geolocation to maplinks when pressing on the address of for example a POI
+  - the geolocation will be prioritized for the pin location if present
+
+### Changed
+- event index is now sectioned by date
+  - restructured code structure regarding lists
+  - split lists according to layout rather than the renderItem function (e.g. HorizontalList, VerticalList (now) <-> TextList, CardList (previous))
+- improved structure of screenOptions
+  - instead of having multiple functions, there is now one function that takes options
+  - this is more easily expandable and maintainable
+
+### Fixed
+
+- when having a specific home news category also referenced in the drawer, there is now the possibility to highlight the correct root route based on the category
+
 ## [v2.1.2]
 
 Minor fixes and package updates under the hood
