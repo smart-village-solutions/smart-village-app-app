@@ -1,7 +1,8 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
-import { InfoBox, RegularText } from '..';
+import { RegularText } from '../Text';
+import { InfoBox } from '../Wrapper';
 import { colors, Icon, normalize } from '../../config';
 import { isOpen } from '../../helpers';
 import { OpeningHour } from '../../types';
