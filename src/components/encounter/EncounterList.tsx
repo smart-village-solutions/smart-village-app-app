@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { WrapperRow } from '..';
 import { colors, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { useEncounterList } from '../../hooks';
@@ -10,7 +9,7 @@ import { Encounter } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
 
 const EncounterEntry = ({ encounter }: { encounter: Encounter }) => {
   return (
