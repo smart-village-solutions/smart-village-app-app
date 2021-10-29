@@ -121,7 +121,7 @@ export const HomeScreen = ({ navigation, route }) => {
         titleDetail: categoryTitleDetail,
         query: QUERY_TYPES.NEWS_ITEMS,
         queryVariables: { limit: 15, ...{ categoryId } },
-        rootRouteName: rootRouteName?.length ? rootRouteName : ROOT_ROUTE_NAMES.NEWS_ITEMS
+        rootRouteName: rootRouteName || ROOT_ROUTE_NAMES.NEWS_ITEMS
       }
     })
   };

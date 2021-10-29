@@ -62,13 +62,13 @@ const useRootRouteByCategory = (details, navigation) => {
     }
 
     // the types (may) differ, so == is required over ===
-    const newRootRouteName = categoriesNews.find((category) => category.categoryId == id)
+    const rootRouteNameByCategory = categoriesNews.find((category) => category.categoryId == id)
       ?.rootRouteName;
 
-    if (newRootRouteName?.length) {
-      navigation.setParams({ rootRouteName: newRootRouteName });
+    if (rootRouteNameByCategory?.length) {
+      navigation.setParams({ rootRouteName: rootRouteNameByCategory });
     }
-  }, [details.categories?.[0]?.id, categoriesNews]);
+  }, [id, categoriesNews]);
 };
 
 export const DetailScreen = ({ navigation, route }) => {
