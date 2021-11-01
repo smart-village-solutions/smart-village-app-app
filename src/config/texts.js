@@ -400,6 +400,7 @@ export const texts = {
   },
   pointOfInterest: {
     description: 'Beschreibung',
+    filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
     location: 'Anfahrt',
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
