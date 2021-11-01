@@ -93,7 +93,7 @@ const getReadableDay = (date) => {
  * @param {Date | undefined} end
  * @return {boolean}
  */
-const dateIsWithinTimeFrame = (date, start, end) => {
+const dateIsWithinInterval = (date, start, end) => {
   // return false if the end is before the date
   if (end) {
     if (!moment(date).isBefore(end)) {
@@ -102,7 +102,7 @@ const dateIsWithinTimeFrame = (date, start, end) => {
   }
   // return false if the start is after the date
   if (start) {
-    if (!moment(date).isAfter(start)) {
+    if (!moment(date).isSameOrAfter(start)) {
       return false;
     }
   }
@@ -123,7 +123,7 @@ const dateIsWithinTimeFrame = (date, start, end) => {
  * @returns {boolean}
  */
 const isOpeningTimeForDate = (info, date) =>
-  dateIsWithinTimeFrame(
+  dateIsWithinInterval(
     date,
     info.dateFrom ? moment(new Date(info.dateFrom)).startOf('day').toDate() : undefined,
     info.dateTo ? moment(new Date(info.dateTo)).endOf('day').toDate() : undefined
@@ -135,6 +135,196 @@ const isOpeningTimeForDate = (info, date) =>
  */
 const getTodayWithTime = (time) => {
   return moment(time, 'HH:mm').toDate();
+};
+
+/**
+ * Parses an opening time into a time interval
+ * @param {{
+ *  open: boolean | null;
+ *  weekday: string;
+ *  dateFrom: string;
+ *  dateTo: string;
+ *  timeFrom: string;
+ *  timeTo: string
+ * }} openingTime
+ */
+const getIntervalFromOpeningTime = (openingTime) => {
+  return {
+    timeFrom: openingTime.timeFrom?.length ? getTodayWithTime(openingTime.timeFrom) : undefined,
+    timeTo: openingTime.timeTo?.length ? getTodayWithTime(openingTime.timeTo) : undefined
+  };
+};
+
+/**
+ * merges two time intervals, if they overlap
+ * @param {{
+ *  timeFrom?: Date;
+ *  timeTo?: Date;
+ * }} timeA
+ * @param {{
+ *  timeFrom?: Date;
+ *  timeTo?: Date;
+ * }} timeB
+ * @returns {{
+ *  timeFrom?: Date;
+ *  timeTo?: Date;
+ * } | undefined} the merged interval, if they overlapped, or undefined otherwise
+ */
+// eslint-disable-next-line complexity
+const mergeIntervals = (timeA, timeB) => {
+  // check which one starts first
+  let isAFirst = false;
+
+  if (timeA.timeFrom && timeB.timeFrom) {
+    isAFirst = timeA.timeFrom < timeB.timeFrom;
+  } else if (!timeA.timeFrom) {
+    isAFirst = true;
+  }
+  const first = isAFirst ? timeA : timeB;
+  const second = isAFirst ? timeB : timeA;
+
+  // check if the one that starts first ends after the other one started, which means that they do not overlap
+  if (first.timeTo && second.timeFrom && first.timeTo < second.timeFrom) {
+    // if this is the case, they do not overlap
+    return;
+  }
+
+  // find the later ending time and return with the start time of the first one
+  // if one of them does not end, the merged one does not end
+  if (!first.timeTo || !second.timeTo) {
+    return { timeFrom: first.timeFrom };
+  }
+
+  return {
+    timeFrom: first.timeFrom,
+    timeTo: first.timeTo < second.timeTo ? second.timeTo : first.timeTo
+  };
+};
+
+/**
+ * Merges all overlapping intervals and sorts them.
+ * @param {{
+ *  timeFrom?: Date;
+ *  timeTo?: Date;
+ * }[]} intervals
+ * @returns {{
+ *  timeFrom?: Date;
+ *  timeTo?: Date;
+ *  }[]} Disjoint and sorted time intervals
+ */
+const mergeAndSortTimeIntervals = (intervals) => {
+  if (!intervals.length) {
+    return [];
+  }
+  // sort by starting times
+  const sortedIntervals = [...intervals].sort((a, b) => {
+    if (!a.timeFrom && !b.timeFrom) {
+      return 0;
+    }
+    if (!a.timeFrom) {
+      return -1;
+    }
+    if (!b.timeFrom) {
+      return 1;
+    }
+    return a.timeFrom < b.timeFrom ? -1 : 1;
+  });
+
+  // merge intervals starting from the one that starts first
+  return sortedIntervals.reduce(
+    (mergedIntervals, currentInterval) => {
+      const latest = mergedIntervals.pop();
+      const result = mergeIntervals(latest, currentInterval);
+
+      // if they overlap, use the merged interval
+      if (result) {
+        mergedIntervals.push(result);
+        return mergedIntervals;
+      }
+
+      // if they do not overlap, then the latest one will not overlap with any others, and is completely merged already.
+      // in that case the current interval needs to be checked next
+      mergedIntervals.push(latest, currentInterval);
+
+      return mergedIntervals;
+    },
+    [sortedIntervals[0]]
+  );
+};
+
+/**
+ * Finds the next interval after, or surrounding the time, that is open, but not closed.
+ * It assumes that both the openIntervals and the closedIntervals are consisting of sorted and disjoint intervals.
+ * @param {{
+ *  timeFrom?: Date;
+ *  timeTo?: Date;
+ * }[]} openIntervals
+ * @param {{
+ *  timeFrom?: Date;
+ *  timeTo?: Date;
+ * }[]} closedIntervals
+ * @param {Date} time
+ * @returns {Date | undefined} nextOpenTime
+ */
+const findNextOpenTime = (openIntervals, closedIntervals, time) => {
+  let opens = openIntervals.filter((interval) => !interval.timeTo || interval.timeTo > time);
+
+  if (!opens.length) {
+    return;
+  }
+
+  const closed = closedIntervals.find((interval) =>
+    dateIsWithinInterval(time, interval.timeFrom, interval.timeTo)
+  );
+
+  if (closed) {
+    if (!closed.timeTo) {
+      return undefined;
+    }
+
+    return findNextOpenTime(opens, closedIntervals, closed.timeTo);
+  }
+
+  return opens[0].timeFrom && opens[0].timeFrom > time ? opens[0].timeFrom : time;
+};
+
+/**
+ * Finds the next interval after, or surrounding the time, that is not open or closed.
+ * It assumes that both the openIntervals and the closedIntervals are consisting of sorted and disjoint intervals.
+ * @param {{
+ *  timeFrom?: Date;
+ *  timeTo?: Date;
+ * }[]} openIntervals
+ * @param {{
+ *  timeFrom?: Date;
+ *  timeTo?: Date;
+ * }[]} closedIntervals
+ * @param {Date} time
+ * @returns {Date | undefined} nextClosedTime
+ */
+const findNextClosedTime = (openIntervals, closedIntervals, time) => {
+  const openInterval = openIntervals.find((interval) =>
+    dateIsWithinInterval(time, interval.timeFrom, interval.timeTo)
+  );
+  const closedInterval = closedIntervals.find((interval) =>
+    dateIsWithinInterval(time, interval.timeFrom, interval.timeTo)
+  );
+
+  // if it is open and not closed, find the next closed time and compare if that is sooner than the open time expiring
+  if (openInterval && !closedInterval) {
+    const upcomingClosedTime = closedIntervals.find(
+      (interval) => !!interval.timeFrom && interval.timeFrom > time
+    )?.timeFrom;
+
+    if (upcomingClosedTime && openInterval.timeTo) {
+      return upcomingClosedTime < openInterval.timeTo ? upcomingClosedTime : openInterval.timeTo;
+    }
+
+    return openInterval.timeTo || upcomingClosedTime;
+  }
+
+  // if it is either closed or not open, the time given is already a closed time.
+  return time;
 };
 
 /**
@@ -161,59 +351,63 @@ export const isOpen = (openingHours) => {
     now.setMilliseconds(0);
 
     // filter out all times that are
-    //  - not flagged as open
     //  - not corresponding to the correct weekday
-    //  - are not currently valid
+    //  - that have a date range that is not currently valid
     const todaysTimes = openingHours
-      .filter((info) => !!info.open)
       .filter((info) => info.weekday === getReadableDay(now) || !info.weekday)
       .filter((info) => isOpeningTimeForDate(info, now));
 
-    // if there are no possible times left, then it is currently closed, and will not open today
-    if (!todaysTimes.length) {
+    const todaysOpenTimes = todaysTimes.filter((info) => !!info.open);
+    const todaysClosedTimes = todaysTimes.filter((info) => !info.open);
+
+    // if there are no possible open times left, then it is currently closed, and will not open today
+    if (!todaysOpenTimes.length) {
       return { open: false };
     }
 
-    // check if it is open right now
-    const currentlyValidOpeningTimes = todaysTimes
-      .map((info) => {
-        const timeFrom = info.timeFrom ? getTodayWithTime(info.timeFrom) : undefined;
-        const timeTo = info.timeTo ? getTodayWithTime(info.timeTo) : undefined;
+    // simplify open and closed times
+    const sortedOpenIntervals = mergeAndSortTimeIntervals(
+      todaysOpenTimes.map(getIntervalFromOpeningTime)
+    );
+    const sortedClosedIntervals = mergeAndSortTimeIntervals(
+      todaysClosedTimes.map(getIntervalFromOpeningTime)
+    );
 
-        return { timeFrom, timeTo };
-      })
-      .filter(({ timeFrom, timeTo }) => dateIsWithinTimeFrame(now, timeFrom, timeTo));
+    // check if there is a current interval of being explicitly closed or open
+    const currentClosedInterval = sortedClosedIntervals.find((interval) => {
+      return dateIsWithinInterval(now, interval.timeFrom, interval.timeTo);
+    });
+    const currentOpenInterval = sortedOpenIntervals.find((interval) => {
+      return dateIsWithinInterval(now, interval.timeFrom, interval.timeTo);
+    });
 
-    // if it is currently open, check for how long and return the remaining time in minutes
-    if (currentlyValidOpeningTimes.length) {
-      let timeDiff = 0;
-
-      currentlyValidOpeningTimes.forEach(({ timeTo }) => {
-        timeDiff = Math.max(timeDiff, moment(timeTo).diff(now, 'minute'));
-      });
-
-      return { open: true, timeDiff };
+    // if it is explicitly closed for an open ended interval, return { open: false }
+    if (currentClosedInterval && !currentClosedInterval.timeTo) {
+      return { open: false };
     }
 
-    // check if it will open again today
-    const nextOpeningTimes = todaysTimes
-      .map((info) => ({
-        timeFrom: info.timeFrom ? getTodayWithTime(info.timeFrom) : undefined
-      }))
-      .filter(({ timeFrom }) => !!timeFrom)
-      .filter(({ timeFrom }) => moment(now).isBefore(timeFrom));
+    // if it is either explicitly closed or not open, find the next open time
+    if (currentClosedInterval || !currentOpenInterval) {
+      const nextOpenTime = findNextOpenTime(
+        sortedOpenIntervals,
+        sortedClosedIntervals,
+        currentClosedInterval?.timeTo ?? now
+      );
 
-    // if it will open again today, find out the closest time and return the time until opening in minutes
-    if (nextOpeningTimes.length) {
-      let timeDiff;
+      return {
+        open: false,
+        timeDiff: nextOpenTime ? moment(nextOpenTime).diff(now, 'minute') : undefined
+      };
+    }
 
-      nextOpeningTimes.forEach(({ timeFrom }) => {
-        const newDiff = moment(timeFrom).diff(now, 'minute');
-
-        timeDiff = timeDiff === undefined ? newDiff : Math.min(timeDiff, newDiff);
-      });
-
-      return { open: false, timeDiff };
+    // since it is not explicitly closed, check if it is open
+    // check for how long it is open and when the next corresponding closed time is
+    if (currentOpenInterval) {
+      const nextClosedTime = findNextClosedTime(sortedOpenIntervals, sortedClosedIntervals, now);
+      return {
+        open: true,
+        timeDiff: nextClosedTime ? moment(nextClosedTime).diff(now, 'minute') : undefined
+      };
     }
 
     return { open: false };
