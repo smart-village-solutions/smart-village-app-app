@@ -1,6 +1,7 @@
+import { DeviceEventEmitter } from 'expo-modules-core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { DeviceEventEmitter, RefreshControl, ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { auth } from '../auth';
 import {

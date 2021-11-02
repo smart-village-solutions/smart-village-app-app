@@ -34,11 +34,11 @@ For detailed documentation see the [docs](./docs/INDEX.md).
 
 Information about currently used packages and their versions:
 
-- Expo (42.0.0): https://github.com/expo/expo
-- React Native (0.63.2): https://github.com/facebook/react-native
-- React (16.13.1): https://github.com/facebook/react
+- Expo (43.0.0): https://github.com/expo/expo
+- React Native (0.64.2): https://github.com/facebook/react-native
+- React (17.0.1): https://github.com/facebook/react
 - React Navigation (5.15.3): https://github.com/react-navigation/react-navigation
-- React Native WebView (11.6.2): https://github.com/react-native-community/react-native-webview
+- React Native WebView (11.13.0): https://github.com/react-native-webview/react-native-webview
 - React Native Elements (1.2.7): https://github.com/react-native-training/react-native-elements
 - React Native Calendars (1.1266.0): https://github.com/wix/react-native-calendars
 - Apollo Client (2.6.10): https://github.com/apollographql/apollo-client
