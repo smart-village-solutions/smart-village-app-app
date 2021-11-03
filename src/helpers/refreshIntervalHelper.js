@@ -52,6 +52,10 @@ export const refreshTimeFor = async (refreshTimeKey, refreshInterval) => {
 
       break;
     }
+    case consts.REFRESH_INTERVALS.NEVER: {
+      // always return tomorrow, so that we never refresh
+      return moment().add(1, 'days').unix();
+    }
     default:
       break;
   }
