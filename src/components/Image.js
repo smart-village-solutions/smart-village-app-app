@@ -72,13 +72,14 @@ export const Image = ({
             .then((path) => {
               mounted && setSource({ uri: path });
             })
-            .catch((err) =>
+            .catch((err) => {
               console.warn(
                 'An error occurred with cache management for an image',
                 props.source.uri,
                 err
-              )
-            )
+              );
+              mounted && setSource(props.source);
+            })
         : mounted && setSource(props.source);
     }
 
