@@ -11,7 +11,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import _isEmpty from 'lodash/isEmpty';
 import React, { useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
-import { ActivityIndicator, StatusBar } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { auth } from './auth';
@@ -40,6 +40,9 @@ const MainAppWithApolloProvider = () => {
   const [initialGlobalSettings, setInitialGlobalSettings] = useState({});
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
+  const [initialOnboardingSettings, setInitialOnboardingSetting] = useState({
+    onboardingComplete: false
+  });
 
   const [authRetried, setAuthRetried] = useState(false);
   const [netInfo, setNetInfo] = useState({
@@ -192,10 +195,16 @@ const MainAppWithApolloProvider = () => {
         defaultAlternativePosition
       );
     }
+    // if there are no onboarding settings yet, set the defaults as fallback
+    // only use the onboarding if it was not already completed, but is enabled on the server
+    const onboardingSettings = (await storageHelper.onboardingSettings()) || {
+      onboardingComplete: false
+    };
 
     setInitialGlobalSettings(globalSettings);
     setInitialListTypesSettings(listTypesSettings);
     setInitialLocationSettings(locationSettings);
+    setInitialOnboardingSetting(onboardingSettings);
   };
 
   // setup global settings if apollo client setup finished
@@ -232,9 +241,13 @@ const MainAppWithApolloProvider = () => {
   return (
     <ApolloProvider client={client}>
       <SettingsProvider
-        {...{ initialGlobalSettings, initialListTypesSettings, initialLocationSettings }}
+        {...{
+          initialGlobalSettings,
+          initialListTypesSettings,
+          initialLocationSettings,
+          initialOnboardingSettings
+        }}
       >
-        <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
         <Navigator />
       </SettingsProvider>
     </ApolloProvider>

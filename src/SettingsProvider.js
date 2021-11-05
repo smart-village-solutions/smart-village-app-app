@@ -5,6 +5,9 @@ export const SettingsContext = createContext({
   globalSettings: {
     filter: {},
     sections: {}
+  },
+  onboardingSettings: {
+    onboardingComplete: true
   }
 });
 
@@ -12,11 +15,13 @@ export const SettingsProvider = ({
   initialGlobalSettings,
   initialListTypesSettings,
   initialLocationSettings,
+  initialOnboardingSettings,
   children
 }) => {
   const [globalSettings, setGlobalSettings] = useState(initialGlobalSettings);
   const [listTypesSettings, setListTypesSettings] = useState(initialListTypesSettings);
   const [locationSettings, setLocationSettings] = useState(initialLocationSettings);
+  const [onboardingSettings, setOnboardingSettings] = useState(initialOnboardingSettings);
 
   return (
     <SettingsContext.Provider
@@ -26,7 +31,9 @@ export const SettingsProvider = ({
         listTypesSettings,
         setListTypesSettings,
         locationSettings,
-        setLocationSettings
+        setLocationSettings,
+        onboardingSettings,
+        setOnboardingSettings
       }}
     >
       {children}
@@ -38,5 +45,6 @@ SettingsProvider.propTypes = {
   initialGlobalSettings: PropTypes.object.isRequired,
   initialListTypesSettings: PropTypes.object.isRequired,
   initialLocationSettings: PropTypes.object.isRequired,
-  children: PropTypes.array.isRequired
+  initialOnboardingSettings: PropTypes.object.isRequired,
+  children: PropTypes.object.isRequired
 };
