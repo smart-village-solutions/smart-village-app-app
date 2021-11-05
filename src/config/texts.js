@@ -412,10 +412,6 @@ export const texts = {
   pushNotifications: {
     abort: 'Abbrechen',
     approve: 'Jetzt einschalten',
-    decline: 'Vielleicht später',
-    greetingBody:
-      'Damit Sie wichtige Mitteilungen aus Ihrer Kommune erreichen, würden wir Ihnen gerne Benachrichtigungen schicken. Sie können diese Einstellung jederzeit in Ihrem persönlichen Bereich ändern.',
-    greetingTitle: 'Willkommen',
     permissionMissingBody: 'Bitte überprüfen Sie Ihre Benachrichtigungseinstellungen im System.',
     permissionMissingTitle: 'Hinweis',
     permissionRequiredBody:

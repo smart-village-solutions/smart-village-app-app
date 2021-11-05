@@ -4,6 +4,7 @@ import AppIntroSlider from 'react-native-app-intro-slider';
 
 import { BoldText, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
 import { colors, normalize } from '../config';
+import { handleSystemPermissions } from '../pushNotifications';
 import { SettingsContext } from '../SettingsProvider';
 
 /*
@@ -34,9 +35,7 @@ const slides: SlideInfo[] = [
     image: 'https://www.smurf.com/characters-smurfs/papa.png',
     title: 'Top informiert',
     text: 'Erlaube Push-Notification – Du wirst sofort benachrichtigt, wenn es Neuigkeiten gibt.',
-    onLeaveSlide: () => {
-      console.log('push notifications');
-    }
+    onLeaveSlide: handleSystemPermissions
   },
   {
     image: 'https://www.smurf.com/characters-smurfs/smurfette.png',
