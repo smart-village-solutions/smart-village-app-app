@@ -183,9 +183,7 @@ const MainAppWithApolloProvider = () => {
     }
 
     // if there are no locationSettings yet, set the defaults as fallback
-    const locationSettings = globalSettings.settings.locationService
-      ? (await storageHelper.locationSettings()) || { locationService: true }
-      : { locationService: false };
+    const locationSettings = (await storageHelper.locationSettings()) || {};
 
     const defaultAlternativePosition =
       globalSettings.settings.locationService?.defaultAlternativePosition;

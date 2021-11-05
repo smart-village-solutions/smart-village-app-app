@@ -1,3 +1,4 @@
+import * as Location from 'expo-location';
 import React, { useContext } from 'react';
 import { ListRenderItem, ScrollView, StyleSheet, View } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
@@ -41,9 +42,7 @@ const slides: SlideInfo[] = [
     image: 'https://www.smurf.com/characters-smurfs/smurfette.png',
     title: 'Gewusst wo',
     text: 'Erlaube Ortungsdienste – bekomme Informationen genau für Deinen Umkreis.',
-    onLeaveSlide: () => {
-      console.log('location services');
-    }
+    onLeaveSlide: Location.requestForegroundPermissionsAsync
   },
   {
     image: 'https://www.smurf.com/characters-smurfs/papa.png',
