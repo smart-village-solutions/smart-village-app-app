@@ -112,7 +112,7 @@ export const texts = {
     scannerTitle: 'Neue Fahrt',
     status: 'Verifikationsstatus',
     supportId: 'Support-ID',
-    verified: 'Verifikationsstatus'
+    verified: 'Verifiziert'
   },
   errors: {
     image: {
