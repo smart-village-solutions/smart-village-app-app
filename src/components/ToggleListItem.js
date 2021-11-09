@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, normalize } from '../config';
+import { colors, consts, device, normalize } from '../config';
 
 import { Switch } from './Switch';
 import { BoldText } from './Text';
@@ -44,10 +44,7 @@ export const ToggleListItem = ({ item, index, section }) => {
         bottomDivider !== undefined || index < section.data.length - 1
       }
       topDivider={topDivider ?? false}
-      containerStyle={{
-        backgroundColor: colors.transparent,
-        paddingVertical: normalize(12)
-      }}
+      containerStyle={styles.container}
       rightIcon={
         <WrapperRow>
           {loading && <ActivityIndicator color={colors.accent} style={styles.marginRight} />}
@@ -63,6 +60,10 @@ export const ToggleListItem = ({ item, index, section }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.transparent,
+    paddingVertical: device.platform === 'ios' ? normalize(12) : normalize(3.85)
+  },
   marginRight: {
     marginRight: normalize(7)
   }
