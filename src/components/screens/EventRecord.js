@@ -13,7 +13,7 @@ import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
 import { matomoTrackingString, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
-import { TMBNotice } from '../TMB/Notice';
+import { DataProviderNotice } from '../DataProviderNotice';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { DataProviderButton } from '../DataProviderButton';
@@ -182,7 +182,7 @@ export const EventRecord = ({ data, route }) => {
           title={texts.eventRecord.operatingCompany}
         />
 
-        <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
+        <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
         {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
       </WrapperWithOrientation>

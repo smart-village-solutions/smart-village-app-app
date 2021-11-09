@@ -132,7 +132,7 @@ export const GET_TOUR = gql`
         }
         name
         dataType
-        description
+        notice
       }
       operatingCompany {
         id
