@@ -1,5 +1,5 @@
 import * as Linking from 'expo-linking';
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import QRCode from 'react-native-qrcode-svg';
@@ -10,6 +10,7 @@ import {
   CircularView,
   DiagonalGradient,
   EncounterWelcome,
+  HtmlView,
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
@@ -20,8 +21,15 @@ import {
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { colors, consts, device, Icon, normalize, texts } from '../config';
-import { useEncounterPolling, useEncounterUser, useQRValue } from '../hooks';
+import {
+  useEncounterPolling,
+  useEncounterUser,
+  useOpenWebScreen,
+  useQRValue,
+  useStaticContent
+} from '../hooks';
 import { QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
 
 const INFO_ICON_SIZE = normalize(16);
@@ -29,7 +37,11 @@ const INFO_ICON_SIZE = normalize(16);
 const a11yLabels = consts.a11yLabel;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line complexity
 export const EncounterHomeScreen = ({ navigation, route }: any) => {
+  // @ts-expect-error settings are not properly typed
+  const encounterCategoryId = useContext(SettingsContext).globalSettings.settings?.encounter
+    ?.categoryId;
   const {
     loading: loadingQr,
     qrValue: qrId,
@@ -45,6 +57,12 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
     user,
     userId
   } = useEncounterUser();
+  const additionalInfo = useStaticContent({
+    type: 'html',
+    name: 'encounter-home-info'
+  }).data as string | undefined;
+
+  const openWebScreen = useOpenWebScreen(texts.screenTitles.encounterHome);
 
   useEncounterPolling(navigation, userId, qrId);
 
@@ -62,6 +80,14 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
     });
   }, [navigation]);
 
+  const onPressToCategory = useCallback(() => {
+    navigation.navigate(ScreenName.Index, {
+      query: QUERY_TYPES.POINTS_OF_INTEREST,
+      queryVariables: { categoryId: encounterCategoryId },
+      title: texts.screenTitles.encounterHome
+    });
+  }, [encounterCategoryId, navigation]);
+
   const refresh = useCallback(() => {
     refreshQr();
     refreshUser();
@@ -75,7 +101,12 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
   }
 
   if (!userId) {
-    return <EncounterWelcome navigation={navigation} />;
+    return (
+      <EncounterWelcome
+        onPressToCategory={encounterCategoryId ? onPressToCategory : undefined}
+        navigation={navigation}
+      />
+    );
   }
 
   if (!user || error) {
@@ -146,6 +177,13 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
               }}
               title={texts.encounter.myData}
             />
+            {encounterCategoryId && (
+              <Button invert title={texts.encounter.toCategory} onPress={onPressToCategory} />
+            )}
+            {additionalInfo?.length && (
+              // @ts-expect-error HtmlView memo is not typed in a way that the correct type can be inferred
+              <HtmlView html={additionalInfo} openWebScreen={openWebScreen} />
+            )}
           </Wrapper>
         </WrapperWithOrientation>
       </ScrollView>

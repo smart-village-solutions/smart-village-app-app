@@ -7,6 +7,7 @@ export const GET_POINTS_OF_INTEREST = gql`
     $offset: Int
     $order: PointsOfInterestOrder
     $category: String
+    $categoryId: ID
     $dataProvider: String
     $dataProviderId: ID
   ) {
@@ -16,6 +17,7 @@ export const GET_POINTS_OF_INTEREST = gql`
       skip: $offset
       order: $order
       category: $category
+      categoryId: $categoryId
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
     ) {

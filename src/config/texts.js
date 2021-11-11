@@ -112,6 +112,7 @@ export const texts = {
     scannerTitle: 'Neue Fahrt',
     status: 'Verifikationsstatus',
     supportId: 'Support-ID',
+    toCategory: 'Zu den Mitfahrbänken',
     verified: 'Verifiziert'
   },
   errors: {
