@@ -20,7 +20,7 @@ import { InfoBox } from '../Wrapper';
 type Props = {
   address?: Address;
   addresses?: Address[];
-  openWebScreen: (link: string) => void;
+  openWebScreen: (link: string, specificTitle?: string) => void;
 };
 
 const addressOnPress = (
@@ -111,7 +111,8 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
                   <TouchableOpacity
                     onPress={() =>
                       openWebScreen(
-                        getBBNaviUrl(bbNaviBaseUrl, item, position ?? lastKnownPosition)
+                        getBBNaviUrl(bbNaviBaseUrl, item, position ?? lastKnownPosition),
+                        texts.screenTitles.routePlanner
                       )
                     }
                   >
