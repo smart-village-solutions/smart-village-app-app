@@ -10,10 +10,10 @@ import {
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
+  SettingsToggle,
   Title,
   TitleContainer,
   TitleShadow,
-  ToggleListItem,
   Wrapper
 } from '../components';
 import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
@@ -35,7 +35,7 @@ const renderSectionHeader = ({ section: { title } }) =>
     </View>
   );
 
-const renderItem = ({ item, index, section }) => <ToggleListItem {...{ item, index, section }} />;
+const renderItem = ({ item, index, section }) => <SettingsToggle {...{ item, index, section }} />;
 
 renderItem.propTypes = {
   item: PropTypes.object.isRequired,

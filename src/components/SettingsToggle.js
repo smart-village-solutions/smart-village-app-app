@@ -11,7 +11,7 @@ import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
 // TODO: snack bar / toast als nutzerinfo
-export const ToggleListItem = ({ item, index, section }) => {
+export const SettingsToggle = ({ item, index, section }) => {
   const { title, bottomDivider, topDivider, value, onActivate, onDeactivate } = item;
 
   const [loading, setLoading] = useState(false);
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   }
 });
 
-ToggleListItem.propTypes = {
+SettingsToggle.propTypes = {
   item: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
   section: PropTypes.object.isRequired
