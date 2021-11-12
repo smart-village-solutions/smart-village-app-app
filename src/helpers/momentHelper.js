@@ -243,7 +243,7 @@ const mergeAndSortTimeIntervals = (intervals) => {
       }
 
       // if they do not overlap, then the latest one will not overlap with any others, and is completely merged already.
-      // in that case the current interval needs to be checked next
+      // in that case the current interval needs to be checked in the next step of reducing the array
       mergedIntervals.push(latest, currentInterval);
 
       return mergedIntervals;
@@ -279,7 +279,7 @@ const findNextOpenTime = (openIntervals, closedIntervals, time) => {
 
   if (closed) {
     if (!closed.timeTo) {
-      return undefined;
+      return;
     }
 
     return findNextOpenTime(opens, closedIntervals, closed.timeTo);
@@ -374,10 +374,10 @@ export const isOpen = (openingHours) => {
     );
 
     // check if there is a current interval of being explicitly closed or open
-    const currentClosedInterval = sortedClosedIntervals.find((interval) => {
+    const currentOpenInterval = sortedOpenIntervals.find((interval) => {
       return dateIsWithinInterval(now, interval.timeFrom, interval.timeTo);
     });
-    const currentOpenInterval = sortedOpenIntervals.find((interval) => {
+    const currentClosedInterval = sortedClosedIntervals.find((interval) => {
       return dateIsWithinInterval(now, interval.timeFrom, interval.timeTo);
     });
 
