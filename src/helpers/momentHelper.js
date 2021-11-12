@@ -173,13 +173,12 @@ const getIntervalFromOpeningTime = (openingTime) => {
 // eslint-disable-next-line complexity
 const mergeIntervals = (timeA, timeB) => {
   // check which one starts first
-  let isAFirst = false;
+  let isAFirst = !timeA.timeFrom;
 
   if (timeA.timeFrom && timeB.timeFrom) {
     isAFirst = timeA.timeFrom < timeB.timeFrom;
-  } else if (!timeA.timeFrom) {
-    isAFirst = true;
   }
+
   const first = isAFirst ? timeA : timeB;
   const second = isAFirst ? timeB : timeA;
 
