@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { Query } from 'react-apollo';
 
@@ -14,11 +14,8 @@ import {
   LoadingContainer,
   LocationOverview,
   MapSwitchHeader,
-  RegularText,
-  SafeAreaViewFlex,
-  Switch,
-  WrapperHorizontal,
-  WrapperRow
+  OptionToggle,
+  SafeAreaViewFlex
 } from '../components';
 import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
 import {
@@ -98,6 +95,8 @@ export const IndexScreen = ({ navigation, route }) => {
 
   // if we show the map or want to sort by distance, we need to fetch all the entries at once
   // this is not a big issue if we want to sort by distance, because getting the location usually takes longer than fetching all entries
+  // if we filter by opening times, we need to also remove the limit as otherwise we might not have any open POIs in the next batch
+  // that would result in the list not getting any new items and not reliably triggering another fetchMore
   if (showMap || sortByDistance || filterByOpeningTimes) {
     delete queryVariables.limit;
   }
@@ -158,12 +157,11 @@ export const IndexScreen = ({ navigation, route }) => {
       {query === QUERY_TYPES.POINTS_OF_INTEREST ? (
         <View>
           <MapSwitchHeader setShowMap={setShowMap} showMap={showMap} />
-          <WrapperHorizontal>
-            <WrapperRow style={styles.textWrapper}>
-              <RegularText>{texts.pointOfInterest.filterByOpeningTime}</RegularText>
-              <Switch switchValue={filterByOpeningTimes} toggleSwitch={setFilterByOpeningTimes} />
-            </WrapperRow>
-          </WrapperHorizontal>
+          <OptionToggle
+            label={texts.pointOfInterest.filterByOpeningTime}
+            onToggle={() => setFilterByOpeningTimes((value) => !value)}
+            value={filterByOpeningTimes}
+          />
           <Divider />
         </View>
       ) : null}
@@ -262,10 +260,3 @@ IndexScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired
 };
-
-const styles = StyleSheet.create({
-  textWrapper: {
-    alignItems: 'center',
-    justifyContent: 'space-between'
-  }
-});

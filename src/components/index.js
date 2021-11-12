@@ -45,6 +45,7 @@ export * from './Logo';
 export * from './MapSwitchHeader';
 export * from './MediaSection';
 export * from './Offer';
+export * from './OptionToggle';
 export * from './OrientationAwareIcon';
 export * from './PreviewSection';
 export * from './Radiobutton';
