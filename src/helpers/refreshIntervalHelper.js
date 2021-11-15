@@ -18,6 +18,11 @@ import { addToStore, readFromStore } from './storageHelper';
  * @return {Promise<number>} refresh time in seconds from 01.01.1970 00:00:00 UTC
  */
 export const refreshTimeFor = async (refreshTimeKey, refreshInterval) => {
+  if (refreshInterval === consts.REFRESH_INTERVALS.NEVER) {
+    // always return tomorrow, so that we never refresh
+    return moment().add(1, 'days').unix();
+  }
+
   const refreshIntervals = await readFromStore('refresh-intervals');
   const now = moment().unix(); // now in seconds from 01.01.1970 00:00:00 UTC
   const refreshTime =
@@ -51,10 +56,6 @@ export const refreshTimeFor = async (refreshTimeKey, refreshInterval) => {
       }
 
       break;
-    }
-    case consts.REFRESH_INTERVALS.NEVER: {
-      // always return tomorrow, so that we never refresh
-      return moment().add(1, 'days').unix();
     }
     default:
       break;
