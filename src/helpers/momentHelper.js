@@ -232,8 +232,8 @@ const mergeAndSortTimeIntervals = (intervals) => {
   // merge intervals starting from the one that starts first
   return sortedIntervals.reduce(
     (mergedIntervals, currentInterval) => {
-      const latest = mergedIntervals.pop();
-      const result = mergeIntervals(latest, currentInterval);
+      const previousInterval = mergedIntervals.pop();
+      const result = mergeIntervals(previousInterval, currentInterval);
 
       // if they overlap, use the merged interval
       if (result) {
@@ -241,9 +241,9 @@ const mergeAndSortTimeIntervals = (intervals) => {
         return mergedIntervals;
       }
 
-      // if they do not overlap, then the latest one will not overlap with any others, and is completely merged already.
+      // if they do not overlap, then the previous interval will not overlap with any others, and is completely merged already.
       // in that case the current interval needs to be checked in the next step of reducing the array
-      mergedIntervals.push(latest, currentInterval);
+      mergedIntervals.push(previousInterval, currentInterval);
 
       return mergedIntervals;
     },
