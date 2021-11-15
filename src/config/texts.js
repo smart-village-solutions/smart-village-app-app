@@ -351,7 +351,7 @@ export const texts = {
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
     prices: 'Preise',
-    routePlanner: 'Zum Stadtnavi',
+    routePlanner: 'Zum Routenplaner bbnavi',
     showLunches: 'Zum aktuellen Gastro-Angebot',
     yourPosition: 'Ihre Position'
   },
@@ -373,6 +373,7 @@ export const texts = {
     company: appJson.expo.name,
     about: appJson.expo.name,
     constructionSite: 'Baustelle',
+    routePlanner: 'Routenplaner bbnavi',
     settings: 'Einstellungen',
     survey: 'Umfrage',
     surveys: 'Umfragen',

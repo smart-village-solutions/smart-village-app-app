@@ -11,11 +11,11 @@ export const useOpenWebScreen = (
   const navigation = useNavigation();
 
   const openWebScreen = useCallback(
-    (webUrl) =>
+    (webUrl: string, specificTitle?: string) =>
       navigation.navigate({
         name: 'Web',
         params: {
-          title: title,
+          title: specificTitle ?? title,
           webUrl: !!webUrl && typeof webUrl === 'string' ? webUrl : link,
           rootRouteName,
           shareContent
