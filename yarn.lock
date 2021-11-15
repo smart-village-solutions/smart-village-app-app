@@ -170,7 +170,7 @@
     jsesc "^2.5.1"
     source-map "^0.5.0"
 
-"@babel/generator@^7.11.5", "@babel/generator@^7.5.0":
+"@babel/generator@^7.11.5":
   version "7.11.6"
   resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.11.6.tgz#b868900f81b163b4d464ea24545c61cbac4dc620"
   integrity sha512-DWtQ1PV3r+cLbySoHrwn9RWEgKMBLLma4OBQloPRyDYvc5msJM9kvTLo1YnlJd1P/ZuKbdli3ijr5q3FvAF3uA==
@@ -188,7 +188,7 @@
     jsesc "^2.5.1"
     source-map "^0.5.0"
 
-"@babel/generator@^7.16.0":
+"@babel/generator@^7.16.0", "@babel/generator@^7.5.0":
   version "7.16.0"
   resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.16.0.tgz#d40f3d1d5075e62d3500bccb67f3daa8a95265b2"
   integrity sha512-RR8hUCfRQn9j9RPKEVXo9LiwoxLPYn6hNZlvUOR8tSnaxlD0p0+la00ZP9/SnRt6HchKr+X0fO2r8vrETiJGew==
@@ -879,7 +879,12 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/parser@^7.0.0", "@babel/parser@^7.1.0", "@babel/parser@^7.4.4":
+"@babel/parser@^7.0.0":
+  version "7.16.3"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.16.3.tgz#271bafcb811080905a119222edbc17909c82261d"
+  integrity sha512-dcNwU1O4sx57ClvLBVFbEgx0UZWfd0JQX5X6fxFRCLHelFBGXFfSz6Y0FAq2PEwUqlqLkdVjVr4VASEOuUnLJw==
+
+"@babel/parser@^7.1.0", "@babel/parser@^7.4.4":
   version "7.4.4"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.4.4.tgz#5977129431b8fe33471730d255ce8654ae1250b6"
   integrity sha512-5pCS4mOsL+ANsFZGdvNLybx4wtqAZJ0MJjMHxvzI3bvIsz6sQvzW8XX92EYIkiPtIvcfG3Aj+Ir5VNyjnZhP7w==
@@ -4582,15 +4587,10 @@ camelize@^1.0.0:
   resolved "https://registry.yarnpkg.com/camelize/-/camelize-1.0.0.tgz#164a5483e630fa4321e5af07020e531831b2609b"
   integrity sha1-FkpUg+Yw+kMh5a8HAg5TGDGyYJs=
 
-caniuse-lite@^1.0.30001219:
-  version "1.0.30001223"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001223.tgz#39b49ff0bfb3ee3587000d2f66c47addc6e14443"
-  integrity sha512-k/RYs6zc/fjbxTjaWZemeSmOjO0JJV+KguOBA3NwPup8uzxM1cMhR2BD9XmO86GuqaqTCO8CgkgH9Rz//vdDiA==
-
-caniuse-lite@^1.0.30001271:
-  version "1.0.30001274"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001274.tgz#26ca36204d15b17601ba6fc35dbdad950a647cc7"
-  integrity sha512-+Nkvv0fHyhISkiMIjnyjmf5YJcQ1IQHZN6U9TLUMroWR38FNwpsC51Gb68yueafX1V6ifOisInSgP9WJFS13ew==
+caniuse-lite@^1.0.30001219, caniuse-lite@^1.0.30001271:
+  version "1.0.30001280"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001280.tgz"
+  integrity sha512-kFXwYvHe5rix25uwueBxC569o53J6TpnGu0BEEn+6Lhl2vsnAumRFWEBhDft1fwyo6m1r4i+RqA4+163FpeFcA==
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -6019,6 +6019,14 @@ expo-modules-core@~0.4.4, expo-modules-core@~0.4.5:
     compare-versions "^3.4.0"
     invariant "^2.2.4"
 
+expo-modules-core@~0.4.7:
+  version "0.4.8"
+  resolved "https://registry.yarnpkg.com/expo-modules-core/-/expo-modules-core-0.4.8.tgz#6fed03fca9370793b0a4bebc4fe1a44b213ed445"
+  integrity sha512-PElvF9/mw8TZ0FG3cQkQHB1yZEvtSrQ9nh90pINuTwmIUrxC427rgGoPrALsMaX90h94jTkPHODXHuX+Xsl/rg==
+  dependencies:
+    compare-versions "^3.4.0"
+    invariant "^2.2.4"
+
 expo-notifications@~0.13.3:
   version "0.13.3"
   resolved "https://registry.yarnpkg.com/expo-notifications/-/expo-notifications-0.13.3.tgz#94e638f8ef56de4ddb67ed8cc2a36510a1d90cbc"
@@ -6059,14 +6067,14 @@ expo-secure-store@~11.0.3:
   dependencies:
     expo-modules-core "~0.4.4"
 
-expo-splash-screen@~0.13.4:
-  version "0.13.4"
-  resolved "https://registry.yarnpkg.com/expo-splash-screen/-/expo-splash-screen-0.13.4.tgz#70de5dcbb5bbd3ce88185e830d84f123c8afafe1"
-  integrity sha512-xcRCx07WlPGP8+qKxqAW4KP1+j7/a9H+xn8/cmpKAmzYbs/ttTRzDEQzEq8BvVqyoBPS6Qo7Hwl1BHDpssjftw==
+expo-splash-screen@~0.13.5:
+  version "0.13.5"
+  resolved "https://registry.yarnpkg.com/expo-splash-screen/-/expo-splash-screen-0.13.5.tgz#ece76c092f2ce88e4660a70e532ed47909a01ddd"
+  integrity sha512-L/L0XlmmxSoyuooCVvbPBO4xUF9kAs+F0+fML3pf7miBOnTd/v9j5riKSmaDthNtM4AarXxgi0AXzSHQ1M3rZg==
   dependencies:
     "@expo/configure-splash-screen" "^0.6.0"
     "@expo/prebuild-config" "^3.0.6"
-    expo-modules-core "~0.4.4"
+    expo-modules-core "~0.4.7"
 
 expo@^43.0.0:
   version "43.0.1"
@@ -10145,9 +10153,9 @@ react-apollo@~3.1.5:
     "@apollo/react-ssr" "^3.1.5"
 
 react-devtools-core@^4.6.0:
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/react-devtools-core/-/react-devtools-core-4.9.0.tgz#39cc4589b4c6fbcb6a18e529ce745a1af3e63ae5"
-  integrity sha512-3NyHXW1ClqxEXdHunawAytDxiIxs620oP3wB8DHsbx1fkGgqjMkwlyHVf0zmES/b4ffqzJySowRwSYds/uAHzw==
+  version "4.21.0"
+  resolved "https://registry.yarnpkg.com/react-devtools-core/-/react-devtools-core-4.21.0.tgz#a54c9a0fd7261491e616d6c87d1869e011d8521d"
+  integrity sha512-clGWwJHV5MHwTwYyKc+7FZHwzdbzrD2/AoZSkicUcr6YLc3Za9a9FaLhccWDHfjQ+ron9yzNhDT6Tv+FiPkD3g==
   dependencies:
     shell-quote "^1.6.1"
     ws "^7"
@@ -10372,10 +10380,10 @@ react-native-webview@11.13.0:
     escape-string-regexp "2.0.0"
     invariant "2.2.4"
 
-react-native@0.64.2:
-  version "0.64.2"
-  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.64.2.tgz#233b6ed84ac4749c8bc2a2d6cf63577a1c437d18"
-  integrity sha512-Ty/fFHld9DcYsFZujXYdeVjEhvSeQcwuTGXezyoOkxfiGEGrpL/uwUZvMzwShnU4zbbTKDu2PAm/uwuOittRGA==
+react-native@^0.64.3:
+  version "0.64.3"
+  resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.64.3.tgz#40db6385963b4b17325f9cc86dd19132394b03fc"
+  integrity sha512-2OEU74U0Ek1/WeBzPbg6XDsCfjF/9fhrNX/5TFgEiBKd5mNc9LOZ/OlMmkb7iues/ZZ/oc51SbEfLRQdcW0fVw==
   dependencies:
     "@jest/create-cache-key-function" "^26.5.0"
     "@react-native-community/cli" "^5.0.1-alpha.1"
