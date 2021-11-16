@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.2.0] :rocket:
+
+This version brings the new encounter feature.
+
+### Added
+
+- users can now register for the encounter feature
+  - afterwards they can scan the qr code of other registered users to create a digital handshake
+- added a new `useStaticContent` hook to simplify queries for static contents
+  - this should be reused and refined further accross the codebase in the future
+
+### Changed
+
+- bb-bus data will now remain completely cached once it has been fetched.
+  - the bb-bus data is currently not being updated on the servers
+- minor text adjustments for route planner
+
 ## [v2.1.3]
 
 Added usage of location services.
