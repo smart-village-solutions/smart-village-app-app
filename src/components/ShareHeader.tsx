@@ -1,15 +1,15 @@
 import React from 'react';
-import { ShareContent, StyleSheet, TouchableOpacity } from 'react-native';
+import { ShareContent, StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { colors, consts, Icon, normalize } from '../config';
+import { colors, consts, Icon } from '../config';
 import { openShare } from '../helpers';
 
 type Props = {
-  headerRight?: boolean;
   shareContent?: ShareContent;
+  style?: StyleProp<ViewStyle>;
 };
 
-export const ShareHeader = ({ headerRight, shareContent }: Props) => {
+export const ShareHeader = ({ shareContent, style }: Props) => {
   if (!shareContent) {
     return null;
   }
@@ -21,22 +21,8 @@ export const ShareHeader = ({ headerRight, shareContent }: Props) => {
         accessibilityLabel={consts.a11yLabel.shareIcon}
         accessibilityHint={consts.a11yLabel.shareHint}
       >
-        <Icon.Share
-          color={colors.lightestText}
-          style={headerRight ? styles.iconLeft : styles.iconRight}
-        />
+        <Icon.Share color={colors.lightestText} style={style} />
       </TouchableOpacity>
     )
   );
 };
-
-const styles = StyleSheet.create({
-  iconLeft: {
-    paddingLeft: normalize(14),
-    paddingRight: normalize(7)
-  },
-  iconRight: {
-    paddingLeft: normalize(7),
-    paddingRight: normalize(14)
-  }
-});

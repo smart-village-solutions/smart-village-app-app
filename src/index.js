@@ -34,6 +34,8 @@ const MainAppWithApolloProvider = () => {
   const [client, setClient] = useState();
   const [initialGlobalSettings, setInitialGlobalSettings] = useState({});
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
+  const [initialLocationSettings, setInitialLocationSettings] = useState({});
+
   const [authRetried, setAuthRetried] = useState(false);
   const [netInfo, setNetInfo] = useState({
     isConnected: null,
@@ -172,8 +174,14 @@ const MainAppWithApolloProvider = () => {
       storageHelper.setGlobalSettings(globalSettings);
     }
 
+    // if there are no locationSettings yet, set the defaults as fallback
+    const locationSettings = globalSettings.settings.locationService
+      ? (await storageHelper.locationSettings()) || { locationService: true }
+      : { locationService: false };
+
     setInitialGlobalSettings(globalSettings);
     setInitialListTypesSettings(listTypesSettings);
+    setInitialLocationSettings(locationSettings);
   };
 
   // setup global settings if apollo client setup finished
@@ -209,7 +217,9 @@ const MainAppWithApolloProvider = () => {
 
   return (
     <ApolloProvider client={client}>
-      <SettingsProvider {...{ initialGlobalSettings, initialListTypesSettings }}>
+      <SettingsProvider
+        {...{ initialGlobalSettings, initialListTypesSettings, initialLocationSettings }}
+      >
         <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
         <Navigator />
       </SettingsProvider>

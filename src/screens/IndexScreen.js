@@ -16,11 +16,19 @@ import {
   SafeAreaViewFlex
 } from '../components';
 import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
-import { graphqlFetchPolicy, matomoTrackingString, parseListItemsFromQuery } from '../helpers';
-import { useTrackScreenViewAsync } from '../hooks';
+import {
+  graphqlFetchPolicy,
+  matomoTrackingString,
+  parseListItemsFromQuery,
+  sortPOIsByDistanceFromPosition
+} from '../helpers';
+import { usePosition, useTrackScreenViewAsync } from '../hooks';
 
 const { MATOMO_TRACKING } = consts;
 
+// TODO: make a list component for POIs that already includes the mapswitchheader?
+// TODO: make a list component that already includes the news/events filter?
+// eslint-disable-next-line complexity
 export const IndexScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
@@ -32,6 +40,12 @@ export const IndexScreen = ({ navigation, route }) => {
   const trackScreenViewAsync = useTrackScreenViewAsync();
 
   const query = route.params?.query ?? '';
+
+  // we currently only require the position for POIs
+  const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST;
+
+  const { loading: loadingPosition, position } = usePosition(!sortByDistance);
+
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
@@ -74,6 +88,12 @@ export const IndexScreen = ({ navigation, route }) => {
     },
     [setQueryVariables, queryVariables]
   );
+
+  // if we show the map or want to sort by distance, we need to fetch all the entries at once
+  // this is not a big issue if we want to sort by distance, because getting the location usually takes longer than fetching all entries
+  if (showMap || sortByDistance) {
+    delete queryVariables.limit;
+  }
 
   useEffect(() => {
     isConnected && auth();
@@ -135,6 +155,7 @@ export const IndexScreen = ({ navigation, route }) => {
         <LocationOverview
           navigation={navigation}
           route={route}
+          position={position}
           category={queryVariables.category}
           dataProviderName={queryVariables.dataProvider}
         />
@@ -145,7 +166,7 @@ export const IndexScreen = ({ navigation, route }) => {
           fetchPolicy={fetchPolicy}
         >
           {({ data, loading, fetchMore, refetch }) => {
-            if (loading) {
+            if (loading || loadingPosition) {
               return (
                 <LoadingContainer>
                   <ActivityIndicator color={colors.accent} />
@@ -153,15 +174,16 @@ export const IndexScreen = ({ navigation, route }) => {
               );
             }
 
-            const listItems = parseListItemsFromQuery(
-              query,
-              data,
-              false,
-              titleDetail,
-              bookmarkable
-            );
+            let listItems = parseListItemsFromQuery(query, data, titleDetail, {
+              bookmarkable,
+              withDate: false
+            });
 
             if (!listItems) return null;
+
+            if (sortByDistance && position) {
+              listItems = sortPOIsByDistanceFromPosition(listItems, position.coords);
+            }
 
             const fetchMoreData = () =>
               fetchMore({
@@ -190,6 +212,7 @@ export const IndexScreen = ({ navigation, route }) => {
                 navigation={navigation}
                 data={listItems}
                 horizontal={false}
+                sectionByDate={true}
                 query={query}
                 fetchMoreData={isConnected ? fetchMoreData : null}
                 refreshControl={
@@ -200,6 +223,7 @@ export const IndexScreen = ({ navigation, route }) => {
                     tintColor={colors.accent}
                   />
                 }
+                showBackToTop
               />
             );
           }}

@@ -14,12 +14,11 @@ import {
   Tour
 } from '../components';
 import { colors, consts } from '../config';
-import { navigatorConfig } from '../config/navigation/config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useRefreshTime } from '../hooks';
-import { screenOptionsWithShare } from '../navigation/screenOptions';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
 
 const getGenericComponent = (genericType) => {
@@ -53,12 +52,30 @@ const getRefreshInterval = (query) => {
   return REFRESH_INTERVALS[query];
 };
 
+const useRootRouteByCategory = (details, navigation) => {
+  const categoriesNews = useContext(SettingsContext)?.globalSettings?.sections?.categoriesNews;
+  const id = details.categories?.[0]?.id;
+
+  useEffect(() => {
+    if (!id || !categoriesNews) {
+      return;
+    }
+
+    // the types (may) differ, so == is required over ===
+    const rootRouteNameByCategory = categoriesNews.find((category) => category.categoryId == id)
+      ?.rootRouteName;
+
+    if (rootRouteNameByCategory?.length) {
+      navigation.setParams({ rootRouteName: rootRouteNameByCategory });
+    }
+  }, [id, categoriesNews]);
+};
+
 export const DetailScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
   const details = route.params?.details ?? {};
-  const bookmarkable = route.params?.bookmarkable ?? true;
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -70,13 +87,7 @@ export const DetailScreen = ({ navigation, route }) => {
     isConnected && auth();
   }, []);
 
-  useEffect(() => {
-    const options = screenOptionsWithShare(navigatorConfig.type === 'drawer')({
-      navigation,
-      route
-    });
-    !bookmarkable && navigation.setOptions(options);
-  }, [bookmarkable]);
+  useRootRouteByCategory(details, navigation);
 
   if (!refreshTime) {
     return (

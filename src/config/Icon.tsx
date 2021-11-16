@@ -10,6 +10,7 @@ import {
   arrowRight,
   arrowUp,
   calendar,
+  clock,
   constructionSite,
   drawerMenu,
   favSettings,
@@ -26,6 +27,7 @@ import {
   oParlOrganizations,
   oParlPeople,
   phone,
+  routePlanner,
   service,
   share,
   url,
@@ -96,6 +98,7 @@ export const Icon = {
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
   Calendar: (props: IconProps) => <SvgIcon xml={calendar} {...props} />,
+  Clock: (props: IconProps) => <SvgIcon xml={clock} {...props} />,
   Company: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-briefcase' : 'md-briefcase'} {...props} />
   ),
@@ -129,6 +132,7 @@ export const Icon = {
       {...props}
     />
   ),
+  RoutePlanner: (props: IconProps) => <SvgIcon xml={routePlanner} {...props} />,
   Service: (props: IconProps) => <SvgIcon xml={service} {...props} />,
   Settings: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'} {...props} />

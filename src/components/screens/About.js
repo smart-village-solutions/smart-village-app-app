@@ -7,7 +7,7 @@ import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { device, consts, texts } from '../../config';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { TextList } from '../TextList';
+import { VerticalList } from '../VerticalList';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
@@ -58,7 +58,7 @@ export const About = ({ navigation }) => {
         </TitleContainer>
       )}
       {!!headlineAbout && device.platform === 'ios' && <TitleShadow />}
-      <TextList navigation={navigation} data={publicJsonFileContent} noSubtitle />
+      <VerticalList navigation={navigation} data={publicJsonFileContent} noSubtitle />
     </View>
   );
 };

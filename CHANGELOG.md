@@ -5,7 +5,62 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.1.3]
+
+Added usage of location services.
+
+### Added
+
+- added location services
+  - added corresponding global setting "locationService"
+  - added new option in the settings screen
+  - when enabled the POIs will be sorted by distance to the current position
+  - when enabled the own location will be added to the location overview map
+- added bb-navi link to POIs
+  - when location services are enabled, the current (or last known) position will be used as the starting location
+- added handling of geolocation to maplinks when pressing on the address of for example a POI
+  - the geolocation will be prioritized for the pin location if present
+
+### Changed
+- event index is now sectioned by date
+  - restructured code structure regarding lists
+  - split lists according to layout rather than the renderItem function (e.g. HorizontalList, VerticalList (now) <-> TextList, CardList (previous))
+- improved structure of screenOptions
+  - instead of having multiple functions, there is now one function that takes options
+  - this is more easily expandable and maintainable
+
+### Fixed
+
+- when having a specific home news category also referenced in the drawer, there is now the possibility to highlight the correct root route based on the category
+
+## [v2.1.2]
+
+Minor fixes and package updates under the hood
+
+### Added
+
+- filter commercials by date
+- improved sub queries for html screens
+  - added the possibility to pass in a params object instead of only a webUrl
+- added more device infos to tracking for matomo
+- added usage of construction sites from generic item
+
+### Fixed
+
+- added order to event widget query, which was missing to be the same as in the events index screen
+- passed query limit to data list section props, which before always rendered 3, instead of more if
+  requested
+- fixed Android notification channel color
+  - added color parsing for the Android notification channel color to result always in hex format
+- fixed wrong default for poiId for lunches
+  - during the react navigation upgrade a wrong default was added, resulting in wrong filtering
+    behavior
+- fixed require cycle in navigation config
+- fixed survey widget icon being too big
+
 ## [v2.1.1]
+
+New widgets and updates on surveys
 
 ### Added
 

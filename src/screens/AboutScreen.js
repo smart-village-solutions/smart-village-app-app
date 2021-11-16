@@ -9,7 +9,7 @@ import { colors, consts, device, texts } from '../config';
 import {
   LoadingContainer,
   SafeAreaViewFlex,
-  TextList,
+  VerticalList,
   Title,
   TitleContainer,
   TitleShadow,
@@ -98,7 +98,7 @@ export const AboutScreen = ({ navigation }) => {
                   />
                 }
               >
-                <TextList navigation={navigation} data={publicJsonFileContent} noSubtitle />
+                <VerticalList navigation={navigation} data={publicJsonFileContent} noSubtitle />
                 <VersionNumber />
               </ScrollView>
             </>

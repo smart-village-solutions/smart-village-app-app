@@ -114,14 +114,14 @@ export const HomeScreen = ({ navigation, route }) => {
         rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
       }
     },
-    NEWS_ITEMS_INDEX: ({ categoryId, categoryTitle, categoryTitleDetail }) => ({
+    NEWS_ITEMS_INDEX: ({ categoryId, categoryTitle, categoryTitleDetail, rootRouteName }) => ({
       name: 'Index',
       params: {
         title: categoryTitle,
         titleDetail: categoryTitleDetail,
         query: QUERY_TYPES.NEWS_ITEMS,
         queryVariables: { limit: 15, ...{ categoryId } },
-        rootRouteName: ROOT_ROUTE_NAMES.NEWS_ITEMS
+        rootRouteName: rootRouteName || ROOT_ROUTE_NAMES.NEWS_ITEMS
       }
     })
   };
@@ -148,7 +148,10 @@ export const HomeScreen = ({ navigation, route }) => {
 
         {showNews &&
           categoriesNews.map(
-            ({ categoryButton, categoryId, categoryTitle, categoryTitleDetail }, index) => (
+            (
+              { categoryButton, categoryId, categoryTitle, categoryTitleDetail, rootRouteName },
+              index
+            ) => (
               <HomeSection
                 key={index}
                 buttonTitle={categoryButton}
@@ -158,7 +161,12 @@ export const HomeScreen = ({ navigation, route }) => {
                 fetchPolicy={fetchPolicy}
                 navigate={() =>
                   navigation.navigate(
-                    NAVIGATION.NEWS_ITEMS_INDEX({ categoryId, categoryTitle, categoryTitleDetail })
+                    NAVIGATION.NEWS_ITEMS_INDEX({
+                      categoryId,
+                      categoryTitle,
+                      categoryTitleDetail,
+                      rootRouteName
+                    })
                   )
                 }
                 navigation={navigation}

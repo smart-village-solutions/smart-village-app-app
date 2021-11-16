@@ -3,17 +3,18 @@ import React, { useRef, useState } from 'react';
 import { ActivityIndicator, FlatList } from 'react-native';
 
 import { colors, normalize } from '../config';
+import { useRenderItem } from '../hooks/listHooks';
 
-import { TextListItem } from './TextListItem';
 import { BackToTop } from './BackToTop';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
-export const TextList = ({
+const MAX_INITIAL_NUM_TO_RENDER = 20;
+
+export const VerticalList = ({
   navigation,
   data,
   noSubtitle,
-  leftImage,
   query,
   fetchMoreData,
   ListHeaderComponent,
@@ -22,6 +23,8 @@ export const TextList = ({
 }) => {
   const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
+
+  const renderItem = useRenderItem(query, navigation, { noSubtitle });
 
   const onEndReached = async () => {
     if (fetchMoreData) {
@@ -40,10 +43,10 @@ export const TextList = ({
       ref={flatListRef}
       keyExtractor={keyExtractor}
       data={data}
-      renderItem={({ item }) => <TextListItem {...{ navigation, item, noSubtitle, leftImage }} />}
+      renderItem={renderItem}
       ListHeaderComponent={ListHeaderComponent}
       ListFooterComponent={() => {
-        if (data.length > 10) {
+        if (data.length >= MAX_INITIAL_NUM_TO_RENDER) {
           if (!listEndReached) {
             return <ActivityIndicator color={colors.accent} style={{ margin: normalize(14) }} />;
           } else if (listEndReached && showBackToTop) {
@@ -65,7 +68,9 @@ export const TextList = ({
           return null;
         }
       }}
-      initialNumToRender={data.length < 20 ? data.length : 20}
+      initialNumToRender={
+        data.length < MAX_INITIAL_NUM_TO_RENDER ? data.length : MAX_INITIAL_NUM_TO_RENDER
+      }
       onEndReachedThreshold={0.5}
       onEndReached={onEndReached}
       refreshControl={refreshControl}
@@ -73,7 +78,7 @@ export const TextList = ({
   );
 };
 
-TextList.propTypes = {
+VerticalList.propTypes = {
   navigation: PropTypes.object,
   data: PropTypes.array,
   noSubtitle: PropTypes.bool,
@@ -85,7 +90,7 @@ TextList.propTypes = {
   refreshControl: PropTypes.object
 };
 
-TextList.defaultProps = {
+VerticalList.defaultProps = {
   noSubtitle: false,
   leftImage: false
 };

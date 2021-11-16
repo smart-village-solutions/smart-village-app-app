@@ -404,7 +404,9 @@ export const texts = {
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
     prices: 'Preise',
-    showLunches: 'Zum aktuellen Gastro-Angebot'
+    routePlanner: 'Zum Routenplaner bbnavi',
+    showLunches: 'Zum aktuellen Gastro-Angebot',
+    yourPosition: 'Ihre Position'
   },
   pushNotifications: {
     abort: 'Abbrechen',
@@ -425,6 +427,7 @@ export const texts = {
     about: appJson.expo.name,
     constructionSite: 'Baustelle',
     encounterHome: 'Mitfahrbank',
+    routePlanner: 'Routenplaner bbnavi',
     settings: 'Einstellungen',
     survey: 'Umfrage',
     surveys: 'Umfragen',
@@ -439,6 +442,10 @@ export const texts = {
       onDeactivate:
         'Soll Matomo Analytics deaktiviert werden? Die Deaktivierung von Matomo Analytics wird mit dem nächsten Neustart der App wirksam.',
       yes: 'Ja'
+    },
+    locationService: {
+      onSystemPermissionMissing:
+        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.'
     }
   },
   settingsScreen: {
@@ -455,6 +462,7 @@ export const texts = {
       sectionTitle: 'Listen-Layouts',
       textList: 'Textliste'
     },
+    locationService: 'Ortungsdienste',
     pushNotifications: 'Push-Benachrichtigungen'
   },
   survey: {

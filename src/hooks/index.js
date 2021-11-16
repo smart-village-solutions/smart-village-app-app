@@ -3,6 +3,7 @@ export * from './Bookmarks';
 export * from './constructionSites';
 export * from './encounter';
 export * from './imagePicker';
+export * from './locationHooks';
 export * from './matomoHooks';
 export * from './NewsCategories';
 export * from './openWebScreen';

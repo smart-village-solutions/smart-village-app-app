@@ -6,13 +6,23 @@ export function locationString(address) {
   return encodeURIComponent(address);
 }
 
-// a maps link is different between the platforms
-export function locationLink(mapsString) {
+/**
+ * a maps link is different between the platforms
+ * @param {string} mapsString
+ * @param {{
+    latitude: number;
+    longitude: number;
+  } | undefined } geoLocation
+ * @returns
+ */
+export function locationLink(mapsString, geoLocation) {
+  const coords = geoLocation ? `${geoLocation.latitude},${geoLocation.longitude}` : undefined;
+
   switch (device.platform) {
     case 'ios':
-      return `maps:0,0?q=${mapsString}`;
+      return coords ? `maps:?q=${mapsString}&ll=${coords}` : `maps:?q=${mapsString}`;
     case 'android':
-      return `geo:0,0?q=${mapsString}`;
+      return coords ? `geo:${coords}?q=${coords}(${mapsString})` : `geo:0,0?q=${mapsString}`;
     default:
       return `https://maps.google.com/?q=${mapsString}`;
   }

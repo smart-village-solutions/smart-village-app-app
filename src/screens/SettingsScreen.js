@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList, View } from 'react-native';
+import * as Location from 'expo-location';
 
 import { OrientationContext } from '../OrientationProvider';
 import { SettingsContext } from '../SettingsProvider';
@@ -19,7 +20,7 @@ import {
 import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
 import { QUERY_TYPES } from '../queries';
 import { createMatomoUserId, readFromStore, removeMatomoUserId, storageHelper } from '../helpers';
-import { useMatomoTrackScreenView } from '../hooks';
+import { useLocationSettings, useMatomoTrackScreenView } from '../hooks';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -61,6 +62,7 @@ const onDeactivatePushNotifications = (revert) => {
 export const SettingsScreen = () => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const { globalSettings, listTypesSettings, setListTypesSettings } = useContext(SettingsContext);
+  const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
   const [sectionedData, setSectionedData] = useState([]);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
@@ -100,6 +102,7 @@ export const SettingsScreen = () => {
           ]
         });
       }
+
       // settings should sometimes contain matomo analytics next, depending on server settings
       if (settings.matomo) {
         const { consent: matomoValue = false } = await storageHelper.matomoSettings();
@@ -145,6 +148,62 @@ export const SettingsScreen = () => {
                   ],
                   { cancelable: false }
                 )
+            }
+          ]
+        });
+      }
+
+      // settings should sometimes contain location settings next, depending on server settings
+      if (settings.locationService) {
+        const systemPermission = await Location.getForegroundPermissionsAsync();
+
+        const { locationService = systemPermission.status !== Location.PermissionStatus.DENIED } =
+          locationSettings || {};
+
+        additionalSectionedData.push({
+          data: [
+            {
+              title: texts.settingsTitles.locationService,
+              topDivider: true,
+              type: 'toggle',
+              value: locationService,
+              onActivate: (revert) => {
+                Location.getForegroundPermissionsAsync().then((response) => {
+                  // if the system permission is granted, we can simply enable the sorting
+                  if (response.status === Location.PermissionStatus.GRANTED) {
+                    const newSettings = { locationService: true };
+                    setAndSyncLocationSettings(newSettings);
+                    return;
+                  }
+
+                  // if we can ask for the system permission, do so and update the settings or revert depending on the outcome
+                  if (
+                    response.status === Location.PermissionStatus.UNDETERMINED ||
+                    response.canAskAgain
+                  ) {
+                    Location.requestForegroundPermissionsAsync()
+                      .then((response) => {
+                        if (response.status !== Location.PermissionStatus.GRANTED) {
+                          revert();
+                        } else {
+                          const newSettings = { locationService: true };
+                          setAndSyncLocationSettings(newSettings);
+                          return;
+                        }
+                      })
+                      .catch(() => revert());
+                    return;
+                  }
+
+                  // if we neither have the permission, nor can we ask for it, then show an alert that the permission is missing
+                  revert();
+                  Alert.alert(
+                    texts.settingsTitles.locationService,
+                    texts.settingsContents.locationService.onSystemPermissionMissing
+                  );
+                });
+              },
+              onDeactivate: () => setAndSyncLocationSettings({ locationService: false })
             }
           ]
         });

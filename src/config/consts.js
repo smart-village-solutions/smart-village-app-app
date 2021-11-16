@@ -1,5 +1,6 @@
 const ONCE_A_DAY = 'ONCE_A_DAY';
 const ONCE_PER_HOUR = 'ONCE_PER_HOUR';
+const NEVER = 'NEVER';
 
 export const consts = {
   a11yLabel: {
@@ -58,8 +59,9 @@ export const consts = {
     // refresh intervals per time:
     ONCE_A_DAY,
     ONCE_PER_HOUR,
+    NEVER,
     // refresh intervals per type:
-    BB_BUS: ONCE_A_DAY,
+    BB_BUS: NEVER,
     BOOKMARKS: ONCE_A_DAY,
     EVENTS: ONCE_A_DAY,
     NEWS: ONCE_A_DAY,

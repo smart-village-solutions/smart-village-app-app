@@ -69,12 +69,14 @@ const CategoryEntry = ({
   active,
   categoryKey,
   categoryName,
-  dispatch
+  dispatch,
+  bottomDivider
 }: {
   categoryKey: string;
   categoryName: string;
   active: boolean;
   dispatch: React.Dispatch<ReminderSettingsAction>;
+  bottomDivider: boolean;
 }) => {
   const [switchValue, setSwitchValue] = useState(active);
 
@@ -100,7 +102,8 @@ const CategoryEntry = ({
   return (
     <ListItem
       title={<RegularText>{categoryName}</RegularText>}
-      bottomDivider
+      bottomDivider={bottomDivider}
+      containerStyle={styles.switchContainer}
       rightIcon={<Switch switchValue={switchValue ?? false} toggleSwitch={toggleSwitch} />}
       onPress={onPress}
       delayPressIn={0}
@@ -262,12 +265,13 @@ export const WasteReminderSettings = ({
             <BoldText>{texts.wasteCalendar.whichType}</BoldText>
             <FlatList
               data={Object.keys(types)}
-              renderItem={({ item }) => (
+              renderItem={({ item, index }) => (
                 <CategoryEntry
                   active={state.activeTypes[item]?.active}
                   categoryKey={item}
                   categoryName={types[item].label}
                   dispatch={dispatch}
+                  bottomDivider={index < Object.keys(types).length - 1}
                 />
               )}
               keyExtractor={keyExtractor}
@@ -298,7 +302,6 @@ export const WasteReminderSettings = ({
                   {texts.wasteCalendar.onDayOfCollection}
                 </RegularText>
               }
-              bottomDivider
               rightIcon={
                 <Radiobutton
                   onPress={onPressDayOfCollection}
@@ -368,6 +371,10 @@ export const WasteReminderSettings = ({
 };
 
 const styles = StyleSheet.create({
+  switchContainer: {
+    backgroundColor: colors.transparent,
+    paddingVertical: device.platform === 'ios' ? normalize(12) : normalize(3.85)
+  },
   dateTimePickerContainerIOS: {
     backgroundColor: colors.surface
   },
@@ -380,6 +387,7 @@ const styles = StyleSheet.create({
     paddingTop: normalize(14)
   },
   radioContainer: {
-    backgroundColor: colors.transparent
+    backgroundColor: colors.transparent,
+    paddingVertical: device.platform === 'ios' ? normalize(3.125) : normalize(0)
   }
 });
