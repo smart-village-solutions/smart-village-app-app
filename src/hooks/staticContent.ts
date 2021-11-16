@@ -49,7 +49,7 @@ export const useStaticContent = <T>({
   const { data, error: queryError, loading, refetch } = useQuery(
     getQuery(type === 'json' ? QUERY_TYPES.PUBLIC_JSON_FILE : QUERY_TYPES.PUBLIC_HTML_FILE),
     {
-      variables: { name: name },
+      variables: { name },
       fetchPolicy,
       skip: !refreshTime
     }

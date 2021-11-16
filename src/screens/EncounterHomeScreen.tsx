@@ -83,7 +83,11 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
   const onPressToCategory = useCallback(() => {
     navigation.navigate(ScreenName.Index, {
       query: QUERY_TYPES.POINTS_OF_INTEREST,
-      queryVariables: { categoryId: encounterCategoryId },
+      queryVariables: {
+        categoryId: encounterCategoryId,
+        limit: 15,
+        order: 'name_ASC'
+      },
       title: texts.screenTitles.encounterHome
     });
   }, [encounterCategoryId, navigation]);
@@ -177,10 +181,10 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
               }}
               title={texts.encounter.myData}
             />
-            {encounterCategoryId && (
+            {!!encounterCategoryId && (
               <Button invert title={texts.encounter.toCategory} onPress={onPressToCategory} />
             )}
-            {additionalInfo?.length && (
+            {!!additionalInfo?.length && (
               // @ts-expect-error HtmlView memo is not typed in a way that the correct type can be inferred
               <HtmlView html={additionalInfo} openWebScreen={openWebScreen} />
             )}
