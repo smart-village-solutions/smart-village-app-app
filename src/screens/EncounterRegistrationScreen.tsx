@@ -55,7 +55,6 @@ const showRegistrationFailAlert = () =>
 
 const a11yLabels = consts.a11yLabel;
 
-// TODO: accesibility labels
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any>) => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);

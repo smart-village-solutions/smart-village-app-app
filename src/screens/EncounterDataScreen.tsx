@@ -118,7 +118,6 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
     });
   }, [navigation]);
 
-  // TODO: implement
   const updateUserData = async () => {
     if (!(birthDate && firstName && lastName && phone && userId)) {
       // the button is disabled, if this is the case, and this should never be called.

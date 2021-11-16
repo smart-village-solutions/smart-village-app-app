@@ -13,7 +13,6 @@ import { texts } from '../config';
 import { useCreateEncounter } from '../hooks';
 import { User } from '../types';
 
-// TODO: accesibility labels
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterUserDetailScreen = ({ route }: any) => {
   const [data, setData] = useState<User | undefined>(route.params?.data);

@@ -45,7 +45,6 @@ const parseQrCode = (data: string): string | undefined => {
   }
 };
 
-// TODO: accesibility labels
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
   const ref = useRef<Camera>(null);
