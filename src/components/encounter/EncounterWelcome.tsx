@@ -1,14 +1,10 @@
 import { NavigationProp } from '@react-navigation/core';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { useQuery } from 'react-apollo';
+import React, { useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { texts } from '../../config';
-import { graphqlFetchPolicy } from '../../helpers';
-import { usePullToRefetch, useRefreshTime } from '../../hooks';
+import { usePullToRefetch, useStaticContent } from '../../hooks';
 import { parseEncounterWelcome } from '../../jsonValidation';
-import { NetworkContext } from '../../NetworkProvider';
-import { getQuery, QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { Image } from '../Image';
@@ -18,82 +14,20 @@ import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
-type StaticContentArgs<T = unknown> = {
-  publicJsonFile: string;
-  refreshTimeKey?: string;
-  refreshInterval?: string;
-  parseFromJson?: (json: unknown) => T;
-};
-
-const useStaticContent = <T,>({
-  publicJsonFile,
-  parseFromJson,
-  refreshInterval,
-  refreshTimeKey
-}: StaticContentArgs<T>): {
-  data: T;
-  error: boolean;
-  loading: boolean;
-  refetch: () => Promise<unknown>;
-} => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const [error, setError] = useState(false);
-
-  const refreshTime = useRefreshTime(refreshTimeKey ?? publicJsonFile, refreshInterval);
-
-  const fetchPolicy = graphqlFetchPolicy({
-    isConnected,
-    isMainserverUp,
-    refreshTime
-  });
-
-  const { data, error: queryError, loading, refetch } = useQuery(
-    getQuery(QUERY_TYPES.PUBLIC_JSON_FILE),
-    {
-      variables: { name: publicJsonFile },
-      fetchPolicy,
-      skip: !refreshTime
-    }
-  );
-
-  const refetchCallback = useCallback(async () => {
-    setError(false);
-    return await refetch?.();
-  }, [refetch]);
-
-  const publicJsonFileData = useMemo(() => {
-    try {
-      if (data) {
-        const json = JSON.parse(data?.publicJsonFile?.content);
-
-        return parseFromJson ? parseFromJson(json) : json;
-      }
-    } catch (error) {
-      setError(true);
-      console.warn(error, data);
-    }
-  }, [data, parseFromJson]);
-
-  return {
-    data: publicJsonFileData,
-    error: error || !!queryError,
-    loading: loading || (!publicJsonFileData && !error),
-    refetch: refetchCallback
-  };
-};
-
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigation: NavigationProp<any>;
+  onPressToCategory?: () => void;
 };
 
-export const EncounterWelcome = ({ navigation }: Props) => {
+export const EncounterWelcome = ({ navigation, onPressToCategory }: Props) => {
   const { data, error, loading, refetch } = useStaticContent({
-    publicJsonFile: 'encounterWelcome',
+    type: 'json',
+    name: 'encounterWelcome',
     parseFromJson: parseEncounterWelcome
   });
 
-  const onPress = useCallback(() => {
+  const onPressRegister = useCallback(() => {
     navigation.navigate(ScreenName.EncounterRegistration);
   }, [navigation]);
 
@@ -125,7 +59,10 @@ export const EncounterWelcome = ({ navigation }: Props) => {
             <RegularText>{data.welcomeText}</RegularText>
           </Wrapper>
           <Wrapper>
-            <Button title={texts.encounter.registerNow} onPress={onPress} />
+            <Button title={texts.encounter.registerNow} onPress={onPressRegister} />
+            {onPressToCategory && (
+              <Button title={texts.encounter.toCategory} onPress={onPressToCategory} />
+            )}
           </Wrapper>
         </WrapperWithOrientation>
       </ScrollView>
