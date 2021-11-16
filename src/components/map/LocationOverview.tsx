@@ -20,10 +20,13 @@ import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { WebViewMap } from './WebViewMap';
 
 type Props = {
-  category: string;
-  dataProviderName?: string;
   position?: LocationObject;
   navigation: StackNavigationProp<never>;
+  queryVariables: {
+    category?: string;
+    categoryId?: string | number;
+    dataProvider?: string;
+  };
   route: RouteProp<any, never>;
 };
 
@@ -54,13 +57,7 @@ const mapToMapMarkers = (data: any): MapMarker[] | undefined => {
   );
 };
 
-export const LocationOverview = ({
-  navigation,
-  position,
-  route,
-  category,
-  dataProviderName
-}: Props) => {
+export const LocationOverview = ({ navigation, position, queryVariables, route }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
@@ -69,7 +66,7 @@ export const LocationOverview = ({
   const overviewQuery = getQuery(QUERY_TYPES.POINTS_OF_INTEREST);
   const { data: overviewData, loading } = useQuery(overviewQuery, {
     fetchPolicy,
-    variables: { category, dataProvider: dataProviderName }
+    variables: queryVariables
   });
 
   const detailsQuery = getQuery(QUERY_TYPES.POINT_OF_INTEREST);

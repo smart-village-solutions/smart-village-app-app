@@ -156,8 +156,11 @@ export const IndexScreen = ({ navigation, route }) => {
           navigation={navigation}
           route={route}
           position={position}
-          category={queryVariables.category}
-          dataProviderName={queryVariables.dataProvider}
+          queryVariables={{
+            category: queryVariables.category,
+            categoryId: queryVariables.categoryId,
+            dataProvider: queryVariables.dataProvider
+          }}
         />
       ) : (
         <Query
