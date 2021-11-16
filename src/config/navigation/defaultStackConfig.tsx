@@ -1,3 +1,6 @@
+import React from 'react';
+
+import { HeaderLeft } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
 import {
   AboutScreen,
@@ -7,6 +10,11 @@ import {
   ConstructionSiteOverviewScreen,
   DataProviderScreen,
   DetailScreen,
+  EncounterDataScreen,
+  EncounterHomeScreen,
+  EncounterRegistrationScreen,
+  EncounterScannerScreen,
+  EncounterUserDetailScreen,
   FormScreen,
   getTilesScreen,
   HomeScreen,
@@ -101,6 +109,45 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Detail,
       screenComponent: DetailScreen,
       screenOptions: getScreenOptions({ withDrawer: isDrawer, withBookmark: true, withShare: true })
+    },
+    {
+      routeName: ScreenName.EncounterData,
+      screenComponent: EncounterDataScreen,
+      screenOptions: { title: texts.screenTitles.encounterHome }
+    },
+    {
+      routeName: ScreenName.EncounterHome,
+      screenComponent: EncounterHomeScreen,
+      screenOptions: { title: texts.screenTitles.encounterHome }
+    },
+    {
+      routeName: ScreenName.EncounterRegistration,
+      screenComponent: EncounterRegistrationScreen,
+      screenOptions: { title: texts.screenTitles.encounterHome }
+    },
+    {
+      routeName: ScreenName.EncounterScanner,
+      screenComponent: EncounterScannerScreen,
+      screenOptions: { title: texts.screenTitles.encounterHome }
+    },
+    {
+      routeName: ScreenName.EncounterUserDetail,
+      screenComponent: EncounterUserDetailScreen,
+      screenOptions: ({ navigation, route }) => ({
+        title: texts.screenTitles.encounterHome,
+        headerLeft: () => (
+          <HeaderLeft
+            onPress={() => {
+              // @ts-expect-error we are lacking proper param types here
+              if (route.params?.qrId || route.params?.fromPoll) {
+                navigation.goBack();
+              } else {
+                navigation.navigate(ScreenName.EncounterHome);
+              }
+            }}
+          />
+        )
+      })
     },
     {
       routeName: ScreenName.Form,

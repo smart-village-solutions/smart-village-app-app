@@ -59,7 +59,7 @@ const renderSectionHeader = ({
 
 export const SurveyOverviewScreen = () => {
   const { loading, refetch, surveySections } = useSurveySections();
-  const RefreshControl = usePullToRefetch(loading, refetch);
+  const RefreshControl = usePullToRefetch(refetch);
   const languages = useSurveyLanguages();
   const navigation = useNavigation<StackNavigationProp<any>>();
 

@@ -4,6 +4,7 @@ import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
 import {
+  addImage,
   arrowDown,
   arrowLeft,
   arrowRight,
@@ -16,10 +17,12 @@ import {
   heartEmpty,
   heartFilled,
   home,
+  info,
   link,
   location,
   lunch,
   mail,
+  notVerifiedBadge,
   oParlCalendar,
   oParlOrganizations,
   oParlPeople,
@@ -27,7 +30,8 @@ import {
   routePlanner,
   service,
   share,
-  url
+  url,
+  verifiedBadge
 } from '../icons';
 
 import { colors } from './colors';
@@ -88,6 +92,7 @@ export const Icon = {
   About: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-menu' : 'md-menu'} {...props} />
   ),
+  AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
   ArrowDown: (props: IconProps) => <SvgIcon xml={arrowDown} {...props} />,
   ArrowLeft: (props: IconProps) => <SvgIcon xml={arrowLeft} {...props} />,
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
@@ -105,10 +110,12 @@ export const Icon = {
   NamedIcon,
   HeartEmpty: (props: IconProps) => <SvgIcon xml={heartEmpty} {...props} />,
   HeartFilled: (props: IconProps) => <SvgIcon xml={heartFilled} {...props} />,
+  Info: (props: IconProps) => <SvgIcon xml={info} {...props} />,
   Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
   Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
   Mail: (props: IconProps) => <SvgIcon xml={mail} {...props} />,
+  NotVerifiedBadge: (props: IconProps) => <SvgIcon xml={notVerifiedBadge} {...props} />,
   OParlCalendar: (props: IconProps) => <SvgIcon xml={oParlCalendar} {...props} />,
   OParlOrganizations: (props: IconProps) => <SvgIcon xml={oParlOrganizations} {...props} />,
   OParlPeople: (props: IconProps) => <SvgIcon xml={oParlPeople} {...props} />,
@@ -137,5 +144,6 @@ export const Icon = {
       <SvgIcon xml={share} {...props} />
     ),
   Surveys: (props: IconProps) => <NamedIcon name="stats-chart-outline" {...props} />,
-  Url: (props: IconProps) => <SvgIcon xml={url} {...props} />
+  Url: (props: IconProps) => <SvgIcon xml={url} {...props} />,
+  VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />
 };

@@ -103,6 +103,12 @@ export const RegularText = styled(Text)`
     css`
       text-decoration: line-through;
     `};
+
+  ${(props) =>
+    props.underline &&
+    css`
+      text-decoration: underline;
+    `};
 `;
 
 export const BoldText = styled(RegularText)`

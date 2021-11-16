@@ -1,19 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { RefreshControl } from 'react-native';
 
 import { colors } from '../config';
 
-export const usePullToRefetch = (loading?: boolean, refetch?: () => void) => {
+export const usePullToRefetch = (refetch?: () => Promise<unknown>) => {
   const [refreshing, setRefreshing] = useState(false);
 
-  const refresh = useCallback(() => {
+  const refresh = useCallback(async () => {
     setRefreshing(true);
-    refetch?.();
+    await refetch?.();
+    setRefreshing(false);
   }, [refetch]);
-
-  useEffect(() => {
-    !loading && setRefreshing(false);
-  }, [loading]);
 
   return (
     <RefreshControl

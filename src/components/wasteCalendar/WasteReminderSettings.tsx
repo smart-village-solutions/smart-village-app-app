@@ -113,6 +113,7 @@ const CategoryEntry = ({
   );
 };
 
+// TODO: use the new DateTimePicker component
 export const WasteReminderSettings = ({
   types,
   locationData
