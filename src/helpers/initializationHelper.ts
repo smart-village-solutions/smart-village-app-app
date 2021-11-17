@@ -18,8 +18,8 @@ const initializeLocationServices = async () => {
 
 // TODO: check how to do it with matomo and initialization differences (pre/post rendering the provider)
 // -> change type from `() => void` to `(onboarding?: boolean) => void` ?
-export const Initializers = new Map<Initializer, () => void>([
-  [Initializer.LocationService, initializeLocationServices],
-  [Initializer.MatomoTracking, () => undefined], // TODO:  get permission -> request if not present
-  [Initializer.PushNotifications, handleSystemPermissions]
-]);
+export const Initializers = {
+  [Initializer.LocationService]: initializeLocationServices,
+  [Initializer.MatomoTracking]: () => undefined, // TODO:  get permission -> request if not present
+  [Initializer.PushNotifications]: handleSystemPermissions
+};

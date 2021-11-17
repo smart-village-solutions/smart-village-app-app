@@ -2,7 +2,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { addToStore, readFromStore } from './helpers';
-import { Initializers } from './helpers/initializationHelper';
+import { Initializer, Initializers } from './helpers/initializationHelper';
 import { AppIntroScreen } from './screens';
 import { SettingsContext } from './SettingsProvider';
 
@@ -15,7 +15,11 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
   const {
     globalSettings: {
       // @ts-expect-error settings context is not properly typed
-      settings: { onboarding: onboardingActive }
+      settings: {
+        locationService: locationServiceActive,
+        onboarding: onboardingActive,
+        pushNotifications: pushNotificationsActive
+      }
     }
   } = useContext(SettingsContext);
 
@@ -55,8 +59,13 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
   // this effect ensures that all settings will be properly initialized, even when onboarding was completed before the settings where available, or an error occured
   useEffect(() => {
     if (onboardingStatus === 'complete') {
-      // TODO: filter out settings disabled by globalsettings
-      Initializers.forEach((init) => init());
+      // TODO: add matomo
+      if (locationServiceActive) {
+        Initializers[Initializer.LocationService]();
+      }
+      if (pushNotificationsActive) {
+        Initializers[Initializer.PushNotifications]();
+      }
     }
   }, [onboardingStatus]);
 

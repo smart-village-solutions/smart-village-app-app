@@ -34,13 +34,13 @@ const slides: SlideInfo[] = [
     image: 'https://www.smurf.com/characters-smurfs/papa.png',
     title: 'Top informiert',
     text: 'Erlaube Push-Notification – Du wirst sofort benachrichtigt, wenn es Neuigkeiten gibt.',
-    onLeaveSlide: Initializers.get(Initializer.PushNotifications)
+    onLeaveSlide: Initializers[Initializer.PushNotifications]
   },
   {
     image: 'https://www.smurf.com/characters-smurfs/smurfette.png',
     title: 'Gewusst wo',
     text: 'Erlaube Ortungsdienste – bekomme Informationen genau für Deinen Umkreis.',
-    onLeaveSlide: Initializers.get(Initializer.LocationService)
+    onLeaveSlide: Initializers[Initializer.LocationService]
   },
   {
     image: 'https://www.smurf.com/characters-smurfs/papa.png',
