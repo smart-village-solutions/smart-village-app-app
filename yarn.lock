@@ -6420,10 +6420,10 @@ expo-blur@~9.0.3:
   resolved "https://registry.yarnpkg.com/expo-blur/-/expo-blur-9.0.3.tgz#5095b5bd04d000f73b351d0e4736767b86b49bbd"
   integrity sha512-7jMqzo53eg5t9Uc1Tg+yGu9lKL9the4CWAQO0kC6YMhrsDiB13mwOUesC+IScHDTSUKNMGcHI8kN+OmvEWfPig==
 
-expo-camera@~11.2.2:
-  version "11.2.2"
-  resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-11.2.2.tgz#4df9e97e533c084caf8d88255def784c568d76f4"
-  integrity sha512-S2o79Ci4RaY7g03dZdIrcnM3dt4NmOnal6kz3TlDhQquxJ8AlUW9zHvCApHIyf682tlLjdw8OUPzSlmxyJhIjQ==
+expo-camera@~11.3.1:
+  version "11.3.1"
+  resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-11.3.1.tgz#f7599c9e2f2184c2369d9acd658c131a9e9efba3"
+  integrity sha512-yjLUvM+ZzPL0u2hrGdwJKpX1URQ/6VuU7j0vVItqGAGlTn6JMl7vQUp0uX0HIIY0Tew6WA0+eBUm7JJqcDxqlA==
   dependencies:
     "@expo/config-plugins" "^3.0.0"
     "@koale/useworker" "^3.2.1"
