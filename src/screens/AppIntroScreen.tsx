@@ -1,12 +1,10 @@
-import * as Location from 'expo-location';
-import React, { useContext } from 'react';
+import React from 'react';
 import { ListRenderItem, ScrollView, StyleSheet, View } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 
 import { BoldText, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
 import { colors, normalize } from '../config';
-import { handleSystemPermissions } from '../pushNotifications';
-import { SettingsContext } from '../SettingsProvider';
+import { Initializer, Initializers } from '../helpers/initializationHelper';
 
 /*
  * TODO:
@@ -36,13 +34,13 @@ const slides: SlideInfo[] = [
     image: 'https://www.smurf.com/characters-smurfs/papa.png',
     title: 'Top informiert',
     text: 'Erlaube Push-Notification – Du wirst sofort benachrichtigt, wenn es Neuigkeiten gibt.',
-    onLeaveSlide: handleSystemPermissions
+    onLeaveSlide: Initializers.get(Initializer.PushNotifications)
   },
   {
     image: 'https://www.smurf.com/characters-smurfs/smurfette.png',
     title: 'Gewusst wo',
     text: 'Erlaube Ortungsdienste – bekomme Informationen genau für Deinen Umkreis.',
-    onLeaveSlide: Location.requestForegroundPermissionsAsync
+    onLeaveSlide: Initializers.get(Initializer.LocationService)
   },
   {
     image: 'https://www.smurf.com/characters-smurfs/papa.png',
@@ -59,15 +57,11 @@ const SliderButton = ({ label }: { label: string }) => {
   );
 };
 
-export const AppIntroScreen = () => {
-  // @ts-expect-error SettingsContext is not properly typed
-  const { setOnboardingSettings } = useContext(SettingsContext);
+type Props = {
+  setOnboardingComplete: () => void;
+};
 
-  const onDone = () => {
-    setOnboardingSettings({ onboardingComplete: true });
-    // TODO: add sync to AsyncStorage to avoid it form reappearing on reload/restart of the app
-  };
-
+export const AppIntroScreen = ({ setOnboardingComplete }: Props) => {
   const renderSlide: ListRenderItem<SlideInfo> = ({ item }) => {
     return (
       <ScrollView>
@@ -97,7 +91,7 @@ export const AppIntroScreen = () => {
         onSlideChange={(_, index) => {
           slides[index]?.onLeaveSlide?.();
         }}
-        onDone={onDone}
+        onDone={setOnboardingComplete}
         renderDoneButton={() => <SliderButton label="Weiter" />}
         renderNextButton={() => <SliderButton label="Weiter" />}
         dotStyle={styles.inactiveDot}

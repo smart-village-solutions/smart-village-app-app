@@ -27,6 +27,7 @@ import {
 import { Navigator } from './navigation/Navigator';
 import NetInfo from './NetInfo';
 import { NetworkProvider } from './NetworkProvider';
+import { OnboardingManager } from './OnboardingManager';
 import { OrientationProvider } from './OrientationProvider';
 import { getQuery, QUERY_TYPES } from './queries';
 import { SettingsProvider } from './SettingsProvider';
@@ -40,9 +41,6 @@ const MainAppWithApolloProvider = () => {
   const [initialGlobalSettings, setInitialGlobalSettings] = useState({});
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
-  const [initialOnboardingSettings, setInitialOnboardingSetting] = useState({
-    onboardingComplete: false
-  });
 
   const [authRetried, setAuthRetried] = useState(false);
   const [netInfo, setNetInfo] = useState({
@@ -193,16 +191,10 @@ const MainAppWithApolloProvider = () => {
         defaultAlternativePosition
       );
     }
-    // if there are no onboarding settings yet, set the defaults as fallback
-    // only use the onboarding if it was not already completed, but is enabled on the server
-    const onboardingSettings = (await storageHelper.onboardingSettings()) || {
-      onboardingComplete: false
-    };
 
     setInitialGlobalSettings(globalSettings);
     setInitialListTypesSettings(listTypesSettings);
     setInitialLocationSettings(locationSettings);
-    setInitialOnboardingSetting(onboardingSettings);
   };
 
   // setup global settings if apollo client setup finished
@@ -242,11 +234,12 @@ const MainAppWithApolloProvider = () => {
         {...{
           initialGlobalSettings,
           initialListTypesSettings,
-          initialLocationSettings,
-          initialOnboardingSettings
+          initialLocationSettings
         }}
       >
-        <Navigator />
+        <OnboardingManager>
+          <Navigator />
+        </OnboardingManager>
       </SettingsProvider>
     </ApolloProvider>
   );
