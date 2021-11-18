@@ -1,3 +1,4 @@
+export * from './appIntroValidator';
 export * from './constructionSiteValidator';
 export * from './encounter';
 export * from './geoJsonValidator';

@@ -4,14 +4,15 @@ import { v4 as uuid } from 'uuid';
 import { texts } from '../config';
 import { storageHelper } from '../helpers/storageHelper';
 
-// TODO: use as initializer. add arg for changing text depending on place where it is used
-export const showMatomoAlert = async () => {
+export const showMatomoAlert = async (fromAppIntro) => {
   const settings = await matomoSettings();
 
   if (!settings?.matomoHandledOnStartup) {
     Alert.alert(
       texts.settingsTitles.analytics,
-      texts.settingsContents.analytics.onActivate,
+      fromAppIntro
+        ? texts.settingsContents.analytics.onActivateWithoutRestart
+        : texts.settingsContents.analytics.onActivate,
       [
         {
           text: texts.settingsContents.analytics.no,

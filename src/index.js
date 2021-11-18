@@ -5,9 +5,7 @@ import { ApolloClient } from 'apollo-client';
 import { ApolloLink } from 'apollo-link';
 import { setContext } from 'apollo-link-context';
 import { createHttpLink } from 'apollo-link-http';
-import * as ScreenOrientation from 'expo-screen-orientation';
 import * as SecureStore from 'expo-secure-store';
-import * as SplashScreen from 'expo-splash-screen';
 import _isEmpty from 'lodash/isEmpty';
 import React, { useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
@@ -36,7 +34,6 @@ const { LIST_TYPES } = consts;
 
 const MainAppWithApolloProvider = () => {
   const [loading, setLoading] = useState(true);
-  const [isSplashScreenVisible, setIsSplashScreenVisible] = useState(true);
   const [client, setClient] = useState();
   const [initialGlobalSettings, setInitialGlobalSettings] = useState({});
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
@@ -207,16 +204,7 @@ const MainAppWithApolloProvider = () => {
     initialGlobalSettings && client && setLoading(false);
   }, [initialGlobalSettings]);
 
-  useEffect(() => {
-    !loading &&
-      SplashScreen.hideAsync().then(() => {
-        setIsSplashScreenVisible(false);
-        // set orientation to "default", to allow both portrait and landscape
-        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
-      });
-  }, [loading]);
-
-  if (loading || isSplashScreenVisible) {
+  if (loading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />

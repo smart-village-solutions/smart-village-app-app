@@ -7,30 +7,31 @@ import { getQuery, QUERY_TYPES } from '../queries';
 
 import { useRefreshTime } from './TimeHooks';
 
-type StaticContentArgs<T = unknown> =
+type StaticContentArgs<T = unknown> = {
+  name: string;
+  refreshTimeKey?: string;
+  refreshInterval?: string;
+  fetchPolicy?: 'cache-first' | 'cache-only' | 'network-only';
+} & (
   | {
-      name: string;
       type: 'json';
-      refreshTimeKey?: string;
-      refreshInterval?: string;
       parseFromJson?: (json: unknown) => T;
     }
   | {
-      name: string;
       type: 'html';
-      refreshTimeKey?: string;
-      refreshInterval?: string;
       parseFromJson?: undefined;
-    };
+    }
+);
 
 export const useStaticContent = <T>({
   name,
   type,
   parseFromJson,
   refreshInterval,
-  refreshTimeKey
+  refreshTimeKey,
+  fetchPolicy: overrideFetchPolicy
 }: StaticContentArgs<T>): {
-  data: T;
+  data?: T;
   error: boolean;
   loading: boolean;
   refetch: () => Promise<unknown>;
@@ -40,11 +41,13 @@ export const useStaticContent = <T>({
 
   const refreshTime = useRefreshTime(refreshTimeKey ?? name, refreshInterval);
 
-  const fetchPolicy = graphqlFetchPolicy({
-    isConnected,
-    isMainserverUp,
-    refreshTime
-  });
+  const fetchPolicy =
+    overrideFetchPolicy ??
+    graphqlFetchPolicy({
+      isConnected,
+      isMainserverUp,
+      refreshTime
+    });
 
   const { data, error: queryError, loading, refetch } = useQuery(
     getQuery(type === 'json' ? QUERY_TYPES.PUBLIC_JSON_FILE : QUERY_TYPES.PUBLIC_HTML_FILE),

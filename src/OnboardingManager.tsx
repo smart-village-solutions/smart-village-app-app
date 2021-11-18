@@ -1,3 +1,4 @@
+import * as ScreenOrientation from 'expo-screen-orientation';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useContext, useEffect, useState } from 'react';
 
@@ -34,6 +35,8 @@ const useInitializeAfterOnboarding = (onboardingComplete: boolean) => {
       if (pushNotificationsActive) {
         Initializers[Initializer.PushNotifications]();
       }
+
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
     }
   }, [onboardingComplete]);
 };
