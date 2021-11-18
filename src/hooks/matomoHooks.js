@@ -50,3 +50,18 @@ export const useMatomoTrackScreenView = (name) => {
     isConnected && trackScreenViewAsync(name);
   }, []);
 };
+
+export const useTrackAppStart = () => {
+  const { trackAppStart } = useMatomo();
+  const userInfoAsync = useUserInfoAsync();
+
+  const trackAppStartAsync = useCallback(async () => {
+    const userInfo = await userInfoAsync();
+
+    trackAppStart({ userInfo });
+  }, [userInfoAsync]);
+
+  useEffect(() => {
+    trackAppStartAsync();
+  }, []);
+};
