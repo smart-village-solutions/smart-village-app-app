@@ -213,7 +213,7 @@ const findNextClosedTime = (
 };
 
 /**
- * WARNING: testDate is only for tests, and will yield unexpected result if the day is not the present day.
+ * WARNING: adding a date as 'now' that is not today may yield unexpected results.
  *
  * Checks for a given array of opening times, if it is currently open, and if it opens or closes soon.
  * The timeDiff contains the remaining minutes until it opens or closes,
@@ -222,13 +222,10 @@ const findNextClosedTime = (
 // eslint-disable-next-line complexity
 export const isOpen = (
   openingHours: OpeningHour[],
-  testDate?: Date
+  now = new Date()
 ): { open: boolean; timeDiff?: number } | undefined => {
   // wrap everything into a try/catch in case of one of the strings used as dates do not have an acceptable format
   try {
-    // get the current time up to minute precision to work with
-    const now = testDate ?? new Date();
-
     now.setSeconds(0);
     now.setMilliseconds(0);
 
