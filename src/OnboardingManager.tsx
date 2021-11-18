@@ -1,12 +1,42 @@
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useContext, useEffect, useState } from 'react';
 
+import { CustomMatomoProvider } from './CustomMatomoProvider';
 import { addToStore, readFromStore } from './helpers';
 import { Initializer, Initializers } from './helpers/initializationHelper';
 import { AppIntroScreen } from './screens';
 import { SettingsContext } from './SettingsProvider';
 
 const ONBOARDING_STORE_KEY = 'ONBOARDING_STORE_KEY';
+
+// this hook ensures that all settings will be properly initialized, even when onboarding was completed before the settings where available, or an error occured
+const useInitializeAfterOnboarding = (onboardingComplete: boolean) => {
+  const {
+    globalSettings: {
+      // @ts-expect-error settings context is not properly typed
+      settings: {
+        locationService: locationServiceActive,
+        pushNotifications: pushNotificationsActive,
+        matomo: matomoActive
+      }
+    }
+  } = useContext(SettingsContext);
+
+  // this effect ensures that all settings will be properly initialized, even when onboarding was completed before the settings where available, or an error occured
+  useEffect(() => {
+    if (onboardingComplete) {
+      if (locationServiceActive) {
+        Initializers[Initializer.LocationService]();
+      }
+      if (matomoActive) {
+        Initializers[Initializer.MatomoTracking]();
+      }
+      if (pushNotificationsActive) {
+        Initializers[Initializer.PushNotifications]();
+      }
+    }
+  }, [onboardingComplete]);
+};
 
 export const OnboardingManager = ({ children }: { children: React.ReactNode }) => {
   const [onboardingStatus, setOnboardingStatus] = useState<'loading' | 'complete' | 'incomplete'>(
@@ -15,11 +45,7 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
   const {
     globalSettings: {
       // @ts-expect-error settings context is not properly typed
-      settings: {
-        locationService: locationServiceActive,
-        onboarding: onboardingActive,
-        pushNotifications: pushNotificationsActive
-      }
+      settings: { onboarding: onboardingActive }
     }
   } = useContext(SettingsContext);
 
@@ -56,18 +82,7 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
     }
   }, []);
 
-  // this effect ensures that all settings will be properly initialized, even when onboarding was completed before the settings where available, or an error occured
-  useEffect(() => {
-    if (onboardingStatus === 'complete') {
-      // TODO: add matomo
-      if (locationServiceActive) {
-        Initializers[Initializer.LocationService]();
-      }
-      if (pushNotificationsActive) {
-        Initializers[Initializer.PushNotifications]();
-      }
-    }
-  }, [onboardingStatus]);
+  useInitializeAfterOnboarding(onboardingStatus === 'complete');
 
   // render null while onboarding status is loading from AsyncStorage
   if (onboardingStatus === 'loading') {
@@ -78,6 +93,5 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
     return <AppIntroScreen setOnboardingComplete={setOnboardingComplete} />;
   }
 
-  // TODO: move matomo provider  here
-  return <>{children}</>;
+  return <CustomMatomoProvider>{children}</CustomMatomoProvider>;
 };

@@ -1,6 +1,33 @@
+import { Alert } from 'react-native';
 import { v4 as uuid } from 'uuid';
 
+import { texts } from '../config';
 import { storageHelper } from '../helpers/storageHelper';
+
+// TODO: use as initializer. add arg for changing text depending on place where it is used
+export const showMatomoAlert = async () => {
+  const settings = await matomoSettings();
+
+  if (!settings?.matomoHandledOnStartup) {
+    Alert.alert(
+      texts.settingsTitles.analytics,
+      texts.settingsContents.analytics.onActivate,
+      [
+        {
+          text: texts.settingsContents.analytics.no,
+          style: 'cancel'
+        },
+        {
+          text: texts.settingsContents.analytics.yes,
+          onPress: createMatomoUserId
+        }
+      ],
+      { cancelable: false }
+    );
+
+    setMatomoHandledOnStartup();
+  }
+};
 
 export const matomoSettings = async () => {
   let settings = await storageHelper.matomoSettings();
@@ -22,7 +49,7 @@ export const matomoSettings = async () => {
     delete settings.userId;
   }
 
-  storageHelper.setMatomoSettings(settings);
+  await storageHelper.setMatomoSettings(settings);
 
   return settings;
 };
@@ -33,7 +60,7 @@ export const matomoSettings = async () => {
  * the user already consented manually.
  */
 export const createMatomoUserId = async () => {
-  const settings = await storageHelper.matomoSettings();
+  const settings = await matomoSettings();
 
   if (settings) {
     settings.userId = uuid();
@@ -47,7 +74,7 @@ export const createMatomoUserId = async () => {
  * Remove a Matomo user id and the consent to be tracked.
  */
 export const removeMatomoUserId = async () => {
-  const settings = await storageHelper.matomoSettings();
+  const settings = await matomoSettings();
 
   if (settings?.userId) {
     delete settings.userId;
@@ -61,7 +88,7 @@ export const removeMatomoUserId = async () => {
  * be shown once.
  */
 export const setMatomoHandledOnStartup = async () => {
-  const settings = await storageHelper.matomoSettings();
+  const settings = await matomoSettings();
 
   if (settings) {
     settings.matomoHandledOnStartup = true;

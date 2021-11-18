@@ -45,7 +45,13 @@ const slides: SlideInfo[] = [
   {
     image: 'https://www.smurf.com/characters-smurfs/papa.png',
     title: 'Sei dabei',
-    text: 'Erlaube Tracking – über Deine Nutzerreise erfahren wir, wo die App besser werden kann.'
+    text: 'Erlaube Tracking – über Deine Nutzerreise erfahren wir, wo die App besser werden kann.',
+    onLeaveSlide: Initializers[Initializer.MatomoTracking]
+  },
+  {
+    image: 'https://www.smurf.com/characters-smurfs/smurfette.png',
+    title: 'All Done!',
+    text: 'Das wars auch schon!'
   }
 ];
 
