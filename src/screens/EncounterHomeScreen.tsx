@@ -1,6 +1,6 @@
 import * as Linking from 'expo-linking';
 import React, { useCallback, useContext, useEffect } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import QRCode from 'react-native-qrcode-svg';
 
@@ -14,7 +14,6 @@ import {
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
-  Touchable,
   Wrapper,
   WrapperRow,
   WrapperWithOrientation
@@ -148,7 +147,7 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
                   <RegularText lightest small textAlign="bottom">
                     {texts.encounter.status}
                   </RegularText>
-                  <Touchable
+                  <TouchableOpacity
                     accessibilityLabel={`${a11yLabels.verifiedInfo} ${a11yLabels.button}`}
                     onPress={onPressInfo}
                   >
@@ -157,7 +156,7 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
                       size={INFO_ICON_SIZE}
                       style={styles.icon}
                     />
-                  </Touchable>
+                  </TouchableOpacity>
                 </WrapperRow>
                 <RegularText lightest>
                   {verified ? texts.encounter.verified : texts.encounter.notVerified}
