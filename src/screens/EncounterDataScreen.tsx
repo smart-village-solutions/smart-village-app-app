@@ -23,7 +23,6 @@ import {
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
-  Touchable,
   Wrapper,
   WrapperRow,
   WrapperWithOrientation
@@ -270,12 +269,12 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             <Wrapper style={styles.noPaddingTop}>
               <WrapperRow style={styles.infoLabelContainer}>
                 <Label>{texts.encounter.verified}</Label>
-                <Touchable
+                <TouchableOpacity
                   accessibilityLabel={`${a11yLabels.verifiedInfo} ${a11yLabels.button}`}
                   onPress={onPressInfoVerification}
                 >
                   <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
-                </Touchable>
+                </TouchableOpacity>
               </WrapperRow>
               <TextInput
                 accessibilityLabel={`${a11yLabels.verified} (${
@@ -289,12 +288,12 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             <Wrapper style={styles.noPaddingTop}>
               <WrapperRow style={styles.infoLabelContainer}>
                 <Label>{texts.encounter.supportId}</Label>
-                <Touchable
+                <TouchableOpacity
                   accessibilityLabel={`${a11yLabels.encounterIdInfo} ${a11yLabels.button}`}
                   onPress={onPressInfoId}
                 >
                   <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
-                </Touchable>
+                </TouchableOpacity>
               </WrapperRow>
               <TextInput
                 accessibilityLabel={`${a11yLabels.encounterId} (${supportIdDisplayValue})`}
