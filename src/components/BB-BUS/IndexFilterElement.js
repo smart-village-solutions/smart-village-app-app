@@ -1,20 +1,30 @@
+import PropTypes from 'prop-types';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
-import { StyleSheet } from 'react-native';
 
-import { colors, normalize } from '../../config';
-
-export const IndexFilterElement = styled.View`
-  padding-top: ${normalize(22)}px;
-  padding-bottom: ${normalize(12)}px;
-`;
-
-export const IndexFilterElementBorder = styled.View`
-  border-bottom-width: ${normalize(2)};
-  border-bottom-color: ${colors.primary};
-  margin-top: ${normalize(4)}px;
-`;
+import { colors } from '../../config';
+import { WrapperVertical } from '../Wrapper';
 
 export const IndexFilterWrapper = styled.View`
   border-bottom-width: ${StyleSheet.hairlineWidth};
   border-bottom-color: ${colors.shadow};
 `;
+
+export const IndexFilterElement = ({ children, selected }) => (
+  <WrapperVertical>
+    <View style={selected ? styles.underline : undefined}>{children}</View>
+  </WrapperVertical>
+);
+
+IndexFilterElement.propTypes = {
+  children: PropTypes.node.isRequired,
+  selected: PropTypes.bool.isRequired
+};
+
+const styles = StyleSheet.create({
+  underline: {
+    borderBottomColor: colors.primary,
+    borderBottomWidth: 1
+  }
+});
