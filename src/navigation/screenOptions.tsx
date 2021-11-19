@@ -7,9 +7,8 @@ import {
   BookmarkHeader,
   DiagonalGradient,
   DrawerHeader,
-  FavSettingsHeader,
+  FavoritesHeader,
   HeaderLeft,
-  SettingsHeader,
   ShareHeader,
   WrapperRow
 } from '../components';
@@ -23,16 +22,14 @@ type OptionProps = {
 type OptionConfig = {
   withBookmark?: boolean;
   withDrawer?: boolean;
-  withSettings?: boolean;
-  withFavSettings?: boolean;
+  withFavorites?: boolean;
   withShare?: boolean;
 };
 
 export const getScreenOptions = ({
   withBookmark,
   withDrawer,
-  withSettings,
-  withFavSettings,
+  withFavorites,
   withShare
 }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) => ({ navigation, route }) => {
   const shareContent = route.params?.shareContent ?? '';
@@ -47,12 +44,11 @@ export const getScreenOptions = ({
       <WrapperRow style={styles.headerRight}>
         {withBookmark && <BookmarkHeader route={route} style={styles.icon} />}
         {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
-        {withSettings && <SettingsHeader navigation={navigation} style={styles.icon} />}
         {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}
       </WrapperRow>
     ),
-    headerLeft: withFavSettings
-      ? () => <FavSettingsHeader navigation={navigation} style={styles.icon} />
+    headerLeft: withFavorites
+      ? () => <FavoritesHeader navigation={navigation} style={styles.icon} />
       : HeaderLeft,
     title: route.params?.title ?? '',
     cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS

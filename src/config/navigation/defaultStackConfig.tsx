@@ -76,7 +76,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Bookmarks,
       screenComponent: BookmarkScreen,
-      screenOptions: getScreenOptions({ withDrawer: isDrawer, withSettings: true })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer })
     },
     {
       routeName: ScreenName.Category,
@@ -156,7 +156,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Home,
       screenComponent: HomeScreen,
-      screenOptions: getScreenOptions({ withDrawer: isDrawer, withFavSettings: true }),
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withFavorites: true }),
       inititalParams: {
         isDrawer,
         title: texts.screenTitles.home

@@ -10,7 +10,6 @@ import {
   HomeSection,
   SafeAreaViewFlex,
   Service,
-  VersionNumber,
   Widgets
 } from '../components';
 import { colors, consts, texts } from '../config';
@@ -203,8 +202,7 @@ export const HomeScreen = ({ navigation, route }) => {
         {route.params?.isDrawer && (
           <>
             <Service navigation={navigation} />
-            <About navigation={navigation} />
-            <VersionNumber />
+            <About navigation={navigation} withHomeRefresh />
           </>
         )}
       </ScrollView>

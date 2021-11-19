@@ -11,14 +11,14 @@ type Props = {
   style: StyleProp<ViewStyle>;
 };
 
-export const FavSettingsHeader = ({ navigation, style }: Props) => {
+export const FavoritesHeader = ({ navigation, style }: Props) => {
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate('Bookmarks', { title: texts.bookmarks.bookmarks })}
       accessibilityLabel={a11yText.settingsBookmarksIcon}
       accessibilityHint={a11yText.settingsBookmarksHint}
     >
-      <Icon.FavSettings color={colors.lightestText} style={style} />
+      <Icon.HeartFilled color={colors.lightestText} style={style} />
     </TouchableOpacity>
   );
 };
