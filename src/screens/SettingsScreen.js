@@ -59,8 +59,8 @@ const Filter = {
 };
 
 const INITIAL_FILTER = [
-  { id: Filter.general, title: 'Allgemein', selected: true }, // TODO: extract texts
-  { id: Filter.listTypes, title: 'App-Aussehen', selected: false }
+  { id: Filter.general, title: texts.settingsTitles.tabs.general, selected: true },
+  { id: Filter.listTypes, title: texts.settingsTitles.tabs.listTypes, selected: false }
 ];
 
 export const SettingsScreen = () => {
