@@ -1,3 +1,5 @@
+import { LocationObject } from 'expo-location';
+
 type LatLon = {
   latitude: number;
   longitude: number;
@@ -56,3 +58,18 @@ const getLatLonForPOI = (item: any): LatLon | undefined => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const sortPOIsByDistanceFromPosition = (pointsOfInterest: any[], position: LatLon) =>
   sortByDistancesFromPoint(pointsOfInterest, getLatLonForPOI, position);
+
+export const latLngToLocationObject = (latLng: { lat: number; lng: number }): LocationObject => {
+  return {
+    coords: {
+      latitude: latLng.lat,
+      longitude: latLng.lng,
+      altitude: null,
+      accuracy: null,
+      altitudeAccuracy: null,
+      heading: null,
+      speed: null
+    },
+    timestamp: new Date().valueOf()
+  };
+};

@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList, View } from 'react-native';
-import * as Location from 'expo-location';
 
 import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, device, texts } from '../config';
 import {
-  ListSettings,
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
@@ -18,8 +16,9 @@ import {
 } from '../components';
 import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
 import { createMatomoUserId, readFromStore, removeMatomoUserId, storageHelper } from '../helpers';
-import { useLocationSettings, useMatomoTrackScreenView } from '../hooks';
+import { useMatomoTrackScreenView } from '../hooks';
 import { IndexFilterWrapperAndList } from '../components/BB-BUS/IndexFilterWrapperAndList';
+import { ListSettings, LocationSettings } from '../components/settings';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -65,7 +64,6 @@ const INITIAL_FILTER = [
 
 export const SettingsScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
-  const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
   const [sectionedData, setSectionedData] = useState([]);
   const [filter, setFilter] = useState(INITIAL_FILTER);
   const selectedFilterId = filter.find((entry) => entry.selected)?.id;
@@ -144,62 +142,13 @@ export const SettingsScreen = () => {
         });
       }
 
-      // settings should sometimes contain location settings next, depending on server settings
       if (settings.locationService) {
-        const systemPermission = await Location.getForegroundPermissionsAsync();
-
-        const { locationService = systemPermission.status !== Location.PermissionStatus.DENIED } =
-          locationSettings || {};
-
         additionalSectionedData.push({
-          data: [
-            {
-              title: texts.settingsTitles.locationService,
-              bottomDivider: true,
-              topDivider: true,
-              value: locationService,
-              onActivate: (revert) => {
-                Location.getForegroundPermissionsAsync().then((response) => {
-                  // if the system permission is granted, we can simply enable the sorting
-                  if (response.status === Location.PermissionStatus.GRANTED) {
-                    const newSettings = { locationService: true };
-                    setAndSyncLocationSettings(newSettings);
-                    return;
-                  }
-
-                  // if we can ask for the system permission, do so and update the settings or revert depending on the outcome
-                  if (
-                    response.status === Location.PermissionStatus.UNDETERMINED ||
-                    response.canAskAgain
-                  ) {
-                    Location.requestForegroundPermissionsAsync()
-                      .then((response) => {
-                        if (response.status !== Location.PermissionStatus.GRANTED) {
-                          revert();
-                        } else {
-                          const newSettings = { locationService: true };
-                          setAndSyncLocationSettings(newSettings);
-                          return;
-                        }
-                      })
-                      .catch(() => revert());
-                    return;
-                  }
-
-                  // if we neither have the permission, nor can we ask for it, then show an alert that the permission is missing
-                  revert();
-                  Alert.alert(
-                    texts.settingsTitles.locationService,
-                    texts.settingsContents.locationService.onSystemPermissionMissing
-                  );
-                });
-              },
-              onDeactivate: () => setAndSyncLocationSettings({ locationService: false })
-            }
-          ]
+          data: ['locationSettings'],
+          title: texts.settingsContents.locationService.sectionHeader,
+          renderItem: () => <LocationSettings />
         });
       }
-
       setSectionedData(additionalSectionedData);
     };
 

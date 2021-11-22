@@ -1,6 +1,5 @@
 export * from './About';
 export * from './EventRecord';
-export * from './ListSettings';
 export * from './LunchSection';
 export * from './NewsItem';
 export * from './OpeningTimesCard';

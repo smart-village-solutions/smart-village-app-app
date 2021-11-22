@@ -446,8 +446,14 @@ export const texts = {
       yes: 'Ja'
     },
     locationService: {
+      abort: 'Abbrechen',
+      alternativePositionHint:
+        'Wenn Ortungsdienste deaktiviert sind, wird stattdessen der alternative Standort verwendet.',
+      chooseAlternateLocationButton: 'Alternativen Standort wählen',
       onSystemPermissionMissing:
-        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.'
+        'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
+      save: 'Speichern',
+      sectionHeader: 'Standort'
     }
   },
   settingsScreen: {
