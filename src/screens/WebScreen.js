@@ -35,6 +35,8 @@ export const WebScreen = ({ route }) => {
               <ActivityIndicator color={colors.accent} />
             </LoadingContainer>
           )}
+          // https://github.com/react-native-webview/react-native-webview/blob/19980d888d66554875f3ac64b3e8a35bd7ad998b/src/WebViewTypes.ts#L378-L389
+          decelerationRate="normal"
         />
       </WrapperWithOrientation>
     </SafeAreaViewFlex>
