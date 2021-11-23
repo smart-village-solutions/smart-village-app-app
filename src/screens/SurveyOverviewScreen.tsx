@@ -36,11 +36,12 @@ const useSurveySections = () => {
 };
 
 const parseSurveyToItem = (survey: Survey & { archived?: true }, languages: string[]) => {
-  const langTitle = combineLanguages(languages, survey.title);
+  const languagesForSurvey = survey.isMultiLanguage ? languages : [languages[0]];
+  const langTitle = combineLanguages(languagesForSurvey, survey.title);
 
   // we know there will be at least one language for the question
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const langQuestion = combineLanguages(languages, survey.questionTitle)!;
+  const langQuestion = combineLanguages(languagesForSurvey, survey.questionTitle)!;
 
   const title = langTitle?.length ? langTitle : langQuestion;
 

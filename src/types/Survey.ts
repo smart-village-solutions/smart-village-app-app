@@ -14,6 +14,7 @@ export type Survey = {
     dateEnd: string;
   };
   responseOptions: ResponseOption[];
+  isMultiLanguage?: boolean;
   comments: Array<{
     id: string;
     createdAt: string;
