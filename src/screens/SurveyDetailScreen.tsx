@@ -13,6 +13,7 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   SurveyAnswer,
+  SurveyText,
   Wrapper,
   WrapperRow,
   WrapperWithOrientation
@@ -118,9 +119,9 @@ export const SurveyDetailScreen = ({ route }: Props) => {
             <DateComponent date={survey.date.dateEnd} isMultilingual={survey.isMultilingual} />
             {!!survey.description?.[languages[0]]?.length && (
               <Wrapper style={styles.noPaddingBottom}>
-                <RegularText>{survey.description[languages[0]]}</RegularText>
+                <SurveyText content={survey.description[languages[0]]} />
                 {!!survey.description?.[languages[1]]?.length && (
-                  <RegularText italic>{survey.description[languages[1]]}</RegularText>
+                  <SurveyText content={survey.description[languages[1]]} italic />
                 )}
               </Wrapper>
             )}

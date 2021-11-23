@@ -61,15 +61,15 @@ const htmlConfig = {
   ignoredTags: IGNORED_TAGS
 };
 
-export const HtmlView = memo(({ html, tagsStyles, openWebScreen }) => {
-  let width = imageWidth();
+export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
+  let calculatedWidth = width !== undefined ? Math.min(imageWidth(), width) : imageWidth();
 
-  if (width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
+  if (calculatedWidth > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
     // image width should be only 70% on wider screens, as there are 15% padding on each side
-    width = width * 0.7;
+    calculatedWidth = calculatedWidth * 0.7;
   }
 
-  const maxWidth = width - 2 * normalize(14); // width of an image minus paddings
+  const maxWidth = calculatedWidth - 2 * normalize(14); // width of an image minus paddings
 
   return (
     <HTML
@@ -99,7 +99,8 @@ HtmlView.displayName = 'HtmlView';
 HtmlView.propTypes = {
   html: PropTypes.string,
   tagsStyles: PropTypes.object,
-  openWebScreen: PropTypes.func
+  openWebScreen: PropTypes.func,
+  width: PropTypes.number
 };
 
 HtmlView.defaultProps = {
