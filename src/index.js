@@ -178,7 +178,9 @@ const MainAppWithApolloProvider = () => {
     }
 
     // if there are no locationSettings yet, set the defaults as fallback
-    const locationSettings = (await storageHelper.locationSettings()) || {};
+    const locationSettings = !globalSettings.settings.locationService
+      ? { locationService: false }
+      : (await storageHelper.locationSettings()) || {};
 
     const defaultAlternativePosition =
       globalSettings.settings.locationService?.defaultAlternativePosition;
@@ -189,9 +191,9 @@ const MainAppWithApolloProvider = () => {
       );
     }
 
-    setInitialGlobalSettings(globalSettings);
-    setInitialListTypesSettings(listTypesSettings);
     setInitialLocationSettings(locationSettings);
+    setInitialListTypesSettings(listTypesSettings);
+    setInitialGlobalSettings(globalSettings);
   };
 
   // setup global settings if apollo client setup finished
