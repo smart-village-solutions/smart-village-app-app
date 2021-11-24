@@ -1,6 +1,9 @@
 import appJson from '../../app.json';
 
 export const texts = {
+  appIntro: {
+    continue: 'Weiter'
+  },
   backToTop: 'zurück nach oben',
   bbBus: {
     authority: {

@@ -3,7 +3,7 @@ import { ListRenderItem, ScrollView, StyleSheet, View } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 
 import { BoldText, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
-import { colors, normalize } from '../config';
+import { colors, normalize, texts } from '../config';
 import { useStaticContent } from '../hooks';
 import { parseIntroSlides } from '../jsonValidation';
 import { AppIntroSlide } from '../types';
@@ -12,7 +12,7 @@ const keyExtractor = (slide: AppIntroSlide) => slide.title + slide.text;
 
 const SliderButton = ({ label }: { label: string }) => {
   return (
-    <View style={styles.underline}>
+    <View style={styles.sliderButton}>
       <BoldText>{label.toUpperCase()}</BoldText>
     </View>
   );
@@ -70,8 +70,8 @@ export const AppIntroScreen = ({ setOnboardingComplete }: Props) => {
           slides[index]?.onLeaveSlide?.(true);
         }}
         onDone={setOnboardingComplete}
-        renderDoneButton={() => <SliderButton label="Weiter" />}
-        renderNextButton={() => <SliderButton label="Weiter" />}
+        renderDoneButton={() => <SliderButton label={texts.appIntro.continue} />}
+        renderNextButton={() => <SliderButton label={texts.appIntro.continue} />}
         dotStyle={styles.inactiveDot}
         activeDotStyle={styles.activeDot}
         scrollEnabled={false}
@@ -102,8 +102,9 @@ const styles = StyleSheet.create({
   noPaddingBottom: {
     paddingBottom: 0
   },
-  underline: {
+  sliderButton: {
     borderBottomColor: colors.darkText,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
+    marginTop: 14 // no normalization here as the dots position does not use normalization either
   }
 });
