@@ -146,6 +146,18 @@ export const SurveyDetailScreen = ({ route }: Props) => {
             {!archived && (
               <>
                 <Wrapper>
+                  {!!survey.questionAllowMultipleResponses && (
+                    <>
+                      <RegularText center error>
+                        {texts.survey.multiSelectPossible.de}
+                      </RegularText>
+                      {/* TODO: update with new optional multilanguage logic */}
+                      <RegularText center error italic>
+                        {texts.survey.multiSelectPossible.pl}
+                      </RegularText>
+                      <RegularText />
+                    </>
+                  )}
                   <Button
                     disabled={isButtonDisabled}
                     title={buttonText}
