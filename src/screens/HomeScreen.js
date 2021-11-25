@@ -14,7 +14,7 @@ import {
 } from '../components';
 import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy, rootRouteName } from '../helpers';
-import { useMatomoTrackScreenView, usePushNotifications, useTrackAppStart } from '../hooks';
+import { useMatomoTrackScreenView, usePushNotifications } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
@@ -75,7 +75,6 @@ export const HomeScreen = ({ navigation, route }) => {
     globalSettings?.settings?.pushNotifications
   );
 
-  useTrackAppStart();
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
   useEffect(() => {
