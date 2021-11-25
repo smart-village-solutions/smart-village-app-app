@@ -8,6 +8,7 @@ export type Survey = {
   id: string;
   title?: Record<string, string | undefined>;
   questionTitle: Record<string, string | undefined>;
+  questionAllowMultipleResponses?: boolean;
   description?: Record<string, string | undefined>;
   date: {
     dateStart: string;

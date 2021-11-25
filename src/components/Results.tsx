@@ -13,8 +13,9 @@ import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
 type Props = {
   isMultilingual?: boolean;
   responseOptions: ResponseOption[];
-  selectedOption?: string;
+  selectedOptions: string[];
 };
+
 type SingleProps = {
   isMultilingual?: boolean;
   option: ResponseOption & { index: number };
@@ -61,7 +62,7 @@ const SingleResult = ({ isMultilingual, option, selected, totalCount }: SinglePr
   );
 };
 
-export const Results = ({ isMultilingual, responseOptions, selectedOption }: Props) => {
+export const Results = ({ isMultilingual, responseOptions, selectedOptions }: Props) => {
   const languages = useSurveyLanguages(isMultilingual);
   const sortedOptions = responseOptions
     .map((option, index) => ({ ...option, index }))
@@ -84,7 +85,7 @@ export const Results = ({ isMultilingual, responseOptions, selectedOption }: Pro
             key={option.id}
             isMultilingual={isMultilingual}
             option={option}
-            selected={selectedOption === option.id}
+            selected={selectedOptions.includes(option.id)}
             totalCount={totalCount}
           />
         ))}

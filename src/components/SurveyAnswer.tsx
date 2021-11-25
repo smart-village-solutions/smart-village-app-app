@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { SetStateAction, useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { colors } from '../config';
@@ -16,9 +16,10 @@ type Props = {
   faded: boolean;
   index: number;
   isMultilingual?: boolean;
+  isMultiSelect?: boolean;
   responseOption: ResponseOption;
   selected: boolean;
-  setSelection: (id: string) => void;
+  setSelection: React.Dispatch<SetStateAction<string[]>>;
 };
 
 export const SurveyAnswer = ({
@@ -26,6 +27,7 @@ export const SurveyAnswer = ({
   faded,
   index,
   isMultilingual,
+  isMultiSelect,
   responseOption,
   selected,
   setSelection
@@ -33,7 +35,18 @@ export const SurveyAnswer = ({
   const languages = useSurveyLanguages(isMultilingual);
 
   const { id } = responseOption;
-  const onPress = useCallback(() => setSelection(id), [id, setSelection]);
+  const onPress = useCallback(() => {
+    setSelection((selection) => {
+      if (selection.includes(id)) {
+        // if it is single selection, then we don't need to change anything if it is selected already
+        // otherwise remove it from the selection -> toggle behaviour
+        return isMultiSelect ? selection.filter((value) => value !== id) : selection;
+      } else {
+        // if we have multiselection simply add the id to the selected ids, otherwise set it as the only selection
+        return isMultiSelect ? [...selection, id] : [id];
+      }
+    });
+  }, [id, setSelection]);
 
   const fadeStyle = { opacity: faded ? 0.5 : 1 };
 
