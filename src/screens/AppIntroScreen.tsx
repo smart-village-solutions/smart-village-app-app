@@ -87,7 +87,7 @@ const ACTIVE_DOT_SIZE = INACTIVE_DOT_SIZE * 2;
 const styles = StyleSheet.create({
   activeDot: {
     backgroundColor: colors.darkText,
-    borderRadius: normalize(ACTIVE_DOT_SIZE / 2),
+    borderRadius: normalize(ACTIVE_DOT_SIZE) / 2,
     height: ACTIVE_DOT_SIZE,
     width: ACTIVE_DOT_SIZE
   },
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   inactiveDot: {
     backgroundColor: colors.darkText,
-    borderRadius: normalize(INACTIVE_DOT_SIZE / 2),
+    borderRadius: normalize(INACTIVE_DOT_SIZE) / 2,
     height: INACTIVE_DOT_SIZE,
     width: INACTIVE_DOT_SIZE
   },
