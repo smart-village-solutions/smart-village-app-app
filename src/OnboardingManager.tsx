@@ -36,6 +36,7 @@ const useInitializeAfterOnboarding = (onboardingComplete: boolean) => {
         Initializers[Initializer.PushNotifications]();
       }
 
+      // set orientation to "default", to allow both portrait and landscape
       ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
     }
   }, [onboardingComplete]);

@@ -74,6 +74,7 @@ export const AppIntroScreen = ({ setOnboardingComplete }: Props) => {
         renderNextButton={() => <SliderButton label={texts.appIntro.continue} />}
         dotStyle={styles.inactiveDot}
         activeDotStyle={styles.activeDot}
+        dotClickEnabled={false}
         scrollEnabled={false}
       />
     </SafeAreaViewFlex>

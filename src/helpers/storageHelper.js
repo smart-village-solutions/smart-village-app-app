@@ -10,7 +10,6 @@ export const storageHelper = {
   globalSettings: () => readFromStore('globalSettings'),
   setGlobalSettings: (globalSettings) => addToStore('globalSettings', globalSettings),
   locationSettings: () => readFromStore('locationSettings'),
-  onboardingSettings: () => readFromStore('onboardingSettings'),
   setLocationSettings: (settings) => addToStore('locationSettings', settings),
   matomoSettings: () => readFromStore('matomoSettings'),
   setMatomoSettings: (matomoSettings) => addToStore('matomoSettings', matomoSettings),

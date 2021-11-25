@@ -17,6 +17,8 @@ const isValidAppIntroSlideData = (json: unknown): json is AppIntroSlideData => {
 
   const { image, title, text, onLeaveSlide } = json as AppIntroSlideData;
 
+  // the purpose is to filter out slides that have invalid onLeaveSlides in them.
+  // that way slides corresponding to features of newer app versions will not be shown.
   const isInitializer = !onLeaveSlide || Object.values(Initializer).includes(onLeaveSlide);
 
   return isString(image) && isString(title) && isString(text) && isInitializer;
