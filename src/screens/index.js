@@ -16,6 +16,7 @@ export * from './HomeScreen';
 export * from './HtmlScreen';
 export * from './IndexScreen';
 export * from './LunchScreen';
+export * from './NestedInfoScreen';
 export * from './OParl';
 export * from './SettingsScreen';
 export * from './SurveyDetailScreen';
