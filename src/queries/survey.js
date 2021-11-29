@@ -4,6 +4,7 @@ export const DETAILED_SURVEY = gql`
   query Surveys($id: ID!) {
     surveys(ids: [$id]) {
       id
+      canComment
       title
       questionTitle
       questionAllowMultipleResponses
