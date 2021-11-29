@@ -18,7 +18,7 @@ import { Wrapper, WrapperWithOrientation } from './Wrapper';
 type Props = {
   archived?: boolean;
   comments: Survey['comments'];
-  isMultiLanguage?: boolean;
+  isMultilingual?: boolean;
   scrollViewRef: RefObject<ScrollView>;
   surveyId: string;
 };
@@ -28,7 +28,7 @@ const MAX_COMMENT_LENGTH = 5000;
 export const CommentSection = ({
   archived,
   comments,
-  isMultiLanguage,
+  isMultilingual,
   scrollViewRef,
   surveyId
 }: Props) => {
@@ -36,7 +36,7 @@ export const CommentSection = ({
   const [sendComment] = useMutation(COMMENT_ON_SURVEY);
   const [newComment, setNewComment] = useState('');
 
-  const languages = useSurveyLanguages(isMultiLanguage);
+  const languages = useSurveyLanguages(isMultilingual);
 
   const submitComment = useCallback(() => {
     Keyboard.dismiss();
@@ -68,7 +68,7 @@ export const CommentSection = ({
       {(!archived || comments.length > 0) && (
         <Wrapper ref={refForPosition}>
           <RegularText big>{texts.survey.comments.de}</RegularText>
-          {!!isMultiLanguage && (
+          {!!isMultilingual && (
             <RegularText big italic>
               {texts.survey.comments.pl}
             </RegularText>

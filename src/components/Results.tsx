@@ -11,12 +11,12 @@ import { BoldText } from './Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
 
 type Props = {
-  isMultiLanguage?: boolean;
+  isMultilingual?: boolean;
   responseOptions: ResponseOption[];
   selectedOption?: string;
 };
 type SingleProps = {
-  isMultiLanguage?: boolean;
+  isMultilingual?: boolean;
   option: ResponseOption & { index: number };
   selected: boolean;
   totalCount: number;
@@ -33,14 +33,14 @@ const getCountLabel = (partial: number, total: number) => {
   return `${partial} / ${getPercent(partial, total)}`;
 };
 
-const SingleResult = ({ isMultiLanguage, option, selected, totalCount }: SingleProps) => {
+const SingleResult = ({ isMultilingual, option, selected, totalCount }: SingleProps) => {
   const percentString = getPercent(option.votesCount, totalCount);
   const width = percentString === '0%' ? barBorderRadius * 2 : percentString;
   return (
     <WrapperRow spaceBetween style={styles.container}>
       <View style={styles.labelContainer}>
         <BoldText small>{getAnswerLabel('de', option.index)}</BoldText>
-        {!!isMultiLanguage && <BoldText small>{getAnswerLabel('pl', option.index)}</BoldText>}
+        {!!isMultilingual && <BoldText small>{getAnswerLabel('pl', option.index)}</BoldText>}
       </View>
       <WrapperHorizontal style={styles.barContainer}>
         <View
@@ -54,15 +54,15 @@ const SingleResult = ({ isMultiLanguage, option, selected, totalCount }: SingleP
           ]}
         />
       </WrapperHorizontal>
-      <View style={[styles.countContainer, { top: isMultiLanguage ? normalize(7) : normalize(3) }]}>
+      <View style={[styles.countContainer, { top: isMultilingual ? normalize(7) : normalize(3) }]}>
         <BoldText>{getCountLabel(option.votesCount, totalCount)}</BoldText>
       </View>
     </WrapperRow>
   );
 };
 
-export const Results = ({ isMultiLanguage, responseOptions, selectedOption }: Props) => {
-  const languages = useSurveyLanguages(isMultiLanguage);
+export const Results = ({ isMultilingual, responseOptions, selectedOption }: Props) => {
+  const languages = useSurveyLanguages(isMultilingual);
   const sortedOptions = responseOptions
     .map((option, index) => ({ ...option, index }))
     // deepcode ignore NoZeroReturnedInSort: The callback provided to sort does return 0 implicitly if the compared values are equal.
@@ -82,7 +82,7 @@ export const Results = ({ isMultiLanguage, responseOptions, selectedOption }: Pr
         {sortedOptions.map((option) => (
           <SingleResult
             key={option.id}
-            isMultiLanguage={isMultiLanguage}
+            isMultilingual={isMultilingual}
             option={option}
             selected={selectedOption === option.id}
             totalCount={totalCount}

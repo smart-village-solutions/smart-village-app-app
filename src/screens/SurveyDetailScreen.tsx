@@ -30,11 +30,11 @@ type Props = {
 const DateComponent = ({
   start,
   date,
-  isMultiLanguage
+  isMultilingual
 }: {
   start?: boolean;
   date: string;
-  isMultiLanguage?: boolean;
+  isMultilingual?: boolean;
 }) => {
   return (
     <Wrapper style={styles.noPaddingBottom}>
@@ -43,7 +43,7 @@ const DateComponent = ({
           <RegularText small>
             {start ? texts.survey.dateStart.de : texts.survey.dateEnd.de}
           </RegularText>
-          {!!isMultiLanguage && (
+          {!!isMultilingual && (
             <RegularText italic small>
               {start ? texts.survey.dateStart.pl : texts.survey.dateEnd.pl}
             </RegularText>
@@ -71,7 +71,7 @@ export const SurveyDetailScreen = ({ route }: Props) => {
   const archived = route.params?.archived;
   const surveyId = route.params?.id;
   const { refetch, survey } = useSurvey(surveyId);
-  const languages = useSurveyLanguages(survey?.isMultiLanguage);
+  const languages = useSurveyLanguages(survey?.isMultilingual);
   const { previousSubmission, selection, setSelection, submitSelection } = useAnswerSelection(
     surveyId,
     refetch
@@ -123,7 +123,7 @@ export const SurveyDetailScreen = ({ route }: Props) => {
                 archived={archived}
                 faded={!!selection && selection !== responseOption.id}
                 index={index}
-                isMultiLanguage={survey.isMultiLanguage}
+                isMultilingual={survey.isMultilingual}
                 responseOption={responseOption}
                 selected={selection === responseOption.id}
                 setSelection={setSelection}
@@ -146,7 +146,7 @@ export const SurveyDetailScreen = ({ route }: Props) => {
                     <RegularText error small>
                       {texts.survey.hint.de}
                     </RegularText>
-                    {!!survey?.isMultiLanguage && (
+                    {!!survey?.isMultilingual && (
                       <RegularText error italic small>
                         {texts.survey.hint.pl}
                       </RegularText>
@@ -157,7 +157,7 @@ export const SurveyDetailScreen = ({ route }: Props) => {
             )}
             {(previousSubmission || archived) && (
               <Results
-                isMultiLanguage={survey.isMultiLanguage}
+                isMultilingual={survey.isMultilingual}
                 responseOptions={survey.responseOptions}
                 selectedOption={previousSubmission}
               />
@@ -166,7 +166,7 @@ export const SurveyDetailScreen = ({ route }: Props) => {
           <CommentSection
             archived={archived}
             comments={survey.comments}
-            isMultiLanguage={survey.isMultiLanguage}
+            isMultilingual={survey.isMultilingual}
             scrollViewRef={scrollViewRef}
             surveyId={surveyId}
           />

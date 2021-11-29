@@ -36,7 +36,7 @@ const useSurveySections = () => {
 };
 
 const parseSurveyToItem = (survey: Survey & { archived?: true }, languages: string[]) => {
-  const languagesForSurvey = survey.isMultiLanguage ? languages : [languages[0]];
+  const languagesForSurvey = survey.isMultilingual ? languages : [languages[0]];
   const langTitle = combineLanguages(languagesForSurvey, survey.title);
 
   // we know there will be at least one language for the question

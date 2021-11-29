@@ -15,7 +15,7 @@ type Props = {
   archived?: boolean;
   faded: boolean;
   index: number;
-  isMultiLanguage?: boolean;
+  isMultilingual?: boolean;
   responseOption: ResponseOption;
   selected: boolean;
   setSelection: (id: string) => void;
@@ -25,12 +25,12 @@ export const SurveyAnswer = ({
   archived,
   faded,
   index,
-  isMultiLanguage,
+  isMultilingual,
   responseOption,
   selected,
   setSelection
 }: Props) => {
-  const languages = useSurveyLanguages(isMultiLanguage);
+  const languages = useSurveyLanguages(isMultilingual);
 
   const { id } = responseOption;
   const onPress = useCallback(() => setSelection(id), [id, setSelection]);
@@ -48,7 +48,7 @@ export const SurveyAnswer = ({
             <Wrapper style={styles.answerContainer}>
               <BoldText>{getAnswerLabel('de', index)}</BoldText>
               <RegularText>{responseOption.title[languages[0]]}</RegularText>
-              {!!isMultiLanguage && !!responseOption.title[languages[1]] && (
+              {!!isMultilingual && !!responseOption.title[languages[1]] && (
                 <>
                   <BoldText italic>{getAnswerLabel('pl', index)}</BoldText>
                   <RegularText italic>{responseOption.title[languages[1]]}</RegularText>

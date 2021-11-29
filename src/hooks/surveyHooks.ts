@@ -7,8 +7,8 @@ import { addToStore, readFromStore } from '../helpers';
 import { SUBMIT_SURVEY_RESPONSE } from '../queries/survey';
 
 // TODO: implement properly
-export const useSurveyLanguages = (isMultiLanguage?: boolean) =>
-  (isMultiLanguage ? ['de', 'pl'] : ['de']) as ('de' | 'pl')[];
+export const useSurveyLanguages = (isMultilingual?: boolean) =>
+  (isMultilingual ? ['de', 'pl'] : ['de']) as ('de' | 'pl')[];
 
 const SURVEY_ANSWERS_STORAGE_PREFIX = 'SVA_SURVEY_ANSWERS_';
 
