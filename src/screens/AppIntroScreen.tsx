@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ListRenderItem, ScrollView, StyleSheet, View } from 'react-native';
+import { ListRenderItem, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 
 import { BoldText, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
@@ -62,6 +62,7 @@ export const AppIntroScreen = ({ setOnboardingComplete }: Props) => {
 
   return (
     <SafeAreaViewFlex>
+      <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
       <AppIntroSlider<AppIntroSlide>
         renderItem={renderSlide}
         data={slides}
@@ -106,6 +107,6 @@ const styles = StyleSheet.create({
   sliderButton: {
     borderBottomColor: colors.darkText,
     borderBottomWidth: 1,
-    marginTop: 14 // no normalization here as the dots position does not use normalization either
+    marginVertical: 12 // no normalization here as the dots position does not use normalization either
   }
 });
