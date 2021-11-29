@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider, ListItem } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { colors, consts, device, Icon, normalize, texts } from '../config';
 import { storageHelper } from '../helpers';
 import { SettingsContext } from '../SettingsProvider';
 
-import { BoldText } from './Text';
+import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
-import { Wrapper, WrapperRow, WrapperVertical } from './Wrapper';
+import { Wrapper, WrapperRow } from './Wrapper';
 
 const { LIST_TYPES } = consts;
 
@@ -39,24 +39,23 @@ export const ListSettingsItem = ({ item }) => {
     });
 
   return (
-    <View>
+    <>
       <Touchable onPress={onPressTitle}>
-        <WrapperVertical>
-          <Wrapper>
-            <WrapperRow spaceBetween>
-              <BoldText>{title}</BoldText>
-              {isCollapsed ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
-            </WrapperRow>
-          </Wrapper>
-        </WrapperVertical>
+        <Wrapper style={styles.wrapper}>
+          <WrapperRow spaceBetween>
+            <BoldText>{title}</BoldText>
+            {isCollapsed ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
+          </WrapperRow>
+        </Wrapper>
       </Touchable>
       <Divider style={styles.divider} />
       <Collapsible collapsed={isCollapsed}>
         {Object.values(LIST_TYPES).map((listType) => (
           <ListItem
             key={listType}
+            title={<RegularText small>{texts.settingsTitles.listLayouts[listType]}</RegularText>}
             bottomDivider
-            onPress={getOnPressListType(listType)}
+            containerStyle={styles.container}
             rightIcon={() =>
               listType === listTypeForQuery ? (
                 <Icon.RadioButtonFilled size={RADIO_BUTTON_SIZE} />
@@ -64,17 +63,29 @@ export const ListSettingsItem = ({ item }) => {
                 <Icon.RadioButtonEmpty color={colors.darkText} size={RADIO_BUTTON_SIZE} />
               )
             }
-            title={texts.settingsTitles.listLayouts[listType]}
+            onPress={getOnPressListType(listType)}
+            delayPressIn={0}
+            Component={Touchable}
+            accessibilityLabel={`(${texts.settingsTitles.listLayouts[listType]}) ${consts.a11yLabel.button}`}
           />
         ))}
       </Collapsible>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.transparent,
+    paddingRight: normalize(18),
+    paddingVertical: normalize(12)
+  },
   divider: {
     backgroundColor: colors.placeholder
+  },
+  wrapper: {
+    paddingBottom: device.platform === 'ios' ? normalize(16) : normalize(14),
+    paddingTop: device.platform === 'ios' ? normalize(16) : normalize(18)
   }
 });
 

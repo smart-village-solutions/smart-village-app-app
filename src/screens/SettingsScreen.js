@@ -86,7 +86,7 @@ export const SettingsScreen = () => {
           data: [
             {
               title: texts.settingsTitles.pushNotifications,
-              topDivider: true,
+              topDivider: false,
               value: pushPermission,
               onActivate: onActivatePushNotifications,
               onDeactivate: onDeactivatePushNotifications
@@ -155,6 +155,7 @@ export const SettingsScreen = () => {
           data: [
             {
               title: texts.settingsTitles.locationService,
+              bottomDivider: true,
               topDivider: true,
               value: locationService,
               onActivate: (revert) => {
