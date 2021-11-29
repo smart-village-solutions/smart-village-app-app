@@ -22,6 +22,7 @@ export const DETAILED_SURVEY = gql`
         createdAt
         message
       }
+      isMultilingual
     }
   }
 `;
