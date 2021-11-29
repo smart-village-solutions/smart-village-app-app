@@ -102,8 +102,12 @@ export const SurveyDetailScreen = ({ route }: Props) => {
         >
           <WrapperWithOrientation>
             {!!shownTitle?.length && <SectionHeader title={shownTitle} />}
-            <DateComponent start date={survey.date.dateStart} />
-            <DateComponent date={survey.date.dateEnd} />
+            <DateComponent
+              date={survey.date.dateStart}
+              isMultilingual={survey.isMultilingual}
+              start
+            />
+            <DateComponent date={survey.date.dateEnd} isMultilingual={survey.isMultilingual} />
             {!!survey.description?.[languages[0]]?.length && (
               <Wrapper style={styles.noPaddingBottom}>
                 <RegularText>{survey.description[languages[0]]}</RegularText>
