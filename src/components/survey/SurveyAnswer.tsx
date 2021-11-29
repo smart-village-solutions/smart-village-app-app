@@ -25,7 +25,7 @@ type Props = {
 };
 
 // image width minus the width of the radiobutton and its wrapper
-const answerWidth = imageWidth() - (2 * normalize(14) + normalize(24));
+const answerWidth = imageWidth() - (3 * normalize(14) + normalize(24));
 
 export const SurveyAnswer = ({
   archived,
