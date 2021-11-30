@@ -1,5 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   Pressable,
@@ -57,7 +57,6 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
   const [lastName, setLastName] = useState<string>();
   const [birthDate, setBirthDate] = useState<Date>();
   const [phone, setPhone] = useState<string>();
-  const [supportIdDisplayValue, setSupportIdDisplayValue] = useState<string>();
 
   // only allow to submit changes, if at least one field was changed
   const [hasChanges, setHasChanges] = useState(false);
@@ -145,8 +144,6 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
     user?.verified ? showChangeWarning(updateUserData) : updateUserData();
   };
 
-  const userIdInputRef = useRef<TextInput>(null);
-
   useEffect(() => {
     if (!user) {
       return;
@@ -161,10 +158,6 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
     setLastName(user.lastName);
     setPhone(user.phone);
   }, [user]);
-
-  useEffect(() => {
-    setSupportIdDisplayValue(supportId);
-  }, [supportId]);
 
   if (loading) {
     return <LoadingSpinner loading />;
@@ -268,7 +261,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
             </Wrapper>
             <Wrapper style={styles.noPaddingTop}>
               <WrapperRow style={styles.infoLabelContainer}>
-                <Label>{texts.encounter.verified}</Label>
+                <Label>{texts.encounter.status}</Label>
                 <TouchableOpacity
                   accessibilityLabel={`${a11yLabels.verifiedInfo} ${a11yLabels.button}`}
                   onPress={onPressInfoVerification}
@@ -295,16 +288,11 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
                   <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
                 </TouchableOpacity>
               </WrapperRow>
-              <TextInput
-                accessibilityLabel={`${a11yLabels.encounterId} (${supportIdDisplayValue})`}
-                onChangeText={setSupportIdDisplayValue}
-                onBlur={() => setSupportIdDisplayValue(supportId)}
-                onTouchStart={() => userIdInputRef.current?.focus()}
-                ref={userIdInputRef}
-                selectTextOnFocus={true}
-                style={styles.inputField}
-                value={supportIdDisplayValue}
-              />
+              <View style={[styles.inputField, styles.supportIdContainer]}>
+                <RegularText big selectable>
+                  {supportId}
+                </RegularText>
+              </View>
             </Wrapper>
             <Wrapper>
               <Button
@@ -346,5 +334,9 @@ const styles = StyleSheet.create({
   },
   noPaddingTop: {
     paddingTop: 0
+  },
+  supportIdContainer: {
+    paddingBottom: normalize(7),
+    paddingTop: normalize(9)
   }
 });
