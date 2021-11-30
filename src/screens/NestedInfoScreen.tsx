@@ -38,10 +38,12 @@ const ListHeaderComponent = ({ loading, html }: { loading: boolean; html?: strin
   }
 
   return (
-    <Wrapper>
-      {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
-      <HtmlView html={html} />
-    </Wrapper>
+    <WrapperWithOrientation>
+      <Wrapper>
+        {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
+        <HtmlView html={html} />
+      </Wrapper>
+    </WrapperWithOrientation>
   );
 };
 
@@ -96,23 +98,21 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
 
   return (
     <SafeAreaViewFlex>
-      <WrapperWithOrientation>
-        <SectionList
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={[colors.accent]}
-              tintColor={colors.accent}
-            />
-          }
-          ListHeaderComponent={<ListHeaderComponent loading={loadingHtml} html={dataHtml} />}
-          sections={sectionData}
-          renderSectionHeader={({ section: { title } }) => <SectionHeader title={title} />}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.title}
-        />
-      </WrapperWithOrientation>
+      <SectionList
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[colors.accent]}
+            tintColor={colors.accent}
+          />
+        }
+        ListHeaderComponent={<ListHeaderComponent loading={loadingHtml} html={dataHtml} />}
+        sections={sectionData}
+        renderSectionHeader={({ section: { title } }) => <SectionHeader title={title} />}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.title}
+      />
     </SafeAreaViewFlex>
   );
 };
