@@ -5,15 +5,13 @@ import { ActivityIndicator, RefreshControl, SectionList } from 'react-native';
 
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
-import { useRefreshTime } from '../../hooks';
-import { useHomeRefresh } from '../../hooks/HomeRefresh';
+import { useHomeRefresh, useRefreshTime, useRenderItem } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { VersionNumber } from '../VersionNumber';
-import { useRenderItem } from '../../hooks/listHooks';
 
 export const About = ({ navigation, withHomeRefresh, withSettings }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);

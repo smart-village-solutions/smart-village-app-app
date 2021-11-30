@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import { ActivityIndicator, FlatList } from 'react-native';
 
 import { colors, normalize } from '../config';
-import { useRenderItem } from '../hooks/listHooks';
+import { useRenderItem } from '../hooks';
 
 import { BackToTop } from './BackToTop';
 

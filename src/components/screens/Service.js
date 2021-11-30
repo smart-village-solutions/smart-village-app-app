@@ -5,8 +5,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, device, Icon, normalize, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
-import { useRefreshTime } from '../../hooks';
-import { useHomeRefresh } from '../../hooks/HomeRefresh';
+import { useHomeRefresh, useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';

@@ -2,8 +2,7 @@ import { useNavigation } from '@react-navigation/core';
 import React, { useCallback } from 'react';
 
 import { Icon, texts } from '../../config';
-import { useConstructionSites } from '../../hooks';
-import { useHomeRefresh } from '../../hooks/HomeRefresh';
+import { useConstructionSites, useHomeRefresh } from '../../hooks';
 import { WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';

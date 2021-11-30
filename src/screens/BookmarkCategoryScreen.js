@@ -13,8 +13,7 @@ import {
 } from '../components';
 import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
-import { useMatomoTrackScreenView, useRefreshTime } from '../hooks';
-import { useBookmarks } from '../hooks/Bookmarks';
+import { useBookmarks, useMatomoTrackScreenView, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery } from '../queries';
 

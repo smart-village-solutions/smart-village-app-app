@@ -6,7 +6,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { consts, normalize, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
-import { useHomeRefresh } from '../../hooks/HomeRefresh';
+import { useHomeRefresh } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { WidgetProps } from '../../types';

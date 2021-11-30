@@ -2,7 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useQuery } from 'react-apollo';
 
-import { useHomeRefresh } from '../hooks/HomeRefresh';
+import { useHomeRefresh } from '../hooks';
 import { getQuery } from '../queries';
 
 import { DataListSection } from './DataListSection';
