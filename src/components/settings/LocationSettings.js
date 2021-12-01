@@ -11,12 +11,12 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
 import { SettingsToggle } from '../SettingsToggle';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
-import { location, locationIconAnchor } from '../../icons';
+import { ownLocationIconAnchor, ownLocation } from '../../icons';
 import { latLngToLocationObject } from '../../helpers';
 
 const baseLocationMarker = {
-  icon: location(colors.primary),
-  iconAnchor: locationIconAnchor
+  icon: ownLocation(colors.accent),
+  iconAnchor: ownLocationIconAnchor
 };
 
 const useSystemPermission = () => {
@@ -31,7 +31,6 @@ const useSystemPermission = () => {
 
 const getLocationMarker = (locationObject) => ({
   ...baseLocationMarker,
-  id: 'alternativePosition',
   position: {
     lat: locationObject.coords.latitude,
     lng: locationObject.coords.longitude
@@ -99,7 +98,7 @@ export const LocationSettings = () => {
   let locations = [];
 
   if (selectedPosition) {
-    locations = [{ ...baseLocationMarker, id: 'selectedPosition', position: selectedPosition }];
+    locations = [{ ...baseLocationMarker, position: selectedPosition }];
   } else if (alternativePosition) {
     locations = [getLocationMarker(alternativePosition)];
   } else if (defaultAlternativePosition) {
@@ -117,14 +116,14 @@ export const LocationSettings = () => {
         </Wrapper>
         <Collapsible collapsed={!showMap}>
           <WebViewMap
-            mapCenterPosition={{ lat: 51.1657, lng: 10.4515 }}
+            mapCenterPosition={{ lat: 51.1657, lng: 10.4515 }} // center of germany
             locations={locations}
             onMessageReceived={(msg) => {
               if (msg.event === 'onMapClicked') {
                 setSelectedPosition(msg.payload.touchLatLng);
               }
             }}
-            zoom={4}
+            zoom={4} // this sets the zoom to show all of germany
           />
           <Wrapper>
             <Button
