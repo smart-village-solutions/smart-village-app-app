@@ -18,7 +18,12 @@ import { auth } from './auth';
 import { BookmarkProvider } from './BookmarkProvider';
 import { LoadingContainer } from './components';
 import { colors, consts, namespace, secrets } from './config';
-import { graphqlFetchPolicy, parsedImageAspectRatio, storageHelper } from './helpers';
+import {
+  graphqlFetchPolicy,
+  latLngToLocationObject,
+  parsedImageAspectRatio,
+  storageHelper
+} from './helpers';
 import { Navigator } from './navigation/Navigator';
 import NetInfo from './NetInfo';
 import { NetworkProvider } from './NetworkProvider';
@@ -178,6 +183,15 @@ const MainAppWithApolloProvider = () => {
     const locationSettings = globalSettings.settings.locationService
       ? (await storageHelper.locationSettings()) || { locationService: true }
       : { locationService: false };
+
+    const defaultAlternativePosition =
+      globalSettings.settings.locationService?.defaultAlternativePosition;
+
+    if (defaultAlternativePosition) {
+      locationSettings.defaultAlternativePosition = latLngToLocationObject(
+        defaultAlternativePosition
+      );
+    }
 
     setInitialGlobalSettings(globalSettings);
     setInitialListTypesSettings(listTypesSettings);

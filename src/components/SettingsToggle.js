@@ -11,7 +11,7 @@ import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
 // TODO: snack bar / toast als nutzerinfo
-export const SettingsToggle = ({ item, index, section }) => {
+export const SettingsToggle = ({ item }) => {
   const { title, bottomDivider, topDivider, value, onActivate, onDeactivate } = item;
 
   const [loading, setLoading] = useState(false);
@@ -39,10 +39,7 @@ export const SettingsToggle = ({ item, index, section }) => {
   return (
     <ListItem
       title={title && <BoldText>{title}</BoldText>}
-      bottomDivider={
-        // do not show a bottomDivider after last entry
-        bottomDivider !== undefined || index < section.data.length - 1
-      }
+      bottomDivider={bottomDivider ?? false}
       topDivider={topDivider ?? false}
       containerStyle={styles.container}
       rightIcon={
@@ -70,7 +67,5 @@ const styles = StyleSheet.create({
 });
 
 SettingsToggle.propTypes = {
-  item: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired,
-  section: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired
 };
