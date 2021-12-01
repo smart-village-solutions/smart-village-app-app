@@ -63,6 +63,15 @@ export const GET_POINTS_OF_INTEREST = gql`
           description
         }
       }
+      openingHours {
+        id
+        weekday
+        timeFrom
+        timeTo
+        open
+        dateFrom
+        dateTo
+      }
       webUrls {
         id
         url

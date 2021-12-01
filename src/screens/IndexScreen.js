@@ -1,23 +1,26 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, RefreshControl } from 'react-native';
+import { ActivityIndicator, RefreshControl, View } from 'react-native';
+import { Divider } from 'react-native-elements';
 import { Query } from 'react-apollo';
 
 import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { auth } from '../auth';
-import { colors, consts } from '../config';
+import { colors, consts, texts } from '../config';
 import {
   DropdownHeader,
   ListComponent,
   LoadingContainer,
   LocationOverview,
   MapSwitchHeader,
+  OptionToggle,
   SafeAreaViewFlex
 } from '../components';
 import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
 import {
   graphqlFetchPolicy,
+  isOpen,
   matomoTrackingString,
   parseListItemsFromQuery,
   sortPOIsByDistanceFromPosition
@@ -38,6 +41,7 @@ export const IndexScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
+  const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
 
   const query = route.params?.query ?? '';
 
@@ -91,7 +95,9 @@ export const IndexScreen = ({ navigation, route }) => {
 
   // if we show the map or want to sort by distance, we need to fetch all the entries at once
   // this is not a big issue if we want to sort by distance, because getting the location usually takes longer than fetching all entries
-  if (showMap || sortByDistance) {
+  // if we filter by opening times, we need to also remove the limit as otherwise we might not have any open POIs in the next batch
+  // that would result in the list not getting any new items and not reliably triggering another fetchMore
+  if (showMap || sortByDistance || filterByOpeningTimes) {
     delete queryVariables.limit;
   }
 
@@ -149,7 +155,15 @@ export const IndexScreen = ({ navigation, route }) => {
   return (
     <SafeAreaViewFlex>
       {query === QUERY_TYPES.POINTS_OF_INTEREST ? (
-        <MapSwitchHeader setShowMap={setShowMap} showMap={showMap} />
+        <View>
+          <MapSwitchHeader setShowMap={setShowMap} showMap={showMap} />
+          <OptionToggle
+            label={texts.pointOfInterest.filterByOpeningTime}
+            onToggle={() => setFilterByOpeningTimes((value) => !value)}
+            value={filterByOpeningTimes}
+          />
+          <Divider />
+        </View>
       ) : null}
       {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
         <LocationOverview
@@ -183,6 +197,12 @@ export const IndexScreen = ({ navigation, route }) => {
             });
 
             if (!listItems) return null;
+
+            if (filterByOpeningTimes) {
+              listItems = listItems.filter(
+                (entry) => isOpen(entry.params?.details?.openingHours)?.open
+              );
+            }
 
             if (sortByDistance && position) {
               listItems = sortPOIsByDistanceFromPosition(listItems, position.coords);
