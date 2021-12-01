@@ -463,7 +463,11 @@ export const texts = {
       textList: 'Textliste'
     },
     locationService: 'Ortungsdienste',
-    pushNotifications: 'Push-Benachrichtigungen'
+    pushNotifications: 'Push-Benachrichtigungen',
+    tabs: {
+      general: 'Allgemein',
+      listTypes: 'App-Aussehen'
+    }
   },
   survey: {
     archive: 'Umfrage-Archiv',

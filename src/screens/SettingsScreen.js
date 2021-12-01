@@ -3,14 +3,13 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList, View } from 'react-native';
 import * as Location from 'expo-location';
 
-import { OrientationContext } from '../OrientationProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, device, texts } from '../config';
 import {
+  ListSettings,
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
-  SettingsListItem,
   Title,
   TitleContainer,
   TitleShadow,
@@ -18,9 +17,9 @@ import {
   Wrapper
 } from '../components';
 import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
-import { QUERY_TYPES } from '../queries';
 import { createMatomoUserId, readFromStore, removeMatomoUserId, storageHelper } from '../helpers';
 import { useLocationSettings, useMatomoTrackScreenView } from '../hooks';
+import { IndexFilterWrapperAndList } from '../components/BB-BUS/IndexFilterWrapperAndList';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -36,12 +35,7 @@ const renderSectionHeader = ({ section: { title } }) =>
     </View>
   );
 
-const renderItem = ({ item, index, section, orientation, dimensions }) =>
-  item.type === 'toggle' ? (
-    <ToggleListItem {...{ item, index, section }} />
-  ) : (
-    <SettingsListItem {...{ item, index, section, orientation, dimensions }} />
-  );
+const renderItem = ({ item, index, section }) => <ToggleListItem {...{ item, index, section }} />;
 
 renderItem.propTypes = {
   item: PropTypes.object.isRequired,
@@ -59,27 +53,26 @@ const onDeactivatePushNotifications = (revert) => {
   setInAppPermission(false).then((success) => !success && revert());
 };
 
+const Filter = {
+  general: 'general',
+  listTypes: 'listTypes'
+};
+
+const INITIAL_FILTER = [
+  { id: Filter.general, title: texts.settingsTitles.tabs.general, selected: true },
+  { id: Filter.listTypes, title: texts.settingsTitles.tabs.listTypes, selected: false }
+];
+
 export const SettingsScreen = () => {
-  const { orientation, dimensions } = useContext(OrientationContext);
-  const { globalSettings, listTypesSettings, setListTypesSettings } = useContext(SettingsContext);
+  const { globalSettings } = useContext(SettingsContext);
   const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
   const [sectionedData, setSectionedData] = useState([]);
+  const [filter, setFilter] = useState(INITIAL_FILTER);
+  const selectedFilterId = filter.find((entry) => entry.selected)?.id;
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
 
   useEffect(() => {
-    const onListTypePress = (selectedListType, queryType) =>
-      setListTypesSettings((previousListTypes) => {
-        const updatedListTypesSettings = {
-          ...previousListTypes,
-          [queryType]: selectedListType
-        };
-
-        storageHelper.setListTypesSettings(updatedListTypesSettings);
-
-        return updatedListTypesSettings;
-      });
-
     const updateSectionedData = async () => {
       const { settings = { matomo: false } } = globalSettings;
 
@@ -93,8 +86,7 @@ export const SettingsScreen = () => {
           data: [
             {
               title: texts.settingsTitles.pushNotifications,
-              topDivider: true,
-              type: 'toggle',
+              topDivider: false,
               value: pushPermission,
               onActivate: onActivatePushNotifications,
               onDeactivate: onDeactivatePushNotifications
@@ -112,7 +104,6 @@ export const SettingsScreen = () => {
             {
               title: texts.settingsTitles.analytics,
               topDivider: true,
-              type: 'toggle',
               value: matomoValue,
               onActivate: (revert) =>
                 Alert.alert(
@@ -164,8 +155,8 @@ export const SettingsScreen = () => {
           data: [
             {
               title: texts.settingsTitles.locationService,
+              bottomDivider: true,
               topDivider: true,
-              type: 'toggle',
               value: locationService,
               onActivate: (revert) => {
                 Location.getForegroundPermissionsAsync().then((response) => {
@@ -209,47 +200,11 @@ export const SettingsScreen = () => {
         });
       }
 
-      // settings should always contain list layouts last
-      const { sections = {} } = globalSettings;
-      const {
-        categoriesNews = [
-          {
-            categoryTitle: texts.settingsTitles.listLayouts.newsItemsTitle
-          }
-        ]
-      } = sections;
-
-      additionalSectionedData.push({
-        title: texts.settingsTitles.listLayouts.sectionTitle,
-        data: [
-          {
-            title: categoriesNews.map((categoryNews) => categoryNews.categoryTitle).join(', '),
-            type: 'listLayout',
-            listSelection: listTypesSettings[QUERY_TYPES.NEWS_ITEMS],
-            onPress: (listType) => onListTypePress(listType, QUERY_TYPES.NEWS_ITEMS)
-          },
-          {
-            title: texts.settingsTitles.listLayouts.eventRecordsTitle,
-            type: 'listLayout',
-            listSelection: listTypesSettings[QUERY_TYPES.EVENT_RECORDS],
-            onPress: (listType) => onListTypePress(listType, QUERY_TYPES.EVENT_RECORDS)
-          },
-          {
-            title: texts.settingsTitles.listLayouts.pointsOfInterestAndToursTitle,
-            type: 'listLayout',
-            listSelection: listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS],
-            onPress: (listType) =>
-              onListTypePress(listType, QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS),
-            bottomDivider: true
-          }
-        ]
-      });
-
       setSectionedData(additionalSectionedData);
     };
 
     updateSectionedData();
-  }, [listTypesSettings]);
+  }, []);
 
   if (!sectionedData.length) {
     return (
@@ -261,22 +216,24 @@ export const SettingsScreen = () => {
 
   return (
     <SafeAreaViewFlex>
-      <SectionList
-        keyExtractor={keyExtractor}
-        sections={sectionedData}
-        renderItem={({ item, index, section }) =>
-          renderItem({ item, index, section, orientation, dimensions })
-        }
-        renderSectionHeader={renderSectionHeader}
-        ListHeaderComponent={
-          !!texts.settingsScreen.intro && (
-            <Wrapper>
-              <RegularText>{texts.settingsScreen.intro}</RegularText>
-            </Wrapper>
-          )
-        }
-        stickySectionHeadersEnabled
-      />
+      <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
+      {selectedFilterId === Filter.general && (
+        <SectionList
+          keyExtractor={keyExtractor}
+          sections={sectionedData}
+          renderItem={({ item, index, section }) => renderItem({ item, index, section })}
+          renderSectionHeader={renderSectionHeader}
+          ListHeaderComponent={
+            !!texts.settingsScreen.intro && (
+              <Wrapper>
+                <RegularText>{texts.settingsScreen.intro}</RegularText>
+              </Wrapper>
+            )
+          }
+          stickySectionHeadersEnabled
+        />
+      )}
+      {selectedFilterId === Filter.listTypes && <ListSettings />}
     </SafeAreaViewFlex>
   );
 };

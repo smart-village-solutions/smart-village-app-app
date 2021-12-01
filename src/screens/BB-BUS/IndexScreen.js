@@ -170,11 +170,7 @@ export const IndexScreen = ({ navigation }) => {
                   if (loading) {
                     return (
                       <>
-                        <IndexFilterWrapperAndList
-                          filter={filter}
-                          selectedFilter={selectedFilter}
-                          setFilter={setFilter}
-                        />
+                        <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
                         <LoadingContainer>
                           <ActivityIndicator color={colors.accent} />
                         </LoadingContainer>
@@ -187,11 +183,7 @@ export const IndexScreen = ({ navigation }) => {
 
                   return (
                     <>
-                      <IndexFilterWrapperAndList
-                        filter={filter}
-                        selectedFilter={selectedFilter}
-                        setFilter={setFilter}
-                      />
+                      <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
                       <Query
                         query={GET_DIRECTUS}
                         variables={GET_SERVICES(queryVariables)}
