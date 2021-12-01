@@ -1,5 +1,5 @@
+import { DeviceEventEmitter } from 'expo-modules-core';
 import { useEffect } from 'react';
-import { DeviceEventEmitter } from 'react-native';
 
 export const HOME_REFRESH_EVENT = 'SVA_HOME_REFRESH';
 
