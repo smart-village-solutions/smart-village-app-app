@@ -15,7 +15,7 @@ import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { WebViewMap } from '../map/WebViewMap';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { TMBNotice } from '../TMB/Notice';
+import { DataProviderNotice } from '../DataProviderNotice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
@@ -182,7 +182,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
           title={texts.pointOfInterest.operatingCompany}
         />
 
-        <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
+        <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
         {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
       </WrapperWithOrientation>

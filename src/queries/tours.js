@@ -132,6 +132,7 @@ export const GET_TOUR = gql`
         }
         name
         dataType
+        notice
       }
       operatingCompany {
         id

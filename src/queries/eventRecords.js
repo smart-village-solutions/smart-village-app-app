@@ -242,6 +242,7 @@ export const GET_EVENT_RECORD = gql`
         }
         name
         dataType
+        notice
       }
       priceInformations {
         id

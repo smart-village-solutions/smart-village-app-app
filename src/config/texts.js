@@ -527,10 +527,6 @@ export const texts = {
     company: 'Unternehmen',
     about: 'Mehr'
   },
-  tmb: {
-    notice:
-      '<p><br /><em>Dies ist ein Service der TMB Tourismus-Marketing Brandenburg GmbH und der regionalen Tourismuspartner. Mehr Informationen zu Reisen und Ausflügen ins Land Brandenburg erhalten sie auf <a href="https://www.reiseland-brandenburg.de" title="www.reiseland-brandenburg.de"><em>www.reiseland-brandenburg.de</em></a></em></p>'
-  },
   tour: {
     description: 'Beschreibung',
     end: 'Tourende',

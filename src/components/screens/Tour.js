@@ -11,7 +11,7 @@ import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { TMBNotice } from '../TMB/Notice';
+import { DataProviderNotice } from '../DataProviderNotice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { OperatingCompany } from './OperatingCompany';
@@ -99,7 +99,7 @@ export const Tour = ({ data, route }) => {
           title={texts.tour.operatingCompany}
         />
 
-        <TMBNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
+        <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
         {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
       </WrapperWithOrientation>
