@@ -421,6 +421,7 @@ export const texts = {
       'Diese Funktion benötigt die Berechtigung Ihnen Benachrichtigungen zu schicken.'
   },
   screenTitles: {
+    appSettings: 'App-Einstellungen',
     home: appJson.expo.name,
     service: appJson.expo.name,
     company: appJson.expo.name,
