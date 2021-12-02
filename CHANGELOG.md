@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.3.0] :rocket:
+
+Overhauled app settings. Introduced onboarding/app intro.
+
+### Added
+
+- app intro
+  - added new app intro screen
+  - added new onboarding manager
+  - the onboarding manager will render either the navigator or the app intro depending on the completion state of the app intro
+- added a new NestedInfo screen to display lists of navigation links beneath a html content
+  - this allows for an easy implementation of a nested information structure for e.g. help sections
+- added option to filter POIs by opening times/open status
+
+### Changed
+
+- upgraded expo to version 43
+- settings
+  - the settings moved from inside of favourites to the drawer and the about screen
+  - settings now have multiple tabs: one for general settings and one for visual settings
+  - location settings now allow setting an alternate position that is used when the locations services are turned off
+- improved useStaticContent hook
+- refactored About/AboutScreen to reduce code redundancy
+- there can now be a notice for set for data providers, which will be displayed for e.g. POIs that they are providing
+
 ## [v2.2.0] :rocket:
 
 This version brings the new encounter feature.
