@@ -52,4 +52,4 @@ Have a look at the [changelog](./CHANGELOG.md) to be up to date with the develop
 
 ---
 
-###### Version: 2.3.0
+###### Version: 2.4.0

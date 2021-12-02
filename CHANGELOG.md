@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.4.0] :rocket:
+
+Updated survey feature.
+
+### Changed
+
+- the following features are now possible for each survey individually through the cms
+  - can now be in a single language
+  - can now have the option of selecting multiple answers
+  - survey information can now contain html
+  - the comment section can now be disabled
+
 ## [v2.3.0] :rocket:
 
 Overhauled app settings. Introduced onboarding/app intro.
