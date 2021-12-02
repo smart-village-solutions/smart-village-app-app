@@ -517,6 +517,10 @@ export const texts = {
       pl:
         'Wyniki ankiety nie będą wyświetlane, dopóki nie oddasz głosu lub ankieta nie zostanie zakończona.'
     },
+    multiSelectPossible: {
+      de: 'Mehrfachantwort möglich.',
+      pl: 'Możliwych jest wiele odpowiedzi.'
+    },
     result: {
       de: 'Ergebnis',
       pl: 'Wynik'

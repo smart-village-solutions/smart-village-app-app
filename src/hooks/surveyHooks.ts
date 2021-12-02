@@ -4,7 +4,7 @@ import { Alert } from 'react-native';
 
 import { texts } from '../config';
 import { addToStore, readFromStore } from '../helpers';
-import { SUBMIT_SURVEY_RESPONSE } from '../queries/survey';
+import { SUBMIT_SURVEY_RESPONSES } from '../queries/survey';
 
 // TODO: implement properly
 export const useSurveyLanguages = (isMultilingual?: boolean) =>
@@ -14,8 +14,8 @@ const SURVEY_ANSWERS_STORAGE_PREFIX = 'SVA_SURVEY_ANSWERS_';
 
 export const useAnswerSelection = (id?: string, refetch?: () => void) => {
   const client = useApolloClient();
-  const [selection, setSelection] = useState<string | undefined>();
-  const [previousSubmission, setPreviousSubmission] = useState<string | undefined>();
+  const [selection, setSelection] = useState<string[]>([]);
+  const [previousSubmission, setPreviousSubmission] = useState<string[]>([]);
 
   const readPreviousSubmissionFromStore = useCallback(async (id?: string) => {
     if (!id) return;
@@ -23,31 +23,36 @@ export const useAnswerSelection = (id?: string, refetch?: () => void) => {
     const storedPreviousSubmission = await readFromStore(SURVEY_ANSWERS_STORAGE_PREFIX + id);
 
     if (storedPreviousSubmission) {
-      setSelection(storedPreviousSubmission);
-      setPreviousSubmission(storedPreviousSubmission);
+      // handle submissions made before multiselect was implemented
+      if (typeof storedPreviousSubmission === 'string') {
+        setSelection([storedPreviousSubmission]);
+        setPreviousSubmission([storedPreviousSubmission]);
+      } else {
+        setSelection(storedPreviousSubmission);
+        setPreviousSubmission(storedPreviousSubmission);
+      }
     }
   }, []);
 
   const submitSelection = useCallback(async () => {
-    if (selection && previousSubmission !== selection) {
-      try {
-        const { data, errors } = await client.mutate({
-          mutation: SUBMIT_SURVEY_RESPONSE,
-          variables: { decreaseId: previousSubmission, increaseId: selection }
-        });
+    try {
+      const { data, errors } = await client.mutate({
+        mutation: SUBMIT_SURVEY_RESPONSES,
+        variables: { decreaseId: previousSubmission, increaseId: selection }
+      });
 
-        if (errors || data?.voteForSurvey?.statusCode !== 200) {
-          throw new Error();
-        }
-      } catch (e) {
-        Alert.alert(texts.survey.errors.submissionTitle, texts.survey.errors.submissionBody);
-        return;
+      if (errors || data?.votesForSurvey?.statusCode !== 200) {
+        throw new Error();
       }
-
-      setPreviousSubmission(selection);
-      await addToStore(SURVEY_ANSWERS_STORAGE_PREFIX + id, selection);
-      refetch?.();
+    } catch (e) {
+      console.error(e);
+      Alert.alert(texts.survey.errors.submissionTitle, texts.survey.errors.submissionBody);
+      return;
     }
+
+    setPreviousSubmission(selection);
+    await addToStore(SURVEY_ANSWERS_STORAGE_PREFIX + id, selection);
+    refetch?.();
   }, [client, id, previousSubmission, refetch, selection]);
 
   useEffect(() => {

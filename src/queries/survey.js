@@ -6,6 +6,7 @@ export const DETAILED_SURVEY = gql`
       id
       title
       questionTitle
+      questionAllowMultipleResponses
       description
       date {
         id
@@ -44,9 +45,9 @@ export const SURVEYS = gql`
   }
 `;
 
-export const SUBMIT_SURVEY_RESPONSE = gql`
-  mutation voteForSurvey($increaseId: ID, $decreaseId: ID) {
-    voteForSurvey(increaseId: $increaseId, decreaseId: $decreaseId) {
+export const SUBMIT_SURVEY_RESPONSES = gql`
+  mutation votesForSurvey($increaseId: [ID!], $decreaseId: [ID!]) {
+    votesForSurvey(increaseId: $increaseId, decreaseId: $decreaseId) {
       statusCode
     }
   }

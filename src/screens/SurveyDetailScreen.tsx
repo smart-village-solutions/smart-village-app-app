@@ -24,6 +24,7 @@ import { DETAILED_SURVEY } from '../queries/survey';
 import { Survey } from '../types';
 
 type Props = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   route: RouteProp<any, any>;
 };
 
@@ -88,9 +89,16 @@ export const SurveyDetailScreen = ({ route }: Props) => {
 
   const shownTitle = title?.length ? title : questionTitle;
 
-  const buttonText = previousSubmission
+  const buttonText = previousSubmission?.length
     ? languages.map((lang) => texts.survey.changeAnswer[lang]).join('\n')
     : languages.map((lang) => texts.survey.submitAnswer[lang]).join('\n');
+
+  const isButtonDisabled =
+    !selection.length ||
+    (selection.length === previousSubmission.length &&
+      selection.reduce<boolean>((value, id) => {
+        return value && previousSubmission.includes(id);
+      }, true));
 
   return (
     <SafeAreaViewFlex>
@@ -125,11 +133,12 @@ export const SurveyDetailScreen = ({ route }: Props) => {
             {survey.responseOptions.map((responseOption, index) => (
               <SurveyAnswer
                 archived={archived}
-                faded={!!selection && selection !== responseOption.id}
+                faded={!!selection.length && !selection.includes(responseOption.id)}
                 index={index}
                 isMultilingual={survey.isMultilingual}
+                isMultiSelect={survey.questionAllowMultipleResponses}
                 responseOption={responseOption}
-                selected={selection === responseOption.id}
+                selected={selection.includes(responseOption.id)}
                 setSelection={setSelection}
                 key={responseOption.id}
               />
@@ -137,15 +146,26 @@ export const SurveyDetailScreen = ({ route }: Props) => {
             {!archived && (
               <>
                 <Wrapper>
+                  {!!survey.questionAllowMultipleResponses && (
+                    <>
+                      <RegularText center error>
+                        {texts.survey.multiSelectPossible.de}
+                      </RegularText>
+                      {!!survey.isMultilingual && (
+                        <RegularText center error italic>
+                          {texts.survey.multiSelectPossible.pl}
+                        </RegularText>
+                      )}
+                      <RegularText />
+                    </>
+                  )}
                   <Button
-                    disabled={
-                      !selection || (!!previousSubmission && selection === previousSubmission)
-                    }
+                    disabled={isButtonDisabled}
                     title={buttonText}
                     onPress={submitSelection}
                   />
                 </Wrapper>
-                {!previousSubmission && (
+                {!previousSubmission.length && (
                   <Wrapper style={styles.noPaddingBottom}>
                     <RegularText error small>
                       {texts.survey.hint.de}
@@ -159,11 +179,11 @@ export const SurveyDetailScreen = ({ route }: Props) => {
                 )}
               </>
             )}
-            {(previousSubmission || archived) && (
+            {(previousSubmission.length || archived) && (
               <Results
                 isMultilingual={survey.isMultilingual}
                 responseOptions={survey.responseOptions}
-                selectedOption={previousSubmission}
+                selectedOptions={previousSubmission}
               />
             )}
           </WrapperWithOrientation>
