@@ -2,8 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList, View } from 'react-native';
 
-import { SettingsContext } from '../SettingsProvider';
-import { colors, consts, device, texts } from '../config';
 import {
   LoadingContainer,
   RegularText,
@@ -14,11 +12,13 @@ import {
   TitleShadow,
   Wrapper
 } from '../components';
-import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
-import { createMatomoUserId, readFromStore, removeMatomoUserId, storageHelper } from '../helpers';
-import { useMatomoTrackScreenView } from '../hooks';
 import { IndexFilterWrapperAndList } from '../components/BB-BUS/IndexFilterWrapperAndList';
 import { ListSettings, LocationSettings } from '../components/settings';
+import { colors, consts, device, texts } from '../config';
+import { createMatomoUserId, matomoSettings, readFromStore, removeMatomoUserId } from '../helpers';
+import { useMatomoTrackScreenView } from '../hooks';
+import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
+import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -95,7 +95,7 @@ export const SettingsScreen = () => {
 
       // settings should sometimes contain matomo analytics next, depending on server settings
       if (settings.matomo) {
-        const { consent: matomoValue = false } = await storageHelper.matomoSettings();
+        const { consent: matomoValue } = await matomoSettings();
 
         additionalSectionedData.push({
           data: [

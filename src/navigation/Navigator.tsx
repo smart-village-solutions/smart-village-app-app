@@ -1,5 +1,6 @@
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import React from 'react';
+import { StatusBar } from 'react-native';
 
 import { linkingConfig, navigatorConfig } from '../config/navigation';
 
@@ -14,6 +15,7 @@ export const Navigator = () => (
     }}
     linking={linkingConfig}
   >
+    <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
     {navigatorConfig.type === 'drawer' ? (
       <DrawerNavigator />
     ) : (

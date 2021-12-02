@@ -88,7 +88,7 @@ const usePos = (func: RequestPermissionAndFetchFunction, skip?: boolean) => {
   const [position, setPosition] = useState<Location.LocationObject>();
   const [loading, setLoading] = useState(false);
 
-  const shouldGetPosition = !skip && locationSettings.locationService;
+  const shouldGetPosition = !skip && locationSettings.locationService !== false;
 
   useEffect(() => {
     let mounted = true;

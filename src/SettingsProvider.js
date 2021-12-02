@@ -38,5 +38,5 @@ SettingsProvider.propTypes = {
   initialGlobalSettings: PropTypes.object.isRequired,
   initialListTypesSettings: PropTypes.object.isRequired,
   initialLocationSettings: PropTypes.object.isRequired,
-  children: PropTypes.array.isRequired
+  children: PropTypes.object.isRequired
 };

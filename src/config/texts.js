@@ -1,6 +1,9 @@
 import appJson from '../../app.json';
 
 export const texts = {
+  appIntro: {
+    continue: 'Weiter'
+  },
   backToTop: 'zurück nach oben',
   bbBus: {
     authority: {
@@ -412,10 +415,6 @@ export const texts = {
   pushNotifications: {
     abort: 'Abbrechen',
     approve: 'Jetzt einschalten',
-    decline: 'Vielleicht später',
-    greetingBody:
-      'Damit Sie wichtige Mitteilungen aus Ihrer Kommune erreichen, würden wir Ihnen gerne Benachrichtigungen schicken. Sie können diese Einstellung jederzeit in Ihrem persönlichen Bereich ändern.',
-    greetingTitle: 'Willkommen',
     permissionMissingBody: 'Bitte überprüfen Sie Ihre Benachrichtigungseinstellungen im System.',
     permissionMissingTitle: 'Hinweis',
     permissionRequiredBody:
@@ -441,6 +440,8 @@ export const texts = {
       no: 'Nein',
       onActivate:
         'Soll Matomo Analytics aktiviert werden? Dies trägt zur Verbesserung der App bei. Matomo Analytics wird nach der Aktivierung mit dem nächsten Neustart der App wirksam.',
+      onActivateWithoutRestart:
+        'Soll Matomo Analytics aktiviert werden? Dies trägt zur Verbesserung der App bei.',
       onDeactivate:
         'Soll Matomo Analytics deaktiviert werden? Die Deaktivierung von Matomo Analytics wird mit dem nächsten Neustart der App wirksam.',
       yes: 'Ja'

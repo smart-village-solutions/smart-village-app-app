@@ -1,6 +1,7 @@
 export * from './encounter';
 
 export * from './Address';
+export * from './AppIntroSlide';
 export * from './Camera';
 export * from './ConstructionSite';
 export * from './Contact';

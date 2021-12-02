@@ -2,13 +2,10 @@ import Constants from 'expo-constants';
 import * as Localization from 'expo-localization';
 import { useMatomo } from 'matomo-tracker-react-native';
 import { useCallback, useContext, useEffect } from 'react';
-import { Alert } from 'react-native';
 
 import appJson from '../../app.json';
-import { device, texts } from '../config';
-import { createMatomoUserId, setMatomoHandledOnStartup, storageHelper } from '../helpers';
+import { device } from '../config';
 import { NetworkContext } from '../NetworkProvider';
-import { SettingsContext } from '../SettingsProvider';
 
 export const useUserInfoAsync = () =>
   useCallback(async () => {
@@ -51,37 +48,5 @@ export const useMatomoTrackScreenView = (name) => {
 
   useEffect(() => {
     isConnected && trackScreenViewAsync(name);
-  }, []);
-};
-
-export const useMatomoAlertOnStartUp = () => {
-  const { globalSettings } = useContext(SettingsContext);
-
-  useEffect(() => {
-    const showMatomoAlert = async () => {
-      const settings = await storageHelper.matomoSettings();
-
-      if (!settings?.matomoHandledOnStartup) {
-        Alert.alert(
-          texts.settingsTitles.analytics,
-          texts.settingsContents.analytics.onActivate,
-          [
-            {
-              text: texts.settingsContents.analytics.no,
-              style: 'cancel'
-            },
-            {
-              text: texts.settingsContents.analytics.yes,
-              onPress: createMatomoUserId
-            }
-          ],
-          { cancelable: false }
-        );
-
-        setMatomoHandledOnStartup();
-      }
-    };
-
-    !!globalSettings?.settings?.matomo && showMatomoAlert();
   }, []);
 };
