@@ -7,6 +7,7 @@ import { normalize } from 'react-native-elements';
 
 import { colors, device, texts } from '../config';
 import { momentFormat } from '../helpers';
+import { useSurveyLanguages } from '../hooks';
 import { COMMENT_ON_SURVEY } from '../queries/survey';
 import { Survey } from '../types';
 
@@ -17,16 +18,25 @@ import { Wrapper, WrapperWithOrientation } from './Wrapper';
 type Props = {
   archived?: boolean;
   comments: Survey['comments'];
+  isMultilingual?: boolean;
   scrollViewRef: RefObject<ScrollView>;
   surveyId: string;
 };
 
 const MAX_COMMENT_LENGTH = 5000;
 
-export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: Props) => {
+export const CommentSection = ({
+  archived,
+  comments,
+  isMultilingual,
+  scrollViewRef,
+  surveyId
+}: Props) => {
   const refForPosition = useRef<View>(null);
   const [sendComment] = useMutation(COMMENT_ON_SURVEY);
   const [newComment, setNewComment] = useState('');
+
+  const languages = useSurveyLanguages(isMultilingual);
 
   const submitComment = useCallback(() => {
     Keyboard.dismiss();
@@ -36,7 +46,7 @@ export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: 
       setNewComment('');
       Alert.alert(
         texts.survey.commentSubmissionAlertTitle,
-        texts.survey.commentSubmissionAlert.de + '\n\n' + texts.survey.commentSubmissionAlert.pl
+        languages.map((lang) => texts.survey.commentSubmissionAlert[lang]).join('\n\n')
       );
     }
   }, [newComment, sendComment, surveyId]);
@@ -51,16 +61,18 @@ export const CommentSection = ({ archived, comments, scrollViewRef, surveyId }: 
     });
   };
 
-  const buttonTitle = texts.survey.submitComment.de + '\n' + texts.survey.submitComment.pl;
+  const buttonTitle = languages.map((lang) => texts.survey.submitComment[lang]).join('\n');
 
   return (
     <WrapperWithOrientation>
       {(!archived || comments.length > 0) && (
         <Wrapper ref={refForPosition}>
           <RegularText big>{texts.survey.comments.de}</RegularText>
-          <RegularText big italic>
-            {texts.survey.comments.pl}
-          </RegularText>
+          {!!isMultilingual && (
+            <RegularText big italic>
+              {texts.survey.comments.pl}
+            </RegularText>
+          )}
         </Wrapper>
       )}
       {!archived && (
