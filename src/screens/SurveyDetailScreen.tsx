@@ -151,10 +151,11 @@ export const SurveyDetailScreen = ({ route }: Props) => {
                       <RegularText center error>
                         {texts.survey.multiSelectPossible.de}
                       </RegularText>
-                      {/* TODO: update with new optional multilanguage logic */}
-                      <RegularText center error italic>
-                        {texts.survey.multiSelectPossible.pl}
-                      </RegularText>
+                      {!!survey.isMultilingual && (
+                        <RegularText center error italic>
+                          {texts.survey.multiSelectPossible.pl}
+                        </RegularText>
+                      )}
                       <RegularText />
                     </>
                   )}
