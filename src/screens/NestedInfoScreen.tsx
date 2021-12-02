@@ -79,6 +79,10 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
       </LoadingContainer>
     );
 
+  if (!data) {
+    return null;
+  }
+
   // aggregate current rootRouteName and title for navigation, if they are not present in params of children
   const sectionData = [
     {
