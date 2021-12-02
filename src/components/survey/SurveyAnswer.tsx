@@ -1,15 +1,17 @@
 import React, { SetStateAction, useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { normalize } from 'react-native-elements';
 
-import { colors } from '../config';
-import { getAnswerLabel } from '../helpers';
-import { useSurveyLanguages } from '../hooks';
-import { ResponseOption } from '../types';
+import { colors } from '../../config';
+import { getAnswerLabel, imageWidth } from '../../helpers';
+import { useSurveyLanguages } from '../../hooks';
+import { ResponseOption } from '../../types';
+import { Radiobutton } from '../Radiobutton';
+import { BoldText } from '../Text';
+import { Touchable } from '../Touchable';
+import { Wrapper, WrapperRow } from '../Wrapper';
 
-import { Radiobutton } from './Radiobutton';
-import { BoldText, RegularText } from './Text';
-import { Touchable } from './Touchable';
-import { Wrapper, WrapperRow } from './Wrapper';
+import { SurveyText } from './SurveyText';
 
 type Props = {
   archived?: boolean;
@@ -21,6 +23,9 @@ type Props = {
   selected: boolean;
   setSelection: React.Dispatch<SetStateAction<string[]>>;
 };
+
+// image width minus the width of the radiobutton and its wrapper
+const answerWidth = imageWidth() - (3 * normalize(14) + normalize(24));
 
 export const SurveyAnswer = ({
   archived,
@@ -60,11 +65,15 @@ export const SurveyAnswer = ({
             </Wrapper>
             <Wrapper style={styles.answerContainer}>
               <BoldText>{getAnswerLabel('de', index)}</BoldText>
-              <RegularText>{responseOption.title[languages[0]]}</RegularText>
+              <SurveyText content={responseOption.title[languages[0]]} width={answerWidth} />
               {!!isMultilingual && !!responseOption.title[languages[1]] && (
                 <>
                   <BoldText italic>{getAnswerLabel('pl', index)}</BoldText>
-                  <RegularText italic>{responseOption.title[languages[1]]}</RegularText>
+                  <SurveyText
+                    content={responseOption.title[languages[1]]}
+                    italic
+                    width={answerWidth}
+                  />
                 </>
               )}
             </Wrapper>
