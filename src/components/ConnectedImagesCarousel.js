@@ -6,8 +6,7 @@ import { ActivityIndicator } from 'react-native';
 
 import { colors } from '../config';
 import { graphqlFetchPolicy, parsedImageAspectRatio } from '../helpers';
-import { useRefreshTime } from '../hooks';
-import { useHomeRefresh } from '../hooks/HomeRefresh';
+import { useHomeRefresh, useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';

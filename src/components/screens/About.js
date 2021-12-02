@@ -1,38 +1,25 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import { useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, SectionList } from 'react-native';
 
 import { colors, texts } from '../../config';
-import { graphqlFetchPolicy } from '../../helpers';
-import { useRefreshTime } from '../../hooks';
-import { useHomeRefresh } from '../../hooks/HomeRefresh';
+import { useHomeRefresh, useRenderItem, useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
-import { getQuery, QUERY_TYPES } from '../../queries';
+import { QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { VersionNumber } from '../VersionNumber';
-import { useRenderItem } from '../../hooks/listHooks';
 
 export const About = ({ navigation, withHomeRefresh, withSettings }) => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { data, loading, refetch } = useStaticContent({
+    name: 'homeAbout',
+    type: 'json',
+    refreshTimeKey: 'publicJsonFile-homeAbout'
+  });
+  const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const [refreshing, setRefreshing] = useState(false);
-
-  const refreshTime = useRefreshTime('publicJsonFile-homeAbout');
-
-  const fetchPolicy = graphqlFetchPolicy({
-    isConnected,
-    isMainserverUp,
-    refreshTime
-  });
-
-  const { data: aboutData, loading, refetch } = useQuery(getQuery(QUERY_TYPES.PUBLIC_JSON_FILE), {
-    variables: { name: 'homeAbout' },
-    fetchPolicy,
-    skip: !refreshTime
-  });
 
   useHomeRefresh(withHomeRefresh ? refetch : undefined);
 
@@ -48,22 +35,14 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
 
   const renderItem = useRenderItem(QUERY_TYPES.PUBLIC_JSON_FILE, navigation);
 
-  if (!refreshTime || loading)
+  if (loading)
     return withHomeRefresh ? null : (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
       </LoadingContainer>
     );
 
-  let publicJsonFileContent = [];
-
-  try {
-    publicJsonFileContent = JSON.parse(aboutData?.publicJsonFile?.content);
-  } catch (error) {
-    console.warn(error, aboutData);
-  }
-
-  if (!publicJsonFileContent?.length) return null;
+  if (!data?.length) return null;
 
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
@@ -71,7 +50,7 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
   const sectionData = [
     {
       title: headlineAbout,
-      data: publicJsonFileContent
+      data
     }
   ];
 

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList } from 'react-native';
 
-import { useRenderItem } from '../hooks/listHooks';
+import { useRenderItem } from '../hooks';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 

@@ -24,6 +24,7 @@ export enum ScreenName {
   Html = 'Html',
   Index = 'Index',
   Lunch = 'Lunch',
+  NestedInfo = 'NestedInfo',
   OParlCalendar = 'OParlCalendar',
   OParlDetail = 'OParlDetail',
   OParlOrganizations = 'OParlOrganizations',

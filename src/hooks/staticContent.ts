@@ -12,6 +12,7 @@ type StaticContentArgs<T = unknown> = {
   refreshTimeKey?: string;
   refreshInterval?: string;
   fetchPolicy?: 'cache-first' | 'cache-only' | 'network-only';
+  skip?: boolean;
 } & (
   | {
       type: 'json';
@@ -24,12 +25,13 @@ type StaticContentArgs<T = unknown> = {
 );
 
 export const useStaticContent = <T>({
+  fetchPolicy: overrideFetchPolicy,
   name,
-  type,
   parseFromJson,
   refreshInterval,
   refreshTimeKey,
-  fetchPolicy: overrideFetchPolicy
+  skip,
+  type
 }: StaticContentArgs<T>): {
   data?: T;
   error: boolean;
@@ -54,7 +56,7 @@ export const useStaticContent = <T>({
     {
       variables: { name },
       fetchPolicy,
-      skip: !refreshTime
+      skip: !refreshTime || skip
     }
   );
 
@@ -85,7 +87,7 @@ export const useStaticContent = <T>({
     error: error || !!queryError,
     // add the extra condition to avoid weird rendering states, where loading is false, but the publicFileData is not yet set.
     // this way we can safely manipulate data and then update the publicFileData with it, after the query has finished loading.
-    loading: loading || (publicFileData === undefined && !error),
+    loading: loading || (publicFileData === undefined && !error && !skip),
     refetch: refetchCallback
   };
 };

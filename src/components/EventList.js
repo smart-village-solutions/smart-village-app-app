@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { SectionList } from 'react-native';
 
 import { momentFormat } from '../helpers';
-import { useRenderItem } from '../hooks/listHooks';
+import { useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 
 import { LoadingSpinner } from './LoadingSpinner';
