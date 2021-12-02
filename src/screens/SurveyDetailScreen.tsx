@@ -187,13 +187,15 @@ export const SurveyDetailScreen = ({ route }: Props) => {
               />
             )}
           </WrapperWithOrientation>
-          <CommentSection
-            archived={archived}
-            comments={survey.comments}
-            isMultilingual={survey.isMultilingual}
-            scrollViewRef={scrollViewRef}
-            surveyId={surveyId}
-          />
+          {!!survey.canComment && (
+            <CommentSection
+              archived={archived}
+              comments={survey.comments}
+              isMultilingual={survey.isMultilingual}
+              scrollViewRef={scrollViewRef}
+              surveyId={surveyId}
+            />
+          )}
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

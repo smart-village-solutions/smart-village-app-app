@@ -21,4 +21,5 @@ export type Survey = {
     createdAt: string;
     message: string;
   }>;
+  canComment?: boolean;
 };
