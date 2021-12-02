@@ -12,7 +12,7 @@ import { SectionHeader } from '../SectionHeader';
 import { VersionNumber } from '../VersionNumber';
 
 export const About = ({ navigation, withHomeRefresh, withSettings }) => {
-  const { data: aboutData, loading, refetch } = useStaticContent({
+  const { data, loading, refetch } = useStaticContent({
     name: 'homeAbout',
     type: 'json',
     refreshTimeKey: 'publicJsonFile-homeAbout'
@@ -42,15 +42,7 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
       </LoadingContainer>
     );
 
-  let publicJsonFileContent = [];
-
-  try {
-    publicJsonFileContent = JSON.parse(aboutData?.publicJsonFile?.content);
-  } catch (error) {
-    console.warn(error, aboutData);
-  }
-
-  if (!publicJsonFileContent?.length) return null;
+  if (!data?.length) return null;
 
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
@@ -58,7 +50,7 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
   const sectionData = [
     {
       title: headlineAbout,
-      data: publicJsonFileContent
+      data
     }
   ];
 
