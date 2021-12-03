@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList } from 'react-native';
 
 import {
+  IndexFilterWrapperAndList,
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
@@ -10,7 +11,6 @@ import {
   SettingsToggle,
   Wrapper
 } from '../components';
-import { IndexFilterWrapperAndList } from '../components/BB-BUS/IndexFilterWrapperAndList';
 import { ListSettings, LocationSettings } from '../components/settings';
 import { colors, consts, texts } from '../config';
 import { createMatomoUserId, matomoSettings, readFromStore, removeMatomoUserId } from '../helpers';

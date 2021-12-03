@@ -10,6 +10,7 @@ import { auth } from '../auth';
 import { colors, consts, texts } from '../config';
 import {
   DropdownHeader,
+  IndexFilterWrapperAndList,
   ListComponent,
   LoadingContainer,
   LocationOverview,
@@ -25,7 +26,6 @@ import {
   sortPOIsByDistanceFromPosition
 } from '../helpers';
 import { usePosition, useTrackScreenViewAsync } from '../hooks';
-import { IndexFilterWrapperAndList } from '../components/BB-BUS/IndexFilterWrapperAndList';
 
 const { MATOMO_TRACKING } = consts;
 

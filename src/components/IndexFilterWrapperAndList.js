@@ -2,10 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList } from 'react-native';
 
-import { Touchable } from '../Touchable';
-import { WrapperHorizontal } from '../Wrapper';
-import { RegularText } from '../Text';
-
+import { Touchable } from './Touchable';
+import { WrapperHorizontal } from './Wrapper';
+import { RegularText } from './Text';
 import { IndexFilterElement, IndexFilterWrapper } from './IndexFilterElement';
 
 export const IndexFilterWrapperAndList = ({ filter, setFilter }) => {

@@ -7,8 +7,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 
-import { DefaultKeyboardAvoidingView, LoadingContainer, SafeAreaViewFlex } from '../../components';
-import { IndexFilterWrapperAndList } from '../../components/BB-BUS/IndexFilterWrapperAndList';
+import {
+  DefaultKeyboardAvoidingView,
+  IndexFilterWrapperAndList,
+  LoadingContainer,
+  SafeAreaViewFlex
+} from '../../components';
 import { ServiceList } from '../../components/BB-BUS/ServiceList';
 import { colors, consts, namespace, secrets, texts } from '../../config';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
