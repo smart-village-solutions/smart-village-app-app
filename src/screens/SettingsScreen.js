@@ -1,20 +1,18 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SectionList, View } from 'react-native';
+import { ActivityIndicator, Alert, SectionList } from 'react-native';
 
 import {
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
+  SectionHeader,
   SettingsToggle,
-  Title,
-  TitleContainer,
-  TitleShadow,
   Wrapper
 } from '../components';
 import { IndexFilterWrapperAndList } from '../components/BB-BUS/IndexFilterWrapperAndList';
 import { ListSettings, LocationSettings } from '../components/settings';
-import { colors, consts, device, texts } from '../config';
+import { colors, consts, texts } from '../config';
 import { createMatomoUserId, matomoSettings, readFromStore, removeMatomoUserId } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
@@ -24,15 +22,7 @@ const { MATOMO_TRACKING } = consts;
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
-const renderSectionHeader = ({ section: { title } }) =>
-  !!title && (
-    <View>
-      <TitleContainer>
-        <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>{title}</Title>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
-    </View>
-  );
+const renderSectionHeader = ({ section: { title } }) => !!title && <SectionHeader title={title} />;
 
 const renderItem = ({ item, index, section }) => <SettingsToggle {...{ item, index, section }} />;
 

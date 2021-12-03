@@ -43,7 +43,6 @@ export * from './LoadingContainer';
 export * from './LoadingModal';
 export * from './LoadingSpinner';
 export * from './Logo';
-export * from './MapSwitchHeader';
 export * from './MediaSection';
 export * from './Offer';
 export * from './OptionToggle';

@@ -150,6 +150,8 @@ export const texts = {
     categoryTitleDetail: 'Nachricht'
   },
   locationOverview: {
+    list: 'Listenansicht',
+    map: 'Kartenansicht',
     noSelection: 'Bitte wählen Sie eine Markierung aus.'
   },
   job: {
