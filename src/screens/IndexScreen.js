@@ -29,17 +29,18 @@ import { usePosition, useTrackScreenViewAsync } from '../hooks';
 
 const { MATOMO_TRACKING } = consts;
 
-const TopFilter = {
-  list: 'list',
-  map: 'listTypes'
+const TOP_FILTER = {
+  LIST: 'list',
+  MAP: 'map'
 };
 
 const INITIAL_TOP_FILTER = [
-  { id: TopFilter.list, title: texts.locationOverview.list, selected: true },
-  { id: TopFilter.map, title: texts.locationOverview.map, selected: false }
+  { id: TOP_FILTER.LIST, title: texts.locationOverview.list, selected: true },
+  { id: TOP_FILTER.MAP, title: texts.locationOverview.map, selected: false }
 ];
 
-const isMapSelected = (topFilter) => topFilter.find((entry) => entry.selected).id === TopFilter.map;
+const isMapSelected = (topFilter) =>
+  topFilter.find((entry) => entry.selected).id === TOP_FILTER.MAP;
 
 // TODO: make a list component for POIs that already includes the mapswitchheader?
 // TODO: make a list component that already includes the news/events filter?
