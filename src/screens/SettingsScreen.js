@@ -42,14 +42,14 @@ const onDeactivatePushNotifications = (revert) => {
   setInAppPermission(false).then((success) => !success && revert());
 };
 
-const FILTER = {
-  general: 'general',
-  listTypes: 'listTypes'
+const TOP_FILTER = {
+  GENERAL: 'general',
+  LIST_TYPES: 'listTypes'
 };
 
 const INITIAL_FILTER = [
-  { id: FILTER.general, title: texts.settingsTitles.tabs.general, selected: true },
-  { id: FILTER.listTypes, title: texts.settingsTitles.tabs.listTypes, selected: false }
+  { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
+  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false }
 ];
 
 export const SettingsScreen = () => {
@@ -156,7 +156,7 @@ export const SettingsScreen = () => {
   return (
     <SafeAreaViewFlex>
       <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
-      {selectedFilterId === FILTER.general && (
+      {selectedFilterId === TOP_FILTER.GENERAL && (
         <SectionList
           keyExtractor={keyExtractor}
           sections={sectionedData}
@@ -172,7 +172,7 @@ export const SettingsScreen = () => {
           stickySectionHeadersEnabled
         />
       )}
-      {selectedFilterId === FILTER.listTypes && <ListSettings />}
+      {selectedFilterId === TOP_FILTER.LIST_TYPES && <ListSettings />}
     </SafeAreaViewFlex>
   );
 };
