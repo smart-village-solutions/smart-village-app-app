@@ -1,6 +1,7 @@
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 
+import appJson from '../../app.json';
 import { graphqlFetchPolicy } from '../helpers';
 import { NetworkContext } from '../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../queries';
@@ -59,7 +60,7 @@ export const useStaticContent = <T>({
   const { data, error: queryError, loading, refetch } = useQuery(
     getQuery(type === 'json' ? QUERY_TYPES.PUBLIC_JSON_FILE : QUERY_TYPES.PUBLIC_HTML_FILE),
     {
-      variables: { name },
+      variables: { name, version: appJson.expo.version },
       fetchPolicy,
       skip: !refreshTime || skip
     }
