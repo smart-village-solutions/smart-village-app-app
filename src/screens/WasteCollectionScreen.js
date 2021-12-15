@@ -27,7 +27,7 @@ import {
 } from '../components';
 import { colors, device, namespace, normalize, secrets, staticRestSuffix, texts } from '../config';
 import { graphqlFetchPolicy, openLink, setupLocales } from '../helpers';
-import { useRefreshTime } from '../hooks';
+import { useRefreshTime, useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifications';
 import { getQuery, QUERY_TYPES } from '../queries';
@@ -100,7 +100,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
   const [selectedStreetId, setSelectedStreetId] = useState();
 
   const addressesRefreshTime = useRefreshTime('waste-addresses');
-  const typesRefreshTime = useRefreshTime('waste-types');
   const streetRefreshTime = useRefreshTime(`waste-${selectedStreetId}`);
 
   const addressesFetchPolicy = graphqlFetchPolicy({
@@ -115,25 +114,16 @@ export const WasteCollectionScreen = ({ navigation }) => {
     refreshTime: streetRefreshTime
   });
 
-  const typesFetchPolicy = graphqlFetchPolicy({
-    isConnected,
-    isMainserverUp,
-    refreshTime: typesRefreshTime
-  });
-
   const { data, loading } = useQuery(getQuery(QUERY_TYPES.WASTE_ADDRESSES), {
     fetchPolicy: addressesFetchPolicy,
     skip: !addressesRefreshTime
   });
 
-  const { data: typesData, loading: typesLoading } = useQuery(
-    getQuery(QUERY_TYPES.PUBLIC_JSON_FILE),
-    {
-      variables: { name: 'wasteTypes' },
-      fetchPolicy: typesFetchPolicy,
-      skip: !typesRefreshTime
-    }
-  );
+  const { data: typesData, loading: typesLoading } = useStaticContent({
+    refreshTimeKey: 'waste-types',
+    name: 'wasteTypes',
+    type: 'json'
+  });
 
   // only query if we have a street selected
   const { data: streetData } = useQuery(getQuery(QUERY_TYPES.WASTE_STREET), {
@@ -144,20 +134,11 @@ export const WasteCollectionScreen = ({ navigation }) => {
 
   const addressesData = data?.wasteAddresses;
 
-  let parsedTypesData;
-  try {
-    if (typesData?.publicJsonFile?.content) {
-      parsedTypesData = JSON.parse(typesData.publicJsonFile.content);
-    }
-  } catch (error) {
-    console.warn(error, data);
-  }
-
   let usedTypes = {};
   streetData?.[QUERY_TYPES.WASTE_ADDRESSES]?.[0]?.wasteLocationTypes?.forEach(
     (wasteLocationType) => {
-      if (parsedTypesData?.[wasteLocationType.wasteType])
-        usedTypes[wasteLocationType.wasteType] = parsedTypesData?.[wasteLocationType.wasteType];
+      if (typesData?.[wasteLocationType.wasteType])
+        usedTypes[wasteLocationType.wasteType] = typesData?.[wasteLocationType.wasteType];
     }
   );
 
@@ -264,7 +245,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
           <View style={styles.topMarginContainer}>
             <Calendar
               dayComponent={NoTouchDay}
-              markedDates={getMarkedDates(parsedTypesData, streetData)}
+              markedDates={getMarkedDates(typesData, streetData)}
               markingType="multi-dot"
               renderArrow={renderArrow}
               theme={{
