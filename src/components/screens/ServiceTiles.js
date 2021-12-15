@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
-import { Query } from 'react-apollo';
+import React, { useCallback, useContext, useState } from 'react';
 import {
   ActivityIndicator,
   RefreshControl,
@@ -12,11 +11,9 @@ import {
 import { normalize } from 'react-native-elements';
 
 import { colors, consts, device, Icon } from '../../config';
-import { graphqlFetchPolicy } from '../../helpers';
-import { useRefreshTime } from '../../hooks';
+import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
-import { getQuery, QUERY_TYPES } from '../../queries';
 import { Image } from '../Image';
 import { LoadingContainer } from '../LoadingContainer';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
@@ -26,130 +23,97 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { WrapperWrap } from '../Wrapper';
 
 export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { isConnected } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const [refreshing, setRefreshing] = useState(false);
 
-  const refreshTime = useRefreshTime(`publicJsonFile-${staticJsonName}`);
+  const { data, loading, refetch } = useStaticContent({
+    refreshTimeKey: `publicJsonFile-${staticJsonName}`,
+    name: staticJsonName,
+    type: 'json'
+  });
 
-  if (!refreshTime) {
+  const refresh = useCallback(async () => {
+    setRefreshing(true);
+    isConnected && (await refetch?.());
+    setRefreshing(false);
+  }, [refetch, isConnected]);
+
+  if (loading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
       </LoadingContainer>
     );
   }
-
-  const refresh = async (refetch) => {
-    setRefreshing(true);
-    isConnected && (await refetch());
-    setRefreshing(false);
-  };
-
-  const fetchPolicy = graphqlFetchPolicy({
-    isConnected,
-    isMainserverUp,
-    refreshTime
-  });
-
   return (
     <SafeAreaViewFlex>
-      <Query
-        query={getQuery(QUERY_TYPES.PUBLIC_JSON_FILE)}
-        variables={{ name: staticJsonName }}
-        fetchPolicy={fetchPolicy}
-      >
-        {({ data, loading, refetch }) => {
-          if (loading) {
-            return (
-              <LoadingContainer>
-                <ActivityIndicator color={colors.accent} />
-              </LoadingContainer>
-            );
+      <>
+        {!!title && (
+          <TitleContainer>
+            <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>{title}</Title>
+          </TitleContainer>
+        )}
+        {!!title && device.platform === 'ios' && <TitleShadow />}
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => refresh(refetch)}
+              colors={[colors.accent]}
+              tintColor={colors.accent}
+            />
           }
-
-          let publicJsonFileContent = [];
-
-          try {
-            publicJsonFileContent = JSON.parse(data?.publicJsonFile?.content);
-          } catch (error) {
-            console.warn(error, data);
-          }
-
-          if (!publicJsonFileContent || !publicJsonFileContent.length) return null;
-
-          return (
-            <>
-              {!!title && (
-                <TitleContainer>
-                  <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>
-                    {title}
-                  </Title>
-                </TitleContainer>
-              )}
-              {!!title && device.platform === 'ios' && <TitleShadow />}
-              <ScrollView
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={() => refresh(refetch)}
-                    colors={[colors.accent]}
-                    tintColor={colors.accent}
-                  />
-                }
-              >
-                <View style={{ padding: normalize(14) }}>
-                  <WrapperWrap spaceBetween>
-                    {publicJsonFileContent.map((item, index) => {
-                      return (
-                        <ServiceBox
-                          key={index + item.title}
-                          orientation={orientation}
-                          dimensions={dimensions}
+        >
+          <View style={{ padding: normalize(14) }}>
+            <WrapperWrap spaceBetween>
+              {data?.map((item, index) => {
+                return (
+                  <ServiceBox
+                    key={index + item.title}
+                    orientation={orientation}
+                    dimensions={dimensions}
+                  >
+                    <TouchableOpacity
+                      onPress={() =>
+                        navigation.navigate({
+                          name: item.routeName,
+                          params: item.params
+                        })
+                      }
+                    >
+                      <View>
+                        {item.iconName ? (
+                          <Icon.NamedIcon
+                            name={item.iconName}
+                            size={30}
+                            style={styles.serviceIcon}
+                          />
+                        ) : (
+                          <Image
+                            source={{ uri: item.icon }}
+                            style={styles.serviceImage}
+                            PlaceholderContent={null}
+                            resizeMode="contain"
+                          />
+                        )}
+                        <BoldText
+                          small
+                          primary
+                          center
+                          accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
                         >
-                          <TouchableOpacity
-                            onPress={() =>
-                              navigation.navigate({
-                                name: item.routeName,
-                                params: item.params
-                              })
-                            }
-                          >
-                            <View>
-                              {item.iconName ? (
-                                <Icon.NamedIcon
-                                  name={item.iconName}
-                                  size={30}
-                                  style={styles.serviceIcon}
-                                />
-                              ) : (
-                                <Image
-                                  source={{ uri: item.icon }}
-                                  style={styles.serviceImage}
-                                  PlaceholderContent={null}
-                                  resizeMode="contain"
-                                />
-                              )}
-                              <BoldText
-                                small
-                                primary
-                                center
-                                accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
-                              >
-                                {item.title}
-                              </BoldText>
-                            </View>
-                          </TouchableOpacity>
-                        </ServiceBox>
-                      );
-                    })}
-                  </WrapperWrap>
-                </View>
-              </ScrollView>
-            </>
-          );
-        }}
-      </Query>
+                          {item.title}
+                        </BoldText>
+                      </View>
+                    </TouchableOpacity>
+                  </ServiceBox>
+                );
+              })}
+            </WrapperWrap>
+          </View>
+        </ScrollView>
+      </>
     </SafeAreaViewFlex>
   );
 };
