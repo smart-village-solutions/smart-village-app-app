@@ -1,14 +1,11 @@
 import _shuffle from 'lodash/shuffle';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { useQuery } from 'react-apollo';
 import { ActivityIndicator } from 'react-native';
 
 import { colors } from '../config';
-import { graphqlFetchPolicy, parsedImageAspectRatio } from '../helpers';
-import { useHomeRefresh, useRefreshTime } from '../hooks';
-import { NetworkContext } from '../NetworkProvider';
-import { getQuery, QUERY_TYPES } from '../queries';
+import { parsedImageAspectRatio } from '../helpers';
+import { useHomeRefresh, useStaticContent } from '../hooks';
 import { SettingsContext } from '../SettingsProvider';
 
 import { ImagesCarousel } from './ImagesCarousel';
@@ -20,26 +17,16 @@ export const ConnectedImagesCarousel = ({
   publicJsonFile,
   refreshTimeKey
 }) => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { data, loading, refetch } = useStaticContent({
+    refreshTimeKey,
+    name: publicJsonFile,
+    type: 'json'
+  });
   const { globalSettings } = useContext(SettingsContext);
-
-  const refreshTime = useRefreshTime(refreshTimeKey);
-
-  const fetchPolicy = graphqlFetchPolicy({
-    isConnected,
-    isMainserverUp,
-    refreshTime
-  });
-
-  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.PUBLIC_JSON_FILE), {
-    variables: { name: publicJsonFile },
-    fetchPolicy,
-    skip: !refreshTime
-  });
 
   useHomeRefresh(refetch);
 
-  if (!refreshTime || loading) {
+  if (loading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
@@ -47,21 +34,11 @@ export const ConnectedImagesCarousel = ({
     );
   }
 
-  let publicJsonFileData = [];
-
-  try {
-    publicJsonFileData = JSON.parse(data?.publicJsonFile?.content);
-  } catch (error) {
-    console.warn(error, data);
-  }
-
-  if (!publicJsonFileData || !publicJsonFileData.length) return null;
-
   return (
     <ImagesCarousel
       navigation={navigation}
-      data={_shuffle(publicJsonFileData)}
-      fetchPolicy={fetchPolicy}
+      data={_shuffle(data)}
+      refreshTimeKey={refreshTimeKey}
       aspectRatio={
         alternateAspectRatio
           ? parsedImageAspectRatio(globalSettings?.homeCarousel?.imageAspectRatio)

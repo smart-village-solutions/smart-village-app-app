@@ -24,6 +24,11 @@ type StaticContentArgs<T = unknown> = {
     }
 );
 
+/**
+ * Gets static content by type and name. Automatically generates refresh interval, refresh time key and fetch policy if not provided.
+ * @param options Options for the query.
+ * @returns result error: if there is an error for the query or the parsing; loading: if the query is initializing or loading
+ */
 export const useStaticContent = <T>({
   fetchPolicy: overrideFetchPolicy,
   name,
