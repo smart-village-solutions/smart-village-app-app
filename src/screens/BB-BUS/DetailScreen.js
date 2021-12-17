@@ -1,4 +1,3 @@
-import deepRenameKeys from 'deep-rename-keys';
 import _remove from 'lodash/remove';
 import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
@@ -6,16 +5,17 @@ import React, { useContext, useRef, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
+import { BBBusClient } from '../../BBBusClient';
 import { BackToTop, Button, SafeAreaViewFlex } from '../../components';
 import { Authority } from '../../components/BB-BUS/Authority';
 import { Persons } from '../../components/BB-BUS/Persons';
 import { TextBlock } from '../../components/BB-BUS/TextBlock';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
-import { colors, consts, device, normalize } from '../../config';
+import { colors, consts, device, namespace, normalize, secrets } from '../../config';
 import { graphqlFetchPolicy, matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen, useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
-import { GET_DIRECTUS, GET_SERVICE } from '../../queries/BB-BUS/directus';
+import { GET_SERVICE } from '../../queries/BB-BUS';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -41,11 +41,11 @@ const TEXT_BLOCKS_SORTER = {
 };
 
 const FormButton = ({ link, rootRouteName }) => {
-  const { id, name, url } = link;
+  const { url } = link;
 
   const openWebScreen = useOpenWebScreen(name, url, rootRouteName);
 
-  return <Button key={id} title={`${name} online`} onPress={openWebScreen} invert />;
+  return <Button title={url} onPress={openWebScreen} invert />;
 };
 
 FormButton.propTypes = {
@@ -54,48 +54,25 @@ FormButton.propTypes = {
 };
 
 const renderForm = (form, rootRouteName) => {
-  // fix for multi nested result form Directus API
-  if (form.forms) form = form.forms;
-
   const { links } = form;
 
   return links.map((link) => {
-    // fix for multi nested result form Directus API
-    if (link.links) link = link.links;
-
-    return <FormButton key={link.id} link={link} rootRouteName={rootRouteName} />;
+    return <FormButton key={link.url} link={link} rootRouteName={rootRouteName} />;
   });
 };
 
-const parseData = (data) => {
-  const snake_caseData = data?.directus?.service?.data;
-
-  if (!snake_caseData) return;
-
-  // workaround for having camelCase keys in `top10`
-  // GraphQL is returning snake_case, see: https://github.com/d12/graphql-remote_loader/issues/36
-  // transforming method thanks to: https://coderwall.com/p/iprsng/convert-snake-case-to-camelcase
-  return deepRenameKeys(snake_caseData, (key) => key.replace(/_\w/g, (m) => m[1].toUpperCase()));
-};
-
-const parseTextBlocks = (data) => {
-  const { textBlocks } = data[0];
+const parseTextBlocks = (service) => {
+  const { textBlocks } = service;
   let firstTextBlocks;
   let sortedTextBlocks;
 
   if (textBlocks) {
     sortedTextBlocks = _sortBy(textBlocks, (textBlock) => {
-      // fix for multi nested result form Directus API
-      if (textBlock.textBlock) textBlock = textBlock.textBlock;
-
       return TEXT_BLOCKS_SORTER[textBlock.name];
     });
 
     // filter text blocks we want to render before authorities and persons
     firstTextBlocks = _remove(sortedTextBlocks, (textBlock) => {
-      // fix for multi nested result form Directus API
-      if (textBlock.textBlock) textBlock = textBlock.textBlock;
-
       return (
         textBlock.name.toUpperCase() === 'KURZTEXT' || textBlock.name.toUpperCase() === 'VOLLTEXT'
       );
@@ -103,9 +80,6 @@ const parseTextBlocks = (data) => {
 
     // filter text blocks, we do not want to render
     _remove(sortedTextBlocks, (textBlock) => {
-      // fix for multi nested result form Directus API
-      if (textBlock.textBlock) textBlock = textBlock.textBlock;
-
       return (
         textBlock.name.toUpperCase() === 'FACHLICH FREIGEGEBEN DURCH' ||
         textBlock.name.toUpperCase() === 'FACHLICH FREIGEGEBEN AM'
@@ -136,13 +110,15 @@ export const DetailScreen = ({ route }) => {
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
-  const { data, loading, refetch } = useQuery(GET_DIRECTUS, {
-    variables: GET_SERVICE(id),
+  const areaId = secrets[namespace]?.busBb?.areaId;
+  const { data, loading, refetch } = useQuery(GET_SERVICE, {
+    variables: { id, areaId },
+    client: BBBusClient,
     fetchPolicy,
-    skip: !id || !refreshTime
+    skip: !id || !areaId || !refreshTime
   });
 
-  if (!id) return null;
+  if (!id || !areaId) return null;
 
   if (!refreshTime || loading) {
     return <LoadingSpinner loading />;
@@ -154,13 +130,15 @@ export const DetailScreen = ({ route }) => {
     setRefreshing(false);
   };
 
-  const parsedData = parseData(data);
+  const service = data?.publicServiceTypes?.[0];
 
-  if (!parsedData?.length) return null;
+  if (!service) return null;
 
-  const { forms, authorities, persons } = parsedData[0];
+  const { organisationalUnits, persons } = service;
 
-  const { firstTextBlocks, sortedTextBlocks } = parseTextBlocks(parsedData);
+  const forms = organisationalUnits?.map((ou) => ou.form).flat();
+
+  const { firstTextBlocks, sortedTextBlocks } = parseTextBlocks(service);
 
   return (
     <SafeAreaViewFlex>
@@ -197,11 +175,11 @@ export const DetailScreen = ({ route }) => {
           );
         })}
 
-        {authorities?.map((authority, index) => (
+        {organisationalUnits?.map((ou, index) => (
           <Authority
-            key={authority.authority.id}
-            data={authority.authority}
-            bottomDivider={index == authorities.length - 1}
+            key={ou.id}
+            data={ou}
+            bottomDivider={index == organisationalUnits.length - 1}
             openWebScreen={openWebScreen}
           />
         ))}

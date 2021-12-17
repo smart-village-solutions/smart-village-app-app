@@ -42,12 +42,12 @@ export const IndexFilter = ({
   setListItems,
   areaId,
   setAreaId,
-  communities,
+  areas,
   loading
 }) => {
   const [serviceSearchData, setServiceSearchData] = useState('');
   const [categoryFilterData, setCategoryFilterData] = useState(initialCategoryFilterData);
-  const [locationFilterData, setLocationFilterData] = useState(communities);
+  const [locationFilterData, setLocationFilterData] = useState(areas);
   const [AZFilterData, setAZFilterData] = useState(initialAZFilterData);
   const listItemsCount = listItems.length;
 
@@ -229,9 +229,9 @@ IndexFilter.propTypes = {
   results: PropTypes.array.isRequired,
   listItems: PropTypes.array.isRequired,
   setListItems: PropTypes.func.isRequired,
-  areaId: PropTypes.number.isRequired,
+  areaId: PropTypes.string.isRequired,
   setAreaId: PropTypes.func.isRequired,
-  communities: PropTypes.array,
+  areas: PropTypes.array,
   loading: PropTypes.bool.isRequired
 };
 
