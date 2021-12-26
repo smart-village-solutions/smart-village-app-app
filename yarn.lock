@@ -6060,12 +6060,10 @@ expo-screen-orientation@~4.0.3:
     "@expo/config-plugins" "^4.0.2"
     expo-modules-core "~0.4.4"
 
-expo-secure-store@~11.0.3:
-  version "11.0.3"
-  resolved "https://registry.yarnpkg.com/expo-secure-store/-/expo-secure-store-11.0.3.tgz#b71c7837925ac7811ed4d25dfb6a61dbdb2eb3b9"
-  integrity sha512-/YJV+kUWdDFYzwNibJx/noLGFG/0nN7TjoF67lpLBxd+X3KwbwrSJo6jy2LBZT49qBlptx4dPFLCjtnx6uaUiw==
-  dependencies:
-    expo-modules-core "~0.4.4"
+expo-secure-store@~11.1.0:
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/expo-secure-store/-/expo-secure-store-11.1.0.tgz#2eb6e793a459e178feeb72bbeb40afc97e412bf6"
+  integrity sha512-LyCLqsoibP90Td4mSWc+un+xGNYnIuGOrfbp2aG2KAn1ZGcDL6muxIaFj7a/4Kh+EiCIoU5EPb1YjOATbmaBnQ==
 
 expo-splash-screen@~0.13.5:
   version "0.13.5"
