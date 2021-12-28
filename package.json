@@ -64,7 +64,7 @@
     "lodash": "~4.17.21",
     "matomo-tracker-react-native": "^0.3.0",
     "moment": "~2.29.1",
-    "qs": "^6.10.1",
+    "qs": "^6.10.2",
     "react": "17.0.1",
     "react-apollo": "~3.1.5",
     "react-native": "^0.64.3",
