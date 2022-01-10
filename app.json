@@ -42,6 +42,7 @@
       "barStyle": "dark-content",
       "translucent": true,
       "backgroundColor": "#00000000"
-    }
+    },
+    "plugins": ["sentry-expo"]
   }
 }
