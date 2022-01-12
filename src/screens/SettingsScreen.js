@@ -1,20 +1,18 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SectionList, View } from 'react-native';
+import { ActivityIndicator, Alert, SectionList } from 'react-native';
 
 import {
+  IndexFilterWrapperAndList,
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
+  SectionHeader,
   SettingsToggle,
-  Title,
-  TitleContainer,
-  TitleShadow,
   Wrapper
 } from '../components';
-import { IndexFilterWrapperAndList } from '../components/BB-BUS/IndexFilterWrapperAndList';
 import { ListSettings, LocationSettings } from '../components/settings';
-import { colors, consts, device, texts } from '../config';
+import { colors, consts, texts } from '../config';
 import { createMatomoUserId, matomoSettings, readFromStore, removeMatomoUserId } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
@@ -24,15 +22,7 @@ const { MATOMO_TRACKING } = consts;
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
-const renderSectionHeader = ({ section: { title } }) =>
-  !!title && (
-    <View>
-      <TitleContainer>
-        <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>{title}</Title>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
-    </View>
-  );
+const renderSectionHeader = ({ section: { title } }) => !!title && <SectionHeader title={title} />;
 
 const renderItem = ({ item, index, section }) => <SettingsToggle {...{ item, index, section }} />;
 
@@ -52,14 +42,14 @@ const onDeactivatePushNotifications = (revert) => {
   setInAppPermission(false).then((success) => !success && revert());
 };
 
-const Filter = {
-  general: 'general',
-  listTypes: 'listTypes'
+const TOP_FILTER = {
+  GENERAL: 'general',
+  LIST_TYPES: 'listTypes'
 };
 
 const INITIAL_FILTER = [
-  { id: Filter.general, title: texts.settingsTitles.tabs.general, selected: true },
-  { id: Filter.listTypes, title: texts.settingsTitles.tabs.listTypes, selected: false }
+  { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
+  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false }
 ];
 
 export const SettingsScreen = () => {
@@ -166,7 +156,7 @@ export const SettingsScreen = () => {
   return (
     <SafeAreaViewFlex>
       <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
-      {selectedFilterId === Filter.general && (
+      {selectedFilterId === TOP_FILTER.GENERAL && (
         <SectionList
           keyExtractor={keyExtractor}
           sections={sectionedData}
@@ -182,7 +172,7 @@ export const SettingsScreen = () => {
           stickySectionHeadersEnabled
         />
       )}
-      {selectedFilterId === Filter.listTypes && <ListSettings />}
+      {selectedFilterId === TOP_FILTER.LIST_TYPES && <ListSettings />}
     </SafeAreaViewFlex>
   );
 };

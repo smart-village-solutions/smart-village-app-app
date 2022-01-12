@@ -3,8 +3,9 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
 
-import { colors } from '../../config';
-import { WrapperVertical } from '../Wrapper';
+import { colors } from '../config';
+
+import { WrapperVertical } from './Wrapper';
 
 export const IndexFilterWrapper = styled.View`
   border-bottom-width: ${StyleSheet.hairlineWidth};

@@ -7,8 +7,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 
-import { DefaultKeyboardAvoidingView, LoadingContainer, SafeAreaViewFlex } from '../../components';
-import { IndexFilterWrapperAndList } from '../../components/BB-BUS/IndexFilterWrapperAndList';
+import {
+  DefaultKeyboardAvoidingView,
+  IndexFilterWrapperAndList,
+  LoadingContainer,
+  SafeAreaViewFlex
+} from '../../components';
 import { ServiceList } from '../../components/BB-BUS/ServiceList';
 import { colors, consts, namespace, secrets, texts } from '../../config';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
@@ -24,7 +28,7 @@ import {
 
 const { MATOMO_TRACKING } = consts;
 
-const initialFilter = [
+const INITIAL_FILTER = [
   { id: 1, title: texts.bbBus.initialFilter.top10, selected: true },
   // TODO: commented out 'Lebenslagen' as the main server does not have data for that section yet
   // { id: 2, title: 'Lebenslagen', selected: false },
@@ -37,7 +41,7 @@ export const IndexScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [areaId, setAreaId] = useState(secrets[namespace]?.busBb?.areaId);
   const queryVariables = { areaId };
-  const [filter, setFilter] = useState(initialFilter);
+  const [filter, setFilter] = useState(INITIAL_FILTER);
   const [refreshing, setRefreshing] = useState(false);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BB_BUS);

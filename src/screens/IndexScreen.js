@@ -10,10 +10,10 @@ import { auth } from '../auth';
 import { colors, consts, texts } from '../config';
 import {
   DropdownHeader,
+  IndexFilterWrapperAndList,
   ListComponent,
   LoadingContainer,
   LocationOverview,
-  MapSwitchHeader,
   OptionToggle,
   SafeAreaViewFlex
 } from '../components';
@@ -29,19 +29,34 @@ import { usePosition, useTrackScreenViewAsync } from '../hooks';
 
 const { MATOMO_TRACKING } = consts;
 
+const TOP_FILTER = {
+  LIST: 'list',
+  MAP: 'map'
+};
+
+const INITIAL_TOP_FILTER = [
+  { id: TOP_FILTER.LIST, title: texts.locationOverview.list, selected: true },
+  { id: TOP_FILTER.MAP, title: texts.locationOverview.map, selected: false }
+];
+
+const isMapSelected = (topFilter) =>
+  topFilter.find((entry) => entry.selected).id === TOP_FILTER.MAP;
+
 // TODO: make a list component for POIs that already includes the mapswitchheader?
 // TODO: make a list component that already includes the news/events filter?
 // eslint-disable-next-line complexity
 export const IndexScreen = ({ navigation, route }) => {
+  const [topFilter, setTopFilter] = useState(INITIAL_TOP_FILTER);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {} } = globalSettings;
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [refreshing, setRefreshing] = useState(false);
-  const [showMap, setShowMap] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
+
+  const showMap = isMapSelected(topFilter);
 
   const query = route.params?.query ?? '';
 
@@ -156,7 +171,7 @@ export const IndexScreen = ({ navigation, route }) => {
     <SafeAreaViewFlex>
       {query === QUERY_TYPES.POINTS_OF_INTEREST ? (
         <View>
-          <MapSwitchHeader setShowMap={setShowMap} showMap={showMap} />
+          <IndexFilterWrapperAndList filter={topFilter} setFilter={setTopFilter} />
           <OptionToggle
             label={texts.pointOfInterest.filterByOpeningTime}
             onToggle={() => setFilterByOpeningTimes((value) => !value)}

@@ -8,8 +8,8 @@ import { RegularText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { DropdownSelect } from '../DropdownSelect';
 import { search } from '../../helpers';
+import { IndexFilterWrapper } from '../IndexFilterElement';
 
-import { IndexFilterWrapper } from './IndexFilterElement';
 import { AZFilter } from './AZFilter';
 import { TextSearch } from './TextSearch';
 
