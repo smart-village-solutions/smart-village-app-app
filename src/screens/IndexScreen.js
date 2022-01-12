@@ -182,6 +182,7 @@ export const IndexScreen = ({ navigation, route }) => {
       ) : null}
       {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
         <LocationOverview
+          filterByOpeningTimes={filterByOpeningTimes}
           navigation={navigation}
           route={route}
           position={position}

@@ -7,7 +7,7 @@ import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { MapMarker, WebviewLeafletMessage } from 'react-native-webview-leaflet';
 
 import { colors, texts } from '../../config';
-import { graphqlFetchPolicy } from '../../helpers';
+import { graphqlFetchPolicy, isOpen } from '../../helpers';
 import { location, locationIconAnchor, ownLocation, ownLocationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
@@ -20,6 +20,7 @@ import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { WebViewMap } from './WebViewMap';
 
 type Props = {
+  filterByOpeningTimes?: boolean;
   position?: LocationObject;
   navigation: StackNavigationProp<never>;
   queryVariables: {
@@ -33,9 +34,9 @@ type Props = {
 // FIXME: with our current setup the data that we receive from a query is not typed
 // if we change that then we can fix this place
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mapToMapMarkers = (data: any): MapMarker[] | undefined => {
+const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
   return (
-    data?.[QUERY_TYPES.POINTS_OF_INTEREST]
+    pointsOfInterest
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ?.map((item: any) => {
         const latitude = item.addresses?.[0]?.geoLocation?.latitude;
@@ -57,7 +58,13 @@ const mapToMapMarkers = (data: any): MapMarker[] | undefined => {
   );
 };
 
-export const LocationOverview = ({ navigation, position, queryVariables, route }: Props) => {
+export const LocationOverview = ({
+  filterByOpeningTimes,
+  navigation,
+  position,
+  queryVariables,
+  route
+}: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
 
@@ -68,6 +75,12 @@ export const LocationOverview = ({ navigation, position, queryVariables, route }
     fetchPolicy,
     variables: queryVariables
   });
+
+  let pointsOfInterest: any[] | undefined = overviewData?.[QUERY_TYPES.POINTS_OF_INTEREST];
+
+  if (filterByOpeningTimes && pointsOfInterest) {
+    pointsOfInterest = pointsOfInterest.filter((entry) => isOpen(entry.openingHours)?.open);
+  }
 
   const detailsQuery = getQuery(QUERY_TYPES.POINT_OF_INTEREST);
   const { data: detailsData, loading: detailsLoading } = useQuery(detailsQuery, {
@@ -93,7 +106,7 @@ export const LocationOverview = ({ navigation, position, queryVariables, route }
     );
   }
 
-  const mapMarkers = mapToMapMarkers(overviewData);
+  const mapMarkers = mapToMapMarkers(pointsOfInterest);
 
   position &&
     mapMarkers?.push({
