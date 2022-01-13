@@ -42,7 +42,7 @@ export const HtmlScreen = ({ navigation, route }) => {
     setRefreshing(true);
     isConnected && (await refetch?.());
     setRefreshing(false);
-  }, [refetch]);
+  }, [isConnected, refetch]);
   const subQuery = route.params?.subQuery ?? '';
   const rootRouteName = route.params?.rootRouteName ?? '';
 
