@@ -1,6 +1,7 @@
 import { sentryApi } from './src/config/secrets';
 
-export default {
+export default ({ config }) => ({
+  ...config,
   hooks: {
     postPublish: [
       sentryApi?.config && {
@@ -9,4 +10,4 @@ export default {
       }
     ]
   }
-};
+});
