@@ -1,9 +1,19 @@
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
+import * as Sentry from '@sentry/react-native';
 
 import { MainApp } from './src';
-import { fontConfig } from './src/config';
+import { fontConfig, sentryApi } from './src/config';
+
+if (sentryApi?.dsn) {
+  Sentry.init({
+    dsn: sentryApi.dsn,
+    enableNative: false, // NOTE: Native crash reporting is not available with the classic build system (expo build:[ios|android]), but is available via EAS Build.
+    // enableInExpoDevelopment: true, // NOTE: Use this to enable temporarily tracking errors in development
+    debug: __DEV__ // NOTE: If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+  });
+}
 
 const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -19,4 +29,4 @@ const App = () => {
   return fontLoaded ? <MainApp /> : null;
 };
 
-export default App;
+export default sentryApi?.dsn ? Sentry.wrap(App) : App;
