@@ -16,7 +16,7 @@ export const GET_SERVICE = gql`
         openingHours
         elevator
         wheelchairAccessible
-        form {
+        forms {
           name
           links {
             url
