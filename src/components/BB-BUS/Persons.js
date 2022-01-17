@@ -17,8 +17,6 @@ export const Persons = ({ data, openWebScreen }) => {
   return (
     <Block title={texts.bbBus.employees}>
       {persons.map((person) => {
-        if (person.object) person.person = person.object;
-
         const {
           id,
           title,
@@ -29,7 +27,7 @@ export const Persons = ({ data, openWebScreen }) => {
           room,
           addresses,
           communication // NOTE: the api returns singular here instead of plural
-        } = person.person;
+        } = person;
 
         const address = getAddress(addresses);
         const contact = getContact(communication);

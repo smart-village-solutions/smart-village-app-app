@@ -83,6 +83,7 @@ export const IndexScreen = ({ navigation }) => {
         title: bbBusService.name,
         routeName: 'BBBUSDetail',
         params: {
+          areaId,
           title: bbBusService.name,
           query: '',
           queryVariables: {},
