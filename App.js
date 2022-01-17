@@ -1,7 +1,7 @@
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
-import * as Sentry from '@sentry/react-native';
+import * as Sentry from 'sentry-expo';
 
 import { MainApp } from './src';
 import { fontConfig, sentryApi } from './src/config';
@@ -29,4 +29,4 @@ const App = () => {
   return fontLoaded ? <MainApp /> : null;
 };
 
-export default sentryApi?.dsn ? Sentry.wrap(App) : App;
+export default App;
