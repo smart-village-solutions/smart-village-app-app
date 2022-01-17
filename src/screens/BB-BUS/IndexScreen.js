@@ -147,7 +147,7 @@ export const IndexScreen = ({ navigation }) => {
             return (
               <Query
                 query={GET_AREAS_AND_TOP_10}
-                variables={{ areaId: secrets[namespace]?.busBb?.areaId, ids: top10Ids }}
+                variables={{ areaId: secrets[namespace]?.busBb?.areaId?.toString(), ids: top10Ids }}
                 fetchPolicy={fetchPolicy}
                 client={BBBusClient}
               >
