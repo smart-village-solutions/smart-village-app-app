@@ -150,7 +150,7 @@ export const IndexFilter = ({
         setListItems([]);
       }
     }
-  }, [selectedFilter, categoryFilterData]);
+  }, [areaId, selectedFilter, categoryFilterData]);
 
   useEffect(() => {
     if (!loading && selectedFilter.id === 3) {
@@ -163,7 +163,7 @@ export const IndexFilter = ({
 
       setListItems(searchResults);
     }
-  }, [selectedFilter, serviceSearchData]);
+  }, [areaId, selectedFilter, serviceSearchData]);
 
   useEffect(() => {
     if (!loading && selectedFilter.id === 4) {
@@ -182,7 +182,7 @@ export const IndexFilter = ({
         setListItems([]);
       }
     }
-  }, [selectedFilter, AZFilterData]);
+  }, [areaId, selectedFilter, AZFilterData]);
 
   return (
     <View>

@@ -12,8 +12,8 @@ import { Persons } from '../../components/BB-BUS/Persons';
 import { TextBlock } from '../../components/BB-BUS/TextBlock';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { colors, consts, device, namespace, normalize, secrets } from '../../config';
-import { graphqlFetchPolicy, matomoTrackingString } from '../../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen, useRefreshTime } from '../../hooks';
+import { matomoTrackingString } from '../../helpers';
+import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { GET_SERVICE } from '../../queries/BB-BUS';
 
@@ -93,7 +93,7 @@ const parseTextBlocks = (service) => {
 // eslint-disable-next-line complexity
 export const DetailScreen = ({ route }) => {
   const scrollViewRef = useRef();
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { isConnected } = useContext(NetworkContext);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -107,20 +107,16 @@ export const DetailScreen = ({ route }) => {
 
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
-  const refreshTime = useRefreshTime(`BBBUS-service-${id}`, consts.REFRESH_INTERVALS.BB_BUS);
-
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
-
   const { data, loading, refetch } = useQuery(GET_SERVICE, {
     variables: { id, areaId },
     client: BBBusClient,
-    fetchPolicy,
-    skip: !id || !areaId || !refreshTime
+    fetchPolicy: 'network-only',
+    skip: !id || !areaId
   });
 
   if (!id || !areaId) return null;
 
-  if (!refreshTime || loading) {
+  if (loading) {
     return <LoadingSpinner loading />;
   }
 
