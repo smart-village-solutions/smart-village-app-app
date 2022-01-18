@@ -1,3 +1,4 @@
+import { openURL } from 'expo-linking';
 import _remove from 'lodash/remove';
 import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
@@ -40,24 +41,22 @@ const TEXT_BLOCKS_SORTER = {
   'Zuständige Stelle': 15
 };
 
-const FormButton = ({ link, rootRouteName }) => {
+const FormButton = ({ link, name }) => {
   const { url } = link;
 
-  const openWebScreen = useOpenWebScreen(name, url, rootRouteName);
-
-  return <Button title={url} onPress={openWebScreen} invert />;
+  return <Button title={name} onPress={() => openURL(url)} invert />;
 };
 
 FormButton.propTypes = {
   link: PropTypes.object.isRequired,
-  rootRouteName: PropTypes.string.isRequired
+  name: PropTypes.string
 };
 
-const renderForm = (form, rootRouteName) => {
-  const { links } = form;
+const renderForm = (form) => {
+  const { links, name } = form;
 
   return links.map((link) => {
-    return <FormButton key={link.url} link={link} rootRouteName={rootRouteName} />;
+    return <FormButton name={name} key={link.url} link={link} />;
   });
 };
 
@@ -108,7 +107,7 @@ export const DetailScreen = ({ route }) => {
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
   const { data, loading, refetch } = useQuery(GET_SERVICE, {
-    variables: { id, areaId },
+    variables: { externalIds: id, areaId },
     client: BBBusClient,
     fetchPolicy: 'network-only',
     skip: !id || !areaId
@@ -153,9 +152,7 @@ export const DetailScreen = ({ route }) => {
         }
       >
         {!!forms?.length && (
-          <View style={styles.formContainer}>
-            {forms.map((form) => renderForm(form, rootRouteName))}
-          </View>
+          <View style={styles.formContainer}>{forms.map((form) => renderForm(form))}</View>
         )}
 
         {firstTextBlocks?.map((textBlock, index) => {

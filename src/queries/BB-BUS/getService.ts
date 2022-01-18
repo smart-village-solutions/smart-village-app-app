@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const GET_SERVICE = gql`
-  query getService($areaId: ID!, $id: ID!) {
-    publicServiceTypes(areaId: $areaId, externalIds: [$id]) {
+  query getService($areaId: ID!, $externalIds: ID!) {
+    publicServiceTypes(areaId: $areaId, externalIds: [$externalIds]) {
       id: externalId
       organisationalUnits {
         id: externalId
