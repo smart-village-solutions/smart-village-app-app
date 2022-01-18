@@ -132,7 +132,7 @@ export const DetailScreen = ({ route }) => {
 
   const { organisationalUnits, persons } = service;
 
-  const forms = organisationalUnits?.map((ou) => ou.form).flat();
+  const forms = organisationalUnits?.map((ou) => ou.forms).flat();
 
   const { firstTextBlocks, sortedTextBlocks } = parseTextBlocks(service);
 
