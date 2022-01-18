@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.4.1]
+
+Integration of Sentry and fixes.
+
+### Added
+
+- added sentry-expo to the project
+- added new multi button screen
+- integrated new GraphQL endpoint for bb-bus
+
+### Changed
+- unified top filter elements (those that simulate multiple tabs, e.g. within a POI category to switch between the location overview and the list)
+- category screen can now filter the categories by id
+
+### Fixed
+
+- media library permission bug due to image component
+- location overview no longer ignores the filtering by opening times
+
 ## [v2.4.0] :rocket:
 
 Updated survey feature.
