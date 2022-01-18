@@ -61,7 +61,7 @@ export const consts = {
     ONCE_PER_HOUR,
     NEVER,
     // refresh intervals per type:
-    BB_BUS: NEVER,
+    BB_BUS: ONCE_A_DAY,
     BOOKMARKS: ONCE_A_DAY,
     EVENTS: ONCE_A_DAY,
     NEWS: ONCE_A_DAY,

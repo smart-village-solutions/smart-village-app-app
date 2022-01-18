@@ -11,7 +11,7 @@ export const ServiceList = ({
   results,
   areaId,
   setAreaId,
-  communities,
+  areas,
   top10,
   loading,
   refreshControl
@@ -37,7 +37,7 @@ export const ServiceList = ({
           setListItems={setListItems}
           areaId={areaId}
           setAreaId={setAreaId}
-          communities={communities}
+          areas={areas}
           loading={loading}
         />
       }
@@ -51,9 +51,9 @@ ServiceList.propTypes = {
   navigation: PropTypes.object.isRequired,
   selectedFilter: PropTypes.object.isRequired,
   results: PropTypes.array,
-  areaId: PropTypes.number.isRequired,
+  areaId: PropTypes.string.isRequired,
   setAreaId: PropTypes.func.isRequired,
-  communities: PropTypes.array,
+  areas: PropTypes.array,
   top10: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
   refreshControl: PropTypes.object

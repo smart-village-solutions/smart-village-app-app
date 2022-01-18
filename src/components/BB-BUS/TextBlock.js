@@ -9,8 +9,6 @@ import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { Block } from './Block';
 
 export const TextBlock = ({ bottomDivider, textBlock, openWebScreen }) => {
-  // fix for multi nested result form Directus API
-  if (textBlock.textBlock) textBlock = textBlock.textBlock;
   const { name, externalLinks, text } = textBlock;
 
   if (!name || (!text && !externalLinks?.length)) {
@@ -28,9 +26,6 @@ export const TextBlock = ({ bottomDivider, textBlock, openWebScreen }) => {
           {!!text && <HtmlView html={trimNewLines(text)} openWebScreen={openWebScreen} />}
           {!!externalLinks?.length &&
             externalLinks.map((externalLink) => {
-              // fix for multi nested result form Directus API
-              if (externalLink.externalLink) externalLink = externalLink.externalLink;
-
               return (
                 <Link
                   url={externalLink.url}

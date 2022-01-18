@@ -43,7 +43,6 @@
     "apollo-link-context": "1.0.20",
     "apollo-link-http": "1.5.17",
     "apollo-link-rest": "~0.7.3",
-    "deep-rename-keys": "~0.2.1",
     "expo": "^43.0.0",
     "expo-application": "~4.0.0",
     "expo-asset": "~8.4.3",

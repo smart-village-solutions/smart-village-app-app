@@ -17,8 +17,6 @@ export const Persons = ({ data, openWebScreen }) => {
   return (
     <Block title={texts.bbBus.employees}>
       {persons.map((person) => {
-        if (person.object) person.person = person.object;
-
         const {
           id,
           title,
@@ -28,17 +26,11 @@ export const Persons = ({ data, openWebScreen }) => {
           department,
           room,
           addresses,
-          communication // NOTE: the main server returns singular here instead of plural
-        } = person.person;
-
-        // set plural from singular
-        let communications = communication;
-
-        // if the result came from Directus, there is no singular and we need the plural directly
-        if (!communications) communications = person.person.communications;
+          communication // NOTE: the api returns singular here instead of plural
+        } = person;
 
         const address = getAddress(addresses);
-        const contact = getContact(communications);
+        const contact = getContact(communication);
 
         const name = pull([title, firstName, lastName], undefined).join(' ');
 
