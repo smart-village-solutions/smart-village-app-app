@@ -1,4 +1,3 @@
-import { openURL } from 'expo-linking';
 import _remove from 'lodash/remove';
 import _sortBy from 'lodash/sortBy';
 import PropTypes from 'prop-types';
@@ -13,7 +12,7 @@ import { Persons } from '../../components/BB-BUS/Persons';
 import { TextBlock } from '../../components/BB-BUS/TextBlock';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { colors, consts, device, namespace, normalize, secrets } from '../../config';
-import { matomoTrackingString } from '../../helpers';
+import { matomoTrackingString, openLink } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { GET_SERVICE } from '../../queries/BB-BUS';
@@ -44,7 +43,7 @@ const TEXT_BLOCKS_SORTER = {
 const FormButton = ({ link, name }) => {
   const { url } = link;
 
-  return <Button title={name} onPress={() => openURL(url)} invert />;
+  return <Button title={name} onPress={() => openLink(url)} invert />;
 };
 
 FormButton.propTypes = {
