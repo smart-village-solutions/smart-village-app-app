@@ -3,9 +3,16 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
 
 import { auth } from '../auth';
-import { Button, HtmlView, SafeAreaViewFlex, Wrapper, WrapperWithOrientation } from '../components';
+import {
+  Button,
+  EmptyMessage,
+  HtmlView,
+  SafeAreaViewFlex,
+  Wrapper,
+  WrapperWithOrientation
+} from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { colors, consts } from '../config';
+import { colors, consts, texts } from '../config';
 import { trimNewLines } from '../helpers';
 import { useStaticContent, useTrackScreenViewAsync } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
@@ -21,7 +28,7 @@ export const HtmlScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
 
-  if (!query || !queryVariables?.name) return null;
+  if (!query || !queryVariables?.name) return <EmptyMessage title={texts.empty.content} />;
 
   const { data, loading, refetch } = useStaticContent({
     name: queryVariables.name,
@@ -114,6 +121,7 @@ export const HtmlScreen = ({ navigation, route }) => {
                 onPress={() => navigate()}
               />
             )}
+
             {!!subQuery &&
               !!subQuery.buttons &&
               subQuery.buttons.map((button, index) => (

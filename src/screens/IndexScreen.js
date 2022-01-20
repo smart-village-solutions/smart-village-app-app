@@ -12,6 +12,7 @@ import {
   DropdownHeader,
   IndexFilterWrapperAndList,
   ListComponent,
+  EmptyMessage,
   LoadingContainer,
   LocationOverview,
   OptionToggle,
@@ -200,6 +201,7 @@ export const IndexScreen = ({ navigation, route }) => {
             onToggle={() => setFilterByOpeningTimes((value) => !value)}
             value={filterByOpeningTimes}
           />
+
           <Divider />
         </View>
       ) : null}
@@ -270,6 +272,7 @@ export const IndexScreen = ({ navigation, route }) => {
                     <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
                   ) : null
                 }
+                ListEmptyComponent={<EmptyMessage title={texts.empty.list} />}
                 navigation={navigation}
                 data={listItems}
                 horizontal={false}

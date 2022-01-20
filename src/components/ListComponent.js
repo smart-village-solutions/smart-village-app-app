@@ -48,6 +48,7 @@ export const ListComponent = ({
   horizontal,
   sectionByDate,
   ListHeaderComponent,
+  ListEmptyComponent,
   refreshControl,
   showBackToTop
 }) => {
@@ -64,6 +65,7 @@ export const ListComponent = ({
       data={data}
       fetchMoreData={fetchMoreData}
       ListHeaderComponent={ListHeaderComponent}
+      ListEmptyComponent={ListEmptyComponent}
       navigation={navigation}
       noSubtitle={noSubtitle}
       query={query}
@@ -82,6 +84,7 @@ ListComponent.propTypes = {
   horizontal: PropTypes.bool,
   sectionByDate: PropTypes.bool,
   ListHeaderComponent: PropTypes.object,
+  ListEmptyComponent: PropTypes.object,
   refreshControl: PropTypes.object,
   showBackToTop: PropTypes.bool
 };

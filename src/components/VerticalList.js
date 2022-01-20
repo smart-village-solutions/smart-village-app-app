@@ -17,6 +17,7 @@ export const VerticalList = ({
   noSubtitle,
   query,
   fetchMoreData,
+  ListEmptyComponent,
   ListHeaderComponent,
   showBackToTop,
   refreshControl
@@ -44,6 +45,7 @@ export const VerticalList = ({
       keyExtractor={keyExtractor}
       data={data}
       renderItem={renderItem}
+      ListEmptyComponent={ListEmptyComponent}
       ListHeaderComponent={ListHeaderComponent}
       ListFooterComponent={() => {
         if (data.length >= MAX_INITIAL_NUM_TO_RENDER) {
@@ -82,6 +84,7 @@ VerticalList.propTypes = {
   navigation: PropTypes.object,
   data: PropTypes.array,
   noSubtitle: PropTypes.bool,
+  ListEmptyComponent: PropTypes.object,
   ListHeaderComponent: PropTypes.object,
   showBackToTop: PropTypes.bool,
   leftImage: PropTypes.bool,

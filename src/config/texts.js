@@ -118,6 +118,12 @@ export const texts = {
     toCategory: 'Zu den Mitfahrbänken',
     verified: 'Verifiziert'
   },
+  empty: {
+    list:
+      'Schade, es wurden keine passenden Einträge gefunden, bitte zu einem späteren Zeitpunkt erneut versuchen.',
+    content:
+      'Schade, es wurde kein passender Inhalt gefunden, bitte zu einem späteren Zeitpunkt erneut versuchen.'
+  },
   errors: {
     image: {
       body: 'Es fehlt die Berechtigung Bilder aus der Medienbibliothek auszuwählen.',
