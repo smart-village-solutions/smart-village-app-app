@@ -40,7 +40,7 @@ Information about currently used packages and their versions:
 - React Navigation (5.15.3): https://github.com/react-navigation/react-navigation
 - React Native WebView (11.13.0): https://github.com/react-native-webview/react-native-webview
 - React Native Elements (1.2.7): https://github.com/react-native-training/react-native-elements
-- React Native Calendars (1.1266.0): https://github.com/wix/react-native-calendars
+- React Native Calendars (1.1276.0): https://github.com/wix/react-native-calendars
 - Apollo Client (2.6.10): https://github.com/apollographql/apollo-client
 - GraphQL (14.6.0): https://github.com/graphql/graphql-js
 - styled-components (4.3.2): https://github.com/styled-components/styled-components
