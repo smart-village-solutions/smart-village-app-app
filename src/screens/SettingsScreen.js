@@ -11,7 +11,7 @@ import {
   SettingsToggle,
   Wrapper
 } from '../components';
-import { ListSettings, LocationSettings } from '../components/settings';
+import { ListSettings, LocationSettings, PermanentFilterSettings } from '../components/settings';
 import { colors, consts, texts } from '../config';
 import { createMatomoUserId, matomoSettings, readFromStore, removeMatomoUserId } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
@@ -139,6 +139,12 @@ export const SettingsScreen = () => {
           renderItem: () => <LocationSettings />
         });
       }
+
+      additionalSectionedData.push({
+        data: ['permanentFilters'],
+        title: texts.settingsContents.permanentFilter.sectionHeader,
+        renderItem: () => <PermanentFilterSettings />
+      });
       setSectionedData(additionalSectionedData);
     };
 

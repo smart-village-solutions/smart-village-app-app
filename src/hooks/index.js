@@ -9,6 +9,7 @@ export * from './locationHooks';
 export * from './matomoHooks';
 export * from './NewsCategories';
 export * from './openWebScreen';
+export * from './permanentFilter';
 export * from './pullToRefetch';
 export * from './PushNotification';
 export * from './TimeHooks';

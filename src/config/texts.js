@@ -457,6 +457,9 @@ export const texts = {
         'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
       save: 'Speichern',
       sectionHeader: 'Standort'
+    },
+    permanentFilter: {
+      sectionHeader: 'Datenquellen'
     }
   },
   settingsScreen: {
