@@ -1,6 +1,8 @@
 import { consts, texts } from '../../../config';
 import { QUERY_TYPES } from '../../../queries';
 
+import { myTasks } from '.';
+
 const { ROOT_ROUTE_NAMES } = consts;
 
 export const myGroups = () => [
@@ -15,6 +17,7 @@ export const myGroups = () => [
     join_policy: 1,
     status: 1,
     tags: 'Senioren, Kinder, Indoor',
+    dataProvider: {},
     owner: {
       id: 6,
       guid: 'c0655623-346b-4b8d-a888-dfeac07d11b7',
@@ -102,6 +105,7 @@ export const myGroups = () => [
         contentType: 'image'
       }
     ],
+    tags: null,
     dataProvider: {
       name: '',
       logo: {
@@ -109,7 +113,6 @@ export const myGroups = () => [
           'https://humhub.herzbergdigitalvereint.de/uploads/profile_image/3e6e404c-4c32-44fa-8aa5-6a9b59e9d62b_org.jpg?m=1637074529'
       }
     },
-    tags: null,
     owner: {
       id: 8,
       guid: 'e2e8ab4a-73c0-411c-90ef-93c0777b08a3',
@@ -134,6 +137,7 @@ export const myGroups = () => [
     join_policy: 0,
     status: 1,
     tags: 'alles',
+    dataProvider: {},
     owner: {
       id: 5,
       guid: 'c8afbeb8-2041-4424-a9d5-84204652243e',
@@ -145,7 +149,8 @@ export const myGroups = () => [
       query: QUERY_TYPES.VOLUNTEER.ALL_GROUPS,
       queryVariables: { id: 11 },
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-    }
+    },
+    tasks: myTasks()
   }
 ];
 
@@ -160,7 +165,6 @@ export const myGroupsFollowing = () => [
     visibility: 1,
     join_policy: 1,
     status: 1,
-    tags: null,
     mediaContents: [
       {
         sourceUrl: {
@@ -170,6 +174,7 @@ export const myGroupsFollowing = () => [
         contentType: 'image'
       }
     ],
+    tags: null,
     dataProvider: {
       name: '',
       logo: {

@@ -10,7 +10,7 @@ import {
   myMessages,
   myTasks
 } from '../../helpers/parser/volunteer';
-import { EventRecord, NewsItem, PointOfInterest, SafeAreaViewFlex, Tour } from '../../components';
+import { EventRecord, PointOfInterest, SafeAreaViewFlex, VolunteerTask } from '../../components';
 import { colors } from '../../config';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
@@ -21,8 +21,7 @@ const getComponent = (query) => {
     [QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING]: PointOfInterest,
     [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: PointOfInterest,
     [QUERY_TYPES.VOLUNTEER.CALENDAR]: EventRecord,
-    [QUERY_TYPES.POINT_OF_INTEREST]: PointOfInterest,
-    [QUERY_TYPES.TOUR]: Tour
+    [QUERY_TYPES.VOLUNTEER.TASKS]: VolunteerTask
   };
 
   return COMPONENTS[query];

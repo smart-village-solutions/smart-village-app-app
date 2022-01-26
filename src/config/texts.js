@@ -69,7 +69,8 @@ export const texts = {
     newsItem: 'Nachricht',
     pointOfInterest: 'Ort',
     volunteer: {
-      group: 'Gruppenprofil'
+      group: 'Gruppenprofil',
+      task: 'Aufgabe'
     },
     tour: 'Tour'
   },

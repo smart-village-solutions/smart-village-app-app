@@ -33,6 +33,7 @@ export const myCalendar = () => [
     title: 'Weihnachten',
     tags: '24.12.2022',
     routeName: 'VolunteerDetail',
+    dataProvider: {},
     dates: [
       {
         dateFrom: '2022-12-24',

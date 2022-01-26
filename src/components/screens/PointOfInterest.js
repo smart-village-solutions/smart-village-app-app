@@ -188,7 +188,18 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
 
         {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
 
-        {data.routeName === 'VolunteerDetail' && (
+        {data.routeName === 'VolunteerDetail' && !!data.tasks?.length && (
+          <DataListSection
+            loading={false}
+            navigation={navigation}
+            query={QUERY_TYPES.VOLUNTEER.TASKS}
+            sectionData={data.tasks}
+            sectionTitle="Aufgaben"
+            sectionTitleDetail="Ehrenamt"
+          />
+        )}
+
+        {data.routeName === 'VolunteerDetail' && !!data.wiki?.length && (
           <DataListSection
             loading={false}
             navigation={navigation}
@@ -208,6 +219,5 @@ PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired,
   hideMap: PropTypes.bool,
   navigation: PropTypes.object,
-  fetchPolicy: PropTypes.string,
   route: PropTypes.object.isRequired
 };
