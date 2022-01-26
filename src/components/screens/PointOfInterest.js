@@ -17,6 +17,8 @@ import { WebViewMap } from '../map/WebViewMap';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { DataListSection } from '..';
+import { QUERY_TYPES } from '../../queries';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
@@ -185,6 +187,17 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
         {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
+
+        {data.routeName === 'VolunteerDetail' && (
+          <DataListSection
+            loading={false}
+            navigation={navigation}
+            query={QUERY_TYPES.NEWS_ITEMS}
+            sectionData={{ [QUERY_TYPES.NEWS_ITEMS]: data.wiki }}
+            sectionTitle="Wiki"
+            sectionTitleDetail="Ehrenamt"
+          />
+        )}
       </WrapperWithOrientation>
     </View>
   );

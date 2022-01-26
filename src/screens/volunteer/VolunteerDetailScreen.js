@@ -17,7 +17,9 @@ import { QUERY_TYPES } from '../../queries';
 
 const getComponent = (query) => {
   const COMPONENTS = {
-    [QUERY_TYPES.NEWS_ITEM]: NewsItem,
+    [QUERY_TYPES.VOLUNTEER.GROUPS]: PointOfInterest,
+    [QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING]: PointOfInterest,
+    [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: PointOfInterest,
     [QUERY_TYPES.VOLUNTEER.CALENDAR]: EventRecord,
     [QUERY_TYPES.POINT_OF_INTEREST]: PointOfInterest,
     [QUERY_TYPES.TOUR]: Tour
