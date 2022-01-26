@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 import * as Sentry from 'sentry-expo';
 
 import { MainApp } from './src';
-import { fontConfig, sentryApi } from './src/config';
+import { fontConfig, namespace, secrets } from './src/config';
 
+let sentryApi = secrets[namespace].sentryApi;
 if (sentryApi?.dsn) {
   Sentry.init({
     dsn: sentryApi.dsn,
