@@ -1,13 +1,14 @@
 import { secrets } from './src/config/secrets';
 
 export default ({ config }) => {
-  const sentryConfig = secrets[config.slug]?.sentryApi?.config;
-  const hooks = sentryConfig
+  const namespace = config.slug;
+  const sentryApi = secrets[namespace].sentryApi;
+  const hooks = sentryApi?.config
     ? {
         postPublish: [
           {
             file: 'sentry-expo/upload-sourcemaps',
-            config: sentryConfig
+            config: sentryApi.config
           }
         ]
       }
