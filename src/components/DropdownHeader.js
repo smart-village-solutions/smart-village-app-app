@@ -4,6 +4,7 @@ import _uniqBy from 'lodash/uniqBy';
 
 import { texts } from '../config';
 import { QUERY_TYPES } from '../queries';
+import { usePermanentFilter } from '../hooks';
 
 import { DropdownSelect } from './DropdownSelect';
 import { Wrapper } from './Wrapper';
@@ -13,6 +14,8 @@ export const DropdownHeader = ({ query, queryVariables, data, updateListData }) 
     [QUERY_TYPES.EVENT_RECORDS]: texts.categoryFilter.category,
     [QUERY_TYPES.NEWS_ITEMS]: texts.categoryFilter.dataProvider
   }[query];
+
+  const { state: excludedDataProviders } = usePermanentFilter();
 
   const dropdownInitialData = (query) => {
     switch (query) {
@@ -28,15 +31,20 @@ export const DropdownHeader = ({ query, queryVariables, data, updateListData }) 
               selected: category.id === queryVariables.categoryId
             }))
         );
-      case QUERY_TYPES.NEWS_ITEMS:
+      case QUERY_TYPES.NEWS_ITEMS: {
+        const filteredDataProviders = data?.dataProviders?.filter(
+          (dataProvider) => !excludedDataProviders.includes(dataProvider.id)
+        );
+
         return (
-          data?.dataProviders?.length &&
-          _uniqBy(data.dataProviders, 'name').map((dataProvider, index) => ({
+          filteredDataProviders?.length &&
+          _uniqBy(filteredDataProviders, 'name').map((dataProvider, index) => ({
             index: index + 1,
             value: dataProvider.name,
             selected: dataProvider.name === queryVariables.dataProvider
           }))
         );
+      }
     }
   };
 

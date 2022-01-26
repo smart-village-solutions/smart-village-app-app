@@ -7,6 +7,7 @@ export const GET_NEWS_ITEMS = gql`
     $offset: Int
     $dataProvider: String
     $dataProviderId: ID
+    $excludeDataProviderIds: [ID]
     $categoryId: ID
   ) {
     newsItems(
@@ -15,6 +16,7 @@ export const GET_NEWS_ITEMS = gql`
       skip: $offset
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
+      excludeDataProviderIds: $excludeDataProviderIds
       categoryId: $categoryId
     ) {
       id
@@ -65,6 +67,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
     $offset: Int
     $dataProvider: String
     $dataProviderId: ID
+    $excludeDataProviderIds: [ID]
     $categoryId: ID
   ) {
     newsItems(
@@ -72,6 +75,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
       skip: $offset
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
+      excludeDataProviderIds: $excludeDataProviderIds
       categoryId: $categoryId
     ) {
       id
