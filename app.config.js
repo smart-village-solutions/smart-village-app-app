@@ -1,17 +1,20 @@
 import { secrets } from './src/config/secrets';
 
-let hooks = secrets.sentryApi?.config
-  ? {
-      postPublish: [
-        secrets.sentryApi?.config && {
-          file: 'sentry-expo/upload-sourcemaps',
-          config: secrets.entryApi.config
-        }
-      ]
-    }
-  : {};
+export default ({ config }) => {
+  const sentryConfig = secrets[config.slug]?.sentryApi?.config;
+  const hooks = sentryConfig
+    ? {
+        postPublish: [
+          {
+            file: 'sentry-expo/upload-sourcemaps',
+            config: sentryConfig
+          }
+        ]
+      }
+    : {};
 
-export default ({ config }) => ({
-  ...config,
-  hooks
-});
+  return {
+    ...config,
+    hooks
+  };
+};

@@ -6,7 +6,7 @@ import * as Sentry from 'sentry-expo';
 import { MainApp } from './src';
 import { fontConfig, namespace, secrets } from './src/config';
 
-let sentryApi = secrets[namespace].sentryApi;
+const sentryApi = secrets[namespace].sentryApi;
 if (sentryApi?.dsn) {
   Sentry.init({
     dsn: sentryApi.dsn,
