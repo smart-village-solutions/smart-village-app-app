@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import { RefreshControl, ScrollView } from 'react-native';
+import { FlatList, RefreshControl, ScrollView } from 'react-native';
 
 import {
   allGroups,
@@ -10,17 +10,27 @@ import {
   myMessages,
   myTasks
 } from '../../helpers/parser/volunteer';
-import { EventRecord, PointOfInterest, SafeAreaViewFlex, VolunteerTask } from '../../components';
+import {
+  DefaultKeyboardAvoidingView,
+  EventRecord,
+  PointOfInterest,
+  RegularText,
+  SafeAreaViewFlex,
+  VolunteerMessage,
+  VolunteerMessageTextField,
+  VolunteerTask
+} from '../../components';
 import { colors } from '../../config';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
 
 const getComponent = (query) => {
   const COMPONENTS = {
+    [QUERY_TYPES.VOLUNTEER.CALENDAR]: EventRecord,
     [QUERY_TYPES.VOLUNTEER.GROUPS]: PointOfInterest,
     [QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING]: PointOfInterest,
     [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: PointOfInterest,
-    [QUERY_TYPES.VOLUNTEER.CALENDAR]: EventRecord,
+    [QUERY_TYPES.VOLUNTEER.MESSAGES]: VolunteerMessage,
     [QUERY_TYPES.VOLUNTEER.TASKS]: VolunteerTask
   };
 
@@ -65,18 +75,21 @@ export const VolunteerDetailScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => refresh(refetch)}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
-          />
-        }
-      >
-        <Component data={details} navigation={navigation} route={route} />
-      </ScrollView>
+      <DefaultKeyboardAvoidingView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => refresh(refetch)}
+              colors={[colors.accent]}
+              tintColor={colors.accent}
+            />
+          }
+        >
+          <Component data={details} navigation={navigation} route={route} />
+        </ScrollView>
+        {query === QUERY_TYPES.VOLUNTEER.MESSAGES && <VolunteerMessageTextField />}
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };

@@ -201,7 +201,7 @@ const parsePointsOfInterestAndTours = (data) => {
 const parseVolunteers = (data, query, skipLastDivider, withDate) => {
   return data?.map((volunteer, index) => ({
     id: volunteer.id,
-    title: volunteer.title || volunteer.name,
+    title: volunteer.title,
     subtitle: subtitle(
       withDate ? eventDate(volunteer.listDate) : undefined,
       query !== QUERY_TYPES.VOLUNTEER.CALENDAR && volunteer.tags
@@ -220,7 +220,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate) => {
       },
       details: {
         ...volunteer,
-        title: volunteer.title || volunteer.name
+        title: volunteer.title
       }
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1
