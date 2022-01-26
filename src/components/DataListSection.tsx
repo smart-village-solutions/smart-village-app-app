@@ -18,6 +18,7 @@ type Props = {
   loading?: boolean;
   navigate?: () => void;
   navigation: StackNavigationProp<any>;
+  placeholder?: React.ReactElement;
   query: string;
   sectionData?: unknown[];
   sectionTitle?: string;
@@ -25,6 +26,7 @@ type Props = {
   showButton?: boolean;
 };
 
+// eslint-disable-next-line complexity
 export const DataListSection = ({
   buttonTitle,
   horizontal,
@@ -32,6 +34,7 @@ export const DataListSection = ({
   loading,
   navigate,
   navigation,
+  placeholder,
   query,
   sectionData,
   sectionTitle,
@@ -50,22 +53,32 @@ export const DataListSection = ({
     skipLastDivider: true
   });
 
-  if (!listData?.length) return null;
+  if (listData?.length) {
+    return (
+      <View>
+        <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
+        <ListComponent
+          data={listData.slice(0, limit)}
+          horizontal={horizontal}
+          navigation={navigation}
+          query={query}
+        />
+        {!!buttonTitle && !!navigate && showButton && (
+          <Wrapper>
+            <Button title={buttonTitle} onPress={navigate} />
+          </Wrapper>
+        )}
+      </View>
+    );
+  }
+  if (!placeholder) {
+    return null;
+  }
 
   return (
     <View>
       <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
-      <ListComponent
-        data={listData.slice(0, limit)}
-        horizontal={horizontal}
-        navigation={navigation}
-        query={query}
-      />
-      {!!buttonTitle && !!navigate && showButton && (
-        <Wrapper>
-          <Button title={buttonTitle} onPress={navigate} />
-        </Wrapper>
-      )}
+      {placeholder}
     </View>
   );
 };

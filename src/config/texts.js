@@ -149,15 +149,15 @@ export const texts = {
     categoryTitle: 'Nachrichten',
     categoryTitleDetail: 'Nachricht'
   },
-  locationOverview: {
-    list: 'Listenansicht',
-    map: 'Kartenansicht',
-    noSelection: 'Bitte wählen Sie eine Markierung aus.'
-  },
   job: {
     employmentType: 'Art der Anstellung: ',
     job: 'Stellenanzeige',
     jobs: 'Stellenanzeigen'
+  },
+  locationOverview: {
+    list: 'Listenansicht',
+    map: 'Kartenansicht',
+    noSelection: 'Bitte wählen Sie eine Markierung aus.'
   },
   lunch: {
     noOffers: 'Für dieses Datum sind derzeit keine Gerichte verfügbar.',
@@ -402,6 +402,11 @@ export const texts = {
       website: 'Website: '
     },
     webRepresentation: 'Webversion: '
+  },
+  placeholder: {
+    homeSectionButton: 'Nachrichten-Filter ändern',
+    homeSectionTitle: 'Keine Nachrichten vorhanden',
+    homeSectionSubtitle: 'Hast Du alle Nachrichten Quellen abgewählt?'
   },
   pointOfInterest: {
     description: 'Beschreibung',
