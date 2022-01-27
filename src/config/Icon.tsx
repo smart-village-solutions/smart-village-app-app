@@ -148,7 +148,13 @@ export const Icon = {
   VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />,
   Volunteer: (props: IconProps) => (
     <NamedIcon
-      name={device.platform === 'ios' ? 'ios-people-circle' : 'md--people-circle'}
+      name={device.platform === 'ios' ? 'ios-people-circle' : 'md-people-circle'}
+      {...props}
+    />
+  ),
+  VolunteerProfile: (props: IconProps) => (
+    <NamedIcon
+      name={device.platform === 'ios' ? 'ios-lock-open-outline' : 'md-lock-open-outline'}
       {...props}
     />
   )

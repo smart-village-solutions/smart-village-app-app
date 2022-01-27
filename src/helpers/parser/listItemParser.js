@@ -268,5 +268,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseVolunteers(data, query, skipLastDivider);
     case QUERY_TYPES.VOLUNTEER.MESSAGES:
       return parseVolunteers(data, query, skipLastDivider);
+    case QUERY_TYPES.VOLUNTEER.PROFILE:
+      return parseVolunteers(data, query, skipLastDivider);
   }
 };

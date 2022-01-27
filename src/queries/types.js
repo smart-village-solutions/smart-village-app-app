@@ -25,6 +25,7 @@ export const QUERY_TYPES = {
     GROUPS: 'groups',
     GROUPS_FOLLOWING: 'groupsFollowing',
     MESSAGES: 'messages',
+    PROFILE: 'profile',
     TASKS: 'tasks'
   },
   WASTE_ADDRESSES: 'wasteAddresses',

@@ -17,7 +17,7 @@ import { WebViewMap } from '../map/WebViewMap';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
-import { DataListSection } from '..';
+import { DataListSection, SectionHeader } from '..';
 import { QUERY_TYPES } from '../../queries';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
@@ -46,6 +46,8 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     title,
     webUrls
   } = data;
+
+  const isVolunteerGroup = data.routeName === 'VolunteerDetail';
 
   const latitude = addresses?.[0]?.geoLocation?.latitude;
   const longitude = addresses?.[0]?.geoLocation?.longitude;
@@ -86,7 +88,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
           {!!logo && <Logo source={{ uri: logo }} />}
 
           <InfoCard
-            category={category}
+            category={(isVolunteerGroup && { name: data.tags }) || category}
             addresses={addresses}
             contact={contact}
             openingHours={openingHours}
@@ -94,6 +96,10 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
             webUrls={webUrls}
           />
         </Wrapper>
+
+        {isVolunteerGroup && <SectionHeader title={`Mitglieder (${data.membersCount})`} />}
+
+        {isVolunteerGroup && <SectionHeader title={`Follower (${data.followersCount})`} />}
 
         {!!openingHours && !!openingHours.length && (
           <View>
@@ -188,7 +194,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
 
         {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
 
-        {data.routeName === 'VolunteerDetail' && !!data.tasks?.length && (
+        {isVolunteerGroup && !!data.tasks?.length && (
           <DataListSection
             loading={false}
             navigation={navigation}
@@ -199,7 +205,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
           />
         )}
 
-        {data.routeName === 'VolunteerDetail' && !!data.wiki?.length && (
+        {isVolunteerGroup && !!data.wiki?.length && (
           <DataListSection
             loading={false}
             navigation={navigation}

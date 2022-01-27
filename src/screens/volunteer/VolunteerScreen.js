@@ -76,7 +76,6 @@ const NAVIGATION = {
 
 export const VolunteerScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const navigate = undefined;
 
   // useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.MORE);
 

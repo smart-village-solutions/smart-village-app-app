@@ -253,7 +253,10 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Volunteer,
       screenComponent: VolunteerScreen,
-      screenOptions: { title: texts.screenTitles.volunteer.home }
+      screenOptions: getScreenOptions({ withVolunteer: true }),
+      inititalParams: {
+        title: texts.screenTitles.volunteer.home
+      }
     },
     {
       routeName: ScreenName.WasteCollection,

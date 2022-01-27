@@ -11,6 +11,7 @@ import {
   myGroups,
   myGroupsFollowing,
   myMessages,
+  myProfile,
   myTasks
 } from '../../helpers/parser/volunteer';
 import { useMatomoTrackScreenView } from '../../hooks';
@@ -39,6 +40,7 @@ export const VolunteerIndexScreen = ({ navigation, route }) => {
     [QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING]: myGroupsFollowing(),
     [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: allGroups(),
     [QUERY_TYPES.VOLUNTEER.MESSAGES]: myMessages(),
+    [QUERY_TYPES.VOLUNTEER.PROFILE]: myProfile(),
     [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks()
   }[query];
 
@@ -49,6 +51,7 @@ export const VolunteerIndexScreen = ({ navigation, route }) => {
     [QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING]: 'categoryId',
     [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: 'categoryId',
     [QUERY_TYPES.VOLUNTEER.MESSAGES]: 'categoryId',
+    [QUERY_TYPES.VOLUNTEER.PROFILE]: 'categoryId',
     [QUERY_TYPES.VOLUNTEER.TASKS]: 'categoryId'
   }[query];
 
