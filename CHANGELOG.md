@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.4.2]
+
+Dependencies and bugfixes.
+
+### Changed
+- updated a couple of dependencies under the hood
+- moved sentry secrets from global secrets to namespaced secrets to more easily allow for individual instances
+
+### Fixed
+
+- changed to a new fork of react-native-webview-leaflet to fix android crashes
+
 ## [v2.4.1]
 
 Integration of Sentry and fixes.
