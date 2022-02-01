@@ -89,7 +89,7 @@
     "react-native-snap-carousel": "~3.9.0",
     "react-native-svg": "12.1.1",
     "react-native-webview": "11.13.0",
-    "react-native-webview-leaflet": "https://github.com/digorath/react-native-webview-leaflet#c5579e2fe46c35f3cc8b307c4794e9a0f11ab436",
+    "react-native-webview-leaflet": "https://github.com/okwast/react-native-webview-leaflet#d1914b1b02dc7a9faad45f23abadbf1fd3958abc",
     "sentry-expo": "^4.0.0",
     "styled-components": "~4.4.1"
   },
