@@ -6157,12 +6157,11 @@ expo-constants@~12.1.1, expo-constants@~12.1.2, expo-constants@~12.1.3:
     expo-modules-core "~0.4.4"
     uuid "^3.3.2"
 
-expo-device@~4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/expo-device/-/expo-device-4.0.3.tgz#da2229f1e5a38c795c9b8a023e65d520d327d4e5"
-  integrity sha512-T04QT90wHYMt+YcyartCez1QF94KPV39LdWbcU00hE5V/tVgUT1Wv3g7p0T2suWeoWRPdgIT9LOlO+DXjIPqWA==
+expo-device@~4.1.0:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/expo-device/-/expo-device-4.1.1.tgz#5de94144113ffb7fa0f37fa3d70e452113954c10"
+  integrity sha512-It0SGtKcvzQSf+Co6zdPdB63zZvG2/rDolB1lqswMNKj03Y7KVU41s5tcQCqNczj7tmeN3CJy7A8YhYGKdb7gA==
   dependencies:
-    expo-modules-core "~0.4.4"
     ua-parser-js "^0.7.19"
 
 expo-error-recovery@~3.0.3:
