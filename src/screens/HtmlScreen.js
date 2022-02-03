@@ -1,21 +1,20 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
-import { Query } from 'react-apollo';
 
-import { NetworkContext } from '../NetworkProvider';
 import { auth } from '../auth';
-import { colors, consts } from '../config';
 import { Button, HtmlView, SafeAreaViewFlex, Wrapper, WrapperWithOrientation } from '../components';
-import { graphqlFetchPolicy, trimNewLines } from '../helpers';
-import { getQuery } from '../queries';
-import { useRefreshTime, useTrackScreenViewAsync } from '../hooks';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { colors, consts } from '../config';
+import { trimNewLines } from '../helpers';
+import { useStaticContent, useTrackScreenViewAsync } from '../hooks';
+import { NetworkContext } from '../NetworkProvider';
 
 const { MATOMO_TRACKING } = consts;
 
+// eslint-disable-next-line complexity
 export const HtmlScreen = ({ navigation, route }) => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { isConnected } = useContext(NetworkContext);
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
   const title = route.params?.title ?? '';
@@ -24,7 +23,11 @@ export const HtmlScreen = ({ navigation, route }) => {
 
   if (!query || !queryVariables?.name) return null;
 
-  const refreshTime = useRefreshTime(`${query}-${queryVariables.name}`);
+  const { data, loading, refetch } = useStaticContent({
+    name: queryVariables.name,
+    type: 'html',
+    refreshTimeKey: `${query}-${queryVariables.name}`
+  });
 
   useEffect(() => {
     isConnected && auth();
@@ -35,22 +38,13 @@ export const HtmlScreen = ({ navigation, route }) => {
     isConnected && title && trackScreenViewAsync(`${MATOMO_TRACKING.SCREEN_VIEW.HTML} / ${title}`);
   }, [title]);
 
-  if (!refreshTime) {
-    return <LoadingSpinner loading />;
-  }
-
-  const refresh = async (refetch) => {
+  const refresh = useCallback(async () => {
     setRefreshing(true);
-    isConnected && (await refetch());
+    isConnected && (await refetch?.());
     setRefreshing(false);
-  };
+  }, [isConnected, refetch]);
   const subQuery = route.params?.subQuery ?? '';
   const rootRouteName = route.params?.rootRouteName ?? '';
-  const fetchPolicy = graphqlFetchPolicy({
-    isConnected,
-    isMainserverUp,
-    refreshTime
-  });
 
   // action to open source urls or navigate to sub screens
   const navigate = (param) => {
@@ -93,65 +87,51 @@ export const HtmlScreen = ({ navigation, route }) => {
     });
   };
 
+  if (loading) {
+    return <LoadingSpinner loading />;
+  }
+
+  if (!data) return null;
+
   return (
-    <Query
-      query={getQuery(query)}
-      variables={{ name: queryVariables.name }}
-      fetchPolicy={fetchPolicy}
-    >
-      {({ data, loading, refetch }) => {
-        if (loading) {
-          return <LoadingSpinner loading />;
+    <SafeAreaViewFlex>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => refresh(refetch)}
+            colors={[colors.accent]}
+            tintColor={colors.accent}
+          />
         }
-
-        if (!data?.publicHtmlFile?.content) return null;
-
-        return (
-          <SafeAreaViewFlex>
-            <ScrollView
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={() => refresh(refetch)}
-                  colors={[colors.accent]}
-                  tintColor={colors.accent}
+      >
+        <WrapperWithOrientation>
+          <Wrapper>
+            <HtmlView html={trimNewLines(data)} openWebScreen={navigate} navigation={navigation} />
+            {!!subQuery && !!subQuery.routeName && (!!subQuery.webUrl || subQuery.params) && (
+              <Button
+                title={subQuery.buttonTitle || `${title} öffnen`}
+                onPress={() => navigate()}
+              />
+            )}
+            {!!subQuery &&
+              !!subQuery.buttons &&
+              subQuery.buttons.map((button, index) => (
+                <Button
+                  key={`${index}-${button.webUrl}`}
+                  title={button.buttonTitle || `${title} öffnen`}
+                  onPress={() =>
+                    navigate({
+                      routeName: button.routeName,
+                      webUrl: button.webUrl
+                    })
+                  }
                 />
-              }
-            >
-              <WrapperWithOrientation>
-                <Wrapper>
-                  <HtmlView
-                    html={trimNewLines(data.publicHtmlFile.content)}
-                    openWebScreen={navigate}
-                    navigation={navigation}
-                  />
-                  {!!subQuery && !!subQuery.routeName && (!!subQuery.webUrl || subQuery.params) && (
-                    <Button
-                      title={subQuery.buttonTitle || `${title} öffnen`}
-                      onPress={() => navigate()}
-                    />
-                  )}
-                  {!!subQuery &&
-                    !!subQuery.buttons &&
-                    subQuery.buttons.map((button, index) => (
-                      <Button
-                        key={`${index}-${button.webUrl}`}
-                        title={button.buttonTitle || `${title} öffnen`}
-                        onPress={() =>
-                          navigate({
-                            routeName: button.routeName,
-                            webUrl: button.webUrl
-                          })
-                        }
-                      />
-                    ))}
-                </Wrapper>
-              </WrapperWithOrientation>
-            </ScrollView>
-          </SafeAreaViewFlex>
-        );
-      }}
-    </Query>
+              ))}
+          </Wrapper>
+        </WrapperWithOrientation>
+      </ScrollView>
+    </SafeAreaViewFlex>
   );
 };
 

@@ -1,14 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { useQuery } from 'react-apollo';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, device, Icon, normalize, texts } from '../../config';
-import { graphqlFetchPolicy } from '../../helpers';
-import { useHomeRefresh, useRefreshTime } from '../../hooks';
-import { NetworkContext } from '../../NetworkProvider';
+import { useHomeRefresh, useStaticContent } from '../../hooks';
 import { OrientationContext } from '../../OrientationProvider';
-import { getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
 import { DiagonalGradient } from '../DiagonalGradient';
 import { Image } from '../Image';
@@ -18,37 +14,18 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { WrapperWrap } from '../Wrapper';
 
 export const Service = ({ navigation }) => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation, dimensions } = useContext(OrientationContext);
   const { globalSettings } = useContext(SettingsContext);
 
-  const refreshTime = useRefreshTime('publicJsonFile-homeService');
-
-  const fetchPolicy = graphqlFetchPolicy({
-    isConnected,
-    isMainserverUp,
-    refreshTime
-  });
-
-  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.PUBLIC_JSON_FILE), {
-    variables: { name: 'homeService' },
-    fetchPolicy,
-    skip: !refreshTime
+  const { data, loading, refetch } = useStaticContent({
+    refreshTimeKey: 'publicJsonFile-homeService',
+    name: 'homeService',
+    type: 'json'
   });
 
   useHomeRefresh(refetch);
 
-  if (!refreshTime || loading) return null;
-
-  let publicJsonFileContent = [];
-
-  try {
-    publicJsonFileContent = JSON.parse(data?.publicJsonFile?.content);
-  } catch (error) {
-    console.warn(error, data);
-  }
-
-  if (!publicJsonFileContent?.length) return null;
+  if (loading || !data?.length) return null;
 
   const { sections = {} } = globalSettings;
   const { headlineService = texts.homeTitles.service } = sections;
@@ -65,7 +42,7 @@ export const Service = ({ navigation }) => {
       {!!headlineService && device.platform === 'ios' && <TitleShadow />}
       <DiagonalGradient style={{ padding: normalize(14) }}>
         <WrapperWrap spaceBetween>
-          {publicJsonFileContent.map((item, index) => {
+          {data.map((item, index) => {
             return (
               <ServiceBox
                 key={index + item.title}

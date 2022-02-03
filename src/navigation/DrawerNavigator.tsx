@@ -1,16 +1,13 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import _isEmpty from 'lodash/isEmpty';
 import _reduce from 'lodash/reduce';
-import React, { useContext, useEffect, useState } from 'react';
-import { useQuery } from 'react-apollo';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { device, texts } from '../config';
 import { defaultStackConfig } from '../config/navigation';
-import { graphqlFetchPolicy } from '../helpers';
-import { NetworkContext } from '../NetworkProvider';
-import { getQuery, QUERY_TYPES } from '../queries';
+import { useStaticContent } from '../hooks';
 import { ScreenName } from '../types';
 
 import { getStackNavigator } from './AppStackNavigator';
@@ -42,30 +39,20 @@ type DrawerRoutes = Record<
 >;
 
 const useDrawerRoutes = () => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { data, error, loading } = useQuery(getQuery(QUERY_TYPES.PUBLIC_JSON_FILE), {
-    variables: { name: 'navigation' },
-    fetchPolicy
+  const { data, error, loading } = useStaticContent<Array<Record<string, any>>>({
+    name: 'navigation',
+    type: 'json'
   });
+
   const [drawerRoutes, setDrawerRoutes] = useState<DrawerRoutes>(defaultDrawerRoutes);
 
   useEffect(() => {
-    let navigationPublicJsonFileContent: Array<Record<string, any>> = [];
-
     error && console.warn('error', error);
 
-    try {
-      const content = data?.publicJsonFile?.content;
-      navigationPublicJsonFileContent = content && JSON.parse(content);
-    } catch (error) {
-      console.warn(error, data);
-    }
-
-    if (!_isEmpty(navigationPublicJsonFileContent)) {
+    if (!_isEmpty(data)) {
       setDrawerRoutes((currentRoutes) =>
         _reduce(
-          navigationPublicJsonFileContent,
+          data,
           (result, value, key) => {
             result[key] = {
               screen: value.screen,

@@ -12,6 +12,8 @@ import { ApolloProvider } from 'react-apollo';
 import { ActivityIndicator } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import appJson from '../app.json';
+
 import { auth } from './auth';
 import { BookmarkProvider } from './BookmarkProvider';
 import { LoadingContainer } from './components';
@@ -148,7 +150,7 @@ const MainAppWithApolloProvider = () => {
     try {
       const response = await client.query({
         query: getQuery(QUERY_TYPES.PUBLIC_JSON_FILE),
-        variables: { name: 'globalSettings' },
+        variables: { name: 'globalSettings', version: appJson.expo.version },
         fetchPolicy
       });
 

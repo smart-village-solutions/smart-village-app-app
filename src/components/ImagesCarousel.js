@@ -5,15 +5,26 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Query } from 'react-apollo';
 
 import { colors } from '../config';
-import { imageWidth, isActive, shareMessage } from '../helpers';
+import { graphqlFetchPolicy, imageWidth, isActive, shareMessage } from '../helpers';
 import { getQuery } from '../queries';
 import { OrientationContext } from '../OrientationProvider';
+import { NetworkContext } from '../NetworkProvider';
+import { useRefreshTime } from '../hooks';
 
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
 
-export const ImagesCarousel = ({ data, navigation, fetchPolicy, aspectRatio }) => {
+export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }) => {
   const { dimensions } = useContext(OrientationContext);
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+
+  const refreshTime = useRefreshTime(refreshTimeKey);
+
+  const fetchPolicy = graphqlFetchPolicy({
+    isConnected,
+    isMainserverUp,
+    refreshTime
+  });
   const itemWidth = imageWidth();
 
   const renderItem = useCallback(
@@ -118,6 +129,6 @@ const styles = StyleSheet.create({
 ImagesCarousel.propTypes = {
   data: PropTypes.array.isRequired,
   navigation: PropTypes.object,
-  fetchPolicy: PropTypes.string,
+  refreshTimeKey: PropTypes.string,
   aspectRatio: PropTypes.object
 };
