@@ -78,7 +78,7 @@ export const useStaticContent = <T>({
 
     try {
       if (data) {
-        const json = JSON.parse(data?.publicJsonFile?.content);
+        const json = data?.publicJsonFile?.content;
 
         return parseFromJson ? parseFromJson(json) : json;
       }
