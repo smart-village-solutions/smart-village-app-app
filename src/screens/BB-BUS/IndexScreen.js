@@ -142,7 +142,7 @@ export const IndexScreen = ({ navigation }) => {
               );
             }
 
-            const top10Ids = data && data.publicJsonFile && JSON.parse(data.publicJsonFile.content);
+            const top10Ids = data?.publicJsonFile?.content;
 
             return (
               <Query

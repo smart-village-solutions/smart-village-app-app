@@ -166,13 +166,7 @@ const MainAppWithApolloProvider = () => {
       }
     }
 
-    let globalSettingsPublicJsonFileContent = [];
-
-    try {
-      globalSettingsPublicJsonFileContent = JSON.parse(globalSettingsData?.publicJsonFile?.content);
-    } catch (error) {
-      console.warn(error, globalSettingsData);
-    }
+    const globalSettingsPublicJsonFileContent = globalSettingsData?.publicJsonFile?.content;
 
     if (!_isEmpty(globalSettingsPublicJsonFileContent)) {
       globalSettings = globalSettingsPublicJsonFileContent;
