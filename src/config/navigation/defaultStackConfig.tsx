@@ -15,7 +15,7 @@ import {
   EncounterRegistrationScreen,
   EncounterScannerScreen,
   EncounterUserDetailScreen,
-  FormScreen,
+  FeedbackScreen,
   getTilesScreen,
   HomeScreen,
   HtmlScreen,
@@ -153,7 +153,13 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.Form,
-      screenComponent: FormScreen
+      screenComponent: FeedbackScreen,
+      screenOptions: { title: texts.screenTitles.feedback }
+    },
+    {
+      routeName: ScreenName.Feedback,
+      screenComponent: FeedbackScreen,
+      screenOptions: { title: texts.screenTitles.feedback }
     },
     {
       routeName: ScreenName.Home,

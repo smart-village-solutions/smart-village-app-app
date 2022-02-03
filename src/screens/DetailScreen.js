@@ -13,6 +13,7 @@ import {
   SafeAreaViewFlex,
   Tour
 } from '../components';
+import { FeedbackFooter } from '../components/FeedbackFooter';
 import { colors, consts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useRefreshTime } from '../hooks';
@@ -146,6 +147,7 @@ export const DetailScreen = ({ navigation, route }) => {
                 fetchPolicy={fetchPolicy}
                 route={route}
               />
+              <FeedbackFooter />
             </ScrollView>
           </SafeAreaViewFlex>
         );
