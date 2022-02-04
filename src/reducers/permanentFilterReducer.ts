@@ -19,8 +19,6 @@ export const permanentFilterReducer: React.Reducer<string[], FilterReducerAction
       newState = [...action.payload];
       break;
     }
-    default:
-      newState = state;
   }
 
   // update the store for next app launch on every change

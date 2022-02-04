@@ -26,7 +26,6 @@ type Props = {
   showButton?: boolean;
 };
 
-// eslint-disable-next-line complexity
 export const DataListSection = ({
   buttonTitle,
   horizontal,
@@ -71,6 +70,7 @@ export const DataListSection = ({
       </View>
     );
   }
+
   if (!placeholder) {
     return null;
   }

@@ -20,6 +20,7 @@ import { WASTE_ADDRESSES, WASTE_STREET } from './waste';
 import { GET_WEATHER, GET_WEATHER_CURRENT } from './weather';
 // IMPORT CREATE QUERIES
 import { CREATE_APP_USER_CONTENT } from './appUserContent';
+import { GET_NEWS_ITEMS_DATA_PROVIDERS } from './newsItemsDataProvider';
 
 // EXPORT TYPES
 export * from './types';
@@ -40,6 +41,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.NEWS_ITEMS]: filterOptions.showNewsFilter
       ? GET_NEWS_ITEMS_AND_DATA_PROVIDERS
       : GET_NEWS_ITEMS,
+    [QUERY_TYPES.NEWS_ITEMS_DATA_PROVIDER]: GET_NEWS_ITEMS_DATA_PROVIDERS,
     [QUERY_TYPES.TOUR]: GET_TOUR,
     [QUERY_TYPES.TOURS]: GET_TOURS,
     [QUERY_TYPES.POINT_OF_INTEREST]: GET_POINT_OF_INTEREST,

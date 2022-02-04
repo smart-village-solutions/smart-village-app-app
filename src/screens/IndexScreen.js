@@ -116,9 +116,7 @@ export const IndexScreen = ({ navigation, route }) => {
         // remove a refetch key if present, which was necessary for the "- Alle -" selection
         delete queryVariables.refetch;
 
-        const newQueryVariables = { ...queryVariables, ...additionalQueryVariables };
-
-        setQueryVariables(newQueryVariables);
+        setQueryVariables({ ...queryVariables, ...additionalQueryVariables });
       } else {
         setQueryVariables((prevQueryVariables) => {
           // remove the filter key for the specific query, when selecting "- Alle -"
@@ -130,7 +128,7 @@ export const IndexScreen = ({ navigation, route }) => {
         });
       }
     },
-    [setQueryVariables, query, queryVariables]
+    [excludeDataProviderIds, setQueryVariables, query, queryVariables]
   );
 
   // if we show the map or want to sort by distance, we need to fetch all the entries at once
@@ -156,7 +154,7 @@ export const IndexScreen = ({ navigation, route }) => {
     };
 
     setQueryVariables(variables);
-  }, [query, route.params?.queryVariables]);
+  }, [excludeDataProviderIds, query, route.params?.queryVariables]);
 
   useEffect(() => {
     if (query) {

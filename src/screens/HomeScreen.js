@@ -172,7 +172,9 @@ export const HomeScreen = ({ navigation, route }) => {
                   )
                 }
                 navigation={navigation}
-                placeholder={<NewsSectionPlaceholder navigation={navigation} />}
+                placeholder={
+                  <NewsSectionPlaceholder navigation={navigation} title={categoryTitle} />
+                }
                 query={QUERY_TYPES.NEWS_ITEMS}
                 queryVariables={{ limit: 3, categoryId, excludeDataProviderIds }}
               />

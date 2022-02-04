@@ -1,11 +1,12 @@
-import gql from 'graphql-tag';
 import React, { useContext } from 'react';
 import { useQuery } from 'react-apollo';
 import { View } from 'react-native';
 
+import { LoadingSpinner } from '..';
 import { graphqlFetchPolicy } from '../../helpers';
 import { usePermanentFilter, useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { getQuery, QUERY_TYPES } from '../../queries';
 import { FilterAction } from '../../types';
 import { SettingsToggle } from '../SettingsToggle';
 
@@ -18,17 +19,13 @@ export const PermanentFilterSettings = () => {
 
   const { state, dispatch } = usePermanentFilter();
 
-  const { data } = useQuery(
-    gql`
-      query dataProviders {
-        newsItemsDataProviders {
-          id
-          name
-        }
-      }
-    `,
-    { fetchPolicy }
-  );
+  const { data, loading } = useQuery(getQuery(QUERY_TYPES.NEWS_ITEMS_DATA_PROVIDER), {
+    fetchPolicy
+  });
+
+  if (!data && loading) {
+    return <LoadingSpinner loading />;
+  }
 
   return (
     <View>

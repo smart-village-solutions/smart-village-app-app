@@ -11,6 +11,7 @@ export const QUERY_TYPES = {
   LUNCHES: 'lunches',
   NEWS_ITEM: 'newsItem',
   NEWS_ITEMS: 'newsItems',
+  NEWS_ITEMS_DATA_PROVIDER: 'newsItemsDataProvider',
   POINT_OF_INTEREST: 'pointOfInterest',
   POINTS_OF_INTEREST: 'pointsOfInterest',
   POINTS_OF_INTEREST_AND_TOURS: 'pointsOfInterestAndTours',

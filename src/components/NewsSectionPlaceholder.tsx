@@ -1,47 +1,48 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, Icon, texts } from '../config';
+import { colors, Icon, normalize, texts } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 
-import { Button } from './Button';
 import { BoldText, RegularText } from './Text';
-import { Wrapper } from './Wrapper';
 
 type Props = {
   navigation: StackNavigationProp<any>;
+  title: string;
 };
 
-export const NewsSectionPlaceholder = ({ navigation }: Props) => {
+export const NewsSectionPlaceholder = ({ navigation, title }: Props) => {
   return (
     <View>
-      <Wrapper>
+      <View style={styles.paddingContainer}>
         <Icon.EmptySection
           color={colors.primary}
-          size={imageHeight(imageWidth())}
+          size={imageHeight(imageWidth()) / 2}
           style={styles.icon}
         />
-        <Wrapper>
-          <BoldText primary center>
-            {texts.placeholder.homeSectionTitle}
-          </BoldText>
-          <RegularText primary center small>
-            {texts.placeholder.homeSectionSubtitle}
-          </RegularText>
-        </Wrapper>
-        <Button
-          title={texts.placeholder.homeSectionButton}
-          onPress={() => navigation.push('Settings')}
-        />
-      </Wrapper>
+      </View>
+      <RegularText primary center>
+        {texts.placeholder.homeSectionTitle(title)}
+      </RegularText>
+      <RegularText primary center small>
+        {texts.placeholder.homeSectionSubtitle}
+      </RegularText>
+      <TouchableOpacity onPress={() => navigation.push('Settings')} style={styles.paddingContainer}>
+        <BoldText center primary underline>
+          {texts.placeholder.homeSectionButton.toUpperCase()}
+        </BoldText>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   icon: {
-    alignSelf: 'center',
     opacity: 0.4 // TODO: use lighterPrimary instead, once it is defined by using opacity
+  },
+  paddingContainer: {
+    alignItems: 'center',
+    paddingVertical: normalize(40)
   }
 });

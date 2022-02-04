@@ -404,9 +404,9 @@ export const texts = {
     webRepresentation: 'Webversion: '
   },
   placeholder: {
-    homeSectionButton: 'Nachrichten-Filter ändern',
-    homeSectionTitle: 'Keine Nachrichten vorhanden',
-    homeSectionSubtitle: 'Hast Du alle Nachrichten Quellen abgewählt?'
+    homeSectionButton: 'Filter ändern',
+    homeSectionTitle: (title) => `Keine ${title} vorhanden.`,
+    homeSectionSubtitle: 'Hast Du alle Quellen abgewählt?'
   },
   pointOfInterest: {
     description: 'Beschreibung',
