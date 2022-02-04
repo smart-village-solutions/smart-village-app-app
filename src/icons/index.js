@@ -7,6 +7,7 @@ export * from './calendar';
 export * from './clock';
 export * from './constructionSite';
 export * from './drawerMenu';
+export * from './emptySection';
 export * from './heartEmpty';
 export * from './heartFilled';
 export * from './home';

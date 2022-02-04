@@ -20,6 +20,7 @@ type Props = {
     | 'cache-and-network';
   navigate: () => void;
   navigation: StackNavigationProp<any>;
+  placeholder?: React.ReactElement;
   query: string;
   queryVariables: { limit?: number };
 };
@@ -31,6 +32,7 @@ export const HomeSection = ({
   fetchPolicy,
   navigate,
   navigation,
+  placeholder,
   query,
   queryVariables
 }: Props) => {
@@ -48,6 +50,7 @@ export const HomeSection = ({
       loading={loading}
       navigate={navigate}
       navigation={navigation}
+      placeholder={placeholder}
       query={query}
       sectionData={data}
       sectionTitle={title}

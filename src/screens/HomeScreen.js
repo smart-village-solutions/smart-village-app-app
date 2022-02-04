@@ -8,13 +8,14 @@ import {
   About,
   ConnectedImagesCarousel,
   HomeSection,
+  NewsSectionPlaceholder,
   SafeAreaViewFlex,
   Service,
   Widgets
 } from '../components';
 import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy, rootRouteName } from '../helpers';
-import { useMatomoTrackScreenView, usePushNotifications } from '../hooks';
+import { useMatomoTrackScreenView, usePermanentFilter, usePushNotifications } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
@@ -44,6 +45,7 @@ export const HomeScreen = ({ navigation, route }) => {
     buttonEvents = texts.homeButtons.events
   } = sections;
   const [refreshing, setRefreshing] = useState(false);
+  const { state: excludeDataProviderIds } = usePermanentFilter();
 
   const interactionHandler = useCallback(
     (response) => {
@@ -170,8 +172,11 @@ export const HomeScreen = ({ navigation, route }) => {
                   )
                 }
                 navigation={navigation}
+                placeholder={
+                  <NewsSectionPlaceholder navigation={navigation} title={categoryTitle} />
+                }
                 query={QUERY_TYPES.NEWS_ITEMS}
-                queryVariables={{ limit: 3, ...{ categoryId } }}
+                queryVariables={{ limit: 3, categoryId, excludeDataProviderIds }}
               />
             )
           )}

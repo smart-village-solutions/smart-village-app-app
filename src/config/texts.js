@@ -149,15 +149,15 @@ export const texts = {
     categoryTitle: 'Nachrichten',
     categoryTitleDetail: 'Nachricht'
   },
-  locationOverview: {
-    list: 'Listenansicht',
-    map: 'Kartenansicht',
-    noSelection: 'Bitte wählen Sie eine Markierung aus.'
-  },
   job: {
     employmentType: 'Art der Anstellung: ',
     job: 'Stellenanzeige',
     jobs: 'Stellenanzeigen'
+  },
+  locationOverview: {
+    list: 'Listenansicht',
+    map: 'Kartenansicht',
+    noSelection: 'Bitte wählen Sie eine Markierung aus.'
   },
   lunch: {
     noOffers: 'Für dieses Datum sind derzeit keine Gerichte verfügbar.',
@@ -403,6 +403,11 @@ export const texts = {
     },
     webRepresentation: 'Webversion: '
   },
+  placeholder: {
+    homeSectionButton: 'Filter ändern',
+    homeSectionTitle: (title) => `Keine ${title} vorhanden.`,
+    homeSectionSubtitle: 'Hast Du alle Quellen abgewählt?'
+  },
   pointOfInterest: {
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
@@ -457,6 +462,9 @@ export const texts = {
         'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
       save: 'Speichern',
       sectionHeader: 'Standort'
+    },
+    permanentFilter: {
+      sectionHeader: 'Datenquellen'
     }
   },
   settingsScreen: {

@@ -29,6 +29,7 @@ import NetInfo from './NetInfo';
 import { NetworkProvider } from './NetworkProvider';
 import { OnboardingManager } from './OnboardingManager';
 import { OrientationProvider } from './OrientationProvider';
+import { PermanentFilterProvider } from './PermanentFilterProvider';
 import { getQuery, QUERY_TYPES } from './queries';
 import { SettingsProvider } from './SettingsProvider';
 
@@ -235,9 +236,11 @@ export const MainApp = () => (
   <NetworkProvider>
     <OrientationProvider>
       <BookmarkProvider>
-        <SafeAreaProvider>
-          <MainAppWithApolloProvider />
-        </SafeAreaProvider>
+        <PermanentFilterProvider>
+          <SafeAreaProvider>
+            <MainAppWithApolloProvider />
+          </SafeAreaProvider>
+        </PermanentFilterProvider>
       </BookmarkProvider>
     </OrientationProvider>
   </NetworkProvider>

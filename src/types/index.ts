@@ -11,6 +11,7 @@ export * from './LocationSettings';
 export * from './Navigation';
 export * from './OParlObjectTypes';
 export * from './OpeningHour';
+export * from './PermanentFilter';
 export * from './Survey';
 export * from './WasteCalendar';
 export * from './WeatherData';

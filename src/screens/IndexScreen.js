@@ -25,7 +25,7 @@ import {
   parseListItemsFromQuery,
   sortPOIsByDistanceFromPosition
 } from '../helpers';
-import { usePosition, useTrackScreenViewAsync } from '../hooks';
+import { usePermanentFilter, usePosition, useTrackScreenViewAsync } from '../hooks';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -42,6 +42,25 @@ const INITIAL_TOP_FILTER = [
 const isMapSelected = (topFilter) =>
   topFilter.find((entry) => entry.selected).id === TOP_FILTER.MAP;
 
+const keyForSelectedValueByQuery = {
+  [QUERY_TYPES.EVENT_RECORDS]: 'categoryId',
+  [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
+};
+const getAdditionalQueryVariables = (query, selectedValue, excludeDataProviderIds) => {
+  const keyForSelectedValue = keyForSelectedValueByQuery[query];
+  const additionalQueryVariables = {};
+
+  if (query === QUERY_TYPES.NEWS_ITEMS) {
+    additionalQueryVariables.excludeDataProviderIds = excludeDataProviderIds;
+  }
+
+  if (selectedValue) {
+    additionalQueryVariables[keyForSelectedValue] = selectedValue;
+  }
+
+  return additionalQueryVariables;
+};
+
 // TODO: make a list component for POIs that already includes the mapswitchheader?
 // TODO: make a list component that already includes the news/events filter?
 // eslint-disable-next-line complexity
@@ -55,6 +74,7 @@ export const IndexScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
+  const { state: excludeDataProviderIds } = usePermanentFilter();
 
   const showMap = isMapSelected(topFilter);
 
@@ -86,18 +106,21 @@ export const IndexScreen = ({ navigation, route }) => {
 
   const updateListData = useCallback(
     (selectedValue) => {
+      const additionalQueryVariables = getAdditionalQueryVariables(
+        query,
+        selectedValue,
+        excludeDataProviderIds
+      );
+
       if (selectedValue) {
         // remove a refetch key if present, which was necessary for the "- Alle -" selection
         delete queryVariables.refetch;
 
-        setQueryVariables({
-          ...queryVariables,
-          [queryVariableForQuery]: selectedValue
-        });
+        setQueryVariables({ ...queryVariables, ...additionalQueryVariables });
       } else {
         setQueryVariables((prevQueryVariables) => {
           // remove the filter key for the specific query, when selecting "- Alle -"
-          delete prevQueryVariables[queryVariableForQuery];
+          delete prevQueryVariables[keyForSelectedValueByQuery[query]];
           // need to spread the `prevQueryVariables` into a new object with additional refetch key
           // to force the Query component to update the data, otherwise it is not fired somehow
           // because the state variable wouldn't change
@@ -105,7 +128,7 @@ export const IndexScreen = ({ navigation, route }) => {
         });
       }
     },
-    [setQueryVariables, queryVariables]
+    [excludeDataProviderIds, setQueryVariables, query, queryVariables]
   );
 
   // if we show the map or want to sort by distance, we need to fetch all the entries at once
@@ -125,8 +148,13 @@ export const IndexScreen = ({ navigation, route }) => {
     // news to events, that the query variables are taken freshly. otherwise the mounted screen can
     // have query variables from the previous screen, that does not work. this can result in an
     // empty screen because the query is not retuning anything.
-    setQueryVariables(route.params?.queryVariables ?? {});
-  }, [query, route.params?.queryVariables]);
+    const variables = {
+      ...(route.params?.queryVariables ?? {}),
+      ...getAdditionalQueryVariables(query, undefined, excludeDataProviderIds)
+    };
+
+    setQueryVariables(variables);
+  }, [excludeDataProviderIds, query, route.params?.queryVariables]);
 
   useEffect(() => {
     if (query) {
@@ -159,11 +187,6 @@ export const IndexScreen = ({ navigation, route }) => {
   }, [isConnected, query]);
 
   if (!query) return null;
-
-  const queryVariableForQuery = {
-    [QUERY_TYPES.EVENT_RECORDS]: 'categoryId',
-    [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
-  }[query];
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
