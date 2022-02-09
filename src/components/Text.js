@@ -57,48 +57,6 @@ export const RegularText = styled(Text)`
     `};
 
   ${(props) =>
-    props.primary &&
-    css`
-      color: ${colors.primary};
-    `};
-
-  ${(props) =>
-    props.lighter &&
-    css`
-      color: ${colors.lighterText};
-    `};
-
-  ${(props) =>
-    props.lightest &&
-    css`
-      color: ${colors.lightestText};
-    `};
-
-  ${(props) =>
-    props.placeholder &&
-    css`
-      color: ${colors.placeholder};
-    `};
-
-  ${(props) =>
-    props.darker &&
-    css`
-      color: ${colors.darkerPrimary};
-    `};
-
-  ${(props) =>
-    props.error &&
-    css`
-      color: ${colors.error};
-    `};
-
-  ${(props) =>
-    props.center &&
-    css`
-      text-align: center;
-    `};
-
-  ${(props) =>
     props.lineThrough &&
     css`
       text-decoration: line-through;
@@ -108,6 +66,54 @@ export const RegularText = styled(Text)`
     props.underline &&
     css`
       text-decoration: underline;
+    `};
+
+  ${(props) =>
+    props.primary &&
+    css`
+      color: ${colors.primary};
+      text-decoration-color: ${colors.primary};
+    `};
+
+  ${(props) =>
+    props.lighter &&
+    css`
+      color: ${colors.lighterText};
+      text-decoration-color: ${colors.lighterText};
+    `};
+
+  ${(props) =>
+    props.lightest &&
+    css`
+      color: ${colors.lightestText};
+      text-decoration-color: ${colors.lightestText};
+    `};
+
+  ${(props) =>
+    props.placeholder &&
+    css`
+      color: ${colors.placeholder};
+      text-decoration-color: ${colors.placeholder};
+    `};
+
+  ${(props) =>
+    props.darker &&
+    css`
+      color: ${colors.darkerPrimary};
+      text-decoration-color: ${colors.darkerPrimary};
+    `};
+
+  ${(props) =>
+    props.error &&
+    css`
+      color: ${colors.error};
+      text-decoration-color: ${colors.error};
+    `};
+
+  ${(props) =>
+    props.center &&
+    css`
+      text-align: center;
     `};
 `;
 

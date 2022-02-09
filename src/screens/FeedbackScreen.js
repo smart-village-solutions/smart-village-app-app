@@ -14,15 +14,18 @@ import {
   WrapperWithOrientation
 } from '../components';
 import { useMatomoTrackScreenView } from '../hooks';
+import { useAppInfo } from '../hooks/appInfo';
 
 const { MATOMO_TRACKING } = consts;
 
-export const FormScreen = () => {
+export const FeedbackScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [consent, setConsent] = useState(false);
+
+  const appInfo = useAppInfo();
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.FEEDBACK);
 
@@ -47,7 +50,8 @@ export const FormScreen = () => {
         email,
         phone,
         message,
-        consent
+        consent,
+        appInfo: appInfo
       })
     };
 
@@ -163,6 +167,6 @@ const styles = StyleSheet.create({
   }
 });
 
-FormScreen.propTypes = {
+FeedbackScreen.propTypes = {
   navigation: PropTypes.object.isRequired
 };
