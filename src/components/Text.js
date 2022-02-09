@@ -115,13 +115,6 @@ export const BoldText = styled(RegularText)`
   font-family: bold;
 
   ${(props) =>
-    props.big &&
-    css`
-      font-size: ${normalize(20)};
-      line-height: ${normalize(26)};
-    `};
-
-  ${(props) =>
     props.italic &&
     css`
       font-family: bold-italic;

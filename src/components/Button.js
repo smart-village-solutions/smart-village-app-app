@@ -25,7 +25,7 @@ export const Button = ({ title, onPress, invert, disabled }) => {
       ]}
       disabledStyle={styles.buttonStyleDisabled}
       disabledTitleStyle={styles.titleStyle}
-      buttonStyle={invert ? styles.buttonStyleInvert : undefined}
+      buttonStyle={[styles.buttonStyle, invert && styles.buttonStyleInvert]}
       containerStyle={[styles.containerStyle, needLandscapeStyle && styles.containerStyleLandscape]}
       ViewComponent={invert || disabled ? undefined : DiagonalGradient}
       useForeground={!invert}
@@ -36,19 +36,7 @@ export const Button = ({ title, onPress, invert, disabled }) => {
 };
 
 const styles = StyleSheet.create({
-  titleStyle: {
-    color: colors.lightestText,
-    fontFamily: 'bold'
-  },
-  titleStyleLandscape: {
-    paddingHorizontal: normalize(14)
-  },
-  containerStyle: {
-    marginBottom: normalize(21)
-  },
-  titleStyleInvert: {
-    color: colors.primary
-  },
+  buttonStyle: {},
   buttonStyleDisabled: {
     backgroundColor: colors.placeholder
   },
@@ -57,9 +45,22 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderWidth: 2
   },
+  containerStyle: {
+    marginBottom: normalize(21)
+  },
   containerStyleLandscape: {
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  titleStyle: {
+    color: colors.lightestText,
+    fontFamily: 'bold'
+  },
+  titleStyleInvert: {
+    color: colors.primary
+  },
+  titleStyleLandscape: {
+    paddingHorizontal: normalize(14)
   }
 });
 
