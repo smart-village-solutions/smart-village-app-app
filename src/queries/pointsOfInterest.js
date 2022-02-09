@@ -10,6 +10,7 @@ export const GET_POINTS_OF_INTEREST = gql`
     $categoryId: ID
     $dataProvider: String
     $dataProviderId: ID
+    $location: String
   ) {
     pointsOfInterest(
       ids: $ids
@@ -20,6 +21,7 @@ export const GET_POINTS_OF_INTEREST = gql`
       categoryId: $categoryId
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
+      location: $location
     ) {
       id
       name
