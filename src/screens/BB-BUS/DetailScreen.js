@@ -10,6 +10,7 @@ import { BackToTop, Button, SafeAreaViewFlex } from '../../components';
 import { Authority } from '../../components/BB-BUS/Authority';
 import { Persons } from '../../components/BB-BUS/Persons';
 import { TextBlock } from '../../components/BB-BUS/TextBlock';
+import { FeedbackFooter } from '../../components/FeedbackFooter';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { colors, consts, device, namespace, normalize, secrets } from '../../config';
 import { matomoTrackingString, openLink } from '../../helpers';
@@ -204,6 +205,7 @@ export const DetailScreen = ({ route }) => {
             }
           />
         )}
+        <FeedbackFooter />
       </ScrollView>
     </SafeAreaViewFlex>
   );
