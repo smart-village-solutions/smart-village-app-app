@@ -347,6 +347,7 @@ export const WasteReminderSettings = ({
                           mode="time"
                           onChange={onDatePickerChange}
                           value={localSelectedTime || new Date()}
+                          textColor={colors.darkText}
                         />
                       </SafeAreaView>
                     </View>
