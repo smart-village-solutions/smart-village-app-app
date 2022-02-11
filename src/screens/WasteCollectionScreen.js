@@ -25,6 +25,7 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../components';
+import { FeedbackFooter } from '../components/FeedbackFooter';
 import { colors, device, namespace, normalize, secrets, staticRestSuffix, texts } from '../config';
 import { graphqlFetchPolicy, openLink, setupLocales } from '../helpers';
 import { useRefreshTime, useStaticContent } from '../hooks';
@@ -271,6 +272,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
             </Wrapper>
           )}
         </WrapperWithOrientation>
+        <FeedbackFooter />
       </ScrollView>
     </SafeAreaViewFlex>
   );

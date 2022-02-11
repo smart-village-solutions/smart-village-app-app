@@ -34,6 +34,7 @@ import {
   ReminderSettingsActionType,
   reminderSettingsReducer
 } from './ReminderSettingsReducer';
+import { FeedbackFooter } from '../FeedbackFooter';
 
 const showErrorAlert = () => {
   Alert.alert(texts.wasteCalendar.errorOnUpdateTitle, texts.wasteCalendar.errorOnUpdateBody);
@@ -366,6 +367,7 @@ export const WasteReminderSettings = ({
           </Wrapper>
         </>
       )}
+      <FeedbackFooter />
     </ScrollView>
   );
 };
