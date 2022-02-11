@@ -19,6 +19,13 @@ export const QUERY_TYPES = {
   PUBLIC_JSON_FILE: 'publicJsonFile',
   TOUR: 'tour',
   TOURS: 'tours',
+  VOLUNTEER: {
+    CALENDAR: 'calendar',
+    GROUPS: 'groups',
+    GROUPS_FOLLOWING: 'groupsFollowing',
+    MESSAGES: 'messages',
+    TASKS: 'tasks'
+  },
   WASTE_ADDRESSES: 'wasteAddresses',
   WASTE_STREET: 'wasteStreet',
   WEATHER_MAP: 'weatherMap',

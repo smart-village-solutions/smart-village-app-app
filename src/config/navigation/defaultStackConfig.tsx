@@ -32,6 +32,8 @@ import {
   SettingsScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
+  VolunteerScreen,
+  VolunteerIndexScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
@@ -238,6 +240,15 @@ export const defaultStackConfig = ({
       routeName: ScreenName.SurveyOverview,
       screenComponent: SurveyOverviewScreen,
       screenOptions: { title: texts.screenTitles.surveys }
+    },
+    {
+      routeName: ScreenName.Volunteer,
+      screenComponent: VolunteerScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.home }
+    },
+    {
+      routeName: ScreenName.VolunteerIndex,
+      screenComponent: VolunteerIndexScreen
     },
     {
       routeName: ScreenName.WasteCollection,

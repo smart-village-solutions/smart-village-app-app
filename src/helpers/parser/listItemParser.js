@@ -198,6 +198,32 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
+const parseVolunteers = (data, query, routeName, skipLastDivider) => {
+  return data?.map((volunteer, index) => ({
+    id: volunteer.id,
+    title: volunteer.name,
+    subtitle: volunteer.tags,
+    picture: {
+      url: undefined
+    },
+    routeName,
+    params: {
+      title: texts.detailTitles.volunteer.group,
+      query,
+      queryVariables: { id: `${volunteer.id}` },
+      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
+      shareContent: {
+        message: shareMessage(volunteer, query)
+      },
+      details: {
+        ...volunteer,
+        title: volunteer.name
+      }
+    },
+    bottomDivider: !skipLastDivider || index !== data.length - 1
+  }));
+};
+
 /**
  * Parses list items from query a query result
  * @param {string} query
@@ -206,6 +232,7 @@ const parsePointsOfInterestAndTours = (data) => {
  * @param {{ bookmarkable?: boolean; skipLastDivider?: boolean; withDate?: boolean }} options
  * @returns
  */
+// eslint-disable-next-line complexity
 export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) => {
   if (!data) return;
 
@@ -226,5 +253,15 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseCategories(data[query], skipLastDivider);
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
+    case QUERY_TYPES.VOLUNTEER.GROUPS:
+      return parseVolunteers(data, query, 'Groups', skipLastDivider);
+    case QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING:
+      return parseVolunteers(data, query, 'GroupsFollowing', skipLastDivider);
+    case QUERY_TYPES.VOLUNTEER.CALENDAR:
+      return parseVolunteers(data, query, 'Calendar', skipLastDivider);
+    case QUERY_TYPES.VOLUNTEER.TASKS:
+      return parseVolunteers(data, query, 'Tasks', skipLastDivider);
+    case QUERY_TYPES.VOLUNTEER.MESSAGES:
+      return parseVolunteers(data, query, 'Messages', skipLastDivider);
   }
 };

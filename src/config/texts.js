@@ -68,6 +68,9 @@ export const texts = {
     eventRecord: 'Veranstaltung',
     newsItem: 'Nachricht',
     pointOfInterest: 'Ort',
+    volunteer: {
+      group: 'Gruppenprofil'
+    },
     tour: 'Tour'
   },
   encounter: {
@@ -440,6 +443,14 @@ export const texts = {
     settings: 'Einstellungen',
     survey: 'Umfrage',
     surveys: 'Umfragen',
+    volunteer: {
+      calendar: 'Mein Kalender',
+      home: 'Mein Bereich',
+      groups: 'Meine Gruppen',
+      groupsFollowing: 'Gruppen, denen ich folge',
+      messages: 'Mein Postfach',
+      tasks: 'Meine Aufgaben'
+    },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
   },
@@ -549,6 +560,7 @@ export const texts = {
     home: 'Übersicht',
     service: 'Service',
     company: 'Unternehmen',
+    volunteer: 'Ehrenamt',
     about: 'Mehr'
   },
   tour: {

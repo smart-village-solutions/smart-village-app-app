@@ -145,5 +145,11 @@ export const Icon = {
     ),
   Surveys: (props: IconProps) => <NamedIcon name="stats-chart-outline" {...props} />,
   Url: (props: IconProps) => <SvgIcon xml={url} {...props} />,
-  VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />
+  VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />,
+  Volunteer: (props: IconProps) => (
+    <NamedIcon
+      name={device.platform === 'ios' ? 'ios-people-circle' : 'md--people-circle'}
+      {...props}
+    />
+  )
 };
