@@ -201,7 +201,7 @@ const parsePointsOfInterestAndTours = (data) => {
 const parseVolunteers = (data, query, skipLastDivider, withDate) => {
   return data?.map((volunteer, index) => ({
     id: volunteer.id,
-    title: volunteer.name,
+    title: volunteer.title || volunteer.name,
     subtitle: subtitle(
       withDate ? eventDate(volunteer.listDate) : undefined,
       query !== QUERY_TYPES.VOLUNTEER.CALENDAR && volunteer.tags
@@ -211,16 +211,16 @@ const parseVolunteers = (data, query, skipLastDivider, withDate) => {
     },
     routeName: volunteer.routeName,
     params: {
-      title: texts.detailTitles.volunteer.group,
+      title: volunteer.params?.title,
       query,
       queryVariables: { id: `${volunteer.id}` },
-      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
+      rootRouteName: volunteer.params?.rootRouteName,
       shareContent: {
         message: shareMessage(volunteer, query)
       },
       details: {
         ...volunteer,
-        title: volunteer.name
+        title: volunteer.title || volunteer.name
       }
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1

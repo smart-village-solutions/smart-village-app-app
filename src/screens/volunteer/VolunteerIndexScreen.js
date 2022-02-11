@@ -7,7 +7,7 @@ import { colors, consts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import {
   allGroups,
-  myCalendarSectioned,
+  myCalendar,
   myGroups,
   myGroupsFollowing,
   myMessages,
@@ -34,7 +34,7 @@ export const VolunteerIndexScreen = ({ navigation, route }) => {
   if (!query) return null;
 
   const data = {
-    [QUERY_TYPES.VOLUNTEER.CALENDAR]: myCalendarSectioned(),
+    [QUERY_TYPES.VOLUNTEER.CALENDAR]: myCalendar(),
     [QUERY_TYPES.VOLUNTEER.GROUPS]: myGroups(),
     [QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING]: myGroupsFollowing(),
     [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: allGroups(),
