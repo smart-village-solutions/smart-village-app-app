@@ -210,9 +210,8 @@ export const IndexScreen = ({ navigation, route }) => {
           route={route}
           position={position}
           queryVariables={{
-            category: queryVariables.category,
-            categoryId: queryVariables.categoryId,
-            dataProvider: queryVariables.dataProvider
+            ...queryVariables,
+            limit: undefined
           }}
         />
       ) : (
