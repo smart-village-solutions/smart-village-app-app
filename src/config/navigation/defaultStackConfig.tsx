@@ -33,8 +33,10 @@ import {
   SurveyDetailScreen,
   SurveyOverviewScreen,
   VolunteerDetailScreen,
+  VolunteerHomeScreen,
   VolunteerIndexScreen,
-  VolunteerScreen,
+  VolunteerLoginScreen,
+  VolunteerRegistrationScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
@@ -247,16 +249,26 @@ export const defaultStackConfig = ({
       screenComponent: VolunteerDetailScreen
     },
     {
-      routeName: ScreenName.VolunteerIndex,
-      screenComponent: VolunteerIndexScreen
-    },
-    {
-      routeName: ScreenName.Volunteer,
-      screenComponent: VolunteerScreen,
+      routeName: ScreenName.VolunteerHome,
+      screenComponent: VolunteerHomeScreen,
       screenOptions: getScreenOptions({ withVolunteer: true }),
       inititalParams: {
         title: texts.screenTitles.volunteer.home
       }
+    },
+    {
+      routeName: ScreenName.VolunteerIndex,
+      screenComponent: VolunteerIndexScreen
+    },
+    {
+      routeName: ScreenName.VolunteerLogin,
+      screenComponent: VolunteerLoginScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.home }
+    },
+    {
+      routeName: ScreenName.VolunteerRegistration,
+      screenComponent: VolunteerRegistrationScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.home }
     },
     {
       routeName: ScreenName.WasteCollection,

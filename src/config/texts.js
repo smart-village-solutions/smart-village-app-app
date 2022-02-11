@@ -112,7 +112,7 @@ export const texts = {
     registrationPrivacyLink: 'Datenschutzerklärung.',
     registrationPrivacyText:
       'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
-    registrationTitle: 'Registrierung',
+    registrationTitle: 'Registrieren',
     saveChanges: 'Änderungen speichern',
     scanAgain: 'Erneut scannen',
     scannerSubTitle: 'Scanne den QR-Code deines Fahrers',
@@ -446,7 +446,7 @@ export const texts = {
     surveys: 'Umfragen',
     volunteer: {
       calendar: 'Mein Kalender',
-      home: 'Mein Bereich',
+      home: 'Ehrenamt',
       groups: 'Meine Gruppen',
       groupsFollowing: 'Gruppen, denen ich folge',
       messages: 'Mein Postfach',
@@ -570,6 +570,28 @@ export const texts = {
     operatingCompany: 'Veranstalter',
     start: 'Tourbeginn',
     tour: 'Tourverlauf'
+  },
+  volunteer: {
+    abort: 'Abbrechen',
+    email: 'E-Mail',
+    errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
+    login: 'Anmelden',
+    loginTitle: 'Anmelden',
+    name: 'Name',
+    next: 'Weiter',
+    password: 'Passwort',
+    passwordConfirmation: 'Passwort bestätigen',
+    passwordForgotten: 'Passwort vergessen',
+    register: 'Registrieren',
+    registrationAllFieldsRequiredBody:
+      'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
+    registrationAllFieldsRequiredTitle: 'Hinweis',
+    registrationFailedBody: 'Bei der Registrierung ist ein Fehler aufgetreten.',
+    registrationFailedTitle: 'Fehler',
+    registrationPrivacyLink: 'Datenschutzerklärung.',
+    registrationPrivacyText:
+      'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
+    registrationTitle: 'Registrieren'
   },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',
