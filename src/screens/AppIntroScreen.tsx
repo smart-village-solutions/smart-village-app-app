@@ -62,7 +62,7 @@ export const AppIntroScreen = ({ setOnboardingComplete }: Props) => {
 
   return (
     <SafeAreaViewFlex>
-      <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
+      <StatusBar barStyle="dark-content" backgroundColor="transparent" />
       <AppIntroSlider<AppIntroSlide>
         renderItem={renderSlide}
         data={slides}
