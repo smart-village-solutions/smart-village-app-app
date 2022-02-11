@@ -1,5 +1,6 @@
 export * from './bookmarks';
 export * from './encounter';
+export * from './form';
 export * from './infoCard';
 export * from './map';
 export * from './screens';

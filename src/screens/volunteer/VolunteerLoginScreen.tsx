@@ -1,13 +1,14 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { normalize } from 'react-native-elements';
+import React, { useState } from 'react';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { useForm } from 'react-hook-form';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import {
   BoldText,
   Button,
   DefaultKeyboardAvoidingView,
-  Label,
+  Input,
   LoadingModal,
   RegularText,
   SafeAreaViewFlex,
@@ -17,18 +18,12 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../../components';
-import { colors, consts, texts } from '../../config';
-import { createUserAsync } from '../../encounterApi';
-import { momentFormat, storeEncounterUserId } from '../../helpers';
+import { colors, consts, Icon, normalize, texts } from '../../config';
+import { storeEncounterUserId } from '../../helpers';
 import { useSelectImage } from '../../hooks';
-import { CreateUserData, ScreenName, User } from '../../types';
+import { ScreenName } from '../../types';
 
-const isValidRegistrationData = (
-  data: Partial<User> & { isPrivacyChecked: boolean }
-): data is CreateUserData & { isPrivacyChecked: boolean } => {
-  const { birthDate, firstName, imageUri, isPrivacyChecked, lastName, phone } = data;
-  return !!(firstName && lastName && birthDate && phone && imageUri && isPrivacyChecked);
-};
+const { a11yLabel } = consts;
 
 const showInvalidRegistrationDataAlert = () =>
   Alert.alert(
@@ -39,34 +34,24 @@ const showInvalidRegistrationDataAlert = () =>
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.volunteer.registrationFailedTitle, texts.volunteer.registrationFailedBody);
 
-const a11yLabels = consts.a11yLabel;
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
-  const [firstName, setFirstName] = useState<string>('');
-  const [lastName, setLastName] = useState<string>('');
-  const [birthDate, setBirthDate] = useState<Date>();
-  const [phone, setPhone] = useState<string>('');
-  const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
+  const {
+    control,
+    formState: { errors, isValid },
+    handleSubmit
+  } = useForm();
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
   // globally disable the button, when loading after pressing register
   const [registrationLoading, setRegistrationLoading] = useState(false);
 
   const { imageUri } = useSelectImage();
 
-  const onPressRegister = useCallback(async () => {
-    const registrationData = {
-      birthDate: birthDate && momentFormat(birthDate.valueOf(), 'yyyy-MM-DD', 'x'),
-      firstName,
-      imageUri,
-      isPrivacyChecked,
-      lastName,
-      phone
-    };
-
-    // this condition should always be true
-    if (isValidRegistrationData(registrationData)) {
+  const onSubmit = async () => {
+    if (isValid) {
+      // TODO: new login logics
       setRegistrationLoading(true);
-      const userId = await createUserAsync(registrationData);
+      const userId = '0';
 
       if (!userId?.length) {
         showRegistrationFailAlert();
@@ -85,7 +70,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
       setRegistrationLoading(false);
       showInvalidRegistrationDataAlert();
     }
-  }, [birthDate, firstName, imageUri, lastName, navigation, phone, isPrivacyChecked]);
+  };
 
   return (
     <SafeAreaViewFlex>
@@ -96,33 +81,53 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
               <Title
                 big
                 center
-                accessibilityLabel={`${texts.volunteer.loginTitle} ${consts.a11yLabel.heading}`}
+                accessibilityLabel={`${texts.volunteer.loginTitle} ${a11yLabel.heading}`}
               >
                 {texts.volunteer.loginTitle}
               </Title>
             </TitleContainer>
             <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.volunteer.email}</Label>
-              <TextInput
-                accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
-                onChangeText={setLastName}
+              <Input
+                name="email"
+                label={texts.volunteer.email}
                 placeholder={texts.volunteer.email}
-                style={styles.inputField}
-                value={lastName}
+                keyboardType="email-address"
+                textContentType="emailAddress"
+                autoCompleteType="email"
+                autoCapitalize="none"
+                validate
+                rules={{ required: true }}
+                errorMessage={errors.email && 'E-Mail muss ausgefüllt werden'}
+                control={control}
               />
             </Wrapper>
             <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.volunteer.password}</Label>
-              <TextInput
-                accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
-                onChangeText={setLastName}
+              <Input
+                name="password"
+                label={texts.volunteer.password}
                 placeholder={texts.volunteer.password}
-                style={styles.inputField}
-                value={lastName}
+                textContentType="password"
+                autoCompleteType="password"
+                secureTextEntry={secureTextEntry}
+                rightIcon={
+                  <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
+                    {secureTextEntry ? (
+                      <Icon.Visible color={colors.darkText} size={normalize(24)} />
+                    ) : (
+                      <Icon.Unvisible color={colors.darkText} size={normalize(24)} />
+                    )}
+                  </TouchableOpacity>
+                }
+                validate
+                rules={{ required: true }}
+                errorMessage={errors.password && 'Passwort muss ausgefüllt werden'}
+                control={control}
               />
             </Wrapper>
             <Wrapper>
-              <Touchable accessibilityLabel={`${a11yLabels.privacy} ${a11yLabels.button}`}>
+              <Touchable
+                accessibilityLabel={`${texts.volunteer.passwordForgotten} ${a11yLabel.button}`}
+              >
                 <RegularText small underline>
                   {texts.volunteer.passwordForgotten}
                 </RegularText>
@@ -130,19 +135,9 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
             </Wrapper>
             <Wrapper>
               <Button
-                onPress={onPressRegister}
+                onPress={handleSubmit(onSubmit)}
                 title={texts.volunteer.login}
-                disabled={
-                  registrationLoading ||
-                  !isValidRegistrationData({
-                    birthDate: birthDate && momentFormat(birthDate.valueOf(), 'yyyy-MM-DD', 'x'),
-                    firstName,
-                    imageUri,
-                    isPrivacyChecked,
-                    lastName,
-                    phone
-                  })
-                }
+                disabled={registrationLoading}
               />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
@@ -159,16 +154,6 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
 };
 
 const styles = StyleSheet.create({
-  inputField: {
-    backgroundColor: colors.surface,
-    borderColor: colors.placeholder,
-    borderWidth: 1,
-    fontFamily: 'regular',
-    fontSize: normalize(16),
-    color: colors.darkText,
-    paddingHorizontal: normalize(14),
-    paddingVertical: normalize(8)
-  },
   noPaddingTop: {
     paddingTop: 0
   }
