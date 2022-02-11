@@ -33,7 +33,7 @@ export const VolunteerWelcome = ({ navigation }: Props) => {
 
   const RefreshControl = usePullToRefetch(refetch);
 
-  if (!welcomeHtml && loading) {
+  if (loading) {
     return <LoadingSpinner loading />;
   }
 

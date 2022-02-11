@@ -1,9 +1,10 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
 import { useForm } from 'react-hook-form';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { useMutation } from 'react-query';
 
+import * as appJson from '../../../app.json';
 import {
   BoldText,
   Button,
@@ -18,59 +19,40 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../../components';
-import { colors, consts, Icon, normalize, texts } from '../../config';
-import { storeEncounterUserId } from '../../helpers';
-import { useSelectImage } from '../../hooks';
+import { colors, consts, Icon, normalize, secrets, texts } from '../../config';
+import { storeVolunteerAuthToken } from '../../helpers';
+import { logInMutation } from '../../queries/volunteer';
 import { ScreenName } from '../../types';
 
 const { a11yLabel } = consts;
+const namespace = appJson.expo.slug as keyof typeof secrets;
+const passwordForgottenUrl = secrets[namespace]?.volunteer?.passwordForgottenUrl;
 
-const showInvalidRegistrationDataAlert = () =>
-  Alert.alert(
-    texts.volunteer.registrationAllFieldsRequiredTitle,
-    texts.volunteer.registrationAllFieldsRequiredBody
-  );
+const showInvalidLoginAlert = () =>
+  Alert.alert('Fehler beim Login', 'Bitte Eingaben überprüfen und erneut versuchen.');
 
-const showRegistrationFailAlert = () =>
-  Alert.alert(texts.volunteer.registrationFailedTitle, texts.volunteer.registrationFailedBody);
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
   const {
     control,
-    formState: { errors, isValid },
+    formState: { errors },
     handleSubmit
   } = useForm();
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  // globally disable the button, when loading after pressing register
-  const [registrationLoading, setRegistrationLoading] = useState(false);
+  const { mutate: mutateLogIn, isLoading, isError, isSuccess, data, error, reset } = useMutation(
+    logInMutation
+  );
+  const onSubmit = (loginData: { username: string; password: string }) => mutateLogIn(loginData);
 
-  const { imageUri } = useSelectImage();
+  if (isError || (!isLoading && data && data.code !== 200)) {
+    showInvalidLoginAlert();
+    reset();
+  } else if (isSuccess) {
+    // save to global state if there are no errors
+    storeVolunteerAuthToken(data.auth_token);
 
-  const onSubmit = async () => {
-    if (isValid) {
-      // TODO: new login logics
-      setRegistrationLoading(true);
-      const userId = '0';
-
-      if (!userId?.length) {
-        showRegistrationFailAlert();
-        setRegistrationLoading(false);
-        return;
-      }
-
-      await storeEncounterUserId(userId);
-
-      // if we do not set the loading state to false, the modal "spills over" to the next screen, sometimes not disappearing at all
-      setRegistrationLoading(false);
-
-      // refreshUser param causes the home screen to update and no longer show the welcome component
-      navigation.navigate(ScreenName.EncounterHome, { refreshUser: new Date().valueOf() });
-    } else {
-      setRegistrationLoading(false);
-      showInvalidRegistrationDataAlert();
-    }
-  };
+    // refreshUser param causes the home screen to update and no longer show the welcome component
+    navigation.navigate(ScreenName.VolunteerHome, { refreshUser: new Date().valueOf() });
+  }
 
   return (
     <SafeAreaViewFlex>
@@ -88,16 +70,18 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
             </TitleContainer>
             <Wrapper style={styles.noPaddingTop}>
               <Input
-                name="email"
-                label={texts.volunteer.email}
-                placeholder={texts.volunteer.email}
+                name="username"
+                label={texts.volunteer.usernameOrEmail}
+                placeholder={texts.volunteer.usernameOrEmail}
                 keyboardType="email-address"
                 textContentType="emailAddress"
                 autoCompleteType="email"
                 autoCapitalize="none"
                 validate
                 rules={{ required: true }}
-                errorMessage={errors.email && 'E-Mail muss ausgefüllt werden'}
+                errorMessage={
+                  errors.username && `${texts.volunteer.usernameOrEmail} muss ausgefüllt werden`
+                }
                 control={control}
               />
             </Wrapper>
@@ -120,13 +104,21 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
                 }
                 validate
                 rules={{ required: true }}
-                errorMessage={errors.password && 'Passwort muss ausgefüllt werden'}
+                errorMessage={
+                  errors.password && `${texts.volunteer.password} muss ausgefüllt werden`
+                }
                 control={control}
               />
             </Wrapper>
             <Wrapper>
               <Touchable
                 accessibilityLabel={`${texts.volunteer.passwordForgotten} ${a11yLabel.button}`}
+                onPress={() =>
+                  navigation.navigate(ScreenName.Web, {
+                    title: texts.volunteer.passwordForgotten,
+                    webUrl: passwordForgottenUrl
+                  })
+                }
               >
                 <RegularText small underline>
                   {texts.volunteer.passwordForgotten}
@@ -137,7 +129,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
               <Button
                 onPress={handleSubmit(onSubmit)}
                 title={texts.volunteer.login}
-                disabled={registrationLoading}
+                disabled={isLoading}
               />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
@@ -146,7 +138,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
               </Touchable>
             </Wrapper>
           </WrapperWithOrientation>
-          <LoadingModal loading={registrationLoading} />
+          <LoadingModal loading={isLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

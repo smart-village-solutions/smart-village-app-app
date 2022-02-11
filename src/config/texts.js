@@ -573,7 +573,7 @@ export const texts = {
   },
   volunteer: {
     abort: 'Abbrechen',
-    email: 'E-Mail',
+    usernameOrEmail: 'Benutzername oder E-Mail',
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
     login: 'Anmelden',
     loginTitle: 'Anmelden',

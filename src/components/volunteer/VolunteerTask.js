@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
-import { OptionToggle, RegularText } from '..';
+import { OptionToggle, RegularText } from '../Text';
 import { consts, device, texts } from '../../config';
 import { useOpenWebScreen } from '../../hooks';
 import { HtmlView } from '../HtmlView';

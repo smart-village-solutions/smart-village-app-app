@@ -1,7 +1,7 @@
 import { consts, texts } from '../../../config';
 import { QUERY_TYPES } from '../../../queries';
 
-import { myTasks } from '.';
+import { myTasks } from './tasksData';
 
 const { ROOT_ROUTE_NAMES } = consts;
 

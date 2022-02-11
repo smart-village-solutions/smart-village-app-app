@@ -91,6 +91,7 @@
     "react-native-svg": "12.1.1",
     "react-native-webview": "11.13.0",
     "react-native-webview-leaflet": "https://github.com/okwast/react-native-webview-leaflet#d1914b1b02dc7a9faad45f23abadbf1fd3958abc",
+    "react-query": "^3.34.14",
     "sentry-expo": "^4.0.0",
     "styled-components": "~4.4.1"
   },

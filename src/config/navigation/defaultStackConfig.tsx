@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { HeaderLeft } from '../../components';
+import { volunteerAuthToken } from '../../helpers';
 import { getScreenOptions } from '../../navigation/screenOptions';
 import {
   AboutScreen,
@@ -246,19 +247,20 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.VolunteerDetail,
-      screenComponent: VolunteerDetailScreen
+      screenComponent: VolunteerDetailScreen,
+      screenOptions: getScreenOptions({ withVolunteer: true })
     },
     {
       routeName: ScreenName.VolunteerHome,
       screenComponent: VolunteerHomeScreen,
-      screenOptions: getScreenOptions({ withVolunteer: true }),
       inititalParams: {
         title: texts.screenTitles.volunteer.home
       }
     },
     {
       routeName: ScreenName.VolunteerIndex,
-      screenComponent: VolunteerIndexScreen
+      screenComponent: VolunteerIndexScreen,
+      screenOptions: getScreenOptions({ withVolunteer: true })
     },
     {
       routeName: ScreenName.VolunteerLogin,

@@ -223,7 +223,8 @@ const parseVolunteers = (data, query, skipLastDivider, withDate) => {
         title: volunteer.title
       }
     },
-    bottomDivider: !skipLastDivider || index !== data.length - 1
+    bottomDivider: !skipLastDivider || index !== data.length - 1,
+    onPress: volunteer.onPress
   }));
 };
 

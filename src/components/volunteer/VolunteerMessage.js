@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Fragment } from 'react';
 
-import { RegularText } from '..';
+import { RegularText } from '../Text';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 export const VolunteerMessage = ({ data, route }) => {
