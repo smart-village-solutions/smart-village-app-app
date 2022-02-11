@@ -1,13 +1,14 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TextInput } from 'react-native';
-import { normalize } from 'react-native-elements';
+import React, { useState } from 'react';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
 
 import {
   BoldText,
   Button,
   DefaultKeyboardAvoidingView,
-  Label,
+  Input,
   LoadingModal,
   SafeAreaViewFlex,
   Title,
@@ -16,75 +17,45 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../../components';
-import { colors, consts, texts } from '../../config';
-import { createUserAsync } from '../../encounterApi';
-import { momentFormat, storeEncounterUserId } from '../../helpers';
-import { useSelectImage } from '../../hooks';
-import { CreateUserData, ScreenName, User } from '../../types';
+import { colors, consts, Icon, normalize, texts } from '../../config';
+import { ScreenName } from '../../types';
+import { registerMutation } from '../../queries/volunteer';
 
-const isValidRegistrationData = (
-  data: Partial<User> & { isPrivacyChecked: boolean }
-): data is CreateUserData & { isPrivacyChecked: boolean } => {
-  const { birthDate, firstName, imageUri, isPrivacyChecked, lastName, phone } = data;
-  return !!(firstName && lastName && birthDate && phone && imageUri && isPrivacyChecked);
-};
+const { a11yLabel } = consts;
 
-const showInvalidRegistrationDataAlert = () =>
-  Alert.alert(
-    texts.volunteer.registrationAllFieldsRequiredTitle,
-    texts.volunteer.registrationAllFieldsRequiredBody
-  );
+const showInvalidRegisterAlert = () =>
+  Alert.alert('Fehler bei der Registrierung', 'Bitte Eingaben überprüfen und erneut versuchen.');
 
-const showRegistrationFailAlert = () =>
-  Alert.alert(texts.volunteer.registrationFailedTitle, texts.volunteer.registrationFailedBody);
-
-const a11yLabels = consts.a11yLabel;
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// eslint-disable-next-line complexity
 export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any>) => {
-  const [firstName, setFirstName] = useState<string>('');
-  const [lastName, setLastName] = useState<string>('');
-  const [birthDate, setBirthDate] = useState<Date>();
-  const [phone, setPhone] = useState<string>('');
-  const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
-  // globally disable the button, when loading after pressing register
-  const [registrationLoading, setRegistrationLoading] = useState(false);
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    watch
+  } = useForm({ mode: 'onChange' });
+  const password = watch('password');
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [secureTextEntryConfirmation, setSecureTextEntryConfirmation] = useState(true);
+  const { mutate: mutateRegister, isLoading, isError, isSuccess, data, reset } = useMutation(
+    registerMutation
+  );
+  const onSubmit = (registerData: {
+    username: string;
+    email: string;
+    password: string;
+    passwordConfirmation: string;
+  }) => mutateRegister(registerData);
 
-  const { imageUri } = useSelectImage();
-
-  const onPressRegister = useCallback(async () => {
-    const registrationData = {
-      birthDate: birthDate && momentFormat(birthDate.valueOf(), 'yyyy-MM-DD', 'x'),
-      firstName,
-      imageUri,
-      isPrivacyChecked,
-      lastName,
-      phone
-    };
-
-    // this condition should always be true
-    if (isValidRegistrationData(registrationData)) {
-      setRegistrationLoading(true);
-      const userId = await createUserAsync(registrationData);
-
-      if (!userId?.length) {
-        showRegistrationFailAlert();
-        setRegistrationLoading(false);
-        return;
-      }
-
-      await storeEncounterUserId(userId);
-
-      // if we do not set the loading state to false, the modal "spills over" to the next screen, sometimes not disappearing at all
-      setRegistrationLoading(false);
-
-      // refreshUser param causes the home screen to update and no longer show the welcome component
-      navigation.navigate(ScreenName.EncounterHome, { refreshUser: new Date().valueOf() });
-    } else {
-      setRegistrationLoading(false);
-      showInvalidRegistrationDataAlert();
-    }
-  }, [birthDate, firstName, imageUri, lastName, navigation, phone, isPrivacyChecked]);
+  if (isError || (!isLoading && data && data.code !== 200)) {
+    // TODO: catch errors
+    // showInvalidRegisterAlert();
+    // reset();
+    // TODO: remove navigation if real registration is working
+    navigation.navigate(ScreenName.VolunteerRegistered);
+  } else if (isSuccess) {
+    navigation.navigate(ScreenName.VolunteerRegistered);
+  }
 
   return (
     <SafeAreaViewFlex>
@@ -95,66 +66,102 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
               <Title
                 big
                 center
-                accessibilityLabel={`${texts.volunteer.registrationTitle} ${consts.a11yLabel.heading}`}
+                accessibilityLabel={`${texts.volunteer.registrationTitle} ${a11yLabel.heading}`}
               >
                 {texts.volunteer.registrationTitle}
               </Title>
             </TitleContainer>
             <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.volunteer.name}</Label>
-              <TextInput
-                accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
-                onChangeText={setLastName}
-                placeholder={texts.volunteer.name}
-                style={styles.inputField}
-                value={lastName}
+              <Input
+                name="username"
+                label={texts.volunteer.username}
+                placeholder={texts.volunteer.username}
+                textContentType="username"
+                autoCapitalize="none"
+                validate
+                rules={{ required: true }}
+                errorMessage={
+                  errors.username && `${texts.volunteer.username} muss ausgefüllt werden`
+                }
+                control={control}
               />
             </Wrapper>
             <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.volunteer.email}</Label>
-              <TextInput
-                accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
-                onChangeText={setLastName}
+              <Input
+                name="email"
+                label={texts.volunteer.email}
                 placeholder={texts.volunteer.email}
-                style={styles.inputField}
-                value={lastName}
+                keyboardType="email-address"
+                textContentType="emailAddress"
+                autoCompleteType="email"
+                autoCapitalize="none"
+                validate
+                rules={{ required: true, validate: (input: string) => /\S+@\S+\.\S+/.test(input) }}
+                errorMessage={
+                  errors.email && `${texts.volunteer.email} muss korrekt ausgefüllt werden`
+                }
+                control={control}
               />
             </Wrapper>
             <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.volunteer.password}</Label>
-              <TextInput
-                accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
-                onChangeText={setLastName}
+              <Input
+                name="password"
+                label={texts.volunteer.password}
                 placeholder={texts.volunteer.password}
-                style={styles.inputField}
-                value={lastName}
+                textContentType="password"
+                autoCompleteType="password"
+                secureTextEntry={secureTextEntry}
+                rightIcon={
+                  <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
+                    {secureTextEntry ? (
+                      <Icon.Visible color={colors.darkText} size={normalize(24)} />
+                    ) : (
+                      <Icon.Unvisible color={colors.darkText} size={normalize(24)} />
+                    )}
+                  </TouchableOpacity>
+                }
+                validate
+                rules={{ required: true }}
+                errorMessage={
+                  errors.password && `${texts.volunteer.password} muss ausgefüllt werden`
+                }
+                control={control}
               />
             </Wrapper>
             <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.volunteer.passwordConfirmation}</Label>
-              <TextInput
-                accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
-                onChangeText={setLastName}
+              <Input
+                name="passwordConfirmation"
+                label={texts.volunteer.passwordConfirmation}
                 placeholder={texts.volunteer.passwordConfirmation}
-                style={styles.inputField}
-                value={lastName}
+                textContentType="password"
+                autoCompleteType="password"
+                secureTextEntry={secureTextEntryConfirmation}
+                rightIcon={
+                  <TouchableOpacity
+                    onPress={() => setSecureTextEntryConfirmation(!secureTextEntryConfirmation)}
+                  >
+                    {secureTextEntryConfirmation ? (
+                      <Icon.Visible color={colors.darkText} size={normalize(24)} />
+                    ) : (
+                      <Icon.Unvisible color={colors.darkText} size={normalize(24)} />
+                    )}
+                  </TouchableOpacity>
+                }
+                validate
+                rules={{ required: true, validate: (input: string) => password === input }}
+                errorMessage={
+                  errors.passwordConfirmation &&
+                  `${texts.volunteer.passwordConfirmation} muss ausgefüllt werden ` +
+                    `und mit ${texts.volunteer.password} übereinstimmen`
+                }
+                control={control}
               />
             </Wrapper>
             <Wrapper>
               <Button
-                onPress={onPressRegister}
+                onPress={handleSubmit(onSubmit)}
                 title={texts.volunteer.next}
-                disabled={
-                  registrationLoading ||
-                  !isValidRegistrationData({
-                    birthDate: birthDate && momentFormat(birthDate.valueOf(), 'yyyy-MM-DD', 'x'),
-                    firstName,
-                    imageUri,
-                    isPrivacyChecked,
-                    lastName,
-                    phone
-                  })
-                }
+                disabled={isLoading}
               />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
@@ -163,7 +170,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
               </Touchable>
             </Wrapper>
           </WrapperWithOrientation>
-          <LoadingModal loading={registrationLoading} />
+          <LoadingModal loading={isLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
@@ -171,16 +178,6 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
 };
 
 const styles = StyleSheet.create({
-  inputField: {
-    backgroundColor: colors.surface,
-    borderColor: colors.placeholder,
-    borderWidth: 1,
-    fontFamily: 'regular',
-    fontSize: normalize(16),
-    color: colors.darkText,
-    paddingHorizontal: normalize(14),
-    paddingVertical: normalize(8)
-  },
   noPaddingTop: {
     paddingTop: 0
   }

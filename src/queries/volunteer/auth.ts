@@ -28,6 +28,35 @@ export const logInMutation = async ({
   return (await fetch(`${serverUrl}auth/login`, fetchObj)).json();
 };
 
+export const registerMutation = async ({
+  username,
+  email,
+  password,
+  passwordConfirmation
+}: {
+  username: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
+}) => {
+  const formData = new FormData();
+  formData.append('username', username);
+  formData.append('email', email);
+  formData.append('password', password);
+  formData.append('passwordConfirmation', passwordConfirmation);
+
+  const fetchObj = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: formData
+  };
+
+  return (await fetch(`${serverUrl}register`, fetchObj)).json();
+};
+
 // TODO: possible and needed?
 export const logOutMutation = async () => {
   const { authToken } = await volunteerAuthToken();

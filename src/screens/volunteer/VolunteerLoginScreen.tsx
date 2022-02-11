@@ -38,7 +38,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
     handleSubmit
   } = useForm();
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const { mutate: mutateLogIn, isLoading, isError, isSuccess, data, error, reset } = useMutation(
+  const { mutate: mutateLogIn, isLoading, isError, isSuccess, data, reset } = useMutation(
     logInMutation
   );
   const onSubmit = (loginData: { username: string; password: string }) => mutateLogIn(loginData);

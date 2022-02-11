@@ -573,12 +573,12 @@ export const texts = {
   },
   volunteer: {
     abort: 'Abbrechen',
-    usernameOrEmail: 'Benutzername oder E-Mail',
+    email: 'E-Mail',
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
     login: 'Anmelden',
     loginTitle: 'Anmelden',
-    name: 'Name',
     next: 'Weiter',
+    ok: 'OK',
     password: 'Passwort',
     passwordConfirmation: 'Passwort bestätigen',
     passwordForgotten: 'Passwort vergessen',
@@ -591,7 +591,9 @@ export const texts = {
     registrationPrivacyLink: 'Datenschutzerklärung.',
     registrationPrivacyText:
       'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
-    registrationTitle: 'Registrieren'
+    registrationTitle: 'Registrieren',
+    username: 'Benutzername',
+    usernameOrEmail: 'Benutzername oder E-Mail'
   },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',
