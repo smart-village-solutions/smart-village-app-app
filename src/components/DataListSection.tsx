@@ -11,6 +11,8 @@ import { ListComponent } from './ListComponent';
 import { LoadingContainer } from './LoadingContainer';
 import { SectionHeader } from './SectionHeader';
 import { Wrapper } from './Wrapper';
+import { BoldText } from './Text';
+import { Touchable } from './Touchable';
 
 type Props = {
   buttonTitle?: string;
@@ -25,8 +27,12 @@ type Props = {
   sectionTitle?: string;
   sectionTitleDetail?: string;
   showButton?: boolean;
+  linkTitle?: string;
+  navigateLink?: () => void;
+  showLink?: boolean;
 };
 
+// eslint-disable-next-line complexity
 export const DataListSection = ({
   buttonTitle,
   horizontal,
@@ -39,7 +45,10 @@ export const DataListSection = ({
   sectionData,
   sectionTitle,
   sectionTitleDetail,
-  showButton
+  showButton,
+  linkTitle,
+  navigateLink,
+  showLink
 }: Props) => {
   if (loading) {
     return (
@@ -66,6 +75,15 @@ export const DataListSection = ({
           navigation={navigation}
           query={query}
         />
+        {!!linkTitle && !!navigateLink && showLink && (
+          <Wrapper>
+            <Touchable onPress={navigateLink}>
+              <BoldText center primary underline>
+                {linkTitle}
+              </BoldText>
+            </Touchable>
+          </Wrapper>
+        )}
         {!!buttonTitle && !!navigate && showButton && (
           <Wrapper>
             <Button title={buttonTitle} onPress={navigate} />

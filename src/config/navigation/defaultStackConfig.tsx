@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { HeaderLeft } from '../../components';
-import { volunteerAuthToken } from '../../helpers';
 import { getScreenOptions } from '../../navigation/screenOptions';
 import {
   AboutScreen,
@@ -34,6 +33,7 @@ import {
   SurveyDetailScreen,
   SurveyOverviewScreen,
   VolunteerDetailScreen,
+  VolunteerFormScreen,
   VolunteerHomeScreen,
   VolunteerIndexScreen,
   VolunteerLoginScreen,
@@ -249,6 +249,11 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.VolunteerDetail,
       screenComponent: VolunteerDetailScreen,
+      screenOptions: getScreenOptions({ withVolunteer: true })
+    },
+    {
+      routeName: ScreenName.VolunteerForm,
+      screenComponent: VolunteerFormScreen,
       screenOptions: getScreenOptions({ withVolunteer: true })
     },
     {

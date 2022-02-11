@@ -83,6 +83,7 @@ export const Input = ({
       ]}
       rightIconContainerStyle={styles.rightIconContainer}
       inputStyle={[styles.input, multiline && device.platform === 'ios' && styles.multiline]}
+      placeholderTextColor={colors.placeholder}
       disabledInputStyle={styles.inputDisabled}
       accessibilityLabel={`${a11yLabel[name]} ${a11yLabel.textInput}: ${field.value}`}
     />
@@ -102,8 +103,7 @@ const styles = StyleSheet.create({
     borderColor: colors.gray40,
     borderLeftWidth: normalize(1),
     borderRightWidth: normalize(1),
-    borderTopWidth: normalize(1),
-    borderRadius: 0
+    borderTopWidth: normalize(1)
   },
   inputContainerDisabled: {
     backgroundColor: colors.gray20,
@@ -130,7 +130,8 @@ const styles = StyleSheet.create({
   input: {
     paddingLeft: normalize(12),
     paddingRight: normalize(6),
-    paddingVertical: device.platform === 'ios' ? normalize(10) : normalize(8)
+    paddingVertical: device.platform === 'ios' ? normalize(10) : normalize(8),
+    fontFamily: 'regular'
   },
   multiline: {
     paddingTop: normalize(12)

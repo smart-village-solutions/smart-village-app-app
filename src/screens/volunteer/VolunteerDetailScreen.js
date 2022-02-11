@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import { FlatList, RefreshControl, ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import {
   allGroups,
@@ -14,7 +14,6 @@ import {
   DefaultKeyboardAvoidingView,
   EventRecord,
   PointOfInterest,
-  RegularText,
   SafeAreaViewFlex,
   VolunteerMessage,
   VolunteerMessageTextField,

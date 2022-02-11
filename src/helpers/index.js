@@ -8,6 +8,7 @@ export * from './colorHelper';
 export * from './dateTimeHelper';
 export * from './encounterHelper';
 export * from './fileSizeHelper';
+export * from './formatHelper';
 export * from './graphqlHelper';
 export * from './headerHelper';
 export * from './htmlViewHelper';

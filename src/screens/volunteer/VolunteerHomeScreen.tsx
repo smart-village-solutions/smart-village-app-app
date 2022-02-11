@@ -20,12 +20,13 @@ import {
 } from '../../helpers/parser/volunteer';
 import { useVolunteerUser } from '../../hooks/volunteer';
 import { QUERY_TYPES } from '../../queries';
+import { ScreenName } from '../../types';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
 const NAVIGATION = {
   CALENDAR_INDEX: {
-    name: 'VolunteerIndex',
+    name: ScreenName.VolunteerIndex,
     params: {
       title: 'Mein Kalender',
       query: QUERY_TYPES.VOLUNTEER.CALENDAR,
@@ -33,8 +34,17 @@ const NAVIGATION = {
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
+  CALENDAR_NEW: {
+    name: ScreenName.VolunteerForm,
+    params: {
+      title: 'Termin eintragen',
+      query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+      queryVariables: {},
+      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+    }
+  },
   GROUPS_INDEX: {
-    name: 'VolunteerIndex',
+    name: ScreenName.VolunteerIndex,
     params: {
       title: 'Meine Gruppen',
       query: QUERY_TYPES.VOLUNTEER.GROUPS,
@@ -43,7 +53,7 @@ const NAVIGATION = {
     }
   },
   GROUPS_FOLLOWING_INDEX: {
-    name: 'VolunteerIndex',
+    name: ScreenName.VolunteerIndex,
     params: {
       title: 'Gruppen, denen ich folge',
       query: QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING,
@@ -52,7 +62,7 @@ const NAVIGATION = {
     }
   },
   ALL_GROUPS_INDEX: {
-    name: 'VolunteerIndex',
+    name: ScreenName.VolunteerIndex,
     params: {
       title: 'Alle Gruppen',
       query: QUERY_TYPES.VOLUNTEER.ALL_GROUPS,
@@ -61,7 +71,7 @@ const NAVIGATION = {
     }
   },
   MESSAGES_INDEX: {
-    name: 'VolunteerIndex',
+    name: ScreenName.VolunteerIndex,
     params: {
       title: 'Mein Postfach',
       query: QUERY_TYPES.VOLUNTEER.MESSAGES,
@@ -70,7 +80,7 @@ const NAVIGATION = {
     }
   },
   TASKS_INDEX: {
-    name: 'VolunteerIndex',
+    name: ScreenName.VolunteerIndex,
     params: {
       title: 'Meine Aufgaben',
       query: QUERY_TYPES.VOLUNTEER.TASKS,
@@ -151,44 +161,56 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
           sectionTitle="Gruppen, denen ich folge"
         />
         <DataListSection
+          linkTitle="Alle Gruppen anzeigen"
           buttonTitle="Alle Gruppen anzeigen"
           loading={false}
+          navigateLink={() => navigation.navigate(NAVIGATION.ALL_GROUPS_INDEX)}
           navigate={() => navigation.navigate(NAVIGATION.ALL_GROUPS_INDEX)}
           navigation={navigation}
           query={QUERY_TYPES.VOLUNTEER.ALL_GROUPS}
           sectionData={allGroups()}
           limit={0}
-          showButton
+          showLink
+          showButton={false}
         />
         <DataListSection
-          buttonTitle="Alle Termine anzeigen"
+          linkTitle="Alle Termine anzeigen"
+          buttonTitle="Termin eintragen"
           loading={false}
-          navigate={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
+          navigateLink={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
+          navigate={() => navigation.navigate(NAVIGATION.CALENDAR_NEW)}
           navigation={navigation}
           query={QUERY_TYPES.VOLUNTEER.CALENDAR}
           sectionData={myCalendar()}
           sectionTitle="Mein Kalender"
+          showLink
           showButton
         />
         <DataListSection
+          linkTitle="Alle Aufgaben anzeigen"
           buttonTitle="Alle Aufgaben anzeigen"
           loading={false}
+          navigateLink={() => navigation.navigate(NAVIGATION.TASKS_INDEX)}
           navigate={() => navigation.navigate(NAVIGATION.TASKS_INDEX)}
           navigation={navigation}
           query={QUERY_TYPES.VOLUNTEER.TASKS}
           sectionData={myTasks()}
           sectionTitle="Meine Aufgaben"
-          showButton
+          showLink
+          showButton={false}
         />
         <DataListSection
+          linkTitle="Alle Nachrichten anzeigen"
           buttonTitle="Alle Nachrichten anzeigen"
           loading={false}
+          navigateLink={() => navigation.navigate(NAVIGATION.MESSAGES_INDEX)}
           navigate={() => navigation.navigate(NAVIGATION.MESSAGES_INDEX)}
           navigation={navigation}
           query={QUERY_TYPES.VOLUNTEER.MESSAGES}
           sectionData={myMessages()}
           sectionTitle="Mein Postfach"
-          showButton
+          showLink
+          showButton={false}
         />
       </ScrollView>
     </SafeAreaViewFlex>

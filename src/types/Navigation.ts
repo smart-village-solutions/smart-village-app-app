@@ -38,6 +38,7 @@ export enum ScreenName {
   SurveyDetail = 'SurveyDetail',
   SurveyOverview = 'SurveyOverview',
   VolunteerDetail = 'VolunteerDetail',
+  VolunteerForm = 'VolunteerForm',
   VolunteerHome = 'VolunteerHome',
   VolunteerIndex = 'VolunteerIndex',
   VolunteerLogin = 'VolunteerLogin',

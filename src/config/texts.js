@@ -573,8 +573,12 @@ export const texts = {
   },
   volunteer: {
     abort: 'Abbrechen',
+    description: 'Beschreibung',
     email: 'E-Mail',
+    endDate: 'Enddatum',
+    endTime: 'Endzeit',
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
+    location: 'Ort',
     login: 'Anmelden',
     loginTitle: 'Anmelden',
     next: 'Weiter',
@@ -592,6 +596,11 @@ export const texts = {
     registrationPrivacyText:
       'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
     registrationTitle: 'Registrieren',
+    save: 'Speichern',
+    startDate: 'Startdatum',
+    startTime: 'Startzeit',
+    title: 'Titel',
+    topics: 'Themen',
     username: 'Benutzername',
     usernameOrEmail: 'Benutzername oder E-Mail'
   },
