@@ -5,6 +5,7 @@ import { RefreshControl, ScrollView } from 'react-native';
 import { DataListSection, SafeAreaViewFlex } from '../../components';
 import { colors, consts } from '../../config';
 import {
+  allGroups,
   myCalendar,
   myGroups,
   myGroupsFollowing,
@@ -40,6 +41,15 @@ const NAVIGATION = {
     params: {
       title: 'Gruppen, denen ich folge',
       query: QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING,
+      queryVariables: {},
+      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+    }
+  },
+  ALL_GROUPS_INDEX: {
+    name: 'VolunteerIndex',
+    params: {
+      title: 'Alle Gruppen',
+      query: QUERY_TYPES.VOLUNTEER.ALL_GROUPS,
       queryVariables: {},
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
@@ -99,7 +109,6 @@ export const VolunteerScreen = ({ navigation }) => {
           query={QUERY_TYPES.VOLUNTEER.GROUPS}
           sectionData={myGroups()}
           sectionTitle="Meine Gruppen"
-          sectionTitleDetail="Meine Gruppen"
         />
         <DataListSection
           loading={false}
@@ -108,16 +117,26 @@ export const VolunteerScreen = ({ navigation }) => {
           query={QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING}
           sectionData={myGroupsFollowing()}
           sectionTitle="Gruppen, denen ich folge"
-          sectionTitleDetail="Gruppen, denen ich folge"
         />
         <DataListSection
+          buttonTitle="Alle Gruppen anzeigen"
+          loading={false}
+          navigate={() => navigation.navigate(NAVIGATION.ALL_GROUPS_INDEX)}
+          navigation={navigation}
+          query={QUERY_TYPES.VOLUNTEER.ALL_GROUPS}
+          sectionData={allGroups()}
+          limit={0}
+          showButton
+        />
+        <DataListSection
+          buttonTitle="Alle Termine anzeigen"
           loading={false}
           navigate={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
           navigation={navigation}
           query={QUERY_TYPES.VOLUNTEER.CALENDAR}
           sectionData={myCalendar()}
           sectionTitle="Mein Kalender"
-          sectionTitleDetail="Mein Kalender"
+          showButton
         />
         <DataListSection
           buttonTitle="Alle Aufgaben anzeigen"
@@ -127,7 +146,6 @@ export const VolunteerScreen = ({ navigation }) => {
           query={QUERY_TYPES.VOLUNTEER.TASKS}
           sectionData={myTasks()}
           sectionTitle="Meine Aufgaben"
-          sectionTitleDetail="Meine Aufgaben"
           showButton
         />
         <DataListSection
@@ -138,7 +156,6 @@ export const VolunteerScreen = ({ navigation }) => {
           query={QUERY_TYPES.VOLUNTEER.MESSAGES}
           sectionData={myMessages()}
           sectionTitle="Mein Postfach"
-          sectionTitleDetail="Mein Postfach"
           showButton
         />
       </ScrollView>

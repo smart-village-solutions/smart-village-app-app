@@ -21,6 +21,7 @@ export const QUERY_TYPES = {
   TOURS: 'tours',
   VOLUNTEER: {
     CALENDAR: 'calendar',
+    ALL_GROUPS: 'allGroups',
     GROUPS: 'groups',
     GROUPS_FOLLOWING: 'groupsFollowing',
     MESSAGES: 'messages',

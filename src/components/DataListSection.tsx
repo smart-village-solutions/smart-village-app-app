@@ -4,6 +4,7 @@ import { ActivityIndicator, View } from 'react-native';
 
 import { colors } from '../config';
 import { getTitleForQuery, parseListItemsFromQuery } from '../helpers';
+import { QUERY_TYPES } from '../queries';
 
 import { Button } from './Button';
 import { ListComponent } from './ListComponent';
@@ -49,13 +50,16 @@ export const DataListSection = ({
   }
 
   const listData = parseListItemsFromQuery(query, sectionData, sectionTitleDetail, {
+    withDate: query === QUERY_TYPES.VOLUNTEER.CALENDAR,
     skipLastDivider: true
   });
 
   if (listData?.length) {
     return (
       <View>
-        <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
+        {sectionTitle && (
+          <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
+        )}
         <ListComponent
           data={listData.slice(0, limit)}
           horizontal={horizontal}
@@ -77,7 +81,9 @@ export const DataListSection = ({
 
   return (
     <View>
-      <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
+      {sectionTitle && (
+        <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
+      )}
       {placeholder}
     </View>
   );

@@ -198,15 +198,18 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
-const parseVolunteers = (data, query, routeName, skipLastDivider) => {
+const parseVolunteers = (data, query, skipLastDivider, withDate) => {
   return data?.map((volunteer, index) => ({
     id: volunteer.id,
     title: volunteer.name,
-    subtitle: volunteer.tags,
+    subtitle: subtitle(
+      withDate ? eventDate(volunteer.listDate) : undefined,
+      query !== QUERY_TYPES.VOLUNTEER.CALENDAR && volunteer.tags
+    ),
     picture: {
       url: undefined
     },
-    routeName,
+    routeName: volunteer.routeName,
     params: {
       title: texts.detailTitles.volunteer.group,
       query,
@@ -254,14 +257,16 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
     case QUERY_TYPES.VOLUNTEER.GROUPS:
-      return parseVolunteers(data, query, 'Groups', skipLastDivider);
+      return parseVolunteers(data, query, skipLastDivider);
     case QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING:
-      return parseVolunteers(data, query, 'GroupsFollowing', skipLastDivider);
+      return parseVolunteers(data, query, skipLastDivider);
+    case QUERY_TYPES.VOLUNTEER.ALL_GROUPS:
+      return parseVolunteers(data, query, skipLastDivider);
     case QUERY_TYPES.VOLUNTEER.CALENDAR:
-      return parseVolunteers(data, query, 'Calendar', skipLastDivider);
+      return parseVolunteers(data, query, skipLastDivider, withDate);
     case QUERY_TYPES.VOLUNTEER.TASKS:
-      return parseVolunteers(data, query, 'Tasks', skipLastDivider);
+      return parseVolunteers(data, query, skipLastDivider);
     case QUERY_TYPES.VOLUNTEER.MESSAGES:
-      return parseVolunteers(data, query, 'Messages', skipLastDivider);
+      return parseVolunteers(data, query, skipLastDivider);
   }
 };

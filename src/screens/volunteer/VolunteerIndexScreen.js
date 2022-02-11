@@ -6,7 +6,8 @@ import { DropdownHeader, ListComponent, SafeAreaViewFlex } from '../../component
 import { colors, consts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import {
-  myCalendar,
+  allGroups,
+  myCalendarSectioned,
   myGroups,
   myGroupsFollowing,
   myMessages,
@@ -33,9 +34,10 @@ export const VolunteerIndexScreen = ({ navigation, route }) => {
   if (!query) return null;
 
   const data = {
-    [QUERY_TYPES.VOLUNTEER.CALENDAR]: myCalendar(),
+    [QUERY_TYPES.VOLUNTEER.CALENDAR]: myCalendarSectioned(),
     [QUERY_TYPES.VOLUNTEER.GROUPS]: myGroups(),
     [QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING]: myGroupsFollowing(),
+    [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: allGroups(),
     [QUERY_TYPES.VOLUNTEER.MESSAGES]: myMessages(),
     [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks()
   }[query];
@@ -45,6 +47,7 @@ export const VolunteerIndexScreen = ({ navigation, route }) => {
     [QUERY_TYPES.VOLUNTEER.CALENDAR]: 'categoryId',
     [QUERY_TYPES.VOLUNTEER.GROUPS]: 'categoryId',
     [QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING]: 'categoryId',
+    [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: 'categoryId',
     [QUERY_TYPES.VOLUNTEER.MESSAGES]: 'categoryId',
     [QUERY_TYPES.VOLUNTEER.TASKS]: 'categoryId'
   }[query];
@@ -102,7 +105,7 @@ export const VolunteerIndexScreen = ({ navigation, route }) => {
         }
         navigation={navigation}
         data={listItems}
-        sectionByDate
+        sectionByDate={query === QUERY_TYPES.VOLUNTEER.CALENDAR}
         query={query}
         fetchMoreData={null}
         refreshControl={
