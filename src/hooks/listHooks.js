@@ -47,7 +47,9 @@ export const useRenderItem = (query, navigation, options = {}) => {
         <TextListItem
           item={{
             ...item,
-            bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
+            bottomDivider:
+              item.bottomDivider ??
+              (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
           }}
           {...{ navigation, noSubtitle: options.noSubtitle, leftImage: true }}
         />
@@ -59,7 +61,9 @@ export const useRenderItem = (query, navigation, options = {}) => {
         <TextListItem
           item={{
             ...item,
-            bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
+            bottomDivider:
+              item.bottomDivider ??
+              (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
           }}
           {...{ navigation, noSubtitle: options.noSubtitle }}
         />
