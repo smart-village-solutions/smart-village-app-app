@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { FC } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { BoldText } from '.';
+import { BoldText } from './Text';
 
 export const FeedbackFooter: FC = () => {
   const navigation = useNavigation();
