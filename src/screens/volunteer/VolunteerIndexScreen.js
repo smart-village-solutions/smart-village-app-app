@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import { RefreshControl } from 'react-native';
 
 import { DropdownHeader, ListComponent, SafeAreaViewFlex } from '../../components';
-import { colors, consts } from '../../config';
+import { colors } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import {
   allGroups,
@@ -14,11 +14,9 @@ import {
   myProfile,
   myTasks
 } from '../../helpers/parser/volunteer';
-import { useMatomoTrackScreenView } from '../../hooks';
+import { useLogoutHeader } from '../../hooks/volunteer';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
-
-const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
 export const VolunteerIndexScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -33,6 +31,8 @@ export const VolunteerIndexScreen = ({ navigation, route }) => {
   // useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.MORE);
 
   if (!query) return null;
+
+  useLogoutHeader({ query, navigation });
 
   const data = {
     [QUERY_TYPES.VOLUNTEER.CALENDAR]: myCalendar(),
