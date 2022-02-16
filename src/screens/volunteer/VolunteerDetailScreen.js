@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
 
 import {
+  additionalData,
   allGroups,
   myCalendar,
   myGroups,
@@ -30,7 +31,8 @@ const getComponent = (query) => {
     [QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING]: PointOfInterest,
     [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: PointOfInterest,
     [QUERY_TYPES.VOLUNTEER.MESSAGES]: VolunteerMessage,
-    [QUERY_TYPES.VOLUNTEER.TASKS]: VolunteerTask
+    [QUERY_TYPES.VOLUNTEER.TASKS]: VolunteerTask,
+    [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: PointOfInterest
   };
 
   return COMPONENTS[query];
@@ -51,7 +53,8 @@ export const VolunteerDetailScreen = ({ navigation, route }) => {
     [QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING]: myGroupsFollowing(),
     [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: allGroups(),
     [QUERY_TYPES.VOLUNTEER.MESSAGES]: myMessages(),
-    [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks()
+    [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks(),
+    [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: additionalData()
   }[query];
 
   const details = data.find((entry) => entry.id == queryVariables.id);

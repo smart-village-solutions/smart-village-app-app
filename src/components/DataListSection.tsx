@@ -16,6 +16,8 @@ import { Touchable } from './Touchable';
 
 type Props = {
   buttonTitle?: string;
+  showButton?: boolean;
+  navigateButton?: () => void;
   horizontal?: boolean;
   limit?: number;
   loading?: boolean;
@@ -26,7 +28,6 @@ type Props = {
   sectionData?: unknown[];
   sectionTitle?: string;
   sectionTitleDetail?: string;
-  showButton?: boolean;
   linkTitle?: string;
   navigateLink?: () => void;
   showLink?: boolean;
@@ -35,6 +36,8 @@ type Props = {
 // eslint-disable-next-line complexity
 export const DataListSection = ({
   buttonTitle,
+  navigateButton,
+  showButton,
   horizontal,
   limit = 3,
   loading,
@@ -45,7 +48,6 @@ export const DataListSection = ({
   sectionData,
   sectionTitle,
   sectionTitleDetail,
-  showButton,
   linkTitle,
   navigateLink,
   showLink
@@ -84,9 +86,9 @@ export const DataListSection = ({
             </Touchable>
           </Wrapper>
         )}
-        {!!buttonTitle && !!navigate && showButton && (
+        {!!buttonTitle && !!navigateButton && showButton && (
           <Wrapper>
-            <Button title={buttonTitle} onPress={navigate} />
+            <Button title={buttonTitle} onPress={navigateButton} />
           </Wrapper>
         )}
       </View>

@@ -3,20 +3,25 @@ import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import {
   DataListSection,
-  ImagesCarousel,
   LoadingSpinner,
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
   Touchable,
   VolunteerCalendar,
-  VolunteerHeaderPersonal,
+  VolunteerHeaderProfile,
   VolunteerWelcome,
   WrapperRow
 } from '../../components';
 import { colors, consts, Icon, normalize, texts } from '../../config';
-import { additionalData, allGroups, myCalendar } from '../../helpers/parser/volunteer';
-import { useStaticContent } from '../../hooks/staticContent';
+import {
+  allGroups,
+  myCalendar,
+  myGroups,
+  myGroupsFollowing,
+  myMessages,
+  myTasks
+} from '../../helpers/parser/volunteer';
 import { useVolunteerUser } from '../../hooks/volunteer';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
@@ -69,11 +74,20 @@ const NAVIGATION = {
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
-  ADDITIONAL_INDEX: {
+  MESSAGES_INDEX: {
     name: ScreenName.VolunteerIndex,
     params: {
-      title: 'Ganz praktisch',
-      query: QUERY_TYPES.VOLUNTEER.ADDITIONAL,
+      title: 'Mein Postfach',
+      query: QUERY_TYPES.VOLUNTEER.MESSAGES,
+      queryVariables: {},
+      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+    }
+  },
+  TASKS_INDEX: {
+    name: ScreenName.VolunteerIndex,
+    params: {
+      title: 'Meine Aufgaben',
+      query: QUERY_TYPES.VOLUNTEER.TASKS,
       queryVariables: {},
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
@@ -99,28 +113,27 @@ const CalendarListToggle = ({ showCalendar, setShowCalendar }: CalendarListToggl
   );
 };
 
-export const VolunteerHomeScreen = ({ navigation, route }: any) => {
-  const [refreshing, setRefreshing] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(true);
-  const { refresh, isLoading, isError, isLoggedIn } = useVolunteerUser();
-  const { data, loading, refetch } = useStaticContent({
-    refreshTimeKey: 'publicJsonFile-volunteerCarousel',
-    name: 'volunteerCarousel',
-    type: 'json'
-  });
+export const VolunteerPersonalScreen = ({ navigation, route }: any) => {
+  const [refreshingHome, setRefreshingHome] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const { refresh: refreshUser, isLoading, isError, isLoggedIn } = useVolunteerUser();
 
-  const refreshUser = useCallback(() => {
-    refresh();
-  }, [refresh]);
+  const refresh = useCallback(() => {
+    refreshUser();
+  }, [refreshUser]);
 
-  const refreshHome = useCallback(async () => {
-    setRefreshing(true);
-    await refetch?.();
-    setRefreshing(false);
-  }, [refetch]);
+  const refreshHome = () => {
+    setRefreshingHome(true);
+
+    // we simulate state change of `refreshing` with setting it to `true` first and after
+    // a timeout to `false` again, which will result in a re-rendering of the screen.
+    setTimeout(() => {
+      setRefreshingHome(false);
+    }, 1500);
+  };
 
   // refresh if the refreshUser param changed, which happens after login
-  useEffect(refreshUser, [route.params?.refreshUser]);
+  useEffect(refresh, [route.params?.refreshUser]);
 
   useEffect(
     () =>
@@ -128,14 +141,14 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
         headerRight: () =>
           isLoggedIn ? (
             <WrapperRow style={styles.headerRight}>
-              <VolunteerHeaderPersonal navigation={navigation} style={styles.icon} />
+              <VolunteerHeaderProfile navigation={navigation} style={styles.icon} />
             </WrapperRow>
           ) : null
       }),
     [isLoggedIn, navigation]
   );
 
-  if (isLoading || loading) {
+  if (isLoading) {
     return <LoadingSpinner loading />;
   }
 
@@ -148,19 +161,43 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
       <ScrollView
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
+            refreshing={refreshingHome}
             onRefresh={refreshHome}
             colors={[colors.accent]}
             tintColor={colors.accent}
           />
         }
       >
-        <ImagesCarousel data={data} />
-        {/* TODO: do we want widgets on volunteer home screen? */}
-        {/* <Widgets widgetConfigs={volunteerWidgetConfigs} /> */}
+        <DataListSection
+          loading={false}
+          navigate={() => navigation.navigate(NAVIGATION.GROUPS_INDEX)}
+          navigation={navigation}
+          query={QUERY_TYPES.VOLUNTEER.GROUPS}
+          sectionData={myGroups()}
+          sectionTitle="Meine Gruppen"
+        />
+        <DataListSection
+          loading={false}
+          navigate={() => navigation.navigate(NAVIGATION.GROUPS_FOLLOWING_INDEX)}
+          navigation={navigation}
+          query={QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING}
+          sectionData={myGroupsFollowing()}
+          sectionTitle="Gruppen, denen ich folge"
+        />
+        <DataListSection
+          linkTitle="Alle Gruppen anzeigen"
+          loading={false}
+          navigateLink={() => navigation.navigate(NAVIGATION.ALL_GROUPS_INDEX)}
+          navigate={() => navigation.navigate(NAVIGATION.ALL_GROUPS_INDEX)}
+          navigation={navigation}
+          query={QUERY_TYPES.VOLUNTEER.ALL_GROUPS}
+          sectionData={allGroups()}
+          limit={0}
+          showLink
+        />
         <SectionHeader
           onPress={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
-          title="Kalender"
+          title="Mein Kalender"
         />
         <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
         {showCalendar ? (
@@ -189,26 +226,26 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
           showButton
         />
         <DataListSection
-          linkTitle="Alle Gruppen anzeigen"
-          buttonTitle="Gruppe eintragen"
+          linkTitle="Alle Aufgaben anzeigen"
           loading={false}
-          navigateLink={() => navigation.navigate(NAVIGATION.ALL_GROUPS_INDEX)}
-          navigateButton={() => undefined}
-          navigate={() => navigation.navigate(NAVIGATION.ALL_GROUPS_INDEX)}
+          navigateLink={() => navigation.navigate(NAVIGATION.TASKS_INDEX)}
+          navigate={() => navigation.navigate(NAVIGATION.TASKS_INDEX)}
           navigation={navigation}
-          query={QUERY_TYPES.VOLUNTEER.ALL_GROUPS}
-          sectionData={allGroups()}
-          sectionTitle="Gruppen"
+          query={QUERY_TYPES.VOLUNTEER.TASKS}
+          sectionData={myTasks()}
+          sectionTitle="Meine Aufgaben"
           showLink
-          showButton
         />
         <DataListSection
+          linkTitle="Alle Nachrichten anzeigen"
           loading={false}
-          navigate={() => navigation.navigate(NAVIGATION.ADDITIONAL_INDEX)}
+          navigateLink={() => navigation.navigate(NAVIGATION.MESSAGES_INDEX)}
+          navigate={() => navigation.navigate(NAVIGATION.MESSAGES_INDEX)}
           navigation={navigation}
-          query={QUERY_TYPES.VOLUNTEER.ADDITIONAL}
-          sectionData={additionalData()}
-          sectionTitle="Ganz praktisch"
+          query={QUERY_TYPES.VOLUNTEER.MESSAGES}
+          sectionData={myMessages()}
+          sectionTitle="Mein Postfach"
+          showLink
         />
       </ScrollView>
     </SafeAreaViewFlex>

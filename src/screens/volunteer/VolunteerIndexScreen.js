@@ -6,6 +6,7 @@ import { DropdownHeader, ListComponent, SafeAreaViewFlex } from '../../component
 import { colors } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import {
+  additionalData,
   allGroups,
   myCalendar,
   myGroups,
@@ -41,7 +42,8 @@ export const VolunteerIndexScreen = ({ navigation, route }) => {
     [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: allGroups(),
     [QUERY_TYPES.VOLUNTEER.MESSAGES]: myMessages(),
     [QUERY_TYPES.VOLUNTEER.PROFILE]: myProfile(),
-    [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks()
+    [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks(),
+    [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: additionalData()
   }[query];
 
   // TODO: filter?
@@ -52,7 +54,8 @@ export const VolunteerIndexScreen = ({ navigation, route }) => {
     [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: 'categoryId',
     [QUERY_TYPES.VOLUNTEER.MESSAGES]: 'categoryId',
     [QUERY_TYPES.VOLUNTEER.PROFILE]: 'categoryId',
-    [QUERY_TYPES.VOLUNTEER.TASKS]: 'categoryId'
+    [QUERY_TYPES.VOLUNTEER.TASKS]: 'categoryId',
+    [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: 'categoryId'
   }[query];
 
   const refetch = () => undefined;

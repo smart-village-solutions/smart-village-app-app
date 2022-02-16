@@ -4,5 +4,6 @@ export * from './VolunteerHomeScreen';
 export * from './VolunteerIndexScreen';
 export * from './VolunteerLoginScreen';
 export * from './VolunteerMeScreen';
+export * from './VolunteerPersonalScreen';
 export * from './VolunteerRegisteredScreen';
 export * from './VolunteerRegistrationScreen';

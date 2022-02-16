@@ -20,10 +20,11 @@ export const QUERY_TYPES = {
   TOUR: 'tour',
   TOURS: 'tours',
   VOLUNTEER: {
-    CALENDAR: 'calendar',
+    ADDITIONAL: 'additional',
     ALL_GROUPS: 'allGroups',
-    GROUPS: 'groups',
+    CALENDAR: 'calendar',
     GROUPS_FOLLOWING: 'groupsFollowing',
+    GROUPS: 'groups',
     MESSAGES: 'messages',
     PROFILE: 'profile',
     TASKS: 'tasks'

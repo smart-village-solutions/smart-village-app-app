@@ -7,9 +7,9 @@ export const myTasks = () => [
   {
     id: 1,
     title: 'Termin finden',
-    tags: 'Testspace',
     routeName: 'VolunteerDetail',
     description: 'Wann?',
+    tags: 'Testspace',
     checklist: [
       {
         id: 9,

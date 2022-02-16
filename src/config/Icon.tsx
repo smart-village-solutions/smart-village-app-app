@@ -178,7 +178,7 @@ export const Icon = {
       {...props}
     />
   ),
-  VolunteerProfile: (props: IconProps) => (
+  VolunteerPersonal: (props: IconProps) => (
     <NamedIcon
       name={device.platform === 'ios' ? 'ios-person-outline' : 'md-person-outline'}
       {...props}

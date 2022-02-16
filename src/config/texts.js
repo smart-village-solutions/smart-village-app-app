@@ -69,6 +69,7 @@ export const texts = {
     newsItem: 'Nachricht',
     pointOfInterest: 'Ort',
     volunteer: {
+      additional: 'Ganz praktisch',
       group: 'Gruppenprofil',
       task: 'Aufgabe'
     },
@@ -451,6 +452,7 @@ export const texts = {
       groups: 'Meine Gruppen',
       groupsFollowing: 'Gruppen, denen ich folge',
       messages: 'Mein Postfach',
+      personal: 'Mein Bereich',
       tasks: 'Meine Aufgaben'
     },
     wasteCollection: 'Abfallkalender',

@@ -38,6 +38,7 @@ import {
   VolunteerIndexScreen,
   VolunteerLoginScreen,
   VolunteerMeScreen,
+  VolunteerPersonalScreen,
   VolunteerRegisteredScreen,
   VolunteerRegistrationScreen,
   WasteCollectionScreen,
@@ -249,13 +250,11 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.VolunteerDetail,
-      screenComponent: VolunteerDetailScreen,
-      screenOptions: getScreenOptions({ withVolunteer: true })
+      screenComponent: VolunteerDetailScreen
     },
     {
       routeName: ScreenName.VolunteerForm,
-      screenComponent: VolunteerFormScreen,
-      screenOptions: getScreenOptions({ withVolunteer: true })
+      screenComponent: VolunteerFormScreen
     },
     {
       routeName: ScreenName.VolunteerHome,
@@ -266,8 +265,7 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.VolunteerIndex,
-      screenComponent: VolunteerIndexScreen,
-      screenOptions: getScreenOptions({ withVolunteer: true })
+      screenComponent: VolunteerIndexScreen
     },
     {
       routeName: ScreenName.VolunteerLogin,
@@ -278,6 +276,11 @@ export const defaultStackConfig = ({
       routeName: ScreenName.VolunteerMe,
       screenComponent: VolunteerMeScreen,
       screenOptions: { title: texts.screenTitles.volunteer.me }
+    },
+    {
+      routeName: ScreenName.VolunteerPersonal,
+      screenComponent: VolunteerPersonalScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.personal }
     },
     {
       routeName: ScreenName.VolunteerRegistered,

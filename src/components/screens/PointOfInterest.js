@@ -97,9 +97,13 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
           />
         </Wrapper>
 
-        {isVolunteerGroup && <SectionHeader title={`Mitglieder (${data.membersCount})`} />}
+        {isVolunteerGroup && !!data.membersCount && (
+          <SectionHeader title={`Mitglieder (${data.membersCount})`} />
+        )}
 
-        {isVolunteerGroup && <SectionHeader title={`Follower (${data.followersCount})`} />}
+        {isVolunteerGroup && !!data.followersCount && (
+          <SectionHeader title={`Follower (${data.followersCount})`} />
+        )}
 
         {!!openingHours && !!openingHours.length && (
           <View>

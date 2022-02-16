@@ -2,10 +2,11 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { View } from 'react-native';
 
-import { OptionToggle, RegularText } from '../Text';
 import { consts, device, texts } from '../../config';
 import { useOpenWebScreen } from '../../hooks';
 import { HtmlView } from '../HtmlView';
+import { OptionToggle } from '../OptionToggle';
+import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 

@@ -206,9 +206,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate) => {
       withDate ? eventDate(volunteer.listDate) : undefined,
       query !== QUERY_TYPES.VOLUNTEER.CALENDAR && volunteer.tags
     ),
-    picture: {
-      url: undefined
-    },
+    picture: volunteer.picture,
     routeName: volunteer.routeName,
     params: {
       title: volunteer.params?.title,
@@ -268,6 +266,8 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.VOLUNTEER.TASKS:
       return parseVolunteers(data, query, skipLastDivider);
     case QUERY_TYPES.VOLUNTEER.MESSAGES:
+      return parseVolunteers(data, query, skipLastDivider);
+    case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
       return parseVolunteers(data, query, skipLastDivider);
     case QUERY_TYPES.VOLUNTEER.PROFILE:
       return parseVolunteers(data, query, skipLastDivider);
