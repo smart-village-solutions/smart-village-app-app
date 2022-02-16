@@ -8,6 +8,7 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   Touchable,
+  VolunteerCalendar,
   VolunteerHeader,
   VolunteerWelcome,
   WrapperRow
@@ -201,7 +202,9 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
           title="Mein Kalender"
         />
         <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
-        {showCalendar ? null : (
+        {showCalendar ? (
+          <VolunteerCalendar navigation={navigation} />
+        ) : (
           <DataListSection
             loading={false}
             navigateLink={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
