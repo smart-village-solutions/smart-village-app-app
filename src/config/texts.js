@@ -573,11 +573,13 @@ export const texts = {
   },
   volunteer: {
     abort: 'Abbrechen',
+    calendar: 'Kalender',
     description: 'Beschreibung',
     email: 'E-Mail',
     endDate: 'Enddatum',
     endTime: 'Endzeit',
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
+    list: 'Liste',
     location: 'Ort',
     login: 'Anmelden',
     loginTitle: 'Anmelden',

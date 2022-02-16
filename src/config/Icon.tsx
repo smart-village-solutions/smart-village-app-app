@@ -153,13 +153,25 @@ export const Icon = {
   Unvisible: (props: IconProps) => <SvgIcon xml={unvisible} {...props} />,
   Url: (props: IconProps) => <SvgIcon xml={url} {...props} />,
   VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />,
+  Visible: (props: IconProps) => <SvgIcon xml={visible} {...props} />,
   Volunteer: (props: IconProps) => (
     <NamedIcon
       name={device.platform === 'ios' ? 'ios-people-circle' : 'md-people-circle'}
       {...props}
     />
   ),
-  Visible: (props: IconProps) => <SvgIcon xml={visible} {...props} />,
+  VolunteerCalendar: (props: IconProps) => (
+    <NamedIcon
+      name={device.platform === 'ios' ? 'ios-calendar-outline' : 'md-calendar-outline'}
+      {...props}
+    />
+  ),
+  VolunteerList: (props: IconProps) => (
+    <NamedIcon
+      name={device.platform === 'ios' ? 'ios-list-outline' : 'md-list-outline'}
+      {...props}
+    />
+  ),
   VolunteerProfile: (props: IconProps) => (
     <NamedIcon
       name={device.platform === 'ios' ? 'ios-lock-open-outline' : 'md-lock-open-outline'}
