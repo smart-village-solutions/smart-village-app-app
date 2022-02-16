@@ -447,6 +447,7 @@ export const texts = {
     volunteer: {
       calendar: 'Mein Kalender',
       home: 'Ehrenamt',
+      me: 'Persönliche Daten',
       groups: 'Meine Gruppen',
       groupsFollowing: 'Gruppen, denen ich folge',
       messages: 'Mein Postfach',
@@ -575,6 +576,7 @@ export const texts = {
     abort: 'Abbrechen',
     calendar: 'Kalender',
     description: 'Beschreibung',
+    edit: 'Daten bearbeiten',
     email: 'E-Mail',
     endDate: 'Enddatum',
     endTime: 'Endzeit',
@@ -583,6 +585,7 @@ export const texts = {
     location: 'Ort',
     login: 'Anmelden',
     loginTitle: 'Anmelden',
+    memberships: 'Mitgliedschaften',
     next: 'Weiter',
     ok: 'OK',
     password: 'Passwort',

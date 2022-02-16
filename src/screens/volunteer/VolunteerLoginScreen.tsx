@@ -43,10 +43,12 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
   );
   const onSubmit = (loginData: { username: string; password: string }) => mutateLogIn(loginData);
 
-  if (isError || (!isLoading && data && data.code !== 200)) {
+  if (isError || (isSuccess && data?.code && data?.code !== 200)) {
     showInvalidLoginAlert();
     reset();
-  } else if (isSuccess) {
+  }
+
+  if (isSuccess && data?.auth_token) {
     // save to global state if there are no errors
     storeVolunteerAuthToken(data.auth_token);
 

@@ -24,7 +24,6 @@ export const VolunteerFormCalendar = ({ navigation }: StackScreenProps<any>) => 
     handleSubmit
   } = useForm<VolunteerCalendar>({
     defaultValues: {
-      containerId: 1,
       allDay: 1,
       isPublic: 0,
       topics: [1]

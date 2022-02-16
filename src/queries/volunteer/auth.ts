@@ -59,7 +59,7 @@ export const registerMutation = async ({
 
 // TODO: possible and needed?
 export const logOutMutation = async () => {
-  const { authToken } = await volunteerAuthToken();
+  const authToken = await volunteerAuthToken();
 
   const fetchObj = {
     method: 'DELETE',
@@ -70,5 +70,20 @@ export const logOutMutation = async () => {
     }
   };
 
-  return await fetch(`${serverUrl}/auth`, fetchObj);
+  return await fetch(`${serverUrl}auth/logout`, fetchObj);
+};
+
+export const meMutation = async () => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (await fetch(`${serverUrl}auth/current`, fetchObj)).json();
 };

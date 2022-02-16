@@ -1,13 +1,12 @@
 import { colors, secrets } from '../../config';
 import * as appJson from '../../../app.json';
-import { formatTime, volunteerAuthToken } from '../../helpers';
+import { formatTime, volunteerAuthToken, volunteerContentContainerId } from '../../helpers';
 import { VolunteerCalendar } from '../../types';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const serverUrl = secrets[namespace]?.volunteer?.serverUrl + secrets[namespace]?.volunteer?.version;
 
 export const calendarNewMutation = async ({
-  containerId,
   title,
   description = '',
   color = colors.primary,
@@ -28,6 +27,8 @@ export const calendarNewMutation = async ({
   topics
 }: VolunteerCalendar) => {
   const authToken = await volunteerAuthToken();
+  const contentContainerId = await volunteerContentContainerId();
+
   const formData = {
     CalendarEntry: {
       title,
@@ -63,5 +64,5 @@ export const calendarNewMutation = async ({
     body: JSON.stringify(formData)
   };
 
-  return (await fetch(`${serverUrl}calendar/container/${containerId}`, fetchObj)).json();
+  return (await fetch(`${serverUrl}calendar/container/${contentContainerId}`, fetchObj)).json();
 };

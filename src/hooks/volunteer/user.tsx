@@ -4,7 +4,11 @@ import { normalize } from 'react-native-elements';
 
 import { WrapperRow } from '../../components';
 import { colors, consts, Icon } from '../../config';
-import { storeVolunteerAuthToken, volunteerAuthToken } from '../../helpers';
+import {
+  storeVolunteerAuthToken,
+  storeVolunteerContentContainerId,
+  volunteerAuthToken
+} from '../../helpers';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
@@ -68,6 +72,7 @@ export const useLogoutHeader = ({ query, navigation }: any) => {
                     style: 'destructive',
                     onPress: async () => {
                       await storeVolunteerAuthToken();
+                      await storeVolunteerContentContainerId();
                       navigation?.navigate(ScreenName.VolunteerHome, {
                         refreshUser: new Date().valueOf()
                       });

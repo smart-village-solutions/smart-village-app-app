@@ -1,5 +1,4 @@
 export type VolunteerCalendar = {
-  containerId: number;
   title: string;
   description: string;
   color: string;

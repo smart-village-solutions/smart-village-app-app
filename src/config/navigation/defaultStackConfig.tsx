@@ -37,6 +37,7 @@ import {
   VolunteerHomeScreen,
   VolunteerIndexScreen,
   VolunteerLoginScreen,
+  VolunteerMeScreen,
   VolunteerRegisteredScreen,
   VolunteerRegistrationScreen,
   WasteCollectionScreen,
@@ -272,6 +273,11 @@ export const defaultStackConfig = ({
       routeName: ScreenName.VolunteerLogin,
       screenComponent: VolunteerLoginScreen,
       screenOptions: { title: texts.screenTitles.volunteer.home }
+    },
+    {
+      routeName: ScreenName.VolunteerMe,
+      screenComponent: VolunteerMeScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.me }
     },
     {
       routeName: ScreenName.VolunteerRegistered,
