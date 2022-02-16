@@ -96,6 +96,12 @@ export const VolunteerIndexScreen = ({ navigation, route }) => {
     skipLastDivider: true
   });
 
+  if (queryVariables.dateRange) {
+    listItems = listItems.filter(
+      (listItem) => listItem.params?.details?.listDate == queryVariables.dateRange
+    );
+  }
+
   if (!listItems) return null;
 
   return (

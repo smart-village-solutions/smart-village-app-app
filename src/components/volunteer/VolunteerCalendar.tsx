@@ -3,11 +3,20 @@ import moment from 'moment';
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
+import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day/basic';
 
-import { NoTouchDay, renderArrow } from '..';
-import { colors, normalize } from '../../config';
+import { colors, consts, normalize } from '../../config';
 import { setupLocales } from '../../helpers';
 import { myCalendar } from '../../helpers/parser/volunteer';
+import { QUERY_TYPES } from '../../queries';
+import { ScreenName } from '../../types';
+import { renderArrow } from '../calendarArrows';
+
+const { ROOT_ROUTE_NAMES } = consts;
+
+const DayComponent = (props: BasicDayProps) => (
+  <BasicDay {...props} marking={{ ...props.marking, disableTouchEvent: !props.marking }} />
+);
 
 type Props = {
   navigation: DrawerNavigationProp<any>;
@@ -46,12 +55,26 @@ export const VolunteerCalendar = ({ navigation }: Props) => {
   return (
     <View style={styles.topMarginContainer}>
       <Calendar
-        dayComponent={NoTouchDay}
+        dayComponent={DayComponent}
+        onDayPress={(day) =>
+          navigation.navigate({
+            name: ScreenName.VolunteerIndex,
+            params: {
+              title: 'Mein Kalender',
+              query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+              queryVariables: { dateRange: [day.dateString] },
+              rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+            }
+          })
+        }
+        displayLoadingIndicator={false} // TODO: set a loading state once queries are implemented
         markedDates={getMarkedDates()}
         markingType="multi-dot"
         renderArrow={renderArrow}
+        firstDay={1}
         theme={{
           todayTextColor: colors.primary,
+          indicatorColor: colors.primary,
           dotStyle: {
             borderRadius: dotSize / 2,
             height: dotSize,
