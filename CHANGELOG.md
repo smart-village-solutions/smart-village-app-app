@@ -5,11 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.5.0] :rocket:
+
+Versioned static contents and further improvements.
+
+## Breaking
+
+This mobile app version needs an updated version of the main server (Februar 17th).
+
+### Added
+
+- refactored all places where we use static contents to use the `useStaticContent` hook
+- added app.json version  to `queryVariables` used in the `useStaticContent` hook
+- added app.json version to `queryVariables` of the `globalSettings` query in `src/index.js`
+- added new provider for permanent dataprovider filtering
+- added new settings section for dataprovider filtering
+- added feedback footer to detail screen
+  - added route info to send feedback info
+- added filter for points of interests by location
+- added option for multiple category ids for points of interest
+
+### Changed
+
+- return of public json contents from servers can now be considered as proper json format
+  and not string anymore, that needs to be parsed
+- adjusted queries to respect the data provider filters
+- adjusted `HomeSection` to allow for a placeholder component
+- removed `big` prop for `BoldText`
+  - the `big` definition is already existing for `RegularText` thus was a duplication
+- set the text color for the date picker of waste reminder to satisfy dark modes
+
+### Fixed
+
+- fixed app intro content below status bar
+
 ## [v2.4.2]
 
 Dependencies and bugfixes.
 
 ### Changed
+
 - updated a couple of dependencies under the hood
 - moved sentry secrets from global secrets to namespaced secrets to more easily allow for individual instances
 
@@ -28,6 +63,7 @@ Integration of Sentry and fixes.
 - integrated new GraphQL endpoint for bb-bus
 
 ### Changed
+
 - unified top filter elements (those that simulate multiple tabs, e.g. within a POI category to switch between the location overview and the list)
 - category screen can now filter the categories by id
 
@@ -107,6 +143,7 @@ Added usage of location services.
   - the geolocation will be prioritized for the pin location if present
 
 ### Changed
+
 - event index is now sectioned by date
   - restructured code structure regarding lists
   - split lists according to layout rather than the renderItem function (e.g. HorizontalList, VerticalList (now) <-> TextList, CardList (previous))
@@ -1243,7 +1280,7 @@ https://blog.expo.io/expo-sdk-v33-0-0-is-now-available-52d1c99dfe4c#c0d2
 
 ## Breaking
 
-You need to remove `node_modules` and install your packages again.
+You need to remove `node_modules` and install your packages again.s an updated version of the main server
 
 `rm -rf node_modules/ && yarn cache clean && yarn`
 
