@@ -8,6 +8,7 @@ export const GET_POINTS_OF_INTEREST = gql`
     $order: PointsOfInterestOrder
     $category: String
     $categoryId: ID
+    $categoryIds: [ID]
     $dataProvider: String
     $dataProviderId: ID
     $location: String
@@ -19,6 +20,7 @@ export const GET_POINTS_OF_INTEREST = gql`
       order: $order
       category: $category
       categoryId: $categoryId
+      categoryIds: $categoryIds
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
       location: $location

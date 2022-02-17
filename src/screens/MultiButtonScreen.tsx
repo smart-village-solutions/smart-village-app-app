@@ -10,7 +10,7 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../components';
-import { useStaticContent } from '../hooks';
+import { usePullToRefetch, useStaticContent } from '../hooks';
 
 type EntryData = {
   text?: string;
@@ -21,31 +21,28 @@ type EntryData = {
 
 export const MultiButtonScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const name = route.params?.name;
-  const { data, error, loading } = useStaticContent<EntryData[]>({
+  const { data, error, loading, refetch } = useStaticContent<EntryData[]>({
     name,
     skip: !name,
     type: 'json'
   });
+  const RefreshControl = usePullToRefetch(refetch);
   const renderItem: ListRenderItem<EntryData> = useCallback(
-    ({ item }) => {
-      return (
-        <WrapperWithOrientation>
-          <>
-            {!!item.text?.length && (
-              <Wrapper style={styles.noPaddingBottom}>
-                <RegularText>{item.text}</RegularText>
-              </Wrapper>
-            )}
-            <Wrapper>
-              <Button
-                title={item.title}
-                onPress={() => navigation.navigate(item.routeName, item.params)}
-              />
-            </Wrapper>
-          </>
-        </WrapperWithOrientation>
-      );
-    },
+    ({ item }) => (
+      <WrapperWithOrientation>
+        {!!item.text?.length && (
+          <Wrapper style={styles.noPaddingBottom}>
+            <RegularText>{item.text}</RegularText>
+          </Wrapper>
+        )}
+        <Wrapper>
+          <Button
+            title={item.title}
+            onPress={() => navigation.navigate(item.routeName, item.params)}
+          />
+        </Wrapper>
+      </WrapperWithOrientation>
+    ),
     [navigation]
   );
 
@@ -60,6 +57,7 @@ export const MultiButtonScreen = ({ navigation, route }: StackScreenProps<any>) 
   return (
     <SafeAreaViewFlex>
       <FlatList
+        refreshControl={RefreshControl}
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item.routeName + item.title}

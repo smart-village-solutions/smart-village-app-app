@@ -7,8 +7,11 @@ export const GET_TOURS = gql`
     $offset: Int
     $order: ToursOrder
     $category: String
+    $categoryId: ID
+    $categoryIds: [ID]
     $dataProvider: String
     $dataProviderId: ID
+    $location: String
   ) {
     tours(
       ids: $ids
@@ -16,8 +19,11 @@ export const GET_TOURS = gql`
       skip: $offset
       order: $order
       category: $category
+      categoryId: $categoryId
+      categoryIds: $categoryIds
       dataProvider: $dataProvider
       dataProviderId: $dataProviderId
+      location: $location
     ) {
       id
       name
