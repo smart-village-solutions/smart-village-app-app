@@ -133,6 +133,7 @@ export const texts = {
     operatingCompany: 'Veranstalter',
     prices: 'Preise'
   },
+  feedbackLink: 'Feedback',
   homeButtons: {
     events: 'Alle Veranstaltungen anzeigen',
     news: 'Alle Nachrichten anzeigen',

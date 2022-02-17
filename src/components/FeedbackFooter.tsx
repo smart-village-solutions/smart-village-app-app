@@ -2,6 +2,9 @@ import { useNavigation } from '@react-navigation/native';
 import React, { FC } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { texts } from '../config';
+import { ScreenName } from '../types';
+
 import { BoldText } from './Text';
 
 export const FeedbackFooter: FC = () => {
@@ -9,9 +12,9 @@ export const FeedbackFooter: FC = () => {
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => navigation.navigate('Feedback')} style={styles.button}>
+      <Pressable onPress={() => navigation.navigate(ScreenName.Feedback)} style={styles.button}>
         <BoldText underline placeholder>
-          FEEDBACK
+          {texts.feedbackLink.toUpperCase()}
         </BoldText>
       </Pressable>
     </View>
