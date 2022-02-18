@@ -83,6 +83,15 @@ const NAVIGATION = {
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
+  MESSAGE_NEW: {
+    name: ScreenName.VolunteerForm,
+    params: {
+      title: 'Neue Nachricht',
+      query: QUERY_TYPES.VOLUNTEER.MESSAGES,
+      queryVariables: {},
+      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+    }
+  },
   TASKS_INDEX: {
     name: ScreenName.VolunteerIndex,
     params: {
@@ -238,14 +247,17 @@ export const VolunteerPersonalScreen = ({ navigation, route }: any) => {
         />
         <DataListSection
           linkTitle="Alle Nachrichten anzeigen"
+          buttonTitle="Neue Nachricht"
           loading={false}
           navigateLink={() => navigation.navigate(NAVIGATION.MESSAGES_INDEX)}
+          navigateButton={() => navigation.navigate(NAVIGATION.MESSAGE_NEW)}
           navigate={() => navigation.navigate(NAVIGATION.MESSAGES_INDEX)}
           navigation={navigation}
           query={QUERY_TYPES.VOLUNTEER.MESSAGES}
           sectionData={myMessages()}
           sectionTitle="Mein Postfach"
           showLink
+          showButton
         />
       </ScrollView>
     </SafeAreaViewFlex>

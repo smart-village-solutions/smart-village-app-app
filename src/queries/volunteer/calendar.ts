@@ -6,6 +6,21 @@ import { VolunteerCalendar } from '../../types';
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const serverUrl = secrets[namespace]?.volunteer?.serverUrl + secrets[namespace]?.volunteer?.version;
 
+export const calendarAllQuery = async () => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (await fetch(`${serverUrl}calendar`, fetchObj)).json();
+};
+
 export const calendarNewMutation = async ({
   title,
   description = '',
