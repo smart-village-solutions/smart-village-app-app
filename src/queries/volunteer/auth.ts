@@ -73,7 +73,7 @@ export const logOutMutation = async () => {
   return await fetch(`${serverUrl}auth/logout`, fetchObj);
 };
 
-export const meMutation = async () => {
+export const meQuery = async () => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
