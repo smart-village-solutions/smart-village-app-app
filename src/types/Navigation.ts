@@ -37,6 +37,7 @@ export enum ScreenName {
   Settings = 'Settings',
   SurveyDetail = 'SurveyDetail',
   SurveyOverview = 'SurveyOverview',
+  TilesScreen = 'TilesScreen',
   WasteCollection = 'WasteCollection',
   WasteReminder = 'WasteReminder',
   Weather = 'Weather',
