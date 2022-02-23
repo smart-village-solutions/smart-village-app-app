@@ -10,31 +10,30 @@ import {
   Touchable,
   VolunteerCalendar,
   VolunteerHeaderProfile,
+  VolunteerHomeSection,
   VolunteerWelcome,
   WrapperRow
 } from '../../components';
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import {
   allGroups,
-  myCalendar,
   myGroups,
   myGroupsFollowing,
   myMessages,
   myTasks
 } from '../../helpers/parser/volunteer';
-import { useVolunteerUser } from '../../hooks/volunteer';
+import { useVolunteerUser } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 
-const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
+const { ROOT_ROUTE_NAMES } = consts;
 
 const NAVIGATION = {
-  CALENDAR_INDEX: {
+  CALENDAR_MY_INDEX: {
     name: ScreenName.VolunteerIndex,
     params: {
-      title: 'Mein Kalender',
-      query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-      queryVariables: {},
+      title: texts.volunteer.myCalendar,
+      query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY,
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
@@ -124,7 +123,7 @@ const CalendarListToggle = ({ showCalendar, setShowCalendar }: CalendarListToggl
 
 export const VolunteerPersonalScreen = ({ navigation, route }: any) => {
   const [refreshingHome, setRefreshingHome] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(true);
   const { refresh: refreshUser, isLoading, isError, isLoggedIn } = useVolunteerUser();
 
   const refresh = useCallback(() => {
@@ -205,31 +204,31 @@ export const VolunteerPersonalScreen = ({ navigation, route }: any) => {
           showLink
         />
         <SectionHeader
-          onPress={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
+          onPress={() => navigation.navigate(NAVIGATION.CALENDAR_MY_INDEX)}
           title="Mein Kalender"
         />
         <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
         {showCalendar ? (
-          <VolunteerCalendar navigation={navigation} />
-        ) : (
-          <DataListSection
-            loading={false}
-            navigateLink={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
+          <VolunteerCalendar
+            query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY}
             navigation={navigation}
-            query={QUERY_TYPES.VOLUNTEER.CALENDAR}
-            sectionData={myCalendar()}
+          />
+        ) : (
+          <VolunteerHomeSection
+            navigateLink={() => navigation.navigate(NAVIGATION.CALENDAR_MY_INDEX)}
+            navigation={navigation}
+            query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY}
           />
         )}
         <DataListSection
-          linkTitle="Alle Termine anzeigen"
+          linkTitle="Alle meine Termine anzeigen"
           buttonTitle="Termin eintragen"
           loading={false}
-          navigateLink={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
+          navigateLink={() => navigation.navigate(NAVIGATION.CALENDAR_MY_INDEX)}
           navigateButton={() => navigation.navigate(NAVIGATION.CALENDAR_NEW)}
-          navigate={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
+          navigate={() => navigation.navigate(NAVIGATION.CALENDAR_MY_INDEX)}
           navigation={navigation}
-          query={QUERY_TYPES.VOLUNTEER.CALENDAR}
-          sectionData={myCalendar()}
+          query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY}
           limit={0}
           showLink
           showButton

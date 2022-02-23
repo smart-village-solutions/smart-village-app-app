@@ -1,32 +1,26 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { QueryFunction, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 
-import { useVolunteerHomeRefresh } from '../../hooks';
+import { useVolunteerData, useVolunteerHomeRefresh } from '../../hooks';
+import { getQuery } from '../../queries';
 import { DataListSection } from '../DataListSection';
 
 type Props = {
-  buttonTitle: string;
-  linkTitle: string;
-  title: string;
+  buttonTitle?: string;
+  linkTitle?: string;
+  title?: string;
   titleDetail?: string;
-  fetchPolicy:
-    | 'cache-first'
-    | 'network-only'
-    | 'cache-only'
-    | 'no-cache'
-    | 'standby'
-    | 'cache-and-network';
-  navigate: () => void;
+  navigate?: () => void;
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
-  queryKey: string;
-  query: QueryFunction;
-  queryVariables: { limit?: number };
-  showButton: boolean;
-  navigateButton: () => void;
-  showLink: boolean;
-  navigateLink: () => void;
+  query: string;
+  queryVariables?: { dateRange?: string[] };
+  showButton?: boolean;
+  showLink?: boolean;
+  navigateButton?: () => void;
+  navigateLink?: () => void;
+  limit?: number;
 };
 
 export const VolunteerHomeSection = ({
@@ -34,20 +28,18 @@ export const VolunteerHomeSection = ({
   linkTitle,
   title,
   titleDetail,
-  fetchPolicy,
   navigate,
   navigation,
   placeholder,
-  queryKey,
   query,
   queryVariables,
   showButton = true,
   showLink = false,
   navigateButton,
-  navigateLink
+  navigateLink,
+  limit = 3
 }: Props) => {
-  // TODO: change with react query to humhub
-  const { data, loading, refetch } = useQuery(queryKey, query);
+  const { data: sectionData, isLoading, refetch } = useVolunteerData({ query, queryVariables });
 
   useVolunteerHomeRefresh(refetch);
 
@@ -55,13 +47,13 @@ export const VolunteerHomeSection = ({
     <DataListSection
       buttonTitle={buttonTitle}
       linkTitle={linkTitle}
-      limit={queryVariables?.limit}
-      loading={loading}
+      limit={limit}
+      loading={isLoading}
       navigate={navigate}
       navigation={navigation}
       placeholder={placeholder}
       query={query}
-      sectionData={data}
+      sectionData={sectionData}
       sectionTitle={title}
       sectionTitleDetail={titleDetail}
       showButton={showButton}

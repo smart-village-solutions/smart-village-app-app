@@ -250,7 +250,8 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.VolunteerDetail,
-      screenComponent: VolunteerDetailScreen
+      screenComponent: VolunteerDetailScreen,
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withShare: true })
     },
     {
       routeName: ScreenName.VolunteerForm,

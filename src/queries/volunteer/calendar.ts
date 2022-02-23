@@ -1,12 +1,13 @@
-import { colors, secrets } from '../../config';
 import * as appJson from '../../../app.json';
-import { formatTime, volunteerAuthToken, volunteerContentContainerId } from '../../helpers';
+import { colors, secrets } from '../../config';
+import { formatTime } from '../../helpers/formatHelper';
+import { volunteerAuthToken, volunteerUserData } from '../../helpers/volunteerHelper';
 import { VolunteerCalendar } from '../../types';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const serverUrl = secrets[namespace]?.volunteer?.serverUrl + secrets[namespace]?.volunteer?.version;
 
-export const calendarAllQuery = async () => {
+export const calendarAll = async () => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
@@ -21,7 +22,22 @@ export const calendarAllQuery = async () => {
   return (await fetch(`${serverUrl}calendar`, fetchObj)).json();
 };
 
-export const calendarNewMutation = async ({
+export const calendar = async (id: number) => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (await fetch(`${serverUrl}calendar/entry/${id}`, fetchObj)).json();
+};
+
+export const calendarNew = async ({
   title,
   description = '',
   color = colors.primary,
@@ -42,7 +58,7 @@ export const calendarNewMutation = async ({
   topics
 }: VolunteerCalendar) => {
   const authToken = await volunteerAuthToken();
-  const contentContainerId = await volunteerContentContainerId();
+  const { contentContainerId } = await volunteerUserData();
 
   const formData = {
     CalendarEntry: {

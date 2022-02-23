@@ -22,9 +22,12 @@ export const QUERY_TYPES = {
   VOLUNTEER: {
     ADDITIONAL: 'additional',
     ALL_GROUPS: 'allGroups',
+    CALENDAR_ALL_MY: 'calendarAllMy',
+    CALENDAR_ALL: 'calendarAll',
     CALENDAR: 'calendar',
     GROUPS_FOLLOWING: 'groupsFollowing',
     GROUPS: 'groups',
+    ME: 'me',
     MESSAGES: 'messages',
     PROFILE: 'profile',
     TASKS: 'tasks'

@@ -1,32 +1,33 @@
+import { StackScreenProps } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
-import React, { useContext, useState } from 'react';
-import { RefreshControl, ScrollView } from 'react-native';
+import React from 'react';
+import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
+import { useQuery } from 'react-query';
 
 import {
-  additionalData,
-  allGroups,
-  myCalendar,
-  myGroups,
-  myGroupsFollowing,
-  myMessages,
-  myTasks
-} from '../../helpers/parser/volunteer';
-import {
   DefaultKeyboardAvoidingView,
-  EventRecord,
+  LoadingContainer,
   PointOfInterest,
   SafeAreaViewFlex,
+  VolunteerEventRecord,
   VolunteerMessage,
   VolunteerMessageTextField,
   VolunteerTask
 } from '../../components';
 import { colors } from '../../config';
-import { NetworkContext } from '../../NetworkProvider';
-import { QUERY_TYPES } from '../../queries';
+import {
+  additionalData,
+  allGroups,
+  myGroups,
+  myGroupsFollowing,
+  myMessages,
+  myTasks
+} from '../../helpers/parser/volunteer';
+import { getQuery, QUERY_TYPES } from '../../queries';
 
-const getComponent = (query) => {
+const getComponent = (query: string) => {
   const COMPONENTS = {
-    [QUERY_TYPES.VOLUNTEER.CALENDAR]: EventRecord,
+    [QUERY_TYPES.VOLUNTEER.CALENDAR]: VolunteerEventRecord,
     [QUERY_TYPES.VOLUNTEER.GROUPS]: PointOfInterest,
     [QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING]: PointOfInterest,
     [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: PointOfInterest,
@@ -38,38 +39,36 @@ const getComponent = (query) => {
   return COMPONENTS[query];
 };
 
-export const VolunteerDetailScreen = ({ navigation, route }) => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+// eslint-disable-next-line complexity
+export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
 
-  const [refreshing, setRefreshing] = useState(false);
+  const { data, isLoading, isRefetching, refetch } = useQuery([query, queryVariables?.id], () =>
+    getQuery(query)(queryVariables?.id)
+  );
 
-  if (!query) return null;
-
-  const data = {
-    [QUERY_TYPES.VOLUNTEER.CALENDAR]: myCalendar(),
+  // TODO: remove if all queries exist
+  const details = {
     [QUERY_TYPES.VOLUNTEER.GROUPS]: myGroups(),
     [QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING]: myGroupsFollowing(),
     [QUERY_TYPES.VOLUNTEER.ALL_GROUPS]: allGroups(),
     [QUERY_TYPES.VOLUNTEER.MESSAGES]: myMessages(),
     [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks(),
     [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: additionalData()
-  }[query];
+  }[query]?.find((entry: { id: number }) => entry.id == queryVariables.id);
 
-  const details = data.find((entry) => entry.id == queryVariables.id);
+  if (isLoading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
 
-  const refetch = () => undefined;
-
-  const refresh = async (refetch) => {
-    setRefreshing(true);
-    isConnected && (await refetch());
-    setRefreshing(false);
-  };
-
-  // we can have `data` from GraphQL or `details` from the previous list view.
+  // we can have `data` from the query or `details` from the previous list view.
   // if there is no cached `data` or network fetched `data` we fallback to the `details`.
-  if (!details) return null;
+  if (!data && !details) return null;
 
   const Component = getComponent(query);
 
@@ -81,14 +80,14 @@ export const VolunteerDetailScreen = ({ navigation, route }) => {
         <ScrollView
           refreshControl={
             <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => refresh(refetch)}
+              refreshing={isRefetching}
+              onRefresh={refetch}
               colors={[colors.accent]}
               tintColor={colors.accent}
             />
           }
         >
-          <Component data={details} navigation={navigation} route={route} />
+          <Component data={data || details} navigation={navigation} route={route} />
         </ScrollView>
         {query === QUERY_TYPES.VOLUNTEER.MESSAGES && <VolunteerMessageTextField />}
       </DefaultKeyboardAvoidingView>

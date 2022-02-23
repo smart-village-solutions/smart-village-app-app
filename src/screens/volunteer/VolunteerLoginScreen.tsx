@@ -21,7 +21,7 @@ import {
 } from '../../components';
 import { colors, consts, Icon, normalize, secrets, texts } from '../../config';
 import { storeVolunteerAuthToken } from '../../helpers';
-import { logInMutation } from '../../queries/volunteer';
+import { logIn } from '../../queries/volunteer';
 import { ScreenName } from '../../types';
 
 const { a11yLabel } = consts;
@@ -38,9 +38,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
     handleSubmit
   } = useForm();
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const { mutate: mutateLogIn, isLoading, isError, isSuccess, data, reset } = useMutation(
-    logInMutation
-  );
+  const { mutate: mutateLogIn, isLoading, isError, isSuccess, data, reset } = useMutation(logIn);
   const onSubmit = (loginData: { username: string; password: string }) => mutateLogIn(loginData);
 
   if (isError || (isSuccess && data?.code && data?.code !== 200)) {

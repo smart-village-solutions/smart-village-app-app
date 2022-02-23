@@ -7,7 +7,7 @@ import { useMutation as useMainserverMutation } from 'react-apollo';
 import { CheckBox } from 'react-native-elements';
 
 import { colors, texts } from '../../config';
-import { calendarNewMutation } from '../../queries/volunteer';
+import { calendarNew } from '../../queries/volunteer';
 import { VolunteerCalendar } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form/Input';
@@ -29,7 +29,7 @@ export const VolunteerFormCalendar = ({ navigation }: StackScreenProps<any>) => 
       topics: [1]
     }
   });
-  const { mutate, isLoading, isError, isSuccess, data, reset } = useMutation(calendarNewMutation);
+  const { mutate, isLoading, isError, isSuccess, data, reset } = useMutation(calendarNew);
   const [createEvent] = useMainserverMutation(CREATE_EVENT_RECORDS);
   const onSubmit = (calendarNewData: VolunteerCalendar) => {
     mutate(calendarNewData);

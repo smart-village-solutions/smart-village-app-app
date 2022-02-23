@@ -10,9 +10,9 @@ import { Button } from './Button';
 import { ListComponent } from './ListComponent';
 import { LoadingContainer } from './LoadingContainer';
 import { SectionHeader } from './SectionHeader';
-import { Wrapper } from './Wrapper';
 import { BoldText } from './Text';
 import { Touchable } from './Touchable';
+import { Wrapper } from './Wrapper';
 
 type Props = {
   buttonTitle?: string;
@@ -61,50 +61,43 @@ export const DataListSection = ({
   }
 
   const listData = parseListItemsFromQuery(query, sectionData, sectionTitleDetail, {
-    withDate: query === QUERY_TYPES.VOLUNTEER.CALENDAR,
+    withDate:
+      query === QUERY_TYPES.EVENT_RECORDS ||
+      query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL ||
+      query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY,
     skipLastDivider: true
   });
-
-  if (listData?.length) {
-    return (
-      <View>
-        {sectionTitle && (
-          <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
-        )}
-        <ListComponent
-          data={listData.slice(0, limit)}
-          horizontal={horizontal}
-          navigation={navigation}
-          query={query}
-        />
-        {!!linkTitle && !!navigateLink && showLink && (
-          <Wrapper>
-            <Touchable onPress={navigateLink}>
-              <BoldText center primary underline>
-                {linkTitle}
-              </BoldText>
-            </Touchable>
-          </Wrapper>
-        )}
-        {!!buttonTitle && !!navigateButton && showButton && (
-          <Wrapper>
-            <Button title={buttonTitle} onPress={navigateButton} />
-          </Wrapper>
-        )}
-      </View>
-    );
-  }
-
-  if (!placeholder) {
-    return null;
-  }
 
   return (
     <View>
       {sectionTitle && (
         <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
       )}
-      {placeholder}
+      {!!limit &&
+        (listData?.length ? (
+          <ListComponent
+            data={listData.slice(0, limit)}
+            horizontal={horizontal}
+            navigation={navigation}
+            query={query}
+          />
+        ) : (
+          !!placeholder && placeholder
+        ))}
+      {!!linkTitle && !!navigateLink && showLink && (
+        <Wrapper>
+          <Touchable onPress={navigateLink}>
+            <BoldText center primary underline>
+              {linkTitle}
+            </BoldText>
+          </Touchable>
+        </Wrapper>
+      )}
+      {!!buttonTitle && !!navigateButton && showButton && (
+        <Wrapper>
+          <Button title={buttonTitle} onPress={navigateButton} />
+        </Wrapper>
+      )}
     </View>
   );
 };

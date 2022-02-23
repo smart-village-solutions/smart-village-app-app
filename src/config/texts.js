@@ -583,11 +583,15 @@ export const texts = {
     endDate: 'Enddatum',
     endTime: 'Endzeit',
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
+    eventRecord: {
+      appointments: 'Terminübersicht'
+    },
     list: 'Liste',
     location: 'Ort',
     login: 'Anmelden',
     loginTitle: 'Anmelden',
     memberships: 'Mitgliedschaften',
+    myCalendar: 'Mein Kalender',
     next: 'Weiter',
     ok: 'OK',
     password: 'Passwort',

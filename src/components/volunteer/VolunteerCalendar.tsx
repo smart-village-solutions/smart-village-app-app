@@ -2,13 +2,14 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import moment from 'moment';
 import React from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
-import { Calendar } from 'react-native-calendars';
+import { Calendar, CalendarProps } from 'react-native-calendars';
 import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day/basic';
+import { useQuery } from 'react-query';
 
-import { colors, consts, normalize } from '../../config';
-import { setupLocales } from '../../helpers';
-import { myCalendar } from '../../helpers/parser/volunteer';
-import { QUERY_TYPES } from '../../queries';
+import { colors, consts, normalize, texts } from '../../config';
+import { setupLocales, volunteerListDate } from '../../helpers';
+import { useVolunteerData, useVolunteerHomeRefresh } from '../../hooks';
+import { getQuery } from '../../queries';
 import { ScreenName } from '../../types';
 import { renderArrow } from '../calendarArrows';
 
@@ -19,6 +20,8 @@ const DayComponent = (props: BasicDayProps) => (
 );
 
 type Props = {
+  query: string;
+  queryVariables?: { dateRange?: string[] };
   navigation: DrawerNavigationProp<any>;
 };
 
@@ -26,15 +29,15 @@ const dotSize = 6;
 
 setupLocales();
 
-const getMarkedDates = () => {
-  const markedDates = {};
+const getMarkedDates = (data) => {
+  const markedDates: CalendarProps['markedDates'] = {};
 
-  myCalendar().forEach((appointment) => {
-    markedDates[appointment.listDate] = {
+  data?.forEach((item) => {
+    markedDates[volunteerListDate(item)] = {
       marked: true,
       dots: [
-        ...(markedDates[appointment.listDate]?.dots ?? []),
-        { color: appointment.color || colors.primary }
+        ...(markedDates[volunteerListDate(item)]?.dots ?? []),
+        { color: item.color || colors.primary }
       ]
     };
   });
@@ -51,7 +54,15 @@ const getMarkedDates = () => {
   return markedDates;
 };
 
-export const VolunteerCalendar = ({ navigation }: Props) => {
+export const VolunteerCalendar = ({ query, queryVariables, navigation }: Props) => {
+  const { data: calendarData, isLoading, refetch } = useVolunteerData({
+    query,
+    queryVariables,
+    onlyUpcoming: false
+  });
+
+  useVolunteerHomeRefresh(refetch);
+
   return (
     <View style={styles.topMarginContainer}>
       <Calendar
@@ -60,15 +71,15 @@ export const VolunteerCalendar = ({ navigation }: Props) => {
           navigation.navigate({
             name: ScreenName.VolunteerIndex,
             params: {
-              title: 'Mein Kalender',
-              query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+              title: texts.volunteer.calendar,
+              query,
               queryVariables: { dateRange: [day.dateString] },
               rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
             }
           })
         }
-        displayLoadingIndicator={false} // TODO: set a loading state once queries are implemented
-        markedDates={getMarkedDates()}
+        displayLoadingIndicator={isLoading}
+        markedDates={getMarkedDates(calendarData)}
         markingType="multi-dot"
         renderArrow={renderArrow}
         firstDay={1}

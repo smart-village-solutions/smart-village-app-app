@@ -1,17 +1,11 @@
-import { secrets } from '../../config';
 import * as appJson from '../../../app.json';
-import { volunteerAuthToken } from '../../helpers';
+import { secrets } from '../../config';
+import { volunteerAuthToken } from '../../helpers/volunteerHelper';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const serverUrl = secrets[namespace]?.volunteer?.serverUrl + secrets[namespace]?.volunteer?.version;
 
-export const logInMutation = async ({
-  username,
-  password
-}: {
-  username: string;
-  password: string;
-}) => {
+export const logIn = async ({ username, password }: { username: string; password: string }) => {
   const formData = new FormData();
   formData.append('username', username);
   formData.append('password', password);
@@ -28,7 +22,7 @@ export const logInMutation = async ({
   return (await fetch(`${serverUrl}auth/login`, fetchObj)).json();
 };
 
-export const registerMutation = async ({
+export const register = async ({
   username,
   email,
   password,
@@ -58,7 +52,7 @@ export const registerMutation = async ({
 };
 
 // TODO: possible and needed?
-export const logOutMutation = async () => {
+export const logOut = async () => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
@@ -73,7 +67,7 @@ export const logOutMutation = async () => {
   return await fetch(`${serverUrl}auth/logout`, fetchObj);
 };
 
-export const meQuery = async () => {
+export const me = async () => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {

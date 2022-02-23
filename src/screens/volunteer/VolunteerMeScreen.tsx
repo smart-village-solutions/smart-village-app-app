@@ -17,11 +17,10 @@ import { AddressSection } from '../../components/infoCard/AddressSection';
 import { ContactSection } from '../../components/infoCard/ContactSection';
 import { UrlSection } from '../../components/infoCard/UrlSection';
 import { consts, texts } from '../../config';
-import { storeVolunteerContentContainerId } from '../../helpers';
-import { useOpenWebScreen, usePullToRefetch } from '../../hooks';
-import { useLogoutHeader } from '../../hooks/volunteer';
+import { storeVolunteerUserData } from '../../helpers';
+import { useLogoutHeader, useOpenWebScreen, usePullToRefetch } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
-import { meQuery } from '../../queries/volunteer';
+import { me } from '../../queries/volunteer';
 
 const { a11yLabel } = consts;
 
@@ -35,14 +34,14 @@ export const VolunteerMeScreen = ({ navigation, route }: StackScreenProps<any>) 
     route.params?.rootRouteName
   );
 
-  const { isLoading, isError, isSuccess, data, refetch } = useQuery('meQuery', meQuery);
+  const { isLoading, isError, isSuccess, data, refetch } = useQuery(QUERY_TYPES.VOLUNTEER.ME, me);
 
   const RefreshControl = usePullToRefetch(refetch);
 
   useEffect(() => {
-    if (isSuccess && data?.account?.contentcontainer_id) {
+    if (isSuccess && data?.account) {
       // save to global state if there are no errors
-      storeVolunteerContentContainerId(data.account.contentcontainer_id);
+      storeVolunteerUserData(data.account);
     }
   }, [isSuccess, data]);
 

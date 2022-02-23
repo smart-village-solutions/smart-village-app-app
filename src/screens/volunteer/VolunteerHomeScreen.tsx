@@ -11,25 +11,24 @@ import {
   Touchable,
   VolunteerCalendar,
   VolunteerHeaderPersonal,
+  VolunteerHomeSection,
   VolunteerWelcome,
   WrapperRow
 } from '../../components';
 import { colors, consts, Icon, normalize, texts } from '../../config';
-import { additionalData, allGroups, myCalendar } from '../../helpers/parser/volunteer';
-import { useStaticContent } from '../../hooks/staticContent';
-import { useVolunteerUser } from '../../hooks/volunteer';
+import { additionalData, allGroups } from '../../helpers/parser/volunteer';
+import { useStaticContent, useVolunteerUser } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 
-const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
+const { ROOT_ROUTE_NAMES } = consts;
 
 const NAVIGATION = {
   CALENDAR_INDEX: {
     name: ScreenName.VolunteerIndex,
     params: {
-      title: 'Mein Kalender',
-      query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-      queryVariables: {},
+      title: texts.volunteer.calendar,
+      query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
@@ -164,14 +163,12 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
         />
         <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
         {showCalendar ? (
-          <VolunteerCalendar navigation={navigation} />
+          <VolunteerCalendar query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL} navigation={navigation} />
         ) : (
-          <DataListSection
-            loading={false}
+          <VolunteerHomeSection
             navigateLink={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
             navigation={navigation}
-            query={QUERY_TYPES.VOLUNTEER.CALENDAR}
-            sectionData={myCalendar()}
+            query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
           />
         )}
         <DataListSection
@@ -182,8 +179,7 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
           navigateButton={() => navigation.navigate(NAVIGATION.CALENDAR_NEW)}
           navigate={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
           navigation={navigation}
-          query={QUERY_TYPES.VOLUNTEER.CALENDAR}
-          sectionData={myCalendar()}
+          query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
           limit={0}
           showLink
           showButton
