@@ -75,12 +75,9 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
                     dimensions={dimensions}
                   >
                     <TouchableOpacity
-                      onPress={() =>
-                        navigation.navigate({
-                          name: item.routeName,
-                          params: item.params
-                        })
-                      }
+                      onPress={() => {
+                        navigation.push(item.routeName, item.params);
+                      }}
                     >
                       <View>
                         {item.iconName ? (

@@ -32,6 +32,7 @@ import {
   SettingsScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
+  TilesScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
@@ -238,6 +239,10 @@ export const defaultStackConfig = ({
       routeName: ScreenName.SurveyOverview,
       screenComponent: SurveyOverviewScreen,
       screenOptions: { title: texts.screenTitles.surveys }
+    },
+    {
+      routeName: ScreenName.TilesScreen,
+      screenComponent: TilesScreen
     },
     {
       routeName: ScreenName.WasteCollection,
