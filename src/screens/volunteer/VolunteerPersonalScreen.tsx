@@ -4,17 +4,13 @@ import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import {
   DataListSection,
   LoadingSpinner,
-  RegularText,
   SafeAreaViewFlex,
-  SectionHeader,
-  Touchable,
-  VolunteerCalendar,
   VolunteerHeaderProfile,
   VolunteerHomeSection,
   VolunteerWelcome,
   WrapperRow
 } from '../../components';
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { colors, consts, normalize, texts } from '../../config';
 import {
   allGroups,
   myGroups,
@@ -102,28 +98,8 @@ const NAVIGATION = {
   }
 };
 
-type CalendarListToggle = {
-  showCalendar: boolean;
-  setShowCalendar: (showCalendar: boolean) => void;
-};
-
-const CalendarListToggle = ({ showCalendar, setShowCalendar }: CalendarListToggle) => {
-  const text = showCalendar ? ` ${texts.volunteer.list}` : ` ${texts.volunteer.calendar}`;
-  const CalendarListToggleIcon = showCalendar ? Icon.VolunteerList : Icon.VolunteerCalendar;
-
-  return (
-    <Touchable onPress={() => setShowCalendar(!showCalendar)}>
-      <WrapperRow style={styles.calendarListToggle}>
-        <CalendarListToggleIcon color={colors.darkText} />
-        <RegularText>{text}</RegularText>
-      </WrapperRow>
-    </Touchable>
-  );
-};
-
 export const VolunteerPersonalScreen = ({ navigation, route }: any) => {
   const [refreshingHome, setRefreshingHome] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(true);
   const { refresh: refreshUser, isLoading, isError, isLoggedIn } = useVolunteerUser();
 
   const refresh = useCallback(() => {
@@ -203,35 +179,15 @@ export const VolunteerPersonalScreen = ({ navigation, route }: any) => {
           limit={0}
           showLink
         />
-        <SectionHeader
-          onPress={() => navigation.navigate(NAVIGATION.CALENDAR_MY_INDEX)}
-          title="Mein Kalender"
-        />
-        <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
-        {showCalendar ? (
-          <VolunteerCalendar
-            query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY}
-            navigation={navigation}
-          />
-        ) : (
-          <VolunteerHomeSection
-            navigateLink={() => navigation.navigate(NAVIGATION.CALENDAR_MY_INDEX)}
-            navigation={navigation}
-            query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY}
-          />
-        )}
-        <DataListSection
+        <VolunteerHomeSection
           linkTitle="Alle meine Termine anzeigen"
           buttonTitle="Termin eintragen"
-          loading={false}
           navigateLink={() => navigation.navigate(NAVIGATION.CALENDAR_MY_INDEX)}
           navigateButton={() => navigation.navigate(NAVIGATION.CALENDAR_NEW)}
           navigate={() => navigation.navigate(NAVIGATION.CALENDAR_MY_INDEX)}
           navigation={navigation}
           query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY}
-          limit={0}
-          showLink
-          showButton
+          sectionTitle="Mein Kalender"
         />
         <DataListSection
           linkTitle="Alle Aufgaben anzeigen"
@@ -264,11 +220,6 @@ export const VolunteerPersonalScreen = ({ navigation, route }: any) => {
 };
 
 const styles = StyleSheet.create({
-  calendarListToggle: {
-    alignItems: 'center',
-    paddingHorizontal: normalize(10),
-    paddingVertical: normalize(5)
-  },
   headerRight: {
     alignItems: 'center',
     paddingRight: normalize(7)

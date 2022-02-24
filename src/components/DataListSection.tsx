@@ -16,40 +16,40 @@ import { Wrapper } from './Wrapper';
 
 type Props = {
   buttonTitle?: string;
-  showButton?: boolean;
-  navigateButton?: () => void;
   horizontal?: boolean;
   limit?: number;
+  linkTitle?: string;
   loading?: boolean;
   navigate?: () => void;
+  navigateButton?: () => void;
+  navigateLink?: () => void;
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
   query: string;
   sectionData?: unknown[];
   sectionTitle?: string;
   sectionTitleDetail?: string;
-  linkTitle?: string;
-  navigateLink?: () => void;
+  showButton?: boolean;
   showLink?: boolean;
 };
 
 // eslint-disable-next-line complexity
 export const DataListSection = ({
   buttonTitle,
-  navigateButton,
-  showButton,
   horizontal,
   limit = 3,
+  linkTitle,
   loading,
   navigate,
+  navigateButton,
+  navigateLink,
   navigation,
   placeholder,
   query,
   sectionData,
   sectionTitle,
   sectionTitleDetail,
-  linkTitle,
-  navigateLink,
+  showButton,
   showLink
 }: Props) => {
   if (loading) {
@@ -70,7 +70,7 @@ export const DataListSection = ({
 
   return (
     <View>
-      {sectionTitle && (
+      {!!sectionTitle && (
         <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
       )}
       {!!limit &&
