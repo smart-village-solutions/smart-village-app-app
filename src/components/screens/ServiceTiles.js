@@ -46,6 +46,7 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
       </LoadingContainer>
     );
   }
+
   return (
     <SafeAreaViewFlex>
       <>

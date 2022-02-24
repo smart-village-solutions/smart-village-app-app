@@ -1,3 +1,4 @@
+import _isEmpty from 'lodash/isEmpty';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 
@@ -77,10 +78,12 @@ export const useStaticContent = <T>({
     }
 
     try {
-      if (data) {
+      if (!_isEmpty(data?.publicJsonFile?.content)) {
         const json = data?.publicJsonFile?.content;
 
         return parseFromJson ? parseFromJson(json) : json;
+      } else {
+        setError(true);
       }
     } catch (error) {
       setError(true);
