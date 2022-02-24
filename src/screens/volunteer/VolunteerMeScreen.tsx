@@ -40,7 +40,7 @@ export const VolunteerMeScreen = ({ navigation, route }: StackScreenProps<any>) 
 
   useEffect(() => {
     if (isSuccess && data?.account) {
-      // save to global state if there are no errors
+      // save user data to global state if there are no errors
       storeVolunteerUserData(data.account);
     }
   }, [isSuccess, data]);
