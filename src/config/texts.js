@@ -586,6 +586,7 @@ export const texts = {
     eventRecord: {
       appointments: 'Terminübersicht'
     },
+    invite: 'Jemanden einladen',
     list: 'Liste',
     location: 'Ort',
     login: 'Anmelden',
