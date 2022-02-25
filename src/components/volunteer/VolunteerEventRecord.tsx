@@ -13,6 +13,8 @@ import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { VolunteerAppointmentsCard } from './VolunteerAppointmentsCard';
 
+const a11yText = consts.a11yLabel;
+
 // eslint-disable-next-line complexity
 export const VolunteerEventRecord = ({ data, route }: { data: any } & StackScreenProps<any>) => {
   const {
@@ -25,7 +27,12 @@ export const VolunteerEventRecord = ({ data, route }: { data: any } & StackScree
     title,
     webUrls
   } = data;
-  const { topics } = content;
+  const { files, topics } = content;
+  const mediaContents = files?.map(({ mime_type, url }: { mime_type: string; url: string }) => ({
+    contentType: mime_type.includes('image') ? 'image' : mime_type,
+    sourceUrl: { url }
+  }));
+
   const { attending, declined, maybe } = participants;
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
@@ -46,10 +53,9 @@ export const VolunteerEventRecord = ({ data, route }: { data: any } & StackScree
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
-  const a11yText = consts.a11yLabel;
   return (
     <View>
-      <ImageSection mediaContents={[]} />
+      {!!mediaContents?.length && <ImageSection mediaContents={mediaContents} />}
 
       <WrapperWithOrientation>
         {!!title && (
