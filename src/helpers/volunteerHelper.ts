@@ -1,10 +1,15 @@
 import * as SecureStore from 'expo-secure-store';
 import moment from 'moment';
 
+import * as appJson from '../../app.json';
+import { secrets } from '../config';
 import { QUERY_TYPES } from '../queries/types';
 
 import { eventDate } from './dateTimeHelper';
 import { subtitle } from './textHelper';
+
+const namespace = appJson.expo.slug as keyof typeof secrets;
+const serverUrl = secrets[namespace]?.volunteer?.serverUrl;
 
 const VOLUNTEER_AUTH_TOKEN = 'VOLUNTEER_AUTH_TOKEN';
 const VOLUNTEER_CURRENT_USER_ID = 'VOLUNTEER_CURRENT_USER_ID';
@@ -63,3 +68,9 @@ export const isAttending = (currentUserId: string | null, attending?: []): boole
 
   return attending.some((item: { id: number }) => item.id.toString() == currentUserId);
 };
+
+export const volunteerProfileImage = (guid: string) =>
+  `${serverUrl}/uploads/profile_image/${guid}.jpg`;
+
+export const volunteerBannerImage = (guid: string) =>
+  `${serverUrl}/uploads/profile_image/banner/${guid}.jpg`;

@@ -576,6 +576,7 @@ export const texts = {
   },
   volunteer: {
     abort: 'Abbrechen',
+    attending: 'Nehmen teil',
     calendar: 'Kalender',
     description: 'Beschreibung',
     edit: 'Daten bearbeiten',

@@ -1,5 +1,6 @@
 export * from './VolunteerAppointmentsCard';
 export * from './VolunteerCalendar';
+export * from './VolunteerEventAttending';
 export * from './VolunteerEventRecord';
 export * from './VolunteerFormCalendar';
 export * from './VolunteerHeader';

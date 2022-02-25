@@ -12,6 +12,7 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { VolunteerAppointmentsCard } from './VolunteerAppointmentsCard';
+import { VolunteerEventAttending } from './VolunteerEventAttending';
 
 const a11yText = consts.a11yLabel;
 
@@ -33,7 +34,7 @@ export const VolunteerEventRecord = ({ data, route }: { data: any } & StackScree
     sourceUrl: { url }
   }));
 
-  const { attending, declined, maybe } = participants;
+  const { attending } = participants;
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
   const category = topics?.length
@@ -65,9 +66,7 @@ export const VolunteerEventRecord = ({ data, route }: { data: any } & StackScree
         )}
         {device.platform === 'ios' && <TitleShadow />}
 
-        <Wrapper>
-          <InfoCard category={category} webUrls={webUrls} openWebScreen={openWebScreen} />
-        </Wrapper>
+        {!!attending?.length && <VolunteerEventAttending data={attending} />}
 
         {!!appointments?.length && (
           <View>
@@ -94,6 +93,10 @@ export const VolunteerEventRecord = ({ data, route }: { data: any } & StackScree
             </Wrapper>
           </View>
         )}
+
+        <Wrapper>
+          <InfoCard category={category} webUrls={webUrls} openWebScreen={openWebScreen} />
+        </Wrapper>
       </WrapperWithOrientation>
     </View>
   );
