@@ -22,7 +22,7 @@ export const useVolunteerData = ({
   refetch: () => void;
 } => {
   const { data, isLoading, isRefetching, refetch } = useQuery(query, getQuery(query));
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(true);
   const [volunteerData, setVolunteerData] = useState<any[]>([]);
 
   const processVolunteerData = useCallback(async () => {
@@ -63,7 +63,7 @@ export const useVolunteerData = ({
 
     setVolunteerData(processedVolunteerData);
     setIsProcessing(false);
-  }, [query, queryVariables, isCalendar, onlyUpcoming]);
+  }, [query, queryVariables, onlyUpcoming, data, refetch]);
 
   useEffect(() => {
     processVolunteerData();

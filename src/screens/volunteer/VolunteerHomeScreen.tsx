@@ -1,3 +1,5 @@
+import { useFocusEffect } from '@react-navigation/native';
+import { DeviceEventEmitter } from 'expo-modules-core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
@@ -13,7 +15,7 @@ import {
 } from '../../components';
 import { colors, consts, normalize, texts } from '../../config';
 import { additionalData, allGroups } from '../../helpers/parser/volunteer';
-import { useStaticContent, useVolunteerUser } from '../../hooks';
+import { useStaticContent, useVolunteerUser, VOLUNTEER_HOME_REFRESH_EVENT } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 
@@ -76,9 +78,9 @@ export const NAVIGATION = {
 };
 
 export const VolunteerHomeScreen = ({ navigation, route }: any) => {
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshingHome, setRefreshingHome] = useState(false);
   const { refresh, isLoading, isError, isLoggedIn } = useVolunteerUser();
-  const { data, loading, refetch } = useStaticContent({
+  const { data, loading, refetch: refetchCarousel } = useStaticContent({
     refreshTimeKey: 'publicJsonFile-volunteerCarousel',
     name: 'volunteerCarousel',
     type: 'json'
@@ -88,14 +90,24 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
     refresh();
   }, [refresh]);
 
-  const refreshHome = useCallback(async () => {
-    setRefreshing(true);
-    await refetch?.();
-    setRefreshing(false);
-  }, [refetch]);
-
   // refresh if the refreshUser param changed, which happens after login
   useEffect(refreshUser, [route.params?.refreshUser]);
+
+  const refreshHome = useCallback(() => {
+    setRefreshingHome(true);
+
+    // this will trigger the onRefresh functions provided to the `useVolunteerHomeRefresh` hook
+    // in other components.
+    DeviceEventEmitter.emit(VOLUNTEER_HOME_REFRESH_EVENT);
+
+    // we simulate state change of `refreshing` with setting it to `true` first and after
+    // a timeout to `false` again, which will result in a re-rendering of the screen.
+    setTimeout(() => {
+      setRefreshingHome(false);
+    }, 500);
+  }, []);
+
+  useFocusEffect(refreshHome);
 
   useEffect(
     () =>
@@ -123,8 +135,11 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
       <ScrollView
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
-            onRefresh={refreshHome}
+            refreshing={refreshingHome}
+            onRefresh={() => {
+              refreshHome();
+              refetchCarousel();
+            }}
             colors={[colors.accent]}
             tintColor={colors.accent}
           />

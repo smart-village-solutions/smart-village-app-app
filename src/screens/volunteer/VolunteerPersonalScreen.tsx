@@ -1,13 +1,13 @@
+import { useFocusEffect } from '@react-navigation/native';
+import { DeviceEventEmitter } from 'expo-modules-core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import {
   DataListSection,
-  LoadingSpinner,
   SafeAreaViewFlex,
   VolunteerHeaderProfile,
   VolunteerHomeSection,
-  VolunteerWelcome,
   WrapperRow
 } from '../../components';
 import { colors, consts, normalize, texts } from '../../config';
@@ -18,7 +18,7 @@ import {
   myMessages,
   myTasks
 } from '../../helpers/parser/volunteer';
-import { useVolunteerUser } from '../../hooks';
+import { SVA_VOLUNTEER_PERSONAL_REFRESH } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 
@@ -98,47 +98,36 @@ const NAVIGATION = {
   }
 };
 
-export const VolunteerPersonalScreen = ({ navigation, route }: any) => {
+export const VolunteerPersonalScreen = ({ navigation }: any) => {
   const [refreshingHome, setRefreshingHome] = useState(false);
-  const { refresh: refreshUser, isLoading, isError, isLoggedIn } = useVolunteerUser();
 
-  const refresh = useCallback(() => {
-    refreshUser();
-  }, [refreshUser]);
-
-  const refreshHome = () => {
+  const refreshHome = useCallback(() => {
     setRefreshingHome(true);
+
+    // this will trigger the onRefresh functions provided to the `useVolunteerHomeRefresh` hook
+    // in other components.
+    DeviceEventEmitter.emit(SVA_VOLUNTEER_PERSONAL_REFRESH);
 
     // we simulate state change of `refreshing` with setting it to `true` first and after
     // a timeout to `false` again, which will result in a re-rendering of the screen.
     setTimeout(() => {
       setRefreshingHome(false);
-    }, 1500);
-  };
+    }, 500);
+  }, []);
 
-  // refresh if the refreshUser param changed, which happens after login
-  useEffect(refresh, [route.params?.refreshUser]);
+  useFocusEffect(refreshHome);
 
   useEffect(
     () =>
       navigation.setOptions({
-        headerRight: () =>
-          isLoggedIn ? (
-            <WrapperRow style={styles.headerRight}>
-              <VolunteerHeaderProfile navigation={navigation} style={styles.icon} />
-            </WrapperRow>
-          ) : null
+        headerRight: () => (
+          <WrapperRow style={styles.headerRight}>
+            <VolunteerHeaderProfile navigation={navigation} style={styles.icon} />
+          </WrapperRow>
+        )
       }),
-    [isLoggedIn, navigation]
+    [navigation]
   );
-
-  if (isLoading) {
-    return <LoadingSpinner loading />;
-  }
-
-  if (!isLoggedIn || isError) {
-    return <VolunteerWelcome navigation={navigation} />;
-  }
 
   return (
     <SafeAreaViewFlex>

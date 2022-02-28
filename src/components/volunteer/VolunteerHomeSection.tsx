@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native';
 import { normalize } from 'react-native-elements';
 
 import { colors, Icon, texts } from '../../config';
+import { isUpcomingDate } from '../../helpers';
 import { useVolunteerData, useVolunteerHomeRefresh } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { DataListSection } from '../DataListSection';
@@ -70,7 +71,7 @@ export const VolunteerHomeSection = ({
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const isPersonal = query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const [showCalendar, setShowCalendar] = useState(isCalendar);
-  const { data: sectionData, isLoading, refetch } = useVolunteerData({
+  const { data: sectionData, isLoading, isRefetching, refetch } = useVolunteerData({
     query,
     queryVariables,
     isCalendar,
@@ -80,6 +81,10 @@ export const VolunteerHomeSection = ({
   useVolunteerHomeRefresh(refetch, isPersonal);
 
   if (isCalendar) {
+    const showAllLink = sectionData?.some((item: { listDate: string }) =>
+      isUpcomingDate(item.listDate)
+    );
+
     return (
       <>
         {!!sectionTitle && (
@@ -93,7 +98,7 @@ export const VolunteerHomeSection = ({
           <VolunteerCalendar
             query={query}
             calendarData={sectionData}
-            isLoading={isLoading}
+            isLoading={isLoading || isRefetching}
             navigation={navigation}
           />
         ) : (
@@ -115,7 +120,7 @@ export const VolunteerHomeSection = ({
           showButton
           showLink
           navigateButton={navigateButton}
-          navigateLink={sectionData?.length ? navigateLink : undefined}
+          navigateLink={showAllLink ? navigateLink : undefined}
         />
       </>
     );
@@ -126,7 +131,7 @@ export const VolunteerHomeSection = ({
       buttonTitle={buttonTitle}
       linkTitle={linkTitle}
       limit={limit}
-      loading={isLoading}
+      loading={isLoading || isRefetching}
       navigate={navigate}
       navigation={navigation}
       placeholder={placeholder}
