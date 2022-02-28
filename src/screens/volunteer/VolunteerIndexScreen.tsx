@@ -26,7 +26,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const showFilter = false; // TODO: filter?
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
-  const { data, isRefetching, refetch } = useVolunteerData({ query, queryVariables });
+  const { data, isRefetching, refetch } = useVolunteerData({ query, queryVariables, isCalendar });
 
   useLogoutHeader({ query, navigation });
 

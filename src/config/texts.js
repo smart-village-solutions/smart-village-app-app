@@ -576,6 +576,7 @@ export const texts = {
   },
   volunteer: {
     abort: 'Abbrechen',
+    attend: 'Teilnehmen',
     attending: 'Nehmen teil',
     calendar: 'Kalender',
     description: 'Beschreibung',
@@ -594,6 +595,7 @@ export const texts = {
     memberships: 'Mitgliedschaften',
     myCalendar: 'Mein Kalender',
     next: 'Weiter',
+    notAttend: 'Nicht teilnehmen',
     ok: 'OK',
     password: 'Passwort',
     passwordConfirmation: 'Passwort bestätigen',

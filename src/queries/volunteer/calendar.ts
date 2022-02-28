@@ -37,6 +37,29 @@ export const calendar = async (id: number) => {
   return (await fetch(`${serverUrl}calendar/entry/${id}`, fetchObj)).json();
 };
 
+export enum PARTICIPANT_TYPE {
+  REMOVE,
+  DECLINE,
+  MAYBE,
+  ACCEPT
+}
+
+export const calendarAttend = async ({ id, type }: { id: number; type: PARTICIPANT_TYPE }) => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    },
+    body: JSON.stringify({ type })
+  };
+
+  return (await fetch(`${serverUrl}calendar/entry/${id}/respond`, fetchObj)).json();
+};
+
 export const calendarNew = async ({
   title,
   description = '',

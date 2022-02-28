@@ -8,10 +8,12 @@ import { getQuery, QUERY_TYPES } from '../../queries';
 export const useVolunteerData = ({
   query,
   queryVariables,
+  isCalendar,
   onlyUpcoming = true
 }: {
   query: string;
   queryVariables?: { dateRange?: string[] };
+  isCalendar?: boolean;
   onlyUpcoming?: boolean;
 }): {
   data: any[];
@@ -24,10 +26,6 @@ export const useVolunteerData = ({
   const [volunteerData, setVolunteerData] = useState<any[]>([]);
 
   const processVolunteerData = useCallback(async () => {
-    const isCalendar =
-      query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL ||
-      query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
-
     let processedVolunteerData = data?.results as any[];
 
     setIsProcessing(true);
@@ -65,7 +63,7 @@ export const useVolunteerData = ({
 
     setVolunteerData(processedVolunteerData);
     setIsProcessing(false);
-  }, [query, queryVariables, onlyUpcoming, data]);
+  }, [query, queryVariables, isCalendar, onlyUpcoming]);
 
   useEffect(() => {
     processVolunteerData();

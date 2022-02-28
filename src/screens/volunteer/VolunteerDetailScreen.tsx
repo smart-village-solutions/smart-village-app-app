@@ -87,7 +87,12 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
             />
           }
         >
-          <Component data={data || details} navigation={navigation} route={route} />
+          <Component
+            data={data || details}
+            refetch={refetch}
+            navigation={navigation}
+            route={route}
+          />
         </ScrollView>
         {query === QUERY_TYPES.VOLUNTEER.MESSAGES && <VolunteerMessageTextField />}
       </DefaultKeyboardAvoidingView>

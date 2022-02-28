@@ -68,14 +68,16 @@ export const VolunteerHomeSection = ({
 }: Props) => {
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
+  const isPersonal = query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const [showCalendar, setShowCalendar] = useState(isCalendar);
   const { data: sectionData, isLoading, refetch } = useVolunteerData({
     query,
     queryVariables,
+    isCalendar,
     onlyUpcoming: !showCalendar
   });
 
-  useVolunteerHomeRefresh(refetch);
+  useVolunteerHomeRefresh(refetch, isPersonal);
 
   if (isCalendar) {
     return (

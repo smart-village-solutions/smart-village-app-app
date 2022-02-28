@@ -1,10 +1,13 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
+import { useMutation } from 'react-query';
 
 import { consts, device, texts } from '../../config';
-import { momentFormat } from '../../helpers';
+import { isAttending, momentFormat, volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
+import { calendarAttend, PARTICIPANT_TYPE } from '../../queries/volunteer';
+import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
@@ -17,8 +20,13 @@ import { VolunteerEventAttending } from './VolunteerEventAttending';
 const a11yText = consts.a11yLabel;
 
 // eslint-disable-next-line complexity
-export const VolunteerEventRecord = ({ data, route }: { data: any } & StackScreenProps<any>) => {
+export const VolunteerEventRecord = ({
+  data,
+  refetch,
+  route
+}: { data: any; refetch: () => void } & StackScreenProps<any>) => {
   const {
+    id,
     content,
     description,
     end_datetime: endDatetime,
@@ -51,8 +59,34 @@ export const VolunteerEventRecord = ({ data, route }: { data: any } & StackScree
     }
   ];
 
+  const [isAttendingEvent, setIsAttendingEvent] = useState(false);
+
+  const checkIfAttending = useCallback(async () => {
+    const { currentUserId } = await volunteerUserData();
+    // show only attending dates for current user if on personal calendar view
+    if (isAttending(currentUserId, attending)) {
+      setIsAttendingEvent(true);
+    } else {
+      setIsAttendingEvent(false);
+    }
+  }, [participants]);
+
+  useEffect(() => {
+    checkIfAttending();
+  }, [checkIfAttending]);
+
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
+
+  const { mutate, isSuccess, data: dataAttend } = useMutation(calendarAttend);
+
+  const attend = useCallback(() => {
+    mutate({ id, type: isAttendingEvent ? PARTICIPANT_TYPE.REMOVE : PARTICIPANT_TYPE.ACCEPT });
+  }, [isAttendingEvent]);
+
+  useEffect(() => {
+    isSuccess && dataAttend.code == 200 && refetch();
+  }, [isSuccess, dataAttend]);
 
   return (
     <View>
@@ -96,6 +130,14 @@ export const VolunteerEventRecord = ({ data, route }: { data: any } & StackScree
 
         <Wrapper>
           <InfoCard category={category} webUrls={webUrls} openWebScreen={openWebScreen} />
+        </Wrapper>
+
+        <Wrapper>
+          <Button
+            title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
+            invert={isAttendingEvent}
+            onPress={attend}
+          />
         </Wrapper>
       </WrapperWithOrientation>
     </View>
