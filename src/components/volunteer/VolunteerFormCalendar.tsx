@@ -17,10 +17,13 @@ import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 import { CREATE_EVENT_RECORDS } from '../../queries/eventRecords';
 
-export const VolunteerFormCalendar = ({ navigation }: StackScreenProps<any>) => {
+export const VolunteerFormCalendar = ({
+  navigation,
+  useScrollToTop
+}: StackScreenProps<any> & { useScrollToTop: () => void }) => {
   const {
     control,
-    formState: { errors },
+    formState: { errors, isValid },
     handleSubmit
   } = useForm<VolunteerCalendar>({
     defaultValues: {
@@ -53,6 +56,10 @@ export const VolunteerFormCalendar = ({ navigation }: StackScreenProps<any>) => 
     //   }
     // });
   };
+
+  if (!isValid) {
+    useScrollToTop();
+  }
 
   if (isError || (!isLoading && data && !data.id)) {
     Alert.alert('Fehler beim Login', 'Bitte Eingaben überprüfen und erneut versuchen.');
