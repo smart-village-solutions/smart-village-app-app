@@ -1,9 +1,6 @@
-import * as appJson from '../../../app.json';
-import { secrets } from '../../config';
 import { volunteerAuthToken } from '../../helpers/volunteerHelper';
 
-const namespace = appJson.expo.slug as keyof typeof secrets;
-const serverUrl = secrets[namespace]?.volunteer?.serverUrl + secrets[namespace]?.volunteer?.version;
+import { volunteerApiUrl } from './index';
 
 export const logIn = async ({ username, password }: { username: string; password: string }) => {
   const formData = new FormData();
@@ -19,7 +16,7 @@ export const logIn = async ({ username, password }: { username: string; password
     body: formData
   };
 
-  return (await fetch(`${serverUrl}auth/login`, fetchObj)).json();
+  return (await fetch(`${volunteerApiUrl}auth/login`, fetchObj)).json();
 };
 
 export const register = async ({
@@ -48,7 +45,7 @@ export const register = async ({
     body: formData
   };
 
-  return (await fetch(`${serverUrl}register`, fetchObj)).json();
+  return (await fetch(`${volunteerApiUrl}register`, fetchObj)).json();
 };
 
 // TODO: possible and needed?
@@ -64,7 +61,7 @@ export const logOut = async () => {
     }
   };
 
-  return await fetch(`${serverUrl}auth/logout`, fetchObj);
+  return await fetch(`${volunteerApiUrl}auth/logout`, fetchObj);
 };
 
 export const me = async () => {
@@ -79,5 +76,5 @@ export const me = async () => {
     }
   };
 
-  return (await fetch(`${serverUrl}auth/current`, fetchObj)).json();
+  return (await fetch(`${volunteerApiUrl}auth/current`, fetchObj)).json();
 };

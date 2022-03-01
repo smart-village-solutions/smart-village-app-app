@@ -1,21 +1,24 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useMutation as useMainserverMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, StyleSheet } from 'react-native';
-import { useMutation } from 'react-query';
-import { useMutation as useMainserverMutation } from 'react-apollo';
 import { CheckBox } from 'react-native-elements';
+import { useMutation, useQuery } from 'react-query';
 
 import { colors, texts } from '../../config';
-import { calendarNew } from '../../queries/volunteer';
+import { isOwner, volunteerUserData } from '../../helpers';
+import { QUERY_TYPES } from '../../queries';
+import { CREATE_EVENT_RECORDS } from '../../queries/eventRecords';
+import { calendarNew, groups } from '../../queries/volunteer';
 import { VolunteerCalendar } from '../../types';
 import { Button } from '../Button';
-import { Input } from '../form/Input';
 import { DateTimeInput } from '../form/DateTimeInput';
+import { DropdownInput, DropdownInputProps } from '../form/DropdownInput';
+import { Input } from '../form/Input';
 import { BoldText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
-import { CREATE_EVENT_RECORDS } from '../../queries/eventRecords';
 
 export const VolunteerFormCalendar = ({
   navigation,
@@ -27,11 +30,29 @@ export const VolunteerFormCalendar = ({
     handleSubmit
   } = useForm<VolunteerCalendar>({
     defaultValues: {
-      allDay: 1,
-      isPublic: 0,
-      topics: [1]
+      allDay: 0,
+      isPublic: 1
     }
   });
+  const { data: dataGroups } = useQuery(QUERY_TYPES.VOLUNTEER.GROUPS, groups);
+  const [groupDropdownData, setGroupDropdownData] = useState<DropdownInputProps['data'] | []>([]);
+
+  const filterGroupDropDownData = useCallback(async () => {
+    if (dataGroups?.results?.length) {
+      const { currentUserId } = await volunteerUserData();
+      // show only groups, where the user is owner, because otherwise edits are not allowed
+      const filteredGroupDropDownData = dataGroups.results
+        ?.filter((item: { owner: { id: number } }) => isOwner(currentUserId, item.owner))
+        ?.map((item) => ({ ...item, value: item.name }));
+
+      filteredGroupDropDownData?.length && setGroupDropdownData(filteredGroupDropDownData);
+    }
+  }, [dataGroups?.results]);
+
+  useEffect(() => {
+    filterGroupDropDownData();
+  }, [filterGroupDropDownData]);
+
   const { mutate, isLoading, isError, isSuccess, data, reset } = useMutation(calendarNew);
   const [createEvent] = useMainserverMutation(CREATE_EVENT_RECORDS);
   const onSubmit = (calendarNewData: VolunteerCalendar) => {
@@ -62,8 +83,12 @@ export const VolunteerFormCalendar = ({
   }
 
   if (isError || (!isLoading && data && !data.id)) {
-    Alert.alert('Fehler beim Login', 'Bitte Eingaben überprüfen und erneut versuchen.');
+    Alert.alert(
+      'Fehler beim Erstellen eines Events',
+      'Bitte Eingaben überprüfen und erneut versuchen.'
+    );
     reset();
+    // console.warn({ data });
   } else if (isSuccess) {
     // refreshUser param causes the home screen to update and no longer show the welcome component
     // navigation.navigate(ScreenName.VolunteerHome, { refreshUser: new Date().valueOf() });
@@ -73,6 +98,29 @@ export const VolunteerFormCalendar = ({
 
   return (
     <>
+      <Wrapper>
+        {!!groupDropdownData?.length && (
+          <Controller
+            name="contentContainerId"
+            render={({ field: { onChange, value } }) => (
+              <DropdownInput
+                {...{
+                  errors,
+                  required: true,
+                  data: groupDropdownData,
+                  value,
+                  onChange,
+                  name: 'contentContainerId',
+                  label: texts.volunteer.group,
+                  placeholder: texts.volunteer.group,
+                  control
+                }}
+              />
+            )}
+            control={control}
+          />
+        )}
+      </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="title"
@@ -132,6 +180,7 @@ export const VolunteerFormCalendar = ({
               {...{
                 mode: 'date',
                 errors,
+                required: true,
                 value,
                 onChange,
                 name: 'endDate',
@@ -225,7 +274,6 @@ export const VolunteerFormCalendar = ({
           name="topics"
           label={texts.volunteer.topics}
           placeholder={texts.volunteer.topics}
-          defaultValue="test"
           validate
           control={control}
         />

@@ -1,8 +1,8 @@
 export type VolunteerCalendar = {
   title: string;
-  description: string;
-  color: string;
-  location: string;
+  description?: string;
+  color?: string;
+  location?: string;
   allDay: number;
   participationMode: number;
   maxParticipants: string;
@@ -11,10 +11,11 @@ export type VolunteerCalendar = {
   participantInfo: string;
   isPublic: number;
   startDate: string;
-  startTime: string;
+  startTime?: string;
   endDate: string;
-  endTime: string;
+  endTime?: string;
   timeZone: string;
   forceJoin: number;
-  topics: [number];
+  topics?: [number];
+  contentContainerId: number;
 };

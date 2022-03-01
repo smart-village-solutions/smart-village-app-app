@@ -588,6 +588,7 @@ export const texts = {
     eventRecord: {
       appointments: 'Terminübersicht'
     },
+    group: 'Gruppe',
     list: 'Liste',
     location: 'Ort',
     login: 'Anmelden',
@@ -611,6 +612,7 @@ export const texts = {
       'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
     registrationTitle: 'Registrieren',
     save: 'Speichern',
+    search: 'Suche',
     startDate: 'Startdatum',
     startTime: 'Startzeit',
     title: 'Titel',

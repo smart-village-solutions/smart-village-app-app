@@ -1,11 +1,10 @@
-import * as appJson from '../../../app.json';
-import { colors, secrets } from '../../config';
+import { colors } from '../../config';
+import { momentFormat } from '../../helpers';
 import { formatTime } from '../../helpers/formatHelper';
-import { volunteerAuthToken, volunteerUserData } from '../../helpers/volunteerHelper';
+import { volunteerAuthToken } from '../../helpers/volunteerHelper';
 import { VolunteerCalendar } from '../../types';
 
-const namespace = appJson.expo.slug as keyof typeof secrets;
-const serverUrl = secrets[namespace]?.volunteer?.serverUrl + secrets[namespace]?.volunteer?.version;
+import { volunteerApiUrl } from './index';
 
 export const calendarAll = async () => {
   const authToken = await volunteerAuthToken();
@@ -19,7 +18,7 @@ export const calendarAll = async () => {
     }
   };
 
-  return (await fetch(`${serverUrl}calendar`, fetchObj)).json();
+  return (await fetch(`${volunteerApiUrl}calendar`, fetchObj)).json();
 };
 
 export const calendar = async (id: number) => {
@@ -34,7 +33,7 @@ export const calendar = async (id: number) => {
     }
   };
 
-  return (await fetch(`${serverUrl}calendar/entry/${id}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiUrl}calendar/entry/${id}`, fetchObj)).json();
 };
 
 export enum PARTICIPANT_TYPE {
@@ -57,13 +56,13 @@ export const calendarAttend = async ({ id, type }: { id: number; type: PARTICIPA
     body: JSON.stringify({ type })
   };
 
-  return (await fetch(`${serverUrl}calendar/entry/${id}/respond`, fetchObj)).json();
+  return (await fetch(`${volunteerApiUrl}calendar/entry/${id}/respond`, fetchObj)).json();
 };
 
 export const calendarNew = async ({
   title,
   description = '',
-  color = colors.primary,
+  color = colors.primary.startsWith('#') ? colors.primary : colors.darkText,
   location = '',
   allDay = 1,
   participationMode = 2,
@@ -72,16 +71,16 @@ export const calendarNew = async ({
   allowMaybe = 1,
   participantInfo = '',
   isPublic = 0,
-  startDate = '2019-03-19',
+  startDate,
   startTime,
-  endDate = '2019-03-31',
+  endDate,
   endTime,
   timeZone = 'Europe/Berlin',
   forceJoin = 1,
-  topics
+  topics,
+  contentContainerId
 }: VolunteerCalendar) => {
   const authToken = await volunteerAuthToken();
-  const { contentContainerId } = await volunteerUserData();
 
   const formData = {
     CalendarEntry: {
@@ -98,9 +97,9 @@ export const calendarNew = async ({
     },
     CalendarEntryForm: {
       is_public: isPublic ? 1 : 0,
-      start_date: startDate,
+      start_date: startDate && momentFormat(startDate, 'YYYY-MM-DD'),
       start_time: startTime && formatTime(startTime),
-      end_date: endDate,
+      end_date: endDate && momentFormat(endDate, 'YYYY-MM-DD'),
       end_time: endTime && formatTime(endTime),
       timeZone,
       forceJoin,
@@ -118,5 +117,7 @@ export const calendarNew = async ({
     body: JSON.stringify(formData)
   };
 
-  return (await fetch(`${serverUrl}calendar/container/${contentContainerId}`, fetchObj)).json();
+  return (
+    await fetch(`${volunteerApiUrl}calendar/container/${contentContainerId}`, fetchObj)
+  ).json();
 };

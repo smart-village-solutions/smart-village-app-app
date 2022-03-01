@@ -69,6 +69,12 @@ export const isAttending = (currentUserId: string | null, attending?: []): boole
   return attending.some((item: { id: number }) => item.id.toString() == currentUserId);
 };
 
+export const isOwner = (currentUserId: string | null, owner: { id: number }): boolean => {
+  if (!currentUserId || !owner?.id) return false;
+
+  return owner.id.toString() == currentUserId;
+};
+
 export const volunteerProfileImage = (guid: string) =>
   `${serverUrl}/uploads/profile_image/${guid}.jpg`;
 
