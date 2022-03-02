@@ -1,8 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { DeviceEventEmitter } from 'expo-modules-core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
-
 import {
   DataListSection,
   ImagesCarousel,
@@ -65,7 +64,6 @@ const NAVIGATION = {
 };
 
 export const VolunteerHomeScreen = ({ navigation, route }: any) => {
-  const [refreshingHome, setRefreshingHome] = useState(false);
   const { refresh, isLoading, isError, isLoggedIn } = useVolunteerUser();
   const { data, loading, refetch: refetchCarousel } = useStaticContent({
     refreshTimeKey: 'publicJsonFile-volunteerCarousel',
@@ -81,17 +79,9 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
   useEffect(refreshUser, [route.params?.refreshUser]);
 
   const refreshHome = useCallback(() => {
-    setRefreshingHome(true);
-
     // this will trigger the onRefresh functions provided to the `useVolunteerHomeRefresh` hook
     // in other components.
     DeviceEventEmitter.emit(VOLUNTEER_HOME_REFRESH_EVENT);
-
-    // we simulate state change of `refreshing` with setting it to `true` first and after
-    // a timeout to `false` again, which will result in a re-rendering of the screen.
-    setTimeout(() => {
-      setRefreshingHome(false);
-    }, 500);
   }, []);
 
   useFocusEffect(refreshHome);
@@ -122,7 +112,7 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
       <ScrollView
         refreshControl={
           <RefreshControl
-            refreshing={refreshingHome}
+            refreshing={false}
             onRefresh={() => {
               refreshHome();
               refetchCarousel();

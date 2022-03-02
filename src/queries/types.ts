@@ -25,6 +25,7 @@ export const QUERY_TYPES = {
     CALENDAR_ALL: 'calendarAll',
     CALENDAR: 'calendar',
     GROUP: 'group',
+    GROUPS_MY: 'groupsMy',
     GROUPS: 'groups',
     ME: 'me',
     MESSAGES: 'messages',

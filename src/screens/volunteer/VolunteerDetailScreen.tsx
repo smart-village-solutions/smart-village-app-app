@@ -40,7 +40,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
   const queryVariables = route.params?.queryVariables ?? {};
   const details = route.params?.details;
 
-  const { data, isLoading, isRefetching, refetch } = useQuery([query, queryVariables?.id], () =>
+  const { data, isLoading, refetch } = useQuery([query, queryVariables?.id], () =>
     getQuery(query)(queryVariables?.id)
   );
 
@@ -77,7 +77,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
         <ScrollView
           refreshControl={
             <RefreshControl
-              refreshing={isRefetching}
+              refreshing={isLoading}
               onRefresh={refetch}
               colors={[colors.accent]}
               tintColor={colors.accent}

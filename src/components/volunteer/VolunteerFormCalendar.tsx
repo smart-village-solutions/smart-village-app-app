@@ -22,8 +22,8 @@ import { Wrapper } from '../Wrapper';
 
 export const VolunteerFormCalendar = ({
   navigation,
-  useScrollToTop
-}: StackScreenProps<any> & { useScrollToTop: () => void }) => {
+  scrollToTop
+}: StackScreenProps<any> & { scrollToTop: () => void }) => {
   const {
     control,
     formState: { errors, isValid },
@@ -79,7 +79,7 @@ export const VolunteerFormCalendar = ({
   };
 
   if (!isValid) {
-    useScrollToTop();
+    scrollToTop();
   }
 
   if (isError || (!isLoading && data && !data.id)) {

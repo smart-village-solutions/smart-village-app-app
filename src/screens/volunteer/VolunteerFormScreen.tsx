@@ -37,7 +37,7 @@ export const VolunteerFormScreen = ({ navigation, route }: StackScreenProps<any>
           <WrapperWithOrientation>
             <Form
               navigation={navigation}
-              useScrollToTop={() =>
+              scrollToTop={() =>
                 scrollViewRef?.current?.scrollTo({
                   x: 0,
                   y: 0,

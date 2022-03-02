@@ -60,7 +60,8 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.VOLUNTEER.CALENDAR_ALL]: calendarAll,
     [QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY]: calendarAll,
     [QUERY_TYPES.VOLUNTEER.GROUP]: group,
-    [QUERY_TYPES.VOLUNTEER.GROUPS]: groups
+    [QUERY_TYPES.VOLUNTEER.GROUPS]: groups,
+    [QUERY_TYPES.VOLUNTEER.GROUPS_MY]: groups
   };
 
   return QUERIES[query];
