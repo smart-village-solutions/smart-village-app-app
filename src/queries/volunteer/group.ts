@@ -89,3 +89,18 @@ export const groupEdit = async ({
 
   return (await fetch(`${volunteerApiUrl}space/${id}`, fetchObj)).json();
 };
+
+export const groupMembership = async (id: number) => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (await fetch(`${volunteerApiUrl}space/${id}/membership`, fetchObj)).json();
+};

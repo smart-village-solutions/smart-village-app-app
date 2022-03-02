@@ -226,6 +226,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate) => {
       details: {
         description: volunteer.description,
         guid: volunteer.guid,
+        id: volunteer.id,
         title: volunteer.title,
         name: volunteer.name
       }

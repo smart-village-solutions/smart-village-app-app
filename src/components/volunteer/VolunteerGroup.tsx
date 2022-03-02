@@ -5,14 +5,14 @@ import { View } from 'react-native';
 import { consts, device, texts } from '../../config';
 import { volunteerBannerImage, volunteerProfileImage } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
-import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
-import { SectionHeader } from '../SectionHeader';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+
+import { VolunteerGroupMember } from './VolunteerGroupMember';
 
 const a11yText = consts.a11yLabel;
 
@@ -46,8 +46,6 @@ export const VolunteerGroup = ({
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
-  const members = [];
-
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
@@ -66,9 +64,7 @@ export const VolunteerGroup = ({
           </Wrapper>
         )}
 
-        {!!members?.length && (
-          <SectionHeader title={`${texts.volunteer.members} (${members.length})`} />
-        )}
+        <VolunteerGroupMember groupId={id} />
 
         {!!description && (
           <View>

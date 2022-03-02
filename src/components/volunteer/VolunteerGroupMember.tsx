@@ -2,9 +2,11 @@ import _shuffle from 'lodash/shuffle';
 import React from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import { Avatar } from 'react-native-elements';
+import { useQuery } from 'react-query';
 
 import { colors, normalize, texts } from '../../config';
 import { volunteerProfileImage } from '../../helpers';
+import { groupMembership } from '../../queries/volunteer';
 import { BoldText } from '../Text';
 import { Wrapper } from '../Wrapper';
 
@@ -15,11 +17,12 @@ const renderItem = ({
   index,
   totalCount
 }: {
-  item: { id: number; guid: string; display_name: string };
+  item: { user: { id: number; guid: string; display_name: string } };
   index: number;
   totalCount: number;
 }) => {
-  const { guid, display_name: displayName } = item;
+  const { user } = item;
+  const { guid, display_name: displayName } = user || {};
 
   // get initials from the display name
   const title = displayName
@@ -63,29 +66,32 @@ const renderItem = ({
 
 const MAX_AVATARS_COUNT = 10;
 
-export const VolunteerEventAttending = ({
-  data
-}: {
-  data: [{ id: number; guid: string; display_name: string }];
-}) => (
-  <Wrapper>
-    <BoldText>{texts.volunteer.attending}</BoldText>
-    <FlatList
-      keyExtractor={keyExtractor}
-      data={_shuffle(data.slice(0, MAX_AVATARS_COUNT + 1))}
-      renderItem={({ item, index }) =>
-        renderItem({
-          item,
-          index,
-          totalCount: data.length
-        })
-      }
-      showsHorizontalScrollIndicator={false}
-      horizontal
-      bounces={false}
-    />
-  </Wrapper>
-);
+export const VolunteerGroupMember = ({ groupId }: { groupId: number }) => {
+  const { data } = useQuery(['groupMembership', groupId], () => groupMembership(groupId));
+  const members = data?.results;
+
+  if (!members?.length) return null;
+
+  return (
+    <Wrapper>
+      <BoldText>{texts.volunteer.members}</BoldText>
+      <FlatList
+        keyExtractor={keyExtractor}
+        data={_shuffle(members.slice(0, MAX_AVATARS_COUNT + 1))}
+        renderItem={({ item, index }) =>
+          renderItem({
+            item,
+            index,
+            totalCount: data.total
+          })
+        }
+        showsHorizontalScrollIndicator={false}
+        horizontal
+        bounces={false}
+      />
+    </Wrapper>
+  );
+};
 
 const styles = StyleSheet.create({
   border: {
