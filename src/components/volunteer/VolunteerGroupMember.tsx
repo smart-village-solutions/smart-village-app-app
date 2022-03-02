@@ -1,11 +1,11 @@
 import _shuffle from 'lodash/shuffle';
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
 import { colors, normalize, texts } from '../../config';
-import { volunteerProfileImage } from '../../helpers';
+import { isMember, volunteerProfileImage, volunteerUserData } from '../../helpers';
 import { groupMembership } from '../../queries/volunteer';
 import { BoldText } from '../Text';
 import { Wrapper } from '../Wrapper';
@@ -66,9 +66,35 @@ const renderItem = ({
 
 const MAX_AVATARS_COUNT = 10;
 
-export const VolunteerGroupMember = ({ groupId }: { groupId: number }) => {
-  const { data } = useQuery(['groupMembership', groupId], () => groupMembership(groupId));
+export const VolunteerGroupMember = ({
+  groupId,
+  setIsGroupMember,
+  isSuccessJoin,
+  isSuccessLeave
+}: {
+  groupId: number;
+  setIsGroupMember: (isMember: boolean) => void;
+  isSuccessJoin: boolean;
+  isSuccessLeave: boolean;
+}) => {
+  const { data, refetch } = useQuery(['groupMembership', groupId], () => groupMembership(groupId));
   const members = data?.results;
+
+  const checkIfJoined = useCallback(async () => {
+    if (!members?.length) return;
+
+    const { currentUserId } = await volunteerUserData();
+
+    setIsGroupMember(isMember(currentUserId, members));
+  }, [members]);
+
+  useEffect(() => {
+    checkIfJoined();
+  }, [checkIfJoined]);
+
+  useEffect(() => {
+    refetch();
+  }, [isSuccessJoin, isSuccessLeave]);
 
   if (!members?.length) return null;
 

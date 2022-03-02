@@ -63,12 +63,8 @@ export const VolunteerEventRecord = ({
 
   const checkIfAttending = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
-    // show only attending dates for current user if on personal calendar view
-    if (isAttending(currentUserId, attending)) {
-      setIsAttendingEvent(true);
-    } else {
-      setIsAttendingEvent(false);
-    }
+
+    setIsAttendingEvent(isAttending(currentUserId, attending));
   }, [participants]);
 
   useEffect(() => {

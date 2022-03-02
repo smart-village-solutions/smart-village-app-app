@@ -1,10 +1,18 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
+import { useMutation } from 'react-query';
 
 import { consts, device, texts } from '../../config';
-import { volunteerBannerImage, volunteerProfileImage } from '../../helpers';
+import {
+  isOwner,
+  volunteerBannerImage,
+  volunteerProfileImage,
+  volunteerUserData
+} from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
+import { groupJoin, groupLeave } from '../../queries/volunteer';
+import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
@@ -19,7 +27,6 @@ const a11yText = consts.a11yLabel;
 // eslint-disable-next-line complexity
 export const VolunteerGroup = ({
   data,
-  refetch,
   route
 }: { data: any; refetch: () => void } & StackScreenProps<any>) => {
   const {
@@ -39,12 +46,39 @@ export const VolunteerGroup = ({
     }
   ];
   const logo = volunteerProfileImage(guid);
-  const { display_name: ownerDisplayName, guid: ownerGuid, id: ownerId } = owner || {};
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
+
+  const [isGroupMember, setIsGroupMember] = useState<boolean | undefined>();
+  const [isGroupOwner, setIsGroupOwner] = useState(false);
+
+  const { mutate: mutateJoin, isSuccess: isSuccessJoin } = useMutation(groupJoin);
+  const { mutate: mutateLeave, isSuccess: isSuccessLeave } = useMutation(groupLeave);
+
+  const join = useCallback(async () => {
+    const { currentUserId } = await volunteerUserData();
+
+    currentUserId && mutateJoin({ id, userId: currentUserId });
+  }, [isGroupMember]);
+
+  const leave = useCallback(async () => {
+    const { currentUserId } = await volunteerUserData();
+
+    currentUserId && mutateLeave({ id, userId: currentUserId });
+  }, [isGroupMember]);
+
+  const checkIfOwner = useCallback(async () => {
+    const { currentUserId } = await volunteerUserData();
+
+    setIsGroupOwner(isOwner(currentUserId, owner));
+  }, [owner]);
+
+  useEffect(() => {
+    checkIfOwner();
+  }, [checkIfOwner]);
 
   return (
     <View>
@@ -64,7 +98,12 @@ export const VolunteerGroup = ({
           </Wrapper>
         )}
 
-        <VolunteerGroupMember groupId={id} />
+        <VolunteerGroupMember
+          groupId={id}
+          setIsGroupMember={setIsGroupMember}
+          isSuccessJoin={isSuccessJoin}
+          isSuccessLeave={isSuccessLeave}
+        />
 
         {!!description && (
           <View>
@@ -84,13 +123,15 @@ export const VolunteerGroup = ({
           <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
         </Wrapper>
 
-        {/* <Wrapper>
-          <Button
-            title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
-            invert={isAttendingEvent}
-            onPress={attend}
-          />
-        </Wrapper> */}
+        {!isGroupOwner && isGroupMember !== undefined && (
+          <Wrapper>
+            <Button
+              title={isGroupMember ? texts.volunteer.leave : texts.volunteer.join}
+              invert={isGroupMember}
+              onPress={isGroupMember ? leave : join}
+            />
+          </Wrapper>
+        )}
       </WrapperWithOrientation>
     </View>
   );

@@ -104,3 +104,33 @@ export const groupMembership = async (id: number) => {
 
   return (await fetch(`${volunteerApiUrl}space/${id}/membership`, fetchObj)).json();
 };
+
+export const groupJoin = async ({ id, userId }: { id: number; userId: string }) => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (await fetch(`${volunteerApiUrl}space/${id}/membership/${userId}`, fetchObj)).json();
+};
+
+export const groupLeave = async ({ id, userId }: { id: number; userId: string }) => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (await fetch(`${volunteerApiUrl}space/${id}/membership/${userId}`, fetchObj)).json();
+};

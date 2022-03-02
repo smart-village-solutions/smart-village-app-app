@@ -76,6 +76,15 @@ export const isOwner = (currentUserId: string | null, owner: { id: number }): bo
   return owner.id.toString() == currentUserId;
 };
 
+export const isMember = (
+  currentUserId: string | null,
+  members?: [{ user: { id: number } }]
+): boolean => {
+  if (!currentUserId || !members?.length) return false;
+
+  return members.some((item: { user: { id: number } }) => item.user.id.toString() == currentUserId);
+};
+
 export const volunteerProfileImage = (guid: string) =>
   `${serverUrl}/uploads/profile_image/${guid}.jpg`;
 

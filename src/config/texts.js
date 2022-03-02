@@ -592,6 +592,8 @@ export const texts = {
     group: 'Gruppe',
     groups: 'Gruppen',
     groupsMy: 'Meine Gruppen',
+    join: 'Beitreten',
+    leave: 'Verlassen',
     list: 'Liste',
     location: 'Ort',
     login: 'Anmelden',
