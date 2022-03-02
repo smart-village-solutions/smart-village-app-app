@@ -218,7 +218,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate) => {
         message: shareMessage(
           {
             title: volunteer.title || volunteer.name,
-            subtitle: volunteerSubtitle(volunteer, query, true)
+            subtitle: volunteerSubtitle(volunteer, query, withDate)
           },
           query
         )
