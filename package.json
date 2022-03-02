@@ -71,6 +71,7 @@
     "qs": "^6.10.3",
     "react": "17.0.1",
     "react-apollo": "~3.1.5",
+    "react-hook-form": "^7.26.1",
     "react-native": "^0.64.3",
     "react-native-app-intro-slider": "^4.0.4",
     "react-native-autocomplete-input": "^4.2.0",
@@ -90,6 +91,7 @@
     "react-native-svg": "12.1.1",
     "react-native-webview": "11.13.0",
     "react-native-webview-leaflet": "https://github.com/okwast/react-native-webview-leaflet#d1914b1b02dc7a9faad45f23abadbf1fd3958abc",
+    "react-query": "^3.34.14",
     "sentry-expo": "^4.0.0",
     "styled-components": "~4.4.1"
   },

@@ -1,10 +1,10 @@
-import PropTypes from 'prop-types';
+import { StackScreenProps } from '@react-navigation/stack';
 import React, { Fragment } from 'react';
 
-import { RegularText } from '..';
+import { RegularText } from '../Text';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
-export const VolunteerMessage = ({ data, route }) => {
+export const VolunteerMessage = ({ data, route }: { data: any } & StackScreenProps<any>) => {
   const { title, messages, multiple = false } = data;
 
   return (
@@ -33,9 +33,4 @@ export const VolunteerMessage = ({ data, route }) => {
       )}
     </WrapperWithOrientation>
   );
-};
-
-VolunteerMessage.propTypes = {
-  data: PropTypes.object.isRequired,
-  route: PropTypes.object.isRequired
 };

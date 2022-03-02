@@ -31,6 +31,7 @@ import { OnboardingManager } from './OnboardingManager';
 import { OrientationProvider } from './OrientationProvider';
 import { PermanentFilterProvider } from './PermanentFilterProvider';
 import { getQuery, QUERY_TYPES } from './queries';
+import { ReactQueryProvider } from './ReactQueryProvider';
 import { SettingsProvider } from './SettingsProvider';
 
 const { LIST_TYPES } = consts;
@@ -237,9 +238,11 @@ export const MainApp = () => (
     <OrientationProvider>
       <BookmarkProvider>
         <PermanentFilterProvider>
-          <SafeAreaProvider>
-            <MainAppWithApolloProvider />
-          </SafeAreaProvider>
+          <ReactQueryProvider>
+            <SafeAreaProvider>
+              <MainAppWithApolloProvider />
+            </SafeAreaProvider>
+          </ReactQueryProvider>
         </PermanentFilterProvider>
       </BookmarkProvider>
     </OrientationProvider>
