@@ -15,6 +15,8 @@ const getListType = (query, listTypesSettings) => {
     case QUERY_TYPES.POINTS_OF_INTEREST:
     case QUERY_TYPES.TOURS:
       return listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS];
+    case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
+      return LIST_TYPES.CARD_LIST;
     default:
       return listTypesSettings[query];
   }

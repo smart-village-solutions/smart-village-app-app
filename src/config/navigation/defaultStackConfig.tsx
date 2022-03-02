@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { HeaderLeft } from '../../components';
-import { volunteerAuthToken } from '../../helpers';
 import { getScreenOptions } from '../../navigation/screenOptions';
 import {
   AboutScreen,
@@ -34,9 +33,12 @@ import {
   SurveyDetailScreen,
   SurveyOverviewScreen,
   VolunteerDetailScreen,
+  VolunteerFormScreen,
   VolunteerHomeScreen,
   VolunteerIndexScreen,
   VolunteerLoginScreen,
+  VolunteerMeScreen,
+  VolunteerPersonalScreen,
   VolunteerRegisteredScreen,
   VolunteerRegistrationScreen,
   WasteCollectionScreen,
@@ -249,7 +251,11 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.VolunteerDetail,
       screenComponent: VolunteerDetailScreen,
-      screenOptions: getScreenOptions({ withVolunteer: true })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withShare: true })
+    },
+    {
+      routeName: ScreenName.VolunteerForm,
+      screenComponent: VolunteerFormScreen
     },
     {
       routeName: ScreenName.VolunteerHome,
@@ -260,13 +266,22 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.VolunteerIndex,
-      screenComponent: VolunteerIndexScreen,
-      screenOptions: getScreenOptions({ withVolunteer: true })
+      screenComponent: VolunteerIndexScreen
     },
     {
       routeName: ScreenName.VolunteerLogin,
       screenComponent: VolunteerLoginScreen,
       screenOptions: { title: texts.screenTitles.volunteer.home }
+    },
+    {
+      routeName: ScreenName.VolunteerMe,
+      screenComponent: VolunteerMeScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.me }
+    },
+    {
+      routeName: ScreenName.VolunteerPersonal,
+      screenComponent: VolunteerPersonalScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.personal }
     },
     {
       routeName: ScreenName.VolunteerRegistered,

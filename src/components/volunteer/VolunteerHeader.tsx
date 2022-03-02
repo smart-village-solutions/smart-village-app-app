@@ -4,6 +4,7 @@ import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { colors, consts, Icon } from '../../config';
 import { QUERY_TYPES } from '../../queries';
+import { ScreenName } from '../../types';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -12,12 +13,24 @@ type Props = {
   style: StyleProp<ViewStyle>;
 };
 
-export const VolunteerHeader = ({ navigation, style }: Props) => {
+export const VolunteerHeaderPersonal = ({ navigation, style }: Props) => {
+  return (
+    <TouchableOpacity
+      onPress={() => navigation.navigate(ScreenName.VolunteerPersonal)}
+      accessibilityLabel={consts.a11yLabel.shareIcon}
+      accessibilityHint={consts.a11yLabel.shareHint}
+    >
+      <Icon.VolunteerPersonal color={colors.lightestText} style={style} />
+    </TouchableOpacity>
+  );
+};
+
+export const VolunteerHeaderProfile = ({ navigation, style }: Props) => {
   return (
     <TouchableOpacity
       onPress={() =>
         navigation.navigate({
-          name: 'VolunteerIndex',
+          name: ScreenName.VolunteerIndex,
           params: {
             title: 'Mein Profil',
             query: QUERY_TYPES.VOLUNTEER.PROFILE,
@@ -29,7 +42,7 @@ export const VolunteerHeader = ({ navigation, style }: Props) => {
       accessibilityLabel={consts.a11yLabel.shareIcon}
       accessibilityHint={consts.a11yLabel.shareHint}
     >
-      <Icon.VolunteerProfile color={colors.lightestText} style={style} />
+      <Icon.Settings color={colors.lightestText} style={style} />
     </TouchableOpacity>
   );
 };

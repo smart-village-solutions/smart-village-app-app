@@ -16,6 +16,7 @@ export const DropdownSelect = ({
   data,
   setData,
   label,
+  labelWrapperStyle,
   showSearch,
   searchInputStyle,
   renderSearch,
@@ -50,7 +51,7 @@ export const DropdownSelect = ({
 
   return (
     <View>
-      <WrapperHorizontal>
+      <WrapperHorizontal style={labelWrapperStyle}>
         <Label>{label}</Label>
       </WrapperHorizontal>
       <Dropdown
@@ -75,7 +76,7 @@ export const DropdownSelect = ({
         onDropdownWillHide={() => setArrow('down')}
         onSelect={(index, value) => {
           // only trigger onPress if a new selection is made
-          if (selectedData.value === value) return;
+          if (selectedData?.value === value) return;
 
           const updatedData = data.map((entry) => ({
             ...entry,
@@ -90,7 +91,7 @@ export const DropdownSelect = ({
         searchPlaceholder={searchPlaceholder}
       >
         <WrapperRow style={styles.dropdownTextWrapper}>
-          <RegularText>{selectedData.value}</RegularText>
+          <RegularText>{selectedData?.value}</RegularText>
           {arrow === 'down' ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
         </WrapperRow>
       </Dropdown>
@@ -130,6 +131,7 @@ DropdownSelect.propTypes = {
   data: PropTypes.array,
   setData: PropTypes.func,
   label: PropTypes.string,
+  labelWrapperStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),
   showSearch: PropTypes.bool,
   searchInputStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),
   renderSearch: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
