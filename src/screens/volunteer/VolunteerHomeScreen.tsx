@@ -1,35 +1,31 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { DeviceEventEmitter } from 'expo-modules-core';
+import React, { useCallback, useEffect } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
-
 import {
   DataListSection,
   ImagesCarousel,
   LoadingSpinner,
-  RegularText,
   SafeAreaViewFlex,
-  SectionHeader,
-  Touchable,
-  VolunteerCalendar,
   VolunteerHeaderPersonal,
+  VolunteerHomeSection,
   VolunteerWelcome,
   WrapperRow
 } from '../../components';
-import { colors, consts, Icon, normalize, texts } from '../../config';
-import { additionalData, allGroups, myCalendar } from '../../helpers/parser/volunteer';
-import { useStaticContent } from '../../hooks/staticContent';
-import { useVolunteerUser } from '../../hooks/volunteer';
+import { colors, consts, normalize, texts } from '../../config';
+import { additionalData } from '../../helpers/parser/volunteer';
+import { useStaticContent, useVolunteerUser, VOLUNTEER_HOME_REFRESH_EVENT } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 
-const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
+const { ROOT_ROUTE_NAMES } = consts;
 
 const NAVIGATION = {
   CALENDAR_INDEX: {
     name: ScreenName.VolunteerIndex,
     params: {
-      title: 'Mein Kalender',
-      query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-      queryVariables: {},
+      title: texts.volunteer.calendar,
+      query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
@@ -38,34 +34,22 @@ const NAVIGATION = {
     params: {
       title: 'Termin eintragen',
       query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-      queryVariables: {},
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
   GROUPS_INDEX: {
     name: ScreenName.VolunteerIndex,
     params: {
-      title: 'Meine Gruppen',
+      title: texts.volunteer.groups,
       query: QUERY_TYPES.VOLUNTEER.GROUPS,
-      queryVariables: {},
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
-  GROUPS_FOLLOWING_INDEX: {
-    name: ScreenName.VolunteerIndex,
+  GROUP_NEW: {
+    name: ScreenName.VolunteerForm,
     params: {
-      title: 'Gruppen, denen ich folge',
-      query: QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING,
-      queryVariables: {},
-      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-    }
-  },
-  ALL_GROUPS_INDEX: {
-    name: ScreenName.VolunteerIndex,
-    params: {
-      title: 'Alle Gruppen',
-      query: QUERY_TYPES.VOLUNTEER.ALL_GROUPS,
-      queryVariables: {},
+      title: 'Gruppe erstellen',
+      query: QUERY_TYPES.VOLUNTEER.GROUP,
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
@@ -74,36 +58,14 @@ const NAVIGATION = {
     params: {
       title: 'Ganz praktisch',
       query: QUERY_TYPES.VOLUNTEER.ADDITIONAL,
-      queryVariables: {},
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   }
 };
 
-type CalendarListToggle = {
-  showCalendar: boolean;
-  setShowCalendar: (showCalendar: boolean) => void;
-};
-
-const CalendarListToggle = ({ showCalendar, setShowCalendar }: CalendarListToggle) => {
-  const text = showCalendar ? ` ${texts.volunteer.list}` : ` ${texts.volunteer.calendar}`;
-  const CalendarListToggleIcon = showCalendar ? Icon.VolunteerList : Icon.VolunteerCalendar;
-
-  return (
-    <Touchable onPress={() => setShowCalendar(!showCalendar)}>
-      <WrapperRow style={styles.calendarListToggle}>
-        <CalendarListToggleIcon color={colors.darkText} />
-        <RegularText>{text}</RegularText>
-      </WrapperRow>
-    </Touchable>
-  );
-};
-
 export const VolunteerHomeScreen = ({ navigation, route }: any) => {
-  const [refreshing, setRefreshing] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(true);
   const { refresh, isLoading, isError, isLoggedIn } = useVolunteerUser();
-  const { data, loading, refetch } = useStaticContent({
+  const { data, loading, refetch: refetchCarousel } = useStaticContent({
     refreshTimeKey: 'publicJsonFile-volunteerCarousel',
     name: 'volunteerCarousel',
     type: 'json'
@@ -113,14 +75,16 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
     refresh();
   }, [refresh]);
 
-  const refreshHome = useCallback(async () => {
-    setRefreshing(true);
-    await refetch?.();
-    setRefreshing(false);
-  }, [refetch]);
-
   // refresh if the refreshUser param changed, which happens after login
   useEffect(refreshUser, [route.params?.refreshUser]);
+
+  const refreshHome = useCallback(() => {
+    // this will trigger the onRefresh functions provided to the `useVolunteerHomeRefresh` hook
+    // in other components.
+    DeviceEventEmitter.emit(VOLUNTEER_HOME_REFRESH_EVENT);
+  }, []);
+
+  useFocusEffect(refreshHome);
 
   useEffect(
     () =>
@@ -148,8 +112,11 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
       <ScrollView
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
-            onRefresh={refreshHome}
+            refreshing={false}
+            onRefresh={() => {
+              refreshHome();
+              refetchCarousel();
+            }}
             colors={[colors.accent]}
             tintColor={colors.accent}
           />
@@ -158,46 +125,24 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
         <ImagesCarousel data={data} />
         {/* TODO: do we want widgets on volunteer home screen? */}
         {/* <Widgets widgetConfigs={volunteerWidgetConfigs} /> */}
-        <SectionHeader
-          onPress={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
-          title="Kalender"
-        />
-        <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
-        {showCalendar ? (
-          <VolunteerCalendar navigation={navigation} />
-        ) : (
-          <DataListSection
-            loading={false}
-            navigateLink={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
-            navigation={navigation}
-            query={QUERY_TYPES.VOLUNTEER.CALENDAR}
-            sectionData={myCalendar()}
-          />
-        )}
-        <DataListSection
+        <VolunteerHomeSection
           linkTitle="Alle Termine anzeigen"
           buttonTitle="Termin eintragen"
-          loading={false}
           navigateLink={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
           navigateButton={() => navigation.navigate(NAVIGATION.CALENDAR_NEW)}
           navigate={() => navigation.navigate(NAVIGATION.CALENDAR_INDEX)}
           navigation={navigation}
-          query={QUERY_TYPES.VOLUNTEER.CALENDAR}
-          sectionData={myCalendar()}
-          limit={0}
-          showLink
-          showButton
+          query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
+          sectionTitle="Kalender"
         />
-        <DataListSection
+        <VolunteerHomeSection
           linkTitle="Alle Gruppen anzeigen"
-          buttonTitle="Gruppe eintragen"
-          loading={false}
-          navigateLink={() => navigation.navigate(NAVIGATION.ALL_GROUPS_INDEX)}
-          navigateButton={() => undefined}
-          navigate={() => navigation.navigate(NAVIGATION.ALL_GROUPS_INDEX)}
+          buttonTitle="Gruppe erstellen"
+          navigateLink={() => navigation.navigate(NAVIGATION.GROUPS_INDEX)}
+          navigateButton={() => navigation.navigate(NAVIGATION.GROUP_NEW)}
+          navigate={() => navigation.navigate(NAVIGATION.GROUPS_INDEX)}
           navigation={navigation}
-          query={QUERY_TYPES.VOLUNTEER.ALL_GROUPS}
-          sectionData={allGroups()}
+          query={QUERY_TYPES.VOLUNTEER.GROUPS}
           sectionTitle="Gruppen"
           showLink
           showButton
@@ -216,11 +161,6 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
 };
 
 const styles = StyleSheet.create({
-  calendarListToggle: {
-    alignItems: 'center',
-    paddingHorizontal: normalize(10),
-    paddingVertical: normalize(5)
-  },
   headerRight: {
     alignItems: 'center',
     paddingRight: normalize(7)

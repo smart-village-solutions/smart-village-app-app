@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
 import * as appJson from '../../../app.json';
 import {
@@ -20,8 +20,9 @@ import {
   WrapperWithOrientation
 } from '../../components';
 import { colors, consts, Icon, normalize, secrets, texts } from '../../config';
-import { storeVolunteerAuthToken } from '../../helpers';
-import { logInMutation } from '../../queries/volunteer';
+import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
+import { QUERY_TYPES } from '../../queries';
+import { logIn, me } from '../../queries/volunteer';
 import { ScreenName } from '../../types';
 
 const { a11yLabel } = consts;
@@ -31,6 +32,7 @@ const passwordForgottenUrl = secrets[namespace]?.volunteer?.passwordForgottenUrl
 const showInvalidLoginAlert = () =>
   Alert.alert('Fehler beim Login', 'Bitte Eingaben überprüfen und erneut versuchen.');
 
+// eslint-disable-next-line complexity
 export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
   const {
     control,
@@ -38,19 +40,30 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
     handleSubmit
   } = useForm();
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const { mutate: mutateLogIn, isLoading, isError, isSuccess, data, reset } = useMutation(
-    logInMutation
-  );
+  const { mutate: mutateLogIn, isLoading, isError, isSuccess, data, reset } = useMutation(logIn);
+  const {
+    isLoading: isLoadingMe,
+    isError: isErrorMe,
+    isSuccess: isSuccessMe,
+    data: dataMe
+  } = useQuery(QUERY_TYPES.VOLUNTEER.ME, me, {
+    enabled: !!data?.auth_token // the query will not execute until the auth token exists
+  });
   const onSubmit = (loginData: { username: string; password: string }) => mutateLogIn(loginData);
 
-  if (isError || (isSuccess && data?.code && data?.code !== 200)) {
+  if (isError || isErrorMe || (isSuccess && data?.code && data?.code !== 200)) {
     showInvalidLoginAlert();
     reset();
   }
 
-  if (isSuccess && data?.auth_token) {
-    // save to global state if there are no errors
+  if (isSuccess && isSuccessMe) {
+    // save auth token to global state if there are no errors
     storeVolunteerAuthToken(data.auth_token);
+
+    if (dataMe?.account) {
+      // save user data to global state if there are no errors
+      storeVolunteerUserData(dataMe.account);
+    }
 
     // refreshUser param causes the home screen to update and no longer show the welcome component
     navigation.navigate(ScreenName.VolunteerHome, { refreshUser: new Date().valueOf() });
@@ -131,7 +144,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
               <Button
                 onPress={handleSubmit(onSubmit)}
                 title={texts.volunteer.login}
-                disabled={isLoading}
+                disabled={isLoading || isLoadingMe}
               />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
@@ -140,7 +153,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
               </Touchable>
             </Wrapper>
           </WrapperWithOrientation>
-          <LoadingModal loading={isLoading} />
+          <LoadingModal loading={isLoading || isLoadingMe} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

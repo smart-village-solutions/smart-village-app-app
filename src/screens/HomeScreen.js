@@ -86,7 +86,7 @@ export const HomeScreen = ({ navigation, route }) => {
   const refresh = () => {
     setRefreshing(true);
 
-    // this will trigger the onRefresh functions provided to the useHomeRefresh hook in other
+    // this will trigger the onRefresh functions provided to the `useHomeRefresh` hook in other
     // components.
     DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
 

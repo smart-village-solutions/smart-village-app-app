@@ -5,11 +5,11 @@ import CommunityDateTimePicker, {
 import React, { useCallback, useState } from 'react';
 import { Keyboard, Modal, SafeAreaView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { BoldText, WrapperRow } from '..';
+import { BoldText } from '../Text';
 import { colors, device, texts } from '../../config';
 import { formatDate, formatTime } from '../../helpers';
 import { Label } from '../Label';
-import { Wrapper } from '../Wrapper';
+import { Wrapper, WrapperRow } from '../Wrapper';
 
 import { Input } from './Input';
 import { PickerInput } from './PickerInput';

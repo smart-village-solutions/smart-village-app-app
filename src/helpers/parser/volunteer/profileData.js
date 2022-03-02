@@ -9,5 +9,9 @@ export const myProfile = () => [
   {
     id: 2,
     title: 'Einstellungen'
+  },
+  {
+    id: 3,
+    title: 'Gespeichert'
   }
 ];
