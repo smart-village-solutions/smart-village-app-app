@@ -4,14 +4,12 @@ import React, { useCallback, useEffect } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import {
-  DataListSection,
   SafeAreaViewFlex,
   VolunteerHeaderProfile,
   VolunteerHomeSection,
   WrapperRow
 } from '../../components';
 import { colors, consts, normalize, texts } from '../../config';
-import { myMessages, myTasks } from '../../helpers/parser/volunteer';
 import { SVA_VOLUNTEER_PERSONAL_REFRESH } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
@@ -36,12 +34,27 @@ const NAVIGATION = {
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
+  CONVERSATIONS_INDEX: {
+    name: ScreenName.VolunteerIndex,
+    params: {
+      title: texts.volunteer.conversations,
+      query: QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
+      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+    }
+  },
+  CONVERSATION_NEW: {
+    name: ScreenName.VolunteerForm,
+    params: {
+      title: 'Neue Nachricht',
+      query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
+      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+    }
+  },
   GROUPS_MY_INDEX: {
     name: ScreenName.VolunteerIndex,
     params: {
       title: texts.volunteer.groupsMy,
       query: QUERY_TYPES.VOLUNTEER.GROUPS_MY,
-      queryVariables: {},
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
@@ -53,30 +66,11 @@ const NAVIGATION = {
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
-  MESSAGES_INDEX: {
-    name: ScreenName.VolunteerIndex,
-    params: {
-      title: 'Mein Postfach',
-      query: QUERY_TYPES.VOLUNTEER.MESSAGES,
-      queryVariables: {},
-      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-    }
-  },
-  MESSAGE_NEW: {
-    name: ScreenName.VolunteerForm,
-    params: {
-      title: 'Neue Nachricht',
-      query: QUERY_TYPES.VOLUNTEER.MESSAGES,
-      queryVariables: {},
-      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-    }
-  },
   TASKS_INDEX: {
     name: ScreenName.VolunteerIndex,
     params: {
       title: 'Meine Aufgaben',
       query: QUERY_TYPES.VOLUNTEER.TASKS,
-      queryVariables: {},
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   }
@@ -148,16 +142,14 @@ export const VolunteerPersonalScreen = ({ navigation }: any) => {
           sectionTitle="Meine Aufgaben"
           showLink
         /> */}
-        <DataListSection
+        <VolunteerHomeSection
           linkTitle="Alle Nachrichten anzeigen"
           buttonTitle="Neue Nachricht"
-          loading={false}
-          navigateLink={() => navigation.navigate(NAVIGATION.MESSAGES_INDEX)}
-          navigateButton={() => navigation.navigate(NAVIGATION.MESSAGE_NEW)}
-          navigate={() => navigation.navigate(NAVIGATION.MESSAGES_INDEX)}
+          navigateLink={() => navigation.navigate(NAVIGATION.CONVERSATIONS_INDEX)}
+          navigateButton={() => navigation.navigate(NAVIGATION.CONVERSATION_NEW)}
+          navigate={() => navigation.navigate(NAVIGATION.CONVERSATIONS_INDEX)}
           navigation={navigation}
-          query={QUERY_TYPES.VOLUNTEER.MESSAGES}
-          sectionData={myMessages()}
+          query={QUERY_TYPES.VOLUNTEER.CONVERSATIONS}
           sectionTitle="Mein Postfach"
           showLink
           showButton

@@ -270,8 +270,9 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.VOLUNTEER.GROUPS:
     case QUERY_TYPES.VOLUNTEER.GROUPS_MY:
       return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.GROUP, skipLastDivider);
+    case QUERY_TYPES.VOLUNTEER.CONVERSATIONS:
+      return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.CONVERSATION, skipLastDivider, withDate);
     case QUERY_TYPES.VOLUNTEER.TASKS:
-    case QUERY_TYPES.VOLUNTEER.MESSAGES:
     case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
     case QUERY_TYPES.VOLUNTEER.PROFILE:
       return parseVolunteers(data, query, skipLastDivider);

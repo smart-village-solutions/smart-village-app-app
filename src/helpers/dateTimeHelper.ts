@@ -7,15 +7,17 @@ import { momentFormat } from './momentHelper';
  *
  * @param dateStart the start date of format 'YYYY-MM-DD'
  * @param dateEnd the end date of format 'YYYY-MM-DD'
+ * @param returnFormat the format of the returned event data
  *
- * @return the formated event date string in format 'DD.MM.YYYY'
+ * @return the formated event date string in format 'DD.MM.YYYY' or specified by `returnFormat`
  */
-export const eventDate = (dateStart?: string, dateEnd?: string) => {
+export const eventDate = (dateStart?: string, dateEnd?: string, returnFormat?: string) => {
   const dateToFormat = dateStart ?? dateEnd;
+
   if (!dateToFormat) {
     return '';
   } else {
-    return momentFormat(dateToFormat);
+    return momentFormat(dateToFormat, returnFormat);
   }
 };
 

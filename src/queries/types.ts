@@ -24,11 +24,12 @@ export const QUERY_TYPES = {
     CALENDAR_ALL_MY: 'calendarAllMy',
     CALENDAR_ALL: 'calendarAll',
     CALENDAR: 'calendar',
+    CONVERSATION: 'conversation',
+    CONVERSATIONS: 'conversations',
     GROUP: 'group',
     GROUPS_MY: 'groupsMy',
     GROUPS: 'groups',
     ME: 'me',
-    MESSAGES: 'messages',
     PROFILE: 'profile',
     TASKS: 'tasks'
   } as const,

@@ -26,7 +26,7 @@ const getComponent = (query: VolunteerQuery) => {
       return VolunteerEventRecord;
     case QUERY_TYPES.VOLUNTEER.GROUP:
       return VolunteerGroup;
-    case QUERY_TYPES.VOLUNTEER.MESSAGES:
+    case QUERY_TYPES.VOLUNTEER.CONVERSATION:
       return VolunteerMessage;
     case QUERY_TYPES.VOLUNTEER.TASKS:
       return VolunteerTask;
@@ -42,7 +42,6 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
 
   // TODO: remove if all queries exist
   const dummyData = {
-    [QUERY_TYPES.VOLUNTEER.MESSAGES]: myMessages(),
     [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks(),
     [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: additionalData()
   }[query]?.find((entry: { id: number }) => entry.id == queryVariables.id);
@@ -90,7 +89,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
         >
           <Component data={componentData} refetch={refetch} navigation={navigation} route={route} />
         </ScrollView>
-        {query === QUERY_TYPES.VOLUNTEER.MESSAGES && <VolunteerMessageTextField />}
+        {query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS && <VolunteerMessageTextField />}
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );

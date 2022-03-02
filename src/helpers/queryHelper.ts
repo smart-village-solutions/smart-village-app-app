@@ -31,7 +31,7 @@ export const getTitleForQuery = (query: string, volunteer?: any) => {
       return texts.detailTitles.eventRecord;
     case QUERY_TYPES.VOLUNTEER.TASKS:
       return texts.detailTitles.volunteer.task;
-    case QUERY_TYPES.VOLUNTEER.MESSAGES:
+    case QUERY_TYPES.VOLUNTEER.CONVERSATIONS:
       return volunteer?.title;
     case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
       return texts.detailTitles.volunteer.additional;

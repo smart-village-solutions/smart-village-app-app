@@ -5,7 +5,7 @@ import { RefreshControl } from 'react-native';
 import { DropdownHeader, ListComponent, SafeAreaViewFlex } from '../../components';
 import { colors } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
-import { additionalData, myMessages, myProfile, myTasks } from '../../helpers/parser/volunteer';
+import { additionalData, myProfile, myTasks } from '../../helpers/parser/volunteer';
 import { useLogoutHeader, useVolunteerData } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 
@@ -24,7 +24,6 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
 
   // TODO: remove if all queries exist
   const details = {
-    [QUERY_TYPES.VOLUNTEER.MESSAGES]: myMessages(),
     [QUERY_TYPES.VOLUNTEER.PROFILE]: myProfile(),
     [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks(),
     [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: additionalData()
@@ -32,7 +31,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
 
   const listItems = parseListItemsFromQuery(query, data || details, titleDetail, {
     bookmarkable,
-    withDate: false,
+    withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
     skipLastDivider: true
   });
 

@@ -580,6 +580,7 @@ export const texts = {
     attending: 'Nehmen teil',
     calendar: 'Kalender',
     calendarMy: 'Mein Kalender',
+    conversations: 'Mein Postfach',
     description: 'Beschreibung',
     edit: 'Daten bearbeiten',
     email: 'E-Mail',

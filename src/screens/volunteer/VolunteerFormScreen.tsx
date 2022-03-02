@@ -8,7 +8,6 @@ import {
   SafeAreaViewFlex,
   VolunteerFormCalendar,
   VolunteerFormGroup,
-  VolunteerMessageTextField,
   WrapperWithOrientation
 } from '../../components';
 import { QUERY_TYPES } from '../../queries';
@@ -16,15 +15,12 @@ import { QUERY_TYPES } from '../../queries';
 export const VolunteerFormScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const query = route.params?.query ?? '';
-  const queryVariables = route.params?.queryVariables ?? {};
 
   if (!query) return null;
 
   const Form = {
     [QUERY_TYPES.VOLUNTEER.CALENDAR]: VolunteerFormCalendar,
-    [QUERY_TYPES.VOLUNTEER.GROUP]: VolunteerFormGroup,
-    [QUERY_TYPES.VOLUNTEER.MESSAGES]: null,
-    [QUERY_TYPES.VOLUNTEER.TASKS]: null
+    [QUERY_TYPES.VOLUNTEER.GROUP]: VolunteerFormGroup
   }[query];
 
   if (!Form) return null;
@@ -46,7 +42,6 @@ export const VolunteerFormScreen = ({ navigation, route }: StackScreenProps<any>
             />
           </WrapperWithOrientation>
         </ScrollView>
-        {query === QUERY_TYPES.VOLUNTEER.MESSAGES && <VolunteerMessageTextField />}
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );

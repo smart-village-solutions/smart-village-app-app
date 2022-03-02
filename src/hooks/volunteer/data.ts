@@ -1,8 +1,15 @@
+import _orderBy from 'lodash/orderBy';
 import _sortBy from 'lodash/sortBy';
 import { useCallback, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 
-import { isAttending, isOwner, isUpcomingDate, volunteerListDate, volunteerUserData } from '../../helpers';
+import {
+  isAttending,
+  isOwner,
+  isUpcomingDate,
+  volunteerListDate,
+  volunteerUserData
+} from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { VolunteerQuery } from '../../types';
 
@@ -65,10 +72,13 @@ export const useVolunteerData = ({
     if (query === QUERY_TYPES.VOLUNTEER.GROUPS_MY) {
       const { currentUserId } = await volunteerUserData();
       // show only attending dates for current user if on personal calendar view
-      processedVolunteerData = processedVolunteerData?.filter(
-        (item: { owner: { id: number } }) =>
-          isOwner(currentUserId, item.owner)
+      processedVolunteerData = processedVolunteerData?.filter((item: { owner: { id: number } }) =>
+        isOwner(currentUserId, item.owner)
       );
+    }
+
+    if (query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS) {
+      processedVolunteerData = _orderBy(processedVolunteerData, 'updated_at', 'desc');
     }
 
     setVolunteerData(processedVolunteerData);
