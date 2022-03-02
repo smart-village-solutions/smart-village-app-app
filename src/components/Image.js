@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { CacheManager } from 'react-native-expo-image-cache';
 import { Image as RNEImage } from 'react-native-elements';
+import { CacheManager } from 'react-native-expo-image-cache';
 
-import { consts, colors } from '../config';
+import { colors, consts } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
-import { SettingsContext } from '../SettingsProvider';
 import { useInterval } from '../hooks/TimeHooks';
+import { SettingsContext } from '../SettingsProvider';
 
 import { ImageMessage } from './ImageMessage';
 import { ImageRights } from './ImageRights';
@@ -21,6 +21,8 @@ const addQueryParam = (url, param) => {
 
   return url.includes('?') ? `${url}&${param}` : `${url}?${param}`;
 };
+
+const NO_IMAGE = { uri: 'NO_IMAGE' };
 
 export const Image = ({
   message,
@@ -70,25 +72,40 @@ export const Image = ({
         break effect;
       }
 
-      sourceProp.uri
-        ? CacheManager.get(sourceProp.uri)
-            .getPath()
-            .then((path) => {
-              mounted && setSource({ uri: path });
-            })
-            .catch((err) => {
-              console.warn(
-                'An error occurred with cache management for an image',
-                sourceProp.uri,
-                err
-              );
-              mounted && setSource(sourceProp);
-            })
-        : mounted && setSource(sourceProp);
+      if (sourceProp.uri) {
+        fetch(sourceProp.uri)
+          .then((response) => {
+            if (response?.status == 200) {
+              CacheManager.get(sourceProp.uri)
+                .getPath()
+                .then((path) => {
+                  mounted && setSource({ uri: path });
+                })
+                .catch((err) => {
+                  console.warn(
+                    'An error occurred with cache management for an image',
+                    sourceProp.uri,
+                    err
+                  );
+                  mounted && setSource(NO_IMAGE);
+                });
+            } else {
+              mounted && setSource(NO_IMAGE);
+            }
+          })
+          .catch((err) => {
+            console.warn('An error occurred with fetching an image', sourceProp.uri, err);
+            mounted && setSource(NO_IMAGE);
+          });
+      } else {
+        mounted && setSource(sourceProp);
+      }
     }
 
     return () => (mounted = false);
   }, [timestamp, refreshInterval, sourceProp, setSource]);
+
+  if (source?.uri === 'NO_IMAGE') return null;
 
   return (
     <View>
