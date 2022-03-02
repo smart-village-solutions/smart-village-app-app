@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect } from 'react';
 import { ScrollView } from 'react-native';
-import { useMutation } from 'react-query';
+import { useQuery } from 'react-query';
 
 import {
   Button,
@@ -17,11 +17,10 @@ import { AddressSection } from '../../components/infoCard/AddressSection';
 import { ContactSection } from '../../components/infoCard/ContactSection';
 import { UrlSection } from '../../components/infoCard/UrlSection';
 import { consts, texts } from '../../config';
-import { storeVolunteerContentContainerId } from '../../helpers';
-import { useOpenWebScreen, usePullToRefetch } from '../../hooks';
-import { useLogoutHeader } from '../../hooks/volunteer';
+import { storeVolunteerUserData } from '../../helpers';
+import { useLogoutHeader, useOpenWebScreen, usePullToRefetch } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
-import { meMutation } from '../../queries/volunteer';
+import { me } from '../../queries/volunteer';
 
 const { a11yLabel } = consts;
 
@@ -35,16 +34,14 @@ export const VolunteerMeScreen = ({ navigation, route }: StackScreenProps<any>) 
     route.params?.rootRouteName
   );
 
-  const { mutate, mutateAsync, isLoading, isError, isSuccess, data } = useMutation(meMutation);
+  const { isLoading, isError, isSuccess, data, refetch } = useQuery(QUERY_TYPES.VOLUNTEER.ME, me);
 
-  const RefreshControl = usePullToRefetch(mutateAsync);
-
-  useEffect(mutate, []);
+  const RefreshControl = usePullToRefetch(refetch);
 
   useEffect(() => {
-    if (isSuccess && data?.account?.contentcontainer_id) {
-      // save to global state if there are no errors
-      storeVolunteerContentContainerId(data.account.contentcontainer_id);
+    if (isSuccess && data?.account) {
+      // save user data to global state if there are no errors
+      storeVolunteerUserData(data.account);
     }
   }, [isSuccess, data]);
 

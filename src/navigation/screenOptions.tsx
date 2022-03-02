@@ -12,7 +12,6 @@ import {
   ShareHeader,
   WrapperRow
 } from '../components';
-import { VolunteerHeader } from '../components/volunteer/VolunteerHeader';
 import { colors, device, normalize } from '../config';
 
 type OptionProps = {
@@ -25,15 +24,13 @@ type OptionConfig = {
   withDrawer?: boolean;
   withFavorites?: boolean;
   withShare?: boolean;
-  withVolunteer?: boolean;
 };
 
 export const getScreenOptions = ({
   withBookmark,
   withDrawer,
   withFavorites,
-  withShare,
-  withVolunteer
+  withShare
 }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) => ({ navigation, route }) => {
   const shareContent = route.params?.shareContent ?? '';
 
@@ -48,7 +45,6 @@ export const getScreenOptions = ({
         {withBookmark && <BookmarkHeader route={route} style={styles.icon} />}
         {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
         {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}
-        {withVolunteer && <VolunteerHeader navigation={navigation} style={styles.icon} />}
       </WrapperRow>
     ),
     headerLeft: withFavorites

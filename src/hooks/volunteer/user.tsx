@@ -2,13 +2,14 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { normalize } from 'react-native-elements';
 
-import { WrapperRow } from '../../components';
+import { WrapperRow } from '../../components/Wrapper';
 import { colors, consts, Icon } from '../../config';
 import {
   storeVolunteerAuthToken,
-  storeVolunteerContentContainerId,
-  volunteerAuthToken
-} from '../../helpers';
+  storeVolunteerUserData,
+  volunteerAuthToken,
+  volunteerUserData
+} from '../../helpers/volunteerHelper';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
@@ -18,11 +19,15 @@ export const useVolunteerUser = (): {
   isLoading: boolean;
   isError: boolean;
   isLoggedIn: boolean;
+  currentUserId: string | null;
+  contentContainerId: string | null;
 } => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [contentContainerId, setContentContainerId] = useState<string | null>(null);
 
   const logInCallback = useCallback(async () => {
     setIsLoading(true);
@@ -30,7 +35,14 @@ export const useVolunteerUser = (): {
 
     try {
       const storedVolunteerAuthToken = await volunteerAuthToken();
+      const {
+        currentUserId: userId,
+        contentContainerId: userContentContainerId
+      } = await volunteerUserData();
+
       setIsLoggedIn(!!storedVolunteerAuthToken);
+      setCurrentUserId(userId);
+      setContentContainerId(userContentContainerId);
     } catch (e) {
       console.warn(e);
       setIsError(true);
@@ -48,7 +60,14 @@ export const useVolunteerUser = (): {
     }
   }, [isConnected, isMainserverUp, logInCallback]);
 
-  return { refresh: logInCallback, isLoading, isError, isLoggedIn };
+  return {
+    refresh: logInCallback,
+    isLoading,
+    isError,
+    isLoggedIn,
+    currentUserId,
+    contentContainerId
+  };
 };
 
 export const useLogoutHeader = ({ query, navigation }: any) => {
@@ -72,7 +91,7 @@ export const useLogoutHeader = ({ query, navigation }: any) => {
                     style: 'destructive',
                     onPress: async () => {
                       await storeVolunteerAuthToken();
-                      await storeVolunteerContentContainerId();
+                      await storeVolunteerUserData();
                       navigation?.navigate(ScreenName.VolunteerHome, {
                         refreshUser: new Date().valueOf()
                       });

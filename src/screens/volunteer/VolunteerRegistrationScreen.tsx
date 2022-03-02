@@ -19,7 +19,7 @@ import {
 } from '../../components';
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import { ScreenName } from '../../types';
-import { registerMutation } from '../../queries/volunteer';
+import { register } from '../../queries/volunteer';
 
 const { a11yLabel } = consts;
 
@@ -38,7 +38,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [secureTextEntryConfirmation, setSecureTextEntryConfirmation] = useState(true);
   const { mutate: mutateRegister, isLoading, isError, isSuccess, data, reset } = useMutation(
-    registerMutation
+    register
   );
   const onSubmit = (registerData: {
     username: string;
