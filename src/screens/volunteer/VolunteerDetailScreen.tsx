@@ -40,8 +40,19 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
   const queryVariables = route.params?.queryVariables ?? {};
   const details = route.params?.details;
 
-  const { data, isLoading, refetch } = useQuery([query, queryVariables?.id], () =>
-    getQuery(query)(queryVariables?.id)
+  // TODO: remove if all queries exist
+  const dummyData = {
+    [QUERY_TYPES.VOLUNTEER.MESSAGES]: myMessages(),
+    [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks(),
+    [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: additionalData()
+  }[query]?.find((entry: { id: number }) => entry.id == queryVariables.id);
+
+  const { data, isLoading, refetch } = useQuery(
+    [query, queryVariables?.id],
+    () => getQuery(query)(queryVariables?.id),
+    {
+      enabled: !dummyData // the query will not execute if there is dummy data
+    }
   );
 
   if (isLoading) {
@@ -52,16 +63,9 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
     );
   }
 
-  // TODO: remove if all queries exist
-  const dummyData = {
-    [QUERY_TYPES.VOLUNTEER.MESSAGES]: myMessages(),
-    [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks(),
-    [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: additionalData()
-  }[query]?.find((entry: { id: number }) => entry.id == queryVariables.id);
-
   // there could be no access to detailed, so we want to show the data we have already fetched
   // with index query as details
-  const componentData = data?.code !== 403 ? data : details || dummyData;
+  const componentData = dummyData || (data?.code !== 403 ? data : details);
 
   // we can have `data` from the query or `details` from the previous list view.
   // if there is no cached `data` or network fetched `data` we fallback to the `details`.
@@ -78,7 +82,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
           refreshControl={
             <RefreshControl
               refreshing={isLoading}
-              onRefresh={refetch}
+              onRefresh={() => !dummyData && refetch()}
               colors={[colors.accent]}
               tintColor={colors.accent}
             />

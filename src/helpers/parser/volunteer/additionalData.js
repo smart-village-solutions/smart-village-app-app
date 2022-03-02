@@ -8,12 +8,22 @@ export const additionalData = () => [
     id: 2,
     title: 'G-Wiki',
     routeName: 'VolunteerDetail',
-    description: '',
+    description:
+      'Esse sit magna mollit Lorem id veniam eiusmod aliquip elit id consequat deserunt tempor sit.',
     tags: 'Wissensspeicher für Gruppen',
+    category: { name: 'Wissensspeicher für Gruppen' },
     dataProvider: {},
     picture: {
       url: 'https://picsum.photos/1600/900'
     },
+    mediaContents: [
+      {
+        sourceUrl: {
+          url: 'https://picsum.photos/1600/900'
+        },
+        contentType: 'image'
+      }
+    ],
     params: {
       title: texts.detailTitles.volunteer.additional,
       query: QUERY_TYPES.VOLUNTEER.ADDITIONAL,
@@ -25,12 +35,22 @@ export const additionalData = () => [
     id: 3,
     title: 'G-Marktplatz',
     routeName: 'VolunteerDetail',
-    description: '',
+    description:
+      'Incididunt eu esse pariatur nisi. Quis labore nisi in id reprehenderit consectetur nisi dolore veniam id irure eiusmod. Fugiat occaecat cupidatat amet deserunt ad officia ut nisi est laboris ex id laboris do.',
     tags: 'Austausch mit und zwischen Gruppen',
+    category: { name: 'Austausch mit und zwischen Gruppen' },
     dataProvider: {},
     picture: {
-      url: 'https://picsum.photos/1600/900'
+      url: 'https://picsum.photos/1600/901'
     },
+    mediaContents: [
+      {
+        sourceUrl: {
+          url: 'https://picsum.photos/1600/901'
+        },
+        contentType: 'image'
+      }
+    ],
     params: {
       title: texts.detailTitles.volunteer.additional,
       query: QUERY_TYPES.VOLUNTEER.ADDITIONAL,
@@ -42,12 +62,22 @@ export const additionalData = () => [
     id: 11,
     title: 'G-Nachbarschaft',
     routeName: 'VolunteerDetail',
-    description: '',
-    tags: 'Technik/Material/Räume gemeinsam nutzen ',
+    description:
+      'Est tempor aliqua do cillum ex officia nostrud cupidatat exercitation. Incididunt eu esse pariatur nisi. Quis labore nisi in id reprehenderit consectetur nisi dolore veniam id irure eiusmod. Fugiat occaecat cupidatat amet deserunt ad officia ut nisi est laboris ex id laboris do. Reprehenderit laboris aliqua anim consectetur adipisicing in reprehenderit. Esse cillum sit incididunt velit tempor.',
+    tags: 'Technik/Material/Räume gemeinsam nutzen',
+    category: { name: 'Technik/Material/Räume gemeinsam nutzen' },
     dataProvider: {},
     picture: {
-      url: 'https://picsum.photos/1600/900'
+      url: 'https://picsum.photos/1600/902'
     },
+    mediaContents: [
+      {
+        sourceUrl: {
+          url: 'https://picsum.photos/1600/902'
+        },
+        contentType: 'image'
+      }
+    ],
     params: {
       title: texts.detailTitles.volunteer.additional,
       query: QUERY_TYPES.VOLUNTEER.ADDITIONAL,
