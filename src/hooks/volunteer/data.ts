@@ -4,6 +4,7 @@ import { useQuery } from 'react-query';
 
 import { isAttending, isUpcomingDate, volunteerListDate, volunteerUserData } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
+import { VolunteerQuery } from '../../types';
 
 export const useVolunteerData = ({
   query,
@@ -11,7 +12,7 @@ export const useVolunteerData = ({
   isCalendar,
   onlyUpcoming = true
 }: {
-  query: string;
+  query: VolunteerQuery;
   queryVariables?: { dateRange?: string[] };
   isCalendar?: boolean;
   onlyUpcoming?: boolean;

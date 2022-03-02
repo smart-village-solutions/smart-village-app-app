@@ -3,6 +3,7 @@ export * from './VolunteerCalendar';
 export * from './VolunteerEventAttending';
 export * from './VolunteerEventRecord';
 export * from './VolunteerFormCalendar';
+export * from './VolunteerGroup';
 export * from './VolunteerHeader';
 export * from './VolunteerHomeSection';
 export * from './VolunteerMessage';

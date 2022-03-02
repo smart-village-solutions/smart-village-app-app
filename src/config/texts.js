@@ -589,10 +589,12 @@ export const texts = {
       appointments: 'Terminübersicht'
     },
     group: 'Gruppe',
+    groups: 'Gruppen',
     list: 'Liste',
     location: 'Ort',
     login: 'Anmelden',
     loginTitle: 'Anmelden',
+    members: 'Mitglieder',
     memberships: 'Mitgliedschaften',
     myCalendar: 'Mein Kalender',
     next: 'Weiter',

@@ -1,6 +1,4 @@
-import { volunteerAuthToken } from '../../helpers/volunteerHelper';
-
-import { volunteerApiUrl } from './index';
+import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
 
 export const logIn = async ({ username, password }: { username: string; password: string }) => {
   const formData = new FormData();

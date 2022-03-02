@@ -7,6 +7,7 @@ import { colors, Icon, texts } from '../../config';
 import { isUpcomingDate } from '../../helpers';
 import { useVolunteerData, useVolunteerHomeRefresh } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
+import { VolunteerQuery } from '../../types';
 import { DataListSection } from '../DataListSection';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
@@ -43,7 +44,7 @@ type Props = {
   navigateLink?: () => void;
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
-  query: string;
+  query: VolunteerQuery;
   queryVariables?: { dateRange?: string[] };
   sectionTitle?: string;
   sectionTitleDetail?: string;
@@ -113,7 +114,6 @@ export const VolunteerHomeSection = ({
           buttonTitle={buttonTitle}
           linkTitle={linkTitle}
           limit={0}
-          loading={false}
           navigate={navigate}
           navigation={navigation}
           query={query}
@@ -131,7 +131,6 @@ export const VolunteerHomeSection = ({
       buttonTitle={buttonTitle}
       linkTitle={linkTitle}
       limit={limit}
-      loading={isLoading || isRefetching}
       navigate={navigate}
       navigation={navigation}
       placeholder={placeholder}

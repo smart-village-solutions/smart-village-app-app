@@ -25,11 +25,7 @@ export const getTitleForQuery = (query: string, volunteer?: any) => {
       return texts.categoryTitles.tours;
     case QUERY_TYPES.EVENT_RECORDS:
       return texts.homeTitles.events;
-    case QUERY_TYPES.VOLUNTEER.GROUPS:
-      return texts.detailTitles.volunteer.group;
-    case QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING:
-      return texts.detailTitles.volunteer.group;
-    case QUERY_TYPES.VOLUNTEER.ALL_GROUPS:
+    case QUERY_TYPES.VOLUNTEER.GROUP:
       return texts.detailTitles.volunteer.group;
     case QUERY_TYPES.VOLUNTEER.CALENDAR:
       return texts.detailTitles.eventRecord;

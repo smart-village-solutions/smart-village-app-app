@@ -1,10 +1,8 @@
 import { colors } from '../../config';
-import { momentFormat } from '../../helpers';
 import { formatTime } from '../../helpers/formatHelper';
-import { volunteerAuthToken } from '../../helpers/volunteerHelper';
+import { momentFormat } from '../../helpers/momentHelper';
+import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
 import { VolunteerCalendar } from '../../types';
-
-import { volunteerApiUrl } from './index';
 
 export const calendarAll = async () => {
   const authToken = await volunteerAuthToken();

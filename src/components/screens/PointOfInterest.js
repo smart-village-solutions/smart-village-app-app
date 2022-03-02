@@ -9,16 +9,14 @@ import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
+import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { WebViewMap } from '../map/WebViewMap';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { DataProviderNotice } from '../DataProviderNotice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
-import { DataListSection, SectionHeader } from '..';
-import { QUERY_TYPES } from '../../queries';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
@@ -46,8 +44,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     title,
     webUrls
   } = data;
-
-  const isVolunteerGroup = data.routeName === 'VolunteerDetail';
 
   const latitude = addresses?.[0]?.geoLocation?.latitude;
   const longitude = addresses?.[0]?.geoLocation?.longitude;
@@ -88,7 +84,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
           {!!logo && <Logo source={{ uri: logo }} />}
 
           <InfoCard
-            category={(isVolunteerGroup && { name: data.tags }) || category}
+            category={category}
             addresses={addresses}
             contact={contact}
             openingHours={openingHours}
@@ -96,14 +92,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
             webUrls={webUrls}
           />
         </Wrapper>
-
-        {isVolunteerGroup && !!data.membersCount && (
-          <SectionHeader title={`Mitglieder (${data.membersCount})`} />
-        )}
-
-        {isVolunteerGroup && !!data.followersCount && (
-          <SectionHeader title={`Follower (${data.followersCount})`} />
-        )}
 
         {!!openingHours && !!openingHours.length && (
           <View>
@@ -197,28 +185,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
         {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
-
-        {isVolunteerGroup && !!data.tasks?.length && (
-          <DataListSection
-            loading={false}
-            navigation={navigation}
-            query={QUERY_TYPES.VOLUNTEER.TASKS}
-            sectionData={data.tasks}
-            sectionTitle="Aufgaben"
-            sectionTitleDetail="Ehrenamt"
-          />
-        )}
-
-        {isVolunteerGroup && !!data.wiki?.length && (
-          <DataListSection
-            loading={false}
-            navigation={navigation}
-            query={QUERY_TYPES.NEWS_ITEMS}
-            sectionData={{ [QUERY_TYPES.NEWS_ITEMS]: data.wiki }}
-            sectionTitle="Wiki"
-            sectionTitleDetail="Ehrenamt"
-          />
-        )}
       </WrapperWithOrientation>
     </View>
   );
