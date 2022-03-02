@@ -48,7 +48,7 @@ const NAVIGATION = {
   GROUP_NEW: {
     name: ScreenName.VolunteerForm,
     params: {
-      title: 'Gruppe eintragen',
+      title: 'Gruppe erstellen',
       query: QUERY_TYPES.VOLUNTEER.GROUP,
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
@@ -137,7 +137,7 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
         />
         <VolunteerHomeSection
           linkTitle="Alle Gruppen anzeigen"
-          buttonTitle="Gruppe eintragen"
+          buttonTitle="Gruppe erstellen"
           navigateLink={() => navigation.navigate(NAVIGATION.GROUPS_INDEX)}
           navigateButton={() => navigation.navigate(NAVIGATION.GROUP_NEW)}
           navigate={() => navigation.navigate(NAVIGATION.GROUPS_INDEX)}

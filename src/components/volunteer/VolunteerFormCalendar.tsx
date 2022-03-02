@@ -88,12 +88,10 @@ export const VolunteerFormCalendar = ({
       'Bitte Eingaben überprüfen und erneut versuchen.'
     );
     reset();
-    // console.warn({ data });
   } else if (isSuccess) {
-    // refreshUser param causes the home screen to update and no longer show the welcome component
-    // navigation.navigate(ScreenName.VolunteerHome, { refreshUser: new Date().valueOf() });
-
     navigation.goBack();
+
+    Alert.alert('Erfolgreich', 'Das Event wurde erfolgreich erstellt.');
   }
 
   return (
