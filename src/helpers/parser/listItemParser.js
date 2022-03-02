@@ -203,7 +203,7 @@ const parsePointsOfInterestAndTours = (data) => {
 const parseVolunteers = (data, query, skipLastDivider, withDate) => {
   return data?.map((volunteer, index) => ({
     id: volunteer.id,
-    title: volunteer.title,
+    title: volunteer.title || volunteer.name,
     subtitle: volunteerSubtitle(volunteer, query, withDate),
     picture: volunteer.picture,
     routeName: ScreenName.VolunteerDetail,
@@ -216,9 +216,19 @@ const parseVolunteers = (data, query, skipLastDivider, withDate) => {
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
       shareContent: {
         message: shareMessage(
-          { title: volunteer.title, subtitle: volunteerSubtitle(volunteer, query, true) },
+          {
+            title: volunteer.title || volunteer.name,
+            subtitle: volunteerSubtitle(volunteer, query, true)
+          },
           query
         )
+      },
+      details: {
+        description: volunteer.description,
+        guid: volunteer.guid,
+        id: volunteer.id,
+        title: volunteer.title,
+        name: volunteer.name
       }
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1
@@ -258,8 +268,8 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY:
       return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.CALENDAR, skipLastDivider, withDate);
     case QUERY_TYPES.VOLUNTEER.GROUPS:
-    case QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING:
-    case QUERY_TYPES.VOLUNTEER.ALL_GROUPS:
+    case QUERY_TYPES.VOLUNTEER.GROUPS_MY:
+      return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.GROUP, skipLastDivider);
     case QUERY_TYPES.VOLUNTEER.TASKS:
     case QUERY_TYPES.VOLUNTEER.MESSAGES:
     case QUERY_TYPES.VOLUNTEER.ADDITIONAL:

@@ -63,12 +63,8 @@ export const VolunteerEventRecord = ({
 
   const checkIfAttending = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
-    // show only attending dates for current user if on personal calendar view
-    if (isAttending(currentUserId, attending)) {
-      setIsAttendingEvent(true);
-    } else {
-      setIsAttendingEvent(false);
-    }
+
+    setIsAttendingEvent(isAttending(currentUserId, attending));
   }, [participants]);
 
   useEffect(() => {
@@ -90,7 +86,7 @@ export const VolunteerEventRecord = ({
 
   return (
     <View>
-      {!!mediaContents?.length && <ImageSection mediaContents={mediaContents} />}
+      <ImageSection mediaContents={mediaContents} />
 
       <WrapperWithOrientation>
         {!!title && (
@@ -117,8 +113,8 @@ export const VolunteerEventRecord = ({
         {!!description && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`(${texts.eventRecord.description}) ${a11yText.heading}`}>
-                {texts.eventRecord.description}
+              <Title accessibilityLabel={`(${texts.volunteer.description}) ${a11yText.heading}`}>
+                {texts.volunteer.description}
               </Title>
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}

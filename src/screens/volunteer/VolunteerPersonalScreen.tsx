@@ -1,8 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { DeviceEventEmitter } from 'expo-modules-core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
-
 import {
   DataListSection,
   SafeAreaViewFlex,
@@ -12,9 +11,6 @@ import {
 } from '../../components';
 import { colors, consts, normalize, texts } from '../../config';
 import {
-  allGroups,
-  myGroups,
-  myGroupsFollowing,
   myMessages,
   myTasks
 } from '../../helpers/parser/volunteer';
@@ -28,7 +24,7 @@ const NAVIGATION = {
   CALENDAR_MY_INDEX: {
     name: ScreenName.VolunteerIndex,
     params: {
-      title: texts.volunteer.myCalendar,
+      title: texts.volunteer.calendarMy,
       query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY,
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
@@ -42,30 +38,20 @@ const NAVIGATION = {
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
-  GROUPS_INDEX: {
+  GROUPS_MY_INDEX: {
     name: ScreenName.VolunteerIndex,
     params: {
-      title: 'Meine Gruppen',
-      query: QUERY_TYPES.VOLUNTEER.GROUPS,
+      title: texts.volunteer.groupsMy,
+      query: QUERY_TYPES.VOLUNTEER.GROUPS_MY,
       queryVariables: {},
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
-  GROUPS_FOLLOWING_INDEX: {
-    name: ScreenName.VolunteerIndex,
+  GROUP_NEW: {
+    name: ScreenName.VolunteerForm,
     params: {
-      title: 'Gruppen, denen ich folge',
-      query: QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING,
-      queryVariables: {},
-      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-    }
-  },
-  ALL_GROUPS_INDEX: {
-    name: ScreenName.VolunteerIndex,
-    params: {
-      title: 'Alle Gruppen',
-      query: QUERY_TYPES.VOLUNTEER.ALL_GROUPS,
-      queryVariables: {},
+      title: 'Gruppe erstellen',
+      query: QUERY_TYPES.VOLUNTEER.GROUP,
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
@@ -99,20 +85,10 @@ const NAVIGATION = {
 };
 
 export const VolunteerPersonalScreen = ({ navigation }: any) => {
-  const [refreshingHome, setRefreshingHome] = useState(false);
-
   const refreshHome = useCallback(() => {
-    setRefreshingHome(true);
-
     // this will trigger the onRefresh functions provided to the `useVolunteerHomeRefresh` hook
     // in other components.
     DeviceEventEmitter.emit(SVA_VOLUNTEER_PERSONAL_REFRESH);
-
-    // we simulate state change of `refreshing` with setting it to `true` first and after
-    // a timeout to `false` again, which will result in a re-rendering of the screen.
-    setTimeout(() => {
-      setRefreshingHome(false);
-    }, 500);
   }, []);
 
   useFocusEffect(refreshHome);
@@ -134,39 +110,24 @@ export const VolunteerPersonalScreen = ({ navigation }: any) => {
       <ScrollView
         refreshControl={
           <RefreshControl
-            refreshing={refreshingHome}
+            refreshing={false}
             onRefresh={refreshHome}
             colors={[colors.accent]}
             tintColor={colors.accent}
           />
         }
       >
-        <DataListSection
-          loading={false}
-          navigate={() => navigation.navigate(NAVIGATION.GROUPS_INDEX)}
+        <VolunteerHomeSection
+          linkTitle="Alle meine Gruppen anzeigen"
+          buttonTitle="Gruppe erstellen"
+          navigateLink={() => navigation.navigate(NAVIGATION.GROUPS_MY_INDEX)}
+          navigateButton={() => navigation.navigate(NAVIGATION.GROUP_NEW)}
+          navigate={() => navigation.navigate(NAVIGATION.GROUPS_MY_INDEX)}
           navigation={navigation}
-          query={QUERY_TYPES.VOLUNTEER.GROUPS}
-          sectionData={myGroups()}
+          query={QUERY_TYPES.VOLUNTEER.GROUPS_MY}
           sectionTitle="Meine Gruppen"
-        />
-        <DataListSection
-          loading={false}
-          navigate={() => navigation.navigate(NAVIGATION.GROUPS_FOLLOWING_INDEX)}
-          navigation={navigation}
-          query={QUERY_TYPES.VOLUNTEER.GROUPS_FOLLOWING}
-          sectionData={myGroupsFollowing()}
-          sectionTitle="Gruppen, denen ich folge"
-        />
-        <DataListSection
-          linkTitle="Alle Gruppen anzeigen"
-          loading={false}
-          navigateLink={() => navigation.navigate(NAVIGATION.ALL_GROUPS_INDEX)}
-          navigate={() => navigation.navigate(NAVIGATION.ALL_GROUPS_INDEX)}
-          navigation={navigation}
-          query={QUERY_TYPES.VOLUNTEER.ALL_GROUPS}
-          sectionData={allGroups()}
-          limit={0}
           showLink
+          showButton
         />
         <VolunteerHomeSection
           linkTitle="Alle meine Termine anzeigen"

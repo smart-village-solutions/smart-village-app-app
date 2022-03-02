@@ -21,7 +21,7 @@ import { GET_WEATHER, GET_WEATHER_CURRENT } from './weather';
 // IMPORT CREATE QUERIES
 import { CREATE_APP_USER_CONTENT } from './appUserContent';
 import { GET_NEWS_ITEMS_DATA_PROVIDERS } from './newsItemsDataProvider';
-import { calendarAll, calendar } from './volunteer';
+import { calendarAll, calendar, group, groups } from './volunteer';
 
 // EXPORT TYPES
 export * from './types';
@@ -58,7 +58,10 @@ export const getQuery = (query, filterOptions = {}) => {
     // VOLUNTEER QUERIES
     [QUERY_TYPES.VOLUNTEER.CALENDAR]: calendar,
     [QUERY_TYPES.VOLUNTEER.CALENDAR_ALL]: calendarAll,
-    [QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY]: calendarAll
+    [QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY]: calendarAll,
+    [QUERY_TYPES.VOLUNTEER.GROUP]: group,
+    [QUERY_TYPES.VOLUNTEER.GROUPS]: groups,
+    [QUERY_TYPES.VOLUNTEER.GROUPS_MY]: groups
   };
 
   return QUERIES[query];

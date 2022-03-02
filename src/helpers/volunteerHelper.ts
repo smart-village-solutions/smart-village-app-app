@@ -10,6 +10,7 @@ import { subtitle } from './textHelper';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const serverUrl = secrets[namespace]?.volunteer?.serverUrl;
+export const volunteerApiUrl = serverUrl + secrets[namespace]?.volunteer?.version;
 
 const VOLUNTEER_AUTH_TOKEN = 'VOLUNTEER_AUTH_TOKEN';
 const VOLUNTEER_CURRENT_USER_ID = 'VOLUNTEER_CURRENT_USER_ID';
@@ -73,6 +74,15 @@ export const isOwner = (currentUserId: string | null, owner: { id: number }): bo
   if (!currentUserId || !owner?.id) return false;
 
   return owner.id.toString() == currentUserId;
+};
+
+export const isMember = (
+  currentUserId: string | null,
+  members?: [{ user: { id: number } }]
+): boolean => {
+  if (!currentUserId || !members?.length) return false;
+
+  return members.some((item: { user: { id: number } }) => item.user.id.toString() == currentUserId);
 };
 
 export const volunteerProfileImage = (guid: string) =>
