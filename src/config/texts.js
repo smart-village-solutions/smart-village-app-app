@@ -592,6 +592,7 @@ export const texts = {
     group: 'Gruppe',
     groups: 'Gruppen',
     groupsMy: 'Meine Gruppen',
+    invite: 'Jemanden einladen',
     join: 'Beitreten',
     leave: 'Verlassen',
     list: 'Liste',
