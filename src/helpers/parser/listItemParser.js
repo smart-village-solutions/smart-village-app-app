@@ -3,13 +3,15 @@ import _shuffle from 'lodash/shuffle';
 
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
-import { GenericType } from '../../types';
+import { GenericType, ScreenName } from '../../types';
 import { eventDate, isBeforeEndOfToday, isTodayOrLater } from '../dateTimeHelper';
 import { getGenericItemDetailTitle, getGenericItemRootRouteName } from '../genericTypeHelper';
 import { mainImageOfMediaContents } from '../imageHelper';
 import { momentFormat } from '../momentHelper';
+import { getTitleForQuery } from '../queryHelper';
 import { shareMessage } from '../shareHelper';
 import { subtitle } from '../textHelper';
+import { volunteerSubtitle } from '../volunteerHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -198,6 +200,41 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
+const parseVolunteers = (data, query, skipLastDivider, withDate) => {
+  return data?.map((volunteer, index) => ({
+    id: volunteer.id,
+    title: volunteer.title || volunteer.name,
+    subtitle: volunteerSubtitle(volunteer, query, withDate),
+    picture: volunteer.picture,
+    routeName: ScreenName.VolunteerDetail,
+    onPress: volunteer.onPress,
+    listDate: volunteer.listDate,
+    params: {
+      title: getTitleForQuery(query, volunteer),
+      query,
+      queryVariables: { id: `${volunteer.id}` },
+      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
+      shareContent: {
+        message: shareMessage(
+          {
+            title: volunteer.title || volunteer.name,
+            subtitle: volunteerSubtitle(volunteer, query, true)
+          },
+          query
+        )
+      },
+      details: {
+        description: volunteer.description,
+        guid: volunteer.guid,
+        id: volunteer.id,
+        title: volunteer.title,
+        name: volunteer.name
+      }
+    },
+    bottomDivider: !skipLastDivider || index !== data.length - 1
+  }));
+};
+
 /**
  * Parses list items from query a query result
  * @param {string} query
@@ -206,6 +243,7 @@ const parsePointsOfInterestAndTours = (data) => {
  * @param {{ bookmarkable?: boolean; skipLastDivider?: boolean; withDate?: boolean }} options
  * @returns
  */
+// eslint-disable-next-line complexity
 export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) => {
   if (!data) return;
 
@@ -226,5 +264,16 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseCategories(data[query], skipLastDivider);
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
+    case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL:
+    case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY:
+      return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.CALENDAR, skipLastDivider, withDate);
+    case QUERY_TYPES.VOLUNTEER.GROUPS:
+    case QUERY_TYPES.VOLUNTEER.GROUPS_MY:
+      return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.GROUP, skipLastDivider);
+    case QUERY_TYPES.VOLUNTEER.TASKS:
+    case QUERY_TYPES.VOLUNTEER.MESSAGES:
+    case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
+    case QUERY_TYPES.VOLUNTEER.PROFILE:
+      return parseVolunteers(data, query, skipLastDivider);
   }
 };

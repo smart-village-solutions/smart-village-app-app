@@ -68,6 +68,11 @@ export const texts = {
     eventRecord: 'Veranstaltung',
     newsItem: 'Nachricht',
     pointOfInterest: 'Ort',
+    volunteer: {
+      additional: 'Ganz praktisch',
+      group: 'Gruppenprofil',
+      task: 'Aufgabe'
+    },
     tour: 'Tour'
   },
   encounter: {
@@ -108,7 +113,7 @@ export const texts = {
     registrationPrivacyLink: 'Datenschutzerklärung.',
     registrationPrivacyText:
       'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
-    registrationTitle: 'Registrierung',
+    registrationTitle: 'Registrieren',
     saveChanges: 'Änderungen speichern',
     scanAgain: 'Erneut scannen',
     scannerSubTitle: 'Scanne den QR-Code deines Fahrers',
@@ -440,6 +445,16 @@ export const texts = {
     settings: 'Einstellungen',
     survey: 'Umfrage',
     surveys: 'Umfragen',
+    volunteer: {
+      calendar: 'Mein Kalender',
+      home: 'Ehrenamt',
+      me: 'Persönliche Daten',
+      groups: 'Meine Gruppen',
+      groupsFollowing: 'Gruppen, denen ich folge',
+      messages: 'Mein Postfach',
+      personal: 'Mein Bereich',
+      tasks: 'Meine Aufgaben'
+    },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
   },
@@ -549,6 +564,7 @@ export const texts = {
     home: 'Übersicht',
     service: 'Service',
     company: 'Unternehmen',
+    volunteer: 'Ehrenamt',
     about: 'Mehr'
   },
   tour: {
@@ -557,6 +573,60 @@ export const texts = {
     operatingCompany: 'Veranstalter',
     start: 'Tourbeginn',
     tour: 'Tourverlauf'
+  },
+  volunteer: {
+    abort: 'Abbrechen',
+    attend: 'Teilnehmen',
+    attending: 'Nehmen teil',
+    calendar: 'Kalender',
+    calendarMy: 'Mein Kalender',
+    description: 'Beschreibung',
+    edit: 'Daten bearbeiten',
+    email: 'E-Mail',
+    endDate: 'Enddatum',
+    endTime: 'Endzeit',
+    errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
+    eventRecord: {
+      appointments: 'Terminübersicht'
+    },
+    group: 'Gruppe',
+    groups: 'Gruppen',
+    groupsMy: 'Meine Gruppen',
+    invite: 'Jemanden einladen',
+    join: 'Beitreten',
+    leave: 'Verlassen',
+    list: 'Liste',
+    location: 'Ort',
+    login: 'Anmelden',
+    loginTitle: 'Anmelden',
+    members: 'Mitglieder',
+    memberships: 'Mitgliedschaften',
+    name: 'Name',
+    next: 'Weiter',
+    notAttend: 'Nicht teilnehmen',
+    ok: 'OK',
+    password: 'Passwort',
+    passwordConfirmation: 'Passwort bestätigen',
+    passwordForgotten: 'Passwort vergessen',
+    register: 'Registrieren',
+    registrationAllFieldsRequiredBody:
+      'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
+    registrationAllFieldsRequiredTitle: 'Hinweis',
+    registrationFailedBody: 'Bei der Registrierung ist ein Fehler aufgetreten.',
+    registrationFailedTitle: 'Fehler',
+    registrationPrivacyLink: 'Datenschutzerklärung.',
+    registrationPrivacyText:
+      'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
+    registrationTitle: 'Registrieren',
+    save: 'Speichern',
+    search: 'Suche',
+    startDate: 'Startdatum',
+    startTime: 'Startzeit',
+    tags: 'Themen',
+    title: 'Titel',
+    topics: 'Themen',
+    username: 'Benutzername',
+    usernameOrEmail: 'Benutzername oder E-Mail'
   },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',

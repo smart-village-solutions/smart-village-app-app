@@ -19,6 +19,19 @@ export const QUERY_TYPES = {
   PUBLIC_JSON_FILE: 'publicJsonFile',
   TOUR: 'tour',
   TOURS: 'tours',
+  VOLUNTEER: {
+    ADDITIONAL: 'additional',
+    CALENDAR_ALL_MY: 'calendarAllMy',
+    CALENDAR_ALL: 'calendarAll',
+    CALENDAR: 'calendar',
+    GROUP: 'group',
+    GROUPS_MY: 'groupsMy',
+    GROUPS: 'groups',
+    ME: 'me',
+    MESSAGES: 'messages',
+    PROFILE: 'profile',
+    TASKS: 'tasks'
+  } as const,
   WASTE_ADDRESSES: 'wasteAddresses',
   WASTE_STREET: 'wasteStreet',
   WEATHER_MAP: 'weatherMap',
@@ -27,10 +40,8 @@ export const QUERY_TYPES = {
 
 /**
  * Parse a query type from json string if one matches.
- * @param {string} input
- * @return {string | undefined}
  */
-export const getQueryType = (input) => {
+export const getQueryType = (input: string) => {
   const camelCaseInput = _camelCase(input);
   const availableTypes = [
     QUERY_TYPES.TOUR,

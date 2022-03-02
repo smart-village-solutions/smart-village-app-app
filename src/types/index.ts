@@ -1,4 +1,5 @@
 export * from './encounter';
+export * from './volunteer';
 
 export * from './Address';
 export * from './AppIntroSlide';
