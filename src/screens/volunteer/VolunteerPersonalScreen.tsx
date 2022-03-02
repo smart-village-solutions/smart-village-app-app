@@ -2,6 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { DeviceEventEmitter } from 'expo-modules-core';
 import React, { useCallback, useEffect } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
+
 import {
   DataListSection,
   SafeAreaViewFlex,
@@ -10,10 +11,7 @@ import {
   WrapperRow
 } from '../../components';
 import { colors, consts, normalize, texts } from '../../config';
-import {
-  myMessages,
-  myTasks
-} from '../../helpers/parser/volunteer';
+import { myMessages, myTasks } from '../../helpers/parser/volunteer';
 import { SVA_VOLUNTEER_PERSONAL_REFRESH } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
@@ -139,7 +137,7 @@ export const VolunteerPersonalScreen = ({ navigation }: any) => {
           query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY}
           sectionTitle="Mein Kalender"
         />
-        <DataListSection
+        {/* <DataListSection
           linkTitle="Alle Aufgaben anzeigen"
           loading={false}
           navigateLink={() => navigation.navigate(NAVIGATION.TASKS_INDEX)}
@@ -149,7 +147,7 @@ export const VolunteerPersonalScreen = ({ navigation }: any) => {
           sectionData={myTasks()}
           sectionTitle="Meine Aufgaben"
           showLink
-        />
+        /> */}
         <DataListSection
           linkTitle="Alle Nachrichten anzeigen"
           buttonTitle="Neue Nachricht"
