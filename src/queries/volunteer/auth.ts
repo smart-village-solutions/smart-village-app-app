@@ -1,17 +1,6 @@
-import { secrets } from '../../config';
-import * as appJson from '../../../app.json';
-import { volunteerAuthToken } from '../../helpers';
+import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
 
-const namespace = appJson.expo.slug as keyof typeof secrets;
-const serverUrl = secrets[namespace]?.volunteer?.serverUrl + secrets[namespace]?.volunteer?.version;
-
-export const logInMutation = async ({
-  username,
-  password
-}: {
-  username: string;
-  password: string;
-}) => {
+export const logIn = async ({ username, password }: { username: string; password: string }) => {
   const formData = new FormData();
   formData.append('username', username);
   formData.append('password', password);
@@ -25,10 +14,10 @@ export const logInMutation = async ({
     body: formData
   };
 
-  return (await fetch(`${serverUrl}auth/login`, fetchObj)).json();
+  return (await fetch(`${volunteerApiUrl}auth/login`, fetchObj)).json();
 };
 
-export const registerMutation = async ({
+export const register = async ({
   username,
   email,
   password,
@@ -54,12 +43,12 @@ export const registerMutation = async ({
     body: formData
   };
 
-  return (await fetch(`${serverUrl}register`, fetchObj)).json();
+  return (await fetch(`${volunteerApiUrl}register`, fetchObj)).json();
 };
 
 // TODO: possible and needed?
-export const logOutMutation = async () => {
-  const { authToken } = await volunteerAuthToken();
+export const logOut = async () => {
+  const authToken = await volunteerAuthToken();
 
   const fetchObj = {
     method: 'DELETE',
@@ -70,5 +59,20 @@ export const logOutMutation = async () => {
     }
   };
 
-  return await fetch(`${serverUrl}/auth`, fetchObj);
+  return await fetch(`${volunteerApiUrl}auth/logout`, fetchObj);
+};
+
+export const me = async () => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (await fetch(`${volunteerApiUrl}auth/current`, fetchObj)).json();
 };

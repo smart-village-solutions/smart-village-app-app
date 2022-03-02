@@ -52,6 +52,8 @@ export const shareMessage = (data, query) => {
         return `${data.category?.name}: ${data.name}`;
       case QUERY_TYPES.TOUR:
         return `${data.category?.name}: ${data.name}`;
+      case QUERY_TYPES.VOLUNTEER.CALENDAR:
+        return `${data.subtitle}: ${data.title}`;
     }
   };
 

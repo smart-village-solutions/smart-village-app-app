@@ -1,8 +1,8 @@
 /**
  * Formatting a subtitle with a separating | if necessary
  *
- * @param {string} first text before the pipe
- * @param {string} last text behind the pipe
+ * @param {string | undefined} first text before the pipe
+ * @param {string | undefined} last text behind the pipe
  *
  * @return {string} a formatted string `first | last` or `first` or `last`
  */

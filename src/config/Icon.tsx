@@ -172,9 +172,15 @@ export const Icon = {
       {...props}
     />
   ),
-  VolunteerProfile: (props: IconProps) => (
+  VolunteerLogout: (props: IconProps) => (
     <NamedIcon
       name={device.platform === 'ios' ? 'ios-lock-open-outline' : 'md-lock-open-outline'}
+      {...props}
+    />
+  ),
+  VolunteerPersonal: (props: IconProps) => (
+    <NamedIcon
+      name={device.platform === 'ios' ? 'ios-person-outline' : 'md-person-outline'}
       {...props}
     />
   )
