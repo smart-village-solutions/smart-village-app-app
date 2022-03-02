@@ -99,7 +99,7 @@ export const VolunteerMeScreen = ({ navigation, route }: StackScreenProps<any>) 
             <UrlSection openWebScreen={openWebScreen} webUrls={webUrls} />
           </Wrapper>
 
-          <TitleContainer>
+          {/* <TitleContainer>
             <Title
               center
               accessibilityLabel={`${texts.volunteer.memberships} ${a11yLabel.heading}`}
@@ -112,7 +112,7 @@ export const VolunteerMeScreen = ({ navigation, route }: StackScreenProps<any>) 
           </Wrapper>
           <Wrapper>
             <Button onPress={() => undefined} title={texts.volunteer.edit} disabled={isLoading} />
-          </Wrapper>
+          </Wrapper> */}
         </WrapperWithOrientation>
       </ScrollView>
     </SafeAreaViewFlex>
