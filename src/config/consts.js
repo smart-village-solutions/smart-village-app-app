@@ -46,6 +46,7 @@ export const consts = {
     shareIcon: 'Teilen (Taste)',
     shareHint: 'Inhalte auf der Seite teilen',
     textInput: 'Texteingabe',
+    username: 'Benutzername',
     verified: 'Verifiziert',
     verifiedInfo: 'Informationen zur Verifikation',
     website: '(Webseite)',

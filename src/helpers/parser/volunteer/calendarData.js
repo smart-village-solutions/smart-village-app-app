@@ -20,6 +20,7 @@ export const myCalendar = () => [
       }
     ],
     listDate: '2022-01-28',
+    color: 'rgb(16, 120, 33)',
     description: 'Beschreibung',
     params: {
       title: texts.detailTitles.eventRecord,
@@ -43,6 +44,7 @@ export const myCalendar = () => [
       }
     ],
     listDate: '2022-12-24',
+    color: 'rgb(174, 0, 29)',
     description: 'Stille Nacht, heilige Nacht',
     params: {
       title: texts.detailTitles.eventRecord,
