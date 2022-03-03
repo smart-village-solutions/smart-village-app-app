@@ -87,7 +87,7 @@
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.8.0",
     "react-native-snap-carousel": "~3.9.0",
-    "react-native-svg": "12.1.1",
+    "react-native-svg": "12.3.0",
     "react-native-webview": "11.13.0",
     "react-native-webview-leaflet": "https://github.com/okwast/react-native-webview-leaflet#d1914b1b02dc7a9faad45f23abadbf1fd3958abc",
     "sentry-expo": "^4.0.0",
