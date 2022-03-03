@@ -2,7 +2,7 @@ import { colors } from '../../config';
 import { formatTime } from '../../helpers/formatHelper';
 import { momentFormat } from '../../helpers/momentHelper';
 import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
-import { VolunteerCalendar } from '../../types';
+import { VolunteerCalendar, VolunteerConversation } from '../../types';
 
 export const conversations = async () => {
   const authToken = await volunteerAuthToken();
@@ -34,52 +34,13 @@ export const conversation = async (id: number) => {
   return (await fetch(`${volunteerApiUrl}calendar/entry/${id}`, fetchObj)).json();
 };
 
-export const conversationNew = async ({
-  title,
-  description = '',
-  color = colors.primary.startsWith('#') ? colors.primary : colors.darkText,
-  location = '',
-  allDay = 1,
-  participationMode = 2,
-  maxParticipants = '',
-  allowDecline = 1,
-  allowMaybe = 1,
-  participantInfo = '',
-  isPublic = 0,
-  startDate,
-  startTime,
-  endDate,
-  endTime,
-  timeZone = 'Europe/Berlin',
-  forceJoin = 1,
-  topics,
-  contentContainerId
-}: VolunteerCalendar) => {
+export const conversationNew = async ({ title, message, guid }: VolunteerConversation) => {
   const authToken = await volunteerAuthToken();
 
   const formData = {
-    CalendarEntry: {
-      title,
-      description,
-      color,
-      location,
-      all_day: allDay ? 1 : 0,
-      participation_mode: participationMode,
-      max_participants: maxParticipants,
-      allow_decline: allowDecline,
-      allow_maybe: allowMaybe,
-      participant_info: participantInfo
-    },
-    CalendarEntryForm: {
-      is_public: isPublic ? 1 : 0,
-      start_date: startDate && momentFormat(startDate, 'YYYY-MM-DD'),
-      start_time: startTime && formatTime(startTime),
-      end_date: endDate && momentFormat(endDate, 'YYYY-MM-DD'),
-      end_time: endTime && formatTime(endTime),
-      timeZone,
-      forceJoin,
-      topics
-    }
+    title,
+    message,
+    recipient: [guid]
   };
 
   const fetchObj = {
@@ -92,7 +53,5 @@ export const conversationNew = async ({
     body: JSON.stringify(formData)
   };
 
-  return (
-    await fetch(`${volunteerApiUrl}calendar/container/${contentContainerId}`, fetchObj)
-  ).json();
+  return (await fetch(`${volunteerApiUrl}mail`, fetchObj)).json();
 };

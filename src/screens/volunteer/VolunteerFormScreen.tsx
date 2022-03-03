@@ -7,6 +7,7 @@ import {
   DefaultKeyboardAvoidingView,
   SafeAreaViewFlex,
   VolunteerFormCalendar,
+  VolunteerFormConversation,
   VolunteerFormGroup,
   WrapperWithOrientation
 } from '../../components';
@@ -20,6 +21,7 @@ export const VolunteerFormScreen = ({ navigation, route }: StackScreenProps<any>
 
   const Form = {
     [QUERY_TYPES.VOLUNTEER.CALENDAR]: VolunteerFormCalendar,
+    [QUERY_TYPES.VOLUNTEER.CONVERSATION]: VolunteerFormConversation,
     [QUERY_TYPES.VOLUNTEER.GROUP]: VolunteerFormGroup
   }[query];
 

@@ -70,6 +70,8 @@ export const texts = {
     pointOfInterest: 'Ort',
     volunteer: {
       additional: 'Ganz praktisch',
+      conversation: 'Unterhaltung',
+      eventRecord: 'Veranstaltung',
       group: 'Gruppenprofil',
       task: 'Aufgabe'
     },
@@ -602,6 +604,7 @@ export const texts = {
     loginTitle: 'Anmelden',
     members: 'Mitglieder',
     memberships: 'Mitgliedschaften',
+    message: 'Nachricht',
     name: 'Name',
     next: 'Weiter',
     notAttend: 'Nicht teilnehmen',
@@ -609,6 +612,7 @@ export const texts = {
     password: 'Passwort',
     passwordConfirmation: 'Passwort bestätigen',
     passwordForgotten: 'Passwort vergessen',
+    recipient: 'Empfänger',
     register: 'Registrieren',
     registrationAllFieldsRequiredBody:
       'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
@@ -621,6 +625,7 @@ export const texts = {
     registrationTitle: 'Registrieren',
     save: 'Speichern',
     search: 'Suche',
+    send: 'Senden',
     startDate: 'Startdatum',
     startTime: 'Startzeit',
     tags: 'Themen',

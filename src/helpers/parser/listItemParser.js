@@ -214,7 +214,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate) => {
       query,
       queryVariables: { id: `${volunteer.id}` },
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
-      shareContent: {
+      shareContent: query !== QUERY_TYPES.VOLUNTEER.CONVERSATION && {
         message: shareMessage(
           {
             title: volunteer.title || volunteer.name,

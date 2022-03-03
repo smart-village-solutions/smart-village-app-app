@@ -31,7 +31,9 @@ export const QUERY_TYPES = {
     GROUPS: 'groups',
     ME: 'me',
     PROFILE: 'profile',
-    TASKS: 'tasks'
+    TASKS: 'tasks',
+    USER: 'user',
+    USERS: 'users'
   } as const,
   WASTE_ADDRESSES: 'wasteAddresses',
   WASTE_STREET: 'wasteStreet',

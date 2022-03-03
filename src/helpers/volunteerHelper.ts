@@ -91,6 +91,12 @@ export const isOwner = (currentUserId: string | null, owner: { id: number }): bo
   return owner.id.toString() == currentUserId;
 };
 
+export const isAccount = (currentUserId: string | null, account: { id: number }): boolean => {
+  if (!currentUserId || !account?.id) return false;
+
+  return account.id.toString() == currentUserId;
+};
+
 export const isMember = (
   currentUserId: string | null,
   members?: [{ user: { id: number } }]

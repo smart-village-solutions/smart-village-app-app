@@ -45,7 +45,7 @@ const NAVIGATION = {
   CONVERSATION_NEW: {
     name: ScreenName.VolunteerForm,
     params: {
-      title: 'Neue Nachricht',
+      title: 'Unterhaltung beginnen',
       query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
@@ -144,7 +144,7 @@ export const VolunteerPersonalScreen = ({ navigation }: any) => {
         /> */}
         <VolunteerHomeSection
           linkTitle="Alle Nachrichten anzeigen"
-          buttonTitle="Neue Nachricht"
+          buttonTitle="Unterhaltung beginnen"
           navigateLink={() => navigation.navigate(NAVIGATION.CONVERSATIONS_INDEX)}
           navigateButton={() => navigation.navigate(NAVIGATION.CONVERSATION_NEW)}
           navigate={() => navigation.navigate(NAVIGATION.CONVERSATIONS_INDEX)}

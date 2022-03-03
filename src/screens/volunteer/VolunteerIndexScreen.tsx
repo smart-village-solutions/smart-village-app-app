@@ -1,5 +1,6 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { RefreshControl } from 'react-native';
 
 import { DropdownHeader, ListComponent, SafeAreaViewFlex } from '../../components';
@@ -21,6 +22,12 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const { data, refetch } = useVolunteerData({ query, queryVariables, isCalendar });
 
   useLogoutHeader({ query, navigation });
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   // TODO: remove if all queries exist
   const details = {
