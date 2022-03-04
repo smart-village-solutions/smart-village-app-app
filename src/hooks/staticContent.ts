@@ -82,7 +82,8 @@ export const useStaticContent = <T>({
         const json = data?.publicJsonFile?.content;
 
         return parseFromJson ? parseFromJson(json) : json;
-      } else {
+      } else if (data || queryError) {
+        // set error true if there is bad data without `publicJsonFile.content` or some `queryError`
         setError(true);
       }
     } catch (error) {
