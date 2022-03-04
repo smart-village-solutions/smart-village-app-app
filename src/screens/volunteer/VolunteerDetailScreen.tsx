@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useRef } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -16,11 +16,11 @@ import {
   VolunteerTask
 } from '../../components';
 import { colors } from '../../config';
-import { additionalData, myMessages, myTasks } from '../../helpers/parser/volunteer';
+import { additionalData, myTasks } from '../../helpers/parser/volunteer';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { VolunteerQuery } from '../../types';
 
-const getComponent = (query: VolunteerQuery) => {
+const getComponent = (query: VolunteerQuery): any => {
   switch (query) {
     case QUERY_TYPES.VOLUNTEER.CALENDAR:
       return VolunteerEventRecord;
@@ -36,6 +36,7 @@ const getComponent = (query: VolunteerQuery) => {
 };
 
 export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const scrollViewRef = useRef<ScrollView>(null);
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
   const details = route.params?.details;
@@ -74,23 +75,47 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
 
   if (!Component) return null;
 
+  if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
+    return (
+      <SafeAreaViewFlex>
+        <DefaultKeyboardAvoidingView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoading}
+                onRefresh={refetch}
+                colors={[colors.accent]}
+                tintColor={colors.accent}
+              />
+            }
+            ref={scrollViewRef}
+          >
+            <Component data={componentData} conversationId={queryVariables.id} />
+          </ScrollView>
+          <VolunteerMessageTextField
+            conversationId={queryVariables.id}
+            refetch={refetch}
+            scrollToBottom={(animated = true) => scrollViewRef?.current?.scrollToEnd({ animated })}
+          />
+        </DefaultKeyboardAvoidingView>
+      </SafeAreaViewFlex>
+    );
+  }
+
   return (
     <SafeAreaViewFlex>
-      <DefaultKeyboardAvoidingView>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={isLoading}
-              onRefresh={() => !dummyData && refetch()}
-              colors={[colors.accent]}
-              tintColor={colors.accent}
-            />
-          }
-        >
-          <Component data={componentData} refetch={refetch} navigation={navigation} route={route} />
-        </ScrollView>
-        {query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS && <VolunteerMessageTextField />}
-      </DefaultKeyboardAvoidingView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={() => !dummyData && refetch()}
+            colors={[colors.accent]}
+            tintColor={colors.accent}
+          />
+        }
+      >
+        <Component data={componentData} refetch={refetch} navigation={navigation} route={route} />
+      </ScrollView>
     </SafeAreaViewFlex>
   );
 };

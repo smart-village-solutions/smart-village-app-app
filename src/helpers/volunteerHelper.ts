@@ -58,6 +58,12 @@ export const volunteerListDate = (data: {
   const { end_datetime: endDatetime, start_datetime: startDatetime, updated_at: updatedAt } = data;
 
   if (updatedAt) {
+    // summertime
+    if (moment(updatedAt).isDST()) {
+      return moment(updatedAt).format('YYYY-MM-DD HH:mm');
+    }
+
+    // wintertime
     return moment.utc(updatedAt).local().format('YYYY-MM-DD HH:mm');
   }
 

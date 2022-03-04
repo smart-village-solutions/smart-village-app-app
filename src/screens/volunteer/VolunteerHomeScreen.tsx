@@ -2,6 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { DeviceEventEmitter } from 'expo-modules-core';
 import React, { useCallback, useEffect } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
+
 import {
   DataListSection,
   ImagesCarousel,

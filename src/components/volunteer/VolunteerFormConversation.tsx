@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import _sortBy from 'lodash/sortBy';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -38,7 +39,9 @@ export const VolunteerFormConversation = ({
     control,
     formState: { errors, isValid },
     handleSubmit
-  } = useForm<VolunteerConversation>();
+  } = useForm<VolunteerConversation>({
+    mode: 'onBlur'
+  });
   const { data: dataUsers } = useQuery(QUERY_TYPES.VOLUNTEER.USERS, users);
   const [userDropdownData, setUserDropdownData] = useState<DropdownInputProps['data'] | []>([]);
 
@@ -63,6 +66,8 @@ export const VolunteerFormConversation = ({
     filterUserDropDownData();
   }, [filterUserDropDownData]);
 
+  const isFocused = useIsFocused();
+
   const { mutate, isLoading, isError, isSuccess, data, reset } = useMutation(conversationNew);
   const onSubmit = (conversationNewData: VolunteerConversation) => {
     mutate(conversationNewData);
@@ -72,13 +77,17 @@ export const VolunteerFormConversation = ({
     scrollToTop();
   }
 
+  if (!userDropdownData.length) {
+    return null;
+  }
+
   if (isError || (!isLoading && data && !data.id)) {
     Alert.alert(
       'Fehler beim Erstellen einer Unterhaltung',
       'Bitte Eingaben überprüfen und erneut versuchen.'
     );
     reset();
-  } else if (isSuccess) {
+  } else if (isSuccess && isFocused) {
     navigation.goBack();
 
     Alert.alert('Erfolgreich', 'Die Unterhaltung wurde erfolgreich erstellt.');
@@ -87,28 +96,26 @@ export const VolunteerFormConversation = ({
   return (
     <>
       <Wrapper>
-        {!!userDropdownData?.length && (
-          <Controller
-            name="id"
-            render={({ field: { onChange, value } }) => (
-              <DropdownInput
-                {...{
-                  errors,
-                  required: true,
-                  data: userDropdownData,
-                  value,
-                  valueKey: 'guid',
-                  onChange,
-                  name: 'id',
-                  label: texts.volunteer.recipient,
-                  placeholder: texts.volunteer.recipient,
-                  control
-                }}
-              />
-            )}
-            control={control}
-          />
-        )}
+        <Controller
+          name="id"
+          render={({ name, onChange, value }) => (
+            <DropdownInput
+              {...{
+                errors,
+                required: true,
+                data: userDropdownData,
+                value,
+                valueKey: 'guid',
+                onChange,
+                name,
+                label: texts.volunteer.recipient,
+                placeholder: texts.volunteer.recipient,
+                control
+              }}
+            />
+          )}
+          control={control}
+        />
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
         <Input
