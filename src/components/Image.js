@@ -72,34 +72,21 @@ export const Image = ({
         break effect;
       }
 
-      if (sourceProp.uri) {
-        fetch(sourceProp.uri)
-          .then((response) => {
-            if (response?.status == 200) {
-              CacheManager.get(sourceProp.uri)
-                .getPath()
-                .then((path) => {
-                  mounted && setSource({ uri: path });
-                })
-                .catch((err) => {
-                  console.warn(
-                    'An error occurred with cache management for an image',
-                    sourceProp.uri,
-                    err
-                  );
-                  mounted && setSource(NO_IMAGE);
-                });
-            } else {
+      sourceProp.uri
+        ? CacheManager.get(sourceProp.uri)
+            .getPath()
+            .then((path) => {
+              mounted && setSource({ uri: path ?? NO_IMAGE.uri });
+            })
+            .catch((err) => {
+              console.warn(
+                'An error occurred with cache management for an image',
+                sourceProp.uri,
+                err
+              );
               mounted && setSource(NO_IMAGE);
-            }
-          })
-          .catch((err) => {
-            console.warn('An error occurred with fetching an image', sourceProp.uri, err);
-            mounted && setSource(NO_IMAGE);
-          });
-      } else {
-        mounted && setSource(sourceProp);
-      }
+            })
+        : mounted && setSource(NO_IMAGE);
     }
 
     return () => (mounted = false);
