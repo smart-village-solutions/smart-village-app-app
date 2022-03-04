@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.5.1]
+
+Nested services
+
+### Added
+
+- added a generic TilesScreen that recieves necessary info through route params
+  - this makes it possible to nest a TilesScreen into any route
+
+### Fixed
+
+- fixed timezone for waste calendar
+- fixed crash that could happen with static json content emptiness
+
+
 ## [v2.5.0] :rocket:
 
 Versioned static contents and further improvements.
