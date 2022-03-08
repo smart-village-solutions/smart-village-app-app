@@ -194,6 +194,59 @@ export const IndexScreen = ({ navigation, route }) => {
     <SafeAreaViewFlex>
       {query === QUERY_TYPES.POINTS_OF_INTEREST ? (
         <View>
+          {/*Neue Abfrage für Kinderkategorien*/}
+
+          <Query
+            query={getQuery('categories')}
+            variables={queryVariables}
+            fetchPolicy={fetchPolicy}
+          >
+            {({ data, loading }) => {
+              if (loading || loadingPosition) {
+                return (
+                  <LoadingContainer>
+                    <ActivityIndicator color={colors.accent} />
+                  </LoadingContainer>
+                );
+              }
+
+              /*Analysieren Sie Listenelemente aus der Kategorienabfrage*/
+              let listItems = parseListItemsFromQuery('categories', data, titleDetail, {
+                bookmarkable,
+                withDate: false
+              });
+
+              if (!listItems) return null;
+
+              /*Filtern des Listenelements mit untergeordneten Informationen*/
+              let childrenFilter = listItems.filter(
+                (entry) => route.params?.title === entry.title && entry.children.length > 0
+              );
+
+              /*Analysieren Sie Listenelemente aus der Abfrage für untergeordnete Kategorien.*/
+              let children = parseListItemsFromQuery(
+                'childrenCategories',
+                childrenFilter,
+                titleDetail,
+                {
+                  bookmarkable,
+                  withDate: false
+                }
+              );
+
+              if (!children) return null;
+
+              return (
+                <ListComponent
+                  navigation={navigation}
+                  data={children}
+                  horizontal={false}
+                  query={'childrenCategories'}
+                />
+              );
+            }}
+          </Query>
+
           <IndexFilterWrapperAndList filter={topFilter} setFilter={setTopFilter} />
           <OptionToggle
             label={texts.pointOfInterest.filterByOpeningTime}

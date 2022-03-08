@@ -177,6 +177,7 @@ const parseCategories = (data, skipLastDivider) => {
   return data?.map((category, index) => ({
     id: category.id,
     title: category.name,
+    children: category.children,
     pointsOfInterestCount: category.pointsOfInterestCount,
     toursCount: category.toursCount,
     routeName: 'Category',
@@ -185,6 +186,26 @@ const parseCategories = (data, skipLastDivider) => {
       query:
         category.pointsOfInterestCount > 0 ? QUERY_TYPES.POINTS_OF_INTEREST : QUERY_TYPES.TOURS,
       queryVariables: { limit: 15, order: 'name_ASC', category: `${category.name}` },
+      rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
+    },
+    bottomDivider: !skipLastDivider || index !== data.length - 1
+  }));
+};
+
+/*Parser für Kinderkategorien*/
+const parseChildrenCategories = (data, skipLastDivider) => {
+  return data[0]?.children?.map((children, index) => ({
+    id: children.id,
+    title: children.name,
+    children: children.children,
+    pointsOfInterestCount: children.pointsOfInterestCount,
+    toursCount: children.toursCount,
+    routeName: 'Detail',
+    params: {
+      title: children.name,
+      query:
+        children.pointsOfInterestCount > 0 ? QUERY_TYPES.POINTS_OF_INTEREST : QUERY_TYPES.TOURS,
+      queryVariables: { limit: 15, order: 'name_ASC', category: `${children.name}` },
       rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1
@@ -224,6 +245,8 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseTours(data[query], skipLastDivider);
     case QUERY_TYPES.CATEGORIES:
       return parseCategories(data[query], skipLastDivider);
+    case QUERY_TYPES.CHILDREN_CATEGORIES:
+      return parseChildrenCategories(data, skipLastDivider);
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
   }

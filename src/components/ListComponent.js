@@ -25,6 +25,7 @@ const isHorizontal = (query, listTypesSettings) => {
 const getComponent = (query, horizontal, sectionByDate) => {
   switch (query) {
     case QUERY_TYPES.CATEGORIES:
+    case QUERY_TYPES.CHILDREN_CATEGORIES:
       return CategoryList;
     case QUERY_TYPES.POINTS_OF_INTEREST:
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
