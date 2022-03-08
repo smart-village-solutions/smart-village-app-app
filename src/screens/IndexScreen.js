@@ -195,6 +195,41 @@ export const IndexScreen = ({ navigation, route }) => {
     <SafeAreaViewFlex>
       {query === QUERY_TYPES.POINTS_OF_INTEREST ? (
         <View>
+          {/*Neue Abfrage für Kinderkategorien*/}
+          <Query
+            query={getQuery('categories')}
+            variables={queryVariables}
+            fetchPolicy={fetchPolicy}
+          >
+            {({ loading }) => {
+              if (loading || loadingPosition) {
+                return (
+                  <LoadingContainer>
+                    <ActivityIndicator color={colors.accent} />
+                  </LoadingContainer>
+                );
+              }
+
+              let listItems = parseListItemsFromQuery('categories', route.params, titleDetail, {
+                bookmarkable,
+                withDate: false
+              });
+
+              if (!listItems) return null;
+
+              listItems.map((item) => (item.routeName = 'Detail'));
+
+              return (
+                <ListComponent
+                  navigation={navigation}
+                  data={listItems}
+                  horizontal={false}
+                  query={'categories'}
+                />
+              );
+            }}
+          </Query>
+
           <IndexFilterWrapperAndList filter={topFilter} setFilter={setTopFilter} />
           <OptionToggle
             label={texts.pointOfInterest.filterByOpeningTime}

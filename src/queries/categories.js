@@ -7,6 +7,12 @@ export const GET_CATEGORIES = gql`
       name
       pointsOfInterestCount
       toursCount
+      children {
+        id
+        name
+        pointsOfInterestCount
+        toursCount
+      }
     }
   }
 `;

@@ -182,6 +182,7 @@ const parseCategories = (data, skipLastDivider) => {
     routeName: 'Category',
     params: {
       title: category.name,
+      categories: category.children,
       query:
         category.pointsOfInterestCount > 0 ? QUERY_TYPES.POINTS_OF_INTEREST : QUERY_TYPES.TOURS,
       queryVariables: { limit: 15, order: 'name_ASC', category: `${category.name}` },
