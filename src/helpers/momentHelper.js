@@ -17,6 +17,14 @@ export const momentFormat = (
 ) => moment(dateTime, dateTimeFormat).format(returnFormat);
 
 /**
+ * @param {string} dateTime Date as utc string
+ * @param {string} [returnFormat] format to return in
+ * @returns formated date to given format
+ */
+export const momentFormatUtcToLocal = (dateTime, returnFormat = 'DD.MM.YYYY') =>
+  moment.utc(dateTime, 'YYYY-MM-DD HH:mm:ss Z').local().format(returnFormat);
+
+/**
  * Check if a given date is today or in the future. We will check that with moment `isBefore`.
  *  https://momentjs.com/docs/#/query/is-before/
  *

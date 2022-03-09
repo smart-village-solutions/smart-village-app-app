@@ -7,7 +7,7 @@ import { GenericType } from '../../types';
 import { eventDate, isBeforeEndOfToday, isTodayOrLater } from '../dateTimeHelper';
 import { getGenericItemDetailTitle, getGenericItemRootRouteName } from '../genericTypeHelper';
 import { mainImageOfMediaContents } from '../imageHelper';
-import { momentFormat } from '../momentHelper';
+import { momentFormatUtcToLocal } from '../momentHelper';
 import { shareMessage } from '../shareHelper';
 import { subtitle } from '../textHelper';
 
@@ -61,7 +61,7 @@ const parseGenericItems = (data, skipLastDivider) => {
   return filteredData?.map((genericItem, index) => ({
     id: genericItem.id,
     subtitle: subtitle(
-      momentFormat(genericItem.publicationDate ?? genericItem.createdAt),
+      momentFormatUtcToLocal(genericItem.publicationDate ?? genericItem.createdAt),
       genericItem.dataProvider?.name
     ),
     title: genericItem.title,
@@ -93,7 +93,7 @@ const parseGenericItems = (data, skipLastDivider) => {
 const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
   return data?.map((newsItem, index) => ({
     id: newsItem.id,
-    subtitle: subtitle(momentFormat(newsItem.publishedAt), newsItem.dataProvider?.name),
+    subtitle: subtitle(momentFormatUtcToLocal(newsItem.publishedAt), newsItem.dataProvider?.name),
     title: newsItem.contentBlocks?.[0]?.title,
     picture: {
       url:
