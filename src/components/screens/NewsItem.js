@@ -3,7 +3,7 @@ import React from 'react';
 import { View } from 'react-native';
 
 import { consts, device } from '../../config';
-import { matomoTrackingString, momentFormat, trimNewLines } from '../../helpers';
+import { matomoTrackingString, momentFormatUtcToLocal, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { DataProviderButton } from '../DataProviderButton';
 import { ImageSection } from '../ImageSection';
@@ -31,7 +31,7 @@ export const NewsItem = ({ data, route }) => {
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const link = sourceUrl && sourceUrl.url;
-  const subtitle = `${momentFormat(publishedAt)} | ${dataProvider && dataProvider.name}`;
+  const subtitle = `${momentFormatUtcToLocal(publishedAt)} | ${dataProvider && dataProvider.name}`;
   // the title of a news item is either a given main title or the title from the first content block
   const title = mainTitle || (!!contentBlocks && !!contentBlocks.length && contentBlocks[0].title);
   const rootRouteName = route.params?.rootRouteName ?? '';
