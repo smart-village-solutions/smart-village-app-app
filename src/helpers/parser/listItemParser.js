@@ -173,16 +173,16 @@ const parseTours = (data, skipLastDivider) => {
   }));
 };
 
-const parseCategories = (data, skipLastDivider) => {
+const parseCategories = (data, skipLastDivider, routeName = 'Category') => {
   return data?.map((category, index) => ({
     id: category.id,
     title: category.name,
     pointsOfInterestCount: category.pointsOfInterestCount,
     toursCount: category.toursCount,
-    routeName: 'Category',
+    routeName,
     params: {
       title: category.name,
-      categories: category.children,
+      categories: parseCategories(category.children, skipLastDivider, 'Index'),
       query:
         category.pointsOfInterestCount > 0 ? QUERY_TYPES.POINTS_OF_INTEREST : QUERY_TYPES.TOURS,
       queryVariables: { limit: 15, order: 'name_ASC', category: `${category.name}` },

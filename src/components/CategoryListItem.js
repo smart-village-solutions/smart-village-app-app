@@ -39,12 +39,7 @@ export class CategoryListItem extends React.PureComponent {
           paddingVertical: normalize(12)
         }}
         rightIcon={<Icon.ArrowRight />}
-        onPress={() =>
-          navigation.navigate({
-            name,
-            params
-          })
-        }
+        onPress={() => navigation.push(name, params)}
         delayPressIn={0}
         Component={Touchable}
         accessibilityLabel={`(${title}) ${consts.a11yLabel.poiCount} ${count} ${consts.a11yLabel.button}`}

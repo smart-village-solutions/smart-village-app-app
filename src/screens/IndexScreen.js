@@ -9,6 +9,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { auth } from '../auth';
 import { colors, consts, texts } from '../config';
 import {
+  CategoryList,
   DropdownHeader,
   IndexFilterWrapperAndList,
   ListComponent,
@@ -89,6 +90,7 @@ export const IndexScreen = ({ navigation, route }) => {
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
+  const subCategories = route.params?.categories;
   const showFilter =
     (route.params?.showFilter ?? true) &&
     {
@@ -195,41 +197,15 @@ export const IndexScreen = ({ navigation, route }) => {
     <SafeAreaViewFlex>
       {query === QUERY_TYPES.POINTS_OF_INTEREST ? (
         <View>
-          {/*Neue Abfrage für Kinderkategorien*/}
-          <Query
-            query={getQuery('categories')}
-            variables={queryVariables}
-            fetchPolicy={fetchPolicy}
-          >
-            {({ loading }) => {
-              if (loading || loadingPosition) {
-                return (
-                  <LoadingContainer>
-                    <ActivityIndicator color={colors.accent} />
-                  </LoadingContainer>
-                );
-              }
-
-              let listItems = parseListItemsFromQuery('categories', route.params, titleDetail, {
-                bookmarkable,
-                withDate: false
-              });
-
-              if (!listItems) return null;
-
-              listItems.map((item) => (item.routeName = 'Detail'));
-
-              return (
-                <ListComponent
-                  navigation={navigation}
-                  data={listItems}
-                  horizontal={false}
-                  query={'categories'}
-                />
-              );
-            }}
-          </Query>
-
+          {!!subCategories?.length && (
+            <CategoryList
+              navigation={navigation}
+              data={subCategories}
+              horizontal={false}
+              scrollEnabled={false}
+              noSectionHeader={true}
+            />
+          )}
           <IndexFilterWrapperAndList filter={topFilter} setFilter={setTopFilter} />
           <OptionToggle
             label={texts.pointOfInterest.filterByOpeningTime}

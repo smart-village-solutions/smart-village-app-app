@@ -27,7 +27,14 @@ export class CategoryList extends React.PureComponent {
   };
 
   render() {
-    const { data, navigation, noSubtitle, refreshControl } = this.props;
+    const {
+      data,
+      navigation,
+      noSubtitle,
+      refreshControl,
+      scrollEnabled,
+      noSectionHeader
+    } = this.props;
 
     const sectionedData = [
       {
@@ -44,7 +51,7 @@ export class CategoryList extends React.PureComponent {
       <SectionList
         keyExtractor={this.keyExtractor}
         sections={sectionedData}
-        initialNumToRender={data.length}
+        initialNumToRender={data.length > 1 ? data.length : 2}
         renderItem={({ item, index, section }) => (
           <CategoryListItem
             navigation={navigation}
@@ -54,7 +61,7 @@ export class CategoryList extends React.PureComponent {
             section={section}
           />
         )}
-        renderSectionHeader={this.renderSectionHeader}
+        renderSectionHeader={noSectionHeader ? null : this.renderSectionHeader}
         ListHeaderComponent={
           !!texts.categoryList.intro && (
             <Wrapper>
@@ -64,6 +71,7 @@ export class CategoryList extends React.PureComponent {
         }
         stickySectionHeadersEnabled
         refreshControl={refreshControl}
+        scrollEnabled={scrollEnabled}
       />
     );
   }
@@ -73,9 +81,12 @@ CategoryList.propTypes = {
   navigation: PropTypes.object.isRequired,
   data: PropTypes.array.isRequired,
   noSubtitle: PropTypes.bool,
-  refreshControl: PropTypes.object
+  refreshControl: PropTypes.object,
+  scrollEnabled: PropTypes.bool,
+  noSectionHeader: PropTypes.bool
 };
 
 CategoryList.defaultProps = {
-  noSubtitle: false
+  noSubtitle: false,
+  noSectionHeader: false
 };
