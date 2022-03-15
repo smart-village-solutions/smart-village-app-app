@@ -8,6 +8,9 @@ import {
   BookmarkScreen,
   ConstructionSiteDetailScreen,
   ConstructionSiteOverviewScreen,
+  ConsulHomeScreen,
+  ConsulLoginScreen,
+  ConsulRegisterScreen,
   DataProviderScreen,
   DetailScreen,
   EncounterDataScreen,
@@ -84,6 +87,18 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Category,
       screenComponent: IndexScreen
+    },
+    {
+      routeName: ScreenName.ConsulHomeScreen,
+      screenComponent: ConsulHomeScreen
+    },
+    {
+      routeName: ScreenName.ConsulRegisterScreen,
+      screenComponent: ConsulRegisterScreen
+    },
+    {
+      routeName: ScreenName.ConsulLoginScreen,
+      screenComponent: ConsulLoginScreen
     },
     {
       routeName: ScreenName.Company,

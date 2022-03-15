@@ -4,6 +4,7 @@ export * from './BookmarkCategoryScreen';
 export * from './BookmarkScreen';
 export * from './ConstructionSiteDetailScreen';
 export * from './ConstructionSiteOverviewScreen';
+export * from './Consul';
 export * from './DataProviderScreen';
 export * from './DetailScreen';
 export * from './EncounterDataScreen';

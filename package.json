@@ -71,6 +71,7 @@
     "qs": "^6.10.3",
     "react": "17.0.1",
     "react-apollo": "~3.1.5",
+    "react-hook-form": "^7.28.0",
     "react-native": "^0.64.3",
     "react-native-app-intro-slider": "^4.0.4",
     "react-native-autocomplete-input": "^4.2.0",

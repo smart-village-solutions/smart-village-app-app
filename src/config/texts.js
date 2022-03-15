@@ -55,6 +55,40 @@ export const texts = {
   constructionSites: {
     noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
   },
+  consul: {
+    abort: 'Abbrechen',
+    email: 'E-Mail',
+    emailError: 'E-Mail muss ausgefüllt werden',
+    emailInvalid: 'E-Mail ungültig',
+    usernameOrEmail: 'Benutzername oder E-Mail',
+    errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
+    login: 'Anmelden',
+    loginTitle: 'Anmelden',
+    name: 'Name',
+    usernameError: 'Username muss ausgefüllt werden',
+    next: 'Weiter',
+    password: 'Passwort',
+    passwordError: 'Passwort muss ausgefüllt werden',
+    passwordLengthError: 'Das Passwort sollte mindestens 8 Zeichen lang sein',
+    passwordDoNotMatch: 'Passwort stimmt nicht überein',
+    passwordConfirmation: 'Passwort bestätigen',
+    passwordConfirmationError: 'Passwortbestätigungsfehler',
+    passwordForgotten: 'Passwort vergessen',
+    privacyChecked: 'Mit der Registrierung akzeptieren Sie die Nutzungsbedingungen',
+    privacyCheckLink: 'Allgemeine Geschäftsbedingungen',
+    privacyCheckRequireBody: 'Kreuzen Sie die Nutzungsvereinbarung an.',
+    privacyCheckRequireTitle: 'Hinweis',
+    register: 'Registrieren',
+    registrationAllFieldsRequiredBody:
+      'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
+    registrationAllFieldsRequiredTitle: 'Hinweis',
+    registrationFailedBody: 'Bei der Registrierung ist ein Fehler aufgetreten.',
+    registrationFailedTitle: 'Fehler',
+    registrationPrivacyLink: 'Datenschutzerklärung.',
+    registrationPrivacyText:
+      'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
+    registrationTitle: 'Registrieren'
+  },
   dataProvider: {
     more: 'Mehr von',
     partner: 'Partner',
