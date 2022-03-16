@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useForm } from 'react-hook-form';
+import { useMutation } from 'react-apollo';
 
 import {
   BoldText,
@@ -19,15 +20,15 @@ import {
   WrapperWithOrientation
 } from '../../../components';
 import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { CONSUL_REGISTER_USER } from '../../../queries/Consul';
+import { ConsulClient } from '../../../ConsulClient';
 
 const { a11yLabel } = consts;
 const text = texts.consul;
 
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-const showInvalidRegistrationDataAlert = () =>
-  Alert.alert(text.registrationAllFieldsRequiredTitle, text.registrationAllFieldsRequiredBody);
-
+// Alerts
 const showRegistrationFailAlert = () =>
   Alert.alert(text.registrationFailedTitle, text.registrationFailedBody);
 
@@ -35,37 +36,44 @@ const showPrivacyCheckedAlert = () =>
   Alert.alert(text.privacyCheckRequireTitle, text.privacyCheckRequireBody);
 
 export const ConsulRegisterScreen = ({ navigation }) => {
+  // useState
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
+  const [termsOfService, settermsOfService] = useState(false);
   const [registrationLoading, setRegistrationLoading] = useState(false);
 
-  const {
-    control,
-    formState: { isValid },
-    handleSubmit,
-    watch
-  } = useForm();
+  // React Hook Form
+  const { control, handleSubmit, watch } = useForm();
   const pwd = watch('password');
 
-  const onSubmit = async () => {
+  // GraphQL
+  const [userRegister] = useMutation(CONSUL_REGISTER_USER, {
+    client: ConsulClient
+  });
+
+  const onSubmit = async (val) => {
     //TODO!
-    if (!isPrivacyChecked) showPrivacyCheckedAlert();
+    if (!termsOfService) return showPrivacyCheckedAlert();
+    // const getFromStore = async (key) => JSON.parse(await AsyncStorage.getItem(key));
 
-    if (isValid) {
-      setRegistrationLoading(true);
-
-      const userId = '0';
-
-      if (!userId?.length) {
-        showRegistrationFailAlert();
-
-        setRegistrationLoading(false);
-        showInvalidRegistrationDataAlert();
+    setRegistrationLoading(true);
+    await userRegister({
+      variables: {
+        email: val.email,
+        username: val.name,
+        password: val.password,
+        passwordConfirmation: val['password-repeat'],
+        termsOfService
       }
-      setTimeout(() => {
+    })
+      .then(() => {
         setRegistrationLoading(false);
-      }, 5000);
-    }
+        Alert.alert('Success', 'Success');
+      })
+      .catch((err) => {
+        console.error(err.message);
+        setRegistrationLoading(false);
+        showRegistrationFailAlert();
+      });
   };
 
   return (
@@ -148,8 +156,8 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 title={text.privacyChecked}
                 checkedIcon="dot-circle-o"
                 uncheckedIcon="circle-o"
-                checked={isPrivacyChecked}
-                onPress={() => setIsPrivacyChecked(!isPrivacyChecked)}
+                checked={termsOfService}
+                onPress={() => settermsOfService(!termsOfService)}
               />
               <Label>{text.passwordConfirmation}</Label>
             </Wrapper>

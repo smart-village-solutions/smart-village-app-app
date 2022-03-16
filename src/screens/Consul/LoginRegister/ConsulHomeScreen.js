@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
+import { useQuery } from 'react-apollo';
 
 import {
   LoadingSpinner,
@@ -12,14 +13,26 @@ import {
   WrapperWithOrientation
 } from '../../../components';
 import { colors, texts } from '../../../config';
+import { CONSUL_USER } from '../../../queries/Consul';
+import { ConsulClient } from '../../../ConsulClient';
 
 export const ConsulHomeScreen = ({ navigation }) => {
+  // useState
   const [refreshing, setRefreshing] = useState(false);
   const [refreshingUser, setRefreshingUser] = useState(false);
-  const loading = false;
-  const error = false;
-  const user = false;
-  const userId = false;
+  const [user, setUser] = useState(null);
+
+  // GraphQL
+  const { loading, data, error } = useQuery(CONSUL_USER, {
+    client: ConsulClient,
+    variables: { id: 1 }
+  });
+
+  useEffect(() => {
+    if (data) {
+      setUser(data.user);
+    }
+  }, []);
 
   const refresh = () => {
     setRefreshing(true);
@@ -41,7 +54,7 @@ export const ConsulHomeScreen = ({ navigation }) => {
     return <LoadingSpinner loading />;
   }
 
-  if (!userId) {
+  if (!user?.id) {
     return <ConsulWelcome navigation={navigation} />;
   }
 

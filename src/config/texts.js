@@ -64,6 +64,11 @@ export const texts = {
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
     login: 'Anmelden',
     loginTitle: 'Anmelden',
+    loginAllFieldsRequiredBody:
+      'Damit die Anmeldung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
+    loginAllFieldsRequiredTitle: 'Hinweis',
+    loginFailedBody: 'Bei der Anmeldung ist ein Fehler aufgetreten.',
+    loginFailedTitle: 'Fehler',
     name: 'Name',
     usernameError: 'Username muss ausgefüllt werden',
     next: 'Weiter',
@@ -79,9 +84,6 @@ export const texts = {
     privacyCheckRequireBody: 'Kreuzen Sie die Nutzungsvereinbarung an.',
     privacyCheckRequireTitle: 'Hinweis',
     register: 'Registrieren',
-    registrationAllFieldsRequiredBody:
-      'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
-    registrationAllFieldsRequiredTitle: 'Hinweis',
     registrationFailedBody: 'Bei der Registrierung ist ein Fehler aufgetreten.',
     registrationFailedTitle: 'Fehler',
     registrationPrivacyLink: 'Datenschutzerklärung.',

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useForm } from 'react-hook-form';
+import { useMutation } from 'react-apollo';
 
 import {
   BoldText,
@@ -18,43 +19,40 @@ import {
   WrapperWithOrientation
 } from '../../../components';
 import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { CONSUL_LOGIN_USER } from '../../../queries/Consul';
+import { ConsulClient } from '../../../ConsulClient';
 
 const { a11yLabel } = consts;
 const text = texts.consul;
 
-const showInvalidRegistrationDataAlert = () =>
-  Alert.alert(text.registrationAllFieldsRequiredTitle, text.registrationAllFieldsRequiredBody);
-
-const showRegistrationFailAlert = () =>
-  Alert.alert(text.registrationFailedTitle, text.registrationFailedBody);
+// Alert
+const showLoginFailAlert = () => Alert.alert(text.loginFailedTitle, text.loginFailedBody);
 
 export const ConsulLoginScreen = ({ navigation }) => {
+  // useState
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [registrationLoading, setRegistrationLoading] = useState(false);
 
-  const {
-    control,
-    formState: { isValid },
-    handleSubmit
-  } = useForm();
+  // React Hook Form
+  const { control, handleSubmit } = useForm();
 
-  const onSubmit = async () => {
-    //TODO!
-    if (isValid) {
-      setRegistrationLoading(true);
+  // GraphQL
+  const [userLogin] = useMutation(CONSUL_LOGIN_USER, {
+    client: ConsulClient
+  });
 
-      const userId = '0';
-
-      if (!userId?.length) {
-        showRegistrationFailAlert();
-
+  const onSubmit = async (val) => {
+    setRegistrationLoading(true);
+    await userLogin({ variables: { email: val.email, password: val.password } })
+      .then(() => {
         setRegistrationLoading(false);
-        showInvalidRegistrationDataAlert();
-      }
-      setTimeout(() => {
+        Alert.alert('Success', 'Success');
+      })
+      .catch((err) => {
+        console.error(err.message);
         setRegistrationLoading(false);
-      }, 5000);
-    }
+        showLoginFailAlert();
+      });
   };
 
   return (

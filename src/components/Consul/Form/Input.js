@@ -38,9 +38,7 @@ export const Input = ({ control, name, label, rules, multiline, rightIcon, row, 
       label={<Label>{label}</Label>}
       value={value}
       onChangeText={onChange}
-      // disabled={disabled}
       multiline={multiline}
-      {...props}
       errorMessage={error && error.message}
       scrollEnabled={multiline && false}
       rightIcon={
@@ -55,8 +53,6 @@ export const Input = ({ control, name, label, rules, multiline, rightIcon, row, 
       containerStyle={[styles.container, row && styles.row]}
       inputContainerStyle={[
         styles.inputContainer,
-        // disabled && styles.inputContainerDisabled,
-        // hidden && styles.inputContainerHidden,
         !error && value && styles.inputContainerSuccess,
         error && styles.inputContainerError
       ]}
@@ -64,6 +60,7 @@ export const Input = ({ control, name, label, rules, multiline, rightIcon, row, 
       inputStyle={[styles.input, multiline && device.platform === 'ios' && styles.multiline]}
       disabledInputStyle={styles.inputDisabled}
       accessibilityLabel={`${a11yLabel[name]} ${a11yLabel.textInput}: ${value}`}
+      {...props}
     />
   );
 };
