@@ -51,9 +51,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
   });
 
   const onSubmit = async (val) => {
-    //TODO!
     if (!termsOfService) return showPrivacyCheckedAlert();
-    // const getFromStore = async (key) => JSON.parse(await AsyncStorage.getItem(key));
 
     setRegistrationLoading(true);
     await userRegister({

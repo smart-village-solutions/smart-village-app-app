@@ -1,80 +1,38 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
-import { RefreshControl, ScrollView } from 'react-native';
-import { useQuery } from 'react-apollo';
+import React, { useState, useEffect, useCallback } from 'react';
+import { RefreshControl, ScrollView, Text } from 'react-native';
 
-import {
-  LoadingSpinner,
-  RegularText,
-  SafeAreaViewFlex,
-  ConsulWelcome,
-  SectionHeader,
-  Wrapper,
-  WrapperWithOrientation
-} from '../../../components';
-import { colors, texts } from '../../../config';
-import { CONSUL_USER } from '../../../queries/Consul';
-import { ConsulClient } from '../../../ConsulClient';
+import { LoadingSpinner, SafeAreaViewFlex, ConsulWelcome } from '../../../components';
+import { colors } from '../../../config';
+import { useConsulUser } from '../../../hooks/Consul/useConsulUser';
 
-export const ConsulHomeScreen = ({ navigation }) => {
+export const ConsulHomeScreen = ({ navigation, route }) => {
   // useState
-  const [refreshing, setRefreshing] = useState(false);
-  const [refreshingUser, setRefreshingUser] = useState(false);
-  const [user, setUser] = useState(null);
+  const [refreshingHome, setRefreshingHome] = useState(false);
+  const { refresh: refreshUser, isLoading, isError, isLoggedIn } = useConsulUser();
 
-  // GraphQL
-  const { loading, data, error } = useQuery(CONSUL_USER, {
-    client: ConsulClient,
-    variables: { id: 1 }
-  });
+  const refresh = useCallback(() => {
+    refreshUser();
+  }, [refreshUser]);
 
-  useEffect(() => {
-    if (data) {
-      setUser(data.user);
-    }
-  }, []);
+  const refreshHome = () => {
+    setRefreshingHome(true);
 
-  const refresh = () => {
-    setRefreshing(true);
-
+    // we simulate state change of `refreshing` with setting it to `true` first and after
+    // a timeout to `false` again, which will result in a re-rendering of the screen.
     setTimeout(() => {
-      setRefreshing(false);
-    }, 500);
+      setRefreshingHome(false);
+    }, 1500);
   };
 
-  const refreshUser = () => {
-    setRefreshingUser(true);
+  useEffect(refresh, [route.params?.refreshUser]);
 
-    setTimeout(() => {
-      setRefreshingUser(false);
-    }, 500);
-  };
-
-  if (loading) {
+  if (isLoading) {
     return <LoadingSpinner loading />;
   }
 
-  if (!user?.id) {
+  if (!isLoggedIn || isError) {
     return <ConsulWelcome navigation={navigation} />;
-  }
-
-  if (!user || error) {
-    return (
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshingUser}
-            onRefresh={refreshUser}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
-          />
-        }
-      >
-        <Wrapper>
-          <RegularText center>{texts.consul.errorLoadingUser}</RegularText>
-        </Wrapper>
-      </ScrollView>
-    );
   }
 
   return (
@@ -82,16 +40,17 @@ export const ConsulHomeScreen = ({ navigation }) => {
       <ScrollView
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
-            onRefresh={refresh}
+            refreshing={refreshingHome}
+            onRefresh={refreshHome}
             colors={[colors.accent]}
             tintColor={colors.accent}
           />
         }
       >
-        <WrapperWithOrientation>
-          <SectionHeader title={texts.encounter.homeTitle} />
-        </WrapperWithOrientation>
+        {/* TODO! */}
+        {NAVIGATION.map((item, index) => (
+          <Text key={index}>{item.name}</Text>
+        ))}
       </ScrollView>
     </SafeAreaViewFlex>
   );
@@ -100,6 +59,14 @@ export const ConsulHomeScreen = ({ navigation }) => {
 ConsulHomeScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func
-  }).isRequired
+    goBack: PropTypes.func,
+    setOptions: PropTypes.object
+  }).isRequired,
+  route: PropTypes.object
 };
+
+const NAVIGATION = [
+  {
+    name: 'User Logged In'
+  }
+];
