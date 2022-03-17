@@ -71,7 +71,7 @@ export const ConsulHomeScreen = ({ navigation }) => {
         }
       >
         <Wrapper>
-          <RegularText center>{texts.encounter.errorLoadingUser}</RegularText>
+          <RegularText center>{texts.consul.errorLoadingUser}</RegularText>
         </Wrapper>
       </ScrollView>
     );

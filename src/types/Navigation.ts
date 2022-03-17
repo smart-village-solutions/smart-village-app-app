@@ -14,6 +14,7 @@ export enum ScreenName {
   ConstructionSiteOverview = 'ConstructionSiteOverview',
   ConsulHomeScreen = 'ConsulHomeScreen',
   ConsulRegisterScreen = 'ConsulRegisterScreen',
+  ConsulRegisteredScreen = 'ConsulRegisteredScreen',
   ConsulLoginScreen = 'ConsulLoginScreen',
   DataProvider = 'DataProvider',
   Detail = 'Detail',

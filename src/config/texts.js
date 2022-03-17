@@ -72,6 +72,7 @@ export const texts = {
     name: 'Name',
     usernameError: 'Username muss ausgefüllt werden',
     next: 'Weiter',
+    ok: 'OK',
     password: 'Passwort',
     passwordError: 'Passwort muss ausgefüllt werden',
     passwordLengthError: 'Das Passwort sollte mindestens 8 Zeichen lang sein',
@@ -469,6 +470,11 @@ export const texts = {
     appSettings: 'App-Einstellungen',
     company: appJson.expo.name,
     constructionSite: 'Baustelle',
+    consul: {
+      login: 'Anmelden',
+      register: 'Registrieren',
+      home: 'Consul'
+    },
     encounterHome: 'Mitfahrbank',
     feedback: 'Feedback',
     home: appJson.expo.name,

@@ -20,6 +20,7 @@ import {
   WrapperWithOrientation
 } from '../../../components';
 import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { ScreenName } from '../../../types';
 import { CONSUL_REGISTER_USER } from '../../../queries/Consul';
 import { ConsulClient } from '../../../ConsulClient';
 
@@ -67,7 +68,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
     })
       .then(() => {
         setRegistrationLoading(false);
-        Alert.alert('Success', 'Success');
+        navigation.navigate(ScreenName.ConsulRegisteredScreen);
       })
       .catch((err) => {
         console.error(err.message);
