@@ -90,7 +90,14 @@ export const texts = {
     registrationPrivacyLink: 'Datenschutzerklärung.',
     registrationPrivacyText:
       'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
-    registrationTitle: 'Registrieren'
+    registrationTitle: 'Registrieren',
+    resetPasswordFailedBody: 'Benutzer wurde nicht gefunden oder war nicht angemeldet.',
+    resetPasswordFailedTitle: 'Fehler',
+    resetPasswordEmptyEmailBody:
+      'Bitte stellen Sie sicher, dass Sie Ihre E-Mail-Adresse korrekt eingegeben haben.',
+    resetPasswordSuccessTitle: 'Erfolgreich',
+    resetPasswordSuccessBody:
+      'Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.'
   },
   dataProvider: {
     more: 'Mehr von',

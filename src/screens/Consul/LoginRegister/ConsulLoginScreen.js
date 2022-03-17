@@ -19,14 +19,21 @@ import {
   WrapperWithOrientation
 } from '../../../components';
 import { colors, consts, Icon, normalize, texts } from '../../../config';
-import { CONSUL_LOGIN_USER } from '../../../queries/Consul';
+import { CONSUL_LOGIN_USER, CONSUL_USER_SEND_PASSWORD_RESET } from '../../../queries/Consul';
 import { ConsulClient } from '../../../ConsulClient';
 
 const { a11yLabel } = consts;
 const text = texts.consul;
 
 // Alert
+
 const showLoginFailAlert = () => Alert.alert(text.loginFailedTitle, text.loginFailedBody);
+const showResetPasswordFailAlert = () =>
+  Alert.alert(text.resetPasswordFailedTitle, text.resetPasswordFailedBody);
+const showResetPasswordSuccessAlert = () =>
+  Alert.alert(text.resetPasswordSuccessTitle, text.resetPasswordSuccessBody);
+const showResetPasswordEmptyMailAlert = () =>
+  Alert.alert(text.resetPasswordFailedTitle, text.resetPasswordEmptyEmailBody);
 
 export const ConsulLoginScreen = ({ navigation }) => {
   // useState
@@ -38,6 +45,9 @@ export const ConsulLoginScreen = ({ navigation }) => {
 
   // GraphQL
   const [userLogin] = useMutation(CONSUL_LOGIN_USER, {
+    client: ConsulClient
+  });
+  const [userSendPasswordReset] = useMutation(CONSUL_USER_SEND_PASSWORD_RESET, {
     client: ConsulClient
   });
 
@@ -53,6 +63,16 @@ export const ConsulLoginScreen = ({ navigation }) => {
         setRegistrationLoading(false);
         showLoginFailAlert();
       });
+  };
+
+  const sendPasswordReset = async (val) => {
+    if (!val) {
+      return showResetPasswordEmptyMailAlert();
+    }
+
+    await userSendPasswordReset({ variables: { email: val, redirectUrl: 'null' } })
+      .then(() => showResetPasswordSuccessAlert())
+      .catch(() => showResetPasswordFailAlert());
   };
 
   return (
@@ -95,7 +115,10 @@ export const ConsulLoginScreen = ({ navigation }) => {
               />
             </Wrapper>
             <Wrapper>
-              <Touchable accessibilityLabel={`${a11yLabel.privacy} ${a11yLabel.button}`}>
+              <Touchable
+                onPress={() => sendPasswordReset(control._fields.email._f.value)}
+                accessibilityLabel={`${a11yLabel.privacy} ${a11yLabel.button}`}
+              >
                 <RegularText small underline>
                   {text.passwordForgotten}
                 </RegularText>

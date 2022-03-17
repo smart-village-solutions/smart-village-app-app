@@ -10,7 +10,6 @@ import {
   Checkbox,
   DefaultKeyboardAvoidingView,
   Input,
-  Label,
   LoadingModal,
   SafeAreaViewFlex,
   Title,
@@ -150,7 +149,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 control={control}
               />
             </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
+            <Wrapper>
               <Checkbox
                 linkDescription={text.privacyCheckLink}
                 link={'https://www.google.de'}
@@ -160,7 +159,6 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 checked={termsOfService}
                 onPress={() => settermsOfService(!termsOfService)}
               />
-              <Label>{text.passwordConfirmation}</Label>
             </Wrapper>
             <Wrapper>
               <Button
