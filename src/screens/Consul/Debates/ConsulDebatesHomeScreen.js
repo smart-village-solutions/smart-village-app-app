@@ -3,7 +3,7 @@ import React, { useState, useCallback } from 'react';
 import { RefreshControl, Text } from 'react-native';
 
 import { ListComponent, LoadingSpinner, SafeAreaViewFlex } from '../../../components';
-import { parseListItemsFromQuery } from '../../../helpers';
+import { momentFormatUtcToLocal, parseListItemsFromQuery } from '../../../helpers';
 import { colors } from '../../../config';
 import { useConsulData } from '../../../hooks';
 
@@ -22,6 +22,14 @@ export const ConsulDebatesHomeScreen = ({ navigation, route }) => {
     bookmarkable,
     skipLastDivider: true
   });
+
+  listItems.sort((a, b) =>
+    momentFormatUtcToLocal(b.createdAt)
+      .split('.')
+      .reverse()
+      .join()
+      .localeCompare(momentFormatUtcToLocal(a.createdAt).split('.').reverse().join())
+  );
 
   const refresh = useCallback(
     async (refetch) => {
