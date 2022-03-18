@@ -22,7 +22,10 @@ export const QUERY_TYPES = {
   WASTE_ADDRESSES: 'wasteAddresses',
   WASTE_STREET: 'wasteStreet',
   WEATHER_MAP: 'weatherMap',
-  WEATHER_MAP_CURRENT: 'weatherMapCurrent'
+  WEATHER_MAP_CURRENT: 'weatherMapCurrent',
+  CONSUL: {
+    DEBATES: 'debates'
+  }
 };
 
 /**

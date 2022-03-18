@@ -198,6 +198,27 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
+const parseConsulData = (data, query, skipLastDivider) => {
+  return data?.nodes?.map((debate, index) => ({
+    id: debate.id,
+    title: debate.title,
+    description: debate.description,
+    cachedVodesUp: debate.cachedVotesUp,
+    cachedVotesTotal: debate.cachedVotesTotal,
+    cachedVotesDown: debate.cachedVotesDown,
+    author: debate.publicAuthor,
+    comments: debate.comments,
+    routeName: 'ConsulDebatesDetailScreen',
+    params: {
+      title: debate.title,
+      query: null,
+      queryVariables: { limit: 15, order: 'name_ASC', debate: `${debate.title}` },
+      rootRouteName: ROOT_ROUTE_NAMES.CONSOLE_HOME
+    },
+    bottomDivider: !skipLastDivider || index !== data.length - 1
+  }));
+};
+
 /**
  * Parses list items from query a query result
  * @param {string} query
@@ -226,5 +247,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseCategories(data[query], skipLastDivider);
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
+    case QUERY_TYPES.CONSUL.DEBATES:
+      return parseConsulData(data[query], query, skipLastDivider);
   }
 };

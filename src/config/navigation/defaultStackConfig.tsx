@@ -13,6 +13,7 @@ import {
   ConsulRegisterScreen,
   ConsulRegisteredScreen,
   ConsulDebatesHomeScreen,
+  ConsulDebatesDetailScreen,
   ConsulProposalsHomeScreen,
   ConsulVotingHomeScreen,
   ConsulUserSettingsScreen,
@@ -116,6 +117,10 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.ConsulDebatesHomeScreen,
       screenComponent: ConsulDebatesHomeScreen
+    },
+    {
+      routeName: ScreenName.ConsulDebatesDetailScreen,
+      screenComponent: ConsulDebatesDetailScreen
     },
     {
       routeName: ScreenName.ConsulProposalsHomeScreen,

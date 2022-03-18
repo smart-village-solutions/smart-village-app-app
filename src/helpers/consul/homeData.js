@@ -1,7 +1,8 @@
 import { ScreenName } from '../../types';
-// import { QUERY_TYPES } from '../../queries';
+import { QUERY_TYPES } from '../../queries';
 import { texts } from '../../config';
 
+const query = QUERY_TYPES.CONSUL;
 const text = texts.consul.homeScreen;
 
 export const homeData = [
@@ -12,7 +13,7 @@ export const homeData = [
         routeName: ScreenName.ConsulDebatesHomeScreen,
         params: {
           title: text.debates,
-          query: null,
+          query: query.DEBATES,
           queryVariables: { limit: 15, order: 'name_ASC', category: text.debates },
           rootRouteName: ScreenName.ConsulHomeScreen
         },

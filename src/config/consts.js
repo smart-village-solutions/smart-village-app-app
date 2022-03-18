@@ -125,6 +125,7 @@ export const consts = {
     NEWS_ITEMS: 'NewsItems',
     POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours',
     POINTS_OF_INTEREST: 'PointsOfInterest',
-    TOURS: 'Tours'
+    TOURS: 'Tours',
+    CONSOLE_HOME: 'ConsulHome'
   }
 };

@@ -1,6 +1,7 @@
 export * from './apollo';
 export * from './Bookmarks';
 export * from './constructionSites';
+export * from './consul';
 export * from './encounter';
 export * from './HomeRefresh';
 export * from './imagePicker';
