@@ -97,7 +97,17 @@ export const texts = {
       'Bitte stellen Sie sicher, dass Sie Ihre E-Mail-Adresse korrekt eingegeben haben.',
     resetPasswordSuccessTitle: 'Erfolgreich',
     resetPasswordSuccessBody:
-      'Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.'
+      'Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.',
+    homeScreen: {
+      account: 'Konto',
+      general: 'Allgemein',
+      debates: 'Diskussionen',
+      proposals: 'Vorschläge',
+      voting: 'Abstimmung',
+      personal: 'Persönlich',
+      settings: 'Einstellungen',
+      logout: 'Ausloggen'
+    }
   },
   dataProvider: {
     more: 'Mehr von',

@@ -1,4 +1,5 @@
 export * from './parser';
+export * from './consul';
 
 export * from './addressHelper';
 export * from './bookmarkHelper';

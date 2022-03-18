@@ -1,4 +1,5 @@
 export * from './bookmarks';
+export * from './consul';
 export * from './encounter';
 export * from './infoCard';
 export * from './map';
@@ -18,7 +19,6 @@ export * from './Checkbox';
 export * from './CircularView';
 export * from './CommentSection';
 export * from './ConnectedImagesCarousel';
-export * from './Consul';
 export * from './CrossData';
 export * from './DataListSection';
 export * from './DataProviderButton';

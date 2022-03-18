@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect, useCallback } from 'react';
-import { RefreshControl, ScrollView, Text } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
 import { LoadingSpinner, SafeAreaViewFlex, ConsulWelcome } from '../../../components';
 import { colors } from '../../../config';
 import { useConsulUser } from '../../../hooks/Consul/useConsulUser';
+import { homeData } from '../../../helpers';
+import { ConsulListComponent } from '../../../components';
 
 export const ConsulHomeScreen = ({ navigation, route }) => {
   // useState
@@ -47,10 +49,17 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
           />
         }
       >
-        {/* TODO! */}
-        {NAVIGATION.map((item, index) => (
-          <Text key={index}>{item.name}</Text>
-        ))}
+        <ConsulListComponent data={homeData} navigation={navigation} />
+        {/* <Touchable
+          onPress={async () => {
+            await setConsulAuthToken();
+            navigation?.navigate(ScreenName.ConsulHomeScreen, {
+              refreshUser: new Date().valueOf()
+            });
+          }}
+        >
+          <Text>LogOut</Text>
+        </Touchable> */}
       </ScrollView>
     </SafeAreaViewFlex>
   );
@@ -60,13 +69,7 @@ ConsulHomeScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired,
     goBack: PropTypes.func,
-    setOptions: PropTypes.object
+    setOptions: PropTypes.func
   }).isRequired,
   route: PropTypes.object
 };
-
-const NAVIGATION = [
-  {
-    name: 'User Logged In'
-  }
-];

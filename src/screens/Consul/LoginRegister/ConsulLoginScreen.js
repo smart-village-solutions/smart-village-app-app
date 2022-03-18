@@ -22,6 +22,7 @@ import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { CONSUL_LOGIN_USER, CONSUL_USER_SEND_PASSWORD_RESET } from '../../../queries/Consul';
 import { ConsulClient } from '../../../ConsulClient';
 import { setConsulAuthToken } from '../../../helpers';
+import { ScreenName } from '../../../types';
 
 const { a11yLabel } = consts;
 const text = texts.consul;
@@ -55,8 +56,12 @@ export const ConsulLoginScreen = ({ navigation }) => {
   const onSubmit = async (val) => {
     setRegistrationLoading(true);
     await userLogin({ variables: { email: val.email, password: val.password } })
-      .then((val) => {
-        setConsulAuthToken(val.data.userLogin?.credentials.accessToken);
+      .then(async (val) => {
+        await setConsulAuthToken(val.data.userLogin?.credentials.accessToken);
+
+        navigation?.navigate(ScreenName.ConsulHomeScreen, {
+          refreshUser: new Date().valueOf()
+        });
 
         setRegistrationLoading(false);
         Alert.alert('Success', 'Success');
