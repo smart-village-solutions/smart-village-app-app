@@ -202,17 +202,13 @@ const parseConsulData = (data, query, skipLastDivider) => {
   return data?.nodes?.map((debate, index) => ({
     id: debate.id,
     title: debate.title,
-    description: debate.description,
-    cachedVodesUp: debate.cachedVotesUp,
-    cachedVotesTotal: debate.cachedVotesTotal,
-    cachedVotesDown: debate.cachedVotesDown,
-    author: debate.publicAuthor,
-    comments: debate.comments,
+    createdAt: debate.publicCreatedAt,
+    subtitle: debate.commentsCount ? debate.commentsCount + ' Comment' : '0 Comment',
     routeName: 'ConsulDebatesDetailScreen',
     params: {
       title: debate.title,
-      query: null,
-      queryVariables: { limit: 15, order: 'name_ASC', debate: `${debate.title}` },
+      query: QUERY_TYPES.CONSUL.DEBATE,
+      queryVariables: { id: debate.id },
       rootRouteName: ROOT_ROUTE_NAMES.CONSOLE_HOME
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1

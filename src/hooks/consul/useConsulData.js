@@ -7,23 +7,42 @@ import { ConsulClient } from '../../ConsulClient';
 
 const QUERIES = QUERY_TYPES.CONSUL;
 
-export const useConsulData = ({ query, queryVariables }) => {
+const useDebates = ({ query, queryVariables }) => {
   const { data, loading, error, refetch } = useQuery(getQuery(query), {
     client: ConsulClient,
     variables: queryVariables
   });
 
+  return {
+    isLoading: loading,
+    isError: error,
+    data,
+    refetch
+  };
+};
+
+const useDebate = ({ query, queryVariables }) => {
+  const { data, loading, error, refetch } = useQuery(getQuery(query), {
+    client: ConsulClient,
+    variables: queryVariables
+  });
+
+  return {
+    isLoading: loading,
+    isError: error,
+    data,
+    refetch
+  };
+};
+
+export const useConsulData = ({ query, queryVariables }) => {
   switch (query) {
     case QUERIES.DEBATES:
-      return {
-        isLoading: loading,
-        isError: error,
-        data,
-        refetch
-      };
-
+      return useDebates({ query, queryVariables });
+    case QUERIES.DEBATE:
+      return useDebate({ query, queryVariables });
     default:
-      return null;
+      null;
   }
 };
 

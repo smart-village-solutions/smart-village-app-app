@@ -24,7 +24,8 @@ export const QUERY_TYPES = {
   WEATHER_MAP: 'weatherMap',
   WEATHER_MAP_CURRENT: 'weatherMapCurrent',
   CONSUL: {
-    DEBATES: 'debates'
+    DEBATES: 'debates',
+    DEBATE: 'debate'
   }
 };
 

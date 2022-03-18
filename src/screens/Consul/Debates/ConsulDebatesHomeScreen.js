@@ -35,7 +35,7 @@ export const ConsulDebatesHomeScreen = ({ navigation, route }) => {
   if (isLoading) return <LoadingSpinner loading />;
 
   // TODO: If Error true return error component
-  if (isError) return <Text>Error</Text>;
+  if (isError) return <Text>{isError.message}</Text>;
 
   if (!listItems) return null;
 
