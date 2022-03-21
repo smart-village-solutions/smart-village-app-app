@@ -9,3 +9,5 @@ export * from './PriceCard';
 export * from './Service';
 export * from './ServiceTiles';
 export * from './Tour';
+
+export * from './Consul';

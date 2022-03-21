@@ -12,8 +12,8 @@ import {
   ConsulLoginScreen,
   ConsulRegisterScreen,
   ConsulRegisteredScreen,
-  ConsulDebatesHomeScreen,
-  ConsulDebatesDetailScreen,
+  ConsulIndexScreen,
+  ConsulDetailScreen,
   ConsulProposalsHomeScreen,
   ConsulVotingHomeScreen,
   ConsulUserSettingsScreen,
@@ -115,12 +115,12 @@ export const defaultStackConfig = ({
       screenOptions: { title: texts.screenTitles.consul.login }
     },
     {
-      routeName: ScreenName.ConsulDebatesHomeScreen,
-      screenComponent: ConsulDebatesHomeScreen
+      routeName: ScreenName.ConsulIndexScreen,
+      screenComponent: ConsulIndexScreen
     },
     {
-      routeName: ScreenName.ConsulDebatesDetailScreen,
-      screenComponent: ConsulDebatesDetailScreen
+      routeName: ScreenName.ConsulDetailScreen,
+      screenComponent: ConsulDetailScreen
     },
     {
       routeName: ScreenName.ConsulProposalsHomeScreen,

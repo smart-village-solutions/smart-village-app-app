@@ -206,7 +206,7 @@ const parseConsulData = (data, query, skipLastDivider) => {
     totalVotes: debate.cachedVotesTotal,
     // subtitle: debate.commentsCount ? debate.commentsCount + ' Comment' : '0 Comment',
     subtitle: debate.publicCreatedAt,
-    routeName: 'ConsulDebatesDetailScreen',
+    routeName: 'ConsulDetailScreen',
     params: {
       title: debate.title,
       query: QUERY_TYPES.CONSUL.DEBATE,

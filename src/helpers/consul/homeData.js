@@ -10,7 +10,7 @@ export const homeData = [
     title: text.general,
     data: [
       {
-        routeName: ScreenName.ConsulDebatesHomeScreen,
+        routeName: ScreenName.ConsulIndexScreen,
         params: {
           title: text.debates,
           query: query.DEBATES,

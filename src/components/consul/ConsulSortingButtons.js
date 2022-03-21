@@ -3,6 +3,7 @@ import React from 'react';
 
 import { Touchable, RegularText } from '../';
 import { Button } from '../Button';
+import { BoldText } from '../Text';
 
 export const ConsulSortingButtons = (item) => {
   const {
@@ -14,19 +15,17 @@ export const ConsulSortingButtons = (item) => {
 
   switch (buttonType) {
     case 'type1':
-      return (
-        <Button onPress={onPress} title={title} invert={orderType !== type}>
-          <RegularText underline={orderType === type} primary={orderType === type}>
-            {title}
-          </RegularText>
-        </Button>
-      );
+      return <Button onPress={onPress} title={title} invert={orderType !== type} />;
     case 'type2':
       return (
         <Touchable onPress={onPress}>
-          <RegularText underline={orderType === type} primary={orderType === type}>
-            {title}
-          </RegularText>
+          {orderType === type ? (
+            <BoldText underline primary>
+              {title}
+            </BoldText>
+          ) : (
+            <RegularText placeholder>{title}</RegularText>
+          )}
         </Touchable>
       );
     default:

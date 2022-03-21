@@ -3,23 +3,31 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { RefreshControl, Text } from 'react-native';
 
 import {
-  ListComponent,
   LoadingSpinner,
   SafeAreaViewFlex,
   WrapperRow,
   WrapperWithOrientation,
-  ConsulSortingButtons
-} from '../../../components';
-import { parseListItemsFromQuery, sortingHelper } from '../../../helpers';
-import { colors } from '../../../config';
-import { useConsulData } from '../../../hooks';
-import { texts } from '../../../config';
-import { QUERY_TYPES } from '../../../queries';
+  ConsulSortingButtons,
+  Debates
+} from '../../components';
+import { parseListItemsFromQuery, sortingHelper } from '../../helpers';
+import { colors } from '../../config';
+import { useConsulData } from '../../hooks';
+import { texts } from '../../config';
+import { QUERY_TYPES } from '../../queries';
 
 const text = texts.consul.sorting;
 const type = QUERY_TYPES.CONSUL.SORTING;
+const queryType = QUERY_TYPES.CONSUL;
 
-export const ConsulDebatesHomeScreen = ({ navigation, route }) => {
+const getComponent = (query) => {
+  const COMPONENTS = {
+    [queryType.DEBATES]: Debates
+  };
+  return COMPONENTS[query];
+};
+
+export const ConsulIndexScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [listData, setListData] = useState([]);
   const [orderType, setOrderType] = useState(type.MOSTACTIVE);
@@ -55,12 +63,14 @@ export const ConsulDebatesHomeScreen = ({ navigation, route }) => {
     [setRefreshing]
   );
 
+  const Component = getComponent(query);
+
   if (isLoading || orderLoading) return <LoadingSpinner loading />;
 
   // TODO: If Error true return error component
   if (isError) return <Text>{isError.message}</Text>;
 
-  if (!listData) return null;
+  if (!listData || !Component) return null;
 
   return (
     <SafeAreaViewFlex>
@@ -78,10 +88,11 @@ export const ConsulDebatesHomeScreen = ({ navigation, route }) => {
         </WrapperRow>
       </WrapperWithOrientation>
 
-      <ListComponent
-        navigation={navigation}
+      <Component
         query={query}
-        data={listData}
+        listData={listData}
+        navigation={navigation}
+        route={route}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -90,7 +101,6 @@ export const ConsulDebatesHomeScreen = ({ navigation, route }) => {
             tintColor={colors.accent}
           />
         }
-        showBackToTop
       />
     </SafeAreaViewFlex>
   );
@@ -98,11 +108,11 @@ export const ConsulDebatesHomeScreen = ({ navigation, route }) => {
 
 const sortingButtons = [
   { title: text.mostActive, type: type.MOSTACTIVE },
-  { title: text.newest, type: type.NEWESTDATE },
-  { title: text.highestRated, type: type.HIGHESTRATED }
+  { title: text.highestRated, type: type.HIGHESTRATED },
+  { title: text.newest, type: type.NEWESTDATE }
 ];
 
-ConsulDebatesHomeScreen.propTypes = {
+ConsulIndexScreen.propTypes = {
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired
   }).isRequired,
