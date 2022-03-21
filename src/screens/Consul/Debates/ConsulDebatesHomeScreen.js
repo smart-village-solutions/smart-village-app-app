@@ -1,14 +1,29 @@
 import PropTypes from 'prop-types';
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { RefreshControl, Text } from 'react-native';
 
-import { ListComponent, LoadingSpinner, SafeAreaViewFlex } from '../../../components';
-import { momentFormatUtcToLocal, parseListItemsFromQuery } from '../../../helpers';
+import {
+  ListComponent,
+  LoadingSpinner,
+  SafeAreaViewFlex,
+  WrapperRow,
+  WrapperWithOrientation,
+  ConsulSortingButtons
+} from '../../../components';
+import { parseListItemsFromQuery, sortingHelper } from '../../../helpers';
 import { colors } from '../../../config';
 import { useConsulData } from '../../../hooks';
+import { texts } from '../../../config';
+import { QUERY_TYPES } from '../../../queries';
+
+const text = texts.consul.sorting;
+const type = QUERY_TYPES.CONSUL.SORTING;
 
 export const ConsulDebatesHomeScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
+  const [listData, setListData] = useState([]);
+  const [orderType, setOrderType] = useState(type.MOSTACTIVE);
+  const [orderLoading, setOrderLoading] = useState(true);
   const bookmarkable = route.params?.bookmarkable;
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
@@ -23,13 +38,13 @@ export const ConsulDebatesHomeScreen = ({ navigation, route }) => {
     skipLastDivider: true
   });
 
-  listItems.sort((a, b) =>
-    momentFormatUtcToLocal(b.createdAt)
-      .split('.')
-      .reverse()
-      .join()
-      .localeCompare(momentFormatUtcToLocal(a.createdAt).split('.').reverse().join())
-  );
+  useEffect(() => {
+    setOrderLoading(true);
+    sortingHelper(orderType, listItems)
+      .then((val) => setListData(val))
+      .then(() => setOrderLoading(false))
+      .catch((err) => console.error(err));
+  }, [orderType, isLoading]);
 
   const refresh = useCallback(
     async (refetch) => {
@@ -40,19 +55,33 @@ export const ConsulDebatesHomeScreen = ({ navigation, route }) => {
     [setRefreshing]
   );
 
-  if (isLoading) return <LoadingSpinner loading />;
+  if (isLoading || orderLoading) return <LoadingSpinner loading />;
 
   // TODO: If Error true return error component
   if (isError) return <Text>{isError.message}</Text>;
 
-  if (!listItems) return null;
+  if (!listData) return null;
 
   return (
     <SafeAreaViewFlex>
+      <WrapperWithOrientation>
+        <WrapperRow center spaceAround>
+          {sortingButtons.map((item, index) => (
+            <ConsulSortingButtons
+              buttonType="type2"
+              item={item}
+              key={index}
+              orderType={orderType}
+              onPress={() => setOrderType(item.type)}
+            />
+          ))}
+        </WrapperRow>
+      </WrapperWithOrientation>
+
       <ListComponent
         navigation={navigation}
         query={query}
-        data={listItems}
+        data={listData}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -66,6 +95,12 @@ export const ConsulDebatesHomeScreen = ({ navigation, route }) => {
     </SafeAreaViewFlex>
   );
 };
+
+const sortingButtons = [
+  { title: text.mostActive, type: type.MOSTACTIVE },
+  { title: text.newest, type: type.NEWESTDATE },
+  { title: text.highestRated, type: type.HIGHESTRATED }
+];
 
 ConsulDebatesHomeScreen.propTypes = {
   navigation: PropTypes.shape({

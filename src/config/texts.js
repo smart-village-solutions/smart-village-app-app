@@ -107,6 +107,11 @@ export const texts = {
       personal: 'Persönlich',
       settings: 'Einstellungen',
       logout: 'Ausloggen'
+    },
+    sorting: {
+      mostActive: 'aktivste',
+      newest: 'neuste',
+      highestRated: 'am besten bewertet'
     }
   },
   dataProvider: {

@@ -8,6 +8,7 @@ export const GET_DEBATES = gql`
         title
         publicCreatedAt
         commentsCount
+        cachedVotesTotal
       }
     }
   }

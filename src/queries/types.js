@@ -25,7 +25,12 @@ export const QUERY_TYPES = {
   WEATHER_MAP_CURRENT: 'weatherMapCurrent',
   CONSUL: {
     DEBATES: 'debates',
-    DEBATE: 'debate'
+    DEBATE: 'debate',
+    SORTING: {
+      NEWESTDATE: 'newestDate',
+      MOSTACTIVE: 'mostActive',
+      HIGHESTRATED: 'highestRated'
+    }
   }
 };
 
