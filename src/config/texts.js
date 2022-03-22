@@ -98,6 +98,11 @@ export const texts = {
     resetPasswordSuccessTitle: 'Erfolgreich',
     resetPasswordSuccessBody:
       'Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.',
+    comment: 'Kommentar',
+    comments: 'Kommentare',
+    noVoting: 'Keine Bewertung',
+    tags: 'Stichworte',
+    supports: 'Unterstützer*innen',
     homeScreen: {
       account: 'Konto',
       general: 'Allgemein',

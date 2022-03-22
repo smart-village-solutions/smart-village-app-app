@@ -21,7 +21,7 @@ export const homeData = [
         title: text.debates
       },
       {
-        routeName: ScreenName.ConsulProposalsHomeScreen,
+        routeName: ScreenName.ConsulIndexScreen,
         params: {
           title: text.proposals,
           query: null,
@@ -32,7 +32,7 @@ export const homeData = [
         title: text.proposals
       },
       {
-        routeName: ScreenName.ConsulVotingHomeScreen,
+        routeName: ScreenName.ConsulIndexScreen,
         params: {
           title: text.voting,
           query: null,

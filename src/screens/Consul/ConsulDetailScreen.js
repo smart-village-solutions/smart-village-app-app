@@ -57,7 +57,7 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
           />
         }
       >
-        <Component listData={data} navigation={navigation} route={route} />
+        <Component listData={data} query={query} route={route} />
       </ScrollView>
     </SafeAreaViewFlex>
   );
