@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { CacheManager } from 'react-native-expo-image-cache';
 import { Image as RNEImage } from 'react-native-elements';
+import { CacheManager } from 'react-native-expo-image-cache';
 
-import { consts, colors } from '../config';
+import { colors, consts } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
-import { SettingsContext } from '../SettingsProvider';
 import { useInterval } from '../hooks/TimeHooks';
+import { SettingsContext } from '../SettingsProvider';
 
 import { ImageMessage } from './ImageMessage';
 import { ImageRights } from './ImageRights';
@@ -21,6 +21,8 @@ const addQueryParam = (url, param) => {
 
   return url.includes('?') ? `${url}&${param}` : `${url}?${param}`;
 };
+
+const NO_IMAGE = { uri: 'NO_IMAGE' };
 
 export const Image = ({
   message,
@@ -74,7 +76,7 @@ export const Image = ({
         ? CacheManager.get(sourceProp.uri)
             .getPath()
             .then((path) => {
-              mounted && setSource({ uri: path });
+              mounted && setSource({ uri: path ?? NO_IMAGE.uri });
             })
             .catch((err) => {
               console.warn(
@@ -82,13 +84,15 @@ export const Image = ({
                 sourceProp.uri,
                 err
               );
-              mounted && setSource(sourceProp);
+              mounted && setSource(NO_IMAGE);
             })
-        : mounted && setSource(sourceProp);
+        : mounted && setSource(NO_IMAGE);
     }
 
     return () => (mounted = false);
   }, [timestamp, refreshInterval, sourceProp, setSource]);
+
+  if (source?.uri === NO_IMAGE.uri) return null;
 
   return (
     <View>
