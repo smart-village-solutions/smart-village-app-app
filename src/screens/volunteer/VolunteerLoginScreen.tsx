@@ -131,7 +131,13 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
                 onPress={() =>
                   navigation.navigate(ScreenName.Web, {
                     title: texts.volunteer.passwordForgotten,
-                    webUrl: passwordForgottenUrl
+                    webUrl: passwordForgottenUrl,
+                    injectedJavaScript: `
+                      document.getElementById('app-title') && document.getElementById('app-title').remove();
+                      document.getElementById('img-logo') && document.getElementById('img-logo').remove();
+                      document.querySelector('button[type="submit"] + a') && document.querySelector('button[type="submit"] + a').remove();
+                      document.querySelector('.powered') && document.querySelector('.powered').remove();
+                    `
                   })
                 }
               >
