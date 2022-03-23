@@ -5,7 +5,7 @@ import { View, StyleSheet } from 'react-native';
 import { momentFormatUtcToLocal } from '../../../helpers';
 import { WrapperRow } from '../../Wrapper';
 import { RegularText } from '../..';
-import { colors, normalize, texts } from '../../../config';
+import { colors, normalize, texts, Icon } from '../../../config';
 import { Touchable } from '../../Touchable';
 
 const text = texts.consul;
@@ -62,7 +62,6 @@ export const ConsulCommentListItem = ({ item, index }) => {
           )}
         </View>
 
-        {/* TODO: SVG icon will be added */}
         <WrapperRow>
           {cachedVotesTotal > 0 ? (
             <RegularText smallest placeholder>
@@ -73,12 +72,22 @@ export const ConsulCommentListItem = ({ item, index }) => {
               {text.noVotes}
             </RegularText>
           )}
-          <RegularText smallest placeholder>
-            %{upVotesPercent}
-          </RegularText>
-          <RegularText smallest placeholder>
-            %{downVotesPercent}
-          </RegularText>
+          <WrapperRow>
+            <Icon.Like color={colors.placeholder} size={normalize(16)} style={styles.icon} />
+            <RegularText smallest placeholder>
+              %{upVotesPercent}
+            </RegularText>
+          </WrapperRow>
+          <WrapperRow>
+            <Icon.Like
+              color={colors.placeholder}
+              style={[styles.icon, { transform: [{ rotateX: '180deg' }] }]}
+              size={normalize(16)}
+            />
+            <RegularText smallest placeholder>
+              %{downVotesPercent}
+            </RegularText>
+          </WrapperRow>
         </WrapperRow>
       </View>
       {responseShow && responses && responses.length
@@ -112,5 +121,8 @@ const styles = StyleSheet.create({
     paddingLeft: normalize(10),
     borderStyle: 'solid',
     borderColor: colors.placeholder
+  },
+  icon: {
+    paddingHorizontal: 5
   }
 });

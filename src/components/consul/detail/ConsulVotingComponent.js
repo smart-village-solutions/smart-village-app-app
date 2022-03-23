@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { TitleContainer, Title, TitleShadow } from '../../Title';
 import { Wrapper, WrapperRow } from '../../Wrapper';
-import { texts, consts, device } from '../../../config';
+import { texts, consts, device, colors, Icon, normalize } from '../../../config';
+import { RegularText } from '../../Text';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
@@ -26,20 +27,35 @@ export const ConsulVotingComponent = (votesData) => {
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
 
-      {/* TODO: SVG icon will be added */}
       <Wrapper>
         <WrapperRow spaceBetween>
           <WrapperRow>
-            <Text>%{upVotesPercent}</Text>
-            <Text>%{downVotesPercent}</Text>
+            <WrapperRow>
+              <Icon.Like color={colors.placeholder} size={normalize(16)} style={styles.icon} />
+              <RegularText smallest placeholder>
+                %{upVotesPercent}
+              </RegularText>
+            </WrapperRow>
+            <WrapperRow>
+              <Icon.Like
+                color={colors.placeholder}
+                style={[styles.icon, { transform: [{ rotateX: '180deg' }] }]}
+                size={normalize(16)}
+              />
+              <RegularText smallest placeholder>
+                %{downVotesPercent}
+              </RegularText>
+            </WrapperRow>
           </WrapperRow>
 
           {cachedVotesTotal > 0 ? (
-            <Text>
+            <RegularText small placeholder>
               {cachedVotesTotal} {text.votes}
-            </Text>
+            </RegularText>
           ) : (
-            <Text>{text.noVotes}</Text>
+            <RegularText small placeholder>
+              {text.noVotes}
+            </RegularText>
           )}
         </WrapperRow>
       </Wrapper>
@@ -50,3 +66,9 @@ export const ConsulVotingComponent = (votesData) => {
 ConsulVotingComponent.propTypes = {
   votesData: PropTypes.object.isRequired
 };
+
+const styles = StyleSheet.create({
+  icon: {
+    paddingHorizontal: 10
+  }
+});
