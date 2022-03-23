@@ -2,7 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 
 import { texts } from '../../config';
-import { formatSize, momentFormat } from '../../helpers';
+import { formatSize, momentFormat, openLink } from '../../helpers';
 import { FileData } from '../../types';
 import { SectionHeader } from '../SectionHeader';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
@@ -90,13 +90,21 @@ export const File = ({ data, navigation }: Props) => {
           <SimpleRow
             left={fileTexts.accessUrl}
             right={accessUrl !== downloadUrl ? accessUrl : undefined}
+            onPress={() => openLink(accessUrl)}
             selectable
             fullText
           />
-          <SimpleRow left={fileTexts.downloadUrl} right={downloadUrl} selectable fullText />
+          <SimpleRow
+            left={fileTexts.downloadUrl}
+            right={downloadUrl}
+            onPress={() => openLink(downloadUrl)}
+            selectable
+            fullText
+          />
           <SimpleRow
             left={fileTexts.externalServiceUrl}
             right={externalServiceUrl}
+            onPress={() => openLink(externalServiceUrl)}
             selectable
             fullText
           />

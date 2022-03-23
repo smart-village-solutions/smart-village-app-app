@@ -74,6 +74,7 @@ export const SimpleRow = ({ fullText, left, lineThrough, onPress, right, selecta
         lineThrough={lineThrough}
         primary={!!onPress}
         selectable={selectable}
+        underline={!!onPress}
       >
         {right}
       </RegularText>
