@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { ScrollView } from 'react-native';
 
 import * as appJson from '../../../app.json';
-import { consts, secrets, texts } from '../../config';
+import { secrets, texts } from '../../config';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
@@ -11,10 +11,8 @@ import { HtmlView } from '../HtmlView';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { RegularText } from '../Text';
-import { Touchable } from '../Touchable';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
-const { a11yLabel } = consts;
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const inviteUrl = secrets[namespace]?.volunteer?.inviteUrl;
 
@@ -34,7 +32,17 @@ export const VolunteerWelcome = ({ navigation }: Props) => {
   }, [navigation]);
 
   const onPressRegister = useCallback(() => {
-    navigation.navigate(ScreenName.VolunteerRegistration);
+    navigation.navigate(ScreenName.Web, {
+      title: texts.volunteer.register,
+      webUrl: inviteUrl,
+      injectedJavaScript: `
+        document.getElementById('app-title') && document.getElementById('app-title').remove();
+        document.getElementById('img-logo') && document.getElementById('img-logo').remove();
+        document.getElementById('login-form') && document.getElementById('login-form').remove();
+        document.querySelector('#register-form + div') && document.querySelector('#register-form + div').remove();
+        document.querySelector('.powered') && document.querySelector('.powered').remove();
+      `
+    });
   }, [navigation]);
 
   const RefreshControl = usePullToRefetch(refetch);
@@ -63,20 +71,6 @@ export const VolunteerWelcome = ({ navigation }: Props) => {
           <Wrapper>
             <Button title={texts.volunteer.login} onPress={onPressLogin} />
             <Button invert title={texts.volunteer.register} onPress={onPressRegister} />
-            <Touchable
-              accessibilityLabel={`${texts.volunteer.invite} ${a11yLabel.button}`}
-              onPress={() =>
-                navigation.navigate(ScreenName.Web, {
-                  title: texts.volunteer.invite,
-                  webUrl: inviteUrl,
-                  injectedJavaScript: 'document.getElementById("login-form").remove();'
-                })
-              }
-            >
-              <RegularText small underline>
-                {texts.volunteer.invite}
-              </RegularText>
-            </Touchable>
           </Wrapper>
         </WrapperWithOrientation>
       </ScrollView>
