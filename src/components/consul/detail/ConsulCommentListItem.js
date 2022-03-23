@@ -1,13 +1,17 @@
 import PropTypes from 'prop-types';
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
 
 import { momentFormatUtcToLocal } from '../../../helpers';
-import { Wrapper, WrapperRow } from '../../Wrapper';
-import { BoldText, RegularText } from '../..';
-import { colors, normalize } from '../../../config';
+import { WrapperRow } from '../../Wrapper';
+import { RegularText } from '../..';
+import { colors, normalize, texts } from '../../../config';
+import { Touchable } from '../../Touchable';
+
+const text = texts.consul;
 
 export const ConsulCommentListItem = ({ item, index }) => {
+  const [responseShow, setResponseShow] = useState(false);
   const {
     body,
     cachedVotesDown,
@@ -19,7 +23,8 @@ export const ConsulCommentListItem = ({ item, index }) => {
     id,
     parentId,
     publicAuthor,
-    publicCreatedAt
+    publicCreatedAt,
+    responses
   } = item.item;
 
   let upVotesPercent = 0;
@@ -29,10 +34,8 @@ export const ConsulCommentListItem = ({ item, index }) => {
     downVotesPercent = (cachedVotesDown * 100) / cachedVotesTotal;
   }
 
-  if (parentId) return null;
-
   return (
-    <Wrapper>
+    <View>
       <WrapperRow>
         <RegularText primary>{publicAuthor ? publicAuthor.username : 'Privat'}</RegularText>
         <RegularText> · </RegularText>
@@ -45,35 +48,47 @@ export const ConsulCommentListItem = ({ item, index }) => {
 
       <View style={styles.votingContainer}>
         <View>
-          {parentId === id ? (
-            <RegularText smallest placeholder>
-              Keine Rückmeldunge
-            </RegularText>
+          {responses && responses.length > 0 ? (
+            <Touchable onPress={() => setResponseShow(!responseShow)}>
+              <RegularText primary smallest>
+                {responses.length} {text.return}
+                {responseShow ? `(${text.collapse})` : `(${text.show})`}
+              </RegularText>
+            </Touchable>
           ) : (
             <RegularText smallest placeholder>
-              Keine Rückmeldungen
+              {text.noReturn}
             </RegularText>
           )}
         </View>
+
+        {/* TODO: SVG icon will be added */}
         <WrapperRow>
           {cachedVotesTotal > 0 ? (
             <RegularText smallest placeholder>
-              {cachedVotesTotal} Stimmen
+              {cachedVotesTotal} {text.votes}
             </RegularText>
           ) : (
             <RegularText smallest placeholder>
-              Keine Bewertung
+              {text.noVotes}
             </RegularText>
           )}
           <RegularText smallest placeholder>
-            %{upVotesPercent} Up
+            %{upVotesPercent}
           </RegularText>
           <RegularText smallest placeholder>
-            %{downVotesPercent} Down
+            %{downVotesPercent}
           </RegularText>
         </WrapperRow>
       </View>
-    </Wrapper>
+      {responseShow && responses && responses.length
+        ? responses.map((item, index) => (
+            <View key={index} style={styles.replyContainer}>
+              <ConsulCommentListItem index={index} item={{ item: item }} />
+            </View>
+          ))
+        : null}
+    </View>
   );
 };
 
@@ -90,6 +105,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 5,
     alignItems: 'center',
+    borderColor: colors.placeholder
+  },
+  replyContainer: {
+    borderLeftWidth: 0.5,
+    paddingLeft: normalize(10),
+    borderStyle: 'solid',
     borderColor: colors.placeholder
   }
 });

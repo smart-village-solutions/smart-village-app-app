@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FlatList } from 'react-native';
+import { normalize } from 'react-native-elements';
 
 import { device, texts, consts } from '../../../config';
 import { TitleShadow, Title, TitleContainer } from '../../Title';
@@ -11,22 +12,8 @@ const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 export const ConsulCommentList = ({ commentCount, commentsData }) => {
-  commentsData.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+  let comments = getThreadedComments(commentsData);
 
-  // let a = [
-  //   { id: '1', parentId: null },
-  //   { id: '2', parentId: '1' },
-  //   { id: '3', parentId: '1' }
-  // ];
-  // useEffect(() => {
-  //   for (let i = 0; i < a.length; i++) {
-  //     const element = a[i];
-  //     if (element.parentId) {
-  //       a.find((data) => data.id === element.parentId);
-  //     }
-  //   }
-  // }, []);
-  // console.log(a);
   return (
     <>
       <TitleContainer>
@@ -36,7 +23,8 @@ export const ConsulCommentList = ({ commentCount, commentsData }) => {
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
       <FlatList
-        data={commentsData}
+        contentContainerStyle={{ padding: normalize(14) }}
+        data={comments}
         renderItem={(item, index) => <ConsulCommentListItem item={item} index={index} />}
       />
     </>
@@ -47,3 +35,16 @@ ConsulCommentList.propTypes = {
   commentsData: PropTypes.array.isRequired,
   commentCount: PropTypes.number
 };
+
+// Thanks to : https://stackoverflow.com/questions/58492213/make-object-as-child-according-to-the-parent-id-javascript
+function getThreadedComments(data, pid = null) {
+  return data.reduce((r, e) => {
+    if (e.parentId == pid) {
+      const obj = { ...e };
+      const responses = getThreadedComments(data, e.id);
+      if (responses.length) obj.responses = responses;
+      r.push(obj);
+    }
+    return r;
+  }, []);
+}

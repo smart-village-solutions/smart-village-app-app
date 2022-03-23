@@ -9,6 +9,7 @@ export const ConsulTagListItem = ({ item }) => {
   const { name } = item.item;
   return (
     <View style={styles.tagContainer}>
+      {/* TODO: Touchable will be added to filter  */}
       <RegularText small style={styles.tagText}>
         {name}
       </RegularText>

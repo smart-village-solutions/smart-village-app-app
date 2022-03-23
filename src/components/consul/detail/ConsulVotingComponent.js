@@ -25,17 +25,21 @@ export const ConsulVotingComponent = (votesData) => {
         <Title accessibilityLabel={`(${text.supports}) ${a11yText.heading}`}>{text.supports}</Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
+
+      {/* TODO: SVG icon will be added */}
       <Wrapper>
         <WrapperRow spaceBetween>
           <WrapperRow>
-            <Text>%{upVotesPercent} Up</Text>
-            <Text>%{downVotesPercent} Down</Text>
+            <Text>%{upVotesPercent}</Text>
+            <Text>%{downVotesPercent}</Text>
           </WrapperRow>
 
           {cachedVotesTotal > 0 ? (
-            <Text>{cachedVotesTotal} Total</Text>
+            <Text>
+              {cachedVotesTotal} {text.votes}
+            </Text>
           ) : (
-            <Text>Keine Bewertung</Text>
+            <Text>{text.noVotes}</Text>
           )}
         </WrapperRow>
       </Wrapper>

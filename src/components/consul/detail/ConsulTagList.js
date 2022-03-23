@@ -18,6 +18,7 @@ export const ConsulTagList = ({ tags }) => {
         <Title accessibilityLabel={`(${text.tags}) ${a11yText.heading}`}>{text.tags}</Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
+
       <Wrapper>
         <WrapperRow>
           <FlatList

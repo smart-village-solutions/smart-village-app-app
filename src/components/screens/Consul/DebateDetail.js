@@ -78,7 +78,6 @@ export const DebateDetail = ({ listData, query, route }) => {
         }}
       />
 
-      {/* TODO: Comment below will be coded via component*/}
       {!!comments && (
         <ConsulCommentList commentCount={commentsCount} commentsData={comments.nodes} />
       )}
