@@ -92,7 +92,7 @@ export const Image = ({
     return () => (mounted = false);
   }, [timestamp, refreshInterval, sourceProp, setSource]);
 
-  if (source?.uri === 'NO_IMAGE') return null;
+  if (source?.uri === NO_IMAGE.uri) return null;
 
   return (
     <View>
