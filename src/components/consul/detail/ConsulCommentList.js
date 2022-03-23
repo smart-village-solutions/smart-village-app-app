@@ -2,9 +2,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList } from 'react-native';
 import { normalize } from 'react-native-elements';
+import { useForm } from 'react-hook-form';
 
+import { Button, Wrapper, WrapperVertical, Title, TitleContainer, TitleShadow } from '../..';
 import { device, texts, consts } from '../../../config';
-import { TitleShadow, Title, TitleContainer } from '../../Title';
+import { Input } from '../form';
 
 import { ConsulCommentListItem } from './ConsulCommentListItem';
 
@@ -14,6 +16,13 @@ const a11yText = consts.a11yLabel;
 export const ConsulCommentList = ({ commentCount, commentsData }) => {
   let comments = getThreadedComments(commentsData);
 
+  // React Hook Form
+  const { control, handleSubmit } = useForm();
+
+  const onSubmit = async (val) => {
+    // TODO: Mutation Query!
+  };
+
   return (
     <>
       <TitleContainer>
@@ -22,11 +31,32 @@ export const ConsulCommentList = ({ commentCount, commentsData }) => {
         </Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
+
+      {/* Comment List! */}
       <FlatList
         contentContainerStyle={{ padding: normalize(14) }}
         data={comments}
         renderItem={(item, index) => <ConsulCommentListItem item={item} index={index} />}
       />
+
+      {/* New Comment Input! */}
+      <Wrapper>
+        <Input
+          name="comment"
+          label={text.commentLabel}
+          placeholder={text.comment}
+          autoCapitalize="none"
+          rules={{ required: text.commentEmptyError }}
+          control={control}
+        />
+        <WrapperVertical>
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            title={text.commentAnswerButton}
+            disabled={false}
+          />
+        </WrapperVertical>
+      </Wrapper>
     </>
   );
 };

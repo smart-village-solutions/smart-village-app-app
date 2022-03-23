@@ -1,17 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { useForm } from 'react-hook-form';
 
 import { momentFormatUtcToLocal } from '../../../helpers';
-import { WrapperRow } from '../../Wrapper';
-import { RegularText } from '../..';
+import { RegularText, Button, Touchable, WrapperRow, WrapperVertical } from '../..';
 import { colors, normalize, texts, Icon } from '../../../config';
-import { Touchable } from '../../Touchable';
+import { Input } from '../form';
 
 const text = texts.consul;
 
 export const ConsulCommentListItem = ({ item, index }) => {
   const [responseShow, setResponseShow] = useState(false);
+  const [antwort, setAntwort] = useState(false);
+
+  // React Hook Form
+  const { control, handleSubmit } = useForm();
+
   const {
     body,
     cachedVotesDown,
@@ -27,15 +32,12 @@ export const ConsulCommentListItem = ({ item, index }) => {
     responses
   } = item.item;
 
-  let upVotesPercent = 0;
-  let downVotesPercent = 0;
-  if (cachedVotesTotal) {
-    upVotesPercent = (cachedVotesUp * 100) / cachedVotesTotal;
-    downVotesPercent = (cachedVotesDown * 100) / cachedVotesTotal;
-  }
+  const onSubmit = async (val) => {
+    // TODO: Mutation Query!
+  };
 
   return (
-    <View>
+    <>
       <WrapperRow>
         <RegularText primary>{publicAuthor ? publicAuthor.username : 'Privat'}</RegularText>
         <RegularText> · </RegularText>
@@ -46,7 +48,8 @@ export const ConsulCommentListItem = ({ item, index }) => {
 
       <RegularText>{body}</RegularText>
 
-      <View style={styles.votingContainer}>
+      {/* Below Comment! */}
+      <View style={styles.bottomContainer}>
         <View>
           {responses && responses.length > 0 ? (
             <Touchable onPress={() => setResponseShow(!responseShow)}>
@@ -62,34 +65,32 @@ export const ConsulCommentListItem = ({ item, index }) => {
           )}
         </View>
 
-        <WrapperRow>
-          {cachedVotesTotal > 0 ? (
-            <RegularText smallest placeholder>
-              {cachedVotesTotal} {text.votes}
-            </RegularText>
-          ) : (
-            <RegularText smallest placeholder>
-              {text.noVotes}
-            </RegularText>
-          )}
-          <WrapperRow>
-            <Icon.Like color={colors.placeholder} size={normalize(16)} style={styles.icon} />
-            <RegularText smallest placeholder>
-              %{upVotesPercent}
-            </RegularText>
-          </WrapperRow>
-          <WrapperRow>
-            <Icon.Like
-              color={colors.placeholder}
-              style={[styles.icon, { transform: [{ rotateX: '180deg' }] }]}
-              size={normalize(16)}
-            />
-            <RegularText smallest placeholder>
-              %{downVotesPercent}
-            </RegularText>
-          </WrapperRow>
-        </WrapperRow>
+        <Space />
+
+        <Touchable onPress={() => setAntwort(!antwort)}>
+          <RegularText primary smallest>
+            Antwort
+          </RegularText>
+        </Touchable>
+
+        <Space />
+
+        {cachedVotesTotal > 0 ? (
+          <RegularText smallest placeholder>
+            {cachedVotesTotal} {text.votes}
+          </RegularText>
+        ) : (
+          <RegularText smallest placeholder>
+            {text.noVotes}
+          </RegularText>
+        )}
+
+        <LikeDissLikeIcon like cachedVotesUp={cachedVotesUp} />
+
+        <LikeDissLikeIcon disslike cachedVotesDown={cachedVotesDown} />
       </View>
+
+      {/* Reply List! */}
       {responseShow && responses && responses.length
         ? responses.map((item, index) => (
             <View key={index} style={styles.replyContainer}>
@@ -97,7 +98,51 @@ export const ConsulCommentListItem = ({ item, index }) => {
             </View>
           ))
         : null}
-    </View>
+
+      {/* New Reply Comment Input! */}
+      {antwort ? (
+        <>
+          <Input
+            name="comment"
+            label={text.commentLabel}
+            placeholder={text.comment}
+            autoCapitalize="none"
+            rules={{ required: text.commentEmptyError }}
+            control={control}
+          />
+          <WrapperVertical>
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              title={text.commentAnswerButton}
+              disabled={false}
+            />
+          </WrapperVertical>
+        </>
+      ) : null}
+    </>
+  );
+};
+
+const LikeDissLikeIcon = ({ cachedVotesUp, cachedVotesDown, like, disslike }) => {
+  return (
+    <>
+      <Icon.Like
+        color={colors.placeholder}
+        style={[styles.icon, { transform: disslike && [{ rotateX: '180deg' }] }]}
+        size={normalize(16)}
+      />
+      <RegularText smallest placeholder>
+        {like ? cachedVotesUp : cachedVotesDown}
+      </RegularText>
+    </>
+  );
+};
+
+const Space = () => {
+  return (
+    <RegularText smallest placeholder>
+      |
+    </RegularText>
   );
 };
 
@@ -106,15 +151,23 @@ ConsulCommentListItem.propTypes = {
   index: PropTypes.number
 };
 
+LikeDissLikeIcon.propTypes = {
+  like: PropTypes.bool,
+  disslike: PropTypes.bool,
+  cachedVotesDown: PropTypes.number,
+  cachedVotesUp: PropTypes.number
+};
+
 const styles = StyleSheet.create({
-  votingContainer: {
+  bottomContainer: {
     borderTopWidth: 0.5,
     borderBottomWidth: 0.5,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 5,
     alignItems: 'center',
-    borderColor: colors.placeholder
+    borderColor: colors.placeholder,
+    flexWrap: 'wrap'
   },
   replyContainer: {
     borderLeftWidth: 0.5,

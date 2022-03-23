@@ -1,17 +1,22 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { ScrollView } from 'react-native';
 
-import { Title, TitleContainer, TitleShadow } from '../../Title';
 import { consts, device } from '../../../config';
-import { Wrapper } from '../../Wrapper';
-import { HtmlView } from '../../HtmlView';
 import { useOpenWebScreen } from '../../../hooks';
 import {
+  DefaultKeyboardAvoidingView,
+  SafeAreaViewFlex,
+  Title,
+  TitleContainer,
+  TitleShadow,
+  Wrapper,
+  HtmlView,
   ConsulCommentList,
   ConsulTagList,
   ConsulVotingComponent,
   ConsulPublicAuthorComponent
-} from '../../consul';
+} from '../..';
 
 const a11yText = consts.a11yLabel;
 
@@ -42,46 +47,50 @@ export const DebateDetail = ({ listData, query, route }) => {
   );
 
   return (
-    <>
-      {!!title && (
-        <>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </>
-      )}
+    <SafeAreaViewFlex>
+      <DefaultKeyboardAvoidingView>
+        <ScrollView keyboardShouldPersistTaps="handled">
+          {!!title && (
+            <>
+              <TitleContainer>
+                <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
+              </TitleContainer>
+              {device.platform === 'ios' && <TitleShadow />}
+            </>
+          )}
 
-      {!!publicAuthor && (
-        <ConsulPublicAuthorComponent
-          authorData={{
-            publicAuthor: publicAuthor,
-            commentsCount: commentsCount,
-            publicCreatedAt: publicCreatedAt
-          }}
-        />
-      )}
+          {!!publicAuthor && (
+            <ConsulPublicAuthorComponent
+              authorData={{
+                publicAuthor: publicAuthor,
+                commentsCount: commentsCount,
+                publicCreatedAt: publicCreatedAt
+              }}
+            />
+          )}
 
-      {!!description && (
-        <Wrapper>
-          <HtmlView html={description} openWebScreen={openWebScreen} />
-        </Wrapper>
-      )}
+          {!!description && (
+            <Wrapper>
+              <HtmlView html={description} openWebScreen={openWebScreen} />
+            </Wrapper>
+          )}
 
-      {!!tags && <ConsulTagList tags={tags.nodes} />}
+          {!!tags && <ConsulTagList tags={tags.nodes} />}
 
-      <ConsulVotingComponent
-        votesData={{
-          cachedVotesTotal: cachedVotesTotal,
-          cachedVotesUp: cachedVotesUp,
-          cachedVotesDown: cachedVotesDown
-        }}
-      />
+          <ConsulVotingComponent
+            votesData={{
+              cachedVotesTotal: cachedVotesTotal,
+              cachedVotesUp: cachedVotesUp,
+              cachedVotesDown: cachedVotesDown
+            }}
+          />
 
-      {!!comments && (
-        <ConsulCommentList commentCount={commentsCount} commentsData={comments.nodes} />
-      )}
-    </>
+          {!!comments && (
+            <ConsulCommentList commentCount={commentsCount} commentsData={comments.nodes} />
+          )}
+        </ScrollView>
+      </DefaultKeyboardAvoidingView>
+    </SafeAreaViewFlex>
   );
 };
 /* eslint-enable complexity */

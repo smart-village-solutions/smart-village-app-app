@@ -30,22 +30,18 @@ export const ConsulVotingComponent = (votesData) => {
       <Wrapper>
         <WrapperRow spaceBetween>
           <WrapperRow>
-            <WrapperRow>
-              <Icon.Like color={colors.placeholder} size={normalize(16)} style={styles.icon} />
-              <RegularText smallest placeholder>
-                %{upVotesPercent}
-              </RegularText>
-            </WrapperRow>
-            <WrapperRow>
-              <Icon.Like
-                color={colors.placeholder}
-                style={[styles.icon, { transform: [{ rotateX: '180deg' }] }]}
-                size={normalize(16)}
-              />
-              <RegularText smallest placeholder>
-                %{downVotesPercent}
-              </RegularText>
-            </WrapperRow>
+            <Icon.Like color={colors.placeholder} size={normalize(16)} style={styles.icon} />
+            <RegularText smallest placeholder>
+              %{upVotesPercent}
+            </RegularText>
+            <Icon.Like
+              color={colors.placeholder}
+              style={[styles.icon, { transform: [{ rotateX: '180deg' }] }]}
+              size={normalize(16)}
+            />
+            <RegularText smallest placeholder>
+              %{downVotesPercent}
+            </RegularText>
           </WrapperRow>
 
           {cachedVotesTotal > 0 ? (

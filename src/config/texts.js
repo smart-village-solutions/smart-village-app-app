@@ -109,6 +109,9 @@ export const texts = {
     votes: 'Stimmen',
     noVoting: 'Keine Bewertung',
     noVotes: 'Keine Bewertungen',
+    commentLabel: 'Schreiben Sie einen Kommentar',
+    commentEmptyError: 'Sie können keine leeren Kommentare posten.',
+    commentAnswerButton: 'Antwort Veröffentlichen',
     homeScreen: {
       account: 'Konto',
       general: 'Allgemein',
