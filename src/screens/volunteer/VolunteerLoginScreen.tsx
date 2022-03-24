@@ -23,7 +23,7 @@ import { colors, consts, Icon, normalize, secrets, texts } from '../../config';
 import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { logIn, me } from '../../queries/volunteer';
-import { ScreenName } from '../../types';
+import { ScreenName, VolunteerLogin } from '../../types';
 
 const { a11yLabel } = consts;
 const namespace = appJson.expo.slug as keyof typeof secrets;
@@ -38,7 +38,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
     control,
     formState: { errors },
     handleSubmit
-  } = useForm();
+  } = useForm<VolunteerLogin>();
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const { mutate: mutateLogIn, isLoading, isError, isSuccess, data, reset } = useMutation(logIn);
   const {
@@ -49,7 +49,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
   } = useQuery(QUERY_TYPES.VOLUNTEER.ME, me, {
     enabled: !!data?.auth_token // the query will not execute until the auth token exists
   });
-  const onSubmit = (loginData: { username: string; password: string }) => mutateLogIn(loginData);
+  const onSubmit = (loginData: VolunteerLogin) => mutateLogIn(loginData);
 
   if (isError || isErrorMe || (isSuccess && data?.code && data?.code !== 200)) {
     showInvalidLoginAlert();
