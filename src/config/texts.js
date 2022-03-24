@@ -112,6 +112,8 @@ export const texts = {
     commentLabel: 'Schreiben Sie einen Kommentar',
     commentEmptyError: 'Sie können keine leeren Kommentare posten.',
     commentAnswerButton: 'Antwort Veröffentlichen',
+    submittingCommentButton: 'Kommentar abgeben',
+    answer: 'Antwort',
     homeScreen: {
       account: 'Konto',
       general: 'Allgemein',

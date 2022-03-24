@@ -6,6 +6,7 @@ import { TitleContainer, Title, TitleShadow } from '../../Title';
 import { Wrapper, WrapperRow } from '../../Wrapper';
 import { texts, consts, device, colors, Icon, normalize } from '../../../config';
 import { RegularText } from '../../Text';
+import { Touchable } from '../../Touchable';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
@@ -20,6 +21,8 @@ export const ConsulVotingComponent = (votesData) => {
     downVotesPercent = (cachedVotesDown * 100) / cachedVotesTotal;
   }
 
+  const onVoting = (like) => {};
+
   return (
     <>
       <TitleContainer>
@@ -30,18 +33,23 @@ export const ConsulVotingComponent = (votesData) => {
       <Wrapper>
         <WrapperRow spaceBetween>
           <WrapperRow>
-            <Icon.Like color={colors.placeholder} size={normalize(16)} style={styles.icon} />
-            <RegularText smallest placeholder>
-              %{upVotesPercent}
-            </RegularText>
-            <Icon.Like
-              color={colors.placeholder}
-              style={[styles.icon, { transform: [{ rotateX: '180deg' }] }]}
-              size={normalize(16)}
-            />
-            <RegularText smallest placeholder>
-              %{downVotesPercent}
-            </RegularText>
+            <Touchable onPress={() => onVoting('like')} style={styles.iconButton}>
+              <Icon.Like color={colors.placeholder} size={normalize(16)} style={styles.icon} />
+              <RegularText smallest placeholder>
+                %{upVotesPercent.toFixed(0)}
+              </RegularText>
+            </Touchable>
+
+            <Touchable onPress={() => onVoting('disslike')} style={styles.iconButton}>
+              <Icon.Like
+                color={colors.placeholder}
+                style={[styles.icon, { transform: [{ rotateX: '180deg' }] }]}
+                size={normalize(16)}
+              />
+              <RegularText smallest placeholder>
+                %{downVotesPercent.toFixed(0)}
+              </RegularText>
+            </Touchable>
           </WrapperRow>
 
           {cachedVotesTotal > 0 ? (
@@ -64,6 +72,10 @@ ConsulVotingComponent.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  iconButton: {
+    alignItems: 'center',
+    marginHorizontal: 10
+  },
   icon: {
     paddingHorizontal: 10
   }

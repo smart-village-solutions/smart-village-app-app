@@ -57,7 +57,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
     setRegistrationLoading(true);
     await userLogin({ variables: { email: val.email, password: val.password } })
       .then(async (val) => {
-        await setConsulAuthToken(val.data.userLogin?.credentials.accessToken);
+        await setConsulAuthToken(val.data.userLogin?.credentials);
 
         navigation?.navigate(ScreenName.ConsulHomeScreen, {
           refreshUser: new Date().valueOf()

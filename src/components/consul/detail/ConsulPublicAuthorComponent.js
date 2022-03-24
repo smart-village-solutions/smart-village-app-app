@@ -21,7 +21,7 @@ export const ConsulPublicAuthorComponent = ({ authorData }) => {
         </RegularText>
         <RegularText> · </RegularText>
         <RegularText smallest placeholder>
-          {commentsCount} {commentsCount > 1 ? text.comments : text.comment}
+          {commentsCount} {commentsCount > 1 || commentsCount === 0 ? text.comments : text.comment}
         </RegularText>
       </WrapperRow>
     </Wrapper>

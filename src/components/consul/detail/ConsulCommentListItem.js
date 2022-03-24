@@ -2,38 +2,65 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useForm } from 'react-hook-form';
+import { useMutation } from 'react-apollo';
 
 import { momentFormatUtcToLocal } from '../../../helpers';
 import { RegularText, Button, Touchable, WrapperRow, WrapperVertical } from '../..';
 import { colors, normalize, texts, Icon } from '../../../config';
 import { Input } from '../form';
+import { ConsulClient } from '../../../ConsulClient';
+import { ADD_REPLY_TO_COMMENT, CAST_VOTE_ON_COMMENT } from '../../../queries/Consul';
 
 const text = texts.consul;
 
-export const ConsulCommentListItem = ({ item, index }) => {
+/* eslint-disable complexity */
+/* NOTE: we need to check a lot for presence, so this is that complex */
+export const ConsulCommentListItem = ({ item, onRefresh }) => {
   const [responseShow, setResponseShow] = useState(false);
-  const [antwort, setAntwort] = useState(false);
+  const [reply, setReply] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // React Hook Form
-  const { control, handleSubmit } = useForm();
+  const { control, handleSubmit, reset } = useForm();
+
+  // GraphQL
+  const [addReplyToComment] = useMutation(ADD_REPLY_TO_COMMENT, {
+    client: ConsulClient
+  });
+  const [castVoteOnComment] = useMutation(CAST_VOTE_ON_COMMENT, {
+    client: ConsulClient
+  });
 
   const {
     body,
     cachedVotesDown,
     cachedVotesTotal,
     cachedVotesUp,
-    commentableId,
-    commentableType,
-    confidenceScore,
     id,
-    parentId,
     publicAuthor,
     publicCreatedAt,
     responses
   } = item.item;
 
   const onSubmit = async (val) => {
-    // TODO: Mutation Query!
+    setLoading(true);
+    await addReplyToComment({ variables: { commentId: id, body: val.comment } })
+      .then(() => {
+        onRefresh();
+        setLoading(false);
+        setReply(false);
+        setResponseShow(true);
+        reset({ comment: null });
+      })
+      .catch((err) => console.error(err));
+  };
+
+  const onVotingToComment = async (UpDown) => {
+    await castVoteOnComment({ variables: { commentId: id, vote: UpDown } })
+      .then(() => {
+        onRefresh();
+      })
+      .catch((err) => console.error(err));
   };
 
   return (
@@ -54,7 +81,7 @@ export const ConsulCommentListItem = ({ item, index }) => {
           {responses && responses.length > 0 ? (
             <Touchable onPress={() => setResponseShow(!responseShow)}>
               <RegularText primary smallest>
-                {responses.length} {text.return}
+                {responses.length} {responseShow ? text.answer : text.return}
                 {responseShow ? `(${text.collapse})` : `(${text.show})`}
               </RegularText>
             </Touchable>
@@ -67,7 +94,8 @@ export const ConsulCommentListItem = ({ item, index }) => {
 
         <Space />
 
-        <Touchable onPress={() => setAntwort(!antwort)}>
+        {/* Reply Button! */}
+        <Touchable onPress={() => setReply(!reply)}>
           <RegularText primary smallest>
             Antwort
           </RegularText>
@@ -75,34 +103,46 @@ export const ConsulCommentListItem = ({ item, index }) => {
 
         <Space />
 
-        {cachedVotesTotal > 0 ? (
-          <RegularText smallest placeholder>
-            {cachedVotesTotal} {text.votes}
-          </RegularText>
-        ) : (
-          <RegularText smallest placeholder>
-            {text.noVotes}
-          </RegularText>
-        )}
+        {/* Vote for Commit! */}
+        <WrapperRow>
+          {cachedVotesTotal > 0 ? (
+            <RegularText smallest placeholder>
+              {cachedVotesTotal} {text.votes}
+            </RegularText>
+          ) : (
+            <RegularText smallest placeholder>
+              {text.noVotes}
+            </RegularText>
+          )}
 
-        <LikeDissLikeIcon like cachedVotesUp={cachedVotesUp} />
+          <LikeDissLikeIcon
+            like
+            cachedVotesUp={cachedVotesUp}
+            onPress={() => onVotingToComment('up')}
+          />
 
-        <LikeDissLikeIcon disslike cachedVotesDown={cachedVotesDown} />
+          <LikeDissLikeIcon
+            disslike
+            cachedVotesDown={cachedVotesDown}
+            onPress={() => onVotingToComment('down')}
+          />
+        </WrapperRow>
       </View>
 
       {/* Reply List! */}
       {responseShow && responses && responses.length
         ? responses.map((item, index) => (
             <View key={index} style={styles.replyContainer}>
-              <ConsulCommentListItem index={index} item={{ item: item }} />
+              <ConsulCommentListItem index={index} item={{ item: item }} onRefresh={onRefresh} />
             </View>
           ))
         : null}
 
       {/* New Reply Comment Input! */}
-      {antwort ? (
+      {reply ? (
         <>
           <Input
+            multiline
             name="comment"
             label={text.commentLabel}
             placeholder={text.comment}
@@ -113,8 +153,8 @@ export const ConsulCommentListItem = ({ item, index }) => {
           <WrapperVertical>
             <Button
               onPress={handleSubmit(onSubmit)}
-              title={text.commentAnswerButton}
-              disabled={false}
+              title={loading ? text.submittingCommentButton : text.commentAnswerButton}
+              disabled={loading}
             />
           </WrapperVertical>
         </>
@@ -122,10 +162,11 @@ export const ConsulCommentListItem = ({ item, index }) => {
     </>
   );
 };
+/* eslint-enable complexity */
 
-const LikeDissLikeIcon = ({ cachedVotesUp, cachedVotesDown, like, disslike }) => {
+const LikeDissLikeIcon = ({ cachedVotesUp, cachedVotesDown, like, disslike, onPress }) => {
   return (
-    <>
+    <Touchable onPress={onPress} style={styles.iconButton}>
       <Icon.Like
         color={colors.placeholder}
         style={[styles.icon, { transform: disslike && [{ rotateX: '180deg' }] }]}
@@ -134,7 +175,7 @@ const LikeDissLikeIcon = ({ cachedVotesUp, cachedVotesDown, like, disslike }) =>
       <RegularText smallest placeholder>
         {like ? cachedVotesUp : cachedVotesDown}
       </RegularText>
-    </>
+    </Touchable>
   );
 };
 
@@ -148,14 +189,15 @@ const Space = () => {
 
 ConsulCommentListItem.propTypes = {
   item: PropTypes.object.isRequired,
-  index: PropTypes.number
+  onRefresh: PropTypes.func
 };
 
 LikeDissLikeIcon.propTypes = {
   like: PropTypes.bool,
   disslike: PropTypes.bool,
   cachedVotesDown: PropTypes.number,
-  cachedVotesUp: PropTypes.number
+  cachedVotesUp: PropTypes.number,
+  onPress: PropTypes.func
 };
 
 const styles = StyleSheet.create({
@@ -163,7 +205,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 0.5,
     borderBottomWidth: 0.5,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     paddingVertical: 5,
     alignItems: 'center',
     borderColor: colors.placeholder,
@@ -177,5 +219,10 @@ const styles = StyleSheet.create({
   },
   icon: {
     paddingHorizontal: 5
+  },
+  iconButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 5
   }
 });

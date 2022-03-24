@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
+import { useForm } from 'react-hook-form';
+import { useMutation } from 'react-apollo';
 
-import { consts, device } from '../../../config';
-import { useOpenWebScreen } from '../../../hooks';
 import {
   DefaultKeyboardAvoidingView,
   SafeAreaViewFlex,
@@ -15,29 +15,35 @@ import {
   ConsulCommentList,
   ConsulTagList,
   ConsulVotingComponent,
-  ConsulPublicAuthorComponent
+  ConsulPublicAuthorComponent,
+  WrapperVertical,
+  Input,
+  Button
 } from '../..';
+import { consts, device, texts } from '../../../config';
+import { useOpenWebScreen } from '../../../hooks';
+import { ConsulClient } from '../../../ConsulClient';
+import { ADD_COMMENT_TO_DEBATE } from '../../../queries/Consul';
 
+const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const DebateDetail = ({ listData, query, route }) => {
+export const DebateDetail = ({ listData, onRefresh, route }) => {
+  const [loading, setLoading] = useState();
   const {
     cachedVotesDown,
     cachedVotesUp,
     cachedVotesTotal,
     comments,
     commentsCount,
-    confidenceScore,
     description,
-    hotScore,
     id,
     publicAuthor,
     publicCreatedAt,
     tags,
-    title,
-    votesFor
+    title
   } = listData.debate;
 
   const openWebScreen = useOpenWebScreen(
@@ -46,10 +52,30 @@ export const DebateDetail = ({ listData, query, route }) => {
     route.params?.rootRouteName
   );
 
+  // React Hook Form
+  const { control, handleSubmit, reset } = useForm();
+
+  // GraphQL
+  const [addCommentToDebate] = useMutation(ADD_COMMENT_TO_DEBATE, {
+    client: ConsulClient
+  });
+
+  const onSubmit = async (val) => {
+    setLoading(true);
+    await addCommentToDebate({ variables: { debateId: id, body: val.comment } })
+      .then(() => {
+        onRefresh();
+        setLoading(false);
+        reset({ comment: null });
+      })
+      .catch((err) => console.error(err));
+  };
+
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
+          {/* Title! */}
           {!!title && (
             <>
               <TitleContainer>
@@ -59,6 +85,7 @@ export const DebateDetail = ({ listData, query, route }) => {
             </>
           )}
 
+          {/* Author! */}
           {!!publicAuthor && (
             <ConsulPublicAuthorComponent
               authorData={{
@@ -69,14 +96,17 @@ export const DebateDetail = ({ listData, query, route }) => {
             />
           )}
 
+          {/* Description! */}
           {!!description && (
             <Wrapper>
               <HtmlView html={description} openWebScreen={openWebScreen} />
             </Wrapper>
           )}
 
+          {/* Tag List! */}
           {!!tags && <ConsulTagList tags={tags.nodes} />}
 
+          {/* Voting Component! */}
           <ConsulVotingComponent
             votesData={{
               cachedVotesTotal: cachedVotesTotal,
@@ -85,9 +115,34 @@ export const DebateDetail = ({ listData, query, route }) => {
             }}
           />
 
+          {/* Comments List! */}
           {!!comments && (
-            <ConsulCommentList commentCount={commentsCount} commentsData={comments.nodes} />
+            <ConsulCommentList
+              commentCount={commentsCount}
+              commentsData={comments.nodes}
+              onRefresh={onRefresh}
+            />
           )}
+
+          {/* New Comment Input! */}
+          <Wrapper>
+            <Input
+              multiline
+              name="comment"
+              label={text.commentLabel}
+              placeholder={text.comment}
+              autoCapitalize="none"
+              rules={{ required: text.commentEmptyError }}
+              control={control}
+            />
+            <WrapperVertical>
+              <Button
+                onPress={handleSubmit(onSubmit)}
+                title={loading ? text.submittingCommentButton : text.commentAnswerButton}
+                disabled={loading}
+              />
+            </WrapperVertical>
+          </Wrapper>
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
@@ -97,6 +152,6 @@ export const DebateDetail = ({ listData, query, route }) => {
 
 DebateDetail.propTypes = {
   listData: PropTypes.object.isRequired,
-  query: PropTypes.string,
+  onRefresh: PropTypes.func,
   route: PropTypes.object
 };

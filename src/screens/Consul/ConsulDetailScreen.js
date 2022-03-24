@@ -17,7 +17,7 @@ const getComponent = (query) => {
   return COMPONENTS[query];
 };
 
-export const ConsulDetailScreen = ({ navigation, route }) => {
+export const ConsulDetailScreen = ({ route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const queryVariables = route.params?.queryVariables ?? {};
   const query = route.params?.query ?? '';
@@ -57,7 +57,7 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
           />
         }
       >
-        <Component listData={data} query={query} route={route} />
+        <Component listData={data} route={route} onRefresh={() => refresh(refetch)} />
       </ScrollView>
     </SafeAreaViewFlex>
   );

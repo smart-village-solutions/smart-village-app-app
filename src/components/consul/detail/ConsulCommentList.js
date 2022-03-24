@@ -2,26 +2,18 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList } from 'react-native';
 import { normalize } from 'react-native-elements';
-import { useForm } from 'react-hook-form';
 
-import { Button, Wrapper, WrapperVertical, Title, TitleContainer, TitleShadow } from '../..';
+import { Title, TitleContainer, TitleShadow } from '../..';
 import { device, texts, consts } from '../../../config';
-import { Input } from '../form';
 
 import { ConsulCommentListItem } from './ConsulCommentListItem';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
-export const ConsulCommentList = ({ commentCount, commentsData }) => {
+export const ConsulCommentList = ({ commentCount, commentsData, onRefresh }) => {
+  commentsData.sort((a, b) => a.id - b.id);
   let comments = getThreadedComments(commentsData);
-
-  // React Hook Form
-  const { control, handleSubmit } = useForm();
-
-  const onSubmit = async (val) => {
-    // TODO: Mutation Query!
-  };
 
   return (
     <>
@@ -36,34 +28,16 @@ export const ConsulCommentList = ({ commentCount, commentsData }) => {
       <FlatList
         contentContainerStyle={{ padding: normalize(14) }}
         data={comments}
-        renderItem={(item, index) => <ConsulCommentListItem item={item} index={index} />}
+        renderItem={(item) => <ConsulCommentListItem item={item} onRefresh={onRefresh} />}
       />
-
-      {/* New Comment Input! */}
-      <Wrapper>
-        <Input
-          name="comment"
-          label={text.commentLabel}
-          placeholder={text.comment}
-          autoCapitalize="none"
-          rules={{ required: text.commentEmptyError }}
-          control={control}
-        />
-        <WrapperVertical>
-          <Button
-            onPress={handleSubmit(onSubmit)}
-            title={text.commentAnswerButton}
-            disabled={false}
-          />
-        </WrapperVertical>
-      </Wrapper>
     </>
   );
 };
 
 ConsulCommentList.propTypes = {
   commentsData: PropTypes.array.isRequired,
-  commentCount: PropTypes.number
+  commentCount: PropTypes.number,
+  onRefresh: PropTypes.func
 };
 
 // Thanks to : https://stackoverflow.com/questions/58492213/make-object-as-child-according-to-the-parent-id-javascript
