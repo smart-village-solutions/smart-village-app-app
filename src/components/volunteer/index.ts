@@ -1,4 +1,5 @@
 export * from './VolunteerAppointmentsCard';
+export * from './VolunteerAvatar';
 export * from './VolunteerCalendar';
 export * from './VolunteerEventAttending';
 export * from './VolunteerEventRecord';
@@ -11,5 +12,7 @@ export * from './VolunteerHeader';
 export * from './VolunteerHomeSection';
 export * from './VolunteerMessage';
 export * from './VolunteerMessageTextField';
+export * from './VolunteerPostListItem';
+export * from './VolunteerPosts';
 export * from './VolunteerTask';
 export * from './VolunteerWelcome';

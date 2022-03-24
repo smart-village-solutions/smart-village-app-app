@@ -21,6 +21,7 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { VolunteerGroupMember } from './VolunteerGroupMember';
+import { VolunteerPosts } from './VolunteerPosts';
 
 const a11yText = consts.a11yLabel;
 
@@ -119,6 +120,8 @@ export const VolunteerGroup = ({ data, route }: { data: any } & StackScreenProps
         <Wrapper>
           <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
         </Wrapper>
+
+        <VolunteerPosts contentContainerId={contentContainerId} />
 
         {!isGroupOwner && isGroupMember !== undefined && (
           <Wrapper>
