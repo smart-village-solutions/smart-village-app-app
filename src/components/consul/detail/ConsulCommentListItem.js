@@ -7,7 +7,7 @@ import { useMutation } from 'react-apollo';
 import { momentFormatUtcToLocal } from '../../../helpers';
 import { RegularText, Button, Touchable, WrapperRow, WrapperVertical } from '../..';
 import { colors, normalize, texts, Icon } from '../../../config';
-import { Input } from '../form';
+import { Input } from '../Form';
 import { ConsulClient } from '../../../ConsulClient';
 import { ADD_REPLY_TO_COMMENT, CAST_VOTE_ON_COMMENT } from '../../../queries/Consul';
 
