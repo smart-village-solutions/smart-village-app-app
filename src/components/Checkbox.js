@@ -6,7 +6,7 @@ import { CheckBox } from 'react-native-elements';
 import { colors, consts, normalize } from '../config';
 import { OrientationContext } from '../OrientationProvider';
 
-import { Link } from '.';
+import { Link } from './Link';
 
 export const Checkbox = ({
   title,

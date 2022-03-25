@@ -1,5 +1,5 @@
 export * from './bookmarks';
-export * from './consul';
+export * from './Consul';
 export * from './encounter';
 export * from './infoCard';
 export * from './map';

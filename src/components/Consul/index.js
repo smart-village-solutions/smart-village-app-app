@@ -1,4 +1,4 @@
 export * from './ConsulWelcome';
 
-export * from './form';
+export * from './Form';
 export * from './list';
