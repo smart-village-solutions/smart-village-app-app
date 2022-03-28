@@ -197,15 +197,6 @@ export const IndexScreen = ({ navigation, route }) => {
     <SafeAreaViewFlex>
       {query === QUERY_TYPES.POINTS_OF_INTEREST ? (
         <View>
-          {!!subCategories?.length && (
-            <CategoryList
-              navigation={navigation}
-              data={subCategories}
-              horizontal={false}
-              scrollEnabled={false}
-              noSectionHeader={true}
-            />
-          )}
           <IndexFilterWrapperAndList filter={topFilter} setFilter={setTopFilter} />
           <OptionToggle
             label={texts.pointOfInterest.filterByOpeningTime}
@@ -281,6 +272,13 @@ export const IndexScreen = ({ navigation, route }) => {
                 ListHeaderComponent={
                   showFilter ? (
                     <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
+                  ) : subCategories?.length ? (
+                    <CategoryList
+                      navigation={navigation}
+                      data={subCategories}
+                      horizontal={false}
+                      noSectionHeader={true}
+                    />
                   ) : null
                 }
                 ListEmptyComponent={<EmptyMessage title={texts.empty.list} />}

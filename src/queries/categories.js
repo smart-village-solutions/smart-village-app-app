@@ -13,6 +13,9 @@ export const GET_CATEGORIES = gql`
         pointsOfInterestCount
         toursCount
       }
+      parent {
+        id
+      }
     }
   }
 `;

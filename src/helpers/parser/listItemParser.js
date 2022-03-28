@@ -180,6 +180,7 @@ const parseCategories = (data, skipLastDivider, routeName = 'Category') => {
     pointsOfInterestCount: category.pointsOfInterestCount,
     toursCount: category.toursCount,
     routeName,
+    parent: category.parent ? true : false,
     params: {
       title: category.name,
       categories: parseCategories(category.children, skipLastDivider, 'Index'),

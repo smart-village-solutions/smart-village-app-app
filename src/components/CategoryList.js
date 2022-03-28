@@ -27,23 +27,19 @@ export class CategoryList extends React.PureComponent {
   };
 
   render() {
-    const {
-      data,
-      navigation,
-      noSubtitle,
-      refreshControl,
-      scrollEnabled,
-      noSectionHeader
-    } = this.props;
+    const { data, navigation, noSubtitle, refreshControl, noSectionHeader } = this.props;
+
+    // Sorting data alphabetically
+    data.sort((a, b) => a.title.localeCompare(b.title));
 
     const sectionedData = [
       {
         title: texts.categoryTitles.pointsOfInterest,
-        data: _filter(data, (category) => category.pointsOfInterestCount > 0)
+        data: _filter(data, (category) => category.pointsOfInterestCount > 0 && !category.parent)
       },
       {
         title: texts.categoryTitles.tours,
-        data: _filter(data, (category) => category.toursCount > 0)
+        data: _filter(data, (category) => category.toursCount > 0 && !category.parent)
       }
     ];
 
@@ -71,7 +67,6 @@ export class CategoryList extends React.PureComponent {
         }
         stickySectionHeadersEnabled
         refreshControl={refreshControl}
-        scrollEnabled={scrollEnabled}
       />
     );
   }
@@ -82,7 +77,6 @@ CategoryList.propTypes = {
   data: PropTypes.array.isRequired,
   noSubtitle: PropTypes.bool,
   refreshControl: PropTypes.object,
-  scrollEnabled: PropTypes.bool,
   noSectionHeader: PropTypes.bool
 };
 
