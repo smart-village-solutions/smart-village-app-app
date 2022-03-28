@@ -16,11 +16,25 @@ function parseNumericCharacterReferences(text) {
   );
 }
 
+function insertWhiteSpaceAfterDashes(text) {
+  if (!text) return;
+
+  return text.replace('-', '-' + String.fromCharCode(8203));
+}
+
+function parseText(text) {
+  if (!text) return;
+
+  let result = parseNumericCharacterReferences(text);
+
+  result = insertWhiteSpaceAfterDashes(result);
+
+  return result;
+}
+
 export const Text = ({ children, ...props }) => {
   return (
-    <RNText {...props}>
-      {typeof children === 'string' ? parseNumericCharacterReferences(children) : children}
-    </RNText>
+    <RNText {...props}>{typeof children === 'string' ? parseText(children) : children}</RNText>
   );
 };
 
