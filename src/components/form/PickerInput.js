@@ -30,7 +30,7 @@ export const PickerInput = ({ value, onPress, isPlaceholder }) => (
       {value && !isPlaceholder ? (
         <Icon.Ok color={colors.primary} size={normalize(24)} />
       ) : (
-        <Icon.ArrowDown color={colors.placeholder} size={normalize(16)} />
+        <Icon.ArrowDown />
       )}
     </Pressable>
   </Pressable>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { StyleSheet } from 'react-native';
 import { Input as RNEInput, normalize, InputProps } from 'react-native-elements';
-import { useController, UseControllerProps } from 'react-hook-form';
+import { useController, UseControllerOptions } from 'react-hook-form';
 
 import { colors, consts, device, Icon } from '../../config';
 import { Label } from '../Label';
@@ -9,7 +9,7 @@ import { Label } from '../Label';
 const { a11yLabel } = consts;
 
 type Props = InputProps &
-  UseControllerProps & {
+  UseControllerOptions & {
     validate?: boolean;
     hidden?: boolean;
     row?: boolean;

@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -23,11 +24,15 @@ export const VolunteerFormGroup = ({
     formState: { errors, isValid, isSubmitted },
     handleSubmit
   } = useForm<VolunteerGroup>({
+    mode: 'onBlur',
     defaultValues: {
       visibility: 1,
       joinPolicy: JOIN_POLICY_TYPES.OPEN
     }
   });
+
+  const isFocused = useIsFocused();
+
   const { mutateAsync, isLoading, isError, data, reset } = useMutation(groupNew);
   const { mutate: mutateEdit, isSuccess: isSuccessEdit } = useMutation(groupEdit);
 
@@ -57,7 +62,7 @@ export const VolunteerFormGroup = ({
     reset();
   }
 
-  if (isSuccessEdit) {
+  if (isSuccessEdit && isFocused) {
     navigation.goBack();
 
     Alert.alert('Erfolgreich', 'Die Gruppe wurde erfolgreich erstellt.');
@@ -73,7 +78,7 @@ export const VolunteerFormGroup = ({
           validate={isSubmitted}
           rules={{ required: true, minLength: 2 }}
           errorMessage={
-            errors.name && `${texts.volunteer.name} muss ausgefüllt werden (und min. 2 Zeichen)`
+            errors.name && `${texts.volunteer.name} muss ausgefüllt werden (min. 2 Zeichen)`
           }
           control={control}
         />
@@ -91,10 +96,8 @@ export const VolunteerFormGroup = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="visibility"
-          defaultValue={1}
-          render={({ field: { onChange, value } }) => (
+          render={({ onChange, value }) => (
             <CheckBox
-              accessibilityRole="checkbox"
               checked={!!value}
               onPress={() => onChange(!value)}
               title="Öffentlich"
@@ -107,13 +110,11 @@ export const VolunteerFormGroup = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
+      {/* <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="joinPolicy"
-          defaultValue={1}
-          render={({ field: { onChange, value } }) => (
+          render={({ onChange, value }) => (
             <CheckBox
-              accessibilityRole="checkbox"
               checked={!!value}
               onPress={() => onChange(!value)}
               title="Jeder kann beitreten"
@@ -125,7 +126,7 @@ export const VolunteerFormGroup = ({
           )}
           control={control}
         />
-      </Wrapper>
+      </Wrapper> */}
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="tags"
