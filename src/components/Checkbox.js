@@ -5,8 +5,10 @@ import { CheckBox } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
 import { OrientationContext } from '../OrientationProvider';
+import { openLink } from '../helpers';
 
-import { Link } from './Link';
+import { RegularText } from './Text';
+import { Wrapper } from './Wrapper';
 
 export const Checkbox = ({
   title,
@@ -23,35 +25,22 @@ export const Checkbox = ({
   const needLandscapeStyle =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 
-  if (link) {
-    return (
-      <>
-        <CheckBox
-          size={normalize(21)}
-          center={center}
-          title={title}
-          onPress={onPress}
-          checkedIcon={checkedIcon}
-          checked={checked}
-          containerStyle={[
-            styles.containerStyle,
-            needLandscapeStyle && styles.containerStyleLandscape
-          ]}
-          uncheckedIcon={uncheckedIcon}
-          textStyle={styles.titleStyle}
-          checkedColor={colors.primary}
-          {...props}
-        />
-        <Link description={linkDescription} url={link} />
-      </>
-    );
-  }
-
   return (
     <CheckBox
       size={normalize(21)}
       center={center}
-      title={title}
+      title={
+        link ? (
+          <Wrapper>
+            <RegularText small>{title} </RegularText>
+            <RegularText small primary onPress={() => openLink(link)}>
+              {linkDescription}
+            </RegularText>
+          </Wrapper>
+        ) : (
+          <RegularText small>{title}</RegularText>
+        )
+      }
       onPress={onPress}
       checkedIcon={checkedIcon}
       checked={checked}
@@ -59,13 +48,18 @@ export const Checkbox = ({
       uncheckedIcon={uncheckedIcon}
       textStyle={styles.titleStyle}
       checkedColor={colors.primary}
+      uncheckedColor={colors.darkText}
+      {...props}
     />
   );
 };
 
 const styles = StyleSheet.create({
   containerStyle: {
-    marginBottom: normalize(21)
+    backgroundColor: colors.lightestText,
+    borderWidth: 0,
+    marginLeft: 0,
+    marginRight: 0
   },
   containerStyleLandscape: {
     alignItems: 'center',

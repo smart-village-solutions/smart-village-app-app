@@ -152,8 +152,8 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 linkDescription={text.privacyCheckLink}
                 link={'https://www.google.de'}
                 title={text.privacyChecked}
-                checkedIcon="dot-circle-o"
-                uncheckedIcon="circle-o"
+                checkedIcon="check-square-o"
+                uncheckedIcon="square-o"
                 checked={termsOfService}
                 onPress={() => settermsOfService(!termsOfService)}
               />
