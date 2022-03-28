@@ -9,7 +9,7 @@ export const logIn = async ({ username, password }: { username: string; password
     method: 'POST',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'multipart/form-data'
     },
     body: formData
   };
