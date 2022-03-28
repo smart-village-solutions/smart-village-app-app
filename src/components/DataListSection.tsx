@@ -64,7 +64,8 @@ export const DataListSection = ({
     withDate:
       query === QUERY_TYPES.EVENT_RECORDS ||
       query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL ||
-      query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY,
+      query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY ||
+      query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
     skipLastDivider: true
   });
 

@@ -9,8 +9,11 @@ import { Input } from './Input';
 export type DropdownInputProps = {
   errors: any;
   required?: boolean;
-  data: [{ id: number; name: string; selected?: boolean; contentcontainer_id: number }];
+  data: [
+    { id: number; name: string; selected?: boolean; contentcontainer_id?: number; guid?: string }
+  ];
   value: number;
+  valueKey: string;
   onChange: (...event: any[]) => void;
   name: string;
   label: string;
@@ -23,6 +26,7 @@ export const DropdownInput = ({
   required = false,
   data,
   value = 0,
+  valueKey,
   onChange,
   name,
   label,
@@ -33,7 +37,7 @@ export const DropdownInput = ({
   );
 
   useEffect(() => {
-    onChange(dropdownData.find((entry) => entry.selected)?.contentcontainer_id);
+    onChange(dropdownData.find((entry) => entry.selected)?.[valueKey]);
   }, [dropdownData]);
 
   return (

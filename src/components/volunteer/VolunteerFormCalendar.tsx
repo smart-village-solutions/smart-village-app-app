@@ -113,6 +113,7 @@ export const VolunteerFormCalendar = ({
                 required: true,
                 data: groupDropdownData,
                 value,
+                valueKey: 'contentcontainer_id',
                 onChange,
                 name,
                 label: texts.volunteer.group,

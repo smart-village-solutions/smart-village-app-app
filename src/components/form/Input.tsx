@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet } from 'react-native';
-import { Input as RNEInput, normalize, InputProps } from 'react-native-elements';
 import { useController, UseControllerOptions } from 'react-hook-form';
+import { StyleSheet } from 'react-native';
+import { Input as RNEInput, InputProps, normalize } from 'react-native-elements';
 
 import { colors, consts, device, Icon } from '../../config';
 import { Label } from '../Label';
@@ -13,6 +13,7 @@ type Props = InputProps &
     validate?: boolean;
     hidden?: boolean;
     row?: boolean;
+    chat?: boolean;
   };
 
 /* eslint-disable complexity */
@@ -29,6 +30,7 @@ export const Input = ({
   row = false,
   multiline = false,
   rightIcon,
+  chat = false,
   ...furtherProps
 }: Props) => {
   const { field } = useController({
@@ -51,6 +53,26 @@ export const Input = ({
       });
     }
   }, []);
+
+  if (chat) {
+    return (
+      <RNEInput
+        ref={inputRef}
+        value={field.value}
+        onChangeText={field.onChange}
+        multiline={multiline}
+        {...furtherProps}
+        containerStyle={[styles.container, styles.chatContainer]}
+        inputContainerStyle={[styles.inputContainer, styles.chatInputContainer]}
+        inputStyle={[
+          styles.input,
+          styles.chatInput,
+          multiline && device.platform === 'ios' && styles.chatMultiline
+        ]}
+        accessibilityLabel={`${a11yLabel[name]} ${a11yLabel.textInput}: ${field.value}`}
+      />
+    );
+  }
 
   const isValid = !disabled && validate && !!field.value && !errorMessage;
 
@@ -138,5 +160,15 @@ const styles = StyleSheet.create({
   },
   inputDisabled: {
     color: colors.placeholder
+  },
+  chatContainer: {
+    width: '90%'
+  },
+  chatMultiline: {
+    paddingTop: normalize(8)
+  },
+  chatInput: {
+    fontSize: normalize(12),
+    paddingVertical: device.platform === 'ios' ? normalize(6) : normalize(4)
   }
 });

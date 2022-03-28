@@ -1,5 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import moment from 'moment';
+import 'moment/locale/de';
 
 import * as appJson from '../../app.json';
 import { secrets } from '../config';
@@ -49,8 +50,22 @@ export const volunteerUserData = async (): Promise<{
   };
 };
 
-export const volunteerListDate = (data: { end_datetime: string; start_datetime: string }) => {
-  const { end_datetime: endDatetime, start_datetime: startDatetime } = data;
+export const volunteerListDate = (data: {
+  end_datetime: string;
+  start_datetime: string;
+  updated_at?: string;
+}) => {
+  const { end_datetime: endDatetime, start_datetime: startDatetime, updated_at: updatedAt } = data;
+
+  if (updatedAt) {
+    // summertime
+    if (moment(updatedAt).isDST()) {
+      return moment(updatedAt).format('YYYY-MM-DD HH:mm');
+    }
+
+    // wintertime
+    return moment.utc(updatedAt).local().format('YYYY-MM-DD HH:mm');
+  }
 
   if (moment().isBetween(startDatetime, endDatetime)) return moment().format('YYYY-MM-DD');
 
@@ -58,8 +73,14 @@ export const volunteerListDate = (data: { end_datetime: string; start_datetime: 
 };
 
 export const volunteerSubtitle = (volunteer: any, query: string, withDate: boolean) => {
+  let date = eventDate(volunteerListDate(volunteer));
+
+  if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
+    date = eventDate(volunteerListDate(volunteer), undefined, 'DD.MM.YYYY HH:mm');
+  }
+
   return subtitle(
-    withDate ? eventDate(volunteerListDate(volunteer)) : undefined,
+    withDate ? date : undefined,
     query !== QUERY_TYPES.VOLUNTEER.CALENDAR && volunteer.tags
   );
 };
@@ -74,6 +95,12 @@ export const isOwner = (currentUserId: string | null, owner: { id: number }): bo
   if (!currentUserId || !owner?.id) return false;
 
   return owner.id.toString() == currentUserId;
+};
+
+export const isAccount = (currentUserId: string | null, account: { id: number }): boolean => {
+  if (!currentUserId || !account?.id) return false;
+
+  return account.id.toString() == currentUserId;
 };
 
 export const isMember = (

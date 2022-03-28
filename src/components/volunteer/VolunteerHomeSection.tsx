@@ -70,7 +70,10 @@ export const VolunteerHomeSection = ({
 }: Props) => {
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
-  const isPersonal = query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
+  const isPersonal =
+    query === QUERY_TYPES.VOLUNTEER.GROUPS_MY ||
+    query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY ||
+    query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS;
   const [showCalendar, setShowCalendar] = useState(isCalendar);
   const { data: sectionData, isLoading, isRefetching, refetch } = useVolunteerData({
     query,

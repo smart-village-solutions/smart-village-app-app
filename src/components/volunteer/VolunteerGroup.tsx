@@ -25,10 +25,7 @@ import { VolunteerGroupMember } from './VolunteerGroupMember';
 const a11yText = consts.a11yLabel;
 
 // eslint-disable-next-line complexity
-export const VolunteerGroup = ({
-  data,
-  route
-}: { data: any; refetch: () => void } & StackScreenProps<any>) => {
+export const VolunteerGroup = ({ data, route }: { data: any } & StackScreenProps<any>) => {
   const {
     contentcontainer_id: contentContainerId,
     description,
