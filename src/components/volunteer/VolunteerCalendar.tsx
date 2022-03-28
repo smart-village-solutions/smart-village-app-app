@@ -23,7 +23,8 @@ type Props = {
   navigation: StackNavigationProp<any>;
 };
 
-const dotSize = 6;
+const DOT_SIZE = 6;
+const MAX_DOTS_PER_DAY = 5;
 
 setupLocales();
 
@@ -31,13 +32,18 @@ const getMarkedDates = (data?: any[]) => {
   const markedDates: CalendarProps['markedDates'] = {};
 
   data?.forEach((item) => {
-    markedDates[volunteerListDate(item)] = {
-      marked: true,
-      dots: [
-        ...(markedDates[volunteerListDate(item)]?.dots ?? []),
-        { color: item.color || colors.primary }
-      ]
-    };
+    if (
+      !markedDates?.[volunteerListDate(item)]?.dots ||
+      markedDates?.[volunteerListDate(item)]?.dots?.length < MAX_DOTS_PER_DAY
+    ) {
+      markedDates[volunteerListDate(item)] = {
+        marked: true,
+        dots: [
+          ...(markedDates[volunteerListDate(item)]?.dots ?? []),
+          { color: item.color || colors.primary }
+        ]
+      };
+    }
   });
 
   const today = moment().format('YYYY-MM-DD');
@@ -76,9 +82,9 @@ export const VolunteerCalendar = ({ query, calendarData, isLoading, navigation }
         todayTextColor: colors.primary,
         indicatorColor: colors.primary,
         dotStyle: {
-          borderRadius: dotSize / 2,
-          height: dotSize,
-          width: dotSize
+          borderRadius: DOT_SIZE / 2,
+          height: DOT_SIZE,
+          width: DOT_SIZE
         }
       }}
     />

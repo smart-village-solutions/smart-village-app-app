@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useMutation as useMainserverMutation } from 'react-apollo';
@@ -29,8 +30,8 @@ export const VolunteerFormCalendar = ({
     formState: { errors, isValid },
     handleSubmit
   } = useForm<VolunteerCalendar>({
+    mode: 'onBlur',
     defaultValues: {
-      allDay: 0,
       isPublic: 1
     }
   });
@@ -52,6 +53,8 @@ export const VolunteerFormCalendar = ({
   useEffect(() => {
     filterGroupDropDownData();
   }, [filterGroupDropDownData]);
+
+  const isFocused = useIsFocused();
 
   const { mutate, isLoading, isError, isSuccess, data, reset } = useMutation(calendarNew);
   const [createEvent] = useMainserverMutation(CREATE_EVENT_RECORDS);
@@ -82,13 +85,17 @@ export const VolunteerFormCalendar = ({
     scrollToTop();
   }
 
+  if (!groupDropdownData.length) {
+    return null;
+  }
+
   if (isError || (!isLoading && data && !data.id)) {
     Alert.alert(
       'Fehler beim Erstellen eines Events',
       'Bitte Eingaben überprüfen und erneut versuchen.'
     );
     reset();
-  } else if (isSuccess) {
+  } else if (isSuccess && isFocused) {
     navigation.goBack();
 
     Alert.alert('Erfolgreich', 'Das Event wurde erfolgreich erstellt.');
@@ -97,27 +104,25 @@ export const VolunteerFormCalendar = ({
   return (
     <>
       <Wrapper>
-        {!!groupDropdownData?.length && (
-          <Controller
-            name="contentContainerId"
-            render={({ field: { onChange, value } }) => (
-              <DropdownInput
-                {...{
-                  errors,
-                  required: true,
-                  data: groupDropdownData,
-                  value,
-                  onChange,
-                  name: 'contentContainerId',
-                  label: texts.volunteer.group,
-                  placeholder: texts.volunteer.group,
-                  control
-                }}
-              />
-            )}
-            control={control}
-          />
-        )}
+        <Controller
+          name="contentContainerId"
+          render={({ name, onChange, value }) => (
+            <DropdownInput
+              {...{
+                errors,
+                required: true,
+                data: groupDropdownData,
+                value,
+                onChange,
+                name,
+                label: texts.volunteer.group,
+                placeholder: texts.volunteer.group,
+                control
+              }}
+            />
+          )}
+          control={control}
+        />
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
         <Input
@@ -133,7 +138,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="startDate"
-          render={({ field: { onChange, value } }) => (
+          render={({ name, onChange, value }) => (
             <DateTimeInput
               {...{
                 mode: 'date',
@@ -141,7 +146,7 @@ export const VolunteerFormCalendar = ({
                 required: true,
                 value,
                 onChange,
-                name: 'startDate',
+                name,
                 label: texts.volunteer.startDate,
                 placeholder: texts.volunteer.startDate,
                 control
@@ -154,13 +159,13 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="startTime"
-          render={({ field: { onChange, value } }) => (
+          render={({ name, onChange, value }) => (
             <DateTimeInput
               {...{
                 errors,
                 value,
                 onChange,
-                name: 'startTime',
+                name,
                 label: texts.volunteer.startTime,
                 placeholder: texts.volunteer.startTime,
                 control
@@ -173,7 +178,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="endDate"
-          render={({ field: { onChange, value } }) => (
+          render={({ name, onChange, value }) => (
             <DateTimeInput
               {...{
                 mode: 'date',
@@ -181,7 +186,7 @@ export const VolunteerFormCalendar = ({
                 required: true,
                 value,
                 onChange,
-                name: 'endDate',
+                name,
                 label: texts.volunteer.endDate,
                 placeholder: texts.volunteer.endDate,
                 control
@@ -194,13 +199,13 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="endTime"
-          render={({ field: { onChange, value } }) => (
+          render={({ name, onChange, value }) => (
             <DateTimeInput
               {...{
                 errors,
                 value,
                 onChange,
-                name: 'endTime',
+                name,
                 label: texts.volunteer.endTime,
                 placeholder: texts.volunteer.endTime,
                 control
@@ -212,30 +217,9 @@ export const VolunteerFormCalendar = ({
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
         <Controller
-          name="allDay"
-          defaultValue={1}
-          render={({ field: { onChange, value } }) => (
-            <CheckBox
-              accessibilityRole="checkbox"
-              checked={!!value}
-              onPress={() => onChange(!value)}
-              title="Ganztägig"
-              uncheckedColor={colors.darkText}
-              checkedColor={colors.primary}
-              containerStyle={styles.checkboxContainerStyle}
-              textStyle={styles.checkboxTextStyle}
-            />
-          )}
-          control={control}
-        />
-      </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
-        <Controller
           name="isPublic"
-          defaultValue={0}
-          render={({ field: { onChange, value } }) => (
+          render={({ onChange, value }) => (
             <CheckBox
-              accessibilityRole="checkbox"
               checked={!!value}
               onPress={() => onChange(!value)}
               title="Öffentlich"
