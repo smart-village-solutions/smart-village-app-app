@@ -14,13 +14,11 @@ export const ConsulPublicAuthorComponent = ({ authorData }) => {
   return (
     <Wrapper>
       <WrapperRow>
-        <RegularText>{publicAuthor ? publicAuthor.username : 'Privat'}</RegularText>
+        <RegularText primary>{publicAuthor ? publicAuthor.username : 'Privat'}</RegularText>
         <RegularText> · </RegularText>
-        <RegularText smallest placeholder>
-          {momentFormatUtcToLocal(publicCreatedAt)}
-        </RegularText>
+        <RegularText smallest>{momentFormatUtcToLocal(publicCreatedAt)}</RegularText>
         <RegularText> · </RegularText>
-        <RegularText smallest placeholder>
+        <RegularText smallest>
           {commentsCount} {commentsCount > 1 || commentsCount === 0 ? text.comments : text.comment}
         </RegularText>
       </WrapperRow>

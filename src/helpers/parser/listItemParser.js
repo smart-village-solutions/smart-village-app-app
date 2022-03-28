@@ -205,7 +205,7 @@ const parseConsulData = (data, query, skipLastDivider) => {
     createdAt: debate.publicCreatedAt,
     totalVotes: debate.cachedVotesTotal,
     // subtitle: debate.commentsCount ? debate.commentsCount + ' Comment' : '0 Comment',
-    subtitle: debate.publicCreatedAt,
+    subtitle: momentFormatUtcToLocal(debate.publicCreatedAt),
     routeName: 'ConsulDetailScreen',
     params: {
       title: debate.title,

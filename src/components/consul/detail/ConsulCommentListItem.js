@@ -68,65 +68,60 @@ export const ConsulCommentListItem = ({ item, onRefresh }) => {
       <WrapperRow>
         <RegularText primary>{publicAuthor ? publicAuthor.username : 'Privat'}</RegularText>
         <RegularText> · </RegularText>
-        <RegularText smallest placeholder>
-          {momentFormatUtcToLocal(publicCreatedAt)}
-        </RegularText>
+        <RegularText smallest>{momentFormatUtcToLocal(publicCreatedAt)}</RegularText>
       </WrapperRow>
 
       <RegularText>{body}</RegularText>
 
       {/* Below Comment! */}
       <View style={styles.bottomContainer}>
-        <View>
-          {responses && responses.length > 0 ? (
-            <Touchable onPress={() => setResponseShow(!responseShow)}>
-              <RegularText primary smallest>
-                {responses.length} {responseShow ? text.answer : text.return}
-                {responseShow ? `(${text.collapse})` : `(${text.show})`}
-              </RegularText>
-            </Touchable>
-          ) : (
-            <RegularText smallest placeholder>
-              {text.noReturn}
+        <View style={styles.bottomLine}>
+          <View>
+            {responses && responses.length > 0 ? (
+              <Touchable onPress={() => setResponseShow(!responseShow)}>
+                <RegularText primary smallest>
+                  {responses.length} {responseShow ? text.answer : text.return}
+                  {responseShow ? `(${text.collapse})` : `(${text.show})`}
+                </RegularText>
+              </Touchable>
+            ) : (
+              <RegularText smallest>{text.noReturn}</RegularText>
+            )}
+          </View>
+
+          <Space />
+
+          {/* Reply Button! */}
+          <Touchable onPress={() => setReply(!reply)}>
+            <RegularText primary smallest>
+              Antwort
             </RegularText>
-          )}
+          </Touchable>
         </View>
+        <View style={styles.bottomLine}>
+          {/* Vote for Commit! */}
+          <WrapperRow>
+            {cachedVotesTotal > 0 ? (
+              <RegularText smallest>
+                {cachedVotesTotal} {text.votes}
+              </RegularText>
+            ) : (
+              <RegularText smallest>{text.noVotes}</RegularText>
+            )}
 
-        <Space />
+            <LikeDissLikeIcon
+              like
+              cachedVotesUp={cachedVotesUp}
+              onPress={() => onVotingToComment('up')}
+            />
 
-        {/* Reply Button! */}
-        <Touchable onPress={() => setReply(!reply)}>
-          <RegularText primary smallest>
-            Antwort
-          </RegularText>
-        </Touchable>
-
-        <Space />
-
-        {/* Vote for Commit! */}
-        <WrapperRow>
-          {cachedVotesTotal > 0 ? (
-            <RegularText smallest placeholder>
-              {cachedVotesTotal} {text.votes}
-            </RegularText>
-          ) : (
-            <RegularText smallest placeholder>
-              {text.noVotes}
-            </RegularText>
-          )}
-
-          <LikeDissLikeIcon
-            like
-            cachedVotesUp={cachedVotesUp}
-            onPress={() => onVotingToComment('up')}
-          />
-
-          <LikeDissLikeIcon
-            disslike
-            cachedVotesDown={cachedVotesDown}
-            onPress={() => onVotingToComment('down')}
-          />
-        </WrapperRow>
+            <LikeDissLikeIcon
+              disslike
+              cachedVotesDown={cachedVotesDown}
+              onPress={() => onVotingToComment('down')}
+            />
+          </WrapperRow>
+        </View>
       </View>
 
       {/* Reply List! */}
@@ -168,23 +163,17 @@ const LikeDissLikeIcon = ({ cachedVotesUp, cachedVotesDown, like, disslike, onPr
   return (
     <Touchable onPress={onPress} style={styles.iconButton}>
       <Icon.Like
-        color={colors.placeholder}
+        color={colors.darkText}
         style={[styles.icon, { transform: disslike && [{ rotateX: '180deg' }] }]}
         size={normalize(16)}
       />
-      <RegularText smallest placeholder>
-        {like ? cachedVotesUp : cachedVotesDown}
-      </RegularText>
+      <RegularText smallest>{like ? cachedVotesUp : cachedVotesDown}</RegularText>
     </Touchable>
   );
 };
 
 const Space = () => {
-  return (
-    <RegularText smallest placeholder>
-      |
-    </RegularText>
-  );
+  return <RegularText smallest>|</RegularText>;
 };
 
 ConsulCommentListItem.propTypes = {
@@ -202,14 +191,13 @@ LikeDissLikeIcon.propTypes = {
 
 const styles = StyleSheet.create({
   bottomContainer: {
-    borderTopWidth: 0.5,
     borderBottomWidth: 0.5,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 5,
-    alignItems: 'center',
     borderColor: colors.placeholder,
-    flexWrap: 'wrap'
+    paddingVertical: 5
+  },
+  bottomLine: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
   },
   replyContainer: {
     borderLeftWidth: 0.5,

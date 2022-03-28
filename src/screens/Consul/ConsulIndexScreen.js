@@ -2,23 +2,23 @@ import PropTypes from 'prop-types';
 import React, { useState, useCallback, useEffect } from 'react';
 import { RefreshControl, Text } from 'react-native';
 
-import {
-  LoadingSpinner,
-  SafeAreaViewFlex,
-  WrapperRow,
-  WrapperWithOrientation,
-  ConsulSortingButtons,
-  Debates
-} from '../../components';
+import { LoadingSpinner, SafeAreaViewFlex, Debates } from '../../components';
 import { parseListItemsFromQuery, sortingHelper } from '../../helpers';
 import { colors } from '../../config';
 import { useConsulData } from '../../hooks';
 import { texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
+import { IndexFilterWrapperAndList } from '../../components';
 
 const text = texts.consul.sorting;
 const type = QUERY_TYPES.CONSUL.SORTING;
 const queryType = QUERY_TYPES.CONSUL;
+
+const INITIAL_TOP_SORTING = [
+  { id: type.MOSTACTIVE, title: text.mostActive, selected: true },
+  { id: type.HIGHESTRATED, title: text.highestRated, selected: false },
+  { id: type.NEWESTDATE, title: text.newest, selected: false }
+];
 
 const getComponent = (query) => {
   const COMPONENTS = {
@@ -30,8 +30,8 @@ const getComponent = (query) => {
 export const ConsulIndexScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [listData, setListData] = useState([]);
-  const [orderType, setOrderType] = useState(type.MOSTACTIVE);
-  const [orderLoading, setOrderLoading] = useState(true);
+  const [sorting, setSorting] = useState(INITIAL_TOP_SORTING);
+  const [sortingLoading, setSortingLoading] = useState(true);
   const bookmarkable = route.params?.bookmarkable;
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
@@ -47,12 +47,13 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   });
 
   useEffect(() => {
-    setOrderLoading(true);
-    sortingHelper(orderType, listItems)
+    setSortingLoading(true);
+    let type = sorting.find((data) => data.selected);
+    sortingHelper(type.id, listItems)
       .then((val) => setListData(val))
-      .then(() => setOrderLoading(false))
+      .then(() => setSortingLoading(false))
       .catch((err) => console.error(err));
-  }, [orderType, isLoading]);
+  }, [sorting, isLoading]);
 
   const refresh = useCallback(
     async (refetch) => {
@@ -65,7 +66,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
   const Component = getComponent(query);
 
-  if (isLoading || orderLoading) return <LoadingSpinner loading />;
+  if (isLoading || sortingLoading) return <LoadingSpinner loading />;
 
   // TODO: If Error true return error component
   if (isError) return <Text>{isError.message}</Text>;
@@ -74,19 +75,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      <WrapperWithOrientation>
-        <WrapperRow center spaceAround>
-          {sortingButtons.map((item, index) => (
-            <ConsulSortingButtons
-              buttonType="type2"
-              item={item}
-              key={index}
-              orderType={orderType}
-              onPress={() => setOrderType(item.type)}
-            />
-          ))}
-        </WrapperRow>
-      </WrapperWithOrientation>
+      <IndexFilterWrapperAndList filter={sorting} setFilter={setSorting} />
 
       <Component
         query={query}
@@ -105,12 +94,6 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
     </SafeAreaViewFlex>
   );
 };
-
-const sortingButtons = [
-  { title: text.mostActive, type: type.MOSTACTIVE },
-  { title: text.highestRated, type: type.HIGHESTRATED },
-  { title: text.newest, type: type.NEWESTDATE }
-];
 
 ConsulIndexScreen.propTypes = {
   navigation: PropTypes.shape({

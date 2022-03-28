@@ -21,7 +21,9 @@ export const ConsulVotingComponent = (votesData) => {
     downVotesPercent = (cachedVotesDown * 100) / cachedVotesTotal;
   }
 
-  const onVoting = (like) => {};
+  const onVoting = (like) => {
+    //TODO: I need mutation
+  };
 
   return (
     <>
@@ -34,32 +36,26 @@ export const ConsulVotingComponent = (votesData) => {
         <WrapperRow spaceBetween>
           <WrapperRow>
             <Touchable onPress={() => onVoting('like')} style={styles.iconButton}>
-              <Icon.Like color={colors.placeholder} size={normalize(16)} style={styles.icon} />
-              <RegularText smallest placeholder>
-                %{upVotesPercent.toFixed(0)}
-              </RegularText>
+              <Icon.Like color={colors.darkText} size={normalize(16)} style={styles.icon} />
+              <RegularText smallest>%{upVotesPercent.toFixed(0)}</RegularText>
             </Touchable>
 
             <Touchable onPress={() => onVoting('disslike')} style={styles.iconButton}>
               <Icon.Like
-                color={colors.placeholder}
+                color={colors.darkText}
                 style={[styles.icon, { transform: [{ rotateX: '180deg' }] }]}
                 size={normalize(16)}
               />
-              <RegularText smallest placeholder>
-                %{downVotesPercent.toFixed(0)}
-              </RegularText>
+              <RegularText smallest>%{downVotesPercent.toFixed(0)}</RegularText>
             </Touchable>
           </WrapperRow>
 
           {cachedVotesTotal > 0 ? (
-            <RegularText small placeholder>
+            <RegularText small>
               {cachedVotesTotal} {text.votes}
             </RegularText>
           ) : (
-            <RegularText small placeholder>
-              {text.noVotes}
-            </RegularText>
+            <RegularText small>{text.noVotes}</RegularText>
           )}
         </WrapperRow>
       </Wrapper>

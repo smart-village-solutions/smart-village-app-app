@@ -5,3 +5,4 @@ export * from './UserSettings';
 
 export * from './ConsulIndexScreen';
 export * from './ConsulDetailScreen';
+export * from './ConsulHomeScreen';

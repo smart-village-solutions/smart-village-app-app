@@ -2,12 +2,12 @@ import PropTypes from 'prop-types';
 import React, { useState, useEffect, useCallback } from 'react';
 import { RefreshControl, ScrollView, Text } from 'react-native';
 
-import { LoadingSpinner, SafeAreaViewFlex, ConsulWelcome, Touchable } from '../../../components';
-import { colors } from '../../../config';
-import { useConsulUser } from '../../../hooks';
-import { homeData, setConsulAuthToken } from '../../../helpers';
-import { ConsulListComponent } from '../../../components';
-import { ScreenName } from '../../../types';
+import { LoadingSpinner, SafeAreaViewFlex, ConsulWelcome, Touchable } from '../../components';
+import { colors } from '../../config';
+import { useConsulUser } from '../../hooks';
+import { homeData, setConsulAuthToken } from '../../helpers';
+import { ConsulListComponent } from '../../components';
+import { ScreenName } from '../../types';
 
 export const ConsulHomeScreen = ({ navigation, route }) => {
   // useState
