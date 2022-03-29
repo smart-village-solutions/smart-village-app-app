@@ -12,6 +12,7 @@ import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 const UserAvatar = ({ uri, title }: { uri: string; title: string }) => (
   <Avatar
+    containerStyle={styles.spacing}
     overlayContainerStyle={[styles.overlayContainerStyle, !uri && styles.border]}
     placeholderStyle={styles.placeholderStyle}
     rounded
@@ -133,5 +134,8 @@ const styles = StyleSheet.create({
   titleStyle: {
     color: colors.darkText,
     fontSize: normalize(12)
+  },
+  spacing: {
+    marginVertical: normalize(5)
   }
 });

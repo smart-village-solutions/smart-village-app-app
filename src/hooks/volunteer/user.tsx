@@ -20,14 +20,18 @@ export const useVolunteerUser = (): {
   isError: boolean;
   isLoggedIn: boolean;
   currentUserId: string | null;
-  contentContainerId: string | null;
+  currentUserGuId: string | null;
+  currentUserContentContainerId: string | null;
 } => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [contentContainerId, setContentContainerId] = useState<string | null>(null);
+  const [currentUserGuId, setCurrentUserGuId] = useState<string | null>(null);
+  const [currentUserContentContainerId, setCurrentUserContentContainerId] = useState<string | null>(
+    null
+  );
 
   const logInCallback = useCallback(async () => {
     setIsLoading(true);
@@ -37,12 +41,14 @@ export const useVolunteerUser = (): {
       const storedVolunteerAuthToken = await volunteerAuthToken();
       const {
         currentUserId: userId,
-        contentContainerId: userContentContainerId
+        currentUserGuId: userGuId,
+        currentUserContentContainerId: userContentContainerId
       } = await volunteerUserData();
 
       setIsLoggedIn(!!storedVolunteerAuthToken);
       setCurrentUserId(userId);
-      setContentContainerId(userContentContainerId);
+      setCurrentUserGuId(userGuId);
+      setCurrentUserContentContainerId(userContentContainerId);
     } catch (e) {
       console.warn(e);
       setIsError(true);
@@ -66,7 +72,8 @@ export const useVolunteerUser = (): {
     isError,
     isLoggedIn,
     currentUserId,
-    contentContainerId
+    currentUserGuId,
+    currentUserContentContainerId
   };
 };
 

@@ -15,7 +15,8 @@ export const volunteerApiUrl = serverUrl + secrets[namespace]?.volunteer?.versio
 
 const VOLUNTEER_AUTH_TOKEN = 'VOLUNTEER_AUTH_TOKEN';
 const VOLUNTEER_CURRENT_USER_ID = 'VOLUNTEER_CURRENT_USER_ID';
-const VOLUNTEER_CONTENT_CONTAINER_ID = 'VOLUNTEER_CONTENT_CONTAINER_ID';
+const VOLUNTEER_CURRENT_USER_GUID = 'VOLUNTEER_CURRENT_USER_GUID';
+const VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID = 'VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID';
 
 export const storeVolunteerAuthToken = (authToken?: string) => {
   if (authToken) {
@@ -27,26 +28,40 @@ export const storeVolunteerAuthToken = (authToken?: string) => {
 
 export const volunteerAuthToken = () => SecureStore.getItemAsync(VOLUNTEER_AUTH_TOKEN);
 
-export const storeVolunteerUserData = (userData?: { id: number; contentcontainer_id: number }) => {
+export const storeVolunteerUserData = (userData?: {
+  id: number;
+  guid: number;
+  contentcontainer_id: number;
+}) => {
   if (userData) {
     SecureStore.setItemAsync(VOLUNTEER_CURRENT_USER_ID, `${userData.id}`);
-    SecureStore.setItemAsync(VOLUNTEER_CONTENT_CONTAINER_ID, `${userData.contentcontainer_id}`);
+    SecureStore.setItemAsync(VOLUNTEER_CURRENT_USER_GUID, `${userData.guid}`);
+    SecureStore.setItemAsync(
+      VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID,
+      `${userData.contentcontainer_id}`
+    );
   } else {
     SecureStore.deleteItemAsync(VOLUNTEER_CURRENT_USER_ID);
-    SecureStore.deleteItemAsync(VOLUNTEER_CONTENT_CONTAINER_ID);
+    SecureStore.deleteItemAsync(VOLUNTEER_CURRENT_USER_GUID);
+    SecureStore.deleteItemAsync(VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID);
   }
 };
 
 export const volunteerUserData = async (): Promise<{
   currentUserId: string | null;
-  contentContainerId: string | null;
+  currentUserGuId: string | null;
+  currentUserContentContainerId: string | null;
 }> => {
   const currentUserId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_ID);
-  const contentContainerId = await SecureStore.getItemAsync(VOLUNTEER_CONTENT_CONTAINER_ID);
+  const currentUserGuId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_GUID);
+  const currentUserContentContainerId = await SecureStore.getItemAsync(
+    VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID
+  );
 
   return {
     currentUserId,
-    contentContainerId
+    currentUserGuId,
+    currentUserContentContainerId
   };
 };
 
