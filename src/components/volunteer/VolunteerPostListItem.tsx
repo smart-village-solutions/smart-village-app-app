@@ -3,8 +3,11 @@ import 'moment/locale/de';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
+import Markdown from 'react-native-markdown-display';
 
-import { colors, normalize } from '../../config';
+import { colors, normalize, styles } from '../../config';
+import { openLink } from '../../helpers';
+import { useOpenWebScreen } from '../../hooks';
 import { BoldText, RegularText } from '../Text';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
@@ -20,7 +23,8 @@ export const VolunteerPostListItem = ({
       }
     }
   },
-  bottomDivider = true
+  bottomDivider = true,
+  openWebScreen
 }: {
   post: {
     id: number;
@@ -30,29 +34,36 @@ export const VolunteerPostListItem = ({
     };
   };
   bottomDivider: boolean;
-}) => {
-  return (
-    <View>
-      <ListItem
-        leftAvatar={<VolunteerAvatar item={{ user: { guid, display_name: displayName } }} />}
-        title={<BoldText>{displayName}</BoldText>}
-        subtitle={
-          <RegularText small>
-            {moment.utc(createdAt).local().format('DD.MM.YYYY HH:mm')}
-          </RegularText>
-        }
-        containerStyle={styles.avatarContainerStyle}
-      />
-      <ListItem
-        title={<RegularText>{message}</RegularText>}
-        bottomDivider={bottomDivider}
-        containerStyle={styles.contentContainerStyle}
-      />
-    </View>
-  );
-};
+  openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
+}) => (
+  <View>
+    <ListItem
+      leftAvatar={<VolunteerAvatar item={{ user: { guid, display_name: displayName } }} />}
+      title={<BoldText>{displayName}</BoldText>}
+      subtitle={
+        <RegularText small>{moment.utc(createdAt).local().format('DD.MM.YYYY HH:mm')}</RegularText>
+      }
+      containerStyle={listItemStyles.avatarContainerStyle}
+    />
+    <ListItem
+      title={
+        <Markdown
+          onLinkPress={(url) => {
+            openLink(url, openWebScreen);
+            return false;
+          }}
+          style={styles.markdown}
+        >
+          {message}
+        </Markdown>
+      }
+      bottomDivider={bottomDivider}
+      containerStyle={listItemStyles.contentContainerStyle}
+    />
+  </View>
+);
 
-const styles = StyleSheet.create({
+const listItemStyles = StyleSheet.create({
   avatarContainerStyle: {
     backgroundColor: colors.transparent,
     paddingBottom: 0,

@@ -14,10 +14,12 @@ import { VolunteerPostListItem } from './VolunteerPostListItem';
 
 export const VolunteerPosts = ({
   contentContainerId,
-  isRefetching
+  isRefetching,
+  openWebScreen
 }: {
   contentContainerId: number;
   isRefetching: boolean;
+  openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
 }) => {
   const { data, isLoading, refetch } = useQuery(
     ['posts', contentContainerId],
@@ -55,6 +57,7 @@ export const VolunteerPosts = ({
             bottomDivider={
               index < posts.length - 1 // do not show a bottomDivider after last entry
             }
+            openWebScreen={openWebScreen}
           />
         </View>
       ))}

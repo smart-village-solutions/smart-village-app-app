@@ -125,7 +125,11 @@ export const VolunteerGroup = ({
           <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
         </Wrapper>
 
-        <VolunteerPosts contentContainerId={contentContainerId} isRefetching={isRefetching} />
+        <VolunteerPosts
+          contentContainerId={contentContainerId}
+          isRefetching={isRefetching}
+          openWebScreen={openWebScreen}
+        />
 
         {!isGroupOwner && isGroupMember !== undefined && (
           <Wrapper>
