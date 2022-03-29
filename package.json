@@ -66,6 +66,7 @@
     "graphql-anywhere": "~4.2.4",
     "graphql-tag": "^2.12.6",
     "lodash": "~4.17.21",
+    "markdown-it": "^12.3.2",
     "matomo-tracker-react-native": "^0.3.0",
     "moment": "~2.29.1",
     "qs": "^6.10.3",
@@ -125,5 +126,8 @@
     "react-test-renderer": "^17.0.2",
     "set-value": "^4.1.0",
     "typescript": "~4.3.5"
+  },
+  "resolutions": {
+    "markdown-it": "^12.3.2"
   }
 }
