@@ -26,6 +26,8 @@ export const QUERY_TYPES = {
   CONSUL: {
     DEBATES: 'debates',
     DEBATE: 'debate',
+    START_DEBATE: 'startDebate',
+    UPDATE_DEBATE: 'updateDebate',
     SORTING: {
       NEWESTDATE: 'newestDate',
       MOSTACTIVE: 'mostActive',

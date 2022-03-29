@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Touchable, RegularText } from '../';
+import { Touchable } from '../Touchable';
+import { RegularText } from '../Text';
 import { Button } from '../Button';
 import { BoldText } from '../Text';
 

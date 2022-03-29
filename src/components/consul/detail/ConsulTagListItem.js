@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
-import { RegularText } from '../..';
+import { RegularText } from '../../Text';
 import { colors } from '../../../config';
 
 export const ConsulTagListItem = ({ item }) => {

@@ -114,6 +114,15 @@ export const texts = {
     commentAnswerButton: 'Antwort Veröffentlichen',
     submittingCommentButton: 'Kommentar abgeben',
     answer: 'Antwort',
+    startNew: {
+      newDebateTitleLabel: 'Title der Diskussion',
+      newDebateDescriptionLabel: 'Initialer Debattenbeitrag',
+      newDebateTagLabel: 'Trennen Sie die Tags mit einem Komma (,)',
+      termsOfServiceLabel:
+        'Ich stimme der Datenschutzbestimmungen und den Allgemeine Nutzungsbedingungen zu',
+      newDebateStartButtonLabel: 'Eine Diskussion starten',
+			updateButtonLabel: 'Bearbeiten',
+    },
     homeScreen: {
       account: 'Konto',
       general: 'Allgemein',

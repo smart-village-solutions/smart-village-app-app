@@ -4,34 +4,34 @@ import { ScrollView } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
+import { DefaultKeyboardAvoidingView } from '../../../DefaultKeyboardAvoidingView';
+import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
+import { Title, TitleContainer, TitleShadow } from '../../../Title';
+import { Wrapper, WrapperVertical } from '../../../Wrapper';
+import { HtmlView } from '../../../HtmlView';
+import { Button } from '../../../Button';
 import {
-  DefaultKeyboardAvoidingView,
-  SafeAreaViewFlex,
-  Title,
-  TitleContainer,
-  TitleShadow,
-  Wrapper,
-  HtmlView,
   ConsulCommentList,
   ConsulTagList,
   ConsulVotingComponent,
   ConsulPublicAuthorComponent,
-  WrapperVertical,
   Input,
-  Button
-} from '../..';
-import { consts, device, texts } from '../../../config';
-import { useOpenWebScreen } from '../../../hooks';
-import { ConsulClient } from '../../../ConsulClient';
-import { ADD_COMMENT_TO_DEBATE } from '../../../queries/Consul';
+  ConsulStartNewButton
+} from '../../../Consul';
+import { consts, device, texts } from '../../../../config';
+import { useOpenWebScreen } from '../../../../hooks';
+import { ConsulClient } from '../../../../ConsulClient';
+import { ADD_COMMENT_TO_DEBATE } from '../../../../queries/Consul';
+import { QUERY_TYPES } from '../../../../queries';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const DebateDetail = ({ listData, onRefresh, route }) => {
+export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
   const [loading, setLoading] = useState();
+
   const {
     cachedVotesDown,
     cachedVotesUp,
@@ -103,10 +103,27 @@ export const DebateDetail = ({ listData, onRefresh, route }) => {
             </Wrapper>
           )}
 
+          {/*TODO: I neet to User ID */}
+          {/* Debate Edit Button */}
+          <ConsulStartNewButton
+            data={{
+              title: title,
+              tagList: tags.nodes.map((item) => item.name),
+              description: description,
+              termsOfService: true,
+              id: id
+            }}
+            navigation={navigation}
+            title={text.startNew.updateButtonLabel}
+            buttonTitle={text.startNew.updateButtonLabel}
+            query={QUERY_TYPES.CONSUL.UPDATE_DEBATE}
+          />
+
           {/* Tag List! */}
-          {!!tags && <ConsulTagList tags={tags.nodes} />}
+          {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} />}
 
           {/* Voting Component! */}
+          {/*TODO: Mutation funksionert nicht*/}
           <ConsulVotingComponent
             votesData={{
               cachedVotesTotal: cachedVotesTotal,
@@ -152,6 +169,9 @@ export const DebateDetail = ({ listData, onRefresh, route }) => {
 
 DebateDetail.propTypes = {
   listData: PropTypes.object.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired
+  }).isRequired,
   onRefresh: PropTypes.func,
   route: PropTypes.object
 };

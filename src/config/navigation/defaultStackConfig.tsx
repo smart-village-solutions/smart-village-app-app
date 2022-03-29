@@ -14,6 +14,7 @@ import {
   ConsulRegisteredScreen,
   ConsulIndexScreen,
   ConsulDetailScreen,
+  ConsulStartNewScreen,
   ConsulProposalsHomeScreen,
   ConsulVotingHomeScreen,
   ConsulUserSettingsScreen,
@@ -121,6 +122,10 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.ConsulDetailScreen,
       screenComponent: ConsulDetailScreen
+    },
+    {
+      routeName: ScreenName.ConsulStartNewScreen,
+      screenComponent: ConsulStartNewScreen
     },
     {
       routeName: ScreenName.ConsulProposalsHomeScreen,

@@ -5,7 +5,10 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
 import { momentFormatUtcToLocal } from '../../../helpers';
-import { RegularText, Button, Touchable, WrapperRow, WrapperVertical } from '../..';
+import { RegularText } from '../../Text';
+import { WrapperRow, WrapperVertical } from '../../Wrapper';
+import { Button } from '../../Button';
+import { Touchable } from '../../Touchable';
 import { colors, normalize, texts, Icon } from '../../../config';
 import { Input } from '../Form';
 import { ConsulClient } from '../../../ConsulClient';

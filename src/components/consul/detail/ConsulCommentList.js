@@ -3,7 +3,7 @@ import React from 'react';
 import { FlatList } from 'react-native';
 import { normalize } from 'react-native-elements';
 
-import { Title, TitleContainer, TitleShadow } from '../..';
+import { Title, TitleContainer, TitleShadow } from '../../Title';
 import { device, texts, consts } from '../../../config';
 
 import { ConsulCommentListItem } from './ConsulCommentListItem';
