@@ -8,13 +8,13 @@ import { QUERY_TYPES } from '../../queries';
 import { posts as postsQuery } from '../../queries/volunteer';
 import { ScreenName } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
+import { SectionHeader } from '../SectionHeader';
 import { BoldText } from '../Text';
-import { Title, TitleContainer } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
-import { VolunteerPostTextField } from './VolunteerPostTextField';
 import { VolunteerPostListItem } from './VolunteerPostListItem';
+import { VolunteerPostTextField } from './VolunteerPostTextField';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -29,7 +29,7 @@ export const VolunteerPosts = ({
   isRefetching: boolean;
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   navigation: StackScreenProps<any>['navigation'];
-  isGroupMember: boolean;
+  isGroupMember?: boolean;
 }) => {
   const { data, isLoading, refetch } = useQuery(
     ['posts', contentContainerId],
@@ -55,11 +55,17 @@ export const VolunteerPosts = ({
   return (
     <>
       {(!!posts?.length || !!isGroupMember) && (
-        <TitleContainer>
-          <Title>
-            {texts.volunteer.posts} ({data?.results?.length})
-          </Title>
-        </TitleContainer>
+        <SectionHeader
+          onPress={() =>
+            navigation.push(ScreenName.VolunteerIndex, {
+              title: texts.volunteer.posts,
+              query: QUERY_TYPES.VOLUNTEER.POSTS,
+              queryVariables: contentContainerId,
+              rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+            })
+          }
+          title={texts.volunteer.posts + (!!data?.results?.length && ` (${data.results.length})`)}
+        />
       )}
 
       {!!isGroupMember && (
