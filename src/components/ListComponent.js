@@ -53,7 +53,8 @@ export const ListComponent = ({
   sectionByDate,
   ListHeaderComponent,
   refreshControl,
-  showBackToTop
+  showBackToTop,
+  openWebScreen
 }) => {
   const { listTypesSettings } = useContext(SettingsContext);
 
@@ -70,6 +71,7 @@ export const ListComponent = ({
       ListHeaderComponent={ListHeaderComponent}
       navigation={navigation}
       noSubtitle={noSubtitle}
+      openWebScreen={openWebScreen}
       query={query}
       refreshControl={refreshControl}
       showBackToTop={showBackToTop}
@@ -78,14 +80,15 @@ export const ListComponent = ({
 };
 
 ListComponent.propTypes = {
-  navigation: PropTypes.object,
   data: PropTypes.array,
-  noSubtitle: PropTypes.bool,
-  query: PropTypes.string.isRequired,
   fetchMoreData: PropTypes.func,
   horizontal: PropTypes.bool,
-  sectionByDate: PropTypes.bool,
   ListHeaderComponent: PropTypes.object,
+  navigation: PropTypes.object,
+  noSubtitle: PropTypes.bool,
+  openWebScreen: PropTypes.func,
+  query: PropTypes.string.isRequired,
   refreshControl: PropTypes.object,
+  sectionByDate: PropTypes.bool,
   showBackToTop: PropTypes.bool
 };

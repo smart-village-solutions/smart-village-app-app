@@ -47,7 +47,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
     [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: additionalData()
   }[query]?.find((entry: { id: number }) => entry.id == queryVariables.id);
 
-  const { data, isLoading, refetch } = useQuery(
+  const { data, isLoading, refetch, isRefetching } = useQuery(
     [query, queryVariables?.id],
     () => getQuery(query)(queryVariables?.id),
     {
@@ -104,18 +104,27 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={isLoading}
-            onRefresh={() => !dummyData && refetch()}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
+      <DefaultKeyboardAvoidingView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={() => !dummyData && refetch()}
+              colors={[colors.accent]}
+              tintColor={colors.accent}
+            />
+          }
+          keyboardShouldPersistTaps="handled"
+        >
+          <Component
+            data={componentData}
+            refetch={refetch}
+            isRefetching={isRefetching}
+            navigation={navigation}
+            route={route}
           />
-        }
-      >
-        <Component data={componentData} refetch={refetch} navigation={navigation} route={route} />
-      </ScrollView>
+        </ScrollView>
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };

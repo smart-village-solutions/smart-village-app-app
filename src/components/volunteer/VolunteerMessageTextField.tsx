@@ -29,9 +29,9 @@ export const VolunteerMessageTextField = ({
 
   const { mutateAsync, isLoading, isError, data } = useMutation(conversationNewEntry);
   const onPress = async (conversationNewEntryData: VolunteerConversation) => {
+    resetForm();
     await mutateAsync(conversationNewEntryData);
     await refetch();
-    resetForm();
     scrollDown();
   };
 

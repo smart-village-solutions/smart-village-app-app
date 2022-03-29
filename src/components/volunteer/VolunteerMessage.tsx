@@ -5,7 +5,12 @@ import { Avatar } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
 import { colors, normalize } from '../../config';
-import { volunteerListDate, volunteerProfileImage, volunteerUserData } from '../../helpers';
+import {
+  momentFormat,
+  volunteerListDate,
+  volunteerProfileImage,
+  volunteerUserData
+} from '../../helpers';
 import { conversationRecipients } from '../../queries/volunteer';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
@@ -87,11 +92,14 @@ export const VolunteerMessage = ({
                 <View style={[!isOwnMessage && styles.containerStyle]}>
                   {!isOwnMessage && <UserAvatar uri={uri} title={title} />}
                   <RegularText right={isOwnMessage} smallest style={styles.dateTimeStyle}>
-                    {volunteerListDate({
-                      end_datetime: '',
-                      start_datetime: '',
-                      updated_at
-                    })}
+                    {momentFormat(
+                      volunteerListDate({
+                        end_datetime: '',
+                        start_datetime: '',
+                        updated_at
+                      }),
+                      'DD.MM.YYYY HH:mm'
+                    )}
                   </RegularText>
                 </View>
                 <RegularText

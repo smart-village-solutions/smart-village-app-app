@@ -20,7 +20,7 @@ export const useVolunteerData = ({
   onlyUpcoming = true
 }: {
   query: VolunteerQuery;
-  queryVariables?: { dateRange?: string[] };
+  queryVariables?: { dateRange?: string[] } | number;
   isCalendar?: boolean;
   onlyUpcoming?: boolean;
 }): {
@@ -29,7 +29,10 @@ export const useVolunteerData = ({
   isRefetching: boolean;
   refetch: () => void;
 } => {
-  const { data, isLoading, isRefetching, refetch } = useQuery(query, getQuery(query));
+  const { data, isLoading, isRefetching, refetch } = useQuery([query, queryVariables], () =>
+    getQuery(query)(queryVariables)
+  );
+
   const [isProcessing, setIsProcessing] = useState(true);
   const [volunteerData, setVolunteerData] = useState<any[]>([]);
 

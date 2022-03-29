@@ -19,7 +19,15 @@ import { GET_PUBLIC_HTML_FILE } from './publicHtmlFiles';
 import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
 import { GET_TOUR, GET_TOURS } from './tours';
 import { QUERY_TYPES } from './types';
-import { calendar, calendarAll, conversation, conversations, group, groups } from './volunteer';
+import {
+  calendar,
+  calendarAll,
+  conversation,
+  conversations,
+  group,
+  groups,
+  posts
+} from './volunteer';
 import { WASTE_ADDRESSES, WASTE_STREET } from './waste';
 import { GET_WEATHER, GET_WEATHER_CURRENT } from './weather';
 
@@ -63,7 +71,8 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.VOLUNTEER.CONVERSATIONS]: conversations,
     [QUERY_TYPES.VOLUNTEER.GROUP]: group,
     [QUERY_TYPES.VOLUNTEER.GROUPS]: groups,
-    [QUERY_TYPES.VOLUNTEER.GROUPS_MY]: groups
+    [QUERY_TYPES.VOLUNTEER.GROUPS_MY]: groups,
+    [QUERY_TYPES.VOLUNTEER.POSTS]: posts
   };
 
   return QUERIES[query];

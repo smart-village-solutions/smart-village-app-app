@@ -1,13 +1,20 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useState } from 'react';
-import { RefreshControl } from 'react-native';
+import { ActivityIndicator, RefreshControl } from 'react-native';
 
-import { DropdownHeader, ListComponent, SafeAreaViewFlex } from '../../components';
+import {
+  DefaultKeyboardAvoidingView,
+  DropdownHeader,
+  ListComponent,
+  LoadingContainer,
+  SafeAreaViewFlex,
+  VolunteerPostTextField
+} from '../../components';
 import { colors } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { additionalData, myProfile, myTasks } from '../../helpers/parser/volunteer';
-import { useLogoutHeader, useVolunteerData } from '../../hooks';
+import { useLogoutHeader, useOpenWebScreen, useVolunteerData } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 
 // eslint-disable-next-line complexity
@@ -16,10 +23,17 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const query = route.params?.query ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
+  const rootRouteName = route.params?.rootRouteName ?? '';
+  const headerTitle = route.params?.title ?? '';
   const showFilter = false; // TODO: filter?
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
-  const { data, refetch } = useVolunteerData({ query, queryVariables, isCalendar });
+  const isPosts = query === QUERY_TYPES.VOLUNTEER.POSTS;
+
+  const { data, isLoading, refetch } = useVolunteerData({ query, queryVariables, isCalendar });
+
+  // action to open source urls
+  const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
   useLogoutHeader({ query, navigation });
 
@@ -42,28 +56,44 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     skipLastDivider: true
   });
 
+  if (isLoading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
+
   if (!listItems) return null;
 
   return (
     <SafeAreaViewFlex>
-      <ListComponent
-        ListHeaderComponent={
-          showFilter ? <DropdownHeader {...{ query: query, queryVariables, data }} /> : null
-        }
-        navigation={navigation}
-        data={listItems}
-        sectionByDate={isCalendar}
-        query={query}
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={refetch}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
-          />
-        }
-        showBackToTop
-      />
+      <DefaultKeyboardAvoidingView>
+        <ListComponent
+          ListHeaderComponent={
+            <>
+              {showFilter && <DropdownHeader {...{ query: query, queryVariables, data }} />}
+              {isPosts && (
+                <VolunteerPostTextField contentContainerId={queryVariables} refetch={refetch} />
+              )}
+            </>
+          }
+          navigation={navigation}
+          data={listItems}
+          sectionByDate={isCalendar}
+          query={query}
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              onRefresh={refetch}
+              colors={[colors.accent]}
+              tintColor={colors.accent}
+            />
+          }
+          showBackToTop
+          openWebScreen={openWebScreen}
+        />
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };

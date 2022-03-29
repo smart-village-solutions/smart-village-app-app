@@ -21,11 +21,17 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { VolunteerGroupMember } from './VolunteerGroupMember';
+import { VolunteerPosts } from './VolunteerPosts';
 
 const a11yText = consts.a11yLabel;
 
 // eslint-disable-next-line complexity
-export const VolunteerGroup = ({ data, route }: { data: any } & StackScreenProps<any>) => {
+export const VolunteerGroup = ({
+  data,
+  isRefetching,
+  navigation,
+  route
+}: { data: any; isRefetching: boolean } & StackScreenProps<any>) => {
   const {
     contentcontainer_id: contentContainerId,
     description,
@@ -119,6 +125,14 @@ export const VolunteerGroup = ({ data, route }: { data: any } & StackScreenProps
         <Wrapper>
           <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
         </Wrapper>
+
+        <VolunteerPosts
+          contentContainerId={contentContainerId}
+          isRefetching={isRefetching}
+          openWebScreen={openWebScreen}
+          navigation={navigation}
+          isGroupMember={isGroupMember}
+        />
 
         {!isGroupOwner && isGroupMember !== undefined && (
           <Wrapper>

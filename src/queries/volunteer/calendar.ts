@@ -2,7 +2,7 @@ import { colors } from '../../config';
 import { formatTime } from '../../helpers/formatHelper';
 import { momentFormat } from '../../helpers/momentHelper';
 import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
-import { VolunteerCalendar } from '../../types';
+import { PARTICIPANT_TYPE, VolunteerCalendar } from '../../types';
 
 export const calendarAll = async () => {
   const authToken = await volunteerAuthToken();
@@ -33,13 +33,6 @@ export const calendar = async (id: number) => {
 
   return (await fetch(`${volunteerApiUrl}calendar/entry/${id}`, fetchObj)).json();
 };
-
-export enum PARTICIPANT_TYPE {
-  REMOVE,
-  DECLINE,
-  MAYBE,
-  ACCEPT
-}
 
 export const calendarAttend = async ({ id, type }: { id: number; type: PARTICIPANT_TYPE }) => {
   const authToken = await volunteerAuthToken();

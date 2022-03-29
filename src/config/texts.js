@@ -612,6 +612,9 @@ export const texts = {
     password: 'Passwort',
     passwordConfirmation: 'Passwort bestätigen',
     passwordForgotten: 'Passwort vergessen',
+    postNew: 'Neuen Beitrag verfassen',
+    posts: 'Beiträge',
+    postsIndexLink: 'Alle Beiträge anzeigen',
     recipient: 'Empfänger',
     register: 'Registrieren',
     registrationAllFieldsRequiredBody:

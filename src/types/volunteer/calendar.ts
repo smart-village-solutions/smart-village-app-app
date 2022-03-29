@@ -1,3 +1,10 @@
+export enum PARTICIPANT_TYPE {
+  REMOVE,
+  DECLINE,
+  MAYBE,
+  ACCEPT
+}
+
 export type VolunteerCalendar = {
   title: string;
   description?: string;

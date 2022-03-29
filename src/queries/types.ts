@@ -30,6 +30,7 @@ export const QUERY_TYPES = {
     GROUPS_MY: 'groupsMy',
     GROUPS: 'groups',
     ME: 'me',
+    POSTS: 'posts',
     PROFILE: 'profile',
     TASKS: 'tasks',
     USER: 'user',

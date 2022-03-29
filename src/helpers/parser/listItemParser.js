@@ -276,5 +276,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
     case QUERY_TYPES.VOLUNTEER.PROFILE:
       return parseVolunteers(data, query, skipLastDivider);
+    default:
+      return data;
   }
 };

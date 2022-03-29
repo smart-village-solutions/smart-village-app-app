@@ -7,6 +7,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
 import { QUERY_TYPES } from '../queries';
+import { VolunteerPostListItem } from '../components';
 
 const { LIST_TYPES } = consts;
 
@@ -57,15 +58,27 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     default: {
-      renderItem = ({ item, index, section }) => (
-        <TextListItem
-          item={{
-            ...item,
-            bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
-          }}
-          {...{ navigation, noSubtitle: options.noSubtitle }}
-        />
-      );
+      renderItem = ({ item, index, section }) => {
+        if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
+          return (
+            <VolunteerPostListItem
+              post={item}
+              bottomDivider={isArray(section?.data) ? section.data.length - 1 !== index : undefined}
+              openWebScreen={options.openWebScreen}
+            />
+          );
+        }
+
+        return (
+          <TextListItem
+            item={{
+              ...item,
+              bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
+            }}
+            {...{ navigation, noSubtitle: options.noSubtitle }}
+          />
+        );
+      };
 
       break;
     }
