@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -12,9 +12,14 @@ import { Wrapper } from '../Wrapper';
 
 import { VolunteerPostListItem } from './VolunteerPostListItem';
 
-// eslint-disable-next-line complexity
-export const VolunteerPosts = ({ contentContainerId }: { contentContainerId: number }) => {
-  const { data, isLoading } = useQuery(
+export const VolunteerPosts = ({
+  contentContainerId,
+  isRefetching
+}: {
+  contentContainerId: number;
+  isRefetching: boolean;
+}) => {
+  const { data, isLoading, refetch } = useQuery(
     ['posts', contentContainerId],
     () => postsQuery(contentContainerId),
     {
@@ -22,6 +27,10 @@ export const VolunteerPosts = ({ contentContainerId }: { contentContainerId: num
     }
   );
   const posts = data?.results?.slice(0, 3);
+
+  useEffect(() => {
+    isRefetching && refetch?.();
+  }, [isRefetching]);
 
   if (isLoading) {
     return (

@@ -26,7 +26,11 @@ import { VolunteerPosts } from './VolunteerPosts';
 const a11yText = consts.a11yLabel;
 
 // eslint-disable-next-line complexity
-export const VolunteerGroup = ({ data, route }: { data: any } & StackScreenProps<any>) => {
+export const VolunteerGroup = ({
+  data,
+  isRefetching,
+  route
+}: { data: any; isRefetching: boolean } & StackScreenProps<any>) => {
   const {
     contentcontainer_id: contentContainerId,
     description,
@@ -121,7 +125,7 @@ export const VolunteerGroup = ({ data, route }: { data: any } & StackScreenProps
           <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
         </Wrapper>
 
-        <VolunteerPosts contentContainerId={contentContainerId} />
+        <VolunteerPosts contentContainerId={contentContainerId} isRefetching={isRefetching} />
 
         {!isGroupOwner && isGroupMember !== undefined && (
           <Wrapper>
