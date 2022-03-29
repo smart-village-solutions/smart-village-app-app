@@ -7,7 +7,7 @@ import { DropdownHeader, ListComponent, SafeAreaViewFlex } from '../../component
 import { colors } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { additionalData, myProfile, myTasks } from '../../helpers/parser/volunteer';
-import { useLogoutHeader, useVolunteerData } from '../../hooks';
+import { useLogoutHeader, useOpenWebScreen, useVolunteerData } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 
 // eslint-disable-next-line complexity
@@ -16,10 +16,15 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const query = route.params?.query ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
+  const rootRouteName = route.params?.rootRouteName ?? '';
+  const headerTitle = route.params?.title ?? '';
   const showFilter = false; // TODO: filter?
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const { data, refetch } = useVolunteerData({ query, queryVariables, isCalendar });
+
+  // action to open source urls
+  const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
   useLogoutHeader({ query, navigation });
 
@@ -63,6 +68,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           />
         }
         showBackToTop
+        openWebScreen={openWebScreen}
       />
     </SafeAreaViewFlex>
   );

@@ -29,6 +29,7 @@ const a11yText = consts.a11yLabel;
 export const VolunteerGroup = ({
   data,
   isRefetching,
+  navigation,
   route
 }: { data: any; isRefetching: boolean } & StackScreenProps<any>) => {
   const {
@@ -129,6 +130,7 @@ export const VolunteerGroup = ({
           contentContainerId={contentContainerId}
           isRefetching={isRefetching}
           openWebScreen={openWebScreen}
+          navigation={navigation}
         />
 
         {!isGroupOwner && isGroupMember !== undefined && (

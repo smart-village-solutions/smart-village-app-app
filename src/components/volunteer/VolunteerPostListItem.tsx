@@ -1,13 +1,10 @@
-import moment from 'moment';
-import 'moment/locale/de';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import Markdown from 'react-native-markdown-display';
 
 import { colors, normalize, styles } from '../../config';
-import { openLink } from '../../helpers';
-import { useOpenWebScreen } from '../../hooks';
+import { momentFormat, openLink, volunteerListDate } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
@@ -41,7 +38,16 @@ export const VolunteerPostListItem = ({
       leftAvatar={<VolunteerAvatar item={{ user: { guid, display_name: displayName } }} />}
       title={<BoldText>{displayName}</BoldText>}
       subtitle={
-        <RegularText small>{moment.utc(createdAt).local().format('DD.MM.YYYY HH:mm')}</RegularText>
+        <RegularText small>
+          {momentFormat(
+            volunteerListDate({
+              end_datetime: '',
+              start_datetime: '',
+              updated_at: createdAt
+            }),
+            'DD.MM.YYYY HH:mm'
+          )}
+        </RegularText>
       }
       containerStyle={listItemStyles.avatarContainerStyle}
     />

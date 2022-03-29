@@ -1,9 +1,12 @@
+import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { colors } from '../../config';
+import { colors, consts, texts } from '../../config';
+import { QUERY_TYPES } from '../../queries';
 import { posts as postsQuery } from '../../queries/volunteer';
+import { ScreenName } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
 import { BoldText } from '../Text';
 import { Title, TitleContainer } from '../Title';
@@ -12,14 +15,18 @@ import { Wrapper } from '../Wrapper';
 
 import { VolunteerPostListItem } from './VolunteerPostListItem';
 
+const { ROOT_ROUTE_NAMES } = consts;
+
 export const VolunteerPosts = ({
   contentContainerId,
   isRefetching,
-  openWebScreen
+  openWebScreen,
+  navigation
 }: {
   contentContainerId: number;
   isRefetching: boolean;
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
+  navigation: StackScreenProps<any>['navigation'];
 }) => {
   const { data, isLoading, refetch } = useQuery(
     ['posts', contentContainerId],
@@ -47,7 +54,7 @@ export const VolunteerPosts = ({
   return (
     <>
       <TitleContainer>
-        <Title>Beiträge</Title>
+        <Title>{texts.volunteer.posts}</Title>
       </TitleContainer>
 
       {posts.map((post, index) => (
@@ -63,9 +70,21 @@ export const VolunteerPosts = ({
       ))}
 
       <Wrapper>
-        <Touchable onPress={undefined}>
+        <Touchable
+          onPress={() =>
+            navigation.navigate({
+              name: ScreenName.VolunteerIndex,
+              params: {
+                title: texts.volunteer.posts,
+                query: QUERY_TYPES.VOLUNTEER.POSTS,
+                queryVariables: contentContainerId,
+                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+              }
+            })
+          }
+        >
           <BoldText center primary underline>
-            Alle Beiträge anzeigen
+            {texts.volunteer.postsIndexLink}
           </BoldText>
         </Touchable>
       </Wrapper>
