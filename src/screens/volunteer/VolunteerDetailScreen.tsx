@@ -104,24 +104,27 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={isLoading}
-            onRefresh={() => !dummyData && refetch()}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
+      <DefaultKeyboardAvoidingView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoading}
+              onRefresh={() => !dummyData && refetch()}
+              colors={[colors.accent]}
+              tintColor={colors.accent}
+            />
+          }
+          keyboardShouldPersistTaps="handled"
+        >
+          <Component
+            data={componentData}
+            refetch={refetch}
+            isRefetching={isRefetching}
+            navigation={navigation}
+            route={route}
           />
-        }
-      >
-        <Component
-          data={componentData}
-          refetch={refetch}
-          isRefetching={isRefetching}
-          navigation={navigation}
-          route={route}
-        />
-      </ScrollView>
+        </ScrollView>
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };

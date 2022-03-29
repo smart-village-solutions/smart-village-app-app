@@ -13,6 +13,7 @@ import { Title, TitleContainer } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
+import { VolunteerPostTextField } from './VolunteerPostTextField';
 import { VolunteerPostListItem } from './VolunteerPostListItem';
 
 const { ROOT_ROUTE_NAMES } = consts;
@@ -21,12 +22,14 @@ export const VolunteerPosts = ({
   contentContainerId,
   isRefetching,
   openWebScreen,
-  navigation
+  navigation,
+  isGroupMember
 }: {
   contentContainerId: number;
   isRefetching: boolean;
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
   navigation: StackScreenProps<any>['navigation'];
+  isGroupMember: boolean;
 }) => {
   const { data, isLoading, refetch } = useQuery(
     ['posts', contentContainerId],
@@ -49,45 +52,51 @@ export const VolunteerPosts = ({
     );
   }
 
-  if (!posts?.length) return null;
-
   return (
     <>
-      <TitleContainer>
-        <Title>{texts.volunteer.posts}</Title>
-      </TitleContainer>
+      {(!!posts?.length || !!isGroupMember) && (
+        <TitleContainer>
+          <Title>
+            {texts.volunteer.posts} ({data?.results?.length})
+          </Title>
+        </TitleContainer>
+      )}
 
-      {posts.map((post, index) => (
-        <View key={`post-${post.id}`}>
-          <VolunteerPostListItem
-            post={post}
-            bottomDivider={
-              index < posts.length - 1 // do not show a bottomDivider after last entry
-            }
-            openWebScreen={openWebScreen}
-          />
-        </View>
-      ))}
+      {!!isGroupMember && (
+        <VolunteerPostTextField contentContainerId={contentContainerId} refetch={refetch} />
+      )}
 
-      <Wrapper>
-        <Touchable
-          onPress={() =>
-            navigation.navigate({
-              name: ScreenName.VolunteerIndex,
-              params: {
+      {!!posts?.length &&
+        posts.map((post: any, index: number) => (
+          <View key={`post-${post.id}`}>
+            <VolunteerPostListItem
+              post={post}
+              bottomDivider={
+                index < posts.length - 1 // do not show a bottomDivider after last entry
+              }
+              openWebScreen={openWebScreen}
+            />
+          </View>
+        ))}
+
+      {data?.results?.length > 3 && !!isGroupMember && (
+        <Wrapper>
+          <Touchable
+            onPress={() =>
+              navigation.push(ScreenName.VolunteerIndex, {
                 title: texts.volunteer.posts,
                 query: QUERY_TYPES.VOLUNTEER.POSTS,
                 queryVariables: contentContainerId,
                 rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-              }
-            })
-          }
-        >
-          <BoldText center primary underline>
-            {texts.volunteer.postsIndexLink}
-          </BoldText>
-        </Touchable>
-      </Wrapper>
+              })
+            }
+          >
+            <BoldText center primary underline>
+              {texts.volunteer.postsIndexLink}
+            </BoldText>
+          </Touchable>
+        </Wrapper>
+      )}
     </>
   );
 };

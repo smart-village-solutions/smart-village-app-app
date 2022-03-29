@@ -20,7 +20,7 @@ export const useVolunteerData = ({
   onlyUpcoming = true
 }: {
   query: VolunteerQuery;
-  queryVariables?: { dateRange?: string[] };
+  queryVariables?: { dateRange?: string[] } | number;
   isCalendar?: boolean;
   onlyUpcoming?: boolean;
 }): {

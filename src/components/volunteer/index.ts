@@ -14,5 +14,6 @@ export * from './VolunteerMessage';
 export * from './VolunteerMessageTextField';
 export * from './VolunteerPostListItem';
 export * from './VolunteerPosts';
+export * from './VolunteerPostTextField';
 export * from './VolunteerTask';
 export * from './VolunteerWelcome';

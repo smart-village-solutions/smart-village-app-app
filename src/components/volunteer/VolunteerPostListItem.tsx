@@ -10,16 +10,7 @@ import { BoldText, RegularText } from '../Text';
 import { VolunteerAvatar } from './VolunteerAvatar';
 
 export const VolunteerPostListItem = ({
-  post: {
-    id,
-    message,
-    content: {
-      metadata: {
-        created_by: { guid, display_name: displayName },
-        created_at: createdAt
-      }
-    }
-  },
+  post: { message, content },
   bottomDivider = true,
   openWebScreen
 }: {
@@ -32,42 +23,50 @@ export const VolunteerPostListItem = ({
   };
   bottomDivider: boolean;
   openWebScreen: (webUrl: string, specificTitle?: string | undefined) => void;
-}) => (
-  <View>
-    <ListItem
-      leftAvatar={<VolunteerAvatar item={{ user: { guid, display_name: displayName } }} />}
-      title={<BoldText>{displayName}</BoldText>}
-      subtitle={
-        <RegularText small>
-          {momentFormat(
-            volunteerListDate({
-              end_datetime: '',
-              start_datetime: '',
-              updated_at: createdAt
-            }),
-            'DD.MM.YYYY HH:mm'
-          )}
-        </RegularText>
-      }
-      containerStyle={listItemStyles.avatarContainerStyle}
-    />
-    <ListItem
-      title={
-        <Markdown
-          onLinkPress={(url) => {
-            openLink(url, openWebScreen);
-            return false;
-          }}
-          style={styles.markdown}
-        >
-          {message}
-        </Markdown>
-      }
-      bottomDivider={bottomDivider}
-      containerStyle={listItemStyles.contentContainerStyle}
-    />
-  </View>
-);
+}) => {
+  const { metadata } = content || {};
+  const {
+    created_by: { guid, display_name: displayName },
+    created_at: createdAt
+  } = metadata || { guid: '', display_name: '' };
+
+  return (
+    <View>
+      <ListItem
+        leftAvatar={<VolunteerAvatar item={{ user: { guid, display_name: displayName } }} />}
+        title={<BoldText>{displayName}</BoldText>}
+        subtitle={
+          <RegularText small>
+            {momentFormat(
+              volunteerListDate({
+                end_datetime: '',
+                start_datetime: '',
+                updated_at: createdAt
+              }),
+              'DD.MM.YYYY HH:mm'
+            )}
+          </RegularText>
+        }
+        containerStyle={listItemStyles.avatarContainerStyle}
+      />
+      <ListItem
+        title={
+          <Markdown
+            onLinkPress={(url) => {
+              openLink(url, openWebScreen);
+              return false;
+            }}
+            style={styles.markdown}
+          >
+            {message}
+          </Markdown>
+        }
+        bottomDivider={bottomDivider}
+        containerStyle={listItemStyles.contentContainerStyle}
+      />
+    </View>
+  );
+};
 
 const listItemStyles = StyleSheet.create({
   avatarContainerStyle: {

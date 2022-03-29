@@ -1,9 +1,16 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useState } from 'react';
-import { RefreshControl } from 'react-native';
+import { ActivityIndicator, RefreshControl } from 'react-native';
 
-import { DropdownHeader, ListComponent, SafeAreaViewFlex } from '../../components';
+import {
+  DefaultKeyboardAvoidingView,
+  DropdownHeader,
+  ListComponent,
+  LoadingContainer,
+  SafeAreaViewFlex,
+  VolunteerPostTextField
+} from '../../components';
 import { colors } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { additionalData, myProfile, myTasks } from '../../helpers/parser/volunteer';
@@ -21,7 +28,9 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const showFilter = false; // TODO: filter?
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
-  const { data, refetch } = useVolunteerData({ query, queryVariables, isCalendar });
+  const isPosts = query === QUERY_TYPES.VOLUNTEER.POSTS;
+
+  const { data, isLoading, refetch } = useVolunteerData({ query, queryVariables, isCalendar });
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
@@ -47,29 +56,44 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     skipLastDivider: true
   });
 
+  if (isLoading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
+
   if (!listItems) return null;
 
   return (
     <SafeAreaViewFlex>
-      <ListComponent
-        ListHeaderComponent={
-          showFilter ? <DropdownHeader {...{ query: query, queryVariables, data }} /> : null
-        }
-        navigation={navigation}
-        data={listItems}
-        sectionByDate={isCalendar}
-        query={query}
-        refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={refetch}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
-          />
-        }
-        showBackToTop
-        openWebScreen={openWebScreen}
-      />
+      <DefaultKeyboardAvoidingView>
+        <ListComponent
+          ListHeaderComponent={
+            <>
+              {showFilter && <DropdownHeader {...{ query: query, queryVariables, data }} />}
+              {isPosts && (
+                <VolunteerPostTextField contentContainerId={queryVariables} refetch={refetch} />
+              )}
+            </>
+          }
+          navigation={navigation}
+          data={listItems}
+          sectionByDate={isCalendar}
+          query={query}
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              onRefresh={refetch}
+              colors={[colors.accent]}
+              tintColor={colors.accent}
+            />
+          }
+          showBackToTop
+          openWebScreen={openWebScreen}
+        />
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };

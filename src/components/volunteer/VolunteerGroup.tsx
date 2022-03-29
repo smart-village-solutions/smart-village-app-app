@@ -131,6 +131,7 @@ export const VolunteerGroup = ({
           isRefetching={isRefetching}
           openWebScreen={openWebScreen}
           navigation={navigation}
+          isGroupMember={isGroupMember}
         />
 
         {!isGroupOwner && isGroupMember !== undefined && (

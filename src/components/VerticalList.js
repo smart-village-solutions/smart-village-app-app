@@ -75,6 +75,7 @@ export const VerticalList = ({
       onEndReachedThreshold={0.5}
       onEndReached={onEndReached}
       refreshControl={refreshControl}
+      keyboardShouldPersistTaps="handled"
     />
   );
 };
