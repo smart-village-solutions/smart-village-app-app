@@ -121,7 +121,7 @@ export const texts = {
       termsOfServiceLabel:
         'Ich stimme der Datenschutzbestimmungen und den Allgemeine Nutzungsbedingungen zu',
       newDebateStartButtonLabel: 'Eine Diskussion starten',
-			updateButtonLabel: 'Bearbeiten',
+      updateButtonLabel: 'Bearbeiten'
     },
     homeScreen: {
       account: 'Konto',

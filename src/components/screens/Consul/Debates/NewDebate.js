@@ -69,7 +69,8 @@ export const NewDebate = ({ navigation, data, query }) => {
             setStartLoading(false);
             navigation.navigate(ScreenName.ConsulDetailScreen, {
               query: QUERY_TYPES.CONSUL.DEBATE,
-              queryVariables: { id: val.data.startDebate.id }
+              queryVariables: { id: val.data.startDebate.id },
+              title: val.data.startDebate.title
             });
           })
           .catch((err) => {
@@ -117,7 +118,14 @@ export const NewDebate = ({ navigation, data, query }) => {
         checked={termsOfService}
         onPress={() => settermsOfService(!termsOfService)}
       />
-      <Button onPress={handleSubmit(onSubmit)} title={text.newDebateStartButtonLabel} />
+      <Button
+        onPress={handleSubmit(onSubmit)}
+        title={
+          query === queryTypes.START_DEBATE
+            ? text.newDebateStartButtonLabel
+            : text.updateButtonLabel
+        }
+      />
     </Wrapper>
   );
 };

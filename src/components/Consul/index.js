@@ -1,5 +1,4 @@
 export * from './ConsulWelcome';
-export * from './ConsulSortingButtons';
 export * from './ConsulStartNewButton';
 
 export * from './Form';
