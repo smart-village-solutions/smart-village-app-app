@@ -1,5 +1,4 @@
 export * from './LoginRegister';
-export * from './Proposals';
 export * from './Voting';
 export * from './UserSettings';
 

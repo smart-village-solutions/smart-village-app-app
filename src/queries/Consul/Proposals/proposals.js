@@ -1,32 +1,31 @@
 import gql from 'graphql-tag';
 
-export const GET_DEBATES = gql`
+export const GET_PROPOSALS = gql`
   query {
-    debates {
+    proposals {
       nodes {
         id
         title
         publicCreatedAt
         commentsCount
-        cachedVotesTotal
       }
     }
   }
 `;
 
-export const GET_DEBATE = gql`
-  query debate($id: ID!) {
-    debate(id: $id) {
+export const GET_PROPOSAL = gql`
+  query proposal($id: ID!) {
+    proposal(id: $id) {
       id
       title
       description
       cachedVotesUp
-      cachedVotesDown
-      cachedVotesTotal
+      summary
+      currentUserHasVoted
       publicCreatedAt
+      cachedVotesUp
       commentsCount
-      confidenceScore
-      hotScore
+      videoUrl
       publicAuthor {
         id
         username
@@ -35,17 +34,6 @@ export const GET_DEBATE = gql`
         nodes {
           id
           name
-          kind
-          taggingsCount
-        }
-      }
-      votesFor {
-        nodes {
-          id
-          publicCreatedAt
-          votableId
-          votableType
-          voteFlag
         }
       }
       comments {
@@ -53,13 +41,9 @@ export const GET_DEBATE = gql`
           id
           parentId
           body
-          ancestry
           cachedVotesUp
           cachedVotesDown
           cachedVotesTotal
-          commentableId
-          commentableType
-          confidenceScore
           publicCreatedAt
           publicAuthor {
             id

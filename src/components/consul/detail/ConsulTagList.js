@@ -11,7 +11,7 @@ import { ConsulTagListItem } from './ConsulTagListItem';
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
-export const ConsulTagList = ({ tags }) => {
+export const ConsulTagList = ({ tags, onPress }) => {
   return (
     <>
       <TitleContainer>
@@ -25,7 +25,9 @@ export const ConsulTagList = ({ tags }) => {
             showsHorizontalScrollIndicator={false}
             horizontal
             data={tags}
-            renderItem={(item, index) => <ConsulTagListItem item={item} index={index} />}
+            renderItem={(item, index) => (
+              <ConsulTagListItem onPress={onPress} item={item} index={index} />
+            )}
           />
         </WrapperRow>
       </Wrapper>
@@ -34,5 +36,6 @@ export const ConsulTagList = ({ tags }) => {
 };
 
 ConsulTagList.propTypes = {
-  tags: PropTypes.array.isRequired
+  tags: PropTypes.array.isRequired,
+  onPress: PropTypes.object
 };

@@ -35,12 +35,44 @@ const useDebate = ({ query, queryVariables }) => {
   };
 };
 
+const useProposals = ({ query, queryVariables }) => {
+  const { data, loading, error, refetch } = useQuery(getQuery(query), {
+    client: ConsulClient,
+    variables: queryVariables
+  });
+
+  return {
+    isLoading: loading,
+    isError: error,
+    data,
+    refetch
+  };
+};
+
+const useProposal = ({ query, queryVariables }) => {
+  const { data, loading, error, refetch } = useQuery(getQuery(query), {
+    client: ConsulClient,
+    variables: queryVariables
+  });
+
+  return {
+    isLoading: loading,
+    isError: error,
+    data,
+    refetch
+  };
+};
+
 export const useConsulData = ({ query, queryVariables }) => {
   switch (query) {
     case QUERIES.DEBATES:
       return useDebates({ query, queryVariables });
     case QUERIES.DEBATE:
       return useDebate({ query, queryVariables });
+    case QUERIES.PROPOSALS:
+      return useProposals({ query, queryVariables });
+    case QUERIES.PROPOSAL:
+      return useProposal({ query, queryVariables });
     default:
       null;
   }

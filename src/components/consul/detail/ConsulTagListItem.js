@@ -1,19 +1,19 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { RegularText } from '../../Text';
 import { colors } from '../../../config';
 
-export const ConsulTagListItem = ({ item }) => {
+export const ConsulTagListItem = ({ item, onPress }) => {
   const { name } = item.item;
   return (
-    <View style={styles.tagContainer}>
+    <TouchableOpacity style={styles.tagContainer} onPress={onPress}>
       {/* TODO: Touchable will be added to filter  */}
       <RegularText small style={styles.tagText}>
         {name}
       </RegularText>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -29,5 +29,6 @@ const styles = StyleSheet.create({
 });
 
 ConsulTagListItem.propTypes = {
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  onPress: PropTypes.object
 };

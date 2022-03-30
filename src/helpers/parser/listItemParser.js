@@ -199,18 +199,21 @@ const parsePointsOfInterestAndTours = (data) => {
 };
 
 const parseConsulData = (data, query, skipLastDivider) => {
-  return data?.nodes?.map((debate, index) => ({
-    id: debate.id,
-    title: debate.title,
-    createdAt: debate.publicCreatedAt,
-    totalVotes: debate.cachedVotesTotal,
-    // subtitle: debate.commentsCount ? debate.commentsCount + ' Comment' : '0 Comment',
-    subtitle: momentFormatUtcToLocal(debate.publicCreatedAt),
+  return data?.nodes?.map((data, index) => ({
+    id: data.id,
+    title: data.title,
+    createdAt: data.publicCreatedAt,
+    totalVotes: data.cachedVotesTotal,
+    // subtitle: data.commentsCount ? data.commentsCount + ' Comment' : '0 Comment',
+    subtitle: momentFormatUtcToLocal(data.publicCreatedAt),
     routeName: 'ConsulDetailScreen',
     params: {
-      title: debate.title,
-      query: QUERY_TYPES.CONSUL.DEBATE,
-      queryVariables: { id: debate.id },
+      title: data.title,
+      query:
+        query === QUERY_TYPES.CONSUL.DEBATES
+          ? QUERY_TYPES.CONSUL.DEBATE
+          : QUERY_TYPES.CONSUL.PROPOSAL,
+      queryVariables: { id: data.id },
       rootRouteName: ROOT_ROUTE_NAMES.CONSOLE_HOME
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1
@@ -246,6 +249,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
     case QUERY_TYPES.CONSUL.DEBATES:
+    case QUERY_TYPES.CONSUL.PROPOSALS:
       return parseConsulData(data[query], query, skipLastDivider);
   }
 };

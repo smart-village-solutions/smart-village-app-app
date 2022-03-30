@@ -3,7 +3,12 @@ import React from 'react';
 import { ScrollView } from 'react-native';
 
 import { QUERY_TYPES } from '../../queries';
-import { SafeAreaViewFlex, NewDebate, DefaultKeyboardAvoidingView } from '../../components';
+import {
+  SafeAreaViewFlex,
+  NewDebate,
+  DefaultKeyboardAvoidingView,
+  NewProposal
+} from '../../components';
 
 const queryType = QUERY_TYPES.CONSUL;
 
@@ -12,7 +17,9 @@ const getComponent = (query) => {
     case queryType.START_DEBATE:
     case queryType.UPDATE_DEBATE:
       return NewDebate;
-
+    case queryType.START_PROPOSAL:
+    case queryType.UPDATE_PROPOSAL:
+      return NewProposal;
     default:
       null;
   }
