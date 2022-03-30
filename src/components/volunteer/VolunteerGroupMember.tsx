@@ -1,15 +1,20 @@
+import { StackScreenProps } from '@react-navigation/stack';
 import _shuffle from 'lodash/shuffle';
 import React, { useCallback, useEffect } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { colors, normalize, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { isMember, volunteerUserData } from '../../helpers';
+import { QUERY_TYPES } from '../../queries';
 import { groupMembership } from '../../queries/volunteer';
+import { ScreenName } from '../../types';
 import { BoldText } from '../Text';
 import { Wrapper } from '../Wrapper';
 
 import { VolunteerAvatar } from './VolunteerAvatar';
+
+const { ROOT_ROUTE_NAMES } = consts;
 
 const keyExtractor = ({ guid }: { guid: string }) => guid;
 
@@ -17,11 +22,13 @@ const MAX_AVATARS_COUNT = 10;
 
 export const VolunteerGroupMember = ({
   groupId,
+  navigation,
   setIsGroupMember,
   isSuccessJoin,
   isSuccessLeave
 }: {
   groupId: number;
+  navigation: StackScreenProps<any>['navigation'];
   setIsGroupMember: (isMember: boolean) => void;
   isSuccessJoin: boolean;
   isSuccessLeave: boolean;
@@ -52,47 +59,35 @@ export const VolunteerGroupMember = ({
 
   return (
     <Wrapper>
-      <BoldText>{texts.volunteer.members}</BoldText>
-      <FlatList
-        keyExtractor={keyExtractor}
-        data={_shuffle(members.slice(0, MAX_AVATARS_COUNT + 1))}
-        renderItem={({ item, index }: any) => (
-          <VolunteerAvatar
-            {...{
-              item,
-              index,
-              totalCount: data.total,
-              MAX_AVATARS_COUNT
-            }}
-          />
-        )}
-        showsHorizontalScrollIndicator={false}
-        horizontal
-        bounces={false}
-      />
+      <TouchableOpacity
+        onPress={() =>
+          navigation.push(ScreenName.VolunteerIndex, {
+            title: texts.volunteer.members,
+            query: QUERY_TYPES.VOLUNTEER.MEMBERS,
+            queryVariables: groupId,
+            rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+          })
+        }
+      >
+        <BoldText>{texts.volunteer.members}</BoldText>
+        <FlatList
+          keyExtractor={keyExtractor}
+          data={_shuffle(members.slice(0, MAX_AVATARS_COUNT + 1))}
+          renderItem={({ item, index }: any) => (
+            <VolunteerAvatar
+              {...{
+                item,
+                index,
+                totalCount: data.total,
+                MAX_AVATARS_COUNT
+              }}
+            />
+          )}
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          bounces={false}
+        />
+      </TouchableOpacity>
     </Wrapper>
   );
 };
-
-const styles = StyleSheet.create({
-  border: {
-    borderColor: colors.darkText,
-    borderWidth: 1
-  },
-  containerStyle: {
-    padding: normalize(2)
-  },
-  marginLeft: {
-    marginLeft: normalize(-12)
-  },
-  overlayContainerStyle: {
-    backgroundColor: colors.lightestText
-  },
-  placeholderStyle: {
-    backgroundColor: colors.lightestText
-  },
-  titleStyle: {
-    color: colors.darkText,
-    fontSize: normalize(12)
-  }
-});

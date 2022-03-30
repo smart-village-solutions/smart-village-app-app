@@ -6,11 +6,11 @@ import { Controller, useForm } from 'react-hook-form';
 import { Alert, StyleSheet } from 'react-native';
 import { useMutation, useQuery } from 'react-query';
 
-import { consts, texts } from '../../config';
+import { texts } from '../../config';
 import { isAccount, volunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { conversationNew, users } from '../../queries/volunteer';
-import { ScreenName, VolunteerConversation } from '../../types';
+import { VolunteerConversation } from '../../types';
 import { Button } from '../Button';
 import { DropdownInput, DropdownInputProps } from '../form/DropdownInput';
 import { Input } from '../form/Input';
@@ -19,30 +19,21 @@ import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
-const { ROOT_ROUTE_NAMES } = consts;
-
-const NAVIGATION = {
-  CONVERSATIONS_INDEX: {
-    name: ScreenName.VolunteerIndex,
-    params: {
-      title: texts.volunteer.conversations,
-      query: QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
-      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-    }
-  }
-};
-
 // eslint-disable-next-line complexity
 export const VolunteerFormConversation = ({
   navigation,
-  scrollToTop
-}: StackScreenProps<any> & { scrollToTop: () => void }) => {
+  scrollToTop,
+  selectedUserId
+}: StackScreenProps<any> & { scrollToTop: () => void; selectedUserId?: number }) => {
   const {
     control,
     formState: { errors, isValid },
     handleSubmit
   } = useForm<VolunteerConversation>({
-    mode: 'onBlur'
+    mode: 'onBlur',
+    defaultValues: {
+      id: selectedUserId || 0
+    }
   });
   const { data: dataUsers, isLoading: isLoadingUsers } = useQuery(
     QUERY_TYPES.VOLUNTEER.USERS,

@@ -73,6 +73,7 @@ export const texts = {
       conversation: 'Unterhaltung',
       eventRecord: 'Veranstaltung',
       group: 'Gruppenprofil',
+      member: 'Mitglied',
       task: 'Aufgabe'
     },
     tour: 'Tour'
@@ -583,6 +584,7 @@ export const texts = {
     calendar: 'Kalender',
     calendarMy: 'Mein Kalender',
     conversations: 'Mein Postfach',
+    conversationStart: 'Unterhaltung beginnen',
     description: 'Beschreibung',
     edit: 'Daten bearbeiten',
     email: 'E-Mail',

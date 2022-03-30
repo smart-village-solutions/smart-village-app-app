@@ -84,6 +84,10 @@ export const useVolunteerData = ({
       processedVolunteerData = _orderBy(processedVolunteerData, 'updated_at', 'desc');
     }
 
+    if (query === QUERY_TYPES.VOLUNTEER.MEMBERS) {
+      processedVolunteerData = _orderBy(processedVolunteerData, 'user.display_name', 'asc');
+    }
+
     setVolunteerData(processedVolunteerData);
     setIsProcessing(false);
   }, [query, queryVariables, onlyUpcoming, data, refetch]);
