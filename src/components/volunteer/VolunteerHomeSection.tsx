@@ -131,6 +131,7 @@ export const VolunteerHomeSection = ({
 
   return (
     <DataListSection
+      loading={isLoading}
       buttonTitle={buttonTitle}
       linkTitle={linkTitle}
       limit={limit}
@@ -142,7 +143,7 @@ export const VolunteerHomeSection = ({
       sectionTitle={sectionTitle}
       sectionTitleDetail={sectionTitleDetail}
       showButton={showButton}
-      showLink={showLink}
+      showLink={showLink && !!sectionData?.length}
       navigateButton={navigateButton}
       navigateLink={navigateLink}
     />

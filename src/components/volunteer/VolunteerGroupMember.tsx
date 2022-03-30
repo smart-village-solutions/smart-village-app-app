@@ -30,7 +30,10 @@ export const VolunteerGroupMember = ({
   const members = data?.results;
 
   const checkIfJoined = useCallback(async () => {
-    if (!members?.length) return;
+    if (!members?.length) {
+      setIsGroupMember(false);
+      return;
+    }
 
     const { currentUserId } = await volunteerUserData();
 

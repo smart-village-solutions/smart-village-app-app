@@ -223,13 +223,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate) => {
           query
         )
       },
-      details: {
-        description: volunteer.description,
-        guid: volunteer.guid,
-        id: volunteer.id,
-        title: volunteer.title,
-        name: volunteer.name
-      }
+      details: volunteer
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1
   }));

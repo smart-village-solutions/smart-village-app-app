@@ -41,8 +41,14 @@ export const VolunteerPosts = ({
   const posts = data?.results?.slice(0, 3);
 
   useEffect(() => {
+    // refetch posts when pull to refresh from parent component
     isRefetching && refetch?.();
   }, [isRefetching]);
+
+  useEffect(() => {
+    // refetch posts when group membership changes
+    refetch?.();
+  }, [isGroupMember]);
 
   if (isLoading) {
     return <LoadingSpinner loading />;
@@ -60,7 +66,7 @@ export const VolunteerPosts = ({
               rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
             })
           }
-          title={texts.volunteer.posts + (!!data?.results?.length && ` (${data.results.length})`)}
+          title={texts.volunteer.posts + (data?.results?.length ? ` (${data.results.length})` : '')}
         />
       )}
 
