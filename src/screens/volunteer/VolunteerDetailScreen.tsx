@@ -13,7 +13,8 @@ import {
   VolunteerGroup,
   VolunteerMessage,
   VolunteerMessageTextField,
-  VolunteerTask
+  VolunteerTask,
+  VolunteerUser
 } from '../../components';
 import { colors } from '../../config';
 import { additionalData, myTasks } from '../../helpers/parser/volunteer';
@@ -32,6 +33,8 @@ const getComponent = (query: VolunteerQuery): any => {
       return VolunteerTask;
     case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
       return PointOfInterest;
+    case QUERY_TYPES.VOLUNTEER.USER:
+      return VolunteerUser;
   }
 };
 

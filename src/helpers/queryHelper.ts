@@ -37,6 +37,8 @@ export const getTitleForQuery = (query: string, volunteer?: any) => {
       return texts.detailTitles.volunteer.additional;
     case QUERY_TYPES.VOLUNTEER.PROFILE:
       return volunteer?.title;
+    case QUERY_TYPES.VOLUNTEER.USER:
+      return texts.detailTitles.volunteer.member;
     default:
       return query;
   }

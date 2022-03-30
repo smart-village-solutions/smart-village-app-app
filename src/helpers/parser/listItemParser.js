@@ -203,7 +203,7 @@ const parsePointsOfInterestAndTours = (data) => {
 const parseVolunteers = (data, query, skipLastDivider, withDate) => {
   return data?.map((volunteer, index) => ({
     id: volunteer.id,
-    title: volunteer.title || volunteer.name,
+    title: volunteer.title || volunteer.name || volunteer.user?.display_name,
     subtitle: volunteerSubtitle(volunteer, query, withDate),
     picture: volunteer.picture,
     routeName: ScreenName.VolunteerDetail,
@@ -212,7 +212,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate) => {
     params: {
       title: getTitleForQuery(query, volunteer),
       query,
-      queryVariables: { id: `${volunteer.id}` },
+      queryVariables: { id: volunteer.user?.id ? `${volunteer.user.id}` : `${volunteer.id}` },
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
       shareContent: query !== QUERY_TYPES.VOLUNTEER.CONVERSATION && {
         message: shareMessage(
@@ -266,6 +266,8 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.GROUP, skipLastDivider);
     case QUERY_TYPES.VOLUNTEER.CONVERSATIONS:
       return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.CONVERSATION, skipLastDivider, withDate);
+    case QUERY_TYPES.VOLUNTEER.MEMBERS:
+      return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.USER, skipLastDivider);
     case QUERY_TYPES.VOLUNTEER.TASKS:
     case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
     case QUERY_TYPES.VOLUNTEER.PROFILE:

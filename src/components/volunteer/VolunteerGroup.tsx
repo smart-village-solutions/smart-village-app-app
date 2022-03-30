@@ -103,6 +103,7 @@ export const VolunteerGroup = ({
 
         <VolunteerGroupMember
           groupId={id}
+          navigation={navigation}
           setIsGroupMember={setIsGroupMember}
           isSuccessJoin={isSuccessJoin}
           isSuccessLeave={isSuccessLeave}

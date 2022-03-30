@@ -4,35 +4,20 @@ import { ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 
 import {
-  Button,
   LoadingSpinner,
   RegularText,
   SafeAreaViewFlex,
-  Title,
-  TitleContainer,
-  Wrapper,
-  WrapperWithOrientation
+  VolunteerUser,
+  Wrapper
 } from '../../components';
-import { AddressSection } from '../../components/infoCard/AddressSection';
-import { ContactSection } from '../../components/infoCard/ContactSection';
-import { UrlSection } from '../../components/infoCard/UrlSection';
-import { consts, texts } from '../../config';
+import { texts } from '../../config';
 import { storeVolunteerUserData } from '../../helpers';
-import { useLogoutHeader, useOpenWebScreen, usePullToRefetch } from '../../hooks';
+import { useLogoutHeader, usePullToRefetch } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { me } from '../../queries/volunteer';
 
-const { a11yLabel } = consts;
-
 export const VolunteerMeScreen = ({ navigation, route }: StackScreenProps<any>) => {
   useLogoutHeader({ query: QUERY_TYPES.VOLUNTEER.PROFILE, navigation });
-
-  // action to open source urls
-  const openWebScreen = useOpenWebScreen(
-    'Persönliche Daten',
-    undefined,
-    route.params?.rootRouteName
-  );
 
   const { isLoading, isError, isSuccess, data, refetch } = useQuery(QUERY_TYPES.VOLUNTEER.ME, me);
 
@@ -59,61 +44,10 @@ export const VolunteerMeScreen = ({ navigation, route }: StackScreenProps<any>) 
     );
   }
 
-  const myName = data?.display_name;
-  const username = data?.account?.username;
-  const contact = {
-    lastName: username,
-    phone: data?.profile?.phone_private,
-    email: data?.account?.email,
-    fax: data?.profile?.fax
-  };
-  const address = {
-    city: data?.profile?.city,
-    street: data?.profile?.street,
-    zip: data?.profile?.zip
-  };
-  const webUrls = [
-    { url: data?.profile?.url },
-    { url: data?.profile?.url_linkedin },
-    { url: data?.profile?.url_xing },
-    { url: data?.profile?.url_facebook },
-    { url: data?.profile?.url_twitter },
-    { url: data?.profile?.url_youtube }
-  ];
-
   return (
     <SafeAreaViewFlex>
       <ScrollView refreshControl={RefreshControl}>
-        <WrapperWithOrientation>
-          <TitleContainer>
-            <Title big center accessibilityLabel={`${myName} ${a11yLabel.heading}`}>
-              {myName}
-            </Title>
-          </TitleContainer>
-
-          <Wrapper>
-            <ContactSection contact={contact} />
-
-            <AddressSection address={address} openWebScreen={openWebScreen} />
-
-            <UrlSection openWebScreen={openWebScreen} webUrls={webUrls} />
-          </Wrapper>
-
-          {/* <TitleContainer>
-            <Title
-              center
-              accessibilityLabel={`${texts.volunteer.memberships} ${a11yLabel.heading}`}
-            >
-              {texts.volunteer.memberships}
-            </Title>
-          </TitleContainer>
-          <Wrapper>
-            <RegularText>...</RegularText>
-          </Wrapper>
-          <Wrapper>
-            <Button onPress={() => undefined} title={texts.volunteer.edit} disabled={isLoading} />
-          </Wrapper> */}
-        </WrapperWithOrientation>
+        <VolunteerUser data={data} navigation={navigation} route={route} />
       </ScrollView>
     </SafeAreaViewFlex>
   );

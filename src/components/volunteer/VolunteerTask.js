@@ -20,65 +20,63 @@ export const VolunteerTask = ({ data, route }) => {
 
   const a11yText = consts.a11yLabel;
   return (
-    <View>
-      <WrapperWithOrientation>
-        {!!title && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-          </View>
-        )}
+    <WrapperWithOrientation>
+      {!!title && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+        </View>
+      )}
 
-        {!!assigned_users?.length && !!assigned_users?.[0]?.display_name && (
+      {!!assigned_users?.length && !!assigned_users?.[0]?.display_name && (
+        <Wrapper>
+          <RegularText>Zugewiesen: {assigned_users?.[0]?.display_name}</RegularText>
+        </Wrapper>
+      )}
+
+      {!!description && (
+        <View>
+          <TitleContainer>
+            <Title
+              accessibilityLabel={`(${texts.pointOfInterest.description}) ${a11yText.heading}`}
+            >
+              {texts.pointOfInterest.description}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
           <Wrapper>
-            <RegularText>Zugewiesen: {assigned_users?.[0]?.display_name}</RegularText>
+            <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
-        )}
+        </View>
+      )}
 
-        {!!description && (
-          <View>
-            <TitleContainer>
-              <Title
-                accessibilityLabel={`(${texts.pointOfInterest.description}) ${a11yText.heading}`}
-              >
-                {texts.pointOfInterest.description}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>
-              <HtmlView html={description} openWebScreen={openWebScreen} />
-            </Wrapper>
-          </View>
-        )}
+      {!!checklistOptions?.length && (
+        <Wrapper>
+          {checklistOptions.map((entry) => {
+            return (
+              <OptionToggle
+                key={entry.id}
+                label={entry.title}
+                onToggle={() =>
+                  setChecklistOptions((checklistOptions) =>
+                    checklistOptions.map((option) => {
+                      if (option.id === entry.id) {
+                        option.completed = !option.completed;
+                      }
 
-        {!!checklistOptions?.length && (
-          <Wrapper>
-            {checklistOptions.map((entry) => {
-              return (
-                <OptionToggle
-                  key={entry.id}
-                  label={entry.title}
-                  onToggle={() =>
-                    setChecklistOptions((checklistOptions) =>
-                      checklistOptions.map((option) => {
-                        if (option.id === entry.id) {
-                          option.completed = !option.completed;
-                        }
-
-                        return option;
-                      })
-                    )
-                  }
-                  value={entry.completed}
-                />
-              );
-            })}
-          </Wrapper>
-        )}
-      </WrapperWithOrientation>
-    </View>
+                      return option;
+                    })
+                  )
+                }
+                value={entry.completed}
+              />
+            );
+          })}
+        </Wrapper>
+      )}
+    </WrapperWithOrientation>
   );
 };
 

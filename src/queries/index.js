@@ -25,9 +25,11 @@ import {
   conversation,
   conversations,
   group,
+  groupMembership,
   groups,
   me,
-  posts
+  posts,
+  user
 } from './volunteer';
 import { WASTE_ADDRESSES, WASTE_STREET } from './waste';
 import { GET_WEATHER, GET_WEATHER_CURRENT } from './weather';
@@ -73,8 +75,10 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.VOLUNTEER.GROUP]: group,
     [QUERY_TYPES.VOLUNTEER.GROUPS]: groups,
     [QUERY_TYPES.VOLUNTEER.GROUPS_MY]: groups,
+    [QUERY_TYPES.VOLUNTEER.MEMBERS]: groupMembership,
     [QUERY_TYPES.VOLUNTEER.POSTS]: posts,
-    [QUERY_TYPES.VOLUNTEER.PROFILE]: me
+    [QUERY_TYPES.VOLUNTEER.PROFILE]: me,
+    [QUERY_TYPES.VOLUNTEER.USER]: user
   };
 
   return QUERIES[query];
