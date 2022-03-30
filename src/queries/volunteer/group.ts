@@ -1,5 +1,5 @@
 import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
-import { JOIN_POLICY_TYPES, VolunteerGroup } from '../../types';
+import { JOIN_POLICY_TYPES, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
 
 export const groups = async () => {
   const authToken = await volunteerAuthToken();
@@ -34,7 +34,7 @@ export const group = async (id: number) => {
 export const groupNew = async ({
   name,
   description,
-  visibility = 1,
+  visibility = VISIBILITY_TYPES.ALL,
   joinPolicy = JOIN_POLICY_TYPES.OPEN
 }: VolunteerGroup) => {
   const authToken = await volunteerAuthToken();
@@ -42,7 +42,7 @@ export const groupNew = async ({
   const formData = {
     name,
     description,
-    visibility: visibility ? 1 : 0,
+    visibility: visibility ? VISIBILITY_TYPES.ALL : VISIBILITY_TYPES.REGISTERED_ONLY,
     join_policy: joinPolicy ? JOIN_POLICY_TYPES.OPEN : JOIN_POLICY_TYPES.INVITE_AND_REQUEST
   };
 
@@ -72,7 +72,7 @@ export const groupEdit = async ({
   const formData = {
     name,
     description,
-    visibility: visibility ? 1 : 0,
+    visibility: visibility ? VISIBILITY_TYPES.ALL : VISIBILITY_TYPES.REGISTERED_ONLY,
     join_policy: joinPolicy ? JOIN_POLICY_TYPES.OPEN : JOIN_POLICY_TYPES.INVITE_AND_REQUEST,
     tags
   };

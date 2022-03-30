@@ -8,7 +8,7 @@ import { useMutation } from 'react-query';
 
 import { colors, texts } from '../../config';
 import { groupEdit, groupNew } from '../../queries/volunteer';
-import { JOIN_POLICY_TYPES, VolunteerGroup } from '../../types';
+import { JOIN_POLICY_TYPES, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form/Input';
 import { BoldText } from '../Text';
@@ -26,7 +26,7 @@ export const VolunteerFormGroup = ({
   } = useForm<VolunteerGroup>({
     mode: 'onBlur',
     defaultValues: {
-      visibility: 1,
+      visibility: VISIBILITY_TYPES.ALL,
       joinPolicy: JOIN_POLICY_TYPES.OPEN
     }
   });
