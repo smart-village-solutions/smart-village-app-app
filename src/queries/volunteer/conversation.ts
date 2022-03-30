@@ -46,11 +46,16 @@ export const conversationRecipients = async (id: number) => {
   return (await fetch(`${volunteerApiUrl}mail/${id}/users`, fetchObj)).json();
 };
 
-export const conversationNew = async ({ id: guid, title, message }: VolunteerConversation) => {
+export const conversationNew = async ({
+  displayName,
+  id: guid,
+  title,
+  message
+}: VolunteerConversation) => {
   const authToken = await volunteerAuthToken();
 
   const formData = {
-    title,
+    title: displayName ? `${displayName}: ${title}` : title,
     message,
     recipient: [guid]
   };

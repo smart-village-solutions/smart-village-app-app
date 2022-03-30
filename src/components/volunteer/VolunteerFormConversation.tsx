@@ -14,7 +14,8 @@ import { ScreenName, VolunteerConversation } from '../../types';
 import { Button } from '../Button';
 import { DropdownInput, DropdownInputProps } from '../form/DropdownInput';
 import { Input } from '../form/Input';
-import { BoldText } from '../Text';
+import { LoadingSpinner } from '../LoadingSpinner';
+import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
@@ -31,6 +32,7 @@ const NAVIGATION = {
   }
 };
 
+// eslint-disable-next-line complexity
 export const VolunteerFormConversation = ({
   navigation,
   scrollToTop
@@ -42,10 +44,16 @@ export const VolunteerFormConversation = ({
   } = useForm<VolunteerConversation>({
     mode: 'onBlur'
   });
-  const { data: dataUsers } = useQuery(QUERY_TYPES.VOLUNTEER.USERS, users);
+  const { data: dataUsers, isLoading: isLoadingUsers } = useQuery(
+    QUERY_TYPES.VOLUNTEER.USERS,
+    users
+  );
   const [userDropdownData, setUserDropdownData] = useState<DropdownInputProps['data'] | []>([]);
+  const [isProcessingUserDropdownData, setIsProcessingUserDropdownData] = useState(true);
+  const [selectedUserDisplayName, setSelectedUserDisplayName] = useState<string | undefined>();
 
   const filterUserDropDownData = useCallback(async () => {
+    setIsProcessingUserDropdownData(true);
     if (dataUsers?.results?.length) {
       const { currentUserId } = await volunteerUserData();
       // show only others users, which are set to visible
@@ -60,6 +68,7 @@ export const VolunteerFormConversation = ({
 
       filteredUserDropDownData?.length && setUserDropdownData(filteredUserDropDownData);
     }
+    setIsProcessingUserDropdownData(false);
   }, [dataUsers?.results]);
 
   useEffect(() => {
@@ -70,15 +79,23 @@ export const VolunteerFormConversation = ({
 
   const { mutate, isLoading, isError, isSuccess, data, reset } = useMutation(conversationNew);
   const onSubmit = (conversationNewData: VolunteerConversation) => {
-    mutate(conversationNewData);
+    mutate({ ...conversationNewData, displayName: selectedUserDisplayName });
   };
 
   if (!isValid) {
     scrollToTop();
   }
 
+  if (isLoadingUsers || isProcessingUserDropdownData) {
+    return <LoadingSpinner loading />;
+  }
+
   if (!userDropdownData.length) {
-    return null;
+    return (
+      <Wrapper>
+        <RegularText>{texts.volunteer.noUsers}</RegularText>
+      </Wrapper>
+    );
   }
 
   if (isError || (!isLoading && data && !data.id)) {
@@ -98,22 +115,28 @@ export const VolunteerFormConversation = ({
       <Wrapper>
         <Controller
           name="id"
-          render={({ name, onChange, value }) => (
-            <DropdownInput
-              {...{
-                errors,
-                required: true,
-                data: userDropdownData,
-                value,
-                valueKey: 'guid',
-                onChange,
-                name,
-                label: texts.volunteer.recipient,
-                placeholder: texts.volunteer.recipient,
-                control
-              }}
-            />
-          )}
+          render={({ name, onChange, value }) => {
+            setSelectedUserDisplayName(
+              userDropdownData.find((item) => item.guid === value)?.display_name
+            );
+
+            return (
+              <DropdownInput
+                {...{
+                  errors,
+                  required: true,
+                  data: userDropdownData,
+                  value,
+                  valueKey: 'guid',
+                  onChange,
+                  name,
+                  label: texts.volunteer.recipient,
+                  placeholder: texts.volunteer.recipient,
+                  control
+                }}
+              />
+            );
+          }}
           control={control}
         />
       </Wrapper>

@@ -1,13 +1,13 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { View } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { colors, consts, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { posts as postsQuery } from '../../queries/volunteer';
 import { ScreenName } from '../../types';
-import { LoadingContainer } from '../LoadingContainer';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
 import { BoldText } from '../Text';
 import { Touchable } from '../Touchable';
@@ -45,11 +45,7 @@ export const VolunteerPosts = ({
   }, [isRefetching]);
 
   if (isLoading) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
-      </LoadingContainer>
-    );
+    return <LoadingSpinner loading />;
   }
 
   return (

@@ -17,10 +17,12 @@ import { Button } from '../Button';
 import { DateTimeInput } from '../form/DateTimeInput';
 import { DropdownInput, DropdownInputProps } from '../form/DropdownInput';
 import { Input } from '../form/Input';
-import { BoldText } from '../Text';
+import { LoadingSpinner } from '../LoadingSpinner';
+import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
+// eslint-disable-next-line complexity
 export const VolunteerFormCalendar = ({
   navigation,
   scrollToTop
@@ -35,10 +37,15 @@ export const VolunteerFormCalendar = ({
       isPublic: 1
     }
   });
-  const { data: dataGroups } = useQuery(QUERY_TYPES.VOLUNTEER.GROUPS, groups);
+  const { data: dataGroups, isLoading: isLoadingGroups } = useQuery(
+    QUERY_TYPES.VOLUNTEER.GROUPS,
+    groups
+  );
   const [groupDropdownData, setGroupDropdownData] = useState<DropdownInputProps['data'] | []>([]);
+  const [isProcessingGroupDropdownData, setIsProcessingGroupDropdownData] = useState(true);
 
   const filterGroupDropDownData = useCallback(async () => {
+    setIsProcessingGroupDropdownData(true);
     if (dataGroups?.results?.length) {
       const { currentUserId } = await volunteerUserData();
       // show only groups, where the user is owner, because otherwise edits are not allowed
@@ -48,6 +55,7 @@ export const VolunteerFormCalendar = ({
 
       filteredGroupDropDownData?.length && setGroupDropdownData(filteredGroupDropDownData);
     }
+    setIsProcessingGroupDropdownData(false);
   }, [dataGroups?.results]);
 
   useEffect(() => {
@@ -85,8 +93,16 @@ export const VolunteerFormCalendar = ({
     scrollToTop();
   }
 
+  if (isLoadingGroups || isProcessingGroupDropdownData) {
+    return <LoadingSpinner loading />;
+  }
+
   if (!groupDropdownData.length) {
-    return null;
+    return (
+      <Wrapper>
+        <RegularText>{texts.volunteer.noGroups}</RegularText>
+      </Wrapper>
+    );
   }
 
   if (isError || (!isLoading && data && !data.id)) {

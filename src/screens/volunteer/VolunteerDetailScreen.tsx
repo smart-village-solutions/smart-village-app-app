@@ -1,12 +1,12 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 
 import {
   DefaultKeyboardAvoidingView,
-  LoadingContainer,
+  LoadingSpinner,
   PointOfInterest,
   SafeAreaViewFlex,
   VolunteerEventRecord,
@@ -56,11 +56,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
   );
 
   if (isLoading) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
-      </LoadingContainer>
-    );
+    return <LoadingSpinner loading />;
   }
 
   // there could be no access to detailed, so we want to show the data we have already fetched

@@ -10,7 +10,14 @@ export type DropdownInputProps = {
   errors: any;
   required?: boolean;
   data: [
-    { id: number; name: string; selected?: boolean; contentcontainer_id?: number; guid?: string }
+    {
+      id: number;
+      name: string;
+      selected?: boolean;
+      contentcontainer_id?: number;
+      guid?: string;
+      display_name?: string;
+    }
   ];
   value: number;
   valueKey: string;

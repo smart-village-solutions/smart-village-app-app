@@ -1,5 +1,5 @@
 export type VolunteerConversation = {
-  guid: string;
+  displayName?: string;
   id: number;
   message: string;
   title: string;

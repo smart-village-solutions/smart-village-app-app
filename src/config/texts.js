@@ -607,6 +607,8 @@ export const texts = {
     message: 'Nachricht',
     name: 'Name',
     next: 'Weiter',
+    noGroups: 'Dir gehören keine Gruppen, in denen du Termine eintragen könntest.',
+    noUsers: 'Es gibt keine Personen, denen du schreiben könntest.',
     notAttend: 'Nicht teilnehmen',
     ok: 'OK',
     password: 'Passwort',

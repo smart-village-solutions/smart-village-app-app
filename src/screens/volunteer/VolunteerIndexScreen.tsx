@@ -1,13 +1,13 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useState } from 'react';
-import { ActivityIndicator, RefreshControl } from 'react-native';
+import { RefreshControl } from 'react-native';
 
 import {
   DefaultKeyboardAvoidingView,
   DropdownHeader,
   ListComponent,
-  LoadingContainer,
+  LoadingSpinner,
   SafeAreaViewFlex,
   VolunteerPostTextField
 } from '../../components';
@@ -57,11 +57,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   });
 
   if (isLoading) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
-      </LoadingContainer>
-    );
+    return <LoadingSpinner loading />;
   }
 
   if (!listItems) return null;
