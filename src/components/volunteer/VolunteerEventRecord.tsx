@@ -24,6 +24,7 @@ const a11yText = consts.a11yLabel;
 export const VolunteerEventRecord = ({
   data,
   refetch,
+  navigation,
   route
 }: { data: any; refetch: () => void } & StackScreenProps<any>) => {
   const {
@@ -97,7 +98,9 @@ export const VolunteerEventRecord = ({
         )}
         {device.platform === 'ios' && <TitleShadow />}
 
-        {!!attending?.length && <VolunteerEventAttending data={attending} />}
+        {!!attending?.length && (
+          <VolunteerEventAttending calendarEntryId={id} data={attending} navigation={navigation} />
+        )}
 
         {!!appointments?.length && (
           <View>

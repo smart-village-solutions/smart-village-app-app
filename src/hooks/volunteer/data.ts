@@ -88,6 +88,10 @@ export const useVolunteerData = ({
       processedVolunteerData = _orderBy(processedVolunteerData, 'user.display_name', 'asc');
     }
 
+    if (query === QUERY_TYPES.VOLUNTEER.CALENDAR) {
+      processedVolunteerData = _orderBy(data?.participants?.attending, 'display_name', 'asc');
+    }
+
     setVolunteerData(processedVolunteerData);
     setIsProcessing(false);
   }, [query, queryVariables, onlyUpcoming, data, refetch]);
