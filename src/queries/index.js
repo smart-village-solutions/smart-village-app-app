@@ -26,6 +26,7 @@ import {
   conversations,
   group,
   groups,
+  me,
   posts
 } from './volunteer';
 import { WASTE_ADDRESSES, WASTE_STREET } from './waste';
@@ -72,7 +73,8 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.VOLUNTEER.GROUP]: group,
     [QUERY_TYPES.VOLUNTEER.GROUPS]: groups,
     [QUERY_TYPES.VOLUNTEER.GROUPS_MY]: groups,
-    [QUERY_TYPES.VOLUNTEER.POSTS]: posts
+    [QUERY_TYPES.VOLUNTEER.POSTS]: posts,
+    [QUERY_TYPES.VOLUNTEER.PROFILE]: me
   };
 
   return QUERIES[query];

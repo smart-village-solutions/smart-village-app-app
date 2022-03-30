@@ -588,7 +588,7 @@ export const texts = {
     email: 'E-Mail',
     endDate: 'Enddatum',
     endTime: 'Endzeit',
-    errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
+    errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten. Bitte erneut einloggen.',
     eventRecord: {
       appointments: 'Terminübersicht'
     },

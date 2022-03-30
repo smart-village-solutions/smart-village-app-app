@@ -51,19 +51,24 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
   });
   const onSubmit = (loginData: VolunteerLogin) => mutateLogIn(loginData);
 
-  if (isError || isErrorMe || (isSuccess && data?.code && data?.code !== 200)) {
+  if (
+    isError ||
+    isErrorMe ||
+    (isSuccess && data?.code && data?.code !== 200) ||
+    (isSuccessMe && dataMe?.status && dataMe?.status !== 200)
+  ) {
     showInvalidLoginAlert();
     reset();
   }
 
-  if (isSuccess && isSuccessMe) {
+  if (isSuccess && data?.auth_token) {
     // save auth token to global state if there are no errors
     storeVolunteerAuthToken(data.auth_token);
+  }
 
-    if (dataMe?.account) {
-      // save user data to global state if there are no errors
-      storeVolunteerUserData(dataMe.account);
-    }
+  if (isSuccessMe && dataMe?.account?.id) {
+    // save user data to global state if there are no errors
+    storeVolunteerUserData(dataMe.account);
 
     // refreshUser param causes the home screen to update and no longer show the welcome component
     navigation.navigate(ScreenName.VolunteerHome, { refreshUser: new Date().valueOf() });
