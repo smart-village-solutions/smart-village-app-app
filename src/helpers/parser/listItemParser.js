@@ -203,7 +203,8 @@ const parsePointsOfInterestAndTours = (data) => {
 const parseVolunteers = (data, query, skipLastDivider, withDate) => {
   return data?.map((volunteer, index) => ({
     id: volunteer.id,
-    title: volunteer.title || volunteer.name || volunteer.user?.display_name,
+    title:
+      volunteer.title || volunteer.name || volunteer.display_name || volunteer.user?.display_name,
     subtitle: volunteerSubtitle(volunteer, query, withDate),
     picture: volunteer.picture,
     routeName: ScreenName.VolunteerDetail,
@@ -267,6 +268,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.VOLUNTEER.CONVERSATIONS:
       return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.CONVERSATION, skipLastDivider, withDate);
     case QUERY_TYPES.VOLUNTEER.MEMBERS:
+    case QUERY_TYPES.VOLUNTEER.CALENDAR:
       return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.USER, skipLastDivider);
     case QUERY_TYPES.VOLUNTEER.TASKS:
     case QUERY_TYPES.VOLUNTEER.ADDITIONAL:

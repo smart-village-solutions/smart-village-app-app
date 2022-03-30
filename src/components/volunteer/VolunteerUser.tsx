@@ -65,7 +65,7 @@ export const VolunteerUser = ({
   const openWebScreen = useOpenWebScreen(
     route.name === QUERY_TYPES.VOLUNTEER.PROFILE
       ? texts.screenTitles.volunteer.me
-      : texts.detailTitles.volunteer.member,
+      : texts.detailTitles.volunteer.user,
     undefined,
     route.params?.rootRouteName
   );

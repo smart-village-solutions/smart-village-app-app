@@ -580,7 +580,6 @@ export const texts = {
   volunteer: {
     abort: 'Abbrechen',
     attend: 'Teilnehmen',
-    attending: 'Nehmen teil',
     calendar: 'Kalender',
     calendarMy: 'Mein Kalender',
     conversations: 'Mein Postfach',
@@ -613,6 +612,7 @@ export const texts = {
     noUsers: 'Es gibt keine Personen, denen du schreiben könntest.',
     notAttend: 'Nicht teilnehmen',
     ok: 'OK',
+    participants: 'Teilnehmer',
     password: 'Passwort',
     passwordConfirmation: 'Passwort bestätigen',
     passwordForgotten: 'Passwort vergessen',
