@@ -49,13 +49,14 @@ export const HomeSection = ({
       limit={queryVariables?.limit}
       loading={loading}
       navigate={navigate}
+      navigateButton={navigate}
       navigation={navigation}
       placeholder={placeholder}
       query={query}
       sectionData={data}
       sectionTitle={title}
       sectionTitleDetail={titleDetail}
-      showButton
+      showButton={!!data?.[query]?.length}
     />
   );
 };
