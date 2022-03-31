@@ -1,5 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import * as Location from 'expo-location';
+import { LocationAccuracy } from 'expo-location';
+import { Platform } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
 import { storageHelper } from '../helpers';
@@ -25,7 +27,12 @@ const requestAndFetchPosition: RequestPermissionAndFetchFunction = async (
     try {
       let done = false;
       location = await Promise.race<Location.LocationObject | undefined>([
-        Location.getCurrentPositionAsync({}),
+        Location.getCurrentPositionAsync({
+          accuracy: Platform.select({
+            ios: LocationAccuracy.Balanced, // Balanced accuracy should result in ~100m accuracy
+            default: undefined
+          })
+        }),
         new Promise<void>((resolve) => {
           setTimeout(() => {
             resolve();
