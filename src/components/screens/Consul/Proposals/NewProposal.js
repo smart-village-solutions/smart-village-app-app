@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Alert, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Alert, TouchableOpacity, StyleSheet, ScrollView, View } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
@@ -170,8 +170,8 @@ export const NewProposal = ({ navigation, data, query }) => {
           )}
 
           {item.type === 'category' && (
-            <>
-              <Label key={index}>{item.title}</Label>
+            <View key={index}>
+              <Label>{item.title}</Label>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {item.category.map((items, index) => (
                   <TouchableOpacity
@@ -199,7 +199,7 @@ export const NewProposal = ({ navigation, data, query }) => {
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-            </>
+            </View>
           )}
         </>
       ))}

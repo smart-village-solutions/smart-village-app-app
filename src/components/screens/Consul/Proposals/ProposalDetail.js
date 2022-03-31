@@ -34,7 +34,9 @@ const a11yText = consts.a11yLabel;
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
   const [loading, setLoading] = useState();
-  let publishedProposal = route.params?.publishedProposal ?? true;
+  const [publishedProposal, setPublishedProposal] = useState(
+    route.params?.publishedProposal ?? true
+  );
 
   const {
     cachedVotesUp,
@@ -84,7 +86,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     setLoading(true);
     await publishProposal({ variables: { id: id } })
       .then(() => {
-        publishedProposal = true;
+        setPublishedProposal(true);
         onRefresh();
         setLoading(false);
       })
