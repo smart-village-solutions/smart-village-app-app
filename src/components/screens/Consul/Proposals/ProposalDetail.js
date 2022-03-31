@@ -47,7 +47,8 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     publicCreatedAt,
     tags,
     title,
-    videoUrl
+    videoUrl,
+    currentUserHasVoted
   } = listData.proposal;
 
   const openWebScreen = useOpenWebScreen(
@@ -162,8 +163,10 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
           {/*TODO: Mutation funksionert nicht*/}
           <ConsulSupportingComponent
             votesData={{
+              onRefresh: onRefresh,
               cachedVotesUp: cachedVotesUp,
-              id: id
+              id: id,
+              currentUserHasVoted: currentUserHasVoted
             }}
           />
 

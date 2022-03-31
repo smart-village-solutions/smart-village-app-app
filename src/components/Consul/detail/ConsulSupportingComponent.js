@@ -15,7 +15,7 @@ const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 export const ConsulSupportingComponent = (votesData) => {
-  const { cachedVotesUp, id } = votesData.votesData;
+  const { cachedVotesUp, id, currentUserHasVoted, onRefresh } = votesData.votesData;
 
   // GraphQL
   const [supportProposal] = useMutation(SUPPORT_PROPOSAL, {
@@ -25,6 +25,7 @@ export const ConsulSupportingComponent = (votesData) => {
   const onVoting = async () => {
     await supportProposal({ variables: { id: id } })
       .then(() => {
+        onRefresh();
         Alert.alert(text.supportProposalAlertTitle, text.supportProposalAlertBody);
       })
       .catch((err) => console.error(err));
@@ -44,7 +45,11 @@ export const ConsulSupportingComponent = (votesData) => {
         <RegularText center smallest>
           100 {text.supportNeed}
         </RegularText>
-        <Button title="Unterstutzung" onPress={() => onVoting()} />
+        {!currentUserHasVoted ? (
+          <Button title="Unterstutzung" onPress={() => onVoting()} />
+        ) : (
+          <RegularText center>{text.proposalAlready}</RegularText>
+        )}
       </Wrapper>
     </>
   );

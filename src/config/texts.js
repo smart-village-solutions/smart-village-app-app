@@ -120,6 +120,7 @@ export const texts = {
     publishProposalBold: 'Herzlichen Glückwunsch! Sie haben den ersten Schritt gemacht.',
     publishProposalRegular: 'überprüfen und teilen Sie Ihren Vorschlag.',
     publishProposalButton: 'Vorschlag veröffentlichen',
+    proposalAlready: 'Sie haben diesen Vorschlag bereits unterstützt.',
     startNew: {
       titleShortError: 'ist zu kurz (minimum 4 Zeichen)',
       descriptionShortError: 'ist zu kurz (minimum 10 Zeichen)',
