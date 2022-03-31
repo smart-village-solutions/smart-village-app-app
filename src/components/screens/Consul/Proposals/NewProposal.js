@@ -68,6 +68,21 @@ export const NewProposal = ({ navigation, data, query }) => {
   });
 
   useEffect(() => {
+    if (data?.tagList) {
+      kategorien.map((item) => {
+        for (let i = 0; i < data?.tagList.length; i++) {
+          const element = data?.tagList[i];
+          if (item.name === element) {
+            item.selected = true;
+          }
+        }
+      });
+      setTags(kategorien);
+    }
+  }, []);
+
+  useEffect(() => {
+    setTags(kategorien);
     const selectedTag = tags.map((item) => {
       if (item.selected) return item.name;
     });
@@ -149,30 +164,37 @@ export const NewProposal = ({ navigation, data, query }) => {
           )}
 
           {item.type === 'infoText' && (
-            <RegularText smallest placeholder>
+            <RegularText key={index} smallest placeholder>
               {item.title}
             </RegularText>
           )}
 
           {item.type === 'category' && (
             <>
-              <Label>{item.title}</Label>
+              <Label key={index}>{item.title}</Label>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {item.category.map((item, index) => (
+                {item.category.map((items, index) => (
                   <TouchableOpacity
                     key={index}
-                    style={styles.tagContainer}
+                    style={[
+                      styles.tagContainer,
+                      { backgroundColor: items.selected ? colors.darkerPrimary : colors.borderRgba }
+                    ]}
                     onPress={() => {
-                      if (item.selected) {
-                        item.selected = false;
+                      if (items.selected) {
+                        items.selected = false;
                       } else {
-                        item.selected = true;
+                        items.selected = true;
                       }
-                      setTags([...tags, item]);
+                      setTags([]);
                     }}
                   >
-                    <RegularText small style={styles.tagText}>
-                      {item.name}
+                    <RegularText
+                      small
+                      style={styles.tagText}
+                      lighter={items.selected ? true : false}
+                    >
+                      {items.name}
                     </RegularText>
                   </TouchableOpacity>
                 ))}
@@ -289,6 +311,7 @@ const Inputs = [
   {
     type: 'input',
     name: 'tagList',
+    multiline: true,
     label: text.newProposalTagLabel,
     placeholder: text.newProposalTagLabel,
     keyboardType: 'default',
