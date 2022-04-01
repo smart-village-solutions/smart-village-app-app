@@ -14,7 +14,9 @@ export class CategoryList extends React.PureComponent {
   keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
   renderSectionHeader = ({ section: { title, data } }) => {
-    if (!data?.length) return null;
+    const { hasSectionHeader } = this.props;
+
+    if (!data?.length || !hasSectionHeader) return null;
 
     return (
       <View>
@@ -27,7 +29,7 @@ export class CategoryList extends React.PureComponent {
   };
 
   render() {
-    const { data, navigation, noSubtitle, refreshControl, noSectionHeader } = this.props;
+    const { data, navigation, noSubtitle, refreshControl } = this.props;
 
     // Sorting data alphabetically
     data.sort((a, b) => a.title.localeCompare(b.title));
@@ -57,7 +59,7 @@ export class CategoryList extends React.PureComponent {
             section={section}
           />
         )}
-        renderSectionHeader={noSectionHeader ? null : this.renderSectionHeader}
+        renderSectionHeader={this.renderSectionHeader}
         ListHeaderComponent={
           !!texts.categoryList.intro && (
             <Wrapper>
@@ -77,10 +79,10 @@ CategoryList.propTypes = {
   data: PropTypes.array.isRequired,
   noSubtitle: PropTypes.bool,
   refreshControl: PropTypes.object,
-  noSectionHeader: PropTypes.bool
+  hasSectionHeader: PropTypes.bool
 };
 
 CategoryList.defaultProps = {
   noSubtitle: false,
-  noSectionHeader: false
+  hasSectionHeader: true
 };

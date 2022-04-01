@@ -3,7 +3,7 @@ import _shuffle from 'lodash/shuffle';
 
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
-import { GenericType } from '../../types';
+import { GenericType, ScreenName } from '../../types';
 import { eventDate, isBeforeEndOfToday, isTodayOrLater } from '../dateTimeHelper';
 import { getGenericItemDetailTitle, getGenericItemRootRouteName } from '../genericTypeHelper';
 import { mainImageOfMediaContents } from '../imageHelper';
@@ -173,17 +173,17 @@ const parseTours = (data, skipLastDivider) => {
   }));
 };
 
-const parseCategories = (data, skipLastDivider, routeName = 'Category') => {
+const parseCategories = (data, skipLastDivider, routeName = ScreenName.Category) => {
   return data?.map((category, index) => ({
     id: category.id,
     title: category.name,
     pointsOfInterestCount: category.pointsOfInterestCount,
     toursCount: category.toursCount,
     routeName,
-    parent: category.parent ? true : false,
+    parent: category.parent,
     params: {
       title: category.name,
-      categories: parseCategories(category.children, skipLastDivider, 'Index'),
+      categories: parseCategories(category.children, skipLastDivider, ScreenName.Index),
       query:
         category.pointsOfInterestCount > 0 ? QUERY_TYPES.POINTS_OF_INTEREST : QUERY_TYPES.TOURS,
       queryVariables: { limit: 15, order: 'name_ASC', category: `${category.name}` },

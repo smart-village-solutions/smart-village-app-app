@@ -270,16 +270,19 @@ export const IndexScreen = ({ navigation, route }) => {
             return (
               <ListComponent
                 ListHeaderComponent={
-                  showFilter ? (
-                    <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
-                  ) : subCategories?.length ? (
-                    <CategoryList
-                      navigation={navigation}
-                      data={subCategories}
-                      horizontal={false}
-                      noSectionHeader={true}
-                    />
-                  ) : null
+                  <>
+                    {showFilter && (
+                      <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
+                    )}
+                    {subCategories?.length && (
+                      <CategoryList
+                        navigation={navigation}
+                        data={subCategories}
+                        horizontal={false}
+                        hasSectionHeader={false}
+                      />
+                    )}
+                  </>
                 }
                 ListEmptyComponent={<EmptyMessage title={texts.empty.list} />}
                 navigation={navigation}
