@@ -158,7 +158,7 @@ export const NewProposal = ({ navigation, data, query }) => {
   return (
     <Wrapper>
       {Inputs.map((item, index) => (
-        <>
+        <View key={index}>
           {item.type === 'input' && (
             <Input key={index} {...item} control={control} rules={item.rules} />
           )}
@@ -173,9 +173,9 @@ export const NewProposal = ({ navigation, data, query }) => {
             <View key={index}>
               <Label>{item.title}</Label>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {item.category.map((items, index) => (
+                {item.category.map((items, indexs) => (
                   <TouchableOpacity
-                    key={index}
+                    key={indexs}
                     style={[
                       styles.tagContainer,
                       { backgroundColor: items.selected ? colors.darkerPrimary : colors.borderRgba }
@@ -201,7 +201,7 @@ export const NewProposal = ({ navigation, data, query }) => {
               </ScrollView>
             </View>
           )}
-        </>
+        </View>
       ))}
       <Checkbox
         title={text.termsOfServiceLabel}
