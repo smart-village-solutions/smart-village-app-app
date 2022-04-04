@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
 import { Input } from '../../../Consul';
-import { Wrapper } from '../../../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../../../Wrapper';
 import { texts, colors } from '../../../../config';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
@@ -16,6 +16,7 @@ import { ScreenName } from '../../../../types';
 import { QUERY_TYPES } from '../../../../queries';
 import { RegularText } from '../../../Text';
 import { Label } from '../../../Label';
+import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 
 const text = texts.consul.startNew;
 const queryTypes = QUERY_TYPES.CONSUL;
@@ -156,71 +157,85 @@ export const NewProposal = ({ navigation, data, query }) => {
   if (startLoading) return <LoadingSpinner loading />;
 
   return (
-    <Wrapper>
-      {Inputs.map((item, index) => (
-        <View key={index}>
-          {item.type === 'input' && (
-            <Input key={index} {...item} control={control} rules={item.rules} />
-          )}
+    <SafeAreaViewFlex>
+      <WrapperWithOrientation>
+        {Inputs.map((item, index) => (
+          <View key={index}>
+            {item.type === 'input' && (
+              <Wrapper key={index} style={styles.noPaddingTop}>
+                <Input key={index} {...item} control={control} rules={item.rules} />
+              </Wrapper>
+            )}
 
-          {item.type === 'infoText' && (
-            <RegularText key={index} smallest placeholder>
-              {item.title}
-            </RegularText>
-          )}
+            {item.type === 'infoText' && (
+              <Wrapper style={styles.noPaddingTop}>
+                <RegularText key={index} smallest placeholder>
+                  {item.title}
+                </RegularText>
+              </Wrapper>
+            )}
 
-          {item.type === 'category' && (
-            <View key={index}>
-              <Label>{item.title}</Label>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {item.category.map((items, indexs) => (
-                  <TouchableOpacity
-                    key={indexs}
-                    style={[
-                      styles.tagContainer,
-                      { backgroundColor: items.selected ? colors.darkerPrimary : colors.borderRgba }
-                    ]}
-                    onPress={() => {
-                      if (items.selected) {
-                        items.selected = false;
-                      } else {
-                        items.selected = true;
-                      }
-                      setTags([]);
-                    }}
-                  >
-                    <RegularText
-                      small
-                      style={styles.tagText}
-                      lighter={items.selected ? true : false}
+            {item.type === 'category' && (
+              <Wrapper style={styles.noPaddingTop} key={index}>
+                <Label>{item.title}</Label>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  {item.category.map((items, indexs) => (
+                    <TouchableOpacity
+                      key={indexs}
+                      style={[
+                        styles.tagContainer,
+                        {
+                          backgroundColor: items.selected ? colors.darkerPrimary : colors.borderRgba
+                        }
+                      ]}
+                      onPress={() => {
+                        if (items.selected) {
+                          items.selected = false;
+                        } else {
+                          items.selected = true;
+                        }
+                        setTags([]);
+                      }}
                     >
-                      {items.name}
-                    </RegularText>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-          )}
-        </View>
-      ))}
-      <Checkbox
-        title={text.termsOfServiceLabel}
-        link={'https://beteiligung.bad-belzig.de/conditions'}
-        linkDescription="Allgemeine Nutzungsbedingungen"
-        checkedIcon="check-square-o"
-        uncheckedIcon="square-o"
-        checked={termsOfService}
-        onPress={() => settermsOfService(!termsOfService)}
-      />
-      <Button
-        onPress={handleSubmit(onSubmit)}
-        title={
-          query === queryTypes.START_PROPOSAL
-            ? text.newProposalStartButtonLabel
-            : text.updateButtonLabel
-        }
-      />
-    </Wrapper>
+                      <RegularText
+                        small
+                        style={styles.tagText}
+                        lighter={items.selected ? true : false}
+                      >
+                        {items.name}
+                      </RegularText>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </Wrapper>
+            )}
+          </View>
+        ))}
+
+        <WrapperHorizontal>
+          <Checkbox
+            title={text.termsOfServiceLabel}
+            link={'https://beteiligung.bad-belzig.de/conditions'}
+            linkDescription="Allgemeine Nutzungsbedingungen"
+            checkedIcon="check-square-o"
+            uncheckedIcon="square-o"
+            checked={termsOfService}
+            onPress={() => settermsOfService(!termsOfService)}
+          />
+        </WrapperHorizontal>
+
+        <Wrapper>
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            title={
+              query === queryTypes.START_PROPOSAL
+                ? text.newProposalStartButtonLabel
+                : text.updateButtonLabel
+            }
+          />
+        </Wrapper>
+      </WrapperWithOrientation>
+    </SafeAreaViewFlex>
   );
 };
 
@@ -241,6 +256,9 @@ const styles = StyleSheet.create({
   },
   tagText: {
     padding: 10
+  },
+  noPaddingTop: {
+    paddingTop: 0
   }
 });
 

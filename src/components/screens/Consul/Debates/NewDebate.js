@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
 import { Input } from '../../../Consul';
-import { Wrapper } from '../../../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../../../Wrapper';
 import { texts } from '../../../../config';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
@@ -15,6 +15,7 @@ import { LoadingSpinner } from '../../../LoadingSpinner';
 import { ScreenName } from '../../../../types';
 import { QUERY_TYPES } from '../../../../queries';
 import { UPDATE_DEBATE } from '../../../../queries/Consul/Debates/updateDebate';
+import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 
 const text = texts.consul.startNew;
 const queryTypes = QUERY_TYPES.CONSUL;
@@ -105,28 +106,38 @@ export const NewDebate = ({ navigation, data, query }) => {
   if (startLoading) return <LoadingSpinner loading />;
 
   return (
-    <Wrapper>
-      {Inputs.map((item, index) => (
-        <Input key={index} {...item} control={control} rules={item.rules} />
-      ))}
-      <Checkbox
-        title={text.termsOfServiceLabel}
-        link={'https://beteiligung.bad-belzig.de/conditions'}
-        linkDescription="Allgemeine Nutzungsbedingungen"
-        checkedIcon="check-square-o"
-        uncheckedIcon="square-o"
-        checked={termsOfService}
-        onPress={() => settermsOfService(!termsOfService)}
-      />
-      <Button
-        onPress={handleSubmit(onSubmit)}
-        title={
-          query === queryTypes.START_DEBATE
-            ? text.newDebateStartButtonLabel
-            : text.updateButtonLabel
-        }
-      />
-    </Wrapper>
+    <SafeAreaViewFlex>
+      <WrapperWithOrientation>
+        {Inputs.map((item, index) => (
+          <Wrapper key={index} style={styles.noPaddingTop}>
+            <Input {...item} control={control} rules={item.rules} />
+          </Wrapper>
+        ))}
+
+        <WrapperHorizontal>
+          <Checkbox
+            title={text.termsOfServiceLabel}
+            link={'https://beteiligung.bad-belzig.de/conditions'}
+            linkDescription="Allgemeine Nutzungsbedingungen zu"
+            checkedIcon="check-square-o"
+            uncheckedIcon="square-o"
+            checked={termsOfService}
+            onPress={() => settermsOfService(!termsOfService)}
+          />
+        </WrapperHorizontal>
+
+        <Wrapper>
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            title={
+              query === queryTypes.START_DEBATE
+                ? text.newDebateStartButtonLabel
+                : text.updateButtonLabel
+            }
+          />
+        </Wrapper>
+      </WrapperWithOrientation>
+    </SafeAreaViewFlex>
   );
 };
 
@@ -138,6 +149,12 @@ NewDebate.propTypes = {
   data: PropTypes.object,
   query: PropTypes.string
 };
+
+const styles = StyleSheet.create({
+  noPaddingTop: {
+    paddingTop: 0
+  }
+});
 
 const Inputs = [
   {

@@ -127,8 +127,7 @@ export const texts = {
       newDebateTitleLabel: 'Title der Diskussion',
       newDebateDescriptionLabel: 'Initialer Debattenbeitrag',
       newDebateTagLabel: 'Trennen Sie die Tags mit einem Komma (,)',
-      termsOfServiceLabel:
-        'Ich stimme der Datenschutzbestimmungen und den Allgemeine Nutzungsbedingungen zu',
+      termsOfServiceLabel: 'Ich stimme der Datenschutzbestimmungen und den',
       updateButtonLabel: 'Bearbeiten',
       newDebateStartButtonLabel: 'Eine Diskussion starten',
       newProposalTitleLabel: 'Titel des Vorschlages',
