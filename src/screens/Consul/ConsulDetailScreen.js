@@ -6,6 +6,7 @@ import {
   LoadingSpinner,
   DebateDetail,
   ProposalDetail,
+  PollDetail,
   SafeAreaViewFlex,
   DefaultKeyboardAvoidingView
 } from '../../components';
@@ -18,7 +19,8 @@ const queryType = QUERY_TYPES.CONSUL;
 const getComponent = (query) => {
   const COMPONENTS = {
     [queryType.DEBATE]: DebateDetail,
-    [queryType.PROPOSAL]: ProposalDetail
+    [queryType.PROPOSAL]: ProposalDetail,
+    [queryType.POLL]: PollDetail
   };
 
   return COMPONENTS[query];

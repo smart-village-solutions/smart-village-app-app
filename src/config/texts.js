@@ -157,9 +157,9 @@ export const texts = {
       logout: 'Ausloggen'
     },
     sorting: {
-      mostActive: 'aktivste',
-      newest: 'neuste',
-      highestRated: 'am besten bewertet'
+      mostActive: 'Aktivste',
+      newest: 'Neuste',
+      highestRated: 'Am besten bewertet'
     }
   },
   dataProvider: {

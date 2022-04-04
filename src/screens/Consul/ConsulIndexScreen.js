@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState, useCallback, useEffect } from 'react';
 import { RefreshControl, Text } from 'react-native';
 
-import { LoadingSpinner, SafeAreaViewFlex, Debates, Proposals } from '../../components';
+import { LoadingSpinner, SafeAreaViewFlex, Debates, Proposals, Polls } from '../../components';
 import { parseListItemsFromQuery, sortingHelper } from '../../helpers';
 import { colors } from '../../config';
 import { useConsulData } from '../../hooks';
@@ -23,7 +23,8 @@ const INITIAL_TOP_SORTING = [
 const getComponent = (query) => {
   const COMPONENTS = {
     [queryType.DEBATES]: Debates,
-    [queryType.PROPOSALS]: Proposals
+    [queryType.PROPOSALS]: Proposals,
+    [queryType.POLLS]: Polls
   };
   return COMPONENTS[query];
 };

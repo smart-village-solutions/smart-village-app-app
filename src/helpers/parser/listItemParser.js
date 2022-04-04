@@ -3,7 +3,7 @@ import _shuffle from 'lodash/shuffle';
 
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
-import { GenericType } from '../../types';
+import { GenericType, ScreenName } from '../../types';
 import { eventDate, isBeforeEndOfToday, isTodayOrLater } from '../dateTimeHelper';
 import { getGenericItemDetailTitle, getGenericItemRootRouteName } from '../genericTypeHelper';
 import { mainImageOfMediaContents } from '../imageHelper';
@@ -198,6 +198,18 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
+const querySwitcherforDetail = (query) => {
+  switch (query) {
+    case QUERY_TYPES.CONSUL.DEBATES:
+      return QUERY_TYPES.CONSUL.DEBATE;
+    case QUERY_TYPES.CONSUL.PROPOSALS:
+      return QUERY_TYPES.CONSUL.PROPOSAL;
+    case QUERY_TYPES.CONSUL.POLLS:
+      return QUERY_TYPES.CONSUL.POLL;
+    default:
+      break;
+  }
+};
 const parseConsulData = (data, query, skipLastDivider) => {
   return data?.nodes?.map((data, index) => ({
     id: data.id,
@@ -206,20 +218,17 @@ const parseConsulData = (data, query, skipLastDivider) => {
     totalVotes: data.cachedVotesTotal,
     // subtitle: data.commentsCount ? data.commentsCount + ' Comment' : '0 Comment',
     subtitle: momentFormatUtcToLocal(data.publicCreatedAt),
-    routeName: 'ConsulDetailScreen',
+    routeName: ScreenName.ConsulDetailScreen,
     params: {
       title: data.title,
-      query:
-        query === QUERY_TYPES.CONSUL.DEBATES
-          ? QUERY_TYPES.CONSUL.DEBATE
-          : QUERY_TYPES.CONSUL.PROPOSAL,
+      query: querySwitcherforDetail(query),
       queryVariables: { id: data.id },
       rootRouteName: ROOT_ROUTE_NAMES.CONSOLE_HOME
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1
   }));
 };
-
+/* eslint-disable complexity */
 /**
  * Parses list items from query a query result
  * @param {string} query
@@ -250,6 +259,8 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parsePointsOfInterestAndTours(data);
     case QUERY_TYPES.CONSUL.DEBATES:
     case QUERY_TYPES.CONSUL.PROPOSALS:
+    case QUERY_TYPES.CONSUL.POLLS:
       return parseConsulData(data[query], query, skipLastDivider);
   }
 };
+/* eslint-enable complexity */

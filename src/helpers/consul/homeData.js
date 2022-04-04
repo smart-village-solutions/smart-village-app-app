@@ -35,8 +35,8 @@ export const homeData = [
         routeName: ScreenName.ConsulIndexScreen,
         params: {
           title: text.voting,
-          query: null,
-          queryVariables: { limit: 15, order: 'name_ASC', category: text.voting },
+          query: query.POLLS,
+          queryVariables: { filter: 'expired' },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
         subtitle: null,
