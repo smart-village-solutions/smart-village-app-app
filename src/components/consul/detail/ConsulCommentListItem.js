@@ -195,7 +195,7 @@ LikeDissLikeIcon.propTypes = {
 const styles = StyleSheet.create({
   bottomContainer: {
     borderBottomWidth: 0.5,
-    borderColor: colors.placeholder,
+    borderColor: colors.darkText,
     paddingVertical: 5
   },
   bottomLine: {
@@ -205,8 +205,9 @@ const styles = StyleSheet.create({
   replyContainer: {
     borderLeftWidth: 0.5,
     paddingLeft: normalize(10),
+    marginTop: normalize(10),
     borderStyle: 'solid',
-    borderColor: colors.placeholder
+    borderColor: colors.borderRgba
   },
   icon: {
     paddingHorizontal: 5
