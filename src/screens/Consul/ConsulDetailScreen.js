@@ -2,7 +2,13 @@ import PropTypes from 'prop-types';
 import React, { useState, useCallback } from 'react';
 import { Text, RefreshControl, ScrollView } from 'react-native';
 
-import { LoadingSpinner, DebateDetail, ProposalDetail, SafeAreaViewFlex } from '../../components';
+import {
+  LoadingSpinner,
+  DebateDetail,
+  ProposalDetail,
+  SafeAreaViewFlex,
+  DefaultKeyboardAvoidingView
+} from '../../components';
 import { useConsulData } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { colors } from '../../config';
@@ -48,23 +54,26 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
+      <DefaultKeyboardAvoidingView>
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => refresh(refetch)}
+              colors={[colors.accent]}
+              tintColor={colors.accent}
+            />
+          }
+        >
+          <Component
+            listData={data}
+            navigation={navigation}
+            route={route}
             onRefresh={() => refresh(refetch)}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
           />
-        }
-      >
-        <Component
-          listData={data}
-          navigation={navigation}
-          route={route}
-          onRefresh={() => refresh(refetch)}
-        />
-      </ScrollView>
+        </ScrollView>
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };

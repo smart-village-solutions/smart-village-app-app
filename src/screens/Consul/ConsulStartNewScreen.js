@@ -1,8 +1,14 @@
 import PropTypes from 'prop-types';
+import { ScrollView } from 'react-native';
 import React from 'react';
 
 import { QUERY_TYPES } from '../../queries';
-import { SafeAreaViewFlex, NewDebate, NewProposal } from '../../components';
+import {
+  SafeAreaViewFlex,
+  NewDebate,
+  NewProposal,
+  DefaultKeyboardAvoidingView
+} from '../../components';
 
 const queryType = QUERY_TYPES.CONSUL;
 
@@ -27,7 +33,11 @@ export const ConsulStartNewScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      <Component query={query} navigation={navigation} route={route} data={data} />
+      <DefaultKeyboardAvoidingView>
+        <ScrollView keyboardShouldPersistTaps="handled">
+          <Component query={query} navigation={navigation} route={route} data={data} />
+        </ScrollView>
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };

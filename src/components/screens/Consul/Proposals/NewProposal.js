@@ -216,7 +216,7 @@ export const NewProposal = ({ navigation, data, query }) => {
           <Checkbox
             title={text.termsOfServiceLabel}
             link={'https://beteiligung.bad-belzig.de/conditions'}
-            linkDescription="Allgemeine Nutzungsbedingungen"
+            linkDescription={text.termsOfServiceLinkLabel}
             checkedIcon="check-square-o"
             uncheckedIcon="square-o"
             checked={termsOfService}

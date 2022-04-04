@@ -1,13 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { ScrollView } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
-import { DefaultKeyboardAvoidingView } from '../../../DefaultKeyboardAvoidingView';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
-import { Wrapper, WrapperVertical } from '../../../Wrapper';
+import { Wrapper, WrapperWithOrientation } from '../../../Wrapper';
 import { HtmlView } from '../../../HtmlView';
 import { Button } from '../../../Button';
 import {
@@ -95,113 +93,114 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <DefaultKeyboardAvoidingView>
-        <ScrollView keyboardShouldPersistTaps="handled">
-          {/* Publish Proposal! */}
-          {!publishedProposal && (
-            <Wrapper>
-              <BoldText>{text.publishProposalBold}</BoldText>
-              <RegularText>{text.publishProposalRegular}</RegularText>
-              <Button title={text.publishProposalButton} onPress={() => proposalShare()} />
-            </Wrapper>
-          )}
-
-          {/* Title! */}
-          {!!title && (
-            <>
-              <TitleContainer>
-                <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-              </TitleContainer>
-              {device.platform === 'ios' && <TitleShadow />}
-            </>
-          )}
-
-          {/* Author! */}
-          {!!publicAuthor && (
-            <ConsulPublicAuthorComponent
-              authorData={{
-                publicAuthor: publicAuthor,
-                commentsCount: commentsCount,
-                publicCreatedAt: publicCreatedAt
-              }}
-            />
-          )}
-
-          {/* Summary! */}
-          {!!summary && <ConsulSummaryComponent summary={summary} />}
-
-          {/* Description! */}
-          {!!description && (
-            <Wrapper>
-              <HtmlView html={description} openWebScreen={openWebScreen} />
-            </Wrapper>
-          )}
-
-          {/* External Video */}
-          {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
-
-          {/*TODO: I neet to User ID */}
-          {/* Proposal Edit Button */}
-          <ConsulStartNewButton
-            data={{
-              title: title,
-              tagList: tags.nodes.map((item) => item.name),
-              description: description,
-              termsOfService: true,
-              summary: summary,
-              videoUrl: videoUrl,
-              id: id
-            }}
-            navigation={navigation}
-            title={text.startNew.updateButtonLabel}
-            buttonTitle={text.startNew.updateButtonLabel}
-            query={QUERY_TYPES.CONSUL.UPDATE_PROPOSAL}
-          />
-
-          {/* Tag List! */}
-          {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
-
-          {/* Voting Component! */}
-          {/*TODO: Mutation funksionert nicht*/}
-          <ConsulSupportingComponent
-            votesData={{
-              onRefresh: onRefresh,
-              cachedVotesUp: cachedVotesUp,
-              id: id,
-              currentUserHasVoted: currentUserHasVoted
-            }}
-          />
-
-          {/* Comments List! */}
-          {!!comments && (
-            <ConsulCommentList
-              commentCount={commentsCount}
-              commentsData={comments.nodes}
-              onRefresh={onRefresh}
-            />
-          )}
-
-          {/* New Comment Input! */}
+      <WrapperWithOrientation>
+        {/* Publish Proposal! */}
+        {!publishedProposal && (
           <Wrapper>
-            <Input
-              multiline
-              name="comment"
-              label={text.commentLabel}
-              placeholder={text.comment}
-              autoCapitalize="none"
-              rules={{ required: text.commentEmptyError }}
-              control={control}
-            />
-            <WrapperVertical>
-              <Button
-                onPress={handleSubmit(onSubmit)}
-                title={loading ? text.submittingCommentButton : text.commentAnswerButton}
-                disabled={loading}
-              />
-            </WrapperVertical>
+            <BoldText>{text.publishProposalBold}</BoldText>
+            <RegularText>{text.publishProposalRegular}</RegularText>
+            <Button title={text.publishProposalButton} onPress={() => proposalShare()} />
           </Wrapper>
-        </ScrollView>
-      </DefaultKeyboardAvoidingView>
+        )}
+
+        {/* Title! */}
+        {!!title && (
+          <>
+            <TitleContainer>
+              <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+          </>
+        )}
+
+        {/* Author! */}
+        {!!publicAuthor && (
+          <ConsulPublicAuthorComponent
+            authorData={{
+              publicAuthor: publicAuthor,
+              commentsCount: commentsCount,
+              publicCreatedAt: publicCreatedAt
+            }}
+          />
+        )}
+
+        {/* Summary! */}
+        {!!summary && <ConsulSummaryComponent summary={summary} />}
+
+        {/* Description! */}
+        {!!description && (
+          <Wrapper>
+            <HtmlView html={description} openWebScreen={openWebScreen} />
+          </Wrapper>
+        )}
+
+        {/* External Video */}
+        {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
+
+        {/*TODO: I neet to User ID */}
+        {/* Proposal Edit Button */}
+        <ConsulStartNewButton
+          data={{
+            title: title,
+            tagList: tags.nodes.map((item) => item.name),
+            description: description,
+            termsOfService: true,
+            summary: summary,
+            videoUrl: videoUrl,
+            id: id
+          }}
+          navigation={navigation}
+          title={text.startNew.updateButtonLabel}
+          buttonTitle={text.startNew.updateButtonLabel}
+          query={QUERY_TYPES.CONSUL.UPDATE_PROPOSAL}
+        />
+
+        {/* Tag List! */}
+        {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
+
+        {/* Voting Component! */}
+        {/*TODO: Mutation funksionert nicht*/}
+        <ConsulSupportingComponent
+          votesData={{
+            onRefresh: onRefresh,
+            cachedVotesUp: cachedVotesUp,
+            id: id,
+            currentUserHasVoted: currentUserHasVoted
+          }}
+        />
+
+        {/* Comments List! */}
+        {!!comments && (
+          <ConsulCommentList
+            commentCount={commentsCount}
+            commentsData={comments.nodes}
+            onRefresh={onRefresh}
+          />
+        )}
+
+        {/* New Comment Input! */}
+        <Wrapper>
+          <Input
+            keyboardType="default"
+            textContentType="none"
+            autoCompleteType="off"
+            multiline
+            name="comment"
+            label={text.commentLabel}
+            placeholder={text.comment}
+            autoCapitalize="none"
+            rules={{ required: text.commentEmptyError }}
+            control={control}
+          />
+        </Wrapper>
+        <Wrapper>
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            title={loading ? text.submittingCommentButton : text.commentAnswerButton}
+            disabled={loading}
+          />
+        </Wrapper>
+      </WrapperWithOrientation>
     </SafeAreaViewFlex>
   );
 };

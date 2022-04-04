@@ -1,13 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { ScrollView } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
-import { DefaultKeyboardAvoidingView } from '../../../DefaultKeyboardAvoidingView';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
-import { Wrapper, WrapperVertical } from '../../../Wrapper';
+import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../../../Wrapper';
 import { HtmlView } from '../../../HtmlView';
 import { Button } from '../../../Button';
 import {
@@ -73,95 +71,93 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
 
   return (
     <SafeAreaViewFlex>
-      <DefaultKeyboardAvoidingView>
-        <ScrollView keyboardShouldPersistTaps="handled">
-          {/* Title! */}
-          {!!title && (
-            <>
-              <TitleContainer>
-                <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-              </TitleContainer>
-              {device.platform === 'ios' && <TitleShadow />}
-            </>
-          )}
+      <WrapperWithOrientation>
+        {/* Title! */}
+        {!!title && (
+          <>
+            <TitleContainer>
+              <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+          </>
+        )}
 
-          {/* Author! */}
-          {!!publicAuthor && (
-            <ConsulPublicAuthorComponent
-              authorData={{
-                publicAuthor: publicAuthor,
-                commentsCount: commentsCount,
-                publicCreatedAt: publicCreatedAt
-              }}
-            />
-          )}
-
-          {/* Description! */}
-          {!!description && (
-            <Wrapper>
-              <HtmlView html={description} openWebScreen={openWebScreen} />
-            </Wrapper>
-          )}
-
-          {/*TODO: I neet to User ID */}
-          {/* Debate Edit Button */}
-          <ConsulStartNewButton
-            data={{
-              title: title,
-              tagList: tags.nodes.map((item) => item.name),
-              description: description,
-              termsOfService: true,
-              id: id
-            }}
-            navigation={navigation}
-            title={text.startNew.updateButtonLabel}
-            buttonTitle={text.startNew.updateButtonLabel}
-            query={QUERY_TYPES.CONSUL.UPDATE_DEBATE}
-          />
-
-          {/* Tag List! */}
-          {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
-
-          {/* Voting Component! */}
-          {/*TODO: Mutation funksionert nicht*/}
-          <ConsulVotingComponent
-            votesData={{
-              cachedVotesTotal: cachedVotesTotal,
-              cachedVotesUp: cachedVotesUp,
-              cachedVotesDown: cachedVotesDown
+        {/* Author! */}
+        {!!publicAuthor && (
+          <ConsulPublicAuthorComponent
+            authorData={{
+              publicAuthor: publicAuthor,
+              commentsCount: commentsCount,
+              publicCreatedAt: publicCreatedAt
             }}
           />
+        )}
 
-          {/* Comments List! */}
-          {!!comments && (
-            <ConsulCommentList
-              commentCount={commentsCount}
-              commentsData={comments.nodes}
-              onRefresh={onRefresh}
-            />
-          )}
-
-          {/* New Comment Input! */}
+        {/* Description! */}
+        {!!description && (
           <Wrapper>
-            <Input
-              multiline
-              name="comment"
-              label={text.commentLabel}
-              placeholder={text.comment}
-              autoCapitalize="none"
-              rules={{ required: text.commentEmptyError }}
-              control={control}
-            />
-            <WrapperVertical>
-              <Button
-                onPress={handleSubmit(onSubmit)}
-                title={loading ? text.submittingCommentButton : text.commentAnswerButton}
-                disabled={loading}
-              />
-            </WrapperVertical>
+            <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
-        </ScrollView>
-      </DefaultKeyboardAvoidingView>
+        )}
+
+        {/*TODO: I neet to User ID */}
+        {/* Debate Edit Button */}
+        <ConsulStartNewButton
+          data={{
+            title: title,
+            tagList: tags.nodes.map((item) => item.name),
+            description: description,
+            termsOfService: true,
+            id: id
+          }}
+          navigation={navigation}
+          title={text.startNew.updateButtonLabel}
+          buttonTitle={text.startNew.updateButtonLabel}
+          query={QUERY_TYPES.CONSUL.UPDATE_DEBATE}
+        />
+
+        {/* Tag List! */}
+        {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
+
+        {/* Voting Component! */}
+        {/*TODO: Mutation funksionert nicht*/}
+        <ConsulVotingComponent
+          votesData={{
+            cachedVotesTotal: cachedVotesTotal,
+            cachedVotesUp: cachedVotesUp,
+            cachedVotesDown: cachedVotesDown
+          }}
+        />
+
+        {/* Comments List! */}
+        {!!comments && (
+          <ConsulCommentList
+            commentCount={commentsCount}
+            commentsData={comments.nodes}
+            onRefresh={onRefresh}
+          />
+        )}
+
+        {/* New Comment Input! */}
+        <Wrapper>
+          <Input
+            multiline
+            name="comment"
+            label={text.commentLabel}
+            placeholder={text.comment}
+            autoCapitalize="none"
+            rules={{ required: text.commentEmptyError }}
+            control={control}
+          />
+          <WrapperVertical>
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              title={loading ? text.submittingCommentButton : text.commentAnswerButton}
+              disabled={loading}
+            />
+          </WrapperVertical>
+        </Wrapper>
+      </WrapperWithOrientation>
     </SafeAreaViewFlex>
   );
 };
