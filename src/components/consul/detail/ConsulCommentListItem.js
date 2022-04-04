@@ -18,7 +18,7 @@ const text = texts.consul;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const ConsulCommentListItem = ({ item, onRefresh }) => {
+export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
   const [responseShow, setResponseShow] = useState(false);
   const [reply, setReply] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -67,7 +67,7 @@ export const ConsulCommentListItem = ({ item, onRefresh }) => {
   };
 
   return (
-    <>
+    <View style={[!replyList && styles.container]}>
       <WrapperRow>
         <RegularText primary>{publicAuthor ? publicAuthor.username : 'Privat'}</RegularText>
         <RegularText> · </RegularText>
@@ -132,7 +132,12 @@ export const ConsulCommentListItem = ({ item, onRefresh }) => {
       {responseShow && responses && responses.length
         ? responses.map((item, index) => (
             <View key={index} style={styles.replyContainer}>
-              <ConsulCommentListItem index={index} item={{ item: item }} onRefresh={onRefresh} />
+              <ConsulCommentListItem
+                index={index}
+                item={{ item: item }}
+                onRefresh={onRefresh}
+                replyList={true}
+              />
             </View>
           ))
         : null}
@@ -158,7 +163,7 @@ export const ConsulCommentListItem = ({ item, onRefresh }) => {
           </WrapperVertical>
         </>
       ) : null}
-    </>
+    </View>
   );
 };
 /* eslint-enable complexity */
@@ -182,7 +187,8 @@ const Space = () => {
 
 ConsulCommentListItem.propTypes = {
   item: PropTypes.object.isRequired,
-  onRefresh: PropTypes.func
+  onRefresh: PropTypes.func,
+  replyList: PropTypes.bool
 };
 
 LikeDissLikeIcon.propTypes = {
@@ -194,6 +200,9 @@ LikeDissLikeIcon.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginTop: normalize(10)
+  },
   bottomContainer: {
     borderBottomWidth: 0.5,
     borderColor: colors.darkText,

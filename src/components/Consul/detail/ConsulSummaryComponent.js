@@ -3,16 +3,14 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 
 import { colors } from '../../../config';
-import { RegularText } from '../../Text';
+import { BoldText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 
 export const ConsulSummaryComponent = ({ summary }) => {
   return (
     <Wrapper>
       <View style={styles.textContainer}>
-        <RegularText small placeholder>
-          {summary}
-        </RegularText>
+        <BoldText small>{summary}</BoldText>
       </View>
     </Wrapper>
   );

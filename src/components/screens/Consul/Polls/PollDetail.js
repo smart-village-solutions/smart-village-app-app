@@ -8,19 +8,11 @@ import { Title, TitleContainer, TitleShadow } from '../../../Title';
 import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../../../Wrapper';
 import { HtmlView } from '../../../HtmlView';
 import { Button } from '../../../Button';
-import {
-  ConsulCommentList,
-  ConsulTagList,
-  ConsulVotingComponent,
-  ConsulPublicAuthorComponent,
-  Input,
-  ConsulStartNewButton
-} from '../../../Consul';
+import { ConsulVotingComponent, ConsulPublicAuthorComponent, Input } from '../../../Consul';
 import { consts, device, texts } from '../../../../config';
 import { useOpenWebScreen } from '../../../../hooks';
 import { ConsulClient } from '../../../../ConsulClient';
 import { ADD_COMMENT_TO_DEBATE } from '../../../../queries/Consul';
-import { QUERY_TYPES } from '../../../../queries';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
@@ -34,7 +26,6 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
     cachedVotesDown,
     cachedVotesUp,
     cachedVotesTotal,
-    comments,
     commentsCount,
     description,
     id,
@@ -42,7 +33,7 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
     publicCreatedAt,
     title
   } = listData.poll;
-  console.log(listData);
+
   const openWebScreen = useOpenWebScreen(
     route.params?.title ?? '',
     undefined,
