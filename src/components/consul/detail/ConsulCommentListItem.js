@@ -84,7 +84,7 @@ export const ConsulCommentListItem = ({ item, onRefresh }) => {
               <Touchable onPress={() => setResponseShow(!responseShow)}>
                 <RegularText primary smallest>
                   {responses.length} {responseShow ? text.answer : text.return}
-                  {responseShow ? `(${text.collapse})` : `(${text.show})`}
+                  {responseShow ? ` (${text.collapse})` : ` (${text.show})`}
                 </RegularText>
               </Touchable>
             ) : (
@@ -97,10 +97,11 @@ export const ConsulCommentListItem = ({ item, onRefresh }) => {
           {/* Reply Button! */}
           <Touchable onPress={() => setReply(!reply)}>
             <RegularText primary smallest>
-              Antwort
+              {text.answer}
             </RegularText>
           </Touchable>
         </View>
+
         <View style={styles.bottomLine}>
           {/* Vote for Commit! */}
           <WrapperRow>
@@ -176,7 +177,7 @@ const LikeDissLikeIcon = ({ cachedVotesUp, cachedVotesDown, like, disslike, onPr
 };
 
 const Space = () => {
-  return <RegularText smallest>|</RegularText>;
+  return <RegularText smallest> | </RegularText>;
 };
 
 ConsulCommentListItem.propTypes = {
@@ -200,7 +201,8 @@ const styles = StyleSheet.create({
   },
   bottomLine: {
     flexDirection: 'row',
-    justifyContent: 'space-around'
+    justifyContent: 'flex-start',
+    marginTop: normalize(10)
   },
   replyContainer: {
     borderLeftWidth: 0.5,

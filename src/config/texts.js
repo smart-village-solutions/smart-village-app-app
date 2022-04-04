@@ -103,7 +103,7 @@ export const texts = {
     tags: 'Stichworte',
     supports: 'Unterstützer*innen',
     show: 'Anzeigen',
-    collapse: 'Kollaps',
+    collapse: 'Anzeigen',
     return: 'Rückmeldung',
     noReturn: 'Keine Rückmeldung',
     votes: 'Stimmen',
