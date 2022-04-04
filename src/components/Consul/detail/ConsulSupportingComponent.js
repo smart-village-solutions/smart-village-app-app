@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Alert } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { useMutation } from 'react-apollo';
 
 import { TitleContainer, Title, TitleShadow } from '../../Title';
 import { Wrapper } from '../../Wrapper';
-import { texts, consts, device } from '../../../config';
-import { RegularText } from '../../Text';
+import { texts, consts, device, normalize } from '../../../config';
+import { BoldText, RegularText } from '../../Text';
 import { SUPPORT_PROPOSAL } from '../../../queries/Consul';
 import { ConsulClient } from '../../../ConsulClient';
 import { Button } from '../../Button';
@@ -39,17 +39,21 @@ export const ConsulSupportingComponent = (votesData) => {
       {device.platform === 'ios' && <TitleShadow />}
 
       <Wrapper>
-        <RegularText center>
+        <BoldText center>
           {cachedVotesUp} {text.supports}
-        </RegularText>
+        </BoldText>
         <RegularText center smallest>
           100 {text.supportNeed}
         </RegularText>
-        {!currentUserHasVoted ? (
-          <Button title="Unterstutzung" onPress={() => onVoting()} />
-        ) : (
-          <RegularText center>{text.proposalAlready}</RegularText>
-        )}
+        <View style={styles.buttonContainer}>
+          {!currentUserHasVoted ? (
+            <Button title="Unterstutzung" onPress={() => onVoting()} />
+          ) : (
+            <RegularText center small>
+              {text.proposalAlready}
+            </RegularText>
+          )}
+        </View>
       </Wrapper>
     </>
   );
@@ -58,3 +62,9 @@ export const ConsulSupportingComponent = (votesData) => {
 ConsulSupportingComponent.propTypes = {
   votesData: PropTypes.object.isRequired
 };
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    marginTop: normalize(10)
+  }
+});
