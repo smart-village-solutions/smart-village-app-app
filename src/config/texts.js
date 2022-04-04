@@ -143,7 +143,8 @@ export const texts = {
       proposalVideoUrlInfo: '(Füge einen YouTube oder Vimeo Link hinzu)',
       proposalSummaryInfo: '(maximal 200 Zeichen)',
       proposalTagInfo:
-        '(Diesen Vorschlag markieren. Sie können aus vorgeschlagenen Kategorien wählen, oder Ihre eigenen hinzufügen)'
+        '(Diesen Vorschlag markieren. Sie können aus vorgeschlagenen Kategorien wählen, oder Ihre eigenen hinzufügen)',
+      tags: 'Tags'
     },
     homeScreen: {
       account: 'Konto',

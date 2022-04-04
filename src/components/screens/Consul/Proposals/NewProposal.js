@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Alert, TouchableOpacity, StyleSheet, ScrollView, View } from 'react-native';
+import { Alert, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
@@ -160,23 +160,29 @@ export const NewProposal = ({ navigation, data, query }) => {
     <SafeAreaViewFlex>
       <WrapperWithOrientation>
         {Inputs.map((item, index) => (
-          <View key={index}>
+          <Wrapper key={index} style={styles.noPaddingTop}>
             {item.type === 'input' && (
-              <Wrapper key={index} style={styles.noPaddingTop}>
-                <Input key={index} {...item} control={control} rules={item.rules} />
-              </Wrapper>
+              <>
+                <Input {...item} control={control} rules={item.rules} />
+              </>
+            )}
+
+            {item.type === 'title' && (
+              <>
+                <Label>{item.title}</Label>
+              </>
             )}
 
             {item.type === 'infoText' && (
-              <Wrapper style={styles.noPaddingTop}>
-                <RegularText key={index} smallest placeholder>
+              <>
+                <RegularText smallest placeholder>
                   {item.title}
                 </RegularText>
-              </Wrapper>
+              </>
             )}
 
             {item.type === 'category' && (
-              <Wrapper style={styles.noPaddingTop} key={index}>
+              <>
                 <Label>{item.title}</Label>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                   {item.category.map((items, indexs) => (
@@ -207,9 +213,9 @@ export const NewProposal = ({ navigation, data, query }) => {
                     </TouchableOpacity>
                   ))}
                 </ScrollView>
-              </Wrapper>
+              </>
             )}
-          </View>
+          </Wrapper>
         ))}
 
         <WrapperHorizontal>
@@ -327,24 +333,29 @@ const Inputs = [
     title: text.proposalVideoUrlInfo
   },
   {
-    type: 'input',
-    name: 'tagList',
-    multiline: true,
-    label: text.newProposalTagLabel,
-    placeholder: text.newProposalTagLabel,
-    keyboardType: 'default',
-    textContentType: 'none',
-    autoCompleteType: 'off',
-    autoCapitalize: 'none',
-    rules: { required: false }
+    type: 'title',
+    title: text.tags
   },
   {
     type: 'infoText',
     title: text.proposalTagInfo
   },
+
   {
     type: 'category',
     title: 'Kategorien',
     category: kategorien
+  },
+  {
+    type: 'input',
+    name: 'tagList',
+    multiline: true,
+    label: text.newProposalTagLabel,
+    placeholder: text.tags,
+    keyboardType: 'default',
+    textContentType: 'none',
+    autoCompleteType: 'off',
+    autoCapitalize: 'none',
+    rules: { required: false }
   }
 ];
