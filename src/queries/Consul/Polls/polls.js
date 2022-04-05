@@ -21,18 +21,13 @@ export const GET_POLL = gql`
       commentsCount
       published
       title
-      token
       comments {
         id
         parentId
         body
-        ancestry
         cachedVotesUp
         cachedVotesDown
         cachedVotesTotal
-        commentableId
-        commentableType
-        confidenceScore
         publicCreatedAt
         publicAuthor {
           id
@@ -41,6 +36,7 @@ export const GET_POLL = gql`
       }
       questions {
         title
+        id
         questionAnswers {
           id
           title

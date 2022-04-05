@@ -6,11 +6,9 @@ import { useMutation } from 'react-apollo';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
 import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../../../Wrapper';
-import { HtmlView } from '../../../HtmlView';
 import { Button } from '../../../Button';
-import { ConsulVotingComponent, ConsulPublicAuthorComponent, Input } from '../../../Consul';
+import { Input, ConsulCommentList, ConsulQuestionsList } from '../../../Consul';
 import { consts, device, texts } from '../../../../config';
-import { useOpenWebScreen } from '../../../../hooks';
 import { ConsulClient } from '../../../../ConsulClient';
 import { ADD_COMMENT_TO_DEBATE } from '../../../../queries/Consul';
 
@@ -19,26 +17,10 @@ const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
+export const PollDetail = ({ listData, onRefresh }) => {
   const [loading, setLoading] = useState();
 
-  const {
-    cachedVotesDown,
-    cachedVotesUp,
-    cachedVotesTotal,
-    commentsCount,
-    description,
-    id,
-    publicAuthor,
-    publicCreatedAt,
-    title
-  } = listData.poll;
-
-  const openWebScreen = useOpenWebScreen(
-    route.params?.title ?? '',
-    undefined,
-    route.params?.rootRouteName
-  );
+  const { commentsCount, comments, questions, id, title } = listData.poll;
 
   // React Hook Form
   const { control, handleSubmit, reset } = useForm();
@@ -72,47 +54,23 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
           </>
         )}
 
-        {/* Author! */}
-        {!!publicAuthor && (
-          <ConsulPublicAuthorComponent
-            authorData={{
-              publicAuthor: publicAuthor,
-              commentsCount: commentsCount,
-              publicCreatedAt: publicCreatedAt
-            }}
-          />
-        )}
-
-        {/* Description! */}
-        {!!description && (
-          <Wrapper>
-            <HtmlView html={description} openWebScreen={openWebScreen} />
-          </Wrapper>
-        )}
-
-        {/* Voting Component! */}
-        {/*TODO: Mutation funksionert nicht*/}
-        <ConsulVotingComponent
-          votesData={{
-            cachedVotesTotal: cachedVotesTotal,
-            cachedVotesUp: cachedVotesUp,
-            cachedVotesDown: cachedVotesDown
-          }}
-        />
+        {/* Question! */}
+        {!!questions && <ConsulQuestionsList data={questions} />}
 
         {/* Comments List! */}
-        {/* {!!comments && (
+        {!!comments && (
           <ConsulCommentList
             commentCount={commentsCount}
-            commentsData={comments.nodes}
+            commentsData={comments}
             onRefresh={onRefresh}
           />
-        )} */}
+        )}
 
         {/* New Comment Input! */}
         <Wrapper>
           <Input
             multiline
+            minHeight={50}
             name="comment"
             label={text.commentLabel}
             placeholder={text.comment}
@@ -136,9 +94,5 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
 
 PollDetail.propTypes = {
   listData: PropTypes.object.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
-  }).isRequired,
-  onRefresh: PropTypes.func,
-  route: PropTypes.object
+  onRefresh: PropTypes.func
 };

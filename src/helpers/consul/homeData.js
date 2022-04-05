@@ -36,7 +36,7 @@ export const homeData = [
         params: {
           title: text.voting,
           query: query.POLLS,
-          queryVariables: { filter: 'expired' },
+          queryVariables: { filter: 'current' },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
         subtitle: null,
