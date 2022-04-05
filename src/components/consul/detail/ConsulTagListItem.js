@@ -3,15 +3,16 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { RegularText } from '../../Text';
-import { colors } from '../../../config';
+// import { colors } from '../../../config';
 
 export const ConsulTagListItem = ({ item, onPress }) => {
   const { name } = item.item;
+
   return (
     <TouchableOpacity style={styles.tagContainer} onPress={onPress}>
       {/* TODO: Touchable will be added to filter  */}
       <RegularText small style={styles.tagText}>
-        {name}
+        {name},
       </RegularText>
     </TouchableOpacity>
   );
@@ -19,12 +20,12 @@ export const ConsulTagListItem = ({ item, onPress }) => {
 
 const styles = StyleSheet.create({
   tagContainer: {
-    backgroundColor: colors.borderRgba,
-    margin: 5,
-    borderRadius: 5
+    // backgroundColor: colors.borderRgba,
+    // margin: 5,
+    // borderRadius: 5
   },
   tagText: {
-    padding: 10
+    // padding: 10
   }
 });
 
