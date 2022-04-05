@@ -312,6 +312,7 @@ const Inputs = [
     textContentType: 'none',
     autoCompleteType: 'off',
     autoCapitalize: 'none',
+    minHeight: 150,
     rules: {
       required: text.leerError,
       minLength: { value: 10, message: text.descriptionShortError }

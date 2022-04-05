@@ -173,6 +173,7 @@ const Inputs = [
   {
     name: 'description',
     multiline: true,
+    minHeight: 150,
     label: text.newDebateDescriptionLabel,
     placeholder: text.newDebateDescriptionLabel,
     keyboardType: 'default',
@@ -186,7 +187,8 @@ const Inputs = [
   },
   {
     name: 'tagList',
-    label: text.newDebateTagLabel,
+    multiline: true,
+    label: text.tags,
     placeholder: text.newDebateTagLabel,
     keyboardType: 'default',
     textContentType: 'none',
