@@ -79,7 +79,14 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
       {/* Below Comment! */}
       <View style={styles.bottomContainer}>
         <View style={styles.bottomLine}>
-          <View>
+          {responses && responses.length > 0 ? (
+            responseShow ? (
+              <Icon.ArrowUp size={normalize(16)} color={colors.primary} />
+            ) : (
+              <Icon.ArrowDown size={normalize(16)} color={colors.primary} />
+            )
+          ) : null}
+          <>
             {responses && responses.length > 0 ? (
               <Touchable onPress={() => setResponseShow(!responseShow)}>
                 <RegularText primary smallest>
@@ -90,7 +97,7 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
             ) : (
               <RegularText smallest>{text.noReturn}</RegularText>
             )}
-          </View>
+          </>
 
           <Space />
 
@@ -211,7 +218,8 @@ const styles = StyleSheet.create({
   bottomLine: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    marginTop: normalize(10)
+    marginTop: normalize(10),
+    alignItems: 'center'
   },
   replyContainer: {
     borderLeftWidth: 0.5,
