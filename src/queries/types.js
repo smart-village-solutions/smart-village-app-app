@@ -37,7 +37,9 @@ export const QUERY_TYPES = {
     SORTING: {
       NEWESTDATE: 'newestDate',
       MOSTACTIVE: 'mostActive',
-      HIGHESTRATED: 'highestRated'
+      HIGHESTRATED: 'highestRated',
+      CURRENT: 'current',
+      EXPIRED: 'expired'
     }
   }
 };

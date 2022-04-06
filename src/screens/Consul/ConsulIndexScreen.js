@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { RefreshControl, Text } from 'react-native';
 
 import { LoadingSpinner, SafeAreaViewFlex, Debates, Proposals, Polls } from '../../components';
-import { parseListItemsFromQuery, sortingHelper } from '../../helpers';
+import { filterHelper, parseListItemsFromQuery, sortingHelper } from '../../helpers';
 import { colors } from '../../config';
 import { useConsulData } from '../../hooks';
 import { texts } from '../../config';
@@ -20,6 +20,11 @@ const INITIAL_TOP_SORTING = [
   { id: type.NEWESTDATE, title: text.newest, selected: false }
 ];
 
+const INITIAL_TOP_FILTERING_FOR_POLLS = [
+  { id: type.CURRENT, title: text.current, selected: true },
+  { id: type.EXPIRED, title: text.expired, selected: false }
+];
+
 const getComponent = (query) => {
   const COMPONENTS = {
     [queryType.DEBATES]: Debates,
@@ -32,11 +37,14 @@ const getComponent = (query) => {
 export const ConsulIndexScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [listData, setListData] = useState([]);
-  const [sorting, setSorting] = useState(INITIAL_TOP_SORTING);
+  const [sorting, setSorting] = useState(
+    route.params?.query === queryType.POLLS ? INITIAL_TOP_FILTERING_FOR_POLLS : INITIAL_TOP_SORTING
+  );
   const [sortingLoading, setSortingLoading] = useState(true);
+  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const bookmarkable = route.params?.bookmarkable;
   const query = route.params?.query ?? '';
-  const queryVariables = route.params?.queryVariables ?? {};
+  // let queryVariables = route.params?.queryVariables ?? {};
 
   const { data, refetch, isLoading, isError } = useConsulData({
     query,
@@ -51,8 +59,15 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   useEffect(() => {
     setSortingLoading(true);
     let type = sorting.find((data) => data.selected);
+
+    //TODO: Filter for Polls!
+    if (query === queryType.POLLS) setQueryVariables({ filter: type.id });
+    filterHelper(type.id)
+      .then((val) => setQueryVariables(val))
+      .catch((err) => console.error(err));
+
     sortingHelper(type.id, listItems)
-      .then((val) => setListData(val))
+      .then(async (val) => await setListData(val))
       .then(() => setSortingLoading(false))
       .catch((err) => console.error(err));
   }, [sorting, isLoading]);

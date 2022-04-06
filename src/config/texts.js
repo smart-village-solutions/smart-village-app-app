@@ -159,7 +159,9 @@ export const texts = {
     sorting: {
       mostActive: 'Aktivste',
       newest: 'Neuste',
-      highestRated: 'Am besten bewertet'
+      highestRated: 'Am besten bewertet',
+      current: 'Offen',
+      expired: 'Abgelaufen'
     }
   },
   dataProvider: {
