@@ -41,6 +41,7 @@ const getComponent = (query) => {
   };
   return COMPONENTS[query];
 };
+/* eslint-disable complexity */
 
 export const ConsulIndexScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -101,7 +102,9 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      <IndexFilterWrapperAndList filter={sorting} setFilter={setSorting} />
+      {query !== queryType.USER && (
+        <IndexFilterWrapperAndList filter={sorting} setFilter={setSorting} />
+      )}
 
       <Component
         query={query}
@@ -122,6 +125,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 ConsulIndexScreen.propTypes = {
   navigation: PropTypes.shape({
