@@ -185,6 +185,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
             textContentType="none"
             autoCompleteType="off"
             multiline
+            minHeight={50}
             name="comment"
             label={text.commentLabel}
             placeholder={text.comment}

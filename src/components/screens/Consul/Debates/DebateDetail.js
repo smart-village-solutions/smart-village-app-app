@@ -142,6 +142,7 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
         <Wrapper>
           <Input
             multiline
+            minHeight={50}
             name="comment"
             label={text.commentLabel}
             placeholder={text.comment}

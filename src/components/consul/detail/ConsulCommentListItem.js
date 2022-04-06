@@ -154,6 +154,7 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
         <>
           <Input
             multiline
+            minHeight={50}
             name="comment"
             label={text.commentLabel}
             placeholder={text.comment}

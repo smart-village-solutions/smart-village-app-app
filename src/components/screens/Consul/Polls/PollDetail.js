@@ -10,7 +10,7 @@ import { Button } from '../../../Button';
 import { Input, ConsulCommentList, ConsulQuestionsList } from '../../../Consul';
 import { consts, device, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
-import { ADD_COMMENT_TO_DEBATE } from '../../../../queries/Consul';
+import { ADD_COMMENT_TO_POLLS } from '../../../../queries/Consul';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
@@ -26,13 +26,13 @@ export const PollDetail = ({ listData, onRefresh }) => {
   const { control, handleSubmit, reset } = useForm();
 
   // GraphQL
-  const [addCommentToDebate] = useMutation(ADD_COMMENT_TO_DEBATE, {
+  const [addCommentToPoll] = useMutation(ADD_COMMENT_TO_POLLS, {
     client: ConsulClient
   });
 
   const onSubmit = async (val) => {
     setLoading(true);
-    await addCommentToDebate({ variables: { debateId: id, body: val.comment } })
+    await addCommentToPoll({ variables: { pollId: id, body: val.comment } })
       .then(() => {
         onRefresh();
         setLoading(false);
