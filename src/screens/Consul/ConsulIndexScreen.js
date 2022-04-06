@@ -2,7 +2,14 @@ import PropTypes from 'prop-types';
 import React, { useState, useCallback, useEffect } from 'react';
 import { RefreshControl, Text } from 'react-native';
 
-import { LoadingSpinner, SafeAreaViewFlex, Debates, Proposals, Polls } from '../../components';
+import {
+  LoadingSpinner,
+  SafeAreaViewFlex,
+  Debates,
+  Proposals,
+  Polls,
+  User
+} from '../../components';
 import { filterHelper, parseListItemsFromQuery, sortingHelper } from '../../helpers';
 import { colors } from '../../config';
 import { useConsulData } from '../../hooks';
@@ -29,7 +36,8 @@ const getComponent = (query) => {
   const COMPONENTS = {
     [queryType.DEBATES]: Debates,
     [queryType.PROPOSALS]: Proposals,
-    [queryType.POLLS]: Polls
+    [queryType.POLLS]: Polls,
+    [queryType.USER]: User
   };
   return COMPONENTS[query];
 };
@@ -44,6 +52,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const bookmarkable = route.params?.bookmarkable;
   const query = route.params?.query ?? '';
+  const extraQuery = route.params?.extraQuery ?? '';
   // let queryVariables = route.params?.queryVariables ?? {};
 
   const { data, refetch, isLoading, isError } = useConsulData({
@@ -61,10 +70,10 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
     let type = sorting.find((data) => data.selected);
 
     //TODO: Filter for Polls!
-    if (query === queryType.POLLS) setQueryVariables({ filter: type.id });
-    filterHelper(type.id)
-      .then((val) => setQueryVariables(val))
-      .catch((err) => console.error(err));
+    if (query === queryType.POLLS)
+      filterHelper(type.id)
+        .then((val) => setQueryVariables(val))
+        .catch((err) => console.error(err));
 
     sortingHelper(type.id, listItems)
       .then(async (val) => await setListData(val))
@@ -88,7 +97,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   // TODO: If Error true return error component
   if (isError) return <Text>{isError.message}</Text>;
 
-  if (!listData || !Component) return null;
+  if ((query !== queryType.USER && !listData) || !Component) return null;
 
   return (
     <SafeAreaViewFlex>
@@ -97,8 +106,10 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
       <Component
         query={query}
         listData={listData}
+        data={data}
         navigation={navigation}
         route={route}
+        extraQuery={extraQuery}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

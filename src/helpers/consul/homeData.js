@@ -1,9 +1,19 @@
 import { ScreenName } from '../../types';
 import { QUERY_TYPES } from '../../queries';
 import { texts } from '../../config';
+// import { getConsulUser } from '../consulHelper';
 
 const query = QUERY_TYPES.CONSUL;
 const text = texts.consul.homeScreen;
+
+// const logInCallback = async () => {
+//   try {
+//     const storedConsulAuthToken = await getConsulUser();
+//     return JSON.parse(storedConsulAuthToken).id;
+//   } catch (e) {
+//     console.warn(e);
+//   }
+// };
 
 export const homeData = [
   {
@@ -47,9 +57,42 @@ export const homeData = [
   {
     title: text.personal,
     data: [
-      { routeName: { name: null }, params: {}, subtitle: null, title: text.debates },
-      { routeName: { name: null }, params: {}, subtitle: null, title: text.proposals },
-      { routeName: { name: null }, params: {}, subtitle: null, title: text.voting }
+      {
+        routeName: ScreenName.ConsulIndexScreen,
+        params: {
+          title: text.myDebates,
+          query: query.USER,
+          extraQuery: query.PUBLIC_DEBATES,
+          queryVariables: { id: '49' },
+          rootRouteName: ScreenName.ConsulHomeScreen
+        },
+        subtitle: null,
+        title: text.myDebates
+      },
+      {
+        routeName: ScreenName.ConsulIndexScreen,
+        params: {
+          title: text.myProposals,
+          query: query.USER,
+          extraQuery: query.PUBLIC_PROPOSALS,
+          queryVariables: { id: '49' },
+          rootRouteName: ScreenName.ConsulHomeScreen
+        },
+        subtitle: null,
+        title: text.myProposals
+      },
+      {
+        routeName: ScreenName.ConsulIndexScreen,
+        params: {
+          title: text.myComments,
+          query: query.USER,
+          extraQuery: query.PUBLIC_COMMENTS,
+          queryVariables: { id: '49' },
+          rootRouteName: ScreenName.ConsulHomeScreen
+        },
+        subtitle: null,
+        title: text.myComments
+      }
     ]
   },
   {

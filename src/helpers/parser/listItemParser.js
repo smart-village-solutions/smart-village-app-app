@@ -260,6 +260,9 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.CONSUL.DEBATES:
     case QUERY_TYPES.CONSUL.PROPOSALS:
     case QUERY_TYPES.CONSUL.POLLS:
+    case QUERY_TYPES.CONSUL.PUBLIC_DEBATES:
+    case QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS:
+    case QUERY_TYPES.CONSUL.PUBLIC_COMMENTS:
       return parseConsulData(data[query], query, skipLastDivider);
   }
 };

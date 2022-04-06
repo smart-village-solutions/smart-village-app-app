@@ -21,7 +21,7 @@ import {
 import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { CONSUL_LOGIN_USER, CONSUL_USER_SEND_PASSWORD_RESET } from '../../../queries/Consul';
 import { ConsulClient } from '../../../ConsulClient';
-import { setConsulAuthToken } from '../../../helpers';
+import { setConsulAuthToken, setConsulUser } from '../../../helpers';
 import { ScreenName } from '../../../types';
 
 const { a11yLabel } = consts;
@@ -58,6 +58,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
     await userLogin({ variables: { email: val.email, password: val.password } })
       .then(async (val) => {
         await setConsulAuthToken(val.data.userLogin?.credentials);
+        await setConsulUser(val.data.userLogin?.authenticatable);
 
         navigation?.navigate(ScreenName.ConsulHomeScreen, {
           refreshUser: new Date().valueOf()

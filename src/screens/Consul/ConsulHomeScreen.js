@@ -5,7 +5,7 @@ import { RefreshControl, ScrollView, Text } from 'react-native';
 import { LoadingSpinner, SafeAreaViewFlex, ConsulWelcome, Touchable } from '../../components';
 import { colors } from '../../config';
 import { useConsulUser } from '../../hooks';
-import { homeData, setConsulAuthToken } from '../../helpers';
+import { homeData, setConsulAuthToken, setConsulUser } from '../../helpers';
 import { ConsulListComponent } from '../../components';
 import { ScreenName } from '../../types';
 
@@ -54,6 +54,7 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
         <Touchable
           onPress={async () => {
             await setConsulAuthToken();
+            await setConsulUser();
             navigation?.navigate(ScreenName.ConsulHomeScreen, {
               refreshUser: new Date().valueOf()
             });

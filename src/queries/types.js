@@ -34,6 +34,11 @@ export const QUERY_TYPES = {
     UPDATE_PROPOSAL: 'updateProposal',
     POLLS: 'polls',
     POLL: 'poll',
+    USER: 'user',
+    COMMENTS: 'comments',
+    PUBLIC_DEBATES: 'publicDebates',
+    PUBLIC_PROPOSALS: 'publicProposals',
+    PUBLIC_COMMENTS: 'publicComments',
     SORTING: {
       NEWESTDATE: 'newestDate',
       MOSTACTIVE: 'mostActive',

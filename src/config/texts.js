@@ -154,7 +154,10 @@ export const texts = {
       voting: 'Abstimmung',
       personal: 'Persönlich',
       settings: 'Einstellungen',
-      logout: 'Ausloggen'
+      logout: 'Ausloggen',
+      myDebates: 'Meine Diskussionen',
+      myComments: 'Meine Kommentare',
+      myProposals: 'Meine Vorschläge'
     },
     sorting: {
       mostActive: 'Aktivste',
