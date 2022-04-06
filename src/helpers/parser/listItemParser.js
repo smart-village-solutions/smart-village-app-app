@@ -201,8 +201,10 @@ const parsePointsOfInterestAndTours = (data) => {
 const querySwitcherforDetail = (query) => {
   switch (query) {
     case QUERY_TYPES.CONSUL.DEBATES:
+    case QUERY_TYPES.CONSUL.PUBLIC_DEBATES:
       return QUERY_TYPES.CONSUL.DEBATE;
     case QUERY_TYPES.CONSUL.PROPOSALS:
+    case QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS:
       return QUERY_TYPES.CONSUL.PROPOSAL;
     case QUERY_TYPES.CONSUL.POLLS:
       return QUERY_TYPES.CONSUL.POLL;
