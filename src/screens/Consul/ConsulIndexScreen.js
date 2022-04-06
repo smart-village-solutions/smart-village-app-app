@@ -77,7 +77,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
         .catch((err) => console.error(err));
 
     sortingHelper(type.id, listItems)
-      .then(async (val) => await setListData(val))
+      .then((val) => setListData(val))
       .then(() => setSortingLoading(false))
       .catch((err) => console.error(err));
   }, [sorting, isLoading]);
