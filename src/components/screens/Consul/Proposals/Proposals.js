@@ -8,7 +8,7 @@ import { texts } from '../../../../config';
 
 const text = texts.consul;
 
-export const Proposals = ({ navigation, query, listData, refreshControl }) => {
+export const Proposals = ({ navigation, query, listData, refreshControl, myContent }) => {
   return (
     <>
       <ListComponent
@@ -18,12 +18,15 @@ export const Proposals = ({ navigation, query, listData, refreshControl }) => {
         refreshControl={refreshControl}
         showBackToTop
       />
-      <ConsulStartNewButton
-        title={text.startNew.newProposalStartButtonLabel}
-        query={QUERY_TYPES.CONSUL.START_PROPOSAL}
-        navigation={navigation}
-        buttonTitle={text.startNew.newProposalStartButtonLabel}
-      />
+
+      {!myContent && (
+        <ConsulStartNewButton
+          title={text.startNew.newProposalStartButtonLabel}
+          query={QUERY_TYPES.CONSUL.START_PROPOSAL}
+          navigation={navigation}
+          buttonTitle={text.startNew.newProposalStartButtonLabel}
+        />
+      )}
     </>
   );
 };
@@ -33,5 +36,6 @@ Proposals.propTypes = {
   navigation: PropTypes.object.isRequired,
   query: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
-  refreshControl: PropTypes.object.isRequired
+  refreshControl: PropTypes.object.isRequired,
+  myContent: PropTypes.bool
 };

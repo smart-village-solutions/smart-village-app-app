@@ -39,6 +39,7 @@ export const QUERY_TYPES = {
     PUBLIC_DEBATES: 'publicDebates',
     PUBLIC_PROPOSALS: 'publicProposals',
     PUBLIC_COMMENTS: 'publicComments',
+    PUBLIC_COMMENT: 'publicComment',
     SORTING: {
       NEWESTDATE: 'newestDate',
       MOSTACTIVE: 'mostActive',

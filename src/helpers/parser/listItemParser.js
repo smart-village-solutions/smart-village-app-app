@@ -208,6 +208,8 @@ const querySwitcherforDetail = (query) => {
       return QUERY_TYPES.CONSUL.PROPOSAL;
     case QUERY_TYPES.CONSUL.POLLS:
       return QUERY_TYPES.CONSUL.POLL;
+    case QUERY_TYPES.CONSUL.PUBLIC_COMMENTS:
+      return QUERY_TYPES.CONSUL.PUBLIC_COMMENT;
     default:
       break;
   }
@@ -215,14 +217,13 @@ const querySwitcherforDetail = (query) => {
 const parseConsulData = (data, query, skipLastDivider) => {
   return data?.nodes?.map((data, index) => ({
     id: data.id,
-    title: data.title,
+    title: data.title ? data.title : data.body,
     createdAt: data.publicCreatedAt,
     totalVotes: data.cachedVotesTotal,
-    // subtitle: data.commentsCount ? data.commentsCount + ' Comment' : '0 Comment',
     subtitle: momentFormatUtcToLocal(data.publicCreatedAt),
     routeName: ScreenName.ConsulDetailScreen,
     params: {
-      title: data.title,
+      title: data.title ? data.title : data.body,
       query: querySwitcherforDetail(query),
       queryVariables: { id: data.id },
       rootRouteName: ROOT_ROUTE_NAMES.CONSOLE_HOME

@@ -5,6 +5,7 @@ import { QUERY_TYPES } from '../../../../queries';
 import { parseListItemsFromQuery } from '../../../../helpers';
 import { Debates } from '../Debates';
 import { Proposals } from '../Proposals';
+import { UserComments } from '../UserComments';
 import { momentFormatUtcToLocal } from '../../../../helpers';
 
 const queryType = QUERY_TYPES.CONSUL;
@@ -12,7 +13,8 @@ const queryType = QUERY_TYPES.CONSUL;
 const getComponent = (query) => {
   const COMPONENTS = {
     [queryType.PUBLIC_DEBATES]: Debates,
-    [queryType.PUBLIC_PROPOSALS]: Proposals
+    [queryType.PUBLIC_PROPOSALS]: Proposals,
+    [queryType.PUBLIC_COMMENTS]: UserComments
   };
   return COMPONENTS[query];
 };
@@ -38,6 +40,7 @@ export const User = ({ navigation, data, route, extraQuery, refreshControl }) =>
 
   return (
     <Component
+      myContent={true}
       query={query}
       listData={listItems}
       navigation={navigation}

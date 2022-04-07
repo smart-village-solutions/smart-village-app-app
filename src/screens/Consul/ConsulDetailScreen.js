@@ -7,6 +7,7 @@ import {
   DebateDetail,
   ProposalDetail,
   PollDetail,
+  UserCommentDetail,
   SafeAreaViewFlex,
   DefaultKeyboardAvoidingView
 } from '../../components';
@@ -20,7 +21,8 @@ const getComponent = (query) => {
   const COMPONENTS = {
     [queryType.DEBATE]: DebateDetail,
     [queryType.PROPOSAL]: ProposalDetail,
-    [queryType.POLL]: PollDetail
+    [queryType.POLL]: PollDetail,
+    [queryType.PUBLIC_COMMENT]: UserCommentDetail
   };
 
   return COMPONENTS[query];

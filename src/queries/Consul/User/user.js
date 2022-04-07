@@ -25,6 +25,13 @@ export const USER = gql`
       publicComments {
         nodes {
           id
+          body
+          cachedVotesTotal
+          publicCreatedAt
+          publicAuthor {
+            id
+            username
+          }
         }
       }
     }
