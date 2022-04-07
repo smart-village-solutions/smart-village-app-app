@@ -24,6 +24,7 @@ import { ConsulClient } from '../../../../ConsulClient';
 import { ADD_COMMENT_TO_PROPOSAL, PUBLISH_PROPOSAL } from '../../../../queries/Consul';
 import { QUERY_TYPES } from '../../../../queries';
 import { BoldText, RegularText } from '../../../Text';
+import { getConsulUser } from '../../../../helpers';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
@@ -35,6 +36,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
   const [publishedProposal, setPublishedProposal] = useState(
     route.params?.publishedProposal ?? true
   );
+  const [userId, setUserId] = useState();
 
   const {
     cachedVotesUp,
@@ -56,6 +58,9 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     undefined,
     route.params?.rootRouteName
   );
+
+  // GET User ID
+  getConsulUser().then((val) => setUserId(JSON.parse(val).id));
 
   // React Hook Form
   const { control, handleSubmit, reset } = useForm();
@@ -137,23 +142,24 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
         {/* External Video */}
         {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
 
-        {/*TODO: I neet to User ID */}
         {/* Proposal Edit Button */}
-        <ConsulStartNewButton
-          data={{
-            title: title,
-            tagList: tags.nodes.map((item) => item.name),
-            description: description,
-            termsOfService: true,
-            summary: summary,
-            videoUrl: videoUrl,
-            id: id
-          }}
-          navigation={navigation}
-          title={text.startNew.updateButtonLabel}
-          buttonTitle={text.startNew.updateButtonLabel}
-          query={QUERY_TYPES.CONSUL.UPDATE_PROPOSAL}
-        />
+        {publicAuthor.id === userId && (
+          <ConsulStartNewButton
+            data={{
+              title: title,
+              tagList: tags.nodes.map((item) => item.name),
+              description: description,
+              termsOfService: true,
+              summary: summary,
+              videoUrl: videoUrl,
+              id: id
+            }}
+            navigation={navigation}
+            title={text.startNew.updateButtonLabel}
+            buttonTitle={text.startNew.updateButtonLabel}
+            query={QUERY_TYPES.CONSUL.UPDATE_PROPOSAL}
+          />
+        )}
 
         {/* Tag List! */}
         {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}

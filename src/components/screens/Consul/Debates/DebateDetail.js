@@ -21,6 +21,7 @@ import { useOpenWebScreen } from '../../../../hooks';
 import { ConsulClient } from '../../../../ConsulClient';
 import { ADD_COMMENT_TO_DEBATE } from '../../../../queries/Consul';
 import { QUERY_TYPES } from '../../../../queries';
+import { getConsulUser } from '../../../../helpers';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
@@ -29,6 +30,7 @@ const a11yText = consts.a11yLabel;
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
   const [loading, setLoading] = useState();
+  const [userId, setUserId] = useState();
 
   const {
     cachedVotesDown,
@@ -49,6 +51,9 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
     undefined,
     route.params?.rootRouteName
   );
+
+  // GET User ID
+  getConsulUser().then((val) => setUserId(JSON.parse(val).id));
 
   // React Hook Form
   const { control, handleSubmit, reset } = useForm();
@@ -100,21 +105,22 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
           </Wrapper>
         )}
 
-        {/*TODO: I neet to User ID */}
         {/* Debate Edit Button */}
-        <ConsulStartNewButton
-          data={{
-            title: title,
-            tagList: tags.nodes.map((item) => item.name),
-            description: description,
-            termsOfService: true,
-            id: id
-          }}
-          navigation={navigation}
-          title={text.startNew.updateButtonLabel}
-          buttonTitle={text.startNew.updateButtonLabel}
-          query={QUERY_TYPES.CONSUL.UPDATE_DEBATE}
-        />
+        {publicAuthor.id === userId && (
+          <ConsulStartNewButton
+            data={{
+              title: title,
+              tagList: tags.nodes.map((item) => item.name),
+              description: description,
+              termsOfService: true,
+              id: id
+            }}
+            navigation={navigation}
+            title={text.startNew.updateButtonLabel}
+            buttonTitle={text.startNew.updateButtonLabel}
+            query={QUERY_TYPES.CONSUL.UPDATE_DEBATE}
+          />
+        )}
 
         {/* Tag List! */}
         {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}

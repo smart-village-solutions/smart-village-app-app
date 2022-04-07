@@ -1,19 +1,9 @@
 import { ScreenName } from '../../types';
 import { QUERY_TYPES } from '../../queries';
 import { texts } from '../../config';
-// import { getConsulUser } from '../consulHelper';
 
 const query = QUERY_TYPES.CONSUL;
 const text = texts.consul.homeScreen;
-
-// const logInCallback = async () => {
-//   try {
-//     const storedConsulAuthToken = await getConsulUser();
-//     return JSON.parse(storedConsulAuthToken).id;
-//   } catch (e) {
-//     console.warn(e);
-//   }
-// };
 
 export const homeData = [
   {
