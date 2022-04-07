@@ -143,7 +143,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
         {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
 
         {/* Proposal Edit Button */}
-        {publicAuthor.id === userId && (
+        {!!publicAuthor && publicAuthor.id === userId && (
           <ConsulStartNewButton
             data={{
               title: title,

@@ -106,7 +106,7 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
         )}
 
         {/* Debate Edit Button */}
-        {publicAuthor.id === userId && (
+        {!!publicAuthor && publicAuthor.id === userId && (
           <ConsulStartNewButton
             data={{
               title: title,
