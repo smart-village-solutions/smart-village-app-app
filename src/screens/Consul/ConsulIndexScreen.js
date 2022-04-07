@@ -54,7 +54,6 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   const bookmarkable = route.params?.bookmarkable;
   const query = route.params?.query ?? '';
   const extraQuery = route.params?.extraQuery ?? '';
-  // let queryVariables = route.params?.queryVariables ?? {};
 
   const { data, refetch, isLoading, isError } = useConsulData({
     query,
@@ -67,7 +66,6 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   });
 
   useEffect(() => {
-    setSortingLoading(true);
     let type = sorting.find((data) => data.selected);
 
     //TODO: Filter for Polls!
@@ -76,10 +74,13 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
         .then((val) => setQueryVariables(val))
         .catch((err) => console.error(err));
 
-    sortingHelper(type.id, listItems)
-      .then((val) => setListData(val))
-      .then(() => setSortingLoading(false))
-      .catch((err) => console.error(err));
+    if (query !== queryType.USER)
+      sortingHelper(type.id, listItems)
+        .then((val) => setListData(val))
+        .then(() => setSortingLoading(false))
+        .catch((err) => console.error(err));
+
+    setSortingLoading(false);
   }, [sorting, isLoading]);
 
   const refresh = useCallback(
