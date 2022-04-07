@@ -5,14 +5,24 @@ import { RefreshControl, ScrollView, Text } from 'react-native';
 import { LoadingSpinner, SafeAreaViewFlex, ConsulWelcome, Touchable } from '../../components';
 import { colors } from '../../config';
 import { useConsulUser } from '../../hooks';
-import { homeData, setConsulAuthToken, setConsulUser } from '../../helpers';
+import { getConsulUser, homeData, setConsulAuthToken, setConsulUser } from '../../helpers';
 import { ConsulListComponent } from '../../components';
 import { ScreenName } from '../../types';
 
 export const ConsulHomeScreen = ({ navigation, route }) => {
   // useState
   const [refreshingHome, setRefreshingHome] = useState(false);
+  const [userId, setUserId] = useState();
   const { refresh: refreshUser, isLoading, isError, isLoggedIn } = useConsulUser();
+
+  //Get User id and set for homeData query variables
+  getConsulUser().then((val) => setUserId(JSON.parse(val).id));
+  useEffect(() => {
+    for (let i = 0; i < homeData[1].data.length; i++) {
+      const element = homeData[1].data[i];
+      element.params.queryVariables.id = userId;
+    }
+  }, [userId]);
 
   const refresh = useCallback(() => {
     refreshUser();

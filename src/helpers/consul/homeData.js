@@ -53,7 +53,7 @@ export const homeData = [
           title: text.myDebates,
           query: query.USER,
           extraQuery: query.PUBLIC_DEBATES,
-          queryVariables: { id: '49' },
+          queryVariables: { id: null },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
         subtitle: null,
@@ -65,7 +65,7 @@ export const homeData = [
           title: text.myProposals,
           query: query.USER,
           extraQuery: query.PUBLIC_PROPOSALS,
-          queryVariables: { id: '49' },
+          queryVariables: { id: null },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
         subtitle: null,
@@ -77,7 +77,7 @@ export const homeData = [
           title: text.myComments,
           query: query.USER,
           extraQuery: query.PUBLIC_COMMENTS,
-          queryVariables: { id: '49' },
+          queryVariables: { id: null },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
         subtitle: null,
