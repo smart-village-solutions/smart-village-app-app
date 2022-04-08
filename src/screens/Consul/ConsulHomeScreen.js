@@ -1,13 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect, useCallback } from 'react';
-import { RefreshControl, ScrollView, Text } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
-import { LoadingSpinner, SafeAreaViewFlex, ConsulWelcome, Touchable } from '../../components';
+import { LoadingSpinner, SafeAreaViewFlex, ConsulWelcome } from '../../components';
 import { colors } from '../../config';
 import { useConsulUser } from '../../hooks';
-import { getConsulUser, homeData, setConsulAuthToken, setConsulUser } from '../../helpers';
+import { getConsulUser, homeData } from '../../helpers';
 import { ConsulListComponent } from '../../components';
-import { ScreenName } from '../../types';
 
 export const ConsulHomeScreen = ({ navigation, route }) => {
   // useState
@@ -16,12 +15,15 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
   const { refresh: refreshUser, isLoading, isError, isLoggedIn } = useConsulUser();
 
   //Get User id and set for homeData query variables
-  getConsulUser().then((val) => setUserId(JSON.parse(val).id));
+  getConsulUser().then((val) => {
+    if (val) return setUserId(JSON.parse(val).id);
+  });
   useEffect(() => {
-    for (let i = 0; i < homeData[1].data.length; i++) {
-      const element = homeData[1].data[i];
-      element.params.queryVariables.id = userId;
-    }
+    if (userId)
+      for (let i = 0; i < homeData[1].data.length; i++) {
+        const element = homeData[1].data[i];
+        element.params.queryVariables.id = userId;
+      }
   }, [userId]);
 
   const refresh = useCallback(() => {
@@ -61,17 +63,6 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
         }
       >
         <ConsulListComponent data={homeData} navigation={navigation} />
-        <Touchable
-          onPress={async () => {
-            await setConsulAuthToken();
-            await setConsulUser();
-            navigation?.navigate(ScreenName.ConsulHomeScreen, {
-              refreshUser: new Date().valueOf()
-            });
-          }}
-        >
-          <Text>LogOut</Text>
-        </Touchable>
       </ScrollView>
     </SafeAreaViewFlex>
   );

@@ -40,6 +40,8 @@ export const QUERY_TYPES = {
     PUBLIC_PROPOSALS: 'publicProposals',
     PUBLIC_COMMENTS: 'publicComments',
     PUBLIC_COMMENT: 'publicComment',
+    USER_SETTINGS: 'userSettings',
+    LOGOUT: 'logout',
     SORTING: {
       NEWESTDATE: 'newestDate',
       MOSTACTIVE: 'mostActive',

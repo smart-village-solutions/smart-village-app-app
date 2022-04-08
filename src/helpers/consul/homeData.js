@@ -89,17 +89,27 @@ export const homeData = [
     title: text.account,
     data: [
       {
-        routeName: ScreenName.ConsulUserSettingsScreen,
+        routeName: ScreenName.ConsulIndexScreen,
         params: {
           title: text.settings,
-          query: null,
-          queryVariables: { limit: 15, order: 'name_ASC', category: text.settings },
+          query: query.USER_SETTINGS,
+          queryVariables: { link: 'https://beteiligung.bad-belzig.de/account' },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
         subtitle: null,
         title: text.settings
       },
-      { routeName: { name: null }, params: {}, subtitle: null, title: text.logout }
+      {
+        routeName: ScreenName.ConsulIndexScreen,
+        params: {
+          title: text.settings,
+          query: query.LOGOUT,
+          queryVariables: { link: 'https://beteiligung.bad-belzig.de/account' },
+          rootRouteName: ScreenName.ConsulHomeScreen
+        },
+        subtitle: null,
+        title: text.logout
+      }
     ]
   }
 ];
