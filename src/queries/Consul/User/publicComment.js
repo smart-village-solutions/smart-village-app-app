@@ -10,6 +10,11 @@ export const PUBLIC_COMMENT = gql`
       cachedVotesDown
       cachedVotesTotal
       publicCreatedAt
+      votesFor {
+        nodes {
+          voteFlag
+        }
+      }
       publicAuthor {
         id
         username

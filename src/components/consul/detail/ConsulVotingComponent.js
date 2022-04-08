@@ -81,7 +81,7 @@ export const ConsulVotingComponent = ({ votesData, onRefresh, id }) => {
 ConsulVotingComponent.propTypes = {
   votesData: PropTypes.object.isRequired,
   id: PropTypes.string,
-  onRefresh: PropTypes.object
+  onRefresh: PropTypes.func
 };
 
 const styles = StyleSheet.create({

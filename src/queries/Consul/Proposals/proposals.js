@@ -45,6 +45,11 @@ export const GET_PROPOSAL = gql`
           cachedVotesDown
           cachedVotesTotal
           publicCreatedAt
+          votesFor {
+            nodes {
+              voteFlag
+            }
+          }
           publicAuthor {
             id
             username

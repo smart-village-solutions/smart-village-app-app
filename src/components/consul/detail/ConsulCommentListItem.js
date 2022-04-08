@@ -42,7 +42,8 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
     id,
     publicAuthor,
     publicCreatedAt,
-    responses
+    responses,
+    votesFor
   } = item.item;
 
   const onSubmit = async (val) => {
@@ -120,13 +121,24 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
               <RegularText smallest>{text.noVotes}</RegularText>
             )}
 
+            {/* Comment like disslike buttons */}
             <LikeDissLikeIcon
+              color={
+                votesFor.nodes[0]?.voteFlag !== undefined && votesFor.nodes[0]?.voteFlag
+                  ? colors.primary
+                  : colors.darkText
+              }
               like
               cachedVotesUp={cachedVotesUp}
               onPress={() => onVotingToComment('up')}
             />
 
             <LikeDissLikeIcon
+              color={
+                votesFor.nodes[0]?.voteFlag !== undefined && !votesFor.nodes[0]?.voteFlag
+                  ? colors.error
+                  : colors.darkText
+              }
               disslike
               cachedVotesDown={cachedVotesDown}
               onPress={() => onVotingToComment('down')}
@@ -176,11 +188,11 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
 };
 /* eslint-enable complexity */
 
-const LikeDissLikeIcon = ({ cachedVotesUp, cachedVotesDown, like, disslike, onPress }) => {
+const LikeDissLikeIcon = ({ cachedVotesUp, cachedVotesDown, like, disslike, onPress, color }) => {
   return (
     <Touchable onPress={onPress} style={styles.iconButton}>
       <Icon.Like
-        color={colors.darkText}
+        color={color}
         style={[styles.icon, { transform: disslike && [{ rotateX: '180deg' }] }]}
         size={normalize(16)}
       />
@@ -204,7 +216,8 @@ LikeDissLikeIcon.propTypes = {
   disslike: PropTypes.bool,
   cachedVotesDown: PropTypes.number,
   cachedVotesUp: PropTypes.number,
-  onPress: PropTypes.func
+  onPress: PropTypes.func,
+  color: PropTypes.string
 };
 
 const styles = StyleSheet.create({

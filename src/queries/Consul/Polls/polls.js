@@ -36,6 +36,11 @@ export const GET_POLL = gql`
         cachedVotesDown
         cachedVotesTotal
         publicCreatedAt
+        votesFor {
+          nodes {
+            voteFlag
+          }
+        }
         publicAuthor {
           id
           username
