@@ -27,6 +27,7 @@ export const GET_POLL = gql`
       startsAt
       endsAt
       createdAt
+      token
       comments {
         id
         parentId

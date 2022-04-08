@@ -37,7 +37,8 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
     description,
     summary,
     startsAt,
-    endsAt
+    endsAt,
+    token
   } = listData.poll;
 
   const openWebScreen = useOpenWebScreen(
@@ -89,7 +90,9 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
         )}
 
         {/* Question! */}
-        {!!questions && <ConsulQuestionsList data={questions} onRefresh={onRefresh} />}
+        {!!questions && (
+          <ConsulQuestionsList data={questions} onRefresh={onRefresh} token={token} />
+        )}
 
         {/* Comments List! */}
         {!!comments && (
