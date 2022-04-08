@@ -43,7 +43,8 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
     publicAuthor,
     publicCreatedAt,
     tags,
-    title
+    title,
+    votesFor
   } = listData.debate;
 
   const openWebScreen = useOpenWebScreen(
@@ -126,12 +127,14 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
         {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
 
         {/* Voting Component! */}
-        {/*TODO: Mutation funksionert nicht*/}
         <ConsulVotingComponent
+          id={id}
+          onRefresh={onRefresh}
           votesData={{
             cachedVotesTotal: cachedVotesTotal,
             cachedVotesUp: cachedVotesUp,
-            cachedVotesDown: cachedVotesDown
+            cachedVotesDown: cachedVotesDown,
+            votesFor: votesFor.nodes[0]?.voteFlag
           }}
         />
 
