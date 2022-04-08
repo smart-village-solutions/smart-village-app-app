@@ -7,20 +7,44 @@ import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
 import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../../../Wrapper';
 import { Button } from '../../../Button';
-import { Input, ConsulCommentList, ConsulQuestionsList } from '../../../Consul';
+import {
+  Input,
+  ConsulCommentList,
+  ConsulQuestionsList,
+  ConsulSummaryComponent
+} from '../../../Consul';
 import { consts, device, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { ADD_COMMENT_TO_POLLS } from '../../../../queries/Consul';
+import { HtmlView } from '../../../HtmlView';
+import { useOpenWebScreen } from '../../../../hooks';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PollDetail = ({ listData, onRefresh }) => {
+export const PollDetail = ({ listData, onRefresh, route }) => {
   const [loading, setLoading] = useState();
 
-  const { commentsCount, comments, questions, id, title } = listData.poll;
+  //TODO: StartsAt, EndsAt Components!
+  const {
+    commentsCount,
+    comments,
+    questions,
+    id,
+    title,
+    description,
+    summary,
+    startsAt,
+    endsAt
+  } = listData.poll;
+
+  const openWebScreen = useOpenWebScreen(
+    route.params?.title ?? '',
+    undefined,
+    route.params?.rootRouteName
+  );
 
   // React Hook Form
   const { control, handleSubmit, reset } = useForm();
@@ -54,8 +78,18 @@ export const PollDetail = ({ listData, onRefresh }) => {
           </>
         )}
 
+        {/* Summary! */}
+        {!!summary && <ConsulSummaryComponent summary={summary} />}
+
+        {/* Description! */}
+        {!!description && (
+          <Wrapper>
+            <HtmlView html={description} openWebScreen={openWebScreen} />
+          </Wrapper>
+        )}
+
         {/* Question! */}
-        {!!questions && <ConsulQuestionsList data={questions} />}
+        {!!questions && <ConsulQuestionsList data={questions} onRefresh={onRefresh} />}
 
         {/* Comments List! */}
         {!!comments && (
@@ -94,5 +128,6 @@ export const PollDetail = ({ listData, onRefresh }) => {
 
 PollDetail.propTypes = {
   listData: PropTypes.object.isRequired,
-  onRefresh: PropTypes.func
+  onRefresh: PropTypes.func,
+  route: PropTypes.object
 };

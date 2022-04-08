@@ -8,6 +8,7 @@ export const GET_POLLS = gql`
         commentsCount
         published
         title
+        createdAt
       }
     }
   }
@@ -21,6 +22,11 @@ export const GET_POLL = gql`
       commentsCount
       published
       title
+      description
+      summary
+      startsAt
+      endsAt
+      createdAt
       comments {
         id
         parentId

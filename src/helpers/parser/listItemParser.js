@@ -220,7 +220,7 @@ const parseConsulData = (data, query, skipLastDivider) => {
     title: data.title ? data.title : data.body,
     createdAt: data.publicCreatedAt,
     totalVotes: data.cachedVotesTotal,
-    subtitle: momentFormatUtcToLocal(data.publicCreatedAt),
+    subtitle: momentFormatUtcToLocal(data.publicCreatedAt ? data.publicCreatedAt : data.createdAt),
     routeName: ScreenName.ConsulDetailScreen,
     params: {
       title: data.title ? data.title : data.body,

@@ -5,14 +5,30 @@ import { StyleSheet, View } from 'react-native';
 import { colors, normalize } from '../../../config';
 import { BoldText, RegularText } from '../../Text';
 
-export const ConsulQuestionsListItem = ({ item }) => {
-  const { questionAnswers, title } = item.item;
+export const ConsulQuestionsListItem = ({ item, onRefresh }) => {
+  const { questionAnswers, title, answersGivenByCurrentUser } = item.item;
+
   return (
     <View style={styles.container}>
       <BoldText style={styles.tagText}>{title}</BoldText>
+
       {questionAnswers.map((item, index) => (
-        <View key={index} style={styles.answerContainer}>
-          <RegularText>{item.title}</RegularText>
+        <View
+          key={index}
+          style={[
+            styles.answerContainer,
+            answersGivenByCurrentUser[0] &&
+              answersGivenByCurrentUser[0].answer === item.title &&
+              styles.selectedContainer
+          ]}
+        >
+          <RegularText
+            lightest={
+              answersGivenByCurrentUser[0] && answersGivenByCurrentUser[0].answer === item.title
+            }
+          >
+            {item.title}
+          </RegularText>
         </View>
       ))}
     </View>
@@ -33,9 +49,15 @@ const styles = StyleSheet.create({
     borderColor: colors.darkText,
     marginVertical: normalize(10),
     paddingVertical: normalize(10)
+  },
+  selectedContainer: {
+    borderColor: colors.primary,
+    borderWidth: 1,
+    backgroundColor: colors.lighterPrimary
   }
 });
 
 ConsulQuestionsListItem.propTypes = {
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  onRefresh: PropTypes.func
 };

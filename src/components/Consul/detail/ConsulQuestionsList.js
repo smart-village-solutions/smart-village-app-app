@@ -7,13 +7,16 @@ import { Wrapper } from '../../Wrapper';
 import { ConsulQuestionsListItem } from './ConsulQuestionsListItem';
 import { ConsulQuestionsDescriptionListItem } from './ConsulQuestionsDescriptionListItem';
 
-export const ConsulQuestionsList = ({ data }) => {
+export const ConsulQuestionsList = ({ data, onRefresh }) => {
   return (
     <Wrapper>
       <FlatList
         data={data}
-        renderItem={(item, index) => <ConsulQuestionsListItem item={item} index={index} />}
+        renderItem={(item, index) => (
+          <ConsulQuestionsListItem item={item} index={index} onRefresh={onRefresh} />
+        )}
       />
+
       <FlatList
         data={data}
         renderItem={(item, index) => (
@@ -25,5 +28,6 @@ export const ConsulQuestionsList = ({ data }) => {
 };
 
 ConsulQuestionsList.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  onRefresh: PropTypes.func
 };
