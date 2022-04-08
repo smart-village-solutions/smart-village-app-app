@@ -6,3 +6,4 @@ export * from './ConsulSupportingComponent';
 export * from './ConsulSummaryComponent';
 export * from './ConsulExternalVideoComponent';
 export * from './ConsulQuestionsList';
+export * from './ConsulDateComponent';

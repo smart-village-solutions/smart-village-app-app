@@ -11,7 +11,8 @@ import {
   Input,
   ConsulCommentList,
   ConsulQuestionsList,
-  ConsulSummaryComponent
+  ConsulSummaryComponent,
+  ConsulDateComponent
 } from '../../../Consul';
 import { consts, device, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
@@ -93,6 +94,8 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
         {!!questions && (
           <ConsulQuestionsList data={questions} onRefresh={onRefresh} token={token} />
         )}
+
+        {!!startsAt && endsAt && <ConsulDateComponent startsAt={startsAt} endsAt={endsAt} />}
 
         {/* Comments List! */}
         {!!comments && (
