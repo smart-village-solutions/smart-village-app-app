@@ -18,13 +18,6 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
   getConsulUser().then((val) => {
     if (val) return setUserId(JSON.parse(val).id);
   });
-  useEffect(() => {
-    if (userId)
-      for (let i = 0; i < homeData[1].data.length; i++) {
-        const element = homeData[1].data[i];
-        element.params.queryVariables.id = userId;
-      }
-  }, [userId]);
 
   const refresh = useCallback(() => {
     refreshUser();
@@ -62,7 +55,7 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
           />
         }
       >
-        <ConsulListComponent data={homeData} navigation={navigation} />
+        <ConsulListComponent data={homeData(userId)} navigation={navigation} />
       </ScrollView>
     </SafeAreaViewFlex>
   );

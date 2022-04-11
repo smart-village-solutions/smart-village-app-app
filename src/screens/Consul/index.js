@@ -1,5 +1,4 @@
 export * from './LoginRegister';
-export * from './UserSettings';
 
 export * from './ConsulIndexScreen';
 export * from './ConsulDetailScreen';

@@ -36,6 +36,10 @@ export const GET_PROPOSAL = gql`
           name
         }
       }
+      documents {
+        id
+        url
+      }
       imageUrlMedium
       mapLocation {
         id

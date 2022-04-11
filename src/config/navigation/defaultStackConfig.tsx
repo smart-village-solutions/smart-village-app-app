@@ -15,7 +15,6 @@ import {
   ConsulIndexScreen,
   ConsulDetailScreen,
   ConsulStartNewScreen,
-  ConsulUserSettingsScreen,
   DataProviderScreen,
   DetailScreen,
   EncounterDataScreen,
@@ -124,10 +123,6 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.ConsulStartNewScreen,
       screenComponent: ConsulStartNewScreen
-    },
-    {
-      routeName: ScreenName.ConsulUserSettingsScreen,
-      screenComponent: ConsulUserSettingsScreen
     },
     {
       routeName: ScreenName.Company,

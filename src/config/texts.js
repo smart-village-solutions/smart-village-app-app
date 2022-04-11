@@ -122,6 +122,7 @@ export const texts = {
     publishProposalButton: 'Vorschlag veröffentlichen',
     proposalAlready: 'Sie haben diesen Vorschlag bereits unterstützt.',
     locationTitle: 'Lage',
+    showPDF: 'PDF anzeigen',
     startNew: {
       titleShortError: 'ist zu kurz (minimum 4 Zeichen)',
       descriptionShortError: 'ist zu kurz (minimum 10 Zeichen)',

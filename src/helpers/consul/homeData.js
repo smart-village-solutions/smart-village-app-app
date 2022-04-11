@@ -5,7 +5,7 @@ import { texts } from '../../config';
 const query = QUERY_TYPES.CONSUL;
 const text = texts.consul.homeScreen;
 
-export const homeData = [
+export const homeData = (id) => [
   {
     title: text.general,
     data: [
@@ -53,7 +53,7 @@ export const homeData = [
           title: text.myDebates,
           query: query.USER,
           extraQuery: query.PUBLIC_DEBATES,
-          queryVariables: { id: null },
+          queryVariables: { id: id },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
         subtitle: null,
@@ -65,7 +65,7 @@ export const homeData = [
           title: text.myProposals,
           query: query.USER,
           extraQuery: query.PUBLIC_PROPOSALS,
-          queryVariables: { id: null },
+          queryVariables: { id: id },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
         subtitle: null,
@@ -77,7 +77,7 @@ export const homeData = [
           title: text.myComments,
           query: query.USER,
           extraQuery: query.PUBLIC_COMMENTS,
-          queryVariables: { id: null },
+          queryVariables: { id: id },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
         subtitle: null,

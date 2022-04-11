@@ -10,13 +10,13 @@ import { HtmlView } from '../../../HtmlView';
 import { Button } from '../../../Button';
 import {
   ConsulCommentList,
-  ConsulTagList,
-  ConsulSupportingComponent,
+  ConsulExternalVideoComponent,
   ConsulPublicAuthorComponent,
-  ConsulSummaryComponent,
-  Input,
   ConsulStartNewButton,
-  ConsulExternalVideoComponent
+  ConsulSummaryComponent,
+  ConsulSupportingComponent,
+  ConsulTagList,
+  Input
 } from '../../../Consul';
 import { colors, consts, device, texts } from '../../../../config';
 import { useOpenWebScreen } from '../../../../hooks';
@@ -28,6 +28,7 @@ import { getConsulUser } from '../../../../helpers';
 import { WebViewMap } from '../../../map';
 import { location, locationIconAnchor } from '../../../../icons';
 import { Image } from '../../../Image';
+import { ConsulDocumentList } from '../../../Consul/detail/ConsulDocumentList';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
@@ -45,17 +46,18 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     cachedVotesUp,
     comments,
     commentsCount,
-    summary,
+    currentUserHasVoted,
     description,
+    documents,
     id,
+    imageUrlMedium,
+    mapLocation,
     publicAuthor,
     publicCreatedAt,
+    summary,
     tags,
     title,
-    videoUrl,
-    currentUserHasVoted,
-    mapLocation,
-    imageUrlMedium
+    videoUrl
   } = listData.proposal;
 
   const latitude = mapLocation?.latitude;
@@ -137,7 +139,8 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
           />
         )}
 
-        {!!imageUrlMedium && <Image source={imageUrlMedium} />}
+        {/* Image Component */}
+        {!!imageUrlMedium && <Image source={{ uri: imageUrlMedium }} />}
 
         {/* Summary! */}
         {!!summary && <ConsulSummaryComponent summary={summary} />}
@@ -152,6 +155,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
         {/* External Video */}
         {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
 
+        {/* Map View */}
         {!!latitude && !!longitude && (
           <>
             <TitleContainer>
@@ -171,6 +175,9 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
             />
           </>
         )}
+
+        {/* Documents */}
+        {!!documents && !!documents.length > 0 && <ConsulDocumentList documents={documents} />}
 
         {/* Proposal Edit Button */}
         {!!publicAuthor && publicAuthor.id === userId && (
@@ -195,7 +202,6 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
         {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
 
         {/* Voting Component! */}
-        {/*TODO: Mutation funksionert nicht*/}
         <ConsulSupportingComponent
           votesData={{
             onRefresh: onRefresh,
