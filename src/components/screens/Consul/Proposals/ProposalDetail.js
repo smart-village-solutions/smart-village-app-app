@@ -18,13 +18,15 @@ import {
   ConsulStartNewButton,
   ConsulExternalVideoComponent
 } from '../../../Consul';
-import { consts, device, texts } from '../../../../config';
+import { colors, consts, device, texts } from '../../../../config';
 import { useOpenWebScreen } from '../../../../hooks';
 import { ConsulClient } from '../../../../ConsulClient';
 import { ADD_COMMENT_TO_PROPOSAL, PUBLISH_PROPOSAL } from '../../../../queries/Consul';
 import { QUERY_TYPES } from '../../../../queries';
 import { BoldText, RegularText } from '../../../Text';
 import { getConsulUser } from '../../../../helpers';
+import { WebViewMap } from '../../../map';
+import { location, locationIconAnchor } from '../../../../icons';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
@@ -50,8 +52,12 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     tags,
     title,
     videoUrl,
-    currentUserHasVoted
+    currentUserHasVoted,
+    mapLocation
   } = listData.proposal;
+
+  const latitude = mapLocation?.latitude;
+  const longitude = mapLocation?.longitude;
 
   const openWebScreen = useOpenWebScreen(
     route.params?.title ?? '',
@@ -141,6 +147,26 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
 
         {/* External Video */}
         {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
+
+        {!!latitude && !!longitude && (
+          <>
+            <TitleContainer>
+              <Title accessibilityLabel={`(${text.locationTitle}) ${a11yText.heading}`}>
+                {text.locationTitle}
+              </Title>
+            </TitleContainer>
+            <WebViewMap
+              locations={[
+                {
+                  icon: location(colors.primary),
+                  iconAnchor: locationIconAnchor,
+                  position: { lat: latitude, lng: longitude }
+                }
+              ]}
+              zoom={14}
+            />
+          </>
+        )}
 
         {/* Proposal Edit Button */}
         {!!publicAuthor && publicAuthor.id === userId && (

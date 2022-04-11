@@ -36,6 +36,12 @@ export const GET_PROPOSAL = gql`
           name
         }
       }
+      mapLocation {
+        id
+        latitude
+        longitude
+        zoom
+      }
       comments {
         nodes {
           id
