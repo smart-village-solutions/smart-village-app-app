@@ -13,6 +13,7 @@ import {
   clock,
   close,
   constructionSite,
+  deleteIcon,
   drawerMenu,
   emptySection,
   heartEmpty,
@@ -109,6 +110,7 @@ export const Icon = {
     <NamedIcon name={device.platform === 'ios' ? 'ios-briefcase' : 'md-briefcase'} {...props} />
   ),
   ConstructionSite: (props: IconProps) => <SvgIcon xml={constructionSite} {...props} />,
+  DeleteIcon: (props: IconProps) => <SvgIcon xml={deleteIcon} {...props} />,
   DrawerMenu: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
   EditSetting: (props: IconProps) => <NamedIcon name="md-create" {...props} />,
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,

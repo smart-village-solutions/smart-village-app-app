@@ -15,3 +15,11 @@ export const ADD_REPLY_TO_COMMENT = gql`
     }
   }
 `;
+
+export const DELETE_COMMENT = gql`
+  mutation deleteComment($id: ID!) {
+    deleteComment(id: $id) {
+      id
+    }
+  }
+`;

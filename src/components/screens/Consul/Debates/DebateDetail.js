@@ -143,6 +143,7 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
           <ConsulCommentList
             commentCount={commentsCount}
             commentsData={comments.nodes}
+            userId={userId}
             onRefresh={onRefresh}
           />
         )}

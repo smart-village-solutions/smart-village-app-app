@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
@@ -12,9 +12,27 @@ import { Touchable } from '../../Touchable';
 import { colors, normalize, texts, Icon } from '../../../config';
 import { Input } from '../Form';
 import { ConsulClient } from '../../../ConsulClient';
-import { ADD_REPLY_TO_COMMENT, CAST_VOTE_ON_COMMENT } from '../../../queries/Consul';
+import {
+  ADD_REPLY_TO_COMMENT,
+  CAST_VOTE_ON_COMMENT,
+  DELETE_COMMENT
+} from '../../../queries/Consul';
 
 const text = texts.consul;
+
+const deleteCommentAlert = (onDelete) =>
+  Alert.alert(text.loginAllFieldsRequiredTitle, text.commentDeleteAlertBody, [
+    {
+      text: text.abort,
+      onPress: () => null,
+      style: 'cancel'
+    },
+    {
+      text: text.delete,
+      onPress: () => onDelete(),
+      style: 'destructive'
+    }
+  ]);
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -33,6 +51,9 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
   const [castVoteOnComment] = useMutation(CAST_VOTE_ON_COMMENT, {
     client: ConsulClient
   });
+  const [deleteComment] = useMutation(DELETE_COMMENT, {
+    client: ConsulClient
+  });
 
   const {
     body,
@@ -43,8 +64,11 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
     publicAuthor,
     publicCreatedAt,
     responses,
-    votesFor
+    votesFor,
+    userId
   } = item.item;
+
+  const commentUserId = publicAuthor ? publicAuthor.id : null;
 
   const onSubmit = async (val) => {
     setLoading(true);
@@ -67,6 +91,12 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
       .catch((err) => console.error(err));
   };
 
+  const onDelete = async () => {
+    await deleteComment({ variables: { id: id } })
+      .then(() => onRefresh())
+      .catch((err) => console.error(err));
+  };
+
   return (
     <View style={[!replyList && styles.container]}>
       <WrapperRow>
@@ -80,6 +110,7 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
       {/* Below Comment! */}
       <View style={styles.bottomContainer}>
         <View style={styles.bottomLine}>
+          {/* Reply Section */}
           {responses && responses.length > 0 ? (
             responseShow ? (
               <Icon.ArrowUp size={normalize(16)} color={colors.primary} />
@@ -99,6 +130,18 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
               <RegularText smallest>{text.noReturn}</RegularText>
             )}
           </>
+
+          <Space />
+
+          {/* Delete Button */}
+          {commentUserId === userId && (
+            <Touchable onPress={() => deleteCommentAlert(onDelete)} style={styles.deleteButton}>
+              <Icon.DeleteIcon size={normalize(12)} color={colors.error} />
+              <RegularText error smallest>
+                {` ${text.delete}`}
+              </RegularText>
+            </Touchable>
+          )}
 
           <Space />
 
@@ -208,7 +251,8 @@ const Space = () => {
 ConsulCommentListItem.propTypes = {
   item: PropTypes.object.isRequired,
   onRefresh: PropTypes.func,
-  replyList: PropTypes.bool
+  replyList: PropTypes.bool,
+  userId: PropTypes.string
 };
 
 LikeDissLikeIcon.propTypes = {
@@ -233,6 +277,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginTop: normalize(10),
+    alignItems: 'center'
+  },
+  deleteButton: {
+    flexDirection: 'row',
     alignItems: 'center'
   },
   replyContainer: {

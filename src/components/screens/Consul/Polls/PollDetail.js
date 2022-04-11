@@ -19,6 +19,7 @@ import { ConsulClient } from '../../../../ConsulClient';
 import { ADD_COMMENT_TO_POLLS } from '../../../../queries/Consul';
 import { HtmlView } from '../../../HtmlView';
 import { useOpenWebScreen } from '../../../../hooks';
+import { getConsulUser } from '../../../../helpers';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
@@ -27,6 +28,7 @@ const a11yText = consts.a11yLabel;
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const PollDetail = ({ listData, onRefresh, route }) => {
   const [loading, setLoading] = useState();
+  const [userId, setUserId] = useState();
 
   //TODO: StartsAt, EndsAt Components!
   const {
@@ -41,6 +43,9 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
     endsAt,
     token
   } = listData.poll;
+
+  // GET User ID
+  getConsulUser().then((val) => setUserId(JSON.parse(val).id));
 
   const openWebScreen = useOpenWebScreen(
     route.params?.title ?? '',
@@ -102,6 +107,7 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
           <ConsulCommentList
             commentCount={commentsCount}
             commentsData={comments}
+            userId={userId}
             onRefresh={onRefresh}
           />
         )}
