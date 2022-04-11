@@ -27,6 +27,7 @@ import { BoldText, RegularText } from '../../../Text';
 import { getConsulUser } from '../../../../helpers';
 import { WebViewMap } from '../../../map';
 import { location, locationIconAnchor } from '../../../../icons';
+import { Image } from '../../../Image';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
@@ -53,7 +54,8 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     title,
     videoUrl,
     currentUserHasVoted,
-    mapLocation
+    mapLocation,
+    imageUrlMedium
   } = listData.proposal;
 
   const latitude = mapLocation?.latitude;
@@ -134,6 +136,8 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
             }}
           />
         )}
+
+        {!!imageUrlMedium && <Image source={imageUrlMedium} />}
 
         {/* Summary! */}
         {!!summary && <ConsulSummaryComponent summary={summary} />}

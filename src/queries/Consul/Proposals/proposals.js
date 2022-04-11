@@ -36,6 +36,7 @@ export const GET_PROPOSAL = gql`
           name
         }
       }
+      imageUrlMedium
       mapLocation {
         id
         latitude
