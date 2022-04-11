@@ -100,6 +100,19 @@ export const NewProposal = ({ navigation, data, query }) => {
           summary: val.summary,
           description: val.description
         },
+        // TODO:am 25.04.2022!!!
+        imageAttributes: {
+          title: 'Profil.png',
+          cachedAttachment:
+            '/Users/ardasenturk/Development/SVA/consul-bb/public/system/images/cached_attachments/user/49/original/3dfe4b17e340624be2f74f822f15e36cadd8d6e1.png'
+        },
+        documentsAttributes: [
+          {
+            title: 'sample.pdf',
+            cachedAttachment:
+              '/Users/ardasenturk/Development/SVA/consul-bb/public/system/documents/cached_attachments/user/49/original/f2245afb48be5f906474ad929aacb7f91f408a23.pdf'
+          }
+        ],
         tagList: val.tagList,
         termsOfService: termsOfService,
         videoUrl: val.videoUrl
