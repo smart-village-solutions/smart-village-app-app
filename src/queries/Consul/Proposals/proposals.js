@@ -25,6 +25,7 @@ export const GET_PROPOSAL = gql`
       publicCreatedAt
       cachedVotesUp
       commentsCount
+      published
       videoUrl
       publicAuthor {
         id

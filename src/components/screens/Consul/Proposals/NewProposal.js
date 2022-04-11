@@ -132,8 +132,7 @@ export const NewProposal = ({ navigation, data, query }) => {
             navigation.navigate(ScreenName.ConsulDetailScreen, {
               query: QUERY_TYPES.CONSUL.PROPOSAL,
               queryVariables: { id: val.data.submitProposal.id },
-              title: val.data.submitProposal.title,
-              publishedProposal: false
+              title: val.data.submitProposal.title
             });
           })
           .catch((err) => {
@@ -145,7 +144,6 @@ export const NewProposal = ({ navigation, data, query }) => {
       case queryTypes.UPDATE_PROPOSAL:
         setStartLoading(true);
 
-        //TODO: Mutation Error!
         await updateProposal({
           variables: variables
         })

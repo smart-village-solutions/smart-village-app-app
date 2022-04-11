@@ -16,6 +16,7 @@ import {
   ConsulSummaryComponent,
   ConsulSupportingComponent,
   ConsulTagList,
+  ConsulVideoComponent,
   Input
 } from '../../../Consul';
 import { colors, consts, device, texts } from '../../../../config';
@@ -37,9 +38,6 @@ const a11yText = consts.a11yLabel;
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
   const [loading, setLoading] = useState();
-  const [publishedProposal, setPublishedProposal] = useState(
-    route.params?.publishedProposal ?? true
-  );
   const [userId, setUserId] = useState();
 
   const {
@@ -57,7 +55,8 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     summary,
     tags,
     title,
-    videoUrl
+    videoUrl,
+    published
   } = listData.proposal;
 
   const latitude = mapLocation?.latitude;
@@ -99,7 +98,6 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     setLoading(true);
     await publishProposal({ variables: { id: id } })
       .then(() => {
-        setPublishedProposal(true);
         onRefresh();
         setLoading(false);
       })
@@ -110,7 +108,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     <SafeAreaViewFlex>
       <WrapperWithOrientation>
         {/* Publish Proposal! */}
-        {!publishedProposal && (
+        {!published && (
           <Wrapper>
             <BoldText>{text.publishProposalBold}</BoldText>
             <RegularText>{text.publishProposalRegular}</RegularText>
@@ -145,15 +143,15 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
         {/* Summary! */}
         {!!summary && <ConsulSummaryComponent summary={summary} />}
 
+        {/* Video Component */}
+        {!!videoUrl && <ConsulVideoComponent videoUrl={videoUrl} />}
+
         {/* Description! */}
         {!!description && (
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
         )}
-
-        {/* External Video */}
-        {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
 
         {/* Map View */}
         {!!latitude && !!longitude && (
@@ -175,6 +173,9 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
             />
           </>
         )}
+
+        {/* External Video */}
+        {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
 
         {/* Documents */}
         {!!documents && !!documents.length > 0 && <ConsulDocumentList documents={documents} />}
