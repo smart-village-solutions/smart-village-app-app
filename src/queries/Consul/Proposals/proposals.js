@@ -8,6 +8,7 @@ export const GET_PROPOSALS = gql`
         title
         publicCreatedAt
         commentsCount
+        cachedVotesUp
       }
     }
   }

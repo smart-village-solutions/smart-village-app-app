@@ -38,7 +38,7 @@ export const ConsulDocumentListItem = ({ item }) => {
               source={{
                 uri:
                   device.platform === 'ios'
-                    ? 'http://www.africau.edu/images/default/sample.pdf'
+                    ? url
                     : `http://docs.google.com/gview?embedded=true&url=${url}`
               }}
               style={{ width: Dimensions.get('screen').width }}

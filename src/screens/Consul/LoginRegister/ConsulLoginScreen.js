@@ -65,7 +65,6 @@ export const ConsulLoginScreen = ({ navigation }) => {
         });
 
         setRegistrationLoading(false);
-        Alert.alert('Success', 'Success');
       })
       .catch((err) => {
         console.error(err.message);

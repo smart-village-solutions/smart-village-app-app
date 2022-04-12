@@ -5,15 +5,13 @@ import { ListComponent } from '../../../ListComponent';
 
 export const Polls = ({ navigation, query, pollData, refreshControl }) => {
   return (
-    <>
-      <ListComponent
-        navigation={navigation}
-        query={query}
-        data={pollData}
-        refreshControl={refreshControl}
-        showBackToTop
-      />
-    </>
+    <ListComponent
+      navigation={navigation}
+      query={query}
+      data={pollData}
+      refreshControl={refreshControl}
+      showBackToTop
+    />
   );
 };
 

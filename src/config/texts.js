@@ -122,7 +122,7 @@ export const texts = {
     showPDF: 'PDF anzeigen',
     submittingCommentButton: 'Kommentar abgeben',
     supportNeed: 'Unterstützungen benötigt',
-    supportProposalAlertBody: 'Sie haben diesen Vorschlag bereits unterstützt. Teilen Sie ihn!',
+    supportProposalAlertBody: 'Sie haben diesen Vorschlag bereits unterstützt.',
     supportProposalAlertTitle: 'Erfolgreich',
     supports: 'Unterstützer*innen',
     tags: 'Stichworte',
