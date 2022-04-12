@@ -140,10 +140,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
 
         {/* Image Component */}
         {!!imageUrlMedium && (
-          <Image
-            source={{ uri: 'https://www.industrialempathy.com/img/remote/ZiClJf-1920w.jpg' }}
-            containerStyle={styles.imageContainerStyle}
-          />
+          <Image source={{ uri: imageUrlMedium }} containerStyle={styles.imageContainerStyle} />
         )}
 
         {/* Summary! */}
