@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
@@ -138,7 +139,12 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
         )}
 
         {/* Image Component */}
-        {!!imageUrlMedium && <Image source={{ uri: imageUrlMedium }} />}
+        {!!imageUrlMedium && (
+          <Image
+            source={{ uri: 'https://www.industrialempathy.com/img/remote/ZiClJf-1920w.jpg' }}
+            containerStyle={styles.imageContainerStyle}
+          />
+        )}
 
         {/* Summary! */}
         {!!summary && <ConsulSummaryComponent summary={summary} />}
@@ -259,3 +265,7 @@ ProposalDetail.propTypes = {
   onRefresh: PropTypes.func,
   route: PropTypes.object
 };
+
+const styles = StyleSheet.create({
+  imageContainerStyle: { alignSelf: 'center' }
+});
