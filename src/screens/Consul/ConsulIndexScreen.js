@@ -67,11 +67,12 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     let type = sorting.find((data) => data.selected);
+    setSortingLoading(true);
 
-    //TODO: Filter for Polls!
     if (query === queryType.POLLS)
       filterHelper(type.id)
         .then((val) => setQueryVariables(val))
+        .then(() => setSortingLoading(false))
         .catch((err) => console.error(err));
 
     if (query !== queryType.USER)
@@ -80,7 +81,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
         .then(() => setSortingLoading(false))
         .catch((err) => console.error(err));
 
-    setSortingLoading(false);
+    if (query === queryType.USER) setSortingLoading(false);
   }, [sorting, isLoading]);
 
   const refresh = useCallback(
@@ -110,6 +111,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
       <Component
         query={query}
         listData={listData}
+        pollData={listItems}
         data={data}
         navigation={navigation}
         route={route}
