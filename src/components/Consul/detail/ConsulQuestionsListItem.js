@@ -10,7 +10,7 @@ import { ConsulClient } from '../../../ConsulClient';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { Touchable } from '../../Touchable';
 
-export const ConsulQuestionsListItem = ({ item, onRefresh, token }) => {
+export const ConsulQuestionsListItem = ({ item, onRefresh, token, disabled }) => {
   const [loading, setLoading] = useState(false);
   const { questionAnswers, title, answersGivenByCurrentUser, id } = item.item;
 
@@ -41,10 +41,11 @@ export const ConsulQuestionsListItem = ({ item, onRefresh, token }) => {
 
       {questionAnswers.map((item, index) => (
         <Touchable
-          disabled={loading}
+          disabled={loading || !disabled}
           onPress={() => onAnswer(item.title)}
           key={index}
           style={[
+            !disabled && styles.disabledStyle,
             styles.answerContainer,
             answersGivenByCurrentUser[0] &&
               answersGivenByCurrentUser[0].answer === item.title &&
@@ -53,7 +54,9 @@ export const ConsulQuestionsListItem = ({ item, onRefresh, token }) => {
         >
           <RegularText
             lightest={
-              answersGivenByCurrentUser[0] && answersGivenByCurrentUser[0].answer === item.title
+              (answersGivenByCurrentUser[0] &&
+                answersGivenByCurrentUser[0].answer === item.title) ||
+              !disabled
             }
           >
             {item.title}
@@ -84,11 +87,15 @@ const styles = StyleSheet.create({
     borderColor: colors.primary,
     borderWidth: 1,
     backgroundColor: colors.lighterPrimary
+  },
+  disabledStyle: {
+    backgroundColor: colors.borderRgba
   }
 });
 
 ConsulQuestionsListItem.propTypes = {
   item: PropTypes.object.isRequired,
   onRefresh: PropTypes.func,
-  token: PropTypes.string
+  token: PropTypes.string,
+  disabled: PropTypes.bool
 };

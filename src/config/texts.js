@@ -92,6 +92,9 @@ export const texts = {
     passwordError: 'Passwort muss ausgefüllt werden',
     passwordForgotten: 'Passwort vergessen',
     passwordLengthError: 'Das Passwort sollte mindestens 8 Zeichen lang sein',
+    pollFinished: 'Diese Umfrage wurde beendet.',
+    pollUserAnswer:
+      'Sie haben bereits an der Umfrage teilgenommen. Falls Sie erneut abstimmen, wird Ihre Wahl überschrieben.',
     privacyChecked: 'Mit der Registrierung akzeptieren Sie die',
     privacyCheckLink: 'Allgemeine Nutzungsbedingungen',
     privacyCheckRequireBody: 'Kreuzen Sie die Nutzungsvereinbarung an.',

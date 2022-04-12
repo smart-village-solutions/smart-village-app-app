@@ -30,19 +30,21 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
   const [loading, setLoading] = useState();
   const [userId, setUserId] = useState();
 
-  //TODO: StartsAt, EndsAt Components!
   const {
-    commentsCount,
     comments,
-    questions,
-    id,
-    title,
+    commentsCount,
     description,
-    summary,
-    startsAt,
     endsAt,
+    id,
+    questions,
+    startsAt,
+    summary,
+    title,
     token
   } = listData.poll;
+
+  const endsDate = new Date(endsAt).toDateString();
+  const currentDate = new Date().toDateString();
 
   // GET User ID
   getConsulUser().then((val) => setUserId(JSON.parse(val).id));
@@ -97,7 +99,12 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
 
         {/* Question! */}
         {!!questions && (
-          <ConsulQuestionsList data={questions} onRefresh={onRefresh} token={token} />
+          <ConsulQuestionsList
+            data={questions}
+            onRefresh={onRefresh}
+            token={token}
+            disabled={endsDate >= currentDate}
+          />
         )}
 
         {!!startsAt && endsAt && <ConsulDateComponent startsAt={startsAt} endsAt={endsAt} />}
