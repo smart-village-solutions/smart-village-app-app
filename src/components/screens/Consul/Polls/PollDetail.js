@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
@@ -46,8 +46,12 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
   const endsDate = new Date(endsAt).toDateString();
   const currentDate = new Date().toDateString();
 
-  // GET User ID
-  getConsulUser().then((val) => setUserId(JSON.parse(val).id));
+  useEffect(() => {
+    // GET User ID
+    getConsulUser().then((val) => {
+      if (val) return setUserId(JSON.parse(val).id);
+    });
+  }, []);
 
   const openWebScreen = useOpenWebScreen(
     route.params?.title ?? '',

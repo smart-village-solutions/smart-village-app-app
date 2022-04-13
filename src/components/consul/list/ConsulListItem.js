@@ -14,7 +14,7 @@ export const ConsulListItem = ({ navigation, item }) => {
 
   return (
     <ListItem
-      subtitle={<BoldText>{title}</BoldText>}
+      title={<BoldText>{title}</BoldText>}
       containerStyle={{
         backgroundColor: colors.transparent,
         paddingVertical: normalize(12)

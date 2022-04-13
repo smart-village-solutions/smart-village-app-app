@@ -14,10 +14,12 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
   const [userId, setUserId] = useState();
   const { refresh: refreshUser, isLoading, isError, isLoggedIn } = useConsulUser();
 
-  //Get User id and set for homeData query variables
-  getConsulUser().then((val) => {
-    if (val) return setUserId(JSON.parse(val).id);
-  });
+  const userID = useCallback(() => {
+    //Get User id and set for homeData query variables
+    getConsulUser().then((val) => {
+      if (val) return setUserId(JSON.parse(val).id);
+    });
+  }, [refreshUser]);
 
   const refresh = useCallback(() => {
     refreshUser();
@@ -34,6 +36,7 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
   };
 
   useEffect(refresh, [route.params?.refreshUser]);
+  useEffect(userID, [route.params?.refreshUser]);
 
   if (isLoading) {
     return <LoadingSpinner loading />;

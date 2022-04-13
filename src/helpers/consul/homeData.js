@@ -17,7 +17,6 @@ export const homeData = (id) => [
           queryVariables: { limit: 15, order: 'name_ASC', category: text.debates },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        subtitle: null,
         title: text.debates
       },
       {
@@ -28,7 +27,6 @@ export const homeData = (id) => [
           queryVariables: { limit: 15, order: 'name_ASC', category: text.proposals },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        subtitle: null,
         title: text.proposals
       },
       {
@@ -39,7 +37,6 @@ export const homeData = (id) => [
           queryVariables: { filter: 'current' },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        subtitle: null,
         title: text.voting
       }
     ]
@@ -56,7 +53,6 @@ export const homeData = (id) => [
           queryVariables: { id: id },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        subtitle: null,
         title: text.myDebates
       },
       {
@@ -68,7 +64,6 @@ export const homeData = (id) => [
           queryVariables: { id: id },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        subtitle: null,
         title: text.myProposals
       },
       {
@@ -80,7 +75,6 @@ export const homeData = (id) => [
           queryVariables: { id: id },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        subtitle: null,
         title: text.myComments
       }
     ]
@@ -96,7 +90,6 @@ export const homeData = (id) => [
           queryVariables: { link: 'https://beteiligung.bad-belzig.de/account' },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        subtitle: null,
         title: text.settings
       },
       {
@@ -107,7 +100,6 @@ export const homeData = (id) => [
           queryVariables: { link: 'https://beteiligung.bad-belzig.de/account' },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        subtitle: null,
         title: text.logout
       }
     ]

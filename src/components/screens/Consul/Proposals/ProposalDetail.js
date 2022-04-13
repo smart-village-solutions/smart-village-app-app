@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
@@ -53,11 +53,11 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     mapLocation,
     publicAuthor,
     publicCreatedAt,
+    published,
     summary,
     tags,
     title,
-    videoUrl,
-    published
+    videoUrl
   } = listData.proposal;
 
   const latitude = mapLocation?.latitude;
@@ -69,8 +69,12 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     route.params?.rootRouteName
   );
 
-  // GET User ID
-  getConsulUser().then((val) => setUserId(JSON.parse(val).id));
+  useEffect(() => {
+    // GET User ID
+    getConsulUser().then((val) => {
+      if (val) return setUserId(JSON.parse(val).id);
+    });
+  }, []);
 
   // React Hook Form
   const { control, handleSubmit, reset } = useForm();
