@@ -79,6 +79,7 @@ export const texts = {
     loginFailedBody: 'Bei der Anmeldung ist ein Fehler aufgetreten.',
     loginFailedTitle: 'Fehler',
     loginTitle: 'Anmelden',
+    logoutAlertBody: 'Möchten Sie sich wirklich abmelden?',
     name: 'Name',
     next: 'Weiter',
     noReturn: 'Keine Rückmeldung',

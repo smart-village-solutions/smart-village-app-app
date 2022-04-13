@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Alert } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { colors, normalize, Icon, consts } from '../../../config';
@@ -8,10 +9,34 @@ import { BoldText } from '../../Text';
 import { Touchable } from '../../Touchable';
 import { ScreenName } from '../../../types';
 import { setConsulAuthToken, setConsulUser, openLink } from '../../../helpers';
+import { texts } from '../../../config';
+
+const text = texts.consul;
+
+const logOutAlert = (onLogout) =>
+  Alert.alert(text.loginAllFieldsRequiredTitle, text.logoutAlertBody, [
+    {
+      text: text.abort,
+      onPress: () => null,
+      style: 'cancel'
+    },
+    {
+      text: text.homeScreen.logout,
+      onPress: () => onLogout(),
+      style: 'destructive'
+    }
+  ]);
 
 export const ConsulListItem = ({ navigation, item }) => {
   const { routeName: name, params, title } = item;
 
+  const onLogout = async () => {
+    await setConsulAuthToken();
+    await setConsulUser();
+    navigation?.navigate(ScreenName.ConsulHomeScreen, {
+      refreshUser: new Date().valueOf()
+    });
+  };
   return (
     <ListItem
       title={<BoldText>{title}</BoldText>}
@@ -22,11 +47,7 @@ export const ConsulListItem = ({ navigation, item }) => {
       rightIcon={<Icon.ArrowRight />}
       onPress={async () => {
         if (params.query === QUERY_TYPES.CONSUL.LOGOUT) {
-          await setConsulAuthToken();
-          await setConsulUser();
-          navigation?.navigate(ScreenName.ConsulHomeScreen, {
-            refreshUser: new Date().valueOf()
-          });
+          logOutAlert(onLogout);
         } else if (params.query === QUERY_TYPES.CONSUL.USER_SETTINGS) {
           openLink(params.queryVariables.link);
         } else {
