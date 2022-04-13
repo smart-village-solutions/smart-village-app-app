@@ -8,8 +8,9 @@ import { QUERY_TYPES } from '../../../queries';
 import { BoldText } from '../../Text';
 import { Touchable } from '../../Touchable';
 import { ScreenName } from '../../../types';
-import { setConsulAuthToken, setConsulUser, openLink } from '../../../helpers';
+import { setConsulAuthToken, setConsulUser } from '../../../helpers';
 import { texts } from '../../../config';
+import { useOpenWebScreen } from '../../../hooks';
 
 const text = texts.consul;
 
@@ -29,6 +30,9 @@ const logOutAlert = (onLogout) =>
 
 export const ConsulListItem = ({ navigation, item }) => {
   const { routeName: name, params, title } = item;
+  const link = params?.queryVariables.link ?? '';
+  const headerTitle = title ?? '';
+  const rootRouteName = params?.rootRouteName ?? '';
 
   const onLogout = async () => {
     await setConsulAuthToken();
@@ -37,6 +41,8 @@ export const ConsulListItem = ({ navigation, item }) => {
       refreshUser: new Date().valueOf()
     });
   };
+
+  const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
 
   return (
     <ListItem
@@ -50,7 +56,7 @@ export const ConsulListItem = ({ navigation, item }) => {
         if (params.query === QUERY_TYPES.CONSUL.LOGOUT) {
           logOutAlert(onLogout);
         } else if (params.query === QUERY_TYPES.CONSUL.USER_SETTINGS) {
-          openLink(params.queryVariables.link);
+          openWebScreen();
         } else {
           navigation.navigate({
             name,

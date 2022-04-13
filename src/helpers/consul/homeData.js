@@ -87,7 +87,7 @@ export const homeData = (id) => [
         params: {
           title: text.settings,
           query: query.USER_SETTINGS,
-          queryVariables: { link: 'https://beteiligung.bad-belzig.de/account' },
+          queryVariables: { link: 'http://192.168.178.107:3000/account' },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
         title: text.settings
@@ -97,7 +97,7 @@ export const homeData = (id) => [
         params: {
           title: text.settings,
           query: query.LOGOUT,
-          queryVariables: { link: 'https://beteiligung.bad-belzig.de/account' },
+          queryVariables: {},
           rootRouteName: ScreenName.ConsulHomeScreen
         },
         title: text.logout
