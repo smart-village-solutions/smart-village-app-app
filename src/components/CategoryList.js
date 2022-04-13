@@ -37,11 +37,14 @@ export class CategoryList extends React.PureComponent {
     const sectionedData = [
       {
         title: texts.categoryTitles.pointsOfInterest,
-        data: _filter(data, (category) => category.pointsOfInterestCount > 0 && !category.parent)
+        data: _filter(
+          data,
+          (category) => category.pointsOfInterestTreeCount > 0 && !category.parent
+        )
       },
       {
         title: texts.categoryTitles.tours,
-        data: _filter(data, (category) => category.toursCount > 0 && !category.parent)
+        data: _filter(data, (category) => category.toursTreeCount > 0 && !category.parent)
       }
     ];
 

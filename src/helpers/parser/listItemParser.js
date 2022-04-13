@@ -39,7 +39,7 @@ const parseEventRecords = (data, skipLastDivider, withDate) => {
     picture: {
       url: mainImageOfMediaContents(eventRecord.mediaContents)
     },
-    routeName: 'Detail',
+    routeName: ScreenName.Detail,
     params: {
       title: texts.detailTitles.eventRecord,
       query: QUERY_TYPES.EVENT_RECORD,
@@ -74,7 +74,7 @@ const parseGenericItems = (data, skipLastDivider) => {
             mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
         )[0]?.sourceUrl?.url
     },
-    routeName: 'Detail',
+    routeName: ScreenName.Detail,
     params: {
       title: getGenericItemDetailTitle(genericItem.genericType),
       suffix: genericItem.genericType,
@@ -104,7 +104,7 @@ const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
             mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
         )[0]?.sourceUrl?.url
     },
-    routeName: 'Detail',
+    routeName: ScreenName.Detail,
     params: {
       bookmarkable,
       title: titleDetail,
@@ -129,7 +129,7 @@ const parsePointOfInterest = (data, skipLastDivider) => {
     picture: {
       url: mainImageOfMediaContents(pointOfInterest.mediaContents)
     },
-    routeName: 'Detail',
+    routeName: ScreenName.Detail,
     params: {
       title: texts.detailTitles.pointOfInterest,
       query: QUERY_TYPES.POINT_OF_INTEREST,
@@ -155,7 +155,7 @@ const parseTours = (data, skipLastDivider) => {
     picture: {
       url: mainImageOfMediaContents(tour.mediaContents)
     },
-    routeName: 'Detail',
+    routeName: ScreenName.Detail,
     params: {
       title: texts.detailTitles.tour,
       query: QUERY_TYPES.TOUR,
@@ -178,14 +178,16 @@ const parseCategories = (data, skipLastDivider, routeName = ScreenName.Category)
     id: category.id,
     title: category.name,
     pointsOfInterestCount: category.pointsOfInterestCount,
+    pointsOfInterestTreeCount: category.pointsOfInterestTreeCount,
     toursCount: category.toursCount,
+    toursTreeCount: category.toursTreeCount,
     routeName,
     parent: category.parent,
     params: {
       title: category.name,
       categories: parseCategories(category.children, skipLastDivider, ScreenName.Index),
       query:
-        category.pointsOfInterestCount > 0 ? QUERY_TYPES.POINTS_OF_INTEREST : QUERY_TYPES.TOURS,
+        category.pointsOfInterestTreeCount > 0 ? QUERY_TYPES.POINTS_OF_INTEREST : QUERY_TYPES.TOURS,
       queryVariables: { limit: 15, order: 'name_ASC', category: `${category.name}` },
       rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
     },

@@ -90,7 +90,7 @@ export const IndexScreen = ({ navigation, route }) => {
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
-  const subCategories = route.params?.categories;
+  const categories = route.params?.categories;
   const showFilter =
     (route.params?.showFilter ?? true) &&
     {
@@ -238,7 +238,7 @@ export const IndexScreen = ({ navigation, route }) => {
               withDate: false
             });
 
-            if (!listItems) return null;
+            if (!listItems?.length && !categories?.length) return null;
 
             if (filterByOpeningTimes) {
               listItems = listItems.filter(
@@ -271,13 +271,13 @@ export const IndexScreen = ({ navigation, route }) => {
               <ListComponent
                 ListHeaderComponent={
                   <>
-                    {showFilter && (
+                    {!!showFilter && (
                       <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
                     )}
-                    {subCategories?.length && (
+                    {!!categories?.length && (
                       <CategoryList
                         navigation={navigation}
-                        data={subCategories}
+                        data={categories}
                         horizontal={false}
                         hasSectionHeader={false}
                       />

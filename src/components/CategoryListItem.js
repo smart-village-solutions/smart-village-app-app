@@ -15,13 +15,13 @@ export class CategoryListItem extends React.PureComponent {
       params,
       subtitle,
       title,
-      pointsOfInterestCount,
-      toursCount,
+      pointsOfInterestTreeCount,
+      toursTreeCount,
       bottomDivider,
       topDivider
     } = item;
 
-    const count = pointsOfInterestCount > 0 ? pointsOfInterestCount : toursCount;
+    const count = pointsOfInterestTreeCount > 0 ? pointsOfInterestTreeCount : toursTreeCount;
     return (
       <ListItem
         title={noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
@@ -29,7 +29,7 @@ export class CategoryListItem extends React.PureComponent {
         bottomDivider={
           bottomDivider !== undefined
             ? bottomDivider
-            : item.toursCount > 0
+            : item.toursTreeCount > 0
             ? index < section.data.length - 1 // do not show a bottomDivider after last entry
             : true
         }
