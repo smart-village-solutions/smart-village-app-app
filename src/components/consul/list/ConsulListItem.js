@@ -37,6 +37,7 @@ export const ConsulListItem = ({ navigation, item }) => {
       refreshUser: new Date().valueOf()
     });
   };
+
   return (
     <ListItem
       title={<BoldText>{title}</BoldText>}
@@ -44,7 +45,7 @@ export const ConsulListItem = ({ navigation, item }) => {
         backgroundColor: colors.transparent,
         paddingVertical: normalize(12)
       }}
-      rightIcon={<Icon.ArrowRight />}
+      rightIcon={params.query !== QUERY_TYPES.CONSUL.LOGOUT ? <Icon.ArrowRight /> : null}
       onPress={async () => {
         if (params.query === QUERY_TYPES.CONSUL.LOGOUT) {
           logOutAlert(onLogout);
