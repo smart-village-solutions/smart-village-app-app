@@ -45,18 +45,17 @@ export const ConsulQuestionsListItem = ({ item, onRefresh, token, disabled }) =>
           onPress={() => onAnswer(item.title)}
           key={index}
           style={[
-            !disabled && styles.disabledStyle,
             styles.answerContainer,
             answersGivenByCurrentUser[0] &&
               answersGivenByCurrentUser[0].answer === item.title &&
-              styles.selectedContainer
+              styles.selectedContainer,
+            !disabled && styles.disabledAnswerContainer
           ]}
         >
           <RegularText
+            placeholder={!disabled}
             lightest={
-              (answersGivenByCurrentUser[0] &&
-                answersGivenByCurrentUser[0].answer === item.title) ||
-              !disabled
+              answersGivenByCurrentUser[0] && answersGivenByCurrentUser[0].answer === item.title
             }
           >
             {item.title}
@@ -83,13 +82,13 @@ const styles = StyleSheet.create({
     marginVertical: normalize(10),
     paddingVertical: normalize(10)
   },
+  disabledAnswerContainer: {
+    borderWidth: 0.3
+  },
   selectedContainer: {
-    borderColor: colors.primary,
+    borderColor: colors.lighterPrimary,
     borderWidth: 1,
     backgroundColor: colors.lighterPrimary
-  },
-  disabledStyle: {
-    backgroundColor: colors.borderRgba
   }
 });
 
