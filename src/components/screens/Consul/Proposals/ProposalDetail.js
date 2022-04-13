@@ -13,7 +13,6 @@ import {
   ConsulCommentList,
   ConsulExternalVideoComponent,
   ConsulPublicAuthorComponent,
-  ConsulStartNewButton,
   ConsulSummaryComponent,
   ConsulSupportingComponent,
   ConsulTagList,
@@ -31,6 +30,7 @@ import { WebViewMap } from '../../../map';
 import { location, locationIconAnchor } from '../../../../icons';
 import { Image } from '../../../Image';
 import { ConsulDocumentList } from '../../../Consul/detail/ConsulDocumentList';
+import { ScreenName } from '../../../../types';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
@@ -134,7 +134,23 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
         {/* Author! */}
         {!!publicAuthor && (
           <ConsulPublicAuthorComponent
+            onPress={() => {
+              navigation.navigate(ScreenName.ConsulStartNewScreen, {
+                title: text.startNew.updateButtonLabel,
+                query: QUERY_TYPES.CONSUL.UPDATE_PROPOSAL,
+                data: {
+                  title: title,
+                  tagList: tags.nodes.map((item) => item.name),
+                  description: description,
+                  termsOfService: true,
+                  summary: summary,
+                  videoUrl: videoUrl,
+                  id: id
+                }
+              });
+            }}
             authorData={{
+              userId: userId,
               publicAuthor: publicAuthor,
               commentsCount: commentsCount,
               publicCreatedAt: publicCreatedAt
@@ -186,25 +202,6 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
 
         {/* Documents */}
         {!!documents && !!documents.length > 0 && <ConsulDocumentList documents={documents} />}
-
-        {/* Proposal Edit Button */}
-        {!!publicAuthor && publicAuthor.id === userId && (
-          <ConsulStartNewButton
-            data={{
-              title: title,
-              tagList: tags.nodes.map((item) => item.name),
-              description: description,
-              termsOfService: true,
-              summary: summary,
-              videoUrl: videoUrl,
-              id: id
-            }}
-            navigation={navigation}
-            title={text.startNew.updateButtonLabel}
-            buttonTitle={text.startNew.updateButtonLabel}
-            query={QUERY_TYPES.CONSUL.UPDATE_PROPOSAL}
-          />
-        )}
 
         {/* Tag List! */}
         {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}

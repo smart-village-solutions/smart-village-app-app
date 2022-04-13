@@ -13,8 +13,7 @@ import {
   ConsulTagList,
   ConsulVotingComponent,
   ConsulPublicAuthorComponent,
-  Input,
-  ConsulStartNewButton
+  Input
 } from '../../../Consul';
 import { consts, device, texts } from '../../../../config';
 import { useOpenWebScreen } from '../../../../hooks';
@@ -22,6 +21,7 @@ import { ConsulClient } from '../../../../ConsulClient';
 import { ADD_COMMENT_TO_DEBATE } from '../../../../queries/Consul';
 import { QUERY_TYPES } from '../../../../queries';
 import { getConsulUser } from '../../../../helpers';
+import { ScreenName } from '../../../../types';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
@@ -95,10 +95,24 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
         {/* Author! */}
         {!!publicAuthor && (
           <ConsulPublicAuthorComponent
+            onPress={() => {
+              navigation.navigate(ScreenName.ConsulStartNewScreen, {
+                title: text.startNew.updateButtonLabel,
+                query: QUERY_TYPES.CONSUL.UPDATE_DEBATE,
+                data: {
+                  title: title,
+                  tagList: tags.nodes.map((item) => item.name),
+                  description: description,
+                  termsOfService: true,
+                  id: id
+                }
+              });
+            }}
             authorData={{
               publicAuthor: publicAuthor,
               commentsCount: commentsCount,
-              publicCreatedAt: publicCreatedAt
+              publicCreatedAt: publicCreatedAt,
+              userId: userId
             }}
           />
         )}
@@ -108,23 +122,6 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
-        )}
-
-        {/* Debate Edit Button */}
-        {!!publicAuthor && publicAuthor.id === userId && (
-          <ConsulStartNewButton
-            data={{
-              title: title,
-              tagList: tags.nodes.map((item) => item.name),
-              description: description,
-              termsOfService: true,
-              id: id
-            }}
-            navigation={navigation}
-            title={text.startNew.updateButtonLabel}
-            buttonTitle={text.startNew.updateButtonLabel}
-            query={QUERY_TYPES.CONSUL.UPDATE_DEBATE}
-          />
         )}
 
         {/* Tag List! */}
