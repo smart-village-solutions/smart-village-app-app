@@ -101,6 +101,10 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
           </Wrapper>
         )}
 
+        {!!startsAt && !!endsAt && endsDate >= currentDate && (
+          <ConsulDateComponent startsAt={startsAt} endsAt={endsAt} />
+        )}
+
         {/* Question! */}
         {!!questions && (
           <ConsulQuestionsList
@@ -110,8 +114,6 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
             disabled={endsDate >= currentDate}
           />
         )}
-
-        {!!startsAt && endsAt && <ConsulDateComponent startsAt={startsAt} endsAt={endsAt} />}
 
         {/* Comments List! */}
         {!!comments && (
