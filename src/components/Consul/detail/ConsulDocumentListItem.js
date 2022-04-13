@@ -15,10 +15,16 @@ export const ConsulDocumentListItem = ({ item }) => {
   const { url } = item.item;
 
   return (
-    <View style={styles.container}>
-      <RegularText>{url}</RegularText>
+    <>
+      <View style={styles.container}>
+        <View>
+          {/* TODO: Name Change!!! */}
+          <RegularText>sample.pdf</RegularText>
+          <RegularText smallest>PDF</RegularText>
+        </View>
 
-      <Button title={texts.consul.showPDF} onPress={() => setModalVisible(true)} />
+        <Button title={texts.consul.showPDF} onPress={() => setModalVisible(true)} />
+      </View>
 
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <View style={styles.centeredView}>
@@ -46,7 +52,7 @@ export const ConsulDocumentListItem = ({ item }) => {
           </View>
         </View>
       </Modal>
-    </View>
+    </>
   );
 };
 
@@ -56,7 +62,9 @@ ConsulDocumentListItem.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: normalize(10)
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: normalize(21)
   },
   centeredView: {
     flex: 1,

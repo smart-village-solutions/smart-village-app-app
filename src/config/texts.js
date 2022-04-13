@@ -67,6 +67,7 @@ export const texts = {
     commentLabel: 'Schreiben Sie einen Kommentar',
     comments: 'Kommentare',
     delete: 'Löschen',
+    documents: 'Unterlagen',
     email: 'E-Mail',
     emailError: 'E-Mail muss ausgefüllt werden',
     emailInvalid: 'E-Mail ungültig',

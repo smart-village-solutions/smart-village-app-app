@@ -15,7 +15,9 @@ export const ConsulDocumentList = (documents) => {
   return (
     <>
       <TitleContainer>
-        <Title accessibilityLabel={`(${text.comments}) ${a11yText.heading}`}>Documents</Title>
+        <Title accessibilityLabel={`(${text.documents}) ${a11yText.heading}`}>
+          {text.documents}
+        </Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
 

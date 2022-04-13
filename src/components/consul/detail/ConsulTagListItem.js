@@ -9,7 +9,7 @@ export const ConsulTagListItem = ({ item, onPress }) => {
   const { name } = item.item;
 
   return (
-    <TouchableOpacity style={styles.tagContainer} onPress={onPress}>
+    <TouchableOpacity style={styles.tagContainer} onPress={onPress} activeOpacity={1}>
       {/* TODO: Touchable will be added to filter  */}
       <RegularText small style={styles.tagText}>
         {name},
