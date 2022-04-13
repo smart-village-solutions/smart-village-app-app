@@ -74,7 +74,7 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
             listData={data}
             navigation={navigation}
             route={route}
-            onRefresh={() => refresh(refetch)}
+            onRefresh={() => refetch()}
           />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
