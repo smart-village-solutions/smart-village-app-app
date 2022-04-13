@@ -153,6 +153,9 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
         {/* Video Component */}
         {!!videoUrl && <ConsulVideoComponent videoUrl={videoUrl} />}
 
+        {/* External Video */}
+        {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
+
         {/* Description! */}
         {!!description && (
           <Wrapper>
@@ -180,9 +183,6 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
             />
           </>
         )}
-
-        {/* External Video */}
-        {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
 
         {/* Documents */}
         {!!documents && !!documents.length > 0 && <ConsulDocumentList documents={documents} />}
