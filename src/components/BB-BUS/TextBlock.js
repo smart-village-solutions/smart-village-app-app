@@ -9,7 +9,11 @@ import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { Block } from './Block';
 
 export const TextBlock = ({ bottomDivider, textBlock, openWebScreen }) => {
-  const { name, externalLinks, text } = textBlock;
+  const {
+    type: { name },
+    externalLinks,
+    text
+  } = textBlock;
 
   if (!name || (!text && !externalLinks?.length)) {
     return null;

@@ -67,21 +67,22 @@ const parseTextBlocks = (service) => {
 
   if (textBlocks) {
     sortedTextBlocks = _sortBy(textBlocks, (textBlock) => {
-      return TEXT_BLOCKS_SORTER[textBlock.name];
+      return TEXT_BLOCKS_SORTER[textBlock.type.name];
     });
 
     // filter text blocks we want to render before authorities and persons
     firstTextBlocks = _remove(sortedTextBlocks, (textBlock) => {
       return (
-        textBlock.name.toUpperCase() === 'KURZTEXT' || textBlock.name.toUpperCase() === 'VOLLTEXT'
+        textBlock.type.name.toUpperCase() === 'KURZTEXT' ||
+        textBlock.type.name.toUpperCase() === 'VOLLTEXT'
       );
     });
 
     // filter text blocks, we do not want to render
     _remove(sortedTextBlocks, (textBlock) => {
       return (
-        textBlock.name.toUpperCase() === 'FACHLICH FREIGEGEBEN DURCH' ||
-        textBlock.name.toUpperCase() === 'FACHLICH FREIGEGEBEN AM'
+        textBlock.type.name.toUpperCase() === 'FACHLICH FREIGEGEBEN DURCH' ||
+        textBlock.type.name.toUpperCase() === 'FACHLICH FREIGEGEBEN AM'
       );
     });
   }
@@ -160,7 +161,7 @@ export const DetailScreen = ({ route }) => {
 
           return (
             <TextBlock
-              key={textBlock.type?.id || uniqueId(textBlock.name)}
+              key={textBlock.type?.id || uniqueId(textBlock.type.name)}
               bottomDivider={index == firstTextBlocks.length - 1}
               textBlock={textBlock}
               openWebScreen={openWebScreen}

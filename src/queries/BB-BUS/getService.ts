@@ -59,7 +59,9 @@ export const GET_SERVICE = gql`
     street
     houseNumber
     zipcode
-    city
+    area {
+      name
+    }
   }
 
   fragment CommunicationValues on Communication {
