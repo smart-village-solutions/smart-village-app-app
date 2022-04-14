@@ -55,9 +55,8 @@ const showRegistrationFailAlert = (navigation) =>
 /* eslint-disable complexity */
 export const ConsulIndexScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [sorting, setSorting] = useState(
-    route.params?.query === queryType.POLLS ? INITIAL_TOP_FILTERING_FOR_POLLS : INITIAL_TOP_SORTING
-  );
+  const [sortingType, setSortingType] = useState(INITIAL_TOP_SORTING);
+  const [filterType, setFilterType] = useState(INITIAL_TOP_FILTERING_FOR_POLLS);
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const bookmarkable = route.params?.bookmarkable;
   const query = route.params?.query ?? '';
@@ -74,24 +73,24 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
     skipLastDivider: true
   });
 
-  let type = sorting.find((data) => data.selected);
+  let type = sortingType.find((data) => data.selected);
 
   const listData = useCallback(
     (listItems) => {
-      type = sorting.find((data) => data.selected);
+      type = sortingType.find((data) => data.selected);
 
       if (query !== queryType.USER || query !== queryType.POLLS)
         sortingHelper(type.id, listItems).catch((err) => console.error(err));
 
       if (listItems) return listItems;
     },
-    [sorting, isLoading]
+    [sortingType, filterType, isLoading]
   );
 
   useEffect(() => {
-    type = sorting.find((data) => data.selected);
+    type = filterType.find((data) => data.selected);
     if (query === queryType.POLLS) filterHelper(type.id).then((val) => setQueryVariables(val));
-  }, [sorting]);
+  }, [filterType]);
 
   const refresh = useCallback(
     async (refetch) => {
@@ -112,8 +111,11 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      {query !== queryType.USER && (
-        <IndexFilterWrapperAndList filter={sorting} setFilter={setSorting} />
+      {query === queryType.POLLS && (
+        <IndexFilterWrapperAndList filter={filterType} setFilter={setFilterType} />
+      )}
+      {query !== queryType.USER && query !== queryType.POLLS && (
+        <IndexFilterWrapperAndList filter={sortingType} setFilter={setSortingType} />
       )}
 
       <Component
