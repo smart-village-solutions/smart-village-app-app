@@ -120,6 +120,9 @@ export const texts = {
       'Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.',
     resetPasswordSuccessTitle: 'Erfolgreich',
     return: 'Rückmeldung',
+    serverErrorAlertTitle: 'Verbindungsfehler',
+    serverErrorAlertBody:
+      'Bitte überprüfen Sie Ihre Internetverbindung und versuchen Sie es erneut',
     show: 'Anzeigen',
     showPDF: 'PDF anzeigen',
     submittingCommentButton: 'Kommentar abgeben',
@@ -128,6 +131,7 @@ export const texts = {
     supportProposalAlertTitle: 'Erfolgreich',
     supports: 'Unterstützer*innen',
     tags: 'Stichworte',
+    tryAgain: 'versuchen Sie es nochmal',
     usernameError: 'Username muss ausgefüllt werden',
     usernameOrEmail: 'Benutzername oder E-Mail',
     votes: 'Stimmen',

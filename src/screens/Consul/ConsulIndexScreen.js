@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState, useCallback, useEffect } from 'react';
-import { RefreshControl, Text } from 'react-native';
+import { RefreshControl, Alert } from 'react-native';
 
 import {
   LoadingSpinner,
@@ -16,6 +16,7 @@ import { useConsulData } from '../../hooks';
 import { texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { IndexFilterWrapperAndList } from '../../components';
+import { ScreenName } from '../../types';
 
 const text = texts.consul.sorting;
 const type = QUERY_TYPES.CONSUL.SORTING;
@@ -41,6 +42,16 @@ const getComponent = (query) => {
   };
   return COMPONENTS[query];
 };
+
+// Alerts
+const showRegistrationFailAlert = (navigation) =>
+  Alert.alert(texts.consul.serverErrorAlertTitle, texts.consul.serverErrorAlertBody, [
+    {
+      text: texts.consul.tryAgain,
+      onPress: () => navigation?.navigate(ScreenName.ConsulHomeScreen)
+    }
+  ]);
+
 /* eslint-disable complexity */
 
 export const ConsulIndexScreen = ({ navigation, route }) => {
@@ -49,24 +60,26 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   const [sorting, setSorting] = useState(
     route.params?.query === queryType.POLLS ? INITIAL_TOP_FILTERING_FOR_POLLS : INITIAL_TOP_SORTING
   );
-  const [sortingLoading, setSortingLoading] = useState(true);
+  const [sortingLoading, setSortingLoading] = useState(false);
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const bookmarkable = route.params?.bookmarkable;
   const query = route.params?.query ?? '';
   const extraQuery = route.params?.extraQuery ?? '';
 
+  //GraphQL
   const { data, refetch, isLoading, isError } = useConsulData({
     query,
     queryVariables
   });
 
-  const listItems = parseListItemsFromQuery(query, data, {
+  let listItems = parseListItemsFromQuery(query, data, {
     bookmarkable,
     skipLastDivider: true
   });
 
   useEffect(() => {
     let type = sorting.find((data) => data.selected);
+    let d = listItems;
     setSortingLoading(true);
 
     if (query === queryType.POLLS)
@@ -76,7 +89,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
         .catch((err) => console.error(err));
 
     if (query !== queryType.USER)
-      sortingHelper(type.id, listItems)
+      sortingHelper(type.id, d)
         .then((val) => setListData(val))
         .then(() => setSortingLoading(false))
         .catch((err) => console.error(err));
@@ -97,8 +110,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
   if (isLoading || sortingLoading) return <LoadingSpinner loading />;
 
-  // TODO: If Error true return error component
-  if (isError) return <Text>{isError.message}</Text>;
+  if (isError) showRegistrationFailAlert(navigation);
 
   if ((query !== queryType.USER && !listData) || !Component) return null;
 

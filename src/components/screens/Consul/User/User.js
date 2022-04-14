@@ -22,11 +22,11 @@ const getComponent = (query) => {
 export const User = ({ navigation, data, route, extraQuery, refreshControl }) => {
   const query = extraQuery ?? '';
 
-  const listItems = parseListItemsFromQuery(query, data.user, {
+  const listItems = parseListItemsFromQuery(query, data?.user, {
     skipLastDivider: true
   });
 
-  listItems.sort((a, b) =>
+  listItems?.sort((a, b) =>
     momentFormatUtcToLocal(b.createdAt)
       .split('.')
       .reverse()
@@ -36,7 +36,7 @@ export const User = ({ navigation, data, route, extraQuery, refreshControl }) =>
 
   const Component = getComponent(query);
 
-  if (!Component) return null;
+  if (!Component || !listItems) return null;
 
   return (
     <Component
@@ -51,7 +51,7 @@ export const User = ({ navigation, data, route, extraQuery, refreshControl }) =>
 };
 
 User.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.object,
   navigation: PropTypes.object.isRequired,
   query: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
