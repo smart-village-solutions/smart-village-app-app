@@ -49,17 +49,13 @@ export const ConsulQuestionsListItem = ({ item, onRefresh, token, disabled }) =>
             answersGivenByCurrentUser[0] &&
               answersGivenByCurrentUser[0].answer === item.title &&
               styles.selectedContainer,
-            !disabled && styles.disabledAnswerContainer
+            !disabled &&
+              answersGivenByCurrentUser[0] &&
+              answersGivenByCurrentUser[0].answer !== item.title &&
+              styles.disabledAnswerContainer
           ]}
         >
-          <RegularText
-            placeholder={!disabled}
-            lightest={
-              answersGivenByCurrentUser[0] && answersGivenByCurrentUser[0].answer === item.title
-            }
-          >
-            {item.title}
-          </RegularText>
+          <RegularText placeholder={!disabled}>{item.title}</RegularText>
         </Touchable>
       ))}
       {loading && <LoadingSpinner loading />}
@@ -87,8 +83,7 @@ const styles = StyleSheet.create({
   },
   selectedContainer: {
     borderColor: colors.lighterPrimary,
-    borderWidth: 1,
-    backgroundColor: colors.lighterPrimary
+    borderWidth: 2
   }
 });
 
