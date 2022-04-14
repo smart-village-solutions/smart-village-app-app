@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Alert, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Alert, TouchableOpacity, StyleSheet, ScrollView, View } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
 import { Input } from '../../../Consul';
-import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../../../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
 import { texts, colors } from '../../../../config';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
@@ -169,9 +169,9 @@ export const NewProposal = ({ navigation, data, query }) => {
 
   return (
     <SafeAreaViewFlex>
-      <WrapperWithOrientation>
+      <Wrapper>
         {Inputs.map((item, index) => (
-          <Wrapper key={index} style={styles.noPaddingTop}>
+          <View key={index}>
             {item.type === 'input' && (
               <>
                 <Input {...item} control={control} rules={item.rules} />
@@ -229,7 +229,7 @@ export const NewProposal = ({ navigation, data, query }) => {
                 </ScrollView>
               </>
             )}
-          </Wrapper>
+          </View>
         ))}
 
         <WrapperHorizontal>
@@ -254,7 +254,7 @@ export const NewProposal = ({ navigation, data, query }) => {
             }
           />
         </Wrapper>
-      </WrapperWithOrientation>
+      </Wrapper>
     </SafeAreaViewFlex>
   );
 };
@@ -276,9 +276,6 @@ const styles = StyleSheet.create({
   },
   tagText: {
     padding: 10
-  },
-  noPaddingTop: {
-    paddingTop: 0
   }
 });
 

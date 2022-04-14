@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert, View } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
 import { Input } from '../../../Consul';
-import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../../../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
 import { texts } from '../../../../config';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
@@ -106,11 +106,11 @@ export const NewDebate = ({ navigation, data, query }) => {
 
   return (
     <SafeAreaViewFlex>
-      <WrapperWithOrientation>
+      <Wrapper>
         {Inputs.map((item, index) => (
-          <Wrapper key={index} style={styles.noPaddingTop}>
+          <View key={index}>
             <Input {...item} control={control} rules={item.rules} />
-          </Wrapper>
+          </View>
         ))}
 
         <WrapperHorizontal>
@@ -135,7 +135,7 @@ export const NewDebate = ({ navigation, data, query }) => {
             }
           />
         </Wrapper>
-      </WrapperWithOrientation>
+      </Wrapper>
     </SafeAreaViewFlex>
   );
 };
@@ -148,12 +148,6 @@ NewDebate.propTypes = {
   data: PropTypes.object,
   query: PropTypes.string
 };
-
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});
 
 const Inputs = [
   {
