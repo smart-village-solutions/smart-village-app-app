@@ -42,7 +42,7 @@ ConsulCommentList.propTypes = {
 };
 
 // Thanks to : https://stackoverflow.com/questions/58492213/make-object-as-child-according-to-the-parent-id-javascript
-function getThreadedComments(data, pid = null, userId) {
+const getThreadedComments = (data, pid = null, userId) => {
   return data.reduce((r, e) => {
     if (e.parentId == pid) {
       const obj = { ...e, userId };
@@ -52,4 +52,4 @@ function getThreadedComments(data, pid = null, userId) {
     }
     return r;
   }, []);
-}
+};
