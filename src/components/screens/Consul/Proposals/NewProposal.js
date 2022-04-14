@@ -199,10 +199,13 @@ export const NewProposal = ({ navigation, data, query }) => {
                   {item.category.map((items, indexs) => (
                     <TouchableOpacity
                       key={indexs}
+                      activeOpacity={1}
                       style={[
                         styles.tagContainer,
                         {
-                          backgroundColor: items.selected ? colors.darkerPrimary : colors.borderRgba
+                          backgroundColor: items.selected
+                            ? colors.lighterPrimary
+                            : colors.placeholder + '60'
                         }
                       ]}
                       onPress={() => {
@@ -217,7 +220,7 @@ export const NewProposal = ({ navigation, data, query }) => {
                       <RegularText
                         small
                         style={styles.tagText}
-                        lighter={items.selected ? true : false}
+                        lightest={items.selected ? true : false}
                       >
                         {items.name}
                       </RegularText>
