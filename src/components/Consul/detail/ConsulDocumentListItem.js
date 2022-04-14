@@ -9,10 +9,10 @@ import { colors, normalize, Icon, texts } from '../../../config';
 import { device } from '../../../config';
 import { Button } from '../../Button';
 
-export const ConsulDocumentListItem = ({ item }) => {
+export const ConsulDocumentListItem = ({ documentItem }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const { url } = item.item;
+  const { url } = documentItem;
 
   return (
     <>
@@ -57,7 +57,7 @@ export const ConsulDocumentListItem = ({ item }) => {
 };
 
 ConsulDocumentListItem.propTypes = {
-  item: PropTypes.object.isRequired
+  documentItem: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({

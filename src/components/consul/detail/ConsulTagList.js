@@ -25,8 +25,8 @@ export const ConsulTagList = ({ tags, onPress }) => {
             showsHorizontalScrollIndicator={false}
             horizontal
             data={tags}
-            renderItem={(item, index) => (
-              <ConsulTagListItem onPress={onPress} item={item} index={index} />
+            renderItem={({ item, index }) => (
+              <ConsulTagListItem onPress={onPress} tagItem={item} index={index} />
             )}
           />
         </WrapperRow>

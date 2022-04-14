@@ -5,8 +5,8 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import { RegularText } from '../../Text';
 // import { colors } from '../../../config';
 
-export const ConsulTagListItem = ({ item, onPress }) => {
-  const { name } = item.item;
+export const ConsulTagListItem = ({ tagItem, onPress }) => {
+  const { name } = tagItem;
 
   return (
     <TouchableOpacity style={styles.tagContainer} onPress={onPress} activeOpacity={1}>
@@ -30,6 +30,6 @@ const styles = StyleSheet.create({
 });
 
 ConsulTagListItem.propTypes = {
-  item: PropTypes.object.isRequired,
+  tagItem: PropTypes.object.isRequired,
   onPress: PropTypes.object
 };

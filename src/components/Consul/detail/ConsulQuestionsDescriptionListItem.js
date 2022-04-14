@@ -7,8 +7,8 @@ import { HtmlView } from '../../HtmlView';
 import { useOpenWebScreen } from '../../../hooks';
 import { Wrapper } from '../../Wrapper';
 
-export const ConsulQuestionsDescriptionListItem = ({ item }) => {
-  const { questionAnswers, title } = item.item;
+export const ConsulQuestionsDescriptionListItem = ({ questionDescriptionItem }) => {
+  const { questionAnswers, title } = questionDescriptionItem;
 
   const openWebScreen = useOpenWebScreen(undefined);
   return (
@@ -27,5 +27,5 @@ export const ConsulQuestionsDescriptionListItem = ({ item }) => {
 };
 
 ConsulQuestionsDescriptionListItem.propTypes = {
-  item: PropTypes.object.isRequired
+  questionDescriptionItem: PropTypes.object.isRequired
 };

@@ -35,9 +35,9 @@ export const ConsulQuestionsList = ({ data, onRefresh, token, disabled }) => {
 
       <FlatList
         data={data}
-        renderItem={(item, index) => (
+        renderItem={({ item, index }) => (
           <ConsulQuestionsListItem
-            item={item}
+            questionItem={item}
             index={index}
             onRefresh={onRefresh}
             token={token}
@@ -48,8 +48,8 @@ export const ConsulQuestionsList = ({ data, onRefresh, token, disabled }) => {
 
       <FlatList
         data={data}
-        renderItem={(item, index) => (
-          <ConsulQuestionsDescriptionListItem item={item} index={index} />
+        renderItem={({ item, index }) => (
+          <ConsulQuestionsDescriptionListItem questionDescriptionItem={item} index={index} />
         )}
       />
     </Wrapper>

@@ -10,9 +10,9 @@ import { ConsulClient } from '../../../ConsulClient';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { Touchable } from '../../Touchable';
 
-export const ConsulQuestionsListItem = ({ item, onRefresh, token, disabled }) => {
+export const ConsulQuestionsListItem = ({ questionItem, onRefresh, token, disabled }) => {
   const [loading, setLoading] = useState(false);
-  const { questionAnswers, title, answersGivenByCurrentUser, id } = item.item;
+  const { questionAnswers, title, answersGivenByCurrentUser, id } = questionItem;
 
   // GraphQL
   const [provideAnswerToPollQuestion] = useMutation(PROVIDE_ANSWER_TO_POLL_QUESTION, {
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
 });
 
 ConsulQuestionsListItem.propTypes = {
-  item: PropTypes.object.isRequired,
+  questionItem: PropTypes.object.isRequired,
   onRefresh: PropTypes.func,
   token: PropTypes.string,
   disabled: PropTypes.bool

@@ -28,7 +28,9 @@ export const ConsulCommentList = ({ commentCount, commentsData, onRefresh, userI
       <FlatList
         contentContainerStyle={{ padding: normalize(14) }}
         data={comments}
-        renderItem={(item) => <ConsulCommentListItem item={item} onRefresh={onRefresh} />}
+        renderItem={({ item }) => (
+          <ConsulCommentListItem commentItem={item} onRefresh={onRefresh} />
+        )}
       />
     </>
   );

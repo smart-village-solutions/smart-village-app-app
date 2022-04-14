@@ -25,7 +25,7 @@ export const ConsulDocumentList = (documents) => {
       <FlatList
         contentContainerStyle={{ padding: normalize(14) }}
         data={documents.documents}
-        renderItem={(item) => <ConsulDocumentListItem item={item} />}
+        renderItem={({ item }) => <ConsulDocumentListItem documentItem={item} />}
       />
     </>
   );

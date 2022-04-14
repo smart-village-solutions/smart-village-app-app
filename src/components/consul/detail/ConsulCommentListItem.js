@@ -36,7 +36,7 @@ const deleteCommentAlert = (onDelete) =>
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
+export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList }) => {
   const [responseShow, setResponseShow] = useState(false);
   const [reply, setReply] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -66,7 +66,7 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
     responses,
     votesFor,
     userId
-  } = item.item;
+  } = commentItem;
 
   const commentUserId = publicAuthor ? publicAuthor.id : null;
 
@@ -198,7 +198,7 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
             <View key={index} style={styles.replyContainer}>
               <ConsulCommentListItem
                 index={index}
-                item={{ item: item }}
+                commentItem={item}
                 onRefresh={onRefresh}
                 replyList={true}
               />
@@ -251,7 +251,7 @@ const Space = () => {
 };
 
 ConsulCommentListItem.propTypes = {
-  item: PropTypes.object.isRequired,
+  commentItem: PropTypes.object.isRequired,
   onRefresh: PropTypes.func,
   replyList: PropTypes.bool,
   userId: PropTypes.string
