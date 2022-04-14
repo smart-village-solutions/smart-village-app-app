@@ -136,6 +136,7 @@ export const texts = {
     usernameOrEmail: 'Benutzername oder E-Mail',
     votes: 'Stimmen',
     startNew: {
+      categoriesTitle: 'Kategorien',
       descriptionShortError: 'ist zu kurz (minimum 10 Zeichen)',
       leerError: 'darf nicht leer sein',
       newDebateDescriptionLabel: 'Initialer Debattenbeitrag',

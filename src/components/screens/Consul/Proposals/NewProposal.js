@@ -21,7 +21,7 @@ import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 const text = texts.consul.startNew;
 const queryTypes = QUERY_TYPES.CONSUL;
 
-const kategorien = [
+const TagCategories = [
   { name: 'Associations', id: 0, selected: false },
   { name: 'Culture', id: 1, selected: false },
   { name: 'Economy', id: 2, selected: false },
@@ -70,7 +70,7 @@ export const NewProposal = ({ navigation, data, query }) => {
 
   useEffect(() => {
     if (data?.tagList) {
-      kategorien.map((item) => {
+      TagCategories.map((item) => {
         for (let i = 0; i < data?.tagList.length; i++) {
           const element = data?.tagList[i];
           if (item.name === element) {
@@ -78,12 +78,12 @@ export const NewProposal = ({ navigation, data, query }) => {
           }
         }
       });
-      setTags(kategorien);
+      setTags(TagCategories);
     }
   }, []);
 
   useEffect(() => {
-    setTags(kategorien);
+    setTags(TagCategories);
     const selectedTag = tags.map((item) => {
       if (item.selected) return item.name;
     });
@@ -355,8 +355,8 @@ const Inputs = [
 
   {
     type: 'category',
-    title: 'Kategorien',
-    category: kategorien
+    title: text.categoriesTitle,
+    category: TagCategories
   },
   {
     type: 'input',
