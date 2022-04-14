@@ -55,6 +55,60 @@ export const texts = {
   constructionSites: {
     noInformationGiven: 'Derzeit sind zu keinen Baustellen Informationen vorhanden.'
   },
+  consul: {
+    abort: 'Abbrechen',
+    email: 'E-Mail',
+    emailError: 'E-Mail muss ausgefüllt werden',
+    emailInvalid: 'E-Mail ungültig',
+    usernameOrEmail: 'Benutzername oder E-Mail',
+    errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten.',
+    login: 'Anmelden',
+    loginTitle: 'Anmelden',
+    loginAllFieldsRequiredBody:
+      'Damit die Anmeldung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
+    loginAllFieldsRequiredTitle: 'Hinweis',
+    loginFailedBody: 'Bei der Anmeldung ist ein Fehler aufgetreten.',
+    loginFailedTitle: 'Fehler',
+    name: 'Name',
+    usernameError: 'Username muss ausgefüllt werden',
+    next: 'Weiter',
+    ok: 'OK',
+    password: 'Passwort',
+    passwordError: 'Passwort muss ausgefüllt werden',
+    passwordLengthError: 'Das Passwort sollte mindestens 8 Zeichen lang sein',
+    passwordDoNotMatch: 'Passwort stimmt nicht überein',
+    passwordConfirmation: 'Passwort bestätigen',
+    passwordConfirmationError: 'Passwortbestätigungsfehler',
+    passwordForgotten: 'Passwort vergessen',
+    privacyChecked: 'Mit der Registrierung akzeptieren Sie die',
+    privacyCheckLink: 'Allgemeine Nutzungsbedingungen',
+    privacyCheckRequireBody: 'Kreuzen Sie die Nutzungsvereinbarung an.',
+    privacyCheckRequireTitle: 'Hinweis',
+    register: 'Registrieren',
+    registrationFailedBody: 'Bei der Registrierung ist ein Fehler aufgetreten.',
+    registrationFailedTitle: 'Fehler',
+    registrationPrivacyLink: 'Datenschutzerklärung.',
+    registrationPrivacyText:
+      'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
+    registrationTitle: 'Registrieren',
+    resetPasswordFailedBody: 'Benutzer wurde nicht gefunden oder war nicht angemeldet.',
+    resetPasswordFailedTitle: 'Fehler',
+    resetPasswordEmptyEmailBody:
+      'Bitte stellen Sie sicher, dass Sie Ihre E-Mail-Adresse korrekt eingegeben haben.',
+    resetPasswordSuccessTitle: 'Erfolgreich',
+    resetPasswordSuccessBody:
+      'Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.',
+    homeScreen: {
+      account: 'Konto',
+      general: 'Allgemein',
+      debates: 'Diskussionen',
+      proposals: 'Vorschläge',
+      voting: 'Abstimmung',
+      personal: 'Persönlich',
+      settings: 'Einstellungen',
+      logout: 'Ausloggen'
+    }
+  },
   dataProvider: {
     more: 'Mehr von',
     partner: 'Partner',
@@ -433,6 +487,11 @@ export const texts = {
     appSettings: 'App-Einstellungen',
     company: appJson.expo.name,
     constructionSite: 'Baustelle',
+    consul: {
+      login: 'Anmelden',
+      register: 'Registrieren',
+      home: 'Consul'
+    },
     encounterHome: 'Mitfahrbank',
     feedback: 'Feedback',
     home: appJson.expo.name,

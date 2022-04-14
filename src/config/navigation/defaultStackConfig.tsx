@@ -8,6 +8,14 @@ import {
   BookmarkScreen,
   ConstructionSiteDetailScreen,
   ConstructionSiteOverviewScreen,
+  ConsulHomeScreen,
+  ConsulLoginScreen,
+  ConsulRegisterScreen,
+  ConsulRegisteredScreen,
+  ConsulDebatesHomeScreen,
+  ConsulProposalsHomeScreen,
+  ConsulVotingHomeScreen,
+  ConsulUserSettingsScreen,
   DataProviderScreen,
   DetailScreen,
   EncounterDataScreen,
@@ -84,6 +92,42 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Category,
       screenComponent: IndexScreen
+    },
+    {
+      routeName: ScreenName.ConsulHomeScreen,
+      screenComponent: ConsulHomeScreen,
+      screenOptions: { title: texts.screenTitles.consul.home }
+    },
+    {
+      routeName: ScreenName.ConsulRegisterScreen,
+      screenComponent: ConsulRegisterScreen,
+      screenOptions: { title: texts.screenTitles.consul.register }
+    },
+    {
+      routeName: ScreenName.ConsulRegisteredScreen,
+      screenComponent: ConsulRegisteredScreen,
+      screenOptions: { title: texts.screenTitles.consul.register }
+    },
+    {
+      routeName: ScreenName.ConsulLoginScreen,
+      screenComponent: ConsulLoginScreen,
+      screenOptions: { title: texts.screenTitles.consul.login }
+    },
+    {
+      routeName: ScreenName.ConsulDebatesHomeScreen,
+      screenComponent: ConsulDebatesHomeScreen
+    },
+    {
+      routeName: ScreenName.ConsulProposalsHomeScreen,
+      screenComponent: ConsulProposalsHomeScreen
+    },
+    {
+      routeName: ScreenName.ConsulVotingHomeScreen,
+      screenComponent: ConsulVotingHomeScreen
+    },
+    {
+      routeName: ScreenName.ConsulUserSettingsScreen,
+      screenComponent: ConsulUserSettingsScreen
     },
     {
       routeName: ScreenName.Company,
