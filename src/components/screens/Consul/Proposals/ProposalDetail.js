@@ -76,10 +76,8 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     });
   }, []);
 
-  // React Hook Form
   const { control, handleSubmit, reset } = useForm();
 
-  // GraphQL
   const [addCommentToProposal] = useMutation(ADD_COMMENT_TO_PROPOSAL, {
     client: ConsulClient
   });
@@ -112,7 +110,6 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
   return (
     <SafeAreaViewFlex>
       <WrapperWithOrientation>
-        {/* Publish Proposal! */}
         {!published && (
           <Wrapper>
             <BoldText>{text.publishProposalBold}</BoldText>
@@ -121,7 +118,6 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
           </Wrapper>
         )}
 
-        {/* Title! */}
         {!!title && (
           <>
             <TitleContainer>
@@ -131,7 +127,6 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
           </>
         )}
 
-        {/* Author! */}
         {!!publicAuthor && (
           <ConsulPublicAuthorComponent
             onPress={() => {
@@ -158,28 +153,22 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
           />
         )}
 
-        {/* Image Component */}
         {!!imageUrlMedium && (
           <Image source={{ uri: imageUrlMedium }} containerStyle={styles.imageContainerStyle} />
         )}
 
-        {/* Summary! */}
         {!!summary && <ConsulSummaryComponent summary={summary} />}
 
-        {/* Video Component */}
         {!!videoUrl && <ConsulVideoComponent videoUrl={videoUrl} />}
 
-        {/* External Video */}
         {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
 
-        {/* Description! */}
         {!!description && (
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
         )}
 
-        {/* Map View */}
         {!!latitude && !!longitude && (
           <>
             <TitleContainer>
@@ -200,13 +189,10 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
           </>
         )}
 
-        {/* Documents */}
         {!!documents && !!documents.length > 0 && <ConsulDocumentList documents={documents} />}
 
-        {/* Tag List! */}
         {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
 
-        {/* Voting Component! */}
         <ConsulSupportingComponent
           votesData={{
             onRefresh: onRefresh,
@@ -216,7 +202,6 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
           }}
         />
 
-        {/* Comments List! */}
         {!!comments && (
           <ConsulCommentList
             commentCount={commentsCount}
@@ -226,7 +211,6 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
           />
         )}
 
-        {/* New Comment Input! */}
         <Wrapper>
           <Input
             keyboardType="default"

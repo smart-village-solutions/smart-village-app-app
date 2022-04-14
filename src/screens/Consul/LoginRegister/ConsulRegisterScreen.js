@@ -29,7 +29,6 @@ const text = texts.consul;
 
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-// Alerts
 const showRegistrationFailAlert = () =>
   Alert.alert(text.registrationFailedTitle, text.registrationFailedBody);
 
@@ -37,16 +36,13 @@ const showPrivacyCheckedAlert = () =>
   Alert.alert(text.privacyCheckRequireTitle, text.privacyCheckRequireBody);
 
 export const ConsulRegisterScreen = ({ navigation }) => {
-  // useState
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [termsOfService, settermsOfService] = useState(false);
   const [registrationLoading, setRegistrationLoading] = useState(false);
 
-  // React Hook Form
   const { control, handleSubmit, watch } = useForm();
   const pwd = watch('password');
 
-  // GraphQL
   const [userRegister] = useMutation(CONSUL_REGISTER_USER, {
     client: ConsulClient
   });

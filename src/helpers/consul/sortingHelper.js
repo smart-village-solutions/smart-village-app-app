@@ -1,11 +1,11 @@
 import { QUERY_TYPES } from '../../queries';
 import { momentFormatUtcToLocal } from '../momentHelper';
 
-const type = QUERY_TYPES.CONSUL.SORTING;
+const { NEWESTDATE, HIGHESTRATED, MOSTACTIVE } = QUERY_TYPES.CONSUL.SORTING;
 
 export const sortingHelper = async (sortingType, listItems) => {
   switch (sortingType) {
-    case type.NEWESTDATE:
+    case NEWESTDATE:
       await listItems.sort((a, b) =>
         momentFormatUtcToLocal(b.createdAt)
           .split('.')
@@ -14,10 +14,10 @@ export const sortingHelper = async (sortingType, listItems) => {
           .localeCompare(momentFormatUtcToLocal(a.createdAt).split('.').reverse().join())
       );
       return listItems;
-    case type.HIGHESTRATED:
+    case HIGHESTRATED:
       await listItems.sort((a, b) => b.totalVotes - a.totalVotes);
       return listItems;
-    case type.MOSTACTIVE:
+    case MOSTACTIVE:
       return listItems;
     default:
       return listItems;

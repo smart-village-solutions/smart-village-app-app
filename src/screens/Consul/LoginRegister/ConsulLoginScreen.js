@@ -38,14 +38,11 @@ const showResetPasswordEmptyMailAlert = () =>
   Alert.alert(text.resetPasswordFailedTitle, text.resetPasswordEmptyEmailBody);
 
 export const ConsulLoginScreen = ({ navigation }) => {
-  // useState
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [registrationLoading, setRegistrationLoading] = useState(false);
 
-  // React Hook Form
   const { control, handleSubmit } = useForm();
 
-  // GraphQL
   const [userLogin] = useMutation(CONSUL_LOGIN_USER, {
     client: ConsulClient
   });

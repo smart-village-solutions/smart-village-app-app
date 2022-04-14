@@ -41,10 +41,8 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList }) => 
   const [reply, setReply] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // React Hook Form
   const { control, handleSubmit, reset } = useForm();
 
-  // GraphQL
   const [addReplyToComment] = useMutation(ADD_REPLY_TO_COMMENT, {
     client: ConsulClient
   });

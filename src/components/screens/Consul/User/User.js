@@ -8,13 +8,11 @@ import { Proposals } from '../Proposals';
 import { UserComments } from '../UserComments';
 import { momentFormatUtcToLocal } from '../../../../helpers';
 
-const queryType = QUERY_TYPES.CONSUL;
-
 const getComponent = (query) => {
   const COMPONENTS = {
-    [queryType.PUBLIC_DEBATES]: Debates,
-    [queryType.PUBLIC_PROPOSALS]: Proposals,
-    [queryType.PUBLIC_COMMENTS]: UserComments
+    [QUERY_TYPES.CONSUL.PUBLIC_DEBATES]: Debates,
+    [QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS]: Proposals,
+    [QUERY_TYPES.CONSUL.PUBLIC_COMMENTS]: UserComments
   };
   return COMPONENTS[query];
 };

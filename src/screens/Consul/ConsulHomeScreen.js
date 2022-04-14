@@ -9,7 +9,6 @@ import { getConsulUser, homeData } from '../../helpers';
 import { ConsulListComponent } from '../../components';
 
 export const ConsulHomeScreen = ({ navigation, route }) => {
-  // useState
   const [refreshingHome, setRefreshingHome] = useState(false);
   const [userId, setUserId] = useState();
   const { refresh: refreshUser, isLoading, isError, isLoggedIn } = useConsulUser();

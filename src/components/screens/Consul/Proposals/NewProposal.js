@@ -19,7 +19,6 @@ import { Label } from '../../../Label';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 
 const text = texts.consul.startNew;
-const queryTypes = QUERY_TYPES.CONSUL;
 
 const TagCategories = [
   { name: 'Associations', id: 0, selected: false },
@@ -39,7 +38,6 @@ const TagCategories = [
   { name: 'Transparency', id: 14, selected: false }
 ];
 
-// Alerts
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 const graphqlErr = (err) => Alert.alert('Hinweis', err);
@@ -49,7 +47,6 @@ export const NewProposal = ({ navigation, data, query }) => {
   const [startLoading, setStartLoading] = useState(false);
   const [tags, setTags] = useState([]);
 
-  // React Hook Form
   const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
       title: data?.title,
@@ -60,7 +57,6 @@ export const NewProposal = ({ navigation, data, query }) => {
     }
   });
 
-  // GraphQL
   const [submitProposal] = useMutation(START_PROPOSAL, {
     client: ConsulClient
   });
@@ -122,7 +118,7 @@ export const NewProposal = ({ navigation, data, query }) => {
     if (!termsOfService) return showRegistrationFailAlert();
 
     switch (query) {
-      case queryTypes.START_PROPOSAL:
+      case QUERY_TYPES.CONSUL.START_PROPOSAL:
         setStartLoading(true);
         await submitProposal({
           variables: variables
@@ -141,7 +137,7 @@ export const NewProposal = ({ navigation, data, query }) => {
             setStartLoading(false);
           });
         break;
-      case queryTypes.UPDATE_PROPOSAL:
+      case QUERY_TYPES.CONSUL.UPDATE_PROPOSAL:
         setStartLoading(true);
 
         await updateProposal({
@@ -248,7 +244,7 @@ export const NewProposal = ({ navigation, data, query }) => {
           <Button
             onPress={handleSubmit(onSubmit)}
             title={
-              query === queryTypes.START_PROPOSAL
+              query === QUERY_TYPES.CONSUL.START_PROPOSAL
                 ? text.newProposalStartButtonLabel
                 : text.updateButtonLabel
             }

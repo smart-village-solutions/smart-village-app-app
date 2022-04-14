@@ -60,10 +60,8 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
     });
   }, []);
 
-  // React Hook Form
   const { control, handleSubmit, reset } = useForm();
 
-  // GraphQL
   const [addCommentToDebate] = useMutation(ADD_COMMENT_TO_DEBATE, {
     client: ConsulClient
   });
@@ -82,7 +80,6 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
   return (
     <SafeAreaViewFlex>
       <WrapperWithOrientation>
-        {/* Title! */}
         {!!title && (
           <>
             <TitleContainer>
@@ -92,7 +89,6 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
           </>
         )}
 
-        {/* Author! */}
         {!!publicAuthor && (
           <ConsulPublicAuthorComponent
             onPress={() => {
@@ -117,17 +113,14 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
           />
         )}
 
-        {/* Description! */}
         {!!description && (
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
         )}
 
-        {/* Tag List! */}
         {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
 
-        {/* Voting Component! */}
         <ConsulVotingComponent
           id={id}
           onRefresh={onRefresh}
@@ -139,7 +132,6 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
           }}
         />
 
-        {/* Comments List! */}
         {!!comments && (
           <ConsulCommentList
             commentCount={commentsCount}
@@ -149,7 +141,6 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
           />
         )}
 
-        {/* New Comment Input! */}
         <Wrapper>
           <Input
             multiline

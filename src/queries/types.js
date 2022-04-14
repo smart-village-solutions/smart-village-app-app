@@ -45,7 +45,9 @@ export const QUERY_TYPES = {
     SORTING: {
       NEWESTDATE: 'newestDate',
       MOSTACTIVE: 'mostActive',
-      HIGHESTRATED: 'highestRated',
+      HIGHESTRATED: 'highestRated'
+    },
+    FILTER: {
       CURRENT: 'current',
       EXPIRED: 'expired'
     }

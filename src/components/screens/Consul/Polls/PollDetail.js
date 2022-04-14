@@ -59,10 +59,8 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
     route.params?.rootRouteName
   );
 
-  // React Hook Form
   const { control, handleSubmit, reset } = useForm();
 
-  // GraphQL
   const [addCommentToPoll] = useMutation(ADD_COMMENT_TO_POLLS, {
     client: ConsulClient
   });
@@ -81,7 +79,6 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
   return (
     <SafeAreaViewFlex>
       <WrapperWithOrientation>
-        {/* Title! */}
         {!!title && (
           <>
             <TitleContainer>
@@ -91,10 +88,8 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
           </>
         )}
 
-        {/* Summary! */}
         {!!summary && <ConsulSummaryComponent summary={summary} />}
 
-        {/* Description! */}
         {!!description && (
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
@@ -105,7 +100,6 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
           <ConsulDateComponent startsAt={startsAt} endsAt={endsAt} />
         )}
 
-        {/* Question! */}
         {!!questions && (
           <ConsulQuestionsList
             data={questions}
@@ -115,7 +109,6 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
           />
         )}
 
-        {/* Comments List! */}
         {!!comments && (
           <ConsulCommentList
             commentCount={commentsCount}
@@ -125,7 +118,6 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
           />
         )}
 
-        {/* New Comment Input! */}
         <Wrapper>
           <Input
             multiline

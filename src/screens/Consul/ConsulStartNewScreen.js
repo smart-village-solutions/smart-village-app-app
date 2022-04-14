@@ -10,15 +10,13 @@ import {
   DefaultKeyboardAvoidingView
 } from '../../components';
 
-const queryType = QUERY_TYPES.CONSUL;
-
 const getComponent = (query) => {
   switch (query) {
-    case queryType.START_DEBATE:
-    case queryType.UPDATE_DEBATE:
+    case QUERY_TYPES.CONSUL.START_DEBATE:
+    case QUERY_TYPES.CONSUL.UPDATE_DEBATE:
       return NewDebate;
-    case queryType.START_PROPOSAL:
-    case queryType.UPDATE_PROPOSAL:
+    case QUERY_TYPES.CONSUL.START_PROPOSAL:
+    case QUERY_TYPES.CONSUL.UPDATE_PROPOSAL:
       return NewProposal;
     default:
       null;

@@ -1,14 +1,14 @@
 import { QUERY_TYPES } from '../../queries';
 
-const type = QUERY_TYPES.CONSUL.SORTING;
+const { CURRENT, EXPIRED } = QUERY_TYPES.CONSUL.FILTER;
 
 export const filterHelper = async (filterType) => {
   switch (filterType) {
-    case type.CURRENT:
-      return { filter: type.CURRENT };
-    case type.EXPIRED:
-      return { filter: type.EXPIRED };
+    case CURRENT:
+      return { filter: CURRENT };
+    case EXPIRED:
+      return { filter: EXPIRED };
     default:
-      return { filter: type.CURRENT };
+      return { filter: CURRENT };
   }
 };

@@ -15,14 +15,12 @@ import { useConsulData } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { colors } from '../../config';
 
-const queryType = QUERY_TYPES.CONSUL;
-
 const getComponent = (query) => {
   const COMPONENTS = {
-    [queryType.DEBATE]: DebateDetail,
-    [queryType.PROPOSAL]: ProposalDetail,
-    [queryType.POLL]: PollDetail,
-    [queryType.PUBLIC_COMMENT]: UserCommentDetail
+    [QUERY_TYPES.CONSUL.DEBATE]: DebateDetail,
+    [QUERY_TYPES.CONSUL.PROPOSAL]: ProposalDetail,
+    [QUERY_TYPES.CONSUL.POLL]: PollDetail,
+    [QUERY_TYPES.CONSUL.PUBLIC_COMMENT]: UserCommentDetail
   };
 
   return COMPONENTS[query];

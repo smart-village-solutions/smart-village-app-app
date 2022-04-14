@@ -17,9 +17,7 @@ import { QUERY_TYPES } from '../../../../queries';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 
 const text = texts.consul.startNew;
-const queryTypes = QUERY_TYPES.CONSUL;
 
-// Alerts
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 const graphqlErr = (err) => Alert.alert('Hinweis', err);
@@ -28,7 +26,6 @@ export const NewDebate = ({ navigation, data, query }) => {
   const [termsOfService, settermsOfService] = useState(data?.termsOfService ?? false);
   const [startLoading, setStartLoading] = useState(false);
 
-  // React Hook Form
   const { control, handleSubmit } = useForm({
     defaultValues: {
       title: data?.title,
@@ -37,7 +34,6 @@ export const NewDebate = ({ navigation, data, query }) => {
     }
   });
 
-  // GraphQL
   const [startDebate] = useMutation(START_DEBATE, {
     client: ConsulClient
   });
@@ -60,7 +56,7 @@ export const NewDebate = ({ navigation, data, query }) => {
 
     if (!termsOfService) return showRegistrationFailAlert();
     switch (query) {
-      case queryTypes.START_DEBATE:
+      case QUERY_TYPES.CONSUL.START_DEBATE:
         setStartLoading(true);
         await startDebate({
           variables: variables
@@ -79,7 +75,7 @@ export const NewDebate = ({ navigation, data, query }) => {
             setStartLoading(false);
           });
         break;
-      case queryTypes.UPDATE_DEBATE:
+      case QUERY_TYPES.CONSUL.UPDATE_DEBATE:
         setStartLoading(true);
         await updateDebate({
           variables: variables
@@ -129,7 +125,7 @@ export const NewDebate = ({ navigation, data, query }) => {
           <Button
             onPress={handleSubmit(onSubmit)}
             title={
-              query === queryTypes.START_DEBATE
+              query === QUERY_TYPES.CONSUL.START_DEBATE
                 ? text.newDebateStartButtonLabel
                 : text.updateButtonLabel
             }
