@@ -135,15 +135,17 @@ export const ConsulCommentListItem = ({ item, onRefresh, replyList }) => {
 
           {/* Delete Button */}
           {commentUserId === userId && (
-            <Touchable onPress={() => deleteCommentAlert(onDelete)} style={styles.deleteButton}>
-              <Icon.Trash size={normalize(12)} color={colors.error} />
-              <RegularText error smallest>
-                {` ${text.delete}`}
-              </RegularText>
-            </Touchable>
-          )}
+            <>
+              <Touchable onPress={() => deleteCommentAlert(onDelete)} style={styles.deleteButton}>
+                <Icon.Trash size={normalize(12)} color={colors.error} />
+                <RegularText error smallest>
+                  {` ${text.delete}`}
+                </RegularText>
+              </Touchable>
 
-          <Space />
+              <Space />
+            </>
+          )}
 
           {/* Reply Button! */}
           <Touchable onPress={() => setReply(!reply)}>
