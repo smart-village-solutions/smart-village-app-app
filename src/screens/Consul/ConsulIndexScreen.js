@@ -53,14 +53,11 @@ const showRegistrationFailAlert = (navigation) =>
   ]);
 
 /* eslint-disable complexity */
-
 export const ConsulIndexScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [listData, setListData] = useState([]);
   const [sorting, setSorting] = useState(
     route.params?.query === queryType.POLLS ? INITIAL_TOP_FILTERING_FOR_POLLS : INITIAL_TOP_SORTING
   );
-  const [sortingLoading, setSortingLoading] = useState(false);
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const bookmarkable = route.params?.bookmarkable;
   const query = route.params?.query ?? '';
@@ -72,30 +69,29 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
     queryVariables
   });
 
-  let listItems = parseListItemsFromQuery(query, data, {
+  const listItems = parseListItemsFromQuery(query, data, {
     bookmarkable,
     skipLastDivider: true
   });
 
+  let type = sorting.find((data) => data.selected);
+
+  const listData = useCallback(
+    (listItems) => {
+      type = sorting.find((data) => data.selected);
+
+      if (query !== queryType.USER || query !== queryType.POLLS)
+        sortingHelper(type.id, listItems).catch((err) => console.error(err));
+
+      if (listItems) return listItems;
+    },
+    [sorting, isLoading]
+  );
+
   useEffect(() => {
-    let type = sorting.find((data) => data.selected);
-    let d = listItems;
-    setSortingLoading(true);
-
-    if (query === queryType.POLLS)
-      filterHelper(type.id)
-        .then((val) => setQueryVariables(val))
-        .then(() => setSortingLoading(false))
-        .catch((err) => console.error(err));
-
-    if (query !== queryType.USER)
-      sortingHelper(type.id, d)
-        .then((val) => setListData(val))
-        .then(() => setSortingLoading(false))
-        .catch((err) => console.error(err));
-
-    if (query === queryType.USER) setSortingLoading(false);
-  }, [sorting, isLoading]);
+    type = sorting.find((data) => data.selected);
+    if (query === queryType.POLLS) filterHelper(type.id).then((val) => setQueryVariables(val));
+  }, [sorting]);
 
   const refresh = useCallback(
     async (refetch) => {
@@ -108,11 +104,11 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
   const Component = getComponent(query);
 
-  if (isLoading || sortingLoading) return <LoadingSpinner loading />;
+  if (isLoading) return <LoadingSpinner loading />;
 
   if (isError) showRegistrationFailAlert(navigation);
 
-  if ((query !== queryType.USER && !listData) || !Component) return null;
+  if ((query !== queryType.USER && !listItems) || !Component) return null;
 
   return (
     <SafeAreaViewFlex>
@@ -122,8 +118,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
       <Component
         query={query}
-        listData={listData}
-        pollData={listItems}
+        listData={listData(listItems)}
         data={data}
         navigation={navigation}
         route={route}

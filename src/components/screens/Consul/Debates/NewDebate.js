@@ -9,12 +9,11 @@ import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../../../Wra
 import { texts } from '../../../../config';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
-import { START_DEBATE } from '../../../../queries/Consul';
+import { START_DEBATE, UPDATE_DEBATE } from '../../../../queries/Consul';
 import { ConsulClient } from '../../../../ConsulClient';
 import { LoadingSpinner } from '../../../LoadingSpinner';
 import { ScreenName } from '../../../../types';
 import { QUERY_TYPES } from '../../../../queries';
-import { UPDATE_DEBATE } from '../../../../queries/Consul/Debates/updateDebate';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 
 const text = texts.consul.startNew;

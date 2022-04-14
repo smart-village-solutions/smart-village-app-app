@@ -3,12 +3,12 @@ import React from 'react';
 
 import { ListComponent } from '../../../ListComponent';
 
-export const Polls = ({ navigation, query, pollData, refreshControl }) => {
+export const Polls = ({ navigation, query, listData, refreshControl }) => {
   return (
     <ListComponent
       navigation={navigation}
       query={query}
-      data={pollData}
+      data={listData}
       refreshControl={refreshControl}
       showBackToTop
     />
@@ -16,7 +16,7 @@ export const Polls = ({ navigation, query, pollData, refreshControl }) => {
 };
 
 Polls.propTypes = {
-  pollData: PropTypes.array.isRequired,
+  listData: PropTypes.array.isRequired,
   navigation: PropTypes.object.isRequired,
   query: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
