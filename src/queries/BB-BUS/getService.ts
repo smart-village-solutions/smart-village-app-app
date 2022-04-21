@@ -14,8 +14,6 @@ export const GET_SERVICE = gql`
           ...CommunicationValues
         }
         openingHours
-        elevator
-        wheelchairAccessible
         forms {
           name
           links {
@@ -62,6 +60,8 @@ export const GET_SERVICE = gql`
     area {
       name
     }
+    elevator
+    wheelchairAccessible
   }
 
   fragment CommunicationValues on Communication {

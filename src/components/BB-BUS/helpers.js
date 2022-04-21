@@ -16,7 +16,9 @@ export const getAddress = (addresses) => {
   return {
     street: (!!street || !!houseNumber) && `${address.street} ${address.houseNumber}`,
     zip: zipcode,
-    city: area?.name
+    city: area?.name,
+    elevator: address.elevator,
+    wheelchairAccessible: address.wheelchairAccessible
   };
 };
 

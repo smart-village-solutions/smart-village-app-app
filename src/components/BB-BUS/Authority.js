@@ -13,10 +13,13 @@ import { Block } from './Block';
 import { getAddress, getContact } from './helpers';
 
 export const Authority = ({ data, bottomDivider, openWebScreen }) => {
-  const { name, addresses, communications, openingHours, elevator, wheelchairAccessible } = data;
+  const { name, addresses, communications, openingHours } = data;
 
   const address = getAddress(addresses);
   const contact = getContact(communications);
+
+  const elevator = address.elevator;
+  const wheelchairAccessible = address.wheelchairAccessible;
 
   return (
     <Block title={name} bottomDivider={bottomDivider}>
