@@ -147,6 +147,7 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
           sectionTitle="Gruppen"
           showLink
           showButton
+          isRandom
         />
         <DataListSection
           loading={false}

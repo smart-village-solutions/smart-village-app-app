@@ -1,4 +1,5 @@
 import { StackNavigationProp } from '@react-navigation/stack';
+import _shuffle from 'lodash/shuffle';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
@@ -17,6 +18,7 @@ import { Wrapper } from './Wrapper';
 type Props = {
   buttonTitle?: string;
   horizontal?: boolean;
+  isRandom?: boolean;
   limit?: number;
   linkTitle?: string;
   loading?: boolean;
@@ -37,6 +39,7 @@ type Props = {
 export const DataListSection = ({
   buttonTitle,
   horizontal,
+  isRandom = false,
   limit = 3,
   linkTitle,
   loading,
@@ -77,7 +80,7 @@ export const DataListSection = ({
       {!!limit &&
         (listData?.length ? (
           <ListComponent
-            data={listData.slice(0, limit)}
+            data={isRandom ? _shuffle(listData).slice(0, limit) : listData.slice(0, limit)}
             horizontal={horizontal}
             navigation={navigation}
             query={query}

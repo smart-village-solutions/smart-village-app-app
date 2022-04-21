@@ -80,6 +80,11 @@ export const useVolunteerData = ({
       );
     }
 
+    // ORDERING
+    if (query === QUERY_TYPES.VOLUNTEER.GROUPS || query === QUERY_TYPES.VOLUNTEER.GROUPS_MY) {
+      processedVolunteerData = _orderBy(processedVolunteerData, 'name', 'asc');
+    }
+
     if (query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS) {
       processedVolunteerData = _orderBy(processedVolunteerData, 'updated_at', 'desc');
     }

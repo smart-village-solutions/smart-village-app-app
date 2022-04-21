@@ -37,6 +37,7 @@ const CalendarListToggle = ({ showCalendar, setShowCalendar }: CalendarListToggl
 
 type Props = {
   buttonTitle?: string;
+  isRandom?: boolean;
   limit?: number;
   linkTitle?: string;
   navigate?: () => void;
@@ -54,7 +55,8 @@ type Props = {
 
 export const VolunteerHomeSection = ({
   buttonTitle,
-  limit = 3,
+  isRandom,
+  limit,
   linkTitle,
   navigate,
   navigateButton,
@@ -146,6 +148,7 @@ export const VolunteerHomeSection = ({
       showLink={showLink && !!sectionData?.length}
       navigateButton={navigateButton}
       navigateLink={navigateLink}
+      isRandom={isRandom}
     />
   );
 };
