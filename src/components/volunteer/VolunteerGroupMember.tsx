@@ -34,7 +34,8 @@ export const VolunteerGroupMember = ({
   isSuccessLeave: boolean;
 }) => {
   const { data, refetch } = useQuery(['groupMembership', groupId], () => groupMembership(groupId));
-  const members = data?.results;
+  // filter out members that are not yet in the group (1 === 'pending', 3 === 'accepted')
+  const members = data?.results?.filter((member: { status: number }) => member.status === 3) ?? [];
 
   const checkIfJoined = useCallback(async () => {
     if (!members?.length) {
