@@ -29,6 +29,7 @@ export const VolunteerAppointmentsCard = ({
     {appointments?.map((item, index) => {
       const { dateFrom, dateTo, timeFrom, timeTo } = item;
       const returnFormatDate = 'DD.MM.YYYY';
+      const fullDay = timeFrom === '00:00' && timeTo === '00:00';
 
       return (
         <View key={index} style={index !== appointments.length - 1 ? styles.divider : null}>
@@ -51,7 +52,7 @@ export const VolunteerAppointmentsCard = ({
                   )}
                 </DateBox>
               )}
-              {(!!timeFrom || !!timeTo) && (
+              {(!!timeFrom || !!timeTo) && !fullDay && (
                 <TimeBox>
                   {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
                   {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}

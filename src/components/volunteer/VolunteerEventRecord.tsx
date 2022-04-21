@@ -105,7 +105,9 @@ export const VolunteerEventRecord = ({
         {!!appointments?.length && (
           <View>
             <TitleContainer>
-              <Title accessibilityLabel={`(${texts.eventRecord.appointments}) ${a11yText.heading}`}>
+              <Title
+                accessibilityLabel={`(${texts.volunteer.eventRecord.appointments}) ${a11yText.heading}`}
+              >
                 {texts.volunteer.eventRecord.appointments}
               </Title>
             </TitleContainer>

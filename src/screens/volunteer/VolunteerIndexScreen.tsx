@@ -19,7 +19,7 @@ import { QUERY_TYPES } from '../../queries';
 
 // eslint-disable-next-line complexity
 export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
+  const [queryVariables] = useState(route.params?.queryVariables ?? {});
   const query = route.params?.query ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
@@ -52,8 +52,9 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
 
   const listItems = parseListItemsFromQuery(query, data || details, titleDetail, {
     bookmarkable,
-    withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
-    skipLastDivider: true
+    skipLastDivider: true,
+    withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS || isCalendar,
+    isSectioned: isCalendar
   });
 
   if (isLoading) {

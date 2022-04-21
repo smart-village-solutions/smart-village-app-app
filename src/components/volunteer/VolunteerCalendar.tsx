@@ -88,6 +88,7 @@ export const VolunteerCalendar = ({ query, calendarData, isLoading, navigation }
           width: DOT_SIZE
         }
       }}
+      enableSwipeMonths
     />
     {/* TODO: show dot with color for the different calendars available */}
     {/* <WasteCalendarLegend data={usedTypes} /> */}

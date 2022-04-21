@@ -65,11 +65,14 @@ export const volunteerUserData = async (): Promise<{
   };
 };
 
-export const volunteerListDate = (data: {
-  end_datetime: string;
-  start_datetime: string;
-  updated_at?: string;
-}) => {
+export const volunteerListDate = (
+  data: {
+    end_datetime: string;
+    start_datetime: string;
+    updated_at?: string;
+  },
+  withTime = false
+) => {
   const { end_datetime: endDatetime, start_datetime: startDatetime, updated_at: updatedAt } = data;
 
   if (updatedAt) {
@@ -84,14 +87,25 @@ export const volunteerListDate = (data: {
 
   if (moment().isBetween(startDatetime, endDatetime)) return moment().format('YYYY-MM-DD');
 
-  return moment(startDatetime).format('YYYY-MM-DD');
+  return moment(startDatetime).format(withTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD');
 };
 
-export const volunteerSubtitle = (volunteer: any, query: string, withDate: boolean) => {
-  let date = eventDate(volunteerListDate(volunteer));
+export const volunteerSubtitle = (
+  volunteer: any,
+  query: string,
+  withDate: boolean,
+  isSectioned?: boolean
+) => {
+  let date = eventDate(
+    volunteerListDate(volunteer, withDate),
+    undefined,
+    isSectioned ? 'HH:mm' : 'DD.MM.YYYY HH:mm'
+  );
 
   if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
     date = eventDate(volunteerListDate(volunteer), undefined, 'DD.MM.YYYY HH:mm');
+  } else if (withDate) {
+    date = date.replace('00:00', '');
   }
 
   return subtitle(
