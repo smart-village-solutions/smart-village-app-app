@@ -1,4 +1,5 @@
 import { StackNavigationProp } from '@react-navigation/stack';
+import _isNumber from 'lodash/isNumber';
 import moment from 'moment';
 import 'moment/locale/de';
 import React from 'react';
@@ -19,6 +20,7 @@ const DayComponent = (props: BasicDayProps) => (
 
 type Props = {
   query: string;
+  queryVariables?: { dateRange?: string[]; contentContainerId?: number } | number;
   calendarData: any[];
   isLoading: boolean;
   navigation: StackNavigationProp<any>;
@@ -59,38 +61,51 @@ const getMarkedDates = (data?: any[]) => {
   return markedDates;
 };
 
-export const VolunteerCalendar = ({ query, calendarData, isLoading, navigation }: Props) => (
-  <View style={styles.topMarginContainer}>
-    <Calendar
-      dayComponent={DayComponent}
-      onDayPress={(day) =>
-        navigation.push(ScreenName.VolunteerIndex, {
-          title: texts.volunteer.calendar,
-          query,
-          queryVariables: { dateRange: [day.dateString] },
-          rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-        })
-      }
-      displayLoadingIndicator={isLoading}
-      markedDates={getMarkedDates(calendarData)}
-      markingType="multi-dot"
-      renderArrow={renderArrow}
-      firstDay={1}
-      theme={{
-        todayTextColor: colors.primary,
-        indicatorColor: colors.primary,
-        dotStyle: {
-          borderRadius: DOT_SIZE / 2,
-          height: DOT_SIZE,
-          width: DOT_SIZE
+export const VolunteerCalendar = ({
+  query,
+  queryVariables,
+  calendarData,
+  isLoading,
+  navigation
+}: Props) => {
+  const contentContainerId =
+    queryVariables && _isNumber(queryVariables)
+      ? queryVariables
+      : queryVariables?.contentContainerId;
+
+  return (
+    <View style={styles.topMarginContainer}>
+      <Calendar
+        dayComponent={DayComponent}
+        onDayPress={(day) =>
+          navigation.push(ScreenName.VolunteerIndex, {
+            title: texts.volunteer.calendar,
+            query,
+            queryVariables: { dateRange: [day.dateString], contentContainerId },
+            rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+          })
         }
-      }}
-      enableSwipeMonths
-    />
-    {/* TODO: show dot with color for the different calendars available */}
-    {/* <WasteCalendarLegend data={usedTypes} /> */}
-  </View>
-);
+        displayLoadingIndicator={isLoading}
+        markedDates={getMarkedDates(calendarData)}
+        markingType="multi-dot"
+        renderArrow={renderArrow}
+        firstDay={1}
+        theme={{
+          todayTextColor: colors.primary,
+          indicatorColor: colors.primary,
+          dotStyle: {
+            borderRadius: DOT_SIZE / 2,
+            height: DOT_SIZE,
+            width: DOT_SIZE
+          }
+        }}
+        enableSwipeMonths
+      />
+      {/* TODO: show dot with color for the different calendars available */}
+      {/* <WasteCalendarLegend data={usedTypes} /> */}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   topMarginContainer: {

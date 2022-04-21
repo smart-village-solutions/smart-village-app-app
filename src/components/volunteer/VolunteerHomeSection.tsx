@@ -107,6 +107,7 @@ export const VolunteerHomeSection = ({
         {showCalendar ? (
           <VolunteerCalendar
             query={query}
+            queryVariables={queryVariables}
             calendarData={sectionData}
             isLoading={isLoading || isRefetching}
             navigation={navigation}

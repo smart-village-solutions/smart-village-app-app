@@ -6,7 +6,9 @@ import { momentFormat } from '../../helpers/momentHelper';
 import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
 import { PARTICIPANT_TYPE, VolunteerCalendar } from '../../types';
 
-export const calendarAll = async (id?: number) => {
+export const calendarAll = async (
+  queryVariables?: { dateRange?: string[]; contentContainerId?: number } | number
+) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
@@ -17,6 +19,11 @@ export const calendarAll = async (id?: number) => {
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
+
+  const id =
+    queryVariables && _isNumber(queryVariables)
+      ? queryVariables
+      : queryVariables?.contentContainerId;
 
   if (id && _isNumber(id)) {
     return (await fetch(`${volunteerApiUrl}calendar/container/${id}`, fetchObj)).json();
