@@ -13,6 +13,7 @@ import {
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { VolunteerQuery } from '../../types';
 
+/* eslint-disable complexity */
 export const useVolunteerData = ({
   query,
   queryVariables,
@@ -60,8 +61,6 @@ export const useVolunteerData = ({
         );
       }
 
-      processedVolunteerData = _sortBy(processedVolunteerData, 'listDate');
-
       if (query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY) {
         const { currentUserId } = await volunteerUserData();
         // show only attending dates for current user if on personal calendar view
@@ -83,6 +82,10 @@ export const useVolunteerData = ({
     // ORDERING
     if (query === QUERY_TYPES.VOLUNTEER.GROUPS || query === QUERY_TYPES.VOLUNTEER.GROUPS_MY) {
       processedVolunteerData = _orderBy(processedVolunteerData, 'name', 'asc');
+    }
+
+    if (isCalendar) {
+      processedVolunteerData = _orderBy(processedVolunteerData, ['start_datetime', 'title'], 'asc');
     }
 
     if (query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS) {
@@ -112,3 +115,4 @@ export const useVolunteerData = ({
     refetch
   };
 };
+/* eslint-enable complexity */
