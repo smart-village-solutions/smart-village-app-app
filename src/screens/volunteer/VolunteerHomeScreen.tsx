@@ -80,7 +80,7 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
   useEffect(refreshUser, [route.params?.refreshUser]);
 
   const refreshHome = useCallback(() => {
-    // this will trigger the onRefresh functions provided to the `useVolunteerHomeRefresh` hook
+    // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
     // in other components.
     DeviceEventEmitter.emit(VOLUNTEER_HOME_REFRESH_EVENT);
   }, []);

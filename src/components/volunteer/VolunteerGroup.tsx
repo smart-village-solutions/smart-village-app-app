@@ -1,6 +1,7 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { DeviceEventEmitter, View } from 'react-native';
 import { useMutation } from 'react-query';
 
 import { consts, device, texts } from '../../config';
@@ -10,7 +11,7 @@ import {
   volunteerProfileImage,
   volunteerUserData
 } from '../../helpers';
-import { useOpenWebScreen } from '../../hooks';
+import { useOpenWebScreen, VOLUNTEER_GROUP_REFRESH_EVENT } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { groupJoin, groupLeave } from '../../queries/volunteer';
 import { ScreenName } from '../../types';
@@ -83,6 +84,14 @@ export const VolunteerGroup = ({
 
     setIsGroupOwner(isOwner(currentUserId, owner));
   }, [owner]);
+
+  const refreshGroup = useCallback(() => {
+    // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
+    // in other components.
+    DeviceEventEmitter.emit(VOLUNTEER_GROUP_REFRESH_EVENT);
+  }, []);
+
+  useFocusEffect(refreshGroup);
 
   useEffect(() => {
     checkIfOwner();

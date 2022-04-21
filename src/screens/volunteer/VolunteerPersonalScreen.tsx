@@ -10,7 +10,7 @@ import {
   WrapperRow
 } from '../../components';
 import { colors, consts, normalize, texts } from '../../config';
-import { SVA_VOLUNTEER_PERSONAL_REFRESH } from '../../hooks';
+import { VOLUNTEER_PERSONAL_REFRESH_EVENT } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 
@@ -77,13 +77,13 @@ const NAVIGATION = {
 };
 
 export const VolunteerPersonalScreen = ({ navigation }: any) => {
-  const refreshHome = useCallback(() => {
-    // this will trigger the onRefresh functions provided to the `useVolunteerHomeRefresh` hook
+  const refreshPersonal = useCallback(() => {
+    // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
     // in other components.
-    DeviceEventEmitter.emit(SVA_VOLUNTEER_PERSONAL_REFRESH);
+    DeviceEventEmitter.emit(VOLUNTEER_PERSONAL_REFRESH_EVENT);
   }, []);
 
-  useFocusEffect(refreshHome);
+  useFocusEffect(refreshPersonal);
 
   useEffect(
     () =>
@@ -103,7 +103,7 @@ export const VolunteerPersonalScreen = ({ navigation }: any) => {
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={refreshHome}
+            onRefresh={refreshPersonal}
             colors={[colors.accent]}
             tintColor={colors.accent}
           />

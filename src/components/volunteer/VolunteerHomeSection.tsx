@@ -1,11 +1,12 @@
 import { StackNavigationProp } from '@react-navigation/stack';
+import _isNumber from 'lodash/isNumber';
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { normalize } from 'react-native-elements';
 
 import { colors, Icon, texts } from '../../config';
 import { isUpcomingDate } from '../../helpers';
-import { useVolunteerData, useVolunteerHomeRefresh } from '../../hooks';
+import { useVolunteerData, useVolunteerRefresh } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { VolunteerQuery } from '../../types';
 import { DataListSection } from '../DataListSection';
@@ -73,10 +74,6 @@ export const VolunteerHomeSection = ({
 }: Props) => {
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
-  const isPersonal =
-    query === QUERY_TYPES.VOLUNTEER.GROUPS_MY ||
-    query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY ||
-    query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS;
   const [showCalendar, setShowCalendar] = useState(isCalendar);
   const { data: sectionData, isLoading, isRefetching, refetch } = useVolunteerData({
     query,
@@ -85,7 +82,13 @@ export const VolunteerHomeSection = ({
     onlyUpcoming: !showCalendar
   });
 
-  useVolunteerHomeRefresh(refetch, isPersonal);
+  useVolunteerRefresh(
+    refetch,
+    // if we have a calendar query and there is a number as queryVariables, we are on the group
+    // detail screen and need to pass the group query identifier to ensure correct behavior of
+    // the refresh event
+    isCalendar && queryVariables && _isNumber(queryVariables) ? QUERY_TYPES.VOLUNTEER.GROUP : query
+  );
 
   if (isCalendar) {
     const showAllLink = sectionData?.some((item: { listDate: string }) =>
