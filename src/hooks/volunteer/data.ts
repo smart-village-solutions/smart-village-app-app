@@ -1,5 +1,4 @@
 import _orderBy from 'lodash/orderBy';
-import _sortBy from 'lodash/sortBy';
 import { useCallback, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 

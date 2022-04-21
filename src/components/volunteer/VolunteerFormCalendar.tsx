@@ -1,5 +1,6 @@
 import { useIsFocused } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
+import _sortBy from 'lodash/sortBy';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useMutation as useMainserverMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
@@ -53,7 +54,10 @@ export const VolunteerFormCalendar = ({
         ?.filter((item: { owner: { id: number } }) => isOwner(currentUserId, item.owner))
         ?.map((item) => ({ ...item, value: item.name }));
 
-      filteredGroupDropDownData?.length && setGroupDropdownData(filteredGroupDropDownData);
+      filteredGroupDropDownData?.length &&
+        setGroupDropdownData(
+          _sortBy(filteredGroupDropDownData, 'name') as DropdownInputProps['data'] | []
+        );
     }
     setIsProcessingGroupDropdownData(false);
   }, [dataGroups?.results]);
