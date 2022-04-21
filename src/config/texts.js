@@ -74,7 +74,8 @@ export const texts = {
       eventRecord: 'Veranstaltung',
       group: 'Gruppenprofil',
       member: 'Mitglied',
-      task: 'Aufgabe'
+      task: 'Aufgabe',
+      user: 'Profil'
     },
     tour: 'Tour'
   },

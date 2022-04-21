@@ -27,7 +27,8 @@ export const VolunteerUser = ({
   const contact = {
     lastName: username,
     phone: data?.profile?.phone_private,
-    email: data?.account?.email,
+    // do not show the email address to others due to privacy
+    email: isMe ? data?.account?.email : '',
     fax: data?.profile?.fax
   };
   const address = {
