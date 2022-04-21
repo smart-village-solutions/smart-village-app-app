@@ -57,9 +57,14 @@ export const DataListSection = ({
 }: Props) => {
   if (loading) {
     return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
-      </LoadingContainer>
+      <View>
+        {!!sectionTitle && (
+          <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
+        )}
+        <LoadingContainer>
+          <ActivityIndicator color={colors.accent} />
+        </LoadingContainer>
+      </View>
     );
   }
 

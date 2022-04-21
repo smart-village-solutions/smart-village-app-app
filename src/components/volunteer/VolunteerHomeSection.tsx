@@ -53,6 +53,7 @@ type Props = {
   showLink?: boolean;
 };
 
+// eslint-disable-next-line complexity
 export const VolunteerHomeSection = ({
   buttonTitle,
   isRandom,
@@ -116,6 +117,7 @@ export const VolunteerHomeSection = ({
           />
         )}
         <DataListSection
+          loading={isLoading || isRefetching}
           buttonTitle={buttonTitle}
           linkTitle={linkTitle}
           limit={0}
@@ -133,7 +135,7 @@ export const VolunteerHomeSection = ({
 
   return (
     <DataListSection
-      loading={isLoading}
+      loading={isLoading || isRefetching}
       buttonTitle={buttonTitle}
       linkTitle={linkTitle}
       limit={limit}
