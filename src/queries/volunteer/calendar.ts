@@ -1,10 +1,12 @@
+import _isNumber from 'lodash/isNumber';
+
 import { colors } from '../../config';
 import { formatTime } from '../../helpers/formatHelper';
 import { momentFormat } from '../../helpers/momentHelper';
 import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
 import { PARTICIPANT_TYPE, VolunteerCalendar } from '../../types';
 
-export const calendarAll = async () => {
+export const calendarAll = async (id?: number) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
@@ -15,6 +17,10 @@ export const calendarAll = async () => {
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
+
+  if (id && _isNumber(id)) {
+    return (await fetch(`${volunteerApiUrl}calendar/container/${id}`, fetchObj)).json();
+  }
 
   return (await fetch(`${volunteerApiUrl}calendar`, fetchObj)).json();
 };

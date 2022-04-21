@@ -46,7 +46,7 @@ type Props = {
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
   query: VolunteerQuery;
-  queryVariables?: { dateRange?: string[] };
+  queryVariables?: { dateRange?: string[] } | number;
   sectionTitle?: string;
   sectionTitleDetail?: string;
   showButton?: boolean;
@@ -124,10 +124,10 @@ export const VolunteerHomeSection = ({
           navigate={navigate}
           navigation={navigation}
           query={query}
-          showButton
-          showLink
+          showButton={showButton}
+          showLink={showAllLink}
           navigateButton={navigateButton}
-          navigateLink={showAllLink ? navigateLink : undefined}
+          navigateLink={navigateLink}
         />
       </>
     );

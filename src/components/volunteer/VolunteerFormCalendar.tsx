@@ -26,8 +26,9 @@ import { Wrapper } from '../Wrapper';
 // eslint-disable-next-line complexity
 export const VolunteerFormCalendar = ({
   navigation,
-  scrollToTop
-}: StackScreenProps<any> & { scrollToTop: () => void }) => {
+  scrollToTop,
+  groupId
+}: StackScreenProps<any> & { scrollToTop: () => void; groupId?: number }) => {
   const {
     control,
     formState: { errors, isValid },
@@ -35,7 +36,8 @@ export const VolunteerFormCalendar = ({
   } = useForm<VolunteerCalendar>({
     mode: 'onBlur',
     defaultValues: {
-      isPublic: 1
+      isPublic: 1,
+      contentContainerId: groupId || 0
     }
   });
   const { data: dataGroups, isLoading: isLoadingGroups } = useQuery(

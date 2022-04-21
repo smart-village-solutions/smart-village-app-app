@@ -17,6 +17,7 @@ export const VolunteerFormScreen = ({ navigation, route }: StackScreenProps<any>
   const scrollViewRef = useRef<ScrollView>(null);
   const query = route.params?.query ?? '';
   const selectedUserId = route.params?.selectedUserId;
+  const groupId = route.params?.groupId;
 
   if (!query) return null;
 
@@ -43,6 +44,7 @@ export const VolunteerFormScreen = ({ navigation, route }: StackScreenProps<any>
                 })
               }
               selectedUserId={selectedUserId}
+              groupId={groupId}
             />
           </WrapperWithOrientation>
         </ScrollView>

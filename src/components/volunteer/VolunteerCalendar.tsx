@@ -64,14 +64,11 @@ export const VolunteerCalendar = ({ query, calendarData, isLoading, navigation }
     <Calendar
       dayComponent={DayComponent}
       onDayPress={(day) =>
-        navigation.navigate({
-          name: ScreenName.VolunteerIndex,
-          params: {
-            title: texts.volunteer.calendar,
-            query,
-            queryVariables: { dateRange: [day.dateString] },
-            rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-          }
+        navigation.push(ScreenName.VolunteerIndex, {
+          title: texts.volunteer.calendar,
+          query,
+          queryVariables: { dateRange: [day.dateString] },
+          rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
         })
       }
       displayLoadingIndicator={isLoading}

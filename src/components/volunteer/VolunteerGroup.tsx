@@ -11,7 +11,9 @@ import {
   volunteerUserData
 } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
+import { QUERY_TYPES } from '../../queries';
 import { groupJoin, groupLeave } from '../../queries/volunteer';
+import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
@@ -21,7 +23,10 @@ import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { VolunteerGroupMember } from './VolunteerGroupMember';
+import { VolunteerHomeSection } from './VolunteerHomeSection';
 import { VolunteerPosts } from './VolunteerPosts';
+
+const { ROOT_ROUTE_NAMES } = consts;
 
 const a11yText = consts.a11yLabel;
 
@@ -126,6 +131,41 @@ export const VolunteerGroup = ({
         <Wrapper>
           <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
         </Wrapper>
+
+        <VolunteerHomeSection
+          linkTitle="Alle Termine anzeigen"
+          buttonTitle="Termin eintragen"
+          showButton={isGroupOwner}
+          navigateLink={() =>
+            navigation.push(ScreenName.VolunteerIndex, {
+              title: texts.volunteer.calendar,
+              query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+              queryVariables: contentContainerId,
+              rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+            })
+          }
+          navigateButton={() =>
+            navigation.navigate(ScreenName.VolunteerForm, {
+              title: 'Termin eintragen',
+              query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+              queryVariables: contentContainerId,
+              groupId: id,
+              rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+            })
+          }
+          navigate={() =>
+            navigation.push(ScreenName.VolunteerIndex, {
+              title: texts.volunteer.calendar,
+              query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+              queryVariables: contentContainerId,
+              rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+            })
+          }
+          navigation={navigation}
+          query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
+          queryVariables={contentContainerId}
+          sectionTitle="Kalender"
+        />
 
         <VolunteerPosts
           contentContainerId={contentContainerId}
