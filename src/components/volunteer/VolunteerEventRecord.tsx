@@ -12,6 +12,7 @@ import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
+import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
@@ -135,6 +136,7 @@ export const VolunteerEventRecord = ({
         </Wrapper>
 
         <Wrapper>
+          {!isAttendingEvent && <RegularText small>{texts.volunteer.attendInfo}</RegularText>}
           <Button
             title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
             invert={isAttendingEvent}

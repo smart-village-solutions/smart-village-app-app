@@ -580,7 +580,9 @@ export const texts = {
   },
   volunteer: {
     abort: 'Abbrechen',
-    attend: 'Teilnehmen',
+    attend: 'Interessiert',
+    attendInfo:
+      'Wenn Sie Interesse an dieser Veranstaltung bekunden wird diese in den Kalender in Ihrem Bereich übernommen.\n',
     calendar: 'Kalender',
     calendarMy: 'Mein Kalender',
     conversations: 'Mein Postfach',
@@ -611,9 +613,9 @@ export const texts = {
     next: 'Weiter',
     noGroups: 'Dir gehören keine Gruppen, in denen du Termine eintragen könntest.',
     noUsers: 'Es gibt keine Personen, denen du schreiben könntest.',
-    notAttend: 'Nicht teilnehmen',
+    notAttend: 'Nicht mehr interessiert',
     ok: 'OK',
-    participants: 'Teilnehmer',
+    participants: 'Interessierte',
     password: 'Passwort',
     passwordConfirmation: 'Passwort bestätigen',
     passwordForgotten: 'Passwort vergessen',
