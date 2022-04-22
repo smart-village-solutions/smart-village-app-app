@@ -3,7 +3,7 @@ import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { normalize } from 'react-native-elements';
 
 import { WrapperRow } from '../../components/Wrapper';
-import { colors, consts, Icon } from '../../config';
+import { colors, consts, Icon, texts } from '../../config';
 import {
   storeVolunteerAuthToken,
   storeVolunteerUserData,
@@ -13,6 +13,8 @@ import {
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
+
+const { ROOT_ROUTE_NAMES } = consts;
 
 export const useVolunteerUser = (): {
   refresh: () => Promise<void>;
@@ -112,6 +114,35 @@ export const useLogoutHeader = ({ query, navigation }: any) => {
             accessibilityHint={consts.a11yLabel.shareHint}
           >
             <Icon.VolunteerLogout color={colors.lightestText} style={styles.icon} />
+          </TouchableOpacity>
+        </WrapperRow>
+      )
+    });
+  }, [query, navigation]);
+};
+
+export const useConversationsHeader = ({ query, navigation }: any) => {
+  useEffect(() => {
+    if (query !== QUERY_TYPES.VOLUNTEER.CONVERSATIONS) return;
+
+    navigation.setOptions({
+      headerRight: () => (
+        <WrapperRow style={styles.headerRight}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate({
+                name: ScreenName.VolunteerForm,
+                params: {
+                  title: texts.volunteer.conversationStart,
+                  query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
+                  rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+                }
+              })
+            }
+            accessibilityLabel={consts.a11yLabel.shareIcon}
+            accessibilityHint={consts.a11yLabel.shareHint}
+          >
+            <Icon.VolunteerConversationNew color={colors.lightestText} style={styles.icon} />
           </TouchableOpacity>
         </WrapperRow>
       )

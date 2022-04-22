@@ -166,6 +166,12 @@ export const Icon = {
       {...props}
     />
   ),
+  VolunteerConversationNew: (props: IconProps) => (
+    <NamedIcon
+      name={device.platform === 'ios' ? 'ios-mail-outline' : 'md-mail-outline'}
+      {...props}
+    />
+  ),
   VolunteerList: (props: IconProps) => (
     <NamedIcon
       name={device.platform === 'ios' ? 'ios-list-outline' : 'md-list-outline'}

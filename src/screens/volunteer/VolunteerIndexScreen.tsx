@@ -14,7 +14,12 @@ import {
 import { colors } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { additionalData, myProfile, myTasks } from '../../helpers/parser/volunteer';
-import { useLogoutHeader, useOpenWebScreen, useVolunteerData } from '../../hooks';
+import {
+  useConversationsHeader,
+  useLogoutHeader,
+  useOpenWebScreen,
+  useVolunteerData
+} from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 
 // eslint-disable-next-line complexity
@@ -42,7 +47,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
   useLogoutHeader({ query, navigation });
-
+  useConversationsHeader({ query, navigation });
   useFocusEffect(
     useCallback(() => {
       refetch();
