@@ -48,7 +48,7 @@ export const conversationRecipients = async (id: number) => {
 
 export const conversationNew = async ({
   displayName,
-  id: guid,
+  id: guids,
   title,
   message
 }: VolunteerConversation) => {
@@ -57,7 +57,7 @@ export const conversationNew = async ({
   const formData = {
     title: displayName ? `${displayName}: ${title}` : title,
     message,
-    recipient: [guid]
+    recipient: guids
   };
 
   const fetchObj = {

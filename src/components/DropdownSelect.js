@@ -14,6 +14,7 @@ import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
 
 export const DropdownSelect = ({
   data,
+  multipleSelect,
   setData,
   label,
   labelWrapperStyle,
@@ -42,6 +43,9 @@ export const DropdownSelect = ({
 
   const [arrow, setArrow] = useState('down');
   const selectedData = data.find((entry) => entry.selected);
+  const selectedValue = selectedData?.value;
+  const selectedMultipleData = data.filter((entry) => entry.selected);
+  const selectedMultipleValues = selectedMultipleData?.map((entry) => entry.value).join(', ');
   const selectedIndex = data.findIndex((entry) => entry.selected);
   const preselect = (index) => dropdownRef.current.select(index);
 
@@ -57,6 +61,7 @@ export const DropdownSelect = ({
       <Dropdown
         ref={dropdownRef}
         options={data.map((entry) => entry.value)}
+        multipleSelect={multipleSelect}
         dropdownStyle={[
           styles.dropdownDropdown,
           {
@@ -66,22 +71,34 @@ export const DropdownSelect = ({
         ]}
         dropdownTextStyle={styles.dropdownDropdownText}
         adjustFrame={adjustFrame}
-        renderRow={(rowData, rowID, highlighted) => (
-          <Wrapper style={styles.dropdownRowWrapper}>
-            <RegularText primary={highlighted}>{rowData}</RegularText>
-          </Wrapper>
-        )}
+        renderRow={(rowData, rowID, highlighted) => {
+          if (multipleSelect) {
+            highlighted = selectedMultipleValues.includes(rowData);
+          }
+
+          return (
+            <Wrapper style={styles.dropdownRowWrapper}>
+              <RegularText primary={highlighted}>{rowData}</RegularText>
+            </Wrapper>
+          );
+        }}
         renderSeparator={() => <View style={styles.dropdownSeparator} />}
         onDropdownWillShow={() => setArrow('up')}
         onDropdownWillHide={() => setArrow('down')}
         onSelect={(index, value) => {
-          // only trigger onPress if a new selection is made
-          if (selectedData?.value === value) return;
+          let updatedData = [...data];
 
-          const updatedData = data.map((entry) => ({
-            ...entry,
-            selected: entry.value === value
-          }));
+          if (multipleSelect) {
+            updatedData[index].selected = !updatedData[index].selected;
+          } else {
+            // only trigger onPress if a new selection is made
+            if (selectedValue === value) return;
+
+            updatedData = updatedData.map((entry) => ({
+              ...entry,
+              selected: entry.value === value
+            }));
+          }
 
           setData(updatedData);
         }}
@@ -91,7 +108,7 @@ export const DropdownSelect = ({
         searchPlaceholder={searchPlaceholder}
       >
         <WrapperRow style={styles.dropdownTextWrapper}>
-          <RegularText>{selectedData?.value}</RegularText>
+          <RegularText>{multipleSelect ? selectedMultipleValues : selectedValue}</RegularText>
           {arrow === 'down' ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
         </WrapperRow>
       </Dropdown>
@@ -129,6 +146,7 @@ const styles = StyleSheet.create({
 DropdownSelect.displayName = 'DropdownSelect';
 DropdownSelect.propTypes = {
   data: PropTypes.array,
+  multipleSelect: PropTypes.bool,
   setData: PropTypes.func,
   label: PropTypes.string,
   labelWrapperStyle: PropTypes.oneOfType([PropTypes.number, PropTypes.object, PropTypes.array]),

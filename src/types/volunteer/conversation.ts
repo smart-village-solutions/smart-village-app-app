@@ -1,6 +1,6 @@
 export type VolunteerConversation = {
   displayName?: string;
-  id: number;
+  id: [number];
   message: string;
   title: string;
 };
