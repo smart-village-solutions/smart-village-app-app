@@ -19,6 +19,7 @@ export type DropdownInputProps = {
       display_name?: string;
     }
   ];
+  multipleSelect?: boolean;
   value: number;
   valueKey: string;
   onChange: (...event: any[]) => void;
@@ -32,6 +33,7 @@ export const DropdownInput = ({
   errors,
   required = false,
   data,
+  multipleSelect = false,
   value = 0,
   valueKey,
   onChange,
@@ -44,13 +46,24 @@ export const DropdownInput = ({
   );
 
   useEffect(() => {
-    onChange(dropdownData.find((entry) => entry.selected)?.[valueKey]);
+    if (multipleSelect) {
+      const selectedMultipleData = dropdownData?.filter((entry) => entry.selected);
+      const selectedMultipleValues = selectedMultipleData?.map((entry) => entry?.[valueKey]);
+
+      onChange(selectedMultipleValues ?? []);
+    } else {
+      const selectedData = dropdownData?.find((entry) => entry.selected);
+      const selectedValue = selectedData?.[valueKey];
+
+      onChange(selectedValue ?? 0);
+    }
   }, [dropdownData]);
 
   return (
     <>
       <DropdownSelect
         data={dropdownData}
+        multipleSelect={multipleSelect}
         setData={setDropdownData}
         label={label}
         labelWrapperStyle={styles.labelWrapper}

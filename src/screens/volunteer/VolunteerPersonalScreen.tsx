@@ -5,6 +5,7 @@ import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import {
   SafeAreaViewFlex,
+  VolunteerConversationsSection,
   VolunteerHeaderProfile,
   VolunteerHomeSection,
   WrapperRow
@@ -39,6 +40,9 @@ const NAVIGATION = {
     params: {
       title: texts.volunteer.conversations,
       query: QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
+      queryOptions: {
+        refetchInterval: 5000
+      },
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },
@@ -143,7 +147,7 @@ export const VolunteerPersonalScreen = ({ navigation }: any) => {
           sectionTitle="Meine Aufgaben"
           showLink
         /> */}
-        <VolunteerHomeSection
+        <VolunteerConversationsSection
           linkTitle="Alle Nachrichten anzeigen"
           buttonTitle={texts.volunteer.conversationStart}
           navigateLink={() => navigation.navigate(NAVIGATION.CONVERSATIONS_INDEX)}

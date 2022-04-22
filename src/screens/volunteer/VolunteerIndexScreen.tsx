@@ -14,13 +14,19 @@ import {
 import { colors } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { additionalData, myProfile, myTasks } from '../../helpers/parser/volunteer';
-import { useLogoutHeader, useOpenWebScreen, useVolunteerData } from '../../hooks';
+import {
+  useConversationsHeader,
+  useLogoutHeader,
+  useOpenWebScreen,
+  useVolunteerData
+} from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 
 // eslint-disable-next-line complexity
 export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const [queryVariables] = useState(route.params?.queryVariables ?? {});
   const query = route.params?.query ?? '';
+  const queryOptions = route.params?.queryOptions;
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
   const rootRouteName = route.params?.rootRouteName ?? '';
@@ -30,13 +36,18 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const isPosts = query === QUERY_TYPES.VOLUNTEER.POSTS;
 
-  const { data, isLoading, refetch } = useVolunteerData({ query, queryVariables, isCalendar });
+  const { data, isLoading, refetch } = useVolunteerData({
+    query,
+    queryVariables,
+    queryOptions,
+    isCalendar
+  });
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
   useLogoutHeader({ query, navigation });
-
+  useConversationsHeader({ query, navigation });
   useFocusEffect(
     useCallback(() => {
       refetch();

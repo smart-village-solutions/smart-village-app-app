@@ -32,7 +32,9 @@ export const VolunteerFormConversation = ({
   } = useForm<VolunteerConversation>({
     mode: 'onBlur',
     defaultValues: {
-      id: selectedUserId || 0
+      id: selectedUserId || 0,
+      title: '',
+      message: ''
     }
   });
   const { data: dataUsers, isLoading: isLoadingUsers } = useQuery(
@@ -108,7 +110,10 @@ export const VolunteerFormConversation = ({
           name="id"
           render={({ name, onChange, value }) => {
             setSelectedUserDisplayName(
-              userDropdownData.find((item) => item.guid === value)?.display_name
+              // just prepend a display name to the title if one recipient is selected
+              value.length === 1
+                ? userDropdownData.find((item) => item.guid === value[0])?.display_name
+                : undefined
             );
 
             return (
@@ -117,6 +122,7 @@ export const VolunteerFormConversation = ({
                   errors,
                   required: true,
                   data: userDropdownData,
+                  multipleSelect: true,
                   value,
                   valueKey: 'guid',
                   onChange,
