@@ -11,9 +11,9 @@ export enum Initializer {
 }
 
 const initializeLocationServices = async () => {
-  const { canAskAgain, status } = await Location.getForegroundPermissionsAsync();
+  const { status } = await Location.getForegroundPermissionsAsync();
 
-  if (status !== Location.PermissionStatus.GRANTED && canAskAgain) {
+  if (status === Location.PermissionStatus.UNDETERMINED) {
     await Location.requestForegroundPermissionsAsync();
   }
 };
