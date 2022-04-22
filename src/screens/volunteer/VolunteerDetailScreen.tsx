@@ -42,6 +42,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
   const scrollViewRef = useRef<ScrollView>(null);
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
+  const queryOptions = route.params?.queryOptions ?? {};
   const details = route.params?.details;
 
   // TODO: remove if all queries exist
@@ -54,6 +55,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
     [query, queryVariables?.id],
     () => getQuery(query)(queryVariables?.id),
     {
+      ...queryOptions,
       enabled: !dummyData // the query will not execute if there is dummy data
     }
   );
@@ -78,22 +80,13 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
     return (
       <SafeAreaViewFlex>
         <DefaultKeyboardAvoidingView>
-          <ScrollView
-            refreshControl={
-              <RefreshControl
-                refreshing={isLoading}
-                onRefresh={refetch}
-                colors={[colors.accent]}
-                tintColor={colors.accent}
-              />
-            }
-            ref={scrollViewRef}
-          >
+          <ScrollView ref={scrollViewRef}>
             <Component data={componentData} conversationId={queryVariables.id} />
           </ScrollView>
           <VolunteerMessageTextField
             conversationId={queryVariables.id}
             refetch={refetch}
+            dataCount={data.results.length}
             scrollToBottom={(animated = true) => scrollViewRef?.current?.scrollToEnd({ animated })}
           />
         </DefaultKeyboardAvoidingView>

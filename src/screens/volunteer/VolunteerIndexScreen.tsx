@@ -21,6 +21,7 @@ import { QUERY_TYPES } from '../../queries';
 export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const [queryVariables] = useState(route.params?.queryVariables ?? {});
   const query = route.params?.query ?? '';
+  const queryOptions = route.params?.queryOptions;
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
   const rootRouteName = route.params?.rootRouteName ?? '';
@@ -30,7 +31,12 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const isPosts = query === QUERY_TYPES.VOLUNTEER.POSTS;
 
-  const { data, isLoading, refetch } = useVolunteerData({ query, queryVariables, isCalendar });
+  const { data, isLoading, refetch } = useVolunteerData({
+    query,
+    queryVariables,
+    queryOptions,
+    isCalendar
+  });
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);

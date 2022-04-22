@@ -12,40 +12,40 @@ import { Wrapper, WrapperRow } from '../Wrapper';
 export const VolunteerMessageTextField = ({
   conversationId,
   refetch,
+  dataCount,
   scrollToBottom
 }: {
   conversationId: number;
   refetch: () => void;
+  dataCount: number;
   scrollToBottom: (animated?: boolean) => void;
 }) => {
   const { control, handleSubmit, reset: resetForm } = useForm<VolunteerConversation>({
     defaultValues: {
-      id: conversationId
+      id: conversationId,
+      message: ''
     }
   });
 
   // needs a small timeout to trigger list scroll to the bottom
   const scrollDown = (ms = 50) => setTimeout(() => scrollToBottom(false), ms);
 
-  const { mutateAsync, isLoading, isError, data } = useMutation(conversationNewEntry);
-  const onPress = async (conversationNewEntryData: VolunteerConversation) => {
-    resetForm();
-    await mutateAsync(conversationNewEntryData);
+  const pollMessages = async () => {
     await refetch();
     scrollDown();
   };
 
+  const { mutateAsync, isLoading, isError, data } = useMutation(conversationNewEntry);
+  const onPress = async (conversationNewEntryData: VolunteerConversation) => {
+    resetForm();
+    await mutateAsync(conversationNewEntryData);
+    pollMessages();
+  };
+
+  // update screen if the count of messages changed
   useEffect(() => {
-    scrollDown();
-
-    // refetch for new messages every 5 seconds
-    const refetchInterval = setInterval(async () => {
-      await refetch();
-      scrollDown(300);
-    }, 5000);
-
-    return () => clearInterval(refetchInterval);
-  }, []);
+    pollMessages();
+  }, [dataCount]);
 
   return (
     <Wrapper>

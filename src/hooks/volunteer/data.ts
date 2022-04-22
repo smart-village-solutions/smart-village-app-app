@@ -16,11 +16,13 @@ import { VolunteerQuery } from '../../types';
 export const useVolunteerData = ({
   query,
   queryVariables,
+  queryOptions,
   isCalendar,
   onlyUpcoming = true
 }: {
   query: VolunteerQuery;
   queryVariables?: { dateRange?: string[]; contentContainerId?: number } | number;
+  queryOptions?: { refetchInterval?: number };
   isCalendar?: boolean;
   onlyUpcoming?: boolean;
 }): {
@@ -29,8 +31,10 @@ export const useVolunteerData = ({
   isRefetching: boolean;
   refetch: () => void;
 } => {
-  const { data, isLoading, isRefetching, refetch } = useQuery([query, queryVariables], () =>
-    getQuery(query)(queryVariables)
+  const { data, isLoading, isRefetching, refetch } = useQuery(
+    [query, queryVariables],
+    () => getQuery(query)(queryVariables),
+    queryOptions
   );
 
   const [isProcessing, setIsProcessing] = useState(true);
