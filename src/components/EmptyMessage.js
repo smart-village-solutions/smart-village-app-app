@@ -5,7 +5,9 @@ import { StyleSheet, View } from 'react-native';
 import { colors, Icon, normalize } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 
-import { RegularText, Wrapper, WrapperWithOrientation, SafeAreaViewFlex } from '.';
+import { SafeAreaViewFlex } from './SafeAreaViewFlex';
+import { RegularText } from './Text';
+import { Wrapper, WrapperWithOrientation } from './Wrapper';
 
 export const EmptyMessage = ({ title }) => {
   return (
