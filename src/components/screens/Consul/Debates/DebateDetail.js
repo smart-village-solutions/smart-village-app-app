@@ -135,6 +135,7 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
             commentCount={commentsCount}
             commentsData={comments.nodes}
             userId={userId}
+            navigation={navigation}
             onRefresh={onRefresh}
           />
         )}

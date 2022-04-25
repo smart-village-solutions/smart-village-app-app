@@ -17,6 +17,7 @@ import {
   CAST_VOTE_ON_COMMENT,
   DELETE_COMMENT
 } from '../../../queries/Consul';
+import { ScreenName } from '../../../types';
 
 const deleteCommentAlert = (onDelete) =>
   Alert.alert(texts.consul.loginAllFieldsRequiredTitle, texts.consul.commentDeleteAlertBody, [
@@ -34,7 +35,7 @@ const deleteCommentAlert = (onDelete) =>
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList }) => {
+export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navigation }) => {
   const [responseShow, setResponseShow] = useState(false);
   const [reply, setReply] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -61,7 +62,8 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList }) => 
     publicCreatedAt,
     responses,
     votesFor,
-    userId
+    userId,
+    userComment
   } = commentItem;
 
   const commentUserId = publicAuthor ? publicAuthor.id : null;
@@ -89,7 +91,13 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList }) => 
 
   const onDelete = async () => {
     await deleteComment({ variables: { id: id } })
-      .then(() => onRefresh())
+      .then(() => {
+        if (userComment) {
+          navigation?.navigate(ScreenName.ConsulHomeScreen);
+        } else {
+          onRefresh();
+        }
+      })
       .catch((err) => console.error(err));
   };
 
@@ -242,6 +250,9 @@ const Space = () => {
 
 ConsulCommentListItem.propTypes = {
   commentItem: PropTypes.object.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired
+  }).isRequired,
   onRefresh: PropTypes.func,
   replyList: PropTypes.bool,
   userId: PropTypes.string

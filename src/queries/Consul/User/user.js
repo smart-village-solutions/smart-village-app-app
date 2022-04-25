@@ -28,6 +28,7 @@ export const USER = gql`
           body
           cachedVotesTotal
           publicCreatedAt
+          commentableTitle
           publicAuthor {
             id
             username

@@ -8,10 +8,15 @@ import { device, texts, consts } from '../../../config';
 
 import { ConsulCommentListItem } from './ConsulCommentListItem';
 
-const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
-export const ConsulCommentList = ({ commentCount, commentsData, onRefresh, userId }) => {
+export const ConsulCommentList = ({
+  commentCount,
+  commentsData,
+  onRefresh,
+  userId,
+  navigation
+}) => {
   commentsData.sort((a, b) => a.id - b.id);
 
   let comments = getThreadedComments(commentsData, null, userId);
@@ -19,8 +24,8 @@ export const ConsulCommentList = ({ commentCount, commentsData, onRefresh, userI
   return (
     <>
       <TitleContainer>
-        <Title accessibilityLabel={`(${text.comments}) ${a11yText.heading}`}>
-          {commentCount > 1 ? text.comments : text.comment} ({commentCount})
+        <Title accessibilityLabel={`(${texts.consul.comments}) ${a11yText.heading}`}>
+          {commentCount > 1 ? texts.consul.comments : texts.consul.comment} ({commentCount})
         </Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
@@ -29,7 +34,7 @@ export const ConsulCommentList = ({ commentCount, commentsData, onRefresh, userI
         contentContainerStyle={{ padding: normalize(14) }}
         data={comments}
         renderItem={({ item }) => (
-          <ConsulCommentListItem commentItem={item} onRefresh={onRefresh} />
+          <ConsulCommentListItem commentItem={item} onRefresh={onRefresh} navigation={navigation} />
         )}
       />
     </>
@@ -38,6 +43,9 @@ export const ConsulCommentList = ({ commentCount, commentsData, onRefresh, userI
 
 ConsulCommentList.propTypes = {
   commentsData: PropTypes.array.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired
+  }).isRequired,
   commentCount: PropTypes.number,
   onRefresh: PropTypes.func,
   userId: PropTypes.string

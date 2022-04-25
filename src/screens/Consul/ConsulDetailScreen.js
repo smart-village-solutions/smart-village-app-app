@@ -58,7 +58,7 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
 
   if (isLoading) return <LoadingSpinner loading />;
 
-  if (isError) return showRegistrationFailAlert(navigation);
+  if (isError) showRegistrationFailAlert(navigation);
 
   if (!data || !Component) return null;
 

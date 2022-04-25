@@ -10,6 +10,7 @@ export const PUBLIC_COMMENT = gql`
       cachedVotesDown
       cachedVotesTotal
       publicCreatedAt
+      commentableTitle
       votesFor {
         nodes {
           voteFlag

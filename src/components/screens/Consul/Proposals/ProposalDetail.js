@@ -69,7 +69,6 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
   );
 
   useEffect(() => {
-    // GET User ID
     getConsulUser().then((val) => {
       if (val) return setUserId(JSON.parse(val).id);
     });
