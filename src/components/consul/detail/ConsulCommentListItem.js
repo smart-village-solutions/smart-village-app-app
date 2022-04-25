@@ -198,6 +198,7 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
                 commentItem={item}
                 onRefresh={onRefresh}
                 replyList={true}
+                navigation={navigation}
               />
             </View>
           ))

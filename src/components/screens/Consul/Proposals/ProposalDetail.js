@@ -206,6 +206,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
             commentsData={comments.nodes}
             userId={userId}
             onRefresh={onRefresh}
+            navigation={navigation}
           />
         )}
 

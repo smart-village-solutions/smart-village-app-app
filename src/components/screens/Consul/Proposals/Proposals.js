@@ -5,6 +5,7 @@ import { ConsulStartNewButton } from '../../../Consul';
 import { ListComponent } from '../../../ListComponent';
 import { QUERY_TYPES } from '../../../../queries';
 import { texts } from '../../../../config';
+import { Wrapper } from '../../../Wrapper';
 
 export const Proposals = ({ navigation, query, listData, refreshControl, myContent }) => {
   return (
@@ -18,12 +19,14 @@ export const Proposals = ({ navigation, query, listData, refreshControl, myConte
       />
 
       {!myContent && (
-        <ConsulStartNewButton
-          title={texts.consul.startNew.newProposalStartButtonLabel}
-          query={QUERY_TYPES.CONSUL.START_PROPOSAL}
-          navigation={navigation}
-          buttonTitle={texts.consul.startNew.newProposalStartButtonLabel}
-        />
+        <Wrapper>
+          <ConsulStartNewButton
+            title={texts.consul.startNew.newProposalStartButtonLabel}
+            query={QUERY_TYPES.CONSUL.START_PROPOSAL}
+            navigation={navigation}
+            buttonTitle={texts.consul.startNew.newProposalStartButtonLabel}
+          />
+        </Wrapper>
       )}
     </>
   );

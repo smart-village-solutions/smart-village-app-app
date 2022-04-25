@@ -25,7 +25,7 @@ const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PollDetail = ({ listData, onRefresh, route }) => {
+export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
   const [loading, setLoading] = useState();
   const [userId, setUserId] = useState();
 
@@ -113,6 +113,7 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
             commentsData={comments}
             userId={userId}
             onRefresh={onRefresh}
+            navigation={navigation}
           />
         )}
 
@@ -145,6 +146,9 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
 
 PollDetail.propTypes = {
   listData: PropTypes.object.isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired
+  }).isRequired,
   onRefresh: PropTypes.func,
   route: PropTypes.object
 };
