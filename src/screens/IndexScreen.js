@@ -238,15 +238,13 @@ export const IndexScreen = ({ navigation, route }) => {
               withDate: false
             });
 
-            if (!listItems?.length && !categories?.length) return null;
-
             if (filterByOpeningTimes) {
-              listItems = listItems.filter(
+              listItems = listItems?.filter(
                 (entry) => isOpen(entry.params?.details?.openingHours)?.open
               );
             }
 
-            if (sortByDistance && position) {
+            if (sortByDistance && position && listItems?.length) {
               listItems = sortPOIsByDistanceFromPosition(listItems, position.coords);
             }
 
@@ -284,7 +282,11 @@ export const IndexScreen = ({ navigation, route }) => {
                     )}
                   </>
                 }
-                ListEmptyComponent={<EmptyMessage title={texts.empty.list} />}
+                ListEmptyComponent={
+                  <EmptyMessage
+                    title={categories?.length ? texts.empty.categoryList : texts.empty.list}
+                  />
+                }
                 navigation={navigation}
                 data={listItems}
                 horizontal={false}
