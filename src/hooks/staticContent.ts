@@ -68,23 +68,25 @@ export const useStaticContent = <T>({
   );
 
   const refetchCallback = useCallback(async () => {
-    setError(false);
     return await refetch?.();
   }, [refetch]);
 
   const publicFileData = useMemo(() => {
+    setError(false);
+
     if (type === 'html') {
       return data?.publicHtmlFile?.content;
     }
 
     try {
-      if (!_isEmpty(data?.publicJsonFile?.content)) {
-        const json = data?.publicJsonFile?.content;
+      const json = data?.publicJsonFile?.content;
 
+      if (!_isEmpty(json)) {
         return parseFromJson ? parseFromJson(json) : json;
-      } else if (data || queryError) {
-        // set error true if there is bad data without `publicJsonFile.content` or some `queryError`
+      } else if (!loading && data) {
+        // set error true if there is bad data without `publicJsonFile.content`
         setError(true);
+        console.warn(error, data);
       }
     } catch (error) {
       setError(true);
@@ -95,9 +97,10 @@ export const useStaticContent = <T>({
   return {
     data: publicFileData,
     error: error || !!queryError,
-    // add the extra condition to avoid weird rendering states, where loading is false, but the publicFileData is not yet set.
-    // this way we can safely manipulate data and then update the publicFileData with it, after the query has finished loading.
-    loading: loading || (publicFileData === undefined && !error && !skip),
+    // add the extra condition to avoid weird rendering states, where `loading` is false, but the
+    // `publicFileData` is not yet set. this way we can safely manipulate `data` and then update the
+    // `publicFileData` with it, after the query has finished loading.
+    loading: loading || (publicFileData === undefined && !error && !queryError && !skip),
     refetch: refetchCallback
   };
 };
