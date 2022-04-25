@@ -46,6 +46,7 @@ export const consts = {
     shareIcon: 'Teilen (Taste)',
     shareHint: 'Inhalte auf der Seite teilen',
     textInput: 'Texteingabe',
+    username: 'Benutzername',
     verified: 'Verifiziert',
     verifiedInfo: 'Informationen zur Verifikation',
     website: '(Webseite)',
@@ -123,6 +124,7 @@ export const consts = {
     NEWS_ITEMS: 'NewsItems',
     POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours',
     POINTS_OF_INTEREST: 'PointsOfInterest',
-    TOURS: 'Tours'
+    TOURS: 'Tours',
+    VOLUNTEER: 'Volunteer'
   }
 };

@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Alert,
   Keyboard,
+  Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -299,12 +300,14 @@ const styles = StyleSheet.create({
   autoCompleteList: {
     margin: 0
   },
-  topMarginContainer:
-    device.platform === 'android'
-      ? {
-          marginTop: normalize(44)
-        }
-      : {}
+  topMarginContainer: {
+    ...Platform.select({
+      android: {
+        marginTop: normalize(44)
+      },
+      ios: {}
+    })
+  }
 });
 
 WasteCollectionScreen.propTypes = {

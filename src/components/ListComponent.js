@@ -22,6 +22,7 @@ const isHorizontal = (query, listTypesSettings) => {
   }
 };
 
+// eslint-disable-next-line complexity
 const getComponent = (query, horizontal, sectionByDate) => {
   switch (query) {
     case QUERY_TYPES.CATEGORIES:
@@ -32,6 +33,9 @@ const getComponent = (query, horizontal, sectionByDate) => {
       return horizontal ? HorizontalList : VerticalList;
     case QUERY_TYPES.EVENT_RECORDS:
       return sectionByDate ? EventList : VerticalList;
+    case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL:
+    case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY:
+      return sectionByDate ? EventList : VerticalList;
     default:
       return VerticalList;
   }
@@ -40,16 +44,17 @@ const getComponent = (query, horizontal, sectionByDate) => {
 // the ListComponent will default to being horizontal for CardLists,
 // which can be overwritten by passing in the horizontal prop
 export const ListComponent = ({
-  navigation,
   data,
-  noSubtitle,
-  query,
   fetchMoreData,
   horizontal,
-  sectionByDate,
-  ListHeaderComponent,
   ListEmptyComponent,
+  ListHeaderComponent,
+  navigation,
+  noSubtitle,
+  openWebScreen,
+  query,
   refreshControl,
+  sectionByDate,
   showBackToTop
 }) => {
   const { listTypesSettings } = useContext(SettingsContext);
@@ -64,10 +69,11 @@ export const ListComponent = ({
     <Component
       data={data}
       fetchMoreData={fetchMoreData}
-      ListHeaderComponent={ListHeaderComponent}
       ListEmptyComponent={ListEmptyComponent}
+      ListHeaderComponent={ListHeaderComponent}
       navigation={navigation}
       noSubtitle={noSubtitle}
+      openWebScreen={openWebScreen}
       query={query}
       refreshControl={refreshControl}
       showBackToTop={showBackToTop}
@@ -76,15 +82,16 @@ export const ListComponent = ({
 };
 
 ListComponent.propTypes = {
-  navigation: PropTypes.object,
   data: PropTypes.array,
-  noSubtitle: PropTypes.bool,
-  query: PropTypes.string.isRequired,
   fetchMoreData: PropTypes.func,
   horizontal: PropTypes.bool,
-  sectionByDate: PropTypes.bool,
-  ListHeaderComponent: PropTypes.object,
   ListEmptyComponent: PropTypes.object,
+  ListHeaderComponent: PropTypes.object,
+  navigation: PropTypes.object,
+  noSubtitle: PropTypes.bool,
+  openWebScreen: PropTypes.func,
+  query: PropTypes.string.isRequired,
   refreshControl: PropTypes.object,
+  sectionByDate: PropTypes.bool,
   showBackToTop: PropTypes.bool
 };

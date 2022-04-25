@@ -8,8 +8,10 @@ import { eventDate, isBeforeEndOfToday, isTodayOrLater } from '../dateTimeHelper
 import { getGenericItemDetailTitle, getGenericItemRootRouteName } from '../genericTypeHelper';
 import { mainImageOfMediaContents } from '../imageHelper';
 import { momentFormatUtcToLocal } from '../momentHelper';
+import { getTitleForQuery } from '../queryHelper';
 import { shareMessage } from '../shareHelper';
 import { subtitle } from '../textHelper';
+import { volunteerSubtitle } from '../volunteerHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -202,18 +204,57 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
+const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned) => {
+  return data?.map((volunteer, index) => ({
+    id: volunteer.id,
+    title:
+      volunteer.title || volunteer.name || volunteer.display_name || volunteer.user?.display_name,
+    subtitle: volunteerSubtitle(volunteer, query, withDate, isSectioned),
+    picture: volunteer.picture,
+    routeName: ScreenName.VolunteerDetail,
+    onPress: volunteer.onPress,
+    listDate: volunteer.listDate,
+    params: {
+      title: getTitleForQuery(query, volunteer),
+      query,
+      queryVariables: { id: volunteer.user?.id ? `${volunteer.user.id}` : `${volunteer.id}` },
+      queryOptions: query === QUERY_TYPES.VOLUNTEER.CONVERSATION && {
+        refetchInterval: 5000
+      },
+      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
+      shareContent: query !== QUERY_TYPES.VOLUNTEER.CONVERSATION && {
+        message: shareMessage(
+          {
+            title: volunteer.title || volunteer.name,
+            subtitle: volunteerSubtitle(volunteer, query, withDate)
+          },
+          query
+        )
+      },
+      details: volunteer
+    },
+    bottomDivider: !skipLastDivider || index !== data.length - 1
+  }));
+};
+
 /**
  * Parses list items from query a query result
  * @param {string} query
  * @param {any} data
  * @param {string | undefined} titleDetail
- * @param {{ bookmarkable?: boolean; skipLastDivider?: boolean; withDate?: boolean }} options
+ * @param {{ bookmarkable?: boolean; skipLastDivider?: boolean; withDate?: boolean, isSectioned?: boolean }} options
  * @returns
  */
+// eslint-disable-next-line complexity
 export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) => {
   if (!data) return;
 
-  const { bookmarkable = true, skipLastDivider = false, withDate = true } = options;
+  const {
+    bookmarkable = true,
+    skipLastDivider = false,
+    withDate = true,
+    isSectioned = false
+  } = options;
 
   switch (query) {
     case QUERY_TYPES.EVENT_RECORDS:
@@ -230,5 +271,28 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseCategories(data[query], skipLastDivider);
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
+    case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL:
+    case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY:
+      return parseVolunteers(
+        data,
+        QUERY_TYPES.VOLUNTEER.CALENDAR,
+        skipLastDivider,
+        withDate,
+        isSectioned
+      );
+    case QUERY_TYPES.VOLUNTEER.GROUPS:
+    case QUERY_TYPES.VOLUNTEER.GROUPS_MY:
+      return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.GROUP, skipLastDivider);
+    case QUERY_TYPES.VOLUNTEER.CONVERSATIONS:
+      return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.CONVERSATION, skipLastDivider, withDate);
+    case QUERY_TYPES.VOLUNTEER.MEMBERS:
+    case QUERY_TYPES.VOLUNTEER.CALENDAR:
+      return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.USER, skipLastDivider);
+    case QUERY_TYPES.VOLUNTEER.TASKS:
+    case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
+    case QUERY_TYPES.VOLUNTEER.PROFILE:
+      return parseVolunteers(data, query, skipLastDivider);
+    default:
+      return data;
   }
 };

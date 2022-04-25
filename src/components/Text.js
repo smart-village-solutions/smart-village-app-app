@@ -129,6 +129,12 @@ export const RegularText = styled(Text)`
     css`
       text-align: center;
     `};
+
+  ${(props) =>
+    props.right &&
+    css`
+      text-align: right;
+    `};
 `;
 
 export const BoldText = styled(RegularText)`

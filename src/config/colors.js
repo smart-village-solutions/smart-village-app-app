@@ -1,6 +1,10 @@
+const gray40 = '#DBDBE6';
+const gray20 = '#EAEAEA';
+const white = '#FFFFFF';
+
 export const colors = {
   lighterPrimary: '#5EC66F',
-  primary: 'rgb(16, 120, 33)',
+  primary: '#107821',
   darkerPrimary: 'rgb(15, 70, 24)',
   darkerPrimaryRgba: 'rgba(15, 70, 24, 0.6)',
   secondary: 'rgb(9, 72, 60)',
@@ -10,7 +14,7 @@ export const colors = {
 
   darkText: '#000000',
   lighterText: 'rgba(221, 242, 243, 0.6)',
-  lightestText: '#FFFFFF',
+  lightestText: white,
 
   shadow: '#BCBBC1',
   shadowRgba: 'rgba(188, 187, 193, 0.4)',
@@ -20,7 +24,9 @@ export const colors = {
   placeholder: '#A2A2A2',
   overlayRgba: 'rgba(20, 20, 20, 0.7)',
 
-  surface: '#FFF',
+  surface: white,
 
-  transparent: 'transparent'
+  transparent: 'transparent',
+  gray20,
+  gray40
 };

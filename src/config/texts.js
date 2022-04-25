@@ -68,6 +68,15 @@ export const texts = {
     eventRecord: 'Veranstaltung',
     newsItem: 'Nachricht',
     pointOfInterest: 'Ort',
+    volunteer: {
+      additional: 'Ganz praktisch',
+      conversation: 'Unterhaltung',
+      eventRecord: 'Veranstaltung',
+      group: 'Gruppenprofil',
+      member: 'Mitglied',
+      task: 'Aufgabe',
+      user: 'Profil'
+    },
     tour: 'Tour'
   },
   encounter: {
@@ -108,7 +117,7 @@ export const texts = {
     registrationPrivacyLink: 'Datenschutzerklärung.',
     registrationPrivacyText:
       'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
-    registrationTitle: 'Registrierung',
+    registrationTitle: 'Registrieren',
     saveChanges: 'Änderungen speichern',
     scanAgain: 'Erneut scannen',
     scannerSubTitle: 'Scanne den QR-Code deines Fahrers',
@@ -449,6 +458,16 @@ export const texts = {
     settings: 'Einstellungen',
     survey: 'Umfrage',
     surveys: 'Umfragen',
+    volunteer: {
+      calendar: 'Mein Kalender',
+      home: 'Ehrenamt',
+      me: 'Persönliche Daten',
+      groups: 'Meine Gruppen',
+      groupsFollowing: 'Gruppen, denen ich folge',
+      messages: 'Mein Postfach',
+      personal: 'Mein Bereich',
+      tasks: 'Meine Aufgaben'
+    },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
   },
@@ -558,6 +577,7 @@ export const texts = {
     home: 'Übersicht',
     service: 'Service',
     company: 'Unternehmen',
+    volunteer: 'Ehrenamt',
     about: 'Mehr'
   },
   tour: {
@@ -566,6 +586,72 @@ export const texts = {
     operatingCompany: 'Veranstalter',
     start: 'Tourbeginn',
     tour: 'Tourverlauf'
+  },
+  volunteer: {
+    abort: 'Abbrechen',
+    attend: 'Interessiert',
+    attendInfo:
+      'Wenn Sie Interesse an dieser Veranstaltung bekunden wird diese in den Kalender in Ihrem Bereich übernommen.\n',
+    calendar: 'Kalender',
+    calendarMy: 'Mein Kalender',
+    conversations: 'Mein Postfach',
+    conversationStart: 'Unterhaltung beginnen',
+    description: 'Beschreibung',
+    edit: 'Daten bearbeiten',
+    email: 'E-Mail',
+    endDate: 'Enddatum',
+    endTime: 'Endzeit',
+    errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten. Bitte erneut einloggen.',
+    eventRecord: {
+      appointments: 'Terminübersicht'
+    },
+    group: 'Gruppe',
+    groups: 'Gruppen',
+    groupsMy: 'Meine Gruppen',
+    invite: 'Jemanden einladen',
+    join: 'Beitreten',
+    leave: 'Verlassen',
+    list: 'Liste',
+    location: 'Ort',
+    login: 'Anmelden',
+    loginTitle: 'Anmelden',
+    members: 'Mitglieder',
+    memberships: 'Mitgliedschaften',
+    message: 'Nachricht',
+    name: 'Name',
+    next: 'Weiter',
+    noGroups: 'Dir gehören keine Gruppen, in denen du Termine eintragen könntest.',
+    noUsers: 'Es gibt keine Personen, denen du schreiben könntest.',
+    notAttend: 'Nicht mehr interessiert',
+    ok: 'OK',
+    participants: 'Interessierte',
+    password: 'Passwort',
+    passwordConfirmation: 'Passwort bestätigen',
+    passwordForgotten: 'Passwort vergessen',
+    postNew: 'Neuen Beitrag verfassen',
+    posts: 'Beiträge',
+    postsIndexLink: 'Alle Beiträge anzeigen',
+    recipient: 'Empfänger',
+    register: 'Registrieren',
+    registrationAllFieldsRequiredBody:
+      'Damit die Registrierung abgesendet werden kann, muss das Formular vollständig ausgefüllt sein.',
+    registrationAllFieldsRequiredTitle: 'Hinweis',
+    registrationFailedBody: 'Bei der Registrierung ist ein Fehler aufgetreten.',
+    registrationFailedTitle: 'Fehler',
+    registrationPrivacyLink: 'Datenschutzerklärung.',
+    registrationPrivacyText:
+      'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
+    registrationTitle: 'Registrieren',
+    save: 'Speichern',
+    search: 'Suche',
+    send: 'Senden',
+    startDate: 'Startdatum',
+    startTime: 'Startzeit',
+    tags: 'Themen',
+    title: 'Titel',
+    topics: 'Themen',
+    username: 'Benutzername',
+    usernameOrEmail: 'Benutzername oder E-Mail'
   },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',

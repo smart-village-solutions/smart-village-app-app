@@ -1,12 +1,13 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useContext } from 'react';
 import { isArray } from 'lodash';
+import React, { useCallback, useContext } from 'react';
 
-import { consts } from '../config';
-import { SettingsContext } from '../SettingsProvider';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
+import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
+import { consts } from '../config';
 import { QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 
 const { LIST_TYPES } = consts;
 
@@ -15,6 +16,8 @@ const getListType = (query, listTypesSettings) => {
     case QUERY_TYPES.POINTS_OF_INTEREST:
     case QUERY_TYPES.TOURS:
       return listTypesSettings[QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS];
+    case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
+      return LIST_TYPES.CARD_LIST;
     default:
       return listTypesSettings[query];
   }
@@ -57,17 +60,27 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     default: {
-      renderItem = ({ item, index, section }) => (
-        <TextListItem
-          item={{
-            ...item,
-            bottomDivider:
-              item.bottomDivider ??
-              (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
-          }}
-          {...{ navigation, noSubtitle: options.noSubtitle }}
-        />
-      );
+      renderItem = ({ item, index, section }) => {
+        if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
+          return (
+            <VolunteerPostListItem
+              post={item}
+              bottomDivider={isArray(section?.data) ? section.data.length - 1 !== index : undefined}
+              openWebScreen={options.openWebScreen}
+            />
+          );
+        }
+
+        return (
+          <TextListItem
+            item={{
+              ...item,
+              bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
+            }}
+            {...{ navigation, noSubtitle: options.noSubtitle }}
+          />
+        );
+      };
 
       break;
     }

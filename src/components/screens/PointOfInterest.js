@@ -9,13 +9,13 @@ import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
+import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { WebViewMap } from '../map/WebViewMap';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { DataProviderNotice } from '../DataProviderNotice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
@@ -195,6 +195,5 @@ PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired,
   hideMap: PropTypes.bool,
   navigation: PropTypes.object,
-  fetchPolicy: PropTypes.string,
   route: PropTypes.object.isRequired
 };

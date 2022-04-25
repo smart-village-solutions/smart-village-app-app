@@ -33,6 +33,15 @@ import {
   SurveyDetailScreen,
   SurveyOverviewScreen,
   TilesScreen,
+  VolunteerDetailScreen,
+  VolunteerFormScreen,
+  VolunteerHomeScreen,
+  VolunteerIndexScreen,
+  VolunteerLoginScreen,
+  VolunteerMeScreen,
+  VolunteerPersonalScreen,
+  VolunteerRegisteredScreen,
+  VolunteerRegistrationScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
@@ -243,6 +252,51 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.TilesScreen,
       screenComponent: TilesScreen
+    },
+    {
+      routeName: ScreenName.VolunteerDetail,
+      screenComponent: VolunteerDetailScreen,
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withShare: true })
+    },
+    {
+      routeName: ScreenName.VolunteerForm,
+      screenComponent: VolunteerFormScreen
+    },
+    {
+      routeName: ScreenName.VolunteerHome,
+      screenComponent: VolunteerHomeScreen,
+      inititalParams: {
+        title: texts.screenTitles.volunteer.home
+      }
+    },
+    {
+      routeName: ScreenName.VolunteerIndex,
+      screenComponent: VolunteerIndexScreen
+    },
+    {
+      routeName: ScreenName.VolunteerLogin,
+      screenComponent: VolunteerLoginScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.home }
+    },
+    {
+      routeName: ScreenName.VolunteerMe,
+      screenComponent: VolunteerMeScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.me }
+    },
+    {
+      routeName: ScreenName.VolunteerPersonal,
+      screenComponent: VolunteerPersonalScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.personal }
+    },
+    {
+      routeName: ScreenName.VolunteerRegistered,
+      screenComponent: VolunteerRegisteredScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.home }
+    },
+    {
+      routeName: ScreenName.VolunteerRegistration,
+      screenComponent: VolunteerRegistrationScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.home }
     },
     {
       routeName: ScreenName.WasteCollection,

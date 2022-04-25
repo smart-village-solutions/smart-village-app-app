@@ -19,6 +19,7 @@ type ItemData = {
   bottomDivider?: boolean;
   topDivider?: boolean;
   picture?: { url: string };
+  onPress?: (navigation: any) => void;
 };
 
 type Props = {
@@ -38,9 +39,18 @@ export const TextListItem: NamedExoticComponent<Props> & {
   navigation: StackNavigationProp<Record<string, any>>;
   noSubtitle?: boolean;
 }>(({ navigation, item, noSubtitle, leftImage }) => {
-  const { routeName: name, params, subtitle, title, bottomDivider, topDivider, picture } = item;
-
+  const {
+    routeName: name,
+    params,
+    subtitle,
+    title,
+    bottomDivider,
+    topDivider,
+    picture,
+    onPress
+  } = item;
   const titleText = <BoldText>{trimNewLines(title)}</BoldText>;
+  const navigate = () => navigation && navigation.push(name, params);
 
   return (
     <ListItem
@@ -59,7 +69,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
           />
         ) : undefined
       }
-      onPress={() => navigation && navigation.push(name, params)}
+      onPress={() => (onPress ? onPress(navigation) : navigate())}
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}

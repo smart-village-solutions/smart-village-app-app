@@ -12,20 +12,21 @@ const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 const MAX_INITIAL_NUM_TO_RENDER = 20;
 
 export const VerticalList = ({
-  navigation,
   data,
-  noSubtitle,
-  query,
   fetchMoreData,
   ListEmptyComponent,
   ListHeaderComponent,
-  showBackToTop,
-  refreshControl
+  navigation,
+  noSubtitle,
+  openWebScreen,
+  query,
+  refreshControl,
+  showBackToTop
 }) => {
   const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
 
-  const renderItem = useRenderItem(query, navigation, { noSubtitle });
+  const renderItem = useRenderItem(query, navigation, { noSubtitle, openWebScreen });
 
   const onEndReached = async () => {
     if (fetchMoreData) {
@@ -76,21 +77,23 @@ export const VerticalList = ({
       onEndReachedThreshold={0.5}
       onEndReached={onEndReached}
       refreshControl={refreshControl}
+      keyboardShouldPersistTaps="handled"
     />
   );
 };
 
 VerticalList.propTypes = {
-  navigation: PropTypes.object,
   data: PropTypes.array,
-  noSubtitle: PropTypes.bool,
+  fetchMoreData: PropTypes.func,
+  leftImage: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
   ListHeaderComponent: PropTypes.object,
-  showBackToTop: PropTypes.bool,
-  leftImage: PropTypes.bool,
+  navigation: PropTypes.object,
+  noSubtitle: PropTypes.bool,
+  openWebScreen: PropTypes.func,
   query: PropTypes.string,
-  fetchMoreData: PropTypes.func,
-  refreshControl: PropTypes.object
+  refreshControl: PropTypes.object,
+  showBackToTop: PropTypes.bool
 };
 
 VerticalList.defaultProps = {

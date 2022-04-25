@@ -37,18 +37,18 @@ export const EventList = ({
   };
 
   const renderItem = useRenderItem(QUERY_TYPES.EVENT_RECORDS, navigation, { noSubtitle });
+  const sectionedData = data?.reduce((previous, current) => {
+    const listDate = current?.params?.details?.listDate || current?.listDate;
 
-  const sectionedData = data.reduce((previous, current) => {
-    if (previous[previous?.length - 1]?.title === current.params.details.listDate) {
-      previous[previous.length - 1].data.push(current);
-      return previous;
-    } else {
-      previous.push({
-        title: current.params.details.listDate,
-        data: [current]
-      });
-      return previous;
+    if (listDate) {
+      if (previous[previous?.length - 1]?.title === listDate) {
+        previous[previous.length - 1].data.push(current);
+      } else {
+        previous.push({ title: listDate, data: [current] });
+      }
     }
+
+    return previous;
   }, []);
 
   return (
