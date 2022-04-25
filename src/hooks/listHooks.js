@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useContext } from 'react';
 import { isArray } from 'lodash';
+import React, { useCallback, useContext } from 'react';
 
-import { consts } from '../config';
-import { SettingsContext } from '../SettingsProvider';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
+import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
+import { consts } from '../config';
 import { QUERY_TYPES } from '../queries';
-import { VolunteerPostListItem } from '../components';
+import { SettingsContext } from '../SettingsProvider';
 
 const { LIST_TYPES } = consts;
 
