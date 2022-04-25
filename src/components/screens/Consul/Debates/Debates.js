@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { ConsulStartNewButton } from '../../../Consul';
 import { ListComponent } from '../../../ListComponent';
 import { QUERY_TYPES } from '../../../../queries';
 import { texts } from '../../../../config';
 import { Wrapper } from '../../../Wrapper';
+import { ScreenName } from '../../../../types';
+import { Button } from '../../../Button';
 
 export const Debates = ({ navigation, query, listData, refreshControl, myContent }) => {
   return (
@@ -20,11 +21,14 @@ export const Debates = ({ navigation, query, listData, refreshControl, myContent
 
       {!myContent && (
         <Wrapper>
-          <ConsulStartNewButton
+          <Button
+            onPress={() =>
+              navigation.navigate(ScreenName.ConsulStartNewScreen, {
+                title: texts.consul.startNew.newDebateStartButtonLabel,
+                query: QUERY_TYPES.CONSUL.START_DEBATE
+              })
+            }
             title={texts.consul.startNew.newDebateStartButtonLabel}
-            query={QUERY_TYPES.CONSUL.START_DEBATE}
-            navigation={navigation}
-            buttonTitle={texts.consul.startNew.newDebateStartButtonLabel}
           />
         </Wrapper>
       )}

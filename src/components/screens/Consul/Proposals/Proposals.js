@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { ConsulStartNewButton } from '../../../Consul';
 import { ListComponent } from '../../../ListComponent';
 import { QUERY_TYPES } from '../../../../queries';
 import { texts } from '../../../../config';
 import { Wrapper } from '../../../Wrapper';
+import { ScreenName } from '../../../../types';
+import { Button } from '../../../Button';
 
 export const Proposals = ({ navigation, query, listData, refreshControl, myContent }) => {
   return (
@@ -20,11 +21,14 @@ export const Proposals = ({ navigation, query, listData, refreshControl, myConte
 
       {!myContent && (
         <Wrapper>
-          <ConsulStartNewButton
+          <Button
+            onPress={() =>
+              navigation.navigate(ScreenName.ConsulStartNewScreen, {
+                title: texts.consul.startNew.newProposalStartButtonLabel,
+                query: QUERY_TYPES.CONSUL.START_PROPOSAL
+              })
+            }
             title={texts.consul.startNew.newProposalStartButtonLabel}
-            query={QUERY_TYPES.CONSUL.START_PROPOSAL}
-            navigation={navigation}
-            buttonTitle={texts.consul.startNew.newProposalStartButtonLabel}
           />
         </Wrapper>
       )}
