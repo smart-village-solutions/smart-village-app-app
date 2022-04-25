@@ -16,6 +16,7 @@ const MAX_INITIAL_NUM_TO_RENDER = 20;
 export const EventList = ({
   data,
   fetchMoreData,
+  ListEmptyComponent,
   ListHeaderComponent,
   navigation,
   noSubtitle,
@@ -42,7 +43,10 @@ export const EventList = ({
       previous[previous.length - 1].data.push(current);
       return previous;
     } else {
-      previous.push({ title: current.params.details.listDate, data: [current] });
+      previous.push({
+        title: current.params.details.listDate,
+        data: [current]
+      });
       return previous;
     }
   }, []);
@@ -60,6 +64,7 @@ export const EventList = ({
 
         return null;
       }}
+      ListEmptyComponent={ListEmptyComponent}
       ListHeaderComponent={ListHeaderComponent}
       onEndReached={onEndReached}
       onEndReachedThreshold={0.5}
@@ -77,6 +82,7 @@ export const EventList = ({
 EventList.propTypes = {
   data: PropTypes.array,
   fetchMoreData: PropTypes.func,
+  ListEmptyComponent: PropTypes.object,
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
