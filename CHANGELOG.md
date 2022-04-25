@@ -5,16 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.5.3]
+
+Minor improvements and bugfixes
+
+### Added
+
+- added list screens for nested categories
+- added param for categories query to exclude specific ids
+- added new empty message component
+
+### Changed
+
+- inserted zero width space after dashes to improve the Android line break behaviour
+- reduced accuracy for location access on iOS
+
+### Fixed
+
+- fixed repeated location permission request on app start
+- fixed logics for setting error in `useStaticContent` hook
+
 ## [v2.5.2]
 
 Minor improvements and bugfixes
 
-### Fixed
-- Date parsing for midnight (Date was calculated using GMT)
-- Improved image behavior when loading of an image via url image failed
-
 ### Changed
+
 - OParl file access and download urls are now opened externally instead of only being able to be copied
+
+### Fixed
+
+- date parsing for midnight (date was calculated using GMT)
+- improved image behavior when loading of an image via url image failed
 
 ## [v2.5.1]
 
