@@ -6,8 +6,6 @@ import { ListComponent } from '../../../ListComponent';
 import { QUERY_TYPES } from '../../../../queries';
 import { texts } from '../../../../config';
 
-const text = texts.consul;
-
 export const Debates = ({ navigation, query, listData, refreshControl, myContent }) => {
   return (
     <>
@@ -21,10 +19,10 @@ export const Debates = ({ navigation, query, listData, refreshControl, myContent
 
       {!myContent && (
         <ConsulStartNewButton
-          title={text.startNew.newDebateStartButtonLabel}
+          title={texts.consul.startNew.newDebateStartButtonLabel}
           query={QUERY_TYPES.CONSUL.START_DEBATE}
           navigation={navigation}
-          buttonTitle={text.startNew.newDebateStartButtonLabel}
+          buttonTitle={texts.consul.startNew.newDebateStartButtonLabel}
         />
       )}
     </>

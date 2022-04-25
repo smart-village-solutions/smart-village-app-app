@@ -11,13 +11,11 @@ import { SUPPORT_PROPOSAL } from '../../../queries/Consul';
 import { ConsulClient } from '../../../ConsulClient';
 import { Button } from '../../Button';
 
-const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 export const ConsulSupportingComponent = (votesData) => {
   const { cachedVotesUp, id, currentUserHasVoted, onRefresh } = votesData.votesData;
 
-  // GraphQL
   const [supportProposal] = useMutation(SUPPORT_PROPOSAL, {
     client: ConsulClient
   });
@@ -26,7 +24,7 @@ export const ConsulSupportingComponent = (votesData) => {
     await supportProposal({ variables: { id: id } })
       .then(() => {
         onRefresh();
-        Alert.alert(text.supportProposalAlertTitle, text.supportProposalAlertBody);
+        Alert.alert(texts.consul.supportProposalAlertTitle, texts.consul.supportProposalAlertBody);
       })
       .catch((err) => console.error(err));
   };
@@ -34,23 +32,25 @@ export const ConsulSupportingComponent = (votesData) => {
   return (
     <>
       <TitleContainer>
-        <Title accessibilityLabel={`(${text.supports}) ${a11yText.heading}`}>{text.supports}</Title>
+        <Title accessibilityLabel={`(${texts.consul.supports}) ${a11yText.heading}`}>
+          {texts.consul.supports}
+        </Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
 
       <Wrapper>
         <BoldText center>
-          {cachedVotesUp} {text.supports}
+          {cachedVotesUp} {texts.consul.supports}
         </BoldText>
         <RegularText center smallest>
-          100 {text.supportNeed}
+          100 {texts.consul.supportNeed}
         </RegularText>
         <View style={styles.buttonContainer}>
           {!currentUserHasVoted ? (
             <Button title="Unterstutzung" onPress={() => onVoting()} />
           ) : (
             <RegularText center small>
-              {text.proposalAlready}
+              {texts.consul.proposalAlready}
             </RegularText>
           )}
         </View>

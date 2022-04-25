@@ -21,7 +21,6 @@ import { HtmlView } from '../../../HtmlView';
 import { useOpenWebScreen } from '../../../../hooks';
 import { getConsulUser } from '../../../../helpers';
 
-const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
@@ -43,11 +42,10 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
     token
   } = listData.poll;
 
-  const endsDate = new Date(endsAt).toDateString();
-  const currentDate = new Date().toDateString();
+  const endsDate = new Date(endsAt).getTime();
+  const currentDate = new Date().getTime();
 
   useEffect(() => {
-    // GET User ID
     getConsulUser().then((val) => {
       if (val) return setUserId(JSON.parse(val).id);
     });
@@ -123,16 +121,18 @@ export const PollDetail = ({ listData, onRefresh, route }) => {
             multiline
             minHeight={50}
             name="comment"
-            label={text.commentLabel}
-            placeholder={text.comment}
+            label={texts.consul.commentLabel}
+            placeholder={texts.consul.comment}
             autoCapitalize="none"
-            rules={{ required: text.commentEmptyError }}
+            rules={{ required: texts.consul.commentEmptyError }}
             control={control}
           />
           <WrapperVertical>
             <Button
               onPress={handleSubmit(onSubmit)}
-              title={loading ? text.submittingCommentButton : text.commentAnswerButton}
+              title={
+                loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
+              }
               disabled={loading}
             />
           </WrapperVertical>

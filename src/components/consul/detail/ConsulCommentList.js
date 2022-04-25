@@ -13,6 +13,7 @@ const a11yText = consts.a11yLabel;
 
 export const ConsulCommentList = ({ commentCount, commentsData, onRefresh, userId }) => {
   commentsData.sort((a, b) => a.id - b.id);
+
   let comments = getThreadedComments(commentsData, null, userId);
 
   return (
@@ -24,7 +25,6 @@ export const ConsulCommentList = ({ commentCount, commentsData, onRefresh, userI
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
 
-      {/* Comment List! */}
       <FlatList
         contentContainerStyle={{ padding: normalize(14) }}
         data={comments}

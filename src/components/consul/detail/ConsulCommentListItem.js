@@ -18,17 +18,15 @@ import {
   DELETE_COMMENT
 } from '../../../queries/Consul';
 
-const text = texts.consul;
-
 const deleteCommentAlert = (onDelete) =>
-  Alert.alert(text.loginAllFieldsRequiredTitle, text.commentDeleteAlertBody, [
+  Alert.alert(texts.consul.loginAllFieldsRequiredTitle, texts.consul.commentDeleteAlertBody, [
     {
-      text: text.abort,
+      text: texts.consul.abort,
       onPress: () => null,
       style: 'cancel'
     },
     {
-      text: text.delete,
+      text: texts.consul.delete,
       onPress: () => onDelete(),
       style: 'destructive'
     }
@@ -105,10 +103,8 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList }) => 
 
       <RegularText>{body}</RegularText>
 
-      {/* Below Comment! */}
       <View style={styles.bottomContainer}>
         <View style={styles.bottomLine}>
-          {/* Reply Section */}
           {responses && responses.length > 0 ? (
             responseShow ? (
               <Icon.ArrowUp size={normalize(16)} color={colors.primary} />
@@ -120,24 +116,23 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList }) => 
             {responses && responses.length > 0 ? (
               <Touchable onPress={() => setResponseShow(!responseShow)}>
                 <RegularText primary smallest>
-                  {responses.length} {responseShow ? text.answer : text.return}
-                  {responseShow ? ` (${text.collapse})` : ` (${text.show})`}
+                  {responses.length} {responseShow ? texts.consul.answer : texts.consul.return}
+                  {responseShow ? ` (${texts.consul.collapse})` : ` (${texts.consul.show})`}
                 </RegularText>
               </Touchable>
             ) : (
-              <RegularText smallest>{text.noReturn}</RegularText>
+              <RegularText smallest>{texts.consul.noReturn}</RegularText>
             )}
           </>
 
           <Space />
 
-          {/* Delete Button */}
           {commentUserId === userId && (
             <>
               <Touchable onPress={() => deleteCommentAlert(onDelete)} style={styles.deleteButton}>
                 <Icon.Trash size={normalize(12)} color={colors.error} />
                 <RegularText error smallest>
-                  {` ${text.delete}`}
+                  {` ${texts.consul.delete}`}
                 </RegularText>
               </Touchable>
 
@@ -145,26 +140,23 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList }) => 
             </>
           )}
 
-          {/* Reply Button! */}
           <Touchable onPress={() => setReply(!reply)}>
             <RegularText primary smallest>
-              {text.answer}
+              {texts.consul.answer}
             </RegularText>
           </Touchable>
         </View>
 
         <View style={styles.bottomLine}>
-          {/* Vote for Commit! */}
           <WrapperRow>
             {cachedVotesTotal > 0 ? (
               <RegularText smallest>
-                {cachedVotesTotal} {text.votes}
+                {cachedVotesTotal} {texts.consul.votes}
               </RegularText>
             ) : (
-              <RegularText smallest>{text.noVotes}</RegularText>
+              <RegularText smallest>{texts.consul.noVotes}</RegularText>
             )}
 
-            {/* Comment like disslike buttons */}
             <LikeDissLikeIcon
               color={
                 votesFor.nodes[0]?.voteFlag !== undefined && votesFor.nodes[0]?.voteFlag
@@ -190,7 +182,6 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList }) => 
         </View>
       </View>
 
-      {/* Reply List! */}
       {responseShow && responses && responses.length
         ? responses.map((item, index) => (
             <View key={index} style={styles.replyContainer}>
@@ -204,23 +195,24 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList }) => 
           ))
         : null}
 
-      {/* New Reply Comment Input! */}
       {reply ? (
         <>
           <Input
             multiline
             minHeight={50}
             name="comment"
-            label={text.commentLabel}
-            placeholder={text.comment}
+            label={texts.consul.commentLabel}
+            placeholder={texts.consul.comment}
             autoCapitalize="none"
-            rules={{ required: text.commentEmptyError }}
+            rules={{ required: texts.consul.commentEmptyError }}
             control={control}
           />
           <WrapperVertical>
             <Button
               onPress={handleSubmit(onSubmit)}
-              title={loading ? text.submittingCommentButton : text.commentAnswerButton}
+              title={
+                loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
+              }
               disabled={loading}
             />
           </WrapperVertical>

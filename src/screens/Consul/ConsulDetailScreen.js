@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState, useCallback } from 'react';
-import { Text, RefreshControl, ScrollView } from 'react-native';
+import { Alert, RefreshControl, ScrollView } from 'react-native';
 
 import {
   LoadingSpinner,
@@ -13,7 +13,8 @@ import {
 } from '../../components';
 import { useConsulData } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
-import { colors } from '../../config';
+import { colors, texts } from '../../config';
+import { ScreenName } from '../../types';
 
 const getComponent = (query) => {
   const COMPONENTS = {
@@ -25,6 +26,14 @@ const getComponent = (query) => {
 
   return COMPONENTS[query];
 };
+
+const showRegistrationFailAlert = (navigation) =>
+  Alert.alert(texts.consul.serverErrorAlertTitle, texts.consul.serverErrorAlertBody, [
+    {
+      text: texts.consul.tryAgain,
+      onPress: () => navigation?.navigate(ScreenName.ConsulHomeScreen)
+    }
+  ]);
 
 export const ConsulDetailScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -49,8 +58,7 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
 
   if (isLoading) return <LoadingSpinner loading />;
 
-  // TODO: If Error true return error component
-  if (isError) return <Text>{isError.message}</Text>;
+  if (isError) return showRegistrationFailAlert(navigation);
 
   if (!data || !Component) return null;
 

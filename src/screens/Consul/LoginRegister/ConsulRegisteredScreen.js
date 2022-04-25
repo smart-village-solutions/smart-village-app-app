@@ -15,8 +15,6 @@ import { texts } from '../../../config';
 import { usePullToRefetch, useStaticContent } from '../../../hooks';
 import { ScreenName } from '../../../types';
 
-const text = texts.consul;
-
 export const ConsulRegisteredScreen = ({ navigation }) => {
   const { data: registeredHtml = '', error, loading, refetch } = useStaticContent({
     type: 'html',
@@ -33,7 +31,7 @@ export const ConsulRegisteredScreen = ({ navigation }) => {
     return (
       <SafeAreaViewFlex>
         <Wrapper>
-          <RegularText>{text.errorLoadingUser}</RegularText>
+          <RegularText>{texts.consul.errorLoadingUser}</RegularText>
         </Wrapper>
       </SafeAreaViewFlex>
     );
@@ -49,7 +47,7 @@ export const ConsulRegisteredScreen = ({ navigation }) => {
           <Wrapper>
             <Button
               invert
-              title={text.ok}
+              title={texts.consul.ok}
               onPress={() => navigation.navigate(ScreenName.ConsulLoginScreen)}
             />
           </Wrapper>

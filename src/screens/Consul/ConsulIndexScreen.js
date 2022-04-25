@@ -18,20 +18,18 @@ import { QUERY_TYPES } from '../../queries';
 import { IndexFilterWrapperAndList } from '../../components';
 import { ScreenName } from '../../types';
 
-const text = texts.consul.sorting;
-
 const { MOSTACTIVE, HIGHESTRATED, NEWESTDATE } = QUERY_TYPES.CONSUL.SORTING;
 const { CURRENT, EXPIRED } = QUERY_TYPES.CONSUL.FILTER;
 
 const INITIAL_TOP_SORTING = [
-  { id: MOSTACTIVE, title: text.mostActive, selected: true },
-  { id: HIGHESTRATED, title: text.highestRated, selected: false },
-  { id: NEWESTDATE, title: text.newest, selected: false }
+  { id: MOSTACTIVE, title: texts.consul.sorting.mostActive, selected: true },
+  { id: HIGHESTRATED, title: texts.consul.sorting.highestRated, selected: false },
+  { id: NEWESTDATE, title: texts.consul.sorting.newest, selected: false }
 ];
 
 const INITIAL_TOP_FILTERING_FOR_POLLS = [
-  { id: CURRENT, title: text.current, selected: true },
-  { id: EXPIRED, title: text.expired, selected: false }
+  { id: CURRENT, title: texts.consul.filter.current, selected: true },
+  { id: EXPIRED, title: texts.consul.filter.expired, selected: false }
 ];
 
 const getComponent = (query) => {
@@ -62,7 +60,6 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
   const extraQuery = route.params?.extraQuery ?? '';
 
-  //GraphQL
   const { data, refetch, isLoading, isError } = useConsulData({
     query,
     queryVariables

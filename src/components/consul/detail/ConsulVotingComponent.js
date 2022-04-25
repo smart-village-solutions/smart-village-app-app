@@ -11,7 +11,6 @@ import { Touchable } from '../../Touchable';
 import { ConsulClient } from '../../../ConsulClient';
 import { CAST_VOTE_ON_DEBATE } from '../../../queries/Consul';
 
-const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 export const ConsulVotingComponent = ({ votesData, onRefresh, id }) => {
@@ -39,7 +38,9 @@ export const ConsulVotingComponent = ({ votesData, onRefresh, id }) => {
   return (
     <>
       <TitleContainer>
-        <Title accessibilityLabel={`(${text.supports}) ${a11yText.heading}`}>{text.supports}</Title>
+        <Title accessibilityLabel={`(${texts.consul.supports}) ${a11yText.heading}`}>
+          {texts.consul.supports}
+        </Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
 
@@ -67,10 +68,10 @@ export const ConsulVotingComponent = ({ votesData, onRefresh, id }) => {
 
           {cachedVotesTotal > 0 ? (
             <RegularText small>
-              {cachedVotesTotal} {text.votes}
+              {cachedVotesTotal} {texts.consul.votes}
             </RegularText>
           ) : (
-            <RegularText small>{text.noVotes}</RegularText>
+            <RegularText small>{texts.consul.noVotes}</RegularText>
           )}
         </WrapperRow>
       </Wrapper>

@@ -4,7 +4,6 @@ import React from 'react';
 import { Wrapper } from '../../../Wrapper';
 import { ConsulCommentListItem } from '../../../Consul/detail/ConsulCommentListItem';
 
-/* NOTE: we need to check a lot for presence, so this is that complex */
 export const UserCommentDetail = ({ listData, onRefresh }) => {
   return (
     <Wrapper>

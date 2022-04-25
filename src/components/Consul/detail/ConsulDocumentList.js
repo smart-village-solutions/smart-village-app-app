@@ -8,15 +8,14 @@ import { device, texts, consts } from '../../../config';
 
 import { ConsulDocumentListItem } from './ConsulDocumentListItem';
 
-const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 export const ConsulDocumentList = (documents) => {
   return (
     <>
       <TitleContainer>
-        <Title accessibilityLabel={`(${text.documents}) ${a11yText.heading}`}>
-          {text.documents}
+        <Title accessibilityLabel={`(${texts.consul.documents}) ${a11yText.heading}`}>
+          {texts.consul.documents}
         </Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}

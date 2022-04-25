@@ -7,8 +7,6 @@ import { RegularText } from '../../Text';
 import { momentFormatUtcToLocal } from '../../../helpers';
 import { Touchable } from '../../Touchable';
 
-const text = texts.consul;
-
 export const ConsulPublicAuthorComponent = ({ authorData, onPress }) => {
   const { publicAuthor, commentsCount, publicCreatedAt, userId } = authorData;
 
@@ -25,14 +23,15 @@ export const ConsulPublicAuthorComponent = ({ authorData, onPress }) => {
         )}
 
         <RegularText smallest>
-          {commentsCount} {commentsCount > 1 || commentsCount === 0 ? text.comments : text.comment}
+          {commentsCount}{' '}
+          {commentsCount > 1 || commentsCount === 0 ? texts.consul.comments : texts.consul.comment}
         </RegularText>
         {publicAuthor && publicAuthor.id === userId && (
           <>
             <RegularText> · </RegularText>
             <Touchable onPress={onPress}>
               <RegularText primary smallest>
-                {text.startNew.updateButtonLabel}
+                {texts.consul.startNew.updateButtonLabel}
               </RegularText>
             </Touchable>
           </>

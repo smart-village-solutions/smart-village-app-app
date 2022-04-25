@@ -6,8 +6,6 @@ import { ListComponent } from '../../../ListComponent';
 import { QUERY_TYPES } from '../../../../queries';
 import { texts } from '../../../../config';
 
-const text = texts.consul;
-
 export const Proposals = ({ navigation, query, listData, refreshControl, myContent }) => {
   return (
     <>
@@ -21,10 +19,10 @@ export const Proposals = ({ navigation, query, listData, refreshControl, myConte
 
       {!myContent && (
         <ConsulStartNewButton
-          title={text.startNew.newProposalStartButtonLabel}
+          title={texts.consul.startNew.newProposalStartButtonLabel}
           query={QUERY_TYPES.CONSUL.START_PROPOSAL}
           navigation={navigation}
-          buttonTitle={text.startNew.newProposalStartButtonLabel}
+          buttonTitle={texts.consul.startNew.newProposalStartButtonLabel}
         />
       )}
     </>

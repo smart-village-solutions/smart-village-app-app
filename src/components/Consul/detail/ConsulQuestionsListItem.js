@@ -12,9 +12,9 @@ import { Touchable } from '../../Touchable';
 
 export const ConsulQuestionsListItem = ({ questionItem, onRefresh, token, disabled }) => {
   const [loading, setLoading] = useState(false);
+
   const { questionAnswers, title, answersGivenByCurrentUser, id } = questionItem;
 
-  // GraphQL
   const [provideAnswerToPollQuestion] = useMutation(PROVIDE_ANSWER_TO_POLL_QUESTION, {
     client: ConsulClient
   });

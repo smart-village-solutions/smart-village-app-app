@@ -32,7 +32,6 @@ import { Image } from '../../../Image';
 import { ConsulDocumentList } from '../../../Consul/detail/ConsulDocumentList';
 import { ScreenName } from '../../../../types';
 
-const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
@@ -112,9 +111,9 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
       <WrapperWithOrientation>
         {!published && (
           <Wrapper>
-            <BoldText>{text.publishProposalBold}</BoldText>
-            <RegularText>{text.publishProposalRegular}</RegularText>
-            <Button title={text.publishProposalButton} onPress={() => proposalShare()} />
+            <BoldText>{texts.consul.publishProposalBold}</BoldText>
+            <RegularText>{texts.consul.publishProposalRegular}</RegularText>
+            <Button title={texts.consul.publishProposalButton} onPress={() => proposalShare()} />
           </Wrapper>
         )}
 
@@ -131,7 +130,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
           <ConsulPublicAuthorComponent
             onPress={() => {
               navigation.navigate(ScreenName.ConsulStartNewScreen, {
-                title: text.startNew.updateButtonLabel,
+                title: texts.consul.startNew.updateButtonLabel,
                 query: QUERY_TYPES.CONSUL.UPDATE_PROPOSAL,
                 data: {
                   title: title,
@@ -172,8 +171,8 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
         {!!latitude && !!longitude && (
           <>
             <TitleContainer>
-              <Title accessibilityLabel={`(${text.locationTitle}) ${a11yText.heading}`}>
-                {text.locationTitle}
+              <Title accessibilityLabel={`(${texts.consul.locationTitle}) ${a11yText.heading}`}>
+                {texts.consul.locationTitle}
               </Title>
             </TitleContainer>
             <WebViewMap
@@ -219,17 +218,19 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
             multiline
             minHeight={50}
             name="comment"
-            label={text.commentLabel}
-            placeholder={text.comment}
+            label={texts.consul.commentLabel}
+            placeholder={texts.consul.comment}
             autoCapitalize="none"
-            rules={{ required: text.commentEmptyError }}
+            rules={{ required: texts.consul.commentEmptyError }}
             control={control}
           />
         </Wrapper>
         <Wrapper>
           <Button
             onPress={handleSubmit(onSubmit)}
-            title={loading ? text.submittingCommentButton : text.commentAnswerButton}
+            title={
+              loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
+            }
             disabled={loading}
           />
         </Wrapper>

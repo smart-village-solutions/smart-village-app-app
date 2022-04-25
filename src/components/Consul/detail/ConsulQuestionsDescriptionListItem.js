@@ -11,6 +11,7 @@ export const ConsulQuestionsDescriptionListItem = ({ questionDescriptionItem }) 
   const { questionAnswers, title } = questionDescriptionItem;
 
   const openWebScreen = useOpenWebScreen(undefined);
+
   return (
     <>
       <BoldText>- {title}</BoldText>

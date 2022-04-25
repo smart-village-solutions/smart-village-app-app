@@ -18,8 +18,6 @@ import { RegularText } from '../../../Text';
 import { Label } from '../../../Label';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 
-const text = texts.consul.startNew;
-
 const TagCategories = [
   { name: 'Associations', id: 0, selected: false },
   { name: 'Culture', id: 1, selected: false },
@@ -230,9 +228,9 @@ export const NewProposal = ({ navigation, data, query }) => {
 
         <WrapperHorizontal>
           <Checkbox
-            title={text.termsOfServiceLabel}
+            title={texts.consul.startNew.termsOfServiceLabel}
             link={'https://beteiligung.bad-belzig.de/conditions'}
-            linkDescription={text.termsOfServiceLinkLabel}
+            linkDescription={texts.consul.startNew.termsOfServiceLinkLabel}
             checkedIcon="check-square-o"
             uncheckedIcon="square-o"
             checked={termsOfService}
@@ -245,8 +243,8 @@ export const NewProposal = ({ navigation, data, query }) => {
             onPress={handleSubmit(onSubmit)}
             title={
               query === QUERY_TYPES.CONSUL.START_PROPOSAL
-                ? text.newProposalStartButtonLabel
-                : text.updateButtonLabel
+                ? texts.consul.startNew.newProposalStartButtonLabel
+                : texts.consul.startNew.updateButtonLabel
             }
           />
         </Wrapper>
@@ -279,57 +277,57 @@ const Inputs = [
   {
     type: 'input',
     name: 'title',
-    label: text.newProposalTitleLabel,
-    placeholder: text.newProposalTitleLabel,
+    label: texts.consul.startNew.newProposalTitleLabel,
+    placeholder: texts.consul.startNew.newProposalTitleLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: text.leerError,
-      minLength: { value: 4, message: text.titleShortError }
+      required: texts.consul.startNew.leerError,
+      minLength: { value: 4, message: texts.consul.startNew.titleShortError }
     }
   },
   {
     type: 'input',
     name: 'summary',
     multiline: true,
-    label: text.newProposalSummaryLabel,
-    placeholder: text.newProposalSummaryLabel,
+    label: texts.consul.startNew.newProposalSummaryLabel,
+    placeholder: texts.consul.startNew.newProposalSummaryLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: text.leerError,
-      maxLength: { value: 200, message: text.proposalSummaryInfo }
+      required: texts.consul.startNew.leerError,
+      maxLength: { value: 200, message: texts.consul.startNew.proposalSummaryInfo }
     }
   },
   {
     type: 'infoText',
-    title: text.proposalSummaryInfo
+    title: texts.consul.startNew.proposalSummaryInfo
   },
   {
     type: 'input',
     name: 'description',
     multiline: true,
-    label: text.newProposalDescriptionLabel,
-    placeholder: text.newProposalDescriptionLabel,
+    label: texts.consul.startNew.newProposalDescriptionLabel,
+    placeholder: texts.consul.startNew.newProposalDescriptionLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     minHeight: 150,
     rules: {
-      required: text.leerError,
-      minLength: { value: 10, message: text.descriptionShortError }
+      required: texts.consul.startNew.leerError,
+      minLength: { value: 10, message: texts.consul.startNew.descriptionShortError }
     }
   },
   {
     type: 'input',
     name: 'videoUrl',
-    label: text.newProposalExternesVideoUrlLabel,
-    placeholder: text.newProposalExternesVideoUrlLabel,
+    label: texts.consul.startNew.newProposalExternesVideoUrlLabel,
+    placeholder: texts.consul.startNew.newProposalExternesVideoUrlLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
@@ -338,28 +336,28 @@ const Inputs = [
   },
   {
     type: 'infoText',
-    title: text.proposalVideoUrlInfo
+    title: texts.consul.startNew.proposalVideoUrlInfo
   },
   {
     type: 'title',
-    title: text.tags
+    title: texts.consul.startNew.tags
   },
   {
     type: 'infoText',
-    title: text.proposalTagInfo
+    title: texts.consul.startNew.proposalTagInfo
   },
 
   {
     type: 'category',
-    title: text.categoriesTitle,
+    title: texts.consul.startNew.categoriesTitle,
     category: TagCategories
   },
   {
     type: 'input',
     name: 'tagList',
     multiline: true,
-    label: text.newProposalTagLabel,
-    placeholder: text.tags,
+    label: texts.consul.startNew.newProposalTagLabel,
+    placeholder: texts.consul.startNew.tags,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',

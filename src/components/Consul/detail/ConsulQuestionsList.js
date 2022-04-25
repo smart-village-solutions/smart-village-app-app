@@ -13,6 +13,7 @@ const text = texts.consul;
 
 export const ConsulQuestionsList = ({ data, onRefresh, token, disabled }) => {
   const [userAnswer, setAnswerUser] = useState(false);
+
   useEffect(() => {
     for (let i = 0; i < data.length; i++) {
       const element = data[i];

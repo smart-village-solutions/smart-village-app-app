@@ -12,17 +12,15 @@ import { setConsulAuthToken, setConsulUser } from '../../../helpers';
 import { texts } from '../../../config';
 import { useOpenWebScreen } from '../../../hooks';
 
-const text = texts.consul;
-
 const logOutAlert = (onLogout) =>
-  Alert.alert(text.loginAllFieldsRequiredTitle, text.logoutAlertBody, [
+  Alert.alert(texts.consul.loginAllFieldsRequiredTitle, texts.consul.logoutAlertBody, [
     {
-      text: text.abort,
+      text: texts.consul.abort,
       onPress: () => null,
       style: 'cancel'
     },
     {
-      text: text.homeScreen.logout,
+      text: texts.consul.homeScreen.logout,
       onPress: () => onLogout(),
       style: 'destructive'
     }

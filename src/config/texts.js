@@ -175,11 +175,13 @@ export const texts = {
       voting: 'Abstimmung'
     },
     sorting: {
-      current: 'Offen',
-      expired: 'Abgelaufen',
       highestRated: 'Am besten bewertet',
       mostActive: 'Aktivste',
       newest: 'Neuste'
+    },
+    filter: {
+      current: 'Offen',
+      expired: 'Abgelaufen'
     }
   },
   dataProvider: {

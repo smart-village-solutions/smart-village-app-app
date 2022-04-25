@@ -23,7 +23,6 @@ import { QUERY_TYPES } from '../../../../queries';
 import { getConsulUser } from '../../../../helpers';
 import { ScreenName } from '../../../../types';
 
-const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
@@ -54,7 +53,6 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
   );
 
   useEffect(() => {
-    // GET User ID
     getConsulUser().then((val) => {
       if (val) return setUserId(JSON.parse(val).id);
     });
@@ -93,7 +91,7 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
           <ConsulPublicAuthorComponent
             onPress={() => {
               navigation.navigate(ScreenName.ConsulStartNewScreen, {
-                title: text.startNew.updateButtonLabel,
+                title: texts.consul.startNew.updateButtonLabel,
                 query: QUERY_TYPES.CONSUL.UPDATE_DEBATE,
                 data: {
                   title: title,
@@ -146,16 +144,18 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
             multiline
             minHeight={50}
             name="comment"
-            label={text.commentLabel}
-            placeholder={text.comment}
+            label={texts.consul.commentLabel}
+            placeholder={texts.consul.comment}
             autoCapitalize="none"
-            rules={{ required: text.commentEmptyError }}
+            rules={{ required: texts.consul.commentEmptyError }}
             control={control}
           />
           <WrapperVertical>
             <Button
               onPress={handleSubmit(onSubmit)}
-              title={loading ? text.submittingCommentButton : text.commentAnswerButton}
+              title={
+                loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
+              }
               disabled={loading}
             />
           </WrapperVertical>

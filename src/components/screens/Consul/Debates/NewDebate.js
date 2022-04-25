@@ -16,8 +16,6 @@ import { ScreenName } from '../../../../types';
 import { QUERY_TYPES } from '../../../../queries';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 
-const text = texts.consul.startNew;
-
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 const graphqlErr = (err) => Alert.alert('Hinweis', err);
@@ -55,6 +53,7 @@ export const NewDebate = ({ navigation, data, query }) => {
     };
 
     if (!termsOfService) return showRegistrationFailAlert();
+
     switch (query) {
       case QUERY_TYPES.CONSUL.START_DEBATE:
         setStartLoading(true);
@@ -111,9 +110,9 @@ export const NewDebate = ({ navigation, data, query }) => {
 
         <WrapperHorizontal>
           <Checkbox
-            title={text.termsOfServiceLabel}
+            title={texts.consul.startNew.termsOfServiceLabel}
             link={'https://beteiligung.bad-belzig.de/conditions'}
-            linkDescription={text.termsOfServiceLinkLabel}
+            linkDescription={texts.consul.startNew.termsOfServiceLinkLabel}
             checkedIcon="check-square-o"
             uncheckedIcon="square-o"
             checked={termsOfService}
@@ -126,8 +125,8 @@ export const NewDebate = ({ navigation, data, query }) => {
             onPress={handleSubmit(onSubmit)}
             title={
               query === QUERY_TYPES.CONSUL.START_DEBATE
-                ? text.newDebateStartButtonLabel
-                : text.updateButtonLabel
+                ? texts.consul.startNew.newDebateStartButtonLabel
+                : texts.consul.startNew.updateButtonLabel
             }
           />
         </Wrapper>
@@ -148,14 +147,14 @@ NewDebate.propTypes = {
 const Inputs = [
   {
     name: 'title',
-    label: text.newDebateTitleLabel,
-    placeholder: text.newDebateTitleLabel,
+    label: texts.consul.startNew.newDebateTitleLabel,
+    placeholder: texts.consul.startNew.newDebateTitleLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: text.emailError,
+      required: texts.consul.startNew.emailError,
       minLength: { value: 4, message: 'ist zu kurz (minimum 4 Zeichen)' }
     }
   },
@@ -163,22 +162,22 @@ const Inputs = [
     name: 'description',
     multiline: true,
     minHeight: 150,
-    label: text.newDebateDescriptionLabel,
-    placeholder: text.newDebateDescriptionLabel,
+    label: texts.consul.startNew.newDebateDescriptionLabel,
+    placeholder: texts.consul.startNew.newDebateDescriptionLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: text.emailError,
+      required: texts.consul.startNew.emailError,
       minLength: { value: 10, message: 'ist zu kurz (minimum 10 Zeichen)' }
     }
   },
   {
     name: 'tagList',
     multiline: true,
-    label: text.tags,
-    placeholder: text.newDebateTagLabel,
+    label: texts.consul.startNew.tags,
+    placeholder: texts.consul.startNew.newDebateTagLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',

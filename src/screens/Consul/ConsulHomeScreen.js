@@ -14,7 +14,6 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
   const { refresh: refreshUser, isLoading, isError, isLoggedIn } = useConsulUser();
 
   const userID = useCallback(() => {
-    //Get User id and set for homeData query variables
     getConsulUser().then((val) => {
       if (val) return setUserId(JSON.parse(val).id);
     });

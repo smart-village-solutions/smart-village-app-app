@@ -25,17 +25,15 @@ import { setConsulAuthToken, setConsulUser } from '../../../helpers';
 import { ScreenName } from '../../../types';
 
 const { a11yLabel } = consts;
-const text = texts.consul;
 
-// Alert
-
-const showLoginFailAlert = () => Alert.alert(text.loginFailedTitle, text.loginFailedBody);
+const showLoginFailAlert = () =>
+  Alert.alert(texts.consul.loginFailedTitle, texts.consul.loginFailedBody);
 const showResetPasswordFailAlert = () =>
-  Alert.alert(text.resetPasswordFailedTitle, text.resetPasswordFailedBody);
+  Alert.alert(texts.consul.resetPasswordFailedTitle, texts.consul.resetPasswordFailedBody);
 const showResetPasswordSuccessAlert = () =>
-  Alert.alert(text.resetPasswordSuccessTitle, text.resetPasswordSuccessBody);
+  Alert.alert(texts.consul.resetPasswordSuccessTitle, texts.consul.resetPasswordSuccessBody);
 const showResetPasswordEmptyMailAlert = () =>
-  Alert.alert(text.resetPasswordFailedTitle, text.resetPasswordEmptyEmailBody);
+  Alert.alert(texts.consul.resetPasswordFailedTitle, texts.consul.resetPasswordEmptyEmailBody);
 
 export const ConsulLoginScreen = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
@@ -86,62 +84,71 @@ export const ConsulLoginScreen = ({ navigation }) => {
         <ScrollView keyboardShouldPersistTaps="handled">
           <WrapperWithOrientation>
             <TitleContainer>
-              <Title big center accessibilityLabel={`${text.loginTitle} ${a11yLabel.heading}`}>
-                {text.loginTitle}
+              <Title
+                big
+                center
+                accessibilityLabel={`${texts.consul.loginTitle} ${a11yLabel.heading}`}
+              >
+                {texts.consul.loginTitle}
               </Title>
             </TitleContainer>
+
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="email"
-                label={text.usernameOrEmail}
-                placeholder={text.usernameOrEmail}
+                label={texts.consul.usernameOrEmail}
+                placeholder={texts.consul.usernameOrEmail}
                 keyboardType="email-address"
                 textContentType="emailAddress"
                 autoCompleteType="email"
                 autoCapitalize="none"
-                rules={{ required: text.emailError }}
+                rules={{ required: texts.consul.emailError }}
                 control={control}
               />
             </Wrapper>
+
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="password"
-                label={text.password}
-                placeholder={text.password}
+                label={texts.consul.password}
+                placeholder={texts.consul.password}
                 textContentType="password"
                 autoCompleteType="password"
                 secureTextEntry={secureTextEntry}
                 rightIcon={rightIcon(secureTextEntry, setSecureTextEntry)}
                 rules={{
-                  required: text.passwordError,
-                  minLength: { value: 8, message: text.passwordLengthError }
+                  required: texts.consul.passwordError,
+                  minLength: { value: 8, message: texts.consul.passwordLengthError }
                 }}
                 control={control}
               />
             </Wrapper>
+
             <Wrapper>
               <Touchable
                 onPress={() => sendPasswordReset(control._fields.email._f.value)}
                 accessibilityLabel={`${a11yLabel.privacy} ${a11yLabel.button}`}
               >
                 <RegularText small underline>
-                  {text.passwordForgotten}
+                  {texts.consul.passwordForgotten}
                 </RegularText>
               </Touchable>
             </Wrapper>
+
             <Wrapper>
               <Button
                 onPress={handleSubmit(onSubmit)}
-                title={text.login}
+                title={texts.consul.login}
                 disabled={registrationLoading}
               />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
-                  {text.abort.toUpperCase()}
+                  {texts.consul.abort.toUpperCase()}
                 </BoldText>
               </Touchable>
             </Wrapper>
           </WrapperWithOrientation>
+
           <LoadingModal loading={registrationLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
