@@ -20,7 +20,6 @@ export const ConsulDocumentList = (documents) => {
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
 
-      {/* Document List! */}
       <FlatList
         contentContainerStyle={{ padding: normalize(14) }}
         data={documents.documents}

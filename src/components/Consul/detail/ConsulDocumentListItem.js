@@ -12,14 +12,13 @@ import { Button } from '../../Button';
 export const ConsulDocumentListItem = ({ documentItem }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
-  const { url } = documentItem;
+  const { url, title } = documentItem;
 
   return (
     <>
       <View style={styles.container}>
         <View>
-          {/* TODO: Name Change!!! */}
-          <RegularText>sample.pdf</RegularText>
+          <RegularText>{title}</RegularText>
           <RegularText smallest>PDF</RegularText>
         </View>
 
