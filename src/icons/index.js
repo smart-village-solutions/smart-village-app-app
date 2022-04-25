@@ -14,6 +14,7 @@ export * from './heartFilled';
 export * from './home';
 export * from './info';
 export * from './link';
+export * from './like';
 export * from './lunch';
 export * from './location';
 export * from './mail';

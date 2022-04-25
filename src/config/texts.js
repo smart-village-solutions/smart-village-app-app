@@ -98,6 +98,31 @@ export const texts = {
     resetPasswordSuccessTitle: 'Erfolgreich',
     resetPasswordSuccessBody:
       'Sie erhalten in wenigen Minuten eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts.',
+    comment: 'Kommentar',
+    comments: 'Kommentare',
+    tags: 'Stichworte',
+    supports: 'Unterstützer*innen',
+    show: 'Anzeigen',
+    collapse: 'Kollaps',
+    return: 'Rückmeldung',
+    noReturn: 'Keine Rückmeldung',
+    votes: 'Stimmen',
+    noVoting: 'Keine Bewertung',
+    noVotes: 'Keine Bewertungen',
+    commentLabel: 'Schreiben Sie einen Kommentar',
+    commentEmptyError: 'Sie können keine leeren Kommentare posten.',
+    commentAnswerButton: 'Antwort Veröffentlichen',
+    submittingCommentButton: 'Kommentar abgeben',
+    answer: 'Antwort',
+    startNew: {
+      newDebateTitleLabel: 'Title der Diskussion',
+      newDebateDescriptionLabel: 'Initialer Debattenbeitrag',
+      newDebateTagLabel: 'Trennen Sie die Tags mit einem Komma (,)',
+      termsOfServiceLabel:
+        'Ich stimme der Datenschutzbestimmungen und den Allgemeine Nutzungsbedingungen zu',
+      newDebateStartButtonLabel: 'Eine Diskussion starten',
+      updateButtonLabel: 'Bearbeiten'
+    },
     homeScreen: {
       account: 'Konto',
       general: 'Allgemein',
@@ -107,6 +132,11 @@ export const texts = {
       personal: 'Persönlich',
       settings: 'Einstellungen',
       logout: 'Ausloggen'
+    },
+    sorting: {
+      mostActive: 'aktivste',
+      newest: 'neuste',
+      highestRated: 'am besten bewertet'
     }
   },
   dataProvider: {

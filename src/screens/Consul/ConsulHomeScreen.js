@@ -1,12 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect, useCallback } from 'react';
-import { RefreshControl, ScrollView } from 'react-native';
+import { RefreshControl, ScrollView, Text } from 'react-native';
 
-import { LoadingSpinner, SafeAreaViewFlex, ConsulWelcome } from '../../../components';
-import { colors } from '../../../config';
-import { useConsulUser } from '../../../hooks/Consul/useConsulUser';
-import { homeData } from '../../../helpers';
-import { ConsulListComponent } from '../../../components';
+import { LoadingSpinner, SafeAreaViewFlex, ConsulWelcome, Touchable } from '../../components';
+import { colors } from '../../config';
+import { useConsulUser } from '../../hooks';
+import { homeData, setConsulAuthToken } from '../../helpers';
+import { ConsulListComponent } from '../../components';
+import { ScreenName } from '../../types';
 
 export const ConsulHomeScreen = ({ navigation, route }) => {
   // useState
@@ -50,7 +51,7 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
         }
       >
         <ConsulListComponent data={homeData} navigation={navigation} />
-        {/* <Touchable
+        <Touchable
           onPress={async () => {
             await setConsulAuthToken();
             navigation?.navigate(ScreenName.ConsulHomeScreen, {
@@ -59,7 +60,7 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
           }}
         >
           <Text>LogOut</Text>
-        </Touchable> */}
+        </Touchable>
       </ScrollView>
     </SafeAreaViewFlex>
   );

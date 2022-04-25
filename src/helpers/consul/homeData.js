@@ -1,7 +1,8 @@
 import { ScreenName } from '../../types';
-// import { QUERY_TYPES } from '../../queries';
+import { QUERY_TYPES } from '../../queries';
 import { texts } from '../../config';
 
+const query = QUERY_TYPES.CONSUL;
 const text = texts.consul.homeScreen;
 
 export const homeData = [
@@ -9,10 +10,10 @@ export const homeData = [
     title: text.general,
     data: [
       {
-        routeName: ScreenName.ConsulDebatesHomeScreen,
+        routeName: ScreenName.ConsulIndexScreen,
         params: {
           title: text.debates,
-          query: null,
+          query: query.DEBATES,
           queryVariables: { limit: 15, order: 'name_ASC', category: text.debates },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
@@ -20,7 +21,7 @@ export const homeData = [
         title: text.debates
       },
       {
-        routeName: ScreenName.ConsulProposalsHomeScreen,
+        routeName: ScreenName.ConsulIndexScreen,
         params: {
           title: text.proposals,
           query: null,
@@ -31,7 +32,7 @@ export const homeData = [
         title: text.proposals
       },
       {
-        routeName: ScreenName.ConsulVotingHomeScreen,
+        routeName: ScreenName.ConsulIndexScreen,
         params: {
           title: text.voting,
           query: null,
