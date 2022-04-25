@@ -7,7 +7,7 @@ import { consul } from './config';
 import { getConsulAuthToken } from './helpers';
 
 const httpLink = createHttpLink({
-  uri: consul
+  uri: consul.serverUrl + consul.graphqlEndpoint
 });
 
 const authLink = setContext(async () => {

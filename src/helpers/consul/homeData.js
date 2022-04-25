@@ -1,106 +1,112 @@
 import { ScreenName } from '../../types';
 import { QUERY_TYPES } from '../../queries';
 import { texts } from '../../config';
-
-const query = QUERY_TYPES.CONSUL;
-const text = texts.consul.homeScreen;
+import { consul } from '../../config';
 
 export const homeData = (id) => [
   {
-    title: text.general,
+    title: texts.consul.homeScreen.general,
     data: [
       {
         routeName: ScreenName.ConsulIndexScreen,
         params: {
-          title: text.debates,
-          query: query.DEBATES,
-          queryVariables: { limit: 15, order: 'name_ASC', category: text.debates },
+          title: texts.consul.homeScreen.debates,
+          query: QUERY_TYPES.CONSUL.DEBATES,
+          queryVariables: {
+            limit: 15,
+            order: 'name_ASC',
+            category: texts.consul.homeScreen.debates
+          },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        title: text.debates
+        title: texts.consul.homeScreen.debates
       },
       {
         routeName: ScreenName.ConsulIndexScreen,
         params: {
-          title: text.proposals,
-          query: query.PROPOSALS,
-          queryVariables: { limit: 15, order: 'name_ASC', category: text.proposals },
+          title: texts.consul.homeScreen.proposals,
+          query: QUERY_TYPES.CONSUL.PROPOSALS,
+          queryVariables: {
+            limit: 15,
+            order: 'name_ASC',
+            category: texts.consul.homeScreen.proposals
+          },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        title: text.proposals
+        title: texts.consul.homeScreen.proposals
       },
       {
         routeName: ScreenName.ConsulIndexScreen,
         params: {
-          title: text.voting,
-          query: query.POLLS,
+          title: texts.consul.homeScreen.voting,
+          query: QUERY_TYPES.CONSUL.POLLS,
           queryVariables: { filter: 'current' },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        title: text.voting
+        title: texts.consul.homeScreen.voting
       }
     ]
   },
   {
-    title: text.personal,
+    title: texts.consul.homeScreen.personal,
     data: [
       {
         routeName: ScreenName.ConsulIndexScreen,
         params: {
-          title: text.myDebates,
-          query: query.USER,
-          extraQuery: query.PUBLIC_DEBATES,
+          title: texts.consul.homeScreen.myDebates,
+          query: QUERY_TYPES.CONSUL.USER,
+          extraQuery: QUERY_TYPES.CONSUL.PUBLIC_DEBATES,
           queryVariables: { id: id },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        title: text.myDebates
+        title: texts.consul.homeScreen.myDebates
       },
       {
         routeName: ScreenName.ConsulIndexScreen,
         params: {
-          title: text.myProposals,
-          query: query.USER,
-          extraQuery: query.PUBLIC_PROPOSALS,
+          title: texts.consul.homeScreen.myProposals,
+          query: QUERY_TYPES.CONSUL.USER,
+          extraQuery: QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS,
           queryVariables: { id: id },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        title: text.myProposals
+        title: texts.consul.homeScreen.myProposals
       },
       {
         routeName: ScreenName.ConsulIndexScreen,
         params: {
-          title: text.myComments,
-          query: query.USER,
-          extraQuery: query.PUBLIC_COMMENTS,
+          title: texts.consul.homeScreen.myComments,
+          query: QUERY_TYPES.CONSUL.USER,
+          extraQuery: QUERY_TYPES.CONSUL.PUBLIC_COMMENTS,
           queryVariables: { id: id },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        title: text.myComments
+        title: texts.consul.homeScreen.myComments
       }
     ]
   },
   {
-    title: text.account,
+    title: texts.consul.homeScreen.account,
     data: [
       {
         routeName: ScreenName.ConsulIndexScreen,
         params: {
-          title: text.settings,
-          query: query.USER_SETTINGS,
-          queryVariables: { link: 'http://192.168.178.107:3000/account' },
+          title: texts.consul.homeScreen.settings,
+          query: QUERY_TYPES.CONSUL.USER_SETTINGS,
+          queryVariables: { link: consul.serverUrl + consul.settings },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        title: text.settings
+        title: texts.consul.homeScreen.settings
       },
       {
         routeName: ScreenName.ConsulIndexScreen,
         params: {
-          title: text.settings,
-          query: query.LOGOUT,
+          title: texts.consul.homeScreen.settings,
+          query: QUERY_TYPES.CONSUL.LOGOUT,
           queryVariables: {},
           rootRouteName: ScreenName.ConsulHomeScreen
         },
-        title: text.logout
+        title: texts.consul.homeScreen.logout
       }
     ]
   }

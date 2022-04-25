@@ -5,7 +5,7 @@ import { CheckBox } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
 import { OrientationContext } from '../OrientationProvider';
-import { openLink } from '../helpers';
+import { useOpenWebScreen } from '../hooks';
 
 import { RegularText } from './Text';
 import { WrapperHorizontal } from './Wrapper';
@@ -25,6 +25,11 @@ export const Checkbox = ({
   const needLandscapeStyle =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 
+  const headerTitle = title ?? '';
+  const rootRouteName = '';
+
+  const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
+
   return (
     <CheckBox
       size={normalize(21)}
@@ -33,7 +38,7 @@ export const Checkbox = ({
         link ? (
           <WrapperHorizontal>
             <RegularText small>{title} </RegularText>
-            <RegularText small primary onPress={() => openLink(link)}>
+            <RegularText small primary onPress={() => openWebScreen()}>
               {linkDescription}
             </RegularText>
           </WrapperHorizontal>

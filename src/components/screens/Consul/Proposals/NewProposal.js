@@ -6,7 +6,7 @@ import { useMutation } from 'react-apollo';
 
 import { Input } from '../../../Consul';
 import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
-import { texts, colors } from '../../../../config';
+import { texts, colors, consul } from '../../../../config';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
 import { START_PROPOSAL, UPDATE_PROPOSAL } from '../../../../queries/Consul';
@@ -230,7 +230,7 @@ export const NewProposal = ({ navigation, data, query }) => {
         <WrapperHorizontal>
           <Checkbox
             title={texts.consul.startNew.termsOfServiceLabel}
-            link={'https://beteiligung.bad-belzig.de/conditions'}
+            link={consul.serverUrl + consul.termsOfService}
             linkDescription={texts.consul.startNew.termsOfServiceLinkLabel}
             checkedIcon="check-square-o"
             uncheckedIcon="square-o"

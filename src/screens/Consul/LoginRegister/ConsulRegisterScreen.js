@@ -19,7 +19,7 @@ import {
   WrapperHorizontal,
   WrapperWithOrientation
 } from '../../../components';
-import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { colors, consts, Icon, normalize, texts, consul } from '../../../config';
 import { ScreenName } from '../../../types';
 import { CONSUL_REGISTER_USER } from '../../../queries/Consul';
 import { ConsulClient } from '../../../ConsulClient';
@@ -151,7 +151,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
             <WrapperHorizontal>
               <Checkbox
                 linkDescription={texts.consul.privacyCheckLink}
-                link={'https://www.google.de'}
+                link={consul.serverUrl + consul.termsOfService}
                 title={texts.consul.privacyChecked}
                 checkedIcon="check-square-o"
                 uncheckedIcon="square-o"
