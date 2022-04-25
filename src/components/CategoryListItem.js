@@ -15,13 +15,13 @@ export class CategoryListItem extends React.PureComponent {
       params,
       subtitle,
       title,
-      pointsOfInterestCount,
-      toursCount,
+      pointsOfInterestTreeCount,
+      toursTreeCount,
       bottomDivider,
       topDivider
     } = item;
 
-    const count = pointsOfInterestCount > 0 ? pointsOfInterestCount : toursCount;
+    const count = pointsOfInterestTreeCount > 0 ? pointsOfInterestTreeCount : toursTreeCount;
     return (
       <ListItem
         title={noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
@@ -29,7 +29,7 @@ export class CategoryListItem extends React.PureComponent {
         bottomDivider={
           bottomDivider !== undefined
             ? bottomDivider
-            : item.toursCount > 0
+            : item.toursTreeCount > 0
             ? index < section.data.length - 1 // do not show a bottomDivider after last entry
             : true
         }
@@ -39,12 +39,7 @@ export class CategoryListItem extends React.PureComponent {
           paddingVertical: normalize(12)
         }}
         rightIcon={<Icon.ArrowRight />}
-        onPress={() =>
-          navigation.navigate({
-            name,
-            params
-          })
-        }
+        onPress={() => navigation.push(name, params)}
         delayPressIn={0}
         Component={Touchable}
         accessibilityLabel={`(${title}) ${consts.a11yLabel.poiCount} ${count} ${consts.a11yLabel.button}`}

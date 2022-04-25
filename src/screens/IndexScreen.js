@@ -9,6 +9,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { auth } from '../auth';
 import { colors, consts, texts } from '../config';
 import {
+  CategoryList,
   DropdownHeader,
   IndexFilterWrapperAndList,
   ListComponent,
@@ -89,6 +90,7 @@ export const IndexScreen = ({ navigation, route }) => {
   const title = route.params?.title ?? '';
   const titleDetail = route.params?.titleDetail ?? '';
   const bookmarkable = route.params?.bookmarkable;
+  const categories = route.params?.categories;
   const showFilter =
     (route.params?.showFilter ?? true) &&
     {
@@ -236,15 +238,13 @@ export const IndexScreen = ({ navigation, route }) => {
               withDate: false
             });
 
-            if (!listItems) return null;
-
             if (filterByOpeningTimes) {
-              listItems = listItems.filter(
+              listItems = listItems?.filter(
                 (entry) => isOpen(entry.params?.details?.openingHours)?.open
               );
             }
 
-            if (sortByDistance && position) {
+            if (sortByDistance && position && listItems?.length) {
               listItems = sortPOIsByDistanceFromPosition(listItems, position.coords);
             }
 
@@ -268,11 +268,25 @@ export const IndexScreen = ({ navigation, route }) => {
             return (
               <ListComponent
                 ListHeaderComponent={
-                  showFilter ? (
-                    <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
-                  ) : null
+                  <>
+                    {!!showFilter && (
+                      <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
+                    )}
+                    {!!categories?.length && (
+                      <CategoryList
+                        navigation={navigation}
+                        data={categories}
+                        horizontal={false}
+                        hasSectionHeader={false}
+                      />
+                    )}
+                  </>
                 }
-                ListEmptyComponent={<EmptyMessage title={texts.empty.list} />}
+                ListEmptyComponent={
+                  <EmptyMessage
+                    title={categories?.length ? texts.empty.categoryList : texts.empty.list}
+                  />
+                }
                 navigation={navigation}
                 data={listItems}
                 horizontal={false}
