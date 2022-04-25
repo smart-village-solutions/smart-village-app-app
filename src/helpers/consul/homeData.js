@@ -24,7 +24,7 @@ export const homeData = [
         routeName: ScreenName.ConsulIndexScreen,
         params: {
           title: text.proposals,
-          query: null,
+          query: query.PROPOSALS,
           queryVariables: { limit: 15, order: 'name_ASC', category: text.proposals },
           rootRouteName: ScreenName.ConsulHomeScreen
         },

@@ -22,6 +22,7 @@ export const ConsulListItem = ({ navigation, item }) => {
           params
         })
       }
+      bottomDivider={true}
       delayPressIn={0}
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.poiCount} ${consts.a11yLabel.button}`}

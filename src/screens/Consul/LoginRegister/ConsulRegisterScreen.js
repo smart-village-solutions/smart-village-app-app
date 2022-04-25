@@ -16,6 +16,7 @@ import {
   TitleContainer,
   Touchable,
   Wrapper,
+  WrapperHorizontal,
   WrapperWithOrientation
 } from '../../../components';
 import { colors, consts, Icon, normalize, texts } from '../../../config';
@@ -147,7 +148,8 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 control={control}
               />
             </Wrapper>
-            <Wrapper>
+
+            <WrapperHorizontal>
               <Checkbox
                 linkDescription={text.privacyCheckLink}
                 link={'https://www.google.de'}
@@ -157,7 +159,8 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 checked={termsOfService}
                 onPress={() => settermsOfService(!termsOfService)}
               />
-            </Wrapper>
+            </WrapperHorizontal>
+
             <Wrapper>
               <Button
                 onPress={handleSubmit(onSubmit)}

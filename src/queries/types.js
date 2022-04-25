@@ -28,6 +28,10 @@ export const QUERY_TYPES = {
     DEBATE: 'debate',
     START_DEBATE: 'startDebate',
     UPDATE_DEBATE: 'updateDebate',
+    PROPOSALS: 'proposals',
+    PROPOSAL: 'proposal',
+    START_PROPOSAL: 'startProposal',
+    UPDATE_PROPOSAL: 'updateProposal',
     SORTING: {
       NEWESTDATE: 'newestDate',
       MOSTACTIVE: 'mostActive',

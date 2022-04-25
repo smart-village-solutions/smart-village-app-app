@@ -8,7 +8,7 @@ import { OrientationContext } from '../OrientationProvider';
 import { openLink } from '../helpers';
 
 import { RegularText } from './Text';
-import { Wrapper } from './Wrapper';
+import { WrapperHorizontal } from './Wrapper';
 
 export const Checkbox = ({
   title,
@@ -31,12 +31,12 @@ export const Checkbox = ({
       center={center}
       title={
         link ? (
-          <Wrapper>
+          <WrapperHorizontal>
             <RegularText small>{title} </RegularText>
             <RegularText small primary onPress={() => openLink(link)}>
               {linkDescription}
             </RegularText>
-          </Wrapper>
+          </WrapperHorizontal>
         ) : (
           <RegularText small>{title}</RegularText>
         )

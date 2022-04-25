@@ -5,44 +5,51 @@ import { useMutation } from 'react-apollo';
 
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
-import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../../../Wrapper';
+import { Wrapper, WrapperWithOrientation } from '../../../Wrapper';
 import { HtmlView } from '../../../HtmlView';
 import { Button } from '../../../Button';
 import {
   ConsulCommentList,
   ConsulTagList,
-  ConsulVotingComponent,
+  ConsulSupportingComponent,
   ConsulPublicAuthorComponent,
+  ConsulSummaryComponent,
   Input,
-  ConsulStartNewButton
+  ConsulStartNewButton,
+  ConsulExternalVideoComponent
 } from '../../../Consul';
 import { consts, device, texts } from '../../../../config';
 import { useOpenWebScreen } from '../../../../hooks';
 import { ConsulClient } from '../../../../ConsulClient';
-import { ADD_COMMENT_TO_DEBATE } from '../../../../queries/Consul';
+import { ADD_COMMENT_TO_PROPOSAL, PUBLISH_PROPOSAL } from '../../../../queries/Consul';
 import { QUERY_TYPES } from '../../../../queries';
+import { BoldText, RegularText } from '../../../Text';
 
 const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
+export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
   const [loading, setLoading] = useState();
+  const [publishedProposal, setPublishedProposal] = useState(
+    route.params?.publishedProposal ?? true
+  );
 
   const {
-    cachedVotesDown,
     cachedVotesUp,
-    cachedVotesTotal,
     comments,
     commentsCount,
+    summary,
     description,
     id,
     publicAuthor,
     publicCreatedAt,
     tags,
-    title
-  } = listData.debate;
+    title,
+    videoUrl,
+    currentUserHasVoted
+  } = listData.proposal;
 
   const openWebScreen = useOpenWebScreen(
     route.params?.title ?? '',
@@ -54,17 +61,32 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
   const { control, handleSubmit, reset } = useForm();
 
   // GraphQL
-  const [addCommentToDebate] = useMutation(ADD_COMMENT_TO_DEBATE, {
+  const [addCommentToProposal] = useMutation(ADD_COMMENT_TO_PROPOSAL, {
+    client: ConsulClient
+  });
+  const [publishProposal] = useMutation(PUBLISH_PROPOSAL, {
     client: ConsulClient
   });
 
   const onSubmit = async (val) => {
     setLoading(true);
-    await addCommentToDebate({ variables: { debateId: id, body: val.comment } })
+    await addCommentToProposal({ variables: { proposalId: id, body: val.comment } })
       .then(() => {
         onRefresh();
+
         setLoading(false);
         reset({ comment: null });
+      })
+      .catch((err) => console.error(err));
+  };
+
+  const proposalShare = async () => {
+    setLoading(true);
+    await publishProposal({ variables: { id: id } })
+      .then(() => {
+        setPublishedProposal(true);
+        onRefresh();
+        setLoading(false);
       })
       .catch((err) => console.error(err));
   };
@@ -72,6 +94,15 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
   return (
     <SafeAreaViewFlex>
       <WrapperWithOrientation>
+        {/* Publish Proposal! */}
+        {!publishedProposal && (
+          <Wrapper>
+            <BoldText>{text.publishProposalBold}</BoldText>
+            <RegularText>{text.publishProposalRegular}</RegularText>
+            <Button title={text.publishProposalButton} onPress={() => proposalShare()} />
+          </Wrapper>
+        )}
+
         {/* Title! */}
         {!!title && (
           <>
@@ -93,6 +124,9 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
           />
         )}
 
+        {/* Summary! */}
+        {!!summary && <ConsulSummaryComponent summary={summary} />}
+
         {/* Description! */}
         {!!description && (
           <Wrapper>
@@ -100,20 +134,25 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
           </Wrapper>
         )}
 
+        {/* External Video */}
+        {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
+
         {/*TODO: I neet to User ID */}
-        {/* Debate Edit Button */}
+        {/* Proposal Edit Button */}
         <ConsulStartNewButton
           data={{
             title: title,
             tagList: tags.nodes.map((item) => item.name),
             description: description,
             termsOfService: true,
+            summary: summary,
+            videoUrl: videoUrl,
             id: id
           }}
           navigation={navigation}
           title={text.startNew.updateButtonLabel}
           buttonTitle={text.startNew.updateButtonLabel}
-          query={QUERY_TYPES.CONSUL.UPDATE_DEBATE}
+          query={QUERY_TYPES.CONSUL.UPDATE_PROPOSAL}
         />
 
         {/* Tag List! */}
@@ -121,11 +160,12 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
 
         {/* Voting Component! */}
         {/*TODO: Mutation funksionert nicht*/}
-        <ConsulVotingComponent
+        <ConsulSupportingComponent
           votesData={{
-            cachedVotesTotal: cachedVotesTotal,
+            onRefresh: onRefresh,
             cachedVotesUp: cachedVotesUp,
-            cachedVotesDown: cachedVotesDown
+            id: id,
+            currentUserHasVoted: currentUserHasVoted
           }}
         />
 
@@ -141,6 +181,9 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
         {/* New Comment Input! */}
         <Wrapper>
           <Input
+            keyboardType="default"
+            textContentType="none"
+            autoCompleteType="off"
             multiline
             name="comment"
             label={text.commentLabel}
@@ -149,13 +192,13 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
             rules={{ required: text.commentEmptyError }}
             control={control}
           />
-          <WrapperVertical>
-            <Button
-              onPress={handleSubmit(onSubmit)}
-              title={loading ? text.submittingCommentButton : text.commentAnswerButton}
-              disabled={loading}
-            />
-          </WrapperVertical>
+        </Wrapper>
+        <Wrapper>
+          <Button
+            onPress={handleSubmit(onSubmit)}
+            title={loading ? text.submittingCommentButton : text.commentAnswerButton}
+            disabled={loading}
+          />
         </Wrapper>
       </WrapperWithOrientation>
     </SafeAreaViewFlex>
@@ -163,7 +206,7 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
 };
 /* eslint-enable complexity */
 
-DebateDetail.propTypes = {
+ProposalDetail.propTypes = {
   listData: PropTypes.object.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired

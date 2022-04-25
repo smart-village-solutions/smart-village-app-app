@@ -114,14 +114,37 @@ export const texts = {
     commentAnswerButton: 'Antwort Veröffentlichen',
     submittingCommentButton: 'Kommentar abgeben',
     answer: 'Antwort',
+    supportProposalAlertTitle: 'Erfolgreich',
+    supportProposalAlertBody: 'Sie haben diesen Vorschlag bereits unterstützt. Teilen Sie ihn!',
+    supportNeed: 'Unterstützungen benötigt',
+    publishProposalBold: 'Herzlichen Glückwunsch! Sie haben den ersten Schritt gemacht.',
+    publishProposalRegular: 'überprüfen und teilen Sie Ihren Vorschlag.',
+    publishProposalButton: 'Vorschlag veröffentlichen',
+    proposalAlready: 'Sie haben diesen Vorschlag bereits unterstützt.',
     startNew: {
+      titleShortError: 'ist zu kurz (minimum 4 Zeichen)',
+      descriptionShortError: 'ist zu kurz (minimum 10 Zeichen)',
       newDebateTitleLabel: 'Title der Diskussion',
       newDebateDescriptionLabel: 'Initialer Debattenbeitrag',
       newDebateTagLabel: 'Trennen Sie die Tags mit einem Komma (,)',
-      termsOfServiceLabel:
-        'Ich stimme der Datenschutzbestimmungen und den Allgemeine Nutzungsbedingungen zu',
+      termsOfServiceLabel: 'Ich stimme der Datenschutzbestimmungen und den',
+      termsOfServiceLinkLabel: 'Allgemeine Nutzungsbedingungen zu',
+      updateButtonLabel: 'Bearbeiten',
       newDebateStartButtonLabel: 'Eine Diskussion starten',
-      updateButtonLabel: 'Bearbeiten'
+      newProposalTitleLabel: 'Titel des Vorschlages',
+      newProposalDescriptionLabel: 'Vorschlagstext',
+      newProposalSummaryLabel: 'Zusammenfassung Vorschlag',
+      newProposalTagLabel: 'Trennen Sie die Tags mit einem Komma (,)',
+      newProposalTagInfoLabel:
+        'Diesen Vorschlag markieren. Sie können aus vorgeschlagenen Kategorien wählen, oder Ihre eigenen hinzufügen',
+      newProposalStartButtonLabel: 'Vorschlag erstellen',
+      newProposalExternesVideoUrlLabel: 'Externes Video URL',
+      leerError: 'darf nicht leer sein',
+      proposalVideoUrlInfo: '(Füge einen YouTube oder Vimeo Link hinzu)',
+      proposalSummaryInfo: '(maximal 200 Zeichen)',
+      proposalTagInfo:
+        '(Diesen Vorschlag markieren. Sie können aus vorgeschlagenen Kategorien wählen, oder Ihre eigenen hinzufügen)',
+      tags: 'Tags'
     },
     homeScreen: {
       account: 'Konto',
