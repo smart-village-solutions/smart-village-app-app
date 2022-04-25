@@ -46,11 +46,7 @@ export const MultiButtonScreen = ({ navigation, route }: StackScreenProps<any>) 
     [navigation]
   );
 
-  if (!name || error) {
-    return null;
-  }
-
-  if (loading) {
+  if (loading && !error) {
     return <LoadingSpinner loading />;
   }
 
