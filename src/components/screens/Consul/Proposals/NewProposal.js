@@ -16,7 +16,6 @@ import { ScreenName } from '../../../../types';
 import { QUERY_TYPES } from '../../../../queries';
 import { RegularText } from '../../../Text';
 import { Label } from '../../../Label';
-import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 
 const TAG_CATEGORIES = [
   { name: 'Associations', id: 0, selected: false },
@@ -127,12 +126,17 @@ export const NewProposal = ({ navigation, data, query }) => {
         await submitProposal({
           variables: variables
         })
-          .then((val) => {
+          .then(() => {
             setStartLoading(false);
-            navigation.navigate(ScreenName.ConsulDetailScreen, {
-              query: QUERY_TYPES.CONSUL.PROPOSAL,
-              queryVariables: { id: val.data.submitProposal.id },
-              title: val.data.submitProposal.title
+            navigation.navigate(ScreenName.ConsulIndexScreen, {
+              title: texts.consul.homeScreen.proposals,
+              query: QUERY_TYPES.CONSUL.PROPOSALS,
+              queryVariables: {
+                limit: 15,
+                order: 'name_ASC',
+                category: texts.consul.homeScreen.proposals
+              },
+              rootRouteName: ScreenName.ConsulHomeScreen
             });
           })
           .catch((err) => {
@@ -168,70 +172,62 @@ export const NewProposal = ({ navigation, data, query }) => {
   if (startLoading) return <LoadingSpinner loading />;
 
   return (
-    <SafeAreaViewFlex>
-      <Wrapper>
-        {INPUTS.map((item, index) => (
-          <View key={index}>
-            {item.type === ITEM_TYPES.INPUT && (
-              <>
-                <Input {...item} control={control} rules={item.rules} />
-              </>
-            )}
+    <>
+      {INPUTS.map((item, index) => (
+        <Wrapper key={index} style={styles.noPaddingTop}>
+          {item.type === ITEM_TYPES.TITLE && <Label>{item.title}</Label>}
 
-            {item.type === ITEM_TYPES.TITLE && (
-              <>
-                <Label>{item.title}</Label>
-              </>
-            )}
+          {item.type === ITEM_TYPES.INPUT && (
+            <Input {...item} control={control} rules={item.rules} />
+          )}
 
-            {item.type === ITEM_TYPES.INFO_TEXT && (
-              <>
-                <RegularText smallest placeholder>
-                  {item.title}
-                </RegularText>
-              </>
-            )}
+          {item.type === ITEM_TYPES.INFO_TEXT && (
+            <RegularText smallest placeholder>
+              {item.title}
+            </RegularText>
+          )}
 
-            {item.type === ITEM_TYPES.CATEGORY && (
-              <>
-                <Label>{item.title}</Label>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  {item.category.map((items, indexs) => (
-                    <TouchableOpacity
-                      key={indexs}
-                      activeOpacity={1}
-                      style={[
-                        styles.tagContainer,
-                        {
-                          backgroundColor: items.selected
-                            ? colors.lighterPrimary
-                            : colors.placeholder + '60'
-                        }
-                      ]}
-                      onPress={() => {
-                        if (items.selected) {
-                          items.selected = false;
-                        } else {
-                          items.selected = true;
-                        }
-                        setTags([]);
-                      }}
+          {item.type === ITEM_TYPES.CATEGORY && (
+            <>
+              <Label>{item.title}</Label>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {item.category.map((items, indexs) => (
+                  <TouchableOpacity
+                    key={indexs}
+                    activeOpacity={1}
+                    style={[
+                      styles.tagContainer,
+                      {
+                        backgroundColor: items.selected
+                          ? colors.lighterPrimary
+                          : colors.placeholder + '60'
+                      }
+                    ]}
+                    onPress={() => {
+                      if (items.selected) {
+                        items.selected = false;
+                      } else {
+                        items.selected = true;
+                      }
+                      setTags([]);
+                    }}
+                  >
+                    <RegularText
+                      small
+                      style={styles.tagText}
+                      lightest={items.selected ? true : false}
                     >
-                      <RegularText
-                        small
-                        style={styles.tagText}
-                        lightest={items.selected ? true : false}
-                      >
-                        {items.name}
-                      </RegularText>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </>
-            )}
-          </View>
-        ))}
+                      {items.name}
+                    </RegularText>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </>
+          )}
+        </Wrapper>
+      ))}
 
+      <Wrapper style={styles.noPaddingTop}>
         <WrapperHorizontal>
           <Checkbox
             title={texts.consul.startNew.termsOfServiceLabel}
@@ -255,20 +251,14 @@ export const NewProposal = ({ navigation, data, query }) => {
           />
         </Wrapper>
       </Wrapper>
-    </SafeAreaViewFlex>
+    </>
   );
 };
 
-NewProposal.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func
-  }).isRequired,
-  data: PropTypes.object,
-  query: PropTypes.string
-};
-
 const styles = StyleSheet.create({
+  noPaddingTop: {
+    paddingTop: 0
+  },
   tagContainer: {
     backgroundColor: colors.borderRgba,
     margin: 5,
@@ -278,6 +268,15 @@ const styles = StyleSheet.create({
     padding: 10
   }
 });
+
+NewProposal.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func.isRequired,
+    goBack: PropTypes.func
+  }).isRequired,
+  data: PropTypes.object,
+  query: PropTypes.string
+};
 
 const ITEM_TYPES = {
   INPUT: 'input',
@@ -315,10 +314,6 @@ const INPUTS = [
       required: texts.consul.startNew.leerError,
       maxLength: { value: 200, message: texts.consul.startNew.proposalSummaryInfo }
     }
-  },
-  {
-    type: ITEM_TYPES.INFO_TEXT,
-    title: texts.consul.startNew.proposalSummaryInfo
   },
   {
     type: ITEM_TYPES.INPUT,
@@ -359,7 +354,6 @@ const INPUTS = [
     type: ITEM_TYPES.INFO_TEXT,
     title: texts.consul.startNew.proposalTagInfo
   },
-
   {
     type: ITEM_TYPES.CATEGORY,
     title: texts.consul.startNew.categoriesTitle,

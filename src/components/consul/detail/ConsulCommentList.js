@@ -17,7 +17,7 @@ export const ConsulCommentList = ({
   userId,
   navigation
 }) => {
-  commentsData.sort((a, b) => a.id - b.id);
+  commentsData.sort((a, b) => b.id - a.id);
 
   let comments = getThreadedComments(commentsData, null, userId);
 

@@ -1,25 +1,24 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
+import { useForm } from 'react-hook-form';
 
-import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
-import { Title, TitleContainer, TitleShadow } from '../../../Title';
-import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../../../Wrapper';
+import { consts, device, texts } from '../../../../config';
+import { ConsulClient } from '../../../../ConsulClient';
+import { getConsulUser } from '../../../../helpers';
+import { useOpenWebScreen } from '../../../../hooks';
+import { ADD_COMMENT_TO_POLLS } from '../../../../queries/Consul';
 import { Button } from '../../../Button';
 import {
-  Input,
   ConsulCommentList,
   ConsulQuestionsList,
   ConsulSummaryComponent,
-  ConsulDateComponent
+  Input
 } from '../../../Consul';
-import { consts, device, texts } from '../../../../config';
-import { ConsulClient } from '../../../../ConsulClient';
-import { ADD_COMMENT_TO_POLLS } from '../../../../queries/Consul';
 import { HtmlView } from '../../../HtmlView';
-import { useOpenWebScreen } from '../../../../hooks';
-import { getConsulUser } from '../../../../helpers';
+import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
+import { Title, TitleContainer, TitleShadow } from '../../../Title';
+import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../../../Wrapper';
 
 const a11yText = consts.a11yLabel;
 
@@ -36,7 +35,6 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
     endsAt,
     id,
     questions,
-    startsAt,
     summary,
     title,
     token
@@ -65,13 +63,15 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
 
   const onSubmit = async (val) => {
     setLoading(true);
-    await addCommentToPoll({ variables: { pollId: id, body: val.comment } })
-      .then(() => {
-        onRefresh();
-        setLoading(false);
-        reset({ comment: null });
-      })
-      .catch((err) => console.error(err));
+
+    try {
+      await addCommentToPoll({ variables: { pollId: id, body: val.comment } });
+      onRefresh();
+      setLoading(false);
+      reset();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -92,10 +92,6 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
-        )}
-
-        {!!startsAt && !!endsAt && endsDate >= currentDate && (
-          <ConsulDateComponent startsAt={startsAt} endsAt={endsAt} />
         )}
 
         {!!questions && (

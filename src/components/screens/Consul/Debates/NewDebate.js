@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
 import { Input } from '../../../Consul';
-import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../../../Wrapper';
 import { texts, secrets, namespace } from '../../../../config';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
@@ -60,12 +60,17 @@ export const NewDebate = ({ navigation, data, query }) => {
         await startDebate({
           variables: variables
         })
-          .then((val) => {
+          .then(() => {
             setStartLoading(false);
-            navigation.navigate(ScreenName.ConsulDetailScreen, {
-              query: QUERY_TYPES.CONSUL.DEBATE,
-              queryVariables: { id: val.data.startDebate.id },
-              title: val.data.startDebate.title
+            navigation.navigate(ScreenName.ConsulIndexScreen, {
+              title: texts.consul.homeScreen.debates,
+              query: QUERY_TYPES.CONSUL.DEBATES,
+              queryVariables: {
+                limit: 15,
+                order: 'name_ASC',
+                category: texts.consul.homeScreen.debates
+              },
+              rootRouteName: ScreenName.ConsulHomeScreen
             });
           })
           .catch((err) => {
@@ -100,14 +105,14 @@ export const NewDebate = ({ navigation, data, query }) => {
   if (startLoading) return <LoadingSpinner loading />;
 
   return (
-    <SafeAreaViewFlex>
-      <Wrapper>
-        {Inputs.map((item, index) => (
-          <View key={index}>
-            <Input {...item} control={control} rules={item.rules} />
-          </View>
-        ))}
+    <>
+      {INPUTS.map((item, index) => (
+        <Wrapper key={index} style={styles.noPaddingTop}>
+          <Input {...item} control={control} rules={item.rules} />
+        </Wrapper>
+      ))}
 
+      <Wrapper style={styles.noPaddingTop}>
         <WrapperHorizontal>
           <Checkbox
             title={texts.consul.startNew.termsOfServiceLabel}
@@ -131,9 +136,15 @@ export const NewDebate = ({ navigation, data, query }) => {
           />
         </Wrapper>
       </Wrapper>
-    </SafeAreaViewFlex>
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  noPaddingTop: {
+    paddingTop: 0
+  }
+});
 
 NewDebate.propTypes = {
   navigation: PropTypes.shape({
@@ -144,7 +155,7 @@ NewDebate.propTypes = {
   query: PropTypes.string
 };
 
-const Inputs = [
+const INPUTS = [
   {
     name: 'title',
     label: texts.consul.startNew.newDebateTitleLabel,

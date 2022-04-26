@@ -85,14 +85,15 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
 
   const onSubmit = async (val) => {
     setLoading(true);
-    await addCommentToProposal({ variables: { proposalId: id, body: val.comment } })
-      .then(() => {
-        onRefresh();
 
-        setLoading(false);
-        reset({ comment: null });
-      })
-      .catch((err) => console.error(err));
+    try {
+      await addCommentToProposal({ variables: { proposalId: id, body: val.comment } });
+      onRefresh();
+      setLoading(false);
+      reset();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const proposalShare = async () => {
@@ -110,7 +111,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
       <WrapperWithOrientation>
         {!published && (
           <Wrapper>
-            <BoldText>{texts.consul.publishProposalBold}</BoldText>
+            <BoldText big>{texts.consul.publishProposalBold}</BoldText>
             <RegularText>{texts.consul.publishProposalRegular}</RegularText>
             <Button title={texts.consul.publishProposalButton} onPress={() => proposalShare()} />
           </Wrapper>
@@ -128,7 +129,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
         {!!publicAuthor && (
           <ConsulPublicAuthorComponent
             onPress={() => {
-              navigation.navigate(ScreenName.ConsulStartNewScreen, {
+              navigation.push(ScreenName.ConsulStartNewScreen, {
                 title: texts.consul.startNew.updateButtonLabel,
                 query: QUERY_TYPES.CONSUL.UPDATE_PROPOSAL,
                 data: {
@@ -243,7 +244,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
 ProposalDetail.propTypes = {
   listData: PropTypes.object.isRequired,
   navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
+    push: PropTypes.func.isRequired
   }).isRequired,
   onRefresh: PropTypes.func,
   route: PropTypes.object

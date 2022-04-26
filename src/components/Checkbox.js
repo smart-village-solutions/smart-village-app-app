@@ -35,16 +35,14 @@ export const Checkbox = ({
       size={normalize(21)}
       center={center}
       title={
-        link ? (
-          <WrapperHorizontal>
-            <RegularText small>{title} </RegularText>
-            <RegularText small primary onPress={() => openWebScreen()}>
+        <WrapperHorizontal>
+          <RegularText small>{title}</RegularText>
+          {link && (
+            <RegularText small primary onPress={openWebScreen}>
               {linkDescription}
             </RegularText>
-          </WrapperHorizontal>
-        ) : (
-          <RegularText small>{title}</RegularText>
-        )
+          )}
+        </WrapperHorizontal>
       }
       onPress={onPress}
       checkedIcon={checkedIcon}

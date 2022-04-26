@@ -1,19 +1,20 @@
+import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useState, useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Alert, RefreshControl, ScrollView } from 'react-native';
 
 import {
-  LoadingSpinner,
   DebateDetail,
-  ProposalDetail,
+  DefaultKeyboardAvoidingView,
+  LoadingSpinner,
   PollDetail,
-  UserCommentDetail,
+  ProposalDetail,
   SafeAreaViewFlex,
-  DefaultKeyboardAvoidingView
+  UserCommentDetail
 } from '../../components';
+import { colors, texts } from '../../config';
 import { useConsulData } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
-import { colors, texts } from '../../config';
 import { ScreenName } from '../../types';
 
 const getComponent = (query) => {
@@ -54,6 +55,14 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
     [setRefreshing]
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+
+      return;
+    }, [refetch])
+  );
+
   const Component = getComponent(query);
 
   if (isLoading) return <LoadingSpinner loading />;
@@ -76,12 +85,7 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
             />
           }
         >
-          <Component
-            listData={data}
-            navigation={navigation}
-            route={route}
-            onRefresh={() => refetch()}
-          />
+          <Component listData={data} navigation={navigation} route={route} onRefresh={refetch} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

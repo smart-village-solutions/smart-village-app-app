@@ -15,6 +15,7 @@ export const ConsulPublicAuthorComponent = ({ authorData, onPress }) => {
       <WrapperRow>
         <RegularText primary>{publicAuthor ? publicAuthor.username : 'Privat'}</RegularText>
         <RegularText> · </RegularText>
+
         {!!publicCreatedAt && (
           <>
             <RegularText smallest>{momentFormatUtcToLocal(publicCreatedAt)}</RegularText>
@@ -26,6 +27,7 @@ export const ConsulPublicAuthorComponent = ({ authorData, onPress }) => {
           {commentsCount}{' '}
           {commentsCount > 1 || commentsCount === 0 ? texts.consul.comments : texts.consul.comment}
         </RegularText>
+
         {publicAuthor && publicAuthor.id === userId && (
           <>
             <RegularText> · </RegularText>

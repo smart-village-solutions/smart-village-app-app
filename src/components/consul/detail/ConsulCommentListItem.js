@@ -159,7 +159,7 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
           <WrapperRow>
             {cachedVotesTotal > 0 ? (
               <RegularText smallest>
-                {cachedVotesTotal} {texts.consul.votes}
+                {cachedVotesTotal} {cachedVotesTotal > 1 ? texts.consul.votes : texts.consul.vote}
               </RegularText>
             ) : (
               <RegularText smallest>{texts.consul.noVotes}</RegularText>

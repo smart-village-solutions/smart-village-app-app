@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useState, useCallback, useEffect } from 'react';
 import { RefreshControl, Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
 import {
   LoadingSpinner,
@@ -97,6 +98,14 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
       setRefreshing(false);
     },
     [setRefreshing]
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+
+      return;
+    }, [refetch])
   );
 
   const Component = getComponent(query);

@@ -1,5 +1,4 @@
 export * from './ConsulCommentList';
-export * from './ConsulDateComponent';
 export * from './ConsulExternalVideoComponent';
 export * from './ConsulPublicAuthorComponent';
 export * from './ConsulQuestionsList';

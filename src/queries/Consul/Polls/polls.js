@@ -8,6 +8,8 @@ export const GET_POLLS = gql`
         commentsCount
         published
         title
+        startsAt
+        endsAt
         createdAt
       }
     }

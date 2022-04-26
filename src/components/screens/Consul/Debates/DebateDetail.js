@@ -66,13 +66,15 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
 
   const onSubmit = async (val) => {
     setLoading(true);
-    await addCommentToDebate({ variables: { debateId: id, body: val.comment } })
-      .then(() => {
-        onRefresh();
-        setLoading(false);
-        reset({ comment: null });
-      })
-      .catch((err) => console.error(err));
+
+    try {
+      await addCommentToDebate({ variables: { debateId: id, body: val.comment } });
+      onRefresh();
+      setLoading(false);
+      reset();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (

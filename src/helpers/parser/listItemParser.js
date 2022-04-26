@@ -215,24 +215,38 @@ const querySwitcherforDetail = (query) => {
   }
 };
 const parseConsulData = (data, query, skipLastDivider) => {
-  return data?.nodes?.map((data, index) => ({
-    id: data.id,
-    title: data.title ? data.title : data.body,
-    createdAt: data.publicCreatedAt,
-    totalVotes: data.cachedVotesTotal ? data.cachedVotesTotal : data.cachedVotesUp,
-    subtitle:
-      query === QUERY_TYPES.CONSUL.PUBLIC_COMMENTS
-        ? data.commentableTitle
-        : momentFormatUtcToLocal(data.publicCreatedAt ? data.publicCreatedAt : data.createdAt),
-    routeName: ScreenName.ConsulDetailScreen,
-    params: {
-      title: data.title ? data.title : data.body,
-      query: querySwitcherforDetail(query),
-      queryVariables: { id: data.id },
-      rootRouteName: ROOT_ROUTE_NAMES.CONSOLE_HOME
-    },
-    bottomDivider: !skipLastDivider || index !== data.length - 1
-  }));
+  return data?.nodes?.map((consulData, index) => {
+    let subtitle = momentFormatUtcToLocal(
+      consulData.publicCreatedAt ? consulData.publicCreatedAt : consulData.createdAt
+    );
+
+    if (query === QUERY_TYPES.CONSUL.PUBLIC_COMMENTS) {
+      subtitle = consulData.commentableTitle;
+    } else if (query === QUERY_TYPES.CONSUL.POLLS) {
+      subtitle =
+        momentFormatUtcToLocal(consulData.startsAt) +
+        ' - ' +
+        momentFormatUtcToLocal(consulData.endsAt);
+    }
+
+    return {
+      id: consulData.id,
+      title: consulData.title ? consulData.title : consulData.body,
+      createdAt: consulData.publicCreatedAt,
+      totalVotes: consulData.cachedVotesTotal
+        ? consulData.cachedVotesTotal
+        : consulData.cachedVotesUp,
+      subtitle,
+      routeName: ScreenName.ConsulDetailScreen,
+      params: {
+        title: consulData.title ? consulData.title : consulData.body,
+        query: querySwitcherforDetail(query),
+        queryVariables: { id: consulData.id },
+        rootRouteName: ROOT_ROUTE_NAMES.CONSOLE_HOME
+      },
+      bottomDivider: !skipLastDivider || index !== consulData.length - 1
+    };
+  });
 };
 /* eslint-disable complexity */
 /**
