@@ -15,15 +15,14 @@ import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import {
   ConsulCommentList,
+  ConsulDocumentList,
   ConsulExternalVideoComponent,
   ConsulPublicAuthorComponent,
   ConsulSummaryComponent,
   ConsulSupportingComponent,
   ConsulTagList,
-  ConsulVideoComponent,
-  Input
+  ConsulVideoComponent
 } from '../../../consul';
-import { ConsulDocumentList } from '../../../Consul/detail/ConsulDocumentList';
 import { HtmlView } from '../../../HtmlView';
 import { Image } from '../../../Image';
 import { WebViewMap } from '../../../map';
@@ -31,6 +30,7 @@ import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { BoldText, RegularText } from '../../../Text';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
 import { Wrapper, WrapperWithOrientation } from '../../../Wrapper';
+import { Input } from '../../../form';
 
 const a11yText = consts.a11yLabel;
 

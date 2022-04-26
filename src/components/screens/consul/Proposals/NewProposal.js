@@ -11,11 +11,11 @@ import { QUERY_TYPES } from '../../../../queries';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
-import { Input } from '../../../consul';
 import { Label } from '../../../Label';
 import { LoadingSpinner } from '../../../LoadingSpinner';
 import { RegularText } from '../../../Text';
 import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
+import { Input } from '../../../form';
 
 const TAG_CATEGORIES = [
   { name: 'Associations', id: 0, selected: false },
@@ -178,7 +178,7 @@ export const NewProposal = ({ navigation, data, query }) => {
           {item.type === ITEM_TYPES.TITLE && <Label>{item.title}</Label>}
 
           {item.type === ITEM_TYPES.INPUT && (
-            <Input {...item} control={control} rules={item.rules} />
+            <Input {...item} validate control={control} rules={item.rules} />
           )}
 
           {item.type === ITEM_TYPES.INFO_TEXT && (

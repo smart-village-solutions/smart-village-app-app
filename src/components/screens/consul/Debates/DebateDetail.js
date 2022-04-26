@@ -11,9 +11,12 @@ import { ADD_COMMENT_TO_DEBATE, QUERY_TYPES } from '../../../../queries/consul';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import {
-  ConsulCommentList, ConsulPublicAuthorComponent, ConsulTagList,
-  ConsulVotingComponent, Input
+  ConsulCommentList,
+  ConsulPublicAuthorComponent,
+  ConsulTagList,
+  ConsulVotingComponent
 } from '../../../consul';
+import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';

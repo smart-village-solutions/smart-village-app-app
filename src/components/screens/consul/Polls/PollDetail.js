@@ -9,12 +9,8 @@ import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
 import { ADD_COMMENT_TO_POLLS } from '../../../../queries/consul';
 import { Button } from '../../../Button';
-import {
-  ConsulCommentList,
-  ConsulQuestionsList,
-  ConsulSummaryComponent,
-  Input
-} from '../../../consul';
+import { ConsulCommentList, ConsulQuestionsList, ConsulSummaryComponent } from '../../../consul';
+import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';

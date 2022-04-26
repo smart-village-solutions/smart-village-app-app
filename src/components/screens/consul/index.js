@@ -1,5 +1,5 @@
 export * from './Debates';
-export * from './Proposals';
 export * from './Polls';
+export * from './Proposals';
 export * from './User';
 export * from './UserComments';

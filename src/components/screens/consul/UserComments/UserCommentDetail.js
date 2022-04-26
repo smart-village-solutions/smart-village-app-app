@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import { Wrapper } from '../../../Wrapper';
-import { ConsulCommentListItem } from '../../../Consul/detail/ConsulCommentListItem';
+import { ConsulCommentListItem } from '../../../consul';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
 import { device } from '../../../../config';
 import { texts, consts } from '../../../../config';

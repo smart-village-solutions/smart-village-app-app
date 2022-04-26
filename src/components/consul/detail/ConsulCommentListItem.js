@@ -10,7 +10,6 @@ import { WrapperRow, WrapperVertical } from '../../Wrapper';
 import { Button } from '../../Button';
 import { Touchable } from '../../Touchable';
 import { colors, normalize, texts, Icon } from '../../../config';
-import { Input } from '../Form';
 import { ConsulClient } from '../../../ConsulClient';
 import {
   ADD_REPLY_TO_COMMENT,
@@ -18,6 +17,7 @@ import {
   DELETE_COMMENT
 } from '../../../queries/consul';
 import { ScreenName } from '../../../types';
+import { Input } from '../../form';
 
 const deleteCommentAlert = (onDelete) =>
   Alert.alert(texts.consul.loginAllFieldsRequiredTitle, texts.consul.commentDeleteAlertBody, [

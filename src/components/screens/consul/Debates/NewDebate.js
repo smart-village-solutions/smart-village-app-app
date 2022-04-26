@@ -11,9 +11,9 @@ import { QUERY_TYPES } from '../../../../queries';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
-import { Input } from '../../../consul';
 import { LoadingSpinner } from '../../../LoadingSpinner';
 import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
+import { Input } from '../../../form';
 
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
@@ -107,7 +107,7 @@ export const NewDebate = ({ navigation, data, query }) => {
     <>
       {INPUTS.map((item, index) => (
         <Wrapper key={index} style={styles.noPaddingTop}>
-          <Input {...item} control={control} rules={item.rules} />
+          <Input {...item} validate control={control} rules={item.rules} />
         </Wrapper>
       ))}
 

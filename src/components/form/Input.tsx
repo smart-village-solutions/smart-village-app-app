@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { useController, UseControllerOptions } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
-import { Input as RNEInput, InputProps, normalize } from 'react-native-elements';
+import { Input as RNEInput, InputProps } from 'react-native-elements';
 
-import { colors, consts, device, Icon } from '../../config';
+import { colors, consts, device, Icon, normalize } from '../../config';
 import { Label } from '../Label';
 
 const { a11yLabel } = consts;
@@ -82,6 +82,7 @@ export const Input = ({
       label={<Label>{label}</Label>}
       value={field.value}
       onChangeText={field.onChange}
+      onBlur={field.onBlur}
       disabled={disabled}
       multiline={multiline}
       {...furtherProps}
