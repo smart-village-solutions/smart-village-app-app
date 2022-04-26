@@ -1,7 +1,7 @@
 import { ScreenName } from '../../types';
 import { QUERY_TYPES } from '../../queries';
 import { texts } from '../../config';
-import { consul } from '../../config';
+import { secrets, namespace } from '../../config';
 
 export const homeData = (id) => [
   {
@@ -93,7 +93,9 @@ export const homeData = (id) => [
         params: {
           title: texts.consul.homeScreen.settings,
           query: QUERY_TYPES.CONSUL.USER_SETTINGS,
-          queryVariables: { link: consul.serverUrl + consul.settings },
+          queryVariables: {
+            link: `${secrets[namespace]?.consul.serverUrl}${secrets[namespace]?.consul.settings}`
+          },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
         title: texts.consul.homeScreen.settings

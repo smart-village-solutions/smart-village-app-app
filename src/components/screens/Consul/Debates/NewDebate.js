@@ -6,7 +6,7 @@ import { useMutation } from 'react-apollo';
 
 import { Input } from '../../../Consul';
 import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
-import { texts, consul } from '../../../../config';
+import { texts, secrets, namespace } from '../../../../config';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
 import { START_DEBATE, UPDATE_DEBATE } from '../../../../queries/Consul';
@@ -111,7 +111,7 @@ export const NewDebate = ({ navigation, data, query }) => {
         <WrapperHorizontal>
           <Checkbox
             title={texts.consul.startNew.termsOfServiceLabel}
-            link={consul.serverUrl + consul.termsOfService}
+            link={`${secrets[namespace]?.consul.serverUrl}${secrets[namespace]?.consul.termsOfService}`}
             linkDescription={texts.consul.startNew.termsOfServiceLinkLabel}
             checkedIcon="check-square-o"
             uncheckedIcon="square-o"

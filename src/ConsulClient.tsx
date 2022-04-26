@@ -3,11 +3,12 @@ import ApolloClient from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 
-import { consul } from './config';
+import { secrets, namespace } from './config';
 import { getConsulAuthToken } from './helpers';
 
 const httpLink = createHttpLink({
-  uri: consul.serverUrl + consul.graphqlEndpoint
+  // @ts-expect-error expo slug is typed as a string, which is insufficient for type checking here.
+  uri: `${secrets[namespace]?.consul.serverUrl}${secrets[namespace]?.consul.graphqlEndpoint}`
 });
 
 const authLink = setContext(async () => {
