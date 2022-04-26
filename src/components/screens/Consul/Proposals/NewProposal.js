@@ -170,21 +170,21 @@ export const NewProposal = ({ navigation, data, query }) => {
   return (
     <SafeAreaViewFlex>
       <Wrapper>
-        {Inputs.map((item, index) => (
+        {INPUTS.map((item, index) => (
           <View key={index}>
-            {item.type === 'input' && (
+            {item.type === ITEM_TYPES.INPUT && (
               <>
                 <Input {...item} control={control} rules={item.rules} />
               </>
             )}
 
-            {item.type === 'title' && (
+            {item.type === ITEM_TYPES.TITLE && (
               <>
                 <Label>{item.title}</Label>
               </>
             )}
 
-            {item.type === 'infoText' && (
+            {item.type === ITEM_TYPES.INFO_TEXT && (
               <>
                 <RegularText smallest placeholder>
                   {item.title}
@@ -192,7 +192,7 @@ export const NewProposal = ({ navigation, data, query }) => {
               </>
             )}
 
-            {item.type === 'category' && (
+            {item.type === ITEM_TYPES.CATEGORY && (
               <>
                 <Label>{item.title}</Label>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -279,9 +279,16 @@ const styles = StyleSheet.create({
   }
 });
 
-const Inputs = [
+const ITEM_TYPES = {
+  INPUT: 'input',
+  INFO_TEXT: 'infoText',
+  TITLE: 'title',
+  CATEGORY: 'category'
+};
+
+const INPUTS = [
   {
-    type: 'input',
+    type: ITEM_TYPES.INPUT,
     name: 'title',
     label: texts.consul.startNew.newProposalTitleLabel,
     placeholder: texts.consul.startNew.newProposalTitleLabel,
@@ -295,7 +302,7 @@ const Inputs = [
     }
   },
   {
-    type: 'input',
+    type: ITEM_TYPES.INPUT,
     name: 'summary',
     multiline: true,
     label: texts.consul.startNew.newProposalSummaryLabel,
@@ -310,11 +317,11 @@ const Inputs = [
     }
   },
   {
-    type: 'infoText',
+    type: ITEM_TYPES.INFO_TEXT,
     title: texts.consul.startNew.proposalSummaryInfo
   },
   {
-    type: 'input',
+    type: ITEM_TYPES.INPUT,
     name: 'description',
     multiline: true,
     label: texts.consul.startNew.newProposalDescriptionLabel,
@@ -330,7 +337,7 @@ const Inputs = [
     }
   },
   {
-    type: 'input',
+    type: ITEM_TYPES.INPUT,
     name: 'videoUrl',
     label: texts.consul.startNew.newProposalExternesVideoUrlLabel,
     placeholder: texts.consul.startNew.newProposalExternesVideoUrlLabel,
@@ -341,25 +348,25 @@ const Inputs = [
     rules: { required: false }
   },
   {
-    type: 'infoText',
+    type: ITEM_TYPES.INFO_TEXT,
     title: texts.consul.startNew.proposalVideoUrlInfo
   },
   {
-    type: 'title',
+    type: ITEM_TYPES.TITLE,
     title: texts.consul.startNew.tags
   },
   {
-    type: 'infoText',
+    type: ITEM_TYPES.INFO_TEXT,
     title: texts.consul.startNew.proposalTagInfo
   },
 
   {
-    type: 'category',
+    type: ITEM_TYPES.CATEGORY,
     title: texts.consul.startNew.categoriesTitle,
     category: TAG_CATEGORIES
   },
   {
-    type: 'input',
+    type: ITEM_TYPES.INPUT,
     name: 'tagList',
     multiline: true,
     label: texts.consul.startNew.newProposalTagLabel,
