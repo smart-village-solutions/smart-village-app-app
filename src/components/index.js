@@ -1,4 +1,5 @@
 export * from './bookmarks';
+export * from './consul';
 export * from './encounter';
 export * from './form';
 export * from './infoCard';
@@ -16,6 +17,7 @@ export * from './calendarArrows';
 export * from './CardListItem';
 export * from './CategoryList';
 export * from './CategoryListItem';
+export * from './Checkbox';
 export * from './CircularView';
 export * from './CommentSection';
 export * from './ConnectedImagesCarousel';

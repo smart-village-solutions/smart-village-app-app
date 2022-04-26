@@ -25,6 +25,7 @@ export const consts = {
     image: '(Bild)',
     imageCarousel: '(Bild des Bildkarussells)',
     infoProvider: 'Anbieterinformationen (Taste)',
+    password: 'Kennwort',
     lastName: 'Nachname',
     link: '(Link)',
     lunch: 'Mittagstisch(Gerichtname)',
@@ -125,6 +126,7 @@ export const consts = {
     POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours',
     POINTS_OF_INTEREST: 'PointsOfInterest',
     TOURS: 'Tours',
-    VOLUNTEER: 'Volunteer'
+    VOLUNTEER: 'Volunteer',
+    CONSOLE_HOME: 'ConsulHome'
   }
 };

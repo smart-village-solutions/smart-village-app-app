@@ -19,6 +19,7 @@ import {
   heartFilled,
   home,
   info,
+  like,
   link,
   location,
   lunch,
@@ -32,6 +33,7 @@ import {
   routePlanner,
   service,
   share,
+  trash,
   unvisible,
   url,
   verifiedBadge,
@@ -118,6 +120,7 @@ export const Icon = {
   HeartFilled: (props: IconProps) => <SvgIcon xml={heartFilled} {...props} />,
   Info: (props: IconProps) => <SvgIcon xml={info} {...props} />,
   Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
+  Like: (props: IconProps) => <SvgIcon xml={like} {...props} />,
   Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
   Mail: (props: IconProps) => <SvgIcon xml={mail} {...props} />,
@@ -150,6 +153,7 @@ export const Icon = {
     ) : (
       <SvgIcon xml={share} {...props} />
     ),
+  Trash: (props: IconProps) => <SvgIcon xml={trash} {...props} />,
   Surveys: (props: IconProps) => <NamedIcon name="stats-chart-outline" {...props} />,
   Unvisible: (props: IconProps) => <SvgIcon xml={unvisible} {...props} />,
   Url: (props: IconProps) => <SvgIcon xml={url} {...props} />,

@@ -40,7 +40,36 @@ export const QUERY_TYPES = {
   WASTE_ADDRESSES: 'wasteAddresses',
   WASTE_STREET: 'wasteStreet',
   WEATHER_MAP: 'weatherMap',
-  WEATHER_MAP_CURRENT: 'weatherMapCurrent'
+  WEATHER_MAP_CURRENT: 'weatherMapCurrent',
+  CONSUL: {
+    DEBATES: 'debates',
+    DEBATE: 'debate',
+    START_DEBATE: 'startDebate',
+    UPDATE_DEBATE: 'updateDebate',
+    PROPOSALS: 'proposals',
+    PROPOSAL: 'proposal',
+    START_PROPOSAL: 'startProposal',
+    UPDATE_PROPOSAL: 'updateProposal',
+    POLLS: 'polls',
+    POLL: 'poll',
+    USER: 'user',
+    COMMENTS: 'comments',
+    PUBLIC_DEBATES: 'publicDebates',
+    PUBLIC_PROPOSALS: 'publicProposals',
+    PUBLIC_COMMENTS: 'publicComments',
+    PUBLIC_COMMENT: 'publicComment',
+    USER_SETTINGS: 'userSettings',
+    LOGOUT: 'logout',
+    SORTING: {
+      NEWESTDATE: 'newestDate',
+      MOSTACTIVE: 'mostActive',
+      HIGHESTRATED: 'highestRated'
+    },
+    FILTER: {
+      CURRENT: 'current',
+      EXPIRED: 'expired'
+    }
+  }
 };
 
 /**
