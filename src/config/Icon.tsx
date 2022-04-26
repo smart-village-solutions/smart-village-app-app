@@ -108,7 +108,6 @@ export const Icon = {
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
   Home: (props: IconProps) => <SvgIcon xml={home} {...props} />,
   NamedIcon,
-  EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
   HeartEmpty: (props: IconProps) => <SvgIcon xml={heartEmpty} {...props} />,
   HeartFilled: (props: IconProps) => <SvgIcon xml={heartFilled} {...props} />,
   Info: (props: IconProps) => <SvgIcon xml={info} {...props} />,
