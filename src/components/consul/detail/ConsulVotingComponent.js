@@ -66,13 +66,13 @@ export const ConsulVotingComponent = ({ votesData, onRefresh, id }) => {
             </Touchable>
           </WrapperRow>
 
-          {cachedVotesTotal > 0 ? (
-            <RegularText small>
-              {cachedVotesTotal} {texts.consul.votes}
-            </RegularText>
-          ) : (
-            <RegularText small>{texts.consul.noVotes}</RegularText>
-          )}
+          <RegularText small>
+            {cachedVotesTotal > 0
+              ? `${cachedVotesTotal} ${
+                  cachedVotesTotal > 1 ? texts.consul.votes : texts.consul.vote
+                }`
+              : texts.consul.noVotes}
+          </RegularText>
         </WrapperRow>
       </Wrapper>
     </>

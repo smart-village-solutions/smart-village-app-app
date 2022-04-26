@@ -85,7 +85,6 @@ export const texts = {
     next: 'Weiter',
     noReturn: 'Keine Rückmeldung',
     noVotes: 'Keine Bewertungen',
-    noVoting: 'Keine Bewertung',
     ok: 'OK',
     password: 'Passwort',
     passwordConfirmation: 'Passwort bestätigen',
