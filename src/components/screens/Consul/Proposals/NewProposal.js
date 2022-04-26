@@ -18,7 +18,7 @@ import { RegularText } from '../../../Text';
 import { Label } from '../../../Label';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 
-const TagCategories = [
+const TAG_CATEGORIES = [
   { name: 'Associations', id: 0, selected: false },
   { name: 'Culture', id: 1, selected: false },
   { name: 'Economy', id: 2, selected: false },
@@ -78,7 +78,7 @@ export const NewProposal = ({ navigation, data, query }) => {
 
   useEffect(() => {
     if (data?.tagList) {
-      TagCategories.map((item) => {
+      TAG_CATEGORIES.map((item) => {
         for (let i = 0; i < data?.tagList.length; i++) {
           const element = data?.tagList[i];
           if (item.name === element) {
@@ -86,12 +86,17 @@ export const NewProposal = ({ navigation, data, query }) => {
           }
         }
       });
-      setTags(TagCategories);
+      setTags(TAG_CATEGORIES);
+    } else {
+      for (let i = 0; i < TAG_CATEGORIES.length; i++) {
+        const element = TAG_CATEGORIES[i];
+        element.selected = false;
+      }
     }
   }, []);
 
   useEffect(() => {
-    setTags(TagCategories);
+    setTags(TAG_CATEGORIES);
     const selectedTag = tags.map((item) => {
       if (item.selected) return item.name;
     });
@@ -351,7 +356,7 @@ const Inputs = [
   {
     type: 'category',
     title: texts.consul.startNew.categoriesTitle,
-    category: TagCategories
+    category: TAG_CATEGORIES
   },
   {
     type: 'input',
