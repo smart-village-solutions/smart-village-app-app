@@ -1,16 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
+import { useForm } from 'react-hook-form';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
+import * as appJson from '../../../../app.json';
 import {
   BoldText,
   Button,
   DefaultKeyboardAvoidingView,
+  Input,
   LoadingModal,
   RegularText,
-  Input,
   SafeAreaViewFlex,
   Title,
   TitleContainer,
@@ -18,22 +19,19 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../../../components';
-import { colors, consts, Icon, normalize, texts } from '../../../config';
-import { CONSUL_LOGIN_USER, CONSUL_USER_SEND_PASSWORD_RESET } from '../../../queries/Consul';
+import { colors, consts, Icon, normalize, secrets, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { setConsulAuthToken, setConsulUser } from '../../../helpers';
+import { CONSUL_LOGIN_USER } from '../../../queries/Consul';
 import { ScreenName } from '../../../types';
 
 const { a11yLabel } = consts;
+const namespace = appJson.expo.slug;
+const serverUrl = secrets[namespace]?.consul?.serverUrl;
+const passwordForgotten = secrets[namespace]?.consul?.passwordForgotten;
 
 const showLoginFailAlert = () =>
   Alert.alert(texts.consul.loginFailedTitle, texts.consul.loginFailedBody);
-const showResetPasswordFailAlert = () =>
-  Alert.alert(texts.consul.resetPasswordFailedTitle, texts.consul.resetPasswordFailedBody);
-const showResetPasswordSuccessAlert = () =>
-  Alert.alert(texts.consul.resetPasswordSuccessTitle, texts.consul.resetPasswordSuccessBody);
-const showResetPasswordEmptyMailAlert = () =>
-  Alert.alert(texts.consul.resetPasswordFailedTitle, texts.consul.resetPasswordEmptyEmailBody);
 
 export const ConsulLoginScreen = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
@@ -42,9 +40,6 @@ export const ConsulLoginScreen = ({ navigation }) => {
   const { control, handleSubmit } = useForm();
 
   const [userLogin] = useMutation(CONSUL_LOGIN_USER, {
-    client: ConsulClient
-  });
-  const [userSendPasswordReset] = useMutation(CONSUL_USER_SEND_PASSWORD_RESET, {
     client: ConsulClient
   });
 
@@ -66,16 +61,6 @@ export const ConsulLoginScreen = ({ navigation }) => {
         setRegistrationLoading(false);
         showLoginFailAlert();
       });
-  };
-
-  const sendPasswordReset = async (val) => {
-    if (!val) {
-      return showResetPasswordEmptyMailAlert();
-    }
-
-    await userSendPasswordReset({ variables: { email: val, redirectUrl: 'null' } })
-      .then(() => showResetPasswordSuccessAlert())
-      .catch(() => showResetPasswordFailAlert());
   };
 
   return (
@@ -126,8 +111,13 @@ export const ConsulLoginScreen = ({ navigation }) => {
 
             <Wrapper>
               <Touchable
-                onPress={() => sendPasswordReset(control._fields.email._f.value)}
-                accessibilityLabel={`${a11yLabel.privacy} ${a11yLabel.button}`}
+                accessibilityLabel={`${texts.consul.passwordForgotten} ${a11yLabel.button}`}
+                onPress={() =>
+                  navigation.navigate(ScreenName.Web, {
+                    title: texts.consul.passwordForgotten,
+                    webUrl: `${serverUrl}${passwordForgotten}`
+                  })
+                }
               >
                 <RegularText small underline>
                   {texts.consul.passwordForgotten}
