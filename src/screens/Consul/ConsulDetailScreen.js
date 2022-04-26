@@ -31,7 +31,7 @@ const getComponent = (query) => {
 const showRegistrationFailAlert = (navigation) =>
   Alert.alert(texts.consul.serverErrorAlertTitle, texts.consul.serverErrorAlertBody, [
     {
-      text: texts.consul.tryAgain,
+      text: texts.consul.ok,
       onPress: () => navigation?.navigate(ScreenName.ConsulHomeScreen)
     }
   ]);

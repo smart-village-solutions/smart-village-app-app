@@ -87,7 +87,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
                 textContentType="emailAddress"
                 autoCompleteType="email"
                 autoCapitalize="none"
-                rules={{ required: texts.consul.emailError }}
+                rules={{ required: texts.consul.usernameOrEmailError }}
                 control={control}
               />
             </Wrapper>
