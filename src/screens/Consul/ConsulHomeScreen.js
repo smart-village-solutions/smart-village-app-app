@@ -1,18 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { useState, useEffect, useCallback } from 'react';
-import { RefreshControl, ScrollView, Text } from 'react-native';
+import { RefreshControl, ScrollView } from 'react-native';
 
-import { LoadingSpinner, SafeAreaViewFlex, ConsulWelcome, Touchable } from '../../components';
+import { LoadingSpinner, SafeAreaViewFlex, ConsulWelcome } from '../../components';
 import { colors } from '../../config';
 import { useConsulUser } from '../../hooks';
-import { homeData, setConsulAuthToken } from '../../helpers';
+import { getConsulUser, homeData } from '../../helpers';
 import { ConsulListComponent } from '../../components';
-import { ScreenName } from '../../types';
 
 export const ConsulHomeScreen = ({ navigation, route }) => {
-  // useState
   const [refreshingHome, setRefreshingHome] = useState(false);
+  const [userId, setUserId] = useState();
   const { refresh: refreshUser, isLoading, isError, isLoggedIn } = useConsulUser();
+
+  const userID = useCallback(() => {
+    getConsulUser().then((val) => {
+      if (val) return setUserId(JSON.parse(val).id);
+    });
+  }, [refreshUser]);
 
   const refresh = useCallback(() => {
     refreshUser();
@@ -29,6 +34,7 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
   };
 
   useEffect(refresh, [route.params?.refreshUser]);
+  useEffect(userID, [route.params?.refreshUser]);
 
   if (isLoading) {
     return <LoadingSpinner loading />;
@@ -50,17 +56,7 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
           />
         }
       >
-        <ConsulListComponent data={homeData} navigation={navigation} />
-        <Touchable
-          onPress={async () => {
-            await setConsulAuthToken();
-            navigation?.navigate(ScreenName.ConsulHomeScreen, {
-              refreshUser: new Date().valueOf()
-            });
-          }}
-        >
-          <Text>LogOut</Text>
-        </Touchable>
+        <ConsulListComponent data={homeData(userId)} navigation={navigation} />
       </ScrollView>
     </SafeAreaViewFlex>
   );

@@ -8,14 +8,15 @@ import { device, texts, consts } from '../../../config';
 
 import { ConsulTagListItem } from './ConsulTagListItem';
 
-const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 export const ConsulTagList = ({ tags, onPress }) => {
   return (
     <>
       <TitleContainer>
-        <Title accessibilityLabel={`(${text.tags}) ${a11yText.heading}`}>{text.tags}</Title>
+        <Title accessibilityLabel={`(${texts.consul.tags}) ${a11yText.heading}`}>
+          {texts.consul.tags}
+        </Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
 
@@ -25,8 +26,8 @@ export const ConsulTagList = ({ tags, onPress }) => {
             showsHorizontalScrollIndicator={false}
             horizontal
             data={tags}
-            renderItem={(item, index) => (
-              <ConsulTagListItem onPress={onPress} item={item} index={index} />
+            renderItem={({ item, index }) => (
+              <ConsulTagListItem onPress={onPress} tagItem={item} index={index} />
             )}
           />
         </WrapperRow>

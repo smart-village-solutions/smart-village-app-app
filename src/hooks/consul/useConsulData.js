@@ -63,6 +63,62 @@ const useProposal = ({ query, queryVariables }) => {
   };
 };
 
+const usePolls = ({ query, queryVariables }) => {
+  const { data, loading, error, refetch } = useQuery(getQuery(query), {
+    client: ConsulClient,
+    variables: queryVariables
+  });
+
+  return {
+    isLoading: loading,
+    isError: error,
+    data,
+    refetch
+  };
+};
+
+const usePoll = ({ query, queryVariables }) => {
+  const { data, loading, error, refetch } = useQuery(getQuery(query), {
+    client: ConsulClient,
+    variables: queryVariables
+  });
+
+  return {
+    isLoading: loading,
+    isError: error,
+    data,
+    refetch
+  };
+};
+
+const useUser = ({ query, queryVariables }) => {
+  const { data, loading, error, refetch } = useQuery(getQuery(query), {
+    client: ConsulClient,
+    variables: queryVariables
+  });
+
+  return {
+    isLoading: loading,
+    isError: error,
+    data,
+    refetch
+  };
+};
+
+const usePublicComment = ({ query, queryVariables }) => {
+  const { data, loading, error, refetch } = useQuery(getQuery(query), {
+    client: ConsulClient,
+    variables: queryVariables
+  });
+
+  return {
+    isLoading: loading,
+    isError: error,
+    data,
+    refetch
+  };
+};
+
 export const useConsulData = ({ query, queryVariables }) => {
   switch (query) {
     case QUERIES.DEBATES:
@@ -73,6 +129,14 @@ export const useConsulData = ({ query, queryVariables }) => {
       return useProposals({ query, queryVariables });
     case QUERIES.PROPOSAL:
       return useProposal({ query, queryVariables });
+    case QUERIES.POLLS:
+      return usePolls({ query, queryVariables });
+    case QUERIES.POLL:
+      return usePoll({ query, queryVariables });
+    case QUERIES.USER:
+      return useUser({ query, queryVariables });
+    case QUERIES.PUBLIC_COMMENT:
+      return usePublicComment({ query, queryVariables });
     default:
       null;
   }

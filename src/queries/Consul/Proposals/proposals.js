@@ -8,6 +8,7 @@ export const GET_PROPOSALS = gql`
         title
         publicCreatedAt
         commentsCount
+        cachedVotesUp
       }
     }
   }
@@ -25,6 +26,7 @@ export const GET_PROPOSAL = gql`
       publicCreatedAt
       cachedVotesUp
       commentsCount
+      published
       videoUrl
       publicAuthor {
         id
@@ -36,6 +38,18 @@ export const GET_PROPOSAL = gql`
           name
         }
       }
+      documents {
+        id
+        url
+        title
+      }
+      imageUrlMedium
+      mapLocation {
+        id
+        latitude
+        longitude
+        zoom
+      }
       comments {
         nodes {
           id
@@ -45,6 +59,11 @@ export const GET_PROPOSAL = gql`
           cachedVotesDown
           cachedVotesTotal
           publicCreatedAt
+          votesFor {
+            nodes {
+              voteFlag
+            }
+          }
           publicAuthor {
             id
             username

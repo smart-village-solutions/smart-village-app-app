@@ -1,18 +1,20 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet } from 'react-native';
+import { useMutation } from 'react-apollo';
 
 import { TitleContainer, Title, TitleShadow } from '../../Title';
 import { Wrapper, WrapperRow } from '../../Wrapper';
 import { texts, consts, device, colors, Icon, normalize } from '../../../config';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
+import { ConsulClient } from '../../../ConsulClient';
+import { CAST_VOTE_ON_DEBATE } from '../../../queries/Consul';
 
-const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
-export const ConsulVotingComponent = (votesData) => {
-  const { cachedVotesTotal, cachedVotesUp, cachedVotesDown } = votesData.votesData;
+export const ConsulVotingComponent = ({ votesData, onRefresh, id }) => {
+  const { cachedVotesTotal, cachedVotesUp, cachedVotesDown, votesFor } = votesData;
 
   let upVotesPercent = 0;
   let downVotesPercent = 0;
@@ -21,28 +23,42 @@ export const ConsulVotingComponent = (votesData) => {
     downVotesPercent = (cachedVotesDown * 100) / cachedVotesTotal;
   }
 
-  const onVoting = (like) => {
-    //TODO: I need mutation
+  const [castVoteOnDebate] = useMutation(CAST_VOTE_ON_DEBATE, {
+    client: ConsulClient
+  });
+
+  const onVoting = async (UpDown) => {
+    await castVoteOnDebate({ variables: { debateId: id, vote: UpDown } })
+      .then(() => {
+        onRefresh();
+      })
+      .catch((err) => console.error(err));
   };
 
   return (
     <>
       <TitleContainer>
-        <Title accessibilityLabel={`(${text.supports}) ${a11yText.heading}`}>{text.supports}</Title>
+        <Title accessibilityLabel={`(${texts.consul.supports}) ${a11yText.heading}`}>
+          {texts.consul.supports}
+        </Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
 
       <Wrapper>
         <WrapperRow spaceBetween>
           <WrapperRow>
-            <Touchable onPress={() => onVoting('like')} style={styles.iconButton}>
-              <Icon.Like color={colors.darkText} size={normalize(16)} style={styles.icon} />
+            <Touchable onPress={() => onVoting('up')} style={styles.iconButton}>
+              <Icon.Like
+                color={votesFor !== undefined && votesFor ? colors.primary : colors.darkText}
+                size={normalize(16)}
+                style={styles.icon}
+              />
               <RegularText smallest>%{upVotesPercent.toFixed(0)}</RegularText>
             </Touchable>
 
-            <Touchable onPress={() => onVoting('disslike')} style={styles.iconButton}>
+            <Touchable onPress={() => onVoting('down')} style={styles.iconButton}>
               <Icon.Like
-                color={colors.darkText}
+                color={votesFor !== undefined && !votesFor ? colors.error : colors.darkText}
                 style={[styles.icon, { transform: [{ rotateX: '180deg' }] }]}
                 size={normalize(16)}
               />
@@ -52,10 +68,10 @@ export const ConsulVotingComponent = (votesData) => {
 
           {cachedVotesTotal > 0 ? (
             <RegularText small>
-              {cachedVotesTotal} {text.votes}
+              {cachedVotesTotal} {texts.consul.votes}
             </RegularText>
           ) : (
-            <RegularText small>{text.noVotes}</RegularText>
+            <RegularText small>{texts.consul.noVotes}</RegularText>
           )}
         </WrapperRow>
       </Wrapper>
@@ -64,7 +80,9 @@ export const ConsulVotingComponent = (votesData) => {
 };
 
 ConsulVotingComponent.propTypes = {
-  votesData: PropTypes.object.isRequired
+  votesData: PropTypes.object.isRequired,
+  id: PropTypes.string,
+  onRefresh: PropTypes.func
 };
 
 const styles = StyleSheet.create({

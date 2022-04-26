@@ -3,7 +3,7 @@ import _shuffle from 'lodash/shuffle';
 
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
-import { GenericType } from '../../types';
+import { GenericType, ScreenName } from '../../types';
 import { eventDate, isBeforeEndOfToday, isTodayOrLater } from '../dateTimeHelper';
 import { getGenericItemDetailTitle, getGenericItemRootRouteName } from '../genericTypeHelper';
 import { mainImageOfMediaContents } from '../imageHelper';
@@ -198,28 +198,57 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
-const parseConsulData = (data, query, skipLastDivider) => {
-  return data?.nodes?.map((data, index) => ({
-    id: data.id,
-    title: data.title,
-    createdAt: data.publicCreatedAt,
-    totalVotes: data.cachedVotesTotal,
-    // subtitle: data.commentsCount ? data.commentsCount + ' Comment' : '0 Comment',
-    subtitle: momentFormatUtcToLocal(data.publicCreatedAt),
-    routeName: 'ConsulDetailScreen',
-    params: {
-      title: data.title,
-      query:
-        query === QUERY_TYPES.CONSUL.DEBATES
-          ? QUERY_TYPES.CONSUL.DEBATE
-          : QUERY_TYPES.CONSUL.PROPOSAL,
-      queryVariables: { id: data.id },
-      rootRouteName: ROOT_ROUTE_NAMES.CONSOLE_HOME
-    },
-    bottomDivider: !skipLastDivider || index !== data.length - 1
-  }));
+const querySwitcherforDetail = (query) => {
+  switch (query) {
+    case QUERY_TYPES.CONSUL.DEBATES:
+    case QUERY_TYPES.CONSUL.PUBLIC_DEBATES:
+      return QUERY_TYPES.CONSUL.DEBATE;
+    case QUERY_TYPES.CONSUL.PROPOSALS:
+    case QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS:
+      return QUERY_TYPES.CONSUL.PROPOSAL;
+    case QUERY_TYPES.CONSUL.POLLS:
+      return QUERY_TYPES.CONSUL.POLL;
+    case QUERY_TYPES.CONSUL.PUBLIC_COMMENTS:
+      return QUERY_TYPES.CONSUL.PUBLIC_COMMENT;
+    default:
+      break;
+  }
 };
+const parseConsulData = (data, query, skipLastDivider) => {
+  return data?.nodes?.map((consulData, index) => {
+    let subtitle = momentFormatUtcToLocal(
+      consulData.publicCreatedAt ? consulData.publicCreatedAt : consulData.createdAt
+    );
 
+    if (query === QUERY_TYPES.CONSUL.PUBLIC_COMMENTS) {
+      subtitle = consulData.commentableTitle;
+    } else if (query === QUERY_TYPES.CONSUL.POLLS) {
+      subtitle =
+        momentFormatUtcToLocal(consulData.startsAt) +
+        ' - ' +
+        momentFormatUtcToLocal(consulData.endsAt);
+    }
+
+    return {
+      id: consulData.id,
+      title: consulData.title ? consulData.title : consulData.body,
+      createdAt: consulData.publicCreatedAt,
+      totalVotes: consulData.cachedVotesTotal
+        ? consulData.cachedVotesTotal
+        : consulData.cachedVotesUp,
+      subtitle,
+      routeName: ScreenName.ConsulDetailScreen,
+      params: {
+        title: consulData.title ? consulData.title : consulData.body,
+        query: querySwitcherforDetail(query),
+        queryVariables: { id: consulData.id },
+        rootRouteName: ROOT_ROUTE_NAMES.CONSOLE_HOME
+      },
+      bottomDivider: !skipLastDivider || index !== consulData.length - 1
+    };
+  });
+};
+/* eslint-disable complexity */
 /**
  * Parses list items from query a query result
  * @param {string} query
@@ -250,6 +279,11 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parsePointsOfInterestAndTours(data);
     case QUERY_TYPES.CONSUL.DEBATES:
     case QUERY_TYPES.CONSUL.PROPOSALS:
+    case QUERY_TYPES.CONSUL.POLLS:
+    case QUERY_TYPES.CONSUL.PUBLIC_DEBATES:
+    case QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS:
+    case QUERY_TYPES.CONSUL.PUBLIC_COMMENTS:
       return parseConsulData(data[query], query, skipLastDivider);
   }
 };
+/* eslint-enable complexity */

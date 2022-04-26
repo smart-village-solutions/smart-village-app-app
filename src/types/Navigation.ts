@@ -19,8 +19,6 @@ export enum ScreenName {
   ConsulIndexScreen = 'ConsulIndexScreen',
   ConsulDetailScreen = 'ConsulDetailScreen',
   ConsulStartNewScreen = 'ConsulStartNewScreen',
-  ConsulVotingHomeScreen = 'ConsulVotingHomeScreen',
-  ConsulUserSettingsScreen = 'ConsulUserSettingsScreen',
   DataProvider = 'DataProvider',
   Detail = 'Detail',
   EncounterData = 'EncounterData',

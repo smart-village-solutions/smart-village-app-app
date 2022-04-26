@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
@@ -10,46 +11,56 @@ import { HtmlView } from '../../../HtmlView';
 import { Button } from '../../../Button';
 import {
   ConsulCommentList,
-  ConsulTagList,
-  ConsulSupportingComponent,
+  ConsulExternalVideoComponent,
   ConsulPublicAuthorComponent,
   ConsulSummaryComponent,
-  Input,
-  ConsulStartNewButton,
-  ConsulExternalVideoComponent
+  ConsulSupportingComponent,
+  ConsulTagList,
+  ConsulVideoComponent,
+  Input
 } from '../../../Consul';
-import { consts, device, texts } from '../../../../config';
+import { colors, consts, device, texts } from '../../../../config';
 import { useOpenWebScreen } from '../../../../hooks';
 import { ConsulClient } from '../../../../ConsulClient';
 import { ADD_COMMENT_TO_PROPOSAL, PUBLISH_PROPOSAL } from '../../../../queries/Consul';
 import { QUERY_TYPES } from '../../../../queries';
 import { BoldText, RegularText } from '../../../Text';
+import { getConsulUser } from '../../../../helpers';
+import { WebViewMap } from '../../../map';
+import { location, locationIconAnchor } from '../../../../icons';
+import { Image } from '../../../Image';
+import { ConsulDocumentList } from '../../../Consul/detail/ConsulDocumentList';
+import { ScreenName } from '../../../../types';
 
-const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
   const [loading, setLoading] = useState();
-  const [publishedProposal, setPublishedProposal] = useState(
-    route.params?.publishedProposal ?? true
-  );
+  const [userId, setUserId] = useState();
 
   const {
     cachedVotesUp,
     comments,
     commentsCount,
-    summary,
+    currentUserHasVoted,
     description,
+    documents,
     id,
+    imageUrlMedium,
+    mapLocation,
     publicAuthor,
     publicCreatedAt,
+    published,
+    summary,
     tags,
     title,
-    videoUrl,
-    currentUserHasVoted
+    videoUrl
   } = listData.proposal;
+
+  const latitude = mapLocation?.latitude;
+  const longitude = mapLocation?.longitude;
 
   const openWebScreen = useOpenWebScreen(
     route.params?.title ?? '',
@@ -57,10 +68,14 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     route.params?.rootRouteName
   );
 
-  // React Hook Form
+  useEffect(() => {
+    getConsulUser().then((val) => {
+      if (val) return setUserId(JSON.parse(val).id);
+    });
+  }, []);
+
   const { control, handleSubmit, reset } = useForm();
 
-  // GraphQL
   const [addCommentToProposal] = useMutation(ADD_COMMENT_TO_PROPOSAL, {
     client: ConsulClient
   });
@@ -70,21 +85,21 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
 
   const onSubmit = async (val) => {
     setLoading(true);
-    await addCommentToProposal({ variables: { proposalId: id, body: val.comment } })
-      .then(() => {
-        onRefresh();
 
-        setLoading(false);
-        reset({ comment: null });
-      })
-      .catch((err) => console.error(err));
+    try {
+      await addCommentToProposal({ variables: { proposalId: id, body: val.comment } });
+      onRefresh();
+      setLoading(false);
+      reset();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const proposalShare = async () => {
     setLoading(true);
     await publishProposal({ variables: { id: id } })
       .then(() => {
-        setPublishedProposal(true);
         onRefresh();
         setLoading(false);
       })
@@ -94,16 +109,14 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
   return (
     <SafeAreaViewFlex>
       <WrapperWithOrientation>
-        {/* Publish Proposal! */}
-        {!publishedProposal && (
+        {!published && (
           <Wrapper>
-            <BoldText>{text.publishProposalBold}</BoldText>
-            <RegularText>{text.publishProposalRegular}</RegularText>
-            <Button title={text.publishProposalButton} onPress={() => proposalShare()} />
+            <BoldText big>{texts.consul.publishProposalBold}</BoldText>
+            <RegularText>{texts.consul.publishProposalRegular}</RegularText>
+            <Button title={texts.consul.publishProposalButton} onPress={() => proposalShare()} />
           </Wrapper>
         )}
 
-        {/* Title! */}
         {!!title && (
           <>
             <TitleContainer>
@@ -113,10 +126,25 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
           </>
         )}
 
-        {/* Author! */}
         {!!publicAuthor && (
           <ConsulPublicAuthorComponent
+            onPress={() => {
+              navigation.push(ScreenName.ConsulStartNewScreen, {
+                title: texts.consul.startNew.updateButtonLabel,
+                query: QUERY_TYPES.CONSUL.UPDATE_PROPOSAL,
+                data: {
+                  title: title,
+                  tagList: tags.nodes.map((item) => item.name),
+                  description: description,
+                  termsOfService: true,
+                  summary: summary,
+                  videoUrl: videoUrl,
+                  id: id
+                }
+              });
+            }}
             authorData={{
+              userId: userId,
               publicAuthor: publicAuthor,
               commentsCount: commentsCount,
               publicCreatedAt: publicCreatedAt
@@ -124,42 +152,46 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
           />
         )}
 
-        {/* Summary! */}
+        {!!imageUrlMedium && (
+          <Image source={{ uri: imageUrlMedium }} containerStyle={styles.imageContainerStyle} />
+        )}
+
         {!!summary && <ConsulSummaryComponent summary={summary} />}
 
-        {/* Description! */}
+        {!!videoUrl && <ConsulVideoComponent videoUrl={videoUrl} />}
+
+        {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
+
         {!!description && (
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
         )}
 
-        {/* External Video */}
-        {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
+        {!!latitude && !!longitude && (
+          <>
+            <TitleContainer>
+              <Title accessibilityLabel={`(${texts.consul.locationTitle}) ${a11yText.heading}`}>
+                {texts.consul.locationTitle}
+              </Title>
+            </TitleContainer>
+            <WebViewMap
+              locations={[
+                {
+                  icon: location(colors.primary),
+                  iconAnchor: locationIconAnchor,
+                  position: { lat: latitude, lng: longitude }
+                }
+              ]}
+              zoom={14}
+            />
+          </>
+        )}
 
-        {/*TODO: I neet to User ID */}
-        {/* Proposal Edit Button */}
-        <ConsulStartNewButton
-          data={{
-            title: title,
-            tagList: tags.nodes.map((item) => item.name),
-            description: description,
-            termsOfService: true,
-            summary: summary,
-            videoUrl: videoUrl,
-            id: id
-          }}
-          navigation={navigation}
-          title={text.startNew.updateButtonLabel}
-          buttonTitle={text.startNew.updateButtonLabel}
-          query={QUERY_TYPES.CONSUL.UPDATE_PROPOSAL}
-        />
+        {!!documents && !!documents.length > 0 && <ConsulDocumentList documents={documents} />}
 
-        {/* Tag List! */}
         {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
 
-        {/* Voting Component! */}
-        {/*TODO: Mutation funksionert nicht*/}
         <ConsulSupportingComponent
           votesData={{
             onRefresh: onRefresh,
@@ -169,34 +201,37 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
           }}
         />
 
-        {/* Comments List! */}
         {!!comments && (
           <ConsulCommentList
             commentCount={commentsCount}
             commentsData={comments.nodes}
+            userId={userId}
             onRefresh={onRefresh}
+            navigation={navigation}
           />
         )}
 
-        {/* New Comment Input! */}
         <Wrapper>
           <Input
             keyboardType="default"
             textContentType="none"
             autoCompleteType="off"
             multiline
+            minHeight={50}
             name="comment"
-            label={text.commentLabel}
-            placeholder={text.comment}
+            label={texts.consul.commentLabel}
+            placeholder={texts.consul.comment}
             autoCapitalize="none"
-            rules={{ required: text.commentEmptyError }}
+            rules={{ required: texts.consul.commentEmptyError }}
             control={control}
           />
         </Wrapper>
         <Wrapper>
           <Button
             onPress={handleSubmit(onSubmit)}
-            title={loading ? text.submittingCommentButton : text.commentAnswerButton}
+            title={
+              loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
+            }
             disabled={loading}
           />
         </Wrapper>
@@ -209,8 +244,12 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
 ProposalDetail.propTypes = {
   listData: PropTypes.object.isRequired,
   navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
+    push: PropTypes.func.isRequired
   }).isRequired,
   onRefresh: PropTypes.func,
   route: PropTypes.object
 };
+
+const styles = StyleSheet.create({
+  imageContainerStyle: { alignSelf: 'center' }
+});

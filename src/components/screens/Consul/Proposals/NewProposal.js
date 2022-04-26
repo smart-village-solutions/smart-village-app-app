@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Alert, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Alert, TouchableOpacity, StyleSheet, ScrollView, View } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
 import { Input } from '../../../Consul';
-import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../../../Wrapper';
-import { texts, colors } from '../../../../config';
+import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
+import { texts, colors, secrets, namespace } from '../../../../config';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
 import { START_PROPOSAL, UPDATE_PROPOSAL } from '../../../../queries/Consul';
@@ -16,12 +16,8 @@ import { ScreenName } from '../../../../types';
 import { QUERY_TYPES } from '../../../../queries';
 import { RegularText } from '../../../Text';
 import { Label } from '../../../Label';
-import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 
-const text = texts.consul.startNew;
-const queryTypes = QUERY_TYPES.CONSUL;
-
-const kategorien = [
+const TAG_CATEGORIES = [
   { name: 'Associations', id: 0, selected: false },
   { name: 'Culture', id: 1, selected: false },
   { name: 'Economy', id: 2, selected: false },
@@ -39,7 +35,20 @@ const kategorien = [
   { name: 'Transparency', id: 14, selected: false }
 ];
 
-// Alerts
+//  // TODO:am 25.04.2022!!!
+//  imageAttributes: {
+// 	title: 'Profil.png',
+// 	cachedAttachment:
+// 		'/Users/ardasenturk/Development/SVA/consul-bb/public/system/images/cached_attachments/user/49/original/3dfe4b17e340624be2f74f822f15e36cadd8d6e1.png'
+// },
+// documentsAttributes: [
+// 	{
+// 		title: 'sample.pdf',
+// 		cachedAttachment:
+// 			'/Users/ardasenturk/Development/SVA/consul-bb/public/system/documents/cached_attachments/user/49/original/f2245afb48be5f906474ad929aacb7f91f408a23.pdf'
+// 	}
+// ],
+
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 const graphqlErr = (err) => Alert.alert('Hinweis', err);
@@ -49,7 +58,6 @@ export const NewProposal = ({ navigation, data, query }) => {
   const [startLoading, setStartLoading] = useState(false);
   const [tags, setTags] = useState([]);
 
-  // React Hook Form
   const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
       title: data?.title,
@@ -60,7 +68,6 @@ export const NewProposal = ({ navigation, data, query }) => {
     }
   });
 
-  // GraphQL
   const [submitProposal] = useMutation(START_PROPOSAL, {
     client: ConsulClient
   });
@@ -70,7 +77,7 @@ export const NewProposal = ({ navigation, data, query }) => {
 
   useEffect(() => {
     if (data?.tagList) {
-      kategorien.map((item) => {
+      TAG_CATEGORIES.map((item) => {
         for (let i = 0; i < data?.tagList.length; i++) {
           const element = data?.tagList[i];
           if (item.name === element) {
@@ -78,12 +85,17 @@ export const NewProposal = ({ navigation, data, query }) => {
           }
         }
       });
-      setTags(kategorien);
+      setTags(TAG_CATEGORIES);
+    } else {
+      for (let i = 0; i < TAG_CATEGORIES.length; i++) {
+        const element = TAG_CATEGORIES[i];
+        element.selected = false;
+      }
     }
   }, []);
 
   useEffect(() => {
-    setTags(kategorien);
+    setTags(TAG_CATEGORIES);
     const selectedTag = tags.map((item) => {
       if (item.selected) return item.name;
     });
@@ -109,18 +121,22 @@ export const NewProposal = ({ navigation, data, query }) => {
     if (!termsOfService) return showRegistrationFailAlert();
 
     switch (query) {
-      case queryTypes.START_PROPOSAL:
+      case QUERY_TYPES.CONSUL.START_PROPOSAL:
         setStartLoading(true);
         await submitProposal({
           variables: variables
         })
-          .then((val) => {
+          .then(() => {
             setStartLoading(false);
-            navigation.navigate(ScreenName.ConsulDetailScreen, {
-              query: QUERY_TYPES.CONSUL.PROPOSAL,
-              queryVariables: { id: val.data.submitProposal.id },
-              title: val.data.submitProposal.title,
-              publishedProposal: false
+            navigation.navigate(ScreenName.ConsulIndexScreen, {
+              title: texts.consul.homeScreen.proposals,
+              query: QUERY_TYPES.CONSUL.PROPOSALS,
+              queryVariables: {
+                limit: 15,
+                order: 'name_ASC',
+                category: texts.consul.homeScreen.proposals
+              },
+              rootRouteName: ScreenName.ConsulHomeScreen
             });
           })
           .catch((err) => {
@@ -129,10 +145,9 @@ export const NewProposal = ({ navigation, data, query }) => {
             setStartLoading(false);
           });
         break;
-      case queryTypes.UPDATE_PROPOSAL:
+      case QUERY_TYPES.CONSUL.UPDATE_PROPOSAL:
         setStartLoading(true);
 
-        //TODO: Mutation Error!
         await updateProposal({
           variables: variables
         })
@@ -157,72 +172,67 @@ export const NewProposal = ({ navigation, data, query }) => {
   if (startLoading) return <LoadingSpinner loading />;
 
   return (
-    <SafeAreaViewFlex>
-      <WrapperWithOrientation>
-        {Inputs.map((item, index) => (
-          <Wrapper key={index} style={styles.noPaddingTop}>
-            {item.type === 'input' && (
-              <>
-                <Input {...item} control={control} rules={item.rules} />
-              </>
-            )}
+    <>
+      {INPUTS.map((item, index) => (
+        <Wrapper key={index} style={styles.noPaddingTop}>
+          {item.type === ITEM_TYPES.TITLE && <Label>{item.title}</Label>}
 
-            {item.type === 'title' && (
-              <>
-                <Label>{item.title}</Label>
-              </>
-            )}
+          {item.type === ITEM_TYPES.INPUT && (
+            <Input {...item} control={control} rules={item.rules} />
+          )}
 
-            {item.type === 'infoText' && (
-              <>
-                <RegularText smallest placeholder>
-                  {item.title}
-                </RegularText>
-              </>
-            )}
+          {item.type === ITEM_TYPES.INFO_TEXT && (
+            <RegularText smallest placeholder>
+              {item.title}
+            </RegularText>
+          )}
 
-            {item.type === 'category' && (
-              <>
-                <Label>{item.title}</Label>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  {item.category.map((items, indexs) => (
-                    <TouchableOpacity
-                      key={indexs}
-                      style={[
-                        styles.tagContainer,
-                        {
-                          backgroundColor: items.selected ? colors.darkerPrimary : colors.borderRgba
-                        }
-                      ]}
-                      onPress={() => {
-                        if (items.selected) {
-                          items.selected = false;
-                        } else {
-                          items.selected = true;
-                        }
-                        setTags([]);
-                      }}
+          {item.type === ITEM_TYPES.CATEGORY && (
+            <>
+              <Label>{item.title}</Label>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {item.category.map((items, indexs) => (
+                  <TouchableOpacity
+                    key={indexs}
+                    activeOpacity={1}
+                    style={[
+                      styles.tagContainer,
+                      {
+                        backgroundColor: items.selected
+                          ? colors.lighterPrimary
+                          : colors.placeholder + '60'
+                      }
+                    ]}
+                    onPress={() => {
+                      if (items.selected) {
+                        items.selected = false;
+                      } else {
+                        items.selected = true;
+                      }
+                      setTags([]);
+                    }}
+                  >
+                    <RegularText
+                      small
+                      style={styles.tagText}
+                      lightest={items.selected ? true : false}
                     >
-                      <RegularText
-                        small
-                        style={styles.tagText}
-                        lighter={items.selected ? true : false}
-                      >
-                        {items.name}
-                      </RegularText>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </>
-            )}
-          </Wrapper>
-        ))}
+                      {items.name}
+                    </RegularText>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </>
+          )}
+        </Wrapper>
+      ))}
 
+      <Wrapper style={styles.noPaddingTop}>
         <WrapperHorizontal>
           <Checkbox
-            title={text.termsOfServiceLabel}
-            link={'https://beteiligung.bad-belzig.de/conditions'}
-            linkDescription={text.termsOfServiceLinkLabel}
+            title={texts.consul.startNew.termsOfServiceLabel}
+            link={`${secrets[namespace]?.consul.serverUrl}${secrets[namespace]?.consul.termsOfService}`}
+            linkDescription={texts.consul.startNew.termsOfServiceLinkLabel}
             checkedIcon="check-square-o"
             uncheckedIcon="square-o"
             checked={termsOfService}
@@ -234,16 +244,30 @@ export const NewProposal = ({ navigation, data, query }) => {
           <Button
             onPress={handleSubmit(onSubmit)}
             title={
-              query === queryTypes.START_PROPOSAL
-                ? text.newProposalStartButtonLabel
-                : text.updateButtonLabel
+              query === QUERY_TYPES.CONSUL.START_PROPOSAL
+                ? texts.consul.startNew.newProposalStartButtonLabel
+                : texts.consul.startNew.updateButtonLabel
             }
           />
         </Wrapper>
-      </WrapperWithOrientation>
-    </SafeAreaViewFlex>
+      </Wrapper>
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  noPaddingTop: {
+    paddingTop: 0
+  },
+  tagContainer: {
+    backgroundColor: colors.borderRgba,
+    margin: 5,
+    borderRadius: 5
+  },
+  tagText: {
+    padding: 10
+  }
+});
 
 NewProposal.propTypes = {
   navigation: PropTypes.shape({
@@ -254,74 +278,64 @@ NewProposal.propTypes = {
   query: PropTypes.string
 };
 
-const styles = StyleSheet.create({
-  tagContainer: {
-    backgroundColor: colors.borderRgba,
-    margin: 5,
-    borderRadius: 5
-  },
-  tagText: {
-    padding: 10
-  },
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});
+const ITEM_TYPES = {
+  INPUT: 'input',
+  INFO_TEXT: 'infoText',
+  TITLE: 'title',
+  CATEGORY: 'category'
+};
 
-const Inputs = [
+const INPUTS = [
   {
-    type: 'input',
+    type: ITEM_TYPES.INPUT,
     name: 'title',
-    label: text.newProposalTitleLabel,
-    placeholder: text.newProposalTitleLabel,
+    label: texts.consul.startNew.newProposalTitleLabel,
+    placeholder: texts.consul.startNew.newProposalTitleLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: text.leerError,
-      minLength: { value: 4, message: text.titleShortError }
+      required: texts.consul.startNew.leerError,
+      minLength: { value: 4, message: texts.consul.startNew.titleShortError }
     }
   },
   {
-    type: 'input',
+    type: ITEM_TYPES.INPUT,
     name: 'summary',
     multiline: true,
-    label: text.newProposalSummaryLabel,
-    placeholder: text.newProposalSummaryLabel,
+    label: texts.consul.startNew.newProposalSummaryLabel,
+    placeholder: texts.consul.startNew.newProposalSummaryLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: text.leerError,
-      maxLength: { value: 200, message: text.proposalSummaryInfo }
+      required: texts.consul.startNew.leerError,
+      maxLength: { value: 200, message: texts.consul.startNew.proposalSummaryInfo }
     }
   },
   {
-    type: 'infoText',
-    title: text.proposalSummaryInfo
-  },
-  {
-    type: 'input',
+    type: ITEM_TYPES.INPUT,
     name: 'description',
     multiline: true,
-    label: text.newProposalDescriptionLabel,
-    placeholder: text.newProposalDescriptionLabel,
+    label: texts.consul.startNew.newProposalDescriptionLabel,
+    placeholder: texts.consul.startNew.newProposalDescriptionLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
     autoCapitalize: 'none',
+    minHeight: 150,
     rules: {
-      required: text.leerError,
-      minLength: { value: 10, message: text.descriptionShortError }
+      required: texts.consul.startNew.leerError,
+      minLength: { value: 10, message: texts.consul.startNew.descriptionShortError }
     }
   },
   {
-    type: 'input',
+    type: ITEM_TYPES.INPUT,
     name: 'videoUrl',
-    label: text.newProposalExternesVideoUrlLabel,
-    placeholder: text.newProposalExternesVideoUrlLabel,
+    label: texts.consul.startNew.newProposalExternesVideoUrlLabel,
+    placeholder: texts.consul.startNew.newProposalExternesVideoUrlLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
@@ -329,29 +343,28 @@ const Inputs = [
     rules: { required: false }
   },
   {
-    type: 'infoText',
-    title: text.proposalVideoUrlInfo
+    type: ITEM_TYPES.INFO_TEXT,
+    title: texts.consul.startNew.proposalVideoUrlInfo
   },
   {
-    type: 'title',
-    title: text.tags
+    type: ITEM_TYPES.TITLE,
+    title: texts.consul.startNew.tags
   },
   {
-    type: 'infoText',
-    title: text.proposalTagInfo
-  },
-
-  {
-    type: 'category',
-    title: 'Kategorien',
-    category: kategorien
+    type: ITEM_TYPES.INFO_TEXT,
+    title: texts.consul.startNew.proposalTagInfo
   },
   {
-    type: 'input',
+    type: ITEM_TYPES.CATEGORY,
+    title: texts.consul.startNew.categoriesTitle,
+    category: TAG_CATEGORIES
+  },
+  {
+    type: ITEM_TYPES.INPUT,
     name: 'tagList',
     multiline: true,
-    label: text.newProposalTagLabel,
-    placeholder: text.tags,
+    label: texts.consul.startNew.newProposalTagLabel,
+    placeholder: texts.consul.startNew.tags,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',

@@ -10,7 +10,17 @@ import { Label } from '../../Label';
 const { a11yLabel } = consts;
 
 /* eslint-disable complexity */
-export const Input = ({ control, name, label, rules, multiline, rightIcon, row, ...props }) => {
+export const Input = ({
+  control,
+  name,
+  label,
+  rules,
+  multiline,
+  minHeight,
+  rightIcon,
+  row,
+  ...props
+}) => {
   const {
     field: { onBlur, onChange, value },
     fieldState: { error }
@@ -54,7 +64,8 @@ export const Input = ({ control, name, label, rules, multiline, rightIcon, row, 
       inputContainerStyle={[
         styles.inputContainer,
         !error && value && styles.inputContainerSuccess,
-        error && styles.inputContainerError
+        error && styles.inputContainerError,
+        multiline && { minHeight }
       ]}
       rightIconContainerStyle={styles.rightIconContainer}
       inputStyle={[styles.input, multiline && device.platform === 'ios' && styles.multiline]}
@@ -95,7 +106,8 @@ const styles = StyleSheet.create({
   input: {
     paddingLeft: normalize(12),
     paddingRight: normalize(6),
-    paddingVertical: device.platform === 'ios' ? normalize(10) : normalize(8)
+    paddingVertical: device.platform === 'ios' ? normalize(10) : normalize(8),
+    alignSelf: 'flex-start'
   },
   multiline: {
     paddingTop: normalize(12)
@@ -112,10 +124,12 @@ Input.propTypes = {
   multiline: PropTypes.bool,
   rightIcon: PropTypes.object,
   label: PropTypes.string,
-  row: PropTypes.bool
+  row: PropTypes.bool,
+  minHeight: PropTypes.number
 };
 
 Input.defaultProps = {
   row: false,
-  multiline: false
+  multiline: false,
+  minHeight: 100
 };

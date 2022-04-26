@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
@@ -13,27 +13,28 @@ import {
   ConsulTagList,
   ConsulVotingComponent,
   ConsulPublicAuthorComponent,
-  Input,
-  ConsulStartNewButton
+  Input
 } from '../../../Consul';
 import { consts, device, texts } from '../../../../config';
 import { useOpenWebScreen } from '../../../../hooks';
 import { ConsulClient } from '../../../../ConsulClient';
 import { ADD_COMMENT_TO_DEBATE } from '../../../../queries/Consul';
 import { QUERY_TYPES } from '../../../../queries';
+import { getConsulUser } from '../../../../helpers';
+import { ScreenName } from '../../../../types';
 
-const text = texts.consul;
 const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
   const [loading, setLoading] = useState();
+  const [userId, setUserId] = useState();
 
   const {
     cachedVotesDown,
-    cachedVotesUp,
     cachedVotesTotal,
+    cachedVotesUp,
     comments,
     commentsCount,
     description,
@@ -41,7 +42,8 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
     publicAuthor,
     publicCreatedAt,
     tags,
-    title
+    title,
+    votesFor
   } = listData.debate;
 
   const openWebScreen = useOpenWebScreen(
@@ -50,29 +52,34 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
     route.params?.rootRouteName
   );
 
-  // React Hook Form
+  useEffect(() => {
+    getConsulUser().then((val) => {
+      if (val) return setUserId(JSON.parse(val).id);
+    });
+  }, []);
+
   const { control, handleSubmit, reset } = useForm();
 
-  // GraphQL
   const [addCommentToDebate] = useMutation(ADD_COMMENT_TO_DEBATE, {
     client: ConsulClient
   });
 
   const onSubmit = async (val) => {
     setLoading(true);
-    await addCommentToDebate({ variables: { debateId: id, body: val.comment } })
-      .then(() => {
-        onRefresh();
-        setLoading(false);
-        reset({ comment: null });
-      })
-      .catch((err) => console.error(err));
+
+    try {
+      await addCommentToDebate({ variables: { debateId: id, body: val.comment } });
+      onRefresh();
+      setLoading(false);
+      reset();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <SafeAreaViewFlex>
       <WrapperWithOrientation>
-        {/* Title! */}
         {!!title && (
           <>
             <TitleContainer>
@@ -82,77 +89,76 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
           </>
         )}
 
-        {/* Author! */}
         {!!publicAuthor && (
           <ConsulPublicAuthorComponent
+            onPress={() => {
+              navigation.navigate(ScreenName.ConsulStartNewScreen, {
+                title: texts.consul.startNew.updateButtonLabel,
+                query: QUERY_TYPES.CONSUL.UPDATE_DEBATE,
+                data: {
+                  title: title,
+                  tagList: tags.nodes.map((item) => item.name),
+                  description: description,
+                  termsOfService: true,
+                  id: id
+                }
+              });
+            }}
             authorData={{
               publicAuthor: publicAuthor,
               commentsCount: commentsCount,
-              publicCreatedAt: publicCreatedAt
+              publicCreatedAt: publicCreatedAt,
+              userId: userId
             }}
           />
         )}
 
-        {/* Description! */}
         {!!description && (
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
         )}
 
-        {/*TODO: I neet to User ID */}
-        {/* Debate Edit Button */}
-        <ConsulStartNewButton
-          data={{
-            title: title,
-            tagList: tags.nodes.map((item) => item.name),
-            description: description,
-            termsOfService: true,
-            id: id
-          }}
-          navigation={navigation}
-          title={text.startNew.updateButtonLabel}
-          buttonTitle={text.startNew.updateButtonLabel}
-          query={QUERY_TYPES.CONSUL.UPDATE_DEBATE}
-        />
-
-        {/* Tag List! */}
         {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
 
-        {/* Voting Component! */}
-        {/*TODO: Mutation funksionert nicht*/}
         <ConsulVotingComponent
+          id={id}
+          onRefresh={onRefresh}
           votesData={{
             cachedVotesTotal: cachedVotesTotal,
             cachedVotesUp: cachedVotesUp,
-            cachedVotesDown: cachedVotesDown
+            cachedVotesDown: cachedVotesDown,
+            votesFor: votesFor.nodes[0]?.voteFlag
           }}
         />
 
-        {/* Comments List! */}
         {!!comments && (
           <ConsulCommentList
             commentCount={commentsCount}
             commentsData={comments.nodes}
+            userId={userId}
+            navigation={navigation}
             onRefresh={onRefresh}
           />
         )}
 
-        {/* New Comment Input! */}
         <Wrapper>
           <Input
             multiline
+            minHeight={50}
             name="comment"
-            label={text.commentLabel}
-            placeholder={text.comment}
+            label={texts.consul.commentLabel}
+            placeholder={texts.consul.comment}
             autoCapitalize="none"
-            rules={{ required: text.commentEmptyError }}
+            rules={{ required: texts.consul.commentEmptyError }}
             control={control}
           />
           <WrapperVertical>
             <Button
               onPress={handleSubmit(onSubmit)}
-              title={loading ? text.submittingCommentButton : text.commentAnswerButton}
+              title={
+                loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
+              }
               disabled={loading}
             />
           </WrapperVertical>

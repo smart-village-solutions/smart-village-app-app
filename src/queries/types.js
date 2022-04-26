@@ -32,10 +32,24 @@ export const QUERY_TYPES = {
     PROPOSAL: 'proposal',
     START_PROPOSAL: 'startProposal',
     UPDATE_PROPOSAL: 'updateProposal',
+    POLLS: 'polls',
+    POLL: 'poll',
+    USER: 'user',
+    COMMENTS: 'comments',
+    PUBLIC_DEBATES: 'publicDebates',
+    PUBLIC_PROPOSALS: 'publicProposals',
+    PUBLIC_COMMENTS: 'publicComments',
+    PUBLIC_COMMENT: 'publicComment',
+    USER_SETTINGS: 'userSettings',
+    LOGOUT: 'logout',
     SORTING: {
       NEWESTDATE: 'newestDate',
       MOSTACTIVE: 'mostActive',
       HIGHESTRATED: 'highestRated'
+    },
+    FILTER: {
+      CURRENT: 'current',
+      EXPIRED: 'expired'
     }
   }
 };

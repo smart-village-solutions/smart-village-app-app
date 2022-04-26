@@ -41,10 +41,6 @@ export const GET_DEBATE = gql`
       }
       votesFor {
         nodes {
-          id
-          publicCreatedAt
-          votableId
-          votableType
           voteFlag
         }
       }
@@ -61,6 +57,11 @@ export const GET_DEBATE = gql`
           commentableType
           confidenceScore
           publicCreatedAt
+          votesFor {
+            nodes {
+              voteFlag
+            }
+          }
           publicAuthor {
             id
             username

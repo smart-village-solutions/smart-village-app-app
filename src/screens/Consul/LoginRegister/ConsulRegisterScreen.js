@@ -19,34 +19,29 @@ import {
   WrapperHorizontal,
   WrapperWithOrientation
 } from '../../../components';
-import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { colors, consts, Icon, normalize, texts, secrets, namespace } from '../../../config';
 import { ScreenName } from '../../../types';
 import { CONSUL_REGISTER_USER } from '../../../queries/Consul';
 import { ConsulClient } from '../../../ConsulClient';
 
 const { a11yLabel } = consts;
-const text = texts.consul;
 
 const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-// Alerts
 const showRegistrationFailAlert = () =>
-  Alert.alert(text.registrationFailedTitle, text.registrationFailedBody);
+  Alert.alert(texts.consul.registrationFailedTitle, texts.consul.registrationFailedBody);
 
 const showPrivacyCheckedAlert = () =>
-  Alert.alert(text.privacyCheckRequireTitle, text.privacyCheckRequireBody);
+  Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 
 export const ConsulRegisterScreen = ({ navigation }) => {
-  // useState
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [termsOfService, settermsOfService] = useState(false);
   const [registrationLoading, setRegistrationLoading] = useState(false);
 
-  // React Hook Form
   const { control, handleSubmit, watch } = useForm();
   const pwd = watch('password');
 
-  // GraphQL
   const [userRegister] = useMutation(CONSUL_REGISTER_USER, {
     client: ConsulClient
   });
@@ -84,66 +79,70 @@ export const ConsulRegisterScreen = ({ navigation }) => {
               <Title
                 big
                 center
-                accessibilityLabel={`${text.registrationTitle} ${a11yLabel.heading}`}
+                accessibilityLabel={`${texts.consul.registrationTitle} ${a11yLabel.heading}`}
               >
-                {text.registrationTitle}
+                {texts.consul.registrationTitle}
               </Title>
             </TitleContainer>
+
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="name"
-                label={text.name}
-                placeholder={text.name}
+                label={texts.consul.name}
+                placeholder={texts.consul.name}
                 autoCapitalize="none"
-                rules={{ required: text.usernameError }}
+                rules={{ required: texts.consul.usernameError }}
                 control={control}
               />
             </Wrapper>
+
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="email"
-                label={text.email}
-                placeholder={text.email}
+                label={texts.consul.email}
+                placeholder={texts.consul.email}
                 keyboardType="email-address"
                 textContentType="emailAddress"
                 autoCompleteType="email"
                 autoCapitalize="none"
                 rules={{
-                  required: text.emailError,
-                  pattern: { value: EMAIL_REGEX, message: text.emailInvalid }
+                  required: texts.consul.emailError,
+                  pattern: { value: EMAIL_REGEX, message: texts.consul.emailInvalid }
                 }}
                 control={control}
               />
             </Wrapper>
+
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="password"
-                label={text.password}
-                placeholder={text.password}
+                label={texts.consul.password}
+                placeholder={texts.consul.password}
                 textContentType="password"
                 autoCompleteType="password"
                 secureTextEntry={secureTextEntry}
                 rightIcon={rightIcon(secureTextEntry, setSecureTextEntry)}
                 rules={{
-                  required: text.passwordError,
-                  minLength: { value: 8, message: text.passwordLengthError }
+                  required: texts.consul.passwordError,
+                  minLength: { value: 8, message: texts.consul.passwordLengthError }
                 }}
                 control={control}
               />
             </Wrapper>
+
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="password-repeat"
-                label={text.passwordConfirmation}
-                placeholder={text.passwordConfirmation}
+                label={texts.consul.passwordConfirmation}
+                placeholder={texts.consul.passwordConfirmation}
                 textContentType="password"
                 autoCompleteType="password"
                 secureTextEntry={secureTextEntry}
                 rightIcon={rightIcon(secureTextEntry, setSecureTextEntry)}
                 rules={{
-                  required: text.passwordError,
-                  minLength: { value: 8, message: text.passwordLengthError },
-                  validate: (value) => value === pwd || text.passwordDoNotMatch
+                  required: texts.consul.passwordError,
+                  minLength: { value: 8, message: texts.consul.passwordLengthError },
+                  validate: (value) => value === pwd || texts.consul.passwordDoNotMatch
                 }}
                 control={control}
               />
@@ -151,9 +150,9 @@ export const ConsulRegisterScreen = ({ navigation }) => {
 
             <WrapperHorizontal>
               <Checkbox
-                linkDescription={text.privacyCheckLink}
-                link={'https://www.google.de'}
-                title={text.privacyChecked}
+                linkDescription={texts.consul.privacyCheckLink}
+                link={`${secrets[namespace]?.consul.serverUrl}${secrets[namespace]?.consul.termsOfService}`}
+                title={texts.consul.privacyChecked}
                 checkedIcon="check-square-o"
                 uncheckedIcon="square-o"
                 checked={termsOfService}
@@ -164,16 +163,17 @@ export const ConsulRegisterScreen = ({ navigation }) => {
             <Wrapper>
               <Button
                 onPress={handleSubmit(onSubmit)}
-                title={text.next}
+                title={texts.consul.next}
                 disabled={registrationLoading}
               />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
-                  {text.abort.toUpperCase()}
+                  {texts.consul.abort.toUpperCase()}
                 </BoldText>
               </Touchable>
             </Wrapper>
           </WrapperWithOrientation>
+
           <LoadingModal loading={registrationLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>

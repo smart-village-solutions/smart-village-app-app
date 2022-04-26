@@ -1,28 +1,40 @@
+import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useState, useCallback } from 'react';
-import { Text, RefreshControl, ScrollView } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Alert, RefreshControl, ScrollView } from 'react-native';
 
 import {
-  LoadingSpinner,
   DebateDetail,
+  DefaultKeyboardAvoidingView,
+  LoadingSpinner,
+  PollDetail,
   ProposalDetail,
   SafeAreaViewFlex,
-  DefaultKeyboardAvoidingView
+  UserCommentDetail
 } from '../../components';
+import { colors, texts } from '../../config';
 import { useConsulData } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
-import { colors } from '../../config';
-
-const queryType = QUERY_TYPES.CONSUL;
+import { ScreenName } from '../../types';
 
 const getComponent = (query) => {
   const COMPONENTS = {
-    [queryType.DEBATE]: DebateDetail,
-    [queryType.PROPOSAL]: ProposalDetail
+    [QUERY_TYPES.CONSUL.DEBATE]: DebateDetail,
+    [QUERY_TYPES.CONSUL.PROPOSAL]: ProposalDetail,
+    [QUERY_TYPES.CONSUL.POLL]: PollDetail,
+    [QUERY_TYPES.CONSUL.PUBLIC_COMMENT]: UserCommentDetail
   };
 
   return COMPONENTS[query];
 };
+
+const showRegistrationFailAlert = (navigation) =>
+  Alert.alert(texts.consul.serverErrorAlertTitle, texts.consul.serverErrorAlertBody, [
+    {
+      text: texts.consul.tryAgain,
+      onPress: () => navigation?.navigate(ScreenName.ConsulHomeScreen)
+    }
+  ]);
 
 export const ConsulDetailScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
@@ -43,12 +55,19 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
     [setRefreshing]
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+
+      return;
+    }, [refetch])
+  );
+
   const Component = getComponent(query);
 
   if (isLoading) return <LoadingSpinner loading />;
 
-  // TODO: If Error true return error component
-  if (isError) return <Text>{isError.message}</Text>;
+  if (isError) showRegistrationFailAlert(navigation);
 
   if (!data || !Component) return null;
 
@@ -66,12 +85,7 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
             />
           }
         >
-          <Component
-            listData={data}
-            navigation={navigation}
-            route={route}
-            onRefresh={() => refresh(refetch)}
-          />
+          <Component listData={data} navigation={navigation} route={route} onRefresh={refetch} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

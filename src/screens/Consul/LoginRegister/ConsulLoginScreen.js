@@ -1,16 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
+import { useForm } from 'react-hook-form';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
+import * as appJson from '../../../../app.json';
 import {
   BoldText,
   Button,
   DefaultKeyboardAvoidingView,
+  Input,
   LoadingModal,
   RegularText,
-  Input,
   SafeAreaViewFlex,
   Title,
   TitleContainer,
@@ -18,38 +19,27 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../../../components';
-import { colors, consts, Icon, normalize, texts } from '../../../config';
-import { CONSUL_LOGIN_USER, CONSUL_USER_SEND_PASSWORD_RESET } from '../../../queries/Consul';
+import { colors, consts, Icon, normalize, secrets, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
-import { setConsulAuthToken } from '../../../helpers';
+import { setConsulAuthToken, setConsulUser } from '../../../helpers';
+import { CONSUL_LOGIN_USER } from '../../../queries/Consul';
 import { ScreenName } from '../../../types';
 
 const { a11yLabel } = consts;
-const text = texts.consul;
+const namespace = appJson.expo.slug;
+const serverUrl = secrets[namespace]?.consul?.serverUrl;
+const passwordForgotten = secrets[namespace]?.consul?.passwordForgotten;
 
-// Alert
-
-const showLoginFailAlert = () => Alert.alert(text.loginFailedTitle, text.loginFailedBody);
-const showResetPasswordFailAlert = () =>
-  Alert.alert(text.resetPasswordFailedTitle, text.resetPasswordFailedBody);
-const showResetPasswordSuccessAlert = () =>
-  Alert.alert(text.resetPasswordSuccessTitle, text.resetPasswordSuccessBody);
-const showResetPasswordEmptyMailAlert = () =>
-  Alert.alert(text.resetPasswordFailedTitle, text.resetPasswordEmptyEmailBody);
+const showLoginFailAlert = () =>
+  Alert.alert(texts.consul.loginFailedTitle, texts.consul.loginFailedBody);
 
 export const ConsulLoginScreen = ({ navigation }) => {
-  // useState
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [registrationLoading, setRegistrationLoading] = useState(false);
 
-  // React Hook Form
   const { control, handleSubmit } = useForm();
 
-  // GraphQL
   const [userLogin] = useMutation(CONSUL_LOGIN_USER, {
-    client: ConsulClient
-  });
-  const [userSendPasswordReset] = useMutation(CONSUL_USER_SEND_PASSWORD_RESET, {
     client: ConsulClient
   });
 
@@ -58,13 +48,13 @@ export const ConsulLoginScreen = ({ navigation }) => {
     await userLogin({ variables: { email: val.email, password: val.password } })
       .then(async (val) => {
         await setConsulAuthToken(val.data.userLogin?.credentials);
+        await setConsulUser(val.data.userLogin?.authenticatable);
 
         navigation?.navigate(ScreenName.ConsulHomeScreen, {
           refreshUser: new Date().valueOf()
         });
 
         setRegistrationLoading(false);
-        Alert.alert('Success', 'Success');
       })
       .catch((err) => {
         console.error(err.message);
@@ -73,78 +63,82 @@ export const ConsulLoginScreen = ({ navigation }) => {
       });
   };
 
-  const sendPasswordReset = async (val) => {
-    if (!val) {
-      return showResetPasswordEmptyMailAlert();
-    }
-
-    await userSendPasswordReset({ variables: { email: val, redirectUrl: 'null' } })
-      .then(() => showResetPasswordSuccessAlert())
-      .catch(() => showResetPasswordFailAlert());
-  };
-
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
           <WrapperWithOrientation>
             <TitleContainer>
-              <Title big center accessibilityLabel={`${text.loginTitle} ${a11yLabel.heading}`}>
-                {text.loginTitle}
+              <Title
+                big
+                center
+                accessibilityLabel={`${texts.consul.loginTitle} ${a11yLabel.heading}`}
+              >
+                {texts.consul.loginTitle}
               </Title>
             </TitleContainer>
+
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="email"
-                label={text.usernameOrEmail}
-                placeholder={text.usernameOrEmail}
+                label={texts.consul.usernameOrEmail}
+                placeholder={texts.consul.usernameOrEmail}
                 keyboardType="email-address"
                 textContentType="emailAddress"
                 autoCompleteType="email"
                 autoCapitalize="none"
-                rules={{ required: text.emailError }}
+                rules={{ required: texts.consul.emailError }}
                 control={control}
               />
             </Wrapper>
+
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="password"
-                label={text.password}
-                placeholder={text.password}
+                label={texts.consul.password}
+                placeholder={texts.consul.password}
                 textContentType="password"
                 autoCompleteType="password"
                 secureTextEntry={secureTextEntry}
                 rightIcon={rightIcon(secureTextEntry, setSecureTextEntry)}
                 rules={{
-                  required: text.passwordError,
-                  minLength: { value: 8, message: text.passwordLengthError }
+                  required: texts.consul.passwordError,
+                  minLength: { value: 8, message: texts.consul.passwordLengthError }
                 }}
                 control={control}
               />
             </Wrapper>
+
             <Wrapper>
               <Touchable
-                onPress={() => sendPasswordReset(control._fields.email._f.value)}
-                accessibilityLabel={`${a11yLabel.privacy} ${a11yLabel.button}`}
+                accessibilityLabel={`${texts.consul.passwordForgotten} ${a11yLabel.button}`}
+                onPress={() =>
+                  navigation.navigate(ScreenName.Web, {
+                    title: texts.consul.passwordForgotten,
+                    webUrl: `${serverUrl}${passwordForgotten}`
+                  })
+                }
               >
                 <RegularText small underline>
-                  {text.passwordForgotten}
+                  {texts.consul.passwordForgotten}
                 </RegularText>
               </Touchable>
             </Wrapper>
+
             <Wrapper>
               <Button
                 onPress={handleSubmit(onSubmit)}
-                title={text.login}
+                title={texts.consul.login}
                 disabled={registrationLoading}
               />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
-                  {text.abort.toUpperCase()}
+                  {texts.consul.abort.toUpperCase()}
                 </BoldText>
               </Touchable>
             </Wrapper>
           </WrapperWithOrientation>
+
           <LoadingModal loading={registrationLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>

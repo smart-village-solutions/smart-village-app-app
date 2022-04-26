@@ -1,41 +1,65 @@
 import PropTypes from 'prop-types';
 import React, { useState, useCallback, useEffect } from 'react';
-import { RefreshControl, Text } from 'react-native';
+import { RefreshControl, Alert } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 
-import { LoadingSpinner, SafeAreaViewFlex, Debates, Proposals } from '../../components';
-import { parseListItemsFromQuery, sortingHelper } from '../../helpers';
+import {
+  LoadingSpinner,
+  SafeAreaViewFlex,
+  Debates,
+  Proposals,
+  Polls,
+  User
+} from '../../components';
+import { filterHelper, parseListItemsFromQuery, sortingHelper } from '../../helpers';
 import { colors } from '../../config';
 import { useConsulData } from '../../hooks';
 import { texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { IndexFilterWrapperAndList } from '../../components';
+import { ScreenName } from '../../types';
 
-const text = texts.consul.sorting;
-const type = QUERY_TYPES.CONSUL.SORTING;
-const queryType = QUERY_TYPES.CONSUL;
+const { MOSTACTIVE, HIGHESTRATED, NEWESTDATE } = QUERY_TYPES.CONSUL.SORTING;
+const { CURRENT, EXPIRED } = QUERY_TYPES.CONSUL.FILTER;
 
 const INITIAL_TOP_SORTING = [
-  { id: type.MOSTACTIVE, title: text.mostActive, selected: true },
-  { id: type.HIGHESTRATED, title: text.highestRated, selected: false },
-  { id: type.NEWESTDATE, title: text.newest, selected: false }
+  { id: MOSTACTIVE, title: texts.consul.sorting.mostActive, selected: true },
+  { id: HIGHESTRATED, title: texts.consul.sorting.highestRated, selected: false },
+  { id: NEWESTDATE, title: texts.consul.sorting.newest, selected: false }
+];
+
+const INITIAL_TOP_FILTERING_FOR_POLLS = [
+  { id: CURRENT, title: texts.consul.filter.current, selected: true },
+  { id: EXPIRED, title: texts.consul.filter.expired, selected: false }
 ];
 
 const getComponent = (query) => {
   const COMPONENTS = {
-    [queryType.DEBATES]: Debates,
-    [queryType.PROPOSALS]: Proposals
+    [QUERY_TYPES.CONSUL.DEBATES]: Debates,
+    [QUERY_TYPES.CONSUL.PROPOSALS]: Proposals,
+    [QUERY_TYPES.CONSUL.POLLS]: Polls,
+    [QUERY_TYPES.CONSUL.USER]: User
   };
   return COMPONENTS[query];
 };
 
+const showRegistrationFailAlert = (navigation) =>
+  Alert.alert(texts.consul.serverErrorAlertTitle, texts.consul.serverErrorAlertBody, [
+    {
+      text: texts.consul.tryAgain,
+      onPress: () => navigation?.navigate(ScreenName.ConsulHomeScreen)
+    }
+  ]);
+
+/* eslint-disable complexity */
 export const ConsulIndexScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
-  const [listData, setListData] = useState([]);
-  const [sorting, setSorting] = useState(INITIAL_TOP_SORTING);
-  const [sortingLoading, setSortingLoading] = useState(true);
+  const [sortingType, setSortingType] = useState(INITIAL_TOP_SORTING);
+  const [filterType, setFilterType] = useState(INITIAL_TOP_FILTERING_FOR_POLLS);
+  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const bookmarkable = route.params?.bookmarkable;
   const query = route.params?.query ?? '';
-  const queryVariables = route.params?.queryVariables ?? {};
+  const extraQuery = route.params?.extraQuery ?? '';
 
   const { data, refetch, isLoading, isError } = useConsulData({
     query,
@@ -47,14 +71,25 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
     skipLastDivider: true
   });
 
+  let type = sortingType.find((data) => data.selected);
+
+  const listData = useCallback(
+    (listItems) => {
+      type = sortingType.find((data) => data.selected);
+
+      if (query !== QUERY_TYPES.CONSUL.USER || query !== QUERY_TYPES.CONSUL.POLLS)
+        sortingHelper(type.id, listItems).catch((err) => console.error(err));
+
+      if (listItems) return listItems;
+    },
+    [sortingType, filterType, isLoading]
+  );
+
   useEffect(() => {
-    setSortingLoading(true);
-    let type = sorting.find((data) => data.selected);
-    sortingHelper(type.id, listItems)
-      .then((val) => setListData(val))
-      .then(() => setSortingLoading(false))
-      .catch((err) => console.error(err));
-  }, [sorting, isLoading]);
+    type = filterType.find((data) => data.selected);
+    if (query === QUERY_TYPES.CONSUL.POLLS)
+      filterHelper(type.id).then((val) => setQueryVariables(val));
+  }, [filterType]);
 
   const refresh = useCallback(
     async (refetch) => {
@@ -65,24 +100,38 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
     [setRefreshing]
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+
+      return;
+    }, [refetch])
+  );
+
   const Component = getComponent(query);
 
-  if (isLoading || sortingLoading) return <LoadingSpinner loading />;
+  if (isLoading) return <LoadingSpinner loading />;
 
-  // TODO: If Error true return error component
-  if (isError) return <Text>{isError.message}</Text>;
+  if (isError) showRegistrationFailAlert(navigation);
 
-  if (!listData || !Component) return null;
+  if ((query !== QUERY_TYPES.CONSUL.USER && !listItems) || !Component) return null;
 
   return (
     <SafeAreaViewFlex>
-      <IndexFilterWrapperAndList filter={sorting} setFilter={setSorting} />
+      {query === QUERY_TYPES.CONSUL.POLLS && (
+        <IndexFilterWrapperAndList filter={filterType} setFilter={setFilterType} />
+      )}
+      {query !== QUERY_TYPES.CONSUL.USER && query !== QUERY_TYPES.CONSUL.POLLS && (
+        <IndexFilterWrapperAndList filter={sortingType} setFilter={setSortingType} />
+      )}
 
       <Component
         query={query}
-        listData={listData}
+        listData={listData(listItems)}
+        data={data}
         navigation={navigation}
         route={route}
+        extraQuery={extraQuery}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -95,6 +144,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 ConsulIndexScreen.propTypes = {
   navigation: PropTypes.shape({

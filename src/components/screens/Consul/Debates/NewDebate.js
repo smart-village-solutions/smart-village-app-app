@@ -1,26 +1,21 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
 
 import { Input } from '../../../Consul';
 import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../../../Wrapper';
-import { texts } from '../../../../config';
+import { texts, secrets, namespace } from '../../../../config';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
-import { START_DEBATE } from '../../../../queries/Consul';
+import { START_DEBATE, UPDATE_DEBATE } from '../../../../queries/Consul';
 import { ConsulClient } from '../../../../ConsulClient';
 import { LoadingSpinner } from '../../../LoadingSpinner';
 import { ScreenName } from '../../../../types';
 import { QUERY_TYPES } from '../../../../queries';
-import { UPDATE_DEBATE } from '../../../../queries/Consul/Debates/updateDebate';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 
-const text = texts.consul.startNew;
-const queryTypes = QUERY_TYPES.CONSUL;
-
-// Alerts
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 const graphqlErr = (err) => Alert.alert('Hinweis', err);
@@ -29,7 +24,6 @@ export const NewDebate = ({ navigation, data, query }) => {
   const [termsOfService, settermsOfService] = useState(data?.termsOfService ?? false);
   const [startLoading, setStartLoading] = useState(false);
 
-  // React Hook Form
   const { control, handleSubmit } = useForm({
     defaultValues: {
       title: data?.title,
@@ -38,7 +32,6 @@ export const NewDebate = ({ navigation, data, query }) => {
     }
   });
 
-  // GraphQL
   const [startDebate] = useMutation(START_DEBATE, {
     client: ConsulClient
   });
@@ -60,18 +53,24 @@ export const NewDebate = ({ navigation, data, query }) => {
     };
 
     if (!termsOfService) return showRegistrationFailAlert();
+
     switch (query) {
-      case queryTypes.START_DEBATE:
+      case QUERY_TYPES.CONSUL.START_DEBATE:
         setStartLoading(true);
         await startDebate({
           variables: variables
         })
-          .then((val) => {
+          .then(() => {
             setStartLoading(false);
-            navigation.navigate(ScreenName.ConsulDetailScreen, {
-              query: QUERY_TYPES.CONSUL.DEBATE,
-              queryVariables: { id: val.data.startDebate.id },
-              title: val.data.startDebate.title
+            navigation.navigate(ScreenName.ConsulIndexScreen, {
+              title: texts.consul.homeScreen.debates,
+              query: QUERY_TYPES.CONSUL.DEBATES,
+              queryVariables: {
+                limit: 15,
+                order: 'name_ASC',
+                category: texts.consul.homeScreen.debates
+              },
+              rootRouteName: ScreenName.ConsulHomeScreen
             });
           })
           .catch((err) => {
@@ -80,7 +79,7 @@ export const NewDebate = ({ navigation, data, query }) => {
             setStartLoading(false);
           });
         break;
-      case queryTypes.UPDATE_DEBATE:
+      case QUERY_TYPES.CONSUL.UPDATE_DEBATE:
         setStartLoading(true);
         await updateDebate({
           variables: variables
@@ -106,19 +105,19 @@ export const NewDebate = ({ navigation, data, query }) => {
   if (startLoading) return <LoadingSpinner loading />;
 
   return (
-    <SafeAreaViewFlex>
-      <WrapperWithOrientation>
-        {Inputs.map((item, index) => (
-          <Wrapper key={index} style={styles.noPaddingTop}>
-            <Input {...item} control={control} rules={item.rules} />
-          </Wrapper>
-        ))}
+    <>
+      {INPUTS.map((item, index) => (
+        <Wrapper key={index} style={styles.noPaddingTop}>
+          <Input {...item} control={control} rules={item.rules} />
+        </Wrapper>
+      ))}
 
+      <Wrapper style={styles.noPaddingTop}>
         <WrapperHorizontal>
           <Checkbox
-            title={text.termsOfServiceLabel}
-            link={'https://beteiligung.bad-belzig.de/conditions'}
-            linkDescription={text.termsOfServiceLinkLabel}
+            title={texts.consul.startNew.termsOfServiceLabel}
+            link={`${secrets[namespace]?.consul.serverUrl}${secrets[namespace]?.consul.termsOfService}`}
+            linkDescription={texts.consul.startNew.termsOfServiceLinkLabel}
             checkedIcon="check-square-o"
             uncheckedIcon="square-o"
             checked={termsOfService}
@@ -130,16 +129,22 @@ export const NewDebate = ({ navigation, data, query }) => {
           <Button
             onPress={handleSubmit(onSubmit)}
             title={
-              query === queryTypes.START_DEBATE
-                ? text.newDebateStartButtonLabel
-                : text.updateButtonLabel
+              query === QUERY_TYPES.CONSUL.START_DEBATE
+                ? texts.consul.startNew.newDebateStartButtonLabel
+                : texts.consul.startNew.updateButtonLabel
             }
           />
         </Wrapper>
-      </WrapperWithOrientation>
-    </SafeAreaViewFlex>
+      </Wrapper>
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  noPaddingTop: {
+    paddingTop: 0
+  }
+});
 
 NewDebate.propTypes = {
   navigation: PropTypes.shape({
@@ -150,44 +155,40 @@ NewDebate.propTypes = {
   query: PropTypes.string
 };
 
-const styles = StyleSheet.create({
-  noPaddingTop: {
-    paddingTop: 0
-  }
-});
-
-const Inputs = [
+const INPUTS = [
   {
     name: 'title',
-    label: text.newDebateTitleLabel,
-    placeholder: text.newDebateTitleLabel,
+    label: texts.consul.startNew.newDebateTitleLabel,
+    placeholder: texts.consul.startNew.newDebateTitleLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: text.emailError,
+      required: texts.consul.startNew.emailError,
       minLength: { value: 4, message: 'ist zu kurz (minimum 4 Zeichen)' }
     }
   },
   {
     name: 'description',
     multiline: true,
-    label: text.newDebateDescriptionLabel,
-    placeholder: text.newDebateDescriptionLabel,
+    minHeight: 150,
+    label: texts.consul.startNew.newDebateDescriptionLabel,
+    placeholder: texts.consul.startNew.newDebateDescriptionLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: text.emailError,
+      required: texts.consul.startNew.emailError,
       minLength: { value: 10, message: 'ist zu kurz (minimum 10 Zeichen)' }
     }
   },
   {
     name: 'tagList',
-    label: text.newDebateTagLabel,
-    placeholder: text.newDebateTagLabel,
+    multiline: true,
+    label: texts.consul.startNew.tags,
+    placeholder: texts.consul.startNew.newDebateTagLabel,
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
