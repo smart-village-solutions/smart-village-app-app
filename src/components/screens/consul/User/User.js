@@ -36,21 +36,17 @@ export const User = ({ navigation, data, route, extraQuery, refreshControl }) =>
 
   const Component = getComponent(query);
 
-  if (!Component || !listItems) return null;
+  if (!Component) return null;
 
   return (
-    <>
-      {!listItems.length > 0 && <EmptyMessage title={texts.empty.list} />}
-
-      <Component
-        myContent={true}
-        query={query}
-        listData={listItems}
-        navigation={navigation}
-        route={route}
-        refreshControl={refreshControl}
-      />
-    </>
+    <Component
+      myContent={true}
+      query={query}
+      data={listItems}
+      navigation={navigation}
+      route={route}
+      refreshControl={refreshControl}
+    />
   );
 };
 

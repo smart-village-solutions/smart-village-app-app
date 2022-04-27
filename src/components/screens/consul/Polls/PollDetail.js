@@ -20,7 +20,7 @@ const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
+export const PollDetail = ({ data, onRefresh, route, navigation }) => {
   const [loading, setLoading] = useState();
   const [userId, setUserId] = useState();
 
@@ -34,7 +34,7 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
     summary,
     title,
     token
-  } = listData.poll;
+  } = data.poll;
 
   const endsDate = new Date(endsAt).getTime();
   const currentDate = new Date().getTime();
@@ -143,7 +143,7 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
 /* eslint-enable complexity */
 
 PollDetail.propTypes = {
-  listData: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired
   }).isRequired,

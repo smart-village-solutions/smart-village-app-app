@@ -6,6 +6,7 @@ import { useQuery } from 'react-query';
 
 import {
   DefaultKeyboardAvoidingView,
+  EmptyMessage,
   LoadingSpinner,
   PointOfInterest,
   SafeAreaViewFlex,
@@ -16,7 +17,7 @@ import {
   VolunteerTask,
   VolunteerUser
 } from '../../components';
-import { colors } from '../../config';
+import { colors, texts } from '../../config';
 import { additionalData, myTasks } from '../../helpers/parser/volunteer';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { VolunteerQuery } from '../../types';
@@ -64,17 +65,15 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
     return <LoadingSpinner loading />;
   }
 
-  // there could be no access to detailed, so we want to show the data we have already fetched
+  // there could be no access to details, so we want to show the data we have already fetched
   // with index query as details
-  const componentData = dummyData || (data?.code !== 403 ? data : details);
-
   // we can have `data` from the query or `details` from the previous list view.
   // if there is no cached `data` or network fetched `data` we fallback to the `details`.
-  if (!componentData) return null;
+  const componentData = dummyData || (data?.code !== 403 ? data : details);
 
   const Component = getComponent(query);
 
-  if (!Component) return null;
+  if (!Component || !componentData) return <EmptyMessage title={texts.empty.content} />;
 
   if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
     return (

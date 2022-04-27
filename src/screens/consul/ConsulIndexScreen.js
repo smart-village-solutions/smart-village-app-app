@@ -115,7 +115,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
   if (isError) showRegistrationFailAlert(navigation);
 
-  if ((query !== QUERY_TYPES.CONSUL.USER && !listItems) || !Component) return null;
+  if (!Component) return null;
 
   return (
     <SafeAreaViewFlex>
@@ -126,12 +126,9 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
         <IndexFilterWrapperAndList filter={sortingType} setFilter={setSortingType} />
       )}
 
-      {!listItems.length > 0 && <EmptyMessage title={texts.empty.list} />}
-
       <Component
         query={query}
-        listData={listData(listItems)}
-        data={data}
+        data={query === QUERY_TYPES.CONSUL.USER ? data : listData(listItems)}
         navigation={navigation}
         route={route}
         extraQuery={extraQuery}
