@@ -9,7 +9,8 @@ import {
   Debates,
   Proposals,
   Polls,
-  User
+  User,
+  EmptyMessage
 } from '../../components';
 import { filterHelper, parseListItemsFromQuery, sortingHelper } from '../../helpers';
 import { colors } from '../../config';
@@ -108,14 +109,13 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
       return;
     }, [refetch])
   );
-
   const Component = getComponent(query);
 
   if (isLoading) return <LoadingSpinner loading />;
 
   if (isError) showRegistrationFailAlert(navigation);
 
-  if ((query !== QUERY_TYPES.CONSUL.USER && !listItems) || !Component) return null;
+  if (!Component) return null;
 
   return (
     <SafeAreaViewFlex>
@@ -128,8 +128,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
       <Component
         query={query}
-        listData={listData(listItems)}
-        data={data}
+        data={query === QUERY_TYPES.CONSUL.USER ? data : listData(listItems)}
         navigation={navigation}
         route={route}
         extraQuery={extraQuery}

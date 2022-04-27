@@ -42,9 +42,7 @@ export const Widgets = ({ widgetConfigs }: Props) => {
 
     const Component = EXISTING_WIDGETS[widgetName];
 
-    if (!Component) {
-      return null;
-    }
+    if (!Component) return null;
 
     return <Component key={index} additionalProps={additionalProps} text={widgetText} />;
   });

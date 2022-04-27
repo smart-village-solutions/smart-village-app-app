@@ -27,7 +27,7 @@ const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
+export const DebateDetail = ({ data, onRefresh, route, navigation }) => {
   const [loading, setLoading] = useState();
   const [userId, setUserId] = useState();
 
@@ -44,7 +44,7 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
     tags,
     title,
     votesFor
-  } = listData.debate;
+  } = data.debate;
 
   const openWebScreen = useOpenWebScreen(
     route.params?.title ?? '',
@@ -177,7 +177,7 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
 /* eslint-enable complexity */
 
 DebateDetail.propTypes = {
-  listData: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired
   }).isRequired,

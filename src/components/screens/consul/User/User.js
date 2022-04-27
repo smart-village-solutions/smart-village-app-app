@@ -7,6 +7,8 @@ import { Debates } from '../Debates';
 import { Proposals } from '../Proposals';
 import { UserComments } from '../UserComments';
 import { momentFormatUtcToLocal } from '../../../../helpers';
+import { EmptyMessage } from '../../../EmptyMessage';
+import { texts } from '../../../../config';
 
 const getComponent = (query) => {
   const COMPONENTS = {
@@ -34,13 +36,13 @@ export const User = ({ navigation, data, route, extraQuery, refreshControl }) =>
 
   const Component = getComponent(query);
 
-  if (!Component || !listItems) return null;
+  if (!Component) return null;
 
   return (
     <Component
       myContent={true}
       query={query}
-      listData={listItems}
+      data={listItems}
       navigation={navigation}
       route={route}
       refreshControl={refreshControl}

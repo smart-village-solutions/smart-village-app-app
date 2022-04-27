@@ -36,7 +36,7 @@ const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
+export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
   const [loading, setLoading] = useState();
   const [userId, setUserId] = useState();
 
@@ -57,7 +57,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     tags,
     title,
     videoUrl
-  } = listData.proposal;
+  } = data.proposal;
 
   const latitude = mapLocation?.latitude;
   const longitude = mapLocation?.longitude;
@@ -247,7 +247,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
 /* eslint-enable complexity */
 
 ProposalDetail.propTypes = {
-  listData: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
   navigation: PropTypes.shape({
     push: PropTypes.func.isRequired
   }).isRequired,

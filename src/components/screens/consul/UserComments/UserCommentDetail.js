@@ -10,10 +10,10 @@ import { getConsulUser } from '../../../../helpers';
 
 const a11yText = consts.a11yLabel;
 
-export const UserCommentDetail = ({ listData, onRefresh, navigation }) => {
+export const UserCommentDetail = ({ data, onRefresh, navigation }) => {
   const [userId, setUserId] = useState();
 
-  const { commentableTitle } = listData.comment;
+  const { commentableTitle } = data.comment;
 
   useEffect(() => {
     getConsulUser().then((val) => {
@@ -21,7 +21,7 @@ export const UserCommentDetail = ({ listData, onRefresh, navigation }) => {
     });
   }, []);
 
-  listData.comment = { ...listData.comment, userId, userComment: true };
+  data.comment = { ...data.comment, userId, userComment: true };
 
   return (
     <>
@@ -34,7 +34,7 @@ export const UserCommentDetail = ({ listData, onRefresh, navigation }) => {
 
       <Wrapper>
         <ConsulCommentListItem
-          commentItem={listData.comment}
+          commentItem={data.comment}
           onRefresh={onRefresh}
           navigation={navigation}
         />
@@ -44,7 +44,7 @@ export const UserCommentDetail = ({ listData, onRefresh, navigation }) => {
 };
 
 UserCommentDetail.propTypes = {
-  listData: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
   navigation: PropTypes.shape({
     navigate: PropTypes.func.isRequired
   }).isRequired,

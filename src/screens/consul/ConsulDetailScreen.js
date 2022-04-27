@@ -6,6 +6,7 @@ import { Alert, RefreshControl, ScrollView } from 'react-native';
 import {
   DebateDetail,
   DefaultKeyboardAvoidingView,
+  EmptyMessage,
   LoadingSpinner,
   PollDetail,
   ProposalDetail,
@@ -63,13 +64,13 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
     }, [refetch])
   );
 
-  const Component = getComponent(query);
-
   if (isLoading) return <LoadingSpinner loading />;
 
   if (isError) showRegistrationFailAlert(navigation);
 
-  if (!data || !Component) return null;
+  const Component = getComponent(query);
+
+  if (!Component || !data) return <EmptyMessage title={texts.empty.content} />;
 
   return (
     <SafeAreaViewFlex>
@@ -85,7 +86,7 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
             />
           }
         >
-          <Component listData={data} navigation={navigation} route={route} onRefresh={refetch} />
+          <Component data={data} navigation={navigation} route={route} onRefresh={refetch} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

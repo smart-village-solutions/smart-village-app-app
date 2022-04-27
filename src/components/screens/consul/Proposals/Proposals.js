@@ -7,16 +7,18 @@ import { texts } from '../../../../config';
 import { Wrapper } from '../../../Wrapper';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
+import { EmptyMessage } from '../../../EmptyMessage';
 
-export const Proposals = ({ navigation, query, listData, refreshControl, myContent }) => {
+export const Proposals = ({ navigation, query, data, refreshControl, myContent }) => {
   return (
     <>
       <ListComponent
         navigation={navigation}
         query={query}
-        data={listData}
+        data={data}
         refreshControl={refreshControl}
         showBackToTop
+        ListEmptyComponent={<EmptyMessage title={texts.empty.list} />}
       />
 
       {!myContent && (
@@ -37,7 +39,7 @@ export const Proposals = ({ navigation, query, listData, refreshControl, myConte
 };
 
 Proposals.propTypes = {
-  listData: PropTypes.array.isRequired,
+  data: PropTypes.array.isRequired,
   navigation: PropTypes.object.isRequired,
   query: PropTypes.string.isRequired,
   route: PropTypes.object.isRequired,
