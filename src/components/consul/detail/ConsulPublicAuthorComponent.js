@@ -33,7 +33,7 @@ export const ConsulPublicAuthorComponent = ({ authorData, onPress }) => {
             <RegularText> · </RegularText>
             <Touchable onPress={onPress}>
               <RegularText primary smallest>
-                {texts.consul.startNew.updateButtonLabel}
+                {texts.consul.startNew.updateButtonLabelOnDetailScreen}
               </RegularText>
             </Touchable>
           </>

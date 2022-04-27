@@ -29,7 +29,7 @@ import { WebViewMap } from '../../../map';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { BoldText, RegularText } from '../../../Text';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
-import { Wrapper, WrapperWithOrientation } from '../../../Wrapper';
+import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../../../Wrapper';
 import { Input } from '../../../form';
 
 const a11yText = consts.a11yLabel;
@@ -74,7 +74,12 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     });
   }, []);
 
-  const { control, handleSubmit, reset } = useForm();
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    reset
+  } = useForm();
 
   const [addCommentToProposal] = useMutation(ADD_COMMENT_TO_PROPOSAL, {
     client: ConsulClient
@@ -133,21 +138,21 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
                 title: texts.consul.startNew.updateButtonLabel,
                 query: QUERY_TYPES.CONSUL.UPDATE_PROPOSAL,
                 data: {
-                  title: title,
+                  title,
                   tagList: tags.nodes.map((item) => item.name),
-                  description: description,
+                  description,
                   termsOfService: true,
-                  summary: summary,
-                  videoUrl: videoUrl,
-                  id: id
+                  summary,
+                  videoUrl,
+                  id
                 }
               });
             }}
             authorData={{
-              userId: userId,
-              publicAuthor: publicAuthor,
-              commentsCount: commentsCount,
-              publicCreatedAt: publicCreatedAt
+              commentsCount,
+              publicAuthor,
+              publicCreatedAt,
+              userId
             }}
           />
         )}
@@ -213,27 +218,26 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
 
         <Wrapper>
           <Input
-            keyboardType="default"
-            textContentType="none"
-            autoCompleteType="off"
             multiline
             minHeight={50}
             name="comment"
             label={texts.consul.commentLabel}
             placeholder={texts.consul.comment}
             autoCapitalize="none"
-            rules={{ required: texts.consul.commentEmptyError }}
+            validate
+            rules={{ required: true }}
+            errorMessage={errors.comment && `${texts.consul.commentEmptyError}`}
             control={control}
           />
-        </Wrapper>
-        <Wrapper>
-          <Button
-            onPress={handleSubmit(onSubmit)}
-            title={
-              loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
-            }
-            disabled={loading}
-          />
+          <WrapperVertical>
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              title={
+                loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
+              }
+              disabled={loading}
+            />
+          </WrapperVertical>
         </Wrapper>
       </WrapperWithOrientation>
     </SafeAreaViewFlex>

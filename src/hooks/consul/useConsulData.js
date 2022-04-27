@@ -1,11 +1,8 @@
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-apollo';
 
-import { QUERY_TYPES } from '../../queries';
-import { getQuery } from '../../queries';
+import { QUERY_TYPES, getQuery } from '../../queries';
 import { ConsulClient } from '../../ConsulClient';
-
-const QUERIES = QUERY_TYPES.CONSUL;
 
 const useDebates = ({ query, queryVariables }) => {
   const { data, loading, error, refetch } = useQuery(getQuery(query), {
@@ -121,21 +118,21 @@ const usePublicComment = ({ query, queryVariables }) => {
 
 export const useConsulData = ({ query, queryVariables }) => {
   switch (query) {
-    case QUERIES.DEBATES:
+    case QUERY_TYPES.CONSUL.DEBATES:
       return useDebates({ query, queryVariables });
-    case QUERIES.DEBATE:
+    case QUERY_TYPES.CONSUL.DEBATE:
       return useDebate({ query, queryVariables });
-    case QUERIES.PROPOSALS:
+    case QUERY_TYPES.CONSUL.PROPOSALS:
       return useProposals({ query, queryVariables });
-    case QUERIES.PROPOSAL:
+    case QUERY_TYPES.CONSUL.PROPOSAL:
       return useProposal({ query, queryVariables });
-    case QUERIES.POLLS:
+    case QUERY_TYPES.CONSUL.POLLS:
       return usePolls({ query, queryVariables });
-    case QUERIES.POLL:
+    case QUERY_TYPES.CONSUL.POLL:
       return usePoll({ query, queryVariables });
-    case QUERIES.USER:
+    case QUERY_TYPES.CONSUL.USER:
       return useUser({ query, queryVariables });
-    case QUERIES.PUBLIC_COMMENT:
+    case QUERY_TYPES.CONSUL.PUBLIC_COMMENT:
       return usePublicComment({ query, queryVariables });
     default:
       null;

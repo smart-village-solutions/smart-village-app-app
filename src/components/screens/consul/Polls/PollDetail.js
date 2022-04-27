@@ -51,7 +51,12 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
     route.params?.rootRouteName
   );
 
-  const { control, handleSubmit, reset } = useForm();
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    reset
+  } = useForm();
 
   const [addCommentToPoll] = useMutation(ADD_COMMENT_TO_POLLS, {
     client: ConsulClient
@@ -117,7 +122,8 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
             label={texts.consul.commentLabel}
             placeholder={texts.consul.comment}
             autoCapitalize="none"
-            rules={{ required: texts.consul.commentEmptyError }}
+            rules={{ required: true }}
+            errorMessage={errors.comment && `${texts.consul.commentEmptyError}`}
             control={control}
           />
           <WrapperVertical>

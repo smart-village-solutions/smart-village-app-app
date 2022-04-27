@@ -47,7 +47,7 @@ export const ConsulSupportingComponent = (votesData) => {
         </RegularText>
         <View style={styles.buttonContainer}>
           {!currentUserHasVoted ? (
-            <Button title="Unterstutzung" onPress={() => onVoting()} />
+            <Button title={texts.consul.support} onPress={() => onVoting()} />
           ) : (
             <RegularText center small>
               {texts.consul.proposalAlready}

@@ -37,7 +37,11 @@ export const ConsulLoginScreen = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [registrationLoading, setRegistrationLoading] = useState(false);
 
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    formState: { errors },
+    handleSubmit
+  } = useForm();
 
   const [userLogin] = useMutation(CONSUL_LOGIN_USER, {
     client: ConsulClient
@@ -45,22 +49,21 @@ export const ConsulLoginScreen = ({ navigation }) => {
 
   const onSubmit = async (val) => {
     setRegistrationLoading(true);
-    await userLogin({ variables: { email: val.email, password: val.password } })
-      .then(async (val) => {
-        await setConsulAuthToken(val.data.userLogin?.credentials);
-        await setConsulUser(val.data.userLogin?.authenticatable);
+    try {
+      let userValue = await userLogin({ variables: { email: val.email, password: val.password } });
+      await setConsulAuthToken(userValue.data.userLogin?.credentials);
+      await setConsulUser(userValue.data.userLogin?.authenticatable);
 
-        navigation?.navigate(ScreenName.ConsulHomeScreen, {
-          refreshUser: new Date().valueOf()
-        });
-
-        setRegistrationLoading(false);
-      })
-      .catch((err) => {
-        console.error(err.message);
-        setRegistrationLoading(false);
-        showLoginFailAlert();
+      navigation?.navigate(ScreenName.ConsulHomeScreen, {
+        refreshUser: new Date().valueOf()
       });
+
+      setRegistrationLoading(false);
+    } catch (error) {
+      console.error(error.message);
+      setRegistrationLoading(false);
+      showLoginFailAlert();
+    }
   };
 
   return (
@@ -87,7 +90,9 @@ export const ConsulLoginScreen = ({ navigation }) => {
                 textContentType="emailAddress"
                 autoCompleteType="email"
                 autoCapitalize="none"
-                rules={{ required: texts.consul.usernameOrEmailError }}
+                validate
+                rules={{ required: true }}
+                errorMessage={errors.email && `${texts.consul.usernameOrEmailError}`}
                 control={control}
               />
             </Wrapper>
@@ -101,10 +106,12 @@ export const ConsulLoginScreen = ({ navigation }) => {
                 autoCompleteType="password"
                 secureTextEntry={secureTextEntry}
                 rightIcon={rightIcon(secureTextEntry, setSecureTextEntry)}
+                validate
                 rules={{
-                  required: texts.consul.passwordError,
+                  required: true,
                   minLength: { value: 8, message: texts.consul.passwordLengthError }
                 }}
+                errorMessage={errors.password && `${texts.consul.passwordError}`}
                 control={control}
               />
             </Wrapper>

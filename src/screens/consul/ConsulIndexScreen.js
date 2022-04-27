@@ -40,6 +40,7 @@ const getComponent = (query) => {
     [QUERY_TYPES.CONSUL.POLLS]: Polls,
     [QUERY_TYPES.CONSUL.USER]: User
   };
+
   return COMPONENTS[query];
 };
 

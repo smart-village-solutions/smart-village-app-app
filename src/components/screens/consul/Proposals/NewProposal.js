@@ -6,16 +6,16 @@ import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, namespace, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
-import { START_PROPOSAL, UPDATE_PROPOSAL } from '../../../../queries/consul';
 import { QUERY_TYPES } from '../../../../queries';
+import { START_PROPOSAL, UPDATE_PROPOSAL } from '../../../../queries/consul';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
+import { Input } from '../../../form';
 import { Label } from '../../../Label';
 import { LoadingSpinner } from '../../../LoadingSpinner';
 import { RegularText } from '../../../Text';
 import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
-import { Input } from '../../../form';
 
 const TAG_CATEGORIES = [
   { name: 'Associations', id: 0, selected: false },
@@ -35,30 +35,35 @@ const TAG_CATEGORIES = [
   { name: 'Transparency', id: 14, selected: false }
 ];
 
-//  // TODO:am 25.04.2022!!!
+// TODO: image and document upload
 //  imageAttributes: {
-// 	title: 'Profil.png',
-// 	cachedAttachment:
-// 		'/Users/ardasenturk/Development/SVA/consul-bb/public/system/images/cached_attachments/user/49/original/3dfe4b17e340624be2f74f822f15e36cadd8d6e1.png'
-// },
-// documentsAttributes: [
-// 	{
-// 		title: 'sample.pdf',
-// 		cachedAttachment:
-// 			'/Users/ardasenturk/Development/SVA/consul-bb/public/system/documents/cached_attachments/user/49/original/f2245afb48be5f906474ad929aacb7f91f408a23.pdf'
-// 	}
-// ],
+//   	title: 'Profil.png',
+//   	cachedAttachment:
+//   		'/Users/ardasenturk/Development/SVA/consul-bb/public/system/images/cached_attachments/user/49/original/3dfe4b17e340624be2f74f822f15e36cadd8d6e1.png'
+//  },
+//  documentsAttributes: [
+// 	  {
+// 		  title: 'sample.pdf',
+// 		  cachedAttachment:
+// 		  	'/Users/ardasenturk/Development/SVA/consul-bb/public/system/documents/cached_attachments/user/49/original/f2245afb48be5f906474ad929aacb7f91f408a23.pdf'
+// 	  }
+//  ],
 
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 const graphqlErr = (err) => Alert.alert('Hinweis', err);
 
 export const NewProposal = ({ navigation, data, query }) => {
-  const [termsOfService, settermsOfService] = useState(data?.termsOfService ?? false);
+  const [termsOfService, setTermsOfService] = useState(data?.termsOfService ?? false);
   const [startLoading, setStartLoading] = useState(false);
   const [tags, setTags] = useState([]);
 
-  const { control, handleSubmit, setValue } = useForm({
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    setValue
+  } = useForm({
     defaultValues: {
       title: data?.title,
       description: data?.description,
@@ -123,46 +128,42 @@ export const NewProposal = ({ navigation, data, query }) => {
     switch (query) {
       case QUERY_TYPES.CONSUL.START_PROPOSAL:
         setStartLoading(true);
-        await submitProposal({
-          variables: variables
-        })
-          .then(() => {
-            setStartLoading(false);
-            navigation.navigate(ScreenName.ConsulIndexScreen, {
-              title: texts.consul.homeScreen.proposals,
-              query: QUERY_TYPES.CONSUL.PROPOSALS,
-              queryVariables: {
-                limit: 15,
-                order: 'name_ASC',
-                category: texts.consul.homeScreen.proposals
-              },
-              rootRouteName: ScreenName.ConsulHomeScreen
-            });
-          })
-          .catch((err) => {
-            graphqlErr(err.message);
-            console.error(err.message);
-            setStartLoading(false);
+
+        try {
+          await submitProposal({ variables });
+          setStartLoading(false);
+
+          navigation.navigate(ScreenName.ConsulIndexScreen, {
+            title: texts.consul.homeScreen.proposals,
+            query: QUERY_TYPES.CONSUL.PROPOSALS,
+            queryVariables: {
+              limit: 15,
+              order: 'name_ASC',
+              category: texts.consul.homeScreen.proposals
+            },
+            rootRouteName: ScreenName.ConsulHomeScreen
           });
+        } catch (error) {
+          graphqlErr(error.message);
+          console.error(error.message);
+          setStartLoading(false);
+        }
         break;
       case QUERY_TYPES.CONSUL.UPDATE_PROPOSAL:
         setStartLoading(true);
+        try {
+          let data = await updateProposal({ variables });
+          setStartLoading(false);
 
-        await updateProposal({
-          variables: variables
-        })
-          .then((val) => {
-            setStartLoading(false);
-            navigation.navigate(ScreenName.ConsulDetailScreen, {
-              query: QUERY_TYPES.CONSUL.PROPOSAL,
-              queryVariables: { id: val.data.updateProposal.id }
-            });
-          })
-          .catch((err) => {
-            graphqlErr(err.message);
-            console.error(err.message);
-            setStartLoading(false);
+          navigation.navigate(ScreenName.ConsulDetailScreen, {
+            query: QUERY_TYPES.CONSUL.PROPOSAL,
+            queryVariables: { id: data.data.updateProposal.id }
           });
+        } catch (error) {
+          graphqlErr(error.message);
+          console.error(error.message);
+          setStartLoading(false);
+        }
         break;
       default:
         break;
@@ -178,7 +179,12 @@ export const NewProposal = ({ navigation, data, query }) => {
           {item.type === ITEM_TYPES.TITLE && <Label>{item.title}</Label>}
 
           {item.type === ITEM_TYPES.INPUT && (
-            <Input {...item} validate control={control} rules={item.rules} />
+            <Input
+              control={control}
+              {...item}
+              validate={item.rules.required}
+              errorMessage={errors[item.name] && item.errorMessage}
+            />
           )}
 
           {item.type === ITEM_TYPES.INFO_TEXT && (
@@ -236,7 +242,7 @@ export const NewProposal = ({ navigation, data, query }) => {
             checkedIcon="check-square-o"
             uncheckedIcon="square-o"
             checked={termsOfService}
-            onPress={() => settermsOfService(!termsOfService)}
+            onPress={() => setTermsOfService(!termsOfService)}
           />
         </WrapperHorizontal>
 
@@ -296,9 +302,10 @@ const INPUTS = [
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: texts.consul.startNew.leerError,
+      required: true,
       minLength: { value: 4, message: texts.consul.startNew.titleShortError }
-    }
+    },
+    errorMessage: texts.consul.startNew.leerError
   },
   {
     type: ITEM_TYPES.INPUT,
@@ -311,9 +318,10 @@ const INPUTS = [
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: texts.consul.startNew.leerError,
+      required: true,
       maxLength: { value: 200, message: texts.consul.startNew.proposalSummaryInfo }
-    }
+    },
+    errorMessage: texts.consul.startNew.leerError
   },
   {
     type: ITEM_TYPES.INPUT,
@@ -327,9 +335,10 @@ const INPUTS = [
     autoCapitalize: 'none',
     minHeight: 150,
     rules: {
-      required: texts.consul.startNew.leerError,
+      required: true,
       minLength: { value: 10, message: texts.consul.startNew.descriptionShortError }
-    }
+    },
+    errorMessage: texts.consul.startNew.leerError
   },
   {
     type: ITEM_TYPES.INPUT,

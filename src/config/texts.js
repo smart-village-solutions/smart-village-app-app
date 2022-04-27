@@ -117,6 +117,7 @@ export const texts = {
     show: 'Anzeigen',
     showPDF: 'PDF anzeigen',
     submittingCommentButton: 'Kommentar wird gesendet',
+    support: 'Unterstützen',
     supportNeed: 'Unterstützungen benötigt',
     supportProposalAlertBody: 'Sie unterstützen nun diesen Vorschlag.',
     supportProposalAlertTitle: 'Erfolgreich',
@@ -151,7 +152,8 @@ export const texts = {
       termsOfServiceLabel: 'Ich stimme den Datenschutzbestimmungen und den',
       termsOfServiceLinkLabel: 'allgemeinen Nutzungsbedingungen zu',
       titleShortError: 'ist zu kurz (minimum 4 Zeichen)',
-      updateButtonLabel: 'Speichern'
+      updateButtonLabel: 'Speichern',
+      updateButtonLabelOnDetailScreen: 'Bearbeiten'
     },
     homeScreen: {
       account: 'Konto',

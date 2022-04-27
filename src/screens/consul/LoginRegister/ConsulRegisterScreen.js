@@ -36,10 +36,15 @@ const showPrivacyCheckedAlert = () =>
 
 export const ConsulRegisterScreen = ({ navigation }) => {
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [termsOfService, settermsOfService] = useState(false);
+  const [termsOfService, setTermsOfService] = useState(false);
   const [registrationLoading, setRegistrationLoading] = useState(false);
 
-  const { control, handleSubmit, watch } = useForm();
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    watch
+  } = useForm();
   const pwd = watch('password');
 
   const [userRegister] = useMutation(CONSUL_REGISTER_USER, {
@@ -50,24 +55,24 @@ export const ConsulRegisterScreen = ({ navigation }) => {
     if (!termsOfService) return showPrivacyCheckedAlert();
 
     setRegistrationLoading(true);
-    await userRegister({
-      variables: {
-        email: val.email,
-        username: val.name,
-        password: val.password,
-        passwordConfirmation: val['password-repeat'],
-        termsOfService
-      }
-    })
-      .then(() => {
-        setRegistrationLoading(false);
-        navigation.navigate(ScreenName.ConsulRegisteredScreen);
-      })
-      .catch((err) => {
-        console.error(err.message);
-        setRegistrationLoading(false);
-        showRegistrationFailAlert();
+
+    try {
+      await userRegister({
+        variables: {
+          email: val.email,
+          username: val.name,
+          password: val.password,
+          passwordConfirmation: val['password-repeat'],
+          termsOfService
+        }
       });
+      setRegistrationLoading(false);
+      navigation.navigate(ScreenName.ConsulRegisteredScreen);
+    } catch (error) {
+      console.error(error.message);
+      setRegistrationLoading(false);
+      showRegistrationFailAlert();
+    }
   };
 
   return (
@@ -91,7 +96,9 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 label={texts.consul.name}
                 placeholder={texts.consul.name}
                 autoCapitalize="none"
-                rules={{ required: texts.consul.usernameError }}
+                validate
+                rules={{ required: true }}
+                errorMessage={errors.password && `${texts.consul.usernameError}`}
                 control={control}
               />
             </Wrapper>
@@ -105,10 +112,12 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 textContentType="emailAddress"
                 autoCompleteType="email"
                 autoCapitalize="none"
+                validate
                 rules={{
-                  required: texts.consul.emailError,
+                  required: true,
                   pattern: { value: EMAIL_REGEX, message: texts.consul.emailInvalid }
                 }}
+                errorMessage={errors.email && `${texts.consul.emailError}`}
                 control={control}
               />
             </Wrapper>
@@ -122,10 +131,12 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 autoCompleteType="password"
                 secureTextEntry={secureTextEntry}
                 rightIcon={rightIcon(secureTextEntry, setSecureTextEntry)}
+                validate
                 rules={{
-                  required: texts.consul.passwordError,
+                  required: true,
                   minLength: { value: 8, message: texts.consul.passwordLengthError }
                 }}
+                errorMessage={errors.password && `${texts.consul.passwordError}`}
                 control={control}
               />
             </Wrapper>
@@ -139,11 +150,13 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 autoCompleteType="password"
                 secureTextEntry={secureTextEntry}
                 rightIcon={rightIcon(secureTextEntry, setSecureTextEntry)}
+                validate
                 rules={{
-                  required: texts.consul.passwordError,
+                  required: true,
                   minLength: { value: 8, message: texts.consul.passwordLengthError },
                   validate: (value) => value === pwd || texts.consul.passwordDoNotMatch
                 }}
+                errorMessage={errors['password-repeat'] && `${texts.consul.passwordError}`}
                 control={control}
               />
             </Wrapper>
@@ -156,7 +169,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 checkedIcon="check-square-o"
                 uncheckedIcon="square-o"
                 checked={termsOfService}
-                onPress={() => settermsOfService(!termsOfService)}
+                onPress={() => setTermsOfService(!termsOfService)}
               />
             </WrapperHorizontal>
 

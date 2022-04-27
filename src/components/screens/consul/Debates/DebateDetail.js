@@ -7,7 +7,8 @@ import { consts, device, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
-import { ADD_COMMENT_TO_DEBATE, QUERY_TYPES } from '../../../../queries/consul';
+import { ADD_COMMENT_TO_DEBATE } from '../../../../queries/consul';
+import { QUERY_TYPES } from '../../../../queries';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import {
@@ -57,7 +58,12 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
     });
   }, []);
 
-  const { control, handleSubmit, reset } = useForm();
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    reset
+  } = useForm();
 
   const [addCommentToDebate] = useMutation(ADD_COMMENT_TO_DEBATE, {
     client: ConsulClient
@@ -95,19 +101,19 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
                 title: texts.consul.startNew.updateButtonLabel,
                 query: QUERY_TYPES.CONSUL.UPDATE_DEBATE,
                 data: {
-                  title: title,
+                  title,
                   tagList: tags.nodes.map((item) => item.name),
-                  description: description,
+                  description,
                   termsOfService: true,
-                  id: id
+                  id
                 }
               });
             }}
             authorData={{
-              publicAuthor: publicAuthor,
-              commentsCount: commentsCount,
-              publicCreatedAt: publicCreatedAt,
-              userId: userId
+              commentsCount,
+              publicAuthor,
+              publicCreatedAt,
+              userId
             }}
           />
         )}
@@ -124,9 +130,9 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
           id={id}
           onRefresh={onRefresh}
           votesData={{
-            cachedVotesTotal: cachedVotesTotal,
-            cachedVotesUp: cachedVotesUp,
-            cachedVotesDown: cachedVotesDown,
+            cachedVotesTotal,
+            cachedVotesUp,
+            cachedVotesDown,
             votesFor: votesFor.nodes[0]?.voteFlag
           }}
         />
@@ -149,7 +155,9 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
             label={texts.consul.commentLabel}
             placeholder={texts.consul.comment}
             autoCapitalize="none"
-            rules={{ required: texts.consul.commentEmptyError }}
+            validate
+            rules={{ required: true }}
+            errorMessage={errors.comment && `${texts.consul.commentEmptyError}`}
             control={control}
           />
           <WrapperVertical>

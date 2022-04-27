@@ -1,23 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
+import { useForm } from 'react-hook-form';
+import { Alert, StyleSheet, View } from 'react-native';
 
-import { momentFormatUtcToLocal } from '../../../helpers';
-import { RegularText } from '../../Text';
-import { WrapperRow, WrapperVertical } from '../../Wrapper';
-import { Button } from '../../Button';
-import { Touchable } from '../../Touchable';
-import { colors, normalize, texts, Icon } from '../../../config';
+import { colors, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
+import { momentFormatUtcToLocal } from '../../../helpers';
 import {
   ADD_REPLY_TO_COMMENT,
   CAST_VOTE_ON_COMMENT,
   DELETE_COMMENT
 } from '../../../queries/consul';
 import { ScreenName } from '../../../types';
+import { Button } from '../../Button';
 import { Input } from '../../form';
+import { RegularText } from '../../Text';
+import { Touchable } from '../../Touchable';
+import { WrapperRow, WrapperVertical } from '../../Wrapper';
 
 const deleteCommentAlert = (onDelete) =>
   Alert.alert(texts.consul.loginAllFieldsRequiredTitle, texts.consul.commentDeleteAlertBody, [
@@ -40,7 +40,12 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
   const [reply, setReply] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { control, handleSubmit, reset } = useForm();
+  const {
+    control,
+    formState: { errors },
+    handleSubmit,
+    reset
+  } = useForm();
 
   const [addReplyToComment] = useMutation(ADD_REPLY_TO_COMMENT, {
     client: ConsulClient
@@ -213,7 +218,8 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
             label={texts.consul.commentLabel}
             placeholder={texts.consul.comment}
             autoCapitalize="none"
-            rules={{ required: texts.consul.commentEmptyError }}
+            rules={{ required: true }}
+            errorMessage={errors.comment && `${texts.consul.commentEmptyError}`}
             control={control}
           />
           <WrapperVertical>
