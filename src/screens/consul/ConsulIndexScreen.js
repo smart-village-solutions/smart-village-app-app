@@ -1,23 +1,21 @@
-import PropTypes from 'prop-types';
-import React, { useState, useCallback, useEffect } from 'react';
-import { RefreshControl, Alert } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import PropTypes from 'prop-types';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Alert, RefreshControl } from 'react-native';
 
 import {
-  LoadingSpinner,
-  SafeAreaViewFlex,
   Debates,
-  Proposals,
+  IndexFilterWrapperAndList,
+  LoadingSpinner,
   Polls,
-  User,
-  EmptyMessage
+  Proposals,
+  SafeAreaViewFlex,
+  User
 } from '../../components';
+import { colors, texts } from '../../config';
 import { filterHelper, parseListItemsFromQuery, sortingHelper } from '../../helpers';
-import { colors } from '../../config';
 import { useConsulData } from '../../hooks';
-import { texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
-import { IndexFilterWrapperAndList } from '../../components';
 import { ScreenName } from '../../types';
 
 const { MOSTACTIVE, HIGHESTRATED, NEWESTDATE } = QUERY_TYPES.CONSUL.SORTING;
@@ -80,9 +78,9 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
       type = sortingType.find((data) => data.selected);
 
       if (query !== QUERY_TYPES.CONSUL.USER || query !== QUERY_TYPES.CONSUL.POLLS)
-        sortingHelper(type.id, listItems).catch((err) => console.error(err));
+        listItems = sortingHelper(type.id, listItems);
 
-      if (listItems) return listItems;
+      return listItems;
     },
     [sortingType, filterType, isLoading]
   );

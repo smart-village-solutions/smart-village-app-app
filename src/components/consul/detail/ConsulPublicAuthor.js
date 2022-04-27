@@ -60,8 +60,7 @@ export const ConsulPublicAuthor = ({ authorData, onPress }) => {
 
 ConsulPublicAuthor.propTypes = {
   authorData: PropTypes.object.isRequired,
-  onPress: PropTypes.func,
-  canEdit: PropTypes.boolean
+  onPress: PropTypes.func
 };
 
 const styles = StyleSheet.create({

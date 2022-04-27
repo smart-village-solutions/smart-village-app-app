@@ -47,6 +47,8 @@ export const getTitleForQuery = (query: string, volunteer?: any) => {
       return texts.detailTitles.consul.proposal;
     case QUERY_TYPES.CONSUL.POLLS:
       return texts.detailTitles.consul.poll;
+    case QUERY_TYPES.CONSUL.PUBLIC_COMMENTS:
+      return texts.detailTitles.consul.comment;
     default:
       return query;
   }

@@ -273,9 +273,7 @@ const parseConsulData = (data, query, skipLastDivider) => {
       id: consulData.id,
       title: consulData.title ? consulData.title : consulData.body,
       createdAt: consulData.publicCreatedAt,
-      totalVotes: consulData.cachedVotesTotal
-        ? consulData.cachedVotesTotal
-        : consulData.cachedVotesUp,
+      cachedVotesUp: consulData.cachedVotesUp,
       subtitle,
       routeName: ScreenName.ConsulDetailScreen,
       params: {

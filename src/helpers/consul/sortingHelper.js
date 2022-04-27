@@ -1,25 +1,18 @@
+import _orderBy from 'lodash/orderBy';
+
 import { QUERY_TYPES } from '../../queries';
-import { momentFormatUtcToLocal } from '../momentHelper';
 
-const { NEWESTDATE, HIGHESTRATED, MOSTACTIVE } = QUERY_TYPES.CONSUL.SORTING;
+const { NEWESTDATE, HIGHESTRATED } = QUERY_TYPES.CONSUL.SORTING;
 
-export const sortingHelper = async (sortingType, listItems) => {
+export const sortingHelper = (sortingType, listItems) => {
   switch (sortingType) {
     case NEWESTDATE:
-      await listItems.sort((a, b) =>
-        momentFormatUtcToLocal(b.createdAt)
-          .split('.')
-          .reverse()
-          .join()
-          .localeCompare(momentFormatUtcToLocal(a.createdAt).split('.').reverse().join())
-      );
-      return listItems;
+      listItems = _orderBy(listItems, 'createdAt', 'desc');
+      break;
     case HIGHESTRATED:
-      await listItems.sort((a, b) => b.totalVotes - a.totalVotes);
-      return listItems;
-    case MOSTACTIVE:
-      return listItems;
-    default:
-      return listItems;
+      listItems = _orderBy(listItems, 'cachedVotesUp', 'desc');
+      break;
   }
+
+  return listItems;
 };

@@ -191,6 +191,7 @@ export const texts = {
   detailTitles: {
     consul: {
       debate: 'Diskussion',
+      comment: 'Kommentar',
       poll: 'Abstimmung',
       proposal: 'Vorschlag'
     },

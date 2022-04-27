@@ -1,14 +1,12 @@
+import _orderBy from 'lodash/orderBy';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { QUERY_TYPES } from '../../../../queries';
 import { parseListItemsFromQuery } from '../../../../helpers';
+import { QUERY_TYPES } from '../../../../queries';
 import { Debates } from '../Debates';
 import { Proposals } from '../Proposals';
 import { UserComments } from '../UserComments';
-import { momentFormatUtcToLocal } from '../../../../helpers';
-import { EmptyMessage } from '../../../EmptyMessage';
-import { texts } from '../../../../config';
 
 const getComponent = (query) => {
   const COMPONENTS = {
@@ -22,17 +20,11 @@ const getComponent = (query) => {
 export const User = ({ navigation, data, route, extraQuery, refreshControl }) => {
   const query = extraQuery ?? '';
 
-  const listItems = parseListItemsFromQuery(query, data?.user, {
+  let listItems = parseListItemsFromQuery(query, data?.user, {
     skipLastDivider: true
   });
 
-  listItems?.sort((a, b) =>
-    momentFormatUtcToLocal(b.createdAt)
-      .split('.')
-      .reverse()
-      .join()
-      .localeCompare(momentFormatUtcToLocal(a.createdAt).split('.').reverse().join())
-  );
+  listItems = _orderBy(listItems, 'createdAt', 'desc');
 
   const Component = getComponent(query);
 
