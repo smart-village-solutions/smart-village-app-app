@@ -189,6 +189,11 @@ export const texts = {
     ok: 'Ok'
   },
   detailTitles: {
+    consul: {
+      debate: 'Diskussion',
+      poll: 'Abstimmung',
+      proposal: 'Vorschlag'
+    },
     eventRecord: 'Veranstaltung',
     newsItem: 'Nachricht',
     pointOfInterest: 'Ort',

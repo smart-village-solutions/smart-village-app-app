@@ -39,6 +39,14 @@ export const getTitleForQuery = (query: string, volunteer?: any) => {
       return volunteer?.title;
     case QUERY_TYPES.VOLUNTEER.USER:
       return texts.detailTitles.volunteer.user;
+    case QUERY_TYPES.CONSUL.DEBATES:
+    case QUERY_TYPES.CONSUL.PUBLIC_DEBATES:
+      return texts.detailTitles.consul.debate;
+    case QUERY_TYPES.CONSUL.PROPOSALS:
+    case QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS:
+      return texts.detailTitles.consul.proposal;
+    case QUERY_TYPES.CONSUL.POLLS:
+      return texts.detailTitles.consul.poll;
     default:
       return query;
   }
