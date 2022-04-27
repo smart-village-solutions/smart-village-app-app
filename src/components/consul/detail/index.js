@@ -2,7 +2,7 @@ export * from './ConsulCommentList';
 export * from './ConsulCommentListItem';
 export * from './ConsulDocumentList';
 export * from './ConsulExternalVideoComponent';
-export * from './ConsulPublicAuthorComponent';
+export * from './ConsulPublicAuthor';
 export * from './ConsulQuestionsList';
 export * from './ConsulSummaryComponent';
 export * from './ConsulSupportingComponent';

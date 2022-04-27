@@ -21,12 +21,13 @@ export const ConsulSupportingComponent = (votesData) => {
   });
 
   const onVoting = async () => {
-    await supportProposal({ variables: { id: id } })
-      .then(() => {
-        onRefresh();
-        Alert.alert(texts.consul.supportProposalAlertTitle, texts.consul.supportProposalAlertBody);
-      })
-      .catch((err) => console.error(err));
+    try {
+      await supportProposal({ variables: { id: id } });
+      onRefresh();
+      Alert.alert(texts.consul.supportProposalAlertTitle, texts.consul.supportProposalAlertBody);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

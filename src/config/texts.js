@@ -83,7 +83,7 @@ export const texts = {
     logoutAlertBody: 'Möchten Sie sich wirklich abmelden?',
     name: 'Benutzername',
     next: 'Weiter',
-    noReturn: 'Keine Rückmeldung',
+    noResponse: 'Keine Rückmeldung',
     noVotes: 'Keine Bewertungen',
     noVoting: 'Keine Bewertung',
     ok: 'OK',
@@ -111,7 +111,8 @@ export const texts = {
     registrationPrivacyText:
       'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
     registrationTitle: 'Registrieren',
-    return: 'Rückmeldung',
+    response: 'Rückmeldung',
+    responses: 'Rückmeldungen',
     serverErrorAlertTitle: 'Fehler',
     serverErrorAlertBody: 'Bitte versuchen Sie es später erneut.',
     show: 'Anzeigen',
@@ -131,6 +132,7 @@ export const texts = {
     startNew: {
       categoriesTitle: 'Kategorien',
       descriptionShortError: 'ist zu kurz (minimum 10 Zeichen)',
+      editButtonLabelOnDetailScreen: 'Bearbeiten',
       leerError: 'darf nicht leer sein',
       newDebateDescriptionLabel: 'Initialer Debattenbeitrag',
       newDebateStartButtonLabel: 'Eine Diskussion starten',
@@ -152,8 +154,7 @@ export const texts = {
       termsOfServiceLabel: 'Ich stimme den Datenschutzbestimmungen und den',
       termsOfServiceLinkLabel: 'allgemeinen Nutzungsbedingungen zu',
       titleShortError: 'ist zu kurz (minimum 4 Zeichen)',
-      updateButtonLabel: 'Speichern',
-      updateButtonLabelOnDetailScreen: 'Bearbeiten'
+      updateButtonLabel: 'Speichern'
     },
     homeScreen: {
       account: 'Konto',

@@ -21,18 +21,20 @@ export const ConsulQuestionsListItem = ({ questionItem, onRefresh, token, disabl
 
   const onAnswer = async (answer) => {
     setLoading(true);
-    await provideAnswerToPollQuestion({
-      variables: {
-        pollQuestionId: id,
-        token: token,
-        answer: answer
-      }
-    })
-      .then(() => {
-        onRefresh();
-        setLoading(false);
-      })
-      .catch((err) => console.error(err));
+
+    try {
+      await provideAnswerToPollQuestion({
+        variables: {
+          pollQuestionId: id,
+          token: token,
+          answer: answer
+        }
+      });
+      onRefresh();
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

@@ -7,13 +7,13 @@ import { consts, device, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
-import { ADD_COMMENT_TO_DEBATE } from '../../../../queries/consul';
 import { QUERY_TYPES } from '../../../../queries';
+import { ADD_COMMENT_TO_DEBATE } from '../../../../queries/consul';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import {
   ConsulCommentList,
-  ConsulPublicAuthorComponent,
+  ConsulPublicAuthor,
   ConsulTagList,
   ConsulVotingComponent
 } from '../../../consul';
@@ -58,22 +58,23 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
     });
   }, []);
 
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    reset
-  } = useForm();
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      comment: ''
+    }
+  });
 
   const [addCommentToDebate] = useMutation(ADD_COMMENT_TO_DEBATE, {
     client: ConsulClient
   });
 
-  const onSubmit = async (val) => {
+  const onSubmit = async (commentData) => {
+    if (!commentData?.comment) return;
+
     setLoading(true);
 
     try {
-      await addCommentToDebate({ variables: { debateId: id, body: val.comment } });
+      await addCommentToDebate({ variables: { debateId: id, body: commentData.comment } });
       onRefresh();
       setLoading(false);
       reset();
@@ -95,27 +96,29 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
         )}
 
         {!!publicAuthor && (
-          <ConsulPublicAuthorComponent
-            onPress={() => {
-              navigation.navigate(ScreenName.ConsulStartNewScreen, {
-                title: texts.consul.startNew.updateButtonLabel,
-                query: QUERY_TYPES.CONSUL.UPDATE_DEBATE,
-                data: {
-                  title,
-                  tagList: tags.nodes.map((item) => item.name),
-                  description,
-                  termsOfService: true,
-                  id
-                }
-              });
-            }}
-            authorData={{
-              commentsCount,
-              publicAuthor,
-              publicCreatedAt,
-              userId
-            }}
-          />
+          <Wrapper>
+            <ConsulPublicAuthor
+              authorData={{
+                commentsCount,
+                publicAuthor,
+                publicCreatedAt,
+                userId
+              }}
+              onPress={() => {
+                navigation.navigate(ScreenName.ConsulStartNewScreen, {
+                  title: texts.consul.startNew.updateButtonLabel,
+                  query: QUERY_TYPES.CONSUL.UPDATE_DEBATE,
+                  data: {
+                    title,
+                    tagList: tags.nodes.map((item) => item.name),
+                    description,
+                    termsOfService: true,
+                    id
+                  }
+                });
+              }}
+            />
+          </Wrapper>
         )}
 
         {!!description && (
@@ -155,9 +158,6 @@ export const DebateDetail = ({ listData, onRefresh, route, navigation }) => {
             label={texts.consul.commentLabel}
             placeholder={texts.consul.comment}
             autoCapitalize="none"
-            validate
-            rules={{ required: true }}
-            errorMessage={errors.comment && `${texts.consul.commentEmptyError}`}
             control={control}
           />
           <WrapperVertical>

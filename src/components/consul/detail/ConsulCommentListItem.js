@@ -6,7 +6,6 @@ import { Alert, StyleSheet, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
-import { momentFormatUtcToLocal } from '../../../helpers';
 import {
   ADD_REPLY_TO_COMMENT,
   CAST_VOTE_ON_COMMENT,
@@ -18,6 +17,8 @@ import { Input } from '../../form';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
 import { WrapperRow, WrapperVertical } from '../../Wrapper';
+
+import { ConsulPublicAuthor } from './ConsulPublicAuthor';
 
 const deleteCommentAlert = (onDelete) =>
   Alert.alert(texts.consul.loginAllFieldsRequiredTitle, texts.consul.commentDeleteAlertBody, [
@@ -36,16 +37,15 @@ const deleteCommentAlert = (onDelete) =>
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navigation }) => {
-  const [responseShow, setResponseShow] = useState(false);
-  const [reply, setReply] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [showResponse, setShowResponse] = useState(false);
+  const [showReply, setShowReply] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    reset
-  } = useForm();
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      comment: ''
+    }
+  });
 
   const [addReplyToComment] = useMutation(ADD_REPLY_TO_COMMENT, {
     client: ConsulClient
@@ -71,55 +71,57 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
     userComment
   } = commentItem;
 
-  const commentUserId = publicAuthor ? publicAuthor.id : null;
+  const commentUserId = publicAuthor?.id;
 
-  const onSubmit = async (val) => {
-    setLoading(true);
-    await addReplyToComment({ variables: { commentId: id, body: val.comment } })
-      .then(() => {
-        onRefresh();
-        setLoading(false);
-        setReply(false);
-        setResponseShow(true);
-        reset({ comment: null });
-      })
-      .catch((err) => console.error(err));
+  const onSubmit = async (replyData) => {
+    if (!replyData?.comment) return;
+
+    setIsLoading(true);
+
+    try {
+      await addReplyToComment({ variables: { commentId: id, body: replyData.comment } });
+      onRefresh();
+      setIsLoading(false);
+      setShowReply(false);
+      setShowResponse(true);
+      reset();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const onVotingToComment = async (UpDown) => {
-    await castVoteOnComment({ variables: { commentId: id, vote: UpDown } })
-      .then(() => {
-        onRefresh();
-      })
-      .catch((err) => console.error(err));
+    try {
+      await castVoteOnComment({ variables: { commentId: id, vote: UpDown } });
+      onRefresh();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const onDelete = async () => {
-    await deleteComment({ variables: { id: id } })
-      .then(() => {
-        if (userComment) {
-          navigation?.navigate(ScreenName.ConsulHomeScreen);
-        } else {
-          onRefresh();
-        }
-      })
-      .catch((err) => console.error(err));
+    try {
+      await deleteComment({ variables: { id } });
+
+      if (userComment) {
+        navigation?.navigate(ScreenName.ConsulHomeScreen);
+      } else {
+        onRefresh();
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <View style={[!replyList && styles.container]}>
-      <WrapperRow>
-        <RegularText primary>{publicAuthor ? publicAuthor.username : 'Privat'}</RegularText>
-        <RegularText> · </RegularText>
-        <RegularText smallest>{momentFormatUtcToLocal(publicCreatedAt)}</RegularText>
-      </WrapperRow>
-
-      <RegularText>{body}</RegularText>
+      <ConsulPublicAuthor authorData={{ publicAuthor, publicCreatedAt }} />
+      <RegularText style={styles.container}>{body}</RegularText>
 
       <View style={styles.bottomContainer}>
         <View style={styles.bottomLine}>
           {responses && responses.length > 0 ? (
-            responseShow ? (
+            showResponse ? (
               <Icon.ArrowUp size={normalize(16)} color={colors.primary} />
             ) : (
               <Icon.ArrowDown size={normalize(16)} color={colors.primary} />
@@ -127,14 +129,15 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
           ) : null}
           <>
             {responses && responses.length > 0 ? (
-              <Touchable onPress={() => setResponseShow(!responseShow)}>
+              <Touchable onPress={() => setShowResponse(!showResponse)}>
                 <RegularText primary smallest>
-                  {responses.length} {responseShow ? texts.consul.answer : texts.consul.return}
-                  {responseShow ? ` (${texts.consul.collapse})` : ` (${texts.consul.show})`}
+                  {responses.length}{' '}
+                  {responses.length > 1 ? texts.consul.responses : texts.consul.response}
+                  {showResponse ? ` (${texts.consul.collapse})` : ` (${texts.consul.show})`}
                 </RegularText>
               </Touchable>
             ) : (
-              <RegularText smallest>{texts.consul.noReturn}</RegularText>
+              <RegularText smallest>{texts.consul.noResponse}</RegularText>
             )}
           </>
 
@@ -153,7 +156,7 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
             </>
           )}
 
-          <Touchable onPress={() => setReply(!reply)}>
+          <Touchable onPress={() => setShowReply(!showReply)}>
             <RegularText primary smallest>
               {texts.consul.answer}
             </RegularText>
@@ -195,7 +198,7 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
         </View>
       </View>
 
-      {responseShow && responses && responses.length
+      {showResponse && responses && responses.length
         ? responses.map((item, index) => (
             <View key={index} style={styles.replyContainer}>
               <ConsulCommentListItem
@@ -209,7 +212,7 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
           ))
         : null}
 
-      {reply ? (
+      {showReply ? (
         <>
           <Input
             multiline
@@ -218,17 +221,15 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
             label={texts.consul.commentLabel}
             placeholder={texts.consul.comment}
             autoCapitalize="none"
-            rules={{ required: true }}
-            errorMessage={errors.comment && `${texts.consul.commentEmptyError}`}
             control={control}
           />
           <WrapperVertical>
             <Button
               onPress={handleSubmit(onSubmit)}
               title={
-                loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
+                isLoading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
               }
-              disabled={loading}
+              disabled={isLoading}
             />
           </WrapperVertical>
         </>
@@ -266,12 +267,12 @@ ConsulCommentListItem.propTypes = {
 };
 
 LikeDissLikeIcon.propTypes = {
-  like: PropTypes.bool,
-  disslike: PropTypes.bool,
   cachedVotesDown: PropTypes.number,
   cachedVotesUp: PropTypes.number,
-  onPress: PropTypes.func,
-  color: PropTypes.string
+  color: PropTypes.string,
+  disslike: PropTypes.bool,
+  like: PropTypes.bool,
+  onPress: PropTypes.func
 };
 
 const styles = StyleSheet.create({
@@ -284,28 +285,28 @@ const styles = StyleSheet.create({
     paddingVertical: 5
   },
   bottomLine: {
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    marginTop: normalize(10),
-    alignItems: 'center'
+    marginTop: normalize(10)
   },
   deleteButton: {
-    flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexDirection: 'row'
   },
   replyContainer: {
+    borderColor: colors.borderRgba,
     borderLeftWidth: 0.5,
-    paddingLeft: normalize(10),
-    marginTop: normalize(10),
     borderStyle: 'solid',
-    borderColor: colors.borderRgba
+    marginTop: normalize(10),
+    paddingLeft: normalize(10)
   },
   icon: {
     paddingHorizontal: 5
   },
   iconButton: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
     marginHorizontal: 5
   }
 });
