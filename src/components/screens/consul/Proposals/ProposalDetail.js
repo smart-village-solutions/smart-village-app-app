@@ -17,7 +17,7 @@ import {
   ConsulCommentList,
   ConsulDocumentList,
   ConsulExternalVideoComponent,
-  ConsulPublicAuthorComponent,
+  ConsulPublicAuthor,
   ConsulSummaryComponent,
   ConsulSupportingComponent,
   ConsulTagList,
@@ -74,12 +74,11 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     });
   }, []);
 
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    reset
-  } = useForm();
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      comment: ''
+    }
+  });
 
   const [addCommentToProposal] = useMutation(ADD_COMMENT_TO_PROPOSAL, {
     client: ConsulClient
@@ -88,11 +87,13 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
     client: ConsulClient
   });
 
-  const onSubmit = async (val) => {
+  const onSubmit = async (commentData) => {
+    if (!commentData?.comment) return;
+
     setLoading(true);
 
     try {
-      await addCommentToProposal({ variables: { proposalId: id, body: val.comment } });
+      await addCommentToProposal({ variables: { proposalId: id, body: commentData.comment } });
       onRefresh();
       setLoading(false);
       reset();
@@ -103,6 +104,7 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
 
   const proposalShare = async () => {
     setLoading(true);
+
     await publishProposal({ variables: { id: id } })
       .then(() => {
         onRefresh();
@@ -132,29 +134,31 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
         )}
 
         {!!publicAuthor && (
-          <ConsulPublicAuthorComponent
-            onPress={() => {
-              navigation.push(ScreenName.ConsulStartNewScreen, {
-                title: texts.consul.startNew.updateButtonLabel,
-                query: QUERY_TYPES.CONSUL.UPDATE_PROPOSAL,
-                data: {
-                  title,
-                  tagList: tags.nodes.map((item) => item.name),
-                  description,
-                  termsOfService: true,
-                  summary,
-                  videoUrl,
-                  id
-                }
-              });
-            }}
-            authorData={{
-              commentsCount,
-              publicAuthor,
-              publicCreatedAt,
-              userId
-            }}
-          />
+          <Wrapper>
+            <ConsulPublicAuthor
+              authorData={{
+                commentsCount,
+                publicAuthor,
+                publicCreatedAt,
+                userId
+              }}
+              onPress={() => {
+                navigation.push(ScreenName.ConsulStartNewScreen, {
+                  title: texts.consul.startNew.updateButtonLabel,
+                  query: QUERY_TYPES.CONSUL.UPDATE_PROPOSAL,
+                  data: {
+                    title,
+                    tagList: tags.nodes.map((item) => item.name),
+                    description,
+                    termsOfService: true,
+                    summary,
+                    videoUrl,
+                    id
+                  }
+                });
+              }}
+            />
+          </Wrapper>
         )}
 
         {!!imageUrlMedium && (
@@ -224,9 +228,6 @@ export const ProposalDetail = ({ listData, onRefresh, route, navigation }) => {
             label={texts.consul.commentLabel}
             placeholder={texts.consul.comment}
             autoCapitalize="none"
-            validate
-            rules={{ required: true }}
-            errorMessage={errors.comment && `${texts.consul.commentEmptyError}`}
             control={control}
           />
           <WrapperVertical>

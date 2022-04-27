@@ -28,11 +28,12 @@ export const ConsulVotingComponent = ({ votesData, onRefresh, id }) => {
   });
 
   const onVoting = async (UpDown) => {
-    await castVoteOnDebate({ variables: { debateId: id, vote: UpDown } })
-      .then(() => {
-        onRefresh();
-      })
-      .catch((err) => console.error(err));
+    try {
+      await castVoteOnDebate({ variables: { debateId: id, vote: UpDown } });
+      onRefresh();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

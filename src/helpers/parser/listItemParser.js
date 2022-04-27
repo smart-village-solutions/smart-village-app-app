@@ -279,7 +279,7 @@ const parseConsulData = (data, query, skipLastDivider) => {
       subtitle,
       routeName: ScreenName.ConsulDetailScreen,
       params: {
-        title: consulData.title ? consulData.title : consulData.body,
+        title: getTitleForQuery(query),
         query: querySwitcherForDetail(query),
         queryVariables: { id: consulData.id },
         rootRouteName: ROOT_ROUTE_NAMES.CONSOLE_HOME

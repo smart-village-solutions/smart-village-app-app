@@ -51,22 +51,21 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
     route.params?.rootRouteName
   );
 
-  const {
-    control,
-    formState: { errors },
-    handleSubmit,
-    reset
-  } = useForm();
+  const { control, handleSubmit, reset } = useForm({
+    defaultValues: {
+      comment: ''
+    }
+  });
 
   const [addCommentToPoll] = useMutation(ADD_COMMENT_TO_POLLS, {
     client: ConsulClient
   });
 
-  const onSubmit = async (val) => {
-    setLoading(true);
+  const onSubmit = async (commentData) => {
+    if (!commentData?.comment) return;
 
     try {
-      await addCommentToPoll({ variables: { pollId: id, body: val.comment } });
+      await addCommentToPoll({ variables: { pollId: id, body: commentData.comment } });
       onRefresh();
       setLoading(false);
       reset();
@@ -122,8 +121,6 @@ export const PollDetail = ({ listData, onRefresh, route, navigation }) => {
             label={texts.consul.commentLabel}
             placeholder={texts.consul.comment}
             autoCapitalize="none"
-            rules={{ required: true }}
-            errorMessage={errors.comment && `${texts.consul.commentEmptyError}`}
             control={control}
           />
           <WrapperVertical>
