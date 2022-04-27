@@ -4,6 +4,35 @@ export const QUERY_TYPES = {
   APP_USER_CONTENT: 'appUserContent',
   CATEGORIES: 'categories',
   CONSTRUCTION_SITES: 'constructionSites',
+  CONSUL: {
+    COMMENTS: 'comments',
+    DEBATE: 'debate',
+    DEBATES: 'debates',
+    FILTER: {
+      CURRENT: 'current',
+      EXPIRED: 'expired'
+    },
+    LOGOUT: 'logout',
+    POLL: 'poll',
+    POLLS: 'polls',
+    PROPOSAL: 'proposal',
+    PROPOSALS: 'proposals',
+    PUBLIC_COMMENT: 'publicComment',
+    PUBLIC_COMMENTS: 'publicComments',
+    PUBLIC_DEBATES: 'publicDebates',
+    PUBLIC_PROPOSALS: 'publicProposals',
+    SORTING: {
+      NEWESTDATE: 'newestDate',
+      MOSTACTIVE: 'mostActive',
+      HIGHESTRATED: 'highestRated'
+    },
+    START_DEBATE: 'startDebate',
+    START_PROPOSAL: 'startProposal',
+    UPDATE_DEBATE: 'updateDebate',
+    UPDATE_PROPOSAL: 'updateProposal',
+    USER_SETTINGS: 'userSettings',
+    USER: 'consulUser'
+  },
   EVENT_RECORD: 'eventRecord',
   EVENT_RECORDS: 'eventRecords',
   GENERIC_ITEM: 'genericItem',
@@ -34,42 +63,13 @@ export const QUERY_TYPES = {
     POSTS: 'posts',
     PROFILE: 'profile',
     TASKS: 'tasks',
-    USER: 'user',
-    USERS: 'users'
+    USER: 'volunteerUser',
+    USERS: 'volunteerUsers'
   } as const,
   WASTE_ADDRESSES: 'wasteAddresses',
   WASTE_STREET: 'wasteStreet',
   WEATHER_MAP: 'weatherMap',
-  WEATHER_MAP_CURRENT: 'weatherMapCurrent',
-  CONSUL: {
-    DEBATES: 'debates',
-    DEBATE: 'debate',
-    START_DEBATE: 'startDebate',
-    UPDATE_DEBATE: 'updateDebate',
-    PROPOSALS: 'proposals',
-    PROPOSAL: 'proposal',
-    START_PROPOSAL: 'startProposal',
-    UPDATE_PROPOSAL: 'updateProposal',
-    POLLS: 'polls',
-    POLL: 'poll',
-    USER: 'user',
-    COMMENTS: 'comments',
-    PUBLIC_DEBATES: 'publicDebates',
-    PUBLIC_PROPOSALS: 'publicProposals',
-    PUBLIC_COMMENTS: 'publicComments',
-    PUBLIC_COMMENT: 'publicComment',
-    USER_SETTINGS: 'userSettings',
-    LOGOUT: 'logout',
-    SORTING: {
-      NEWESTDATE: 'newestDate',
-      MOSTACTIVE: 'mostActive',
-      HIGHESTRATED: 'highestRated'
-    },
-    FILTER: {
-      CURRENT: 'current',
-      EXPIRED: 'expired'
-    }
-  }
+  WEATHER_MAP_CURRENT: 'weatherMapCurrent'
 };
 
 /**
