@@ -758,6 +758,7 @@ export const texts = {
     noUsers: 'Es gibt keine Personen, denen du schreiben könntest.',
     notAttend: 'Nicht mehr interessiert',
     ok: 'OK',
+    organizer: 'Veranstalter',
     participants: 'Interessierte',
     password: 'Passwort',
     passwordConfirmation: 'Passwort bestätigen',

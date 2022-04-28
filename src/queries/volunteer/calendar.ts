@@ -1,6 +1,6 @@
 import _isNumber from 'lodash/isNumber';
 
-import { colors } from '../../config';
+import { colors, texts } from '../../config';
 import { formatTime } from '../../helpers/formatHelper';
 import { momentFormat } from '../../helpers/momentHelper';
 import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
@@ -66,6 +66,7 @@ export const calendarAttend = async ({ id, type }: { id: number; type: PARTICIPA
 export const calendarNew = async ({
   title,
   description = '',
+  organizer = '',
   color = colors.primary.startsWith('#') ? colors.primary : colors.darkText,
   location = '',
   participationMode = 2,
@@ -84,6 +85,11 @@ export const calendarNew = async ({
   contentContainerId
 }: VolunteerCalendar) => {
   const authToken = await volunteerAuthToken();
+
+  // add organizer information to the description field if present
+  description = organizer?.length
+    ? `${description}\n\n\n<strong>${texts.volunteer.organizer}</strong>\n\n${organizer}`
+    : description;
 
   const formData = {
     CalendarEntry: {
