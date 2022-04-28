@@ -18,7 +18,7 @@ import { ScreenName } from '../../../types';
 export const ConsulRegisteredScreen = ({ navigation }) => {
   const { data: registeredHtml = '', error, loading, refetch } = useStaticContent({
     type: 'html',
-    name: 'ehrenamt-registriert'
+    name: 'consul-registriert'
   });
 
   const RefreshControl = usePullToRefetch(refetch);

@@ -15,7 +15,7 @@ import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 export const ConsulWelcome = ({ navigation }) => {
   const { data: welcomeHtml = '', error, loading, refetch } = useStaticContent({
     type: 'html',
-    name: 'ehrenamt-willkommen'
+    name: 'consul-willkommen'
   });
 
   const onPressLogin = useCallback(() => {
