@@ -165,13 +165,13 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
 
         <View style={styles.bottomLine}>
           <WrapperRow>
-            {cachedVotesTotal > 0 ? (
-              <RegularText smallest>
-                {cachedVotesTotal} {cachedVotesTotal > 1 ? texts.consul.votes : texts.consul.vote}
-              </RegularText>
-            ) : (
-              <RegularText smallest>{texts.consul.noVotes}</RegularText>
-            )}
+            <RegularText small>
+              {cachedVotesTotal > 0
+                ? `${cachedVotesTotal} ${
+                    cachedVotesTotal > 1 ? texts.consul.votes : texts.consul.vote
+                  }`
+                : texts.consul.noVotes}
+            </RegularText>
 
             <LikeDissLikeIcon
               color={
