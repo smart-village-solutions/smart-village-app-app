@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
@@ -12,11 +12,10 @@ import {
   DELETE_COMMENT
 } from '../../../queries/consul';
 import { ScreenName } from '../../../types';
-import { Button } from '../../Button';
 import { Input } from '../../form';
 import { RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
-import { WrapperRow, WrapperVertical } from '../../Wrapper';
+import { WrapperRow } from '../../Wrapper';
 
 import { ConsulPublicAuthor } from './ConsulPublicAuthor';
 
@@ -213,26 +212,25 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
         : null}
 
       {showReply ? (
-        <>
+        <WrapperRow style={{ marginTop: normalize(10) }}>
           <Input
             multiline
             minHeight={50}
             name="comment"
             label={texts.consul.commentLabel}
-            placeholder={texts.consul.comment}
+            placeholder={texts.consul.answer}
             autoCapitalize="none"
             control={control}
+            chat
           />
-          <WrapperVertical>
-            <Button
-              onPress={handleSubmit(onSubmit)}
-              title={
-                isLoading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
-              }
-              disabled={isLoading}
-            />
-          </WrapperVertical>
-        </>
+          <TouchableOpacity
+            onPress={handleSubmit(onSubmit)}
+            style={styles.button}
+            disabled={isLoading}
+          >
+            <Icon.Send color={colors.primary} size={normalize(16)} />
+          </TouchableOpacity>
+        </WrapperRow>
       ) : null}
     </View>
   );
@@ -289,6 +287,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     marginTop: normalize(10)
+  },
+  button: {
+    alignSelf: 'flex-end',
+    alignItems: 'flex-end',
+    marginBottom: normalize(10),
+    width: '10%'
   },
   deleteButton: {
     alignItems: 'center',

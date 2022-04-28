@@ -2,15 +2,15 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { consts, device, texts } from '../../../../config';
+import { colors, consts, device, Icon, normalize, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
 import { QUERY_TYPES } from '../../../../queries';
 import { ADD_COMMENT_TO_DEBATE } from '../../../../queries/consul';
 import { ScreenName } from '../../../../types';
-import { Button } from '../../../Button';
 import {
   ConsulCommentList,
   ConsulPublicAuthor,
@@ -21,7 +21,7 @@ import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
-import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../../../Wrapper';
+import { Wrapper, WrapperRow, WrapperWithOrientation } from '../../../Wrapper';
 
 const a11yText = consts.a11yLabel;
 
@@ -150,25 +150,26 @@ export const DebateDetail = ({ data, onRefresh, route, navigation }) => {
           />
         )}
 
-        <Wrapper>
-          <Input
-            multiline
-            minHeight={50}
-            name="comment"
-            label={texts.consul.commentLabel}
-            placeholder={texts.consul.comment}
-            autoCapitalize="none"
-            control={control}
-          />
-          <WrapperVertical>
-            <Button
-              onPress={handleSubmit(onSubmit)}
-              title={
-                loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
-              }
-              disabled={loading}
+        <Wrapper style={styles.input}>
+          <WrapperRow>
+            <Input
+              multiline
+              minHeight={50}
+              name="comment"
+              label={texts.consul.commentLabel}
+              placeholder={texts.consul.comment}
+              autoCapitalize="none"
+              control={control}
+              chat
             />
-          </WrapperVertical>
+            <TouchableOpacity
+              onPress={handleSubmit(onSubmit)}
+              style={styles.button}
+              disabled={loading}
+            >
+              <Icon.Send color={colors.primary} size={normalize(16)} />
+            </TouchableOpacity>
+          </WrapperRow>
         </Wrapper>
       </WrapperWithOrientation>
     </SafeAreaViewFlex>
@@ -184,3 +185,18 @@ DebateDetail.propTypes = {
   onRefresh: PropTypes.func,
   route: PropTypes.object
 };
+
+const styles = StyleSheet.create({
+  button: {
+    alignSelf: 'flex-end',
+    alignItems: 'flex-end',
+    marginBottom: normalize(10),
+    width: '10%'
+  },
+  input: {
+    shadowColor: colors.shadow,
+    shadowOpacity: 0.7,
+    shadowRadius: 3,
+    backgroundColor: colors.lightestText
+  }
+});
