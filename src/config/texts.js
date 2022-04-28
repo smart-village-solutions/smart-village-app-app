@@ -759,6 +759,7 @@ export const texts = {
     notAttend: 'Nicht mehr interessiert',
     ok: 'OK',
     organizer: 'Veranstalter',
+    owner: 'Inhaber',
     participants: 'Interessierte',
     participantInfo: 'Informationen für Interessierte',
     password: 'Passwort',

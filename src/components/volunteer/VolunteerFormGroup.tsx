@@ -94,6 +94,16 @@ export const VolunteerFormGroup = ({
         />
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
+        <Input
+          name="owner"
+          label={texts.volunteer.owner}
+          placeholder={texts.volunteer.owner}
+          multiline
+          validate
+          control={control}
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="visibility"
           render={({ onChange, value }) => (

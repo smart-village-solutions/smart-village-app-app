@@ -1,3 +1,4 @@
+import { texts } from '../../config';
 import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
 import { JOIN_POLICY_TYPES, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
 
@@ -33,11 +34,17 @@ export const group = async (id: number) => {
 
 export const groupNew = async ({
   name,
-  description,
+  description = '',
+  owner = '',
   visibility = VISIBILITY_TYPES.ALL,
   joinPolicy = JOIN_POLICY_TYPES.OPEN
 }: VolunteerGroup) => {
   const authToken = await volunteerAuthToken();
+
+  // add owner information to the description field if present
+  description = owner?.length
+    ? `${description}\n\n\n<strong>${texts.volunteer.owner}</strong>\n\n${owner}`
+    : description;
 
   const formData = {
     name,

@@ -13,6 +13,7 @@ export enum VISIBILITY_TYPES {
 export type VolunteerGroup = {
   name: string;
   description?: string;
+  owner?: string;
   visibility?: VISIBILITY_TYPES;
   joinPolicy?: JOIN_POLICY_TYPES;
   color?: string;
