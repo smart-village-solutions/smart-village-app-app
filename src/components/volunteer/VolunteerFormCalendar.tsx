@@ -277,6 +277,16 @@ export const VolunteerFormCalendar = ({
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
         <Input
+          name="participantInfo"
+          label={texts.volunteer.participantInfo}
+          placeholder={texts.volunteer.participantInfo}
+          multiline
+          validate
+          control={control}
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Input
           name="location"
           label={texts.volunteer.location}
           placeholder={texts.volunteer.location}

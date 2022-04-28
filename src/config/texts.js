@@ -760,6 +760,7 @@ export const texts = {
     ok: 'OK',
     organizer: 'Veranstalter',
     participants: 'Interessierte',
+    participantInfo: 'Informationen für Interessierte',
     password: 'Passwort',
     passwordConfirmation: 'Passwort bestätigen',
     passwordForgotten: 'Passwort vergessen',
