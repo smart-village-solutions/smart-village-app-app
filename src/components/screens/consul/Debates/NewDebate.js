@@ -113,7 +113,7 @@ export const NewDebate = ({ navigation, data, query }) => {
             control={control}
             {...item}
             validate={item.rules.required}
-            errorMessage={errors[item.name] && item.errorMessage}
+            errorMessage={errors[item.name] && `${errors[item.name].message}`}
           />
         </Wrapper>
       ))}
@@ -171,10 +171,9 @@ const INPUTS = [
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: true,
+      required: texts.consul.startNew.leerError,
       minLength: { value: 4, message: 'ist zu kurz (minimum 4 Zeichen)' }
-    },
-    errorMessage: texts.consul.startNew.leerError
+    }
   },
   {
     name: 'description',
@@ -187,10 +186,9 @@ const INPUTS = [
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: true,
+      required: texts.consul.startNew.leerError,
       minLength: { value: 10, message: 'ist zu kurz (minimum 10 Zeichen)' }
-    },
-    errorMessage: texts.consul.startNew.leerError
+    }
   },
   {
     name: 'tagList',
