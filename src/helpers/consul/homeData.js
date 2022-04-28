@@ -94,7 +94,7 @@ export const homeData = (id) => [
           title: texts.consul.homeScreen.settings,
           query: QUERY_TYPES.CONSUL.USER_SETTINGS,
           queryVariables: {
-            link: `${secrets[namespace]?.consul.serverUrl}${secrets[namespace]?.consul.settings}`
+            link: `${secrets[namespace]?.consul?.serverUrl}${secrets[namespace]?.consul?.settings}`
           },
           rootRouteName: ScreenName.ConsulHomeScreen
         },

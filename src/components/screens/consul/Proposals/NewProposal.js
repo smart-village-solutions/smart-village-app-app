@@ -237,7 +237,7 @@ export const NewProposal = ({ navigation, data, query }) => {
         <WrapperHorizontal>
           <Checkbox
             title={texts.consul.startNew.termsOfServiceLabel}
-            link={`${secrets[namespace]?.consul.serverUrl}${secrets[namespace]?.consul.termsOfService}`}
+            link={`${secrets[namespace]?.consul?.serverUrl}${secrets[namespace]?.consul?.termsOfService}`}
             linkDescription={texts.consul.startNew.termsOfServiceLinkLabel}
             checkedIcon="check-square-o"
             uncheckedIcon="square-o"

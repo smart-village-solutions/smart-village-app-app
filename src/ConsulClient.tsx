@@ -8,7 +8,7 @@ import { getConsulAuthToken } from './helpers';
 
 const httpLink = createHttpLink({
   // @ts-expect-error expo slug is typed as a string, which is insufficient for type checking here.
-  uri: `${secrets[namespace]?.consul.serverUrl}${secrets[namespace]?.consul.graphqlEndpoint}`
+  uri: `${secrets[namespace]?.consul?.serverUrl}${secrets[namespace]?.consul?.graphqlEndpoint}`
 });
 
 const authLink = setContext(async () => {
