@@ -1,26 +1,26 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { useMutation } from 'react-apollo';
+import { StyleSheet } from 'react-native';
 
-import { TitleContainer, Title, TitleShadow } from '../../Title';
-import { Wrapper, WrapperRow } from '../../Wrapper';
-import { texts, consts, device, colors, Icon, normalize } from '../../../config';
-import { RegularText } from '../../Text';
-import { Touchable } from '../../Touchable';
+import { colors, consts, device, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { CAST_VOTE_ON_DEBATE } from '../../../queries/consul';
+import { RegularText } from '../../Text';
+import { Title, TitleContainer, TitleShadow } from '../../Title';
+import { Touchable } from '../../Touchable';
+import { Wrapper, WrapperRow } from '../../Wrapper';
 
 const a11yText = consts.a11yLabel;
 
-export const ConsulVotingComponent = ({ votesData, onRefresh, id }) => {
-  const { cachedVotesTotal, cachedVotesUp, cachedVotesDown, votesFor } = votesData;
+export const ConsulVoting = ({ votesData, refetch, id }) => {
+  const { cachedVotesDown, cachedVotesTotal, cachedVotesUp, votesFor } = votesData;
 
-  let upVotesPercent = 0;
   let downVotesPercent = 0;
+  let upVotesPercent = 0;
   if (cachedVotesTotal) {
-    upVotesPercent = (cachedVotesUp * 100) / cachedVotesTotal;
     downVotesPercent = (cachedVotesDown * 100) / cachedVotesTotal;
+    upVotesPercent = (cachedVotesUp * 100) / cachedVotesTotal;
   }
 
   const [castVoteOnDebate] = useMutation(CAST_VOTE_ON_DEBATE, {
@@ -30,7 +30,7 @@ export const ConsulVotingComponent = ({ votesData, onRefresh, id }) => {
   const onVoting = async (UpDown) => {
     try {
       await castVoteOnDebate({ variables: { debateId: id, vote: UpDown } });
-      onRefresh();
+      refetch();
     } catch (error) {
       console.error(error);
     }
@@ -80,18 +80,18 @@ export const ConsulVotingComponent = ({ votesData, onRefresh, id }) => {
   );
 };
 
-ConsulVotingComponent.propTypes = {
-  votesData: PropTypes.object.isRequired,
-  id: PropTypes.string,
-  onRefresh: PropTypes.func
-};
-
 const styles = StyleSheet.create({
+  icon: {
+    paddingHorizontal: 10
+  },
   iconButton: {
     alignItems: 'center',
     marginHorizontal: 10
-  },
-  icon: {
-    paddingHorizontal: 10
   }
 });
+
+ConsulVoting.propTypes = {
+  id: PropTypes.string,
+  refetch: PropTypes.func,
+  votesData: PropTypes.object.isRequired
+};

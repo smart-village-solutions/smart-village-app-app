@@ -3,14 +3,13 @@ import React from 'react';
 import { Alert } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, normalize, Icon, consts } from '../../../config';
+import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { setConsulAuthToken, setConsulUser } from '../../../helpers';
+import { useOpenWebScreen } from '../../../hooks';
 import { QUERY_TYPES } from '../../../queries';
+import { ScreenName } from '../../../types';
 import { BoldText } from '../../Text';
 import { Touchable } from '../../Touchable';
-import { ScreenName } from '../../../types';
-import { setConsulAuthToken, setConsulUser } from '../../../helpers';
-import { texts } from '../../../config';
-import { useOpenWebScreen } from '../../../hooks';
 
 const logOutAlert = (onLogout) =>
   Alert.alert(texts.consul.loginAllFieldsRequiredTitle, texts.consul.logoutAlertBody, [
@@ -28,8 +27,8 @@ const logOutAlert = (onLogout) =>
 
 export const ConsulListItem = ({ navigation, item }) => {
   const { routeName: name, params, title } = item;
-  const link = params?.queryVariables.link ?? '';
   const headerTitle = title ?? '';
+  const link = params?.queryVariables.link ?? '';
   const rootRouteName = params?.rootRouteName ?? '';
 
   const onLogout = async () => {
@@ -71,6 +70,6 @@ export const ConsulListItem = ({ navigation, item }) => {
 };
 
 ConsulListItem.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired
 };

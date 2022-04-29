@@ -36,14 +36,14 @@ const deleteCommentAlert = (onDelete) =>
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navigation }) => {
-  const [showResponse, setShowResponse] = useState(false);
-  const [showReply, setShowReply] = useState(false);
+export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isShowReply, setIsShowReply] = useState(false);
+  const [isShowResponse, setIsShowResponse] = useState(false);
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
-      comment: ''
+      comment: null
     }
   });
 
@@ -80,20 +80,20 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
 
     try {
       await addReplyToComment({ variables: { commentId: id, body: replyData.comment } });
-      onRefresh();
+      refetch();
       setIsLoading(false);
-      setShowReply(false);
-      setShowResponse(true);
+      setIsShowReply(false);
+      setIsShowResponse(true);
       reset();
     } catch (error) {
       console.error(error);
     }
   };
 
-  const onVotingToComment = async (UpDown) => {
+  const onVotingToComment = async (commentVoting) => {
     try {
-      await castVoteOnComment({ variables: { commentId: id, vote: UpDown } });
-      onRefresh();
+      await castVoteOnComment({ variables: { commentId: id, vote: commentVoting } });
+      refetch();
     } catch (error) {
       console.error(error);
     }
@@ -106,7 +106,7 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
       if (userComment) {
         navigation?.navigate(ScreenName.ConsulHomeScreen);
       } else {
-        onRefresh();
+        refetch();
       }
     } catch (error) {
       console.error(error);
@@ -121,7 +121,7 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
       <View style={styles.bottomContainer}>
         <View style={styles.bottomLine}>
           {responses && responses.length > 0 ? (
-            showResponse ? (
+            isShowResponse ? (
               <Icon.ArrowUp size={normalize(16)} color={colors.primary} />
             ) : (
               <Icon.ArrowDown size={normalize(16)} color={colors.primary} />
@@ -129,11 +129,11 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
           ) : null}
           <>
             {responses && responses.length > 0 ? (
-              <Touchable onPress={() => setShowResponse(!showResponse)}>
+              <Touchable onPress={() => setIsShowResponse(!isShowResponse)}>
                 <RegularText primary smallest>
                   {responses.length}{' '}
                   {responses.length > 1 ? texts.consul.responses : texts.consul.response}
-                  {showResponse ? ` (${texts.consul.collapse})` : ` (${texts.consul.show})`}
+                  {isShowResponse ? ` (${texts.consul.collapse})` : ` (${texts.consul.show})`}
                 </RegularText>
               </Touchable>
             ) : (
@@ -156,7 +156,7 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
             </>
           )}
 
-          <Touchable onPress={() => setShowReply(!showReply)}>
+          <Touchable onPress={() => setIsShowReply(!isShowReply)}>
             <RegularText primary smallest>
               {texts.consul.answer}
             </RegularText>
@@ -198,13 +198,13 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
         </View>
       </View>
 
-      {showResponse && responses && responses.length
+      {isShowResponse && responses && responses.length
         ? responses.map((item, index) => (
             <View key={index} style={styles.replyContainer}>
               <ConsulCommentListItem
                 index={index}
                 commentItem={item}
-                onRefresh={onRefresh}
+                refetch={refetch}
                 replyList={true}
                 navigation={navigation}
               />
@@ -212,7 +212,7 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
           ))
         : null}
 
-      {showReply ? (
+      {isShowReply ? (
         <>
           <Input
             multiline
@@ -256,12 +256,46 @@ const Space = () => {
   return <RegularText smallest> | </RegularText>;
 };
 
+const styles = StyleSheet.create({
+  bottomContainer: {
+    borderBottomWidth: 0.5,
+    borderColor: colors.darkText,
+    paddingVertical: 5
+  },
+  bottomLine: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginTop: normalize(10)
+  },
+  container: {
+    marginTop: normalize(10)
+  },
+  deleteButton: {
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  icon: {
+    paddingHorizontal: 5
+  },
+  iconButton: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginHorizontal: 5
+  },
+  replyContainer: {
+    borderColor: colors.borderRgba,
+    borderLeftWidth: 0.5,
+    borderStyle: 'solid',
+    marginTop: normalize(10),
+    paddingLeft: normalize(10)
+  }
+});
+
 ConsulCommentListItem.propTypes = {
   commentItem: PropTypes.object.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
-  }).isRequired,
-  onRefresh: PropTypes.func,
+  navigation: PropTypes.object.isRequired,
+  refetch: PropTypes.func,
   replyList: PropTypes.bool,
   userId: PropTypes.string
 };
@@ -274,39 +308,3 @@ LikeDissLikeIcon.propTypes = {
   like: PropTypes.bool,
   onPress: PropTypes.func
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginTop: normalize(10)
-  },
-  bottomContainer: {
-    borderBottomWidth: 0.5,
-    borderColor: colors.darkText,
-    paddingVertical: 5
-  },
-  bottomLine: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    marginTop: normalize(10)
-  },
-  deleteButton: {
-    alignItems: 'center',
-    flexDirection: 'row'
-  },
-  replyContainer: {
-    borderColor: colors.borderRgba,
-    borderLeftWidth: 0.5,
-    borderStyle: 'solid',
-    marginTop: normalize(10),
-    paddingLeft: normalize(10)
-  },
-  icon: {
-    paddingHorizontal: 5
-  },
-  iconButton: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginHorizontal: 5
-  }
-});

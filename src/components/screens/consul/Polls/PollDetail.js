@@ -9,7 +9,7 @@ import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
 import { ADD_COMMENT_TO_POLLS } from '../../../../queries/consul';
 import { Button } from '../../../Button';
-import { ConsulCommentList, ConsulQuestionsList, ConsulSummaryComponent } from '../../../consul';
+import { ConsulCommentList, ConsulQuestionsList, ConsulSummary } from '../../../consul';
 import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
 import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
@@ -20,8 +20,8 @@ const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PollDetail = ({ data, onRefresh, route, navigation }) => {
-  const [loading, setLoading] = useState();
+export const PollDetail = ({ data, refetch, route, navigation }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState();
 
   const {
@@ -40,8 +40,8 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
   const currentDate = new Date().getTime();
 
   useEffect(() => {
-    getConsulUser().then((val) => {
-      if (val) return setUserId(JSON.parse(val).id);
+    getConsulUser().then((userInfo) => {
+      if (userInfo) return setUserId(JSON.parse(userInfo).id);
     });
   }, []);
 
@@ -53,7 +53,7 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
-      comment: ''
+      comment: null
     }
   });
 
@@ -66,8 +66,8 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
 
     try {
       await addCommentToPoll({ variables: { pollId: id, body: commentData.comment } });
-      onRefresh();
-      setLoading(false);
+      refetch();
+      setIsLoading(false);
       reset();
     } catch (err) {
       console.error(err);
@@ -86,7 +86,7 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
           </>
         )}
 
-        {!!summary && <ConsulSummaryComponent summary={summary} />}
+        {!!summary && <ConsulSummary summary={summary} />}
 
         {!!description && (
           <Wrapper>
@@ -97,7 +97,7 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
         {!!questions && (
           <ConsulQuestionsList
             data={questions}
-            onRefresh={onRefresh}
+            refetch={refetch}
             token={token}
             disabled={endsDate >= currentDate}
           />
@@ -108,7 +108,7 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
             commentCount={commentsCount}
             commentsData={comments}
             userId={userId}
-            onRefresh={onRefresh}
+            refetch={refetch}
             navigation={navigation}
           />
         )}
@@ -127,9 +127,9 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
             <Button
               onPress={handleSubmit(onSubmit)}
               title={
-                loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
+                isLoading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
               }
-              disabled={loading}
+              disabled={isLoading}
             />
           </WrapperVertical>
         </Wrapper>
@@ -141,9 +141,7 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
 
 PollDetail.propTypes = {
   data: PropTypes.object.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
-  }).isRequired,
-  onRefresh: PropTypes.func,
+  navigation: PropTypes.object.isRequired,
+  refetch: PropTypes.func,
   route: PropTypes.object
 };

@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { RegularText, BoldText } from '../../Text';
-import { Wrapper } from '../../Wrapper';
 import { openLink } from '../../../helpers';
+import { BoldText, RegularText } from '../../Text';
+import { Wrapper } from '../../Wrapper';
 
-export const ConsulExternalVideoComponent = ({ videoUrl }) => {
+export const ConsulExternalVideo = ({ videoUrl }) => {
   return (
     <Wrapper>
       <BoldText>Externes Video</BoldText>
@@ -16,6 +16,6 @@ export const ConsulExternalVideoComponent = ({ videoUrl }) => {
   );
 };
 
-ConsulExternalVideoComponent.propTypes = {
+ConsulExternalVideo.propTypes = {
   videoUrl: PropTypes.string
 };

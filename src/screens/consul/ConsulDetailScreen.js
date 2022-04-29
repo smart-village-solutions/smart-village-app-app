@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
-import { Alert, RefreshControl, ScrollView } from 'react-native';
+import React, { useCallback } from 'react';
+import { Alert, ScrollView } from 'react-native';
 
 import {
   DebateDetail,
@@ -13,8 +13,8 @@ import {
   SafeAreaViewFlex,
   UserCommentDetail
 } from '../../components';
-import { colors, texts } from '../../config';
-import { useConsulData } from '../../hooks';
+import { texts } from '../../config';
+import { useConsulData, usePullToRefetch } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 
@@ -38,23 +38,15 @@ const showRegistrationFailAlert = (navigation) =>
   ]);
 
 export const ConsulDetailScreen = ({ navigation, route }) => {
-  const [refreshing, setRefreshing] = useState(false);
-  const queryVariables = route.params?.queryVariables ?? {};
   const query = route.params?.query ?? '';
+  const queryVariables = route.params?.queryVariables ?? {};
 
   const { data, refetch, isLoading, isError } = useConsulData({
     query,
     queryVariables
   });
 
-  const refresh = useCallback(
-    async (refetch) => {
-      setRefreshing(true);
-      await refetch();
-      setRefreshing(false);
-    },
-    [setRefreshing]
-  );
+  const RefreshControl = usePullToRefetch(refetch);
 
   useFocusEffect(
     useCallback(() => {
@@ -75,18 +67,8 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => refresh(refetch)}
-              colors={[colors.accent]}
-              tintColor={colors.accent}
-            />
-          }
-        >
-          <Component data={data} navigation={navigation} route={route} onRefresh={refetch} />
+        <ScrollView keyboardShouldPersistTaps="handled" refreshControl={RefreshControl}>
+          <Component data={data} navigation={navigation} route={route} refetch={refetch} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
@@ -94,8 +76,6 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
 };
 
 ConsulDetailScreen.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
-  }).isRequired,
+  navigation: PropTypes.object.isRequired,
   route: PropTypes.object
 };

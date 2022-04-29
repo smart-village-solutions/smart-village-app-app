@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList } from 'react-native';
 
+import { consts, device, texts } from '../../../config';
 import { Title, TitleContainer, TitleShadow } from '../../Title';
 import { Wrapper, WrapperRow } from '../../Wrapper';
-import { device, texts, consts } from '../../../config';
 
 import { ConsulTagListItem } from './ConsulTagListItem';
 
@@ -37,6 +37,6 @@ export const ConsulTagList = ({ tags, onPress }) => {
 };
 
 ConsulTagList.propTypes = {
-  tags: PropTypes.array.isRequired,
-  onPress: PropTypes.object
+  onPress: PropTypes.object,
+  tags: PropTypes.array.isRequired
 };

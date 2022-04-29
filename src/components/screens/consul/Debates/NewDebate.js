@@ -21,7 +21,7 @@ const graphqlErr = (err) => Alert.alert('Hinweis', err);
 
 export const NewDebate = ({ navigation, data, query }) => {
   const [termsOfService, setTermsOfService] = useState(data?.termsOfService ?? false);
-  const [startLoading, setStartLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
@@ -29,9 +29,9 @@ export const NewDebate = ({ navigation, data, query }) => {
     handleSubmit
   } = useForm({
     defaultValues: {
-      title: data?.title,
-      description: data?.description,
-      tagList: data?.tagList?.toString()
+      title: data?.title ? data?.title : null,
+      description: data?.description ? data?.description : null,
+      tagList: data?.tagList ? data?.tagList?.toString() : null
     }
   });
 
@@ -42,15 +42,15 @@ export const NewDebate = ({ navigation, data, query }) => {
     client: ConsulClient
   });
 
-  const onSubmit = async (val) => {
+  const onSubmit = async (newDebateData) => {
     let variables = {
       id: data?.id,
       attributes: {
         translationsAttributes: {
-          title: val.title,
-          description: val.description
+          title: newDebateData.title,
+          description: newDebateData.description
         },
-        tagList: val.tagList,
+        tagList: newDebateData.tagList,
         termsOfService: termsOfService
       }
     };
@@ -59,11 +59,11 @@ export const NewDebate = ({ navigation, data, query }) => {
 
     switch (query) {
       case QUERY_TYPES.CONSUL.START_DEBATE:
-        setStartLoading(true);
+        setIsLoading(true);
 
         try {
           await startDebate({ variables });
-          setStartLoading(false);
+          setIsLoading(false);
 
           navigation.navigate(ScreenName.ConsulIndexScreen, {
             title: texts.consul.homeScreen.debates,
@@ -78,15 +78,15 @@ export const NewDebate = ({ navigation, data, query }) => {
         } catch (error) {
           graphqlErr(error.message);
           console.error(error.message);
-          setStartLoading(false);
+          setIsLoading(false);
         }
         break;
       case QUERY_TYPES.CONSUL.UPDATE_DEBATE:
-        setStartLoading(true);
+        setIsLoading(true);
 
         try {
           let data = await updateDebate({ variables });
-          setStartLoading(false);
+          setIsLoading(false);
 
           navigation.navigate(ScreenName.ConsulDetailScreen, {
             query: QUERY_TYPES.CONSUL.DEBATE,
@@ -95,7 +95,7 @@ export const NewDebate = ({ navigation, data, query }) => {
         } catch (error) {
           graphqlErr(error.message);
           console.error(error.message);
-          setStartLoading(false);
+          setIsLoading(false);
         }
         break;
       default:
@@ -103,7 +103,7 @@ export const NewDebate = ({ navigation, data, query }) => {
     }
   };
 
-  if (startLoading) return <LoadingSpinner loading />;
+  if (isLoading) return <LoadingSpinner loading />;
 
   return (
     <>
@@ -153,11 +153,8 @@ const styles = StyleSheet.create({
 });
 
 NewDebate.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func
-  }).isRequired,
   data: PropTypes.object,
+  navigation: PropTypes.object.isRequired,
   query: PropTypes.string
 };
 

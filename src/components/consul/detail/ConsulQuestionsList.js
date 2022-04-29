@@ -1,24 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { FlatList, View, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
-import { Wrapper } from '../../Wrapper';
-import { RegularText } from '../../Text';
 import { colors, texts } from '../../../config';
+import { RegularText } from '../../Text';
+import { Wrapper } from '../../Wrapper';
 
-import { ConsulQuestionsListItem } from './ConsulQuestionsListItem';
 import { ConsulQuestionsDescriptionListItem } from './ConsulQuestionsDescriptionListItem';
+import { ConsulQuestionsListItem } from './ConsulQuestionsListItem';
 
-const text = texts.consul;
-
-export const ConsulQuestionsList = ({ data, onRefresh, token, disabled }) => {
-  const [userAnswer, setAnswerUser] = useState(false);
+export const ConsulQuestionsList = ({ data, refetch, token, disabled }) => {
+  const [isUserAnswer, setIsAnswerUser] = useState(false);
 
   useEffect(() => {
     for (let i = 0; i < data.length; i++) {
       const element = data[i];
       if (element.answersGivenByCurrentUser.length > 0) {
-        setAnswerUser(true);
+        setIsAnswerUser(true);
         break;
       }
     }
@@ -26,10 +24,10 @@ export const ConsulQuestionsList = ({ data, onRefresh, token, disabled }) => {
 
   return (
     <Wrapper>
-      {(userAnswer || !disabled) && (
+      {(isUserAnswer || !disabled) && (
         <View style={!disabled ? styles.pollUserAnswerContainer : styles.pollEndeContainer}>
           <RegularText lightest small>
-            {!disabled ? text.pollFinished : text.pollUserAnswer}
+            {!disabled ? texts.consul.pollFinished : texts.consul.pollUserAnswer}
           </RegularText>
         </View>
       )}
@@ -40,7 +38,7 @@ export const ConsulQuestionsList = ({ data, onRefresh, token, disabled }) => {
           <ConsulQuestionsListItem
             questionItem={item}
             index={index}
-            onRefresh={onRefresh}
+            refetch={refetch}
             token={token}
             disabled={disabled}
           />
@@ -57,13 +55,6 @@ export const ConsulQuestionsList = ({ data, onRefresh, token, disabled }) => {
   );
 };
 
-ConsulQuestionsList.propTypes = {
-  data: PropTypes.array,
-  onRefresh: PropTypes.func,
-  token: PropTypes.string,
-  disabled: PropTypes.bool
-};
-
 const styles = StyleSheet.create({
   pollEndeContainer: {
     backgroundColor: colors.lighterPrimary,
@@ -74,3 +65,10 @@ const styles = StyleSheet.create({
     padding: 5
   }
 });
+
+ConsulQuestionsList.propTypes = {
+  data: PropTypes.array,
+  disabled: PropTypes.bool,
+  refetch: PropTypes.func,
+  token: PropTypes.string
+};

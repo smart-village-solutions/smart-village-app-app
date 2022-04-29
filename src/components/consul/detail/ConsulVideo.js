@@ -5,7 +5,7 @@ import WebView from 'react-native-webview';
 
 import { Wrapper } from '../../Wrapper';
 
-export const ConsulVideoComponent = ({ videoUrl }) => {
+export const ConsulVideo = ({ videoUrl }) => {
   const SplitedVideo = videoUrl.split('watch?v=');
   const Embed = SplitedVideo.join('embed/');
 
@@ -24,14 +24,14 @@ export const ConsulVideoComponent = ({ videoUrl }) => {
   );
 };
 
-ConsulVideoComponent.propTypes = {
+ConsulVideo.propTypes = {
   videoUrl: PropTypes.string
 };
 
 const styles = StyleSheet.create({
   videoView: {
     flex: 1,
-    width: '100%',
-    height: 250
+    height: 250,
+    width: '100%'
   }
 });

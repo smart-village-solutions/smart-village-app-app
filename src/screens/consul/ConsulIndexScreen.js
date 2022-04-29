@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, RefreshControl } from 'react-native';
+import { Alert } from 'react-native';
 
 import {
   Debates,
@@ -12,9 +12,9 @@ import {
   SafeAreaViewFlex,
   User
 } from '../../components';
-import { colors, texts } from '../../config';
+import { texts } from '../../config';
 import { filterHelper, parseListItemsFromQuery, sortingHelper } from '../../helpers';
-import { useConsulData } from '../../hooks';
+import { useConsulData, usePullToRefetch } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 
@@ -53,13 +53,13 @@ const showRegistrationFailAlert = (navigation) =>
 
 /* eslint-disable complexity */
 export const ConsulIndexScreen = ({ navigation, route }) => {
-  const [refreshing, setRefreshing] = useState(false);
-  const [sortingType, setSortingType] = useState(INITIAL_TOP_SORTING);
   const [filterType, setFilterType] = useState(INITIAL_TOP_FILTERING_FOR_POLLS);
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
+  const [sortingType, setSortingType] = useState(INITIAL_TOP_SORTING);
   const bookmarkable = route.params?.bookmarkable;
-  const query = route.params?.query ?? '';
   const extraQuery = route.params?.extraQuery ?? '';
+  const query = route.params?.query ?? '';
+  let type = null;
 
   const { data, refetch, isLoading, isError } = useConsulData({
     query,
@@ -71,7 +71,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
     skipLastDivider: true
   });
 
-  let type = sortingType.find((data) => data.selected);
+  const RefreshControl = usePullToRefetch(refetch);
 
   const listData = useCallback(
     (listItems) => {
@@ -88,17 +88,8 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   useEffect(() => {
     type = filterType.find((data) => data.selected);
     if (query === QUERY_TYPES.CONSUL.POLLS)
-      filterHelper(type.id).then((val) => setQueryVariables(val));
+      filterHelper(type.id).then((variables) => setQueryVariables(variables));
   }, [filterType]);
-
-  const refresh = useCallback(
-    async (refetch) => {
-      setRefreshing(true);
-      await refetch();
-      setRefreshing(false);
-    },
-    [setRefreshing]
-  );
 
   useFocusEffect(
     useCallback(() => {
@@ -107,6 +98,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
       return;
     }, [refetch])
   );
+
   const Component = getComponent(query);
 
   if (isLoading) return <LoadingSpinner loading />;
@@ -130,14 +122,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
         navigation={navigation}
         route={route}
         extraQuery={extraQuery}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => refresh(refetch)}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
-          />
-        }
+        refreshControl={RefreshControl}
       />
     </SafeAreaViewFlex>
   );
@@ -145,8 +130,6 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 /* eslint-enable complexity */
 
 ConsulIndexScreen.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
-  }).isRequired,
+  navigation: PropTypes.object.isRequired,
   route: PropTypes.object
 };

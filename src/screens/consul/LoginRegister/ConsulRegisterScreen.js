@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-apollo';
+import { useForm } from 'react-hook-form';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
 import {
   BoldText,
@@ -19,10 +19,11 @@ import {
   WrapperHorizontal,
   WrapperWithOrientation
 } from '../../../components';
-import { colors, consts, Icon, normalize, texts, secrets, namespace } from '../../../config';
-import { ScreenName } from '../../../types';
-import { CONSUL_REGISTER_USER } from '../../../queries/consul';
+import { colors, consts, Icon, namespace, normalize, secrets, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
+import { usePullToRefetch } from '../../../hooks';
+import { CONSUL_REGISTER_USER } from '../../../queries/consul';
+import { ScreenName } from '../../../types';
 
 const { a11yLabel } = consts;
 
@@ -35,50 +36,59 @@ const showPrivacyCheckedAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 
 export const ConsulRegisterScreen = ({ navigation }) => {
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
   const [termsOfService, setTermsOfService] = useState(false);
-  const [registrationLoading, setRegistrationLoading] = useState(false);
+  const [isRegistrationLoading, setIsRegistrationLoading] = useState(false);
 
   const {
     control,
     formState: { errors },
     handleSubmit,
     watch
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      email: null,
+      name: null,
+      password: null,
+      passwordConfirmation: null
+    }
+  });
   const pwd = watch('password');
 
   const [userRegister] = useMutation(CONSUL_REGISTER_USER, {
     client: ConsulClient
   });
 
-  const onSubmit = async (val) => {
+  const onSubmit = async (inputData) => {
     if (!termsOfService) return showPrivacyCheckedAlert();
 
-    setRegistrationLoading(true);
+    setIsRegistrationLoading(true);
 
     try {
       await userRegister({
         variables: {
-          email: val.email,
-          username: val.name,
-          password: val.password,
-          passwordConfirmation: val['password-repeat'],
+          email: inputData.email,
+          username: inputData.name,
+          password: inputData.password,
+          passwordConfirmation: inputData.passwordConfirmation,
           termsOfService
         }
       });
-      setRegistrationLoading(false);
+      setIsRegistrationLoading(false);
       navigation.navigate(ScreenName.ConsulRegisteredScreen);
     } catch (error) {
       console.error(error.message);
-      setRegistrationLoading(false);
+      setIsRegistrationLoading(false);
       showRegistrationFailAlert();
     }
   };
 
+  const RefreshControl = usePullToRefetch();
+
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView keyboardShouldPersistTaps="handled" refreshControl={RefreshControl}>
           <WrapperWithOrientation>
             <TitleContainer>
               <Title
@@ -129,8 +139,8 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 placeholder={texts.consul.password}
                 textContentType="password"
                 autoCompleteType="password"
-                secureTextEntry={secureTextEntry}
-                rightIcon={rightIcon(secureTextEntry, setSecureTextEntry)}
+                secureTextEntry={isSecureTextEntry}
+                rightIcon={rightIcon(isSecureTextEntry, setIsSecureTextEntry)}
                 validate
                 rules={{
                   required: true,
@@ -143,20 +153,20 @@ export const ConsulRegisterScreen = ({ navigation }) => {
 
             <Wrapper style={styles.noPaddingTop}>
               <Input
-                name="password-repeat"
+                name="passwordConfirmation"
                 label={texts.consul.passwordConfirmation}
                 placeholder={texts.consul.passwordConfirmation}
                 textContentType="password"
                 autoCompleteType="password"
-                secureTextEntry={secureTextEntry}
-                rightIcon={rightIcon(secureTextEntry, setSecureTextEntry)}
+                secureTextEntry={isSecureTextEntry}
+                rightIcon={rightIcon(isSecureTextEntry, setIsSecureTextEntry)}
                 validate
                 rules={{
                   required: true,
                   minLength: { value: 8, message: texts.consul.passwordLengthError },
                   validate: (value) => value === pwd || texts.consul.passwordDoNotMatch
                 }}
-                errorMessage={errors['password-repeat'] && `${texts.consul.passwordError}`}
+                errorMessage={errors.passwordConfirmation && `${texts.consul.passwordError}`}
                 control={control}
               />
             </Wrapper>
@@ -177,7 +187,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
               <Button
                 onPress={handleSubmit(onSubmit)}
                 title={texts.consul.next}
-                disabled={registrationLoading}
+                disabled={isRegistrationLoading}
               />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
@@ -187,17 +197,17 @@ export const ConsulRegisterScreen = ({ navigation }) => {
             </Wrapper>
           </WrapperWithOrientation>
 
-          <LoadingModal loading={registrationLoading} />
+          <LoadingModal loading={isRegistrationLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };
 
-const rightIcon = (secureTextEntry, setSecureTextEntry) => {
+const rightIcon = (isSecureTextEntry, setIsSecureTextEntry) => {
   return (
-    <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
-      {secureTextEntry ? (
+    <TouchableOpacity onPress={() => setIsSecureTextEntry(!isSecureTextEntry)}>
+      {isSecureTextEntry ? (
         <Icon.Visible color={colors.darkText} size={normalize(20)} />
       ) : (
         <Icon.Unvisible color={colors.darkText} size={normalize(20)} />
@@ -213,8 +223,5 @@ const styles = StyleSheet.create({
 });
 
 ConsulRegisterScreen.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func
-  }).isRequired
+  navigation: PropTypes.object.isRequired
 };

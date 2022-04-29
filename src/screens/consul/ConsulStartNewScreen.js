@@ -1,15 +1,15 @@
 import PropTypes from 'prop-types';
-import { ScrollView } from 'react-native';
 import React from 'react';
+import { ScrollView } from 'react-native';
 
-import { QUERY_TYPES } from '../../queries';
 import {
-  SafeAreaViewFlex,
+  DefaultKeyboardAvoidingView,
   NewDebate,
   NewProposal,
-  DefaultKeyboardAvoidingView,
+  SafeAreaViewFlex,
   WrapperWithOrientation
 } from '../../components';
+import { QUERY_TYPES } from '../../queries';
 
 const getComponent = (query) => {
   switch (query) {
@@ -44,8 +44,6 @@ export const ConsulStartNewScreen = ({ navigation, route }) => {
 };
 
 ConsulStartNewScreen.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
-  }).isRequired,
+  navigation: PropTypes.object.isRequired,
   route: PropTypes.object
 };

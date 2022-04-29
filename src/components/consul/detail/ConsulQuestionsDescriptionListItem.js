@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
 
-import { BoldText } from '../../Text';
-import { HtmlView } from '../../HtmlView';
 import { useOpenWebScreen } from '../../../hooks';
+import { HtmlView } from '../../HtmlView';
+import { BoldText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 
 export const ConsulQuestionsDescriptionListItem = ({ questionDescriptionItem }) => {

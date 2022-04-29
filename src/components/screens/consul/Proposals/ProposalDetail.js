@@ -9,20 +9,21 @@ import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
 import { location, locationIconAnchor } from '../../../../icons';
-import { ADD_COMMENT_TO_PROPOSAL, PUBLISH_PROPOSAL } from '../../../../queries/consul';
 import { QUERY_TYPES } from '../../../../queries';
+import { ADD_COMMENT_TO_PROPOSAL, PUBLISH_PROPOSAL } from '../../../../queries/consul';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import {
   ConsulCommentList,
   ConsulDocumentList,
-  ConsulExternalVideoComponent,
+  ConsulExternalVideo,
   ConsulPublicAuthor,
-  ConsulSummaryComponent,
-  ConsulSupportingComponent,
+  ConsulSummary,
+  ConsulSupporting,
   ConsulTagList,
-  ConsulVideoComponent
+  ConsulVideo
 } from '../../../consul';
+import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
 import { Image } from '../../../Image';
 import { WebViewMap } from '../../../map';
@@ -30,14 +31,13 @@ import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { BoldText, RegularText } from '../../../Text';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
 import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../../../Wrapper';
-import { Input } from '../../../form';
 
 const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
-  const [loading, setLoading] = useState();
+export const ProposalDetail = ({ data, refetch, route, navigation }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState();
 
   const {
@@ -69,14 +69,14 @@ export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
   );
 
   useEffect(() => {
-    getConsulUser().then((val) => {
-      if (val) return setUserId(JSON.parse(val).id);
+    getConsulUser().then((userInfo) => {
+      if (userInfo) return setUserId(JSON.parse(userInfo).id);
     });
   }, []);
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
-      comment: ''
+      comment: null
     }
   });
 
@@ -90,12 +90,12 @@ export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
   const onSubmit = async (commentData) => {
     if (!commentData?.comment) return;
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       await addCommentToProposal({ variables: { proposalId: id, body: commentData.comment } });
-      onRefresh();
-      setLoading(false);
+      refetch();
+      setIsLoading(false);
       reset();
     } catch (err) {
       console.error(err);
@@ -103,12 +103,12 @@ export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
   };
 
   const proposalShare = async () => {
-    setLoading(true);
+    setIsLoading(true);
 
     await publishProposal({ variables: { id: id } })
       .then(() => {
-        onRefresh();
-        setLoading(false);
+        refetch();
+        setIsLoading(false);
       })
       .catch((err) => console.error(err));
   };
@@ -165,11 +165,11 @@ export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
           <Image source={{ uri: imageUrlMedium }} containerStyle={styles.imageContainerStyle} />
         )}
 
-        {!!summary && <ConsulSummaryComponent summary={summary} />}
+        {!!summary && <ConsulSummary summary={summary} />}
 
-        {!!videoUrl && <ConsulVideoComponent videoUrl={videoUrl} />}
+        {!!videoUrl && <ConsulVideo videoUrl={videoUrl} />}
 
-        {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
+        {!!videoUrl && <ConsulExternalVideo videoUrl={videoUrl} />}
 
         {!!description && (
           <Wrapper>
@@ -201,12 +201,12 @@ export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
 
         {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
 
-        <ConsulSupportingComponent
+        <ConsulSupporting
           votesData={{
-            onRefresh: onRefresh,
-            cachedVotesUp: cachedVotesUp,
-            id: id,
-            currentUserHasVoted: currentUserHasVoted
+            refetch,
+            cachedVotesUp,
+            id,
+            currentUserHasVoted
           }}
         />
 
@@ -215,7 +215,7 @@ export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
             commentCount={commentsCount}
             commentsData={comments.nodes}
             userId={userId}
-            onRefresh={onRefresh}
+            refetch={refetch}
             navigation={navigation}
           />
         )}
@@ -234,9 +234,9 @@ export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
             <Button
               onPress={handleSubmit(onSubmit)}
               title={
-                loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
+                isLoading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
               }
-              disabled={loading}
+              disabled={isLoading}
             />
           </WrapperVertical>
         </Wrapper>
@@ -246,15 +246,13 @@ export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
 };
 /* eslint-enable complexity */
 
-ProposalDetail.propTypes = {
-  data: PropTypes.object.isRequired,
-  navigation: PropTypes.shape({
-    push: PropTypes.func.isRequired
-  }).isRequired,
-  onRefresh: PropTypes.func,
-  route: PropTypes.object
-};
-
 const styles = StyleSheet.create({
   imageContainerStyle: { alignSelf: 'center' }
 });
+
+ProposalDetail.propTypes = {
+  data: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
+  refetch: PropTypes.func,
+  route: PropTypes.object
+};

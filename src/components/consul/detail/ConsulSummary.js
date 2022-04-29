@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { colors } from '../../../config';
 import { BoldText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 
-export const ConsulSummaryComponent = ({ summary }) => {
+export const ConsulSummary = ({ summary }) => {
   return (
     <Wrapper>
       <View style={styles.textContainer}>
@@ -18,12 +18,12 @@ export const ConsulSummaryComponent = ({ summary }) => {
 
 const styles = StyleSheet.create({
   textContainer: {
-    borderLeftWidth: 0.5,
     borderLeftColor: colors.placeholder,
+    borderLeftWidth: 0.5,
     paddingHorizontal: 10
   }
 });
 
-ConsulSummaryComponent.propTypes = {
+ConsulSummary.propTypes = {
   summary: PropTypes.string
 };
