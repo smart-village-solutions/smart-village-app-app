@@ -59,8 +59,6 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   const bookmarkable = route.params?.bookmarkable;
   const extraQuery = route.params?.extraQuery ?? '';
   const query = route.params?.query ?? '';
-  const selectedSortingType = sortingType.find((data) => data.selected);
-  const selectedFilterType = filterType.find((data) => data.selected);
 
   const { data, refetch, isLoading, isError } = useConsulData({
     query,
@@ -76,6 +74,8 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
   const listData = useCallback(
     (listItems) => {
+      const selectedSortingType = sortingType.find((data) => data.selected);
+
       if (query !== QUERY_TYPES.CONSUL.USER || query !== QUERY_TYPES.CONSUL.POLLS)
         listItems = sortingHelper(selectedSortingType.id, listItems);
 
@@ -85,6 +85,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   );
 
   useEffect(() => {
+    const selectedFilterType = filterType.find((data) => data.selected);
     if (query === QUERY_TYPES.CONSUL.POLLS)
       filterHelper(selectedFilterType.id).then((variables) => setQueryVariables(variables));
   }, [filterType]);

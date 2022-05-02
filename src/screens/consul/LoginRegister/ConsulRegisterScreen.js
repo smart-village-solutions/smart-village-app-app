@@ -37,7 +37,7 @@ const showPrivacyCheckedAlert = () =>
 
 export const ConsulRegisterScreen = ({ navigation }) => {
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
-  const [termsOfService, setTermsOfService] = useState(false);
+  const [hasAcceptedTermsOfService, setHasAcceptedTermsOfService] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -60,7 +60,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
   });
 
   const onSubmit = async (inputData) => {
-    if (!termsOfService) return showPrivacyCheckedAlert();
+    if (!hasAcceptedTermsOfService) return showPrivacyCheckedAlert();
 
     setIsLoading(true);
 
@@ -71,7 +71,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
           username: inputData.name,
           password: inputData.password,
           passwordConfirmation: inputData.passwordConfirmation,
-          termsOfService
+          termsOfService: hasAcceptedTermsOfService
         }
       });
       setIsLoading(false);
@@ -178,8 +178,8 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 title={texts.consul.privacyChecked}
                 checkedIcon="check-square-o"
                 uncheckedIcon="square-o"
-                checked={termsOfService}
-                onPress={() => setTermsOfService(!termsOfService)}
+                checked={hasAcceptedTermsOfService}
+                onPress={() => setHasAcceptedTermsOfService(!hasAcceptedTermsOfService)}
               />
             </WrapperHorizontal>
 

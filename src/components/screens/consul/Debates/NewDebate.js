@@ -20,7 +20,9 @@ const showRegistrationFailAlert = () =>
 const graphqlErr = (err) => Alert.alert('Hinweis', err);
 
 export const NewDebate = ({ navigation, data, query }) => {
-  const [termsOfService, setTermsOfService] = useState(data?.termsOfService ?? false);
+  const [hasAcceptedTermsOfService, setHasAcceptedTermsOfService] = useState(
+    data?.termsOfService ?? false
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -51,11 +53,11 @@ export const NewDebate = ({ navigation, data, query }) => {
           description: newDebateData?.description
         },
         tagList: newDebateData?.tagList,
-        termsOfService: termsOfService
+        termsOfService: hasAcceptedTermsOfService
       }
     };
 
-    if (!termsOfService) return showRegistrationFailAlert();
+    if (!hasAcceptedTermsOfService) return showRegistrationFailAlert();
 
     switch (query) {
       case QUERY_TYPES.CONSUL.START_DEBATE:
@@ -126,8 +128,8 @@ export const NewDebate = ({ navigation, data, query }) => {
             linkDescription={texts.consul.startNew.termsOfServiceLinkLabel}
             checkedIcon="check-square-o"
             uncheckedIcon="square-o"
-            checked={termsOfService}
-            onPress={() => setTermsOfService(!termsOfService)}
+            checked={hasAcceptedTermsOfService}
+            onPress={() => setHasAcceptedTermsOfService(!hasAcceptedTermsOfService)}
           />
         </WrapperHorizontal>
 
