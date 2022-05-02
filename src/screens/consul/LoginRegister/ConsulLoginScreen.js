@@ -92,7 +92,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
                 autoCapitalize="none"
                 validate
                 rules={{ required: texts.consul.usernameOrEmailError }}
-                errorMessage={errors.email && `${errors.email.message}`}
+                errorMessage={errors.email && errors.email.message}
                 control={control}
               />
             </Wrapper>
@@ -111,7 +111,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
                   required: texts.consul.passwordError,
                   minLength: { value: 8, message: texts.consul.passwordLengthError }
                 }}
-                errorMessage={errors.password && `${errors.password.message}`}
+                errorMessage={errors.password && errors.password.message}
                 control={control}
               />
             </Wrapper>

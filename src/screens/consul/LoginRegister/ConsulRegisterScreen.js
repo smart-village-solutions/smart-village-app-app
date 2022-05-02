@@ -98,7 +98,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 autoCapitalize="none"
                 validate
                 rules={{ required: texts.consul.usernameError }}
-                errorMessage={errors.name && `${errors.name.message}`}
+                errorMessage={errors.name && errors.name.message}
                 control={control}
               />
             </Wrapper>
@@ -117,7 +117,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                   required: texts.consul.emailError,
                   pattern: { value: EMAIL_REGEX, message: texts.consul.emailInvalid }
                 }}
-                errorMessage={errors.email && `${errors.email.message}`}
+                errorMessage={errors.email && errors.email.message}
                 control={control}
               />
             </Wrapper>
@@ -136,7 +136,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                   required: texts.consul.passwordError,
                   minLength: { value: 8, message: texts.consul.passwordLengthError }
                 }}
-                errorMessage={errors.password && `${errors.password.message}`}
+                errorMessage={errors.password && errors.password.message}
                 control={control}
               />
             </Wrapper>
@@ -156,7 +156,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                   minLength: { value: 8, message: texts.consul.passwordLengthError },
                   validate: (value) => value === pwd || texts.consul.passwordDoNotMatch
                 }}
-                errorMessage={errors['password-repeat'] && `${errors['password-repeat'].message}`}
+                errorMessage={errors['password-repeat'] && errors['password-repeat'].message}
                 control={control}
               />
             </Wrapper>

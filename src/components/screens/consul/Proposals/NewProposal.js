@@ -183,7 +183,7 @@ export const NewProposal = ({ navigation, data, query }) => {
               control={control}
               {...item}
               validate={item.rules.required}
-              errorMessage={errors[item.name] && `${errors[item.name].message}`}
+              errorMessage={errors[item.name] && errors[item.name].message}
             />
           )}
 
@@ -302,7 +302,7 @@ const INPUTS = [
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: texts.consul.startNew.leerError,
+      required: texts.consul.startNew.emptyError,
       minLength: { value: 4, message: texts.consul.startNew.titleShortError }
     }
   },
@@ -317,7 +317,7 @@ const INPUTS = [
     autoCompleteType: 'off',
     autoCapitalize: 'none',
     rules: {
-      required: texts.consul.startNew.leerError,
+      required: texts.consul.startNew.emptyError,
       maxLength: { value: 200, message: texts.consul.startNew.proposalSummaryInfo }
     }
   },
@@ -333,7 +333,7 @@ const INPUTS = [
     autoCapitalize: 'none',
     minHeight: 150,
     rules: {
-      required: texts.consul.startNew.leerError,
+      required: texts.consul.startNew.emptyError,
       minLength: { value: 10, message: texts.consul.startNew.descriptionShortError }
     }
   },
