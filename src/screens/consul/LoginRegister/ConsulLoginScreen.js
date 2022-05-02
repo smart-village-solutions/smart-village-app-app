@@ -36,7 +36,7 @@ const showLoginFailAlert = () =>
 
 export const ConsulLoginScreen = ({ navigation }) => {
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
-  const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
@@ -44,8 +44,8 @@ export const ConsulLoginScreen = ({ navigation }) => {
     handleSubmit
   } = useForm({
     defaultValues: {
-      email: null,
-      password: null
+      email: '',
+      password: ''
     }
   });
 
@@ -54,7 +54,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
   });
 
   const onSubmit = async (inputData) => {
-    setIsLoginLoading(true);
+    setIsLoading(true);
     try {
       let userData = await userLogin({
         variables: { email: inputData.email, password: inputData.password }
@@ -66,10 +66,10 @@ export const ConsulLoginScreen = ({ navigation }) => {
         refreshUser: new Date().valueOf()
       });
 
-      setIsLoginLoading(false);
+      setIsLoading(false);
     } catch (error) {
       console.error(error.message);
-      setIsLoginLoading(false);
+      setIsLoading(false);
       showLoginFailAlert();
     }
   };
@@ -146,7 +146,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
               <Button
                 onPress={handleSubmit(onSubmit)}
                 title={texts.consul.login}
-                disabled={isLoginLoading}
+                disabled={isLoading}
               />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
@@ -156,7 +156,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
             </Wrapper>
           </WrapperWithOrientation>
 
-          <LoadingModal loading={isLoginLoading} />
+          <LoadingModal loading={isLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

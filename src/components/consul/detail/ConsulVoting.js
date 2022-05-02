@@ -82,11 +82,11 @@ export const ConsulVoting = ({ votesData, refetch, id }) => {
 
 const styles = StyleSheet.create({
   icon: {
-    paddingHorizontal: 10
+    paddingHorizontal: normalize(5)
   },
   iconButton: {
     alignItems: 'center',
-    marginHorizontal: 10
+    marginHorizontal: normalize(10)
   }
 });
 

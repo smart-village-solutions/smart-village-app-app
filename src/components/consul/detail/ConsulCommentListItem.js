@@ -38,12 +38,12 @@ const deleteCommentAlert = (onDelete) =>
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isShowReply, setIsShowReply] = useState(false);
-  const [isShowResponse, setIsShowResponse] = useState(false);
+  const [showReply, setShowReply] = useState(false);
+  const [showResponse, setShowResponse] = useState(false);
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
-      comment: null
+      comment: ''
     }
   });
 
@@ -82,8 +82,8 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
       await addReplyToComment({ variables: { commentId: id, body: replyData.comment } });
       refetch();
       setIsLoading(false);
-      setIsShowReply(false);
-      setIsShowResponse(true);
+      setShowReply(false);
+      setShowResponse(true);
       reset();
     } catch (error) {
       console.error(error);
@@ -121,7 +121,7 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
       <View style={styles.bottomContainer}>
         <View style={styles.bottomLine}>
           {responses && responses.length > 0 ? (
-            isShowResponse ? (
+            showResponse ? (
               <Icon.ArrowUp size={normalize(16)} color={colors.primary} />
             ) : (
               <Icon.ArrowDown size={normalize(16)} color={colors.primary} />
@@ -129,11 +129,11 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
           ) : null}
           <>
             {responses && responses.length > 0 ? (
-              <Touchable onPress={() => setIsShowResponse(!isShowResponse)}>
+              <Touchable onPress={() => setShowResponse(!showResponse)}>
                 <RegularText primary smallest>
                   {responses.length}{' '}
                   {responses.length > 1 ? texts.consul.responses : texts.consul.response}
-                  {isShowResponse ? ` (${texts.consul.collapse})` : ` (${texts.consul.show})`}
+                  {showResponse ? ` (${texts.consul.collapse})` : ` (${texts.consul.show})`}
                 </RegularText>
               </Touchable>
             ) : (
@@ -156,7 +156,7 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
             </>
           )}
 
-          <Touchable onPress={() => setIsShowReply(!isShowReply)}>
+          <Touchable onPress={() => setShowReply(!showReply)}>
             <RegularText primary smallest>
               {texts.consul.answer}
             </RegularText>
@@ -198,7 +198,7 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
         </View>
       </View>
 
-      {isShowResponse && responses && responses.length
+      {showResponse && responses && responses.length
         ? responses.map((item, index) => (
             <View key={index} style={styles.replyContainer}>
               <ConsulCommentListItem
@@ -212,7 +212,7 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
           ))
         : null}
 
-      {isShowReply ? (
+      {showReply ? (
         <>
           <Input
             multiline

@@ -76,7 +76,7 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
-      comment: null
+      comment: ''
     }
   });
 
@@ -116,7 +116,7 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
   return (
     <SafeAreaViewFlex>
       <WrapperWithOrientation>
-        {!published && (
+        {!published && publicAuthor?.id === userId && (
           <Wrapper>
             <BoldText big>{texts.consul.publishProposalBold}</BoldText>
             <RegularText>{texts.consul.publishProposalRegular}</RegularText>
@@ -247,7 +247,9 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  imageContainerStyle: { alignSelf: 'center' }
+  imageContainerStyle: {
+    alignSelf: 'center'
+  }
 });
 
 ProposalDetail.propTypes = {

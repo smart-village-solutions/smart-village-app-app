@@ -59,7 +59,8 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   const bookmarkable = route.params?.bookmarkable;
   const extraQuery = route.params?.extraQuery ?? '';
   const query = route.params?.query ?? '';
-  let type = null;
+  const selectedSortingType = sortingType.find((data) => data.selected);
+  const selectedFilterType = filterType.find((data) => data.selected);
 
   const { data, refetch, isLoading, isError } = useConsulData({
     query,
@@ -75,10 +76,8 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
   const listData = useCallback(
     (listItems) => {
-      type = sortingType.find((data) => data.selected);
-
       if (query !== QUERY_TYPES.CONSUL.USER || query !== QUERY_TYPES.CONSUL.POLLS)
-        listItems = sortingHelper(type.id, listItems);
+        listItems = sortingHelper(selectedSortingType.id, listItems);
 
       return listItems;
     },
@@ -86,9 +85,8 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
   );
 
   useEffect(() => {
-    type = filterType.find((data) => data.selected);
     if (query === QUERY_TYPES.CONSUL.POLLS)
-      filterHelper(type.id).then((variables) => setQueryVariables(variables));
+      filterHelper(selectedFilterType.id).then((variables) => setQueryVariables(variables));
   }, [filterType]);
 
   useFocusEffect(

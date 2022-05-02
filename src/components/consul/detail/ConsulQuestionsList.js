@@ -10,13 +10,13 @@ import { ConsulQuestionsDescriptionListItem } from './ConsulQuestionsDescription
 import { ConsulQuestionsListItem } from './ConsulQuestionsListItem';
 
 export const ConsulQuestionsList = ({ data, refetch, token, disabled }) => {
-  const [isUserAnswer, setIsAnswerUser] = useState(false);
+  const [isUserAnswer, setIsUserAnswer] = useState(false);
 
   useEffect(() => {
     for (let i = 0; i < data.length; i++) {
       const element = data[i];
       if (element.answersGivenByCurrentUser.length > 0) {
-        setIsAnswerUser(true);
+        setIsUserAnswer(true);
         break;
       }
     }

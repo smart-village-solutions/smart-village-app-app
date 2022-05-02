@@ -38,7 +38,7 @@ const showPrivacyCheckedAlert = () =>
 export const ConsulRegisterScreen = ({ navigation }) => {
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
   const [termsOfService, setTermsOfService] = useState(false);
-  const [isRegistrationLoading, setIsRegistrationLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
@@ -47,10 +47,10 @@ export const ConsulRegisterScreen = ({ navigation }) => {
     watch
   } = useForm({
     defaultValues: {
-      email: null,
-      name: null,
-      password: null,
-      passwordConfirmation: null
+      email: '',
+      name: '',
+      password: '',
+      passwordConfirmation: ''
     }
   });
   const pwd = watch('password');
@@ -62,7 +62,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
   const onSubmit = async (inputData) => {
     if (!termsOfService) return showPrivacyCheckedAlert();
 
-    setIsRegistrationLoading(true);
+    setIsLoading(true);
 
     try {
       await userRegister({
@@ -74,11 +74,11 @@ export const ConsulRegisterScreen = ({ navigation }) => {
           termsOfService
         }
       });
-      setIsRegistrationLoading(false);
+      setIsLoading(false);
       navigation.navigate(ScreenName.ConsulRegisteredScreen);
     } catch (error) {
       console.error(error.message);
-      setIsRegistrationLoading(false);
+      setIsLoading(false);
       showRegistrationFailAlert();
     }
   };
@@ -187,7 +187,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
               <Button
                 onPress={handleSubmit(onSubmit)}
                 title={texts.consul.next}
-                disabled={isRegistrationLoading}
+                disabled={isLoading}
               />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
@@ -197,7 +197,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
             </Wrapper>
           </WrapperWithOrientation>
 
-          <LoadingModal loading={isRegistrationLoading} />
+          <LoadingModal loading={isLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

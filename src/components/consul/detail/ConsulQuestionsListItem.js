@@ -11,7 +11,7 @@ import { BoldText, RegularText } from '../../Text';
 import { Touchable } from '../../Touchable';
 
 export const ConsulQuestionsListItem = ({ questionItem, refetch, token, disabled }) => {
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { answersGivenByCurrentUser, id, questionAnswers, title } = questionItem;
 
@@ -20,7 +20,7 @@ export const ConsulQuestionsListItem = ({ questionItem, refetch, token, disabled
   });
 
   const onAnswer = async (answer) => {
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       await provideAnswerToPollQuestion({
@@ -31,7 +31,7 @@ export const ConsulQuestionsListItem = ({ questionItem, refetch, token, disabled
         }
       });
       refetch();
-      setLoading(false);
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -43,7 +43,7 @@ export const ConsulQuestionsListItem = ({ questionItem, refetch, token, disabled
 
       {questionAnswers.map((item, index) => (
         <Touchable
-          disabled={loading || !disabled}
+          disabled={isLoading || !disabled}
           onPress={() => onAnswer(item.title)}
           key={index}
           style={[
@@ -60,7 +60,7 @@ export const ConsulQuestionsListItem = ({ questionItem, refetch, token, disabled
           <RegularText placeholder={!disabled}>{item.title}</RegularText>
         </Touchable>
       ))}
-      {loading && <LoadingSpinner loading />}
+      {isLoading && <LoadingSpinner loading />}
     </View>
   );
 };

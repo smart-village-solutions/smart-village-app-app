@@ -72,11 +72,11 @@ export const NewProposal = ({ navigation, data, query }) => {
     setValue
   } = useForm({
     defaultValues: {
-      title: data?.title ? data?.title : null,
-      description: data?.description ? data?.description : null,
-      tagList: data?.tagList ? data?.tagList?.toString() : null,
-      summary: data?.summary ? data?.summary : null,
-      videoUrl: data?.videoUrl ? data?.videoUrl : null
+      title: data?.title || '',
+      description: data?.description || '',
+      tagList: data?.tagList?.toString() || '',
+      summary: data?.summary || '',
+      videoUrl: data?.videoUrl || ''
     }
   });
 
@@ -120,13 +120,13 @@ export const NewProposal = ({ navigation, data, query }) => {
       id: data?.id,
       attributes: {
         translationsAttributes: {
-          title: newProposalData.title,
-          summary: newProposalData.summary,
-          description: newProposalData.description
+          title: newProposalData?.title,
+          summary: newProposalData?.summary,
+          description: newProposalData?.description
         },
-        tagList: newProposalData.tagList,
+        tagList: newProposalData?.tagList,
         termsOfService: termsOfService,
-        videoUrl: newProposalData.videoUrl
+        videoUrl: newProposalData?.videoUrl
       }
     };
 

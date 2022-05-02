@@ -60,7 +60,7 @@ export const DebateDetail = ({ data, refetch, route, navigation }) => {
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
-      comment: null
+      comment: ''
     }
   });
 

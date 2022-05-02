@@ -29,9 +29,9 @@ export const NewDebate = ({ navigation, data, query }) => {
     handleSubmit
   } = useForm({
     defaultValues: {
-      title: data?.title ? data?.title : null,
-      description: data?.description ? data?.description : null,
-      tagList: data?.tagList ? data?.tagList?.toString() : null
+      title: data?.title || '',
+      description: data?.description || '',
+      tagList: data?.tagList?.toString() || ''
     }
   });
 
@@ -47,10 +47,10 @@ export const NewDebate = ({ navigation, data, query }) => {
       id: data?.id,
       attributes: {
         translationsAttributes: {
-          title: newDebateData.title,
-          description: newDebateData.description
+          title: newDebateData?.title,
+          description: newDebateData?.description
         },
-        tagList: newDebateData.tagList,
+        tagList: newDebateData?.tagList,
         termsOfService: termsOfService
       }
     };
