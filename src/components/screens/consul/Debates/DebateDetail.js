@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 
 import { colors, consts, device, Icon, normalize, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
@@ -19,9 +19,8 @@ import {
 } from '../../../consul';
 import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
-import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
-import { Wrapper, WrapperRow, WrapperWithOrientation } from '../../../Wrapper';
+import { Wrapper, WrapperRow } from '../../../Wrapper';
 
 const a11yText = consts.a11yLabel;
 
@@ -78,101 +77,100 @@ export const DebateDetail = ({ data, onRefresh, route, navigation }) => {
       onRefresh();
       setLoading(false);
       reset();
+      Keyboard.dismiss();
     } catch (err) {
       console.error(err);
     }
   };
 
   return (
-    <SafeAreaViewFlex>
-      <WrapperWithOrientation>
-        {!!title && (
-          <>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-          </>
-        )}
+    <>
+      {!!title && (
+        <>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+        </>
+      )}
 
-        {!!publicAuthor && (
-          <Wrapper>
-            <ConsulPublicAuthor
-              authorData={{
-                commentsCount,
-                publicAuthor,
-                publicCreatedAt,
-                userId
-              }}
-              onPress={() => {
-                navigation.navigate(ScreenName.ConsulStartNewScreen, {
-                  title: texts.consul.startNew.updateButtonLabel,
-                  query: QUERY_TYPES.CONSUL.UPDATE_DEBATE,
-                  data: {
-                    title,
-                    tagList: tags.nodes.map((item) => item.name),
-                    description,
-                    termsOfService: true,
-                    id
-                  }
-                });
-              }}
-            />
-          </Wrapper>
-        )}
-
-        {!!description && (
-          <Wrapper>
-            <HtmlView html={description} openWebScreen={openWebScreen} />
-          </Wrapper>
-        )}
-
-        {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
-
-        <ConsulVotingComponent
-          id={id}
-          onRefresh={onRefresh}
-          votesData={{
-            cachedVotesTotal,
-            cachedVotesUp,
-            cachedVotesDown,
-            votesFor: votesFor.nodes[0]?.voteFlag
-          }}
-        />
-
-        {!!comments && (
-          <ConsulCommentList
-            commentCount={commentsCount}
-            commentsData={comments.nodes}
-            userId={userId}
-            navigation={navigation}
-            onRefresh={onRefresh}
+      {!!publicAuthor && (
+        <Wrapper>
+          <ConsulPublicAuthor
+            authorData={{
+              commentsCount,
+              publicAuthor,
+              publicCreatedAt,
+              userId
+            }}
+            onPress={() => {
+              navigation.navigate(ScreenName.ConsulStartNewScreen, {
+                title: texts.consul.startNew.updateButtonLabel,
+                query: QUERY_TYPES.CONSUL.UPDATE_DEBATE,
+                data: {
+                  title,
+                  tagList: tags.nodes.map((item) => item.name),
+                  description,
+                  termsOfService: true,
+                  id
+                }
+              });
+            }}
           />
-        )}
-
-        <Wrapper style={styles.input}>
-          <WrapperRow>
-            <Input
-              multiline
-              minHeight={50}
-              name="comment"
-              label={texts.consul.commentLabel}
-              placeholder={texts.consul.comment}
-              autoCapitalize="none"
-              control={control}
-              chat
-            />
-            <TouchableOpacity
-              onPress={handleSubmit(onSubmit)}
-              style={styles.button}
-              disabled={loading}
-            >
-              <Icon.Send color={colors.primary} size={normalize(16)} />
-            </TouchableOpacity>
-          </WrapperRow>
         </Wrapper>
-      </WrapperWithOrientation>
-    </SafeAreaViewFlex>
+      )}
+
+      {!!description && (
+        <Wrapper>
+          <HtmlView html={description} openWebScreen={openWebScreen} />
+        </Wrapper>
+      )}
+
+      {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
+
+      <ConsulVotingComponent
+        id={id}
+        onRefresh={onRefresh}
+        votesData={{
+          cachedVotesTotal,
+          cachedVotesUp,
+          cachedVotesDown,
+          votesFor: votesFor.nodes[0]?.voteFlag
+        }}
+      />
+
+      {!!comments && (
+        <ConsulCommentList
+          commentCount={commentsCount}
+          commentsData={comments.nodes}
+          userId={userId}
+          navigation={navigation}
+          onRefresh={onRefresh}
+        />
+      )}
+
+      <Wrapper style={styles.input}>
+        <WrapperRow>
+          <Input
+            multiline
+            minHeight={50}
+            name="comment"
+            label={texts.consul.commentLabel}
+            placeholder={texts.consul.comment}
+            autoCapitalize="none"
+            control={control}
+            chat
+          />
+          <TouchableOpacity
+            onPress={handleSubmit(onSubmit)}
+            style={styles.button}
+            disabled={loading}
+          >
+            <Icon.Send color={colors.primary} size={normalize(16)} />
+          </TouchableOpacity>
+        </WrapperRow>
+      </Wrapper>
+    </>
   );
 };
 /* eslint-enable complexity */

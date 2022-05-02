@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View, Keyboard } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
@@ -84,6 +84,7 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
       setShowReply(false);
       setShowResponse(true);
       reset();
+      Keyboard.dismiss();
     } catch (error) {
       console.error(error);
     }

@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 
-import { colors, consts, device, texts } from '../../../../config';
+import { colors, consts, device, Icon, normalize, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
@@ -26,10 +26,9 @@ import {
 import { HtmlView } from '../../../HtmlView';
 import { Image } from '../../../Image';
 import { WebViewMap } from '../../../map';
-import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { BoldText, RegularText } from '../../../Text';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
-import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../../../Wrapper';
+import { Wrapper, WrapperRow } from '../../../Wrapper';
 import { Input } from '../../../form';
 
 const a11yText = consts.a11yLabel;
@@ -97,6 +96,7 @@ export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
       onRefresh();
       setLoading(false);
       reset();
+      Keyboard.dismiss();
     } catch (err) {
       console.error(err);
     }
@@ -114,113 +114,113 @@ export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
   };
 
   return (
-    <SafeAreaViewFlex>
-      <WrapperWithOrientation>
-        {!published && (
-          <Wrapper>
-            <BoldText big>{texts.consul.publishProposalBold}</BoldText>
-            <RegularText>{texts.consul.publishProposalRegular}</RegularText>
-            <Button title={texts.consul.publishProposalButton} onPress={() => proposalShare()} />
-          </Wrapper>
-        )}
-
-        {!!title && (
-          <>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-          </>
-        )}
-
-        {!!publicAuthor && (
-          <Wrapper>
-            <ConsulPublicAuthor
-              authorData={{
-                commentsCount,
-                publicAuthor,
-                publicCreatedAt,
-                userId
-              }}
-              onPress={() => {
-                navigation.push(ScreenName.ConsulStartNewScreen, {
-                  title: texts.consul.startNew.updateButtonLabel,
-                  query: QUERY_TYPES.CONSUL.UPDATE_PROPOSAL,
-                  data: {
-                    title,
-                    tagList: tags.nodes.map((item) => item.name),
-                    description,
-                    termsOfService: true,
-                    summary,
-                    videoUrl,
-                    id
-                  }
-                });
-              }}
-            />
-          </Wrapper>
-        )}
-
-        {!!imageUrlMedium && (
-          <Image source={{ uri: imageUrlMedium }} containerStyle={styles.imageContainerStyle} />
-        )}
-
-        {!!summary && <ConsulSummaryComponent summary={summary} />}
-
-        {!!videoUrl && <ConsulVideoComponent videoUrl={videoUrl} />}
-
-        {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
-
-        {!!description && (
-          <Wrapper>
-            <HtmlView html={description} openWebScreen={openWebScreen} />
-          </Wrapper>
-        )}
-
-        {!!latitude && !!longitude && (
-          <>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${texts.consul.locationTitle}) ${a11yText.heading}`}>
-                {texts.consul.locationTitle}
-              </Title>
-            </TitleContainer>
-            <WebViewMap
-              locations={[
-                {
-                  icon: location(colors.primary),
-                  iconAnchor: locationIconAnchor,
-                  position: { lat: latitude, lng: longitude }
-                }
-              ]}
-              zoom={14}
-            />
-          </>
-        )}
-
-        {!!documents && !!documents.length > 0 && <ConsulDocumentList documents={documents} />}
-
-        {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
-
-        <ConsulSupportingComponent
-          votesData={{
-            onRefresh: onRefresh,
-            cachedVotesUp: cachedVotesUp,
-            id: id,
-            currentUserHasVoted: currentUserHasVoted
-          }}
-        />
-
-        {!!comments && (
-          <ConsulCommentList
-            commentCount={commentsCount}
-            commentsData={comments.nodes}
-            userId={userId}
-            onRefresh={onRefresh}
-            navigation={navigation}
-          />
-        )}
-
+    <>
+      {!published && (
         <Wrapper>
+          <BoldText big>{texts.consul.publishProposalBold}</BoldText>
+          <RegularText>{texts.consul.publishProposalRegular}</RegularText>
+          <Button title={texts.consul.publishProposalButton} onPress={() => proposalShare()} />
+        </Wrapper>
+      )}
+
+      {!!title && (
+        <>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+        </>
+      )}
+
+      {!!publicAuthor && (
+        <Wrapper>
+          <ConsulPublicAuthor
+            authorData={{
+              commentsCount,
+              publicAuthor,
+              publicCreatedAt,
+              userId
+            }}
+            onPress={() => {
+              navigation.push(ScreenName.ConsulStartNewScreen, {
+                title: texts.consul.startNew.updateButtonLabel,
+                query: QUERY_TYPES.CONSUL.UPDATE_PROPOSAL,
+                data: {
+                  title,
+                  tagList: tags.nodes.map((item) => item.name),
+                  description,
+                  termsOfService: true,
+                  summary,
+                  videoUrl,
+                  id
+                }
+              });
+            }}
+          />
+        </Wrapper>
+      )}
+
+      {!!imageUrlMedium && (
+        <Image source={{ uri: imageUrlMedium }} containerStyle={styles.imageContainerStyle} />
+      )}
+
+      {!!summary && <ConsulSummaryComponent summary={summary} />}
+
+      {!!videoUrl && <ConsulVideoComponent videoUrl={videoUrl} />}
+
+      {!!videoUrl && <ConsulExternalVideoComponent videoUrl={videoUrl} />}
+
+      {!!description && (
+        <Wrapper>
+          <HtmlView html={description} openWebScreen={openWebScreen} />
+        </Wrapper>
+      )}
+
+      {!!latitude && !!longitude && (
+        <>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${texts.consul.locationTitle}) ${a11yText.heading}`}>
+              {texts.consul.locationTitle}
+            </Title>
+          </TitleContainer>
+          <WebViewMap
+            locations={[
+              {
+                icon: location(colors.primary),
+                iconAnchor: locationIconAnchor,
+                position: { lat: latitude, lng: longitude }
+              }
+            ]}
+            zoom={14}
+          />
+        </>
+      )}
+
+      {!!documents && !!documents.length > 0 && <ConsulDocumentList documents={documents} />}
+
+      {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
+
+      <ConsulSupportingComponent
+        votesData={{
+          onRefresh: onRefresh,
+          cachedVotesUp: cachedVotesUp,
+          id: id,
+          currentUserHasVoted: currentUserHasVoted
+        }}
+      />
+
+      {!!comments && (
+        <ConsulCommentList
+          commentCount={commentsCount}
+          commentsData={comments.nodes}
+          userId={userId}
+          onRefresh={onRefresh}
+          navigation={navigation}
+        />
+      )}
+
+      <Wrapper style={styles.input}>
+        <WrapperRow>
           <Input
             multiline
             minHeight={50}
@@ -229,19 +229,18 @@ export const ProposalDetail = ({ data, onRefresh, route, navigation }) => {
             placeholder={texts.consul.comment}
             autoCapitalize="none"
             control={control}
+            chat
           />
-          <WrapperVertical>
-            <Button
-              onPress={handleSubmit(onSubmit)}
-              title={
-                loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
-              }
-              disabled={loading}
-            />
-          </WrapperVertical>
-        </Wrapper>
-      </WrapperWithOrientation>
-    </SafeAreaViewFlex>
+          <TouchableOpacity
+            onPress={handleSubmit(onSubmit)}
+            style={styles.button}
+            disabled={loading}
+          >
+            <Icon.Send color={colors.primary} size={normalize(16)} />
+          </TouchableOpacity>
+        </WrapperRow>
+      </Wrapper>
+    </>
   );
 };
 /* eslint-enable complexity */
@@ -256,5 +255,17 @@ ProposalDetail.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  imageContainerStyle: { alignSelf: 'center' }
+  button: {
+    alignSelf: 'flex-end',
+    alignItems: 'flex-end',
+    marginBottom: normalize(10),
+    width: '10%'
+  },
+  imageContainerStyle: { alignSelf: 'center' },
+  input: {
+    shadowColor: colors.shadow,
+    shadowOpacity: 0.7,
+    shadowRadius: 3,
+    backgroundColor: colors.lightestText
+  }
 });
