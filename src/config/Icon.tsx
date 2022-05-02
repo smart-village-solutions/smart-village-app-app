@@ -147,7 +147,7 @@ export const Icon = {
   Settings: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'} {...props} />
   ),
-  Send: (props: IconProps) => <NamedIcon name={'send'} {...props} />,
+  Send: (props: IconProps) => <NamedIcon name="send" {...props} />,
   Share: (props: IconProps) =>
     device.platform === 'ios' ? (
       <NamedIcon name="ios-share" {...props} />
