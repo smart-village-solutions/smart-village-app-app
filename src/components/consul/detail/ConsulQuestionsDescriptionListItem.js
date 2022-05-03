@@ -19,7 +19,9 @@ export const ConsulQuestionsDescriptionListItem = ({ questionDescriptionItem }) 
         {questionAnswers.map((item, index) => (
           <View key={index}>
             <BoldText small>{item.title}</BoldText>
-            <HtmlView html={item.description} openWebScreen={openWebScreen} />
+            {!!item.description && (
+              <HtmlView html={item.description} openWebScreen={openWebScreen} />
+            )}
           </View>
         ))}
       </Wrapper>
