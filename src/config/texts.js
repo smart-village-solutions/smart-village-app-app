@@ -132,7 +132,7 @@ export const texts = {
       categoriesTitle: 'Kategorien',
       descriptionShortError: 'ist zu kurz (minimum 10 Zeichen)',
       editButtonLabelOnDetailScreen: 'Bearbeiten',
-      leerError: 'darf nicht leer sein',
+      emptyError: 'darf nicht leer sein',
       newDebateDescriptionLabel: 'Initialer Debattenbeitrag',
       newDebateStartButtonLabel: 'Eine Diskussion starten',
       newDebateTagLabel: 'Trennen Sie die Tags mit einem Komma (,)',

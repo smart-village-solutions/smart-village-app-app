@@ -97,8 +97,8 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 placeholder={texts.consul.name}
                 autoCapitalize="none"
                 validate
-                rules={{ required: true }}
-                errorMessage={errors.password && `${texts.consul.usernameError}`}
+                rules={{ required: texts.consul.usernameError }}
+                errorMessage={errors.name && errors.name.message}
                 control={control}
               />
             </Wrapper>
@@ -114,10 +114,10 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 autoCapitalize="none"
                 validate
                 rules={{
-                  required: true,
+                  required: texts.consul.emailError,
                   pattern: { value: EMAIL_REGEX, message: texts.consul.emailInvalid }
                 }}
-                errorMessage={errors.email && `${texts.consul.emailError}`}
+                errorMessage={errors.email && errors.email.message}
                 control={control}
               />
             </Wrapper>
@@ -133,10 +133,10 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 rightIcon={rightIcon(secureTextEntry, setSecureTextEntry)}
                 validate
                 rules={{
-                  required: true,
+                  required: texts.consul.passwordError,
                   minLength: { value: 8, message: texts.consul.passwordLengthError }
                 }}
-                errorMessage={errors.password && `${texts.consul.passwordError}`}
+                errorMessage={errors.password && errors.password.message}
                 control={control}
               />
             </Wrapper>
@@ -152,11 +152,11 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 rightIcon={rightIcon(secureTextEntry, setSecureTextEntry)}
                 validate
                 rules={{
-                  required: true,
+                  required: texts.consul.passwordError,
                   minLength: { value: 8, message: texts.consul.passwordLengthError },
                   validate: (value) => value === pwd || texts.consul.passwordDoNotMatch
                 }}
-                errorMessage={errors['password-repeat'] && `${texts.consul.passwordError}`}
+                errorMessage={errors['password-repeat'] && errors['password-repeat'].message}
                 control={control}
               />
             </Wrapper>
