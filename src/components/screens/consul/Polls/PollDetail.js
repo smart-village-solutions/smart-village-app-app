@@ -2,19 +2,18 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
+import { StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
 
-import { consts, device, texts } from '../../../../config';
+import { colors, consts, device, Icon, normalize, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
 import { ADD_COMMENT_TO_POLLS } from '../../../../queries/consul';
-import { Button } from '../../../Button';
 import { ConsulCommentList, ConsulQuestionsList, ConsulSummaryComponent } from '../../../consul';
 import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
-import { SafeAreaViewFlex } from '../../../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
-import { Wrapper, WrapperVertical, WrapperWithOrientation } from '../../../Wrapper';
+import { Wrapper, WrapperRow } from '../../../Wrapper';
 
 const a11yText = consts.a11yLabel;
 
@@ -69,51 +68,52 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
       onRefresh();
       setLoading(false);
       reset();
+      Keyboard.dismiss();
     } catch (err) {
       console.error(err);
     }
   };
 
   return (
-    <SafeAreaViewFlex>
-      <WrapperWithOrientation>
-        {!!title && (
-          <>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-          </>
-        )}
+    <>
+      {!!title && (
+        <>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+        </>
+      )}
 
-        {!!summary && <ConsulSummaryComponent summary={summary} />}
+      {!!summary && <ConsulSummaryComponent summary={summary} />}
 
-        {!!description && (
-          <Wrapper>
-            <HtmlView html={description} openWebScreen={openWebScreen} />
-          </Wrapper>
-        )}
-
-        {!!questions && (
-          <ConsulQuestionsList
-            data={questions}
-            onRefresh={onRefresh}
-            token={token}
-            disabled={endsDate >= currentDate}
-          />
-        )}
-
-        {!!comments && (
-          <ConsulCommentList
-            commentCount={commentsCount}
-            commentsData={comments}
-            userId={userId}
-            onRefresh={onRefresh}
-            navigation={navigation}
-          />
-        )}
-
+      {!!description && (
         <Wrapper>
+          <HtmlView html={description} openWebScreen={openWebScreen} />
+        </Wrapper>
+      )}
+
+      {!!questions && (
+        <ConsulQuestionsList
+          data={questions}
+          onRefresh={onRefresh}
+          token={token}
+          disabled={endsDate >= currentDate}
+        />
+      )}
+
+      {!!comments && (
+        <ConsulCommentList
+          commentCount={commentsCount}
+          commentsData={comments}
+          userId={userId}
+          onRefresh={onRefresh}
+          navigation={navigation}
+        />
+      )}
+
+      <Wrapper style={styles.input}>
+        <WrapperRow>
           <Input
             multiline
             minHeight={50}
@@ -122,19 +122,18 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
             placeholder={texts.consul.comment}
             autoCapitalize="none"
             control={control}
+            chat
           />
-          <WrapperVertical>
-            <Button
-              onPress={handleSubmit(onSubmit)}
-              title={
-                loading ? texts.consul.submittingCommentButton : texts.consul.commentAnswerButton
-              }
-              disabled={loading}
-            />
-          </WrapperVertical>
-        </Wrapper>
-      </WrapperWithOrientation>
-    </SafeAreaViewFlex>
+          <TouchableOpacity
+            onPress={handleSubmit(onSubmit)}
+            style={styles.button}
+            disabled={loading}
+          >
+            <Icon.Send color={colors.primary} size={normalize(16)} />
+          </TouchableOpacity>
+        </WrapperRow>
+      </Wrapper>
+    </>
   );
 };
 /* eslint-enable complexity */
@@ -147,3 +146,18 @@ PollDetail.propTypes = {
   onRefresh: PropTypes.func,
   route: PropTypes.object
 };
+
+const styles = StyleSheet.create({
+  button: {
+    alignSelf: 'flex-end',
+    alignItems: 'flex-end',
+    marginBottom: normalize(10),
+    width: '10%'
+  },
+  input: {
+    shadowColor: colors.shadow,
+    shadowOpacity: 0.7,
+    shadowRadius: 3,
+    backgroundColor: colors.lightestText
+  }
+});

@@ -32,6 +32,7 @@ export const ConsulCommentList = ({
 
       <FlatList
         contentContainerStyle={{ padding: normalize(14) }}
+        keyboardShouldPersistTaps="handled"
         data={comments}
         renderItem={({ item }) => (
           <ConsulCommentListItem commentItem={item} onRefresh={onRefresh} navigation={navigation} />

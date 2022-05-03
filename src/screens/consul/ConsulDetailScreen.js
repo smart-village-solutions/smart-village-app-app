@@ -11,7 +11,8 @@ import {
   PollDetail,
   ProposalDetail,
   SafeAreaViewFlex,
-  UserCommentDetail
+  UserCommentDetail,
+  WrapperWithOrientation
 } from '../../components';
 import { colors, texts } from '../../config';
 import { useConsulData } from '../../hooks';
@@ -86,7 +87,9 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
             />
           }
         >
-          <Component data={data} navigation={navigation} route={route} onRefresh={refetch} />
+          <WrapperWithOrientation>
+            <Component data={data} navigation={navigation} route={route} onRefresh={refetch} />
+          </WrapperWithOrientation>
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
