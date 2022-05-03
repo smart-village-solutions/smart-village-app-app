@@ -145,11 +145,13 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
 
           {commentUserId === userId && (
             <>
-              <Touchable onPress={() => deleteCommentAlert(onDelete)} style={styles.deleteButton}>
-                <Icon.Trash size={normalize(12)} color={colors.error} />
-                <RegularText error smallest>
-                  {` ${texts.consul.delete}`}
-                </RegularText>
+              <Touchable onPress={() => deleteCommentAlert(onDelete)}>
+                <View style={styles.deleteButton}>
+                  <Icon.Trash size={normalize(12)} color={colors.error} />
+                  <RegularText error smallest>
+                    {` ${texts.consul.delete}`}
+                  </RegularText>
+                </View>
               </Touchable>
 
               <Space />
@@ -240,13 +242,15 @@ export const ConsulCommentListItem = ({ commentItem, onRefresh, replyList, navig
 
 const LikeDissLikeIcon = ({ cachedVotesUp, cachedVotesDown, like, disslike, onPress, color }) => {
   return (
-    <Touchable onPress={onPress} style={styles.iconButton}>
-      <Icon.Like
-        color={color}
-        style={[styles.icon, { transform: disslike && [{ rotateX: '180deg' }] }]}
-        size={normalize(16)}
-      />
-      <RegularText smallest>{like ? cachedVotesUp : cachedVotesDown}</RegularText>
+    <Touchable onPress={onPress}>
+      <View style={styles.iconButton}>
+        <Icon.Like
+          color={color}
+          style={[styles.icon, { transform: disslike && [{ rotateX: '180deg' }] }]}
+          size={normalize(16)}
+        />
+        <RegularText smallest>{like ? cachedVotesUp : cachedVotesDown}</RegularText>
+      </View>
     </Touchable>
   );
 };

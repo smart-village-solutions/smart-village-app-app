@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, normalize } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { PROVIDE_ANSWER_TO_POLL_QUESTION } from '../../../queries/consul';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { BoldText, RegularText } from '../../Text';
-import { Touchable } from '../../Touchable';
 
 export const ConsulQuestionsListItem = ({ questionItem, onRefresh, token, disabled }) => {
   const [loading, setLoading] = useState(false);
@@ -42,7 +41,7 @@ export const ConsulQuestionsListItem = ({ questionItem, onRefresh, token, disabl
       <BoldText style={styles.tagText}>{title}</BoldText>
 
       {questionAnswers.map((item, index) => (
-        <Touchable
+        <TouchableOpacity
           disabled={loading || !disabled}
           onPress={() => onAnswer(item.title)}
           key={index}
@@ -58,7 +57,7 @@ export const ConsulQuestionsListItem = ({ questionItem, onRefresh, token, disabl
           ]}
         >
           <RegularText placeholder={!disabled}>{item.title}</RegularText>
-        </Touchable>
+        </TouchableOpacity>
       ))}
       {loading && <LoadingSpinner loading />}
     </View>

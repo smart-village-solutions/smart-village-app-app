@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useMutation } from 'react-apollo';
 
 import { TitleContainer, Title, TitleShadow } from '../../Title';
@@ -48,22 +48,26 @@ export const ConsulVotingComponent = ({ votesData, onRefresh, id }) => {
       <Wrapper>
         <WrapperRow spaceBetween>
           <WrapperRow>
-            <Touchable onPress={() => onVoting('up')} style={styles.iconButton}>
-              <Icon.Like
-                color={votesFor !== undefined && votesFor ? colors.primary : colors.darkText}
-                size={normalize(16)}
-                style={styles.icon}
-              />
-              <RegularText smallest>%{upVotesPercent.toFixed(0)}</RegularText>
+            <Touchable onPress={() => onVoting('up')}>
+              <View style={styles.iconButton}>
+                <Icon.Like
+                  color={votesFor !== undefined && votesFor ? colors.primary : colors.darkText}
+                  size={normalize(16)}
+                  style={styles.icon}
+                />
+                <RegularText smallest>%{upVotesPercent.toFixed(0)}</RegularText>
+              </View>
             </Touchable>
 
-            <Touchable onPress={() => onVoting('down')} style={styles.iconButton}>
-              <Icon.Like
-                color={votesFor !== undefined && !votesFor ? colors.error : colors.darkText}
-                style={[styles.icon, { transform: [{ rotateX: '180deg' }] }]}
-                size={normalize(16)}
-              />
-              <RegularText smallest>%{downVotesPercent.toFixed(0)}</RegularText>
+            <Touchable onPress={() => onVoting('down')}>
+              <View style={styles.iconButton}>
+                <Icon.Like
+                  color={votesFor !== undefined && !votesFor ? colors.error : colors.darkText}
+                  style={[styles.icon, { transform: [{ rotateX: '180deg' }] }]}
+                  size={normalize(16)}
+                />
+                <RegularText smallest>%{downVotesPercent.toFixed(0)}</RegularText>
+              </View>
             </Touchable>
           </WrapperRow>
 

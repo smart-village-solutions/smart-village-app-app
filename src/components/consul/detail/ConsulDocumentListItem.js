@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { View, StyleSheet, Modal, Dimensions } from 'react-native';
+import { View, StyleSheet, Modal, Dimensions, TouchableOpacity } from 'react-native';
 import WebView from 'react-native-webview';
 
 import { RegularText } from '../../Text';
-import { Touchable } from '../../Touchable';
 import { colors, normalize, Icon, texts } from '../../../config';
 import { device } from '../../../config';
 import { Button } from '../../Button';
@@ -28,12 +27,12 @@ export const ConsulDocumentListItem = ({ documentItem }) => {
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Touchable
+            <TouchableOpacity
               style={[styles.button, styles.buttonClose]}
               onPress={() => setModalVisible(!modalVisible)}
             >
               <Icon.Close color={colors.lightestText} size={normalize(16)} />
-            </Touchable>
+            </TouchableOpacity>
 
             <WebView
               bounces={false}
