@@ -217,7 +217,7 @@ export const WasteReminderSettings = ({
           const id = await updateReminderSettings({
             ...locationData,
             onDayBefore: state.onDayBefore,
-            reminderTime: reminderTime.toISOString(),
+            reminderTime,
             wasteType: typeKey
           });
 

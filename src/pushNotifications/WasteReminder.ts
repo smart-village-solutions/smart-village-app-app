@@ -9,7 +9,7 @@ const namespace = appJson.expo.slug as keyof typeof secrets;
 
 type SettingInfo = {
   city: string;
-  reminderTime: string;
+  reminderTime: Date;
   onDayBefore: boolean;
   street: string;
   wasteType: string;
@@ -39,7 +39,7 @@ export const updateReminderSettings = async ({
     },
     body: JSON.stringify({
       waste_registration: {
-        notify_at: reminderTime,
+        notify_at: `${reminderTime.getHours()}:${reminderTime.getMinutes()}+01:00`,
         notify_for_waste_type: wasteType,
         street,
         city,
