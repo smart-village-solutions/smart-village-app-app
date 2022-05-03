@@ -33,7 +33,7 @@ export const VolunteerEventRecord = ({
     content,
     description,
     end_datetime: endDatetime,
-    participant_info,
+    participant_info: participantInfo,
     participants,
     start_datetime: startDatetime,
     title,
@@ -127,6 +127,22 @@ export const VolunteerEventRecord = ({
             {device.platform === 'ios' && <TitleShadow />}
             <Wrapper>
               <HtmlView html={description} openWebScreen={openWebScreen} />
+            </Wrapper>
+          </View>
+        )}
+
+        {!!isAttendingEvent && !!participantInfo && (
+          <View>
+            <TitleContainer>
+              <Title
+                accessibilityLabel={`(${texts.volunteer.participantInfo}) ${a11yText.heading}`}
+              >
+                {texts.volunteer.participantInfo}
+              </Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            <Wrapper>
+              <HtmlView html={participantInfo} openWebScreen={openWebScreen} />
             </Wrapper>
           </View>
         )}

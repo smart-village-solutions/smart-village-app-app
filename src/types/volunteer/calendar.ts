@@ -8,6 +8,7 @@ export enum PARTICIPANT_TYPE {
 export type VolunteerCalendar = {
   title: string;
   description?: string;
+  organizer?: string;
   color?: string;
   location?: string;
   allDay: number;
