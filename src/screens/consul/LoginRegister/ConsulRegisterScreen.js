@@ -164,7 +164,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
             <WrapperHorizontal>
               <Checkbox
                 linkDescription={texts.consul.privacyCheckLink}
-                link={`${secrets[namespace]?.consul.serverUrl}${secrets[namespace]?.consul.termsOfService}`}
+                link={`${secrets[namespace]?.consul?.serverUrl}${secrets[namespace]?.consul?.termsOfService}`}
                 title={texts.consul.privacyChecked}
                 checkedIcon="check-square-o"
                 uncheckedIcon="square-o"
