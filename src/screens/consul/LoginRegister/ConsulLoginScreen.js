@@ -22,6 +22,7 @@ import {
 import { colors, consts, Icon, normalize, secrets, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { setConsulAuthToken, setConsulUser } from '../../../helpers';
+import { usePullToRefetch } from '../../../hooks';
 import { CONSUL_LOGIN_USER } from '../../../queries/consul';
 import { ScreenName } from '../../../types';
 
@@ -34,42 +35,51 @@ const showLoginFailAlert = () =>
   Alert.alert(texts.consul.loginFailedTitle, texts.consul.loginFailedBody);
 
 export const ConsulLoginScreen = ({ navigation }) => {
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [registrationLoading, setRegistrationLoading] = useState(false);
+  const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
     formState: { errors },
     handleSubmit
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  });
 
   const [userLogin] = useMutation(CONSUL_LOGIN_USER, {
     client: ConsulClient
   });
 
-  const onSubmit = async (val) => {
-    setRegistrationLoading(true);
+  const onSubmit = async (inputData) => {
+    setIsLoading(true);
     try {
-      let userValue = await userLogin({ variables: { email: val.email, password: val.password } });
-      await setConsulAuthToken(userValue.data.userLogin?.credentials);
-      await setConsulUser(userValue.data.userLogin?.authenticatable);
+      let userData = await userLogin({
+        variables: { email: inputData?.email, password: inputData?.password }
+      });
+      await setConsulAuthToken(userData.data.userLogin?.credentials);
+      await setConsulUser(userData.data.userLogin?.authenticatable);
 
       navigation?.navigate(ScreenName.ConsulHomeScreen, {
         refreshUser: new Date().valueOf()
       });
 
-      setRegistrationLoading(false);
+      setIsLoading(false);
     } catch (error) {
       console.error(error.message);
-      setRegistrationLoading(false);
+      setIsLoading(false);
       showLoginFailAlert();
     }
   };
 
+  const RefreshControl = usePullToRefetch();
+
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView keyboardShouldPersistTaps="handled" refreshControl={RefreshControl}>
           <WrapperWithOrientation>
             <TitleContainer>
               <Title
@@ -104,8 +114,8 @@ export const ConsulLoginScreen = ({ navigation }) => {
                 placeholder={texts.consul.password}
                 textContentType="password"
                 autoCompleteType="password"
-                secureTextEntry={secureTextEntry}
-                rightIcon={rightIcon(secureTextEntry, setSecureTextEntry)}
+                secureTextEntry={isSecureTextEntry}
+                rightIcon={rightIcon(isSecureTextEntry, setIsSecureTextEntry)}
                 validate
                 rules={{
                   required: texts.consul.passwordError,
@@ -136,7 +146,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
               <Button
                 onPress={handleSubmit(onSubmit)}
                 title={texts.consul.login}
-                disabled={registrationLoading}
+                disabled={isLoading}
               />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
@@ -146,17 +156,17 @@ export const ConsulLoginScreen = ({ navigation }) => {
             </Wrapper>
           </WrapperWithOrientation>
 
-          <LoadingModal loading={registrationLoading} />
+          <LoadingModal loading={isLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };
 
-const rightIcon = (secureTextEntry, setSecureTextEntry) => {
+const rightIcon = (isSecureTextEntry, setIsSecureTextEntry) => {
   return (
-    <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
-      {secureTextEntry ? (
+    <TouchableOpacity onPress={() => setIsSecureTextEntry(!isSecureTextEntry)}>
+      {isSecureTextEntry ? (
         <Icon.Visible color={colors.darkText} size={normalize(20)} />
       ) : (
         <Icon.Unvisible color={colors.darkText} size={normalize(20)} />
@@ -172,8 +182,5 @@ const styles = StyleSheet.create({
 });
 
 ConsulLoginScreen.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func
-  }).isRequired
+  navigation: PropTypes.object.isRequired
 };

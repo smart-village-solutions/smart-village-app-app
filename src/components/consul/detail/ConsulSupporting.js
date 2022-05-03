@@ -1,20 +1,20 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
 import { useMutation } from 'react-apollo';
+import { Alert, StyleSheet, View } from 'react-native';
 
-import { TitleContainer, Title, TitleShadow } from '../../Title';
-import { Wrapper } from '../../Wrapper';
-import { texts, consts, device, normalize } from '../../../config';
-import { BoldText, RegularText } from '../../Text';
-import { SUPPORT_PROPOSAL } from '../../../queries/consul';
+import { consts, device, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
+import { SUPPORT_PROPOSAL } from '../../../queries/consul';
 import { Button } from '../../Button';
+import { BoldText, RegularText } from '../../Text';
+import { Title, TitleContainer, TitleShadow } from '../../Title';
+import { Wrapper } from '../../Wrapper';
 
 const a11yText = consts.a11yLabel;
 
-export const ConsulSupportingComponent = (votesData) => {
-  const { cachedVotesUp, id, currentUserHasVoted, onRefresh } = votesData.votesData;
+export const ConsulSupporting = (votesData) => {
+  const { cachedVotesUp, currentUserHasVoted, id, refetch } = votesData.votesData;
 
   const [supportProposal] = useMutation(SUPPORT_PROPOSAL, {
     client: ConsulClient
@@ -23,7 +23,7 @@ export const ConsulSupportingComponent = (votesData) => {
   const onVoting = async () => {
     try {
       await supportProposal({ variables: { id: id } });
-      onRefresh();
+      refetch();
       Alert.alert(texts.consul.supportProposalAlertTitle, texts.consul.supportProposalAlertBody);
     } catch (error) {
       console.error(error);
@@ -60,12 +60,12 @@ export const ConsulSupportingComponent = (votesData) => {
   );
 };
 
-ConsulSupportingComponent.propTypes = {
-  votesData: PropTypes.object.isRequired
-};
-
 const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: normalize(10)
   }
 });
+
+ConsulSupporting.propTypes = {
+  votesData: PropTypes.object.isRequired
+};

@@ -9,7 +9,7 @@ import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
 import { ADD_COMMENT_TO_POLLS } from '../../../../queries/consul';
-import { ConsulCommentList, ConsulQuestionsList, ConsulSummaryComponent } from '../../../consul';
+import { ConsulCommentList, ConsulQuestionsList, ConsulSummary } from '../../../consul';
 import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
@@ -19,8 +19,8 @@ const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const PollDetail = ({ data, onRefresh, route, navigation }) => {
-  const [loading, setLoading] = useState();
+export const PollDetail = ({ data, refetch, route, navigation }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState();
 
   const {
@@ -39,8 +39,8 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
   const currentDate = new Date().getTime();
 
   useEffect(() => {
-    getConsulUser().then((val) => {
-      if (val) return setUserId(JSON.parse(val).id);
+    getConsulUser().then((userInfo) => {
+      if (userInfo) return setUserId(JSON.parse(userInfo).id);
     });
   }, []);
 
@@ -65,8 +65,8 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
 
     try {
       await addCommentToPoll({ variables: { pollId: id, body: commentData.comment } });
-      onRefresh();
-      setLoading(false);
+      refetch();
+      setIsLoading(false);
       reset();
       Keyboard.dismiss();
     } catch (err) {
@@ -85,7 +85,7 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
         </>
       )}
 
-      {!!summary && <ConsulSummaryComponent summary={summary} />}
+      {!!summary && <ConsulSummary summary={summary} />}
 
       {!!description && (
         <Wrapper>
@@ -96,7 +96,7 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
       {!!questions && (
         <ConsulQuestionsList
           data={questions}
-          onRefresh={onRefresh}
+          refetch={refetch}
           token={token}
           disabled={endsDate >= currentDate}
         />
@@ -107,7 +107,7 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
           commentCount={commentsCount}
           commentsData={comments}
           userId={userId}
-          onRefresh={onRefresh}
+          refetch={refetch}
           navigation={navigation}
         />
       )}
@@ -127,7 +127,7 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
             style={styles.button}
-            disabled={loading}
+            disabled={isLoading}
           >
             <Icon.Send color={colors.primary} size={normalize(16)} />
           </TouchableOpacity>
@@ -137,15 +137,6 @@ export const PollDetail = ({ data, onRefresh, route, navigation }) => {
   );
 };
 /* eslint-enable complexity */
-
-PollDetail.propTypes = {
-  data: PropTypes.object.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
-  }).isRequired,
-  onRefresh: PropTypes.func,
-  route: PropTypes.object
-};
 
 const styles = StyleSheet.create({
   button: {
@@ -161,3 +152,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightestText
   }
 });
+
+PollDetail.propTypes = {
+  data: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
+  refetch: PropTypes.func,
+  route: PropTypes.object
+};

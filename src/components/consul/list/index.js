@@ -1,2 +1,2 @@
-export * from './ConsulListComponent';
+export * from './ConsulList';
 export * from './ConsulListItem';

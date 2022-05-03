@@ -1,22 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList } from 'react-native';
-import { normalize } from 'react-native-elements';
 
+import { consts, device, texts, normalize } from '../../../config';
 import { Title, TitleContainer, TitleShadow } from '../../Title';
-import { device, texts, consts } from '../../../config';
 
 import { ConsulCommentListItem } from './ConsulCommentListItem';
 
 const a11yText = consts.a11yLabel;
 
-export const ConsulCommentList = ({
-  commentCount,
-  commentsData,
-  onRefresh,
-  userId,
-  navigation
-}) => {
+export const ConsulCommentList = ({ commentCount, commentsData, navigation, refetch, userId }) => {
   commentsData.sort((a, b) => a.id - b.id);
 
   let comments = getThreadedComments(commentsData, null, userId);
@@ -35,7 +28,7 @@ export const ConsulCommentList = ({
         keyboardShouldPersistTaps="handled"
         data={comments}
         renderItem={({ item }) => (
-          <ConsulCommentListItem commentItem={item} onRefresh={onRefresh} navigation={navigation} />
+          <ConsulCommentListItem commentItem={item} refetch={refetch} navigation={navigation} />
         )}
       />
     </>
@@ -43,12 +36,10 @@ export const ConsulCommentList = ({
 };
 
 ConsulCommentList.propTypes = {
-  commentsData: PropTypes.array.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
-  }).isRequired,
   commentCount: PropTypes.number,
-  onRefresh: PropTypes.func,
+  commentsData: PropTypes.array.isRequired,
+  navigation: PropTypes.object.isRequired,
+  refetch: PropTypes.func,
   userId: PropTypes.string
 };
 

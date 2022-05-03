@@ -10,7 +10,7 @@ import { VolunteerAvatar } from '../../volunteer';
 import { WrapperRow } from '../../Wrapper';
 
 export const ConsulPublicAuthor = ({ authorData, onPress }) => {
-  const { publicAuthor, commentsCount, publicCreatedAt, userId } = authorData;
+  const { commentsCount, publicAuthor, publicCreatedAt, userId } = authorData;
 
   return (
     <WrapperRow style={styles.userInfoContainer}>
@@ -58,11 +58,6 @@ export const ConsulPublicAuthor = ({ authorData, onPress }) => {
   );
 };
 
-ConsulPublicAuthor.propTypes = {
-  authorData: PropTypes.object.isRequired,
-  onPress: PropTypes.func
-};
-
 const styles = StyleSheet.create({
   authorStyle: {
     marginLeft: normalize(6)
@@ -71,3 +66,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   }
 });
+
+ConsulPublicAuthor.propTypes = {
+  authorData: PropTypes.object.isRequired,
+  onPress: PropTypes.func
+};

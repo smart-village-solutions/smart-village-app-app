@@ -44,9 +44,9 @@ export const User = ({ navigation, data, route, extraQuery, refreshControl }) =>
 
 User.propTypes = {
   data: PropTypes.object,
+  extraQuery: PropTypes.string.isRequired,
   navigation: PropTypes.object.isRequired,
   query: PropTypes.string.isRequired,
-  route: PropTypes.object.isRequired,
-  extraQuery: PropTypes.string.isRequired,
-  refreshControl: PropTypes.object.isRequired
+  refreshControl: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

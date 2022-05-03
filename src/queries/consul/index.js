@@ -1,5 +1,5 @@
-export * from './LoginRegister';
 export * from './Debates';
-export * from './Proposals';
+export * from './LoginRegister';
 export * from './Polls';
+export * from './Proposals';
 export * from './User';

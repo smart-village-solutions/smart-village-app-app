@@ -1,23 +1,22 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-import { Wrapper } from '../../../Wrapper';
+import { consts, device, texts } from '../../../../config';
+import { getConsulUser } from '../../../../helpers';
 import { ConsulCommentListItem } from '../../../consul';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
-import { device } from '../../../../config';
-import { texts, consts } from '../../../../config';
-import { getConsulUser } from '../../../../helpers';
+import { Wrapper } from '../../../Wrapper';
 
 const a11yText = consts.a11yLabel;
 
-export const UserCommentDetail = ({ data, onRefresh, navigation }) => {
+export const UserCommentDetail = ({ data, refetch, navigation }) => {
   const [userId, setUserId] = useState();
 
   const { commentableTitle } = data.comment;
 
   useEffect(() => {
-    getConsulUser().then((val) => {
-      if (val) return setUserId(JSON.parse(val).id);
+    getConsulUser().then((userInfo) => {
+      if (userInfo) return setUserId(JSON.parse(userInfo).id);
     });
   }, []);
 
@@ -35,7 +34,7 @@ export const UserCommentDetail = ({ data, onRefresh, navigation }) => {
       <Wrapper>
         <ConsulCommentListItem
           commentItem={data.comment}
-          onRefresh={onRefresh}
+          refetch={refetch}
           navigation={navigation}
         />
       </Wrapper>
@@ -45,8 +44,6 @@ export const UserCommentDetail = ({ data, onRefresh, navigation }) => {
 
 UserCommentDetail.propTypes = {
   data: PropTypes.object.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
-  }).isRequired,
-  onRefresh: PropTypes.func
+  navigation: PropTypes.object.isRequired,
+  refetch: PropTypes.func
 };

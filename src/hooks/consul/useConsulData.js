@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import { useQuery } from 'react-apollo';
 
-import { QUERY_TYPES, getQuery } from '../../queries';
 import { ConsulClient } from '../../ConsulClient';
+import { getQuery, QUERY_TYPES } from '../../queries';
 
 const useDebates = ({ query, queryVariables }) => {
   const { data, loading, error, refetch } = useQuery(getQuery(query), {

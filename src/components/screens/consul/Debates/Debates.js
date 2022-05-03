@@ -40,9 +40,9 @@ export const Debates = ({ navigation, query, data, refreshControl, myContent }) 
 
 Debates.propTypes = {
   data: PropTypes.array.isRequired,
+  myContent: PropTypes.bool,
   navigation: PropTypes.object.isRequired,
   query: PropTypes.string.isRequired,
-  route: PropTypes.object.isRequired,
   refreshControl: PropTypes.object.isRequired,
-  myContent: PropTypes.bool
+  route: PropTypes.object.isRequired
 };

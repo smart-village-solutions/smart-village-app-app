@@ -35,6 +35,13 @@ const TAG_CATEGORIES = [
   { name: 'Transparency', id: 14, selected: false }
 ];
 
+const ITEM_TYPES = {
+  INPUT: 'input',
+  INFO_TEXT: 'infoText',
+  TITLE: 'title',
+  CATEGORY: 'category'
+};
+
 // TODO: image and document upload
 //  imageAttributes: {
 //   	title: 'Profil.png',
@@ -54,8 +61,10 @@ const showRegistrationFailAlert = () =>
 const graphqlErr = (err) => Alert.alert('Hinweis', err);
 
 export const NewProposal = ({ navigation, data, query }) => {
-  const [termsOfService, setTermsOfService] = useState(data?.termsOfService ?? false);
-  const [startLoading, setStartLoading] = useState(false);
+  const [hasAcceptedTermsOfService, setHasAcceptedTermsOfService] = useState(
+    data?.termsOfService ?? false
+  );
+  const [isLoading, setIsLoading] = useState(false);
   const [tags, setTags] = useState([]);
 
   const {
@@ -65,11 +74,11 @@ export const NewProposal = ({ navigation, data, query }) => {
     setValue
   } = useForm({
     defaultValues: {
-      title: data?.title,
-      description: data?.description,
-      tagList: data?.tagList?.toString(),
-      summary: data?.summary,
-      videoUrl: data?.videoUrl
+      title: data?.title || '',
+      description: data?.description || '',
+      tagList: data?.tagList?.toString() || '',
+      summary: data?.summary || '',
+      videoUrl: data?.videoUrl || ''
     }
   });
 
@@ -108,30 +117,30 @@ export const NewProposal = ({ navigation, data, query }) => {
     setValue('tagList', filterData.toString());
   }, [tags]);
 
-  const onSubmit = async (val) => {
+  const onSubmit = async (newProposalData) => {
     let variables = {
       id: data?.id,
       attributes: {
         translationsAttributes: {
-          title: val.title,
-          summary: val.summary,
-          description: val.description
+          title: newProposalData?.title,
+          summary: newProposalData?.summary,
+          description: newProposalData?.description
         },
-        tagList: val.tagList,
-        termsOfService: termsOfService,
-        videoUrl: val.videoUrl
+        tagList: newProposalData?.tagList,
+        termsOfService: hasAcceptedTermsOfService,
+        videoUrl: newProposalData?.videoUrl
       }
     };
 
-    if (!termsOfService) return showRegistrationFailAlert();
+    if (!hasAcceptedTermsOfService) return showRegistrationFailAlert();
 
     switch (query) {
       case QUERY_TYPES.CONSUL.START_PROPOSAL:
-        setStartLoading(true);
+        setIsLoading(true);
 
         try {
           await submitProposal({ variables });
-          setStartLoading(false);
+          setIsLoading(false);
 
           navigation.navigate(ScreenName.ConsulIndexScreen, {
             title: texts.consul.homeScreen.proposals,
@@ -146,14 +155,14 @@ export const NewProposal = ({ navigation, data, query }) => {
         } catch (error) {
           graphqlErr(error.message);
           console.error(error.message);
-          setStartLoading(false);
+          setIsLoading(false);
         }
         break;
       case QUERY_TYPES.CONSUL.UPDATE_PROPOSAL:
-        setStartLoading(true);
+        setIsLoading(true);
         try {
           let data = await updateProposal({ variables });
-          setStartLoading(false);
+          setIsLoading(false);
 
           navigation.navigate(ScreenName.ConsulDetailScreen, {
             query: QUERY_TYPES.CONSUL.PROPOSAL,
@@ -162,7 +171,7 @@ export const NewProposal = ({ navigation, data, query }) => {
         } catch (error) {
           graphqlErr(error.message);
           console.error(error.message);
-          setStartLoading(false);
+          setIsLoading(false);
         }
         break;
       default:
@@ -170,7 +179,7 @@ export const NewProposal = ({ navigation, data, query }) => {
     }
   };
 
-  if (startLoading) return <LoadingSpinner loading />;
+  if (isLoading) return <LoadingSpinner loading />;
 
   return (
     <>
@@ -241,8 +250,8 @@ export const NewProposal = ({ navigation, data, query }) => {
             linkDescription={texts.consul.startNew.termsOfServiceLinkLabel}
             checkedIcon="check-square-o"
             uncheckedIcon="square-o"
-            checked={termsOfService}
-            onPress={() => setTermsOfService(!termsOfService)}
+            checked={hasAcceptedTermsOfService}
+            onPress={() => setHasAcceptedTermsOfService(!hasAcceptedTermsOfService)}
           />
         </WrapperHorizontal>
 
@@ -276,19 +285,9 @@ const styles = StyleSheet.create({
 });
 
 NewProposal.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired,
-    goBack: PropTypes.func
-  }).isRequired,
   data: PropTypes.object,
+  navigation: PropTypes.object.isRequired,
   query: PropTypes.string
-};
-
-const ITEM_TYPES = {
-  INPUT: 'input',
-  INFO_TEXT: 'infoText',
-  TITLE: 'title',
-  CATEGORY: 'category'
 };
 
 const INPUTS = [

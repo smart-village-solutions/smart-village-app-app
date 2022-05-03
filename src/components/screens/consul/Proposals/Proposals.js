@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { ListComponent } from '../../../ListComponent';
-import { QUERY_TYPES } from '../../../../queries';
 import { texts } from '../../../../config';
-import { Wrapper } from '../../../Wrapper';
+import { QUERY_TYPES } from '../../../../queries';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import { EmptyMessage } from '../../../EmptyMessage';
+import { ListComponent } from '../../../ListComponent';
+import { Wrapper } from '../../../Wrapper';
 
 export const Proposals = ({ navigation, query, data, refreshControl, myContent }) => {
   return (
@@ -40,9 +40,9 @@ export const Proposals = ({ navigation, query, data, refreshControl, myContent }
 
 Proposals.propTypes = {
   data: PropTypes.array.isRequired,
+  myContent: PropTypes.bool,
   navigation: PropTypes.object.isRequired,
   query: PropTypes.string.isRequired,
-  route: PropTypes.object.isRequired,
   refreshControl: PropTypes.object.isRequired,
-  myContent: PropTypes.bool
+  route: PropTypes.object.isRequired
 };

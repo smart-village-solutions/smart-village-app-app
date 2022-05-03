@@ -15,7 +15,7 @@ import {
   ConsulCommentList,
   ConsulPublicAuthor,
   ConsulTagList,
-  ConsulVotingComponent
+  ConsulVoting
 } from '../../../consul';
 import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
@@ -26,8 +26,8 @@ const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const DebateDetail = ({ data, onRefresh, route, navigation }) => {
-  const [loading, setLoading] = useState();
+export const DebateDetail = ({ data, refetch, route, navigation }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState();
 
   const {
@@ -52,8 +52,8 @@ export const DebateDetail = ({ data, onRefresh, route, navigation }) => {
   );
 
   useEffect(() => {
-    getConsulUser().then((val) => {
-      if (val) return setUserId(JSON.parse(val).id);
+    getConsulUser().then((userInfo) => {
+      if (userInfo) return setUserId(JSON.parse(userInfo).id);
     });
   }, []);
 
@@ -70,12 +70,12 @@ export const DebateDetail = ({ data, onRefresh, route, navigation }) => {
   const onSubmit = async (commentData) => {
     if (!commentData?.comment) return;
 
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       await addCommentToDebate({ variables: { debateId: id, body: commentData.comment } });
-      onRefresh();
-      setLoading(false);
+      refetch();
+      setIsLoading(false);
       reset();
       Keyboard.dismiss();
     } catch (err) {
@@ -105,15 +105,15 @@ export const DebateDetail = ({ data, onRefresh, route, navigation }) => {
             }}
             onPress={() => {
               navigation.navigate(ScreenName.ConsulStartNewScreen, {
-                title: texts.consul.startNew.updateButtonLabel,
-                query: QUERY_TYPES.CONSUL.UPDATE_DEBATE,
                 data: {
-                  title,
-                  tagList: tags.nodes.map((item) => item.name),
                   description,
+                  id,
+                  tagList: tags.nodes.map((item) => item.name),
                   termsOfService: true,
-                  id
-                }
+                  title
+                },
+                query: QUERY_TYPES.CONSUL.UPDATE_DEBATE,
+                title: texts.consul.startNew.updateButtonLabel
               });
             }}
           />
@@ -128,13 +128,13 @@ export const DebateDetail = ({ data, onRefresh, route, navigation }) => {
 
       {!!tags && tags.nodes.length > 0 && <ConsulTagList tags={tags.nodes} title={true} />}
 
-      <ConsulVotingComponent
+      <ConsulVoting
         id={id}
-        onRefresh={onRefresh}
+        refetch={refetch}
         votesData={{
+          cachedVotesDown,
           cachedVotesTotal,
           cachedVotesUp,
-          cachedVotesDown,
           votesFor: votesFor.nodes[0]?.voteFlag
         }}
       />
@@ -145,7 +145,7 @@ export const DebateDetail = ({ data, onRefresh, route, navigation }) => {
           commentsData={comments.nodes}
           userId={userId}
           navigation={navigation}
-          onRefresh={onRefresh}
+          refetch={refetch}
         />
       )}
 
@@ -164,7 +164,7 @@ export const DebateDetail = ({ data, onRefresh, route, navigation }) => {
           <TouchableOpacity
             onPress={handleSubmit(onSubmit)}
             style={styles.button}
-            disabled={loading}
+            disabled={isLoading}
           >
             <Icon.Send color={colors.primary} size={normalize(16)} />
           </TouchableOpacity>
@@ -174,15 +174,6 @@ export const DebateDetail = ({ data, onRefresh, route, navigation }) => {
   );
 };
 /* eslint-enable complexity */
-
-DebateDetail.propTypes = {
-  data: PropTypes.object.isRequired,
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func.isRequired
-  }).isRequired,
-  onRefresh: PropTypes.func,
-  route: PropTypes.object
-};
 
 const styles = StyleSheet.create({
   button: {
@@ -198,3 +189,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightestText
   }
 });
+
+DebateDetail.propTypes = {
+  data: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
+  refetch: PropTypes.func,
+  route: PropTypes.object
+};

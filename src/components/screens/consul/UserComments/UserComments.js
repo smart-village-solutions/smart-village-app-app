@@ -22,6 +22,6 @@ UserComments.propTypes = {
   data: PropTypes.array.isRequired,
   navigation: PropTypes.object.isRequired,
   query: PropTypes.string.isRequired,
-  route: PropTypes.object.isRequired,
-  refreshControl: PropTypes.object.isRequired
+  refreshControl: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

@@ -30,6 +30,6 @@ const styles = StyleSheet.create({
 });
 
 ConsulTagListItem.propTypes = {
-  tagItem: PropTypes.object.isRequired,
-  onPress: PropTypes.object
+  onPress: PropTypes.object,
+  tagItem: PropTypes.object.isRequired
 };

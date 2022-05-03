@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList } from 'react-native';
-import { normalize } from 'react-native-elements';
 
+import { consts, device, texts, normalize } from '../../../config';
 import { Title, TitleContainer, TitleShadow } from '../../Title';
-import { device, texts, consts } from '../../../config';
 
 import { ConsulDocumentListItem } from './ConsulDocumentListItem';
 

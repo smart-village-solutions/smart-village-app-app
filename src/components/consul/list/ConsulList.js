@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { SectionList, View } from 'react-native';
 
-import { TitleShadow, Title, TitleContainer } from '../../Title';
 import { consts, device } from '../../../config';
+import { Title, TitleContainer, TitleShadow } from '../../Title';
 
 import { ConsulListItem } from './ConsulListItem';
 
@@ -20,7 +20,7 @@ const renderSectionHeader = ({ section: { title, data } }) => {
   );
 };
 
-export const ConsulListComponent = ({ data, navigation }) => {
+export const ConsulList = ({ data, navigation }) => {
   return (
     <SectionList
       sections={data}
@@ -31,7 +31,7 @@ export const ConsulListComponent = ({ data, navigation }) => {
   );
 };
 
-ConsulListComponent.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  data: PropTypes.array.isRequired
+ConsulList.propTypes = {
+  data: PropTypes.array.isRequired,
+  navigation: PropTypes.object.isRequired
 };

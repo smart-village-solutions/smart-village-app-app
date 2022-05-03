@@ -9,28 +9,28 @@ import { PROVIDE_ANSWER_TO_POLL_QUESTION } from '../../../queries/consul';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { BoldText, RegularText } from '../../Text';
 
-export const ConsulQuestionsListItem = ({ questionItem, onRefresh, token, disabled }) => {
-  const [loading, setLoading] = useState(false);
+export const ConsulQuestionsListItem = ({ questionItem, refetch, token, disabled }) => {
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { questionAnswers, title, answersGivenByCurrentUser, id } = questionItem;
+  const { answersGivenByCurrentUser, id, questionAnswers, title } = questionItem;
 
   const [provideAnswerToPollQuestion] = useMutation(PROVIDE_ANSWER_TO_POLL_QUESTION, {
     client: ConsulClient
   });
 
   const onAnswer = async (answer) => {
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       await provideAnswerToPollQuestion({
         variables: {
           pollQuestionId: id,
-          token: token,
-          answer: answer
+          token,
+          answer
         }
       });
-      onRefresh();
-      setLoading(false);
+      refetch();
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -42,7 +42,7 @@ export const ConsulQuestionsListItem = ({ questionItem, onRefresh, token, disabl
 
       {questionAnswers.map((item, index) => (
         <TouchableOpacity
-          disabled={loading || !disabled}
+          disabled={isLoading || !disabled}
           onPress={() => onAnswer(item.title)}
           key={index}
           style={[
@@ -59,25 +59,25 @@ export const ConsulQuestionsListItem = ({ questionItem, onRefresh, token, disabl
           <RegularText placeholder={!disabled}>{item.title}</RegularText>
         </TouchableOpacity>
       ))}
-      {loading && <LoadingSpinner loading />}
+      {isLoading && <LoadingSpinner loading />}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    borderWidth: 1,
-    borderColor: colors.borderRgba,
-    marginVertical: normalize(10),
-    padding: normalize(10)
-  },
   answerContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 0.5,
     borderColor: colors.darkText,
+    borderWidth: 0.5,
+    justifyContent: 'center',
     marginVertical: normalize(10),
     paddingVertical: normalize(10)
+  },
+  container: {
+    borderColor: colors.borderRgba,
+    borderWidth: 1,
+    marginVertical: normalize(10),
+    padding: normalize(10)
   },
   disabledAnswerContainer: {
     borderWidth: 0.3
@@ -89,8 +89,8 @@ const styles = StyleSheet.create({
 });
 
 ConsulQuestionsListItem.propTypes = {
+  disabled: PropTypes.bool,
   questionItem: PropTypes.object.isRequired,
-  onRefresh: PropTypes.func,
-  token: PropTypes.string,
-  disabled: PropTypes.bool
+  refetch: PropTypes.func,
+  token: PropTypes.string
 };
