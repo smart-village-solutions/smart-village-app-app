@@ -13,7 +13,13 @@ import {
 } from '../components';
 import { ListSettings, LocationSettings, PermanentFilterSettings } from '../components/settings';
 import { colors, consts, texts } from '../config';
-import { createMatomoUserId, matomoSettings, readFromStore, removeMatomoUserId } from '../helpers';
+import {
+  addToStore,
+  createMatomoUserId,
+  matomoSettings,
+  readFromStore,
+  removeMatomoUserId
+} from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
 import { SettingsContext } from '../SettingsProvider';
@@ -51,6 +57,8 @@ const INITIAL_FILTER = [
   { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
   { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false }
 ];
+
+const ONBOARDING_STORE_KEY = 'ONBOARDING_STORE_KEY';
 
 export const SettingsScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
@@ -126,6 +134,42 @@ export const SettingsScreen = () => {
                     }
                   ],
                   { cancelable: false }
+                )
+            }
+          ]
+        });
+      }
+
+      if (settings.onboarding) {
+        const onboarding = await readFromStore(ONBOARDING_STORE_KEY);
+
+        additionalSectionedData.push({
+          data: [
+            {
+              title: texts.settingsTitles.onboarding,
+              topDivider: false,
+              value: onboarding === 'complete' ? false : true,
+              onActivate: () =>
+                Alert.alert(
+                  texts.settingsTitles.onboarding,
+                  texts.settingsContents.onboarding.onActivate,
+                  [
+                    {
+                      text: texts.settingsContents.onboarding.ok,
+                      onPress: () => addToStore(ONBOARDING_STORE_KEY, 'incomplete')
+                    }
+                  ]
+                ),
+              onDeactivate: () =>
+                Alert.alert(
+                  texts.settingsTitles.onboarding,
+                  texts.settingsContents.onboarding.onDeactivate,
+                  [
+                    {
+                      text: texts.settingsContents.onboarding.ok,
+                      onPress: () => addToStore(ONBOARDING_STORE_KEY, 'complete')
+                    }
+                  ]
                 )
             }
           ]
