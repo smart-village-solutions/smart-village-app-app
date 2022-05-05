@@ -34,7 +34,7 @@ export const VolunteerGroupMember = ({
   isSuccessLeave: boolean;
 }) => {
   const { data, refetch } = useQuery(['groupMembership', groupId], () => groupMembership(groupId));
-  const [members, setMembers] = useState<[{ user: VolunteerUser }]>();
+  const [members, setMembers] = useState<{ user: VolunteerUser }[]>();
 
   useEffect(() => {
     // filter out members that are not yet in the group (1 === 'pending', 3 === 'accepted')
@@ -42,7 +42,7 @@ export const VolunteerGroupMember = ({
       (member: { status: number }) => member.status === 3
     );
 
-    const fewShuffledMembers = _shuffle(acceptedMembers.slice(0, MAX_AVATARS_COUNT + 1)) as [
+    const fewShuffledMembers = _shuffle(acceptedMembers?.slice(0, MAX_AVATARS_COUNT + 1)) as [
       { user: VolunteerUser }
     ];
 
