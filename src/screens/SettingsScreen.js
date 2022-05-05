@@ -23,6 +23,7 @@ import {
 import { useMatomoTrackScreenView } from '../hooks';
 import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
 import { SettingsContext } from '../SettingsProvider';
+import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -57,8 +58,6 @@ const INITIAL_FILTER = [
   { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
   { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false }
 ];
-
-const ONBOARDING_STORE_KEY = 'ONBOARDING_STORE_KEY';
 
 export const SettingsScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
@@ -147,8 +146,8 @@ export const SettingsScreen = () => {
           data: [
             {
               title: texts.settingsTitles.onboarding,
-              topDivider: false,
-              value: onboarding === 'complete' ? false : true,
+              topDivider: true,
+              value: onboarding === 'incomplete',
               onActivate: () =>
                 Alert.alert(
                   texts.settingsTitles.onboarding,

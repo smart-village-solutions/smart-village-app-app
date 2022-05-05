@@ -476,7 +476,7 @@ export const texts = {
     onboarding: {
       onActivate: 'Beim nächsten Start wird die App-Einführung angezeigt.',
       onDeactivate: 'Die App-Einführung wird beim nächsten Start nicht angezeigt.',
-      ok: 'OK'
+      ok: 'Ok'
     },
     permanentFilter: {
       sectionHeader: 'Datenquellen'
