@@ -4,6 +4,7 @@ import { Avatar } from 'react-native-elements';
 
 import { colors, normalize } from '../../config';
 import { volunteerProfileImage } from '../../helpers';
+import { VolunteerUser } from '../../types';
 
 export const VolunteerAvatar = ({
   item,
@@ -11,7 +12,7 @@ export const VolunteerAvatar = ({
   totalCount = 1,
   MAX_AVATARS_COUNT = 10
 }: {
-  item: { user: { id: number; guid: string; display_name: string } };
+  item: { user: VolunteerUser };
   index: number;
   totalCount: number;
   MAX_AVATARS_COUNT: number;

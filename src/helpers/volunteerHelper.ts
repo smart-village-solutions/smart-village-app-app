@@ -1,10 +1,11 @@
 import * as SecureStore from 'expo-secure-store';
 import moment from 'moment';
-import 'moment/locale/de';
 
+import 'moment/locale/de';
 import * as appJson from '../../app.json';
 import { secrets } from '../config';
 import { QUERY_TYPES } from '../queries/types';
+import { VolunteerUser } from '../types';
 
 import { eventDate } from './dateTimeHelper';
 import { subtitle } from './textHelper';
@@ -117,16 +118,16 @@ export const volunteerSubtitle = (
 export const isAttending = (currentUserId: string | null, attending?: []): boolean => {
   if (!currentUserId || !attending?.length) return false;
 
-  return attending.some((item: { id: number }) => item.id.toString() == currentUserId);
+  return attending.some((item: VolunteerUser) => item.id.toString() == currentUserId);
 };
 
-export const isOwner = (currentUserId: string | null, owner: { id: number }): boolean => {
+export const isOwner = (currentUserId: string | null, owner: VolunteerUser): boolean => {
   if (!currentUserId || !owner?.id) return false;
 
   return owner.id.toString() == currentUserId;
 };
 
-export const isAccount = (currentUserId: string | null, account: { id: number }): boolean => {
+export const isAccount = (currentUserId: string | null, account: VolunteerUser): boolean => {
   if (!currentUserId || !account?.id) return false;
 
   return account.id.toString() == currentUserId;
@@ -134,11 +135,11 @@ export const isAccount = (currentUserId: string | null, account: { id: number })
 
 export const isMember = (
   currentUserId: string | null,
-  members?: [{ user: { id: number } }]
+  members?: { user: VolunteerUser }[]
 ): boolean => {
   if (!currentUserId || !members?.length) return false;
 
-  return members.some((item: { user: { id: number } }) => item.user.id.toString() == currentUserId);
+  return members.some((item: { user: VolunteerUser }) => item.user.id.toString() == currentUserId);
 };
 
 export const volunteerProfileImage = (guid: string) =>
