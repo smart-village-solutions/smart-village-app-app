@@ -89,12 +89,17 @@ export const homeData = (id) => [
     title: texts.consul.homeScreen.account,
     data: [
       {
-        routeName: ScreenName.ConsulIndexScreen,
+        routeName: ScreenName.Html,
         params: {
           title: texts.consul.homeScreen.settings,
-          query: QUERY_TYPES.CONSUL.USER_SETTINGS,
+          query: QUERY_TYPES.PUBLIC_HTML_FILE,
           queryVariables: {
-            link: `${secrets[namespace]?.consul?.serverUrl}${secrets[namespace]?.consul?.settings}`
+            name: 'consul-einstellungen'
+          },
+          subQuery: {
+            webUrl: `${secrets[namespace]?.consul?.serverUrl}${secrets[namespace]?.consul?.settings}`,
+            routeName: ScreenName.Web,
+            buttonTitle: texts.consul.settingsButtonTitle
           },
           rootRouteName: ScreenName.ConsulHomeScreen
         },
