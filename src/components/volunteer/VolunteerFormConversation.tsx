@@ -32,7 +32,7 @@ export const VolunteerFormConversation = ({
   } = useForm<VolunteerConversation>({
     mode: 'onBlur',
     defaultValues: {
-      id: selectedUserId || 0,
+      id: selectedUserId ? [selectedUserId] : [0],
       title: '',
       message: ''
     }

@@ -89,7 +89,13 @@ export const DropdownSelect = ({
           let updatedData = [...data];
 
           if (multipleSelect) {
-            updatedData[index].selected = !updatedData[index].selected;
+            updatedData = updatedData.map((entry) => {
+              if (entry.value === value) {
+                entry.selected = !entry.selected;
+              }
+
+              return entry;
+            });
           } else {
             // only trigger onPress if a new selection is made
             if (selectedValue === value) return;
@@ -106,6 +112,7 @@ export const DropdownSelect = ({
         searchInputStyle={searchInputStyle}
         renderSearch={renderSearch}
         searchPlaceholder={searchPlaceholder}
+        keyboardShouldPersistTaps="handled"
       >
         <WrapperRow style={styles.dropdownTextWrapper}>
           <RegularText>{multipleSelect ? selectedMultipleValues : selectedValue}</RegularText>
