@@ -112,6 +112,7 @@ export const DropdownSelect = ({
         searchInputStyle={searchInputStyle}
         renderSearch={renderSearch}
         searchPlaceholder={searchPlaceholder}
+        keyboardShouldPersistTaps="handled"
       >
         <WrapperRow style={styles.dropdownTextWrapper}>
           <RegularText>{multipleSelect ? selectedMultipleValues : selectedValue}</RegularText>
