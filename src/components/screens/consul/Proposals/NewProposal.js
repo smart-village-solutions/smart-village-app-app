@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, namespace, secrets, texts } from '../../../../config';
@@ -41,20 +41,6 @@ const ITEM_TYPES = {
   TITLE: 'title',
   CATEGORY: 'category'
 };
-
-// TODO: image and document upload
-//  imageAttributes: {
-//   	title: 'Profil.png',
-//   	cachedAttachment:
-//   		'/Users/ardasenturk/Development/SVA/consul-bb/public/system/images/cached_attachments/user/49/original/3dfe4b17e340624be2f74f822f15e36cadd8d6e1.png'
-//  },
-//  documentsAttributes: [
-// 	  {
-// 		  title: 'sample.pdf',
-// 		  cachedAttachment:
-// 		  	'/Users/ardasenturk/Development/SVA/consul-bb/public/system/documents/cached_attachments/user/49/original/f2245afb48be5f906474ad929aacb7f91f408a23.pdf'
-// 	  }
-//  ],
 
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
@@ -128,11 +114,25 @@ export const NewProposal = ({ navigation, data, query }) => {
         },
         tagList: newProposalData?.tagList,
         termsOfService: hasAcceptedTermsOfService,
-        videoUrl: newProposalData?.videoUrl
+        videoUrl: newProposalData?.videoUrl,
+
+        // TODO: image and document upload needed here? and if yes, how to do it?
+        //  imageAttributes: {
+        //   	title: 'Profil.png',
+        //   	cachedAttachment:
+        //   		'/Users/ardasenturk/Development/SVA/consul-bb/public/system/images/cached_attachments/user/49/original/3dfe4b17e340624be2f74f822f15e36cadd8d6e1.png'
+        //  },
+        //  documentsAttributes: [
+        // 	  {
+        // 		  title: 'sample.pdf',
+        // 		  cachedAttachment:
+        // 		  	'/Users/ardasenturk/Development/SVA/consul-bb/public/system/documents/cached_attachments/user/49/original/f2245afb48be5f906474ad929aacb7f91f408a23.pdf'
+        // 	  }
+        //  ],
       }
     };
 
-    if (!hasAcceptedTermsOfService) return showRegistrationFailAlert();
+    if (!hasAcceptedTermsOfService) return showRegistrationFailAlert(); // TODO: naming?
 
     switch (query) {
       case QUERY_TYPES.CONSUL.START_PROPOSAL:
@@ -140,6 +140,13 @@ export const NewProposal = ({ navigation, data, query }) => {
 
         try {
           await submitProposal({ variables });
+
+          // TODO: handle uploads for the proposal (id returned by `submitProposal`?)
+          // 1. get infos about files to be uploaded
+          // 2. upload files per upload helper function `uploadAttachment` for the proposal
+          // 3. if success go on here
+          // 4. if error, show error message and ??
+
           setIsLoading(false);
 
           navigation.navigate(ScreenName.ConsulIndexScreen, {
@@ -162,6 +169,13 @@ export const NewProposal = ({ navigation, data, query }) => {
         setIsLoading(true);
         try {
           let data = await updateProposal({ variables });
+
+          // TODO: handle uploads for the proposal (id in `data`?)
+          // 1. get infos about files to be uploaded
+          // 2. upload files per upload helper function `uploadAttachment` for the proposal
+          // 3. if success go on here
+          // 4. if error, show error message and ??
+
           setIsLoading(false);
 
           navigation.navigate(ScreenName.ConsulDetailScreen, {
@@ -241,6 +255,41 @@ export const NewProposal = ({ navigation, data, query }) => {
           )}
         </Wrapper>
       ))}
+
+      {/* TODO: uploads WIP */}
+      <Controller
+        key=??
+        control={control}
+        name=?? // image or documents
+        rules={{ // TODO: depending on image or documents
+          required: ??,
+          validate: ??
+        }}
+        defaultValue=?? // should be placed in initial values for useForm?
+        render={({ onChange, value }) => {
+          // TODO: handle `onChange` somewhere after selecting image or documents to change `value`
+          //       that is placed in the hidden input
+
+          return (
+            <>
+              {/* preview component that renders image and documents to be uploaded */}
+              <Input
+                hidden // can be removed for development to see value of hidden input
+                validate
+                errorMessage=?? // or something like {errors[name] && `Es dürfen maximal ${max} Fotos hinzugefügt werden`}
+                value={value} // or JSON.stringify(value)?
+              />
+              {/* TODO: multiple buttons depending on image (take picture, select picture from device) or documents (select from device) */}
+              {/* TODO: new camera screen for taking pictures that is navigated to on selection "take picture" */}
+              <Button
+                title=?? // image or document
+                invert
+                onPress=?? // what happens for image (bottom sheet with selection for camera or image picker)? what happens for documents (directly document picker)?
+              />
+            </>
+          );
+        }}
+      />
 
       <Wrapper style={styles.noPaddingTop}>
         <WrapperHorizontal>
