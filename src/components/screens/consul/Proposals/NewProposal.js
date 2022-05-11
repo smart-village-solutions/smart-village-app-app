@@ -4,18 +4,23 @@ import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, namespace, secrets, texts } from '../../../../config';
+import { colors, Icon, namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
+import { imageHeight, imageWidth } from '../../../../helpers';
+import { useSelectImage } from '../../../../hooks';
 import { QUERY_TYPES } from '../../../../queries';
 import { START_PROPOSAL, UPDATE_PROPOSAL } from '../../../../queries/consul';
+import { uploadAttachment } from '../../../../queries/consul/uploads';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
 import { Input } from '../../../form';
+import { Image } from '../../../Image';
 import { Label } from '../../../Label';
 import { LoadingSpinner } from '../../../LoadingSpinner';
 import { RegularText } from '../../../Text';
-import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
+import { Touchable } from '../../../Touchable';
+import { Wrapper, WrapperHorizontal, WrapperRow } from '../../../Wrapper';
 
 const TAG_CATEGORIES = [
   { name: 'Associations', id: 0, selected: false },
@@ -39,12 +44,23 @@ const ITEM_TYPES = {
   INPUT: 'input',
   INFO_TEXT: 'infoText',
   TITLE: 'title',
-  CATEGORY: 'category'
+  CATEGORY: 'category',
+  PICKER: 'picker'
 };
 
-const showRegistrationFailAlert = () =>
+const showPrivacyCheckRequireAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
-const graphqlErr = (err) => Alert.alert('Hinweis', err);
+const graphqlErr = (err) => Alert.alert(texts.consul.privacyCheckRequireTitle, err);
+const showImageUploadSizeError = () =>
+  Alert.alert(
+    texts.consul.privacyCheckRequireTitle,
+    texts.consul.startNew.newProposalImageUploadSizeErrorAlertTitle
+  );
+const showImageUploadFormatError = () =>
+  Alert.alert(
+    texts.consul.privacyCheckRequireTitle,
+    texts.consul.startNew.newProposalImageUploadFormatErrorAlertTitle
+  );
 
 export const NewProposal = ({ navigation, data, query }) => {
   const [hasAcceptedTermsOfService, setHasAcceptedTermsOfService] = useState(
@@ -52,6 +68,7 @@ export const NewProposal = ({ navigation, data, query }) => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [tags, setTags] = useState([]);
+  const { imageUri, selectImage } = useSelectImage();
 
   const {
     control,
@@ -60,10 +77,11 @@ export const NewProposal = ({ navigation, data, query }) => {
     setValue
   } = useForm({
     defaultValues: {
-      title: data?.title || '',
       description: data?.description || '',
-      tagList: data?.tagList?.toString() || '',
+      image: data?.image || '',
       summary: data?.summary || '',
+      tagList: data?.tagList?.toString() || '',
+      title: data?.title || '',
       videoUrl: data?.videoUrl || ''
     }
   });
@@ -104,6 +122,7 @@ export const NewProposal = ({ navigation, data, query }) => {
   }, [tags]);
 
   const onSubmit = async (newProposalData) => {
+    let imageData = null;
     let variables = {
       id: data?.id,
       attributes: {
@@ -114,14 +133,9 @@ export const NewProposal = ({ navigation, data, query }) => {
         },
         tagList: newProposalData?.tagList,
         termsOfService: hasAcceptedTermsOfService,
-        videoUrl: newProposalData?.videoUrl,
+        videoUrl: newProposalData?.videoUrl
 
         // TODO: image and document upload needed here? and if yes, how to do it?
-        //  imageAttributes: {
-        //   	title: 'Profil.png',
-        //   	cachedAttachment:
-        //   		'/Users/ardasenturk/Development/SVA/consul-bb/public/system/images/cached_attachments/user/49/original/3dfe4b17e340624be2f74f822f15e36cadd8d6e1.png'
-        //  },
         //  documentsAttributes: [
         // 	  {
         // 		  title: 'sample.pdf',
@@ -132,7 +146,30 @@ export const NewProposal = ({ navigation, data, query }) => {
       }
     };
 
-    if (!hasAcceptedTermsOfService) return showRegistrationFailAlert(); // TODO: naming?
+    if (!hasAcceptedTermsOfService) return showPrivacyCheckRequireAlert();
+
+    if (newProposalData.image) {
+      const imageUploadData = await uploadAttachment(newProposalData.image, 'image', 'Proposal');
+
+      if (imageUploadData.status === 200) {
+        imageData = JSON.parse(imageUploadData.body);
+
+        let imageAttributes = {
+          title: imageData?.filename,
+          cachedAttachment: imageData?.cached_attachment
+        };
+
+        variables.attributes = { ...variables.attributes, imageAttributes };
+      } else if (imageUploadData.status === 422) {
+        if (JSON.parse(imageUploadData.body).errors.length < 100) {
+          showImageUploadSizeError();
+        } else {
+          showImageUploadFormatError();
+        }
+
+        return;
+      }
+    }
 
     switch (query) {
       case QUERY_TYPES.CONSUL.START_PROPOSAL:
@@ -253,43 +290,48 @@ export const NewProposal = ({ navigation, data, query }) => {
               </ScrollView>
             </>
           )}
+
+          {item.type === ITEM_TYPES.PICKER && (
+            <Controller
+              key={item.name}
+              name={item.name}
+              control={control}
+              render={({ onChange, value }) => {
+                // TODO: Need to use onChange function elsewhere
+                useEffect(() => {
+                  onChange(imageUri);
+                }, [imageUri]);
+
+                return (
+                  <>
+                    <Input
+                      hidden
+                      label={item.label}
+                      control={control}
+                      name={item.name}
+                      value={value}
+                    />
+                    <RegularText smallest placeholder>
+                      {item.infoText}
+                    </RegularText>
+
+                    {value ? (
+                      <WrapperRow center spaceBetween>
+                        <Image source={{ uri: value }} style={styles.image} />
+                        <Touchable onPress={() => onChange(null)}>
+                          <Icon.Trash color={colors.error} size={normalize(16)} />
+                        </Touchable>
+                      </WrapperRow>
+                    ) : (
+                      <Button title={item.buttonTitle} invert onPress={selectImage} />
+                    )}
+                  </>
+                );
+              }}
+            />
+          )}
         </Wrapper>
       ))}
-
-      {/* TODO: uploads WIP */}
-      <Controller
-        key=??
-        control={control}
-        name=?? // image or documents
-        rules={{ // TODO: depending on image or documents
-          required: ??,
-          validate: ??
-        }}
-        defaultValue=?? // should be placed in initial values for useForm?
-        render={({ onChange, value }) => {
-          // TODO: handle `onChange` somewhere after selecting image or documents to change `value`
-          //       that is placed in the hidden input
-
-          return (
-            <>
-              {/* preview component that renders image and documents to be uploaded */}
-              <Input
-                hidden // can be removed for development to see value of hidden input
-                validate
-                errorMessage=?? // or something like {errors[name] && `Es dürfen maximal ${max} Fotos hinzugefügt werden`}
-                value={value} // or JSON.stringify(value)?
-              />
-              {/* TODO: multiple buttons depending on image (take picture, select picture from device) or documents (select from device) */}
-              {/* TODO: new camera screen for taking pictures that is navigated to on selection "take picture" */}
-              <Button
-                title=?? // image or document
-                invert
-                onPress=?? // what happens for image (bottom sheet with selection for camera or image picker)? what happens for documents (directly document picker)?
-              />
-            </>
-          );
-        }}
-      />
 
       <Wrapper style={styles.noPaddingTop}>
         <WrapperHorizontal>
@@ -320,6 +362,10 @@ export const NewProposal = ({ navigation, data, query }) => {
 };
 
 const styles = StyleSheet.create({
+  image: {
+    height: imageHeight(imageWidth() * 0.6),
+    width: imageWidth() * 0.6
+  },
   noPaddingTop: {
     paddingTop: 0
   },
@@ -399,6 +445,14 @@ const INPUTS = [
   {
     type: ITEM_TYPES.INFO_TEXT,
     title: texts.consul.startNew.proposalVideoUrlInfo
+  },
+  {
+    buttonTitle: texts.consul.startNew.newProposalImageAddButtonTitle,
+    infoText: texts.consul.startNew.newProposalImageAddInfoText,
+    label: texts.consul.startNew.newProposalImageAddTitle,
+    name: 'image',
+    rules: { required: false },
+    type: ITEM_TYPES.PICKER
   },
   {
     type: ITEM_TYPES.TITLE,

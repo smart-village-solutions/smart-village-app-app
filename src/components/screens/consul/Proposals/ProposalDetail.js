@@ -152,7 +152,8 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
                   termsOfService: true,
                   summary,
                   videoUrl,
-                  id
+                  id,
+                  image: imageUrlMedium ?? null
                 }
               });
             }}

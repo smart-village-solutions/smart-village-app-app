@@ -140,6 +140,14 @@ export const texts = {
       newDebateTitleLabel: 'Title der Diskussion',
       newProposalDescriptionLabel: 'Vorschlagstext',
       newProposalExternesVideoUrlLabel: 'Externe Video-URL',
+      newProposalImageAddButtonTitle: 'Bild hinzufügen',
+      newProposalImageAddInfoText:
+        'Sie können ein Bild des folgenden Formats hochladen: jpg, bis zu 1 MB.',
+      newProposalImageAddTitle: 'Aussagekräftiges Bild',
+      newProposalImageUploadFormatErrorAlertTitle:
+        'Inhaltstyp Bild auswählen image/png stimmt mit keinem der akzeptierten Inhaltstypen jpg überein, Bild auswählen muss zwischen 0 Bytes und 1 MB liegen',
+      newProposalImageUploadSizeErrorAlertTitle:
+        'Bild auswählen muss zwischen 0 Byte und 1 MB groß sein',
       newProposalStartButtonLabel: 'Vorschlag erstellen',
       newProposalSummaryLabel: 'Zusammenfassung Vorschlag',
       newProposalTagInfoLabel:
