@@ -100,7 +100,7 @@ export const DetailScreen = ({ route }) => {
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
   const details = route?.params?.data ?? '';
-  const areaId = route.params?.areaId ?? secrets[namespace]?.busBb?.areaId?.toString();
+  const areaId = route.params?.areaId ?? secrets[namespace]?.busBb?.v2?.areaId?.toString();
   const id = details.id;
 
   useMatomoTrackScreenView(matomoTrackingString([MATOMO_TRACKING.SCREEN_VIEW.BB_BUS, headerTitle]));
