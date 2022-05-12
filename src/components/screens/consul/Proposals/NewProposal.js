@@ -48,6 +48,13 @@ const ITEM_TYPES = {
   PICKER: 'picker'
 };
 
+const imageProps = {
+  onChange: null,
+  allowsEditing: false,
+  aspect: null,
+  quality: 0.2
+};
+
 const showPrivacyCheckRequireAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 const graphqlErr = (err) => Alert.alert(texts.consul.privacyCheckRequireTitle, err);
@@ -68,7 +75,12 @@ export const NewProposal = ({ navigation, data, query }) => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [tags, setTags] = useState([]);
-  const { imageUri, selectImage } = useSelectImage();
+  const { imageUri, selectImage } = useSelectImage(
+    imageProps.onChange,
+    imageProps.allowsEditing,
+    imageProps.aspect,
+    imageProps.quality
+  );
 
   const {
     control,
@@ -177,13 +189,6 @@ export const NewProposal = ({ navigation, data, query }) => {
 
         try {
           await submitProposal({ variables });
-
-          // TODO: handle uploads for the proposal (id returned by `submitProposal`?)
-          // 1. get infos about files to be uploaded
-          // 2. upload files per upload helper function `uploadAttachment` for the proposal
-          // 3. if success go on here
-          // 4. if error, show error message and ??
-
           setIsLoading(false);
 
           navigation.navigate(ScreenName.ConsulIndexScreen, {
@@ -206,12 +211,6 @@ export const NewProposal = ({ navigation, data, query }) => {
         setIsLoading(true);
         try {
           let data = await updateProposal({ variables });
-
-          // TODO: handle uploads for the proposal (id in `data`?)
-          // 1. get infos about files to be uploaded
-          // 2. upload files per upload helper function `uploadAttachment` for the proposal
-          // 3. if success go on here
-          // 4. if error, show error message and ??
 
           setIsLoading(false);
 
@@ -297,9 +296,10 @@ export const NewProposal = ({ navigation, data, query }) => {
               name={item.name}
               control={control}
               render={({ onChange, value }) => {
-                // TODO: Need to use onChange function elsewhere
                 useEffect(() => {
-                  onChange(imageUri);
+                  if (!value) {
+                    onChange(imageUri);
+                  }
                 }, [imageUri]);
 
                 return (

@@ -12,7 +12,10 @@ import { texts } from '../config';
 export const useSelectImage = (
   onChange?: <T>(
     setter: React.Dispatch<React.SetStateAction<T>>
-  ) => React.Dispatch<React.SetStateAction<T>>
+  ) => React.Dispatch<React.SetStateAction<T>>,
+  allowsEditing?: boolean,
+  aspect?: [number, number],
+  quality?: number
 ) => {
   const [imageUri, setImageUri] = useState<string>();
 
@@ -28,9 +31,9 @@ export const useSelectImage = (
     // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
     const result = await launchImageLibraryAsync({
       mediaTypes: MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1
+      allowsEditing: allowsEditing ?? true,
+      aspect: aspect ?? [1, 1],
+      quality: quality ?? 1
     });
 
     if (!result.cancelled) {
