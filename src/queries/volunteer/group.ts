@@ -1,5 +1,5 @@
 import { texts } from '../../config';
-import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
+import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
 import { JOIN_POLICY_TYPES, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
 
 export const groups = async () => {
@@ -14,7 +14,7 @@ export const groups = async () => {
     }
   };
 
-  return (await fetch(`${volunteerApiUrl}space`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}space`, fetchObj)).json();
 };
 
 export const group = async (id: number) => {
@@ -29,7 +29,7 @@ export const group = async (id: number) => {
     }
   };
 
-  return (await fetch(`${volunteerApiUrl}space/${id}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}space/${id}`, fetchObj)).json();
 };
 
 export const groupNew = async ({
@@ -63,7 +63,7 @@ export const groupNew = async ({
     body: JSON.stringify(formData)
   };
 
-  return (await fetch(`${volunteerApiUrl}space`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}space`, fetchObj)).json();
 };
 
 export const groupEdit = async ({
@@ -94,7 +94,7 @@ export const groupEdit = async ({
     body: JSON.stringify(formData)
   };
 
-  return (await fetch(`${volunteerApiUrl}space/${id}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}space/${id}`, fetchObj)).json();
 };
 
 export const groupMembership = async (id: number) => {
@@ -109,7 +109,7 @@ export const groupMembership = async (id: number) => {
     }
   };
 
-  return (await fetch(`${volunteerApiUrl}space/${id}/membership`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}space/${id}/membership`, fetchObj)).json();
 };
 
 export const groupJoin = async ({ id, userId }: { id: number; userId: string }) => {
@@ -124,7 +124,7 @@ export const groupJoin = async ({ id, userId }: { id: number; userId: string }) 
     }
   };
 
-  return (await fetch(`${volunteerApiUrl}space/${id}/membership/${userId}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}space/${id}/membership/${userId}`, fetchObj)).json();
 };
 
 export const groupLeave = async ({ id, userId }: { id: number; userId: string }) => {
@@ -139,5 +139,5 @@ export const groupLeave = async ({ id, userId }: { id: number; userId: string })
     }
   };
 
-  return (await fetch(`${volunteerApiUrl}space/${id}/membership/${userId}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}space/${id}/membership/${userId}`, fetchObj)).json();
 };

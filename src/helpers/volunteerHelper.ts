@@ -12,7 +12,8 @@ import { subtitle } from './textHelper';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const serverUrl = secrets[namespace]?.volunteer?.serverUrl;
-export const volunteerApiUrl = serverUrl + secrets[namespace]?.volunteer?.version;
+export const volunteerApiV1Url = serverUrl + secrets[namespace]?.volunteer?.v1;
+export const volunteerApiV2Url = serverUrl + secrets[namespace]?.volunteer?.v2;
 
 const VOLUNTEER_AUTH_TOKEN = 'VOLUNTEER_AUTH_TOKEN';
 const VOLUNTEER_CURRENT_USER_ID = 'VOLUNTEER_CURRENT_USER_ID';

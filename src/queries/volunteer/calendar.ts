@@ -3,7 +3,7 @@ import _isNumber from 'lodash/isNumber';
 import { colors, texts } from '../../config';
 import { formatTime } from '../../helpers/formatHelper';
 import { momentFormat } from '../../helpers/momentHelper';
-import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
+import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
 import { PARTICIPANT_TYPE, VolunteerCalendar } from '../../types';
 
 export const calendarAll = async (
@@ -26,10 +26,10 @@ export const calendarAll = async (
       : queryVariables?.contentContainerId;
 
   if (id && _isNumber(id)) {
-    return (await fetch(`${volunteerApiUrl}calendar/container/${id}`, fetchObj)).json();
+    return (await fetch(`${volunteerApiV1Url}calendar/container/${id}`, fetchObj)).json();
   }
 
-  return (await fetch(`${volunteerApiUrl}calendar`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}calendar`, fetchObj)).json();
 };
 
 export const calendar = async (id: number) => {
@@ -44,7 +44,7 @@ export const calendar = async (id: number) => {
     }
   };
 
-  return (await fetch(`${volunteerApiUrl}calendar/entry/${id}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}calendar/entry/${id}`, fetchObj)).json();
 };
 
 export const calendarAttend = async ({ id, type }: { id: number; type: PARTICIPANT_TYPE }) => {
@@ -60,7 +60,7 @@ export const calendarAttend = async ({ id, type }: { id: number; type: PARTICIPA
     body: JSON.stringify({ type })
   };
 
-  return (await fetch(`${volunteerApiUrl}calendar/entry/${id}/respond`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}calendar/entry/${id}/respond`, fetchObj)).json();
 };
 
 export const calendarNew = async ({
@@ -127,6 +127,6 @@ export const calendarNew = async ({
   };
 
   return (
-    await fetch(`${volunteerApiUrl}calendar/container/${contentContainerId}`, fetchObj)
+    await fetch(`${volunteerApiV1Url}calendar/container/${contentContainerId}`, fetchObj)
   ).json();
 };

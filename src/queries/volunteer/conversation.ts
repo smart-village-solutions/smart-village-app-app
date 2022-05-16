@@ -1,4 +1,4 @@
-import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
+import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
 import { VolunteerConversation } from '../../types';
 
 export const conversations = async () => {
@@ -13,7 +13,7 @@ export const conversations = async () => {
     }
   };
 
-  return (await fetch(`${volunteerApiUrl}mail`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}mail`, fetchObj)).json();
 };
 
 export const conversation = async (id: number) => {
@@ -28,7 +28,7 @@ export const conversation = async (id: number) => {
     }
   };
 
-  return (await fetch(`${volunteerApiUrl}mail/${id}/entries`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}mail/${id}/entries`, fetchObj)).json();
 };
 
 export const conversationRecipients = async (id: number) => {
@@ -43,7 +43,7 @@ export const conversationRecipients = async (id: number) => {
     }
   };
 
-  return (await fetch(`${volunteerApiUrl}mail/${id}/users`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}mail/${id}/users`, fetchObj)).json();
 };
 
 export const conversationNew = async ({
@@ -70,7 +70,7 @@ export const conversationNew = async ({
     body: JSON.stringify(formData)
   };
 
-  return (await fetch(`${volunteerApiUrl}mail`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}mail`, fetchObj)).json();
 };
 
 export const conversationNewEntry = async ({ id, message }: VolunteerConversation) => {
@@ -88,5 +88,5 @@ export const conversationNewEntry = async ({ id, message }: VolunteerConversatio
     body: JSON.stringify(formData)
   };
 
-  return (await fetch(`${volunteerApiUrl}mail/${id}/entry`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}mail/${id}/entry`, fetchObj)).json();
 };
