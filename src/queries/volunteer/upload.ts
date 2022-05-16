@@ -7,7 +7,7 @@ export const uploadFile = async (uri: string, contentContainerId: number, folder
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
-    httpMethod: 'POST',
+    method: 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',

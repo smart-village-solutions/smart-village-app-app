@@ -48,26 +48,11 @@ const ITEM_TYPES = {
   PICKER: 'picker'
 };
 
-const imageProps = {
-  onChange: null,
-  allowsEditing: false,
-  aspect: null,
-  quality: 0.2
-};
-
 const showPrivacyCheckRequireAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 const graphqlErr = (err) => Alert.alert(texts.consul.privacyCheckRequireTitle, err);
-const showImageUploadSizeError = () =>
-  Alert.alert(
-    texts.consul.privacyCheckRequireTitle,
-    texts.consul.startNew.newProposalImageUploadSizeErrorAlertTitle
-  );
-const showImageUploadFormatError = () =>
-  Alert.alert(
-    texts.consul.privacyCheckRequireTitle,
-    texts.consul.startNew.newProposalImageUploadFormatErrorAlertTitle
-  );
+const showImageUploadError = (errorText) =>
+  Alert.alert(texts.consul.privacyCheckRequireTitle, errorText);
 
 export const NewProposal = ({ navigation, data, query }) => {
   const [hasAcceptedTermsOfService, setHasAcceptedTermsOfService] = useState(
@@ -76,10 +61,10 @@ export const NewProposal = ({ navigation, data, query }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [tags, setTags] = useState([]);
   const { imageUri, selectImage } = useSelectImage(
-    imageProps.onChange,
-    imageProps.allowsEditing,
-    imageProps.aspect,
-    imageProps.quality
+    undefined, // onChange
+    false, // allowsEditing,
+    undefined, // aspect,
+    0.2 // quality
   );
 
   const {
@@ -133,8 +118,31 @@ export const NewProposal = ({ navigation, data, query }) => {
     setValue('tagList', filterData.toString());
   }, [tags]);
 
+  const uploadImage = async (imageData) => {
+    let imageAttributes = null;
+    const imageUploadData = await uploadAttachment(imageData, 'image');
+
+    if (imageUploadData.status === 200) {
+      const { filename, cached_attachment } = JSON.parse(imageUploadData.body);
+
+      imageAttributes = {
+        title: filename,
+        cachedAttachment: cached_attachment
+      };
+    } else if (imageUploadData.status === 422) {
+      const errors = JSON.parse(imageUploadData.body).errors.toLowerCase().split(' ').join('-');
+
+      showImageUploadError(
+        texts.consul.startNew[errors] ?? texts.consul.startNew.generalPhotoUploadError
+      );
+
+      return;
+    }
+
+    return imageAttributes;
+  };
+
   const onSubmit = async (newProposalData) => {
-    let imageData = null;
     let variables = {
       id: data?.id,
       attributes: {
@@ -161,25 +169,12 @@ export const NewProposal = ({ navigation, data, query }) => {
     if (!hasAcceptedTermsOfService) return showPrivacyCheckRequireAlert();
 
     if (newProposalData.image) {
-      const imageUploadData = await uploadAttachment(newProposalData.image, 'image', 'Proposal');
+      const imageAttributes = await uploadImage(newProposalData.image);
 
-      if (imageUploadData.status === 200) {
-        imageData = JSON.parse(imageUploadData.body);
-
-        let imageAttributes = {
-          title: imageData?.filename,
-          cachedAttachment: imageData?.cached_attachment
-        };
-
-        variables.attributes = { ...variables.attributes, imageAttributes };
-      } else if (imageUploadData.status === 422) {
-        if (JSON.parse(imageUploadData.body).errors.length < 100) {
-          showImageUploadSizeError();
-        } else {
-          showImageUploadFormatError();
-        }
-
+      if (!imageAttributes) {
         return;
+      } else {
+        variables.attributes = { ...variables.attributes, imageAttributes };
       }
     }
 
@@ -292,42 +287,11 @@ export const NewProposal = ({ navigation, data, query }) => {
 
           {item.type === ITEM_TYPES.PICKER && (
             <Controller
-              key={item.name}
               name={item.name}
               control={control}
-              render={({ onChange, value }) => {
-                useEffect(() => {
-                  if (!value) {
-                    onChange(imageUri);
-                  }
-                }, [imageUri]);
-
-                return (
-                  <>
-                    <Input
-                      hidden
-                      label={item.label}
-                      control={control}
-                      name={item.name}
-                      value={value}
-                    />
-                    <RegularText smallest placeholder>
-                      {item.infoText}
-                    </RegularText>
-
-                    {value ? (
-                      <WrapperRow center spaceBetween>
-                        <Image source={{ uri: value }} style={styles.image} />
-                        <Touchable onPress={() => onChange(null)}>
-                          <Icon.Trash color={colors.error} size={normalize(16)} />
-                        </Touchable>
-                      </WrapperRow>
-                    ) : (
-                      <Button title={item.buttonTitle} invert onPress={selectImage} />
-                    )}
-                  </>
-                );
-              }}
+              render={({ onChange, value }) => (
+                <ImageSelector {...{ control, imageUri, item, onChange, selectImage, value }} />
+              )}
             />
           )}
         </Wrapper>
@@ -361,6 +325,38 @@ export const NewProposal = ({ navigation, data, query }) => {
   );
 };
 
+const ImageSelector = ({ control, imageUri, item, onChange, selectImage, value }) => {
+  const { buttonTitle, infoText, label, name } = item;
+
+  useEffect(() => {
+    // the `!value` control is used for editing the proposal
+    // the proposal contains an image, it is for showing the preview to the users
+    if (!value) {
+      onChange(imageUri);
+    }
+  }, [imageUri]);
+
+  return (
+    <>
+      <Input hidden label={label} control={control} name={name} value={value} />
+      <RegularText smallest placeholder>
+        {infoText}
+      </RegularText>
+
+      {value ? (
+        <WrapperRow center spaceBetween>
+          <Image source={{ uri: value }} style={styles.image} />
+          <Touchable onPress={() => onChange(null)}>
+            <Icon.Trash color={colors.error} size={normalize(16)} />
+          </Touchable>
+        </WrapperRow>
+      ) : (
+        <Button title={buttonTitle} invert onPress={selectImage} />
+      )}
+    </>
+  );
+};
+
 const styles = StyleSheet.create({
   image: {
     height: imageHeight(imageWidth() * 0.6),
@@ -383,6 +379,15 @@ NewProposal.propTypes = {
   data: PropTypes.object,
   navigation: PropTypes.object.isRequired,
   query: PropTypes.string
+};
+
+ImageSelector.propTypes = {
+  item: PropTypes.object,
+  control: PropTypes.object,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+  selectImage: PropTypes.func,
+  imageUri: PropTypes.string
 };
 
 const INPUTS = [
@@ -447,12 +452,12 @@ const INPUTS = [
     title: texts.consul.startNew.proposalVideoUrlInfo
   },
   {
-    buttonTitle: texts.consul.startNew.newProposalImageAddButtonTitle,
-    infoText: texts.consul.startNew.newProposalImageAddInfoText,
-    label: texts.consul.startNew.newProposalImageAddTitle,
+    type: ITEM_TYPES.PICKER,
     name: 'image',
+    label: texts.consul.startNew.newProposalImageAddTitle,
     rules: { required: false },
-    type: ITEM_TYPES.PICKER
+    buttonTitle: texts.consul.startNew.newProposalImageAddButtonTitle,
+    infoText: texts.consul.startNew.newProposalImageAddInfoText
   },
   {
     type: ITEM_TYPES.TITLE,

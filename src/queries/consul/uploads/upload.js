@@ -4,11 +4,11 @@ import { namespace, secrets } from '../../../config';
 import { getConsulAuthToken } from '../../../helpers';
 
 // https://docs.expo.io/versions/latest/sdk/filesystem/#filesystemuploadasyncurl-fileuri-options
-export const uploadAttachment = async (uri, resourceRelation, resourceType) => {
+export const uploadAttachment = async (uri, resourceRelation, resourceType = 'Proposal') => {
   const token = await getConsulAuthToken();
 
   const fetchObj = {
-    httpMethod: 'POST',
+    method: 'POST',
     headers: {
       'access-token': token ? `${JSON.parse(token).accessToken}` : '',
       client: token ? `${JSON.parse(token).client}` : '',
