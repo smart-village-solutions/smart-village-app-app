@@ -730,6 +730,7 @@ export const texts = {
     calendar: 'Kalender',
     calendarMy: 'Mein Kalender',
     conversations: 'Mein Postfach',
+    conversationAllStart: 'Unterhaltung mit allen beginnen',
     conversationStart: 'Unterhaltung beginnen',
     description: 'Beschreibung',
     edit: 'Daten bearbeiten',

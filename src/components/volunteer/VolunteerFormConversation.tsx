@@ -23,8 +23,8 @@ import { Wrapper } from '../Wrapper';
 export const VolunteerFormConversation = ({
   navigation,
   scrollToTop,
-  selectedUserId
-}: StackScreenProps<any> & { scrollToTop: () => void; selectedUserId?: number }) => {
+  selectedUserIds
+}: StackScreenProps<any> & { scrollToTop: () => void; selectedUserIds?: number[] }) => {
   const {
     control,
     formState: { errors, isValid },
@@ -32,7 +32,7 @@ export const VolunteerFormConversation = ({
   } = useForm<VolunteerConversation>({
     mode: 'onBlur',
     defaultValues: {
-      id: selectedUserId ? [selectedUserId] : [0],
+      id: selectedUserIds?.length ? selectedUserIds : [0],
       title: '',
       message: ''
     }

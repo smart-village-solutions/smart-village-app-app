@@ -20,7 +20,7 @@ export type DropdownInputProps = {
     }
   ];
   multipleSelect?: boolean;
-  value: number;
+  value: number[];
   valueKey: string;
   onChange: (...event: any[]) => void;
   name: string;
@@ -34,7 +34,7 @@ export const DropdownInput = ({
   required = false,
   data,
   multipleSelect = false,
-  value = 0,
+  value = [0],
   valueKey,
   onChange,
   name,
@@ -42,7 +42,7 @@ export const DropdownInput = ({
   control
 }: DropdownInputProps) => {
   const [dropdownData, setDropdownData] = useState(
-    data.map((item) => ({ ...item, selected: item.id == value }))
+    data.map((item) => ({ ...item, selected: value.includes(item.id) }))
   );
 
   useEffect(() => {
