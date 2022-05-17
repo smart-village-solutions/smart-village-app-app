@@ -214,6 +214,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned) =>
     routeName: ScreenName.VolunteerDetail,
     onPress: volunteer.onPress,
     listDate: volunteer.listDate,
+    status: volunteer.status,
     params: {
       title: getTitleForQuery(query, volunteer),
       query,

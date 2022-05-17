@@ -1,4 +1,8 @@
-import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
+import {
+  volunteerApiV1Url,
+  volunteerApiV2Url,
+  volunteerAuthToken
+} from '../../helpers/volunteerHelper';
 import { VolunteerConversation } from '../../types';
 
 export const conversations = async () => {
@@ -13,7 +17,7 @@ export const conversations = async () => {
     }
   };
 
-  return (await fetch(`${volunteerApiV1Url}mail`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV2Url}mail`, fetchObj)).json();
 };
 
 export const conversation = async (id: number) => {
@@ -28,7 +32,7 @@ export const conversation = async (id: number) => {
     }
   };
 
-  return (await fetch(`${volunteerApiV1Url}mail/${id}/entries`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV2Url}mail/${id}/entries`, fetchObj)).json();
 };
 
 export const conversationRecipients = async (id: number) => {
