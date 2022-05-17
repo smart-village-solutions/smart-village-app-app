@@ -118,7 +118,6 @@ export const NewProposal = ({ navigation, data, query }) => {
   }, [tags]);
 
   const uploadImage = async (imageData) => {
-    let imageAttributes;
     const imageUploadData = await uploadAttachment(imageData, 'image');
 
     if (imageUploadData.status === 200) {
@@ -126,7 +125,7 @@ export const NewProposal = ({ navigation, data, query }) => {
         imageUploadData.body
       );
 
-      imageAttributes = {
+      return {
         title,
         cachedAttachment
       };
@@ -135,8 +134,6 @@ export const NewProposal = ({ navigation, data, query }) => {
 
       throw errors;
     }
-
-    return imageAttributes;
   };
 
   const onSubmit = async (newProposalData) => {
@@ -322,7 +319,8 @@ export const NewProposal = ({ navigation, data, query }) => {
 };
 
 const ImageSelector = ({ control, field, item, selectImage }) => {
-  const [errorMessage, setErrorMessage] = useState();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [imageInfoText, setImageInfoText] = useState('');
 
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
@@ -334,8 +332,8 @@ const ImageSelector = ({ control, field, item, selectImage }) => {
         control={control}
         errorMessage={errorMessage}
         hidden
+        validate
         name={name}
-        validate={true}
         value={value}
       />
       <RegularText smallest placeholder>
@@ -343,59 +341,62 @@ const ImageSelector = ({ control, field, item, selectImage }) => {
       </RegularText>
 
       {value ? (
-        <WrapperRow center spaceBetween>
-          <Image source={{ uri: value }} style={styles.image} />
+        <>
+          <WrapperRow center spaceBetween>
+            <Image source={{ uri: value }} style={styles.image} />
 
-          <TouchableOpacity
-            onPress={() => {
-              onChange('');
-              setErrorMessage('');
-            }}
-          >
-            <Icon.Trash color={colors.error} size={normalize(16)} />
-          </TouchableOpacity>
-        </WrapperRow>
+            <TouchableOpacity
+              onPress={() => {
+                onChange('');
+                setErrorMessage('');
+              }}
+            >
+              <Icon.Trash color={colors.error} size={normalize(16)} />
+            </TouchableOpacity>
+          </WrapperRow>
+          <RegularText smallest>{imageInfoText}</RegularText>
+        </>
       ) : (
         <Button
           title={buttonTitle}
           invert
           onPress={async () => {
-            const { uri } = await selectImage();
+            const { uri, type } = await selectImage();
             const { size } = await FileSystem.getInfoAsync(uri);
+            const errorMessage = imageErrorMessageGenerator({
+              size,
+              uri: uri.substr(uri.length - 4)
+            });
 
-            // `1048576` = the byte equivalent of 1MB
-            if (size > 1048576) {
-              setErrorMessage(
-                texts.consul.startNew['choose-image-must-be-in-between-0-bytes-and-1-mb']
-              );
-            }
-
-            // if the photo that wants to be uploaded is not a jpg,
-            // we show this error message on the screen
-            if (!uri.includes('.jpg')) {
-              setErrorMessage(
-                texts.consul.startNew[
-                  'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg'
-                ]
-              );
-            }
-
-            // if both requests are not met, a message with all
-            // errors is displayed on the screen
-            if (!uri.includes('.jpg') && size > 1048576) {
-              setErrorMessage(
-                texts.consul.startNew[
-                  'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg,-choose-image-must-be-in-between-0-bytes-and-1-mb'
-                ]
-              );
-            }
-
+            setErrorMessage(texts.consul.startNew[errorMessage]);
+            setImageInfoText(`(${type}/${uri.substr(uri.length - 3)}, ${bytesToSize(size)})`);
             onChange(uri);
           }}
         />
       )}
     </>
   );
+};
+
+const bytesToSize = (bytes) => {
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  if (bytes == 0) return '0 Byte';
+  let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+
+  return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+};
+
+const imageErrorMessageGenerator = ({ size, uri }) => {
+  const errorMessage =
+    uri !== '.jpg' && uri !== 'jpeg' && size > 1048576
+      ? 'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg,-choose-image-must-be-in-between-0-bytes-and-1-mb'
+      : uri !== '.jpg' && uri !== 'jpeg'
+      ? 'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg'
+      : size > 1048576
+      ? 'choose-image-must-be-in-between-0-bytes-and-1-mb'
+      : '';
+
+  return errorMessage;
 };
 
 const styles = StyleSheet.create({
