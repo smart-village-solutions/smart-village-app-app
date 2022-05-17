@@ -95,7 +95,7 @@ export const VolunteerUser = ({
                 title: texts.volunteer.conversationStart,
                 query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
                 rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
-                selectedUserId: data?.id
+                selectedUserIds: [data?.id]
               })
             }
             title={texts.volunteer.conversationStart}

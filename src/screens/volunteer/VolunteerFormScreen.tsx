@@ -16,7 +16,7 @@ import { QUERY_TYPES } from '../../queries';
 export const VolunteerFormScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const scrollViewRef = useRef<ScrollView>(null);
   const query = route.params?.query ?? '';
-  const selectedUserId = route.params?.selectedUserId;
+  const selectedUserIds = route.params?.selectedUserIds || [];
   const groupId = route.params?.groupId;
 
   if (!query) return null;
@@ -43,7 +43,7 @@ export const VolunteerFormScreen = ({ navigation, route }: StackScreenProps<any>
                   animated: true
                 })
               }
-              selectedUserId={selectedUserId}
+              selectedUserIds={selectedUserIds}
               groupId={groupId}
             />
           </WrapperWithOrientation>

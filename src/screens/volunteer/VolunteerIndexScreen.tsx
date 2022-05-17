@@ -4,14 +4,16 @@ import React, { useCallback, useState } from 'react';
 import { RefreshControl } from 'react-native';
 
 import {
+  Button,
   DefaultKeyboardAvoidingView,
   DropdownHeader,
   ListComponent,
   LoadingSpinner,
   SafeAreaViewFlex,
-  VolunteerPostTextField
+  VolunteerPostTextField,
+  Wrapper
 } from '../../components';
-import { colors } from '../../config';
+import { colors, consts, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { additionalData, myProfile, myTasks } from '../../helpers/parser/volunteer';
 import {
@@ -21,6 +23,9 @@ import {
   useVolunteerData
 } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
+import { ScreenName, VolunteerUser } from '../../types';
+
+const { ROOT_ROUTE_NAMES } = consts;
 
 // eslint-disable-next-line complexity
 export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
@@ -101,6 +106,21 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           showBackToTop
           openWebScreen={openWebScreen}
         />
+        {query === QUERY_TYPES.VOLUNTEER.MEMBERS && (
+          <Wrapper>
+            <Button
+              onPress={() =>
+                navigation.push(ScreenName.VolunteerForm, {
+                  title: texts.volunteer.conversationAllStart,
+                  query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
+                  rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
+                  selectedUserIds: listItems.map(({ id }: VolunteerUser) => id)
+                })
+              }
+              title={texts.volunteer.conversationAllStart}
+            />
+          </Wrapper>
+        )}
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
