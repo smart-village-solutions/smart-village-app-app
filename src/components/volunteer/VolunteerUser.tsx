@@ -20,7 +20,7 @@ export const VolunteerUser = ({
   navigation,
   route
 }: { data: any } & StackScreenProps<any>) => {
-  const [isMe, setIsMe] = useState(true);
+  const [isMe, setIsMe] = useState<boolean>();
 
   const name = data?.display_name;
   const username = data?.account?.username;
@@ -28,7 +28,7 @@ export const VolunteerUser = ({
     lastName: username,
     phone: data?.profile?.phone_private,
     // do not show the email address to others due to privacy
-    email: isMe ? data?.account?.email : '',
+    email: isMe === true ? data?.account?.email : '',
     fax: data?.profile?.fax
   };
   const address = {
@@ -87,7 +87,7 @@ export const VolunteerUser = ({
         <UrlSection openWebScreen={openWebScreen} webUrls={webUrls} />
       </Wrapper>
 
-      {!isMe && (
+      {isMe === false && (
         <Wrapper>
           <Button
             onPress={() =>
