@@ -1,4 +1,4 @@
-import { volunteerApiUrl, volunteerAuthToken } from '../../helpers/volunteerHelper';
+import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
 import { VolunteerPost } from '../../types';
 
 export const posts = async (contentContainerId: number) => {
@@ -13,7 +13,7 @@ export const posts = async (contentContainerId: number) => {
     }
   };
 
-  return (await fetch(`${volunteerApiUrl}post/container/${contentContainerId}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}post/container/${contentContainerId}`, fetchObj)).json();
 };
 
 export const post = async (id: number) => {
@@ -28,7 +28,7 @@ export const post = async (id: number) => {
     }
   };
 
-  return (await fetch(`${volunteerApiUrl}post/${id}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}post/${id}`, fetchObj)).json();
 };
 
 export const postNew = async ({ message, contentContainerId }: VolunteerPost) => {
@@ -50,5 +50,5 @@ export const postNew = async ({ message, contentContainerId }: VolunteerPost) =>
     body: JSON.stringify(formData)
   };
 
-  return (await fetch(`${volunteerApiUrl}post/container/${contentContainerId}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV1Url}post/container/${contentContainerId}`, fetchObj)).json();
 };
