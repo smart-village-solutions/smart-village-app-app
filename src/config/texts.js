@@ -166,6 +166,7 @@ export const texts = {
       termsOfServiceLabel: 'Ich stimme den Datenschutzbestimmungen und den',
       termsOfServiceLinkLabel: 'allgemeinen Nutzungsbedingungen zu',
       titleShortError: 'ist zu kurz (minimum 4 Zeichen)',
+      updateButtonDisabledLabel: 'Wird geladen',
       updateButtonLabel: 'Speichern'
     },
     homeScreen: {

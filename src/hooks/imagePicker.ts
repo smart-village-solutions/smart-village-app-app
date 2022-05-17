@@ -38,6 +38,7 @@ export const useSelectImage = (
 
     if (!result.cancelled) {
       onChange ? onChange(setImageUri)(result.uri) : setImageUri(result.uri);
+      return result;
     }
   }, [onChange]);
 

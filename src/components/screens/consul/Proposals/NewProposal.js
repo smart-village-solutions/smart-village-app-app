@@ -1,3 +1,4 @@
+import * as FileSystem from 'expo-file-system';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
@@ -17,9 +18,7 @@ import { Checkbox } from '../../../Checkbox';
 import { Input } from '../../../form';
 import { Image } from '../../../Image';
 import { Label } from '../../../Label';
-import { LoadingSpinner } from '../../../LoadingSpinner';
 import { RegularText } from '../../../Text';
-import { Touchable } from '../../../Touchable';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../../../Wrapper';
 
 const TAG_CATEGORIES = [
@@ -60,11 +59,11 @@ export const NewProposal = ({ navigation, data, query }) => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [tags, setTags] = useState([]);
-  const { imageUri, selectImage } = useSelectImage(
+  const { selectImage } = useSelectImage(
     undefined, // onChange
     false, // allowsEditing,
     undefined, // aspect,
-    0.2 // quality
+    undefined // quality
   );
 
   const {
@@ -119,24 +118,22 @@ export const NewProposal = ({ navigation, data, query }) => {
   }, [tags]);
 
   const uploadImage = async (imageData) => {
-    let imageAttributes = null;
+    let imageAttributes;
     const imageUploadData = await uploadAttachment(imageData, 'image');
 
     if (imageUploadData.status === 200) {
-      const { filename, cached_attachment } = JSON.parse(imageUploadData.body);
+      const { cached_attachment: cachedAttachment, filename: title } = JSON.parse(
+        imageUploadData.body
+      );
 
       imageAttributes = {
-        title: filename,
-        cachedAttachment: cached_attachment
+        title,
+        cachedAttachment
       };
     } else if (imageUploadData.status === 422) {
       const errors = JSON.parse(imageUploadData.body).errors.toLowerCase().split(' ').join('-');
 
-      showImageUploadError(
-        texts.consul.startNew[errors] ?? texts.consul.startNew.generalPhotoUploadError
-      );
-
-      return;
+      throw errors;
     }
 
     return imageAttributes;
@@ -168,23 +165,26 @@ export const NewProposal = ({ navigation, data, query }) => {
 
     if (!hasAcceptedTermsOfService) return showPrivacyCheckRequireAlert();
 
-    if (newProposalData.image) {
-      const imageAttributes = await uploadImage(newProposalData.image);
+    setIsLoading(true);
 
-      if (!imageAttributes) {
-        return;
-      } else {
+    if (newProposalData.image) {
+      try {
+        const imageAttributes = await uploadImage(newProposalData.image);
+
         variables.attributes = { ...variables.attributes, imageAttributes };
+      } catch (error) {
+        setIsLoading(false);
+
+        return showImageUploadError(
+          texts.consul.startNew[error] ?? texts.consul.startNew.generalPhotoUploadError
+        );
       }
     }
 
     switch (query) {
       case QUERY_TYPES.CONSUL.START_PROPOSAL:
-        setIsLoading(true);
-
         try {
           await submitProposal({ variables });
-          setIsLoading(false);
 
           navigation.navigate(ScreenName.ConsulIndexScreen, {
             title: texts.consul.homeScreen.proposals,
@@ -203,11 +203,8 @@ export const NewProposal = ({ navigation, data, query }) => {
         }
         break;
       case QUERY_TYPES.CONSUL.UPDATE_PROPOSAL:
-        setIsLoading(true);
         try {
           let data = await updateProposal({ variables });
-
-          setIsLoading(false);
 
           navigation.navigate(ScreenName.ConsulDetailScreen, {
             query: QUERY_TYPES.CONSUL.PROPOSAL,
@@ -223,8 +220,6 @@ export const NewProposal = ({ navigation, data, query }) => {
         break;
     }
   };
-
-  if (isLoading) return <LoadingSpinner loading />;
 
   return (
     <>
@@ -289,9 +284,7 @@ export const NewProposal = ({ navigation, data, query }) => {
             <Controller
               name={item.name}
               control={control}
-              render={({ onChange, value }) => (
-                <ImageSelector {...{ control, imageUri, item, onChange, selectImage, value }} />
-              )}
+              render={(field) => <ImageSelector {...{ control, field, item, selectImage }} />}
             />
           )}
         </Wrapper>
@@ -312,9 +305,12 @@ export const NewProposal = ({ navigation, data, query }) => {
 
         <Wrapper>
           <Button
+            disabled={isLoading}
             onPress={handleSubmit(onSubmit)}
             title={
-              query === QUERY_TYPES.CONSUL.START_PROPOSAL
+              isLoading
+                ? texts.consul.startNew.updateButtonDisabledLabel
+                : query === QUERY_TYPES.CONSUL.START_PROPOSAL
                 ? texts.consul.startNew.newProposalStartButtonLabel
                 : texts.consul.startNew.updateButtonLabel
             }
@@ -325,20 +321,23 @@ export const NewProposal = ({ navigation, data, query }) => {
   );
 };
 
-const ImageSelector = ({ control, imageUri, item, onChange, selectImage, value }) => {
-  const { buttonTitle, infoText, label, name } = item;
+const ImageSelector = ({ control, field, item, selectImage }) => {
+  const [errorMessage, setErrorMessage] = useState();
 
-  useEffect(() => {
-    // the `!value` control is used for editing the proposal
-    // the proposal contains an image, it is for showing the preview to the users
-    if (!value) {
-      onChange(imageUri);
-    }
-  }, [imageUri]);
+  const { buttonTitle, infoText } = item;
+  const { name, onChange, value } = field;
 
   return (
     <>
-      <Input hidden label={label} control={control} name={name} value={value} />
+      <Input
+        {...item}
+        control={control}
+        errorMessage={errorMessage}
+        hidden
+        name={name}
+        validate={true}
+        value={value}
+      />
       <RegularText smallest placeholder>
         {infoText}
       </RegularText>
@@ -346,12 +345,54 @@ const ImageSelector = ({ control, imageUri, item, onChange, selectImage, value }
       {value ? (
         <WrapperRow center spaceBetween>
           <Image source={{ uri: value }} style={styles.image} />
-          <Touchable onPress={() => onChange(null)}>
+
+          <TouchableOpacity
+            onPress={() => {
+              onChange('');
+              setErrorMessage('');
+            }}
+          >
             <Icon.Trash color={colors.error} size={normalize(16)} />
-          </Touchable>
+          </TouchableOpacity>
         </WrapperRow>
       ) : (
-        <Button title={buttonTitle} invert onPress={selectImage} />
+        <Button
+          title={buttonTitle}
+          invert
+          onPress={async () => {
+            const { uri } = await selectImage();
+            const { size } = await FileSystem.getInfoAsync(uri);
+
+            // `1048576` = the byte equivalent of 1MB
+            if (size > 1048576) {
+              setErrorMessage(
+                texts.consul.startNew['choose-image-must-be-in-between-0-bytes-and-1-mb']
+              );
+            }
+
+            // if the photo that wants to be uploaded is not a jpg,
+            // we show this error message on the screen
+            if (!uri.includes('.jpg')) {
+              setErrorMessage(
+                texts.consul.startNew[
+                  'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg'
+                ]
+              );
+            }
+
+            // if both requests are not met, a message with all
+            // errors is displayed on the screen
+            if (!uri.includes('.jpg') && size > 1048576) {
+              setErrorMessage(
+                texts.consul.startNew[
+                  'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg,-choose-image-must-be-in-between-0-bytes-and-1-mb'
+                ]
+              );
+            }
+
+            onChange(uri);
+          }}
+        />
       )}
     </>
   );
@@ -382,12 +423,10 @@ NewProposal.propTypes = {
 };
 
 ImageSelector.propTypes = {
-  item: PropTypes.object,
   control: PropTypes.object,
-  value: PropTypes.string,
-  onChange: PropTypes.func,
-  selectImage: PropTypes.func,
-  imageUri: PropTypes.string
+  field: PropTypes.object,
+  item: PropTypes.object,
+  selectImage: PropTypes.func
 };
 
 const INPUTS = [
