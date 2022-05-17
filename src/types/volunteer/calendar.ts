@@ -9,6 +9,7 @@ export type VolunteerCalendar = {
   title: string;
   description?: string;
   organizer?: string;
+  entranceFee?: string;
   color?: string;
   location?: string;
   allDay: number;

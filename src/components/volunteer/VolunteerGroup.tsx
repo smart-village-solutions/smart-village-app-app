@@ -14,7 +14,7 @@ import {
 import { useOpenWebScreen, VOLUNTEER_GROUP_REFRESH_EVENT } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { groupJoin, groupLeave } from '../../queries/volunteer';
-import { ScreenName } from '../../types';
+import { ScreenName, VolunteerGroup as TVolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
@@ -37,7 +37,10 @@ export const VolunteerGroup = ({
   isRefetching,
   navigation,
   route
-}: { data: any; isRefetching: boolean } & StackScreenProps<any>) => {
+}: {
+  data: TVolunteerGroup & { contentcontainer_id: number; join_policy: number };
+  isRefetching: boolean;
+} & StackScreenProps<any>) => {
   const {
     contentcontainer_id: contentContainerId,
     description,

@@ -737,6 +737,7 @@ export const texts = {
     email: 'E-Mail',
     endDate: 'Enddatum',
     endTime: 'Endzeit',
+    entranceFee: 'Eintrittspreis',
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten. Bitte erneut einloggen.',
     eventRecord: {
       appointments: 'Terminübersicht'
