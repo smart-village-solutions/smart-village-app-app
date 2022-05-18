@@ -4,6 +4,7 @@ import React, { useCallback, useContext } from 'react';
 
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
+import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
 import { consts } from '../config';
 import { QUERY_TYPES } from '../queries';
@@ -67,6 +68,20 @@ export const useRenderItem = (query, navigation, options = {}) => {
               post={item}
               bottomDivider={isArray(section?.data) ? section.data.length - 1 !== index : undefined}
               openWebScreen={options.openWebScreen}
+            />
+          );
+        }
+
+        if (query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS) {
+          return (
+            <VolunteerConversationListItem
+              item={{
+                ...item,
+                bottomDivider: isArray(section?.data)
+                  ? section.data.length - 1 !== index
+                  : undefined
+              }}
+              navigation={navigation}
             />
           );
         }
