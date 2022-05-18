@@ -61,12 +61,6 @@ export const NewProposal = ({ navigation, data, query }) => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [tags, setTags] = useState([]);
-  const { selectImage } = useSelectImage(
-    undefined, // onChange
-    false, // allowsEditing,
-    undefined, // aspect,
-    undefined // quality
-  );
 
   const {
     control,
@@ -283,7 +277,7 @@ export const NewProposal = ({ navigation, data, query }) => {
             <Controller
               name={item.name}
               control={control}
-              render={(field) => <ImageSelector {...{ control, field, item, selectImage }} />}
+              render={(field) => <ImageSelector {...{ control, field, item }} />}
             />
           )}
         </Wrapper>
@@ -320,12 +314,19 @@ export const NewProposal = ({ navigation, data, query }) => {
   );
 };
 
-const ImageSelector = ({ control, field, item, selectImage }) => {
+const ImageSelector = ({ control, field, item }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [imageInfoText, setImageInfoText] = useState('');
 
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
+
+  const { selectImage } = useSelectImage(
+    undefined, // onChange
+    false, // allowsEditing,
+    undefined, // aspect,
+    undefined // quality
+  );
 
   return (
     <>
