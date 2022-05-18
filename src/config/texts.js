@@ -130,16 +130,28 @@ export const texts = {
     vote: 'Stimme',
     votes: 'Stimmen',
     startNew: {
+      'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg':
+        'Inhaltstyp Bild auswählen image/png stimmt mit keinem der akzeptierten Inhaltstypen jpg überein.',
+      'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg,-choose-image-must-be-in-between-0-bytes-and-1-mb':
+        'Inhaltstyp Bild auswählen image/png stimmt mit keinem der akzeptierten Inhaltstypen jpg überein. Das ausgewählte Bild darf maximal 1 MB groß sein.',
+      'choose-image-must-be-in-between-0-bytes-and-1-mb':
+        'Das ausgewählte Bild darf maximal 1 MB groß sein.',
       categoriesTitle: 'Kategorien',
       descriptionShortError: 'ist zu kurz (minimum 10 Zeichen)',
       editButtonLabelOnDetailScreen: 'Bearbeiten',
       emptyError: 'darf nicht leer sein',
+      generalPhotoUploadError:
+        'Beim Hochladen des Fotos ist ein Problem aufgetreten. Bitte überprüfen Sie das Foto.',
       newDebateDescriptionLabel: 'Initialer Debattenbeitrag',
       newDebateStartButtonLabel: 'Eine Diskussion starten',
       newDebateTagLabel: 'Trennen Sie die Tags mit einem Komma (,)',
       newDebateTitleLabel: 'Title der Diskussion',
       newProposalDescriptionLabel: 'Vorschlagstext',
       newProposalExternesVideoUrlLabel: 'Externe Video-URL',
+      newProposalImageAddButtonTitle: 'Bild hinzufügen',
+      newProposalImageAddInfoText:
+        'Sie können ein Bild des folgenden Formats hochladen: jpg, bis zu 1 MB.',
+      newProposalImageAddTitle: 'Aussagekräftiges Bild',
       newProposalStartButtonLabel: 'Vorschlag erstellen',
       newProposalSummaryLabel: 'Zusammenfassung Vorschlag',
       newProposalTagInfoLabel:
@@ -154,6 +166,7 @@ export const texts = {
       termsOfServiceLabel: 'Ich stimme den Datenschutzbestimmungen und den',
       termsOfServiceLinkLabel: 'allgemeinen Nutzungsbedingungen zu',
       titleShortError: 'ist zu kurz (minimum 4 Zeichen)',
+      updateButtonDisabledLabel: 'Bitte warten...',
       updateButtonLabel: 'Speichern'
     },
     homeScreen: {

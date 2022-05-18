@@ -1,21 +1,25 @@
+import * as FileSystem from 'expo-file-system';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, namespace, secrets, texts } from '../../../../config';
+import { colors, Icon, namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
+import { imageHeight, imageWidth } from '../../../../helpers';
+import { useSelectImage } from '../../../../hooks';
 import { QUERY_TYPES } from '../../../../queries';
 import { START_PROPOSAL, UPDATE_PROPOSAL } from '../../../../queries/consul';
+import { uploadAttachment } from '../../../../queries/consul/uploads';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
 import { Input } from '../../../form';
+import { Image } from '../../../Image';
 import { Label } from '../../../Label';
-import { LoadingSpinner } from '../../../LoadingSpinner';
 import { RegularText } from '../../../Text';
-import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperRow } from '../../../Wrapper';
 
 const TAG_CATEGORIES = [
   { name: 'Associations', id: 0, selected: false },
@@ -39,26 +43,17 @@ const ITEM_TYPES = {
   INPUT: 'input',
   INFO_TEXT: 'infoText',
   TITLE: 'title',
-  CATEGORY: 'category'
+  CATEGORY: 'category',
+  PICKER: 'picker'
 };
 
-// TODO: image and document upload
-//  imageAttributes: {
-//   	title: 'Profil.png',
-//   	cachedAttachment:
-//   		'/Users/ardasenturk/Development/SVA/consul-bb/public/system/images/cached_attachments/user/49/original/3dfe4b17e340624be2f74f822f15e36cadd8d6e1.png'
-//  },
-//  documentsAttributes: [
-// 	  {
-// 		  title: 'sample.pdf',
-// 		  cachedAttachment:
-// 		  	'/Users/ardasenturk/Development/SVA/consul-bb/public/system/documents/cached_attachments/user/49/original/f2245afb48be5f906474ad929aacb7f91f408a23.pdf'
-// 	  }
-//  ],
+const IMAGE_TYPE_REGEX = /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i;
 
-const showRegistrationFailAlert = () =>
+const showPrivacyCheckRequireAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
-const graphqlErr = (err) => Alert.alert('Hinweis', err);
+const graphqlErr = (err) => Alert.alert(texts.consul.privacyCheckRequireTitle, err);
+const showImageUploadError = (errorText) =>
+  Alert.alert(texts.consul.privacyCheckRequireTitle, errorText);
 
 export const NewProposal = ({ navigation, data, query }) => {
   const [hasAcceptedTermsOfService, setHasAcceptedTermsOfService] = useState(
@@ -74,10 +69,11 @@ export const NewProposal = ({ navigation, data, query }) => {
     setValue
   } = useForm({
     defaultValues: {
-      title: data?.title || '',
       description: data?.description || '',
-      tagList: data?.tagList?.toString() || '',
+      image: data?.image || '',
       summary: data?.summary || '',
+      tagList: data?.tagList?.toString() || '',
+      title: data?.title || '',
       videoUrl: data?.videoUrl || ''
     }
   });
@@ -117,6 +113,25 @@ export const NewProposal = ({ navigation, data, query }) => {
     setValue('tagList', filterData.toString());
   }, [tags]);
 
+  const uploadImage = async (imageData) => {
+    const imageUploadData = await uploadAttachment(imageData, 'image');
+
+    if (imageUploadData.status === 200) {
+      const { cached_attachment: cachedAttachment, filename: title } = JSON.parse(
+        imageUploadData.body
+      );
+
+      return {
+        title,
+        cachedAttachment
+      };
+    } else if (imageUploadData.status === 422) {
+      const errors = JSON.parse(imageUploadData.body).errors.toLowerCase().split(' ').join('-');
+
+      throw errors;
+    }
+  };
+
   const onSubmit = async (newProposalData) => {
     let variables = {
       id: data?.id,
@@ -129,18 +144,40 @@ export const NewProposal = ({ navigation, data, query }) => {
         tagList: newProposalData?.tagList,
         termsOfService: hasAcceptedTermsOfService,
         videoUrl: newProposalData?.videoUrl
+
+        // TODO: image and document upload needed here? and if yes, how to do it?
+        //  documentsAttributes: [
+        // 	  {
+        // 		  title: 'sample.pdf',
+        // 		  cachedAttachment:
+        // 		  	'/Users/ardasenturk/Development/SVA/consul-bb/public/system/documents/cached_attachments/user/49/original/f2245afb48be5f906474ad929aacb7f91f408a23.pdf'
+        // 	  }
+        //  ],
       }
     };
 
-    if (!hasAcceptedTermsOfService) return showRegistrationFailAlert();
+    if (!hasAcceptedTermsOfService) return showPrivacyCheckRequireAlert();
+
+    setIsLoading(true);
+
+    if (newProposalData.image) {
+      try {
+        const imageAttributes = await uploadImage(newProposalData.image);
+
+        variables.attributes = { ...variables.attributes, imageAttributes };
+      } catch (error) {
+        setIsLoading(false);
+
+        return showImageUploadError(
+          texts.consul.startNew[error] ?? texts.consul.startNew.generalPhotoUploadError
+        );
+      }
+    }
 
     switch (query) {
       case QUERY_TYPES.CONSUL.START_PROPOSAL:
-        setIsLoading(true);
-
         try {
           await submitProposal({ variables });
-          setIsLoading(false);
 
           navigation.navigate(ScreenName.ConsulIndexScreen, {
             title: texts.consul.homeScreen.proposals,
@@ -159,10 +196,8 @@ export const NewProposal = ({ navigation, data, query }) => {
         }
         break;
       case QUERY_TYPES.CONSUL.UPDATE_PROPOSAL:
-        setIsLoading(true);
         try {
           let data = await updateProposal({ variables });
-          setIsLoading(false);
 
           navigation.navigate(ScreenName.ConsulDetailScreen, {
             query: QUERY_TYPES.CONSUL.PROPOSAL,
@@ -178,8 +213,6 @@ export const NewProposal = ({ navigation, data, query }) => {
         break;
     }
   };
-
-  if (isLoading) return <LoadingSpinner loading />;
 
   return (
     <>
@@ -239,6 +272,14 @@ export const NewProposal = ({ navigation, data, query }) => {
               </ScrollView>
             </>
           )}
+
+          {item.type === ITEM_TYPES.PICKER && (
+            <Controller
+              name={item.name}
+              control={control}
+              render={(field) => <ImageSelector {...{ control, field, item }} />}
+            />
+          )}
         </Wrapper>
       ))}
 
@@ -257,9 +298,12 @@ export const NewProposal = ({ navigation, data, query }) => {
 
         <Wrapper>
           <Button
+            disabled={isLoading}
             onPress={handleSubmit(onSubmit)}
             title={
-              query === QUERY_TYPES.CONSUL.START_PROPOSAL
+              isLoading
+                ? texts.consul.startNew.updateButtonDisabledLabel
+                : query === QUERY_TYPES.CONSUL.START_PROPOSAL
                 ? texts.consul.startNew.newProposalStartButtonLabel
                 : texts.consul.startNew.updateButtonLabel
             }
@@ -270,7 +314,105 @@ export const NewProposal = ({ navigation, data, query }) => {
   );
 };
 
+const ImageSelector = ({ control, field, item }) => {
+  const [errorMessage, setErrorMessage] = useState('');
+  const [imageInfoText, setImageInfoText] = useState('');
+
+  const { buttonTitle, infoText } = item;
+  const { name, onChange, value } = field;
+
+  const { selectImage } = useSelectImage(
+    undefined, // onChange
+    false, // allowsEditing,
+    undefined, // aspect,
+    undefined // quality
+  );
+
+  return (
+    <>
+      <Input
+        {...item}
+        control={control}
+        errorMessage={errorMessage}
+        hidden
+        validate
+        name={name}
+        value={value}
+      />
+      <RegularText smallest placeholder>
+        {infoText}
+      </RegularText>
+
+      {value ? (
+        <>
+          <WrapperRow center spaceBetween>
+            <Image source={{ uri: value }} style={styles.image} />
+
+            <TouchableOpacity
+              onPress={() => {
+                onChange('');
+                setErrorMessage('');
+                setImageInfoText('');
+              }}
+            >
+              <Icon.Trash color={colors.error} size={normalize(16)} />
+            </TouchableOpacity>
+          </WrapperRow>
+          {!!imageInfoText && <RegularText smallest>{imageInfoText}</RegularText>}
+        </>
+      ) : (
+        <Button
+          title={buttonTitle}
+          invert
+          onPress={async () => {
+            const { uri, type } = await selectImage();
+            const { size } = await FileSystem.getInfoAsync(uri);
+            const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
+
+            const errorMessage = imageErrorMessageGenerator({
+              size,
+              imageType
+            });
+
+            setErrorMessage(texts.consul.startNew[errorMessage]);
+            setImageInfoText(`(${type}/${imageType}, ${bytesToSize(size)})`);
+            onChange(uri);
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+const bytesToSize = (bytes) => {
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  if (bytes == 0) return '0 Byte';
+  let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+
+  return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+};
+
+const imageErrorMessageGenerator = ({ size, imageType }) => {
+  const isJPG = imageType === 'jpg' || imageType === 'jpeg';
+  const isGreater1MB = size > 1048576;
+
+  const errorMessage =
+    !isJPG && isGreater1MB
+      ? 'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg,-choose-image-must-be-in-between-0-bytes-and-1-mb'
+      : !isJPG
+      ? 'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg'
+      : isGreater1MB
+      ? 'choose-image-must-be-in-between-0-bytes-and-1-mb'
+      : '';
+
+  return errorMessage;
+};
+
 const styles = StyleSheet.create({
+  image: {
+    height: imageHeight(imageWidth() * 0.6),
+    width: imageWidth() * 0.6
+  },
   noPaddingTop: {
     paddingTop: 0
   },
@@ -288,6 +430,13 @@ NewProposal.propTypes = {
   data: PropTypes.object,
   navigation: PropTypes.object.isRequired,
   query: PropTypes.string
+};
+
+ImageSelector.propTypes = {
+  control: PropTypes.object,
+  field: PropTypes.object,
+  item: PropTypes.object,
+  selectImage: PropTypes.func
 };
 
 const INPUTS = [
@@ -350,6 +499,14 @@ const INPUTS = [
   {
     type: ITEM_TYPES.INFO_TEXT,
     title: texts.consul.startNew.proposalVideoUrlInfo
+  },
+  {
+    type: ITEM_TYPES.PICKER,
+    name: 'image',
+    label: texts.consul.startNew.newProposalImageAddTitle,
+    rules: { required: false },
+    buttonTitle: texts.consul.startNew.newProposalImageAddButtonTitle,
+    infoText: texts.consul.startNew.newProposalImageAddInfoText
   },
   {
     type: ITEM_TYPES.TITLE,
