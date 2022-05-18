@@ -9,7 +9,7 @@ import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day
 
 import { colors, consts, normalize, texts } from '../../config';
 import { setupLocales, volunteerListDate } from '../../helpers';
-import { ScreenName } from '../../types';
+import { ScreenName, VolunteerCalendar as TVolunteerCalendar } from '../../types';
 import { renderArrow } from '../calendarArrows';
 
 const { ROOT_ROUTE_NAMES } = consts;
@@ -21,7 +21,7 @@ const DayComponent = (props: BasicDayProps) => (
 type Props = {
   query: string;
   queryVariables?: { dateRange?: string[]; contentContainerId?: number } | number;
-  calendarData: any[];
+  calendarData: TVolunteerCalendar[];
   isLoading: boolean;
   navigation: StackNavigationProp<any>;
 };

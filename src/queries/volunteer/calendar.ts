@@ -63,10 +63,12 @@ export const calendarAttend = async ({ id, type }: { id: number; type: PARTICIPA
   return (await fetch(`${volunteerApiV1Url}calendar/entry/${id}/respond`, fetchObj)).json();
 };
 
+// eslint-disable-next-line complexity
 export const calendarNew = async ({
   title,
   description = '',
   organizer = '',
+  entranceFee = '',
   color = colors.primary.startsWith('#') ? colors.primary : colors.darkText,
   location = '',
   participationMode = 2,
@@ -89,6 +91,11 @@ export const calendarNew = async ({
   // add organizer information to the description field if present
   description = organizer?.length
     ? `${description}\n\n\n<strong>${texts.volunteer.organizer}</strong>\n\n${organizer}`
+    : description;
+
+  // add entrance fee information to the description field if present
+  description = entranceFee?.length
+    ? `${description}\n\n\n<strong>${texts.volunteer.entranceFee}</strong>\n\n${entranceFee}`
     : description;
 
   const formData = {

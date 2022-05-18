@@ -13,7 +13,7 @@ import { isOwner, volunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { CREATE_EVENT_RECORDS } from '../../queries/eventRecords';
 import { calendarNew, groups } from '../../queries/volunteer';
-import { VolunteerCalendar } from '../../types';
+import { VolunteerCalendar, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { DateTimeInput } from '../form/DateTimeInput';
 import { DropdownInput, DropdownInputProps } from '../form/DropdownInput';
@@ -53,8 +53,8 @@ export const VolunteerFormCalendar = ({
       const { currentUserId } = await volunteerUserData();
       // show only groups, where the user is owner, because otherwise edits are not allowed
       const filteredGroupDropDownData = dataGroups.results
-        ?.filter((item: { owner: { id: number } }) => isOwner(currentUserId, item.owner))
-        ?.map((item) => ({ ...item, value: item.name }));
+        ?.filter((item: VolunteerGroup) => isOwner(currentUserId, item.owner))
+        ?.map((item: VolunteerGroup) => ({ ...item, value: item.name }));
 
       filteredGroupDropDownData?.length &&
         setGroupDropdownData(
@@ -270,6 +270,16 @@ export const VolunteerFormCalendar = ({
           name="organizer"
           label={texts.volunteer.organizer}
           placeholder={texts.volunteer.organizer}
+          multiline
+          validate
+          control={control}
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Input
+          name="entranceFee"
+          label={texts.volunteer.entranceFee}
+          placeholder={texts.volunteer.entranceFee}
           multiline
           validate
           control={control}
