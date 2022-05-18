@@ -47,6 +47,8 @@ const ITEM_TYPES = {
   PICKER: 'picker'
 };
 
+const IMAGE_TYPE_REGEX = /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i;
+
 const showPrivacyCheckRequireAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 const graphqlErr = (err) => Alert.alert(texts.consul.privacyCheckRequireTitle, err);
@@ -364,13 +366,15 @@ const ImageSelector = ({ control, field, item, selectImage }) => {
           onPress={async () => {
             const { uri, type } = await selectImage();
             const { size } = await FileSystem.getInfoAsync(uri);
+            const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
+
             const errorMessage = imageErrorMessageGenerator({
               size,
-              imageType: uri.substr(uri.length - 4)
+              imageType
             });
 
             setErrorMessage(texts.consul.startNew[errorMessage]);
-            setImageInfoText(`(${type}/${uri.substr(uri.length - 3)}, ${bytesToSize(size)})`);
+            setImageInfoText(`(${type}/${imageType}, ${bytesToSize(size)})`);
             onChange(uri);
           }}
         />
@@ -388,7 +392,7 @@ const bytesToSize = (bytes) => {
 };
 
 const imageErrorMessageGenerator = ({ size, imageType }) => {
-  const isJPG = imageType === '.jpg' ?? 'jpeg';
+  const isJPG = imageType === 'jpg' || imageType === 'jpeg';
   const isGreater1MB = size > 1048576;
 
   const errorMessage =
