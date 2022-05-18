@@ -349,12 +349,13 @@ const ImageSelector = ({ control, field, item, selectImage }) => {
               onPress={() => {
                 onChange('');
                 setErrorMessage('');
+                setImageInfoText('');
               }}
             >
               <Icon.Trash color={colors.error} size={normalize(16)} />
             </TouchableOpacity>
           </WrapperRow>
-          <RegularText smallest>{imageInfoText}</RegularText>
+          {!!imageInfoText && <RegularText smallest>{imageInfoText}</RegularText>}
         </>
       ) : (
         <Button
@@ -365,7 +366,7 @@ const ImageSelector = ({ control, field, item, selectImage }) => {
             const { size } = await FileSystem.getInfoAsync(uri);
             const errorMessage = imageErrorMessageGenerator({
               size,
-              uri: uri.substr(uri.length - 4)
+              imageType: uri.substr(uri.length - 4)
             });
 
             setErrorMessage(texts.consul.startNew[errorMessage]);
@@ -386,13 +387,16 @@ const bytesToSize = (bytes) => {
   return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
 };
 
-const imageErrorMessageGenerator = ({ size, uri }) => {
+const imageErrorMessageGenerator = ({ size, imageType }) => {
+  const isJPG = imageType === '.jpg' ?? 'jpeg';
+  const isGreater1MB = size > 1048576;
+
   const errorMessage =
-    uri !== '.jpg' && uri !== 'jpeg' && size > 1048576
+    !isJPG && isGreater1MB
       ? 'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg,-choose-image-must-be-in-between-0-bytes-and-1-mb'
-      : uri !== '.jpg' && uri !== 'jpeg'
+      : !isJPG
       ? 'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg'
-      : size > 1048576
+      : isGreater1MB
       ? 'choose-image-must-be-in-between-0-bytes-and-1-mb'
       : '';
 
