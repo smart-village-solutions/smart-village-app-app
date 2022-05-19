@@ -8,7 +8,7 @@ import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { colors, Icon, namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { imageHeight, imageWidth } from '../../../../helpers';
-import { useSelectDocument, useSelectImage } from '../../../../hooks';
+import { DOCUMENT_TYPE_PDF, useSelectDocument, useSelectImage } from '../../../../hooks';
 import { QUERY_TYPES } from '../../../../queries';
 import { START_PROPOSAL, UPDATE_PROPOSAL } from '../../../../queries/consul';
 import { uploadAttachment } from '../../../../queries/consul/uploads';
@@ -456,13 +456,15 @@ const DocumentSelector = ({ control, field, item, documentsAttributes }) => {
         : null}
 
       {/* users can upload a maximum of 3 PDF files
-					if 3 PDFs are selected, the new add button will not be displayed. */}
+          if 3 PDFs are selected, the new add button will not be displayed. */}
       {!value || JSON.parse(value).length < 3 ? (
         <Button
           title={buttonTitle}
           invert
           onPress={async () => {
             const { mimeType, name: title, size, uri: cachedAttachment } = await selectDocument();
+
+            if (!cachedAttachment) return;
 
             documentsAttributes.push({ title, cachedAttachment });
 
@@ -506,7 +508,7 @@ const imageErrorMessageGenerator = ({ size, imageType }) => {
 };
 
 const documentErrorMessageGenerator = ({ size, mimeType }) => {
-  const isPDF = mimeType === 'application/pdf';
+  const isPDF = mimeType === DOCUMENT_TYPE_PDF;
   const isGreater3MB = size > 3145728;
 
   const errorMessage =
