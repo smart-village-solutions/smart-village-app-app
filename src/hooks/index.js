@@ -5,6 +5,7 @@ export * from './volunteer';
 export * from './apollo';
 export * from './Bookmarks';
 export * from './constructionSites';
+export * from './documentPicker';
 export * from './HomeRefresh';
 export * from './imagePicker';
 export * from './listHooks';

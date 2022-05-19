@@ -146,14 +146,15 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
                 title: texts.consul.startNew.updateButtonLabel,
                 query: QUERY_TYPES.CONSUL.UPDATE_PROPOSAL,
                 data: {
-                  title,
-                  tagList: tags.nodes.map((item) => item.name),
                   description,
-                  termsOfService: true,
-                  summary,
-                  videoUrl,
+                  documents: documents ?? undefined,
                   id,
-                  image: imageUrlMedium ?? null
+                  image: imageUrlMedium ?? undefined,
+                  summary,
+                  tagList: tags.nodes.map((item) => item.name),
+                  termsOfService: true,
+                  title,
+                  videoUrl
                 }
               });
             }}

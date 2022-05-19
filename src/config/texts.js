@@ -130,6 +130,12 @@ export const texts = {
     vote: 'Stimme',
     votes: 'Stimmen',
     startNew: {
+      'choose-document-content-type-application/msword-does-not-match-any-of-accepted-content-types-pdf':
+        'Inhaltstyp Document auswählen application/msword stimmt mit keinem der akzeptierten Inhaltstypen PDF überein.',
+      'choose-document-content-type-application/msword-does-not-match-any-of-accepted-content-types-pdf,-choose-document-must-be-in-between-0-bytes-and-3-mb':
+        'Inhaltstyp Document auswählen application/msword stimmt mit keinem der akzeptierten Inhaltstypen PDF überein. Das ausgewählte Dokumente darf maximal 3 MB groß sein.',
+      'choose-document-must-be-in-between-0-bytes-and-3-mb':
+        'Das ausgewählte Dokumente darf maximal 3 MB groß sein.',
       'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg':
         'Inhaltstyp Bild auswählen image/png stimmt mit keinem der akzeptierten Inhaltstypen jpg überein.',
       'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg,-choose-image-must-be-in-between-0-bytes-and-1-mb':
@@ -140,12 +146,16 @@ export const texts = {
       descriptionShortError: 'ist zu kurz (minimum 10 Zeichen)',
       editButtonLabelOnDetailScreen: 'Bearbeiten',
       emptyError: 'darf nicht leer sein',
-      generalPhotoUploadError:
-        'Beim Hochladen des Fotos ist ein Problem aufgetreten. Bitte überprüfen Sie das Foto.',
+      generalDataUploadError:
+        'Beim Hochladen des Fotos oder Dokuments ist ein Problem aufgetreten. Bitte überprüfen.',
       newDebateDescriptionLabel: 'Initialer Debattenbeitrag',
       newDebateStartButtonLabel: 'Eine Diskussion starten',
       newDebateTagLabel: 'Trennen Sie die Tags mit einem Komma (,)',
       newDebateTitleLabel: 'Title der Diskussion',
+      newProposalDocumentAddButtonTitle: 'Neues Dokument hinzufügen',
+      newProposalDocumentAddInfoText:
+        'Sie können maximal bis zu 3 Dokumente des folgenden Inhalttyps hochladen: pdf, bis zu 3 MB pro Datei.',
+      newProposalDocumentAddTitle: 'Dokumente',
       newProposalDescriptionLabel: 'Vorschlagstext',
       newProposalExternesVideoUrlLabel: 'Externe Video-URL',
       newProposalImageAddButtonTitle: 'Bild hinzufügen',

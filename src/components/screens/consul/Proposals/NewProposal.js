@@ -8,7 +8,7 @@ import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { colors, Icon, namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { imageHeight, imageWidth } from '../../../../helpers';
-import { useSelectImage } from '../../../../hooks';
+import { useSelectDocument, useSelectImage } from '../../../../hooks';
 import { QUERY_TYPES } from '../../../../queries';
 import { START_PROPOSAL, UPDATE_PROPOSAL } from '../../../../queries/consul';
 import { uploadAttachment } from '../../../../queries/consul/uploads';
@@ -52,15 +52,18 @@ const IMAGE_TYPE_REGEX = /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i;
 const showPrivacyCheckRequireAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 const graphqlErr = (err) => Alert.alert(texts.consul.privacyCheckRequireTitle, err);
-const showImageUploadError = (errorText) =>
+const showDataUploadError = (errorText) =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, errorText);
 
+/* eslint-disable complexity */
+/* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewProposal = ({ navigation, data, query }) => {
   const [hasAcceptedTermsOfService, setHasAcceptedTermsOfService] = useState(
     data?.termsOfService ?? false
   );
   const [isLoading, setIsLoading] = useState(false);
   const [tags, setTags] = useState([]);
+  const documentsAttributes = [];
 
   const {
     control,
@@ -70,6 +73,7 @@ export const NewProposal = ({ navigation, data, query }) => {
   } = useForm({
     defaultValues: {
       description: data?.description || '',
+      documents: JSON.stringify(data?.documents) || '',
       image: data?.image || '',
       summary: data?.summary || '',
       tagList: data?.tagList?.toString() || '',
@@ -113,20 +117,17 @@ export const NewProposal = ({ navigation, data, query }) => {
     setValue('tagList', filterData.toString());
   }, [tags]);
 
-  const uploadImage = async (imageData) => {
-    const imageUploadData = await uploadAttachment(imageData, 'image');
-
-    if (imageUploadData.status === 200) {
-      const { cached_attachment: cachedAttachment, filename: title } = JSON.parse(
-        imageUploadData.body
-      );
+  const uploadData = async (dataUri, dataType) => {
+    const uploadData = await uploadAttachment(dataUri, dataType);
+    if (uploadData.status === 200) {
+      const { cached_attachment: cachedAttachment, filename: title } = JSON.parse(uploadData.body);
 
       return {
         title,
         cachedAttachment
       };
-    } else if (imageUploadData.status === 422) {
-      const errors = JSON.parse(imageUploadData.body).errors.toLowerCase().split(' ').join('-');
+    } else if (uploadData.status === 422) {
+      const errors = JSON.parse(uploadData.body).errors.toLowerCase().split(' ').join('-');
 
       throw errors;
     }
@@ -144,15 +145,6 @@ export const NewProposal = ({ navigation, data, query }) => {
         tagList: newProposalData?.tagList,
         termsOfService: hasAcceptedTermsOfService,
         videoUrl: newProposalData?.videoUrl
-
-        // TODO: image and document upload needed here? and if yes, how to do it?
-        //  documentsAttributes: [
-        // 	  {
-        // 		  title: 'sample.pdf',
-        // 		  cachedAttachment:
-        // 		  	'/Users/ardasenturk/Development/SVA/consul-bb/public/system/documents/cached_attachments/user/49/original/f2245afb48be5f906474ad929aacb7f91f408a23.pdf'
-        // 	  }
-        //  ],
       }
     };
 
@@ -162,15 +154,42 @@ export const NewProposal = ({ navigation, data, query }) => {
 
     if (newProposalData.image) {
       try {
-        const imageAttributes = await uploadImage(newProposalData.image);
+        const imageAttributes = await uploadData(newProposalData.image, 'image');
 
         variables.attributes = { ...variables.attributes, imageAttributes };
       } catch (error) {
         setIsLoading(false);
 
-        return showImageUploadError(
-          texts.consul.startNew[error] ?? texts.consul.startNew.generalPhotoUploadError
+        return showDataUploadError(
+          texts.consul.startNew[error] ?? texts.consul.startNew.generalDataUploadError
         );
+      }
+    }
+
+    if (newProposalData.documents) {
+      let documents = JSON.parse(newProposalData.documents);
+      variables.attributes = {
+        ...variables.attributes,
+        documentsAttributes: []
+      };
+
+      for (let i = 0; i < documents.length; i++) {
+        const { cachedAttachment, title } = documents[i];
+
+        try {
+          const documentsAttributes = await uploadData(cachedAttachment, 'documents');
+
+          variables.attributes.documentsAttributes.push({
+            cachedAttachment: documentsAttributes.cachedAttachment,
+            title
+          });
+        } catch (error) {
+          setIsLoading(false);
+
+          return showDataUploadError(
+            texts.consul.startNew[error] ?? texts.consul.startNew.generalDataUploadError
+          );
+        }
       }
     }
 
@@ -277,7 +296,13 @@ export const NewProposal = ({ navigation, data, query }) => {
             <Controller
               name={item.name}
               control={control}
-              render={(field) => <ImageSelector {...{ control, field, item }} />}
+              render={(field) =>
+                item.name === 'image' ? (
+                  <ImageSelector {...{ control, field, item }} />
+                ) : (
+                  <DocumentSelector {...{ control, field, item, documentsAttributes }} />
+                )
+              }
             />
           )}
         </Wrapper>
@@ -384,6 +409,78 @@ const ImageSelector = ({ control, field, item }) => {
   );
 };
 
+const DocumentSelector = ({ control, field, item, documentsAttributes }) => {
+  const [errorMessage, setErrorMessage] = useState([]);
+  const [pdfInfoText, setPDFInfoText] = useState([]);
+
+  const { buttonTitle, infoText } = item;
+  const { name, onChange, value } = field;
+
+  const { selectDocument } = useSelectDocument();
+
+  return (
+    <>
+      <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
+      <RegularText smallest placeholder>
+        {infoText}
+      </RegularText>
+
+      {value
+        ? JSON.parse(value).map((item, index) => (
+            <>
+              <WrapperRow key={index} center spaceBetween>
+                <RegularText>{item.title}</RegularText>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    documentsAttributes.splice(index, 1);
+                    errorMessage.splice(index, 1);
+                    pdfInfoText.splice(index, 1);
+                    onChange(JSON.stringify(documentsAttributes));
+                    setErrorMessage(errorMessage);
+                    setPDFInfoText(pdfInfoText);
+                  }}
+                >
+                  <Icon.Trash color={colors.error} size={normalize(16)} />
+                </TouchableOpacity>
+              </WrapperRow>
+
+              {!!pdfInfoText && <RegularText smallest>{pdfInfoText[index]}</RegularText>}
+              {!!errorMessage && (
+                <RegularText smallest error>
+                  {errorMessage[index]}
+                </RegularText>
+              )}
+            </>
+          ))
+        : null}
+
+      {/* users can upload a maximum of 3 PDF files
+					if 3 PDFs are selected, the new add button will not be displayed. */}
+      {!value || JSON.parse(value).length < 3 ? (
+        <Button
+          title={buttonTitle}
+          invert
+          onPress={async () => {
+            const { mimeType, name: title, size, uri: cachedAttachment } = await selectDocument();
+
+            documentsAttributes.push({ title, cachedAttachment });
+
+            const errorMessages = documentErrorMessageGenerator({
+              size,
+              mimeType
+            });
+
+            setErrorMessage([...errorMessage, texts.consul.startNew[errorMessages]]);
+            setPDFInfoText([...pdfInfoText, `(${mimeType}, ${bytesToSize(size)})`]);
+            onChange(JSON.stringify(documentsAttributes));
+          }}
+        />
+      ) : null}
+    </>
+  );
+};
+
 const bytesToSize = (bytes) => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   if (bytes == 0) return '0 Byte';
@@ -407,6 +504,23 @@ const imageErrorMessageGenerator = ({ size, imageType }) => {
 
   return errorMessage;
 };
+
+const documentErrorMessageGenerator = ({ size, mimeType }) => {
+  const isPDF = mimeType === 'application/pdf';
+  const isGreater3MB = size > 3145728;
+
+  const errorMessage =
+    !isPDF && isGreater3MB
+      ? 'choose-document-content-type-application/msword-does-not-match-any-of-accepted-content-types-pdf,-choose-document-must-be-in-between-0-bytes-and-3-mb'
+      : !isPDF
+      ? 'choose-document-content-type-application/msword-does-not-match-any-of-accepted-content-types-pdf'
+      : isGreater3MB
+      ? 'choose-document-must-be-in-between-0-bytes-and-3-mb'
+      : '';
+
+  return errorMessage;
+};
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   image: {
@@ -434,6 +548,14 @@ NewProposal.propTypes = {
 
 ImageSelector.propTypes = {
   control: PropTypes.object,
+  field: PropTypes.object,
+  item: PropTypes.object,
+  selectImage: PropTypes.func
+};
+
+DocumentSelector.propTypes = {
+  control: PropTypes.object,
+  documentsAttributes: PropTypes.object,
   field: PropTypes.object,
   item: PropTypes.object,
   selectImage: PropTypes.func
@@ -507,6 +629,14 @@ const INPUTS = [
     rules: { required: false },
     buttonTitle: texts.consul.startNew.newProposalImageAddButtonTitle,
     infoText: texts.consul.startNew.newProposalImageAddInfoText
+  },
+  {
+    type: ITEM_TYPES.PICKER,
+    name: 'documents',
+    label: texts.consul.startNew.newProposalDocumentAddTitle,
+    rules: { required: false },
+    buttonTitle: texts.consul.startNew.newProposalDocumentAddButtonTitle,
+    infoText: texts.consul.startNew.newProposalDocumentAddInfoText
   },
   {
     type: ITEM_TYPES.TITLE,
