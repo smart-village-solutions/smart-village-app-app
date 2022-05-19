@@ -1,18 +1,18 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../config';
-import { formatSize } from '../../../helpers';
-import { DOCUMENT_TYPE_PDF, useSelectDocument } from '../../../hooks';
+import { deleteArrayItem, formatSize } from '../../../helpers';
+import { documentErrorMessageHepler } from '../../../helpers/consul/documentErrorMessageHepler';
+import { useSelectDocument } from '../../../hooks';
 import { Button } from '../../Button';
 import { Input } from '../../form';
 import { RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
 
 export const DocumentSelector = ({ control, field, item, documentsAttributes }) => {
-  const [errorMessage, setErrorMessage] = useState([]);
-  const [pdfInfoText, setPDFInfoText] = useState([]);
+  const [infoAndErrorText, setInfoAndErrorText] = useState([]);
 
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
@@ -28,31 +28,29 @@ export const DocumentSelector = ({ control, field, item, documentsAttributes }) 
 
       {value
         ? JSON.parse(value).map((item, index) => (
-            <>
-              <WrapperRow key={index} center spaceBetween>
+            <View key={index} style={{ marginVertical: normalize(10) }}>
+              <WrapperRow center spaceBetween>
                 <RegularText>{item.title}</RegularText>
 
                 <TouchableOpacity
                   onPress={() => {
-                    documentsAttributes.splice(index, 1);
-                    errorMessage.splice(index, 1);
-                    pdfInfoText.splice(index, 1);
-                    onChange(JSON.stringify(documentsAttributes));
-                    setErrorMessage(errorMessage);
-                    setPDFInfoText(pdfInfoText);
+                    onChange(JSON.stringify(deleteArrayItem(documentsAttributes, index)));
+                    setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
                   }}
                 >
                   <Icon.Trash color={colors.error} size={normalize(16)} />
                 </TouchableOpacity>
               </WrapperRow>
 
-              {!!pdfInfoText && <RegularText smallest>{pdfInfoText[index]}</RegularText>}
-              {!!errorMessage && (
+              {!!infoAndErrorText[index]?.infoText && (
+                <RegularText smallest>{infoAndErrorText[index].infoText}</RegularText>
+              )}
+              {!!infoAndErrorText[index]?.errorText && (
                 <RegularText smallest error>
-                  {errorMessage[index]}
+                  {infoAndErrorText[index].errorText}
                 </RegularText>
               )}
-            </>
+            </View>
           ))
         : null}
 
@@ -67,37 +65,23 @@ export const DocumentSelector = ({ control, field, item, documentsAttributes }) 
 
             if (!cachedAttachment) return;
 
+            const errorMessages = await documentErrorMessageHepler(cachedAttachment);
+
             documentsAttributes.push({ title, cachedAttachment });
 
-            const errorMessages = documentErrorMessageGenerator({
-              size,
-              mimeType
-            });
-
-            setErrorMessage([...errorMessage, texts.consul.startNew[errorMessages]]);
-            setPDFInfoText([...pdfInfoText, `(${mimeType}, ${formatSize(size)})`]);
+            setInfoAndErrorText([
+              ...infoAndErrorText,
+              {
+                errorText: texts.consul.startNew[errorMessages],
+                infoText: `(${mimeType}, ${formatSize(size)})`
+              }
+            ]);
             onChange(JSON.stringify(documentsAttributes));
           }}
         />
       ) : null}
     </>
   );
-};
-
-const documentErrorMessageGenerator = ({ size, mimeType }) => {
-  const isPDF = mimeType === DOCUMENT_TYPE_PDF;
-  const isGreater3MB = size > 3145728;
-
-  const errorMessage =
-    !isPDF && isGreater3MB
-      ? 'choose-document-content-type-application/msword-does-not-match-any-of-accepted-content-types-pdf,-choose-document-must-be-in-between-0-bytes-and-3-mb'
-      : !isPDF
-      ? 'choose-document-content-type-application/msword-does-not-match-any-of-accepted-content-types-pdf'
-      : isGreater3MB
-      ? 'choose-document-must-be-in-between-0-bytes-and-3-mb'
-      : '';
-
-  return errorMessage;
 };
 
 DocumentSelector.propTypes = {

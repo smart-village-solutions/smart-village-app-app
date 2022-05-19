@@ -8,6 +8,7 @@ export * from './cameraHelper';
 export * from './colorHelper';
 export * from './consulHelper';
 export * from './dateTimeHelper';
+export * from './deleteArrayItem';
 export * from './encounterHelper';
 export * from './fileSizeHelper';
 export * from './formatHelper';

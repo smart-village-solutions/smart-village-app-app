@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, consts, Icon, normalize, texts } from '../../../config';
-import { formatSize, imageHeight, imageWidth } from '../../../helpers';
+import { formatSize, imageErrorMessageHelper, imageHeight, imageWidth } from '../../../helpers';
 import { useSelectImage } from '../../../hooks';
 import { Button } from '../../Button';
 import { Input } from '../../form';
@@ -15,8 +15,7 @@ import { WrapperRow } from '../../Wrapper';
 const { IMAGE_TYPE_REGEX } = consts;
 
 export const ImageSelector = ({ control, field, item }) => {
-  const [errorMessage, setErrorMessage] = useState('');
-  const [imageInfoText, setImageInfoText] = useState('');
+  const [infoAndErrorText, setInfoAndErrorText] = useState({});
 
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
@@ -33,7 +32,7 @@ export const ImageSelector = ({ control, field, item }) => {
       <Input
         {...item}
         control={control}
-        errorMessage={errorMessage}
+        errorMessage={infoAndErrorText?.errorText}
         hidden
         validate
         name={name}
@@ -51,14 +50,16 @@ export const ImageSelector = ({ control, field, item }) => {
             <TouchableOpacity
               onPress={() => {
                 onChange('');
-                setErrorMessage('');
-                setImageInfoText('');
+                setInfoAndErrorText({});
               }}
             >
               <Icon.Trash color={colors.error} size={normalize(16)} />
             </TouchableOpacity>
           </WrapperRow>
-          {!!imageInfoText && <RegularText smallest>{imageInfoText}</RegularText>}
+
+          {!!infoAndErrorText?.infoText && (
+            <RegularText smallest>{infoAndErrorText.infoText}</RegularText>
+          )}
         </>
       ) : (
         <Button
@@ -67,37 +68,19 @@ export const ImageSelector = ({ control, field, item }) => {
           onPress={async () => {
             const { uri, type } = await selectImage();
             const { size } = await FileSystem.getInfoAsync(uri);
+            const errorMessage = await imageErrorMessageHelper(uri);
             const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
 
-            const errorMessage = imageErrorMessageGenerator({
-              size,
-              imageType
+            setInfoAndErrorText({
+              errorText: texts.consul.startNew[errorMessage],
+              infoText: `(${type}/${imageType}, ${formatSize(size)})`
             });
-
-            setErrorMessage(texts.consul.startNew[errorMessage]);
-            setImageInfoText(`(${type}/${imageType}, ${formatSize(size)})`);
             onChange(uri);
           }}
         />
       )}
     </>
   );
-};
-
-const imageErrorMessageGenerator = ({ size, imageType }) => {
-  const isJPG = imageType === 'jpg' || imageType === 'jpeg';
-  const isGreater1MB = size > 1048576;
-
-  const errorMessage =
-    !isJPG && isGreater1MB
-      ? 'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg,-choose-image-must-be-in-between-0-bytes-and-1-mb'
-      : !isJPG
-      ? 'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg'
-      : isGreater1MB
-      ? 'choose-image-must-be-in-between-0-bytes-and-1-mb'
-      : '';
-
-  return errorMessage;
 };
 
 ImageSelector.propTypes = {

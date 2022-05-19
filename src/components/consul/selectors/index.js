@@ -1,2 +1,2 @@
-export * from './ConsulDocumentSelector';
-export * from './ConsulImageSelector';
+export * from './DocumentSelector';
+export * from './ImageSelector';

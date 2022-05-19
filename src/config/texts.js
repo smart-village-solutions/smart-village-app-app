@@ -130,18 +130,19 @@ export const texts = {
     vote: 'Stimme',
     votes: 'Stimmen',
     startNew: {
-      'choose-document-content-type-application/msword-does-not-match-any-of-accepted-content-types-pdf':
-        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur PDF akzeptiert.',
-      'choose-document-content-type-application/msword-does-not-match-any-of-accepted-content-types-pdf,-choose-document-must-be-in-between-0-bytes-and-3-mb':
-        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur PDF akzeptiert. Das ausgewählte Dokument darf maximal 3 MB groß sein.',
-      'choose-document-must-be-in-between-0-bytes-and-3-mb':
+      'documentSizeError-choosedocumentmustbeinbetween0bytesand3mb':
         'Das ausgewählte Dokument darf maximal 3 MB groß sein.',
-      'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg':
-        'Inhaltstyp Bild auswählen image/png stimmt mit keinem der akzeptierten Inhaltstypen jpg überein.',
-      'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg,-choose-image-must-be-in-between-0-bytes-and-1-mb':
-        'Inhaltstyp Bild auswählen image/png stimmt mit keinem der akzeptierten Inhaltstypen jpg überein. Das ausgewählte Bild darf maximal 1 MB groß sein.',
-      'choose-image-must-be-in-between-0-bytes-and-1-mb':
+      'documentTypeError-doesnotmatchanyofacceptedcontenttypespdf':
+        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur PDF akzeptiert.',
+      'documentTypeAndSizeError-doesnotmatchanyofacceptedcontenttypespdf,choosedocumentmustbeinbetween0bytesand3mb':
+        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur PDF akzeptiert. Das ausgewählte Dokument darf maximal 3 MB groß sein.',
+      'imageSizeError-chooseimagemustbeinbetween0bytesand1mb':
         'Das ausgewählte Bild darf maximal 1 MB groß sein.',
+      'imageTypeError-doesnotmatchanyofacceptedcontenttypesjpg':
+        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur JPG akzeptiert.',
+      'imageTypeAndSizeError-doesnotmatchanyofacceptedcontenttypesjpg,chooseimagemustbeinbetween0bytesand1mb':
+        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur JPG akzeptiert. Das ausgewählte Bild darf maximal 1 MB groß sein.',
+
       categoriesTitle: 'Kategorien',
       descriptionShortError: 'ist zu kurz (minimum 10 Zeichen)',
       editButtonLabelOnDetailScreen: 'Bearbeiten',
