@@ -57,6 +57,8 @@ export const consts = {
     WEATHER: 3600000
   },
 
+  IMAGE_TYPE_REGEX: /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i,
+
   REFRESH_INTERVALS: {
     // refresh intervals per time:
     ONCE_A_DAY,

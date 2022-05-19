@@ -1,25 +1,22 @@
-import * as FileSystem from 'expo-file-system';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, Icon, namespace, normalize, secrets, texts } from '../../../../config';
+import { colors, namespace, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
-import { imageHeight, imageWidth } from '../../../../helpers';
-import { DOCUMENT_TYPE_PDF, useSelectDocument, useSelectImage } from '../../../../hooks';
 import { QUERY_TYPES } from '../../../../queries';
 import { START_PROPOSAL, UPDATE_PROPOSAL } from '../../../../queries/consul';
 import { uploadAttachment } from '../../../../queries/consul/uploads';
 import { ScreenName } from '../../../../types';
 import { Button } from '../../../Button';
 import { Checkbox } from '../../../Checkbox';
+import { DocumentSelector, ImageSelector } from '../../../consul';
 import { Input } from '../../../form';
-import { Image } from '../../../Image';
 import { Label } from '../../../Label';
 import { RegularText } from '../../../Text';
-import { Wrapper, WrapperHorizontal, WrapperRow } from '../../../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
 
 const TAG_CATEGORIES = [
   { name: 'Associations', id: 0, selected: false },
@@ -46,8 +43,6 @@ const ITEM_TYPES = {
   CATEGORY: 'category',
   PICKER: 'picker'
 };
-
-const IMAGE_TYPE_REGEX = /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i;
 
 const showPrivacyCheckRequireAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
@@ -118,16 +113,17 @@ export const NewProposal = ({ navigation, data, query }) => {
   }, [tags]);
 
   const uploadData = async (dataUri, dataType) => {
-    const uploadData = await uploadAttachment(dataUri, dataType);
-    if (uploadData.status === 200) {
-      const { cached_attachment: cachedAttachment, filename: title } = JSON.parse(uploadData.body);
+    const { status, body } = await uploadAttachment(dataUri, dataType);
+
+    if (status === 200) {
+      const { cached_attachment: cachedAttachment, filename: title } = JSON.parse(body);
 
       return {
         title,
         cachedAttachment
       };
-    } else if (uploadData.status === 422) {
-      const errors = JSON.parse(uploadData.body).errors.toLowerCase().split(' ').join('-');
+    } else if (status === 422) {
+      const errors = JSON.parse(body).errors.toLowerCase().split(' ').join('-');
 
       throw errors;
     }
@@ -338,197 +334,9 @@ export const NewProposal = ({ navigation, data, query }) => {
     </>
   );
 };
-
-const ImageSelector = ({ control, field, item }) => {
-  const [errorMessage, setErrorMessage] = useState('');
-  const [imageInfoText, setImageInfoText] = useState('');
-
-  const { buttonTitle, infoText } = item;
-  const { name, onChange, value } = field;
-
-  const { selectImage } = useSelectImage(
-    undefined, // onChange
-    false, // allowsEditing,
-    undefined, // aspect,
-    undefined // quality
-  );
-
-  return (
-    <>
-      <Input
-        {...item}
-        control={control}
-        errorMessage={errorMessage}
-        hidden
-        validate
-        name={name}
-        value={value}
-      />
-      <RegularText smallest placeholder>
-        {infoText}
-      </RegularText>
-
-      {value ? (
-        <>
-          <WrapperRow center spaceBetween>
-            <Image source={{ uri: value }} style={styles.image} />
-
-            <TouchableOpacity
-              onPress={() => {
-                onChange('');
-                setErrorMessage('');
-                setImageInfoText('');
-              }}
-            >
-              <Icon.Trash color={colors.error} size={normalize(16)} />
-            </TouchableOpacity>
-          </WrapperRow>
-          {!!imageInfoText && <RegularText smallest>{imageInfoText}</RegularText>}
-        </>
-      ) : (
-        <Button
-          title={buttonTitle}
-          invert
-          onPress={async () => {
-            const { uri, type } = await selectImage();
-            const { size } = await FileSystem.getInfoAsync(uri);
-            const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
-
-            const errorMessage = imageErrorMessageGenerator({
-              size,
-              imageType
-            });
-
-            setErrorMessage(texts.consul.startNew[errorMessage]);
-            setImageInfoText(`(${type}/${imageType}, ${bytesToSize(size)})`);
-            onChange(uri);
-          }}
-        />
-      )}
-    </>
-  );
-};
-
-const DocumentSelector = ({ control, field, item, documentsAttributes }) => {
-  const [errorMessage, setErrorMessage] = useState([]);
-  const [pdfInfoText, setPDFInfoText] = useState([]);
-
-  const { buttonTitle, infoText } = item;
-  const { name, onChange, value } = field;
-
-  const { selectDocument } = useSelectDocument();
-
-  return (
-    <>
-      <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
-      <RegularText smallest placeholder>
-        {infoText}
-      </RegularText>
-
-      {value
-        ? JSON.parse(value).map((item, index) => (
-            <>
-              <WrapperRow key={index} center spaceBetween>
-                <RegularText>{item.title}</RegularText>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    documentsAttributes.splice(index, 1);
-                    errorMessage.splice(index, 1);
-                    pdfInfoText.splice(index, 1);
-                    onChange(JSON.stringify(documentsAttributes));
-                    setErrorMessage(errorMessage);
-                    setPDFInfoText(pdfInfoText);
-                  }}
-                >
-                  <Icon.Trash color={colors.error} size={normalize(16)} />
-                </TouchableOpacity>
-              </WrapperRow>
-
-              {!!pdfInfoText && <RegularText smallest>{pdfInfoText[index]}</RegularText>}
-              {!!errorMessage && (
-                <RegularText smallest error>
-                  {errorMessage[index]}
-                </RegularText>
-              )}
-            </>
-          ))
-        : null}
-
-      {/* users can upload a maximum of 3 PDF files
-          if 3 PDFs are selected, the new add button will not be displayed. */}
-      {!value || JSON.parse(value).length < 3 ? (
-        <Button
-          title={buttonTitle}
-          invert
-          onPress={async () => {
-            const { mimeType, name: title, size, uri: cachedAttachment } = await selectDocument();
-
-            if (!cachedAttachment) return;
-
-            documentsAttributes.push({ title, cachedAttachment });
-
-            const errorMessages = documentErrorMessageGenerator({
-              size,
-              mimeType
-            });
-
-            setErrorMessage([...errorMessage, texts.consul.startNew[errorMessages]]);
-            setPDFInfoText([...pdfInfoText, `(${mimeType}, ${bytesToSize(size)})`]);
-            onChange(JSON.stringify(documentsAttributes));
-          }}
-        />
-      ) : null}
-    </>
-  );
-};
-
-const bytesToSize = (bytes) => {
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  if (bytes == 0) return '0 Byte';
-  let i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
-
-  return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
-};
-
-const imageErrorMessageGenerator = ({ size, imageType }) => {
-  const isJPG = imageType === 'jpg' || imageType === 'jpeg';
-  const isGreater1MB = size > 1048576;
-
-  const errorMessage =
-    !isJPG && isGreater1MB
-      ? 'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg,-choose-image-must-be-in-between-0-bytes-and-1-mb'
-      : !isJPG
-      ? 'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg'
-      : isGreater1MB
-      ? 'choose-image-must-be-in-between-0-bytes-and-1-mb'
-      : '';
-
-  return errorMessage;
-};
-
-const documentErrorMessageGenerator = ({ size, mimeType }) => {
-  const isPDF = mimeType === DOCUMENT_TYPE_PDF;
-  const isGreater3MB = size > 3145728;
-
-  const errorMessage =
-    !isPDF && isGreater3MB
-      ? 'choose-document-content-type-application/msword-does-not-match-any-of-accepted-content-types-pdf,-choose-document-must-be-in-between-0-bytes-and-3-mb'
-      : !isPDF
-      ? 'choose-document-content-type-application/msword-does-not-match-any-of-accepted-content-types-pdf'
-      : isGreater3MB
-      ? 'choose-document-must-be-in-between-0-bytes-and-3-mb'
-      : '';
-
-  return errorMessage;
-};
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  image: {
-    height: imageHeight(imageWidth() * 0.6),
-    width: imageWidth() * 0.6
-  },
   noPaddingTop: {
     paddingTop: 0
   },
@@ -546,21 +354,6 @@ NewProposal.propTypes = {
   data: PropTypes.object,
   navigation: PropTypes.object.isRequired,
   query: PropTypes.string
-};
-
-ImageSelector.propTypes = {
-  control: PropTypes.object,
-  field: PropTypes.object,
-  item: PropTypes.object,
-  selectImage: PropTypes.func
-};
-
-DocumentSelector.propTypes = {
-  control: PropTypes.object,
-  documentsAttributes: PropTypes.object,
-  field: PropTypes.object,
-  item: PropTypes.object,
-  selectImage: PropTypes.func
 };
 
 const INPUTS = [

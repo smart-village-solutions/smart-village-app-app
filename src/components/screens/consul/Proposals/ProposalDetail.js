@@ -147,9 +147,9 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
                 query: QUERY_TYPES.CONSUL.UPDATE_PROPOSAL,
                 data: {
                   description,
-                  documents: documents ?? undefined,
+                  documents,
                   id,
-                  image: imageUrlMedium ?? undefined,
+                  image: imageUrlMedium,
                   summary,
                   tagList: tags.nodes.map((item) => item.name),
                   termsOfService: true,

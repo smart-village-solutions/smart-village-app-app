@@ -131,11 +131,11 @@ export const texts = {
     votes: 'Stimmen',
     startNew: {
       'choose-document-content-type-application/msword-does-not-match-any-of-accepted-content-types-pdf':
-        'Inhaltstyp Document auswählen application/msword stimmt mit keinem der akzeptierten Inhaltstypen PDF überein.',
+        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur PDF akzeptiert.',
       'choose-document-content-type-application/msword-does-not-match-any-of-accepted-content-types-pdf,-choose-document-must-be-in-between-0-bytes-and-3-mb':
-        'Inhaltstyp Document auswählen application/msword stimmt mit keinem der akzeptierten Inhaltstypen PDF überein. Das ausgewählte Dokumente darf maximal 3 MB groß sein.',
+        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur PDF akzeptiert. Das ausgewählte Dokument darf maximal 3 MB groß sein.',
       'choose-document-must-be-in-between-0-bytes-and-3-mb':
-        'Das ausgewählte Dokumente darf maximal 3 MB groß sein.',
+        'Das ausgewählte Dokument darf maximal 3 MB groß sein.',
       'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg':
         'Inhaltstyp Bild auswählen image/png stimmt mit keinem der akzeptierten Inhaltstypen jpg überein.',
       'choose-image-content-type-image/png-does-not-match-any-of-accepted-content-types-jpg,-choose-image-must-be-in-between-0-bytes-and-1-mb':
@@ -152,9 +152,9 @@ export const texts = {
       newDebateStartButtonLabel: 'Eine Diskussion starten',
       newDebateTagLabel: 'Trennen Sie die Tags mit einem Komma (,)',
       newDebateTitleLabel: 'Title der Diskussion',
-      newProposalDocumentAddButtonTitle: 'Neues Dokument hinzufügen',
+      newProposalDocumentAddButtonTitle: 'Dokument hinzufügen',
       newProposalDocumentAddInfoText:
-        'Sie können maximal bis zu 3 Dokumente des folgenden Inhalttyps hochladen: pdf, bis zu 3 MB pro Datei.',
+        'Sie können maximal 3 Dokumente des folgenden Inhalttyps hochladen: pdf, bis zu 3 MB pro Datei.',
       newProposalDocumentAddTitle: 'Dokumente',
       newProposalDescriptionLabel: 'Vorschlagstext',
       newProposalExternesVideoUrlLabel: 'Externe Video-URL',
