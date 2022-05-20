@@ -29,8 +29,7 @@
       "infoPlist": {
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes."
-      },
-      "usesIcloudStorage": true
+      }
     },
     "android": {
       "permissions": [
