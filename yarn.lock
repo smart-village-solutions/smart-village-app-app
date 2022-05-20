@@ -6212,6 +6212,15 @@ expo-device@~4.0.3:
     expo-modules-core "~0.4.4"
     ua-parser-js "^0.7.19"
 
+expo-document-picker@~10.0.3:
+  version "10.0.3"
+  resolved "https://registry.yarnpkg.com/expo-document-picker/-/expo-document-picker-10.0.3.tgz#80697fd13dcb6d4975658f8c7eddc24af2a94b76"
+  integrity sha512-upH2A+1s7mf54rWDDpngNWITKQDd/eiMOjprfcnoRj1/GTx6crMDKaVd9vNEir0z2K7ZYULj8hapGAAMHLTglA==
+  dependencies:
+    "@expo/config-plugins" "^4.0.2"
+    expo-modules-core "~0.4.4"
+    uuid "^3.3.2"
+
 expo-error-recovery@~3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/expo-error-recovery/-/expo-error-recovery-3.0.3.tgz#43ded4320ed3a1136f976ed07805303b6069c618"
