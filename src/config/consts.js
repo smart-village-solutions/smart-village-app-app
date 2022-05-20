@@ -57,7 +57,9 @@ export const consts = {
     WEATHER: 3600000
   },
 
-  PDF_OR_JPG_TYPE_REGEX: /\.(([pP][dD][fF])|([jJ][pP][eE]?[gG]))$/i,
+  IMAGE_TYPE_REGEX: /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i,
+  JPG_TYPE_REGEX: /\.((jpe?g))$/i,
+  PDF_TYPE_REGEX: /\.((pdf))$/i,
 
   REFRESH_INTERVALS: {
     // refresh intervals per time:

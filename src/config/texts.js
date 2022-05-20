@@ -130,25 +130,22 @@ export const texts = {
     vote: 'Stimme',
     votes: 'Stimmen',
     startNew: {
-      'documentSizeError-choosedocumentmustbeinbetween0bytesand3mb':
-        'Das ausgewählte Dokument darf maximal 3 MB groß sein.',
-      'documentTypeError-doesnotmatchanyofacceptedcontenttypespdf':
-        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur PDF akzeptiert.',
-      'documentTypeAndSizeError-doesnotmatchanyofacceptedcontenttypespdf,choosedocumentmustbeinbetween0bytesand3mb':
-        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur PDF akzeptiert. Das ausgewählte Dokument darf maximal 3 MB groß sein.',
-      'imageSizeError-chooseimagemustbeinbetween0bytesand1mb':
-        'Das ausgewählte Bild darf maximal 1 MB groß sein.',
-      'imageTypeError-doesnotmatchanyofacceptedcontenttypesjpg':
-        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur JPG akzeptiert.',
-      'imageTypeAndSizeError-doesnotmatchanyofacceptedcontenttypesjpg,chooseimagemustbeinbetween0bytesand1mb':
-        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur JPG akzeptiert. Das ausgewählte Bild darf maximal 1 MB groß sein.',
-
       categoriesTitle: 'Kategorien',
       descriptionShortError: 'ist zu kurz (minimum 10 Zeichen)',
+      documentSizeError: 'Das ausgewählte Dokument darf maximal 3 MB groß sein.',
+      documentTypeAndSizeError:
+        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur PDF akzeptiert. Das ausgewählte Dokument darf maximal 3 MB groß sein.',
+      documentTypeError:
+        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur PDF akzeptiert.',
       editButtonLabelOnDetailScreen: 'Bearbeiten',
       emptyError: 'darf nicht leer sein',
       generalDataUploadError:
         'Beim Hochladen des Fotos oder Dokuments ist ein Problem aufgetreten. Bitte überprüfen.',
+      imageSizeError: 'Das ausgewählte Bild darf maximal 1 MB groß sein.',
+      imageTypeAndSizeError:
+        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur JPG akzeptiert. Das ausgewählte Bild darf maximal 1 MB groß sein.',
+      imageTypeError:
+        'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur JPG akzeptiert.',
       newDebateDescriptionLabel: 'Initialer Debattenbeitrag',
       newDebateStartButtonLabel: 'Eine Diskussion starten',
       newDebateTagLabel: 'Trennen Sie die Tags mit einem Komma (,)',

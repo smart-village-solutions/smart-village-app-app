@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../config';
 import { deleteArrayItem, formatSize } from '../../../helpers';
-import { documentErrorMessageHepler } from '../../../helpers/consul/documentErrorMessageHepler';
+import { documentErrorMessageGenerator } from '../../../helpers';
 import { useSelectDocument } from '../../../hooks';
 import { Button } from '../../Button';
 import { Input } from '../../form';
@@ -65,7 +65,7 @@ export const DocumentSelector = ({ control, field, item, documentsAttributes }) 
 
             if (!cachedAttachment) return;
 
-            const errorMessages = await documentErrorMessageHepler(cachedAttachment);
+            const errorMessages = await documentErrorMessageGenerator(cachedAttachment);
 
             documentsAttributes.push({ title, cachedAttachment });
 

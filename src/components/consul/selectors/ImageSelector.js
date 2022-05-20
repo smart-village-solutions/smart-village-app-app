@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, consts, Icon, normalize, texts } from '../../../config';
-import { formatSize, imageErrorMessageHelper, imageHeight, imageWidth } from '../../../helpers';
+import { formatSize, imageErrorMessageGenerator, imageHeight, imageWidth } from '../../../helpers';
 import { useSelectImage } from '../../../hooks';
 import { Button } from '../../Button';
 import { Input } from '../../form';
@@ -68,7 +68,7 @@ export const ImageSelector = ({ control, field, item }) => {
           onPress={async () => {
             const { uri, type } = await selectImage();
             const { size } = await FileSystem.getInfoAsync(uri);
-            const errorMessage = await imageErrorMessageHelper(uri);
+            const errorMessage = await imageErrorMessageGenerator(uri);
             const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
 
             setInfoAndErrorText({

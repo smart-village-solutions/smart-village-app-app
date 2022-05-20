@@ -6,8 +6,7 @@ import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, namespace, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
-import { imageErrorMessageHelper } from '../../../../helpers';
-import { documentErrorMessageHepler } from '../../../../helpers/consul/documentErrorMessageHepler';
+import { documentErrorMessageGenerator, imageErrorMessageGenerator } from '../../../../helpers';
 import { QUERY_TYPES } from '../../../../queries';
 import { START_PROPOSAL, UPDATE_PROPOSAL } from '../../../../queries/consul';
 import { uploadAttachment } from '../../../../queries/consul/uploads';
@@ -125,8 +124,6 @@ export const NewProposal = ({ navigation, data, query }) => {
         cachedAttachment
       };
     } else if (status === 422) {
-      const errors = JSON.parse(body).errors.toLowerCase().split(' ').join('');
-
       throw errors;
     }
   };
@@ -158,7 +155,7 @@ export const NewProposal = ({ navigation, data, query }) => {
       } catch (error) {
         setIsLoading(false);
 
-        const errorMessage = await imageErrorMessageHelper(newProposalData.image);
+        const errorMessage = await imageErrorMessageGenerator(newProposalData.image);
 
         return showDataUploadError(
           texts.consul.startNew[errorMessage] ?? texts.consul.startNew.generalDataUploadError
@@ -186,7 +183,7 @@ export const NewProposal = ({ navigation, data, query }) => {
         } catch (error) {
           setIsLoading(false);
 
-          const errorMessage = await documentErrorMessageHepler(cachedAttachment);
+          const errorMessage = await documentErrorMessageGenerator(cachedAttachment);
 
           return showDataUploadError(
             texts.consul.startNew[errorMessage] ?? texts.consul.startNew.generalDataUploadError
