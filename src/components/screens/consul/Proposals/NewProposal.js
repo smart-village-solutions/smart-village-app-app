@@ -59,7 +59,6 @@ export const NewProposal = ({ navigation, data, query }) => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [tags, setTags] = useState([]);
-  const documentsAttributes = [];
 
   const {
     control,
@@ -69,7 +68,7 @@ export const NewProposal = ({ navigation, data, query }) => {
   } = useForm({
     defaultValues: {
       description: data?.description || '',
-      documents: JSON.stringify(data?.documents) || '',
+      documents: JSON.stringify(data?.documents) || '[]',
       image: data?.image || '',
       summary: data?.summary || '',
       tagList: data?.tagList?.toString() || '',
@@ -124,6 +123,8 @@ export const NewProposal = ({ navigation, data, query }) => {
         cachedAttachment
       };
     } else if (status === 422) {
+      const errors = JSON.parse(body.body).errors;
+
       throw errors;
     }
   };
@@ -299,7 +300,7 @@ export const NewProposal = ({ navigation, data, query }) => {
                 item.name === 'image' ? (
                   <ImageSelector {...{ control, field, item }} />
                 ) : (
-                  <DocumentSelector {...{ control, field, item, documentsAttributes }} />
+                  <DocumentSelector {...{ control, field, item }} />
                 )
               }
             />

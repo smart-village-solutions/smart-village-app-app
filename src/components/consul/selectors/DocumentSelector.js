@@ -1,23 +1,27 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../config';
-import { deleteArrayItem, formatSize } from '../../../helpers';
-import { documentErrorMessageGenerator } from '../../../helpers';
+import { deleteArrayItem, documentErrorMessageGenerator, formatSize } from '../../../helpers';
 import { useSelectDocument } from '../../../hooks';
 import { Button } from '../../Button';
 import { Input } from '../../form';
 import { RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
 
-export const DocumentSelector = ({ control, field, item, documentsAttributes }) => {
-  const [infoAndErrorText, setInfoAndErrorText] = useState([]);
-
+export const DocumentSelector = ({ control, field, item }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
+  const [infoAndErrorText, setInfoAndErrorText] = useState([]);
+  const [documentsAttributes, setDocumentsAttributes] = useState(JSON.parse(value));
+
   const { selectDocument } = useSelectDocument();
+
+  useEffect(() => {
+    onChange(JSON.stringify(documentsAttributes));
+  }, [documentsAttributes]);
 
   return (
     <>
@@ -34,7 +38,7 @@ export const DocumentSelector = ({ control, field, item, documentsAttributes }) 
 
                 <TouchableOpacity
                   onPress={() => {
-                    onChange(JSON.stringify(deleteArrayItem(documentsAttributes, index)));
+                    setDocumentsAttributes(deleteArrayItem(documentsAttributes, index));
                     setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
                   }}
                 >
@@ -67,7 +71,7 @@ export const DocumentSelector = ({ control, field, item, documentsAttributes }) 
 
             const errorMessages = await documentErrorMessageGenerator(cachedAttachment);
 
-            documentsAttributes.push({ title, cachedAttachment });
+            setDocumentsAttributes([...documentsAttributes, { title, cachedAttachment }]);
 
             setInfoAndErrorText([
               ...infoAndErrorText,
@@ -76,7 +80,6 @@ export const DocumentSelector = ({ control, field, item, documentsAttributes }) 
                 infoText: `(${mimeType}, ${formatSize(size)})`
               }
             ]);
-            onChange(JSON.stringify(documentsAttributes));
           }}
         />
       ) : null}

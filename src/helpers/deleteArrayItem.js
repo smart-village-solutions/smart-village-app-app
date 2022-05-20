@@ -1,6 +1,6 @@
-export const deleteArrayItem = (mainArray, moveFromIndex) => {
-  const array = mainArray;
-  array.splice(moveFromIndex, 1);
+export const deleteArrayItem = (items, moveFromIndex) => {
+  const newItems = [...items];
+  newItems.splice(moveFromIndex, 1);
 
-  return array;
+  return newItems;
 };
