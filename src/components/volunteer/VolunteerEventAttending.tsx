@@ -20,11 +20,13 @@ const MAX_AVATARS_COUNT = 10;
 export const VolunteerEventAttending = ({
   calendarEntryId,
   data,
-  navigation
+  navigation,
+  isAttendingEvent
 }: {
   calendarEntryId: number;
   data: VolunteerUser[];
   navigation: StackScreenProps<any>['navigation'];
+  isAttendingEvent?: boolean;
 }) => {
   const [attendees, setAttendees] = useState<VolunteerUser[]>();
 
@@ -42,7 +44,8 @@ export const VolunteerEventAttending = ({
             title: texts.volunteer.participants,
             query: QUERY_TYPES.VOLUNTEER.CALENDAR,
             queryVariables: calendarEntryId,
-            rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+            rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
+            isAttendingEvent
           })
         }
       >

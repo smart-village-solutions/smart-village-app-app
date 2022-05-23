@@ -37,6 +37,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
   const isGroupMember = route.params?.isGroupMember ?? false;
+  const isAttendingEvent = route.params?.isAttendingEvent ?? false;
   const showFilter = false; // TODO: filter?
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
@@ -107,7 +108,8 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           showBackToTop
           openWebScreen={openWebScreen}
         />
-        {query === QUERY_TYPES.VOLUNTEER.MEMBERS && isGroupMember && (
+        {((query === QUERY_TYPES.VOLUNTEER.MEMBERS && isGroupMember) ||
+          (query === QUERY_TYPES.VOLUNTEER.CALENDAR && isAttendingEvent)) && (
           <Wrapper style={styles.noPaddingBottom}>
             <Button
               onPress={() =>

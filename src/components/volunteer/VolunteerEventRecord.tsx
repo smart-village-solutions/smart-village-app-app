@@ -100,7 +100,12 @@ export const VolunteerEventRecord = ({
         {device.platform === 'ios' && <TitleShadow />}
 
         {!!attending?.length && (
-          <VolunteerEventAttending calendarEntryId={id} data={attending} navigation={navigation} />
+          <VolunteerEventAttending
+            calendarEntryId={id}
+            data={attending}
+            navigation={navigation}
+            isAttendingEvent={isAttendingEvent}
+          />
         )}
 
         {!!appointments?.length && (
