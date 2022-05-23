@@ -23,12 +23,14 @@ const MAX_AVATARS_COUNT = 10;
 export const VolunteerGroupMember = ({
   groupId,
   navigation,
+  isGroupMember,
   setIsGroupMember,
   isSuccessJoin,
   isSuccessLeave
 }: {
   groupId: number;
   navigation: StackScreenProps<any>['navigation'];
+  isGroupMember?: boolean;
   setIsGroupMember: (isMember: boolean) => void;
   isSuccessJoin: boolean;
   isSuccessLeave: boolean;
@@ -78,7 +80,8 @@ export const VolunteerGroupMember = ({
             title: texts.volunteer.members,
             query: QUERY_TYPES.VOLUNTEER.MEMBERS,
             queryVariables: groupId,
-            rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+            rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
+            isGroupMember
           })
         }
       >

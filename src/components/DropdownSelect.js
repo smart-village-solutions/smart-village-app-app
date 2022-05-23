@@ -115,7 +115,9 @@ export const DropdownSelect = ({
         keyboardShouldPersistTaps="handled"
       >
         <WrapperRow style={styles.dropdownTextWrapper}>
-          <RegularText>{multipleSelect ? selectedMultipleValues : selectedValue}</RegularText>
+          <RegularText style={styles.selectedValueText}>
+            {multipleSelect ? selectedMultipleValues : selectedValue}
+          </RegularText>
           {arrow === 'down' ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
         </WrapperRow>
       </Dropdown>
@@ -147,7 +149,8 @@ const styles = StyleSheet.create({
   dropdownSeparator: {
     backgroundColor: colors.borderRgba,
     height: StyleSheet.hairlineWidth
-  }
+  },
+  selectedValueText: { width: '90%' }
 });
 
 DropdownSelect.displayName = 'DropdownSelect';

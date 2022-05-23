@@ -121,6 +121,7 @@ export const VolunteerGroup = ({
         <VolunteerGroupMember
           groupId={id}
           navigation={navigation}
+          isGroupMember={isGroupMember}
           setIsGroupMember={setIsGroupMember}
           isSuccessJoin={isSuccessJoin}
           isSuccessLeave={isSuccessLeave}
