@@ -1,60 +1,106 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { useMutation, useQuery } from 'react-query';
 
+import * as appJson from '../../../app.json';
 import {
   BoldText,
   Button,
+  Checkbox,
   DefaultKeyboardAvoidingView,
   Input,
+  InputSecureTextIcon,
   LoadingModal,
   SafeAreaViewFlex,
   Title,
   TitleContainer,
   Touchable,
   Wrapper,
+  WrapperHorizontal,
   WrapperWithOrientation
 } from '../../components';
-import { colors, consts, Icon, normalize, texts } from '../../config';
-import { ScreenName } from '../../types';
-import { register } from '../../queries/volunteer';
+import { consts, secrets, texts } from '../../config';
+import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
+import { QUERY_TYPES } from '../../queries';
+import { me, register } from '../../queries/volunteer';
+import { ScreenName, VolunteerRegistration } from '../../types';
 
-const { a11yLabel } = consts;
+const { a11yLabel, EMAIL_REGEX } = consts;
+const namespace = appJson.expo.slug as keyof typeof secrets;
+const dataPrivacyLink = secrets[namespace]?.volunteer?.dataPrivacyLink;
 
-const showInvalidRegisterAlert = () =>
-  Alert.alert('Fehler bei der Registrierung', 'Bitte Eingaben überprüfen und erneut versuchen.');
+const showRegistrationFailAlert = () =>
+  Alert.alert(texts.volunteer.registrationFailedTitle, texts.volunteer.registrationFailedBody);
+
+const showPrivacyCheckedAlert = () =>
+  Alert.alert(texts.volunteer.privacyCheckRequireTitle, texts.volunteer.privacyCheckRequireBody);
 
 // eslint-disable-next-line complexity
 export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any>) => {
+  const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
+  const [isSecureTextEntryConfirmation, setIsSecureTextEntryConfirmation] = useState(true);
+  const [hasAcceptedDataPrivacy, setHasAcceptedDataPrivacy] = useState(false);
+
   const {
     control,
     formState: { errors },
     handleSubmit,
     watch
-  } = useForm({ mode: 'onChange' });
+  } = useForm<VolunteerRegistration>({
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      passwordConfirmation: '',
+      dataPrivacyCheck: false
+    }
+  });
   const password = watch('password');
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const [secureTextEntryConfirmation, setSecureTextEntryConfirmation] = useState(true);
+
   const { mutate: mutateRegister, isLoading, isError, isSuccess, data, reset } = useMutation(
     register
   );
-  const onSubmit = (registerData: {
-    username: string;
-    email: string;
-    password: string;
-    passwordConfirmation: string;
-  }) => mutateRegister(registerData);
+  const {
+    isLoading: isLoadingMe,
+    isError: isErrorMe,
+    isSuccess: isSuccessMe,
+    data: dataMe
+  } = useQuery(QUERY_TYPES.VOLUNTEER.ME, me, {
+    enabled: !!data?.auth_token, // the query will not execute until the auth token exists
+    onSuccess: (dataMe) => {
+      if (dataMe?.account) {
+        // save user data to global state
+        storeVolunteerUserData(dataMe.account);
 
-  if (isError || (!isLoading && data && data.code !== 200)) {
-    // TODO: catch errors
-    // showInvalidRegisterAlert();
-    // reset();
-    // TODO: remove navigation if real registration is working
-    navigation.navigate(ScreenName.VolunteerRegistered);
-  } else if (isSuccess) {
-    navigation.navigate(ScreenName.VolunteerRegistered);
+        navigation.navigate(ScreenName.VolunteerRegistered);
+      }
+    }
+  });
+
+  const onSubmit = (registerData: VolunteerRegistration) => {
+    if (!hasAcceptedDataPrivacy) return showPrivacyCheckedAlert();
+
+    mutateRegister(
+      { ...registerData, dataPrivacyCheck: hasAcceptedDataPrivacy },
+      {
+        onSuccess: (data) => {
+          // wait for saving auth token to global state
+          return storeVolunteerAuthToken(data.auth_token);
+        }
+      }
+    );
+  };
+
+  if (
+    isError ||
+    isErrorMe ||
+    (isSuccess && data?.code && data?.code !== 200) ||
+    (isSuccessMe && dataMe?.status && dataMe?.status !== 200)
+  ) {
+    showRegistrationFailAlert();
+    reset();
   }
 
   return (
@@ -71,6 +117,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
                 {texts.volunteer.registrationTitle}
               </Title>
             </TitleContainer>
+
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="username"
@@ -79,13 +126,15 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
                 textContentType="username"
                 autoCapitalize="none"
                 validate
-                rules={{ required: true }}
-                errorMessage={
-                  errors.username && `${texts.volunteer.username} muss ausgefüllt werden`
-                }
+                rules={{
+                  required: texts.volunteer.usernameError,
+                  minLength: { value: 4, message: texts.volunteer.usernameErrorLengthError }
+                }}
+                errorMessage={errors.username && errors.username.message}
                 control={control}
               />
             </Wrapper>
+
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="email"
@@ -96,13 +145,15 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
                 autoCompleteType="email"
                 autoCapitalize="none"
                 validate
-                rules={{ required: true, validate: (input: string) => /\S+@\S+\.\S+/.test(input) }}
-                errorMessage={
-                  errors.email && `${texts.volunteer.email} muss korrekt ausgefüllt werden`
-                }
+                rules={{
+                  required: texts.volunteer.emailError,
+                  pattern: { value: EMAIL_REGEX, message: texts.volunteer.emailInvalid }
+                }}
+                errorMessage={errors.email && errors.email.message}
                 control={control}
               />
             </Wrapper>
+
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="password"
@@ -110,24 +161,23 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
                 placeholder={texts.volunteer.password}
                 textContentType="password"
                 autoCompleteType="password"
-                secureTextEntry={secureTextEntry}
+                secureTextEntry={isSecureTextEntry}
                 rightIcon={
-                  <TouchableOpacity onPress={() => setSecureTextEntry(!secureTextEntry)}>
-                    {secureTextEntry ? (
-                      <Icon.Visible color={colors.darkText} size={normalize(24)} />
-                    ) : (
-                      <Icon.Unvisible color={colors.darkText} size={normalize(24)} />
-                    )}
-                  </TouchableOpacity>
+                  <InputSecureTextIcon
+                    isSecureTextEntry={isSecureTextEntry}
+                    setIsSecureTextEntry={setIsSecureTextEntry}
+                  />
                 }
                 validate
-                rules={{ required: true }}
-                errorMessage={
-                  errors.password && `${texts.volunteer.password} muss ausgefüllt werden`
-                }
+                rules={{
+                  required: texts.volunteer.passwordError,
+                  minLength: { value: 5, message: texts.volunteer.passwordLengthError }
+                }}
+                errorMessage={errors.password && errors.password.message}
                 control={control}
               />
             </Wrapper>
+
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="passwordConfirmation"
@@ -135,33 +185,42 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
                 placeholder={texts.volunteer.passwordConfirmation}
                 textContentType="password"
                 autoCompleteType="password"
-                secureTextEntry={secureTextEntryConfirmation}
+                secureTextEntry={isSecureTextEntryConfirmation}
                 rightIcon={
-                  <TouchableOpacity
-                    onPress={() => setSecureTextEntryConfirmation(!secureTextEntryConfirmation)}
-                  >
-                    {secureTextEntryConfirmation ? (
-                      <Icon.Visible color={colors.darkText} size={normalize(24)} />
-                    ) : (
-                      <Icon.Unvisible color={colors.darkText} size={normalize(24)} />
-                    )}
-                  </TouchableOpacity>
+                  <InputSecureTextIcon
+                    isSecureTextEntry={isSecureTextEntryConfirmation}
+                    setIsSecureTextEntry={setIsSecureTextEntryConfirmation}
+                  />
                 }
                 validate
-                rules={{ required: true, validate: (input: string) => password === input }}
-                errorMessage={
-                  errors.passwordConfirmation &&
-                  `${texts.volunteer.passwordConfirmation} muss ausgefüllt werden ` +
-                    `und mit ${texts.volunteer.password} übereinstimmen`
-                }
+                rules={{
+                  required: texts.volunteer.passwordError,
+                  minLength: { value: 5, message: texts.volunteer.passwordLengthError },
+                  validate: (value) => value === password || texts.volunteer.passwordDoNotMatch
+                }}
+                errorMessage={errors.passwordConfirmation && errors.passwordConfirmation.message}
                 control={control}
               />
             </Wrapper>
+
+            <WrapperHorizontal>
+              <Checkbox
+                linkDescription={texts.volunteer.privacyCheckLink}
+                link={dataPrivacyLink}
+                title={texts.volunteer.privacyChecked}
+                checkedIcon="check-square-o"
+                uncheckedIcon="square-o"
+                checked={hasAcceptedDataPrivacy}
+                center={false}
+                onPress={() => setHasAcceptedDataPrivacy(!hasAcceptedDataPrivacy)}
+              />
+            </WrapperHorizontal>
+
             <Wrapper>
               <Button
                 onPress={handleSubmit(onSubmit)}
                 title={texts.volunteer.next}
-                disabled={isLoading}
+                disabled={isLoading || isLoadingMe}
               />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
@@ -170,7 +229,8 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
               </Touchable>
             </Wrapper>
           </WrapperWithOrientation>
-          <LoadingModal loading={isLoading} />
+
+          <LoadingModal loading={isLoading || isLoadingMe} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

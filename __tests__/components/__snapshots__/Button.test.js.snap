@@ -33,7 +33,7 @@ exports[`Button renders a button with Outline style 1`] = `
         Object {
           "alignItems": "center",
           "backgroundColor": "transparent",
-          "borderColor": "rgb(16, 120, 33)",
+          "borderColor": "#107821",
           "borderRadius": 3,
           "borderStyle": "solid",
           "borderWidth": 2,
@@ -46,7 +46,7 @@ exports[`Button renders a button with Outline style 1`] = `
       <Text
         style={
           Object {
-            "color": "rgb(16, 120, 33)",
+            "color": "#107821",
             "fontFamily": "bold",
             "fontSize": 18,
             "paddingBottom": 1,

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
 
 import * as appJson from '../../../../app.json';
 import {
@@ -10,6 +10,7 @@ import {
   Button,
   DefaultKeyboardAvoidingView,
   Input,
+  InputSecureTextIcon,
   LoadingModal,
   RegularText,
   SafeAreaViewFlex,
@@ -19,10 +20,9 @@ import {
   Wrapper,
   WrapperWithOrientation
 } from '../../../components';
-import { colors, consts, Icon, normalize, secrets, texts } from '../../../config';
+import { consts, secrets, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { setConsulAuthToken, setConsulUser } from '../../../helpers';
-import { usePullToRefetch } from '../../../hooks';
 import { CONSUL_LOGIN_USER } from '../../../queries/consul';
 import { ScreenName } from '../../../types';
 
@@ -36,7 +36,6 @@ const showLoginFailAlert = () =>
 
 export const ConsulLoginScreen = ({ navigation }) => {
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
 
   const {
     control,
@@ -49,37 +48,29 @@ export const ConsulLoginScreen = ({ navigation }) => {
     }
   });
 
-  const [userLogin] = useMutation(CONSUL_LOGIN_USER, {
+  const [userLogin, { loading: isLoading }] = useMutation(CONSUL_LOGIN_USER, {
     client: ConsulClient
   });
 
   const onSubmit = async (inputData) => {
-    setIsLoading(true);
     try {
-      let userData = await userLogin({
+      const userData = await userLogin({
         variables: { email: inputData?.email, password: inputData?.password }
       });
-      await setConsulAuthToken(userData.data.userLogin?.credentials);
-      await setConsulUser(userData.data.userLogin?.authenticatable);
+      await setConsulAuthToken(userData?.data?.userLogin?.credentials);
+      await setConsulUser(userData?.data?.userLogin?.authenticatable);
 
-      navigation?.navigate(ScreenName.ConsulHomeScreen, {
-        refreshUser: new Date().valueOf()
-      });
-
-      setIsLoading(false);
+      navigation.navigate(ScreenName.ConsulHomeScreen, { refreshUser: new Date().valueOf() });
     } catch (error) {
       console.error(error.message);
-      setIsLoading(false);
       showLoginFailAlert();
     }
   };
 
-  const RefreshControl = usePullToRefetch();
-
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
-        <ScrollView keyboardShouldPersistTaps="handled" refreshControl={RefreshControl}>
+        <ScrollView keyboardShouldPersistTaps="handled">
           <WrapperWithOrientation>
             <TitleContainer>
               <Title
@@ -115,7 +106,12 @@ export const ConsulLoginScreen = ({ navigation }) => {
                 textContentType="password"
                 autoCompleteType="password"
                 secureTextEntry={isSecureTextEntry}
-                rightIcon={rightIcon(isSecureTextEntry, setIsSecureTextEntry)}
+                rightIcon={
+                  <InputSecureTextIcon
+                    isSecureTextEntry={isSecureTextEntry}
+                    setIsSecureTextEntry={setIsSecureTextEntry}
+                  />
+                }
                 validate
                 rules={{
                   required: texts.consul.passwordError,
@@ -160,18 +156,6 @@ export const ConsulLoginScreen = ({ navigation }) => {
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
-  );
-};
-
-const rightIcon = (isSecureTextEntry, setIsSecureTextEntry) => {
-  return (
-    <TouchableOpacity onPress={() => setIsSecureTextEntry(!isSecureTextEntry)}>
-      {isSecureTextEntry ? (
-        <Icon.Visible color={colors.darkText} size={normalize(20)} />
-      ) : (
-        <Icon.Unvisible color={colors.darkText} size={normalize(20)} />
-      )}
-    </TouchableOpacity>
   );
 };
 

@@ -1,4 +1,9 @@
-import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
+import {
+  volunteerApiV1Url,
+  volunteerApiV2Url,
+  volunteerAuthToken
+} from '../../helpers/volunteerHelper';
+import { VolunteerRegistration } from '../../types';
 
 export const logIn = async ({ username, password }: { username: string; password: string }) => {
   const formData = new FormData();
@@ -21,18 +26,22 @@ export const register = async ({
   username,
   email,
   password,
-  passwordConfirmation
-}: {
-  username: string;
-  email: string;
-  password: string;
-  passwordConfirmation: string;
-}) => {
-  const formData = new FormData();
-  formData.append('username', username);
-  formData.append('email', email);
-  formData.append('password', password);
-  formData.append('passwordConfirmation', passwordConfirmation);
+  passwordConfirmation,
+  dataPrivacyCheck
+}: VolunteerRegistration) => {
+  const formData = {
+    account: {
+      username,
+      email
+    },
+    password: {
+      newPassword: password,
+      newPasswordConfirm: passwordConfirmation
+    },
+    legal: {
+      dataPrivacyCheck
+    }
+  };
 
   const fetchObj = {
     method: 'POST',
@@ -40,10 +49,10 @@ export const register = async ({
       Accept: 'application/json',
       'Content-Type': 'application/json'
     },
-    body: formData
+    body: JSON.stringify(formData)
   };
 
-  return (await fetch(`${volunteerApiV1Url}register`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV2Url}auth/register`, fetchObj)).json();
 };
 
 // TODO: possible and needed?

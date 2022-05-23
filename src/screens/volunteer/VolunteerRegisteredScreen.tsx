@@ -52,8 +52,14 @@ export const VolunteerRegisteredScreen = ({ navigation }: Props) => {
           <Wrapper>
             <Button
               invert
-              title={texts.volunteer.ok}
-              onPress={() => navigation.navigate(ScreenName.VolunteerLogin)}
+              title={texts.volunteer.next}
+              onPress={() => {
+                navigation.navigate(ScreenName.VolunteerHome, {
+                  // refreshUser param causes the home screen to update and no longer show
+                  // the welcome component
+                  refreshUser: new Date().valueOf()
+                });
+              }}
             />
           </Wrapper>
         </WrapperWithOrientation>

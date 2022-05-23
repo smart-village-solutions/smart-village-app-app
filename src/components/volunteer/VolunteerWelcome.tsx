@@ -14,7 +14,6 @@ import { RegularText } from '../Text';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
-const inviteUrl = secrets[namespace]?.volunteer?.inviteUrl;
 
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,23 +26,8 @@ export const VolunteerWelcome = ({ navigation }: Props) => {
     name: 'ehrenamt-willkommen'
   });
 
-  const onPressLogin = useCallback(() => {
-    navigation.navigate(ScreenName.VolunteerLogin);
-  }, [navigation]);
-
-  const onPressRegister = useCallback(() => {
-    navigation.navigate(ScreenName.Web, {
-      title: texts.volunteer.register,
-      webUrl: inviteUrl,
-      injectedJavaScript: `
-        document.getElementById('app-title') && document.getElementById('app-title').remove();
-        document.getElementById('img-logo') && document.getElementById('img-logo').remove();
-        document.getElementById('login-form') && document.getElementById('login-form').remove();
-        document.querySelector('#register-form + div') && document.querySelector('#register-form + div').remove();
-        document.querySelector('.powered') && document.querySelector('.powered').remove();
-      `
-    });
-  }, [navigation]);
+  const onPressLogin = () => navigation.navigate(ScreenName.VolunteerLogin);
+  const onPressRegister = () => navigation.navigate(ScreenName.VolunteerRegistration);
 
   const RefreshControl = usePullToRefetch(refetch);
 

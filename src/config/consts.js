@@ -53,6 +53,10 @@ export const consts = {
     website: '(Webseite)',
     webViewHint: '(Öffnet Webseite in der aktuellen App)'
   },
+
+  // e-mail regex found at https://emailregex.com
+  EMAIL_REGEX: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+
   POLL_INTERVALS: {
     WEATHER: 3600000
   },
