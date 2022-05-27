@@ -1,10 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { useMutation } from 'react-apollo';
 import { TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../config';
+import { ConsulClient } from '../../../ConsulClient';
 import { deleteArrayItem, documentErrorMessageGenerator, formatSize } from '../../../helpers';
 import { useSelectDocument } from '../../../hooks';
+import { DELETE_DOCUMENT } from '../../../queries/consul';
 import { Button } from '../../Button';
 import { Input } from '../../form';
 import { RegularText } from '../../Text';
@@ -18,6 +21,10 @@ export const DocumentSelector = ({ control, field, item }) => {
   const [documentsAttributes, setDocumentsAttributes] = useState(JSON.parse(value));
 
   const { selectDocument } = useSelectDocument();
+
+  const [deleteDocument] = useMutation(DELETE_DOCUMENT, {
+    client: ConsulClient
+  });
 
   useEffect(() => {
     onChange(JSON.stringify(documentsAttributes));
@@ -37,7 +44,14 @@ export const DocumentSelector = ({ control, field, item }) => {
                 <RegularText>{item.title}</RegularText>
 
                 <TouchableOpacity
-                  onPress={() => {
+                  onPress={async () => {
+                    if (item.id) {
+                      try {
+                        await deleteDocument({ variables: { id: item.id } });
+                      } catch (err) {
+                        console.error(err);
+                      }
+                    }
                     setDocumentsAttributes(deleteArrayItem(documentsAttributes, index));
                     setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
                   }}
