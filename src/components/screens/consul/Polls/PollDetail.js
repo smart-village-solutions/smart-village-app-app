@@ -24,6 +24,7 @@ export const PollDetail = ({ data, refetch, route, navigation }) => {
   const [userId, setUserId] = useState();
 
   const {
+    resultsReadyToBeShown,
     comments,
     commentsCount,
     description,
@@ -96,9 +97,10 @@ export const PollDetail = ({ data, refetch, route, navigation }) => {
       {!!questions && (
         <ConsulQuestionsList
           data={questions}
-          refetch={refetch}
-          token={token}
           disabled={endsDate >= currentDate}
+          refetch={refetch}
+          resultsReadyToBeShown={resultsReadyToBeShown}
+          token={token}
         />
       )}
 

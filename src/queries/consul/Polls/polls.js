@@ -30,6 +30,7 @@ export const GET_POLL = gql`
       endsAt
       createdAt
       token
+      resultsReadyToBeShown
       comments {
         id
         parentId
@@ -55,6 +56,8 @@ export const GET_POLL = gql`
           id
           title
           description
+          totalVotes
+          totalVotesPercentage
         }
         answersGivenByCurrentUser {
           id

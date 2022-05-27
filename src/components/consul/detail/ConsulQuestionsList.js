@@ -9,7 +9,7 @@ import { Wrapper } from '../../Wrapper';
 import { ConsulQuestionsDescriptionListItem } from './ConsulQuestionsDescriptionListItem';
 import { ConsulQuestionsListItem } from './ConsulQuestionsListItem';
 
-export const ConsulQuestionsList = ({ data, refetch, token, disabled }) => {
+export const ConsulQuestionsList = ({ data, refetch, token, disabled, resultsReadyToBeShown }) => {
   const [isUserAnswer, setIsUserAnswer] = useState(false);
 
   useEffect(() => {
@@ -36,11 +36,12 @@ export const ConsulQuestionsList = ({ data, refetch, token, disabled }) => {
         data={data}
         renderItem={({ item, index }) => (
           <ConsulQuestionsListItem
-            questionItem={item}
-            index={index}
-            refetch={refetch}
-            token={token}
             disabled={disabled}
+            index={index}
+            questionItem={item}
+            refetch={refetch}
+            resultsReadyToBeShown={resultsReadyToBeShown}
+            token={token}
           />
         )}
       />
@@ -70,5 +71,6 @@ ConsulQuestionsList.propTypes = {
   data: PropTypes.array,
   disabled: PropTypes.bool,
   refetch: PropTypes.func,
+  resultsReadyToBeShown: PropTypes.bool,
   token: PropTypes.string
 };

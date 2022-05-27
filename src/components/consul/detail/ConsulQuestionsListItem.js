@@ -9,7 +9,15 @@ import { PROVIDE_ANSWER_TO_POLL_QUESTION } from '../../../queries/consul';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { BoldText, RegularText } from '../../Text';
 
-export const ConsulQuestionsListItem = ({ questionItem, refetch, token, disabled }) => {
+/* eslint-disable complexity */
+/* NOTE: we need to check a lot for presence, so this is that complex */
+export const ConsulQuestionsListItem = ({
+  disabled,
+  questionItem,
+  refetch,
+  resultsReadyToBeShown,
+  token
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { answersGivenByCurrentUser, id, questionAnswers, title } = questionItem;
@@ -17,6 +25,11 @@ export const ConsulQuestionsListItem = ({ questionItem, refetch, token, disabled
   const [provideAnswerToPollQuestion] = useMutation(PROVIDE_ANSWER_TO_POLL_QUESTION, {
     client: ConsulClient
   });
+
+  const totalVotesArray = questionAnswers.map(({ totalVotesPercentage }) => {
+    return totalVotesPercentage;
+  });
+  const highestVote = Math.max(...totalVotesArray);
 
   const onAnswer = async (answer) => {
     setIsLoading(true);
@@ -47,22 +60,33 @@ export const ConsulQuestionsListItem = ({ questionItem, refetch, token, disabled
           key={index}
           style={[
             styles.answerContainer,
-            answersGivenByCurrentUser[0] &&
-              answersGivenByCurrentUser[0].answer === item.title &&
-              styles.selectedContainer,
-            !disabled &&
+            (resultsReadyToBeShown && highestVote === item.totalVotesPercentage) ||
+            (!resultsReadyToBeShown &&
+              answersGivenByCurrentUser[0] &&
+              answersGivenByCurrentUser[0].answer === item.title)
+              ? styles.selectedContainer
+              : null,
+            !resultsReadyToBeShown &&
+              !disabled &&
               answersGivenByCurrentUser[0] &&
               answersGivenByCurrentUser[0].answer !== item.title &&
               styles.disabledAnswerContainer
           ]}
         >
           <RegularText placeholder={!disabled}>{item.title}</RegularText>
+
+          {!!resultsReadyToBeShown && (
+            <RegularText placeholder={!disabled}>
+              {item.totalVotes} - {parseFloat(item.totalVotesPercentage).toFixed(2)} %
+            </RegularText>
+          )}
         </TouchableOpacity>
       ))}
       {isLoading && <LoadingSpinner loading />}
     </View>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   answerContainer: {
@@ -92,5 +116,6 @@ ConsulQuestionsListItem.propTypes = {
   disabled: PropTypes.bool,
   questionItem: PropTypes.object.isRequired,
   refetch: PropTypes.func,
+  resultsReadyToBeShown: PropTypes.bool,
   token: PropTypes.string
 };
