@@ -170,10 +170,18 @@ export const NewProposal = ({ navigation, data, query }) => {
 
     if (newProposalData.documents) {
       let documents = JSON.parse(newProposalData.documents);
+      let documentsLength = documents.length;
+
       variables.attributes = {
         ...variables.attributes,
         documentsAttributes: []
       };
+
+      while (documentsLength--) {
+        if (documents[documentsLength].url) {
+          documents.splice(documentsLength, 1);
+        }
+      }
 
       for (let i = 0; i < documents.length; i++) {
         const { cachedAttachment, title } = documents[i];
