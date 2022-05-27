@@ -1,11 +1,14 @@
 import * as FileSystem from 'expo-file-system';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { useMutation } from 'react-apollo';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { ConsulClient } from '../../../ConsulClient';
 import { formatSize, imageErrorMessageGenerator, imageHeight, imageWidth } from '../../../helpers';
 import { useSelectImage } from '../../../hooks';
+import { DELETE_IMAGE } from '../../../queries/consul';
 import { Button } from '../../Button';
 import { Input } from '../../form';
 import { Image } from '../../Image';
@@ -14,11 +17,15 @@ import { WrapperRow } from '../../Wrapper';
 
 const { IMAGE_TYPE_REGEX } = consts;
 
-export const ImageSelector = ({ control, field, item }) => {
+export const ImageSelector = ({ control, field, item, imageId }) => {
   const [infoAndErrorText, setInfoAndErrorText] = useState({});
 
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
+
+  const [deleteImage] = useMutation(DELETE_IMAGE, {
+    client: ConsulClient
+  });
 
   const { selectImage } = useSelectImage(
     undefined, // onChange
@@ -48,7 +55,15 @@ export const ImageSelector = ({ control, field, item }) => {
             <Image source={{ uri: value }} style={styles.image} />
 
             <TouchableOpacity
-              onPress={() => {
+              onPress={async () => {
+                if (imageId) {
+                  try {
+                    await deleteImage({ variables: { id: imageId } });
+                  } catch (err) {
+                    console.error(err);
+                  }
+                }
+
                 onChange('');
                 setInfoAndErrorText({});
               }}
@@ -87,6 +102,7 @@ ImageSelector.propTypes = {
   control: PropTypes.object,
   field: PropTypes.object,
   item: PropTypes.object,
+  imageId: PropTypes.string,
   selectImage: PropTypes.func
 };
 

@@ -7,3 +7,11 @@ export const DELETE_DOCUMENT = gql`
     }
   }
 `;
+
+export const DELETE_IMAGE = gql`
+  mutation deleteImage($id: ID!) {
+    deleteImage(id: $id) {
+      id
+    }
+  }
+`;
