@@ -257,9 +257,8 @@ const querySwitcherForDetail = (query) => {
 
 const parseConsulData = (data, query, skipLastDivider) => {
   return data?.nodes?.map((consulData, index) => {
-    let subtitle = momentFormatUtcToLocal(
-      consulData.publicCreatedAt ? consulData.publicCreatedAt : consulData.createdAt
-    );
+    let subtitle = momentFormatUtcToLocal(consulData.publicCreatedAt ?? consulData.createdAt);
+    let title = consulData.title ?? consulData.body;
 
     if (query === QUERY_TYPES.CONSUL.PUBLIC_COMMENTS) {
       subtitle = consulData.commentableTitle;
@@ -270,13 +269,18 @@ const parseConsulData = (data, query, skipLastDivider) => {
         momentFormatUtcToLocal(consulData.endsAt);
     }
 
+    if (query === QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS && !consulData.published) {
+      title = `${texts.consul.draft} - ${consulData.title ?? consulData.body}`;
+    }
+
     return {
       id: consulData.id,
-      title: consulData.title ? consulData.title : consulData.body,
+      title,
       createdAt: consulData.publicCreatedAt,
       cachedVotesUp: consulData.cachedVotesUp,
       subtitle,
       routeName: ScreenName.ConsulDetailScreen,
+      published: consulData.published,
       params: {
         title: getTitleForQuery(query),
         query: querySwitcherForDetail(query),

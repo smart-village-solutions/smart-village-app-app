@@ -62,6 +62,8 @@ export const useRenderItem = (query, navigation, options = {}) => {
     }
     default: {
       renderItem = ({ item, index, section }) => {
+        if (query === QUERY_TYPES.CONSUL.PROPOSALS && !item.published) return;
+
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
           return (
             <VolunteerPostListItem

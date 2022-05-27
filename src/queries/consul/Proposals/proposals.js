@@ -9,6 +9,7 @@ export const GET_PROPOSALS = gql`
         publicCreatedAt
         commentsCount
         cachedVotesUp
+        published
       }
     }
   }
