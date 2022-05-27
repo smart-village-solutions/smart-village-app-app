@@ -28,6 +28,10 @@ export const GET_PROPOSAL = gql`
       commentsCount
       published
       videoUrl
+      image {
+        id
+        imageUrlLarge
+      }
       publicAuthor {
         id
         username
@@ -43,7 +47,6 @@ export const GET_PROPOSAL = gql`
         url
         title
       }
-      imageUrlMedium
       mapLocation {
         id
         latitude

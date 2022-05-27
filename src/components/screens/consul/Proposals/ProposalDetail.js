@@ -47,7 +47,7 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
     description,
     documents,
     id,
-    imageUrlMedium,
+    image,
     mapLocation,
     publicAuthor,
     publicCreatedAt,
@@ -149,7 +149,8 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
                   description,
                   documents,
                   id,
-                  image: imageUrlMedium,
+                  image: image?.imageUrlLarge,
+                  imageId: image?.id,
                   summary,
                   tagList: tags.nodes.map((item) => item.name),
                   termsOfService: true,
@@ -162,8 +163,8 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
         </Wrapper>
       )}
 
-      {!!imageUrlMedium && (
-        <Image source={{ uri: imageUrlMedium }} containerStyle={styles.imageContainerStyle} />
+      {!!image?.imageUrlLarge && (
+        <Image source={{ uri: image?.imageUrlLarge }} containerStyle={styles.imageContainerStyle} />
       )}
 
       {!!summary && <ConsulSummary summary={summary} />}
