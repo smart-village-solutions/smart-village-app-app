@@ -131,7 +131,11 @@ export const texts = {
     votes: 'Stimmen',
     startNew: {
       categoriesTitle: 'Kategorien',
+      deleteAttributesAlertTitle: 'Hinweis',
+      deleteAttributesButtonText: 'Löschen',
       descriptionShortError: 'ist zu kurz (minimum 10 Zeichen)',
+      documentDeleteAlertBody:
+        'Sind Sie sicher, dass Sie dieses Dokument löschen möchten? \n Diese Aktion kann nicht rückgängig gemacht werden!',
       documentSizeError: 'Das ausgewählte Dokument darf maximal 3 MB groß sein.',
       documentTypeAndSizeError:
         'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur PDF akzeptiert. Das ausgewählte Dokument darf maximal 3 MB groß sein.',
