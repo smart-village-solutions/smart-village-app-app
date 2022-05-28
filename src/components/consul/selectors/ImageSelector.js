@@ -2,7 +2,7 @@ import * as FileSystem from 'expo-file-system';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
@@ -16,6 +16,24 @@ import { RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
 
 const { IMAGE_TYPE_REGEX } = consts;
+
+const deleteImageAlert = (onDeleteImage) =>
+  Alert.alert(
+    texts.consul.startNew.deleteAttributesAlertTitle,
+    texts.consul.startNew.imageDeleteAlertBody,
+    [
+      {
+        text: texts.consul.abort,
+        onPress: () => null,
+        style: 'cancel'
+      },
+      {
+        text: texts.consul.startNew.deleteAttributesButtonText,
+        onPress: () => onDeleteImage(),
+        style: 'destructive'
+      }
+    ]
+  );
 
 export const ImageSelector = ({ control, field, item, imageId }) => {
   const [infoAndErrorText, setInfoAndErrorText] = useState({});
@@ -33,6 +51,19 @@ export const ImageSelector = ({ control, field, item, imageId }) => {
     undefined, // aspect,
     undefined // quality
   );
+
+  const onDeleteImage = async () => {
+    if (imageId) {
+      try {
+        await deleteImage({ variables: { id: imageId } });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    onChange('');
+    setInfoAndErrorText({});
+  };
 
   return (
     <>
@@ -54,20 +85,7 @@ export const ImageSelector = ({ control, field, item, imageId }) => {
           <WrapperRow center spaceBetween>
             <Image source={{ uri: value }} style={styles.image} />
 
-            <TouchableOpacity
-              onPress={async () => {
-                if (imageId) {
-                  try {
-                    await deleteImage({ variables: { id: imageId } });
-                  } catch (err) {
-                    console.error(err);
-                  }
-                }
-
-                onChange('');
-                setInfoAndErrorText({});
-              }}
-            >
+            <TouchableOpacity onPress={() => deleteImageAlert(onDeleteImage)}>
               <Icon.Trash color={colors.error} size={normalize(16)} />
             </TouchableOpacity>
           </WrapperRow>
