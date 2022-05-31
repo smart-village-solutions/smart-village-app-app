@@ -17,19 +17,18 @@ import { WrapperRow } from '../../Wrapper';
 
 const { IMAGE_TYPE_REGEX } = consts;
 
-const deleteImageAlert = (onDeleteImage) =>
+const deleteImageAlert = (onPress) =>
   Alert.alert(
     texts.consul.startNew.deleteAttributesAlertTitle,
     texts.consul.startNew.imageDeleteAlertBody,
     [
       {
         text: texts.consul.abort,
-        onPress: () => null,
         style: 'cancel'
       },
       {
         text: texts.consul.startNew.deleteAttributesButtonText,
-        onPress: () => onDeleteImage(),
+        onPress,
         style: 'destructive'
       }
     ]

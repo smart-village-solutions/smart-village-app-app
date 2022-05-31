@@ -13,19 +13,18 @@ import { Input } from '../../form';
 import { RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
 
-const deleteDocumentAlert = ({ onDeleteDocument, documentId, index }) =>
+const deleteDocumentAlert = (onPress) =>
   Alert.alert(
     texts.consul.startNew.deleteAttributesAlertTitle,
     texts.consul.startNew.documentDeleteAlertBody,
     [
       {
         text: texts.consul.abort,
-        onPress: () => null,
         style: 'cancel'
       },
       {
         text: texts.consul.startNew.deleteAttributesButtonText,
-        onPress: () => onDeleteDocument(documentId, index),
+        onPress,
         style: 'destructive'
       }
     ]
@@ -75,9 +74,7 @@ export const DocumentSelector = ({ control, field, item }) => {
                 <RegularText>{item.title}</RegularText>
 
                 <TouchableOpacity
-                  onPress={() =>
-                    deleteDocumentAlert({ onDeleteDocument, documentId: item.id, index })
-                  }
+                  onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
                 >
                   <Icon.Trash color={colors.error} size={normalize(16)} />
                 </TouchableOpacity>
