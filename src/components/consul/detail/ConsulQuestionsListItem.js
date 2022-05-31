@@ -61,15 +61,12 @@ export const ConsulQuestionsListItem = ({
           style={[
             styles.answerContainer,
             (resultsReadyToBeShown && highestVote === item.totalVotesPercentage) ||
-            (!resultsReadyToBeShown &&
-              answersGivenByCurrentUser[0] &&
-              answersGivenByCurrentUser[0].answer === item.title)
+            (!resultsReadyToBeShown && answersGivenByCurrentUser?.[0]?.answer === item.title)
               ? styles.selectedContainer
               : null,
             !resultsReadyToBeShown &&
               !disabled &&
-              answersGivenByCurrentUser[0] &&
-              answersGivenByCurrentUser[0].answer !== item.title &&
+              answersGivenByCurrentUser?.[0]?.answer === item.title &&
               styles.disabledAnswerContainer
           ]}
         >
