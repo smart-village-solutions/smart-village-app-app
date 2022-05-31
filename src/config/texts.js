@@ -131,7 +131,11 @@ export const texts = {
     votes: 'Stimmen',
     startNew: {
       categoriesTitle: 'Kategorien',
+      deleteAttributesAlertTitle: 'Hinweis',
+      deleteAttributesButtonText: 'Löschen',
       descriptionShortError: 'ist zu kurz (minimum 10 Zeichen)',
+      documentDeleteAlertBody:
+        'Sind Sie sicher, dass Sie dieses Dokument löschen möchten? \n Diese Aktion kann nicht rückgängig gemacht werden!',
       documentSizeError: 'Das ausgewählte Dokument darf maximal 3 MB groß sein.',
       documentTypeAndSizeError:
         'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur PDF akzeptiert. Das ausgewählte Dokument darf maximal 3 MB groß sein.',
@@ -141,6 +145,7 @@ export const texts = {
       emptyError: 'darf nicht leer sein',
       generalDataUploadError:
         'Beim Hochladen des Fotos oder Dokuments ist ein Problem aufgetreten. Bitte überprüfen.',
+      imageDeleteAlertBody: 'Möchten Sie das Bild löschen?',
       imageSizeError: 'Das ausgewählte Bild darf maximal 1 MB groß sein.',
       imageTypeAndSizeError:
         'Der ausgewählte Inhaltstyp wird leider nicht unterstützt. Es wird nur JPG akzeptiert. Das ausgewählte Bild darf maximal 1 MB groß sein.',

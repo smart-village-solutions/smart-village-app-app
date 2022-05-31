@@ -1,27 +1,64 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
+import { useMutation } from 'react-apollo';
+import { Alert, TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../config';
+import { ConsulClient } from '../../../ConsulClient';
 import { deleteArrayItem, documentErrorMessageGenerator, formatSize } from '../../../helpers';
 import { useSelectDocument } from '../../../hooks';
+import { DELETE_DOCUMENT } from '../../../queries/consul';
 import { Button } from '../../Button';
 import { Input } from '../../form';
 import { RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
 
+const deleteDocumentAlert = (onPress) =>
+  Alert.alert(
+    texts.consul.startNew.deleteAttributesAlertTitle,
+    texts.consul.startNew.documentDeleteAlertBody,
+    [
+      {
+        text: texts.consul.abort,
+        style: 'cancel'
+      },
+      {
+        text: texts.consul.startNew.deleteAttributesButtonText,
+        onPress,
+        style: 'destructive'
+      }
+    ]
+  );
+
 export const DocumentSelector = ({ control, field, item }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
-  const [infoAndErrorText, setInfoAndErrorText] = useState([]);
+  const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
   const [documentsAttributes, setDocumentsAttributes] = useState(JSON.parse(value));
 
   const { selectDocument } = useSelectDocument();
 
+  const [deleteDocument] = useMutation(DELETE_DOCUMENT, {
+    client: ConsulClient
+  });
+
   useEffect(() => {
     onChange(JSON.stringify(documentsAttributes));
   }, [documentsAttributes]);
+
+  const onDeleteDocument = async (documentId, index) => {
+    if (documentId) {
+      try {
+        await deleteDocument({ variables: { id: documentId } });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    setDocumentsAttributes(deleteArrayItem(documentsAttributes, index));
+    setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
+  };
 
   return (
     <>
@@ -37,10 +74,7 @@ export const DocumentSelector = ({ control, field, item }) => {
                 <RegularText>{item.title}</RegularText>
 
                 <TouchableOpacity
-                  onPress={() => {
-                    setDocumentsAttributes(deleteArrayItem(documentsAttributes, index));
-                    setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
-                  }}
+                  onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
                 >
                   <Icon.Trash color={colors.error} size={normalize(16)} />
                 </TouchableOpacity>

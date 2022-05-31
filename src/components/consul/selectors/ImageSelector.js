@@ -1,11 +1,14 @@
 import * as FileSystem from 'expo-file-system';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { useMutation } from 'react-apollo';
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { colors, consts, Icon, normalize, texts } from '../../../config';
+import { ConsulClient } from '../../../ConsulClient';
 import { formatSize, imageErrorMessageGenerator, imageHeight, imageWidth } from '../../../helpers';
 import { useSelectImage } from '../../../hooks';
+import { DELETE_IMAGE } from '../../../queries/consul';
 import { Button } from '../../Button';
 import { Input } from '../../form';
 import { Image } from '../../Image';
@@ -14,11 +17,32 @@ import { WrapperRow } from '../../Wrapper';
 
 const { IMAGE_TYPE_REGEX } = consts;
 
-export const ImageSelector = ({ control, field, item }) => {
+const deleteImageAlert = (onPress) =>
+  Alert.alert(
+    texts.consul.startNew.deleteAttributesAlertTitle,
+    texts.consul.startNew.imageDeleteAlertBody,
+    [
+      {
+        text: texts.consul.abort,
+        style: 'cancel'
+      },
+      {
+        text: texts.consul.startNew.deleteAttributesButtonText,
+        onPress,
+        style: 'destructive'
+      }
+    ]
+  );
+
+export const ImageSelector = ({ control, field, item, imageId }) => {
   const [infoAndErrorText, setInfoAndErrorText] = useState({});
 
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
+
+  const [deleteImage] = useMutation(DELETE_IMAGE, {
+    client: ConsulClient
+  });
 
   const { selectImage } = useSelectImage(
     undefined, // onChange
@@ -26,6 +50,19 @@ export const ImageSelector = ({ control, field, item }) => {
     undefined, // aspect,
     undefined // quality
   );
+
+  const onDeleteImage = async () => {
+    if (imageId) {
+      try {
+        await deleteImage({ variables: { id: imageId } });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    onChange('');
+    setInfoAndErrorText({});
+  };
 
   return (
     <>
@@ -47,12 +84,7 @@ export const ImageSelector = ({ control, field, item }) => {
           <WrapperRow center spaceBetween>
             <Image source={{ uri: value }} style={styles.image} />
 
-            <TouchableOpacity
-              onPress={() => {
-                onChange('');
-                setInfoAndErrorText({});
-              }}
-            >
+            <TouchableOpacity onPress={() => deleteImageAlert(onDeleteImage)}>
               <Icon.Trash color={colors.error} size={normalize(16)} />
             </TouchableOpacity>
           </WrapperRow>
@@ -87,6 +119,7 @@ ImageSelector.propTypes = {
   control: PropTypes.object,
   field: PropTypes.object,
   item: PropTypes.object,
+  imageId: PropTypes.string,
   selectImage: PropTypes.func
 };
 

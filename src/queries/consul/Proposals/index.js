@@ -1,4 +1,5 @@
 export * from './commits';
+export * from './deleteAttributes';
 export * from './proposals';
 export * from './publishProposal';
 export * from './startProposal';
