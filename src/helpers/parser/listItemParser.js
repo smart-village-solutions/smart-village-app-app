@@ -270,7 +270,7 @@ const parseConsulData = (data, query, skipLastDivider) => {
     }
 
     if (query === QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS && !consulData.published) {
-      title = `${texts.consul.draft} - ${consulData.title ?? consulData.body}`;
+      title = `${texts.consul.draft} - ${title}`;
     }
 
     return {
