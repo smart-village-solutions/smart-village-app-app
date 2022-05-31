@@ -28,7 +28,9 @@
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
-        "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes."
+        "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
+        "CFBundleLocalizations": ["de"],
+        "CFBundleDevelopmentRegion": "de_DE"
       }
     },
     "android": {
