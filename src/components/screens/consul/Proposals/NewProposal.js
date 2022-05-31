@@ -150,9 +150,10 @@ export const NewProposal = ({ navigation, data, query }) => {
 
     setIsLoading(true);
 
-    if (newProposalData.image) {
-      if (URL_REGEX.test(newProposalData.image)) return;
+    // if the image is an absolute url, we are editing and do not want to upload a new image
+    const isImageToUpload = newProposalData.image && !URL_REGEX.test(newProposalData.image);
 
+    if (isImageToUpload) {
       try {
         const imageAttributes = await uploadData(newProposalData.image, 'image');
 
