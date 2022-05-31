@@ -4,7 +4,7 @@ import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, namespace, secrets, texts } from '../../../../config';
+import { colors, consts, namespace, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { documentErrorMessageGenerator, imageErrorMessageGenerator } from '../../../../helpers';
 import { QUERY_TYPES } from '../../../../queries';
@@ -18,6 +18,8 @@ import { Input } from '../../../form';
 import { Label } from '../../../Label';
 import { RegularText } from '../../../Text';
 import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
+
+const { URL_REGEX } = consts;
 
 const TAG_CATEGORIES = [
   { name: 'Associations', id: 0, selected: false },
@@ -148,7 +150,10 @@ export const NewProposal = ({ navigation, data, query }) => {
 
     setIsLoading(true);
 
-    if (newProposalData.image) {
+    // if the image is an absolute url, we are editing and do not want to upload a new image
+    const isImageToUpload = newProposalData.image && !URL_REGEX.test(newProposalData.image);
+
+    if (isImageToUpload) {
       try {
         const imageAttributes = await uploadData(newProposalData.image, 'image');
 
@@ -165,7 +170,8 @@ export const NewProposal = ({ navigation, data, query }) => {
     }
 
     if (newProposalData.documents) {
-      let documents = JSON.parse(newProposalData.documents);
+      const documents = JSON.parse(newProposalData.documents).filter(({ url }) => !url);
+
       variables.attributes = {
         ...variables.attributes,
         documentsAttributes: []
