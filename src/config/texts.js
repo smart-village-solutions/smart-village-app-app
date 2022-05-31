@@ -68,6 +68,7 @@ export const texts = {
     comments: 'Kommentare',
     delete: 'Löschen',
     documents: 'Unterlagen',
+    draft: 'Entwurf',
     email: 'E-Mail',
     emailError: 'E-Mail muss korrekt ausgefüllt werden',
     emailInvalid: 'E-Mail ungültig',

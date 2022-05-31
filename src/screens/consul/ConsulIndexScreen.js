@@ -79,6 +79,10 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
       if (query !== QUERY_TYPES.CONSUL.USER || query !== QUERY_TYPES.CONSUL.POLLS)
         listItems = sortingHelper(selectedSortingType.id, listItems);
 
+      if (query === QUERY_TYPES.CONSUL.PROPOSALS) {
+        listItems = listItems.filter(({ published }) => published);
+      }
+
       return listItems;
     },
     [sortingType, filterType, isLoading]

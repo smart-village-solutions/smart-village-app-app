@@ -18,8 +18,9 @@ export const USER = gql`
         nodes {
           id
           title
-          publicCreatedAt
           commentsCount
+          publicCreatedAt
+          published
         }
       }
       publicComments {
