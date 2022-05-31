@@ -29,7 +29,7 @@ export class CategoryList extends React.PureComponent {
   };
 
   render() {
-    const { data, navigation, noSubtitle, refreshControl } = this.props;
+    const { data, navigation, noSubtitle, refreshControl, hasSectionHeader } = this.props;
 
     // Sorting data alphabetically
     data.sort((a, b) => a.title.localeCompare(b.title));
@@ -64,6 +64,7 @@ export class CategoryList extends React.PureComponent {
         )}
         renderSectionHeader={this.renderSectionHeader}
         ListHeaderComponent={
+          hasSectionHeader &&
           !!texts.categoryList.intro && (
             <Wrapper>
               <RegularText>{texts.categoryList.intro}</RegularText>
