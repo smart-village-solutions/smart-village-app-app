@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.5.4]
+
+Set app language to German and bugfixes
+
+### Added
+
+- added setting for feedback footer to be able to prevent it from rendering on several screens
+
+### Fixed
+
+- set default app language to German to also satisfy iOS AppStore shown language
+- removed rendering of BUS-BB teaser section
+- fixed sorting of one BUS-BB section caused by typo
+- avoided rendering of intro text in header for sub category lists
+- added missing location param when navigating from categories list into points of interests or tours
+
 ## [v2.5.3]
 
 Minor improvements and bugfixes
@@ -51,7 +67,6 @@ Nested services
 
 - fixed timezone for waste calendar
 - fixed crash that could happen with static json content emptiness
-
 
 ## [v2.5.0] :rocket:
 
