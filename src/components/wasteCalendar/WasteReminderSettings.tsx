@@ -28,13 +28,13 @@ import { ReminderSettings, WasteTypeData } from '../../types';
 import { Button } from '../Button';
 import { areValidReminderSettings, parseReminderSettings } from '../../jsonValidation';
 import { SectionHeader } from '../SectionHeader';
+import { FeedbackFooter } from '../FeedbackFooter';
 
 import {
   ReminderSettingsAction,
   ReminderSettingsActionType,
   reminderSettingsReducer
 } from './ReminderSettingsReducer';
-import { FeedbackFooter } from '../FeedbackFooter';
 
 const showErrorAlert = () => {
   Alert.alert(texts.wasteCalendar.errorOnUpdateTitle, texts.wasteCalendar.errorOnUpdateBody);
@@ -217,7 +217,7 @@ export const WasteReminderSettings = ({
           const id = await updateReminderSettings({
             ...locationData,
             onDayBefore: state.onDayBefore,
-            reminderTime: reminderTime.toISOString(),
+            reminderTime,
             wasteType: typeKey
           });
 
@@ -245,7 +245,7 @@ export const WasteReminderSettings = ({
 
   return (
     <ScrollView
-      keyboardShouldPersistTaps="always"
+      keyboardShouldPersistTaps="handled"
       refreshControl={
         <RefreshControl
           refreshing={loading}
