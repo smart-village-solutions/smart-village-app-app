@@ -3,7 +3,7 @@ import React from 'react';
 import { useQuery } from 'react-apollo';
 
 import { useHomeRefresh } from '../hooks';
-import { getQuery } from '../queries';
+import { getQuery, QUERY_TYPES } from '../queries';
 
 import { DataListSection } from './DataListSection';
 
@@ -43,6 +43,13 @@ export const HomeSection = ({
 
   useHomeRefresh(refetch);
 
+  let showButton = !!data?.[query]?.length;
+
+  if (query === QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS) {
+    showButton =
+      !!data?.[QUERY_TYPES.POINTS_OF_INTEREST]?.length || !!data?.[QUERY_TYPES.TOURS]?.length;
+  }
+
   return (
     <DataListSection
       buttonTitle={buttonTitle}
@@ -56,7 +63,7 @@ export const HomeSection = ({
       sectionData={data}
       sectionTitle={title}
       sectionTitleDetail={titleDetail}
-      showButton={!!data?.[query]?.length}
+      showButton={showButton}
     />
   );
 };
