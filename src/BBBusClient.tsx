@@ -2,10 +2,10 @@ import { InMemoryCache } from 'apollo-cache-inmemory';
 import ApolloClient from 'apollo-client';
 import { createHttpLink } from 'apollo-link-http';
 
-import { bbBusUrl } from './config';
+import { bbBusUrlV2 } from './config';
 
 const httpLink = createHttpLink({
-  uri: bbBusUrl
+  uri: bbBusUrlV2
 });
 
 export const BBBusClient = new ApolloClient({

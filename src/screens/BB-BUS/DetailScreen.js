@@ -67,22 +67,23 @@ const parseTextBlocks = (service) => {
 
   if (textBlocks) {
     sortedTextBlocks = _sortBy(textBlocks, (textBlock) => {
-      return TEXT_BLOCKS_SORTER[textBlock.name];
+      return TEXT_BLOCKS_SORTER[textBlock.type.name];
     });
 
     // filter text blocks we want to render before authorities and persons
     firstTextBlocks = _remove(sortedTextBlocks, (textBlock) => {
       return (
-        textBlock.name.toUpperCase() === 'KURZTEXT' || textBlock.name.toUpperCase() === 'VOLLTEXT'
+        textBlock.type.name.toUpperCase() === 'KURZTEXT' ||
+        textBlock.type.name.toUpperCase() === 'VOLLTEXT'
       );
     });
 
     // filter text blocks, we do not want to render
     _remove(sortedTextBlocks, (textBlock) => {
       return (
-        textBlock.name.toUpperCase() === 'TEASER' ||
-        textBlock.name.toUpperCase() === 'FACHLICH FREIGEGEBEN DURCH' ||
-        textBlock.name.toUpperCase() === 'FACHLICH FREIGEGEBEN AM'
+        textBlock.type.name.toUpperCase() === 'TEASER' ||
+        textBlock.type.name.toUpperCase() === 'FACHLICH FREIGEGEBEN DURCH' ||
+        textBlock.type.name.toUpperCase() === 'FACHLICH FREIGEGEBEN AM'
       );
     });
   }
@@ -100,7 +101,7 @@ export const DetailScreen = ({ route }) => {
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
   const details = route?.params?.data ?? '';
-  const areaId = route.params?.areaId ?? secrets[namespace]?.busBb?.areaId?.toString();
+  const areaId = route.params?.areaId ?? secrets[namespace]?.busBb?.v2?.areaId?.toString();
   const id = details.id;
 
   useMatomoTrackScreenView(matomoTrackingString([MATOMO_TRACKING.SCREEN_VIEW.BB_BUS, headerTitle]));
@@ -161,7 +162,7 @@ export const DetailScreen = ({ route }) => {
 
           return (
             <TextBlock
-              key={textBlock.type?.id || uniqueId(textBlock.name)}
+              key={textBlock.type?.id || uniqueId(textBlock.type.name)}
               bottomDivider={index == firstTextBlocks.length - 1}
               textBlock={textBlock}
               openWebScreen={openWebScreen}

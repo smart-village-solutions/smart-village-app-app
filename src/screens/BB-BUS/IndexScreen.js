@@ -34,7 +34,7 @@ const INITIAL_FILTER = [
 export const IndexScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const [areaId, setAreaId] = useState(secrets[namespace]?.busBb?.areaId?.toString());
+  const [areaId, setAreaId] = useState(secrets[namespace]?.busBb?.v2?.areaId?.toString());
   const [filter, setFilter] = useState(INITIAL_FILTER);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -147,7 +147,10 @@ export const IndexScreen = ({ navigation }) => {
             return (
               <Query
                 query={GET_AREAS_AND_TOP_10}
-                variables={{ areaId: secrets[namespace]?.busBb?.areaId?.toString(), ids: top10Ids }}
+                variables={{
+                  areaId: secrets[namespace]?.busBb?.v2?.areaId?.toString(),
+                  ids: top10Ids
+                }}
                 fetchPolicy={fetchPolicy}
                 client={BBBusClient}
               >

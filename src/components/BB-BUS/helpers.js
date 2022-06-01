@@ -11,12 +11,14 @@ export const getAddress = (addresses) => {
 
   let address = addresses[0];
 
-  const { street, houseNumber, zipcode, city } = address;
+  const { street, houseNumber, zipcode, area } = address;
 
   return {
     street: (!!street || !!houseNumber) && `${address.street} ${address.houseNumber}`,
     zip: zipcode,
-    city: city
+    city: area?.name,
+    elevator: address.elevator,
+    wheelchairAccessible: address.wheelchairAccessible
   };
 };
 
