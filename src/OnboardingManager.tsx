@@ -8,7 +8,7 @@ import { Initializer, Initializers } from './helpers/initializationHelper';
 import { AppIntroScreen } from './screens';
 import { SettingsContext } from './SettingsProvider';
 
-const ONBOARDING_STORE_KEY = 'ONBOARDING_STORE_KEY';
+export const ONBOARDING_STORE_KEY = 'ONBOARDING_STORE_KEY';
 
 // this hook ensures that all settings will be properly initialized, even when onboarding was completed before the settings where available, or an error occured
 const useInitializeAfterOnboarding = (onboardingComplete: boolean) => {

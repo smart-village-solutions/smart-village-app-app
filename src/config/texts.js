@@ -473,6 +473,11 @@ export const texts = {
       save: 'Speichern',
       sectionHeader: 'Standort'
     },
+    onboarding: {
+      onActivate: 'Beim nächsten Start wird die App-Einführung angezeigt.',
+      onDeactivate: 'Die App-Einführung wird beim nächsten Start nicht angezeigt.',
+      ok: 'Ok'
+    },
     permanentFilter: {
       sectionHeader: 'Datenquellen'
     }
@@ -492,6 +497,7 @@ export const texts = {
       textList: 'Textliste'
     },
     locationService: 'Ortungsdienste',
+    onboarding: 'App-Einführung',
     pushNotifications: 'Push-Benachrichtigungen',
     tabs: {
       general: 'Allgemein',
