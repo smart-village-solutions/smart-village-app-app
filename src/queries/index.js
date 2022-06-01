@@ -1,8 +1,19 @@
 // IMPORT TYPES
-import { QUERY_TYPES } from './types';
+// IMPORT CREATE QUERIES
+import { CREATE_APP_USER_CONTENT } from './appUserContent';
 // IMPORT GET QUERIES
 import { GET_CATEGORIES } from './categories';
 import { GET_CONSTRUCTION_SITES } from './constructionSite';
+import {
+  GET_DEBATE,
+  GET_DEBATES,
+  GET_POLL,
+  GET_POLLS,
+  GET_PROPOSAL,
+  GET_PROPOSALS,
+  PUBLIC_COMMENT,
+  USER
+} from './consul';
 import {
   GET_EVENT_RECORD,
   GET_EVENT_RECORDS,
@@ -11,16 +22,27 @@ import {
 import { GET_GENERIC_ITEM, GET_GENERIC_ITEMS } from './genericItem';
 import { GET_LUNCHES } from './lunch';
 import { GET_NEWS_ITEM, GET_NEWS_ITEMS, GET_NEWS_ITEMS_AND_DATA_PROVIDERS } from './newsItems';
-import { GET_POINT_OF_INTEREST, GET_POINTS_OF_INTEREST } from './pointsOfInterest';
-import { GET_TOUR, GET_TOURS } from './tours';
+import { GET_NEWS_ITEMS_DATA_PROVIDERS } from './newsItemsDataProvider';
+import { GET_POINTS_OF_INTEREST, GET_POINT_OF_INTEREST } from './pointsOfInterest';
 import { GET_POINTS_OF_INTEREST_AND_TOURS } from './pointsOfInterestAndTours';
 import { GET_PUBLIC_HTML_FILE } from './publicHtmlFiles';
 import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
+import { GET_TOUR, GET_TOURS } from './tours';
+import { QUERY_TYPES } from './types';
+import {
+  calendar,
+  calendarAll,
+  conversation,
+  conversations,
+  group,
+  groupMembership,
+  groups,
+  me,
+  posts,
+  user
+} from './volunteer';
 import { WASTE_ADDRESSES, WASTE_STREET } from './waste';
 import { GET_WEATHER, GET_WEATHER_CURRENT } from './weather';
-// IMPORT CREATE QUERIES
-import { CREATE_APP_USER_CONTENT } from './appUserContent';
-import { GET_NEWS_ITEMS_DATA_PROVIDERS } from './newsItemsDataProvider';
 
 // EXPORT TYPES
 export * from './types';
@@ -52,7 +74,31 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.WASTE_ADDRESSES]: WASTE_ADDRESSES,
     [QUERY_TYPES.WASTE_STREET]: WASTE_STREET,
     [QUERY_TYPES.WEATHER_MAP]: GET_WEATHER,
-    [QUERY_TYPES.WEATHER_MAP_CURRENT]: GET_WEATHER_CURRENT
+    [QUERY_TYPES.WEATHER_MAP_CURRENT]: GET_WEATHER_CURRENT,
+
+    // CONSUL QUERIES
+    [QUERY_TYPES.CONSUL.DEBATE]: GET_DEBATE,
+    [QUERY_TYPES.CONSUL.DEBATES]: GET_DEBATES,
+    [QUERY_TYPES.CONSUL.POLL]: GET_POLL,
+    [QUERY_TYPES.CONSUL.POLLS]: GET_POLLS,
+    [QUERY_TYPES.CONSUL.PROPOSAL]: GET_PROPOSAL,
+    [QUERY_TYPES.CONSUL.PROPOSALS]: GET_PROPOSALS,
+    [QUERY_TYPES.CONSUL.PUBLIC_COMMENT]: PUBLIC_COMMENT,
+    [QUERY_TYPES.CONSUL.USER]: USER,
+
+    // VOLUNTEER QUERIES
+    [QUERY_TYPES.VOLUNTEER.CALENDAR]: calendar,
+    [QUERY_TYPES.VOLUNTEER.CALENDAR_ALL]: calendarAll,
+    [QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY]: calendarAll,
+    [QUERY_TYPES.VOLUNTEER.CONVERSATION]: conversation,
+    [QUERY_TYPES.VOLUNTEER.CONVERSATIONS]: conversations,
+    [QUERY_TYPES.VOLUNTEER.GROUP]: group,
+    [QUERY_TYPES.VOLUNTEER.GROUPS]: groups,
+    [QUERY_TYPES.VOLUNTEER.GROUPS_MY]: groups,
+    [QUERY_TYPES.VOLUNTEER.MEMBERS]: groupMembership,
+    [QUERY_TYPES.VOLUNTEER.POSTS]: posts,
+    [QUERY_TYPES.VOLUNTEER.PROFILE]: me,
+    [QUERY_TYPES.VOLUNTEER.USER]: user
   };
 
   return QUERIES[query];

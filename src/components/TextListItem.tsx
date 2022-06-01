@@ -12,13 +12,14 @@ import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
 type ItemData = {
-  routeName: string;
+  bottomDivider?: boolean;
+  onPress?: (navigation: any) => void;
   params: Record<string, unknown>;
+  picture?: { url: string };
+  routeName: string;
   subtitle?: string;
   title: string;
-  bottomDivider?: boolean;
   topDivider?: boolean;
-  picture?: { url: string };
 };
 
 type Props = {
@@ -37,10 +38,19 @@ export const TextListItem: NamedExoticComponent<Props> & {
   leftImage?: boolean;
   navigation: StackNavigationProp<Record<string, any>>;
   noSubtitle?: boolean;
-}>(({ navigation, item, noSubtitle, leftImage }) => {
-  const { routeName: name, params, subtitle, title, bottomDivider, topDivider, picture } = item;
-
+}>(({ item, leftImage, navigation, noSubtitle }) => {
+  const {
+    bottomDivider,
+    onPress,
+    params,
+    picture,
+    routeName: name,
+    subtitle,
+    title,
+    topDivider
+  } = item;
   const titleText = <BoldText>{trimNewLines(title)}</BoldText>;
+  const navigate = () => navigation && navigation.push(name, params);
 
   return (
     <ListItem
@@ -59,7 +69,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
           />
         ) : undefined
       }
-      onPress={() => navigation && navigation.push(name, params)}
+      onPress={() => (onPress ? onPress(navigation) : navigate())}
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}
@@ -85,13 +95,13 @@ const styles = StyleSheet.create({
 TextListItem.displayName = 'TextListItem';
 
 TextListItem.propTypes = {
-  navigation: PropTypes.object,
   item: PropTypes.object.isRequired,
-  noSubtitle: PropTypes.bool,
-  leftImage: PropTypes.bool
+  leftImage: PropTypes.bool,
+  navigation: PropTypes.object,
+  noSubtitle: PropTypes.bool
 };
 
 TextListItem.defaultProps = {
-  noSubtitle: false,
-  leftImage: false
+  leftImage: false,
+  noSubtitle: false
 };

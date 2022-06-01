@@ -11,6 +11,7 @@ import {
   arrowUp,
   calendar,
   clock,
+  close,
   constructionSite,
   drawerMenu,
   emptySection,
@@ -18,11 +19,13 @@ import {
   heartFilled,
   home,
   info,
+  like,
   link,
   location,
   lunch,
   mail,
   notVerifiedBadge,
+  ok,
   oParlCalendar,
   oParlOrganizations,
   oParlPeople,
@@ -30,8 +33,11 @@ import {
   routePlanner,
   service,
   share,
+  trash,
+  unvisible,
   url,
-  verifiedBadge
+  verifiedBadge,
+  visible
 } from '../icons';
 
 import { colors } from './colors';
@@ -99,6 +105,7 @@ export const Icon = {
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
   Calendar: (props: IconProps) => <SvgIcon xml={calendar} {...props} />,
   Clock: (props: IconProps) => <SvgIcon xml={clock} {...props} />,
+  Close: (props: IconProps) => <SvgIcon xml={close} {...props} />,
   Company: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-briefcase' : 'md-briefcase'} {...props} />
   ),
@@ -112,10 +119,12 @@ export const Icon = {
   HeartFilled: (props: IconProps) => <SvgIcon xml={heartFilled} {...props} />,
   Info: (props: IconProps) => <SvgIcon xml={info} {...props} />,
   Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
+  Like: (props: IconProps) => <SvgIcon xml={like} {...props} />,
   Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
   Mail: (props: IconProps) => <SvgIcon xml={mail} {...props} />,
   NotVerifiedBadge: (props: IconProps) => <SvgIcon xml={notVerifiedBadge} {...props} />,
+  Ok: (props: IconProps) => <SvgIcon xml={ok} {...props} />,
   OParlCalendar: (props: IconProps) => <SvgIcon xml={oParlCalendar} {...props} />,
   OParlOrganizations: (props: IconProps) => <SvgIcon xml={oParlOrganizations} {...props} />,
   OParlPeople: (props: IconProps) => <SvgIcon xml={oParlPeople} {...props} />,
@@ -137,13 +146,53 @@ export const Icon = {
   Settings: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'} {...props} />
   ),
+  Send: (props: IconProps) => <NamedIcon name="send" {...props} />,
   Share: (props: IconProps) =>
     device.platform === 'ios' ? (
       <NamedIcon name="ios-share" {...props} />
     ) : (
       <SvgIcon xml={share} {...props} />
     ),
+  Trash: (props: IconProps) => <SvgIcon xml={trash} {...props} />,
   Surveys: (props: IconProps) => <NamedIcon name="stats-chart-outline" {...props} />,
+  Unvisible: (props: IconProps) => <SvgIcon xml={unvisible} {...props} />,
   Url: (props: IconProps) => <SvgIcon xml={url} {...props} />,
-  VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />
+  VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />,
+  Visible: (props: IconProps) => <SvgIcon xml={visible} {...props} />,
+  Volunteer: (props: IconProps) => (
+    <NamedIcon
+      name={device.platform === 'ios' ? 'ios-people-circle' : 'md-people-circle'}
+      {...props}
+    />
+  ),
+  VolunteerCalendar: (props: IconProps) => (
+    <NamedIcon
+      name={device.platform === 'ios' ? 'ios-calendar-outline' : 'md-calendar-outline'}
+      {...props}
+    />
+  ),
+  VolunteerConversationNew: (props: IconProps) => (
+    <NamedIcon
+      name={device.platform === 'ios' ? 'ios-mail-outline' : 'md-mail-outline'}
+      {...props}
+    />
+  ),
+  VolunteerList: (props: IconProps) => (
+    <NamedIcon
+      name={device.platform === 'ios' ? 'ios-list-outline' : 'md-list-outline'}
+      {...props}
+    />
+  ),
+  VolunteerLogout: (props: IconProps) => (
+    <NamedIcon
+      name={device.platform === 'ios' ? 'ios-lock-open-outline' : 'md-lock-open-outline'}
+      {...props}
+    />
+  ),
+  VolunteerPersonal: (props: IconProps) => (
+    <NamedIcon
+      name={device.platform === 'ios' ? 'ios-person-outline' : 'md-person-outline'}
+      {...props}
+    />
+  )
 };

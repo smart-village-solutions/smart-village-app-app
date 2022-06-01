@@ -1,3 +1,4 @@
+export * from './consul';
 export * from './parser';
 
 export * from './addressHelper';
@@ -5,9 +6,12 @@ export * from './bookmarkHelper';
 export * from './calendarHelper';
 export * from './cameraHelper';
 export * from './colorHelper';
+export * from './consulHelper';
 export * from './dateTimeHelper';
+export * from './deleteArrayItem';
 export * from './encounterHelper';
 export * from './fileSizeHelper';
+export * from './formatHelper';
 export * from './graphqlHelper';
 export * from './headerHelper';
 export * from './htmlViewHelper';
@@ -28,3 +32,4 @@ export * from './shareHelper';
 export * from './storageHelper';
 export * from './surveyHelper';
 export * from './textHelper';
+export * from './volunteerHelper';

@@ -86,7 +86,7 @@ export const HomeScreen = ({ navigation, route }) => {
   const refresh = () => {
     setRefreshing(true);
 
-    // this will trigger the onRefresh functions provided to the useHomeRefresh hook in other
+    // this will trigger the onRefresh functions provided to the `useHomeRefresh` hook in other
     // components.
     DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
 
@@ -146,6 +146,7 @@ export const HomeScreen = ({ navigation, route }) => {
           publicJsonFile="homeCarousel"
           refreshTimeKey="publicJsonFile-homeCarousel"
         />
+
         <Widgets widgetConfigs={widgetConfigs} />
 
         {showNews &&
@@ -197,13 +198,14 @@ export const HomeScreen = ({ navigation, route }) => {
           <HomeSection
             buttonTitle={buttonEvents}
             title={headlineEvents}
+            fetchPolicy={fetchPolicy}
             navigate={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}
             navigation={navigation}
             query={QUERY_TYPES.EVENT_RECORDS}
             queryVariables={{ limit: 3, order: 'listDate_ASC' }}
-            fetchPolicy={fetchPolicy}
           />
         )}
+
         {route.params?.isDrawer && (
           <>
             <Service navigation={navigation} />
