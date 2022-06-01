@@ -32,7 +32,7 @@ const TEXT_BLOCKS_SORTER = {
   Verfahrensablauf: 6,
   Formulare: 7,
   Fristen: 8,
-  'Kosten (Gebühren, Auslagen,etc.)': 9,
+  'Kosten (Gebühren, Auslagen, etc.)': 9,
   'Rechtsgrundlage(n)': 10,
   'Hinweise (Besonderheiten)': 11,
   Urheber: 12,
@@ -80,6 +80,7 @@ const parseTextBlocks = (service) => {
     // filter text blocks, we do not want to render
     _remove(sortedTextBlocks, (textBlock) => {
       return (
+        textBlock.name.toUpperCase() === 'TEASER' ||
         textBlock.name.toUpperCase() === 'FACHLICH FREIGEGEBEN DURCH' ||
         textBlock.name.toUpperCase() === 'FACHLICH FREIGEGEBEN AM'
       );
