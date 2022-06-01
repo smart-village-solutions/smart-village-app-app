@@ -207,7 +207,9 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
                   checked={isPrivacyChecked}
                   onPress={() => setIsPrivacyChecked((value) => !value)}
                   checkedColor={colors.darkText}
+                  checkedIcon="check-square-o"
                   uncheckedColor={colors.darkText}
+                  uncheckedIcon="square-o"
                 />
                 <View style={styles.privacyTextContainer}>
                   <RegularText small>{texts.encounter.registrationPrivacyText}</RegularText>

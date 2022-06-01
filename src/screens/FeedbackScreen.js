@@ -124,8 +124,10 @@ export const FeedbackScreen = () => {
                     checked={consent}
                     onPress={() => setConsent(!consent)}
                     title="Ich bin mit dem Speichern meiner Daten einverstanden."
-                    uncheckedColor={colors.darkText}
                     checkedColor={colors.accent}
+                    checkedIcon="check-square-o"
+                    uncheckedColor={colors.darkText}
+                    uncheckedIcon="square-o"
                     containerStyle={styles.checkboxContainerStyle}
                     textStyle={styles.checkboxTextStyle}
                   />
