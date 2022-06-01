@@ -235,7 +235,8 @@ export const IndexScreen = ({ navigation, route }) => {
 
             let listItems = parseListItemsFromQuery(query, data, titleDetail, {
               bookmarkable,
-              withDate: false
+              withDate: false,
+              queryVariables
             });
 
             if (filterByOpeningTimes) {

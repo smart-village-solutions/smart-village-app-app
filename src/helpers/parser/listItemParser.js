@@ -173,7 +173,7 @@ const parseTours = (data, skipLastDivider) => {
   }));
 };
 
-const parseCategories = (data, skipLastDivider, routeName = ScreenName.Category) => {
+const parseCategories = (data, skipLastDivider, routeName, queryVariables) => {
   return data?.map((category, index) => ({
     id: category.id,
     title: category.name,
@@ -185,10 +185,20 @@ const parseCategories = (data, skipLastDivider, routeName = ScreenName.Category)
     parent: category.parent,
     params: {
       title: category.name,
-      categories: parseCategories(category.children, skipLastDivider, ScreenName.Index),
+      categories: parseCategories(
+        category.children,
+        skipLastDivider,
+        ScreenName.Index,
+        queryVariables
+      ),
       query:
         category.pointsOfInterestTreeCount > 0 ? QUERY_TYPES.POINTS_OF_INTEREST : QUERY_TYPES.TOURS,
-      queryVariables: { limit: 15, order: 'name_ASC', category: `${category.name}` },
+      queryVariables: {
+        limit: 15,
+        order: 'name_ASC',
+        category: `${category.name}`,
+        location: queryVariables?.location
+      },
       rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1
@@ -213,7 +223,7 @@ const parsePointsOfInterestAndTours = (data) => {
 export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) => {
   if (!data) return;
 
-  const { bookmarkable = true, skipLastDivider = false, withDate = true } = options;
+  const { bookmarkable = true, skipLastDivider = false, withDate = true, queryVariables } = options;
 
   switch (query) {
     case QUERY_TYPES.EVENT_RECORDS:
@@ -227,7 +237,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.TOURS:
       return parseTours(data[query], skipLastDivider);
     case QUERY_TYPES.CATEGORIES:
-      return parseCategories(data[query], skipLastDivider);
+      return parseCategories(data[query], skipLastDivider, ScreenName.Category, queryVariables);
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
   }
