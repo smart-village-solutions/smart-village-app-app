@@ -1,6 +1,6 @@
 import { isArray, isObjectLike, isString } from 'lodash';
 
-import { Initializer, Initializers } from '../helpers/initializationHelper';
+import { Initializer, Initializers } from '../helpers';
 import { AppIntroSlide } from '../types';
 
 type AppIntroSlideData = {

@@ -1,10 +1,11 @@
-import { Alert } from 'react-native';
-import { PermissionStatus } from 'expo-permissions';
-import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
+import { PermissionStatus } from 'expo-permissions';
+import { Alert } from 'react-native';
 
-import { addToStore, parseColorToHex, readFromStore } from '../helpers';
 import { colors, device, texts } from '../config';
+import { parseColorToHex } from '../helpers/colorHelper';
+import { addToStore, readFromStore } from '../helpers/storageHelper';
 
 import { handleIncomingToken, PushNotificationStorageKeys } from './TokenHandling';
 

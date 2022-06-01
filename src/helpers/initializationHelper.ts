@@ -1,6 +1,6 @@
 import * as Location from 'expo-location';
 
-import { handleSystemPermissions } from '../pushNotifications';
+import { handleSystemPermissions } from '../pushNotifications/PermissionHandling';
 
 import { showMatomoAlert } from './matomoHelper';
 

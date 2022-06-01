@@ -3,27 +3,31 @@ import * as SplashScreen from 'expo-splash-screen';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { CustomMatomoProvider } from './CustomMatomoProvider';
-import { addToStore, readFromStore } from './helpers';
+import { addToStore, readFromStore } from './helpers/storageHelper';
 import { Initializer, Initializers } from './helpers/initializationHelper';
-import { AppIntroScreen } from './screens';
+import { AppIntroScreen } from './screens/AppIntroScreen';
 import { SettingsContext } from './SettingsProvider';
 
 export const ONBOARDING_STORE_KEY = 'ONBOARDING_STORE_KEY';
 
-// this hook ensures that all settings will be properly initialized, even when onboarding was completed before the settings where available, or an error occured
+// this hook ensures that all settings will be properly initialized, even when onboarding
+// was completed before the settings where available, or an error occurred
 const useInitializeAfterOnboarding = (onboardingComplete: boolean) => {
   const {
     globalSettings: {
-      // @ts-expect-error settings context is not properly typed
       settings: {
+        // @ts-expect-error settings context is not properly typed
         locationService: locationServiceActive,
+        // @ts-expect-error settings context is not properly typed
         pushNotifications: pushNotificationsActive,
+        // @ts-expect-error settings context is not properly typed
         matomo: matomoActive
       }
     }
   } = useContext(SettingsContext);
 
-  // this effect ensures that all settings will be properly initialized, even when onboarding was completed before the settings where available, or an error occured
+  // this effect ensures that all settings will be properly initialized, even when onboarding
+  // was completed before the settings where available, or an error occurred
   useEffect(() => {
     if (onboardingComplete) {
       if (locationServiceActive) {
@@ -48,8 +52,10 @@ export const OnboardingManager = ({ children }: { children: React.ReactNode }) =
   );
   const {
     globalSettings: {
-      // @ts-expect-error settings context is not properly typed
-      settings: { onboarding: onboardingActive }
+      settings: {
+        // @ts-expect-error settings context is not properly typed
+        onboarding: onboardingActive
+      }
     }
   } = useContext(SettingsContext);
 
