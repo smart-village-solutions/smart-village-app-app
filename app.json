@@ -10,6 +10,7 @@
       "android"
     ],
     "version": "2.6.1",
+    "runtimeVersion": "nativeVersion",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "smart-village-app",
