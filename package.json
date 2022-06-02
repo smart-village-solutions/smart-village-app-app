@@ -1,16 +1,17 @@
 {
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "android": "expo start --android",
-    "eject": "expo eject",
-    "ios": "expo start --ios",
-    "lint": "./node_modules/.bin/eslint __tests__ src --ext .js,.jsx,.ts,.tsx",
     "start": "expo start",
+    "start:android": "expo start --android",
+    "start:ios": "expo start --ios",
+    "build:android": "eas build --platform android",
+    "build:ios": "eas build --platform ios",
+    "submit:android": "eas submit --platform android",
+    "submit:ios": "eas submit --platform ios",
+    "lint": "./node_modules/.bin/eslint __tests__ src --ext .js,.jsx,.ts,.tsx",
     "test": "./node_modules/.bin/jest",
     "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand",
-    "test:coverage": "node_modules/.bin/jest --coverage",
-    "build:android": "expo build:android",
-    "build:ios": "expo build:ios"
+    "test:coverage": "node_modules/.bin/jest --coverage"
   },
   "jest": {
     "preset": "jest-expo",
