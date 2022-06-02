@@ -14,12 +14,16 @@
       "distribution": "internal"
     },
     "development": {
-      "extends": "preview",
+      "extends": "production",
       "releaseChannel": "development",
+      "distribution": "internal",
       "developmentClient": true
     },
     "development-simulator": {
-      "extends": "development",
+      "extends": "production",
+      "releaseChannel": "development",
+      "distribution": "internal",
+      "developmentClient": true,
       "ios": {
         "simulator": true
       }
