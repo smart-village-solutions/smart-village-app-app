@@ -9,7 +9,7 @@
       "ios",
       "android"
     ],
-    "version": "2.6.0",
+    "version": "2.7.0",
     "runtimeVersion": "nativeVersion",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -26,6 +26,7 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "de.dev.smartvillage.app",
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
@@ -35,6 +36,7 @@
       }
     },
     "android": {
+      "package": "de.dev.smartvillage.app",
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
