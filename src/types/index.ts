@@ -9,6 +9,7 @@ export * from './Contact';
 export * from './GenericItem';
 export * from './GenericType';
 export * from './LocationSettings';
+export * from './Map';
 export * from './Navigation';
 export * from './OParlObjectTypes';
 export * from './OpeningHour';
