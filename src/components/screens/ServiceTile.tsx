@@ -21,11 +21,18 @@ export const ServiceTile = ({
   const { orientation, dimensions } = useContext(OrientationContext);
 
   return (
-    <ServiceBox orientation={orientation} dimensions={dimensions}>
+    <ServiceBox
+      orientation={orientation}
+      dimensions={dimensions}
+      style={[!!item.tile && styles.bigTileBox]}
+    >
       <TouchableOpacity
-        onPress={() => {
-          navigation.push(item.routeName, item.params);
-        }}
+        onPress={() => navigation.push(item.routeName, item.params)}
+        accessibilityLabel={
+          item.accessibilityLabel
+            ? `(${item.accessibilityLabel}) ${consts.a11yLabel.button}`
+            : undefined
+        }
       >
         <View>
           {item.iconName ? (
@@ -37,21 +44,23 @@ export const ServiceTile = ({
             />
           ) : (
             <Image
-              source={{ uri: item.icon }}
-              style={styles.serviceImage}
+              source={{ uri: item.icon || item.tile }}
+              style={[styles.serviceImage, !!item.tile && stylesWithProps({ orientation }).bigTile]}
               PlaceholderContent={null}
               resizeMode="contain"
             />
           )}
-          <BoldText
-            small
-            lightest={hasDiagonalGradientBackground}
-            primary={!hasDiagonalGradientBackground}
-            center
-            accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
-          >
-            {item.title}
-          </BoldText>
+          {!!item.title && (
+            <BoldText
+              small
+              lightest={hasDiagonalGradientBackground}
+              primary={!hasDiagonalGradientBackground}
+              center
+              accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
+            >
+              {item.title}
+            </BoldText>
+          )}
         </View>
       </TouchableOpacity>
     </ServiceBox>
@@ -68,5 +77,21 @@ const styles = StyleSheet.create({
     height: normalize(40),
     marginBottom: normalize(7),
     width: '100%'
+  },
+  bigTileBox: {
+    marginBottom: 0,
+    marginTop: 0
   }
 });
+
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
+const stylesWithProps = ({ orientation }: { orientation: string }) => {
+  return StyleSheet.create({
+    bigTile: {
+      height: orientation === 'landscape' ? normalize(94) : normalize(80),
+      marginBottom: 0
+    }
+  });
+};
+/* eslint-enable react-native/no-unused-styles */
