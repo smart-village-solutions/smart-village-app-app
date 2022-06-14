@@ -11,7 +11,12 @@ import {
   SettingsToggle,
   Wrapper
 } from '../components';
-import { ListSettings, LocationSettings, PermanentFilterSettings } from '../components/settings';
+import {
+  ARDownloadList,
+  ListSettings,
+  LocationSettings,
+  PermanentFilterSettings
+} from '../components/settings';
 import { colors, consts, texts } from '../config';
 import {
   addToStore,
@@ -50,13 +55,15 @@ const onDeactivatePushNotifications = (revert) => {
 };
 
 const TOP_FILTER = {
+  AR_DOWNLOAD_LIST: 'arDownloadList',
   GENERAL: 'general',
   LIST_TYPES: 'listTypes'
 };
 
 const INITIAL_FILTER = [
   { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
-  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false }
+  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false },
+  { id: TOP_FILTER.AR_DOWNLOAD_LIST, title: texts.settingsTitles.tabs.arSettings, selected: false }
 ];
 
 export const SettingsScreen = () => {
@@ -222,6 +229,7 @@ export const SettingsScreen = () => {
         />
       )}
       {selectedFilterId === TOP_FILTER.LIST_TYPES && <ListSettings />}
+      {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && <ARDownloadList />}
     </SafeAreaViewFlex>
   );
 };

@@ -668,6 +668,7 @@ export const texts = {
   },
   settingsTitles: {
     analytics: 'Matomo Analytics',
+    arListTitle: 'Dateien verwalten',
     listLayouts: {
       cardList: 'Liste mit großen Bildern',
       eventRecordsTitle: 'Veranstaltungen',
@@ -681,6 +682,7 @@ export const texts = {
     onboarding: 'App-Einführung',
     pushNotifications: 'Push-Benachrichtigungen',
     tabs: {
+      arSettings: 'AR-Einstellungen',
       general: 'Allgemein',
       listTypes: 'App-Aussehen'
     }
