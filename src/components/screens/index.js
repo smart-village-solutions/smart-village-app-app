@@ -9,5 +9,6 @@ export * from './OperatingCompany';
 export * from './PointOfInterest';
 export * from './PriceCard';
 export * from './Service';
+export * from './ServiceTile';
 export * from './ServiceTiles';
 export * from './Tour';
