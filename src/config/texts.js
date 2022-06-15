@@ -668,7 +668,19 @@ export const texts = {
   },
   settingsTitles: {
     analytics: 'Matomo Analytics',
-    arListTitle: 'Dateien verwalten',
+    arListLayouts: {
+      alertTitle: 'Hinweis',
+      allDeleteAlertMessage: 'Alle Dateien löschen?',
+      allDeleteButtonTitle: 'Alle löschen',
+      allDownloadAlertMessage: 'Möchten Sie alle Dateien herunterladen?',
+      allDownloadButtonTitle: 'Alle laden',
+      arListTitle: 'Dateien verwalten',
+      cancel: 'Abbrechen',
+      deleteAlertButtonText: 'Löschen',
+      deleteAlertMessage: 'Möchten Sie die Datei löschen?',
+      downloadAlertButtonText: 'Herunterladen',
+      freeMemoryPlace: 'Verfügbarer Speicherplatz auf dem Gerät: '
+    },
     listLayouts: {
       cardList: 'Liste mit großen Bildern',
       eventRecordsTitle: 'Veranstaltungen',
