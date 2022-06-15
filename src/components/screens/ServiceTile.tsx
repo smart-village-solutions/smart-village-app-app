@@ -2,8 +2,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { normalize } from 'react-native-elements';
+import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, consts, Icon } from '../../config';
+import { colors, consts, device, Icon } from '../../config';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
 import { ServiceBox } from '../ServiceBox';
@@ -19,6 +20,7 @@ export const ServiceTile = ({
   hasDiagonalGradientBackground?: boolean;
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
+  const safeAreaInsets = useSafeAreaInsets();
 
   return (
     <ServiceBox
@@ -45,7 +47,10 @@ export const ServiceTile = ({
           ) : (
             <Image
               source={{ uri: item.icon || item.tile }}
-              style={[styles.serviceImage, !!item.tile && stylesWithProps({ orientation }).bigTile]}
+              style={[
+                styles.serviceImage,
+                !!item.tile && stylesWithProps({ orientation, safeAreaInsets }).bigTile
+              ]}
               PlaceholderContent={null}
               resizeMode="contain"
             />
@@ -79,17 +84,34 @@ const styles = StyleSheet.create({
     width: '100%'
   },
   bigTileBox: {
-    marginBottom: 0,
+    marginBottom: normalize(14),
     marginTop: 0
   }
 });
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ orientation }: { orientation: string }) => {
+const stylesWithProps = ({
+  orientation,
+  safeAreaInsets
+}: {
+  orientation: string;
+  safeAreaInsets: EdgeInsets;
+}) => {
+  const containerPadding = normalize(14);
+  const numberOfTiles = orientation === 'landscape' ? 5 : 3;
+  const deviceHeight = device.height - safeAreaInsets.left - safeAreaInsets.right;
+
+  // calculate tile sizes based on device orientation, safe are insets and padding
+  const tileSize =
+    ((orientation === 'landscape' ? deviceHeight : device.width) -
+      (numberOfTiles + 1) * containerPadding) /
+    numberOfTiles;
+
   return StyleSheet.create({
     bigTile: {
-      height: orientation === 'landscape' ? normalize(94) : normalize(80),
+      height: tileSize,
+      width: tileSize,
       marginBottom: 0
     }
   });
