@@ -1,18 +1,29 @@
 import * as FileSystem from 'expo-file-system';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { addToStore } from '../storageHelper';
 
 import { DOWNLOAD_TYPE } from './downloadType';
-export const downloadObject = async ({ item, index, downloadableData, setDownloadableData }) => {
-  const { id: objectId, downloadableUris } = item;
+import { storageNameCreator } from './storageNameCreator';
+
+// function for downloading AR objects
+export const downloadObject = async ({ index, downloadableData, setDownloadableData }) => {
+  const { downloadableUris } = downloadableData[index];
   let newDownloadedData = [...downloadableData];
 
   for (let itemIndex = 0; itemIndex < downloadableUris.length; itemIndex++) {
     const { downloadUri, title, type, id } = downloadableUris[itemIndex];
+
+    const storageName = storageNameCreator({
+      downloadableDataItem: downloadableData[index],
+      objectItem: downloadableUris[itemIndex]
+    });
+
     const downloadResumable = FileSystem.createDownloadResumable(
       downloadUri,
-      FileSystem.cacheDirectory + `${objectId}-${title}${id}.${type}`,
+      FileSystem.cacheDirectory + storageName,
       {},
-      (downloadProgress) => callback(downloadProgress, index, downloadableData, setDownloadableData)
+      (downloadProgress) =>
+        downloadProgressInBytes(downloadProgress, index, downloadableData, setDownloadableData)
     );
 
     try {
@@ -29,10 +40,7 @@ export const downloadObject = async ({ item, index, downloadableData, setDownloa
         type
       });
 
-      await AsyncStorage.setItem(
-        `${objectId}-${title}${id}.${type}`,
-        JSON.stringify(newDownloadedData[index])
-      );
+      addToStore(storageName, newDownloadedData[index]);
     } catch (e) {
       console.error(e);
     }
@@ -41,13 +49,20 @@ export const downloadObject = async ({ item, index, downloadableData, setDownloa
   return { newDownloadedData };
 };
 
-const callback = (downloadProgress, index, download, setDownload) => {
-  let newArr = [...download];
+// callback function that allows us to see how many
+// bytes per second the file is downloaded
+const downloadProgressInBytes = (
+  downloadProgress,
+  index,
+  downloadableData,
+  setDownloadableData
+) => {
+  let newArr = [...downloadableData];
   const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
 
   newArr[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADING;
   newArr[index].progressSize = downloadProgress.totalBytesWritten;
   newArr[index].progress = progress;
 
-  setDownload(newArr);
+  setDownloadableData(newArr);
 };

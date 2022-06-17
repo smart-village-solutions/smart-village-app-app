@@ -15,7 +15,6 @@ export const ARDownloadListSettingsItem = ({ item, index, data, setData }) => {
   const onPress = async () => {
     if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADABLE) {
       const { newDownloadedData } = await downloadObject({
-        item,
         index,
         downloadableData: data,
         setDownloadableData: setData
@@ -31,7 +30,6 @@ export const ARDownloadListSettingsItem = ({ item, index, data, setData }) => {
             text: texts.settingsTitles.arListLayouts.deleteAlertButtonText,
             onPress: async () => {
               const { newDownloadedData } = await deleteObject({
-                item,
                 index,
                 downloadableData: data
               });

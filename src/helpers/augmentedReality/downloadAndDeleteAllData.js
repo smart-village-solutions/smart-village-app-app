@@ -1,24 +1,28 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { readFromStore } from '../storageHelper';
 
 import { deleteObject } from './deleteObject';
 import { downloadObject } from './downloadObject';
+import { storageNameCreator } from './storageNameCreator';
 
+// function to download all AR objects using `downloadObject`
 export const downloadAllData = async ({ downloadableData, setDownloadableData }) => {
   let allData = [...downloadableData];
 
   for (let index = 0; index < allData.length; index++) {
     const downloadableDataItem = allData[index];
-    const { id: objectId, downloadableUris } = downloadableDataItem;
+    const { downloadableUris } = downloadableDataItem;
 
     for (let itemIndex = 0; itemIndex < downloadableUris.length; itemIndex++) {
-      const { id, title, type } = downloadableUris[itemIndex];
+      const storageName = storageNameCreator({
+        downloadableDataItem: downloadableData[index],
+        objectItem: downloadableUris[itemIndex]
+      });
 
       try {
-        const downloadedItem = await AsyncStorage.getItem(`${objectId}-${title}${id}.${type}`);
+        const downloadedItem = await readFromStore(storageName);
 
         if (!downloadedItem) {
           const { newDownloadedData } = await downloadObject({
-            item: downloadableDataItem,
             index,
             downloadableData: allData,
             setDownloadableData
@@ -33,13 +37,12 @@ export const downloadAllData = async ({ downloadableData, setDownloadableData })
   }
 };
 
+// function to delete all AR objects using `deleteObject`
 export const deleteAllData = async ({ downloadableData, setDownloadableData }) => {
   let allData = [...downloadableData];
 
   for (let index = 0; index < allData.length; index++) {
-    const downloadableDataItem = allData[index];
     const { newDownloadedData } = await deleteObject({
-      item: downloadableDataItem,
       index,
       downloadableData: allData
     });
