@@ -63,7 +63,7 @@ export const ARDownloadListSettings = () => {
   }, []);
 
   const checkDownloadData = async () => {
-    setLoading(false);
+    setLoading(true);
     const { newDownloadedData } = await checkDownloadedData({ downloadableData: data });
     setData(newDownloadedData);
     setLoading(false);
