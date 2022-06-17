@@ -1,5 +1,6 @@
 import { DOWNLOAD_TYPE } from './downloadType';
 
+// TODO: will be deleted after the necessary adjustments have been made on the server
 export const dummyData = [
   {
     id: 0,

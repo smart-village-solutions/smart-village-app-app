@@ -671,9 +671,9 @@ export const texts = {
     arListLayouts: {
       alertTitle: 'Hinweis',
       allDeleteAlertMessage: 'Alle Dateien löschen?',
-      allDeleteButtonTitle: 'Alle löschen',
+      allDeleteButtonTitle: 'Alle Dateien löschen',
       allDownloadAlertMessage: 'Möchten Sie alle Dateien herunterladen?',
-      allDownloadButtonTitle: 'Alle laden',
+      allDownloadButtonTitle: 'Alle Dateien herunterladen',
       arListTitle: 'Dateien verwalten',
       cancel: 'Abbrechen',
       deleteAlertButtonText: 'Löschen',
