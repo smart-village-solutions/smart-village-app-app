@@ -1,9 +1,8 @@
 import * as FileSystem from 'expo-file-system';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, StyleSheet } from 'react-native';
-import { Divider } from 'react-native-elements';
+import { ActivityIndicator, Alert, FlatList } from 'react-native';
 
-import { colors, device, normalize, texts } from '../../config';
+import { texts } from '../../config';
 import {
   checkDownloadedData,
   deleteAllData,
@@ -11,11 +10,12 @@ import {
   dummyData,
   formatSize
 } from '../../helpers';
-import { ARDownloadListItem } from '../ARDownloadListItem';
+import { ARDownloadListSettingsItem } from '../ARDownloadListSettingsItem';
 import { Button } from '../Button';
-import { BoldText, RegularText } from '../Text';
+import { SectionHeader } from '../SectionHeader';
+import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 const downloadAllDataAlert = (downloadAll) =>
   Alert.alert(
@@ -46,10 +46,10 @@ const deleteAllDataAlert = (deleteAll) =>
   );
 
 const renderItem = ({ data, index, item, setData }) => (
-  <ARDownloadListItem item={item} index={index} data={data} setData={setData} />
+  <ARDownloadListSettingsItem item={item} index={index} data={data} setData={setData} />
 );
 
-export const ARDownloadList = () => {
+export const ARDownloadListSettings = () => {
   const [data, setData] = useState(dummyData);
   const [loading, setLoading] = useState(false);
   const [freeSize, setFreeSize] = useState(0);
@@ -59,10 +59,10 @@ export const ARDownloadList = () => {
   }, [data]);
 
   useEffect(() => {
-    checkinData();
+    checkDownloadData();
   }, []);
 
-  const checkinData = async () => {
+  const checkDownloadData = async () => {
     setLoading(false);
     const { newDownloadedData } = await checkDownloadedData({ downloadableData: data });
     setData(newDownloadedData);
@@ -86,13 +86,7 @@ export const ARDownloadList = () => {
 
   return (
     <>
-      <Wrapper style={styles.wrapper}>
-        <WrapperRow spaceBetween>
-          <BoldText>{texts.settingsTitles.arListLayouts.arListTitle}</BoldText>
-        </WrapperRow>
-      </Wrapper>
-
-      <Divider style={styles.divider} />
+      <SectionHeader title={texts.settingsTitles.arListLayouts.arListTitle} />
 
       <FlatList
         data={data}
@@ -106,11 +100,13 @@ export const ARDownloadList = () => {
           title={texts.settingsTitles.arListLayouts.allDownloadButtonTitle}
           onPress={() => downloadAllDataAlert(downloadAll)}
         />
-        <Touchable style={styles.touchableStyle} onPress={() => deleteAllDataAlert(deleteAll)}>
-          <RegularText small primary underline>
+
+        <Touchable onPress={() => deleteAllDataAlert(deleteAll)}>
+          <RegularText small primary underline center>
             {texts.settingsTitles.arListLayouts.allDeleteButtonTitle}
           </RegularText>
         </Touchable>
+
         <RegularText smallest center>
           {`${texts.settingsTitles.arListLayouts.freeMemoryPlace}${freeSize}`}
         </RegularText>
@@ -118,16 +114,3 @@ export const ARDownloadList = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  divider: {
-    backgroundColor: colors.placeholder
-  },
-  touchableStyle: {
-    alignSelf: 'center'
-  },
-  wrapper: {
-    paddingBottom: device.platform === 'ios' ? normalize(16) : normalize(14),
-    paddingTop: device.platform === 'ios' ? normalize(16) : normalize(18)
-  }
-});

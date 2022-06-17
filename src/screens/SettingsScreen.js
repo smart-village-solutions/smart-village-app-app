@@ -12,7 +12,7 @@ import {
   Wrapper
 } from '../components';
 import {
-  ARDownloadList,
+  ARDownloadListSettings,
   ListSettings,
   LocationSettings,
   PermanentFilterSettings
@@ -229,7 +229,7 @@ export const SettingsScreen = () => {
         />
       )}
       {selectedFilterId === TOP_FILTER.LIST_TYPES && <ListSettings />}
-      {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && <ARDownloadList />}
+      {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && <ARDownloadListSettings />}
     </SafeAreaViewFlex>
   );
 };

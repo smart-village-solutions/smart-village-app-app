@@ -9,9 +9,7 @@ import { deleteObject, downloadObject, DOWNLOAD_TYPE, formatSize } from '../help
 import { RegularText } from './Text';
 import { Touchable } from './Touchable';
 
-const BUTTON_SIZE = normalize(16);
-
-export const ARDownloadListItem = ({ item, index, data, setData }) => {
+export const ARDownloadListSettingsItem = ({ item, index, data, setData }) => {
   const { DOWNLOAD_TYPE: itemDownloadType, progressSize, size, title, totalSize } = item;
 
   const onPress = async () => {
@@ -22,16 +20,13 @@ export const ARDownloadListItem = ({ item, index, data, setData }) => {
         downloadableData: data,
         setDownloadableData: setData
       });
+
       setData(newDownloadedData);
     } else if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED) {
       Alert.alert(
         texts.settingsTitles.arListLayouts.alertTitle,
         texts.settingsTitles.arListLayouts.deleteAlertMessage,
         [
-          {
-            text: texts.settingsTitles.arListLayouts.cancel,
-            style: 'cancel'
-          },
           {
             text: texts.settingsTitles.arListLayouts.deleteAlertButtonText,
             onPress: async () => {
@@ -40,30 +35,41 @@ export const ARDownloadListItem = ({ item, index, data, setData }) => {
                 index,
                 downloadableData: data
               });
+
               setData(newDownloadedData);
             },
             style: 'destructive'
+          },
+          {
+            text: texts.settingsTitles.arListLayouts.cancel,
+            style: 'cancel'
           }
         ]
       );
-    } else {
-      return;
     }
   };
 
   return (
     <ListItem
       title={<RegularText small>{title}</RegularText>}
-      subtitle={() => subtitleRender({ totalSize, size, progressSize })}
+      subtitle={
+        progressSize ? (
+          <RegularText smallest>{`${
+            size >= totalSize ? formatSize(size) : formatSize(progressSize)
+          } / ${formatSize(totalSize)}`}</RegularText>
+        ) : (
+          <RegularText smallest>{`${formatSize(totalSize)}`}</RegularText>
+        )
+      }
       bottomDivider
       containerStyle={styles.container}
       rightIcon={() =>
         itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED ? (
-          <Icon.CloseCircle color={colors.darkText} size={BUTTON_SIZE} />
+          <Icon.CloseCircle color={colors.darkText} size={normalize(16)} />
         ) : itemDownloadType === DOWNLOAD_TYPE.DOWNLOADABLE ? (
-          <Icon.ArrowDownCircle color={colors.primary} size={BUTTON_SIZE} />
+          <Icon.ArrowDownCircle color={colors.primary} size={normalize(16)} />
         ) : (
-          <ActivityIndicator size="small" />
+          <ActivityIndicator size="small" color={colors.accent} />
         )
       }
       onPress={onPress}
@@ -71,16 +77,6 @@ export const ARDownloadListItem = ({ item, index, data, setData }) => {
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
     />
-  );
-};
-
-const subtitleRender = ({ totalSize, size, progressSize }) => {
-  return progressSize ? (
-    <RegularText smallest>{`${
-      size >= totalSize ? formatSize(size) : formatSize(progressSize)
-    } / ${formatSize(totalSize)}`}</RegularText>
-  ) : (
-    <RegularText smallest>{`${formatSize(totalSize)}`}</RegularText>
   );
 };
 
@@ -92,7 +88,7 @@ const styles = StyleSheet.create({
   }
 });
 
-ARDownloadListItem.propTypes = {
+ARDownloadListSettingsItem.propTypes = {
   data: PropTypes.array,
   index: PropTypes.number,
   item: PropTypes.object.isRequired,
