@@ -50,21 +50,27 @@ export const VolunteerSignupScreen = ({ navigation, route }: StackScreenProps<an
     data: dataMe
   } = useQuery(QUERY_TYPES.VOLUNTEER.ME, me, {
     enabled: !!data?.auth_token, // the query will not execute until the auth token exists
-    onSuccess: (dataMe) => {
-      if (dataMe?.account) {
-        // save user data to global state
-        storeVolunteerUserData(dataMe.account);
-
-        navigation.navigate(ScreenName.VolunteerRegistered);
+    onSuccess: (responseData) => {
+      if (!responseData?.account) {
+        return;
       }
+
+      // save user data to global state
+      storeVolunteerUserData(responseData.account);
+
+      navigation.navigate(ScreenName.VolunteerRegistered);
     }
   });
 
   const onSubmit = (signupData: VolunteerSignup) => {
     mutateSignup(signupData, {
-      onSuccess: (data) => {
+      onSuccess: (responseData) => {
+        if (!responseData?.auth_token) {
+          return;
+        }
+
         // wait for saving auth token to global state
-        return storeVolunteerAuthToken(data.auth_token);
+        return storeVolunteerAuthToken(responseData.auth_token);
       }
     });
   };

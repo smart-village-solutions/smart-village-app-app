@@ -68,7 +68,11 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
     mutateRegister(
       { ...registerData, dataPrivacyCheck: hasAcceptedDataPrivacy },
       {
-        onSuccess: () => {
+        onSuccess: (responseData) => {
+          if (responseData?.code !== 200) {
+            return;
+          }
+
           navigation.navigate(ScreenName.VolunteerSignup, {
             email: registerData.email
           });
