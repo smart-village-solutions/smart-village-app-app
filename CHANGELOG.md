@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.6.0] :rocket:
+
+This version brings fist integrations of volunteer and consul areas.
+
+### Added
+
+- integration of HumHub as new optional volunteer feature including user accounts, groups, chats, events, ...
+  - extended and used the HumHub API functionalities to fit our needs for a seamless integration
+    - check this repo for more infos: https://github.com/ikuseiGmbH/smart-village-app-humhub-ext
+  - this is a first version containing a lot of features that will be expanded and optimized in upcoming releases
+- integration of Consul as new optional consul feature including user accounts, debates, proposals, polls, ...
+  - updated and used GraphQL API of https://github.com/consul/consul
+  - this is a first version containing a lot of features that will be expanded and optimized in upcoming releases
+- added an option to the settings screen so that users can see the intro of the app again
+
+### Changed
+
+- migrated Teleport API from v3 to v4 that is used for BUS-BB
+
+### Fixed
+
+- fixed waste reminder notification times for summer time
+- fixed Matomo setup with adding check for existence of mandatory values for initialization of an instance
+  - there was a warning otherwise which caused an annoying warning message on the screen with every app reload in development
+
 ## [v2.5.4]
 
 Set app language to German and bugfixes
