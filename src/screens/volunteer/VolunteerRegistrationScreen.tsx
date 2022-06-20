@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 
 import * as appJson from '../../../app.json';
 import {
@@ -13,6 +13,7 @@ import {
   Input,
   InputSecureTextIcon,
   LoadingModal,
+  RegularText,
   SafeAreaViewFlex,
   Title,
   TitleContainer,
@@ -22,9 +23,7 @@ import {
   WrapperWithOrientation
 } from '../../components';
 import { consts, secrets, texts } from '../../config';
-import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
-import { QUERY_TYPES } from '../../queries';
-import { me, register } from '../../queries/volunteer';
+import { register } from '../../queries/volunteer';
 import { ScreenName, VolunteerRegistration } from '../../types';
 
 const { a11yLabel, EMAIL_REGEX } = consts;
@@ -62,22 +61,6 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
   const { mutate: mutateRegister, isLoading, isError, isSuccess, data, reset } = useMutation(
     register
   );
-  const {
-    isLoading: isLoadingMe,
-    isError: isErrorMe,
-    isSuccess: isSuccessMe,
-    data: dataMe
-  } = useQuery(QUERY_TYPES.VOLUNTEER.ME, me, {
-    enabled: !!data?.auth_token, // the query will not execute until the auth token exists
-    onSuccess: (dataMe) => {
-      if (dataMe?.account) {
-        // save user data to global state
-        storeVolunteerUserData(dataMe.account);
-
-        navigation.navigate(ScreenName.VolunteerRegistered);
-      }
-    }
-  });
 
   const onSubmit = (registerData: VolunteerRegistration) => {
     if (!hasAcceptedDataPrivacy) return showPrivacyCheckedAlert();
@@ -85,20 +68,20 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
     mutateRegister(
       { ...registerData, dataPrivacyCheck: hasAcceptedDataPrivacy },
       {
-        onSuccess: (data) => {
-          // wait for saving auth token to global state
-          return storeVolunteerAuthToken(data.auth_token);
+        onSuccess: (responseData) => {
+          if (responseData?.code !== 200) {
+            return;
+          }
+
+          navigation.navigate(ScreenName.VolunteerSignup, {
+            email: registerData.email
+          });
         }
       }
     );
   };
 
-  if (
-    isError ||
-    isErrorMe ||
-    (isSuccess && data?.code && data?.code !== 200) ||
-    (isSuccessMe && dataMe?.status && dataMe?.status !== 200)
-  ) {
+  if (isError || (isSuccess && data?.code && data?.code !== 200)) {
     showRegistrationFailAlert();
     reset();
   }
@@ -220,8 +203,14 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
               <Button
                 onPress={handleSubmit(onSubmit)}
                 title={texts.volunteer.next}
-                disabled={isLoading || isLoadingMe}
+                disabled={isLoading}
               />
+              <Touchable onPress={() => navigation.navigate(ScreenName.VolunteerSignup)}>
+                <BoldText center primary underline>
+                  {texts.volunteer.enterCode.toUpperCase()}
+                </BoldText>
+              </Touchable>
+              <RegularText />
               <Touchable onPress={() => navigation.goBack()}>
                 <BoldText center primary underline>
                   {texts.volunteer.abort.toUpperCase()}
@@ -230,7 +219,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
             </Wrapper>
           </WrapperWithOrientation>
 
-          <LoadingModal loading={isLoading || isLoadingMe} />
+          <LoadingModal loading={isLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

@@ -8,12 +8,12 @@ import {
   BookmarkScreen,
   ConstructionSiteDetailScreen,
   ConstructionSiteOverviewScreen,
-  ConsulHomeScreen,
-  ConsulLoginScreen,
-  ConsulRegisterScreen,
-  ConsulRegisteredScreen,
-  ConsulIndexScreen,
   ConsulDetailScreen,
+  ConsulHomeScreen,
+  ConsulIndexScreen,
+  ConsulLoginScreen,
+  ConsulRegisteredScreen,
+  ConsulRegisterScreen,
   ConsulStartNewScreen,
   DataProviderScreen,
   DetailScreen,
@@ -49,6 +49,7 @@ import {
   VolunteerPersonalScreen,
   VolunteerRegisteredScreen,
   VolunteerRegistrationScreen,
+  VolunteerSignupScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
@@ -335,6 +336,11 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.VolunteerRegistration,
       screenComponent: VolunteerRegistrationScreen,
+      screenOptions: { title: texts.screenTitles.volunteer.home }
+    },
+    {
+      routeName: ScreenName.VolunteerSignup,
+      screenComponent: VolunteerSignupScreen,
       screenOptions: { title: texts.screenTitles.volunteer.home }
     },
     {

@@ -7,3 +7,4 @@ export * from './VolunteerMeScreen';
 export * from './VolunteerPersonalScreen';
 export * from './VolunteerRegisteredScreen';
 export * from './VolunteerRegistrationScreen';
+export * from './VolunteerSignupScreen';

@@ -56,22 +56,28 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
     data: dataMe
   } = useQuery(QUERY_TYPES.VOLUNTEER.ME, me, {
     enabled: !!data?.auth_token, // the query will not execute until the auth token exists
-    onSuccess: (dataMe) => {
-      if (dataMe?.account) {
-        // save user data to global state
-        storeVolunteerUserData(dataMe.account);
-
-        // refreshUser param causes the home screen to update and no longer show the welcome component
-        navigation.navigate(ScreenName.VolunteerHome, { refreshUser: new Date().valueOf() });
+    onSuccess: (responseData) => {
+      if (!responseData?.account) {
+        return;
       }
+
+      // save user data to global state
+      storeVolunteerUserData(responseData.account);
+
+      // refreshUser param causes the home screen to update and no longer show the welcome component
+      navigation.navigate(ScreenName.VolunteerHome, { refreshUser: new Date().valueOf() });
     }
   });
 
   const onSubmit = (loginData: VolunteerLogin) =>
     mutateLogIn(loginData, {
-      onSuccess: (data) => {
+      onSuccess: (responseData) => {
+        if (!responseData?.auth_token) {
+          return;
+        }
+
         // wait for saving auth token to global state
-        return storeVolunteerAuthToken(data.auth_token);
+        return storeVolunteerAuthToken(responseData.auth_token);
       }
     });
 

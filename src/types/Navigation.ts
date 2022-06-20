@@ -54,6 +54,7 @@ export enum ScreenName {
   VolunteerPersonal = 'VolunteerPersonal',
   VolunteerRegistered = 'VolunteerRegistered',
   VolunteerRegistration = 'VolunteerRegistration',
+  VolunteerSignup = 'VolunteerSignup',
   WasteCollection = 'WasteCollection',
   WasteReminder = 'WasteReminder',
   Weather = 'Weather',

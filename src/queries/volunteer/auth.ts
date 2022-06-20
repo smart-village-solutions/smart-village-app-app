@@ -3,7 +3,7 @@ import {
   volunteerApiV2Url,
   volunteerAuthToken
 } from '../../helpers/volunteerHelper';
-import { VolunteerRegistration } from '../../types';
+import { VolunteerRegistration, VolunteerSignup } from '../../types';
 
 export const logIn = async ({ username, password }: { username: string; password: string }) => {
   const formData = new FormData();
@@ -53,6 +53,26 @@ export const register = async ({
   };
 
   return (await fetch(`${volunteerApiV2Url}auth/register`, fetchObj)).json();
+};
+
+export const signup = async ({ email, token }: VolunteerSignup) => {
+  const formData = {
+    signup: {
+      email,
+      token
+    }
+  };
+
+  const fetchObj = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  };
+
+  return (await fetch(`${volunteerApiV2Url}auth/signup`, fetchObj)).json();
 };
 
 // TODO: possible and needed?

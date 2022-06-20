@@ -12,6 +12,11 @@ export type VolunteerRegistration = {
   dataPrivacyCheck: boolean;
 };
 
+export type VolunteerSignup = {
+  email: string;
+  token: string;
+};
+
 export type VolunteerLogin = {
   username: string;
   password: string;
