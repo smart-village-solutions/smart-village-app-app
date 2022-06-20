@@ -11,23 +11,27 @@ export const CustomMatomoProvider = ({ children }) => {
   const getUserInfo = useUserInfoAsync();
 
   useEffect(() => {
-    matomoSettings()
-      .then((settings) => {
-        const instance = new MatomoTracker({
-          urlBase: secrets[namespace]?.matomoUrl,
-          siteId: secrets[namespace]?.matomoSiteId,
-          userId: settings?.userId,
-          disabled: !settings?.consent || __DEV__,
-          log: __DEV__
-        });
+    if (secrets[namespace]?.matomoUrl && secrets[namespace]?.matomoSiteId) {
+      matomoSettings()
+        .then((settings) => {
+          const instance = new MatomoTracker({
+            urlBase: secrets[namespace]?.matomoUrl,
+            siteId: secrets[namespace]?.matomoSiteId,
+            userId: settings?.userId,
+            disabled: !settings?.consent || __DEV__,
+            log: __DEV__
+          });
 
-        getUserInfo().then((userInfo) => instance.trackAppStart(userInfo));
-        setMatomoInstance(instance);
-      })
-      .catch((error) => {
-        console.warn('An error occurred with setup Matomo tracking', error);
-        setMatomoInstance({});
-      });
+          getUserInfo().then((userInfo) => instance.trackAppStart(userInfo));
+          setMatomoInstance(instance);
+        })
+        .catch((error) => {
+          console.warn('An error occurred with setup Matomo tracking', error);
+          setMatomoInstance({});
+        });
+    } else {
+      setMatomoInstance({});
+    }
   }, []);
 
   if (!matomoInstance) return null;
