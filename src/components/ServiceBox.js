@@ -1,25 +1,26 @@
 import styled, { css } from 'styled-components/native';
 
-import { consts, normalize } from '../config';
+import { normalize } from '../config';
+
+const flexBasis = (props) => {
+  const { orientation, bigTile } = props;
+  const numberOfTiles = orientation === 'landscape' ? 5 : 3;
+  const tileFactor = bigTile ? 0.3 : 1;
+
+  return 100 / (numberOfTiles + 0.3 * tileFactor);
+};
 
 export const ServiceBox = styled.View`
-  flex-basis: ${100 / 3.3}%;
   margin: ${normalize(14)}px 0;
 
   ${(props) =>
-    props.dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH &&
     css`
-      /*
-        need to add slightly more than 5.3 like on landscape in order to re-render
-        on orientation change. with the same values in this condition and for landscape,
-        it seems that the styled component is memoized and a re-rendering does not take place.
-      */
-      flex-basis: ${100 / 5.301}%;
+      flex-basis: ${flexBasis(props)}%;
     `};
 
   ${(props) =>
-    props.orientation === 'landscape' &&
+    props.bigTile &&
     css`
-      flex-basis: ${100 / 5.3}%;
+      margin: 0 0 ${normalize(1)}px 0;
     `};
 `;

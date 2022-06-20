@@ -23,11 +23,7 @@ export const ServiceTile = ({
   const safeAreaInsets = useSafeAreaInsets();
 
   return (
-    <ServiceBox
-      orientation={orientation}
-      dimensions={dimensions}
-      style={[!!item.tile && styles.bigTileBox]}
-    >
+    <ServiceBox orientation={orientation} dimensions={dimensions} bigTile={!!item.tile}>
       <TouchableOpacity
         onPress={() => navigation.push(item.routeName, item.params)}
         accessibilityLabel={
@@ -82,10 +78,6 @@ const styles = StyleSheet.create({
     height: normalize(40),
     marginBottom: normalize(7),
     width: '100%'
-  },
-  bigTileBox: {
-    marginBottom: normalize(14),
-    marginTop: 0
   }
 });
 
@@ -104,8 +96,7 @@ const stylesWithProps = ({
 
   // calculate tile sizes based on device orientation, safe are insets and padding
   const tileSize =
-    ((orientation === 'landscape' ? deviceHeight : device.width) -
-      (numberOfTiles + 1) * containerPadding) /
+    ((orientation === 'landscape' ? deviceHeight : device.width) - 2 * containerPadding) /
     numberOfTiles;
 
   return StyleSheet.create({
