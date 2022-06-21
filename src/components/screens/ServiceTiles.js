@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { normalize } from 'react-native-elements';
 
 import { colors, consts, device } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
-import { LoadingContainer } from '../LoadingContainer';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { WrapperWrap } from '../Wrapper';
@@ -30,11 +30,7 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
   }, [refetch, isConnected]);
 
   if (loading) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
-      </LoadingContainer>
-    );
+    return <LoadingSpinner loading />;
   }
 
   return (
@@ -59,7 +55,11 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
           <View style={styles.padding}>
             <WrapperWrap spaceBetween>
               {data?.map((item, index) => (
-                <ServiceTile key={index + item.title} navigation={navigation} item={item} />
+                <ServiceTile
+                  key={index + (item.title || item.accessibilityLabel)}
+                  navigation={navigation}
+                  item={item}
+                />
               ))}
             </WrapperWrap>
           </View>
