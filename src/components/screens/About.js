@@ -42,7 +42,7 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
       </LoadingContainer>
     );
 
-  if (!data?.length) return null;
+  if (!data?.length) return <VersionNumber />;
 
   const { sections = {} } = globalSettings;
   const { headlineAbout = texts.homeTitles.about } = sections;
