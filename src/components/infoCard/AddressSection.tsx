@@ -55,7 +55,7 @@ const getBBNaviUrl = (baseUrl: string, address: Address, currentPosition?: Locat
 
 export const AddressSection = ({ address, addresses, openWebScreen }: Props) => {
   // @ts-expect-error global settings are not properly typed
-  const bbNaviBaseUrl = useContext(SettingsContext).globalSettings.settings?.['bbnavi'];
+  const bbNaviBaseUrl = useContext(SettingsContext).globalSettings?.settings?.['bbnavi'];
   const { position } = usePosition();
   const { position: lastKnownPosition } = useLastKnownPosition();
 

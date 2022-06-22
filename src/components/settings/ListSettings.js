@@ -9,7 +9,7 @@ import { ListSettingsItem } from '../ListSettingsItem';
 const renderItem = ({ item }) => <ListSettingsItem item={item} />;
 
 export const ListSettings = () => {
-  const categoriesNews = useContext(SettingsContext).globalSettings.sections?.categoriesNews ?? [
+  const categoriesNews = useContext(SettingsContext).globalSettings?.sections?.categoriesNews ?? [
     {
       categoryTitle: texts.settingsTitles.listLayouts.newsItemsTitle
     }

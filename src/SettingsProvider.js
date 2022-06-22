@@ -5,7 +5,8 @@ export const SettingsContext = createContext({
   globalSettings: {
     filter: {},
     sections: {},
-    settings: {}
+    settings: {},
+    widgets: []
   }
 });
 

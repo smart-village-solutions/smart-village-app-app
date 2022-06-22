@@ -54,7 +54,7 @@ const getRefreshInterval = (query) => {
 };
 
 const useRootRouteByCategory = (details, navigation) => {
-  const categoriesNews = useContext(SettingsContext)?.globalSettings?.sections?.categoriesNews;
+  const categoriesNews = useContext(SettingsContext).globalSettings?.sections?.categoriesNews;
   const id = details.categories?.[0]?.id;
 
   useEffect(() => {

@@ -69,7 +69,7 @@ export const SettingsScreen = () => {
 
   useEffect(() => {
     const updateSectionedData = async () => {
-      const { settings = { matomo: false } } = globalSettings;
+      const { settings = {} } = globalSettings;
 
       const additionalSectionedData = [];
 

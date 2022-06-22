@@ -39,7 +39,7 @@ const a11yLabels = consts.a11yLabel;
 // eslint-disable-next-line complexity
 export const EncounterHomeScreen = ({ navigation, route }: any) => {
   // @ts-expect-error settings are not properly typed
-  const encounterCategoryId = useContext(SettingsContext).globalSettings.settings?.encounter
+  const encounterCategoryId = useContext(SettingsContext).globalSettings?.settings?.encounter
     ?.categoryId;
   const {
     loading: loadingQr,
