@@ -11,7 +11,7 @@ import { BoldText } from './Text';
 export const FeedbackFooter: FC = () => {
   const navigation = useNavigation();
   // @ts-expect-error settings are not properly typed
-  const feedbackFooter = useContext(SettingsContext).globalSettings.settings?.feedbackFooter;
+  const feedbackFooter = useContext(SettingsContext).globalSettings?.settings?.feedbackFooter;
 
   if (!feedbackFooter) return null;
 

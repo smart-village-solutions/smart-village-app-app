@@ -39,7 +39,12 @@ const { LIST_TYPES } = consts;
 const MainAppWithApolloProvider = () => {
   const [loading, setLoading] = useState(true);
   const [client, setClient] = useState();
-  const [initialGlobalSettings, setInitialGlobalSettings] = useState({});
+  const [initialGlobalSettings, setInitialGlobalSettings] = useState({
+    filter: {},
+    sections: {},
+    settings: {},
+    widgets: []
+  });
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
 
@@ -137,8 +142,7 @@ const MainAppWithApolloProvider = () => {
     const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
     // rehydrate data from the async storage to the global state
-    // if there are no general settings yet, add a navigation fallback
-    let globalSettings = await storageHelper.globalSettings();
+    let globalSettings = (await storageHelper.globalSettings()) || initialGlobalSettings;
 
     // if there are no list type settings yet, set the defaults as fallback
     const listTypesSettings = (await storageHelper.listTypesSettings()) || {
@@ -176,12 +180,12 @@ const MainAppWithApolloProvider = () => {
     }
 
     // if there are no locationSettings yet, set the defaults as fallback
-    const locationSettings = !globalSettings.settings.locationService
+    const locationSettings = !globalSettings?.settings?.locationService
       ? { locationService: false }
       : (await storageHelper.locationSettings()) || {};
 
     const defaultAlternativePosition =
-      globalSettings.settings.locationService?.defaultAlternativePosition;
+      globalSettings?.settings?.locationService?.defaultAlternativePosition;
 
     if (defaultAlternativePosition) {
       locationSettings.defaultAlternativePosition = latLngToLocationObject(
