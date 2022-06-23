@@ -268,14 +268,7 @@ export const NewProposal = ({ navigation, data, query }) => {
                   <TouchableOpacity
                     key={indexs}
                     activeOpacity={1}
-                    style={[
-                      styles.tagContainer,
-                      {
-                        backgroundColor: items.selected
-                          ? colors.lighterPrimary
-                          : colors.placeholder + '60'
-                      }
-                    ]}
+                    style={[styles.tagContainer, !!items.selected && styles.tagContainerSelected]}
                     onPress={() => {
                       if (items.selected) {
                         items.selected = false;
@@ -354,6 +347,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.borderRgba,
     margin: 5,
     borderRadius: 5
+  },
+  tagContainerSelected: {
+    backgroundColor: colors.primary
   },
   tagText: {
     padding: 10

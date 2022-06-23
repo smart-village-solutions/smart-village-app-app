@@ -92,8 +92,8 @@ export const RegularText = styled(Text)`
   ${(props) =>
     props.lighter &&
     css`
-      color: ${colors.lighterText};
-      text-decoration-color: ${colors.lighterText};
+      color: ${colors.gray60};
+      text-decoration-color: ${colors.gray60};
     `};
 
   ${(props) =>

@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     shadowColor: colors.shadow,
     shadowOpacity: 0.7,
     shadowRadius: 3,
-    backgroundColor: colors.lightestText
+    backgroundColor: colors.surface
   }
 });
 

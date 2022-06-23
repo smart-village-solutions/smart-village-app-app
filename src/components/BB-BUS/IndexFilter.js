@@ -201,7 +201,7 @@ export const IndexFilter = ({
 
 const styles = StyleSheet.create({
   divider: {
-    backgroundColor: colors.lightestText,
+    backgroundColor: colors.surface,
     height: normalize(18),
     opacity: 0
   },

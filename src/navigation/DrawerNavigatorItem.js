@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     paddingVertical: normalize(12)
   },
   divider: {
-    backgroundColor: colors.lightestText,
+    backgroundColor: colors.surface,
     height: StyleSheet.hairlineWidth,
     opacity: 0.3
   }

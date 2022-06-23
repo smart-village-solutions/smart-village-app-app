@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center'
   },
-  divider: { backgroundColor: colors.lightestText },
+  divider: { backgroundColor: colors.surface },
   gradient: {
     justifyContent: 'center',
     paddingVertical: normalize(24)
