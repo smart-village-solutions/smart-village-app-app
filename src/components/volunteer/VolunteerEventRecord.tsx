@@ -84,7 +84,7 @@ export const VolunteerEventRecord = ({
   }, [isAttendingEvent]);
 
   useEffect(() => {
-    isSuccess && dataAttend.code == 200 && refetch();
+    isSuccess && dataAttend?.code == 200 && refetch();
   }, [isSuccess, dataAttend]);
 
   return (
