@@ -676,6 +676,7 @@ export const texts = {
       allDownloadButtonTitle: 'Alle Dateien herunterladen',
       arListTitle: 'Dateien verwalten',
       cancel: 'Abbrechen',
+      continue: 'Weiter',
       deleteAlertButtonText: 'Löschen',
       deleteAlertMessage: 'Möchten Sie die Datei löschen?',
       downloadAlertButtonText: 'Herunterladen',

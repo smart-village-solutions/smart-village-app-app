@@ -3,16 +3,23 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Overlay } from 'react-native-elements';
 
-import { colors, normalize, texts } from '../config';
+import { colors, normalize } from '../config';
 
 import { BoldText } from './Text';
 import { Touchable } from './Touchable';
 
-export const Modal = ({ children, isBackdropPress, onPress, isVisible }) => {
+export const Modal = ({
+  children,
+  isBackdropPress,
+  isVisible,
+  modalHiddenButtonName,
+  onModalVisible
+}) => {
   return (
     <Overlay
+      animationType="fade"
       isVisible={isVisible}
-      onBackdropPress={isBackdropPress ? onPress : undefined}
+      onBackdropPress={isBackdropPress ? onModalVisible : undefined}
       windowBackgroundColor={colors.overlayRgba}
       overlayStyle={styles.overlay}
       width="80%"
@@ -20,30 +27,29 @@ export const Modal = ({ children, isBackdropPress, onPress, isVisible }) => {
       borderRadius={8}
       supportedOrientations={['portrait', 'landscape']}
     >
-      {children}
+      <>
+        {children}
 
-      <Touchable style={styles.touchableStyle} onPress={onPress}>
-        <BoldText underline primary>
-          {texts.settingsTitles.arListLayouts.cancel}
-        </BoldText>
-      </Touchable>
+        <Touchable onPress={onModalVisible}>
+          <BoldText center underline primary>
+            {modalHiddenButtonName}
+          </BoldText>
+        </Touchable>
+      </>
     </Overlay>
   );
 };
 
 const styles = StyleSheet.create({
   overlay: {
-    padding: normalize(30),
-    alignItems: 'center'
-  },
-  touchableStyle: {
-    marginTop: 10
+    padding: normalize(30)
   }
 });
 
 Modal.propTypes = {
-  children: PropTypes.object.isRequired,
-  isBackdropPress: PropTypes.bool.isRequired,
+  children: PropTypes.node.isRequired,
+  isBackdropPress: PropTypes.bool,
   isVisible: PropTypes.bool.isRequired,
-  onPress: PropTypes.func.isRequired
+  modalHiddenButtonName: PropTypes.string.isRequired,
+  onModalVisible: PropTypes.func.isRequired
 };
