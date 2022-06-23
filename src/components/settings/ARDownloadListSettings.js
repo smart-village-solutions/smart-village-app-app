@@ -1,17 +1,13 @@
 import * as FileSystem from 'expo-file-system';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList } from 'react-native';
+import { Alert, FlatList } from 'react-native';
 
 import { texts } from '../../config';
-import {
-  checkDownloadedData,
-  deleteAllData,
-  downloadAllData,
-  dummyData,
-  formatSize
-} from '../../helpers';
+import { checkDownloadedData, deleteAllData, downloadAllData, formatSize } from '../../helpers';
+import { usePullToRefetch, useStaticContent } from '../../hooks';
 import { ARDownloadListSettingsItem } from '../ARDownloadListSettingsItem';
 import { Button } from '../Button';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
@@ -50,8 +46,13 @@ const renderItem = ({ data, index, item, setData }) => (
 );
 
 export const ARDownloadListSettings = () => {
-  const [data, setData] = useState(dummyData);
-  const [loading, setLoading] = useState(false);
+  const { data: staticData, loading, refetch } = useStaticContent({
+    name: 'arDownloadableDataList',
+    type: 'json'
+  });
+
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(loading);
   const [freeSize, setFreeSize] = useState(0);
 
   useEffect(() => {
@@ -59,14 +60,18 @@ export const ARDownloadListSettings = () => {
   }, [data]);
 
   useEffect(() => {
-    checkDownloadData();
-  }, []);
+    setData(staticData);
 
-  const checkDownloadData = async () => {
-    setLoading(true);
+    if (staticData?.length) {
+      checkDownloadData({ data: staticData });
+    }
+  }, [staticData]);
+
+  const checkDownloadData = async ({ data }) => {
+    setIsLoading(true);
     const { newDownloadedData } = await checkDownloadedData({ downloadableData: data });
     setData(newDownloadedData);
-    setLoading(false);
+    setIsLoading(false);
   };
 
   const checkFreeStorage = async () => {
@@ -82,13 +87,16 @@ export const ARDownloadListSettings = () => {
     deleteAllData({ downloadableData: data, setDownloadableData: setData });
   };
 
-  if (loading) return <ActivityIndicator size="small" />;
+  const RefreshControl = usePullToRefetch(refetch);
+
+  if (isLoading || !data?.length) return <LoadingSpinner loading />;
 
   return (
     <>
       <SectionHeader title={texts.settingsTitles.arListLayouts.arListTitle} />
 
       <FlatList
+        refreshControl={RefreshControl}
         data={data}
         renderItem={({ item, index }) => renderItem({ data, index, item, setData })}
         keyExtractor={(item) => item.id}
