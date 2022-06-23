@@ -166,7 +166,7 @@ export const DebateDetail = ({ data, refetch, route, navigation }) => {
             style={styles.button}
             disabled={isLoading}
           >
-            <Icon.Send color={colors.primary} size={normalize(16)} />
+            <Icon.Mail color={colors.primary} />
           </TouchableOpacity>
         </WrapperRow>
       </Wrapper>
