@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import ProgressBar from 'react-native-progress/Bar';
 
 import { colors, Icon, normalize, texts } from '../../config';
 import { DOWNLOAD_TYPE, formatSize } from '../../helpers';
@@ -8,7 +9,7 @@ import { Modal } from '../Modal';
 import { BoldText, RegularText } from '../Text';
 
 export const ARModal = ({ isModalVisible, item, onModalVisible }) => {
-  const { DOWNLOAD_TYPE: itemDownloadType, progressSize, size, title, totalSize } = item;
+  const { DOWNLOAD_TYPE: itemDownloadType, progress, progressSize, size, title, totalSize } = item;
 
   return (
     <Modal
@@ -36,6 +37,7 @@ export const ARModal = ({ isModalVisible, item, onModalVisible }) => {
 
       <View style={styles.container}>
         <BoldText>{title}</BoldText>
+        <ProgressBar progress={progress} width={null} height={3} color={colors.primary} />
       </View>
     </Modal>
   );
