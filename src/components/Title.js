@@ -29,7 +29,7 @@ export const Title = styled(Text)`
 // need to set a background color for shadow applying to the View instead of Text inside it
 // thx to https://github.com/styled-components/styled-components/issues/709#issuecomment-377968412
 export const TitleContainer = styled.View`
-  background-color: ${colors.lightestText};
+  background-color: ${colors.surface};
   padding: ${normalize(7)}px ${normalize(14)}px;
 
   ${() =>
@@ -50,7 +50,7 @@ export const TitleContainer = styled.View`
 
 // dummy bottom shadow container for iOS
 export const TitleShadow = styled.View`
-  background-color: ${colors.lightestText};
+  background-color: ${colors.surface};
   shadow-color: ${colors.shadow};
   shadow-offset: 0px 1px;
   shadow-opacity: 0.7;

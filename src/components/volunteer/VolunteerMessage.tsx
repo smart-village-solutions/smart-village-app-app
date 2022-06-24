@@ -134,10 +134,10 @@ const styles = StyleSheet.create({
     marginBottom: normalize(10)
   },
   overlayContainerStyle: {
-    backgroundColor: colors.lightestText
+    backgroundColor: colors.surface
   },
   placeholderStyle: {
-    backgroundColor: colors.lightestText
+    backgroundColor: colors.surface
   },
   titleStyle: {
     color: colors.darkText,

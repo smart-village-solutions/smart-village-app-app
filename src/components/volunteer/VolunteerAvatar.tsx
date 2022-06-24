@@ -72,10 +72,10 @@ const styles = StyleSheet.create({
     marginLeft: normalize(-12)
   },
   overlayContainerStyle: {
-    backgroundColor: colors.lightestText
+    backgroundColor: colors.surface
   },
   placeholderStyle: {
-    backgroundColor: colors.lightestText
+    backgroundColor: colors.surface
   },
   titleStyle: {
     color: colors.darkText,

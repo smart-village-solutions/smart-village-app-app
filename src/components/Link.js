@@ -14,7 +14,7 @@ export const Link = ({ url, description, openWebScreen }) => (
     accessibilityLabel={`(${description}) ${consts.a11yLabel.link}`}
   >
     <WrapperRow>
-      <Icon.Link color={colors.secondary} style={styles.icon} />
+      <Icon.Link color={colors.primary} style={styles.icon} />
       <RegularText primary>{description}</RegularText>
     </WrapperRow>
   </TouchableOpacity>

@@ -31,7 +31,7 @@ export const Radiobutton = ({ title, disabled, selected, onPress, containerStyle
 
 const styles = StyleSheet.create({
   containerStyle: {
-    backgroundColor: colors.lightestText,
+    backgroundColor: colors.surface,
     borderColor: colors.lightestText,
     borderRadius: 0,
     borderWidth: 0,

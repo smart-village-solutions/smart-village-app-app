@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     padding: normalize(10)
   },
   checkboxContainerStyle: {
-    backgroundColor: colors.lightestText,
+    backgroundColor: colors.surface,
     borderWidth: 0,
     marginBottom: normalize(10),
     marginLeft: 0,

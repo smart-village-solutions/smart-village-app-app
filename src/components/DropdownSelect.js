@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
   dropdownDropdownText: baseFontStyle,
   dropdownRowWrapper: {
-    backgroundColor: colors.lightestText
+    backgroundColor: colors.surface
   },
   dropdownSeparator: {
     backgroundColor: colors.borderRgba,

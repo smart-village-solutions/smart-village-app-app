@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     alignItems: 'center',
-    backgroundColor: colors.lightestText,
+    backgroundColor: colors.surface,
     borderRadius: 20,
     height: Dimensions.get('screen').height - 120,
     paddingTop: 75
