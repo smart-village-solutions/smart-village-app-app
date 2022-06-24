@@ -84,7 +84,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
   if (
     isError ||
     isErrorMe ||
-    (isSuccess && data?.code && data?.code !== 200) ||
+    (isSuccess && data?.code !== 200) ||
     (isSuccessMe && dataMe?.status && dataMe?.status !== 200)
   ) {
     showLoginFailAlert();

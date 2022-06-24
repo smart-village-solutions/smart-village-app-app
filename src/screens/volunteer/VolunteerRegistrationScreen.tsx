@@ -81,7 +81,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
     );
   };
 
-  if (isError || (isSuccess && data?.code && data?.code !== 200)) {
+  if (isError || (isSuccess && data?.code !== 200)) {
     showRegistrationFailAlert();
     reset();
   }
