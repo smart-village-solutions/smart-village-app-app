@@ -37,7 +37,14 @@ export const ARModal = ({ isModalVisible, item, onModalVisible }) => {
 
       <View style={styles.container}>
         <BoldText>{title}</BoldText>
-        <ProgressBar progress={progress} width={null} height={3} color={colors.primary} />
+        <ProgressBar
+          borderColor={colors.surface}
+          color={colors.primary}
+          height={3}
+          progress={progress}
+          unfilledColor={colors.gray20}
+          width={null}
+        />
       </View>
     </Modal>
   );
