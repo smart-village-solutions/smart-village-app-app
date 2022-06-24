@@ -231,7 +231,7 @@ export const ConsulCommentListItem = ({ commentItem, refetch, replyList, navigat
             style={styles.button}
             disabled={isLoading}
           >
-            <Icon.Send color={colors.primary} size={normalize(16)} />
+            <Icon.Mail color={colors.primary} />
           </TouchableOpacity>
         </WrapperRow>
       ) : null}
