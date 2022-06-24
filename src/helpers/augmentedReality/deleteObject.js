@@ -25,10 +25,11 @@ export const deleteObject = async ({ index, downloadableData }) => {
     }
   }
 
-  newDownloadedData[index].size = 0;
-  newDownloadedData[index].progressSize = 0;
   newDownloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADABLE;
   newDownloadedData[index].localUris = [];
+  newDownloadedData[index].progress = 0;
+  newDownloadedData[index].progressSize = 0;
+  newDownloadedData[index].size = 0;
 
   return { newDownloadedData };
 };
