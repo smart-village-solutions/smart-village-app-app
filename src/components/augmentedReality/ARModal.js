@@ -3,17 +3,15 @@ import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import ProgressBar from 'react-native-progress/Bar';
 
-import { colors, consts, device, Icon, normalize, texts } from '../../config';
+import { colors, Icon, normalize, texts } from '../../config';
 import { DOWNLOAD_TYPE, formatSize } from '../../helpers';
 import { Modal } from '../Modal';
 import { BoldText, RegularText } from '../Text';
-import { Title, TitleContainer, TitleShadow } from '../Title';
 
 import { ARObjectList } from './ARObjectList';
 
 export const ARModal = ({ isListView, isModalVisible, item, onModalVisible, showTitle }) => {
   const { DOWNLOAD_TYPE: itemDownloadType, progress, progressSize, size, title, totalSize } = item;
-  const a11yText = consts.a11yLabel;
 
   return (
     <Modal
@@ -26,21 +24,13 @@ export const ARModal = ({ isListView, isModalVisible, item, onModalVisible, show
           : texts.settingsTitles.arListLayouts.cancel
       }
     >
-      {showTitle && (
-        <>
-          <TitleContainer>
-            <Title
-              accessibilityLabel={`(${texts.settingsTitles.arListLayouts.arListTitle}) ${a11yText.heading}`}
-            >
-              {texts.settingsTitles.arListLayouts.arListTitle}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </>
-      )}
-
       {isListView ? (
-        <ARObjectList showDownloadAllButton showDeleteAllButton showFreeSpace />
+        <ARObjectList
+          showDownloadAllButton
+          showDeleteAllButton
+          showFreeSpace
+          showTitle={showTitle}
+        />
       ) : (
         <View>
           <View style={[styles.container, styles.upContainer]}>

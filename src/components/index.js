@@ -12,7 +12,6 @@ export * from './wasteCalendar';
 export * from './weather';
 export * from './widgets';
 
-export * from './ARDownloadListSettingsItem';
 export * from './BackToTop';
 export * from './Button';
 export * from './calendarArrows';

@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList } from 'react-native';
 
 import {
+  ARObjectList,
   IndexFilterWrapperAndList,
   LoadingContainer,
   RegularText,
@@ -11,12 +12,7 @@ import {
   SettingsToggle,
   Wrapper
 } from '../components';
-import {
-  ARDownloadListSettings,
-  ListSettings,
-  LocationSettings,
-  PermanentFilterSettings
-} from '../components/settings';
+import { ListSettings, LocationSettings, PermanentFilterSettings } from '../components/settings';
 import { colors, consts, texts } from '../config';
 import {
   addToStore,
@@ -26,9 +22,9 @@ import {
   removeMatomoUserId
 } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
+import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
 import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
 import { SettingsContext } from '../SettingsProvider';
-import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -229,7 +225,9 @@ export const SettingsScreen = () => {
         />
       )}
       {selectedFilterId === TOP_FILTER.LIST_TYPES && <ListSettings />}
-      {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && <ARDownloadListSettings />}
+      {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && (
+        <ARObjectList showDeleteAllButton showDownloadAllButton showFreeSpace showTitle />
+      )}
     </SafeAreaViewFlex>
   );
 };

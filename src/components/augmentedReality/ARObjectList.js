@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 
-import { texts } from '../../config';
+import { consts, device, texts } from '../../config';
 import { checkDownloadedData, deleteAllData, downloadAllData, formatSize } from '../../helpers';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
+import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
@@ -56,7 +57,8 @@ export const ARObjectList = ({
   showDeleteAllButton,
   showDownloadAllButton,
   showFreeSpace,
-  showOnDetailPage
+  showOnDetailPage,
+  showTitle
 }) => {
   const { data: staticData, loading, refetch } = useStaticContent({
     name: 'arDownloadableDataList',
@@ -100,11 +102,25 @@ export const ARObjectList = ({
   };
 
   const RefreshControl = usePullToRefetch(refetch);
+  const a11yText = consts.a11yLabel;
 
   if (isLoading || !data?.length) return <LoadingSpinner loading />;
 
   return (
     <>
+      {showTitle && (
+        <>
+          <TitleContainer>
+            <Title
+              accessibilityLabel={`(${texts.settingsTitles.arListLayouts.arListTitle}) ${a11yText.heading}`}
+            >
+              {texts.settingsTitles.arListLayouts.arListTitle}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+        </>
+      )}
+
       <FlatList
         refreshControl={RefreshControl}
         data={data}
@@ -151,5 +167,6 @@ ARObjectList.propTypes = {
   showDeleteAllButton: PropTypes.bool,
   showDownloadAllButton: PropTypes.bool,
   showFreeSpace: PropTypes.bool,
-  showOnDetailPage: PropTypes.bool
+  showOnDetailPage: PropTypes.bool,
+  showTitle: PropTypes.bool
 };
