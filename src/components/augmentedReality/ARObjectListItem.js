@@ -3,8 +3,8 @@ import React from 'react';
 import { ActivityIndicator, Alert, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { deleteObject, downloadObject, DOWNLOAD_TYPE, formatSize } from '../../helpers';
 import { colors, consts, Icon, normalize, texts } from '../../config';
+import { deleteObject, downloadObject, DOWNLOAD_TYPE, formatSize } from '../../helpers';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 

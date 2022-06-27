@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { consts, device, Icon, normalize, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
-import { ARModal } from '../augmentedReality';
+import { ARModal, ARObjectList } from '../augmentedReality';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
@@ -73,23 +73,35 @@ export const Tour = ({ data, route }) => {
                 it will be edited later 
                 & component to be relocated */}
       {!!augmentedReality && (
-        <Wrapper>
-          <Touchable>
-            <WrapperRow spaceBetween>
-              <RegularText>Was ist Augmented Reality (AR)?</RegularText>
-              <Icon.ArrowRight />
-            </WrapperRow>
-          </Touchable>
+        <WrapperWithOrientation>
+          <Wrapper>
+            <Touchable>
+              <WrapperRow spaceBetween>
+                <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
+                <Icon.ArrowRight size={normalize(20)} />
+              </WrapperRow>
+            </Touchable>
+          </Wrapper>
 
-          <View style={{ marginTop: normalize(20) }}>
+          <Wrapper>
             <Button
               onPress={() => setIsModalVisible(!isModalVisible)}
               invert
-              title="Kunstwerke laden"
+              title={texts.augmentedReality.loadingArtworks}
             />
-          </View>
-        </Wrapper>
+          </Wrapper>
+        </WrapperWithOrientation>
       )}
+
+      <WrapperWithOrientation>
+        <TitleContainer>
+          <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>
+            {texts.augmentedReality.worksOfArt}
+          </Title>
+        </TitleContainer>
+        {device.platform === 'ios' && <TitleShadow />}
+        <ARObjectList showOnDetailPage />
+      </WrapperWithOrientation>
 
       <WrapperWithOrientation>
         {!!title && (
@@ -136,6 +148,7 @@ export const Tour = ({ data, route }) => {
         {/* TODO: hard code was written just to development it. 
                   it will be edited later */}
         <ARModal
+          showTitle
           isListView
           item={{
             DOWNLOAD_TYPE: 'downloaded',

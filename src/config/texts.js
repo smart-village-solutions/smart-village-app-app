@@ -4,6 +4,11 @@ export const texts = {
   appIntro: {
     continue: 'Weiter'
   },
+  augmentedReality: {
+    loadingArtworks: 'Kunstwerke laden',
+    whatIsAugmentedReality: 'Was ist Augmented Reality (AR)?',
+    worksOfArt: 'Kunstwerke'
+  },
   backToTop: 'zurück nach oben',
   bbBus: {
     authority: {
