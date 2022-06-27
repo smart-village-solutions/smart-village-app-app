@@ -1,18 +1,22 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import { View } from 'react-native';
 
-import { consts, device, texts } from '../../config';
+import { consts, device, Icon, normalize, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { ARModal } from '../augmentedReality';
+import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
+import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
+import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { DataProviderNotice } from '../DataProviderNotice';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Touchable } from '../Touchable';
+import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
 
 import { OperatingCompany } from './OperatingCompany';
 import { TourCard } from './TourCard';
@@ -46,6 +50,10 @@ export const Tour = ({ data, route }) => {
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
 
+  // TODO: DEVELOP! - it will be deleted, it was only made to development!
+  let augmentedReality = true;
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   useMatomoTrackScreenView(
     matomoTrackingString([
       MATOMO_TRACKING.SCREEN_VIEW.TOURS,
@@ -60,6 +68,28 @@ export const Tour = ({ data, route }) => {
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
+
+      {/* TODO: hard code was written just to development it. 
+                it will be edited later 
+                & component to be relocated */}
+      {!!augmentedReality && (
+        <Wrapper>
+          <Touchable>
+            <WrapperRow spaceBetween>
+              <RegularText>Was ist Augmented Reality (AR)?</RegularText>
+              <Icon.ArrowRight />
+            </WrapperRow>
+          </Touchable>
+
+          <View style={{ marginTop: normalize(20) }}>
+            <Button
+              onPress={() => setIsModalVisible(!isModalVisible)}
+              invert
+              title="Kunstwerke laden"
+            />
+          </View>
+        </Wrapper>
+      )}
 
       <WrapperWithOrientation>
         {!!title && (
@@ -102,6 +132,22 @@ export const Tour = ({ data, route }) => {
         <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
         {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
+
+        {/* TODO: hard code was written just to development it. 
+                  it will be edited later */}
+        <ARModal
+          isListView
+          item={{
+            DOWNLOAD_TYPE: 'downloaded',
+            progress: 0,
+            progressSize: 0,
+            size: 0,
+            title: 'test',
+            totalSize: 0
+          }}
+          isModalVisible={isModalVisible}
+          onModalVisible={() => setIsModalVisible(!isModalVisible)}
+        />
       </WrapperWithOrientation>
     </View>
   );
