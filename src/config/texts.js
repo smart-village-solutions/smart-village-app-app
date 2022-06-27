@@ -676,10 +676,13 @@ export const texts = {
       allDownloadButtonTitle: 'Alle Dateien herunterladen',
       arListTitle: 'Dateien verwalten',
       cancel: 'Abbrechen',
+      deleteError:
+        'Beim Löschen von Objekten ist ein Problem aufgetreten. Bitte versuchen Sie es erneut',
       deleteAlertButtonText: 'Löschen',
       deleteAlertMessage: 'Möchten Sie die Datei löschen?',
       downloadAlertButtonText: 'Herunterladen',
-      freeMemoryPlace: 'Verfügbarer Speicherplatz auf dem Gerät: '
+      freeMemoryPlace: 'Verfügbarer Speicherplatz auf dem Gerät: ',
+      ok: 'OK'
     },
     listLayouts: {
       cardList: 'Liste mit großen Bildern',

@@ -1,8 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
+import { Alert } from 'react-native';
+
+import { texts } from '../../config';
 
 import { DOWNLOAD_TYPE } from './downloadType';
 import { storageNameCreator } from './storageNameCreator';
+
+const deleteErrorAlert = () =>
+  Alert.alert(
+    texts.settingsTitles.arListLayouts.alertTitle,
+    texts.settingsTitles.arListLayouts.deleteError,
+    [{ text: texts.settingsTitles.arListLayouts.ok, style: 'cancel' }]
+  );
 
 // function to delete AR objects downloaded on the device
 export const deleteObject = async ({ index, downloadableData }) => {
@@ -20,8 +30,8 @@ export const deleteObject = async ({ index, downloadableData }) => {
     try {
       await FileSystem.deleteAsync(downloadUri);
       await AsyncStorage.removeItem(storageName);
-    } catch (e) {
-      console.error(e);
+    } catch (error) {
+      return deleteErrorAlert();
     }
   }
 
