@@ -4,6 +4,7 @@ import { StackNavigationOptions } from '@react-navigation/stack';
 
 export enum ScreenName {
   About = 'About',
+  ARInfo = 'ARInfo',
   BBBUSDetail = 'BBBUSDetail',
   BBBUSIndex = 'BBBUSIndex',
   BookmarkCategory = 'BookmarkCategory',

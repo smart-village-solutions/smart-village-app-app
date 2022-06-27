@@ -5,6 +5,7 @@ import { View } from 'react-native';
 import { consts, device, Icon, normalize, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { ScreenName } from '../../types';
 import { ARModal, ARObjectList } from '../augmentedReality';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
@@ -25,7 +26,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const Tour = ({ data, route }) => {
+export const Tour = ({ data, navigation, route }) => {
   const {
     addresses,
     category,
@@ -75,7 +76,7 @@ export const Tour = ({ data, route }) => {
       {!!augmentedReality && (
         <WrapperWithOrientation>
           <Wrapper>
-            <Touchable>
+            <Touchable onPress={() => navigation.navigate(ScreenName.ARInfo)}>
               <WrapperRow spaceBetween>
                 <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
                 <Icon.ArrowRight size={normalize(20)} />

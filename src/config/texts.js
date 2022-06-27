@@ -5,6 +5,12 @@ export const texts = {
     continue: 'Weiter'
   },
   augmentedReality: {
+    arInfoScreen: {
+      header: 'Was is AR?',
+      loadingError:
+        'Es gibt ein Problem mit der Verbindung. Bitte versuchen Sie es später noch einmal.',
+      settingsButton: 'AR-Einstellungen'
+    },
     loadingArtworks: 'Kunstwerke laden',
     whatIsAugmentedReality: 'Was ist Augmented Reality (AR)?',
     worksOfArt: 'Kunstwerke'

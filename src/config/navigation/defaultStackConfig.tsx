@@ -4,16 +4,17 @@ import { HeaderLeft } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
 import {
   AboutScreen,
+  ARInfoScreen,
   BookmarkCategoryScreen,
   BookmarkScreen,
   ConstructionSiteDetailScreen,
   ConstructionSiteOverviewScreen,
-  ConsulHomeScreen,
-  ConsulLoginScreen,
-  ConsulRegisterScreen,
-  ConsulRegisteredScreen,
-  ConsulIndexScreen,
   ConsulDetailScreen,
+  ConsulHomeScreen,
+  ConsulIndexScreen,
+  ConsulLoginScreen,
+  ConsulRegisteredScreen,
+  ConsulRegisterScreen,
   ConsulStartNewScreen,
   DataProviderScreen,
   DetailScreen,
@@ -78,6 +79,11 @@ export const defaultStackConfig = ({
       routeName: ScreenName.About,
       screenComponent: AboutScreen,
       screenOptions: { title: texts.screenTitles.about }
+    },
+    {
+      routeName: ScreenName.ARInfo,
+      screenComponent: ARInfoScreen,
+      screenOptions: { title: texts.augmentedReality.arInfoScreen.header }
     },
     {
       routeName: ScreenName.BBBUSIndex,
