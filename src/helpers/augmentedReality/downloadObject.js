@@ -6,15 +6,15 @@ import { DOWNLOAD_TYPE } from './downloadType';
 import { storageNameCreator } from './storageNameCreator';
 
 // function for downloading AR objects
-export const downloadObject = async ({ index, downloadableData, setDownloadableData }) => {
-  const { downloadableUris } = downloadableData[index];
-  let newDownloadedData = [...downloadableData];
+export const downloadObject = async ({ index, data, setData }) => {
+  const { downloadableUris } = data[index];
+  let downloadedData = [...data];
 
   for (let itemIndex = 0; itemIndex < downloadableUris.length; itemIndex++) {
     const { downloadUri, title, type, id } = downloadableUris[itemIndex];
 
     const storageName = storageNameCreator({
-      downloadableDataItem: downloadableData[index],
+      dataItem: data[index],
       objectItem: downloadableUris[itemIndex]
     });
 
@@ -22,17 +22,16 @@ export const downloadObject = async ({ index, downloadableData, setDownloadableD
       downloadUri,
       FileSystem.cacheDirectory + storageName,
       {},
-      (downloadProgress) =>
-        downloadProgressInBytes(downloadProgress, index, downloadableData, setDownloadableData)
+      (downloadProgress) => downloadProgressInBytes(downloadProgress, index, data, setData)
     );
 
     try {
       const { uri } = await downloadResumable.downloadAsync();
       const { size } = await FileSystem.getInfoAsync(uri);
 
-      newDownloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADED;
-      newDownloadedData[index].size += size;
-      newDownloadedData[index].localUris.push({
+      downloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADED;
+      downloadedData[index].size += size;
+      downloadedData[index].localUris.push({
         downloadUri: uri,
         id,
         size,
@@ -40,13 +39,13 @@ export const downloadObject = async ({ index, downloadableData, setDownloadableD
         type
       });
 
-      addToStore(storageName, newDownloadedData[index]);
+      addToStore(storageName, downloadedData[index]);
     } catch (e) {
       console.error(e);
     }
   }
 
-  return { newDownloadedData };
+  return { downloadedData };
 };
 
 // callback function that allows us to see how many

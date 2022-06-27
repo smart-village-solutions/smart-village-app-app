@@ -5,8 +5,8 @@ import { downloadObject } from './downloadObject';
 import { storageNameCreator } from './storageNameCreator';
 
 // function to download all AR objects using `downloadObject`
-export const downloadAllData = async ({ downloadableData, setDownloadableData }) => {
-  let allData = [...downloadableData];
+export const downloadAllData = async ({ data, setData }) => {
+  let allData = [...data];
 
   for (let index = 0; index < allData.length; index++) {
     const downloadableDataItem = allData[index];
@@ -14,7 +14,7 @@ export const downloadAllData = async ({ downloadableData, setDownloadableData })
 
     for (let itemIndex = 0; itemIndex < downloadableUris.length; itemIndex++) {
       const storageName = storageNameCreator({
-        downloadableDataItem: downloadableData[index],
+        dataItem: data[index],
         objectItem: downloadableUris[itemIndex]
       });
 
@@ -22,13 +22,13 @@ export const downloadAllData = async ({ downloadableData, setDownloadableData })
         const downloadedItem = await readFromStore(storageName);
 
         if (!downloadedItem) {
-          const { newDownloadedData } = await downloadObject({
+          const { downloadedData } = await downloadObject({
             index,
-            downloadableData: allData,
-            setDownloadableData
+            data: allData,
+            setData
           });
 
-          setDownloadableData(newDownloadedData);
+          setData(downloadedData);
         }
       } catch (error) {
         console.error(error);
@@ -38,15 +38,15 @@ export const downloadAllData = async ({ downloadableData, setDownloadableData })
 };
 
 // function to delete all AR objects using `deleteObject`
-export const deleteAllData = async ({ downloadableData, setDownloadableData }) => {
-  let allData = [...downloadableData];
+export const deleteAllData = async ({ data, setData }) => {
+  let allData = [...data];
 
   for (let index = 0; index < allData.length; index++) {
-    const { newDownloadedData } = await deleteObject({
+    const { deletedData } = await deleteObject({
       index,
-      downloadableData: allData
+      data: allData
     });
 
-    setDownloadableData(newDownloadedData);
+    setData(deletedData);
   }
 };

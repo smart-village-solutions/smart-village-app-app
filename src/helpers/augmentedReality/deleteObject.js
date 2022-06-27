@@ -5,15 +5,15 @@ import { DOWNLOAD_TYPE } from './downloadType';
 import { storageNameCreator } from './storageNameCreator';
 
 // function to delete AR objects downloaded on the device
-export const deleteObject = async ({ index, downloadableData }) => {
-  const { localUris } = downloadableData[index];
-  let newDownloadedData = [...downloadableData];
+export const deleteObject = async ({ index, data }) => {
+  const { localUris } = data[index];
+  let deletedData = [...data];
 
   for (let i = 0; i < localUris.length; i++) {
     const { downloadUri } = localUris[i];
 
     const storageName = storageNameCreator({
-      downloadableDataItem: downloadableData[index],
+      dataItem: data[index],
       objectItem: localUris[i]
     });
 
@@ -25,11 +25,11 @@ export const deleteObject = async ({ index, downloadableData }) => {
     }
   }
 
-  newDownloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADABLE;
-  newDownloadedData[index].localUris = [];
-  newDownloadedData[index].progress = 0;
-  newDownloadedData[index].progressSize = 0;
-  newDownloadedData[index].size = 0;
+  deletedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADABLE;
+  deletedData[index].localUris = [];
+  deletedData[index].progress = 0;
+  deletedData[index].progressSize = 0;
+  deletedData[index].size = 0;
 
-  return { newDownloadedData };
+  return { deletedData };
 };

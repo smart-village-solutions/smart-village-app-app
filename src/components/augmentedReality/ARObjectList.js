@@ -81,8 +81,8 @@ export const ARObjectList = ({
 
   const checkDownloadData = async ({ data }) => {
     setIsLoading(true);
-    const { newDownloadedData } = await checkDownloadedData({ downloadableData: data });
-    setData(newDownloadedData);
+    const { checkedData } = await checkDownloadedData({ data });
+    setData(checkedData);
     setIsLoading(false);
   };
 
@@ -92,11 +92,11 @@ export const ARObjectList = ({
   };
 
   const downloadAll = async () => {
-    downloadAllData({ downloadableData: data, setDownloadableData: setData });
+    downloadAllData({ data, setData });
   };
 
   const deleteAll = async () => {
-    deleteAllData({ downloadableData: data, setDownloadableData: setData });
+    deleteAllData({ data, setData });
   };
 
   const RefreshControl = usePullToRefetch(refetch);
