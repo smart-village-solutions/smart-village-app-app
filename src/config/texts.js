@@ -11,6 +11,9 @@ export const texts = {
         'Es gibt ein Problem mit der Verbindung. Bitte versuchen Sie es später noch einmal.',
       settingsButton: 'AR-Einstellungen'
     },
+    artworkDetailScreen: {
+      header: 'AR-Kunstwerk'
+    },
     loadingArtworks: 'Kunstwerke laden',
     whatIsAugmentedReality: 'Was ist Augmented Reality (AR)?',
     worksOfArt: 'Kunstwerke'

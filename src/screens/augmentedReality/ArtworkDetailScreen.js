@@ -53,8 +53,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
 
   const onPress = async () => {
     if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED) {
-      // TODO: DEVELOP! - will be changed later
-      navigation.navigate(ScreenName.ARInfo);
+      navigation.navigate(ScreenName.ARShow, { data, index });
     } else {
       setIsModalVisible(true);
 

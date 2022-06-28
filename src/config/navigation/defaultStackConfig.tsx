@@ -5,6 +5,8 @@ import { getScreenOptions } from '../../navigation/screenOptions';
 import {
   AboutScreen,
   ARInfoScreen,
+  ARShowScreen,
+  ArtworkDetailScreen,
   BookmarkCategoryScreen,
   BookmarkScreen,
   ConstructionSiteDetailScreen,
@@ -84,6 +86,16 @@ export const defaultStackConfig = ({
       routeName: ScreenName.ARInfo,
       screenComponent: ARInfoScreen,
       screenOptions: { title: texts.augmentedReality.arInfoScreen.header }
+    },
+    {
+      routeName: ScreenName.ARShow,
+      screenComponent: ARShowScreen,
+      screenOptions: { headerShown: false }
+    },
+    {
+      routeName: ScreenName.ArtworkDetail,
+      screenComponent: ArtworkDetailScreen,
+      screenOptions: { title: texts.augmentedReality.artworkDetailScreen.header }
     },
     {
       routeName: ScreenName.BBBUSIndex,
