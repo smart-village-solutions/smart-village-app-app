@@ -101,7 +101,7 @@ export const Tour = ({ data, navigation, route }) => {
           </Title>
         </TitleContainer>
         {device.platform === 'ios' && <TitleShadow />}
-        <ARObjectList showOnDetailPage />
+        <ARObjectList showOnDetailPage navigation={navigation} />
       </WrapperWithOrientation>
 
       <WrapperWithOrientation>

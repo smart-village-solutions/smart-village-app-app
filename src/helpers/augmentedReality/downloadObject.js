@@ -50,18 +50,13 @@ export const downloadObject = async ({ index, data, setData }) => {
 
 // callback function that allows us to see how many
 // bytes per second the file is downloaded
-const downloadProgressInBytes = (
-  downloadProgress,
-  index,
-  downloadableData,
-  setDownloadableData
-) => {
-  let newArr = [...downloadableData];
+const downloadProgressInBytes = (downloadProgress, index, data, setData) => {
+  let newArr = [...data];
   const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
 
   newArr[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADING;
   newArr[index].progressSize = downloadProgress.totalBytesWritten;
   newArr[index].progress = progress;
 
-  setDownloadableData(newArr);
+  setData(newArr);
 };

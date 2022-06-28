@@ -5,10 +5,11 @@ import { ListItem } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import { deleteObject, downloadObject, DOWNLOAD_TYPE, formatSize } from '../../helpers';
+import { ScreenName } from '../../types';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 
-export const ARObjectListItem = ({ item, index, data, setData, showOnDetailPage }) => {
+export const ARObjectListItem = ({ data, index, item, navigation, setData, showOnDetailPage }) => {
   const {
     DOWNLOAD_TYPE: itemDownloadType,
     progressSize,
@@ -19,6 +20,11 @@ export const ARObjectListItem = ({ item, index, data, setData, showOnDetailPage 
   } = item;
 
   const onPress = async () => {
+    if (showOnDetailPage) {
+      navigation.navigate(ScreenName.ArtworkDetail, { data, index });
+      return;
+    }
+
     if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADABLE) {
       const { downloadedData } = await downloadObject({
         index,
@@ -106,6 +112,7 @@ ARObjectListItem.propTypes = {
   data: PropTypes.array,
   index: PropTypes.number,
   item: PropTypes.object.isRequired,
+  navigation: PropTypes.object,
   setData: PropTypes.func,
   showOnDetailPage: PropTypes.bool
 };

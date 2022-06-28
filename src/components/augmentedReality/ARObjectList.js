@@ -43,17 +43,19 @@ const deleteAllDataAlert = (deleteAll) =>
     ]
   );
 
-const renderItem = ({ data, index, item, setData, showOnDetailPage }) => (
+const renderItem = ({ data, index, item, navigation, setData, showOnDetailPage }) => (
   <ARObjectListItem
     data={data}
     index={index}
     item={item}
+    navigation={navigation}
     setData={setData}
     showOnDetailPage={showOnDetailPage}
   />
 );
 
 export const ARObjectList = ({
+  navigation,
   showDeleteAllButton,
   showDownloadAllButton,
   showFreeSpace,
@@ -129,6 +131,7 @@ export const ARObjectList = ({
             data,
             index,
             item,
+            navigation,
             setData,
             showOnDetailPage
           })
@@ -164,6 +167,7 @@ export const ARObjectList = ({
 };
 
 ARObjectList.propTypes = {
+  navigation: PropTypes.object,
   showDeleteAllButton: PropTypes.bool,
   showDownloadAllButton: PropTypes.bool,
   showFreeSpace: PropTypes.bool,
