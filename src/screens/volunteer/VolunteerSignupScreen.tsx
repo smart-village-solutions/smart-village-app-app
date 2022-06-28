@@ -79,7 +79,7 @@ export const VolunteerSignupScreen = ({ navigation, route }: StackScreenProps<an
     isError ||
     isErrorMe ||
     (isSuccess && data?.code !== 200) ||
-    (isSuccessMe && dataMe?.status !== 200)
+    (isSuccessMe && dataMe?.status && dataMe?.status !== 200)
   ) {
     showSignupFailAlert();
     reset();

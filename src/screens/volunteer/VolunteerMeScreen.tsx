@@ -34,7 +34,7 @@ export const VolunteerMeScreen = ({ navigation, route }: StackScreenProps<any>) 
     return <LoadingSpinner loading />;
   }
 
-  if (isError || (isSuccess && data?.status !== 200)) {
+  if (isError || (isSuccess && data?.status && data?.status !== 200)) {
     return (
       <SafeAreaViewFlex>
         <Wrapper>
