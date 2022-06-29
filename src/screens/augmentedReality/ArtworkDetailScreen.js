@@ -83,7 +83,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
             <Title
               accessibilityLabel={`(${texts.augmentedReality.whatIsAugmentedReality}) ${a11yText.heading}`}
             >
-              Artwork Detail Screen
+              {data[index].title}
             </Title>
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}

@@ -73,36 +73,6 @@ export const Tour = ({ data, navigation, route }) => {
       {/* TODO: hard code was written just to development it. 
                 it will be edited later 
                 & component to be relocated */}
-      {!!augmentedReality && (
-        <WrapperWithOrientation>
-          <Wrapper>
-            <Touchable onPress={() => navigation.navigate(ScreenName.ARInfo)}>
-              <WrapperRow spaceBetween>
-                <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
-                <Icon.ArrowRight size={normalize(20)} />
-              </WrapperRow>
-            </Touchable>
-          </Wrapper>
-
-          <Wrapper>
-            <Button
-              onPress={() => setIsModalVisible(!isModalVisible)}
-              invert
-              title={texts.augmentedReality.loadingArtworks}
-            />
-          </Wrapper>
-        </WrapperWithOrientation>
-      )}
-
-      <WrapperWithOrientation>
-        <TitleContainer>
-          <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>
-            {texts.augmentedReality.worksOfArt}
-          </Title>
-        </TitleContainer>
-        {device.platform === 'ios' && <TitleShadow />}
-        <ARObjectList showOnDetailPage navigation={navigation} />
-      </WrapperWithOrientation>
 
       <WrapperWithOrientation>
         {!!title && (
@@ -136,6 +106,27 @@ export const Tour = ({ data, navigation, route }) => {
           </View>
         )}
 
+        {!!augmentedReality && (
+          <WrapperWithOrientation>
+            <Wrapper>
+              <Touchable onPress={() => navigation.navigate(ScreenName.ARInfo)}>
+                <WrapperRow spaceBetween>
+                  <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
+                  <Icon.ArrowRight size={normalize(20)} />
+                </WrapperRow>
+              </Touchable>
+            </Wrapper>
+
+            <Wrapper>
+              <Button
+                onPress={() => setIsModalVisible(!isModalVisible)}
+                invert
+                title={texts.augmentedReality.loadingArtworks}
+              />
+            </Wrapper>
+          </WrapperWithOrientation>
+        )}
+
         <OperatingCompany
           openWebScreen={openWebScreen}
           operatingCompany={operatingCompany}
@@ -143,6 +134,16 @@ export const Tour = ({ data, navigation, route }) => {
         />
 
         <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
+
+        <WrapperWithOrientation>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>
+              {texts.augmentedReality.worksOfArt}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <ARObjectList showOnDetailPage navigation={navigation} />
+        </WrapperWithOrientation>
 
         {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
 

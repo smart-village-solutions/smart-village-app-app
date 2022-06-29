@@ -1,5 +1,6 @@
 import { readFromStore } from '../storageHelper';
 
+import { DOWNLOAD_TYPE } from './downloadType';
 import { storageNameCreator } from './storageNameCreator';
 
 // function to recognise whether the AR
@@ -26,6 +27,12 @@ export const checkDownloadedData = async ({ data }) => {
           const { localUris } = downloadedItem;
 
           checkedData[index] = localUris ? downloadedItem : [];
+        } else {
+          checkedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADABLE;
+          checkedData[index].localUris = [];
+          checkedData[index].progress = 0;
+          checkedData[index].progressSize = 0;
+          checkedData[index].size = 0;
         }
       } catch (error) {
         console.error(error);
