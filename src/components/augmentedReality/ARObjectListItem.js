@@ -63,15 +63,15 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
     <ListItem
       title={<RegularText small>{title}</RegularText>}
       subtitle={
-        showOnDetailPage ? (
-          <RegularText smallest>{locationInfo}</RegularText>
-        ) : progressSize ? (
-          <RegularText smallest>{`${
-            size >= totalSize ? formatSize(size) : formatSize(progressSize)
-          } / ${formatSize(totalSize)}`}</RegularText>
-        ) : (
-          <RegularText smallest>{`${formatSize(totalSize)}`}</RegularText>
-        )
+        <RegularText smallest>
+          {showOnDetailPage
+            ? locationInfo
+            : progressSize
+            ? `${size >= totalSize ? formatSize(size) : formatSize(progressSize)} / ${formatSize(
+                totalSize
+              )}`
+            : `${formatSize(totalSize)}`}
+        </RegularText>
       }
       bottomDivider
       containerStyle={styles.container}
@@ -79,7 +79,7 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
         showOnDetailPage ? (
           <Icon.ArrowRight size={normalize(20)} />
         ) : (
-          <RightIconForDownloadType itemDownloadType={itemDownloadType} />
+          <IconFor itemDownloadType={itemDownloadType} />
         )
       }
       onPress={onPress}
@@ -90,7 +90,7 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
   );
 };
 
-const RightIconForDownloadType = ({ itemDownloadType }) => {
+const IconFor = ({ itemDownloadType }) => {
   return itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED ? (
     <Icon.CloseCircle color={colors.darkText} size={normalize(16)} />
   ) : itemDownloadType === DOWNLOAD_TYPE.DOWNLOADABLE ? (
@@ -117,6 +117,6 @@ ARObjectListItem.propTypes = {
   showOnDetailPage: PropTypes.bool
 };
 
-RightIconForDownloadType.propTypes = {
+IconFor.propTypes = {
   itemDownloadType: PropTypes.string.isRequired
 };
