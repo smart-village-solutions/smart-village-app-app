@@ -694,7 +694,8 @@ export const texts = {
       deleteAlertButtonText: 'Löschen',
       deleteAlertMessage: 'Möchten Sie die Datei löschen?',
       downloadAlertButtonText: 'Herunterladen',
-      freeMemoryPlace: 'Verfügbarer Speicherplatz auf dem Gerät: '
+      freeMemoryPlace: 'Verfügbarer Speicherplatz auf dem Gerät: ',
+      hide: 'Ausblenden'
     },
     listLayouts: {
       cardList: 'Liste mit großen Bildern',

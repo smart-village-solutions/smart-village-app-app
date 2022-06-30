@@ -57,5 +57,5 @@ Modal.propTypes = {
 };
 
 Modal.defaultProps = {
-  modalHiddenButtonName: texts.settingsTitles.arListLayouts.cancel
+  modalHiddenButtonName: texts.settingsTitles.arListLayouts.hide
 };

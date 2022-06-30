@@ -21,7 +21,7 @@ export const ARModal = ({ isListView, isModalVisible, item, onModalVisible, show
       modalHiddenButtonName={
         itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED && !isListView
           ? texts.settingsTitles.arListLayouts.continue
-          : texts.settingsTitles.arListLayouts.cancel
+          : texts.settingsTitles.arListLayouts.hide
       }
     >
       {isListView ? (
