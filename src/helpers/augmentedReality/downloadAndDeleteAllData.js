@@ -22,13 +22,11 @@ export const downloadAllData = async ({ data, setData }) => {
         const downloadedItem = await readFromStore(storageName);
 
         if (!downloadedItem) {
-          const { downloadedData } = await downloadObject({
+          await downloadObject({
             index,
             data: allData,
             setData
           });
-
-          setData(downloadedData);
         }
       } catch (error) {
         console.error(error);
@@ -42,11 +40,10 @@ export const deleteAllData = async ({ data, setData }) => {
   let allData = [...data];
 
   for (let index = 0; index < allData.length; index++) {
-    const { deletedData } = await deleteObject({
+    await deleteObject({
       index,
-      data: allData
+      data: allData,
+      setData
     });
-
-    setData(deletedData);
   }
 };

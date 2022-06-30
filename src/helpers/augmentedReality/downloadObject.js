@@ -45,7 +45,7 @@ export const downloadObject = async ({ index, data, setData }) => {
     }
   }
 
-  return { downloadedData };
+  setData(downloadedData);
 };
 
 // callback function that allows us to see how many

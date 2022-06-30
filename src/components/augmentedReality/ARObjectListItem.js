@@ -26,13 +26,11 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
     }
 
     if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADABLE) {
-      const { downloadedData } = await downloadObject({
+      await downloadObject({
         index,
         data,
         setData
       });
-
-      setData(downloadedData);
     } else if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED) {
       Alert.alert(
         texts.settingsTitles.arListLayouts.alertTitle,
@@ -41,12 +39,11 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
           {
             text: texts.settingsTitles.arListLayouts.deleteAlertButtonText,
             onPress: async () => {
-              const { deletedData } = await deleteObject({
+              await deleteObject({
                 index,
-                data
+                data,
+                setData
               });
-
-              setData(deletedData);
             },
             style: 'destructive'
           },

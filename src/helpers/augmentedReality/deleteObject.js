@@ -5,7 +5,7 @@ import { DOWNLOAD_TYPE } from './downloadType';
 import { storageNameCreator } from './storageNameCreator';
 
 // function to delete AR objects downloaded on the device
-export const deleteObject = async ({ index, data }) => {
+export const deleteObject = async ({ index, data, setData }) => {
   const { localUris } = data[index];
   let deletedData = [...data];
 
@@ -31,5 +31,5 @@ export const deleteObject = async ({ index, data }) => {
   deletedData[index].progressSize = 0;
   deletedData[index].size = 0;
 
-  return { deletedData };
+  setData(deletedData);
 };
