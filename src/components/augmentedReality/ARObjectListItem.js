@@ -4,7 +4,7 @@ import { ActivityIndicator, Alert, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
-import { deleteObject, downloadObject, DOWNLOAD_TYPE, formatSize } from '../../helpers';
+import { deleteObject, downloadObject, DOWNLOAD_TYPE, progressSizeGenerator } from '../../helpers';
 import { ScreenName } from '../../types';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
@@ -63,11 +63,7 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
         <RegularText smallest>
           {showOnDetailPage
             ? locationInfo
-            : progressSize
-            ? `${size >= totalSize ? formatSize(size) : formatSize(progressSize)} / ${formatSize(
-                totalSize
-              )}`
-            : `${formatSize(totalSize)}`}
+            : progressSizeGenerator({ progressSize, size, totalSize })}
         </RegularText>
       }
       bottomDivider

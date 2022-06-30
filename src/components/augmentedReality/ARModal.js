@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import ProgressBar from 'react-native-progress/Bar';
 
 import { colors, Icon, normalize, texts } from '../../config';
-import { DOWNLOAD_TYPE, formatSize } from '../../helpers';
+import { DOWNLOAD_TYPE, progressSizeGenerator } from '../../helpers';
 import { Modal } from '../Modal';
 import { BoldText, RegularText } from '../Text';
 
@@ -41,9 +41,7 @@ export const ARModal = ({ isListView, isModalVisible, item, onModalVisible, show
             )}
 
             <RegularText small style={styles.progressTextStyle}>
-              {`${size >= totalSize ? formatSize(size) : formatSize(progressSize)} / ${formatSize(
-                totalSize
-              )}`}
+              {progressSizeGenerator({ progressSize, size, totalSize })}
             </RegularText>
           </View>
 
