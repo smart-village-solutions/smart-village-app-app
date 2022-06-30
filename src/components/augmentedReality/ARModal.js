@@ -1,14 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import ProgressBar from 'react-native-progress/Bar';
 
-import { colors, Icon, normalize, texts } from '../../config';
+import { colors, normalize, texts } from '../../config';
 import { DOWNLOAD_TYPE, progressSizeGenerator } from '../../helpers';
 import { Modal } from '../Modal';
 import { BoldText, RegularText } from '../Text';
 
 import { ARObjectList } from './ARObjectList';
+import { IconForDownloadType } from './IconForDownloadType';
 
 export const ARModal = ({ isListView, isModalVisible, item, onModalVisible, showTitle }) => {
   const { DOWNLOAD_TYPE: itemDownloadType, progress, progressSize, size, title, totalSize } = item;
@@ -34,11 +35,7 @@ export const ARModal = ({ isListView, isModalVisible, item, onModalVisible, show
       ) : (
         <View>
           <View style={[styles.container, styles.iconAndByteText]}>
-            {itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED ? (
-              <Icon.Check color={colors.primary} size={normalize(20)} />
-            ) : (
-              <ActivityIndicator size="small" color={colors.accent} />
-            )}
+            <IconForDownloadType itemDownloadType={itemDownloadType} />
 
             <RegularText small style={styles.progressTextStyle}>
               {progressSizeGenerator({ progressSize, size, totalSize })}

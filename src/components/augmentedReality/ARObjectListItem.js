@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ActivityIndicator, Alert, StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { colors, consts, normalize, texts } from '../../config';
 import { deleteObject, downloadObject, DOWNLOAD_TYPE, progressSizeGenerator } from '../../helpers';
 import { ScreenName } from '../../types';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
+
+import { IconForDownloadType } from './IconForDownloadType';
 
 export const ARObjectListItem = ({ data, index, item, navigation, setData, showOnDetailPage }) => {
   const {
@@ -68,28 +70,18 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
       }
       bottomDivider
       containerStyle={styles.container}
-      rightIcon={() =>
-        showOnDetailPage ? (
-          <Icon.ArrowRight size={normalize(20)} />
-        ) : (
-          <IconFor itemDownloadType={itemDownloadType} />
-        )
+      rightIcon={
+        <IconForDownloadType
+          isListView
+          itemDownloadType={itemDownloadType}
+          showOnDetailPage={showOnDetailPage}
+        />
       }
       onPress={onPress}
       delayPressIn={0}
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
     />
-  );
-};
-
-const IconFor = ({ itemDownloadType }) => {
-  return itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED ? (
-    <Icon.CloseCircle color={colors.darkText} size={normalize(16)} />
-  ) : itemDownloadType === DOWNLOAD_TYPE.DOWNLOADABLE ? (
-    <Icon.ArrowDownCircle color={colors.primary} size={normalize(16)} />
-  ) : (
-    <ActivityIndicator size="small" color={colors.accent} />
   );
 };
 
@@ -108,8 +100,4 @@ ARObjectListItem.propTypes = {
   navigation: PropTypes.object,
   setData: PropTypes.func,
   showOnDetailPage: PropTypes.bool
-};
-
-IconFor.propTypes = {
-  itemDownloadType: PropTypes.string.isRequired
 };
