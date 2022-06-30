@@ -33,7 +33,7 @@ export const ARModal = ({ isListView, isModalVisible, item, onModalVisible, show
         />
       ) : (
         <View>
-          <View style={[styles.container, styles.upContainer]}>
+          <View style={[styles.container, styles.iconAndByteText]}>
             {itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED ? (
               <Icon.Check color={colors.primary} size={normalize(20)} />
             ) : (
@@ -69,12 +69,12 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: normalize(20)
   },
-  progressTextStyle: {
-    marginLeft: normalize(10)
-  },
-  upContainer: {
+  iconAndByteText: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  progressTextStyle: {
+    marginLeft: normalize(10)
   }
 });
 
