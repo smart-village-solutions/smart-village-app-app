@@ -117,7 +117,13 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
       <ARModal
         item={data[index]}
         isModalVisible={isModalVisible}
-        onModalVisible={() => setIsModalVisible(!isModalVisible)}
+        onModalVisible={() => {
+          if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED) {
+            navigation.navigate(ScreenName.ARShow, { data, index });
+          }
+
+          setIsModalVisible(!isModalVisible);
+        }}
       />
     </SafeAreaViewFlex>
   );
