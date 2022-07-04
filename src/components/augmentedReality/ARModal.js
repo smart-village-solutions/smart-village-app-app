@@ -38,7 +38,7 @@ export const ARModal = ({ isListView, isModalVisible, item, onModalVisible, show
             <IconForDownloadType itemDownloadType={itemDownloadType} />
 
             <RegularText small style={styles.progressTextStyle}>
-              {progressSizeGenerator({ progressSize, size, totalSize })}
+              {progressSizeGenerator(progressSize, size, totalSize)}
             </RegularText>
           </View>
 

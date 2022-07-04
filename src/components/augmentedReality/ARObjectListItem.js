@@ -63,9 +63,7 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
       title={<RegularText small>{title}</RegularText>}
       subtitle={
         <RegularText smallest>
-          {showOnDetailPage
-            ? locationInfo
-            : progressSizeGenerator({ progressSize, size, totalSize })}
+          {showOnDetailPage ? locationInfo : progressSizeGenerator(progressSize, size, totalSize)}
         </RegularText>
       }
       bottomDivider
