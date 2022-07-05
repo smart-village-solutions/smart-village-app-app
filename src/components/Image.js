@@ -139,7 +139,7 @@ Image.propTypes = {
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
   message: PropTypes.string,
   containerStyle: PropTypes.object,
-  style: PropTypes.object,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   PlaceholderContent: PropTypes.object,
   aspectRatio: PropTypes.object,
   resizeMode: PropTypes.string,

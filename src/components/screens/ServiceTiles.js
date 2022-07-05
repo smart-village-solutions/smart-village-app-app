@@ -1,30 +1,20 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
-import {
-  ActivityIndicator,
-  RefreshControl,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View
-} from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { normalize } from 'react-native-elements';
 
-import { colors, consts, device, Icon } from '../../config';
+import { colors, consts, device } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
-import { OrientationContext } from '../../OrientationProvider';
-import { Image } from '../Image';
-import { LoadingContainer } from '../LoadingContainer';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
-import { ServiceBox } from '../ServiceBox';
-import { BoldText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { WrapperWrap } from '../Wrapper';
 
+import { ServiceTile } from './ServiceTile';
+
 export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
   const { isConnected } = useContext(NetworkContext);
-  const { orientation, dimensions } = useContext(OrientationContext);
   const [refreshing, setRefreshing] = useState(false);
 
   const { data, loading, refetch } = useStaticContent({
@@ -40,11 +30,7 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
   }, [refetch, isConnected]);
 
   if (loading) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
-      </LoadingContainer>
-    );
+    return <LoadingSpinner loading />;
   }
 
   return (
@@ -66,48 +52,15 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
             />
           }
         >
-          <View style={{ padding: normalize(14) }}>
+          <View style={styles.padding}>
             <WrapperWrap spaceBetween>
-              {data?.map((item, index) => {
-                return (
-                  <ServiceBox
-                    key={index + item.title}
-                    orientation={orientation}
-                    dimensions={dimensions}
-                  >
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.push(item.routeName, item.params);
-                      }}
-                    >
-                      <View>
-                        {item.iconName ? (
-                          <Icon.NamedIcon
-                            name={item.iconName}
-                            size={30}
-                            style={styles.serviceIcon}
-                          />
-                        ) : (
-                          <Image
-                            source={{ uri: item.icon }}
-                            style={styles.serviceImage}
-                            PlaceholderContent={null}
-                            resizeMode="contain"
-                          />
-                        )}
-                        <BoldText
-                          small
-                          primary
-                          center
-                          accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
-                        >
-                          {item.title}
-                        </BoldText>
-                      </View>
-                    </TouchableOpacity>
-                  </ServiceBox>
-                );
-              })}
+              {data?.map((item, index) => (
+                <ServiceTile
+                  key={index + (item.title || item.accessibilityLabel)}
+                  navigation={navigation}
+                  item={item}
+                />
+              ))}
             </WrapperWrap>
           </View>
         </ScrollView>
@@ -117,15 +70,8 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
 };
 
 const styles = StyleSheet.create({
-  serviceIcon: {
-    alignSelf: 'center',
-    paddingVertical: normalize(7.5)
-  },
-  serviceImage: {
-    alignSelf: 'center',
-    height: normalize(40),
-    marginBottom: normalize(7),
-    width: '100%'
+  padding: {
+    padding: normalize(14)
   }
 });
 
