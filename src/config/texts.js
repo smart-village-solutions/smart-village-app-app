@@ -19,7 +19,7 @@ export const texts = {
     cancel: 'Abbrechen',
     loadingArtworks: 'Kunstwerke laden',
     modalHiddenAlertMessage:
-      'Das Herunterladen der Dateien ist im Gange. Bitte warten Sie, bis der Download abgeschlossen ist. Bei heruntergeladenen Dateien können Probleme auftreten.',
+      'Das Herunterladen der Dateien ist noch im Gange. Bitte warten Sie, bis der Download komplett abgeschlossen ist, da ansonsten Probleme mit den heruntergeladenen Dateien auftreten können.',
     modalHiddenAlertTitle: 'Hinweis',
     ok: 'OK',
     whatIsAugmentedReality: 'Was ist Augmented Reality (AR)?',
