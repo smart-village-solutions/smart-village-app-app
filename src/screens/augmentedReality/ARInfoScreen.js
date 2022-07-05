@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import { ScrollView } from 'react-native';
 
 import {
+  ARModal,
   Button,
   EmptyMessage,
+  HiddenModalAlert,
   HtmlView,
   LoadingSpinner,
   SafeAreaViewFlex,
@@ -13,15 +15,15 @@ import {
 } from '../../components';
 import { texts } from '../../config';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
-import { ScreenName } from '../../types';
 
-export const ARInfoScreen = ({ navigation }) => {
+export const ARInfoScreen = () => {
   const { data: arInfo = '', error, loading, refetch } = useStaticContent({
     type: 'html',
     name: 'arInfo'
   });
 
   const RefreshControl = usePullToRefetch(refetch);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   if (loading) {
     return <LoadingSpinner loading />;
@@ -42,11 +44,28 @@ export const ARInfoScreen = ({ navigation }) => {
             <Button
               invert
               title={texts.augmentedReality.arInfoScreen.settingsButton}
-              onPress={() => navigation.navigate(ScreenName.Settings)}
+              onPress={() => setIsModalVisible(!isModalVisible)}
             />
           </Wrapper>
         </WrapperWithOrientation>
       </ScrollView>
+
+      <ARModal
+        showTitle
+        isListView
+        item={{
+          DOWNLOAD_TYPE: 'downloaded',
+          progress: 0,
+          progressSize: 0,
+          size: 0,
+          title: 'test',
+          totalSize: 0
+        }}
+        isModalVisible={isModalVisible}
+        onModalVisible={() =>
+          HiddenModalAlert({ onPress: () => setIsModalVisible(!isModalVisible) })
+        }
+      />
     </SafeAreaViewFlex>
   );
 };
