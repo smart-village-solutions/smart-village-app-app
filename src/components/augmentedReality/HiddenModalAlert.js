@@ -7,8 +7,8 @@ export const HiddenModalAlert = ({ onPress }) => {
     texts.augmentedReality.modalHiddenAlertTitle,
     texts.augmentedReality.modalHiddenAlertMessage,
     [
-      { text: texts.augmentedReality.ok, onPress, style: 'default' },
-      { text: texts.augmentedReality.cancel, style: 'cancel' }
+      { text: texts.augmentedReality.wait, style: 'cancel' },
+      { text: texts.augmentedReality.hide, onPress, style: 'destructive' }
     ]
   );
 };

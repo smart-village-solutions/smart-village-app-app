@@ -17,11 +17,13 @@ export const texts = {
       header: 'AR-Kunstwerk'
     },
     cancel: 'Abbrechen',
+    hide: 'Ausblenden',
     loadingArtworks: 'Kunstwerke laden',
     modalHiddenAlertMessage:
       'Das Herunterladen der Dateien ist noch im Gange. Bitte warten Sie, bis der Download komplett abgeschlossen ist, da ansonsten Probleme mit den heruntergeladenen Dateien auftreten können.',
     modalHiddenAlertTitle: 'Hinweis',
     ok: 'OK',
+    wait: 'Warten',
     whatIsAugmentedReality: 'Was ist Augmented Reality (AR)?',
     worksOfArt: 'Kunstwerke'
   },
