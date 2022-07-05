@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v2.6.1]
+
+New option for bigger service tiles and bugfixes
+
+### Added
+
+- added option for big tiles with an image `tile` that is styled bigger (orientation aware) and with less spacings to each other in the grid
+  - added option for `accessibilityLabel` in order has `tile`-image has text on it and no separate title rendered
+- added rendering of version number if there is no data for "homeAbout", which resulted to a missing version number in latest version, as it was moved to section list footer, that was only rendered if there are list entries
+
+### Changed
+
+- refactored service tiles to reduce duplication
+  - created new `ServiceTile` that combine duplicated code for `Service` and `ServiceTiles` with condition for coloring based on `hasDiagonalGradientBackground`
+- removed `Send` icon as we used `Mail` in other places and want to have the same icon everywhere
+  - also `Mail` is svg and does not depend on a font icon set so there are no changes necessary across different cities
+- adjusted colors
+  - changed `lightestText` to `surface` where it was used for background, as both are white, but one for texts and the other for surfaces
+  - removed `lighterText` as it was rarely used and gray, so `gray60` could be used
+  - changed `secondary` to `primary` for bus bb link icons to always have the same color for the icon and the text
+  - properly set error color for form validations of inputs
+
+### Fixed
+
+- fixed initialization and access of global settings in some particular situations
+  - added fallback to `initialGlobalSettings` on setting up the global settings to ensure a valid value also if there was nothing stored locally before or accessing failed somehow
+  - fixed error: `[Unhandled promise rejection: TypeError: null is not an object (evaluating 'globalSettings.settings')]`
+
 ## [v2.6.0] :rocket:
 
 This version brings fist integrations of volunteer and consul areas.
