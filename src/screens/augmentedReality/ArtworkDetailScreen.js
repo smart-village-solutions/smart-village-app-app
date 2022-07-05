@@ -57,11 +57,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
     } else {
       setIsModalVisible(true);
 
-      await downloadObject({
-        index,
-        data,
-        setData
-      });
+      await downloadObject({ index, data, setData });
     }
   };
 

@@ -3,16 +3,11 @@ import { readFromStore } from '../storageHelper';
 import { DOWNLOAD_TYPE } from './downloadType';
 import { storageNameCreator } from './storageNameCreator';
 
-// function to recognise whether the AR
-// object is on the device when the download
-// page is opened
-export const checkDownloadedData = async ({ data }) => {
+// function to recognise whether the AR object is on the device when the download page is opened
   let checkedData = [...data];
 
   for (let index = 0; index < checkedData.length; index++) {
-    const downloadableDataItem = checkedData[index];
-
-    const { downloadableUris } = downloadableDataItem;
+    const { downloadableUris } = checkedData[index];
 
     for (let itemIndex = 0; itemIndex < downloadableUris.length; itemIndex++) {
       const storageName = storageNameCreator({

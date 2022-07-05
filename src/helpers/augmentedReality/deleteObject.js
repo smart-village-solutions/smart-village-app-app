@@ -9,12 +9,12 @@ export const deleteObject = async ({ index, data, setData }) => {
   const { localUris } = data[index];
   let deletedData = [...data];
 
-  for (let i = 0; i < localUris.length; i++) {
-    const { downloadUri } = localUris[i];
+  for (const objectItem of localUris) {
+    const { downloadUri } = objectItem;
 
     const storageName = storageNameCreator({
       dataItem: data[index],
-      objectItem: localUris[i]
+      objectItem
     });
 
     try {

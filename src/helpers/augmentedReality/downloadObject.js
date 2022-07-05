@@ -10,19 +10,20 @@ export const downloadObject = async ({ index, data, setData }) => {
   const { downloadableUris } = data[index];
   let downloadedData = [...data];
 
-  for (let itemIndex = 0; itemIndex < downloadableUris.length; itemIndex++) {
-    const { downloadUri, title, type, id } = downloadableUris[itemIndex];
+  for (const objectItem of downloadableUris) {
+    const { downloadUri, title, type, id } = objectItem;
 
     const storageName = storageNameCreator({
       dataItem: data[index],
-      objectItem: downloadableUris[itemIndex]
+      objectItem
     });
 
     const downloadResumable = FileSystem.createDownloadResumable(
       downloadUri,
       FileSystem.cacheDirectory + storageName,
       {},
-      (downloadProgress) => downloadProgressInBytes(downloadProgress, index, data, setData)
+      (downloadProgress) =>
+        downloadProgressInBytes(downloadProgress, index, downloadedData, setData)
     );
 
     try {
@@ -48,15 +49,24 @@ export const downloadObject = async ({ index, data, setData }) => {
   setData(downloadedData);
 };
 
-// callback function that allows us to see how many
-// bytes per second the file is downloaded
-const downloadProgressInBytes = (downloadProgress, index, data, setData) => {
-  let newArr = [...data];
-  const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
+/**
+ * callback function that allows us to see how many
+ * bytes per second the file is downloaded
+ *
+ * @param {object} downloadProgress the object that holds the total size of the object
+ *                                  returned by the `createDownloadResumable` function
+ *                                  and how much was downloaded to the device
+ * @param {number} index            the index information of the downloaded object in `JSON`
+ * @param {array} downloadedData    `JSON` array containing the objects to be downloaded
+ * @param {function} setData        state function that allows us to re-render the image on
+ *                                  the screen to show the download size
+ */
+const downloadProgressInBytes = (downloadProgress, index, downloadedData, setData) => {
+  downloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADING;
+  downloadedData[index].progressSize =
+    downloadedData[index].size + downloadProgress.totalBytesWritten;
+  downloadedData[index].progress =
+    downloadedData[index].progressSize / downloadedData[index].totalSize;
 
-  newArr[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADING;
-  newArr[index].progressSize = downloadProgress.totalBytesWritten;
-  newArr[index].progress = progress;
-
-  setData(newArr);
+  setData([...downloadedData]);
 };
