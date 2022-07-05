@@ -12,6 +12,8 @@ export const texts = {
       settingsButton: 'AR-Einstellungen'
     },
     artworkDetailScreen: {
+      downloadAndLookAtArt: 'Downloaden & AR Kunst gucken',
+      lookAtArt: 'AR Kunst gucken',
       header: 'AR-Kunstwerk'
     },
     loadingArtworks: 'Kunstwerke laden',

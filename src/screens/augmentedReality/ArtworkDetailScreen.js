@@ -10,15 +10,12 @@ import {
   LoadingSpinner,
   RegularText,
   SafeAreaViewFlex,
-  Title,
-  TitleContainer,
-  TitleShadow,
   Touchable,
   Wrapper,
   WrapperRow,
   WrapperWithOrientation
 } from '../../components';
-import { consts, device, Icon, normalize, texts } from '../../config';
+import { Icon, normalize, texts } from '../../config';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
 import { ScreenName } from '../../types';
 import { checkDownloadedData, downloadObject, DOWNLOAD_TYPE } from '../../helpers';
@@ -26,7 +23,7 @@ import { checkDownloadedData, downloadObject, DOWNLOAD_TYPE } from '../../helper
 export const ArtworkDetailScreen = ({ route, navigation }) => {
   const { data: artworkDetail = '', error, loading, refetch } = useStaticContent({
     type: 'html',
-    name: ''
+    name: 'artworkDetail'
   });
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -36,7 +33,6 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
   const { DOWNLOAD_TYPE: itemDownloadType } = data[index];
 
   const RefreshControl = usePullToRefetch(refetch);
-  const a11yText = consts.a11yLabel;
 
   useEffect(() => {
     if (data?.length) {
@@ -72,17 +68,6 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
     <SafeAreaViewFlex>
       <ScrollView refreshControl={RefreshControl}>
         <WrapperWithOrientation>
-          <TitleContainer>
-            <Title
-              accessibilityLabel={`(${texts.augmentedReality.whatIsAugmentedReality}) ${a11yText.heading}`}
-            >
-              {data[index].title}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </WrapperWithOrientation>
-
-        <WrapperWithOrientation>
           <Wrapper>
             <HtmlView html={artworkDetail} />
           </Wrapper>
@@ -101,8 +86,8 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
               onPress={onPress}
               title={
                 itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED
-                  ? 'AR Kunst gucken'
-                  : 'Downloaden & AR Kunst gucken'
+                  ? texts.augmentedReality.artworkDetailScreen.lookAtArt
+                  : texts.augmentedReality.artworkDetailScreen.downloadAndLookAtArt
               }
             />
           </Wrapper>
