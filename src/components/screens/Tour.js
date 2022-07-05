@@ -6,7 +6,7 @@ import { consts, device, Icon, normalize, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { ScreenName } from '../../types';
-import { ARModal, ARObjectList } from '../augmentedReality';
+import { ARModal, ARObjectList, HiddenModalAlert } from '../augmentedReality';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
@@ -161,7 +161,9 @@ export const Tour = ({ data, navigation, route }) => {
             totalSize: 0
           }}
           isModalVisible={isModalVisible}
-          onModalVisible={() => setIsModalVisible(!isModalVisible)}
+          onModalVisible={() =>
+            HiddenModalAlert({ onPress: () => setIsModalVisible(!isModalVisible) })
+          }
         />
       </WrapperWithOrientation>
     </View>

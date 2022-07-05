@@ -16,7 +16,12 @@ export const texts = {
       lookAtArt: 'AR Kunst gucken',
       header: 'AR-Kunstwerk'
     },
+    cancel: 'Abbrechen',
     loadingArtworks: 'Kunstwerke laden',
+    modalHiddenAlertMessage:
+      'Das Herunterladen der Dateien ist im Gange. Bitte warten Sie, bis der Download abgeschlossen ist. Bei heruntergeladenen Dateien können Probleme auftreten.',
+    modalHiddenAlertTitle: 'Hinweis',
+    ok: 'OK',
     whatIsAugmentedReality: 'Was ist Augmented Reality (AR)?',
     worksOfArt: 'Kunstwerke'
   },

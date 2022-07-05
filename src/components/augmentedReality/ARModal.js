@@ -12,7 +12,7 @@ import { ARObjectList } from './ARObjectList';
 import { IconForDownloadType } from './IconForDownloadType';
 
 export const ARModal = ({ isListView, isModalVisible, item, onModalVisible, showTitle }) => {
-  const { DOWNLOAD_TYPE: itemDownloadType, progress, progressSize, size, title, totalSize } = item;
+  const { DOWNLOAD_TYPE: itemDownloadType, progress, progressSize, title, totalSize } = item;
 
   return (
     <Modal

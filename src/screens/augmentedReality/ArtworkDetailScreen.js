@@ -6,6 +6,7 @@ import {
   ARModal,
   Button,
   EmptyMessage,
+  HiddenModalAlert,
   HtmlView,
   LoadingSpinner,
   RegularText,
@@ -47,12 +48,19 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
   };
 
   const onPress = async () => {
-    if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED) {
-      navigation.navigate(ScreenName.ARShow, { data, index });
-    } else {
-      setIsModalVisible(true);
+    switch (itemDownloadType) {
+      case DOWNLOAD_TYPE.DOWNLOADABLE:
+        setIsModalVisible(true);
 
-      await downloadObject({ index, data, setData });
+        await downloadObject({ index, data, setData });
+
+        break;
+      case DOWNLOAD_TYPE.DOWNLOADED:
+        navigation.navigate(ScreenName.ARShow, { data, index });
+
+        break;
+      default:
+        setIsModalVisible(true);
     }
   };
 
@@ -98,11 +106,19 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
         item={data[index]}
         isModalVisible={isModalVisible}
         onModalVisible={() => {
-          if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED) {
-            navigation.navigate(ScreenName.ARShow, { data, index });
-          }
+          switch (itemDownloadType) {
+            case DOWNLOAD_TYPE.DOWNLOADING:
+              HiddenModalAlert({ onPress: () => setIsModalVisible(!isModalVisible) });
 
-          setIsModalVisible(!isModalVisible);
+              break;
+            case DOWNLOAD_TYPE.DOWNLOADED:
+              navigation.navigate(ScreenName.ARShow, { data, index });
+              setIsModalVisible(!isModalVisible);
+
+              break;
+            default:
+              setIsModalVisible(!isModalVisible);
+          }
         }}
       />
     </SafeAreaViewFlex>
