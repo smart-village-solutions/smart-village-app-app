@@ -5,24 +5,17 @@ import { storageNameCreator } from './storageNameCreator';
 
 // function to recognise whether the AR object is on the device when the download page is opened
 export const checkDownloadedData = async ({ data, setData }) => {
-  let checkedData = [...data];
+  const checkedData = [...data];
 
-  for (let index = 0; index < checkedData.length; index++) {
-    const { downloadableUris } = checkedData[index];
-
-    for (let itemIndex = 0; itemIndex < downloadableUris.length; itemIndex++) {
-      const storageName = storageNameCreator({
-        dataItem: data[index],
-        objectItem: downloadableUris[itemIndex]
-      });
+  for (const [index, dataItem] of checkedData.entries()) {
+    for (const objectItem of dataItem?.downloadableUris) {
+      const storageName = storageNameCreator({ dataItem, objectItem });
 
       try {
         const downloadedItem = await readFromStore(storageName);
 
         if (downloadedItem) {
-          const { localUris } = downloadedItem;
-
-          checkedData[index] = localUris ? downloadedItem : [];
+          checkedData[index] = downloadedItem?.localUris ? downloadedItem : [];
         } else {
           checkedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADABLE;
           checkedData[index].localUris = [];

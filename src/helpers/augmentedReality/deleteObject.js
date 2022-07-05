@@ -6,19 +6,14 @@ import { storageNameCreator } from './storageNameCreator';
 
 // function to delete AR objects downloaded on the device
 export const deleteObject = async ({ index, data, setData }) => {
-  const { localUris } = data[index];
-  let deletedData = [...data];
+  const deletedData = [...data];
+  const dataItem = data[index];
 
-  for (const objectItem of localUris) {
-    const { downloadUri } = objectItem;
-
-    const storageName = storageNameCreator({
-      dataItem: data[index],
-      objectItem
-    });
+  for (const objectItem of dataItem?.localUris) {
+    const storageName = storageNameCreator({ dataItem, objectItem });
 
     try {
-      await FileSystem.deleteAsync(downloadUri);
+      await FileSystem.deleteAsync(objectItem?.uri);
       await AsyncStorage.removeItem(storageName);
     } catch (e) {
       console.error(e);

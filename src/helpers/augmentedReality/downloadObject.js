@@ -7,23 +7,19 @@ import { storageNameCreator } from './storageNameCreator';
 
 // function for downloading AR objects
 export const downloadObject = async ({ index, data, setData }) => {
-  const { downloadableUris } = data[index];
-  let downloadedData = [...data];
+  const downloadedData = [...data];
+  const dataItem = data[index];
 
-  for (const objectItem of downloadableUris) {
-    const { downloadUri, title, type, id } = objectItem;
+  for (const objectItem of dataItem?.downloadableUris) {
+    const { uri, title, type, id } = objectItem;
 
-    const storageName = storageNameCreator({
-      dataItem: data[index],
-      objectItem
-    });
+    const storageName = storageNameCreator({ dataItem, objectItem });
 
     const downloadResumable = FileSystem.createDownloadResumable(
-      downloadUri,
+      uri,
       FileSystem.cacheDirectory + storageName,
       {},
-      (downloadProgress) =>
-        downloadProgressInBytes(downloadProgress, index, downloadedData, setData)
+      (progress) => downloadProgressInBytes(progress, index, downloadedData, setData)
     );
 
     try {
@@ -32,13 +28,7 @@ export const downloadObject = async ({ index, data, setData }) => {
 
       downloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADED;
       downloadedData[index].size += size;
-      downloadedData[index].localUris.push({
-        downloadUri: uri,
-        id,
-        size,
-        title,
-        type
-      });
+      downloadedData[index].localUris.push({ uri, id, size, title, type });
 
       addToStore(storageName, downloadedData[index]);
     } catch (e) {
@@ -50,10 +40,9 @@ export const downloadObject = async ({ index, data, setData }) => {
 };
 
 /**
- * callback function that allows us to see how many
- * bytes per second the file is downloaded
+ * callback function that allows us to see how many bytes per second the file is downloaded
  *
- * @param {object} downloadProgress the object that holds the total size of the object
+ * @param {object} progress         the object that holds the total size of the object
  *                                  returned by the `createDownloadResumable` function
  *                                  and how much was downloaded to the device
  * @param {number} index            the index information of the downloaded object in `JSON`
@@ -61,12 +50,13 @@ export const downloadObject = async ({ index, data, setData }) => {
  * @param {function} setData        state function that allows us to re-render the image on
  *                                  the screen to show the download size
  */
-const downloadProgressInBytes = (downloadProgress, index, downloadedData, setData) => {
+const downloadProgressInBytes = (progress, index, downloadedData, setData) => {
   downloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADING;
-  downloadedData[index].progressSize =
-    downloadedData[index].size + downloadProgress.totalBytesWritten;
+  downloadedData[index].progressSize = downloadedData[index].size + progress.totalBytesWritten;
   downloadedData[index].progress =
     downloadedData[index].progressSize / downloadedData[index].totalSize;
 
+  // we create a copy of the array to make the set state method aware of "there is something new"
+  // that should be rendered
   setData([...downloadedData]);
 };
