@@ -12,14 +12,7 @@ import { Touchable } from '../Touchable';
 import { IconForDownloadType } from './IconForDownloadType';
 
 export const ARObjectListItem = ({ data, index, item, navigation, setData, showOnDetailPage }) => {
-  const {
-    DOWNLOAD_TYPE: itemDownloadType,
-    progressSize,
-    size,
-    title,
-    totalSize,
-    locationInfo
-  } = item;
+  const { DOWNLOAD_TYPE: itemDownloadType, progressSize, title, totalSize, locationInfo } = item;
 
   const onPress = async () => {
     if (showOnDetailPage) {
@@ -63,7 +56,7 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
       title={<RegularText small>{title}</RegularText>}
       subtitle={
         <RegularText smallest>
-          {showOnDetailPage ? locationInfo : progressSizeGenerator(progressSize, size, totalSize)}
+          {showOnDetailPage ? locationInfo : progressSizeGenerator(progressSize, totalSize)}
         </RegularText>
       }
       bottomDivider
