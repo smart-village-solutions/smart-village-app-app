@@ -7,7 +7,7 @@ export const ARShowScreen = ({ navigation }) => {
   return (
     <SafeAreaViewFlex>
       <RegularText>AR Show Screen</RegularText>
-      <RegularText onPress={() => navigation.pop()}>Zurück</RegularText>
+      <RegularText onPress={() => navigation.goBack()}>Zurück</RegularText>
     </SafeAreaViewFlex>
   );
 };
