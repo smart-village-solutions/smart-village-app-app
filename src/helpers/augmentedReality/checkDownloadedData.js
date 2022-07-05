@@ -4,6 +4,7 @@ import { DOWNLOAD_TYPE } from './downloadType';
 import { storageNameCreator } from './storageNameCreator';
 
 // function to recognise whether the AR object is on the device when the download page is opened
+export const checkDownloadedData = async ({ data, setData }) => {
   let checkedData = [...data];
 
   for (let index = 0; index < checkedData.length; index++) {
@@ -35,5 +36,5 @@ import { storageNameCreator } from './storageNameCreator';
     }
   }
 
-  return { checkedData };
+  setData(checkedData);
 };

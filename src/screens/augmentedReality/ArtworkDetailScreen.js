@@ -46,8 +46,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
 
   const checkDownloadData = async ({ data }) => {
     setIsLoading(true);
-    const { checkedData } = await checkDownloadedData({ data });
-    setData(checkedData);
+    await checkDownloadedData({ data, setData });
     setIsLoading(false);
   };
 

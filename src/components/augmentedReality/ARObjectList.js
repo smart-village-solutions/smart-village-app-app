@@ -85,8 +85,7 @@ export const ARObjectList = ({
 
   const checkDownloadData = async ({ data }) => {
     setIsLoading(true);
-    const { checkedData } = await checkDownloadedData({ data });
-    setData(checkedData);
+    await checkDownloadedData({ data, setData });
     setIsLoading(false);
   };
 
