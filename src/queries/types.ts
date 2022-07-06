@@ -2,6 +2,7 @@ import _camelCase from 'lodash/camelCase';
 
 export const QUERY_TYPES = {
   APP_USER_CONTENT: 'appUserContent',
+  AR_DOWNLOAD_LIST: 'arDownloadList',
   CATEGORIES: 'categories',
   CONSTRUCTION_SITES: 'constructionSites',
   CONSUL: {

@@ -1,3 +1,4 @@
+export * from './augmentedReality';
 export * from './consul';
 export * from './OParl';
 export * from './volunteer';

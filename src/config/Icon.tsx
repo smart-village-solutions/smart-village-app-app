@@ -100,12 +100,15 @@ export const Icon = {
   ),
   AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
   ArrowDown: (props: IconProps) => <SvgIcon xml={arrowDown} {...props} />,
+  ArrowDownCircle: (props: IconProps) => <NamedIcon name="arrow-down-circle" {...props} />,
   ArrowLeft: (props: IconProps) => <SvgIcon xml={arrowLeft} {...props} />,
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
   Calendar: (props: IconProps) => <SvgIcon xml={calendar} {...props} />,
+  Check: (props: IconProps) => <NamedIcon name="checkmark-circle" {...props} />,
   Clock: (props: IconProps) => <SvgIcon xml={clock} {...props} />,
   Close: (props: IconProps) => <SvgIcon xml={close} {...props} />,
+  CloseCircle: (props: IconProps) => <NamedIcon name="close-circle" {...props} />,
   Company: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-briefcase' : 'md-briefcase'} {...props} />
   ),

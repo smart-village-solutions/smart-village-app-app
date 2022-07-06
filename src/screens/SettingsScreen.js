@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList } from 'react-native';
 
 import {
+  AugmentedReality,
   IndexFilterWrapperAndList,
   LoadingContainer,
   RegularText,
@@ -21,9 +22,9 @@ import {
   removeMatomoUserId
 } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
+import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
 import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
 import { SettingsContext } from '../SettingsProvider';
-import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -50,13 +51,15 @@ const onDeactivatePushNotifications = (revert) => {
 };
 
 const TOP_FILTER = {
+  AR_DOWNLOAD_LIST: 'arDownloadList',
   GENERAL: 'general',
   LIST_TYPES: 'listTypes'
 };
 
 const INITIAL_FILTER = [
   { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
-  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false }
+  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false },
+  { id: TOP_FILTER.AR_DOWNLOAD_LIST, title: texts.settingsTitles.tabs.arSettings, selected: false }
 ];
 
 export const SettingsScreen = () => {
@@ -222,6 +225,7 @@ export const SettingsScreen = () => {
         />
       )}
       {selectedFilterId === TOP_FILTER.LIST_TYPES && <ListSettings />}
+      {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && <AugmentedReality onSettingsScreen />}
     </SafeAreaViewFlex>
   );
 };
