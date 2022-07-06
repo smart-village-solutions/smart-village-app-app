@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import { consts, device, Icon, normalize, texts } from '../../config';
-import { checkDownloadedData, DOWNLOAD_TYPE } from '../../helpers';
+import { checkDownloadedData } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
@@ -24,7 +24,6 @@ export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(loading);
-  const [listItemDownloadType, setListItemDownloadType] = useState(DOWNLOAD_TYPE.DOWNLOADABLE);
 
   useEffect(() => {
     setData(staticData);
@@ -49,7 +48,6 @@ export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
         setData={setData}
         isLoading={isLoading}
         refetch={refetch}
-        setListItemDownloadType={setListItemDownloadType}
         showDeleteAllButton
         showDownloadAllButton
         showFreeSpace
@@ -63,14 +61,7 @@ export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
       <WrapperWithOrientation>
         <Wrapper>
           <Touchable
-            onPress={() =>
-              navigation.navigate(ScreenName.ARInfo, {
-                data,
-                isLoading,
-                listItemDownloadType,
-                refetch
-              })
-            }
+            onPress={() => navigation.navigate(ScreenName.ARInfo, { data, isLoading, refetch })}
           >
             <WrapperRow spaceBetween>
               <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
@@ -109,8 +100,6 @@ export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
         isLoading={isLoading}
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
-        listItemDownloadType={listItemDownloadType}
-        setListItemDownloadType={setListItemDownloadType}
         refetch={refetch}
         showTitle
       />

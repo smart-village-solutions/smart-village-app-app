@@ -14,19 +14,33 @@ import { IconForDownloadType } from './IconForDownloadType';
 
 export const ARModal = ({
   data,
+  index,
   setData,
   isListView,
   isLoading,
   isModalVisible,
   setIsModalVisible,
-  item,
-  listItemDownloadType,
-  setListItemDownloadType,
   onModalVisible,
   refetch,
   showTitle
 }) => {
-  let { DOWNLOAD_TYPE: itemDownloadType, progress, progressSize, title, totalSize } = item;
+  // this modal is called for file package lists and for single file packages, where we need the
+  // explicit object at the given `index`. the `index` is only given if we do not have a
+  // truthy `isListView`, thats why we need to "secure" the destructing with `{}`.
+  const { DOWNLOAD_TYPE: itemDownloadType, progress, progressSize, title, totalSize } =
+    data?.[index] || {};
+
+  // if a download is running, we want to show the users an additional alert to inform about
+  // difficulties with hiding the modal.
+  const showHiddenAlert = data?.some((item) => item.DOWNLOAD_TYPE === DOWNLOAD_TYPE.DOWNLOADING);
+
+  // in modals for single files we can have two states of the modal button and not only "hide",
+  // because we want to navigate directly in case the file package is downloaded instead of hiding
+  // the modal manually and then pressing a button to navigate.
+  const modalHiddenButtonName =
+    itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED && !isListView
+      ? texts.settingsTitles.arListLayouts.continue
+      : texts.settingsTitles.arListLayouts.hide;
 
   return (
     <Modal
@@ -37,10 +51,7 @@ export const ARModal = ({
           return;
         }
 
-        if (
-          itemDownloadType === DOWNLOAD_TYPE.DOWNLOADING ||
-          listItemDownloadType === DOWNLOAD_TYPE.DOWNLOADING
-        ) {
+        if (showHiddenAlert) {
           HiddenModalAlert({ onPress: () => setIsModalVisible(!isModalVisible) });
           return;
         }
@@ -48,11 +59,7 @@ export const ARModal = ({
         setIsModalVisible(!isModalVisible);
       }}
       isVisible={isModalVisible}
-      modalHiddenButtonName={
-        itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED && !isListView
-          ? texts.settingsTitles.arListLayouts.continue
-          : texts.settingsTitles.arListLayouts.hide
-      }
+      modalHiddenButtonName={modalHiddenButtonName}
     >
       {isListView ? (
         <ARObjectList
@@ -60,7 +67,6 @@ export const ARModal = ({
           setData={setData}
           isLoading={isLoading}
           refetch={refetch}
-          setListItemDownloadType={setListItemDownloadType}
           showDeleteAllButton
           showDownloadAllButton
           showFreeSpace
@@ -95,12 +101,12 @@ export const ARModal = ({
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    marginBottom: normalize(20)
+    marginBottom: normalize(20),
+    width: '100%'
   },
   iconAndByteText: {
-    flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexDirection: 'row'
   },
   progressTextStyle: {
     marginLeft: normalize(10)
@@ -109,26 +115,13 @@ const styles = StyleSheet.create({
 
 ARModal.propTypes = {
   data: PropTypes.array,
+  index: PropTypes.number,
   setData: PropTypes.func,
   isListView: PropTypes.bool,
   isLoading: PropTypes.bool,
   isModalVisible: PropTypes.bool.isRequired,
   setIsModalVisible: PropTypes.func,
-  item: PropTypes.object,
-  listItemDownloadType: PropTypes.string,
-  setListItemDownloadType: PropTypes.func,
   onModalVisible: PropTypes.func,
   refetch: PropTypes.func,
   showTitle: PropTypes.bool
-};
-
-ARModal.defaultProps = {
-  item: {
-    DOWNLOAD_TYPE: DOWNLOAD_TYPE.DOWNLOADABLE,
-    progress: 0,
-    progressSize: 0,
-    size: 0,
-    title: '',
-    totalSize: 0
-  }
 };

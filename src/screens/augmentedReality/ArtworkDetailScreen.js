@@ -103,7 +103,8 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
       </ScrollView>
 
       <ARModal
-        item={data[index]}
+        data={data}
+        inde={index}
         isModalVisible={isModalVisible}
         onModalVisible={() => {
           switch (itemDownloadType) {

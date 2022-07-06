@@ -14,8 +14,8 @@ export const checkDownloadedData = async ({ data, setData }) => {
       try {
         const downloadedItem = await readFromStore(storageName);
 
-        if (downloadedItem) {
-          checkedData[index] = downloadedItem?.localUris ? downloadedItem : [];
+        if (downloadedItem?.localUris) {
+          checkedData[index] = downloadedItem;
         } else {
           checkedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADABLE;
           checkedData[index].localUris = [];

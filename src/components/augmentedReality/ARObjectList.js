@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 
 import { consts, device, texts } from '../../config';
-import { deleteAllData, downloadAllData, DOWNLOAD_TYPE, formatSize } from '../../helpers';
+import { deleteAllData, downloadAllData, formatSize } from '../../helpers';
 import { usePullToRefetch } from '../../hooks';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -43,17 +43,8 @@ const deleteAllDataAlert = (deleteAll) =>
     ]
   );
 
-const renderItem = ({
-  setListItemDownloadType,
-  data,
-  index,
-  item,
-  navigation,
-  setData,
-  showOnDetailPage
-}) => (
+const renderItem = ({ data, index, item, navigation, setData, showOnDetailPage }) => (
   <ARObjectListItem
-    setListItemDownloadType={setListItemDownloadType}
     data={data}
     index={index}
     item={item}
@@ -69,7 +60,6 @@ export const ARObjectList = ({
   isLoading,
   navigation,
   refetch,
-  setListItemDownloadType,
   showDeleteAllButton,
   showDownloadAllButton,
   showFreeSpace,
@@ -88,11 +78,7 @@ export const ARObjectList = ({
   };
 
   const downloadAll = async () => {
-    setListItemDownloadType(DOWNLOAD_TYPE.DOWNLOADING);
-
     await downloadAllData({ data, setData });
-
-    setListItemDownloadType(DOWNLOAD_TYPE.DOWNLOADED);
   };
 
   const deleteAll = async () => {
@@ -124,7 +110,6 @@ export const ARObjectList = ({
         data={data}
         renderItem={({ item, index }) =>
           renderItem({
-            setListItemDownloadType,
             data,
             index,
             item,
@@ -169,7 +154,6 @@ ARObjectList.propTypes = {
   isLoading: PropTypes.bool,
   refetch: PropTypes.func,
   navigation: PropTypes.object,
-  setListItemDownloadType: PropTypes.func,
   showDeleteAllButton: PropTypes.bool,
   showDownloadAllButton: PropTypes.bool,
   showFreeSpace: PropTypes.bool,
