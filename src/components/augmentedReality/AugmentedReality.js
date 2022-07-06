@@ -14,7 +14,7 @@ import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
 import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
 
-export const AugmentedReality = ({ navigation }) => {
+export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { data: staticData, loading, refetch } = useStaticContent({
@@ -41,6 +41,23 @@ export const AugmentedReality = ({ navigation }) => {
   };
 
   const a11yText = consts.a11yLabel;
+
+  if (onSettingsScreen) {
+    return (
+      <ARObjectList
+        data={data}
+        setData={setData}
+        isLoading={isLoading}
+        refetch={refetch}
+        setListItemDownloadType={setListItemDownloadType}
+        showDeleteAllButton
+        showDownloadAllButton
+        showFreeSpace
+        showTitle
+      />
+    );
+  }
+
   return (
     <>
       <WrapperWithOrientation>
@@ -102,5 +119,6 @@ export const AugmentedReality = ({ navigation }) => {
 };
 
 AugmentedReality.propTypes = {
-  navigation: PropTypes.object
+  navigation: PropTypes.object,
+  onSettingsScreen: PropTypes.bool
 };

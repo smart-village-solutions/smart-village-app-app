@@ -56,11 +56,11 @@ export const ARModal = ({
     >
       {isListView ? (
         <ARObjectList
-          setListItemDownloadType={setListItemDownloadType}
           data={data}
           setData={setData}
           isLoading={isLoading}
           refetch={refetch}
+          setListItemDownloadType={setListItemDownloadType}
           showDeleteAllButton
           showDownloadAllButton
           showFreeSpace

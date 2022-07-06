@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList } from 'react-native';
 
 import {
-  ARObjectList,
+  AugmentedReality,
   IndexFilterWrapperAndList,
   LoadingContainer,
   RegularText,
@@ -225,9 +225,7 @@ export const SettingsScreen = () => {
         />
       )}
       {selectedFilterId === TOP_FILTER.LIST_TYPES && <ListSettings />}
-      {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && (
-        <ARObjectList showDeleteAllButton showDownloadAllButton showFreeSpace showTitle />
-      )}
+      {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && <AugmentedReality onSettingsScreen />}
     </SafeAreaViewFlex>
   );
 };
