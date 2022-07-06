@@ -1,23 +1,19 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 
-import { consts, device, Icon, normalize, texts } from '../../config';
+import { consts, device, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
-import { ScreenName } from '../../types';
-import { ARModal, ARObjectList, HiddenModalAlert } from '../augmentedReality';
-import { Button } from '../Button';
+import { AugmentedReality } from '../augmentedReality';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
-import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Touchable } from '../Touchable';
-import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { OperatingCompany } from './OperatingCompany';
 import { TourCard } from './TourCard';
@@ -53,7 +49,6 @@ export const Tour = ({ data, navigation, route }) => {
 
   // TODO: DEVELOP! - it will be deleted, it was only made to development!
   let augmentedReality = true;
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useMatomoTrackScreenView(
     matomoTrackingString([
@@ -69,10 +64,6 @@ export const Tour = ({ data, navigation, route }) => {
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
-
-      {/* TODO: hard code was written just to development it. 
-                it will be edited later 
-                & component to be relocated */}
 
       <WrapperWithOrientation>
         {!!title && (
@@ -106,26 +97,7 @@ export const Tour = ({ data, navigation, route }) => {
           </View>
         )}
 
-        {!!augmentedReality && (
-          <WrapperWithOrientation>
-            <Wrapper>
-              <Touchable onPress={() => navigation.navigate(ScreenName.ARInfo)}>
-                <WrapperRow spaceBetween>
-                  <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
-                  <Icon.ArrowRight size={normalize(20)} />
-                </WrapperRow>
-              </Touchable>
-            </Wrapper>
-
-            <Wrapper>
-              <Button
-                onPress={() => setIsModalVisible(!isModalVisible)}
-                invert
-                title={texts.augmentedReality.loadingArtworks}
-              />
-            </Wrapper>
-          </WrapperWithOrientation>
-        )}
+        {!!augmentedReality && <AugmentedReality navigation={navigation} />}
 
         <OperatingCompany
           openWebScreen={openWebScreen}
@@ -135,36 +107,7 @@ export const Tour = ({ data, navigation, route }) => {
 
         <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
-        <WrapperWithOrientation>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>
-              {texts.augmentedReality.worksOfArt}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-          <ARObjectList showOnDetailPage navigation={navigation} />
-        </WrapperWithOrientation>
-
         {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
-
-        {/* TODO: hard code was written just to development it. 
-                  it will be edited later */}
-        <ARModal
-          showTitle
-          isListView
-          item={{
-            DOWNLOAD_TYPE: 'downloaded',
-            progress: 0,
-            progressSize: 0,
-            size: 0,
-            title: 'test',
-            totalSize: 0
-          }}
-          isModalVisible={isModalVisible}
-          onModalVisible={() =>
-            HiddenModalAlert({ onPress: () => setIsModalVisible(!isModalVisible) })
-          }
-        />
       </WrapperWithOrientation>
     </View>
   );
