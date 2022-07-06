@@ -4,6 +4,29 @@ export const texts = {
   appIntro: {
     continue: 'Weiter'
   },
+  augmentedReality: {
+    arInfoScreen: {
+      header: 'Was is AR?',
+      loadingError:
+        'Es gibt ein Problem mit der Verbindung. Bitte versuchen Sie es später noch einmal.',
+      settingsButton: 'AR-Einstellungen'
+    },
+    artworkDetailScreen: {
+      downloadAndLookAtArt: 'Downloaden & AR Kunst gucken',
+      lookAtArt: 'AR Kunst gucken',
+      header: 'AR-Kunstwerk'
+    },
+    cancel: 'Abbrechen',
+    hide: 'Ausblenden',
+    loadingArtworks: 'Kunstwerke laden',
+    modalHiddenAlertMessage:
+      'Das Herunterladen der Dateien ist noch im Gange. Bitte warten Sie, bis der Download komplett abgeschlossen ist, da ansonsten Probleme mit den heruntergeladenen Dateien auftreten können.',
+    modalHiddenAlertTitle: 'Hinweis',
+    ok: 'OK',
+    wait: 'Warten',
+    whatIsAugmentedReality: 'Was ist Augmented Reality (AR)?',
+    worksOfArt: 'Kunstwerke'
+  },
   backToTop: 'zurück nach oben',
   bbBus: {
     authority: {
@@ -676,12 +699,14 @@ export const texts = {
       allDownloadButtonTitle: 'Alle Dateien herunterladen',
       arListTitle: 'Dateien verwalten',
       cancel: 'Abbrechen',
-      deleteError:
-        'Beim Löschen von Objekten ist ein Problem aufgetreten. Bitte versuchen Sie es erneut',
+      continue: 'Weiter',
       deleteAlertButtonText: 'Löschen',
       deleteAlertMessage: 'Möchten Sie die Datei löschen?',
+      deleteError:
+        'Beim Löschen von Objekten ist ein Problem aufgetreten. Bitte versuchen Sie es erneut',
       downloadAlertButtonText: 'Herunterladen',
       freeMemoryPlace: 'Verfügbarer Speicherplatz auf dem Gerät: ',
+      hide: 'Ausblenden',
       ok: 'OK'
     },
     listLayouts: {

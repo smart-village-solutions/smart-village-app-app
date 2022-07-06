@@ -105,6 +105,7 @@ export const Icon = {
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
   Calendar: (props: IconProps) => <SvgIcon xml={calendar} {...props} />,
+  Check: (props: IconProps) => <NamedIcon name="checkmark-circle" {...props} />,
   Clock: (props: IconProps) => <SvgIcon xml={clock} {...props} />,
   Close: (props: IconProps) => <SvgIcon xml={close} {...props} />,
   CloseCircle: (props: IconProps) => <NamedIcon name="close-circle" {...props} />,

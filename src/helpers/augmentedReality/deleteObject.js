@@ -11,34 +11,33 @@ const deleteErrorAlert = () =>
   Alert.alert(
     texts.settingsTitles.arListLayouts.alertTitle,
     texts.settingsTitles.arListLayouts.deleteError,
-    [{ text: texts.settingsTitles.arListLayouts.ok, style: 'cancel' }]
+    [{ text: texts.settingsTitles.arListLayouts.ok }]
   );
 
 // function to delete AR objects downloaded on the device
-export const deleteObject = async ({ index, downloadableData }) => {
-  const { localUris } = downloadableData[index];
-  let newDownloadedData = [...downloadableData];
+export const deleteObject = async ({ index, data, setData }) => {
+  const deletedData = [...data];
+  const dataItem = data[index];
 
-  for (let i = 0; i < localUris.length; i++) {
-    const { downloadUri } = localUris[i];
-
-    const storageName = storageNameCreator({
-      downloadableDataItem: downloadableData[index],
-      objectItem: localUris[i]
-    });
+  for (const objectItem of dataItem?.localUris) {
+    const storageName = storageNameCreator({ dataItem, objectItem });
 
     try {
-      await FileSystem.deleteAsync(downloadUri);
+      await FileSystem.deleteAsync(objectItem?.uri);
       await AsyncStorage.removeItem(storageName);
+
+      deletedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADABLE;
+      deletedData[index].localUris = [];
+      deletedData[index].progress = 0;
+      deletedData[index].progressSize = 0;
+      deletedData[index].size = 0;
     } catch (error) {
+      console.error(error);
+
+      // return is used to prevent the for loop from continuing
       return deleteErrorAlert();
     }
   }
 
-  newDownloadedData[index].size = 0;
-  newDownloadedData[index].progressSize = 0;
-  newDownloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADABLE;
-  newDownloadedData[index].localUris = [];
-
-  return { newDownloadedData };
+  setData(deletedData);
 };

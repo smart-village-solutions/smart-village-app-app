@@ -6,63 +6,57 @@ import { DOWNLOAD_TYPE } from './downloadType';
 import { storageNameCreator } from './storageNameCreator';
 
 // function for downloading AR objects
-export const downloadObject = async ({ index, downloadableData, setDownloadableData }) => {
-  const { downloadableUris } = downloadableData[index];
-  let newDownloadedData = [...downloadableData];
+export const downloadObject = async ({ index, data, setData }) => {
+  const downloadedData = [...data];
+  const dataItem = data[index];
 
-  for (let itemIndex = 0; itemIndex < downloadableUris.length; itemIndex++) {
-    const { downloadUri, title, type, id } = downloadableUris[itemIndex];
+  for (const objectItem of dataItem?.downloadableUris) {
+    const { uri, title, type, id } = objectItem;
 
-    const storageName = storageNameCreator({
-      downloadableDataItem: downloadableData[index],
-      objectItem: downloadableUris[itemIndex]
-    });
+    const storageName = storageNameCreator({ dataItem, objectItem });
 
     const downloadResumable = FileSystem.createDownloadResumable(
-      downloadUri,
+      uri,
       FileSystem.cacheDirectory + storageName,
       {},
-      (downloadProgress) =>
-        downloadProgressInBytes(downloadProgress, index, downloadableData, setDownloadableData)
+      (progress) => downloadProgressInBytes(progress, index, downloadedData, setData)
     );
 
     try {
       const { uri } = await downloadResumable.downloadAsync();
       const { size } = await FileSystem.getInfoAsync(uri);
 
-      newDownloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADED;
-      newDownloadedData[index].size += size;
-      newDownloadedData[index].localUris.push({
-        downloadUri: uri,
-        id,
-        size,
-        title,
-        type
-      });
+      downloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADED;
+      downloadedData[index].size += size;
+      downloadedData[index].localUris.push({ uri, id, size, title, type });
 
-      addToStore(storageName, newDownloadedData[index]);
+      addToStore(storageName, downloadedData[index]);
     } catch (e) {
       console.error(e);
     }
   }
 
-  return { newDownloadedData };
+  setData(downloadedData);
 };
 
-// callback function that allows us to see how many
-// bytes per second the file is downloaded
-const downloadProgressInBytes = (
-  downloadProgress,
-  index,
-  downloadableData,
-  setDownloadableData
-) => {
-  let newArr = [...downloadableData];
-  const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
+/**
+ * callback function that allows us to see how many bytes per second the file is downloaded
+ *
+ * @param {object} progress         the object that holds the total size of the object
+ *                                  returned by the `createDownloadResumable` function
+ *                                  and how much was downloaded to the device
+ * @param {number} index            the index information of the downloaded object in `JSON`
+ * @param {array} downloadedData    `JSON` array containing the objects to be downloaded
+ * @param {function} setData        state function that allows us to re-render the image on
+ *                                  the screen to show the download size
+ */
+const downloadProgressInBytes = (progress, index, downloadedData, setData) => {
+  downloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADING;
+  downloadedData[index].progressSize = downloadedData[index].size + progress.totalBytesWritten;
+  downloadedData[index].progress =
+    downloadedData[index].progressSize / downloadedData[index].totalSize;
 
-  newArr[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADING;
-  newArr[index].progressSize = downloadProgress.totalBytesWritten;
-  newArr[index].progress = progress;
-
-  setDownloadableData(newArr);
+  // we create a copy of the array to make the set state method aware of "there is something new"
+  // that should be rendered
+  setData([...downloadedData]);
 };

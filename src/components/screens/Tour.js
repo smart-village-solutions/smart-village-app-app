@@ -5,13 +5,14 @@ import { View } from 'react-native';
 import { consts, device, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { AugmentedReality } from '../augmentedReality';
 import { DataProviderButton } from '../DataProviderButton';
+import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { DataProviderNotice } from '../DataProviderNotice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { OperatingCompany } from './OperatingCompany';
@@ -21,7 +22,7 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const Tour = ({ data, route }) => {
+export const Tour = ({ data, navigation, route }) => {
   const {
     addresses,
     category,
@@ -45,6 +46,9 @@ export const Tour = ({ data, route }) => {
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
+
+  // TODO: DEVELOP! - it will be deleted, it was only made to development!
+  let augmentedReality = true;
 
   useMatomoTrackScreenView(
     matomoTrackingString([
@@ -92,6 +96,8 @@ export const Tour = ({ data, route }) => {
             </Wrapper>
           </View>
         )}
+
+        {!!augmentedReality && <AugmentedReality navigation={navigation} />}
 
         <OperatingCompany
           openWebScreen={openWebScreen}
