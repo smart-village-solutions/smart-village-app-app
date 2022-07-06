@@ -23,8 +23,11 @@ export const ARInfoScreen = ({ route }) => {
 
   const RefreshControl = usePullToRefetch(refetch);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
   const [data, setData] = useState(route?.params?.data ?? []);
+  const [listItemDownloadType, setListItemDownloadType] = useState(
+    route?.params?.listItemDownloadType ?? ''
+  );
+
   const isLoading = route?.params?.isLoading ?? [];
   const objectRefetch = route?.params?.refetch ?? [];
 
@@ -60,6 +63,8 @@ export const ARInfoScreen = ({ route }) => {
         isLoading={isLoading}
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
+        listItemDownloadType={listItemDownloadType}
+        setListItemDownloadType={setListItemDownloadType}
         refetch={objectRefetch}
         showTitle
       />

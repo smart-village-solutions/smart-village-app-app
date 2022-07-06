@@ -15,28 +15,18 @@ import { IconForDownloadType } from './IconForDownloadType';
 export const ARModal = ({
   data,
   setData,
-  isLoading,
-  refetch,
   isListView,
+  isLoading,
   isModalVisible,
   setIsModalVisible,
   item,
+  listItemDownloadType,
+  setListItemDownloadType,
   onModalVisible,
+  refetch,
   showTitle
 }) => {
-  const defaultItem = {
-    DOWNLOAD_TYPE: DOWNLOAD_TYPE.DOWNLOADABLE,
-    progress: 0,
-    progressSize: 0,
-    size: 0,
-    title: '',
-    totalSize: 0
-  };
-  const { DOWNLOAD_TYPE: itemDownloadType, progress, progressSize, title, totalSize } =
-    item || defaultItem;
-
-  // TODO: if isListView == true we will have multiple items with maybe different download types
-  //       depending on the download type we can than decide which onModalVisible we want to trigger
+  let { DOWNLOAD_TYPE: itemDownloadType, progress, progressSize, title, totalSize } = item;
 
   return (
     <Modal
@@ -47,7 +37,10 @@ export const ARModal = ({
           return;
         }
 
-        if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADING) {
+        if (
+          itemDownloadType === DOWNLOAD_TYPE.DOWNLOADING ||
+          listItemDownloadType === DOWNLOAD_TYPE.DOWNLOADING
+        ) {
           HiddenModalAlert({ onPress: () => setIsModalVisible(!isModalVisible) });
           return;
         }
@@ -63,6 +56,7 @@ export const ARModal = ({
     >
       {isListView ? (
         <ARObjectList
+          setListItemDownloadType={setListItemDownloadType}
           data={data}
           setData={setData}
           isLoading={isLoading}
@@ -121,7 +115,20 @@ ARModal.propTypes = {
   isModalVisible: PropTypes.bool.isRequired,
   setIsModalVisible: PropTypes.func,
   item: PropTypes.object,
+  listItemDownloadType: PropTypes.string,
+  setListItemDownloadType: PropTypes.func,
   onModalVisible: PropTypes.func,
   refetch: PropTypes.func,
   showTitle: PropTypes.bool
+};
+
+ARModal.defaultProps = {
+  item: {
+    DOWNLOAD_TYPE: DOWNLOAD_TYPE.DOWNLOADABLE,
+    progress: 0,
+    progressSize: 0,
+    size: 0,
+    title: '',
+    totalSize: 0
+  }
 };

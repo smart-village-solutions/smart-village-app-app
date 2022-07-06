@@ -11,7 +11,15 @@ import { Touchable } from '../Touchable';
 
 import { IconForDownloadType } from './IconForDownloadType';
 
-export const ARObjectListItem = ({ data, index, item, navigation, setData, showOnDetailPage }) => {
+export const ARObjectListItem = ({
+  setListItemDownloadType,
+  data,
+  index,
+  item,
+  navigation,
+  setData,
+  showOnDetailPage
+}) => {
   const { DOWNLOAD_TYPE: itemDownloadType, progressSize, title, totalSize, locationInfo } = item;
 
   const onPress = async () => {
@@ -21,7 +29,11 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
     }
 
     if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADABLE) {
+      setListItemDownloadType(DOWNLOAD_TYPE.DOWNLOADING);
+
       await downloadObject({ index, data, setData });
+
+      setListItemDownloadType(DOWNLOAD_TYPE.DOWNLOADED);
     } else if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED) {
       Alert.alert(
         texts.settingsTitles.arListLayouts.alertTitle,
@@ -78,9 +90,10 @@ const styles = StyleSheet.create({
 
 ARObjectListItem.propTypes = {
   data: PropTypes.array,
+  setData: PropTypes.func,
   index: PropTypes.number,
   item: PropTypes.object.isRequired,
   navigation: PropTypes.object,
-  setData: PropTypes.func,
+  setListItemDownloadType: PropTypes.func,
   showOnDetailPage: PropTypes.bool
 };
