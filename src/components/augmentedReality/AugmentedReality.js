@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { consts, device, Icon, normalize, texts } from '../../config';
+import { checkDownloadedData } from '../../helpers';
+import { useStaticContent } from '../../hooks';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { RegularText } from '../Text';
@@ -15,19 +17,42 @@ import { ARObjectList } from './ARObjectList';
 export const AugmentedReality = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const { data: staticData, loading, refetch } = useStaticContent({
+    name: 'arDownloadableDataList',
+    type: 'json'
+  });
+
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(loading);
+
+  useEffect(() => {
+    setData(staticData);
+
+    if (staticData?.length) {
+      checkDownloadData({ data: staticData });
+    }
+  }, [staticData]);
+
+  const checkDownloadData = async ({ data }) => {
+    setIsLoading(true);
+    await checkDownloadedData({ data, setData });
+    setIsLoading(false);
+  };
+
   const a11yText = consts.a11yLabel;
   return (
     <>
       <WrapperWithOrientation>
         <Wrapper>
-          <Touchable onPress={() => navigation.navigate(ScreenName.ARInfo)}>
+          <Touchable
+            onPress={() => navigation.navigate(ScreenName.ARInfo, { data, isLoading, refetch })}
+          >
             <WrapperRow spaceBetween>
               <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
               <Icon.ArrowRight size={normalize(20)} />
             </WrapperRow>
           </Touchable>
         </Wrapper>
-
         <Wrapper>
           <Button
             onPress={() => setIsModalVisible(!isModalVisible)}
@@ -35,7 +60,6 @@ export const AugmentedReality = ({ navigation }) => {
             title={texts.augmentedReality.loadingArtworks}
           />
         </Wrapper>
-
         <TitleContainer>
           <Title accessibilityLabel={`(${texts.augmentedReality.worksOfArt}) ${a11yText.heading}`}>
             {texts.augmentedReality.worksOfArt}
@@ -43,15 +67,25 @@ export const AugmentedReality = ({ navigation }) => {
         </TitleContainer>
         {device.platform === 'ios' && <TitleShadow />}
 
-        <ARObjectList showOnDetailPage navigation={navigation} />
+        <ARObjectList
+          data={data}
+          setData={setData}
+          isLoading={isLoading}
+          navigation={navigation}
+          refetch={refetch}
+          showOnDetailPage
+        />
       </WrapperWithOrientation>
 
       <ARModal
-        showTitle
+        data={data}
+        setData={setData}
         isListView
-        item={{}}
+        isLoading={isLoading}
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
+        refetch={refetch}
+        showTitle
       />
     </>
   );

@@ -9,15 +9,51 @@ import { Modal } from '../Modal';
 import { BoldText, RegularText } from '../Text';
 
 import { ARObjectList } from './ARObjectList';
+import { HiddenModalAlert } from './HiddenModalAlert';
 import { IconForDownloadType } from './IconForDownloadType';
 
-export const ARModal = ({ isListView, isModalVisible, item, onModalVisible, showTitle }) => {
-  const { DOWNLOAD_TYPE: itemDownloadType, progress, progressSize, title, totalSize } = item;
+export const ARModal = ({
+  data,
+  setData,
+  isLoading,
+  refetch,
+  isListView,
+  isModalVisible,
+  setIsModalVisible,
+  item,
+  onModalVisible,
+  showTitle
+}) => {
+  const defaultItem = {
+    DOWNLOAD_TYPE: DOWNLOAD_TYPE.DOWNLOADABLE,
+    progress: 0,
+    progressSize: 0,
+    size: 0,
+    title: '',
+    totalSize: 0
+  };
+  const { DOWNLOAD_TYPE: itemDownloadType, progress, progressSize, title, totalSize } =
+    item || defaultItem;
+
+  // TODO: if isListView == true we will have multiple items with maybe different download types
+  //       depending on the download type we can than decide which onModalVisible we want to trigger
 
   return (
     <Modal
       isListView={isListView}
-      onModalVisible={onModalVisible}
+      onModalVisible={() => {
+        if (onModalVisible) {
+          onModalVisible();
+          return;
+        }
+
+        if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADING) {
+          HiddenModalAlert({ onPress: () => setIsModalVisible(!isModalVisible) });
+          return;
+        }
+
+        setIsModalVisible(!isModalVisible);
+      }}
       isVisible={isModalVisible}
       modalHiddenButtonName={
         itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED && !isListView
@@ -27,8 +63,12 @@ export const ARModal = ({ isListView, isModalVisible, item, onModalVisible, show
     >
       {isListView ? (
         <ARObjectList
-          showDownloadAllButton
+          data={data}
+          setData={setData}
+          isLoading={isLoading}
+          refetch={refetch}
           showDeleteAllButton
+          showDownloadAllButton
           showFreeSpace
           showTitle={showTitle}
         />
@@ -74,9 +114,14 @@ const styles = StyleSheet.create({
 });
 
 ARModal.propTypes = {
+  data: PropTypes.array,
+  setData: PropTypes.func,
   isListView: PropTypes.bool,
+  isLoading: PropTypes.bool,
   isModalVisible: PropTypes.bool.isRequired,
-  item: PropTypes.object.isRequired,
-  onModalVisible: PropTypes.func.isRequired,
+  setIsModalVisible: PropTypes.func,
+  item: PropTypes.object,
+  onModalVisible: PropTypes.func,
+  refetch: PropTypes.func,
   showTitle: PropTypes.bool
 };

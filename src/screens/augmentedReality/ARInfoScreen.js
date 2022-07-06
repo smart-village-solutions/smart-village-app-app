@@ -6,7 +6,6 @@ import {
   ARModal,
   Button,
   EmptyMessage,
-  HiddenModalAlert,
   HtmlView,
   LoadingSpinner,
   SafeAreaViewFlex,
@@ -16,7 +15,7 @@ import {
 import { texts } from '../../config';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
 
-export const ARInfoScreen = () => {
+export const ARInfoScreen = ({ route }) => {
   const { data: arInfo = '', error, loading, refetch } = useStaticContent({
     type: 'html',
     name: 'arInfo'
@@ -24,6 +23,10 @@ export const ARInfoScreen = () => {
 
   const RefreshControl = usePullToRefetch(refetch);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const [data, setData] = useState(route?.params?.data ?? []);
+  const isLoading = route?.params?.isLoading ?? [];
+  const objectRefetch = route?.params?.refetch ?? [];
 
   if (loading) {
     return <LoadingSpinner loading />;
@@ -51,25 +54,20 @@ export const ARInfoScreen = () => {
       </ScrollView>
 
       <ARModal
-        showTitle
+        data={data}
+        setData={setData}
         isListView
-        item={{
-          DOWNLOAD_TYPE: 'downloaded',
-          progress: 0,
-          progressSize: 0,
-          size: 0,
-          title: 'test',
-          totalSize: 0
-        }}
+        isLoading={isLoading}
         isModalVisible={isModalVisible}
-        onModalVisible={() =>
-          HiddenModalAlert({ onPress: () => setIsModalVisible(!isModalVisible) })
-        }
+        setIsModalVisible={setIsModalVisible}
+        refetch={objectRefetch}
+        showTitle
       />
     </SafeAreaViewFlex>
   );
 };
 
 ARInfoScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };

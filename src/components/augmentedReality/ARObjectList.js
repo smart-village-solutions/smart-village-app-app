@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 
 import { consts, device, texts } from '../../config';
-import { checkDownloadedData, deleteAllData, downloadAllData, formatSize } from '../../helpers';
-import { usePullToRefetch, useStaticContent } from '../../hooks';
+import { deleteAllData, downloadAllData, formatSize } from '../../helpers';
+import { usePullToRefetch } from '../../hooks';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
@@ -55,39 +55,22 @@ const renderItem = ({ data, index, item, navigation, setData, showOnDetailPage }
 );
 
 export const ARObjectList = ({
+  data,
+  setData,
+  isLoading,
   navigation,
+  refetch,
   showDeleteAllButton,
   showDownloadAllButton,
   showFreeSpace,
   showOnDetailPage,
   showTitle
 }) => {
-  const { data: staticData, loading, refetch } = useStaticContent({
-    name: 'arDownloadableDataList',
-    type: 'json'
-  });
-
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(loading);
   const [freeSize, setFreeSize] = useState(0);
 
   useEffect(() => {
     checkFreeStorage();
   }, [data]);
-
-  useEffect(() => {
-    setData(staticData);
-
-    if (staticData?.length) {
-      checkDownloadData({ data: staticData });
-    }
-  }, [staticData]);
-
-  const checkDownloadData = async ({ data }) => {
-    setIsLoading(true);
-    await checkDownloadedData({ data, setData });
-    setIsLoading(false);
-  };
 
   const checkFreeStorage = async () => {
     const storage = await FileSystem.getFreeDiskStorageAsync();
@@ -166,6 +149,10 @@ export const ARObjectList = ({
 };
 
 ARObjectList.propTypes = {
+  data: PropTypes.array,
+  setData: PropTypes.func,
+  isLoading: PropTypes.bool,
+  refetch: PropTypes.func,
   navigation: PropTypes.object,
   showDeleteAllButton: PropTypes.bool,
   showDownloadAllButton: PropTypes.bool,
