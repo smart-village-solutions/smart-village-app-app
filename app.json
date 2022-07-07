@@ -53,7 +53,15 @@
 			"backgroundColor": "#00000000"
 		},
 		"plugins": [
-			"sentry-expo"
+			"sentry-expo",
+			[
+				"@viro-community/react-viro",
+				{
+					"androidXrMode": [
+						"AR"
+					]
+				}
+			]
 		]
 	}
 }
