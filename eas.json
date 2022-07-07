@@ -1,0 +1,35 @@
+{
+  "cli": {
+    "version": ">= 0.53.0"
+  },
+  "build": {
+    "production": {
+      "node": "14.18.1",
+      "yarn": "1.22.4",
+      "releaseChannel": "production"
+    },
+    "preview": {
+      "extends": "production",
+      "releaseChannel": "preview",
+      "distribution": "internal"
+    },
+    "development": {
+      "extends": "production",
+      "releaseChannel": "development",
+      "distribution": "internal",
+      "developmentClient": true
+    },
+    "development-simulator": {
+      "extends": "production",
+      "releaseChannel": "development",
+      "distribution": "internal",
+      "developmentClient": true,
+      "ios": {
+        "simulator": true
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
