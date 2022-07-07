@@ -17,6 +17,8 @@ target 'SmartVillageApp' do
     :path => config[:reactNativePath],
     :hermes_enabled => podfile_properties['expo.jsEngine'] == 'hermes'
   )
+	pod 'ViroReact', :path => '../node_modules/@viro-community/react-viro/ios/'
+	pod 'ViroKit', :path => '../node_modules/@viro-community/react-viro/ios/dist/ViroRenderer/'
 
   # Uncomment to opt-in to using Flipper
   #

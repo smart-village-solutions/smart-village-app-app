@@ -13,6 +13,8 @@ PODS:
     - ExpoModulesCore
   - EXDocumentPicker (10.0.3):
     - ExpoModulesCore
+  - EXErrorRecovery (3.0.3):
+    - ExpoModulesCore
   - EXFileSystem (13.0.3):
     - ExpoModulesCore
   - EXFont (10.0.3):
@@ -414,6 +416,10 @@ PODS:
   - Sentry/Core (7.7.0)
   - UMTaskManagerInterface (7.0.3):
     - ExpoModulesCore
+  - ViroKit (1.0):
+    - React
+  - ViroReact (1.0):
+    - React
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -424,6 +430,7 @@ DEPENDENCIES:
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXDevice (from `../node_modules/expo-device/ios`)
   - EXDocumentPicker (from `../node_modules/expo-document-picker/ios`)
+  - EXErrorRecovery (from `../node_modules/expo-error-recovery/ios`)
   - EXFileSystem (from `../node_modules/expo-file-system/ios`)
   - EXFont (from `../node_modules/expo-font/ios`)
   - EXImagePicker (from `../node_modules/expo-image-picker/ios`)
@@ -488,6 +495,8 @@ DEPENDENCIES:
   - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNSVG (from `../node_modules/react-native-svg`)
   - UMTaskManagerInterface (from `../node_modules/unimodules-task-manager-interface/ios`)
+  - "ViroKit (from `../node_modules/@viro-community/react-viro/ios/dist/ViroRenderer/`)"
+  - "ViroReact (from `../node_modules/@viro-community/react-viro/ios/`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -510,6 +519,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-device/ios"
   EXDocumentPicker:
     :path: "../node_modules/expo-document-picker/ios"
+  EXErrorRecovery:
+    :path: "../node_modules/expo-error-recovery/ios"
   EXFileSystem:
     :path: "../node_modules/expo-file-system/ios"
   EXFont:
@@ -634,6 +645,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-svg"
   UMTaskManagerInterface:
     :path: "../node_modules/unimodules-task-manager-interface/ios"
+  ViroKit:
+    :path: "../node_modules/@viro-community/react-viro/ios/dist/ViroRenderer/"
+  ViroReact:
+    :path: "../node_modules/@viro-community/react-viro/ios/"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -646,6 +661,7 @@ SPEC CHECKSUMS:
   EXConstants: 6d585d93723b18d7a8c283591a335609e3bc153e
   EXDevice: d19bbef7ab8ee4669ef1d6424c538f8d8fe7d6e9
   EXDocumentPicker: 9329610c4fb22531093cecb0b617222c71bda77b
+  EXErrorRecovery: ac2622400a32be84604591f70d0efff416e4b9a2
   EXFileSystem: 99aac7962c11c680681819dd9cbca24e20e5b1e7
   EXFont: 2e1c6fe726d008a039db80df95f48b4921b7fe59
   EXImagePicker: bf704ef8e9171b05696a24114b44c6629565b45d
@@ -670,7 +686,7 @@ SPEC CHECKSUMS:
   EXUpdates: 061b67c33f0e7f8fd335bbb48697c4a4fc8a5157
   EXUpdatesInterface: e1c01b4f5ec76bd1d6cc714938f9edf5ef6379b9
   FBLazyVector: c71c5917ec0ad2de41d5d06a5855f6d5eda06971
-  FBReactNativeSpec: e4d0bb08313b08bb5ab92f3bbd1eca2aabcabf49
+  FBReactNativeSpec: 6e720d4e88a02f09435e422d7fa47a2189363004
   glog: 73c2498ac6884b13ede40eda8228cb1eee9d9d62
   RCT-Folly: ec7a233ccc97cc556cf7237f0db1ff65b986f27c
   RCTRequired: d34bf57e17cb6e3b2681f4809b13843c021feb6c
@@ -709,8 +725,10 @@ SPEC CHECKSUMS:
   RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
   Sentry: e58e062056a061ae1145e22ad3dff6e506bff177
   UMTaskManagerInterface: 5654c50e68af11b19b9d05452bacf23d19b3f30f
+  ViroKit: 700d3d4ca086368d06224de1cbbc19781aea2094
+  ViroReact: f4980e6b04918c4340637f9cbaae22a6bb7ea440
   Yoga: e6ecf3fa25af9d4c87e94ad7d5d292eedef49749
 
-PODFILE CHECKSUM: 1ba48b0e4ef512ada8ac7deeea79ae4f9c549ae3
+PODFILE CHECKSUM: 6e3c0e77911df864a9f473ade36d75b685a9fb8a
 
-COCOAPODS: 1.10.2
+COCOAPODS: 1.11.3
