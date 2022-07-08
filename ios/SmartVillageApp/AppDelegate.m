@@ -8,7 +8,6 @@
 #include <EXDevLauncher/EXDevLauncherController.h>
 #import <EXUpdates/EXUpdatesDevLauncherController.h>
 #endif
-#import <EXScreenOrientation/EXScreenOrientationViewController.h>
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
@@ -42,14 +41,13 @@ static void InitializeFlipper(UIApplication *application) {
   RCTBridge *bridge = [self.reactDelegate createBridgeWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [self.reactDelegate createRootViewWithBridge:bridge moduleName:@"main" initialProperties:nil];
   rootView.backgroundColor = [UIColor whiteColor];
-  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
   UIViewController *rootViewController = [self.reactDelegate createRootViewController];
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
 
   return bridge;
-}
+ }
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -57,7 +55,8 @@ static void InitializeFlipper(UIApplication *application) {
 #if defined(FB_SONARKIT_ENABLED) && __has_include(<FlipperKit/FlipperClient.h>)
   InitializeFlipper(application);
 #endif
-
+  
+  self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
 #if defined(EX_DEV_LAUNCHER_ENABLED)
   EXDevLauncherController *controller = [EXDevLauncherController sharedInstance];
         controller.updatesInterface = [EXUpdatesDevLauncherController sharedInstance];
@@ -96,14 +95,13 @@ static void InitializeFlipper(UIApplication *application) {
     return true;
   }
   #endif
-  return [RCTLinkingManager application:application openURL:url options:options];
+  return [super application:application openURL:url options:options] || [RCTLinkingManager application:application openURL:url options:options];
 }
 
 // Universal Links
 - (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler {
-  return [RCTLinkingManager application:application
-                   continueUserActivity:userActivity
-                     restorationHandler:restorationHandler];
+  BOOL result = [RCTLinkingManager application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
+  return [super application:application continueUserActivity:userActivity restorationHandler:restorationHandler] || result;
 }
 
 @end
