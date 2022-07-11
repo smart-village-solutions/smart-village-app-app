@@ -1,10 +1,7 @@
 import PropTypes from 'prop-types';
-import React from 'react';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
 
-import { RegularText, SafeAreaViewFlex } from '../../components';
-import { LoadingSpinner, RegularText } from '../../components';
+import { LoadingSpinner, RegularText, SafeAreaViewFlex } from '../../components';
 
 export const ARShowScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +20,6 @@ export const ARShowScreen = ({ navigation, route }) => {
 
   if (isLoading || !object) return <LoadingSpinner loading />;
 
-export const ARShowScreen = ({ navigation }) => {
   return (
     <SafeAreaViewFlex>
       <RegularText>AR Show Screen</RegularText>
@@ -49,8 +45,8 @@ const objectParser = async ({ item, setObject }) => {
 
   setObject(parsedObject);
 };
+
 ARShowScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired
-};
 };
