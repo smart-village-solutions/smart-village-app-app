@@ -17,9 +17,9 @@ import {
   WrapperWithOrientation
 } from '../../components';
 import { Icon, normalize, texts } from '../../config';
+import { checkDownloadedData, downloadObject, DOWNLOAD_TYPE } from '../../helpers';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
 import { ScreenName } from '../../types';
-import { checkDownloadedData, downloadObject, DOWNLOAD_TYPE } from '../../helpers';
 
 export const ArtworkDetailScreen = ({ route, navigation }) => {
   const { data: artworkDetail = '', error, loading, refetch } = useStaticContent({
@@ -81,7 +81,9 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
           </Wrapper>
 
           <Wrapper>
-            <Touchable onPress={() => navigation.navigate(ScreenName.ARInfo)}>
+            <Touchable
+              onPress={() => navigation.navigate(ScreenName.ARInfo, { data, isLoading, refetch })}
+            >
               <WrapperRow spaceBetween>
                 <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
                 <Icon.ArrowRight size={normalize(20)} />
@@ -104,7 +106,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
 
       <ARModal
         data={data}
-        inde={index}
+        index={index}
         isModalVisible={isModalVisible}
         onModalVisible={() => {
           switch (itemDownloadType) {
