@@ -9,7 +9,7 @@ import { Button } from '../Button';
 import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperRow } from '../Wrapper';
 
 import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
@@ -58,40 +58,38 @@ export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
 
   return (
     <>
-      <WrapperWithOrientation>
-        <Wrapper>
-          <Touchable
-            onPress={() => navigation.navigate(ScreenName.ARInfo, { data, isLoading, refetch })}
-          >
-            <WrapperRow spaceBetween>
-              <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
-              <Icon.ArrowRight size={normalize(20)} />
-            </WrapperRow>
-          </Touchable>
-        </Wrapper>
-        <Wrapper>
-          <Button
-            onPress={() => setIsModalVisible(!isModalVisible)}
-            invert
-            title={texts.augmentedReality.loadingArtworks}
-          />
-        </Wrapper>
-        <TitleContainer>
-          <Title accessibilityLabel={`(${texts.augmentedReality.worksOfArt}) ${a11yText.heading}`}>
-            {texts.augmentedReality.worksOfArt}
-          </Title>
-        </TitleContainer>
-        {device.platform === 'ios' && <TitleShadow />}
-
-        <ARObjectList
-          data={data}
-          setData={setData}
-          isLoading={isLoading}
-          navigation={navigation}
-          refetch={refetch}
-          showOnDetailPage
+      <Wrapper>
+        <Touchable
+          onPress={() => navigation.navigate(ScreenName.ARInfo, { data, isLoading, refetch })}
+        >
+          <WrapperRow spaceBetween>
+            <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
+            <Icon.ArrowRight size={normalize(20)} />
+          </WrapperRow>
+        </Touchable>
+      </Wrapper>
+      <Wrapper>
+        <Button
+          onPress={() => setIsModalVisible(!isModalVisible)}
+          invert
+          title={texts.augmentedReality.loadingArtworks}
         />
-      </WrapperWithOrientation>
+      </Wrapper>
+      <TitleContainer>
+        <Title accessibilityLabel={`(${texts.augmentedReality.worksOfArt}) ${a11yText.heading}`}>
+          {texts.augmentedReality.worksOfArt}
+        </Title>
+      </TitleContainer>
+      {device.platform === 'ios' && <TitleShadow />}
+
+      <ARObjectList
+        data={data}
+        setData={setData}
+        isLoading={isLoading}
+        navigation={navigation}
+        refetch={refetch}
+        showOnDetailPage
+      />
 
       <ARModal
         data={data}
