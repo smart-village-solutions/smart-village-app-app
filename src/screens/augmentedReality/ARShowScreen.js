@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import {
   Viro3DObject,
   ViroAmbientLight,
@@ -9,7 +9,8 @@ import {
   ViroMaterials
 } from '@viro-community/react-viro';
 
-import { LoadingSpinner, RegularText } from '../../components';
+import { LoadingSpinner, Touchable } from '../../components';
+import { colors, Icon } from '../../config';
 
 export const ARShowScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -22,38 +23,53 @@ export const ARShowScreen = ({ navigation, route }) => {
   }, []);
 
   const parser = async () => {
-    await objectParser({ item: data[index], setObject });
+    // TODO: the `onPress` prop is just for testing
+    await objectParser({ item: data[index], setObject, onPress: () => navigation.goBack() });
+
     setIsLoading(false);
   };
 
-  if (isLoading || !object) return <LoadingSpinner loading />;
+  if (isLoading || !object || !object.vrx) return <LoadingSpinner loading />;
 
   return (
-    <View style={styles.f1}>
+    <View style={styles.arSceneNavigator}>
       <ViroARSceneNavigator
         initialScene={{
           scene: AugmentedRealityView
         }}
         viroAppProps={{ object }}
-        style={styles.f1}
+        style={styles.arSceneNavigator}
       />
-      <RegularText style={styles.backButton} onPress={() => navigation.goBack()}>
-        Zurück
-      </RegularText>
+      <Touchable style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Icon.Close color={colors.surface} />
+      </Touchable>
     </View>
   );
 };
 
 const AugmentedRealityView = ({ sceneNavigator }) => {
+  const [rotation, setRotation] = useState([0, 0, 0]);
+  const [position, setPosition] = useState([0, -1, -5]);
+
   const { object } = sceneNavigator.viroAppProps;
 
   ViroMaterials.createMaterials({
-    SVA: {
-      diffuseTexture: {
-        uri: object.png
-      }
-    }
+    SVA: { diffuseTexture: { uri: object.png } }
   });
+
+  const moveObject = (newPosition) => {
+    setPosition(newPosition);
+  };
+
+  const rotateObject = (rotateState, rotationFactor) => {
+    let newRotation = [rotation[0], rotation[1] - rotationFactor, rotation[2]];
+
+    if (rotateState === 2) {
+      setRotation(newRotation);
+
+      return;
+    }
+  };
 
   const handleLoadStart = () => {
     console.warn('OBJ loading has started');
@@ -70,14 +86,14 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
       <ViroAmbientLight color={'#fff'} />
 
       <Viro3DObject
-        source={{
-          uri: object.vrx
-        }}
+        source={{ uri: object.vrx }}
         resources={['SVA']}
         type="VRX"
-        position={[0, -1, -5]}
+        position={position}
         scale={[0.02, 0.02, 0.02]}
-        rotation={[0, 0, 0]}
+        rotation={rotation}
+        onDrag={moveObject}
+        onRotate={rotateObject}
         onLoadStart={handleLoadStart}
         onLoadEnd={handleLoadEnd}
         onError={(event) => handleError(event)}
@@ -86,7 +102,7 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
   );
 };
 
-const objectParser = async ({ item, setObject }) => {
+const objectParser = async ({ item, setObject, onPress }) => {
   let parsedObject = {};
 
   item.localUris?.find((item) => {
@@ -101,18 +117,37 @@ const objectParser = async ({ item, setObject }) => {
     }
   });
 
+  // TODO: Just for the test
+  if (!parsedObject.vrx) {
+    return Alert.alert(
+      'Hinweis',
+      'Bitte laden Sie ein echtes AR-Objekt herunter. Die Dateien im Gerät sind nur zu Testzwecken vorbereitet. Sie können ein Beispielobjekt sehen, indem Sie die Datei Diffuse Texture aus der Objektliste herunterladen.',
+      [
+        {
+          text: 'OK',
+          onPress
+        }
+      ]
+    );
+  }
+
   setObject(parsedObject);
 };
 
 var styles = StyleSheet.create({
+  arSceneNavigator: {
+    flex: 1
+  },
   backButton: {
+    alignItems: 'center',
+    backgroundColor: colors.gray60,
+    borderRadius: 50,
+    justifyContent: 'center',
+    padding: 5,
     position: 'absolute',
     right: 10,
     top: 100,
     zIndex: 1
-  },
-  f1: {
-    flex: 1
   }
 });
 
