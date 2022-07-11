@@ -20,7 +20,7 @@ export const deleteObject = async ({ index, data, setData }) => {
   const dataItem = data[index];
 
   for (const objectItem of dataItem?.localUris) {
-    const storageName = storageNameCreator({ dataItem, objectItem });
+    const { storageName } = storageNameCreator({ dataItem, objectItem });
 
     try {
       await FileSystem.deleteAsync(objectItem?.uri);

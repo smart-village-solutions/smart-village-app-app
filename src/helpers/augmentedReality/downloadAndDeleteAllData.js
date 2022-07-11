@@ -8,7 +8,7 @@ import { storageNameCreator } from './storageNameCreator';
 export const downloadAllData = async ({ data, setData }) => {
   for (const [index, dataItem] of data.entries()) {
     for (const objectItem of dataItem?.downloadableUris) {
-      const storageName = storageNameCreator({ dataItem, objectItem });
+      const { storageName } = storageNameCreator({ dataItem, objectItem });
 
       try {
         const downloadedItem = await readFromStore(storageName);
