@@ -110,10 +110,10 @@
     "styled-components": "~4.4.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/eslint-parser": "^7.17.0",
-    "@babel/plugin-proposal-logical-assignment-operators": "^7.12.1",
-    "@babel/preset-typescript": "^7.13.0",
+    "@babel/core": "^7.18.0",
+    "@babel/eslint-parser": "^7.18.0",
+    "@babel/plugin-proposal-logical-assignment-operators": "^7.18.1",
+    "@babel/preset-typescript": "^7.18.0",
     "@types/lodash": "^4.14.165",
     "@types/react": "~17.0.21",
     "@types/react-dom": "~17.0.11",
