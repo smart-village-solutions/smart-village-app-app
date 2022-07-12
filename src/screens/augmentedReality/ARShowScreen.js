@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import {
   Viro3DObject,
@@ -9,13 +9,14 @@ import {
 } from '@viro-community/react-viro';
 
 import { LoadingSpinner } from '../../components';
-import { colors, Icon } from '../../config';
+import { colors, Icon, normalize } from '../../config';
 
 export const ARShowScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   const data = route?.params?.data ?? [];
   const [object, setObject] = useState();
   const index = route?.params?.index;
+  const arSceneRef = useRef();
 
   useEffect(() => {
     parser();
@@ -28,11 +29,23 @@ export const ARShowScreen = ({ navigation, route }) => {
     setIsLoading(false);
   };
 
+  const takeScreenshot = useCallback(async () => {
+    const fileName = 'AugmentedReality_' + Date.now().toString();
+
+    try {
+      await arSceneRef.current._takeScreenshot(fileName, true);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }, []);
+
+
   if (isLoading || !object || !object.vrx) return <LoadingSpinner loading />;
 
   return (
     <>
       <ViroARSceneNavigator
+        ref={arSceneRef}
         autofocus
         initialScene={{
           scene: AugmentedRealityView
@@ -40,8 +53,9 @@ export const ARShowScreen = ({ navigation, route }) => {
         viroAppProps={{ object }}
         style={styles.arSceneNavigator}
       />
+
       <TouchableOpacity
-        style={styles.backButton}
+        style={[styles.backButton, styles.generalButtonStyle]}
         onPress={() => {
           /*
           to solve the Android crash problem, you must first remove the 3D object from the screen. 
@@ -53,6 +67,15 @@ export const ARShowScreen = ({ navigation, route }) => {
       >
         <Icon.Close color={colors.surface} />
       </TouchableOpacity>
+
+
+      <TouchableOpacity
+        style={[styles.generalButtonStyle, styles.screenShotButton]}
+        onPress={takeScreenshot}
+      >
+        <Icon.NamedIcon name="camera" color={colors.darkText} size={normalize(30)} />
+      </TouchableOpacity>
+
     </>
   );
 };
@@ -145,15 +168,22 @@ var styles = StyleSheet.create({
     flex: 1
   },
   backButton: {
+    padding: 5,
+    right: 10,
+    top: 100
+  },
+  generalButtonStyle: {
     alignItems: 'center',
     backgroundColor: colors.gray60,
     borderRadius: 50,
     justifyContent: 'center',
-    padding: 5,
     position: 'absolute',
-    right: 10,
-    top: 100,
     zIndex: 1
+  },
+  screenShotButton: {
+    bottom: 100,
+    padding: 15,
+    right: 10
   }
 });
 
