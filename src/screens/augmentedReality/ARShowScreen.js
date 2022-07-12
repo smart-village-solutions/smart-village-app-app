@@ -13,6 +13,7 @@ import { colors, Icon, normalize } from '../../config';
 
 export const ARShowScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isVideoRecording, setIsVideoRecording] = useState(false);
   const data = route?.params?.data ?? [];
   const [object, setObject] = useState();
   const index = route?.params?.index;
@@ -39,6 +40,24 @@ export const ARShowScreen = ({ navigation, route }) => {
     }
   }, []);
 
+  const screenVideoRecording = async () => {
+    const fileName = 'AugmentedReality_' + Date.now().toString();
+
+    setIsVideoRecording(!isVideoRecording);
+
+    if (!isVideoRecording) {
+      arSceneRef.current._startVideoRecording(fileName, true, (error) => alert(error));
+    } else {
+      const { success } = await arSceneRef.current._stopVideoRecording();
+
+      if (success) {
+        Alert.alert(
+          'Hinweis',
+          'Die Videoaufzeichnung ist erfolgreich. Sie können das von Ihnen aufgenommene Video in der Galerie-Anwendung sehen.'
+        );
+      }
+    }
+  };
 
   if (isLoading || !object || !object.vrx) return <LoadingSpinner loading />;
 
@@ -68,6 +87,16 @@ export const ARShowScreen = ({ navigation, route }) => {
         <Icon.Close color={colors.surface} />
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={[styles.generalButtonStyle, styles.screenRecording]}
+        onPress={screenVideoRecording}
+      >
+        {isVideoRecording ? (
+          <Icon.NamedIcon name="stop-circle" color={colors.error} size={normalize(20)} />
+        ) : (
+          <Icon.NamedIcon name="videocam" color={colors.error} size={normalize(20)} />
+        )}
+      </TouchableOpacity>
 
       <TouchableOpacity
         style={[styles.generalButtonStyle, styles.screenShotButton]}
@@ -179,6 +208,11 @@ var styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     zIndex: 1
+  },
+  screenRecording: {
+    bottom: 200,
+    padding: 15,
+    right: 10
   },
   screenShotButton: {
     bottom: 100,
