@@ -50,6 +50,14 @@
       "translucent": true,
       "backgroundColor": "#00000000"
     },
-    "plugins": ["sentry-expo"]
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "microphonePermission": false
+        }
+      ],
+      "sentry-expo"
+    ]
   }
 }
