@@ -1,15 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import {
   Viro3DObject,
   ViroAmbientLight,
   ViroARScene,
-  ViroARSceneNavigator,
-  ViroMaterials
+  ViroARSceneNavigator
 } from '@viro-community/react-viro';
 
-import { LoadingSpinner, Touchable } from '../../components';
+import { LoadingSpinner } from '../../components';
 import { colors, Icon } from '../../config';
 
 export const ARShowScreen = ({ navigation, route }) => {
@@ -32,18 +31,29 @@ export const ARShowScreen = ({ navigation, route }) => {
   if (isLoading || !object || !object.vrx) return <LoadingSpinner loading />;
 
   return (
-    <View style={styles.arSceneNavigator}>
+    <>
       <ViroARSceneNavigator
+        autofocus
         initialScene={{
           scene: AugmentedRealityView
         }}
         viroAppProps={{ object }}
         style={styles.arSceneNavigator}
       />
-      <Touchable style={styles.backButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => {
+          /*
+          to solve the Android crash problem, you must first remove the 3D object from the screen. 
+          then navigation can be done.
+          */
+          setObject();
+          navigation.goBack();
+        }}
+      >
         <Icon.Close color={colors.surface} />
-      </Touchable>
-    </View>
+      </TouchableOpacity>
+    </>
   );
 };
 
@@ -52,10 +62,6 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
   const [position, setPosition] = useState([0, -1, -5]);
 
   const { object } = sceneNavigator.viroAppProps;
-
-  ViroMaterials.createMaterials({
-    SVA: { diffuseTexture: { uri: object.png } }
-  });
 
   const moveObject = (newPosition) => {
     setPosition(newPosition);
@@ -87,7 +93,7 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
 
       <Viro3DObject
         source={{ uri: object.vrx }}
-        resources={['SVA']}
+        resources={[{ uri: object.png }]}
         type="VRX"
         position={position}
         scale={[0.02, 0.02, 0.02]}
