@@ -4,8 +4,8 @@
   },
   "build": {
     "production": {
-      "node": "14.18.1",
-      "yarn": "1.22.4",
+      "node": "14.20.0",
+      "yarn": "1.22.19",
       "releaseChannel": "production"
     },
     "preview": {
