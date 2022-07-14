@@ -9,7 +9,7 @@ import {
 } from '@viro-community/react-viro';
 
 import { LoadingSpinner } from '../../components';
-import { colors, Icon, normalize } from '../../config';
+import { colors, Icon, normalize, texts } from '../../config';
 
 export const ARShowScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -50,10 +50,10 @@ export const ARShowScreen = ({ navigation, route }) => {
     } else {
       const { success } = await arSceneRef.current._stopVideoRecording();
 
-      if (success) {
+      if (!success) {
         Alert.alert(
-          'Hinweis',
-          'Die Videoaufzeichnung ist erfolgreich. Sie können das von Ihnen aufgenommene Video in der Galerie-Anwendung sehen.'
+          texts.augmentedReality.modalHiddenAlertTitle,
+          texts.augmentedReality.arShowScreen.screenRecordingError
         );
       }
     }
@@ -80,6 +80,12 @@ export const ARShowScreen = ({ navigation, route }) => {
           to solve the Android crash problem, you must first remove the 3D object from the screen. 
           then navigation can be done.
           */
+          if (isVideoRecording) {
+            return Alert.alert(
+              texts.augmentedReality.modalHiddenAlertTitle,
+              texts.augmentedReality.arShowScreen.backNavigationErrorOnScreenRecord
+            );
+          }
           setObject();
           navigation.goBack();
         }}
