@@ -92,7 +92,7 @@ export const ARShowScreen = ({ navigation, route }) => {
         onPress={screenVideoRecording}
       >
         {isVideoRecording ? (
-          <Icon.NamedIcon name="stop-circle" color={colors.error} size={normalize(20)} />
+          <Icon.NamedIcon name="stop" color={colors.error} size={normalize(20)} />
         ) : (
           <Icon.NamedIcon name="videocam" color={colors.error} size={normalize(20)} />
         )}
@@ -210,9 +210,9 @@ var styles = StyleSheet.create({
     zIndex: 1
   },
   screenRecording: {
-    bottom: 200,
-    padding: 15,
-    right: 10
+    bottom: normalize(120),
+    padding: normalize(15),
+    right: normalize(10)
   },
   screenShotButton: {
     bottom: 100,
