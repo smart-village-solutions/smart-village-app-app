@@ -39,7 +39,6 @@ export const ARShowScreen = ({ navigation, route }) => {
     }
   }, []);
 
-
   if (isLoading || !object || !object.vrx) return <LoadingSpinner loading />;
 
   return (
@@ -68,14 +67,12 @@ export const ARShowScreen = ({ navigation, route }) => {
         <Icon.Close color={colors.surface} />
       </TouchableOpacity>
 
-
       <TouchableOpacity
         style={[styles.generalButtonStyle, styles.screenShotButton]}
         onPress={takeScreenshot}
       >
         <Icon.NamedIcon name="camera" color={colors.darkText} size={normalize(30)} />
       </TouchableOpacity>
-
     </>
   );
 };
@@ -168,9 +165,9 @@ var styles = StyleSheet.create({
     flex: 1
   },
   backButton: {
-    padding: 5,
-    right: 10,
-    top: 100
+    padding: normalize(5),
+    right: normalize(10),
+    top: normalize(50)
   },
   generalButtonStyle: {
     alignItems: 'center',
@@ -181,9 +178,9 @@ var styles = StyleSheet.create({
     zIndex: 1
   },
   screenShotButton: {
-    bottom: 100,
-    padding: 15,
-    right: 10
+    bottom: normalize(40),
+    padding: normalize(15),
+    right: normalize(10)
   }
 });
 
