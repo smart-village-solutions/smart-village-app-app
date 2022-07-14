@@ -1,18 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-import { consts, device, Icon, normalize, texts } from '../../config';
+import { consts, device, texts } from '../../config';
 import { checkDownloadedData } from '../../helpers';
 import { useStaticContent } from '../../hooks';
-import { ScreenName } from '../../types';
 import { Button } from '../Button';
-import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Touchable } from '../Touchable';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
+import { WhatIsARButton } from './WhatIsARButton';
 
 export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -58,16 +56,8 @@ export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
 
   return (
     <>
-      <Wrapper>
-        <Touchable
-          onPress={() => navigation.navigate(ScreenName.ARInfo, { data, isLoading, refetch })}
-        >
-          <WrapperRow spaceBetween>
-            <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
-            <Icon.ArrowRight size={normalize(20)} />
-          </WrapperRow>
-        </Touchable>
-      </Wrapper>
+      <WhatIsARButton {...{ data, isLoading, navigation, refetch }} />
+
       <Wrapper>
         <Button
           onPress={() => setIsModalVisible(!isModalVisible)}

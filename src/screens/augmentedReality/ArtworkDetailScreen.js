@@ -9,14 +9,12 @@ import {
   HiddenModalAlert,
   HtmlView,
   LoadingSpinner,
-  RegularText,
   SafeAreaViewFlex,
-  Touchable,
+  WhatIsARButton,
   Wrapper,
-  WrapperRow,
   WrapperWithOrientation
 } from '../../components';
-import { Icon, normalize, texts } from '../../config';
+import { texts } from '../../config';
 import { checkDownloadedData, downloadObject, DOWNLOAD_TYPE } from '../../helpers';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
 import { ScreenName } from '../../types';
@@ -80,16 +78,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
             <HtmlView html={artworkDetail} />
           </Wrapper>
 
-          <Wrapper>
-            <Touchable
-              onPress={() => navigation.navigate(ScreenName.ARInfo, { data, isLoading, refetch })}
-            >
-              <WrapperRow spaceBetween>
-                <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
-                <Icon.ArrowRight size={normalize(20)} />
-              </WrapperRow>
-            </Touchable>
-          </Wrapper>
+          <WhatIsARButton {...{ data, isLoading, navigation, refetch }} />
 
           <Wrapper>
             <Button
