@@ -12,7 +12,7 @@ import { LoadingSpinner } from '../../components';
 import { colors, Icon, normalize } from '../../config';
 
 export const ARShowScreen = ({ navigation, route }) => {
-  const [startAnimation, setStartAnimation] = useState(false);
+  const [isStartAnimation, setIsStartAnimation] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isVideoRecording, setIsVideoRecording] = useState(false);
   const data = route?.params?.data ?? [];
@@ -70,7 +70,7 @@ export const ARShowScreen = ({ navigation, route }) => {
         initialScene={{
           scene: AugmentedRealityView
         }}
-        viroAppProps={{ object, startAnimation }}
+        viroAppProps={{ object, isStartAnimation }}
         style={styles.arSceneNavigator}
       />
 
@@ -108,12 +108,12 @@ export const ARShowScreen = ({ navigation, route }) => {
 
       <TouchableOpacity
         style={[styles.animationButton, styles.generalButtonStyle]}
-        onPress={() => setStartAnimation(!startAnimation)}
+        onPress={() => setIsStartAnimation(!isStartAnimation)}
       >
-        {startAnimation ? (
-          <Icon.NamedIcon name="stop" color={colors.primary} size={normalize(40)} />
+        {isStartAnimation ? (
+          <Icon.NamedIcon name="pause" color={colors.primary} size={normalize(30)} />
         ) : (
-          <Icon.NamedIcon name="play" color={colors.primary} size={normalize(40)} />
+          <Icon.NamedIcon name="play" color={colors.primary} size={normalize(30)} />
         )}
       </TouchableOpacity>
     </>
@@ -124,8 +124,7 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
   const [rotation, setRotation] = useState([0, 0, 0]);
   const [position, setPosition] = useState([0, -1, -5]);
 
-  const { object, startAnimation } = sceneNavigator.viroAppProps;
-
+  const { object, isStartAnimation } = sceneNavigator.viroAppProps;
 
   const moveObject = (newPosition) => {
     setPosition(newPosition);
@@ -170,7 +169,7 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
         animation={{
           loop: true,
           name: object.animationName,
-          run: startAnimation
+          run: isStartAnimation
         }}
       />
     </ViroARScene>
@@ -216,8 +215,8 @@ const objectParser = async ({ item, setObject, onPress }) => {
 var styles = StyleSheet.create({
   animationButton: {
     alignSelf: 'center',
-    bottom: 100,
-    padding: 12
+    bottom: normalize(40),
+    padding: normalize(15)
   },
   arSceneNavigator: {
     flex: 1
