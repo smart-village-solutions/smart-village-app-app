@@ -14,8 +14,7 @@ export const ARShowScreen = ({ navigation, route }) => {
   }, []);
 
   const parser = async () => {
-    await objectParser({ item: data[index], setObject });
-    setIsLoading(false);
+    await objectParser({ item: data?.[index], setObject, setIsLoading });
   };
 
   if (isLoading || !object) return <LoadingSpinner loading />;
@@ -28,22 +27,15 @@ export const ARShowScreen = ({ navigation, route }) => {
   );
 };
 
-const objectParser = async ({ item, setObject }) => {
+const objectParser = async ({ item, setObject, setIsLoading }) => {
   let parsedObject = {};
 
-  item.localUris?.find((item) => {
-    if (item.type === 'vrx') {
-      parsedObject.vrx = item.uri;
-    }
-    if (item.type === 'png') {
-      parsedObject.png = item.uri;
-    }
-    if (item.type === 'mp3') {
-      parsedObject.mp3 = item.uri;
-    }
+  item?.localUris?.forEach((item) => {
+    parsedObject[item.type] = item.uri;
   });
 
   setObject(parsedObject);
+  setIsLoading(false);
 };
 
 ARShowScreen.propTypes = {
