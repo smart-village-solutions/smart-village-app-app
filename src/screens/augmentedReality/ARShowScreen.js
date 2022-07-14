@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
   Viro3DObject,
   ViroAmbientLight,
@@ -9,10 +9,11 @@ import {
 } from '@viro-community/react-viro';
 
 import { LoadingSpinner } from '../../components';
-import { colors, Icon } from '../../config';
+import { colors, Icon, texts } from '../../config';
 
 export const ARShowScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [isObjectLoading, setIsObjectLoading] = useState(true);
   const data = route?.params?.data ?? [];
   const [object, setObject] = useState();
   const index = route?.params?.index;
@@ -37,7 +38,7 @@ export const ARShowScreen = ({ navigation, route }) => {
         initialScene={{
           scene: AugmentedRealityView
         }}
-        viroAppProps={{ object }}
+        viroAppProps={{ object, setIsObjectLoading }}
         style={styles.arSceneNavigator}
       />
       <TouchableOpacity
@@ -53,6 +54,12 @@ export const ARShowScreen = ({ navigation, route }) => {
       >
         <Icon.Close color={colors.surface} />
       </TouchableOpacity>
+
+      {isObjectLoading && (
+        <View style={styles.objectLoadingIndicatorComponent}>
+          <LoadingSpinner loading />
+        </View>
+      )}
     </>
   );
 };
@@ -61,7 +68,7 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
   const [rotation, setRotation] = useState([0, 0, 0]);
   const [position, setPosition] = useState([0, -1, -5]);
 
-  const { object } = sceneNavigator.viroAppProps;
+  const { object, setIsObjectLoading } = sceneNavigator.viroAppProps;
 
   const moveObject = (newPosition) => {
     setPosition(newPosition);
@@ -77,16 +84,6 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
     }
   };
 
-  const handleLoadStart = () => {
-    console.warn('OBJ loading has started');
-  };
-  const handleLoadEnd = () => {
-    console.warn('OBJ loading has finished');
-  };
-  const handleError = (event) => {
-    console.warn('OBJ loading failed with error: ' + event.nativeEvent.error);
-  };
-
   return (
     <ViroARScene dragType="FixedToWorld">
       <ViroAmbientLight color={'#fff'} />
@@ -100,9 +97,9 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
         rotation={rotation}
         onDrag={moveObject}
         onRotate={rotateObject}
-        onLoadStart={handleLoadStart}
-        onLoadEnd={handleLoadEnd}
-        onError={(event) => handleError(event)}
+        onLoadStart={() => setIsObjectLoading(true)}
+        onLoadEnd={() => setIsObjectLoading(false)}
+        onError={() => alert(texts.augmentedReality.arShowScreen.objectLoadErrorAlert)}
       />
     </ViroARScene>
   );
@@ -153,6 +150,12 @@ var styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     top: 100,
+    zIndex: 1
+  },
+  objectLoadingIndicatorComponent: {
+    height: '100%',
+    position: 'absolute',
+    width: '100%',
     zIndex: 1
   }
 });

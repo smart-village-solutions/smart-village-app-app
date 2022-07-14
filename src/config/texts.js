@@ -11,6 +11,10 @@ export const texts = {
         'Es gibt ein Problem mit der Verbindung. Bitte versuchen Sie es später noch einmal.',
       settingsButton: 'AR-Einstellungen'
     },
+    arShowScreen: {
+      objectLoadErrorAlert:
+        'Beim Laden des 3D-Objekts ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.'
+    },
     artworkDetailScreen: {
       downloadAndLookAtArt: 'Downloaden & AR Kunst gucken',
       lookAtArt: 'AR Kunst gucken',
