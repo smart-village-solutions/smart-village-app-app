@@ -11,6 +11,12 @@ export const texts = {
         'Es gibt ein Problem mit der Verbindung. Bitte versuchen Sie es später noch einmal.',
       settingsButton: 'AR-Einstellungen'
     },
+    arShowScreen: {
+      backNavigationErrorOnScreenRecord:
+        'Bitte beende die Videoaufzeichnung, bevor Sie zurückkehren.',
+      screenRecordingCompleted: 'Die Aufnahme wurde erfolgreich in Ihrer Galerie gespeichert.',
+      screenRecordingError: 'Bei der Bildschirmaufzeichnung ist ein Fehler aufgetreten.'
+    },
     artworkDetailScreen: {
       downloadAndLookAtArt: 'Downloaden & AR Kunst gucken',
       lookAtArt: 'AR Kunst gucken',

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { Alert, Animated, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import {
   Viro3DObject,
   ViroAmbientLight,
@@ -9,17 +9,16 @@ import {
 } from '@viro-community/react-viro';
 
 import { LoadingSpinner } from '../../components';
-import { colors, Icon, normalize } from '../../config';
+import { colors, Icon, normalize, texts } from '../../config';
 
 export const ARShowScreen = ({ navigation, route }) => {
+  const [isStartAnimation, setIsStartAnimation] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [object, setObject] = useState();
-
+  const [isVideoRecording, setIsVideoRecording] = useState(false);
   const data = route?.params?.data ?? [];
+  const [object, setObject] = useState();
   const index = route?.params?.index;
-
   const arSceneRef = useRef();
-  const screenshotEffectOpacityRef = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     parser();
@@ -37,11 +36,34 @@ export const ARShowScreen = ({ navigation, route }) => {
 
     try {
       await arSceneRef.current._takeScreenshot(fileName, true);
-      screenshotFlashEffect({ screenshotEffectOpacityRef });
     } catch (error) {
       console.error(error.message);
     }
   }, []);
+
+  const screenVideoRecording = async () => {
+    const fileName = 'AugmentedReality_' + Date.now().toString();
+
+    setIsVideoRecording(!isVideoRecording);
+
+    if (!isVideoRecording) {
+      arSceneRef.current._startVideoRecording(fileName, true, (error) => alert(error));
+    } else {
+      const { success } = await arSceneRef.current._stopVideoRecording();
+
+      if (success) {
+        Alert.alert(
+          texts.augmentedReality.modalHiddenAlertTitle,
+          texts.augmentedReality.arShowScreen.screenRecordingCompleted
+        );
+      } else {
+        Alert.alert(
+          texts.augmentedReality.modalHiddenAlertTitle,
+          texts.augmentedReality.arShowScreen.screenRecordingError
+        );
+      }
+    }
+  };
 
   if (isLoading || !object || !object.vrx) return <LoadingSpinner loading />;
 
@@ -53,7 +75,7 @@ export const ARShowScreen = ({ navigation, route }) => {
         initialScene={{
           scene: AugmentedRealityView
         }}
-        viroAppProps={{ object }}
+        viroAppProps={{ object, isStartAnimation }}
         style={styles.arSceneNavigator}
       />
 
@@ -64,11 +86,38 @@ export const ARShowScreen = ({ navigation, route }) => {
           to solve the Android crash problem, you must first remove the 3D object from the screen. 
           then navigation can be done.
           */
+          if (isVideoRecording) {
+            return Alert.alert(
+              texts.augmentedReality.modalHiddenAlertTitle,
+              texts.augmentedReality.arShowScreen.backNavigationErrorOnScreenRecord
+            );
+          }
           setObject();
           navigation.goBack();
         }}
       >
         <Icon.Close color={colors.surface} />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.generalButtonStyle, styles.screenRecording, styles.opacity]}
+        onPress={screenVideoRecording}
+      >
+        {isVideoRecording ? (
+          <Icon.NamedIcon
+            name="stop"
+            color={colors.error}
+            size={normalize(30)}
+            style={styles.opacity}
+          />
+        ) : (
+          <Icon.NamedIcon
+            name="videocam"
+            color={colors.error}
+            size={normalize(30)}
+            style={styles.opacity}
+          />
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -83,9 +132,16 @@ export const ARShowScreen = ({ navigation, route }) => {
         />
       </TouchableOpacity>
 
-      <Animated.View
-        style={[styles.flashEffectContainer, { opacity: screenshotEffectOpacityRef }]}
-      />
+      <TouchableOpacity
+        style={[styles.animationButton, styles.generalButtonStyle]}
+        onPress={() => setIsStartAnimation(!isStartAnimation)}
+      >
+        {isStartAnimation ? (
+          <Icon.NamedIcon name="pause" color={colors.primary} size={normalize(30)} />
+        ) : (
+          <Icon.NamedIcon name="play" color={colors.primary} size={normalize(30)} />
+        )}
+      </TouchableOpacity>
     </>
   );
 };
@@ -94,7 +150,7 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
   const [rotation, setRotation] = useState([0, 0, 0]);
   const [position, setPosition] = useState([0, -1, -5]);
 
-  const { object } = sceneNavigator.viroAppProps;
+  const { object, isStartAnimation } = sceneNavigator.viroAppProps;
 
   const moveObject = (newPosition) => {
     setPosition(newPosition);
@@ -136,6 +192,11 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
         onLoadStart={handleLoadStart}
         onLoadEnd={handleLoadEnd}
         onError={(event) => handleError(event)}
+        animation={{
+          loop: true,
+          name: object.animationName,
+          run: isStartAnimation
+        }}
       />
     </ViroARScene>
   );
@@ -143,6 +204,10 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
 
 const objectParser = async ({ item, setObject, onPress }) => {
   let parsedObject = {};
+
+  if (item.animationName) {
+    parsedObject.animationName = item.animationName;
+  }
 
   item.localUris?.find((item) => {
     if (item.type === 'vrx') {
@@ -173,39 +238,23 @@ const objectParser = async ({ item, setObject, onPress }) => {
   setObject(parsedObject);
 };
 
-const screenshotFlashEffect = ({ screenshotEffectOpacityRef }) => {
-  Animated.parallel([
-    Animated.timing(screenshotEffectOpacityRef, {
-      duration: 0,
-      toValue: 1,
-      useNativeDriver: false
-    }),
-    Animated.timing(screenshotEffectOpacityRef, {
-      duration: 500,
-      toValue: 0,
-      useNativeDriver: false
-    })
-  ]).start();
-};
-
 var styles = StyleSheet.create({
+  animationButton: {
+    backgroundColor: colors.surface,
+    alignSelf: 'center',
+    bottom: normalize(40),
+    padding: normalize(15)
+  },
   arSceneNavigator: {
     flex: 1
   },
   backButton: {
-    padding: normalize(5),
-    right: normalize(10),
-    top: normalize(50)
-  },
-  flashEffectContainer: {
-    backgroundColor: colors.surface,
-    height: '100%',
-    position: 'absolute',
-    width: '100%'
+    padding: 5,
+    right: 10,
+    top: 100
   },
   generalButtonStyle: {
     alignItems: 'center',
-    backgroundColor: colors.gray60,
     borderRadius: 50,
     justifyContent: 'center',
     position: 'absolute',
@@ -214,11 +263,16 @@ var styles = StyleSheet.create({
   opacity: {
     opacity: 0.6
   },
-  screenShotButton: {
+  screenRecording: {
     backgroundColor: colors.surface,
-    bottom: normalize(40),
+    bottom: normalize(120),
     padding: normalize(15),
     right: normalize(10)
+  },
+  screenShotButton: {
+    bottom: 100,
+    padding: 15,
+    right: 10
   }
 });
 
