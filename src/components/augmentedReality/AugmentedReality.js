@@ -1,29 +1,27 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-import { consts, device, Icon, normalize, texts } from '../../config';
+import { consts, device, texts } from '../../config';
 import { checkDownloadedData } from '../../helpers';
 import { useStaticContent } from '../../hooks';
-import { ScreenName } from '../../types';
 import { Button } from '../Button';
-import { RegularText } from '../Text';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Touchable } from '../Touchable';
-import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
+import { WhatIsARButton } from './WhatIsARButton';
 
-export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const { data: staticData, loading, refetch } = useStaticContent({
-    name: 'arDownloadableDataList',
+export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
+  const { data: staticData, error, loading, refetch } = useStaticContent({
+    name: `arDownloadableDataList-${tourID}`,
     type: 'json'
   });
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(loading);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     setData(staticData);
@@ -38,6 +36,10 @@ export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
     await checkDownloadedData({ data, setData });
     setIsLoading(false);
   };
+
+  if (error) return null;
+
+  if (isLoading || !staticData) return <LoadingSpinner loading />;
 
   const a11yText = consts.a11yLabel;
 
@@ -58,40 +60,30 @@ export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
 
   return (
     <>
-      <WrapperWithOrientation>
-        <Wrapper>
-          <Touchable
-            onPress={() => navigation.navigate(ScreenName.ARInfo, { data, isLoading, refetch })}
-          >
-            <WrapperRow spaceBetween>
-              <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
-              <Icon.ArrowRight size={normalize(20)} />
-            </WrapperRow>
-          </Touchable>
-        </Wrapper>
-        <Wrapper>
-          <Button
-            onPress={() => setIsModalVisible(!isModalVisible)}
-            invert
-            title={texts.augmentedReality.loadingArtworks}
-          />
-        </Wrapper>
-        <TitleContainer>
-          <Title accessibilityLabel={`(${texts.augmentedReality.worksOfArt}) ${a11yText.heading}`}>
-            {texts.augmentedReality.worksOfArt}
-          </Title>
-        </TitleContainer>
-        {device.platform === 'ios' && <TitleShadow />}
+      <WhatIsARButton {...{ data, isLoading, navigation, refetch }} />
 
-        <ARObjectList
-          data={data}
-          setData={setData}
-          isLoading={isLoading}
-          navigation={navigation}
-          refetch={refetch}
-          showOnDetailPage
+      <Wrapper>
+        <Button
+          onPress={() => setIsModalVisible(!isModalVisible)}
+          invert
+          title={texts.augmentedReality.loadingArtworks}
         />
-      </WrapperWithOrientation>
+      </Wrapper>
+      <TitleContainer>
+        <Title accessibilityLabel={`(${texts.augmentedReality.worksOfArt}) ${a11yText.heading}`}>
+          {texts.augmentedReality.worksOfArt}
+        </Title>
+      </TitleContainer>
+      {device.platform === 'ios' && <TitleShadow />}
+
+      <ARObjectList
+        data={data}
+        setData={setData}
+        isLoading={isLoading}
+        navigation={navigation}
+        refetch={refetch}
+        showOnDetailPage
+      />
 
       <ARModal
         data={data}
@@ -109,5 +101,6 @@ export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
 
 AugmentedReality.propTypes = {
   navigation: PropTypes.object,
-  onSettingsScreen: PropTypes.bool
+  onSettingsScreen: PropTypes.bool,
+  tourID: PropTypes.string
 };
