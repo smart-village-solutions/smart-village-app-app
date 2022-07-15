@@ -121,10 +121,15 @@ export const ARShowScreen = ({ navigation, route }) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.generalButtonStyle, styles.screenShotButton]}
+        style={[styles.generalButtonStyle, styles.screenShotButton, styles.opacity]}
         onPress={takeScreenshot}
       >
-        <Icon.NamedIcon name="camera" color={colors.darkText} size={normalize(30)} />
+        <Icon.NamedIcon
+          name="camera"
+          color={colors.darkText}
+          size={normalize(30)}
+          style={styles.opacity}
+        />
       </TouchableOpacity>
 
       <TouchableOpacity
