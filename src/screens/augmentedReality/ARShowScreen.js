@@ -99,9 +99,19 @@ export const ARShowScreen = ({ navigation, route }) => {
         onPress={screenVideoRecording}
       >
         {isVideoRecording ? (
-          <Icon.NamedIcon name="stop" color={colors.error} size={normalize(20)} />
+          <Icon.NamedIcon
+            name="stop"
+            color={colors.error}
+            size={normalize(30)}
+            style={styles.opacity}
+          />
         ) : (
-          <Icon.NamedIcon name="videocam" color={colors.error} size={normalize(20)} />
+          <Icon.NamedIcon
+            name="videocam"
+            color={colors.error}
+            size={normalize(30)}
+            style={styles.opacity}
+          />
         )}
       </TouchableOpacity>
 
@@ -220,6 +230,7 @@ const objectParser = async ({ item, setObject, onPress }) => {
 
 var styles = StyleSheet.create({
   animationButton: {
+    backgroundColor: colors.surface,
     alignSelf: 'center',
     bottom: normalize(40),
     padding: normalize(15)
@@ -234,13 +245,16 @@ var styles = StyleSheet.create({
   },
   generalButtonStyle: {
     alignItems: 'center',
-    backgroundColor: colors.gray60,
     borderRadius: 50,
     justifyContent: 'center',
     position: 'absolute',
     zIndex: 1
   },
+  opacity: {
+    opacity: 0.6
+  },
   screenRecording: {
+    backgroundColor: colors.borderRgba,
     bottom: normalize(120),
     padding: normalize(15),
     right: normalize(10)
