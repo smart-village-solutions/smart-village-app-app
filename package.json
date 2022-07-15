@@ -140,6 +140,7 @@
     "typescript": "~4.3.5"
   },
   "resolutions": {
+    "@types/react": "~17.0.21",
     "markdown-it": "^12.3.2"
   }
 }
