@@ -12,8 +12,12 @@ export const texts = {
       settingsButton: 'AR-Einstellungen'
     },
     arShowScreen: {
+      backNavigationErrorOnScreenRecord:
+        'Bitte beende die Videoaufzeichnung, bevor Sie zurückkehren.',
       objectLoadErrorAlert:
-        'Beim Laden des 3D-Objekts ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.'
+        'Beim Laden des 3D-Objekts ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+      screenRecordingCompleted: 'Die Aufnahme wurde erfolgreich in Ihrer Galerie gespeichert.',
+      screenRecordingError: 'Bei der Bildschirmaufzeichnung ist ein Fehler aufgetreten.'
     },
     artworkDetailScreen: {
       downloadAndLookAtArt: 'Downloaden & AR Kunst gucken',
