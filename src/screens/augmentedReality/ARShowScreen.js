@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, Animated, StyleSheet, TouchableOpacity } from 'react-native';
 import {
   Viro3DObject,
   ViroAmbientLight,
@@ -15,10 +15,13 @@ export const ARShowScreen = ({ navigation, route }) => {
   const [isStartAnimation, setIsStartAnimation] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isVideoRecording, setIsVideoRecording] = useState(false);
-  const data = route?.params?.data ?? [];
   const [object, setObject] = useState();
+
+  const data = route?.params?.data ?? [];
   const index = route?.params?.index;
+
   const arSceneRef = useRef();
+  const screenshotEffectOpacityRef = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     parser();
@@ -36,6 +39,7 @@ export const ARShowScreen = ({ navigation, route }) => {
 
     try {
       await arSceneRef.current._takeScreenshot(fileName, true);
+      screenshotFlashEffect({ screenshotEffectOpacityRef });
     } catch (error) {
       console.error(error.message);
     }
@@ -122,6 +126,10 @@ export const ARShowScreen = ({ navigation, route }) => {
           <Icon.NamedIcon name="play" color={colors.primary} size={normalize(30)} />
         )}
       </TouchableOpacity>
+
+      <Animated.View
+        style={[styles.flashEffectContainer, { opacity: screenshotEffectOpacityRef }]}
+      />
     </>
   );
 };
@@ -218,6 +226,21 @@ const objectParser = async ({ item, setObject, onPress }) => {
   setObject(parsedObject);
 };
 
+const screenshotFlashEffect = ({ screenshotEffectOpacityRef }) => {
+  Animated.parallel([
+    Animated.timing(screenshotEffectOpacityRef, {
+      duration: 0,
+      toValue: 1,
+      useNativeDriver: false
+    }),
+    Animated.timing(screenshotEffectOpacityRef, {
+      duration: 500,
+      toValue: 0,
+      useNativeDriver: false
+    })
+  ]).start();
+};
+
 var styles = StyleSheet.create({
   animationButton: {
     alignSelf: 'center',
@@ -228,9 +251,15 @@ var styles = StyleSheet.create({
     flex: 1
   },
   backButton: {
-    padding: 5,
-    right: 10,
-    top: 100
+    padding: normalize(5),
+    right: normalize(10),
+    top: normalize(50)
+  },
+  flashEffectContainer: {
+    backgroundColor: colors.surface,
+    height: '100%',
+    position: 'absolute',
+    width: '100%'
   },
   generalButtonStyle: {
     alignItems: 'center',
@@ -246,9 +275,9 @@ var styles = StyleSheet.create({
     right: normalize(10)
   },
   screenShotButton: {
-    bottom: 100,
-    padding: 15,
-    right: 10
+    bottom: normalize(40),
+    padding: normalize(15),
+    right: normalize(10)
   }
 });
 
