@@ -72,10 +72,15 @@ export const ARShowScreen = ({ navigation, route }) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.generalButtonStyle, styles.screenShotButton]}
+        style={[styles.generalButtonStyle, styles.screenShotButton, styles.opacity]}
         onPress={takeScreenshot}
       >
-        <Icon.NamedIcon name="camera" color={colors.darkText} size={normalize(30)} />
+        <Icon.NamedIcon
+          name="camera"
+          color={colors.darkText}
+          size={normalize(30)}
+          style={styles.opacity}
+        />
       </TouchableOpacity>
 
       <Animated.View
@@ -206,7 +211,11 @@ var styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 1
   },
+  opacity: {
+    opacity: 0.6
+  },
   screenShotButton: {
+    backgroundColor: colors.surface,
     bottom: normalize(40),
     padding: normalize(15),
     right: normalize(10)
