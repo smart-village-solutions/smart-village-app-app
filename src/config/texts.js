@@ -14,8 +14,7 @@ export const texts = {
     arShowScreen: {
       backNavigationErrorOnScreenRecord:
         'Bitte beende die Videoaufzeichnung, bevor Sie zurückkehren.',
-      screenRecordingCompleted:
-        'Die Videoaufzeichnung ist erfolgreich. Sie können das von Ihnen aufgenommene Video in der Galerie sehen.',
+      screenRecordingCompleted: 'Die Aufnahme wurde erfolgreich in Ihrer Galerie gespeichert.',
       screenRecordingError: 'Bei der Bildschirmaufzeichnung ist ein Fehler aufgetreten.'
     },
     artworkDetailScreen: {
