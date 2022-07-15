@@ -51,7 +51,12 @@ export const ARShowScreen = ({ navigation, route }) => {
     } else {
       const { success } = await arSceneRef.current._stopVideoRecording();
 
-      if (!success) {
+      if (success) {
+        Alert.alert(
+          texts.augmentedReality.modalHiddenAlertTitle,
+          texts.augmentedReality.arShowScreen.screenRecordingCompleted
+        );
+      } else {
         Alert.alert(
           texts.augmentedReality.modalHiddenAlertTitle,
           texts.augmentedReality.arShowScreen.screenRecordingError
