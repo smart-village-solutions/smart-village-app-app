@@ -153,24 +153,7 @@ export const ARShowScreen = ({ navigation, route }) => {
 };
 
 const AugmentedRealityView = ({ sceneNavigator }) => {
-  const [rotation, setRotation] = useState([0, 0, 0]);
-  const [position, setPosition] = useState([0, -1, -5]);
-
   const { object, isStartAnimation, setIsObjectLoading } = sceneNavigator.viroAppProps;
-
-  const moveObject = (newPosition) => {
-    setPosition(newPosition);
-  };
-
-  const rotateObject = (rotateState, rotationFactor) => {
-    let newRotation = [rotation[0], rotation[1] - rotationFactor, rotation[2]];
-
-    if (rotateState === 2) {
-      setRotation(newRotation);
-
-      return;
-    }
-  };
 
   return (
     <ViroARScene dragType="FixedToWorld">
@@ -180,11 +163,9 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
         source={{ uri: object.vrx }}
         resources={[{ uri: object.png }]}
         type="VRX"
-        position={position}
+        position={[0, -1, -5]}
         scale={[0.02, 0.02, 0.02]}
-        rotation={rotation}
-        onDrag={moveObject}
-        onRotate={rotateObject}
+        rotation={[0, 0, 0]}
         onLoadStart={() => setIsObjectLoading(true)}
         onLoadEnd={() => setIsObjectLoading(false)}
         onError={() => alert(texts.augmentedReality.arShowScreen.objectLoadErrorAlert)}
