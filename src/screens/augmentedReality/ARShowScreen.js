@@ -12,6 +12,7 @@ import { LoadingSpinner } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
 
 export const ARShowScreen = ({ navigation, route }) => {
+  const [isStartAnimation, setIsStartAnimation] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isVideoRecording, setIsVideoRecording] = useState(false);
   const data = route?.params?.data ?? [];
@@ -69,7 +70,7 @@ export const ARShowScreen = ({ navigation, route }) => {
         initialScene={{
           scene: AugmentedRealityView
         }}
-        viroAppProps={{ object }}
+        viroAppProps={{ object, isStartAnimation }}
         style={styles.arSceneNavigator}
       />
 
@@ -111,6 +112,16 @@ export const ARShowScreen = ({ navigation, route }) => {
         <Icon.NamedIcon name="camera" color={colors.darkText} size={normalize(30)} />
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={[styles.animationButton, styles.generalButtonStyle]}
+        onPress={() => setIsStartAnimation(!isStartAnimation)}
+      >
+        {isStartAnimation ? (
+          <Icon.NamedIcon name="pause" color={colors.primary} size={normalize(30)} />
+        ) : (
+          <Icon.NamedIcon name="play" color={colors.primary} size={normalize(30)} />
+        )}
+      </TouchableOpacity>
     </>
   );
 };
@@ -119,7 +130,7 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
   const [rotation, setRotation] = useState([0, 0, 0]);
   const [position, setPosition] = useState([0, -1, -5]);
 
-  const { object } = sceneNavigator.viroAppProps;
+  const { object, isStartAnimation } = sceneNavigator.viroAppProps;
 
   const moveObject = (newPosition) => {
     setPosition(newPosition);
@@ -161,6 +172,11 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
         onLoadStart={handleLoadStart}
         onLoadEnd={handleLoadEnd}
         onError={(event) => handleError(event)}
+        animation={{
+          loop: true,
+          name: object.animationName,
+          run: isStartAnimation
+        }}
       />
     </ViroARScene>
   );
@@ -168,6 +184,10 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
 
 const objectParser = async ({ item, setObject, onPress }) => {
   let parsedObject = {};
+
+  if (item.animationName) {
+    parsedObject.animationName = item.animationName;
+  }
 
   item.localUris?.find((item) => {
     if (item.type === 'vrx') {
@@ -199,6 +219,11 @@ const objectParser = async ({ item, setObject, onPress }) => {
 };
 
 var styles = StyleSheet.create({
+  animationButton: {
+    alignSelf: 'center',
+    bottom: normalize(40),
+    padding: normalize(15)
+  },
   arSceneNavigator: {
     flex: 1
   },
