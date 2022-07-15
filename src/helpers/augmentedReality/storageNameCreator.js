@@ -1,13 +1,13 @@
 import { documentDirectory } from 'expo-file-system';
 
 export const storageNameCreator = ({ dataItem, objectItem }) => {
-  const { id: objectId, title: objectTitle } = dataItem;
-  const { title, type } = objectItem;
-  const replacedObjectTitle = objectTitle.replace(/\s+/g, '');
+  const objectItemTitleWithoutSpaces = dataItem.title.replace(/\s+/g, '');
+  const dataDirectoryName = `${objectItemTitleWithoutSpaces}_${dataItem.id}`;
+  const objectName = `${objectItem.title}.${objectItem.type}`;
 
   return {
-    directoryName: documentDirectory + `${replacedObjectTitle}_${objectId}/${title}.${type}`,
-    folderName: documentDirectory + `${replacedObjectTitle}_${objectId}`,
-    storageName: `${replacedObjectTitle}_${objectId}_${title}.${type}`
+    directoryName: documentDirectory + `${dataDirectoryName}/${objectName}`,
+    folderName: documentDirectory + `${dataDirectoryName}`,
+    storageName: `${dataDirectoryName}_${objectName}`
   };
 };
