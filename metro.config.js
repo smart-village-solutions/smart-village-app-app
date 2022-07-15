@@ -16,22 +16,7 @@ module.exports = (async () => {
       })
     },
     resolver: {
-      assetExts: [
-        ...assetExts,
-        'obj',
-        'mtl',
-        'fbx',
-        'mp3',
-        'JPG',
-        'vrx',
-        'fbx',
-        'hdr',
-        'gltf',
-        'glb',
-        'bin',
-        'arobject',
-        'gif'
-      ]
+      assetExts: [...assetExts, 'JPG', 'mp3', 'mtl', 'obj', 'vrx']
     }
   };
 })();
