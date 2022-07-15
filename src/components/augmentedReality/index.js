@@ -3,3 +3,4 @@ export * from './ARObjectList';
 export * from './AugmentedReality';
 export * from './HiddenModalAlert';
 export * from './IconForDownloadType';
+export * from './WhatIsARButton';

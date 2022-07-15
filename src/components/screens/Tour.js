@@ -25,11 +25,12 @@ const { MATOMO_TRACKING } = consts;
 export const Tour = ({ data, navigation, route }) => {
   const {
     addresses,
-    category,
     categories,
+    category,
     contact,
     dataProvider,
     description,
+    id,
     lengthKm,
     mediaContents,
     operatingCompany,
@@ -97,7 +98,7 @@ export const Tour = ({ data, navigation, route }) => {
           </View>
         )}
 
-        {!!augmentedReality && <AugmentedReality navigation={navigation} />}
+        {!!augmentedReality && <AugmentedReality navigation={navigation} tourID={id} />}
 
         <OperatingCompany
           openWebScreen={openWebScreen}
