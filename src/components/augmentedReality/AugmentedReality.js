@@ -6,6 +6,7 @@ import { checkDownloadedData } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
@@ -14,16 +15,15 @@ import { Wrapper, WrapperRow } from '../Wrapper';
 import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
 
-export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const { data: staticData, loading, refetch } = useStaticContent({
-    name: 'arDownloadableDataList',
+export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
+  const { data: staticData, error, loading, refetch } = useStaticContent({
+    name: `arDownloadableDataList-${tourID}`,
     type: 'json'
   });
 
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(loading);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     setData(staticData);
@@ -38,6 +38,10 @@ export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
     await checkDownloadedData({ data, setData });
     setIsLoading(false);
   };
+
+  if (error) return null;
+
+  if (isLoading || !staticData) return <LoadingSpinner loading />;
 
   const a11yText = consts.a11yLabel;
 
@@ -107,5 +111,6 @@ export const AugmentedReality = ({ navigation, onSettingsScreen }) => {
 
 AugmentedReality.propTypes = {
   navigation: PropTypes.object,
-  onSettingsScreen: PropTypes.bool
+  onSettingsScreen: PropTypes.bool,
+  tourID: PropTypes.string
 };
