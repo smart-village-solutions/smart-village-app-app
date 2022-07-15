@@ -100,7 +100,7 @@ export const ARShowScreen = ({ navigation, route }) => {
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.generalButtonStyle, styles.screenRecording]}
+        style={[styles.generalButtonStyle, styles.screenRecording, styles.opacity]}
         onPress={screenVideoRecording}
       >
         {isVideoRecording ? (
@@ -259,7 +259,7 @@ var styles = StyleSheet.create({
     opacity: 0.6
   },
   screenRecording: {
-    backgroundColor: colors.borderRgba,
+    backgroundColor: colors.surface,
     bottom: normalize(120),
     padding: normalize(15),
     right: normalize(10)
