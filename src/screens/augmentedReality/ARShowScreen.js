@@ -201,6 +201,10 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
 const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
   let parsedObject = {};
 
+  if (item.animationName) {
+    parsedObject.animationName = item.animationName;
+  }
+
   item?.localUris?.forEach((item) => {
     parsedObject[item.type] = item.uri;
   });
