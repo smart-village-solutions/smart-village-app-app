@@ -23,12 +23,8 @@ export const ARShowScreen = ({ navigation, route }) => {
   const screenshotEffectOpacityRef = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    parser();
+    objectParser({ item: data?.[index], setObject, setIsLoading });
   }, []);
-
-  const parser = async () => {
-    await objectParser({ item: data?.[index], setObject, setIsLoading });
-  };
 
   const takeScreenshot = useCallback(async () => {
     const fileName = 'AugmentedReality_' + Date.now().toString();
