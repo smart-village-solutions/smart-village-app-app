@@ -1,0 +1,120 @@
+publiccodeYmlVersion: '0.3'
+categories:
+  - online-community
+  - application-development
+  - appointment-scheduling
+  - communications
+  - customer-service-and-support
+  - digital-citizenship
+description:
+  en:
+    features:
+      - News
+      - Events
+      - Points of interest
+      - Service links
+      - Push notifications
+      - Weather
+      - many more
+    longDescription: >-
+      The Smart Village App is an information and service app. In addition to
+      administrative services, which are made available in bundled form via the
+      app, locals and tourists can obtain information from the respective
+      municipality. For example, hiking routes are made available via the app,
+      and local news and events are published. Citizens are given the
+      opportunity to report current problems or find out about administrative
+      services via the Smart Village App, among other things. Consequently, the
+      Smart Village App contributes to improving the exchange of information in
+      rural areas. The Smart Village App was developed by municipalities for
+      municipalities and is adaptable to the individual needs of the
+      municipalities. One of the goals is to form a network of Smart Village
+      municipalities for the purpose of work sharing. The joint generation and
+      use of synergy effects from ideas and experiences of the participants
+      enables a reduction of costs. The Smart Village App is a nationwide
+      offering that has already been implemented in numerous municipalities.
+    shortDescription: >-
+      The Smart Village App is a modular app builder for municipalities and
+      cities.
+    awards:
+      - Digitale Orte im Land der Ideen 2022
+      - Theodor-Fontane-Medaille des Landes Brandenburg 2022
+  de:
+    features:
+      - Aktuelle Nachrichten
+      - Veranstaltungskalender
+      - Branchenbuch
+      - Service links
+      - Push-Nachrichten
+      - Wetter
+      - und vieles mehr
+    longDescription: >-
+      Die Smart Village App ist eine Informations- und Dienstleistungsapp. Neben
+      Verwaltungsdienstleistungen, die gebündelt über die App zur Verfügung
+      gestellt werden, erhalten Einheimische, Touristinnen und Touristen
+      Informationen aus der jeweiligen Kommune. Beispielsweise werden
+      Wanderrouten über die App zur Verfügung gestellt sowie Lokalnachrichten
+      und Veranstaltungen veröffentlicht. Bürgerinnen und Bürger erhalten über
+      die Smart Village App u. a. die Möglichkeit, aktuelle Probleme zu melden
+      oder sich über Verwaltungsdienstleistungen zu informieren. Die Smart
+      Village App leistet folglich einen Beitrag zur Verbesserung des
+      Informationsaustausches im ländlichen Raum. Die Smart Village App wurde
+      von Gemeinden für Gemeinden entwickelt und ist an die individuellen
+      Bedarfe der Kommunen anpassbar. Ziel ist u. a. die Bildung eines
+      Netzwerkes der Smart-Village-Kommunen zum Zweck der Arbeitsteilung. Die
+      gemeinsame Erzeugung und Nutzung von Synergieeffekten aus Ideen und
+      Erfahrungen der Beteiligten ermöglicht eine Kostenreduzierung. Die Smart
+      Village App ist ein bundesweites Angebot, welches bereits in zahlreichen
+      Kommunen umgesetzt wurde.
+    shortDescription: >-
+      Die Smart Village App ist ein open-source App-Baukasten für Kommunen,
+      Städte und Landkreise.
+    awards:
+      - Digitale Orte im Land der Ideen 2022
+      - Theodor-Fontane-Medaille des Landes Brandenburg 2022
+developmentStatus: stable
+intendedAudience:
+  countries:
+    - de
+  scope:
+    - culture
+    - emergency-services
+    - employment
+    - environment
+    - finance-and-economic-development
+    - government
+    - infrastructures
+    - local-authorities
+    - society
+    - sport
+    - tourism
+    - transportation
+landingURL: 'https://smart-village.app'
+legal:
+  license: GPL-3.0-or-later
+  mainCopyrightOwner: Stadt Bad Belzig
+  repoOwner: Smart Village Solutions SVS GmbH
+localisation:
+  availableLanguages:
+    - de
+  localisationReady: false
+maintenance:
+  contractors:
+    - name: Smart Village Solutions SVS GmbH
+      until: '2027-12-31'
+      website: 'https://smart-village.solutions'
+  type: contract
+name: Smart Village App
+platforms:
+  - ios
+  - android
+releaseDate: '2022-07-05'
+softwareType: standalone/mobile
+softwareVersion: 2.6.0
+url: 'https://github.com/ikuseiGmbH/smart-village-app-app'
+usedBy:
+  - Stadt Bad Belzig
+  - Stadt Herzberg/Elster
+  - Stadt Frankfurt (Oder)
+  - Landkreis Uckermark
+  - Amt Gransee und Gemeinden
+  - Gemeinde Schönefeld
