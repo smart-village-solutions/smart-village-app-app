@@ -155,6 +155,12 @@ export const ARShowScreen = ({ navigation, route }) => {
 const AugmentedRealityView = ({ sceneNavigator }) => {
   const { object, isStartAnimation, setIsObjectLoading } = sceneNavigator.viroAppProps;
 
+  // TODO: these data can be updated according to the data coming from the server when the
+  //       real 3D models arrive
+  const position = [0, -1, -5];
+  const rotation = [0, 0, 0];
+  const scale = [0.02, 0.02, 0.02];
+
   return (
     <ViroARScene dragType="FixedToWorld">
       <ViroAmbientLight color={'#fff'} />
@@ -163,9 +169,9 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
         source={{ uri: object.vrx }}
         resources={[{ uri: object.png }]}
         type="VRX"
-        position={[0, -1, -5]}
-        scale={[0.02, 0.02, 0.02]}
-        rotation={[0, 0, 0]}
+        position={position}
+        rotation={rotation}
+        scale={scale}
         onLoadStart={() => setIsObjectLoading(true)}
         onLoadEnd={() => setIsObjectLoading(false)}
         onError={() => alert(texts.augmentedReality.arShowScreen.objectLoadErrorAlert)}
