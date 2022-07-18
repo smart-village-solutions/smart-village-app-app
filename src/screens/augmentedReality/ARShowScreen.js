@@ -5,14 +5,15 @@ import {
   Viro3DObject,
   ViroAmbientLight,
   ViroARScene,
-  ViroARSceneNavigator
+  ViroARSceneNavigator,
+  ViroSound
 } from '@viro-community/react-viro';
 
 import { LoadingSpinner } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
 
 export const ARShowScreen = ({ navigation, route }) => {
-  const [isStartAnimation, setIsStartAnimation] = useState(true);
+  const [isStartAnimationAndSound, setIsStartAnimationAndSound] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isObjectLoading, setIsObjectLoading] = useState(true);
   const [isVideoRecording, setIsVideoRecording] = useState(false);
@@ -72,7 +73,13 @@ export const ARShowScreen = ({ navigation, route }) => {
         initialScene={{
           scene: AugmentedRealityView
         }}
-        viroAppProps={{ object, isStartAnimation, setIsObjectLoading }}
+        viroAppProps={{
+          isObjectLoading,
+          setIsObjectLoading,
+          isStartAnimationAndSound,
+          setIsStartAnimationAndSound,
+          object
+        }}
         style={styles.arSceneNavigator}
       />
 
@@ -136,9 +143,9 @@ export const ARShowScreen = ({ navigation, route }) => {
 
       <TouchableOpacity
         style={[styles.animationButton, styles.generalButtonStyle]}
-        onPress={() => setIsStartAnimation(!isStartAnimation)}
+        onPress={() => setIsStartAnimationAndSound(!isStartAnimationAndSound)}
       >
-        {isStartAnimation ? (
+        {isStartAnimationAndSound ? (
           <Icon.NamedIcon name="pause" color={colors.primary} size={normalize(30)} />
         ) : (
           <Icon.NamedIcon name="play" color={colors.primary} size={normalize(30)} />
@@ -153,45 +160,46 @@ export const ARShowScreen = ({ navigation, route }) => {
 };
 
 const AugmentedRealityView = ({ sceneNavigator }) => {
-  const [rotation, setRotation] = useState([0, 0, 0]);
-  const [position, setPosition] = useState([0, -1, -5]);
+  const {
+    isObjectLoading,
+    setIsObjectLoading,
+    isStartAnimationAndSound,
+    setIsStartAnimationAndSound,
+    object
+  } = sceneNavigator.viroAppProps;
 
-  const { object, isStartAnimation, setIsObjectLoading } = sceneNavigator.viroAppProps;
-
-  const moveObject = (newPosition) => {
-    setPosition(newPosition);
-  };
-
-  const rotateObject = (rotateState, rotationFactor) => {
-    let newRotation = [rotation[0], rotation[1] - rotationFactor, rotation[2]];
-
-    if (rotateState === 2) {
-      setRotation(newRotation);
-
-      return;
-    }
-  };
+  // TODO: these data can be updated according to the data coming from the server when the
+  //       real 3D models arrive
+  const position = [0, -1, -5];
+  const rotation = [0, 0, 0];
+  const scale = [0.02, 0.02, 0.02];
 
   return (
     <ViroARScene dragType="FixedToWorld">
       <ViroAmbientLight color={'#fff'} />
+
+      {!!object.mp3 && !isObjectLoading && (
+        <ViroSound
+          source={{ uri: object.mp3 }}
+          paused={!isStartAnimationAndSound}
+          onFinish={() => setIsStartAnimationAndSound(false)}
+        />
+      )}
 
       <Viro3DObject
         source={{ uri: object.vrx }}
         resources={[{ uri: object.png }]}
         type="VRX"
         position={position}
-        scale={[0.02, 0.02, 0.02]}
         rotation={rotation}
-        onDrag={moveObject}
-        onRotate={rotateObject}
+        scale={scale}
         onLoadStart={() => setIsObjectLoading(true)}
         onLoadEnd={() => setIsObjectLoading(false)}
         onError={() => alert(texts.augmentedReality.arShowScreen.objectLoadErrorAlert)}
         animation={{
           loop: true,
           name: object.animationName,
-          run: isStartAnimation
+          run: isStartAnimationAndSound
         }}
       />
     </ViroARScene>
