@@ -16,7 +16,7 @@ module.exports = (async () => {
       })
     },
     resolver: {
-      assetExts: [...assetExts, 'JPG', 'mp3', 'mtl', 'obj', 'vrx']
+      assetExts: [...assetExts, 'mtl', 'obj', 'vrx']
     }
   };
 })();
