@@ -58,9 +58,8 @@ export const DataListSection = ({
   if (loading) {
     return (
       <View>
-        {!!sectionTitle && (
-          <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
-        )}
+        <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
+
         <LoadingContainer>
           <ActivityIndicator color={colors.accent} />
         </LoadingContainer>
@@ -77,36 +76,43 @@ export const DataListSection = ({
     skipLastDivider: true
   });
 
+  if (listData?.length) {
+    return (
+      <View>
+        <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
+
+        <ListComponent
+          data={isRandom ? _shuffle(listData).slice(0, limit) : listData.slice(0, limit)}
+          horizontal={horizontal}
+          navigation={navigation}
+          query={query}
+        />
+        {!!linkTitle && !!navigateLink && showLink && (
+          <Wrapper>
+            <Touchable onPress={navigateLink}>
+              <BoldText center primary underline>
+                {linkTitle}
+              </BoldText>
+            </Touchable>
+          </Wrapper>
+        )}
+        {!!buttonTitle && !!navigateButton && showButton && (
+          <Wrapper>
+            <Button title={buttonTitle} onPress={navigateButton} />
+          </Wrapper>
+        )}
+      </View>
+    );
+  }
+
+  if (!placeholder) {
+    return null;
+  }
+
   return (
     <View>
-      {!!sectionTitle && (
-        <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
-      )}
-      {!!limit &&
-        (listData?.length ? (
-          <ListComponent
-            data={isRandom ? _shuffle(listData).slice(0, limit) : listData.slice(0, limit)}
-            horizontal={horizontal}
-            navigation={navigation}
-            query={query}
-          />
-        ) : (
-          !!placeholder && placeholder
-        ))}
-      {!!linkTitle && !!navigateLink && showLink && (
-        <Wrapper>
-          <Touchable onPress={navigateLink}>
-            <BoldText center primary underline>
-              {linkTitle}
-            </BoldText>
-          </Touchable>
-        </Wrapper>
-      )}
-      {!!buttonTitle && !!navigateButton && showButton && (
-        <Wrapper>
-          <Button title={buttonTitle} onPress={navigateButton} />
-        </Wrapper>
-      )}
+      <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
+      {placeholder}
     </View>
   );
 };

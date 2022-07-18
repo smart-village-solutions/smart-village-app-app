@@ -13,7 +13,13 @@ exports[`Button renders a button with Outline style 1`] = `
 >
   <View
     accessibilityLabel="title (Taste)"
+    accessibilityState={
+      Object {
+        "disabled": false,
+      }
+    }
     accessible={true}
+    collapsable={false}
     focusable={true}
     onClick={[Function]}
     onResponderGrant={[Function]}
@@ -76,7 +82,13 @@ exports[`Button renders a default button 1`] = `
 >
   <View
     accessibilityLabel="title (Taste)"
+    accessibilityState={
+      Object {
+        "disabled": false,
+      }
+    }
     accessible={true}
+    collapsable={false}
     focusable={true}
     onClick={[Function]}
     onResponderGrant={[Function]}

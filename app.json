@@ -1,59 +1,63 @@
 {
-	"expo": {
-		"name": "Smart Village App",
-		"slug": "smart-village-app",
-		"privacy": "public",
-		"description": "An open source React Native app for smart villages merging regional offers and services in one place - in your pocket.",
-		"githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
-		"platforms": [
-			"ios",
-			"android"
-		],
-		"version": "2.7.0",
-		"runtimeVersion": "nativeVersion",
-		"orientation": "portrait",
-		"icon": "./assets/icon.png",
-		"scheme": "smart-village-app",
-		"splash": {
-			"image": "./assets/splash.png",
-			"resizeMode": "cover",
-			"backgroundColor": "#ffffff"
-		},
-		"updates": {
-			"fallbackToCacheTimeout": 0
-		},
-		"assetBundlePatterns": [
-			"**/*"
-		],
-		"ios": {
-			"bundleIdentifier": "de.dev.smartvillage.app",
-			"supportsTablet": true,
-			"infoPlist": {
-				"NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
-				"NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
-				"CFBundleLocalizations": [
-					"de"
-				],
-				"CFBundleDevelopmentRegion": "de_DE"
-			}
-		},
-		"android": {
-			"package": "de.dev.smartvillage.app",
-			"permissions": [
-				"ACCESS_FINE_LOCATION",
-				"ACCESS_COARSE_LOCATION",
-				"CAMERA",
-				"READ_EXTERNAL_STORAGE",
-				"WRITE_EXTERNAL_STORAGE"
-			]
-		},
-		"androidStatusBar": {
-			"barStyle": "dark-content",
-			"translucent": true,
-			"backgroundColor": "#00000000"
-		},
-		"plugins": [
-			"sentry-expo"
-		]
-	}
+  "expo": {
+    "name": "Smart Village App",
+    "slug": "smart-village-app",
+    "privacy": "public",
+    "description": "An open source React Native app for smart villages merging regional offers and services in one place - in your pocket.",
+    "githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "version": "2.7.1",
+    "runtimeVersion": "nativeVersion",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "smart-village-app",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "de.dev.smartvillage.app",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
+        "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
+        "CFBundleLocalizations": ["de"],
+        "CFBundleDevelopmentRegion": "de_DE"
+      }
+    },
+    "android": {
+      "package": "de.dev.smartvillage.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "androidStatusBar": {
+      "barStyle": "dark-content",
+      "translucent": true,
+      "backgroundColor": "#00000000"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "microphonePermission": false
+        }
+      ],
+      "sentry-expo"
+    ]
+  }
 }
