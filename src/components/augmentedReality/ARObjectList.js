@@ -42,13 +42,14 @@ const deleteAllDataAlert = (deleteAll) =>
     ]
   );
 
-const renderItem = ({ data, index, item, navigation, setData, showOnDetailPage }) => (
+const renderItem = ({ data, index, item, navigation, setData, refetch, showOnDetailPage }) => (
   <ARObjectListItem
     data={data}
     index={index}
     item={item}
     navigation={navigation}
     setData={setData}
+    refetch={refetch}
     showOnDetailPage={showOnDetailPage}
   />
 );
@@ -110,10 +111,11 @@ export const ARObjectList = ({
         renderItem={({ item, index }) =>
           renderItem({
             data,
+            setData,
             index,
             item,
             navigation,
-            setData,
+            refetch,
             showOnDetailPage
           })
         }

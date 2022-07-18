@@ -1,6 +1,13 @@
-export const storageNameCreator = ({ dataItem, objectItem }) => {
-  const { id: objectId } = dataItem;
-  const { title, type, id } = objectItem;
+import { documentDirectory } from 'expo-file-system';
 
-  return `${objectId}-${title}${id}.${type}`;
+export const storageNameCreator = ({ dataItem, objectItem }) => {
+  const objectItemTitleWithoutSpaces = dataItem.title.replace(/\s+/g, '');
+  const dataDirectoryName = `${objectItemTitleWithoutSpaces}_${dataItem.id}`;
+  const objectName = `${objectItem.title}.${objectItem.type}`;
+
+  return {
+    directoryName: documentDirectory + `${dataDirectoryName}/${objectName}`,
+    folderName: documentDirectory + `${dataDirectoryName}`,
+    storageName: `${dataDirectoryName}_${objectName}`
+  };
 };

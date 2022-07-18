@@ -13,16 +13,27 @@ export const downloadObject = async ({ index, data, setData }) => {
   for (const objectItem of dataItem?.downloadableUris) {
     const { uri, title, type, id } = objectItem;
 
-    const storageName = storageNameCreator({ dataItem, objectItem });
+    const { directoryName, folderName, storageName } = storageNameCreator({ dataItem, objectItem });
 
     const downloadResumable = FileSystem.createDownloadResumable(
       uri,
-      FileSystem.cacheDirectory + storageName,
+      directoryName,
       {},
       (progress) => downloadProgressInBytes(progress, index, downloadedData, setData)
     );
 
     try {
+      /*
+      in order to load the textures properly, it is necessary to create a different folder for 
+      each object. Saving all objects in the same folder with a specific name is important for 
+      the display of the 3D object. If the folder does not exist at the time of downloading the 
+      object, this folder must be created on the device before downloading.
+      */
+      const dirInfo = await FileSystem.getInfoAsync(folderName);
+      if (!dirInfo.exists) {
+        await FileSystem.makeDirectoryAsync(folderName, { intermediates: true });
+      }
+
       const { uri } = await downloadResumable.downloadAsync();
       const { size } = await FileSystem.getInfoAsync(uri);
 

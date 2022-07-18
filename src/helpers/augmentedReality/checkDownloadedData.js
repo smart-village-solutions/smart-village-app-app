@@ -9,7 +9,7 @@ export const checkDownloadedData = async ({ data, setData }) => {
 
   for (const [index, dataItem] of checkedData.entries()) {
     for (const objectItem of dataItem?.downloadableUris) {
-      const storageName = storageNameCreator({ dataItem, objectItem });
+      const { storageName } = storageNameCreator({ dataItem, objectItem });
 
       try {
         const downloadedItem = await readFromStore(storageName);

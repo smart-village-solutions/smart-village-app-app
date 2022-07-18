@@ -57,6 +57,14 @@
           "microphonePermission": false
         }
       ],
+			[
+				"@viro-community/react-viro",
+				{
+					"androidXrMode": [
+						"AR"
+					]
+				}
+			],
       "sentry-expo"
     ]
   }

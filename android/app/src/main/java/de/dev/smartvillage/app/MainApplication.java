@@ -1,4 +1,5 @@
 package de.dev.smartvillage.app;
+import com.viromedia.bridge.ReactViroPackage;
 
 import android.app.Application;
 import android.content.Context;
@@ -33,6 +34,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       @SuppressWarnings("UnnecessaryLocalVariable")
       List<ReactPackage> packages = new PackageList(this).getPackages();
+      packages.add(new ReactViroPackage(ReactViroPackage.ViroPlatform.valueOf("AR")));
+
       // Packages that cannot be autolinked yet can be added manually here, for example:
       // packages.add(new MyReactNativePackage());
       return packages;

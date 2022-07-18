@@ -225,7 +225,9 @@ export const SettingsScreen = () => {
         />
       )}
       {selectedFilterId === TOP_FILTER.LIST_TYPES && <ListSettings />}
-      {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && <AugmentedReality onSettingsScreen />}
+      {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && (
+        <AugmentedReality onSettingsScreen tourID="579" />
+      )}
     </SafeAreaViewFlex>
   );
 };

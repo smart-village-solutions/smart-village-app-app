@@ -13,3 +13,10 @@ if (settings.hasProperty("newArchEnabled") && settings.newArchEnabled == "true")
   include(":ReactAndroid")
   project(":ReactAndroid").projectDir = new File(["node", "--print", "require.resolve('react-native/package.json')"].execute(null, rootDir).text.trim(), "../ReactAndroid");
 }
+
+include ':react_viro', ':arcore_client', ':gvr_common', ':viro_renderer'
+project(':arcore_client').projectDir = new File('../node_modules/@viro-community/react-viro/android/arcore_client')
+project(':gvr_common').projectDir = new File('../node_modules/@viro-community/react-viro/android/gvr_common')
+project(':viro_renderer').projectDir = new File('../node_modules/@viro-community/react-viro/android/viro_renderer')
+project(':react_viro').projectDir = new File('../node_modules/@viro-community/react-viro/android/react_viro')
+    
