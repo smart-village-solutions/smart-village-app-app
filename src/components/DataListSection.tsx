@@ -58,9 +58,8 @@ export const DataListSection = ({
   if (loading) {
     return (
       <View>
-        {!!sectionTitle && (
-          <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
-        )}
+        <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
+
         <LoadingContainer>
           <ActivityIndicator color={colors.accent} />
         </LoadingContainer>
@@ -80,20 +79,14 @@ export const DataListSection = ({
   if (listData?.length) {
     return (
       <View>
-        {!!sectionTitle && (
-          <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
-        )}
-        {!!limit &&
-          (listData?.length ? (
-            <ListComponent
-              data={isRandom ? _shuffle(listData).slice(0, limit) : listData.slice(0, limit)}
-              horizontal={horizontal}
-              navigation={navigation}
-              query={query}
-            />
-          ) : (
-            !!placeholder && placeholder
-          ))}
+        <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
+
+        <ListComponent
+          data={isRandom ? _shuffle(listData).slice(0, limit) : listData.slice(0, limit)}
+          horizontal={horizontal}
+          navigation={navigation}
+          query={query}
+        />
         {!!linkTitle && !!navigateLink && showLink && (
           <Wrapper>
             <Touchable onPress={navigateLink}>
