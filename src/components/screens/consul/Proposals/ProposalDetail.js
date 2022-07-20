@@ -68,9 +68,7 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
   );
 
   useEffect(() => {
-    getConsulUser().then((userInfo) => {
-      if (userInfo) return setUserId(JSON.parse(userInfo).id);
-    });
+    getConsulUser().then(setUserId);
   }, []);
 
   const { control, handleSubmit, reset } = useForm({

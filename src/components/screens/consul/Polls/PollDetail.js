@@ -40,9 +40,7 @@ export const PollDetail = ({ data, refetch, route, navigation }) => {
   const currentDate = new Date().getTime();
 
   useEffect(() => {
-    getConsulUser().then((userInfo) => {
-      if (userInfo) return setUserId(JSON.parse(userInfo).id);
-    });
+    getConsulUser().then(setUserId);
   }, []);
 
   const openWebScreen = useOpenWebScreen(

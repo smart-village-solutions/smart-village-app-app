@@ -58,7 +58,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
         variables: { email: inputData?.email, password: inputData?.password }
       });
       await setConsulAuthToken(userData?.data?.userLogin?.credentials);
-      await setConsulUser(userData?.data?.userLogin?.authenticatable);
+      await setConsulUser(userData?.data?.userLogin?.authenticatable?.id);
 
       navigation.navigate(ScreenName.ConsulHomeScreen, { refreshUser: new Date().valueOf() });
     } catch (error) {
