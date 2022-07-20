@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import { consts, device, texts } from '../../config';
-import { checkDownloadedData } from '../../helpers';
+import { checkDownloadedData, supportedDevice } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -14,7 +14,12 @@ import { ARObjectList } from './ARObjectList';
 import { WhatIsARButton } from './WhatIsARButton';
 
 export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
-  const { data: staticData, error, loading, refetch } = useStaticContent({
+  const {
+    data: staticData,
+    error,
+    loading,
+    refetch
+  } = useStaticContent({
     name: `arDownloadableDataList-${tourID}`,
     type: 'json'
   });
@@ -22,6 +27,7 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(loading);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { isSupported } = supportedDevice();
 
   useEffect(() => {
     setData(staticData);
@@ -37,7 +43,7 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
     setIsLoading(false);
   };
 
-  if (error) return null;
+  if (error || !isSupported) return null;
 
   if (isLoading || !staticData) return <LoadingSpinner loading />;
 

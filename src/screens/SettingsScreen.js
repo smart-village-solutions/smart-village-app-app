@@ -19,7 +19,8 @@ import {
   createMatomoUserId,
   matomoSettings,
   readFromStore,
-  removeMatomoUserId
+  removeMatomoUserId,
+  supportedDevice
 } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
@@ -58,12 +59,12 @@ const TOP_FILTER = {
 
 const INITIAL_FILTER = [
   { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
-  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false },
-  { id: TOP_FILTER.AR_DOWNLOAD_LIST, title: texts.settingsTitles.tabs.arSettings, selected: false }
+  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false }
 ];
 
 export const SettingsScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
+  const { isSupported } = supportedDevice();
   const [sectionedData, setSectionedData] = useState([]);
   const [filter, setFilter] = useState(INITIAL_FILTER);
   const selectedFilterId = filter.find((entry) => entry.selected)?.id;
@@ -193,6 +194,17 @@ export const SettingsScreen = () => {
       });
       setSectionedData(additionalSectionedData);
     };
+
+    if (isSupported) {
+      setFilter([
+        ...filter,
+        {
+          id: TOP_FILTER.AR_DOWNLOAD_LIST,
+          title: texts.settingsTitles.tabs.arSettings,
+          selected: false
+        }
+      ]);
+    }
 
     updateSectionedData();
   }, []);

@@ -39,6 +39,7 @@ export const texts = {
       'Das Herunterladen der Dateien ist noch im Gange. Bitte warten Sie, bis der Download komplett abgeschlossen ist, da ansonsten Probleme mit den heruntergeladenen Dateien auftreten können.',
     modalHiddenAlertTitle: 'Hinweis',
     ok: 'OK',
+    unsupportedDevice: 'Ihr Gerät wird von Augmented Reality leider nicht unterstützt.',
     wait: 'Warten',
     whatIsAugmentedReality: 'Was ist Augmented Reality (AR)?',
     worksOfArt: 'Kunstwerke'

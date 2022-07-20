@@ -5,3 +5,4 @@ export * from './downloadObject';
 export * from './downloadType';
 export * from './progressSizeGenerator';
 export * from './storageNameCreator';
+export * from './supportedDevice';
