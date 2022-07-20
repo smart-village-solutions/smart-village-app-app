@@ -16,9 +16,7 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
   }, [refreshUser]);
 
   const userID = useCallback(() => {
-    getConsulUser().then((userInfo) => {
-      if (userInfo) return setUserId(userInfo);
-    });
+    getConsulUser().then(setUserId);
   }, [refreshUser]);
 
   useEffect(refresh, [route.params?.refreshUser]);
