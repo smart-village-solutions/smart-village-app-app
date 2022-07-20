@@ -284,8 +284,7 @@ var styles = StyleSheet.create({
   objectLoadingIndicatorComponent: {
     height: '100%',
     position: 'absolute',
-    width: '100%',
-    zIndex: 1
+    width: '100%'
   },
   opacity: {
     opacity: 0.6
