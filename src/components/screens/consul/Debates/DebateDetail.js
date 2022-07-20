@@ -53,7 +53,7 @@ export const DebateDetail = ({ data, refetch, route, navigation }) => {
 
   useEffect(() => {
     getConsulUser().then((userInfo) => {
-      if (userInfo) return setUserId(JSON.parse(userInfo).id);
+      if (userInfo) return setUserId(userInfo);
     });
   }, []);
 

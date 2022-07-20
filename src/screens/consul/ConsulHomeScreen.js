@@ -17,7 +17,7 @@ export const ConsulHomeScreen = ({ navigation, route }) => {
 
   const userID = useCallback(() => {
     getConsulUser().then((userInfo) => {
-      if (userInfo) return setUserId(JSON.parse(userInfo).id);
+      if (userInfo) return setUserId(userInfo);
     });
   }, [refreshUser]);
 

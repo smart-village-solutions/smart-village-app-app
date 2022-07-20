@@ -16,7 +16,7 @@ export const UserCommentDetail = ({ data, refetch, navigation }) => {
 
   useEffect(() => {
     getConsulUser().then((userInfo) => {
-      if (userInfo) return setUserId(JSON.parse(userInfo).id);
+      if (userInfo) return setUserId(userInfo);
     });
   }, []);
 

@@ -15,7 +15,7 @@ export const getConsulAuthToken = async () => await SecureStore.getItemAsync(CON
 
 export const setConsulUser = async (user) => {
   if (user) {
-    await SecureStore.setItemAsync(CONSUL_USER, JSON.stringify(user));
+    await SecureStore.setItemAsync(CONSUL_USER, user.id);
   } else {
     await SecureStore.deleteItemAsync(CONSUL_USER);
   }
