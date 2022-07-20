@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState, useRef } from 'react';
-import { Alert, Animated, View, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Alert, Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
 import {
   Viro3DObject,
   ViroAmbientLight,
   ViroARScene,
   ViroARSceneNavigator,
+  ViroRecordingErrorConstants,
   ViroSound
 } from '@viro-community/react-viro';
 
@@ -31,9 +32,13 @@ export const ARShowScreen = ({ navigation, route }) => {
     const fileName = 'AugmentedReality_' + Date.now().toString();
 
     try {
-      await arSceneRef.current._takeScreenshot(fileName, true);
+      const { success, errorCode } = await arSceneRef.current._takeScreenshot(fileName, true);
 
-      screenshotFlashEffect({ screenshotEffectOpacityRef });
+      if (success) {
+        screenshotFlashEffect({ screenshotEffectOpacityRef });
+      } else {
+        errorHandler(errorCode);
+      }
     } catch (error) {
       console.error(error.message);
     }
@@ -47,7 +52,7 @@ export const ARShowScreen = ({ navigation, route }) => {
     if (!isVideoRecording) {
       arSceneRef.current._startVideoRecording(fileName, true, (error) => alert(error));
     } else {
-      const { success } = await arSceneRef.current._stopVideoRecording();
+      const { success, errorCode } = await arSceneRef.current._stopVideoRecording();
 
       if (success) {
         Alert.alert(
@@ -55,15 +60,12 @@ export const ARShowScreen = ({ navigation, route }) => {
           texts.augmentedReality.arShowScreen.screenRecordingCompleted
         );
       } else {
-        Alert.alert(
-          texts.augmentedReality.modalHiddenAlertTitle,
-          texts.augmentedReality.arShowScreen.screenRecordingError
-        );
+        errorHandler(errorCode);
       }
     }
   };
 
-  if (isLoading || !object || !object.vrx) return <LoadingSpinner loading />;
+  if (isLoading || !object) return <LoadingSpinner loading />;
 
   return (
     <>
@@ -209,7 +211,7 @@ const AugmentedRealityView = ({ sceneNavigator }) => {
   );
 };
 
-const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
+const objectParser = async ({ item, setObject, setIsLoading }) => {
   let parsedObject = {};
 
   if (item.animationName) {
@@ -220,22 +222,55 @@ const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
     parsedObject[item.type] = item.uri;
   });
 
-  // TODO: Just for the test
-  if (!parsedObject.vrx) {
-    return Alert.alert(
-      'Hinweis',
-      'Bitte laden Sie ein echtes AR-Objekt herunter. Die Dateien im Gerät sind nur zu Testzwecken vorbereitet. Sie können ein Beispielobjekt sehen, indem Sie die Datei Diffuse Texture aus der Objektliste herunterladen.',
-      [
-        {
-          text: 'OK',
-          onPress
-        }
-      ]
-    );
-  }
-
   setObject(parsedObject);
   setIsLoading(false);
+};
+
+const errorHandler = (errorCode) => {
+  switch (errorCode) {
+    case ViroRecordingErrorConstants.RECORD_ERROR_UNKNOWN:
+      Alert.alert(
+        texts.augmentedReality.modalHiddenAlertTitle,
+        texts.augmentedReality.arShowScreen.screenRecordingError
+      );
+      break;
+    case ViroRecordingErrorConstants.RECORD_ERROR_NO_PERMISSION:
+      Alert.alert(
+        texts.augmentedReality.modalHiddenAlertTitle,
+        texts.augmentedReality.arShowScreen.screenRecordNoPermissionError
+      );
+      break;
+    case ViroRecordingErrorConstants.RECORD_ERROR_INITIALIZATION:
+      Alert.alert(
+        texts.augmentedReality.modalHiddenAlertTitle,
+        texts.augmentedReality.arShowScreen.screenRecordInitializationError
+      );
+      break;
+    case ViroRecordingErrorConstants.RECORD_ERROR_WRITE_TO_FILE:
+      Alert.alert(
+        texts.augmentedReality.modalHiddenAlertTitle,
+        texts.augmentedReality.arShowScreen.screenRecordWriteToFileError
+      );
+      break;
+    case ViroRecordingErrorConstants.RECORD_ERROR_ALREADY_RUNNING:
+      Alert.alert(
+        texts.augmentedReality.modalHiddenAlertTitle,
+        texts.augmentedReality.arShowScreen.screenRecordAlreadyRecordingError
+      );
+      break;
+    case ViroRecordingErrorConstants.RECORD_ERROR_ALREADY_STOPPED:
+      Alert.alert(
+        texts.augmentedReality.modalHiddenAlertTitle,
+        texts.augmentedReality.arShowScreen.screenRecordAlreadyStoppedError
+      );
+      break;
+    default:
+      Alert.alert(
+        texts.augmentedReality.modalHiddenAlertTitle,
+        texts.augmentedReality.arShowScreen.screenRecordingError
+      );
+      break;
+  }
 };
 
 const screenshotFlashEffect = ({ screenshotEffectOpacityRef }) => {

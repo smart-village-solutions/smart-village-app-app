@@ -16,8 +16,14 @@ export const texts = {
         'Bitte beende die Videoaufzeichnung, bevor Sie zurückkehren.',
       objectLoadErrorAlert:
         'Beim Laden des 3D-Objekts ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+      screenRecordAlreadyRecordingError: 'Ihr System zeichnet bereits auf.',
+      screenRecordAlreadyStoppedError: 'Ihr System kann derzeit nicht aufzeichnen.',
       screenRecordingCompleted: 'Die Aufnahme wurde erfolgreich in Ihrer Galerie gespeichert.',
-      screenRecordingError: 'Bei der Bildschirmaufzeichnung ist ein Fehler aufgetreten.'
+      screenRecordingError: 'Bei der Bildschirmaufzeichnung ist ein Fehler aufgetreten.',
+      screenRecordInitializationError:
+        'Bei der Initialisierung der Bildschirmaufzeichnung ist ein Fehler aufgetreten.',
+      screenRecordNoPermissionError: 'Bitte erlauben Sie die Aufnahme von Videos/Screenshots.',
+      screenRecordWriteToFileError: 'Beim Schreiben in die Datei ist ein Fehler aufgetreten.'
     },
     artworkDetailScreen: {
       downloadAndLookAtArt: 'Downloaden & AR Kunst gucken',
@@ -320,8 +326,7 @@ export const texts = {
       'Schade, es wurden keine passenden Einträge in dieser Kategorie gefunden. Bitte eine Unterkategorie wählen oder zu einem späteren Zeitpunkt erneut versuchen.',
     content:
       'Schade, es wurde kein passender Inhalt gefunden, bitte zu einem späteren Zeitpunkt erneut versuchen.',
-    list:
-      'Schade, es wurden keine passenden Einträge gefunden, bitte zu einem späteren Zeitpunkt erneut versuchen.'
+    list: 'Schade, es wurden keine passenden Einträge gefunden, bitte zu einem späteren Zeitpunkt erneut versuchen.'
   },
   errors: {
     image: {
@@ -751,8 +756,7 @@ export const texts = {
     },
     commentSubmissionAlert: {
       de: 'Ihr Kommentar wird nun redaktionell geprüft und schnellstmöglich veröffentlicht.',
-      pl:
-        'Twój komentarz zostanie teraz sprawdzony redakcyjnie i opublikowany tak szybko, jak to możliwe.'
+      pl: 'Twój komentarz zostanie teraz sprawdzony redakcyjnie i opublikowany tak szybko, jak to możliwe.'
     },
     commentSubmissionAlertTitle: 'Ihr Kommentar wird nun redaktionell geprüft',
     dateEnd: {
@@ -769,10 +773,8 @@ export const texts = {
       submissionTitle: 'Fehler'
     },
     hint: {
-      de:
-        'Die Umfrageergebnisse werden erst angezeigt, wenn Sie Ihre Stimme abgegeben haben oder die Umfrage beendet wurde.',
-      pl:
-        'Wyniki ankiety nie będą wyświetlane, dopóki nie oddasz głosu lub ankieta nie zostanie zakończona.'
+      de: 'Die Umfrageergebnisse werden erst angezeigt, wenn Sie Ihre Stimme abgegeben haben oder die Umfrage beendet wurde.',
+      pl: 'Wyniki ankiety nie będą wyświetlane, dopóki nie oddasz głosu lub ankieta nie zostanie zakończona.'
     },
     multiSelectPossible: {
       de: 'Mehrfachantwort möglich.',
