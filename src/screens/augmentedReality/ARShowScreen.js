@@ -103,54 +103,57 @@ export const ARShowScreen = ({ navigation, route }) => {
         <Icon.Close color={colors.surface} />
       </TouchableOpacity>
 
-      {isObjectLoading && (
+      {isObjectLoading ? (
         <View style={styles.objectLoadingIndicatorComponent}>
           <LoadingSpinner loading />
         </View>
+      ) : (
+        <>
+          <TouchableOpacity
+            style={[styles.generalButtonStyle, styles.screenRecording, styles.opacity]}
+            onPress={screenVideoRecording}
+          >
+            {isVideoRecording ? (
+              <Icon.NamedIcon
+                name="stop"
+                color={colors.error}
+                size={normalize(30)}
+                style={styles.opacity}
+              />
+            ) : (
+              <Icon.NamedIcon
+                name="videocam"
+                color={colors.error}
+                size={normalize(30)}
+                style={styles.opacity}
+              />
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.generalButtonStyle, styles.screenShotButton, styles.opacity]}
+            onPress={takeScreenshot}
+          >
+            <Icon.NamedIcon
+              name="camera"
+              color={colors.darkText}
+              size={normalize(30)}
+              style={styles.opacity}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.animationButton, styles.generalButtonStyle]}
+            onPress={() => setIsStartAnimationAndSound(!isStartAnimationAndSound)}
+          >
+            {isStartAnimationAndSound ? (
+              <Icon.NamedIcon name="pause" color={colors.primary} size={normalize(30)} />
+            ) : (
+              <Icon.NamedIcon name="play" color={colors.primary} size={normalize(30)} />
+            )}
+          </TouchableOpacity>
+        </>
       )}
-      <TouchableOpacity
-        style={[styles.generalButtonStyle, styles.screenRecording, styles.opacity]}
-        onPress={screenVideoRecording}
-      >
-        {isVideoRecording ? (
-          <Icon.NamedIcon
-            name="stop"
-            color={colors.error}
-            size={normalize(30)}
-            style={styles.opacity}
-          />
-        ) : (
-          <Icon.NamedIcon
-            name="videocam"
-            color={colors.error}
-            size={normalize(30)}
-            style={styles.opacity}
-          />
-        )}
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[styles.generalButtonStyle, styles.screenShotButton, styles.opacity]}
-        onPress={takeScreenshot}
-      >
-        <Icon.NamedIcon
-          name="camera"
-          color={colors.darkText}
-          size={normalize(30)}
-          style={styles.opacity}
-        />
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={[styles.animationButton, styles.generalButtonStyle]}
-        onPress={() => setIsStartAnimationAndSound(!isStartAnimationAndSound)}
-      >
-        {isStartAnimationAndSound ? (
-          <Icon.NamedIcon name="pause" color={colors.primary} size={normalize(30)} />
-        ) : (
-          <Icon.NamedIcon name="play" color={colors.primary} size={normalize(30)} />
-        )}
-      </TouchableOpacity>
 
       <Animated.View
         style={[styles.flashEffectContainer, { opacity: screenshotEffectOpacityRef }]}
