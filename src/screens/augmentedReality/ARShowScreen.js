@@ -6,7 +6,6 @@ import {
   ViroAmbientLight,
   ViroARScene,
   ViroARSceneNavigator,
-  ViroRecordingErrorConstants,
   ViroSound
 } from '@viro-community/react-viro';
 
@@ -227,50 +226,10 @@ const objectParser = async ({ item, setObject, setIsLoading }) => {
 };
 
 const errorHandler = (errorCode) => {
-  switch (errorCode) {
-    case ViroRecordingErrorConstants.RECORD_ERROR_UNKNOWN:
-      Alert.alert(
-        texts.augmentedReality.modalHiddenAlertTitle,
-        texts.augmentedReality.arShowScreen.screenRecordingError
-      );
-      break;
-    case ViroRecordingErrorConstants.RECORD_ERROR_NO_PERMISSION:
-      Alert.alert(
-        texts.augmentedReality.modalHiddenAlertTitle,
-        texts.augmentedReality.arShowScreen.screenRecordNoPermissionError
-      );
-      break;
-    case ViroRecordingErrorConstants.RECORD_ERROR_INITIALIZATION:
-      Alert.alert(
-        texts.augmentedReality.modalHiddenAlertTitle,
-        texts.augmentedReality.arShowScreen.screenRecordInitializationError
-      );
-      break;
-    case ViroRecordingErrorConstants.RECORD_ERROR_WRITE_TO_FILE:
-      Alert.alert(
-        texts.augmentedReality.modalHiddenAlertTitle,
-        texts.augmentedReality.arShowScreen.screenRecordWriteToFileError
-      );
-      break;
-    case ViroRecordingErrorConstants.RECORD_ERROR_ALREADY_RUNNING:
-      Alert.alert(
-        texts.augmentedReality.modalHiddenAlertTitle,
-        texts.augmentedReality.arShowScreen.screenRecordAlreadyRecordingError
-      );
-      break;
-    case ViroRecordingErrorConstants.RECORD_ERROR_ALREADY_STOPPED:
-      Alert.alert(
-        texts.augmentedReality.modalHiddenAlertTitle,
-        texts.augmentedReality.arShowScreen.screenRecordAlreadyStoppedError
-      );
-      break;
-    default:
-      Alert.alert(
-        texts.augmentedReality.modalHiddenAlertTitle,
-        texts.augmentedReality.arShowScreen.screenRecordingError
-      );
-      break;
-  }
+  Alert.alert(
+    texts.augmentedReality.modalHiddenAlertTitle,
+    texts.augmentedReality.arShowScreen.viroRecordingError?.[errorCode]
+  );
 };
 
 const screenshotFlashEffect = ({ screenshotEffectOpacityRef }) => {

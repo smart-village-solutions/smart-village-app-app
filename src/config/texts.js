@@ -16,14 +16,15 @@ export const texts = {
         'Bitte beende die Videoaufzeichnung, bevor Sie zurückkehren.',
       objectLoadErrorAlert:
         'Beim Laden des 3D-Objekts ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
-      screenRecordAlreadyRecordingError: 'Ihr System zeichnet bereits auf.',
-      screenRecordAlreadyStoppedError: 'Ihr System kann derzeit nicht aufzeichnen.',
       screenRecordingCompleted: 'Die Aufnahme wurde erfolgreich in Ihrer Galerie gespeichert.',
-      screenRecordingError: 'Bei der Bildschirmaufzeichnung ist ein Fehler aufgetreten.',
-      screenRecordInitializationError:
-        'Bei der Initialisierung der Bildschirmaufzeichnung ist ein Fehler aufgetreten.',
-      screenRecordNoPermissionError: 'Bitte erlauben Sie die Aufnahme von Videos/Screenshots.',
-      screenRecordWriteToFileError: 'Beim Schreiben in die Datei ist ein Fehler aufgetreten.'
+      viroRecordingError: {
+        0: 'Bei der Bildschirmaufzeichnung ist ein Fehler aufgetreten.',
+        1: 'Bitte erlauben Sie die Aufnahme von Videos/Screenshots.',
+        2: 'Bei der Initialisierung der Bildschirmaufzeichnung ist ein Fehler aufgetreten.',
+        3: 'Beim Speichern der Datei ist ein Fehler aufgetreten.',
+        4: 'Ihr System zeichnet bereits auf.',
+        5: 'Ihr System kann derzeit nicht aufzeichnen.'
+      }
     },
     artworkDetailScreen: {
       downloadAndLookAtArt: 'Downloaden & AR Kunst gucken',
