@@ -4,8 +4,8 @@ import { useContext } from 'react';
 import { device } from '../../config';
 import { SettingsContext } from '../../SettingsProvider';
 
-export const supportedDevice = () => {
+export const ARSupportingDevice = () => {
   const { globalSettings } = useContext(SettingsContext);
 
-  return { isSupported: osVersion >= globalSettings.augmentedReality[device.platform] };
+  return { isARSupported: osVersion >= globalSettings?.augmentedReality[device?.platform] };
 };

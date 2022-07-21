@@ -20,7 +20,7 @@ import {
   matomoSettings,
   readFromStore,
   removeMatomoUserId,
-  supportedDevice
+  ARSupportingDevice
 } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
@@ -57,16 +57,23 @@ const TOP_FILTER = {
   LIST_TYPES: 'listTypes'
 };
 
-const INITIAL_FILTER = [
-  { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
-  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false }
-];
+const INITIAL_FILTER = (isARSupported) => {
+  return [
+    { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
+    { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false },
+    isARSupported && {
+      id: TOP_FILTER.AR_DOWNLOAD_LIST,
+      title: texts.settingsTitles.tabs.arSettings,
+      selected: false
+    }
+  ];
+};
 
 export const SettingsScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
-  const { isSupported } = supportedDevice();
+  const { isARSupported } = ARSupportingDevice();
   const [sectionedData, setSectionedData] = useState([]);
-  const [filter, setFilter] = useState(INITIAL_FILTER);
+  const [filter, setFilter] = useState(INITIAL_FILTER(isARSupported));
   const selectedFilterId = filter.find((entry) => entry.selected)?.id;
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
@@ -194,17 +201,6 @@ export const SettingsScreen = () => {
       });
       setSectionedData(additionalSectionedData);
     };
-
-    if (isSupported) {
-      setFilter([
-        ...filter,
-        {
-          id: TOP_FILTER.AR_DOWNLOAD_LIST,
-          title: texts.settingsTitles.tabs.arSettings,
-          selected: false
-        }
-      ]);
-    }
 
     updateSectionedData();
   }, []);

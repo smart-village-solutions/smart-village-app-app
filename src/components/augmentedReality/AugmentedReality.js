@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import { consts, device, texts } from '../../config';
-import { checkDownloadedData, supportedDevice } from '../../helpers';
+import { checkDownloadedData, ARSupportingDevice } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -27,7 +27,7 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(loading);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { isSupported } = supportedDevice();
+  const { isARSupported } = ARSupportingDevice();
 
   useEffect(() => {
     setData(staticData);
@@ -43,7 +43,7 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
     setIsLoading(false);
   };
 
-  if (error || !isSupported) return null;
+  if (error || !isARSupported) return null;
 
   if (isLoading || !staticData) return <LoadingSpinner loading />;
 
