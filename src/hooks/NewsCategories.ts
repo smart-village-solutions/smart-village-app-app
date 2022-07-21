@@ -21,5 +21,6 @@ export const useNewsCategories = () => {
     categoryTitleDetail?: string;
     categoryButton?: string;
     categoryId?: string;
+    indexCategoryIds?: string[];
   }>;
 };
