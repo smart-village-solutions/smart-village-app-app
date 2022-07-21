@@ -1,3 +1,4 @@
+import { isARSupportedOnDevice } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList } from 'react-native';
@@ -19,8 +20,7 @@ import {
   createMatomoUserId,
   matomoSettings,
   readFromStore,
-  removeMatomoUserId,
-  ARSupportingDevice
+  removeMatomoUserId
 } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
@@ -57,23 +57,15 @@ const TOP_FILTER = {
   LIST_TYPES: 'listTypes'
 };
 
-const INITIAL_FILTER = (isARSupported) => {
-  return [
-    { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
-    { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false },
-    isARSupported && {
-      id: TOP_FILTER.AR_DOWNLOAD_LIST,
-      title: texts.settingsTitles.tabs.arSettings,
-      selected: false
-    }
-  ];
-};
+const INITIAL_FILTER = [
+  { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
+  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false }
+];
 
 export const SettingsScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
-  const { isARSupported } = ARSupportingDevice();
   const [sectionedData, setSectionedData] = useState([]);
-  const [filter, setFilter] = useState(INITIAL_FILTER(isARSupported));
+  const [filter, setFilter] = useState(INITIAL_FILTER);
   const selectedFilterId = filter.find((entry) => entry.selected)?.id;
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
@@ -203,6 +195,21 @@ export const SettingsScreen = () => {
     };
 
     updateSectionedData();
+  }, []);
+
+  useEffect(() => {
+    isARSupportedOnDevice(
+      () => null,
+      () =>
+        setFilter([
+          ...filter,
+          {
+            id: TOP_FILTER.AR_DOWNLOAD_LIST,
+            title: texts.settingsTitles.tabs.arSettings,
+            selected: false
+          }
+        ])
+    );
   }, []);
 
   if (!sectionedData.length) {

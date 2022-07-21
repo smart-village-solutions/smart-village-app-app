@@ -1,11 +1,13 @@
-import { osVersion } from 'expo-device';
-import { useContext } from 'react';
-
-import { device } from '../../config';
-import { SettingsContext } from '../../SettingsProvider';
+import { isARSupportedOnDevice } from '@viro-community/react-viro';
+import { useState } from 'react';
 
 export const ARSupportingDevice = () => {
-  const { globalSettings } = useContext(SettingsContext);
+  const [isARSupported, setIsARSupported] = useState(false);
 
-  return { isARSupported: osVersion >= globalSettings?.augmentedReality[device?.platform] };
+  isARSupportedOnDevice(
+    () => null, // notSupportedCallback callBack
+    () => setIsARSupported(true) // supportedCallback callBack
+  );
+
+  return { isARSupported };
 };
