@@ -1,4 +1,3 @@
-export * from './ARSupportingDevice';
 export * from './checkDownloadedData';
 export * from './deleteObject';
 export * from './downloadAndDeleteAllData';

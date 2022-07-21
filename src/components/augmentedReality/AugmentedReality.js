@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { isARSupportedOnDevice } from '@viro-community/react-viro';
 
 import { consts, device, texts } from '../../config';
-import { checkDownloadedData, ARSupportingDevice } from '../../helpers';
+import { checkDownloadedData } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
@@ -24,10 +25,17 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
     type: 'json'
   });
 
+  const [isARSupported, setIsARSupported] = useState(false);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(loading);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { isARSupported } = ARSupportingDevice();
+
+  useEffect(() => {
+    isARSupportedOnDevice(
+      () => null,
+      () => setIsARSupported(true)
+    );
+  }, []);
 
   useEffect(() => {
     setData(staticData);
