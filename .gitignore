@@ -115,6 +115,9 @@ fabric.properties
 
 # Android ######
 
+# Native Android Folder
+/android/
+
 # Built application files
 *.apk
 *.ap_
@@ -256,6 +259,11 @@ buck-out/
 
 # Bundle artifacts
 *.jsbundle
+
+# iOS ######
+
+# Native iOS Folder
+/ios/
 
 # CocoaPods
 /ios/Pods/
