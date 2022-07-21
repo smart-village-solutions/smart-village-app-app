@@ -33,6 +33,7 @@ export const texts = {
     },
     cancel: 'Abbrechen',
     hide: 'Ausblenden',
+    invalidModelError: 'Das 3D-Modell konnte nicht richtig geladen werden.',
     loadingArtworks: 'Kunstwerke laden',
     modalHiddenAlertMessage:
       'Das Herunterladen der Dateien ist noch im Gange. Bitte warten Sie, bis der Download komplett abgeschlossen ist, da ansonsten Probleme mit den heruntergeladenen Dateien auftreten können.',
