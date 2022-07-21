@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-import React from 'react';
 import {
   Viro3DObject,
   ViroAmbientLight,
@@ -8,8 +6,10 @@ import {
   ViroARTrackingTargets,
   ViroSound
 } from '@viro-community/react-viro';
+import PropTypes from 'prop-types';
+import React, { useEffect } from 'react';
 
-import { texts } from '../../config';
+import { colors, texts } from '../../config';
 
 export const AugmentedRealityView = ({ sceneNavigator }) => {
   const {
@@ -20,56 +20,53 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
     object
   } = sceneNavigator.viroAppProps;
 
+  const TARGET = 'targetImage';
+
   // TODO: these data can be updated according to the data coming from the server when the
   //       real 3D models arrive
   const position = [0, 0, 0];
   const rotation = [0, 0, 0];
   const scale = [0.002, 0.002, 0.002];
 
-  ViroARTrackingTargets.createTargets({
-    targetImage: {
-      physicalWidth: 0.2, // real world width in meters
-      source: { uri: object.target },
-      type: 'image'
-    }
-  });
+  useEffect(() => {
+    ViroARTrackingTargets.createTargets({
+      [TARGET]: {
+        physicalWidth: 0.2, // real world width in meters
+        source: { uri: object.target },
+        type: 'image'
+      }
+    });
+  }, [object?.target]);
+
+  const ViroContent = (
+    <ViroSoundAnd3DObject
+      {...{
+        isObjectLoading,
+        isStartAnimationAndSound,
+        object,
+        position,
+        rotation,
+        scale,
+        setIsObjectLoading,
+        setIsStartAnimationAndSound
+      }}
+    />
+  );
 
   return (
     <ViroARScene dragType="FixedToWorld">
-      <ViroAmbientLight color={'#fff'} />
+      <ViroAmbientLight color={colors.surface} />
 
-      {object.target ? (
+      {object?.target ? (
         <ViroARImageMarker
           onAnchorFound={() => setIsStartAnimationAndSound(true)} // animation and sound file are started after the image is recognised
           pauseUpdates // prevents the model from continuous jumping
-          target={'targetImage'}
+          target={TARGET}
         >
-          <ViroSoundAnd3DObject
-            {...{
-              isObjectLoading,
-              isStartAnimationAndSound,
-              object,
-              position,
-              rotation,
-              scale,
-              setIsObjectLoading,
-              setIsStartAnimationAndSound
-            }}
-          />
+          {ViroContent}
         </ViroARImageMarker>
       ) : (
-        <ViroSoundAnd3DObject
-          {...{
-            isObjectLoading,
-            isStartAnimationAndSound,
-            object,
-            position,
-            rotation,
-            scale,
-            setIsObjectLoading,
-            setIsStartAnimationAndSound
-          }}
-        />
+        ViroContent
       )}
     </ViroARScene>
   );
