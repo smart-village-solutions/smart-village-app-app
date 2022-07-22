@@ -12,10 +12,8 @@ export const parseColorToHex = (color: string) => {
     return `#${shortFormatMatches.join('')}`;
   }
 
-  // check for format rgb(r,g,b)
-  const rgbFormatMatches = /^rgb\(\s*(?<red>\d+)\s*,\s*(?<green>\d+)\s*,\s*(?<blue>\d+)\s*\)$/.exec(
-    color
-  );
+  // check for format rgb(r,g,b) and group by each value
+  const rgbFormatMatches = /^rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/.exec(color);
   if (rgbFormatMatches) {
     rgbFormatMatches.shift();
     const hexValues = rgbFormatMatches.map((value) => {
