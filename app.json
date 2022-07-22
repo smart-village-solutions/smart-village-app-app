@@ -5,10 +5,7 @@
     "privacy": "public",
     "description": "An open source React Native app for smart villages merging regional offers and services in one place - in your pocket.",
     "githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
-    "platforms": [
-      "ios",
-      "android"
-    ],
+    "platforms": ["ios", "android"],
     "version": "2.7.1",
     "runtimeVersion": "nativeVersion",
     "orientation": "portrait",
@@ -22,9 +19,7 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "de.dev.smartvillage.app",
       "supportsTablet": true,
@@ -43,7 +38,8 @@
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
-      ]
+      ],
+      "jsEngine": "hermes"
     },
     "androidStatusBar": {
       "barStyle": "dark-content",
@@ -52,19 +48,18 @@
     },
     "plugins": [
       [
+        "expo-camera",
+        {
+          "microphonePermission": false
+        }
+      ],
+      [
         "expo-image-picker",
         {
           "microphonePermission": false
         }
       ],
-			[
-				"@viro-community/react-viro",
-				{
-					"androidXrMode": [
-						"AR"
-					]
-				}
-			],
+      "@viro-community/react-viro",
       "sentry-expo"
     ]
   }
