@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { isARSupportedOnDevice } from '@viro-community/react-viro';
 
 import { consts, device, texts } from '../../config';
 import { checkDownloadedData } from '../../helpers';
@@ -14,14 +15,27 @@ import { ARObjectList } from './ARObjectList';
 import { WhatIsARButton } from './WhatIsARButton';
 
 export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
-  const { data: staticData, error, loading, refetch } = useStaticContent({
+  const {
+    data: staticData,
+    error,
+    loading,
+    refetch
+  } = useStaticContent({
     name: `arDownloadableDataList-${tourID}`,
     type: 'json'
   });
 
+  const [isARSupported, setIsARSupported] = useState(false);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(loading);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  useEffect(() => {
+    isARSupportedOnDevice(
+      () => null,
+      () => setIsARSupported(true)
+    );
+  }, []);
 
   useEffect(() => {
     setData(staticData);
@@ -37,7 +51,7 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
     setIsLoading(false);
   };
 
-  if (error) return null;
+  if (error || !isARSupported) return null;
 
   if (isLoading || !staticData) return <LoadingSpinner loading />;
 

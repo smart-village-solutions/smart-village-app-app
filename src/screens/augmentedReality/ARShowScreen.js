@@ -1,19 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
-import {
-  Viro3DObject,
-  ViroAmbientLight,
-  ViroARScene,
-  ViroARSceneNavigator,
-  ViroSound
-} from '@viro-community/react-viro';
+import { ViroARSceneNavigator } from '@viro-community/react-viro';
 
-import { LoadingSpinner } from '../../components';
+import { AugmentedRealityView, LoadingSpinner } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
 
 export const ARShowScreen = ({ navigation, route }) => {
-  const [isStartAnimationAndSound, setIsStartAnimationAndSound] = useState(true);
+  const [isStartAnimationAndSound, setIsStartAnimationAndSound] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isObjectLoading, setIsObjectLoading] = useState(true);
   const [isVideoRecording, setIsVideoRecording] = useState(false);
@@ -24,7 +18,12 @@ export const ARShowScreen = ({ navigation, route }) => {
   const screenshotEffectOpacityRef = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    objectParser({ item: data?.[index], setObject, setIsLoading });
+    objectParser({
+      item: data?.[index],
+      setObject,
+      setIsLoading,
+      onPress: () => navigation.goBack()
+    });
   }, []);
 
   const takeScreenshot = useCallback(async () => {
@@ -163,54 +162,7 @@ export const ARShowScreen = ({ navigation, route }) => {
   );
 };
 
-const AugmentedRealityView = ({ sceneNavigator }) => {
-  const {
-    isObjectLoading,
-    setIsObjectLoading,
-    isStartAnimationAndSound,
-    setIsStartAnimationAndSound,
-    object
-  } = sceneNavigator.viroAppProps;
-
-  // TODO: these data can be updated according to the data coming from the server when the
-  //       real 3D models arrive
-  const position = [0, -1, -5];
-  const rotation = [0, 0, 0];
-  const scale = [0.02, 0.02, 0.02];
-
-  return (
-    <ViroARScene dragType="FixedToWorld">
-      <ViroAmbientLight color={'#fff'} />
-
-      {!!object.mp3 && !isObjectLoading && (
-        <ViroSound
-          source={{ uri: object.mp3 }}
-          paused={!isStartAnimationAndSound}
-          onFinish={() => setIsStartAnimationAndSound(false)}
-        />
-      )}
-
-      <Viro3DObject
-        source={{ uri: object.vrx }}
-        resources={[{ uri: object.png }]}
-        type="VRX"
-        position={position}
-        rotation={rotation}
-        scale={scale}
-        onLoadStart={() => setIsObjectLoading(true)}
-        onLoadEnd={() => setIsObjectLoading(false)}
-        onError={() => alert(texts.augmentedReality.arShowScreen.objectLoadErrorAlert)}
-        animation={{
-          loop: true,
-          name: object.animationName,
-          run: isStartAnimationAndSound
-        }}
-      />
-    </ViroARScene>
-  );
-};
-
-const objectParser = async ({ item, setObject, setIsLoading }) => {
+const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
   let parsedObject = {};
 
   if (item.animationName) {
@@ -220,6 +172,14 @@ const objectParser = async ({ item, setObject, setIsLoading }) => {
   item?.localUris?.forEach((item) => {
     parsedObject[item.type] = item.uri;
   });
+
+  if (!parsedObject.png || !parsedObject.vrx) {
+    return Alert.alert(
+      texts.augmentedReality.modalHiddenAlertTitle,
+      texts.augmentedReality.invalidModelError,
+      [{ text: texts.augmentedReality.ok, onPress }]
+    );
+  }
 
   setObject(parsedObject);
   setIsLoading(false);
@@ -300,8 +260,4 @@ var styles = StyleSheet.create({
 ARShowScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired
-};
-
-AugmentedRealityView.propTypes = {
-  sceneNavigator: PropTypes.object
 };

@@ -1,3 +1,4 @@
+import { isARSupportedOnDevice } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList } from 'react-native';
@@ -58,8 +59,7 @@ const TOP_FILTER = {
 
 const INITIAL_FILTER = [
   { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
-  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false },
-  { id: TOP_FILTER.AR_DOWNLOAD_LIST, title: texts.settingsTitles.tabs.arSettings, selected: false }
+  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false }
 ];
 
 export const SettingsScreen = () => {
@@ -195,6 +195,21 @@ export const SettingsScreen = () => {
     };
 
     updateSectionedData();
+  }, []);
+
+  useEffect(() => {
+    isARSupportedOnDevice(
+      () => null,
+      () =>
+        setFilter([
+          ...filter,
+          {
+            id: TOP_FILTER.AR_DOWNLOAD_LIST,
+            title: texts.settingsTitles.tabs.arSettings,
+            selected: false
+          }
+        ])
+    );
   }, []);
 
   if (!sectionedData.length) {
