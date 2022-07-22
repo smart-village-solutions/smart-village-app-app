@@ -304,6 +304,7 @@ export const texts = {
   eventRecord: {
     appointments: 'Termine',
     description: 'Beschreibung',
+    filterByDailyEvents: 'Nur tagesaktuelle anzeigen',
     operatingCompany: 'Veranstalter',
     prices: 'Preise'
   },

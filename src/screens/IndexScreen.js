@@ -1,25 +1,23 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { Query } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
-import { Query } from 'react-apollo';
+import moment from 'moment';
 
-import { NetworkContext } from '../NetworkProvider';
-import { SettingsContext } from '../SettingsProvider';
 import { auth } from '../auth';
-import { colors, consts, texts } from '../config';
 import {
   CategoryList,
   DropdownHeader,
+  EmptyMessage,
   IndexFilterWrapperAndList,
   ListComponent,
-  EmptyMessage,
   LoadingContainer,
   LocationOverview,
   OptionToggle,
   SafeAreaViewFlex
 } from '../components';
-import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
+import { colors, consts, texts } from '../config';
 import {
   graphqlFetchPolicy,
   isOpen,
@@ -28,6 +26,9 @@ import {
   sortPOIsByDistanceFromPosition
 } from '../helpers';
 import { usePermanentFilter, usePosition, useTrackScreenViewAsync } from '../hooks';
+import { NetworkContext } from '../NetworkProvider';
+import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -63,9 +64,11 @@ const getAdditionalQueryVariables = (query, selectedValue, excludeDataProviderId
   return additionalQueryVariables;
 };
 
+const currentDate = moment().format('YYYY-MM-DD');
+
+/* eslint-disable complexity */
 // TODO: make a list component for POIs that already includes the mapswitchheader?
 // TODO: make a list component that already includes the news/events filter?
-// eslint-disable-next-line complexity
 export const IndexScreen = ({ navigation, route }) => {
   const [topFilter, setTopFilter] = useState(INITIAL_TOP_FILTER);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -76,6 +79,9 @@ export const IndexScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
+  const [filterByDailyEvents, setFilterByDailyEvents] = useState(
+    route.params?.filterByDailyEvents ?? false
+  );
   const { state: excludeDataProviderIds } = usePermanentFilter();
 
   const showMap = isMapSelected(topFilter);
@@ -160,6 +166,28 @@ export const IndexScreen = ({ navigation, route }) => {
   }, [excludeDataProviderIds, query, route.params?.queryVariables]);
 
   useEffect(() => {
+    // if we filter for daily events we need to update the query variables with a date range of today
+    if (filterByDailyEvents) {
+      setQueryVariables((prevQueryVariables) => {
+        // remove a refetch key if present, which was necessary for unselecting daily events
+        delete prevQueryVariables.refetch;
+
+        // add the filter key for the specific query, when filtering for daily events
+        return { ...prevQueryVariables, dateRange: [currentDate, currentDate] };
+      });
+    } else {
+      setQueryVariables((prevQueryVariables) => {
+        // remove the filter key for the specific query, when unselecting daily events
+        delete queryVariables.dateRange;
+        // need to spread the `prevQueryVariables` into a new object with additional refetch key
+        // to force the Query component to update the data, otherwise it is not fired somehow
+        // because the state variable wouldn't change
+        return { ...prevQueryVariables, refetch: true };
+      });
+    }
+  }, [filterByDailyEvents]);
+
+  useEffect(() => {
     if (query) {
       const MATOMO_TRACKING_SCREEN = {
         [QUERY_TYPES.EVENT_RECORDS]: MATOMO_TRACKING.SCREEN_VIEW.EVENT_RECORDS,
@@ -195,7 +223,7 @@ export const IndexScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      {query === QUERY_TYPES.POINTS_OF_INTEREST ? (
+      {query === QUERY_TYPES.POINTS_OF_INTEREST && (
         <View>
           <IndexFilterWrapperAndList filter={topFilter} setFilter={setTopFilter} />
           <OptionToggle
@@ -203,10 +231,9 @@ export const IndexScreen = ({ navigation, route }) => {
             onToggle={() => setFilterByOpeningTimes((value) => !value)}
             value={filterByOpeningTimes}
           />
-
           <Divider />
         </View>
-      ) : null}
+      )}
       {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
         <LocationOverview
           filterByOpeningTimes={filterByOpeningTimes}
@@ -271,7 +298,18 @@ export const IndexScreen = ({ navigation, route }) => {
                 ListHeaderComponent={
                   <>
                     {!!showFilter && (
-                      <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
+                      <>
+                        <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
+                        {query === QUERY_TYPES.EVENT_RECORDS && (
+                          <View>
+                            <OptionToggle
+                              label={texts.eventRecord.filterByDailyEvents}
+                              onToggle={() => setFilterByDailyEvents((value) => !value)}
+                              value={filterByDailyEvents}
+                            />
+                          </View>
+                        )}
+                      </>
                     )}
                     {!!categories?.length && (
                       <CategoryList
@@ -311,6 +349,7 @@ export const IndexScreen = ({ navigation, route }) => {
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 IndexScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
