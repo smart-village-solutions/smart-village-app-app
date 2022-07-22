@@ -53,8 +53,11 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
     />
   );
 
+  /* see `onAnchorFound` function to auto-start animation and sound file 
+     when showing a 3D model that is not `TARGET` in the future time */
+
   return (
-    <ViroARScene dragType="FixedToWorld">
+    <ViroARScene>
       <ViroAmbientLight color={colors.surface} />
 
       {object?.target ? (
