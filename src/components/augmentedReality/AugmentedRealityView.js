@@ -31,6 +31,7 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
   useEffect(() => {
     ViroARTrackingTargets.createTargets({
       [TARGET]: {
+        orientation: 'Up',
         physicalWidth: 0.2, // real world width in meters
         source: { uri: object.target },
         type: 'image'
