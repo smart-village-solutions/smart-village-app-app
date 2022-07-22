@@ -9,6 +9,7 @@ export const GET_NEWS_ITEMS = gql`
     $dataProviderId: ID
     $excludeDataProviderIds: [ID]
     $categoryId: ID
+    $categoryIds: [ID]
   ) {
     newsItems(
       ids: $ids
@@ -18,6 +19,7 @@ export const GET_NEWS_ITEMS = gql`
       dataProviderId: $dataProviderId
       excludeDataProviderIds: $excludeDataProviderIds
       categoryId: $categoryId
+      categoryIds: $categoryIds
     ) {
       id
       mainTitle: title
@@ -69,6 +71,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
     $dataProviderId: ID
     $excludeDataProviderIds: [ID]
     $categoryId: ID
+    $categoryIds: [ID]
   ) {
     newsItems(
       limit: $limit
@@ -77,6 +80,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
       dataProviderId: $dataProviderId
       excludeDataProviderIds: $excludeDataProviderIds
       categoryId: $categoryId
+      categoryIds: $categoryIds
     ) {
       id
       mainTitle: title

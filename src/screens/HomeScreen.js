@@ -116,16 +116,32 @@ export const HomeScreen = ({ navigation, route }) => {
         rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
       }
     },
-    NEWS_ITEMS_INDEX: ({ categoryId, categoryTitle, categoryTitleDetail, rootRouteName }) => ({
-      name: 'Index',
-      params: {
-        title: categoryTitle,
-        titleDetail: categoryTitleDetail,
-        query: QUERY_TYPES.NEWS_ITEMS,
-        queryVariables: { limit: 15, ...{ categoryId } },
-        rootRouteName: rootRouteName || ROOT_ROUTE_NAMES.NEWS_ITEMS
+    NEWS_ITEMS_INDEX: ({
+      categoryId,
+      categoryTitle,
+      categoryTitleDetail,
+      indexCategoryIds,
+      rootRouteName
+    }) => {
+      const queryVariables = { limit: 15 };
+
+      if (indexCategoryIds?.length) {
+        queryVariables.categoryIds = indexCategoryIds;
+      } else {
+        queryVariables.categoryId = categoryId;
       }
-    })
+
+      return {
+        name: 'Index',
+        params: {
+          title: categoryTitle,
+          titleDetail: categoryTitleDetail,
+          query: QUERY_TYPES.NEWS_ITEMS,
+          queryVariables,
+          rootRouteName: rootRouteName || ROOT_ROUTE_NAMES.NEWS_ITEMS
+        }
+      };
+    }
   };
 
   return (
@@ -152,7 +168,14 @@ export const HomeScreen = ({ navigation, route }) => {
         {showNews &&
           categoriesNews.map(
             (
-              { categoryButton, categoryId, categoryTitle, categoryTitleDetail, rootRouteName },
+              {
+                categoryButton,
+                categoryId,
+                categoryTitle,
+                categoryTitleDetail,
+                indexCategoryIds,
+                rootRouteName
+              },
               index
             ) => (
               <HomeSection
@@ -168,6 +191,7 @@ export const HomeScreen = ({ navigation, route }) => {
                       categoryId,
                       categoryTitle,
                       categoryTitleDetail,
+                      indexCategoryIds,
                       rootRouteName
                     })
                   )
