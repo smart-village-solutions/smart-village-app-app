@@ -7,7 +7,7 @@ import { colors, texts } from '../../config';
 import { location, locationIconAnchor } from '../../icons';
 import { isFeature, isFeatureCollection, isMultiPoint, isPoint } from '../../jsonValidation';
 import { LocationData } from '../../types';
-import { WebViewMap } from '../map';
+import { Map } from '../map';
 import { WrapperHorizontal } from '../Wrapper';
 
 import { Row, SimpleRow } from './Row';
@@ -113,7 +113,7 @@ export const Location = ({ data, navigation }: Props) => {
       <Row fullText left={locationTexts.postalCode} right={postalCode} />
       <Row fullText left={locationTexts.locality} right={localityString} />
       <Row fullText left={locationTexts.room} right={room} />
-      {!!mapMarkers.length && <WebViewMap locations={mapMarkers} />}
+      {!!mapMarkers.length && <Map locations={mapMarkers} />}
       <OParlPreviewSection
         data={meetings ?? meeting}
         header={locationTexts.meeting}
