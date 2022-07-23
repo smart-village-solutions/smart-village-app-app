@@ -115,16 +115,6 @@ export const LocationSettings = () => {
           </RegularText>
         </Wrapper>
         <Collapsible collapsed={!showMap}>
-          {/* <WebViewMap
-            mapCenterPosition={{ lat: 51.1657, lng: 10.4515 }} // center of germany
-            locations={locations}
-            onMessageReceived={(msg) => {
-              if (msg.event === 'onMapClicked') {
-                setSelectedPosition(msg.payload.touchLatLng);
-              }
-            }}
-            zoom={4} // this sets the zoom to show all of germany
-          /> */}
           <Map
             locations={locations}
             mapCenterPosition={{ lat: 51.1657, lng: 10.4515 }} // center of germany
