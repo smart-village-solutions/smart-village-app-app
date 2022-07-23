@@ -14,7 +14,7 @@ import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
-import { WebViewMap } from '../map/WebViewMap';
+import { Map } from '../map';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
@@ -162,7 +162,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
                 {texts.pointOfInterest.location}
               </Title>
             </TitleContainer>
-            <WebViewMap
+            <Map
               locations={[
                 {
                   icon: location(colors.primary),
