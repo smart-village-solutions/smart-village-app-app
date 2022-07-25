@@ -32,6 +32,10 @@ export const texts = {
       header: 'AR-Kunstwerk'
     },
     cancel: 'Abbrechen',
+    filter: {
+      mapView: 'Kartenansicht',
+      listView: 'Listenansicht'
+    },
     hide: 'Ausblenden',
     invalidModelError: 'Das 3D-Modell konnte nicht richtig geladen werden.',
     loadingArtworks: 'Kunstwerke laden',

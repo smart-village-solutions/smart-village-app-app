@@ -2,17 +2,30 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { isARSupportedOnDevice } from '@viro-community/react-viro';
 
-import { consts, device, texts } from '../../config';
-import { checkDownloadedData } from '../../helpers';
+import { colors, consts, device, texts } from '../../config';
 import { useStaticContent } from '../../hooks';
+import { location, locationIconAnchor } from '../../icons';
+import { ScreenName } from '../../types';
 import { Button } from '../Button';
+import { IndexFilterWrapperAndList } from '../IndexFilterWrapperAndList';
 import { LoadingSpinner } from '../LoadingSpinner';
+import { Map } from '../map';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper } from '../Wrapper';
 
 import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
 import { WhatIsARButton } from './WhatIsARButton';
+
+const TOP_FILTER = {
+  MAP_VIEW: 'mapView',
+  LIST_VIEW: 'listView'
+};
+
+const INITIAL_FILTER = [
+  { id: TOP_FILTER.MAP_VIEW, title: texts.augmentedReality.filter.mapView, selected: true },
+  { id: TOP_FILTER.LIST_VIEW, title: texts.augmentedReality.filter.listView, selected: false }
+];
 
 export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
   const {
@@ -25,10 +38,13 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
     type: 'json'
   });
 
-  const [isARSupported, setIsARSupported] = useState(false);
   const [data, setData] = useState([]);
+  const [filter, setFilter] = useState(INITIAL_FILTER);
+  const [isARSupported, setIsARSupported] = useState(false);
   const [isLoading, setIsLoading] = useState(loading);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const selectedFilterId = filter.find((entry) => entry.selected)?.id;
+  const [modelId, setModelId] = useState();
 
   useEffect(() => {
     isARSupportedOnDevice(
@@ -54,6 +70,8 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
   if (error || !isARSupported) return null;
 
   if (isLoading || !staticData) return <LoadingSpinner loading />;
+
+  const mapMarkers = mapToMapMarkers(staticData);
 
   const a11yText = consts.a11yLabel;
 
@@ -90,14 +108,25 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
 
-      <ARObjectList
-        data={data}
-        setData={setData}
-        isLoading={isLoading}
-        navigation={navigation}
-        refetch={refetch}
-        showOnDetailPage
-      />
+      <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
+
+      {selectedFilterId === TOP_FILTER.LIST_VIEW && (
+        <ARObjectList
+          data={data}
+          setData={setData}
+          isLoading={isLoading}
+          navigation={navigation}
+          refetch={refetch}
+          showOnDetailPage
+        />
+      )}
+
+      {selectedFilterId === TOP_FILTER.MAP_VIEW && (
+        <Map
+          locations={mapMarkers}
+          onMarkerPress={setModelId}
+        />
+      )}
 
       <ARModal
         data={data}
@@ -111,6 +140,26 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
       />
     </>
   );
+};
+
+const mapToMapMarkers = (augmentedReality) => {
+  return augmentedReality
+    ?.map((item) => {
+      const latitude = item.location.lat;
+      const longitude = item.location.lng;
+
+      if (!latitude || !longitude) return undefined;
+      return {
+        icon: location(colors.primary),
+        iconAnchor: locationIconAnchor,
+        id: item.id.toString(),
+        position: {
+          lat: latitude,
+          lng: longitude
+        }
+      };
+    })
+    .filter((item) => item !== undefined);
 };
 
 AugmentedReality.propTypes = {
