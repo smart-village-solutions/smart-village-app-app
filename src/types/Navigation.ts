@@ -35,6 +35,7 @@ export enum ScreenName {
   Html = 'Html',
   Index = 'Index',
   Lunch = 'Lunch',
+  MapView = 'MapView',
   MultiButton = 'MultiButton',
   NestedInfo = 'NestedInfo',
   OParlCalendar = 'OParlCalendar',

@@ -9,11 +9,13 @@ import { imageHeight, imageWidth } from '../../helpers';
 import { MapMarker } from '../../types';
 
 type Props = {
+  isMaximizeButtonVisible?: boolean;
   locations?: MapMarker[];
   mapCenterPosition?: { lat: number; lng: number };
   mapStyle?: StyleProp<ViewStyle>;
   onMapPress?: () => void;
   onMarkerPress?: (arg0?: string) => void;
+  onMaximizeButtonPress?: () => void;
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
   zoom?: number;
@@ -25,11 +27,13 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (device.width / (device.height / 2));
 
 export const Map = ({
+  isMaximizeButtonVisible,
   locations,
   mapCenterPosition,
   mapStyle,
   onMapPress,
   onMarkerPress,
+  onMaximizeButtonPress,
   showsUserLocation = true,
   style,
   zoom
@@ -95,6 +99,11 @@ export const Map = ({
           </Marker>
         ))}
       </MapView>
+      {isMaximizeButtonVisible && (
+        <TouchableOpacity style={stylesForMap().maximizeMapButton} onPress={onMaximizeButtonPress}>
+          <Icon.NamedIcon name="expand" color={colors.primary} size={normalize(18)} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -114,6 +123,19 @@ const stylesForMap = () => {
       backgroundColor: colors.lightestText,
       flex: 1,
       justifyContent: 'center'
+    },
+    maximizeMapButton: {
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: 50,
+      bottom: normalize(15),
+      height: normalize(48),
+      justifyContent: 'center',
+      opacity: 0.6,
+      position: 'absolute',
+      right: normalize(15),
+      width: normalize(48),
+      zIndex: 1
     },
     map: {
       alignSelf: 'center',

@@ -136,6 +136,18 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
         <Map
           locations={mapMarkers}
           onMarkerPress={setModelId}
+          onMaximizeButtonPress={() =>
+            navigation.navigate(ScreenName.MapView, {
+              augmentedRealityData: {
+                data,
+                refetch
+              },
+              isAugmentedReality: true,
+              isMaximizeButtonVisible: false,
+              locations: mapMarkers
+            })
+          }
+          isMaximizeButtonVisible
         />
       )}
 

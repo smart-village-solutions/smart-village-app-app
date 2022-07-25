@@ -657,6 +657,7 @@ export const texts = {
     encounterHome: 'Mitfahrbank',
     feedback: 'Feedback',
     home: appJson.expo.name,
+    mapView: 'Kartenansicht',
     routePlanner: 'Routenplaner bbnavi',
     service: appJson.expo.name,
     settings: 'Einstellungen',
