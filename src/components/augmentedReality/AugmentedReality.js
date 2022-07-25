@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { isARSupportedOnDevice } from '@viro-community/react-viro';
 
 import { colors, consts, device, texts } from '../../config';
+import { checkDownloadedData, navigationToArtworksDetailScreen } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { location, locationIconAnchor } from '../../icons';
 import { ScreenName } from '../../types';
@@ -52,6 +53,16 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
       () => setIsARSupported(true)
     );
   }, []);
+
+  useEffect(() => {
+    navigationToArtworksDetailScreen({
+      data,
+      isNavigation: true,
+      modelId,
+      navigation,
+      refetch
+    });
+  }, [modelId]);
 
   useEffect(() => {
     setData(staticData);

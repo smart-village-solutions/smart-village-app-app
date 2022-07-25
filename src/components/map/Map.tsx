@@ -1,10 +1,10 @@
-import React, { useRef, useState } from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import React, { useRef } from 'react';
+import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { normalize } from 'react-native-elements';
 import MapView, { MAP_TYPES, Marker, UrlTile } from 'react-native-maps';
 import { SvgXml } from 'react-native-svg';
 
-import { colors, device } from '../../config';
+import { colors, device, Icon } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
 import { MapMarker } from '../../types';
 
@@ -14,6 +14,7 @@ type Props = {
   mapStyle?: StyleProp<ViewStyle>;
   onMapPress?: () => void;
   onMarkerPress?: (arg0?: string) => void;
+  showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
   zoom?: number;
 };
@@ -26,14 +27,14 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * (device.width / (device.height / 2));
 export const Map = ({
   locations,
   mapCenterPosition,
-  style,
   mapStyle,
-  onMarkerPress,
   onMapPress,
+  onMarkerPress,
+  showsUserLocation = true,
+  style,
   zoom
 }: Props) => {
   const refForMapView = useRef<MapView>(null);
-  const [showsUserLocation, setShowsUserLocation] = useState(true);
   const initialRegion = mapCenterPosition
     ? {
         latitude: mapCenterPosition.lat,
