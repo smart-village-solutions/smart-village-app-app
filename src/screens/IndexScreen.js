@@ -308,7 +308,7 @@ export const IndexScreen = ({ navigation, route }) => {
               <ListComponent
                 ListHeaderComponent={
                   <>
-                    {!!showFilter && (
+                    {!!showFilter && (query === QUERY_TYPES.EVENT_RECORDS || !loading) && (
                       <>
                         <DropdownHeader
                           {...{
