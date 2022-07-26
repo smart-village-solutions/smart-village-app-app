@@ -1,9 +1,9 @@
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
-import moment from 'moment';
 
 import { auth } from '../auth';
 import {
@@ -113,7 +113,28 @@ export const IndexScreen = ({ navigation, route }) => {
     [isConnected, setRefreshing]
   );
 
-  const updateListData = useCallback(
+  const buildListItems = useCallback(
+    (data) => {
+      let listItems = parseListItemsFromQuery(query, data, titleDetail, {
+        bookmarkable,
+        withDate: false,
+        queryVariables
+      });
+
+      if (filterByOpeningTimes) {
+        listItems = listItems?.filter((entry) => isOpen(entry.params?.details?.openingHours)?.open);
+      }
+
+      if (sortByDistance && position && listItems?.length) {
+        listItems = sortPOIsByDistanceFromPosition(listItems, position.coords);
+      }
+
+      return listItems;
+    },
+    [query, queryVariables, filterByOpeningTimes]
+  );
+
+  const updateListDataByDropdown = useCallback(
     (selectedValue) => {
       const additionalQueryVariables = getAdditionalQueryVariables(
         query,
@@ -130,9 +151,9 @@ export const IndexScreen = ({ navigation, route }) => {
         setQueryVariables((prevQueryVariables) => {
           // remove the filter key for the specific query, when selecting "- Alle -"
           delete prevQueryVariables[keyForSelectedValueByQuery[query]];
-          // need to spread the `prevQueryVariables` into a new object with additional refetch key
-          // to force the Query component to update the data, otherwise it is not fired somehow
-          // because the state variable wouldn't change
+          // need to spread the `prevQueryVariables` into a new object with additional
+          // refetch key to force the Query component to update the data, otherwise it is
+          // not fired somehow because the state variable wouldn't change
           return { ...prevQueryVariables, refetch: true };
         });
       }
@@ -140,10 +161,38 @@ export const IndexScreen = ({ navigation, route }) => {
     [excludeDataProviderIds, setQueryVariables, query, queryVariables]
   );
 
+  const updateListDataByDailySwitch = useCallback(() => {
+    // update switch state as well
+    setFilterByDailyEvents((oldSwitchValue) => {
+      // if `oldSwitchValue` wa false, we now activate the daily filter and set a date range
+      if (!oldSwitchValue) {
+        setQueryVariables((prevQueryVariables) => {
+          // remove a refetch key if present, which was necessary for unselecting daily events
+          delete prevQueryVariables.refetchDate;
+
+          // add the filter key for the specific query, when filtering for daily events
+          return { ...prevQueryVariables, dateRange: [currentDate, currentDate] };
+        });
+      } else {
+        setQueryVariables((prevQueryVariables) => {
+          // remove the filter key for the specific query, when unselecting daily events
+          delete queryVariables.dateRange;
+          // need to spread the `prevQueryVariables` into a new object with additional refetchDate key
+          // to force the Query component to update the data, otherwise it is not fired somehow
+          // because the state variable wouldn't change
+          return { ...prevQueryVariables, refetchDate: true };
+        });
+      }
+
+      return !oldSwitchValue;
+    });
+  }, [filterByDailyEvents, setQueryVariables, queryVariables]);
+
   // if we show the map or want to sort by distance, we need to fetch all the entries at once
-  // this is not a big issue if we want to sort by distance, because getting the location usually takes longer than fetching all entries
-  // if we filter by opening times, we need to also remove the limit as otherwise we might not have any open POIs in the next batch
-  // that would result in the list not getting any new items and not reliably triggering another fetchMore
+  // this is not a big issue if we want to sort by distance, because getting the location usually
+  // takes longer than fetching all entries if we filter by opening times, we need to also remove
+  // the limit as otherwise we might not have any open POIs in the next batch that would result in
+  // the list not getting any new items and not reliably triggering another fetchMore
   if (showMap || sortByDistance || filterByOpeningTimes) {
     delete queryVariables.limit;
   }
@@ -164,28 +213,6 @@ export const IndexScreen = ({ navigation, route }) => {
 
     setQueryVariables(variables);
   }, [excludeDataProviderIds, query, route.params?.queryVariables]);
-
-  useEffect(() => {
-    // if we filter for daily events we need to update the query variables with a date range of today
-    if (filterByDailyEvents) {
-      setQueryVariables((prevQueryVariables) => {
-        // remove a refetch key if present, which was necessary for unselecting daily events
-        delete prevQueryVariables.refetch;
-
-        // add the filter key for the specific query, when filtering for daily events
-        return { ...prevQueryVariables, dateRange: [currentDate, currentDate] };
-      });
-    } else {
-      setQueryVariables((prevQueryVariables) => {
-        // remove the filter key for the specific query, when unselecting daily events
-        delete queryVariables.dateRange;
-        // need to spread the `prevQueryVariables` into a new object with additional refetch key
-        // to force the Query component to update the data, otherwise it is not fired somehow
-        // because the state variable wouldn't change
-        return { ...prevQueryVariables, refetch: true };
-      });
-    }
-  }, [filterByDailyEvents]);
 
   useEffect(() => {
     if (query) {
@@ -252,28 +279,12 @@ export const IndexScreen = ({ navigation, route }) => {
           fetchPolicy={fetchPolicy}
         >
           {({ data, loading, fetchMore, refetch }) => {
-            if (loading || loadingPosition) {
+            if ((!data && loading) || loadingPosition) {
               return (
                 <LoadingContainer>
                   <ActivityIndicator color={colors.accent} />
                 </LoadingContainer>
               );
-            }
-
-            let listItems = parseListItemsFromQuery(query, data, titleDetail, {
-              bookmarkable,
-              withDate: false,
-              queryVariables
-            });
-
-            if (filterByOpeningTimes) {
-              listItems = listItems?.filter(
-                (entry) => isOpen(entry.params?.details?.openingHours)?.open
-              );
-            }
-
-            if (sortByDistance && position && listItems?.length) {
-              listItems = sortPOIsByDistanceFromPosition(listItems, position.coords);
             }
 
             const fetchMoreData = () =>
@@ -299,12 +310,19 @@ export const IndexScreen = ({ navigation, route }) => {
                   <>
                     {!!showFilter && (
                       <>
-                        <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
+                        <DropdownHeader
+                          {...{
+                            query,
+                            queryVariables,
+                            data,
+                            updateListData: updateListDataByDropdown
+                          }}
+                        />
                         {query === QUERY_TYPES.EVENT_RECORDS && (
                           <View>
                             <OptionToggle
                               label={texts.eventRecord.filterByDailyEvents}
-                              onToggle={() => setFilterByDailyEvents((value) => !value)}
+                              onToggle={updateListDataByDailySwitch}
                               value={filterByDailyEvents}
                             />
                           </View>
@@ -322,12 +340,18 @@ export const IndexScreen = ({ navigation, route }) => {
                   </>
                 }
                 ListEmptyComponent={
-                  <EmptyMessage
-                    title={categories?.length ? texts.empty.categoryList : texts.empty.list}
-                  />
+                  loading ? (
+                    <LoadingContainer>
+                      <ActivityIndicator color={colors.accent} />
+                    </LoadingContainer>
+                  ) : (
+                    <EmptyMessage
+                      title={categories?.length ? texts.empty.categoryList : texts.empty.list}
+                    />
+                  )
                 }
                 navigation={navigation}
-                data={listItems}
+                data={loading ? [] : buildListItems(data)}
                 horizontal={false}
                 sectionByDate={true}
                 query={query}

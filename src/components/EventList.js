@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { SectionList } from 'react-native';
+import { SectionList, StyleSheet } from 'react-native';
 
 import { momentFormat } from '../helpers';
 import { useRenderItem } from '../hooks';
@@ -75,9 +75,16 @@ export const EventList = ({
       )}
       sections={sectionedData}
       stickySectionHeadersEnabled
+      contentContainerStyle={styles.contentContainerStyle}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  contentContainerStyle: {
+    flexGrow: 1
+  }
+});
 
 EventList.propTypes = {
   data: PropTypes.array,
