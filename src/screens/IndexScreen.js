@@ -49,6 +49,7 @@ const keyForSelectedValueByQuery = {
   [QUERY_TYPES.EVENT_RECORDS]: 'categoryId',
   [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
 };
+
 const getAdditionalQueryVariables = (query, selectedValue, excludeDataProviderIds) => {
   const keyForSelectedValue = keyForSelectedValueByQuery[query];
   const additionalQueryVariables = {};
@@ -136,17 +137,14 @@ export const IndexScreen = ({ navigation, route }) => {
 
   const updateListDataByDropdown = useCallback(
     (selectedValue) => {
-      const additionalQueryVariables = getAdditionalQueryVariables(
-        query,
-        selectedValue,
-        excludeDataProviderIds
-      );
-
       if (selectedValue) {
         // remove a refetch key if present, which was necessary for the "- Alle -" selection
         delete queryVariables.refetch;
 
-        setQueryVariables({ ...queryVariables, ...additionalQueryVariables });
+        setQueryVariables({
+          ...queryVariables,
+          ...getAdditionalQueryVariables(query, selectedValue, excludeDataProviderIds)
+        });
       } else {
         setQueryVariables((prevQueryVariables) => {
           // remove the filter key for the specific query, when selecting "- Alle -"
@@ -158,7 +156,7 @@ export const IndexScreen = ({ navigation, route }) => {
         });
       }
     },
-    [excludeDataProviderIds, setQueryVariables, query, queryVariables]
+    [excludeDataProviderIds, query, queryVariables]
   );
 
   const updateListDataByDailySwitch = useCallback(() => {
@@ -186,7 +184,7 @@ export const IndexScreen = ({ navigation, route }) => {
 
       return !oldSwitchValue;
     });
-  }, [filterByDailyEvents, setQueryVariables, queryVariables]);
+  }, [filterByDailyEvents, queryVariables]);
 
   // if we show the map or want to sort by distance, we need to fetch all the entries at once
   // this is not a big issue if we want to sort by distance, because getting the location usually
@@ -205,7 +203,7 @@ export const IndexScreen = ({ navigation, route }) => {
     // we want to ensure when changing from one index screen to another, for example from
     // news to events, that the query variables are taken freshly. otherwise the mounted screen can
     // have query variables from the previous screen, that does not work. this can result in an
-    // empty screen because the query is not retuning anything.
+    // empty screen because the query is not returning anything.
     const variables = {
       ...(route.params?.queryVariables ?? {}),
       ...getAdditionalQueryVariables(query, undefined, excludeDataProviderIds)
@@ -308,13 +306,13 @@ export const IndexScreen = ({ navigation, route }) => {
               <ListComponent
                 ListHeaderComponent={
                   <>
-                    {!!showFilter && (query === QUERY_TYPES.EVENT_RECORDS || !loading) && (
+                    {!!showFilter && (
                       <>
                         <DropdownHeader
                           {...{
                             query,
                             queryVariables,
-                            data,
+                            data: loading ? {} : data,
                             updateListData: updateListDataByDropdown
                           }}
                         />
