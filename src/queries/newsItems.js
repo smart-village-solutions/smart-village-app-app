@@ -71,7 +71,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
     $dataProviderId: ID
     $excludeDataProviderIds: [ID]
     $categoryId: ID
-    $categoryIds: [ID]
+    $categoryIds: [ID!]
   ) {
     newsItems(
       limit: $limit
@@ -121,7 +121,7 @@ export const GET_NEWS_ITEMS_AND_DATA_PROVIDERS = gql`
         onlySummaryLinkText
       }
     }
-    dataProviders: newsItemsDataProviders(categoryId: $categoryId) {
+    dataProviders: newsItemsDataProviders(categoryId: $categoryId, categoryIds: $categoryIds) {
       id
       name
     }
