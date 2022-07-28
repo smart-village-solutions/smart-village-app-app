@@ -1,19 +1,14 @@
 import _isEmpty from 'lodash/isEmpty';
 import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { colors, device, Icon, normalize, texts } from '../config';
+import { texts } from '../config';
 import { usePermanentFilter } from '../hooks';
-import { OrientationContext } from '../OrientationProvider';
 import { QUERY_TYPES } from '../queries';
 
 import { DropdownSelect } from './DropdownSelect';
-import { Label } from './Label';
-import { RegularText } from './Text';
-import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
+import { Wrapper } from './Wrapper';
 
 const dropdownEntries = (query, queryVariables, data, excludedDataProviders) => {
   // check if there is something set in the certain `queryVariables`
@@ -24,7 +19,7 @@ const dropdownEntries = (query, queryVariables, data, excludedDataProviders) => 
   }[query];
 
   const blankEntry = {
-    id: '-1',
+    id: '0',
     index: 0,
     value: '- Alle -',
     selected
@@ -59,12 +54,6 @@ const dropdownEntries = (query, queryVariables, data, excludedDataProviders) => 
 };
 
 export const DropdownHeader = ({ query, queryVariables, data, updateListData }) => {
-  const isEmptyData = _isEmpty(data);
-  const { orientation } = useContext(OrientationContext);
-  const { left: safeAreaLeft } = useSafeAreaInsets();
-
-  const marginHorizontal = normalize(14) + safeAreaLeft;
-
   const dropdownLabel = {
     [QUERY_TYPES.EVENT_RECORDS]: texts.categoryFilter.category,
     [QUERY_TYPES.NEWS_ITEMS]: texts.categoryFilter.dataProvider
@@ -81,81 +70,39 @@ export const DropdownHeader = ({ query, queryVariables, data, updateListData }) 
     dropdownEntries(query, queryVariables, data, excludedDataProviders)
   );
 
+  const selectedDropdownData = dropdownData?.find((entry) => entry.selected) || {};
+
   // https://medium.com/swlh/prevent-useeffects-callback-firing-during-initial-render-the-armchair-critic-f71bc0e03536
   const initialRender = useRef(true);
 
-  const selectedDropdownData = dropdownData?.find((entry) => entry.selected) || {};
-
   useEffect(() => {
-    !isEmptyData &&
-      setDropdownData(dropdownEntries(query, queryVariables, data, excludedDataProviders));
+    setDropdownData(dropdownEntries(query, queryVariables, data, excludedDataProviders));
   }, [data]);
 
-  // influence list data when changing selected dropdown value
+  // influence list data when changing selected dropdown value,
   // call update of the list with the selected key
   useEffect(() => {
     if (initialRender.current) {
       initialRender.current = false;
     } else {
-      // do not pass the value, if the index is 0, because we do not want to use "- Alle -" or "-1"
-      // inside of updateListData
-      !isEmptyData &&
-        updateListData(!!selectedDropdownData?.index && selectedDropdownData[selectedKey]);
+      // update list data on selection only if there is some selected data from the dropdown and do
+      // not pass the value, if the index is 0, because we do not want to use "- Alle -" or "0"
+      // inside of `updateListData`
+      !_isEmpty(selectedDropdownData) &&
+        updateListData(!!selectedDropdownData.index && selectedDropdownData[selectedKey]);
     }
   }, [selectedDropdownData]);
 
-  if (!isEmptyData && dropdownData.length <= 2) return null;
+  // if we have too few entries, we do not want to show the dropdown, where users would have
+  // nothing to chose from
+  if (dropdownData?.length <= 2) return null;
 
   return (
     <Wrapper>
-      {isEmptyData ? (
-        <View>
-          <WrapperHorizontal>
-            <Label>{dropdownLabel}</Label>
-          </WrapperHorizontal>
-          <View
-            style={[
-              styles.dropdownDropdown,
-              {
-                width:
-                  (orientation === 'portrait' ? device.width : device.height) - 2 * marginHorizontal
-              }
-            ]}
-          >
-            <WrapperRow style={styles.dropdownTextWrapper}>
-              <RegularText style={styles.selectedValueText}>
-                {selectedDropdownData?.value || '- Alle -'}
-              </RegularText>
-              <Icon.ArrowDown />
-            </WrapperRow>
-          </View>
-        </View>
-      ) : (
-        <DropdownSelect data={dropdownData} setData={setDropdownData} label={dropdownLabel} />
-      )}
+      <DropdownSelect data={dropdownData} setData={setDropdownData} label={dropdownLabel} />
     </Wrapper>
   );
 };
-
-const styles = StyleSheet.create({
-  dropdownTextWrapper: {
-    borderColor: colors.borderRgba,
-    borderWidth: StyleSheet.hairlineWidth,
-    justifyContent: 'space-between',
-    padding: normalize(14)
-  },
-  dropdownDropdown: {
-    borderColor: colors.borderRgba,
-    borderRadius: 0,
-    borderWidth: StyleSheet.hairlineWidth,
-    elevation: 2,
-    shadowColor: colors.shadow,
-    shadowOffset: { height: 5, width: 0 },
-    shadowOpacity: 0.5,
-    shadowRadius: 3
-  },
-  selectedValueText: { width: '90%' }
-});
 
 DropdownHeader.propTypes = {
   query: PropTypes.string.isRequired,

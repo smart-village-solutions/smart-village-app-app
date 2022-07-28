@@ -54,12 +54,12 @@ const getAdditionalQueryVariables = (query, selectedValue, excludeDataProviderId
   const keyForSelectedValue = keyForSelectedValueByQuery[query];
   const additionalQueryVariables = {};
 
-  if (query === QUERY_TYPES.NEWS_ITEMS) {
-    additionalQueryVariables.excludeDataProviderIds = excludeDataProviderIds;
-  }
-
   if (selectedValue) {
     additionalQueryVariables[keyForSelectedValue] = selectedValue;
+  }
+
+  if (excludeDataProviderIds?.length) {
+    additionalQueryVariables.excludeDataProviderIds = excludeDataProviderIds;
   }
 
   return additionalQueryVariables;
@@ -132,37 +132,46 @@ export const IndexScreen = ({ navigation, route }) => {
 
       return listItems;
     },
-    [query, queryVariables, filterByOpeningTimes]
+    [query, queryVariables, filterByOpeningTimes, sortByDistance, position]
   );
 
   const updateListDataByDropdown = useCallback(
     (selectedValue) => {
       if (selectedValue) {
-        // remove a refetch key if present, which was necessary for the "- Alle -" selection
-        delete queryVariables.refetch;
+        setQueryVariables((prevQueryVariables) => {
+          // remove a refetch key if present, which was necessary for the "- Alle -" selection
+          delete prevQueryVariables.refetch;
 
-        setQueryVariables({
-          ...queryVariables,
-          ...getAdditionalQueryVariables(query, selectedValue, excludeDataProviderIds)
+          return {
+            ...prevQueryVariables,
+            ...getAdditionalQueryVariables(query, selectedValue, excludeDataProviderIds)
+          };
         });
       } else {
-        setQueryVariables((prevQueryVariables) => {
-          // remove the filter key for the specific query, when selecting "- Alle -"
-          delete prevQueryVariables[keyForSelectedValueByQuery[query]];
-          // need to spread the `prevQueryVariables` into a new object with additional
-          // refetch key to force the Query component to update the data, otherwise it is
-          // not fired somehow because the state variable wouldn't change
-          return { ...prevQueryVariables, refetch: true };
-        });
+        if (
+          Object.prototype.hasOwnProperty.call(queryVariables, [
+            keyForSelectedValueByQuery?.[query]
+          ])
+        ) {
+          setQueryVariables((prevQueryVariables) => {
+            // remove the filter key for the specific query if present, when selecting "- Alle -"
+            delete prevQueryVariables[keyForSelectedValueByQuery[query]];
+
+            // need to spread the prior `queryVariables` into a new object with additional
+            // refetch key to force the Query component to update the data, otherwise it is
+            // not fired somehow because the state variable wouldn't change
+            return { ...prevQueryVariables, refetch: true };
+          });
+        }
       }
     },
-    [excludeDataProviderIds, query, queryVariables]
+    [query, queryVariables, excludeDataProviderIds]
   );
 
   const updateListDataByDailySwitch = useCallback(() => {
     // update switch state as well
     setFilterByDailyEvents((oldSwitchValue) => {
-      // if `oldSwitchValue` wa false, we now activate the daily filter and set a date range
+      // if `oldSwitchValue` was false, we now activate the daily filter and set a date range
       if (!oldSwitchValue) {
         setQueryVariables((prevQueryVariables) => {
           // remove a refetch key if present, which was necessary for unselecting daily events
@@ -174,7 +183,8 @@ export const IndexScreen = ({ navigation, route }) => {
       } else {
         setQueryVariables((prevQueryVariables) => {
           // remove the filter key for the specific query, when unselecting daily events
-          delete queryVariables.dateRange;
+          delete prevQueryVariables.dateRange;
+
           // need to spread the `prevQueryVariables` into a new object with additional refetchDate key
           // to force the Query component to update the data, otherwise it is not fired somehow
           // because the state variable wouldn't change
@@ -204,13 +214,11 @@ export const IndexScreen = ({ navigation, route }) => {
     // news to events, that the query variables are taken freshly. otherwise the mounted screen can
     // have query variables from the previous screen, that does not work. this can result in an
     // empty screen because the query is not returning anything.
-    const variables = {
+    setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
       ...getAdditionalQueryVariables(query, undefined, excludeDataProviderIds)
-    };
-
-    setQueryVariables(variables);
-  }, [excludeDataProviderIds, query, route.params?.queryVariables]);
+    });
+  }, [route.params?.queryVariables, query, excludeDataProviderIds]);
 
   useEffect(() => {
     if (query) {
@@ -302,6 +310,15 @@ export const IndexScreen = ({ navigation, route }) => {
                 }
               });
 
+            // hack to force the query to refetch for the data provider filter when the user
+            // navigates from one news items index to another
+            const initialNewsItemsFetch =
+              query === QUERY_TYPES.NEWS_ITEMS &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, [
+                keyForSelectedValueByQuery?.[query]
+              ]) &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
+
             return (
               <ListComponent
                 ListHeaderComponent={
@@ -312,11 +329,11 @@ export const IndexScreen = ({ navigation, route }) => {
                           {...{
                             query,
                             queryVariables,
-                            data: loading ? {} : data,
+                            data: initialNewsItemsFetch && loading ? {} : data,
                             updateListData: updateListDataByDropdown
                           }}
                         />
-                        {query === QUERY_TYPES.EVENT_RECORDS && (
+                        {query === QUERY_TYPES.EVENT_RECORDS && data?.categories?.length && (
                           <View>
                             <OptionToggle
                               label={texts.eventRecord.filterByDailyEvents}
