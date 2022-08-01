@@ -218,6 +218,9 @@ export const IndexScreen = ({ navigation, route }) => {
       ...(route.params?.queryVariables ?? {}),
       ...getAdditionalQueryVariables(query, undefined, excludeDataProviderIds)
     });
+    // reset daily events filter as well when navigating from one index screen to a new events index
+    setFilterByDailyEvents(route.params?.filterByDailyEvents);
+    navigation.setParams({ filterByDailyEvents: false });
   }, [route.params?.queryVariables, query, excludeDataProviderIds]);
 
   useEffect(() => {
