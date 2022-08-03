@@ -1,25 +1,23 @@
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { Query } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
-import { Query } from 'react-apollo';
 
-import { NetworkContext } from '../NetworkProvider';
-import { SettingsContext } from '../SettingsProvider';
 import { auth } from '../auth';
-import { colors, consts, texts } from '../config';
 import {
   CategoryList,
   DropdownHeader,
+  EmptyMessage,
   IndexFilterWrapperAndList,
   ListComponent,
-  EmptyMessage,
   LoadingContainer,
   LocationOverview,
   OptionToggle,
   SafeAreaViewFlex
 } from '../components';
-import { getQuery, getFetchMoreQuery, QUERY_TYPES } from '../queries';
+import { colors, consts, texts } from '../config';
 import {
   graphqlFetchPolicy,
   isOpen,
@@ -28,6 +26,9 @@ import {
   sortPOIsByDistanceFromPosition
 } from '../helpers';
 import { usePermanentFilter, usePosition, useTrackScreenViewAsync } from '../hooks';
+import { NetworkContext } from '../NetworkProvider';
+import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -48,24 +49,27 @@ const keyForSelectedValueByQuery = {
   [QUERY_TYPES.EVENT_RECORDS]: 'categoryId',
   [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
 };
+
 const getAdditionalQueryVariables = (query, selectedValue, excludeDataProviderIds) => {
   const keyForSelectedValue = keyForSelectedValueByQuery[query];
   const additionalQueryVariables = {};
-
-  if (query === QUERY_TYPES.NEWS_ITEMS) {
-    additionalQueryVariables.excludeDataProviderIds = excludeDataProviderIds;
-  }
 
   if (selectedValue) {
     additionalQueryVariables[keyForSelectedValue] = selectedValue;
   }
 
+  if (excludeDataProviderIds?.length) {
+    additionalQueryVariables.excludeDataProviderIds = excludeDataProviderIds;
+  }
+
   return additionalQueryVariables;
 };
 
+const currentDate = moment().format('YYYY-MM-DD');
+
+/* eslint-disable complexity */
 // TODO: make a list component for POIs that already includes the mapswitchheader?
 // TODO: make a list component that already includes the news/events filter?
-// eslint-disable-next-line complexity
 export const IndexScreen = ({ navigation, route }) => {
   const [topFilter, setTopFilter] = useState(INITIAL_TOP_FILTER);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -76,6 +80,9 @@ export const IndexScreen = ({ navigation, route }) => {
   const [refreshing, setRefreshing] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
+  const [filterByDailyEvents, setFilterByDailyEvents] = useState(
+    route.params?.filterByDailyEvents ?? false
+  );
   const { state: excludeDataProviderIds } = usePermanentFilter();
 
   const showMap = isMapSelected(topFilter);
@@ -107,37 +114,93 @@ export const IndexScreen = ({ navigation, route }) => {
     [isConnected, setRefreshing]
   );
 
-  const updateListData = useCallback(
-    (selectedValue) => {
-      const additionalQueryVariables = getAdditionalQueryVariables(
-        query,
-        selectedValue,
-        excludeDataProviderIds
-      );
+  const buildListItems = useCallback(
+    (data) => {
+      let listItems = parseListItemsFromQuery(query, data, titleDetail, {
+        bookmarkable,
+        withDate: false,
+        queryVariables
+      });
 
-      if (selectedValue) {
-        // remove a refetch key if present, which was necessary for the "- Alle -" selection
-        delete queryVariables.refetch;
-
-        setQueryVariables({ ...queryVariables, ...additionalQueryVariables });
-      } else {
-        setQueryVariables((prevQueryVariables) => {
-          // remove the filter key for the specific query, when selecting "- Alle -"
-          delete prevQueryVariables[keyForSelectedValueByQuery[query]];
-          // need to spread the `prevQueryVariables` into a new object with additional refetch key
-          // to force the Query component to update the data, otherwise it is not fired somehow
-          // because the state variable wouldn't change
-          return { ...prevQueryVariables, refetch: true };
-        });
+      if (filterByOpeningTimes) {
+        listItems = listItems?.filter((entry) => isOpen(entry.params?.details?.openingHours)?.open);
       }
+
+      if (sortByDistance && position && listItems?.length) {
+        listItems = sortPOIsByDistanceFromPosition(listItems, position.coords);
+      }
+
+      return listItems;
     },
-    [excludeDataProviderIds, setQueryVariables, query, queryVariables]
+    [query, queryVariables, filterByOpeningTimes, sortByDistance, position]
   );
 
+  const updateListDataByDropdown = useCallback(
+    (selectedValue) => {
+      if (selectedValue) {
+        setQueryVariables((prevQueryVariables) => {
+          // remove a refetch key if present, which was necessary for the "- Alle -" selection
+          delete prevQueryVariables.refetch;
+
+          return {
+            ...prevQueryVariables,
+            ...getAdditionalQueryVariables(query, selectedValue, excludeDataProviderIds)
+          };
+        });
+      } else {
+        if (
+          Object.prototype.hasOwnProperty.call(queryVariables, [
+            keyForSelectedValueByQuery?.[query]
+          ])
+        ) {
+          setQueryVariables((prevQueryVariables) => {
+            // remove the filter key for the specific query if present, when selecting "- Alle -"
+            delete prevQueryVariables[keyForSelectedValueByQuery[query]];
+
+            // need to spread the prior `queryVariables` into a new object with additional
+            // refetch key to force the Query component to update the data, otherwise it is
+            // not fired somehow because the state variable wouldn't change
+            return { ...prevQueryVariables, refetch: true };
+          });
+        }
+      }
+    },
+    [query, queryVariables, excludeDataProviderIds]
+  );
+
+  const updateListDataByDailySwitch = useCallback(() => {
+    // update switch state as well
+    setFilterByDailyEvents((oldSwitchValue) => {
+      // if `oldSwitchValue` was false, we now activate the daily filter and set a date range
+      if (!oldSwitchValue) {
+        setQueryVariables((prevQueryVariables) => {
+          // remove a refetch key if present, which was necessary for unselecting daily events
+          delete prevQueryVariables.refetchDate;
+
+          // add the filter key for the specific query, when filtering for daily events
+          return { ...prevQueryVariables, dateRange: [currentDate, currentDate] };
+        });
+      } else {
+        setQueryVariables((prevQueryVariables) => {
+          // remove the filter key for the specific query, when unselecting daily events
+          delete prevQueryVariables.dateRange;
+
+          // need to spread the `prevQueryVariables` into a new object with additional refetchDate key
+          // to force the Query component to update the data, otherwise it is not fired somehow
+          // because the state variable wouldn't change
+          return { ...prevQueryVariables, refetchDate: true };
+        });
+      }
+
+      return !oldSwitchValue;
+    });
+  }, [filterByDailyEvents, queryVariables]);
+
   // if we show the map or want to sort by distance, we need to fetch all the entries at once
-  // this is not a big issue if we want to sort by distance, because getting the location usually takes longer than fetching all entries
-  // if we filter by opening times, we need to also remove the limit as otherwise we might not have any open POIs in the next batch
-  // that would result in the list not getting any new items and not reliably triggering another fetchMore
+  // this is not a big issue if we want to sort by distance, because getting the location usually
+  // takes longer than fetching all entries if we filter by opening times, we need to also remove
+  // the limit as otherwise we might not have any open POIs in the next batch that would result in
+  // the list not getting any new items and not reliably triggering another fetchMore
   if (showMap || sortByDistance || filterByOpeningTimes) {
     delete queryVariables.limit;
   }
@@ -150,14 +213,15 @@ export const IndexScreen = ({ navigation, route }) => {
     // we want to ensure when changing from one index screen to another, for example from
     // news to events, that the query variables are taken freshly. otherwise the mounted screen can
     // have query variables from the previous screen, that does not work. this can result in an
-    // empty screen because the query is not retuning anything.
-    const variables = {
+    // empty screen because the query is not returning anything.
+    setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
       ...getAdditionalQueryVariables(query, undefined, excludeDataProviderIds)
-    };
-
-    setQueryVariables(variables);
-  }, [excludeDataProviderIds, query, route.params?.queryVariables]);
+    });
+    // reset daily events filter as well when navigating from one index screen to a new events index
+    setFilterByDailyEvents(route.params?.filterByDailyEvents);
+    navigation.setParams({ filterByDailyEvents: false });
+  }, [route.params?.queryVariables, query, excludeDataProviderIds]);
 
   useEffect(() => {
     if (query) {
@@ -195,7 +259,7 @@ export const IndexScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      {query === QUERY_TYPES.POINTS_OF_INTEREST ? (
+      {query === QUERY_TYPES.POINTS_OF_INTEREST && (
         <View>
           <IndexFilterWrapperAndList filter={topFilter} setFilter={setTopFilter} />
           <OptionToggle
@@ -203,10 +267,9 @@ export const IndexScreen = ({ navigation, route }) => {
             onToggle={() => setFilterByOpeningTimes((value) => !value)}
             value={filterByOpeningTimes}
           />
-
           <Divider />
         </View>
-      ) : null}
+      )}
       {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
         <LocationOverview
           filterByOpeningTimes={filterByOpeningTimes}
@@ -225,28 +288,12 @@ export const IndexScreen = ({ navigation, route }) => {
           fetchPolicy={fetchPolicy}
         >
           {({ data, loading, fetchMore, refetch }) => {
-            if (loading || loadingPosition) {
+            if ((!data && loading) || loadingPosition) {
               return (
                 <LoadingContainer>
                   <ActivityIndicator color={colors.accent} />
                 </LoadingContainer>
               );
-            }
-
-            let listItems = parseListItemsFromQuery(query, data, titleDetail, {
-              bookmarkable,
-              withDate: false,
-              queryVariables
-            });
-
-            if (filterByOpeningTimes) {
-              listItems = listItems?.filter(
-                (entry) => isOpen(entry.params?.details?.openingHours)?.open
-              );
-            }
-
-            if (sortByDistance && position && listItems?.length) {
-              listItems = sortPOIsByDistanceFromPosition(listItems, position.coords);
             }
 
             const fetchMoreData = () =>
@@ -266,12 +313,39 @@ export const IndexScreen = ({ navigation, route }) => {
                 }
               });
 
+            // hack to force the query to refetch for the data provider filter when the user
+            // navigates from one news items index to another
+            const initialNewsItemsFetch =
+              query === QUERY_TYPES.NEWS_ITEMS &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, [
+                keyForSelectedValueByQuery?.[query]
+              ]) &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
+
             return (
               <ListComponent
                 ListHeaderComponent={
                   <>
                     {!!showFilter && (
-                      <DropdownHeader {...{ query, queryVariables, data, updateListData }} />
+                      <>
+                        <DropdownHeader
+                          {...{
+                            query,
+                            queryVariables,
+                            data: initialNewsItemsFetch && loading ? {} : data,
+                            updateListData: updateListDataByDropdown
+                          }}
+                        />
+                        {query === QUERY_TYPES.EVENT_RECORDS && data?.categories?.length && (
+                          <View>
+                            <OptionToggle
+                              label={texts.eventRecord.filterByDailyEvents}
+                              onToggle={updateListDataByDailySwitch}
+                              value={filterByDailyEvents}
+                            />
+                          </View>
+                        )}
+                      </>
                     )}
                     {!!categories?.length && (
                       <CategoryList
@@ -284,12 +358,18 @@ export const IndexScreen = ({ navigation, route }) => {
                   </>
                 }
                 ListEmptyComponent={
-                  <EmptyMessage
-                    title={categories?.length ? texts.empty.categoryList : texts.empty.list}
-                  />
+                  loading ? (
+                    <LoadingContainer>
+                      <ActivityIndicator color={colors.accent} />
+                    </LoadingContainer>
+                  ) : (
+                    <EmptyMessage
+                      title={categories?.length ? texts.empty.categoryList : texts.empty.list}
+                    />
+                  )
                 }
                 navigation={navigation}
-                data={listItems}
+                data={loading ? [] : buildListItems(data)}
                 horizontal={false}
                 sectionByDate={true}
                 query={query}
@@ -311,6 +391,7 @@ export const IndexScreen = ({ navigation, route }) => {
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 IndexScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

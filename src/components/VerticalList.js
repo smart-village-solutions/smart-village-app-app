@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
-import { ActivityIndicator, FlatList } from 'react-native';
+import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
 
 import { colors, normalize } from '../config';
 import { useRenderItem } from '../hooks';
@@ -78,9 +78,16 @@ export const VerticalList = ({
       onEndReached={onEndReached}
       refreshControl={refreshControl}
       keyboardShouldPersistTaps="handled"
+      contentContainerStyle={styles.contentContainerStyle}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  contentContainerStyle: {
+    flexGrow: 1
+  }
+});
 
 VerticalList.propTypes = {
   data: PropTypes.array,

@@ -12,6 +12,8 @@ import { WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
+const currentDate = moment().format('YYYY-MM-DD');
+
 export const EventWidget = ({ text }: WidgetProps) => {
   const navigation = useNavigation();
   const refreshTime = useRefreshTime('event-widget', consts.REFRESH_INTERVALS.ONCE_A_DAY);
@@ -19,7 +21,6 @@ export const EventWidget = ({ text }: WidgetProps) => {
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
-  const currentDate = moment().format('YYYY-MM-DD');
   const queryVariables = {
     dateRange: [currentDate, currentDate],
     order: 'listDate_ASC'
@@ -36,7 +37,8 @@ export const EventWidget = ({ text }: WidgetProps) => {
       title: text ?? texts.homeTitles.events,
       query: QUERY_TYPES.EVENT_RECORDS,
       queryVariables,
-      rootRouteName: 'EventRecords'
+      rootRouteName: 'EventRecords',
+      filterByDailyEvents: true
     });
   }, [navigation, text, queryVariables]);
 

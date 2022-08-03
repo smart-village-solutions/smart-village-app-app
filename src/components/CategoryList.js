@@ -1,14 +1,15 @@
+import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { SectionList, View } from 'react-native';
-import _filter from 'lodash/filter';
+import { ActivityIndicator, SectionList, View } from 'react-native';
 
-import { device, consts, texts } from '../config';
+import { colors, consts, device, texts } from '../config';
 
+import { CategoryListItem } from './CategoryListItem';
+import { LoadingContainer } from './LoadingContainer';
 import { RegularText } from './Text';
 import { Title, TitleContainer, TitleShadow } from './Title';
 import { Wrapper } from './Wrapper';
-import { CategoryListItem } from './CategoryListItem';
 
 export class CategoryList extends React.PureComponent {
   keyExtractor = (item, index) => `index${index}-id${item.id}`;
@@ -30,6 +31,14 @@ export class CategoryList extends React.PureComponent {
 
   render() {
     const { data, navigation, noSubtitle, refreshControl, hasSectionHeader } = this.props;
+
+    if (!data?.length) {
+      return (
+        <LoadingContainer>
+          <ActivityIndicator color={colors.accent} />
+        </LoadingContainer>
+      );
+    }
 
     // Sorting data alphabetically
     data.sort((a, b) => a.title.localeCompare(b.title));
@@ -80,7 +89,7 @@ export class CategoryList extends React.PureComponent {
 
 CategoryList.propTypes = {
   navigation: PropTypes.object.isRequired,
-  data: PropTypes.array.isRequired,
+  data: PropTypes.array,
   noSubtitle: PropTypes.bool,
   refreshControl: PropTypes.object,
   hasSectionHeader: PropTypes.bool

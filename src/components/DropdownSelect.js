@@ -39,14 +39,28 @@ export const DropdownSelect = ({
     [marginHorizontal]
   );
 
-  if (!data || !data.length) return null;
-
   const [arrow, setArrow] = useState('down');
-  const selectedData = data.find((entry) => entry.selected);
+  const selectedData = data?.find((entry) => entry.selected);
   const selectedValue = selectedData?.value;
-  const selectedMultipleData = data.filter((entry) => entry.selected);
+  const selectedIndex = selectedData?.index;
+  const selectedMultipleData = data?.filter((entry) => entry.selected);
   const selectedMultipleValues = selectedMultipleData?.map((entry) => entry.value).join(', ');
-  const selectedIndex = data.findIndex((entry) => entry.selected);
+
+  const renderRow = useCallback(
+    (rowData, rowID, highlighted) => {
+      if (multipleSelect) {
+        highlighted = selectedMultipleValues.includes(rowData);
+      }
+
+      return (
+        <Wrapper style={styles.dropdownRowWrapper}>
+          <RegularText primary={highlighted}>{rowData}</RegularText>
+        </Wrapper>
+      );
+    },
+    [data]
+  );
+
   const preselect = (index) => dropdownRef.current.select(index);
 
   useEffect(() => {
@@ -71,17 +85,7 @@ export const DropdownSelect = ({
         ]}
         dropdownTextStyle={styles.dropdownDropdownText}
         adjustFrame={adjustFrame}
-        renderRow={(rowData, rowID, highlighted) => {
-          if (multipleSelect) {
-            highlighted = selectedMultipleValues.includes(rowData);
-          }
-
-          return (
-            <Wrapper style={styles.dropdownRowWrapper}>
-              <RegularText primary={highlighted}>{rowData}</RegularText>
-            </Wrapper>
-          );
-        }}
+        renderRow={renderRow}
         renderSeparator={() => <View style={styles.dropdownSeparator} />}
         onDropdownWillShow={() => setArrow('up')}
         onDropdownWillHide={() => setArrow('down')}
