@@ -69,10 +69,18 @@ export const VolunteerGroup = ({
   const [isGroupOwner, setIsGroupOwner] = useState(false);
   const [isGroupApplicant, setIsGroupApplicant] = useState(false);
 
-  const { mutate: mutateJoin, isSuccess: isSuccessJoin } = useMutation(groupJoin);
+  const {
+    mutate: mutateJoin,
+    mutateAsync: mutateAsyncJoin,
+    isSuccess: isSuccessJoin
+  } = useMutation(groupJoin);
   const { mutate: mutateRequest, isSuccess: isSuccessRequest } =
     useMutation(groupRequestMembership);
-  const { mutate: mutateLeave, isSuccess: isSuccessLeave } = useMutation(groupLeave);
+  const {
+    mutate: mutateLeave,
+    mutateAsync: mutateAsyncLeave,
+    isSuccess: isSuccessLeave
+  } = useMutation(groupLeave);
 
   const join = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
@@ -137,7 +145,9 @@ export const VolunteerGroup = ({
           setIsGroupMember={setIsGroupMember}
           setIsGroupApplicant={setIsGroupApplicant}
           isRefetching={isRefetching}
+          mutateAsyncJoin={mutateAsyncJoin}
           isSuccessJoin={isSuccessJoin}
+          mutateAsyncLeave={mutateAsyncLeave}
           isSuccessLeave={isSuccessLeave}
           isSuccessRequest={isSuccessRequest}
         />

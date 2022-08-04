@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import _shuffle from 'lodash/shuffle';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
-import { useQuery } from 'react-query';
+import { UseMutateAsyncFunction, useQuery } from 'react-query';
 
 import { consts, texts } from '../../config';
 import { isApplicant, isMember, volunteerUserData } from '../../helpers';
@@ -28,7 +28,9 @@ export const VolunteerGroupMembersAndApplicants = ({
   setIsGroupMember,
   setIsGroupApplicant,
   isRefetching,
+  mutateAsyncJoin,
   isSuccessJoin,
+  mutateAsyncLeave,
   isSuccessLeave,
   isSuccessRequest
 }: {
@@ -39,7 +41,9 @@ export const VolunteerGroupMembersAndApplicants = ({
   setIsGroupMember: (isMember: boolean) => void;
   setIsGroupApplicant: (isApplicant: boolean) => void;
   isRefetching: boolean;
+  mutateAsyncJoin: UseMutateAsyncFunction<any, unknown, { id: number; userId: string }, unknown>;
   isSuccessJoin: boolean;
+  mutateAsyncLeave: UseMutateAsyncFunction<any, unknown, { id: number; userId: string }, unknown>;
   isSuccessLeave: boolean;
   isSuccessRequest: boolean;
 }) => {
@@ -61,7 +65,7 @@ export const VolunteerGroupMembersAndApplicants = ({
         { user: VolunteerUser }
       ];
 
-      fewShuffledApplicants?.length && setGroupApplicants(fewShuffledApplicants);
+      setGroupApplicants(fewShuffledApplicants);
     }
 
     const members = data?.results?.filter(
@@ -74,7 +78,7 @@ export const VolunteerGroupMembersAndApplicants = ({
       { user: VolunteerUser }
     ];
 
-    fewShuffledMembers?.length && setGroupMembers(fewShuffledMembers);
+    setGroupMembers(fewShuffledMembers);
   }, [data, isGroupOwner]);
 
   useEffect(() => {
@@ -86,7 +90,7 @@ export const VolunteerGroupMembersAndApplicants = ({
   }, [isSuccessJoin, isSuccessLeave, isSuccessRequest]);
 
   useEffect(() => {
-    // refetch posts when pull to refresh from parent component
+    // refetch when pull to refresh from parent component
     isRefetching && refetch();
   }, [isRefetching]);
 
@@ -138,7 +142,9 @@ export const VolunteerGroupMembersAndApplicants = ({
                 query: QUERY_TYPES.VOLUNTEER.APPLICANTS,
                 queryVariables: groupId,
                 rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
-                isGroupMember
+                isGroupMember,
+                mutateAsyncJoin,
+                mutateAsyncLeave
               })
             }
           >

@@ -1,3 +1,4 @@
+export * from './VolunteerApplicantListItem';
 export * from './VolunteerAppointmentsCard';
 export * from './VolunteerAvatar';
 export * from './VolunteerCalendar';

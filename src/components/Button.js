@@ -1,17 +1,38 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button as RNEButton } from 'react-native-elements';
 
-import { colors, consts, normalize } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import { OrientationContext } from '../OrientationProvider';
 
 import { DiagonalGradient } from './DiagonalGradient';
 
+/* eslint-disable complexity */
 export const Button = ({ title, onPress, invert, disabled }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeStyle =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
+  const isAccept = title === texts.volunteer.accept;
+  const isReject = title === texts.volunteer.reject;
+
+  if (isAccept || isReject) {
+    return (
+      <RNEButton
+        onPress={onPress}
+        title={title}
+        titleStyle={[styles.titleStyle, needLandscapeStyle && styles.titleStyleLandscape]}
+        buttonStyle={[
+          styles.buttonStyle,
+          isAccept && styles.acceptStyle,
+          isReject && styles.rejectStyle
+        ]}
+        containerStyle={[needLandscapeStyle && styles.containerStyleLandscape]}
+        useForeground
+        accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
+      />
+    );
+  }
 
   return (
     <RNEButton
@@ -34,6 +55,7 @@ export const Button = ({ title, onPress, invert, disabled }) => {
     />
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   buttonStyle: {},
@@ -61,6 +83,12 @@ const styles = StyleSheet.create({
   },
   titleStyleLandscape: {
     paddingHorizontal: normalize(14)
+  },
+  acceptStyle: {
+    backgroundColor: colors.primary
+  },
+  rejectStyle: {
+    backgroundColor: colors.error
   }
 });
 

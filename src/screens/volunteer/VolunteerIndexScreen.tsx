@@ -97,6 +97,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           data={listItems}
           sectionByDate={isCalendar}
           query={query}
+          refetch={refetch}
           refreshControl={
             <RefreshControl
               refreshing={false}
