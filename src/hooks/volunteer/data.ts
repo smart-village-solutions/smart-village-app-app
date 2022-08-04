@@ -102,6 +102,13 @@ export const useVolunteerData = ({
       processedVolunteerData = _orderBy(processedVolunteerData, 'user.display_name', 'asc');
     }
 
+    if (query === QUERY_TYPES.VOLUNTEER.APPLICANTS) {
+      processedVolunteerData = processedVolunteerData?.filter(
+        (member: { status: number }) => member.status === MEMBER_STATUS_TYPES.APPLICANT
+      );
+      processedVolunteerData = _orderBy(processedVolunteerData, 'user.display_name', 'asc');
+    }
+
     if (query === QUERY_TYPES.VOLUNTEER.CALENDAR) {
       processedVolunteerData = _orderBy(data?.participants?.attending, 'display_name', 'asc');
     }

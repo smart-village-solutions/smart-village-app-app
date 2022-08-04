@@ -24,7 +24,7 @@ import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
-import { VolunteerGroupMembers } from './VolunteerGroupMembers';
+import { VolunteerGroupMembersAndApplicants } from './VolunteerGroupMembersAndApplicants';
 import { VolunteerHomeSection } from './VolunteerHomeSection';
 import { VolunteerPosts } from './VolunteerPosts';
 
@@ -129,9 +129,10 @@ export const VolunteerGroup = ({
           </Wrapper>
         )}
 
-        <VolunteerGroupMembers
+        <VolunteerGroupMembersAndApplicants
           groupId={id}
           navigation={navigation}
+          isGroupOwner={isGroupOwner}
           isGroupMember={isGroupMember}
           setIsGroupMember={setIsGroupMember}
           setIsGroupApplicant={setIsGroupApplicant}

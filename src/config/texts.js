@@ -758,6 +758,7 @@ export const texts = {
   },
   volunteer: {
     abort: 'Abbrechen',
+    applicants: 'Beitrittsanfragen',
     attend: 'Interessiert',
     attendInfo:
       'Wenn Sie Interesse an dieser Veranstaltung bekunden wird diese in den Kalender in Ihrem Bereich übernommen.\n',

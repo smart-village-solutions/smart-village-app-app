@@ -353,6 +353,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.VOLUNTEER.CONVERSATIONS:
       return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.CONVERSATION, skipLastDivider, withDate);
     case QUERY_TYPES.VOLUNTEER.MEMBERS:
+    case QUERY_TYPES.VOLUNTEER.APPLICANTS:
     case QUERY_TYPES.VOLUNTEER.CALENDAR:
       return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.USER, skipLastDivider);
     case QUERY_TYPES.VOLUNTEER.TASKS:
