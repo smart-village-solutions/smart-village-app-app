@@ -12,9 +12,10 @@ import { colors, texts } from '../../config';
 import { isOwner, volunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { CREATE_EVENT_RECORDS } from '../../queries/eventRecords';
-import { calendarNew, groups } from '../../queries/volunteer';
+import { calendarNew, calendarUpload, groups } from '../../queries/volunteer';
 import { VolunteerCalendar, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
+import { DocumentSelector, ImageSelector } from '../consul';
 import { DateTimeInput } from '../form/DateTimeInput';
 import { DropdownInput, DropdownInputProps } from '../form/DropdownInput';
 import { Input } from '../form/Input';
@@ -37,7 +38,9 @@ export const VolunteerFormCalendar = ({
     mode: 'onBlur',
     defaultValues: {
       isPublic: 1,
-      contentContainerId: groupId || 0
+      contentContainerId: groupId || 0,
+      documents: '[]',
+      images: '[]'
     }
   });
   const { data: dataGroups, isLoading: isLoadingGroups } = useQuery(
@@ -70,10 +73,37 @@ export const VolunteerFormCalendar = ({
 
   const isFocused = useIsFocused();
 
-  const { mutate, isLoading, isError, isSuccess, data, reset } = useMutation(calendarNew);
+  const { mutateAsync, isLoading, isError, isSuccess, data, reset } = useMutation(calendarNew);
   const [createEvent] = useMainserverMutation(CREATE_EVENT_RECORDS);
-  const onSubmit = (calendarNewData: VolunteerCalendar) => {
-    mutate(calendarNewData);
+  const onSubmit = async (calendarNewData: VolunteerCalendar) => {
+    mutateAsync(calendarNewData).then(async ({ id }) => {
+      if (id) {
+        const uris = [];
+
+        if (calendarNewData.images) {
+          JSON.parse(calendarNewData.images).forEach(({ uri = String, mimeType = String }) => {
+            uris.push({ uri, mimeType });
+          });
+        }
+
+        if (calendarNewData.documents) {
+          JSON.parse(calendarNewData.documents).forEach(({ uri = String, mimeType = String }) => {
+            uris.push({ uri, mimeType });
+          });
+        }
+
+        /* foreach loop to upload each file after the event has been created */
+        uris.forEach(async ({ uri, mimeType }) => {
+          try {
+            await calendarUpload(uri, id, mimeType);
+          } catch (error) {
+            console.error(error);
+          }
+        });
+      }
+    });
+
+    // mutate(calendarNewData);
 
     /**
      * TODO: create event on main-server
@@ -310,6 +340,46 @@ export const VolunteerFormCalendar = ({
           label={texts.volunteer.topics}
           placeholder={texts.volunteer.topics}
           validate
+          control={control}
+        />
+      </Wrapper>
+      <Wrapper>
+        <Controller
+          name="images"
+          render={(field) => (
+            <ImageSelector
+              {...{
+                control,
+                field,
+                isVolunteer: true,
+                item: {
+                  name: 'images',
+                  label: texts.volunteer.images,
+                  rules: { required: false },
+                  buttonTitle: texts.volunteer.addImage
+                }
+              }}
+            />
+          )}
+          control={control}
+        />
+        <Controller
+          name="documents"
+          render={(field) => (
+            <DocumentSelector
+              {...{
+                control,
+                field,
+                isVolunteer: true,
+                item: {
+                  name: 'documents',
+                  label: texts.volunteer.documents,
+                  rules: { required: false },
+                  buttonTitle: texts.volunteer.addDocument
+                }
+              }}
+            />
+          )}
           control={control}
         />
       </Wrapper>

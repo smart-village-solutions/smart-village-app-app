@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { Alert, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
@@ -30,7 +30,7 @@ const deleteDocumentAlert = (onPress) =>
     ]
   );
 
-export const DocumentSelector = ({ control, field, item }) => {
+export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -59,6 +59,66 @@ export const DocumentSelector = ({ control, field, item }) => {
     setDocumentsAttributes(deleteArrayItem(documentsAttributes, index));
     setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
   };
+
+  if (isVolunteer) {
+    return (
+      <>
+        <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
+        <RegularText smallest placeholder>
+          {infoText}
+        </RegularText>
+
+        <Button
+          title={buttonTitle}
+          invert
+          onPress={async () => {
+            const { name: title, size, uri, mimeType } = await selectDocument();
+
+            if (!uri) return;
+
+            /* the server does not support files more than 10MB in size. */
+            const errorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
+
+            setDocumentsAttributes([...documentsAttributes, { uri, mimeType }]);
+
+            setInfoAndErrorText([
+              ...infoAndErrorText,
+              {
+                errorText,
+                infoText: `${title}`
+              }
+            ]);
+          }}
+        />
+
+        {value
+          ? JSON.parse(value).map((item, index) => (
+              <View key={index}>
+                {!!infoAndErrorText[index]?.errorText && (
+                  <RegularText smallest error>
+                    {infoAndErrorText[index].errorText}
+                  </RegularText>
+                )}
+
+                <View style={styles.volunteerImageView}>
+                  {!!infoAndErrorText[index]?.infoText && (
+                    <RegularText style={{ width: '90%' }} numberOfLines={1} small>
+                      {infoAndErrorText[index].infoText}
+                    </RegularText>
+                  )}
+
+                  <TouchableOpacity
+                    onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
+                  >
+                    <Icon.Trash color={colors.darkText} size={normalize(16)} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))
+          : null}
+      </>
+    );
+  }
 
   return (
     <>
@@ -123,8 +183,20 @@ export const DocumentSelector = ({ control, field, item }) => {
 
 DocumentSelector.propTypes = {
   control: PropTypes.object,
-  documentsAttributes: PropTypes.array,
   field: PropTypes.object,
-  item: PropTypes.object,
-  selectImage: PropTypes.func
+  isVolunteer: PropTypes.bool,
+  item: PropTypes.object
 };
+
+const styles = StyleSheet.create({
+  volunteerImageView: {
+    alignItems: 'center',
+    backgroundColor: colors.gray20,
+    borderRadius: normalize(4),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: normalize(8),
+    paddingHorizontal: normalize(20),
+    paddingVertical: normalize(14)
+  }
+});

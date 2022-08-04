@@ -6,25 +6,27 @@ export enum PARTICIPANT_TYPE {
 }
 
 export type VolunteerCalendar = {
-  title: string;
-  description?: string;
-  organizer?: string;
-  entranceFee?: string;
-  color?: string;
-  location?: string;
   allDay: number;
-  participationMode: number;
-  maxParticipants: string;
   allowDecline: number;
   allowMaybe: number;
-  participantInfo: string;
-  isPublic: number;
-  startDate: string;
-  startTime?: string;
+  color?: string;
+  contentContainerId: number;
+  description?: string;
+  documents?: string;
   endDate: string;
   endTime?: string;
-  timeZone: string;
+  entranceFee?: string;
   forceJoin: number;
+  images?: string;
+  isPublic: number;
+  location?: string;
+  maxParticipants: string;
+  organizer?: string;
+  participantInfo: string;
+  participationMode: number;
+  startDate: string;
+  startTime?: string;
+  timeZone: string;
+  title: string;
   topics?: [number];
-  contentContainerId: number;
 };
