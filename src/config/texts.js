@@ -785,7 +785,10 @@ export const texts = {
     groups: 'Gruppen',
     groupsMy: 'Meine Gruppen',
     invite: 'Jemanden einladen',
-    join: 'Beitreten',
+    join: {
+      1: 'Beitrittsanfrage stellen',
+      2: 'Beitreten'
+    },
     lastname: 'Nachname',
     lastnameError: 'Nachname muss ausgefüllt werden',
     leave: 'Verlassen',
@@ -814,6 +817,7 @@ export const texts = {
     passwordError: 'Passwort muss ausgefüllt werden',
     passwordForgotten: 'Passwort vergessen',
     passwordLengthError: 'Das Passwort sollte mindestens 5 Zeichen lang sein',
+    pending: 'Beitrittsanfrage ausstehend',
     postNew: 'Neuen Beitrag verfassen',
     posts: 'Beiträge',
     postsIndexLink: 'Alle Beiträge anzeigen',
@@ -832,6 +836,8 @@ export const texts = {
     registrationPrivacyText:
       'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
     registrationTitle: 'Registrieren',
+    requestPending:
+      'Ihre Beitrittsanfrage wird schnellstmöglich vom Gruppenadministrator bearbeitet',
     save: 'Speichern',
     search: 'Suche',
     send: 'Senden',

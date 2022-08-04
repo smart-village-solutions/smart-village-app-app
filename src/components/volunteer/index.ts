@@ -9,7 +9,7 @@ export * from './VolunteerFormCalendar';
 export * from './VolunteerFormConversation';
 export * from './VolunteerFormGroup';
 export * from './VolunteerGroup';
-export * from './VolunteerGroupMember';
+export * from './VolunteerGroupMembers';
 export * from './VolunteerHeader';
 export * from './VolunteerHomeSection';
 export * from './VolunteerMessage';

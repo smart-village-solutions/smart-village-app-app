@@ -13,17 +13,18 @@ import {
 } from '../../helpers';
 import { useOpenWebScreen, VOLUNTEER_GROUP_REFRESH_EVENT } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
-import { groupJoin, groupLeave } from '../../queries/volunteer';
-import { ScreenName, VolunteerGroup as TVolunteerGroup } from '../../types';
+import { groupJoin, groupLeave, groupRequestMembership } from '../../queries/volunteer';
+import { JOIN_POLICY_TYPES, ScreenName, VolunteerGroup as TVolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
+import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
-import { VolunteerGroupMember } from './VolunteerGroupMember';
+import { VolunteerGroupMembers } from './VolunteerGroupMembers';
 import { VolunteerHomeSection } from './VolunteerHomeSection';
 import { VolunteerPosts } from './VolunteerPosts';
 
@@ -66,15 +67,25 @@ export const VolunteerGroup = ({
 
   const [isGroupMember, setIsGroupMember] = useState<boolean | undefined>();
   const [isGroupOwner, setIsGroupOwner] = useState(false);
+  const [isGroupApplicant, setIsGroupApplicant] = useState(false);
 
   const { mutate: mutateJoin, isSuccess: isSuccessJoin } = useMutation(groupJoin);
+  const { mutate: mutateRequest, isSuccess: isSuccessRequest } =
+    useMutation(groupRequestMembership);
   const { mutate: mutateLeave, isSuccess: isSuccessLeave } = useMutation(groupLeave);
 
   const join = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
 
-    currentUserId && mutateJoin({ id, userId: currentUserId });
-  }, [isGroupMember]);
+    if (!currentUserId) return;
+
+    if (joinPolicy == JOIN_POLICY_TYPES.INVITE_AND_REQUEST) {
+      mutateRequest({ id, userId: currentUserId });
+    } else {
+      // JOIN_POLICY_TYPES.OPEN
+      mutateJoin({ id, userId: currentUserId });
+    }
+  }, [isGroupMember, isGroupApplicant, joinPolicy]);
 
   const leave = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
@@ -118,13 +129,16 @@ export const VolunteerGroup = ({
           </Wrapper>
         )}
 
-        <VolunteerGroupMember
+        <VolunteerGroupMembers
           groupId={id}
           navigation={navigation}
           isGroupMember={isGroupMember}
           setIsGroupMember={setIsGroupMember}
+          setIsGroupApplicant={setIsGroupApplicant}
+          isRefetching={isRefetching}
           isSuccessJoin={isSuccessJoin}
           isSuccessLeave={isSuccessLeave}
+          isSuccessRequest={isSuccessRequest}
         />
 
         {!!description && (
@@ -188,13 +202,25 @@ export const VolunteerGroup = ({
           isGroupMember={isGroupMember}
         />
 
-        {!isGroupOwner && isGroupMember !== undefined && (
+        {!!joinPolicy && !isGroupOwner && isGroupMember !== undefined && (
           <Wrapper>
             <Button
-              title={isGroupMember ? texts.volunteer.leave : texts.volunteer.join}
+              title={
+                isGroupMember
+                  ? texts.volunteer.leave
+                  : isGroupApplicant
+                  ? texts.volunteer.pending
+                  : texts.volunteer.join[joinPolicy as keyof typeof texts.volunteer.join]
+              }
               invert={isGroupMember}
               onPress={isGroupMember ? leave : join}
+              disabled={isGroupApplicant}
             />
+            {!isGroupMember && joinPolicy === JOIN_POLICY_TYPES.INVITE_AND_REQUEST && (
+              <RegularText small center placeholder>
+                {texts.volunteer.requestPending}
+              </RegularText>
+            )}
           </Wrapper>
         )}
       </WrapperWithOrientation>
