@@ -38,17 +38,9 @@ function isWeb(linkWithProtocol) {
 export function openLink(link, openWebScreen) {
   const linkWithProtocol = ensureProtocol(link);
 
-  Linking.canOpenURL(linkWithProtocol)
-    .then((canOpen) => {
-      if (!canOpen) {
-        alert(`Can't handle: ${linkWithProtocol}`);
-      } else {
-        if (isWeb(linkWithProtocol) && openWebScreen) {
-          return openWebScreen(linkWithProtocol);
-        }
+  if (isWeb(linkWithProtocol) && openWebScreen) {
+    return openWebScreen(linkWithProtocol);
+  }
 
-        return Linking.openURL(linkWithProtocol);
-      }
-    })
-    .catch((err) => console.warn('An error occurred', err));
+  return Linking.openURL(linkWithProtocol);
 }
