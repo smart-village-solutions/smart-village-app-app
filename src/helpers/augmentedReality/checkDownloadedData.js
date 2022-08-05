@@ -8,20 +8,20 @@ export const checkDownloadedData = async ({ data, setData }) => {
   const checkedData = [...data];
 
   for (const [index, dataItem] of checkedData.entries()) {
-    for (const objectItem of dataItem?.downloadableUris) {
+    for (const objectItem of dataItem?.payload?.downloadableUris) {
       const { storageName } = storageNameCreator({ dataItem, objectItem });
 
       try {
         const downloadedItem = await readFromStore(storageName);
 
-        if (downloadedItem?.localUris) {
+        if (downloadedItem?.payload?.localUris) {
           checkedData[index] = downloadedItem;
         } else {
-          checkedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADABLE;
-          checkedData[index].localUris = [];
-          checkedData[index].progress = 0;
-          checkedData[index].progressSize = 0;
-          checkedData[index].size = 0;
+          checkedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADABLE;
+          checkedData[index].payload.localUris = [];
+          checkedData[index].payload.progress = 0;
+          checkedData[index].payload.progressSize = 0;
+          checkedData[index].payload.size = 0;
         }
       } catch (error) {
         console.error(error);

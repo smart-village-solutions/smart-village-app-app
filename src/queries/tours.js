@@ -92,6 +92,18 @@ export const GET_TOUR = gql`
         id
         name
       }
+      tourStops {
+        id
+        title: name
+        description
+        location {
+          geoLocation {
+            latitude
+            longitude
+          }
+        }
+        payload
+      }
       description
       mediaContents {
         id

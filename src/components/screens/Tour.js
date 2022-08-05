@@ -30,11 +30,11 @@ export const Tour = ({ data, navigation, route }) => {
     contact,
     dataProvider,
     description,
-    id,
     lengthKm,
     mediaContents,
     operatingCompany,
     title,
+    tourStops,
     webUrls
   } = data;
   // action to open source urls
@@ -47,9 +47,6 @@ export const Tour = ({ data, navigation, route }) => {
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
-
-  // TODO: DEVELOP! - it will be deleted, it was only made to development!
-  let augmentedReality = true;
 
   useMatomoTrackScreenView(
     matomoTrackingString([
@@ -98,7 +95,7 @@ export const Tour = ({ data, navigation, route }) => {
           </View>
         )}
 
-        {!!augmentedReality && <AugmentedReality navigation={navigation} tourID={id} />}
+        {!!tourStops.length && <AugmentedReality data={tourStops} navigation={navigation} />}
 
         <OperatingCompany
           openWebScreen={openWebScreen}

@@ -19,18 +19,18 @@ export const deleteObject = async ({ index, data, setData }) => {
   const deletedData = [...data];
   const dataItem = data[index];
 
-  for (const objectItem of dataItem?.localUris) {
+  for (const objectItem of dataItem?.payload?.localUris) {
     const { storageName } = storageNameCreator({ dataItem, objectItem });
 
     try {
       await FileSystem.deleteAsync(objectItem?.uri);
       await AsyncStorage.removeItem(storageName);
 
-      deletedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADABLE;
-      deletedData[index].localUris = [];
-      deletedData[index].progress = 0;
-      deletedData[index].progressSize = 0;
-      deletedData[index].size = 0;
+      deletedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADABLE;
+      deletedData[index].payload.localUris = [];
+      deletedData[index].payload.progress = 0;
+      deletedData[index].payload.progressSize = 0;
+      deletedData[index].payload.size = 0;
     } catch (error) {
       console.error(error);
 

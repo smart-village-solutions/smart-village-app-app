@@ -5,7 +5,6 @@ import { Alert, FlatList } from 'react-native';
 
 import { consts, device, texts } from '../../config';
 import { deleteAllData, downloadAllData, formatSize } from '../../helpers';
-import { usePullToRefetch } from '../../hooks';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
@@ -42,14 +41,13 @@ const deleteAllDataAlert = (deleteAll) =>
     ]
   );
 
-const renderItem = ({ data, index, item, navigation, setData, refetch, showOnDetailPage }) => (
+const renderItem = ({ data, index, item, navigation, setData, showOnDetailPage }) => (
   <ARObjectListItem
     data={data}
     index={index}
     item={item}
     navigation={navigation}
     setData={setData}
-    refetch={refetch}
     showOnDetailPage={showOnDetailPage}
   />
 );
@@ -59,7 +57,6 @@ export const ARObjectList = ({
   setData,
   isLoading,
   navigation,
-  refetch,
   showDeleteAllButton,
   showDownloadAllButton,
   showFreeSpace,
@@ -85,7 +82,6 @@ export const ARObjectList = ({
     await deleteAllData({ data, setData });
   };
 
-  const RefreshControl = usePullToRefetch(refetch);
   const a11yText = consts.a11yLabel;
 
   if (isLoading || !data?.length) return <LoadingSpinner loading />;
@@ -106,7 +102,6 @@ export const ARObjectList = ({
       )}
 
       <FlatList
-        refreshControl={RefreshControl}
         data={data}
         renderItem={({ item, index }) =>
           renderItem({
@@ -115,7 +110,6 @@ export const ARObjectList = ({
             index,
             item,
             navigation,
-            refetch,
             showOnDetailPage
           })
         }
@@ -153,7 +147,6 @@ ARObjectList.propTypes = {
   data: PropTypes.array,
   setData: PropTypes.func,
   isLoading: PropTypes.bool,
-  refetch: PropTypes.func,
   navigation: PropTypes.object,
   showDeleteAllButton: PropTypes.bool,
   showDownloadAllButton: PropTypes.bool,

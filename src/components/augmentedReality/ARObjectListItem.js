@@ -11,20 +11,15 @@ import { Touchable } from '../Touchable';
 
 import { IconForDownloadType } from './IconForDownloadType';
 
-export const ARObjectListItem = ({
-  data,
-  index,
-  item,
-  navigation,
-  setData,
-  refetch,
-  showOnDetailPage
-}) => {
-  const { DOWNLOAD_TYPE: itemDownloadType, progressSize, title, totalSize, locationInfo } = item;
+export const ARObjectListItem = ({ data, index, item, navigation, setData, showOnDetailPage }) => {
+  const {
+    payload: { downloadType: itemDownloadType, progressSize, totalSize, locationInfo },
+    title
+  } = item;
 
   const onPress = async () => {
     if (showOnDetailPage) {
-      navigation.navigate(ScreenName.ArtworkDetail, { data, index, refetch });
+      navigation.navigate(ScreenName.ArtworkDetail, { data, index });
       return;
     }
 
@@ -90,6 +85,5 @@ ARObjectListItem.propTypes = {
   index: PropTypes.number,
   item: PropTypes.object.isRequired,
   navigation: PropTypes.object,
-  refetch: PropTypes.func,
   showOnDetailPage: PropTypes.bool
 };

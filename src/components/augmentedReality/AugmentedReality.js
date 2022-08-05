@@ -4,7 +4,6 @@ import { isARSupportedOnDevice } from '@viro-community/react-viro';
 
 import { consts, device, texts } from '../../config';
 import { checkDownloadedData } from '../../helpers';
-import { useStaticContent } from '../../hooks';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Title, TitleContainer, TitleShadow } from '../Title';
@@ -14,20 +13,10 @@ import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
 import { WhatIsARButton } from './WhatIsARButton';
 
-export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
-  const {
-    data: staticData,
-    error,
-    loading,
-    refetch
-  } = useStaticContent({
-    name: `arDownloadableDataList-${tourID}`,
-    type: 'json'
-  });
-
+export const AugmentedReality = ({ data: staticData, navigation, onSettingsScreen }) => {
   const [isARSupported, setIsARSupported] = useState(false);
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(loading);
+  const [isLoading, setIsLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
@@ -51,7 +40,7 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
     setIsLoading(false);
   };
 
-  if (error || !isARSupported) return null;
+  if (!isARSupported) return null;
 
   if (isLoading || !staticData) return <LoadingSpinner loading />;
 
@@ -63,7 +52,6 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
         data={data}
         setData={setData}
         isLoading={isLoading}
-        refetch={refetch}
         showDeleteAllButton
         showDownloadAllButton
         showFreeSpace
@@ -74,7 +62,7 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
 
   return (
     <>
-      <WhatIsARButton {...{ data, isLoading, navigation, refetch }} />
+      <WhatIsARButton {...{ data, isLoading, navigation }} />
 
       <Wrapper>
         <Button
@@ -95,7 +83,6 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
         setData={setData}
         isLoading={isLoading}
         navigation={navigation}
-        refetch={refetch}
         showOnDetailPage
       />
 
@@ -106,7 +93,6 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
         isLoading={isLoading}
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
-        refetch={refetch}
         showTitle
       />
     </>
@@ -114,7 +100,7 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
 };
 
 AugmentedReality.propTypes = {
+  data: PropTypes.array,
   navigation: PropTypes.object,
-  onSettingsScreen: PropTypes.bool,
-  tourID: PropTypes.string
+  onSettingsScreen: PropTypes.bool
 };

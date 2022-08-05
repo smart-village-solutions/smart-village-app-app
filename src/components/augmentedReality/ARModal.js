@@ -21,18 +21,21 @@ export const ARModal = ({
   isModalVisible,
   setIsModalVisible,
   onModalVisible,
-  refetch,
   showTitle
 }) => {
   // this modal is called for file package lists and for single file packages, where we need the
   // explicit object at the given `index`. the `index` is only given if we do not have a
   // truthy `isListView`, thats why we need to "secure" the destructing with `{}`.
-  const { DOWNLOAD_TYPE: itemDownloadType, progress, progressSize, title, totalSize } =
-    data?.[index] || {};
+  const { downloadType: itemDownloadType, progress, progressSize, totalSize } =
+    data?.[index]?.payload || {};
+
+  const { title } = data?.[index] || {};
 
   // if a download is running, we want to show the users an additional alert to inform about
   // difficulties with hiding the modal.
-  const showHiddenAlert = data?.some((item) => item.DOWNLOAD_TYPE === DOWNLOAD_TYPE.DOWNLOADING);
+  const showHiddenAlert = data?.some(
+    (item) => item?.payload?.downloadType === DOWNLOAD_TYPE.DOWNLOADING
+  );
 
   // in modals for single files we can have two states of the modal button and not only "hide",
   // because we want to navigate directly in case the file package is downloaded instead of hiding
@@ -66,7 +69,6 @@ export const ARModal = ({
           data={data}
           setData={setData}
           isLoading={isLoading}
-          refetch={refetch}
           showDeleteAllButton
           showDownloadAllButton
           showFreeSpace
@@ -122,6 +124,5 @@ ARModal.propTypes = {
   isModalVisible: PropTypes.bool.isRequired,
   setIsModalVisible: PropTypes.func,
   onModalVisible: PropTypes.func,
-  refetch: PropTypes.func,
   showTitle: PropTypes.bool
 };

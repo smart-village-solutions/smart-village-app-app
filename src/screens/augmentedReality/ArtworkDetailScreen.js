@@ -29,7 +29,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
   const [data, setData] = useState(route?.params?.data ?? []);
   const [isLoading, setIsLoading] = useState(loading);
   const index = route?.params?.index;
-  const { DOWNLOAD_TYPE: itemDownloadType } = data[index];
+  const { downloadType: itemDownloadType } = data[index]?.payload;
 
   const RefreshControl = usePullToRefetch(refetch);
 
@@ -78,7 +78,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
             <HtmlView html={artworkDetail} />
           </Wrapper>
 
-          <WhatIsARButton {...{ data, isLoading, navigation, refetch }} />
+          <WhatIsARButton {...{ data, isLoading, navigation }} />
 
           <Wrapper>
             <Button

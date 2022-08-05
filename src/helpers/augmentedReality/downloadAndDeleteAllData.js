@@ -7,7 +7,7 @@ import { storageNameCreator } from './storageNameCreator';
 // function to download all AR objects using `downloadObject`
 export const downloadAllData = async ({ data, setData }) => {
   for (const [index, dataItem] of data.entries()) {
-    for (const objectItem of dataItem?.downloadableUris) {
+    for (const objectItem of dataItem?.payload?.downloadableUris) {
       const { storageName } = storageNameCreator({ dataItem, objectItem });
 
       try {

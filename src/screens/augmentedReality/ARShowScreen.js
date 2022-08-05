@@ -163,17 +163,21 @@ export const ARShowScreen = ({ navigation, route }) => {
 };
 
 const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
-  let parsedObject = {};
+  let parsedObject = { texture: [] };
 
-  if (item.animationName) {
-    parsedObject.animationName = item.animationName;
+  if (item?.payload?.animationName) {
+    parsedObject.animationName = item?.payload?.animationName;
   }
 
-  item?.localUris?.forEach((item) => {
-    parsedObject[item.type] = item.uri;
+  item?.payload?.localUris?.forEach((item) => {
+    if (item.type === 'texture') {
+      parsedObject[item.type].push({ uri: item.uri });
+    } else {
+      parsedObject[item.type] = item.uri;
+    }
   });
 
-  if (!parsedObject.png || !parsedObject.vrx) {
+  if (!parsedObject.texture || !parsedObject.vrx) {
     return Alert.alert(
       texts.augmentedReality.modalHiddenAlertTitle,
       texts.augmentedReality.invalidModelError,

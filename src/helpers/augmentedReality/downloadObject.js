@@ -10,7 +10,7 @@ export const downloadObject = async ({ index, data, setData }) => {
   const downloadedData = [...data];
   const dataItem = data[index];
 
-  for (const objectItem of dataItem?.downloadableUris) {
+  for (const objectItem of dataItem?.payload?.downloadableUris) {
     const { uri, title, type, id } = objectItem;
 
     const { directoryName, folderName, storageName } = storageNameCreator({ dataItem, objectItem });
@@ -37,9 +37,9 @@ export const downloadObject = async ({ index, data, setData }) => {
       const { uri } = await downloadResumable.downloadAsync();
       const { size } = await FileSystem.getInfoAsync(uri);
 
-      downloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADED;
-      downloadedData[index].size += size;
-      downloadedData[index].localUris.push({ uri, id, size, title, type });
+      downloadedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADED;
+      downloadedData[index].payload.size += size;
+      downloadedData[index].payload.localUris.push({ uri, id, size, title, type });
 
       addToStore(storageName, downloadedData[index]);
     } catch (e) {
@@ -62,10 +62,11 @@ export const downloadObject = async ({ index, data, setData }) => {
  *                                  the screen to show the download size
  */
 const downloadProgressInBytes = (progress, index, downloadedData, setData) => {
-  downloadedData[index].DOWNLOAD_TYPE = DOWNLOAD_TYPE.DOWNLOADING;
-  downloadedData[index].progressSize = downloadedData[index].size + progress.totalBytesWritten;
-  downloadedData[index].progress =
-    downloadedData[index].progressSize / downloadedData[index].totalSize;
+  downloadedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADING;
+  downloadedData[index].payload.progressSize =
+    downloadedData[index].payload.size + progress.totalBytesWritten;
+  downloadedData[index].payload.progress =
+    downloadedData[index].payload.progressSize / downloadedData[index].payload.totalSize;
 
   // we create a copy of the array to make the set state method aware of "there is something new"
   // that should be rendered
