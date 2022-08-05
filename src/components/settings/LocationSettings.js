@@ -119,11 +119,10 @@ export const LocationSettings = () => {
             locations={locations}
             mapCenterPosition={{ lat: 51.1657, lng: 10.4515 }} // center of germany
             onMapPress={({ nativeEvent }) => {
-              const coordinate = {
+              setSelectedPosition({
                 lat: nativeEvent.coordinate.latitude,
                 lng: nativeEvent.coordinate.longitude
-              };
-              setSelectedPosition(coordinate);
+              });
             }}
             zoom={4} // this sets the zoom to show all of germany
           />
