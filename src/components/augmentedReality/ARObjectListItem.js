@@ -13,7 +13,7 @@ import { IconForDownloadType } from './IconForDownloadType';
 
 export const ARObjectListItem = ({ data, index, item, navigation, setData, showOnDetailPage }) => {
   const {
-    payload: { downloadType: itemDownloadType, progressSize, totalSize, locationInfo },
+    payload: { downloadType, progressSize, totalSize, locationInfo },
     title
   } = item;
 
@@ -23,9 +23,9 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
       return;
     }
 
-    if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADABLE) {
+    if (downloadType === DOWNLOAD_TYPE.DOWNLOADABLE) {
       await downloadObject({ index, data, setData });
-    } else if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED) {
+    } else if (downloadType === DOWNLOAD_TYPE.DOWNLOADED) {
       Alert.alert(
         texts.settingsTitles.arListLayouts.alertTitle,
         texts.settingsTitles.arListLayouts.deleteAlertMessage,
@@ -59,7 +59,7 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
       rightIcon={
         <IconForDownloadType
           isListView
-          itemDownloadType={itemDownloadType}
+          downloadType={downloadType}
           showOnDetailPage={showOnDetailPage}
         />
       }

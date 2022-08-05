@@ -26,8 +26,7 @@ export const ARModal = ({
   // this modal is called for file package lists and for single file packages, where we need the
   // explicit object at the given `index`. the `index` is only given if we do not have a
   // truthy `isListView`, thats why we need to "secure" the destructing with `{}`.
-  const { downloadType: itemDownloadType, progress, progressSize, totalSize } =
-    data?.[index]?.payload || {};
+  const { downloadType, progress, progressSize, totalSize } = data?.[index]?.payload || {};
 
   const { title } = data?.[index] || {};
 
@@ -41,7 +40,7 @@ export const ARModal = ({
   // because we want to navigate directly in case the file package is downloaded instead of hiding
   // the modal manually and then pressing a button to navigate.
   const modalHiddenButtonName =
-    itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED && !isListView
+    downloadType === DOWNLOAD_TYPE.DOWNLOADED && !isListView
       ? texts.settingsTitles.arListLayouts.continue
       : texts.settingsTitles.arListLayouts.hide;
 
@@ -77,7 +76,7 @@ export const ARModal = ({
       ) : (
         <View>
           <View style={[styles.container, styles.iconAndByteText]}>
-            <IconForDownloadType itemDownloadType={itemDownloadType} />
+            <IconForDownloadType downloadType={downloadType} />
 
             <RegularText small style={styles.progressTextStyle}>
               {progressSizeGenerator(progressSize, totalSize)}

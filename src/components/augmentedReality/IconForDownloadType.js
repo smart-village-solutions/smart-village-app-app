@@ -5,21 +5,20 @@ import { ActivityIndicator } from 'react-native';
 import { colors, Icon, normalize } from '../../config';
 import { DOWNLOAD_TYPE } from '../../helpers';
 
-export const IconForDownloadType = ({ isListView, itemDownloadType, showOnDetailPage }) => {
+export const IconForDownloadType = ({ isListView, downloadType, showOnDetailPage }) => {
   if (showOnDetailPage) {
     return <Icon.ArrowRight size={normalize(20)} />;
   }
 
-  switch (itemDownloadType) {
+  switch (downloadType) {
     case DOWNLOAD_TYPE.DOWNLOADABLE:
       return <Icon.ArrowDownCircle color={colors.primary} size={normalize(16)} />;
     case DOWNLOAD_TYPE.DOWNLOADED:
-      return isListView ? (
-        <Icon.CloseCircle color={colors.darkText} size={normalize(16)} />
-      ) : (
-        <Icon.Check color={colors.primary} size={normalize(20)} />
-      );
+      if (isListView) {
+        return <Icon.CloseCircle color={colors.darkText} size={normalize(16)} />;
+      }
 
+      return <Icon.Check color={colors.primary} size={normalize(20)} />;
     default:
       return <ActivityIndicator size="small" color={colors.accent} />;
   }
@@ -27,6 +26,6 @@ export const IconForDownloadType = ({ isListView, itemDownloadType, showOnDetail
 
 IconForDownloadType.propTypes = {
   isListView: PropTypes.bool,
-  itemDownloadType: PropTypes.string.isRequired,
+  downloadType: PropTypes.string.isRequired,
   showOnDetailPage: PropTypes.bool
 };
