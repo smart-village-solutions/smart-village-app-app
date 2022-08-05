@@ -13,7 +13,7 @@ import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
 import { WhatIsARButton } from './WhatIsARButton';
 
-export const AugmentedReality = ({ data: staticData, navigation, onSettingsScreen }) => {
+export const AugmentedReality = ({ tourStops, navigation, onSettingsScreen }) => {
   const [isARSupported, setIsARSupported] = useState(false);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,12 +27,12 @@ export const AugmentedReality = ({ data: staticData, navigation, onSettingsScree
   }, []);
 
   useEffect(() => {
-    setData(staticData);
+    setData(tourStops);
 
-    if (staticData?.length) {
-      checkDownloadData({ data: staticData });
+    if (tourStops?.length) {
+      checkDownloadData({ data: tourStops });
     }
-  }, [staticData]);
+  }, [tourStops]);
 
   const checkDownloadData = async ({ data }) => {
     setIsLoading(true);
@@ -42,7 +42,7 @@ export const AugmentedReality = ({ data: staticData, navigation, onSettingsScree
 
   if (!isARSupported) return null;
 
-  if (isLoading || !staticData) return <LoadingSpinner loading />;
+  if (isLoading || !tourStops) return <LoadingSpinner loading />;
 
   const a11yText = consts.a11yLabel;
 
@@ -100,7 +100,7 @@ export const AugmentedReality = ({ data: staticData, navigation, onSettingsScree
 };
 
 AugmentedReality.propTypes = {
-  data: PropTypes.array,
+  tourStops: PropTypes.array,
   navigation: PropTypes.object,
   onSettingsScreen: PropTypes.bool
 };

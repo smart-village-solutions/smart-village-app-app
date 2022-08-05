@@ -87,7 +87,7 @@ export const ARShowScreen = ({ navigation, route }) => {
         style={[styles.backButton, styles.generalButtonStyle]}
         onPress={() => {
           /*
-          to solve the Android crash problem, you must first remove the 3D object from the screen. 
+          to solve the Android crash problem, you must first remove the 3D object from the screen.
           then navigation can be done.
           */
           if (isVideoRecording) {
@@ -163,7 +163,7 @@ export const ARShowScreen = ({ navigation, route }) => {
 };
 
 const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
-  let parsedObject = { texture: [] };
+  const parsedObject = { texture: [] };
 
   if (item?.payload?.animationName) {
     parsedObject.animationName = item?.payload?.animationName;
@@ -177,7 +177,7 @@ const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
     }
   });
 
-  if (!parsedObject.texture || !parsedObject.vrx) {
+  if (!parsedObject?.texture?.length || !parsedObject?.vrx) {
     return Alert.alert(
       texts.augmentedReality.modalHiddenAlertTitle,
       texts.augmentedReality.invalidModelError,
