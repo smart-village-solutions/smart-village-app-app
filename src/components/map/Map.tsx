@@ -78,7 +78,7 @@ export const Map = ({
         }}
       >
         <UrlTile
-          urlTemplate="https://a.tile.opentopomap.org/{z}/{x}/{y}.png"
+          urlTemplate="https://tile-server.sva-services.customer.planetary-quantum.net/tile/{z}/{x}/{y}.png"
           shouldReplaceMapContent={device.platform === 'ios'}
         />
         {locations?.map((marker, index) => (
