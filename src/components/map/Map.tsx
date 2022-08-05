@@ -13,7 +13,7 @@ type Props = {
   mapCenterPosition?: { lat: number; lng: number };
   mapStyle?: StyleProp<ViewStyle>;
   onMapPress?: () => void;
-  onMarkerPress: (arg0?: string) => void;
+  onMarkerPress?: (arg0?: string) => void;
   style?: StyleProp<ViewStyle>;
   zoom?: number;
 };
@@ -84,7 +84,11 @@ export const Map = ({
             identifier={marker.id}
             key={`${index}-${marker.id}`}
             coordinate={{ latitude: marker.position?.lat, longitude: marker.position?.lng }}
-            onPress={() => onMarkerPress(marker.id)}
+            onPress={() => {
+              if (onMarkerPress) {
+                onMarkerPress(marker.id);
+              }
+            }}
           >
             <SvgXml xml={marker.icon} width={MARKER_ICON_SIZE} height={MARKER_ICON_SIZE} />
           </Marker>
