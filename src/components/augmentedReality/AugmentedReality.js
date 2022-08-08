@@ -15,23 +15,12 @@ import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
 import { WhatIsARButton } from './WhatIsARButton';
 
-const OnSettingsScreen = ({ id, isLoading, setData }) => {
-  const { data } = useQuery(getQuery(QUERY_TYPES.TOUR_STOPS), { variables: { id } });
-
-  return (
-    <ARObjectList
-      data={data?.tour?.tourStops}
-      setData={setData}
-      isLoading={isLoading}
-      showDeleteAllButton
-      showDownloadAllButton
-      showFreeSpace
-      showTitle
-    />
-  );
-};
-
 export const AugmentedReality = ({ id, navigation, onSettingsScreen, tourStops }) => {
+  const { data: tourData } = useQuery(getQuery(QUERY_TYPES.TOUR_STOPS), {
+    variables: { id },
+    skip: !onSettingsScreen
+  });
+
   const [isARSupported, setIsARSupported] = useState(false);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -61,7 +50,17 @@ export const AugmentedReality = ({ id, navigation, onSettingsScreen, tourStops }
   if (!isARSupported) return null;
 
   if (onSettingsScreen) {
-    return <OnSettingsScreen {...{ id, isLoading, setData }} />;
+    return (
+      <ARObjectList
+        data={tourData?.tour?.tourStops}
+        setData={setData}
+        isLoading={isLoading}
+        showDeleteAllButton
+        showDownloadAllButton
+        showFreeSpace
+        showTitle
+      />
+    );
   }
 
   if (isLoading) return <LoadingSpinner loading />;
@@ -112,10 +111,4 @@ AugmentedReality.propTypes = {
   navigation: PropTypes.object,
   onSettingsScreen: PropTypes.bool,
   tourStops: PropTypes.array
-};
-
-OnSettingsScreen.propTypes = {
-  id: PropTypes.string,
-  isLoading: PropTypes.bool,
-  setData: PropTypes.func
 };
