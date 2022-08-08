@@ -14,8 +14,6 @@ import {
   Wrapper
 } from '../../components';
 import { colors, consts, texts } from '../../config';
-import { parseListItemsFromQuery } from '../../helpers';
-import { additionalData, myProfile, myTasks } from '../../helpers/parser/volunteer';
 import {
   useConversationsHeader,
   useLogoutHeader,
@@ -47,7 +45,9 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     query,
     queryVariables,
     queryOptions,
-    isCalendar
+    isCalendar,
+    titleDetail,
+    bookmarkable
   });
 
   // action to open source urls
@@ -61,25 +61,11 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     }, [])
   );
 
-  // TODO: remove if all queries exist
-  const details = {
-    [QUERY_TYPES.VOLUNTEER.PROFILE]: myProfile(),
-    [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks(),
-    [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: additionalData()
-  }[query];
-
-  const listItems = parseListItemsFromQuery(query, data || details, titleDetail, {
-    bookmarkable,
-    skipLastDivider: true,
-    withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS || isCalendar,
-    isSectioned: isCalendar
-  });
-
   if (isLoading) {
     return <LoadingSpinner loading />;
   }
 
-  if (!listItems) return null;
+  if (!data) return null;
 
   return (
     <SafeAreaViewFlex>
@@ -94,7 +80,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
             </>
           }
           navigation={navigation}
-          data={listItems}
+          data={data}
           sectionByDate={isCalendar}
           query={query}
           refetch={refetch}
@@ -120,7 +106,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
                   title: texts.volunteer.conversationAllStart,
                   query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
                   rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
-                  selectedUserIds: listItems.map(({ id }: VolunteerUser) => id)
+                  selectedUserIds: data.map(({ id }: VolunteerUser) => id)
                 })
               }
               title={texts.volunteer.conversationAllStart}

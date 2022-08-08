@@ -2,7 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useQuery } from 'react-apollo';
 
-import { useHomeRefresh } from '../hooks';
+import { useHomeRefresh, useVolunteerData } from '../hooks';
 import { getQuery, QUERY_TYPES } from '../queries';
 
 import { DataListSection } from './DataListSection';
@@ -23,6 +23,7 @@ type Props = {
   placeholder?: React.ReactElement;
   query: string;
   queryVariables: { limit?: number };
+  showVolunteerEvents?: boolean;
 };
 
 export const HomeSection = ({
@@ -34,14 +35,31 @@ export const HomeSection = ({
   navigation,
   placeholder,
   query,
-  queryVariables
+  queryVariables,
+  showVolunteerEvents = false
 }: Props) => {
-  const { data, loading, refetch } = useQuery(getQuery(query), {
+  const { data, loading: isLoading, refetch } = useQuery(getQuery(query), {
     variables: queryVariables,
     fetchPolicy
   });
 
-  useHomeRefresh(refetch);
+  const isCalendarWithVolunteerEvents = query === QUERY_TYPES.EVENT_RECORDS && showVolunteerEvents;
+
+  const {
+    data: dataVolunteerEvents,
+    isLoading: isLoadingVolunteerEvents = false,
+    refetch: refetchVolunteerEvents
+  } = useVolunteerData({
+    query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+    queryOptions: { enabled: isCalendarWithVolunteerEvents },
+    isCalendar: isCalendarWithVolunteerEvents,
+    isSectioned: false
+  });
+
+  useHomeRefresh(() => {
+    refetch();
+    isCalendarWithVolunteerEvents && refetchVolunteerEvents();
+  });
 
   let showButton = !!data?.[query]?.length;
 
@@ -49,6 +67,9 @@ export const HomeSection = ({
     showButton =
       !!data?.[QUERY_TYPES.POINTS_OF_INTEREST]?.length || !!data?.[QUERY_TYPES.TOURS]?.length;
   }
+
+  const loading = isLoading || isLoadingVolunteerEvents;
+  const additionalData = isCalendarWithVolunteerEvents ? dataVolunteerEvents : undefined;
 
   return (
     <DataListSection
@@ -61,6 +82,7 @@ export const HomeSection = ({
       placeholder={placeholder}
       query={query}
       sectionData={data}
+      additionalData={additionalData}
       sectionTitle={title}
       sectionTitleDetail={titleDetail}
       showButton={showButton}

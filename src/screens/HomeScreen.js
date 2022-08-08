@@ -27,7 +27,7 @@ export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings } = useContext(SettingsContext);
-  const { sections = {}, widgets: widgetConfigs = [] } = globalSettings;
+  const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
   const {
     showNews = true,
     showPointsOfInterestAndTours = true,
@@ -44,6 +44,7 @@ export const HomeScreen = ({ navigation, route }) => {
     headlineEvents = texts.homeTitles.events,
     buttonEvents = texts.homeButtons.events
   } = sections;
+  const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
   const { state: excludeDataProviderIds } = usePermanentFilter();
 
@@ -227,6 +228,7 @@ export const HomeScreen = ({ navigation, route }) => {
             navigation={navigation}
             query={QUERY_TYPES.EVENT_RECORDS}
             queryVariables={{ limit: 3, order: 'listDate_ASC' }}
+            showVolunteerEvents={showVolunteerEvents}
           />
         )}
 
