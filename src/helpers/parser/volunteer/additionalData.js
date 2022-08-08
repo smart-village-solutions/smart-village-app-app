@@ -10,8 +10,8 @@ export const additionalData = () => [
     routeName: 'VolunteerDetail',
     description:
       'Esse sit magna mollit Lorem id veniam eiusmod aliquip elit id consequat deserunt tempor sit.',
-    tags: 'Wissensspeicher für Gruppen',
-    category: { name: 'Wissensspeicher für Gruppen' },
+    tags: 'Wissensspeicher für Gruppen und Vereine',
+    category: { name: 'Wissensspeicher für Gruppen und Vereine' },
     dataProvider: {},
     picture: {
       url: 'https://picsum.photos/1600/900'
@@ -37,8 +37,8 @@ export const additionalData = () => [
     routeName: 'VolunteerDetail',
     description:
       'Incididunt eu esse pariatur nisi. Quis labore nisi in id reprehenderit consectetur nisi dolore veniam id irure eiusmod. Fugiat occaecat cupidatat amet deserunt ad officia ut nisi est laboris ex id laboris do.',
-    tags: 'Austausch mit und zwischen Gruppen',
-    category: { name: 'Austausch mit und zwischen Gruppen' },
+    tags: 'Austausch mit und zwischen Gruppen und Vereinen',
+    category: { name: 'Austausch mit und zwischen Gruppen und Vereinen' },
     dataProvider: {},
     picture: {
       url: 'https://picsum.photos/1600/901'
