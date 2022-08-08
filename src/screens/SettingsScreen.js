@@ -240,9 +240,8 @@ export const SettingsScreen = () => {
         />
       )}
       {selectedFilterId === TOP_FILTER.LIST_TYPES && <ListSettings />}
-      {/* TODO: this will crash now as the props were changed in `AugmentedReality`, right? */}
       {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && (
-        <AugmentedReality onSettingsScreen tourID="579" />
+        <AugmentedReality id="579" onSettingsScreen />
       )}
     </SafeAreaViewFlex>
   );

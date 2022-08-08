@@ -48,6 +48,7 @@ export const QUERY_TYPES = {
   PUBLIC_HTML_FILE: 'publicHtmlFile',
   PUBLIC_JSON_FILE: 'publicJsonFile',
   TOUR: 'tour',
+  TOUR_STOPS: 'tourStops',
   TOURS: 'tours',
   VOLUNTEER: {
     ADDITIONAL: 'additional',

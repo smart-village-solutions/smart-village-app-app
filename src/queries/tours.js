@@ -180,3 +180,22 @@ export const GET_TOUR = gql`
     }
   }
 `;
+
+export const GET_TOUR_STOPS = gql`
+  query Tour($id: ID!) {
+    tour(id: $id) {
+      tourStops {
+        id
+        title: name
+        description
+        location {
+          geoLocation {
+            latitude
+            longitude
+          }
+        }
+        payload
+      }
+    }
+  }
+`;
