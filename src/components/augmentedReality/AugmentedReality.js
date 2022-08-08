@@ -1,32 +1,40 @@
+import { isARSupportedOnDevice } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { isARSupportedOnDevice } from '@viro-community/react-viro';
 import { useQuery } from 'react-apollo';
 
 import { consts, device, texts } from '../../config';
 import { checkDownloadedData } from '../../helpers';
+import { getQuery, QUERY_TYPES } from '../../queries';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper } from '../Wrapper';
-import { GET_TOUR_STOPS } from '../../queries/tours';
 
 import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
 import { WhatIsARButton } from './WhatIsARButton';
-import { getQuery, QUERY_TYPES } from '../../queries';
 
-export const AugmentedReality = ({ id, navigation, onSettingsScreen }) => {
-  const {
-    data: {
-      tour: { tourStops }
-    },
-    loading
-  } = useQuery(getQuery(QUERY_TYPES.TOUR_STOPS), { variables: { id } });
+const OnSettingsScreen = ({ id, isLoading, setData }) => {
+  const { data } = useQuery(getQuery(QUERY_TYPES.TOUR_STOPS), { variables: { id } });
 
+  return (
+    <ARObjectList
+      data={data?.tour?.tourStops}
+      setData={setData}
+      isLoading={isLoading}
+      showDeleteAllButton
+      showDownloadAllButton
+      showFreeSpace
+      showTitle
+    />
+  );
+};
+
+export const AugmentedReality = ({ id, navigation, onSettingsScreen, tourStops }) => {
   const [isARSupported, setIsARSupported] = useState(false);
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(loading);
+  const [isLoading, setIsLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
@@ -52,23 +60,13 @@ export const AugmentedReality = ({ id, navigation, onSettingsScreen }) => {
 
   if (!isARSupported) return null;
 
-  if (isLoading || !tourStops?.length) return <LoadingSpinner loading />;
+  if (onSettingsScreen) {
+    return <OnSettingsScreen {...{ id, isLoading, setData }} />;
+  }
+
+  if (isLoading) return <LoadingSpinner loading />;
 
   const a11yText = consts.a11yLabel;
-
-  if (onSettingsScreen) {
-    return (
-      <ARObjectList
-        data={data}
-        setData={setData}
-        isLoading={isLoading}
-        showDeleteAllButton
-        showDownloadAllButton
-        showFreeSpace
-        showTitle
-      />
-    );
-  }
 
   return (
     <>
@@ -110,8 +108,14 @@ export const AugmentedReality = ({ id, navigation, onSettingsScreen }) => {
 };
 
 AugmentedReality.propTypes = {
-  tourStops: PropTypes.array,
   id: PropTypes.string,
   navigation: PropTypes.object,
-  onSettingsScreen: PropTypes.bool
+  onSettingsScreen: PropTypes.bool,
+  tourStops: PropTypes.array
+};
+
+OnSettingsScreen.propTypes = {
+  id: PropTypes.string,
+  isLoading: PropTypes.bool,
+  setData: PropTypes.func
 };

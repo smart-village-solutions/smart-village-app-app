@@ -96,7 +96,7 @@ export const Tour = ({ data, navigation, route }) => {
           </View>
         )}
 
-        {!!tourStops?.length && <AugmentedReality {...{ id, navigation }} />}
+        {!!tourStops?.length && <AugmentedReality {...{ id, tourStops, navigation }} />}
 
         <OperatingCompany
           openWebScreen={openWebScreen}
