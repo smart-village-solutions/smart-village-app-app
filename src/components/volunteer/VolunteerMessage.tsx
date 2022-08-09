@@ -1,38 +1,11 @@
 import 'moment/locale/de';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { Avatar } from 'react-native-elements';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
-import { colors, normalize } from '../../config';
-import {
-  momentFormat,
-  volunteerListDate,
-  volunteerProfileImage,
-  volunteerUserData
-} from '../../helpers';
-import { conversationRecipients } from '../../queries/volunteer';
-import { RegularText } from '../Text';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
-
-const UserAvatar = ({ uri, title }: { uri: string; title: string }) => (
-  <Avatar
-    containerStyle={styles.spacing}
-    overlayContainerStyle={[styles.overlayContainerStyle, !uri && styles.border]}
-    placeholderStyle={styles.placeholderStyle}
-    rounded
-    source={uri ? { uri } : undefined}
-    renderPlaceholderContent={
-      <Avatar
-        containerStyle={[styles.containerStyle]}
-        overlayContainerStyle={[styles.overlayContainerStyle, styles.border]}
-        rounded
-        title={title}
-        titleStyle={styles.titleStyle}
-      />
-    }
-  />
-);
+import { Chat } from '../Chat';
+import { volunteerProfileImage, volunteerUserData } from '../../helpers';
+import { conversationNewEntry, conversationRecipients } from '../../queries/volunteer';
+import { VolunteerConversation } from '../../types';
 
 export const VolunteerMessage = ({
   data,
@@ -53,6 +26,7 @@ export const VolunteerMessage = ({
   };
   conversationId: number;
 }) => {
+  const [messageData, setMessageData] = useState<any>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   const { data: dataRecipients, isLoading } = useQuery(
@@ -66,84 +40,71 @@ export const VolunteerMessage = ({
     });
   }, []);
 
+  useEffect(() => {
+    const messageArray: {
+      text: string;
+      createdAt: string;
+      updatedAt: string;
+      _id: number;
+      user: { _id: number; name: any; avatar: string };
+    }[] = [];
+
+    if (currentUserId && !!data?.results?.length && !!dataRecipients) {
+      data?.results?.forEach((message) => {
+        const {
+          id,
+          user_id,
+          content,
+          created_at,
+          created_by: createdBy,
+          updated_at
+        } = message || {};
+
+        const user = dataRecipients.find(
+          (recipient: { id: string }) => recipient.id == createdBy.toString()
+        );
+        const { display_name: displayName, guid } = user || {};
+        // get initials from the display name
+        const title = displayName
+          ?.split(' ')
+          .map((part: string) => part[0])
+          .join('');
+        const uri = volunteerProfileImage(guid);
+
+        messageArray.push({
+          text: content,
+          createdAt: created_at,
+          updatedAt: updated_at,
+          _id: id,
+          user: {
+            _id: user_id,
+            name: title,
+            avatar: uri
+          }
+        });
+      });
+      setMessageData(messageArray.reverse());
+    }
+  }, [currentUserId, data, dataRecipients]);
+
+  const { mutateAsync } = useMutation(conversationNewEntry);
+  const onSend = async (conversationNewEntryData: VolunteerConversation) => {
+    mutateAsync(conversationNewEntryData);
+  };
+
   if (isLoading || !dataRecipients || !currentUserId) return null;
 
   return (
-    <WrapperWithOrientation>
-      {currentUserId && !!data?.results?.length && (
-        <Wrapper>
-          {data.results.map((message) => {
-            const { id, content, created_by: createdBy, updated_at } = message || {};
-            const isOwnMessage = createdBy.toString() == currentUserId;
-
-            const user = dataRecipients.find(
-              (recipient: { id: string }) => recipient.id == createdBy.toString()
-            );
-            const { display_name: displayName, guid } = user || {};
-            // get initials from the display name
-            const title = displayName
-              ?.split(' ')
-              .map((part: string) => part[0])
-              .join('');
-            const uri = volunteerProfileImage(guid);
-
-            return (
-              <View key={id}>
-                <View style={[!isOwnMessage && styles.containerStyle]}>
-                  {!isOwnMessage && <UserAvatar uri={uri} title={title} />}
-                  <RegularText right={isOwnMessage} smallest style={styles.dateTimeStyle}>
-                    {momentFormat(
-                      volunteerListDate({
-                        end_datetime: '',
-                        start_datetime: '',
-                        updated_at
-                      }),
-                      'DD.MM.YYYY HH:mm'
-                    )}
-                  </RegularText>
-                </View>
-                <RegularText
-                  primary={!isOwnMessage}
-                  right={isOwnMessage}
-                  style={styles.messageStyle}
-                >
-                  {content}
-                </RegularText>
-              </View>
-            );
-          })}
-        </Wrapper>
-      )}
-    </WrapperWithOrientation>
+    <Chat
+      data={messageData}
+      onSendButton={(message) =>
+        onSend({
+          id: [conversationId],
+          message,
+          title: ''
+        })
+      }
+      userId={currentUserId}
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  border: {
-    borderColor: colors.darkText,
-    borderWidth: 1
-  },
-  containerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  dateTimeStyle: {
-    marginLeft: normalize(6)
-  },
-  messageStyle: {
-    marginBottom: normalize(10)
-  },
-  overlayContainerStyle: {
-    backgroundColor: colors.surface
-  },
-  placeholderStyle: {
-    backgroundColor: colors.surface
-  },
-  titleStyle: {
-    color: colors.darkText,
-    fontSize: normalize(12)
-  },
-  spacing: {
-    marginVertical: normalize(5)
-  }
-});

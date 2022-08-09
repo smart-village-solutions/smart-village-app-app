@@ -76,21 +76,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
   if (!Component || !componentData) return <EmptyMessage title={texts.empty.content} />;
 
   if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
-    return (
-      <SafeAreaViewFlex>
-        <DefaultKeyboardAvoidingView>
-          <ScrollView ref={scrollViewRef}>
-            <Component data={componentData} conversationId={queryVariables.id} />
-          </ScrollView>
-          <VolunteerMessageTextField
-            conversationId={queryVariables.id}
-            refetch={refetch}
-            dataCount={data.results.length}
-            scrollToBottom={(animated = true) => scrollViewRef?.current?.scrollToEnd({ animated })}
-          />
-        </DefaultKeyboardAvoidingView>
-      </SafeAreaViewFlex>
-    );
+    return <Component data={componentData} conversationId={queryVariables.id} />;
   }
 
   return (
