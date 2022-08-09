@@ -108,6 +108,10 @@ export const VolunteerEventRecord = ({
           />
         )}
 
+        <Wrapper>
+          <InfoCard category={category} webUrls={webUrls} openWebScreen={openWebScreen} />
+        </Wrapper>
+
         {!!appointments?.length && (
           <View>
             <TitleContainer>
@@ -151,10 +155,6 @@ export const VolunteerEventRecord = ({
             </Wrapper>
           </View>
         )}
-
-        <Wrapper>
-          <InfoCard category={category} webUrls={webUrls} openWebScreen={openWebScreen} />
-        </Wrapper>
 
         {isAttendingEvent !== undefined && (
           <Wrapper>
