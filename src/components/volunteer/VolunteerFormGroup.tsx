@@ -56,7 +56,7 @@ export const VolunteerFormGroup = ({
 
   if (isError || (!isLoading && data && !data.id)) {
     Alert.alert(
-      'Fehler beim Erstellen einer Gruppe',
+      'Fehler beim Erstellen einer Gruppe/eines Vereins',
       'Bitte Eingaben überprüfen und erneut versuchen.'
     );
     reset();
@@ -65,7 +65,7 @@ export const VolunteerFormGroup = ({
   if (isSuccessEdit && isFocused) {
     navigation.goBack();
 
-    Alert.alert('Erfolgreich', 'Die Gruppe wurde erfolgreich erstellt.');
+    Alert.alert('Erfolgreich', 'Die Gruppe/der Verein wurde erfolgreich erstellt.');
   }
 
   return (
