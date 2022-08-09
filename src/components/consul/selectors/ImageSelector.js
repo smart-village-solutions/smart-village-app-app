@@ -81,6 +81,41 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
     setInfoAndErrorText({});
   };
 
+  const imageSelect = async () => {
+    const { uri, type } = await selectImage();
+    const { size } = await FileSystem.getInfoAsync(uri);
+
+    /* the server does not support files more than 10MB in size. */
+    const volunteerErrorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
+    const consulErrorText = await imageErrorMessageGenerator(uri);
+
+    /* used to specify the mimeType when uploading to the server */
+    const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
+
+    /* variable to find the name of the image */
+    const uriSplitForImageName = uri.split('/');
+    const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
+
+    if (isVolunteer) {
+      setInfoAndErrorText([
+        ...infoAndErrorText,
+        {
+          errorText: volunteerErrorText,
+          infoText: `${imageName}`
+        }
+      ]);
+
+      setImagesAttributes([...imagesAttributes, { uri, mimeType: `${type}/${imageType}` }]);
+    } else {
+      setInfoAndErrorText({
+        errorText: texts.consul.startNew[consulErrorText],
+        infoText: `(${type}/${imageType}, ${formatSize(size)})`
+      });
+
+      onChange(uri);
+    }
+  };
+
   if (isVolunteer) {
     return (
       <>
@@ -89,53 +124,28 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
           {infoText}
         </RegularText>
 
-        <Button
-          title={buttonTitle}
-          invert
-          onPress={async () => {
-            const { uri, type } = await selectImage();
-            const { size } = await FileSystem.getInfoAsync(uri);
-
-            /* the server does not support files more than 10MB in size. */
-            const errorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
-
-            /* used to specify the mimeType when uploading to the server */
-            const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
-
-            /* variable to find the name of the image */
-            const uriSplitForImageName = uri.split('/');
-            const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
-
-            setImagesAttributes([...imagesAttributes, { uri, mimeType: `${type}/${imageType}` }]);
-
-            setInfoAndErrorText([
-              ...infoAndErrorText,
-              {
-                errorText,
-                infoText: `${imageName}`
-              }
-            ]);
-          }}
-        />
+        <Button title={buttonTitle} invert onPress={imageSelect} />
 
         {value
           ? JSON.parse(value).map((item, index) => (
-              <View key={index}>
+              <View key={index} style={{ marginBottom: normalize(8) }}>
+                <View style={styles.volunteerUploadPreview}>
+                  {!!infoAndErrorText[index]?.infoText && (
+                    <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
+                      {infoAndErrorText[index].infoText}
+                    </RegularText>
+                  )}
+
+                  <TouchableOpacity onPress={() => deleteImageAlert(() => onDeleteImage(index))}>
+                    <Icon.Trash color={colors.darkText} size={normalize(16)} />
+                  </TouchableOpacity>
+                </View>
+
                 {!!infoAndErrorText[index]?.errorText && (
                   <RegularText smallest error>
                     {infoAndErrorText[index].errorText}
                   </RegularText>
                 )}
-                <View style={styles.volunteerImageView}>
-                  {!!infoAndErrorText[index]?.infoText && (
-                    <RegularText style={{ width: '90%' }} numberOfLines={1} small>
-                      {infoAndErrorText[index].infoText}
-                    </RegularText>
-                  )}
-                  <TouchableOpacity onPress={() => deleteImageAlert(() => onDeleteImage(index))}>
-                    <Icon.Trash color={colors.darkText} size={normalize(16)} />
-                  </TouchableOpacity>
-                </View>
               </View>
             ))
           : null}
@@ -173,22 +183,7 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
           )}
         </>
       ) : (
-        <Button
-          title={buttonTitle}
-          invert
-          onPress={async () => {
-            const { uri, type } = await selectImage();
-            const { size } = await FileSystem.getInfoAsync(uri);
-            const errorMessage = await imageErrorMessageGenerator(uri);
-            const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
-
-            setInfoAndErrorText({
-              errorText: texts.consul.startNew[errorMessage],
-              infoText: `(${type}/${imageType}, ${formatSize(size)})`
-            });
-            onChange(uri);
-          }}
-        />
+        <Button title={buttonTitle} invert onPress={imageSelect} />
       )}
     </>
   );
@@ -207,13 +202,15 @@ const styles = StyleSheet.create({
     height: imageHeight(imageWidth() * 0.6),
     width: imageWidth() * 0.6
   },
-  volunteerImageView: {
+  volunteerInfoText: {
+    width: '90%'
+  },
+  volunteerUploadPreview: {
     alignItems: 'center',
     backgroundColor: colors.gray20,
     borderRadius: normalize(4),
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: normalize(8),
     paddingHorizontal: normalize(20),
     paddingVertical: normalize(14)
   }
