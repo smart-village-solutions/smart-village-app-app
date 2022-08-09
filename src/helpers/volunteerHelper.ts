@@ -112,7 +112,7 @@ export const volunteerSubtitle = (
 
   return subtitle(
     withDate ? date : undefined,
-    query !== QUERY_TYPES.VOLUNTEER.CALENDAR && volunteer.tags
+    query !== QUERY_TYPES.VOLUNTEER.CALENDAR && volunteer.tags?.length ? volunteer.tags : undefined
   );
 };
 
@@ -132,6 +132,17 @@ export const isAccount = (currentUserId: string | null, account: VolunteerUser):
   if (!currentUserId || !account?.id) return false;
 
   return account.id.toString() == currentUserId;
+};
+
+export const isApplicant = (
+  currentUserId: string | null,
+  applicants?: { user: VolunteerUser }[]
+): boolean => {
+  if (!currentUserId || !applicants?.length) return false;
+
+  return applicants.some(
+    (item: { user: VolunteerUser }) => item.user.id.toString() == currentUserId
+  );
 };
 
 export const isMember = (

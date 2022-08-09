@@ -10,7 +10,7 @@ import {
   volunteerUserData
 } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { VolunteerQuery } from '../../types';
+import { MEMBER_STATUS_TYPES, VolunteerQuery } from '../../types';
 
 /* eslint-disable complexity */
 export const useVolunteerData = ({
@@ -96,6 +96,16 @@ export const useVolunteerData = ({
     }
 
     if (query === QUERY_TYPES.VOLUNTEER.MEMBERS) {
+      processedVolunteerData = processedVolunteerData?.filter(
+        (member: { status: number }) => member.status === MEMBER_STATUS_TYPES.MEMBER
+      );
+      processedVolunteerData = _orderBy(processedVolunteerData, 'user.display_name', 'asc');
+    }
+
+    if (query === QUERY_TYPES.VOLUNTEER.APPLICANTS) {
+      processedVolunteerData = processedVolunteerData?.filter(
+        (member: { status: number }) => member.status === MEMBER_STATUS_TYPES.APPLICANT
+      );
       processedVolunteerData = _orderBy(processedVolunteerData, 'user.display_name', 'asc');
     }
 

@@ -97,6 +97,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           data={listItems}
           sectionByDate={isCalendar}
           query={query}
+          refetch={refetch}
           refreshControl={
             <RefreshControl
               refreshing={false}
@@ -108,7 +109,9 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           showBackToTop
           openWebScreen={openWebScreen}
         />
-        {((query === QUERY_TYPES.VOLUNTEER.MEMBERS && isGroupMember) ||
+        {(((query === QUERY_TYPES.VOLUNTEER.MEMBERS ||
+          query === QUERY_TYPES.VOLUNTEER.APPLICANTS) &&
+          isGroupMember) ||
           (query === QUERY_TYPES.VOLUNTEER.CALENDAR && isAttendingEvent)) && (
           <Wrapper style={styles.noPaddingBottom}>
             <Button

@@ -49,6 +49,7 @@ export const QUERY_TYPES = {
   TOUR: 'tour',
   TOURS: 'tours',
   VOLUNTEER: {
+    APPLICANTS: 'applicants',
     ADDITIONAL: 'additional',
     CALENDAR_ALL_MY: 'calendarAllMy',
     CALENDAR_ALL: 'calendarAll',

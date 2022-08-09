@@ -13,6 +13,7 @@ const MAX_INITIAL_NUM_TO_RENDER = 20;
 
 export const VerticalList = ({
   data,
+  refetch,
   fetchMoreData,
   ListEmptyComponent,
   ListHeaderComponent,
@@ -26,7 +27,7 @@ export const VerticalList = ({
   const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
 
-  const renderItem = useRenderItem(query, navigation, { noSubtitle, openWebScreen });
+  const renderItem = useRenderItem(query, navigation, { noSubtitle, openWebScreen, refetch });
 
   const onEndReached = async () => {
     if (fetchMoreData) {
@@ -91,6 +92,7 @@ const styles = StyleSheet.create({
 
 VerticalList.propTypes = {
   data: PropTypes.array,
+  refetch: PropTypes.func,
   fetchMoreData: PropTypes.func,
   leftImage: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,

@@ -1,5 +1,9 @@
 import { texts } from '../../config';
-import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
+import {
+  volunteerApiV1Url,
+  volunteerApiV2Url,
+  volunteerAuthToken
+} from '../../helpers/volunteerHelper';
 import { JOIN_POLICY_TYPES, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
 
 export const groups = async () => {
@@ -124,7 +128,23 @@ export const groupJoin = async ({ id, userId }: { id: number; userId: string }) 
     }
   };
 
-  return (await fetch(`${volunteerApiV1Url}space/${id}/membership/${userId}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV2Url}space/${id}/membership/${userId}`, fetchObj)).json();
+};
+export const groupRequestMembership = async ({ id, userId }: { id: number; userId: string }) => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (
+    await fetch(`${volunteerApiV2Url}space/${id}/membership/${userId}/request`, fetchObj)
+  ).json();
 };
 
 export const groupLeave = async ({ id, userId }: { id: number; userId: string }) => {

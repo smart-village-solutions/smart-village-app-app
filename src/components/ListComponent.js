@@ -45,6 +45,7 @@ const getComponent = (query, horizontal, sectionByDate) => {
 // which can be overwritten by passing in the horizontal prop
 export const ListComponent = ({
   data,
+  refetch,
   fetchMoreData,
   horizontal,
   ListEmptyComponent,
@@ -68,6 +69,7 @@ export const ListComponent = ({
   return (
     <Component
       data={data}
+      refetch={refetch}
       fetchMoreData={fetchMoreData}
       ListEmptyComponent={ListEmptyComponent}
       ListHeaderComponent={ListHeaderComponent}
@@ -83,6 +85,7 @@ export const ListComponent = ({
 
 ListComponent.propTypes = {
   data: PropTypes.array,
+  refetch: PropTypes.func,
   fetchMoreData: PropTypes.func,
   horizontal: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,

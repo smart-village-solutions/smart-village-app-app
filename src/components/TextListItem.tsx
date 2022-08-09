@@ -11,7 +11,8 @@ import { Image } from './Image';
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
-type ItemData = {
+export type ItemData = {
+  id: string;
   bottomDivider?: boolean;
   onPress?: (navigation: any) => void;
   params: Record<string, unknown>;
@@ -33,12 +34,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
   propTypes?: Record<string, Validator<any>>;
 } & {
   defaultProps?: Partial<Props>;
-} = memo<{
-  item: ItemData;
-  leftImage?: boolean;
-  navigation: StackNavigationProp<Record<string, any>>;
-  noSubtitle?: boolean;
-}>(({ item, leftImage, navigation, noSubtitle }) => {
+} = memo<Props>(({ item, leftImage, navigation, noSubtitle }) => {
   const {
     bottomDivider,
     onPress,
@@ -59,7 +55,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
       bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
       topDivider={topDivider !== undefined ? topDivider : false}
       containerStyle={styles.container}
-      rightIcon={<Icon.ArrowRight />}
+      rightIcon={!!navigation && <Icon.ArrowRight />}
       leftIcon={
         leftImage && !!picture?.url ? (
           <Image

@@ -758,6 +758,8 @@ export const texts = {
   },
   volunteer: {
     abort: 'Abbrechen',
+    applicants: 'Beitrittsanfragen',
+    accept: 'Akzeptieren',
     attend: 'Interessiert',
     attendInfo:
       'Wenn Sie Interesse an dieser Veranstaltung bekunden wird diese in den Kalender in Ihrem Bereich übernommen.\n',
@@ -785,7 +787,10 @@ export const texts = {
     groups: 'Gruppen und Vereine',
     groupsMy: 'Meine Gruppen und Vereine',
     invite: 'Jemanden einladen',
-    join: 'Beitreten',
+    join: {
+      1: 'Beitrittsanfrage stellen',
+      2: 'Beitreten'
+    },
     lastname: 'Nachname',
     lastnameError: 'Nachname muss ausgefüllt werden',
     leave: 'Verlassen',
@@ -814,6 +819,7 @@ export const texts = {
     passwordError: 'Passwort muss ausgefüllt werden',
     passwordForgotten: 'Passwort vergessen',
     passwordLengthError: 'Das Passwort sollte mindestens 5 Zeichen lang sein',
+    pending: 'Beitrittsanfrage ausstehend',
     postNew: 'Neuen Beitrag verfassen',
     posts: 'Beiträge',
     postsIndexLink: 'Alle Beiträge anzeigen',
@@ -832,6 +838,9 @@ export const texts = {
     registrationPrivacyText:
       'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
     registrationTitle: 'Registrieren',
+    reject: 'Ablehnen',
+    requestPending:
+      'Ihre Beitrittsanfrage wird schnellstmöglich vom Gruppenadministrator bearbeitet',
     save: 'Speichern',
     search: 'Suche',
     send: 'Senden',

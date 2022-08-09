@@ -12,6 +12,13 @@ export enum VISIBILITY_TYPES {
   ALL
 }
 
+export enum MEMBER_STATUS_TYPES {
+  NONE,
+  INVITED,
+  APPLICANT,
+  MEMBER
+}
+
 export type VolunteerGroup = {
   guid: string;
   id: number;

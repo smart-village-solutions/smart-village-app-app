@@ -87,6 +87,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.CONSUL.USER]: USER,
 
     // VOLUNTEER QUERIES
+    [QUERY_TYPES.VOLUNTEER.APPLICANTS]: groupMembership,
     [QUERY_TYPES.VOLUNTEER.CALENDAR]: calendar,
     [QUERY_TYPES.VOLUNTEER.CALENDAR_ALL]: calendarAll,
     [QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY]: calendarAll,
