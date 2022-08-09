@@ -4,8 +4,8 @@ import { FlatList, ListRenderItem, StyleSheet } from 'react-native';
 
 import {
   Button,
+  HtmlView,
   LoadingSpinner,
-  RegularText,
   SafeAreaViewFlex,
   Wrapper,
   WrapperWithOrientation
@@ -32,7 +32,7 @@ export const MultiButtonScreen = ({ navigation, route }: StackScreenProps<any>) 
       <WrapperWithOrientation>
         {!!item.text?.length && (
           <Wrapper style={styles.noPaddingBottom}>
-            <RegularText>{item.text}</RegularText>
+            <HtmlView html={item.text} />
           </Wrapper>
         )}
         <Wrapper>
