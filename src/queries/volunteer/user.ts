@@ -1,4 +1,8 @@
-import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
+import {
+  volunteerApiV1Url,
+  volunteerApiV2Url,
+  volunteerAuthToken
+} from '../../helpers/volunteerHelper';
 
 export const users = async () => {
   const authToken = await volunteerAuthToken();
@@ -27,5 +31,5 @@ export const user = async (id: number) => {
     }
   };
 
-  return (await fetch(`${volunteerApiV1Url}user/${id}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV2Url}user/${id}`, fetchObj)).json();
 };
