@@ -78,16 +78,18 @@ export const VolunteerFormCalendar = ({
   const onSubmit = async (calendarNewData: VolunteerCalendar) => {
     mutateAsync(calendarNewData).then(async ({ id }) => {
       if (id) {
-        const uris = [];
+        const uris: { uri: StringConstructor; mimeType: StringConstructor }[] = [];
+        const imagesParser = JSON.parse(calendarNewData.images);
+        const documentsParser = JSON.parse(calendarNewData.documents);
 
-        if (calendarNewData.images) {
-          JSON.parse(calendarNewData.images).forEach(({ uri = String, mimeType = String }) => {
+        if (imagesParser.length) {
+          imagesParser.forEach(({ uri = String, mimeType = String }) => {
             uris.push({ uri, mimeType });
           });
         }
 
-        if (calendarNewData.documents) {
-          JSON.parse(calendarNewData.documents).forEach(({ uri = String, mimeType = String }) => {
+        if (documentsParser.length) {
+          documentsParser.forEach(({ uri = String, mimeType = String }) => {
             uris.push({ uri, mimeType });
           });
         }
@@ -355,7 +357,6 @@ export const VolunteerFormCalendar = ({
                 item: {
                   name: 'images',
                   label: texts.volunteer.images,
-                  rules: { required: false },
                   buttonTitle: texts.volunteer.addImage
                 }
               }}
@@ -374,7 +375,6 @@ export const VolunteerFormCalendar = ({
                 item: {
                   name: 'documents',
                   label: texts.volunteer.documents,
-                  rules: { required: false },
                   buttonTitle: texts.volunteer.addDocument
                 }
               }}
