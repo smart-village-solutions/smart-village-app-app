@@ -60,6 +60,29 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
     setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
   };
 
+  const documentSelect = async () => {
+    const { name: title, size, uri, mimeType } = await selectDocument();
+
+    if (!uri) return;
+
+    /* the server does not support files more than 10MB in size. */
+    const volunteerErrorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
+    const consulErrorText = await documentErrorMessageGenerator(uri);
+
+    setDocumentsAttributes([
+      ...documentsAttributes,
+      isVolunteer ? { uri, mimeType } : { title, cachedAttachment: uri }
+    ]);
+
+    setInfoAndErrorText([
+      ...infoAndErrorText,
+      {
+        errorText: isVolunteer ? volunteerErrorText : texts.consul.startNew[consulErrorText],
+        infoText: isVolunteer ? `${title}` : `(${mimeType}, ${formatSize(size)})`
+      }
+    ]);
+  };
+
   if (isVolunteer) {
     return (
       <>
@@ -68,54 +91,31 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
           {infoText}
         </RegularText>
 
-        <Button
-          title={buttonTitle}
-          invert
-          onPress={async () => {
-            const { name: title, size, uri, mimeType } = await selectDocument();
+        <Button title={buttonTitle} invert onPress={documentSelect} />
 
-            if (!uri) return;
-
-            /* the server does not support files more than 10MB in size. */
-            const errorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
-
-            setDocumentsAttributes([...documentsAttributes, { uri, mimeType }]);
-
-            setInfoAndErrorText([
-              ...infoAndErrorText,
-              {
-                errorText,
-                infoText: `${title}`
-              }
-            ]);
-          }}
-        />
-
-        {value
-          ? JSON.parse(value).map((item, index) => (
-              <View key={index}>
-                {!!infoAndErrorText[index]?.errorText && (
-                  <RegularText smallest error>
-                    {infoAndErrorText[index].errorText}
+        {!!value &&
+          JSON.parse(value).map((item, index) => (
+            <View key={index} style={{ marginBottom: normalize(8) }}>
+              <View style={styles.volunteerUploadPreview}>
+                {!!infoAndErrorText[index]?.infoText && (
+                  <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
+                    {infoAndErrorText[index].infoText}
                   </RegularText>
                 )}
 
-                <View style={styles.volunteerImageView}>
-                  {!!infoAndErrorText[index]?.infoText && (
-                    <RegularText style={{ width: '90%' }} numberOfLines={1} small>
-                      {infoAndErrorText[index].infoText}
-                    </RegularText>
-                  )}
-
-                  <TouchableOpacity
-                    onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
-                  >
-                    <Icon.Trash color={colors.darkText} size={normalize(16)} />
-                  </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                  onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
+                >
+                  <Icon.Trash color={colors.darkText} size={normalize(16)} />
+                </TouchableOpacity>
               </View>
-            ))
-          : null}
+              {!!infoAndErrorText[index]?.errorText && (
+                <RegularText smallest error>
+                  {infoAndErrorText[index].errorText}
+                </RegularText>
+              )}
+            </View>
+          ))}
       </>
     );
   }
@@ -155,27 +155,7 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
       {/* users can upload a maximum of 3 PDF files
           if 3 PDFs are selected, the new add button will not be displayed. */}
       {!value || JSON.parse(value).length < 3 ? (
-        <Button
-          title={buttonTitle}
-          invert
-          onPress={async () => {
-            const { mimeType, name: title, size, uri: cachedAttachment } = await selectDocument();
-
-            if (!cachedAttachment) return;
-
-            const errorMessages = await documentErrorMessageGenerator(cachedAttachment);
-
-            setDocumentsAttributes([...documentsAttributes, { title, cachedAttachment }]);
-
-            setInfoAndErrorText([
-              ...infoAndErrorText,
-              {
-                errorText: texts.consul.startNew[errorMessages],
-                infoText: `(${mimeType}, ${formatSize(size)})`
-              }
-            ]);
-          }}
-        />
+        <Button title={buttonTitle} invert onPress={documentSelect} />
       ) : null}
     </>
   );
@@ -189,13 +169,15 @@ DocumentSelector.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  volunteerImageView: {
+  volunteerInfoText: {
+    width: '90%'
+  },
+  volunteerUploadPreview: {
     alignItems: 'center',
     backgroundColor: colors.gray20,
     borderRadius: normalize(4),
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: normalize(8),
     paddingHorizontal: normalize(20),
     paddingVertical: normalize(14)
   }
