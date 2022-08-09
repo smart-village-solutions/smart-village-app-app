@@ -7,8 +7,6 @@ import {
   isOwner,
   isUpcomingDate,
   parseListItemsFromQuery,
-  volunteerListDate,
-  volunteerSubtitle,
   volunteerUserData
 } from '../../helpers';
 import { additionalData, myProfile, myTasks } from '../../helpers/parser/volunteer';
@@ -137,7 +135,7 @@ export const useVolunteerData = ({
 
     setVolunteerData(processedVolunteerData);
     setIsProcessing(false);
-  }, [query, queryVariables, onlyUpcoming, data, refetch]);
+  }, [query, queryVariables, isCalendar, isSectioned, onlyUpcoming, data, refetch]);
 
   useEffect(() => {
     processVolunteerData();
