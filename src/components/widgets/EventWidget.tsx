@@ -5,9 +5,10 @@ import { useQuery } from 'react-apollo';
 
 import { consts, Icon, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
-import { useHomeRefresh, useRefreshTime } from '../../hooks';
+import { useHomeRefresh, useRefreshTime, useVolunteerData } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
+import { SettingsContext } from '../../SettingsProvider';
 import { WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
@@ -18,6 +19,9 @@ export const EventWidget = ({ text }: WidgetProps) => {
   const navigation = useNavigation();
   const refreshTime = useRefreshTime('event-widget', consts.REFRESH_INTERVALS.ONCE_A_DAY);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { globalSettings } = useContext(SettingsContext);
+  const { hdvt = {} } = globalSettings;
+  const { events: showVolunteerEvents = false } = hdvt as { events?: boolean };
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
@@ -32,6 +36,13 @@ export const EventWidget = ({ text }: WidgetProps) => {
     skip: !refreshTime
   });
 
+  const { data: dataVolunteerEvents, refetch: refetchVolunteerEvents } = useVolunteerData({
+    query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+    queryOptions: { enabled: showVolunteerEvents },
+    isCalendar: showVolunteerEvents,
+    isSectioned: false
+  });
+
   const onPress = useCallback(() => {
     navigation.navigate('Index', {
       title: text ?? texts.homeTitles.events,
@@ -42,9 +53,21 @@ export const EventWidget = ({ text }: WidgetProps) => {
     });
   }, [navigation, text, queryVariables]);
 
-  useHomeRefresh(refetch);
+  useHomeRefresh(() => {
+    refetch();
+    showVolunteerEvents && refetchVolunteerEvents();
+  });
 
-  const eventCount = data?.eventRecords?.length;
+  // TODO: filter dataVolunteerEvents by date range already in the request if this will be possible
+  const todaysDataVolunteerEvents = dataVolunteerEvents?.filter(
+    ({ listDate }: { listDate: string }) => listDate === currentDate
+  );
+
+  let eventCount = data?.eventRecords?.length || 0;
+
+  if (showVolunteerEvents && todaysDataVolunteerEvents?.length) {
+    eventCount += todaysDataVolunteerEvents.length;
+  }
 
   return (
     <DefaultWidget
