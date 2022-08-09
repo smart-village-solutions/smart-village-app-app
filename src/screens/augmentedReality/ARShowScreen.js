@@ -10,7 +10,6 @@ export const ARShowScreen = ({ navigation, route }) => {
   const [isStartAnimationAndSound, setIsStartAnimationAndSound] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isObjectLoading, setIsObjectLoading] = useState(true);
-  const [isVideoRecording, setIsVideoRecording] = useState(false);
   const data = route?.params?.data ?? [];
   const [object, setObject] = useState();
   const index = route?.params?.index;
@@ -42,27 +41,6 @@ export const ARShowScreen = ({ navigation, route }) => {
     }
   }, []);
 
-  const screenVideoRecording = async () => {
-    const fileName = 'AugmentedReality_' + Date.now().toString();
-
-    setIsVideoRecording(!isVideoRecording);
-
-    if (!isVideoRecording) {
-      arSceneRef.current._startVideoRecording(fileName, true, (error) => alert(error));
-    } else {
-      const { success, errorCode } = await arSceneRef.current._stopVideoRecording();
-
-      if (success) {
-        Alert.alert(
-          texts.augmentedReality.modalHiddenAlertTitle,
-          texts.augmentedReality.arShowScreen.screenRecordingCompleted
-        );
-      } else {
-        errorHandler(errorCode);
-      }
-    }
-  };
-
   if (isLoading || !object) return <LoadingSpinner loading />;
 
   return (
@@ -90,12 +68,6 @@ export const ARShowScreen = ({ navigation, route }) => {
           to solve the Android crash problem, you must first remove the 3D object from the screen.
           then navigation can be done.
           */
-          if (isVideoRecording) {
-            return Alert.alert(
-              texts.augmentedReality.modalHiddenAlertTitle,
-              texts.augmentedReality.arShowScreen.backNavigationErrorOnScreenRecord
-            );
-          }
           setObject();
           navigation.goBack();
         }}
@@ -109,27 +81,6 @@ export const ARShowScreen = ({ navigation, route }) => {
         </View>
       ) : (
         <>
-          <TouchableOpacity
-            style={[styles.generalButtonStyle, styles.screenRecording, styles.opacity]}
-            onPress={screenVideoRecording}
-          >
-            {isVideoRecording ? (
-              <Icon.NamedIcon
-                name="stop"
-                color={colors.error}
-                size={normalize(30)}
-                style={styles.opacity}
-              />
-            ) : (
-              <Icon.NamedIcon
-                name="videocam"
-                color={colors.error}
-                size={normalize(30)}
-                style={styles.opacity}
-              />
-            )}
-          </TouchableOpacity>
-
           <TouchableOpacity
             style={[styles.generalButtonStyle, styles.screenShotButton, styles.opacity]}
             onPress={takeScreenshot}
@@ -246,12 +197,6 @@ var styles = StyleSheet.create({
   },
   opacity: {
     opacity: 0.6
-  },
-  screenRecording: {
-    backgroundColor: colors.surface,
-    bottom: normalize(120),
-    padding: normalize(15),
-    right: normalize(10)
   },
   screenShotButton: {
     backgroundColor: colors.surface,
