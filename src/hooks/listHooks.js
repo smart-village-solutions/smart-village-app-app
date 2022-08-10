@@ -2,10 +2,11 @@
 import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
 
-import { VolunteerApplicantListItem, VolunteerPostListItem } from '../components';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
+import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
 import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
+import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
 import { consts } from '../config';
 import { QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';

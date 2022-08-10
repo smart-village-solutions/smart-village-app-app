@@ -15,7 +15,7 @@ import { CREATE_EVENT_RECORDS } from '../../queries/eventRecords';
 import { calendarNew, calendarUpload, groups } from '../../queries/volunteer';
 import { VolunteerCalendar, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
-import { DocumentSelector, ImageSelector } from '../consul';
+import { DocumentSelector, ImageSelector } from '../consul/selectors';
 import { DateTimeInput } from '../form/DateTimeInput';
 import { DropdownInput, DropdownInputProps } from '../form/DropdownInput';
 import { Input } from '../form/Input';
