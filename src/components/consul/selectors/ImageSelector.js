@@ -11,7 +11,8 @@ import {
   formatSize,
   imageErrorMessageGenerator,
   imageHeight,
-  imageWidth
+  imageWidth,
+  jsonParser
 } from '../../../helpers';
 import { useSelectImage } from '../../../hooks';
 import { DELETE_IMAGE } from '../../../queries/consul';
@@ -117,6 +118,10 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
   };
 
   if (isVolunteer) {
+    const values = jsonParser(value);
+
+    if (!values.length) return null;
+
     return (
       <>
         <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
@@ -126,29 +131,27 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
 
         <Button title={buttonTitle} invert onPress={imageSelect} />
 
-        {value
-          ? JSON.parse(value).map((item, index) => (
-              <View key={index} style={{ marginBottom: normalize(8) }}>
-                <View style={styles.volunteerUploadPreview}>
-                  {!!infoAndErrorText[index]?.infoText && (
-                    <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
-                      {infoAndErrorText[index].infoText}
-                    </RegularText>
-                  )}
+        {values?.map((item, index) => (
+          <View key={index} style={styles.volunteerContainer}>
+            <View style={styles.volunteerUploadPreview}>
+              {!!infoAndErrorText[index]?.infoText && (
+                <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
+                  {infoAndErrorText[index].infoText}
+                </RegularText>
+              )}
 
-                  <TouchableOpacity onPress={() => deleteImageAlert(() => onDeleteImage(index))}>
-                    <Icon.Trash color={colors.darkText} size={normalize(16)} />
-                  </TouchableOpacity>
-                </View>
+              <TouchableOpacity onPress={() => deleteImageAlert(() => onDeleteImage(index))}>
+                <Icon.Trash color={colors.darkText} size={normalize(16)} />
+              </TouchableOpacity>
+            </View>
 
-                {!!infoAndErrorText[index]?.errorText && (
-                  <RegularText smallest error>
-                    {infoAndErrorText[index].errorText}
-                  </RegularText>
-                )}
-              </View>
-            ))
-          : null}
+            {!!infoAndErrorText[index]?.errorText && (
+              <RegularText smallest error>
+                {infoAndErrorText[index].errorText}
+              </RegularText>
+            )}
+          </View>
+        ))}
       </>
     );
   }
@@ -201,6 +204,9 @@ const styles = StyleSheet.create({
   image: {
     height: imageHeight(imageWidth() * 0.6),
     width: imageWidth() * 0.6
+  },
+  volunteerContainer: {
+    marginBottom: normalize(8)
   },
   volunteerInfoText: {
     width: '90%'

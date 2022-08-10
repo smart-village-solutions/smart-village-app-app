@@ -5,7 +5,12 @@ import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
-import { deleteArrayItem, documentErrorMessageGenerator, formatSize } from '../../../helpers';
+import {
+  deleteArrayItem,
+  documentErrorMessageGenerator,
+  formatSize,
+  jsonParser
+} from '../../../helpers';
 import { useSelectDocument } from '../../../hooks';
 import { DELETE_DOCUMENT } from '../../../queries/consul';
 import { Button } from '../../Button';
@@ -83,6 +88,10 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
     ]);
   };
 
+  const values = jsonParser(value);
+
+  if (!values.length) return null;
+
   if (isVolunteer) {
     return (
       <>
@@ -93,29 +102,28 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
 
         <Button title={buttonTitle} invert onPress={documentSelect} />
 
-        {!!value &&
-          JSON.parse(value).map((item, index) => (
-            <View key={index} style={{ marginBottom: normalize(8) }}>
-              <View style={styles.volunteerUploadPreview}>
-                {!!infoAndErrorText[index]?.infoText && (
-                  <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
-                    {infoAndErrorText[index].infoText}
-                  </RegularText>
-                )}
-
-                <TouchableOpacity
-                  onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
-                >
-                  <Icon.Trash color={colors.darkText} size={normalize(16)} />
-                </TouchableOpacity>
-              </View>
-              {!!infoAndErrorText[index]?.errorText && (
-                <RegularText smallest error>
-                  {infoAndErrorText[index].errorText}
+        {values?.map((item, index) => (
+          <View key={`document-${index}`} style={styles.volunteerContainer}>
+            <View style={styles.volunteerUploadPreview}>
+              {!!infoAndErrorText[index]?.infoText && (
+                <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
+                  {infoAndErrorText[index].infoText}
                 </RegularText>
               )}
+
+              <TouchableOpacity
+                onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
+              >
+                <Icon.Trash color={colors.darkText} size={normalize(16)} />
+              </TouchableOpacity>
             </View>
-          ))}
+            {!!infoAndErrorText[index]?.errorText && (
+              <RegularText smallest error>
+                {infoAndErrorText[index].errorText}
+              </RegularText>
+            )}
+          </View>
+        ))}
       </>
     );
   }
@@ -127,34 +135,32 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
         {infoText}
       </RegularText>
 
-      {value
-        ? JSON.parse(value).map((item, index) => (
-            <View key={index} style={{ marginVertical: normalize(10) }}>
-              <WrapperRow center spaceBetween>
-                <RegularText>{item.title}</RegularText>
+      {values?.map((item, index) => (
+        <View key={index} style={styles.container}>
+          <WrapperRow center spaceBetween>
+            <RegularText>{item.title}</RegularText>
 
-                <TouchableOpacity
-                  onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
-                >
-                  <Icon.Trash color={colors.error} size={normalize(16)} />
-                </TouchableOpacity>
-              </WrapperRow>
+            <TouchableOpacity
+              onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
+            >
+              <Icon.Trash color={colors.error} size={normalize(16)} />
+            </TouchableOpacity>
+          </WrapperRow>
 
-              {!!infoAndErrorText[index]?.infoText && (
-                <RegularText smallest>{infoAndErrorText[index].infoText}</RegularText>
-              )}
-              {!!infoAndErrorText[index]?.errorText && (
-                <RegularText smallest error>
-                  {infoAndErrorText[index].errorText}
-                </RegularText>
-              )}
-            </View>
-          ))
-        : null}
+          {!!infoAndErrorText[index]?.infoText && (
+            <RegularText smallest>{infoAndErrorText[index].infoText}</RegularText>
+          )}
+          {!!infoAndErrorText[index]?.errorText && (
+            <RegularText smallest error>
+              {infoAndErrorText[index].errorText}
+            </RegularText>
+          )}
+        </View>
+      ))}
 
       {/* users can upload a maximum of 3 PDF files
           if 3 PDFs are selected, the new add button will not be displayed. */}
-      {!value || JSON.parse(value).length < 3 ? (
+      {!value || values.length < 3 ? (
         <Button title={buttonTitle} invert onPress={documentSelect} />
       ) : null}
     </>
@@ -169,6 +175,12 @@ DocumentSelector.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginVertical: normalize(10)
+  },
+  volunteerContainer: {
+    marginBottom: normalize(8)
+  },
   volunteerInfoText: {
     width: '90%'
   },

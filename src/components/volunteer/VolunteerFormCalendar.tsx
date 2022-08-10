@@ -9,7 +9,7 @@ import { CheckBox } from 'react-native-elements';
 import { useMutation, useQuery } from 'react-query';
 
 import { colors, texts } from '../../config';
-import { isOwner, volunteerUserData } from '../../helpers';
+import { isOwner, jsonParser, volunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { CREATE_EVENT_RECORDS } from '../../queries/eventRecords';
 import { calendarNew, calendarUpload, groups } from '../../queries/volunteer';
@@ -78,18 +78,18 @@ export const VolunteerFormCalendar = ({
   const onSubmit = async (calendarNewData: VolunteerCalendar) => {
     mutateAsync(calendarNewData).then(async ({ id }) => {
       if (id) {
+        const images = jsonParser(calendarNewData.images);
+        const documents = jsonParser(calendarNewData.documents);
         const uris: { uri: StringConstructor; mimeType: StringConstructor }[] = [];
-        const imagesParser = JSON.parse(calendarNewData.images);
-        const documentsParser = JSON.parse(calendarNewData.documents);
 
-        if (imagesParser.length) {
-          imagesParser.forEach(({ uri = String, mimeType = String }) => {
+        if (images?.length) {
+          images.forEach(({ uri = String, mimeType = String }) => {
             uris.push({ uri, mimeType });
           });
         }
 
-        if (documentsParser.length) {
-          documentsParser.forEach(({ uri = String, mimeType = String }) => {
+        if (documents?.length) {
+          documents.forEach(({ uri = String, mimeType = String }) => {
             uris.push({ uri, mimeType });
           });
         }
