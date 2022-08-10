@@ -64,7 +64,7 @@ export const useVolunteerData = ({
       {
         bookmarkable,
         skipLastDivider: true,
-        withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS || isCalendar,
+        withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS || (!isSectioned ?? isCalendar),
         isSectioned: isSectioned ?? isCalendar
       }
     );

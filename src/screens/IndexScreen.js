@@ -116,6 +116,8 @@ export const IndexScreen = ({ navigation, route }) => {
     keyForSelectedValueByQuery?.[query]
   ]);
 
+  const hasDailyFilterSelection = !!queryVariables.dateRange;
+
   const buildListItems = useCallback(
     (data, additionalData) => {
       let listItems = parseListItemsFromQuery(query, data, titleDetail, {
@@ -352,7 +354,9 @@ export const IndexScreen = ({ navigation, route }) => {
             // no category selection is made, because the category has nothing to do with
             // volunteer data
             const additionalData =
-              isCalendarWithVolunteerEvents && !hasCategoryFilterSelection
+              isCalendarWithVolunteerEvents &&
+              !hasCategoryFilterSelection &&
+              !hasDailyFilterSelection
                 ? dataVolunteerEvents
                 : undefined;
 
