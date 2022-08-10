@@ -113,7 +113,7 @@ export const groupMembership = async (id: number) => {
     }
   };
 
-  return (await fetch(`${volunteerApiV1Url}space/${id}/membership`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV2Url}space/${id}/membership`, fetchObj)).json();
 };
 
 export const groupJoin = async ({ id, userId }: { id: number; userId: string }) => {
