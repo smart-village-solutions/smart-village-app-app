@@ -11,26 +11,21 @@ import { Touchable } from '../Touchable';
 
 import { IconForDownloadType } from './IconForDownloadType';
 
-export const ARObjectListItem = ({
-  data,
-  index,
-  item,
-  navigation,
-  setData,
-  refetch,
-  showOnDetailPage
-}) => {
-  const { DOWNLOAD_TYPE: itemDownloadType, progressSize, title, totalSize, locationInfo } = item;
+export const ARObjectListItem = ({ data, index, item, navigation, setData, showOnDetailPage }) => {
+  const {
+    payload: { downloadType, progressSize, totalSize, locationInfo },
+    title
+  } = item;
 
   const onPress = async () => {
     if (showOnDetailPage) {
-      navigation.navigate(ScreenName.ArtworkDetail, { data, index, refetch });
+      navigation.navigate(ScreenName.ArtworkDetail, { data, index });
       return;
     }
 
-    if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADABLE) {
+    if (downloadType === DOWNLOAD_TYPE.DOWNLOADABLE) {
       await downloadObject({ index, data, setData });
-    } else if (itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED) {
+    } else if (downloadType === DOWNLOAD_TYPE.DOWNLOADED) {
       Alert.alert(
         texts.settingsTitles.arListLayouts.alertTitle,
         texts.settingsTitles.arListLayouts.deleteAlertMessage,
@@ -64,7 +59,7 @@ export const ARObjectListItem = ({
       rightIcon={
         <IconForDownloadType
           isListView
-          itemDownloadType={itemDownloadType}
+          downloadType={downloadType}
           showOnDetailPage={showOnDetailPage}
         />
       }
@@ -90,6 +85,5 @@ ARObjectListItem.propTypes = {
   index: PropTypes.number,
   item: PropTypes.object.isRequired,
   navigation: PropTypes.object,
-  refetch: PropTypes.func,
   showOnDetailPage: PropTypes.bool
 };

@@ -92,6 +92,18 @@ export const GET_TOUR = gql`
         id
         name
       }
+      tourStops {
+        id
+        title: name
+        description
+        location {
+          geoLocation {
+            latitude
+            longitude
+          }
+        }
+        payload
+      }
       description
       mediaContents {
         id
@@ -164,6 +176,25 @@ export const GET_TOUR = gql`
             description
           }
         }
+      }
+    }
+  }
+`;
+
+export const GET_TOUR_STOPS = gql`
+  query Tour($id: ID!) {
+    tour(id: $id) {
+      tourStops {
+        id
+        title: name
+        description
+        location {
+          geoLocation {
+            latitude
+            longitude
+          }
+        }
+        payload
       }
     }
   }

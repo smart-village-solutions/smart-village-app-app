@@ -20,7 +20,12 @@ import { usePullToRefetch, useStaticContent } from '../../hooks';
 import { ScreenName } from '../../types';
 
 export const ArtworkDetailScreen = ({ route, navigation }) => {
-  const { data: artworkDetail = '', error, loading, refetch } = useStaticContent({
+  const {
+    data: artworkDetail = '',
+    error,
+    loading,
+    refetch
+  } = useStaticContent({
     type: 'html',
     name: 'artworkDetail'
   });
@@ -29,7 +34,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
   const [data, setData] = useState(route?.params?.data ?? []);
   const [isLoading, setIsLoading] = useState(loading);
   const index = route?.params?.index;
-  const { DOWNLOAD_TYPE: itemDownloadType } = data[index];
+  const { downloadType } = data[index]?.payload;
 
   const RefreshControl = usePullToRefetch(refetch);
 
@@ -46,7 +51,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
   };
 
   const onPress = async () => {
-    switch (itemDownloadType) {
+    switch (downloadType) {
       case DOWNLOAD_TYPE.DOWNLOADABLE:
         setIsModalVisible(true);
 
@@ -78,13 +83,13 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
             <HtmlView html={artworkDetail} />
           </Wrapper>
 
-          <WhatIsARButton {...{ data, isLoading, navigation, refetch }} />
+          <WhatIsARButton {...{ data, isLoading, navigation }} />
 
           <Wrapper>
             <Button
               onPress={onPress}
               title={
-                itemDownloadType === DOWNLOAD_TYPE.DOWNLOADED
+                downloadType === DOWNLOAD_TYPE.DOWNLOADED
                   ? texts.augmentedReality.artworkDetailScreen.lookAtArt
                   : texts.augmentedReality.artworkDetailScreen.downloadAndLookAtArt
               }
@@ -98,7 +103,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
         index={index}
         isModalVisible={isModalVisible}
         onModalVisible={() => {
-          switch (itemDownloadType) {
+          switch (downloadType) {
             case DOWNLOAD_TYPE.DOWNLOADING:
               HiddenModalAlert({ onPress: () => setIsModalVisible(!isModalVisible) });
 
