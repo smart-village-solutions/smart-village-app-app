@@ -1,10 +1,10 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useMutation } from 'react-query';
 
-import { consts, device, texts } from '../../config';
-import { isAttending, momentFormat, volunteerUserData } from '../../helpers';
+import { colors, consts, device, Icon, normalize, texts } from '../../config';
+import { isAttending, momentFormat, openLink, volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { calendarAttend } from '../../queries/volunteer';
 import { PARTICIPANT_TYPE } from '../../types';
@@ -14,12 +14,23 @@ import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Touchable } from '../Touchable';
+import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
 
 import { VolunteerAppointmentsCard } from './VolunteerAppointmentsCard';
 import { VolunteerEventAttending } from './VolunteerEventAttending';
 
 const a11yText = consts.a11yLabel;
+
+type File = {
+  file_name: string;
+  guid: string;
+  mime_type: string;
+  url: string;
+};
+
+const filterForMimeType = (items: File[], mimeType: string) =>
+  items.filter((item) => item.mime_type.includes(mimeType));
 
 // eslint-disable-next-line complexity
 export const VolunteerEventRecord = ({
@@ -40,10 +51,11 @@ export const VolunteerEventRecord = ({
     webUrls
   } = data;
   const { files, topics } = content;
-  const mediaContents = files?.map(({ mime_type, url }: { mime_type: string; url: string }) => ({
+  const mediaContents = filterForMimeType(files, 'image')?.map(({ mime_type, url }: File) => ({
     contentType: mime_type.includes('image') ? 'image' : mime_type,
     sourceUrl: { url }
   }));
+  const documents = filterForMimeType(files, 'application');
 
   const { attending } = participants;
   const rootRouteName = route.params?.rootRouteName ?? '';
@@ -136,6 +148,21 @@ export const VolunteerEventRecord = ({
           </View>
         )}
 
+        {!!documents?.length &&
+          documents.map((document) => (
+            <WrapperHorizontal key={document.guid}>
+              <Touchable onPress={() => openLink(document.url)}>
+                <View style={styles.volunteerUploadPreview}>
+                  <Icon.Document color={colors.darkText} size={normalize(16)} />
+
+                  <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
+                    {document.file_name}
+                  </RegularText>
+                </View>
+              </Touchable>
+            </WrapperHorizontal>
+          ))}
+
         {!!isAttendingEvent && !!participantInfo && (
           <View>
             <TitleContainer>
@@ -168,3 +195,19 @@ export const VolunteerEventRecord = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  volunteerInfoText: {
+    width: '90%'
+  },
+  volunteerUploadPreview: {
+    alignItems: 'center',
+    backgroundColor: colors.gray20,
+    borderRadius: normalize(4),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: normalize(8),
+    paddingHorizontal: normalize(20),
+    paddingVertical: normalize(14)
+  }
+});
