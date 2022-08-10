@@ -110,6 +110,7 @@ export const Icon = {
     <NamedIcon name={device.platform === 'ios' ? 'ios-briefcase' : 'md-briefcase'} {...props} />
   ),
   ConstructionSite: (props: IconProps) => <SvgIcon xml={constructionSite} {...props} />,
+  Document: (props: IconProps) => <NamedIcon name="md-document-text-outline" {...props} />,
   DrawerMenu: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
   EditSetting: (props: IconProps) => <NamedIcon name="md-create" {...props} />,
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
