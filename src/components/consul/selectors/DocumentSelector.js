@@ -90,8 +90,6 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
 
   const values = jsonParser(value);
 
-  if (!values.length) return null;
-
   if (isVolunteer) {
     return (
       <>

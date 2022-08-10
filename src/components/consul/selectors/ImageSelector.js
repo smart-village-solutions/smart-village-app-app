@@ -120,8 +120,6 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
   if (isVolunteer) {
     const values = jsonParser(value);
 
-    if (!values.length) return null;
-
     return (
       <>
         <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
@@ -132,7 +130,7 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
         <Button title={buttonTitle} invert onPress={imageSelect} />
 
         {values?.map((item, index) => (
-          <View key={index} style={styles.volunteerContainer}>
+          <View key={`image-${index}`} style={styles.volunteerContainer}>
             <View style={styles.volunteerUploadPreview}>
               {!!infoAndErrorText[index]?.infoText && (
                 <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
