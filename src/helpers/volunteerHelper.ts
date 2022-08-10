@@ -87,9 +87,13 @@ export const volunteerListDate = (
     return moment.utc(updatedAt).local().format('YYYY-MM-DD HH:mm:ss');
   }
 
-  if (moment().isBetween(startDatetime, endDatetime)) return moment().format('YYYY-MM-DD');
+  if (startDatetime && endDatetime && moment().isBetween(startDatetime, endDatetime)) {
+    return moment().format('YYYY-MM-DD');
+  }
 
-  return moment(startDatetime).format(withTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD');
+  if (startDatetime) {
+    return moment(startDatetime).format(withTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD');
+  }
 };
 
 export const volunteerSubtitle = (

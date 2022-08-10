@@ -36,13 +36,14 @@ const getMarkedDates = (data?: any[]) => {
 
   data?.forEach((item) => {
     if (
-      !markedDates?.[volunteerListDate(item)]?.dots ||
-      markedDates?.[volunteerListDate(item)]?.dots?.length < MAX_DOTS_PER_DAY
+      !!item.listDate &&
+      (!markedDates?.[item?.listDate]?.dots ||
+        markedDates?.[item?.listDate]?.dots?.length < MAX_DOTS_PER_DAY)
     ) {
-      markedDates[volunteerListDate(item)] = {
+      markedDates[item?.listDate] = {
         marked: true,
         dots: [
-          ...(markedDates[volunteerListDate(item)]?.dots ?? []),
+          ...(markedDates[item?.listDate]?.dots ?? []),
           { color: item.color || colors.primary }
         ]
       };

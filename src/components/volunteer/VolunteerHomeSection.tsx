@@ -79,6 +79,7 @@ export const VolunteerHomeSection = ({
     query,
     queryVariables,
     isCalendar,
+    isSectioned: false,
     onlyUpcoming: !showCalendar
   });
 
