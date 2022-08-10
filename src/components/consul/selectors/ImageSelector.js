@@ -1,12 +1,19 @@
 import * as FileSystem from 'expo-file-system';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
-import { formatSize, imageErrorMessageGenerator, imageHeight, imageWidth } from '../../../helpers';
+import {
+  deleteArrayItem,
+  formatSize,
+  imageErrorMessageGenerator,
+  imageHeight,
+  imageWidth,
+  jsonParser
+} from '../../../helpers';
 import { useSelectImage } from '../../../hooks';
 import { DELETE_IMAGE } from '../../../queries/consul';
 import { Button } from '../../Button';
@@ -34,11 +41,12 @@ const deleteImageAlert = (onPress) =>
     ]
   );
 
-export const ImageSelector = ({ control, field, item, imageId }) => {
-  const [infoAndErrorText, setInfoAndErrorText] = useState({});
-
+export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
+
+  const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
+  const [imagesAttributes, setImagesAttributes] = useState(JSON.parse(value));
 
   const [deleteImage] = useMutation(DELETE_IMAGE, {
     client: ConsulClient
@@ -51,7 +59,17 @@ export const ImageSelector = ({ control, field, item, imageId }) => {
     undefined // quality
   );
 
-  const onDeleteImage = async () => {
+  useEffect(() => {
+    onChange(JSON.stringify(imagesAttributes));
+  }, [imagesAttributes]);
+
+  const onDeleteImage = async (index) => {
+    if (isVolunteer) {
+      setImagesAttributes(deleteArrayItem(imagesAttributes, index));
+      setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
+      return;
+    }
+
     if (imageId) {
       try {
         await deleteImage({ variables: { id: imageId } });
@@ -63,6 +81,78 @@ export const ImageSelector = ({ control, field, item, imageId }) => {
     onChange('');
     setInfoAndErrorText({});
   };
+
+  const imageSelect = async () => {
+    const { uri, type } = await selectImage();
+    const { size } = await FileSystem.getInfoAsync(uri);
+
+    /* the server does not support files more than 10MB in size. */
+    const volunteerErrorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
+    const consulErrorText = await imageErrorMessageGenerator(uri);
+
+    /* used to specify the mimeType when uploading to the server */
+    const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
+
+    /* variable to find the name of the image */
+    const uriSplitForImageName = uri.split('/');
+    const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
+
+    if (isVolunteer) {
+      setInfoAndErrorText([
+        ...infoAndErrorText,
+        {
+          errorText: volunteerErrorText,
+          infoText: `${imageName}`
+        }
+      ]);
+
+      setImagesAttributes([...imagesAttributes, { uri, mimeType: `${type}/${imageType}` }]);
+    } else {
+      setInfoAndErrorText({
+        errorText: texts.consul.startNew[consulErrorText],
+        infoText: `(${type}/${imageType}, ${formatSize(size)})`
+      });
+
+      onChange(uri);
+    }
+  };
+
+  if (isVolunteer) {
+    const values = jsonParser(value);
+
+    return (
+      <>
+        <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
+        <RegularText smallest placeholder>
+          {infoText}
+        </RegularText>
+
+        <Button title={buttonTitle} invert onPress={imageSelect} />
+
+        {values?.map((item, index) => (
+          <View key={`image-${index}`} style={styles.volunteerContainer}>
+            <View style={styles.volunteerUploadPreview}>
+              {!!infoAndErrorText[index]?.infoText && (
+                <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
+                  {infoAndErrorText[index].infoText}
+                </RegularText>
+              )}
+
+              <TouchableOpacity onPress={() => deleteImageAlert(() => onDeleteImage(index))}>
+                <Icon.Trash color={colors.darkText} size={normalize(16)} />
+              </TouchableOpacity>
+            </View>
+
+            {!!infoAndErrorText[index]?.errorText && (
+              <RegularText smallest error>
+                {infoAndErrorText[index].errorText}
+              </RegularText>
+            )}
+          </View>
+        ))}
+      </>
+    );
+  }
 
   return (
     <>
@@ -94,22 +184,7 @@ export const ImageSelector = ({ control, field, item, imageId }) => {
           )}
         </>
       ) : (
-        <Button
-          title={buttonTitle}
-          invert
-          onPress={async () => {
-            const { uri, type } = await selectImage();
-            const { size } = await FileSystem.getInfoAsync(uri);
-            const errorMessage = await imageErrorMessageGenerator(uri);
-            const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
-
-            setInfoAndErrorText({
-              errorText: texts.consul.startNew[errorMessage],
-              infoText: `(${type}/${imageType}, ${formatSize(size)})`
-            });
-            onChange(uri);
-          }}
-        />
+        <Button title={buttonTitle} invert onPress={imageSelect} />
       )}
     </>
   );
@@ -118,14 +193,29 @@ export const ImageSelector = ({ control, field, item, imageId }) => {
 ImageSelector.propTypes = {
   control: PropTypes.object,
   field: PropTypes.object,
-  item: PropTypes.object,
   imageId: PropTypes.string,
-  selectImage: PropTypes.func
+  isVolunteer: PropTypes.bool,
+  item: PropTypes.object
 };
 
 const styles = StyleSheet.create({
   image: {
     height: imageHeight(imageWidth() * 0.6),
     width: imageWidth() * 0.6
+  },
+  volunteerContainer: {
+    marginBottom: normalize(8)
+  },
+  volunteerInfoText: {
+    width: '90%'
+  },
+  volunteerUploadPreview: {
+    alignItems: 'center',
+    backgroundColor: colors.gray20,
+    borderRadius: normalize(4),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: normalize(20),
+    paddingVertical: normalize(14)
   }
 });

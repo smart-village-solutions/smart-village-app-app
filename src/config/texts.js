@@ -758,8 +758,10 @@ export const texts = {
   },
   volunteer: {
     abort: 'Abbrechen',
-    applicants: 'Beitrittsanfragen',
     accept: 'Akzeptieren',
+    addDocument: 'Dokument hinzufügen',
+    addImage: 'Bild hinzufügen',
+    applicants: 'Beitrittsanfragen',
     attend: 'Interessiert',
     attendInfo:
       'Wenn Sie Interesse an dieser Veranstaltung bekunden wird diese in den Kalender in Ihrem Bereich übernommen.\n',
@@ -769,6 +771,8 @@ export const texts = {
     conversationAllStart: 'Unterhaltung mit allen beginnen',
     conversationStart: 'Unterhaltung beginnen',
     description: 'Beschreibung',
+    documentGreater10MBError: 'Das ausgewählte Dokument darf maximal 10 MB groß sein.',
+    documents: 'Dokumente',
     edit: 'Daten bearbeiten',
     email: 'E-Mail',
     emailError: 'E-Mail muss korrekt ausgefüllt werden',
@@ -786,6 +790,8 @@ export const texts = {
     group: 'Gruppe/Verein',
     groups: 'Gruppen und Vereine',
     groupsMy: 'Meine Gruppen und Vereine',
+    imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
+    images: 'Aussagekäftiges Bild',
     invite: 'Jemanden einladen',
     join: {
       1: 'Beitrittsanfrage stellen',

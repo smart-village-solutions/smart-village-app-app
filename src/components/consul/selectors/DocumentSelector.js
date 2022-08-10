@@ -1,11 +1,16 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { Alert, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
-import { deleteArrayItem, documentErrorMessageGenerator, formatSize } from '../../../helpers';
+import {
+  deleteArrayItem,
+  documentErrorMessageGenerator,
+  formatSize,
+  jsonParser
+} from '../../../helpers';
 import { useSelectDocument } from '../../../hooks';
 import { DELETE_DOCUMENT } from '../../../queries/consul';
 import { Button } from '../../Button';
@@ -30,7 +35,7 @@ const deleteDocumentAlert = (onPress) =>
     ]
   );
 
-export const DocumentSelector = ({ control, field, item }) => {
+export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -60,6 +65,67 @@ export const DocumentSelector = ({ control, field, item }) => {
     setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
   };
 
+  const documentSelect = async () => {
+    const { name: title, size, uri, mimeType } = await selectDocument();
+
+    if (!uri) return;
+
+    /* the server does not support files more than 10MB in size. */
+    const volunteerErrorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
+    const consulErrorText = await documentErrorMessageGenerator(uri);
+
+    setDocumentsAttributes([
+      ...documentsAttributes,
+      isVolunteer ? { uri, mimeType } : { title, cachedAttachment: uri }
+    ]);
+
+    setInfoAndErrorText([
+      ...infoAndErrorText,
+      {
+        errorText: isVolunteer ? volunteerErrorText : texts.consul.startNew[consulErrorText],
+        infoText: isVolunteer ? `${title}` : `(${mimeType}, ${formatSize(size)})`
+      }
+    ]);
+  };
+
+  const values = jsonParser(value);
+
+  if (isVolunteer) {
+    return (
+      <>
+        <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
+        <RegularText smallest placeholder>
+          {infoText}
+        </RegularText>
+
+        <Button title={buttonTitle} invert onPress={documentSelect} />
+
+        {values?.map((item, index) => (
+          <View key={`document-${index}`} style={styles.volunteerContainer}>
+            <View style={styles.volunteerUploadPreview}>
+              {!!infoAndErrorText[index]?.infoText && (
+                <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
+                  {infoAndErrorText[index].infoText}
+                </RegularText>
+              )}
+
+              <TouchableOpacity
+                onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
+              >
+                <Icon.Trash color={colors.darkText} size={normalize(16)} />
+              </TouchableOpacity>
+            </View>
+            {!!infoAndErrorText[index]?.errorText && (
+              <RegularText smallest error>
+                {infoAndErrorText[index].errorText}
+              </RegularText>
+            )}
+          </View>
+        ))}
+      </>
+    );
+  }
+
   return (
     <>
       <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
@@ -67,55 +133,33 @@ export const DocumentSelector = ({ control, field, item }) => {
         {infoText}
       </RegularText>
 
-      {value
-        ? JSON.parse(value).map((item, index) => (
-            <View key={index} style={{ marginVertical: normalize(10) }}>
-              <WrapperRow center spaceBetween>
-                <RegularText>{item.title}</RegularText>
+      {values?.map((item, index) => (
+        <View key={index} style={styles.container}>
+          <WrapperRow center spaceBetween>
+            <RegularText>{item.title}</RegularText>
 
-                <TouchableOpacity
-                  onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
-                >
-                  <Icon.Trash color={colors.error} size={normalize(16)} />
-                </TouchableOpacity>
-              </WrapperRow>
+            <TouchableOpacity
+              onPress={() => deleteDocumentAlert(() => onDeleteDocument(item.id, index))}
+            >
+              <Icon.Trash color={colors.error} size={normalize(16)} />
+            </TouchableOpacity>
+          </WrapperRow>
 
-              {!!infoAndErrorText[index]?.infoText && (
-                <RegularText smallest>{infoAndErrorText[index].infoText}</RegularText>
-              )}
-              {!!infoAndErrorText[index]?.errorText && (
-                <RegularText smallest error>
-                  {infoAndErrorText[index].errorText}
-                </RegularText>
-              )}
-            </View>
-          ))
-        : null}
+          {!!infoAndErrorText[index]?.infoText && (
+            <RegularText smallest>{infoAndErrorText[index].infoText}</RegularText>
+          )}
+          {!!infoAndErrorText[index]?.errorText && (
+            <RegularText smallest error>
+              {infoAndErrorText[index].errorText}
+            </RegularText>
+          )}
+        </View>
+      ))}
 
       {/* users can upload a maximum of 3 PDF files
           if 3 PDFs are selected, the new add button will not be displayed. */}
-      {!value || JSON.parse(value).length < 3 ? (
-        <Button
-          title={buttonTitle}
-          invert
-          onPress={async () => {
-            const { mimeType, name: title, size, uri: cachedAttachment } = await selectDocument();
-
-            if (!cachedAttachment) return;
-
-            const errorMessages = await documentErrorMessageGenerator(cachedAttachment);
-
-            setDocumentsAttributes([...documentsAttributes, { title, cachedAttachment }]);
-
-            setInfoAndErrorText([
-              ...infoAndErrorText,
-              {
-                errorText: texts.consul.startNew[errorMessages],
-                infoText: `(${mimeType}, ${formatSize(size)})`
-              }
-            ]);
-          }}
-        />
+      {!value || values.length < 3 ? (
+        <Button title={buttonTitle} invert onPress={documentSelect} />
       ) : null}
     </>
   );
@@ -123,8 +167,28 @@ export const DocumentSelector = ({ control, field, item }) => {
 
 DocumentSelector.propTypes = {
   control: PropTypes.object,
-  documentsAttributes: PropTypes.array,
   field: PropTypes.object,
-  item: PropTypes.object,
-  selectImage: PropTypes.func
+  isVolunteer: PropTypes.bool,
+  item: PropTypes.object
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginVertical: normalize(10)
+  },
+  volunteerContainer: {
+    marginBottom: normalize(8)
+  },
+  volunteerInfoText: {
+    width: '90%'
+  },
+  volunteerUploadPreview: {
+    alignItems: 'center',
+    backgroundColor: colors.gray20,
+    borderRadius: normalize(4),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: normalize(20),
+    paddingVertical: normalize(14)
+  }
+});
