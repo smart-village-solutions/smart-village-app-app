@@ -6,9 +6,10 @@ import {
   isAttending,
   isOwner,
   isUpcomingDate,
-  volunteerListDate,
+  parseListItemsFromQuery,
   volunteerUserData
 } from '../../helpers';
+import { additionalData, myProfile, myTasks } from '../../helpers/parser/volunteer';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { MEMBER_STATUS_TYPES, VolunteerQuery } from '../../types';
 
@@ -18,13 +19,19 @@ export const useVolunteerData = ({
   queryVariables,
   queryOptions,
   isCalendar,
-  onlyUpcoming = true
+  isSectioned,
+  onlyUpcoming = true,
+  titleDetail,
+  bookmarkable
 }: {
   query: VolunteerQuery;
   queryVariables?: { dateRange?: string[]; contentContainerId?: number } | number;
-  queryOptions?: { refetchInterval?: number };
+  queryOptions?: { refetchInterval?: number; enabled?: boolean };
   isCalendar?: boolean;
+  isSectioned?: boolean;
   onlyUpcoming?: boolean;
+  titleDetail?: string;
+  bookmarkable?: boolean;
 }): {
   data: any[];
   isLoading: boolean;
@@ -43,15 +50,28 @@ export const useVolunteerData = ({
   const processVolunteerData = useCallback(async () => {
     let processedVolunteerData = data?.results as any[];
 
+    // TODO: remove if all queries exist
+    const details = {
+      [QUERY_TYPES.VOLUNTEER.PROFILE]: myProfile(),
+      [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks(),
+      [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: additionalData()
+    }[query];
+
+    processedVolunteerData = parseListItemsFromQuery(
+      query,
+      processedVolunteerData || details,
+      titleDetail,
+      {
+        bookmarkable,
+        skipLastDivider: true,
+        withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS || isCalendar,
+        isSectioned: isSectioned ?? isCalendar
+      }
+    );
+
     setIsProcessing(true);
 
     if (isCalendar) {
-      // add `listDate` to appointments for calendar list view
-      processedVolunteerData = processedVolunteerData?.map((item: any) => ({
-        ...item,
-        listDate: volunteerListDate(item)
-      }));
-
       if (queryVariables?.dateRange?.length) {
         // show only selected day appointments for calendar list view
         processedVolunteerData = processedVolunteerData?.filter(
@@ -115,7 +135,7 @@ export const useVolunteerData = ({
 
     setVolunteerData(processedVolunteerData);
     setIsProcessing(false);
-  }, [query, queryVariables, onlyUpcoming, data, refetch]);
+  }, [query, queryVariables, isCalendar, isSectioned, onlyUpcoming, data, refetch]);
 
   useEffect(() => {
     processVolunteerData();

@@ -11,7 +11,7 @@ import { momentFormatUtcToLocal } from '../momentHelper';
 import { getTitleForQuery } from '../queryHelper';
 import { shareMessage } from '../shareHelper';
 import { subtitle } from '../textHelper';
-import { volunteerSubtitle } from '../volunteerHelper';
+import { volunteerListDate, volunteerSubtitle } from '../volunteerHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -214,16 +214,17 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
+/* eslint-disable complexity */
 const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned) => {
   return data?.map((volunteer, index) => ({
     id: volunteer.id || volunteer?.user?.id,
     title:
       volunteer.title || volunteer.name || volunteer.display_name || volunteer.user?.display_name,
-    subtitle: volunteerSubtitle(volunteer, query, withDate, isSectioned),
+    subtitle: volunteer.subtitle || volunteerSubtitle(volunteer, query, withDate, isSectioned),
     picture: volunteer.picture,
     routeName: ScreenName.VolunteerDetail,
     onPress: volunteer.onPress,
-    listDate: volunteer.listDate,
+    listDate: volunteer.listDate || volunteerListDate(volunteer),
     status: volunteer.status,
     params: {
       title: getTitleForQuery(query, volunteer),
@@ -247,6 +248,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned) =>
     bottomDivider: !skipLastDivider || index !== data.length - 1
   }));
 };
+/* eslint-enable complexity */
 
 const querySwitcherForDetail = (query) => {
   switch (query) {

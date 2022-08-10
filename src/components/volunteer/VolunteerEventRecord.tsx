@@ -62,12 +62,12 @@ export const VolunteerEventRecord = ({
     }
   ];
 
-  const [isAttendingEvent, setIsAttendingEvent] = useState(false);
+  const [isAttendingEvent, setIsAttendingEvent] = useState<boolean>();
 
   const checkIfAttending = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
 
-    setIsAttendingEvent(isAttending(currentUserId, attending));
+    !!currentUserId && setIsAttendingEvent(isAttending(currentUserId, attending));
   }, [participants]);
 
   useEffect(() => {
@@ -99,7 +99,7 @@ export const VolunteerEventRecord = ({
         )}
         {device.platform === 'ios' && <TitleShadow />}
 
-        {!!attending?.length && (
+        {isAttendingEvent !== undefined && !!attending?.length && (
           <VolunteerEventAttending
             calendarEntryId={id}
             data={attending}
@@ -107,6 +107,10 @@ export const VolunteerEventRecord = ({
             isAttendingEvent={isAttendingEvent}
           />
         )}
+
+        <Wrapper>
+          <InfoCard category={category} webUrls={webUrls} openWebScreen={openWebScreen} />
+        </Wrapper>
 
         {!!appointments?.length && (
           <View>
@@ -152,18 +156,16 @@ export const VolunteerEventRecord = ({
           </View>
         )}
 
-        <Wrapper>
-          <InfoCard category={category} webUrls={webUrls} openWebScreen={openWebScreen} />
-        </Wrapper>
-
-        <Wrapper>
-          {!isAttendingEvent && <RegularText small>{texts.volunteer.attendInfo}</RegularText>}
-          <Button
-            title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
-            invert={isAttendingEvent}
-            onPress={attend}
-          />
-        </Wrapper>
+        {isAttendingEvent !== undefined && (
+          <Wrapper>
+            {!isAttendingEvent && <RegularText small>{texts.volunteer.attendInfo}</RegularText>}
+            <Button
+              title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
+              invert={isAttendingEvent}
+              onPress={attend}
+            />
+          </Wrapper>
+        )}
       </WrapperWithOrientation>
     </View>
   );

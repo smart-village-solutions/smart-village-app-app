@@ -1,5 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import _shuffle from 'lodash/shuffle';
+import _sortBy from 'lodash/sortBy';
 import React from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
@@ -29,6 +30,7 @@ type Props = {
   placeholder?: React.ReactElement;
   query: string;
   sectionData?: unknown[];
+  additionalData?: unknown[];
   sectionTitle?: string;
   sectionTitleDetail?: string;
   showButton?: boolean;
@@ -50,6 +52,7 @@ export const DataListSection = ({
   placeholder,
   query,
   sectionData,
+  additionalData,
   sectionTitle,
   sectionTitleDetail,
   showButton,
@@ -68,7 +71,7 @@ export const DataListSection = ({
     );
   }
 
-  const listData = parseListItemsFromQuery(query, sectionData, sectionTitleDetail, {
+  let listData = parseListItemsFromQuery(query, sectionData, sectionTitleDetail, {
     withDate:
       query === QUERY_TYPES.EVENT_RECORDS ||
       query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL ||
@@ -76,6 +79,11 @@ export const DataListSection = ({
       query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
     skipLastDivider: true
   });
+
+  if (additionalData?.length) {
+    listData.push(...additionalData);
+    listData = _sortBy(listData, (item) => item.listDate);
+  }
 
   return (
     <View>

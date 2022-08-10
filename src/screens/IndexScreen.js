@@ -1,3 +1,4 @@
+import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -25,7 +26,12 @@ import {
   parseListItemsFromQuery,
   sortPOIsByDistanceFromPosition
 } from '../helpers';
-import { usePermanentFilter, usePosition, useTrackScreenViewAsync } from '../hooks';
+import {
+  usePermanentFilter,
+  usePosition,
+  useTrackScreenViewAsync,
+  useVolunteerData
+} from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
@@ -74,8 +80,9 @@ export const IndexScreen = ({ navigation, route }) => {
   const [topFilter, setTopFilter] = useState(INITIAL_TOP_FILTER);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { filter = {} } = globalSettings;
+  const { filter = {}, hdvt = {} } = globalSettings;
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
+  const { events: showVolunteerEvents = false } = hdvt;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [refreshing, setRefreshing] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
@@ -105,22 +112,22 @@ export const IndexScreen = ({ navigation, route }) => {
       [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
     }[query];
 
-  const refresh = useCallback(
-    async (refetch) => {
-      setRefreshing(true);
-      isConnected && (await refetch());
-      setRefreshing(false);
-    },
-    [isConnected, setRefreshing]
-  );
+  const hasCategoryFilterSelection = !!Object.prototype.hasOwnProperty.call(queryVariables, [
+    keyForSelectedValueByQuery?.[query]
+  ]);
 
   const buildListItems = useCallback(
-    (data) => {
+    (data, additionalData) => {
       let listItems = parseListItemsFromQuery(query, data, titleDetail, {
         bookmarkable,
         withDate: false,
         queryVariables
       });
+
+      if (additionalData?.length) {
+        listItems.push(...additionalData);
+        listItems = _sortBy(listItems, (item) => item.listDate);
+      }
 
       if (filterByOpeningTimes) {
         listItems = listItems?.filter((entry) => isOpen(entry.params?.details?.openingHours)?.open);
@@ -148,11 +155,7 @@ export const IndexScreen = ({ navigation, route }) => {
           };
         });
       } else {
-        if (
-          Object.prototype.hasOwnProperty.call(queryVariables, [
-            keyForSelectedValueByQuery?.[query]
-          ])
-        ) {
+        if (hasCategoryFilterSelection) {
           setQueryVariables((prevQueryVariables) => {
             // remove the filter key for the specific query if present, when selecting "- Alle -"
             delete prevQueryVariables[keyForSelectedValueByQuery[query]];
@@ -253,6 +256,29 @@ export const IndexScreen = ({ navigation, route }) => {
     }
   }, [isConnected, query]);
 
+  const isCalendarWithVolunteerEvents = query === QUERY_TYPES.EVENT_RECORDS && showVolunteerEvents;
+
+  const {
+    data: dataVolunteerEvents,
+    isLoading: isLoadingVolunteerEvents = false,
+    refetch: refetchVolunteerEvents
+  } = useVolunteerData({
+    query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+    queryOptions: { enabled: isCalendarWithVolunteerEvents },
+    isCalendar: isCalendarWithVolunteerEvents,
+    isSectioned: true
+  });
+
+  const refresh = useCallback(
+    async (refetch) => {
+      setRefreshing(true);
+      isConnected && (await refetch());
+      isCalendarWithVolunteerEvents && refetchVolunteerEvents();
+      setRefreshing(false);
+    },
+    [isConnected, setRefreshing]
+  );
+
   if (!query) return null;
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -288,7 +314,7 @@ export const IndexScreen = ({ navigation, route }) => {
           fetchPolicy={fetchPolicy}
         >
           {({ data, loading, fetchMore, refetch }) => {
-            if ((!data && loading) || loadingPosition) {
+            if ((!data && loading) || loadingPosition || isLoadingVolunteerEvents) {
               return (
                 <LoadingContainer>
                   <ActivityIndicator color={colors.accent} />
@@ -321,6 +347,14 @@ export const IndexScreen = ({ navigation, route }) => {
                 keyForSelectedValueByQuery?.[query]
               ]) &&
               !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
+
+            // apply additional data if volunteer events should be presented and
+            // no category selection is made, because the category has nothing to do with
+            // volunteer data
+            const additionalData =
+              isCalendarWithVolunteerEvents && !hasCategoryFilterSelection
+                ? dataVolunteerEvents
+                : undefined;
 
             return (
               <ListComponent
@@ -369,7 +403,7 @@ export const IndexScreen = ({ navigation, route }) => {
                   )
                 }
                 navigation={navigation}
-                data={loading ? [] : buildListItems(data)}
+                data={loading ? [] : buildListItems(data, additionalData)}
                 horizontal={false}
                 sectionByDate={true}
                 query={query}

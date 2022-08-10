@@ -43,7 +43,8 @@ const MainAppWithApolloProvider = () => {
     filter: {},
     sections: {},
     settings: {},
-    widgets: []
+    widgets: [],
+    hdvt: {}
   });
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});

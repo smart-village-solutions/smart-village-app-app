@@ -779,7 +779,7 @@ export const texts = {
     entranceFee: 'Eintrittspreis',
     errorLoadingUser: 'Beim Laden deiner Daten ist ein Fehler aufgetreten. Bitte erneut einloggen.',
     eventRecord: {
-      appointments: 'Terminübersicht'
+      appointments: 'Termine'
     },
     firstname: 'Vorname',
     firstnameError: 'Vorname muss ausgefüllt werden',
