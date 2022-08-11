@@ -218,6 +218,7 @@ const parsePointsOfInterestAndTours = (data) => {
 /* eslint-disable complexity */
 const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned) => {
   return data?.map((volunteer, index) => ({
+    ...volunteer,
     id: volunteer.id || volunteer?.user?.id,
     title:
       volunteer.title || volunteer.name || volunteer.display_name || volunteer.user?.display_name,
