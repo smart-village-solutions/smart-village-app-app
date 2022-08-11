@@ -1,6 +1,6 @@
 import { isARSupportedOnDevice } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
-import { default as React, default as React, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 
 import { consts, device, texts } from '../../config';
