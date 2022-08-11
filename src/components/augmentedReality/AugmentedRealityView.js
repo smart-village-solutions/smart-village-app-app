@@ -100,7 +100,7 @@ const ViroSoundAnd3DObject = (item) => {
 
       <Viro3DObject
         source={{ uri: object.vrx }}
-        resources={[{ uri: object.texture }]}
+        resources={object.texture}
         type="VRX"
         position={position}
         rotation={rotation}
