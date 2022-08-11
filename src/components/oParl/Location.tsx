@@ -1,7 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import { isString } from 'lodash';
 import React from 'react';
-import { MapMarker } from 'react-native-webview-leaflet';
 
 import { colors, texts } from '../../config';
 import { location, locationIconAnchor } from '../../icons';

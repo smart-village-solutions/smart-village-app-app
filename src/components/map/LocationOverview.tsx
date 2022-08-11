@@ -43,6 +43,7 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
         const longitude = item.addresses?.[0]?.geoLocation?.longitude;
 
         if (!latitude || !longitude) return undefined;
+
         return {
           icon: location(colors.primary),
           iconAnchor: locationIconAnchor,
@@ -121,7 +122,6 @@ export const LocationOverview = ({
     <SafeAreaViewFlex>
       <ScrollView>
         <WrapperWithOrientation>
-          {/* <WebViewMap locations={mapMarkers} onMessageReceived={onMessageReceived} /> */}
           <Map locations={mapMarkers} onMarkerPress={setSelectedPointOfInterest} />
           <View>
             {!selectedPointOfInterest && (

@@ -5,7 +5,7 @@
     "dev": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "start": "expo start",
+    "start": "expo start --dev-client",
     "start:android": "expo start --android",
     "start:ios": "expo start --ios",
     "build:android": "eas build --platform android",
@@ -108,7 +108,6 @@
     "react-native-svg": "12.3.0",
     "react-native-web": "0.17.7",
     "react-native-webview": "11.18.1",
-    "react-native-webview-leaflet": "https://github.com/donni106/react-native-webview-leaflet#28dc2b06f957bec3e64a439f1fac62e1390da624",
     "react-query": "^3.34.14",
     "sentry-expo": "^4.2.0",
     "styled-components": "~4.4.1"
