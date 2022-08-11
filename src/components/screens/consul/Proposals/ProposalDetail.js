@@ -194,7 +194,6 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
                 position: { lat: latitude, lng: longitude }
               }
             ]}
-            zoom={14}
           />
         </>
       )}

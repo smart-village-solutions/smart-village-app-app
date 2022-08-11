@@ -117,14 +117,14 @@ export const LocationSettings = () => {
         <Collapsible collapsed={!showMap}>
           <Map
             locations={locations}
-            mapCenterPosition={{ lat: 51.1657, lng: 10.4515 }} // center of germany
+            mapCenterPosition={{ lat: 51.1657, lng: 10.4515 }} // center of Germany
             onMapPress={({ nativeEvent }) => {
               setSelectedPosition({
                 lat: nativeEvent.coordinate.latitude,
                 lng: nativeEvent.coordinate.longitude
               });
             }}
-            zoom={4} // this sets the zoom to show all of germany
+            zoom={4}
           />
           <Wrapper>
             <Button

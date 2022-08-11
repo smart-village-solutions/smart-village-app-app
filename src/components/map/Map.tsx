@@ -19,9 +19,6 @@ type Props = {
 };
 
 const MARKER_ICON_SIZE = normalize(40);
-const LATITUDE_DELTA = 0.0922;
-// example for longitude delta: https://github.com/react-native-maps/react-native-maps/blob/master/example/examples/DisplayLatLng.js#L18
-const LONGITUDE_DELTA = LATITUDE_DELTA * (device.width / (device.height / 2));
 
 export const Map = ({
   locations,
@@ -30,21 +27,26 @@ export const Map = ({
   mapStyle,
   onMarkerPress,
   onMapPress,
-  zoom
+  zoom = 0
 }: Props) => {
   const refForMapView = useRef<MapView>(null);
   const [showsUserLocation, setShowsUserLocation] = useState(true);
-  const initialRegion = mapCenterPosition
-    ? {
-        latitude: mapCenterPosition.lat,
-        longitude: mapCenterPosition.lng,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA
-      }
-    : locations?.[0]
+  // LATITUDE_DELTA handles the zoom, see: https://github.com/react-native-maps/react-native-maps/issues/2129#issuecomment-457056572
+  const LATITUDE_DELTA = zoom || 0.0922;
+  // example for longitude delta: https://github.com/react-native-maps/react-native-maps/blob/0.30.x/example/examples/DisplayLatLng.js#L18
+  const LONGITUDE_DELTA = LATITUDE_DELTA * (device.width / (device.height / 2));
+
+  const initialRegion = locations?.[0]
     ? {
         latitude: locations[0].position.lat,
         longitude: locations[0].position.lng,
+        latitudeDelta: LATITUDE_DELTA,
+        longitudeDelta: LONGITUDE_DELTA
+      }
+    : mapCenterPosition
+    ? {
+        latitude: mapCenterPosition.lat,
+        longitude: mapCenterPosition.lng,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA
       }
@@ -55,7 +57,6 @@ export const Map = ({
       <MapView
         initialRegion={initialRegion}
         mapType={device.platform === 'android' ? MAP_TYPES.NONE : MAP_TYPES.STANDARD}
-        maxZoomLevel={zoom}
         onPress={onMapPress}
         ref={refForMapView}
         rotateEnabled={false}
