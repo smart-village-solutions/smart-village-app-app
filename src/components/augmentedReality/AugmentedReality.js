@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
 import { isARSupportedOnDevice } from '@viro-community/react-viro';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { consts, device, texts } from '../../config';
 import { checkDownloadedData } from '../../helpers';
@@ -9,12 +9,15 @@ import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper } from '../Wrapper';
+import { SettingsContext } from '../../SettingsProvider';
 
 import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
 import { WhatIsARButton } from './WhatIsARButton';
 
 export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
+  const { globalSettings } = useContext(SettingsContext);
+
   const {
     data: staticData,
     error,
@@ -31,10 +34,13 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
-    isARSupportedOnDevice(
-      () => null,
-      () => setIsARSupported(true)
-    );
+    const { settings = {} } = globalSettings;
+
+    settings.ar &&
+      isARSupportedOnDevice(
+        () => null,
+        () => setIsARSupported(true)
+      );
   }, []);
 
   useEffect(() => {

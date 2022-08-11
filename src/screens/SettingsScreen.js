@@ -198,18 +198,21 @@ export const SettingsScreen = () => {
   }, []);
 
   useEffect(() => {
-    isARSupportedOnDevice(
-      () => null,
-      () =>
-        setFilter([
-          ...filter,
-          {
-            id: TOP_FILTER.AR_DOWNLOAD_LIST,
-            title: texts.settingsTitles.tabs.arSettings,
-            selected: false
-          }
-        ])
-    );
+    const { settings = {} } = globalSettings;
+
+    settings.ar &&
+      isARSupportedOnDevice(
+        () => null,
+        () =>
+          setFilter([
+            ...filter,
+            {
+              id: TOP_FILTER.AR_DOWNLOAD_LIST,
+              title: texts.settingsTitles.tabs.arSettings,
+              selected: false
+            }
+          ])
+      );
   }, []);
 
   if (!sectionedData.length) {
