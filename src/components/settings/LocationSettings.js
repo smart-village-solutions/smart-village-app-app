@@ -5,7 +5,7 @@ import Collapsible from 'react-native-collapsible';
 
 import { colors, texts } from '../../config';
 import { useLocationSettings } from '../../hooks';
-import { WebViewMap } from '../map';
+import { Map } from '../map';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
@@ -115,15 +115,16 @@ export const LocationSettings = () => {
           </RegularText>
         </Wrapper>
         <Collapsible collapsed={!showMap}>
-          <WebViewMap
-            mapCenterPosition={{ lat: 51.1657, lng: 10.4515 }} // center of germany
+          <Map
             locations={locations}
-            onMessageReceived={(msg) => {
-              if (msg.event === 'onMapClicked') {
-                setSelectedPosition(msg.payload.touchLatLng);
-              }
+            mapCenterPosition={{ lat: 51.1657, lng: 10.4515 }} // center of Germany
+            onMapPress={({ nativeEvent }) => {
+              setSelectedPosition({
+                lat: nativeEvent.coordinate.latitude,
+                lng: nativeEvent.coordinate.longitude
+              });
             }}
-            zoom={4} // this sets the zoom to show all of germany
+            zoom={4}
           />
           <Wrapper>
             <Button

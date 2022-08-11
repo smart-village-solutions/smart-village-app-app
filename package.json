@@ -5,7 +5,7 @@
     "dev": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "start": "expo start",
+    "start": "expo start --dev-client",
     "start:android": "expo start --android",
     "start:ios": "expo start --ios",
     "build:android": "eas build --platform android",
@@ -95,6 +95,7 @@
     "react-native-expo-image-cache": "4.1.0",
     "react-native-gesture-handler": "~2.2.1",
     "react-native-get-random-values": "~1.8.0",
+    "react-native-maps": "0.30.2",
     "react-native-markdown-display": "^7.0.0-alpha.2",
     "react-native-modal-dropdown": "https://github.com/donni106/react-native-modal-dropdown#feature/search-options",
     "react-native-progress": "^5.0.0",
@@ -105,12 +106,11 @@
     "react-native-screens": "~3.11.1",
     "react-native-snap-carousel": "~3.9.0",
     "react-native-svg": "12.3.0",
+    "react-native-web": "0.17.7",
     "react-native-webview": "11.18.1",
-    "react-native-webview-leaflet": "https://github.com/donni106/react-native-webview-leaflet#28dc2b06f957bec3e64a439f1fac62e1390da624",
     "react-query": "^3.34.14",
     "sentry-expo": "^4.2.0",
-    "styled-components": "~4.4.1",
-    "react-native-web": "0.17.7"
+    "styled-components": "~4.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.18.0",

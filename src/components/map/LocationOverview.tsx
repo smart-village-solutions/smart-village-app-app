@@ -1,23 +1,23 @@
 import { RouteProp } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { LocationObject } from 'expo-location';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, ScrollView, View } from 'react-native';
-import { MapMarker, WebviewLeafletMessage } from 'react-native-webview-leaflet';
 
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy, isOpen } from '../../helpers';
 import { location, locationIconAnchor, ownLocation, ownLocationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
+import { MapMarker } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { PointOfInterest } from '../screens/PointOfInterest';
 import { RegularText } from '../Text';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
-import { WebViewMap } from './WebViewMap';
+import { Map } from './Map';
 
 type Props = {
   filterByOpeningTimes?: boolean;
@@ -43,6 +43,7 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
         const longitude = item.addresses?.[0]?.geoLocation?.longitude;
 
         if (!latitude || !longitude) return undefined;
+
         return {
           icon: location(colors.primary),
           iconAnchor: locationIconAnchor,
@@ -89,15 +90,6 @@ export const LocationOverview = ({
     skip: !selectedPointOfInterest
   });
 
-  const onMessageReceived = useCallback(
-    (message: WebviewLeafletMessage) => {
-      if (message.event === 'onMapMarkerClicked') {
-        setSelectedPointOfInterest(message.payload?.mapMarkerID);
-      }
-    },
-    [setSelectedPointOfInterest, overviewData]
-  );
-
   if (loading) {
     return (
       <LoadingContainer>
@@ -108,15 +100,15 @@ export const LocationOverview = ({
 
   const mapMarkers = mapToMapMarkers(pointsOfInterest);
 
-  position &&
-    mapMarkers?.push({
-      icon: ownLocation(colors.accent),
-      iconAnchor: ownLocationIconAnchor,
-      position: {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      }
-    });
+  // position &&
+  //   mapMarkers?.push({
+  //     icon: ownLocation(colors.accent),
+  //     iconAnchor: ownLocationIconAnchor,
+  //     position: {
+  //       lat: position.coords.latitude,
+  //       lng: position.coords.longitude
+  //     }
+  //   });
 
   if (!mapMarkers?.length) {
     return (
@@ -130,7 +122,7 @@ export const LocationOverview = ({
     <SafeAreaViewFlex>
       <ScrollView>
         <WrapperWithOrientation>
-          <WebViewMap locations={mapMarkers} onMessageReceived={onMessageReceived} />
+          <Map locations={mapMarkers} onMarkerPress={setSelectedPointOfInterest} />
           <View>
             {!selectedPointOfInterest && (
               <Wrapper>

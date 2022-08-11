@@ -7,11 +7,11 @@ import { colors, consts, normalize, texts } from '../config';
 import {
   BoldText,
   Image,
+  Map,
   RegularText,
   SafeAreaViewFlex,
   Title,
   TitleContainer,
-  WebViewMap,
   Wrapper,
   WrapperWithOrientation,
   WrapperWrap
@@ -138,7 +138,7 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
             )}
           </Wrapper>
           {!!location && (
-            <WebViewMap
+            <Map
               locations={[
                 {
                   icon: locationIcon(colors.primary),
@@ -146,7 +146,6 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
                   position: { lat: location.lat, lng: location.lon }
                 }
               ]}
-              zoom={14}
             />
           )}
         </WrapperWithOrientation>

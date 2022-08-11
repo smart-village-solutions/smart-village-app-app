@@ -1,11 +1,12 @@
 import { isARSupportedOnDevice } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import { default as React, default as React, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 
 import { consts, device, texts } from '../../config';
 import { checkDownloadedData } from '../../helpers';
 import { getQuery, QUERY_TYPES } from '../../queries';
+import { SettingsContext } from '../../SettingsProvider';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Title, TitleContainer, TitleShadow } from '../Title';
@@ -16,6 +17,8 @@ import { ARObjectList } from './ARObjectList';
 import { WhatIsARButton } from './WhatIsARButton';
 
 export const AugmentedReality = ({ id, navigation, onSettingsScreen, tourStops }) => {
+  const { globalSettings } = useContext(SettingsContext);
+
   const { data: tourData } = useQuery(getQuery(QUERY_TYPES.TOUR_STOPS), {
     variables: { id },
     skip: !onSettingsScreen
@@ -27,10 +30,13 @@ export const AugmentedReality = ({ id, navigation, onSettingsScreen, tourStops }
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
-    isARSupportedOnDevice(
-      () => null,
-      () => setIsARSupported(true)
-    );
+    const { settings = {} } = globalSettings;
+
+    settings.ar &&
+      isARSupportedOnDevice(
+        () => null,
+        () => setIsARSupported(true)
+      );
   }, []);
 
   useEffect(() => {

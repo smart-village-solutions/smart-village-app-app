@@ -26,6 +26,7 @@
       "infoPlist": {
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
+        "NSLocationWhenInUseUsageDescription": "Diese App nutzt die Standortbestimmung um Ihre aktuelle Position auf der Karte darzustellen.",
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE"
       }
@@ -39,7 +40,12 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "jsEngine": "hermes"
+      "jsEngine": "hermes",
+      "config": {
+        "googleMaps": {
+          "apiKey": "abcdef"
+        }
+      }
     },
     "androidStatusBar": {
       "barStyle": "dark-content",
