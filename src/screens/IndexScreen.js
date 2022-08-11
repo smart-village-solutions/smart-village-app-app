@@ -127,6 +127,11 @@ export const IndexScreen = ({ navigation, route }) => {
       });
 
       if (additionalData?.length) {
+        if (hasDailyFilterSelection) {
+          // filter additionalData on current day
+          additionalData = additionalData.filter((item) => item.listDate === currentDate);
+        }
+
         listItems.push(...additionalData);
         listItems = _sortBy(listItems, (item) => item.listDate);
       }
@@ -354,9 +359,7 @@ export const IndexScreen = ({ navigation, route }) => {
             // no category selection is made, because the category has nothing to do with
             // volunteer data
             const additionalData =
-              isCalendarWithVolunteerEvents &&
-              !hasCategoryFilterSelection &&
-              !hasDailyFilterSelection
+              isCalendarWithVolunteerEvents && !hasCategoryFilterSelection
                 ? dataVolunteerEvents
                 : undefined;
 
