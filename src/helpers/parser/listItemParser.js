@@ -1,7 +1,7 @@
 import _filter from 'lodash/filter';
 import _shuffle from 'lodash/shuffle';
 
-import { consts, texts } from '../../config';
+import { colors, consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { GenericType, ScreenName } from '../../types';
 import { eventDate, isBeforeEndOfToday, isTodayOrLater } from '../dateTimeHelper';
@@ -217,39 +217,56 @@ const parsePointsOfInterestAndTours = (data) => {
 
 /* eslint-disable complexity */
 const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned) => {
-  return data?.map((volunteer, index) => ({
-    ...volunteer,
-    id: volunteer.id || volunteer?.user?.id,
-    title:
-      volunteer.title || volunteer.name || volunteer.display_name || volunteer.user?.display_name,
-    subtitle: volunteer.subtitle || volunteerSubtitle(volunteer, query, withDate, isSectioned),
-    picture: volunteer.picture,
-    routeName: ScreenName.VolunteerDetail,
-    onPress: volunteer.onPress,
-    listDate: volunteer.listDate || volunteerListDate(volunteer),
-    status: volunteer.status,
-    params: {
-      title: getTitleForQuery(query, volunteer),
-      query,
-      queryVariables: { id: volunteer.user?.id ? `${volunteer.user.id}` : `${volunteer.id}` },
-      queryOptions: query === QUERY_TYPES.VOLUNTEER.CONVERSATION && {
-        refetchInterval: 5000
+  return data?.map((volunteer, index) => {
+    let badge;
+
+    if (query === QUERY_TYPES.VOLUNTEER.GROUP && volunteer?.role === 'admin') {
+      badge = {
+        value: texts.volunteer.admin,
+        textStyle: {
+          color: colors.lightestText
+        },
+        badgeStyle: {
+          backgroundColor: colors.primary
+        }
+      };
+    }
+
+    return {
+      ...volunteer,
+      id: volunteer.id || volunteer?.user?.id,
+      title:
+        volunteer.title || volunteer.name || volunteer.display_name || volunteer.user?.display_name,
+      subtitle: volunteer.subtitle || volunteerSubtitle(volunteer, query, withDate, isSectioned),
+      badge: volunteer.badge || badge,
+      picture: volunteer.picture,
+      routeName: ScreenName.VolunteerDetail,
+      onPress: volunteer.onPress,
+      listDate: volunteer.listDate || volunteerListDate(volunteer),
+      status: volunteer.status,
+      params: {
+        title: getTitleForQuery(query, volunteer),
+        query,
+        queryVariables: { id: volunteer.user?.id ? `${volunteer.user.id}` : `${volunteer.id}` },
+        queryOptions: query === QUERY_TYPES.VOLUNTEER.CONVERSATION && {
+          refetchInterval: 5000
+        },
+        rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
+        shareContent: query !== QUERY_TYPES.VOLUNTEER.CONVERSATION && {
+          message: shareMessage(
+            {
+              title: volunteer.title || volunteer.name,
+              subtitle:
+                volunteer.subtitle || volunteerSubtitle(volunteer, query, withDate, isSectioned)
+            },
+            query
+          )
+        },
+        details: volunteer
       },
-      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
-      shareContent: query !== QUERY_TYPES.VOLUNTEER.CONVERSATION && {
-        message: shareMessage(
-          {
-            title: volunteer.title || volunteer.name,
-            subtitle:
-              volunteer.subtitle || volunteerSubtitle(volunteer, query, withDate, isSectioned)
-          },
-          query
-        )
-      },
-      details: volunteer
-    },
-    bottomDivider: !skipLastDivider || index !== data.length - 1
-  }));
+      bottomDivider: !skipLastDivider || index !== data.length - 1
+    };
+  });
 };
 /* eslint-enable complexity */
 

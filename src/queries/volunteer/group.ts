@@ -21,6 +21,21 @@ export const groups = async () => {
   return (await fetch(`${volunteerApiV1Url}space`, fetchObj)).json();
 };
 
+export const groupsMy = async () => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (await fetch(`${volunteerApiV2Url}space/memberships`, fetchObj)).json();
+};
+
 export const group = async (id: number) => {
   const authToken = await volunteerAuthToken();
 

@@ -170,48 +170,52 @@ export const VolunteerGroup = ({
           <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
         </Wrapper>
 
-        <VolunteerHomeSection
-          linkTitle="Alle Termine anzeigen"
-          buttonTitle="Termin eintragen"
-          showButton={isGroupOwner}
-          navigateLink={() =>
-            navigation.push(ScreenName.VolunteerIndex, {
-              title: texts.volunteer.calendar,
-              query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-              queryVariables: contentContainerId,
-              rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-            })
-          }
-          navigateButton={() =>
-            navigation.navigate(ScreenName.VolunteerForm, {
-              title: 'Termin eintragen',
-              query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-              queryVariables: contentContainerId,
-              groupId: id,
-              rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-            })
-          }
-          navigate={() =>
-            navigation.push(ScreenName.VolunteerIndex, {
-              title: texts.volunteer.calendar,
-              query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-              queryVariables: contentContainerId,
-              rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-            })
-          }
-          navigation={navigation}
-          query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
-          queryVariables={contentContainerId}
-          sectionTitle="Kalender"
-        />
+        {!!contentContainerId && (
+          <VolunteerHomeSection
+            linkTitle="Alle Termine anzeigen"
+            buttonTitle="Termin eintragen"
+            showButton={isGroupOwner}
+            navigateLink={() =>
+              navigation.push(ScreenName.VolunteerIndex, {
+                title: texts.volunteer.calendar,
+                query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+                queryVariables: contentContainerId,
+                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+              })
+            }
+            navigateButton={() =>
+              navigation.navigate(ScreenName.VolunteerForm, {
+                title: 'Termin eintragen',
+                query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+                queryVariables: contentContainerId,
+                groupId: id,
+                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+              })
+            }
+            navigate={() =>
+              navigation.push(ScreenName.VolunteerIndex, {
+                title: texts.volunteer.calendar,
+                query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+                queryVariables: contentContainerId,
+                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+              })
+            }
+            navigation={navigation}
+            query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
+            queryVariables={contentContainerId}
+            sectionTitle="Kalender"
+          />
+        )}
 
-        <VolunteerPosts
-          contentContainerId={contentContainerId}
-          isRefetching={isRefetching}
-          openWebScreen={openWebScreen}
-          navigation={navigation}
-          isGroupMember={isGroupMember}
-        />
+        {!!contentContainerId && (
+          <VolunteerPosts
+            contentContainerId={contentContainerId}
+            isRefetching={isRefetching}
+            openWebScreen={openWebScreen}
+            navigation={navigation}
+            isGroupMember={isGroupMember}
+          />
+        )}
 
         {!!joinPolicy && !isGroupOwner && isGroupMember !== undefined && (
           <Wrapper>

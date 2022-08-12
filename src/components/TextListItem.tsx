@@ -13,6 +13,7 @@ import { Touchable } from './Touchable';
 
 export type ItemData = {
   id: string;
+  badge?: { value: string; textStyle: { color: string } };
   bottomDivider?: boolean;
   onPress?: (navigation: any) => void;
   params: Record<string, unknown>;
@@ -36,6 +37,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
   defaultProps?: Partial<Props>;
 } = memo<Props>(({ item, leftImage, navigation, noSubtitle }) => {
   const {
+    badge,
     bottomDivider,
     onPress,
     params,
@@ -56,6 +58,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
       topDivider={topDivider !== undefined ? topDivider : false}
       containerStyle={styles.container}
       rightIcon={!!navigation && <Icon.ArrowRight />}
+      badge={badge}
       leftIcon={
         leftImage && !!picture?.url ? (
           <Image

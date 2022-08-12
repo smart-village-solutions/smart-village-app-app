@@ -75,7 +75,11 @@ export const VolunteerHomeSection = ({
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const [showCalendar, setShowCalendar] = useState(isCalendar);
-  const { data: sectionData, isLoading, isRefetching, refetch } = useVolunteerData({
+  const {
+    data: sectionData,
+    isLoading,
+    refetch
+  } = useVolunteerData({
     query,
     queryVariables,
     isCalendar,
@@ -110,7 +114,7 @@ export const VolunteerHomeSection = ({
             query={query}
             queryVariables={queryVariables}
             calendarData={sectionData}
-            isLoading={isLoading || isRefetching}
+            isLoading={isLoading}
             navigation={navigation}
           />
         ) : (
@@ -122,7 +126,7 @@ export const VolunteerHomeSection = ({
           />
         )}
         <DataListSection
-          loading={isLoading || isRefetching}
+          loading={isLoading}
           buttonTitle={buttonTitle}
           linkTitle={linkTitle}
           limit={0}
@@ -140,7 +144,7 @@ export const VolunteerHomeSection = ({
 
   return (
     <DataListSection
-      loading={isLoading || isRefetching}
+      loading={isLoading}
       buttonTitle={buttonTitle}
       linkTitle={linkTitle}
       limit={limit}

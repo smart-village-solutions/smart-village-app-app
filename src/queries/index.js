@@ -37,6 +37,7 @@ import {
   group,
   groupMembership,
   groups,
+  groupsMy,
   me,
   posts,
   user
@@ -95,7 +96,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.VOLUNTEER.CONVERSATIONS]: conversations,
     [QUERY_TYPES.VOLUNTEER.GROUP]: group,
     [QUERY_TYPES.VOLUNTEER.GROUPS]: groups,
-    [QUERY_TYPES.VOLUNTEER.GROUPS_MY]: groups,
+    [QUERY_TYPES.VOLUNTEER.GROUPS_MY]: groupsMy,
     [QUERY_TYPES.VOLUNTEER.MEMBERS]: groupMembership,
     [QUERY_TYPES.VOLUNTEER.POSTS]: posts,
     [QUERY_TYPES.VOLUNTEER.PROFILE]: me,
