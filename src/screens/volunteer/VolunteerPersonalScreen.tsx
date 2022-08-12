@@ -124,7 +124,6 @@ export const VolunteerPersonalScreen = ({ navigation }: any) => {
           sectionTitle="Meine Gruppen und Vereine"
           showLink
           showButton
-          isRandom
         />
         <VolunteerHomeSection
           linkTitle="Alle meine Termine anzeigen"

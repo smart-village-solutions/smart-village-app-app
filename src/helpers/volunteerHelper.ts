@@ -114,10 +114,18 @@ export const volunteerSubtitle = (
     date = date.replace('00:00', '');
   }
 
-  return subtitle(
-    withDate ? date : undefined,
-    query !== QUERY_TYPES.VOLUNTEER.CALENDAR && volunteer.tags?.length ? volunteer.tags : undefined
-  );
+  // build subtitle
+  let first, last;
+
+  if (withDate) {
+    first = date;
+  }
+
+  if (query !== QUERY_TYPES.VOLUNTEER.CALENDAR && volunteer.tags?.length) {
+    last = volunteer.tags;
+  }
+
+  return subtitle(first, last);
 };
 
 export const isAttending = (currentUserId: string | null, attending?: []): boolean => {

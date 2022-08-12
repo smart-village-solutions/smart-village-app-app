@@ -761,6 +761,7 @@ export const texts = {
     accept: 'Akzeptieren',
     addDocument: 'Dokument hinzufügen',
     addImage: 'Bild hinzufügen',
+    admin: 'Administrator',
     applicants: 'Beitrittsanfragen',
     attend: 'Interessiert',
     attendInfo:
@@ -806,6 +807,7 @@ export const texts = {
     loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     loginFailedTitle: 'Fehler bei der Anmeldung',
     loginTitle: 'Anmelden',
+    member: 'Mitglied',
     members: 'Mitglieder',
     memberships: 'Mitgliedschaften',
     message: 'Nachricht',

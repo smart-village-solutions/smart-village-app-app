@@ -4,7 +4,6 @@ import { useQuery } from 'react-query';
 
 import {
   isAttending,
-  isOwner,
   isUpcomingDate,
   parseListItemsFromQuery,
   volunteerUserData
@@ -92,14 +91,6 @@ export const useVolunteerData = ({
             isAttending(currentUserId, item.participants?.attending)
         );
       }
-    }
-
-    if (query === QUERY_TYPES.VOLUNTEER.GROUPS_MY) {
-      const { currentUserId } = await volunteerUserData();
-      // show only attending dates for current user if on personal calendar view
-      processedVolunteerData = processedVolunteerData?.filter((item: { owner: { id: number } }) =>
-        isOwner(currentUserId, item.owner)
-      );
     }
 
     // ORDERING
