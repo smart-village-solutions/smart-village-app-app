@@ -28,7 +28,7 @@ const INITIAL_FILTER = [
   { id: TOP_FILTER.LIST_VIEW, title: texts.augmentedReality.filter.listView, selected: false }
 ];
 
-export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
+export const AugmentedReality = ({ geometryTourData, navigation, onSettingsScreen, tourID }) => {
   const {
     data: staticData,
     error,
@@ -134,6 +134,7 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
 
       {selectedFilterId === TOP_FILTER.MAP_VIEW && (
         <Map
+          geometryTourData={geometryTourData}
           locations={mapMarkers}
           onMarkerPress={setModelId}
           onMaximizeButtonPress={() =>
@@ -142,6 +143,7 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
                 data,
                 refetch
               },
+              geometryTourData,
               isAugmentedReality: true,
               isMaximizeButtonVisible: false,
               locations: mapMarkers
@@ -168,8 +170,8 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
 const mapToMapMarkers = (augmentedReality) => {
   return augmentedReality
     ?.map((item) => {
-      const latitude = item.location.lat;
-      const longitude = item.location.lng;
+      const latitude = item?.location?.lat;
+      const longitude = item?.location?.lng;
 
       if (!latitude || !longitude) return undefined;
       return {
@@ -186,6 +188,7 @@ const mapToMapMarkers = (augmentedReality) => {
 };
 
 AugmentedReality.propTypes = {
+  geometryTourData: PropTypes.array,
   navigation: PropTypes.object,
   onSettingsScreen: PropTypes.bool,
   tourID: PropTypes.string

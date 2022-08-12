@@ -8,6 +8,7 @@ import { navigationToArtworksDetailScreen } from '../helpers';
 
 export const MapViewScreen = ({ navigation, route }) => {
   const {
+    geometryTourData,
     isAugmentedReality,
     isMaximizeButtonVisible,
     locations,
@@ -30,6 +31,7 @@ export const MapViewScreen = ({ navigation, route }) => {
     <>
       <Map
         {...{
+          geometryTourData,
           isMaximizeButtonVisible,
           locations,
           mapStyle: styles.mapStyle,

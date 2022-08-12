@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { normalize } from 'react-native-elements';
-import MapView, { MAP_TYPES, Marker, UrlTile } from 'react-native-maps';
+import MapView, { LatLng, MAP_TYPES, Marker, Polyline, UrlTile } from 'react-native-maps';
 import { SvgXml } from 'react-native-svg';
 
 import { colors, device, Icon } from '../../config';
@@ -9,6 +9,7 @@ import { imageHeight, imageWidth } from '../../helpers';
 import { MapMarker } from '../../types';
 
 type Props = {
+  geometryTourData?: LatLng[];
   isMaximizeButtonVisible?: boolean;
   locations?: MapMarker[];
   mapCenterPosition?: { lat: number; lng: number };
@@ -27,6 +28,7 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * (device.width / (device.height / 2));
 
 export const Map = ({
+  geometryTourData,
   isMaximizeButtonVisible,
   locations,
   mapCenterPosition,
@@ -80,6 +82,9 @@ export const Map = ({
           left: 0
         }}
       >
+        {!!geometryTourData?.length && (
+          <Polyline coordinates={geometryTourData} strokeWidth={2} strokeColor={colors.primary} />
+        )}
         <UrlTile
           urlTemplate="https://a.tile.opentopomap.org/{z}/{x}/{y}.png"
           shouldReplaceMapContent={device.platform === 'ios'}
