@@ -86,7 +86,7 @@ export const calendarNew = async ({
   endDate,
   endTime,
   timeZone = 'Europe/Berlin',
-  forceJoin = 1,
+  forceJoin = 0,
   topics,
   contentContainerId
 }: VolunteerCalendar) => {
