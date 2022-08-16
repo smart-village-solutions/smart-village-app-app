@@ -3,5 +3,6 @@ export type WidgetProps = {
   additionalProps?: {
     dataProviderId?: string;
     noCount?: boolean;
+    noFilterByDailyEvents?: boolean;
   };
 };

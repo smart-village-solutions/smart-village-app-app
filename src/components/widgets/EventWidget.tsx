@@ -49,7 +49,7 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
       query: QUERY_TYPES.EVENT_RECORDS,
       queryVariables,
       rootRouteName: 'EventRecords',
-      filterByDailyEvents: true
+      filterByDailyEvents: additionalProps?.noFilterByDailyEvents ? false : true
     });
   }, [navigation, text, queryVariables]);
 
