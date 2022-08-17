@@ -9,7 +9,8 @@ import { VolunteerConversation } from '../../types';
 
 export const VolunteerMessage = ({
   data,
-  conversationId
+  conversationId,
+  refetch
 }: {
   data: {
     results: [
@@ -25,6 +26,7 @@ export const VolunteerMessage = ({
     ];
   };
   conversationId: number;
+  refetch: () => void;
 }) => {
   const [messageData, setMessageData] = useState<any>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -97,12 +99,13 @@ export const VolunteerMessage = ({
   return (
     <Chat
       data={messageData}
+      placeholder=""
       onSendButton={(message) =>
         onSend({
           id: [conversationId],
           message,
           title: ''
-        })
+        }).then(() => refetch())
       }
       userId={currentUserId}
     />

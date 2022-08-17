@@ -76,7 +76,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
   if (!Component || !componentData) return <EmptyMessage title={texts.empty.content} />;
 
   if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
-    return <Component data={componentData} conversationId={queryVariables.id} />;
+    return <Component data={componentData} conversationId={queryVariables.id} refetch={refetch} />;
   }
 
   return (
