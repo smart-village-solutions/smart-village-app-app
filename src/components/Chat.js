@@ -60,12 +60,11 @@ export const Chat = ({
   messageTextStyleLeft,
   messageTextStyleRight,
   onSendButton,
-  placeholder,
+  placeholder = 'Type a message',
   textInputProps,
-  userId
+  userId = 1
 }) => {
   const [messages, setMessages] = useState(data);
-  const [onFocus, setOnFocus] = useState(false);
 
   useEffect(() => {
     setMessages(data);
@@ -79,13 +78,11 @@ export const Chat = ({
     <GiftedChat
       alwaysShowSend
       messages={messages}
-      messagesContainerStyle={{ bottom: onFocus ? 0 : normalize(48) }}
+      minInputToolbarHeight={normalize(96)}
       onSend={(messages) => onSend(messages)}
-      placeholder={placeholder || ''}
+      placeholder={placeholder}
       scrollToBottom
-      user={{
-        _id: parseInt(userId) || 1
-      }}
+      user={{ _id: parseInt(userId) }}
       renderAvatar={(props) => (
         <UserAvatar
           uri={props?.currentMessage?.user?.avatar}
@@ -110,24 +107,15 @@ export const Chat = ({
       renderComposer={(props) => (
         <Composer
           {...props}
-          composerHeight={normalize(48)}
-          textInputProps={
-            textInputProps || {
-              multiline: true,
-              onFocus: () => setOnFocus(true),
-              onBlur: () => setOnFocus(false)
-            }
-          }
           textInputStyle={styles.textInputStyle}
+          textInputProps={textInputProps}
         />
       )}
       renderDay={() => null}
       renderInputToolbar={(props) => (
         <InputToolbar
           {...props}
-          containerStyle={{
-            height: normalize(88)
-          }}
+          containerStyle={styles.inputToolbarContainer}
           primaryStyle={styles.inputToolbarPrimary}
         />
       )}
@@ -158,18 +146,22 @@ export const Chat = ({
 
 const styles = StyleSheet.create({
   textInputStyle: {
-    alignItems: 'center',
     borderColor: colors.gray20,
     borderRadius: normalize(4),
     borderWidth: normalize(1),
-    fontSize: normalize(14),
-    height: normalize(48),
+    marginBottom: 0,
     marginLeft: normalize(20),
-    paddingHorizontal: normalize(5)
+    marginTop: 0,
+    maxHeight: normalize(200),
+    minHeight: normalize(48),
+    paddingHorizontal: normalize(10),
+    paddingTop: normalize(16)
+  },
+  inputToolbarContainer: {
+    paddingVertical: normalize(24)
   },
   inputToolbarPrimary: {
-    alignItems: 'center',
-    justifyContent: 'center'
+    minHeight: normalize(48)
   },
   sendButtonContainer: {
     alignItems: 'center',
@@ -177,8 +169,8 @@ const styles = StyleSheet.create({
     borderRadius: normalize(4),
     height: normalize(48),
     justifyContent: 'center',
-    margin: normalize(20),
     marginLeft: normalize(8),
+    marginRight: normalize(20),
     width: normalize(48)
   },
   border: {
