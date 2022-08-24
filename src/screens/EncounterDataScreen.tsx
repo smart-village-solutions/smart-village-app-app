@@ -134,6 +134,7 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
 
     if (result === userId) {
       showChangeSuccessAlert();
+      setHasChanges(false);
     } else {
       showChangeErrorAlert();
     }
