@@ -1,21 +1,23 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useMutation } from 'react-query';
 
 import { colors, consts, device, Icon, normalize, texts } from '../../config';
 import { isAttending, momentFormat, openLink, volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
+import { QUERY_TYPES } from '../../queries';
 import { calendarAttend } from '../../queries/volunteer';
-import { PARTICIPANT_TYPE } from '../../types';
+import { PARTICIPANT_TYPE, ScreenName } from '../../types';
 import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
+import { ShareHeader } from '../ShareHeader';
 import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperRow, WrapperWithOrientation } from '../Wrapper';
 
 import { VolunteerAppointmentsCard } from './VolunteerAppointmentsCard';
 import { VolunteerEventAttending } from './VolunteerEventAttending';
@@ -78,6 +80,47 @@ export const VolunteerEventRecord = ({
       timeTo: momentFormat(endDatetime, 'HH:mm')
     }
   ];
+  const shareContent = route.params?.shareContent || undefined;
+
+  const [isMe, setIsMe] = useState<boolean>();
+
+  const checkIfMe = useCallback(async () => {
+    const { currentUserId } = await volunteerUserData();
+
+    !!currentUserId && setIsMe(currentUserId == content?.metadata?.created_by?.id);
+  }, [data]);
+
+  useEffect(() => {
+    checkIfMe();
+  }, [checkIfMe]);
+
+  useLayoutEffect(() => {
+    if (isMe) {
+      navigation.setOptions({
+        headerRight: () =>
+          isMe && (
+            <WrapperRow style={styles.headerRight}>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation?.navigate(ScreenName.VolunteerForm, {
+                    query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+                    calendarData: data,
+                    groupId: content?.metadata?.contentcontainer_id
+                  })
+                }
+              >
+                <Icon.NamedIcon name="settings" color="white" style={styles.icon} />
+              </TouchableOpacity>
+
+              <ShareHeader
+                shareContent={shareContent}
+                style={{ paddingHorizontal: normalize(10) }}
+              />
+            </WrapperRow>
+          )
+      });
+    }
+  }, [isMe]);
 
   const [isAttendingEvent, setIsAttendingEvent] = useState<boolean>();
 
@@ -209,6 +252,13 @@ export const VolunteerEventRecord = ({
 };
 
 const styles = StyleSheet.create({
+  headerRight: {
+    alignItems: 'center',
+    paddingRight: normalize(7)
+  },
+  icon: {
+    paddingHorizontal: normalize(10)
+  },
   volunteerInfoText: {
     width: '90%'
   },
