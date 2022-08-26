@@ -8,11 +8,11 @@ import { Alert, StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { useMutation, useQuery } from 'react-query';
 
-import { colors, texts } from '../../config';
-import { isOwner, jsonParser, volunteerUserData } from '../../helpers';
+import { colors, consts, texts } from '../../config';
+import { isOwner, jsonParser, momentFormat, volunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { CREATE_EVENT_RECORDS } from '../../queries/eventRecords';
-import { calendarNew, calendarUpload, groups } from '../../queries/volunteer';
+import { calendarNew, calendarUpdate, calendarUpload, groups } from '../../queries/volunteer';
 import { VolunteerCalendar, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { DocumentSelector, ImageSelector } from '../consul/selectors';
@@ -30,6 +30,15 @@ export const VolunteerFormCalendar = ({
   scrollToTop,
   groupId
 }: StackScreenProps<any> & { scrollToTop: () => void; groupId?: number }) => {
+  const calendarData = route.params?.calendarData ?? '';
+
+  const appointments = {
+    dateFrom: new Date(momentFormat(calendarData?.start_datetime, 'YYYY-MM-DD')),
+    dateTo: new Date(momentFormat(calendarData?.end_datetime, 'YYYY-MM-DD')),
+    timeFrom: new Date(momentFormat(calendarData?.start_datetime, '')),
+    timeTo: new Date(momentFormat(calendarData?.end_datetime, ''))
+  };
+
   const {
     control,
     formState: { errors, isValid },
@@ -38,6 +47,17 @@ export const VolunteerFormCalendar = ({
     mode: 'onBlur',
     defaultValues: {
       isPublic: 0,
+      calendarId: calendarData?.id || '',
+      title: calendarData?.title || '',
+      startDate: calendarData?.start_datetime ? appointments?.dateFrom : '',
+      startTime: calendarData?.start_datetime ? appointments?.timeFrom : '',
+      endDate: calendarData?.end_datetime ? appointments?.dateTo : '',
+      endTime: calendarData?.end_datetime ? appointments?.timeTo : '',
+      description: calendarData?.description || '',
+      participantInfo: calendarData?.participant_info || '',
+      entranceFee: '',
+      location: '',
+      topics: calendarData?.content?.topics.map(({ name }: any) => name).toString() || [],
       contentContainerId: groupId || 0,
       documents: '[]',
       images: '[]'
