@@ -71,6 +71,7 @@ export const calendarNew = async ({
   description = '',
   organizer = '',
   entranceFee = '',
+  calendarId,
   color = colors.primary.startsWith('#') ? colors.primary : colors.darkText,
   location = '',
   participationMode = 2,
@@ -126,7 +127,7 @@ export const calendarNew = async ({
   };
 
   const fetchObj = {
-    method: 'POST',
+    method: calendarId ? 'PUT' : 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -134,6 +135,10 @@ export const calendarNew = async ({
     },
     body: JSON.stringify(formData)
   };
+
+  if (calendarId) {
+    return (await fetch(`${volunteerApiV1Url}calendar/entry/${calendarId}`, fetchObj)).json();
+  }
 
   return (
     await fetch(`${volunteerApiV1Url}calendar/container/${contentContainerId}`, fetchObj)

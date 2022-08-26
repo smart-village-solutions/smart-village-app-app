@@ -9,6 +9,7 @@ export type VolunteerCalendar = {
   allDay: number;
   allowDecline: number;
   allowMaybe: number;
+  calendarId: number;
   color?: string;
   contentContainerId: number;
   description?: string;

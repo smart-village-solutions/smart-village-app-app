@@ -12,7 +12,7 @@ import { colors, consts, texts } from '../../config';
 import { isOwner, jsonParser, momentFormat, volunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { CREATE_EVENT_RECORDS } from '../../queries/eventRecords';
-import { calendarNew, calendarUpdate, calendarUpload, groups } from '../../queries/volunteer';
+import { calendarNew, calendarUpload, groups } from '../../queries/volunteer';
 import { VolunteerCalendar, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { DocumentSelector, ImageSelector } from '../consul/selectors';
@@ -29,6 +29,7 @@ const { IMAGE_TYPE_REGEX, PDF_TYPE_REGEX, URL_REGEX } = consts;
 // eslint-disable-next-line complexity
 export const VolunteerFormCalendar = ({
   navigation,
+  route,
   scrollToTop,
   groupId
 }: StackScreenProps<any> & { scrollToTop: () => void; groupId?: number }) => {
@@ -51,10 +52,10 @@ export const VolunteerFormCalendar = ({
       isPublic: 0,
       calendarId: calendarData?.id || '',
       title: calendarData?.title || '',
-      startDate: calendarData?.start_datetime ? appointments?.dateFrom : '',
-      startTime: calendarData?.start_datetime ? appointments?.timeFrom : '',
-      endDate: calendarData?.end_datetime ? appointments?.dateTo : '',
-      endTime: calendarData?.end_datetime ? appointments?.timeTo : '',
+      startDate: calendarData?.start_datetime ? appointments?.dateFrom : undefined,
+      startTime: calendarData?.start_datetime ? appointments?.timeFrom : undefined,
+      endDate: calendarData?.end_datetime ? appointments?.dateTo : undefined,
+      endTime: calendarData?.end_datetime ? appointments?.timeTo : undefined,
       description: calendarData?.description || '',
       participantInfo: calendarData?.participant_info || '',
       entranceFee: '',
@@ -103,32 +104,7 @@ export const VolunteerFormCalendar = ({
   const [createEvent] = useMainserverMutation(CREATE_EVENT_RECORDS);
   const onSubmit = async (calendarNewData: VolunteerCalendar) => {
     mutateAsync(calendarNewData).then(async ({ id }) => {
-      if (id) {
-        const images = jsonParser(calendarNewData.images);
-        const documents = jsonParser(calendarNewData.documents);
-        const uris: { uri: StringConstructor; mimeType: StringConstructor }[] = [];
-
-        if (images?.length) {
-          images.forEach(({ uri = String, mimeType = String }) => {
-            uris.push({ uri, mimeType });
-          });
-        }
-
-        if (documents?.length) {
-          documents.forEach(({ uri = String, mimeType = String }) => {
-            uris.push({ uri, mimeType });
-          });
-        }
-
-        /* foreach loop to upload each file after the event has been created */
-        uris.forEach(async ({ uri, mimeType }) => {
-          try {
-            await calendarUpload(uri, id, mimeType);
-          } catch (error) {
-            console.error(error);
-          }
-        });
-      }
+      if (id) filerParseAndUpload(calendarNewData, id);
     });
 
     // mutate(calendarNewData);
@@ -184,6 +160,7 @@ export const VolunteerFormCalendar = ({
   return (
     <>
       <Wrapper>
+        <Input hidden name="calendarId" control={control} />
         <Controller
           name="contentContainerId"
           render={({ name, onChange, value }) => (
@@ -438,6 +415,35 @@ const fileFilters = (fileRegex: any, calendarData: { content: { files: any[] } }
       })
       .filter((otherFiles: any) => otherFiles != null)
   );
+
+const filerParseAndUpload = (calendarNewData: VolunteerCalendar, id: number) => {
+  const images = jsonParser(calendarNewData.images);
+  const documents = jsonParser(calendarNewData.documents);
+  const uris: { uri: StringConstructor; mimeType: StringConstructor }[] = [];
+  if (images?.length) {
+    images.forEach(({ uri = String, mimeType = String }) => {
+      uris.push({ uri, mimeType });
+    });
+  }
+  if (documents?.length) {
+    documents.forEach(({ uri = String, mimeType = String }) => {
+      uris.push({ uri, mimeType });
+    });
+  }
+
+  /* foreach loop to upload each file after the event has been created */
+  uris.forEach(async ({ uri, mimeType }: any) => {
+    try {
+      const isURL = URL_REGEX.test(uri);
+      if (isURL) return;
+
+      await calendarUpload(uri, id, mimeType);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+};
+
 const styles = StyleSheet.create({
   noPaddingTop: {
     paddingTop: 0
