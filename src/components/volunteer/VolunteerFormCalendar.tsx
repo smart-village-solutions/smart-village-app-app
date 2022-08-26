@@ -24,6 +24,8 @@ import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
+const { IMAGE_TYPE_REGEX, PDF_TYPE_REGEX, URL_REGEX } = consts;
+
 // eslint-disable-next-line complexity
 export const VolunteerFormCalendar = ({
   navigation,
@@ -59,8 +61,12 @@ export const VolunteerFormCalendar = ({
       location: '',
       topics: calendarData?.content?.topics.map(({ name }: any) => name).toString() || [],
       contentContainerId: groupId || 0,
-      documents: '[]',
-      images: '[]'
+      documents: calendarData?.content?.files?.length
+        ? fileFilters(PDF_TYPE_REGEX, calendarData)
+        : '[]',
+      images: calendarData?.content?.files?.length
+        ? fileFilters(IMAGE_TYPE_REGEX, calendarData)
+        : '[]'
     }
   });
   const { data: dataGroups, isLoading: isLoadingGroups } = useQuery(
@@ -421,6 +427,17 @@ export const VolunteerFormCalendar = ({
   );
 };
 
+const fileFilters = (fileRegex: any, calendarData: { content: { files: any[] } }) =>
+  JSON.stringify(
+    calendarData?.content?.files
+      .map(({ file_name: infoText, mime_type: mimeType, url: uri }: any) => {
+        const isFile = fileRegex.test(infoText);
+
+        if (isFile) return { infoText, mimeType, uri };
+        else return;
+      })
+      .filter((otherFiles: any) => otherFiles != null)
+  );
 const styles = StyleSheet.create({
   noPaddingTop: {
     paddingTop: 0
