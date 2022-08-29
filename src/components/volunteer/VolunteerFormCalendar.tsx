@@ -12,8 +12,8 @@ import { colors, consts, texts } from '../../config';
 import { isOwner, jsonParser, momentFormat, volunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { CREATE_EVENT_RECORDS } from '../../queries/eventRecords';
-import { calendarNew, calendarUpload, groups } from '../../queries/volunteer';
-import { VolunteerCalendar, VolunteerGroup } from '../../types';
+import { calendarDelete, calendarNew, calendarUpload, groups } from '../../queries/volunteer';
+import { ScreenName, VolunteerCalendar, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { DocumentSelector, ImageSelector } from '../consul/selectors';
 import { DateTimeInput } from '../form/DateTimeInput';
@@ -25,6 +25,12 @@ import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
 const { IMAGE_TYPE_REGEX, PDF_TYPE_REGEX, URL_REGEX } = consts;
+
+const deleteCalendarAlert = (onPress: () => Promise<void>) =>
+  Alert.alert('Hinweis', 'Möchten Sie das Event löschen?', [
+    { text: 'Abbrechen', style: 'cancel' },
+    { text: 'Löschen', onPress, style: 'destructive' }
+  ]);
 
 // eslint-disable-next-line complexity
 export const VolunteerFormCalendar = ({
@@ -127,6 +133,18 @@ export const VolunteerFormCalendar = ({
     //     timeEnd: calendarNewData.endTime
     //   }
     // });
+  };
+
+  const onCalendarDelete = async () => {
+    try {
+      await calendarDelete(calendarData?.id);
+      navigation.navigate(ScreenName.VolunteerHome);
+
+      Alert.alert('Erfolgreich', 'Das Event wurde erfolgreich gelöscht.');
+    } catch (error) {
+      Alert.alert('Fehler beim Löschen des Events', 'Bitte versuchen Sie es noch einmal.');
+      console.error(error);
+    }
   };
 
   if (!isValid) {
@@ -394,6 +412,14 @@ export const VolunteerFormCalendar = ({
           title={texts.volunteer.save}
           disabled={isLoading}
         />
+        {!!calendarData && (
+          <Button
+            disabled={isLoading}
+            invert
+            onPress={() => deleteCalendarAlert(onCalendarDelete)}
+            title={texts.volunteer.delete}
+          />
+        )}
         <Touchable onPress={() => navigation.goBack()}>
           <BoldText center primary underline>
             {texts.volunteer.abort.toUpperCase()}

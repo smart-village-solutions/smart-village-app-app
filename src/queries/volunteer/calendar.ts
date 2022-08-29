@@ -144,3 +144,16 @@ export const calendarNew = async ({
     await fetch(`${volunteerApiV1Url}calendar/container/${contentContainerId}`, fetchObj)
   ).json();
 };
+
+export const calendarDelete = async (entryId: any) => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'DELETE',
+    headers: {
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return await fetch(`${volunteerApiV1Url}calendar/entry/${entryId}`, fetchObj);
+};
