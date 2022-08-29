@@ -1,10 +1,11 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useEffect, useState } from 'react';
-import { DeviceEventEmitter, View } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useMutation } from 'react-query';
 
-import { consts, device, texts } from '../../config';
+import { consts, device, Icon, normalize, texts } from '../../config';
 import {
   isOwner,
   volunteerBannerImage,
@@ -20,9 +21,10 @@ import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
+import { ShareHeader } from '../ShareHeader';
 import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
 
 import { VolunteerGroupMembersAndApplicants } from './VolunteerGroupMembersAndApplicants';
 import { VolunteerHomeSection } from './VolunteerHomeSection';
@@ -112,6 +114,37 @@ export const VolunteerGroup = ({
     // in other components.
     DeviceEventEmitter.emit(VOLUNTEER_GROUP_REFRESH_EVENT);
   }, []);
+
+  const shareContent = route.params?.shareContent || undefined;
+
+  useLayoutEffect(() => {
+    if (isGroupOwner) {
+      navigation.setOptions({
+        headerRight: () =>
+          isGroupOwner && (
+            <WrapperRow style={styles.headerRight}>
+              <TouchableOpacity
+                onPress={() =>
+                  // eslint-disable-next-line react/prop-types
+                  navigation?.navigate(ScreenName.VolunteerForm, {
+                    query: QUERY_TYPES.VOLUNTEER.GROUP,
+                    groupData: data,
+                    groupId: data.id
+                  })
+                }
+              >
+                <Icon.NamedIcon name="settings" color="white" style={styles.icon} />
+              </TouchableOpacity>
+
+              <ShareHeader
+                shareContent={shareContent}
+                style={{ paddingHorizontal: normalize(10) }}
+              />
+            </WrapperRow>
+          )
+      });
+    }
+  }, [isGroupOwner]);
 
   useFocusEffect(refreshGroup);
 
@@ -242,3 +275,13 @@ export const VolunteerGroup = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  headerRight: {
+    alignItems: 'center',
+    paddingRight: normalize(7)
+  },
+  icon: {
+    paddingHorizontal: normalize(10)
+  }
+});
