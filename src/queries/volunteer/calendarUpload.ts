@@ -29,14 +29,12 @@ export const calendarDeleteFile = async (fileId: number, entryId: number) => {
   const fetchObj = {
     method: 'DELETE',
     headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
       Authorization: authToken ? `Bearer ${authToken}` : ''
     }
   };
 
   return await fetch(
-    `${volunteerApiV1Url}/calendar/entry/${entryId}/remove-file/${fileId}`,
+    `${volunteerApiV1Url}calendar/entry/${entryId}/remove-file/${fileId}`,
     fetchObj
   );
 };

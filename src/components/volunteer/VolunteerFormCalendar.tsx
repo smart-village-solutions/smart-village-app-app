@@ -404,13 +404,19 @@ export const VolunteerFormCalendar = ({
   );
 };
 
-const fileFilters = (fileRegex: any, calendarData: { content: { files: any[] } }) =>
+const fileFilters = (
+  fileRegex: any,
+  calendarData: {
+    id: number;
+    content: { files: any[] };
+  }
+) =>
   JSON.stringify(
     calendarData?.content?.files
-      .map(({ file_name: infoText, mime_type: mimeType, url: uri }: any) => {
+      .map(({ file_name: infoText, mime_type: mimeType, url: uri, id: fileId }: any) => {
         const isFile = fileRegex.test(infoText);
 
-        if (isFile) return { infoText, mimeType, uri };
+        if (isFile) return { entryId: calendarData?.id, fileId, infoText, mimeType, uri };
         else return;
       })
       .filter((otherFiles: any) => otherFiles != null)
