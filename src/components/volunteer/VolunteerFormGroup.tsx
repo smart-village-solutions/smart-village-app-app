@@ -46,17 +46,24 @@ export const VolunteerFormGroup = ({
   const { mutate: mutateEdit, isSuccess: isSuccessEdit } = useMutation(groupEdit);
 
   const onSubmit = (groupNewData: VolunteerGroup) => {
-    mutateAsync(groupNewData).then((dataAsync) => {
-      // tags are not possible to send with creation and need to be updated after creation, which we
-      // do automatically here
-      if (dataAsync?.id) {
-        mutateEdit({
-          id: dataAsync.id,
-          name: dataAsync.name,
-          tags: groupNewData.tags
-        });
-      }
-    });
+    if (groupData) {
+      const { description, name, tags, visibility } = groupNewData;
+      const { id, joinPolicy } = groupData;
+
+      mutateEdit({ name, description, visibility, joinPolicy, tags, id });
+    } else {
+      mutateAsync(groupNewData).then((dataAsync) => {
+        // tags are not possible to send with creation and need to be updated after creation, which we
+        // do automatically here
+        if (dataAsync?.id) {
+          mutateEdit({
+            id: dataAsync.id,
+            name: dataAsync.name,
+            tags: groupNewData.tags
+          });
+        }
+      });
+    }
   };
 
   if (!isValid) {
