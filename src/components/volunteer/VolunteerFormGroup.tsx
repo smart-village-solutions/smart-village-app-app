@@ -15,10 +15,14 @@ import { BoldText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
+// eslint-disable-next-line complexity
 export const VolunteerFormGroup = ({
   navigation,
+  route,
   scrollToTop
 }: StackScreenProps<any> & { scrollToTop: () => void }) => {
+  const groupData = route.params?.groupData ?? undefined;
+
   const {
     control,
     formState: { errors, isValid, isSubmitted },
@@ -26,8 +30,13 @@ export const VolunteerFormGroup = ({
   } = useForm<VolunteerGroup>({
     mode: 'onBlur',
     defaultValues: {
-      visibility: VISIBILITY_TYPES.ALL,
-      joinPolicy: JOIN_POLICY_TYPES.OPEN
+      contentContainerId: groupData?.contentcontainer_id || '',
+      description: groupData?.description || '',
+      joinPolicy: JOIN_POLICY_TYPES.OPEN,
+      name: groupData?.name || '',
+      owner: groupData?.owner?.display_name || '',
+      tags: groupData?.tags?.toString() || '',
+      visibility: VISIBILITY_TYPES.ALL
     }
   });
 
