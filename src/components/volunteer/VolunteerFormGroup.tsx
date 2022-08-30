@@ -7,13 +7,19 @@ import { CheckBox } from 'react-native-elements';
 import { useMutation } from 'react-query';
 
 import { colors, texts } from '../../config';
-import { groupEdit, groupNew } from '../../queries/volunteer';
-import { JOIN_POLICY_TYPES, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
+import { groupDelete, groupEdit, groupNew } from '../../queries/volunteer';
+import { JOIN_POLICY_TYPES, ScreenName, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form/Input';
 import { BoldText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
+
+const deleteGroupAlert = (onPress: () => Promise<void>) =>
+  Alert.alert('Hinweis', 'Möchten Sie das Group löschen?', [
+    { text: 'Abbrechen', style: 'cancel' },
+    { text: 'Löschen', onPress, style: 'destructive' }
+  ]);
 
 // eslint-disable-next-line complexity
 export const VolunteerFormGroup = ({
@@ -63,6 +69,18 @@ export const VolunteerFormGroup = ({
           });
         }
       });
+    }
+  };
+
+  const onGroupDelete = async () => {
+    try {
+      await groupDelete(groupData?.id);
+      navigation.navigate(ScreenName.VolunteerHome);
+
+      Alert.alert('Erfolgreich', 'Das Group wurde erfolgreich gelöscht.');
+    } catch (error) {
+      Alert.alert('Fehler beim Löschen des Group', 'Bitte versuchen Sie es noch einmal.');
+      console.error(error);
     }
   };
 
@@ -172,6 +190,14 @@ export const VolunteerFormGroup = ({
           title={texts.volunteer.save}
           disabled={isLoading}
         />
+        {!!groupData && (
+          <Button
+            disabled={isLoading}
+            invert
+            onPress={() => deleteGroupAlert(onGroupDelete)}
+            title={texts.volunteer.delete}
+          />
+        )}
         <Touchable onPress={() => navigation.goBack()}>
           <BoldText center primary underline>
             {texts.volunteer.abort.toUpperCase()}

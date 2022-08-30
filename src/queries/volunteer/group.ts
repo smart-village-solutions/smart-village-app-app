@@ -116,6 +116,19 @@ export const groupEdit = async ({
   return (await fetch(`${volunteerApiV1Url}space/${id}`, fetchObj)).json();
 };
 
+export const groupDelete = async (groupId: any) => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'DELETE',
+    headers: {
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return await fetch(`${volunteerApiV1Url}space/${groupId}`, fetchObj);
+};
+
 export const groupMembership = async ({ id }: { id: number }) => {
   const authToken = await volunteerAuthToken();
 
