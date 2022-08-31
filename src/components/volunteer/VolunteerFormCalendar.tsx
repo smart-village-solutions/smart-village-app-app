@@ -39,7 +39,7 @@ export const VolunteerFormCalendar = ({
   scrollToTop,
   groupId
 }: StackScreenProps<any> & { scrollToTop: () => void; groupId?: number }) => {
-  const calendarData = route.params?.calendarData ?? '';
+  const calendarData = route.params?.calendarData ?? undefined;
 
   const appointments = {
     dateFrom: new Date(momentFormat(calendarData?.start_datetime, 'YYYY-MM-DD')),

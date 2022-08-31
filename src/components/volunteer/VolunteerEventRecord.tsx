@@ -120,7 +120,7 @@ export const VolunteerEventRecord = ({
           )
       });
     }
-  }, [isMe]);
+  }, [isMe, data]);
 
   const [isAttendingEvent, setIsAttendingEvent] = useState<boolean>();
 
