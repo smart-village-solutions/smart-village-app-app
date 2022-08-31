@@ -54,6 +54,10 @@ export const VolunteerFormProfile = ({
     mode: 'onBlur',
     defaultValues: {
       about: userData?.profile?.about || '',
+      birthday: userData?.profile?.birthday
+        ? new Date(momentFormat(userData?.profile?.birthday, 'YYYY-MM-DD'))
+        : undefined,
+      birthdayHideYear: userData?.profile?.birthday_hide_year || 0,
       city: userData?.profile?.city || '',
       country: countryDefaultValue || '',
       email: userData?.account?.email || '',
@@ -241,6 +245,43 @@ export const VolunteerFormProfile = ({
           name="state"
           placeholder={texts.volunteer.state}
           validate
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Controller
+          name="birthday"
+          render={({ name, onChange, value }) => (
+            <DateTimeInput
+              {...{
+                mode: 'date',
+                errors,
+                value,
+                onChange,
+                name,
+                label: texts.volunteer.birthday,
+                placeholder: texts.volunteer.birthday,
+                control
+              }}
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Controller
+          name="birthdayHideYear"
+          render={({ onChange, value }) => (
+            <Checkbox
+              checked={!!value}
+              onPress={() => onChange(!value)}
+              title="Jahr im Profil verbergen"
+              uncheckedColor={colors.darkText}
+              checkedColor={colors.primary}
+              containerStyle={styles.checkboxContainerStyle}
+              textStyle={styles.checkboxTextStyle}
+            />
+          )}
+          control={control}
         />
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
@@ -473,6 +514,16 @@ export const VolunteerFormProfile = ({
 };
 
 const styles = StyleSheet.create({
+  checkboxContainerStyle: {
+    backgroundColor: colors.surface,
+    borderWidth: 0,
+    marginLeft: 0,
+    marginRight: 0
+  },
+  checkboxTextStyle: {
+    color: colors.darkText,
+    fontWeight: 'normal'
+  },
   divider: {
     backgroundColor: colors.placeholder
   },
