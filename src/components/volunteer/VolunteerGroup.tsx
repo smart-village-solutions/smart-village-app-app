@@ -144,7 +144,7 @@ export const VolunteerGroup = ({
           )
       });
     }
-  }, [isGroupOwner]);
+  }, [isGroupOwner, data]);
 
   useFocusEffect(refreshGroup);
 
