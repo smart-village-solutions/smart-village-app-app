@@ -1,7 +1,36 @@
 export type VolunteerUser = {
+  about: string;
+  birthday: string;
+  birthdayHideYear: boolean;
+  city: string;
+  country: string;
   display_name: string;
+  email: string;
+  facebook: string;
+  fax: string;
+  firstName: string;
+  flickr: string;
+  gender: number;
   guid: string;
   id: number;
+  lastName: string;
+  linkedin: string;
+  mySpace: string;
+  phoneMobile: string;
+  phonePrivate: string;
+  phoneWork: string;
+  postalCode: string;
+  skype: string;
+  state: string;
+  street: string;
+  title: string;
+  twitter: string;
+  username: string;
+  vimeo: string;
+  website: string;
+  xing: string;
+  xmpp: string;
+  youtube: string;
 };
 
 export type VolunteerRegistration = {

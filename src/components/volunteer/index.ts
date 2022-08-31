@@ -9,6 +9,7 @@ export * from './VolunteerEventRecord';
 export * from './VolunteerFormCalendar';
 export * from './VolunteerFormConversation';
 export * from './VolunteerFormGroup';
+export * from './VolunteerFormProfile';
 export * from './VolunteerGroup';
 export * from './VolunteerGroupMembersAndApplicants';
 export * from './VolunteerHeader';
