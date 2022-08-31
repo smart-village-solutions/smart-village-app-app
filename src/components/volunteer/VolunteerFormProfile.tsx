@@ -42,6 +42,10 @@ export const VolunteerFormProfile = ({
     ({ name }) => name === userData?.profile?.gender
   )[0]?.id;
 
+  const countryDefaultValue = countryList?.filter(
+    ({ name }) => name === userData?.profile?.country
+  )[0]?.id;
+
   const {
     control,
     formState: { errors, isValid },
@@ -51,6 +55,7 @@ export const VolunteerFormProfile = ({
     defaultValues: {
       about: userData?.profile?.about || '',
       city: userData?.profile?.city || '',
+      country: countryDefaultValue || '',
       email: userData?.account?.email || '',
       facebook: userData?.profile?.url_facebook || '',
       fax: userData?.profile?.fax || '',
@@ -206,6 +211,27 @@ export const VolunteerFormProfile = ({
           name="city"
           placeholder={texts.volunteer.city}
           validate
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Controller
+          name="country"
+          render={({ name, onChange, value }) => (
+            <DropdownInput
+              {...{
+                errors,
+                data: countryList,
+                value,
+                valueKey: 'name',
+                onChange,
+                name,
+                label: texts.volunteer.gender,
+                placeholder: texts.volunteer.gender,
+                control
+              }}
+            />
+          )}
+          control={control}
         />
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
