@@ -22,6 +22,11 @@ import { Wrapper, WrapperRow } from '../Wrapper';
 
 const { EMAIL_REGEX, URL_REGEX } = consts;
 
+const genderDropdownData = [
+  { id: 1, name: 'male', value: 'Männlich' },
+  { id: 2, name: 'female', value: 'Weiblich' },
+  { id: 3, name: 'custom', value: 'Divers' }
+];
 
 // eslint-disable-next-line complexity
 export const VolunteerFormProfile = ({
@@ -33,6 +38,9 @@ export const VolunteerFormProfile = ({
   const [isCollapsedContact, setIsCollapsedContact] = useState(true);
   const [isCollapsedLinks, setIsCollapsedLinks] = useState(true);
 
+  const genderDefaultValue = genderDropdownData?.filter(
+    ({ name }) => name === userData?.profile?.gender
+  )[0]?.id;
 
   const {
     control,
@@ -48,6 +56,7 @@ export const VolunteerFormProfile = ({
       fax: userData?.profile?.fax || '',
       firstName: userData?.profile?.firstname || '',
       flickr: userData?.profile?.url_flickr || '',
+      gender: genderDefaultValue || undefined,
       id: userData?.account?.id || undefined,
       lastName: userData?.profile?.lastname || '',
       linkedin: userData?.profile?.url_linkedin || '',
@@ -148,6 +157,27 @@ export const VolunteerFormProfile = ({
           name="title"
           placeholder={texts.volunteer.title}
           validate
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Controller
+          name="gender"
+          render={({ name, onChange, value }) => (
+            <DropdownInput
+              {...{
+                errors,
+                data: genderDropdownData,
+                value,
+                valueKey: 'name',
+                onChange,
+                name,
+                label: texts.volunteer.gender,
+                placeholder: texts.volunteer.gender,
+                control
+              }}
+            />
+          )}
+          control={control}
         />
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
