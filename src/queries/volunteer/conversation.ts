@@ -1,3 +1,5 @@
+import * as FileSystem from 'expo-file-system';
+
 import {
   volunteerApiV1Url,
   volunteerApiV2Url,
@@ -93,4 +95,24 @@ export const conversationNewEntry = async ({ id, message }: VolunteerConversatio
   };
 
   return (await fetch(`${volunteerApiV1Url}mail/${id}/entry`, fetchObj)).json();
+};
+
+export const conversationUpload = async (uri: string, conversationId: number, mimeType: string) => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'POST',
+    headers: {
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    },
+    uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+    fieldName: 'files',
+    mimeType
+  };
+
+  return await FileSystem.uploadAsync(
+    `${volunteerApiV2Url}mail/${conversationId}/upload-files`,
+    uri,
+    fetchObj
+  );
 };
