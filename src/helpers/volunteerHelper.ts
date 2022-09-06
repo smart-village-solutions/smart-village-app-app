@@ -148,3 +148,6 @@ export const volunteerProfileImage = (guid: string) =>
 
 export const volunteerBannerImage = (guid: string) =>
   `${serverUrl}/uploads/profile_image/banner/${guid}.jpg`;
+
+export const volunteerMessageMedia = (guid: string) =>
+  `${serverUrl}/file/file/download?guid=${guid}`;
