@@ -56,11 +56,13 @@ export const consts = {
 
   // e-mail regex found at https://emailregex.com
   EMAIL_REGEX: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  GUID_REGEX: /[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}/g,
   IMAGE_TYPE_REGEX: /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i,
   JPG_TYPE_REGEX: /\.jpe?g$/i,
   PDF_TYPE_REGEX: /\.pdf$/i,
   // url regex found at https://uibakery.io/regex-library/url
   URL_REGEX: /^https?:\/\/(?:www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9()]{1,6}\b(?:[-a-z0-9()@:%_\+.~#?&\/=]*)$/i,
+  VIDEO_TYPE_REGEX: /\.(swf|avi|flv|mpg|rm|mov|wav|asf|3gp|mkv|rmvb|mp4)$/i,
 
   POLL_INTERVALS: {
     WEATHER: 3600000
