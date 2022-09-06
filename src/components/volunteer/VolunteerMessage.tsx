@@ -95,6 +95,15 @@ export const VolunteerMessage = ({
 
   const { mutateAsync } = useMutation(conversationNewEntry);
   const onSend = async (conversationNewEntryData: VolunteerConversation) => {
+    if (conversationNewEntryData.medias.length) {
+      conversationNewEntryData?.medias?.forEach(async ({ uri, mimeType }) => {
+        try {
+          await conversationUpload(uri, conversationId, mimeType);
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    }
     mutateAsync(conversationNewEntryData);
   };
 
@@ -107,9 +116,10 @@ export const VolunteerMessage = ({
       onSendButton={(message) =>
         onSend({
           id: [conversationId],
-          message,
+          medias: message.medias,
+          message: message.text,
           title: ''
-        }).then(() => refetch())
+        })
       }
       userId={currentUserId}
     />
