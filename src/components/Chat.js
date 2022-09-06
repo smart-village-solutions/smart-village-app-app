@@ -169,6 +169,16 @@ export const Chat = ({
           textInputProps={textInputProps}
         />
       )}
+      renderCustomView={(props) =>
+        props?.currentMessage?.pdf?.map(({ uri }, index) => (
+          <TouchableOpacity
+            key={`pdf-${index}`}
+            onPress={() => openLink(uri)}
+            style={styles.pdfBubble}
+          >
+            <Icon.NamedIcon name="document" size={normalize(50)} />
+          </TouchableOpacity>
+        ))
       }
       renderFooter={() => medias && renderFooter(medias, setMedias)}
       renderDay={() => null}
@@ -179,6 +189,22 @@ export const Chat = ({
           primaryStyle={styles.inputToolbarPrimary}
         />
       )}
+      renderMessageImage={(props) =>
+        props?.currentMessage?.image?.map(({ uri }, index) => (
+          <MessageImage {...props} key={`image-${index}`} currentMessage={{ image: uri }} />
+        ))
+      }
+      renderMessageVideo={(props) =>
+        props?.currentMessage?.video?.map(({ uri }, index) => (
+          <Video
+            key={`video-${index}`}
+            resizeMode="cover"
+            source={{ uri }}
+            style={styles.videoBubble}
+            useNativeControls
+          />
+        ))
+      }
       renderMessageText={(props) => (
         <MessageText
           {...props}
