@@ -82,9 +82,30 @@ export const Chat = ({
     setMessages(data);
   }, [data]);
 
-  const onSend = useCallback((messages) => {
-    onSendButton(messages[0].text);
-  }, []);
+  const onSendMessages = (text, onSend) => {
+    const message = { text, medias };
+
+    if ((medias.length || text) && onSend) {
+      onSendButton(message);
+      onSend({ text: text.trim() }, true);
+      setMedias([]);
+    } else {
+      return false;
+    }
+  };
+
+  const errorHandler = async (uri) => {
+    const { size } = await FileSystem.getInfoAsync(uri);
+    const errorText = size > 10485760 && {
+      title: texts.errors.image.title,
+      message: texts.volunteer.mediaGreater10MBError
+    };
+
+    if (errorText) {
+      throw errorText;
+    }
+  };
+
   const { selectImage } = useSelectImage(
     undefined, // onChange
     false, // allowsEditing,
@@ -214,8 +235,12 @@ export const Chat = ({
           }}
         />
       )}
-      renderSend={(props) => (
-        <Send {...props} containerStyle={styles.sendButtonContainer}>
+      renderSend={({ onSend, text, sendButtonProps, ...props }) => (
+        <Send
+          {...props}
+          containerStyle={styles.sendButtonContainer}
+          sendButtonProps={{ ...sendButtonProps, onPress: () => onSendMessages(text, onSend) }}
+        >
           <Icon.NamedIcon name="send" color={colors.surface} />
         </Send>
       )}
