@@ -71,7 +71,7 @@ export const EventList = ({
       refreshControl={refreshControl}
       renderItem={renderItem}
       renderSectionHeader={({ section: { title } }) => (
-        <SectionHeader title={momentFormat(title, 'DD.MM.YYYY ddd')} />
+        <SectionHeader title={momentFormat(title, 'DD.MM.YYYY dddd')} />
       )}
       sections={sectionedData}
       stickySectionHeadersEnabled
