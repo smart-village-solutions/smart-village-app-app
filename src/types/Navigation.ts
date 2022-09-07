@@ -101,6 +101,8 @@ export type TabConfig = {
 export type TabNavigatorConfig = {
   activeTintColor: string;
   inactiveTintColor: string;
+  activeBackgroundColor: string;
+  inactiveBackgroundColor: string;
   tabConfigs: TabConfig[];
 };
 

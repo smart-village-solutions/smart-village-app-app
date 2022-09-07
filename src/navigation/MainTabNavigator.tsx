@@ -17,6 +17,8 @@ export const MainTabNavigator = ({
     tabBarOptions={{
       activeTintColor: tabNavigatorConfig.activeTintColor,
       inactiveTintColor: tabNavigatorConfig.inactiveTintColor,
+      activeBackgroundColor: tabNavigatorConfig.activeBackgroundColor,
+      inactiveBackgroundColor: tabNavigatorConfig.inactiveBackgroundColor,
       tabStyle: { marginTop: normalize(0) },
       keyboardHidesTabBar: device.platform === 'android'
     }}
