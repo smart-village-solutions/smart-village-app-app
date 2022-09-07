@@ -16,11 +16,11 @@ type Props = {
 export const DefaultWidget = ({ Icon, count, onPress, text }: Props) => {
   return (
     <TouchableOpacity onPress={onPress}>
-      <WrapperVertical style={styles.container}>
+      <WrapperVertical style={styles().container}>
         <WrapperRow center>
-          <Icon style={styles.icon} />
+          <Icon style={styles(!!count?.toString()).icon} />
           <BoldText primary big>
-            {count ?? ' '}
+            {count}
           </BoldText>
         </WrapperRow>
         <RegularText primary small>
@@ -31,11 +31,16 @@ export const DefaultWidget = ({ Icon, count, onPress, text }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center'
-  },
-  icon: {
-    paddingRight: normalize(8)
-  }
-});
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
+const styles = (count?: boolean) =>
+  StyleSheet.create({
+    container: {
+      alignItems: 'center'
+    },
+    icon: {
+      paddingRight: count ? normalize(8) : 0,
+      paddingBottom: normalize(3)
+    }
+  });
+/* eslint-enable react-native/no-unused-styles */
