@@ -31,8 +31,6 @@ export const DefaultWidget = ({ Icon, count, onPress, text }: Props) => {
   );
 };
 
-/* eslint-disable react-native/no-unused-styles */
-/* this works properly, we do not want that warning */
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center'
@@ -44,4 +42,3 @@ const styles = StyleSheet.create({
     paddingBottom: normalize(3)
   }
 });
-/* eslint-enable react-native/no-unused-styles */
