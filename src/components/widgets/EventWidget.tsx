@@ -25,10 +25,14 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
-  const queryVariables = {
+  const queryVariables: { dateRange?: string[]; order: string } = {
     dateRange: [currentDate, currentDate],
     order: 'listDate_ASC'
   };
+
+  if (additionalProps?.noFilterByDailyEvents) {
+    delete queryVariables.dateRange;
+  }
 
   const { data, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
     fetchPolicy,
