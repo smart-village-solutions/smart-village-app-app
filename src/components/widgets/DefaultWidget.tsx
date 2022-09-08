@@ -18,9 +18,9 @@ export const DefaultWidget = ({ Icon, count, onPress, text }: Props) => {
     <TouchableOpacity onPress={onPress}>
       <WrapperVertical style={styles.container}>
         <WrapperRow center>
-          <Icon style={styles.icon} />
+          <Icon style={[styles.iconWithoutCount, !!count?.toString() && styles.iconWithCount]} />
           <BoldText primary big>
-            {count ?? ' '}
+            {count ?? ''}
           </BoldText>
         </WrapperRow>
         <RegularText primary small>
@@ -35,7 +35,10 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center'
   },
-  icon: {
+  iconWithCount: {
     paddingRight: normalize(8)
+  },
+  iconWithoutCount: {
+    paddingBottom: normalize(3)
   }
 });

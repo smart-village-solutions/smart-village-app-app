@@ -15,7 +15,7 @@ import { DefaultWidget } from './DefaultWidget';
 
 const currentDate = moment().format('YYYY-MM-DD');
 
-export const EventWidget = ({ text }: WidgetProps) => {
+export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
   const navigation = useNavigation();
   const refreshTime = useRefreshTime('event-widget', consts.REFRESH_INTERVALS.ONCE_A_DAY);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -49,7 +49,7 @@ export const EventWidget = ({ text }: WidgetProps) => {
       query: QUERY_TYPES.EVENT_RECORDS,
       queryVariables,
       rootRouteName: 'EventRecords',
-      filterByDailyEvents: true
+      filterByDailyEvents: additionalProps?.noFilterByDailyEvents ? false : true
     });
   }, [navigation, text, queryVariables]);
 
@@ -71,7 +71,7 @@ export const EventWidget = ({ text }: WidgetProps) => {
 
   return (
     <DefaultWidget
-      count={eventCount}
+      count={additionalProps?.noCount ? null : eventCount}
       Icon={Icon.Calendar}
       onPress={onPress}
       text={text ?? texts.widgets.events}
