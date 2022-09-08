@@ -6,7 +6,6 @@ import {
   ActivityIndicator,
   Alert,
   Keyboard,
-  Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
@@ -236,12 +235,14 @@ export const WasteCollectionScreen = ({ navigation }) => {
           <Autocomplete
             containerStyle={styles.autoCompleteContainer}
             data={filteredStreets}
-            defaultValue={inputValue}
+            value={inputValue}
             disableFullscreenUI
             onChangeText={(text) => setInputValue(text)}
             placeholder="Straße"
-            renderItem={renderSuggestion}
-            style={styles.autoCompleteInput}
+            flatListProps={{
+              renderItem: renderSuggestion
+            }}
+            inputContainerStyle={styles.autoCompleteInput}
             listStyle={styles.autoCompleteList}
           />
           <View style={styles.topMarginContainer}>
@@ -280,33 +281,27 @@ export const WasteCollectionScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  autoCompleteContainer:
-    device.platform === 'android'
-      ? {
-          alignSelf: 'center',
-          flex: 1,
-          position: 'absolute',
-          top: 0,
-          width: '100%',
-          zIndex: 1
-        }
-      : {},
+  autoCompleteContainer: {
+    alignSelf: 'center',
+    backgroundColor: colors.surface,
+    borderColor: colors.placeholder,
+    borderWidth: 1,
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+    zIndex: 1
+  },
   autoCompleteInput: {
     color: colors.darkText,
     fontFamily: 'regular',
-    fontSize: normalize(16),
-    padding: normalize(8)
+    fontSize: normalize(16)
   },
   autoCompleteList: {
     margin: 0
   },
   topMarginContainer: {
-    ...Platform.select({
-      android: {
-        marginTop: normalize(44)
-      },
-      ios: {}
-    })
+    marginTop: normalize(44)
   }
 });
 
