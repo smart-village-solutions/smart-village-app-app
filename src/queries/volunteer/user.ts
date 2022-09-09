@@ -16,7 +16,7 @@ export const users = async () => {
     }
   };
 
-  return (await fetch(`${volunteerApiV1Url}user`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV2Url}user`, fetchObj)).json();
 };
 
 export const user = async (id: number) => {
