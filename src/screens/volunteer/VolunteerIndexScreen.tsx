@@ -98,21 +98,22 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
         {(((query === QUERY_TYPES.VOLUNTEER.MEMBERS ||
           query === QUERY_TYPES.VOLUNTEER.APPLICANTS) &&
           isGroupMember) ||
-          (query === QUERY_TYPES.VOLUNTEER.CALENDAR && isAttendingEvent)) && (
-          <Wrapper style={styles.noPaddingBottom}>
-            <Button
-              onPress={() =>
-                navigation.push(ScreenName.VolunteerForm, {
-                  title: texts.volunteer.conversationAllStart,
-                  query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
-                  rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
-                  selectedUserIds: data.map(({ id }: VolunteerUser) => id)
-                })
-              }
-              title={texts.volunteer.conversationAllStart}
-            />
-          </Wrapper>
-        )}
+          (query === QUERY_TYPES.VOLUNTEER.CALENDAR && isAttendingEvent)) &&
+          data?.length > 1 && (
+            <Wrapper style={styles.noPaddingBottom}>
+              <Button
+                onPress={() =>
+                  navigation.push(ScreenName.VolunteerForm, {
+                    title: texts.volunteer.conversationAllStart,
+                    query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
+                    rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
+                    selectedUserIds: data.map(({ id }: VolunteerUser) => id)
+                  })
+                }
+                title={texts.volunteer.conversationAllStart}
+              />
+            </Wrapper>
+          )}
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
