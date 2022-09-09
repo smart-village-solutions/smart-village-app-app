@@ -6,5 +6,6 @@ export type WidgetProps = {
     noCount?: boolean;
     noFilterByDailyEvents?: boolean;
     staticContentName?: string;
+    staticContentTitle?: string;
   };
 };

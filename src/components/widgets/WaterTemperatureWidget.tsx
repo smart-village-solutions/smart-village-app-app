@@ -15,7 +15,7 @@ export const WaterTemperatureWidget = ({ text, additionalProps }: WidgetProps) =
 
   const onPress = useCallback(() => {
     navigation.navigate(ScreenName.Html, {
-      title: text ?? texts.waterTemperature.headerTitle,
+      title: additionalProps?.staticContentTitle ?? texts.waterTemperature.headerTitle,
       query: QUERY_TYPES.WATER_TEMPERATURE,
       queryVariables: { name: additionalProps?.staticContentName ?? 'water-temperature' }
     });
@@ -23,11 +23,9 @@ export const WaterTemperatureWidget = ({ text, additionalProps }: WidgetProps) =
 
   useHomeRefresh(refresh);
 
-  if (!temperature) return null;
-
   return (
     <DefaultWidget
-      count={(temperature ?? 0) + '°C'}
+      count={(temperature ?? '—') + '°C'}
       Icon={() => (
         <Icon.NamedIcon name={additionalProps?.iconName ?? 'water'} size={normalize(22)} />
       )}

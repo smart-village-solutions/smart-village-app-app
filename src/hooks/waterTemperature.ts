@@ -13,7 +13,7 @@ export const useWaterTemperature = (): {
 } => {
   const [refreshing, setRefreshing] = useState(false);
 
-  const { data: temperature, isLoading: loading, refetch } = useQuery(
+  const { data, isLoading: loading, refetch } = useQuery(
     QUERY_TYPES.WATER_TEMPERATURE,
     getWaterTemperature
   );
@@ -25,7 +25,7 @@ export const useWaterTemperature = (): {
   }, [refetch]);
 
   return {
-    temperature: temperature?.temperature,
+    temperature: data?.temperature,
     loading,
     refresh,
     refreshing

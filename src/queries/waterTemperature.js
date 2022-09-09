@@ -1,12 +1,12 @@
 import { waterTemperatureEndpoint } from '../config';
 
 export const getWaterTemperature = async () => {
+  const { serverUrl, authSecret } = waterTemperatureEndpoint;
+
   const fetchObj = {
     method: 'GET',
-    headers: { Authorization: 'readonly:LjjhVGU46EBcKND9j3cX' }
+    headers: { Authorization: `readonly:${authSecret}` }
   };
 
-  return await fetch(waterTemperatureEndpoint, fetchObj)
-    .then((response) => response.json())
-    .catch((err) => console.error(err));
+  return (await fetch(serverUrl, fetchObj)).json();
 };
