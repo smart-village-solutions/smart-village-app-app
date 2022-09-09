@@ -216,13 +216,25 @@ const parsePointsOfInterestAndTours = (data) => {
 };
 
 /* eslint-disable complexity */
-const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned) => {
+const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned, currentUserId) => {
   return data?.map((volunteer, index) => {
     let badge;
 
     if (query === QUERY_TYPES.VOLUNTEER.GROUP && volunteer?.role === 'admin') {
       badge = {
         value: texts.volunteer.admin,
+        textStyle: {
+          color: colors.lightestText
+        },
+        badgeStyle: {
+          backgroundColor: colors.primary
+        }
+      };
+    }
+
+    if (query === QUERY_TYPES.VOLUNTEER.USER && volunteer?.user?.id == currentUserId) {
+      badge = {
+        value: texts.volunteer.myProfile,
         textStyle: {
           color: colors.lightestText
         },
@@ -330,7 +342,13 @@ const parseConsulData = (data, query, skipLastDivider) => {
  * @param {string} query
  * @param {any} data
  * @param {string | undefined} titleDetail
- * @param {{ bookmarkable?: boolean; skipLastDivider?: boolean; withDate?: boolean, isSectioned?: boolean }} options
+ * @param {{
+ *    bookmarkable?: boolean;
+ *    skipLastDivider?: boolean;
+ *    withDate?: boolean,
+ *    isSectioned?: boolean,
+ *    queryVariables?: any
+ *  }} options
  * @returns
  */
 // eslint-disable-next-line complexity
@@ -377,7 +395,14 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.VOLUNTEER.MEMBERS:
     case QUERY_TYPES.VOLUNTEER.APPLICANTS:
     case QUERY_TYPES.VOLUNTEER.CALENDAR:
-      return parseVolunteers(data, QUERY_TYPES.VOLUNTEER.USER, skipLastDivider);
+      return parseVolunteers(
+        data,
+        QUERY_TYPES.VOLUNTEER.USER,
+        skipLastDivider,
+        undefined,
+        undefined,
+        queryVariables?.currentUserId
+      );
     case QUERY_TYPES.VOLUNTEER.TASKS:
     case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
     case QUERY_TYPES.VOLUNTEER.PROFILE:

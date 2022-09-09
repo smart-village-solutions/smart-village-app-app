@@ -2,7 +2,7 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import React from 'react';
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { colors, consts, Icon } from '../../config';
+import { colors, consts, Icon, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 
@@ -32,7 +32,7 @@ export const VolunteerHeaderProfile = ({ navigation, style }: Props) => {
         navigation.navigate({
           name: ScreenName.VolunteerIndex,
           params: {
-            title: 'Mein Profil',
+            title: texts.volunteer.myProfile,
             query: QUERY_TYPES.VOLUNTEER.PROFILE,
             queryVariables: {},
             rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER

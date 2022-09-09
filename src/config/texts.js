@@ -811,6 +811,7 @@ export const texts = {
     members: 'Mitglieder',
     memberships: 'Mitgliedschaften',
     message: 'Nachricht',
+    myProfile: 'Mein Profil',
     name: 'Name',
     next: 'Weiter',
     noGroups: 'Dir gehören keine Gruppen oder Vereine, in denen du Termine eintragen könntest.',
