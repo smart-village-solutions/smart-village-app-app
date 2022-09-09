@@ -3,10 +3,9 @@ import { useQuery } from 'react-query';
 
 import { QUERY_TYPES } from '../queries';
 import { getWaterTemperature } from '../queries/waterTemperature';
-import { WaterTemperature } from '../types';
 
 export const useWaterTemperature = (): {
-  temperature: WaterTemperature;
+  temperature?: string;
   loading: boolean;
   refresh: () => void;
   refreshing: boolean;
