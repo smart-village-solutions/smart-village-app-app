@@ -15,6 +15,7 @@ export * from './OpeningHour';
 export * from './PermanentFilter';
 export * from './Survey';
 export * from './WasteCalendar';
+export * from './WaterTemperature';
 export * from './WeatherData';
 export * from './WebUrl';
 export * from './WidgetProps';

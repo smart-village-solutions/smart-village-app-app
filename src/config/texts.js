@@ -886,6 +886,9 @@ export const texts = {
     whichDay: 'Möchten Sie am Vortag oder am Tag der Abholung benachrichtigt werden?',
     whichType: 'Für welche Müllsorten möchten Sie Erinnerungen?'
   },
+  waterTemperature: {
+    headerTitle: 'Wassertemperatur'
+  },
   weather: {
     alertsHeadline: 'Wetterwarnungen',
     currentHeadline: 'Aktuelles Wetter',
@@ -898,6 +901,7 @@ export const texts = {
     events: 'Events',
     lunch: 'Gastro',
     surveys: 'Umfragen',
+    water: 'Wasser',
     weather: 'Wetter'
   }
 };

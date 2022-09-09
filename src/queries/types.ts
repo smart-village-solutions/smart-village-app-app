@@ -69,6 +69,7 @@ export const QUERY_TYPES = {
   } as const,
   WASTE_ADDRESSES: 'wasteAddresses',
   WASTE_STREET: 'wasteStreet',
+  WATER_TEMPERATURE: 'waterTemperature',
   WEATHER_MAP: 'weatherMap',
   WEATHER_MAP_CURRENT: 'weatherMapCurrent'
 };
