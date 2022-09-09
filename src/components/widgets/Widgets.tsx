@@ -3,11 +3,12 @@ import React from 'react';
 import { WidgetProps } from '../../types';
 import { WrapperRow } from '../Wrapper';
 
+import { ConstructionSiteNewsWidget } from './ConstructionSiteNewsWidget';
 import { ConstructionSiteWidget } from './ConstructionSiteWidget';
 import { EventWidget } from './EventWidget';
 import { LunchWidget } from './LunchWidget';
-import { ConstructionSiteNewsWidget } from './ConstructionSiteNewsWidget';
 import { SurveyWidget } from './SurveyWidget';
+import { WaterTemperatureWidget } from './WaterTemperatureWidget';
 import { WeatherWidget } from './WeatherWidget';
 
 type WidgetConfig =
@@ -28,6 +29,7 @@ const EXISTING_WIDGETS: {
   event: EventWidget,
   lunch: LunchWidget,
   survey: SurveyWidget,
+  water: WaterTemperatureWidget,
   weather: WeatherWidget
 };
 
