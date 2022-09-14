@@ -119,6 +119,7 @@ export const volunteerSubtitle = (
 
   if (withDate) {
     first = date;
+    last = volunteer.location;
   }
 
   if (query !== QUERY_TYPES.VOLUNTEER.CALENDAR && volunteer.tags?.length) {
