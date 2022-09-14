@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
-import React, { useRef } from 'react';
+import React from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -13,7 +13,6 @@ import {
   VolunteerEventRecord,
   VolunteerGroup,
   VolunteerMessage,
-  VolunteerMessageTextField,
   VolunteerTask,
   VolunteerUser
 } from '../../components';
@@ -40,7 +39,6 @@ const getComponent = (query: VolunteerQuery): any => {
 };
 
 export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const scrollViewRef = useRef<ScrollView>(null);
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
   const queryOptions = route.params?.queryOptions ?? {};
@@ -76,21 +74,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
   if (!Component || !componentData) return <EmptyMessage title={texts.empty.content} />;
 
   if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
-    return (
-      <SafeAreaViewFlex>
-        <DefaultKeyboardAvoidingView>
-          <ScrollView ref={scrollViewRef}>
-            <Component data={componentData} conversationId={queryVariables.id} />
-          </ScrollView>
-          <VolunteerMessageTextField
-            conversationId={queryVariables.id}
-            refetch={refetch}
-            dataCount={data?.results?.length}
-            scrollToBottom={(animated = true) => scrollViewRef?.current?.scrollToEnd({ animated })}
-          />
-        </DefaultKeyboardAvoidingView>
-      </SafeAreaViewFlex>
-    );
+    return <Component data={componentData} conversationId={queryVariables.id} refetch={refetch} />;
   }
 
   return (

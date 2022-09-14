@@ -17,6 +17,7 @@ export * from './calendarArrows';
 export * from './CardListItem';
 export * from './CategoryList';
 export * from './CategoryListItem';
+export * from './Chat';
 export * from './Checkbox';
 export * from './CircularView';
 export * from './CommentSection';

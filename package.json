@@ -83,6 +83,7 @@
     "react-native-expo-image-cache": "4.1.0",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-get-random-values": "~1.7.0",
+    "react-native-gifted-chat": "0.16.3",
     "react-native-markdown-display": "^7.0.0-alpha.2",
     "react-native-modal-dropdown": "https://github.com/donni106/react-native-modal-dropdown#feature/search-options",
     "react-native-qrcode-svg": "^6.1.1",
