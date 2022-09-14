@@ -43,6 +43,7 @@ export const VolunteerEventRecord = ({
     id,
     content,
     description,
+    location,
     end_datetime: endDatetime,
     participant_info: participantInfo,
     participants,
@@ -56,7 +57,7 @@ export const VolunteerEventRecord = ({
     sourceUrl: { url }
   }));
   const documents = filterForMimeType(files, 'application');
-
+  const address = { city: location };
   const { attending } = participants;
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
@@ -121,7 +122,12 @@ export const VolunteerEventRecord = ({
         )}
 
         <Wrapper>
-          <InfoCard category={category} webUrls={webUrls} openWebScreen={openWebScreen} />
+          <InfoCard
+            category={category}
+            address={address}
+            webUrls={webUrls}
+            openWebScreen={openWebScreen}
+          />
         </Wrapper>
 
         {!!appointments?.length && (
