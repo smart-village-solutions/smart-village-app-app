@@ -111,8 +111,10 @@ export const VolunteerFormGroup = ({
               checked={!!value}
               onPress={() => onChange(!value)}
               title="Öffentlich"
+              checkedColor={colors.accent}
+              checkedIcon="check-square-o"
               uncheckedColor={colors.darkText}
-              checkedColor={colors.primary}
+              uncheckedIcon="square-o"
               containerStyle={styles.checkboxContainerStyle}
               textStyle={styles.checkboxTextStyle}
             />
@@ -128,8 +130,10 @@ export const VolunteerFormGroup = ({
               checked={!!value}
               onPress={() => onChange(!value)}
               title="Jeder kann beitreten"
+              checkedColor={colors.accent}
+              checkedIcon="check-square-o"
               uncheckedColor={colors.darkText}
-              checkedColor={colors.primary}
+              uncheckedIcon="square-o"
               containerStyle={styles.checkboxContainerStyle}
               textStyle={styles.checkboxTextStyle}
             />

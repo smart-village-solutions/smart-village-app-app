@@ -1,7 +1,8 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { consts, texts } from '../../config';
+import { consts, Icon, normalize, texts } from '../../config';
 import { volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
@@ -11,7 +12,7 @@ import { AddressSection } from '../infoCard/AddressSection';
 import { ContactSection } from '../infoCard/ContactSection';
 import { UrlSection } from '../infoCard/UrlSection';
 import { Title, TitleContainer } from '../Title';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
 
 const { a11yLabel, ROOT_ROUTE_NAMES } = consts;
 
@@ -59,8 +60,26 @@ export const VolunteerUser = ({
   useEffect(() => {
     if (route.name === QUERY_TYPES.VOLUNTEER.PROFILE) return;
 
-    navigation.setOptions({ headerRight: () => null });
-  }, [route, navigation]);
+    navigation.setOptions({
+      headerRight: () =>
+        isMe && (
+          <WrapperRow style={styles.headerRight}>
+            <TouchableOpacity
+              onPress={() =>
+                // eslint-disable-next-line react/prop-types
+                navigation?.navigate(ScreenName.VolunteerForm, {
+                  title: data?.display_name,
+                  query: QUERY_TYPES.VOLUNTEER.PROFILE,
+                  userData: data
+                })
+              }
+            >
+              <Icon.EditSetting color="white" style={styles.icon} />
+            </TouchableOpacity>
+          </WrapperRow>
+        )
+    });
+  }, [route, navigation, isMe, data]);
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(
@@ -120,3 +139,13 @@ export const VolunteerUser = ({
     </WrapperWithOrientation>
   );
 };
+
+const styles = StyleSheet.create({
+  headerRight: {
+    alignItems: 'center',
+    paddingRight: normalize(7)
+  },
+  icon: {
+    paddingHorizontal: normalize(10)
+  }
+});
