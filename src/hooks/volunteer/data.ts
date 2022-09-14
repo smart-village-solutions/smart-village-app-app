@@ -50,6 +50,10 @@ export const useVolunteerData = ({
     const { currentUserId } = await volunteerUserData();
     let processedVolunteerData = data?.results as any[];
 
+    if (query === QUERY_TYPES.VOLUNTEER.CALENDAR) {
+      processedVolunteerData = data?.participants?.attending as any[];
+    }
+
     // TODO: remove if all queries exist
     const details = {
       [QUERY_TYPES.VOLUNTEER.PROFILE]: myProfile(),
@@ -124,7 +128,7 @@ export const useVolunteerData = ({
     }
 
     if (query === QUERY_TYPES.VOLUNTEER.CALENDAR) {
-      processedVolunteerData = _orderBy(data?.participants?.attending, 'display_name', 'asc');
+      processedVolunteerData = _orderBy(processedVolunteerData, 'display_name', 'asc');
     }
 
     setVolunteerData(processedVolunteerData);

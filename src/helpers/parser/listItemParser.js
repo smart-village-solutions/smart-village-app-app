@@ -232,7 +232,10 @@ const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned, cu
       };
     }
 
-    if (query === QUERY_TYPES.VOLUNTEER.USER && volunteer?.user?.id == currentUserId) {
+    if (
+      query === QUERY_TYPES.VOLUNTEER.USER &&
+      (volunteer?.user?.id || volunteer?.id) == currentUserId
+    ) {
       badge = {
         value: texts.volunteer.myProfile,
         textStyle: {
