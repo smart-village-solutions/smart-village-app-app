@@ -1,6 +1,6 @@
 export type VolunteerUser = {
   about: string;
-  birthday: string;
+  birthday: string | Date;
   birthdayHideYear: boolean;
   city: string;
   country: string;

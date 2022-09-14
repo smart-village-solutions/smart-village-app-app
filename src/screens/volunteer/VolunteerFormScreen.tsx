@@ -19,6 +19,7 @@ export const VolunteerFormScreen = ({ navigation, route }: StackScreenProps<any>
   const query = route.params?.query ?? '';
   const selectedUserIds = route.params?.selectedUserIds || [];
   const groupId = route.params?.groupId;
+  const userData = route.params?.userData;
 
   if (!query) return null;
 
@@ -47,6 +48,7 @@ export const VolunteerFormScreen = ({ navigation, route }: StackScreenProps<any>
               }
               selectedUserIds={selectedUserIds}
               groupId={groupId}
+              userData={userData}
             />
           </WrapperWithOrientation>
         </ScrollView>

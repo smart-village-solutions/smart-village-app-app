@@ -27,6 +27,7 @@ export type DropdownInputProps = {
   label: string;
   placeholder: string;
   control: any;
+  showSearch?: boolean;
 };
 
 export const DropdownInput = ({
@@ -39,7 +40,8 @@ export const DropdownInput = ({
   onChange,
   name,
   label,
-  control
+  control,
+  showSearch = true
 }: DropdownInputProps) => {
   const [dropdownData, setDropdownData] = useState(
     data.map((item) =>
@@ -71,7 +73,7 @@ export const DropdownInput = ({
         setData={setDropdownData}
         label={label}
         labelWrapperStyle={styles.labelWrapper}
-        showSearch
+        showSearch={showSearch}
         searchInputStyle={styles.searchInput}
         searchPlaceholder={texts.volunteer.search}
       />

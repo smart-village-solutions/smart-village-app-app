@@ -31,10 +31,9 @@ const genderDropdownData = [
 // eslint-disable-next-line complexity
 export const VolunteerFormProfile = ({
   navigation,
-  route,
-  scrollToTop
+  scrollToTop,
+  userData
 }: StackScreenProps<any> & { scrollToTop: () => void; selectedUserIds?: number[] }) => {
-  const userData = route?.params?.userData || undefined;
   const [isCollapsedContact, setIsCollapsedContact] = useState(true);
   const [isCollapsedLinks, setIsCollapsedLinks] = useState(true);
 
@@ -65,8 +64,8 @@ export const VolunteerFormProfile = ({
       fax: userData?.profile?.fax || '',
       firstName: userData?.profile?.firstname || '',
       flickr: userData?.profile?.url_flickr || '',
-      gender: genderDefaultValue || undefined,
-      id: userData?.account?.id || undefined,
+      gender: genderDefaultValue || 0,
+      id: userData?.account?.id || '',
       lastName: userData?.profile?.lastname || '',
       linkedin: userData?.profile?.url_linkedin || '',
       mySpace: userData?.profile?.url_myspace || '',
@@ -90,29 +89,30 @@ export const VolunteerFormProfile = ({
 
   const isFocused = useIsFocused();
 
-  const { mutateAsync, isLoading, isError, isSuccess, data, reset } = useMutation(userEdit);
+  const { mutate, isLoading, isError, isSuccess, data, reset } = useMutation(userEdit);
 
   const onSubmit = (profileEditData: VolunteerUser) => {
-    mutateAsync(profileEditData);
+    mutate(profileEditData);
   };
 
   const onPressContactTitle = useCallback(() => setIsCollapsedContact((value) => !value), []);
   const onPressLinksTitle = useCallback(() => setIsCollapsedLinks((value) => !value), []);
 
-  if (!isValid) {
-    scrollToTop();
-  }
+  // TODO: commented out because scrolls on collapsing should not happen
+  // if (!isValid) {
+  //   scrollToTop();
+  // }
 
   if (isError || (!isLoading && data && !data.id)) {
     Alert.alert(
-      'Fehler beim Erstellen einer Unterhaltung',
+      'Fehler beim Speichern des Profils',
       'Bitte Eingaben überprüfen und erneut versuchen.'
     );
     reset();
   } else if (isSuccess && isFocused) {
     navigation.goBack();
 
-    Alert.alert('Erfolgreich', 'Die Unterhaltung wurde erfolgreich erstellt.');
+    Alert.alert('Erfolgreich', 'Das Profil wurde erfolgreich gespeichert.');
   }
 
   return (
@@ -187,7 +187,8 @@ export const VolunteerFormProfile = ({
                 name,
                 label: texts.volunteer.gender,
                 placeholder: texts.volunteer.gender,
-                control
+                control,
+                showSearch: false
               }}
             />
           )}
@@ -234,8 +235,8 @@ export const VolunteerFormProfile = ({
                 valueKey: 'name',
                 onChange,
                 name,
-                label: texts.volunteer.gender,
-                placeholder: texts.volunteer.gender,
+                label: texts.volunteer.country,
+                placeholder: texts.volunteer.country,
                 control
               }}
             />
@@ -280,8 +281,10 @@ export const VolunteerFormProfile = ({
               checked={!!value}
               onPress={() => onChange(!value)}
               title="Jahr im Profil verbergen"
+              checkedColor={colors.accent}
+              checkedIcon="check-square-o"
               uncheckedColor={colors.darkText}
-              checkedColor={colors.primary}
+              uncheckedIcon="square-o"
               containerStyle={styles.checkboxContainerStyle}
               textStyle={styles.checkboxTextStyle}
             />
@@ -298,6 +301,7 @@ export const VolunteerFormProfile = ({
           validate
         />
       </Wrapper>
+      <Divider style={styles.divider} />
       <Touchable onPress={onPressContactTitle}>
         <Wrapper style={styles.wrapper}>
           <WrapperRow spaceBetween>
@@ -306,7 +310,6 @@ export const VolunteerFormProfile = ({
           </WrapperRow>
         </Wrapper>
       </Touchable>
-      <Divider style={styles.divider} />
       <Collapsible collapsed={isCollapsedContact}>
         <Wrapper style={styles.noPaddingTop}>
           <Input
@@ -370,6 +373,7 @@ export const VolunteerFormProfile = ({
           />
         </Wrapper>
       </Collapsible>
+      <Divider style={styles.divider} />
       <Touchable onPress={onPressLinksTitle}>
         <Wrapper style={styles.wrapper}>
           <WrapperRow spaceBetween>
@@ -378,7 +382,6 @@ export const VolunteerFormProfile = ({
           </WrapperRow>
         </Wrapper>
       </Touchable>
-      <Divider style={styles.divider} />
       <Collapsible collapsed={isCollapsedLinks}>
         <Wrapper style={styles.noPaddingTop}>
           <Input
@@ -501,6 +504,7 @@ export const VolunteerFormProfile = ({
           />
         </Wrapper>
       </Collapsible>
+      <Divider style={styles.divider} />
 
       <Wrapper>
         <Button

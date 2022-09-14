@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { consts, Icon, normalize, texts } from '../../config';
 import { volunteerUserData } from '../../helpers';
@@ -11,7 +11,6 @@ import { Button } from '../Button';
 import { AddressSection } from '../infoCard/AddressSection';
 import { ContactSection } from '../infoCard/ContactSection';
 import { UrlSection } from '../infoCard/UrlSection';
-import { ShareHeader } from '../ShareHeader';
 import { Title, TitleContainer } from '../Title';
 import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
 
@@ -69,12 +68,13 @@ export const VolunteerUser = ({
               onPress={() =>
                 // eslint-disable-next-line react/prop-types
                 navigation?.navigate(ScreenName.VolunteerForm, {
+                  title: data?.display_name,
                   query: QUERY_TYPES.VOLUNTEER.PROFILE,
                   userData: data
                 })
               }
             >
-              <Icon.NamedIcon name="settings" color="white" style={styles.icon} />
+              <Icon.EditSetting color="white" style={styles.icon} />
             </TouchableOpacity>
           </WrapperRow>
         )
