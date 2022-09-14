@@ -20,7 +20,7 @@ export const conversations = async () => {
   return (await fetch(`${volunteerApiV2Url}mail`, fetchObj)).json();
 };
 
-export const conversation = async (id: number) => {
+export const conversation = async ({ id }: { id: number }) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {

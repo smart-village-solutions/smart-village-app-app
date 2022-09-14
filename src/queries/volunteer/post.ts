@@ -1,7 +1,7 @@
 import { volunteerApiV1Url, volunteerAuthToken } from '../../helpers/volunteerHelper';
 import { VolunteerPost } from '../../types';
 
-export const posts = async (contentContainerId: number) => {
+export const posts = async ({ contentContainerId }: { contentContainerId: number }) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {

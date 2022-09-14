@@ -8,7 +8,7 @@ import { Calendar, CalendarProps } from 'react-native-calendars';
 import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day/basic';
 
 import { colors, consts, normalize, texts } from '../../config';
-import { setupLocales, volunteerListDate } from '../../helpers';
+import { setupLocales } from '../../helpers';
 import { ScreenName, VolunteerCalendar as TVolunteerCalendar } from '../../types';
 import { renderArrow } from '../calendarArrows';
 

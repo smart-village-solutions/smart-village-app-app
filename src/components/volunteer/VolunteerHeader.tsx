@@ -34,7 +34,6 @@ export const VolunteerHeaderProfile = ({ navigation, style }: Props) => {
           params: {
             title: texts.volunteer.myProfile,
             query: QUERY_TYPES.VOLUNTEER.PROFILE,
-            queryVariables: {},
             rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
           }
         })

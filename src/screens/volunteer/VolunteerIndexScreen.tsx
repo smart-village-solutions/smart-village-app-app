@@ -74,8 +74,11 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           ListHeaderComponent={
             <>
               {showFilter && <DropdownHeader {...{ query: query, queryVariables, data }} />}
-              {isPosts && (
-                <VolunteerPostTextField contentContainerId={queryVariables} refetch={refetch} />
+              {isPosts && isGroupMember && (
+                <VolunteerPostTextField
+                  contentContainerId={queryVariables?.contentContainerId}
+                  refetch={refetch}
+                />
               )}
             </>
           }

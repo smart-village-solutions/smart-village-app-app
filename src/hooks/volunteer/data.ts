@@ -24,7 +24,7 @@ export const useVolunteerData = ({
   bookmarkable
 }: {
   query: VolunteerQuery;
-  queryVariables?: { dateRange?: string[]; contentContainerId?: number } | number;
+  queryVariables?: { dateRange?: string[]; contentContainerId?: number; id?: number };
   queryOptions?: { refetchInterval?: number; enabled?: boolean };
   isCalendar?: boolean;
   isSectioned?: boolean;

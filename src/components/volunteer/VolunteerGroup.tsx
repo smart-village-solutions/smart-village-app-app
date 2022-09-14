@@ -74,8 +74,9 @@ export const VolunteerGroup = ({
     mutateAsync: mutateAsyncJoin,
     isSuccess: isSuccessJoin
   } = useMutation(groupJoin);
-  const { mutate: mutateRequest, isSuccess: isSuccessRequest } =
-    useMutation(groupRequestMembership);
+  const { mutate: mutateRequest, isSuccess: isSuccessRequest } = useMutation(
+    groupRequestMembership
+  );
   const {
     mutate: mutateLeave,
     mutateAsync: mutateAsyncLeave,
@@ -179,7 +180,7 @@ export const VolunteerGroup = ({
               navigation.push(ScreenName.VolunteerIndex, {
                 title: texts.volunteer.calendar,
                 query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-                queryVariables: contentContainerId,
+                queryVariables: { contentContainerId },
                 rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
               })
             }
@@ -187,7 +188,6 @@ export const VolunteerGroup = ({
               navigation.navigate(ScreenName.VolunteerForm, {
                 title: 'Termin eintragen',
                 query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-                queryVariables: contentContainerId,
                 groupId: id,
                 rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
               })
@@ -196,13 +196,13 @@ export const VolunteerGroup = ({
               navigation.push(ScreenName.VolunteerIndex, {
                 title: texts.volunteer.calendar,
                 query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-                queryVariables: contentContainerId,
+                queryVariables: { contentContainerId },
                 rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
               })
             }
             navigation={navigation}
             query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
-            queryVariables={contentContainerId}
+            queryVariables={{ contentContainerId }}
             sectionTitle="Kalender"
           />
         )}

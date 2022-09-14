@@ -47,7 +47,9 @@ export const VolunteerGroupMembersAndApplicants = ({
   isSuccessLeave: boolean;
   isSuccessRequest: boolean;
 }) => {
-  const { data, refetch } = useQuery(['groupMembership', groupId], () => groupMembership(groupId));
+  const { data, refetch } = useQuery(['groupMembership', groupId], () =>
+    groupMembership({ id: groupId })
+  );
   const [groupMembers, setGroupMembers] = useState<{ user: VolunteerUser }[]>();
   const [groupApplicants, setGroupApplicants] = useState<{ user: VolunteerUser }[]>();
 
@@ -105,7 +107,7 @@ export const VolunteerGroupMembersAndApplicants = ({
               navigation.push(ScreenName.VolunteerIndex, {
                 title: texts.volunteer.members,
                 query: QUERY_TYPES.VOLUNTEER.MEMBERS,
-                queryVariables: groupId,
+                queryVariables: { id: groupId },
                 rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
                 isGroupMember
               })
@@ -140,7 +142,7 @@ export const VolunteerGroupMembersAndApplicants = ({
               navigation.push(ScreenName.VolunteerIndex, {
                 title: texts.volunteer.applicants,
                 query: QUERY_TYPES.VOLUNTEER.APPLICANTS,
-                queryVariables: groupId,
+                queryVariables: { id: groupId },
                 rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
                 isGroupMember,
                 mutateAsyncJoin,
