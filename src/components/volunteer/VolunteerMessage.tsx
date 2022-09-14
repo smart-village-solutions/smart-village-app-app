@@ -1,11 +1,10 @@
-import 'moment/locale/de';
 import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 
-import { Chat } from '../Chat';
 import { volunteerProfileImage, volunteerUserData } from '../../helpers';
 import { conversationNewEntry, conversationRecipients } from '../../queries/volunteer';
 import { VolunteerConversation } from '../../types';
+import { Chat } from '../Chat';
 
 export const VolunteerMessage = ({
   data,
@@ -48,20 +47,13 @@ export const VolunteerMessage = ({
       createdAt: string;
       updatedAt: string;
       _id: number;
-      user: { _id: number; name: any; avatar: string };
+      user: { _id: number; name: string; avatar: string };
     }[] = [];
 
-    if (currentUserId && !!data?.results?.length && !!dataRecipients) {
+    if (currentUserId && data?.results?.length && !!dataRecipients) {
       data?.results?.forEach((message) => {
-        const {
-          id,
-          user_id,
-          content,
-          created_at,
-          created_by: createdBy,
-          updated_at
-        } = message || {};
-
+        const { id, user_id, content, created_at, created_by: createdBy, updated_at } =
+          message || {};
         const user = dataRecipients.find(
           (recipient: { id: string }) => recipient.id == createdBy.toString()
         );
@@ -99,13 +91,12 @@ export const VolunteerMessage = ({
   return (
     <Chat
       data={messageData}
-      placeholder=""
       onSendButton={(message) =>
         onSend({
           id: [conversationId],
           message,
           title: ''
-        }).then(() => refetch())
+        }).then(refetch)
       }
       userId={currentUserId}
     />

@@ -1,6 +1,5 @@
-import 'moment/locale/de';
 import PropTypes from 'prop-types';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import {
@@ -16,9 +15,6 @@ import { colors, Icon, normalize } from '../config';
 import { momentFormat } from '../helpers';
 
 import { RegularText } from './Text';
-
-/* eslint-disable react-native/no-inline-styles */
-/* eslint-disable react/prop-types */
 
 const UserAvatar = ({ uri, title }) => (
   <Avatar
@@ -50,7 +46,7 @@ const UserAvatar = ({ uri, title }) => (
  * @param {func}   onSendButton            function returning message text
  * @param {string} placeholder             placeholder text of `textInput`
  * @param {object} textInputProps          props to customise text input
- * @param {number} userId                  prop to recognise whether the message is the owner
+ * @param {number} userId      prop to recognise whether the message is the owner
  *                                         or another user
  */
 export const Chat = ({
@@ -60,9 +56,9 @@ export const Chat = ({
   messageTextStyleLeft,
   messageTextStyleRight,
   onSendButton,
-  placeholder = 'Type a message',
+  placeholder = '',
   textInputProps,
-  userId = 1
+  userId
 }) => {
   const [messages, setMessages] = useState(data);
 
@@ -70,16 +66,14 @@ export const Chat = ({
     setMessages(data);
   }, [data]);
 
-  const onSend = useCallback((messages) => {
-    onSendButton(messages[0].text);
-  }, []);
-
   return (
     <GiftedChat
       alwaysShowSend
       messages={messages}
       minInputToolbarHeight={normalize(96)}
-      onSend={(messages) => onSend(messages)}
+      onSend={(messages) => {
+        onSendButton(messages[0].text);
+      }}
       placeholder={placeholder}
       scrollToBottom
       user={{ _id: parseInt(userId) }}
@@ -97,8 +91,7 @@ export const Chat = ({
               backgroundColor: colors.gray20
             },
             right: bubbleWrapperStyleRight || {
-              // TODO: added manually because there is no similar colour in the colours file.
-              //       can be edited later!
+              // TODO: added manually because there is no similar color in the colors file
               backgroundColor: '#E8F1E9'
             }
           }}
@@ -111,7 +104,6 @@ export const Chat = ({
           textInputProps={textInputProps}
         />
       )}
-      renderDay={() => null}
       renderInputToolbar={(props) => (
         <InputToolbar
           {...props}
@@ -134,9 +126,9 @@ export const Chat = ({
         </Send>
       )}
       renderTime={(props) => (
-        <View style={{ paddingHorizontal: 10 }}>
+        <View style={styles.spacingTime}>
           <RegularText smallest placeholder>
-            {momentFormat(props.currentMessage.createdAt, 'lll')} Uhr
+            {momentFormat(props?.currentMessage?.createdAt, 'HH:mm')}
           </RegularText>
         </View>
       )}
@@ -193,12 +185,16 @@ const styles = StyleSheet.create({
   },
   spacing: {
     marginVertical: normalize(5)
+  },
+  spacingTime: {
+    paddingHorizontal: normalize(10)
   }
 });
 
 Chat.propTypes = {
   bubbleWrapperStyleLeft: PropTypes.object,
   bubbleWrapperStyleRight: PropTypes.object,
+  currentMessage: PropTypes.object,
   data: PropTypes.array.isRequired,
   messageTextStyleLeft: PropTypes.object,
   messageTextStyleRight: PropTypes.object,

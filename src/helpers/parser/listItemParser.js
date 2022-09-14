@@ -230,7 +230,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned) =>
       query,
       queryVariables: { id: volunteer.user?.id ? `${volunteer.user.id}` : `${volunteer.id}` },
       queryOptions: query === QUERY_TYPES.VOLUNTEER.CONVERSATION && {
-        refetchInterval: 5000
+        refetchInterval: 3000
       },
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
       shareContent: query !== QUERY_TYPES.VOLUNTEER.CONVERSATION && {

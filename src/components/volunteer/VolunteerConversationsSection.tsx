@@ -42,7 +42,7 @@ export const VolunteerConversationsSection = ({
     query,
     queryVariables,
     queryOptions: {
-      refetchInterval: 5000
+      refetchInterval: 3000
     }
   });
 
