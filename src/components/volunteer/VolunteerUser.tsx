@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { consts, Icon, normalize, texts } from '../../config';
+import { colors, consts, Icon, normalize, texts } from '../../config';
 import { volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
@@ -74,7 +74,7 @@ export const VolunteerUser = ({
                 })
               }
             >
-              <Icon.EditSetting color="white" style={styles.icon} />
+              <Icon.EditSetting color={colors.lightestText} style={styles.icon} />
             </TouchableOpacity>
           </WrapperRow>
         )

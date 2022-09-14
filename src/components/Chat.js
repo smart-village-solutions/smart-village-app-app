@@ -153,9 +153,7 @@ export const Chat = ({
             {...props}
             options={mediaActionSheet}
             containerStyle={styles.actionButtonContainer}
-            icon={() => (
-              <Icon.NamedIcon name={'add'} size={normalize(24)} color={colors.darkText} />
-            )}
+            icon={() => <Icon.NamedIcon name="add" size={normalize(24)} color={colors.darkText} />}
           />
         );
       }}
