@@ -807,6 +807,7 @@ export const texts = {
     loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     loginFailedTitle: 'Fehler bei der Anmeldung',
     loginTitle: 'Anmelden',
+    mediaGreater10MBError: 'Das ausgewählte Medien darf maximal 10 MB groß sein.',
     member: 'Mitglied',
     members: 'Mitglieder',
     memberships: 'Mitgliedschaften',

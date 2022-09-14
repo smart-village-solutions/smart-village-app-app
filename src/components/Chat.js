@@ -1,20 +1,32 @@
+import { Video } from 'expo-av';
+import * as FileSystem from 'expo-file-system';
+import { MediaTypeOptions } from 'expo-image-picker';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { Avatar } from 'react-native-elements';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
+  Actions,
   Bubble,
   Composer,
+  Day,
   GiftedChat,
   InputToolbar,
+  MessageImage,
   MessageText,
   Send
 } from 'react-native-gifted-chat';
 
-import { colors, Icon, normalize } from '../config';
-import { momentFormat } from '../helpers';
+import { colors, consts, Icon, normalize, texts } from '../config';
+import { deleteArrayItem, momentFormat, openLink } from '../helpers';
+import { useSelectDocument, useSelectImage } from '../hooks';
 
+import { Image } from './Image';
 import { RegularText } from './Text';
+import { Wrapper } from './Wrapper';
+
+const { IMAGE_TYPE_REGEX, VIDEO_TYPE_REGEX } = consts;
 
 const UserAvatar = ({ uri, title }) => (
   <Avatar
@@ -61,22 +73,92 @@ export const Chat = ({
   userId
 }) => {
   const [messages, setMessages] = useState(data);
+  const [medias, setMedias] = useState([]);
 
   useEffect(() => {
     setMessages(data);
   }, [data]);
+
+  const onSendMessages = (text, onSend) => {
+    const message = { text, medias };
+
+    if ((medias.length || text) && onSend) {
+      onSendButton(message);
+      onSend({ text: text.trim() }, true);
+      setMedias([]);
+    } else {
+      return false;
+    }
+  };
+
+  const errorHandler = async (uri) => {
+    const { size } = await FileSystem.getInfoAsync(uri);
+    const errorText = size > 10485760 && {
+      title: texts.errors.image.title,
+      message: texts.volunteer.mediaGreater10MBError
+    };
+
+    if (errorText) {
+      throw errorText;
+    }
+  };
+
+  const { selectImage } = useSelectImage(
+    undefined, // onChange
+    false, // allowsEditing,
+    undefined, // aspect,
+    undefined, // quality,
+    MediaTypeOptions.All // mediaTypes
+  );
+  const { selectDocument } = useSelectDocument();
 
   return (
     <GiftedChat
       alwaysShowSend
       messages={messages}
       minInputToolbarHeight={normalize(96)}
-      onSend={(messages) => {
-        onSendButton(messages[0].text);
-      }}
       placeholder={placeholder}
       scrollToBottom
       user={{ _id: parseInt(userId) }}
+      renderActions={(props) => {
+        const mediaActionSheet = {
+          'Aus Bibliothek wählen': async () => {
+            const { uri, type } = await selectImage();
+            const mediaType = (IMAGE_TYPE_REGEX.exec(uri) || VIDEO_TYPE_REGEX.exec(uri))[1];
+
+            try {
+              await errorHandler(uri);
+            } catch (error) {
+              return Alert.alert(error.title, error.message);
+            }
+
+            setMedias([...medias, { mimeType: `${type}/${mediaType}`, type, uri }]);
+          },
+          'Dokument senden': async () => {
+            const { mimeType, uri } = await selectDocument();
+
+            try {
+              await errorHandler(uri);
+            } catch (error) {
+              return Alert.alert(error.title, error.message);
+            }
+
+            setMedias([...medias, { mimeType, type: 'pdf', uri }]);
+          },
+          Cancel: () => null
+        };
+
+        return (
+          <Actions
+            {...props}
+            options={mediaActionSheet}
+            containerStyle={styles.actionButtonContainer}
+            icon={() => (
+              <Icon.NamedIcon name={'add'} size={normalize(24)} color={colors.darkText} />
+            )}
+          />
+        );
+      }}
       renderAvatar={(props) => (
         <UserAvatar
           uri={props?.currentMessage?.user?.avatar}
@@ -104,6 +186,19 @@ export const Chat = ({
           textInputProps={textInputProps}
         />
       )}
+      renderCustomView={(props) =>
+        props?.currentMessage?.pdf?.map(({ uri }, index) => (
+          <TouchableOpacity
+            key={`pdf-${index}`}
+            onPress={() => openLink(uri)}
+            style={styles.pdfBubble}
+          >
+            <Icon.NamedIcon name="document" size={normalize(50)} />
+          </TouchableOpacity>
+        ))
+      }
+      renderDay={(props) => <Day {...props} dateFormat="DD.MM.YYYY" />}
+      renderFooter={() => medias && renderFooter(medias, setMedias)}
       renderInputToolbar={(props) => (
         <InputToolbar
           {...props}
@@ -111,6 +206,22 @@ export const Chat = ({
           primaryStyle={styles.inputToolbarPrimary}
         />
       )}
+      renderMessageImage={(props) =>
+        props?.currentMessage?.image?.map(({ uri }, index) => (
+          <MessageImage {...props} key={`image-${index}`} currentMessage={{ image: uri }} />
+        ))
+      }
+      renderMessageVideo={(props) =>
+        props?.currentMessage?.video?.map(({ uri }, index) => (
+          <Video
+            key={`video-${index}`}
+            resizeMode="cover"
+            source={{ uri }}
+            style={styles.videoBubble}
+            useNativeControls
+          />
+        ))
+      }
       renderMessageText={(props) => (
         <MessageText
           {...props}
@@ -120,8 +231,12 @@ export const Chat = ({
           }}
         />
       )}
-      renderSend={(props) => (
-        <Send {...props} containerStyle={styles.sendButtonContainer}>
+      renderSend={({ onSend, text, sendButtonProps, ...props }) => (
+        <Send
+          {...props}
+          containerStyle={styles.sendButtonContainer}
+          sendButtonProps={{ ...sendButtonProps, onPress: () => onSendMessages(text, onSend) }}
+        >
           <Icon.NamedIcon name="send" color={colors.surface} />
         </Send>
       )}
@@ -136,24 +251,104 @@ export const Chat = ({
   );
 };
 
+const renderFooter = (medias, setMedias) => (
+  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+    {medias.map(({ uri, type }, index) => {
+      return (
+        <Wrapper key={index}>
+          {type === 'image' && (
+            <Image
+              borderRadius={normalize(4)}
+              resizeMode="cover"
+              source={{ uri }}
+              style={styles.mediaPreview}
+            />
+          )}
+          {type === 'video' && (
+            <Video
+              resizeMode="cover"
+              source={{ uri }}
+              style={[styles.mediaBorder, styles.mediaPreview]}
+              useNativeControls
+            />
+          )}
+          {type === 'pdf' && (
+            <TouchableOpacity
+              onPress={() => openLink(uri)}
+              style={[styles.mediaBorder, styles.mediaPreview, styles.pdfPreview]}
+            >
+              <Icon.NamedIcon name="document" size={normalize(50)} />
+            </TouchableOpacity>
+          )}
+          <View style={styles.mediaDeleteButton}>
+            <TouchableOpacity onPress={() => setMedias(deleteArrayItem(medias, index))}>
+              <Icon.NamedIcon
+                name="close-circle-outline"
+                size={normalize(24)}
+                color={colors.surface}
+              />
+            </TouchableOpacity>
+          </View>
+        </Wrapper>
+      );
+    })}
+  </ScrollView>
+);
+
 const styles = StyleSheet.create({
-  textInputStyle: {
-    borderColor: colors.gray20,
-    borderRadius: normalize(4),
-    borderWidth: normalize(1),
-    marginBottom: 0,
-    marginLeft: normalize(20),
-    marginTop: 0,
-    maxHeight: normalize(200),
-    minHeight: normalize(48),
-    paddingHorizontal: normalize(10),
-    paddingTop: normalize(16)
+  actionButtonContainer: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'center'
+  },
+  border: {
+    borderColor: colors.darkText,
+    borderWidth: 1
+  },
+  containerStyle: {
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   inputToolbarContainer: {
     paddingVertical: normalize(24)
   },
   inputToolbarPrimary: {
     minHeight: normalize(48)
+  },
+  mediaBorder: {
+    borderRadius: normalize(4)
+  },
+  mediaDeleteButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    right: normalize(20),
+    top: normalize(20),
+    zIndex: 1
+  },
+  mediaPreview: {
+    height: normalize(86),
+    width: normalize(86)
+  },
+  overlayContainerStyle: {
+    backgroundColor: colors.surface
+  },
+  pdfBubble: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderRadius: normalize(13),
+    height: normalize(86),
+    justifyContent: 'center',
+    marginBottom: normalize(10),
+    width: '100%'
+  },
+  pdfPreview: {
+    alignItems: 'center',
+    backgroundColor: colors.gray40,
+    justifyContent: 'center'
+  },
+  placeholderStyle: {
+    backgroundColor: colors.surface
   },
   sendButtonContainer: {
     alignItems: 'center',
@@ -165,29 +360,34 @@ const styles = StyleSheet.create({
     marginRight: normalize(20),
     width: normalize(48)
   },
-  border: {
-    borderColor: colors.darkText,
-    borderWidth: 1
-  },
-  containerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  overlayContainerStyle: {
-    backgroundColor: colors.surface
-  },
-  placeholderStyle: {
-    backgroundColor: colors.surface
-  },
-  titleStyle: {
-    color: colors.darkText,
-    fontSize: normalize(12)
-  },
   spacing: {
     marginVertical: normalize(5)
   },
   spacingTime: {
     paddingHorizontal: normalize(10)
+  },
+  textInputStyle: {
+    borderColor: colors.gray20,
+    borderRadius: normalize(4),
+    borderWidth: normalize(1),
+    marginBottom: 0,
+    marginLeft: normalize(16),
+    marginTop: 0,
+    maxHeight: normalize(200),
+    minHeight: normalize(48),
+    paddingHorizontal: normalize(10),
+    paddingTop: normalize(16)
+  },
+  titleStyle: {
+    color: colors.darkText,
+    fontSize: normalize(12)
+  },
+  videoBubble: {
+    alignSelf: 'center',
+    borderRadius: normalize(13),
+    height: normalize(86),
+    marginBottom: normalize(10),
+    width: '100%'
   }
 });
 

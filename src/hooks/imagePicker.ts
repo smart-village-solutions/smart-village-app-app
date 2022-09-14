@@ -15,7 +15,8 @@ export const useSelectImage = (
   ) => React.Dispatch<React.SetStateAction<T>>,
   allowsEditing?: boolean,
   aspect?: [number, number],
-  quality?: number
+  quality?: number,
+  mediaTypes?: MediaTypeOptions
 ) => {
   const [imageUri, setImageUri] = useState<string>();
 
@@ -30,7 +31,7 @@ export const useSelectImage = (
     // this allows for proper selecting and cropping to 1:1 images (and not videos)
     // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
     const result = await launchImageLibraryAsync({
-      mediaTypes: MediaTypeOptions.Images,
+      mediaTypes: mediaTypes ?? MediaTypeOptions.Images,
       allowsEditing: allowsEditing ?? true,
       aspect: aspect ?? [1, 1],
       quality: quality ?? 1
