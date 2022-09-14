@@ -24,7 +24,7 @@ export const useVolunteerData = ({
   bookmarkable
 }: {
   query: VolunteerQuery;
-  queryVariables?: { dateRange?: string[]; contentContainerId?: number } | number;
+  queryVariables?: { dateRange?: string[]; contentContainerId?: number; id?: number };
   queryOptions?: { refetchInterval?: number; enabled?: boolean };
   isCalendar?: boolean;
   isSectioned?: boolean;
@@ -47,7 +47,12 @@ export const useVolunteerData = ({
   const [volunteerData, setVolunteerData] = useState<any[]>([]);
 
   const processVolunteerData = useCallback(async () => {
+    const { currentUserId } = await volunteerUserData();
     let processedVolunteerData = data?.results as any[];
+
+    if (query === QUERY_TYPES.VOLUNTEER.CALENDAR) {
+      processedVolunteerData = data?.participants?.attending as any[];
+    }
 
     // TODO: remove if all queries exist
     const details = {
@@ -64,7 +69,10 @@ export const useVolunteerData = ({
         bookmarkable,
         skipLastDivider: true,
         withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS || (!isSectioned ?? isCalendar),
-        isSectioned: isSectioned ?? isCalendar
+        isSectioned: isSectioned ?? isCalendar,
+        queryVariables: {
+          currentUserId
+        }
       }
     );
 
@@ -84,7 +92,6 @@ export const useVolunteerData = ({
       }
 
       if (query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY) {
-        const { currentUserId } = await volunteerUserData();
         // show only attending dates for current user if on personal calendar view
         processedVolunteerData = processedVolunteerData?.filter(
           (item: { participants?: { attending?: [] } }) =>
@@ -121,7 +128,7 @@ export const useVolunteerData = ({
     }
 
     if (query === QUERY_TYPES.VOLUNTEER.CALENDAR) {
-      processedVolunteerData = _orderBy(data?.participants?.attending, 'display_name', 'asc');
+      processedVolunteerData = _orderBy(processedVolunteerData, 'display_name', 'asc');
     }
 
     setVolunteerData(processedVolunteerData);

@@ -43,6 +43,7 @@ export const VolunteerEventRecord = ({
     id,
     content,
     description,
+    location,
     end_datetime: endDatetime,
     participant_info: participantInfo,
     participants,
@@ -50,21 +51,25 @@ export const VolunteerEventRecord = ({
     title,
     webUrls
   } = data;
-  const { files, topics } = content;
-  const mediaContents = filterForMimeType(files, 'image')?.map(({ mime_type, url }: File) => ({
-    contentType: mime_type.includes('image') ? 'image' : mime_type,
-    sourceUrl: { url }
-  }));
-  const documents = filterForMimeType(files, 'application');
 
-  const { attending } = participants;
-  const rootRouteName = route.params?.rootRouteName ?? '';
-  const headerTitle = route.params?.title ?? '';
+  const { files, topics } = content || {};
+  const mediaContents = files?.length
+    ? filterForMimeType(files, 'image')?.map(({ mime_type, url }: File) => ({
+        contentType: mime_type.includes('image') ? 'image' : mime_type,
+        sourceUrl: { url }
+      }))
+    : undefined;
+  const documents = files?.length ? filterForMimeType(files, 'application') : undefined;
   const category = topics?.length
     ? {
         name: topics.map((topic: { name: string }) => topic.name).join(', ')
       }
     : undefined;
+
+  const address = location?.length ? { city: location } : undefined;
+  const { attending } = participants || {};
+  const rootRouteName = route.params?.rootRouteName ?? '';
+  const headerTitle = route.params?.title ?? '';
   const appointments = [
     {
       dateFrom: momentFormat(startDatetime, 'YYYY-MM-DD'),
@@ -121,7 +126,12 @@ export const VolunteerEventRecord = ({
         )}
 
         <Wrapper>
-          <InfoCard category={category} webUrls={webUrls} openWebScreen={openWebScreen} />
+          <InfoCard
+            category={category}
+            address={address}
+            webUrls={webUrls}
+            openWebScreen={openWebScreen}
+          />
         </Wrapper>
 
         {!!appointments?.length && (

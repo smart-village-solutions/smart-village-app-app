@@ -18,7 +18,7 @@ export const groups = async () => {
     }
   };
 
-  return (await fetch(`${volunteerApiV1Url}space`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV2Url}space`, fetchObj)).json();
 };
 
 export const groupsMy = async () => {
@@ -36,7 +36,7 @@ export const groupsMy = async () => {
   return (await fetch(`${volunteerApiV2Url}space/memberships`, fetchObj)).json();
 };
 
-export const group = async (id: number) => {
+export const group = async ({ id }: { id: number }) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
@@ -48,7 +48,7 @@ export const group = async (id: number) => {
     }
   };
 
-  return (await fetch(`${volunteerApiV1Url}space/${id}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV2Url}space/${id}`, fetchObj)).json();
 };
 
 export const groupNew = async ({
@@ -116,7 +116,7 @@ export const groupEdit = async ({
   return (await fetch(`${volunteerApiV1Url}space/${id}`, fetchObj)).json();
 };
 
-export const groupMembership = async (id: number) => {
+export const groupMembership = async ({ id }: { id: number }) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {

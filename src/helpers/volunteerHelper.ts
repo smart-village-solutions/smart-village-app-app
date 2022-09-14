@@ -115,7 +115,8 @@ export const volunteerSubtitle = (
   }
 
   // build subtitle
-  let first, last;
+  let first;
+  let last = volunteer.location;
 
   if (withDate) {
     first = date;

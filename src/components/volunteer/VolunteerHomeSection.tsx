@@ -47,7 +47,7 @@ type Props = {
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
   query: VolunteerQuery;
-  queryVariables?: { dateRange?: string[] } | number;
+  queryVariables?: { dateRange?: string[]; contentContainerId?: number };
   sectionTitle?: string;
   sectionTitleDetail?: string;
   showButton?: boolean;
@@ -75,11 +75,7 @@ export const VolunteerHomeSection = ({
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const [showCalendar, setShowCalendar] = useState(isCalendar);
-  const {
-    data: sectionData,
-    isLoading,
-    refetch
-  } = useVolunteerData({
+  const { data: sectionData, isLoading, refetch } = useVolunteerData({
     query,
     queryVariables,
     isCalendar,
@@ -89,10 +85,12 @@ export const VolunteerHomeSection = ({
 
   useVolunteerRefresh(
     refetch,
-    // if we have a calendar query and there is a number as queryVariables, we are on the group
-    // detail screen and need to pass the group query identifier to ensure correct behavior of
-    // the refresh event
-    isCalendar && queryVariables && _isNumber(queryVariables) ? QUERY_TYPES.VOLUNTEER.GROUP : query
+    // if we have a calendar query and there is a `contentContainerId` number in `queryVariables`,
+    // we are on the group detail screen and need to pass the group query identifier to
+    // ensure correct behavior of the refresh event
+    isCalendar && queryVariables?.contentContainerId && _isNumber(queryVariables.contentContainerId)
+      ? QUERY_TYPES.VOLUNTEER.GROUP
+      : query
   );
 
   if (isCalendar) {

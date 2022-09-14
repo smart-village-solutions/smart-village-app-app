@@ -10,9 +10,10 @@ import {
 } from '../../helpers/volunteerHelper';
 import { PARTICIPANT_TYPE, VolunteerCalendar } from '../../types';
 
-export const calendarAll = async (
-  queryVariables?: { dateRange?: string[]; contentContainerId?: number } | number
-) => {
+export const calendarAll = async (queryVariables?: {
+  dateRange?: string[];
+  contentContainerId?: number;
+}) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {
@@ -24,10 +25,7 @@ export const calendarAll = async (
     }
   };
 
-  const id =
-    queryVariables && _isNumber(queryVariables)
-      ? queryVariables
-      : queryVariables?.contentContainerId;
+  const id = queryVariables?.contentContainerId;
 
   if (id && _isNumber(id)) {
     return (await fetch(`${volunteerApiV2Url}calendar/container/${id}`, fetchObj)).json();
@@ -36,7 +34,7 @@ export const calendarAll = async (
   return (await fetch(`${volunteerApiV2Url}calendar`, fetchObj)).json();
 };
 
-export const calendar = async (id: number) => {
+export const calendar = async ({ id }: { id: number }) => {
   const authToken = await volunteerAuthToken();
 
   const fetchObj = {

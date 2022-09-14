@@ -17,7 +17,7 @@ export const VolunteerMessageTextField = ({
 }: {
   conversationId: number;
   refetch: () => void;
-  dataCount: number;
+  dataCount?: number;
   scrollToBottom: (animated?: boolean) => void;
 }) => {
   const { control, handleSubmit, reset: resetForm } = useForm<VolunteerConversation>({

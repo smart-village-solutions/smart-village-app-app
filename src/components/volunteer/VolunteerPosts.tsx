@@ -33,7 +33,7 @@ export const VolunteerPosts = ({
 }) => {
   const { data, isLoading, refetch } = useQuery(
     ['posts', contentContainerId],
-    () => postsQuery(contentContainerId),
+    () => postsQuery({ contentContainerId }),
     {
       enabled: !!contentContainerId // the query will not execute if there is no contentContainerId
     }
@@ -62,7 +62,8 @@ export const VolunteerPosts = ({
             navigation.push(ScreenName.VolunteerIndex, {
               title: texts.volunteer.posts,
               query: QUERY_TYPES.VOLUNTEER.POSTS,
-              queryVariables: contentContainerId,
+              queryVariables: { contentContainerId },
+              isGroupMember,
               rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
             })
           }
@@ -94,7 +95,7 @@ export const VolunteerPosts = ({
               navigation.push(ScreenName.VolunteerIndex, {
                 title: texts.volunteer.posts,
                 query: QUERY_TYPES.VOLUNTEER.POSTS,
-                queryVariables: contentContainerId,
+                queryVariables: { contentContainerId },
                 rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
               })
             }

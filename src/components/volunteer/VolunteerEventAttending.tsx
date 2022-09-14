@@ -43,7 +43,7 @@ export const VolunteerEventAttending = ({
           navigation.push(ScreenName.VolunteerIndex, {
             title: texts.volunteer.participants,
             query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-            queryVariables: calendarEntryId,
+            queryVariables: { id: calendarEntryId },
             rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
             isAttendingEvent
           })

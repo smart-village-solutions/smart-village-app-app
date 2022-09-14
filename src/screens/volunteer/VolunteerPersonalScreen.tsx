@@ -31,7 +31,6 @@ const NAVIGATION = {
     params: {
       title: 'Termin eintragen',
       query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-      queryVariables: {},
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
   },

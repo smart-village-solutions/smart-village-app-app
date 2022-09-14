@@ -54,7 +54,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
 
   const { data, isLoading, refetch, isRefetching } = useQuery(
     [query, queryVariables?.id],
-    () => getQuery(query)(queryVariables?.id),
+    () => getQuery(query)(queryVariables),
     {
       ...queryOptions,
       enabled: !dummyData // the query will not execute if there is dummy data
@@ -85,7 +85,7 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
           <VolunteerMessageTextField
             conversationId={queryVariables.id}
             refetch={refetch}
-            dataCount={data.results.length}
+            dataCount={data?.results?.length}
             scrollToBottom={(animated = true) => scrollViewRef?.current?.scrollToEnd({ animated })}
           />
         </DefaultKeyboardAvoidingView>
