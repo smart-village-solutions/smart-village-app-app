@@ -37,7 +37,7 @@ export const VolunteerFormCalendar = ({
   } = useForm<VolunteerCalendar>({
     mode: 'onBlur',
     defaultValues: {
-      isPublic: 1,
+      isPublic: 0,
       contentContainerId: groupId || 0,
       documents: '[]',
       images: '[]'
