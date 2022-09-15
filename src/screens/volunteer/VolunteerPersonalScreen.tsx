@@ -40,7 +40,7 @@ const NAVIGATION = {
       title: texts.volunteer.conversations,
       query: QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
       queryOptions: {
-        refetchInterval: 3000
+        refetchInterval: 1000
       },
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
@@ -133,6 +133,8 @@ export const VolunteerPersonalScreen = ({ navigation }: any) => {
           navigation={navigation}
           query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY}
           sectionTitle="Mein Kalender"
+          showLink
+          showButton
         />
         {/* <DataListSection
           linkTitle="Alle Aufgaben anzeigen"

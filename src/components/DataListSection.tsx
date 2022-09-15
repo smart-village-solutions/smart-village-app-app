@@ -53,7 +53,7 @@ export const DataListSection = ({
   query,
   sectionData,
   additionalData,
-  sectionTitle,
+  sectionTitle = getTitleForQuery(query),
   sectionTitleDetail,
   showButton,
   showLink
@@ -61,9 +61,8 @@ export const DataListSection = ({
   if (loading) {
     return (
       <View>
-        {!!sectionTitle && (
-          <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
-        )}
+        {!!sectionTitle && <SectionHeader onPress={navigate} title={sectionTitle} />}
+
         <LoadingContainer>
           <ActivityIndicator color={colors.accent} />
         </LoadingContainer>
@@ -87,9 +86,7 @@ export const DataListSection = ({
 
   return (
     <View>
-      {!!sectionTitle && (
-        <SectionHeader onPress={navigate} title={sectionTitle ?? getTitleForQuery(query)} />
-      )}
+      {!!sectionTitle && <SectionHeader onPress={navigate} title={sectionTitle} />}
       {!!limit &&
         (listData?.length ? (
           <ListComponent

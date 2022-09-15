@@ -1,13 +1,11 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import _isNumber from 'lodash/isNumber';
 import moment from 'moment';
 import 'moment/locale/de';
 import React from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
 import { Calendar, CalendarProps } from 'react-native-calendars';
 import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day/basic';
 
-import { colors, consts, normalize, texts } from '../../config';
+import { colors, consts, texts } from '../../config';
 import { setupLocales } from '../../helpers';
 import { ScreenName, VolunteerCalendar as TVolunteerCalendar } from '../../types';
 import { renderArrow } from '../calendarArrows';
@@ -20,7 +18,7 @@ const DayComponent = (props: BasicDayProps) => (
 
 type Props = {
   query: string;
-  queryVariables?: { dateRange?: string[]; contentContainerId?: number } | number;
+  queryVariables?: { dateRange?: string[]; contentContainerId?: number };
   calendarData: TVolunteerCalendar[];
   isLoading: boolean;
   navigation: StackNavigationProp<any>;
@@ -69,52 +67,34 @@ export const VolunteerCalendar = ({
   isLoading,
   navigation
 }: Props) => {
-  const contentContainerId =
-    queryVariables && _isNumber(queryVariables)
-      ? queryVariables
-      : queryVariables?.contentContainerId;
+  const contentContainerId = queryVariables?.contentContainerId;
 
   return (
-    <View style={styles.topMarginContainer}>
-      <Calendar
-        dayComponent={DayComponent}
-        onDayPress={(day) =>
-          navigation.push(ScreenName.VolunteerIndex, {
-            title: texts.volunteer.calendar,
-            query,
-            queryVariables: { dateRange: [day.dateString], contentContainerId },
-            rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-          })
+    <Calendar
+      dayComponent={DayComponent}
+      onDayPress={(day) =>
+        navigation.push(ScreenName.VolunteerIndex, {
+          title: texts.volunteer.calendar,
+          query,
+          queryVariables: { dateRange: [day.dateString], contentContainerId },
+          rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+        })
+      }
+      displayLoadingIndicator={isLoading}
+      markedDates={getMarkedDates(calendarData)}
+      markingType="multi-dot"
+      renderArrow={renderArrow}
+      firstDay={1}
+      theme={{
+        todayTextColor: colors.primary,
+        indicatorColor: colors.primary,
+        dotStyle: {
+          borderRadius: DOT_SIZE / 2,
+          height: DOT_SIZE,
+          width: DOT_SIZE
         }
-        displayLoadingIndicator={isLoading}
-        markedDates={getMarkedDates(calendarData)}
-        markingType="multi-dot"
-        renderArrow={renderArrow}
-        firstDay={1}
-        theme={{
-          todayTextColor: colors.primary,
-          indicatorColor: colors.primary,
-          dotStyle: {
-            borderRadius: DOT_SIZE / 2,
-            height: DOT_SIZE,
-            width: DOT_SIZE
-          }
-        }}
-        enableSwipeMonths
-      />
-      {/* TODO: show dot with color for the different calendars available */}
-      {/* <WasteCalendarLegend data={usedTypes} /> */}
-    </View>
+      }}
+      enableSwipeMonths
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  topMarginContainer: {
-    ...Platform.select({
-      android: {
-        marginTop: normalize(44)
-      },
-      ios: {}
-    })
-  }
-});

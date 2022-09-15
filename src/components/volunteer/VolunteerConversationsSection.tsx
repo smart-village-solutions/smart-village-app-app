@@ -15,7 +15,7 @@ type Props = {
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
   query: VolunteerQuery;
-  queryVariables?: { dateRange?: string[] } | number;
+  queryVariables?: { dateRange?: string[] };
   sectionTitle?: string;
   sectionTitleDetail?: string;
   showButton?: boolean;
@@ -42,7 +42,7 @@ export const VolunteerConversationsSection = ({
     query,
     queryVariables,
     queryOptions: {
-      refetchInterval: 3000
+      refetchInterval: 1000
     }
   });
 

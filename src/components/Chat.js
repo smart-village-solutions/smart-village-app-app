@@ -122,30 +122,32 @@ export const Chat = ({
       user={{ _id: parseInt(userId) }}
       renderActions={(props) => {
         const mediaActionSheet = {
-          'Aus Bibliothek wählen': async () => {
+          'Foto wählen': async () => {
             const { uri, type } = await selectImage();
             const mediaType = (IMAGE_TYPE_REGEX.exec(uri) || VIDEO_TYPE_REGEX.exec(uri))[1];
 
             try {
               await errorHandler(uri);
             } catch (error) {
-              return Alert.alert(error.title, error.message);
+              console.error(error);
+              return;
             }
 
             setMedias([...medias, { mimeType: `${type}/${mediaType}`, type, uri }]);
           },
-          'Dokument senden': async () => {
+          'Dokument wählen': async () => {
             const { mimeType, uri } = await selectDocument();
 
             try {
               await errorHandler(uri);
             } catch (error) {
-              return Alert.alert(error.title, error.message);
+              console.error(error);
+              return;
             }
 
             setMedias([...medias, { mimeType, type: 'pdf', uri }]);
           },
-          Cancel: () => null
+          Abbrechen: () => null
         };
 
         return (
@@ -191,7 +193,7 @@ export const Chat = ({
             onPress={() => openLink(uri)}
             style={styles.pdfBubble}
           >
-            <Icon.NamedIcon name="document" size={normalize(50)} />
+            <Icon.Document size={normalize(50)} />
           </TouchableOpacity>
         ))
       }
@@ -275,7 +277,7 @@ const renderFooter = (medias, setMedias) => (
               onPress={() => openLink(uri)}
               style={[styles.mediaBorder, styles.mediaPreview, styles.pdfPreview]}
             >
-              <Icon.NamedIcon name="document" size={normalize(50)} />
+              <Icon.Document size={normalize(50)} />
             </TouchableOpacity>
           )}
           <View style={styles.mediaDeleteButton}>
