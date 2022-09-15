@@ -129,7 +129,8 @@ export const Chat = ({
             try {
               await errorHandler(uri);
             } catch (error) {
-              return Alert.alert(error.title, error.message);
+              console.error(error);
+              return;
             }
 
             setMedias([...medias, { mimeType: `${type}/${mediaType}`, type, uri }]);
@@ -140,7 +141,8 @@ export const Chat = ({
             try {
               await errorHandler(uri);
             } catch (error) {
-              return Alert.alert(error.title, error.message);
+              console.error(error);
+              return;
             }
 
             setMedias([...medias, { mimeType, type: 'pdf', uri }]);
@@ -191,7 +193,7 @@ export const Chat = ({
             onPress={() => openLink(uri)}
             style={styles.pdfBubble}
           >
-            <Icon.NamedIcon name="document" size={normalize(50)} />
+            <Icon.Document size={normalize(50)} />
           </TouchableOpacity>
         ))
       }
@@ -275,7 +277,7 @@ const renderFooter = (medias, setMedias) => (
               onPress={() => openLink(uri)}
               style={[styles.mediaBorder, styles.mediaPreview, styles.pdfPreview]}
             >
-              <Icon.NamedIcon name="document" size={normalize(50)} />
+              <Icon.Document size={normalize(50)} />
             </TouchableOpacity>
           )}
           <View style={styles.mediaDeleteButton}>
