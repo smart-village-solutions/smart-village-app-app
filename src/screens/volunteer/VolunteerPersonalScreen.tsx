@@ -133,6 +133,8 @@ export const VolunteerPersonalScreen = ({ navigation }: any) => {
           navigation={navigation}
           query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY}
           sectionTitle="Mein Kalender"
+          showLink
+          showButton
         />
         {/* <DataListSection
           linkTitle="Alle Aufgaben anzeigen"

@@ -20,7 +20,7 @@ const DayComponent = (props: BasicDayProps) => (
 
 type Props = {
   query: string;
-  queryVariables?: { dateRange?: string[]; contentContainerId?: number } | number;
+  queryVariables?: { dateRange?: string[]; contentContainerId?: number };
   calendarData: TVolunteerCalendar[];
   isLoading: boolean;
   navigation: StackNavigationProp<any>;
@@ -69,10 +69,7 @@ export const VolunteerCalendar = ({
   isLoading,
   navigation
 }: Props) => {
-  const contentContainerId =
-    queryVariables && _isNumber(queryVariables)
-      ? queryVariables
-      : queryVariables?.contentContainerId;
+  const contentContainerId = queryVariables?.contentContainerId;
 
   return (
     <View style={styles.topMarginContainer}>

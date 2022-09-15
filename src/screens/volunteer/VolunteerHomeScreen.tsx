@@ -135,6 +135,8 @@ export const VolunteerHomeScreen = ({ navigation, route }: any) => {
           navigation={navigation}
           query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
           sectionTitle="Kalender"
+          showLink
+          showButton
         />
         <VolunteerHomeSection
           linkTitle="Alle Gruppen und Vereine anzeigen"
