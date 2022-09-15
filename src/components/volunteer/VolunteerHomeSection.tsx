@@ -121,6 +121,7 @@ export const VolunteerHomeSection = ({
             navigation={navigation}
             query={query}
             sectionData={sectionData}
+            sectionTitle=""
           />
         )}
         <DataListSection
