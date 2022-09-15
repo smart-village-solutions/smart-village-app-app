@@ -40,7 +40,7 @@ const NAVIGATION = {
       title: texts.volunteer.conversations,
       query: QUERY_TYPES.VOLUNTEER.CONVERSATIONS,
       queryOptions: {
-        refetchInterval: 3000
+        refetchInterval: 1000
       },
       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
     }
