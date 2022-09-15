@@ -74,9 +74,8 @@ export const VolunteerGroup = ({
     mutateAsync: mutateAsyncJoin,
     isSuccess: isSuccessJoin
   } = useMutation(groupJoin);
-  const { mutate: mutateRequest, isSuccess: isSuccessRequest } = useMutation(
-    groupRequestMembership
-  );
+  const { mutate: mutateRequest, isSuccess: isSuccessRequest } =
+    useMutation(groupRequestMembership);
   const {
     mutate: mutateLeave,
     mutateAsync: mutateAsyncLeave,
@@ -175,7 +174,6 @@ export const VolunteerGroup = ({
           <VolunteerHomeSection
             linkTitle="Alle Termine anzeigen"
             buttonTitle="Termin eintragen"
-            showButton={isGroupOwner}
             navigateLink={() =>
               navigation.push(ScreenName.VolunteerIndex, {
                 title: texts.volunteer.calendar,
@@ -204,6 +202,8 @@ export const VolunteerGroup = ({
             query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
             queryVariables={{ contentContainerId }}
             sectionTitle="Kalender"
+            showLink
+            showButton={isGroupOwner || isGroupMember}
           />
         )}
 
