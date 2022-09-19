@@ -39,7 +39,22 @@ export const downloadObject = async ({ index, data, setData }) => {
 
       downloadedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADED;
       downloadedData[index].payload.size += size;
-      downloadedData[index].payload.localUris.push({ uri, id, size, title, type });
+      downloadedData[index].payload.localUris.push({
+        uri,
+        id,
+        size,
+        title,
+        type,
+        chromaKeyFilteredVideo: objectItem?.chromaKeyFilteredVideo, // HEX Color Code
+        maxDistance: parseFloat(objectItem?.maxDistance),
+        minDistance: parseFloat(objectItem?.minDistance),
+        physicalWidth: parseFloat(objectItem?.physicalWidth),
+        position: objectItem?.position, // Array [x,y,z]
+        rolloffModel: objectItem?.rolloffModel, // String (none, linear, or logarithmic)
+        rotation: objectItem?.rotation, // Array [x,y,z]
+        scale: objectItem?.scale, // Array [x,y,z]
+        isSpatialSound: objectItem?.isSpatialSound // Boolean
+      });
 
       addToStore(storageName, downloadedData[index]);
     } catch (e) {

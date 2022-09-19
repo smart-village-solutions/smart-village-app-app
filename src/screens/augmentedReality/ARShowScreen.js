@@ -1,7 +1,7 @@
+import { ViroARSceneNavigator } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { ViroARSceneNavigator } from '@viro-community/react-viro';
 
 import { AugmentedRealityView, LoadingSpinner } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
@@ -122,9 +122,20 @@ const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
 
   item?.payload?.localUris?.forEach((item) => {
     if (item.type === 'texture') {
-      parsedObject[item.type].push({ uri: item.uri });
+      parsedObject[item?.type].push({ uri: item?.uri });
     } else {
-      parsedObject[item.type] = item.uri;
+      parsedObject[item?.type] = {
+        chromaKeyFilteredVideo: item?.chromaKeyFilteredVideo,
+        maxDistance: item?.maxDistance,
+        minDistance: item?.minDistance,
+        physicalWidth: item?.physicalWidth,
+        position: item?.position,
+        rolloffModel: item?.rolloffModel,
+        rotation: item?.rotation,
+        scale: item?.scale,
+        isSpatialSound: item?.isSpatialSound,
+        uri: item?.uri
+      };
     }
   });
 
@@ -136,7 +147,7 @@ const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
     );
   }
 
-  setObject(parsedObject);
+  setObject(JSON.parse(JSON.stringify(parsedObject)));
   setIsLoading(false);
 };
 
