@@ -1,3 +1,4 @@
+import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
@@ -47,6 +48,11 @@ export const Tour = ({ data, navigation, route }) => {
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
+  // for tour addresses we just consider addresses that are kind of 'start' or 'end'
+  const tourAddresses = _filter(
+    addresses,
+    (address) => address.kind === 'start' || address.kind === 'end'
+  );
 
   // TODO: DEVELOP! - it will be deleted, it was only made to development!
   let augmentedReality = true;
@@ -82,7 +88,9 @@ export const Tour = ({ data, navigation, route }) => {
           <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
         </Wrapper>
 
-        <TourCard lengthKm={lengthKm} addresses={addresses} />
+        {(!!tourAddresses.length || !!lengthKm) && (
+          <TourCard lengthKm={lengthKm} tourAddresses={tourAddresses} />
+        )}
 
         {!!description && (
           <View>

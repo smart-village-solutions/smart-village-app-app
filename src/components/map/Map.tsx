@@ -101,7 +101,7 @@ export const Map = ({
       </MapView>
       {isMaximizeButtonVisible && (
         <TouchableOpacity style={stylesForMap().maximizeMapButton} onPress={onMaximizeButtonPress}>
-          <Icon.NamedIcon name="expand" color={colors.primary} size={normalize(18)} />
+          <Icon.ExpandMap size={normalize(18)} />
         </TouchableOpacity>
       )}
     </View>

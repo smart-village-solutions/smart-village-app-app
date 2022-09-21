@@ -1,6 +1,6 @@
+import { isARSupportedOnDevice } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { isARSupportedOnDevice } from '@viro-community/react-viro';
 
 import { colors, consts, device, texts } from '../../config';
 import { checkDownloadedData, navigationToArtworksDetailScreen } from '../../helpers';
@@ -165,13 +165,14 @@ export const AugmentedReality = ({ navigation, onSettingsScreen, tourID }) => {
   );
 };
 
-const mapToMapMarkers = (augmentedReality) => {
-  return augmentedReality
+const mapToMapMarkers = (augmentedReality) =>
+  augmentedReality
     ?.map((item) => {
-      const latitude = item.location.lat;
-      const longitude = item.location.lng;
+      const latitude = item.location?.lat;
+      const longitude = item.location?.lng;
 
       if (!latitude || !longitude) return undefined;
+
       return {
         icon: location(colors.primary),
         iconAnchor: locationIconAnchor,
@@ -183,7 +184,6 @@ const mapToMapMarkers = (augmentedReality) => {
       };
     })
     .filter((item) => item !== undefined);
-};
 
 AugmentedReality.propTypes = {
   navigation: PropTypes.object,
