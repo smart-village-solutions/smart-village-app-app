@@ -3,5 +3,6 @@ export * from './deleteObject';
 export * from './downloadAndDeleteAllData';
 export * from './downloadObject';
 export * from './downloadType';
+export * from './navigationToArtworkDetailScreen';
 export * from './progressSizeGenerator';
 export * from './storageNameCreator';

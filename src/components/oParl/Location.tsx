@@ -5,7 +5,7 @@ import React from 'react';
 import { colors, texts } from '../../config';
 import { location, locationIconAnchor } from '../../icons';
 import { isFeature, isFeatureCollection, isMultiPoint, isPoint } from '../../jsonValidation';
-import { LocationData } from '../../types';
+import { LocationData, MapMarker } from '../../types';
 import { Map } from '../map';
 import { WrapperHorizontal } from '../Wrapper';
 
@@ -31,8 +31,8 @@ const getMapMarkers = (geoJson: unknown): MapMarker[] => {
         icon: location(colors.primary),
         iconAnchor: locationIconAnchor,
         position: {
-          lat: geoJson.coordinates[1],
-          lng: geoJson.coordinates[0]
+          latitude: geoJson.coordinates[1],
+          longitude: geoJson.coordinates[0]
         }
       }
     ];
@@ -45,8 +45,8 @@ const getMapMarkers = (geoJson: unknown): MapMarker[] => {
         icon: location(colors.primary),
         iconAnchor: locationIconAnchor,
         position: {
-          lat: entry[1],
-          lng: entry[0]
+          latitude: entry[1],
+          longitude: entry[0]
         }
       }));
   } else if (isFeature(geoJson)) {

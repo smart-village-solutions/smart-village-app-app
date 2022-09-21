@@ -31,6 +31,7 @@ import {
   HtmlScreen,
   IndexScreen,
   LunchScreen,
+  MapViewScreen,
   MultiButtonScreen,
   NestedInfoScreen,
   OParlCalendarScreen,
@@ -249,6 +250,11 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Lunch,
       screenComponent: LunchScreen
+    },
+    {
+      routeName: ScreenName.MapView,
+      screenComponent: MapViewScreen,
+      screenOptions: { title: texts.screenTitles.mapView }
     },
     {
       routeName: ScreenName.MultiButton,

@@ -12,7 +12,7 @@ import { RegularText } from '../Text';
 import { SettingsToggle } from '../SettingsToggle';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { ownLocationIconAnchor, ownLocation } from '../../icons';
-import { latLngToLocationObject } from '../../helpers';
+import { geoLocationToLocationObject } from '../../helpers';
 
 const baseLocationMarker = {
   icon: ownLocation(colors.accent),
@@ -32,8 +32,7 @@ const useSystemPermission = () => {
 const getLocationMarker = (locationObject) => ({
   ...baseLocationMarker,
   position: {
-    lat: locationObject.coords.latitude,
-    lng: locationObject.coords.longitude
+    ...locationObject.coords
   }
 });
 
@@ -117,11 +116,10 @@ export const LocationSettings = () => {
         <Collapsible collapsed={!showMap}>
           <Map
             locations={locations}
-            mapCenterPosition={{ lat: 51.1657, lng: 10.4515 }} // center of Germany
+            mapCenterPosition={{ latitude: 51.1657, longitude: 10.4515 }} // center of Germany
             onMapPress={({ nativeEvent }) => {
               setSelectedPosition({
-                lat: nativeEvent.coordinate.latitude,
-                lng: nativeEvent.coordinate.longitude
+                ...nativeEvent.coordinate
               });
             }}
             zoom={4}
@@ -132,7 +130,7 @@ export const LocationSettings = () => {
               onPress={() => {
                 selectedPosition &&
                   setAndSyncLocationSettings({
-                    alternativePosition: latLngToLocationObject(selectedPosition)
+                    alternativePosition: geoLocationToLocationObject(selectedPosition)
                   });
                 setSelectedPosition(undefined);
                 setShowMap(false);

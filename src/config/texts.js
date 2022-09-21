@@ -32,6 +32,10 @@ export const texts = {
       header: 'AR-Kunstwerk'
     },
     cancel: 'Abbrechen',
+    filter: {
+      mapView: 'Kartenansicht',
+      listView: 'Listenansicht'
+    },
     hide: 'Ausblenden',
     invalidModelError: 'Das 3D-Modell konnte nicht richtig geladen werden.',
     loadingArtworks: 'Kunstwerke laden',
@@ -653,6 +657,7 @@ export const texts = {
     encounterHome: 'Mitfahrbank',
     feedback: 'Feedback',
     home: appJson.expo.name,
+    mapView: 'Kartenansicht',
     routePlanner: 'Routenplaner bbnavi',
     service: appJson.expo.name,
     settings: 'Einstellungen',

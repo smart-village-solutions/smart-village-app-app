@@ -167,7 +167,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
                 {
                   icon: location(colors.primary),
                   iconAnchor: locationIconAnchor,
-                  position: { lat: latitude, lng: longitude }
+                  position: { latitude, longitude }
                 }
               ]}
             />

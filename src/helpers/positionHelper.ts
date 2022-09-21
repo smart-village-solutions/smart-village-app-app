@@ -59,11 +59,13 @@ const getLatLonForPOI = (item: any): LatLon | undefined => {
 export const sortPOIsByDistanceFromPosition = (pointsOfInterest: any[], position: LatLon) =>
   sortByDistancesFromPoint(pointsOfInterest, getLatLonForPOI, position);
 
-export const latLngToLocationObject = (latLng: { lat: number; lng: number }): LocationObject => {
+export const geoLocationToLocationObject = (geoLocation: {
+  latitude: number;
+  longitude: number;
+}): LocationObject => {
   return {
     coords: {
-      latitude: latLng.lat,
-      longitude: latLng.lng,
+      ...geoLocation,
       altitude: null,
       accuracy: null,
       altitudeAccuracy: null,

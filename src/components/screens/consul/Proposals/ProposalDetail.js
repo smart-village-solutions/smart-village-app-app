@@ -191,7 +191,7 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
               {
                 icon: location(colors.primary),
                 iconAnchor: locationIconAnchor,
-                position: { lat: latitude, lng: longitude }
+                position: { latitude, longitude }
               }
             ]}
           />

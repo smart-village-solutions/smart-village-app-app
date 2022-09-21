@@ -2,8 +2,8 @@ import { Point } from 'react-native-maps';
 
 export type MapMarker = {
   position: {
-    lat: number;
-    lng: number;
+    latitude: number;
+    longitude: number;
   };
   icon: any;
   iconAnchor?: Point;

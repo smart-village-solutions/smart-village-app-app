@@ -49,8 +49,8 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
           iconAnchor: locationIconAnchor,
           id: item.id,
           position: {
-            lat: latitude,
-            lng: longitude
+            latitude,
+            longitude
           }
         };
       })
@@ -105,8 +105,7 @@ export const LocationOverview = ({
   //     icon: ownLocation(colors.accent),
   //     iconAnchor: ownLocationIconAnchor,
   //     position: {
-  //       lat: position.coords.latitude,
-  //       lng: position.coords.longitude
+  //       ...position.coords
   //     }
   //   });
 

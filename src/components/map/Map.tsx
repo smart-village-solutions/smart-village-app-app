@@ -1,19 +1,22 @@
-import React, { useRef, useState } from 'react';
-import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import React, { useRef } from 'react';
+import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { normalize } from 'react-native-elements';
 import MapView, { MAP_TYPES, Marker, UrlTile } from 'react-native-maps';
 import { SvgXml } from 'react-native-svg';
 
-import { colors, device } from '../../config';
+import { colors, device, Icon } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
 import { MapMarker } from '../../types';
 
 type Props = {
+  isMaximizeButtonVisible?: boolean;
   locations?: MapMarker[];
-  mapCenterPosition?: { lat: number; lng: number };
+  mapCenterPosition?: { latitude: number; longitude: number };
   mapStyle?: StyleProp<ViewStyle>;
   onMapPress?: () => void;
   onMarkerPress?: (arg0?: string) => void;
+  onMaximizeButtonPress?: () => void;
+  showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
   zoom?: number;
 };
@@ -21,16 +24,18 @@ type Props = {
 const MARKER_ICON_SIZE = normalize(40);
 
 export const Map = ({
+  isMaximizeButtonVisible,
   locations,
   mapCenterPosition,
-  style,
   mapStyle,
-  onMarkerPress,
   onMapPress,
+  onMarkerPress,
+  onMaximizeButtonPress,
+  showsUserLocation = true,
+  style,
   zoom = 0
 }: Props) => {
   const refForMapView = useRef<MapView>(null);
-  const [showsUserLocation, setShowsUserLocation] = useState(true);
   // LATITUDE_DELTA handles the zoom, see: https://github.com/react-native-maps/react-native-maps/issues/2129#issuecomment-457056572
   const LATITUDE_DELTA = zoom || 0.0922;
   // example for longitude delta: https://github.com/react-native-maps/react-native-maps/blob/0.30.x/example/examples/DisplayLatLng.js#L18
@@ -38,15 +43,13 @@ export const Map = ({
 
   const initialRegion = locations?.[0]
     ? {
-        latitude: locations[0].position.lat,
-        longitude: locations[0].position.lng,
+        ...locations[0].position,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA
       }
     : mapCenterPosition
     ? {
-        latitude: mapCenterPosition.lat,
-        longitude: mapCenterPosition.lng,
+        ...mapCenterPosition,
         latitudeDelta: LATITUDE_DELTA,
         longitudeDelta: LONGITUDE_DELTA
       }
@@ -86,7 +89,7 @@ export const Map = ({
           <Marker
             identifier={marker.id}
             key={`${index}-${marker.id}`}
-            coordinate={{ latitude: marker.position?.lat, longitude: marker.position?.lng }}
+            coordinate={marker.position}
             onPress={() => {
               if (onMarkerPress) {
                 onMarkerPress(marker.id);
@@ -97,6 +100,11 @@ export const Map = ({
           </Marker>
         ))}
       </MapView>
+      {isMaximizeButtonVisible && (
+        <TouchableOpacity style={stylesForMap().maximizeMapButton} onPress={onMaximizeButtonPress}>
+          <Icon.ExpandMap size={normalize(18)} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -116,6 +124,19 @@ const stylesForMap = () => {
       backgroundColor: colors.lightestText,
       flex: 1,
       justifyContent: 'center'
+    },
+    maximizeMapButton: {
+      alignItems: 'center',
+      backgroundColor: colors.surface,
+      borderRadius: 50,
+      bottom: normalize(15),
+      height: normalize(48),
+      justifyContent: 'center',
+      opacity: 0.6,
+      position: 'absolute',
+      right: normalize(15),
+      width: normalize(48),
+      zIndex: 1
     },
     map: {
       alignSelf: 'center',

@@ -116,6 +116,7 @@ export const Icon = {
   DrawerMenu: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
   EditSetting: (props: IconProps) => <NamedIcon name="md-create" {...props} />,
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
+  ExpandMap: (props: IconProps) => <Icon.NamedIcon name="expand" {...props} />,
   Home: (props: IconProps) => <SvgIcon xml={home} {...props} />,
   NamedIcon,
   HeartEmpty: (props: IconProps) => <SvgIcon xml={heartEmpty} {...props} />,

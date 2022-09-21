@@ -143,7 +143,10 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
                 {
                   icon: locationIcon(colors.primary),
                   iconAnchor: locationIconAnchor,
-                  position: { lat: location.lat, lng: location.lon }
+                  position: {
+                    latitude: location.lat,
+                    longitude: location.lon
+                  }
                 }
               ]}
             />

@@ -1,4 +1,3 @@
-import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -19,7 +18,7 @@ const addressOnPress = (address) => {
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const TourCard = ({ addresses, lengthKm }) => (
+export const TourCard = ({ lengthKm, tourAddresses }) => (
   <View>
     <TitleContainer>
       <Title accessibilityLabel={`(${texts.tour.tour}) ${consts.a11yLabel.heading}`}>
@@ -35,38 +34,35 @@ export const TourCard = ({ addresses, lengthKm }) => (
         </InfoBox>
       )}
 
-      {!!addresses &&
-        _filter(addresses, (address) => address.kind === 'start' || address.kind === 'end').map(
-          (item, index) => {
-            const { city, street, zip, kind } = item;
-            let address = '';
+      {tourAddresses?.map((item, index) => {
+        const { city, street, zip, kind } = item;
+        let address = '';
 
-            if (!city && !street && !zip) return null;
+        if (!city && !street && !zip) return null;
 
-            // build the address in multiple steps to check every data before rendering
-            if (street) {
-              address += `${street},${'\n'}`;
-            }
-            if (zip) {
-              address += `${zip} `;
-            }
-            if (city) {
-              address += city;
-            }
+        // build the address in multiple steps to check every data before rendering
+        if (street) {
+          address += `${street},${'\n'}`;
+        }
+        if (zip) {
+          address += `${zip} `;
+        }
+        if (city) {
+          address += city;
+        }
 
-            return (
-              <InfoBox key={index}>
-                <Icon.Location style={styles.margin} />
-                <View>
-                  <RegularText>{kind === 'start' ? texts.tour.start : texts.tour.end}</RegularText>
-                  <TouchableOpacity onPress={() => addressOnPress(address)}>
-                    <RegularText primary>{address}</RegularText>
-                  </TouchableOpacity>
-                </View>
-              </InfoBox>
-            );
-          }
-        )}
+        return (
+          <InfoBox key={index}>
+            <Icon.Location style={styles.margin} />
+            <View>
+              <RegularText>{kind === 'start' ? texts.tour.start : texts.tour.end}</RegularText>
+              <TouchableOpacity onPress={() => addressOnPress(address)}>
+                <RegularText primary>{address}</RegularText>
+              </TouchableOpacity>
+            </View>
+          </InfoBox>
+        );
+      })}
     </Wrapper>
   </View>
 );
@@ -79,6 +75,6 @@ const styles = StyleSheet.create({
 });
 
 TourCard.propTypes = {
-  addresses: PropTypes.array,
-  lengthKm: PropTypes.number
+  lengthKm: PropTypes.number,
+  tourAddresses: PropTypes.array
 };
