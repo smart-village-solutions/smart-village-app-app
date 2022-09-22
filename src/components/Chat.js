@@ -155,7 +155,7 @@ export const Chat = ({
             {...props}
             options={mediaActionSheet}
             containerStyle={styles.actionButtonContainer}
-            icon={() => <Icon.NamedIcon name="add" size={normalize(24)} color={colors.darkText} />}
+            icon={() => <Icon.Plus size={normalize(24)} color={colors.darkText} />}
           />
         );
       }}
@@ -237,7 +237,7 @@ export const Chat = ({
           containerStyle={styles.sendButtonContainer}
           sendButtonProps={{ ...sendButtonProps, onPress: () => onSendMessages(text, onSend) }}
         >
-          <Icon.NamedIcon name="send" color={colors.surface} />
+          <Icon.Send color={colors.surface} />
         </Send>
       )}
       renderTime={(props) => (
@@ -282,11 +282,7 @@ const renderFooter = (medias, setMedias) => (
           )}
           <View style={styles.mediaDeleteButton}>
             <TouchableOpacity onPress={() => setMedias(deleteArrayItem(medias, index))}>
-              <Icon.NamedIcon
-                name="close-circle-outline"
-                size={normalize(24)}
-                color={colors.surface}
-              />
+              <Icon.CloseCircleOutline size={normalize(24)} color={colors.surface} />
             </TouchableOpacity>
           </View>
         </Wrapper>
