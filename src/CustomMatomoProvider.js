@@ -1,22 +1,25 @@
 import MatomoTracker, { MatomoProvider } from 'matomo-tracker-react-native';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
-import { namespace, secrets } from './config';
 import { matomoSettings } from './helpers';
 import { useUserInfoAsync } from './hooks';
+import { SettingsContext } from './SettingsProvider';
 
 export const CustomMatomoProvider = ({ children }) => {
   const [matomoInstance, setMatomoInstance] = useState();
   const getUserInfo = useUserInfoAsync();
+  const { globalSettings } = useContext(SettingsContext);
+  const urlBase = globalSettings?.settings?.matomo?.urlBase;
+  const siteId = globalSettings?.settings?.matomo?.siteId;
 
   useEffect(() => {
-    if (secrets[namespace]?.matomoUrl && secrets[namespace]?.matomoSiteId) {
+    if (urlBase && siteId) {
       matomoSettings()
         .then((settings) => {
           const instance = new MatomoTracker({
-            urlBase: secrets[namespace]?.matomoUrl,
-            siteId: secrets[namespace]?.matomoSiteId,
+            urlBase,
+            siteId,
             userId: settings?.userId,
             disabled: !settings?.consent || __DEV__,
             log: __DEV__
