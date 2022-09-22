@@ -7,7 +7,7 @@ import { ActivityIndicator, ScrollView, View } from 'react-native';
 
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy, isOpen } from '../../helpers';
-import { location, locationIconAnchor, ownLocation, ownLocationIconAnchor } from '../../icons';
+import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { MapMarker } from '../../types';
@@ -62,7 +62,6 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
 export const LocationOverview = ({
   filterByOpeningTimes,
   navigation,
-  position,
   queryVariables,
   route
 }: Props) => {
@@ -71,8 +70,7 @@ export const LocationOverview = ({
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime: undefined });
 
-  const overviewQuery = getQuery(QUERY_TYPES.POINTS_OF_INTEREST);
-  const { data: overviewData, loading } = useQuery(overviewQuery, {
+  const { data: overviewData, loading } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
     fetchPolicy,
     variables: queryVariables
   });
@@ -83,12 +81,14 @@ export const LocationOverview = ({
     pointsOfInterest = pointsOfInterest.filter((entry) => isOpen(entry.openingHours)?.open);
   }
 
-  const detailsQuery = getQuery(QUERY_TYPES.POINT_OF_INTEREST);
-  const { data: detailsData, loading: detailsLoading } = useQuery(detailsQuery, {
-    fetchPolicy,
-    variables: { id: selectedPointOfInterest },
-    skip: !selectedPointOfInterest
-  });
+  const { data: detailsData, loading: detailsLoading } = useQuery(
+    getQuery(QUERY_TYPES.POINT_OF_INTEREST),
+    {
+      fetchPolicy,
+      variables: { id: selectedPointOfInterest },
+      skip: !selectedPointOfInterest
+    }
+  );
 
   if (loading) {
     return (
@@ -99,15 +99,6 @@ export const LocationOverview = ({
   }
 
   const mapMarkers = mapToMapMarkers(pointsOfInterest);
-
-  // position &&
-  //   mapMarkers?.push({
-  //     icon: ownLocation(colors.accent),
-  //     iconAnchor: ownLocationIconAnchor,
-  //     position: {
-  //       ...position.coords
-  //     }
-  //   });
 
   if (!mapMarkers?.length) {
     return (

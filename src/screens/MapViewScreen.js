@@ -2,15 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import {
-  HtmlView,
-  Map,
-  RegularText,
-  Touchable,
-  Wrapper,
-  WrapperRow,
-  WrapperVertical
-} from '../components';
+import { HtmlView, Map, RegularText, Touchable, Wrapper, WrapperRow } from '../components';
 import { colors, Icon, normalize } from '../config';
 import { navigationToArtworksDetailScreen } from '../helpers';
 

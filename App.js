@@ -1,6 +1,7 @@
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Sentry from 'sentry-expo';
 
@@ -29,10 +30,14 @@ const App = () => {
   }, []);
 
   return fontLoaded ? (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.flex}>
       <MainApp />
     </GestureHandlerRootView>
   ) : null;
 };
 
 export default App;
+
+const styles = StyleSheet.create({
+  flex: { flex: 1 }
+});

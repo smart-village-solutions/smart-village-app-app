@@ -16,7 +16,12 @@ import { texts } from '../../config';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
 
 export const ARInfoScreen = ({ route }) => {
-  const { data: arInfo = '', error, loading, refetch } = useStaticContent({
+  const {
+    data: arInfo = '',
+    error,
+    loading,
+    refetch
+  } = useStaticContent({
     type: 'html',
     name: 'arInfo'
   });
