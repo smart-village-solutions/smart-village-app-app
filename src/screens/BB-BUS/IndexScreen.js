@@ -6,20 +6,21 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 
+import { BBBusClient } from '../../BBBusClient';
 import {
   DefaultKeyboardAvoidingView,
   IndexFilterWrapperAndList,
   LoadingContainer,
   SafeAreaViewFlex
 } from '../../components';
-import { BBBusClient } from '../../BBBusClient';
 import { ServiceList } from '../../components/BB-BUS/ServiceList';
-import { colors, consts, namespace, secrets, texts } from '../../config';
+import { colors, consts, texts } from '../../config';
 import { graphqlFetchPolicy, refreshTimeFor } from '../../helpers';
 import { shareMessage } from '../../helpers/BB-BUS/shareHelper';
 import { useMatomoTrackScreenView } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { GET_AREAS_AND_TOP_10, GET_SERVICES, GET_TOP_10_IDS } from '../../queries/BB-BUS';
+import { SettingsContext } from '../../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -34,9 +35,11 @@ const INITIAL_FILTER = [
 export const IndexScreen = ({ navigation }) => {
   const [refreshTime, setRefreshTime] = useState();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const [areaId, setAreaId] = useState(secrets[namespace]?.busBb?.v2?.areaId?.toString());
+  const { globalSettings } = useContext(SettingsContext);
+  const [areaId, setAreaId] = useState(globalSettings?.settings?.busBb?.v2?.areaId?.toString());
   const [filter, setFilter] = useState(INITIAL_FILTER);
   const [refreshing, setRefreshing] = useState(false);
+  const [client] = useState(BBBusClient(globalSettings?.settings?.busBb?.uri));
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.BB_BUS);
 
@@ -148,11 +151,11 @@ export const IndexScreen = ({ navigation }) => {
               <Query
                 query={GET_AREAS_AND_TOP_10}
                 variables={{
-                  areaId: secrets[namespace]?.busBb?.v2?.areaId?.toString(),
+                  areaId: globalSettings?.settings?.busBb?.v2?.areaId?.toString(),
                   ids: top10Ids
                 }}
                 fetchPolicy={fetchPolicy}
-                client={BBBusClient}
+                client={client}
               >
                 {({ data, loading }) => {
                   if (loading) {
@@ -176,9 +179,9 @@ export const IndexScreen = ({ navigation }) => {
                         query={GET_SERVICES}
                         variables={{ areaId }}
                         fetchPolicy={fetchPolicy}
-                        client={BBBusClient}
+                        client={client}
                       >
-                        {({ data, loading, client }) => {
+                        {({ data, loading }) => {
                           if (loading) {
                             return selectedFilter.id === 1 ? (
                               <ServiceList
@@ -188,8 +191,6 @@ export const IndexScreen = ({ navigation }) => {
                                 setAreaId={setAreaId}
                                 areas={areas}
                                 top10={top10}
-                                client={client}
-                                fetchPolicy={fetchPolicy}
                                 loading={loading}
                                 refreshControl={
                                   <RefreshControl
@@ -220,8 +221,6 @@ export const IndexScreen = ({ navigation }) => {
                               setAreaId={setAreaId}
                               areas={areas}
                               top10={top10}
-                              client={client}
-                              fetchPolicy={fetchPolicy}
                               loading={loading}
                               refreshControl={
                                 <RefreshControl

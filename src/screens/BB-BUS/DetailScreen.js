@@ -12,11 +12,12 @@ import { Persons } from '../../components/BB-BUS/Persons';
 import { TextBlock } from '../../components/BB-BUS/TextBlock';
 import { FeedbackFooter } from '../../components/FeedbackFooter';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
-import { colors, consts, device, namespace, normalize, secrets } from '../../config';
+import { colors, consts, device, normalize } from '../../config';
 import { matomoTrackingString, openLink } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { GET_SERVICE } from '../../queries/BB-BUS';
+import { SettingsContext } from '../../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -95,13 +96,15 @@ const parseTextBlocks = (service) => {
 export const DetailScreen = ({ route }) => {
   const scrollViewRef = useRef();
   const { isConnected } = useContext(NetworkContext);
+  const { globalSettings } = useContext(SettingsContext);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [client] = useState(BBBusClient(globalSettings?.settings?.busBb?.uri));
 
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
   const details = route?.params?.data ?? '';
-  const areaId = route.params?.areaId ?? secrets[namespace]?.busBb?.v2?.areaId?.toString();
+  const areaId = route.params?.areaId ?? globalSettings?.settings?.busBb?.v2?.areaId?.toString();
   const id = details.id;
 
   useMatomoTrackScreenView(matomoTrackingString([MATOMO_TRACKING.SCREEN_VIEW.BB_BUS, headerTitle]));
@@ -110,7 +113,7 @@ export const DetailScreen = ({ route }) => {
 
   const { data, loading, refetch } = useQuery(GET_SERVICE, {
     variables: { externalIds: id, areaId },
-    client: BBBusClient,
+    client,
     fetchPolicy: 'network-only',
     skip: !id || !areaId
   });
