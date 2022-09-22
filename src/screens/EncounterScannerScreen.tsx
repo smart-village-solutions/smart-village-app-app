@@ -33,14 +33,7 @@ const showErrorAlert = () => Alert.alert(texts.errors.errorTitle, texts.encounte
 const parseQrCode = (data: string): string | undefined => {
   const result = Linking.parse(data);
 
-  // while we are developing with expo go, the qr codes we will generate will not start with the specified app scheme, but with expo instead
-  // so we need to also expect those when scanning while testing in dev mode
-  if (
-    result.scheme === (__DEV__ ? 'exp' : appJson.expo.scheme) &&
-    // the created link for production looks like this "smart-village-app://encounter?qrId=xxxxxxxx"
-    // the "encounter" no longer gets treated as a path, but as a hostname because of that
-    (__DEV__ ? result.path : result.hostname) === 'encounter'
-  ) {
+  if (result.scheme === appJson.expo.scheme && result.hostname === 'encounter') {
     return result.queryParams?.qrId;
   }
 };

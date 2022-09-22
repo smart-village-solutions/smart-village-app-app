@@ -56,6 +56,7 @@
     "expo-application": "~4.1.0",
     "expo-asset": "~8.5.0",
     "expo-av": "~11.2.3",
+    "expo-barcode-scanner": "~11.3.0",
     "expo-blur": "~11.1.0",
     "expo-camera": "~12.2.0",
     "expo-constants": "~13.1.1",
