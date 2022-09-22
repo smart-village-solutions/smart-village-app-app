@@ -10,7 +10,7 @@ import { useMutation } from 'react-query';
 import { colors, consts, device, Icon, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { userEdit } from '../../queries/volunteer';
-import { countryList, VolunteerUser } from '../../types';
+import { countries, VolunteerUser } from '../../types';
 import { Button } from '../Button';
 import { Checkbox } from '../Checkbox';
 import { DateTimeInput } from '../form';
@@ -41,7 +41,7 @@ export const VolunteerFormProfile = ({
     ({ name }) => name === userData?.profile?.gender
   )[0]?.id;
 
-  const countryDefaultValue = countryList?.filter(
+  const countryDefaultValue = countries?.filter(
     ({ name }) => name === userData?.profile?.country
   )[0]?.id;
 
@@ -230,7 +230,7 @@ export const VolunteerFormProfile = ({
             <DropdownInput
               {...{
                 errors,
-                data: countryList,
+                data: countries,
                 value,
                 valueKey: 'name',
                 onChange,
