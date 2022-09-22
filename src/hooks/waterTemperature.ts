@@ -12,10 +12,11 @@ export const useWaterTemperature = (): {
 } => {
   const [refreshing, setRefreshing] = useState(false);
 
-  const { data, isLoading: loading, refetch } = useQuery(
-    QUERY_TYPES.WATER_TEMPERATURE,
-    getWaterTemperature
-  );
+  const {
+    data,
+    isLoading: loading,
+    refetch
+  } = useQuery(QUERY_TYPES.WATER_TEMPERATURE, getWaterTemperature);
 
   const refresh = useCallback(async () => {
     setRefreshing(true);
