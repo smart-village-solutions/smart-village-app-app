@@ -85,12 +85,7 @@ export const ARShowScreen = ({ navigation, route }) => {
             style={[styles.generalButtonStyle, styles.screenShotButton, styles.opacity]}
             onPress={takeScreenshot}
           >
-            <Icon.NamedIcon
-              name="camera"
-              color={colors.darkText}
-              size={normalize(30)}
-              style={styles.opacity}
-            />
+            <Icon.Camera color={colors.darkText} size={normalize(30)} style={styles.opacity} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -98,9 +93,9 @@ export const ARShowScreen = ({ navigation, route }) => {
             onPress={() => setIsStartAnimationAndSound(!isStartAnimationAndSound)}
           >
             {isStartAnimationAndSound ? (
-              <Icon.NamedIcon name="pause" color={colors.primary} size={normalize(30)} />
+              <Icon.Pause size={normalize(30)} />
             ) : (
-              <Icon.NamedIcon name="play" color={colors.primary} size={normalize(30)} />
+              <Icon.Play size={normalize(30)} />
             )}
           </TouchableOpacity>
         </>
