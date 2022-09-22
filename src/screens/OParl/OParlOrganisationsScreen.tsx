@@ -57,6 +57,10 @@ export const OParlOrganizationsScreen = ({ navigation }: Props) => {
     setFetchingMore(false);
   };
 
+  if (loading) {
+    return <LoadingSpinner loading />;
+  }
+
   if (error) {
     return (
       <SafeAreaViewFlex>
@@ -78,7 +82,7 @@ export const OParlOrganizationsScreen = ({ navigation }: Props) => {
         onEndReached={onEndReached}
         // this does currently not work as intended, until we upgrade our apollo client dependency
         // as of now the fetchmore function does not set the loading state to true
-        ListFooterComponent={<LoadingSpinner loading={!finished && (loading || fetchingMore)} />}
+        ListFooterComponent={<LoadingSpinner loading={!finished && fetchingMore} />}
       />
     </SafeAreaViewFlex>
   );
