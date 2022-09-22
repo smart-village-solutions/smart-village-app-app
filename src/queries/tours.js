@@ -136,6 +136,10 @@ export const GET_TOUR = gql`
           description
         }
       }
+      geometryTourData {
+        latitude
+        longitude
+      }
       webUrls {
         id
         url

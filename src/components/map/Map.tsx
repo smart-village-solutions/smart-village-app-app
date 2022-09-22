@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { normalize } from 'react-native-elements';
-import MapView, { MAP_TYPES, Marker, UrlTile } from 'react-native-maps';
+import MapView, { LatLng, MAP_TYPES, Marker, Polyline, UrlTile } from 'react-native-maps';
 import { SvgXml } from 'react-native-svg';
 
 import { colors, device, Icon } from '../../config';
@@ -9,6 +9,7 @@ import { imageHeight, imageWidth } from '../../helpers';
 import { MapMarker } from '../../types';
 
 type Props = {
+  geometryTourData?: LatLng[];
   isMaximizeButtonVisible?: boolean;
   locations?: MapMarker[];
   mapCenterPosition?: { latitude: number; longitude: number };
@@ -24,6 +25,7 @@ type Props = {
 const MARKER_ICON_SIZE = normalize(40);
 
 export const Map = ({
+  geometryTourData,
   isMaximizeButtonVisible,
   locations,
   mapCenterPosition,
@@ -85,6 +87,9 @@ export const Map = ({
           urlTemplate="https://tile-server.sva-services.customer.planetary-quantum.net/tile/{z}/{x}/{y}.png"
           shouldReplaceMapContent={device.platform === 'ios'}
         />
+        {!!geometryTourData?.length && (
+          <Polyline coordinates={geometryTourData} strokeWidth={2} strokeColor={colors.primary} />
+        )}
         {locations?.map((marker, index) => (
           <Marker
             identifier={marker.id}

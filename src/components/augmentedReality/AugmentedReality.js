@@ -30,7 +30,13 @@ const INITIAL_FILTER = [
   { id: TOP_FILTER.LIST_VIEW, title: texts.augmentedReality.filter.listView, selected: false }
 ];
 
-export const AugmentedReality = ({ id, navigation, onSettingsScreen, tourStops }) => {
+export const AugmentedReality = ({
+  geometryTourData,
+  id,
+  navigation,
+  onSettingsScreen,
+  tourStops
+}) => {
   const { globalSettings } = useContext(SettingsContext);
 
   const { data: tourData } = useQuery(getQuery(QUERY_TYPES.TOUR_STOPS), {
@@ -132,11 +138,13 @@ export const AugmentedReality = ({ id, navigation, onSettingsScreen, tourStops }
 
       {selectedFilterId === TOP_FILTER.MAP_VIEW && (
         <Map
+          geometryTourData={geometryTourData}
           locations={mapMarkers}
           onMarkerPress={setModelId}
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.MapView, {
               augmentedRealityData: { data },
+              geometryTourData,
               isAugmentedReality: true,
               isMaximizeButtonVisible: false,
               locations: mapMarkers
@@ -180,6 +188,7 @@ const mapToMapMarkers = (data) =>
     .filter((item) => item !== undefined);
 
 AugmentedReality.propTypes = {
+  geometryTourData: PropTypes.array,
   id: PropTypes.string,
   navigation: PropTypes.object,
   onSettingsScreen: PropTypes.bool,

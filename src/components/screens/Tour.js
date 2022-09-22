@@ -32,6 +32,7 @@ export const Tour = ({ data, navigation, route }) => {
     dataProvider,
     description,
     id,
+    geometryTourData,
     lengthKm,
     mediaContents,
     operatingCompany,
@@ -104,7 +105,9 @@ export const Tour = ({ data, navigation, route }) => {
           </View>
         )}
 
-        {!!tourStops?.length && <AugmentedReality {...{ id, tourStops, navigation }} />}
+        {!!tourStops?.length && (
+          <AugmentedReality {...{ geometryTourData, id, navigation, tourStops }} />
+        )}
 
         <OperatingCompany
           openWebScreen={openWebScreen}
