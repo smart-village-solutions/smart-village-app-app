@@ -1,7 +1,9 @@
-import { waterTemperature } from '../config';
+import { storageHelper } from '../helpers';
 
 export const getWaterTemperature = async () => {
-  const { serverUrl, authSecret } = waterTemperature;
+  const globalSettings = await storageHelper.globalSettings();
+  const serverUrl = globalSettings?.settings?.waterTemperature?.serverUrl;
+  const authSecret = globalSettings?.settings?.waterTemperature?.authSecret;
 
   const fetchObj = {
     method: 'GET',
