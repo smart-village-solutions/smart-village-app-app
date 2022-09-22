@@ -80,7 +80,7 @@ export const userEdit = async ({
       birthday: birthday && formatDate(birthday),
       birthday_hide_year: birthdayHideYear ? 1 : 0,
       city,
-      country,
+      country: country.toUpperCase(),
       fax,
       firstname: firstName,
       gender,
