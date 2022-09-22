@@ -4,6 +4,7 @@ exports[`Link renders a Link that opens a WebScreen 1`] = `
 <View
   accessibilityLabel="(description) (Link)"
   accessible={true}
+  collapsable={false}
   focusable={true}
   onClick={[Function]}
   onResponderGrant={[Function]}
@@ -153,6 +154,7 @@ exports[`Link renders a default Link 1`] = `
 <View
   accessibilityLabel="(description) (Link)"
   accessible={true}
+  collapsable={false}
   focusable={true}
   onClick={[Function]}
   onResponderGrant={[Function]}

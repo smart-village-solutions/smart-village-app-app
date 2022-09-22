@@ -1,13 +1,12 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import { isString } from 'lodash';
 import React from 'react';
-import { MapMarker } from 'react-native-webview-leaflet';
 
 import { colors, texts } from '../../config';
 import { location, locationIconAnchor } from '../../icons';
 import { isFeature, isFeatureCollection, isMultiPoint, isPoint } from '../../jsonValidation';
-import { LocationData } from '../../types';
-import { WebViewMap } from '../map';
+import { LocationData, MapMarker } from '../../types';
+import { Map } from '../map';
 import { WrapperHorizontal } from '../Wrapper';
 
 import { Row, SimpleRow } from './Row';
@@ -32,8 +31,8 @@ const getMapMarkers = (geoJson: unknown): MapMarker[] => {
         icon: location(colors.primary),
         iconAnchor: locationIconAnchor,
         position: {
-          lat: geoJson.coordinates[1],
-          lng: geoJson.coordinates[0]
+          latitude: geoJson.coordinates[1],
+          longitude: geoJson.coordinates[0]
         }
       }
     ];
@@ -46,8 +45,8 @@ const getMapMarkers = (geoJson: unknown): MapMarker[] => {
         icon: location(colors.primary),
         iconAnchor: locationIconAnchor,
         position: {
-          lat: entry[1],
-          lng: entry[0]
+          latitude: entry[1],
+          longitude: entry[0]
         }
       }));
   } else if (isFeature(geoJson)) {
@@ -113,7 +112,7 @@ export const Location = ({ data, navigation }: Props) => {
       <Row fullText left={locationTexts.postalCode} right={postalCode} />
       <Row fullText left={locationTexts.locality} right={localityString} />
       <Row fullText left={locationTexts.room} right={room} />
-      {!!mapMarkers.length && <WebViewMap locations={mapMarkers} />}
+      {!!mapMarkers.length && <Map locations={mapMarkers} />}
       <OParlPreviewSection
         data={meetings ?? meeting}
         header={locationTexts.meeting}

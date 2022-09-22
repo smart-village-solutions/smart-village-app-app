@@ -26,7 +26,7 @@ import {
 import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
 import { Image } from '../../../Image';
-import { WebViewMap } from '../../../map';
+import { Map } from '../../../map';
 import { BoldText, RegularText } from '../../../Text';
 import { Title, TitleContainer, TitleShadow } from '../../../Title';
 import { Wrapper, WrapperRow } from '../../../Wrapper';
@@ -184,15 +184,14 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
               {texts.consul.locationTitle}
             </Title>
           </TitleContainer>
-          <WebViewMap
+          <Map
             locations={[
               {
                 icon: location(colors.primary),
                 iconAnchor: locationIconAnchor,
-                position: { lat: latitude, lng: longitude }
+                position: { latitude, longitude }
               }
             ]}
-            zoom={14}
           />
         </>
       )}

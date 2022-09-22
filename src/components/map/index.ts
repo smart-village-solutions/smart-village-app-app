@@ -1,2 +1,2 @@
 export * from './LocationOverview';
-export * from './WebViewMap';
+export * from './Map';

@@ -5,14 +5,14 @@ import Collapsible from 'react-native-collapsible';
 
 import { colors, texts } from '../../config';
 import { useLocationSettings } from '../../hooks';
-import { WebViewMap } from '../map';
+import { Map } from '../map';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
 import { SettingsToggle } from '../SettingsToggle';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 import { ownLocationIconAnchor, ownLocation } from '../../icons';
-import { latLngToLocationObject } from '../../helpers';
+import { geoLocationToLocationObject } from '../../helpers';
 
 const baseLocationMarker = {
   icon: ownLocation(colors.accent),
@@ -32,8 +32,7 @@ const useSystemPermission = () => {
 const getLocationMarker = (locationObject) => ({
   ...baseLocationMarker,
   position: {
-    lat: locationObject.coords.latitude,
-    lng: locationObject.coords.longitude
+    ...locationObject.coords
   }
 });
 
@@ -115,15 +114,15 @@ export const LocationSettings = () => {
           </RegularText>
         </Wrapper>
         <Collapsible collapsed={!showMap}>
-          <WebViewMap
-            mapCenterPosition={{ lat: 51.1657, lng: 10.4515 }} // center of germany
+          <Map
             locations={locations}
-            onMessageReceived={(msg) => {
-              if (msg.event === 'onMapClicked') {
-                setSelectedPosition(msg.payload.touchLatLng);
-              }
+            mapCenterPosition={{ latitude: 51.1657, longitude: 10.4515 }} // center of Germany
+            onMapPress={({ nativeEvent }) => {
+              setSelectedPosition({
+                ...nativeEvent.coordinate
+              });
             }}
-            zoom={4} // this sets the zoom to show all of germany
+            zoom={4}
           />
           <Wrapper>
             <Button
@@ -131,7 +130,7 @@ export const LocationSettings = () => {
               onPress={() => {
                 selectedPosition &&
                   setAndSyncLocationSettings({
-                    alternativePosition: latLngToLocationObject(selectedPosition)
+                    alternativePosition: geoLocationToLocationObject(selectedPosition)
                   });
                 setSelectedPosition(undefined);
                 setShowMap(false);

@@ -12,7 +12,7 @@ import { NavigatorConfig, ScreenName } from '../../types';
 // const index = 2;
 
 // export const linkingConfig = {
-//   prefixes: [Linking.makeUrl('/')],
+//   prefixes: [Linking.createURL('/')],
 //   config: {
 //     screens: {
 //       // For tab navigation choose the preferred tab by its position in the config array
@@ -34,7 +34,7 @@ export const navigatorConfig: NavigatorConfig = {
 };
 
 export const linkingConfig = {
-  prefixes: [Linking.makeUrl('/')],
+  prefixes: [Linking.createURL('/')],
   config: {
     screens: {
       // For tab navigation choose the preferred tab by its position in the config array: AppStack -> `Stack${index}`

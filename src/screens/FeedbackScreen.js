@@ -107,6 +107,7 @@ export const FeedbackScreen = () => {
                     }}
                     value={phone}
                     style={styles.inputField}
+                    keyboardType="phone-pad"
                   />
                   <BoldText>Ihre Mitteilung</BoldText>
                   <TextInput
@@ -120,7 +121,7 @@ export const FeedbackScreen = () => {
                     textAlignVertical="top"
                   />
                   <CheckBox
-                    accessibilityRole="checkbox"
+                    accessibilityRole="button"
                     checked={consent}
                     onPress={() => setConsent(!consent)}
                     title="Ich bin mit dem Speichern meiner Daten einverstanden."

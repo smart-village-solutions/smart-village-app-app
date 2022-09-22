@@ -48,7 +48,8 @@ const INITIAL_TOP_FILTER = [
   { id: TOP_FILTER.MAP, title: texts.locationOverview.map, selected: false }
 ];
 
-const isMapSelected = (topFilter) =>
+const isMapSelected = (query, topFilter) =>
+  query === QUERY_TYPES.POINTS_OF_INTEREST &&
   topFilter.find((entry) => entry.selected).id === TOP_FILTER.MAP;
 
 const keyForSelectedValueByQuery = {
@@ -92,9 +93,9 @@ export const IndexScreen = ({ navigation, route }) => {
   );
   const { state: excludeDataProviderIds } = usePermanentFilter();
 
-  const showMap = isMapSelected(topFilter);
-
   const query = route.params?.query ?? '';
+
+  const showMap = isMapSelected(query, topFilter);
 
   // we currently only require the position for POIs
   const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST;

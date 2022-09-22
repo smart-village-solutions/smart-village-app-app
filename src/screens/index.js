@@ -1,3 +1,4 @@
+export * from './augmentedReality';
 export * from './consul';
 export * from './OParl';
 export * from './volunteer';
@@ -20,6 +21,7 @@ export * from './HomeScreen';
 export * from './HtmlScreen';
 export * from './IndexScreen';
 export * from './LunchScreen';
+export * from './MapViewScreen';
 export * from './MultiButtonScreen';
 export * from './NestedInfoScreen';
 export * from './SettingsScreen';

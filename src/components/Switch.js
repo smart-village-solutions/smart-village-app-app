@@ -23,6 +23,7 @@ export const Switch = ({ switchValue, toggleSwitch }) => (
     ios_backgroundColor={colors.shadow}
     onValueChange={toggleSwitch}
     value={switchValue}
+    accessibilityRole="button"
   />
 );
 

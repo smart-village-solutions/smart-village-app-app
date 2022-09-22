@@ -1,3 +1,4 @@
+export * from './augmentedReality';
 export * from './bookmarks';
 export * from './consul';
 export * from './encounter';
@@ -51,6 +52,7 @@ export * from './LoadingModal';
 export * from './LoadingSpinner';
 export * from './Logo';
 export * from './MediaSection';
+export * from './Modal';
 export * from './NewsSectionPlaceholder';
 export * from './Offer';
 export * from './OptionToggle';

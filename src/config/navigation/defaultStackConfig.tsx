@@ -4,6 +4,9 @@ import { HeaderLeft } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
 import {
   AboutScreen,
+  ARInfoScreen,
+  ARShowScreen,
+  ArtworkDetailScreen,
   BookmarkCategoryScreen,
   BookmarkScreen,
   ConstructionSiteDetailScreen,
@@ -28,6 +31,7 @@ import {
   HtmlScreen,
   IndexScreen,
   LunchScreen,
+  MapViewScreen,
   MultiButtonScreen,
   NestedInfoScreen,
   OParlCalendarScreen,
@@ -79,6 +83,21 @@ export const defaultStackConfig = ({
       routeName: ScreenName.About,
       screenComponent: AboutScreen,
       screenOptions: { title: texts.screenTitles.about }
+    },
+    {
+      routeName: ScreenName.ARInfo,
+      screenComponent: ARInfoScreen,
+      screenOptions: { title: texts.augmentedReality.arInfoScreen.header }
+    },
+    {
+      routeName: ScreenName.ARShow,
+      screenComponent: ARShowScreen,
+      screenOptions: { headerShown: false }
+    },
+    {
+      routeName: ScreenName.ArtworkDetail,
+      screenComponent: ArtworkDetailScreen,
+      screenOptions: { title: texts.augmentedReality.artworkDetailScreen.header }
     },
     {
       routeName: ScreenName.BBBUSIndex,
@@ -231,6 +250,11 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Lunch,
       screenComponent: LunchScreen
+    },
+    {
+      routeName: ScreenName.MapView,
+      screenComponent: MapViewScreen,
+      screenOptions: { title: texts.screenTitles.mapView }
     },
     {
       routeName: ScreenName.MultiButton,

@@ -98,6 +98,13 @@ const CrossDataSection = ({
     <DataListSection
       buttonTitle={texts.dataProvider.showAll}
       limit={3}
+      navigateButton={getNavigationFunction(
+        navigation,
+        dataProviderName,
+        query,
+        sectionTitle,
+        categoryId
+      )}
       navigate={getNavigationFunction(
         navigation,
         dataProviderName,

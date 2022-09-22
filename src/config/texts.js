@@ -4,6 +4,49 @@ export const texts = {
   appIntro: {
     continue: 'Weiter'
   },
+  augmentedReality: {
+    arInfoScreen: {
+      header: 'Was is AR?',
+      loadingError:
+        'Es gibt ein Problem mit der Verbindung. Bitte versuchen Sie es später noch einmal.',
+      settingsButton: 'AR-Einstellungen'
+    },
+    arShowScreen: {
+      backNavigationErrorOnScreenRecord:
+        'Bitte beende die Videoaufzeichnung, bevor Sie zurückkehren.',
+      objectLoadErrorAlert:
+        'Beim Laden des 3D-Objekts ist ein Problem aufgetreten. Bitte versuchen Sie es erneut.',
+      screenRecordingCompleted: 'Die Aufnahme wurde erfolgreich in Ihrer Galerie gespeichert.',
+      viroRecordingError: {
+        0: 'Bei der Bildschirmaufzeichnung ist ein Fehler aufgetreten.',
+        1: 'Bitte erlauben Sie die Aufnahme von Videos/Screenshots.',
+        2: 'Bei der Initialisierung der Bildschirmaufzeichnung ist ein Fehler aufgetreten.',
+        3: 'Beim Speichern der Datei ist ein Fehler aufgetreten.',
+        4: 'Ihr System zeichnet bereits auf.',
+        5: 'Ihr System kann derzeit nicht aufzeichnen.'
+      }
+    },
+    artworkDetailScreen: {
+      downloadAndLookAtArt: 'Downloaden & AR Kunst gucken',
+      lookAtArt: 'AR Kunst gucken',
+      header: 'AR-Kunstwerk'
+    },
+    cancel: 'Abbrechen',
+    filter: {
+      mapView: 'Kartenansicht',
+      listView: 'Listenansicht'
+    },
+    hide: 'Ausblenden',
+    invalidModelError: 'Das 3D-Modell konnte nicht richtig geladen werden.',
+    loadingArtworks: 'Kunstwerke laden',
+    modalHiddenAlertMessage:
+      'Das Herunterladen der Dateien ist noch im Gange. Bitte warten Sie, bis der Download komplett abgeschlossen ist, da ansonsten Probleme mit den heruntergeladenen Dateien auftreten können.',
+    modalHiddenAlertTitle: 'Hinweis',
+    ok: 'OK',
+    wait: 'Warten',
+    whatIsAugmentedReality: 'Was ist Augmented Reality (AR)?',
+    worksOfArt: 'Kunstwerke'
+  },
   backToTop: 'zurück nach oben',
   bbBus: {
     authority: {
@@ -289,8 +332,7 @@ export const texts = {
       'Schade, es wurden keine passenden Einträge in dieser Kategorie gefunden. Bitte eine Unterkategorie wählen oder zu einem späteren Zeitpunkt erneut versuchen.',
     content:
       'Schade, es wurde kein passender Inhalt gefunden, bitte zu einem späteren Zeitpunkt erneut versuchen.',
-    list:
-      'Schade, es wurden keine passenden Einträge gefunden, bitte zu einem späteren Zeitpunkt erneut versuchen.'
+    list: 'Schade, es wurden keine passenden Einträge gefunden, bitte zu einem späteren Zeitpunkt erneut versuchen.'
   },
   errors: {
     image: {
@@ -616,6 +658,7 @@ export const texts = {
     encounterHome: 'Mitfahrbank',
     feedback: 'Feedback',
     home: appJson.expo.name,
+    mapView: 'Kartenansicht',
     routePlanner: 'Routenplaner bbnavi',
     service: appJson.expo.name,
     settings: 'Einstellungen',
@@ -669,6 +712,24 @@ export const texts = {
   },
   settingsTitles: {
     analytics: 'Matomo Analytics',
+    arListLayouts: {
+      alertTitle: 'Hinweis',
+      allDeleteAlertMessage: 'Alle Dateien löschen?',
+      allDeleteButtonTitle: 'Alle Dateien löschen',
+      allDownloadAlertMessage: 'Möchten Sie alle Dateien herunterladen?',
+      allDownloadButtonTitle: 'Alle Dateien herunterladen',
+      arListTitle: 'Dateien verwalten',
+      cancel: 'Abbrechen',
+      continue: 'Weiter',
+      deleteAlertButtonText: 'Löschen',
+      deleteAlertMessage: 'Möchten Sie die Datei löschen?',
+      deleteError:
+        'Beim Löschen von Objekten ist ein Problem aufgetreten. Bitte versuchen Sie es erneut',
+      downloadAlertButtonText: 'Herunterladen',
+      freeMemoryPlace: 'Verfügbarer Speicherplatz auf dem Gerät: ',
+      hide: 'Ausblenden',
+      ok: 'OK'
+    },
     listLayouts: {
       cardList: 'Liste mit großen Bildern',
       eventRecordsTitle: 'Veranstaltungen',
@@ -682,6 +743,7 @@ export const texts = {
     onboarding: 'App-Einführung',
     pushNotifications: 'Push-Benachrichtigungen',
     tabs: {
+      arSettings: 'AR-Einstellungen',
       general: 'Allgemein',
       listTypes: 'App-Aussehen'
     }
@@ -702,8 +764,7 @@ export const texts = {
     },
     commentSubmissionAlert: {
       de: 'Ihr Kommentar wird nun redaktionell geprüft und schnellstmöglich veröffentlicht.',
-      pl:
-        'Twój komentarz zostanie teraz sprawdzony redakcyjnie i opublikowany tak szybko, jak to możliwe.'
+      pl: 'Twój komentarz zostanie teraz sprawdzony redakcyjnie i opublikowany tak szybko, jak to możliwe.'
     },
     commentSubmissionAlertTitle: 'Ihr Kommentar wird nun redaktionell geprüft',
     dateEnd: {
@@ -720,10 +781,8 @@ export const texts = {
       submissionTitle: 'Fehler'
     },
     hint: {
-      de:
-        'Die Umfrageergebnisse werden erst angezeigt, wenn Sie Ihre Stimme abgegeben haben oder die Umfrage beendet wurde.',
-      pl:
-        'Wyniki ankiety nie będą wyświetlane, dopóki nie oddasz głosu lub ankieta nie zostanie zakończona.'
+      de: 'Die Umfrageergebnisse werden erst angezeigt, wenn Sie Ihre Stimme abgegeben haben oder die Umfrage beendet wurde.',
+      pl: 'Wyniki ankiety nie będą wyświetlane, dopóki nie oddasz głosu lub ankieta nie zostanie zakończona.'
     },
     multiSelectPossible: {
       de: 'Mehrfachantwort möglich.',

@@ -4,6 +4,9 @@ import { StackNavigationOptions } from '@react-navigation/stack';
 
 export enum ScreenName {
   About = 'About',
+  ARShow = 'ARShow',
+  ARInfo = 'ARInfo',
+  ArtworkDetail = 'ArtworkDetail',
   BBBUSDetail = 'BBBUSDetail',
   BBBUSIndex = 'BBBUSIndex',
   BookmarkCategory = 'BookmarkCategory',
@@ -32,6 +35,7 @@ export enum ScreenName {
   Html = 'Html',
   Index = 'Index',
   Lunch = 'Lunch',
+  MapView = 'MapView',
   MultiButton = 'MultiButton',
   NestedInfo = 'NestedInfo',
   OParlCalendar = 'OParlCalendar',

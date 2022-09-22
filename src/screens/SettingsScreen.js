@@ -1,8 +1,10 @@
+import { isARSupportedOnDevice } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, SectionList } from 'react-native';
 
 import {
+  AugmentedReality,
   IndexFilterWrapperAndList,
   LoadingContainer,
   RegularText,
@@ -21,9 +23,9 @@ import {
   removeMatomoUserId
 } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
+import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
 import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
 import { SettingsContext } from '../SettingsProvider';
-import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -50,6 +52,7 @@ const onDeactivatePushNotifications = (revert) => {
 };
 
 const TOP_FILTER = {
+  AR_DOWNLOAD_LIST: 'arDownloadList',
   GENERAL: 'general',
   LIST_TYPES: 'listTypes'
 };
@@ -194,6 +197,24 @@ export const SettingsScreen = () => {
     updateSectionedData();
   }, []);
 
+  useEffect(() => {
+    const { settings = {} } = globalSettings;
+
+    settings.ar &&
+      isARSupportedOnDevice(
+        () => null,
+        () =>
+          setFilter([
+            ...filter,
+            {
+              id: TOP_FILTER.AR_DOWNLOAD_LIST,
+              title: texts.settingsTitles.tabs.arSettings,
+              selected: false
+            }
+          ])
+      );
+  }, []);
+
   if (!sectionedData.length) {
     return (
       <LoadingContainer>
@@ -222,6 +243,9 @@ export const SettingsScreen = () => {
         />
       )}
       {selectedFilterId === TOP_FILTER.LIST_TYPES && <ListSettings />}
+      {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && (
+        <AugmentedReality id="579" onSettingsScreen />
+      )}
     </SafeAreaViewFlex>
   );
 };

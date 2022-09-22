@@ -1,3 +1,4 @@
+import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
@@ -5,13 +6,14 @@ import { View } from 'react-native';
 import { consts, device, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { AugmentedReality } from '../augmentedReality';
 import { DataProviderButton } from '../DataProviderButton';
+import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { DataProviderNotice } from '../DataProviderNotice';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { OperatingCompany } from './OperatingCompany';
@@ -21,18 +23,21 @@ const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const Tour = ({ data, route }) => {
+export const Tour = ({ data, navigation, route }) => {
   const {
     addresses,
-    category,
     categories,
+    category,
     contact,
     dataProvider,
     description,
+    id,
+    geometryTourData,
     lengthKm,
     mediaContents,
     operatingCompany,
     title,
+    tourStops,
     webUrls
   } = data;
   // action to open source urls
@@ -45,6 +50,11 @@ export const Tour = ({ data, route }) => {
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
+  // for tour addresses we just consider addresses that are kind of 'start' or 'end'
+  const tourAddresses = _filter(
+    addresses,
+    (address) => address.kind === 'start' || address.kind === 'end'
+  );
 
   useMatomoTrackScreenView(
     matomoTrackingString([
@@ -77,7 +87,9 @@ export const Tour = ({ data, route }) => {
           <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
         </Wrapper>
 
-        <TourCard lengthKm={lengthKm} addresses={addresses} />
+        {(!!tourAddresses.length || !!lengthKm) && (
+          <TourCard lengthKm={lengthKm} tourAddresses={tourAddresses} />
+        )}
 
         {!!description && (
           <View>
@@ -91,6 +103,10 @@ export const Tour = ({ data, route }) => {
               <HtmlView html={description} openWebScreen={openWebScreen} />
             </Wrapper>
           </View>
+        )}
+
+        {!!tourStops?.length && (
+          <AugmentedReality {...{ geometryTourData, id, navigation, tourStops }} />
         )}
 
         <OperatingCompany
