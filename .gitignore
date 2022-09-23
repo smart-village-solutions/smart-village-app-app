@@ -4,6 +4,9 @@
 
 /src/config/secrets.js
 
+# Native Android & iOS Folders
+/android/
+/ios/
 
 # expo ######
 
@@ -114,9 +117,6 @@ fabric.properties
 
 
 # Android ######
-
-# Native Android Folder
-/android/
 
 # Built application files
 *.apk
@@ -261,9 +261,6 @@ buck-out/
 *.jsbundle
 
 # iOS ######
-
-# Native iOS Folder
-/ios/
 
 # CocoaPods
 /ios/Pods/
