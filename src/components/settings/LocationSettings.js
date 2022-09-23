@@ -32,6 +32,8 @@ const useSystemPermission = () => {
 const getLocationMarker = (locationObject) => ({
   ...baseLocationMarker,
   position: {
+    latitude: locationObject?.coords?.lat,
+    longitude: locationObject?.coords?.lng,
     ...locationObject.coords
   }
 });
