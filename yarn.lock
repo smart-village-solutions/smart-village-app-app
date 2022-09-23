@@ -9158,10 +9158,10 @@ react-native-autocomplete-input@^5.1.0:
   dependencies:
     deprecated-react-native-prop-types "^2.3.0"
 
-react-native-calendars@1.1276.0:
-  version "1.1276.0"
-  resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.1276.0.tgz#4b0a312b7318ff6dc328f5eb03869f0ea1665922"
-  integrity sha512-+/zK6rlKIhRlNu/VgcG/XiDfteDYWrv0MnxVb6BKpyuTMTgVTfdE+/LJZtMoPXE15zYGcrCwEArVGQvAwJOgKA==
+react-native-calendars@1.1288.2:
+  version "1.1288.2"
+  resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.1288.2.tgz#42e41f7bfb25f1be0bbb01b12435fddfbae8e836"
+  integrity sha512-GzQ8+qeMfICms8LjMov+zH4Ne4fy/gHQbXjUfWiR/fqs0NqtIxYYGyujj9bObqXSH/ZRQafmJVKUc4Yv2F5tvA==
   dependencies:
     hoist-non-react-statics "^3.3.1"
     immutable "^4.0.0-rc.12"
