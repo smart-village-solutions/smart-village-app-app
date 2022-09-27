@@ -39,7 +39,7 @@ export const downloadObject = async ({ index, data, setData }) => {
 
       downloadedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADED;
       downloadedData[index].payload.size += size;
-      downloadedData[index].payload.localUris.push({
+      downloadedData[index]?.payload?.localUris?.push({
         uri,
         id,
         size,
