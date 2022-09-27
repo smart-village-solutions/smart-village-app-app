@@ -294,7 +294,7 @@ const renderFooter = (medias, setMedias) => (
 const styles = StyleSheet.create({
   actionButtonContainer: {
     alignItems: 'center',
-    alignSelf: 'center',
+    height: normalize(30),
     justifyContent: 'center'
   },
   border: {
