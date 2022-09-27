@@ -65,7 +65,6 @@
           "microphonePermission": false
         }
       ],
-      "@viro-community/react-viro",
       "sentry-expo"
     ]
   }
