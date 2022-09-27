@@ -49,7 +49,7 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
     />
   );
 
-  /* see `onAnchorFound` function to auto-start animation and sound file 
+  /* see `onAnchorFound` function to auto-start animation and sound file
      when showing a 3D model that is not `TARGET` in the future time */
 
   return (
@@ -58,7 +58,8 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
 
       {object?.target ? (
         <ViroARImageMarker
-          onAnchorFound={() => setIsStartAnimationAndSound(true)} // animation and sound file are started after the image is recognised
+          // animation and sound file are started after the image is recognized
+          onAnchorFound={() => setIsStartAnimationAndSound(true)}
           pauseUpdates // prevents the model from continuous jumping
           target={TARGET}
         >
@@ -81,53 +82,58 @@ const ViroSoundAnd3DObject = (item) => {
     setIsStartAnimationAndSound
   } = item;
 
-  // if the `chromaKeyFilteredVideo` prop is undefined, the default colour of GreenScreen is defined
-  ViroMaterials.createMaterials({
-    chromaKeyFilteredVideo: {
-      chromaKeyFilteringColor: object?.mp4?.chromaKeyFilteredVideo || '#00FF00'
-    }
-  });
+  if (object?.mp4) {
+    // if the `chromaKeyFilteredVideo` prop is undefined, the default color of a green screen is set
+    ViroMaterials.createMaterials({
+      chromaKeyFilteredVideo: {
+        chromaKeyFilteringColor: object?.mp4?.chromaKeyFilteredVideo || '#00FF00'
+      }
+    });
+  }
 
   return (
     <>
-      {!!object?.mp3 &&
-        !isObjectLoading &&
-        (object?.mp3?.isSpatialSound ? (
-          <ViroSpatialSound
-            source={{ uri: object?.mp3?.uri }}
-            paused={!isStartAnimationAndSound}
-            onFinish={() => setIsStartAnimationAndSound(false)}
-            maxDistance={object?.mp3?.maxDistance}
-            minDistance={object?.mp3?.minDistance}
-            position={object?.mp3?.position}
-            rolloffModel={object?.mp3?.rolloffModel}
-          />
-        ) : (
-          <ViroSound
-            source={{ uri: object?.mp3?.uri }}
-            paused={!isStartAnimationAndSound}
-            onFinish={() => setIsStartAnimationAndSound(false)}
-          />
-        ))}
+      {!isObjectLoading && (
+        <>
+          {!!object?.mp3 &&
+            (object?.mp3?.isSpatialSound ? (
+              <ViroSpatialSound
+                source={{ uri: object?.mp3?.uri }}
+                paused={!isStartAnimationAndSound}
+                onFinish={() => setIsStartAnimationAndSound(false)}
+                maxDistance={object?.mp3?.maxDistance}
+                minDistance={object?.mp3?.minDistance}
+                position={object?.mp3?.position}
+                rolloffModel={object?.mp3?.rolloffModel}
+              />
+            ) : (
+              <ViroSound
+                source={{ uri: object?.mp3?.uri }}
+                paused={!isStartAnimationAndSound}
+                onFinish={() => setIsStartAnimationAndSound(false)}
+              />
+            ))}
 
-      {!!object?.mp4 && !isObjectLoading && (
-        <ViroVideo
-          loop
-          materials={['chromaKeyFilteredVideo']}
-          position={object?.mp4?.position}
-          rotation={object?.mp4?.rotation}
-          scale={object?.mp4?.scale}
-          source={{ uri: object?.mp4?.uri }}
-        />
-      )}
+          {!!object?.mp4 && (
+            <ViroVideo
+              loop
+              materials={['chromaKeyFilteredVideo']}
+              position={object?.mp4?.position}
+              rotation={object?.mp4?.rotation}
+              scale={object?.mp4?.scale}
+              source={{ uri: object?.mp4?.uri }}
+            />
+          )}
 
-      {!!object?.image && !isObjectLoading && (
-        <ViroImage
-          position={object?.image?.position}
-          rotation={object?.image?.rotation}
-          scale={object?.image?.scale}
-          source={{ uri: object?.image?.uri }}
-        />
+          {!!object?.image && (
+            <ViroImage
+              position={object?.image?.position}
+              rotation={object?.image?.rotation}
+              scale={object?.image?.scale}
+              source={{ uri: object?.image?.uri }}
+            />
+          )}
+        </>
       )}
 
       <Viro3DObject
