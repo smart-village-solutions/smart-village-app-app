@@ -21,6 +21,7 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
     setIsObjectLoading,
     isStartAnimationAndSound,
     setIsStartAnimationAndSound,
+    setIsAnchorFound,
     object
   } = sceneNavigator.viroAppProps;
 
@@ -41,10 +42,10 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
     <ViroSoundAnd3DObject
       {...{
         isObjectLoading,
-        isStartAnimationAndSound,
-        object,
         setIsObjectLoading,
-        setIsStartAnimationAndSound
+        isStartAnimationAndSound,
+        setIsStartAnimationAndSound,
+        object
       }}
     />
   );
@@ -58,8 +59,11 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
 
       {object?.target ? (
         <ViroARImageMarker
-          // animation and sound file are started after the image is recognized
-          onAnchorFound={() => setIsStartAnimationAndSound(true)}
+          onAnchorFound={() => {
+            // animation and sound file are started after the image is recognized
+            setIsAnchorFound(true);
+            setIsStartAnimationAndSound(true);
+          }}
           pauseUpdates // prevents the model from continuous jumping
           target={TARGET}
         >
@@ -76,10 +80,10 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
 const ViroSoundAnd3DObject = (item) => {
   const {
     isObjectLoading,
-    isStartAnimationAndSound,
-    object,
     setIsObjectLoading,
-    setIsStartAnimationAndSound
+    isStartAnimationAndSound,
+    setIsStartAnimationAndSound,
+    object
   } = item;
 
   if (object?.mp4) {
