@@ -3,7 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import { MediaTypeOptions } from 'expo-image-picker';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, View } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
@@ -252,7 +252,7 @@ export const Chat = ({
 };
 
 const renderFooter = (medias, setMedias) => (
-  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.footerStyle}>
     {medias.map(({ uri, type }, index) => {
       return (
         <Wrapper key={index}>
@@ -294,7 +294,7 @@ const renderFooter = (medias, setMedias) => (
 const styles = StyleSheet.create({
   actionButtonContainer: {
     alignItems: 'center',
-    alignSelf: 'center',
+    height: normalize(30),
     justifyContent: 'center'
   },
   border: {
@@ -304,6 +304,10 @@ const styles = StyleSheet.create({
   containerStyle: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  footerStyle: {
+    borderTopWidth: normalize(1),
+    borderTopColor: colors.gray20
   },
   inputToolbarContainer: {
     paddingVertical: normalize(24)
@@ -372,7 +376,11 @@ const styles = StyleSheet.create({
     maxHeight: normalize(200),
     minHeight: normalize(48),
     paddingHorizontal: normalize(10),
-    paddingTop: normalize(16)
+    ...Platform.select({
+      ios: {
+        paddingTop: normalize(16)
+      }
+    })
   },
   titleStyle: {
     color: colors.darkText,
