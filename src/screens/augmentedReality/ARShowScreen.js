@@ -1,15 +1,16 @@
+import { ViroARSceneNavigator } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { ViroARSceneNavigator } from '@viro-community/react-viro';
 
 import { AugmentedRealityView, LoadingSpinner } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
 
 export const ARShowScreen = ({ navigation, route }) => {
-  const [isStartAnimationAndSound, setIsStartAnimationAndSound] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isObjectLoading, setIsObjectLoading] = useState(true);
+  const [isAnchorFound, setIsAnchorFound] = useState(false);
+  const [isStartAnimationAndSound, setIsStartAnimationAndSound] = useState(false);
   const data = route?.params?.data ?? [];
   const [object, setObject] = useState();
   const index = route?.params?.index;
@@ -56,6 +57,7 @@ export const ARShowScreen = ({ navigation, route }) => {
           setIsObjectLoading,
           isStartAnimationAndSound,
           setIsStartAnimationAndSound,
+          setIsAnchorFound,
           object
         }}
         style={styles.arSceneNavigator}
@@ -65,8 +67,8 @@ export const ARShowScreen = ({ navigation, route }) => {
         style={[styles.backButton, styles.generalButtonStyle]}
         onPress={() => {
           /*
-          to solve the Android crash problem, you must first remove the 3D object from the screen.
-          then navigation can be done.
+            to solve the Android crash problem, you must first remove the 3D object from the screen.
+            then navigation can be done.
           */
           setObject();
           navigation.goBack();
@@ -75,11 +77,13 @@ export const ARShowScreen = ({ navigation, route }) => {
         <Icon.Close color={colors.surface} />
       </TouchableOpacity>
 
-      {isObjectLoading ? (
+      {isObjectLoading && (
         <View style={styles.objectLoadingIndicatorComponent}>
           <LoadingSpinner loading />
         </View>
-      ) : (
+      )}
+
+      {!isObjectLoading && isAnchorFound && (
         <>
           <TouchableOpacity
             style={[styles.generalButtonStyle, styles.screenShotButton, styles.opacity]}
@@ -98,12 +102,12 @@ export const ARShowScreen = ({ navigation, route }) => {
               <Icon.Play size={normalize(30)} />
             )}
           </TouchableOpacity>
+
+          <Animated.View
+            style={[styles.flashEffectContainer, { opacity: screenshotEffectOpacityRef }]}
+          />
         </>
       )}
-
-      <Animated.View
-        style={[styles.flashEffectContainer, { opacity: screenshotEffectOpacityRef }]}
-      />
     </>
   );
 };
@@ -117,9 +121,20 @@ const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
 
   item?.payload?.localUris?.forEach((item) => {
     if (item.type === 'texture') {
-      parsedObject[item.type].push({ uri: item.uri });
+      parsedObject[item.type]?.push({ uri: item?.uri });
     } else {
-      parsedObject[item.type] = item.uri;
+      parsedObject[item.type] = {
+        chromaKeyFilteredVideo: item?.chromaKeyFilteredVideo,
+        maxDistance: item?.maxDistance,
+        minDistance: item?.minDistance,
+        physicalWidth: item?.physicalWidth,
+        position: item?.position,
+        rolloffModel: item?.rolloffModel,
+        rotation: item?.rotation,
+        scale: item?.scale,
+        isSpatialSound: item?.isSpatialSound,
+        uri: item?.uri
+      };
     }
   });
 
@@ -131,7 +146,7 @@ const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
     );
   }
 
-  setObject(parsedObject);
+  setObject(JSON.parse(JSON.stringify(parsedObject)));
   setIsLoading(false);
 };
 

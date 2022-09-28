@@ -4,7 +4,11 @@ import {
   ViroARImageMarker,
   ViroARScene,
   ViroARTrackingTargets,
-  ViroSound
+  ViroImage,
+  ViroMaterials,
+  ViroSound,
+  ViroSpatialSound,
+  ViroVideo
 } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
@@ -17,44 +21,36 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
     setIsObjectLoading,
     isStartAnimationAndSound,
     setIsStartAnimationAndSound,
+    setIsAnchorFound,
     object
   } = sceneNavigator.viroAppProps;
 
   const TARGET = 'targetImage';
 
-  // TODO: these data can be updated according to the data coming from the server when the
-  //       real 3D models arrive
-  const position = [0, 0, 0];
-  const rotation = [0, 0, 0];
-  const scale = [0.002, 0.002, 0.002];
-
   useEffect(() => {
     ViroARTrackingTargets.createTargets({
       [TARGET]: {
         orientation: 'Up',
-        physicalWidth: 0.2, // real world width in meters
-        source: { uri: object.target },
+        physicalWidth: object?.target?.physicalWidth || 0.2, // real world width in meters
+        source: { uri: object?.target?.uri },
         type: 'image'
       }
     });
-  }, [object?.target]);
+  }, [object?.target?.uri]);
 
   const ViroContent = (
     <ViroSoundAnd3DObject
       {...{
         isObjectLoading,
-        isStartAnimationAndSound,
-        object,
-        position,
-        rotation,
-        scale,
         setIsObjectLoading,
-        setIsStartAnimationAndSound
+        isStartAnimationAndSound,
+        setIsStartAnimationAndSound,
+        object
       }}
     />
   );
 
-  /* see `onAnchorFound` function to auto-start animation and sound file 
+  /* see `onAnchorFound` function to auto-start animation and sound file
      when showing a 3D model that is not `TARGET` in the future time */
 
   return (
@@ -63,7 +59,11 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
 
       {object?.target ? (
         <ViroARImageMarker
-          onAnchorFound={() => setIsStartAnimationAndSound(true)} // animation and sound file are started after the image is recognised
+          onAnchorFound={() => {
+            // animation and sound file are started after the image is recognized
+            setIsAnchorFound(true);
+            setIsStartAnimationAndSound(true);
+          }}
           pauseUpdates // prevents the model from continuous jumping
           target={TARGET}
         >
@@ -76,41 +76,83 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
   );
 };
 
+// eslint-disable-next-line complexity
 const ViroSoundAnd3DObject = (item) => {
   const {
     isObjectLoading,
-    isStartAnimationAndSound,
-    object,
-    position,
-    rotation,
-    scale,
     setIsObjectLoading,
-    setIsStartAnimationAndSound
+    isStartAnimationAndSound,
+    setIsStartAnimationAndSound,
+    object
   } = item;
+
+  if (object?.mp4) {
+    // if the `chromaKeyFilteredVideo` prop is undefined, the default color of a green screen is set
+    ViroMaterials.createMaterials({
+      chromaKeyFilteredVideo: {
+        chromaKeyFilteringColor: object?.mp4?.chromaKeyFilteredVideo || '#00FF00'
+      }
+    });
+  }
 
   return (
     <>
-      {!!object.mp3 && !isObjectLoading && (
-        <ViroSound
-          source={{ uri: object.mp3 }}
-          paused={!isStartAnimationAndSound}
-          onFinish={() => setIsStartAnimationAndSound(false)}
-        />
+      {!isObjectLoading && (
+        <>
+          {!!object?.mp3 &&
+            (object?.mp3?.isSpatialSound ? (
+              <ViroSpatialSound
+                source={{ uri: object?.mp3?.uri }}
+                paused={!isStartAnimationAndSound}
+                onFinish={() => setIsStartAnimationAndSound(false)}
+                maxDistance={object?.mp3?.maxDistance}
+                minDistance={object?.mp3?.minDistance}
+                position={object?.mp3?.position}
+                rolloffModel={object?.mp3?.rolloffModel}
+              />
+            ) : (
+              <ViroSound
+                source={{ uri: object?.mp3?.uri }}
+                paused={!isStartAnimationAndSound}
+                onFinish={() => setIsStartAnimationAndSound(false)}
+              />
+            ))}
+
+          {!!object?.mp4 && (
+            <ViroVideo
+              loop
+              materials={['chromaKeyFilteredVideo']}
+              position={object?.mp4?.position}
+              rotation={object?.mp4?.rotation}
+              scale={object?.mp4?.scale}
+              source={{ uri: object?.mp4?.uri }}
+            />
+          )}
+
+          {!!object?.image && (
+            <ViroImage
+              position={object?.image?.position}
+              rotation={object?.image?.rotation}
+              scale={object?.image?.scale}
+              source={{ uri: object?.image?.uri }}
+            />
+          )}
+        </>
       )}
 
       <Viro3DObject
-        source={{ uri: object.vrx }}
-        resources={object.texture}
+        source={{ uri: object?.vrx?.uri }}
+        resources={object?.texture}
         type="VRX"
-        position={position}
-        rotation={rotation}
-        scale={scale}
+        position={object?.vrx?.position}
+        rotation={object?.vrx?.rotation}
+        scale={object?.vrx?.scale}
         onLoadStart={() => setIsObjectLoading(true)}
         onLoadEnd={() => setIsObjectLoading(false)}
         onError={() => alert(texts.augmentedReality.arShowScreen.objectLoadErrorAlert)}
         animation={{
           loop: true,
-          name: object.animationName,
+          name: object?.animationName,
           run: isStartAnimationAndSound
         }}
       />
