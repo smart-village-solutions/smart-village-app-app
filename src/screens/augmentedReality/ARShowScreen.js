@@ -126,7 +126,7 @@ const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
 
   item?.payload?.localUris?.forEach((item) => {
     if (item.type === 'texture') {
-      parsedObject[item.type].push({ uri: item?.uri });
+      parsedObject[item.type]?.push({ uri: item?.uri });
     } else {
       parsedObject[item.type] = {
         chromaKeyFilteredVideo: item?.chromaKeyFilteredVideo,
