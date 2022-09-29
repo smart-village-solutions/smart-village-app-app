@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.0.0] :t-rex:
+
+The third major version with new Expo SDK versions 44 & 45 and architecture on EAS, integration of augmented reality possibilities and updated volunteer features
+
+## Breaking
+
+Read about the new app architecture with EAS Builds here: https://blog.expo.dev/expo-managed-workflow-in-2021-d1c9b68aa10
+The EAS docs can be found here: https://docs.expo.dev/eas
+
+### Added
+
+- added `expo-barcode-scanner` package to make barcode scanner work with new architecture
+- added augmented reality possibilities with `@viro-community/react-viro` package: https://github.com/ViroCommunity/viro
+  - iOS simulator builds are not running with viro package integrated
+  - if apps do need viro for AR features, `"@viro-community/react-viro"` needs to be added individually in `app.json` from now on
+    - for development purposes that is needed as well temporarily
+- added chat per `react-native-gifted-chat` for volunteer area: https://github.com/FaridSafi/react-native-gifted-chat
+- added new water temperature widget, that can be configured
+- integrated `react-native-maps` instead of `react-native-webview-leaflet` in every component we use maps: https://github.com/react-native-maps/react-native-maps
+  - `config.googleMaps.apiKey` needs to be changed in `app.json` individually for app builds
+
+### Changed
+
+- upgraded Expo to version 44: https://blog.expo.dev/expo-sdk-44-4c4b8306584a
+- upgraded Expo to version 45: https://blog.expo.dev/expo-sdk-45-f4e332954a68
+- changed android to use `hermes` because of problems running jsc
+  - refactored color helper `parseColorToHex` because hermes does not support named capture groups
+- put all used icons from several places to `configs/Icons.tsx`
+- moved configs from secrets to global settings
+  - for more flexibility in setup processes, configs should be editable without app builds
+- changed multi button text rendering component to a html view in order to put styles and images on the screen above buttons
+- changed deprecated `expo/metro-config` in metro config to `@expo/metro-config`
+
+### Fixed
+
+- solved error with `react-native-autocomplete-input` package
+  - changed props of the package due to version upgrade have been reorganized
+- fixed `canOpenURL` bug with `expo-linking` that prevented links from opening on android
+- fixed the error of displaying empty sections on `CrossData` page
+
+### Removed
+
+- removed some secrets in the secrets template as well, as they are received through global settings from now on
+
 ## [v2.6.1]
 
 New option for bigger service tiles and bugfixes
@@ -127,6 +171,8 @@ Versioned static contents and further improvements.
 
 ## Breaking
 
+Read anything about the new app architecture
+
 This mobile app version needs an updated version of the main server (Februar 17th).
 
 ### Added
@@ -174,7 +220,7 @@ Integration of Sentry and fixes.
 
 ### Added
 
-- added sentry-expo to the project
+- added `sentry-expo` to the project
 - added new multi button screen
 - integrated new GraphQL endpoint for bb-bus
 
@@ -216,7 +262,7 @@ Overhauled app settings. Introduced onboarding/app intro.
 
 ### Changed
 
-- upgraded expo to version 43
+- upgraded Expo to version 43: https://blog.expo.dev/expo-sdk-43-aa9b3c7d5541
 - settings
   - the settings moved from inside of favourites to the drawer and the about screen
   - settings now have multiple tabs: one for general settings and one for visual settings
@@ -356,10 +402,10 @@ Fix header left showing on initial screens
 
 ## [v1.8.0] :rocket:
 
-The eighth minor version upgrade includes the expo update 41, an update from react navigation
+The eighth minor version upgrade includes the Expo update 41, an update from react navigation
 version 3 to 5 and several minor fixes and dependency updates.
 
-- Read about the expo update step in: https://dev.to/expo/expo-sdk-41-1f2j
+- Read about the Expo update step in: https://dev.to/expo/expo-sdk-41-1f2j
 
 ## [v1.7.2]
 
@@ -740,7 +786,7 @@ settings
     depends on server setting) and provides the ability to change list layouts for the three
     different data types (`newsItems`, `eventRecords` and `pointsOfInteresAndTours`)
 - with push notifications activated, users can receive push notifications triggered by the server
-  - the registration and usage is setup with expo, https://docs.expo.io/push-notifications/overview
+  - the registration and usage is setup with Expo, https://docs.expo.io/push-notifications/overview
 - Matomo analytics can be included to track screen views across the app for helping
   Smart Village App operators to get to know the usage behaviors of the users
 - with different list types, users can customize their Smart Village App and change list views
@@ -1367,7 +1413,7 @@ Updates on several screens and small bugfixes
 
 - wrapped every screen with a SafeAreaView
 - added missing package for react-native-webview
-  - expo install react-native-webview
+  - `expo install react-native-webview`
 
 ### Changed
 
@@ -1396,6 +1442,8 @@ https://blog.expo.io/expo-sdk-v33-0-0-is-now-available-52d1c99dfe4c#c0d2
 
 ## Breaking
 
+Read anything about the new app architecture
+
 You need to remove `node_modules` and install your packages again.s an updated version of the main server
 
 `rm -rf node_modules/ && yarn cache clean && yarn`
@@ -1412,7 +1460,7 @@ Here is the changelog from React Native: https://github.com/react-native-communi
 
 ### Changed
 
-- changed expo packages from 'expo' to modularized expo packages,
+- changed Expo packages from 'expo' to modularized expo packages,
   as the previous way of importing is deprecated now
 - changed WebView from react-native to react-native-webview,
   as it is deprecated in react-native
@@ -1565,7 +1613,7 @@ Implement custom font Titillium Web from Google Fonts
 ### Added
 
 - downloaded from https://fonts.google.com/specimen/Titillium+Web?selection.family=Titillium+Web
-- implemented following the expo way:
+- implemented following the Expo way:
   https://docs.expo.io/versions/latest/guides/using-custom-fonts/
   - font must be loaded in App before MainApp renders
 - added new font family everywhere there is some text
