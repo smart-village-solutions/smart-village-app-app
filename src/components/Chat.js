@@ -208,7 +208,12 @@ export const Chat = ({
       )}
       renderMessageImage={(props) =>
         props?.currentMessage?.image?.map(({ uri }, index) => (
-          <MessageImage {...props} key={`image-${index}`} currentMessage={{ image: uri }} />
+          <MessageImage
+            {...props}
+            key={`image-${index}`}
+            currentMessage={{ image: uri }}
+            lightboxProps={{ springConfig: { useNativeDriver: false } }}
+          />
         ))
       }
       renderMessageVideo={(props) =>
