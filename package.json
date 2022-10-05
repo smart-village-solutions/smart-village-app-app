@@ -38,7 +38,7 @@
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-community/datetimepicker": "6.1.2",
     "@react-native-community/netinfo": "8.2.0",
-    "@react-native-masked-view/masked-view": "0.2.6",
+    "@react-native-masked-view/masked-view": "0.2.7",
     "@react-navigation/bottom-tabs": "5.11.15",
     "@react-navigation/drawer": "5.12.9",
     "@react-navigation/native": "5.9.8",
