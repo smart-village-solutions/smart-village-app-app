@@ -64,6 +64,7 @@ const INITIAL_FILTER = [
 
 export const SettingsScreen = () => {
   const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
   const [sectionedData, setSectionedData] = useState([]);
   const [filter, setFilter] = useState(INITIAL_FILTER);
   const selectedFilterId = filter.find((entry) => entry.selected)?.id;
@@ -72,8 +73,6 @@ export const SettingsScreen = () => {
 
   useEffect(() => {
     const updateSectionedData = async () => {
-      const { settings = {} } = globalSettings;
-
       const additionalSectionedData = [];
 
       // add push notification option if they are enabled
@@ -198,9 +197,7 @@ export const SettingsScreen = () => {
   }, []);
 
   useEffect(() => {
-    const { settings = {} } = globalSettings;
-
-    settings.ar &&
+    !!settings.ar &&
       isARSupportedOnDevice(
         () => null,
         () =>
@@ -244,7 +241,7 @@ export const SettingsScreen = () => {
       )}
       {selectedFilterId === TOP_FILTER.LIST_TYPES && <ListSettings />}
       {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && (
-        <AugmentedReality id="579" onSettingsScreen />
+        <AugmentedReality id={settings?.ar?.tourId} onSettingsScreen />
       )}
     </SafeAreaViewFlex>
   );
