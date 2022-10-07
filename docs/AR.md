@@ -19,7 +19,7 @@ The information required to use the Augmented Reality feature will be specified 
 - Edit the sections added for AugmentedReality in Tourstopps
 - To find out what types of files you can upload, see the next section
 
-## What to do on the server side
+## Materials that can be added to a scene
 
 - **VRX:** To upload a 3D model, you must make sure that the model is in VRX format. (Required) [Viro3DObject](https://viro-community.readme.io/docs/viro3dobject)
 - **TARGET:** If you want your 3D model to have an image recognition function, upload the desired image in this section (Optional) [ViroARImageMarker](https://viro-community.readme.io/docs/viroarimagemarker)
