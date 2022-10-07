@@ -88,7 +88,12 @@ export const Map = ({
           shouldReplaceMapContent={device.platform === 'ios'}
         />
         {!!geometryTourData?.length && (
-          <Polyline coordinates={geometryTourData} strokeWidth={2} strokeColor={colors.primary} />
+          <Polyline
+            coordinates={geometryTourData}
+            strokeWidth={2}
+            strokeColor={colors.primary}
+            zIndex={1}
+          />
         )}
         {locations?.map((marker, index) => (
           <Marker
