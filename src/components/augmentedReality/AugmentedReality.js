@@ -55,7 +55,7 @@ export const AugmentedReality = ({
   useEffect(() => {
     const { settings = {} } = globalSettings;
 
-    settings.ar &&
+    !!settings.ar &&
       isARSupportedOnDevice(
         () => null,
         () => setIsARSupported(true)
