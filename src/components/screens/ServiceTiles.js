@@ -6,6 +6,7 @@ import { normalize } from 'react-native-elements';
 import { colors, consts, device } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { Image } from '../Image';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../Title';
@@ -13,7 +14,7 @@ import { WrapperWrap } from '../Wrapper';
 
 import { ServiceTile } from './ServiceTile';
 
-export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
+export const ServiceTiles = ({ image, navigation, staticJsonName, title }) => {
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -52,6 +53,8 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
             />
           }
         >
+          {!!image && <Image source={{ uri: image }} containerStyle={styles.imageContainerStyle} />}
+
           <View style={styles.padding}>
             <WrapperWrap spaceBetween>
               {data?.map((item, index) => (
@@ -70,12 +73,16 @@ export const ServiceTiles = ({ navigation, staticJsonName, title }) => {
 };
 
 const styles = StyleSheet.create({
+  imageContainerStyle: {
+    alignSelf: 'center'
+  },
   padding: {
     padding: normalize(14)
   }
 });
 
 ServiceTiles.propTypes = {
+  image: PropTypes.string,
   navigation: PropTypes.object.isRequired,
   staticJsonName: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired

@@ -159,7 +159,8 @@ export const defaultStackConfig = ({
         matomoString: MATOMO_TRACKING.SCREEN_VIEW.COMPANY,
         staticJsonName: 'homeCompanies',
         titleFallback: texts.homeTitles.company,
-        titleKey: 'headlineCompany'
+        titleKey: 'headlineCompany',
+        imageKey: 'headlineCompanyImage'
       }),
       screenOptions: { title: texts.screenTitles.company }
     },
@@ -294,7 +295,8 @@ export const defaultStackConfig = ({
         matomoString: MATOMO_TRACKING.SCREEN_VIEW.SERVICE,
         staticJsonName: 'homeService',
         titleFallback: texts.homeTitles.service,
-        titleKey: 'headlineService'
+        titleKey: 'headlineService',
+        imageKey: 'headlineServiceImage'
       }),
       screenOptions: { title: texts.screenTitles.service }
     },
