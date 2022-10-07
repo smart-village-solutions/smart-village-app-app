@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.0.1]
+
+Minor improvements and bugfixes
+
+### Added
+
+- added image to `ServiceTiles` screen
+
+### Changed
+
+- get tour id for AR settings from global settings and removed hardcoded tour id
+
+### Fixed
+
+- added `lightboxProps` to the `MessageImage` component to remove the `useNativeDrive` warning when an image is opened in the `GiftedChat` component
+- added `zIndex` prop to `Polyline` component in `Maps` to make polyline visible on Android devices
+
 ## [v3.0.0] :t-rex:
 
 The third major version with new Expo SDK versions 44 & 45 and architecture on EAS, integration of augmented reality possibilities and updated volunteer features
