@@ -55,11 +55,16 @@ export const AugmentedReality = ({
   useEffect(() => {
     const { settings = {} } = globalSettings;
 
-    !!settings.ar &&
-      isARSupportedOnDevice(
-        () => null,
-        () => setIsARSupported(true)
-      );
+    try {
+      !!settings.ar &&
+        isARSupportedOnDevice(
+          () => null,
+          () => setIsARSupported(true)
+        );
+    } catch (error) {
+      // if Viro is not integrated, we need to catch the error for `isARSupportedOnDevice of null`
+      console.warn(error);
+    }
   }, []);
 
   useEffect(() => {
