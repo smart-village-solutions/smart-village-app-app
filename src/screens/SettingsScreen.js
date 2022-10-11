@@ -197,19 +197,24 @@ export const SettingsScreen = () => {
   }, []);
 
   useEffect(() => {
-    !!settings.ar &&
-      isARSupportedOnDevice(
-        () => null,
-        () =>
-          setFilter([
-            ...filter,
-            {
-              id: TOP_FILTER.AR_DOWNLOAD_LIST,
-              title: texts.settingsTitles.tabs.arSettings,
-              selected: false
-            }
-          ])
-      );
+    try {
+      !!settings.ar &&
+        isARSupportedOnDevice(
+          () => null,
+          () =>
+            setFilter([
+              ...filter,
+              {
+                id: TOP_FILTER.AR_DOWNLOAD_LIST,
+                title: texts.settingsTitles.tabs.arSettings,
+                selected: false
+              }
+            ])
+        );
+    } catch (error) {
+      // if Viro is not integrated, we need to catch the error for `isARSupportedOnDevice of null`
+      console.warn(error);
+    }
   }, []);
 
   if (!sectionedData.length) {
