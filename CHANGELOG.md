@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.0.2]
+
+Fix location request on map for iOS
+
+### Fixed
+
+- `showsUserLocation = false` was causing location requests in iOS even if location services where turned off entirely
+- added check for global setting and setting the default value for that special prop
+
 ## [v3.0.1]
 
 Minor improvements and bugfixes

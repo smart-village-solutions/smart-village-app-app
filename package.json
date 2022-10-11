@@ -1,6 +1,6 @@
 {
   "name": "smart-village-app",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "scripts": {
     "android": "expo run:android",
     "ios": "expo run:ios",
