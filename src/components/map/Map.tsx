@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { normalize } from 'react-native-elements';
 import MapView, { LatLng, MAP_TYPES, Marker, Polyline, UrlTile } from 'react-native-maps';
@@ -6,6 +6,7 @@ import { SvgXml } from 'react-native-svg';
 
 import { colors, device, Icon } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
+import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
 
 type Props = {
@@ -33,9 +34,9 @@ export const Map = ({
   onMapPress,
   onMarkerPress,
   onMaximizeButtonPress,
-  showsUserLocation = true,
   style,
-  zoom = 0
+  zoom = 0,
+  ...otherProps
 }: Props) => {
   const refForMapView = useRef<MapView>(null);
   // LATITUDE_DELTA handles the zoom, see: https://github.com/react-native-maps/react-native-maps/issues/2129#issuecomment-457056572
@@ -56,6 +57,10 @@ export const Map = ({
         longitudeDelta: LONGITUDE_DELTA
       }
     : undefined;
+
+  const { globalSettings } = useContext(SettingsContext);
+  const showsUserLocation =
+    otherProps.showsUserLocation ?? !!globalSettings?.settings?.locationService;
 
   return (
     <View style={[stylesForMap().container, style]}>
