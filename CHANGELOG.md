@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.0.3]
+
+Fix coords in location settings
+
+### Fixed
+
+- set `initialRegion` more explicitly to avoid undefineds
+- extended setting coords in `getLocationMarker` because in global settings we are storing the short ones
+
 ## [v3.0.2]
 
 Fix location request on map for iOS
