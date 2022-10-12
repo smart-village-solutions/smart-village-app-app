@@ -33,8 +33,8 @@ const getLocationMarker = (locationObject) => ({
   ...baseLocationMarker,
   position: {
     ...locationObject.coords,
-    latitude: locationObject?.coords?.lat,
-    longitude: locationObject?.coords?.lng
+    latitude: locationObject?.coords?.latitude || locationObject?.coords?.lat,
+    longitude: locationObject?.coords?.longitude || locationObject?.coords?.lng
   }
 });
 
