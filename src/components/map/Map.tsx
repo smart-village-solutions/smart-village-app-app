@@ -1,7 +1,7 @@
 import React, { useContext, useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { normalize } from 'react-native-elements';
-import MapView, { LatLng, MAP_TYPES, Marker, Polyline, UrlTile } from 'react-native-maps';
+import MapView, { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 import { SvgXml } from 'react-native-svg';
 
 import { colors, device, Icon } from '../../config';
@@ -44,19 +44,27 @@ export const Map = ({
   // example for longitude delta: https://github.com/react-native-maps/react-native-maps/blob/0.30.x/example/examples/DisplayLatLng.js#L18
   const LONGITUDE_DELTA = LATITUDE_DELTA * (device.width / (device.height / 2));
 
-  const initialRegion = locations?.[0]
-    ? {
-        ...locations[0].position,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA
-      }
-    : mapCenterPosition
-    ? {
-        ...mapCenterPosition,
-        latitudeDelta: LATITUDE_DELTA,
-        longitudeDelta: LONGITUDE_DELTA
-      }
-    : undefined;
+  let initialRegion: Region = {
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: LATITUDE_DELTA,
+    longitudeDelta: LONGITUDE_DELTA
+  };
+
+  if (mapCenterPosition) {
+    initialRegion = {
+      ...initialRegion,
+      ...mapCenterPosition
+    };
+  }
+
+  if (locations?.[0]?.position?.latitude && locations[0]?.position?.longitude) {
+    initialRegion = {
+      ...initialRegion,
+      latitude: locations[0].position.latitude,
+      longitude: locations[0].position.longitude
+    };
+  }
 
   const { globalSettings } = useContext(SettingsContext);
   const showsUserLocation =
