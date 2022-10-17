@@ -64,7 +64,7 @@ To download the 3D Model from the Tour detail screen:
 
 To download the 3D Model from the settings screen:
 
-- **Note:** To avoid an error in the settings page, please manually add the id of the tour you added tourstopp to the id section in line 247 of the `SettingsScreen`.
+- **Note:** In order to avoid an error on the settings page, please open an object called `ar` in the `settings` object in `globalSettings` and write the id of the tour you added tourstopp with the key `tourId`.
 
 1. Go to the settings page of the application.
 2. Select `AR Settings`.
