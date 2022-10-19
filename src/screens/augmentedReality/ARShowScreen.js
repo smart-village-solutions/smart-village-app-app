@@ -114,12 +114,13 @@ export const ARShowScreen = ({ navigation, route }) => {
 
 const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
   const parsedObject = { texture: [] };
+  const localUris = item?.payload?.scenes?.[0]?.localUris;
 
-  if (item?.payload?.animationName) {
-    parsedObject.animationName = item?.payload?.animationName;
+  if (localUris?.animationName) {
+    parsedObject.animationName = localUris?.animationName;
   }
 
-  item?.payload?.localUris?.forEach((item) => {
+  localUris?.forEach((item) => {
     if (item.type === 'texture') {
       parsedObject[item.type]?.push({ uri: item?.uri });
     } else {
