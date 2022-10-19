@@ -114,6 +114,8 @@ export const ARShowScreen = ({ navigation, route }) => {
 
 const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
   const parsedObject = { texture: [] };
+
+  // TODO: in the future the index 0 used here will be changed according to time logic!
   const localUris = item?.payload?.scenes?.[0]?.localUris;
 
   if (localUris?.animationName) {
