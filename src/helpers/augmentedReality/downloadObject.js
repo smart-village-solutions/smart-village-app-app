@@ -10,69 +10,75 @@ export const downloadObject = async ({ index, data, setData }) => {
   const downloadedData = [...data];
   const dataItem = data[index];
 
-  for (const objectItem of dataItem?.payload?.downloadableUris) {
-    const {
-      chromaKeyFilteredVideo,
-      id,
-      isSpatialSound,
-      maxDistance,
-      minDistance,
-      physicalWidth,
-      position,
-      rolloffModel,
-      rotation,
-      scale,
-      title,
-      type,
-      uri
-    } = objectItem;
-
-    const { directoryName, folderName, storageName } = storageNameCreator({ dataItem, objectItem });
-
-    const downloadResumable = FileSystem.createDownloadResumable(
-      uri,
-      directoryName,
-      {},
-      (progress) => downloadProgressInBytes(progress, index, downloadedData, setData)
-    );
-
-    try {
-      /*
-      in order to load the textures properly, it is necessary to create a different folder for
-      each object. Saving all objects in the same folder with a specific name is important for
-      the display of the 3D object. If the folder does not exist at the time of downloading the
-      object, this folder must be created on the device before downloading.
-      */
-      const dirInfo = await FileSystem.getInfoAsync(folderName);
-      if (!dirInfo.exists) {
-        await FileSystem.makeDirectoryAsync(folderName, { intermediates: true });
-      }
-
-      const fileSystemDownload = await downloadResumable.downloadAsync();
-      const { size } = await FileSystem.getInfoAsync(fileSystemDownload.uri);
-
-      downloadedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADED;
-      downloadedData[index].payload.size += size;
-      downloadedData[index].payload.localUris?.push({
-        chromaKeyFilteredVideo, // HEX Color Code
+  for (const [sceneIndex, sceneItem] of dataItem?.payload?.scenes?.entries()) {
+    for (const objectItem of sceneItem?.downloadableUris) {
+      const {
+        chromaKeyFilteredVideo,
         id,
-        isSpatialSound, // Boolean
-        maxDistance: parseFloat(maxDistance),
-        minDistance: parseFloat(minDistance),
-        physicalWidth: parseFloat(physicalWidth),
-        position, // Array [x,y,z]
-        rolloffModel, // String (none, linear, or logarithmic)
-        rotation, // Array [x,y,z]
-        scale, // Array [x,y,z]
-        size,
+        isSpatialSound,
+        maxDistance,
+        minDistance,
+        physicalWidth,
+        position,
+        rolloffModel,
+        rotation,
+        scale,
         title,
         type,
-        uri: fileSystemDownload.uri
+        uri
+      } = objectItem;
+
+      const { directoryName, folderName, storageName } = storageNameCreator({
+        dataItem,
+        objectItem,
+        sceneIndex
       });
 
-      addToStore(storageName, downloadedData[index]);
-    } catch (e) {
-      console.error(e);
+      const downloadResumable = FileSystem.createDownloadResumable(
+        uri,
+        directoryName,
+        {},
+        (progress) => downloadProgressInBytes(progress, index, downloadedData, setData)
+      );
+
+      try {
+        /*
+        in order to load the textures properly, it is necessary to create a different folder for
+        each object. Saving all objects in the same folder with a specific name is important for
+        the display of the 3D object. If the folder does not exist at the time of downloading the
+        object, this folder must be created on the device before downloading.
+        */
+        const dirInfo = await FileSystem.getInfoAsync(folderName);
+        if (!dirInfo.exists) {
+          await FileSystem.makeDirectoryAsync(folderName, { intermediates: true });
+        }
+
+        const fileSystemDownload = await downloadResumable.downloadAsync();
+        const { size } = await FileSystem.getInfoAsync(fileSystemDownload.uri);
+
+        downloadedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADED;
+        downloadedData[index].payload.size += size;
+        downloadedData[index].payload.scenes[sceneIndex].localUris?.push({
+          chromaKeyFilteredVideo, // HEX Color Code
+          id,
+          isSpatialSound, // Boolean
+          maxDistance: parseFloat(maxDistance),
+          minDistance: parseFloat(minDistance),
+          physicalWidth: parseFloat(physicalWidth),
+          position, // Array [x,y,z]
+          rolloffModel, // String (none, linear, or logarithmic)
+          rotation, // Array [x,y,z]
+          scale, // Array [x,y,z]
+          size,
+          title,
+          type,
+          uri: fileSystemDownload.uri
+        });
+
+        addToStore(storageName, downloadedData[index]);
+      } catch (e) {
+        console.error(e);
+      }
     }
   }
 
