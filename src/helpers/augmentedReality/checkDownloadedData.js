@@ -8,14 +8,14 @@ export const checkDownloadedData = async ({ data, setData }) => {
   const checkedData = [...data];
 
   for (const [index, dataItem] of checkedData.entries()) {
-    for (const [sceneIndex, sceneItem] of dataItem?.payload?.scenes.entries()) {
+    for (const [sceneIndex, sceneItem] of dataItem?.payload?.scenes?.entries()) {
       for (const objectItem of sceneItem.downloadableUris) {
         const { storageName } = storageNameCreator({ dataItem, objectItem, sceneIndex });
 
         try {
           const downloadedItem = await readFromStore(storageName);
 
-          if (downloadedItem?.payload?.scenes[sceneIndex]?.localUris) {
+          if (downloadedItem?.payload?.scenes?.[sceneIndex].localUris) {
             checkedData[index] = downloadedItem;
           } else {
             checkedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADABLE;
