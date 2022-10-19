@@ -12,15 +12,20 @@ The information required to use the Augmented Reality feature will be specified 
 
 ## What to do on the server side
 
+![](./assets/ModelUpload/ModelUpload0.png)
+
 - Go to the CMS page and log in
 
 ![](./assets/ModelUpload/ModelUpload1.png)
+
 - Go to the list of tours
 
 ![](./assets/ModelUpload/ModelUpload2.png)
+
 - Select the tour you want to add Augmented Reality feature to
 
 ![](./assets/ModelUpload/ModelUpload3.png)
+
 - Add new Tourstopps on the tour detail page
 - Edit the sections added for AugmentedReality in Tourstopps
 
@@ -28,15 +33,16 @@ The information required to use the Augmented Reality feature will be specified 
 ![](./assets/ModelUpload/ModelUpload5.png)
 ![](./assets/ModelUpload/ModelUpload6.png)
 ![](./assets/ModelUpload/ModelUpload7.png)
+
 - To find out what types of files you can upload, see the next section
 - After entering all the information, press the save button
 
 ![](./assets/ModelUpload/ModelUpload8.png)
 
+**How to upload 3D Model with Video**
 
-<video width="640" height="320" controls>
-  <source src="./assets/ModelUpload/ModelUploadVideo.mp4" type="video/mp4">
-</video>
+[![](./assets/ModelUpload/thumb.png)](https://www.youtube.com/watch?v=0i_jmbDfhes)
+
 
 ## Materials that can be added to a scene
 
@@ -108,16 +114,18 @@ Delete the 3D Model from the settings screen:
 
 ## Converter required when uploading a 3D Model
 
-- [FBX to VRX converter](https://fileserver.smart-village.app/development/augmented-reality/VRX_Converter/bin/ViroFBX)
+- [**Download FBX to VRX converter**](https://fileserver.smart-village.app/development/augmented-reality/VRX_Converter/bin/ViroFBX)
+- [ViroFBX Documentation (MacOS)](https://github.com/ViroCommunity/ViroFBX)
+- [ViroFBX Documentation (Linux)](https://github.com/ViroCommunity/ViroFBX/tree/linux-support)
 
+**How to use Converter with Images**
 
 ![](./assets/VRXConverter/VRXConverter1.png)
 ![](./assets/VRXConverter/VRXConverter2.png)
 ![](./assets/VRXConverter/VRXConverter3.png)
 ![](./assets/VRXConverter/VRXConverter4.png)
 
-<video width="640" height="320" controls>
-  <source src="./assets/VRXConverter/VRXConverterVideo.mp4" type="video/mp4">
-</video>
+**How to use Converter with Video**
 
 
+[![](./assets/VRXConverter/thumb.png)](https://www.youtube.com/watch?v=VANrglRc5v4)
