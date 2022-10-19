@@ -6,7 +6,7 @@ const { IMAGE_TYPE_REGEX } = consts;
 
 export const storageNameCreator = ({ dataItem, objectItem, sceneIndex }) => {
   const objectItemTitleWithoutSpaces = dataItem.title.replace(/\s+/g, '');
-  const dataDirectoryName = `${objectItemTitleWithoutSpaces}_${dataItem.id}` + sceneIndex;
+  const dataDirectoryName = `${objectItemTitleWithoutSpaces}_${dataItem.id}_${sceneIndex}`;
   const modelName = objectNameParser(objectItem);
 
   return {
