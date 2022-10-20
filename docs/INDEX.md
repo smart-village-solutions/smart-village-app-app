@@ -21,3 +21,7 @@ For executing linters run `npm run lint` or `yarn lint`.
 ## Auth
 
 For detailed documentation see [the auth docs](./AUTH.md).
+
+## Augmented Reality
+
+For detailed documentation see [the ar docs](./AR.md).
