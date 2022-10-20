@@ -111,8 +111,6 @@ To download the 3D model from the settings screen:
 2. Select `AR Settings`.
 3. Download the "Sample File" to your device.
 
-- :information_source: In order to avoid an error on the settings page, please store an entry called `ar` in the `settings` object in `globalSettings` on the main-server and put in the id of the tour you added tour stops to with the key `tourId`.
-
 To delete the 3D model from the device:
 
 1. Open the detail page of the relevant tour.
