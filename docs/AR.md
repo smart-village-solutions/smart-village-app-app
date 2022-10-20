@@ -1,10 +1,10 @@
 # Augmented Reality Documentation
 
-![Viro](https://raw.githubusercontent.com/ViroCommunity/virocommunity.github.io/main/viro_community_logo.png)
-
 The information required to use the Augmented Reality feature will be specified here
 
 ## Package used and system requirements
+
+![Viro](https://raw.githubusercontent.com/ViroCommunity/virocommunity.github.io/main/viro_community_logo.png)
 
 - [Viro](https://viro-community.readme.io)
 - [iOS Requirements](https://developer.apple.com/library/archive/documentation/DeviceInformation/Reference/iOSDeviceCompatibility/DeviceCompatibilityMatrix/DeviceCompatibilityMatrix.html)
@@ -26,23 +26,22 @@ The information required to use the Augmented Reality feature will be specified 
 
 ![](./assets/ModelUpload/ModelUpload3.png)
 
-- Add new Tourstopps on the tour detail page
-- Edit the sections added for Augmented Reality in Tourstopps
+- Add new "Tourstopps" on the tour detail page
+- Edit the sections added for Augmented Reality in "Tourstopps"
 
 ![](./assets/ModelUpload/ModelUpload4.png)
 ![](./assets/ModelUpload/ModelUpload5.png)
 ![](./assets/ModelUpload/ModelUpload6.png)
 ![](./assets/ModelUpload/ModelUpload7.png)
 
-- To find out what types of files you can upload, see the [next section](#materials-that-can-be-added-to-a-scene)
+- To find out what types of files (materials) you can upload, see the [next section](#materials-that-can-be-added-to-a-scene)
 - After entering all the information, press the save button
 
 ![](./assets/ModelUpload/ModelUpload8.png)
 
-**How to upload 3D Model (video)**
+### How to upload 3D model (video)
 
 [![](./assets/ModelUpload/thumb.png)](https://www.youtube.com/watch?v=0i_jmbDfhes)
-
 
 ## Materials that can be added to a scene
 
@@ -52,18 +51,18 @@ The information required to use the Augmented Reality feature will be specified 
 - **MP4:** If you want a video on Augmented Reality scene, please upload it to this section (Optional) [ViroVideo](https://viro-community.readme.io/docs/virovideo)
 - **IMAGE:** If you want a picture in the Augmented Reality scene, upload it to this section (Optional) [ViroImage](https://viro-community.readme.io/docs/viroimage)
 - **TEXTURE:** The section where you can upload the multiple texture files required for the 3D model (Required)
-  - **Important!** Each texture file has a specific name. Please enter this specific name in the name field. Otherwise there will be a problem in displaying the 3D model.
+  - :warning: Each texture file has a specific name. Please enter this specific name in the name field. Otherwise there will be a problem in displaying the 3D model.
 
 File naming examples:
 
-**texture :**
-|filename|file type|upload name|
+**TEXTURE:**
+|File name|File type|Upload name|
 |--|--|--|
 |1simple|texture|1simple|
 |2simple|texture|2simple|
 
-**other files :**
-|filename|file type|cms name|
+**Other types:**
+|File name|File type|CMS name|
 |--|--|--|
 |image|target|augmentedRealityTargetImage|
 |bild12|png|test-bild|
@@ -71,9 +70,11 @@ File naming examples:
 |sound|mp3|music|
 |3dobject|vrx|test-123123|
 
-## Customisation of the Augmented Reality scene
+This shows, that the texture name needs to be the same as the name of the texture file in the 3D model. The other files can have any name.
 
-**Note!** To view the customisation in Augmented Reality scene, you need to delete the 3D model you downloaded in the application and download it again!
+## Customization of the Augmented Reality scene
+
+**Note!** To view the customization in Augmented Reality scene, you need to delete the 3D model you downloaded in the application and download it again!
 
 - **Name:** Write the name you want your 3D model to be displayed in this section (Required) (String)
 - **Description:** Write the description you want your 3D model to be displayed in this section (Optional) (String)
@@ -82,35 +83,35 @@ File naming examples:
 - **Animation name:** The field where the name of the animation of the 3D model can be written (Optional) (String)
 - **Package size:** This is the field where the total size of all Augmented Reality scene objects you have loaded should be written in bytes. The value added to this section allows the user to show how many MB files will be downloaded in the application. (Required) (Number)
 - **VRX & MP4 & IMAGE:**
-  - Set the Position, Size and Rotation properties according to x,y,z coordinates. (Array[Float]) [Scenes](https://viro-community.readme.io/docs/scenes)
+  - Set the _Position_, _Size_ and _Rotation_ properties according to x, y, z coordinates. Example: [0, 20, 0] (Array[Float]) [Scenes](https://viro-community.readme.io/docs/scenes)
 - **TARGET:**
-  - _Physical width_ - Allows you to set the distance in the physical world (in metres) between the image and the device's camera. (Number)
+  - _Physical width_ - Allows you to set the distance in the physical world (in meters) between the image and the device's camera. (Number)
 - **MP3:**
-  - _Is spatial sound_ - A field that allows you to specify whether the audio file you are uploading has spatial audio capability. takes true or false value [ViroSpatialSound](https://viro-community.readme.io/docs/virospatialsound#onfinish)
-  - If Spatial Audio is true:
-    - _Max distance:_ A distance after which the audio can not be heard. (Number)
-    - _Min distance:_ A distance after which the audio will begin to attenuate until maxDistance where the sound is completely gone. (Number)
-    - _Rolloff model:_ The rolloff model which determines how the sound volume will fall off between minDistance and maxDistance. Can take `None`, `Linear` & `Logarithmic` values as String
+  - _Is spatial sound_ - A field that allows you to specify whether the audio file you are uploading has spatial audio capability. Takes `true` or `false` value [ViroSpatialSound](https://viro-community.readme.io/docs/virospatialsound#onfinish)
+  - If _Is spatial sound_ is `true`:
+    - _Max distance_ - A distance (in meters) after which the audio can not be heard. (Number)
+    - _Min distance_ - A distance (in meters) after which the audio will begin to attenuate until _Max distance_ where the sound is completely gone. (Number)
+    - _Rolloff model_ - The rolloff model which determines how the sound volume will fall off between _Min distance_ and _Max distance_. Can take `None`, `Linear` & `Logarithmic` values as String
 - **MP4:**
-  - _Chroma key filtered video_ - If the video you want to add to the Augmented Reality scene has a background colour that you want to delete, add the colour code in HEX format here. Example: #00FF00 (String)
+  - _Chroma key filtered video_ - If the video you want to add to the Augmented Reality scene has a background color that you want to delete, add the color code in HEX format here. Example: #00FF00 (String)
 
-## Display of added tourstopps in the app
+## View AR added in a tour stop in the app
 
 To download the 3D model from the tour detail screen:
 
-1. Press the hamburger menu button in the top right corner of the app and select "Tours and Places" from the drop-down menu,
-2. Scroll to the bottom of the page and in the "select the section where you have added.." category select the section where you have added tourstopps,
-3. Select the tour you added tourstopps to from the displayed tour list and scroll to the bottom of the tour details page,
-4. Select the downloaded file from the artworks list and click on the "Downloaden & AR Kunst gucken" button and wait for the 3D object to download,
-5. When finished, click the button to view the 3D model on the screen that is navigated to.
+1. Find tours inside the app from the home screen or the drawer menu,
+2. Scroll to the category of the tour where you have added tour stops and select it,
+3. Select the tour you added tour stops to from the displayed tour list and scroll to the bottom of the tour details page,
+4. Select the downloaded file from the artworks list, click on the button and wait for the 3D object to download,
+5. When finished, click the next button to view the 3D model on the screen that is navigated to.
 
 To download the 3D model from the settings screen:
-
-- **Note:** In order to avoid an error on the settings page, please open an object called `ar` in the `settings` object in `globalSettings` and write the id of the tour you added tourstopp with the key `tourId`.
 
 1. Go to the settings page of the application.
 2. Select `AR Settings`.
 3. Download the "Sample File" to your device.
+
+- :information_source: In order to avoid an error on the settings page, please store an entry called `ar` in the `settings` object in `globalSettings` on the main-server and put in the id of the tour you added tour stops to with the key `tourId`.
 
 To delete the 3D model from the device:
 
@@ -129,21 +130,20 @@ Delete the 3D model from the settings screen:
 4. Click on the downloaded item. Select "Delete" on the warning screen.
 5. When you see the download button again, the 3D object has been deleted from your device.
 
-## Converter required when uploading a 3D Model (Mac OSX & Linux Support Only)
+## Converter required when uploading a 3D model (Mac OSX & Linux support only)
 
-- [**Download FBX to VRX converter**](https://fileserver.smart-village.app/development/augmented-reality/VRX_Converter/bin/ViroFBX)
+- [Download](https://fileserver.smart-village.app/development/augmented-reality/VRX_Converter/bin/ViroFBX) FBX to VRX converter
 - [Viro Community Documentation](https://viro-community.readme.io/docs/3d-objects#fbx)
 - [ViroFBX Github Documentation (MacOS)](https://github.com/ViroCommunity/ViroFBX)
 - [ViroFBX Github Documentation (Linux)](https://github.com/ViroCommunity/ViroFBX/tree/linux-support)
 
-**How to use Converter (images)**
+### How to use Converter (images)
 
 ![](./assets/VRXConverter/VRXConverter1.png)
 ![](./assets/VRXConverter/VRXConverter2.png)
 ![](./assets/VRXConverter/VRXConverter3.png)
 ![](./assets/VRXConverter/VRXConverter4.png)
 
-**How to use Converter (video)**
-
+### How to use Converter (video)
 
 [![](./assets/VRXConverter/thumb.png)](https://www.youtube.com/watch?v=VANrglRc5v4)
