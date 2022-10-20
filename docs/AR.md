@@ -85,7 +85,7 @@ This shows, that the texture name needs to be the same as the name of the textur
 - **VRX & MP4 & IMAGE:**
   - Set the _Position_, _Size_ and _Rotation_ properties according to x, y, z coordinates. Example: [0, 20, 0] (Array[Float]) [Scenes](https://viro-community.readme.io/docs/scenes)
 - **TARGET:**
-  - _Physical width_ - Allows you to set the distance in the physical world (in meters) between the image and the device's camera. (Number)
+  - _Physical width_ - The width of the image in the real world in meters. (Number)
 - **MP3:**
   - _Is spatial sound_ - A field that allows you to specify whether the audio file you are uploading has spatial audio capability. Takes `true` or `false` value [ViroSpatialSound](https://viro-community.readme.io/docs/virospatialsound#onfinish)
   - If _Is spatial sound_ is `true`:
