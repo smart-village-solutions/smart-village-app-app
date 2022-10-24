@@ -9,3 +9,14 @@ export const formatSize = (size: number) => {
     return `${(size / 1000000000).toFixed(1)} GB`;
   }
 };
+
+// thanks for : https://gist.github.com/zentala/1e6f72438796d74531803cc3833c039c
+export const formatSizeForAugmentedReality = (bytes: number, decimals = 1) => {
+  if (bytes == 0) return '0 Bytes';
+
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const index = Math.floor(Math.log(bytes) / Math.log(1024));
+  const size = parseFloat((bytes / Math.pow(1024, index)).toFixed(decimals));
+
+  return `${size} ${sizes[index]}`;
+};
