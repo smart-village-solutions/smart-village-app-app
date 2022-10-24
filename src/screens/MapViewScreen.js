@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { HtmlView, Map, RegularText, Touchable, Wrapper, WrapperRow } from '../components';
+import { Map, RegularText, Touchable, Wrapper, WrapperRow } from '../components';
 import { colors, Icon, normalize } from '../config';
 import { navigationToArtworksDetailScreen } from '../helpers';
 
@@ -53,14 +53,9 @@ export const MapViewScreen = ({ navigation, route }) => {
           >
             <WrapperRow spaceBetween>
               <View style={styles.augmentedRealityInfoContainer}>
-                {!!modelData.title && <RegularText big>{modelData.title}</RegularText>}
-                {!!modelData.locationInfo && (
-                  <RegularText small>{modelData.locationInfo}</RegularText>
-                )}
-                {!!modelData.description && (
-                  <View style={styles.marginTop}>
-                    <HtmlView html={modelData.description} tagsStyles={{ p: styles.p }} />
-                  </View>
+                {!!modelData?.title && <RegularText big>{modelData?.title}</RegularText>}
+                {!!modelData?.payload?.locationInfo && (
+                  <RegularText small>{modelData?.payload?.locationInfo}</RegularText>
                 )}
               </View>
 
