@@ -69,8 +69,6 @@ export const calendarAttend = async ({ id, type }: { id: number; type: PARTICIPA
 export const calendarNew = async ({
   title,
   description = '',
-  organizer = '',
-  entranceFee = '',
   calendarId,
   color = colors.primary.startsWith('#') ? colors.primary : colors.darkText,
   location = '',
@@ -90,16 +88,6 @@ export const calendarNew = async ({
   contentContainerId
 }: VolunteerCalendar) => {
   const authToken = await volunteerAuthToken();
-
-  // add organizer information to the description field if present
-  description = organizer?.length
-    ? `${description}\n\n\n<strong>${texts.volunteer.organizer}</strong>\n\n${organizer}`
-    : description;
-
-  // add entrance fee information to the description field if present
-  description = entranceFee?.length
-    ? `${description}\n\n\n<strong>${texts.volunteer.entranceFee}</strong>\n\n${entranceFee}`
-    : description;
 
   const formData = {
     CalendarEntry: {

@@ -16,13 +16,11 @@ export type VolunteerCalendar = {
   documents?: string;
   endDate: string;
   endTime?: string;
-  entranceFee?: string;
   forceJoin: number;
   images?: string;
   isPublic: number;
   location?: string;
   maxParticipants: string;
-  organizer?: string;
   participantInfo: string;
   participationMode: number;
   startDate: string;
