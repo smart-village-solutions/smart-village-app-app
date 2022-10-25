@@ -40,7 +40,6 @@ export const VolunteerFormGroup = ({
       description: groupData?.description || '',
       joinPolicy: JOIN_POLICY_TYPES.OPEN,
       name: groupData?.name || '',
-      owner: groupData?.owner?.display_name || '',
       tags: groupData?.tags?.toString() || '',
       visibility: VISIBILITY_TYPES.ALL
     }
@@ -122,16 +121,6 @@ export const VolunteerFormGroup = ({
           name="description"
           label={texts.volunteer.description}
           placeholder={texts.volunteer.description}
-          multiline
-          validate
-          control={control}
-        />
-      </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
-        <Input
-          name="owner"
-          label={texts.volunteer.owner}
-          placeholder={texts.volunteer.owner}
           multiline
           validate
           control={control}

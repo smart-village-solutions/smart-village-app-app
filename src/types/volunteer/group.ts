@@ -1,5 +1,3 @@
-import { VolunteerUser } from './user';
-
 export enum JOIN_POLICY_TYPES {
   INVITE,
   INVITE_AND_REQUEST,
@@ -24,7 +22,6 @@ export type VolunteerGroup = {
   id: number;
   name: string;
   description?: string;
-  owner: VolunteerUser;
   visibility?: VISIBILITY_TYPES;
   joinPolicy?: JOIN_POLICY_TYPES;
   tags?: string;

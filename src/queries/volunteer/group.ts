@@ -1,4 +1,3 @@
-import { texts } from '../../config';
 import {
   volunteerApiV1Url,
   volunteerApiV2Url,
@@ -54,16 +53,10 @@ export const group = async ({ id }: { id: number }) => {
 export const groupNew = async ({
   name,
   description = '',
-  owner = '',
   visibility = VISIBILITY_TYPES.ALL,
   joinPolicy = JOIN_POLICY_TYPES.OPEN
 }: VolunteerGroup) => {
   const authToken = await volunteerAuthToken();
-
-  // add owner information to the description field if present
-  description = owner?.length
-    ? `${description}\n\n\n<strong>${texts.volunteer.owner}</strong>\n\n${owner}`
-    : description;
 
   const formData = {
     name,
