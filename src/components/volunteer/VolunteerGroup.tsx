@@ -13,7 +13,12 @@ import {
 } from '../../helpers';
 import { useOpenWebScreen, VOLUNTEER_GROUP_REFRESH_EVENT } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
-import { groupJoin, groupLeave, groupRequestMembership } from '../../queries/volunteer';
+import {
+  groupJoin,
+  groupLeave,
+  groupMembership,
+  groupRequestMembership
+} from '../../queries/volunteer';
 import { JOIN_POLICY_TYPES, ScreenName, VolunteerGroup as TVolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
@@ -68,6 +73,7 @@ export const VolunteerGroup = ({
   const [isGroupMember, setIsGroupMember] = useState<boolean | undefined>();
   const [isGroupOwner, setIsGroupOwner] = useState(false);
   const [isGroupApplicant, setIsGroupApplicant] = useState(false);
+  const [groupAdmins, setGroupAdmins] = useState<Array<string>>([]);
 
   const {
     mutate: mutateJoin,
@@ -81,6 +87,18 @@ export const VolunteerGroup = ({
     mutateAsync: mutateAsyncLeave,
     isSuccess: isSuccessLeave
   } = useMutation(groupLeave);
+
+  useEffect(() => {
+    fetchGroupMembers();
+  }, []);
+
+  // added this request to add the IDs of the group's admins as param to the send message button
+  const fetchGroupMembers = async () => {
+    const { results } = await groupMembership({ id });
+    setGroupAdmins(
+      results?.filter(({ role }: any) => role === 'admin').map(({ user: { id } }: any) => id)
+    );
+  };
 
   const join = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
@@ -151,6 +169,22 @@ export const VolunteerGroup = ({
           isSuccessLeave={isSuccessLeave}
           isSuccessRequest={isSuccessRequest}
         />
+
+        {(isGroupOwner || !isGroupMember) && (
+          <Wrapper>
+            <Button
+              title={texts.volunteer.contactGroupOwner}
+              onPress={() =>
+                navigation.push(ScreenName.VolunteerForm, {
+                  title: texts.volunteer.conversationAllStart,
+                  query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
+                  rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
+                  selectedUserIds: groupAdmins
+                })
+              }
+            />
+          </Wrapper>
+        )}
 
         {!!description && (
           <View>
