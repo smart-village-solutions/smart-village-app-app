@@ -14,7 +14,7 @@ export const formatSize = (size: number) => {
 export const formatSizeForAugmentedReality = (bytes: number, decimals = 1) => {
   if (bytes == 0) return '0 Bytes';
 
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const index = Math.floor(Math.log(bytes) / Math.log(1024));
   const size = parseFloat((bytes / Math.pow(1024, index)).toFixed(decimals));
 
