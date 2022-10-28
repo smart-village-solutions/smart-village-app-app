@@ -19,23 +19,25 @@ export const deleteObject = async ({ index, data, setData }) => {
   const deletedData = [...data];
   const dataItem = data[index];
 
-  for (const objectItem of dataItem?.payload?.localUris) {
-    const { storageName } = storageNameCreator({ dataItem, objectItem });
+  for (const [sceneIndex, sceneItem] of dataItem?.payload?.scenes?.entries()) {
+    for (const objectItem of sceneItem?.localUris) {
+      const { storageName } = storageNameCreator({ dataItem, objectItem, sceneIndex });
 
-    try {
-      await FileSystem.deleteAsync(objectItem?.uri);
-      await AsyncStorage.removeItem(storageName);
+      try {
+        await FileSystem.deleteAsync(objectItem?.uri);
+        await AsyncStorage.removeItem(storageName);
 
-      deletedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADABLE;
-      deletedData[index].payload.localUris = [];
-      deletedData[index].payload.progress = 0;
-      deletedData[index].payload.progressSize = 0;
-      deletedData[index].payload.size = 0;
-    } catch (error) {
-      console.error(error);
+        deletedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADABLE;
+        deletedData[index].payload.scenes[sceneIndex].localUris = [];
+        deletedData[index].payload.progress = 0;
+        deletedData[index].payload.progressSize = 0;
+        deletedData[index].payload.size = 0;
+      } catch (error) {
+        console.error(error);
 
-      // return is used to prevent the for loop from continuing
-      return deleteErrorAlert();
+        // return is used to prevent the for loop from continuing
+        return deleteErrorAlert(storageName);
+      }
     }
   }
 
