@@ -24,7 +24,9 @@ export const deleteObject = async ({ index, data, setData }) => {
       const { storageName } = storageNameCreator({ dataItem, objectItem, sceneIndex });
 
       try {
-        await FileSystem.deleteAsync(objectItem?.uri);
+        if (objectItem?.uri) {
+          await FileSystem.deleteAsync(objectItem.uri);
+        }
         await AsyncStorage.removeItem(storageName);
 
         deletedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADABLE;

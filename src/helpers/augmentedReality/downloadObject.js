@@ -14,7 +14,9 @@ export const downloadObject = async ({ index, data, setData }) => {
     for (const objectItem of sceneItem?.downloadableUris) {
       const {
         chromaKeyFilteredVideo,
+        color,
         id,
+        intensity,
         isSpatialSound,
         maxDistance,
         minDistance,
@@ -23,6 +25,7 @@ export const downloadObject = async ({ index, data, setData }) => {
         rolloffModel,
         rotation,
         scale,
+        temperature,
         title,
         type,
         uri
@@ -53,26 +56,35 @@ export const downloadObject = async ({ index, data, setData }) => {
           await FileSystem.makeDirectoryAsync(folderName, { intermediates: true });
         }
 
-        const fileSystemDownload = await downloadResumable.downloadAsync();
-        const { size } = await FileSystem.getInfoAsync(fileSystemDownload.uri);
+        let size = 0;
+        let fileSystemDownload = undefined;
+
+        if (uri) {
+          fileSystemDownload = await downloadResumable.downloadAsync();
+          const fileSystemInfo = await FileSystem.getInfoAsync(fileSystemDownload.uri);
+          size = fileSystemInfo.size;
+        }
 
         downloadedData[index].payload.downloadType = DOWNLOAD_TYPE.DOWNLOADED;
         downloadedData[index].payload.size += size;
         downloadedData[index].payload.scenes[sceneIndex].localUris?.push({
           chromaKeyFilteredVideo, // HEX Color Code
+          color, // HEX Color Code,
           id,
+          intensity, // Number
           isSpatialSound, // Boolean
-          maxDistance: parseFloat(maxDistance),
-          minDistance: parseFloat(minDistance),
-          physicalWidth: parseFloat(physicalWidth),
+          maxDistance: maxDistance && parseFloat(maxDistance),
+          minDistance: minDistance && parseFloat(minDistance),
+          physicalWidth: physicalWidth && parseFloat(physicalWidth),
           position, // Array [x,y,z]
           rolloffModel, // String (none, linear, or logarithmic)
           rotation, // Array [x,y,z]
           scale, // Array [x,y,z]
           size,
+          temperature, // Number
           title,
           type,
-          uri: fileSystemDownload.uri
+          uri: fileSystemDownload?.uri
         });
 
         addToStore(storageName, downloadedData[index]);
