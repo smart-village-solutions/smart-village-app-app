@@ -194,7 +194,7 @@ export const SettingsScreen = () => {
     };
 
     updateSectionedData();
-  }, []);
+  }, [selectedFilterId]);
 
   useEffect(() => {
     try {
