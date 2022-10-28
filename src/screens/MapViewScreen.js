@@ -53,9 +53,9 @@ export const MapViewScreen = ({ navigation, route }) => {
           >
             <WrapperRow spaceBetween>
               <View style={styles.augmentedRealityInfoContainer}>
-                {!!modelData?.title && <RegularText big>{modelData?.title}</RegularText>}
-                {!!modelData?.payload?.locationInfo && (
-                  <RegularText small>{modelData?.payload?.locationInfo}</RegularText>
+                {!!modelData.title && <RegularText big>{modelData.title}</RegularText>}
+                {!!modelData.payload?.locationInfo && (
+                  <RegularText small>{modelData.payload.locationInfo}</RegularText>
                 )}
               </View>
 
