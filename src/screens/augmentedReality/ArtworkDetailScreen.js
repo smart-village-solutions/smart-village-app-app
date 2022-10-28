@@ -23,7 +23,7 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
   const [data, setData] = useState(route?.params?.data ?? []);
   const [isLoading, setIsLoading] = useState(true);
   const index = route?.params?.index;
-  const description = data?.[index]?.description || undefined;
+  const description = data[index]?.description;
   const { downloadType } = data[index]?.payload;
 
   useEffect(() => {
