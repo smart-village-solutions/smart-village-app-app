@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 
 import { consts, device, texts } from '../../config';
-import { deleteAllData, downloadAllData, formatSize } from '../../helpers';
+import { deleteAllData, downloadAllData, formatSizeForAugmentedReality } from '../../helpers';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
@@ -71,7 +71,7 @@ export const ARObjectList = ({
 
   const checkFreeStorage = async () => {
     const storage = await FileSystem.getFreeDiskStorageAsync();
-    setFreeSize(formatSize(storage));
+    setFreeSize(formatSizeForAugmentedReality(storage));
   };
 
   const downloadAll = async () => {
