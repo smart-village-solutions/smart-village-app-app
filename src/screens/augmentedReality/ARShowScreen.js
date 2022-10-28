@@ -128,6 +128,9 @@ const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
     } else {
       parsedObject[item.type] = {
         chromaKeyFilteredVideo: item?.chromaKeyFilteredVideo,
+        color: item?.color,
+        intensity: item?.intensity,
+        isSpatialSound: item?.isSpatialSound,
         maxDistance: item?.maxDistance,
         minDistance: item?.minDistance,
         physicalWidth: item?.physicalWidth,
@@ -135,7 +138,7 @@ const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
         rolloffModel: item?.rolloffModel,
         rotation: item?.rotation,
         scale: item?.scale,
-        isSpatialSound: item?.isSpatialSound,
+        temperature: item?.temperature,
         uri: item?.uri
       };
     }
