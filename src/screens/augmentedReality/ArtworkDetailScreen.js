@@ -16,27 +16,15 @@ import {
 } from '../../components';
 import { texts } from '../../config';
 import { checkDownloadedData, downloadObject, DOWNLOAD_TYPE } from '../../helpers';
-import { usePullToRefetch, useStaticContent } from '../../hooks';
 import { ScreenName } from '../../types';
 
 export const ArtworkDetailScreen = ({ route, navigation }) => {
-  const {
-    data: artworkDetail = '',
-    error,
-    loading,
-    refetch
-  } = useStaticContent({
-    type: 'html',
-    name: 'artworkDetail'
-  });
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [data, setData] = useState(route?.params?.data ?? []);
-  const [isLoading, setIsLoading] = useState(loading);
+  const [isLoading, setIsLoading] = useState(true);
   const index = route?.params?.index;
+  const description = data[index]?.description;
   const { downloadType } = data[index]?.payload;
-
-  const RefreshControl = usePullToRefetch(refetch);
 
   useEffect(() => {
     if (data?.length) {
@@ -71,17 +59,19 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
     return <LoadingSpinner loading />;
   }
 
-  if (error || !data.length) {
+  if (!data.length) {
     return <EmptyMessage title={texts.augmentedReality.arInfoScreen.loadingError} />;
   }
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView refreshControl={RefreshControl}>
+      <ScrollView>
         <WrapperWithOrientation>
-          <Wrapper>
-            <HtmlView html={artworkDetail} />
-          </Wrapper>
+          {!!description && (
+            <Wrapper>
+              <HtmlView html={description} />
+            </Wrapper>
+          )}
 
           <WhatIsARButton {...{ data, isLoading, navigation }} />
 
