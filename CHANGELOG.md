@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
+## [v3.0.4]
+
+New features for `AugmentedReality` and minor bug fixes
+
+### Added
+
+- added a document explaining how to use the `AugmentedReality` feature
+- added a description about the artwork to the `ArtworkDetail` page
+- added props required for `ViroAmbientLight` from server
+
+### Changed
+
+- the ability to download one model for `AugmentedReality` has been updated to download multiple models
+- updated `AugmentedReality`'s `physicalWidth` prop to come from `globalSettings`
+- removed description of 3D model on full screen map page
+
+### Fixed
+
+- fixed an issue where the toggle activated after changing tabs on the `SettingsScreen` would not update
+- fixed the problem of not displaying the size of the `AugmentedReality` model properly
 
 ## [v3.0.3]
 
