@@ -168,9 +168,6 @@ export const VolunteerFormGroup = ({
           title={texts.volunteer.save}
           disabled={isLoading}
         />
-        {isEditMode && (
-          <Button onPress={() => deleteGroupAlert(onGroupDelete)} title={texts.volunteer.delete} />
-        )}
         <Touchable onPress={() => navigation.goBack()}>
           <BoldText center primary underline>
             {texts.volunteer.abort.toUpperCase()}
