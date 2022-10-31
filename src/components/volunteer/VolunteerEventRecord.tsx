@@ -112,7 +112,8 @@ export const VolunteerEventRecord = ({
             <WrapperRow style={styles.headerRight}>
               <TouchableOpacity
                 onPress={() =>
-                  navigation?.navigate(ScreenName.VolunteerForm, {
+                  // eslint-disable-next-line react/prop-types
+                  navigation.navigate(ScreenName.VolunteerForm, {
                     query: QUERY_TYPES.VOLUNTEER.CALENDAR,
                     calendarData: data,
                     groupId: content?.metadata?.contentcontainer_id

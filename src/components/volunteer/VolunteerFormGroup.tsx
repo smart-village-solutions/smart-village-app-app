@@ -8,7 +8,7 @@ import { useMutation } from 'react-query';
 
 import { colors, texts } from '../../config';
 import { groupDelete, groupEdit, groupNew } from '../../queries/volunteer';
-import { JOIN_POLICY_TYPES, ScreenName, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
+import { JOIN_POLICY_TYPES, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form/Input';
 import { BoldText } from '../Text';
@@ -27,7 +27,8 @@ export const VolunteerFormGroup = ({
   route,
   scrollToTop
 }: StackScreenProps<any> & { scrollToTop: () => void }) => {
-  const groupData = route.params?.groupData ?? undefined;
+  const groupData = route.params?.groupData;
+  const isEditMode = !!groupData; // edit mode if there exists some group data
 
   const {
     control,
@@ -51,20 +52,21 @@ export const VolunteerFormGroup = ({
   const { mutate: mutateEdit, isSuccess: isSuccessEdit } = useMutation(groupEdit);
 
   const onSubmit = (groupNewData: VolunteerGroup) => {
-    if (groupData) {
-      const { description, name, tags, visibility } = groupNewData;
+    if (isEditMode) {
       const { id, joinPolicy } = groupData;
 
-      mutateEdit({ name, description, visibility, joinPolicy, tags, id });
+      mutateEdit({ ...groupNewData, id, joinPolicy });
     } else {
-      mutateAsync(groupNewData).then((dataAsync) => {
-        // tags are not possible to send with creation and need to be updated after creation, which we
-        // do automatically here
+      mutateAsync(groupNewData).then((dataAsync: VolunteerGroup) => {
+        // tags are not possible to send with creation and need to be updated after creation,
+        // which we do automatically here
         if (dataAsync?.id) {
           mutateEdit({
             id: dataAsync.id,
             name: dataAsync.name,
-            tags: groupNewData.tags
+            tags: groupNewData.tags,
+            guid: dataAsync.guid,
+            contentContainerId: dataAsync.contentContainerId
           });
         }
       });
@@ -74,8 +76,7 @@ export const VolunteerFormGroup = ({
   const onGroupDelete = async () => {
     try {
       await groupDelete(groupData?.id);
-      navigation.navigate(ScreenName.VolunteerHome);
-
+      navigation.pop(2);
       Alert.alert('Erfolgreich', 'Das Group wurde erfolgreich gelöscht.');
     } catch (error) {
       Alert.alert('Fehler beim Löschen des Group', 'Bitte versuchen Sie es noch einmal.');
@@ -89,7 +90,9 @@ export const VolunteerFormGroup = ({
 
   if (isError || (!isLoading && data && !data.id)) {
     Alert.alert(
-      'Fehler beim Erstellen einer Gruppe/eines Vereins',
+      isEditMode
+        ? 'Fehler beim Aktualisieren einer Gruppe/eines Vereins'
+        : 'Fehler beim Erstellen einer Gruppe/eines Vereins',
       'Bitte Eingaben überprüfen und erneut versuchen.'
     );
     reset();
@@ -98,7 +101,12 @@ export const VolunteerFormGroup = ({
   if (isSuccessEdit && isFocused) {
     navigation.goBack();
 
-    Alert.alert('Erfolgreich', 'Die Gruppe/der Verein wurde erfolgreich erstellt.');
+    Alert.alert(
+      'Erfolgreich',
+      isEditMode
+        ? 'Die Gruppe/der Verein wurde erfolgreich aktualisiert.'
+        : 'Die Gruppe/der Verein wurde erfolgreich erstellt.'
+    );
   }
 
   return (
@@ -145,25 +153,6 @@ export const VolunteerFormGroup = ({
           control={control}
         />
       </Wrapper>
-      {/* <Wrapper style={styles.noPaddingTop}>
-        <Controller
-          name="joinPolicy"
-          render={({ onChange, value }) => (
-            <CheckBox
-              checked={!!value}
-              onPress={() => onChange(!value)}
-              title="Jeder kann beitreten"
-              checkedColor={colors.accent}
-              checkedIcon="check-square-o"
-              uncheckedColor={colors.darkText}
-              uncheckedIcon="square-o"
-              containerStyle={styles.checkboxContainerStyle}
-              textStyle={styles.checkboxTextStyle}
-            />
-          )}
-          control={control}
-        />
-      </Wrapper> */}
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="tags"
@@ -179,13 +168,8 @@ export const VolunteerFormGroup = ({
           title={texts.volunteer.save}
           disabled={isLoading}
         />
-        {!!groupData && (
-          <Button
-            disabled={isLoading}
-            invert
-            onPress={() => deleteGroupAlert(onGroupDelete)}
-            title={texts.volunteer.delete}
-          />
+        {isEditMode && (
+          <Button onPress={() => deleteGroupAlert(onGroupDelete)} title={texts.volunteer.delete} />
         )}
         <Touchable onPress={() => navigation.goBack()}>
           <BoldText center primary underline>

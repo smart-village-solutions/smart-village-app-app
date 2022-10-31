@@ -85,7 +85,7 @@ export const groupEdit = async ({
   joinPolicy,
   tags,
   id
-}: VolunteerGroup & { id: number }) => {
+}: VolunteerGroup) => {
   const authToken = await volunteerAuthToken();
 
   const formData = {

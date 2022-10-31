@@ -5,7 +5,7 @@ import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useMutation } from 'react-query';
 
-import { consts, device, Icon, normalize, texts } from '../../config';
+import { colors, consts, device, Icon, normalize, texts } from '../../config';
 import {
   isOwner,
   volunteerBannerImage,
@@ -37,11 +37,13 @@ const a11yText = consts.a11yLabel;
 // eslint-disable-next-line complexity
 export const VolunteerGroup = ({
   data,
+  refetch,
   isRefetching,
   navigation,
   route
 }: {
   data: TVolunteerGroup & { contentcontainer_id: number; join_policy: number };
+  refetch: () => void;
   isRefetching: boolean;
 } & StackScreenProps<any>) => {
   const {
@@ -126,14 +128,14 @@ export const VolunteerGroup = ({
               <TouchableOpacity
                 onPress={() =>
                   // eslint-disable-next-line react/prop-types
-                  navigation?.navigate(ScreenName.VolunteerForm, {
+                  navigation.navigate(ScreenName.VolunteerForm, {
                     query: QUERY_TYPES.VOLUNTEER.GROUP,
                     groupData: data,
                     groupId: data.id
                   })
                 }
               >
-                <Icon.NamedIcon name="settings" color="white" style={styles.icon} />
+                <Icon.EditSetting color={colors.lightestText} style={styles.icon} />
               </TouchableOpacity>
 
               <ShareHeader
@@ -151,6 +153,12 @@ export const VolunteerGroup = ({
   useEffect(() => {
     checkIfOwner();
   }, [checkIfOwner]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   return (
     <View>
