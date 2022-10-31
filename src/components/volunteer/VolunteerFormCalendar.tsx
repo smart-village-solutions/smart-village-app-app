@@ -2,7 +2,6 @@ import { useIsFocused } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import _sortBy from 'lodash/sortBy';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useMutation as useMainserverMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
@@ -11,7 +10,6 @@ import { useMutation, useQuery } from 'react-query';
 import { colors, consts, texts } from '../../config';
 import { isOwner, jsonParser, momentFormat, volunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
-import { CREATE_EVENT_RECORDS } from '../../queries/eventRecords';
 import { calendarDelete, calendarNew, calendarUpload, groups } from '../../queries/volunteer';
 import { ScreenName, VolunteerCalendar, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
@@ -57,6 +55,7 @@ export const VolunteerFormCalendar = ({
     defaultValues: {
       isPublic: 0,
       calendarId: calendarData?.id || '',
+      contentContainerId: groupId || '',
       title: calendarData?.title || '',
       startDate: calendarData?.start_datetime ? appointments?.dateFrom : undefined,
       startTime: calendarData?.start_datetime ? appointments?.timeFrom : undefined,
@@ -66,8 +65,7 @@ export const VolunteerFormCalendar = ({
       participantInfo: calendarData?.participant_info || '',
       entranceFee: '',
       location: '',
-      topics: calendarData?.content?.topics.map(({ name }: any) => name).toString() || [],
-      contentContainerId: groupId || 0,
+      topics: calendarData?.content?.topics.map(({ name }: any) => name).toString() || '',
       documents: calendarData?.content?.files?.length
         ? fileFilters(PDF_TYPE_REGEX, calendarData)
         : '[]',
@@ -107,32 +105,11 @@ export const VolunteerFormCalendar = ({
   const isFocused = useIsFocused();
 
   const { mutateAsync, isLoading, isError, isSuccess, data, reset } = useMutation(calendarNew);
-  const [createEvent] = useMainserverMutation(CREATE_EVENT_RECORDS);
+
   const onSubmit = async (calendarNewData: VolunteerCalendar) => {
-    mutateAsync(calendarNewData).then(async ({ id }) => {
+    mutateAsync(calendarNewData).then(async ({ id }: { id: number }) => {
       if (id) filerParseAndUpload(calendarNewData, id);
     });
-
-    // mutate(calendarNewData);
-
-    /**
-     * TODO: create event on main-server
-     *       - this needs correct logics with checks if mutation works or errors
-     *       - a correct data provider needs to be used instead of the mobile-app account
-     */
-    //
-    // createEvent({
-    //   variables: {
-    //     title: calendarNewData.title,
-    //     categoryName: 'test',
-    //     city: calendarNewData.location,
-    //     description: calendarNewData.description,
-    //     dateStart: calendarNewData.startDate,
-    //     dateEnd: calendarNewData.endDate,
-    //     timeStart: calendarNewData.startTime,
-    //     timeEnd: calendarNewData.endTime
-    //   }
-    // });
   };
 
   const onCalendarDelete = async () => {
