@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { normalize } from 'react-native-elements';
@@ -101,6 +102,24 @@ export const useConversationsHeader = ({ query, navigation }: any) => {
       )
     });
   }, [query, navigation]);
+};
+
+export const useVolunteerAuthRequiredNavigation = () => {
+  const navigation = useNavigation();
+  const { isLoggedIn } = useVolunteerUser();
+
+  const useVolunteerNavigation = useCallback(
+    ({ routeName, params, volunteerAction }) => {
+      if (isLoggedIn) {
+        if (!volunteerAction) navigation.navigate(routeName, params);
+      } else {
+        navigation.navigate(ScreenName.VolunteerLogin);
+      }
+    },
+    [navigation, isLoggedIn]
+  );
+
+  return { useVolunteerNavigation };
 };
 
 const styles = StyleSheet.create({
