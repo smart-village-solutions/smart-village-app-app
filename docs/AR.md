@@ -35,6 +35,11 @@ The information required to use the Augmented Reality feature will be specified 
 ![](./assets/ModelUpload/ModelUpload7.png)
 
 - To find out what types of files (materials) you can upload, see the [next section](#materials-that-can-be-added-to-a-scene)
+
+- Press the `AR Scene Hinzufügen` button to add a new Augmented Reality scene
+
+![](./assets/ModelUpload/ModelUpload9.png)
+
 - After entering all the information, press the save button
 
 ![](./assets/ModelUpload/ModelUpload8.png)
@@ -50,6 +55,8 @@ The information required to use the Augmented Reality feature will be specified 
 - **MP3:** If you want a sound file in Augmented Reality scene, upload it to this section (Optional) [ViroSound](https://viro-community.readme.io/docs/virosound)
 - **MP4:** If you want a video on Augmented Reality scene, please upload it to this section (Optional) [ViroVideo](https://viro-community.readme.io/docs/virovideo)
 - **IMAGE:** If you want a picture in the Augmented Reality scene, upload it to this section (Optional) [ViroImage](https://viro-community.readme.io/docs/viroimage)
+- **Light:** If you wish, you can change the lighting settings of the scene from this tab (Optional)
+[ViroAmbientLight](https://viro-community.readme.io/docs/viroambientlight)
 - **TEXTURE:** The section where you can upload the multiple texture files required for the 3D model (Required)
   - :warning: Each texture file has a specific name. Please enter this specific name in the name field. Otherwise there will be a problem in displaying the 3D model.
 
@@ -94,6 +101,22 @@ This shows, that the texture name needs to be the same as the name of the textur
     - _Rolloff model_ - The rolloff model which determines how the sound volume will fall off between _Min distance_ and _Max distance_. Can take `None`, `Linear` & `Logarithmic` values as String
 - **MP4:**
   - _Chroma key filtered video_ - If the video you want to add to the Augmented Reality scene has a background color that you want to delete, add the color code in HEX format here. Example: #00FF00 (String)
+- **Light:**
+  - _Color_ - The color of the light. The default light color is white. Valid color formats are:
+    - '#f0f' (#rgb)
+    - '#f0fc' (#rgba)
+    - '#ff00ff' (#rrggbb)
+    - '#ff00ff00' (#rrggbbaa)
+    - 'rgb(255, 255, 255)'
+    - 'rgba(255, 255, 255, 1.0)'
+    - 'hsl(360, 100%, 100%)'
+    - 'hsla(360, 100%, 100%, 1.0)'
+    - 'transparent'
+    - 'red'
+    - 0xff00ff00 (0xrrggbbaa)
+  - _Temperature_ - The temperature of the light, in Kelvin. Viro will derive a hue from this temperature and multiply it by the light's color. To model a physical light with a known temperature, you can leave the color of this Light set to (1.0, 1.0, 1.0) and set its temperature only. The default value for temperature is 6500K, which represents pure white light. (Number)
+  - _Intensity_ - The brightness of the light. Set to 1000 for normal intensity. The intensity is simply divided by 1000 and multiplied by the light's color. Lower intensities will decrease the brightness of the light, and higher intensities will increase the brightness of the light. The default intensity is 1000. (Number)
+  - _Rotation_ - The rotation of the component around it's local axis specified as Euler angles [x, y, z]. Units for each angle are specified in degrees. (Array[Number])
 
 ## View AR added in a tour stop in the app
 
