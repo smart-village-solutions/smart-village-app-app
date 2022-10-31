@@ -12,7 +12,11 @@ import {
   volunteerProfileImage,
   volunteerUserData
 } from '../../helpers';
-import { useOpenWebScreen, VOLUNTEER_GROUP_REFRESH_EVENT } from '../../hooks';
+import {
+  useOpenWebScreen,
+  useVolunteerAuthRequiredNavigation,
+  VOLUNTEER_GROUP_REFRESH_EVENT
+} from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import {
   groupJoin,
@@ -86,6 +90,7 @@ export const VolunteerGroup = ({
   const [isGroupApplicant, setIsGroupApplicant] = useState(false);
   const [groupAdmins, setGroupAdmins] = useState<Array<number>>([owner?.id]);
 
+  const { useVolunteerNavigation } = useVolunteerAuthRequiredNavigation();
   const {
     mutate: mutateJoin,
     mutateAsync: mutateAsyncJoin,
@@ -226,11 +231,14 @@ export const VolunteerGroup = ({
             <Button
               title={texts.volunteer.contactGroupOwner}
               onPress={() =>
-                navigation.push(ScreenName.VolunteerForm, {
-                  title: texts.volunteer.conversationAllStart,
-                  query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
-                  rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
-                  selectedUserIds: groupAdmins
+                useVolunteerNavigation({
+                  routeName: ScreenName.VolunteerForm,
+                  params: {
+                    title: texts.volunteer.conversationAllStart,
+                    query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
+                    rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
+                    selectedUserIds: groupAdmins
+                  }
                 })
               }
             />
@@ -313,7 +321,11 @@ export const VolunteerGroup = ({
                   : texts.volunteer.join[joinPolicy as keyof typeof texts.volunteer.join]
               }
               invert={isGroupMember}
-              onPress={isGroupMember ? leave : join}
+              onPress={() =>
+                isGroupMember
+                  ? useVolunteerNavigation({ volunteerAction: leave })
+                  : useVolunteerNavigation({ volunteerAction: join })
+              }
               disabled={isGroupApplicant}
             />
             {!isGroupMember && joinPolicy === JOIN_POLICY_TYPES.INVITE_AND_REQUEST && (
