@@ -1,10 +1,11 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useEffect, useState } from 'react';
-import { DeviceEventEmitter, View } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useMutation } from 'react-query';
 
-import { consts, device, texts } from '../../config';
+import { colors, consts, device, Icon, normalize, texts } from '../../config';
 import {
   isOwner,
   volunteerBannerImage,
@@ -31,9 +32,10 @@ import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
+import { ShareHeader } from '../ShareHeader';
 import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
 
 import { VolunteerGroupMembersAndApplicants } from './VolunteerGroupMembersAndApplicants';
 import { VolunteerHomeSection } from './VolunteerHomeSection';
@@ -46,11 +48,13 @@ const a11yText = consts.a11yLabel;
 // eslint-disable-next-line complexity
 export const VolunteerGroup = ({
   data,
+  refetch,
   isRefetching,
   navigation,
   route
 }: {
   data: TVolunteerGroup & { contentcontainer_id: number; join_policy: number };
+  refetch: () => void;
   isRefetching: boolean;
 } & StackScreenProps<any>) => {
   const {
@@ -72,6 +76,7 @@ export const VolunteerGroup = ({
   const logo = volunteerProfileImage(guid);
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
+  const shareContent = route.params?.shareContent;
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
@@ -138,6 +143,35 @@ export const VolunteerGroup = ({
       );
   }, [id]);
 
+  useLayoutEffect(() => {
+    if (isGroupOwner) {
+      navigation.setOptions({
+        headerRight: () =>
+          isGroupOwner && (
+            <WrapperRow style={styles.headerRight}>
+              <TouchableOpacity
+                onPress={() =>
+                  // eslint-disable-next-line react/prop-types
+                  navigation.navigate(ScreenName.VolunteerForm, {
+                    query: QUERY_TYPES.VOLUNTEER.GROUP,
+                    groupData: data,
+                    groupId: data.id
+                  })
+                }
+              >
+                <Icon.EditSetting color={colors.lightestText} style={styles.icon} />
+              </TouchableOpacity>
+
+              <ShareHeader
+                shareContent={shareContent}
+                style={{ paddingHorizontal: normalize(10) }}
+              />
+            </WrapperRow>
+          )
+      });
+    }
+  }, [isGroupOwner, data]);
+
   useFocusEffect(refreshGroup);
 
   useEffect(() => {
@@ -147,6 +181,12 @@ export const VolunteerGroup = ({
   useEffect(() => {
     getGroupAdmins();
   }, [getGroupAdmins]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   return (
     <View>
@@ -287,3 +327,13 @@ export const VolunteerGroup = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  headerRight: {
+    alignItems: 'center',
+    paddingRight: normalize(7)
+  },
+  icon: {
+    paddingHorizontal: normalize(10)
+  }
+});

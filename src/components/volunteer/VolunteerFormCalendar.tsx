@@ -201,7 +201,7 @@ export const VolunteerFormCalendar = ({
     );
     reset();
   } else if (isSuccess && isFocused) {
-    isEditMode ? navigation.pop(2) : navigation.goBack();
+    navigation.goBack();
 
     Alert.alert(
       'Erfolgreich',

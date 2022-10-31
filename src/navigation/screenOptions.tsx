@@ -26,34 +26,36 @@ type OptionConfig = {
   withShare?: boolean;
 };
 
-export const getScreenOptions = ({
-  withBookmark,
-  withDrawer,
-  withFavorites,
-  withShare
-}: OptionConfig): ((props: OptionProps) => StackNavigationOptions) => ({ navigation, route }) => {
-  const shareContent = route.params?.shareContent ?? '';
+export const getScreenOptions =
+  ({
+    withBookmark,
+    withDrawer,
+    withFavorites,
+    withShare
+  }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
+  ({ navigation, route }) => {
+    const shareContent = route.params?.shareContent;
 
-  return {
-    // header gradient:
-    // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
-    headerBackground: () => <DiagonalGradient />,
-    headerTitleStyle: styles.headerTitleStyle,
-    headerTitleContainerStyle: styles.headerTitleContainerStyle,
-    headerRight: () => (
-      <WrapperRow style={styles.headerRight}>
-        {withBookmark && <BookmarkHeader route={route} style={styles.icon} />}
-        {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
-        {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}
-      </WrapperRow>
-    ),
-    headerLeft: withFavorites
-      ? () => <FavoritesHeader navigation={navigation} style={styles.icon} />
-      : HeaderLeft,
-    title: route.params?.title ?? '',
-    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+    return {
+      // header gradient:
+      // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
+      headerBackground: () => <DiagonalGradient />,
+      headerTitleStyle: styles.headerTitleStyle,
+      headerTitleContainerStyle: styles.headerTitleContainerStyle,
+      headerRight: () => (
+        <WrapperRow style={styles.headerRight}>
+          {withBookmark && <BookmarkHeader route={route} style={styles.icon} />}
+          {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
+          {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}
+        </WrapperRow>
+      ),
+      headerLeft: withFavorites
+        ? () => <FavoritesHeader navigation={navigation} style={styles.icon} />
+        : HeaderLeft,
+      title: route.params?.title ?? '',
+      cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+    };
   };
-};
 
 const styles = StyleSheet.create({
   headerRight: {

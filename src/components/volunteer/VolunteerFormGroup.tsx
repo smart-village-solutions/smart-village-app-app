@@ -7,7 +7,7 @@ import { CheckBox } from 'react-native-elements';
 import { useMutation } from 'react-query';
 
 import { colors, texts } from '../../config';
-import { groupEdit, groupNew } from '../../queries/volunteer';
+import { groupDelete, groupEdit, groupNew } from '../../queries/volunteer';
 import { JOIN_POLICY_TYPES, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form/Input';
@@ -15,10 +15,21 @@ import { BoldText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
+const deleteGroupAlert = (onPress: () => Promise<void>) =>
+  Alert.alert('Hinweis', 'Möchten Sie das Group löschen?', [
+    { text: 'Abbrechen', style: 'cancel' },
+    { text: 'Löschen', onPress, style: 'destructive' }
+  ]);
+
+// eslint-disable-next-line complexity
 export const VolunteerFormGroup = ({
   navigation,
+  route,
   scrollToTop
 }: StackScreenProps<any> & { scrollToTop: () => void }) => {
+  const groupData = route.params?.groupData;
+  const isEditMode = !!groupData; // edit mode if there exists some group data
+
   const {
     control,
     formState: { errors, isValid, isSubmitted },
@@ -26,8 +37,12 @@ export const VolunteerFormGroup = ({
   } = useForm<VolunteerGroup>({
     mode: 'onBlur',
     defaultValues: {
-      visibility: VISIBILITY_TYPES.ALL,
-      joinPolicy: JOIN_POLICY_TYPES.OPEN
+      contentContainerId: groupData?.contentcontainer_id || '',
+      description: groupData?.description || '',
+      joinPolicy: JOIN_POLICY_TYPES.OPEN,
+      name: groupData?.name || '',
+      tags: groupData?.tags?.toString() || '',
+      visibility: VISIBILITY_TYPES.ALL
     }
   });
 
@@ -37,17 +52,36 @@ export const VolunteerFormGroup = ({
   const { mutate: mutateEdit, isSuccess: isSuccessEdit } = useMutation(groupEdit);
 
   const onSubmit = (groupNewData: VolunteerGroup) => {
-    mutateAsync(groupNewData).then((dataAsync) => {
-      // tags are not possible to send with creation and need to be updated after creation, which we
-      // do automatically here
-      if (dataAsync?.id) {
-        mutateEdit({
-          id: dataAsync.id,
-          name: dataAsync.name,
-          tags: groupNewData.tags
-        });
-      }
-    });
+    if (isEditMode) {
+      const { id, joinPolicy } = groupData;
+
+      mutateEdit({ ...groupNewData, id, joinPolicy });
+    } else {
+      mutateAsync(groupNewData).then((dataAsync: VolunteerGroup) => {
+        // tags are not possible to send with creation and need to be updated after creation,
+        // which we do automatically here
+        if (dataAsync?.id) {
+          mutateEdit({
+            id: dataAsync.id,
+            name: dataAsync.name,
+            tags: groupNewData.tags,
+            guid: dataAsync.guid,
+            contentContainerId: dataAsync.contentContainerId
+          });
+        }
+      });
+    }
+  };
+
+  const onGroupDelete = async () => {
+    try {
+      await groupDelete(groupData?.id);
+      navigation.pop(2);
+      Alert.alert('Erfolgreich', 'Das Group wurde erfolgreich gelöscht.');
+    } catch (error) {
+      Alert.alert('Fehler beim Löschen des Group', 'Bitte versuchen Sie es noch einmal.');
+      console.error(error);
+    }
   };
 
   if (!isValid) {
@@ -56,7 +90,9 @@ export const VolunteerFormGroup = ({
 
   if (isError || (!isLoading && data && !data.id)) {
     Alert.alert(
-      'Fehler beim Erstellen einer Gruppe/eines Vereins',
+      isEditMode
+        ? 'Fehler beim Aktualisieren einer Gruppe/eines Vereins'
+        : 'Fehler beim Erstellen einer Gruppe/eines Vereins',
       'Bitte Eingaben überprüfen und erneut versuchen.'
     );
     reset();
@@ -65,7 +101,12 @@ export const VolunteerFormGroup = ({
   if (isSuccessEdit && isFocused) {
     navigation.goBack();
 
-    Alert.alert('Erfolgreich', 'Die Gruppe/der Verein wurde erfolgreich erstellt.');
+    Alert.alert(
+      'Erfolgreich',
+      isEditMode
+        ? 'Die Gruppe/der Verein wurde erfolgreich aktualisiert.'
+        : 'Die Gruppe/der Verein wurde erfolgreich erstellt.'
+    );
   }
 
   return (
@@ -94,16 +135,6 @@ export const VolunteerFormGroup = ({
         />
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
-        <Input
-          name="owner"
-          label={texts.volunteer.owner}
-          placeholder={texts.volunteer.owner}
-          multiline
-          validate
-          control={control}
-        />
-      </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="visibility"
           render={({ onChange, value }) => (
@@ -122,25 +153,6 @@ export const VolunteerFormGroup = ({
           control={control}
         />
       </Wrapper>
-      {/* <Wrapper style={styles.noPaddingTop}>
-        <Controller
-          name="joinPolicy"
-          render={({ onChange, value }) => (
-            <CheckBox
-              checked={!!value}
-              onPress={() => onChange(!value)}
-              title="Jeder kann beitreten"
-              checkedColor={colors.accent}
-              checkedIcon="check-square-o"
-              uncheckedColor={colors.darkText}
-              uncheckedIcon="square-o"
-              containerStyle={styles.checkboxContainerStyle}
-              textStyle={styles.checkboxTextStyle}
-            />
-          )}
-          control={control}
-        />
-      </Wrapper> */}
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="tags"

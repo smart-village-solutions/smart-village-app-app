@@ -73,6 +73,7 @@ export const VolunteerEventRecord = ({
   const { attending } = participants || {};
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
+  const shareContent = route.params?.shareContent;
   const appointments = [
     {
       dateFrom: momentFormat(startDatetime, 'YYYY-MM-DD'),
@@ -81,7 +82,6 @@ export const VolunteerEventRecord = ({
       timeTo: momentFormat(endDatetime, 'HH:mm')
     }
   ];
-  const shareContent = route.params?.shareContent || undefined;
   const [isMe, setIsMe] = useState<boolean>();
   const [isAttendingEvent, setIsAttendingEvent] = useState<boolean>();
 
@@ -112,7 +112,8 @@ export const VolunteerEventRecord = ({
             <WrapperRow style={styles.headerRight}>
               <TouchableOpacity
                 onPress={() =>
-                  navigation?.navigate(ScreenName.VolunteerForm, {
+                  // eslint-disable-next-line react/prop-types
+                  navigation.navigate(ScreenName.VolunteerForm, {
                     query: QUERY_TYPES.VOLUNTEER.CALENDAR,
                     calendarData: data,
                     groupId: content?.metadata?.contentcontainer_id
