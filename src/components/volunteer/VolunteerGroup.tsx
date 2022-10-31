@@ -19,7 +19,13 @@ import {
   groupMembership,
   groupRequestMembership
 } from '../../queries/volunteer';
-import { JOIN_POLICY_TYPES, ScreenName, VolunteerGroup as TVolunteerGroup } from '../../types';
+import {
+  JOIN_POLICY_TYPES,
+  ROLE_TYPES,
+  ScreenName,
+  VolunteerGroup as TVolunteerGroup,
+  VolunteerUser
+} from '../../types';
 import { Button } from '../Button';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
@@ -73,7 +79,7 @@ export const VolunteerGroup = ({
   const [isGroupMember, setIsGroupMember] = useState<boolean | undefined>();
   const [isGroupOwner, setIsGroupOwner] = useState(false);
   const [isGroupApplicant, setIsGroupApplicant] = useState(false);
-  const [groupAdmins, setGroupAdmins] = useState<Array<string>>([]);
+  const [groupAdmins, setGroupAdmins] = useState<Array<number>>([owner?.id]);
 
   const {
     mutate: mutateJoin,
@@ -87,18 +93,6 @@ export const VolunteerGroup = ({
     mutateAsync: mutateAsyncLeave,
     isSuccess: isSuccessLeave
   } = useMutation(groupLeave);
-
-  useEffect(() => {
-    fetchGroupMembers();
-  }, []);
-
-  // added this request to add the IDs of the group's admins as param to the send message button
-  const fetchGroupMembers = async () => {
-    const { results } = await groupMembership({ id });
-    setGroupAdmins(
-      results?.filter(({ role }: any) => role === 'admin').map(({ user: { id } }: any) => id)
-    );
-  };
 
   const join = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
@@ -119,23 +113,40 @@ export const VolunteerGroup = ({
     currentUserId && mutateLeave({ id, userId: currentUserId });
   }, [isGroupMember]);
 
-  const checkIfOwner = useCallback(async () => {
-    const { currentUserId } = await volunteerUserData();
-
-    setIsGroupOwner(isOwner(currentUserId, owner));
-  }, [owner]);
-
   const refreshGroup = useCallback(() => {
     // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
     // in other components.
     DeviceEventEmitter.emit(VOLUNTEER_GROUP_REFRESH_EVENT);
   }, []);
 
+  const checkIfOwner = useCallback(async () => {
+    const { currentUserId } = await volunteerUserData();
+
+    setIsGroupOwner(isOwner(currentUserId, owner));
+  }, [owner]);
+
+  const getGroupAdmins = useCallback(async () => {
+    const { results } = await groupMembership({ id });
+
+    // if there is only one member, it is the owner, which is the only admin, so we do not need to
+    // check for more admins
+    results?.length > 1 &&
+      setGroupAdmins(
+        results
+          .filter(({ role }: { role: ROLE_TYPES }) => role === 'admin')
+          .map(({ user: { id } }: { user: VolunteerUser }) => id)
+      );
+  }, [id]);
+
   useFocusEffect(refreshGroup);
 
   useEffect(() => {
     checkIfOwner();
   }, [checkIfOwner]);
+
+  useEffect(() => {
+    getGroupAdmins();
+  }, [getGroupAdmins]);
 
   return (
     <View>
@@ -170,7 +181,7 @@ export const VolunteerGroup = ({
           isSuccessRequest={isSuccessRequest}
         />
 
-        {(isGroupOwner || !isGroupMember) && (
+        {isGroupMember !== undefined && !isGroupMember && (
           <Wrapper>
             <Button
               title={texts.volunteer.contactGroupOwner}

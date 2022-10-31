@@ -19,6 +19,8 @@ export enum MEMBER_STATUS_TYPES {
   MEMBER
 }
 
+export type ROLE_TYPES = 'admin' | 'moderator' | 'member';
+
 export type VolunteerGroup = {
   guid: string;
   id: number;
