@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../../config';
+import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import {
   deleteArrayItem,
@@ -13,10 +13,13 @@ import {
 } from '../../../helpers';
 import { useSelectDocument } from '../../../hooks';
 import { DELETE_DOCUMENT } from '../../../queries/consul';
+import { calendarDeleteFile } from '../../../queries/volunteer';
 import { Button } from '../../Button';
 import { Input } from '../../form';
 import { RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
+
+const { URL_REGEX } = consts;
 
 const deleteDocumentAlert = (onPress) =>
   Alert.alert(
@@ -53,6 +56,21 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
   }, [documentsAttributes]);
 
   const onDeleteDocument = async (documentId, index) => {
+    if (isVolunteer) {
+      const isURL = URL_REGEX.test(documentsAttributes[index].uri);
+
+      if (isURL) {
+        try {
+          await calendarDeleteFile(
+            documentsAttributes[index].fileId,
+            documentsAttributes[index].entryId
+          );
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+
     if (documentId) {
       try {
         await deleteDocument({ variables: { id: documentId } });

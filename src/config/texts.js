@@ -836,6 +836,7 @@ export const texts = {
     country: 'Land',
     city: 'Ort',
     description: 'Beschreibung',
+    delete: 'Löschen',
     documentGreater10MBError: 'Das ausgewählte Dokument darf maximal 10 MB groß sein.',
     documents: 'Dokumente',
     edit: 'Daten bearbeiten',

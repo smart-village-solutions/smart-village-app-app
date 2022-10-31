@@ -61,7 +61,7 @@ export const DropdownInput = ({
       const selectedData = dropdownData?.find((entry) => entry.selected);
       const selectedValue = selectedData?.[valueKey];
 
-      onChange(selectedValue ?? 0);
+      onChange(selectedValue ?? '');
     }
   }, [dropdownData]);
 

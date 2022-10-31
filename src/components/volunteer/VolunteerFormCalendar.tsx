@@ -2,17 +2,15 @@ import { useIsFocused } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import _sortBy from 'lodash/sortBy';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useMutation as useMainserverMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { useMutation, useQuery } from 'react-query';
 
-import { colors, texts } from '../../config';
-import { isOwner, jsonParser, volunteerUserData } from '../../helpers';
+import { colors, consts, texts } from '../../config';
+import { isOwner, jsonParser, momentFormat, volunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
-import { CREATE_EVENT_RECORDS } from '../../queries/eventRecords';
-import { calendarNew, calendarUpload, groups } from '../../queries/volunteer';
+import { calendarDelete, calendarNew, calendarUpload, groups } from '../../queries/volunteer';
 import { VolunteerCalendar, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { DocumentSelector, ImageSelector } from '../consul/selectors';
@@ -24,12 +22,85 @@ import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
+const { IMAGE_TYPE_REGEX, PDF_TYPE_REGEX, URL_REGEX } = consts;
+
+const fileFilters = (fileRegex: RegExp, calendarData: VolunteerCalendar) =>
+  JSON.stringify(
+    calendarData?.content?.files
+      ?.map(({ file_name: infoText, mime_type: mimeType, url: uri, id: fileId }) => {
+        const isFile = fileRegex.test(infoText);
+
+        if (isFile) {
+          return { entryId: calendarData?.id, fileId, infoText, mimeType, uri };
+        }
+
+        return null;
+      })
+      ?.filter((otherFiles) => otherFiles != null)
+  );
+
+const filerParseAndUpload = (calendarNewData: VolunteerCalendar, id: number) => {
+  const images = jsonParser(calendarNewData.images);
+  const documents = jsonParser(calendarNewData.documents);
+  const uris: { uri: string; mimeType: string }[] = [];
+
+  if (images?.length) {
+    images.forEach(({ uri, mimeType }: { uri: string; mimeType: string }) => {
+      uris.push({ uri, mimeType });
+    });
+  }
+
+  if (documents?.length) {
+    documents.forEach(({ uri, mimeType }: { uri: string; mimeType: string }) => {
+      uris.push({ uri, mimeType });
+    });
+  }
+
+  /* foreach loop to upload each file after the event has been created */
+  uris.forEach(async ({ uri, mimeType }) => {
+    try {
+      const isURL = URL_REGEX.test(uri);
+
+      if (isURL) return;
+
+      await calendarUpload(uri, id, mimeType);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+};
+
+const deleteCalendarAlert = (onPress: () => Promise<void>) =>
+  Alert.alert('Hinweis', 'Möchten Sie das Event löschen?', [
+    { text: texts.volunteer.abort, style: 'cancel' },
+    { text: texts.volunteer.delete, onPress, style: 'destructive' }
+  ]);
+
 // eslint-disable-next-line complexity
 export const VolunteerFormCalendar = ({
   navigation,
+  route,
   scrollToTop,
   groupId
 }: StackScreenProps<any> & { scrollToTop: () => void; groupId?: number }) => {
+  const calendarData = route.params?.calendarData as VolunteerCalendar;
+  const isEditMode = !!calendarData; // edit mode if there exists some calendar data
+
+  const appointments = {
+    dateFrom: calendarData?.start_datetime
+      ? new Date(momentFormat(calendarData.start_datetime, 'YYYY-MM-DD'))
+      : undefined,
+    dateTo: calendarData?.end_datetime
+      ? new Date(momentFormat(calendarData.end_datetime, 'YYYY-MM-DD'))
+      : undefined,
+    timeFrom: calendarData?.start_datetime
+      ? new Date(momentFormat(calendarData.start_datetime, 'YYYY-MM-DDTHH:mm:ss'))
+      : undefined,
+    timeTo: calendarData?.end_datetime
+      ? new Date(momentFormat(calendarData.end_datetime, 'YYYY-MM-DDTHH:mm:ss'))
+      : undefined
+  };
+
   const {
     control,
     formState: { errors, isValid },
@@ -38,9 +109,24 @@ export const VolunteerFormCalendar = ({
     mode: 'onBlur',
     defaultValues: {
       isPublic: 0,
-      contentContainerId: groupId || 0,
-      documents: '[]',
-      images: '[]'
+      calendarId: calendarData?.id || '',
+      contentContainerId: groupId || '',
+      title: calendarData?.title || '',
+      startDate: appointments.dateFrom,
+      startTime: appointments.timeFrom || '',
+      endDate: appointments.dateTo,
+      endTime: appointments.timeTo || '',
+      description: calendarData?.description || '',
+      participantInfo: calendarData?.participant_info || '',
+      entranceFee: '',
+      location: '',
+      topics: calendarData?.content?.topics.map(({ name }) => name).toString() || '',
+      documents: calendarData?.content?.files?.length
+        ? fileFilters(PDF_TYPE_REGEX, calendarData)
+        : '[]',
+      images: calendarData?.content?.files?.length
+        ? fileFilters(IMAGE_TYPE_REGEX, calendarData)
+        : '[]'
     }
   });
   const { data: dataGroups, isLoading: isLoadingGroups } = useQuery(
@@ -74,57 +160,22 @@ export const VolunteerFormCalendar = ({
   const isFocused = useIsFocused();
 
   const { mutateAsync, isLoading, isError, isSuccess, data, reset } = useMutation(calendarNew);
-  const [createEvent] = useMainserverMutation(CREATE_EVENT_RECORDS);
+
   const onSubmit = async (calendarNewData: VolunteerCalendar) => {
-    mutateAsync(calendarNewData).then(async ({ id }) => {
-      if (id) {
-        const images = jsonParser(calendarNewData.images);
-        const documents = jsonParser(calendarNewData.documents);
-        const uris: { uri: StringConstructor; mimeType: StringConstructor }[] = [];
-
-        if (images?.length) {
-          images.forEach(({ uri = String, mimeType = String }) => {
-            uris.push({ uri, mimeType });
-          });
-        }
-
-        if (documents?.length) {
-          documents.forEach(({ uri = String, mimeType = String }) => {
-            uris.push({ uri, mimeType });
-          });
-        }
-
-        /* foreach loop to upload each file after the event has been created */
-        uris.forEach(async ({ uri, mimeType }) => {
-          try {
-            await calendarUpload(uri, id, mimeType);
-          } catch (error) {
-            console.error(error);
-          }
-        });
-      }
+    mutateAsync(calendarNewData).then(async ({ id }: { id: number }) => {
+      if (id) filerParseAndUpload(calendarNewData, id);
     });
+  };
 
-    // mutate(calendarNewData);
-
-    /**
-     * TODO: create event on main-server
-     *       - this needs correct logics with checks if mutation works or errors
-     *       - a correct data provider needs to be used instead of the mobile-app account
-     */
-    //
-    // createEvent({
-    //   variables: {
-    //     title: calendarNewData.title,
-    //     categoryName: 'test',
-    //     city: calendarNewData.location,
-    //     description: calendarNewData.description,
-    //     dateStart: calendarNewData.startDate,
-    //     dateEnd: calendarNewData.endDate,
-    //     timeStart: calendarNewData.startTime,
-    //     timeEnd: calendarNewData.endTime
-    //   }
-    // });
+  const onCalendarDelete = async () => {
+    try {
+      await calendarDelete(calendarData?.id);
+      navigation.pop(2);
+      Alert.alert('Erfolgreich', 'Das Event wurde erfolgreich gelöscht.');
+    } catch (error) {
+      Alert.alert('Fehler beim Löschen des Events', 'Bitte versuchen Sie es noch einmal.');
+      console.error(error);
+    }
   };
 
   if (!isValid) {
@@ -145,39 +196,49 @@ export const VolunteerFormCalendar = ({
 
   if (isError || (!isLoading && data && !data.id)) {
     Alert.alert(
-      'Fehler beim Erstellen eines Events',
+      isEditMode ? 'Fehler beim Aktualisieren eines Events' : 'Fehler beim Erstellen eines Events',
       'Bitte Eingaben überprüfen und erneut versuchen.'
     );
     reset();
   } else if (isSuccess && isFocused) {
-    navigation.goBack();
+    isEditMode ? navigation.pop(2) : navigation.goBack();
 
-    Alert.alert('Erfolgreich', 'Das Event wurde erfolgreich erstellt.');
+    Alert.alert(
+      'Erfolgreich',
+      isEditMode
+        ? 'Das Event wurde erfolgreich aktualisiert.'
+        : 'Das Event wurde erfolgreich erstellt.'
+    );
   }
 
   return (
     <>
       <Wrapper>
-        <Controller
-          name="contentContainerId"
-          render={({ name, onChange, value }) => (
-            <DropdownInput
-              {...{
-                errors,
-                required: true,
-                data: groupDropdownData,
-                value,
-                valueKey: 'contentcontainer_id',
-                onChange,
-                name,
-                label: texts.volunteer.group,
-                placeholder: texts.volunteer.group,
-                control
-              }}
-            />
-          )}
-          control={control}
-        />
+        <Input hidden name="calendarId" control={control} />
+        {!!groupId || isEditMode ? (
+          <Input hidden name="contentContainerId" control={control} />
+        ) : (
+          <Controller
+            name="contentContainerId"
+            render={({ name, onChange, value }) => (
+              <DropdownInput
+                {...{
+                  errors,
+                  required: true,
+                  data: groupDropdownData,
+                  value,
+                  valueKey: 'contentcontainer_id',
+                  onChange,
+                  name,
+                  label: texts.volunteer.group,
+                  placeholder: texts.volunteer.group,
+                  control
+                }}
+              />
+            )}
+            control={control}
+          />
+        )}
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
         <Input
@@ -301,26 +362,6 @@ export const VolunteerFormCalendar = ({
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="organizer"
-          label={texts.volunteer.organizer}
-          placeholder={texts.volunteer.organizer}
-          multiline
-          validate
-          control={control}
-        />
-      </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
-        <Input
-          name="entranceFee"
-          label={texts.volunteer.entranceFee}
-          placeholder={texts.volunteer.entranceFee}
-          multiline
-          validate
-          control={control}
-        />
-      </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
-        <Input
           name="participantInfo"
           label={texts.volunteer.participantInfo}
           placeholder={texts.volunteer.participantInfo}
@@ -391,6 +432,12 @@ export const VolunteerFormCalendar = ({
           title={texts.volunteer.save}
           disabled={isLoading}
         />
+        {isEditMode && (
+          <Button
+            onPress={() => deleteCalendarAlert(onCalendarDelete)}
+            title={texts.volunteer.delete}
+          />
+        )}
         <Touchable onPress={() => navigation.goBack()}>
           <BoldText center primary underline>
             {texts.volunteer.abort.toUpperCase()}

@@ -1,6 +1,6 @@
 import _isNumber from 'lodash/isNumber';
 
-import { colors, texts } from '../../config';
+import { colors } from '../../config';
 import { formatTime } from '../../helpers/formatHelper';
 import { momentFormat } from '../../helpers/momentHelper';
 import {
@@ -69,8 +69,7 @@ export const calendarAttend = async ({ id, type }: { id: number; type: PARTICIPA
 export const calendarNew = async ({
   title,
   description = '',
-  organizer = '',
-  entranceFee = '',
+  calendarId,
   color = colors.primary.startsWith('#') ? colors.primary : colors.darkText,
   location = '',
   participationMode = 2,
@@ -89,16 +88,6 @@ export const calendarNew = async ({
   contentContainerId
 }: VolunteerCalendar) => {
   const authToken = await volunteerAuthToken();
-
-  // add organizer information to the description field if present
-  description = organizer?.length
-    ? `${description}\n\n\n<strong>${texts.volunteer.organizer}</strong>\n\n${organizer}`
-    : description;
-
-  // add entrance fee information to the description field if present
-  description = entranceFee?.length
-    ? `${description}\n\n\n<strong>${texts.volunteer.entranceFee}</strong>\n\n${entranceFee}`
-    : description;
 
   const formData = {
     CalendarEntry: {
@@ -126,7 +115,7 @@ export const calendarNew = async ({
   };
 
   const fetchObj = {
-    method: 'POST',
+    method: calendarId ? 'PUT' : 'POST',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -135,7 +124,24 @@ export const calendarNew = async ({
     body: JSON.stringify(formData)
   };
 
+  if (calendarId) {
+    return (await fetch(`${volunteerApiV1Url}calendar/entry/${calendarId}`, fetchObj)).json();
+  }
+
   return (
     await fetch(`${volunteerApiV1Url}calendar/container/${contentContainerId}`, fetchObj)
   ).json();
+};
+
+export const calendarDelete = async (entryId: any) => {
+  const authToken = await volunteerAuthToken();
+
+  const fetchObj = {
+    method: 'DELETE',
+    headers: {
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return await fetch(`${volunteerApiV1Url}calendar/entry/${entryId}`, fetchObj);
 };

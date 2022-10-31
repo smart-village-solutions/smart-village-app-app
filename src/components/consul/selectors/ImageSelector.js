@@ -16,13 +16,14 @@ import {
 } from '../../../helpers';
 import { useSelectImage } from '../../../hooks';
 import { DELETE_IMAGE } from '../../../queries/consul';
+import { calendarDeleteFile } from '../../../queries/volunteer';
 import { Button } from '../../Button';
 import { Input } from '../../form';
 import { Image } from '../../Image';
 import { RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
 
-const { IMAGE_TYPE_REGEX } = consts;
+const { IMAGE_TYPE_REGEX, URL_REGEX } = consts;
 
 const deleteImageAlert = (onPress) =>
   Alert.alert(
@@ -65,6 +66,16 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
 
   const onDeleteImage = async (index) => {
     if (isVolunteer) {
+      const isURL = URL_REGEX.test(imagesAttributes[index].uri);
+
+      if (isURL) {
+        try {
+          await calendarDeleteFile(imagesAttributes[index].fileId, imagesAttributes[index].entryId);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
       setImagesAttributes(deleteArrayItem(imagesAttributes, index));
       setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
       return;
