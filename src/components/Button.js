@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Button as RNEButton } from 'react-native-elements';
 
 import { colors, consts, normalize, texts } from '../config';
@@ -34,6 +34,8 @@ export const Button = ({ title, onPress, invert, disabled }) => {
     );
   }
 
+  const isDelete = title === texts.volunteer.delete;
+
   return (
     <RNEButton
       type={invert ? 'outline' : undefined}
@@ -46,9 +48,13 @@ export const Button = ({ title, onPress, invert, disabled }) => {
       ]}
       disabledStyle={styles.buttonStyleDisabled}
       disabledTitleStyle={styles.titleStyle}
-      buttonStyle={[styles.buttonStyle, invert && styles.buttonStyleInvert]}
+      buttonStyle={[
+        styles.buttonStyle,
+        invert && styles.buttonStyleInvert,
+        isDelete && styles.rejectStyle
+      ]}
       containerStyle={[styles.containerStyle, needLandscapeStyle && styles.containerStyleLandscape]}
-      ViewComponent={invert || disabled ? undefined : DiagonalGradient}
+      ViewComponent={invert || isDelete || disabled ? undefined : DiagonalGradient}
       useForeground={!invert}
       accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
       disabled={disabled}

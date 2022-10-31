@@ -11,7 +11,7 @@ import { colors, consts, texts } from '../../config';
 import { isOwner, jsonParser, momentFormat, volunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { calendarDelete, calendarNew, calendarUpload, groups } from '../../queries/volunteer';
-import { ScreenName, VolunteerCalendar, VolunteerGroup } from '../../types';
+import { VolunteerCalendar, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { DocumentSelector, ImageSelector } from '../consul/selectors';
 import { DateTimeInput } from '../form/DateTimeInput';
@@ -24,10 +24,56 @@ import { Wrapper } from '../Wrapper';
 
 const { IMAGE_TYPE_REGEX, PDF_TYPE_REGEX, URL_REGEX } = consts;
 
+const fileFilters = (fileRegex: RegExp, calendarData: VolunteerCalendar) =>
+  JSON.stringify(
+    calendarData?.content?.files
+      ?.map(({ file_name: infoText, mime_type: mimeType, url: uri, id: fileId }) => {
+        const isFile = fileRegex.test(infoText);
+
+        if (isFile) {
+          return { entryId: calendarData?.id, fileId, infoText, mimeType, uri };
+        }
+
+        return null;
+      })
+      ?.filter((otherFiles) => otherFiles != null)
+  );
+
+const filerParseAndUpload = (calendarNewData: VolunteerCalendar, id: number) => {
+  const images = jsonParser(calendarNewData.images);
+  const documents = jsonParser(calendarNewData.documents);
+  const uris: { uri: string; mimeType: string }[] = [];
+
+  if (images?.length) {
+    images.forEach(({ uri, mimeType }: { uri: string; mimeType: string }) => {
+      uris.push({ uri, mimeType });
+    });
+  }
+
+  if (documents?.length) {
+    documents.forEach(({ uri, mimeType }: { uri: string; mimeType: string }) => {
+      uris.push({ uri, mimeType });
+    });
+  }
+
+  /* foreach loop to upload each file after the event has been created */
+  uris.forEach(async ({ uri, mimeType }) => {
+    try {
+      const isURL = URL_REGEX.test(uri);
+
+      if (isURL) return;
+
+      await calendarUpload(uri, id, mimeType);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+};
+
 const deleteCalendarAlert = (onPress: () => Promise<void>) =>
   Alert.alert('Hinweis', 'Möchten Sie das Event löschen?', [
-    { text: 'Abbrechen', style: 'cancel' },
-    { text: 'Löschen', onPress, style: 'destructive' }
+    { text: texts.volunteer.abort, style: 'cancel' },
+    { text: texts.volunteer.delete, onPress, style: 'destructive' }
   ]);
 
 // eslint-disable-next-line complexity
@@ -37,13 +83,22 @@ export const VolunteerFormCalendar = ({
   scrollToTop,
   groupId
 }: StackScreenProps<any> & { scrollToTop: () => void; groupId?: number }) => {
-  const calendarData = route.params?.calendarData ?? undefined;
+  const calendarData = route.params?.calendarData as VolunteerCalendar;
+  const isEditMode = !!calendarData; // edit mode if there exists some calendar data
 
   const appointments = {
-    dateFrom: new Date(momentFormat(calendarData?.start_datetime, 'YYYY-MM-DD')),
-    dateTo: new Date(momentFormat(calendarData?.end_datetime, 'YYYY-MM-DD')),
-    timeFrom: new Date(momentFormat(calendarData?.start_datetime, '')),
-    timeTo: new Date(momentFormat(calendarData?.end_datetime, ''))
+    dateFrom: calendarData?.start_datetime
+      ? new Date(momentFormat(calendarData.start_datetime, 'YYYY-MM-DD'))
+      : undefined,
+    dateTo: calendarData?.end_datetime
+      ? new Date(momentFormat(calendarData.end_datetime, 'YYYY-MM-DD'))
+      : undefined,
+    timeFrom: calendarData?.start_datetime
+      ? new Date(momentFormat(calendarData.start_datetime, 'YYYY-MM-DDTHH:mm:ss'))
+      : undefined,
+    timeTo: calendarData?.end_datetime
+      ? new Date(momentFormat(calendarData.end_datetime, 'YYYY-MM-DDTHH:mm:ss'))
+      : undefined
   };
 
   const {
@@ -57,15 +112,15 @@ export const VolunteerFormCalendar = ({
       calendarId: calendarData?.id || '',
       contentContainerId: groupId || '',
       title: calendarData?.title || '',
-      startDate: calendarData?.start_datetime ? appointments?.dateFrom : undefined,
-      startTime: calendarData?.start_datetime ? appointments?.timeFrom : undefined,
-      endDate: calendarData?.end_datetime ? appointments?.dateTo : undefined,
-      endTime: calendarData?.end_datetime ? appointments?.timeTo : undefined,
+      startDate: appointments.dateFrom,
+      startTime: appointments.timeFrom || '',
+      endDate: appointments.dateTo,
+      endTime: appointments.timeTo || '',
       description: calendarData?.description || '',
       participantInfo: calendarData?.participant_info || '',
       entranceFee: '',
       location: '',
-      topics: calendarData?.content?.topics.map(({ name }: any) => name).toString() || '',
+      topics: calendarData?.content?.topics.map(({ name }) => name).toString() || '',
       documents: calendarData?.content?.files?.length
         ? fileFilters(PDF_TYPE_REGEX, calendarData)
         : '[]',
@@ -115,8 +170,7 @@ export const VolunteerFormCalendar = ({
   const onCalendarDelete = async () => {
     try {
       await calendarDelete(calendarData?.id);
-      navigation.navigate(ScreenName.VolunteerHome);
-
+      navigation.pop(2);
       Alert.alert('Erfolgreich', 'Das Event wurde erfolgreich gelöscht.');
     } catch (error) {
       Alert.alert('Fehler beim Löschen des Events', 'Bitte versuchen Sie es noch einmal.');
@@ -142,40 +196,49 @@ export const VolunteerFormCalendar = ({
 
   if (isError || (!isLoading && data && !data.id)) {
     Alert.alert(
-      'Fehler beim Erstellen eines Events',
+      isEditMode ? 'Fehler beim Aktualisieren eines Events' : 'Fehler beim Erstellen eines Events',
       'Bitte Eingaben überprüfen und erneut versuchen.'
     );
     reset();
   } else if (isSuccess && isFocused) {
-    navigation.goBack();
+    isEditMode ? navigation.pop(2) : navigation.goBack();
 
-    Alert.alert('Erfolgreich', 'Das Event wurde erfolgreich erstellt.');
+    Alert.alert(
+      'Erfolgreich',
+      isEditMode
+        ? 'Das Event wurde erfolgreich aktualisiert.'
+        : 'Das Event wurde erfolgreich erstellt.'
+    );
   }
 
   return (
     <>
       <Wrapper>
         <Input hidden name="calendarId" control={control} />
-        <Controller
-          name="contentContainerId"
-          render={({ name, onChange, value }) => (
-            <DropdownInput
-              {...{
-                errors,
-                required: true,
-                data: groupDropdownData,
-                value,
-                valueKey: 'contentcontainer_id',
-                onChange,
-                name,
-                label: texts.volunteer.group,
-                placeholder: texts.volunteer.group,
-                control
-              }}
-            />
-          )}
-          control={control}
-        />
+        {!!groupId || isEditMode ? (
+          <Input hidden name="contentContainerId" control={control} />
+        ) : (
+          <Controller
+            name="contentContainerId"
+            render={({ name, onChange, value }) => (
+              <DropdownInput
+                {...{
+                  errors,
+                  required: true,
+                  data: groupDropdownData,
+                  value,
+                  valueKey: 'contentcontainer_id',
+                  onChange,
+                  name,
+                  label: texts.volunteer.group,
+                  placeholder: texts.volunteer.group,
+                  control
+                }}
+              />
+            )}
+            control={control}
+          />
+        )}
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
         <Input
@@ -369,10 +432,8 @@ export const VolunteerFormCalendar = ({
           title={texts.volunteer.save}
           disabled={isLoading}
         />
-        {!!calendarData && (
+        {isEditMode && (
           <Button
-            disabled={isLoading}
-            invert
             onPress={() => deleteCalendarAlert(onCalendarDelete)}
             title={texts.volunteer.delete}
           />
@@ -385,52 +446,6 @@ export const VolunteerFormCalendar = ({
       </Wrapper>
     </>
   );
-};
-
-const fileFilters = (
-  fileRegex: any,
-  calendarData: {
-    id: number;
-    content: { files: any[] };
-  }
-) =>
-  JSON.stringify(
-    calendarData?.content?.files
-      .map(({ file_name: infoText, mime_type: mimeType, url: uri, id: fileId }: any) => {
-        const isFile = fileRegex.test(infoText);
-
-        if (isFile) return { entryId: calendarData?.id, fileId, infoText, mimeType, uri };
-        else return;
-      })
-      .filter((otherFiles: any) => otherFiles != null)
-  );
-
-const filerParseAndUpload = (calendarNewData: VolunteerCalendar, id: number) => {
-  const images = jsonParser(calendarNewData.images);
-  const documents = jsonParser(calendarNewData.documents);
-  const uris: { uri: StringConstructor; mimeType: StringConstructor }[] = [];
-  if (images?.length) {
-    images.forEach(({ uri = String, mimeType = String }) => {
-      uris.push({ uri, mimeType });
-    });
-  }
-  if (documents?.length) {
-    documents.forEach(({ uri = String, mimeType = String }) => {
-      uris.push({ uri, mimeType });
-    });
-  }
-
-  /* foreach loop to upload each file after the event has been created */
-  uris.forEach(async ({ uri, mimeType }: any) => {
-    try {
-      const isURL = URL_REGEX.test(uri);
-      if (isURL) return;
-
-      await calendarUpload(uri, id, mimeType);
-    } catch (error) {
-      console.error(error);
-    }
-  });
 };
 
 const styles = StyleSheet.create({

@@ -1,6 +1,6 @@
 import _isNumber from 'lodash/isNumber';
 
-import { colors, texts } from '../../config';
+import { colors } from '../../config';
 import { formatTime } from '../../helpers/formatHelper';
 import { momentFormat } from '../../helpers/momentHelper';
 import {

@@ -1,3 +1,4 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -81,8 +82,17 @@ export const VolunteerEventRecord = ({
     }
   ];
   const shareContent = route.params?.shareContent || undefined;
-
   const [isMe, setIsMe] = useState<boolean>();
+  const [isAttendingEvent, setIsAttendingEvent] = useState<boolean>();
+
+  // action to open source urls
+  const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
+
+  const { mutate, isSuccess, data: dataAttend } = useMutation(calendarAttend);
+
+  const attend = useCallback(() => {
+    mutate({ id, type: isAttendingEvent ? PARTICIPANT_TYPE.REMOVE : PARTICIPANT_TYPE.ACCEPT });
+  }, [isAttendingEvent]);
 
   const checkIfMe = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
@@ -109,7 +119,7 @@ export const VolunteerEventRecord = ({
                   })
                 }
               >
-                <Icon.NamedIcon name="settings" color="white" style={styles.icon} />
+                <Icon.EditSetting color={colors.lightestText} style={styles.icon} />
               </TouchableOpacity>
 
               <ShareHeader
@@ -122,8 +132,6 @@ export const VolunteerEventRecord = ({
     }
   }, [isMe, data]);
 
-  const [isAttendingEvent, setIsAttendingEvent] = useState<boolean>();
-
   const checkIfAttending = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
 
@@ -134,18 +142,15 @@ export const VolunteerEventRecord = ({
     checkIfAttending();
   }, [checkIfAttending]);
 
-  // action to open source urls
-  const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
-
-  const { mutate, isSuccess, data: dataAttend } = useMutation(calendarAttend);
-
-  const attend = useCallback(() => {
-    mutate({ id, type: isAttendingEvent ? PARTICIPANT_TYPE.REMOVE : PARTICIPANT_TYPE.ACCEPT });
-  }, [isAttendingEvent]);
-
   useEffect(() => {
     isSuccess && dataAttend?.code == 200 && refetch();
   }, [isSuccess, dataAttend]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   return (
     <View>
