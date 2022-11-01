@@ -6,15 +6,16 @@ import { normalize } from 'react-native-elements';
 import { colors, consts, device } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { WrapperWrap } from '../Wrapper';
+import { Wrapper, WrapperWrap } from '../Wrapper';
 
 import { ServiceTile } from './ServiceTile';
 
-export const ServiceTiles = ({ image, navigation, staticJsonName, title }) => {
+export const ServiceTiles = ({ html, image, navigation, staticJsonName, title }) => {
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -43,6 +44,7 @@ export const ServiceTiles = ({ image, navigation, staticJsonName, title }) => {
           </TitleContainer>
         )}
         {!!title && device.platform === 'ios' && <TitleShadow />}
+
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -54,6 +56,12 @@ export const ServiceTiles = ({ image, navigation, staticJsonName, title }) => {
           }
         >
           {!!image && <Image source={{ uri: image }} containerStyle={styles.imageContainerStyle} />}
+
+          {!!html && (
+            <Wrapper>
+              <HtmlView html={html} />
+            </Wrapper>
+          )}
 
           <View style={styles.padding}>
             <WrapperWrap spaceBetween>
@@ -82,8 +90,9 @@ const styles = StyleSheet.create({
 });
 
 ServiceTiles.propTypes = {
+  html: PropTypes.string,
   image: PropTypes.string,
   navigation: PropTypes.object.isRequired,
   staticJsonName: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired
+  title: PropTypes.string
 };
