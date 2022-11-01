@@ -406,8 +406,6 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
         undefined,
         queryVariables?.currentUserId
       );
-    case QUERY_TYPES.VOLUNTEER.TASKS:
-    case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
     case QUERY_TYPES.VOLUNTEER.PROFILE:
       return parseVolunteers(data, query, skipLastDivider);
     case QUERY_TYPES.CONSUL.DEBATES:

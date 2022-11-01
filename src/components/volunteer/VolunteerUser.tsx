@@ -121,21 +121,6 @@ export const VolunteerUser = ({
           />
         </Wrapper>
       )}
-
-      {/* <TitleContainer>
-        <Title
-          center
-          accessibilityLabel={`${texts.volunteer.memberships} ${a11yLabel.heading}`}
-        >
-          {texts.volunteer.memberships}
-        </Title>
-      </TitleContainer>
-      <Wrapper>
-        <RegularText>...</RegularText>
-      </Wrapper>
-      <Wrapper>
-        <Button onPress={() => undefined} title={texts.volunteer.edit} disabled={isLoading} />
-      </Wrapper> */}
     </WrapperWithOrientation>
   );
 };

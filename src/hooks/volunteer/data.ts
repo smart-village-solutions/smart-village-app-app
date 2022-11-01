@@ -8,7 +8,6 @@ import {
   parseListItemsFromQuery,
   volunteerUserData
 } from '../../helpers';
-import { additionalData, myProfile, myTasks } from '../../helpers/parser/volunteer';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { MEMBER_STATUS_TYPES, VolunteerQuery } from '../../types';
 
@@ -54,27 +53,15 @@ export const useVolunteerData = ({
       processedVolunteerData = data?.participants?.attending as any[];
     }
 
-    // TODO: remove if all queries exist
-    const details = {
-      [QUERY_TYPES.VOLUNTEER.PROFILE]: myProfile(),
-      [QUERY_TYPES.VOLUNTEER.TASKS]: myTasks(),
-      [QUERY_TYPES.VOLUNTEER.ADDITIONAL]: additionalData()
-    }[query];
-
-    processedVolunteerData = parseListItemsFromQuery(
-      query,
-      processedVolunteerData || details,
-      titleDetail,
-      {
-        bookmarkable,
-        skipLastDivider: true,
-        withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS || (!isSectioned ?? isCalendar),
-        isSectioned: isSectioned ?? isCalendar,
-        queryVariables: {
-          currentUserId
-        }
+    processedVolunteerData = parseListItemsFromQuery(query, processedVolunteerData, titleDetail, {
+      bookmarkable,
+      skipLastDivider: true,
+      withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS || (!isSectioned ?? isCalendar),
+      isSectioned: isSectioned ?? isCalendar,
+      queryVariables: {
+        currentUserId
       }
-    );
+    });
 
     setIsProcessing(true);
 
