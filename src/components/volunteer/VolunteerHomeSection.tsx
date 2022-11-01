@@ -1,7 +1,7 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import _isNumber from 'lodash/isNumber';
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { normalize } from 'react-native-elements';
 
 import { colors, Icon, texts } from '../../config';
@@ -12,29 +12,31 @@ import { VolunteerQuery } from '../../types';
 import { DataListSection } from '../DataListSection';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
-import { Touchable } from '../Touchable';
 import { WrapperRow } from '../Wrapper';
 
 import { VolunteerCalendar } from './VolunteerCalendar';
 
-type CalendarListToggle = {
+type TCalendarListToggle = {
   showCalendar: boolean;
   setShowCalendar: (showCalendar: boolean) => void;
 };
 
-const CalendarListToggle = ({ showCalendar, setShowCalendar }: CalendarListToggle) => {
-  const text = showCalendar ? ` ${texts.volunteer.list}` : ` ${texts.volunteer.calendar}`;
-  const CalendarListToggleIcon = showCalendar ? Icon.VolunteerList : Icon.VolunteerCalendar;
-
-  return (
-    <Touchable onPress={() => setShowCalendar(!showCalendar)}>
-      <WrapperRow style={styles.calendarListToggle}>
-        <CalendarListToggleIcon color={colors.darkText} />
-        <RegularText>{text}</RegularText>
+export const CalendarListToggle = ({ showCalendar, setShowCalendar }: TCalendarListToggle) => (
+  <WrapperRow>
+    <TouchableOpacity onPress={() => setShowCalendar(false)}>
+      <WrapperRow style={[styles.calendarListToggle, !showCalendar && styles.underline]}>
+        <Icon.List color={colors.darkText} size={normalize(12)} style={styles.icon} />
+        <RegularText>{texts.volunteer.list}</RegularText>
       </WrapperRow>
-    </Touchable>
-  );
-};
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => setShowCalendar(true)}>
+      <WrapperRow style={[styles.calendarListToggle, showCalendar && styles.underline]}>
+        <Icon.VolunteerCalendar color={colors.darkText} size={normalize(12)} style={styles.icon} />
+        <RegularText>{texts.volunteer.calendar}</RegularText>
+      </WrapperRow>
+    </TouchableOpacity>
+  </WrapperRow>
+);
 
 type Props = {
   buttonTitle?: string;
@@ -75,7 +77,11 @@ export const VolunteerHomeSection = ({
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const [showCalendar, setShowCalendar] = useState(isCalendar);
-  const { data: sectionData, isLoading, refetch } = useVolunteerData({
+  const {
+    data: sectionData,
+    isLoading,
+    refetch
+  } = useVolunteerData({
     query,
     queryVariables,
     isCalendar,
@@ -168,7 +174,15 @@ export const VolunteerHomeSection = ({
 const styles = StyleSheet.create({
   calendarListToggle: {
     alignItems: 'center',
-    paddingHorizontal: normalize(10),
+    marginHorizontal: normalize(10),
     paddingVertical: normalize(5)
+  },
+  icon: {
+    marginBottom: normalize(1),
+    marginRight: normalize(6.5)
+  },
+  underline: {
+    borderBottomWidth: normalize(1),
+    borderColor: colors.darkText
   }
 });
