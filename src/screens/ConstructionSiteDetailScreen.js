@@ -3,7 +3,7 @@ import moment from 'moment';
 import React from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
-import { colors, consts, normalize, texts } from '../config';
+import { colors, consts, device, normalize, texts } from '../config';
 import {
   BoldText,
   Image,
@@ -12,6 +12,7 @@ import {
   SafeAreaViewFlex,
   Title,
   TitleContainer,
+  TitleShadow,
   Wrapper,
   WrapperWithOrientation,
   WrapperWrap
@@ -99,6 +100,7 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
           <TitleContainer>
             <Title>{extendedTitle}</Title>
           </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
           <Wrapper>
             <WrapperWrap>
               <BoldText>{endDate ? 'Gesamtzeitraum: ' : 'Datum: '}</BoldText>

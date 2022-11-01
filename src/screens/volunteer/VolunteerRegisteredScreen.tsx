@@ -21,7 +21,12 @@ type Props = {
 };
 
 export const VolunteerRegisteredScreen = ({ navigation }: Props) => {
-  const { data: registeredHtml = '', error, loading, refetch } = useStaticContent({
+  const {
+    data: registeredHtml = '',
+    error,
+    loading,
+    refetch
+  } = useStaticContent({
     type: 'html',
     name: 'ehrenamt-registriert'
   });
@@ -55,8 +60,7 @@ export const VolunteerRegisteredScreen = ({ navigation }: Props) => {
               title={texts.volunteer.next}
               onPress={() => {
                 navigation.navigate(ScreenName.VolunteerHome, {
-                  // refreshUser param causes the home screen to update and no longer show
-                  // the welcome component
+                  // refreshUser param causes the home screen to update and to le logged in
                   refreshUser: new Date().valueOf()
                 });
               }}

@@ -1,12 +1,11 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useMutation } from 'react-query';
 
 import * as appJson from '../../../app.json';
 import {
-  BoldText,
   Button,
   Checkbox,
   DefaultKeyboardAvoidingView,
@@ -17,12 +16,12 @@ import {
   SafeAreaViewFlex,
   Title,
   TitleContainer,
-  Touchable,
+  TitleShadow,
   Wrapper,
   WrapperHorizontal,
   WrapperWithOrientation
 } from '../../components';
-import { consts, secrets, texts } from '../../config';
+import { consts, device, secrets, texts } from '../../config';
 import { register } from '../../queries/volunteer';
 import { ScreenName, VolunteerRegistration } from '../../types';
 
@@ -58,9 +57,14 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
   });
   const password = watch('password');
 
-  const { mutate: mutateRegister, isLoading, isError, isSuccess, data, reset } = useMutation(
-    register
-  );
+  const {
+    mutate: mutateRegister,
+    isLoading,
+    isError,
+    isSuccess,
+    data,
+    reset
+  } = useMutation(register);
 
   const onSubmit = (registerData: VolunteerRegistration) => {
     if (!hasAcceptedDataPrivacy) return showPrivacyCheckedAlert();
@@ -100,7 +104,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
                 {texts.volunteer.registrationTitle}
               </Title>
             </TitleContainer>
-
+            {device.platform === 'ios' && <TitleShadow />}
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="username"
@@ -204,18 +208,19 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
                 onPress={handleSubmit(onSubmit)}
                 title={texts.volunteer.next}
                 disabled={isLoading}
+                notFullWidth
               />
-              <Touchable onPress={() => navigation.navigate(ScreenName.VolunteerSignup)}>
-                <BoldText center primary underline>
-                  {texts.volunteer.enterCode.toUpperCase()}
-                </BoldText>
-              </Touchable>
+              <TouchableOpacity onPress={() => navigation.navigate(ScreenName.VolunteerSignup)}>
+                <RegularText primary center>
+                  {texts.volunteer.enterCode}
+                </RegularText>
+              </TouchableOpacity>
               <RegularText />
-              <Touchable onPress={() => navigation.goBack()}>
-                <BoldText center primary underline>
-                  {texts.volunteer.abort.toUpperCase()}
-                </BoldText>
-              </Touchable>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <RegularText primary center>
+                  {texts.volunteer.abort}
+                </RegularText>
+              </TouchableOpacity>
             </Wrapper>
           </WrapperWithOrientation>
 
