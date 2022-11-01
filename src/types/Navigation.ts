@@ -54,6 +54,7 @@ export enum ScreenName {
   VolunteerHome = 'VolunteerHome',
   VolunteerIndex = 'VolunteerIndex',
   VolunteerLogin = 'VolunteerLogin',
+  VolunteerLogout = 'VolunteerLogout',
   VolunteerMe = 'VolunteerMe',
   VolunteerPersonal = 'VolunteerPersonal',
   VolunteerRegistered = 'VolunteerRegistered',

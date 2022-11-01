@@ -18,11 +18,12 @@ export const useHomeRefresh = (onRefresh?: () => void) => {
   }, [onRefresh]);
 };
 
-const getRefreshKey = (query?: string) => {
+const getRefreshKey = (query: string) => {
   switch (query) {
     case QUERY_TYPES.VOLUNTEER.GROUPS_MY:
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY:
     case QUERY_TYPES.VOLUNTEER.CONVERSATIONS:
+    case QUERY_TYPES.VOLUNTEER.PERSONAL:
       return VOLUNTEER_PERSONAL_REFRESH_EVENT;
     case QUERY_TYPES.VOLUNTEER.GROUP:
       return VOLUNTEER_GROUP_REFRESH_EVENT;

@@ -24,6 +24,8 @@ type OptionConfig = {
   withDrawer?: boolean;
   withFavorites?: boolean;
   withShare?: boolean;
+  noHeaderLeft?: boolean;
+  cardStyleInterpolator?: StackNavigationOptions['cardStyleInterpolator'];
 };
 
 export const getScreenOptions =
@@ -31,7 +33,9 @@ export const getScreenOptions =
     withBookmark,
     withDrawer,
     withFavorites,
-    withShare
+    withShare,
+    noHeaderLeft = false,
+    cardStyleInterpolator
   }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
   ({ navigation, route }) => {
     const shareContent = route.params?.shareContent;
@@ -49,11 +53,13 @@ export const getScreenOptions =
           {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}
         </WrapperRow>
       ),
-      headerLeft: withFavorites
-        ? () => <FavoritesHeader navigation={navigation} style={styles.icon} />
-        : HeaderLeft,
+      headerLeft:
+        !noHeaderLeft &&
+        (withFavorites
+          ? () => <FavoritesHeader navigation={navigation} style={styles.icon} />
+          : HeaderLeft),
       title: route.params?.title ?? '',
-      cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
+      cardStyleInterpolator: cardStyleInterpolator ?? CardStyleInterpolators.forHorizontalIOS
     };
   };
 

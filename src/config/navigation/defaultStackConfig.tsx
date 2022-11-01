@@ -1,3 +1,4 @@
+import { CardStyleInterpolators } from '@react-navigation/stack';
 import React from 'react';
 
 import { HeaderLeft } from '../../components';
@@ -49,6 +50,7 @@ import {
   VolunteerHomeScreen,
   VolunteerIndexScreen,
   VolunteerLoginScreen,
+  VolunteerLogoutScreen,
   VolunteerMeScreen,
   VolunteerPersonalScreen,
   VolunteerRegisteredScreen,
@@ -345,9 +347,16 @@ export const defaultStackConfig = ({
       screenOptions: { title: texts.screenTitles.volunteer.home }
     },
     {
+      routeName: ScreenName.VolunteerLogout,
+      screenComponent: VolunteerLogoutScreen,
+      screenOptions: getScreenOptions({
+        noHeaderLeft: true,
+        cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid
+      })
+    },
+    {
       routeName: ScreenName.VolunteerMe,
-      screenComponent: VolunteerMeScreen,
-      screenOptions: { title: texts.screenTitles.volunteer.me }
+      screenComponent: VolunteerMeScreen
     },
     {
       routeName: ScreenName.VolunteerPersonal,
