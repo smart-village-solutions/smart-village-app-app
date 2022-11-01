@@ -4,7 +4,7 @@ import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { normalize } from 'react-native-elements';
 
 import { colors, consts, device } from '../../config';
-import { useStaticContent } from '../../hooks';
+import { useStaticContent, useVolunteerRefresh } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
@@ -15,7 +15,7 @@ import { Wrapper, WrapperWrap } from '../Wrapper';
 
 import { ServiceTile } from './ServiceTile';
 
-export const ServiceTiles = ({ html, image, navigation, staticJsonName, title }) => {
+export const ServiceTiles = ({ html, image, navigation, query, staticJsonName, title }) => {
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -30,6 +30,8 @@ export const ServiceTiles = ({ html, image, navigation, staticJsonName, title })
     isConnected && (await refetch?.());
     setRefreshing(false);
   }, [refetch, isConnected]);
+
+  useVolunteerRefresh(refetch, query);
 
   if (loading) {
     return <LoadingSpinner loading />;
@@ -93,6 +95,7 @@ ServiceTiles.propTypes = {
   html: PropTypes.string,
   image: PropTypes.string,
   navigation: PropTypes.object.isRequired,
+  query: PropTypes.string,
   staticJsonName: PropTypes.string.isRequired,
   title: PropTypes.string
 };

@@ -16,6 +16,7 @@ import {
 } from '../../components';
 import { colors } from '../../config';
 import { useStaticContent, useVolunteerUser, VOLUNTEER_HOME_REFRESH_EVENT } from '../../hooks';
+import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 
 // eslint-disable-next-line complexity
@@ -48,6 +49,9 @@ export const VolunteerHomeScreen = ({ navigation, route }: StackScreenProps<any>
   useEffect(refreshUser, [route.params?.refreshUser]);
 
   const refreshHome = useCallback(() => {
+    refetchImageCarousel();
+    refetchHomeText();
+
     // this will trigger the onRefresh functions provided to the `useVolunteerRefresh` hook
     // in other components.
     DeviceEventEmitter.emit(VOLUNTEER_HOME_REFRESH_EVENT);
@@ -69,11 +73,7 @@ export const VolunteerHomeScreen = ({ navigation, route }: StackScreenProps<any>
         refreshControl={
           <RefreshControl
             refreshing={false}
-            onRefresh={() => {
-              refreshHome();
-              refetchImageCarousel();
-              refetchHomeText();
-            }}
+            onRefresh={refreshHome}
             colors={[colors.accent]}
             tintColor={colors.accent}
           />
@@ -83,6 +83,7 @@ export const VolunteerHomeScreen = ({ navigation, route }: StackScreenProps<any>
 
         <ServiceTiles
           html={dataHomeText}
+          query={QUERY_TYPES.VOLUNTEER.HOME}
           navigation={navigation}
           staticJsonName={`volunteerHomeTiles${isLoggedIn ? '-loggedIn' : ''}`}
         />

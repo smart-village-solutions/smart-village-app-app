@@ -31,9 +31,9 @@ const getRefreshKey = (query?: string) => {
   }
 };
 
-export const useVolunteerRefresh = (onRefresh?: () => void, query?: string) => {
+export const useVolunteerRefresh = (onRefresh: () => void, query?: string) => {
   useEffect(() => {
-    if (!onRefresh) return;
+    if (!query) return;
 
     const subscription = DeviceEventEmitter.addListener(getRefreshKey(query), onRefresh);
 
