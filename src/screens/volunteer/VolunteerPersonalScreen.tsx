@@ -1,15 +1,17 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { DeviceEventEmitter } from 'expo-modules-core';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
 
 import { LoadingSpinner, SafeAreaViewFlex, ServiceTiles } from '../../components';
 import { colors } from '../../config';
-import { useStaticContent, VOLUNTEER_PERSONAL_REFRESH_EVENT } from '../../hooks';
+import { useStaticContent, useVolunteerUser, VOLUNTEER_PERSONAL_REFRESH_EVENT } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
+import { ScreenName } from '../../types';
 
 export const VolunteerPersonalScreen = ({ navigation }: StackScreenProps<any>) => {
+  const { isLoading, isLoggedIn } = useVolunteerUser();
   const {
     data: dataPersonalText,
     loading: loadingPersonalText,
@@ -29,6 +31,12 @@ export const VolunteerPersonalScreen = ({ navigation }: StackScreenProps<any>) =
   }, []);
 
   useFocusEffect(refreshPersonal);
+
+  useEffect(() => {
+    if (!isLoading && !isLoggedIn) {
+      navigation.replace(ScreenName.VolunteerLogin);
+    }
+  }, [isLoading, isLoggedIn]);
 
   if (loadingPersonalText) {
     return <LoadingSpinner loading />;
