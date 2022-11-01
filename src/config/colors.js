@@ -6,6 +6,7 @@ const gray60 = '#BCBBC1';
 const gray80 = '#A2A2A2';
 
 export const colors = {
+  lighterPrimaryRgba: 'rgba(15, 70, 24, 0.1)',
   lighterPrimary: '#5EC66F',
   primary: '#107821',
   darkerPrimary: 'rgb(15, 70, 24)',
