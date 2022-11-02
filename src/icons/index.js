@@ -19,6 +19,7 @@ export * from './list';
 export * from './location';
 export * from './lunch';
 export * from './mail';
+export * from './member';
 export * from './notVerifiedBadge';
 export * from './ok';
 export * from './oParlCalendar';
