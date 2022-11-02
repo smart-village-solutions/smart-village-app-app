@@ -57,7 +57,7 @@ export const VolunteerMessage = ({
       image?: { type?: string; uri?: string }[];
       pdf?: { type?: string; uri?: string }[];
       video?: { type?: string; uri?: string }[];
-      user?: { _id: number; name: string; avatar: string };
+      user?: { _id: number; guid: string; name: string };
     }[] = [];
 
     if (currentUserId && data?.results?.length && !!dataRecipients) {
@@ -71,7 +71,7 @@ export const VolunteerMessage = ({
           updated_at: updatedAt
         } = message || {};
 
-        const { title, uri } = userInfo(dataRecipients, createdBy) || undefined;
+        const { guid, title } = userInfo(dataRecipients, createdBy) || undefined;
         const { image, pdf, video } = mediaParser(content) || undefined;
         const text = textParser(content);
 
@@ -85,8 +85,8 @@ export const VolunteerMessage = ({
           video,
           user: {
             _id: user_id,
-            name: title,
-            avatar: uri
+            guid,
+            name: title
           }
         });
       });
@@ -172,7 +172,6 @@ const userInfo = (dataRecipients: any[], createdBy: number) => {
     ?.split(' ')
     .map((part: string) => part[0])
     .join('');
-  const uri = volunteerProfileImage(guid);
 
-  return { title, uri };
+  return { guid, title };
 };
