@@ -24,6 +24,12 @@ export const Title = styled(Text)`
       font-size: ${normalize(24)};
       line-height: ${normalize(28)};
     `};
+
+  ${(props) =>
+    props.center &&
+    css`
+      text-align: center;
+    `};
 `;
 
 // need to set a background color for shadow applying to the View instead of Text inside it

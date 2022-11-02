@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, consts, Icon, normalize, texts } from '../../config';
+import { colors, consts, device, Icon, normalize, texts } from '../../config';
 import { volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
@@ -11,7 +11,7 @@ import { Button } from '../Button';
 import { AddressSection } from '../infoCard/AddressSection';
 import { ContactSection } from '../infoCard/ContactSection';
 import { UrlSection } from '../infoCard/UrlSection';
-import { Title, TitleContainer } from '../Title';
+import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
 
 const { a11yLabel, ROOT_ROUTE_NAMES } = consts;
@@ -97,6 +97,7 @@ export const VolunteerUser = ({
           {name}
         </Title>
       </TitleContainer>
+      {device.platform === 'ios' && <TitleShadow />}
 
       <Wrapper>
         <ContactSection contact={contact} />

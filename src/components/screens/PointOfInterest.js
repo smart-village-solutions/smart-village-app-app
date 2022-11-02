@@ -162,6 +162,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
                 {texts.pointOfInterest.location}
               </Title>
             </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
             <Map
               locations={[
                 {

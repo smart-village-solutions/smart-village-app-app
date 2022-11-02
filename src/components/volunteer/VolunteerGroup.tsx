@@ -198,7 +198,7 @@ export const VolunteerGroup = ({
             <Title accessibilityLabel={`(${name}) ${a11yText.heading}`}>{name}</Title>
           </TitleContainer>
         )}
-        {device.platform === 'ios' && <TitleShadow />}
+        {!!name && device.platform === 'ios' && <TitleShadow />}
 
         {!!logo && (
           <Wrapper>

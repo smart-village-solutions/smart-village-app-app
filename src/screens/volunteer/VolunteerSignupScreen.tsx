@@ -1,23 +1,23 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useMutation, useQuery } from 'react-query';
 
 import {
-  BoldText,
   Button,
   DefaultKeyboardAvoidingView,
   Input,
   LoadingModal,
+  RegularText,
   SafeAreaViewFlex,
   Title,
   TitleContainer,
-  Touchable,
+  TitleShadow,
   Wrapper,
   WrapperWithOrientation
 } from '../../components';
-import { consts, texts } from '../../config';
+import { consts, device, texts } from '../../config';
 import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { me, signup } from '../../queries/volunteer';
@@ -99,7 +99,7 @@ export const VolunteerSignupScreen = ({ navigation, route }: StackScreenProps<an
                 {texts.volunteer.registrationTitle}
               </Title>
             </TitleContainer>
-
+            {device.platform === 'ios' && <TitleShadow />}
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="email"
@@ -141,12 +141,13 @@ export const VolunteerSignupScreen = ({ navigation, route }: StackScreenProps<an
                 onPress={handleSubmit(onSubmit)}
                 title={texts.volunteer.next}
                 disabled={isLoading || isLoadingMe}
+                notFullWidth
               />
-              <Touchable onPress={() => navigation.goBack()}>
-                <BoldText center primary underline>
-                  {texts.volunteer.abort.toUpperCase()}
-                </BoldText>
-              </Touchable>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <RegularText primary center>
+                  {texts.volunteer.abort}
+                </RegularText>
+              </TouchableOpacity>
             </Wrapper>
           </WrapperWithOrientation>
 

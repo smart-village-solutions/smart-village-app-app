@@ -184,6 +184,7 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
               {texts.consul.locationTitle}
             </Title>
           </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
           <Map
             locations={[
               {

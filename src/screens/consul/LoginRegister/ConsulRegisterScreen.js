@@ -15,12 +15,13 @@ import {
   SafeAreaViewFlex,
   Title,
   TitleContainer,
+  TitleShadow,
   Touchable,
   Wrapper,
   WrapperHorizontal,
   WrapperWithOrientation
 } from '../../../components';
-import { consts, namespace, secrets, texts } from '../../../config';
+import { consts, device, namespace, secrets, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { CONSUL_REGISTER_USER } from '../../../queries/consul';
 import { ScreenName } from '../../../types';
@@ -92,7 +93,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
                 {texts.consul.registrationTitle}
               </Title>
             </TitleContainer>
-
+            {device.platform === 'ios' && <TitleShadow />}
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="name"

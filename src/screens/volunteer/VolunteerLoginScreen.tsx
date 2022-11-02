@@ -1,12 +1,11 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet } from 'react-native';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useMutation, useQuery } from 'react-query';
 
 import * as appJson from '../../../app.json';
 import {
-  BoldText,
   Button,
   DefaultKeyboardAvoidingView,
   Input,
@@ -16,11 +15,12 @@ import {
   SafeAreaViewFlex,
   Title,
   TitleContainer,
+  TitleShadow,
   Touchable,
   Wrapper,
   WrapperWithOrientation
 } from '../../components';
-import { consts, secrets, texts } from '../../config';
+import { consts, device, secrets, texts } from '../../config';
 import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { logIn, me } from '../../queries/volunteer';
@@ -105,6 +105,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
                 {texts.volunteer.loginTitle}
               </Title>
             </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
 
             <Wrapper style={styles.noPaddingTop}>
               <Input
@@ -163,7 +164,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
                   })
                 }
               >
-                <RegularText small underline>
+                <RegularText primary small underline>
                   {texts.volunteer.passwordForgotten}
                 </RegularText>
               </Touchable>
@@ -174,12 +175,13 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
                 onPress={handleSubmit(onSubmit)}
                 title={texts.volunteer.login}
                 disabled={isLoading || isLoadingMe}
+                notFullWidth
               />
-              <Touchable onPress={() => navigation.goBack()}>
-                <BoldText center primary underline>
-                  {texts.volunteer.abort.toUpperCase()}
-                </BoldText>
-              </Touchable>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <RegularText primary center>
+                  {texts.volunteer.abort}
+                </RegularText>
+              </TouchableOpacity>
             </Wrapper>
           </WrapperWithOrientation>
 
