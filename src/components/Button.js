@@ -9,10 +9,12 @@ import { OrientationContext } from '../OrientationProvider';
 import { DiagonalGradient } from './DiagonalGradient';
 
 /* eslint-disable complexity */
-export const Button = ({ title, onPress, invert, disabled }) => {
+export const Button = ({ disabled, invert, notFullWidth, onPress, title }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeStyle =
-    orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
+    notFullWidth ||
+    orientation === 'landscape' ||
+    dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
   const isAccept = title === texts.volunteer.accept;
   const isReject = title === texts.volunteer.reject;
 
@@ -99,12 +101,14 @@ const styles = StyleSheet.create({
 });
 
 Button.propTypes = {
-  title: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
   invert: PropTypes.bool,
-  disabled: PropTypes.bool
+  notFullWidth: PropTypes.bool,
+  onPress: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired
 };
 
 Button.defaultProps = {
-  invert: false
+  invert: false,
+  notFullWidth: false
 };

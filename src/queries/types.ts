@@ -61,6 +61,7 @@ export const QUERY_TYPES = {
     GROUP: 'group',
     GROUPS_MY: 'groupsMy',
     GROUPS: 'groups',
+    HOME: 'home',
     ME: 'me',
     MEMBERS: 'members',
     POSTS: 'posts',
