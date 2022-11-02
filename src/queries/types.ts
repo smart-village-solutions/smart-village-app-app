@@ -64,6 +64,7 @@ export const QUERY_TYPES = {
     HOME: 'home',
     ME: 'me',
     MEMBERS: 'members',
+    PERSONAL: 'personal',
     POSTS: 'posts',
     PROFILE: 'profile',
     TASKS: 'tasks',
