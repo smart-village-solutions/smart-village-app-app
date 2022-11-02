@@ -819,6 +819,7 @@ export const texts = {
     abort: 'Abbrechen',
     about: 'Über mich',
     accept: 'Akzeptieren',
+    accessionDirective: 'Beitritts-Richtlinie',
     addDocument: 'Dokument hinzufügen',
     addImage: 'Bild hinzufügen',
     admin: 'Administrator',

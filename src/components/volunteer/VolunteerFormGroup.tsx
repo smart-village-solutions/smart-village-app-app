@@ -26,6 +26,12 @@ const VISIBILITY_OPTIONS = [
   { value: VISIBILITY_TYPES.REGISTERED_ONLY, title: 'Öffentlich (Nur Mitglieder)' },
   { value: VISIBILITY_TYPES.PRIVATE, title: 'Privat (unsichtbar)' }
 ];
+const JOIN_POLICY_OPTIONS = [
+  { value: JOIN_POLICY_TYPES.OPEN, title: 'Jeder kann beitreten' },
+  { value: JOIN_POLICY_TYPES.INVITE_AND_REQUEST, title: 'Einladung und Anfrage' },
+  { value: JOIN_POLICY_TYPES.INVITE, title: 'Nur auf Einladung' }
+];
+
 // eslint-disable-next-line complexity
 export const VolunteerFormGroup = ({
   navigation,
@@ -38,6 +44,7 @@ export const VolunteerFormGroup = ({
   const {
     control,
     formState: { errors, isValid, isSubmitted },
+    watch,
     handleSubmit
   } = useForm<VolunteerGroup>({
     mode: 'onBlur',
@@ -158,9 +165,9 @@ export const VolunteerFormGroup = ({
                   onPress={() => onChange(visibilityItem.value)}
                   title={visibilityItem.title}
                   checkedColor={colors.accent}
-                  checkedIcon="check-square-o"
+                  checkedIcon="dot-circle-o"
                   uncheckedColor={colors.darkText}
-                  uncheckedIcon="square-o"
+                  uncheckedIcon="circle-o"
                   containerStyle={styles.checkboxContainerStyle}
                   textStyle={styles.checkboxTextStyle}
                 />
@@ -170,6 +177,39 @@ export const VolunteerFormGroup = ({
           control={control}
         />
       </Wrapper>
+      {watch('visibility') !== VISIBILITY_TYPES.PRIVATE && (
+        <Wrapper style={styles.noPaddingTop}>
+          <Controller
+            name="joinPolicy"
+            render={({ onChange, value }) => (
+              <>
+                <Input
+                  hidden
+                  name="Beitritts-Richtlinie"
+                  label={texts.volunteer.accessionDirective}
+                  placeholder={texts.volunteer.accessionDirective}
+                  control={control}
+                />
+                {JOIN_POLICY_OPTIONS.map((joinPolicyItem) => (
+                  <CheckBox
+                    key={joinPolicyItem.title}
+                    checked={value === joinPolicyItem.value}
+                    onPress={() => onChange(joinPolicyItem.value)}
+                    title={joinPolicyItem.title}
+                    checkedColor={colors.accent}
+                    checkedIcon="dot-circle-o"
+                    uncheckedColor={colors.darkText}
+                    uncheckedIcon="circle-o"
+                    containerStyle={styles.checkboxContainerStyle}
+                    textStyle={styles.checkboxTextStyle}
+                  />
+                ))}
+              </>
+            )}
+            control={control}
+          />
+        </Wrapper>
+      )}
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="tags"
