@@ -3,6 +3,7 @@ import _shuffle from 'lodash/shuffle';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
+import { VolunteerAvatar } from '../../components';
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { GenericType, ScreenName } from '../../types';
@@ -220,21 +221,22 @@ const parsePointsOfInterestAndTours = (data) => {
 /* eslint-disable complexity */
 const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned, currentUserId) => {
   return data?.map((volunteer, index) => {
-    let badge, statustitle, statustitleIcon, teaserTitle;
+    let badge, leftIcon, statustitle, statustitleIcon, teaserTitle;
 
-    if (
-      query === QUERY_TYPES.VOLUNTEER.USER &&
-      (volunteer.user?.id || volunteer.id) == currentUserId
-    ) {
-      badge = {
-        value: texts.volunteer.myProfile,
-        textStyle: {
-          color: colors.lightestText
-        },
-        badgeStyle: {
-          backgroundColor: colors.primary
-        }
-      };
+    if (query === QUERY_TYPES.VOLUNTEER.USER) {
+      if ((volunteer.user?.id || volunteer.id) == currentUserId) {
+        badge = {
+          value: texts.volunteer.myProfile,
+          textStyle: {
+            color: colors.lightestText
+          },
+          badgeStyle: {
+            backgroundColor: colors.primary
+          }
+        };
+      }
+
+      leftIcon = <VolunteerAvatar item={volunteer} />;
     }
 
     if (query === QUERY_TYPES.VOLUNTEER.GROUP && !!volunteer.role) {
@@ -265,6 +267,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned, cu
       badge: volunteer.badge || badge,
       statustitle: volunteer.statustitle || statustitle,
       statustitleIcon: volunteer.statustitleIcon || statustitleIcon,
+      leftIcon,
       teaserTitle,
       picture: volunteer.picture,
       routeName: ScreenName.VolunteerDetail,

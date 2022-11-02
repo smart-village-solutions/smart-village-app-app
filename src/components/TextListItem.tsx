@@ -16,6 +16,7 @@ export type ItemData = {
   id: string;
   badge?: { value: string; textStyle: { color: string } };
   bottomDivider?: boolean;
+  leftIcon?: React.ReactElement;
   onPress?: (navigation: any) => void;
   params: Record<string, unknown>;
   picture?: { url: string };
@@ -44,6 +45,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
   const {
     badge,
     bottomDivider,
+    leftIcon,
     onPress,
     params,
     picture,
@@ -93,13 +95,14 @@ export const TextListItem: NamedExoticComponent<Props> & {
       rightIcon={!!navigation && <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
       badge={badge}
       leftIcon={
-        leftImage && !!picture?.url ? (
+        leftIcon ||
+        (leftImage && !!picture?.url ? (
           <Image
             source={{ uri: picture.url }}
             style={styles.smallImage}
             containerStyle={styles.smallImageContainer}
           />
-        ) : undefined
+        ) : undefined)
       }
       onPress={() => (onPress ? onPress(navigation) : navigate())}
       disabled={!navigation}
