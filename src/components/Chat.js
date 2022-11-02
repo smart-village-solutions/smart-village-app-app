@@ -219,7 +219,7 @@ export const Chat = ({
           containerStyle={styles.sendButtonContainer}
           sendButtonProps={{ ...sendButtonProps, onPress: () => onSendMessages(text, onSend) }}
         >
-          <Icon.Send color={colors.surface} />
+          <Icon.Send color={colors.lightestText} size={normalize(20)} />
         </Send>
       )}
       renderTime={(props) => (

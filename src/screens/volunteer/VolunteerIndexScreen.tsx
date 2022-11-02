@@ -52,7 +52,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
-  useConversationsHeader({ query, navigation });
+  useConversationsHeader({ query, navigation, route });
 
   useFocusEffect(
     useCallback(() => {

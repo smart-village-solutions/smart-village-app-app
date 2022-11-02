@@ -272,7 +272,7 @@ export const texts = {
       additional: 'Ganz praktisch',
       conversation: 'Unterhaltung',
       eventRecord: 'Veranstaltung',
-      group: 'Gruppen-/Vereinsprofil',
+      group: 'Gruppe/Verein',
       member: 'Mitglied',
       task: 'Aufgabe',
       user: 'Profil'
@@ -941,6 +941,7 @@ export const texts = {
     startTime: 'Startzeit',
     state: 'Bundesland/Kanton',
     street: 'Straße',
+    subject: 'Betreff',
     tags: 'Themen',
     title: 'Titel',
     token: 'Code',

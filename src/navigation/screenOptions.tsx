@@ -3,15 +3,7 @@ import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigatio
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
-import {
-  BookmarkHeader,
-  DiagonalGradient,
-  DrawerHeader,
-  FavoritesHeader,
-  HeaderLeft,
-  ShareHeader,
-  WrapperRow
-} from '../components';
+import { DiagonalGradient, FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
 import { colors, device, normalize } from '../config';
 
 type OptionProps = {
@@ -38,8 +30,6 @@ export const getScreenOptions =
     cardStyleInterpolator
   }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
   ({ navigation, route }) => {
-    const shareContent = route.params?.shareContent;
-
     return {
       // header gradient:
       // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
@@ -47,11 +37,16 @@ export const getScreenOptions =
       headerTitleStyle: styles.headerTitleStyle,
       headerTitleContainerStyle: styles.headerTitleContainerStyle,
       headerRight: () => (
-        <WrapperRow style={styles.headerRight}>
-          {withBookmark && <BookmarkHeader route={route} style={styles.icon} />}
-          {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
-          {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}
-        </WrapperRow>
+        <HeaderRight
+          {...{
+            navigation,
+            route,
+            shareContent: route.params?.shareContent,
+            withBookmark,
+            withDrawer,
+            withShare
+          }}
+        />
       ),
       headerLeft:
         !noHeaderLeft &&
@@ -64,10 +59,6 @@ export const getScreenOptions =
   };
 
 const styles = StyleSheet.create({
-  headerRight: {
-    alignItems: 'center',
-    paddingRight: normalize(7)
-  },
   headerTitleStyle: {
     color: colors.lightestText,
     fontFamily: device.platform === 'ios' ? 'bold' : 'regular',

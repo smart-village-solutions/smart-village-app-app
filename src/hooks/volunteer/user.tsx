@@ -1,10 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import { normalize } from 'react-native-elements';
 
-import { WrapperRow } from '../../components/Wrapper';
-import { colors, consts, Icon, texts } from '../../config';
+import { HeaderRight } from '../../components';
+import { consts, texts } from '../../config';
+import { navigatorConfig } from '../../config/navigation';
 import { volunteerAuthToken, volunteerUserData } from '../../helpers/volunteerHelper';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
@@ -75,15 +75,20 @@ export const useVolunteerUser = (): {
   };
 };
 
-export const useConversationsHeader = ({ query, navigation }: any) => {
+export const useConversationsHeader = ({
+  query,
+  navigation,
+  route
+}: { query: string } & StackScreenProps<any>) => {
   useEffect(() => {
     if (query !== QUERY_TYPES.VOLUNTEER.CONVERSATIONS) return;
 
     navigation.setOptions({
       headerRight: () => (
-        <WrapperRow style={styles.headerRight}>
-          <TouchableOpacity
-            onPress={() =>
+        <HeaderRight
+          {...{
+            navigation,
+            onPress: () =>
               navigation.navigate({
                 name: ScreenName.VolunteerForm,
                 params: {
@@ -91,14 +96,12 @@ export const useConversationsHeader = ({ query, navigation }: any) => {
                   query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
                   rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
                 }
-              })
-            }
-            accessibilityLabel={consts.a11yLabel.shareIcon}
-            accessibilityHint={consts.a11yLabel.shareHint}
-          >
-            <Icon.VolunteerConversationNew color={colors.lightestText} style={styles.icon} />
-          </TouchableOpacity>
-        </WrapperRow>
+              }),
+            route,
+            withChat: true,
+            withDrawer: navigatorConfig.type === 'drawer'
+          }}
+        />
       )
     });
   }, [query, navigation]);
@@ -119,13 +122,3 @@ export const useVolunteerNavigation = () => {
     [navigation, isLoggedIn]
   );
 };
-
-const styles = StyleSheet.create({
-  headerRight: {
-    alignItems: 'center',
-    paddingRight: normalize(7)
-  },
-  icon: {
-    paddingHorizontal: normalize(10)
-  }
-});

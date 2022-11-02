@@ -77,17 +77,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
         }
 
         if (query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS) {
-          return (
-            <VolunteerConversationListItem
-              item={{
-                ...item,
-                bottomDivider: isArray(section?.data)
-                  ? section.data.length - 1 !== index
-                  : undefined
-              }}
-              navigation={navigation}
-            />
-          );
+          return <VolunteerConversationListItem item={item} navigation={navigation} />;
         }
 
         if (query === QUERY_TYPES.VOLUNTEER.APPLICANTS) {

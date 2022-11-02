@@ -1,7 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
@@ -14,20 +14,21 @@ import {
   styles as configStyles,
   texts
 } from '../../config';
+import { navigatorConfig } from '../../config/navigation';
 import { isAttending, momentFormat, openLink, volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { calendarAttend } from '../../queries/volunteer';
 import { PARTICIPANT_TYPE, ScreenName } from '../../types';
 import { Button } from '../Button';
+import { HeaderRight } from '../HeaderRight';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
-import { ShareHeader } from '../ShareHeader';
 import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperHorizontal, WrapperRow, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
 
 import { VolunteerAppointmentsCard } from './VolunteerAppointmentsCard';
 import { VolunteerEventAttending } from './VolunteerEventAttending';
@@ -82,7 +83,6 @@ export const VolunteerEventRecord = ({
   const { attending } = participants || {};
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
-  const shareContent = route.params?.shareContent;
   const appointments = [
     {
       dateFrom: momentFormat(startDatetime, 'YYYY-MM-DD'),
@@ -116,28 +116,23 @@ export const VolunteerEventRecord = ({
   useLayoutEffect(() => {
     if (isMe) {
       navigation.setOptions({
-        headerRight: () =>
-          isMe && (
-            <WrapperRow style={styles.headerRight}>
-              <TouchableOpacity
-                onPress={() =>
-                  // eslint-disable-next-line react/prop-types
-                  navigation.navigate(ScreenName.VolunteerForm, {
-                    query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-                    calendarData: data,
-                    groupId: content?.metadata?.contentcontainer_id
-                  })
-                }
-              >
-                <Icon.EditSetting color={colors.lightestText} style={styles.icon} />
-              </TouchableOpacity>
-
-              <ShareHeader
-                shareContent={shareContent}
-                style={{ paddingHorizontal: normalize(10) }}
-              />
-            </WrapperRow>
-          )
+        headerRight: () => (
+          <HeaderRight
+            {...{
+              navigation,
+              onPress: () =>
+                navigation.navigate(ScreenName.VolunteerForm, {
+                  query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+                  calendarData: data,
+                  groupId: content?.metadata?.contentcontainer_id
+                }),
+              route,
+              withDrawer: navigatorConfig.type === 'drawer',
+              withEdit: true,
+              withShare: true
+            }}
+          />
+        )
       });
     }
   }, [isMe, data]);
@@ -275,13 +270,6 @@ export const VolunteerEventRecord = ({
 };
 
 const styles = StyleSheet.create({
-  headerRight: {
-    alignItems: 'center',
-    paddingRight: normalize(7)
-  },
-  icon: {
-    paddingHorizontal: normalize(10)
-  },
   volunteerInfoText: {
     width: '90%'
   },

@@ -5,7 +5,7 @@ import 'moment/locale/de';
 import * as appJson from '../../app.json';
 import { secrets } from '../config';
 import { QUERY_TYPES } from '../queries/types';
-import { VolunteerUser } from '../types';
+import { VolunteerOwner, VolunteerUser } from '../types';
 
 import { eventDate } from './dateTimeHelper';
 import { subtitle } from './textHelper';
@@ -135,7 +135,7 @@ export const isAttending = (currentUserId: string | null, attending?: []): boole
   return attending.some((item: VolunteerUser) => item.id.toString() == currentUserId);
 };
 
-export const isOwner = (currentUserId: string | null, owner: VolunteerUser): boolean => {
+export const isOwner = (currentUserId: string | null, owner: VolunteerOwner): boolean => {
   if (!currentUserId || !owner?.id) return false;
 
   return owner.id.toString() == currentUserId;
