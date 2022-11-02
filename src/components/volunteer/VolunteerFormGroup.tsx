@@ -21,6 +21,11 @@ const deleteGroupAlert = (onPress: () => Promise<void>) =>
     { text: 'Löschen', onPress, style: 'destructive' }
   ]);
 
+const VISIBILITY_OPTIONS = [
+  { value: VISIBILITY_TYPES.ALL, title: 'Öffentlich (auch nicht registrierte Besucher)' },
+  { value: VISIBILITY_TYPES.REGISTERED_ONLY, title: 'Öffentlich (Nur Mitglieder)' },
+  { value: VISIBILITY_TYPES.PRIVATE, title: 'Privat (unsichtbar)' }
+];
 // eslint-disable-next-line complexity
 export const VolunteerFormGroup = ({
   navigation,
@@ -138,17 +143,29 @@ export const VolunteerFormGroup = ({
         <Controller
           name="visibility"
           render={({ onChange, value }) => (
-            <CheckBox
-              checked={!!value}
-              onPress={() => onChange(!value)}
-              title="Öffentlich"
-              checkedColor={colors.accent}
-              checkedIcon="check-square-o"
-              uncheckedColor={colors.darkText}
-              uncheckedIcon="square-o"
-              containerStyle={styles.checkboxContainerStyle}
-              textStyle={styles.checkboxTextStyle}
-            />
+            <>
+              <Input
+                hidden
+                name="Sichtbarkeit"
+                label={texts.volunteer.visibility}
+                placeholder={texts.volunteer.visibility}
+                control={control}
+              />
+              {VISIBILITY_OPTIONS.map((visibilityItem) => (
+                <CheckBox
+                  key={visibilityItem.title}
+                  checked={value === visibilityItem.value}
+                  onPress={() => onChange(visibilityItem.value)}
+                  title={visibilityItem.title}
+                  checkedColor={colors.accent}
+                  checkedIcon="check-square-o"
+                  uncheckedColor={colors.darkText}
+                  uncheckedIcon="square-o"
+                  containerStyle={styles.checkboxContainerStyle}
+                  textStyle={styles.checkboxTextStyle}
+                />
+              ))}
+            </>
           )}
           control={control}
         />

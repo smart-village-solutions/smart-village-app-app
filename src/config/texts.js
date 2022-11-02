@@ -949,6 +949,7 @@ export const texts = {
     usernameErrorLengthError: 'Der Benutzername sollte mindestens 4 Zeichen lang sein',
     usernameOrEmail: 'Benutzername oder E-Mail',
     vimeo: 'Vimeo',
+    visibility: 'Sichtbarkeit',
     website: 'Home page',
     xing: 'xing',
     xmpp: 'xmpp',

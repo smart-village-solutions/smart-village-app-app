@@ -61,8 +61,8 @@ export const groupNew = async ({
   const formData = {
     name,
     description,
-    visibility: visibility ? VISIBILITY_TYPES.ALL : VISIBILITY_TYPES.REGISTERED_ONLY,
     join_policy: joinPolicy ? JOIN_POLICY_TYPES.OPEN : JOIN_POLICY_TYPES.INVITE_AND_REQUEST
+    visibility: visibility,
   };
 
   const fetchObj = {
@@ -91,8 +91,8 @@ export const groupEdit = async ({
   const formData = {
     name,
     description,
-    visibility: visibility ? VISIBILITY_TYPES.ALL : VISIBILITY_TYPES.REGISTERED_ONLY,
     join_policy: joinPolicy ? JOIN_POLICY_TYPES.OPEN : JOIN_POLICY_TYPES.INVITE_AND_REQUEST,
+    visibility: visibility,
     tags
   };
 
