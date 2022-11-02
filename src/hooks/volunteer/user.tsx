@@ -104,22 +104,20 @@ export const useConversationsHeader = ({ query, navigation }: any) => {
   }, [query, navigation]);
 };
 
-export const useVolunteerAuthRequiredNavigation = () => {
+export const useVolunteerNavigation = () => {
   const navigation = useNavigation();
   const { isLoggedIn } = useVolunteerUser();
 
-  const useVolunteerNavigation = useCallback(
-    ({ routeName, params, volunteerAction }) => {
-      if (isLoggedIn) {
-        if (!volunteerAction) navigation.navigate(routeName, params);
-      } else {
+  return useCallback(
+    (action) => {
+      if (!isLoggedIn) {
         navigation.navigate(ScreenName.VolunteerLogin);
+      } else {
+        action();
       }
     },
     [navigation, isLoggedIn]
   );
-
-  return { useVolunteerNavigation };
 };
 
 const styles = StyleSheet.create({
