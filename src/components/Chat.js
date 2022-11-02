@@ -100,6 +100,7 @@ export const Chat = ({
       minInputToolbarHeight={normalize(96)}
       placeholder={placeholder}
       scrollToBottom
+      scrollToBottomComponent={() => <Icon.ArrowDown />}
       user={{ _id: parseInt(userId) }}
       renderActions={(props) => {
         const mediaActionSheet = {
