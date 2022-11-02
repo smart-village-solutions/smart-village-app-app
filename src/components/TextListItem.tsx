@@ -57,7 +57,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
       bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
       topDivider={topDivider !== undefined ? topDivider : false}
       containerStyle={styles.container}
-      rightIcon={!!navigation && <Icon.ArrowRight />}
+      rightIcon={!!navigation && <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
       badge={badge}
       leftIcon={
         leftImage && !!picture?.url ? (

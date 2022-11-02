@@ -38,7 +38,7 @@ export class CategoryListItem extends React.PureComponent {
           backgroundColor: colors.transparent,
           paddingVertical: normalize(12)
         }}
-        rightIcon={<Icon.ArrowRight />}
+        rightIcon={<Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
         onPress={() => navigation.push(name, params)}
         delayPressIn={0}
         Component={Touchable}
