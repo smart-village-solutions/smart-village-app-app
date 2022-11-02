@@ -2,9 +2,18 @@ import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
-import { colors, consts, device, Icon, normalize, texts } from '../../config';
+import {
+  colors,
+  consts,
+  device,
+  Icon,
+  normalize,
+  styles as configStyles,
+  texts
+} from '../../config';
 import { isAttending, momentFormat, openLink, volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
@@ -206,7 +215,15 @@ export const VolunteerEventRecord = ({
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Wrapper>
-              <HtmlView html={description} openWebScreen={openWebScreen} />
+              <Markdown
+                onLinkPress={(url) => {
+                  openLink(url, openWebScreen);
+                  return false;
+                }}
+                style={configStyles.markdown}
+              >
+                {description}
+              </Markdown>
             </Wrapper>
           </View>
         )}

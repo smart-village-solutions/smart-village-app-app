@@ -295,9 +295,9 @@ export const VolunteerFormProfile = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           control={control}
-          label={texts.volunteer.about}
+          label={texts.volunteer.aboutMe}
           name="about"
-          placeholder={texts.volunteer.about}
+          placeholder={texts.volunteer.aboutMe}
           validate
         />
       </Wrapper>

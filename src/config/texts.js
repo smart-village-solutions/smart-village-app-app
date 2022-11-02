@@ -817,7 +817,8 @@ export const texts = {
   },
   volunteer: {
     abort: 'Abbrechen',
-    about: 'Über mich',
+    about: 'Über',
+    aboutMe: 'Über mich',
     accept: 'Akzeptieren',
     accessionDirective: 'Beitritts-Richtlinie',
     addDocument: 'Dokument hinzufügen',

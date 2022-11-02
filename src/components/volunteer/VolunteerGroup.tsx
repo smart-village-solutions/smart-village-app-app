@@ -3,11 +3,21 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
-import { colors, consts, device, Icon, normalize, texts } from '../../config';
+import {
+  colors,
+  consts,
+  device,
+  Icon,
+  normalize,
+  styles as configStyles,
+  texts
+} from '../../config';
 import {
   isOwner,
+  openLink,
   volunteerBannerImage,
   volunteerProfileImage,
   volunteerUserData
@@ -62,6 +72,7 @@ export const VolunteerGroup = ({
   isRefetching: boolean;
 } & StackScreenProps<any>) => {
   const {
+    about,
     contentcontainer_id: contentContainerId,
     description,
     guid,
@@ -253,14 +264,38 @@ export const VolunteerGroup = ({
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Wrapper>
-              <HtmlView html={description} openWebScreen={openWebScreen} />
+              <RegularText>{description}</RegularText>
             </Wrapper>
           </View>
         )}
 
-        <Wrapper>
-          <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
-        </Wrapper>
+        {!!about && (
+          <View>
+            <TitleContainer>
+              <Title accessibilityLabel={`(${texts.volunteer.about}) ${a11yText.heading}`}>
+                {texts.volunteer.about}
+              </Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            <Wrapper>
+              <Markdown
+                onLinkPress={(url) => {
+                  openLink(url, openWebScreen);
+                  return false;
+                }}
+                style={configStyles.markdown}
+              >
+                {about}
+              </Markdown>
+            </Wrapper>
+          </View>
+        )}
+
+        {!!tags?.length && (
+          <Wrapper>
+            <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
+          </Wrapper>
+        )}
 
         {!!contentContainerId && (
           <VolunteerHomeSection
