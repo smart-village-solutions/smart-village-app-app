@@ -11,7 +11,6 @@ import {
   RegularText,
   SafeAreaViewFlex,
   ServiceTiles,
-  VolunteerWelcome,
   Wrapper
 } from '../../components';
 import { colors } from '../../config';
@@ -21,7 +20,7 @@ import { ScreenName } from '../../types';
 
 // eslint-disable-next-line complexity
 export const VolunteerHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { refresh, isLoading, isError, isLoggedIn } = useVolunteerUser();
+  const { refresh, isLoading, isLoggedIn } = useVolunteerUser();
   const {
     data: dataImageCarousel,
     loading: loadingImageCarousel,
@@ -61,10 +60,6 @@ export const VolunteerHomeScreen = ({ navigation, route }: StackScreenProps<any>
 
   if (isLoading || loadingImageCarousel || loadingHomeText) {
     return <LoadingSpinner loading />;
-  }
-
-  if (!isLoggedIn || isError) {
-    return <VolunteerWelcome navigation={navigation} />;
   }
 
   return (

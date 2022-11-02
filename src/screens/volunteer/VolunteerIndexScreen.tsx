@@ -14,12 +14,7 @@ import {
   Wrapper
 } from '../../components';
 import { colors, consts, texts } from '../../config';
-import {
-  useConversationsHeader,
-  useLogoutHeader,
-  useOpenWebScreen,
-  useVolunteerData
-} from '../../hooks';
+import { useConversationsHeader, useOpenWebScreen, useVolunteerData } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName, VolunteerUser } from '../../types';
 
@@ -53,7 +48,6 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
-  useLogoutHeader({ query, navigation });
   useConversationsHeader({ query, navigation });
   useFocusEffect(
     useCallback(() => {

@@ -29,12 +29,8 @@ export const getTitleForQuery = (query: string, volunteer?: any) => {
       return texts.detailTitles.volunteer.group;
     case QUERY_TYPES.VOLUNTEER.CALENDAR:
       return texts.detailTitles.volunteer.eventRecord;
-    case QUERY_TYPES.VOLUNTEER.TASKS:
-      return texts.detailTitles.volunteer.task;
     case QUERY_TYPES.VOLUNTEER.CONVERSATION:
       return volunteer?.title;
-    case QUERY_TYPES.VOLUNTEER.ADDITIONAL:
-      return texts.detailTitles.volunteer.additional;
     case QUERY_TYPES.VOLUNTEER.PROFILE:
       return volunteer?.title;
     case QUERY_TYPES.VOLUNTEER.USER:

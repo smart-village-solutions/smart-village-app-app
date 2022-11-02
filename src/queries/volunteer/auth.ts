@@ -75,22 +75,6 @@ export const signup = async ({ email, token }: VolunteerSignup) => {
   return (await fetch(`${volunteerApiV2Url}auth/signup`, fetchObj)).json();
 };
 
-// TODO: possible and needed?
-export const logOut = async () => {
-  const authToken = await volunteerAuthToken();
-
-  const fetchObj = {
-    method: 'DELETE',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authorization: authToken ? `Bearer ${authToken}` : ''
-    }
-  };
-
-  return await fetch(`${volunteerApiV1Url}auth/logout`, fetchObj);
-};
-
 export const me = async () => {
   const authToken = await volunteerAuthToken();
 

@@ -1,15 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { normalize } from 'react-native-elements';
 
 import { WrapperRow } from '../../components/Wrapper';
 import { colors, consts, Icon, texts } from '../../config';
-import {
-  storeVolunteerAuthToken,
-  storeVolunteerUserData,
-  volunteerAuthToken,
-  volunteerUserData
-} from '../../helpers/volunteerHelper';
+import { volunteerAuthToken, volunteerUserData } from '../../helpers/volunteerHelper';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
@@ -77,48 +72,6 @@ export const useVolunteerUser = (): {
     currentUserGuId,
     currentUserContentContainerId
   };
-};
-
-export const useLogoutHeader = ({ query, navigation }: any) => {
-  useEffect(() => {
-    if (query !== QUERY_TYPES.VOLUNTEER.PROFILE) return;
-
-    navigation.setOptions({
-      headerRight: () => (
-        <WrapperRow style={styles.headerRight}>
-          <TouchableOpacity
-            onPress={() =>
-              Alert.alert(
-                'Abmelden',
-                'Bist du sicher, dass du dich abmelden möchtest?',
-                [
-                  {
-                    text: 'Abbrechen'
-                  },
-                  {
-                    text: 'Ja, abmelden',
-                    style: 'destructive',
-                    onPress: async () => {
-                      await storeVolunteerAuthToken();
-                      await storeVolunteerUserData();
-                      navigation?.navigate(ScreenName.VolunteerHome, {
-                        refreshUser: new Date().valueOf()
-                      });
-                    }
-                  }
-                ],
-                { cancelable: false }
-              )
-            }
-            accessibilityLabel={consts.a11yLabel.shareIcon}
-            accessibilityHint={consts.a11yLabel.shareHint}
-          >
-            <Icon.VolunteerLogout color={colors.lightestText} style={styles.icon} />
-          </TouchableOpacity>
-        </WrapperRow>
-      )
-    });
-  }, [query, navigation]);
 };
 
 export const useConversationsHeader = ({ query, navigation }: any) => {
