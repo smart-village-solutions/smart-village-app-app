@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { colors, consts, Icon, normalize, texts } from '../config';
+import { useVolunteerNavigation } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
 
@@ -13,24 +14,30 @@ type Props = {
   style: StyleProp<ViewStyle>;
 };
 
-export const CalendarHeader = ({ navigation, style }: Props) => (
-  <TouchableOpacity
-    onPress={() =>
-      navigation.navigate({
-        name: ScreenName.VolunteerForm,
-        params: {
-          title: texts.volunteer.calendarNew,
-          query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-          rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-        }
-      })
-    }
-    accessibilityLabel={a11yLabel.calendarIcon}
-    accessibilityHint={a11yLabel.calendarHint}
-  >
-    <Icon.Plus color={colors.lightestText} style={[style, styles.icon]} size={normalize(28)} />
-  </TouchableOpacity>
-);
+export const CalendarHeader = ({ navigation, style }: Props) => {
+  const volunteerNavigation = useVolunteerNavigation();
+
+  return (
+    <TouchableOpacity
+      onPress={() =>
+        volunteerNavigation(() =>
+          navigation.navigate({
+            name: ScreenName.VolunteerForm,
+            params: {
+              title: texts.volunteer.calendarNew,
+              query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+              rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+            }
+          })
+        )
+      }
+      accessibilityLabel={a11yLabel.calendarIcon}
+      accessibilityHint={a11yLabel.calendarHint}
+    >
+      <Icon.Plus color={colors.lightestText} style={[style, styles.icon]} size={normalize(28)} />
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   icon: {
