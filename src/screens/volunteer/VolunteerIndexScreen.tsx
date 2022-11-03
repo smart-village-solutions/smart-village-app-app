@@ -7,6 +7,7 @@ import {
   Button,
   CalendarListToggle,
   DefaultKeyboardAvoidingView,
+  EmptyMessage,
   ListComponent,
   LoadingSpinner,
   SafeAreaViewFlex,
@@ -101,7 +102,9 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
                 isLoading={isLoading}
                 navigation={navigation}
               />
-            ) : null
+            ) : (
+              <EmptyMessage title={texts.empty.list} />
+            )
           }
           navigation={navigation}
           data={isCalendar && showCalendar ? [] : data}
