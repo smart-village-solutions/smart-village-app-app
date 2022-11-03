@@ -81,7 +81,7 @@ export const texts = {
     showAll: 'Alle anzeigen'
   },
   categoryFilter: {
-    dataProvider: 'Datenquelle',
+    dataProvider: 'Datenquellenauswahl',
     category: 'Kategorie'
   },
   categoryList: {
