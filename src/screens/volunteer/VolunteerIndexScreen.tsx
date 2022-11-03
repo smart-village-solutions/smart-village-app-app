@@ -5,11 +5,12 @@ import { RefreshControl, StyleSheet } from 'react-native';
 
 import {
   Button,
+  CalendarListToggle,
   DefaultKeyboardAvoidingView,
-  DropdownHeader,
   ListComponent,
   LoadingSpinner,
   SafeAreaViewFlex,
+  VolunteerCalendar,
   VolunteerPostTextField,
   Wrapper
 } from '../../components';
@@ -23,6 +24,7 @@ const { ROOT_ROUTE_NAMES } = consts;
 // eslint-disable-next-line complexity
 export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const [queryVariables] = useState(route.params?.queryVariables ?? {});
+  const [showCalendar, setShowCalendar] = useState(false);
   const query = route.params?.query ?? '';
   const queryOptions = route.params?.queryOptions;
   const titleDetail = route.params?.titleDetail ?? '';
@@ -31,10 +33,11 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const headerTitle = route.params?.title ?? '';
   const isGroupMember = route.params?.isGroupMember ?? false;
   const isAttendingEvent = route.params?.isAttendingEvent ?? false;
-  const showFilter = false; // TODO: filter?
+  // const showFilter = false; // TODO: filter?
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const isPosts = query === QUERY_TYPES.VOLUNTEER.POSTS;
+  const hasDailyFilterSelection = !!queryVariables.dateRange;
 
   const { data, isLoading, refetch } = useVolunteerData({
     query,
@@ -42,13 +45,15 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
     queryOptions,
     isCalendar,
     titleDetail,
-    bookmarkable
+    bookmarkable,
+    onlyUpcoming: !showCalendar
   });
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
   useConversationsHeader({ query, navigation });
+
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -64,10 +69,13 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
+        {isCalendar && !hasDailyFilterSelection && (
+          <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+        )}
         <ListComponent
           ListHeaderComponent={
             <>
-              {showFilter && <DropdownHeader {...{ query: query, queryVariables, data }} />}
+              {/* {showFilter && <DropdownHeader {...{ query: query, queryVariables, data }} />} */}
               {isPosts && isGroupMember && (
                 <VolunteerPostTextField
                   contentContainerId={queryVariables?.contentContainerId}
@@ -76,9 +84,20 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
               )}
             </>
           }
+          ListEmptyComponent={
+            showCalendar ? (
+              <VolunteerCalendar
+                query={query}
+                queryVariables={queryVariables}
+                calendarData={data}
+                isLoading={isLoading}
+                navigation={navigation}
+              />
+            ) : null
+          }
           navigation={navigation}
-          data={data}
-          sectionByDate={isCalendar}
+          data={isCalendar && showCalendar ? [] : data}
+          sectionByDate={isCalendar && !showCalendar}
           query={query}
           refetch={refetch}
           refreshControl={
@@ -92,6 +111,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           showBackToTop
           openWebScreen={openWebScreen}
         />
+
         {(((query === QUERY_TYPES.VOLUNTEER.MEMBERS ||
           query === QUERY_TYPES.VOLUNTEER.APPLICANTS) &&
           isGroupMember) ||

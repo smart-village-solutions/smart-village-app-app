@@ -10,16 +10,21 @@ import { trimNewLines } from '../helpers';
 import { Image } from './Image';
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
+import { WrapperRow } from './Wrapper';
 
 export type ItemData = {
   id: string;
   badge?: { value: string; textStyle: { color: string } };
   bottomDivider?: boolean;
+  leftIcon?: React.ReactElement;
   onPress?: (navigation: any) => void;
   params: Record<string, unknown>;
   picture?: { url: string };
   routeName: string;
+  statustitle?: string;
+  statustitleIcon?: React.ReactElement;
   subtitle?: string;
+  teaserTitle?: string;
   title: string;
   topDivider?: boolean;
 };
@@ -31,6 +36,7 @@ type Props = {
   noSubtitle?: boolean | undefined;
 };
 
+/* eslint-disable complexity */
 export const TextListItem: NamedExoticComponent<Props> & {
   propTypes?: Record<string, Validator<any>>;
 } & {
@@ -39,17 +45,46 @@ export const TextListItem: NamedExoticComponent<Props> & {
   const {
     badge,
     bottomDivider,
+    leftIcon,
     onPress,
     params,
     picture,
     routeName: name,
+    statustitle,
+    statustitleIcon,
     subtitle,
+    teaserTitle,
     title,
     topDivider
   } = item;
-  const titleText = <BoldText>{trimNewLines(title)}</BoldText>;
   const navigate = () => navigation && navigation.push(name, params);
+  let titleText = <BoldText>{trimNewLines(title)}</BoldText>;
 
+  if (teaserTitle) {
+    titleText = (
+      <>
+        {titleText}
+        <RegularText small>{teaserTitle}</RegularText>
+      </>
+    );
+  }
+
+  if (statustitle) {
+    titleText = (
+      <>
+        {titleText}
+        <WrapperRow style={styles.statustitleWrapper}>
+          {!!statustitleIcon && statustitleIcon}
+          <RegularText small placeholder>
+            {statustitle}
+          </RegularText>
+        </WrapperRow>
+      </>
+    );
+  }
+
+  // `title` is the first line and `subtitle` the second line, so `title` is used with our subtitle
+  // content and `subtitle` is used with the main title
   return (
     <ListItem
       title={noSubtitle || !subtitle ? titleText : <RegularText small>{subtitle}</RegularText>}
@@ -57,16 +92,17 @@ export const TextListItem: NamedExoticComponent<Props> & {
       bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
       topDivider={topDivider !== undefined ? topDivider : false}
       containerStyle={styles.container}
-      rightIcon={!!navigation && <Icon.ArrowRight />}
+      rightIcon={!!navigation && <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
       badge={badge}
       leftIcon={
-        leftImage && !!picture?.url ? (
+        leftIcon ||
+        (leftImage && !!picture?.url ? (
           <Image
             source={{ uri: picture.url }}
             style={styles.smallImage}
             containerStyle={styles.smallImageContainer}
           />
-        ) : undefined
+        ) : undefined)
       }
       onPress={() => (onPress ? onPress(navigation) : navigate())}
       disabled={!navigation}
@@ -76,6 +112,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
     />
   );
 });
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   container: {
@@ -88,6 +125,9 @@ const styles = StyleSheet.create({
   },
   smallImageContainer: {
     alignSelf: 'flex-start'
+  },
+  statustitleWrapper: {
+    marginTop: normalize(7)
   }
 });
 

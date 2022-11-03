@@ -48,7 +48,11 @@ export const ConsulListItem = ({ navigation, item }) => {
         backgroundColor: colors.transparent,
         paddingVertical: normalize(12)
       }}
-      rightIcon={params.query !== QUERY_TYPES.CONSUL.LOGOUT ? <Icon.ArrowRight /> : null}
+      rightIcon={
+        params.query !== QUERY_TYPES.CONSUL.LOGOUT && (
+          <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
+        )
+      }
       onPress={async () => {
         if (params.query === QUERY_TYPES.CONSUL.LOGOUT) {
           logOutAlert(onLogout);

@@ -21,9 +21,11 @@ import {
   info,
   like,
   link,
+  list,
   location,
   lunch,
   mail,
+  member,
   notVerifiedBadge,
   ok,
   oParlCalendar,
@@ -37,7 +39,8 @@ import {
   unvisible,
   url,
   verifiedBadge,
-  visible
+  visible,
+  volunteerCalendar
 } from '../icons';
 
 import { colors } from './colors';
@@ -127,9 +130,11 @@ export const Icon = {
   Info: (props: IconProps) => <SvgIcon xml={info} {...props} />,
   Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
   Like: (props: IconProps) => <SvgIcon xml={like} {...props} />,
+  List: (props: IconProps) => <SvgIcon xml={list} {...props} />,
   Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
   Mail: (props: IconProps) => <SvgIcon xml={mail} {...props} />,
+  Member: (props: IconProps) => <SvgIcon xml={member} {...props} />,
   NotVerifiedBadge: (props: IconProps) => <SvgIcon xml={notVerifiedBadge} {...props} />,
   Ok: (props: IconProps) => <SvgIcon xml={ok} {...props} />,
   OParlCalendar: (props: IconProps) => <SvgIcon xml={oParlCalendar} {...props} />,
@@ -175,21 +180,10 @@ export const Icon = {
       {...props}
     />
   ),
-  VolunteerCalendar: (props: IconProps) => (
-    <NamedIcon
-      name={device.platform === 'ios' ? 'ios-calendar-outline' : 'md-calendar-outline'}
-      {...props}
-    />
-  ),
+  VolunteerCalendar: (props: IconProps) => <SvgIcon xml={volunteerCalendar} {...props} />,
   VolunteerConversationNew: (props: IconProps) => (
     <NamedIcon
       name={device.platform === 'ios' ? 'ios-mail-outline' : 'md-mail-outline'}
-      {...props}
-    />
-  ),
-  VolunteerList: (props: IconProps) => (
-    <NamedIcon
-      name={device.platform === 'ios' ? 'ios-list-outline' : 'md-list-outline'}
       {...props}
     />
   )

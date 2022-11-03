@@ -31,7 +31,7 @@ export const OParlPreviewEntry = ({
       bottomDivider={!topDivider}
       topDivider={topDivider}
       containerStyle={styles.container}
-      rightIcon={navigation && <Icon.ArrowRight />}
+      rightIcon={navigation && <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
       onPress={() => navigation?.push('OParlDetail', { id, type, title: screenTitle ?? title })}
       disabled={!navigation}
       delayPressIn={0}

@@ -52,7 +52,7 @@ export const VolunteerConversationListItem: NamedExoticComponent<Props> & {
       }
       bottomDivider={bottomDivider}
       containerStyle={listItemStyles.contentContainerStyle}
-      rightIcon={<Icon.ArrowRight />}
+      rightIcon={<Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
       onPress={() => (onPress ? onPress(navigation) : navigate())}
       disabled={!navigation}
       delayPressIn={0}
