@@ -141,16 +141,7 @@ export const Chat = ({
           />
         );
       }}
-      renderAvatar={(props) => (
-        <VolunteerAvatar
-          item={{
-            user: {
-              display_name: props?.currentMessage?.user?.name,
-              guid: props?.currentMessage?.user?.guid
-            }
-          }}
-        />
-      )}
+      renderAvatar={(props) => <VolunteerAvatar item={{ user: props?.currentMessage?.user }} />}
       renderBubble={(props) => (
         <Bubble
           {...props}

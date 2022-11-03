@@ -22,9 +22,9 @@ export const VolunteerAvatar = ({
 
   // get initials from the display name
   const title = displayName
-    .split(' ')
-    .map((part) => part[0])
-    .join('');
+    ?.split(' ')
+    ?.map((part) => part[0])
+    ?.join('');
 
   const uri = volunteerProfileImage(guid);
 
