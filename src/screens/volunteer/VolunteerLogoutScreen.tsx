@@ -1,8 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useEffect } from 'react';
-import { Alert, View } from 'react-native';
+import { useEffect } from 'react';
+import { Alert } from 'react-native';
 
-import { colors } from '../../config';
 import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
 import { ScreenName } from '../../types';
 
@@ -25,7 +24,7 @@ export const VolunteerLogoutScreen = ({ navigation }: StackScreenProps<any>) => 
             onPress: async () => {
               await storeVolunteerAuthToken();
               await storeVolunteerUserData();
-              navigation?.navigate(ScreenName.VolunteerHome, {
+              navigation.navigate(ScreenName.VolunteerHome, {
                 refreshUser: new Date().valueOf()
               });
             }

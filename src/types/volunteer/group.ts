@@ -19,13 +19,22 @@ export enum MEMBER_STATUS_TYPES {
 
 export type ROLE_TYPES = 'admin' | 'moderator' | 'member';
 
-export type VolunteerGroup = {
+export type VolunteerOwner = {
+  display_name: string;
   guid: string;
   id: number;
-  name: string;
-  description?: string;
-  visibility?: VISIBILITY_TYPES;
-  joinPolicy?: JOIN_POLICY_TYPES;
-  tags?: string;
+  url: string;
+};
+
+export type VolunteerGroup = {
+  about: string;
   contentContainerId: number;
+  description?: string;
+  guid: string;
+  id: number;
+  joinPolicy?: JOIN_POLICY_TYPES;
+  name: string;
+  owner: VolunteerOwner;
+  tags?: string;
+  visibility?: VISIBILITY_TYPES;
 };

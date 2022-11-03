@@ -1,18 +1,23 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { colors, consts, device, Icon, normalize, texts } from '../../config';
-import { volunteerUserData } from '../../helpers';
+import { consts, device, normalize, texts } from '../../config';
+import { navigatorConfig } from '../../config/navigation';
+import { volunteerBannerImage, volunteerProfileImage, volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
+import { HeaderRight } from '../HeaderRight';
+import { ImageSection } from '../ImageSection';
 import { AddressSection } from '../infoCard/AddressSection';
 import { ContactSection } from '../infoCard/ContactSection';
 import { UrlSection } from '../infoCard/UrlSection';
+import { Logo } from '../Logo';
+import { BoldText, RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 const { a11yLabel, ROOT_ROUTE_NAMES } = consts;
 
@@ -45,6 +50,14 @@ export const VolunteerUser = ({
     { url: data?.profile?.url_twitter },
     { url: data?.profile?.url_youtube }
   ];
+  const about = data?.profile?.about;
+  const mediaContents = [
+    {
+      contentType: 'image',
+      sourceUrl: { url: volunteerBannerImage(data?.guid) }
+    }
+  ];
+  const logo = volunteerProfileImage(data?.guid);
 
   const checkIfMe = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
@@ -60,25 +73,27 @@ export const VolunteerUser = ({
   useEffect(() => {
     if (route.name === QUERY_TYPES.VOLUNTEER.PROFILE) return;
 
-    navigation.setOptions({
-      headerRight: () =>
-        isMe && (
-          <WrapperRow style={styles.headerRight}>
-            <TouchableOpacity
-              onPress={() =>
-                // eslint-disable-next-line react/prop-types
-                navigation?.navigate(ScreenName.VolunteerForm, {
-                  title: data?.display_name,
+    if (isMe) {
+      navigation.setOptions({
+        headerRight: () => (
+          <HeaderRight
+            {...{
+              navigation,
+              onPress: () =>
+                navigation.navigate(ScreenName.VolunteerForm, {
                   query: QUERY_TYPES.VOLUNTEER.PROFILE,
-                  userData: data
-                })
-              }
-            >
-              <Icon.EditSetting color={colors.lightestText} style={styles.icon} />
-            </TouchableOpacity>
-          </WrapperRow>
+                  userData: data,
+                  title: data?.display_name
+                }),
+              route,
+              withDrawer: navigatorConfig.type === 'drawer',
+              withEdit: true,
+              withShare: true
+            }}
+          />
         )
-    });
+      });
+    }
   }, [route, navigation, isMe, data]);
 
   // action to open source urls
@@ -92,12 +107,25 @@ export const VolunteerUser = ({
 
   return (
     <WrapperWithOrientation>
+      <View>
+        <ImageSection mediaContents={mediaContents} />
+
+        {!!logo && <Logo source={{ uri: logo }} containerStyle={styles.logoContainer} />}
+      </View>
+
       <TitleContainer>
-        <Title big center accessibilityLabel={`${name} ${a11yLabel.heading}`}>
+        <Title big accessibilityLabel={`${name} ${a11yLabel.heading}`}>
           {name}
         </Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
+
+      {!!about && (
+        <Wrapper>
+          <BoldText>{texts.volunteer.aboutMe}</BoldText>
+          <RegularText>{about}</RegularText>
+        </Wrapper>
+      )}
 
       <Wrapper>
         <ContactSection contact={contact} />
@@ -112,13 +140,13 @@ export const VolunteerUser = ({
           <Button
             onPress={() =>
               navigation.push(ScreenName.VolunteerForm, {
-                title: texts.volunteer.conversationStart,
+                title: texts.volunteer.messageNew,
                 query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
                 rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
                 selectedUserIds: [data?.id]
               })
             }
-            title={texts.volunteer.conversationStart}
+            title={texts.volunteer.messageNew}
           />
         </Wrapper>
       )}
@@ -127,11 +155,10 @@ export const VolunteerUser = ({
 };
 
 const styles = StyleSheet.create({
-  headerRight: {
-    alignItems: 'center',
-    paddingRight: normalize(7)
-  },
-  icon: {
-    paddingHorizontal: normalize(10)
+  logoContainer: {
+    left: normalize(20),
+    paddingLeft: 100,
+    position: 'absolute',
+    top: -80
   }
 });

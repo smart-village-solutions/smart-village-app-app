@@ -7,26 +7,21 @@ import { CheckBox } from 'react-native-elements';
 import { useMutation } from 'react-query';
 
 import { colors, texts } from '../../config';
-import { groupDelete, groupEdit, groupNew } from '../../queries/volunteer';
+import { groupEdit, groupNew } from '../../queries/volunteer';
 import { JOIN_POLICY_TYPES, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form/Input';
 import { Label } from '../Label';
-import { BoldText } from '../Text';
+import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
-
-const deleteGroupAlert = (onPress: () => Promise<void>) =>
-  Alert.alert('Hinweis', 'Möchten Sie das Group löschen?', [
-    { text: 'Abbrechen', style: 'cancel' },
-    { text: 'Löschen', onPress, style: 'destructive' }
-  ]);
 
 const VISIBILITY_OPTIONS = [
   { value: VISIBILITY_TYPES.ALL, title: 'Öffentlich (auch nicht registrierte Besucher)' },
   { value: VISIBILITY_TYPES.REGISTERED_ONLY, title: 'Öffentlich (Nur Mitglieder)' },
   { value: VISIBILITY_TYPES.PRIVATE, title: 'Privat (unsichtbar)' }
 ];
+
 const JOIN_POLICY_OPTIONS = [
   { value: JOIN_POLICY_TYPES.OPEN, title: 'Jeder kann beitreten' },
   { value: JOIN_POLICY_TYPES.INVITE_AND_REQUEST, title: 'Einladung und Anfrage' },
@@ -83,17 +78,6 @@ export const VolunteerFormGroup = ({
           });
         }
       });
-    }
-  };
-
-  const onGroupDelete = async () => {
-    try {
-      await groupDelete(groupData?.id);
-      navigation.pop(2);
-      Alert.alert('Erfolgreich', 'Das Group wurde erfolgreich gelöscht.');
-    } catch (error) {
-      Alert.alert('Fehler beim Löschen des Group', 'Bitte versuchen Sie es noch einmal.');
-      console.error(error);
     }
   };
 
@@ -211,9 +195,9 @@ export const VolunteerFormGroup = ({
           disabled={isLoading}
         />
         <Touchable onPress={() => navigation.goBack()}>
-          <BoldText center primary underline>
-            {texts.volunteer.abort.toUpperCase()}
-          </BoldText>
+          <RegularText primary center>
+            {texts.volunteer.abort}
+          </RegularText>
         </Touchable>
       </Wrapper>
     </>

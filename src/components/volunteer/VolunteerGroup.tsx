@@ -2,12 +2,14 @@ import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
-import { colors, consts, device, Icon, normalize, texts } from '../../config';
+import { colors, consts, device, normalize, styles as configStyles, texts } from '../../config';
+import { navigatorConfig } from '../../config/navigation';
 import {
   isOwner,
+  openLink,
   volunteerBannerImage,
   volunteerProfileImage,
   volunteerUserData
@@ -32,14 +34,13 @@ import {
   VolunteerUser
 } from '../../types';
 import { Button } from '../Button';
-import { HtmlView } from '../HtmlView';
+import { HeaderRight } from '../HeaderRight';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
-import { ShareHeader } from '../ShareHeader';
 import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
 import { VolunteerGroupMembersAndApplicants } from './VolunteerGroupMembersAndApplicants';
 import { VolunteerHomeSection } from './VolunteerHomeSection';
@@ -62,6 +63,7 @@ export const VolunteerGroup = ({
   isRefetching: boolean;
 } & StackScreenProps<any>) => {
   const {
+    about,
     contentcontainer_id: contentContainerId,
     description,
     guid,
@@ -80,7 +82,6 @@ export const VolunteerGroup = ({
   const logo = volunteerProfileImage(guid);
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
-  const shareContent = route.params?.shareContent;
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
@@ -151,28 +152,23 @@ export const VolunteerGroup = ({
   useLayoutEffect(() => {
     if (isGroupOwner) {
       navigation.setOptions({
-        headerRight: () =>
-          isGroupOwner && (
-            <WrapperRow style={styles.headerRight}>
-              <TouchableOpacity
-                onPress={() =>
-                  // eslint-disable-next-line react/prop-types
-                  navigation.navigate(ScreenName.VolunteerForm, {
-                    query: QUERY_TYPES.VOLUNTEER.GROUP,
-                    groupData: data,
-                    groupId: data.id
-                  })
-                }
-              >
-                <Icon.EditSetting color={colors.lightestText} style={styles.icon} />
-              </TouchableOpacity>
-
-              <ShareHeader
-                shareContent={shareContent}
-                style={{ paddingHorizontal: normalize(10) }}
-              />
-            </WrapperRow>
-          )
+        headerRight: () => (
+          <HeaderRight
+            {...{
+              navigation,
+              onPress: () =>
+                navigation.navigate(ScreenName.VolunteerForm, {
+                  query: QUERY_TYPES.VOLUNTEER.GROUP,
+                  groupData: data,
+                  groupId: data.id
+                }),
+              route,
+              withDrawer: navigatorConfig.type === 'drawer',
+              withEdit: true,
+              withShare: true
+            }}
+          />
+        )
       });
     }
   }, [isGroupOwner, data]);
@@ -195,7 +191,11 @@ export const VolunteerGroup = ({
 
   return (
     <View>
-      <ImageSection mediaContents={mediaContents} />
+      <View>
+        <ImageSection mediaContents={mediaContents} />
+
+        {!!logo && <Logo source={{ uri: logo }} containerStyle={styles.logoContainer} />}
+      </View>
 
       <WrapperWithOrientation>
         {!!name && (
@@ -204,12 +204,6 @@ export const VolunteerGroup = ({
           </TitleContainer>
         )}
         {!!name && device.platform === 'ios' && <TitleShadow />}
-
-        {!!logo && (
-          <Wrapper>
-            <Logo source={{ uri: logo }} />
-          </Wrapper>
-        )}
 
         <VolunteerGroupMembersAndApplicants
           groupId={id}
@@ -253,60 +247,90 @@ export const VolunteerGroup = ({
             </TitleContainer>
             {device.platform === 'ios' && <TitleShadow />}
             <Wrapper>
-              <HtmlView html={description} openWebScreen={openWebScreen} />
+              <RegularText>{description}</RegularText>
             </Wrapper>
           </View>
         )}
 
-        <Wrapper>
-          <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
-        </Wrapper>
+        {!!about && (
+          <View>
+            <TitleContainer>
+              <Title accessibilityLabel={`(${texts.volunteer.about}) ${a11yText.heading}`}>
+                {texts.volunteer.about}
+              </Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            <Wrapper>
+              <Markdown
+                onLinkPress={(url) => {
+                  openLink(url, openWebScreen);
+                  return false;
+                }}
+                style={configStyles.markdown}
+              >
+                {about}
+              </Markdown>
+            </Wrapper>
+          </View>
+        )}
 
-        {!!contentContainerId && (
-          <VolunteerHomeSection
-            linkTitle="Alle Termine anzeigen"
-            buttonTitle="Termin eintragen"
-            navigateLink={() =>
-              navigation.push(ScreenName.VolunteerIndex, {
-                title: texts.volunteer.calendar,
-                query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-                queryVariables: { contentContainerId },
-                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-              })
-            }
-            navigateButton={() =>
-              navigation.navigate(ScreenName.VolunteerForm, {
-                title: 'Termin eintragen',
-                query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-                groupId: id,
-                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-              })
-            }
-            navigate={() =>
-              navigation.push(ScreenName.VolunteerIndex, {
-                title: texts.volunteer.calendar,
-                query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-                queryVariables: { contentContainerId },
-                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-              })
-            }
-            navigation={navigation}
-            query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
-            queryVariables={{ contentContainerId }}
-            sectionTitle="Kalender"
-            showLink
-            showButton={isGroupOwner || isGroupMember}
-          />
+        {!!tags?.length && (
+          <Wrapper>
+            <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
+          </Wrapper>
         )}
 
         {!!contentContainerId && (
-          <VolunteerPosts
-            contentContainerId={contentContainerId}
-            isRefetching={isRefetching}
-            openWebScreen={openWebScreen}
-            navigation={navigation}
-            isGroupMember={isGroupMember}
-          />
+          <>
+            <VolunteerHomeSection
+              linkTitle="Alle Termine anzeigen"
+              navigateLink={() =>
+                navigation.push(ScreenName.VolunteerIndex, {
+                  title: texts.volunteer.events,
+                  query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+                  queryVariables: { contentContainerId },
+                  rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+                })
+              }
+              navigate={() =>
+                navigation.push(ScreenName.VolunteerIndex, {
+                  title: texts.volunteer.events,
+                  query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+                  queryVariables: { contentContainerId },
+                  rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+                })
+              }
+              navigation={navigation}
+              query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
+              queryVariables={{ contentContainerId }}
+              sectionTitle={texts.volunteer.events}
+              showLink
+            />
+
+            {(isGroupOwner || isGroupMember) && (
+              <Wrapper>
+                <Button
+                  title="Termin eintragen"
+                  onPress={() =>
+                    navigation.navigate(ScreenName.VolunteerForm, {
+                      title: 'Termin eintragen',
+                      query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+                      groupId: id,
+                      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+                    })
+                  }
+                />
+              </Wrapper>
+            )}
+
+            <VolunteerPosts
+              contentContainerId={contentContainerId}
+              isRefetching={isRefetching}
+              openWebScreen={openWebScreen}
+              navigation={navigation}
+              isGroupMember={isGroupMember}
+            />
+          </>
         )}
 
         {!!joinPolicy && !isGroupOwner && isGroupMember !== undefined && (
@@ -336,11 +360,11 @@ export const VolunteerGroup = ({
 };
 
 const styles = StyleSheet.create({
-  headerRight: {
-    alignItems: 'center',
-    paddingRight: normalize(7)
-  },
-  icon: {
-    paddingHorizontal: normalize(10)
+  logoContainer: {
+    backgroundColor: colors.surface,
+    left: normalize(20),
+    paddingLeft: 100,
+    position: 'absolute',
+    top: -80
   }
 });

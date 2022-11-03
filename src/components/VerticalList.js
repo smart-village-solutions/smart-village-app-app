@@ -73,7 +73,7 @@ export const VerticalList = ({
         }
       }}
       initialNumToRender={
-        data.length < MAX_INITIAL_NUM_TO_RENDER ? data.length : MAX_INITIAL_NUM_TO_RENDER
+        data?.length < MAX_INITIAL_NUM_TO_RENDER ? data.length : MAX_INITIAL_NUM_TO_RENDER
       }
       onEndReachedThreshold={0.5}
       onEndReached={onEndReached}

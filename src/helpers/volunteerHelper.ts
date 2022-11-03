@@ -5,7 +5,7 @@ import 'moment/locale/de';
 import * as appJson from '../../app.json';
 import { secrets } from '../config';
 import { QUERY_TYPES } from '../queries/types';
-import { VolunteerUser } from '../types';
+import { VolunteerOwner, VolunteerUser } from '../types';
 
 import { eventDate } from './dateTimeHelper';
 import { subtitle } from './textHelper';
@@ -105,13 +105,13 @@ export const volunteerSubtitle = (
   let date = eventDate(
     volunteerListDate(volunteer, withDate),
     undefined,
-    isSectioned ? 'HH:mm' : 'DD.MM.YYYY HH:mm'
+    isSectioned ? 'HH:mm [Uhr]' : 'D. MMMM YYYY[,] HH:mm [Uhr]'
   );
 
   if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
-    date = eventDate(volunteerListDate(volunteer), undefined, 'DD.MM.YYYY HH:mm');
+    date = eventDate(volunteerListDate(volunteer), undefined, 'D. MMMM YYYY[,] HH:mm [Uhr]');
   } else if (withDate) {
-    date = date.replace('00:00', '');
+    date = date.replace('00:00 Uhr', '');
   }
 
   // build subtitle
@@ -135,7 +135,7 @@ export const isAttending = (currentUserId: string | null, attending?: []): boole
   return attending.some((item: VolunteerUser) => item.id.toString() == currentUserId);
 };
 
-export const isOwner = (currentUserId: string | null, owner: VolunteerUser): boolean => {
+export const isOwner = (currentUserId: string | null, owner: VolunteerOwner): boolean => {
   if (!currentUserId || !owner?.id) return false;
 
   return owner.id.toString() == currentUserId;

@@ -7,6 +7,7 @@ import {
   Button,
   CalendarListToggle,
   DefaultKeyboardAvoidingView,
+  EmptyMessage,
   ListComponent,
   LoadingSpinner,
   SafeAreaViewFlex,
@@ -15,7 +16,13 @@ import {
   Wrapper
 } from '../../components';
 import { colors, consts, texts } from '../../config';
-import { useConversationsHeader, useOpenWebScreen, useVolunteerData } from '../../hooks';
+import {
+  useCalendarsHeader,
+  useConversationsHeader,
+  useGroupsHeader,
+  useOpenWebScreen,
+  useVolunteerData
+} from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName, VolunteerUser } from '../../types';
 
@@ -52,7 +59,9 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, undefined, rootRouteName);
 
-  useConversationsHeader({ query, navigation });
+  useConversationsHeader({ query, navigation, route });
+  useCalendarsHeader({ query, navigation, route });
+  useGroupsHeader({ query, navigation, route });
 
   useFocusEffect(
     useCallback(() => {
@@ -93,7 +102,9 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
                 isLoading={isLoading}
                 navigation={navigation}
               />
-            ) : null
+            ) : (
+              <EmptyMessage title={texts.empty.list} />
+            )
           }
           navigation={navigation}
           data={isCalendar && showCalendar ? [] : data}

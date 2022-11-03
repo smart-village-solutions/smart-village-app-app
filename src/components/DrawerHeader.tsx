@@ -4,7 +4,7 @@ import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { colors, consts, Icon } from '../config';
 
-const a11yText = consts.a11yLabel;
+const { a11yLabel } = consts;
 
 type Props = {
   navigation: DrawerNavigationProp<any>;
@@ -15,8 +15,8 @@ export const DrawerHeader = ({ navigation, style }: Props) => {
   return (
     <TouchableOpacity
       onPress={() => navigation.openDrawer()}
-      accessibilityLabel={a11yText.openMenuIcon}
-      accessibilityHint={a11yText.openMenuHint}
+      accessibilityLabel={a11yLabel.openMenuIcon}
+      accessibilityHint={a11yLabel.openMenuHint}
     >
       <Icon.DrawerMenu color={colors.lightestText} style={style} />
     </TouchableOpacity>

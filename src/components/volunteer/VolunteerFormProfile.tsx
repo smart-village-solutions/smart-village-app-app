@@ -16,7 +16,7 @@ import { Checkbox } from '../Checkbox';
 import { DateTimeInput } from '../form';
 import { DropdownInput } from '../form/DropdownInput';
 import { Input } from '../form/Input';
-import { BoldText } from '../Text';
+import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow } from '../Wrapper';
 
@@ -295,9 +295,9 @@ export const VolunteerFormProfile = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           control={control}
-          label={texts.volunteer.about}
+          label={texts.volunteer.aboutMe}
           name="about"
-          placeholder={texts.volunteer.about}
+          placeholder={texts.volunteer.aboutMe}
           validate
         />
       </Wrapper>
@@ -513,9 +513,9 @@ export const VolunteerFormProfile = ({
           disabled={isLoading}
         />
         <Touchable onPress={() => navigation.goBack()}>
-          <BoldText center primary underline>
-            {texts.volunteer.abort.toUpperCase()}
-          </BoldText>
+          <RegularText primary center>
+            {texts.volunteer.abort}
+          </RegularText>
         </Touchable>
       </Wrapper>
     </>

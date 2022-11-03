@@ -24,7 +24,7 @@ const homeTabConfig: TabConfig = {
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.home,
     tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon color={color} Icon={Icon.Home} size={normalize(24)} />
+      <OrientationAwareIcon color={color} Icon={Icon.Home} />
     )
   }
 };
@@ -37,7 +37,7 @@ const serviceTabConfig: TabConfig = {
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.service,
     tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon color={color} Icon={Icon.Service} size={normalize(24)} />
+      <OrientationAwareIcon color={color} Icon={Icon.Service} />
     )
   }
 };

@@ -13,14 +13,22 @@ export const consts = {
     bookmarkList: 'Lesezeichenliste (Taste)',
     bookmarkListHint: '(Zu der Lesezeichenliste hinzufügen)',
     button: '(Taste)',
+    calendarIcon: 'Neuer Termin (Taste)',
+    calendarHint: 'Einen neuen Termin erstellen',
     category: '(Kategorie)',
     changeImage: 'Bild ändern',
+    chatIcon: 'Neue Unterhaltung (Taste)',
+    chatHint: 'Eine neue Unterhaltung beginnen',
     closeMenuIcon: 'Schließen (Taste)',
     closeMenuHint: 'Menü schließen',
+    editIcon: 'Bearbeiten (Taste)',
+    editHint: 'Diesen Eintrag bearbeiten',
     encounterId: 'Identifikationsnummer',
     encounterIdInfo: 'Informationen zur Identifikationsnummer',
     fax: '(Fax)',
     firstName: 'Vorname',
+    groupIcon: 'Neue Gruppe/Verein (Taste)',
+    groupHint: 'Eine neue Gruppe oder einen neuen Verein erstellen',
     heading: '(Überschrift)',
     image: '(Bild)',
     imageCarousel: '(Bild des Bildkarussells)',
@@ -55,13 +63,15 @@ export const consts = {
   },
 
   // e-mail regex found at https://emailregex.com
-  EMAIL_REGEX: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  EMAIL_REGEX:
+    /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   GUID_REGEX: /[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}/g,
   IMAGE_TYPE_REGEX: /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i,
   JPG_TYPE_REGEX: /\.jpe?g$/i,
   PDF_TYPE_REGEX: /\.pdf$/i,
   // url regex found at https://uibakery.io/regex-library/url
-  URL_REGEX: /^https?:\/\/(?:www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9()]{1,6}\b(?:[-a-z0-9()@:%_\+.~#?&\/=]*)$/i,
+  URL_REGEX:
+    /^https?:\/\/(?:www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9()]{1,6}\b(?:[-a-z0-9()@:%_\+.~#?&\/=]*)$/i,
   VIDEO_TYPE_REGEX: /\.(swf|avi|flv|mpg|rm|mov|wav|asf|3gp|mkv|rmvb|mp4)$/i,
 
   POLL_INTERVALS: {

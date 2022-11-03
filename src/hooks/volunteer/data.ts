@@ -55,7 +55,6 @@ export const useVolunteerData = ({
 
     processedVolunteerData = parseListItemsFromQuery(query, processedVolunteerData, titleDetail, {
       bookmarkable,
-      skipLastDivider: true,
       withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS || (!isSectioned ?? isCalendar),
       isSectioned: isSectioned ?? isCalendar,
       queryVariables: {

@@ -3,7 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import { MediaTypeOptions } from 'expo-image-picker';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
   Actions,
@@ -137,7 +137,7 @@ export const Chat = ({
             {...props}
             options={mediaActionSheet}
             containerStyle={styles.actionButtonContainer}
-            icon={() => <Icon.Plus size={normalize(24)} color={colors.darkText} />}
+            icon={() => <Icon.Plus color={colors.darkText} />}
           />
         );
       }}
@@ -174,8 +174,8 @@ export const Chat = ({
           </TouchableOpacity>
         ))
       }
-      renderDay={(props) => <Day {...props} dateFormat="DD.MM.YYYY" />}
-      renderFooter={() => medias && renderFooter(medias, setMedias)}
+      renderDay={(props) => <Day {...props} dateFormat="D. MMMM YYYY" />}
+      renderFooter={() => !!medias.length && renderFooter(medias, setMedias)}
       renderInputToolbar={(props) => (
         <InputToolbar
           {...props}
@@ -208,8 +208,8 @@ export const Chat = ({
         <MessageText
           {...props}
           textStyle={{
-            left: messageTextStyleLeft || { color: colors.darkText, fontSize: normalize(14) },
-            right: messageTextStyleRight || { color: colors.darkText, fontSize: normalize(14) }
+            left: messageTextStyleLeft || styles.textStyle,
+            right: messageTextStyleRight || styles.textStyle
           }}
         />
       )}
@@ -219,7 +219,7 @@ export const Chat = ({
           containerStyle={styles.sendButtonContainer}
           sendButtonProps={{ ...sendButtonProps, onPress: () => onSendMessages(text, onSend) }}
         >
-          <Icon.Send color={colors.surface} />
+          <Icon.Send color={colors.lightestText} size={normalize(20)} />
         </Send>
       )}
       renderTime={(props) => (
@@ -264,7 +264,7 @@ const renderFooter = (medias, setMedias) => (
           )}
           <View style={styles.mediaDeleteButton}>
             <TouchableOpacity onPress={() => setMedias(deleteArrayItem(medias, index))}>
-              <Icon.CloseCircleOutline size={normalize(24)} color={colors.surface} />
+              <Icon.CloseCircleOutline color={colors.surface} />
             </TouchableOpacity>
           </View>
         </Wrapper>
@@ -335,17 +335,22 @@ const styles = StyleSheet.create({
     borderColor: colors.gray20,
     borderRadius: normalize(4),
     borderWidth: normalize(1),
+    fontFamily: 'regular',
+    fontSize: normalize(16),
+    lineHeight: normalize(24),
     marginBottom: 0,
-    marginLeft: normalize(16),
+    marginLeft: normalize(10),
     marginTop: 0,
     maxHeight: normalize(200),
     minHeight: normalize(48),
+    paddingBottom: normalize(10),
     paddingHorizontal: normalize(10),
-    ...Platform.select({
-      ios: {
-        paddingTop: normalize(16)
-      }
-    })
+    paddingTop: normalize(10)
+  },
+  textStyle: {
+    color: colors.darkText,
+    fontFamily: 'regular',
+    fontSize: normalize(14)
   },
   videoBubble: {
     alignSelf: 'center',

@@ -15,7 +15,7 @@ import { Button } from '../Button';
 import { DropdownInput, DropdownInputProps } from '../form/DropdownInput';
 import { Input } from '../form/Input';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { BoldText, RegularText } from '../Text';
+import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
@@ -140,11 +140,11 @@ export const VolunteerFormConversation = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="title"
-          label={texts.volunteer.title}
-          placeholder={texts.volunteer.title}
+          label={texts.volunteer.subject}
+          placeholder={texts.volunteer.subject}
           validate
           rules={{ required: true }}
-          errorMessage={errors.title && `${texts.volunteer.title} muss ausgefüllt werden`}
+          errorMessage={errors.title && `${texts.volunteer.subject} muss ausgefüllt werden`}
           control={control}
         />
       </Wrapper>
@@ -165,11 +165,12 @@ export const VolunteerFormConversation = ({
           onPress={handleSubmit(onSubmit)}
           title={texts.volunteer.send}
           disabled={isLoading}
+          notFullWidth
         />
         <Touchable onPress={() => navigation.goBack()}>
-          <BoldText center primary underline>
-            {texts.volunteer.abort.toUpperCase()}
-          </BoldText>
+          <RegularText primary center>
+            {texts.volunteer.abort}
+          </RegularText>
         </Touchable>
       </Wrapper>
     </>

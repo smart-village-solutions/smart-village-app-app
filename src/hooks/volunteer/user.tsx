@@ -1,16 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import { normalize } from 'react-native-elements';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
-import { WrapperRow } from '../../components/Wrapper';
-import { colors, consts, Icon, texts } from '../../config';
 import { volunteerAuthToken, volunteerUserData } from '../../helpers/volunteerHelper';
 import { NetworkContext } from '../../NetworkProvider';
-import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
-
-const { ROOT_ROUTE_NAMES } = consts;
 
 export const useVolunteerUser = (): {
   refresh: () => Promise<void>;
@@ -75,35 +68,6 @@ export const useVolunteerUser = (): {
   };
 };
 
-export const useConversationsHeader = ({ query, navigation }: any) => {
-  useEffect(() => {
-    if (query !== QUERY_TYPES.VOLUNTEER.CONVERSATIONS) return;
-
-    navigation.setOptions({
-      headerRight: () => (
-        <WrapperRow style={styles.headerRight}>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate({
-                name: ScreenName.VolunteerForm,
-                params: {
-                  title: texts.volunteer.conversationStart,
-                  query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
-                  rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-                }
-              })
-            }
-            accessibilityLabel={consts.a11yLabel.shareIcon}
-            accessibilityHint={consts.a11yLabel.shareHint}
-          >
-            <Icon.VolunteerConversationNew color={colors.lightestText} style={styles.icon} />
-          </TouchableOpacity>
-        </WrapperRow>
-      )
-    });
-  }, [query, navigation]);
-};
-
 export const useVolunteerNavigation = () => {
   const navigation = useNavigation();
   const { isLoggedIn } = useVolunteerUser();
@@ -119,13 +83,3 @@ export const useVolunteerNavigation = () => {
     [navigation, isLoggedIn]
   );
 };
-
-const styles = StyleSheet.create({
-  headerRight: {
-    alignItems: 'center',
-    paddingRight: normalize(7)
-  },
-  icon: {
-    paddingHorizontal: normalize(10)
-  }
-});

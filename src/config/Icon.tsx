@@ -14,6 +14,7 @@ import {
   close,
   constructionSite,
   drawerMenu,
+  editSetting,
   emptySection,
   heartEmpty,
   heartFilled,
@@ -31,8 +32,10 @@ import {
   oParlCalendar,
   oParlOrganizations,
   oParlPeople,
+  pen,
   phone,
   routePlanner,
+  send,
   service,
   share,
   trash,
@@ -120,7 +123,7 @@ export const Icon = {
   ConstructionSite: (props: IconProps) => <SvgIcon xml={constructionSite} {...props} />,
   Document: (props: IconProps) => <NamedIcon name="md-document-text-outline" {...props} />,
   DrawerMenu: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
-  EditSetting: (props: IconProps) => <NamedIcon name="md-create" {...props} />,
+  EditSetting: (props: IconProps) => <SvgIcon xml={editSetting} {...props} />,
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
   ExpandMap: (props: IconProps) => <Icon.NamedIcon name="expand" {...props} />,
   Home: (props: IconProps) => <SvgIcon xml={home} {...props} />,
@@ -141,6 +144,7 @@ export const Icon = {
   OParlOrganizations: (props: IconProps) => <SvgIcon xml={oParlOrganizations} {...props} />,
   OParlPeople: (props: IconProps) => <SvgIcon xml={oParlPeople} {...props} />,
   Pause: (props: IconProps) => <NamedIcon name="pause" {...props} />,
+  Pen: (props: IconProps) => <SvgIcon xml={pen} {...props} />,
   Phone: (props: IconProps) => <SvgIcon xml={phone} {...props} />,
   Play: (props: IconProps) => <NamedIcon name="play" {...props} />,
   Plus: (props: IconProps) => <NamedIcon name="add" {...props} />,
@@ -167,9 +171,9 @@ export const Icon = {
     ) : (
       <SvgIcon xml={share} {...props} />
     ),
-  Trash: (props: IconProps) => <SvgIcon xml={trash} {...props} />,
-  Send: (props: IconProps) => <NamedIcon name="send" {...props} />,
+  Send: (props: IconProps) => <SvgIcon xml={send} {...props} />,
   Surveys: (props: IconProps) => <NamedIcon name="stats-chart-outline" {...props} />,
+  Trash: (props: IconProps) => <SvgIcon xml={trash} {...props} />,
   Unvisible: (props: IconProps) => <SvgIcon xml={unvisible} {...props} />,
   Url: (props: IconProps) => <SvgIcon xml={url} {...props} />,
   VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />,
@@ -180,11 +184,5 @@ export const Icon = {
       {...props}
     />
   ),
-  VolunteerCalendar: (props: IconProps) => <SvgIcon xml={volunteerCalendar} {...props} />,
-  VolunteerConversationNew: (props: IconProps) => (
-    <NamedIcon
-      name={device.platform === 'ios' ? 'ios-mail-outline' : 'md-mail-outline'}
-      {...props}
-    />
-  )
+  VolunteerCalendar: (props: IconProps) => <SvgIcon xml={volunteerCalendar} {...props} />
 };

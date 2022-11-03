@@ -272,7 +272,7 @@ export const texts = {
       additional: 'Ganz praktisch',
       conversation: 'Unterhaltung',
       eventRecord: 'Veranstaltung',
-      group: 'Gruppen-/Vereinsprofil',
+      group: 'Gruppe/Verein',
       member: 'Mitglied',
       task: 'Aufgabe',
       user: 'Profil'
@@ -817,7 +817,8 @@ export const texts = {
   },
   volunteer: {
     abort: 'Abbrechen',
-    about: 'Über mich',
+    about: 'Über',
+    aboutMe: 'Über mich',
     accept: 'Akzeptieren',
     accessionDirective: 'Beitritts-Richtlinie',
     addDocument: 'Dokument hinzufügen',
@@ -830,6 +831,7 @@ export const texts = {
     birthday: 'Geburtstag',
     calendar: 'Kalender',
     calendarMy: 'Mein Kalender',
+    calendarNew: 'Termin erstellen',
     contactGroupOwner: 'Gruppenbesitzer kontaktieren',
     conversationAllStart: 'Unterhaltung mit allen beginnen',
     conversations: 'Mein Postfach',
@@ -852,6 +854,7 @@ export const texts = {
     eventRecord: {
       appointments: 'Termine'
     },
+    events: 'Veranstaltungen',
     facebook: 'Facebook',
     fax: 'Fax',
     firstname: 'Vorname',
@@ -861,6 +864,7 @@ export const texts = {
     group: 'Gruppe/Verein',
     groups: 'Gruppen und Vereine',
     groupsMy: 'Meine Gruppen und Vereine',
+    groupNew: 'Gruppe/Verein erstellen',
     imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
     images: 'Aussagekäftiges Bild',
     invalidUrl: '-URL ist keine gültige URL',
@@ -885,6 +889,7 @@ export const texts = {
     members: 'Mitglieder',
     memberships: 'Mitgliedschaften',
     message: 'Nachricht',
+    messageNew: 'Nachricht senden',
     moderator: 'Moderator',
     myProfile: 'Mein Profil',
     mySpace: 'MySpace',
@@ -940,6 +945,7 @@ export const texts = {
     startTime: 'Startzeit',
     state: 'Bundesland/Kanton',
     street: 'Straße',
+    subject: 'Betreff',
     tags: 'Themen',
     title: 'Titel',
     token: 'Code',

@@ -16,7 +16,11 @@ export const VolunteerPostTextField = ({
   contentContainerId: number;
   refetch: () => void;
 }) => {
-  const { control, handleSubmit, reset: resetForm } = useForm<VolunteerPost>({
+  const {
+    control,
+    handleSubmit,
+    reset: resetForm
+  } = useForm<VolunteerPost>({
     defaultValues: {
       contentContainerId
     }
@@ -43,7 +47,7 @@ export const VolunteerPostTextField = ({
           control={control}
         />
         <TouchableOpacity onPress={handleSubmit(onPress)} style={styles.button}>
-          <Icon.Mail color={colors.primary} />
+          <Icon.Send color={colors.primary} />
         </TouchableOpacity>
       </WrapperRow>
     </Wrapper>
