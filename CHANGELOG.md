@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
+
+## [v3.0.5]
+
+New volunteer features and design
+
+### Added
+
+- new icons for volunteer features
+- volunteer button to send messages to group admins
+- editing of volunteer profile, group and calendar data
+- new volunteer home and personal screens based on static contents
+
+### Changed
+
+- adjusted volunteer forms according to new layouts
+
+### Fixed
+
+- data length check for vertical list
+
 ## [v3.0.4]
 
 New features for `AugmentedReality` and minor bug fixes
