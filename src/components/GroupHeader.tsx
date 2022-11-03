@@ -1,6 +1,6 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
-import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { colors, consts, Icon, normalize, texts } from '../config';
 import { QUERY_TYPES } from '../queries';
@@ -13,21 +13,27 @@ type Props = {
   style: StyleProp<ViewStyle>;
 };
 
-export const ChatHeader = ({ navigation, style }: Props) => (
+export const GroupHeader = ({ navigation, style }: Props) => (
   <TouchableOpacity
     onPress={() =>
       navigation.navigate({
         name: ScreenName.VolunteerForm,
         params: {
-          title: texts.volunteer.conversationStart,
-          query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
+          title: texts.volunteer.groupNew,
+          query: QUERY_TYPES.VOLUNTEER.GROUP,
           rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
         }
       })
     }
-    accessibilityLabel={a11yLabel.chatIcon}
-    accessibilityHint={a11yLabel.chatHint}
+    accessibilityLabel={a11yLabel.groupIcon}
+    accessibilityHint={a11yLabel.groupHint}
   >
-    <Icon.Pen color={colors.lightestText} style={style} size={normalize(20)} />
+    <Icon.Plus color={colors.lightestText} style={[style, styles.icon]} size={normalize(28)} />
   </TouchableOpacity>
 );
+
+const styles = StyleSheet.create({
+  icon: {
+    paddingHorizontal: normalize(6)
+  }
+});

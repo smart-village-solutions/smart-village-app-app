@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { colors, consts, Icon } from '../config';
+import { colors, consts, Icon, normalize } from '../config';
 
-const a11yText = consts.a11yLabel;
+const { a11yLabel } = consts;
 
 type Props = {
   onPress?: () => void;
@@ -13,9 +13,9 @@ type Props = {
 export const EditHeader = ({ onPress, style }: Props) => (
   <TouchableOpacity
     onPress={onPress}
-    accessibilityLabel={a11yText.editIcon}
-    accessibilityHint={a11yText.editHint}
+    accessibilityLabel={a11yLabel.editIcon}
+    accessibilityHint={a11yLabel.editHint}
   >
-    <Icon.EditSetting color={colors.lightestText} style={style} />
+    <Icon.EditSetting color={colors.lightestText} style={style} size={normalize(22)} />
   </TouchableOpacity>
 );

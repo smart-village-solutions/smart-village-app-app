@@ -11,9 +11,10 @@ type Props = {
   style: StyleProp<ViewStyle>;
 };
 
+const a11yLabel = consts.a11yLabel;
+
 export const BookmarkHeader = ({ route, style }: Props) => {
   const { toggleBookmark } = useContext(BookmarkContext);
-  const a11yText = consts.a11yLabel;
 
   const suffix = route.params?.suffix ?? '';
   const query = route.params?.query ?? '';
@@ -34,8 +35,8 @@ export const BookmarkHeader = ({ route, style }: Props) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      accessibilityLabel={a11yText.bookmarkList}
-      accessibilityHint={a11yText.bookmarkListHint}
+      accessibilityLabel={a11yLabel.bookmarkList}
+      accessibilityHint={a11yLabel.bookmarkListHint}
     >
       {isBookmarked ? (
         <Icon.HeartFilled color={colors.lightestText} style={[styles.icon, style]} />

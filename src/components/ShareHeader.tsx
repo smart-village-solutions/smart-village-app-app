@@ -4,6 +4,8 @@ import { ShareContent, StyleProp, TouchableOpacity, ViewStyle } from 'react-nati
 import { colors, consts, Icon } from '../config';
 import { openShare } from '../helpers';
 
+const { a11yLabel } = consts;
+
 type Props = {
   shareContent?: ShareContent;
   style?: StyleProp<ViewStyle>;
@@ -18,8 +20,8 @@ export const ShareHeader = ({ shareContent, style }: Props) => {
     !!shareContent && (
       <TouchableOpacity
         onPress={() => openShare(shareContent)}
-        accessibilityLabel={consts.a11yLabel.shareIcon}
-        accessibilityHint={consts.a11yLabel.shareHint}
+        accessibilityLabel={a11yLabel.shareIcon}
+        accessibilityHint={a11yLabel.shareHint}
       >
         <Icon.Share color={colors.lightestText} style={style} />
       </TouchableOpacity>

@@ -1,16 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 
-import { HeaderRight } from '../../components';
-import { consts, texts } from '../../config';
-import { navigatorConfig } from '../../config/navigation';
 import { volunteerAuthToken, volunteerUserData } from '../../helpers/volunteerHelper';
 import { NetworkContext } from '../../NetworkProvider';
-import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
-
-const { ROOT_ROUTE_NAMES } = consts;
 
 export const useVolunteerUser = (): {
   refresh: () => Promise<void>;
@@ -73,38 +66,6 @@ export const useVolunteerUser = (): {
     currentUserGuId,
     currentUserContentContainerId
   };
-};
-
-export const useConversationsHeader = ({
-  query,
-  navigation,
-  route
-}: { query: string } & StackScreenProps<any>) => {
-  useEffect(() => {
-    if (query !== QUERY_TYPES.VOLUNTEER.CONVERSATIONS) return;
-
-    navigation.setOptions({
-      headerRight: () => (
-        <HeaderRight
-          {...{
-            navigation,
-            onPress: () =>
-              navigation.navigate({
-                name: ScreenName.VolunteerForm,
-                params: {
-                  title: texts.volunteer.conversationStart,
-                  query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
-                  rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-                }
-              }),
-            route,
-            withChat: true,
-            withDrawer: navigatorConfig.type === 'drawer'
-          }}
-        />
-      )
-    });
-  }, [query, navigation]);
 };
 
 export const useVolunteerNavigation = () => {

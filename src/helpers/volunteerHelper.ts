@@ -111,7 +111,7 @@ export const volunteerSubtitle = (
   if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
     date = eventDate(volunteerListDate(volunteer), undefined, 'D. MMMM YYYY[,] HH:mm [Uhr]');
   } else if (withDate) {
-    date = date.replace('00:00', '');
+    date = date.replace('00:00 Uhr', '');
   }
 
   // build subtitle

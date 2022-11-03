@@ -8,6 +8,7 @@ export * from './clock';
 export * from './close';
 export * from './constructionSite';
 export * from './drawerMenu';
+export * from './editSetting';
 export * from './emptySection';
 export * from './heartEmpty';
 export * from './heartFilled';

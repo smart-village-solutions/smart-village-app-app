@@ -69,9 +69,9 @@ export const VolunteerUser = ({
               navigation,
               onPress: () =>
                 navigation.navigate(ScreenName.VolunteerForm, {
-                  title: data?.display_name,
                   query: QUERY_TYPES.VOLUNTEER.PROFILE,
-                  userData: data
+                  userData: data,
+                  title: data?.display_name
                 }),
               route,
               withDrawer: navigatorConfig.type === 'drawer',

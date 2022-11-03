@@ -35,6 +35,7 @@ export * from './DropdownSelect';
 export * from './EditHeader';
 export * from './EmptyMessage';
 export * from './FavoritesHeader';
+export * from './GroupHeader';
 export * from './HeaderLeft';
 export * from './HeaderRight';
 export * from './HomeSection';
