@@ -4,7 +4,6 @@ import { MediaTypeOptions } from 'expo-image-picker';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Platform, ScrollView, StyleSheet, View } from 'react-native';
-import { Avatar } from 'react-native-elements';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
   Actions,
@@ -24,28 +23,10 @@ import { useSelectDocument, useSelectImage } from '../hooks';
 
 import { Image } from './Image';
 import { RegularText } from './Text';
+import { VolunteerAvatar } from './volunteer';
 import { Wrapper } from './Wrapper';
 
 const { IMAGE_TYPE_REGEX, VIDEO_TYPE_REGEX } = consts;
-
-const UserAvatar = ({ uri, title }) => (
-  <Avatar
-    containerStyle={styles.spacing}
-    overlayContainerStyle={[styles.overlayContainerStyle, !uri && styles.border]}
-    placeholderStyle={styles.placeholderStyle}
-    rounded
-    source={uri ? { uri } : undefined}
-    renderPlaceholderContent={
-      <Avatar
-        containerStyle={[styles.containerStyle]}
-        overlayContainerStyle={[styles.overlayContainerStyle, styles.border]}
-        rounded
-        title={title}
-        titleStyle={styles.titleStyle}
-      />
-    }
-  />
-);
 
 /**
  * it is the component used to realise the chat function
@@ -119,6 +100,7 @@ export const Chat = ({
       minInputToolbarHeight={normalize(96)}
       placeholder={placeholder}
       scrollToBottom
+      scrollToBottomComponent={() => <Icon.ArrowDown />}
       user={{ _id: parseInt(userId) }}
       renderActions={(props) => {
         const mediaActionSheet = {
@@ -159,12 +141,7 @@ export const Chat = ({
           />
         );
       }}
-      renderAvatar={(props) => (
-        <UserAvatar
-          uri={props?.currentMessage?.user?.avatar}
-          title={props?.currentMessage?.user?.name}
-        />
-      )}
+      renderAvatar={(props) => <VolunteerAvatar item={{ user: props?.currentMessage?.user }} />}
       renderBubble={(props) => (
         <Bubble
           {...props}
@@ -302,14 +279,6 @@ const styles = StyleSheet.create({
     height: normalize(30),
     justifyContent: 'center'
   },
-  border: {
-    borderColor: colors.darkText,
-    borderWidth: 1
-  },
-  containerStyle: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
   footerStyle: {
     borderTopWidth: normalize(1),
     borderTopColor: colors.gray20
@@ -335,9 +304,6 @@ const styles = StyleSheet.create({
     height: normalize(86),
     width: normalize(86)
   },
-  overlayContainerStyle: {
-    backgroundColor: colors.surface
-  },
   pdfBubble: {
     alignItems: 'center',
     alignSelf: 'center',
@@ -352,9 +318,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gray40,
     justifyContent: 'center'
   },
-  placeholderStyle: {
-    backgroundColor: colors.surface
-  },
   sendButtonContainer: {
     alignItems: 'center',
     backgroundColor: colors.primary,
@@ -364,9 +327,6 @@ const styles = StyleSheet.create({
     marginLeft: normalize(8),
     marginRight: normalize(20),
     width: normalize(48)
-  },
-  spacing: {
-    marginVertical: normalize(5)
   },
   spacingTime: {
     paddingHorizontal: normalize(10)
@@ -386,10 +346,6 @@ const styles = StyleSheet.create({
         paddingTop: normalize(16)
       }
     })
-  },
-  titleStyle: {
-    color: colors.darkText,
-    fontSize: normalize(12)
   },
   videoBubble: {
     alignSelf: 'center',
@@ -411,9 +367,4 @@ Chat.propTypes = {
   placeholder: PropTypes.string,
   textInputProps: PropTypes.object,
   userId: PropTypes.string || PropTypes.number
-};
-
-UserAvatar.propTypes = {
-  uri: PropTypes.string,
-  title: PropTypes.string
 };
