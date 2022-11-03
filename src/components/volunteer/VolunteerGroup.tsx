@@ -288,7 +288,7 @@ export const VolunteerGroup = ({
               linkTitle="Alle Termine anzeigen"
               navigateLink={() =>
                 navigation.push(ScreenName.VolunteerIndex, {
-                  title: texts.volunteer.calendar,
+                  title: texts.volunteer.events,
                   query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
                   queryVariables: { contentContainerId },
                   rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
@@ -296,7 +296,7 @@ export const VolunteerGroup = ({
               }
               navigate={() =>
                 navigation.push(ScreenName.VolunteerIndex, {
-                  title: texts.volunteer.calendar,
+                  title: texts.volunteer.events,
                   query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
                   queryVariables: { contentContainerId },
                   rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
@@ -305,7 +305,7 @@ export const VolunteerGroup = ({
               navigation={navigation}
               query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
               queryVariables={{ contentContainerId }}
-              sectionTitle="Kalender"
+              sectionTitle={texts.volunteer.events}
               showLink
             />
 

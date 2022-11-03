@@ -74,7 +74,7 @@ export const VolunteerCalendar = ({
       dayComponent={DayComponent}
       onDayPress={(day) =>
         navigation.push(ScreenName.VolunteerIndex, {
-          title: texts.volunteer.calendar,
+          title: texts.volunteer.events,
           query,
           queryVariables: { dateRange: [day.dateString], contentContainerId },
           rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER

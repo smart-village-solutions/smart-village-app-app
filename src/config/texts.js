@@ -854,6 +854,7 @@ export const texts = {
     eventRecord: {
       appointments: 'Termine'
     },
+    events: 'Veranstaltungen',
     facebook: 'Facebook',
     fax: 'Fax',
     firstname: 'Vorname',
