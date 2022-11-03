@@ -99,7 +99,7 @@ export const Input = ({
       containerStyle={[
         styles.container,
         row && styles.row,
-        hidden && isValid && styles.containerHidden
+        hidden && !errorMessage && styles.containerHidden
       ]}
       inputContainerStyle={[
         styles.inputContainer,

@@ -18,7 +18,7 @@ import { DateTimeInput } from '../form/DateTimeInput';
 import { DropdownInput, DropdownInputProps } from '../form/DropdownInput';
 import { Input } from '../form/Input';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { BoldText, RegularText } from '../Text';
+import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
@@ -332,21 +332,11 @@ export const VolunteerFormCalendar = ({
         />
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
-        <Controller
-          name="isPublic"
-          render={({ onChange, value }) => (
-            <CheckBox
-              checked={!!value}
-              onPress={() => onChange(!value)}
-              title="Öffentlich"
-              checkedColor={colors.accent}
-              checkedIcon="check-square-o"
-              uncheckedColor={colors.darkText}
-              uncheckedIcon="square-o"
-              containerStyle={styles.checkboxContainerStyle}
-              textStyle={styles.checkboxTextStyle}
-            />
-          )}
+        <Input
+          name="location"
+          label={texts.volunteer.location}
+          placeholder={texts.volunteer.location}
+          validate
           control={control}
         />
       </Wrapper>
@@ -372,15 +362,6 @@ export const VolunteerFormCalendar = ({
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="location"
-          label={texts.volunteer.location}
-          placeholder={texts.volunteer.location}
-          validate
-          control={control}
-        />
-      </Wrapper>
-      <Wrapper style={styles.noPaddingTop}>
-        <Input
           name="topics"
           label={texts.volunteer.topics}
           placeholder={texts.volunteer.topics}
@@ -388,7 +369,26 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Controller
+          name="isPublic"
+          render={({ onChange, value }) => (
+            <CheckBox
+              checked={!!value}
+              onPress={() => onChange(!value)}
+              title="Öffentlich"
+              checkedColor={colors.accent}
+              checkedIcon="check-square-o"
+              uncheckedColor={colors.darkText}
+              uncheckedIcon="square-o"
+              containerStyle={styles.checkboxContainerStyle}
+              textStyle={styles.checkboxTextStyle}
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="images"
           render={(field) => (
@@ -426,7 +426,7 @@ export const VolunteerFormCalendar = ({
           control={control}
         />
       </Wrapper>
-      <Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.volunteer.save}
@@ -439,9 +439,9 @@ export const VolunteerFormCalendar = ({
           />
         )}
         <Touchable onPress={() => navigation.goBack()}>
-          <BoldText center primary underline>
-            {texts.volunteer.abort.toUpperCase()}
-          </BoldText>
+          <RegularText primary center>
+            {texts.volunteer.abort}
+          </RegularText>
         </Touchable>
       </Wrapper>
     </>

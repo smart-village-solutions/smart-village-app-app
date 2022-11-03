@@ -2,11 +2,8 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useEffect } from 'react';
 
 import { HeaderRight } from '../../components';
-import { consts } from '../../config';
 import { navigatorConfig } from '../../config/navigation';
 import { QUERY_TYPES } from '../../queries';
-
-const { ROOT_ROUTE_NAMES } = consts;
 
 export const useConversationsHeader = ({
   query,

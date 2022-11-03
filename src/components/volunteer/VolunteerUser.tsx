@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { colors, consts, device, normalize, texts } from '../../config';
+import { consts, device, normalize, texts } from '../../config';
 import { navigatorConfig } from '../../config/navigation';
 import { volunteerBannerImage, volunteerProfileImage, volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
