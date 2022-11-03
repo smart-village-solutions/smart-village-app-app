@@ -11,6 +11,7 @@ import { groupDelete, groupEdit, groupNew } from '../../queries/volunteer';
 import { JOIN_POLICY_TYPES, VISIBILITY_TYPES, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { Input } from '../form/Input';
+import { Label } from '../Label';
 import { BoldText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
@@ -147,17 +148,11 @@ export const VolunteerFormGroup = ({
         />
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
+        <Label>{texts.volunteer.visibility}</Label>
         <Controller
           name="visibility"
           render={({ onChange, value }) => (
             <>
-              <Input
-                hidden
-                name="Sichtbarkeit"
-                label={texts.volunteer.visibility}
-                placeholder={texts.volunteer.visibility}
-                control={control}
-              />
               {VISIBILITY_OPTIONS.map((visibilityItem) => (
                 <CheckBox
                   key={visibilityItem.title}
@@ -165,9 +160,7 @@ export const VolunteerFormGroup = ({
                   onPress={() => onChange(visibilityItem.value)}
                   title={visibilityItem.title}
                   checkedColor={colors.accent}
-                  checkedIcon="dot-circle-o"
                   uncheckedColor={colors.darkText}
-                  uncheckedIcon="circle-o"
                   containerStyle={styles.checkboxContainerStyle}
                   textStyle={styles.checkboxTextStyle}
                 />
@@ -179,17 +172,11 @@ export const VolunteerFormGroup = ({
       </Wrapper>
       {watch('visibility') !== VISIBILITY_TYPES.PRIVATE && (
         <Wrapper style={styles.noPaddingTop}>
+          <Label>{texts.volunteer.accessionDirective}</Label>
           <Controller
             name="joinPolicy"
             render={({ onChange, value }) => (
               <>
-                <Input
-                  hidden
-                  name="Beitritts-Richtlinie"
-                  label={texts.volunteer.accessionDirective}
-                  placeholder={texts.volunteer.accessionDirective}
-                  control={control}
-                />
                 {JOIN_POLICY_OPTIONS.map((joinPolicyItem) => (
                   <CheckBox
                     key={joinPolicyItem.title}
@@ -197,9 +184,7 @@ export const VolunteerFormGroup = ({
                     onPress={() => onChange(joinPolicyItem.value)}
                     title={joinPolicyItem.title}
                     checkedColor={colors.accent}
-                    checkedIcon="dot-circle-o"
                     uncheckedColor={colors.darkText}
-                    uncheckedIcon="circle-o"
                     containerStyle={styles.checkboxContainerStyle}
                     textStyle={styles.checkboxTextStyle}
                   />
