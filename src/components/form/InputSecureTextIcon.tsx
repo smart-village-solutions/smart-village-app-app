@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { colors, Icon, normalize } from '../../config';
+import { colors, Icon } from '../../config';
 
 export const InputSecureTextIcon = ({
   isSecureTextEntry,
@@ -12,9 +12,9 @@ export const InputSecureTextIcon = ({
 }) => (
   <TouchableOpacity onPress={() => setIsSecureTextEntry(!isSecureTextEntry)}>
     {isSecureTextEntry ? (
-      <Icon.Visible color={colors.darkText} size={normalize(24)} />
+      <Icon.Visible color={colors.darkText} />
     ) : (
-      <Icon.Unvisible color={colors.darkText} size={normalize(24)} />
+      <Icon.Unvisible color={colors.darkText} />
     )}
   </TouchableOpacity>
 );

@@ -105,11 +105,11 @@ export const volunteerSubtitle = (
   let date = eventDate(
     volunteerListDate(volunteer, withDate),
     undefined,
-    isSectioned ? 'HH:mm' : 'DD.MM.YYYY HH:mm'
+    isSectioned ? 'HH:mm [Uhr]' : 'D. MMMM YYYY[,] HH:mm [Uhr]'
   );
 
   if (query === QUERY_TYPES.VOLUNTEER.CONVERSATION) {
-    date = eventDate(volunteerListDate(volunteer), undefined, 'DD.MM.YYYY HH:mm');
+    date = eventDate(volunteerListDate(volunteer), undefined, 'D. MMMM YYYY[,] HH:mm [Uhr]');
   } else if (withDate) {
     date = date.replace('00:00', '');
   }

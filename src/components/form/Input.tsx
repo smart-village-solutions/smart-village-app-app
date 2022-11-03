@@ -91,9 +91,9 @@ export const Input = ({
       rightIcon={
         rightIcon ||
         (isValid ? (
-          <Icon.Ok color={colors.primary} size={normalize(24)} />
+          <Icon.Ok color={colors.primary} />
         ) : (
-          !isValid && !!errorMessage && <Icon.Close color={colors.error} size={normalize(24)} />
+          !isValid && !!errorMessage && <Icon.Close color={colors.error} />
         ))
       }
       containerStyle={[
