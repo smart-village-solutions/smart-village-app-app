@@ -1,11 +1,11 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { DeviceEventEmitter, View } from 'react-native';
+import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
-import { consts, device, styles as configStyles, texts } from '../../config';
+import { colors, consts, device, normalize, styles as configStyles, texts } from '../../config';
 import { navigatorConfig } from '../../config/navigation';
 import {
   isOwner,
@@ -191,7 +191,11 @@ export const VolunteerGroup = ({
 
   return (
     <View>
-      <ImageSection mediaContents={mediaContents} />
+      <View>
+        <ImageSection mediaContents={mediaContents} />
+
+        {!!logo && <Logo source={{ uri: logo }} containerStyle={styles.logoContainer} />}
+      </View>
 
       <WrapperWithOrientation>
         {!!name && (
@@ -200,12 +204,6 @@ export const VolunteerGroup = ({
           </TitleContainer>
         )}
         {!!name && device.platform === 'ios' && <TitleShadow />}
-
-        {!!logo && (
-          <Wrapper>
-            <Logo source={{ uri: logo }} />
-          </Wrapper>
-        )}
 
         <VolunteerGroupMembersAndApplicants
           groupId={id}
@@ -360,3 +358,13 @@ export const VolunteerGroup = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  logoContainer: {
+    backgroundColor: colors.surface,
+    left: normalize(20),
+    paddingLeft: 100,
+    position: 'absolute',
+    top: -80
+  }
+});

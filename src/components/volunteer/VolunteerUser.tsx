@@ -1,17 +1,21 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-import { consts, device, texts } from '../../config';
+import { colors, consts, device, normalize, texts } from '../../config';
 import { navigatorConfig } from '../../config/navigation';
-import { volunteerUserData } from '../../helpers';
+import { volunteerBannerImage, volunteerProfileImage, volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { HeaderRight } from '../HeaderRight';
+import { ImageSection } from '../ImageSection';
 import { AddressSection } from '../infoCard/AddressSection';
 import { ContactSection } from '../infoCard/ContactSection';
 import { UrlSection } from '../infoCard/UrlSection';
+import { Logo } from '../Logo';
+import { BoldText, RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
 
@@ -46,6 +50,14 @@ export const VolunteerUser = ({
     { url: data?.profile?.url_twitter },
     { url: data?.profile?.url_youtube }
   ];
+  const about = data?.profile?.about;
+  const mediaContents = [
+    {
+      contentType: 'image',
+      sourceUrl: { url: volunteerBannerImage(data?.guid) }
+    }
+  ];
+  const logo = volunteerProfileImage(data?.guid);
 
   const checkIfMe = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
@@ -95,12 +107,25 @@ export const VolunteerUser = ({
 
   return (
     <WrapperWithOrientation>
+      <View>
+        <ImageSection mediaContents={mediaContents} />
+
+        {!!logo && <Logo source={{ uri: logo }} containerStyle={styles.logoContainer} />}
+      </View>
+
       <TitleContainer>
-        <Title big center accessibilityLabel={`${name} ${a11yLabel.heading}`}>
+        <Title big accessibilityLabel={`${name} ${a11yLabel.heading}`}>
           {name}
         </Title>
       </TitleContainer>
       {device.platform === 'ios' && <TitleShadow />}
+
+      {!!about && (
+        <Wrapper>
+          <BoldText>{texts.volunteer.aboutMe}</BoldText>
+          <RegularText>{about}</RegularText>
+        </Wrapper>
+      )}
 
       <Wrapper>
         <ContactSection contact={contact} />
@@ -115,16 +140,25 @@ export const VolunteerUser = ({
           <Button
             onPress={() =>
               navigation.push(ScreenName.VolunteerForm, {
-                title: texts.volunteer.conversationStart,
+                title: texts.volunteer.messageNew,
                 query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
                 rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
                 selectedUserIds: [data?.id]
               })
             }
-            title={texts.volunteer.conversationStart}
+            title={texts.volunteer.messageNew}
           />
         </Wrapper>
       )}
     </WrapperWithOrientation>
   );
 };
+
+const styles = StyleSheet.create({
+  logoContainer: {
+    left: normalize(20),
+    paddingLeft: 100,
+    position: 'absolute',
+    top: -80
+  }
+});

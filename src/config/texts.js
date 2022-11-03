@@ -889,6 +889,7 @@ export const texts = {
     members: 'Mitglieder',
     memberships: 'Mitgliedschaften',
     message: 'Nachricht',
+    messageNew: 'Nachricht senden',
     moderator: 'Moderator',
     myProfile: 'Mein Profil',
     mySpace: 'MySpace',

@@ -9,7 +9,7 @@ import { posts as postsQuery } from '../../queries/volunteer';
 import { ScreenName } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
-import { BoldText } from '../Text';
+import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
@@ -100,9 +100,9 @@ export const VolunteerPosts = ({
               })
             }
           >
-            <BoldText center primary underline>
+            <RegularText primary center>
               {texts.volunteer.postsIndexLink}
-            </BoldText>
+            </RegularText>
           </Touchable>
         </Wrapper>
       )}
