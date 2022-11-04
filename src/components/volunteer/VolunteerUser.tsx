@@ -1,6 +1,6 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { consts, device, normalize, texts } from '../../config';
 import { navigatorConfig } from '../../config/navigation';
@@ -107,11 +107,9 @@ export const VolunteerUser = ({
 
   return (
     <WrapperWithOrientation>
-      <View>
-        <ImageSection mediaContents={mediaContents} />
+      <ImageSection mediaContents={mediaContents} />
 
-        {!!logo && <Logo source={{ uri: logo }} containerStyle={styles.logoContainer} />}
-      </View>
+      {!!logo && <Logo source={{ uri: logo }} containerStyle={styles.logoContainer} />}
 
       <TitleContainer>
         <Title big accessibilityLabel={`${name} ${a11yLabel.heading}`}>
