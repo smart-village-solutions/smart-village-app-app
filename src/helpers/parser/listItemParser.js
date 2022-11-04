@@ -236,7 +236,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned, cu
         };
       }
 
-      leftIcon = <VolunteerAvatar item={volunteer} />;
+      leftIcon = <VolunteerAvatar item={volunteer.user ? volunteer : { user: volunteer }} />;
     }
 
     if (query === QUERY_TYPES.VOLUNTEER.GROUP && !!volunteer.role) {
