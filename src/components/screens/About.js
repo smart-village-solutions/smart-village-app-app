@@ -77,7 +77,7 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
         />
       }
       sections={sectionData}
-      renderSectionHeader={({ section: { title } }) => <SectionHeader title={title} />}
+      renderSectionHeader={({ section: { title } }) => !!title && <SectionHeader title={title} />}
       renderItem={renderItem}
       keyExtractor={(item) => item.title}
       ListFooterComponent={<VersionNumber />}
