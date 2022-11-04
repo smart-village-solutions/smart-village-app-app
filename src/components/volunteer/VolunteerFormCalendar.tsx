@@ -8,9 +8,9 @@ import { CheckBox } from 'react-native-elements';
 import { useMutation, useQuery } from 'react-query';
 
 import { colors, consts, texts } from '../../config';
-import { isOwner, jsonParser, momentFormat, volunteerUserData } from '../../helpers';
+import { jsonParser, momentFormat } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
-import { calendarDelete, calendarNew, calendarUpload, groups } from '../../queries/volunteer';
+import { calendarDelete, calendarNew, calendarUpload, groupsMy } from '../../queries/volunteer';
 import { VolunteerCalendar, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { DocumentSelector, ImageSelector } from '../consul/selectors';
@@ -129,29 +129,28 @@ export const VolunteerFormCalendar = ({
         : '[]'
     }
   });
-  const { data: dataGroups, isLoading: isLoadingGroups } = useQuery(
-    QUERY_TYPES.VOLUNTEER.GROUPS,
-    groups
-  );
-  const [groupDropdownData, setGroupDropdownData] = useState<DropdownInputProps['data'] | []>([]);
+  const {
+    data: dataGroupsMy,
+    isLoading: isLoadingGroupsMy,
+    isSuccess: isSuccessGroupsMy
+  } = useQuery(QUERY_TYPES.VOLUNTEER.GROUPS_MY, groupsMy);
+  const [groupDropdownData, setGroupDropdownData] = useState<DropdownInputProps['data'] | []>();
   const [isProcessingGroupDropdownData, setIsProcessingGroupDropdownData] = useState(true);
 
   const filterGroupDropDownData = useCallback(async () => {
     setIsProcessingGroupDropdownData(true);
-    if (dataGroups?.results?.length) {
-      const { currentUserId } = await volunteerUserData();
-      // show only groups, where the user is owner, because otherwise edits are not allowed
-      const filteredGroupDropDownData = dataGroups.results
-        ?.filter((item: VolunteerGroup) => isOwner(currentUserId, item.owner))
-        ?.map((item: VolunteerGroup) => ({ ...item, value: item.name }));
+    if (dataGroupsMy?.results?.length) {
+      const filteredGroupDropDownData = dataGroupsMy.results.map((item: VolunteerGroup) => ({
+        ...item,
+        value: item.name
+      }));
 
-      filteredGroupDropDownData?.length &&
-        setGroupDropdownData(
-          _sortBy(filteredGroupDropDownData, 'name') as DropdownInputProps['data'] | []
-        );
+      setGroupDropdownData(
+        _sortBy(filteredGroupDropDownData, 'name') as DropdownInputProps['data'] | []
+      );
     }
     setIsProcessingGroupDropdownData(false);
-  }, [dataGroups?.results]);
+  }, [dataGroupsMy]);
 
   useEffect(() => {
     filterGroupDropDownData();
@@ -182,11 +181,11 @@ export const VolunteerFormCalendar = ({
     scrollToTop();
   }
 
-  if (isLoadingGroups || isProcessingGroupDropdownData) {
+  if (isLoadingGroupsMy || isProcessingGroupDropdownData) {
     return <LoadingSpinner loading />;
   }
 
-  if (!groupDropdownData.length) {
+  if (!isSuccessGroupsMy && groupDropdownData !== undefined && !groupDropdownData.length) {
     return (
       <Wrapper>
         <RegularText>{texts.volunteer.noGroups}</RegularText>
@@ -218,26 +217,28 @@ export const VolunteerFormCalendar = ({
         {!!groupId || isEditMode ? (
           <Input hidden name="contentContainerId" control={control} />
         ) : (
-          <Controller
-            name="contentContainerId"
-            render={({ name, onChange, value }) => (
-              <DropdownInput
-                {...{
-                  errors,
-                  required: true,
-                  data: groupDropdownData,
-                  value,
-                  valueKey: 'contentcontainer_id',
-                  onChange,
-                  name,
-                  label: texts.volunteer.group,
-                  placeholder: texts.volunteer.group,
-                  control
-                }}
-              />
-            )}
-            control={control}
-          />
+          groupDropdownData?.length && (
+            <Controller
+              name="contentContainerId"
+              render={({ name, onChange, value }) => (
+                <DropdownInput
+                  {...{
+                    errors,
+                    required: true,
+                    data: groupDropdownData,
+                    value,
+                    valueKey: 'contentcontainer_id',
+                    onChange,
+                    name,
+                    label: texts.volunteer.group,
+                    placeholder: texts.volunteer.group,
+                    control
+                  }}
+                />
+              )}
+              control={control}
+            />
+          )
         )}
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>

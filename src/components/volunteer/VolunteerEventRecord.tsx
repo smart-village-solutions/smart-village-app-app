@@ -91,7 +91,7 @@ export const VolunteerEventRecord = ({
       timeTo: momentFormat(endDatetime, 'HH:mm')
     }
   ];
-  const [isMe, setIsMe] = useState<boolean>();
+  const [isMy, setIsMy] = useState<boolean>();
   const [isAttendingEvent, setIsAttendingEvent] = useState<boolean>();
 
   // action to open source urls
@@ -106,7 +106,7 @@ export const VolunteerEventRecord = ({
   const checkIfMe = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
 
-    !!currentUserId && setIsMe(currentUserId == content?.metadata?.created_by?.id);
+    !!currentUserId && setIsMy(currentUserId == content?.metadata?.created_by?.id);
   }, [data]);
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export const VolunteerEventRecord = ({
   }, [checkIfMe]);
 
   useLayoutEffect(() => {
-    if (isMe) {
+    if (isMy) {
       navigation.setOptions({
         headerRight: () => (
           <HeaderRight
@@ -135,7 +135,7 @@ export const VolunteerEventRecord = ({
         )
       });
     }
-  }, [isMe, data]);
+  }, [isMy, data]);
 
   const checkIfAttending = useCallback(async () => {
     const { currentUserId } = await volunteerUserData();
