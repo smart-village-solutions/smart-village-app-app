@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
 import { View } from 'react-native';
 
@@ -6,6 +6,7 @@ import { LoadingSpinner } from '..';
 import { graphqlFetchPolicy } from '../../helpers';
 import { usePermanentFilter, useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { addDataProvidersToTokenOnServer } from '../../pushNotifications';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { FilterAction } from '../../types';
 import { SettingsToggle } from '../SettingsToggle';
@@ -17,11 +18,19 @@ export const PermanentFilterSettings = () => {
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
-  const { state, dispatch } = usePermanentFilter();
+  const { state: excludedDataProviderIds, dispatch } = usePermanentFilter();
 
   const { data, loading } = useQuery(getQuery(QUERY_TYPES.NEWS_ITEMS_DATA_PROVIDER), {
     fetchPolicy
   });
+
+  const dataProviderIds = (data?.newsItemsDataProviders?.map((item: { id: string }) => item.id) ||
+    []) as string[];
+
+  useEffect(() => {
+    !!dataProviderIds?.length &&
+      addDataProvidersToTokenOnServer(excludedDataProviderIds.map((id) => parseInt(id, 10)));
+  }, [excludedDataProviderIds]);
 
   if (!data && loading) {
     return <LoadingSpinner loading />;
@@ -33,7 +42,7 @@ export const PermanentFilterSettings = () => {
         const options = {
           title: item.name,
           bottomDivider: true,
-          value: !state.includes(item.id),
+          value: !excludedDataProviderIds.includes(item.id),
           onActivate: () => {
             dispatch({ type: FilterAction.RemoveDataProvider, payload: item.id });
           },

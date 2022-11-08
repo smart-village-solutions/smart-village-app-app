@@ -89,3 +89,28 @@ const storeTokenSecurely = (token?: string) => {
 
 export const getPushTokenFromStorage = () =>
   SecureStore.getItemAsync(PushNotificationStorageKeys.PUSH_TOKEN);
+
+export const addDataProvidersToTokenOnServer = async (excludeDataProviderIds: number[]) => {
+  const storedToken = await getPushTokenFromStorage();
+  const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+  const requestPath =
+    secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesDataProviders;
+
+  const fetchObj = {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + accessToken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      notification_device: { token: storedToken, exclude_data_provider_ids: excludeDataProviderIds }
+    })
+  };
+
+  if (storedToken && accessToken) {
+    return fetch(requestPath, fetchObj).then((response) => response.status === 200);
+  }
+
+  return false;
+};

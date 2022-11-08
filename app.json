@@ -2,6 +2,7 @@
   "expo": {
     "name": "Smart Village App",
     "slug": "smart-village-app",
+    "owner": "ikusei",
     "privacy": "public",
     "description": "An open source React Native app for smart villages merging regional offers and services in one place - in your pocket.",
     "githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
