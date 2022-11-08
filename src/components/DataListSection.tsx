@@ -79,7 +79,7 @@ export const DataListSection = ({
     skipLastDivider: true
   });
 
-  if (additionalData?.length) {
+  if (listData && additionalData?.length) {
     listData.push(...additionalData);
     listData = _sortBy(listData, (item) => item.listDate);
   }
