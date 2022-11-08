@@ -144,7 +144,7 @@ export const VolunteerGroup = ({
     results?.length > 1 &&
       setGroupAdmins(
         results
-          .filter(({ role }: { role: ROLE_TYPES }) => role === 'admin')
+          .filter(({ role }: { role: ROLE_TYPES }) => role === ROLE_TYPES.ADMIN)
           .map(({ user: { id } }: { user: VolunteerUser }) => id)
       );
   }, [id]);

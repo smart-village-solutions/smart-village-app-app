@@ -17,7 +17,11 @@ export enum MEMBER_STATUS_TYPES {
   MEMBER
 }
 
-export type ROLE_TYPES = 'admin' | 'moderator' | 'member';
+export enum ROLE_TYPES {
+  ADMIN = 'admin',
+  MODERATOR = 'moderator',
+  MEMBER = 'member'
+}
 
 export type VolunteerOwner = {
   display_name: string;
