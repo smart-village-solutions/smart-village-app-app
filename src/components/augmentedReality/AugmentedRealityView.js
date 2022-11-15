@@ -64,7 +64,6 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
         color={object?.light?.color || colors.surface}
         temperature={object?.light?.temperature || 6500}
         intensity={object?.light?.intensity || 1000}
-        rotation={object?.light?.rotation || [0, 0, 0]}
       />
 
       {object?.target ? (
