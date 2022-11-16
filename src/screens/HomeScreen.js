@@ -8,9 +8,9 @@ import {
   About,
   ConnectedImagesCarousel,
   HomeSection,
+  HomeService,
   NewsSectionPlaceholder,
   SafeAreaViewFlex,
-  Service,
   Widgets
 } from '../components';
 import { colors, consts, texts } from '../config';
@@ -234,7 +234,7 @@ export const HomeScreen = ({ navigation, route }) => {
 
         {route.params?.isDrawer && (
           <>
-            <Service navigation={navigation} />
+            <HomeService />
             <About navigation={navigation} withHomeRefresh />
           </>
         )}

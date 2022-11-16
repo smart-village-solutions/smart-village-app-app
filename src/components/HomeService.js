@@ -1,17 +1,15 @@
-import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { consts, device, normalize, texts } from '../../config';
-import { useHomeRefresh, useStaticContent } from '../../hooks';
-import { SettingsContext } from '../../SettingsProvider';
-import { DiagonalGradient } from '../DiagonalGradient';
-import { Title, TitleContainer, TitleShadow } from '../Title';
-import { WrapperWrap } from '../Wrapper';
+import { consts, device, normalize, texts } from '../config';
+import { useHomeRefresh, useStaticContent } from '../hooks';
+import { SettingsContext } from '../SettingsProvider';
 
-import { ServiceTile } from './ServiceTile';
+import { DiagonalGradient } from './DiagonalGradient';
+import { Service } from './screens/Service';
+import { Title, TitleContainer, TitleShadow } from './Title';
 
-export const Service = ({ navigation }) => {
+export const HomeService = () => {
   const { globalSettings } = useContext(SettingsContext);
 
   const { data, loading, refetch } = useStaticContent({
@@ -38,16 +36,7 @@ export const Service = ({ navigation }) => {
       )}
       {!!headlineService && device.platform === 'ios' && <TitleShadow />}
       <DiagonalGradient style={styles.padding}>
-        <WrapperWrap spaceBetween>
-          {data.map((item, index) => (
-            <ServiceTile
-              key={index + item.title}
-              navigation={navigation}
-              item={item}
-              hasDiagonalGradientBackground
-            />
-          ))}
-        </WrapperWrap>
+        <Service data={data} hasDiagonalGradientBackground staticJsonName="homeService" />
       </DiagonalGradient>
     </View>
   );
@@ -58,7 +47,3 @@ const styles = StyleSheet.create({
     padding: normalize(14)
   }
 });
-
-Service.propTypes = {
-  navigation: PropTypes.object.isRequired
-};

@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -10,14 +11,13 @@ import { ServiceBox } from '../ServiceBox';
 import { BoldText } from '../Text';
 
 export const ServiceTile = ({
-  navigation,
   item,
   hasDiagonalGradientBackground = false
 }: {
-  navigation: StackNavigationProp<any>;
   item: any;
   hasDiagonalGradientBackground?: boolean;
 }) => {
+  const navigation = useNavigation<StackNavigationProp<any>>();
   const { orientation, dimensions } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
 

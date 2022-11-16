@@ -10,11 +10,11 @@ import { Image } from '../Image';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperWrap } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
-import { ServiceTile } from './ServiceTile';
+import { Service } from './Service';
 
-export const ServiceTiles = ({ html, image, navigation, query, staticJsonName, title }) => {
+export const ServiceTiles = ({ html, image, query, staticJsonName, title }) => {
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -65,15 +65,7 @@ export const ServiceTiles = ({ html, image, navigation, query, staticJsonName, t
           )}
 
           <View style={styles.padding}>
-            <WrapperWrap spaceBetween>
-              {data?.map((item, index) => (
-                <ServiceTile
-                  key={index + (item.title || item.accessibilityLabel)}
-                  navigation={navigation}
-                  item={item}
-                />
-              ))}
-            </WrapperWrap>
+            <Service data={data} staticJsonName={staticJsonName} />
           </View>
         </ScrollView>
       </>
@@ -93,7 +85,6 @@ const styles = StyleSheet.create({
 ServiceTiles.propTypes = {
   html: PropTypes.string,
   image: PropTypes.string,
-  navigation: PropTypes.object.isRequired,
   query: PropTypes.string,
   staticJsonName: PropTypes.string.isRequired,
   title: PropTypes.string

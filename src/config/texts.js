@@ -677,6 +677,9 @@ export const texts = {
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
   },
+  serviceTiles: {
+    edit: 'Kacheln bearbeiten'
+  },
   settingsContents: {
     analytics: {
       no: 'Nein',

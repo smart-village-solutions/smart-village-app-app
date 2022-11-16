@@ -12,21 +12,14 @@ export const getTilesScreen = ({
   titleKey,
   imageKey
 }) => {
-  const TilesScreen = ({ navigation }) => {
+  const TilesScreen = () => {
     const { globalSettings } = useContext(SettingsContext);
     const { sections = {} } = globalSettings;
     const { [titleKey]: title = titleFallback, [imageKey]: image } = sections;
 
     useMatomoTrackScreenView(matomoString);
 
-    return (
-      <ServiceTiles
-        navigation={navigation}
-        staticJsonName={staticJsonName}
-        title={title}
-        image={image}
-      />
-    );
+    return <ServiceTiles staticJsonName={staticJsonName} title={title} image={image} />;
   };
 
   TilesScreen.propTypes = {
