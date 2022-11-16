@@ -12,9 +12,11 @@ import { BoldText } from '../Text';
 
 export const ServiceTile = ({
   item,
+  isEditMode = false,
   hasDiagonalGradientBackground = false
 }: {
   item: any;
+  isEditMode?: boolean;
   hasDiagonalGradientBackground?: boolean;
 }) => {
   const navigation = useNavigation<StackNavigationProp<any>>();
@@ -24,7 +26,7 @@ export const ServiceTile = ({
   return (
     <ServiceBox orientation={orientation} dimensions={dimensions} bigTile={!!item.tile}>
       <TouchableOpacity
-        onPress={() => navigation.push(item.routeName, item.params)}
+        onPress={() => !isEditMode && navigation.push(item.routeName, item.params)}
         accessibilityLabel={
           item.accessibilityLabel
             ? `(${item.accessibilityLabel}) ${consts.a11yLabel.button}`

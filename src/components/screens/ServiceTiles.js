@@ -14,7 +14,15 @@ import { Wrapper } from '../Wrapper';
 
 import { Service } from './Service';
 
-export const ServiceTiles = ({ html, image, query, staticJsonName, title }) => {
+export const ServiceTiles = ({
+  hasDiagonalGradientBackground,
+  html,
+  image,
+  isEditMode,
+  query,
+  staticJsonName,
+  title
+}) => {
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -38,37 +46,48 @@ export const ServiceTiles = ({ html, image, query, staticJsonName, title }) => {
 
   return (
     <SafeAreaViewFlex>
-      <>
-        {!!title && (
-          <TitleContainer>
-            <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>{title}</Title>
-          </TitleContainer>
-        )}
-        {!!title && device.platform === 'ios' && <TitleShadow />}
-
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={() => refresh(refetch)}
-              colors={[colors.accent]}
-              tintColor={colors.accent}
-            />
-          }
-        >
-          {!!image && <Image source={{ uri: image }} containerStyle={styles.imageContainerStyle} />}
-
-          {!!html && (
-            <Wrapper>
-              <HtmlView html={html} />
-            </Wrapper>
+      {isEditMode ? (
+        <Service
+          data={data}
+          isEditMode
+          staticJsonName={staticJsonName}
+          hasDiagonalGradientBackground={hasDiagonalGradientBackground}
+        />
+      ) : (
+        <>
+          {!!title && (
+            <TitleContainer>
+              <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>{title}</Title>
+            </TitleContainer>
           )}
+          {!!title && device.platform === 'ios' && <TitleShadow />}
 
-          <View style={styles.padding}>
-            <Service data={data} staticJsonName={staticJsonName} />
-          </View>
-        </ScrollView>
-      </>
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => refresh(refetch)}
+                colors={[colors.accent]}
+                tintColor={colors.accent}
+              />
+            }
+          >
+            {!!image && (
+              <Image source={{ uri: image }} containerStyle={styles.imageContainerStyle} />
+            )}
+
+            {!!html && (
+              <Wrapper>
+                <HtmlView html={html} />
+              </Wrapper>
+            )}
+
+            <View style={styles.padding}>
+              <Service data={data} staticJsonName={staticJsonName} />
+            </View>
+          </ScrollView>
+        </>
+      )}
     </SafeAreaViewFlex>
   );
 };
@@ -83,8 +102,10 @@ const styles = StyleSheet.create({
 });
 
 ServiceTiles.propTypes = {
+  hasDiagonalGradientBackground: PropTypes.bool,
   html: PropTypes.string,
   image: PropTypes.string,
+  isEditMode: PropTypes.bool,
   query: PropTypes.string,
   staticJsonName: PropTypes.string.isRequired,
   title: PropTypes.string

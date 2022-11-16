@@ -10,7 +10,9 @@ export const getTilesScreen = ({
   staticJsonName,
   titleFallback,
   titleKey,
-  imageKey
+  imageKey,
+  hasDiagonalGradientBackground,
+  isEditMode
 }) => {
   const TilesScreen = () => {
     const { globalSettings } = useContext(SettingsContext);
@@ -19,7 +21,15 @@ export const getTilesScreen = ({
 
     useMatomoTrackScreenView(matomoString);
 
-    return <ServiceTiles staticJsonName={staticJsonName} title={title} image={image} />;
+    return (
+      <ServiceTiles
+        staticJsonName={staticJsonName}
+        title={title}
+        image={image}
+        hasDiagonalGradientBackground={hasDiagonalGradientBackground}
+        isEditMode={isEditMode}
+      />
+    );
   };
 
   TilesScreen.propTypes = {

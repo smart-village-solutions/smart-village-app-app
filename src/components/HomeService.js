@@ -36,7 +36,7 @@ export const HomeService = () => {
       )}
       {!!headlineService && device.platform === 'ios' && <TitleShadow />}
       <DiagonalGradient style={styles.padding}>
-        <Service data={data} hasDiagonalGradientBackground staticJsonName="homeService" />
+        <Service data={data} staticJsonName="homeService" hasDiagonalGradientBackground />
       </DiagonalGradient>
     </View>
   );
