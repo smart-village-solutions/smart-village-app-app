@@ -678,6 +678,7 @@ export const texts = {
     weather: 'Wetter'
   },
   serviceTiles: {
+    done: 'Fertig',
     edit: 'Kacheln bearbeiten'
   },
   settingsContents: {

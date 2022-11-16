@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { normalize, texts } from '../../config';
@@ -18,6 +18,7 @@ export const Service = ({
   staticJsonName: string;
 }) => {
   const { globalSettings } = useContext(SettingsContext);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   return (
     <>
@@ -32,9 +33,9 @@ export const Service = ({
       </WrapperWrap>
       {globalSettings?.settings?.personalizedTiles && (
         <View style={styles.paddingTop}>
-          <TouchableOpacity onPress={undefined}>
+          <TouchableOpacity onPress={() => setIsEditMode(!isEditMode)}>
             <RegularText lightest={hasDiagonalGradientBackground} center small underline>
-              {texts.serviceTiles.edit}
+              {isEditMode ? texts.serviceTiles.done : texts.serviceTiles.edit}
             </RegularText>
           </TouchableOpacity>
         </View>
