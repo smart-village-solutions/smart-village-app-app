@@ -3,9 +3,8 @@ import { RefObject } from 'react';
 import { useRef } from 'react';
 import { useMutation } from 'react-apollo';
 import { Alert, Keyboard, ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { normalize } from 'react-native-elements';
 
-import { colors, device, texts } from '../config';
+import { colors, device, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useSurveyLanguages } from '../hooks';
 import { COMMENT_ON_SURVEY } from '../queries/survey';

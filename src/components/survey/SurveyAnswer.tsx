@@ -1,8 +1,7 @@
 import React, { SetStateAction, useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { normalize } from 'react-native-elements';
 
-import { colors } from '../../config';
+import { colors, normalize } from '../../config';
 import { getAnswerLabel, imageWidth } from '../../helpers';
 import { useSurveyLanguages } from '../../hooks';
 import { ResponseOption } from '../../types';

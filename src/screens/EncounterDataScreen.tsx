@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { normalize } from 'react-native-elements';
 
 import {
   Button,
@@ -27,7 +26,7 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../components';
-import { colors, consts, Icon, texts } from '../config';
+import { colors, consts, Icon, normalize, texts } from '../config';
 import { updateUserAsync } from '../encounterApi';
 import { momentFormat } from '../helpers';
 import { useEncounterUser, useSelectImage, useEncounterSupportId } from '../hooks';

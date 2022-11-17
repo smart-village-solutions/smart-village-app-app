@@ -1,10 +1,9 @@
 import React, { useContext, useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
-import { normalize } from 'react-native-elements';
 import MapView, { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 import { SvgXml } from 'react-native-svg';
 
-import { colors, device, Icon } from '../../config';
+import { colors, device, Icon, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';

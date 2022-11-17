@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { CheckBox as RNECheckbox, normalize } from 'react-native-elements';
+import { CheckBox as RNECheckbox } from 'react-native-elements';
 
-import { colors, Icon } from '../config';
+import { colors, Icon, normalize } from '../config';
 import { baseFontStyle } from '../config/styles/baseFontStyle';
 
 export const Radiobutton = ({ title, disabled, selected, onPress, containerStyle }) => (
