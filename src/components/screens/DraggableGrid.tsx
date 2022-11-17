@@ -1,5 +1,4 @@
 import React, { ReactElement, useContext } from 'react';
-import { StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -9,7 +8,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { device, normalize } from '../../config';
 import { OrientationContext } from '../../OrientationProvider';
-import { WrapperWrap } from '../Wrapper';
 
 import { DraggableItem } from './DraggableItem';
 
@@ -18,7 +16,7 @@ type Positions = {
 };
 
 type Props = {
-  children: ReactElement<{ id: string; key: string }>[];
+  children: ReactElement<{ draggableId: string; key: string }>[];
   onDragEnd: (diff: Positions) => void;
 };
 
@@ -26,7 +24,10 @@ export const DraggableGrid = ({ children, onDragEnd }: Props) => {
   const scrollY = useSharedValue(0);
   const scrollView = useAnimatedRef<Animated.ScrollView>();
   const positions = useSharedValue<Positions>(
-    Object.assign({}, ...children.map((child, index) => ({ [child.props.id]: index })))
+    Object.assign(
+      {},
+      ...children.map((child, index) => ({ [child.props.draggableId.replace('​', '')]: index }))
+    )
   );
   const onScroll = useAnimatedScrollHandler({
     onScroll: ({ contentOffset: { y } }) => {
@@ -62,7 +63,7 @@ export const DraggableGrid = ({ children, onDragEnd }: Props) => {
           <DraggableItem
             key={child.props.key}
             positions={positions}
-            id={child.props.id}
+            id={child.props.draggableId?.replace('​', '')}
             onDragEnd={onDragEnd}
             scrollView={scrollView}
             scrollY={scrollY}

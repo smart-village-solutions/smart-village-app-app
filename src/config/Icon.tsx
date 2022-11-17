@@ -57,7 +57,7 @@ export type IconProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-const IconSet = Ionicons;
+export const IconSet = Ionicons;
 
 const getHitSlops = (size: number) => {
   const hitSlop = (44 - size) / 2;

@@ -13,7 +13,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { device, normalize } from '../../config';
+import { device } from '../../config';
 import { getHeaderHeight, statusBarHeight } from '../../helpers';
 import { OrientationContext } from '../../OrientationProvider';
 

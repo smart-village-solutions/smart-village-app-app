@@ -1,22 +1,34 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useContext } from 'react';
+import React, { ComponentProps, useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, consts, device, Icon, normalize } from '../../config';
+import { colors, consts, device, Icon, IconSet, normalize } from '../../config';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
 import { ServiceBox } from '../ServiceBox';
 import { BoldText } from '../Text';
+
+export type TServiceTile = {
+  accessibilityLabel: string;
+  icon: string;
+  iconName?: ComponentProps<typeof IconSet>['name'];
+  image: string;
+  params?: any;
+  routeName: string;
+  tile?: string;
+  title: string;
+};
 
 export const ServiceTile = ({
   item,
   isEditMode = false,
   hasDiagonalGradientBackground = false
 }: {
-  item: any;
+  item: TServiceTile;
   isEditMode?: boolean;
+  draggableId?: string;
   hasDiagonalGradientBackground?: boolean;
 }) => {
   const navigation = useNavigation<StackNavigationProp<any>>();
