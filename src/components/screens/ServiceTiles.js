@@ -36,7 +36,7 @@ export const ServiceTiles = ({
     setRefreshing(true);
     isConnected && (await refetch?.());
     setRefreshing(false);
-  }, [refetch, isConnected]);
+  }, [isConnected, refetch]);
 
   useVolunteerRefresh(refetch, query);
 
@@ -66,7 +66,7 @@ export const ServiceTiles = ({
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
-                onRefresh={() => refresh(refetch)}
+                onRefresh={refresh}
                 colors={[colors.accent]}
                 tintColor={colors.accent}
               />

@@ -17,7 +17,7 @@ import { device } from '../../config';
 import { getHeaderHeight, statusBarHeight } from '../../helpers';
 import { OrientationContext } from '../../OrientationProvider';
 
-type Positions = {
+export type Positions = {
   [id: string]: number;
 };
 

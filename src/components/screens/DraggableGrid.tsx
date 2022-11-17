@@ -9,11 +9,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { device, normalize } from '../../config';
 import { OrientationContext } from '../../OrientationProvider';
 
-import { DraggableItem } from './DraggableItem';
-
-type Positions = {
-  [id: string]: number;
-};
+import { DraggableItem, Positions } from './DraggableItem';
 
 type Props = {
   children: ReactElement<{ draggableId: string; key: string }>[];
@@ -26,7 +22,7 @@ export const DraggableGrid = ({ children, onDragEnd }: Props) => {
   const positions = useSharedValue<Positions>(
     Object.assign(
       {},
-      ...children.map((child, index) => ({ [child.props.draggableId.replace('​', '')]: index }))
+      ...children.map((child, index) => ({ [child.props.draggableId?.replace('​', '')]: index }))
     )
   );
   const onScroll = useAnimatedScrollHandler({

@@ -50,6 +50,7 @@ export const HtmlScreen = ({ navigation, route }) => {
     isConnected && (await refetch?.());
     setRefreshing(false);
   }, [isConnected, refetch]);
+
   const subQuery = route.params?.subQuery ?? '';
   const rootRouteName = route.params?.rootRouteName ?? '';
 
@@ -106,7 +107,7 @@ export const HtmlScreen = ({ navigation, route }) => {
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={() => refresh(refetch)}
+            onRefresh={refresh}
             colors={[colors.accent]}
             tintColor={colors.accent}
           />

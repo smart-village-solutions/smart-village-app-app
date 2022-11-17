@@ -4,9 +4,11 @@ import React, { useCallback, useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, normalize, texts } from '../../config';
+import { usePersonalizedTiles } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName } from '../../types';
 import { DiagonalGradient } from '../DiagonalGradient';
+import { LoadingSpinner } from '../LoadingSpinner';
 import { RegularText } from '../Text';
 import { WrapperWrap } from '../Wrapper';
 
@@ -27,7 +29,15 @@ export const Service = ({
   hasDiagonalGradientBackground?: boolean;
 }) => {
   const { globalSettings } = useContext(SettingsContext);
+  const isPersonalizable = globalSettings?.settings?.personalizedTiles || false;
   const navigation = useNavigation<StackNavigationProp<any>>();
+  const { isLoading, tiles, onDragEnd } = usePersonalizedTiles(
+    isPersonalizable,
+    data,
+    isEditMode,
+    staticJsonName
+  );
+
   const onPress = useCallback(
     () =>
       isEditMode
@@ -53,8 +63,8 @@ export const Service = ({
     ),
     [isEditMode, hasDiagonalGradientBackground]
   );
-  const toggleItem = globalSettings?.settings?.personalizedTiles && (
-    <View style={styles.toggleItem}>
+  const toggler = globalSettings?.settings?.personalizedTiles && (
+    <View style={styles.toggler}>
       <TouchableOpacity onPress={onPress}>
         <RegularText lightest={hasDiagonalGradientBackground} center small underline>
           {isEditMode ? texts.serviceTiles.done : texts.serviceTiles.edit}
@@ -63,46 +73,20 @@ export const Service = ({
     </View>
   );
 
-  const sorter = {
-    'Bürgeramt/Termine': 1,
-    Bürgerbeteiligung: 0,
-    Bürgermeister: 7,
-    Bürgerservice: 4,
-    Formulare: 5,
-    Gemeindeporträt: 8,
-    Kommunalpolitik: 3,
-    'Kontakt zur Verwaltung': 2,
-    Presse: 6,
-    Stellenangebote: 9
-  };
-
-  const sortedData = [...data].sort((a: TServiceTile, b: TServiceTile) => {
-    const sortTitles = {
-      a: a.title?.replace('​', '') || a.accessibilityLabel,
-      b: b.title?.replace('​', '') || b.accessibilityLabel
-    };
-    const sortA =
-      sorter?.[sortTitles.a] ?? data.findIndex((d: TServiceTile) => d.title === a.title);
-    const sortB =
-      sorter?.[sortTitles.b] ?? data.findIndex((d: TServiceTile) => d.title === b.title);
-
-    return sortA - sortB;
-  });
+  if (isLoading && isEditMode) return <LoadingSpinner loading />;
 
   return isEditMode ? (
     <DiagonalGradient
       colors={!hasDiagonalGradientBackground ? [colors.surface, colors.surface] : undefined}
       style={styles.diagonalGradient}
     >
-      <DraggableGrid onDragEnd={(positions) => console.log(JSON.stringify(positions, null, 2))}>
-        {sortedData?.map(renderItem)}
-      </DraggableGrid>
-      {toggleItem}
+      <DraggableGrid onDragEnd={onDragEnd}>{tiles?.map(renderItem)}</DraggableGrid>
+      {toggler}
     </DiagonalGradient>
   ) : (
     <>
-      <WrapperWrap spaceBetween>{sortedData?.map(renderItem)}</WrapperWrap>
-      {toggleItem}
+      <WrapperWrap spaceBetween>{tiles?.map(renderItem)}</WrapperWrap>
+      {toggler}
     </>
   );
 };
@@ -111,7 +95,7 @@ const styles = StyleSheet.create({
   diagonalGradient: {
     flex: 1
   },
-  toggleItem: {
+  toggler: {
     paddingVertical: normalize(14)
   }
 });
