@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
-import { normalize } from 'react-native-elements';
 
-import { colors, consts, device } from '../../config';
+import { colors, consts, device, normalize } from '../../config';
 import { useStaticContent, useVolunteerRefresh } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { HtmlView } from '../HtmlView';

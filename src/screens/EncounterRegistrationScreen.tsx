@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { CheckBox, normalize } from 'react-native-elements';
+import { CheckBox } from 'react-native-elements';
 
 import {
   BoldText,
@@ -30,7 +30,7 @@ import {
   WrapperRow,
   WrapperWithOrientation
 } from '../components';
-import { colors, consts, device, Icon, texts } from '../config';
+import { colors, consts, device, Icon, normalize, texts } from '../config';
 import { createUserAsync } from '../encounterApi';
 import { momentFormat, storeEncounterUserId } from '../helpers';
 import { useSelectImage } from '../hooks';

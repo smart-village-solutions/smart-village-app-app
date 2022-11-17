@@ -2,9 +2,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import _isNumber from 'lodash/isNumber';
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import { normalize } from 'react-native-elements';
 
-import { colors, Icon, texts } from '../../config';
+import { colors, Icon, normalize, texts } from '../../config';
 import { isUpcomingDate } from '../../helpers';
 import { useVolunteerData, useVolunteerRefresh } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';

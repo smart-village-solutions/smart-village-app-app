@@ -11,7 +11,7 @@ import {
   View
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { ListItem, normalize } from 'react-native-elements';
+import { ListItem } from 'react-native-elements';
 
 import {
   deleteReminderSetting,
@@ -23,7 +23,7 @@ import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Radiobutton } from '../Radiobutton';
 import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
-import { colors, consts, device, texts } from '../../config';
+import { colors, consts, device, normalize, texts } from '../../config';
 import { ReminderSettings, WasteTypeData } from '../../types';
 import { Button } from '../Button';
 import { areValidReminderSettings, parseReminderSettings } from '../../jsonValidation';

@@ -1,10 +1,9 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { normalize } from 'react-native-elements';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, consts, device, Icon } from '../../config';
+import { colors, consts, device, Icon, normalize } from '../../config';
 import { OrientationContext } from '../../OrientationProvider';
 import { Image } from '../Image';
 import { ServiceBox } from '../ServiceBox';
