@@ -54,22 +54,20 @@ export const DraggableGrid = ({ children, onDragEnd }: Props) => {
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
     >
-      {children.map((child) => {
-        return (
-          <DraggableItem
-            key={child.props.key}
-            positions={positions}
-            id={child.props.draggableId?.replace('​', '')}
-            onDragEnd={onDragEnd}
-            scrollView={scrollView}
-            scrollY={scrollY}
-            numberOfTiles={numberOfTiles}
-            tileSize={tileSize}
-          >
-            {child}
-          </DraggableItem>
-        );
-      })}
+      {children.map((child) => (
+        <DraggableItem
+          key={child.props.key}
+          positions={positions}
+          id={child.props.draggableId?.replace('​', '')}
+          onDragEnd={onDragEnd}
+          scrollView={scrollView}
+          scrollY={scrollY}
+          numberOfTiles={numberOfTiles}
+          tileSize={tileSize}
+        >
+          {child}
+        </DraggableItem>
+      ))}
     </Animated.ScrollView>
   );
 };

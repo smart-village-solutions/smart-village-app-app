@@ -61,6 +61,14 @@ export const usePersonalizedTiles = (
     [staticJsonName]
   );
 
+  const onToggleVisibility = useCallback(
+    (toggleableId: string, isVisible: boolean, setIsVisible: (isVisible: boolean) => void) => {
+      console.log('onToggleVisibility', toggleableId, isVisible);
+      setIsVisible(!isVisible);
+    },
+    [staticJsonName]
+  );
+
   const isFocused = useIsFocused();
 
   const refreshTiles = useCallback(
@@ -76,5 +84,5 @@ export const usePersonalizedTiles = (
     isPersonalizable && getPersonalizedTiles();
   }, []);
 
-  return { isLoading, tiles, onDragEnd };
+  return { isLoading, tiles, onDragEnd, onToggleVisibility };
 };

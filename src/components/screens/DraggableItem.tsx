@@ -1,4 +1,5 @@
 import React, { ReactNode, RefObject, useCallback, useContext } from 'react';
+import { StyleSheet } from 'react-native';
 import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
@@ -13,7 +14,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { device } from '../../config';
+import { colors, device, normalize } from '../../config';
 import { getHeaderHeight, statusBarHeight } from '../../helpers';
 import { OrientationContext } from '../../OrientationProvider';
 
@@ -106,9 +107,9 @@ export const DraggableItem = ({
     onStart: (_, ctx) => {
       ctx.x = translateX.value;
       ctx.y = translateY.value;
-      isGestureActive.value = true;
     },
     onActive: ({ translationX, translationY }, ctx) => {
+      isGestureActive.value = true;
       translateX.value = ctx.x + translationX;
       translateY.value = ctx.y + translationY;
 
@@ -170,16 +171,12 @@ export const DraggableItem = ({
     }
   });
 
-  const style = useAnimatedStyle(() => {
+  const animatedStyle = useAnimatedStyle(() => {
     const zIndex = isGestureActive.value ? 100 : 0;
     const scale = withSpring(isGestureActive.value ? 1.05 : 1);
 
     return {
       height: tileSize,
-      left: 0,
-      padding: 3,
-      position: 'absolute',
-      top: 0,
       transform: [{ translateX: translateX.value }, { translateY: translateY.value }, { scale }],
       width: tileSize,
       zIndex
@@ -187,10 +184,29 @@ export const DraggableItem = ({
   });
 
   return (
-    <Animated.View style={style}>
+    <Animated.View style={[StyleSheet.absoluteFillObject, animatedStyle]}>
       <PanGestureHandler enabled onGestureEvent={onGestureEvent}>
-        <Animated.View>{children}</Animated.View>
+        <Animated.View
+          style={[
+            StyleSheet.absoluteFillObject,
+            styles.draggableItem,
+            !!children?.props?.item?.tile && styles.noBorder
+          ]}
+        >
+          {children}
+        </Animated.View>
       </PanGestureHandler>
     </Animated.View>
   );
 };
+
+const styles = StyleSheet.create({
+  draggableItem: {
+    borderColor: colors.borderRgba,
+    borderWidth: 1,
+    margin: normalize(3)
+  },
+  noBorder: {
+    borderWidth: 0
+  }
+});

@@ -31,7 +31,7 @@ export const Service = ({
   const { globalSettings } = useContext(SettingsContext);
   const isPersonalizable = globalSettings?.settings?.personalizedTiles || false;
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const { isLoading, tiles, onDragEnd } = usePersonalizedTiles(
+  const { isLoading, tiles, onDragEnd, onToggleVisibility } = usePersonalizedTiles(
     isPersonalizable,
     data,
     isEditMode,
@@ -58,6 +58,7 @@ export const Service = ({
         item={item}
         isEditMode={isEditMode}
         draggableId={item.title || item.accessibilityLabel}
+        onToggleVisibility={onToggleVisibility}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
       />
     ),

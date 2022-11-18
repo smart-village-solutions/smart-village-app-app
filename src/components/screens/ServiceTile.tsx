@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { ComponentProps, useContext } from 'react';
+import React, { ComponentProps, useCallback, useContext, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -24,33 +24,56 @@ export type TServiceTile = {
 export const ServiceTile = ({
   item,
   isEditMode = false,
+  draggableId,
+  onToggleVisibility,
   hasDiagonalGradientBackground = false
 }: {
   item: TServiceTile;
   isEditMode?: boolean;
-  draggableId?: string;
+  draggableId: string;
+  onToggleVisibility: (
+    toggleableId: string,
+    isVisible: boolean,
+    setIsVisible: (isVisible: boolean) => void
+  ) => void;
   hasDiagonalGradientBackground?: boolean;
 }) => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { orientation, dimensions } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
+  const [isVisible, setIsVisible] = useState(true);
+  const onPress = useCallback(
+    () =>
+      isEditMode
+        ? onToggleVisibility(draggableId, isVisible, setIsVisible)
+        : navigation.push(item.routeName, item.params),
+    [isEditMode, isVisible]
+  );
+  const ToggleVisibilityIcon = isVisible ? Icon.Visible : Icon.Unvisible;
 
   return (
     <ServiceBox orientation={orientation} dimensions={dimensions} bigTile={!!item.tile}>
       <TouchableOpacity
-        onPress={() => !isEditMode && navigation.push(item.routeName, item.params)}
+        onPress={onPress}
         accessibilityLabel={
           item.accessibilityLabel
             ? `(${item.accessibilityLabel}) ${consts.a11yLabel.button}`
             : undefined
         }
       >
-        <View>
+        {isEditMode && (
+          <ToggleVisibilityIcon
+            color={colors.placeholder}
+            size={normalize(20)}
+            style={[styles.toggleVisibilityIcon, !!item.tile && styles.toggleVisibilityIconBigTile]}
+          />
+        )}
+        <View style={!isVisible && styles.invisible}>
           {item.iconName ? (
             <Icon.NamedIcon
               color={hasDiagonalGradientBackground ? colors.lightestText : undefined}
               name={item.iconName}
-              size={30}
+              size={normalize(30)}
               style={styles.serviceIcon}
             />
           ) : (
@@ -91,6 +114,19 @@ const styles = StyleSheet.create({
     height: normalize(40),
     marginBottom: normalize(7),
     width: '100%'
+  },
+  toggleVisibilityIcon: {
+    backgroundColor: colors.surface,
+    position: 'absolute',
+    right: 0,
+    top: normalize(-14),
+    zIndex: 1
+  },
+  toggleVisibilityIconBigTile: {
+    top: normalize(2)
+  },
+  invisible: {
+    opacity: 0.2
   }
 });
 
@@ -115,8 +151,8 @@ const stylesWithProps = ({
   return StyleSheet.create({
     bigTile: {
       height: tileSize,
-      width: tileSize,
-      marginBottom: 0
+      marginBottom: 0,
+      width: tileSize
     }
   });
 };
