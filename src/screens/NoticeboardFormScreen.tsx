@@ -173,6 +173,21 @@ export const NoticeboardFormScreen = ({
       if (!noticeboardNewData.noticeboardType) return alert('noticeboardType');
 
       try {
+        await createGenericItem({
+          variables: {
+            categoryName: noticeboardNewData.noticeboardType,
+            genericType,
+            title: noticeboardNewData.title,
+            contentBlocks: [{ body: noticeboardNewData.body, title: noticeboardNewData.title }],
+            dates: [
+              {
+                dateEnd: momentFormat(noticeboardNewData.dateEnd),
+                dateStart: momentFormat(noticeboardNewData.dateStart)
+              }
+            ]
+          }
+        });
+
         alert('success');
         navigation.pop();
       } catch (error) {

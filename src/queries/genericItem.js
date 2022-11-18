@@ -155,6 +155,7 @@ export const GET_GENERIC_ITEM = gql`
       contentBlocks {
         id
         body
+        title
         mediaContents {
           id
           contentType
@@ -187,9 +188,44 @@ export const GET_GENERIC_ITEM = gql`
       dates {
         id
         dateEnd
+        dateStart
       }
       publicationDate
       payload
+    }
+  }
+`;
+
+export const CREATE_GENERIC_ITEM = gql`
+  mutation createGenericItem(
+    $categoryName: String
+    $contentBlocks: [ContentBlockInput!]
+    $dates: [DateInput!]
+    $genericType: String
+    $title: String
+  ) {
+    createGenericItem(
+      categoryName: $categoryName
+      contentBlocks: $contentBlocks
+      dates: $dates
+      genericType: $genericType
+      title: $title
+    ) {
+      genericType
+      id
+      title
+      categories {
+        id
+        name
+      }
+      contentBlocks {
+        body
+        title
+      }
+      dates {
+        dateEnd
+        dateStart
+      }
     }
   }
 `;
