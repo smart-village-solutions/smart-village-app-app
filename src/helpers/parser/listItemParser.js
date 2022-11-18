@@ -60,7 +60,7 @@ const parseEventRecords = (data, skipLastDivider, withDate) => {
   }));
 };
 
-const parseGenericItems = (data, skipLastDivider) => {
+const parseGenericItems = (data, skipLastDivider, titleDetail) => {
   // this likely needs a rework in the future, but for now this is the place to filter items.
   const filteredData = data?.filter(filterGenericItems);
 
@@ -83,6 +83,7 @@ const parseGenericItems = (data, skipLastDivider) => {
     routeName: ScreenName.Detail,
     params: {
       title: getGenericItemDetailTitle(genericItem.genericType),
+      consentForDataProcessingText: titleDetail || '',
       suffix: genericItem.genericType,
       query: QUERY_TYPES.GENERIC_ITEM,
       queryVariables: { id: `${genericItem.id}` },
@@ -385,7 +386,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.EVENT_RECORDS:
       return parseEventRecords(data[query], skipLastDivider, withDate);
     case QUERY_TYPES.GENERIC_ITEMS:
-      return parseGenericItems(data[query], skipLastDivider);
+      return parseGenericItems(data[query], skipLastDivider, titleDetail);
     case QUERY_TYPES.NEWS_ITEMS:
       return parseNewsItems(data[query], skipLastDivider, titleDetail, bookmarkable);
     case QUERY_TYPES.POINTS_OF_INTEREST:
