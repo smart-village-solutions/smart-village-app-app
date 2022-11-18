@@ -39,6 +39,12 @@ type NoticeboardFormScreenDataType = {
   title: string;
 };
 
+
+const NOTICEBOARD_TYPE = [
+  { value: NoticeboardType.Offers, title: texts.noticeboard.offers },
+  { value: NoticeboardType.Searches, title: texts.noticeboard.searches },
+  { value: NoticeboardType.NeighbourlyHelp, title: texts.noticeboard.neighbourlyHelp }
+];
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 /* eslint-disable complexity */
 export const NoticeboardFormScreen = ({
@@ -57,6 +63,7 @@ export const NoticeboardFormScreen = ({
   const genericType = route?.params?.genericType ?? '';
   const name = route?.params?.name ?? '';
   const newEntryForm = route?.params?.newEntryForm ?? false;
+  const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
 
   const {
     data: dataHtml,
@@ -182,6 +189,10 @@ export const NoticeboardFormScreen = ({
         />
       </Wrapper>
 
+      {newEntryForm
+        ? entryForm({ control, errors, requestedDateDifference })
+        : applicationForm({ control, errors })}
+
       <Wrapper style={styles.noPaddingTop}>
         {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
         <HtmlView html={consentForDataProcessingTex} />
@@ -213,3 +224,122 @@ export const NoticeboardFormScreen = ({
   );
 };
 /* eslint-enable complexity */
+
+const entryForm = ({
+  control,
+  errors,
+  requestedDateDifference
+}: {
+  control: Control<FieldValues>;
+  errors: DeepMap<any, string>;
+  requestedDateDifference: string;
+}) => {
+  return (
+    <>
+      <Wrapper style={styles.noPaddingTop}>
+        <Controller
+          name="noticeboardType"
+          render={({ onChange, value }) => (
+            <>
+              {NOTICEBOARD_TYPE.map((noticeboardItem) => (
+                <Checkbox
+                  key={noticeboardItem.title}
+                  checked={value === noticeboardItem.value}
+                  onPress={() => onChange(noticeboardItem.value)}
+                  title={noticeboardItem.title}
+                  checkedColor={colors.accent}
+                  uncheckedColor={colors.darkText}
+                  containerStyle={styles.checkboxContainerStyle}
+                  textStyle={styles.checkboxTextStyle}
+                  link={undefined}
+                  center={undefined}
+                  linkDescription={undefined}
+                  checkedIcon={undefined}
+                  uncheckedIcon={undefined}
+                />
+              ))}
+            </>
+          )}
+          control={control}
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Input
+          name="title"
+          label={texts.noticeboard.inputTitle}
+          placeholder={texts.noticeboard.inputTitle}
+          validate
+          rules={{
+            required: `${texts.noticeboard.inputTitle} ${texts.noticeboard.inputErrorText}`
+          }}
+          errorMessage={errors.title && errors.title.message}
+          control={control}
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Input
+          name="body"
+          label={texts.noticeboard.inputDescription}
+          placeholder={texts.noticeboard.inputDescription}
+          validate
+          multiline
+          rules={{
+            required: `${texts.noticeboard.inputDescription} ${texts.noticeboard.inputErrorText}`
+          }}
+          errorMessage={errors.body && errors.body.message}
+          control={control}
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Controller
+          name="dateEnd"
+          render={({ name, onChange, value }) => (
+            <DateTimeInput
+              {...{
+                mode: 'date',
+                errors,
+                required: true,
+                value,
+                onChange,
+                name,
+                label: texts.noticeboard.inputDate(requestedDateDifference),
+                placeholder: texts.noticeboard.inputDate(requestedDateDifference),
+                control
+              }}
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
+    </>
+  );
+};
+
+const applicationForm = ({
+  control,
+  errors
+}: {
+  control: Control<FieldValues>;
+  errors: DeepMap<any, string>;
+}) => {
+  return (
+    <>
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  noPaddingTop: {
+    paddingTop: 0
+  },
+  checkboxContainerStyle: {
+    backgroundColor: colors.surface,
+    borderWidth: 0,
+    marginLeft: 0,
+    marginRight: 0
+  },
+  checkboxTextStyle: {
+    color: colors.darkText,
+    fontWeight: 'normal'
+  }
+});
