@@ -31,6 +31,7 @@ import { NoticeboardType } from '../types';
 
 const { EMAIL_REGEX } = consts;
 const a11yText = consts.a11yLabel;
+const moment = extendMoment(Moment);
 
 type NoticeboardFormScreenDataType = {
   contentBlocks: [{ body: string; title: string }];
@@ -39,12 +40,62 @@ type NoticeboardFormScreenDataType = {
   title: string;
 };
 
+type NoticeboardData = {
+  body: string;
+  dateEnd: string;
+  dateStart: string;
+  email: string;
+  consentToDataProcessing: boolean;
+  message: string;
+  name: string;
+  noticeboardType: string;
+  phoneNumber: string;
+  title: string;
+};
 
 const NOTICEBOARD_TYPE = [
   { value: NoticeboardType.Offers, title: texts.noticeboard.offers },
   { value: NoticeboardType.Searches, title: texts.noticeboard.searches },
   { value: NoticeboardType.NeighbourlyHelp, title: texts.noticeboard.neighbourlyHelp }
 ];
+
+const alert = (alertType: string) => {
+  let title = '',
+    message = '',
+    buttonText = texts.noticeboard.cancel;
+
+  // TODO: alert titles and messages will be updated later
+  switch (alertType) {
+    case 'consentToDataProcessing':
+      title = 'consentToDataProcessing';
+      message = 'consentToDataProcessing';
+      break;
+    case 'dateDifference':
+      title = 'dateDifference';
+      message = 'dateDifference';
+      break;
+    case 'noticeboardType':
+      title = 'noticeboardType';
+      message = 'noticeboardType';
+      break;
+    case 'success':
+      title = 'success';
+      message = 'success';
+      break;
+    case 'error':
+      title = 'error';
+      message = 'error';
+      break;
+    default:
+      title = 'default';
+      message = 'default';
+      buttonText = texts.noticeboard.cancel;
+      break;
+  }
+
+  return Alert.alert(title, message, [{ text: buttonText, style: 'cancel' }]);
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 /* eslint-disable complexity */
 export const NoticeboardFormScreen = ({
@@ -103,6 +154,34 @@ export const NoticeboardFormScreen = ({
       title: ''
     }
   });
+
+  const [createGenericItem, { data: newGenericItem, loading, error }] =
+    useMutation(CREATE_GENERIC_ITEM);
+
+  const onSubmit = async (noticeboardNewData: NoticeboardData) => {
+    // TODO: query will be added when `Main-Server` is ready for mail sending function
+    if (!noticeboardNewData.consentToDataProcessing) return alert('consentToDataProcessing');
+
+    if (newEntryForm) {
+      const dateStart = new Date(noticeboardNewData.dateStart);
+      const dateEnd = new Date(noticeboardNewData.dateEnd);
+      const dateDifference = moment.range(dateStart, dateEnd).diff('months');
+
+      if (dateDifference > requestedDateDifference || dateDifference < 0)
+        return alert('dateDifference');
+
+      if (!noticeboardNewData.noticeboardType) return alert('noticeboardType');
+
+      try {
+        alert('success');
+        navigation.pop();
+      } catch (error) {
+        console.error(error);
+        alert('error');
+      }
+    }
+  };
+
   if (loadingHtml) {
     return (
       <LoadingContainer>
@@ -219,6 +298,19 @@ export const NoticeboardFormScreen = ({
           )}
           control={control}
         />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Button
+          onPress={handleSubmit(onSubmit)}
+          title={texts.noticeboard.sent}
+          disabled={loading}
+        />
+
+        <Touchable onPress={() => navigation.goBack()}>
+          <RegularText primary center>
+            {texts.noticeboard.abort}
+          </RegularText>
+        </Touchable>
       </Wrapper>
     </ScrollView>
   );

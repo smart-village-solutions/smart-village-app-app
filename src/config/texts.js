@@ -388,7 +388,7 @@ export const texts = {
     home: 'Übersicht'
   },
   noticeboard: {
-    cancel: 'Abbrechen',
+    abort: 'Abbrechen',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',
@@ -405,7 +405,8 @@ export const texts = {
     noticeboard: 'Schwarzes Brett',
     offers: 'Angebot',
     publicationDate: 'Erscheinungsdatum',
-    searches: 'Gesuch'
+    searches: 'Gesuch',
+    sent: 'Senden'
   },
   oparl: {
     agendaItem: {
