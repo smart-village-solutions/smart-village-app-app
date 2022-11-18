@@ -24,6 +24,7 @@ export * from './LunchScreen';
 export * from './MapViewScreen';
 export * from './MultiButtonScreen';
 export * from './NestedInfoScreen';
+export * from './NoticeboardFormScreen';
 export * from './NoticeboardIndexScreen';
 export * from './SettingsScreen';
 export * from './SurveyDetailScreen';

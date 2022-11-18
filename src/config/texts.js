@@ -388,7 +388,24 @@ export const texts = {
     home: 'Übersicht'
   },
   noticeboard: {
+    cancel: 'Abbrechen',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
+    expiryDate: 'Ablaufdatum',
+    inputCheckbox: 'Einverständnis zur Datenverarbeitung',
+    inputDate: (requestedDateDifference) => `Laufzeit (max. ${requestedDateDifference} Monate)`,
+    inputDescription: 'Beschreibung',
+    inputErrorText: 'muss ausgefüllt werden',
+    inputMail: 'Ihre E-Mail',
+    inputMessage: 'Ihre Nachricht',
+    inputName: 'Ihr Name',
+    inputPhoneNumber: 'Ihre Telefonnummer',
+    inputTitle: 'Titel',
+    invalidMail: ' Addresse ist keine gültige E-Mail-Adresse.',
+    neighbourlyHelp: 'Nachbarschaftshilfe',
+    noticeboard: 'Schwarzes Brett',
+    offers: 'Angebot',
+    publicationDate: 'Erscheinungsdatum',
+    searches: 'Gesuch'
   },
   oparl: {
     agendaItem: {
