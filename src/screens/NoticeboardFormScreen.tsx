@@ -324,6 +324,29 @@ const applicationForm = ({
 }) => {
   return (
     <>
+      <Wrapper style={styles.noPaddingTop}>
+        <Input
+          name="phoneNumber"
+          label={texts.noticeboard.inputPhoneNumber}
+          placeholder={texts.noticeboard.inputPhoneNumber}
+          validate
+          control={control}
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Input
+          name="body"
+          label={texts.noticeboard.inputMessage}
+          placeholder={texts.noticeboard.inputMessage}
+          validate
+          multiline
+          rules={{
+            required: `${texts.noticeboard.inputMessage} ${texts.noticeboard.inputErrorText}`
+          }}
+          errorMessage={errors.body && errors.body.message}
+          control={control}
+        />
+      </Wrapper>
     </>
   );
 };
