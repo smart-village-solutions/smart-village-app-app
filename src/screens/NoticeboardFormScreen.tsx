@@ -29,6 +29,7 @@ import { NetworkContext } from '../NetworkProvider';
 import { CREATE_GENERIC_ITEM } from '../queries/genericItem';
 import { NoticeboardType } from '../types';
 
+const { EMAIL_REGEX } = consts;
 const a11yText = consts.a11yLabel;
 
 type NoticeboardFormScreenDataType = {
@@ -77,6 +78,24 @@ export const NoticeboardFormScreen = ({
     setRefreshing(false);
   }, [isConnected, refetchHtml]);
 
+  const {
+    control,
+    formState: { errors },
+    handleSubmit
+  } = useForm({
+    defaultValues: {
+      body: '',
+      dateEnd: new Date(),
+      dateStart: new Date(),
+      email: '',
+      consentToDataProcessing: false,
+      message: '',
+      name: '',
+      noticeboardType: '',
+      phoneNumber: '',
+      title: ''
+    }
+  });
   if (loadingHtml) {
     return (
       <LoadingContainer>
@@ -132,6 +151,64 @@ export const NoticeboardFormScreen = ({
         </Wrapper>
       )}
 
+      <Wrapper style={styles.noPaddingTop}>
+        <Input name="dateStart" hidden control={control} />
+        <Input
+          name="name"
+          label={texts.noticeboard.inputName}
+          placeholder={texts.noticeboard.inputName}
+          validate
+          rules={{ required: `${texts.noticeboard.inputName} ${texts.noticeboard.inputErrorText}` }}
+          errorMessage={errors.name && errors.name.message}
+          control={control}
+        />
+      </Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
+        <Input
+          name="email"
+          label={texts.noticeboard.inputMail}
+          placeholder={texts.noticeboard.inputMail}
+          keyboardType="email-address"
+          validate
+          rules={{
+            required: `${texts.noticeboard.inputMail} ${texts.noticeboard.inputErrorText}`,
+            pattern: {
+              value: EMAIL_REGEX,
+              message: `${texts.noticeboard.inputMail}${texts.noticeboard.invalidMail}`
+            }
+          }}
+          errorMessage={errors.email && errors.email.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper style={styles.noPaddingTop}>
+        {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
+        <HtmlView html={consentForDataProcessingTex} />
+
+        <Controller
+          name="consentToDataProcessing"
+          render={({ onChange, value }) => (
+            <>
+              <Checkbox
+                checked={!!value}
+                onPress={() => onChange(!value)}
+                title={texts.noticeboard.inputCheckbox}
+                checkedColor={colors.accent}
+                checkedIcon="check-square-o"
+                uncheckedColor={colors.darkText}
+                uncheckedIcon="square-o"
+                containerStyle={styles.checkboxContainerStyle}
+                textStyle={styles.checkboxTextStyle}
+                link={undefined}
+                center={undefined}
+                linkDescription={undefined}
+              />
+            </>
+          )}
+          control={control}
+        />
+      </Wrapper>
     </ScrollView>
   );
 };
