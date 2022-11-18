@@ -19,8 +19,10 @@ export type TServiceTile = {
   routeName: string;
   tile?: string;
   title: string;
+  isVisible?: boolean;
 };
 
+/* eslint-disable complexity */
 export const ServiceTile = ({
   item,
   isEditMode = false,
@@ -41,7 +43,7 @@ export const ServiceTile = ({
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { orientation, dimensions } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(item.isVisible ?? true);
   const onPress = useCallback(
     () =>
       isEditMode
@@ -103,6 +105,7 @@ export const ServiceTile = ({
     </ServiceBox>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   serviceIcon: {

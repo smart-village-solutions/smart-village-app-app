@@ -19,10 +19,30 @@ export const usePersonalizedTiles = (
   const getPersonalizedTiles = useCallback(async () => {
     setIsLoading(true);
     const storedPersonalizedTilesSettings = await readFromStore(PERSONALIZED_TILES_SETTINGS);
+    const toggles = storedPersonalizedTilesSettings?.[staticJsonName]?.toggles;
     const sorter = storedPersonalizedTilesSettings?.[staticJsonName]?.sorter;
 
+    let personalizedTiles = [...tiles];
+
+    if (toggles) {
+      // in edit mode we want to show all tiles but with visual difference.
+      // if we are not in edit mode we want to filter out tiles entirely.
+      // if there is no entry in `toggles`, it means that the tile is new or never toggled, so we
+      // want to show it.
+      const isVisible = (item: TServiceTile) => toggles[item.title || item.accessibilityLabel] ?? 1;
+
+      if (isEditMode) {
+        personalizedTiles = personalizedTiles.map((item: TServiceTile) => ({
+          ...item,
+          isVisible: isVisible(item)
+        }));
+      } else {
+        personalizedTiles = personalizedTiles.filter(isVisible);
+      }
+    }
+
     if (sorter) {
-      const sortedTiles = [...tiles].sort((a: TServiceTile, b: TServiceTile) => {
+      const sortedTiles = personalizedTiles.sort((a: TServiceTile, b: TServiceTile) => {
         const sortTitles = {
           a: a.title?.replace('​', '') || a.accessibilityLabel,
           b: b.title?.replace('​', '') || b.accessibilityLabel
@@ -41,16 +61,48 @@ export const usePersonalizedTiles = (
   }, [staticJsonName]);
 
   const storePersonalizedTilesSettings = useCallback(
-    async ({ personalizedTilesSorter }: { personalizedTilesSorter: Positions }) => {
+    async ({
+      personalizedTilesSorter,
+      personalizedTilesToggle
+    }: {
+      personalizedTilesSorter?: Positions;
+      personalizedTilesToggle?: Positions;
+    }) => {
       const storedPersonalizedTilesSettings = await readFromStore(PERSONALIZED_TILES_SETTINGS);
 
-      await addToStore(PERSONALIZED_TILES_SETTINGS, {
-        ...storedPersonalizedTilesSettings,
-        [staticJsonName]: {
-          ...storedPersonalizedTilesSettings?.[staticJsonName],
-          sorter: personalizedTilesSorter
-        }
-      });
+      if (personalizedTilesToggle) {
+        await addToStore(PERSONALIZED_TILES_SETTINGS, {
+          ...storedPersonalizedTilesSettings,
+          [staticJsonName]: {
+            ...storedPersonalizedTilesSettings?.[staticJsonName],
+            toggles: {
+              ...storedPersonalizedTilesSettings?.[staticJsonName]?.toggles,
+              ...personalizedTilesToggle
+            }
+          }
+        });
+      }
+
+      if (personalizedTilesSorter) {
+        await addToStore(PERSONALIZED_TILES_SETTINGS, {
+          ...storedPersonalizedTilesSettings,
+          [staticJsonName]: {
+            ...storedPersonalizedTilesSettings?.[staticJsonName],
+            sorter: personalizedTilesSorter
+          }
+        });
+      }
+    },
+    [staticJsonName]
+  );
+
+  const onToggleVisibility = useCallback(
+    (toggleableId: string, oldVisibility: boolean, setIsVisible: (isVisible: boolean) => void) => {
+      const newVisibility = !oldVisibility;
+      const visibility = { [toggleableId]: Number(newVisibility) };
+
+      setIsVisible(newVisibility);
+      storePersonalizedTilesSettings({ personalizedTilesToggle: visibility });
     },
     [staticJsonName]
   );
@@ -58,14 +110,6 @@ export const usePersonalizedTiles = (
   const onDragEnd = useCallback(
     (positions: Positions) =>
       storePersonalizedTilesSettings({ personalizedTilesSorter: positions }),
-    [staticJsonName]
-  );
-
-  const onToggleVisibility = useCallback(
-    (toggleableId: string, isVisible: boolean, setIsVisible: (isVisible: boolean) => void) => {
-      console.log('onToggleVisibility', toggleableId, isVisible);
-      setIsVisible(!isVisible);
-    },
     [staticJsonName]
   );
 
