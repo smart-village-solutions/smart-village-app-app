@@ -1,8 +1,9 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useState } from 'react';
 import { ActivityIndicator, RefreshControl, SectionList } from 'react-native';
 
 import {
+  Button,
   HtmlView,
   LoadingContainer,
   LoadingSpinner,
@@ -28,7 +29,21 @@ type NestedInfo = {
   }>;
 };
 
-const ListHeaderComponent = ({ loading, html }: { loading: boolean; html?: string }) => {
+export const ListHeaderComponent = ({
+  html,
+  loading,
+  navigation,
+  subQuery
+}: {
+  html?: string;
+  loading: boolean;
+  navigation: StackNavigationProp<any>;
+  subQuery?: {
+    buttonTitle: string;
+    params: { rootRouteName: string; title: string };
+    routeName: string;
+  };
+}) => {
   if (loading) {
     return <LoadingSpinner loading />;
   }
@@ -42,6 +57,20 @@ const ListHeaderComponent = ({ loading, html }: { loading: boolean; html?: strin
       <Wrapper>
         {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
         <HtmlView html={html} />
+        {!!subQuery && !!subQuery.routeName && subQuery.params && (
+          <Button
+            title={subQuery.buttonTitle}
+            onPress={() =>
+              navigation.navigate({
+                name: subQuery.routeName,
+                params: {
+                  ...subQuery.params,
+                  title: subQuery.params?.title
+                }
+              })
+            }
+          />
+        )}
       </Wrapper>
     </WrapperWithOrientation>
   );
@@ -53,9 +82,14 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
   const [refreshing, setRefreshing] = useState(false);
   const name = route.params?.name;
   const rootRouteName = route.params?.rootRouteName;
+  const subQuery = route.params?.subQuery ?? undefined;
   const navigationTitle = route.params?.title;
   const { data, loading, refetch } = useStaticContent<NestedInfo>({ name, type: 'json' });
-  const { data: dataHtml, loading: loadingHtml, refetch: refetchHtml } = useStaticContent<string>({
+  const {
+    data: dataHtml,
+    loading: loadingHtml,
+    refetch: refetchHtml
+  } = useStaticContent<string>({
     name: data?.content ?? '',
     type: 'html',
     skip: !data?.content
@@ -111,7 +145,14 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
             tintColor={colors.accent}
           />
         }
-        ListHeaderComponent={<ListHeaderComponent loading={loadingHtml} html={dataHtml} />}
+        ListHeaderComponent={
+          <ListHeaderComponent
+            loading={loadingHtml}
+            html={dataHtml}
+            subQuery={subQuery}
+            navigation={navigation}
+          />
+        }
         sections={sectionData}
         renderSectionHeader={({ section: { title } }) => <SectionHeader title={title} />}
         renderItem={renderItem}
