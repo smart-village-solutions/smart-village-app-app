@@ -387,6 +387,9 @@ export const texts = {
   navigationTitles: {
     home: 'Übersicht'
   },
+  noticeboard: {
+    emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
+  },
   oparl: {
     agendaItem: {
       agendaItem: 'Tagesordnungspunkt',

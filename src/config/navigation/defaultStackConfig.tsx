@@ -35,6 +35,7 @@ import {
   MapViewScreen,
   MultiButtonScreen,
   NestedInfoScreen,
+  NoticeboardIndexScreen,
   OParlCalendarScreen,
   OParlDetailScreen,
   OParlOrganizationsScreen,
@@ -266,6 +267,10 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.NestedInfo,
       screenComponent: NestedInfoScreen
+    },
+    {
+      routeName: ScreenName.Noticeboard,
+      screenComponent: NoticeboardIndexScreen
     },
     {
       routeName: ScreenName.OParlCalendar,
