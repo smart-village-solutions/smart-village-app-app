@@ -79,7 +79,6 @@ export const VolunteerHomeScreen = ({ navigation, route }: StackScreenProps<any>
         <ServiceTiles
           html={dataHomeText}
           query={QUERY_TYPES.VOLUNTEER.HOME}
-          navigation={navigation}
           staticJsonName={`volunteerHomeTiles${isLoggedIn ? '-loggedIn' : ''}`}
         />
 

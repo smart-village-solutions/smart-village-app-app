@@ -39,6 +39,7 @@ export * from './GroupHeader';
 export * from './HeaderLeft';
 export * from './HeaderRight';
 export * from './HomeSection';
+export * from './HomeService';
 export * from './HtmlView';
 export * from './Image';
 export * from './ImageSection';

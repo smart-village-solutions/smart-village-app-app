@@ -57,7 +57,6 @@ export const VolunteerPersonalScreen = ({ navigation }: StackScreenProps<any>) =
         <ServiceTiles
           html={dataPersonalText}
           query={QUERY_TYPES.VOLUNTEER.PERSONAL}
-          navigation={navigation}
           staticJsonName="volunteerPersonalTiles"
         />
       </ScrollView>

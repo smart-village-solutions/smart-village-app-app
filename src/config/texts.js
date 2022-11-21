@@ -681,6 +681,10 @@ export const texts = {
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
   },
+  serviceTiles: {
+    done: 'Fertig',
+    edit: 'Kacheln bearbeiten'
+  },
   settingsContents: {
     analytics: {
       no: 'Nein',

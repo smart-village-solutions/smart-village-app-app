@@ -10,9 +10,11 @@ export const getTilesScreen = ({
   staticJsonName,
   titleFallback,
   titleKey,
-  imageKey
+  imageKey,
+  hasDiagonalGradientBackground,
+  isEditMode
 }) => {
-  const TilesScreen = ({ navigation }) => {
+  const TilesScreen = () => {
     const { globalSettings } = useContext(SettingsContext);
     const { sections = {} } = globalSettings;
     const { [titleKey]: title = titleFallback, [imageKey]: image } = sections;
@@ -21,10 +23,11 @@ export const getTilesScreen = ({
 
     return (
       <ServiceTiles
-        navigation={navigation}
         staticJsonName={staticJsonName}
         title={title}
         image={image}
+        hasDiagonalGradientBackground={hasDiagonalGradientBackground}
+        isEditMode={isEditMode}
       />
     );
   };
