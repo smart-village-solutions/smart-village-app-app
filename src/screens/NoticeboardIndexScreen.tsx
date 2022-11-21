@@ -77,10 +77,11 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
         }
         ListHeaderComponent={
           <ListHeaderComponent
-            loading={loadingHtml}
             html={dataHtml}
-            subQuery={subQuery}
+            loading={loadingHtml}
             navigation={navigation}
+            navigationTitle=""
+            subQuery={subQuery}
           />
         }
       />
