@@ -46,11 +46,11 @@ type NoticeboardData = {
   dateEnd: string;
   dateStart: string;
   email: string;
-  consentToDataProcessing: boolean;
   message: string;
   name: string;
   noticeboardType: string;
   phoneNumber: string;
+  termsOfService: boolean;
   title: string;
 };
 
@@ -63,13 +63,13 @@ const NOTICEBOARD_TYPE = [
 const alert = (alertType: string) => {
   let title = '',
     message = '',
-    buttonText = texts.noticeboard.cancel;
+    buttonText = texts.noticeboard.abort;
 
   // TODO: alert titles and messages will be updated later
   switch (alertType) {
-    case 'consentToDataProcessing':
-      title = 'consentToDataProcessing';
-      message = 'consentToDataProcessing';
+    case 'termsOfService':
+      title = 'termsOfService';
+      message = 'termsOfService';
       break;
     case 'dateDifference':
       title = 'dateDifference';
@@ -90,7 +90,7 @@ const alert = (alertType: string) => {
     default:
       title = 'default';
       message = 'default';
-      buttonText = texts.noticeboard.cancel;
+      buttonText = texts.noticeboard.abort;
       break;
   }
 
@@ -148,7 +148,7 @@ export const NoticeboardFormScreen = ({
       dateEnd: new Date(),
       dateStart: new Date(),
       email: '',
-      consentToDataProcessing: false,
+      termsOfService: false,
       message: '',
       name: '',
       noticeboardType: '',
@@ -165,7 +165,7 @@ export const NoticeboardFormScreen = ({
   ] = useMutation(MESSAGE_GENERIC_ITEM);
 
   const onSubmit = async (noticeboardNewData: NoticeboardData) => {
-    if (!noticeboardNewData.consentToDataProcessing) return alert('consentToDataProcessing');
+    if (!noticeboardNewData.termsOfService) return alert('termsOfService');
 
     if (newEntryForm) {
       const dateStart = new Date(noticeboardNewData.dateStart);
@@ -315,7 +315,7 @@ export const NoticeboardFormScreen = ({
         <HtmlView html={consentForDataProcessingTex} />
 
         <Controller
-          name="consentToDataProcessing"
+          name="termsOfService"
           render={({ onChange, value }) => (
             <>
               <Checkbox
