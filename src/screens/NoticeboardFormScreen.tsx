@@ -182,6 +182,7 @@ export const NoticeboardFormScreen = ({
           variables: {
             categoryName: noticeboardNewData.noticeboardType,
             genericType,
+            publishedAt: momentFormat(noticeboardNewData.dateStart),
             title: noticeboardNewData.title,
             contentBlocks: [{ body: noticeboardNewData.body, title: noticeboardNewData.title }],
             dates: [

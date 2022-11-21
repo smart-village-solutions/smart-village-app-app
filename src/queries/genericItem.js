@@ -202,6 +202,7 @@ export const CREATE_GENERIC_ITEM = gql`
     $contentBlocks: [ContentBlockInput!]
     $dates: [DateInput!]
     $genericType: String
+    $publishedAt: String
     $title: String
   ) {
     createGenericItem(
@@ -209,6 +210,7 @@ export const CREATE_GENERIC_ITEM = gql`
       contentBlocks: $contentBlocks
       dates: $dates
       genericType: $genericType
+      publishedAt: $publishedAt
       title: $title
     ) {
       genericType
