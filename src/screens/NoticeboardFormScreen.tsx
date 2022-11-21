@@ -26,7 +26,7 @@ import { colors, consts, device, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
-import { CREATE_GENERIC_ITEM } from '../queries/genericItem';
+import { CREATE_GENERIC_ITEM, MESSAGE_GENERIC_ITEM } from '../queries/genericItem';
 import { NoticeboardType } from '../types';
 
 const { EMAIL_REGEX } = consts;
@@ -37,6 +37,7 @@ type NoticeboardFormScreenDataType = {
   contentBlocks: [{ body: string; title: string }];
   createdAt?: string;
   dates: [{ dateEnd: string; dateStart: string }];
+  id: string | number;
   title: string;
 };
 
@@ -111,6 +112,7 @@ export const NoticeboardFormScreen = ({
   const [refreshing, setRefreshing] = useState(false);
 
   const consentForDataProcessingTex = route?.params?.consentForDataProcessingText ?? '';
+  const genericItemId = data?.id ?? '';
   const genericType = route?.params?.genericType ?? '';
   const name = route?.params?.name ?? '';
   const newEntryForm = route?.params?.newEntryForm ?? false;
@@ -155,11 +157,14 @@ export const NoticeboardFormScreen = ({
     }
   });
 
-  const [createGenericItem, { data: newGenericItem, loading, error }] =
+  const [createGenericItem, { data: createItem, loading, error: createError }] =
     useMutation(CREATE_GENERIC_ITEM);
+  const [
+    messageGenericItem,
+    { data: messageStatusCode, loading: messageLoading, error: messageError }
+  ] = useMutation(MESSAGE_GENERIC_ITEM);
 
   const onSubmit = async (noticeboardNewData: NoticeboardData) => {
-    // TODO: query will be added when `Main-Server` is ready for mail sending function
     if (!noticeboardNewData.consentToDataProcessing) return alert('consentToDataProcessing');
 
     if (newEntryForm) {
@@ -191,9 +196,27 @@ export const NoticeboardFormScreen = ({
         alert('success');
         navigation.pop();
       } catch (error) {
-        console.error(error);
+        console.error(error, createError);
         alert('error');
       }
+    }
+
+    try {
+      await messageGenericItem({
+        variables: {
+          genericItemId: genericItemId,
+          name: noticeboardNewData.name,
+          email: noticeboardNewData.email,
+          phoneNumber: noticeboardNewData.phoneNumber,
+          message: noticeboardNewData.message,
+          termsOfService: noticeboardNewData.termsOfService
+        }
+      });
+
+      alert('success');
+    } catch (error) {
+      console.error(error, messageError);
+      alert('error');
     }
   };
 

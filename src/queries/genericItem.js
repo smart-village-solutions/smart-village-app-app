@@ -229,3 +229,25 @@ export const CREATE_GENERIC_ITEM = gql`
     }
   }
 `;
+
+export const MESSAGE_GENERIC_ITEM = gql`
+  mutation messageGenericItem(
+    $genericItemId: ID!
+    $name: String!
+    $email: String!
+    $phoneNumber: String
+    $message: String!
+    $termsOfService: Boolean!
+  ) {
+    messageGenericItem(
+      genericItemId: $genericItemId
+      name: $name
+      email: $email
+      phoneNumber: $phoneNumber
+      message: $message
+      termsOfService: $termsOfService
+    ) {
+      statusCode
+    }
+  }
+`;
