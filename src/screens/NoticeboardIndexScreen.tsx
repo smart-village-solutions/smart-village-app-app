@@ -1,20 +1,17 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, RefreshControl, SectionList } from 'react-native';
+import { ActivityIndicator, RefreshControl } from 'react-native';
 
-import { EmptyMessage, LoadingContainer, SafeAreaViewFlex, SectionHeader } from '../components';
+import { EmptyMessage, ListComponent, LoadingContainer, SafeAreaViewFlex } from '../components';
 import { colors, texts } from '../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
 import { useStaticContent } from '../hooks';
-import { useRenderItem } from '../hooks/listHooks';
 import { NetworkContext } from '../NetworkProvider';
-import { getQuery, QUERY_TYPES } from '../queries';
+import { getQuery } from '../queries';
 
 import { ListHeaderComponent } from './NestedInfoScreen';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-/* eslint-disable complexity */
 export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -25,7 +22,6 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
   const subQuery = route.params?.subQuery ?? '';
-  const title = route.params?.title ?? '';
 
   const { data, loading, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
@@ -54,24 +50,23 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     setRefreshing(false);
   }, [isConnected, refetch]);
 
-  const renderItem = useRenderItem(QUERY_TYPES.PUBLIC_JSON_FILE, navigation);
-
-  if (loading && !data)
+  if (loading && !listItems)
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
       </LoadingContainer>
     );
 
-  if (!data) {
+  if (!listItems) {
     return <EmptyMessage title={texts.noticeboard.emptyTitle} />;
   }
 
-  const sectionData = [{ title: title, data: listItems }];
-
   return (
     <SafeAreaViewFlex>
-      <SectionList
+      <ListComponent
+        data={listItems}
+        navigation={navigation}
+        query={query}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -88,12 +83,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
             navigation={navigation}
           />
         }
-        sections={sectionData}
-        renderSectionHeader={({ section: { title } }) => <SectionHeader title={title} />}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.title + item.id}
       />
     </SafeAreaViewFlex>
   );
 };
-/* eslint-enable complexity */
