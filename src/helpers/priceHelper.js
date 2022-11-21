@@ -8,6 +8,10 @@ import { device } from '../config/device';
  * @return {string} a formatted string in the de-DE locale and with currency code
  */
 export const priceFormat = (price) => {
+  if (price === null || price === undefined) {
+    return;
+  }
+
   if (device.platform === 'ios') {
     return new Intl.NumberFormat('de-DE', {
       style: 'currency',
