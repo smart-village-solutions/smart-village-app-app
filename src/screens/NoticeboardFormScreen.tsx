@@ -26,7 +26,7 @@ import { colors, consts, device, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
-import { CREATE_GENERIC_ITEM, MESSAGE_GENERIC_ITEM } from '../queries/genericItem';
+import { CREATE_GENERIC_ITEM, CREATE_GENERIC_ITEM_MESSAGE } from '../queries/genericItem';
 import { NoticeboardType } from '../types';
 
 const { EMAIL_REGEX } = consts;
@@ -160,9 +160,9 @@ export const NoticeboardFormScreen = ({
   const [createGenericItem, { data: createItem, loading, error: createError }] =
     useMutation(CREATE_GENERIC_ITEM);
   const [
-    messageGenericItem,
+    createGenericItemMessage,
     { data: messageStatusCode, loading: messageLoading, error: messageError }
-  ] = useMutation(MESSAGE_GENERIC_ITEM);
+  ] = useMutation(CREATE_GENERIC_ITEM_MESSAGE);
 
   const onSubmit = async (noticeboardNewData: NoticeboardData) => {
     if (!noticeboardNewData.termsOfService) return alert('termsOfService');
@@ -203,7 +203,7 @@ export const NoticeboardFormScreen = ({
     }
 
     try {
-      await messageGenericItem({
+      await createGenericItemMessage({
         variables: {
           genericItemId: genericItemId,
           name: noticeboardNewData.name,

@@ -232,8 +232,8 @@ export const CREATE_GENERIC_ITEM = gql`
   }
 `;
 
-export const MESSAGE_GENERIC_ITEM = gql`
-  mutation messageGenericItem(
+export const CREATE_GENERIC_ITEM_MESSAGE = gql`
+  mutation createGenericItemMessage(
     $genericItemId: ID!
     $name: String!
     $email: String!
