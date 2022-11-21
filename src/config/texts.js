@@ -632,6 +632,7 @@ export const texts = {
     location: 'Anfahrt',
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
+    priceFree: 'kostenlos',
     prices: 'Preise',
     routePlanner: 'Zum Routenplaner bbnavi',
     showLunches: 'Zum aktuellen Gastro-Angebot',

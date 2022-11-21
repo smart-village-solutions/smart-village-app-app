@@ -29,6 +29,8 @@ export const PriceCard = ({ prices }) => (
             maxAdultCount,
             groupPrice
           } = item;
+          const formattedAmount = priceFormat(amount);
+          const formattedGroupPrice = priceFormat(groupPrice);
 
           return (
             <PriceBox key={index}>
@@ -37,14 +39,14 @@ export const PriceCard = ({ prices }) => (
                   {category}
                 </BoldText>
               )}
-              {!!amount && (
+              {!!formattedAmount && (
                 <BoldText small lightest>
-                  {priceFormat(amount)}
+                  {formattedAmount}
                 </BoldText>
               )}
-              {!!groupPrice && (
+              {!!formattedGroupPrice && (
                 <BoldText small lightest>
-                  {priceFormat(groupPrice)}
+                  {formattedGroupPrice}
                 </BoldText>
               )}
               {!!description && (

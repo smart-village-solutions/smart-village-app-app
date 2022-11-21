@@ -1,4 +1,4 @@
-import { device } from '../config/device';
+import { device, texts } from '../config';
 
 /**
  * Formatting floating-point numbers from data in to prices (1.2 => 1,20 EUR)
@@ -8,6 +8,14 @@ import { device } from '../config/device';
  * @return {string} a formatted string in the de-DE locale and with currency code
  */
 export const priceFormat = (price) => {
+  if (price === null || price === undefined) {
+    return;
+  }
+
+  if (price === 0) {
+    return texts.pointOfInterest.priceFree;
+  }
+
   if (device.platform === 'ios') {
     return new Intl.NumberFormat('de-DE', {
       style: 'currency',
