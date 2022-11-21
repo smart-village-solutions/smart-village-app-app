@@ -1,5 +1,5 @@
-export enum NoticeboardType {
-  Offers = 'Angebot',
-  Searches = 'Gesuch',
-  NeighbourlyHelp = 'Nachbarschaftshilfe'
+export enum NOTICEBOARD_TYPES {
+  NEIGHBOURLY_HELP,
+  OFFERS,
+  SEARCHES
 }

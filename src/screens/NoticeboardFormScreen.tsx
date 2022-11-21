@@ -27,7 +27,7 @@ import { momentFormat } from '../helpers';
 import { useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { CREATE_GENERIC_ITEM, CREATE_GENERIC_ITEM_MESSAGE } from '../queries/genericItem';
-import { NoticeboardType, ScreenName } from '../types';
+import { NOTICEBOARD_TYPES, ScreenName } from '../types';
 
 const { EMAIL_REGEX } = consts;
 const a11yText = consts.a11yLabel;
@@ -48,16 +48,16 @@ type NoticeboardData = {
   email: string;
   message: string;
   name: string;
-  noticeboardType: string;
+  noticeboardType: NOTICEBOARD_TYPES;
   phoneNumber: string;
   termsOfService: boolean;
   title: string;
 };
 
-const NOTICEBOARD_TYPE = [
-  { value: NoticeboardType.Offers, title: texts.noticeboard.offers },
-  { value: NoticeboardType.Searches, title: texts.noticeboard.searches },
-  { value: NoticeboardType.NeighbourlyHelp, title: texts.noticeboard.neighbourlyHelp }
+const NOTICEBOARD_TYPE_OPTIONS = [
+  { value: NOTICEBOARD_TYPES.OFFERS, title: texts.noticeboard.categoryNames[1] },
+  { value: NOTICEBOARD_TYPES.SEARCHES, title: texts.noticeboard.categoryNames[2] },
+  { value: NOTICEBOARD_TYPES.NEIGHBOURLY_HELP, title: texts.noticeboard.categoryNames[0] }
 ];
 
 const alert = (alertType: string) => {
@@ -151,7 +151,7 @@ export const NoticeboardFormScreen = ({
       try {
         await createGenericItem({
           variables: {
-            categoryName: noticeboardNewData.noticeboardType,
+            categoryName: texts.noticeboard.categoryNames[noticeboardNewData.noticeboardType],
             genericType,
             publishedAt: momentFormat(noticeboardNewData.dateStart),
             title: noticeboardNewData.title,
@@ -345,7 +345,7 @@ const entryForm = ({
           name="noticeboardType"
           render={({ onChange, value }) => (
             <>
-              {NOTICEBOARD_TYPE.map((noticeboardItem) => (
+              {NOTICEBOARD_TYPE_OPTIONS.map((noticeboardItem) => (
                 <Checkbox
                   key={noticeboardItem.title}
                   checked={value === noticeboardItem.value}

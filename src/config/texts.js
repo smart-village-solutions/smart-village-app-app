@@ -396,6 +396,11 @@ export const texts = {
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },
+    categoryNames: {
+      0: 'Nachbarschaftshilfe',
+      1: 'Angebot',
+      2: 'Gesuch'
+    },
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',
@@ -408,11 +413,8 @@ export const texts = {
     inputPhoneNumber: 'Ihre Telefonnummer',
     inputTitle: 'Titel',
     invalidMail: ' Addresse ist keine gültige E-Mail-Adresse.',
-    neighbourlyHelp: 'Nachbarschaftshilfe',
     noticeboard: 'Schwarzes Brett',
-    offers: 'Angebot',
     publicationDate: 'Erscheinungsdatum',
-    searches: 'Gesuch',
     sent: 'Senden',
     successScreen: {
       application: 'Ihre Nachricht wurde gesende.',
