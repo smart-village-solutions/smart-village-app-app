@@ -56,6 +56,7 @@ export * from './LoadingSpinner';
 export * from './Logo';
 export * from './MediaSection';
 export * from './Modal';
+export * from './MultiButtonWithSubQuery';
 export * from './NewsSectionPlaceholder';
 export * from './Offer';
 export * from './OptionToggle';
