@@ -389,6 +389,13 @@ export const texts = {
   },
   noticeboard: {
     abort: 'Abbrechen',
+    alerts: {
+      dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von weniger als drei Monaten.',
+      error: 'Bitte versuchen Sie es erneut.',
+      hint: 'Hinweis',
+      noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
+      termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
+    },
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',

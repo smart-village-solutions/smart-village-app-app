@@ -1,5 +1,5 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import * as Moment from 'moment';
+import moment from 'moment';
 import { extendMoment } from 'moment-range';
 import React, { useCallback, useContext, useState } from 'react';
 import { useMutation } from 'react-apollo';
@@ -31,7 +31,7 @@ import { NoticeboardType } from '../types';
 
 const { EMAIL_REGEX } = consts;
 const a11yText = consts.a11yLabel;
-const moment = extendMoment(Moment);
+const extendedMoment = extendMoment(moment);
 
 type NoticeboardFormScreenDataType = {
   contentBlocks: [{ body: string; title: string }];
@@ -61,38 +61,9 @@ const NOTICEBOARD_TYPE = [
 ];
 
 const alert = (alertType: string) => {
-  let title = '',
-    message = '',
-    buttonText = texts.noticeboard.abort;
-
-  // TODO: alert titles and messages will be updated later
-  switch (alertType) {
-    case 'termsOfService':
-      title = 'termsOfService';
-      message = 'termsOfService';
-      break;
-    case 'dateDifference':
-      title = 'dateDifference';
-      message = 'dateDifference';
-      break;
-    case 'noticeboardType':
-      title = 'noticeboardType';
-      message = 'noticeboardType';
-      break;
-    case 'success':
-      title = 'success';
-      message = 'success';
-      break;
-    case 'error':
-      title = 'error';
-      message = 'error';
-      break;
-    default:
-      title = 'default';
-      message = 'default';
-      buttonText = texts.noticeboard.abort;
-      break;
-  }
+  const buttonText = texts.noticeboard.abort,
+    message = texts.noticeboard.alerts[alertType] ?? texts.noticeboard.alerts.error,
+    title = texts.noticeboard.alerts.hint;
 
   return Alert.alert(title, message, [{ text: buttonText, style: 'cancel' }]);
 };
@@ -170,7 +141,7 @@ export const NoticeboardFormScreen = ({
     if (newEntryForm) {
       const dateStart = new Date(noticeboardNewData.dateStart);
       const dateEnd = new Date(noticeboardNewData.dateEnd);
-      const dateDifference = moment.range(dateStart, dateEnd).diff('months');
+      const dateDifference = extendedMoment.range(dateStart, dateEnd).diff('months');
 
       if (dateDifference > requestedDateDifference || dateDifference < 0)
         return alert('dateDifference');
