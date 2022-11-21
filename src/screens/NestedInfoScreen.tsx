@@ -3,10 +3,10 @@ import React, { useCallback, useContext, useState } from 'react';
 import { ActivityIndicator, RefreshControl, SectionList } from 'react-native';
 
 import {
-  Button,
   HtmlView,
   LoadingContainer,
   LoadingSpinner,
+  MultiButtonWithSubQuery,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
@@ -17,6 +17,7 @@ import { useStaticContent } from '../hooks';
 import { useRenderItem } from '../hooks/listHooks';
 import { NetworkContext } from '../NetworkProvider';
 import { QUERY_TYPES } from '../queries';
+import { SubQuery } from '../types';
 
 type NestedInfo = {
   content?: string;
@@ -33,16 +34,14 @@ export const ListHeaderComponent = ({
   html,
   loading,
   navigation,
+  navigationTitle,
   subQuery
 }: {
   html?: string;
   loading: boolean;
   navigation: StackNavigationProp<any>;
-  subQuery?: {
-    buttonTitle: string;
-    params: { rootRouteName: string; title: string };
-    routeName: string;
-  };
+  navigationTitle: string;
+  subQuery: SubQuery;
 }) => {
   if (loading) {
     return <LoadingSpinner loading />;
@@ -57,14 +56,7 @@ export const ListHeaderComponent = ({
       <Wrapper>
         {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
         <HtmlView html={html} />
-        {!!subQuery && !!subQuery.routeName && subQuery.params && (
-          <Button
-            title={subQuery.buttonTitle}
-            onPress={() =>
-              navigation.navigate({ name: subQuery.routeName, params: subQuery.params })
-            }
-          />
-        )}
+        <MultiButtonWithSubQuery {...{ navigation, subQuery, title: navigationTitle }} />
       </Wrapper>
     </WrapperWithOrientation>
   );
@@ -141,10 +133,11 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
         }
         ListHeaderComponent={
           <ListHeaderComponent
-            loading={loadingHtml}
             html={dataHtml}
-            subQuery={subQuery}
+            loading={loadingHtml}
             navigation={navigation}
+            navigationTitle={navigationTitle}
+            subQuery={subQuery}
           />
         }
         sections={sectionData}
