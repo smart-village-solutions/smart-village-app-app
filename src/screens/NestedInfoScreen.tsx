@@ -141,7 +141,9 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
           />
         }
         sections={sectionData}
-        renderSectionHeader={({ section: { title } }) => <SectionHeader title={title} />}
+        renderSectionHeader={({ section: { title } }) =>
+          title ? <SectionHeader title={title} /> : null
+        }
         renderItem={renderItem}
         keyExtractor={(item) => item.title}
       />
