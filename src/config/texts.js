@@ -413,7 +413,13 @@ export const texts = {
     offers: 'Angebot',
     publicationDate: 'Erscheinungsdatum',
     searches: 'Gesuch',
-    sent: 'Senden'
+    sent: 'Senden',
+    successScreen: {
+      application: 'Ihre Nachricht wurde gesende.',
+      entry:
+        'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Sie erhalten eine E-Mail, wenn der Eintrag freigeschaltet wurde.',
+      header: 'Vielen Dank'
+    }
   },
   oparl: {
     agendaItem: {

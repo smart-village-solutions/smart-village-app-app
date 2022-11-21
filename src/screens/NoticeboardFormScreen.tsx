@@ -27,7 +27,7 @@ import { momentFormat } from '../helpers';
 import { useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { CREATE_GENERIC_ITEM, CREATE_GENERIC_ITEM_MESSAGE } from '../queries/genericItem';
-import { NoticeboardType } from '../types';
+import { NoticeboardType, ScreenName } from '../types';
 
 const { EMAIL_REGEX } = consts;
 const a11yText = consts.a11yLabel;
@@ -164,12 +164,9 @@ export const NoticeboardFormScreen = ({
             ]
           }
         });
-
-        alert('success');
-        navigation.pop();
       } catch (error) {
         console.error(error, createError);
-        alert('error');
+        return alert('error');
       }
     }
 
@@ -184,12 +181,17 @@ export const NoticeboardFormScreen = ({
           termsOfService: noticeboardNewData.termsOfService
         }
       });
-
-      alert('success');
     } catch (error) {
       console.error(error, messageError);
-      alert('error');
+      return alert('error');
     }
+
+    navigation.navigate(ScreenName.NoticeboardSuccess, {
+      title: texts.noticeboard.successScreen.header,
+      successText: newEntryForm
+        ? texts.noticeboard.successScreen.entry
+        : texts.noticeboard.successScreen.application
+    });
   };
 
   if (loadingHtml) {

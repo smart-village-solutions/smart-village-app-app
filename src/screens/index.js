@@ -26,6 +26,7 @@ export * from './MultiButtonScreen';
 export * from './NestedInfoScreen';
 export * from './NoticeboardFormScreen';
 export * from './NoticeboardIndexScreen';
+export * from './NoticeboardSuccessScreen';
 export * from './SettingsScreen';
 export * from './SurveyDetailScreen';
 export * from './SurveyOverviewScreen';
