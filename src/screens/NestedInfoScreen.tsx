@@ -61,13 +61,7 @@ export const ListHeaderComponent = ({
           <Button
             title={subQuery.buttonTitle}
             onPress={() =>
-              navigation.navigate({
-                name: subQuery.routeName,
-                params: {
-                  ...subQuery.params,
-                  title: subQuery.params?.title
-                }
-              })
+              navigation.navigate({ name: subQuery.routeName, params: subQuery.params })
             }
           />
         )}
