@@ -68,6 +68,13 @@ const alert = (alertType: string) => {
   return Alert.alert(title, message, [{ text: buttonText, style: 'cancel' }]);
 };
 
+const navigate = (navigation: StackNavigationProp<any>, successText: string) => {
+  return navigation.push(ScreenName.NoticeboardSuccess, {
+    title: texts.noticeboard.successScreen.header,
+    successText
+  });
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 /* eslint-disable complexity */
 export const NoticeboardFormScreen = ({
@@ -86,7 +93,7 @@ export const NoticeboardFormScreen = ({
   const genericItemId = data?.id ?? '';
   const genericType = route?.params?.genericType ?? '';
   const name = route?.params?.name ?? '';
-  const newEntryForm = route?.params?.newEntryForm ?? false;
+  const isNewEntryForm = route?.params?.isNewEntryForm ?? false;
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
 
   const {
@@ -128,45 +135,48 @@ export const NoticeboardFormScreen = ({
     }
   });
 
-  const [createGenericItem, { data: createItem, loading, error: createError }] =
+  const [createGenericItem, { loading: createLoading, error: createError }] =
     useMutation(CREATE_GENERIC_ITEM);
-  const [
-    createGenericItemMessage,
-    { data: messageStatusCode, loading: messageLoading, error: messageError }
-  ] = useMutation(CREATE_GENERIC_ITEM_MESSAGE);
+  const [createGenericItemMessage, { loading: messageLoading, error: messageError }] = useMutation(
+    CREATE_GENERIC_ITEM_MESSAGE
+  );
 
-  const onSubmit = async (noticeboardNewData: NoticeboardData) => {
+  const createGenericItemSubmit = async (noticeboardNewData: NoticeboardData) => {
     if (!noticeboardNewData.termsOfService) return alert('termsOfService');
 
-    if (newEntryForm) {
-      const dateStart = new Date(noticeboardNewData.dateStart);
-      const dateEnd = new Date(noticeboardNewData.dateEnd);
-      const dateDifference = extendedMoment.range(dateStart, dateEnd).diff('months');
+    const dateStart = new Date(noticeboardNewData.dateStart);
+    const dateEnd = new Date(noticeboardNewData.dateEnd);
+    const dateDifference = extendedMoment.range(dateStart, dateEnd).diff('months');
 
-      if (dateDifference > requestedDateDifference || dateDifference < 0)
-        return alert('dateDifference');
+    if (dateDifference > requestedDateDifference || dateDifference < 0)
+      return alert('dateDifference');
 
-      try {
-        await createGenericItem({
-          variables: {
-            categoryName: texts.noticeboard.categoryNames[noticeboardNewData.noticeboardType],
-            genericType,
-            publishedAt: momentFormat(noticeboardNewData.dateStart),
-            title: noticeboardNewData.title,
-            contentBlocks: [{ body: noticeboardNewData.body, title: noticeboardNewData.title }],
-            dates: [
-              {
-                dateEnd: momentFormat(noticeboardNewData.dateEnd),
-                dateStart: momentFormat(noticeboardNewData.dateStart)
-              }
-            ]
-          }
-        });
-      } catch (error) {
-        console.error(error, createError);
-        return alert('error');
-      }
+    try {
+      await createGenericItem({
+        variables: {
+          categoryName: texts.noticeboard.categoryNames[noticeboardNewData.noticeboardType],
+          genericType,
+          publishedAt: momentFormat(noticeboardNewData.dateStart),
+          title: noticeboardNewData.title,
+          contentBlocks: [{ body: noticeboardNewData.body, title: noticeboardNewData.title }],
+          dates: [
+            {
+              dateEnd: momentFormat(noticeboardNewData.dateEnd),
+              dateStart: momentFormat(noticeboardNewData.dateStart)
+            }
+          ]
+        }
+      });
+    } catch (error) {
+      console.error(error, createError);
+      return alert('error');
     }
+
+    navigate(navigation, texts.noticeboard.successScreen.entry);
+  };
+
+  const createGenericItemMessageSubmit = async (noticeboardNewData: NoticeboardData) => {
+    if (!noticeboardNewData.termsOfService) return alert('termsOfService');
 
     try {
       await createGenericItemMessage({
@@ -184,12 +194,7 @@ export const NoticeboardFormScreen = ({
       return alert('error');
     }
 
-    navigation.navigate(ScreenName.NoticeboardSuccess, {
-      title: texts.noticeboard.successScreen.header,
-      successText: newEntryForm
-        ? texts.noticeboard.successScreen.entry
-        : texts.noticeboard.successScreen.application
-    });
+    navigate(navigation, texts.noticeboard.successScreen.application);
   };
 
   if (loadingHtml) {
@@ -259,6 +264,7 @@ export const NoticeboardFormScreen = ({
           control={control}
         />
       </Wrapper>
+
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="email"
@@ -278,9 +284,9 @@ export const NoticeboardFormScreen = ({
         />
       </Wrapper>
 
-      {newEntryForm
-        ? entryForm({ control, errors, requestedDateDifference })
-        : applicationForm({ control, errors })}
+      {isNewEntryForm
+        ? createGenericItemForm({ control, errors, requestedDateDifference })
+        : createGenericItemMessageForm({ control, errors })}
 
       <Wrapper style={styles.noPaddingTop}>
         {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
@@ -311,9 +317,11 @@ export const NoticeboardFormScreen = ({
       </Wrapper>
       <Wrapper style={styles.noPaddingTop}>
         <Button
-          onPress={handleSubmit(onSubmit)}
+          onPress={handleSubmit(
+            isNewEntryForm ? createGenericItemSubmit : createGenericItemMessageSubmit
+          )}
           title={texts.noticeboard.sent}
-          disabled={loading}
+          disabled={createLoading || messageLoading}
         />
 
         <Touchable onPress={() => navigation.goBack()}>
@@ -327,7 +335,7 @@ export const NoticeboardFormScreen = ({
 };
 /* eslint-enable complexity */
 
-const entryForm = ({
+const createGenericItemForm = ({
   control,
   errors,
   requestedDateDifference
@@ -425,7 +433,7 @@ const entryForm = ({
   );
 };
 
-const applicationForm = ({
+const createGenericItemMessageForm = ({
   control,
   errors
 }: {
