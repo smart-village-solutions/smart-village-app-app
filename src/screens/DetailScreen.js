@@ -22,7 +22,7 @@ import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
 
-import { NoticeboardFormScreen } from './NoticeboardFormScreen';
+import { NoticeboardFormScreen } from './Noticeboard';
 
 const getGenericComponent = (genericType) => {
   switch (genericType) {

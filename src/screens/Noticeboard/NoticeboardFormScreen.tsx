@@ -21,13 +21,13 @@ import {
   Touchable,
   Wrapper,
   WrapperRow
-} from '../components';
-import { colors, consts, device, texts } from '../config';
-import { momentFormat } from '../helpers';
-import { useStaticContent } from '../hooks';
-import { NetworkContext } from '../NetworkProvider';
-import { CREATE_GENERIC_ITEM, CREATE_GENERIC_ITEM_MESSAGE } from '../queries/genericItem';
-import { NOTICEBOARD_TYPES, ScreenName } from '../types';
+} from '../../components';
+import { colors, consts, device, texts } from '../../config';
+import { momentFormat } from '../../helpers';
+import { useStaticContent } from '../../hooks';
+import { NetworkContext } from '../../NetworkProvider';
+import { CREATE_GENERIC_ITEM, CREATE_GENERIC_ITEM_MESSAGE } from '../../queries/genericItem';
+import { NOTICEBOARD_TYPES, ScreenName } from '../../types';
 
 const { EMAIL_REGEX } = consts;
 const a11yText = consts.a11yLabel;

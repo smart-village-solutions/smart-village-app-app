@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { BoldText, Wrapper } from '../components';
+import { BoldText, Wrapper } from '../../components';
 
 export const NoticeboardSuccessScreen = ({ route }: { route: any }) => {
   const successText = route?.params?.successText ?? '';

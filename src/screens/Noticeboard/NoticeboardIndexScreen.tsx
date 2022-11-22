@@ -3,14 +3,13 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl } from 'react-native';
 
-import { EmptyMessage, ListComponent, LoadingContainer, SafeAreaViewFlex } from '../components';
-import { colors, texts } from '../config';
-import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
-import { useStaticContent } from '../hooks';
-import { NetworkContext } from '../NetworkProvider';
-import { getQuery } from '../queries';
-
-import { ListHeaderComponent } from './NestedInfoScreen';
+import { EmptyMessage, ListComponent, LoadingContainer, SafeAreaViewFlex } from '../../components';
+import { colors, texts } from '../../config';
+import { graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
+import { useStaticContent } from '../../hooks';
+import { NetworkContext } from '../../NetworkProvider';
+import { getQuery } from '../../queries';
+import { ListHeaderComponent } from '../NestedInfoScreen';
 
 export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
