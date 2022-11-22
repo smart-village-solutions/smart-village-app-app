@@ -199,6 +199,7 @@ export const GET_GENERIC_ITEM = gql`
 export const CREATE_GENERIC_ITEM = gql`
   mutation createGenericItem(
     $categoryName: String
+    $contacts: [ContactInput!]
     $contentBlocks: [ContentBlockInput!]
     $dates: [DateInput!]
     $genericType: String
@@ -207,12 +208,17 @@ export const CREATE_GENERIC_ITEM = gql`
   ) {
     createGenericItem(
       categoryName: $categoryName
+      contacts: $contacts
       contentBlocks: $contentBlocks
       dates: $dates
       genericType: $genericType
       publishedAt: $publishedAt
       title: $title
     ) {
+      contacts {
+        firstName
+        email
+      }
       genericType
       id
       title

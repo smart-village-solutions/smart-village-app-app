@@ -158,6 +158,7 @@ export const NoticeboardFormScreen = ({
           genericType,
           publishedAt: momentFormat(noticeboardNewData.dateStart),
           title: noticeboardNewData.title,
+          contacts: [{ email: noticeboardNewData.email, firstName: noticeboardNewData.name }],
           contentBlocks: [{ body: noticeboardNewData.body, title: noticeboardNewData.title }],
           dates: [
             {
