@@ -6,7 +6,10 @@
     "production": {
       "node": "14.20.0",
       "yarn": "1.22.19",
-      "releaseChannel": "production"
+      "releaseChannel": "production",
+      "ios": {
+        "image": "macos-monterey-12.4-xcode-13.4"
+      }
     },
     "preview": {
       "extends": "production",
