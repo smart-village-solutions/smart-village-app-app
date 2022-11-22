@@ -1,5 +1,5 @@
 export enum NOTICEBOARD_TYPES {
-  NEIGHBOURLY_HELP,
-  OFFERS,
-  SEARCHES
+  NEIGHBOURLY_HELP = 'neighbourlyHelp',
+  OFFER = 'offer',
+  SEARCH = 'search'
 }

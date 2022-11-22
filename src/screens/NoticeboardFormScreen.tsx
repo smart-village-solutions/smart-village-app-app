@@ -55,9 +55,12 @@ type NoticeboardData = {
 };
 
 const NOTICEBOARD_TYPE_OPTIONS = [
-  { value: NOTICEBOARD_TYPES.OFFERS, title: texts.noticeboard.categoryNames[1] },
-  { value: NOTICEBOARD_TYPES.SEARCHES, title: texts.noticeboard.categoryNames[2] },
-  { value: NOTICEBOARD_TYPES.NEIGHBOURLY_HELP, title: texts.noticeboard.categoryNames[0] }
+  { value: NOTICEBOARD_TYPES.OFFER, title: texts.noticeboard.categoryNames.offer },
+  { value: NOTICEBOARD_TYPES.SEARCH, title: texts.noticeboard.categoryNames.search },
+  {
+    value: NOTICEBOARD_TYPES.NEIGHBOURLY_HELP,
+    title: texts.noticeboard.categoryNames.neighbourlyHelp
+  }
 ];
 
 const alert = (alertType: string) => {

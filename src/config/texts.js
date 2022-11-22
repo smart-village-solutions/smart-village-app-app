@@ -397,9 +397,9 @@ export const texts = {
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },
     categoryNames: {
-      0: 'Nachbarschaftshilfe',
-      1: 'Angebot',
-      2: 'Gesuch'
+      neighbourlyHelp: 'Nachbarschaftshilfe',
+      offer: 'Angebot',
+      search: 'Gesuch'
     },
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',
@@ -417,7 +417,7 @@ export const texts = {
     publicationDate: 'Erscheinungsdatum',
     sent: 'Senden',
     successScreen: {
-      application: 'Ihre Nachricht wurde gesende.',
+      application: 'Ihre Nachricht wurde gesendet.',
       entry:
         'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Sie erhalten eine E-Mail, wenn der Eintrag freigeschaltet wurde.',
       header: 'Vielen Dank'

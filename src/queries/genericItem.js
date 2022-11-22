@@ -215,25 +215,7 @@ export const CREATE_GENERIC_ITEM = gql`
       publishedAt: $publishedAt
       title: $title
     ) {
-      contacts {
-        firstName
-        email
-      }
-      genericType
       id
-      title
-      categories {
-        id
-        name
-      }
-      contentBlocks {
-        body
-        title
-      }
-      dates {
-        dateEnd
-        dateStart
-      }
     }
   }
 `;
