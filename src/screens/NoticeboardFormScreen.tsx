@@ -146,8 +146,6 @@ export const NoticeboardFormScreen = ({
       if (dateDifference > requestedDateDifference || dateDifference < 0)
         return alert('dateDifference');
 
-      if (!noticeboardNewData.noticeboardType) return alert('noticeboardType');
-
       try {
         await createGenericItem({
           variables: {
@@ -343,6 +341,7 @@ const entryForm = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="noticeboardType"
+          rules={{ required: texts.noticeboard.alerts.noticeboardType }}
           render={({ onChange, value }) => (
             <>
               {NOTICEBOARD_TYPE_OPTIONS.map((noticeboardItem) => (
@@ -362,6 +361,13 @@ const entryForm = ({
                   uncheckedIcon={undefined}
                 />
               ))}
+              <Input
+                control={control}
+                errorMessage={errors.noticeboardType && errors.noticeboardType.message}
+                hidden
+                name={'noticeboardType'}
+                validate
+              />
             </>
           )}
           control={control}
