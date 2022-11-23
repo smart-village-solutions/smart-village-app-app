@@ -164,9 +164,15 @@ export const WasteCollectionScreen = ({ navigation }) => {
 
     const baseUrl = secrets[namespace].serverUrl + staticRestSuffix.wasteCalendarExport;
 
-    const params = `street=${encodeURIComponent(street)}&zip=${encodeURIComponent(
-      zip
-    )}&city=${encodeURIComponent(city)}`;
+    let params = `street=${encodeURIComponent(street)}`;
+
+    if (zip) {
+      params += `&zip=${encodeURIComponent(zip)}`;
+    }
+
+    if (city) {
+      params += `&city=${encodeURIComponent(city)}`;
+    }
 
     const combinedUrl = baseUrl + params;
 
