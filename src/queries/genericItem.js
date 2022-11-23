@@ -235,7 +235,7 @@ export const CREATE_GENERIC_ITEM_MESSAGE = gql`
     $message: String!
     $termsOfService: Boolean!
   ) {
-    messageGenericItem(
+    createGenericItemMessage(
       genericItemId: $genericItemId
       name: $name
       email: $email

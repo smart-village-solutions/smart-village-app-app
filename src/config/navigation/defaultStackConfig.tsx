@@ -36,7 +36,6 @@ import {
   MultiButtonScreen,
   NestedInfoScreen,
   NoticeboardFormScreen,
-  NoticeboardSuccessScreen,
   NoticeboardIndexScreen,
   OParlCalendarScreen,
   OParlDetailScreen,
@@ -277,10 +276,6 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Noticeboard,
       screenComponent: NoticeboardIndexScreen
-    },
-    {
-      routeName: ScreenName.NoticeboardSuccess,
-      screenComponent: NoticeboardSuccessScreen
     },
     {
       routeName: ScreenName.OParlCalendar,

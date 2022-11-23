@@ -4,7 +4,7 @@ import { extendMoment } from 'moment-range';
 import React from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { StyleSheet } from 'react-native';
+import { Alert, Keyboard, StyleSheet } from 'react-native';
 
 import {
   Button,
@@ -12,7 +12,6 @@ import {
   DateTimeInput,
   HtmlView,
   Input,
-  NoticeboardAlerts,
   RegularText,
   Touchable,
   Wrapper
@@ -20,7 +19,7 @@ import {
 import { colors, consts, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
-import { NOTICEBOARD_TYPES, ScreenName } from '../../types';
+import { NOTICEBOARD_TYPES } from '../../types';
 
 const { EMAIL_REGEX } = consts;
 const extendedMoment = extendMoment(moment);
@@ -52,7 +51,7 @@ export const NoticeboardCreateForm = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
-  const consentForDataProcessingTex = route?.params?.consentForDataProcessingText ?? '';
+  const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
 
@@ -73,18 +72,22 @@ export const NoticeboardCreateForm = ({
     }
   });
 
-  const [createGenericItem, { loading: createLoading, error: createError }] =
-    useMutation(CREATE_GENERIC_ITEM);
+  const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
 
   const onSubmit = async (noticeboardNewData: TNoticeboardCreateData) => {
-    if (!noticeboardNewData.termsOfService) return NoticeboardAlerts('termsOfService');
+    Keyboard.dismiss();
+
+    if (!noticeboardNewData.termsOfService) {
+      return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.termsOfService);
+    }
 
     const dateStart = new Date(noticeboardNewData.dateStart);
     const dateEnd = new Date(noticeboardNewData.dateEnd);
     const dateDifference = extendedMoment.range(dateStart, dateEnd).diff('months');
 
-    if (dateDifference > requestedDateDifference || dateDifference < 0)
-      return NoticeboardAlerts('dateDifference');
+    if (dateDifference > requestedDateDifference || dateDifference < 0) {
+      return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.dateDifference);
+    }
 
     try {
       await createGenericItem({
@@ -103,24 +106,22 @@ export const NoticeboardCreateForm = ({
           ]
         }
       });
-    } catch (error) {
-      console.error(error, createError);
-      return alert('error');
-    }
 
-    navigation.navigate(ScreenName.NoticeboardSuccess, {
-      title: texts.noticeboard.successScreen.header,
-      successText: texts.noticeboard.successScreen.entry
-    });
+      navigation.goBack();
+      Alert.alert(texts.noticeboard.successScreen.header, texts.noticeboard.successScreen.entry);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <>
+      <Input name="dateStart" hidden control={control} />
+
       <Wrapper style={styles.noPaddingTop}>
-        <Input name="dateStart" hidden control={control} />
         <Input
           name="name"
-          label={texts.noticeboard.inputName}
+          label={`${texts.noticeboard.inputName} *`}
           placeholder={texts.noticeboard.inputName}
           validate
           rules={{
@@ -134,7 +135,7 @@ export const NoticeboardCreateForm = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="email"
-          label={texts.noticeboard.inputMail}
+          label={`${texts.noticeboard.inputMail} *`}
           placeholder={texts.noticeboard.inputMail}
           keyboardType="email-address"
           validate
@@ -189,7 +190,7 @@ export const NoticeboardCreateForm = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="title"
-          label={texts.noticeboard.inputTitle}
+          label={`${texts.noticeboard.inputTitle} *`}
           placeholder={texts.noticeboard.inputTitle}
           validate
           rules={{
@@ -203,7 +204,7 @@ export const NoticeboardCreateForm = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="body"
-          label={texts.noticeboard.inputDescription}
+          label={`${texts.noticeboard.inputDescription} *`}
           placeholder={texts.noticeboard.inputDescription}
           validate
           multiline
@@ -239,7 +240,7 @@ export const NoticeboardCreateForm = ({
 
       <Wrapper style={styles.noPaddingTop}>
         {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
-        <HtmlView html={consentForDataProcessingTex} />
+        <HtmlView html={consentForDataProcessingText} />
 
         <Controller
           name="termsOfService"
@@ -247,16 +248,13 @@ export const NoticeboardCreateForm = ({
             <Checkbox
               checked={!!value}
               onPress={() => onChange(!value)}
-              title={texts.noticeboard.inputCheckbox}
+              title={`${texts.noticeboard.inputCheckbox} *`}
               checkedColor={colors.accent}
               checkedIcon="check-square-o"
               uncheckedColor={colors.darkText}
               uncheckedIcon="square-o"
               containerStyle={styles.checkboxContainerStyle}
               textStyle={styles.checkboxTextStyle}
-              link={undefined}
-              center={undefined}
-              linkDescription={undefined}
             />
           )}
           control={control}
@@ -267,7 +265,7 @@ export const NoticeboardCreateForm = ({
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.noticeboard.sent}
-          disabled={createLoading}
+          disabled={loading}
         />
 
         <Touchable onPress={() => navigation.goBack()}>

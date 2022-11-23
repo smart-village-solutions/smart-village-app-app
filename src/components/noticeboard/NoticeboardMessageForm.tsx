@@ -2,21 +2,19 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { StyleSheet } from 'react-native';
+import { Alert, Keyboard, StyleSheet } from 'react-native';
 
 import {
   Button,
   Checkbox,
   HtmlView,
   Input,
-  NoticeboardAlerts,
   RegularText,
   Touchable,
   Wrapper
 } from '../../components';
 import { colors, consts, texts } from '../../config';
 import { CREATE_GENERIC_ITEM_MESSAGE } from '../../queries/genericItem';
-import { ScreenName } from '../../types';
 
 const { EMAIL_REGEX } = consts;
 
@@ -47,7 +45,8 @@ export const NoticeboardMessageForm = ({
   const {
     control,
     formState: { errors },
-    handleSubmit
+    handleSubmit,
+    reset: resetForm
   } = useForm({
     defaultValues: {
       email: '',
@@ -58,12 +57,14 @@ export const NoticeboardMessageForm = ({
     }
   });
 
-  const [createGenericItemMessage, { loading: messageLoading, error: messageError }] = useMutation(
-    CREATE_GENERIC_ITEM_MESSAGE
-  );
+  const [createGenericItemMessage, { loading }] = useMutation(CREATE_GENERIC_ITEM_MESSAGE);
 
   const onSubmit = async (noticeboardNewData: TNoticeboardMessageData) => {
-    if (!noticeboardNewData.termsOfService) return NoticeboardAlerts('termsOfService');
+    Keyboard.dismiss();
+
+    if (!noticeboardNewData.termsOfService) {
+      return Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.termsOfService);
+    }
 
     try {
       await createGenericItemMessage({
@@ -76,15 +77,16 @@ export const NoticeboardMessageForm = ({
           termsOfService: noticeboardNewData.termsOfService
         }
       });
-    } catch (error) {
-      console.error(error, messageError);
-      return NoticeboardAlerts('error');
-    }
 
-    navigation.navigate(ScreenName.NoticeboardSuccess, {
-      title: texts.noticeboard.successScreen.header,
-      successText: texts.noticeboard.successScreen.application
-    });
+      resetForm();
+
+      Alert.alert(
+        texts.noticeboard.successScreen.header,
+        texts.noticeboard.successScreen.application
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -92,7 +94,7 @@ export const NoticeboardMessageForm = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="name"
-          label={texts.noticeboard.inputName}
+          label={`${texts.noticeboard.inputName} *`}
           placeholder={texts.noticeboard.inputName}
           validate
           rules={{
@@ -106,7 +108,7 @@ export const NoticeboardMessageForm = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="email"
-          label={texts.noticeboard.inputMail}
+          label={`${texts.noticeboard.inputMail} *`}
           placeholder={texts.noticeboard.inputMail}
           keyboardType="email-address"
           validate
@@ -129,13 +131,14 @@ export const NoticeboardMessageForm = ({
           placeholder={texts.noticeboard.inputPhoneNumber}
           validate
           control={control}
+          keyboardType="phone-pad"
         />
       </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="message"
-          label={texts.noticeboard.inputMessage}
+          label={`${texts.noticeboard.inputMessage} *`}
           placeholder={texts.noticeboard.inputMessage}
           validate
           multiline
@@ -157,16 +160,13 @@ export const NoticeboardMessageForm = ({
             <Checkbox
               checked={!!value}
               onPress={() => onChange(!value)}
-              title={texts.noticeboard.inputCheckbox}
+              title={`${texts.noticeboard.inputCheckbox} *`}
               checkedColor={colors.accent}
               checkedIcon="check-square-o"
               uncheckedColor={colors.darkText}
               uncheckedIcon="square-o"
               containerStyle={styles.checkboxContainerStyle}
               textStyle={styles.checkboxTextStyle}
-              link={undefined}
-              center={undefined}
-              linkDescription={undefined}
             />
           )}
           control={control}
@@ -177,7 +177,7 @@ export const NoticeboardMessageForm = ({
         <Button
           onPress={handleSubmit(onSubmit)}
           title={texts.noticeboard.sent}
-          disabled={messageLoading}
+          disabled={loading}
         />
 
         <Touchable onPress={() => navigation.goBack()}>

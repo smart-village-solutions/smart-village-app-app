@@ -13,12 +13,12 @@ import { WrapperHorizontal } from './Wrapper';
 export const Checkbox = ({
   title,
   onPress,
-  link,
   checkedIcon,
   uncheckedIcon,
   checked,
-  center,
-  linkDescription,
+  center = undefined,
+  link = undefined,
+  linkDescription = undefined,
   ...props
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);

@@ -390,7 +390,7 @@ export const texts = {
   noticeboard: {
     abort: 'Abbrechen',
     alerts: {
-      dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von weniger als drei Monaten.',
+      dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
       error: 'Bitte versuchen Sie es erneut.',
       hint: 'Hinweis',
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
@@ -412,7 +412,7 @@ export const texts = {
     inputName: 'Ihr Name',
     inputPhoneNumber: 'Ihre Telefonnummer',
     inputTitle: 'Titel',
-    invalidMail: ' Addresse ist keine gültige E-Mail-Adresse.',
+    invalidMail: '-Adresse ist nicht gültig.',
     noticeboard: 'Schwarzes Brett',
     publicationDate: 'Erscheinungsdatum',
     sent: 'Senden',

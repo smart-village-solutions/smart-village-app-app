@@ -68,7 +68,7 @@ const parseGenericItems = (data, skipLastDivider, titleDetail) => {
     id: genericItem.id,
     subtitle: subtitle(
       momentFormatUtcToLocal(genericItem.publicationDate ?? genericItem.createdAt),
-      genericItem.dataProvider?.name
+      genericItem.genericType !== GenericType.Noticeboard && genericItem.dataProvider?.name
     ),
     title: genericItem.title,
     picture: {

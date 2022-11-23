@@ -25,15 +25,6 @@ import { NetworkContext } from '../../NetworkProvider';
 
 const a11yText = consts.a11yLabel;
 
-const getComponent = (isNewEntryForm: boolean) => {
-  switch (isNewEntryForm) {
-    case true:
-      return NoticeboardCreateForm;
-    case false:
-      return NoticeboardMessageForm;
-  }
-};
-
 /* eslint-disable complexity */
 export const NoticeboardFormScreen = ({
   navigation,
@@ -77,9 +68,7 @@ export const NoticeboardFormScreen = ({
     );
   }
 
-  const Component = getComponent(isNewEntryForm);
-
-  if (!Component) return null;
+  const Component = isNewEntryForm ? NoticeboardCreateForm : NoticeboardMessageForm;
 
   return (
     <SafeAreaViewFlex>
@@ -116,21 +105,20 @@ export const NoticeboardFormScreen = ({
               </Wrapper>
             )}
 
-            {!!details?.dates?.[0]?.dateStart && (
+            {!!details?.dates?.[0] && (
               <Wrapper>
-                <WrapperRow>
-                  <BoldText>{texts.noticeboard.publicationDate}: </BoldText>
-                  <RegularText>{momentFormat(details.dates[0].dateStart)}</RegularText>
-                </WrapperRow>
-              </Wrapper>
-            )}
-
-            {!!details?.dates?.[0]?.dateEnd && (
-              <Wrapper>
-                <WrapperRow>
-                  <BoldText>{texts.noticeboard.expiryDate}: </BoldText>
-                  <RegularText>{momentFormat(details.dates[0].dateEnd)}</RegularText>
-                </WrapperRow>
+                {!!details?.dates?.[0]?.dateStart && (
+                  <WrapperRow>
+                    <BoldText>{texts.noticeboard.publicationDate}: </BoldText>
+                    <RegularText>{momentFormat(details.dates[0].dateStart)}</RegularText>
+                  </WrapperRow>
+                )}
+                {!!details?.dates?.[0]?.dateEnd && (
+                  <WrapperRow>
+                    <BoldText>{texts.noticeboard.expiryDate}: </BoldText>
+                    <RegularText>{momentFormat(details.dates[0].dateEnd)}</RegularText>
+                  </WrapperRow>
+                )}
               </Wrapper>
             )}
 

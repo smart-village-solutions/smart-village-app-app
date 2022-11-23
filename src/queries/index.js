@@ -19,7 +19,7 @@ import {
   GET_EVENT_RECORDS,
   GET_EVENT_RECORDS_AND_CATEGORIES
 } from './eventRecords';
-import { CREATE_GENERIC_ITEM, GET_GENERIC_ITEM, GET_GENERIC_ITEMS } from './genericItem';
+import { GET_GENERIC_ITEM, GET_GENERIC_ITEMS } from './genericItem';
 import { GET_LUNCHES } from './lunch';
 import { GET_NEWS_ITEM, GET_NEWS_ITEMS, GET_NEWS_ITEMS_AND_DATA_PROVIDERS } from './newsItems';
 import { GET_NEWS_ITEMS_DATA_PROVIDERS } from './newsItemsDataProvider';
