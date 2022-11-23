@@ -77,7 +77,9 @@ export const HtmlScreen = ({ navigation, route }) => {
           <Wrapper>
             <HtmlView
               html={trimNewLines(data)}
-              openWebScreen={() => navigateWithSubQuery({ navigation })}
+              openWebScreen={(param) =>
+                navigateWithSubQuery({ params: param, navigation, subQuery })
+              }
               navigation={navigation}
             />
             <MultiButtonWithSubQuery {...{ navigation, rootRouteName, subQuery, title }} />
