@@ -22,6 +22,10 @@ export const GET_GENERIC_ITEMS = gql`
       genericType
       title
       externalId
+      categories {
+        id
+        name
+      }
       companies {
         id
         name
@@ -65,6 +69,7 @@ export const GET_GENERIC_ITEMS = gql`
       contentBlocks {
         id
         body
+        title
         mediaContents {
           id
           contentType
@@ -97,6 +102,7 @@ export const GET_GENERIC_ITEMS = gql`
       dates {
         id
         dateEnd
+        dateStart
       }
       publicationDate
       payload

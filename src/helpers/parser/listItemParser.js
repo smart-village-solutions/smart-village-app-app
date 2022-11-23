@@ -18,7 +18,7 @@ import { volunteerListDate, volunteerSubtitle } from '../volunteerHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
-const GENERIC_TYPES_WITH_DATES = [GenericType.Job, GenericType.Commercial];
+const GENERIC_TYPES_WITH_DATES = [GenericType.Job, GenericType.Commercial, GenericType.Noticeboard];
 
 const filterGenericItems = (item) => {
   if (GENERIC_TYPES_WITH_DATES.includes(item?.genericType)) {
@@ -80,7 +80,10 @@ const parseGenericItems = (data, skipLastDivider, titleDetail) => {
             mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
         )[0]?.sourceUrl?.url
     },
-    routeName: ScreenName.Detail,
+    routeName:
+      genericItem.genericType === GenericType.Noticeboard
+        ? ScreenName.NoticeboardForm
+        : ScreenName.Detail,
     params: {
       title: getGenericItemDetailTitle(genericItem.genericType),
       consentForDataProcessingText: titleDetail || '',
