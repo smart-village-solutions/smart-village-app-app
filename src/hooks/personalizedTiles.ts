@@ -10,7 +10,7 @@ const PERSONALIZED_TILES_SETTINGS = 'PERSONALIZED_TILES_SETTINGS';
 export const usePersonalizedTiles = (
   isPersonalizable = false,
   data: any,
-  isEditMode: boolean,
+  isEditMode = false,
   staticJsonName: string
 ) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +42,7 @@ export const usePersonalizedTiles = (
     }
 
     if (sorter) {
-      const sortedTiles = personalizedTiles.sort((a: TServiceTile, b: TServiceTile) => {
+      personalizedTiles = personalizedTiles.sort((a: TServiceTile, b: TServiceTile) => {
         const sortTitles = {
           a: a.title?.replace('​', '') || a.accessibilityLabel,
           b: b.title?.replace('​', '') || b.accessibilityLabel
@@ -54,9 +54,9 @@ export const usePersonalizedTiles = (
 
         return sortA - sortB;
       });
-
-      setTiles(sortedTiles);
     }
+
+    setTiles(personalizedTiles);
     setIsLoading(false);
   }, [staticJsonName]);
 
@@ -115,13 +115,10 @@ export const usePersonalizedTiles = (
 
   const isFocused = useIsFocused();
 
-  const refreshTiles = useCallback(
-    () => !isEditMode && getPersonalizedTiles(),
-    [isEditMode, getPersonalizedTiles]
-  );
+  const refreshTiles = useCallback(getPersonalizedTiles, [getPersonalizedTiles]);
 
   useEffect(() => {
-    isPersonalizable && refreshTiles();
+    isPersonalizable && !isEditMode && refreshTiles();
   }, [isFocused]);
 
   useEffect(() => {
