@@ -46,7 +46,8 @@
         "googleMaps": {
           "apiKey": "abcdef"
         }
-      }
+      },
+      "softwareKeyboardLayoutMode": "pan"
     },
     "androidStatusBar": {
       "barStyle": "dark-content",
