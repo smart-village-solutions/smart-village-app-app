@@ -1,10 +1,14 @@
+import { Alert } from 'react-native';
+
+import { texts } from '../../config';
+
 import { multipleSceneIndexGenerator } from './multipleSceneIndexGenerator';
 
 export const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
   const parsedObject = { textures: [] };
   const variableTextures = [];
 
-  const { modalIndex, textureIndex } = await multipleSceneIndexGenerator({
+  const { modalIndex, textureIndex } = multipleSceneIndexGenerator({
     startDate: item?.payload?.startDate,
     timePeriodInDays: item?.payload?.timePeriodInDays,
     scenes: item?.payload?.scenes
@@ -13,16 +17,16 @@ export const objectParser = async ({ item, setObject, setIsLoading, onPress }) =
   const localUris =
     item?.payload?.scenes?.[modalIndex]?.localUris || item?.payload?.scenes?.[0]?.localUris;
 
-  localUris.filter(
-    ({ stable, uri, type }) => stable && type === 'texture' && parsedObject.textures.push({ uri })
-  );
+  localUris.filter(({ stable, uri, type }) => {
+    if (type === 'texture') {
+      stable && parsedObject.textures.push({ uri });
+      !stable && variableTextures.push({ uri });
+    }
+  });
 
-  // combine stable textures with variable textures
-  if (typeof modalIndex === 'number' && typeof textureIndex === 'number') {
-    localUris.filter(
-      ({ stable, uri, type }) => !stable && type === 'texture' && variableTextures.push({ uri })
-    );
-    parsedObject.textures.push(variableTextures[textureIndex || 0] || []);
+  if (variableTextures.length > 0) {
+    const variableTexture = variableTextures[textureIndex || 0] || [];
+    parsedObject.textures.push(variableTexture);
   }
 
   if (localUris?.animationName) {
