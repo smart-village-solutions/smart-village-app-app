@@ -1,14 +1,33 @@
 import { ViroARSceneNavigator } from '@viro-community/react-viro';
-import moment from 'moment';
-import { extendMoment } from 'moment-range';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { AugmentedRealityView, LoadingSpinner } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
+import { objectParser } from '../../helpers';
 
-const extendedMoment = extendMoment(moment);
+const errorHandler = (errorCode) => {
+  Alert.alert(
+    texts.augmentedReality.modalHiddenAlertTitle,
+    texts.augmentedReality.arShowScreen.viroRecordingError?.[errorCode]
+  );
+};
+
+const screenshotFlashEffect = ({ screenshotEffectOpacityRef }) => {
+  Animated.parallel([
+    Animated.timing(screenshotEffectOpacityRef, {
+      duration: 0,
+      toValue: 1,
+      useNativeDriver: false
+    }),
+    Animated.timing(screenshotEffectOpacityRef, {
+      duration: 500,
+      toValue: 0,
+      useNativeDriver: false
+    })
+  ]).start();
+};
 
 export const ARShowScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -114,123 +133,6 @@ export const ARShowScreen = ({ navigation, route }) => {
       )}
     </>
   );
-};
-
-/**
- * index creation function for model and texture
- *
- * @param {string} startDate           start date of the model
- * @param {number} timePeriodInDays    time period in days of the model
- * @param {array}  scenes              array of models
- *
- * @return {object} both parsed values as an object, like { modalIndex: 1, textureIndex: 1 }
- */
-const multipleSceneIndexGenerator = async ({ startDate, timePeriodInDays, scenes }) =>
-  new Promise((resolve) => {
-    let modalIndex, textureIndex;
-
-    /* all models must have the same number of variable textures. Therefore, in order to obtain the 
-       number of textures, the textures of the first model were calculated. */
-    if (scenes.length > 1) {
-      const today = new Date(),
-        differenceDate = extendedMoment.range(startDate, today).diff('days'),
-        textureCount = scenes[0]?.localUris?.filter(
-          ({ type, stable }) => !stable && type === 'texture'
-        )?.length,
-        texture = Math.floor(differenceDate / timePeriodInDays),
-        modalCount = scenes.length,
-        modal = Math.floor(texture / textureCount);
-
-      modalIndex = modal % modalCount;
-      textureIndex = texture % textureCount;
-    }
-
-    resolve({ modalIndex, textureIndex });
-  });
-
-const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
-  const parsedObject = { textures: [] };
-  const variableTextures = [];
-
-  const { modalIndex, textureIndex } = await multipleSceneIndexGenerator({
-    startDate: item?.payload?.startDate,
-    timePeriodInDays: item?.payload?.timePeriodInDays,
-    scenes: item?.payload?.scenes
-  });
-
-  const localUris =
-    item?.payload?.scenes?.[modalIndex]?.localUris || item?.payload?.scenes?.[0]?.localUris;
-
-  localUris.filter(
-    ({ stable, uri, type }) => stable && type === 'texture' && parsedObject.textures.push({ uri })
-  );
-
-  // combine stable textures with variable textures
-  if (typeof modalIndex === 'number' && typeof textureIndex === 'number') {
-    localUris.filter(
-      ({ stable, uri, type }) => !stable && type === 'texture' && variableTextures.push({ uri })
-    );
-    parsedObject.textures.push(variableTextures[textureIndex || 0] || []);
-  }
-
-  if (localUris?.animationName) {
-    parsedObject.animationName = localUris?.animationName;
-  }
-
-  localUris?.forEach((item) => {
-    if (item.type !== 'texture') {
-      parsedObject[item.type] = {
-        chromaKeyFilteredVideo: item?.chromaKeyFilteredVideo,
-        color: item?.color,
-        intensity: item?.intensity,
-        isSpatialSound: item?.isSpatialSound,
-        maxDistance: item?.maxDistance,
-        minDistance: item?.minDistance,
-        physicalWidth: item?.physicalWidth,
-        position: item?.position,
-        rolloffModel: item?.rolloffModel,
-        rotation: item?.rotation,
-        scale: item?.scale,
-        temperature: item?.temperature,
-        uri: item?.uri
-      };
-    } else {
-      return;
-    }
-  });
-
-  if (!parsedObject?.textures?.length || !parsedObject?.vrx) {
-    return Alert.alert(
-      texts.augmentedReality.modalHiddenAlertTitle,
-      texts.augmentedReality.invalidModelError,
-      [{ text: texts.augmentedReality.ok, onPress }]
-    );
-  }
-
-  setObject(JSON.parse(JSON.stringify(parsedObject)));
-  setIsLoading(false);
-};
-
-const errorHandler = (errorCode) => {
-  Alert.alert(
-    texts.augmentedReality.modalHiddenAlertTitle,
-    texts.augmentedReality.arShowScreen.viroRecordingError?.[errorCode]
-  );
-};
-
-const screenshotFlashEffect = ({ screenshotEffectOpacityRef }) => {
-  Animated.parallel([
-    Animated.timing(screenshotEffectOpacityRef, {
-      duration: 0,
-      toValue: 1,
-      useNativeDriver: false
-    }),
-    Animated.timing(screenshotEffectOpacityRef, {
-      duration: 500,
-      toValue: 0,
-      useNativeDriver: false
-    })
-  ]).start();
 };
 
 var styles = StyleSheet.create({
