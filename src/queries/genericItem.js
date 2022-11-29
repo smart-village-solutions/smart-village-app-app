@@ -22,6 +22,10 @@ export const GET_GENERIC_ITEMS = gql`
       genericType
       title
       externalId
+      categories {
+        id
+        name
+      }
       companies {
         id
         name
@@ -65,6 +69,7 @@ export const GET_GENERIC_ITEMS = gql`
       contentBlocks {
         id
         body
+        title
         mediaContents {
           id
           contentType
@@ -97,6 +102,7 @@ export const GET_GENERIC_ITEMS = gql`
       dates {
         id
         dateEnd
+        dateStart
       }
       publicationDate
       payload
@@ -155,6 +161,7 @@ export const GET_GENERIC_ITEM = gql`
       contentBlocks {
         id
         body
+        title
         mediaContents {
           id
           contentType
@@ -187,9 +194,56 @@ export const GET_GENERIC_ITEM = gql`
       dates {
         id
         dateEnd
+        dateStart
       }
       publicationDate
       payload
+    }
+  }
+`;
+
+export const CREATE_GENERIC_ITEM = gql`
+  mutation createGenericItem(
+    $categoryName: String
+    $contacts: [ContactInput!]
+    $contentBlocks: [ContentBlockInput!]
+    $dates: [DateInput!]
+    $genericType: String
+    $publishedAt: String
+    $title: String
+  ) {
+    createGenericItem(
+      categoryName: $categoryName
+      contacts: $contacts
+      contentBlocks: $contentBlocks
+      dates: $dates
+      genericType: $genericType
+      publishedAt: $publishedAt
+      title: $title
+    ) {
+      id
+    }
+  }
+`;
+
+export const CREATE_GENERIC_ITEM_MESSAGE = gql`
+  mutation createGenericItemMessage(
+    $genericItemId: ID!
+    $name: String!
+    $email: String!
+    $phoneNumber: String
+    $message: String!
+    $termsOfService: Boolean!
+  ) {
+    createGenericItemMessage(
+      genericItemId: $genericItemId
+      name: $name
+      email: $email
+      phoneNumber: $phoneNumber
+      message: $message
+      termsOfService: $termsOfService
+    ) {
+      statusCode
     }
   }
 `;

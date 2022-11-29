@@ -22,11 +22,15 @@ import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
 
+import { NoticeboardFormScreen } from './Noticeboard';
+
 const getGenericComponent = (genericType) => {
   switch (genericType) {
     case GenericType.Commercial:
     case GenericType.Job:
       return Offer;
+    case GenericType.Noticeboard:
+      return NoticeboardFormScreen;
   }
 };
 

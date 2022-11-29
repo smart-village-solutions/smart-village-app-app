@@ -11,6 +11,7 @@ export * from './GenericType';
 export * from './LocationSettings';
 export * from './Map';
 export * from './Navigation';
+export * from './NoticeboardType';
 export * from './OParlObjectTypes';
 export * from './OpeningHour';
 export * from './PermanentFilter';

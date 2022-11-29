@@ -388,7 +388,40 @@ export const texts = {
     home: 'Übersicht'
   },
   noticeboard: {
+    abort: 'Abbrechen',
+    alerts: {
+      dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
+      error: 'Bitte versuchen Sie es erneut.',
+      hint: 'Hinweis',
+      noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
+      termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
+    },
+    categoryNames: {
+      neighbourlyHelp: 'Nachbarschaftshilfe',
+      offer: 'Angebot',
+      search: 'Gesuch'
+    },
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
+    expiryDate: 'Ablaufdatum',
+    inputCheckbox: 'Einverständnis zur Datenverarbeitung',
+    inputDate: (requestedDateDifference) => `Laufzeit (max. ${requestedDateDifference} Monate)`,
+    inputDescription: 'Beschreibung',
+    inputErrorText: 'muss ausgefüllt werden',
+    inputMail: 'Ihre E-Mail',
+    inputMessage: 'Ihre Nachricht',
+    inputName: 'Ihr Name',
+    inputPhoneNumber: 'Ihre Telefonnummer',
+    inputTitle: 'Titel',
+    invalidMail: '-Adresse ist nicht gültig.',
+    noticeboard: 'Schwarzes Brett',
+    publicationDate: 'Erscheinungsdatum',
+    sent: 'Senden',
+    successScreen: {
+      application: 'Ihre Nachricht wurde gesendet.',
+      entry:
+        'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Sie erhalten eine E-Mail, wenn der Eintrag freigeschaltet wurde.',
+      header: 'Vielen Dank'
+    }
   },
   oparl: {
     agendaItem: {

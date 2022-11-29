@@ -144,6 +144,7 @@ export const consts = {
     EVENT_RECORDS: 'EventRecords',
     JOBS: 'Jobs',
     NEWS_ITEMS: 'NewsItems',
+    NOTICEBOARD: 'Noticeboard',
     POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours',
     POINTS_OF_INTEREST: 'PointsOfInterest',
     TOURS: 'Tours',
