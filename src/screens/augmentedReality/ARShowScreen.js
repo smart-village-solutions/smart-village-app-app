@@ -149,19 +149,36 @@ const multipleSceneIndexGenerator = async ({ startDate, timePeriodInDays, scenes
   });
 
 const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
-  const parsedObject = { texture: [] };
+  const parsedObject = { textures: [] };
+  const variableTextures = [];
 
-  // TODO: in the future the index 0 used here will be changed according to time logic!
-  const localUris = item?.payload?.scenes?.[0]?.localUris;
+  const { modalIndex, textureIndex } = await multipleSceneIndexGenerator({
+    startDate: item?.payload?.startDate,
+    timePeriodInDays: item?.payload?.timePeriodInDays,
+    scenes: item?.payload?.scenes
+  });
+
+  const localUris =
+    item?.payload?.scenes?.[modalIndex]?.localUris || item?.payload?.scenes?.[0]?.localUris;
+
+  localUris.filter(
+    ({ stable, uri, type }) => stable && type === 'texture' && parsedObject.textures.push({ uri })
+  );
+
+  // combine stable textures with variable textures
+  if (typeof modalIndex === 'number' && typeof textureIndex === 'number') {
+    localUris.filter(
+      ({ stable, uri, type }) => !stable && type === 'texture' && variableTextures.push({ uri })
+    );
+    parsedObject.textures.push(variableTextures[textureIndex || 0] || []);
+  }
 
   if (localUris?.animationName) {
     parsedObject.animationName = localUris?.animationName;
   }
 
   localUris?.forEach((item) => {
-    if (item.type === 'texture') {
-      parsedObject[item.type]?.push({ uri: item?.uri });
-    } else {
+    if (item.type !== 'texture') {
       parsedObject[item.type] = {
         chromaKeyFilteredVideo: item?.chromaKeyFilteredVideo,
         color: item?.color,
@@ -177,10 +194,12 @@ const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
         temperature: item?.temperature,
         uri: item?.uri
       };
+    } else {
+      return;
     }
   });
 
-  if (!parsedObject?.texture?.length || !parsedObject?.vrx) {
+  if (!parsedObject?.textures?.length || !parsedObject?.vrx) {
     return Alert.alert(
       texts.augmentedReality.modalHiddenAlertTitle,
       texts.augmentedReality.invalidModelError,
