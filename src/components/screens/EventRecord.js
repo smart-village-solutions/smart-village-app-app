@@ -11,12 +11,13 @@ import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
-import { matomoTrackingString, trimNewLines } from '../../helpers';
+import { matomoTrackingString, openLink, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { DataProviderButton } from '../DataProviderButton';
+import { Button } from '../Button';
 
 import { OperatingCompany } from './OperatingCompany';
 import { OpeningTimesCard } from './OpeningTimesCard';
@@ -48,6 +49,7 @@ export const EventRecord = ({ data, route }) => {
     mediaContents,
     operatingCompany,
     priceInformations,
+    settings,
     title,
     webUrls
   } = data;
@@ -130,7 +132,7 @@ export const EventRecord = ({ data, route }) => {
             category={category}
             addresses={addresses}
             contacts={contacts}
-            webUrls={webUrls}
+            webUrls={settings?.displayOnlySummary === 'true' ? [] : webUrls}
             openWebScreen={openWebScreen}
           />
         </Wrapper>
@@ -181,6 +183,18 @@ export const EventRecord = ({ data, route }) => {
           operatingCompany={operatingCompany}
           title={texts.eventRecord.operatingCompany}
         />
+
+        {settings?.displayOnlySummary === 'true' && !!settings?.onlySummaryLinkText && (
+          <Wrapper>
+            {webUrls.map(({ url }, index) => (
+              <Button
+                key={index}
+                title={settings.onlySummaryLinkText}
+                onPress={() => openLink(url, openWebScreen)}
+              />
+            ))}
+          </Wrapper>
+        )}
 
         <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
