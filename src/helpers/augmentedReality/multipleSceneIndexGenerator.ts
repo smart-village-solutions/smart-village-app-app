@@ -13,14 +13,14 @@ type TScenes = { localUris: Array<{ type: string; stable: boolean }> };
  * @param {number} timePeriodInDays    time period in days of the model
  * @param {array}  scenes              array of models
  *
- * @return {object} both parsed values as an object, like { modalIndex: 1, textureIndex: 1 }
+ * @return {object} both parsed values as an object, like { modelIndex: 1, textureIndex: 1 }
  */
 export const multipleSceneIndexGenerator = ({
   startDate,
   timePeriodInDays,
   scenes
 }: TGenerator) => {
-  let modalIndex, textureIndex;
+  let modelIndex, textureIndex;
 
   /* all models must have the same number of variable textures. Therefore, in order to obtain the 
       number of textures, the textures of the first model were calculated. */
@@ -31,12 +31,12 @@ export const multipleSceneIndexGenerator = ({
         ({ type, stable }) => !stable && type === 'texture'
       )?.length,
       texture = Math.floor(differenceDate / timePeriodInDays),
-      modalCount = scenes.length,
-      modal = Math.floor(texture / textureCount);
+      modelCount = scenes.length,
+      model = Math.floor(texture / textureCount);
 
-    modalIndex = modal % modalCount;
+    modelIndex = model % modelCount;
     textureIndex = texture % textureCount;
   }
 
-  return { modalIndex, textureIndex };
+  return { modelIndex, textureIndex };
 };

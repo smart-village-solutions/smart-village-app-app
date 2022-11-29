@@ -8,14 +8,14 @@ export const objectParser = async ({ item, setObject, setIsLoading, onPress }) =
   const parsedObject = { textures: [] };
   const variableTextures = [];
 
-  const { modalIndex, textureIndex } = multipleSceneIndexGenerator({
+  const { modelIndex, textureIndex } = multipleSceneIndexGenerator({
     startDate: item?.payload?.startDate,
     timePeriodInDays: item?.payload?.timePeriodInDays,
     scenes: item?.payload?.scenes
   });
 
   const localUris =
-    item?.payload?.scenes?.[modalIndex]?.localUris || item?.payload?.scenes?.[0]?.localUris;
+    item?.payload?.scenes?.[modelIndex]?.localUris || item?.payload?.scenes?.[0]?.localUris;
 
   localUris.filter(({ stable, uri, type }) => {
     if (type === 'texture') {
