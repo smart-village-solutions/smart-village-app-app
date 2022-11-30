@@ -17,24 +17,15 @@ export const objectParser = async ({ item, setObject, setIsLoading, onPress }) =
   const localUris =
     item?.payload?.scenes?.[modelIndex]?.localUris || item?.payload?.scenes?.[0]?.localUris;
 
-  localUris.filter(({ stable, uri, type }) => {
-    if (type === 'texture') {
-      stable && parsedObject.textures.push({ uri });
-      !stable && variableTextures.push({ uri });
-    }
-  });
-
-  if (variableTextures.length > 0) {
-    const variableTexture = variableTextures[textureIndex || 0] || [];
-    parsedObject.textures.push(variableTexture);
-  }
-
   if (localUris?.animationName) {
     parsedObject.animationName = localUris?.animationName;
   }
 
   localUris?.forEach((item) => {
-    if (item.type !== 'texture') {
+    if (item.type === 'texture') {
+      item.stable && parsedObject.textures.push({ uri: item.uri });
+      !item.stable && variableTextures.push({ uri: item.uri });
+    } else {
       parsedObject[item.type] = {
         chromaKeyFilteredVideo: item?.chromaKeyFilteredVideo,
         color: item?.color,
@@ -52,6 +43,11 @@ export const objectParser = async ({ item, setObject, setIsLoading, onPress }) =
       };
     }
   });
+
+  if (variableTextures.length > 0) {
+    const variableTexture = variableTextures[textureIndex || 0] || [];
+    parsedObject.textures.push(variableTexture);
+  }
 
   if (!parsedObject?.textures?.length || !parsedObject?.vrx) {
     return Alert.alert(
