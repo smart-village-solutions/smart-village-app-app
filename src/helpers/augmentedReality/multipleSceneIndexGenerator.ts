@@ -23,7 +23,7 @@ export const multipleSceneIndexGenerator = ({
 }: TGenerator) => {
   let modelIndex = 0;
   const scenesCount = scenes?.length;
-  const localUris = scenes?.[modelIndex]?.localUris;
+  let localUris = scenes?.[modelIndex]?.localUris;
 
   // if we have multiple scenes, we want to calculate the model and texture based on the current day
   // compared to the `startDate`
@@ -49,6 +49,7 @@ export const multipleSceneIndexGenerator = ({
     modelIndex = model % scenesCount;
     const textureIndex = texture % variableTexturesCount;
     const variableTexture = variableTextures?.[textureIndex];
+    localUris = scenes?.[modelIndex]?.localUris;
 
     _remove(localUris, ({ type, stable }) => type === 'texture' && !stable);
 
