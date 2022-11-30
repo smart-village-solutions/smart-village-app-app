@@ -5,6 +5,29 @@ import { Alert, Animated, StyleSheet, TouchableOpacity, View } from 'react-nativ
 
 import { AugmentedRealityView, LoadingSpinner } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
+import { objectParser } from '../../helpers';
+
+const errorHandler = (errorCode) => {
+  Alert.alert(
+    texts.augmentedReality.modalHiddenAlertTitle,
+    texts.augmentedReality.arShowScreen.viroRecordingError?.[errorCode]
+  );
+};
+
+const screenshotFlashEffect = ({ screenshotEffectOpacityRef }) => {
+  Animated.parallel([
+    Animated.timing(screenshotEffectOpacityRef, {
+      duration: 0,
+      toValue: 1,
+      useNativeDriver: false
+    }),
+    Animated.timing(screenshotEffectOpacityRef, {
+      duration: 500,
+      toValue: 0,
+      useNativeDriver: false
+    })
+  ]).start();
+};
 
 export const ARShowScreen = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -19,7 +42,7 @@ export const ARShowScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     objectParser({
-      item: data?.[index],
+      payload: data?.[index]?.payload,
       setObject,
       setIsLoading,
       onPress: () => navigation.goBack()
@@ -110,72 +133,6 @@ export const ARShowScreen = ({ navigation, route }) => {
       )}
     </>
   );
-};
-
-const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
-  const parsedObject = { texture: [] };
-
-  // TODO: in the future the index 0 used here will be changed according to time logic!
-  const localUris = item?.payload?.scenes?.[0]?.localUris;
-
-  if (localUris?.animationName) {
-    parsedObject.animationName = localUris?.animationName;
-  }
-
-  localUris?.forEach((item) => {
-    if (item.type === 'texture') {
-      parsedObject[item.type]?.push({ uri: item?.uri });
-    } else {
-      parsedObject[item.type] = {
-        chromaKeyFilteredVideo: item?.chromaKeyFilteredVideo,
-        color: item?.color,
-        intensity: item?.intensity,
-        isSpatialSound: item?.isSpatialSound,
-        maxDistance: item?.maxDistance,
-        minDistance: item?.minDistance,
-        physicalWidth: item?.physicalWidth,
-        position: item?.position,
-        rolloffModel: item?.rolloffModel,
-        rotation: item?.rotation,
-        scale: item?.scale,
-        temperature: item?.temperature,
-        uri: item?.uri
-      };
-    }
-  });
-
-  if (!parsedObject?.texture?.length || !parsedObject?.vrx) {
-    return Alert.alert(
-      texts.augmentedReality.modalHiddenAlertTitle,
-      texts.augmentedReality.invalidModelError,
-      [{ text: texts.augmentedReality.ok, onPress }]
-    );
-  }
-
-  setObject(JSON.parse(JSON.stringify(parsedObject)));
-  setIsLoading(false);
-};
-
-const errorHandler = (errorCode) => {
-  Alert.alert(
-    texts.augmentedReality.modalHiddenAlertTitle,
-    texts.augmentedReality.arShowScreen.viroRecordingError?.[errorCode]
-  );
-};
-
-const screenshotFlashEffect = ({ screenshotEffectOpacityRef }) => {
-  Animated.parallel([
-    Animated.timing(screenshotEffectOpacityRef, {
-      duration: 0,
-      toValue: 1,
-      useNativeDriver: false
-    }),
-    Animated.timing(screenshotEffectOpacityRef, {
-      duration: 500,
-      toValue: 0,
-      useNativeDriver: false
-    })
-  ]).start();
 };
 
 var styles = StyleSheet.create({

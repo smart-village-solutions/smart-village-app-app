@@ -25,6 +25,7 @@ export const downloadObject = async ({ index, data, setData }) => {
         rolloffModel,
         rotation,
         scale,
+        stable,
         temperature,
         title,
         type,
@@ -81,6 +82,7 @@ export const downloadObject = async ({ index, data, setData }) => {
           rotation, // Array [x,y,z]
           scale, // Array [x,y,z]
           size,
+          stable,
           temperature, // Number
           title,
           type,
