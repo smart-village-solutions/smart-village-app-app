@@ -42,7 +42,7 @@ export const ARShowScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     objectParser({
-      item: data?.[index],
+      payload: data?.[index]?.payload,
       setObject,
       setIsLoading,
       onPress: () => navigation.goBack()

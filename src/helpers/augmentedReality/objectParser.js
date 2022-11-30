@@ -4,14 +4,10 @@ import { texts } from '../../config';
 
 import { multipleSceneIndexGenerator } from './multipleSceneIndexGenerator';
 
-export const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
+export const objectParser = async ({ payload, setObject, setIsLoading, onPress }) => {
   const parsedObject = { textures: [] };
 
-  const { localUris } = multipleSceneIndexGenerator({
-    scenes: item?.payload?.scenes,
-    startDate: item?.payload?.startDate,
-    timePeriodInDays: item?.payload?.timePeriodInDays
-  });
+  const { localUris } = multipleSceneIndexGenerator(payload);
 
   if (localUris?.animationName) {
     parsedObject.animationName = localUris?.animationName;
