@@ -6,16 +6,12 @@ import { multipleSceneIndexGenerator } from './multipleSceneIndexGenerator';
 
 export const objectParser = async ({ item, setObject, setIsLoading, onPress }) => {
   const parsedObject = { textures: [] };
-  const variableTextures = [];
 
-  const { modelIndex, textureIndex } = multipleSceneIndexGenerator({
+  const { localUris } = multipleSceneIndexGenerator({
+    scenes: item?.payload?.scenes,
     startDate: item?.payload?.startDate,
-    timePeriodInDays: item?.payload?.timePeriodInDays,
-    scenes: item?.payload?.scenes
+    timePeriodInDays: item?.payload?.timePeriodInDays
   });
-
-  const localUris =
-    item?.payload?.scenes?.[modelIndex]?.localUris || item?.payload?.scenes?.[0]?.localUris;
 
   if (localUris?.animationName) {
     parsedObject.animationName = localUris?.animationName;
@@ -23,8 +19,7 @@ export const objectParser = async ({ item, setObject, setIsLoading, onPress }) =
 
   localUris?.forEach((item) => {
     if (item.type === 'texture') {
-      item.stable && parsedObject.textures.push({ uri: item.uri });
-      !item.stable && variableTextures.push({ uri: item.uri });
+      parsedObject.textures.push({ uri: item.uri });
     } else {
       parsedObject[item.type] = {
         chromaKeyFilteredVideo: item?.chromaKeyFilteredVideo,
@@ -43,11 +38,6 @@ export const objectParser = async ({ item, setObject, setIsLoading, onPress }) =
       };
     }
   });
-
-  if (variableTextures.length > 0) {
-    const variableTexture = variableTextures[textureIndex || 0] || [];
-    parsedObject.textures.push(variableTexture);
-  }
 
   if (!parsedObject?.textures?.length || !parsedObject?.vrx) {
     return Alert.alert(

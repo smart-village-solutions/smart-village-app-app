@@ -3,8 +3,8 @@ import { extendMoment } from 'moment-range';
 
 const extendedMoment = extendMoment(moment);
 
-type TGenerator = { startDate: Date; timePeriodInDays: number; scenes: Array<TScenes> };
 type TScenes = { localUris: Array<{ type: string; stable: boolean }> };
+type TGenerator = { startDate: Date; timePeriodInDays: number; scenes: Array<TScenes> };
 
 /**
  * index creation function for model and texture
@@ -16,27 +16,34 @@ type TScenes = { localUris: Array<{ type: string; stable: boolean }> };
  * @return {object} both parsed values as an object, like { modelIndex: 1, textureIndex: 1 }
  */
 export const multipleSceneIndexGenerator = ({
+  scenes,
   startDate,
-  timePeriodInDays,
-  scenes
+  timePeriodInDays
 }: TGenerator) => {
-  let modelIndex, textureIndex;
+  let modelIndex = 0;
+  const scenesCount = scenes?.length;
+  let localUris = scenes?.[modelIndex]?.localUris;
 
-  /* all models must have the same number of variable textures. Therefore, in order to obtain the 
-      number of textures, the textures of the first model were calculated. */
-  if (scenes.length > 1) {
-    const today = new Date(),
-      differenceDate = extendedMoment.range(startDate, today).diff('days'),
-      textureCount = scenes[0]?.localUris?.filter(
-        ({ type, stable }) => !stable && type === 'texture'
-      )?.length,
-      texture = Math.floor(differenceDate / timePeriodInDays),
-      modelCount = scenes.length,
-      model = Math.floor(texture / textureCount);
+  // if we have multiple scenes, we want to calculate the model and texture based on the current day
+  // compared to the `startDate`
+  if (scenesCount > 1 && startDate && timePeriodInDays) {
+    const today = new Date();
 
-    modelIndex = model % modelCount;
-    textureIndex = texture % textureCount;
+    // the current day number is the number of running days since the given start date
+    const currentDayNumber = extendedMoment.range(startDate, today).diff('days');
+
+    // all models must have the same number of variable textures. therefore, in order to obtain the
+    // number of textures, the textures of the first model were calculated.
+    const textureCount = scenes[0]?.localUris?.filter(
+      ({ type, stable }) => !stable && type === 'texture'
+    )?.length;
+
+    const texture = Math.floor(currentDayNumber / timePeriodInDays);
+    const model = Math.floor(texture / textureCount);
+    modelIndex = model % scenesCount;
+    const textureIndex = texture % textureCount;
+    localUris = [scenes[modelIndex]?.localUris[textureIndex]];
   }
 
-  return { modelIndex, textureIndex };
+  return { localUris };
 };
