@@ -87,13 +87,7 @@ export const AugmentedRealityView = ({ sceneNavigator }) => {
 
 // eslint-disable-next-line complexity
 const ViroSoundAnd3DObject = (item) => {
-  const {
-    isObjectLoading,
-    setIsObjectLoading,
-    isStartAnimationAndSound,
-    setIsStartAnimationAndSound,
-    object
-  } = item;
+  const { isObjectLoading, setIsObjectLoading, isStartAnimationAndSound, object } = item;
 
   if (object?.mp4) {
     // if the `chromaKeyFilteredVideo` prop is undefined, the default color of a green screen is set
@@ -113,7 +107,7 @@ const ViroSoundAnd3DObject = (item) => {
               <ViroSpatialSound
                 source={{ uri: object?.mp3?.uri }}
                 paused={!isStartAnimationAndSound}
-                onFinish={() => setIsStartAnimationAndSound(false)}
+                loop
                 maxDistance={object?.mp3?.maxDistance}
                 minDistance={object?.mp3?.minDistance}
                 position={object?.mp3?.position}
@@ -123,7 +117,7 @@ const ViroSoundAnd3DObject = (item) => {
               <ViroSound
                 source={{ uri: object?.mp3?.uri }}
                 paused={!isStartAnimationAndSound}
-                onFinish={() => setIsStartAnimationAndSound(false)}
+                loop
               />
             ))}
 
