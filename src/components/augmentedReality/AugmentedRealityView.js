@@ -143,22 +143,27 @@ const ViroSoundAnd3DObject = (item) => {
         </>
       )}
 
-      <Viro3DObject
-        source={{ uri: object?.vrx?.uri }}
-        resources={object?.textures}
-        type="VRX"
-        position={object?.vrx?.position}
-        rotation={object?.vrx?.rotation}
-        scale={object?.vrx?.scale}
-        onLoadStart={() => setIsObjectLoading(true)}
-        onLoadEnd={() => setIsObjectLoading(false)}
-        onError={() => alert(texts.augmentedReality.arShowScreen.objectLoadErrorAlert)}
-        animation={{
-          loop: true,
-          name: object?.animationName,
-          run: isStartAnimationAndSound
-        }}
-      />
+      {!!object?.models &&
+        !!object?.textures &&
+        object.models.map((model, index) => (
+          <Viro3DObject
+            key={index}
+            source={{ uri: model.uri }}
+            resources={object.textures}
+            type="VRX"
+            position={model.position}
+            rotation={model.rotation}
+            scale={model.scale}
+            onLoadStart={() => setIsObjectLoading(true)}
+            onLoadEnd={() => setIsObjectLoading(false)}
+            onError={() => alert(texts.augmentedReality.arShowScreen.objectLoadErrorAlert)}
+            animation={{
+              loop: true,
+              name: object?.animationName,
+              run: isStartAnimationAndSound
+            }}
+          />
+        ))}
     </>
   );
 };
