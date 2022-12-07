@@ -55,6 +55,18 @@ export const multipleSceneIndexGenerator = ({
     );
     const variableTexturesCount = variableTextures?.length;
 
+    if (!variableTexturesCount) {
+      // nothing to do if there are no unstable textures
+      // keep original localUris with modelIndex = 0
+      localUris.forEach((subItem) => {
+        modelsAndTexturesArrayGenerator(subItem, models, textures);
+      });
+
+      _remove(localUris, ({ type }) => type === 'texture' || type === 'vrx');
+
+      return { localUris, models, textures };
+    }
+
     const today = new Date();
     // the current day number is the number of running days since the given start date
     const currentDayNumber = extendedMoment.range(startDate, today).diff('days');
@@ -62,8 +74,8 @@ export const multipleSceneIndexGenerator = ({
     const model = Math.floor(texture / variableTexturesCount);
     modelIndex = model % scenesCount;
 
-    // When VariableTextures are created, they are created according to index 0 of the scene array.
-    // Once the modelIndex is found, it must be updated to select the correct texture file.
+    // When `variableTextures` are created, they are created according to index 0 of the scene array.
+    // Once the `modelIndex` is found, it must be updated to select the correct texture file.
     if (modelIndex > 0) {
       variableTextures = scenes[modelIndex]?.localUris?.filter(
         ({ type, stable }) => type === 'texture' && !stable
@@ -72,47 +84,47 @@ export const multipleSceneIndexGenerator = ({
 
     localUris = scenes?.[modelIndex]?.localUris;
     const textureIndex = texture % variableTexturesCount;
-    const variableTexture = variableTextures[textureIndex];
-
-    localUris.forEach((item) => {
-      switch (item.type) {
-        case 'vrx':
-          models.push(item as TModels[0]);
-          break;
-        case 'texture':
-          if (item.stable) {
-            textures.push(item as TTextures[0]);
-            !!variableTexture && textures.push(variableTexture as TTextures[0]);
-          }
-          break;
-        default:
-          break;
-      }
-    });
-
-    _remove(localUris, ({ type }) => type === 'texture' || type === 'vrx');
-
-    localUris.push({ models, textures });
-  } else {
-    scenes.forEach(({ localUris: multiModelLocalUris }) => {
-      multiModelLocalUris.forEach((item) => {
-        switch (item.type) {
-          case 'vrx':
-            models.push(item as TModels[0]);
-            break;
-          case 'texture':
-            textures.push(item as TTextures[0]);
-            break;
-          default:
-            break;
-        }
-      });
-    });
-
-    _remove(localUris, ({ type }) => type === 'texture' || type === 'vrx');
-
-    localUris.push({ models, textures });
+    textures.push(variableTextures?.[textureIndex] as TTextures[0]);
   }
 
-  return { localUris };
+  for (let i = 0; i < scenes.length; i++) {
+    if (scenesCount > 1 && startDate && timePeriodInDays) {
+      // INFO: localUris = scenes?.[modelIndex]?.localUris;
+      // `localUri` is generated according to `modelIndex`.
+      localUris.forEach((subItem) => {
+        modelsAndTexturesArrayGenerator(subItem, models, textures, true);
+      });
+      break;
+    } else {
+      localUris = scenes?.[i]?.localUris;
+      localUris.forEach((subItem) => {
+        modelsAndTexturesArrayGenerator(subItem, models, textures);
+      });
+    }
+  }
+
+  // deleted to avoid sending unused information to the `AugmentedRealityView` screen
+  _remove(localUris, ({ type }) => type === 'texture' || type === 'vrx');
+
+  return { localUris, models, textures };
+};
+
+const modelsAndTexturesArrayGenerator = (
+  subItem: TScenes['localUris'][0],
+  models: TModels,
+  textures: TTextures,
+  stableTextureLogic?: boolean
+) => {
+  switch (subItem.type) {
+    case 'vrx':
+      models.push(subItem as TModels[0]);
+      break;
+    case 'texture':
+      stableTextureLogic
+        ? subItem.stable && textures.push(subItem as TTextures[0])
+        : textures.push(subItem as TTextures[0]);
+      break;
+    default:
+      break;
+  }
 };

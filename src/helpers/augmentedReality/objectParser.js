@@ -7,15 +7,18 @@ import { multipleSceneIndexGenerator } from './multipleSceneIndexGenerator';
 export const objectParser = async ({ payload, setObject, setIsLoading, onPress }) => {
   const parsedObject = { textures: [], models: [] };
 
-  const { localUris } = multipleSceneIndexGenerator(payload);
+  const { localUris, models, textures } = multipleSceneIndexGenerator(payload);
 
   if (payload?.animationName) {
     parsedObject.animationName = payload.animationName;
   }
 
+  if (models.length && textures.length) {
+    parsedObject.models = models;
+    parsedObject.textures = textures;
+  }
+
   localUris?.forEach((item) => {
-    parsedObject.models = item?.models;
-    parsedObject.textures = item?.textures;
     parsedObject[item.type] = {
       chromaKeyFilteredVideo: item?.chromaKeyFilteredVideo,
       color: item?.color,
