@@ -9,8 +9,8 @@ export const objectParser = async ({ payload, setObject, setIsLoading, onPress }
 
   const { localUris } = multipleSceneIndexGenerator(payload);
 
-  if (localUris?.animationName) {
-    parsedObject.animationName = localUris?.animationName;
+  if (payload?.animationName) {
+    parsedObject.animationName = payload.animationName;
   }
 
   localUris?.forEach((item) => {
