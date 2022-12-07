@@ -50,7 +50,7 @@ export const multipleSceneIndexGenerator = ({
   if (scenesCount > 1 && startDate && timePeriodInDays) {
     // all models must have the same number of variable textures. therefore, in order to obtain the
     // number of textures, the textures of the first model were calculated.
-    let variableTextures = scenes[0]?.localUris?.filter(
+    let variableTextures = scenes[modelIndex]?.localUris?.filter(
       ({ type, stable }) => type === 'texture' && !stable
     );
     const variableTexturesCount = variableTextures?.length;
@@ -64,9 +64,12 @@ export const multipleSceneIndexGenerator = ({
 
     // When VariableTextures are created, they are created according to index 0 of the scene array.
     // Once the modelIndex is found, it must be updated to select the correct texture file.
-    variableTextures = scenes[modelIndex]?.localUris?.filter(
-      ({ type, stable }) => type === 'texture' && !stable
-    );
+    if (modelIndex > 0) {
+      variableTextures = scenes[modelIndex]?.localUris?.filter(
+        ({ type, stable }) => type === 'texture' && !stable
+      );
+    }
+
     localUris = scenes?.[modelIndex]?.localUris;
     const textureIndex = texture % variableTexturesCount;
     const variableTexture = variableTextures[textureIndex];
