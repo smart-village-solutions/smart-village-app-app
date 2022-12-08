@@ -114,3 +114,40 @@ export const addDataProvidersToTokenOnServer = async (excludeDataProviderIds: nu
 
   return false;
 };
+
+export const togglePushDeviceAssignment = async (
+  notificationPushableId: string,
+  notificationPushableType: string,
+  method: 'POST' | 'DELETE' = 'POST'
+) => {
+  const storedToken = await getPushTokenFromStorage();
+  const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+  let requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesAddAssignment;
+
+  if (method === 'DELETE') {
+    requestPath =
+      secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesRemoveAssignment;
+  }
+
+  const fetchObj = {
+    method,
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + accessToken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      notification_push_device_assignment: {
+        token: storedToken,
+        notification_pushable_id: notificationPushableId,
+        notification_pushable_type: notificationPushableType
+      }
+    })
+  };
+
+  if (storedToken && accessToken) {
+    return fetch(requestPath, fetchObj).then((response) => response.status === 200);
+  }
+
+  return false;
+};
