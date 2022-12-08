@@ -115,6 +115,7 @@ export const consts = {
       COMPANY: 'Company',
       CONSTRUCTION_SITE_DETAIL: 'Construction',
       CONSTRUCTION_SITES: 'Constructions',
+      DEADLINE: 'Deadline',
       EVENT_RECORDS: 'Events',
       FEEDBACK: 'Feedback',
       HOME: 'Home',
@@ -123,6 +124,7 @@ export const consts = {
       MORE: 'More',
       LUNCH: 'Lunch',
       NEWS_ITEMS: 'News',
+      NOTICEBOARD: 'Noticeboard',
       POINTS_OF_INTEREST_AND_TOURS: 'Points of interest and tours',
       POINTS_OF_INTEREST: 'Points of interest',
       SERVICE: 'Service',
@@ -141,6 +143,7 @@ export const consts = {
 
   ROOT_ROUTE_NAMES: {
     COMMERCIALS: 'Commercials',
+    DEADLINES: 'Deadlines',
     EVENT_RECORDS: 'EventRecords',
     JOBS: 'Jobs',
     NEWS_ITEMS: 'NewsItems',
