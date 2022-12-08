@@ -59,7 +59,7 @@ export const multipleSceneIndexGenerator = ({
       // nothing to do if there are no unstable textures
       // keep original localUris with modelIndex = 0
       localUris.forEach((subItem) => {
-        modelsAndTexturesArrayGenerator(subItem, models, textures);
+        modelsAndTexturesArrayGenerator(subItem, models, textures, false);
       });
 
       _remove(localUris, ({ type }) => type === 'texture' || type === 'vrx');
@@ -85,22 +85,22 @@ export const multipleSceneIndexGenerator = ({
     localUris = scenes?.[modelIndex]?.localUris;
     const textureIndex = texture % variableTexturesCount;
     textures.push(variableTextures?.[textureIndex] as TTextures[0]);
+
+    localUris.forEach((subItem) => {
+      modelsAndTexturesArrayGenerator(subItem, models, textures, !!subItem.stable);
+    });
+
+    // deleted to avoid sending unused information to the `AugmentedRealityView` screen
+    _remove(localUris, ({ type }) => type === 'texture' || type === 'vrx');
+
+    return { localUris, models, textures };
   }
 
   for (let i = 0; i < scenes.length; i++) {
-    if (scenesCount > 1 && startDate && timePeriodInDays) {
-      // INFO: localUris = scenes?.[modelIndex]?.localUris;
-      // `localUri` is generated according to `modelIndex`.
-      localUris.forEach((subItem) => {
-        modelsAndTexturesArrayGenerator(subItem, models, textures, true);
-      });
-      break;
-    } else {
-      localUris = scenes?.[i]?.localUris;
-      localUris.forEach((subItem) => {
-        modelsAndTexturesArrayGenerator(subItem, models, textures);
-      });
-    }
+    localUris = scenes?.[i]?.localUris;
+    localUris.forEach((subItem) => {
+      modelsAndTexturesArrayGenerator(subItem, models, textures);
+    });
   }
 
   // deleted to avoid sending unused information to the `AugmentedRealityView` screen
@@ -113,16 +113,14 @@ const modelsAndTexturesArrayGenerator = (
   subItem: TScenes['localUris'][0],
   models: TModels,
   textures: TTextures,
-  stableTextureLogic?: boolean
+  shouldPushTexture = true
 ) => {
   switch (subItem.type) {
     case 'vrx':
       models.push(subItem as TModels[0]);
       break;
     case 'texture':
-      stableTextureLogic
-        ? subItem.stable && textures.push(subItem as TTextures[0])
-        : textures.push(subItem as TTextures[0]);
+      shouldPushTexture && textures.push(subItem as TTextures[0]);
       break;
     default:
       break;
