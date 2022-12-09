@@ -23,7 +23,7 @@ export const getGenericItemDetailTitle = (genericType: GenericType): string => {
     case GenericType.Commercial:
       return texts.commercial.commercial;
     case GenericType.Deadline:
-      return texts.deadline.deadline;
+      return '';
     case GenericType.Job:
       return texts.job.job;
     case GenericType.Noticeboard:
