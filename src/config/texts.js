@@ -258,6 +258,10 @@ export const texts = {
     cancel: 'Abbrechen',
     ok: 'Ok'
   },
+  deadline: {
+    deadline: 'Fristen- und Aktionsmeldung',
+    deadlines: 'Fristen- und Aktionsmeldungen'
+  },
   detailTitles: {
     consul: {
       debate: 'Diskussion',

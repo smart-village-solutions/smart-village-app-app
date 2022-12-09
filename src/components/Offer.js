@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
 
-import { consts, texts } from '../config';
-import { matomoTrackingString, momentFormat } from '../helpers';
+import { consts, device, texts } from '../config';
+import { getGenericItemMatomoName, matomoTrackingString, momentFormat } from '../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../hooks';
 import { GenericType } from '../types';
 
@@ -11,23 +11,26 @@ import { DataProviderButton } from './DataProviderButton';
 import { ImageSection } from './ImageSection';
 import { InfoCard } from './infoCard';
 import { Logo } from './Logo';
-import { OperatingCompany } from './screens';
+import { OpeningTimesCard, OperatingCompany } from './screens';
 import { SectionHeader } from './SectionHeader';
 import { StorySection } from './StorySection';
 import { BoldText, RegularText } from './Text';
+import { Title, TitleContainer, TitleShadow } from './Title';
 import { Wrapper, WrapperRow, WrapperWithOrientation, WrapperWrap } from './Wrapper';
 
-const { MATOMO_TRACKING } = consts;
+const { a11yLabel: a11yText } = consts;
 
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
 // eslint-disable-next-line complexity
 export const Offer = ({ data, route }) => {
   const {
+    categories,
     companies,
     contacts,
     contentBlocks,
     dataProvider,
+    dates,
     genericType,
     mediaContents,
     payload,
@@ -38,9 +41,7 @@ export const Offer = ({ data, route }) => {
 
   useMatomoTrackScreenView(
     matomoTrackingString([
-      genericType === GenericType.Job
-        ? MATOMO_TRACKING.SCREEN_VIEW.JOB_OFFER
-        : MATOMO_TRACKING.SCREEN_VIEW.COMMERCIAL_OFFER,
+      getGenericItemMatomoName(genericType),
       dataProvider && dataProvider.name,
       title
     ])
@@ -75,6 +76,12 @@ export const Offer = ({ data, route }) => {
           </Wrapper>
         )}
 
+        {!!categories?.length && (
+          <Wrapper>
+            <InfoCard category={categories[0]} openWebScreen={openWebScreen} />
+          </Wrapper>
+        )}
+
         {typeof payload?.employmentType === 'string' && payload?.employmentType?.length && (
           <Wrapper>
             <WrapperWrap>
@@ -84,7 +91,7 @@ export const Offer = ({ data, route }) => {
           </Wrapper>
         )}
 
-        {!!publicationDate && (
+        {!!publicationDate && genericType !== GenericType.Deadline && (
           <Wrapper>
             <WrapperRow>
               <BoldText>{texts.job.publishedAt}</BoldText>
@@ -103,6 +110,18 @@ export const Offer = ({ data, route }) => {
             />
           );
         })}
+
+        {!!dates && !!dates.length && (
+          <View>
+            <TitleContainer>
+              <Title accessibilityLabel={`(${texts.eventRecord.appointments}) ${a11yText.heading}`}>
+                {texts.eventRecord.appointments}
+              </Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
+            <OpeningTimesCard openingHours={dates} />
+          </View>
+        )}
 
         {!!contact && (
           <Wrapper>

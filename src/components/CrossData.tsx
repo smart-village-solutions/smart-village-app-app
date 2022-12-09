@@ -141,6 +141,20 @@ export const CrossData = ({ dataProviderName, navigation }: Props) => {
         query={QUERY_TYPES.GENERIC_ITEMS}
         sectionTitle={getGenericItemSectionTitle(GenericType.Commercial)}
       />
+      <CrossDataSection
+        dataProviderName={dataProviderName}
+        genericType={GenericType.Noticeboard}
+        navigation={navigation}
+        query={QUERY_TYPES.GENERIC_ITEMS}
+        sectionTitle={getGenericItemSectionTitle(GenericType.Noticeboard)}
+      />
+      <CrossDataSection
+        dataProviderName={dataProviderName}
+        genericType={GenericType.Deadline}
+        navigation={navigation}
+        query={QUERY_TYPES.GENERIC_ITEMS}
+        sectionTitle={getGenericItemSectionTitle(GenericType.Deadline)}
+      />
       {categoriesNews?.map(({ categoryId, categoryTitle, categoryTitleDetail }) => (
         <CrossDataSection
           categoryId={categoryId}

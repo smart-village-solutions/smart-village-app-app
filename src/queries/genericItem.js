@@ -103,6 +103,8 @@ export const GET_GENERIC_ITEMS = gql`
         id
         dateEnd
         dateStart
+        dateFrom: dateStart
+        dateTo: dateEnd
       }
       publicationDate
       payload
@@ -114,6 +116,10 @@ export const GET_GENERIC_ITEM = gql`
   query GenericItem($id: ID!) {
     genericItem(id: $id) {
       id
+      categories {
+        id
+        name
+      }
       createdAt
       genericType
       title
@@ -195,6 +201,8 @@ export const GET_GENERIC_ITEM = gql`
         id
         dateEnd
         dateStart
+        dateFrom: dateStart
+        dateTo: dateEnd
       }
       publicationDate
       payload

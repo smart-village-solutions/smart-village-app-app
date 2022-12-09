@@ -18,7 +18,12 @@ import { volunteerListDate, volunteerSubtitle } from '../volunteerHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
-const GENERIC_TYPES_WITH_DATES = [GenericType.Job, GenericType.Commercial, GenericType.Noticeboard];
+const GENERIC_TYPES_WITH_DATES = [
+  GenericType.Commercial,
+  GenericType.Deadline,
+  GenericType.Job,
+  GenericType.Noticeboard
+];
 
 const filterGenericItems = (item) => {
   if (GENERIC_TYPES_WITH_DATES.includes(item?.genericType)) {
@@ -30,6 +35,7 @@ const filterGenericItems = (item) => {
 
     return hasNotEnded && isPublished;
   }
+
   return true;
 };
 

@@ -5,6 +5,7 @@ import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native
 import { BookmarkContext } from '../../BookmarkProvider';
 import { colors, consts, Icon, normalize } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
+import { togglePushDeviceAssignment } from '../../pushNotifications';
 
 type Props = {
   route: RouteProp<any, any>;
@@ -26,6 +27,11 @@ export const BookmarkHeader = ({ route, style }: Props) => {
 
   const onPress = useCallback(() => {
     toggleBookmark(query, id, suffix);
+    togglePushDeviceAssignment(
+      id,
+      query.charAt(0).toUpperCase() + query.slice(1), // convert first character to uppercase
+      isBookmarked ? 'DELETE' : 'POST'
+    );
   }, [suffix, id, query]);
 
   if (!(bookmarkable && query && id)) {
