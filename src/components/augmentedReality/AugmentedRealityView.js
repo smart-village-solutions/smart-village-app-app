@@ -93,7 +93,7 @@ const ViroSoundAnd3DObject = (item) => {
     // if the `chromaKeyFilteredVideo` prop is undefined, the default color of a green screen is set
     ViroMaterials.createMaterials({
       chromaKeyFilteredVideo: {
-        chromaKeyFilteringColor: object?.mp4?.chromaKeyFilteredVideo || '#00FF00'
+        chromaKeyFilteringColor: object.mp4?.chromaKeyFilteredVideo || '#00FF00'
       }
     });
   }
@@ -103,19 +103,19 @@ const ViroSoundAnd3DObject = (item) => {
       {!isObjectLoading && (
         <>
           {!!object?.mp3 &&
-            (object?.mp3?.isSpatialSound ? (
+            (object.mp3?.isSpatialSound ? (
               <ViroSpatialSound
-                source={{ uri: object?.mp3?.uri }}
+                source={{ uri: object.mp3?.uri }}
                 paused={!isStartAnimationAndSound}
                 loop
-                maxDistance={object?.mp3?.maxDistance}
-                minDistance={object?.mp3?.minDistance}
-                position={object?.mp3?.position}
-                rolloffModel={object?.mp3?.rolloffModel}
+                maxDistance={object.mp3?.maxDistance}
+                minDistance={object.mp3?.minDistance}
+                position={object.mp3?.position}
+                rolloffModel={object.mp3?.rolloffModel}
               />
             ) : (
               <ViroSound
-                source={{ uri: object?.mp3?.uri }}
+                source={{ uri: object.mp3?.uri }}
                 paused={!isStartAnimationAndSound}
                 loop
               />
@@ -125,40 +125,45 @@ const ViroSoundAnd3DObject = (item) => {
             <ViroVideo
               loop
               materials={['chromaKeyFilteredVideo']}
-              position={object?.mp4?.position}
-              rotation={object?.mp4?.rotation}
-              scale={object?.mp4?.scale}
-              source={{ uri: object?.mp4?.uri }}
+              position={object.mp4?.position}
+              rotation={object.mp4?.rotation}
+              scale={object.mp4?.scale}
+              source={{ uri: object.mp4?.uri }}
             />
           )}
 
           {!!object?.image && (
             <ViroImage
-              position={object?.image?.position}
-              rotation={object?.image?.rotation}
-              scale={object?.image?.scale}
-              source={{ uri: object?.image?.uri }}
+              position={object.image?.position}
+              rotation={object.image?.rotation}
+              scale={object.image?.scale}
+              source={{ uri: object.image?.uri }}
             />
           )}
         </>
       )}
 
-      <Viro3DObject
-        source={{ uri: object?.vrx?.uri }}
-        resources={object?.textures}
-        type="VRX"
-        position={object?.vrx?.position}
-        rotation={object?.vrx?.rotation}
-        scale={object?.vrx?.scale}
-        onLoadStart={() => setIsObjectLoading(true)}
-        onLoadEnd={() => setIsObjectLoading(false)}
-        onError={() => alert(texts.augmentedReality.arShowScreen.objectLoadErrorAlert)}
-        animation={{
-          loop: true,
-          name: object?.animationName,
-          run: isStartAnimationAndSound
-        }}
-      />
+      {!!object?.models?.length &&
+        !!object?.textures?.length &&
+        object.models.map((model, index) => (
+          <Viro3DObject
+            key={index}
+            source={{ uri: model.uri }}
+            resources={object.textures}
+            type="VRX"
+            position={model.position}
+            rotation={model.rotation}
+            scale={model.scale}
+            onLoadStart={() => setIsObjectLoading(true)}
+            onLoadEnd={() => setIsObjectLoading(false)}
+            onError={() => alert(texts.augmentedReality.arShowScreen.objectLoadErrorAlert)}
+            animation={{
+              loop: true,
+              name: object?.animationName,
+              run: isStartAnimationAndSound
+            }}
+          />
+        ))}
     </>
   );
 };
