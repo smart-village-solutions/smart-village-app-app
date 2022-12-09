@@ -112,6 +112,11 @@ export const BookmarkScreen = ({ navigation }) => {
         )}
         {getSection(
           QUERY_TYPES.GENERIC_ITEMS,
+          getGenericItemSectionTitle(GenericType.Deadline),
+          GenericType.Deadline
+        )}
+        {getSection(
+          QUERY_TYPES.GENERIC_ITEMS,
           getGenericItemSectionTitle(GenericType.Job),
           GenericType.Job
         )}
@@ -119,11 +124,6 @@ export const BookmarkScreen = ({ navigation }) => {
           QUERY_TYPES.GENERIC_ITEMS,
           getGenericItemSectionTitle(GenericType.Noticeboard),
           GenericType.Noticeboard
-        )}
-        {getSection(
-          QUERY_TYPES.GENERIC_ITEMS,
-          getGenericItemSectionTitle(GenericType.Deadline),
-          GenericType.Deadline
         )}
       </ScrollView>
     </SafeAreaViewFlex>
