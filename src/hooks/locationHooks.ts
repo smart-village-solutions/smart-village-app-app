@@ -1,10 +1,10 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
 import * as Location from 'expo-location';
-import { LocationAccuracy } from 'expo-location';
+import { LocationAccuracy, LocationPermissionResponse } from 'expo-location';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
-import { SettingsContext } from '../SettingsProvider';
 import { storageHelper } from '../helpers';
+import { SettingsContext } from '../SettingsProvider';
 import { LocationSettings } from '../types';
 
 type RequestPermissionAndFetchFunction = (
@@ -68,6 +68,16 @@ const requestAndFetchLastKnownPosition: RequestPermissionAndFetchFunction = asyn
       console.warn(e);
     }
   }
+};
+
+export const useSystemPermission = () => {
+  const [systemPermission, setSystemPermission] = useState<LocationPermissionResponse>();
+
+  useEffect(() => {
+    (async () => setSystemPermission(await Location.getForegroundPermissionsAsync()))();
+  }, []);
+
+  return systemPermission;
 };
 
 export const useLocationSettings = () => {

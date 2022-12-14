@@ -22,6 +22,7 @@ import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 import { GenericType } from '../types';
 
+import { DefectReportFormScreen } from './DefectReport';
 import { NoticeboardFormScreen } from './Noticeboard';
 
 const getGenericComponent = (genericType) => {
@@ -30,6 +31,8 @@ const getGenericComponent = (genericType) => {
     case GenericType.Deadline:
     case GenericType.Job:
       return Offer;
+    case GenericType.DefectReport:
+      return DefectReportFormScreen;
     case GenericType.Noticeboard:
       return NoticeboardFormScreen;
   }

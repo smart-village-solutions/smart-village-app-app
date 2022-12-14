@@ -262,6 +262,36 @@ export const texts = {
     deadline: 'Fristen- und Aktionsmeldung',
     deadlines: 'Fristen- und Aktionsmeldungen'
   },
+  defectReport: {
+    usePosition: 'Meine aktuelle Position verwenden',
+    useMap: 'Auf der Karte auswählen',
+    abort: 'Abbrechen',
+    alerts: {
+      error: 'Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      hint: 'Hinweis',
+      termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.'
+    },
+    defectReport: 'Mängelmeldung',
+    defectReports: 'Mängelmeldungen',
+    emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
+    inputCheckbox:
+      'Mit dem Absenden des Hinweises bestätigen Sie, dass Sie unsere Datenschutzbestimmungen gelesen haben und diese anerkennen.',
+    inputDescription: 'Beschreibung',
+    inputErrorText: 'muss ausgefüllt werden',
+    inputMail: 'Ihre E-Mail',
+    inputMessage: 'Ihre Nachricht',
+    inputName: 'Ihr Name',
+    inputPhone: 'Ihre Telefonnummer',
+    inputTitle: 'Titel',
+    invalidMail: '-Adresse ist nicht gültig.',
+    optional: 'Die folgenden Angaben sind freiwillig:',
+    send: 'Senden',
+    successScreen: {
+      entry: 'Wir prüfen Ihre Angaben.',
+      header: 'Vielen Dank für Ihre Meldung'
+    },
+    wait: 'Bitte warten...'
+  },
   detailTitles: {
     consul: {
       debate: 'Diskussion',
@@ -419,7 +449,7 @@ export const texts = {
     invalidMail: '-Adresse ist nicht gültig.',
     noticeboard: 'Schwarzes Brett',
     publicationDate: 'Erscheinungsdatum',
-    sent: 'Senden',
+    send: 'Senden',
     successScreen: {
       application: 'Ihre Nachricht wurde gesendet.',
       entry:
@@ -738,6 +768,7 @@ export const texts = {
       alternativePositionHint:
         'Wenn Ortungsdienste deaktiviert sind, wird stattdessen der alternative Standort verwendet.',
       chooseAlternateLocationButton: 'Alternativen Standort wählen',
+      next: 'Weiter',
       onSystemPermissionMissing:
         'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
       save: 'Speichern',

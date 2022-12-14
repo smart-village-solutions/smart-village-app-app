@@ -42,7 +42,7 @@ const deleteImageAlert = (onPress) =>
     ]
   );
 
-export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) => {
+export const ImageSelector = ({ control, field, imageId, isConsul, isVolunteer, item }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -65,6 +65,19 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
   }, [imagesAttributes]);
 
   const onDeleteImage = async (index) => {
+    if (isConsul) {
+      if (imageId) {
+        try {
+          await deleteImage({ variables: { id: imageId } });
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      onChange('');
+      setInfoAndErrorText({});
+    }
+
     if (isVolunteer) {
       const isURL = URL_REGEX.test(imagesAttributes[index].uri);
 
@@ -81,16 +94,8 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
       return;
     }
 
-    if (imageId) {
-      try {
-        await deleteImage({ variables: { id: imageId } });
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    onChange('');
-    setInfoAndErrorText({});
+    setImagesAttributes(deleteArrayItem(imagesAttributes, index));
+    setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
   };
 
   const imageSelect = async () => {
@@ -108,7 +113,14 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
     const uriSplitForImageName = uri.split('/');
     const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
 
-    if (isVolunteer) {
+    if (isConsul) {
+      setInfoAndErrorText({
+        errorText: texts.consul.startNew[consulErrorText],
+        infoText: `(${type}/${imageType}, ${formatSize(size)})`
+      });
+
+      onChange(uri);
+    } else if (isVolunteer) {
       setInfoAndErrorText([
         ...infoAndErrorText,
         {
@@ -119,18 +131,50 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
 
       setImagesAttributes([...imagesAttributes, { uri, mimeType: `${type}/${imageType}` }]);
     } else {
-      setInfoAndErrorText({
-        errorText: texts.consul.startNew[consulErrorText],
-        infoText: `(${type}/${imageType}, ${formatSize(size)})`
-      });
-
-      onChange(uri);
+      setImagesAttributes([...imagesAttributes, { uri, mimeType: `${type}/${imageType}` }]);
     }
   };
 
-  if (isVolunteer) {
-    const values = jsonParser(value);
+  if (isConsul) {
+    return (
+      <>
+        <Input
+          {...item}
+          control={control}
+          errorMessage={infoAndErrorText?.errorText}
+          hidden
+          validate
+          name={name}
+          value={value}
+        />
+        <RegularText smallest placeholder>
+          {infoText}
+        </RegularText>
 
+        {value ? (
+          <>
+            <WrapperRow center spaceBetween>
+              <Image source={{ uri: value }} style={styles.image} />
+
+              <TouchableOpacity onPress={() => deleteImageAlert(onDeleteImage)}>
+                <Icon.Trash color={colors.error} size={normalize(16)} />
+              </TouchableOpacity>
+            </WrapperRow>
+
+            {!!infoAndErrorText?.infoText && (
+              <RegularText smallest>{infoAndErrorText.infoText}</RegularText>
+            )}
+          </>
+        ) : (
+          <Button title={buttonTitle} invert onPress={imageSelect} />
+        )}
+      </>
+    );
+  }
+
+  const values = jsonParser(value);
+
+  if (isVolunteer) {
     return (
       <>
         <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
@@ -167,32 +211,20 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
 
   return (
     <>
-      <Input
-        {...item}
-        control={control}
-        errorMessage={infoAndErrorText?.errorText}
-        hidden
-        validate
-        name={name}
-        value={value}
-      />
+      <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
       <RegularText smallest placeholder>
         {infoText}
       </RegularText>
 
-      {value ? (
+      {values.length ? (
         <>
           <WrapperRow center spaceBetween>
-            <Image source={{ uri: value }} style={styles.image} />
+            <Image source={{ uri: values[0].uri }} style={styles.image} />
 
-            <TouchableOpacity onPress={() => deleteImageAlert(onDeleteImage)}>
+            <TouchableOpacity onPress={() => deleteImageAlert(() => onDeleteImage(0))}>
               <Icon.Trash color={colors.error} size={normalize(16)} />
             </TouchableOpacity>
           </WrapperRow>
-
-          {!!infoAndErrorText?.infoText && (
-            <RegularText smallest>{infoAndErrorText.infoText}</RegularText>
-          )}
         </>
       ) : (
         <Button title={buttonTitle} invert onPress={imageSelect} />
@@ -205,14 +237,15 @@ ImageSelector.propTypes = {
   control: PropTypes.object,
   field: PropTypes.object,
   imageId: PropTypes.string,
+  isConsul: PropTypes.bool,
   isVolunteer: PropTypes.bool,
   item: PropTypes.object
 };
 
 const styles = StyleSheet.create({
   image: {
-    height: imageHeight(imageWidth() * 0.6),
-    width: imageWidth() * 0.6
+    height: imageHeight(imageWidth() * 0.8),
+    width: imageWidth() * 0.8
   },
   volunteerContainer: {
     marginBottom: normalize(8)

@@ -20,6 +20,7 @@ import {
   ConsulRegisterScreen,
   ConsulStartNewScreen,
   DataProviderScreen,
+  DefectReportFormScreen,
   DetailScreen,
   EncounterDataScreen,
   EncounterHomeScreen,
@@ -180,6 +181,10 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.DataProvider,
       screenComponent: DataProviderScreen
+    },
+    {
+      routeName: ScreenName.DefectReportForm,
+      screenComponent: DefectReportFormScreen
     },
     {
       routeName: ScreenName.Detail,

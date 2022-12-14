@@ -116,6 +116,7 @@ export const consts = {
       CONSTRUCTION_SITE_DETAIL: 'Construction',
       CONSTRUCTION_SITES: 'Constructions',
       DEADLINE: 'Deadline',
+      DEFECT_REPORT: 'Defect report',
       EVENT_RECORDS: 'Events',
       FEEDBACK: 'Feedback',
       HOME: 'Home',
@@ -144,6 +145,7 @@ export const consts = {
   ROOT_ROUTE_NAMES: {
     COMMERCIALS: 'Commercials',
     DEADLINES: 'Deadlines',
+    DEFECT_REPORT: 'DefectReport',
     EVENT_RECORDS: 'EventRecords',
     JOBS: 'Jobs',
     NEWS_ITEMS: 'NewsItems',

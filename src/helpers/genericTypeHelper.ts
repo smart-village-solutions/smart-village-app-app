@@ -9,6 +9,8 @@ export const getGenericItemSectionTitle = (genericType: GenericType): string => 
       return texts.commercial.commercials;
     case GenericType.Deadline:
       return texts.deadline.deadlines;
+    case GenericType.DefectReport:
+      return texts.defectReport.defectReports;
     case GenericType.Job:
       return texts.job.jobs;
     case GenericType.Noticeboard:
@@ -24,6 +26,8 @@ export const getGenericItemDetailTitle = (genericType: GenericType): string => {
       return texts.commercial.commercial;
     case GenericType.Deadline:
       return '';
+    case GenericType.DefectReport:
+      return texts.defectReport.defectReport;
     case GenericType.Job:
       return texts.job.job;
     case GenericType.Noticeboard:
@@ -39,6 +43,8 @@ export const getGenericItemRootRouteName = (genericType: GenericType): string =>
       return ROOT_ROUTE_NAMES.COMMERCIALS;
     case GenericType.Deadline:
       return ROOT_ROUTE_NAMES.DEADLINES;
+    case GenericType.DefectReport:
+      return ROOT_ROUTE_NAMES.DEFECT_REPORT;
     case GenericType.Job:
       return ROOT_ROUTE_NAMES.JOBS;
     case GenericType.Noticeboard:
@@ -54,6 +60,8 @@ export const getGenericItemMatomoName = (genericType: GenericType): string => {
       return MATOMO_TRACKING.SCREEN_VIEW.COMMERCIAL_OFFER;
     case GenericType.Deadline:
       return MATOMO_TRACKING.SCREEN_VIEW.DEADLINE;
+    case GenericType.DefectReport:
+      return MATOMO_TRACKING.SCREEN_VIEW.DEFECT_REPORT;
     case GenericType.Job:
       return MATOMO_TRACKING.SCREEN_VIEW.JOB_OFFER;
     case GenericType.Noticeboard:
