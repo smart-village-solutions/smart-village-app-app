@@ -8,6 +8,7 @@ import { Alert, Keyboard, StyleSheet } from 'react-native';
 import {
   Button,
   Checkbox,
+  DropdownInput,
   HtmlView,
   ImageSelector,
   Input,
@@ -36,11 +37,13 @@ type TDefectReportCreateData = {
 export const DefectReportCreateForm = ({
   navigation,
   route,
-  selectedPosition
+  selectedPosition,
+  categoryNameDropdownData
 }: {
   navigation: StackNavigationProp<any>;
   route: any;
   selectedPosition: Location.LocationObjectCoords | undefined;
+  categoryNameDropdownData: { id: number; name: string; value: string }[];
 }) => {
   const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
   const [isLoading, setIsLoading] = React.useState(false);
@@ -50,10 +53,10 @@ export const DefectReportCreateForm = ({
     formState: { errors },
     handleSubmit
   } = useForm({
-    mode: 'onChange',
+    mode: 'onBlur',
     defaultValues: {
       body: '',
-      categoryName: 'Abfall/Müll',
+      categoryName: '',
       email: '',
       images: '[]',
       name: '',
@@ -132,6 +135,29 @@ export const DefectReportCreateForm = ({
 
   return (
     <>
+      <Wrapper style={styles.noPaddingTop}>
+        <Controller
+          name="categoryName"
+          render={({ name, onChange, value }) => (
+            <DropdownInput
+              {...{
+                errors,
+                data: categoryNameDropdownData,
+                value,
+                valueKey: 'name',
+                onChange,
+                name,
+                required: true,
+                label: texts.defectReport.categoryName,
+                placeholder: texts.defectReport.categoryName,
+                control
+              }}
+            />
+          )}
+          control={control}
+        />
+      </Wrapper>
+
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="title"

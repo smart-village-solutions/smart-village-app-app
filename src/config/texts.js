@@ -271,6 +271,7 @@ export const texts = {
       hint: 'Hinweis',
       termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.'
     },
+    categoryName: 'Kategorie',
     defectReport: 'Mängelmeldung',
     defectReports: 'Mängelmeldungen',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',

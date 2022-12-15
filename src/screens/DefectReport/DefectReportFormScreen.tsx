@@ -1,6 +1,7 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React, { useCallback, useContext, useState } from 'react';
+import { useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 
 import {
@@ -16,6 +17,8 @@ import {
 import { colors } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { GET_CATEGORIES } from '../../queries/categories';
+import { SettingsContext } from '../../SettingsProvider';
 
 /* eslint-disable complexity */
 export const DefectReportFormScreen = ({
@@ -26,11 +29,13 @@ export const DefectReportFormScreen = ({
   route: any;
 }) => {
   const { isConnected } = useContext(NetworkContext);
+  const { globalSettings } = useContext(SettingsContext);
   const [refreshing, setRefreshing] = useState(false);
   const [isLocationSelect, setIsLocationSelect] = useState(true);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
 
   const name = isLocationSelect ? 'defectReportLocationForm' : 'defectReportCreateForm';
+  const categoryId = globalSettings?.settings?.defectReports?.categoryId;
 
   const {
     data: html,
@@ -42,15 +47,25 @@ export const DefectReportFormScreen = ({
     skip: !name
   });
 
+  const {
+    data: dataCategories,
+    loading: loadingCategories,
+    refetch: refetchCategories
+  } = useQuery(GET_CATEGORIES, {
+    variables: { ids: [categoryId] },
+    skip: !categoryId
+  });
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     if (isConnected) {
       await refetchHtml?.();
+      await refetchCategories?.();
     }
     setRefreshing(false);
   }, [isConnected, refetchHtml]);
 
-  if (loadingHtml) {
+  if (loadingHtml || loadingCategories) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
@@ -59,6 +74,13 @@ export const DefectReportFormScreen = ({
   }
 
   const Component = isLocationSelect ? DefectReportLocationForm : DefectReportCreateForm;
+
+  const categoryNameDropdownData =
+    dataCategories?.categories?.[0]?.children?.map((category) => ({
+      id: category.id,
+      name: category.name,
+      value: category.name
+    })) || [];
 
   return (
     <SafeAreaViewFlex>
@@ -83,7 +105,14 @@ export const DefectReportFormScreen = ({
             )}
 
             <Component
-              {...{ navigation, route, setIsLocationSelect, selectedPosition, setSelectedPosition }}
+              {...{
+                navigation,
+                route,
+                setIsLocationSelect,
+                selectedPosition,
+                setSelectedPosition,
+                categoryNameDropdownData
+              }}
             />
           </WrapperWithOrientation>
         </ScrollView>
