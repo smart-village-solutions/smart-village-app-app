@@ -8,7 +8,11 @@ import { colors, consts, Icon, normalize, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { GenericType, ScreenName } from '../../types';
 import { eventDate, isBeforeEndOfToday, isTodayOrLater } from '../dateTimeHelper';
-import { getGenericItemDetailTitle, getGenericItemRootRouteName } from '../genericTypeHelper';
+import {
+  getGenericItemDetailTitle,
+  getGenericItemRootRouteName,
+  getGenericItemSubtitle
+} from '../genericTypeHelper';
 import { mainImageOfMediaContents } from '../imageHelper';
 import { momentFormatUtcToLocal } from '../momentHelper';
 import { getTitleForQuery } from '../queryHelper';
@@ -74,7 +78,7 @@ const parseGenericItems = (data, skipLastDivider, titleDetail, consentForDataPro
     id: genericItem.id,
     subtitle: subtitle(
       momentFormatUtcToLocal(genericItem.publicationDate ?? genericItem.createdAt),
-      genericItem.genericType !== GenericType.Noticeboard && genericItem.dataProvider?.name
+      getGenericItemSubtitle(genericItem)
     ),
     title: genericItem.title,
     picture: {
