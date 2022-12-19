@@ -70,9 +70,11 @@ export const DefectReportLocationForm = ({
 
   return (
     <>
-      <Wrapper>
-        <Button onPress={onPressPosition} title={texts.defectReport.usePosition} />
-      </Wrapper>
+      {systemPermission.status !== Location.PermissionStatus.DENIED && (
+        <Wrapper>
+          <Button onPress={onPressPosition} title={texts.defectReport.usePosition} />
+        </Wrapper>
+      )}
       <Collapsible collapsed={!showMap}>
         <Map
           locations={locations}
