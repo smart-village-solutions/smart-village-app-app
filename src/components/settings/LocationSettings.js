@@ -1,35 +1,26 @@
 import * as Location from 'expo-location';
-import React, { useEffect, useState } from 'react';
-import { Alert, View } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, StyleSheet, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
-import { colors, texts } from '../../config';
-import { useLocationSettings } from '../../hooks';
-import { Map } from '../map';
+import { colors, normalize, texts } from '../../config';
+import { geoLocationToLocationObject } from '../../helpers';
+import { useLocationSettings, useSystemPermission } from '../../hooks';
+import { ownLocation, ownLocationIconAnchor } from '../../icons';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { RegularText } from '../Text';
+import { Map } from '../map';
 import { SettingsToggle } from '../SettingsToggle';
+import { RegularText } from '../Text';
+import { Touchable } from '../Touchable';
 import { Wrapper, WrapperWithOrientation } from '../Wrapper';
-import { ownLocationIconAnchor, ownLocation } from '../../icons';
-import { geoLocationToLocationObject } from '../../helpers';
 
-const baseLocationMarker = {
+export const baseLocationMarker = {
   icon: ownLocation(colors.accent),
   iconAnchor: ownLocationIconAnchor
 };
 
-const useSystemPermission = () => {
-  const [systemPermission, setSystemPermission] = useState();
-
-  useEffect(() => {
-    (async () => setSystemPermission(await Location.getForegroundPermissionsAsync()))();
-  }, []);
-
-  return systemPermission;
-};
-
-const getLocationMarker = (locationObject) => ({
+export const getLocationMarker = (locationObject) => ({
   ...baseLocationMarker,
   position: {
     ...locationObject.coords,
@@ -138,14 +129,18 @@ export const LocationSettings = () => {
                 setShowMap(false);
               }}
             />
-            <Button
-              invert
-              title={texts.settingsContents.locationService.abort}
+
+            <Touchable
               onPress={() => {
                 setSelectedPosition(undefined);
                 setShowMap(false);
               }}
-            />
+              style={styles.containerStyle}
+            >
+              <RegularText primary center>
+                {texts.settingsContents.locationService.abort}
+              </RegularText>
+            </Touchable>
           </Wrapper>
         </Collapsible>
         <Collapsible collapsed={showMap}>
@@ -160,3 +155,9 @@ export const LocationSettings = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  containerStyle: {
+    marginBottom: normalize(21)
+  }
+});

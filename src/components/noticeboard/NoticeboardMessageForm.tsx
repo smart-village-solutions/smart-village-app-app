@@ -176,7 +176,7 @@ export const NoticeboardMessageForm = ({
       <Wrapper style={styles.noPaddingTop}>
         <Button
           onPress={handleSubmit(onSubmit)}
-          title={texts.noticeboard.sent}
+          title={texts.noticeboard.send}
           disabled={loading}
         />
 

@@ -297,7 +297,15 @@ export const NewProposal = ({ navigation, data, query }) => {
               control={control}
               render={(field) =>
                 item.name === 'image' ? (
-                  <ImageSelector {...{ control, field, item, imageId: data?.imageId }} />
+                  <ImageSelector
+                    {...{
+                      control,
+                      field,
+                      isConsul: true,
+                      item,
+                      imageId: data?.imageId
+                    }}
+                  />
                 ) : (
                   <DocumentSelector {...{ control, field, item }} />
                 )

@@ -22,6 +22,7 @@ export enum ScreenName {
   ConsulIndexScreen = 'ConsulIndexScreen',
   ConsulDetailScreen = 'ConsulDetailScreen',
   ConsulStartNewScreen = 'ConsulStartNewScreen',
+  DefectReportForm = 'DefectReportForm',
   DataProvider = 'DataProvider',
   Detail = 'Detail',
   EncounterData = 'EncounterData',
