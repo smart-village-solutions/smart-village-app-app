@@ -120,7 +120,8 @@ export const DefectReportCreateForm = ({
               },
               contentType: 'image'
             }
-          ]
+          ],
+          forceCreate: true
         }
       });
 

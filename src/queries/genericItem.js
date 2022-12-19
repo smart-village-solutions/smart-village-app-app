@@ -221,6 +221,7 @@ export const CREATE_GENERIC_ITEM = gql`
     $mediaContents: [MediaContentInput!]
     $publishedAt: String
     $title: String
+    $forceCreate: Boolean = false
   ) {
     createGenericItem(
       addresses: $addresses
@@ -232,6 +233,7 @@ export const CREATE_GENERIC_ITEM = gql`
       mediaContents: $mediaContents
       publishedAt: $publishedAt
       title: $title
+      forceCreate: $forceCreate
     ) {
       id
     }
