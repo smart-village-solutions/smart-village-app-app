@@ -88,6 +88,14 @@ export const DefectReportLocationForm = ({
           <Button
             title={texts.settingsContents.locationService.next}
             onPress={() => {
+              if (!selectedPosition) {
+                if (alternativePosition) {
+                  setSelectedPosition(alternativePosition.coords);
+                } else if (defaultAlternativePosition) {
+                  setSelectedPosition(defaultAlternativePosition.coords);
+                }
+              }
+
               setIsLocationSelect(false);
               setShowMap(false);
             }}
