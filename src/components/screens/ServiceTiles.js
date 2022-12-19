@@ -26,7 +26,7 @@ export const ServiceTiles = ({
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
 
-  const { data, loading, refetch } = useStaticContent({
+  const { data, loading, refetch, error } = useStaticContent({
     refreshTimeKey: `publicJsonFile-${staticJsonName}`,
     name: staticJsonName,
     type: 'json'
@@ -83,7 +83,7 @@ export const ServiceTiles = ({
             )}
 
             <View style={styles.padding}>
-              <Service data={data} staticJsonName={staticJsonName} />
+              {!error && <Service data={data} staticJsonName={staticJsonName} />}
             </View>
           </ScrollView>
         </>

@@ -87,7 +87,7 @@ export const Service = ({
   ) : (
     <>
       <WrapperWrap spaceBetween>{tiles?.map(renderItem)}</WrapperWrap>
-      {toggler}
+      {!!tiles?.length && toggler}
     </>
   );
 };

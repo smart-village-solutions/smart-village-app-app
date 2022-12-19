@@ -1,4 +1,5 @@
 import _isEmpty from 'lodash/isEmpty';
+import _isObjectLike from 'lodash/isObjectLike';
 import { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 
@@ -81,7 +82,7 @@ export const useStaticContent = <T>({
     try {
       const json = data?.publicJsonFile?.content;
 
-      if (!_isEmpty(json)) {
+      if (!_isEmpty(json) && _isObjectLike(json)) {
         return parseFromJson ? parseFromJson(json) : json;
       } else if (!loading && data) {
         // set error true if there is bad data without `publicJsonFile.content`
