@@ -244,8 +244,8 @@ ImageSelector.propTypes = {
 
 const styles = StyleSheet.create({
   image: {
-    height: imageHeight(imageWidth() * 0.8),
-    width: imageWidth() * 0.8
+    height: imageHeight(imageWidth() * 0.6),
+    width: imageWidth() * 0.6
   },
   volunteerContainer: {
     marginBottom: normalize(8)
