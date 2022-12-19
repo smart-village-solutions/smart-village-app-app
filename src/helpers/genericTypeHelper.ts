@@ -70,3 +70,18 @@ export const getGenericItemMatomoName = (genericType: GenericType): string => {
       return '';
   }
 };
+
+export const getGenericItemSubtitle = (genericItem: {
+  genericType: GenericType;
+  categories: [{ name: string }];
+  dataProvider: { name: string };
+}): string => {
+  switch (genericItem.genericType) {
+    case GenericType.Deadline:
+      return genericItem.categories?.[0]?.name;
+    case GenericType.Noticeboard:
+      return '';
+    default:
+      return genericItem.dataProvider?.name;
+  }
+};
