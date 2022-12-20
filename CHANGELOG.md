@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.1.0] :rocket:
+
+This release brings the first integrations of the Error Report, Due Date and action notifier and Noticeboard fields and customisable `ServiceTiles`
+
+### Added
+
+- added Defect Report feature
+- added deadline and action notifier feature
+- added noticeboard feature
+- added redirect button to the website at the bottom of the event page
+- added the ability to render multiple models in a scene for Augmented Reality feature
+- customisable service tiles
+  - the sorting of service tiles can be arranged
+  - unwanted can be hidden from service tiles
+
+### Changed
+
+- some parts of the application have been resized
+- changed the text `kostenlos` to an event with 0 EUR in the price card section
+- audio file for Augmented Reality looped infinitely until user stops
+
+### Fixed
+
+- fixed a bug where `staticContent` was not an object
+
 ## [v3.0.5]
 
 New volunteer features and design
