@@ -47,6 +47,7 @@ export const ARModal = ({
   return (
     <Modal
       isListView={isListView}
+      height={isListView && '85%'}
       onModalVisible={() => {
         if (onModalVisible) {
           onModalVisible();

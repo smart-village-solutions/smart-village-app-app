@@ -10,6 +10,7 @@ import { Touchable } from './Touchable';
 
 export const Modal = ({
   children,
+  height,
   isBackdropPress,
   isListView,
   isVisible,
@@ -24,7 +25,7 @@ export const Modal = ({
       windowBackgroundColor={colors.overlayRgba}
       overlayStyle={!isListView && styles.overlay}
       width="80%"
-      height="auto"
+      height={height}
       borderRadius={8}
       supportedOrientations={['portrait', 'landscape']}
     >
@@ -49,6 +50,7 @@ const styles = StyleSheet.create({
 
 Modal.propTypes = {
   children: PropTypes.node.isRequired,
+  height: PropTypes.string,
   isBackdropPress: PropTypes.bool,
   isListView: PropTypes.bool,
   isVisible: PropTypes.bool.isRequired,
@@ -57,5 +59,6 @@ Modal.propTypes = {
 };
 
 Modal.defaultProps = {
+  height: 'auto',
   modalHiddenButtonName: texts.settingsTitles.arListLayouts.hide
 };
