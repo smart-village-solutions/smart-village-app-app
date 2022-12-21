@@ -5,6 +5,7 @@ export const navigationToArtworksDetailScreen = ({
   isNavigation,
   isShow,
   modelId,
+  setModelId,
   navigation,
   setModelData
 }) => {
@@ -13,7 +14,7 @@ export const navigationToArtworksDetailScreen = ({
 
     if (id.toString() === modelId) {
       if (isNavigation) {
-        return navigation.navigate(ScreenName.ArtworkDetail, { data, index });
+        return navigation.navigate(ScreenName.ArtworkDetail, { data, index, setModelId });
       } else if (isShow) {
         return setModelData(data[index]);
       }
