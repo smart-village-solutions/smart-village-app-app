@@ -72,6 +72,7 @@ export const AugmentedReality = ({
       data,
       isNavigation: true,
       modelId,
+      setModelId,
       navigation
     });
   }, [modelId]);

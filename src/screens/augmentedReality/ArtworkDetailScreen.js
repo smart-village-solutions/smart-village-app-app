@@ -25,6 +25,13 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
   const index = route?.params?.index;
   const description = data[index]?.description;
   const { downloadType } = data[index]?.payload;
+  const setModelId = route?.params?.setModelId;
+
+  useEffect(() => {
+    if (setModelId) {
+      setModelId(null);
+    }
+  }, []);
 
   useEffect(() => {
     if (data?.length) {
