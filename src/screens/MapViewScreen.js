@@ -47,7 +47,6 @@ export const MapViewScreen = ({ navigation, route }) => {
                 data,
                 isNavigation: true,
                 modelId,
-                setModelId,
                 navigation
               })
             }
