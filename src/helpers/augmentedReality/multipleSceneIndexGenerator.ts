@@ -1,4 +1,3 @@
-import _remove from 'lodash/remove';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
 
@@ -62,8 +61,6 @@ export const multipleSceneIndexGenerator = ({
         modelsAndTexturesArrayGenerator(subItem, models, textures, false);
       });
 
-      _remove(localUris, ({ type }) => type === 'texture' || type === 'vrx');
-
       return { localUris, models, textures };
     }
 
@@ -90,9 +87,6 @@ export const multipleSceneIndexGenerator = ({
       modelsAndTexturesArrayGenerator(subItem, models, textures, !!subItem.stable);
     });
 
-    // deleted to avoid sending unused information to the `AugmentedRealityView` screen
-    _remove(localUris, ({ type }) => type === 'texture' || type === 'vrx');
-
     return { localUris, models, textures };
   }
 
@@ -102,9 +96,6 @@ export const multipleSceneIndexGenerator = ({
       modelsAndTexturesArrayGenerator(subItem, models, textures);
     });
   }
-
-  // deleted to avoid sending unused information to the `AugmentedRealityView` screen
-  _remove(localUris, ({ type }) => type === 'texture' || type === 'vrx');
 
   return { localUris, models, textures };
 };

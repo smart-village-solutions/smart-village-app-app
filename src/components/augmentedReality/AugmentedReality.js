@@ -50,7 +50,6 @@ export const AugmentedReality = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const selectedFilterId = filter.find((entry) => entry.selected)?.id;
-  const [modelId, setModelId] = useState();
 
   useEffect(() => {
     const { settings = {} } = globalSettings;
@@ -66,15 +65,6 @@ export const AugmentedReality = ({
       console.warn(error);
     }
   }, []);
-
-  useEffect(() => {
-    navigationToArtworksDetailScreen({
-      data,
-      isNavigation: true,
-      modelId,
-      navigation
-    });
-  }, [modelId]);
 
   useEffect(() => {
     setData(tourStops);
@@ -145,7 +135,14 @@ export const AugmentedReality = ({
         <Map
           geometryTourData={geometryTourData}
           locations={mapMarkers}
-          onMarkerPress={setModelId}
+          onMarkerPress={(modelId) =>
+            navigationToArtworksDetailScreen({
+              data,
+              isNavigation: true,
+              modelId,
+              navigation
+            })
+          }
           onMaximizeButtonPress={() =>
             navigation.navigate(ScreenName.MapView, {
               augmentedRealityData: { data },
