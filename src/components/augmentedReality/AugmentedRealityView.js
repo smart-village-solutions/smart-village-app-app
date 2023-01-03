@@ -6,8 +6,10 @@ import {
   ViroARTrackingTargets,
   ViroImage,
   ViroMaterials,
+  ViroQuad,
   ViroSound,
   ViroSpatialSound,
+  ViroSpotLight,
   ViroVideo
 } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
@@ -105,39 +107,35 @@ const ViroSoundAnd3DObject = (item) => {
           {!!object?.mp3 &&
             (object.mp3?.isSpatialSound ? (
               <ViroSpatialSound
-                source={{ uri: object.mp3?.uri }}
+                source={{ uri: object.mp3.uri }}
                 paused={!isStartAnimationAndSound}
                 loop
-                maxDistance={object.mp3?.maxDistance}
-                minDistance={object.mp3?.minDistance}
-                position={object.mp3?.position}
-                rolloffModel={object.mp3?.rolloffModel}
+                maxDistance={object.mp3.maxDistance}
+                minDistance={object.mp3.minDistance}
+                position={object.mp3.position}
+                rolloffModel={object.mp3.rolloffModel}
               />
             ) : (
-              <ViroSound
-                source={{ uri: object.mp3?.uri }}
-                paused={!isStartAnimationAndSound}
-                loop
-              />
+              <ViroSound source={{ uri: object.mp3.uri }} paused={!isStartAnimationAndSound} loop />
             ))}
 
           {!!object?.mp4 && (
             <ViroVideo
               loop
               materials={['chromaKeyFilteredVideo']}
-              position={object.mp4?.position}
-              rotation={object.mp4?.rotation}
-              scale={object.mp4?.scale}
-              source={{ uri: object.mp4?.uri }}
+              position={object.mp4.position}
+              rotation={object.mp4.rotation}
+              scale={object.mp4.scale}
+              source={{ uri: object.mp4.uri }}
             />
           )}
 
           {!!object?.image && (
             <ViroImage
-              position={object.image?.position}
-              rotation={object.image?.rotation}
-              scale={object.image?.scale}
-              source={{ uri: object.image?.uri }}
+              position={object.image.position}
+              rotation={object.image.rotation}
+              scale={object.image.scale}
+              source={{ uri: object.image.uri }}
             />
           )}
         </>
@@ -157,6 +155,7 @@ const ViroSoundAnd3DObject = (item) => {
             onLoadStart={() => setIsObjectLoading(true)}
             onLoadEnd={() => setIsObjectLoading(false)}
             onError={() => alert(texts.augmentedReality.arShowScreen.objectLoadErrorAlert)}
+            shadowCastingBitMask={2}
             animation={{
               loop: true,
               name: object?.animationName,
@@ -164,6 +163,32 @@ const ViroSoundAnd3DObject = (item) => {
             }}
           />
         ))}
+
+      {object?.spot && (
+        <ViroSpotLight
+          direction={object.spot.direction}
+          innerAngle={object.spot.innerAngle}
+          outerAngle={object.spot.outerAngle}
+          position={object.spot.position}
+          shadowMapSize={object.spot.shadowMapSize}
+          shadowOpacity={object.spot.shadowOpacity}
+          castsShadow
+          influenceBitMask={2}
+          shadowFarZ={5}
+          shadowNearZ={2}
+        />
+      )}
+
+      {object?.quad && (
+        <ViroQuad
+          height={object.quad.height}
+          position={object.quad.position}
+          width={object.quad.width}
+          arShadowReceiver
+          lightReceivingBitMask={2}
+          rotation={[-90, 0, 0]}
+        />
+      )}
     </>
   );
 };
