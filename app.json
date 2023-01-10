@@ -11,6 +11,7 @@
     "runtimeVersion": "nativeVersion",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "locales": { "de": "./src/config/locales/de.json" },
     "scheme": "smart-village-app",
     "splash": {
       "image": "./assets/splash.png",
