@@ -29,6 +29,7 @@ const hourlyKeyExtractor = (item) => JSON.stringify(item.dt);
 const renderHourlyWeather = ({ item }) => {
   return (
     <HourlyWeather
+      description={item.weather[0].description}
       icon={item.weather[0].icon}
       isNow={item.isNow}
       temperature={item.temp}
@@ -143,6 +144,7 @@ export const WeatherScreen = () => {
             {device.platform === 'ios' && <TitleShadow />}
             {weatherMap.daily.map((day, index) => (
               <DailyWeather
+                description={day.weather[0].description}
                 key={index}
                 icon={day.weather[0].icon}
                 temperatures={day.temp}

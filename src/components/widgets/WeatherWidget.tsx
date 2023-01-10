@@ -27,6 +27,7 @@ export const WeatherWidget = ({ text }: WidgetProps) => {
   const { data, refetch } = useQuery(getQuery(QUERY_TYPES.WEATHER_MAP_CURRENT), queryVariables);
 
   const icon = data?.weatherMap?.current?.weather?.[0]?.icon ?? '02d';
+  const description = data?.weatherMap?.current?.weather?.[0]?.description;
   const temperature = data?.weatherMap?.current?.temp;
 
   const onPress = useCallback(
@@ -42,7 +43,10 @@ export const WeatherWidget = ({ text }: WidgetProps) => {
         <WrapperRow center>
           <View style={styles.iconContainer}>
             <Image
-              source={{ uri: `https://openweathermap.org/img/wn/${icon}@2x.png` }}
+              source={{
+                uri: `https://openweathermap.org/img/wn/${icon}@2x.png`,
+                captionText: description
+              }}
               style={styles.icon}
               resizeMode="contain"
             />
