@@ -10,6 +10,7 @@ import { WrapperHorizontal, WrapperRow } from '../Wrapper';
 
 type Props = {
   date: number;
+  description: string;
   icon: string;
   temperatures: {
     day: number;
@@ -21,7 +22,7 @@ type Props = {
   };
 };
 
-export const DailyWeather = ({ date, icon, temperatures }: Props) => {
+export const DailyWeather = ({ date, description, icon, temperatures }: Props) => {
   const { day, eve, max, min, morn, night } = temperatures;
 
   return (
@@ -35,7 +36,10 @@ export const DailyWeather = ({ date, icon, temperatures }: Props) => {
           <WrapperRow center>
             <View style={styles.iconContainer}>
               <Image
-                source={{ uri: `https://openweathermap.org/img/wn/${icon}@2x.png` }}
+                source={{
+                  uri: `https://openweathermap.org/img/wn/${icon}@2x.png`,
+                  captionText: description
+                }}
                 style={styles.icon}
                 resizeMode="contain"
               />

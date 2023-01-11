@@ -7,20 +7,30 @@ import { Image } from '../Image';
 import { RegularText } from '../Text';
 
 export type HourlyWeatherData = {
+  description: string;
   icon: string;
   isNow?: boolean;
   temperature: number;
   time: number;
 };
 
-export const HourlyWeather = ({ icon, temperature, time, isNow }: HourlyWeatherData) => {
+export const HourlyWeather = ({
+  description,
+  icon,
+  isNow,
+  temperature,
+  time
+}: HourlyWeatherData) => {
   const formattedTime = momentFormat(time * 1000, 'HH:mm', 'x');
 
   return (
     <View style={[styles.container, isNow && { backgroundColor: colors.lighterPrimary }]}>
       <RegularText>{formattedTime}</RegularText>
       <Image
-        source={{ uri: `https://openweathermap.org/img/wn/${icon}@2x.png` }}
+        source={{
+          uri: `https://openweathermap.org/img/wn/${icon}@2x.png`,
+          captionText: description
+        }}
         style={styles.icon}
         resizeMode="contain"
       />
