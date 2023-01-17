@@ -99,6 +99,7 @@ export const Input = ({
       containerStyle={[
         styles.container,
         row && styles.row,
+        !errorMessage && styles.containerHeight,
         hidden && !errorMessage && styles.containerHidden
       ]}
       inputContainerStyle={[
@@ -114,7 +115,7 @@ export const Input = ({
         multiline && device.platform === 'ios' && styles.multiline,
         !isValid && !!errorMessage && styles.inputError
       ]}
-      errorStyle={styles.inputError}
+      errorStyle={[styles.inputError, !errorMessage && styles.inputErrorHeight]}
       placeholderTextColor={colors.placeholder}
       disabledInputStyle={styles.inputDisabled}
       accessibilityLabel={`${a11yLabel[name]} ${a11yLabel.textInput}: ${field.value}`}
@@ -126,6 +127,9 @@ export const Input = ({
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 0
+  },
+  containerHeight: {
+    height: normalize(65)
   },
   containerHidden: {
     height: 0
@@ -174,6 +178,9 @@ const styles = StyleSheet.create({
   },
   inputError: {
     color: colors.error
+  },
+  inputErrorHeight: {
+    height: 0
   },
   inputDisabled: {
     color: colors.placeholder
