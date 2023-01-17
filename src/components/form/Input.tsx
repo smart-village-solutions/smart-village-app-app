@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0
   },
   containerHeight: {
-    height: normalize(65)
+    height: normalize(75)
   },
   containerHidden: {
     height: 0

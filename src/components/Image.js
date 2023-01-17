@@ -98,7 +98,7 @@ export const Image = ({
     <View>
       <RNEImage
         source={source}
-        style={style || stylesForImage(aspectRatio).defaultStyle}
+        childrenContainerStyle={style || stylesForImage(aspectRatio).defaultStyle}
         containerStyle={containerStyle}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={{ backgroundColor: colors.transparent }}

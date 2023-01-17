@@ -32,6 +32,7 @@ export const Checkbox = ({
 
   return (
     <CheckBox
+      accessibilityRole="button"
       size={normalize(21)}
       center={center}
       title={

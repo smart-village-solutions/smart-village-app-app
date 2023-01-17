@@ -43,16 +43,10 @@ export const ConsulListItem = ({ navigation, item }) => {
 
   return (
     <ListItem
-      title={<BoldText>{title}</BoldText>}
       containerStyle={{
         backgroundColor: colors.transparent,
         paddingVertical: normalize(12)
       }}
-      rightIcon={
-        params.query !== QUERY_TYPES.CONSUL.LOGOUT && (
-          <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
-        )
-      }
       onPress={async () => {
         if (params.query === QUERY_TYPES.CONSUL.LOGOUT) {
           logOutAlert(onLogout);
@@ -69,7 +63,15 @@ export const ConsulListItem = ({ navigation, item }) => {
       delayPressIn={0}
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.poiCount} ${consts.a11yLabel.button}`}
-    />
+    >
+      <ListItem.Content>
+        <BoldText>{title}</BoldText>
+      </ListItem.Content>
+
+      {params.query !== QUERY_TYPES.CONSUL.LOGOUT && (
+        <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
+      )}
+    </ListItem>
   );
 };
 

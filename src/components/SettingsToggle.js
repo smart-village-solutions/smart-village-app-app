@@ -38,21 +38,21 @@ export const SettingsToggle = ({ item }) => {
 
   return (
     <ListItem
-      title={title && <BoldText>{title}</BoldText>}
       bottomDivider={bottomDivider ?? false}
       topDivider={topDivider ?? false}
       containerStyle={styles.container}
-      rightIcon={
-        <WrapperRow>
-          {loading && <ActivityIndicator color={colors.accent} style={styles.marginRight} />}
-          <Switch switchValue={switchValue} toggleSwitch={toggleSwitch} />
-        </WrapperRow>
-      }
       onPress={onPress}
       delayPressIn={0}
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
-    />
+    >
+      <ListItem.Content>{title && <BoldText>{title}</BoldText>}</ListItem.Content>
+
+      <WrapperRow>
+        {loading && <ActivityIndicator color={colors.accent} style={styles.marginRight} />}
+        <Switch switchValue={switchValue} toggleSwitch={toggleSwitch} />
+      </WrapperRow>
+    </ListItem>
   );
 };
 

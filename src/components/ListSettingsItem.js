@@ -53,21 +53,23 @@ export const ListSettingsItem = ({ item }) => {
         {Object.values(LIST_TYPES).map((listType) => (
           <ListItem
             key={listType}
-            title={<RegularText small>{texts.settingsTitles.listLayouts[listType]}</RegularText>}
             bottomDivider
             containerStyle={styles.container}
-            rightIcon={() =>
-              listType === listTypeForQuery ? (
-                <Icon.RadioButtonFilled size={RADIO_BUTTON_SIZE} />
-              ) : (
-                <Icon.RadioButtonEmpty color={colors.darkText} size={RADIO_BUTTON_SIZE} />
-              )
-            }
             onPress={getOnPressListType(listType)}
             delayPressIn={0}
             Component={Touchable}
             accessibilityLabel={`(${texts.settingsTitles.listLayouts[listType]}) ${consts.a11yLabel.button}`}
-          />
+          >
+            <ListItem.Content>
+              <RegularText small>{texts.settingsTitles.listLayouts[listType]}</RegularText>
+            </ListItem.Content>
+
+            {listType === listTypeForQuery ? (
+              <Icon.RadioButtonFilled size={RADIO_BUTTON_SIZE} />
+            ) : (
+              <Icon.RadioButtonEmpty color={colors.darkText} size={RADIO_BUTTON_SIZE} />
+            )}
+          </ListItem>
         ))}
       </Collapsible>
     </>

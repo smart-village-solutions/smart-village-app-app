@@ -48,26 +48,26 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
 
   return (
     <ListItem
-      title={<RegularText small>{title}</RegularText>}
-      subtitle={
-        <RegularText smallest>
-          {showOnDetailPage ? locationInfo : progressSizeGenerator(progressSize, totalSize)}
-        </RegularText>
-      }
       bottomDivider
       containerStyle={styles.container}
-      rightIcon={
-        <IconForDownloadType
-          isListView
-          downloadType={downloadType}
-          showOnDetailPage={showOnDetailPage}
-        />
-      }
       onPress={onPress}
       delayPressIn={0}
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
-    />
+    >
+      <ListItem.Content>
+        <RegularText small>{title}</RegularText>
+        <RegularText smallest>
+          {showOnDetailPage ? locationInfo : progressSizeGenerator(progressSize, totalSize)}
+        </RegularText>
+      </ListItem.Content>
+
+      <IconForDownloadType
+        isListView
+        downloadType={downloadType}
+        showOnDetailPage={showOnDetailPage}
+      />
+    </ListItem>
   );
 };
 
