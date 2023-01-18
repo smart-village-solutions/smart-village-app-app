@@ -153,7 +153,7 @@ Delete the 3D model from the settings screen:
 
 ## Converter required when uploading a 3D model (Mac OSX & Linux support only)
 
-- [Download](https://fileserver.smart-village.app/development/augmented-reality/VRX_Converter/bin/ViroFBX) FBX to VRX converter
+- [Download](https://fileserver.smart-village.app/development/augmented-reality/VRX_Converter/bin/ViroFBX.zip) FBX to VRX converter
 - [Viro Community Documentation](https://viro-community.readme.io/docs/3d-objects#fbx)
 - [ViroFBX Github Documentation (MacOS)](https://github.com/ViroCommunity/ViroFBX)
 - [ViroFBX Github Documentation (Linux)](https://github.com/ViroCommunity/ViroFBX/tree/linux-support)
