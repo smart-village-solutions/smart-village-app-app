@@ -51,22 +51,22 @@ export const DailyWeather = ({ date, description, icon, temperatures }: Props) =
           </WrapperRow>
           <RegularText />
           <WrapperRow spaceBetween>
-            <View style={styles.dayTimeEntry}>
-              <RegularText>Morgens</RegularText>
-              <RegularText>{morn.toFixed(1)}°C</RegularText>
-            </View>
-            <View style={styles.dayTimeEntry}>
-              <RegularText>Mittags</RegularText>
-              <RegularText>{day.toFixed(1)}°C</RegularText>
-            </View>
-            <View style={styles.dayTimeEntry}>
-              <RegularText>Abends</RegularText>
-              <RegularText>{eve.toFixed(1)}°C</RegularText>
-            </View>
-            <View style={styles.dayTimeEntry}>
-              <RegularText>Nachts</RegularText>
-              <RegularText>{night.toFixed(1)}°C</RegularText>
-            </View>
+            <RegularText center>
+              Morgens{'\n'}
+              {morn.toFixed(1)}°C
+            </RegularText>
+            <RegularText center>
+              Mittags{'\n'}
+              {day.toFixed(1)}°C
+            </RegularText>
+            <RegularText center>
+              Abends{'\n'}
+              {eve.toFixed(1)}°C
+            </RegularText>
+            <RegularText center>
+              Nachts{'\n'}
+              {night.toFixed(1)}°C
+            </RegularText>
           </WrapperRow>
         </WrapperHorizontal>
       </View>
