@@ -22,17 +22,24 @@ export const objectParser = async ({ payload, setObject, setIsLoading, onPress }
     parsedObject[item.type] = {
       chromaKeyFilteredVideo: item?.chromaKeyFilteredVideo,
       color: item?.color,
+      direction: item?.direction,
+      height: item?.height,
+      innerAngle: item?.innerAngle,
       intensity: item?.intensity,
       isSpatialSound: item?.isSpatialSound,
       maxDistance: item?.maxDistance,
       minDistance: item?.minDistance,
+      outerAngle: item?.outerAngle,
       physicalWidth: item?.physicalWidth,
       position: item?.position,
       rolloffModel: item?.rolloffModel,
       rotation: item?.rotation,
       scale: item?.scale,
+      shadowMapSize: item?.shadowMapSize,
+      shadowOpacity: item?.shadowOpacity,
       temperature: item?.temperature,
-      uri: item?.uri
+      uri: item?.uri,
+      width: item?.width
     };
   });
 

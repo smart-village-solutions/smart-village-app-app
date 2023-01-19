@@ -6,6 +6,7 @@ import { DOWNLOAD_TYPE } from './downloadType';
 import { storageNameCreator } from './storageNameCreator';
 
 // function for downloading AR objects
+/* eslint-disable complexity */
 export const downloadObject = async ({ index, data, setData }) => {
   const downloadedData = [...data];
   const dataItem = data[index];
@@ -15,21 +16,28 @@ export const downloadObject = async ({ index, data, setData }) => {
       const {
         chromaKeyFilteredVideo,
         color,
+        direction,
+        height,
         id,
+        innerAngle,
         intensity,
         isSpatialSound,
         maxDistance,
         minDistance,
+        outerAngle,
         physicalWidth,
         position,
         rolloffModel,
         rotation,
         scale,
+        shadowMapSize,
+        shadowOpacity,
         stable,
         temperature,
         title,
         type,
-        uri
+        uri,
+        width
       } = objectItem;
 
       const { directoryName, folderName, storageName } = storageNameCreator({
@@ -71,22 +79,29 @@ export const downloadObject = async ({ index, data, setData }) => {
         downloadedData[index].payload.scenes[sceneIndex].localUris?.push({
           chromaKeyFilteredVideo, // HEX Color Code
           color, // HEX Color Code,
+          direction, // Array [x,y,z]
+          height, // Number
           id,
+          innerAngle: innerAngle && parseInt(innerAngle),
           intensity, // Number
           isSpatialSound, // Boolean
           maxDistance: maxDistance && parseFloat(maxDistance),
           minDistance: minDistance && parseFloat(minDistance),
+          outerAngle: outerAngle && parseInt(outerAngle),
           physicalWidth: physicalWidth && parseFloat(physicalWidth),
           position, // Array [x,y,z]
           rolloffModel, // String (none, linear, or logarithmic)
           rotation, // Array [x,y,z]
           scale, // Array [x,y,z]
-          size,
-          stable,
+          shadowMapSize: shadowMapSize && parseInt(shadowMapSize),
+          shadowOpacity: shadowOpacity && parseFloat(shadowOpacity),
+          size, // Number
+          stable, // Boolean
           temperature, // Number
-          title,
-          type,
-          uri: fileSystemDownload?.uri
+          title, // String
+          type, // String
+          uri: fileSystemDownload?.uri,
+          width // Number
         });
 
         addToStore(storageName, downloadedData[index]);
@@ -98,6 +113,7 @@ export const downloadObject = async ({ index, data, setData }) => {
 
   setData(downloadedData);
 };
+/* eslint-enable complexity */
 
 /**
  * callback function that allows us to see how many bytes per second the file is downloaded
