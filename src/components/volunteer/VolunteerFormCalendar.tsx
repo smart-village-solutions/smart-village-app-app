@@ -11,7 +11,7 @@ import { colors, consts, texts } from '../../config';
 import { jsonParser, momentFormat } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { calendarDelete, calendarNew, calendarUpload, groupsMy } from '../../queries/volunteer';
-import { VolunteerCalendar, VolunteerGroup } from '../../types';
+import { Calendar, VolunteerGroup } from '../../types';
 import { Button } from '../Button';
 import { DocumentSelector, ImageSelector } from '../consul/selectors';
 import { DateTimeInput } from '../form/DateTimeInput';
@@ -24,7 +24,7 @@ import { Wrapper } from '../Wrapper';
 
 const { IMAGE_TYPE_REGEX, PDF_TYPE_REGEX, URL_REGEX } = consts;
 
-const fileFilters = (fileRegex: RegExp, calendarData: VolunteerCalendar) =>
+const fileFilters = (fileRegex: RegExp, calendarData: Calendar) =>
   JSON.stringify(
     calendarData?.content?.files
       ?.map(({ file_name: infoText, mime_type: mimeType, url: uri, id: fileId }) => {
@@ -39,7 +39,7 @@ const fileFilters = (fileRegex: RegExp, calendarData: VolunteerCalendar) =>
       ?.filter((otherFiles) => otherFiles != null)
   );
 
-const filerParseAndUpload = (calendarNewData: VolunteerCalendar, id: number) => {
+const filerParseAndUpload = (calendarNewData: Calendar, id: number) => {
   const images = jsonParser(calendarNewData.images);
   const documents = jsonParser(calendarNewData.documents);
   const uris: { uri: string; mimeType: string }[] = [];
@@ -83,7 +83,7 @@ export const VolunteerFormCalendar = ({
   scrollToTop,
   groupId
 }: StackScreenProps<any> & { scrollToTop: () => void; groupId?: number }) => {
-  const calendarData = route.params?.calendarData as VolunteerCalendar;
+  const calendarData = route.params?.calendarData as Calendar;
   const isEditMode = !!calendarData; // edit mode if there exists some calendar data
 
   const appointments = {
@@ -105,7 +105,7 @@ export const VolunteerFormCalendar = ({
     control,
     formState: { errors, isValid },
     handleSubmit
-  } = useForm<VolunteerCalendar>({
+  } = useForm<Calendar>({
     mode: 'onBlur',
     defaultValues: {
       isPublic: 0,
@@ -160,7 +160,7 @@ export const VolunteerFormCalendar = ({
 
   const { mutateAsync, isLoading, isError, isSuccess, data, reset } = useMutation(calendarNew);
 
-  const onSubmit = async (calendarNewData: VolunteerCalendar) => {
+  const onSubmit = async (calendarNewData: Calendar) => {
     mutateAsync(calendarNewData).then(async ({ id }: { id: number }) => {
       if (id) filerParseAndUpload(calendarNewData, id);
     });

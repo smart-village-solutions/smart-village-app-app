@@ -1,4 +1,4 @@
-export const volunteerCalendar = (color) => `
+export const calendarToggle = (color) => `
   <?xml version="1.0" encoding="UTF-8"?>
   <svg width="12px" height="12px" viewBox="0 0 12 12" fill="none" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <path d="M2.5 0.5V2.5" stroke="${color}" stroke-linecap="round" stroke-linejoin="round"/>

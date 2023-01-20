@@ -1,41 +1,15 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import _isNumber from 'lodash/isNumber';
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, Icon, normalize, texts } from '../../config';
 import { isUpcomingDate } from '../../helpers';
 import { useVolunteerData, useVolunteerRefresh } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { VolunteerQuery } from '../../types';
+import { Calendar } from '../Calendar';
+import { CalendarListToggle } from '../CalendarListToggle';
 import { DataListSection } from '../DataListSection';
 import { SectionHeader } from '../SectionHeader';
-import { RegularText } from '../Text';
-import { WrapperRow } from '../Wrapper';
-
-import { VolunteerCalendar } from './VolunteerCalendar';
-
-type TCalendarListToggle = {
-  showCalendar: boolean;
-  setShowCalendar: (showCalendar: boolean) => void;
-};
-
-export const CalendarListToggle = ({ showCalendar, setShowCalendar }: TCalendarListToggle) => (
-  <WrapperRow>
-    <TouchableOpacity onPress={() => setShowCalendar(false)}>
-      <WrapperRow style={[styles.calendarListToggle, !showCalendar && styles.underline]}>
-        <Icon.List color={colors.darkText} size={normalize(12)} style={styles.icon} />
-        <RegularText>{texts.volunteer.list}</RegularText>
-      </WrapperRow>
-    </TouchableOpacity>
-    <TouchableOpacity onPress={() => setShowCalendar(true)}>
-      <WrapperRow style={[styles.calendarListToggle, showCalendar && styles.underline]}>
-        <Icon.VolunteerCalendar color={colors.darkText} size={normalize(12)} style={styles.icon} />
-        <RegularText>{texts.volunteer.calendar}</RegularText>
-      </WrapperRow>
-    </TouchableOpacity>
-  </WrapperRow>
-);
 
 type Props = {
   buttonTitle?: string;
@@ -113,7 +87,7 @@ export const VolunteerHomeSection = ({
         )}
         <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
         {showCalendar ? (
-          <VolunteerCalendar
+          <Calendar
             query={query}
             queryVariables={queryVariables}
             calendarData={sectionData}
@@ -169,19 +143,3 @@ export const VolunteerHomeSection = ({
     />
   );
 };
-
-const styles = StyleSheet.create({
-  calendarListToggle: {
-    alignItems: 'center',
-    marginHorizontal: normalize(10),
-    paddingVertical: normalize(5)
-  },
-  icon: {
-    marginBottom: normalize(1),
-    marginRight: normalize(6.5)
-  },
-  underline: {
-    borderBottomWidth: normalize(1),
-    borderColor: colors.darkText
-  }
-});

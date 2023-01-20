@@ -2,13 +2,14 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import 'moment/locale/de';
 import React from 'react';
-import { Calendar, CalendarProps } from 'react-native-calendars';
+import { Calendar as RNCalendar, CalendarProps } from 'react-native-calendars';
 import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day/basic';
 
-import { colors, consts, texts } from '../../config';
-import { setupLocales } from '../../helpers';
-import { ScreenName, VolunteerCalendar as TVolunteerCalendar } from '../../types';
-import { renderArrow } from '../calendarArrows';
+import { colors, consts, texts } from '../config';
+import { setupLocales } from '../helpers';
+import { Calendar as TCalendar, ScreenName } from '../types';
+
+import { renderArrow } from './calendarArrows';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -19,7 +20,7 @@ const DayComponent = (props: BasicDayProps) => (
 type Props = {
   query: string;
   queryVariables?: { dateRange?: string[]; contentContainerId?: number };
-  calendarData: TVolunteerCalendar[];
+  calendarData: TCalendar[];
   isLoading: boolean;
   navigation: StackNavigationProp<any>;
 };
@@ -60,17 +61,11 @@ const getMarkedDates = (data?: any[]) => {
   return markedDates;
 };
 
-export const VolunteerCalendar = ({
-  query,
-  queryVariables,
-  calendarData,
-  isLoading,
-  navigation
-}: Props) => {
+export const Calendar = ({ query, queryVariables, calendarData, isLoading, navigation }: Props) => {
   const contentContainerId = queryVariables?.contentContainerId;
 
   return (
-    <Calendar
+    <RNCalendar
       dayComponent={DayComponent}
       onDayPress={(day) =>
         navigation.push(ScreenName.VolunteerIndex, {

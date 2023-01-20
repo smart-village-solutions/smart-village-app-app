@@ -5,7 +5,7 @@ export enum PARTICIPANT_TYPE {
   ACCEPT
 }
 
-export type VolunteerCalendar = {
+export type Calendar = {
   id: number;
   allDay: number;
   allowDecline: number;
