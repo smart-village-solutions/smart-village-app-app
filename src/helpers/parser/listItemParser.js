@@ -386,7 +386,7 @@ const parseConsulData = (data, query, skipLastDivider) => {
  */
 // eslint-disable-next-line complexity
 export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) => {
-  if (!data) return;
+  if (!data) return [];
 
   const {
     bookmarkable = true,

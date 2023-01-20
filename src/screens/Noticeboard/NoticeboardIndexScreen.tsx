@@ -50,7 +50,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     setRefreshing(false);
   }, [isConnected, refetch]);
 
-  if (loading && !listItems)
+  if (loading && !listItems?.length)
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
