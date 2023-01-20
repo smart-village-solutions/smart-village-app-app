@@ -2,9 +2,11 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { SectionList, StyleSheet } from 'react-native';
 
+import { consts, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
+import { ScreenName } from '../types';
 
 import { LoadingSpinner } from './LoadingSpinner';
 import { SectionHeader } from './SectionHeader';
@@ -12,6 +14,7 @@ import { SectionHeader } from './SectionHeader';
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
 const MAX_INITIAL_NUM_TO_RENDER = 20;
+const { ROOT_ROUTE_NAMES } = consts;
 
 export const EventList = ({
   data,
@@ -20,6 +23,8 @@ export const EventList = ({
   ListHeaderComponent,
   navigation,
   noSubtitle,
+  query,
+  queryVariables,
   refreshControl
 }) => {
   const [listEndReached, setListEndReached] = useState(false);
@@ -71,7 +76,20 @@ export const EventList = ({
       refreshControl={refreshControl}
       renderItem={renderItem}
       renderSectionHeader={({ section: { title } }) => (
-        <SectionHeader title={momentFormat(title, 'DD.MM.YYYY dddd')} />
+        <SectionHeader
+          title={momentFormat(title, 'DD.MM.YYYY dddd')}
+          onPress={() =>
+            navigation.push(ScreenName.Index, {
+              title: texts.homeTitles.events,
+              query,
+              queryVariables: {
+                ...queryVariables,
+                dateRange: [momentFormat(title, 'YYYY-MM-DD'), momentFormat(title, 'YYYY-MM-DD')]
+              },
+              rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
+            })
+          }
+        />
       )}
       sections={sectionedData}
       stickySectionHeadersEnabled
@@ -93,5 +111,7 @@ EventList.propTypes = {
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
+  query: PropTypes.string,
+  queryVariables: PropTypes.object,
   refreshControl: PropTypes.object
 };

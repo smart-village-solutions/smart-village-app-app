@@ -8,6 +8,8 @@ import { Divider } from 'react-native-elements';
 
 import { auth } from '../auth';
 import {
+  Calendar,
+  CalendarListToggle,
   CategoryList,
   DropdownHeader,
   EmptyMessage,
@@ -85,6 +87,7 @@ export const IndexScreen = ({ navigation, route }) => {
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
+  const [showCalendar, setShowCalendar] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
@@ -129,8 +132,10 @@ export const IndexScreen = ({ navigation, route }) => {
 
       if (additionalData?.length) {
         if (hasDailyFilterSelection) {
-          // filter additionalData on current day
-          additionalData = additionalData.filter((item) => item.listDate === currentDate);
+          // filter additionalData on given or current day
+          additionalData = additionalData.filter(
+            (item) => item.listDate === (queryVariables.dateRange?.[0] ?? currentDate)
+          );
         }
 
         listItems.push(...additionalData);
@@ -196,8 +201,8 @@ export const IndexScreen = ({ navigation, route }) => {
           // remove the filter key for the specific query, when unselecting daily events
           delete prevQueryVariables.dateRange;
 
-          // need to spread the `prevQueryVariables` into a new object with additional refetchDate key
-          // to force the Query component to update the data, otherwise it is not fired somehow
+          // need to spread the `prevQueryVariables` into a new object with additional refetchDate
+          // key to force the Query component to update the data, otherwise it is not fired somehow
           // because the state variable wouldn't change
           return { ...prevQueryVariables, refetchDate: true };
         });
@@ -207,12 +212,12 @@ export const IndexScreen = ({ navigation, route }) => {
     });
   }, [filterByDailyEvents, queryVariables]);
 
-  // if we show the map or want to sort by distance, we need to fetch all the entries at once
-  // this is not a big issue if we want to sort by distance, because getting the location usually
-  // takes longer than fetching all entries if we filter by opening times, we need to also remove
-  // the limit as otherwise we might not have any open POIs in the next batch that would result in
-  // the list not getting any new items and not reliably triggering another fetchMore
-  if (showMap || sortByDistance || filterByOpeningTimes) {
+  // if we show the map, calendar or want to sort by distance, we need to fetch all the entries at
+  // once this is not a big issue if we want to sort by distance, because getting the location
+  // usually takes longer than fetching all entries if we filter by opening times, we need to also
+  // remove the limit as otherwise we might not have any open POIs in the next batch that would
+  // result in the list not getting any new items and not reliably triggering another `fetchMore`
+  if (showMap || showCalendar || sortByDistance || filterByOpeningTimes) {
     delete queryVariables.limit;
   }
 
@@ -231,7 +236,11 @@ export const IndexScreen = ({ navigation, route }) => {
     });
     // reset daily events filter as well when navigating from one index screen to a new events index
     setFilterByDailyEvents(route.params?.filterByDailyEvents);
-    navigation.setParams({ filterByDailyEvents: false });
+    // reset some of the navigation params for some reason
+    navigation.setParams({
+      filterByDailyEvents: false,
+      titleDetail: query === QUERY_TYPES.NEWS_ITEMS ? route.params?.titleDetail : ''
+    });
   }, [route.params?.queryVariables, query, excludeDataProviderIds]);
 
   useEffect(() => {
@@ -264,7 +273,8 @@ export const IndexScreen = ({ navigation, route }) => {
     }
   }, [isConnected, query]);
 
-  const isCalendarWithVolunteerEvents = query === QUERY_TYPES.EVENT_RECORDS && showVolunteerEvents;
+  const isCalendar = query === QUERY_TYPES.EVENT_RECORDS;
+  const isCalendarWithVolunteerEvents = isCalendar && showVolunteerEvents;
 
   const {
     data: dataVolunteerEvents,
@@ -365,67 +375,88 @@ export const IndexScreen = ({ navigation, route }) => {
                 : undefined;
 
             return (
-              <ListComponent
-                ListHeaderComponent={
-                  <>
-                    {!!showFilter && (
-                      <>
-                        <DropdownHeader
-                          {...{
-                            query,
-                            queryVariables,
-                            data: initialNewsItemsFetch && loading ? {} : data,
-                            updateListData: updateListDataByDropdown
-                          }}
-                        />
-                        {query === QUERY_TYPES.EVENT_RECORDS && data?.categories?.length && (
-                          <View>
-                            <OptionToggle
-                              label={texts.eventRecord.filterByDailyEvents}
-                              onToggle={updateListDataByDailySwitch}
-                              value={filterByDailyEvents}
-                            />
-                          </View>
-                        )}
-                      </>
-                    )}
-                    {!!categories?.length && (
-                      <CategoryList
-                        navigation={navigation}
-                        data={categories}
-                        horizontal={false}
-                        hasSectionHeader={false}
-                      />
-                    )}
-                  </>
-                }
-                ListEmptyComponent={
-                  loading ? (
-                    <LoadingContainer>
-                      <ActivityIndicator color={colors.accent} />
-                    </LoadingContainer>
-                  ) : (
-                    <EmptyMessage
-                      title={categories?.length ? texts.empty.categoryList : texts.empty.list}
-                    />
-                  )
-                }
-                navigation={navigation}
-                data={loading ? [] : buildListItems(data, additionalData)}
-                horizontal={false}
-                sectionByDate={true}
-                query={query}
-                fetchMoreData={isConnected ? fetchMoreData : null}
-                refreshControl={
-                  <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={() => refresh(refetch)}
-                    colors={[colors.accent]}
-                    tintColor={colors.accent}
+              <>
+                {isCalendar && !hasDailyFilterSelection && (
+                  <CalendarListToggle
+                    showCalendar={showCalendar}
+                    setShowCalendar={setShowCalendar}
                   />
-                }
-                showBackToTop
-              />
+                )}
+                <ListComponent
+                  ListHeaderComponent={
+                    <>
+                      {!!showFilter && (
+                        <>
+                          <DropdownHeader
+                            {...{
+                              query,
+                              queryVariables,
+                              data: initialNewsItemsFetch && loading ? {} : data,
+                              updateListData: updateListDataByDropdown
+                            }}
+                          />
+                          {query === QUERY_TYPES.EVENT_RECORDS && data?.categories?.length && (
+                            <View>
+                              <OptionToggle
+                                label={texts.eventRecord.filterByDailyEvents}
+                                onToggle={updateListDataByDailySwitch}
+                                value={filterByDailyEvents}
+                              />
+                            </View>
+                          )}
+                        </>
+                      )}
+                      {!!categories?.length && (
+                        <CategoryList
+                          navigation={navigation}
+                          data={categories}
+                          horizontal={false}
+                          hasSectionHeader={false}
+                        />
+                      )}
+                    </>
+                  }
+                  ListEmptyComponent={
+                    loading ? (
+                      <LoadingContainer>
+                        <ActivityIndicator color={colors.accent} />
+                      </LoadingContainer>
+                    ) : showCalendar ? (
+                      <Calendar
+                        query={query}
+                        queryVariables={queryVariables}
+                        calendarData={buildListItems(data, additionalData)}
+                        isLoading={loading}
+                        navigation={navigation}
+                      />
+                    ) : (
+                      <EmptyMessage
+                        title={categories?.length ? texts.empty.categoryList : texts.empty.list}
+                      />
+                    )
+                  }
+                  navigation={navigation}
+                  data={
+                    loading || (isCalendar && showCalendar)
+                      ? []
+                      : buildListItems(data, additionalData)
+                  }
+                  horizontal={false}
+                  sectionByDate={isCalendar ? !showCalendar : true}
+                  query={query}
+                  queryVariables={queryVariables}
+                  fetchMoreData={isConnected ? fetchMoreData : null}
+                  refreshControl={
+                    <RefreshControl
+                      refreshing={refreshing}
+                      onRefresh={() => refresh(refetch)}
+                      colors={[colors.accent]}
+                      tintColor={colors.accent}
+                    />
+                  }
+                  showBackToTop
+                />
+              </>
             );
           }}
         </Query>

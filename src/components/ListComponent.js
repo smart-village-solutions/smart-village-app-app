@@ -53,6 +53,7 @@ export const ListComponent = ({
   noSubtitle,
   openWebScreen,
   query,
+  queryVariables,
   refreshControl,
   sectionByDate,
   showBackToTop
@@ -76,6 +77,7 @@ export const ListComponent = ({
       noSubtitle={noSubtitle}
       openWebScreen={openWebScreen}
       query={query}
+      queryVariables={queryVariables}
       refreshControl={refreshControl}
       showBackToTop={showBackToTop}
     />
@@ -93,6 +95,7 @@ ListComponent.propTypes = {
   noSubtitle: PropTypes.bool,
   openWebScreen: PropTypes.func,
   query: PropTypes.string.isRequired,
+  queryVariables: PropTypes.object,
   refreshControl: PropTypes.object,
   sectionByDate: PropTypes.bool,
   showBackToTop: PropTypes.bool

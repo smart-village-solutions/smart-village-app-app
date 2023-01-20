@@ -1,8 +1,8 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import 'moment/locale/de';
-import React from 'react';
-import { Calendar as RNCalendar, CalendarProps } from 'react-native-calendars';
+import React, { useCallback } from 'react';
+import { Calendar as RNCalendar, CalendarProps, DateData } from 'react-native-calendars';
 import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day/basic';
 
 import { colors, consts, texts } from '../config';
@@ -64,17 +64,31 @@ const getMarkedDates = (data?: any[]) => {
 export const Calendar = ({ query, queryVariables, calendarData, isLoading, navigation }: Props) => {
   const contentContainerId = queryVariables?.contentContainerId;
 
-  return (
-    <RNCalendar
-      dayComponent={DayComponent}
-      onDayPress={(day) =>
-        navigation.push(ScreenName.VolunteerIndex, {
+  const onDayPress = useCallback(
+    (day: DateData) => {
+      if (contentContainerId) {
+        return navigation.push(ScreenName.VolunteerIndex, {
           title: texts.volunteer.events,
           query,
           queryVariables: { dateRange: [day.dateString], contentContainerId },
           rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-        })
+        });
       }
+
+      navigation.push(ScreenName.Index, {
+        title: texts.homeTitles.events,
+        query,
+        queryVariables: { ...queryVariables, dateRange: [day.dateString, day.dateString] },
+        rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
+      });
+    },
+    [navigation, query, queryVariables, calendarData, contentContainerId]
+  );
+
+  return (
+    <RNCalendar
+      dayComponent={DayComponent}
+      onDayPress={onDayPress}
       displayLoadingIndicator={isLoading}
       markedDates={getMarkedDates(calendarData)}
       markingType="multi-dot"
