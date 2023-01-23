@@ -196,6 +196,7 @@ export const IndexScreen = ({ navigation, route }) => {
           // add the filter key for the specific query, when filtering for daily events
           return { ...prevQueryVariables, dateRange: [currentDate, currentDate] };
         });
+        setShowCalendar(false);
       } else {
         setQueryVariables((prevQueryVariables) => {
           // remove the filter key for the specific query, when unselecting daily events
