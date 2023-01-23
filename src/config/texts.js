@@ -80,6 +80,10 @@ export const texts = {
       'Es wurden noch keine Beiträge, Orte oder Touren für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     showAll: 'Alle anzeigen'
   },
+  calendarToggle: {
+    calendar: 'Kalender',
+    list: 'Liste'
+  },
   categoryFilter: {
     dataProvider: 'Datenquellenauswahl',
     category: 'Kategorie'
@@ -906,7 +910,6 @@ export const texts = {
     attendInfo:
       'Wenn Sie Interesse an dieser Veranstaltung bekunden wird diese in den Kalender in Ihrem Bereich übernommen.\n',
     birthday: 'Geburtstag',
-    calendar: 'Kalender',
     calendarMy: 'Mein Kalender',
     calendarNew: 'Termin erstellen',
     contactGroupOwner: 'Gruppenbesitzer kontaktieren',
@@ -955,7 +958,6 @@ export const texts = {
     lastnameError: 'Nachname muss ausgefüllt werden',
     leave: 'Verlassen',
     linkedin: 'Linkedin',
-    list: 'Liste',
     location: 'Ort',
     login: 'Anmelden',
     loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',

@@ -5,13 +5,13 @@ import { RefreshControl, StyleSheet } from 'react-native';
 
 import {
   Button,
+  Calendar,
   CalendarListToggle,
   DefaultKeyboardAvoidingView,
   EmptyMessage,
   ListComponent,
   LoadingSpinner,
   SafeAreaViewFlex,
-  VolunteerCalendar,
   VolunteerPostTextField,
   Wrapper
 } from '../../components';
@@ -95,7 +95,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           }
           ListEmptyComponent={
             showCalendar ? (
-              <VolunteerCalendar
+              <Calendar
                 query={query}
                 queryVariables={queryVariables}
                 calendarData={data}

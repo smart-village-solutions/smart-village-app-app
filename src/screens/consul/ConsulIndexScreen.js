@@ -108,7 +108,7 @@ export const ConsulIndexScreen = ({ navigation, route }) => {
 
   if (isError) showRegistrationFailAlert(navigation);
 
-  if (!Component || !listItems) return null;
+  if (!Component || !listItems?.length) return null;
 
   return (
     <SafeAreaViewFlex>

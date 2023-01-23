@@ -10,6 +10,7 @@ import {
   arrowRight,
   arrowUp,
   calendar,
+  calendarToggle,
   clock,
   close,
   constructionSite,
@@ -42,8 +43,7 @@ import {
   unvisible,
   url,
   verifiedBadge,
-  visible,
-  volunteerCalendar
+  visible
 } from '../icons';
 
 import { colors } from './colors';
@@ -111,6 +111,7 @@ export const Icon = {
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
   Calendar: (props: IconProps) => <SvgIcon xml={calendar} {...props} />,
+  CalendarToggle: (props: IconProps) => <SvgIcon xml={calendarToggle} {...props} />,
   Camera: (props: IconProps) => <NamedIcon name="camera" {...props} />,
   Check: (props: IconProps) => <NamedIcon name="checkmark-circle" {...props} />,
   Clock: (props: IconProps) => <SvgIcon xml={clock} {...props} />,
@@ -183,6 +184,5 @@ export const Icon = {
       name={device.platform === 'ios' ? 'ios-people-circle' : 'md-people-circle'}
       {...props}
     />
-  ),
-  VolunteerCalendar: (props: IconProps) => <SvgIcon xml={volunteerCalendar} {...props} />
+  )
 };

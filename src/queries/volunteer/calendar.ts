@@ -8,7 +8,7 @@ import {
   volunteerApiV2Url,
   volunteerAuthToken
 } from '../../helpers/volunteerHelper';
-import { PARTICIPANT_TYPE, VolunteerCalendar } from '../../types';
+import { Calendar, PARTICIPANT_TYPE } from '../../types';
 
 export const calendarAll = async (queryVariables?: {
   dateRange?: string[];
@@ -86,7 +86,7 @@ export const calendarNew = async ({
   forceJoin = 0,
   topics,
   contentContainerId
-}: VolunteerCalendar) => {
+}: Calendar) => {
   const authToken = await volunteerAuthToken();
 
   const formData = {
