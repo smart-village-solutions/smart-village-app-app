@@ -78,16 +78,22 @@ export const EventList = ({
       renderSectionHeader={({ section: { title } }) => (
         <SectionHeader
           title={momentFormat(title, 'DD.MM.YYYY dddd')}
-          onPress={() =>
-            navigation.push(ScreenName.Index, {
-              title: texts.homeTitles.events,
-              query,
-              queryVariables: {
-                ...queryVariables,
-                dateRange: [momentFormat(title, 'YYYY-MM-DD'), momentFormat(title, 'YYYY-MM-DD')]
-              },
-              rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
-            })
+          onPress={
+            query === QUERY_TYPES.EVENT_RECORDS
+              ? () =>
+                  navigation.push(ScreenName.Index, {
+                    title: texts.homeTitles.events,
+                    query,
+                    queryVariables: {
+                      ...queryVariables,
+                      dateRange: [
+                        momentFormat(title, 'YYYY-MM-DD'),
+                        momentFormat(title, 'YYYY-MM-DD')
+                      ]
+                    },
+                    rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
+                  })
+              : undefined
           }
         />
       )}
