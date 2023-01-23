@@ -7,6 +7,7 @@ import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day
 
 import { colors, consts, texts } from '../config';
 import { setupLocales } from '../helpers';
+import { QUERY_TYPES } from '../queries';
 import { Calendar as TCalendar, ScreenName } from '../types';
 
 import { renderArrow } from './calendarArrows';
@@ -66,20 +67,20 @@ export const Calendar = ({ query, queryVariables, calendarData, isLoading, navig
 
   const onDayPress = useCallback(
     (day: DateData) => {
-      if (contentContainerId) {
-        return navigation.push(ScreenName.VolunteerIndex, {
-          title: texts.volunteer.events,
+      if (query === QUERY_TYPES.EVENT_RECORDS) {
+        return navigation.push(ScreenName.Index, {
+          title: texts.homeTitles.events,
           query,
-          queryVariables: { dateRange: [day.dateString], contentContainerId },
-          rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+          queryVariables: { ...queryVariables, dateRange: [day.dateString, day.dateString] },
+          rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
         });
       }
 
-      navigation.push(ScreenName.Index, {
-        title: texts.homeTitles.events,
+      navigation.push(ScreenName.VolunteerIndex, {
+        title: texts.volunteer.events,
         query,
-        queryVariables: { ...queryVariables, dateRange: [day.dateString, day.dateString] },
-        rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
+        queryVariables: { dateRange: [day.dateString], contentContainerId },
+        rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
       });
     },
     [navigation, query, queryVariables, calendarData, contentContainerId]
