@@ -5,7 +5,7 @@ import { CheckBox } from 'react-native-elements';
 import { Mutation } from 'react-apollo';
 
 import { createQuery, QUERY_TYPES } from '../queries';
-import { colors, consts, normalize } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import {
   BoldText,
   Button,
@@ -121,6 +121,11 @@ export const FeedbackScreen = () => {
                     textAlignVertical="top"
                   />
                   <CheckBox
+                    accessibilityLabel={`${
+                      consent
+                        ? texts.accessibilityLabels.checkbox.active
+                        : texts.accessibilityLabels.checkbox.inactive
+                    } Ich bin mit dem Speichern meiner Daten einverstanden.`}
                     accessibilityRole="button"
                     checked={consent}
                     onPress={() => setConsent(!consent)}

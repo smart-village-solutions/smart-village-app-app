@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { CheckBox as RNECheckbox } from 'react-native-elements';
 
-import { colors, Icon, normalize } from '../config';
+import { colors, Icon, normalize, texts } from '../config';
 import { baseFontStyle } from '../config/styles/baseFontStyle';
 
 export const Radiobutton = ({ title, disabled, selected, onPress, containerStyle }) => (
@@ -13,6 +13,11 @@ export const Radiobutton = ({ title, disabled, selected, onPress, containerStyle
     onPress={onPress}
     size={normalize(24)}
     containerStyle={[styles.containerStyle, containerStyle]}
+    accessibilityLabel={`${
+      selected
+        ? texts.accessibilityLabels.checkbox.active
+        : texts.accessibilityLabels.checkbox.inactive
+    } ${title}`}
     textStyle={[
       styles.textStyle,
       selected && styles.textStyleSelected,

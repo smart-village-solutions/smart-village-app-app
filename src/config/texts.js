@@ -2,6 +2,10 @@ import appJson from '../../app.json';
 
 export const texts = {
   accessibilityLabels: {
+    checkbox: {
+      active: 'Ausgewählt',
+      inactive: 'Nicht ausgewählt'
+    },
     searchInputIcons: {
       delete: 'Suche löschen',
       search: 'Suche'
