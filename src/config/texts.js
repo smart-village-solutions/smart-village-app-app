@@ -2,6 +2,10 @@ import appJson from '../../app.json';
 
 export const texts = {
   accessibilityLabels: {
+    checkbox: {
+      active: 'ausgewählt',
+      inactive: 'nicht ausgewählt'
+    },
     searchInputIcons: {
       delete: 'Suche löschen',
       search: 'Suche'
@@ -400,6 +404,9 @@ export const texts = {
     prices: 'Preise'
   },
   feedbackLink: 'Feedback',
+  feedbackScreen: {
+    checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.'
+  },
   homeButtons: {
     events: 'Alle Veranstaltungen anzeigen',
     news: 'Alle Nachrichten anzeigen',
