@@ -1,7 +1,9 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 
-import { colors, Icon } from '../../config';
+import { colors, consts, Icon, texts } from '../../config';
+
+const a11yText = consts.a11yLabel;
 
 export const InputSecureTextIcon = ({
   isSecureTextEntry,
@@ -10,7 +12,14 @@ export const InputSecureTextIcon = ({
   isSecureTextEntry: boolean;
   setIsSecureTextEntry: React.Dispatch<React.SetStateAction<boolean>>;
 }) => (
-  <TouchableOpacity onPress={() => setIsSecureTextEntry(!isSecureTextEntry)}>
+  <TouchableOpacity
+    accessibilityLabel={
+      isSecureTextEntry
+        ? `${texts.accessibilityLabels.secureInputIcons.visible} ${a11yText.button}`
+        : `${texts.accessibilityLabels.secureInputIcons.invisible} ${a11yText.button}`
+    }
+    onPress={() => setIsSecureTextEntry(!isSecureTextEntry)}
+  >
     {isSecureTextEntry ? (
       <Icon.Visible color={colors.darkText} />
     ) : (

@@ -3,9 +3,11 @@ import React, { memo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SearchBar } from 'react-native-elements';
 
-import { colors, normalize } from '../../config';
+import { colors, consts, normalize, texts } from '../../config';
 import { Label } from '../Label';
 import { WrapperHorizontal } from '../Wrapper';
+
+const a11yText = consts.a11yLabel;
 
 export const TextSearch = memo(({ data, setData, label, placeholder }) => {
   return (
@@ -25,8 +27,20 @@ export const TextSearch = memo(({ data, setData, label, placeholder }) => {
         inputStyle={[styles.inputStyle, data.length && styles.marginLeft]}
         leftIconContainerStyle={styles.leftIconContainerStyle}
         rightIconContainerStyle={styles.rightIconContainerStyle}
-        searchIcon={data.length ? null : { color: colors.primary, size: normalize(28) }}
-        clearIcon={{ color: colors.primary, size: normalize(24) }}
+        searchIcon={
+          data.length
+            ? null
+            : {
+                accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.search} ${a11yText.button}`,
+                color: colors.primary,
+                size: normalize(28)
+              }
+        }
+        clearIcon={{
+          accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.delete} ${a11yText.button}`,
+          color: colors.primary,
+          size: normalize(24)
+        }}
       />
     </View>
   );
