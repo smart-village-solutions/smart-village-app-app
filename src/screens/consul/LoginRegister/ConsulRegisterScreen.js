@@ -97,7 +97,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="name"
-                label={texts.consul.name}
+                label={texts.consul.name + ' *'}
                 placeholder={texts.consul.name}
                 autoCapitalize="none"
                 validate
@@ -110,7 +110,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="email"
-                label={texts.consul.email}
+                label={texts.consul.email + ' *'}
                 placeholder={texts.consul.email}
                 keyboardType="email-address"
                 textContentType="emailAddress"
@@ -129,7 +129,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="password"
-                label={texts.consul.password}
+                label={texts.consul.password + ' *'}
                 placeholder={texts.consul.password}
                 textContentType="password"
                 autoCompleteType="password"
@@ -153,7 +153,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="passwordConfirmation"
-                label={texts.consul.passwordConfirmation}
+                label={texts.consul.passwordConfirmation + ' *'}
                 placeholder={texts.consul.passwordConfirmation}
                 textContentType="password"
                 autoCompleteType="password"
@@ -179,7 +179,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
               <Checkbox
                 linkDescription={texts.consul.privacyCheckLink}
                 link={`${secrets[namespace]?.consul?.serverUrl}${secrets[namespace]?.consul?.termsOfService}`}
-                title={texts.consul.privacyChecked}
+                title={texts.consul.privacyChecked + ' *'}
                 checkedIcon="check-square-o"
                 uncheckedIcon="square-o"
                 checked={hasAcceptedTermsOfService}

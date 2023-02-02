@@ -108,7 +108,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="username"
-                label={texts.volunteer.username}
+                label={texts.volunteer.username + ' *'}
                 placeholder={texts.volunteer.username}
                 textContentType="username"
                 autoCapitalize="none"
@@ -125,7 +125,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="email"
-                label={texts.volunteer.email}
+                label={texts.volunteer.email + ' *'}
                 placeholder={texts.volunteer.email}
                 keyboardType="email-address"
                 textContentType="emailAddress"
@@ -144,7 +144,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="password"
-                label={texts.volunteer.password}
+                label={texts.volunteer.password + ' *'}
                 placeholder={texts.volunteer.password}
                 textContentType="password"
                 autoCompleteType="password"
@@ -168,7 +168,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="passwordConfirmation"
-                label={texts.volunteer.passwordConfirmation}
+                label={texts.volunteer.passwordConfirmation + ' *'}
                 placeholder={texts.volunteer.passwordConfirmation}
                 textContentType="password"
                 autoCompleteType="password"
@@ -194,7 +194,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
               <Checkbox
                 linkDescription={texts.volunteer.privacyCheckLink}
                 link={dataPrivacyLink}
-                title={texts.volunteer.privacyChecked}
+                title={texts.volunteer.privacyChecked + ' *'}
                 checkedIcon="check-square-o"
                 uncheckedIcon="square-o"
                 checked={hasAcceptedDataPrivacy}

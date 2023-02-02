@@ -86,7 +86,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="email"
-                label={texts.consul.usernameOrEmail}
+                label={texts.consul.usernameOrEmail + ' *'}
                 placeholder={texts.consul.usernameOrEmail}
                 keyboardType="email-address"
                 textContentType="emailAddress"
@@ -102,7 +102,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="password"
-                label={texts.consul.password}
+                label={texts.consul.password + ' *'}
                 placeholder={texts.consul.password}
                 textContentType="password"
                 autoCompleteType="password"
