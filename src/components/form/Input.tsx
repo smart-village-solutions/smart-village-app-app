@@ -5,6 +5,7 @@ import { Input as RNEInput, InputProps } from 'react-native-elements';
 
 import { colors, consts, device, Icon, normalize } from '../../config';
 import { Label } from '../Label';
+import { BoldText } from '../Text';
 
 const { a11yLabel } = consts;
 
@@ -14,6 +15,7 @@ type Props = InputProps &
     hidden?: boolean;
     row?: boolean;
     chat?: boolean;
+    boldLabel?: boolean;
   };
 
 /* eslint-disable complexity */
@@ -23,6 +25,7 @@ export const Input = ({
   name,
   rules,
   label,
+  boldLabel = false,
   validate = false,
   disabled = false,
   hidden = false,
@@ -31,6 +34,9 @@ export const Input = ({
   multiline = false,
   rightIcon,
   chat = false,
+  inputContainerStyle,
+  inputStyle,
+  containerStyle,
   ...furtherProps
 }: Props) => {
   const { field } = useController({
@@ -79,7 +85,7 @@ export const Input = ({
   return (
     <RNEInput
       ref={inputRef}
-      label={<Label>{label}</Label>}
+      label={boldLabel ? <BoldText>{label}</BoldText> : <Label>{label}</Label>}
       value={field.value}
       onChangeText={field.onChange}
       onBlur={field.onBlur}
@@ -87,7 +93,7 @@ export const Input = ({
       multiline={multiline}
       {...furtherProps}
       errorMessage={!isValid ? errorMessage : ''}
-      scrollEnabled={multiline && false}
+      scrollEnabled={multiline}
       rightIcon={
         rightIcon ||
         (isValid ? (
@@ -99,20 +105,23 @@ export const Input = ({
       containerStyle={[
         styles.container,
         row && styles.row,
-        hidden && !errorMessage && styles.containerHidden
+        hidden && !errorMessage && styles.containerHidden,
+        !!containerStyle && containerStyle
       ]}
       inputContainerStyle={[
         styles.inputContainer,
         disabled && styles.inputContainerDisabled,
         hidden && styles.inputContainerHidden,
         isValid && styles.inputContainerSuccess,
-        !isValid && !!errorMessage && styles.inputContainerError
+        !isValid && !!errorMessage && styles.inputContainerError,
+        !!inputContainerStyle && inputContainerStyle
       ]}
       rightIconContainerStyle={styles.rightIconContainer}
       inputStyle={[
         styles.input,
         multiline && device.platform === 'ios' && styles.multiline,
-        !isValid && !!errorMessage && styles.inputError
+        !isValid && !!errorMessage && styles.inputError,
+        !!inputStyle && inputStyle
       ]}
       errorStyle={styles.inputError}
       placeholderTextColor={colors.placeholder}

@@ -390,6 +390,31 @@ export const texts = {
     prices: 'Preise'
   },
   feedbackLink: 'Feedback',
+  feedbackScreen: {
+    alert: {
+      title: 'Feedback',
+      message: 'Vielen Dank für Ihr Feedback!',
+      ok: 'OK'
+    },
+    inputsLabel: {
+      name: 'Name',
+      email: 'E-Mail',
+      phone: 'Telefon',
+      message: 'Ihre Mitteilung',
+      checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.'
+    },
+    inputsErrorMessages: {
+      name: 'Bitte geben Sie Ihren Namen ein.',
+      email: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+      phone: 'Bitte geben Sie eine gültige Telefonnummer ein.',
+      message: 'Bitte geben Sie eine Mitteilung ein.',
+      checkbox: 'Bitte bestätigen Sie, dass Sie mit dem Speichern Ihrer Daten einverstanden sind.'
+    },
+    sendButton: {
+      disabled: 'Bitte warten...',
+      enabled: 'Senden'
+    }
+  },
   homeButtons: {
     events: 'Alle Veranstaltungen anzeigen',
     news: 'Alle Nachrichten anzeigen',
