@@ -2,10 +2,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList } from 'react-native';
 
+import { consts, texts } from '../config';
+
+import { IndexFilterElement, IndexFilterWrapper } from './IndexFilterElement';
+import { RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { WrapperHorizontal } from './Wrapper';
-import { RegularText } from './Text';
-import { IndexFilterElement, IndexFilterWrapper } from './IndexFilterElement';
+
+const { a11yLabel } = consts;
 
 export const IndexFilterWrapperAndList = ({ filter, setFilter }) => {
   const selectedFilter = filter.find((entry) => entry.selected);
@@ -17,6 +21,11 @@ export const IndexFilterWrapperAndList = ({ filter, setFilter }) => {
         data={filter}
         renderItem={({ item }) => (
           <Touchable
+            accessibilityLabel={`(${item.title}) ${a11yLabel.drop} (${
+              item.selected
+                ? texts.accessibilityLabels.tabs.active
+                : texts.accessibilityLabels.tabs.inactive
+            })`}
             onPress={() => {
               // only trigger onPress if a new selection is made
               if (selectedFilter.id === item.id) return;
