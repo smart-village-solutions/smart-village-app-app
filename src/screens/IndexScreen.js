@@ -83,9 +83,10 @@ export const IndexScreen = ({ navigation, route }) => {
   const [topFilter, setTopFilter] = useState(INITIAL_TOP_FILTER);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { filter = {}, hdvt = {} } = globalSettings;
+  const { filter = {}, hdvt = {}, settings = {} } = globalSettings;
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
+  const { calendarToggle = false } = settings;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [showCalendar, setShowCalendar] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -377,7 +378,7 @@ export const IndexScreen = ({ navigation, route }) => {
 
             return (
               <>
-                {isCalendar && !hasDailyFilterSelection && (
+                {calendarToggle && isCalendar && !hasDailyFilterSelection && (
                   <CalendarListToggle
                     showCalendar={showCalendar}
                     setShowCalendar={setShowCalendar}
