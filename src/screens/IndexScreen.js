@@ -18,7 +18,9 @@ import {
   LoadingContainer,
   LocationOverview,
   OptionToggle,
-  SafeAreaViewFlex
+  RegularText,
+  SafeAreaViewFlex,
+  Wrapper
 } from '../components';
 import { colors, consts, texts } from '../config';
 import {
@@ -83,10 +85,11 @@ export const IndexScreen = ({ navigation, route }) => {
   const [topFilter, setTopFilter] = useState(INITIAL_TOP_FILTER);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { filter = {}, hdvt = {}, settings = {} } = globalSettings;
+  const { filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
+  const { categoryListIntroText = texts.categoryList.intro } = sections;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [showCalendar, setShowCalendar] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -415,6 +418,11 @@ export const IndexScreen = ({ navigation, route }) => {
                           horizontal={false}
                           hasSectionHeader={false}
                         />
+                      )}
+                      {query === QUERY_TYPES.CATEGORIES && !!categoryListIntroText && (
+                        <Wrapper>
+                          <RegularText>{categoryListIntroText}</RegularText>
+                        </Wrapper>
                       )}
                     </>
                   }
