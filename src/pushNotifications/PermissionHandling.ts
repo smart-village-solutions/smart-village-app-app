@@ -56,7 +56,7 @@ export const initializePushPermissions = async () => {
 
 const registerForPushNotificationsAsync = async () => {
   const { data: token } = await Notifications.getExpoPushTokenAsync({
-    experienceId: `${Constants.manifest?.owner}/${Constants.manifest?.slug}`
+    experienceId: `@${Constants.manifest?.owner || 'ikusei'}/${Constants.manifest?.slug}`
   });
 
   if (device.platform === 'android') {
