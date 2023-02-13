@@ -315,7 +315,7 @@ export const VolunteerGroup = ({
                     navigation.navigate(ScreenName.VolunteerForm, {
                       title: 'Termin eintragen',
                       query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-                      groupId: id,
+                      groupId: contentContainerId,
                       rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
                     })
                   }
