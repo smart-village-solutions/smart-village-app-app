@@ -95,7 +95,7 @@ export const consts = {
 
   DIMENSIONS: {
     // the max screen size we want to render full screen
-    FULL_SCREEN_MAX_WIDTH: 414
+    FULL_SCREEN_MAX_WIDTH: 428
   },
 
   // the image aspect ratio can be overwritten by a global setting `imageAspectRatio`
