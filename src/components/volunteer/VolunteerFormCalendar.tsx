@@ -1,4 +1,4 @@
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import _sortBy from 'lodash/sortBy';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -132,7 +132,9 @@ export const VolunteerFormCalendar = ({
   const {
     data: dataGroupsMy,
     isLoading: isLoadingGroupsMy,
-    isSuccess: isSuccessGroupsMy
+    isSuccess: isSuccessGroupsMy,
+    refetch: refetchGroupsMy,
+    isRefetching: isRefetchingGroupsMy
   } = useQuery(QUERY_TYPES.VOLUNTEER.GROUPS_MY, groupsMy);
   const [groupDropdownData, setGroupDropdownData] = useState<DropdownInputProps['data'] | []>();
   const [isProcessingGroupDropdownData, setIsProcessingGroupDropdownData] = useState(true);
@@ -152,9 +154,18 @@ export const VolunteerFormCalendar = ({
     setIsProcessingGroupDropdownData(false);
   }, [dataGroupsMy]);
 
+  useFocusEffect(
+    useCallback(() => {
+      refetchGroupsMy();
+    }, [])
+  );
+
   useEffect(() => {
-    filterGroupDropDownData();
-  }, [filterGroupDropDownData]);
+    !isRefetchingGroupsMy &&
+      setTimeout(() => {
+        filterGroupDropDownData();
+      }, 300);
+  }, [isRefetchingGroupsMy]);
 
   const isFocused = useIsFocused();
 
