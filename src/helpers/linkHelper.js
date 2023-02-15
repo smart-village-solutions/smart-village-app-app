@@ -35,10 +35,11 @@ function isWeb(linkWithProtocol) {
 }
 
 // https://facebook.github.io/react-native/docs/linking.html#opening-external-links
-export function openLink(link, openWebScreen) {
+export function openLink(link, openWebScreen, htmlAttribs) {
   const linkWithProtocol = ensureProtocol(link);
+  const isDownload = 'download' in htmlAttribs;
 
-  if (isWeb(linkWithProtocol) && openWebScreen) {
+  if (!isDownload && isWeb(linkWithProtocol) && openWebScreen) {
     return openWebScreen(linkWithProtocol);
   }
 

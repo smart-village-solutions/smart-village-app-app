@@ -75,7 +75,7 @@ export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
     <HTML
       html={html}
       {...htmlConfig}
-      onLinkPress={(evt, href) => openLink(href, openWebScreen)}
+      onLinkPress={(event, href, htmlAttribs) => openLink(href, openWebScreen, htmlAttribs)}
       tagsStyles={{ ...styles.html, ...tagsStyles }}
       emSize={normalize(16)}
       baseFontStyle={styles.baseFontStyle}
