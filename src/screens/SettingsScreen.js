@@ -43,12 +43,12 @@ renderItem.propTypes = {
   dimensions: PropTypes.object.isRequired
 };
 
-const onActivatePushNotifications = (revert) => {
-  setInAppPermission(true).then((success) => !success && revert());
+const onActivatePushNotifications = () => {
+  setInAppPermission(true).then((success) => !success);
 };
 
-const onDeactivatePushNotifications = (revert) => {
-  setInAppPermission(false).then((success) => !success && revert());
+const onDeactivatePushNotifications = () => {
+  setInAppPermission(false).then((success) => !success);
 };
 
 const TOP_FILTER = {
