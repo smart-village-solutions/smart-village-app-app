@@ -1,17 +1,19 @@
+import TableRenderer, {
+  cssRulesFromSpecs,
+  defaultTableStylesSpecs,
+  tableModel
+} from '@native-html/table-plugin';
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import HTML from 'react-native-render-html';
-import {
-  alterNode,
-  cssRulesFromSpecs,
-  defaultTableStylesSpecs,
-  IGNORED_TAGS,
-  makeTableRenderer
-} from '@native-html/table-plugin';
 import { WebView } from 'react-native-webview';
 
 import { colors, consts, normalize, styles } from '../config';
 import { imageWidth, openLink } from '../helpers';
+
+import { RegularText } from './Text';
+
+const { HTML_REGEX } = consts;
 
 const cssRules =
   cssRulesFromSpecs({
@@ -31,34 +33,32 @@ const cssRules =
   font-size: ${normalize(13)}px;
 }
 th {
-  border-bottom: 0.25px solid ${'#3f5c7a'};
-  border-left: 0.25px solid ${'#3f5c7a'};
-  border-top: 0.25px solid ${'#3f5c7a'};
+  border-bottom: 1px solid ${'#3f5c7a'};
+  border-left: 1px solid ${'#3f5c7a'};
+  border-top: 1px solid ${'#3f5c7a'};
 }
 th:last-child {
-  border-right: 0.25px solid ${'#3f5c7a'};
+  border-right: 1px solid ${'#3f5c7a'};
 }
 td {
-  border-bottom: 0.25px solid ${'#b5b5b5'};
-  border-left: 0.25px solid ${'#b5b5b5'};
+  border-bottom: 1px solid ${'#b5b5b5'};
+  border-left: 1px solid ${'#b5b5b5'};
   border-top: 0;
 }
 td:last-child {
-  border-right: 0.25px solid ${'#b5b5b5'};
+  border-right: 1px solid ${'#b5b5b5'};
 }
 table {
-  border-bottom: 0.25px solid ${'#b5b5b5'};
+  border-bottom: 1px solid ${'#b5b5b5'};
 }
 `;
 
-const renderers = {
-  table: makeTableRenderer({ WebView, cssRules })
-};
+const renderers = { table: TableRenderer };
 
 const htmlConfig = {
-  alterNode,
+  WebView,
   renderers,
-  ignoredTags: IGNORED_TAGS
+  customHTMLElementModels: { table: tableModel }
 };
 
 export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
@@ -71,25 +71,34 @@ export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
 
   const maxWidth = calculatedWidth - 2 * normalize(14); // width of an image minus paddings
 
+  if (!html.match(HTML_REGEX)) {
+    return <RegularText>{html}</RegularText>;
+  }
+
   return (
     <HTML
-      html={html}
+      source={{ html }}
       {...htmlConfig}
-      onLinkPress={(evt, href) => openLink(href, openWebScreen)}
+      renderersProps={{
+        a: { onPress: (evt, href) => openLink(href, openWebScreen) },
+        table: { cssRules }
+      }}
       tagsStyles={{ ...styles.html, ...tagsStyles }}
       emSize={normalize(16)}
-      baseFontStyle={styles.baseFontStyle}
+      baseStyle={styles.baseFontStyle}
       ignoredStyles={['width', 'height']}
-      imagesMaxWidth={maxWidth}
-      staticContentMaxWidth={maxWidth}
-      alterChildren={(node) => {
-        if (node.name === 'img' || node.name === 'iframe') {
-          delete node.attribs.width;
-          delete node.attribs.height;
-        }
+      contentWidth={maxWidth}
+      domVisitors={{
+        onElement: (node) => {
+          if (node.name === 'img' || node.name === 'iframe') {
+            delete node.attribs.width;
+            delete node.attribs.height;
+          }
 
-        return node.children;
+          return node.children;
+        }
       }}
+      systemFonts={['regular', 'bold', 'italic', 'bold-italic']}
     />
   );
 });
