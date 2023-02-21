@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
-import Carousel from 'react-native-snap-carousel';
-import React, { useCallback, useContext } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import React, { useCallback, useContext, useState } from 'react';
 import { Query } from 'react-apollo';
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Carousel from 'react-native-snap-carousel';
 
-import { colors } from '../config';
+import { colors, Icon, normalize } from '../config';
 import { graphqlFetchPolicy, imageWidth, isActive, shareMessage } from '../helpers';
-import { getQuery } from '../queries';
-import { OrientationContext } from '../OrientationProvider';
-import { NetworkContext } from '../NetworkProvider';
 import { useRefreshTime } from '../hooks';
+import { NetworkContext } from '../NetworkProvider';
+import { OrientationContext } from '../OrientationProvider';
+import { getQuery } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
@@ -17,8 +18,18 @@ import { LoadingContainer } from './LoadingContainer';
 export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }) => {
   const { dimensions } = useContext(OrientationContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { sliderPauseButton = {} } = settings;
+  const {
+    horizontalPosition = 'right',
+    show: showSliderPauseButton = true,
+    size: sizeSliderPauseButton = 25,
+    verticalPosition = 'bottom'
+  } = sliderPauseButton;
   const refreshTime = useRefreshTime(refreshTimeKey);
+  const [isPaused, setIsPaused] = useState(false);
+  const [carouselImageIndex, setCarouselImageIndex] = useState(0);
 
   const fetchPolicy = graphqlFetchPolicy({
     isConnected,
@@ -102,20 +113,53 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
   }
 
   return (
-    <Carousel
-      data={carouselData}
-      renderItem={renderItem}
-      sliderWidth={dimensions.width}
-      itemWidth={itemWidth}
-      inactiveSlideScale={1}
-      autoplay
-      loop
-      autoplayDelay={0}
-      autoplayInterval={4000}
-      containerCustomStyle={styles.center}
-    />
+    <View>
+      {isPaused ? (
+        renderItem({ item: carouselData[carouselImageIndex] })
+      ) : (
+        <Carousel
+          data={carouselData}
+          renderItem={renderItem}
+          sliderWidth={dimensions.width}
+          itemWidth={itemWidth}
+          inactiveSlideScale={1}
+          autoplay
+          loop
+          autoplayDelay={0}
+          autoplayInterval={4000}
+          containerCustomStyle={styles.center}
+          onScrollIndexChanged={setCarouselImageIndex}
+        />
+      )}
+
+      {showSliderPauseButton &&
+        pauseButton(
+          horizontalPosition,
+          isPaused,
+          setIsPaused,
+          sizeSliderPauseButton,
+          verticalPosition
+        )}
+    </View>
   );
 };
+
+const pauseButton = (horizontalPosition, isPaused, setIsPaused, size, verticalPosition) => (
+  <TouchableOpacity
+    style={[
+      styles.pauseButton,
+      {
+        [horizontalPosition]: normalize(12),
+        [verticalPosition]: normalize(24),
+        borderRadius: normalize(size * 2),
+        padding: normalize(size / 2)
+      }
+    ]}
+    onPress={() => setIsPaused(!isPaused)}
+  >
+    {isPaused ? <Icon.Play size={normalize(size)} /> : <Icon.Pause size={normalize(size)} />}
+  </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
   center: {
@@ -123,6 +167,14 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     alignSelf: 'center'
+  },
+  pauseButton: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    backgroundColor: colors.surface,
+    justifyContent: 'center',
+    position: 'absolute',
+    zIndex: 1
   }
 });
 
@@ -130,5 +182,6 @@ ImagesCarousel.propTypes = {
   data: PropTypes.array.isRequired,
   navigation: PropTypes.object,
   refreshTimeKey: PropTypes.string,
-  aspectRatio: PropTypes.object
+  aspectRatio: PropTypes.object,
+  autoplay: PropTypes.bool
 };
