@@ -24,13 +24,19 @@ export const setInAppPermission = async (newValue: boolean) => {
 
       if (!hasPermission) {
         showSystemPermissionMissingDialog();
+
         return true;
       } else {
-        return registerForPushNotificationsAsync().then(handleIncomingToken);
+        const token = await registerForPushNotificationsAsync();
+        const successfullyHandled = await handleIncomingToken(token);
+
+        return successfullyHandled;
       }
     } else {
       // remove token from store and notify server
-      return handleIncomingToken();
+      const successfullyHandled = await handleIncomingToken();
+
+      return successfullyHandled;
     }
   } else {
     return true;
@@ -102,12 +108,8 @@ export const showSystemPermissionMissingDialog = () => {
 };
 
 export const showPermissionRequiredAlert = (approveCallback: () => void) => {
-  const {
-    abort,
-    approve,
-    permissionMissingTitle,
-    permissionRequiredBody
-  } = texts.pushNotifications;
+  const { abort, approve, permissionMissingTitle, permissionRequiredBody } =
+    texts.pushNotifications;
 
   Alert.alert(permissionMissingTitle, permissionRequiredBody, [
     {
