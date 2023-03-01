@@ -25,10 +25,12 @@ export const handleIncomingToken = async (token?: string) => {
     if (storedToken) successfullyRemoved = await removeTokenFromServer(storedToken);
     if (token) successfullyAdded = await addTokenToServer(token);
     if (token ?? successfullyRemoved) storeTokenSecurely(token);
+
     // if we want to remove the token (token === undefined) then return if we did.
     // otherwise it is sufficient for the app to know that the new token has arrived on the server.
     return (!token && successfullyRemoved) || successfullyAdded;
   }
+
   // if the stored token and the new token coincide then there is nothing to do
   return true;
 };
@@ -44,17 +46,18 @@ const removeTokenFromServer = async (token: string) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      token
+      notification_device: { token }
     })
   };
 
-  if (accessToken)
+  if (accessToken) {
+    const response = await fetch(requestPath, fetchObj);
+
     // 204 means that it was a success on the server
-    // 404 means that the token was already not on the server and can be treated
-    //  as a success
-    return fetch(requestPath, fetchObj).then(
-      (response) => response.status === 204 || response.status === 404
-    );
+    // 404 means that the token was already not on the server and can be treated as a success
+    return response.status === 204 || response.status === 404;
+  }
+
   return false;
 };
 
@@ -75,7 +78,14 @@ const addTokenToServer = async (token: string) => {
       notification_device: { token, device_type: os }
     })
   };
-  if (accessToken) return fetch(requestPath, fetchObj).then((response) => response.status === 201);
+
+  if (accessToken) {
+    const response = await fetch(requestPath, fetchObj);
+
+    // 201 means that it was a success on the server
+    return response.status === 201;
+  }
+
   return false;
 };
 
