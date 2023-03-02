@@ -1,6 +1,16 @@
 import appJson from '../../app.json';
 
 export const texts = {
+  accessibilityLabels: {
+    searchInputIcons: {
+      delete: 'Suche löschen',
+      search: 'Suche'
+    },
+    secureInputIcons: {
+      invisible: 'Kennwort verstecken',
+      visible: 'Kennwort sichtbar machen'
+    }
+  },
   appIntro: {
     continue: 'Weiter'
   },
