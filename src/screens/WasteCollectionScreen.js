@@ -1,3 +1,5 @@
+import _sortBy from 'lodash/sortBy';
+import _uniqBy from 'lodash/uniqBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
@@ -8,8 +10,7 @@ import {
   Keyboard,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
-  View
+  TouchableOpacity
 } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
 import { Calendar } from 'react-native-calendars';
@@ -32,6 +33,7 @@ import { useRefreshTime, useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifications';
 import { getQuery, QUERY_TYPES } from '../queries';
+import { SettingsContext } from '../SettingsProvider';
 
 const dotSize = 6;
 
@@ -78,25 +80,12 @@ const getLocationData = (streetData) => {
   };
 };
 
-// show streets that contain the string in it
-// return empty list on an exact match (except for capitalization)
-const filterStreets = (currentInputValue, streetData) => {
-  if (currentInputValue === '') return [];
-
-  return streetData
-    ?.filter((street) =>
-      getStreetString(street).toLowerCase().includes(currentInputValue.toLowerCase())
-    )
-    .filter((street) => getStreetString(street) !== currentInputValue)
-    .slice(0, 5);
-};
-
-const getStreetString = (item) => {
-  return `${item.street} (${item.zip} ${item.city})`;
-};
-
+// eslint-disable-next-line complexity
 export const WasteCollectionScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { globalSettings } = useContext(SettingsContext);
+  const [inputValueCity, setInputValueCity] = useState('');
+  const [inputValueCitySelected, setInputValueCitySelected] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [selectedStreetId, setSelectedStreetId] = useState();
 
@@ -141,6 +130,79 @@ export const WasteCollectionScreen = ({ navigation }) => {
       if (typesData?.[wasteLocationType.wasteType])
         usedTypes[wasteLocationType.wasteType] = typesData?.[wasteLocationType.wasteType];
     }
+  );
+
+  const wasteAddressesStreetCount = globalSettings?.settings?.wasteAddresses?.streetCount || 5;
+  const wasteAddressesTwoStep = !!globalSettings?.settings?.wasteAddresses?.twoStep;
+
+  const getStreetString = useCallback(
+    (address) => {
+      if (wasteAddressesTwoStep) {
+        return address.street || '';
+      }
+
+      return `${address.street} (${address.zip} ${address.city})`;
+    },
+    [wasteAddressesTwoStep]
+  );
+
+  // show cities that contain the string in it
+  // return empty list on an exact match (except for capitalization)
+  const filterCities = useCallback(
+    (currentInputValue, addressesData) => {
+      if (currentInputValue === '') return [];
+
+      const cities = addressesData?.filter(
+        (address) =>
+          address.city !== currentInputValue &&
+          address.city?.toLowerCase().includes(currentInputValue.toLowerCase())
+      );
+
+      return _sortBy(_uniqBy(cities, 'city'), 'city');
+    },
+    [getStreetString]
+  );
+
+  // show streets that contain the string in it
+  // consider the city if it is set because of the two step process
+  // return empty list on an exact match (except for capitalization)
+  const filterStreets = useCallback(
+    (currentInputValue, addressesData) => {
+      if (wasteAddressesTwoStep && inputValueCity === '') return [];
+      if (currentInputValue === '') return [];
+
+      const streets = addressesData
+        ?.filter((address) => {
+          const street = getStreetString(address);
+
+          return (
+            street !== currentInputValue &&
+            street?.toLowerCase().includes(currentInputValue.toLowerCase())
+          );
+        })
+        ?.filter((address) => (wasteAddressesTwoStep ? address.city === inputValueCity : true));
+
+      return _sortBy(streets, 'street').slice(0, wasteAddressesStreetCount);
+    },
+    [getStreetString, inputValueCity]
+  );
+
+  const renderSuggestionCities = useCallback(
+    ({ item }) => (
+      <TouchableOpacity
+        onPress={() => {
+          setInputValue('');
+          setInputValueCity(item.city);
+          setInputValueCitySelected(true);
+          Keyboard.dismiss();
+        }}
+      >
+        <Wrapper>
+          <RegularText>{item.city}</RegularText>
+        </Wrapper>
+      </TouchableOpacity>
+    ),
+    [setInputValueCity]
   );
 
   const renderSuggestion = useCallback(
@@ -213,13 +275,21 @@ export const WasteCollectionScreen = ({ navigation }) => {
   }, [navigation, usedTypes, streetData]);
 
   useEffect(() => {
-    if (!addressesData) {
+    if (!addressesData || !inputValue || (wasteAddressesTwoStep && !inputValueCity)) {
+      setSelectedStreetId(undefined);
       return;
     }
 
-    const item = addressesData.find(
-      (street) => getStreetString(street).toLowerCase() === inputValue.toLowerCase()
-    );
+    const item = addressesData.find((address) => {
+      if (wasteAddressesTwoStep) {
+        return (
+          address.city === inputValueCity &&
+          getStreetString(address).toLowerCase() === inputValue.toLowerCase()
+        );
+      }
+
+      return getStreetString(address).toLowerCase() === inputValue.toLowerCase();
+    });
 
     setSelectedStreetId(item?.id);
   }, [addressesData, inputValue, setSelectedStreetId]);
@@ -232,26 +302,48 @@ export const WasteCollectionScreen = ({ navigation }) => {
     );
   }
 
-  const filteredStreets = filterStreets(inputValue, addressesData);
+  const filteredCities = wasteAddressesTwoStep ? filterCities(inputValueCity, addressesData) : [];
+  const filteredStreets = filterStreets(inputValue, addressesData, inputValueCity);
 
   return (
     <SafeAreaViewFlex>
       <ScrollView keyboardShouldPersistTaps="handled">
         <WrapperWithOrientation>
-          <Autocomplete
-            containerStyle={styles.autoCompleteContainer}
-            data={filteredStreets}
-            value={inputValue}
-            disableFullscreenUI
-            onChangeText={(text) => setInputValue(text)}
-            placeholder="Straße"
-            flatListProps={{
-              renderItem: renderSuggestion
-            }}
-            inputContainerStyle={styles.autoCompleteInput}
-            listStyle={styles.autoCompleteList}
-          />
-          <View style={styles.topMarginContainer}>
+          {wasteAddressesTwoStep && (
+            <Autocomplete
+              containerStyle={styles.autoCompleteContainer}
+              data={filteredCities}
+              disableFullscreenUI
+              flatListProps={{
+                renderItem: inputValueCitySelected ? null : renderSuggestionCities
+              }}
+              inputContainerStyle={styles.autoCompleteInput}
+              listStyle={styles.autoCompleteList}
+              onChangeText={(text) => {
+                setInputValueCitySelected(false);
+                setSelectedStreetId(undefined);
+                setInputValueCity(text);
+              }}
+              placeholder="Ortschaft"
+              value={inputValueCity}
+            />
+          )}
+          {(!wasteAddressesTwoStep || (wasteAddressesTwoStep && inputValueCitySelected)) && (
+            <Autocomplete
+              containerStyle={styles.autoCompleteContainer}
+              data={filteredStreets}
+              disableFullscreenUI
+              flatListProps={{
+                renderItem: renderSuggestion
+              }}
+              inputContainerStyle={styles.autoCompleteInput}
+              listStyle={styles.autoCompleteList}
+              onChangeText={(text) => setInputValue(text)}
+              placeholder="Straße"
+              value={inputValue}
+            />
+          )}
+          {selectedStreetId && (
             <Calendar
               dayComponent={NoTouchDay}
               markedDates={getMarkedDates(typesData, streetData)}
@@ -266,11 +358,15 @@ export const WasteCollectionScreen = ({ navigation }) => {
                 }
               }}
             />
-            <WasteCalendarLegend data={usedTypes} />
-          </View>
+          )}
+          <WasteCalendarLegend data={usedTypes} />
           {!selectedStreetId && (
             <Wrapper>
-              <RegularText center>{texts.wasteCalendar.hint}</RegularText>
+              <RegularText center>
+                {wasteAddressesTwoStep
+                  ? texts.wasteCalendar.hintCityAndStreet
+                  : texts.wasteCalendar.hintStreet}
+              </RegularText>
             </Wrapper>
           )}
           {!!streetData && !!usedTypes && (
@@ -288,15 +384,10 @@ export const WasteCollectionScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   autoCompleteContainer: {
-    alignSelf: 'center',
     backgroundColor: colors.surface,
     borderColor: colors.placeholder,
     borderWidth: 1,
-    flex: 1,
-    position: 'absolute',
-    top: 0,
-    width: '100%',
-    zIndex: 1
+    width: '100%'
   },
   autoCompleteInput: {
     color: colors.darkText,
@@ -305,9 +396,6 @@ const styles = StyleSheet.create({
   },
   autoCompleteList: {
     margin: 0
-  },
-  topMarginContainer: {
-    marginTop: normalize(44)
   }
 });
 
