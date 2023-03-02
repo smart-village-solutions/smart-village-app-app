@@ -7,7 +7,7 @@ import { colors, consts, normalize, texts } from '../../config';
 import { Label } from '../Label';
 import { WrapperHorizontal } from '../Wrapper';
 
-const a11yText = consts.a11yLabel;
+const { a11yLabel } = consts;
 
 export const TextSearch = memo(({ data, setData, label, placeholder }) => {
   return (
@@ -16,6 +16,11 @@ export const TextSearch = memo(({ data, setData, label, placeholder }) => {
         <Label>{label}</Label>
       </WrapperHorizontal>
       <SearchBar
+        clearIcon={{
+          accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.delete} ${a11yLabel.button}`,
+          color: colors.primary,
+          size: normalize(24)
+        }}
         value={data}
         onChangeText={(value) => setData(value)}
         onClearText={() => setData('')}
@@ -31,16 +36,11 @@ export const TextSearch = memo(({ data, setData, label, placeholder }) => {
           data.length
             ? null
             : {
-                accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.search} ${a11yText.button}`,
+                accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.search} ${a11yLabel.button}`,
                 color: colors.primary,
                 size: normalize(28)
               }
         }
-        clearIcon={{
-          accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.delete} ${a11yText.button}`,
-          color: colors.primary,
-          size: normalize(24)
-        }}
       />
     </View>
   );
