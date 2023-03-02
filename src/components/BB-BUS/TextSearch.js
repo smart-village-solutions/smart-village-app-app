@@ -16,6 +16,11 @@ export const TextSearch = memo(({ data, setData, label, placeholder }) => {
         <Label>{label}</Label>
       </WrapperHorizontal>
       <SearchBar
+        clearIcon={{
+          accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.delete} ${a11yLabel.button}`,
+          color: colors.primary,
+          size: normalize(24)
+        }}
         value={data}
         onChangeText={(value) => setData(value)}
         onClearText={() => setData('')}
@@ -36,11 +41,6 @@ export const TextSearch = memo(({ data, setData, label, placeholder }) => {
                 size: normalize(28)
               }
         }
-        clearIcon={{
-          accessibilityLabel: `${texts.accessibilityLabels.searchInputIcons.delete} ${a11yLabel.button}`,
-          color: colors.primary,
-          size: normalize(24)
-        }}
       />
     </View>
   );
