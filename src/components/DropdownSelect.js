@@ -4,13 +4,15 @@ import { StyleSheet, View } from 'react-native';
 import Dropdown from 'react-native-modal-dropdown';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors, device, Icon, normalize } from '../config';
+import { colors, consts, device, Icon, normalize, texts } from '../config';
 import { baseFontStyle } from '../config/styles/baseFontStyle';
 import { OrientationContext } from '../OrientationProvider';
 
 import { Label } from './Label';
 import { RegularText } from './Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
+
+const { a11yLabel } = consts;
 
 export const DropdownSelect = ({
   data,
@@ -53,7 +55,11 @@ export const DropdownSelect = ({
       }
 
       return (
-        <Wrapper style={styles.dropdownRowWrapper}>
+        <Wrapper
+          accessibilityLabel={`${rowData} (${a11yLabel.dropDownMenuItem})`}
+          accessible
+          style={styles.dropdownRowWrapper}
+        >
           <RegularText primary={highlighted}>{rowData}</RegularText>
         </Wrapper>
       );
@@ -67,12 +73,17 @@ export const DropdownSelect = ({
     preselect(selectedIndex);
   }, [selectedData]);
 
+  const accessibilityLabel = multipleSelect ? selectedMultipleValues : selectedValue;
   return (
-    <View>
+    <View
+      accessibilityLabel={`${label} (${accessibilityLabel}) ${a11yLabel.dropDownMenu} (${texts.accessibilityLabels.dropDownMenu.closed})`}
+      accessible
+    >
       <WrapperHorizontal style={labelWrapperStyle}>
         <Label>{label}</Label>
       </WrapperHorizontal>
       <Dropdown
+        accessible={false}
         ref={dropdownRef}
         options={data.map((entry) => entry.value)}
         multipleSelect={multipleSelect}

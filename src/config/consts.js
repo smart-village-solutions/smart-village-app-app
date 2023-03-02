@@ -22,6 +22,7 @@ export const consts = {
     closeMenuIcon: 'Schließen (Taste)',
     closeMenuHint: 'Menü schließen',
     dropDownMenu: 'Dropdown-Menü (Taste)',
+    dropDownMenuItem: 'Dropdown-Menü-Eintrag (Taste)',
     editIcon: 'Bearbeiten (Taste)',
     editHint: 'Diesen Eintrag bearbeiten',
     encounterId: 'Identifikationsnummer',
