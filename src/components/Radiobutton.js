@@ -18,6 +18,11 @@ export const Radiobutton = ({ title, disabled, selected, onPress, containerStyle
     onPress={onPress}
     size={normalize(24)}
     containerStyle={[styles.containerStyle, containerStyle]}
+    accessibilityLabel={`${
+      selected
+        ? texts.accessibilityLabels.checkbox.active
+        : texts.accessibilityLabels.checkbox.inactive
+    } ${title}`}
     textStyle={[
       styles.textStyle,
       selected && styles.textStyleSelected,

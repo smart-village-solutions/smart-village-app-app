@@ -6,6 +6,10 @@ export const texts = {
       active: 'ausgewählt',
       inactive: 'nicht ausgewählt'
     },
+    dropDownMenu: {
+      closed: 'geschlossen',
+      open: 'geöffnet'
+    },
     searchInputIcons: {
       delete: 'Suche löschen',
       search: 'Suche'
@@ -13,6 +17,10 @@ export const texts = {
     secureInputIcons: {
       invisible: 'Kennwort verstecken',
       visible: 'Kennwort sichtbar machen'
+    },
+    tabs: {
+      active: 'geöffnet',
+      inactive: 'geschlossen'
     }
   },
   appIntro: {

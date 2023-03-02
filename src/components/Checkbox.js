@@ -57,6 +57,11 @@ export const Checkbox = ({
       textStyle={styles.titleStyle}
       checkedColor={colors.primary}
       uncheckedColor={colors.darkText}
+      accessibilityLabel={`${
+        checked
+          ? texts.accessibilityLabels.checkbox.active
+          : texts.accessibilityLabels.checkbox.inactive
+      } ${title}`}
       {...props}
     />
   );
