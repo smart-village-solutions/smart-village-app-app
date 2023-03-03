@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.1.2]
+
+This update adds new accessibility features and the ability to select streets on the waste calendar screen
+
+### Added
+
+- added city and street selection feature for waste calendar
+- added accessibility features to the clear or search buttons on inputs
+- added accessibility feature to checkbox component
+- added accessibility feature to filter
+
+### Changed
+
+- updated the accessibility feature in the dropdown to include the dropdown's label
+
+### Fixed
+
+- fixed notification switcher switching on and off issue
+
 ## [v3.1.1]
 
 This update adds shadow feature for Augmented Reality, event calendar and accessibility improvements
@@ -798,8 +817,7 @@ Customizable image aspect ratios and upgrade react-native-elements
   - latest v1 is 1.2.7: https://github.com/react-native-elements/react-native-elements/blob/next/CHANGELOG.md#v127
   - when updating like this, we needed to make changes where using Image not all styles will be
     applied anymore, you need to change styles to props we had the need of moving `resizeMode` and
-    `borderRadius` from inside of style prop to be props itself default for `resizeMode` was ` cover``
-before in the code of react-native-elements, as it is the default for React Native  `Image`
+    `borderRadius` from inside of style prop to be props itself default for `resizeMode` was ` cover`` before in the code of react-native-elements, as it is the default for React Native  `Image`
     component https://reactnative.dev/docs/image#resizemode
 
 ## [v1.5.0] :rocket:
