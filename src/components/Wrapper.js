@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import styled, { css } from 'styled-components/native';
 
-import { consts, normalize } from '../config';
+import { consts, device, normalize } from '../config';
 import { OrientationContext } from '../OrientationProvider';
 
 export const Wrapper = styled.View`
@@ -40,6 +40,13 @@ export const WrapperLandscape = styled.View`
     !props.noFlex &&
     css`
       flex: 1;
+    `};
+
+  ${(props) =>
+    props.isPad &&
+    css`
+      padding-left: 0;
+      padding-right: 0;
     `};
 `;
 
@@ -87,7 +94,11 @@ export const WrapperWithOrientation = ({ noFlex, children }) => {
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 
   if (needLandscapeWrapper) {
-    return <WrapperLandscape noFlex={noFlex}>{children}</WrapperLandscape>;
+    return (
+      <WrapperLandscape noFlex={noFlex} isPad={device.isPad}>
+        {children}
+      </WrapperLandscape>
+    );
   }
 
   return children;
