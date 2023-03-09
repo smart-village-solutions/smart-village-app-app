@@ -1,3 +1,4 @@
+import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
 import TableRenderer, {
   cssRulesFromSpecs,
   defaultTableStylesSpecs,
@@ -53,12 +54,18 @@ table {
 }
 `;
 
-const renderers = { table: TableRenderer };
+const renderers = {
+  iframe: IframeRenderer,
+  table: TableRenderer
+};
 
 const htmlConfig = {
   WebView,
   renderers,
-  customHTMLElementModels: { table: tableModel }
+  customHTMLElementModels: {
+    iframe: iframeModel,
+    table: tableModel
+  }
 };
 
 export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
@@ -81,6 +88,14 @@ export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
       {...htmlConfig}
       renderersProps={{
         a: { onPress: (evt, href) => openLink(href, openWebScreen) },
+        iframe: {
+          scalesPageToFit: true,
+          webViewProps: {
+            // the opacity of the iframe was set to 0.99 to solve the crashing problem on Android
+            // thanks to : https://github.com/meliorence/react-native-render-html/issues/393#issuecomment-1277533605
+            style: { opacity: 0.99 }
+          }
+        },
         table: { cssRules }
       }}
       tagsStyles={{ ...styles.html, ...tagsStyles }}
