@@ -236,7 +236,7 @@ export const isOpen = (
       .filter((info) => info.weekday === getReadableDay(now) || !info.weekday)
       .filter((info) => isOpeningTimeForDate(info, now));
 
-    const todaysOpenTimes = todaysTimes.filter((info) => !!info.open);
+    const todaysOpenTimes = todaysTimes.filter((info) => !!info.open && !!info.weekday);
     const todaysClosedTimes = todaysTimes.filter((info) => !info.open);
 
     // if there are no possible open times left, then it is currently closed, and will not open today
