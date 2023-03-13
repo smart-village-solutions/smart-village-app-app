@@ -100,7 +100,7 @@
     "react-native-gesture-handler": "~2.2.1",
     "react-native-get-random-values": "~1.8.0",
     "react-native-gifted-chat": "0.16.3",
-    "react-native-maps": "0.30.2",
+    "react-native-maps": "0.31.1",
     "react-native-markdown-display": "^7.0.0-alpha.2",
     "react-native-modal-dropdown": "https://github.com/donni106/react-native-modal-dropdown#feature/search-options",
     "react-native-progress": "^5.0.0",
