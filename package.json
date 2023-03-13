@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@apollo/react-hooks": "~3.1.5",
+    "@native-html/iframe-plugin": "^2.6.1",
     "@native-html/table-plugin": "^5.3.1",
     "@react-native-async-storage/async-storage": "~1.17.3",
     "@react-native-community/datetimepicker": "6.1.2",
