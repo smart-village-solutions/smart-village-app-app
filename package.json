@@ -52,7 +52,7 @@
     "apollo-link": "~1.2.12",
     "apollo-link-context": "1.0.20",
     "apollo-link-http": "1.5.17",
-    "apollo-link-rest": "~0.7.3",
+    "apollo-link-rest": "~0.9.0",
     "expo": "^45.0.0",
     "expo-application": "~4.1.0",
     "expo-asset": "~8.5.0",
