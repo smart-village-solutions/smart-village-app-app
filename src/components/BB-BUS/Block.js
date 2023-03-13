@@ -17,15 +17,19 @@ export const Block = ({ bottomDivider, children, initiallyOpen, title }) => {
   return (
     <>
       <ListItem
-        title={<Title small>{title}</Title>}
         bottomDivider={isOpen || bottomDivider}
         topDivider
         containerStyle={styles.sectionTitle}
-        rightIcon={<Title>{isOpen ? '－' : '＋'}</Title>}
         onPress={onPress}
         delayPressIn={0}
         Component={Touchable}
-      />
+      >
+        <ListItem.Content>
+          <Title small>{title}</Title>
+        </ListItem.Content>
+
+        <Title>{isOpen ? '－' : '＋'}</Title>
+      </ListItem>
       {isOpen && children}
     </>
   );

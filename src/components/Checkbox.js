@@ -32,6 +32,7 @@ export const Checkbox = ({
 
   return (
     <CheckBox
+      accessibilityRole="button"
       accessibilityLabel={`${
         checked
           ? texts.accessibilityLabels.checkbox.active
@@ -57,11 +58,6 @@ export const Checkbox = ({
       textStyle={styles.titleStyle}
       checkedColor={colors.primary}
       uncheckedColor={colors.darkText}
-      accessibilityLabel={`${
-        checked
-          ? texts.accessibilityLabels.checkbox.active
-          : texts.accessibilityLabels.checkbox.inactive
-      } ${title}`}
       {...props}
     />
   );

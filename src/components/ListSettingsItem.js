@@ -67,20 +67,22 @@ export const ListSettingsItem = ({ item }) => {
             <ListItem
               accessibilityLabel={`(${texts.settingsTitles.listLayouts[listType]}) ${a11yLabel.button} ${activeTabAccessibilityLabel}`}
               key={listType}
-              title={<RegularText small>{texts.settingsTitles.listLayouts[listType]}</RegularText>}
               bottomDivider
               containerStyle={styles.container}
-              rightIcon={() =>
-                listType === listTypeForQuery ? (
-                  <Icon.RadioButtonFilled size={RADIO_BUTTON_SIZE} />
-                ) : (
-                  <Icon.RadioButtonEmpty color={colors.darkText} size={RADIO_BUTTON_SIZE} />
-                )
-              }
               onPress={getOnPressListType(listType)}
               delayPressIn={0}
               Component={Touchable}
-            />
+            >
+              <ListItem.Content>
+                <RegularText small>{texts.settingsTitles.listLayouts[listType]}</RegularText>
+              </ListItem.Content>
+
+              {listType === listTypeForQuery ? (
+                <Icon.RadioButtonFilled size={RADIO_BUTTON_SIZE} />
+              ) : (
+                <Icon.RadioButtonEmpty color={colors.darkText} size={RADIO_BUTTON_SIZE} />
+              )}
+            </ListItem>
           );
         })}
       </Collapsible>

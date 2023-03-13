@@ -23,10 +23,7 @@ export const Modal = ({
       isVisible={isVisible}
       onBackdropPress={isBackdropPress ? onModalVisible : undefined}
       windowBackgroundColor={colors.overlayRgba}
-      overlayStyle={!isListView && styles.overlay}
-      width="80%"
-      height={height}
-      borderRadius={8}
+      overlayStyle={[!isListView && styles.overlay, styles.overlayWidth, { height }]}
       supportedOrientations={['portrait', 'landscape']}
     >
       <>
@@ -44,7 +41,11 @@ export const Modal = ({
 
 const styles = StyleSheet.create({
   overlay: {
+    borderRadius: normalize(8),
     padding: normalize(30)
+  },
+  overlayWidth: {
+    width: '80%'
   }
 });
 

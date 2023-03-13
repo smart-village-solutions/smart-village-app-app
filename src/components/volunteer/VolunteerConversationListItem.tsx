@@ -36,29 +36,29 @@ export const VolunteerConversationListItem: NamedExoticComponent<Props> & {
 
   return (
     <ListItem
-      title={
-        status === 'unread' ? (
-          <BoldText small>{subtitle}</BoldText>
-        ) : (
-          <RegularText small>{subtitle}</RegularText>
-        )
-      }
-      subtitle={
-        status === 'unread' ? (
-          <BoldText>{titleText}</BoldText>
-        ) : (
-          <RegularText>{titleText}</RegularText>
-        )
-      }
       bottomDivider={bottomDivider}
       containerStyle={listItemStyles.contentContainerStyle}
-      rightIcon={<Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
       onPress={() => (onPress ? onPress(navigation) : navigate())}
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
-    />
+    >
+      <ListItem.Content>
+        {status === 'unread' ? (
+          <BoldText small>{subtitle}</BoldText>
+        ) : (
+          <RegularText small>{subtitle}</RegularText>
+        )}
+        {status === 'unread' ? (
+          <BoldText>{titleText}</BoldText>
+        ) : (
+          <RegularText>{titleText}</RegularText>
+        )}
+      </ListItem.Content>
+
+      <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
+    </ListItem>
   );
 });
 

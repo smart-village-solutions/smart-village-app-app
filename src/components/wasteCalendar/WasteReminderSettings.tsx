@@ -102,15 +102,19 @@ const CategoryEntry = ({
 
   return (
     <ListItem
-      title={<RegularText>{categoryName}</RegularText>}
       bottomDivider={bottomDivider}
       containerStyle={styles.switchContainer}
-      rightIcon={<Switch switchValue={switchValue ?? false} toggleSwitch={toggleSwitch} />}
       onPress={onPress}
       delayPressIn={0}
       Component={Touchable}
       accessibilityLabel={`(${categoryName}) ${consts.a11yLabel.button}`}
-    />
+    >
+      <ListItem.Content>
+        <RegularText>{categoryName}</RegularText>
+      </ListItem.Content>
+
+      <Switch switchValue={switchValue ?? false} toggleSwitch={toggleSwitch} />
+    </ListItem>
   );
 };
 
@@ -280,40 +284,36 @@ export const WasteReminderSettings = ({
             <RegularText />
             <BoldText>{texts.wasteCalendar.whichDay}</BoldText>
             <ListItem
-              title={
-                <RegularText primary={onDayBefore}>
-                  {texts.wasteCalendar.onDayBeforeCollection}
-                </RegularText>
-              }
               bottomDivider
-              rightIcon={
-                <Radiobutton
-                  onPress={onPressDayBefore}
-                  selected={onDayBefore}
-                  containerStyle={styles.radioContainer}
-                />
-              }
               onPress={onPressDayBefore}
               delayPressIn={0}
               Component={Touchable}
-            />
-            <ListItem
-              title={
+            >
+              <ListItem.Content>
+                <RegularText primary={onDayBefore}>
+                  {texts.wasteCalendar.onDayBeforeCollection}
+                </RegularText>
+              </ListItem.Content>
+
+              <Radiobutton
+                onPress={onPressDayBefore}
+                selected={onDayBefore}
+                containerStyle={styles.radioContainer}
+              />
+            </ListItem>
+            <ListItem onPress={onPressDayOfCollection} delayPressIn={0} Component={Touchable}>
+              <ListItem.Content>
                 <RegularText primary={!onDayBefore}>
                   {texts.wasteCalendar.onDayOfCollection}
                 </RegularText>
-              }
-              rightIcon={
-                <Radiobutton
-                  onPress={onPressDayOfCollection}
-                  selected={!onDayBefore}
-                  containerStyle={styles.radioContainer}
-                />
-              }
-              onPress={onPressDayOfCollection}
-              delayPressIn={0}
-              Component={Touchable}
-            />
+              </ListItem.Content>
+
+              <Radiobutton
+                onPress={onPressDayOfCollection}
+                selected={!onDayBefore}
+                containerStyle={styles.radioContainer}
+              />
+            </ListItem>
             <RegularText />
             <BoldText>{texts.wasteCalendar.reminderTime}</BoldText>
             <Wrapper>

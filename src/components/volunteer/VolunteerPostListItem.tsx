@@ -32,10 +32,11 @@ export const VolunteerPostListItem = ({
 
   return (
     <View>
-      <ListItem
-        leftAvatar={<VolunteerAvatar item={{ user: { guid, display_name: displayName } }} />}
-        title={<BoldText>{displayName}</BoldText>}
-        subtitle={
+      <ListItem containerStyle={listItemStyles.avatarContainerStyle}>
+        <VolunteerAvatar item={{ user: { guid, display_name: displayName } }} />
+
+        <ListItem.Content>
+          <BoldText>{displayName}</BoldText>
           <RegularText small>
             {momentFormat(
               volunteerListDate({
@@ -46,24 +47,20 @@ export const VolunteerPostListItem = ({
               'DD.MM.YYYY HH:mm'
             )}
           </RegularText>
-        }
-        containerStyle={listItemStyles.avatarContainerStyle}
-      />
-      <ListItem
-        title={
-          <Markdown
-            onLinkPress={(url) => {
-              openLink(url, openWebScreen);
-              return false;
-            }}
-            style={styles.markdown}
-          >
-            {message}
-          </Markdown>
-        }
-        bottomDivider={bottomDivider}
-        containerStyle={listItemStyles.contentContainerStyle}
-      />
+        </ListItem.Content>
+      </ListItem>
+
+      <ListItem bottomDivider={bottomDivider} containerStyle={listItemStyles.contentContainerStyle}>
+        <Markdown
+          onLinkPress={(url) => {
+            openLink(url, openWebScreen);
+            return false;
+          }}
+          style={styles.markdown}
+        >
+          {message}
+        </Markdown>
+      </ListItem>
     </View>
   );
 };
