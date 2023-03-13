@@ -8247,7 +8247,7 @@ moment-range@^4.0.2:
   dependencies:
     es6-symbol "^3.1.0"
 
-moment@^2.24.0, moment@~2.29.4:
+moment@^2.29.4, moment@~2.29.4:
   version "2.29.4"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
@@ -9240,10 +9240,10 @@ react-native-autocomplete-input@^5.1.0:
   dependencies:
     deprecated-react-native-prop-types "^2.3.0"
 
-react-native-calendars@1.1276.0:
-  version "1.1276.0"
-  resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.1276.0.tgz#4b0a312b7318ff6dc328f5eb03869f0ea1665922"
-  integrity sha512-+/zK6rlKIhRlNu/VgcG/XiDfteDYWrv0MnxVb6BKpyuTMTgVTfdE+/LJZtMoPXE15zYGcrCwEArVGQvAwJOgKA==
+react-native-calendars@1.1293.0:
+  version "1.1293.0"
+  resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.1293.0.tgz#3b06a7cbc050a074ec876a5accc90e49e9db84a1"
+  integrity sha512-/wWBlNOooHAVTCDhZptdeZEa1+DTUW1E3cI9auEPblJ56t1TXqe0gVK1UTchPDsA5d2eIXxdhTThpFD846yq7g==
   dependencies:
     hoist-non-react-statics "^3.3.1"
     immutable "^4.0.0-rc.12"
@@ -9254,7 +9254,7 @@ react-native-calendars@1.1276.0:
     recyclerlistview "^3.0.5"
     xdate "^0.8.0"
   optionalDependencies:
-    moment "^2.24.0"
+    moment "^2.29.4"
 
 react-native-codegen@^0.0.17:
   version "0.0.17"
