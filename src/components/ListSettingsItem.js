@@ -12,7 +12,7 @@ import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { Wrapper, WrapperRow } from './Wrapper';
 
-const { LIST_TYPES } = consts;
+const { a11yLabel, LIST_TYPES } = consts;
 
 const RADIO_BUTTON_SIZE = normalize(16);
 
@@ -40,7 +40,14 @@ export const ListSettingsItem = ({ item }) => {
 
   return (
     <>
-      <Touchable onPress={onPressTitle}>
+      <Touchable
+        accessibilityLabel={`(${item.title}) ${a11yLabel.dropDownMenu} (${
+          isCollapsed
+            ? texts.accessibilityLabels.dropDownMenu.closed
+            : texts.accessibilityLabels.dropDownMenu.open
+        })`}
+        onPress={onPressTitle}
+      >
         <Wrapper style={styles.wrapper}>
           <WrapperRow spaceBetween>
             <BoldText>{title}</BoldText>
@@ -50,27 +57,34 @@ export const ListSettingsItem = ({ item }) => {
       </Touchable>
       <Divider style={styles.divider} />
       <Collapsible collapsed={isCollapsed}>
-        {Object.values(LIST_TYPES).map((listType) => (
-          <ListItem
-            key={listType}
-            bottomDivider
-            containerStyle={styles.container}
-            onPress={getOnPressListType(listType)}
-            delayPressIn={0}
-            Component={Touchable}
-            accessibilityLabel={`(${texts.settingsTitles.listLayouts[listType]}) ${consts.a11yLabel.button}`}
-          >
-            <ListItem.Content>
-              <RegularText small>{texts.settingsTitles.listLayouts[listType]}</RegularText>
-            </ListItem.Content>
+        {Object.values(LIST_TYPES).map((listType) => {
+          const activeTabAccessibilityLabel =
+            listType === listTypeForQuery
+              ? texts.accessibilityLabels.tabs.active
+              : texts.accessibilityLabels.tabs.inactive;
 
-            {listType === listTypeForQuery ? (
-              <Icon.RadioButtonFilled size={RADIO_BUTTON_SIZE} />
-            ) : (
-              <Icon.RadioButtonEmpty color={colors.darkText} size={RADIO_BUTTON_SIZE} />
-            )}
-          </ListItem>
-        ))}
+          return (
+            <ListItem
+              accessibilityLabel={`(${texts.settingsTitles.listLayouts[listType]}) ${a11yLabel.button} ${activeTabAccessibilityLabel}`}
+              key={listType}
+              bottomDivider
+              containerStyle={styles.container}
+              onPress={getOnPressListType(listType)}
+              delayPressIn={0}
+              Component={Touchable}
+            >
+              <ListItem.Content>
+                <RegularText small>{texts.settingsTitles.listLayouts[listType]}</RegularText>
+              </ListItem.Content>
+
+              {listType === listTypeForQuery ? (
+                <Icon.RadioButtonFilled size={RADIO_BUTTON_SIZE} />
+              ) : (
+                <Icon.RadioButtonEmpty color={colors.darkText} size={RADIO_BUTTON_SIZE} />
+              )}
+            </ListItem>
+          );
+        })}
       </Collapsible>
     </>
   );

@@ -60,7 +60,7 @@ export const SurveyAnswer = ({
         <View style={styles.border}>
           <WrapperRow>
             <Wrapper style={styles.radioButtonContainer}>
-              <Radiobutton selected={selected} />
+              <Radiobutton selected={selected} onPress={onPress} />
             </Wrapper>
             <Wrapper style={styles.answerContainer}>
               <BoldText>{getAnswerLabel('de', index)}</BoldText>

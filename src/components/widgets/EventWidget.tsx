@@ -9,15 +9,17 @@ import { useHomeRefresh, useRefreshTime, useVolunteerData } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
-import { WidgetProps } from '../../types';
+import { ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
+
+const { REFRESH_INTERVALS, ROOT_ROUTE_NAMES } = consts;
 
 const currentDate = moment().format('YYYY-MM-DD');
 
 export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
   const navigation = useNavigation();
-  const refreshTime = useRefreshTime('event-widget', consts.REFRESH_INTERVALS.ONCE_A_DAY);
+  const refreshTime = useRefreshTime('event-widget', REFRESH_INTERVALS.ONCE_A_DAY);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { hdvt = {} } = globalSettings;
@@ -48,11 +50,11 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
   });
 
   const onPress = useCallback(() => {
-    navigation.navigate('Index', {
+    navigation.navigate(ScreenName.Index, {
       title: text ?? texts.homeTitles.events,
       query: QUERY_TYPES.EVENT_RECORDS,
       queryVariables,
-      rootRouteName: 'EventRecords',
+      rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
       filterByDailyEvents: additionalProps?.noFilterByDailyEvents ? false : true
     });
   }, [navigation, text, queryVariables]);

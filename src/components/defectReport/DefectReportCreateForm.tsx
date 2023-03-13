@@ -149,7 +149,7 @@ export const DefectReportCreateForm = ({
                 onChange,
                 name,
                 required: true,
-                label: texts.defectReport.categoryName,
+                label: `${texts.defectReport.categoryName} *`,
                 placeholder: texts.defectReport.categoryName,
                 control
               }}

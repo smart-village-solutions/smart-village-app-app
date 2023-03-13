@@ -1,6 +1,28 @@
 import appJson from '../../app.json';
 
 export const texts = {
+  accessibilityLabels: {
+    checkbox: {
+      active: 'ausgewählt',
+      inactive: 'nicht ausgewählt'
+    },
+    dropDownMenu: {
+      closed: 'geschlossen',
+      open: 'geöffnet'
+    },
+    searchInputIcons: {
+      delete: 'Suche löschen',
+      search: 'Suche'
+    },
+    secureInputIcons: {
+      invisible: 'Kennwort verstecken',
+      visible: 'Kennwort sichtbar machen'
+    },
+    tabs: {
+      active: 'geöffnet',
+      inactive: 'geschlossen'
+    }
+  },
   appIntro: {
     continue: 'Weiter'
   },
@@ -79,6 +101,10 @@ export const texts = {
     noBookmarksYet:
       'Es wurden noch keine Beiträge, Orte oder Touren für die Lesezeichenliste markiert. Sobald etwas markiert wurde, wird es hier zu finden sein!',
     showAll: 'Alle anzeigen'
+  },
+  calendarToggle: {
+    calendar: 'Kalender',
+    list: 'Liste'
   },
   categoryFilter: {
     dataProvider: 'Datenquellenauswahl',
@@ -386,6 +412,9 @@ export const texts = {
     prices: 'Preise'
   },
   feedbackLink: 'Feedback',
+  feedbackScreen: {
+    checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.'
+  },
   homeButtons: {
     events: 'Alle Veranstaltungen anzeigen',
     news: 'Alle Nachrichten anzeigen',
@@ -906,7 +935,6 @@ export const texts = {
     attendInfo:
       'Wenn Sie Interesse an dieser Veranstaltung bekunden wird diese in den Kalender in Ihrem Bereich übernommen.\n',
     birthday: 'Geburtstag',
-    calendar: 'Kalender',
     calendarMy: 'Mein Kalender',
     calendarNew: 'Termin erstellen',
     contactGroupOwner: 'Gruppenbesitzer kontaktieren',
@@ -955,7 +983,6 @@ export const texts = {
     lastnameError: 'Nachname muss ausgefüllt werden',
     leave: 'Verlassen',
     linkedin: 'Linkedin',
-    list: 'Liste',
     location: 'Ort',
     login: 'Anmelden',
     loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
@@ -1048,7 +1075,8 @@ export const texts = {
       'Ein Download wird in einem externen Browser gestartet.\nNachdem der Download abgeschlossen ist, können Sie die Termine durch Öffnen der Datei in Ihren Kalender importieren.',
     exportAlertTitle: 'Abfallkalender',
     exportCalendar: 'Kalender exportieren',
-    hint: 'Bitte geben Sie Ihre Straße an.',
+    hintCityAndStreet: 'Bitte geben Sie Ihre Ortschaft und anschließend Ihre Straße an.',
+    hintStreet: 'Bitte geben Sie Ihre Straße an.',
     onDayBeforeCollection: 'Am Vortag',
     onDayOfCollection: 'Am Tag der Abholung',
     reminder: 'Erinnerungen',

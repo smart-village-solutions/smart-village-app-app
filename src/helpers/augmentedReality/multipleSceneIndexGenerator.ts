@@ -79,7 +79,40 @@ export const multipleSceneIndexGenerator = ({
       );
     }
 
+    // localUris = [{ type: 'vrx' }, { type: 'texture' }, { type: 'texture' }];
     localUris = scenes?.[modelIndex]?.localUris;
+
+    if (modelIndex > 0) {
+      /*
+      the first index of scenes is selected because all data except models and textures 
+      are in the first index
+      firstSceneLocalUris = [
+        { type: 'vrx' },
+        { type: 'texture' },
+        { type: 'texture' },
+        // benötigen wir Folgendes.
+        { type: 'quad' },
+        { type: 'target' },
+        { type: 'mp3' }
+      ];
+      */
+      const firstSceneLocalUris = scenes?.[0]?.localUris;
+
+      /*
+      according to the date logic, all types in the selected index are equal to uniqueTypes
+      uniqueTypes = {'vrx', 'texture'};
+       */
+      const uniqueTypes = new Set(localUris.map((item) => item.type));
+
+      /* all the data we need except model and texture are merged with localUris
+      localUris = [...localUris, { type: 'quad' }, { type: 'target' }, { type: 'mp3' }]; 
+      */
+      localUris = [
+        ...localUris,
+        ...firstSceneLocalUris.filter((item) => !uniqueTypes.has(item.type))
+      ];
+    }
+
     const textureIndex = texture % variableTexturesCount;
     textures.push(variableTextures?.[textureIndex] as TTextures[0]);
 

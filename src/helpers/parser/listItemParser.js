@@ -70,7 +70,7 @@ const parseEventRecords = (data, skipLastDivider, withDate) => {
   }));
 };
 
-const parseGenericItems = (data, skipLastDivider, titleDetail, consentForDataProcessingText) => {
+const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText) => {
   // this likely needs a rework in the future, but for now this is the place to filter items.
   const filteredData = data?.filter(filterGenericItems);
 
@@ -386,7 +386,7 @@ const parseConsulData = (data, query, skipLastDivider) => {
  */
 // eslint-disable-next-line complexity
 export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) => {
-  if (!data) return;
+  if (!data) return [];
 
   const {
     bookmarkable = true,
@@ -401,12 +401,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.EVENT_RECORDS:
       return parseEventRecords(data[query], skipLastDivider, withDate);
     case QUERY_TYPES.GENERIC_ITEMS:
-      return parseGenericItems(
-        data[query],
-        skipLastDivider,
-        titleDetail,
-        consentForDataProcessingText
-      );
+      return parseGenericItems(data[query], skipLastDivider, consentForDataProcessingText);
     case QUERY_TYPES.NEWS_ITEMS:
       return parseNewsItems(data[query], skipLastDivider, titleDetail, bookmarkable);
     case QUERY_TYPES.POINTS_OF_INTEREST:

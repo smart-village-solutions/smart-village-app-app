@@ -20,6 +20,7 @@ import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
+import { ScreenName } from '../types';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
@@ -100,7 +101,7 @@ export const HomeScreen = ({ navigation, route }) => {
 
   const NAVIGATION = {
     CATEGORIES_INDEX: {
-      name: 'Index',
+      name: ScreenName.Index,
       params: {
         title: headlinePointsOfInterestAndTours,
         query: QUERY_TYPES.CATEGORIES,
@@ -109,7 +110,7 @@ export const HomeScreen = ({ navigation, route }) => {
       }
     },
     EVENT_RECORDS_INDEX: {
-      name: 'Index',
+      name: ScreenName.Index,
       params: {
         title: headlineEvents,
         query: QUERY_TYPES.EVENT_RECORDS,
@@ -133,7 +134,7 @@ export const HomeScreen = ({ navigation, route }) => {
       }
 
       return {
-        name: 'Index',
+        name: ScreenName.Index,
         params: {
           title: categoryTitle,
           titleDetail: categoryTitleDetail,

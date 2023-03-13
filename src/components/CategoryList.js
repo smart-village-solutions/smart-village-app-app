@@ -7,9 +7,7 @@ import { colors, consts, device, texts } from '../config';
 
 import { CategoryListItem } from './CategoryListItem';
 import { LoadingContainer } from './LoadingContainer';
-import { RegularText } from './Text';
 import { Title, TitleContainer, TitleShadow } from './Title';
-import { Wrapper } from './Wrapper';
 
 export class CategoryList extends React.PureComponent {
   keyExtractor = (item, index) => `index${index}-id${item.id}`;
@@ -30,7 +28,7 @@ export class CategoryList extends React.PureComponent {
   };
 
   render() {
-    const { data, navigation, noSubtitle, refreshControl, hasSectionHeader } = this.props;
+    const { data, navigation, noSubtitle, refreshControl, ListHeaderComponent } = this.props;
 
     if (!data?.length) {
       return (
@@ -72,14 +70,7 @@ export class CategoryList extends React.PureComponent {
           />
         )}
         renderSectionHeader={this.renderSectionHeader}
-        ListHeaderComponent={
-          hasSectionHeader &&
-          !!texts.categoryList.intro && (
-            <Wrapper>
-              <RegularText>{texts.categoryList.intro}</RegularText>
-            </Wrapper>
-          )
-        }
+        ListHeaderComponent={ListHeaderComponent}
         stickySectionHeadersEnabled
         refreshControl={refreshControl}
       />
@@ -92,7 +83,8 @@ CategoryList.propTypes = {
   data: PropTypes.array,
   noSubtitle: PropTypes.bool,
   refreshControl: PropTypes.object,
-  hasSectionHeader: PropTypes.bool
+  hasSectionHeader: PropTypes.bool,
+  ListHeaderComponent: PropTypes.object
 };
 
 CategoryList.defaultProps = {

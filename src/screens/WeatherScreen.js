@@ -131,6 +131,7 @@ export const WeatherScreen = () => {
               horizontal
               keyExtractor={hourlyKeyExtractor}
               renderItem={renderHourlyWeather}
+              showsHorizontalScrollIndicator={false}
             />
           </View>
         )}

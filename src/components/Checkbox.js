@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
-import { colors, consts, normalize } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import { OrientationContext } from '../OrientationProvider';
 import { useOpenWebScreen } from '../hooks';
 
@@ -33,6 +33,11 @@ export const Checkbox = ({
   return (
     <CheckBox
       accessibilityRole="button"
+      accessibilityLabel={`${
+        checked
+          ? texts.accessibilityLabels.checkbox.active
+          : texts.accessibilityLabels.checkbox.inactive
+      } ${title}`}
       size={normalize(21)}
       center={center}
       title={

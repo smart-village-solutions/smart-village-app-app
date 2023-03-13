@@ -180,5 +180,5 @@ export const groupLeave = async ({ id, userId }: { id: number; userId: string })
     }
   };
 
-  return (await fetch(`${volunteerApiV1Url}space/${id}/membership/${userId}`, fetchObj)).json();
+  return (await fetch(`${volunteerApiV2Url}space/${id}/membership/${userId}`, fetchObj)).json();
 };

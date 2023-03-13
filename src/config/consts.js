@@ -21,6 +21,8 @@ export const consts = {
     chatHint: 'Eine neue Unterhaltung beginnen',
     closeMenuIcon: 'Schließen (Taste)',
     closeMenuHint: 'Menü schließen',
+    dropDownMenu: 'Dropdown-Menü (Taste)',
+    dropDownMenuItem: 'Dropdown-Menü-Eintrag (Taste)',
     editIcon: 'Bearbeiten (Taste)',
     editHint: 'Diesen Eintrag bearbeiten',
     encounterId: 'Identifikationsnummer',
@@ -54,6 +56,7 @@ export const consts = {
     bookmarksHint: 'Zu den Lesezeichen wechseln',
     shareIcon: 'Teilen (Taste)',
     shareHint: 'Inhalte auf der Seite teilen',
+    tabs: 'Tabs',
     textInput: 'Texteingabe',
     username: 'Benutzername',
     verified: 'Verifiziert',
@@ -66,6 +69,7 @@ export const consts = {
   EMAIL_REGEX:
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
   GUID_REGEX: /[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}/g,
+  HTML_REGEX: /<(?:"[^"]*"['"]*|'[^']*'['"]*|[^'">])+>/g,
   IMAGE_TYPE_REGEX: /\.(gif|jpe?g|tiff?|png|webp|bmp)$/i,
   JPG_TYPE_REGEX: /\.jpe?g$/i,
   PDF_TYPE_REGEX: /\.pdf$/i,
@@ -95,7 +99,7 @@ export const consts = {
 
   DIMENSIONS: {
     // the max screen size we want to render full screen
-    FULL_SCREEN_MAX_WIDTH: 414
+    FULL_SCREEN_MAX_WIDTH: 428
   },
 
   // the image aspect ratio can be overwritten by a global setting `imageAspectRatio`
