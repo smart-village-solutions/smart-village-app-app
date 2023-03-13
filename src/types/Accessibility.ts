@@ -1,4 +1,4 @@
-export type TAccessibility = {
+export type Accessibility = {
   isBoldTextEnabled: boolean;
   isGrayscaleEnabled: boolean;
   isInvertColorsEnabled: boolean;
