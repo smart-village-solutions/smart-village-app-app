@@ -14,6 +14,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import appJson from '../app.json';
 
+import { AccessibilityProvider } from './AccessibilityProvider';
 import { auth } from './auth';
 import { BookmarkProvider } from './BookmarkProvider';
 import { LoadingContainer } from './components';
@@ -245,7 +246,9 @@ export const MainApp = () => (
         <PermanentFilterProvider>
           <ReactQueryProvider>
             <SafeAreaProvider>
-              <MainAppWithApolloProvider />
+              <AccessibilityProvider>
+                <MainAppWithApolloProvider />
+              </AccessibilityProvider>
             </SafeAreaProvider>
           </ReactQueryProvider>
         </PermanentFilterProvider>

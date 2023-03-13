@@ -1,6 +1,7 @@
 export * from './encounter';
 export * from './volunteer';
 
+export * from './Accessibility';
 export * from './Address';
 export * from './AppIntroSlide';
 export * from './Camera';
