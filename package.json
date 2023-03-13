@@ -104,7 +104,7 @@
     "react-native-modal-dropdown": "https://github.com/donni106/react-native-modal-dropdown#feature/search-options",
     "react-native-progress": "^5.0.0",
     "react-native-qrcode-svg": "^6.1.2",
-    "react-native-reanimated": "~2.8.0",
+    "react-native-reanimated": "~2.10.0",
     "react-native-render-html": "^6.3.4",
     "react-native-safe-area-context": "4.2.4",
     "react-native-screens": "~3.11.1",
