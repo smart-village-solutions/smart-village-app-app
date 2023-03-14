@@ -98,7 +98,7 @@ export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
         },
         table: { cssRules }
       }}
-      tagsStyles={{ ...styles.html, ...tagsStyles }}
+      tagsStyles={{ ...styles.html(), ...tagsStyles }}
       emSize={normalize(16)}
       baseStyle={styles.baseFontStyle}
       ignoredStyles={['width', 'height']}

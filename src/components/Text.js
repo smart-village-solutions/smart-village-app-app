@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Text as RNText } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { colors, normalize } from '../config';
 
 // example: S&#322;ubice -> Słubice
@@ -38,7 +39,17 @@ export const Text = ({ children, ...props }) => {
   );
 };
 
-export const RegularText = styled(Text)`
+export const RegularText = ({ children, ...props }) => {
+  const { isBoldTextEnabled } = useContext(AccessibilityContext);
+
+  if (isBoldTextEnabled) {
+    return <BoldText {...props}>{children}</BoldText>;
+  }
+
+  return <RegularTextStyledComponent {...props}>{children}</RegularTextStyledComponent>;
+};
+
+const RegularTextStyledComponent = styled(Text)`
   color: ${colors.darkText};
   font-family: regular;
   font-size: ${normalize(16)};
@@ -137,7 +148,7 @@ export const RegularText = styled(Text)`
     `};
 `;
 
-export const BoldText = styled(RegularText)`
+export const BoldText = styled(RegularTextStyledComponent)`
   font-family: bold;
 
   ${(props) =>
@@ -148,5 +159,9 @@ export const BoldText = styled(RegularText)`
 `;
 
 Text.propTypes = {
+  children: PropTypes.node
+};
+
+RegularText.propTypes = {
   children: PropTypes.node
 };
