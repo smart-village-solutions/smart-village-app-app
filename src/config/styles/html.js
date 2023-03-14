@@ -1,13 +1,18 @@
+import { useContext } from 'react';
 import { Dimensions } from 'react-native';
 
+import { AccessibilityContext } from '../../AccessibilityProvider';
+import { imageHeight } from '../../helpers/imageHelper';
 import { colors } from '../colors';
 import { normalize } from '../normalize';
-import { imageHeight } from '../../helpers/imageHelper';
 
 export const html = () => {
+  const { isBoldTextEnabled } = useContext(AccessibilityContext);
+
   return {
     p: {
       color: colors.darkText,
+      fontFamily: isBoldTextEnabled ? 'bold' : 'regular',
       margin: 0,
       marginBottom: normalize(16)
     },
@@ -16,6 +21,9 @@ export const html = () => {
       fontFamily: 'bold',
       margin: 0,
       textDecorationLine: 'none'
+    },
+    div: {
+      fontFamily: isBoldTextEnabled ? 'bold' : 'regular'
     },
     h1: {
       color: colors.darkText,
@@ -27,7 +35,7 @@ export const html = () => {
     },
     h2: {
       color: colors.darkText,
-      fontFamily: 'regular',
+      fontFamily: isBoldTextEnabled ? 'bold' : 'regular',
       fontSize: normalize(20),
       fontWeight: '400',
       lineHeight: normalize(26),
@@ -43,7 +51,7 @@ export const html = () => {
     },
     h4: {
       color: colors.darkText,
-      fontFamily: 'regular',
+      fontFamily: isBoldTextEnabled ? 'bold' : 'regular',
       fontSize: normalize(18),
       fontWeight: '400',
       lineHeight: normalize(24),
@@ -51,14 +59,14 @@ export const html = () => {
     },
     h5: {
       color: colors.darkText,
-      fontFamily: 'regular',
+      fontFamily: isBoldTextEnabled ? 'bold' : 'regular',
       fontSize: normalize(16),
       fontWeight: '400',
       margin: 0
     },
     h6: {
       color: colors.darkText,
-      fontFamily: 'regular',
+      fontFamily: isBoldTextEnabled ? 'bold' : 'regular',
       fontSize: normalize(14),
       fontWeight: '400',
       margin: 0
@@ -72,9 +80,11 @@ export const html = () => {
       margin: 0
     },
     ul: {
+      fontFamily: isBoldTextEnabled ? 'bold' : 'regular',
       margin: 0
     },
     ol: {
+      fontFamily: isBoldTextEnabled ? 'bold' : 'regular',
       margin: 0
     },
     img: {
@@ -87,7 +97,7 @@ export const html = () => {
       margin: 0
     },
     em: {
-      fontFamily: 'italic',
+      fontFamily: isBoldTextEnabled ? 'bold-italic' : 'italic',
       margin: 0
     },
     figure: {
