@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import React, { FC, useContext } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { texts } from '../config';
 import { SettingsContext } from '../SettingsProvider';
 import { ScreenName } from '../types';
@@ -12,13 +13,14 @@ export const FeedbackFooter: FC = () => {
   const navigation = useNavigation();
   // @ts-expect-error settings are not properly typed
   const feedbackFooter = useContext(SettingsContext).globalSettings?.settings?.feedbackFooter;
+  const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
 
   if (!feedbackFooter) return null;
 
   return (
     <View style={styles.container}>
       <Pressable onPress={() => navigation.navigate(ScreenName.Feedback)} style={styles.button}>
-        <BoldText underline placeholder>
+        <BoldText underline placeholder={!isReduceTransparencyEnabled}>
           {texts.feedbackLink.toUpperCase()}
         </BoldText>
       </Pressable>
