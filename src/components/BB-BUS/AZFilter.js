@@ -1,12 +1,15 @@
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
+import React, { memo, useContext } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native';
 
+import { AccessibilityContext } from '../../AccessibilityProvider';
 import { BoldText } from '../Text';
 
 import { AZFilterElement } from './AZFilterElement';
 
 export const AZFilter = memo(({ data, setData }) => {
+  const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
+
   const selectedData = data.find((entry) => entry.selected) || {};
 
   return (
@@ -33,11 +36,14 @@ export const AZFilter = memo(({ data, setData }) => {
           }}
         >
           <AZFilterElement
+            backgroundContrast={isReduceTransparencyEnabled && item.selected}
             first={index === 0}
             last={index === data.length - 1}
             selected={item.selected}
           >
-            <BoldText link={item.selected}>{item.value}</BoldText>
+            <BoldText link={item.selected} lightest={isReduceTransparencyEnabled && item.selected}>
+              {item.value}
+            </BoldText>
           </AZFilterElement>
         </TouchableOpacity>
       )}
