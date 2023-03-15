@@ -5,10 +5,11 @@ import TableRenderer, {
   tableModel
 } from '@native-html/table-plugin';
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
+import React, { memo, useContext } from 'react';
 import HTML from 'react-native-render-html';
 import { WebView } from 'react-native-webview';
 
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { colors, consts, normalize, styles } from '../config';
 import { imageWidth, openLink } from '../helpers';
 
@@ -69,6 +70,8 @@ const htmlConfig = {
 };
 
 export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
+  const { isBoldTextEnabled } = useContext(AccessibilityContext);
+
   let calculatedWidth = width !== undefined ? Math.min(imageWidth(), width) : imageWidth();
 
   if (calculatedWidth > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
@@ -98,7 +101,11 @@ export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
         },
         table: { cssRules }
       }}
-      tagsStyles={{ ...styles.html, ...tagsStyles }}
+      tagsStyles={{
+        ...styles.html,
+        ...(isBoldTextEnabled ? styles.htmlBoldTextEnabled : {}),
+        ...tagsStyles
+      }}
       emSize={normalize(16)}
       baseStyle={styles.baseFontStyle}
       ignoredStyles={['width', 'height']}

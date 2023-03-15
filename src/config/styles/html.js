@@ -1,12 +1,13 @@
 import { Dimensions } from 'react-native';
 
+import { imageHeight } from '../../helpers/imageHelper';
 import { colors } from '../colors';
 import { normalize } from '../normalize';
-import { imageHeight } from '../../helpers/imageHelper';
 
 export const html = {
   p: {
     color: colors.darkText,
+    fontFamily: 'regular',
     margin: 0,
     marginBottom: normalize(16)
   },
@@ -15,6 +16,9 @@ export const html = {
     fontFamily: 'bold',
     margin: 0,
     textDecorationLine: 'none'
+  },
+  div: {
+    fontFamily: 'regular'
   },
   h1: {
     color: colors.darkText,
@@ -71,9 +75,11 @@ export const html = {
     margin: 0
   },
   ul: {
+    fontFamily: 'regular',
     margin: 0
   },
   ol: {
+    fontFamily: 'regular',
     margin: 0
   },
   img: {
@@ -91,5 +97,35 @@ export const html = {
   },
   figure: {
     margin: 0
+  }
+};
+
+export const htmlBoldTextEnabled = {
+  p: {
+    fontFamily: 'bold'
+  },
+  div: {
+    fontFamily: 'bold'
+  },
+  h2: {
+    fontFamily: 'bold'
+  },
+  h4: {
+    fontFamily: 'bold'
+  },
+  h5: {
+    fontFamily: 'bold'
+  },
+  h6: {
+    fontFamily: 'bold'
+  },
+  ul: {
+    fontFamily: 'bold'
+  },
+  ol: {
+    fontFamily: 'bold'
+  },
+  em: {
+    fontFamily: 'bold-italic'
   }
 };

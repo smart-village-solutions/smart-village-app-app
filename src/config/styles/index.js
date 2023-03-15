@@ -1,9 +1,10 @@
 import { baseFontStyle } from './baseFontStyle';
-import { html } from './html';
+import { html, htmlBoldTextEnabled } from './html';
 import { markdown } from './markdown';
 
 export const styles = {
   baseFontStyle,
   html,
+  htmlBoldTextEnabled,
   markdown
 };
