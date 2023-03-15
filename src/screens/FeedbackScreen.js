@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import { Mutation } from 'react-apollo';
@@ -15,10 +15,13 @@ import {
 } from '../components';
 import { useMatomoTrackScreenView } from '../hooks';
 import { useAppInfo } from '../hooks/appInfo';
+import { AccessibilityContext } from '../AccessibilityProvider';
 
 const { MATOMO_TRACKING } = consts;
 
 export const FeedbackScreen = () => {
+  const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -87,7 +90,7 @@ export const FeedbackScreen = () => {
                       setName(text);
                     }}
                     value={name}
-                    style={styles.inputField}
+                    style={[styles.inputField, isReduceTransparencyEnabled && styles.inputContrast]}
                   />
                   <BoldText>E-Mail</BoldText>
                   <TextInput
@@ -96,7 +99,7 @@ export const FeedbackScreen = () => {
                       setEmail(text);
                     }}
                     value={email}
-                    style={styles.inputField}
+                    style={[styles.inputField, isReduceTransparencyEnabled && styles.inputContrast]}
                     keyboardType="email-address"
                   />
                   <BoldText>Telefon</BoldText>
@@ -106,7 +109,7 @@ export const FeedbackScreen = () => {
                       setPhone(text);
                     }}
                     value={phone}
-                    style={styles.inputField}
+                    style={[styles.inputField, isReduceTransparencyEnabled && styles.inputContrast]}
                     keyboardType="phone-pad"
                   />
                   <BoldText>Ihre Mitteilung</BoldText>
@@ -116,7 +119,7 @@ export const FeedbackScreen = () => {
                       setMessage(text);
                     }}
                     value={message}
-                    style={styles.textArea}
+                    style={[styles.textArea, isReduceTransparencyEnabled && styles.inputContrast]}
                     multiline
                     textAlignVertical="top"
                   />
@@ -149,6 +152,9 @@ export const FeedbackScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  inputContrast: {
+    borderColor: colors.darkText
+  },
   inputField: {
     borderColor: colors.shadow,
     borderWidth: 1,
