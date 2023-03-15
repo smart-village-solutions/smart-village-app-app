@@ -33,23 +33,32 @@ function parseText(text) {
   return result;
 }
 
-export const Text = ({ children, ...props }) => {
-  return (
-    <RNText {...props}>{typeof children === 'string' ? parseText(children) : children}</RNText>
-  );
-};
-
-export const RegularText = ({ children, ...props }) => {
+export const Text = ({ children, style, italic, ...props }) => {
   const { isBoldTextEnabled } = useContext(AccessibilityContext);
 
-  if (isBoldTextEnabled) {
-    return <BoldText {...props}>{children}</BoldText>;
-  }
-
-  return <RegularTextStyledComponent {...props}>{children}</RegularTextStyledComponent>;
+  /* eslint-disable react-native/no-inline-styles */
+  return (
+    <RNText
+      {...props}
+      style={[
+        ...style,
+        isBoldTextEnabled && { fontFamily: 'bold' },
+        italic && { fontFamily: 'bold-italic' }
+      ]}
+    >
+      {typeof children === 'string' ? parseText(children) : children}
+    </RNText>
+  );
+  /* eslint-enable react-native/no-inline-styles */
 };
 
-const RegularTextStyledComponent = styled(Text)`
+Text.propTypes = {
+  children: PropTypes.node,
+  style: PropTypes.array,
+  italic: PropTypes.bool
+};
+
+export const RegularText = styled(Text)`
   color: ${colors.darkText};
   font-family: regular;
   font-size: ${normalize(16)};
@@ -148,7 +157,7 @@ const RegularTextStyledComponent = styled(Text)`
     `};
 `;
 
-export const BoldText = styled(RegularTextStyledComponent)`
+export const BoldText = styled(RegularText)`
   font-family: bold;
 
   ${(props) =>
@@ -157,11 +166,3 @@ export const BoldText = styled(RegularTextStyledComponent)`
       font-family: bold-italic;
     `};
 `;
-
-Text.propTypes = {
-  children: PropTypes.node
-};
-
-RegularText.propTypes = {
-  children: PropTypes.node
-};
