@@ -128,7 +128,9 @@ const MainAppWithApolloProvider = () => {
 
       setNetInfo({
         isConnected: updatedNetInfo.isConnected,
-        isMainserverUp: updatedNetInfo.isInternetReachable,
+        // TODO: updatedNetInfo.isInternetReachable did not take the true value,
+        // so true value was added manually
+        isMainserverUp: updatedNetInfo.isInternetReachable || true,
         netInfoCounter: updatedNetInfo.isInternetReachable === null && netInfoCounter + 1
       });
     };
