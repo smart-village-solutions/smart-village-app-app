@@ -1,7 +1,7 @@
 import { DeviceEventEmitter } from 'expo-modules-core';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { RefreshControl, ScrollView } from 'react-native';
+import { FlatList, RefreshControl } from 'react-native';
 
 import { auth } from '../auth';
 import {
@@ -99,11 +99,96 @@ export const HomeScreen = ({ navigation, route }) => {
     }, 500);
   };
 
+  const flatListData = [
+    {
+      categoriesNews,
+      fetchPolicy,
+      isShow: showNews,
+      navigation,
+      query: QUERY_TYPES.NEWS_ITEMS,
+      queryVariables: { limit: 3, excludeDataProviderIds }
+    },
+    {
+      buttonTitle: buttonPointsOfInterestAndTours,
+      fetchPolicy: fetchPolicy,
+      isShow: showPointsOfInterestAndTours,
+      navigate: 'CATEGORIES_INDEX',
+      navigation,
+      query: QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS,
+      queryVariables: { limit: 10, orderPoi: 'RAND', orderTour: 'RAND' },
+      title: headlinePointsOfInterestAndTours
+    },
+    {
+      buttonTitle: buttonEvents,
+      fetchPolicy: fetchPolicy,
+      isShow: showEvents,
+      navigate: 'EVENT_RECORDS_INDEX',
+      navigation,
+      query: QUERY_TYPES.EVENT_RECORDS,
+      queryVariables: { limit: 3, order: 'listDate_ASC' },
+      showVolunteerEvents,
+      title: headlineEvents
+    }
+  ];
+
+  return (
+    <SafeAreaViewFlex>
+      <FlatList
+        data={flatListData}
+        ListHeaderComponent={
+          <>
+            <ConnectedImagesCarousel
+              alternateAspectRatio
+              navigation={navigation}
+              publicJsonFile="homeCarousel"
+              refreshTimeKey="publicJsonFile-homeCarousel"
+            />
+
+            <Widgets widgetConfigs={widgetConfigs} />
+          </>
+        }
+        ListFooterComponent={
+          route.params?.isDrawer && (
+            <>
+              <HomeService />
+              <About navigation={navigation} withHomeRefresh />
+            </>
+          )
+        }
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={refresh}
+            colors={[colors.accent]}
+            tintColor={colors.accent}
+          />
+        }
+        renderItem={(item) => renderItem(item)}
+      />
+    </SafeAreaViewFlex>
+  );
+};
+/* eslint-enable complexity */
+
+const renderItem = ({ item }) => {
+  const {
+    buttonTitle,
+    categoriesNews,
+    fetchPolicy,
+    isShow,
+    navigate,
+    navigation,
+    query,
+    queryVariables,
+    showVolunteerEvents,
+    title
+  } = item;
+
   const NAVIGATION = {
     CATEGORIES_INDEX: {
       name: ScreenName.Index,
       params: {
-        title: headlinePointsOfInterestAndTours,
+        title: title,
         query: QUERY_TYPES.CATEGORIES,
         queryVariables: {},
         rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
@@ -112,7 +197,7 @@ export const HomeScreen = ({ navigation, route }) => {
     EVENT_RECORDS_INDEX: {
       name: ScreenName.Index,
       params: {
-        title: headlineEvents,
+        title: title,
         query: QUERY_TYPES.EVENT_RECORDS,
         queryVariables: { limit: 15, order: 'listDate_ASC' },
         rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
@@ -146,104 +231,65 @@ export const HomeScreen = ({ navigation, route }) => {
     }
   };
 
-  return (
-    <SafeAreaViewFlex>
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={refresh}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
-          />
-        }
-      >
-        <ConnectedImagesCarousel
-          alternateAspectRatio
-          navigation={navigation}
-          publicJsonFile="homeCarousel"
-          refreshTimeKey="publicJsonFile-homeCarousel"
+  if (isShow && !!categoriesNews) {
+    return categoriesNews.map(
+      (
+        {
+          categoryButton,
+          categoryId,
+          categoryTitle,
+          categoryTitleDetail,
+          indexCategoryIds,
+          rootRouteName
+        },
+        index
+      ) => (
+        <HomeSection
+          key={index}
+          {...{
+            buttonTitle: categoryButton,
+            categoryId: categoryId,
+            fetchPolicy,
+            navigation,
+            navigate: () =>
+              navigation.navigate(
+                NAVIGATION.NEWS_ITEMS_INDEX({
+                  categoryId,
+                  categoryTitle,
+                  categoryTitleDetail,
+                  indexCategoryIds,
+                  rootRouteName
+                })
+              ),
+            placeholder: <NewsSectionPlaceholder navigation={navigation} title={categoryTitle} />,
+            query,
+            queryVariables: { ...queryVariables, categoryId },
+            showVolunteerEvents,
+            title: categoryTitle,
+            titleDetail: categoryTitleDetail
+          }}
         />
+      )
+    );
+  }
 
-        <Widgets widgetConfigs={widgetConfigs} />
-
-        {showNews &&
-          categoriesNews.map(
-            (
-              {
-                categoryButton,
-                categoryId,
-                categoryTitle,
-                categoryTitleDetail,
-                indexCategoryIds,
-                rootRouteName
-              },
-              index
-            ) => (
-              <HomeSection
-                key={index}
-                buttonTitle={categoryButton}
-                categoryId={categoryId}
-                title={categoryTitle}
-                titleDetail={categoryTitleDetail}
-                fetchPolicy={fetchPolicy}
-                navigate={() =>
-                  navigation.navigate(
-                    NAVIGATION.NEWS_ITEMS_INDEX({
-                      categoryId,
-                      categoryTitle,
-                      categoryTitleDetail,
-                      indexCategoryIds,
-                      rootRouteName
-                    })
-                  )
-                }
-                navigation={navigation}
-                placeholder={
-                  <NewsSectionPlaceholder navigation={navigation} title={categoryTitle} />
-                }
-                query={QUERY_TYPES.NEWS_ITEMS}
-                queryVariables={{ limit: 3, categoryId, excludeDataProviderIds }}
-              />
-            )
-          )}
-
-        {showPointsOfInterestAndTours && (
-          <HomeSection
-            buttonTitle={buttonPointsOfInterestAndTours}
-            title={headlinePointsOfInterestAndTours}
-            fetchPolicy={fetchPolicy}
-            navigate={() => navigation.navigate(NAVIGATION.CATEGORIES_INDEX)}
-            navigation={navigation}
-            query={QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS}
-            queryVariables={{ limit: 10, orderPoi: 'RAND', orderTour: 'RAND' }}
-          />
-        )}
-
-        {showEvents && (
-          <HomeSection
-            buttonTitle={buttonEvents}
-            title={headlineEvents}
-            fetchPolicy={fetchPolicy}
-            navigate={() => navigation.navigate(NAVIGATION.EVENT_RECORDS_INDEX)}
-            navigation={navigation}
-            query={QUERY_TYPES.EVENT_RECORDS}
-            queryVariables={{ limit: 3, order: 'listDate_ASC' }}
-            showVolunteerEvents={showVolunteerEvents}
-          />
-        )}
-
-        {route.params?.isDrawer && (
-          <>
-            <HomeService />
-            <About navigation={navigation} withHomeRefresh />
-          </>
-        )}
-      </ScrollView>
-    </SafeAreaViewFlex>
+  return (
+    isShow && (
+      <HomeSection
+        {...{
+          buttonTitle,
+          fetchPolicy,
+          navigate: () => navigation.navigate(NAVIGATION[navigate]),
+          navigation,
+          query,
+          queryVariables,
+          showVolunteerEvents,
+          title
+        }}
+      />
+    )
   );
 };
-/* eslint-enable complexity */
 
 HomeScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
