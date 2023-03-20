@@ -29,11 +29,11 @@ const renderItem = ({ item }) => {
     buttonTitle,
     categoriesNews,
     fetchPolicy,
-    showData,
     navigate,
     navigation,
     query,
     queryVariables,
+    showData,
     showVolunteerEvents,
     title
   } = item;
@@ -57,13 +57,7 @@ const renderItem = ({ item }) => {
         rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
       }
     },
-    NEWS_ITEMS_INDEX: ({
-      categoryId,
-      categoryTitle,
-      categoryTitleDetail,
-      indexCategoryIds,
-      rootRouteName
-    }) => {
+    NEWS_ITEMS_INDEX: ({ categoryId, title, titleDetail, indexCategoryIds, rootRouteName }) => {
       const queryVariables = { limit: 15 };
 
       if (indexCategoryIds?.length) {
@@ -75,8 +69,8 @@ const renderItem = ({ item }) => {
       return {
         name: ScreenName.Index,
         params: {
-          title: categoryTitle,
-          titleDetail: categoryTitleDetail,
+          title,
+          titleDetail,
           query: QUERY_TYPES.NEWS_ITEMS,
           queryVariables,
           rootRouteName: rootRouteName || ROOT_ROUTE_NAMES.NEWS_ITEMS
@@ -93,10 +87,10 @@ const renderItem = ({ item }) => {
     return categoriesNews.map(
       (
         {
-          categoryButton,
+          categoryButton: buttonTitle,
           categoryId,
-          categoryTitle,
-          categoryTitleDetail,
+          categoryTitle: title,
+          categoryTitleDetail: titleDetail,
           indexCategoryIds,
           rootRouteName
         },
@@ -105,7 +99,7 @@ const renderItem = ({ item }) => {
         // eslint-disable-next-line react/jsx-key
         <HomeSection
           {...{
-            buttonTitle: categoryButton,
+            buttonTitle,
             categoryId,
             fetchPolicy,
             key: index,
@@ -114,18 +108,18 @@ const renderItem = ({ item }) => {
               navigation.navigate(
                 NAVIGATION.NEWS_ITEMS_INDEX({
                   categoryId,
-                  categoryTitle,
-                  categoryTitleDetail,
+                  title,
+                  titleDetail,
                   indexCategoryIds,
                   rootRouteName
                 })
               ),
-            placeholder: <NewsSectionPlaceholder navigation={navigation} title={categoryTitle} />,
+            placeholder: <NewsSectionPlaceholder navigation={navigation} title={title} />,
             query,
             queryVariables: { ...queryVariables, categoryId },
             showVolunteerEvents,
-            title: categoryTitle,
-            titleDetail: categoryTitleDetail
+            title,
+            titleDetail
           }}
         />
       )
@@ -227,29 +221,29 @@ export const HomeScreen = ({ navigation, route }) => {
     {
       categoriesNews,
       fetchPolicy,
-      showData: showNews,
       navigation,
       query: QUERY_TYPES.NEWS_ITEMS,
-      queryVariables: { limit: 3, excludeDataProviderIds }
+      queryVariables: { limit: 3, excludeDataProviderIds },
+      showData: showNews
     },
     {
       buttonTitle: buttonPointsOfInterestAndTours,
       fetchPolicy,
-      showData: showPointsOfInterestAndTours,
       navigate: 'CATEGORIES_INDEX',
       navigation,
       query: QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS,
       queryVariables: { limit: 10, orderPoi: 'RAND', orderTour: 'RAND' },
+      showData: showPointsOfInterestAndTours,
       title: headlinePointsOfInterestAndTours
     },
     {
       buttonTitle: buttonEvents,
       fetchPolicy,
-      showData: showEvents,
       navigate: 'EVENT_RECORDS_INDEX',
       navigation,
       query: QUERY_TYPES.EVENT_RECORDS,
       queryVariables: { limit: 3, order: 'listDate_ASC' },
+      showData: showEvents,
       showVolunteerEvents,
       title: headlineEvents
     }
