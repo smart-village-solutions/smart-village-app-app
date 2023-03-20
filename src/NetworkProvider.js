@@ -12,14 +12,14 @@ export const NetworkContext = createContext({
 });
 
 export const NetworkProvider = ({ children }) => {
-  const [connected, setConnected] = useState(defaultIsConnected);
-  const [internetReachable, setInternetReachable] = useState(defaultIsMainserverUp);
+  const [isConnected, setIsConnected] = useState(defaultIsConnected);
+  const [isMainserverUp, setIsMainserverUp] = useState(defaultIsMainserverUp);
 
   useEffect(() => {
     // https://github.com/react-native-community/react-native-netinfo#netinfostate
     const unsubscribe = NetInfo.addEventListener((state) => {
-      setConnected(state.isConnected);
-      setInternetReachable(state.isInternetReachable);
+      setIsConnected(state.isConnected);
+      setIsMainserverUp(state.isInternetReachable);
     });
 
     // returned function will be called when component unmounts
@@ -27,7 +27,7 @@ export const NetworkProvider = ({ children }) => {
   }, []);
 
   return (
-    <NetworkContext.Provider value={{ isConnected: connected, isMainserverUp: internetReachable }}>
+    <NetworkContext.Provider value={{ isConnected, isMainserverUp }}>
       {children}
     </NetworkContext.Provider>
   );
