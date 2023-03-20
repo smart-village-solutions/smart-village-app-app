@@ -11,10 +11,10 @@ export const getWaterTemperature = async () => {
   };
 
   const response = await fetch(serverUrl, fetchObj);
+  const status = response.status;
+  const ok = response.ok;
 
-  if (response?.status === 404) {
-    return undefined;
+  if (ok && status === 200) {
+    return await response.json();
   }
-
-  return await response.json();
 };
