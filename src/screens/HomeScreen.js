@@ -57,7 +57,13 @@ const renderItem = ({ item }) => {
         rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
       }
     },
-    NEWS_ITEMS_INDEX: ({ categoryId, title, titleDetail, indexCategoryIds, rootRouteName }) => {
+    NEWS_ITEMS_INDEX: ({
+      categoryId,
+      title,
+      titleDetail,
+      indexCategoryIds,
+      rootRouteName = ROOT_ROUTE_NAMES.NEWS_ITEMS
+    }) => {
       const queryVariables = { limit: 15 };
 
       if (indexCategoryIds?.length) {
@@ -73,7 +79,7 @@ const renderItem = ({ item }) => {
           titleDetail,
           query: QUERY_TYPES.NEWS_ITEMS,
           queryVariables,
-          rootRouteName: rootRouteName || ROOT_ROUTE_NAMES.NEWS_ITEMS
+          rootRouteName
         }
       };
     }
