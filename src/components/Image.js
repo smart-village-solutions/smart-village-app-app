@@ -101,7 +101,7 @@ export const Image = ({
         childrenContainerStyle={style || stylesForImage(aspectRatio).defaultStyle}
         containerStyle={containerStyle}
         PlaceholderContent={PlaceholderContent}
-        placeholderStyle={{ backgroundColor: colors.transparent }}
+        placeholderStyle={styles.placeholderStyle}
         accessible={!!sourceProp?.captionText}
         accessibilityLabel={`${sourceProp.captionText ? sourceProp.captionText : ''} ${
           consts.a11yLabel.image
@@ -117,6 +117,13 @@ export const Image = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  placeholderStyle: {
+    backgroundColor: colors.transparent,
+    flex: 1
+  }
+});
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that eslint warning */
