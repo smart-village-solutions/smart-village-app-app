@@ -24,6 +24,130 @@ import { ScreenName } from '../types';
 
 const { MATOMO_TRACKING, ROOT_ROUTE_NAMES } = consts;
 
+const renderItem = ({ item }) => {
+  const {
+    buttonTitle,
+    categoriesNews,
+    fetchPolicy,
+    showData,
+    navigate,
+    navigation,
+    query,
+    queryVariables,
+    showVolunteerEvents,
+    title
+  } = item;
+
+  const NAVIGATION = {
+    CATEGORIES_INDEX: {
+      name: ScreenName.Index,
+      params: {
+        title,
+        query: QUERY_TYPES.CATEGORIES,
+        queryVariables: {},
+        rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
+      }
+    },
+    EVENT_RECORDS_INDEX: {
+      name: ScreenName.Index,
+      params: {
+        title,
+        query: QUERY_TYPES.EVENT_RECORDS,
+        queryVariables: { limit: 15, order: 'listDate_ASC' },
+        rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
+      }
+    },
+    NEWS_ITEMS_INDEX: ({
+      categoryId,
+      categoryTitle,
+      categoryTitleDetail,
+      indexCategoryIds,
+      rootRouteName
+    }) => {
+      const queryVariables = { limit: 15 };
+
+      if (indexCategoryIds?.length) {
+        queryVariables.categoryIds = indexCategoryIds;
+      } else {
+        queryVariables.categoryId = categoryId;
+      }
+
+      return {
+        name: ScreenName.Index,
+        params: {
+          title: categoryTitle,
+          titleDetail: categoryTitleDetail,
+          query: QUERY_TYPES.NEWS_ITEMS,
+          queryVariables,
+          rootRouteName: rootRouteName || ROOT_ROUTE_NAMES.NEWS_ITEMS
+        }
+      };
+    }
+  };
+
+  if (!showData) {
+    return null;
+  }
+
+  if (categoriesNews?.length) {
+    return categoriesNews.map(
+      (
+        {
+          categoryButton,
+          categoryId,
+          categoryTitle,
+          categoryTitleDetail,
+          indexCategoryIds,
+          rootRouteName
+        },
+        index
+      ) => (
+        // eslint-disable-next-line react/jsx-key
+        <HomeSection
+          {...{
+            buttonTitle: categoryButton,
+            categoryId,
+            fetchPolicy,
+            key: index,
+            navigation,
+            navigate: () =>
+              navigation.navigate(
+                NAVIGATION.NEWS_ITEMS_INDEX({
+                  categoryId,
+                  categoryTitle,
+                  categoryTitleDetail,
+                  indexCategoryIds,
+                  rootRouteName
+                })
+              ),
+            placeholder: <NewsSectionPlaceholder navigation={navigation} title={categoryTitle} />,
+            query,
+            queryVariables: { ...queryVariables, categoryId },
+            showVolunteerEvents,
+            title: categoryTitle,
+            titleDetail: categoryTitleDetail
+          }}
+        />
+      )
+    );
+  }
+
+  return (
+    <HomeSection
+      {...{
+        buttonTitle,
+        fetchPolicy,
+        navigate: () => navigation.navigate(NAVIGATION[navigate]),
+        navigation,
+        query,
+        queryVariables,
+        showVolunteerEvents,
+        title
+      }}
+    />
+  );
+};
+
 export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -99,19 +223,19 @@ export const HomeScreen = ({ navigation, route }) => {
     }, 500);
   };
 
-  const flatListData = [
+  const data = [
     {
       categoriesNews,
       fetchPolicy,
-      isShow: showNews,
+      showData: showNews,
       navigation,
       query: QUERY_TYPES.NEWS_ITEMS,
       queryVariables: { limit: 3, excludeDataProviderIds }
     },
     {
       buttonTitle: buttonPointsOfInterestAndTours,
-      fetchPolicy: fetchPolicy,
-      isShow: showPointsOfInterestAndTours,
+      fetchPolicy,
+      showData: showPointsOfInterestAndTours,
       navigate: 'CATEGORIES_INDEX',
       navigation,
       query: QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS,
@@ -120,8 +244,8 @@ export const HomeScreen = ({ navigation, route }) => {
     },
     {
       buttonTitle: buttonEvents,
-      fetchPolicy: fetchPolicy,
-      isShow: showEvents,
+      fetchPolicy,
+      showData: showEvents,
       navigate: 'EVENT_RECORDS_INDEX',
       navigation,
       query: QUERY_TYPES.EVENT_RECORDS,
@@ -134,7 +258,7 @@ export const HomeScreen = ({ navigation, route }) => {
   return (
     <SafeAreaViewFlex>
       <FlatList
-        data={flatListData}
+        data={data}
         ListHeaderComponent={
           <>
             <ConnectedImagesCarousel
@@ -163,133 +287,12 @@ export const HomeScreen = ({ navigation, route }) => {
             tintColor={colors.accent}
           />
         }
-        renderItem={(item) => renderItem(item)}
+        renderItem={renderItem}
       />
     </SafeAreaViewFlex>
   );
 };
 /* eslint-enable complexity */
-
-const renderItem = ({ item }) => {
-  const {
-    buttonTitle,
-    categoriesNews,
-    fetchPolicy,
-    isShow,
-    navigate,
-    navigation,
-    query,
-    queryVariables,
-    showVolunteerEvents,
-    title
-  } = item;
-
-  const NAVIGATION = {
-    CATEGORIES_INDEX: {
-      name: ScreenName.Index,
-      params: {
-        title: title,
-        query: QUERY_TYPES.CATEGORIES,
-        queryVariables: {},
-        rootRouteName: ROOT_ROUTE_NAMES.POINTS_OF_INTEREST_AND_TOURS
-      }
-    },
-    EVENT_RECORDS_INDEX: {
-      name: ScreenName.Index,
-      params: {
-        title: title,
-        query: QUERY_TYPES.EVENT_RECORDS,
-        queryVariables: { limit: 15, order: 'listDate_ASC' },
-        rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
-      }
-    },
-    NEWS_ITEMS_INDEX: ({
-      categoryId,
-      categoryTitle,
-      categoryTitleDetail,
-      indexCategoryIds,
-      rootRouteName
-    }) => {
-      const queryVariables = { limit: 15 };
-
-      if (indexCategoryIds?.length) {
-        queryVariables.categoryIds = indexCategoryIds;
-      } else {
-        queryVariables.categoryId = categoryId;
-      }
-
-      return {
-        name: ScreenName.Index,
-        params: {
-          title: categoryTitle,
-          titleDetail: categoryTitleDetail,
-          query: QUERY_TYPES.NEWS_ITEMS,
-          queryVariables,
-          rootRouteName: rootRouteName || ROOT_ROUTE_NAMES.NEWS_ITEMS
-        }
-      };
-    }
-  };
-
-  if (isShow && !!categoriesNews) {
-    return categoriesNews.map(
-      (
-        {
-          categoryButton,
-          categoryId,
-          categoryTitle,
-          categoryTitleDetail,
-          indexCategoryIds,
-          rootRouteName
-        },
-        index
-      ) => (
-        <HomeSection
-          key={index}
-          {...{
-            buttonTitle: categoryButton,
-            categoryId: categoryId,
-            fetchPolicy,
-            navigation,
-            navigate: () =>
-              navigation.navigate(
-                NAVIGATION.NEWS_ITEMS_INDEX({
-                  categoryId,
-                  categoryTitle,
-                  categoryTitleDetail,
-                  indexCategoryIds,
-                  rootRouteName
-                })
-              ),
-            placeholder: <NewsSectionPlaceholder navigation={navigation} title={categoryTitle} />,
-            query,
-            queryVariables: { ...queryVariables, categoryId },
-            showVolunteerEvents,
-            title: categoryTitle,
-            titleDetail: categoryTitleDetail
-          }}
-        />
-      )
-    );
-  }
-
-  return (
-    isShow && (
-      <HomeSection
-        {...{
-          buttonTitle,
-          fetchPolicy,
-          navigate: () => navigation.navigate(NAVIGATION[navigate]),
-          navigation,
-          query,
-          queryVariables,
-          showVolunteerEvents,
-          title
-        }}
-      />
-    )
-  );
-};
 
 HomeScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
