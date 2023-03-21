@@ -317,7 +317,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
               flatListProps={{
                 renderItem: inputValueCitySelected ? null : renderSuggestionCities
               }}
-              inputContainerStyle={styles.autoCompleteInput}
               listStyle={styles.autoCompleteList}
               onChangeText={(text) => {
                 setInputValueCitySelected(false);
@@ -325,21 +324,25 @@ export const WasteCollectionScreen = ({ navigation }) => {
                 setInputValueCity(text);
               }}
               placeholder="Ortschaft"
+              style={styles.autoCompleteInput}
               value={inputValueCity}
             />
           )}
           {(!wasteAddressesTwoStep || (wasteAddressesTwoStep && inputValueCitySelected)) && (
             <Autocomplete
-              containerStyle={styles.autoCompleteContainer}
+              containerStyle={[
+                styles.autoCompleteContainer,
+                wasteAddressesTwoStep && styles.noBorderTop
+              ]}
               data={filteredStreets}
               disableFullscreenUI
               flatListProps={{
                 renderItem: renderSuggestion
               }}
-              inputContainerStyle={styles.autoCompleteInput}
               listStyle={styles.autoCompleteList}
               onChangeText={(text) => setInputValue(text)}
               placeholder="Straße"
+              style={styles.autoCompleteInput}
               value={inputValue}
             />
           )}
@@ -396,6 +399,10 @@ const styles = StyleSheet.create({
   },
   autoCompleteList: {
     margin: 0
+  },
+  noBorderTop: {
+    borderTopWidth: 0,
+    marginTop: normalize(-1)
   }
 });
 
