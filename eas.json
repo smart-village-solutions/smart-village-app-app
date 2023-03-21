@@ -4,7 +4,7 @@
   },
   "build": {
     "production": {
-      "node": "14.20.0",
+      "node": "16.13.0",
       "yarn": "1.22.19",
       "releaseChannel": "production"
     },
