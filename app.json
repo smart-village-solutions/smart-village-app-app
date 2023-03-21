@@ -24,6 +24,7 @@
     "ios": {
       "bundleIdentifier": "de.dev.smartvillage.app",
       "supportsTablet": true,
+      "requireFullScreen": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
@@ -66,6 +67,7 @@
           "microphonePermission": false
         }
       ],
+      "expo-screen-orientation",
       "sentry-expo"
     ]
   }
