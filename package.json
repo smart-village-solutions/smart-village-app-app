@@ -90,7 +90,7 @@
     "react-apollo": "~3.1.5",
     "react-dom": "17.0.2",
     "react-hook-form": "^6.11.0",
-    "react-native": "0.68.2",
+    "react-native": "0.71.3",
     "react-native-app-intro-slider": "^4.0.4",
     "react-native-autocomplete-input": "^5.1.0",
     "react-native-calendars": "1.1276.0",
