@@ -4,12 +4,9 @@
   },
   "build": {
     "production": {
-      "node": "14.20.0",
+      "node": "16.13.0",
       "yarn": "1.22.19",
-      "releaseChannel": "production",
-      "ios": {
-        "image": "macos-monterey-12.4-xcode-13.4"
-      }
+      "releaseChannel": "production"
     },
     "preview": {
       "extends": "production",
