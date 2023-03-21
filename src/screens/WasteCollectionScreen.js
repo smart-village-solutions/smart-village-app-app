@@ -294,6 +294,18 @@ export const WasteCollectionScreen = ({ navigation }) => {
     setSelectedStreetId(item?.id);
   }, [addressesData, inputValue, setSelectedStreetId]);
 
+  useEffect(() => {
+    if (wasteAddressesTwoStep && addressesData?.length && !!inputValueCity) {
+      const cityData = addressesData?.filter(
+        (address) => address.city?.toLowerCase() === inputValueCity.toLowerCase()
+      );
+
+      if (cityData?.length == 1) {
+        setInputValue(getStreetString(cityData[0]));
+      }
+    }
+  }, [addressesData, inputValueCity]);
+
   if (loading || typesLoading) {
     return (
       <LoadingContainer>
