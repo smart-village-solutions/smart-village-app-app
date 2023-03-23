@@ -13,22 +13,18 @@ export const Radiobutton = ({ title, disabled, selected, onPress, containerStyle
         ? texts.accessibilityLabels.checkbox.active
         : texts.accessibilityLabels.checkbox.inactive
     } (${title})`}
-    title={title}
     checked={selected}
+    checkedIcon={<Icon.RadioButtonFilled size={22} style={styles.rightContentContainer} />}
+    containerStyle={[styles.containerStyle, containerStyle]}
+    disabled={disabled}
     onPress={onPress}
     size={normalize(24)}
-    containerStyle={[styles.containerStyle, containerStyle]}
-    accessibilityLabel={`${
-      selected
-        ? texts.accessibilityLabels.checkbox.active
-        : texts.accessibilityLabels.checkbox.inactive
-    } ${title}`}
     textStyle={[
       styles.textStyle,
       selected && styles.textStyleSelected,
       disabled && styles.textStyleDisabled
     ]}
-    checkedIcon={<Icon.RadioButtonFilled size={22} style={styles.rightContentContainer} />}
+    title={title}
     uncheckedIcon={
       <Icon.RadioButtonEmpty
         size={22}
