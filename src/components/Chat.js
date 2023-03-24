@@ -1,6 +1,7 @@
 import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { MediaTypeOptions } from 'expo-image-picker';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -55,6 +56,12 @@ export const Chat = ({
 }) => {
   const [messages, setMessages] = useState(data);
   const [medias, setMedias] = useState([]);
+
+  useEffect(() => {
+    // this screen is set to portrait mode because half of the screen is visible in landscape
+    // mode when viewing pictures in large screen mode
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+  }, []);
 
   useEffect(() => {
     setMessages(data);
