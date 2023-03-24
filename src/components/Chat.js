@@ -115,7 +115,7 @@ export const Chat = ({
               return;
             }
 
-            setMedias([...medias, { mimeType: `${type}/${mediaType}`, type, uri }]);
+            setMedias((prev) => [...prev, { mimeType: `${type}/${mediaType}`, type, uri }]);
           },
           'Dokument wählen': async () => {
             const { mimeType, uri } = await selectDocument();
@@ -127,7 +127,7 @@ export const Chat = ({
               return;
             }
 
-            setMedias([...medias, { mimeType, type: 'pdf', uri }]);
+            setMedias((prev) => [...prev, { mimeType, type: 'pdf', uri }]);
           },
           Abbrechen: () => null
         };
