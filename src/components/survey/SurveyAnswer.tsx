@@ -14,7 +14,6 @@ import { SurveyText } from './SurveyText';
 
 type Props = {
   archived?: boolean;
-  faded: boolean;
   index: number;
   isMultilingual?: boolean;
   isMultiSelect?: boolean;
@@ -28,7 +27,6 @@ const answerWidth = imageWidth() - (3 * normalize(14) + normalize(24));
 
 export const SurveyAnswer = ({
   archived,
-  faded,
   index,
   isMultilingual,
   isMultiSelect,
@@ -52,11 +50,11 @@ export const SurveyAnswer = ({
     });
   }, [id, setSelection]);
 
-  const fadeStyle = { opacity: faded ? 0.5 : 1 };
+  const opacity = archived ? (selected ? 1 : 0.5) : 1;
 
   return (
     <Touchable disabled={archived} onPress={onPress}>
-      <Wrapper style={[styles.noPaddingBottom, fadeStyle]}>
+      <Wrapper style={[styles.noPaddingBottom, opacity]}>
         <View style={styles.border}>
           <WrapperRow>
             <Wrapper style={styles.radioButtonContainer}>
