@@ -48,6 +48,7 @@ export const ListComponent = ({
   fetchMoreData,
   horizontal,
   ListEmptyComponent,
+  ListFooterComponent,
   ListHeaderComponent,
   navigation,
   noSubtitle,
@@ -72,6 +73,7 @@ export const ListComponent = ({
       refetch={refetch}
       fetchMoreData={fetchMoreData}
       ListEmptyComponent={ListEmptyComponent}
+      ListFooterComponent={ListFooterComponent}
       ListHeaderComponent={ListHeaderComponent}
       navigation={navigation}
       noSubtitle={noSubtitle}
@@ -90,6 +92,7 @@ ListComponent.propTypes = {
   fetchMoreData: PropTypes.func,
   horizontal: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
+  ListFooterComponent: PropTypes.object,
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
