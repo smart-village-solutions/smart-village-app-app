@@ -236,7 +236,7 @@ export const isOpen = (
     const todaysTimes = openingHours.filter(
       (info) =>
         (info.weekday === getReadableDay(now) ||
-          (!info.weekday && (info.timeFrom || info.timeTo))) &&
+          (!info.weekday && (!!info.timeFrom || !!info.timeTo))) &&
         isOpeningTimeForDate(info, now)
     );
 
