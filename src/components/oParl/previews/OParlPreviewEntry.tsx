@@ -27,17 +27,21 @@ export const OParlPreviewEntry = ({
 }: Props) => {
   return (
     <ListItem
-      title={<HtmlView html={title} />}
       bottomDivider={!topDivider}
       topDivider={topDivider}
       containerStyle={styles.container}
-      rightIcon={navigation && <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
       onPress={() => navigation?.push('OParlDetail', { id, type, title: screenTitle ?? title })}
       disabled={!navigation}
       delayPressIn={0}
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button} `}
-    />
+    >
+      <ListItem.Content>
+        <HtmlView html={title} />
+      </ListItem.Content>
+
+      {navigation && <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
+    </ListItem>
   );
 };
 

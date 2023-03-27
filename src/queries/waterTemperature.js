@@ -10,5 +10,11 @@ export const getWaterTemperature = async () => {
     headers: { Authorization: authSecret }
   };
 
-  return (await fetch(serverUrl, fetchObj)).json();
+  const response = await fetch(serverUrl, fetchObj);
+  const status = response.status;
+  const ok = response.ok;
+
+  if (ok && status === 200) {
+    return await response.json();
+  }
 };

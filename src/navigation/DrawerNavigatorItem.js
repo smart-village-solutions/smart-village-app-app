@@ -13,7 +13,10 @@ export const DrawerNavigatorItem = ({ activeRoute, itemInfo, navigation, topDivi
   const accessibilityLabel = itemInfo.params.title;
 
   const handleItemPress = () => {
-    navigation.navigate(itemInfo.screen, itemInfo.params);
+    navigation.navigate(itemInfo.screen, {
+      ...itemInfo.params,
+      subQuery: itemInfo.params.subQuery ?? undefined
+    });
     navigation.closeDrawer();
   };
 

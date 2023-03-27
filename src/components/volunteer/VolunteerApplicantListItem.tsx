@@ -28,8 +28,8 @@ export const VolunteerApplicantListItem = ({
   return (
     <View>
       <TextListItem item={{ ...item, bottomDivider: false }} navigation={navigation} />
-      <ListItem
-        leftElement={
+      <ListItem bottomDivider>
+        <ListItem.Content>
           <Button
             onPress={() => {
               mutateAsyncJoin({ id: groupId, userId: item.id }).then(() => {
@@ -38,19 +38,17 @@ export const VolunteerApplicantListItem = ({
             }}
             title={texts.volunteer.accept}
           />
-        }
-        rightElement={
-          <Button
-            onPress={() => {
-              mutateAsyncLeave({ id: groupId, userId: item.id }).then(() => {
-                refetch?.();
-              });
-            }}
-            title={texts.volunteer.reject}
-          />
-        }
-        bottomDivider
-      />
+        </ListItem.Content>
+
+        <Button
+          onPress={() => {
+            mutateAsyncLeave({ id: groupId, userId: item.id }).then(() => {
+              refetch?.();
+            });
+          }}
+          title={texts.volunteer.reject}
+        />
+      </ListItem>
     </View>
   );
 };

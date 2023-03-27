@@ -22,15 +22,19 @@ export const OptionToggle = ({ label, onToggle, value, options }: Props) => {
   const TextComponent = options?.bold ? BoldText : RegularText;
   return (
     <ListItem
-      title={<TextComponent>{label}</TextComponent>}
       bottomDivider
       containerStyle={styles.switchContainer}
-      rightIcon={<Switch switchValue={!!value} toggleSwitch={onToggle} />}
       onPress={onToggle}
       delayPressIn={0}
       Component={Touchable}
       accessibilityLabel={`(${label}) ${consts.a11yLabel.button}`}
-    />
+    >
+      <ListItem.Content>
+        <TextComponent>{label}</TextComponent>
+      </ListItem.Content>
+
+      <Switch switchValue={!!value} toggleSwitch={onToggle} />
+    </ListItem>
   );
 };
 

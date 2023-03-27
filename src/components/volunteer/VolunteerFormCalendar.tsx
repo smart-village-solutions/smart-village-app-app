@@ -386,6 +386,7 @@ export const VolunteerFormCalendar = ({
           name="isPublic"
           render={({ onChange, value }) => (
             <CheckBox
+              accessibilityRole="button"
               checked={!!value}
               onPress={() => onChange(!value)}
               title="Öffentlich"

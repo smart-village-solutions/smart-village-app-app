@@ -204,6 +204,7 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
             <Wrapper style={styles.noPaddingTop}>
               <WrapperRow style={styles.privacyContainer}>
                 <CheckBox
+                  accessibilityRole="button"
                   checked={isPrivacyChecked}
                   onPress={() => setIsPrivacyChecked((value) => !value)}
                   checkedColor={colors.darkText}

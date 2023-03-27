@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Text as RNText } from 'react-native';
 import styled, { css } from 'styled-components/native';
 
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { colors, normalize } from '../config';
 
 // example: S&#322;ubice -> Słubice
@@ -32,10 +33,29 @@ function parseText(text) {
   return result;
 }
 
-export const Text = ({ children, ...props }) => {
+export const Text = ({ children, style, italic, ...props }) => {
+  const { isBoldTextEnabled } = useContext(AccessibilityContext);
+
+  /* eslint-disable react-native/no-inline-styles */
   return (
-    <RNText {...props}>{typeof children === 'string' ? parseText(children) : children}</RNText>
+    <RNText
+      {...props}
+      style={[
+        ...style,
+        isBoldTextEnabled && { fontFamily: 'bold' },
+        italic && { fontFamily: 'bold-italic' }
+      ]}
+    >
+      {typeof children === 'string' ? parseText(children) : children}
+    </RNText>
   );
+  /* eslint-enable react-native/no-inline-styles */
+};
+
+Text.propTypes = {
+  children: PropTypes.node,
+  style: PropTypes.array,
+  italic: PropTypes.bool
 };
 
 export const RegularText = styled(Text)`
@@ -146,7 +166,3 @@ export const BoldText = styled(RegularText)`
       font-family: bold-italic;
     `};
 `;
-
-Text.propTypes = {
-  children: PropTypes.node
-};

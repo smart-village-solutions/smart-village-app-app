@@ -87,29 +87,32 @@ export const TextListItem: NamedExoticComponent<Props> & {
   // content and `subtitle` is used with the main title
   return (
     <ListItem
-      title={noSubtitle || !subtitle ? titleText : <RegularText small>{subtitle}</RegularText>}
-      subtitle={noSubtitle || !subtitle ? undefined : titleText}
       bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
       topDivider={topDivider !== undefined ? topDivider : false}
       containerStyle={styles.container}
-      rightIcon={!!navigation && <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
       badge={badge}
-      leftIcon={
-        leftIcon ||
+      onPress={() => (onPress ? onPress(navigation) : navigate())}
+      disabled={!navigation}
+      delayPressIn={0}
+      Component={Touchable}
+      accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
+    >
+      {leftIcon ||
         (leftImage && !!picture?.url ? (
           <Image
             source={{ uri: picture.url }}
             style={styles.smallImage}
             containerStyle={styles.smallImageContainer}
           />
-        ) : undefined)
-      }
-      onPress={() => (onPress ? onPress(navigation) : navigate())}
-      disabled={!navigation}
-      delayPressIn={0}
-      Component={Touchable}
-      accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
-    />
+        ) : undefined)}
+
+      <ListItem.Content>
+        {noSubtitle || !subtitle ? titleText : <RegularText small>{subtitle}</RegularText>}
+        {noSubtitle || !subtitle ? undefined : titleText}
+      </ListItem.Content>
+
+      {!!navigation && <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
+    </ListItem>
   );
 });
 /* eslint-enable complexity */

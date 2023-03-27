@@ -139,6 +139,7 @@ export const VolunteerFormGroup = ({
             <>
               {VISIBILITY_OPTIONS.map((visibilityItem) => (
                 <CheckBox
+                  accessibilityRole="button"
                   key={visibilityItem.title}
                   checked={value === visibilityItem.value}
                   onPress={() => onChange(visibilityItem.value)}
@@ -163,6 +164,7 @@ export const VolunteerFormGroup = ({
               <>
                 {JOIN_POLICY_OPTIONS.map((joinPolicyItem) => (
                   <CheckBox
+                    accessibilityRole="button"
                     key={joinPolicyItem.title}
                     checked={value === joinPolicyItem.value}
                     onPress={() => onChange(joinPolicyItem.value)}

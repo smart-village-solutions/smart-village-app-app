@@ -32,7 +32,7 @@ export const StorySection = ({ contentBlock, index, openWebScreen, settings }) =
                   : `<p>${contentBlock.intro}</p>`
               }</div>`
             )}
-            tagsStyles={{ div: { fontFamily: 'bold' } }}
+            tagsStyles={{ div: { fontFamily: 'bold' }, p: { fontFamily: 'bold' } }}
             openWebScreen={openWebScreen}
           />
         </WrapperHorizontal>

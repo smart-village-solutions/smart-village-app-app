@@ -24,8 +24,6 @@ export class CategoryListItem extends React.PureComponent {
     const count = pointsOfInterestTreeCount > 0 ? pointsOfInterestTreeCount : toursTreeCount;
     return (
       <ListItem
-        title={noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
-        subtitle={<BoldText noSubtitle={noSubtitle}>{`${title} (${count})`}</BoldText>}
         bottomDivider={
           bottomDivider !== undefined
             ? bottomDivider
@@ -38,12 +36,18 @@ export class CategoryListItem extends React.PureComponent {
           backgroundColor: colors.transparent,
           paddingVertical: normalize(12)
         }}
-        rightIcon={<Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
         onPress={() => navigation.push(name, params)}
         delayPressIn={0}
         Component={Touchable}
         accessibilityLabel={`(${title}) ${consts.a11yLabel.poiCount} ${count} ${consts.a11yLabel.button}`}
-      />
+      >
+        <ListItem.Content>
+          {noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
+          <BoldText noSubtitle={noSubtitle}>{`${title} (${count})`}</BoldText>
+        </ListItem.Content>
+
+        <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
+      </ListItem>
     );
   }
 }

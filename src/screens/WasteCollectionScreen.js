@@ -295,6 +295,18 @@ export const WasteCollectionScreen = ({ navigation }) => {
     setSelectedStreetId(item?.id);
   }, [addressesData, inputValue, setSelectedStreetId]);
 
+  useEffect(() => {
+    if (wasteAddressesTwoStep && addressesData?.length && !!inputValueCity) {
+      const cityData = addressesData?.filter(
+        (address) => address.city?.toLowerCase() === inputValueCity.toLowerCase()
+      );
+
+      if (cityData?.length == 1) {
+        setInputValue(getStreetString(cityData[0]));
+      }
+    }
+  }, [addressesData, inputValueCity]);
+
   if (loading || typesLoading) {
     return (
       <LoadingContainer>
@@ -318,7 +330,6 @@ export const WasteCollectionScreen = ({ navigation }) => {
               flatListProps={{
                 renderItem: inputValueCitySelected ? null : renderSuggestionCities
               }}
-              inputContainerStyle={styles.autoCompleteInput}
               listStyle={styles.autoCompleteList}
               onChangeText={(text) => {
                 setInputValueCitySelected(false);
@@ -326,21 +337,25 @@ export const WasteCollectionScreen = ({ navigation }) => {
                 setInputValueCity(text);
               }}
               placeholder="Ortschaft"
+              style={styles.autoCompleteInput}
               value={inputValueCity}
             />
           )}
           {(!wasteAddressesTwoStep || (wasteAddressesTwoStep && inputValueCitySelected)) && (
             <Autocomplete
-              containerStyle={styles.autoCompleteContainer}
+              containerStyle={[
+                styles.autoCompleteContainer,
+                wasteAddressesTwoStep && styles.noBorderTop
+              ]}
               data={filteredStreets}
               disableFullscreenUI
               flatListProps={{
                 renderItem: renderSuggestion
               }}
-              inputContainerStyle={styles.autoCompleteInput}
               listStyle={styles.autoCompleteList}
               onChangeText={(text) => setInputValue(text)}
               placeholder="Straße"
+              style={styles.autoCompleteInput}
               value={inputValue}
             />
           )}
@@ -397,6 +412,10 @@ const styles = StyleSheet.create({
   },
   autoCompleteList: {
     margin: 0
+  },
+  noBorderTop: {
+    borderTopWidth: 0,
+    marginTop: normalize(-1)
   }
 });
 
