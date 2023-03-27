@@ -28,7 +28,8 @@ import {
 } from '../components';
 import { FeedbackFooter } from '../components/FeedbackFooter';
 import { colors, device, namespace, normalize, secrets, staticRestSuffix, texts } from '../config';
-import { graphqlFetchPolicy, openLink, setupLocales } from '../helpers';
+import { graphqlFetchPolicy, openLink } from '../helpers';
+import { setupLocales } from '../helpers/calendarHelper';
 import { useRefreshTime, useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifications';

@@ -1,4 +1,5 @@
 import { getReadableDay, isOpen } from '../../src/helpers';
+import { OpeningHour } from '../../src/types';
 
 const FAKE_NOW_DATE = new Date();
 FAKE_NOW_DATE.setHours(12);
@@ -8,7 +9,8 @@ FAKE_NOW_DATE.setMilliseconds(0);
 
 const weekday = getReadableDay(FAKE_NOW_DATE);
 
-const isOpenWithFakeTimeDateTime = (openingHours) => isOpen(openingHours, FAKE_NOW_DATE);
+const isOpenWithFakeTimeDateTime = (openingHours: OpeningHour[]) =>
+  isOpen(openingHours, FAKE_NOW_DATE);
 
 describe('testing the opening times handling', () => {
   it('single opening intervals work as expected', () => {
@@ -20,8 +22,9 @@ describe('testing the opening times handling', () => {
           timeTo: '17:00',
           weekday
         }
-      ]).open
-    ).toEqual(false);
+      ])
+    ).toEqual({ open: false, timeDiff: 240 });
+
     expect(
       isOpenWithFakeTimeDateTime([
         {
@@ -30,8 +33,9 @@ describe('testing the opening times handling', () => {
           timeTo: '17:00',
           weekday
         }
-      ]).open
-    ).toEqual(true);
+      ])
+    ).toEqual({ open: true, timeDiff: 300 });
+
     expect(
       isOpenWithFakeTimeDateTime([
         {
@@ -40,8 +44,9 @@ describe('testing the opening times handling', () => {
           timeTo: '11:00',
           weekday
         }
-      ]).open
-    ).toEqual(false);
+      ])
+    ).toEqual({ open: false });
+
     expect(
       isOpenWithFakeTimeDateTime([
         {
@@ -50,8 +55,9 @@ describe('testing the opening times handling', () => {
           timeTo: '17:00',
           weekday
         }
-      ]).open
-    ).toEqual(false);
+      ])
+    ).toEqual({ open: false });
+
     expect(
       isOpenWithFakeTimeDateTime([
         {
@@ -60,8 +66,9 @@ describe('testing the opening times handling', () => {
           timeTo: '17:00',
           weekday
         }
-      ]).open
-    ).toEqual(false);
+      ])
+    ).toEqual({ open: false });
+
     expect(
       isOpenWithFakeTimeDateTime([
         {
@@ -70,8 +77,8 @@ describe('testing the opening times handling', () => {
           timeTo: '11:00',
           weekday
         }
-      ]).open
-    ).toEqual(false);
+      ])
+    ).toEqual({ open: false });
   });
 
   it('currently in closed interval and open interval', () => {
@@ -90,8 +97,8 @@ describe('testing the opening times handling', () => {
           timeTo: '14:00',
           weekday
         }
-      ]).open
-    ).toEqual(false);
+      ])
+    ).toEqual({ open: false, timeDiff: 60 });
 
     // closed interval is surrounding open interval
     expect(
@@ -108,8 +115,8 @@ describe('testing the opening times handling', () => {
           timeTo: '14:00',
           weekday
         }
-      ]).open
-    ).toEqual(false);
+      ])
+    ).toEqual({ open: false });
   });
 
   it('currently open, multiple opening times', () => {

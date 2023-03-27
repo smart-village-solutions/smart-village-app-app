@@ -2,7 +2,8 @@ import React, { SetStateAction, useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { colors, normalize } from '../../config';
-import { getAnswerLabel, imageWidth } from '../../helpers';
+import { getAnswerLabel } from '../../helpers';
+import { imageWidth } from '../../helpers/imageHelper';
 import { useSurveyLanguages } from '../../hooks';
 import { ResponseOption } from '../../types';
 import { Radiobutton } from '../Radiobutton';

@@ -1,6 +1,7 @@
 import { LocaleConfig } from 'react-native-calendars';
 
 export const setupLocales = () => {
+  LocaleConfig.defaultLocale = 'de';
   LocaleConfig.locales['de'] = {
     monthNames: [
       'Januar',
@@ -31,8 +32,6 @@ export const setupLocales = () => {
       'Dez.'
     ],
     dayNames: ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'],
-    dayNamesShort: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.'],
-    today: 'Heute'
+    dayNamesShort: ['So.', 'Mo.', 'Di.', 'Mi.', 'Do.', 'Fr.', 'Sa.']
   };
-  LocaleConfig.defaultLocale = 'de';
 };

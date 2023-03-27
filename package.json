@@ -26,7 +26,7 @@
       "\\.svg": "<rootDir>/__mocks__/svgMock.js"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?@?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*|matomo-tracker-react-native|ramda)"
+      "node_modules/(?!(jest-)?@?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*|matomo-tracker-react-native|ramda|@viro-community/react-viro/*)"
     ],
     "setupFiles": [
       "./jest-setup.js"
@@ -121,6 +121,7 @@
     "@babel/eslint-parser": "^7.18.0",
     "@babel/plugin-proposal-logical-assignment-operators": "^7.18.1",
     "@babel/preset-typescript": "^7.18.0",
+    "@types/jest": "^29.5.0",
     "@types/lodash": "^4.14.165",
     "@types/react": "~17.0.21",
     "@types/react-dom": "~17.0.11",
