@@ -36,6 +36,7 @@ const dateIsWithinInterval = (date: Date, start?: Date, end?: Date) => {
       return false;
     }
   }
+
   // return false if the start is after the date
   if (start) {
     if (!(date >= start)) {
@@ -229,12 +230,15 @@ export const isOpen = (
     now.setSeconds(0);
     now.setMilliseconds(0);
 
-    // filter out all times that are
-    //  - not corresponding to the correct weekday
-    //  - that have a date range that is not currently valid
-    const todaysTimes = openingHours
-      .filter((info) => info.weekday === getReadableDay(now) || !info.weekday)
-      .filter((info) => isOpeningTimeForDate(info, now));
+    // filter all times that
+    //  - are corresponding to the correct weekday or are without a weekday but with a time value
+    //  - have a currently valid date range
+    const todaysTimes = openingHours.filter(
+      (info) =>
+        (info.weekday === getReadableDay(now) ||
+          (!info.weekday && (!!info.timeFrom || !!info.timeTo))) &&
+        isOpeningTimeForDate(info, now)
+    );
 
     const todaysOpenTimes = todaysTimes.filter((info) => !!info.open);
     const todaysClosedTimes = todaysTimes.filter((info) => !info.open);

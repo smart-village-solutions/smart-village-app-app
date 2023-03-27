@@ -10,10 +10,9 @@ import {
   deleteArrayItem,
   formatSize,
   imageErrorMessageGenerator,
-  imageHeight,
-  imageWidth,
   jsonParser
 } from '../../../helpers';
+import { imageHeight, imageWidth } from '../../../helpers/imageHelper';
 import { useSelectImage } from '../../../hooks';
 import { DELETE_IMAGE } from '../../../queries/consul';
 import { calendarDeleteFile } from '../../../queries/volunteer';

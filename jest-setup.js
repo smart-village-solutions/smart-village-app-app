@@ -4,4 +4,5 @@ import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/asy
 import { setUpTests } from 'react-native-reanimated/lib/reanimated2/jestUtils';
 
 jest.mock('@react-native-async-storage/async-storage', () => mockAsyncStorage);
+jest.mock('@viro-community/react-viro', () => ({ ViroMaterials: {} }));
 setUpTests();
