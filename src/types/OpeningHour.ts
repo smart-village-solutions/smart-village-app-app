@@ -4,13 +4,5 @@ export type OpeningHour = {
   open: boolean | null;
   timeFrom?: string;
   timeTo?: string;
-  weekday:
-    | 'Sonntag'
-    | 'Montag'
-    | 'Dienstag'
-    | 'Mittwoch'
-    | 'Donnerstag'
-    | 'Freitag'
-    | 'Samstag'
-    | undefined;
+  weekday?: 'Sonntag' | 'Montag' | 'Dienstag' | 'Mittwoch' | 'Donnerstag' | 'Freitag' | 'Samstag';
 };

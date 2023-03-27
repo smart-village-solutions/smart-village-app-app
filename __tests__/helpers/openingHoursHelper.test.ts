@@ -79,6 +79,22 @@ describe('testing the opening times handling', () => {
         }
       ])
     ).toEqual({ open: false });
+
+    expect(
+      isOpenWithFakeTimeDateTime([
+        {
+          open: false
+        }
+      ])
+    ).toEqual({ open: false });
+
+    expect(
+      isOpenWithFakeTimeDateTime([
+        {
+          open: true
+        }
+      ])
+    ).toEqual({ open: true });
   });
 
   it('currently in closed interval and open interval', () => {
@@ -218,5 +234,54 @@ describe('testing the opening times handling', () => {
         }
       ])
     ).toEqual({ open: false, timeDiff: 120 });
+  });
+
+  it.only('currently open, with random entry without time and weekday', () => {
+    expect(
+      isOpenWithFakeTimeDateTime([
+        {
+          open: true,
+          timeFrom: '10:00',
+          timeTo: '17:00',
+          weekday
+        },
+        {
+          open: true
+          // description: 'Betriebsurlaub'
+        }
+      ])
+    ).toEqual({ open: true, timeDiff: 300 });
+
+    expect(
+      isOpenWithFakeTimeDateTime([
+        {
+          open: true,
+          timeFrom: '10:00',
+          timeTo: '17:00',
+          weekday
+        },
+        {
+          open: false
+          // description: 'Ruhetag'
+        }
+      ])
+    ).toEqual({ open: true, timeDiff: 300 });
+  });
+
+  it('currently closed, with random entry without time and weekday', () => {
+    expect(
+      isOpenWithFakeTimeDateTime([
+        {
+          open: false,
+          timeFrom: '00:00',
+          timeTo: '00:00',
+          weekday
+        },
+        {
+          open: true
+          // description: 'Ruhetag'
+        }
+      ])
+    ).toEqual({ open: false });
   });
 });
