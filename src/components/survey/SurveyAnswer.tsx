@@ -53,15 +53,21 @@ export const SurveyAnswer = ({
     });
   }, [id, setSelection]);
 
-  const fadeStyle = { opacity: faded ? 0.5 : 1 };
+  let opacity = 1;
+
+  if (archived) {
+    opacity = selected ? 1 : 0.5;
+  } else if (faded) {
+    opacity = 0.5;
+  }
 
   return (
     <Touchable disabled={archived} onPress={onPress}>
-      <Wrapper style={[styles.noPaddingBottom, fadeStyle]}>
+      <Wrapper style={[styles.noPaddingBottom, { opacity }]}>
         <View style={styles.border}>
           <WrapperRow>
             <Wrapper style={styles.radioButtonContainer}>
-              <Radiobutton selected={selected} onPress={onPress} />
+              <Radiobutton selected={selected} disabled={archived} onPress={onPress} />
             </Wrapper>
             <Wrapper style={styles.answerContainer}>
               <BoldText>{getAnswerLabel('de', index)}</BoldText>
