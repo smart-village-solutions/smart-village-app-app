@@ -4,6 +4,7 @@ export const GET_EVENT_RECORDS = gql`
   query EventRecords(
     $ids: [ID]
     $limit: Int
+    $location: String
     $offset: Int
     $order: EventRecordsOrder
     $categoryId: ID
@@ -14,6 +15,7 @@ export const GET_EVENT_RECORDS = gql`
     eventRecords(
       ids: $ids
       limit: $limit
+      location: $location
       skip: $offset
       order: $order
       categoryId: $categoryId
@@ -86,6 +88,7 @@ export const GET_EVENT_RECORDS = gql`
 export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
   query EventRecords(
     $limit: Int
+    $location: String
     $offset: Int
     $order: EventRecordsOrder
     $categoryId: ID
@@ -95,6 +98,7 @@ export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
   ) {
     eventRecords(
       limit: $limit
+      location: $location
       skip: $offset
       order: $order
       categoryId: $categoryId
