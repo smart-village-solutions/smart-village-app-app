@@ -91,7 +91,7 @@ export const DropdownHeader = ({
   const { state: excludedDataProviders } = usePermanentFilter();
 
   const [dropdownData, setDropdownData] = useState(
-    dropdownEntries(query, queryVariables, data, excludedDataProviders)
+    dropdownEntries(query, queryVariables, data, excludedDataProviders, isLocationFilter)
   );
 
   const selectedDropdownData = dropdownData?.find((entry) => entry.selected) || {};
@@ -100,7 +100,9 @@ export const DropdownHeader = ({
   const initialRender = useRef(true);
 
   useEffect(() => {
-    setDropdownData(dropdownEntries(query, queryVariables, data, excludedDataProviders));
+    setDropdownData(
+      dropdownEntries(query, queryVariables, data, excludedDataProviders, isLocationFilter)
+    );
   }, [data]);
 
   // influence list data when changing selected dropdown value,
@@ -113,7 +115,10 @@ export const DropdownHeader = ({
       // not pass the value, if the index is 0, because we do not want to use "- Alle -" or "0"
       // inside of `updateListData`
       !_isEmpty(selectedDropdownData) &&
-        updateListData(!!selectedDropdownData.index && selectedDropdownData[selectedKey]);
+        updateListData(
+          !!selectedDropdownData.index && selectedDropdownData[selectedKey],
+          isLocationFilter
+        );
     }
   }, [selectedDropdownData]);
 

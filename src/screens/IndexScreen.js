@@ -56,13 +56,22 @@ const isMapSelected = (query, topFilter) =>
   query === QUERY_TYPES.POINTS_OF_INTEREST &&
   topFilter.find((entry) => entry.selected).id === TOP_FILTER.MAP;
 
-const keyForSelectedValueByQuery = {
-  [QUERY_TYPES.EVENT_RECORDS]: 'categoryId',
-  [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
+const keyForSelectedValueByQuery = (query, isLocationFilter) => {
+  const QUERIES = {
+    [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter ? 'location' : 'categoryId',
+    [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
+  };
+
+  return QUERIES[query];
 };
 
-const getAdditionalQueryVariables = (query, selectedValue, excludeDataProviderIds) => {
-  const keyForSelectedValue = keyForSelectedValueByQuery[query];
+const getAdditionalQueryVariables = (
+  query,
+  selectedValue,
+  excludeDataProviderIds,
+  isLocationFilter
+) => {
+  const keyForSelectedValue = keyForSelectedValueByQuery(query, isLocationFilter);
   const additionalQueryVariables = {};
 
   if (selectedValue) {
@@ -124,9 +133,14 @@ export const IndexScreen = ({ navigation, route }) => {
       [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
     }[query];
 
-  const hasCategoryFilterSelection = !!Object.prototype.hasOwnProperty.call(queryVariables, [
-    keyForSelectedValueByQuery?.[query]
-  ]);
+  const hasCategoryFilterSelection = useCallback(
+    (query, isLocationFilter) => {
+      return !!Object.prototype.hasOwnProperty.call(queryVariables, [
+        keyForSelectedValueByQuery(query, isLocationFilter)
+      ]);
+    },
+    [queryVariables]
+  );
 
   const hasDailyFilterSelection = !!queryVariables.dateRange;
 
@@ -164,7 +178,7 @@ export const IndexScreen = ({ navigation, route }) => {
   );
 
   const updateListDataByDropdown = useCallback(
-    (selectedValue) => {
+    (selectedValue, isLocationFilter) => {
       if (selectedValue) {
         setQueryVariables((prevQueryVariables) => {
           // remove a refetch key if present, which was necessary for the "- Alle -" selection
@@ -172,14 +186,19 @@ export const IndexScreen = ({ navigation, route }) => {
 
           return {
             ...prevQueryVariables,
-            ...getAdditionalQueryVariables(query, selectedValue, excludeDataProviderIds)
+            ...getAdditionalQueryVariables(
+              query,
+              selectedValue,
+              excludeDataProviderIds,
+              isLocationFilter
+            )
           };
         });
       } else {
-        if (hasCategoryFilterSelection) {
+        if (hasCategoryFilterSelection(query, isLocationFilter)) {
           setQueryVariables((prevQueryVariables) => {
             // remove the filter key for the specific query if present, when selecting "- Alle -"
-            delete prevQueryVariables[keyForSelectedValueByQuery[query]];
+            delete prevQueryVariables[keyForSelectedValueByQuery(query, isLocationFilter)];
 
             // need to spread the prior `queryVariables` into a new object with additional
             // refetch key to force the Query component to update the data, otherwise it is
@@ -241,7 +260,7 @@ export const IndexScreen = ({ navigation, route }) => {
     // empty screen because the query is not returning anything.
     setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
-      ...getAdditionalQueryVariables(query, undefined, excludeDataProviderIds)
+      ...getAdditionalQueryVariables(query, undefined, excludeDataProviderIds, undefined)
     });
     // reset daily events filter as well when navigating from one index screen to a new events index
     setFilterByDailyEvents(route.params?.filterByDailyEvents);
@@ -371,7 +390,7 @@ export const IndexScreen = ({ navigation, route }) => {
             const initialNewsItemsFetch =
               query === QUERY_TYPES.NEWS_ITEMS &&
               !Object.prototype.hasOwnProperty.call(queryVariables, [
-                keyForSelectedValueByQuery?.[query]
+                keyForSelectedValueByQuery(query)
               ]) &&
               !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
 
@@ -379,7 +398,7 @@ export const IndexScreen = ({ navigation, route }) => {
             // no category selection is made, because the category has nothing to do with
             // volunteer data
             const additionalData =
-              isCalendarWithVolunteerEvents && !hasCategoryFilterSelection
+              isCalendarWithVolunteerEvents && !hasCategoryFilterSelection(query)
                 ? dataVolunteerEvents
                 : undefined;
 
