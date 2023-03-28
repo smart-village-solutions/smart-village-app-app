@@ -86,7 +86,11 @@ export const IndexScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
-  const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
+  const {
+    news: showNewsFilter = false,
+    events: showEventsFilter = true,
+    eventsLocationFilter: showEventLocationFilter = true
+  } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
   const { categoryListIntroText = texts.categoryList.intro } = sections;
@@ -394,12 +398,25 @@ export const IndexScreen = ({ navigation, route }) => {
                         <>
                           <DropdownHeader
                             {...{
+                              data: initialNewsItemsFetch && loading ? {} : data,
                               query,
                               queryVariables,
-                              data: initialNewsItemsFetch && loading ? {} : data,
                               updateListData: updateListDataByDropdown
                             }}
                           />
+
+                          {query === QUERY_TYPES.EVENT_RECORDS && showEventLocationFilter && (
+                            <DropdownHeader
+                              {...{
+                                data: initialNewsItemsFetch && loading ? {} : data,
+                                isLocationFilter: true,
+                                query,
+                                queryVariables,
+                                updateListData: updateListDataByDropdown
+                              }}
+                            />
+                          )}
+
                           {query === QUERY_TYPES.EVENT_RECORDS && data?.categories?.length && (
                             <View>
                               <OptionToggle

@@ -53,7 +53,13 @@ const dropdownEntries = (query, queryVariables, data, excludedDataProviders) => 
   return [blankEntry, ...entries];
 };
 
-export const DropdownHeader = ({ query, queryVariables, data, updateListData }) => {
+export const DropdownHeader = ({
+  data,
+  isLocationFilter,
+  query,
+  queryVariables,
+  updateListData
+}) => {
   const dropdownLabel = {
     [QUERY_TYPES.EVENT_RECORDS]: texts.categoryFilter.category,
     [QUERY_TYPES.NEWS_ITEMS]: texts.categoryFilter.dataProvider
@@ -105,8 +111,9 @@ export const DropdownHeader = ({ query, queryVariables, data, updateListData }) 
 };
 
 DropdownHeader.propTypes = {
+  data: PropTypes.object.isRequired,
+  isLocationFilter: PropTypes.bool,
   query: PropTypes.string.isRequired,
   queryVariables: PropTypes.object.isRequired,
-  data: PropTypes.object.isRequired,
   updateListData: PropTypes.func.isRequired
 };
