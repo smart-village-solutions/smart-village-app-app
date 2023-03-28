@@ -79,8 +79,10 @@ export const DropdownHeader = ({
   updateListData
 }) => {
   const dropdownLabel = {
-    [QUERY_TYPES.EVENT_RECORDS]: texts.categoryFilter.category,
-    [QUERY_TYPES.NEWS_ITEMS]: texts.categoryFilter.dataProvider
+    [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter
+      ? texts.dropdownFilter.location
+      : texts.dropdownFilter.category,
+    [QUERY_TYPES.NEWS_ITEMS]: texts.dropdownFilter.dataProvider
   }[query];
 
   const selectedKey = {
