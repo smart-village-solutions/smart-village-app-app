@@ -10,11 +10,15 @@ import { QUERY_TYPES } from '../queries';
 import { DropdownSelect } from './DropdownSelect';
 import { Wrapper } from './Wrapper';
 
-const dropdownEntries = (query, queryVariables, data, excludedDataProviders) => {
+const dropdownData = [];
+
+const dropdownEntries = (query, queryVariables, data, excludedDataProviders, isLocationFilter) => {
   // check if there is something set in the certain `queryVariables`
   // if not, - Alle - will be selected in the `dropdownData`
   const selected = {
-    [QUERY_TYPES.EVENT_RECORDS]: !queryVariables.categoryId,
+    [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter
+      ? !queryVariables.location
+      : !queryVariables.categoryId,
     [QUERY_TYPES.NEWS_ITEMS]: !queryVariables.dataProvider
   }[query];
 
@@ -28,14 +32,28 @@ const dropdownEntries = (query, queryVariables, data, excludedDataProviders) => 
   let entries = [];
 
   if (query === QUERY_TYPES.EVENT_RECORDS && data?.categories?.length) {
-    entries = _uniqBy(data.categories, 'name')
-      .filter((category) => !!category.upcomingEventRecordsCount)
-      .map((category, index) => ({
+    if (isLocationFilter) {
+      data[query].forEach(({ addresses }) => {
+        if (addresses.length) {
+          dropdownData.push({ value: addresses?.[0]?.city });
+        }
+      });
+
+      entries = _uniqBy(dropdownData, 'value').map((location, index) => ({
         index: index + 1,
-        id: category.id,
-        value: category.name,
-        selected: category.id === queryVariables.categoryId
+        value: location.value,
+        selected: location.value === queryVariables.location
       }));
+    } else {
+      entries = _uniqBy(data.categories, 'name')
+        .filter((category) => !!category.upcomingEventRecordsCount)
+        .map((category, index) => ({
+          index: index + 1,
+          id: category.id,
+          value: category.name,
+          selected: category.id === queryVariables.categoryId
+        }));
+    }
   } else if (query === QUERY_TYPES.NEWS_ITEMS) {
     const filteredDataProviders = data?.dataProviders?.filter(
       (dataProvider) => !excludedDataProviders.includes(dataProvider.id)
@@ -66,7 +84,7 @@ export const DropdownHeader = ({
   }[query];
 
   const selectedKey = {
-    [QUERY_TYPES.EVENT_RECORDS]: 'id',
+    [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter ? 'value' : 'id',
     [QUERY_TYPES.NEWS_ITEMS]: 'value'
   }[query];
 
