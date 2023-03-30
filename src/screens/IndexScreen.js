@@ -8,6 +8,7 @@ import { Divider } from 'react-native-elements';
 
 import { auth } from '../auth';
 import {
+  Button,
   Calendar,
   CalendarListToggle,
   CategoryList,
@@ -27,10 +28,12 @@ import {
   graphqlFetchPolicy,
   isOpen,
   matomoTrackingString,
+  openLink,
   parseListItemsFromQuery,
   sortPOIsByDistanceFromPosition
 } from '../helpers';
 import {
+  useOpenWebScreen,
   usePermanentFilter,
   usePosition,
   useTrackScreenViewAsync,
@@ -89,7 +92,8 @@ export const IndexScreen = ({ navigation, route }) => {
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
-  const { categoryListIntroText = texts.categoryList.intro } = sections;
+  const { categoryListIntroText = texts.categoryList.intro, eventListIntro } = sections;
+
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [showCalendar, setShowCalendar] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -119,6 +123,8 @@ export const IndexScreen = ({ navigation, route }) => {
       [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
       [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
     }[query];
+
+  const openWebScreen = useOpenWebScreen(title, eventListIntro?.url);
 
   const hasCategoryFilterSelection = !!Object.prototype.hasOwnProperty.call(queryVariables, [
     keyForSelectedValueByQuery?.[query]
@@ -390,6 +396,25 @@ export const IndexScreen = ({ navigation, route }) => {
                 <ListComponent
                   ListHeaderComponent={
                     <>
+                      {query === QUERY_TYPES.EVENT_RECORDS && !!eventListIntro && !showCalendar && (
+                        <>
+                          {!!eventListIntro.introText && (
+                            <Wrapper>
+                              <RegularText small>{eventListIntro.introText}</RegularText>
+                            </Wrapper>
+                          )}
+
+                          {!!eventListIntro.url && !!eventListIntro.buttonTitle && (
+                            <Wrapper>
+                              <Button
+                                onPress={() => openLink(eventListIntro.url, openWebScreen)}
+                                title={eventListIntro.buttonTitle}
+                              />
+                            </Wrapper>
+                          )}
+                          <Divider />
+                        </>
+                      )}
                       {!!showFilter && (
                         <>
                           <DropdownHeader
