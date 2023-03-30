@@ -92,8 +92,11 @@ export const IndexScreen = ({ navigation, route }) => {
   const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
-  const { categoryListIntroText = texts.categoryList.intro, eventListIntro } = sections;
-
+  const {
+    categoryListIntroText = texts.categoryList.intro,
+    categoryListFooter,
+    eventListIntro
+  } = sections;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [showCalendar, setShowCalendar] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -124,7 +127,8 @@ export const IndexScreen = ({ navigation, route }) => {
       [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
     }[query];
 
-  const openWebScreen = useOpenWebScreen(title, eventListIntro?.url);
+  const openWebScreenUrl = eventListIntro?.url || categoryListFooter?.url;
+  const openWebScreen = useOpenWebScreen(title, openWebScreenUrl);
 
   const hasCategoryFilterSelection = !!Object.prototype.hasOwnProperty.call(queryVariables, [
     keyForSelectedValueByQuery?.[query]
@@ -469,6 +473,27 @@ export const IndexScreen = ({ navigation, route }) => {
                         title={categories?.length ? texts.empty.categoryList : texts.empty.list}
                       />
                     )
+                  }
+                  ListFooterComponent={
+                    <>
+                      {query === QUERY_TYPES.CATEGORIES && !!categoryListFooter && (
+                        <>
+                          {!!categoryListFooter.footerText && (
+                            <Wrapper>
+                              <RegularText small>{categoryListFooter.footerText}</RegularText>
+                            </Wrapper>
+                          )}
+                          {!!categoryListFooter.url && !!categoryListFooter.buttonTitle && (
+                            <Wrapper>
+                              <Button
+                                onPress={() => openLink(categoryListFooter.url, openWebScreen)}
+                                title={categoryListFooter.buttonTitle}
+                              />
+                            </Wrapper>
+                          )}
+                        </>
+                      )}
+                    </>
                   }
                   navigation={navigation}
                   data={
