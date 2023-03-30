@@ -3,24 +3,24 @@ import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { texts } from '../config';
 import { usePermanentFilter } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 
 import { DropdownSelect } from './DropdownSelect';
 import { Wrapper } from './Wrapper';
 
-const dropdownData = [];
-
-const dropdownEntries = (query, queryVariables, data, excludedDataProviders, isLocationFilter) => {
+const dropdownEntries = ({
+  data,
+  dropdownKey,
+  dropdownValue,
+  excludedDataProviders,
+  query,
+  queryVariables,
+  selectedKey
+}) => {
   // check if there is something set in the certain `queryVariables`
   // if not, - Alle - will be selected in the `dropdownData`
-  const selected = {
-    [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter
-      ? !queryVariables.location
-      : !queryVariables.categoryId,
-    [QUERY_TYPES.NEWS_ITEMS]: !queryVariables.dataProvider
-  }[query];
+  const selected = !queryVariables[selectedKey];
 
   const blankEntry = {
     id: '0',
@@ -29,71 +29,62 @@ const dropdownEntries = (query, queryVariables, data, excludedDataProviders, isL
     selected
   };
 
+  if (!data?.length) return [blankEntry];
+
   let entries = [];
 
-  if (query === QUERY_TYPES.EVENT_RECORDS && data?.categories?.length) {
-    if (isLocationFilter) {
-      data[query].forEach(({ addresses }) => {
-        if (addresses.length) {
-          dropdownData.push({ value: addresses?.[0]?.city });
-        }
-      });
-
-      entries = _uniqBy(dropdownData, 'value').map((location, index) => ({
-        index: index + 1,
-        value: location.value,
-        selected: location.value === queryVariables.location
-      }));
-    } else {
-      entries = _uniqBy(data.categories, 'name')
-        .filter((category) => !!category.upcomingEventRecordsCount)
-        .map((category, index) => ({
-          index: index + 1,
-          id: category.id,
-          value: category.name,
-          selected: category.id === queryVariables.categoryId
-        }));
-    }
-  } else if (query === QUERY_TYPES.NEWS_ITEMS) {
-    const filteredDataProviders = data?.dataProviders?.filter(
+  if (query === QUERY_TYPES.NEWS_ITEMS) {
+    const filteredDataProviders = data.filter(
       (dataProvider) => !excludedDataProviders.includes(dataProvider.id)
     );
 
     if (filteredDataProviders?.length) {
-      entries = _uniqBy(filteredDataProviders, 'name').map((dataProvider, index) => ({
-        index: index + 1,
-        id: dataProvider.id,
-        value: dataProvider.name,
-        selected: dataProvider.name === queryVariables.dataProvider
-      }));
+      entries = _uniqBy(filteredDataProviders, dropdownValue);
     }
   }
+
+  if (query === QUERY_TYPES.EVENT_RECORDS) {
+    entries = _uniqBy(data, dropdownValue);
+
+    if (selectedKey === 'categoryId') {
+      entries = entries.filter((category) => !!category.upcomingEventRecordsCount);
+    } else if (selectedKey === 'location') {
+      entries = entries.filter((address) => !!address.city);
+    }
+  }
+
+  entries = entries.map((entry, index) => ({
+    index: index + 1,
+    id: entry.id,
+    value: entry[dropdownValue],
+    selected: entry[dropdownKey] === queryVariables[selectedKey]
+  }));
+  // console.warn({ entries, selectedKey, dropdownKey, queryVariables });
   return [blankEntry, ...entries];
 };
 
 export const DropdownHeader = ({
   data,
-  isLocationFilter,
+  dropdownKey,
+  dropdownLabel,
+  dropdownValue,
   query,
   queryVariables,
+  selectedKey,
   updateListData
 }) => {
-  const dropdownLabel = {
-    [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter
-      ? texts.dropdownFilter.location
-      : texts.dropdownFilter.category,
-    [QUERY_TYPES.NEWS_ITEMS]: texts.dropdownFilter.dataProvider
-  }[query];
-
-  const selectedKey = {
-    [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter ? 'value' : 'id',
-    [QUERY_TYPES.NEWS_ITEMS]: 'value'
-  }[query];
-
   const { state: excludedDataProviders } = usePermanentFilter();
 
   const [dropdownData, setDropdownData] = useState(
-    dropdownEntries(query, queryVariables, data, excludedDataProviders, isLocationFilter)
+    dropdownEntries({
+      data,
+      dropdownKey,
+      dropdownValue,
+      excludedDataProviders,
+      query,
+      queryVariables,
+      selectedKey
+    })
   );
 
   const selectedDropdownData = dropdownData?.find((entry) => entry.selected) || {};
@@ -103,7 +94,15 @@ export const DropdownHeader = ({
 
   useEffect(() => {
     setDropdownData(
-      dropdownEntries(query, queryVariables, data, excludedDataProviders, isLocationFilter)
+      dropdownEntries({
+        data,
+        dropdownKey,
+        dropdownValue,
+        excludedDataProviders,
+        query,
+        queryVariables,
+        selectedKey
+      })
     );
   }, [data]);
 
@@ -117,10 +116,7 @@ export const DropdownHeader = ({
       // not pass the value, if the index is 0, because we do not want to use "- Alle -" or "0"
       // inside of `updateListData`
       !_isEmpty(selectedDropdownData) &&
-        updateListData(
-          !!selectedDropdownData.index && selectedDropdownData[selectedKey],
-          isLocationFilter
-        );
+        updateListData(!!selectedDropdownData.index && selectedDropdownData[dropdownKey]);
     }
   }, [selectedDropdownData]);
 
@@ -136,9 +132,13 @@ export const DropdownHeader = ({
 };
 
 DropdownHeader.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.array.isRequired,
+  dropdownKey: PropTypes.string.isRequired,
+  dropdownLabel: PropTypes.string.isRequired,
+  dropdownValue: PropTypes.string.isRequired,
   isLocationFilter: PropTypes.bool,
   query: PropTypes.string.isRequired,
   queryVariables: PropTypes.object.isRequired,
+  selectedKey: PropTypes.string.isRequired,
   updateListData: PropTypes.func.isRequired
 };

@@ -40,6 +40,8 @@ import { NetworkContext } from '../NetworkProvider';
 import { getFetchMoreQuery, getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
+import { WasteReminderScreen } from './WasteReminderScreen';
+
 const { MATOMO_TRACKING } = consts;
 
 const TOP_FILTER = {
@@ -56,7 +58,7 @@ const isMapSelected = (query, topFilter) =>
   query === QUERY_TYPES.POINTS_OF_INTEREST &&
   topFilter.find((entry) => entry.selected).id === TOP_FILTER.MAP;
 
-const keyForSelectedValueByQuery = (query, isLocationFilter) => {
+const keyForSelectedValueByQuery = (query, isLocationFilter = false) => {
   const QUERIES = {
     [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter ? 'location' : 'categoryId',
     [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
@@ -66,12 +68,10 @@ const keyForSelectedValueByQuery = (query, isLocationFilter) => {
 };
 
 const getAdditionalQueryVariables = (
-  query,
   selectedValue,
   excludeDataProviderIds,
-  isLocationFilter
+  keyForSelectedValue
 ) => {
-  const keyForSelectedValue = keyForSelectedValueByQuery(query, isLocationFilter);
   const additionalQueryVariables = {};
 
   if (selectedValue) {
@@ -95,11 +95,6 @@ export const IndexScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
-  const {
-    news: showNewsFilter = false,
-    events: showEventsFilter = true,
-    eventsLocationFilter: showEventLocationFilter = true
-  } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
   const { categoryListIntroText = texts.categoryList.intro } = sections;
@@ -115,6 +110,10 @@ export const IndexScreen = ({ navigation, route }) => {
 
   const query = route.params?.query ?? '';
 
+  const showNewsDataProvidersFilter = query == QUERY_TYPES.NEWS_ITEMS && (filter?.news ?? false);
+  const showEventCategoriesFilter = query == QUERY_TYPES.EVENT_RECORDS && (filter?.events ?? true);
+  const showEventLocationsFilter =
+    query == QUERY_TYPES.EVENT_RECORDS && (filter?.eventsLocations ?? true);
   const showMap = isMapSelected(query, topFilter);
 
   // we currently only require the position for POIs
@@ -128,19 +127,12 @@ export const IndexScreen = ({ navigation, route }) => {
   const categories = route.params?.categories;
   const showFilter =
     (route.params?.showFilter ?? true) &&
-    {
-      [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
-      [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
-    }[query];
+    (showNewsDataProvidersFilter || showEventCategoriesFilter || showEventLocationsFilter);
 
-  const hasCategoryFilterSelection = useCallback(
-    (query, isLocationFilter) => {
-      return !!Object.prototype.hasOwnProperty.call(queryVariables, [
-        keyForSelectedValueByQuery(query, isLocationFilter)
-      ]);
-    },
-    [queryVariables]
-  );
+  const hasFilterSelection =
+    Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') ||
+    Object.prototype.hasOwnProperty.call(queryVariables, 'categoryId') ||
+    Object.prototype.hasOwnProperty.call(queryVariables, 'location');
 
   const hasDailyFilterSelection = !!queryVariables.dateRange;
 
@@ -179,27 +171,36 @@ export const IndexScreen = ({ navigation, route }) => {
 
   const updateListDataByDropdown = useCallback(
     (selectedValue, isLocationFilter) => {
+      const keyForSelectedValue = keyForSelectedValueByQuery(query, isLocationFilter);
+
       if (selectedValue) {
         setQueryVariables((prevQueryVariables) => {
           // remove a refetch key if present, which was necessary for the "- Alle -" selection
           delete prevQueryVariables.refetch;
-
+          console.warn({
+            prevQueryVariables,
+            ...prevQueryVariables,
+            ...getAdditionalQueryVariables(
+              selectedValue,
+              excludeDataProviderIds,
+              keyForSelectedValue
+            )
+          });
           return {
             ...prevQueryVariables,
             ...getAdditionalQueryVariables(
-              query,
               selectedValue,
               excludeDataProviderIds,
-              isLocationFilter
+              keyForSelectedValue
             )
           };
         });
       } else {
-        if (hasCategoryFilterSelection(query, isLocationFilter)) {
+        if (hasFilterSelection) {
           setQueryVariables((prevQueryVariables) => {
             // remove the filter key for the specific query if present, when selecting "- Alle -"
-            delete prevQueryVariables[keyForSelectedValueByQuery(query, isLocationFilter)];
 
+            delete prevQueryVariables[keyForSelectedValue];
             // need to spread the prior `queryVariables` into a new object with additional
             // refetch key to force the Query component to update the data, otherwise it is
             // not fired somehow because the state variable wouldn't change
@@ -260,7 +261,11 @@ export const IndexScreen = ({ navigation, route }) => {
     // empty screen because the query is not returning anything.
     setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
-      ...getAdditionalQueryVariables(query, undefined, excludeDataProviderIds, undefined)
+      ...getAdditionalQueryVariables(
+        undefined,
+        excludeDataProviderIds,
+        keyForSelectedValueByQuery(query)
+      )
     });
     // reset daily events filter as well when navigating from one index screen to a new events index
     setFilterByDailyEvents(route.params?.filterByDailyEvents);
@@ -355,7 +360,10 @@ export const IndexScreen = ({ navigation, route }) => {
         />
       ) : (
         <Query
-          query={getQuery(query, { showNewsFilter, showEventsFilter })}
+          query={getQuery(query, {
+            showNewsFilter: showNewsDataProvidersFilter,
+            showEventsFilter: showEventCategoriesFilter
+          })}
           variables={queryVariables}
           fetchPolicy={fetchPolicy}
         >
@@ -386,19 +394,26 @@ export const IndexScreen = ({ navigation, route }) => {
               });
 
             // hack to force the query to refetch for the data provider filter when the user
-            // navigates from one news items index to another
+            // navigates from one index to another and also for rendering the correct data
+            // on first index screen load
             const initialNewsItemsFetch =
               query === QUERY_TYPES.NEWS_ITEMS &&
-              !Object.prototype.hasOwnProperty.call(queryVariables, [
-                keyForSelectedValueByQuery(query)
-              ]) &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
+
+            const initialEventRecordsFetch =
+              query === QUERY_TYPES.EVENT_RECORDS &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'categoryId') &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'location') &&
               !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
 
             // apply additional data if volunteer events should be presented and
             // no category selection is made, because the category has nothing to do with
             // volunteer data
             const additionalData =
-              isCalendarWithVolunteerEvents && !hasCategoryFilterSelection(query)
+              isCalendarWithVolunteerEvents &&
+              !queryVariables.categoryId &&
+              !queryVariables.location
                 ? dataVolunteerEvents
                 : undefined;
 
@@ -415,27 +430,55 @@ export const IndexScreen = ({ navigation, route }) => {
                     <>
                       {!!showFilter && (
                         <>
-                          <DropdownHeader
-                            {...{
-                              data: initialNewsItemsFetch && loading ? {} : data,
-                              query,
-                              queryVariables,
-                              updateListData: updateListDataByDropdown
-                            }}
-                          />
-
-                          {query === QUERY_TYPES.EVENT_RECORDS && showEventLocationFilter && (
+                          {showNewsDataProvidersFilter && (
                             <DropdownHeader
                               {...{
-                                data: initialNewsItemsFetch && loading ? {} : data,
-                                isLocationFilter: true,
+                                data: initialNewsItemsFetch && loading ? [] : data.dataProviders,
                                 query,
                                 queryVariables,
-                                updateListData: updateListDataByDropdown
+                                updateListData: updateListDataByDropdown,
+                                dropdownLabel: texts.dropdownFilter.dataProvider,
+                                dropdownKey: 'value',
+                                dropdownValue: 'name',
+                                selectedKey: 'dataProvider'
                               }}
                             />
                           )}
 
+                          {showEventCategoriesFilter && (
+                            <DropdownHeader
+                              {...{
+                                data: initialEventRecordsFetch && loading ? [] : data.categories,
+                                query,
+                                queryVariables,
+                                updateListData: updateListDataByDropdown,
+                                dropdownLabel: texts.dropdownFilter.category,
+                                dropdownKey: 'id',
+                                dropdownValue: 'name',
+                                selectedKey: 'categoryId'
+                              }}
+                            />
+                          )}
+
+                          {showEventLocationsFilter && (
+                            <DropdownHeader
+                              {...{
+                                data:
+                                  initialEventRecordsFetch && loading
+                                    ? []
+                                    : data.eventRecordsAddresses,
+                                query,
+                                queryVariables,
+                                updateListData: updateListDataByDropdown,
+                                dropdownLabel: texts.dropdownFilter.location,
+                                dropdownKey: 'value',
+                                dropdownValue: 'city',
+                                selectedKey: 'location'
+                              }}
+                            />
+                          )}
+
+                          {/* categories check hier?? */}
                           {query === QUERY_TYPES.EVENT_RECORDS && data?.categories?.length && (
                             <View>
                               <OptionToggle

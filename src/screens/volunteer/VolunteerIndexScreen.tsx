@@ -84,7 +84,6 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
         <ListComponent
           ListHeaderComponent={
             <>
-              {/* {showFilter && <DropdownHeader {...{ query: query, queryVariables, data }} />} */}
               {isPosts && isGroupMember && (
                 <VolunteerPostTextField
                   contentContainerId={queryVariables?.contentContainerId}
