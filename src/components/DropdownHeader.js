@@ -10,8 +10,6 @@ import { QUERY_TYPES } from '../queries';
 import { DropdownSelect } from './DropdownSelect';
 import { Wrapper } from './Wrapper';
 
-const dropdownData = [];
-
 const dropdownEntries = (query, queryVariables, data, excludedDataProviders, isLocationFilter) => {
   // check if there is something set in the certain `queryVariables`
   // if not, - Alle - will be selected in the `dropdownData`
@@ -31,20 +29,18 @@ const dropdownEntries = (query, queryVariables, data, excludedDataProviders, isL
 
   let entries = [];
 
-  if (query === QUERY_TYPES.EVENT_RECORDS && data?.categories?.length) {
+  if (query === QUERY_TYPES.EVENT_RECORDS) {
     if (isLocationFilter) {
-      data[query].forEach(({ addresses }) => {
-        if (addresses.length) {
-          dropdownData.push({ value: addresses?.[0]?.city });
-        }
-      });
+      entries = _uniqBy(data.eventRecordsAddresses, 'city')
+        .filter((location) => !!location.city)
+        .map((location, index) => ({
+          index: index + 1,
+          value: location.city,
+          selected: location.city === queryVariables.location
+        }));
+    }
 
-      entries = _uniqBy(dropdownData, 'value').map((location, index) => ({
-        index: index + 1,
-        value: location.value,
-        selected: location.value === queryVariables.location
-      }));
-    } else {
+    if (data?.categories?.length) {
       entries = _uniqBy(data.categories, 'name')
         .filter((category) => !!category.upcomingEventRecordsCount)
         .map((category, index) => ({

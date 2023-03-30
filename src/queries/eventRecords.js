@@ -319,3 +319,11 @@ export const CREATE_EVENT_RECORDS = gql`
     }
   }
 `;
+
+export const GET_EVENT_RECORDS_ADDRESSES = gql`
+  query {
+    eventRecordsAddresses {
+      city
+    }
+  }
+`;

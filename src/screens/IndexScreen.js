@@ -2,7 +2,7 @@ import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Query } from 'react-apollo';
+import { Query, useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
@@ -141,6 +141,14 @@ export const IndexScreen = ({ navigation, route }) => {
     },
     [queryVariables]
   );
+
+  const {
+    data: eventAddressesData,
+    loading: eventAddressesLoading,
+    error: eventAddressesError
+  } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS_ADDRESSES), {
+    skip: !showEventLocationFilter
+  });
 
   const hasDailyFilterSelection = !!queryVariables.dateRange;
 
@@ -398,7 +406,9 @@ export const IndexScreen = ({ navigation, route }) => {
             // no category selection is made, because the category has nothing to do with
             // volunteer data
             const additionalData =
-              isCalendarWithVolunteerEvents && !hasCategoryFilterSelection(query)
+              isCalendarWithVolunteerEvents &&
+              !hasCategoryFilterSelection(query) &&
+              !queryVariables.location
                 ? dataVolunteerEvents
                 : undefined;
 
@@ -427,7 +437,7 @@ export const IndexScreen = ({ navigation, route }) => {
                           {query === QUERY_TYPES.EVENT_RECORDS && showEventLocationFilter && (
                             <DropdownHeader
                               {...{
-                                data: initialNewsItemsFetch && loading ? {} : data,
+                                data: eventAddressesLoading ? [] : eventAddressesData,
                                 isLocationFilter: true,
                                 query,
                                 queryVariables,
