@@ -7,7 +7,6 @@ import {
   Wrapper,
   WrapperHorizontal,
   WrapperVertical,
-  WrapperLandscape,
   WrapperRow,
   WrapperWrap,
   InfoBox,
@@ -27,11 +26,6 @@ describe('testing Wrapper style component', () => {
 
   it('renders WrapperVertical', async () => {
     const tree = renderer.create(<WrapperVertical />).toJSON();
-    expect(tree).toMatchSnapshot();
-  });
-
-  it('renders WrapperLandscape', async () => {
-    const tree = renderer.create(<WrapperLandscape noFlex />).toJSON();
     expect(tree).toMatchSnapshot();
   });
 
