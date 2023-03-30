@@ -24,10 +24,8 @@ export const Checkbox = ({
   const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeStyle =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
-
   const headerTitle = title ?? '';
   const rootRouteName = '';
-
   const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
 
   return (

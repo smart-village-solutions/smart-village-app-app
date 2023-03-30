@@ -20,12 +20,12 @@ export const OrientationAwareIcon = (props: Props) => {
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
 
   // we need adjustments only on iOS, so otherwise just return the item with the usual props
+  // TODO: is this still needed with Expo 48?
   if (!needLandscapeStyle || !(device.platform === 'ios')) {
     return <Icon {...props} />;
   }
 
   const adjustedSize = size * LANDSCAPE_ADJUSTMENT_FACTOR;
-
   const landscapeIconStyle = { width: adjustedSize };
 
   return (
