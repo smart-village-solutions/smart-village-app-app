@@ -1,4 +1,5 @@
 import _isEmpty from 'lodash/isEmpty';
+import _sortBy from 'lodash/sortBy';
 import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
@@ -31,13 +32,15 @@ const dropdownEntries = (query, queryVariables, data, excludedDataProviders, isL
 
   if (query === QUERY_TYPES.EVENT_RECORDS) {
     if (isLocationFilter) {
-      entries = _uniqBy(data.eventRecordsAddresses, 'city')
-        .filter((location) => !!location.city)
-        .map((location, index) => ({
-          index: index + 1,
-          value: location.city,
-          selected: location.city === queryVariables.location
-        }));
+      entries = data?.eventRecordsAddresses?.filter((location) => !!location.city);
+      entries = _sortBy(
+        _uniqBy(entries, (location) => location.city.toLowerCase()),
+        'city'
+      ).map((location, index) => ({
+        index: index + 1,
+        value: location.city,
+        selected: location.city === queryVariables.location
+      }));
     }
 
     if (data?.categories?.length) {

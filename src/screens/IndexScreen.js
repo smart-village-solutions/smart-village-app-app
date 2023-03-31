@@ -98,7 +98,7 @@ export const IndexScreen = ({ navigation, route }) => {
   const {
     news: showNewsFilter = false,
     events: showEventsFilter = true,
-    eventsLocationFilter: showEventLocationFilter = true
+    eventLocations: showEventLocationsFilter = false
   } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
@@ -133,7 +133,7 @@ export const IndexScreen = ({ navigation, route }) => {
       [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
     }[query];
 
-  const hasCategoryFilterSelection = useCallback(
+  const hasFilterSelection = useCallback(
     (query, isLocationFilter) => {
       return !!Object.prototype.hasOwnProperty.call(queryVariables, [
         keyForSelectedValueByQuery(query, isLocationFilter)
@@ -142,13 +142,12 @@ export const IndexScreen = ({ navigation, route }) => {
     [queryVariables]
   );
 
-  const {
-    data: eventAddressesData,
-    loading: eventAddressesLoading,
-    error: eventAddressesError
-  } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS_ADDRESSES), {
-    skip: !showEventLocationFilter
-  });
+  const { data: eventRecordsAddressesData, loading: eventRecordsAddressesLoading } = useQuery(
+    getQuery(QUERY_TYPES.EVENT_RECORDS_ADDRESSES),
+    {
+      skip: !showEventLocationsFilter
+    }
+  );
 
   const hasDailyFilterSelection = !!queryVariables.dateRange;
 
@@ -203,7 +202,7 @@ export const IndexScreen = ({ navigation, route }) => {
           };
         });
       } else {
-        if (hasCategoryFilterSelection(query, isLocationFilter)) {
+        if (hasFilterSelection(query, isLocationFilter)) {
           setQueryVariables((prevQueryVariables) => {
             // remove the filter key for the specific query if present, when selecting "- Alle -"
             delete prevQueryVariables[keyForSelectedValueByQuery(query, isLocationFilter)];
@@ -394,12 +393,17 @@ export const IndexScreen = ({ navigation, route }) => {
               });
 
             // hack to force the query to refetch for the data provider filter when the user
-            // navigates from one news items index to another
+            // navigates from one index to another and also for rendering the correct data
+            // on first index screen load
             const initialNewsItemsFetch =
               query === QUERY_TYPES.NEWS_ITEMS &&
-              !Object.prototype.hasOwnProperty.call(queryVariables, [
-                keyForSelectedValueByQuery(query)
-              ]) &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
+
+            const initialEventRecordsItemsFetch =
+              query === QUERY_TYPES.EVENT_RECORDS &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'categoryId') &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'location') &&
               !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
 
             // apply additional data if volunteer events should be presented and
@@ -407,8 +411,8 @@ export const IndexScreen = ({ navigation, route }) => {
             // volunteer data
             const additionalData =
               isCalendarWithVolunteerEvents &&
-              !hasCategoryFilterSelection(query) &&
-              !queryVariables.location
+              !hasFilterSelection(query, false) &&
+              !hasFilterSelection(query, true)
                 ? dataVolunteerEvents
                 : undefined;
 
@@ -427,17 +431,24 @@ export const IndexScreen = ({ navigation, route }) => {
                         <>
                           <DropdownHeader
                             {...{
-                              data: initialNewsItemsFetch && loading ? {} : data,
+                              data:
+                                (initialNewsItemsFetch || initialEventRecordsItemsFetch) && loading
+                                  ? {}
+                                  : data,
                               query,
                               queryVariables,
                               updateListData: updateListDataByDropdown
                             }}
                           />
 
-                          {query === QUERY_TYPES.EVENT_RECORDS && showEventLocationFilter && (
+                          {query === QUERY_TYPES.EVENT_RECORDS && !!eventRecordsAddressesData && (
                             <DropdownHeader
                               {...{
-                                data: eventAddressesLoading ? [] : eventAddressesData,
+                                data:
+                                  (initialEventRecordsItemsFetch && loading) ||
+                                  eventRecordsAddressesLoading
+                                    ? {}
+                                    : eventRecordsAddressesData,
                                 isLocationFilter: true,
                                 query,
                                 queryVariables,
