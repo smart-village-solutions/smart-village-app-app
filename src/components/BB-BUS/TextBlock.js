@@ -25,7 +25,7 @@ export const TextBlock = ({ bottomDivider, textBlock, openWebScreen }) => {
       initiallyOpen={name.toUpperCase() === 'KURZTEXT'}
       title={name}
     >
-      <WrapperWithOrientation noFlex>
+      <WrapperWithOrientation>
         <Wrapper>
           {!!text && <HtmlView html={trimNewLines(text)} openWebScreen={openWebScreen} />}
           {!!externalLinks?.length &&

@@ -70,7 +70,7 @@ export const Map = ({
     otherProps.showsUserLocation ?? !!globalSettings?.settings?.locationService;
 
   return (
-    <View style={[stylesForMap().container, style]}>
+    <View style={[styles.container, style]}>
       <MapView
         initialRegion={initialRegion}
         mapType={device.platform === 'android' ? MAP_TYPES.NONE : MAP_TYPES.STANDARD}
@@ -123,7 +123,7 @@ export const Map = ({
         ))}
       </MapView>
       {isMaximizeButtonVisible && (
-        <TouchableOpacity style={stylesForMap().maximizeMapButton} onPress={onMaximizeButtonPress}>
+        <TouchableOpacity style={styles.maximizeMapButton} onPress={onMaximizeButtonPress}>
           <Icon.ExpandMap size={normalize(18)} />
         </TouchableOpacity>
       )}
@@ -131,39 +131,39 @@ export const Map = ({
   );
 };
 
-/* eslint-disable react-native/no-unused-styles */
-/* this works properly, we do not want that eslint warning */
-// the map should have the same aspect ratio as images.
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    backgroundColor: colors.lightestText,
+    flex: 1,
+    justifyContent: 'center'
+  },
+  maximizeMapButton: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: 50,
+    bottom: normalize(15),
+    height: normalize(48),
+    justifyContent: 'center',
+    opacity: 0.6,
+    position: 'absolute',
+    right: normalize(15),
+    width: normalize(48),
+    zIndex: 1
+  }
+});
+
+// the map should have the same aspect ratio as images in portrait and a full width on landscape.
 // we need to call the default styles in a method to ensure correct defaults for image aspect ratio,
-// which could be overwritten bei server global settings. otherwise (as default prop) the style
+// which could be overwritten by server global settings. otherwise (as default prop) the style
 // would be set before the overwriting occurred.
 const stylesForMap = () => {
-  const width = imageWidth();
-
   return StyleSheet.create({
-    container: {
-      alignItems: 'center',
-      backgroundColor: colors.lightestText,
-      flex: 1,
-      justifyContent: 'center'
-    },
-    maximizeMapButton: {
-      alignItems: 'center',
-      backgroundColor: colors.surface,
-      borderRadius: 50,
-      bottom: normalize(15),
-      height: normalize(48),
-      justifyContent: 'center',
-      opacity: 0.6,
-      position: 'absolute',
-      right: normalize(15),
-      width: normalize(48),
-      zIndex: 1
-    },
+    // eslint-disable-next-line react-native/no-unused-styles
     map: {
       alignSelf: 'center',
-      height: imageHeight(width),
-      width
+      height: imageHeight(imageWidth()),
+      width: device.width
     }
   });
 };

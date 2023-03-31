@@ -53,13 +53,9 @@ export const SurveyAnswer = ({
     });
   }, [id, setSelection]);
 
-  let opacity = 1;
+  let opacity = 0.5;
 
-  if (archived) {
-    opacity = selected ? 1 : 0.5;
-  } else if (faded) {
-    opacity = 0.5;
-  }
+  if (selected || !faded) opacity = 1;
 
   return (
     <Touchable disabled={archived} onPress={onPress}>

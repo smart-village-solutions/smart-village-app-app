@@ -28,7 +28,14 @@ export class CategoryList extends React.PureComponent {
   };
 
   render() {
-    const { data, navigation, noSubtitle, refreshControl, ListHeaderComponent } = this.props;
+    const {
+      data,
+      navigation,
+      noSubtitle,
+      refreshControl,
+      ListFooterComponent,
+      ListHeaderComponent
+    } = this.props;
 
     if (!data?.length) {
       return (
@@ -70,6 +77,7 @@ export class CategoryList extends React.PureComponent {
           />
         )}
         renderSectionHeader={this.renderSectionHeader}
+        ListFooterComponent={ListFooterComponent}
         ListHeaderComponent={ListHeaderComponent}
         stickySectionHeadersEnabled
         refreshControl={refreshControl}
@@ -84,6 +92,7 @@ CategoryList.propTypes = {
   noSubtitle: PropTypes.bool,
   refreshControl: PropTypes.object,
   hasSectionHeader: PropTypes.bool,
+  ListFooterComponent: PropTypes.object,
   ListHeaderComponent: PropTypes.object
 };
 

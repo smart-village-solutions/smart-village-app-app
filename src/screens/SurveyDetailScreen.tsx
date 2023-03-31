@@ -134,7 +134,7 @@ export const SurveyDetailScreen = ({ route }: Props) => {
             {survey.responseOptions.map((responseOption, index) => (
               <SurveyAnswer
                 archived={archived}
-                faded={!!selection.length && !selection.includes(responseOption.id)}
+                faded={(!!selection.length && !selection.includes(responseOption.id)) || archived}
                 index={index}
                 isMultilingual={survey.isMultilingual}
                 isMultiSelect={survey.questionAllowMultipleResponses}

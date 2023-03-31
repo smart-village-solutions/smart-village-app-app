@@ -8,6 +8,7 @@ import { Divider } from 'react-native-elements';
 
 import { auth } from '../auth';
 import {
+  Button,
   Calendar,
   CalendarListToggle,
   CategoryList,
@@ -27,10 +28,12 @@ import {
   graphqlFetchPolicy,
   isOpen,
   matomoTrackingString,
+  openLink,
   parseListItemsFromQuery,
   sortPOIsByDistanceFromPosition
 } from '../helpers';
 import {
+  useOpenWebScreen,
   usePermanentFilter,
   usePosition,
   useTrackScreenViewAsync,
@@ -102,7 +105,11 @@ export const IndexScreen = ({ navigation, route }) => {
   } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
-  const { categoryListIntroText = texts.categoryList.intro } = sections;
+  const {
+    categoryListIntroText = texts.categoryList.intro,
+    categoryListFooter,
+    eventListIntro
+  } = sections;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [showCalendar, setShowCalendar] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -132,6 +139,9 @@ export const IndexScreen = ({ navigation, route }) => {
       [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
       [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
     }[query];
+
+  const openWebScreenUrl = eventListIntro?.url || categoryListFooter?.url;
+  const openWebScreen = useOpenWebScreen(title, openWebScreenUrl);
 
   const hasFilterSelection = useCallback(
     (query, isLocationFilter) => {
@@ -427,6 +437,25 @@ export const IndexScreen = ({ navigation, route }) => {
                 <ListComponent
                   ListHeaderComponent={
                     <>
+                      {query === QUERY_TYPES.EVENT_RECORDS && !!eventListIntro && !showCalendar && (
+                        <>
+                          {!!eventListIntro.introText && (
+                            <Wrapper>
+                              <RegularText small>{eventListIntro.introText}</RegularText>
+                            </Wrapper>
+                          )}
+
+                          {!!eventListIntro.url && !!eventListIntro.buttonTitle && (
+                            <Wrapper>
+                              <Button
+                                onPress={() => openLink(eventListIntro.url, openWebScreen)}
+                                title={eventListIntro.buttonTitle}
+                              />
+                            </Wrapper>
+                          )}
+                          <Divider />
+                        </>
+                      )}
                       {!!showFilter && (
                         <>
                           <DropdownHeader
@@ -501,6 +530,27 @@ export const IndexScreen = ({ navigation, route }) => {
                         title={categories?.length ? texts.empty.categoryList : texts.empty.list}
                       />
                     )
+                  }
+                  ListFooterComponent={
+                    <>
+                      {query === QUERY_TYPES.CATEGORIES && !!categoryListFooter && (
+                        <>
+                          {!!categoryListFooter.footerText && (
+                            <Wrapper>
+                              <RegularText small>{categoryListFooter.footerText}</RegularText>
+                            </Wrapper>
+                          )}
+                          {!!categoryListFooter.url && !!categoryListFooter.buttonTitle && (
+                            <Wrapper>
+                              <Button
+                                onPress={() => openLink(categoryListFooter.url, openWebScreen)}
+                                title={categoryListFooter.buttonTitle}
+                              />
+                            </Wrapper>
+                          )}
+                        </>
+                      )}
+                    </>
                   }
                   navigation={navigation}
                   data={

@@ -27,20 +27,6 @@ exports[`testing Wrapper style component renders WrapperHorizontal 1`] = `
 />
 `;
 
-exports[`testing Wrapper style component renders WrapperLandscape 1`] = `
-<View
-  noFlex={true}
-  style={
-    Array [
-      Object {
-        "paddingLeft": "15%",
-        "paddingRight": "15%",
-      },
-    ]
-  }
-/>
-`;
-
 exports[`testing Wrapper style component renders WrapperRow 1`] = `
 <View
   style={
