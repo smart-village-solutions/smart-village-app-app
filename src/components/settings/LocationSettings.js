@@ -13,7 +13,7 @@ import { Map } from '../map';
 import { SettingsToggle } from '../SettingsToggle';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 export const baseLocationMarker = {
   icon: ownLocation(colors.accent),
@@ -100,58 +100,54 @@ export const LocationSettings = () => {
   return (
     <View>
       <SettingsToggle item={locationServiceSwitchData} />
-      <WrapperWithOrientation>
+      <Wrapper>
+        <RegularText>{texts.settingsContents.locationService.alternativePositionHint}</RegularText>
+      </Wrapper>
+      <Collapsible collapsed={!showMap}>
+        <Map
+          locations={locations}
+          mapCenterPosition={{ latitude: 51.1657, longitude: 10.4515 }} // center of Germany
+          onMapPress={({ nativeEvent }) => {
+            setSelectedPosition({
+              ...nativeEvent.coordinate
+            });
+          }}
+          zoom={4}
+        />
         <Wrapper>
-          <RegularText>
-            {texts.settingsContents.locationService.alternativePositionHint}
-          </RegularText>
-        </Wrapper>
-        <Collapsible collapsed={!showMap}>
-          <Map
-            locations={locations}
-            mapCenterPosition={{ latitude: 51.1657, longitude: 10.4515 }} // center of Germany
-            onMapPress={({ nativeEvent }) => {
-              setSelectedPosition({
-                ...nativeEvent.coordinate
-              });
+          <Button
+            title={texts.settingsContents.locationService.save}
+            onPress={() => {
+              selectedPosition &&
+                setAndSyncLocationSettings({
+                  alternativePosition: geoLocationToLocationObject(selectedPosition)
+                });
+              setSelectedPosition(undefined);
+              setShowMap(false);
             }}
-            zoom={4}
           />
-          <Wrapper>
-            <Button
-              title={texts.settingsContents.locationService.save}
-              onPress={() => {
-                selectedPosition &&
-                  setAndSyncLocationSettings({
-                    alternativePosition: geoLocationToLocationObject(selectedPosition)
-                  });
-                setSelectedPosition(undefined);
-                setShowMap(false);
-              }}
-            />
 
-            <Touchable
-              onPress={() => {
-                setSelectedPosition(undefined);
-                setShowMap(false);
-              }}
-              style={styles.containerStyle}
-            >
-              <RegularText primary center>
-                {texts.settingsContents.locationService.abort}
-              </RegularText>
-            </Touchable>
-          </Wrapper>
-        </Collapsible>
-        <Collapsible collapsed={showMap}>
-          <Wrapper>
-            <Button
-              title={texts.settingsContents.locationService.chooseAlternateLocationButton}
-              onPress={() => setShowMap(true)}
-            />
-          </Wrapper>
-        </Collapsible>
-      </WrapperWithOrientation>
+          <Touchable
+            onPress={() => {
+              setSelectedPosition(undefined);
+              setShowMap(false);
+            }}
+            style={styles.containerStyle}
+          >
+            <RegularText primary center>
+              {texts.settingsContents.locationService.abort}
+            </RegularText>
+          </Touchable>
+        </Wrapper>
+      </Collapsible>
+      <Collapsible collapsed={showMap}>
+        <Wrapper>
+          <Button
+            title={texts.settingsContents.locationService.chooseAlternateLocationButton}
+            onPress={() => setShowMap(true)}
+          />
+        </Wrapper>
+      </Collapsible>
     </View>
   );
 };

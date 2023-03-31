@@ -7,22 +7,20 @@ import { imageHeight, imageWidth } from '../helpers';
 
 import { SafeAreaViewFlex } from './SafeAreaViewFlex';
 import { RegularText } from './Text';
-import { Wrapper, WrapperWithOrientation } from './Wrapper';
+import { Wrapper } from './Wrapper';
 
 export const EmptyMessage = ({ title }) => {
   return (
     <SafeAreaViewFlex>
-      <WrapperWithOrientation>
-        <Wrapper>
-          <View style={styles.paddingContainer}>
-            <Icon.EmptySection color={colors.placeholder} size={imageHeight(imageWidth()) / 2} />
-          </View>
+      <Wrapper>
+        <View style={styles.paddingContainer}>
+          <Icon.EmptySection color={colors.placeholder} size={imageHeight(imageWidth()) / 2} />
+        </View>
 
-          <RegularText placeholder small center>
-            {title}
-          </RegularText>
-        </Wrapper>
-      </WrapperWithOrientation>
+        <RegularText placeholder small center>
+          {title}
+        </RegularText>
+      </Wrapper>
     </SafeAreaViewFlex>
   );
 };

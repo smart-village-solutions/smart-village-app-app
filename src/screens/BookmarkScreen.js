@@ -2,13 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { ScrollView } from 'react-native';
 
-import {
-  BookmarkSection,
-  RegularText,
-  SafeAreaViewFlex,
-  Wrapper,
-  WrapperWithOrientation
-} from '../components';
+import { BookmarkSection, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
 import { consts, texts } from '../config';
 import { getKeyFromTypeAndSuffix } from '../helpers';
 import { getGenericItemSectionTitle } from '../helpers/genericTypeHelper';
@@ -77,11 +71,9 @@ export const BookmarkScreen = ({ navigation }) => {
 
   if (!bookmarks || getBookmarkCount(bookmarks) === 0) {
     return (
-      <WrapperWithOrientation>
-        <Wrapper>
-          <RegularText>{texts.bookmarks.noBookmarksYet}</RegularText>
-        </Wrapper>
-      </WrapperWithOrientation>
+      <Wrapper>
+        <RegularText>{texts.bookmarks.noBookmarksYet}</RegularText>
+      </Wrapper>
     );
   }
 

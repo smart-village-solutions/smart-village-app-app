@@ -1,6 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useState } from 'react';
-import { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Alert,
   Keyboard,
@@ -27,10 +26,9 @@ import {
   SectionHeader,
   Touchable,
   Wrapper,
-  WrapperRow,
-  WrapperWithOrientation
+  WrapperRow
 } from '../components';
-import { colors, consts, device, Icon, normalize, texts } from '../config';
+import { Icon, colors, consts, device, normalize, texts } from '../config';
 import { createUserAsync } from '../encounterApi';
 import { momentFormat, storeEncounterUserId } from '../helpers';
 import { useSelectImage } from '../hooks';
@@ -114,135 +112,133 @@ export const EncounterRegistrationScreen = ({ navigation }: StackScreenProps<any
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <WrapperWithOrientation>
-            <SectionHeader title={texts.encounter.registrationTitle} />
-            <Wrapper>
-              <BoldText>{texts.encounter.registrationHint}</BoldText>
-            </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.encounter.firstName}</Label>
+          <SectionHeader title={texts.encounter.registrationTitle} />
+          <Wrapper>
+            <BoldText>{texts.encounter.registrationHint}</BoldText>
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.firstName}</Label>
+            <TextInput
+              accessibilityLabel={`${a11yLabels.firstName} ${a11yLabels.textInput}: ${firstName}`}
+              onChangeText={setFirstName}
+              placeholder={texts.encounter.firstName}
+              style={styles.inputField}
+              value={firstName}
+            />
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.lastName}</Label>
+            <TextInput
+              accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
+              onChangeText={setLastName}
+              placeholder={texts.encounter.lastName}
+              style={styles.inputField}
+              value={lastName}
+            />
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.birthDate}</Label>
+            <Pressable
+              accessibilityLabel={`${a11yLabels.birthDate} ${a11yLabels.textInput}: ${
+                birthDate ? momentFormat(birthDate.toISOString()) : ''
+              }`}
+              accessibilityHint={a11yLabels.birthDateHint}
+              onPress={() => {
+                Keyboard.dismiss();
+                setIsDatePickerVisible(true);
+              }}
+              onStartShouldSetResponderCapture={() => true}
+            >
               <TextInput
-                accessibilityLabel={`${a11yLabels.firstName} ${a11yLabels.textInput}: ${firstName}`}
-                onChangeText={setFirstName}
-                placeholder={texts.encounter.firstName}
+                editable={false}
+                placeholder={texts.encounter.birthDate}
                 style={styles.inputField}
-                value={firstName}
+                value={birthDate ? momentFormat(birthDate.toISOString()) : undefined}
               />
-            </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.encounter.lastName}</Label>
-              <TextInput
-                accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
-                onChangeText={setLastName}
-                placeholder={texts.encounter.lastName}
-                style={styles.inputField}
-                value={lastName}
-              />
-            </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.encounter.birthDate}</Label>
-              <Pressable
-                accessibilityLabel={`${a11yLabels.birthDate} ${a11yLabels.textInput}: ${
-                  birthDate ? momentFormat(birthDate.toISOString()) : ''
-                }`}
-                accessibilityHint={a11yLabels.birthDateHint}
-                onPress={() => {
-                  Keyboard.dismiss();
-                  setIsDatePickerVisible(true);
-                }}
-                onStartShouldSetResponderCapture={() => true}
-              >
-                <TextInput
-                  editable={false}
-                  placeholder={texts.encounter.birthDate}
-                  style={styles.inputField}
-                  value={birthDate ? momentFormat(birthDate.toISOString()) : undefined}
-                />
-              </Pressable>
-            </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.encounter.phone}</Label>
-              <TextInput
-                accessibilityLabel={`${a11yLabels.phoneNumber} ${a11yLabels.textInput}: ${phone}`}
-                keyboardType="phone-pad"
-                onChangeText={setPhone}
-                placeholder={texts.encounter.phone}
-                style={styles.inputField}
-                value={phone}
-              />
-            </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.encounter.profilePhoto}</Label>
-              <TouchableOpacity
-                accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
-                onPress={selectImage}
-              >
-                <WrapperRow spaceBetween>
-                  {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
-                  <View style={styles.editIconContainer}>
-                    <Icon.EditSetting color={colors.transparent} />
-                  </View>
-                  <CircularView size={device.width / 2} style={styles.circle}>
-                    {imageUri ? (
-                      <Image source={{ uri: imageUri }} resizeMode="contain" />
-                    ) : (
-                      <>
-                        <Wrapper>
-                          <Icon.AddImage color={colors.darkText} size={normalize(34)} />
-                        </Wrapper>
-                        <RegularText small>{texts.encounter.photoPlaceholder.first}</RegularText>
-                        <RegularText small>{texts.encounter.photoPlaceholder.second}</RegularText>
-                      </>
-                    )}
-                  </CircularView>
-                  <View style={styles.editIconContainer}>
-                    <Icon.EditSetting color={colors.shadow} />
-                  </View>
-                </WrapperRow>
-              </TouchableOpacity>
-            </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
-              <WrapperRow style={styles.privacyContainer}>
-                <CheckBox
-                  accessibilityRole="button"
-                  checked={isPrivacyChecked}
-                  onPress={() => setIsPrivacyChecked((value) => !value)}
-                  checkedColor={colors.darkText}
-                  checkedIcon="check-square-o"
-                  uncheckedColor={colors.darkText}
-                  uncheckedIcon="square-o"
-                />
-                <View style={styles.privacyTextContainer}>
-                  <RegularText small>{texts.encounter.registrationPrivacyText}</RegularText>
-                  <Touchable
-                    accessibilityLabel={`${a11yLabels.privacy} ${a11yLabels.button}`}
-                    onPress={onPressInfo}
-                  >
-                    <RegularText small underline>
-                      {texts.encounter.registrationPrivacyLink}
-                    </RegularText>
-                  </Touchable>
+            </Pressable>
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.phone}</Label>
+            <TextInput
+              accessibilityLabel={`${a11yLabels.phoneNumber} ${a11yLabels.textInput}: ${phone}`}
+              keyboardType="phone-pad"
+              onChangeText={setPhone}
+              placeholder={texts.encounter.phone}
+              style={styles.inputField}
+              value={phone}
+            />
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.profilePhoto}</Label>
+            <TouchableOpacity
+              accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
+              onPress={selectImage}
+            >
+              <WrapperRow spaceBetween>
+                {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
+                <View style={styles.editIconContainer}>
+                  <Icon.EditSetting color={colors.transparent} />
+                </View>
+                <CircularView size={device.width / 2} style={styles.circle}>
+                  {imageUri ? (
+                    <Image source={{ uri: imageUri }} resizeMode="contain" />
+                  ) : (
+                    <>
+                      <Wrapper>
+                        <Icon.AddImage color={colors.darkText} size={normalize(34)} />
+                      </Wrapper>
+                      <RegularText small>{texts.encounter.photoPlaceholder.first}</RegularText>
+                      <RegularText small>{texts.encounter.photoPlaceholder.second}</RegularText>
+                    </>
+                  )}
+                </CircularView>
+                <View style={styles.editIconContainer}>
+                  <Icon.EditSetting color={colors.shadow} />
                 </View>
               </WrapperRow>
-            </Wrapper>
-            <Wrapper>
-              <Button
-                onPress={onPressRegister}
-                title={texts.encounter.register}
-                disabled={
-                  registrationLoading ||
-                  !isValidRegistrationData({
-                    birthDate: birthDate && momentFormat(birthDate.valueOf(), 'yyyy-MM-DD', 'x'),
-                    firstName,
-                    imageUri,
-                    isPrivacyChecked,
-                    lastName,
-                    phone
-                  })
-                }
+            </TouchableOpacity>
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <WrapperRow style={styles.privacyContainer}>
+              <CheckBox
+                accessibilityRole="button"
+                checked={isPrivacyChecked}
+                onPress={() => setIsPrivacyChecked((value) => !value)}
+                checkedColor={colors.darkText}
+                checkedIcon="check-square-o"
+                uncheckedColor={colors.darkText}
+                uncheckedIcon="square-o"
               />
-            </Wrapper>
-          </WrapperWithOrientation>
+              <View style={styles.privacyTextContainer}>
+                <RegularText small>{texts.encounter.registrationPrivacyText}</RegularText>
+                <Touchable
+                  accessibilityLabel={`${a11yLabels.privacy} ${a11yLabels.button}`}
+                  onPress={onPressInfo}
+                >
+                  <RegularText small underline>
+                    {texts.encounter.registrationPrivacyLink}
+                  </RegularText>
+                </Touchable>
+              </View>
+            </WrapperRow>
+          </Wrapper>
+          <Wrapper>
+            <Button
+              onPress={onPressRegister}
+              title={texts.encounter.register}
+              disabled={
+                registrationLoading ||
+                !isValidRegistrationData({
+                  birthDate: birthDate && momentFormat(birthDate.valueOf(), 'yyyy-MM-DD', 'x'),
+                  firstName,
+                  imageUri,
+                  isPrivacyChecked,
+                  lastName,
+                  phone
+                })
+              }
+            />
+          </Wrapper>
           <DateTimePicker
             initialTime={birthDate}
             mode="date"

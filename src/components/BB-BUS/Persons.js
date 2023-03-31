@@ -1,12 +1,12 @@
 import { pull } from 'lodash';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { texts } from '../../config';
 import { InfoCard } from '../infoCard';
 import { RegularText } from '../Text';
-import { InfoBox, Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { InfoBox, Wrapper } from '../Wrapper';
 
 import { Block } from './Block';
 import { getAddress, getContact } from './helpers';
@@ -35,7 +35,7 @@ export const Persons = ({ data, openWebScreen }) => {
         const name = pull([title, firstName, lastName], undefined).join(' ');
 
         return (
-          <WrapperWithOrientation key={id}>
+          <View key={id}>
             {(!!name || !!position || !!department || !!room) && (
               <Wrapper style={styles.wrapperWithoutBottomPadding}>
                 {!!name && (
@@ -63,7 +63,7 @@ export const Persons = ({ data, openWebScreen }) => {
             <Wrapper>
               <InfoCard address={address} contact={contact} openWebScreen={openWebScreen} />
             </Wrapper>
-          </WrapperWithOrientation>
+          </View>
         );
       })}
     </Block>

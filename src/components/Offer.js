@@ -16,7 +16,7 @@ import { SectionHeader } from './SectionHeader';
 import { StorySection } from './StorySection';
 import { BoldText, RegularText } from './Text';
 import { Title, TitleContainer, TitleShadow } from './Title';
-import { Wrapper, WrapperRow, WrapperWithOrientation, WrapperWrap } from './Wrapper';
+import { Wrapper, WrapperRow, WrapperWrap } from './Wrapper';
 
 const { a11yLabel: a11yText } = consts;
 
@@ -68,75 +68,73 @@ export const Offer = ({ data, route }) => {
       {/* the images from the first content block will be present in the main image carousel */}
       <ImageSection mediaContents={mediaContents?.filter(isImage)} />
 
-      <WrapperWithOrientation>
-        {!!title && <SectionHeader title={title} onPress={link ? openWebScreen : undefined} />}
-        {!!dataProviderLogo && (
-          <Wrapper>
-            <Logo source={{ uri: dataProviderLogo }} />
-          </Wrapper>
-        )}
+      {!!title && <SectionHeader title={title} onPress={link ? openWebScreen : undefined} />}
+      {!!dataProviderLogo && (
+        <Wrapper>
+          <Logo source={{ uri: dataProviderLogo }} />
+        </Wrapper>
+      )}
 
-        {!!categories?.length && (
-          <Wrapper>
-            <InfoCard category={categories[0]} openWebScreen={openWebScreen} />
-          </Wrapper>
-        )}
+      {!!categories?.length && (
+        <Wrapper>
+          <InfoCard category={categories[0]} openWebScreen={openWebScreen} />
+        </Wrapper>
+      )}
 
-        {typeof payload?.employmentType === 'string' && payload?.employmentType?.length && (
-          <Wrapper>
-            <WrapperWrap>
-              <BoldText>{texts.job.employmentType}</BoldText>
-              <RegularText>{payload.employmentType}</RegularText>
-            </WrapperWrap>
-          </Wrapper>
-        )}
+      {typeof payload?.employmentType === 'string' && payload?.employmentType?.length && (
+        <Wrapper>
+          <WrapperWrap>
+            <BoldText>{texts.job.employmentType}</BoldText>
+            <RegularText>{payload.employmentType}</RegularText>
+          </WrapperWrap>
+        </Wrapper>
+      )}
 
-        {!!publicationDate && genericType !== GenericType.Deadline && (
-          <Wrapper>
-            <WrapperRow>
-              <BoldText>{texts.job.publishedAt}</BoldText>
-              <RegularText>{momentFormat(publicationDate)}</RegularText>
-            </WrapperRow>
-          </Wrapper>
-        )}
+      {!!publicationDate && genericType !== GenericType.Deadline && (
+        <Wrapper>
+          <WrapperRow>
+            <BoldText>{texts.job.publishedAt}</BoldText>
+            <RegularText>{momentFormat(publicationDate)}</RegularText>
+          </WrapperRow>
+        </Wrapper>
+      )}
 
-        {contentBlocks?.map((contentBlock, index) => {
-          return (
-            <StorySection
-              contentBlock={contentBlock}
-              index={index}
-              key={`${contentBlock.id}-${index}`}
-              openWebScreen={openWebScreen}
-            />
-          );
-        })}
+      {contentBlocks?.map((contentBlock, index) => {
+        return (
+          <StorySection
+            contentBlock={contentBlock}
+            index={index}
+            key={`${contentBlock.id}-${index}`}
+            openWebScreen={openWebScreen}
+          />
+        );
+      })}
 
-        {!!dates && !!dates.length && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${texts.eventRecord.appointments}) ${a11yText.heading}`}>
-                {texts.eventRecord.appointments}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <OpeningTimesCard openingHours={dates} />
-          </View>
-        )}
+      {!!dates && !!dates.length && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${texts.eventRecord.appointments}) ${a11yText.heading}`}>
+              {texts.eventRecord.appointments}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <OpeningTimesCard openingHours={dates} />
+        </View>
+      )}
 
-        {!!contact && (
-          <Wrapper>
-            <InfoCard contact={contact} openWebScreen={openWebScreen} />
-          </Wrapper>
-        )}
+      {!!contact && (
+        <Wrapper>
+          <InfoCard contact={contact} openWebScreen={openWebScreen} />
+        </Wrapper>
+      )}
 
-        <OperatingCompany
-          title={texts.pointOfInterest.operatingCompany}
-          logo={logo}
-          operatingCompany={operatingCompany}
-          openWebScreen={openWebScreen}
-        />
-        {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
-      </WrapperWithOrientation>
+      <OperatingCompany
+        title={texts.pointOfInterest.operatingCompany}
+        logo={logo}
+        operatingCompany={operatingCompany}
+        openWebScreen={openWebScreen}
+      />
+      {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
     </View>
   );
 };

@@ -66,16 +66,3 @@ export const WrapperWrap = styled(WrapperRow)`
 export const InfoBox = styled(WrapperRow)`
   margin-bottom: ${normalize(5)}px;
 `;
-
-export const WrapperWithOrientation = ({ children }) => children;
-
-WrapperWithOrientation.displayName = 'WrapperWithOrientation';
-
-WrapperWithOrientation.propTypes = {
-  noFlex: PropTypes.bool,
-  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired
-};
-
-WrapperWithOrientation.defaultProps = {
-  noFlex: false
-};

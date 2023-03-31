@@ -9,8 +9,7 @@ import {
   HtmlView,
   LoadingSpinner,
   SafeAreaViewFlex,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../../components';
 import { texts } from '../../config';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
@@ -44,18 +43,16 @@ export const ARInfoScreen = ({ route }) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView refreshControl={RefreshControl}>
-        <WrapperWithOrientation>
-          <Wrapper>
-            <HtmlView html={arInfo} />
-          </Wrapper>
-          <Wrapper>
-            <Button
-              invert
-              title={texts.augmentedReality.arInfoScreen.settingsButton}
-              onPress={() => setIsModalVisible(!isModalVisible)}
-            />
-          </Wrapper>
-        </WrapperWithOrientation>
+        <Wrapper>
+          <HtmlView html={arInfo} />
+        </Wrapper>
+        <Wrapper>
+          <Button
+            invert
+            title={texts.augmentedReality.arInfoScreen.settingsButton}
+            onPress={() => setIsModalVisible(!isModalVisible)}
+          />
+        </Wrapper>
       </ScrollView>
 
       <ARModal

@@ -16,7 +16,7 @@ import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { Map } from '../map';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
@@ -70,122 +70,120 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     <View>
       <ImageSection mediaContents={mediaContents} />
 
-      <WrapperWithOrientation>
-        {!!title && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-          </View>
-        )}
+      {!!title && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+        </View>
+      )}
 
+      <Wrapper>
+        {!!logo && <Logo source={{ uri: logo }} />}
+
+        <InfoCard
+          category={category}
+          addresses={addresses}
+          contact={contact}
+          openingHours={openingHours}
+          openWebScreen={openWebScreen}
+          webUrls={webUrls}
+        />
+      </Wrapper>
+
+      {!!openingHours && !!openingHours.length && (
+        <View>
+          <TitleContainer>
+            <Title
+              accessibilityLabel={`(${texts.pointOfInterest.openingTime}) ${a11yText.heading}`}
+            >
+              {texts.pointOfInterest.openingTime}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <OpeningTimesCard openingHours={openingHours} />
+        </View>
+      )}
+
+      {!!priceInformations && !!priceInformations.length && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${texts.pointOfInterest.prices}) ${a11yText.heading}`}>
+              {texts.pointOfInterest.prices}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <PriceCard prices={priceInformations} />
+        </View>
+      )}
+
+      {!!description && (
+        <View>
+          <TitleContainer>
+            <Title
+              accessibilityLabel={`(${texts.pointOfInterest.description}) ${a11yText.heading}`}
+            >
+              {texts.pointOfInterest.description}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Wrapper>
+            <HtmlView html={description} openWebScreen={openWebScreen} />
+          </Wrapper>
+        </View>
+      )}
+
+      {!!lunches?.length && (
         <Wrapper>
-          {!!logo && <Logo source={{ uri: logo }} />}
-
-          <InfoCard
-            category={category}
-            addresses={addresses}
-            contact={contact}
-            openingHours={openingHours}
-            openWebScreen={openWebScreen}
-            webUrls={webUrls}
+          <Button
+            title={texts.pointOfInterest.showLunches}
+            onPress={() => navigation.push('Lunch', { title: texts.widgets.lunch, poiId: id })}
           />
         </Wrapper>
+      )}
 
-        {!!openingHours && !!openingHours.length && (
-          <View>
-            <TitleContainer>
-              <Title
-                accessibilityLabel={`(${texts.pointOfInterest.openingTime}) ${a11yText.heading}`}
-              >
-                {texts.pointOfInterest.openingTime}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <OpeningTimesCard openingHours={openingHours} />
-          </View>
-        )}
+      {/* There are several connection states that can happen
+       * a) We are connected to a wifi and our mainserver is up (and reachable)
+       *   a.1) OSM is reachable -> everything is fine
+       *   a.2) OSM is not reachable -> white rectangle is shown
+       * b) We are connected to a wifi and our mainserver is not reachable
+       *   b.1) OSM is reachable -> we don't know and do not show the map for the cached data
+       *   b.2) OSM is not reachable -> everything is fine
+       *
+       * we can also not check for isMainserverUp here, but then we would only verify that we are
+       * connected to a network with no information of internet connectivity.
+       */}
+      {!hideMap && !!latitude && !!longitude && isConnected && isMainserverUp && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${texts.pointOfInterest.location}) ${a11yText.heading}`}>
+              {texts.pointOfInterest.location}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Map
+            locations={[
+              {
+                icon: location(colors.primary),
+                iconAnchor: locationIconAnchor,
+                position: { latitude, longitude }
+              }
+            ]}
+          />
+          {device.platform === 'ios' && <TitleShadow />}
+        </View>
+      )}
 
-        {!!priceInformations && !!priceInformations.length && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${texts.pointOfInterest.prices}) ${a11yText.heading}`}>
-                {texts.pointOfInterest.prices}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <PriceCard prices={priceInformations} />
-          </View>
-        )}
+      <OperatingCompany
+        openWebScreen={openWebScreen}
+        operatingCompany={operatingCompany}
+        title={texts.pointOfInterest.operatingCompany}
+      />
 
-        {!!description && (
-          <View>
-            <TitleContainer>
-              <Title
-                accessibilityLabel={`(${texts.pointOfInterest.description}) ${a11yText.heading}`}
-              >
-                {texts.pointOfInterest.description}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>
-              <HtmlView html={description} openWebScreen={openWebScreen} />
-            </Wrapper>
-          </View>
-        )}
+      <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
-        {!!lunches?.length && (
-          <Wrapper>
-            <Button
-              title={texts.pointOfInterest.showLunches}
-              onPress={() => navigation.push('Lunch', { title: texts.widgets.lunch, poiId: id })}
-            />
-          </Wrapper>
-        )}
-
-        {/* There are several connection states that can happen
-         * a) We are connected to a wifi and our mainserver is up (and reachable)
-         *   a.1) OSM is reachable -> everything is fine
-         *   a.2) OSM is not reachable -> white rectangle is shown
-         * b) We are connected to a wifi and our mainserver is not reachable
-         *   b.1) OSM is reachable -> we don't know and do not show the map for the cached data
-         *   b.2) OSM is not reachable -> everything is fine
-         *
-         * we can also not check for isMainserverUp here, but then we would only verify that we are
-         * connected to a network with no information of internet connectivity.
-         */}
-        {!hideMap && !!latitude && !!longitude && isConnected && isMainserverUp && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${texts.pointOfInterest.location}) ${a11yText.heading}`}>
-                {texts.pointOfInterest.location}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Map
-              locations={[
-                {
-                  icon: location(colors.primary),
-                  iconAnchor: locationIconAnchor,
-                  position: { latitude, longitude }
-                }
-              ]}
-            />
-            {device.platform === 'ios' && <TitleShadow />}
-          </View>
-        )}
-
-        <OperatingCompany
-          openWebScreen={openWebScreen}
-          operatingCompany={operatingCompany}
-          title={texts.pointOfInterest.operatingCompany}
-        />
-
-        <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
-
-        {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
-      </WrapperWithOrientation>
+      {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
     </View>
   );
 };

@@ -11,8 +11,7 @@ import {
   PollDetail,
   ProposalDetail,
   SafeAreaViewFlex,
-  UserCommentDetail,
-  WrapperWithOrientation
+  UserCommentDetail
 } from '../../components';
 import { texts } from '../../config';
 import { useConsulData, usePullToRefetch } from '../../hooks';
@@ -69,9 +68,7 @@ export const ConsulDetailScreen = ({ navigation, route }) => {
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled" refreshControl={RefreshControl}>
-          <WrapperWithOrientation>
-            <Component data={data} navigation={navigation} route={route} refetch={refetch} />
-          </WrapperWithOrientation>
+          <Component data={data} navigation={navigation} route={route} refetch={refetch} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

@@ -2,18 +2,23 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { ScrollView } from 'react-native';
 
-import { HtmlView } from '../HtmlView';
 import { texts } from '../../config';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
+import { HtmlView } from '../HtmlView';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { RegularText } from '../Text';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 export const ConsulWelcome = ({ navigation }) => {
-  const { data: welcomeHtml = '', error, loading, refetch } = useStaticContent({
+  const {
+    data: welcomeHtml = '',
+    error,
+    loading,
+    refetch
+  } = useStaticContent({
     type: 'html',
     name: 'consul-willkommen'
   });
@@ -45,15 +50,13 @@ export const ConsulWelcome = ({ navigation }) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView refreshControl={RefreshControl}>
-        <WrapperWithOrientation>
-          <Wrapper>
-            <HtmlView html={welcomeHtml} />
-          </Wrapper>
-          <Wrapper>
-            <Button title={texts.consul.login} onPress={onPressLogin} />
-            <Button invert title={texts.consul.register} onPress={onPressRegister} />
-          </Wrapper>
-        </WrapperWithOrientation>
+        <Wrapper>
+          <HtmlView html={welcomeHtml} />
+        </Wrapper>
+        <Wrapper>
+          <Button title={texts.consul.login} onPress={onPressLogin} />
+          <Button invert title={texts.consul.register} onPress={onPressRegister} />
+        </Wrapper>
       </ScrollView>
     </SafeAreaViewFlex>
   );

@@ -11,8 +11,7 @@ import {
   RegularText,
   SafeAreaViewFlex,
   SectionHeader,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { device, texts } from '../config';
@@ -104,10 +103,8 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
     return (
       <SafeAreaViewFlex>
         <ScrollView>
-          <WrapperWithOrientation>
-            <SectionHeader title={texts.encounter.scannerTitle} />
-            <LoadingSpinner loading />
-          </WrapperWithOrientation>
+          <SectionHeader title={texts.encounter.scannerTitle} />
+          <LoadingSpinner loading />
         </ScrollView>
       </SafeAreaViewFlex>
     );
@@ -116,24 +113,20 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
   if (!hasPermission) {
     return (
       <ScrollView>
-        <WrapperWithOrientation>
-          <SectionHeader title={texts.encounter.scannerTitle} />
-          <Wrapper>
-            <RegularText>{texts.encounter.cameraPermissionMissing}</RegularText>
-          </Wrapper>
-        </WrapperWithOrientation>
+        <SectionHeader title={texts.encounter.scannerTitle} />
+        <Wrapper>
+          <RegularText>{texts.encounter.cameraPermissionMissing}</RegularText>
+        </Wrapper>
       </ScrollView>
     );
   }
 
   return (
     <ScrollView>
-      <WrapperWithOrientation>
-        <SectionHeader title={texts.encounter.scannerTitle} />
-        <Wrapper>
-          <BoldText>{texts.encounter.scannerSubTitle}</BoldText>
-        </Wrapper>
-      </WrapperWithOrientation>
+      <SectionHeader title={texts.encounter.scannerTitle} />
+      <Wrapper>
+        <BoldText>{texts.encounter.scannerSubTitle}</BoldText>
+      </Wrapper>
       {isScanning ? (
         <Wrapper style={styles.scannerContainer}>
           <Camera
@@ -147,11 +140,9 @@ export const EncounterScannerScreen = ({ navigation }: { navigation: any }) => {
           />
         </Wrapper>
       ) : (
-        <WrapperWithOrientation>
-          <Wrapper>
-            <Button title={texts.encounter.scanAgain} onPress={onPress} />
-          </Wrapper>
-        </WrapperWithOrientation>
+        <Wrapper>
+          <Button title={texts.encounter.scanAgain} onPress={onPress} />
+        </Wrapper>
       )}
     </ScrollView>
   );

@@ -1,20 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { Mutation } from 'react-apollo';
 import { Alert, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { CheckBox } from 'react-native-elements';
-import { Mutation } from 'react-apollo';
 
-import { createQuery, QUERY_TYPES } from '../queries';
+import { BoldText, Button, DefaultKeyboardAvoidingView, SafeAreaViewFlex } from '../components';
 import { colors, consts, normalize, texts } from '../config';
-import {
-  BoldText,
-  Button,
-  DefaultKeyboardAvoidingView,
-  SafeAreaViewFlex,
-  WrapperWithOrientation
-} from '../components';
 import { useMatomoTrackScreenView } from '../hooks';
 import { useAppInfo } from '../hooks/appInfo';
+import { createQuery, QUERY_TYPES } from '../queries';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -76,72 +70,70 @@ export const FeedbackScreen = () => {
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <WrapperWithOrientation>
-            <Mutation mutation={createQuery(QUERY_TYPES.APP_USER_CONTENT)}>
-              {(createAppUserContent) => (
-                <View style={{ padding: normalize(14) }}>
-                  <BoldText>Name</BoldText>
-                  <TextInput
-                    accessibilityLabel={`${a11yText.textInput} (${name})`}
-                    onChangeText={(text) => {
-                      setName(text);
-                    }}
-                    value={name}
-                    style={styles.inputField}
-                  />
-                  <BoldText>E-Mail</BoldText>
-                  <TextInput
-                    accessibilityLabel={`${a11yText.textInput} (${email})`}
-                    onChangeText={(text) => {
-                      setEmail(text);
-                    }}
-                    value={email}
-                    style={styles.inputField}
-                    keyboardType="email-address"
-                  />
-                  <BoldText>Telefon</BoldText>
-                  <TextInput
-                    accessibilityLabel={`${a11yText.textInput} (${phone})`}
-                    onChangeText={(text) => {
-                      setPhone(text);
-                    }}
-                    value={phone}
-                    style={styles.inputField}
-                    keyboardType="phone-pad"
-                  />
-                  <BoldText>Ihre Mitteilung</BoldText>
-                  <TextInput
-                    accessibilityLabel={`${a11yText.textInput} (${message})`}
-                    onChangeText={(text) => {
-                      setMessage(text);
-                    }}
-                    value={message}
-                    style={styles.textArea}
-                    multiline
-                    textAlignVertical="top"
-                  />
-                  <CheckBox
-                    accessibilityLabel={`(${
-                      consent
-                        ? texts.accessibilityLabels.checkbox.active
-                        : texts.accessibilityLabels.checkbox.inactive
-                    }) ${texts.feedbackScreen.checkboxTitle}`}
-                    accessibilityRole="button"
-                    checked={consent}
-                    onPress={() => setConsent(!consent)}
-                    title={texts.feedbackScreen.checkboxTitle}
-                    checkedColor={colors.accent}
-                    checkedIcon="check-square-o"
-                    uncheckedColor={colors.darkText}
-                    uncheckedIcon="square-o"
-                    containerStyle={styles.checkboxContainerStyle}
-                    textStyle={styles.checkboxTextStyle}
-                  />
-                  <Button title="Senden" onPress={() => submitForm(createAppUserContent)}></Button>
-                </View>
-              )}
-            </Mutation>
-          </WrapperWithOrientation>
+          <Mutation mutation={createQuery(QUERY_TYPES.APP_USER_CONTENT)}>
+            {(createAppUserContent) => (
+              <View style={{ padding: normalize(14) }}>
+                <BoldText>Name</BoldText>
+                <TextInput
+                  accessibilityLabel={`${a11yText.textInput} (${name})`}
+                  onChangeText={(text) => {
+                    setName(text);
+                  }}
+                  value={name}
+                  style={styles.inputField}
+                />
+                <BoldText>E-Mail</BoldText>
+                <TextInput
+                  accessibilityLabel={`${a11yText.textInput} (${email})`}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                  }}
+                  value={email}
+                  style={styles.inputField}
+                  keyboardType="email-address"
+                />
+                <BoldText>Telefon</BoldText>
+                <TextInput
+                  accessibilityLabel={`${a11yText.textInput} (${phone})`}
+                  onChangeText={(text) => {
+                    setPhone(text);
+                  }}
+                  value={phone}
+                  style={styles.inputField}
+                  keyboardType="phone-pad"
+                />
+                <BoldText>Ihre Mitteilung</BoldText>
+                <TextInput
+                  accessibilityLabel={`${a11yText.textInput} (${message})`}
+                  onChangeText={(text) => {
+                    setMessage(text);
+                  }}
+                  value={message}
+                  style={styles.textArea}
+                  multiline
+                  textAlignVertical="top"
+                />
+                <CheckBox
+                  accessibilityLabel={`(${
+                    consent
+                      ? texts.accessibilityLabels.checkbox.active
+                      : texts.accessibilityLabels.checkbox.inactive
+                  }) ${texts.feedbackScreen.checkboxTitle}`}
+                  accessibilityRole="button"
+                  checked={consent}
+                  onPress={() => setConsent(!consent)}
+                  title={texts.feedbackScreen.checkboxTitle}
+                  checkedColor={colors.accent}
+                  checkedIcon="check-square-o"
+                  uncheckedColor={colors.darkText}
+                  uncheckedIcon="square-o"
+                  containerStyle={styles.checkboxContainerStyle}
+                  textStyle={styles.checkboxTextStyle}
+                />
+                <Button title="Senden" onPress={() => submitForm(createAppUserContent)}></Button>
+              </View>
+            )}
+          </Mutation>
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

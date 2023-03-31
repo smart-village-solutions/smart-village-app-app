@@ -94,25 +94,6 @@ exports[`testing Wrapper style component renders WrapperVertical 1`] = `
 />
 `;
 
-exports[`testing Wrapper style component renders WrapperWithOrientation 1`] = `
-<View
-  noFlex={false}
-  style={
-    Array [
-      Object {
-        "flexBasis": 0,
-        "flexGrow": 1,
-        "flexShrink": 1,
-        "paddingLeft": "15%",
-        "paddingRight": "15%",
-      },
-    ]
-  }
->
-  <View />
-</View>
-`;
-
 exports[`testing Wrapper style component renders WrapperWrap 1`] = `
 <View
   style={

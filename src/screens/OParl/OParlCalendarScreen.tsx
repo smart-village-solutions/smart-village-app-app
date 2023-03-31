@@ -5,14 +5,7 @@ import React, { useCallback, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { Calendar, DateObject, MultiDotMarking } from 'react-native-calendars';
 
-import {
-  NoTouchDay,
-  RegularText,
-  renderArrow,
-  SafeAreaViewFlex,
-  Wrapper,
-  WrapperWithOrientation
-} from '../../components';
+import { NoTouchDay, RegularText, renderArrow, SafeAreaViewFlex, Wrapper } from '../../components';
 import { OParlPreviewSection } from '../../components/oParl/sections';
 import { colors, texts } from '../../config';
 import { momentFormat } from '../../helpers';
@@ -104,31 +97,29 @@ export const OParlCalendarScreen = ({ navigation }: Props) => {
 
   return (
     <SafeAreaViewFlex>
-      <WrapperWithOrientation>
-        <ScrollView>
-          <Calendar
-            dayComponent={NoTouchDay}
-            onMonthChange={updateMonth}
-            markingType="multi-dot"
-            markedDates={markedDates}
-            renderArrow={renderArrow}
-            theme={{
-              todayTextColor: colors.primary,
-              dotStyle: {
-                borderRadius: dotSize / 2,
-                height: dotSize,
-                width: dotSize
-              }
-            }}
-          />
-          {!!error && (
-            <Wrapper>
-              <RegularText center>{texts.errors.noData}</RegularText>
-            </Wrapper>
-          )}
-          <OParlPreviewSection data={filteredAndSortedMeetings} navigation={navigation} />
-        </ScrollView>
-      </WrapperWithOrientation>
+      <ScrollView>
+        <Calendar
+          dayComponent={NoTouchDay}
+          onMonthChange={updateMonth}
+          markingType="multi-dot"
+          markedDates={markedDates}
+          renderArrow={renderArrow}
+          theme={{
+            todayTextColor: colors.primary,
+            dotStyle: {
+              borderRadius: dotSize / 2,
+              height: dotSize,
+              width: dotSize
+            }
+          }}
+        />
+        {!!error && (
+          <Wrapper>
+            <RegularText center>{texts.errors.noData}</RegularText>
+          </Wrapper>
+        )}
+        <OParlPreviewSection data={filteredAndSortedMeetings} navigation={navigation} />
+      </ScrollView>
     </SafeAreaViewFlex>
   );
 };

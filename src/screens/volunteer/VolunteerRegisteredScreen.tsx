@@ -8,8 +8,7 @@ import {
   LoadingSpinner,
   RegularText,
   SafeAreaViewFlex,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../../components';
 import { texts } from '../../config';
 import { usePullToRefetch, useStaticContent } from '../../hooks';
@@ -50,23 +49,21 @@ export const VolunteerRegisteredScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView refreshControl={RefreshControl}>
-        <WrapperWithOrientation>
-          <Wrapper>
-            <HtmlView html={registeredHtml} />
-          </Wrapper>
-          <Wrapper>
-            <Button
-              invert
-              title={texts.volunteer.next}
-              onPress={() => {
-                navigation.navigate(ScreenName.VolunteerHome, {
-                  // refreshUser param causes the home screen to update and to le logged in
-                  refreshUser: new Date().valueOf()
-                });
-              }}
-            />
-          </Wrapper>
-        </WrapperWithOrientation>
+        <Wrapper>
+          <HtmlView html={registeredHtml} />
+        </Wrapper>
+        <Wrapper>
+          <Button
+            invert
+            title={texts.volunteer.next}
+            onPress={() => {
+              navigation.navigate(ScreenName.VolunteerHome, {
+                // refreshUser param causes the home screen to update and to le logged in
+                refreshUser: new Date().valueOf()
+              });
+            }}
+          />
+        </Wrapper>
       </ScrollView>
     </SafeAreaViewFlex>
   );

@@ -6,8 +6,7 @@ import {
   DefaultKeyboardAvoidingView,
   NewDebate,
   NewProposal,
-  SafeAreaViewFlex,
-  WrapperWithOrientation
+  SafeAreaViewFlex
 } from '../../components';
 import { QUERY_TYPES } from '../../queries';
 
@@ -34,9 +33,7 @@ export const ConsulStartNewScreen = ({ navigation, route }) => {
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <WrapperWithOrientation>
-            <Component query={query} navigation={navigation} route={route} data={data} />
-          </WrapperWithOrientation>
+          <Component query={query} navigation={navigation} route={route} data={data} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

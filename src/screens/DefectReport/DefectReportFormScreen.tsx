@@ -11,8 +11,7 @@ import {
   HtmlView,
   LoadingContainer,
   SafeAreaViewFlex,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../../components';
 import { colors } from '../../config';
 import { useStaticContent } from '../../hooks';
@@ -96,25 +95,23 @@ export const DefectReportFormScreen = ({
             />
           }
         >
-          <WrapperWithOrientation>
-            {!!html && (
-              <Wrapper>
-                {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
-                <HtmlView html={html} />
-              </Wrapper>
-            )}
+          {!!html && (
+            <Wrapper>
+              {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
+              <HtmlView html={html} />
+            </Wrapper>
+          )}
 
-            <Component
-              {...{
-                navigation,
-                route,
-                setIsLocationSelect,
-                selectedPosition,
-                setSelectedPosition,
-                categoryNameDropdownData
-              }}
-            />
-          </WrapperWithOrientation>
+          <Component
+            {...{
+              navigation,
+              route,
+              setIsLocationSelect,
+              selectedPosition,
+              setSelectedPosition,
+              categoryNameDropdownData
+            }}
+          />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

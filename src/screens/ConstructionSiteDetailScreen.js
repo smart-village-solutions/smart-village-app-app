@@ -1,9 +1,8 @@
-import PropTypes from 'prop-types';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
-import { colors, consts, device, normalize, texts } from '../config';
 import {
   BoldText,
   Image,
@@ -14,13 +13,13 @@ import {
   TitleContainer,
   TitleShadow,
   Wrapper,
-  WrapperWithOrientation,
   WrapperWrap
 } from '../components';
-import { locationIconAnchor, location as locationIcon } from '../icons';
-import { useConstructionSites, useMatomoTrackScreenView } from '../hooks';
-import { momentFormat } from '../helpers';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { colors, consts, device, normalize, texts } from '../config';
+import { momentFormat } from '../helpers';
+import { useConstructionSites, useMatomoTrackScreenView } from '../hooks';
+import { location as locationIcon, locationIconAnchor } from '../icons';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -86,74 +85,72 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
           />
         }
       >
-        <WrapperWithOrientation>
-          {!!image?.url && (
-            <Image
-              source={{
-                captionText: image.captionText,
-                imageRights: image.copyright,
-                uri: image.url
-              }}
-              containerStyle={styles.imageContainer}
-            />
-          )}
-          <TitleContainer>
-            <Title>{extendedTitle}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-          <Wrapper>
+        {!!image?.url && (
+          <Image
+            source={{
+              captionText: image.captionText,
+              imageRights: image.copyright,
+              uri: image.url
+            }}
+            containerStyle={styles.imageContainer}
+          />
+        )}
+        <TitleContainer>
+          <Title>{extendedTitle}</Title>
+        </TitleContainer>
+        {device.platform === 'ios' && <TitleShadow />}
+        <Wrapper>
+          <WrapperWrap>
+            <BoldText>{endDate ? 'Gesamtzeitraum: ' : 'Datum: '}</BoldText>
+            <RegularText>{formattedDates}</RegularText>
+          </WrapperWrap>
+          {!!locationDescription && (
             <WrapperWrap>
-              <BoldText>{endDate ? 'Gesamtzeitraum: ' : 'Datum: '}</BoldText>
-              <RegularText>{formattedDates}</RegularText>
+              <BoldText>Standort: </BoldText>
+              <RegularText>{locationDescription}</RegularText>
             </WrapperWrap>
-            {!!locationDescription && (
-              <WrapperWrap>
-                <BoldText>Standort: </BoldText>
-                <RegularText>{locationDescription}</RegularText>
-              </WrapperWrap>
-            )}
-            {!!direction && (
-              <WrapperWrap>
-                <BoldText>Richtung: </BoldText>
-                <RegularText>{direction}</RegularText>
-              </WrapperWrap>
-            )}
-            {!!cause && (
-              <WrapperWrap>
-                <BoldText>Ursache: </BoldText>
-                <RegularText>{cause}</RegularText>
-              </WrapperWrap>
-            )}
-            {!!description && (
-              <View style={styles.verticalPadding}>
-                <BoldText>Weitere Informationen: </BoldText>
-                <RegularText>{description}</RegularText>
-              </View>
-            )}
-            {!!restrictions?.length && (
-              <View style={styles.verticalPadding}>
-                <BoldText>Aktuelle Einschränkungen: </BoldText>
-                {restrictions.map((restriction, index) => (
-                  <RegularText key={`restriction-${index}`}>- {restriction}</RegularText>
-                ))}
-              </View>
-            )}
-          </Wrapper>
-          {!!location && (
-            <Map
-              locations={[
-                {
-                  icon: locationIcon(colors.primary),
-                  iconAnchor: locationIconAnchor,
-                  position: {
-                    latitude: location.lat,
-                    longitude: location.lon
-                  }
-                }
-              ]}
-            />
           )}
-        </WrapperWithOrientation>
+          {!!direction && (
+            <WrapperWrap>
+              <BoldText>Richtung: </BoldText>
+              <RegularText>{direction}</RegularText>
+            </WrapperWrap>
+          )}
+          {!!cause && (
+            <WrapperWrap>
+              <BoldText>Ursache: </BoldText>
+              <RegularText>{cause}</RegularText>
+            </WrapperWrap>
+          )}
+          {!!description && (
+            <View style={styles.verticalPadding}>
+              <BoldText>Weitere Informationen: </BoldText>
+              <RegularText>{description}</RegularText>
+            </View>
+          )}
+          {!!restrictions?.length && (
+            <View style={styles.verticalPadding}>
+              <BoldText>Aktuelle Einschränkungen: </BoldText>
+              {restrictions.map((restriction, index) => (
+                <RegularText key={`restriction-${index}`}>- {restriction}</RegularText>
+              ))}
+            </View>
+          )}
+        </Wrapper>
+        {!!location && (
+          <Map
+            locations={[
+              {
+                icon: locationIcon(colors.primary),
+                iconAnchor: locationIconAnchor,
+                position: {
+                  latitude: location.lat,
+                  longitude: location.lon
+                }
+              }
+            ]}
+          />
+        )}
       </ScrollView>
     </SafeAreaViewFlex>
   );

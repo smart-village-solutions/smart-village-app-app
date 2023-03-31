@@ -11,11 +11,10 @@ import {
   LoadingSpinner,
   SafeAreaViewFlex,
   WhatIsARButton,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../../components';
 import { texts } from '../../config';
-import { checkDownloadedData, downloadObject, DOWNLOAD_TYPE } from '../../helpers';
+import { DOWNLOAD_TYPE, checkDownloadedData, downloadObject } from '../../helpers';
 import { ScreenName } from '../../types';
 
 export const ArtworkDetailScreen = ({ route, navigation }) => {
@@ -66,26 +65,24 @@ export const ArtworkDetailScreen = ({ route, navigation }) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        <WrapperWithOrientation>
-          {!!description && (
-            <Wrapper>
-              <HtmlView html={description} />
-            </Wrapper>
-          )}
-
-          <WhatIsARButton {...{ data, isLoading, navigation }} />
-
+        {!!description && (
           <Wrapper>
-            <Button
-              onPress={onPress}
-              title={
-                downloadType === DOWNLOAD_TYPE.DOWNLOADED
-                  ? texts.augmentedReality.artworkDetailScreen.lookAtArt
-                  : texts.augmentedReality.artworkDetailScreen.downloadAndLookAtArt
-              }
-            />
+            <HtmlView html={description} />
           </Wrapper>
-        </WrapperWithOrientation>
+        )}
+
+        <WhatIsARButton {...{ data, isLoading, navigation }} />
+
+        <Wrapper>
+          <Button
+            onPress={onPress}
+            title={
+              downloadType === DOWNLOAD_TYPE.DOWNLOADED
+                ? texts.augmentedReality.artworkDetailScreen.lookAtArt
+                : texts.augmentedReality.artworkDetailScreen.downloadAndLookAtArt
+            }
+          />
+        </Wrapper>
       </ScrollView>
 
       <ARModal

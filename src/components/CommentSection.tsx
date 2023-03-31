@@ -1,6 +1,4 @@
-import React, { useCallback, useState } from 'react';
-import { RefObject } from 'react';
-import { useRef } from 'react';
+import React, { RefObject, useCallback, useRef, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Alert, Keyboard, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 
@@ -12,7 +10,7 @@ import { Survey } from '../types';
 
 import { Button } from './Button';
 import { RegularText } from './Text';
-import { Wrapper, WrapperWithOrientation } from './Wrapper';
+import { Wrapper } from './Wrapper';
 
 type Props = {
   archived?: boolean;
@@ -63,7 +61,7 @@ export const CommentSection = ({
   const buttonTitle = languages.map((lang) => texts.survey.submitComment[lang]).join('\n');
 
   return (
-    <WrapperWithOrientation>
+    <>
       {(!archived || comments.length > 0) && (
         <Wrapper ref={refForPosition}>
           <RegularText big>{texts.survey.comments.de}</RegularText>
@@ -105,7 +103,7 @@ export const CommentSection = ({
           </Wrapper>
         );
       })}
-    </WrapperWithOrientation>
+    </>
   );
 };
 

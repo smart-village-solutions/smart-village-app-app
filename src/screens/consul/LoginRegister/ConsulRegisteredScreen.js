@@ -8,15 +8,19 @@ import {
   LoadingSpinner,
   RegularText,
   SafeAreaViewFlex,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../../../components';
 import { texts } from '../../../config';
 import { usePullToRefetch, useStaticContent } from '../../../hooks';
 import { ScreenName } from '../../../types';
 
 export const ConsulRegisteredScreen = ({ navigation }) => {
-  const { data: registeredHtml = '', error, loading, refetch } = useStaticContent({
+  const {
+    data: registeredHtml = '',
+    error,
+    loading,
+    refetch
+  } = useStaticContent({
     type: 'html',
     name: 'consul-registriert'
   });
@@ -40,18 +44,16 @@ export const ConsulRegisteredScreen = ({ navigation }) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView refreshControl={RefreshControl}>
-        <WrapperWithOrientation>
-          <Wrapper>
-            <HtmlView html={registeredHtml} />
-          </Wrapper>
-          <Wrapper>
-            <Button
-              invert
-              title={texts.consul.ok}
-              onPress={() => navigation.navigate(ScreenName.ConsulLoginScreen)}
-            />
-          </Wrapper>
-        </WrapperWithOrientation>
+        <Wrapper>
+          <HtmlView html={registeredHtml} />
+        </Wrapper>
+        <Wrapper>
+          <Button
+            invert
+            title={texts.consul.ok}
+            onPress={() => navigation.navigate(ScreenName.ConsulLoginScreen)}
+          />
+        </Wrapper>
       </ScrollView>
     </SafeAreaViewFlex>
   );

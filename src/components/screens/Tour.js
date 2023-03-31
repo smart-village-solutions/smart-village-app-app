@@ -14,7 +14,7 @@ import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 import { OperatingCompany } from './OperatingCompany';
 import { TourCard } from './TourCard';
@@ -71,54 +71,52 @@ export const Tour = ({ data, navigation, route }) => {
     <View>
       <ImageSection mediaContents={mediaContents} />
 
-      <WrapperWithOrientation>
-        {!!title && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-          </View>
-        )}
+      {!!title && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+        </View>
+      )}
 
-        <Wrapper>
-          {!!logo && <Logo source={{ uri: logo }} />}
+      <Wrapper>
+        {!!logo && <Logo source={{ uri: logo }} />}
 
-          <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
-        </Wrapper>
+        <InfoCard category={category} addresses={addresses} contact={contact} webUrls={webUrls} />
+      </Wrapper>
 
-        {(!!tourAddresses.length || !!lengthKm) && (
-          <TourCard lengthKm={lengthKm} tourAddresses={tourAddresses} />
-        )}
+      {(!!tourAddresses.length || !!lengthKm) && (
+        <TourCard lengthKm={lengthKm} tourAddresses={tourAddresses} />
+      )}
 
-        {!!description && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${texts.tour.description}) ${a11yText.heading}`}>
-                {texts.tour.description}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>
-              <HtmlView html={description} openWebScreen={openWebScreen} />
-            </Wrapper>
-          </View>
-        )}
+      {!!description && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${texts.tour.description}) ${a11yText.heading}`}>
+              {texts.tour.description}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Wrapper>
+            <HtmlView html={description} openWebScreen={openWebScreen} />
+          </Wrapper>
+        </View>
+      )}
 
-        {!!tourStops?.length && (
-          <AugmentedReality {...{ geometryTourData, id, navigation, tourStops }} />
-        )}
+      {!!tourStops?.length && (
+        <AugmentedReality {...{ geometryTourData, id, navigation, tourStops }} />
+      )}
 
-        <OperatingCompany
-          openWebScreen={openWebScreen}
-          operatingCompany={operatingCompany}
-          title={texts.tour.operatingCompany}
-        />
+      <OperatingCompany
+        openWebScreen={openWebScreen}
+        operatingCompany={operatingCompany}
+        title={texts.tour.operatingCompany}
+      />
 
-        <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
+      <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
-        {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
-      </WrapperWithOrientation>
+      {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
     </View>
   );
 };
