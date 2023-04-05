@@ -414,7 +414,9 @@ export const IndexScreen = ({ navigation, route }) => {
               query === QUERY_TYPES.EVENT_RECORDS &&
               !Object.prototype.hasOwnProperty.call(queryVariables, 'categoryId') &&
               !Object.prototype.hasOwnProperty.call(queryVariables, 'location') &&
-              !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch') &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'dateRange') &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'refetchDate');
 
             // apply additional data if volunteer events should be presented and
             // no category selection is made, because the category has nothing to do with
