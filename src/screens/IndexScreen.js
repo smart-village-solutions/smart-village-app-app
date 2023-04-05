@@ -437,7 +437,7 @@ export const IndexScreen = ({ navigation, route }) => {
                 <ListComponent
                   ListHeaderComponent={
                     <>
-                      {query === QUERY_TYPES.EVENT_RECORDS && !!eventListIntro && !showCalendar && (
+                      {query === QUERY_TYPES.EVENT_RECORDS && !!eventListIntro && (
                         <>
                           {!!eventListIntro.introText && (
                             <Wrapper>
