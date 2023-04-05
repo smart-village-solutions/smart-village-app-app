@@ -9,14 +9,16 @@ import { SafeAreaViewFlex } from './SafeAreaViewFlex';
 import { RegularText } from './Text';
 import { Wrapper, WrapperWithOrientation } from './Wrapper';
 
-export const EmptyMessage = ({ title }) => {
+export const EmptyMessage = ({ title, showIcon }) => {
   return (
     <SafeAreaViewFlex>
       <WrapperWithOrientation>
         <Wrapper>
-          <View style={styles.paddingContainer}>
-            <Icon.EmptySection color={colors.placeholder} size={imageHeight(imageWidth()) / 2} />
-          </View>
+          {showIcon && (
+            <View style={styles.paddingContainer}>
+              <Icon.EmptySection color={colors.placeholder} size={imageHeight(imageWidth()) / 2} />
+            </View>
+          )}
 
           <RegularText placeholder small center>
             {title}
@@ -28,7 +30,12 @@ export const EmptyMessage = ({ title }) => {
 };
 
 EmptyMessage.propTypes = {
-  title: PropTypes.string.isRequired
+  title: PropTypes.string.isRequired,
+  showIcon: PropTypes.bool
+};
+
+EmptyMessage.defaultProps = {
+  showIcon: true
 };
 
 const styles = StyleSheet.create({

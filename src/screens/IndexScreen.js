@@ -530,6 +530,7 @@ export const IndexScreen = ({ navigation, route }) => {
                     ) : (
                       <EmptyMessage
                         title={categories?.length ? texts.empty.categoryList : texts.empty.list}
+                        showIcon={!categories?.length}
                       />
                     )
                   }
