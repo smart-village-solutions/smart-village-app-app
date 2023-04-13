@@ -330,6 +330,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
               flatListProps={{
                 renderItem: inputValueCitySelected ? null : renderSuggestionCities
               }}
+              inputContainerStyle={styles.autoCompleteInputContainer}
               listStyle={styles.autoCompleteList}
               onChangeText={(text) => {
                 setInputValueCitySelected(false);
@@ -345,6 +346,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
             <Autocomplete
               containerStyle={[
                 styles.autoCompleteContainer,
+                !filteredStreets?.length && styles.noBorderBottom,
                 wasteAddressesTwoStep && styles.noBorderTop
               ]}
               data={filteredStreets}
@@ -352,6 +354,10 @@ export const WasteCollectionScreen = ({ navigation }) => {
               flatListProps={{
                 renderItem: renderSuggestion
               }}
+              inputContainerStyle={[
+                styles.autoCompleteInputContainer,
+                wasteAddressesTwoStep && styles.noBorderTop
+              ]}
               listStyle={styles.autoCompleteList}
               onChangeText={(text) => setInputValue(text)}
               placeholder="Straße"
@@ -401,17 +407,28 @@ export const WasteCollectionScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   autoCompleteContainer: {
     backgroundColor: colors.surface,
-    borderColor: colors.placeholder,
-    borderWidth: 1,
+    borderColor: colors.shadow,
+    borderBottomWidth: 1,
     width: '100%'
   },
+  autoCompleteInputContainer: {
+    borderRadius: 0,
+    borderWidth: 0
+  },
   autoCompleteInput: {
+    borderColor: colors.shadow,
+    borderWidth: 1,
     color: colors.darkText,
     fontFamily: 'regular',
-    fontSize: normalize(16)
+    fontSize: normalize(16),
+    height: normalize(44),
+    paddingHorizontal: normalize(10)
   },
   autoCompleteList: {
     margin: 0
+  },
+  noBorderBottom: {
+    borderBottomWidth: 0
   },
   noBorderTop: {
     borderTopWidth: 0,
