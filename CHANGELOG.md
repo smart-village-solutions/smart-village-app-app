@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.1.4]
+
+New features for accessibility have been added in this update
+
+### Added
+
+- added `Reduce Transparency` feature in iOS accessibility settings to reduce transparency of switches within the app
+- added `Reduce Transparency` feature in iOS accessibility settings to reduce transparency of version code
+
 ## [v3.1.3]
 
 This update provides some performance improvements and fixes some bugs
