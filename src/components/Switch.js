@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useContext } from 'react';
 import { Platform, Switch as RNSwitch } from 'react-native';
 
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { colors } from '../config';
 
 const trackColor = {
@@ -16,16 +17,20 @@ const thumbColorEnabled = Platform.select({
   ios: colors.lightestText
 });
 
-export const Switch = ({ switchValue, toggleSwitch }) => (
-  <RNSwitch
-    trackColor={trackColor}
-    thumbColor={switchValue ? thumbColorEnabled : thumbColor}
-    ios_backgroundColor={colors.shadow}
-    onValueChange={toggleSwitch}
-    value={switchValue}
-    accessibilityRole="button"
-  />
-);
+export const Switch = ({ switchValue, toggleSwitch }) => {
+  const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
+
+  return (
+    <RNSwitch
+      trackColor={trackColor}
+      thumbColor={switchValue ? thumbColorEnabled : thumbColor}
+      ios_backgroundColor={isReduceTransparencyEnabled ? colors.overlayRgba : colors.shadow}
+      onValueChange={toggleSwitch}
+      value={switchValue}
+      accessibilityRole="button"
+    />
+  );
+};
 
 Switch.propTypes = {
   switchValue: PropTypes.bool.isRequired,
