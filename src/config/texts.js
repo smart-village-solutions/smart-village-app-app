@@ -404,11 +404,12 @@ export const texts = {
       checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.'
     },
     inputsErrorMessages: {
-      name: 'Bitte geben Sie Ihren Namen ein.',
+      checkbox: 'Bitte bestätigen Sie, dass Sie mit dem Speichern Ihrer Daten einverstanden sind.',
       email: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
-      phone: 'Bitte geben Sie eine gültige Telefonnummer ein.',
+      hint: 'Hinweis',
       message: 'Bitte geben Sie eine Mitteilung ein.',
-      checkbox: 'Bitte bestätigen Sie, dass Sie mit dem Speichern Ihrer Daten einverstanden sind.'
+      name: 'Bitte geben Sie Ihren Namen ein.',
+      phone: 'Bitte geben Sie eine gültige Telefonnummer ein.'
     },
     sendButton: {
       disabled: 'Bitte warten...',

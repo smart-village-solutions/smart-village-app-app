@@ -45,6 +45,13 @@ export const FeedbackScreen = () => {
   const onSubmit = async (createAppUserContentNewData) => {
     Keyboard.dismiss();
 
+    if (!createAppUserContentNewData.consent) {
+      return Alert.alert(
+        texts.feedbackScreen.inputsErrorMessages.hint,
+        texts.feedbackScreen.inputsErrorMessages.checkbox
+      );
+    }
+
     const formData = {
       dataType: 'json',
       dataSource: 'form',
@@ -143,27 +150,17 @@ export const FeedbackScreen = () => {
 
               <Controller
                 name="consent"
-                rules={{ required: texts.feedbackScreen.inputsErrorMessages.checkbox }}
                 render={({ onChange, value }) => (
-                  <>
-                    <Checkbox
-                      boldTitle
-                      title={texts.feedbackScreen.inputsLabel.checkbox + ' *'}
-                      checkedIcon="check-square-o"
-                      checkedColor={colors.accent}
-                      uncheckedIcon="square-o"
-                      uncheckedColor={colors.darkText}
-                      checked={value}
-                      onPress={() => onChange(!value)}
-                    />
-                    <Input
-                      control={control}
-                      errorMessage={errors.consent && errors.consent.message}
-                      hidden
-                      name={'consent'}
-                      validate
-                    />
-                  </>
+                  <Checkbox
+                    boldTitle
+                    title={texts.feedbackScreen.inputsLabel.checkbox + ' *'}
+                    checkedIcon="check-square-o"
+                    checkedColor={colors.accent}
+                    uncheckedIcon="square-o"
+                    uncheckedColor={colors.darkText}
+                    checked={value}
+                    onPress={() => onChange(!value)}
+                  />
                 )}
                 control={control}
               />
