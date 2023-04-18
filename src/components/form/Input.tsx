@@ -85,7 +85,7 @@ export const Input = ({
   return (
     <RNEInput
       ref={inputRef}
-      label={boldLabel ? <BoldText>{label}</BoldText> : <Label>{label}</Label>}
+      label={label && <Label bold={boldLabel}>{label}</Label>}
       value={field.value}
       onChangeText={field.onChange}
       onBlur={field.onBlur}
