@@ -61,7 +61,7 @@ export const FeedbackScreen = () => {
         phone: createAppUserContentNewData.phone,
         message: createAppUserContentNewData.message,
         consent: createAppUserContentNewData.consent,
-        appInfo: appInfo
+        appInfo
       })
     };
 
@@ -70,12 +70,9 @@ export const FeedbackScreen = () => {
     try {
       await createAppUserContent({ variables: formData });
 
-      Alert.alert(
-        texts.feedbackScreen.alert.title,
-        texts.feedbackScreen.alert.message,
-        [{ text: texts.feedbackScreen.alert.ok, onPress: () => reset() }],
-        { cancelable: false }
-      );
+      reset();
+
+      Alert.alert(texts.feedbackScreen.alert.title, texts.feedbackScreen.alert.message);
     } catch (error) {
       console.error(error);
     }
@@ -137,7 +134,6 @@ export const FeedbackScreen = () => {
                 label={texts.feedbackScreen.inputsLabel.message + ' *'}
                 boldLabel
                 placeholder={texts.feedbackScreen.inputsLabel.message}
-                keyboardType="phone-pad"
                 multiline
                 textAlignVertical="top"
                 validate
@@ -187,8 +183,6 @@ const styles = StyleSheet.create({
     marginBottom: normalize(30)
   },
   textArea: {
-    borderColor: colors.shadow,
-    borderWidth: 1,
     height: normalize(100),
     padding: normalize(10)
   }
