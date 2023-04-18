@@ -106,7 +106,7 @@ export const Input = ({
         styles.container,
         row && styles.row,
         hidden && !errorMessage && styles.containerHidden,
-        !!containerStyle && containerStyle
+        containerStyle
       ]}
       inputContainerStyle={[
         styles.inputContainer,
@@ -114,14 +114,14 @@ export const Input = ({
         hidden && styles.inputContainerHidden,
         isValid && styles.inputContainerSuccess,
         !isValid && !!errorMessage && styles.inputContainerError,
-        !!inputContainerStyle && inputContainerStyle
+        inputContainerStyle
       ]}
       rightIconContainerStyle={styles.rightIconContainer}
       inputStyle={[
         styles.input,
         multiline && device.platform === 'ios' && styles.multiline,
         !isValid && !!errorMessage && styles.inputError,
-        !!inputStyle && inputStyle
+        inputStyle
       ]}
       errorStyle={styles.inputError}
       placeholderTextColor={colors.placeholder}
