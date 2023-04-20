@@ -9,7 +9,6 @@
     "platforms": ["ios", "android"],
     "version": "3.1.2",
     "runtimeVersion": "nativeVersion",
-    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "smart-village-app",
     "splash": {
@@ -67,7 +66,12 @@
           "microphonePermission": false
         }
       ],
-      "expo-screen-orientation",
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "PORTRAIT"
+        }
+      ],
       "sentry-expo"
     ]
   }
