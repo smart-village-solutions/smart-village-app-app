@@ -1,15 +1,17 @@
 {
   "expo": {
-    "name": "Smart Village App",
-    "slug": "smart-village-app",
+    "name": "MEINQUARTIER",
+    "slug": "meinquartier",
     "owner": "ikusei",
     "privacy": "public",
     "description": "An open source React Native app for smart villages merging regional offers and services in one place - in your pocket.",
     "githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
     "platforms": ["ios", "android"],
     "version": "3.1.4",
+    "extra": { "eas": { "projectId": "84611212-b1ac-47b3-8f2d-065898fab1cb" } },
     "runtimeVersion": "nativeVersion",
     "orientation": "portrait",
+    "primaryColor": "#3F7193",
     "icon": "./assets/icon.png",
     "scheme": "smart-village-app",
     "splash": {
@@ -22,8 +24,10 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "bundleIdentifier": "de.dev.smartvillage.app",
+      "bundleIdentifier": "de.hb.meinquartier.smartvillage.app",
+      "buildNumber": "1",
       "supportsTablet": true,
+      "usesIcloudStorage": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
@@ -33,7 +37,8 @@
       }
     },
     "android": {
-      "package": "de.dev.smartvillage.app",
+      "package": "de.hb.meinquartier.smartvillage.app",
+      "versionCode": 1,
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
@@ -41,10 +46,11 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
+      "googleServicesFile": "./google-services.json",
       "jsEngine": "hermes",
       "config": {
         "googleMaps": {
-          "apiKey": "abcdef"
+          "apiKey": "AIzaSyC0P5I0NMEjQS2auZUfK3dzgWwPKGrkllc"
         }
       },
       "softwareKeyboardLayoutMode": "pan"
@@ -55,6 +61,12 @@
       "backgroundColor": "#00000000"
     },
     "plugins": [
+      [
+        "expo-document-picker",
+        {
+          "appleTeamId": "xxx"
+        }
+      ],
       [
         "expo-camera",
         {

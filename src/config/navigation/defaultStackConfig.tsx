@@ -71,6 +71,7 @@ import {
 import { ScreenName, StackConfig } from '../../types';
 import { consts } from '../consts';
 import { texts } from '../texts';
+import { QUERY_TYPES } from '../../queries';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -231,6 +232,15 @@ export const defaultStackConfig = ({
       })
     },
     {
+      routeName: ScreenName.Events,
+      screenComponent: IndexScreen,
+      inititalParams: {
+        title: texts.screenTitles.events,
+        query: QUERY_TYPES.EVENT_RECORDS,
+        queryVariables: { limit: 15, order: 'listDate_ASC' }
+      }
+    },
+    {
       routeName: ScreenName.Form,
       screenComponent: FeedbackScreen,
       screenOptions: { title: texts.screenTitles.feedback }
@@ -243,7 +253,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Home,
       screenComponent: HomeScreen,
-      screenOptions: getScreenOptions({ withDrawer: isDrawer, withFavorites: true }),
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withFavorites: false }),
       inititalParams: {
         isDrawer,
         title: texts.screenTitles.home
@@ -255,7 +265,12 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.Index,
-      screenComponent: IndexScreen
+      screenComponent: IndexScreen,
+      // NOTE: is used as initial screen for the points of interest tab
+      inititalParams: {
+        title: texts.screenTitles.pointsOfInterest,
+        query: QUERY_TYPES.CATEGORIES
+      }
     },
     {
       routeName: ScreenName.Lunch,
@@ -305,6 +320,17 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.OParlSearch,
       screenComponent: OParlSearchScreen
+    },
+    {
+      routeName: ScreenName.Profile,
+      screenComponent: getTilesScreen({
+        matomoString: MATOMO_TRACKING.SCREEN_VIEW.COMPANY,
+        staticJsonName: 'homeProfile',
+        titleFallback: texts.homeTitles.profile,
+        titleKey: 'headlineProfile',
+        imageKey: 'headlineProfileImage'
+      }),
+      screenOptions: { title: texts.screenTitles.profile }
     },
     {
       routeName: ScreenName.Service,

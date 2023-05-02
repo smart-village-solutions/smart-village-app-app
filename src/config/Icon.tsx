@@ -126,8 +126,9 @@ export const Icon = {
   DrawerMenu: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
   EditSetting: (props: IconProps) => <SvgIcon xml={editSetting} {...props} />,
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
+  Event: (props: IconProps) => <NamedIcon name="calendar-outline" {...props} />,
   ExpandMap: (props: IconProps) => <Icon.NamedIcon name="expand" {...props} />,
-  Home: (props: IconProps) => <SvgIcon xml={home} {...props} />,
+  Home: (props: IconProps) => <Icon.NamedIcon name="home-outline" {...props} />,
   NamedIcon,
   HeartEmpty: (props: IconProps) => <SvgIcon xml={heartEmpty} {...props} />,
   HeartFilled: (props: IconProps) => <SvgIcon xml={heartFilled} {...props} />,
@@ -149,6 +150,7 @@ export const Icon = {
   Phone: (props: IconProps) => <SvgIcon xml={phone} {...props} />,
   Play: (props: IconProps) => <NamedIcon name="play" {...props} />,
   Plus: (props: IconProps) => <NamedIcon name="add" {...props} />,
+  PointOfInterest: (props: IconProps) => <NamedIcon name="trail-sign-outline" {...props} />,
   RadioButtonEmpty: (props: IconProps) => (
     <NamedIcon
       name={device.platform === 'ios' ? 'ios-radio-button-off' : 'md-radio-button-off'}
@@ -162,7 +164,7 @@ export const Icon = {
     />
   ),
   RoutePlanner: (props: IconProps) => <SvgIcon xml={routePlanner} {...props} />,
-  Service: (props: IconProps) => <SvgIcon xml={service} {...props} />,
+  Service: (props: IconProps) => <NamedIcon name="person-circle-outline" {...props} />,
   Settings: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'} {...props} />
   ),

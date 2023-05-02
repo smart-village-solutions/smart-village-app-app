@@ -11,6 +11,7 @@ import {
   HomeService,
   NewsSectionPlaceholder,
   SafeAreaViewFlex,
+  ServiceTiles,
   Widgets
 } from '../components';
 import { colors, consts, texts } from '../config';
@@ -167,7 +168,8 @@ export const HomeScreen = ({ navigation, route }) => {
     headlinePointsOfInterestAndTours = texts.homeTitles.pointsOfInterest,
     buttonPointsOfInterestAndTours = texts.homeButtons.pointsOfInterest,
     headlineEvents = texts.homeTitles.events,
-    buttonEvents = texts.homeButtons.events
+    buttonEvents = texts.homeButtons.events,
+    headlineService = texts.homeTitles.service
   } = sections;
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
@@ -272,12 +274,19 @@ export const HomeScreen = ({ navigation, route }) => {
           </>
         }
         ListFooterComponent={
-          route.params?.isDrawer && (
-            <>
-              <HomeService />
-              <About navigation={navigation} withHomeRefresh />
-            </>
-          )
+          <>
+            <ServiceTiles
+              navigation={navigation}
+              staticJsonName="homeService"
+              title={headlineService}
+            />
+            {route.params?.isDrawer && (
+              <>
+                <HomeService />
+                <About navigation={navigation} withHomeRefresh />
+              </>
+            )}
+          </>
         }
         refreshControl={
           <RefreshControl

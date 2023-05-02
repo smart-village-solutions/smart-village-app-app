@@ -1,18 +1,18 @@
 const white = '#FFFFFF';
-const black = '#141414';
+const black = '#041623';
 const gray20 = '#EAEAEA';
 const gray40 = '#DBDBE6';
 const gray60 = '#BCBBC1';
 const gray80 = '#A2A2A2';
 
 export const colors = {
-  lighterPrimaryRgba: 'rgba(15, 70, 24, 0.1)',
-  lighterPrimary: '#5EC66F',
-  primary: '#107821',
-  darkerPrimary: 'rgb(15, 70, 24)',
-  darkerPrimaryRgba: 'rgba(15, 70, 24, 0.6)', // darkerPrimary with 0.6 alpha
-  secondary: 'rgb(9, 72, 60)',
-  accent: 'rgb(15, 70, 24)',
+  lighterPrimaryRgba: 'rgba(163, 200, 225, 0.1)',
+  lighterPrimary: '#A3C8E1',
+  primary: '#3F7193',
+  darkerPrimary: 'rgb(8, 51, 81)',
+  darkerPrimaryRgba: 'rgba(8, 51, 81, 0.6)', // darkerPrimary with 0.6 alpha
+  secondary: 'rgb(169, 206, 192)',
+  accent: 'rgb(8, 51, 81)',
 
   error: 'rgb(174, 0, 29)',
 

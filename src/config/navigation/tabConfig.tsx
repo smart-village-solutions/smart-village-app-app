@@ -24,37 +24,68 @@ const homeTabConfig: TabConfig = {
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.home,
     tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon color={color} Icon={Icon.Home} />
+      <OrientationAwareIcon
+        color={color}
+        Icon={Icon.Home}
+        landscapeStyle={{ marginRight: -normalize(6) }}
+        size={normalize(28)}
+        style={{ marginTop: normalize(3) }}
+      />
+    )
+  }
+};
+
+const pointOfInterestTabConfig: TabConfig = {
+  stackConfig: defaultStackConfig({
+    initialRouteName: ScreenName.Index,
+    isDrawer: false
+  }),
+  tabOptions: {
+    tabBarLabel: texts.tabBarLabel.pointsOfInterest,
+    tabBarIcon: ({ color }: TabBarIconProps) => (
+      <OrientationAwareIcon
+        color={color}
+        Icon={Icon.PointOfInterest}
+        landscapeStyle={{ marginRight: -normalize(6) }}
+        size={normalize(28)}
+        style={{ marginTop: normalize(3) }}
+      />
     )
   }
 };
 
 const serviceTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
-    initialRouteName: ScreenName.Service,
+    initialRouteName: ScreenName.Profile,
     isDrawer: false
   }),
   tabOptions: {
-    tabBarLabel: texts.tabBarLabel.service,
+    tabBarLabel: texts.tabBarLabel.profile,
     tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon color={color} Icon={Icon.Service} />
+      <OrientationAwareIcon
+        color={color}
+        Icon={Icon.Service}
+        landscapeStyle={{ marginRight: -normalize(6) }}
+        size={normalize(28)}
+        style={{ marginTop: normalize(3) }}
+      />
     )
   }
 };
 
-const companyTabConfig: TabConfig = {
+const eventsTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
-    initialRouteName: ScreenName.Company,
+    initialRouteName: ScreenName.Events,
     isDrawer: false
   }),
   tabOptions: {
-    tabBarLabel: texts.tabBarLabel.company,
+    tabBarLabel: texts.tabBarLabel.events,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={Icon.Company}
-        landscapeStyle={{ marginRight: -normalize(4), marginTop: 0 }}
-        size={normalize(26)}
+        Icon={Icon.Event}
+        landscapeStyle={{ marginRight: -normalize(6) }}
+        size={normalize(28)}
         style={{ marginTop: normalize(3) }}
       />
     )
@@ -85,5 +116,11 @@ export const tabNavigatorConfig: TabNavigatorConfig = {
   inactiveTintColor: colors.primary,
   activeBackgroundColor: colors.surface,
   inactiveBackgroundColor: colors.surface,
-  tabConfigs: [homeTabConfig, serviceTabConfig, companyTabConfig, aboutTabConfig]
+  tabConfigs: [
+    homeTabConfig,
+    pointOfInterestTabConfig,
+    serviceTabConfig,
+    eventsTabConfig,
+    aboutTabConfig
+  ]
 };

@@ -426,7 +426,8 @@ export const texts = {
     company: 'Städtische Unternehmen',
     events: 'Veranstaltungen',
     pointsOfInterest: 'Orte und Touren',
-    service: 'Service'
+    service: 'Service',
+    profile: 'Profil'
   },
   homeCategoriesNews: {
     categoryTitle: 'Nachrichten',
@@ -758,9 +759,12 @@ export const texts = {
       home: 'Consul'
     },
     encounterHome: 'Mitfahrbank',
+    events: appJson.expo.name,
     feedback: 'Feedback',
     home: appJson.expo.name,
     mapView: 'Kartenansicht',
+    pointsOfInterest: appJson.expo.name,
+    profile: appJson.expo.name,
     routePlanner: 'Routenplaner bbnavi',
     service: appJson.expo.name,
     settings: 'Einstellungen',
@@ -909,11 +913,11 @@ export const texts = {
     }
   },
   tabBarLabel: {
-    home: 'Übersicht',
-    service: 'Service',
-    company: 'Unternehmen',
-    volunteer: 'Ehrenamt',
-    about: 'Mehr'
+    about: 'Mehr',
+    events: 'Kalender',
+    home: 'Start',
+    pointsOfInterest: 'Wegweiser',
+    profile: 'Profil'
   },
   tour: {
     description: 'Beschreibung',

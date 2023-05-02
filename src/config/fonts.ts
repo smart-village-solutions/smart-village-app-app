@@ -1,8 +1,8 @@
 export const fontConfig = {
-  bold: require('../../assets/fonts/TitilliumWeb-Bold.ttf'),
-  'bold-italic': require('../../assets/fonts/TitilliumWeb-BoldItalic.ttf'),
-  regular: require('../../assets/fonts/TitilliumWeb-Regular.ttf'),
-  italic: require('../../assets/fonts/TitilliumWeb-Italic.ttf'),
-  light: require('../../assets/fonts/TitilliumWeb-Light.ttf'),
-  'light-italic': require('../../assets/fonts/TitilliumWeb-LightItalic.ttf')
+  bold: require('../../assets/fonts/Lato-Bold.ttf'),
+  'bold-italic': require('../../assets/fonts/Lato-BoldItalic.ttf'),
+  regular: require('../../assets/fonts/Lato-Regular.ttf'),
+  italic: require('../../assets/fonts/Lato-Italic.ttf'),
+  light: require('../../assets/fonts/Lato-Light.ttf'),
+  'light-italic': require('../../assets/fonts/Lato-LightItalic.ttf')
 };
