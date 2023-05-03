@@ -24,7 +24,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "bundleIdentifier": "de.hb.meinquartier.smartvillage.app",
+      "bundleIdentifier": "de.test.hb.meinquartier.smartvillage.app",
       "buildNumber": "1",
       "supportsTablet": true,
       "usesIcloudStorage": true,
@@ -37,7 +37,7 @@
       }
     },
     "android": {
-      "package": "de.hb.meinquartier.smartvillage.app",
+      "package": "de.test.hb.meinquartier.smartvillage.app",
       "versionCode": 1,
       "permissions": [
         "ACCESS_FINE_LOCATION",
