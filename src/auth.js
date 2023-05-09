@@ -2,13 +2,25 @@ import * as SecureStore from 'expo-secure-store';
 
 import { namespace, secrets } from './config';
 
+const ACCESS_TOKEN_EXPIRE_TIME = 'ACCESS_TOKEN_EXPIRE_TIME';
+
 /**
  * Check if a auth token is expired or still valid.
  * The expire time is saved as seconds from 01.01.1970 00:00:00 UTC, so
  * we need to divide Date.now() by 1000, which otherwise would return miliseconds.
  */
 const isTokenValid = async () => {
-  const accessTokenExpireTime = await SecureStore.getItemAsync('ACCESS_TOKEN_EXPIRE_TIME');
+  let accessTokenExpireTime = null;
+
+  // The reason for the problem of staying in SplashScreen that occurs after the application is
+  // updated on the Android side is the inability to obtain the token here.
+  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
+  try {
+    accessTokenExpireTime = await SecureStore.getItemAsync(ACCESS_TOKEN_EXPIRE_TIME);
+  } catch {
+    // Token deleted here so that it can be recreated
+    await SecureStore.deleteItemAsync(ACCESS_TOKEN_EXPIRE_TIME);
+  }
 
   if (!accessTokenExpireTime) return false;
 
@@ -48,7 +60,7 @@ export const auth = async (callback, forceNewToken = false) => {
       SecureStore.setItemAsync('ACCESS_TOKEN', json.access_token);
       // save the time when the token will expire, calculated from the creation time in seconds
       // added by the expire duration in seconds
-      SecureStore.setItemAsync('ACCESS_TOKEN_EXPIRE_TIME', `${json.created_at + json.expires_in}`);
+      SecureStore.setItemAsync(ACCESS_TOKEN_EXPIRE_TIME, `${json.created_at + json.expires_in}`);
     })
     .finally(() => callback && callback());
 };

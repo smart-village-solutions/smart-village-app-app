@@ -28,7 +28,21 @@ export const storeVolunteerAuthToken = (authToken?: string) => {
   }
 };
 
-export const volunteerAuthToken = () => SecureStore.getItemAsync(VOLUNTEER_AUTH_TOKEN);
+export const volunteerAuthToken = async () => {
+  let authToken = null;
+
+  // The reason for the problem of staying in SplashScreen that occurs after the application is
+  // updated on the Android side is the inability to obtain the token here.
+  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
+  try {
+    authToken = await SecureStore.getItemAsync(VOLUNTEER_AUTH_TOKEN);
+  } catch {
+    // Token deleted here so that it can be recreated
+    SecureStore.deleteItemAsync(VOLUNTEER_AUTH_TOKEN);
+  }
+
+  return authToken;
+};
 
 export const storeVolunteerUserData = (userData?: {
   id: number;
@@ -54,11 +68,25 @@ export const volunteerUserData = async (): Promise<{
   currentUserGuId: string | null;
   currentUserContentContainerId: string | null;
 }> => {
-  const currentUserId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_ID);
-  const currentUserGuId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_GUID);
-  const currentUserContentContainerId = await SecureStore.getItemAsync(
-    VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID
-  );
+  let currentUserId = null;
+  let currentUserGuId = null;
+  let currentUserContentContainerId = null;
+
+  // The reason for the problem of staying in SplashScreen that occurs after the application is
+  // updated on the Android side is the inability to obtain the token here.
+  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
+  try {
+    currentUserId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_ID);
+    currentUserGuId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_GUID);
+    currentUserContentContainerId = await SecureStore.getItemAsync(
+      VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID
+    );
+  } catch {
+    // Token deleted here so that it can be recreated
+    await SecureStore.deleteItemAsync(VOLUNTEER_CURRENT_USER_ID);
+    await SecureStore.deleteItemAsync(VOLUNTEER_CURRENT_USER_GUID);
+    await SecureStore.deleteItemAsync(VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID);
+  }
 
   return {
     currentUserId,
