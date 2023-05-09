@@ -112,6 +112,9 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
     return renderItem({ item: carouselData[0] });
   }
 
+  // to change the style of the pause button, the images in the slider are checked for copyright
+  const isCopyrighted = data.some((item) => item.picture?.copyright);
+
   return (
     <View>
       {isPaused ? (
@@ -135,6 +138,7 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
       {showSliderPauseButton &&
         pauseButton(
           horizontalPosition,
+          isCopyrighted,
           isPaused,
           setIsPaused,
           sizeSliderPauseButton,
@@ -144,13 +148,20 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
   );
 };
 
-const pauseButton = (horizontalPosition, isPaused, setIsPaused, size, verticalPosition) => (
+const pauseButton = (
+  horizontalPosition,
+  isCopyrighted,
+  isPaused,
+  setIsPaused,
+  size,
+  verticalPosition
+) => (
   <TouchableOpacity
     style={[
       styles.pauseButton,
       {
         [horizontalPosition]: normalize(12),
-        [verticalPosition]: normalize(24),
+        [verticalPosition]: isCopyrighted ? normalize(36) : normalize(12),
         borderRadius: normalize(size * 2),
         padding: normalize(size / 2)
       }
