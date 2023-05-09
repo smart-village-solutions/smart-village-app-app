@@ -84,6 +84,7 @@ export const Input = ({
       onChangeText={field.onChange}
       onBlur={field.onBlur}
       disabled={disabled}
+      disableFullscreenUI
       multiline={multiline}
       {...furtherProps}
       errorMessage={!isValid ? errorMessage : ''}
