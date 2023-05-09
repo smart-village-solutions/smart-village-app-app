@@ -8,7 +8,13 @@ import { namespace, secrets } from './config';
  * we need to divide Date.now() by 1000, which otherwise would return miliseconds.
  */
 const isTokenValid = async () => {
-  const accessTokenExpireTime = await SecureStore.getItemAsync('ACCESS_TOKEN_EXPIRE_TIME');
+  let accessTokenExpireTime = null;
+  try {
+    accessTokenExpireTime = await SecureStore.getItemAsync('ACCESS_TOKEN_EXPIRE_TIME');
+  } catch (e) {
+    // this only throws if they reinstall on android
+    await SecureStore.deleteItemAsync('ACCESS_TOKEN_EXPIRE_TIME');
+  }
 
   if (!accessTokenExpireTime) return false;
 

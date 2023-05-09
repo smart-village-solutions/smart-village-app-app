@@ -28,7 +28,16 @@ export const storeVolunteerAuthToken = (authToken?: string) => {
   }
 };
 
-export const volunteerAuthToken = () => SecureStore.getItemAsync(VOLUNTEER_AUTH_TOKEN);
+export const volunteerAuthToken = async () => {
+  let authToken = null;
+  try {
+    authToken = await SecureStore.getItemAsync(VOLUNTEER_AUTH_TOKEN);
+  } catch (error) {
+    SecureStore.deleteItemAsync(VOLUNTEER_AUTH_TOKEN);
+  }
+
+  return authToken;
+};
 
 export const storeVolunteerUserData = (userData?: {
   id: number;
@@ -54,11 +63,21 @@ export const volunteerUserData = async (): Promise<{
   currentUserGuId: string | null;
   currentUserContentContainerId: string | null;
 }> => {
-  const currentUserId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_ID);
-  const currentUserGuId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_GUID);
-  const currentUserContentContainerId = await SecureStore.getItemAsync(
-    VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID
-  );
+  let currentUserId = null;
+  let currentUserGuId = null;
+  let currentUserContentContainerId = null;
+  try {
+    currentUserId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_ID);
+    currentUserGuId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_GUID);
+    currentUserContentContainerId = await SecureStore.getItemAsync(
+      VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID
+    );
+  } catch (e) {
+    // this only throws if they reinstall on android
+    await SecureStore.deleteItemAsync(VOLUNTEER_CURRENT_USER_ID);
+    await SecureStore.deleteItemAsync(VOLUNTEER_CURRENT_USER_GUID);
+    await SecureStore.deleteItemAsync(VOLUNTEER_CURRENT_USER_CONTENT_CONTAINER_ID);
+  }
 
   return {
     currentUserId,
