@@ -15,7 +15,11 @@ import { renderArrow } from './calendarArrows';
 const { ROOT_ROUTE_NAMES } = consts;
 
 const DayComponent = (props: BasicDayProps) => (
-  <BasicDay {...props} marking={{ ...props.marking, disableTouchEvent: !props.marking?.marked }} />
+  <BasicDay
+    {...props}
+    date={props?.date?.dateString}
+    marking={{ ...props.marking, disableTouchEvent: !props.marking?.marked }}
+  />
 );
 
 type Props = {
