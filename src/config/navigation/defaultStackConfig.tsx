@@ -253,7 +253,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Home,
       screenComponent: HomeScreen,
-      screenOptions: getScreenOptions({ withDrawer: isDrawer, withFavorites: false }),
+      screenOptions: getScreenOptions({ withDrawer: isDrawer, withFavorites: true }),
       inititalParams: {
         isDrawer,
         title: texts.screenTitles.home
