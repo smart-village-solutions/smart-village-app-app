@@ -12,7 +12,7 @@ export const HeaderLeft = ({ onPress }: StackHeaderLeftButtonProps) =>
         accessibilityLabel={consts.a11yLabel.backIcon}
         accessibilityHint={consts.a11yLabel.backIconHint}
       >
-        <Icon.ArrowLeft color={colors.lightestText} style={styles.icon} />
+        <Icon.ArrowLeft color={colors.primary} style={styles.icon} />
       </TouchableOpacity>
     </View>
   ) : null;

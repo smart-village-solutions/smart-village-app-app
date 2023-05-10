@@ -15,7 +15,7 @@ export const Navigator = () => (
     }}
     linking={linkingConfig}
   >
-    <StatusBar barStyle="light-content" translucent backgroundColor="transparent" />
+    <StatusBar barStyle="dark-content" translucent backgroundColor="transparent" />
     {navigatorConfig.type === 'drawer' ? (
       <DrawerNavigator />
     ) : (
