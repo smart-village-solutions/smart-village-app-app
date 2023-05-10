@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.2.0]
+
+Three major new Expo SDK versions 46, 47 and 48 and updated new packages
+
+### Changed
+
+- upgraded Expo to version 46: https://blog.expo.dev/expo-sdk-46-c2a1655f63f7
+- upgraded Expo to version 47: https://blog.expo.dev/expo-sdk-47-a0f6f5c038af
+- upgraded Expo to version 48: https://blog.expo.dev/expo-sdk-48-ccb8302e231
+- upgraded react-native-calendars to 1.1293.0
+- upgraded react-native-gifted-chat to 2.0.1
+
+### Fixed
+
+- fixed an issue due to a recent update of the `react-native-calendar` package
+- fixed a bug when the chat screen switches to landscape mode
+
 ## [v3.1.4]
 
 New features for accessibility have been added in this update
