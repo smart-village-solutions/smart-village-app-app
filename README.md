@@ -2,7 +2,7 @@
 
 # Smart Village App - Mobile App
 
-![Project version](https://img.shields.io/badge/version-3.2.0-informational.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/maintainability)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/maintainability) ![Node version](https://img.shields.io/badge/node-16.13.0-informational.svg) ![Yarn version](https://img.shields.io/badge/yarn-1.22.19-informational.svg) ![Expo version](https://img.shields.io/badge/expo-48.0.11-informational.svg)
+![Project version](https://img.shields.io/badge/version-3.2.0-informational.svg) [![Maintainability](https://api.codeclimate.com/v1/badges/ee77a5fd8990be0158c1/maintainability)](https://codeclimate.com/github/ikuseiGmbH/smart-village-app-app/maintainability) ![Node version](https://img.shields.io/badge/node-16.13.0-informational.svg) ![Yarn version](https://img.shields.io/badge/yarn-1.22.19-informational.svg) ![Expo version](https://img.shields.io/badge/expo-48.0.15-informational.svg)
 
 The Smart Village App is a open source mobile app for villages, communities and counties. It is made with React Native for Android and iOS.
 
@@ -34,8 +34,8 @@ For detailed documentation see the [docs](./docs/INDEX.md).
 
 Information about currently used packages and their versions:
 
-- Expo (48.0.11): https://github.com/expo/expo
-- React Native (0.71.6): https://github.com/facebook/react-native
+- Expo (48.0.15): https://github.com/expo/expo
+- React Native (0.71.7): https://github.com/facebook/react-native
 - React (18.2.0): https://github.com/facebook/react
 - React Navigation (5.16.1): https://github.com/react-navigation/react-navigation
 - React Native WebView (11.26.0): https://github.com/react-native-webview/react-native-webview
