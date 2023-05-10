@@ -17,8 +17,7 @@ import {
   TitleContainer,
   TitleShadow,
   Touchable,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../../components';
 import { consts, device, secrets, texts } from '../../config';
 import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
@@ -95,95 +94,91 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <WrapperWithOrientation>
-            <TitleContainer>
-              <Title
-                big
-                center
-                accessibilityLabel={`${texts.volunteer.loginTitle} ${a11yLabel.heading}`}
-              >
-                {texts.volunteer.loginTitle}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
+          <TitleContainer>
+            <Title
+              big
+              center
+              accessibilityLabel={`${texts.volunteer.loginTitle} ${a11yLabel.heading}`}
+            >
+              {texts.volunteer.loginTitle}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
 
-            <Wrapper style={styles.noPaddingTop}>
-              <Input
-                name="username"
-                label={texts.volunteer.usernameOrEmail + ' *'}
-                placeholder={texts.volunteer.usernameOrEmail}
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                autoCompleteType="email"
-                autoCapitalize="none"
-                validate
-                rules={{ required: true }}
-                errorMessage={
-                  errors.username && `${texts.volunteer.usernameOrEmail} muss ausgefüllt werden`
-                }
-                control={control}
-              />
-            </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              name="username"
+              label={texts.volunteer.usernameOrEmail}
+              placeholder={texts.volunteer.usernameOrEmail}
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              autoCompleteType="email"
+              autoCapitalize="none"
+              validate
+              rules={{ required: true }}
+              errorMessage={
+                errors.username && `${texts.volunteer.usernameOrEmail} muss ausgefüllt werden`
+              }
+              control={control}
+            />
+          </Wrapper>
 
-            <Wrapper style={styles.noPaddingTop}>
-              <Input
-                name="password"
-                label={texts.volunteer.password + ' *'}
-                placeholder={texts.volunteer.password}
-                textContentType="password"
-                autoCompleteType="password"
-                secureTextEntry={isSecureTextEntry}
-                rightIcon={
-                  <InputSecureTextIcon
-                    isSecureTextEntry={isSecureTextEntry}
-                    setIsSecureTextEntry={setIsSecureTextEntry}
-                  />
-                }
-                validate
-                rules={{ required: true }}
-                errorMessage={
-                  errors.password && `${texts.volunteer.password} muss ausgefüllt werden`
-                }
-                control={control}
-              />
-            </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              name="password"
+              label={texts.volunteer.password}
+              placeholder={texts.volunteer.password}
+              textContentType="password"
+              autoCompleteType="password"
+              secureTextEntry={isSecureTextEntry}
+              rightIcon={
+                <InputSecureTextIcon
+                  isSecureTextEntry={isSecureTextEntry}
+                  setIsSecureTextEntry={setIsSecureTextEntry}
+                />
+              }
+              validate
+              rules={{ required: true }}
+              errorMessage={errors.password && `${texts.volunteer.password} muss ausgefüllt werden`}
+              control={control}
+            />
+          </Wrapper>
 
-            <Wrapper>
-              <Touchable
-                accessibilityLabel={`${texts.volunteer.passwordForgotten} ${a11yLabel.button}`}
-                onPress={() =>
-                  navigation.navigate(ScreenName.Web, {
-                    title: texts.volunteer.passwordForgotten,
-                    webUrl: passwordForgottenUrl,
-                    injectedJavaScript: `
+          <Wrapper>
+            <Touchable
+              accessibilityLabel={`${texts.volunteer.passwordForgotten} ${a11yLabel.button}`}
+              onPress={() =>
+                navigation.navigate(ScreenName.Web, {
+                  title: texts.volunteer.passwordForgotten,
+                  webUrl: passwordForgottenUrl,
+                  injectedJavaScript: `
                       document.getElementById('app-title') && document.getElementById('app-title').remove();
                       document.getElementById('img-logo') && document.getElementById('img-logo').remove();
                       document.querySelector('button[type="submit"] + a') && document.querySelector('button[type="submit"] + a').remove();
                       document.querySelector('.powered') && document.querySelector('.powered').remove();
                     `
-                  })
-                }
-              >
-                <RegularText primary small underline>
-                  {texts.volunteer.passwordForgotten}
-                </RegularText>
-              </Touchable>
-            </Wrapper>
+                })
+              }
+            >
+              <RegularText primary small underline>
+                {texts.volunteer.passwordForgotten}
+              </RegularText>
+            </Touchable>
+          </Wrapper>
 
-            <Wrapper>
-              <Button
-                onPress={handleSubmit(onSubmit)}
-                title={texts.volunteer.login}
-                disabled={isLoading || isLoadingMe}
-                notFullWidth
-              />
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <RegularText primary center>
-                  {texts.volunteer.abort}
-                </RegularText>
-              </TouchableOpacity>
-            </Wrapper>
-          </WrapperWithOrientation>
+          <Wrapper>
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              title={texts.volunteer.login}
+              disabled={isLoading || isLoadingMe}
+              notFullWidth
+            />
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <RegularText primary center>
+                {texts.volunteer.abort}
+              </RegularText>
+            </TouchableOpacity>
+          </Wrapper>
 
           <LoadingModal loading={isLoading || isLoadingMe} />
         </ScrollView>

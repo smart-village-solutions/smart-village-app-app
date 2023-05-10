@@ -18,8 +18,7 @@ import {
   TitleContainer,
   TitleShadow,
   Wrapper,
-  WrapperHorizontal,
-  WrapperWithOrientation
+  WrapperHorizontal
 } from '../../components';
 import { consts, device, secrets, texts } from '../../config';
 import { register } from '../../queries/volunteer';
@@ -94,135 +93,133 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <WrapperWithOrientation>
-            <TitleContainer>
-              <Title
-                big
-                center
-                accessibilityLabel={`${texts.volunteer.registrationTitle} ${a11yLabel.heading}`}
-              >
-                {texts.volunteer.registrationTitle}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper style={styles.noPaddingTop}>
-              <Input
-                name="username"
-                label={texts.volunteer.username + ' *'}
-                placeholder={texts.volunteer.username}
-                textContentType="username"
-                autoCapitalize="none"
-                validate
-                rules={{
-                  required: texts.volunteer.usernameError,
-                  minLength: { value: 4, message: texts.volunteer.usernameErrorLengthError }
-                }}
-                errorMessage={errors.username && errors.username.message}
-                control={control}
-              />
-            </Wrapper>
+          <TitleContainer>
+            <Title
+              big
+              center
+              accessibilityLabel={`${texts.volunteer.registrationTitle} ${a11yLabel.heading}`}
+            >
+              {texts.volunteer.registrationTitle}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              name="username"
+              label={texts.volunteer.username}
+              placeholder={texts.volunteer.username}
+              textContentType="username"
+              autoCapitalize="none"
+              validate
+              rules={{
+                required: texts.volunteer.usernameError,
+                minLength: { value: 4, message: texts.volunteer.usernameErrorLengthError }
+              }}
+              errorMessage={errors.username && errors.username.message}
+              control={control}
+            />
+          </Wrapper>
 
-            <Wrapper style={styles.noPaddingTop}>
-              <Input
-                name="email"
-                label={texts.volunteer.email + ' *'}
-                placeholder={texts.volunteer.email}
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                autoCompleteType="email"
-                autoCapitalize="none"
-                validate
-                rules={{
-                  required: texts.volunteer.emailError,
-                  pattern: { value: EMAIL_REGEX, message: texts.volunteer.emailInvalid }
-                }}
-                errorMessage={errors.email && errors.email.message}
-                control={control}
-              />
-            </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              name="email"
+              label={texts.volunteer.email}
+              placeholder={texts.volunteer.email}
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              autoCompleteType="email"
+              autoCapitalize="none"
+              validate
+              rules={{
+                required: texts.volunteer.emailError,
+                pattern: { value: EMAIL_REGEX, message: texts.volunteer.emailInvalid }
+              }}
+              errorMessage={errors.email && errors.email.message}
+              control={control}
+            />
+          </Wrapper>
 
-            <Wrapper style={styles.noPaddingTop}>
-              <Input
-                name="password"
-                label={texts.volunteer.password + ' *'}
-                placeholder={texts.volunteer.password}
-                textContentType="password"
-                autoCompleteType="password"
-                secureTextEntry={isSecureTextEntry}
-                rightIcon={
-                  <InputSecureTextIcon
-                    isSecureTextEntry={isSecureTextEntry}
-                    setIsSecureTextEntry={setIsSecureTextEntry}
-                  />
-                }
-                validate
-                rules={{
-                  required: texts.volunteer.passwordError,
-                  minLength: { value: 5, message: texts.volunteer.passwordLengthError }
-                }}
-                errorMessage={errors.password && errors.password.message}
-                control={control}
-              />
-            </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              name="password"
+              label={texts.volunteer.password}
+              placeholder={texts.volunteer.password}
+              textContentType="password"
+              autoCompleteType="password"
+              secureTextEntry={isSecureTextEntry}
+              rightIcon={
+                <InputSecureTextIcon
+                  isSecureTextEntry={isSecureTextEntry}
+                  setIsSecureTextEntry={setIsSecureTextEntry}
+                />
+              }
+              validate
+              rules={{
+                required: texts.volunteer.passwordError,
+                minLength: { value: 5, message: texts.volunteer.passwordLengthError }
+              }}
+              errorMessage={errors.password && errors.password.message}
+              control={control}
+            />
+          </Wrapper>
 
-            <Wrapper style={styles.noPaddingTop}>
-              <Input
-                name="passwordConfirmation"
-                label={texts.volunteer.passwordConfirmation + ' *'}
-                placeholder={texts.volunteer.passwordConfirmation}
-                textContentType="password"
-                autoCompleteType="password"
-                secureTextEntry={isSecureTextEntryConfirmation}
-                rightIcon={
-                  <InputSecureTextIcon
-                    isSecureTextEntry={isSecureTextEntryConfirmation}
-                    setIsSecureTextEntry={setIsSecureTextEntryConfirmation}
-                  />
-                }
-                validate
-                rules={{
-                  required: texts.volunteer.passwordError,
-                  minLength: { value: 5, message: texts.volunteer.passwordLengthError },
-                  validate: (value) => value === password || texts.volunteer.passwordDoNotMatch
-                }}
-                errorMessage={errors.passwordConfirmation && errors.passwordConfirmation.message}
-                control={control}
-              />
-            </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              name="passwordConfirmation"
+              label={texts.volunteer.passwordConfirmation}
+              placeholder={texts.volunteer.passwordConfirmation}
+              textContentType="password"
+              autoCompleteType="password"
+              secureTextEntry={isSecureTextEntryConfirmation}
+              rightIcon={
+                <InputSecureTextIcon
+                  isSecureTextEntry={isSecureTextEntryConfirmation}
+                  setIsSecureTextEntry={setIsSecureTextEntryConfirmation}
+                />
+              }
+              validate
+              rules={{
+                required: texts.volunteer.passwordError,
+                minLength: { value: 5, message: texts.volunteer.passwordLengthError },
+                validate: (value) => value === password || texts.volunteer.passwordDoNotMatch
+              }}
+              errorMessage={errors.passwordConfirmation && errors.passwordConfirmation.message}
+              control={control}
+            />
+          </Wrapper>
 
-            <WrapperHorizontal>
-              <Checkbox
-                linkDescription={texts.volunteer.privacyCheckLink}
-                link={dataPrivacyLink}
-                title={texts.volunteer.privacyChecked + ' *'}
-                checkedIcon="check-square-o"
-                uncheckedIcon="square-o"
-                checked={hasAcceptedDataPrivacy}
-                center={false}
-                onPress={() => setHasAcceptedDataPrivacy(!hasAcceptedDataPrivacy)}
-              />
-            </WrapperHorizontal>
+          <WrapperHorizontal>
+            <Checkbox
+              linkDescription={texts.volunteer.privacyCheckLink}
+              link={dataPrivacyLink}
+              title={texts.volunteer.privacyChecked}
+              checkedIcon="check-square-o"
+              uncheckedIcon="square-o"
+              checked={hasAcceptedDataPrivacy}
+              center={false}
+              onPress={() => setHasAcceptedDataPrivacy(!hasAcceptedDataPrivacy)}
+            />
+          </WrapperHorizontal>
 
-            <Wrapper>
-              <Button
-                onPress={handleSubmit(onSubmit)}
-                title={texts.volunteer.next}
-                disabled={isLoading}
-                notFullWidth
-              />
-              <TouchableOpacity onPress={() => navigation.navigate(ScreenName.VolunteerSignup)}>
-                <RegularText primary center>
-                  {texts.volunteer.enterCode}
-                </RegularText>
-              </TouchableOpacity>
-              <RegularText />
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <RegularText primary center>
-                  {texts.volunteer.abort}
-                </RegularText>
-              </TouchableOpacity>
-            </Wrapper>
-          </WrapperWithOrientation>
+          <Wrapper>
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              title={texts.volunteer.next}
+              disabled={isLoading}
+              notFullWidth
+            />
+            <TouchableOpacity onPress={() => navigation.navigate(ScreenName.VolunteerSignup)}>
+              <RegularText primary center>
+                {texts.volunteer.enterCode}
+              </RegularText>
+            </TouchableOpacity>
+            <RegularText />
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <RegularText primary center>
+                {texts.volunteer.abort}
+              </RegularText>
+            </TouchableOpacity>
+          </Wrapper>
 
           <LoadingModal loading={isLoading} />
         </ScrollView>

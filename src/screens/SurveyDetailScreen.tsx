@@ -15,8 +15,7 @@ import {
   SurveyAnswer,
   SurveyText,
   Wrapper,
-  WrapperRow,
-  WrapperWithOrientation
+  WrapperRow
 } from '../components';
 import { texts } from '../config';
 import { combineLanguages, momentFormat } from '../helpers';
@@ -109,85 +108,80 @@ export const SurveyDetailScreen = ({ route }: Props) => {
           refreshControl={RefreshControl}
           ref={scrollViewRef}
         >
-          <WrapperWithOrientation>
-            {!!shownTitle?.length && <SectionHeader title={shownTitle} />}
-            <DateComponent
-              date={survey.date.dateStart}
+          {!!shownTitle?.length && <SectionHeader title={shownTitle} />}
+          <DateComponent
+            date={survey.date.dateStart}
+            isMultilingual={survey.isMultilingual}
+            start
+          />
+          <DateComponent date={survey.date.dateEnd} isMultilingual={survey.isMultilingual} />
+          {!!survey.description?.[languages[0]]?.length && (
+            <Wrapper style={styles.noPaddingBottom}>
+              <SurveyText content={survey.description[languages[0]]} />
+              {!!survey.description?.[languages[1]]?.length && (
+                <SurveyText content={survey.description[languages[1]]} italic />
+              )}
+            </Wrapper>
+          )}
+          {!!survey.questionTitle?.[languages[0]]?.length && !!title?.length && (
+            <Wrapper style={styles.noPaddingBottom}>
+              <BoldText>{survey.questionTitle?.[languages[0]]}</BoldText>
+              <BoldText italic>{survey.questionTitle?.[languages[1]]}</BoldText>
+            </Wrapper>
+          )}
+          {survey.responseOptions.map((responseOption, index) => (
+            <SurveyAnswer
+              archived={archived}
+              faded={(!!selection.length && !selection.includes(responseOption.id)) || archived}
+              index={index}
               isMultilingual={survey.isMultilingual}
-              start
+              isMultiSelect={survey.questionAllowMultipleResponses}
+              responseOption={responseOption}
+              selected={selection.includes(responseOption.id)}
+              setSelection={setSelection}
+              key={responseOption.id}
             />
-            <DateComponent date={survey.date.dateEnd} isMultilingual={survey.isMultilingual} />
-            {!!survey.description?.[languages[0]]?.length && (
-              <Wrapper style={styles.noPaddingBottom}>
-                <SurveyText content={survey.description[languages[0]]} />
-                {!!survey.description?.[languages[1]]?.length && (
-                  <SurveyText content={survey.description[languages[1]]} italic />
-                )}
-              </Wrapper>
-            )}
-            {!!survey.questionTitle?.[languages[0]]?.length && !!title?.length && (
-              <Wrapper style={styles.noPaddingBottom}>
-                <BoldText>{survey.questionTitle?.[languages[0]]}</BoldText>
-                <BoldText italic>{survey.questionTitle?.[languages[1]]}</BoldText>
-              </Wrapper>
-            )}
-            {survey.responseOptions.map((responseOption, index) => (
-              <SurveyAnswer
-                archived={archived}
-                faded={(!!selection.length && !selection.includes(responseOption.id)) || archived}
-                index={index}
-                isMultilingual={survey.isMultilingual}
-                isMultiSelect={survey.questionAllowMultipleResponses}
-                responseOption={responseOption}
-                selected={selection.includes(responseOption.id)}
-                setSelection={setSelection}
-                key={responseOption.id}
-              />
-            ))}
-            {!archived && (
-              <>
-                <Wrapper>
-                  {!!survey.questionAllowMultipleResponses && (
-                    <>
-                      <RegularText center error>
-                        {texts.survey.multiSelectPossible.de}
-                      </RegularText>
-                      {!!survey.isMultilingual && (
-                        <RegularText center error italic>
-                          {texts.survey.multiSelectPossible.pl}
-                        </RegularText>
-                      )}
-                      <RegularText />
-                    </>
-                  )}
-                  <Button
-                    disabled={isButtonDisabled}
-                    title={buttonText}
-                    onPress={submitSelection}
-                  />
-                </Wrapper>
-                {!previousSubmission.length && (
-                  <Wrapper style={styles.noPaddingBottom}>
-                    <RegularText error small>
-                      {texts.survey.hint.de}
+          ))}
+          {!archived && (
+            <>
+              <Wrapper>
+                {!!survey.questionAllowMultipleResponses && (
+                  <>
+                    <RegularText center error>
+                      {texts.survey.multiSelectPossible.de}
                     </RegularText>
-                    {!!survey?.isMultilingual && (
-                      <RegularText error italic small>
-                        {texts.survey.hint.pl}
+                    {!!survey.isMultilingual && (
+                      <RegularText center error italic>
+                        {texts.survey.multiSelectPossible.pl}
                       </RegularText>
                     )}
-                  </Wrapper>
+                    <RegularText />
+                  </>
                 )}
-              </>
-            )}
-            {(previousSubmission.length || archived) && (
-              <Results
-                isMultilingual={survey.isMultilingual}
-                responseOptions={survey.responseOptions}
-                selectedOptions={previousSubmission}
-              />
-            )}
-          </WrapperWithOrientation>
+                <Button disabled={isButtonDisabled} title={buttonText} onPress={submitSelection} />
+              </Wrapper>
+              {!previousSubmission.length && (
+                <Wrapper style={styles.noPaddingBottom}>
+                  <RegularText error small>
+                    {texts.survey.hint.de}
+                  </RegularText>
+                  {!!survey?.isMultilingual && (
+                    <RegularText error italic small>
+                      {texts.survey.hint.pl}
+                    </RegularText>
+                  )}
+                </Wrapper>
+              )}
+            </>
+          )}
+          {(previousSubmission.length || archived) && (
+            <Results
+              isMultilingual={survey.isMultilingual}
+              responseOptions={survey.responseOptions}
+              selectedOptions={previousSubmission}
+            />
+          )}
+
           {!!survey.canComment && (
             <CommentSection
               archived={archived}

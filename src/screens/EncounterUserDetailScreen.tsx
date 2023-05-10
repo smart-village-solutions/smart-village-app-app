@@ -6,8 +6,7 @@ import {
   EncounterUserDetails,
   LoadingSpinner,
   RegularText,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../components';
 import { texts } from '../config';
 import { useCreateEncounter } from '../hooks';
@@ -33,12 +32,10 @@ export const EncounterUserDetailScreen = ({ route }: any) => {
   if (data) {
     return (
       <ScrollView>
-        <WrapperWithOrientation>
-          <Wrapper>
-            <BoldText center>{texts.encounter.newEncounterSuccess}</BoldText>
-          </Wrapper>
-          {!!data && <EncounterUserDetails data={data} />}
-        </WrapperWithOrientation>
+        <Wrapper>
+          <BoldText center>{texts.encounter.newEncounterSuccess}</BoldText>
+        </Wrapper>
+        {!!data && <EncounterUserDetails data={data} />}
       </ScrollView>
     );
   }
@@ -46,11 +43,9 @@ export const EncounterUserDetailScreen = ({ route }: any) => {
   if (!qrId || error) {
     return (
       <ScrollView>
-        <WrapperWithOrientation>
-          <Wrapper>
-            <RegularText>{texts.encounter.errorScanBody}</RegularText>
-          </Wrapper>
-        </WrapperWithOrientation>
+        <Wrapper>
+          <RegularText>{texts.encounter.errorScanBody}</RegularText>
+        </Wrapper>
       </ScrollView>
     );
   }

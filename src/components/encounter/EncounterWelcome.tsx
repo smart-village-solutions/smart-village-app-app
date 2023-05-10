@@ -12,7 +12,7 @@ import { LoadingSpinner } from '../LoadingSpinner';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -50,21 +50,19 @@ export const EncounterWelcome = ({ navigation, onPressToCategory }: Props) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView refreshControl={RefreshControl}>
-        <WrapperWithOrientation>
-          <View style={styles.imageContainer}>
-            <Image source={{ uri: data.imageUrl }} />
-          </View>
-          <SectionHeader title={data.welcomeTitle} />
-          <Wrapper>
-            <RegularText>{data.welcomeText}</RegularText>
-          </Wrapper>
-          <Wrapper>
-            <Button title={texts.encounter.registerNow} onPress={onPressRegister} />
-            {onPressToCategory && (
-              <Button title={texts.encounter.toCategory} onPress={onPressToCategory} />
-            )}
-          </Wrapper>
-        </WrapperWithOrientation>
+        <View style={styles.imageContainer}>
+          <Image source={{ uri: data.imageUrl }} />
+        </View>
+        <SectionHeader title={data.welcomeTitle} />
+        <Wrapper>
+          <RegularText>{data.welcomeText}</RegularText>
+        </Wrapper>
+        <Wrapper>
+          <Button title={texts.encounter.registerNow} onPress={onPressRegister} />
+          {onPressToCategory && (
+            <Button title={texts.encounter.toCategory} onPress={onPressToCategory} />
+          )}
+        </Wrapper>
       </ScrollView>
     </SafeAreaViewFlex>
   );

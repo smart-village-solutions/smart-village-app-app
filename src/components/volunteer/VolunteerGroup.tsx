@@ -5,7 +5,7 @@ import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
-import { colors, consts, device, normalize, styles as configStyles, texts } from '../../config';
+import { colors, styles as configStyles, consts, device, normalize, texts } from '../../config';
 import { navigatorConfig } from '../../config/navigation';
 import {
   isOwner,
@@ -40,7 +40,7 @@ import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 import { VolunteerGroupMembersAndApplicants } from './VolunteerGroupMembersAndApplicants';
 import { VolunteerHomeSection } from './VolunteerHomeSection';
@@ -197,164 +197,162 @@ export const VolunteerGroup = ({
         {!!logo && <Logo source={{ uri: logo }} containerStyle={styles.logoContainer} />}
       </View>
 
-      <WrapperWithOrientation>
-        {!!name && (
+      {!!name && (
+        <TitleContainer>
+          <Title accessibilityLabel={`(${name}) ${a11yText.heading}`}>{name}</Title>
+        </TitleContainer>
+      )}
+      {!!name && device.platform === 'ios' && <TitleShadow />}
+
+      <VolunteerGroupMembersAndApplicants
+        groupId={id}
+        navigation={navigation}
+        isGroupOwner={isGroupOwner}
+        isGroupMember={isGroupMember}
+        setIsGroupMember={setIsGroupMember}
+        setIsGroupApplicant={setIsGroupApplicant}
+        isRefetching={isRefetching}
+        mutateAsyncJoin={mutateAsyncJoin}
+        isSuccessJoin={isSuccessJoin}
+        mutateAsyncLeave={mutateAsyncLeave}
+        isSuccessLeave={isSuccessLeave}
+        isSuccessRequest={isSuccessRequest}
+      />
+
+      {isGroupMember !== undefined && !isGroupMember && (
+        <Wrapper>
+          <Button
+            title={texts.volunteer.contactGroupOwner}
+            onPress={() =>
+              volunteerNavigation(() =>
+                navigation.push(ScreenName.VolunteerForm, {
+                  title: texts.volunteer.conversationAllStart,
+                  query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
+                  rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
+                  selectedUserIds: groupAdmins
+                })
+              )
+            }
+          />
+        </Wrapper>
+      )}
+
+      {!!description && (
+        <View>
           <TitleContainer>
-            <Title accessibilityLabel={`(${name}) ${a11yText.heading}`}>{name}</Title>
+            <Title accessibilityLabel={`(${texts.volunteer.description}) ${a11yText.heading}`}>
+              {texts.volunteer.description}
+            </Title>
           </TitleContainer>
-        )}
-        {!!name && device.platform === 'ios' && <TitleShadow />}
-
-        <VolunteerGroupMembersAndApplicants
-          groupId={id}
-          navigation={navigation}
-          isGroupOwner={isGroupOwner}
-          isGroupMember={isGroupMember}
-          setIsGroupMember={setIsGroupMember}
-          setIsGroupApplicant={setIsGroupApplicant}
-          isRefetching={isRefetching}
-          mutateAsyncJoin={mutateAsyncJoin}
-          isSuccessJoin={isSuccessJoin}
-          mutateAsyncLeave={mutateAsyncLeave}
-          isSuccessLeave={isSuccessLeave}
-          isSuccessRequest={isSuccessRequest}
-        />
-
-        {isGroupMember !== undefined && !isGroupMember && (
+          {device.platform === 'ios' && <TitleShadow />}
           <Wrapper>
-            <Button
-              title={texts.volunteer.contactGroupOwner}
-              onPress={() =>
-                volunteerNavigation(() =>
-                  navigation.push(ScreenName.VolunteerForm, {
-                    title: texts.volunteer.conversationAllStart,
-                    query: QUERY_TYPES.VOLUNTEER.CONVERSATION,
-                    rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER,
-                    selectedUserIds: groupAdmins
+            <RegularText>{description}</RegularText>
+          </Wrapper>
+        </View>
+      )}
+
+      {!!about && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${texts.volunteer.about}) ${a11yText.heading}`}>
+              {texts.volunteer.about}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Wrapper>
+            <Markdown
+              onLinkPress={(url) => {
+                openLink(url, openWebScreen);
+                return false;
+              }}
+              style={configStyles.markdown}
+            >
+              {about}
+            </Markdown>
+          </Wrapper>
+        </View>
+      )}
+
+      {!!tags?.length && (
+        <Wrapper>
+          <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
+        </Wrapper>
+      )}
+
+      {!!contentContainerId && (
+        <>
+          <VolunteerHomeSection
+            linkTitle="Alle Termine anzeigen"
+            navigateLink={() =>
+              navigation.push(ScreenName.VolunteerIndex, {
+                title: texts.volunteer.events,
+                query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+                queryVariables: { contentContainerId },
+                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+              })
+            }
+            navigate={() =>
+              navigation.push(ScreenName.VolunteerIndex, {
+                title: texts.volunteer.events,
+                query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
+                queryVariables: { contentContainerId },
+                rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+              })
+            }
+            navigation={navigation}
+            query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
+            queryVariables={{ contentContainerId }}
+            sectionTitle={texts.volunteer.events}
+            showLink
+          />
+
+          {(isGroupOwner || isGroupMember) && (
+            <Wrapper>
+              <Button
+                title="Termin eintragen"
+                onPress={() =>
+                  navigation.navigate(ScreenName.VolunteerForm, {
+                    title: 'Termin eintragen',
+                    query: QUERY_TYPES.VOLUNTEER.CALENDAR,
+                    groupId: contentContainerId,
+                    rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
                   })
-                )
-              }
-            />
-          </Wrapper>
-        )}
-
-        {!!description && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${texts.volunteer.description}) ${a11yText.heading}`}>
-                {texts.volunteer.description}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>
-              <RegularText>{description}</RegularText>
+                }
+              />
             </Wrapper>
-          </View>
-        )}
+          )}
 
-        {!!about && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${texts.volunteer.about}) ${a11yText.heading}`}>
-                {texts.volunteer.about}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>
-              <Markdown
-                onLinkPress={(url) => {
-                  openLink(url, openWebScreen);
-                  return false;
-                }}
-                style={configStyles.markdown}
-              >
-                {about}
-              </Markdown>
-            </Wrapper>
-          </View>
-        )}
+          <VolunteerPosts
+            contentContainerId={contentContainerId}
+            isRefetching={isRefetching}
+            openWebScreen={openWebScreen}
+            navigation={navigation}
+            isGroupMember={isGroupMember}
+          />
+        </>
+      )}
 
-        {!!tags?.length && (
-          <Wrapper>
-            <InfoCard category={{ name: tags }} openWebScreen={openWebScreen} />
-          </Wrapper>
-        )}
-
-        {!!contentContainerId && (
-          <>
-            <VolunteerHomeSection
-              linkTitle="Alle Termine anzeigen"
-              navigateLink={() =>
-                navigation.push(ScreenName.VolunteerIndex, {
-                  title: texts.volunteer.events,
-                  query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-                  queryVariables: { contentContainerId },
-                  rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-                })
-              }
-              navigate={() =>
-                navigation.push(ScreenName.VolunteerIndex, {
-                  title: texts.volunteer.events,
-                  query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-                  queryVariables: { contentContainerId },
-                  rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-                })
-              }
-              navigation={navigation}
-              query={QUERY_TYPES.VOLUNTEER.CALENDAR_ALL}
-              queryVariables={{ contentContainerId }}
-              sectionTitle={texts.volunteer.events}
-              showLink
-            />
-
-            {(isGroupOwner || isGroupMember) && (
-              <Wrapper>
-                <Button
-                  title="Termin eintragen"
-                  onPress={() =>
-                    navigation.navigate(ScreenName.VolunteerForm, {
-                      title: 'Termin eintragen',
-                      query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-                      groupId: contentContainerId,
-                      rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-                    })
-                  }
-                />
-              </Wrapper>
-            )}
-
-            <VolunteerPosts
-              contentContainerId={contentContainerId}
-              isRefetching={isRefetching}
-              openWebScreen={openWebScreen}
-              navigation={navigation}
-              isGroupMember={isGroupMember}
-            />
-          </>
-        )}
-
-        {!!joinPolicy && !isGroupOwner && isGroupMember !== undefined && (
-          <Wrapper>
-            <Button
-              title={
-                isGroupMember
-                  ? texts.volunteer.leave
-                  : isGroupApplicant
-                  ? texts.volunteer.pending
-                  : texts.volunteer.join[joinPolicy as keyof typeof texts.volunteer.join]
-              }
-              invert={isGroupMember}
-              onPress={() => volunteerNavigation(isGroupMember ? leave : join)}
-              disabled={isGroupApplicant}
-            />
-            {!isGroupMember && joinPolicy === JOIN_POLICY_TYPES.INVITE_AND_REQUEST && (
-              <RegularText small center placeholder>
-                {texts.volunteer.requestPending}
-              </RegularText>
-            )}
-          </Wrapper>
-        )}
-      </WrapperWithOrientation>
+      {!!joinPolicy && !isGroupOwner && isGroupMember !== undefined && (
+        <Wrapper>
+          <Button
+            title={
+              isGroupMember
+                ? texts.volunteer.leave
+                : isGroupApplicant
+                ? texts.volunteer.pending
+                : texts.volunteer.join[joinPolicy as keyof typeof texts.volunteer.join]
+            }
+            invert={isGroupMember}
+            onPress={() => volunteerNavigation(isGroupMember ? leave : join)}
+            disabled={isGroupApplicant}
+          />
+          {!isGroupMember && joinPolicy === JOIN_POLICY_TYPES.INVITE_AND_REQUEST && (
+            <RegularText small center placeholder>
+              {texts.volunteer.requestPending}
+            </RegularText>
+          )}
+        </Wrapper>
+      )}
     </View>
   );
 };

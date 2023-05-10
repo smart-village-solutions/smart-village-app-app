@@ -9,8 +9,7 @@ import {
   Checkbox,
   DefaultKeyboardAvoidingView,
   Input,
-  SafeAreaViewFlex,
-  WrapperWithOrientation
+  SafeAreaViewFlex
 } from '../components';
 import { colors, consts, normalize, texts } from '../config';
 import { useMatomoTrackScreenView } from '../hooks';
@@ -83,95 +82,93 @@ export const FeedbackScreen = () => {
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <WrapperWithOrientation>
-            <View style={{ padding: normalize(14) }}>
-              <Input
-                name="name"
-                label={texts.feedbackScreen.inputsLabel.name + ' *'}
-                boldLabel
-                placeholder={texts.feedbackScreen.inputsLabel.name}
-                validate
-                rules={{ required: texts.feedbackScreen.inputsErrorMessages.name }}
-                errorMessage={errors.name && errors.name.message}
-                control={control}
-                containerStyle={styles.containerStyle}
-              />
+          <View style={{ padding: normalize(14) }}>
+            <Input
+              name="name"
+              label={texts.feedbackScreen.inputsLabel.name + ' *'}
+              boldLabel
+              placeholder={texts.feedbackScreen.inputsLabel.name}
+              validate
+              rules={{ required: texts.feedbackScreen.inputsErrorMessages.name }}
+              errorMessage={errors.name && errors.name.message}
+              control={control}
+              containerStyle={styles.containerStyle}
+            />
 
-              <Input
-                name="email"
-                label={texts.feedbackScreen.inputsLabel.email + ' *'}
-                boldLabel
-                placeholder={texts.feedbackScreen.inputsLabel.email}
-                keyboardType="email-address"
-                validate
-                rules={{
-                  required: texts.feedbackScreen.inputsErrorMessages.email,
-                  pattern: {
-                    value: EMAIL_REGEX,
-                    message: texts.feedbackScreen.inputsErrorMessages.email
-                  }
-                }}
-                errorMessage={errors.email && errors.email.message}
-                control={control}
-                containerStyle={styles.containerStyle}
-              />
-
-              <Input
-                name="phone"
-                label={texts.feedbackScreen.inputsLabel.phone + ' *'}
-                boldLabel
-                placeholder={texts.feedbackScreen.inputsLabel.phone}
-                keyboardType="phone-pad"
-                validate
-                rules={{ required: texts.feedbackScreen.inputsErrorMessages.phone }}
-                errorMessage={errors.phone && errors.phone.message}
-                control={control}
-                containerStyle={styles.containerStyle}
-              />
-
-              <Input
-                name="message"
-                label={texts.feedbackScreen.inputsLabel.message + ' *'}
-                boldLabel
-                placeholder={texts.feedbackScreen.inputsLabel.message}
-                multiline
-                textAlignVertical="top"
-                validate
-                rules={{ required: texts.feedbackScreen.inputsErrorMessages.message }}
-                errorMessage={errors.message && errors.message.message}
-                control={control}
-                containerStyle={styles.containerStyle}
-                inputStyle={styles.textArea}
-              />
-
-              <Controller
-                name="consent"
-                render={({ onChange, value }) => (
-                  <Checkbox
-                    boldTitle
-                    title={texts.feedbackScreen.inputsLabel.checkbox + ' *'}
-                    checkedIcon="check-square-o"
-                    checkedColor={colors.accent}
-                    uncheckedIcon="square-o"
-                    uncheckedColor={colors.darkText}
-                    checked={value}
-                    onPress={() => onChange(!value)}
-                  />
-                )}
-                control={control}
-              />
-
-              <Button
-                onPress={handleSubmit(onSubmit)}
-                title={
-                  loading
-                    ? texts.feedbackScreen.sendButton.disabled
-                    : texts.feedbackScreen.sendButton.enabled
+            <Input
+              name="email"
+              label={texts.feedbackScreen.inputsLabel.email + ' *'}
+              boldLabel
+              placeholder={texts.feedbackScreen.inputsLabel.email}
+              keyboardType="email-address"
+              validate
+              rules={{
+                required: texts.feedbackScreen.inputsErrorMessages.email,
+                pattern: {
+                  value: EMAIL_REGEX,
+                  message: texts.feedbackScreen.inputsErrorMessages.email
                 }
-                disabled={loading}
-              />
-            </View>
-          </WrapperWithOrientation>
+              }}
+              errorMessage={errors.email && errors.email.message}
+              control={control}
+              containerStyle={styles.containerStyle}
+            />
+
+            <Input
+              name="phone"
+              label={texts.feedbackScreen.inputsLabel.phone + ' *'}
+              boldLabel
+              placeholder={texts.feedbackScreen.inputsLabel.phone}
+              keyboardType="phone-pad"
+              validate
+              rules={{ required: texts.feedbackScreen.inputsErrorMessages.phone }}
+              errorMessage={errors.phone && errors.phone.message}
+              control={control}
+              containerStyle={styles.containerStyle}
+            />
+
+            <Input
+              name="message"
+              label={texts.feedbackScreen.inputsLabel.message + ' *'}
+              boldLabel
+              placeholder={texts.feedbackScreen.inputsLabel.message}
+              multiline
+              textAlignVertical="top"
+              validate
+              rules={{ required: texts.feedbackScreen.inputsErrorMessages.message }}
+              errorMessage={errors.message && errors.message.message}
+              control={control}
+              containerStyle={styles.containerStyle}
+              inputStyle={styles.textArea}
+            />
+
+            <Controller
+              name="consent"
+              render={({ onChange, value }) => (
+                <Checkbox
+                  boldTitle
+                  title={texts.feedbackScreen.inputsLabel.checkbox + ' *'}
+                  checkedIcon="check-square-o"
+                  checkedColor={colors.accent}
+                  uncheckedIcon="square-o"
+                  uncheckedColor={colors.darkText}
+                  checked={value}
+                  onPress={() => onChange(!value)}
+                />
+              )}
+              control={control}
+            />
+
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              title={
+                loading
+                  ? texts.feedbackScreen.sendButton.disabled
+                  : texts.feedbackScreen.sendButton.enabled
+              }
+              disabled={loading}
+            />
+          </View>
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

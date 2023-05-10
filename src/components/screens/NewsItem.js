@@ -12,22 +12,15 @@ import { StorySection } from '../StorySection';
 import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const NewsItem = ({ data, route }) => {
-  const {
-    dataProvider,
-    mainTitle,
-    contentBlocks,
-    publishedAt,
-    sourceUrl,
-    settings,
-    categories
-  } = data;
+  const { dataProvider, mainTitle, contentBlocks, publishedAt, sourceUrl, settings, categories } =
+    data;
 
   const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   const link = sourceUrl && sourceUrl.url;
@@ -61,43 +54,41 @@ export const NewsItem = ({ data, route }) => {
       {/* the images from the first content block will be present in the main image carousel */}
       <ImageSection mediaContents={contentBlocks?.[0]?.mediaContents} />
 
-      <WrapperWithOrientation>
-        {!!title && !!link ? (
+      {!!title && !!link ? (
+        <TitleContainer>
+          <Touchable onPress={openWebScreen}>
+            <Title accessibilityLabel={`${trimNewLines(title)} ${a11yText.heading}`}>
+              {trimNewLines(title)}
+            </Title>
+          </Touchable>
+        </TitleContainer>
+      ) : (
+        !!title && (
           <TitleContainer>
-            <Touchable onPress={openWebScreen}>
-              <Title accessibilityLabel={`${trimNewLines(title)} ${a11yText.heading}`}>
-                {trimNewLines(title)}
-              </Title>
-            </Touchable>
+            <Title accessibilityLabel={`${trimNewLines(title)} ${a11yText.heading}`}>
+              {trimNewLines(title)}
+            </Title>
           </TitleContainer>
-        ) : (
-          !!title && (
-            <TitleContainer>
-              <Title accessibilityLabel={`${trimNewLines(title)} ${a11yText.heading}`}>
-                {trimNewLines(title)}
-              </Title>
-            </TitleContainer>
-          )
-        )}
-        {device.platform === 'ios' && <TitleShadow />}
-        <Wrapper>
-          {!!subtitle && <RegularText small>{subtitle}</RegularText>}
-          {!!logo && <Logo source={{ uri: logo }} />}
-        </Wrapper>
+        )
+      )}
+      {device.platform === 'ios' && <TitleShadow />}
+      <Wrapper>
+        {!!subtitle && <RegularText small>{subtitle}</RegularText>}
+        {!!logo && <Logo source={{ uri: logo }} />}
+      </Wrapper>
 
-        {!!contentBlocks?.length &&
-          contentBlocks.map((contentBlock, index) => (
-            <StorySection
-              key={`${contentBlock.id}-${index}`}
-              contentBlock={contentBlock}
-              index={index}
-              openWebScreen={openWebScreen}
-              settings={settings}
-            />
-          ))}
+      {!!contentBlocks?.length &&
+        contentBlocks.map((contentBlock, index) => (
+          <StorySection
+            key={`${contentBlock.id}-${index}`}
+            contentBlock={contentBlock}
+            index={index}
+            openWebScreen={openWebScreen}
+            settings={settings}
+          />
+        ))}
 
-        {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
-      </WrapperWithOrientation>
+      {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
     </View>
   );
 };

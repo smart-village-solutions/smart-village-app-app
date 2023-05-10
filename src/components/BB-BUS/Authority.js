@@ -7,7 +7,7 @@ import { trimNewLines } from '../../helpers';
 import { HtmlView } from '../HtmlView';
 import { InfoCard } from '../infoCard';
 import { BoldText, RegularText } from '../Text';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 import { Block } from './Block';
 import { getAddress, getContact } from './helpers';
@@ -23,39 +23,36 @@ export const Authority = ({ data, bottomDivider, openWebScreen }) => {
 
   return (
     <Block title={name} bottomDivider={bottomDivider}>
-      <WrapperWithOrientation>
-        <Wrapper>
-          <InfoCard address={address} contact={contact} openWebScreen={openWebScreen} />
-        </Wrapper>
-      </WrapperWithOrientation>
+      <Wrapper>
+        <InfoCard address={address} contact={contact} openWebScreen={openWebScreen} />
+      </Wrapper>
+
       {(!!openingHours || elevator !== undefined || wheelchairAccessible !== undefined) && (
-        <WrapperWithOrientation>
-          <Wrapper style={styles.wrapperWithoutTopPadding}>
-            {!!openingHours && (
-              <View>
-                <BoldText>{texts.bbBus.authority.openingTime}:</BoldText>
-                <HtmlView html={trimNewLines(openingHours)} openWebScreen={openWebScreen} />
-              </View>
-            )}
-            {elevator !== undefined && (
-              <View>
-                <BoldText>{texts.bbBus.authority.elevator}:</BoldText>
-                <RegularText>{elevator ? 'ja' : 'nein'}</RegularText>
-              </View>
-            )}
-            {elevator !== undefined && wheelchairAccessible !== undefined && (
-              <View>
-                <RegularText />
-              </View>
-            )}
-            {wheelchairAccessible !== undefined && (
-              <View>
-                <BoldText>{texts.bbBus.authority.wheelchairAccessible}:</BoldText>
-                <RegularText>{wheelchairAccessible ? 'ja' : 'nein'}</RegularText>
-              </View>
-            )}
-          </Wrapper>
-        </WrapperWithOrientation>
+        <Wrapper style={styles.wrapperWithoutTopPadding}>
+          {!!openingHours && (
+            <View>
+              <BoldText>{texts.bbBus.authority.openingTime}:</BoldText>
+              <HtmlView html={trimNewLines(openingHours)} openWebScreen={openWebScreen} />
+            </View>
+          )}
+          {elevator !== undefined && (
+            <View>
+              <BoldText>{texts.bbBus.authority.elevator}:</BoldText>
+              <RegularText>{elevator ? 'ja' : 'nein'}</RegularText>
+            </View>
+          )}
+          {elevator !== undefined && wheelchairAccessible !== undefined && (
+            <View>
+              <RegularText />
+            </View>
+          )}
+          {wheelchairAccessible !== undefined && (
+            <View>
+              <BoldText>{texts.bbBus.authority.wheelchairAccessible}:</BoldText>
+              <RegularText>{wheelchairAccessible ? 'ja' : 'nein'}</RegularText>
+            </View>
+          )}
+        </Wrapper>
       )}
     </Block>
   );

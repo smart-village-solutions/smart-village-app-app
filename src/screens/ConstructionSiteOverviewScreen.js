@@ -2,13 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
 import { FlatList, RefreshControl } from 'react-native';
 
-import {
-  RegularText,
-  SafeAreaViewFlex,
-  TextListItem,
-  Wrapper,
-  WrapperWithOrientation
-} from '../components';
+import { RegularText, SafeAreaViewFlex, TextListItem, Wrapper } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { colors, consts, texts } from '../config';
 import { momentFormat } from '../helpers';
@@ -53,11 +47,9 @@ export const ConstructionSiteOverviewScreen = ({ navigation }) => {
   if (!constructionSites.length) {
     return (
       <SafeAreaViewFlex>
-        <WrapperWithOrientation>
-          <Wrapper>
-            <RegularText>{texts.constructionSites.noInformationGiven}</RegularText>
-          </Wrapper>
-        </WrapperWithOrientation>
+        <Wrapper>
+          <RegularText>{texts.constructionSites.noInformationGiven}</RegularText>
+        </Wrapper>
       </SafeAreaViewFlex>
     );
   }

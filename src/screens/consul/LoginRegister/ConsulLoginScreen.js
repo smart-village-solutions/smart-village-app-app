@@ -18,8 +18,7 @@ import {
   TitleContainer,
   TitleShadow,
   Touchable,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../../../components';
 import { consts, device, secrets, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
@@ -72,86 +71,84 @@ export const ConsulLoginScreen = ({ navigation }) => {
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <WrapperWithOrientation>
-            <TitleContainer>
-              <Title
-                big
-                center
-                accessibilityLabel={`${texts.consul.loginTitle} ${a11yLabel.heading}`}
-              >
-                {texts.consul.loginTitle}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper style={styles.noPaddingTop}>
-              <Input
-                name="email"
-                label={texts.consul.usernameOrEmail + ' *'}
-                placeholder={texts.consul.usernameOrEmail}
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                autoCompleteType="email"
-                autoCapitalize="none"
-                validate
-                rules={{ required: texts.consul.usernameOrEmailError }}
-                errorMessage={errors.email && errors.email.message}
-                control={control}
-              />
-            </Wrapper>
+          <TitleContainer>
+            <Title
+              big
+              center
+              accessibilityLabel={`${texts.consul.loginTitle} ${a11yLabel.heading}`}
+            >
+              {texts.consul.loginTitle}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              name="email"
+              label={texts.consul.usernameOrEmail}
+              placeholder={texts.consul.usernameOrEmail}
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              autoCompleteType="email"
+              autoCapitalize="none"
+              validate
+              rules={{ required: texts.consul.usernameOrEmailError }}
+              errorMessage={errors.email && errors.email.message}
+              control={control}
+            />
+          </Wrapper>
 
-            <Wrapper style={styles.noPaddingTop}>
-              <Input
-                name="password"
-                label={texts.consul.password + ' *'}
-                placeholder={texts.consul.password}
-                textContentType="password"
-                autoCompleteType="password"
-                secureTextEntry={isSecureTextEntry}
-                rightIcon={
-                  <InputSecureTextIcon
-                    isSecureTextEntry={isSecureTextEntry}
-                    setIsSecureTextEntry={setIsSecureTextEntry}
-                  />
-                }
-                validate
-                rules={{
-                  required: texts.consul.passwordError,
-                  minLength: { value: 8, message: texts.consul.passwordLengthError }
-                }}
-                errorMessage={errors.password && errors.password.message}
-                control={control}
-              />
-            </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              name="password"
+              label={texts.consul.password}
+              placeholder={texts.consul.password}
+              textContentType="password"
+              autoCompleteType="password"
+              secureTextEntry={isSecureTextEntry}
+              rightIcon={
+                <InputSecureTextIcon
+                  isSecureTextEntry={isSecureTextEntry}
+                  setIsSecureTextEntry={setIsSecureTextEntry}
+                />
+              }
+              validate
+              rules={{
+                required: texts.consul.passwordError,
+                minLength: { value: 8, message: texts.consul.passwordLengthError }
+              }}
+              errorMessage={errors.password && errors.password.message}
+              control={control}
+            />
+          </Wrapper>
 
-            <Wrapper>
-              <Touchable
-                accessibilityLabel={`${texts.consul.passwordForgotten} ${a11yLabel.button}`}
-                onPress={() =>
-                  navigation.navigate(ScreenName.Web, {
-                    title: texts.consul.passwordForgotten,
-                    webUrl: `${serverUrl}${passwordForgotten}`
-                  })
-                }
-              >
-                <RegularText small underline>
-                  {texts.consul.passwordForgotten}
-                </RegularText>
-              </Touchable>
-            </Wrapper>
+          <Wrapper>
+            <Touchable
+              accessibilityLabel={`${texts.consul.passwordForgotten} ${a11yLabel.button}`}
+              onPress={() =>
+                navigation.navigate(ScreenName.Web, {
+                  title: texts.consul.passwordForgotten,
+                  webUrl: `${serverUrl}${passwordForgotten}`
+                })
+              }
+            >
+              <RegularText small underline>
+                {texts.consul.passwordForgotten}
+              </RegularText>
+            </Touchable>
+          </Wrapper>
 
-            <Wrapper>
-              <Button
-                onPress={handleSubmit(onSubmit)}
-                title={texts.consul.login}
-                disabled={isLoading}
-              />
-              <Touchable onPress={() => navigation.goBack()}>
-                <BoldText center primary underline>
-                  {texts.consul.abort.toUpperCase()}
-                </BoldText>
-              </Touchable>
-            </Wrapper>
-          </WrapperWithOrientation>
+          <Wrapper>
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              title={texts.consul.login}
+              disabled={isLoading}
+            />
+            <Touchable onPress={() => navigation.goBack()}>
+              <BoldText center primary underline>
+                {texts.consul.abort.toUpperCase()}
+              </BoldText>
+            </Touchable>
+          </Wrapper>
 
           <LoadingModal loading={isLoading} />
         </ScrollView>

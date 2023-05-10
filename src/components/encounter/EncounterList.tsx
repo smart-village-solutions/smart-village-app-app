@@ -9,7 +9,7 @@ import { Encounter } from '../../types';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
-import { Wrapper, WrapperRow, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperRow } from '../Wrapper';
 
 const EncounterEntry = ({ encounter }: { encounter: Encounter }) => {
   return (
@@ -35,7 +35,7 @@ export const EncounterList = () => {
   const { loading, data } = useEncounterList();
 
   return (
-    <WrapperWithOrientation>
+    <>
       <SectionHeader title={texts.encounter.history} />
       {!loading && !data?.length && (
         <Wrapper>
@@ -46,7 +46,7 @@ export const EncounterList = () => {
         <EncounterEntry key={encounter.encounterId} encounter={encounter} />
       ))}
       <LoadingSpinner loading={loading} />
-    </WrapperWithOrientation>
+    </>
   );
 };
 

@@ -15,8 +15,7 @@ import {
   TitleContainer,
   TitleShadow,
   Wrapper,
-  WrapperRow,
-  WrapperWithOrientation
+  WrapperRow
 } from '../../components';
 import { colors, consts, device, texts } from '../../config';
 import { momentFormat } from '../../helpers';
@@ -84,46 +83,44 @@ export const NoticeboardFormScreen = ({
             />
           }
         >
-          <WrapperWithOrientation>
-            {!!details?.contentBlocks?.[0]?.title && (
-              <>
-                <TitleContainer>
-                  <Title
-                    accessibilityLabel={`(${texts.noticeboard.noticeboard}) ${a11yText.heading}`}
-                  >
-                    {details.contentBlocks[0].title}
-                  </Title>
-                </TitleContainer>
-                {device.platform === 'ios' && <TitleShadow />}
-              </>
-            )}
+          {!!details?.contentBlocks?.[0]?.title && (
+            <>
+              <TitleContainer>
+                <Title
+                  accessibilityLabel={`(${texts.noticeboard.noticeboard}) ${a11yText.heading}`}
+                >
+                  {details.contentBlocks[0].title}
+                </Title>
+              </TitleContainer>
+              {device.platform === 'ios' && <TitleShadow />}
+            </>
+          )}
 
-            {!!html && (
-              <Wrapper>
-                {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
-                <HtmlView html={html} />
-              </Wrapper>
-            )}
+          {!!html && (
+            <Wrapper>
+              {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
+              <HtmlView html={html} />
+            </Wrapper>
+          )}
 
-            {!!details?.dates?.[0] && (
-              <Wrapper>
-                {!!details?.dates?.[0]?.dateStart && (
-                  <WrapperRow>
-                    <BoldText>{texts.noticeboard.publicationDate}: </BoldText>
-                    <RegularText>{momentFormat(details.dates[0].dateStart)}</RegularText>
-                  </WrapperRow>
-                )}
-                {!!details?.dates?.[0]?.dateEnd && (
-                  <WrapperRow>
-                    <BoldText>{texts.noticeboard.expiryDate}: </BoldText>
-                    <RegularText>{momentFormat(details.dates[0].dateEnd)}</RegularText>
-                  </WrapperRow>
-                )}
-              </Wrapper>
-            )}
+          {!!details?.dates?.[0] && (
+            <Wrapper>
+              {!!details?.dates?.[0]?.dateStart && (
+                <WrapperRow>
+                  <BoldText>{texts.noticeboard.publicationDate}: </BoldText>
+                  <RegularText>{momentFormat(details.dates[0].dateStart)}</RegularText>
+                </WrapperRow>
+              )}
+              {!!details?.dates?.[0]?.dateEnd && (
+                <WrapperRow>
+                  <BoldText>{texts.noticeboard.expiryDate}: </BoldText>
+                  <RegularText>{momentFormat(details.dates[0].dateEnd)}</RegularText>
+                </WrapperRow>
+              )}
+            </Wrapper>
+          )}
 
-            <Component {...{ data: details, navigation, route }} />
-          </WrapperWithOrientation>
+          <Component {...{ data: details, navigation, route }} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

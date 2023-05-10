@@ -14,8 +14,7 @@ import {
   Title,
   TitleContainer,
   TitleShadow,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../../components';
 import { consts, device, texts } from '../../config';
 import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
@@ -89,67 +88,65 @@ export const VolunteerSignupScreen = ({ navigation, route }: StackScreenProps<an
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <WrapperWithOrientation>
-            <TitleContainer>
-              <Title
-                big
-                center
-                accessibilityLabel={`${texts.volunteer.registrationTitle} ${a11yLabel.heading}`}
-              >
-                {texts.volunteer.registrationTitle}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper style={styles.noPaddingTop}>
-              <Input
-                name="email"
-                label={texts.volunteer.email}
-                placeholder={texts.volunteer.email}
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                autoCompleteType="email"
-                autoCapitalize="none"
-                validate
-                rules={{
-                  required: texts.volunteer.emailError,
-                  pattern: { value: EMAIL_REGEX, message: texts.volunteer.emailInvalid }
-                }}
-                errorMessage={errors.email && errors.email.message}
-                control={control}
-              />
-            </Wrapper>
+          <TitleContainer>
+            <Title
+              big
+              center
+              accessibilityLabel={`${texts.volunteer.registrationTitle} ${a11yLabel.heading}`}
+            >
+              {texts.volunteer.registrationTitle}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              name="email"
+              label={texts.volunteer.email}
+              placeholder={texts.volunteer.email}
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              autoCompleteType="email"
+              autoCapitalize="none"
+              validate
+              rules={{
+                required: texts.volunteer.emailError,
+                pattern: { value: EMAIL_REGEX, message: texts.volunteer.emailInvalid }
+              }}
+              errorMessage={errors.email && errors.email.message}
+              control={control}
+            />
+          </Wrapper>
 
-            <Wrapper style={styles.noPaddingTop}>
-              <Input
-                name="token"
-                label={texts.volunteer.token}
-                placeholder={texts.volunteer.token}
-                keyboardType="number-pad"
-                textContentType="oneTimeCode"
-                autoCapitalize="none"
-                validate
-                rules={{
-                  required: texts.volunteer.tokenError
-                }}
-                errorMessage={errors.token && errors.token.message}
-                control={control}
-              />
-            </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              name="token"
+              label={texts.volunteer.token}
+              placeholder={texts.volunteer.token}
+              keyboardType="number-pad"
+              textContentType="oneTimeCode"
+              autoCapitalize="none"
+              validate
+              rules={{
+                required: texts.volunteer.tokenError
+              }}
+              errorMessage={errors.token && errors.token.message}
+              control={control}
+            />
+          </Wrapper>
 
-            <Wrapper>
-              <Button
-                onPress={handleSubmit(onSubmit)}
-                title={texts.volunteer.next}
-                disabled={isLoading || isLoadingMe}
-                notFullWidth
-              />
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <RegularText primary center>
-                  {texts.volunteer.abort}
-                </RegularText>
-              </TouchableOpacity>
-            </Wrapper>
-          </WrapperWithOrientation>
+          <Wrapper>
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              title={texts.volunteer.next}
+              disabled={isLoading || isLoadingMe}
+              notFullWidth
+            />
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <RegularText primary center>
+                {texts.volunteer.abort}
+              </RegularText>
+            </TouchableOpacity>
+          </Wrapper>
 
           <LoadingModal loading={isLoading || isLoadingMe} />
         </ScrollView>

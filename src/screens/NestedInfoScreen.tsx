@@ -9,8 +9,7 @@ import {
   MultiButtonWithSubQuery,
   SafeAreaViewFlex,
   SectionHeader,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../components';
 import { colors } from '../config';
 import { useStaticContent } from '../hooks';
@@ -52,13 +51,11 @@ export const ListHeaderComponent = ({
   }
 
   return (
-    <WrapperWithOrientation>
-      <Wrapper>
-        {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
-        <HtmlView html={html} />
-        <MultiButtonWithSubQuery {...{ navigation, subQuery, title: navigationTitle }} />
-      </Wrapper>
-    </WrapperWithOrientation>
+    <Wrapper>
+      {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
+      <HtmlView html={html} />
+      <MultiButtonWithSubQuery {...{ navigation, subQuery, title: navigationTitle }} />
+    </Wrapper>
   );
 };
 

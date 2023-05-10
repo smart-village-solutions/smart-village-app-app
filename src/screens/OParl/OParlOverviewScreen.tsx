@@ -2,13 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-import {
-  BoldText,
-  SafeAreaViewFlex,
-  Touchable,
-  Wrapper,
-  WrapperWithOrientation
-} from '../../components';
+import { BoldText, SafeAreaViewFlex, Touchable, Wrapper } from '../../components';
 import { Icon, texts } from '../../config';
 
 type Props = {
@@ -37,25 +31,23 @@ export const OParlOverviewScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        <WrapperWithOrientation>
-          <Tile
-            icon={<Icon.OParlCalendar />}
-            title={overviewTexts.calendar}
-            onPress={() => navigation.navigate('OParlCalendar', { title: overviewTexts.calendar })}
-          />
-          <Tile
-            icon={<Icon.OParlPeople />}
-            title={overviewTexts.persons}
-            onPress={() => navigation.navigate('OParlPersons', { title: overviewTexts.persons })}
-          />
-          <Tile
-            icon={<Icon.OParlOrganizations />}
-            title={overviewTexts.organizations}
-            onPress={() =>
-              navigation.navigate('OParlOrganizations', { title: overviewTexts.organizations })
-            }
-          />
-        </WrapperWithOrientation>
+        <Tile
+          icon={<Icon.OParlCalendar />}
+          title={overviewTexts.calendar}
+          onPress={() => navigation.navigate('OParlCalendar', { title: overviewTexts.calendar })}
+        />
+        <Tile
+          icon={<Icon.OParlPeople />}
+          title={overviewTexts.persons}
+          onPress={() => navigation.navigate('OParlPersons', { title: overviewTexts.persons })}
+        />
+        <Tile
+          icon={<Icon.OParlOrganizations />}
+          title={overviewTexts.organizations}
+          onPress={() =>
+            navigation.navigate('OParlOrganizations', { title: overviewTexts.organizations })
+          }
+        />
       </ScrollView>
     </SafeAreaViewFlex>
   );

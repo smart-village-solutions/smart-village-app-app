@@ -1,26 +1,26 @@
+import _filter from 'lodash/filter';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
-import _filter from 'lodash/filter';
 
 import { colors, consts, device, normalize, texts } from '../../config';
+import { matomoTrackingString, openLink, trimNewLines } from '../../helpers';
+import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { Button } from '../Button';
+import { DataProviderButton } from '../DataProviderButton';
+import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
+import { ImageSection } from '../ImageSection';
 import { LoadingContainer } from '../LoadingContainer';
 import { Logo } from '../Logo';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
-import { matomoTrackingString, openLink, trimNewLines } from '../../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
-import { DataProviderNotice } from '../DataProviderNotice';
-import { ImageSection } from '../ImageSection';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 import { InfoCard } from '../infoCard';
-import { DataProviderButton } from '../DataProviderButton';
-import { Button } from '../Button';
 
-import { OperatingCompany } from './OperatingCompany';
 import { OpeningTimesCard } from './OpeningTimesCard';
+import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
 
 // necessary hacky way of implementing iframe in webview with correct zoom level
@@ -108,98 +108,96 @@ export const EventRecord = ({ data, route }) => {
     <View>
       <ImageSection mediaContents={mediaContents} />
 
-      <WrapperWithOrientation>
-        {!!title && !!link ? (
+      {!!title && !!link ? (
+        <TitleContainer>
+          <Touchable onPress={openWebScreen}>
+            <Title accessibilityLabel={`(${title}) ${a11yText.heading} ${a11yText.button}`}>
+              {title}
+            </Title>
+          </Touchable>
+        </TitleContainer>
+      ) : (
+        !!title && (
           <TitleContainer>
-            <Touchable onPress={openWebScreen}>
-              <Title accessibilityLabel={`(${title}) ${a11yText.heading} ${a11yText.button}`}>
-                {title}
-              </Title>
-            </Touchable>
+            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
           </TitleContainer>
-        ) : (
-          !!title && (
-            <TitleContainer>
-              <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-            </TitleContainer>
-          )
-        )}
-        {device.platform === 'ios' && <TitleShadow />}
-        <Wrapper>
-          {!!logo && <Logo source={{ uri: logo }} />}
+        )
+      )}
+      {device.platform === 'ios' && <TitleShadow />}
+      <Wrapper>
+        {!!logo && <Logo source={{ uri: logo }} />}
 
-          <InfoCard
-            category={category}
-            addresses={addresses}
-            contacts={contacts}
-            webUrls={settings?.displayOnlySummary === 'true' ? [] : webUrls}
-            openWebScreen={openWebScreen}
-          />
-        </Wrapper>
-
-        {!!dates && !!dates.length && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${texts.eventRecord.appointments}) ${a11yText.heading}`}>
-                {texts.eventRecord.appointments}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <OpeningTimesCard openingHours={dates} />
-          </View>
-        )}
-
-        {/* temporary logic in order to show PriceCard just when description is present for the first index */}
-        {!!priceInformations && !!priceInformations.length && !!priceInformations[0].description && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${texts.eventRecord.prices}) ${a11yText.heading}`}>
-                {texts.eventRecord.prices}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <PriceCard prices={priceInformations} />
-          </View>
-        )}
-
-        {!!description && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${texts.eventRecord.description}) ${a11yText.heading}`}>
-                {texts.eventRecord.description}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>
-              <HtmlView html={description} openWebScreen={openWebScreen} />
-            </Wrapper>
-          </View>
-        )}
-
-        {!!media.length && media}
-
-        <OperatingCompany
+        <InfoCard
+          category={category}
+          addresses={addresses}
+          contacts={contacts}
+          webUrls={settings?.displayOnlySummary === 'true' ? [] : webUrls}
           openWebScreen={openWebScreen}
-          operatingCompany={operatingCompany}
-          title={texts.eventRecord.operatingCompany}
         />
+      </Wrapper>
 
-        {settings?.displayOnlySummary === 'true' && !!settings?.onlySummaryLinkText && (
+      {!!dates && !!dates.length && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${texts.eventRecord.appointments}) ${a11yText.heading}`}>
+              {texts.eventRecord.appointments}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <OpeningTimesCard openingHours={dates} />
+        </View>
+      )}
+
+      {/* temporary logic in order to show PriceCard just when description is present for the first index */}
+      {!!priceInformations && !!priceInformations.length && !!priceInformations[0].description && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${texts.eventRecord.prices}) ${a11yText.heading}`}>
+              {texts.eventRecord.prices}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <PriceCard prices={priceInformations} />
+        </View>
+      )}
+
+      {!!description && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${texts.eventRecord.description}) ${a11yText.heading}`}>
+              {texts.eventRecord.description}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
           <Wrapper>
-            {webUrls.map(({ url }, index) => (
-              <Button
-                key={index}
-                title={settings.onlySummaryLinkText}
-                onPress={() => openLink(url, openWebScreen)}
-              />
-            ))}
+            <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
-        )}
+        </View>
+      )}
 
-        <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
+      {!!media.length && media}
 
-        {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
-      </WrapperWithOrientation>
+      <OperatingCompany
+        openWebScreen={openWebScreen}
+        operatingCompany={operatingCompany}
+        title={texts.eventRecord.operatingCompany}
+      />
+
+      {settings?.displayOnlySummary === 'true' && !!settings?.onlySummaryLinkText && (
+        <Wrapper>
+          {webUrls.map(({ url }, index) => (
+            <Button
+              key={index}
+              title={settings.onlySummaryLinkText}
+              onPress={() => openLink(url, openWebScreen)}
+            />
+          ))}
+        </Wrapper>
+      )}
+
+      <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
+
+      {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
     </View>
   );
 };
