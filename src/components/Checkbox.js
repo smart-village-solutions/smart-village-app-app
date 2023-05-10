@@ -7,11 +7,12 @@ import { colors, consts, normalize, texts } from '../config';
 import { OrientationContext } from '../OrientationProvider';
 import { useOpenWebScreen } from '../hooks';
 
-import { RegularText } from './Text';
+import { BoldText, RegularText } from './Text';
 import { WrapperHorizontal } from './Wrapper';
 
 export const Checkbox = ({
   title,
+  boldTitle,
   onPress,
   checkedIcon,
   uncheckedIcon,
@@ -40,7 +41,11 @@ export const Checkbox = ({
       center={center}
       title={
         <WrapperHorizontal>
-          <RegularText small>{title}</RegularText>
+          {boldTitle ? (
+            <BoldText small>{title}</BoldText>
+          ) : (
+            <RegularText small>{title}</RegularText>
+          )}
           {link && (
             <RegularText small primary onPress={openWebScreen}>
               {linkDescription}
@@ -79,6 +84,7 @@ const styles = StyleSheet.create({
 
 Checkbox.propTypes = {
   title: PropTypes.string.isRequired,
+  boldTitle: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
   link: PropTypes.string,
   checkedIcon: PropTypes.string,

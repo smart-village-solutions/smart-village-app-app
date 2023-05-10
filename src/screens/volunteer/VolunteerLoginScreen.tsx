@@ -110,7 +110,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="username"
-                label={texts.volunteer.usernameOrEmail}
+                label={texts.volunteer.usernameOrEmail + ' *'}
                 placeholder={texts.volunteer.usernameOrEmail}
                 keyboardType="email-address"
                 textContentType="emailAddress"
@@ -128,7 +128,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
             <Wrapper style={styles.noPaddingTop}>
               <Input
                 name="password"
-                label={texts.volunteer.password}
+                label={texts.volunteer.password + ' *'}
                 placeholder={texts.volunteer.password}
                 textContentType="password"
                 autoCompleteType="password"

@@ -414,7 +414,31 @@ export const texts = {
   },
   feedbackLink: 'Feedback',
   feedbackScreen: {
-    checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.'
+    alert: {
+      title: 'Feedback',
+      message: 'Vielen Dank für Ihr Feedback!',
+      ok: 'OK'
+    },
+    checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
+    inputsLabel: {
+      name: 'Name',
+      email: 'E-Mail',
+      phone: 'Telefon',
+      message: 'Ihre Mitteilung',
+      checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.'
+    },
+    inputsErrorMessages: {
+      checkbox: 'Bitte bestätigen Sie, dass Sie mit dem Speichern Ihrer Daten einverstanden sind.',
+      email: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+      hint: 'Hinweis',
+      message: 'Bitte geben Sie eine Mitteilung ein.',
+      name: 'Bitte geben Sie Ihren Namen ein.',
+      phone: 'Bitte geben Sie eine gültige Telefonnummer ein.'
+    },
+    sendButton: {
+      disabled: 'Bitte warten...',
+      enabled: 'Senden'
+    }
   },
   homeButtons: {
     events: 'Alle Veranstaltungen anzeigen',
