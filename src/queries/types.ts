@@ -35,6 +35,7 @@ export const QUERY_TYPES = {
     USER: 'consulUser'
   },
   EVENT_RECORD: 'eventRecord',
+  EVENT_RECORDS_ADDRESSES: 'eventRecordsAddresses',
   EVENT_RECORDS: 'eventRecords',
   GENERIC_ITEM: 'genericItem',
   GENERIC_ITEMS: 'genericItems',

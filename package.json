@@ -1,6 +1,6 @@
 {
   "name": "smart-village-app",
-  "version": "3.1.2",
+  "version": "3.1.4",
   "scripts": {
     "android": "npx expo run:android",
     "ios": "npx expo run:ios",
@@ -26,7 +26,7 @@
       "\\.svg": "<rootDir>/__mocks__/svgMock.js"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?@?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*|matomo-tracker-react-native|ramda)"
+      "node_modules/(?!(jest-)?@?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*|matomo-tracker-react-native|ramda|@viro-community/react-viro/*)"
     ],
     "setupFiles": [
       "./jest-setup.js"
@@ -99,7 +99,7 @@
     "react-native-expo-image-cache": "4.1.0",
     "react-native-gesture-handler": "~2.9.0",
     "react-native-get-random-values": "~1.8.0",
-    "react-native-gifted-chat": "0.16.3",
+    "react-native-gifted-chat": "^2.0.1",
     "react-native-maps": "1.3.2",
     "react-native-markdown-display": "^7.0.0-alpha.2",
     "react-native-modal-dropdown": "https://github.com/donni106/react-native-modal-dropdown#feature/search-options",
@@ -123,6 +123,7 @@
     "@babel/eslint-parser": "^7.18.0",
     "@babel/plugin-proposal-logical-assignment-operators": "^7.18.1",
     "@babel/preset-typescript": "^7.18.0",
+    "@types/jest": "^29.5.0",
     "@types/lodash": "^4.14.165",
     "@types/react": "~18.0.27",
     "@types/react-dom": "~18.0.10",

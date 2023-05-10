@@ -7,7 +7,7 @@ import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day
 import { DateData } from 'react-native-calendars/src/types';
 
 import { colors, consts, texts } from '../config';
-import { setupLocales } from '../helpers';
+import { setupLocales } from '../helpers/calendarHelper';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName, Calendar as TCalendar } from '../types';
 

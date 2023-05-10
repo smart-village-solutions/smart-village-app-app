@@ -67,9 +67,8 @@ const styles = StyleSheet.create({
 const stylesWithProps = ({ horizontal }) => {
   let width = imageWidth();
 
-  if (horizontal || width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH) {
-    // image width should be only 70% when rendering horizontal cards or on wider screens,
-    // as there are 15% padding on each side
+  if (horizontal) {
+    // image width should be only 70% when rendering horizontal cards
     width = width * 0.7;
   }
 
@@ -77,7 +76,6 @@ const stylesWithProps = ({ horizontal }) => {
 
   return StyleSheet.create({
     contentContainer: {
-      alignSelf: 'center',
       width: maxWidth
     },
     image: {

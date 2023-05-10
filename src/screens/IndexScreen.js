@@ -2,12 +2,13 @@ import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { Query } from 'react-apollo';
+import { Query, useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
 import { auth } from '../auth';
 import {
+  Button,
   Calendar,
   CalendarListToggle,
   CategoryList,
@@ -27,10 +28,12 @@ import {
   graphqlFetchPolicy,
   isOpen,
   matomoTrackingString,
+  openLink,
   parseListItemsFromQuery,
   sortPOIsByDistanceFromPosition
 } from '../helpers';
 import {
+  useOpenWebScreen,
   usePermanentFilter,
   usePosition,
   useTrackScreenViewAsync,
@@ -56,13 +59,22 @@ const isMapSelected = (query, topFilter) =>
   query === QUERY_TYPES.POINTS_OF_INTEREST &&
   topFilter.find((entry) => entry.selected).id === TOP_FILTER.MAP;
 
-const keyForSelectedValueByQuery = {
-  [QUERY_TYPES.EVENT_RECORDS]: 'categoryId',
-  [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
+const keyForSelectedValueByQuery = (query, isLocationFilter) => {
+  const QUERIES = {
+    [QUERY_TYPES.EVENT_RECORDS]: isLocationFilter ? 'location' : 'categoryId',
+    [QUERY_TYPES.NEWS_ITEMS]: 'dataProvider'
+  };
+
+  return QUERIES[query];
 };
 
-const getAdditionalQueryVariables = (query, selectedValue, excludeDataProviderIds) => {
-  const keyForSelectedValue = keyForSelectedValueByQuery[query];
+const getAdditionalQueryVariables = (
+  query,
+  selectedValue,
+  excludeDataProviderIds,
+  isLocationFilter
+) => {
+  const keyForSelectedValue = keyForSelectedValueByQuery(query, isLocationFilter);
   const additionalQueryVariables = {};
 
   if (selectedValue) {
@@ -86,10 +98,18 @@ export const IndexScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
-  const { news: showNewsFilter = false, events: showEventsFilter = true } = filter;
+  const {
+    news: showNewsFilter = false,
+    events: showEventsFilter = true,
+    eventLocations: showEventLocationsFilter = false
+  } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
   const { calendarToggle = false } = settings;
-  const { categoryListIntroText = texts.categoryList.intro } = sections;
+  const {
+    categoryListIntroText = texts.categoryList.intro,
+    categoryListFooter,
+    eventListIntro
+  } = sections;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [showCalendar, setShowCalendar] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -120,9 +140,24 @@ export const IndexScreen = ({ navigation, route }) => {
       [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
     }[query];
 
-  const hasCategoryFilterSelection = !!Object.prototype.hasOwnProperty.call(queryVariables, [
-    keyForSelectedValueByQuery?.[query]
-  ]);
+  const openWebScreenUrl = eventListIntro?.url || categoryListFooter?.url;
+  const openWebScreen = useOpenWebScreen(title, openWebScreenUrl);
+
+  const hasFilterSelection = useCallback(
+    (query, isLocationFilter) => {
+      return !!Object.prototype.hasOwnProperty.call(queryVariables, [
+        keyForSelectedValueByQuery(query, isLocationFilter)
+      ]);
+    },
+    [queryVariables]
+  );
+
+  const { data: eventRecordsAddressesData, loading: eventRecordsAddressesLoading } = useQuery(
+    getQuery(QUERY_TYPES.EVENT_RECORDS_ADDRESSES),
+    {
+      skip: !showEventLocationsFilter
+    }
+  );
 
   const hasDailyFilterSelection = !!queryVariables.dateRange;
 
@@ -160,7 +195,7 @@ export const IndexScreen = ({ navigation, route }) => {
   );
 
   const updateListDataByDropdown = useCallback(
-    (selectedValue) => {
+    (selectedValue, isLocationFilter) => {
       if (selectedValue) {
         setQueryVariables((prevQueryVariables) => {
           // remove a refetch key if present, which was necessary for the "- Alle -" selection
@@ -168,14 +203,19 @@ export const IndexScreen = ({ navigation, route }) => {
 
           return {
             ...prevQueryVariables,
-            ...getAdditionalQueryVariables(query, selectedValue, excludeDataProviderIds)
+            ...getAdditionalQueryVariables(
+              query,
+              selectedValue,
+              excludeDataProviderIds,
+              isLocationFilter
+            )
           };
         });
       } else {
-        if (hasCategoryFilterSelection) {
+        if (hasFilterSelection(query, isLocationFilter)) {
           setQueryVariables((prevQueryVariables) => {
             // remove the filter key for the specific query if present, when selecting "- Alle -"
-            delete prevQueryVariables[keyForSelectedValueByQuery[query]];
+            delete prevQueryVariables[keyForSelectedValueByQuery(query, isLocationFilter)];
 
             // need to spread the prior `queryVariables` into a new object with additional
             // refetch key to force the Query component to update the data, otherwise it is
@@ -237,7 +277,7 @@ export const IndexScreen = ({ navigation, route }) => {
     // empty screen because the query is not returning anything.
     setQueryVariables({
       ...(route.params?.queryVariables ?? {}),
-      ...getAdditionalQueryVariables(query, undefined, excludeDataProviderIds)
+      ...getAdditionalQueryVariables(query, undefined, excludeDataProviderIds, undefined)
     });
     // reset daily events filter as well when navigating from one index screen to a new events index
     setFilterByDailyEvents(route.params?.filterByDailyEvents);
@@ -363,19 +403,28 @@ export const IndexScreen = ({ navigation, route }) => {
               });
 
             // hack to force the query to refetch for the data provider filter when the user
-            // navigates from one news items index to another
+            // navigates from one index to another and also for rendering the correct data
+            // on first index screen load
             const initialNewsItemsFetch =
               query === QUERY_TYPES.NEWS_ITEMS &&
-              !Object.prototype.hasOwnProperty.call(queryVariables, [
-                keyForSelectedValueByQuery?.[query]
-              ]) &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') &&
               !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
+
+            const initialEventRecordsItemsFetch =
+              query === QUERY_TYPES.EVENT_RECORDS &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'categoryId') &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'location') &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch') &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'dateRange') &&
+              !Object.prototype.hasOwnProperty.call(queryVariables, 'refetchDate');
 
             // apply additional data if volunteer events should be presented and
             // no category selection is made, because the category has nothing to do with
             // volunteer data
             const additionalData =
-              isCalendarWithVolunteerEvents && !hasCategoryFilterSelection
+              isCalendarWithVolunteerEvents &&
+              !hasFilterSelection(query, false) &&
+              !hasFilterSelection(query, true)
                 ? dataVolunteerEvents
                 : undefined;
 
@@ -390,16 +439,55 @@ export const IndexScreen = ({ navigation, route }) => {
                 <ListComponent
                   ListHeaderComponent={
                     <>
+                      {query === QUERY_TYPES.EVENT_RECORDS && !!eventListIntro && (
+                        <>
+                          {!!eventListIntro.introText && (
+                            <Wrapper>
+                              <RegularText small>{eventListIntro.introText}</RegularText>
+                            </Wrapper>
+                          )}
+
+                          {!!eventListIntro.url && !!eventListIntro.buttonTitle && (
+                            <Wrapper>
+                              <Button
+                                onPress={() => openLink(eventListIntro.url, openWebScreen)}
+                                title={eventListIntro.buttonTitle}
+                              />
+                            </Wrapper>
+                          )}
+                          <Divider />
+                        </>
+                      )}
                       {!!showFilter && (
                         <>
                           <DropdownHeader
                             {...{
+                              data:
+                                (initialNewsItemsFetch || initialEventRecordsItemsFetch) && loading
+                                  ? {}
+                                  : data,
                               query,
                               queryVariables,
-                              data: initialNewsItemsFetch && loading ? {} : data,
                               updateListData: updateListDataByDropdown
                             }}
                           />
+
+                          {query === QUERY_TYPES.EVENT_RECORDS && !!eventRecordsAddressesData && (
+                            <DropdownHeader
+                              {...{
+                                data:
+                                  (initialEventRecordsItemsFetch && loading) ||
+                                  eventRecordsAddressesLoading
+                                    ? {}
+                                    : eventRecordsAddressesData,
+                                isLocationFilter: true,
+                                query,
+                                queryVariables,
+                                updateListData: updateListDataByDropdown
+                              }}
+                            />
+                          )}
+
                           {query === QUERY_TYPES.EVENT_RECORDS && data?.categories?.length && (
                             <View>
                               <OptionToggle
@@ -442,8 +530,30 @@ export const IndexScreen = ({ navigation, route }) => {
                     ) : (
                       <EmptyMessage
                         title={categories?.length ? texts.empty.categoryList : texts.empty.list}
+                        showIcon={!categories?.length}
                       />
                     )
+                  }
+                  ListFooterComponent={
+                    <>
+                      {query === QUERY_TYPES.CATEGORIES && !!categoryListFooter && (
+                        <>
+                          {!!categoryListFooter.footerText && (
+                            <Wrapper>
+                              <RegularText small>{categoryListFooter.footerText}</RegularText>
+                            </Wrapper>
+                          )}
+                          {!!categoryListFooter.url && !!categoryListFooter.buttonTitle && (
+                            <Wrapper>
+                              <Button
+                                onPress={() => openLink(categoryListFooter.url, openWebScreen)}
+                                title={categoryListFooter.buttonTitle}
+                              />
+                            </Wrapper>
+                          )}
+                        </>
+                      )}
+                    </>
                   }
                   navigation={navigation}
                   data={

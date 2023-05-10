@@ -103,7 +103,9 @@ export const LocationOverview = ({
   if (!mapMarkers?.length) {
     return (
       <Wrapper>
-        <RegularText>{texts.map.noGeoLocations}</RegularText>
+        <RegularText placeholder small center>
+          {texts.map.noGeoLocations}
+        </RegularText>
       </Wrapper>
     );
   }

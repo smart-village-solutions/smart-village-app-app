@@ -28,7 +28,8 @@ import {
 } from '../components';
 import { FeedbackFooter } from '../components/FeedbackFooter';
 import { colors, device, namespace, normalize, secrets, staticRestSuffix, texts } from '../config';
-import { graphqlFetchPolicy, openLink, setupLocales } from '../helpers';
+import { graphqlFetchPolicy, openLink } from '../helpers';
+import { setupLocales } from '../helpers/calendarHelper';
 import { useRefreshTime, useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
 import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifications';
@@ -294,6 +295,18 @@ export const WasteCollectionScreen = ({ navigation }) => {
     setSelectedStreetId(item?.id);
   }, [addressesData, inputValue, setSelectedStreetId]);
 
+  useEffect(() => {
+    if (wasteAddressesTwoStep && addressesData?.length && !!inputValueCity) {
+      const cityData = addressesData?.filter(
+        (address) => address.city?.toLowerCase() === inputValueCity.toLowerCase()
+      );
+
+      if (cityData?.length == 1) {
+        setInputValue(getStreetString(cityData[0]));
+      }
+    }
+  }, [addressesData, inputValueCity]);
+
   if (loading || typesLoading) {
     return (
       <LoadingContainer>
@@ -317,7 +330,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
               flatListProps={{
                 renderItem: inputValueCitySelected ? null : renderSuggestionCities
               }}
-              inputContainerStyle={styles.autoCompleteInput}
+              inputContainerStyle={styles.autoCompleteInputContainer}
               listStyle={styles.autoCompleteList}
               onChangeText={(text) => {
                 setInputValueCitySelected(false);
@@ -325,21 +338,30 @@ export const WasteCollectionScreen = ({ navigation }) => {
                 setInputValueCity(text);
               }}
               placeholder="Ortschaft"
+              style={styles.autoCompleteInput}
               value={inputValueCity}
             />
           )}
           {(!wasteAddressesTwoStep || (wasteAddressesTwoStep && inputValueCitySelected)) && (
             <Autocomplete
-              containerStyle={styles.autoCompleteContainer}
+              containerStyle={[
+                styles.autoCompleteContainer,
+                !filteredStreets?.length && styles.noBorderBottom,
+                wasteAddressesTwoStep && styles.noBorderTop
+              ]}
               data={filteredStreets}
               disableFullscreenUI
               flatListProps={{
                 renderItem: renderSuggestion
               }}
-              inputContainerStyle={styles.autoCompleteInput}
+              inputContainerStyle={[
+                styles.autoCompleteInputContainer,
+                wasteAddressesTwoStep && styles.noBorderTop
+              ]}
               listStyle={styles.autoCompleteList}
               onChangeText={(text) => setInputValue(text)}
               placeholder="Straße"
+              style={styles.autoCompleteInput}
               value={inputValue}
             />
           )}
@@ -385,17 +407,32 @@ export const WasteCollectionScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   autoCompleteContainer: {
     backgroundColor: colors.surface,
-    borderColor: colors.placeholder,
-    borderWidth: 1,
+    borderColor: colors.shadow,
+    borderBottomWidth: 1,
     width: '100%'
   },
+  autoCompleteInputContainer: {
+    borderRadius: 0,
+    borderWidth: 0
+  },
   autoCompleteInput: {
+    borderColor: colors.shadow,
+    borderWidth: 1,
     color: colors.darkText,
     fontFamily: 'regular',
-    fontSize: normalize(16)
+    fontSize: normalize(16),
+    height: normalize(44),
+    paddingHorizontal: normalize(10)
   },
   autoCompleteList: {
     margin: 0
+  },
+  noBorderBottom: {
+    borderBottomWidth: 0
+  },
+  noBorderTop: {
+    borderTopWidth: 0,
+    marginTop: normalize(-1)
   }
 });
 

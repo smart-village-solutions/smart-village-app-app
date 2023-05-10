@@ -15,7 +15,8 @@ import {
 } from '../../components';
 import { OParlPreviewSection } from '../../components/oParl/sections';
 import { colors, texts } from '../../config';
-import { momentFormat, setupLocales } from '../../helpers';
+import { momentFormat } from '../../helpers';
+import { setupLocales } from '../../helpers/calendarHelper';
 import { useOParlQuery } from '../../hooks';
 import { meetingListQuery } from '../../queries/OParl/meeting';
 import { MeetingPreviewData } from '../../types';

@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.1.4]
+
+New features for accessibility have been added in this update
+
+### Added
+
+- added `Reduce Transparency` feature in iOS accessibility settings to reduce transparency of switches within the app
+- added `Reduce Transparency` feature in iOS accessibility settings to reduce transparency of version code
+
+## [v3.1.3]
+
+This update provides some performance improvements and fixes some bugs
+
+### Added
+
+- `react-native-render-html` package updated to latest version (6.3.4)
+- `@native-html/table-plugin` package updated to latest version (5.3.1)
+- `react-native elements` package updated to latest version (3.4.3)
+- added `@native-html/iframe-plugin` package to use iframe feature separated from `react-native-render-html` package
+- added new provider to be able to access accessibility features through the whole code
+- added automatic street selection feature to `WasteCalendar` for locations with only one street
+- added the ability to reduce the opacity of options for finished surveys
+- added `footerText` and button that can be set via server to the bottom of POI list
+- added `introText` and button that can be set via server to the top of the event list
+- added location filter for event list
+
+### Fixed
+
+- fixed the ability to click on finished surveys with `RadioButton`
+- fixed param error when navigating between two identically named navigation screens
+- fixed json.parse error on application startup
+- fixed an `ActivityIndicator` bug that sometimes appeared at the top of the image when loading the image
+- fixed `VirtualisedLists` error caused by using `FlatList` in `ScrollView`
+- fixed opening and closing times of POIs that were sometimes incorrectly shown
+- fixed white areas on the edges of the screen on large screen devices
+
 ## [v3.1.2]
 
 This update adds new accessibility features and the ability to select streets on the waste calendar screen

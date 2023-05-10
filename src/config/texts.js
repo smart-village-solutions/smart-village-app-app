@@ -106,10 +106,6 @@ export const texts = {
     calendar: 'Kalender',
     list: 'Liste'
   },
-  categoryFilter: {
-    dataProvider: 'Datenquellenauswahl',
-    category: 'Kategorie'
-  },
   categoryList: {
     intro: ''
   },
@@ -339,6 +335,11 @@ export const texts = {
       user: 'Profil'
     },
     tour: 'Tour'
+  },
+  dropdownFilter: {
+    category: 'Kategorie',
+    dataProvider: 'Datenquellenauswahl',
+    location: 'Ort'
   },
   encounter: {
     birthDate: 'Geburtsdatum',
