@@ -60,10 +60,16 @@ export const initializePushPermissions = async () => {
   }
 };
 
+// https://docs.expo.dev/versions/latest/sdk/notifications/#expopushtokenoptions
 const registerForPushNotificationsAsync = async () => {
-  const { data: token } = await Notifications.getExpoPushTokenAsync({
-    experienceId: `@${Constants.manifest?.owner || 'ikusei'}/${Constants.manifest?.slug}`
-  });
+  const { data: token } = await Notifications.getExpoPushTokenAsync();
+
+  return token;
+};
+
+export const handleSystemPermissions = async (): Promise<boolean> => {
+  // Push notifications do not work properly with simulators/emulators
+  if (!Constants.isDevice) return false;
 
   if (device.platform === 'android') {
     Notifications.setNotificationChannelAsync('default', {
@@ -73,13 +79,6 @@ const registerForPushNotificationsAsync = async () => {
       lightColor: parseColorToHex(colors.primary) ?? '#ffffff' // fall back to white if we can't make sense of the color value
     });
   }
-
-  return token;
-};
-
-export const handleSystemPermissions = async (): Promise<boolean> => {
-  // Push notifications do not work properly with simulators/emulators
-  if (!Constants.isDevice) return false;
 
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
 
