@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.2.1]
+
+This update includes new accessibility features and some bug fixes for android
+
+### Added
+
+- Updated inputs in `FeedbackScreen` and added accessibility features
+- Added pause button to sliders
+- Added contrast to `AZFilter` based on `isReduceTransparencyEnabled`
+- Added contrast to inputs based on `isReduceTransparencyEnabled`
+- Added contrast to `FeedbackFooter` based on `isReduceTransparencyEnabled`
+- Added contrast to hourly weather section based on `isReduceTransparencyEnabled`
+
+### Changed
+
+- removed WrapperWithOrientation wrapper as it does not cause any change in appearance
+- upgraded Expo to version 48.0.11 to 48.0.15
+- upgraded react-native version 0.71.6 to 0.71.7
+
+### Fixed
+
+- Fixed app stuck in `SplashScreen` after new Android update
+- Fixed issue with not activating notifications for Android 13
+
 ## [v3.2.0]
 
 Three major new Expo SDK versions 46, 47 and 48 and updated new packages
