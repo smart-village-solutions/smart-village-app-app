@@ -38,7 +38,7 @@ const a11yLabels = consts.a11yLabel;
 // eslint-disable-next-line complexity
 export const EncounterHomeScreen = ({ navigation, route }: any) => {
   // @ts-expect-error settings are not properly typed
-  const encounterCategoryId = useContext(SettingsContext).globalSettings?.settings?.encounter?.categoryId;
+  const categoryId = useContext(SettingsContext).globalSettings?.settings?.encounter?.categoryId;
   const {
     loading: loadingQr,
     qrValue: qrId,
@@ -81,13 +81,13 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
     navigation.navigate(ScreenName.Index, {
       query: QUERY_TYPES.POINTS_OF_INTEREST,
       queryVariables: {
-        categoryId: encounterCategoryId,
+        categoryId,
         limit: 15,
         order: 'name_ASC'
       },
       title: texts.screenTitles.encounterHome
     });
-  }, [encounterCategoryId, navigation]);
+  }, [categoryId, navigation]);
 
   const refresh = useCallback(() => {
     refreshQr();
@@ -104,7 +104,7 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
   if (!userId) {
     return (
       <EncounterWelcome
-        onPressToCategory={encounterCategoryId ? onPressToCategory : undefined}
+        onPressToCategory={categoryId ? onPressToCategory : undefined}
         navigation={navigation}
       />
     );
@@ -177,7 +177,7 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
             }}
             title={texts.encounter.myData}
           />
-          {!!encounterCategoryId && (
+          {!!categoryId && (
             <Button invert title={texts.encounter.toCategory} onPress={onPressToCategory} />
           )}
           {!!additionalInfo?.length && (
