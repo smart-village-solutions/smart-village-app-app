@@ -9,7 +9,6 @@
     "platforms": ["ios", "android"],
     "version": "3.1.4",
     "runtimeVersion": "nativeVersion",
-    "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "smart-village-app",
     "splash": {
@@ -24,6 +23,7 @@
     "ios": {
       "bundleIdentifier": "de.dev.smartvillage.app",
       "supportsTablet": true,
+      "requireFullScreen": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
@@ -41,7 +41,6 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "jsEngine": "hermes",
       "config": {
         "googleMaps": {
           "apiKey": "abcdef"
@@ -65,6 +64,12 @@
         "expo-image-picker",
         {
           "microphonePermission": false
+        }
+      ],
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "PORTRAIT"
         }
       ],
       "sentry-expo"
