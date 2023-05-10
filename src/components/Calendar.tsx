@@ -2,19 +2,20 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import 'moment/locale/de';
 import React, { useCallback } from 'react';
-import { Calendar as RNCalendar, CalendarProps, DateData } from 'react-native-calendars';
+import { CalendarProps, Calendar as RNCalendar } from 'react-native-calendars';
 import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day/basic';
+import { DateData } from 'react-native-calendars/src/types';
 
 import { colors, consts, texts } from '../config';
 import { setupLocales } from '../helpers';
 import { QUERY_TYPES } from '../queries';
-import { Calendar as TCalendar, ScreenName } from '../types';
+import { ScreenName, Calendar as TCalendar } from '../types';
 
 import { renderArrow } from './calendarArrows';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
-const DayComponent = (props: BasicDayProps) => (
+const DayComponent = (props: BasicDayProps & { date?: DateData }) => (
   <BasicDay
     {...props}
     date={props?.date?.dateString}
