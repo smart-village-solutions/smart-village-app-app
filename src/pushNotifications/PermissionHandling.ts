@@ -60,10 +60,9 @@ export const initializePushPermissions = async () => {
   }
 };
 
+// https://docs.expo.dev/versions/latest/sdk/notifications/#expopushtokenoptions
 const registerForPushNotificationsAsync = async () => {
-  const { data: token } = await Notifications.getExpoPushTokenAsync({
-    experienceId: `@${Constants.manifest?.owner || 'ikusei'}/${Constants.manifest?.slug}`
-  });
+  const { data: token } = await Notifications.getExpoPushTokenAsync();
 
   return token;
 };
