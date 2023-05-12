@@ -60,8 +60,14 @@ export const initializePushPermissions = async () => {
 
 // https://docs.expo.dev/versions/latest/sdk/notifications/#expopushtokenoptions
 const registerForPushNotificationsAsync = async () => {
+  const { data: token } = await Notifications.getExpoPushTokenAsync();
+
+  return token;
+};
+
+export const handleSystemPermissions = async (): Promise<boolean> => {
   if (device.platform === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
+    await Notifications.setNotificationChannelAsync('default', {
       name: 'default',
       importance: Notifications.AndroidImportance.DEFAULT,
       vibrationPattern: [0, 250, 250, 250],
@@ -69,12 +75,6 @@ const registerForPushNotificationsAsync = async () => {
     });
   }
 
-  const { data: token } = await Notifications.getExpoPushTokenAsync();
-
-  return token;
-};
-
-export const handleSystemPermissions = async (): Promise<boolean> => {
   // Push notifications do not work properly with simulators/emulators
   if (!Device.isDevice) return false;
 
