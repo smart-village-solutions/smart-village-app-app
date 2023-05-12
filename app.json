@@ -30,6 +30,9 @@
         "NSLocationWhenInUseUsageDescription": "Diese App nutzt die Standortbestimmung um Ihre aktuelle Position auf der Karte darzustellen.",
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE"
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {
