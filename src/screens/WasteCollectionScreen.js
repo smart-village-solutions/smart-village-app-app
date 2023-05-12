@@ -267,6 +267,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
       navigation.navigate('WasteReminder', { wasteTypes: usedTypes, locationData });
 
     const inAppPushPermission = await getInAppPermission();
+
     if (inAppPushPermission) {
       navigate();
     } else {

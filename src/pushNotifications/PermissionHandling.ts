@@ -1,4 +1,4 @@
-import Constants from 'expo-constants';
+import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { PermissionStatus } from 'expo-permissions';
 import { Alert } from 'react-native';
@@ -50,27 +50,16 @@ export const initializePushPermissions = async () => {
 
   // if inAppPermission is undefined (or null), set it depending on the system permission and trigger a token update
   if (inAppPermission === undefined || inAppPermission === null) {
-    const newValue = await handleSystemPermissions();
+    const hasPermission = await handleSystemPermissions();
 
-    addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
+    addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, hasPermission);
 
-    if (newValue) {
-      updatePushToken();
-    }
+    hasPermission && updatePushToken();
   }
 };
 
 // https://docs.expo.dev/versions/latest/sdk/notifications/#expopushtokenoptions
 const registerForPushNotificationsAsync = async () => {
-  const { data: token } = await Notifications.getExpoPushTokenAsync();
-
-  return token;
-};
-
-export const handleSystemPermissions = async (): Promise<boolean> => {
-  // Push notifications do not work properly with simulators/emulators
-  if (!Constants.isDevice) return false;
-
   if (device.platform === 'android') {
     Notifications.setNotificationChannelAsync('default', {
       name: 'default',
@@ -80,13 +69,23 @@ export const handleSystemPermissions = async (): Promise<boolean> => {
     });
   }
 
+  const { data: token } = await Notifications.getExpoPushTokenAsync();
+
+  return token;
+};
+
+export const handleSystemPermissions = async (): Promise<boolean> => {
+  // Push notifications do not work properly with simulators/emulators
+  if (!Device.isDevice) return false;
+
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
 
   let finalStatus = existingStatus;
 
-  if (existingStatus === PermissionStatus.UNDETERMINED) {
-    const { status: askedStatus } = await Notifications.requestPermissionsAsync();
-    finalStatus = askedStatus;
+  if (existingStatus !== PermissionStatus.GRANTED) {
+    const { status: requestedStatus } = await Notifications.requestPermissionsAsync();
+
+    finalStatus = requestedStatus;
   }
 
   return finalStatus === PermissionStatus.GRANTED;
