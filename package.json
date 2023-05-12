@@ -149,7 +149,7 @@
     "typescript": "^4.9.4"
   },
   "resolutions": {
-    "@types/react": "~17.0.21",
+    "@expo/config-plugins": "~6.0.0",
     "markdown-it": "^12.3.2"
   }
 }
