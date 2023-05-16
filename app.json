@@ -16,9 +16,6 @@
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "de.dev.smartvillage.app",
