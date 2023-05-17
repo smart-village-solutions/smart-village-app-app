@@ -66,6 +66,13 @@ const registerForPushNotificationsAsync = async () => {
 };
 
 export const handleSystemPermissions = async (): Promise<boolean> => {
+  const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+
+  // Push notifications do not work properly with simulators/emulators
+  if (!Device.isDevice || inAppPermission !== null) {
+    return false;
+  }
+
   if (device.platform === 'android') {
     await Notifications.setNotificationChannelAsync('default', {
       name: 'default',
@@ -74,9 +81,6 @@ export const handleSystemPermissions = async (): Promise<boolean> => {
       lightColor: parseColorToHex(colors.primary) ?? '#ffffff' // fall back to white if we can't make sense of the color value
     });
   }
-
-  // Push notifications do not work properly with simulators/emulators
-  if (!Device.isDevice) return false;
 
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
 
@@ -88,6 +92,10 @@ export const handleSystemPermissions = async (): Promise<boolean> => {
     finalStatus = requestedStatus;
   }
 
+  addToStore(
+    PushNotificationStorageKeys.IN_APP_PERMISSION,
+    finalStatus === PermissionStatus.GRANTED
+  );
   return finalStatus === PermissionStatus.GRANTED;
 };
 

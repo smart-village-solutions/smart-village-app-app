@@ -58,8 +58,6 @@ export const usePushNotifications = (
         }
     });
 
-    initializePushPermissions();
-
     const subscription = AppState.addEventListener('change', onGetActive);
 
     // This listener is fired whenever a notification is received while the app is foregrounded
