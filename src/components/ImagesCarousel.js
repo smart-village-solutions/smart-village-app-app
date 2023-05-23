@@ -23,7 +23,7 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
   const { sliderPauseButton = {} } = settings;
   const {
     horizontalPosition = 'right',
-    show: showSliderPauseButton = true,
+    show: showSliderPauseButton = false,
     size: sizeSliderPauseButton = 25,
     verticalPosition = 'bottom'
   } = sliderPauseButton;
