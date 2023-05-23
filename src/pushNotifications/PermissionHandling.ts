@@ -14,48 +14,25 @@ export const getInAppPermission = async (): Promise<boolean> => {
 };
 
 export const setInAppPermission = async (newValue: boolean) => {
+  let token = undefined;
   const oldValue = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
   if (newValue !== oldValue) {
+    if (newValue) {
+      // receive token
+      token = await registerForPushNotificationsAsync();
+    }
+
     addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
 
-    if (newValue) {
-      const hasPermission = await handleSystemPermissions();
+    // add token to store and notify server or
+    // remove token from store and notify server
+    const successfullyHandled = await handleIncomingToken(token);
 
-      if (!hasPermission) {
-        showSystemPermissionMissingDialog();
-
-        return true;
-      } else {
-        const token = await registerForPushNotificationsAsync();
-        const successfullyHandled = await handleIncomingToken(token);
-
-        return successfullyHandled;
-      }
-    } else {
-      // remove token from store and notify server
-      const successfullyHandled = await handleIncomingToken();
-
-      return successfullyHandled;
-    }
-  } else {
-    return true;
+    return successfullyHandled;
   }
-};
 
-export const initializePushPermissions = async () => {
-  const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
-
-  inAppPermission && updatePushToken();
-
-  // if inAppPermission is undefined (or null), set it depending on the system permission and trigger a token update
-  if (inAppPermission === undefined || inAppPermission === null) {
-    const hasPermission = await handleSystemPermissions();
-
-    addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, hasPermission);
-
-    hasPermission && updatePushToken();
-  }
+  return true;
 };
 
 // https://docs.expo.dev/versions/latest/sdk/notifications/#expopushtokenoptions
@@ -65,11 +42,11 @@ const registerForPushNotificationsAsync = async () => {
   return token;
 };
 
-export const handleSystemPermissions = async (): Promise<boolean> => {
-  const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
-
+export const handleSystemPermissions = async (
+  shouldSetInAppPermission = true
+): Promise<boolean> => {
   // Push notifications do not work properly with simulators/emulators
-  if (!Device.isDevice || inAppPermission !== null) {
+  if (!Device.isDevice) {
     return false;
   }
 
@@ -83,24 +60,35 @@ export const handleSystemPermissions = async (): Promise<boolean> => {
   }
 
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
-
   let finalStatus = existingStatus;
+  const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+  // if in app permission is already set, do not request again
+  const hasInAppPermissionSet = inAppPermission !== undefined && inAppPermission !== null;
 
-  if (existingStatus !== PermissionStatus.GRANTED) {
+  if (!hasInAppPermissionSet && existingStatus !== PermissionStatus.GRANTED) {
     const { status: requestedStatus } = await Notifications.requestPermissionsAsync();
 
     finalStatus = requestedStatus;
   }
 
-  addToStore(
-    PushNotificationStorageKeys.IN_APP_PERMISSION,
-    finalStatus === PermissionStatus.GRANTED
-  );
-  return finalStatus === PermissionStatus.GRANTED;
+  const isGranted = finalStatus === PermissionStatus.GRANTED;
+
+  if (shouldSetInAppPermission) {
+    try {
+      const successfullyHandledInAppPermission = await setInAppPermission(isGranted);
+
+      return successfullyHandledInAppPermission && isGranted;
+    } catch (error) {
+      console.warn('An error occurred while handling in app permissions:', error);
+      return false;
+    }
+  }
+
+  return isGranted;
 };
 
 export const updatePushToken = async () => {
-  await handleSystemPermissions()
+  await handleSystemPermissions(false)
     .then((hasPermission) => {
       if (hasPermission) return registerForPushNotificationsAsync();
     })
@@ -125,8 +113,14 @@ export const showPermissionRequiredAlert = (approveCallback: () => void) => {
     {
       text: approve,
       onPress: async () => {
-        await setInAppPermission(true);
-        approveCallback();
+        const hasPermission = await handleSystemPermissions(false);
+
+        if (!hasPermission) {
+          showSystemPermissionMissingDialog();
+        } else {
+          await setInAppPermission(true);
+          approveCallback();
+        }
       }
     }
   ]);

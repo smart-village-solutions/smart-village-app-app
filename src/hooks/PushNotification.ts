@@ -5,9 +5,8 @@ import { AppState, AppStateStatus } from 'react-native';
 
 import { readFromStore } from '../helpers';
 import {
-  getPushTokenFromStorage,
-  initializePushPermissions,
   PushNotificationStorageKeys,
+  getPushTokenFromStorage,
   updatePushToken
 } from '../pushNotifications';
 
@@ -41,8 +40,8 @@ export const usePushNotifications = (
         const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
         const token = await getPushTokenFromStorage();
 
-        if (nextState === 'active') {
-          inAppPermission && !token && updatePushToken();
+        if (nextState === 'active' && inAppPermission && !token) {
+          updatePushToken();
         }
       }, 3000);
     }
