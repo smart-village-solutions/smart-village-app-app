@@ -8,6 +8,7 @@ import { ImagesCarousel } from './ImagesCarousel';
 
 export const ImageSection = ({ mediaContents }) => {
   const images = [];
+
   !!mediaContents?.length &&
     _filter(
       mediaContents,

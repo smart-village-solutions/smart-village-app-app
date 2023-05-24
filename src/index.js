@@ -103,6 +103,8 @@ const MainAppWithApolloProvider = () => {
     });
 
     setClient(client);
+
+    return client;
   };
 
   // we wait for NetInfo to check for main server reachability, which is made when `isMainserverUp`
@@ -112,7 +114,7 @@ const MainAppWithApolloProvider = () => {
     isMainserverUp !== null && !client && auth(setupApolloClient);
   }, [isMainserverUp]);
 
-  const setupInitialGlobalSettings = async () => {
+  const setupInitialGlobalSettings = async ({ client }) => {
     const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
     // rehydrate data from the async storage to the global state
@@ -170,19 +172,29 @@ const MainAppWithApolloProvider = () => {
     setInitialLocationSettings(locationSettings);
     setInitialListTypesSettings(listTypesSettings);
     setInitialGlobalSettings(globalSettings);
+
+    // this is currently the last point where something was done, so the app startup is done
+    setLoading(false);
   };
 
-  // setup global settings if apollo client setup finished
+  // setup the apollo client and setup global settings after apollo client setup finished
   useEffect(() => {
-    client && setupInitialGlobalSettings();
-  }, [client]);
+    async function prepare() {
+      try {
+        await auth();
 
-  useEffect(() => {
-    // this is currently the last point where something was done, so the app startup is done
-    initialGlobalSettings && client && setLoading(false);
-  }, [initialGlobalSettings]);
+        const client = await setupApolloClient();
 
-  if (loading) {
+        setupInitialGlobalSettings({ client });
+      } catch (error) {
+        console.warn(error);
+      }
+    }
+
+    !!isMainserverUp && prepare();
+  }, [isMainserverUp]);
+
+  if (loading || !client) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />

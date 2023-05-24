@@ -22,8 +22,10 @@ export const NetworkProvider = ({ children }) => {
       setIsMainserverUp(state.isInternetReachable);
     });
 
-    // returned function will be called when component unmounts
-    return () => unsubscribe();
+    return () => {
+      // Unsubscribe to network state updates when component unmounts
+      unsubscribe();
+    };
   }, []);
 
   return (

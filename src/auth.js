@@ -32,13 +32,10 @@ const isTokenValid = async () => {
 
 /**
  * Requests the server to authenticate the mobile app with the main server.
- *
- * @param {requestCallback} callback the callback that needs authentication
- * @param {boolean} forceNewToken trigger to force request for new token, default `false`
  */
-export const auth = async (callback, forceNewToken = false) => {
-  // if the token is still valid, just run the callback, if one exists
-  if (!forceNewToken && (await isTokenValid())) return callback && callback();
+export const auth = async () => {
+  // quit if the token is still valid
+  if (await isTokenValid()) return;
 
   // otherwise fetch a new access token and expire time
   const fetchObj = {
@@ -54,13 +51,14 @@ export const auth = async (callback, forceNewToken = false) => {
     })
   };
 
-  fetch(`${secrets[namespace].serverUrl}${secrets[namespace].oAuthTokenEndpoint}`, fetchObj)
-    .then((res) => res.json())
-    .then((json) => {
-      SecureStore.setItemAsync('ACCESS_TOKEN', json.access_token);
-      // save the time when the token will expire, calculated from the creation time in seconds
-      // added by the expire duration in seconds
-      SecureStore.setItemAsync(ACCESS_TOKEN_EXPIRE_TIME, `${json.created_at + json.expires_in}`);
-    })
-    .finally(() => callback && callback());
+  const response = await fetch(
+    `${secrets[namespace].serverUrl}${secrets[namespace].oAuthTokenEndpoint}`,
+    fetchObj
+  );
+  const json = await response.json();
+
+  await SecureStore.setItemAsync('ACCESS_TOKEN', json.access_token);
+  // save the time when the token will expire, calculated from the creation time in seconds
+  // added by the expire duration in seconds
+  await SecureStore.setItemAsync(ACCESS_TOKEN_EXPIRE_TIME, `${json.created_at + json.expires_in}`);
 };

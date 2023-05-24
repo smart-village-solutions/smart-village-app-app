@@ -8,7 +8,7 @@
     "githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
     "platforms": ["ios", "android"],
     "version": "3.2.1",
-    "runtimeVersion": "nativeVersion",
+    "runtimeVersion": { "policy": "nativeVersion" },
     "icon": "./assets/icon.png",
     "scheme": "smart-village-app",
     "splash": {

@@ -13,9 +13,11 @@ export const EmptyMessage = ({ title, showIcon }) => {
   return (
     <SafeAreaViewFlex>
       <Wrapper>
-        <View style={styles.paddingContainer}>
-          <Icon.EmptySection color={colors.placeholder} size={imageHeight(imageWidth()) / 2} />
-        </View>
+        {showIcon && (
+          <View style={styles.paddingContainer}>
+            <Icon.EmptySection color={colors.placeholder} size={imageHeight(imageWidth()) / 2} />
+          </View>
+        )}
 
         <RegularText placeholder small center>
           {title}

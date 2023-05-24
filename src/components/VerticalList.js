@@ -65,12 +65,10 @@ export const VerticalList = ({
                 }
               />
             );
-          } else {
-            return null;
           }
-        } else {
-          return null;
         }
+
+        return null;
       }}
       initialNumToRender={
         data?.length < MAX_INITIAL_NUM_TO_RENDER ? data.length : MAX_INITIAL_NUM_TO_RENDER

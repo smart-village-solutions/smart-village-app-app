@@ -104,16 +104,17 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
   const sectionData = [
     {
       title: data.title,
-      data: data.children?.map((child) => {
-        return {
-          ...child,
-          params: {
-            ...child.params,
-            rootRouteName: child.params?.rootRouteName ?? rootRouteName,
-            title: child.params?.title ?? navigationTitle
-          }
-        };
-      })
+      data:
+        data.children?.map((child) => {
+          return {
+            ...child,
+            params: {
+              ...child.params,
+              rootRouteName: child.params?.rootRouteName ?? rootRouteName,
+              title: child.params?.title ?? navigationTitle
+            }
+          };
+        }) || []
     }
   ];
 
