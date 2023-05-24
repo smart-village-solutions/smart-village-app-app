@@ -19,7 +19,12 @@ export const NetworkProvider = ({ children }) => {
     // https://github.com/react-native-community/react-native-netinfo#netinfostate
     const unsubscribe = NetInfo.addEventListener((state) => {
       setIsConnected(state.isConnected);
-      setIsMainserverUp(state.isInternetReachable);
+      // NOTE: Somehow on iOS there is always `null` for `state.isInternetReachable` but we need it
+      // to be `true` to not fallback to cached data. If there is a connection, we assume the main
+      // server is also reachable, so we fallback to `state.isConnected` here.
+      // With cached data on the initial app load, we cannot show anything and get stuck on the
+      // splash screen.
+      setIsMainserverUp(state.isInternetReachable || state.isConnected);
     });
 
     return () => {
