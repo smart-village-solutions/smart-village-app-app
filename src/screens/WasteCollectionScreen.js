@@ -34,6 +34,7 @@ import { NetworkContext } from '../NetworkProvider';
 import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifications';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
+import { OrientationContext } from '../OrientationProvider';
 
 const dotSize = 6;
 
@@ -83,10 +84,12 @@ const getLocationData = (streetData) => {
 // eslint-disable-next-line complexity
 export const WasteCollectionScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { dimensions } = useContext(OrientationContext);
   const { globalSettings } = useContext(SettingsContext);
   const [inputValueCity, setInputValueCity] = useState('');
   const [inputValueCitySelected, setInputValueCitySelected] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [isStreetInputFocused, setIsStreetInputFocused] = useState(false);
   const [selectedStreetId, setSelectedStreetId] = useState();
 
   const addressesRefreshTime = useRefreshTime('waste-addresses');
@@ -132,6 +135,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
     }
   );
 
+  const isInputAutoFocus = globalSettings?.settings?.wasteAddresses?.isInputAutoFocus;
   const wasteAddressesStreetCount = globalSettings?.settings?.wasteAddresses?.streetCount || 5;
   const wasteAddressesTwoStep = !!globalSettings?.settings?.wasteAddresses?.twoStep;
 
@@ -169,7 +173,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
   const filterStreets = useCallback(
     (currentInputValue, addressesData) => {
       if (wasteAddressesTwoStep && inputValueCity === '') return [];
-      if (currentInputValue === '') return [];
+      if (isInputAutoFocus && currentInputValue === '' && !isStreetInputFocused) return [];
 
       const streets = addressesData
         ?.filter((address) => {
@@ -182,9 +186,15 @@ export const WasteCollectionScreen = ({ navigation }) => {
         })
         ?.filter((address) => (wasteAddressesTwoStep ? address.city === inputValueCity : true));
 
-      return _sortBy(streets, 'street').slice(0, wasteAddressesStreetCount);
+      const sortedStreets = _sortBy(streets, 'street');
+
+      if (isInputAutoFocus) {
+        return sortedStreets;
+      }
+
+      return sortedStreets.slice(0, wasteAddressesStreetCount);
     },
-    [getStreetString, inputValueCity]
+    [getStreetString, inputValueCity, isStreetInputFocused]
   );
 
   const renderSuggestionCities = useCallback(
@@ -327,13 +337,19 @@ export const WasteCollectionScreen = ({ navigation }) => {
             data={filteredCities}
             disableFullscreenUI
             flatListProps={{
-              renderItem: inputValueCitySelected ? null : renderSuggestionCities
+              renderItem: inputValueCitySelected ? null : renderSuggestionCities,
+              height: dimensions.height - normalize(170)
             }}
             listStyle={styles.autoCompleteList}
             onChangeText={(text) => {
               setInputValueCitySelected(false);
               setSelectedStreetId(undefined);
               setInputValueCity(text);
+            }}
+            onFocus={() => {
+              if (isInputAutoFocus) {
+                setIsStreetInputFocused(false);
+              }
             }}
             placeholder="Ortschaft"
             style={styles.autoCompleteInput}
@@ -349,10 +365,16 @@ export const WasteCollectionScreen = ({ navigation }) => {
             data={filteredStreets}
             disableFullscreenUI
             flatListProps={{
-              renderItem: renderSuggestion
+              renderItem: renderSuggestion,
+              height: dimensions.height - normalize(220)
             }}
             listStyle={styles.autoCompleteList}
             onChangeText={(text) => setInputValue(text)}
+            onFocus={() => {
+              if (isInputAutoFocus) {
+                setIsStreetInputFocused(true);
+              }
+            }}
             placeholder="Straße"
             style={styles.autoCompleteInput}
             value={inputValue}
