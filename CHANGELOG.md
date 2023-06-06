@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.2.2]
+
+This update includes bug fixes for waste calendar notifications
+
+### Fixed
+
+- fixed a bug that prevented users from re-creating notifications for the waste calendar
+
 ## [v3.2.1]
 
 This update includes new accessibility features and some bug fixes for android
