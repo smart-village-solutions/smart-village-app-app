@@ -14,7 +14,7 @@ import * as Linking from 'expo-linking';
  */
 function ensureProtocol(link) {
   const protocolRegExpMatch = link.match(/^https?:|tel:|mailto:|maps:|geo:/);
-  let linkWithProtocol = link;
+  let linkWithProtocol = link.replaceAll(' ', '');
 
   if (!protocolRegExpMatch) {
     linkWithProtocol = `http://${link}`;
