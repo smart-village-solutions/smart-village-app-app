@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { useController, UseControllerOptions } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 import { Input as RNEInput, InputProps } from 'react-native-elements';
@@ -6,6 +6,7 @@ import { Input as RNEInput, InputProps } from 'react-native-elements';
 import { colors, consts, device, Icon, normalize } from '../../config';
 import { Label } from '../Label';
 import { BoldText } from '../Text';
+import { AccessibilityContext } from '../../AccessibilityProvider';
 
 const { a11yLabel } = consts;
 
@@ -39,6 +40,8 @@ export const Input = ({
   containerStyle,
   ...furtherProps
 }: Props) => {
+  const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
+
   const { field } = useController({
     control,
     name,
@@ -116,6 +119,7 @@ export const Input = ({
         hidden && styles.inputContainerHidden,
         isValid && styles.inputContainerSuccess,
         !isValid && !!errorMessage && styles.inputContainerError,
+        isReduceTransparencyEnabled && styles.inputAccessibilityBorderContrast,
         inputContainerStyle
       ]}
       rightIconContainerStyle={styles.rightIconContainer}
@@ -146,6 +150,9 @@ const styles = StyleSheet.create({
   },
   row: {
     width: '47%'
+  },
+  inputAccessibilityBorderContrast: {
+    borderColor: colors.darkText
   },
   inputContainer: {
     borderBottomWidth: normalize(1),
