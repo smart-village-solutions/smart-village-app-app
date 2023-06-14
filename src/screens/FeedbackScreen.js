@@ -140,6 +140,7 @@ export const FeedbackScreen = () => {
               render={({ onChange, value }) => (
                 <Checkbox
                   boldTitle
+                  containerStyle={styles.checkboxContainerStyle}
                   title={texts.feedbackScreen.inputsLabel.checkbox + ' *'}
                   checkedIcon="check-square-o"
                   checkedColor={colors.accent}
@@ -169,6 +170,9 @@ export const FeedbackScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  checkboxContainerStyle: {
+    marginTop: normalize(30)
+  },
   containerStyle: {
     marginBottom: normalize(30)
   },
