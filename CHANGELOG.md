@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.2.3]
+
+This update fixes some bugs and includes new features
+
+### Added
+
+- added automatic show of the list after pressing the street input in the waste calendar
+- added scrolling feature to the waste calendar list
+- added to list the events of the selected day under the event calendar
+- added the feature to change the number of dots shown in the event calendar
+- added the feature to darken the borders of inputs depending on accessibility features
+
+### Changed
+
+- upgraded Expo to version 48.0.15 to 48.0.18
+- upgraded react-native version 0.71.7 to 0.71.8
+- removed the requirement on some inputs of the form in `FeedbackScreen`
+
+### Fixed
+
+- fixed a problem that prevented links within the application from opening
+- fixed the problem with the checkbox in `FeedbackScreen` appearing above the input
+
 ## [v3.2.2]
 
 This update includes bug fixes for waste calendar notifications
