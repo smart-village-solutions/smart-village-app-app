@@ -431,9 +431,7 @@ export const texts = {
       checkbox: 'Bitte bestätigen Sie, dass Sie mit dem Speichern Ihrer Daten einverstanden sind.',
       email: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
       hint: 'Hinweis',
-      message: 'Bitte geben Sie eine Mitteilung ein.',
-      name: 'Bitte geben Sie Ihren Namen ein.',
-      phone: 'Bitte geben Sie eine gültige Telefonnummer ein.'
+      message: 'Bitte geben Sie eine Mitteilung ein.'
     },
     sendButton: {
       disabled: 'Bitte warten...',

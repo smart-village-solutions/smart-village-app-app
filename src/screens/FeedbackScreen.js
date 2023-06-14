@@ -85,25 +85,21 @@ export const FeedbackScreen = () => {
           <View style={{ padding: normalize(14) }}>
             <Input
               name="name"
-              label={texts.feedbackScreen.inputsLabel.name + ' *'}
+              label={texts.feedbackScreen.inputsLabel.name}
               boldLabel
               placeholder={texts.feedbackScreen.inputsLabel.name}
-              validate
-              rules={{ required: texts.feedbackScreen.inputsErrorMessages.name }}
-              errorMessage={errors.name && errors.name.message}
               control={control}
               containerStyle={styles.containerStyle}
             />
 
             <Input
               name="email"
-              label={texts.feedbackScreen.inputsLabel.email + ' *'}
+              label={texts.feedbackScreen.inputsLabel.email}
               boldLabel
               placeholder={texts.feedbackScreen.inputsLabel.email}
               keyboardType="email-address"
               validate
               rules={{
-                required: texts.feedbackScreen.inputsErrorMessages.email,
                 pattern: {
                   value: EMAIL_REGEX,
                   message: texts.feedbackScreen.inputsErrorMessages.email
@@ -116,13 +112,10 @@ export const FeedbackScreen = () => {
 
             <Input
               name="phone"
-              label={texts.feedbackScreen.inputsLabel.phone + ' *'}
+              label={texts.feedbackScreen.inputsLabel.phone}
               boldLabel
               placeholder={texts.feedbackScreen.inputsLabel.phone}
               keyboardType="phone-pad"
-              validate
-              rules={{ required: texts.feedbackScreen.inputsErrorMessages.phone }}
-              errorMessage={errors.phone && errors.phone.message}
               control={control}
               containerStyle={styles.containerStyle}
             />
