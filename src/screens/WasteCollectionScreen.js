@@ -327,6 +327,16 @@ export const WasteCollectionScreen = ({ navigation }) => {
 
   const filteredCities = wasteAddressesTwoStep ? filterCities(inputValueCity, addressesData) : [];
   const filteredStreets = filterStreets(inputValue, addressesData, inputValueCity);
+  /**
+   * The variable `isStreetResultsHidden` indicates whether the street results should be hidden based
+   * on the focused state of the street input and the auto-focus configuration, considering the presence
+   * of input value; it is set to `true` if the conditions are met, indicating that the street results
+   * should be hidden.
+   */
+  const isStreetResultsHidden = !(
+    isStreetInputFocused &&
+    ((!isInputAutoFocus && inputValue) || isInputAutoFocus)
+  );
 
   return (
     <SafeAreaViewFlex>
@@ -337,8 +347,9 @@ export const WasteCollectionScreen = ({ navigation }) => {
             data={filteredCities}
             disableFullscreenUI
             flatListProps={{
-              renderItem: inputValueCitySelected ? null : renderSuggestionCities,
-              height: dimensions.height - normalize(170)
+              height: dimensions.height - normalize(170),
+              keyboardShouldPersistTaps: 'handled',
+              renderItem: inputValueCitySelected ? null : renderSuggestionCities
             }}
             listStyle={styles.autoCompleteList}
             onChangeText={(text) => {
@@ -346,11 +357,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
               setSelectedStreetId(undefined);
               setInputValueCity(text);
             }}
-            onFocus={() => {
-              if (isInputAutoFocus) {
-                setIsStreetInputFocused(false);
-              }
-            }}
+            onFocus={() => setIsStreetInputFocused(false)}
             placeholder="Ortschaft"
             style={styles.autoCompleteInput}
             value={inputValueCity}
@@ -365,16 +372,15 @@ export const WasteCollectionScreen = ({ navigation }) => {
             data={filteredStreets}
             disableFullscreenUI
             flatListProps={{
-              renderItem: renderSuggestion,
-              height: dimensions.height - normalize(220)
+              height: dimensions.height - normalize(220),
+              keyboardShouldPersistTaps: 'handled',
+              renderItem: renderSuggestion
             }}
+            hideResults={isStreetResultsHidden}
             listStyle={styles.autoCompleteList}
             onChangeText={(text) => setInputValue(text)}
-            onFocus={() => {
-              if (isInputAutoFocus) {
-                setIsStreetInputFocused(true);
-              }
-            }}
+            onBlur={() => setIsStreetInputFocused(false)}
+            onFocus={() => setIsStreetInputFocused(true)}
             placeholder="Straße"
             style={styles.autoCompleteInput}
             value={inputValue}
