@@ -10,6 +10,10 @@ export const texts = {
       closed: 'geschlossen',
       open: 'geöffnet'
     },
+    menuItem: {
+      active: 'aktiviert',
+      inactive: 'nicht aktiviert'
+    },
     searchInputIcons: {
       delete: 'Suche löschen',
       search: 'Suche'

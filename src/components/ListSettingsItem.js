@@ -60,8 +60,8 @@ export const ListSettingsItem = ({ item }) => {
         {Object.values(LIST_TYPES).map((listType) => {
           const activeTabAccessibilityLabel =
             listType === listTypeForQuery
-              ? texts.accessibilityLabels.tabs.active
-              : texts.accessibilityLabels.tabs.inactive;
+              ? texts.accessibilityLabels.menuItem.active
+              : texts.accessibilityLabels.menuItem.inactive;
 
           return (
             <ListItem
