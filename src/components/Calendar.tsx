@@ -3,13 +3,13 @@ import moment from 'moment';
 import 'moment/locale/de';
 import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { CalendarProps, Calendar as RNCalendar } from 'react-native-calendars';
 import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day/basic';
 import { DateData } from 'react-native-calendars/src/types';
 
 import { SettingsContext } from '../SettingsProvider';
-import { colors, consts, texts } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import { parseListItemsFromQuery } from '../helpers';
 import { setupLocales } from '../helpers/calendarHelper';
 import { QUERY_TYPES, getQuery } from '../queries';
@@ -164,6 +164,7 @@ export const Calendar = ({ query, queryVariables, calendarData, isLoading, navig
               <EmptyMessage title={texts.empty.list} />
             )
           }
+          ListHeaderComponent={<View style={{ height: normalize(20) }} />}
           navigation={navigation}
           query={query}
           queryVariables={queryVariables}
