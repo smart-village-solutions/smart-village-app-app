@@ -112,7 +112,7 @@
     "react-native-screens": "~3.20.0",
     "react-native-snap-carousel": "4.0.0-beta.6",
     "react-native-status-bar-height": "^2.6.0",
-    "react-native-svg": "13.4.0",
+    "react-native-svg": "13.9.0",
     "react-native-web": "~0.18.11",
     "react-native-webview": "11.26.0",
     "react-query": "^3.34.14",
