@@ -70,7 +70,7 @@ const htmlConfig = {
 };
 
 export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
-  const { isBoldTextEnabled } = useContext(AccessibilityContext);
+  const { isBoldTextEnabled, isReduceTransparencyEnabled } = useContext(AccessibilityContext);
 
   let calculatedWidth = width !== undefined ? Math.min(imageWidth(), width) : imageWidth();
 
@@ -104,6 +104,7 @@ export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
       tagsStyles={{
         ...styles.html,
         ...(isBoldTextEnabled ? styles.htmlBoldTextEnabled : {}),
+        ...(isReduceTransparencyEnabled ? styles.htmlReduceTransparencyEnabled : {}),
         ...tagsStyles
       }}
       emSize={normalize(16)}
