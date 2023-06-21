@@ -8,9 +8,10 @@ import { CalendarProps, Calendar as RNCalendar } from 'react-native-calendars';
 import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day/basic';
 import { DateData } from 'react-native-calendars/src/types';
 
+import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, normalize, texts } from '../config';
-import { parseListItemsFromQuery } from '../helpers';
+import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
 import { setupLocales } from '../helpers/calendarHelper';
 import { QUERY_TYPES, getQuery } from '../queries';
 import { ScreenName, Calendar as TCalendar } from '../types';
@@ -74,27 +75,31 @@ const getMarkedDates = (data?: any[], dotCount: number = MAX_DOTS_PER_DAY, selec
 
 export const Calendar = ({ query, queryVariables, calendarData, isLoading, navigation }: Props) => {
   const contentContainerId = queryVariables?.contentContainerId;
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const today = moment().format('YYYY-MM-DD');
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { eventCalendar = {} } = settings;
   const { dotCount, subList = false } = eventCalendar;
 
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+
   const [queryVariableWithDateRange, setQueryVariableWithDateRange] = useState<any>({
-    queryVariables,
+    ...queryVariables,
     dateRange: [today, today]
   });
   const [markedDates, setMarkedDates] = useState<CalendarProps['markedDates']>(
     getMarkedDates(calendarData, dotCount, today)
   );
 
-  const { data, loading } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
+  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
+    fetchPolicy,
     variables: queryVariableWithDateRange,
     skip: !subList
   });
 
   const onDayPress = useCallback(
-    (day: DateData) => {
+    async (day: DateData) => {
       if (query === QUERY_TYPES.EVENT_RECORDS) {
         if (subList) {
           setQueryVariableWithDateRange({
@@ -102,6 +107,8 @@ export const Calendar = ({ query, queryVariables, calendarData, isLoading, navig
             dateRange: [day.dateString, day.dateString]
           });
           setMarkedDates(getMarkedDates(calendarData, dotCount, day.dateString));
+
+          await refetch();
 
           return;
         }
@@ -153,7 +160,7 @@ export const Calendar = ({ query, queryVariables, calendarData, isLoading, navig
 
       {subList && (
         <ListComponent
-          data={buildListItems(data)}
+          data={loading ? [] : buildListItems(data)}
           horizontal={false}
           ListEmptyComponent={
             loading ? (
