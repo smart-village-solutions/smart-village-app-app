@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { colors, normalize, texts } from '../config';
@@ -6,6 +6,7 @@ import { combineLanguages, getAnswerLabel } from '../helpers';
 import { useSurveyLanguages } from '../hooks';
 import { ResponseOption } from '../types';
 
+import { AccessibilityContext } from '../AccessibilityProvider';
 import { SectionHeader } from './SectionHeader';
 import { BoldText } from './Text';
 import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
@@ -35,6 +36,8 @@ const getCountLabel = (partial: number, total: number) => {
 };
 
 const SingleResult = ({ isMultilingual, option, selected, totalCount }: SingleProps) => {
+  const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
+
   const percentString = getPercent(option.votesCount, totalCount);
   const width = percentString === '0%' ? barBorderRadius * 2 : percentString;
   return (
@@ -49,7 +52,9 @@ const SingleResult = ({ isMultilingual, option, selected, totalCount }: SinglePr
             styles.baseBarStyle,
             // eslint-disable-next-line react-native/no-inline-styles
             {
-              opacity: selected ? 1 : 0.5,
+              opacity: isReduceTransparencyEnabled || selected ? 1 : 0.5,
+              backgroundColor:
+                isReduceTransparencyEnabled && !selected ? colors.surface : colors.primary,
               width
             }
           ]}
@@ -102,8 +107,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   baseBarStyle: {
-    backgroundColor: colors.primary,
+    borderColor: colors.primary,
     borderRadius: 4,
+    borderWidth: 1,
     height: normalize(26)
   },
   container: {
