@@ -26,7 +26,8 @@
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
         "NSLocationWhenInUseUsageDescription": "Diese App nutzt die Standortbestimmung um Ihre aktuelle Position auf der Karte darzustellen.",
         "CFBundleLocalizations": ["de"],
-        "CFBundleDevelopmentRegion": "de_DE"
+        "CFBundleDevelopmentRegion": "de_DE",
+        "LSApplicationQueriesSchemes": ["whatsapp"]
       },
       "config": {
         "usesNonExemptEncryption": false
