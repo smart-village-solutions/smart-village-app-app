@@ -42,7 +42,9 @@ export const WebScreen = ({ route }) => {
         // https://github.com/react-native-webview/react-native-webview/blob/19980d888d66554875f3ac64b3e8a35bd7ad998b/src/WebViewTypes.ts#L378-L389
         decelerationRate="normal"
         // https://github.com/react-native-webview/react-native-webview/blob/master/docs/Reference.md#applicationnameforuseragent
-        applicationNameForUserAgent={appJson.expo.scheme}
+        applicationNameForUserAgent={
+          !webUrl.includes('bbnavi.de') ? appJson.expo.scheme : undefined
+        }
       />
     </SafeAreaViewFlex>
   );
