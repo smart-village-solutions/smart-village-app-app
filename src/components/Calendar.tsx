@@ -149,7 +149,11 @@ export const Calendar = ({ query, queryVariables, calendarData, isLoading, navig
   );
 
   const buildListItems = useCallback(
-    (data: DateData) => parseListItemsFromQuery(query, data, { queryVariableWithDateRange }),
+    (data: DateData) =>
+      parseListItemsFromQuery(query, data, '', {
+        queryVariables: queryVariableWithDateRange,
+        withDate: false
+      }),
     [query, queryVariableWithDateRange]
   );
 
