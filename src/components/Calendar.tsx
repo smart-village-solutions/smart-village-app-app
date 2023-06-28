@@ -13,7 +13,7 @@ import { SettingsContext } from '../SettingsProvider';
 import { colors, consts, normalize, texts } from '../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
 import { setupLocales } from '../helpers/calendarHelper';
-import { QUERY_TYPES, getQuery } from '../queries';
+import { QUERY_TYPES, getFetchMoreQuery, getQuery } from '../queries';
 import { ScreenName, Calendar as TCalendar } from '../types';
 
 import { EmptyMessage } from './EmptyMessage';
@@ -92,11 +92,28 @@ export const Calendar = ({ query, queryVariables, calendarData, isLoading, navig
     getMarkedDates(calendarData, dotCount, today)
   );
 
-  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
+  const { data, loading, refetch, fetchMore } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
     fetchPolicy,
     variables: queryVariableWithDateRange,
     skip: !subList
   });
+
+  const fetchMoreData = () =>
+    fetchMore({
+      query: getFetchMoreQuery(query),
+      variables: {
+        ...queryVariableWithDateRange,
+        offset: data?.[query]?.length
+      },
+      updateQuery: (prevResult, { fetchMoreResult }) => {
+        if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
+
+        return {
+          ...prevResult,
+          [query]: [...prevResult[query], ...fetchMoreResult[query]]
+        };
+      }
+    });
 
   const onDayPress = useCallback(
     async (day: DateData) => {
@@ -161,7 +178,7 @@ export const Calendar = ({ query, queryVariables, calendarData, isLoading, navig
       {subList && (
         <ListComponent
           data={loading ? [] : buildListItems(data)}
-          horizontal={false}
+          fetchMoreData={fetchMoreData}
           ListEmptyComponent={
             loading ? (
               <LoadingContainer>
@@ -176,7 +193,6 @@ export const Calendar = ({ query, queryVariables, calendarData, isLoading, navig
           query={query}
           queryVariables={queryVariables}
           sectionByDate
-          showBackToTop
         />
       )}
     </>
