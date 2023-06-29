@@ -26,7 +26,6 @@ import {
 } from '../components';
 import { colors, consts, texts } from '../config';
 import {
-  graphqlFetchPolicy,
   isOpen,
   matomoTrackingString,
   openLink,
@@ -141,13 +140,10 @@ export const IndexScreen = ({ navigation, route }) => {
       [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
     }[query];
 
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-
   const { data, loading, fetchMore, refetch } = useQuery(
     getQuery(query, { showNewsFilter, showEventsFilter }),
     {
-      variables: queryVariables,
-      fetchPolicy
+      variables: queryVariables
     }
   );
   const openWebScreenUrl = eventListIntro?.url || categoryListFooter?.url;
