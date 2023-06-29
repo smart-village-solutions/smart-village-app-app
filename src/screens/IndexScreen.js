@@ -1,4 +1,5 @@
 import { useFocusEffect } from '@react-navigation/native';
+import { NetworkStatus } from 'apollo-client';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -140,10 +141,11 @@ export const IndexScreen = ({ navigation, route }) => {
       [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
     }[query];
 
-  const { data, loading, fetchMore, refetch } = useQuery(
+  const { data, loading, fetchMore, refetch, networkStatus } = useQuery(
     getQuery(query, { showNewsFilter, showEventsFilter }),
     {
-      variables: queryVariables
+      variables: queryVariables,
+      notifyOnNetworkStatusChange: true
     }
   );
   const openWebScreenUrl = eventListIntro?.url || categoryListFooter?.url;
@@ -362,7 +364,12 @@ export const IndexScreen = ({ navigation, route }) => {
 
   if (!query) return null;
 
-  if ((!data && loading) || loadingPosition || isLoadingVolunteerEvents) {
+  if (
+    (!data && loading) ||
+    networkStatus === NetworkStatus.refetch ||
+    loadingPosition ||
+    isLoadingVolunteerEvents
+  ) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
