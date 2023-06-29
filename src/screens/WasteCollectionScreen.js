@@ -347,7 +347,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
             data={filteredCities}
             disableFullscreenUI
             flatListProps={{
-              height: dimensions.height - normalize(170),
+              height: inputValueCitySelected ? undefined : dimensions.height - normalize(170),
               keyboardShouldPersistTaps: 'handled',
               renderItem: inputValueCitySelected ? null : renderSuggestionCities
             }}
