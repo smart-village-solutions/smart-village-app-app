@@ -328,13 +328,7 @@ export const IndexScreen = ({ navigation, route }) => {
 
   useFocusEffect(
     useCallback(() => {
-      const fetchData = async () => {
-        if (query === QUERY_TYPES.EVENT_RECORDS) {
-          await refetch();
-        }
-      };
-
-      fetchData();
+      query === QUERY_TYPES.EVENT_RECORDS && refetch();
     }, [refetch])
   );
 
