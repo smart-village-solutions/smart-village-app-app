@@ -567,7 +567,9 @@ export const IndexScreen = ({ navigation, route }) => {
             sectionByDate={isCalendar ? !showCalendar : true}
             query={query}
             queryVariables={queryVariables}
-            fetchMoreData={isConnected ? fetchMoreData : null}
+            fetchMoreData={
+              isConnected && networkStatus === NetworkStatus.refetch ? fetchMoreData : null
+            }
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
