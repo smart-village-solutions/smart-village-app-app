@@ -58,9 +58,7 @@ export const EventList = ({
 
   return (
     <SectionList
-      initialNumToRender={
-        data?.length < MAX_INITIAL_NUM_TO_RENDER ? data.length : MAX_INITIAL_NUM_TO_RENDER
-      }
+      initialNumToRender={MAX_INITIAL_NUM_TO_RENDER}
       keyExtractor={keyExtractor}
       ListFooterComponent={() => {
         if (data?.length >= MAX_INITIAL_NUM_TO_RENDER) {
