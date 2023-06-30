@@ -326,12 +326,6 @@ export const IndexScreen = ({ navigation, route }) => {
     }
   }, [isConnected, query]);
 
-  useFocusEffect(
-    useCallback(() => {
-      query === QUERY_TYPES.EVENT_RECORDS && refetch();
-    }, [refetch])
-  );
-
   const isCalendar = query === QUERY_TYPES.EVENT_RECORDS;
   const isCalendarWithVolunteerEvents = isCalendar && showVolunteerEvents;
 
@@ -346,24 +340,22 @@ export const IndexScreen = ({ navigation, route }) => {
     isSectioned: true
   });
 
-  const refresh = useCallback(
-    async (refetch) => {
-      setRefreshing(true);
-      isConnected && (await refetch());
-      isCalendarWithVolunteerEvents && refetchVolunteerEvents();
-      setRefreshing(false);
-    },
-    [isConnected, setRefreshing]
+  const refresh = useCallback(async () => {
+    setRefreshing(true);
+    refetch();
+    isCalendarWithVolunteerEvents && refetchVolunteerEvents();
+    setRefreshing(false);
+  }, [refetch, setRefreshing]);
+
+  useFocusEffect(
+    useCallback(() => {
+      query === QUERY_TYPES.EVENT_RECORDS && refresh();
+    }, [refresh])
   );
 
   if (!query) return null;
 
-  if (
-    (!data && loading) ||
-    networkStatus === NetworkStatus.refetch ||
-    loadingPosition ||
-    isLoadingVolunteerEvents
-  ) {
+  if ((!data && loading) || loadingPosition || isLoadingVolunteerEvents) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
@@ -567,13 +559,11 @@ export const IndexScreen = ({ navigation, route }) => {
             sectionByDate={isCalendar ? !showCalendar : true}
             query={query}
             queryVariables={queryVariables}
-            fetchMoreData={
-              isConnected && networkStatus === NetworkStatus.refetch ? fetchMoreData : null
-            }
+            fetchMoreData={networkStatus === NetworkStatus.refetch ? fetchMoreData : undefined}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
-                onRefresh={() => refresh(refetch)}
+                onRefresh={refresh}
                 colors={[colors.accent]}
                 tintColor={colors.accent}
               />
