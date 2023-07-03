@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.2.4]
+
+This update includes some accessibility improvements and fixes some bugs in the waste calendar and event page
+
+### Added
+
+- added redirection from html page to whatsapp app in iOS version
+- increased contrast of survey answers according to accessibility settings
+
+### Changed
+
+- added extra space between event calendar and list
+- replaced accessibility labels with new text for better understanding
+
+### Fixed
+
+- improved a problem with the showing of series events
+- fixed an issue where the autocomplete list on the waste calendar screen would not close in some cases
+- fixed a bug that prevented the bbnavi feature from working
+
 ## [v3.2.3]
 
 This update fixes some bugs and includes new features
