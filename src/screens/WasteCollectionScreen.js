@@ -351,6 +351,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
               keyboardShouldPersistTaps: 'handled',
               renderItem: inputValueCitySelected ? null : renderSuggestionCities
             }}
+            hideResults={inputValueCitySelected}
             listStyle={styles.autoCompleteList}
             onChangeText={(text) => {
               setInputValueCitySelected(false);
