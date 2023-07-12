@@ -314,7 +314,8 @@ export const texts = {
     optional: 'Die folgenden Angaben sind freiwillig:',
     send: 'Senden',
     successScreen: {
-      entry: 'Wir prüfen Ihre Angaben.',
+      entry:
+        'Wir werden uns Ihrem Anliegen annehmen, den Sachverhalt prüfen und gegebenenfalls notwendige Maßnahmen einleiten.',
       header: 'Vielen Dank für Ihre Meldung'
     },
     wait: 'Bitte warten...'
