@@ -41,6 +41,8 @@ export const useAnswerSelection = (id?: string, refetch?: () => void) => {
         variables: { decreaseId: previousSubmission, increaseId: selection }
       });
 
+      Alert.alert(texts.survey.submitSuccess.header, texts.survey.submitSuccess.entry);
+
       if (errors || data?.votesForSurvey?.statusCode !== 200) {
         throw new Error();
       }

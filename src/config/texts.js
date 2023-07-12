@@ -933,6 +933,11 @@ export const texts = {
     submitComment: {
       de: 'Kommentar senden',
       pl: 'Wyślij komentarz'
+    },
+    submitSuccess: {
+      entry:
+        'Mit Ihren Ideen und Rückmeldungen helfen Sie uns dabei, den Service der Gemeinde weiter zu verbessern.',
+      header: 'Vielen Dank für die Teilnahme an unserer Umfrage.'
     }
   },
   tabBarLabel: {
