@@ -4,7 +4,7 @@ import { View, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 
 import { normalize, colors } from '../../config';
-import { momentFormat } from '../../helpers';
+import { TMB_YEAR_TO_PARSE, momentFormat } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
 
@@ -27,7 +27,13 @@ export const OpeningTimesCard = ({ openingHours }) => (
     {!!openingHours &&
       openingHours.map((item, index) => {
         const { weekday, timeFrom, timeTo, dateFrom, dateTo, description, open } = item;
-        const returnFormatDate = 'DD.MM.YYYY';
+        // if `dateFrom` and `dateTo` are from year that should be parsed, set flag to true
+        const withoutYear =
+          dateFrom &&
+          dateTo &&
+          dateFrom.includes(TMB_YEAR_TO_PARSE) &&
+          dateTo.includes(TMB_YEAR_TO_PARSE);
+        const returnFormatDate = withoutYear ? 'DD.MM' : 'DD.MM.YYYY';
 
         return (
           <View key={index} style={index !== openingHours.length - 1 ? styles.divider : null}>
