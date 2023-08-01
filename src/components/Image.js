@@ -4,7 +4,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Image as RNEImage } from 'react-native-elements';
 import { CacheManager } from 'react-native-expo-image-cache';
 
-import { colors, consts } from '../config';
+import { colors, consts, device } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 import { useInterval } from '../hooks/TimeHooks';
 import { SettingsContext } from '../SettingsProvider';
@@ -104,7 +104,7 @@ export const Image = ({
         placeholderStyle={styles.placeholderStyle}
         accessible={!!sourceProp?.captionText}
         accessibilityLabel={`${sourceProp.captionText ? sourceProp.captionText : ''} ${
-          consts.a11yLabel.image
+          device.platform === 'ios' ? consts.a11yLabel.image : ''
         }`}
         resizeMode={resizeMode}
         borderRadius={borderRadius}
