@@ -74,7 +74,8 @@
           "initialOrientation": "PORTRAIT"
         }
       ],
-      "sentry-expo"
+      "sentry-expo",
+      "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
     ]
   }
 }
