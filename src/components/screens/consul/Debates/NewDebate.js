@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert, Platform, StyleSheet } from 'react-native';
 
-import { namespace, secrets, texts } from '../../../../config';
+import { device, namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { QUERY_TYPES } from '../../../../queries';
 import { START_DEBATE, UPDATE_DEBATE } from '../../../../queries/consul';
@@ -177,10 +177,14 @@ const INPUTS = [
   {
     autoCapitalize: 'none',
     autoCompleteType: 'off',
+    containerStyle: {
+      marginBottom: Platform.select({ android: normalize(130), ios: normalize(85) })
+    },
     keyboardType: 'default',
     label: texts.consul.startNew.newDebateDescriptionLabel,
     minHeight: 150,
     multiline: true,
+    textAlignVertical: 'top',
     name: 'description',
     placeholder: texts.consul.startNew.newDebateDescriptionLabel,
     rules: {
@@ -194,6 +198,7 @@ const INPUTS = [
     autoCompleteType: 'off',
     keyboardType: 'default',
     label: texts.consul.startNew.tags,
+    maxHeight: 50,
     multiline: true,
     name: 'tagList',
     placeholder: texts.consul.startNew.newDebateTagLabel,
