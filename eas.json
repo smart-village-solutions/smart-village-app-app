@@ -6,22 +6,22 @@
     "production": {
       "node": "16.13.0",
       "yarn": "1.22.19",
-      "releaseChannel": "production"
+      "channel": "production"
     },
     "preview": {
       "extends": "production",
-      "releaseChannel": "preview",
+      "channel": "preview",
       "distribution": "internal"
     },
     "development": {
       "extends": "production",
-      "releaseChannel": "development",
+      "channel": "development",
       "distribution": "internal",
       "developmentClient": true
     },
     "development-simulator": {
       "extends": "production",
-      "releaseChannel": "development",
+      "channel": "development",
       "distribution": "internal",
       "developmentClient": true,
       "ios": {
