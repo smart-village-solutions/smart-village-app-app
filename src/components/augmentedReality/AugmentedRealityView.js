@@ -15,8 +15,10 @@ import {
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 
-import { colors, texts } from '../../config';
+import { colors, consts, device, texts } from '../../config';
 import { SettingsContext } from '../../SettingsProvider';
+
+const { GB_TO_BYTES } = consts;
 
 export const AugmentedRealityView = ({ sceneNavigator }) => {
   const {
@@ -100,6 +102,8 @@ const ViroSoundAnd3DObject = (item) => {
     });
   }
 
+  const isMore2GBRam = device.totalMemory > GB_TO_BYTES[2];
+
   return (
     <>
       {!isObjectLoading && (
@@ -164,7 +168,7 @@ const ViroSoundAnd3DObject = (item) => {
           />
         ))}
 
-      {object?.spot && (
+      {object?.spot && isMore2GBRam && (
         <ViroSpotLight
           direction={object.spot.direction}
           innerAngle={object.spot.innerAngle}
@@ -179,7 +183,7 @@ const ViroSoundAnd3DObject = (item) => {
         />
       )}
 
-      {object?.quad && (
+      {object?.quad && isMore2GBRam && (
         <ViroQuad
           height={object.quad.height}
           position={object.quad.position}
