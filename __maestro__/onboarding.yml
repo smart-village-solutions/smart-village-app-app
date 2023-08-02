@@ -1,0 +1,7 @@
+appId: de.dev.smartvillage.app
+---
+- tapOn: "WEITER"
+- tapOn: "WEITER"
+- tapOn: "WEITER"
+- tapOn: "WEITER"
+- tapOn: "Nein"

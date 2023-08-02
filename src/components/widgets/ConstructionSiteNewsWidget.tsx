@@ -10,6 +10,7 @@ import { getQuery, QUERY_TYPES } from '../../queries';
 import { WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
+import { testIDs } from '../../config/maestro';
 
 export const ConstructionSiteNewsWidget = ({ text, additionalProps }: WidgetProps) => {
   const navigation = useNavigation();
@@ -46,6 +47,7 @@ export const ConstructionSiteNewsWidget = ({ text, additionalProps }: WidgetProp
       count={count}
       Icon={Icon.ConstructionSite}
       onPress={onPress}
+      testID={testIDs.widgets.constructionSiteNews}
       text={text ?? texts.widgets.constructionSites}
     />
   );

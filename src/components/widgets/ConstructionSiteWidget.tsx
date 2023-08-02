@@ -6,6 +6,7 @@ import { useConstructionSites, useHomeRefresh } from '../../hooks';
 import { WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
+import { testIDs } from '../../config/maestro';
 
 export const ConstructionSiteWidget = ({ text }: WidgetProps) => {
   const navigation = useNavigation();
@@ -24,6 +25,7 @@ export const ConstructionSiteWidget = ({ text }: WidgetProps) => {
       count={constructionSites?.length ?? 0}
       Icon={Icon.ConstructionSite}
       onPress={onPress}
+      testID={testIDs.widgets.constructionSite}
       text={text ?? texts.widgets.constructionSites}
     />
   );

@@ -1,0 +1,12 @@
+appId: de.dev.smartvillage.app
+---
+- scrollUntilVisible:
+    element: "Wetter"
+- tapOn:
+    id: "weatherWidget"
+- swipe:  
+    start: 89%, 24% 
+    end: 0%, 24% 
+- scroll
+- tapOn:
+    point: "7%,10%"

@@ -1,0 +1,8 @@
+appId: de.dev.smartvillage.app
+---
+- assertVisible:
+    id: "lunchWidget"
+- tapOn:
+    id: "lunchWidget"
+- tapOn:
+    point: "7%,10%"

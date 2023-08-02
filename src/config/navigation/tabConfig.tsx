@@ -9,6 +9,7 @@ import { normalize } from '../normalize';
 import { texts } from '../texts';
 
 import { defaultStackConfig } from './defaultStackConfig';
+import { testIDs } from '../maestro';
 
 type TabBarIconProps = {
   focused: boolean;
@@ -23,6 +24,7 @@ const homeTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.home,
+    tabBarTestID: testIDs.tabBar.home,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon color={color} Icon={Icon.Home} />
     )
@@ -36,6 +38,7 @@ const serviceTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.service,
+    tabBarTestID: testIDs.tabBar.service,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon color={color} Icon={Icon.Service} />
     )
@@ -49,6 +52,7 @@ const companyTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.company,
+    tabBarTestID: testIDs.tabBar.company,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
@@ -68,6 +72,7 @@ const aboutTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.about,
+    tabBarTestID: testIDs.tabBar.about,
     tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}

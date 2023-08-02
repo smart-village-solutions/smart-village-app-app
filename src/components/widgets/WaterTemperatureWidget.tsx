@@ -8,6 +8,7 @@ import { QUERY_TYPES } from '../../queries';
 import { ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
+import { testIDs } from '../../config/maestro';
 
 export const WaterTemperatureWidget = ({ text, additionalProps }: WidgetProps) => {
   const navigation = useNavigation();
@@ -28,6 +29,7 @@ export const WaterTemperatureWidget = ({ text, additionalProps }: WidgetProps) =
       count={(temperature ?? '—') + '°C'}
       Icon={() => <Icon.NamedIcon name={additionalProps?.iconName} size={normalize(22)} />}
       onPress={onPress}
+      testID={testIDs.widgets.waterTemperature}
       text={text ?? texts.widgets.water}
     />
   );

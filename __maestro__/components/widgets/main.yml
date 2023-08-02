@@ -1,0 +1,11 @@
+appId: de.dev.smartvillage.app
+---
+- runFlow: onboarding.yml
+- runFlow: weatherWidget.yml
+- runFlow: waterTemperatureWidget.yml
+- runFlow: eventWidget.yml
+- runFlow: constructionSiteWidget.yml
+# - runFlow: constructionSiteNewsWidget.yml  
+## widget is deactivated in the server config, therefore not possible to run the flow
+- runFlow: lunchWidget.yml
+- runFlow: surveyWidget.yml

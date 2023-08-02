@@ -1,0 +1,8 @@
+appId: de.dev.smartvillage.app
+---
+- assertVisible:
+    id: "constructionSiteWidget"
+- tapOn:
+    id: "constructionSiteWidget"
+- tapOn:
+    point: "7%,10%"

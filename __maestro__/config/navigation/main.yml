@@ -1,0 +1,3 @@
+appId: de.dev.smartvillage.app
+---
+- runFlow: tabBar.yml

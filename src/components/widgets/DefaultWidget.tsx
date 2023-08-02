@@ -11,12 +11,13 @@ type Props = {
   Icon: (props: IconProps) => JSX.Element;
   onPress: () => void;
   text: string;
+  testID: string;
 };
 
-export const DefaultWidget = ({ Icon, count, onPress, text }: Props) => {
+export const DefaultWidget = ({ Icon, count, onPress, text, testID }: Props) => {
   return (
     <TouchableOpacity onPress={onPress}>
-      <WrapperVertical style={styles.container}>
+      <WrapperVertical style={styles.container} testID={testID}>
         <WrapperRow center>
           <Icon style={[styles.iconWithoutCount, !!count?.toString() && styles.iconWithCount]} />
           <BoldText primary big>

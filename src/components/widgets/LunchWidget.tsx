@@ -11,6 +11,7 @@ import { getQuery, QUERY_TYPES } from '../../queries';
 import { WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
+import { testIDs } from '../../config/maestro';
 
 export const LunchWidget = ({ text }: WidgetProps) => {
   const navigation = useNavigation();
@@ -42,6 +43,7 @@ export const LunchWidget = ({ text }: WidgetProps) => {
       count={data?.[QUERY_TYPES.LUNCHES]?.length}
       Icon={Icon.Lunch}
       onPress={onPress}
+      testID={testIDs.widgets.lunch}
       text={text ?? texts.widgets.lunch}
     />
   );

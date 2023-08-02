@@ -13,6 +13,7 @@ import { WidgetProps } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
+import { testIDs } from '../../config/maestro';
 
 const { POLL_INTERVALS } = consts;
 
@@ -39,7 +40,7 @@ export const WeatherWidget = ({ text }: WidgetProps) => {
 
   return (
     <TouchableOpacity onPress={onPress} style={styles.widget}>
-      <WrapperVertical>
+      <WrapperVertical testID={testIDs.widgets.weather}>
         <WrapperRow center>
           <View style={styles.iconContainer}>
             <Image

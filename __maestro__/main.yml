@@ -1,0 +1,13 @@
+appId: de.dev.smartvillage.app
+---
+- launchApp:
+    clearState: true
+- waitForAnimationToEnd
+- tapOn:
+    point: "50%,26%"
+- tapOn: "Got It"
+- tapOn:
+    point: "50%,18%"
+- runFlow: onboarding.yml
+- runFlow: components/widgets/main.yml
+- runFlow: config/navigation/main.yml

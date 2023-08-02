@@ -1,0 +1,8 @@
+appId: de.dev.smartvillage.app
+---
+- assertVisible:
+    id: "eventWidget"
+- tapOn:
+    id: "eventWidget"
+- tapOn:
+    point: "7%,10%"

@@ -1,0 +1,20 @@
+appId: de.dev.smartvillage.app
+---
+- assertVisible:
+    id: "tabBarHome"
+- tapOn:
+    id: "tabBarHome"
+- assertVisible:
+    id: "tabBarService"
+- tapOn:
+    id: "tabBarService"
+- scroll
+- assertVisible:
+    id: "tabBarCompany"
+- tapOn:
+    id: "tabBarCompany"
+- scroll
+- assertVisible:
+    id: "tabBarAbout"
+- tapOn:
+    id: "tabBarAbout"

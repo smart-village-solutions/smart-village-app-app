@@ -12,6 +12,7 @@ import { SettingsContext } from '../../SettingsProvider';
 import { ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
+import { testIDs } from '../../config/maestro';
 
 const { REFRESH_INTERVALS, ROOT_ROUTE_NAMES } = consts;
 
@@ -80,6 +81,7 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
       count={additionalProps?.noCount ? null : eventCount}
       Icon={Icon.Calendar}
       onPress={onPress}
+      testID={testIDs.widgets.event}
       text={text ?? texts.widgets.events}
     />
   );

@@ -10,6 +10,7 @@ import { SURVEYS } from '../../queries/survey';
 import { Survey, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
+import { testIDs } from '../../config/maestro';
 
 export const SurveyWidget = ({ text }: WidgetProps) => {
   const navigation = useNavigation();
@@ -34,6 +35,7 @@ export const SurveyWidget = ({ text }: WidgetProps) => {
       count={surveys?.ongoing.length}
       Icon={(props) => <Icon.Surveys {...props} size={normalize(22)} />}
       onPress={onPress}
+      testID={testIDs.widgets.survey}
       text={text ?? texts.widgets.surveys}
     />
   );
