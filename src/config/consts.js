@@ -102,6 +102,13 @@ export const consts = {
     FULL_SCREEN_MAX_WIDTH: 428
   },
 
+  // this section has been added to optimise AR on low RAM devices and to prevent some features of AR from being used
+  GB_TO_BYTES: {
+    1: 1073741824,
+    2: 2147483648,
+    3: 3221225472
+  },
+
   // the image aspect ratio can be overwritten by a global setting `imageAspectRatio`
   // from the server in src/index.js
   IMAGE_ASPECT_RATIO: {
