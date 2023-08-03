@@ -84,7 +84,6 @@ export const DefectReportLocationForm = ({
               ...nativeEvent.coordinate
             });
           }}
-          zoom={4}
         />
         <Wrapper>
           <Button

@@ -113,7 +113,11 @@ export const LocationOverview = ({
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        <Map locations={mapMarkers} onMarkerPress={setSelectedPointOfInterest} />
+        <Map
+          locations={mapMarkers}
+          onMarkerPress={setSelectedPointOfInterest}
+          isMultipleMarkersMap
+        />
         <View>
           {!selectedPointOfInterest && (
             <Wrapper>

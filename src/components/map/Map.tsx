@@ -11,6 +11,7 @@ import { MapMarker } from '../../types';
 type Props = {
   geometryTourData?: LatLng[];
   isMaximizeButtonVisible?: boolean;
+  isMultipleMarkersMap?: boolean;
   locations?: MapMarker[];
   mapCenterPosition?: { latitude: number; longitude: number };
   mapStyle?: StyleProp<ViewStyle>;
@@ -19,7 +20,6 @@ type Props = {
   onMaximizeButtonPress?: () => void;
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
-  zoom?: number;
 };
 
 const MARKER_ICON_SIZE = normalize(40);
@@ -27,6 +27,7 @@ const MARKER_ICON_SIZE = normalize(40);
 export const Map = ({
   geometryTourData,
   isMaximizeButtonVisible,
+  isMultipleMarkersMap = false,
   locations,
   mapCenterPosition,
   mapStyle,
@@ -34,9 +35,17 @@ export const Map = ({
   onMarkerPress,
   onMaximizeButtonPress,
   style,
-  zoom = 0,
   ...otherProps
 }: Props) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { zoomLevelForMaps = {}, locationService = {} } = settings;
+
+  const showsUserLocation = otherProps.showsUserLocation ?? !!locationService;
+  const zoom = isMultipleMarkersMap
+    ? zoomLevelForMaps.multipleMarkers
+    : zoomLevelForMaps.singleMarker;
+
   const refForMapView = useRef<MapView>(null);
   // LATITUDE_DELTA handles the zoom, see: https://github.com/react-native-maps/react-native-maps/issues/2129#issuecomment-457056572
   const LATITUDE_DELTA = zoom || 0.0922;
@@ -64,10 +73,6 @@ export const Map = ({
       longitude: locations[0].position.longitude
     };
   }
-
-  const { globalSettings } = useContext(SettingsContext);
-  const showsUserLocation =
-    otherProps.showsUserLocation ?? !!globalSettings?.settings?.locationService;
 
   return (
     <View style={[styles.container, style]}>

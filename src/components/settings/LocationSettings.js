@@ -112,7 +112,6 @@ export const LocationSettings = () => {
               ...nativeEvent.coordinate
             });
           }}
-          zoom={4}
         />
         <Wrapper>
           <Button
