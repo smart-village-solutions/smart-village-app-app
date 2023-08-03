@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.2.5]
+
+This update fixes some optimisation issues in the app and adds new features
+
+### Added
+
+- added the ability to click on whatsapp links in HTML pages on Android platform
+- added a new alert to inform users after answering the survey
+- added configurable zoom values for maps from main server
+
+### Changed
+
+- changed Polnish texts in the application
+- upgraded `@sentry/react-native` to version 4.13.0 to 4.15.2
+- upgraded `sentry-expo` to version 6.1.0 to 6.2.0
+- added `expo-clipboard` package which is missing package to make Augmented Reality feature working
+- changed the alert text that appears after users report a defect report
+
+### Fixed
+
+- optimised augmented reality feature for devices with less than 2gb RAM
+- fixed the problem of consul inputs overlapping
+- fixed a bug where images were repeated twice by TalkBack for Android
+- configured `expo-updates` package to prevent crashes on android platform
+- fixed the problem of POIs being open or not
+
 ## [v3.2.4]
 
 This update includes some accessibility improvements and fixes some bugs in the waste calendar and event page
