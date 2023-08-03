@@ -898,16 +898,16 @@ export const texts = {
     },
     commentSubmissionAlert: {
       de: 'Ihr Kommentar wird nun redaktionell geprüft und schnellstmöglich veröffentlicht.',
-      pl: 'Twój komentarz zostanie teraz sprawdzony redakcyjnie i opublikowany tak szybko, jak to możliwe.'
+      pl: 'Twój komentarz zostanie teraz zweryfikowany przez redakcję i opublikowany tak szybko, jak to możliwe.'
     },
     commentSubmissionAlertTitle: 'Ihr Kommentar wird nun redaktionell geprüft',
     dateEnd: {
       de: 'Abschluss der Umfrage:',
-      pl: 'Wypełnienie ankiety:'
+      pl: 'Zakończenie ankiety:'
     },
     dateStart: {
       de: 'Start der Umfrage:',
-      pl: 'Rozpocznij ankietę:'
+      pl: 'Rozpoczęcie ankiety:'
     },
     errors: {
       submissionBody:
@@ -920,7 +920,7 @@ export const texts = {
     },
     multiSelectPossible: {
       de: 'Mehrfachantwort möglich.',
-      pl: 'Możliwych jest wiele odpowiedzi.'
+      pl: 'Wybór wielokrotnych odpowiedzi jest możliwy.'
     },
     result: {
       de: 'Ergebnis',
