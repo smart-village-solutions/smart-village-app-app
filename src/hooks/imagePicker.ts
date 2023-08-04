@@ -37,9 +37,9 @@ export const useSelectImage = (
       quality: quality ?? 1
     });
 
-    if (!result.cancelled) {
-      onChange ? onChange(setImageUri)(result.uri) : setImageUri(result.uri);
-      return result;
+    if (!result.canceled) {
+      onChange ? onChange(setImageUri)(result.assets[0].uri) : setImageUri(result.assets[0].uri);
+      return { uri: result.assets[0].uri, type: result.assets[0].type };
     }
   }, [onChange]);
 
