@@ -177,12 +177,10 @@ const INPUTS = [
   {
     autoCapitalize: 'none',
     autoCompleteType: 'off',
-    containerStyle: {
-      marginBottom: Platform.select({ android: normalize(130), ios: normalize(85) })
-    },
+    containerStyle: { marginBottom: normalize(95) },
     keyboardType: 'default',
     label: texts.consul.startNew.newDebateDescriptionLabel,
-    minHeight: 150,
+    minHeight: normalize(150),
     multiline: true,
     textAlignVertical: 'top',
     name: 'description',
@@ -198,7 +196,7 @@ const INPUTS = [
     autoCompleteType: 'off',
     keyboardType: 'default',
     label: texts.consul.startNew.tags,
-    maxHeight: 50,
+    maxHeight: normalize(50),
     multiline: true,
     name: 'tagList',
     placeholder: texts.consul.startNew.newDebateTagLabel,

@@ -4,7 +4,7 @@ import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, consts, namespace, secrets, texts } from '../../../../config';
+import { colors, consts, namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { documentErrorMessageGenerator, imageErrorMessageGenerator } from '../../../../helpers';
 import { QUERY_TYPES } from '../../../../queries';
@@ -407,11 +407,12 @@ const INPUTS = [
     multiline: true,
     label: texts.consul.startNew.newProposalDescriptionLabel,
     placeholder: texts.consul.startNew.newProposalDescriptionLabel,
+    containerStyle: { marginBottom: normalize(95) },
     keyboardType: 'default',
     textContentType: 'none',
     autoCompleteType: 'off',
     autoCapitalize: 'none',
-    minHeight: 150,
+    minHeight: normalize(150),
     rules: {
       required: texts.consul.startNew.emptyError,
       minLength: { value: 10, message: texts.consul.startNew.descriptionShortError }
@@ -465,6 +466,7 @@ const INPUTS = [
     type: ITEM_TYPES.INPUT,
     name: 'tagList',
     multiline: true,
+    maxHeight: normalize(50),
     label: texts.consul.startNew.newProposalTagLabel,
     placeholder: texts.consul.startNew.tags,
     keyboardType: 'default',
