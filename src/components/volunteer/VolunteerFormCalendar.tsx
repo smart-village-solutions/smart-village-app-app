@@ -409,7 +409,7 @@ export const VolunteerFormCalendar = ({
               {...{
                 control,
                 field,
-                isVolunteer: true,
+                isMultiImages: true,
                 item: {
                   name: 'images',
                   label: texts.volunteer.images,

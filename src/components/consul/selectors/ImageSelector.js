@@ -41,7 +41,7 @@ const deleteImageAlert = (onPress) =>
     ]
   );
 
-export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) => {
+export const ImageSelector = ({ control, field, imageId, isMultiImages, item }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -72,7 +72,7 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
       }
     }
 
-    if (isVolunteer) {
+    if (isMultiImages) {
       const isURL = URL_REGEX.test(imagesAttributes[index].uri);
 
       if (isURL) {
@@ -107,7 +107,7 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
     const uriSplitForImageName = uri.split('/');
     const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
 
-    if (isVolunteer) {
+    if (isMultiImages) {
       setInfoAndErrorText([
         ...infoAndErrorText,
         {
@@ -129,7 +129,7 @@ export const ImageSelector = ({ control, field, imageId, isVolunteer, item }) =>
 
   const values = jsonParser(value);
 
-  if (isVolunteer) {
+  if (isMultiImages) {
     return (
       <>
         <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
@@ -192,7 +192,7 @@ ImageSelector.propTypes = {
   control: PropTypes.object,
   field: PropTypes.object,
   imageId: PropTypes.string,
-  isVolunteer: PropTypes.bool,
+  isMultiImages: PropTypes.bool,
   item: PropTypes.object
 };
 
