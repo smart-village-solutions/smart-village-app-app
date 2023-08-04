@@ -41,7 +41,7 @@ const deleteImageAlert = (onPress) =>
     ]
   );
 
-export const ImageSelector = ({ control, field, imageId, isMultiImages, item }) => {
+export const ImageSelector = ({ control, errorType, field, imageId, isMultiImages, item }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -62,6 +62,44 @@ export const ImageSelector = ({ control, field, imageId, isMultiImages, item }) 
   useEffect(() => {
     onChange(JSON.stringify(imagesAttributes));
   }, [imagesAttributes]);
+
+  const errorTextGenerator = async ({ uri, type }) => {
+    const { size } = await FileSystem.getInfoAsync(uri);
+
+    /* the server does not support files more than 10MB in size. */
+    const volunteerErrorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
+    const consulErrorText = await imageErrorMessageGenerator(uri);
+
+    /* used to specify the mimeType when uploading to the server */
+    const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
+
+    /* variable to find the name of the image */
+    const uriSplitForImageName = uri.split('/');
+    const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
+
+    switch (errorType) {
+      case 'consul':
+        setInfoAndErrorText([
+          ...infoAndErrorText,
+          {
+            errorText: texts.consul.startNew[consulErrorText],
+            infoText: `(${type}/${imageType}, ${formatSize(size)})`
+          }
+        ]);
+        break;
+      case 'volunteer':
+        setInfoAndErrorText([
+          ...infoAndErrorText,
+          {
+            errorText: volunteerErrorText,
+            infoText: `${imageName}`
+          }
+        ]);
+        break;
+      default:
+        break;
+    }
+  };
 
   const onDeleteImage = async (index) => {
     if (imageId) {
@@ -94,37 +132,13 @@ export const ImageSelector = ({ control, field, imageId, isMultiImages, item }) 
 
   const imageSelect = async () => {
     const { uri, type } = await selectImage();
-    const { size } = await FileSystem.getInfoAsync(uri);
-
-    /* the server does not support files more than 10MB in size. */
-    const volunteerErrorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
-    const consulErrorText = await imageErrorMessageGenerator(uri);
 
     /* used to specify the mimeType when uploading to the server */
     const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
 
-    /* variable to find the name of the image */
-    const uriSplitForImageName = uri.split('/');
-    const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
+    errorTextGenerator({ uri, type });
 
-    if (isMultiImages) {
-      setInfoAndErrorText([
-        ...infoAndErrorText,
-        {
-          errorText: volunteerErrorText,
-          infoText: `${imageName}`
-        }
-      ]);
-
-      setImagesAttributes([...imagesAttributes, { uri, mimeType: `${type}/${imageType}` }]);
-    } else {
-      setInfoAndErrorText({
-        errorText: texts.consul.startNew[consulErrorText],
-        infoText: `(${type}/${imageType}, ${formatSize(size)})`
-      });
-
-      setImagesAttributes([...imagesAttributes, { uri, mimeType: `${type}/${imageType}` }]);
-    }
+    setImagesAttributes([...imagesAttributes, { uri, mimeType: `${type}/${imageType}` }]);
   };
 
   const values = jsonParser(value);
@@ -166,7 +180,14 @@ export const ImageSelector = ({ control, field, imageId, isMultiImages, item }) 
 
   return (
     <>
-      <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
+      <Input
+        {...item}
+        control={control}
+        errorMessage={infoAndErrorText?.[0]?.errorText}
+        hidden
+        name={name}
+        value={JSON.parse(value)}
+      />
       <RegularText smallest placeholder>
         {infoText}
       </RegularText>
@@ -180,6 +201,10 @@ export const ImageSelector = ({ control, field, imageId, isMultiImages, item }) 
               <Icon.Trash color={colors.error} size={normalize(16)} />
             </TouchableOpacity>
           </WrapperRow>
+
+          {!!infoAndErrorText?.[0]?.infoText && (
+            <RegularText smallest>{infoAndErrorText[0].infoText}</RegularText>
+          )}
         </>
       ) : (
         <Button title={buttonTitle} invert onPress={imageSelect} />
@@ -190,6 +215,7 @@ export const ImageSelector = ({ control, field, imageId, isMultiImages, item }) 
 
 ImageSelector.propTypes = {
   control: PropTypes.object,
+  errorType: PropTypes.string,
   field: PropTypes.object,
   imageId: PropTypes.string,
   isMultiImages: PropTypes.bool,

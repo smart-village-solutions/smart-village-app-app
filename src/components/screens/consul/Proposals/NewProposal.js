@@ -300,6 +300,7 @@ export const NewProposal = ({ navigation, data, query }) => {
                   <ImageSelector
                     {...{
                       control,
+                      errorType: 'consul',
                       field,
                       item,
                       imageId: data?.imageId

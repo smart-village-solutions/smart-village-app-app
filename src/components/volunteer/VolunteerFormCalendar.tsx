@@ -408,6 +408,7 @@ export const VolunteerFormCalendar = ({
             <ImageSelector
               {...{
                 control,
+                errorType: 'volunteer',
                 field,
                 isMultiImages: true,
                 item: {
