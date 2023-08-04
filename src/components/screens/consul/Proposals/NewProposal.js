@@ -150,18 +150,19 @@ export const NewProposal = ({ navigation, data, query }) => {
 
     setIsLoading(true);
 
+    const image = JSON.parse(newProposalData.image)?.[0]?.uri;
     // if the image is an absolute url, we are editing and do not want to upload a new image
-    const isImageToUpload = newProposalData.image && !URL_REGEX.test(newProposalData.image);
+    const isImageToUpload = image && !URL_REGEX.test(image);
 
     if (isImageToUpload) {
       try {
-        const imageAttributes = await uploadData(newProposalData.image, 'image');
+        const imageAttributes = await uploadData(image, 'image');
 
         variables.attributes = { ...variables.attributes, imageAttributes };
       } catch (error) {
         setIsLoading(false);
 
-        const errorMessage = await imageErrorMessageGenerator(newProposalData.image);
+        const errorMessage = await imageErrorMessageGenerator(image);
 
         return showDataUploadError(
           texts.consul.startNew[errorMessage] ?? texts.consul.startNew.generalDataUploadError
