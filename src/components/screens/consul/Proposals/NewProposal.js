@@ -373,106 +373,107 @@ NewProposal.propTypes = {
 
 const INPUTS = [
   {
-    type: ITEM_TYPES.INPUT,
-    name: 'title',
-    label: texts.consul.startNew.newProposalTitleLabel,
-    placeholder: texts.consul.startNew.newProposalTitleLabel,
-    keyboardType: 'default',
-    textContentType: 'none',
-    autoCompleteType: 'off',
     autoCapitalize: 'none',
+    autoCompleteType: 'off',
+    keyboardType: 'default',
+    label: texts.consul.startNew.newProposalTitleLabel,
+    name: 'title',
+    placeholder: texts.consul.startNew.newProposalTitleLabel,
     rules: {
       required: texts.consul.startNew.emptyError,
       minLength: { value: 4, message: texts.consul.startNew.titleShortError }
-    }
+    },
+    textContentType: 'none',
+    type: ITEM_TYPES.INPUT
   },
   {
-    type: ITEM_TYPES.INPUT,
-    name: 'summary',
-    multiline: true,
-    label: texts.consul.startNew.newProposalSummaryLabel,
-    placeholder: texts.consul.startNew.newProposalSummaryLabel,
-    keyboardType: 'default',
-    textContentType: 'none',
-    autoCompleteType: 'off',
     autoCapitalize: 'none',
+    autoCompleteType: 'off',
+    keyboardType: 'default',
+    label: texts.consul.startNew.newProposalSummaryLabel,
+    multiline: true,
+    name: 'summary',
+    placeholder: texts.consul.startNew.newProposalSummaryLabel,
     rules: {
       required: texts.consul.startNew.emptyError,
       maxLength: { value: 200, message: texts.consul.startNew.proposalSummaryInfo }
-    }
+    },
+    textContentType: 'none',
+    type: ITEM_TYPES.INPUT
   },
   {
-    type: ITEM_TYPES.INPUT,
-    name: 'description',
-    multiline: true,
-    label: texts.consul.startNew.newProposalDescriptionLabel,
-    placeholder: texts.consul.startNew.newProposalDescriptionLabel,
+    autoCapitalize: 'none',
+    autoCompleteType: 'off',
     containerStyle: { marginBottom: normalize(95) },
     keyboardType: 'default',
-    textContentType: 'none',
-    autoCompleteType: 'off',
-    autoCapitalize: 'none',
+    label: texts.consul.startNew.newProposalDescriptionLabel,
     minHeight: normalize(150),
+    multiline: true,
+    textAlignVertical: 'top',
+    name: 'description',
+    placeholder: texts.consul.startNew.newProposalDescriptionLabel,
     rules: {
       required: texts.consul.startNew.emptyError,
       minLength: { value: 10, message: texts.consul.startNew.descriptionShortError }
-    }
+    },
+    textContentType: 'none',
+    type: ITEM_TYPES.INPUT
   },
   {
-    type: ITEM_TYPES.INPUT,
-    name: 'videoUrl',
+    autoCapitalize: 'none',
+    autoCompleteType: 'off',
+    keyboardType: 'default',
     label: texts.consul.startNew.newProposalExternesVideoUrlLabel,
+    name: 'videoUrl',
     placeholder: texts.consul.startNew.newProposalExternesVideoUrlLabel,
-    keyboardType: 'default',
-    textContentType: 'none',
-    autoCompleteType: 'off',
-    autoCapitalize: 'none',
-    rules: { required: false }
-  },
-  {
-    type: ITEM_TYPES.INFO_TEXT,
-    title: texts.consul.startNew.proposalVideoUrlInfo
-  },
-  {
-    type: ITEM_TYPES.PICKER,
-    name: 'image',
-    label: texts.consul.startNew.newProposalImageAddTitle,
     rules: { required: false },
+    textContentType: 'none',
+    type: ITEM_TYPES.INPUT
+  },
+  {
+    title: texts.consul.startNew.proposalVideoUrlInfo,
+    type: ITEM_TYPES.INFO_TEXT
+  },
+  {
     buttonTitle: texts.consul.startNew.newProposalImageAddButtonTitle,
-    infoText: texts.consul.startNew.newProposalImageAddInfoText
-  },
-  {
-    type: ITEM_TYPES.PICKER,
-    name: 'documents',
-    label: texts.consul.startNew.newProposalDocumentAddTitle,
+    infoText: texts.consul.startNew.newProposalImageAddInfoText,
+    label: texts.consul.startNew.newProposalImageAddTitle,
+    name: 'image',
     rules: { required: false },
+    type: ITEM_TYPES.PICKER
+  },
+  {
     buttonTitle: texts.consul.startNew.newProposalDocumentAddButtonTitle,
-    infoText: texts.consul.startNew.newProposalDocumentAddInfoText
+    infoText: texts.consul.startNew.newProposalDocumentAddInfoText,
+    label: texts.consul.startNew.newProposalDocumentAddTitle,
+    name: 'documents',
+    rules: { required: false },
+    type: ITEM_TYPES.PICKER
   },
   {
-    type: ITEM_TYPES.TITLE,
-    title: texts.consul.startNew.tags
+    title: texts.consul.startNew.tags,
+    type: ITEM_TYPES.TITLE
   },
   {
-    type: ITEM_TYPES.INFO_TEXT,
-    title: texts.consul.startNew.proposalTagInfo
+    title: texts.consul.startNew.proposalTagInfo,
+    type: ITEM_TYPES.INFO_TEXT
   },
   {
-    type: ITEM_TYPES.CATEGORY,
+    category: TAG_CATEGORIES,
     title: texts.consul.startNew.categoriesTitle,
-    category: TAG_CATEGORIES
+    type: ITEM_TYPES.CATEGORY
   },
   {
-    type: ITEM_TYPES.INPUT,
-    name: 'tagList',
-    multiline: true,
-    maxHeight: normalize(50),
-    label: texts.consul.startNew.newProposalTagLabel,
-    placeholder: texts.consul.startNew.tags,
-    keyboardType: 'default',
-    textContentType: 'none',
-    autoCompleteType: 'off',
     autoCapitalize: 'none',
-    rules: { required: false }
+    autoCompleteType: 'off',
+    keyboardType: 'default',
+    label: texts.consul.startNew.newProposalTagLabel,
+    maxHeight: normalize(50),
+    multiline: true,
+    name: 'tagList',
+    placeholder: texts.consul.startNew.tags,
+    rules: { required: false },
+    textContentType: 'none',
+    type: ITEM_TYPES.INPUT
   }
 ];
