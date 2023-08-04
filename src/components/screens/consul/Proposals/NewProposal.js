@@ -71,7 +71,7 @@ export const NewProposal = ({ navigation, data, query }) => {
     defaultValues: {
       description: data?.description || '',
       documents: JSON.stringify(data?.documents) || '[]',
-      image: data?.image || '',
+      image: data?.image || '[]',
       summary: data?.summary || '',
       tagList: data?.tagList?.toString() || '',
       title: data?.title || '',
@@ -301,7 +301,6 @@ export const NewProposal = ({ navigation, data, query }) => {
                     {...{
                       control,
                       field,
-                      isConsul: true,
                       item,
                       imageId: data?.imageId
                     }}
