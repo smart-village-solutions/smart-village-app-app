@@ -95,7 +95,10 @@ export const DrawerNavigator = () => {
           drawerRoutes={drawerRoutes}
         />
       )}
-      drawerPosition="right"
+      screenOptions={{
+        drawerPosition:"right",
+        headerShown: false
+      }}
       drawerStyle={styles.drawerContainer}
       drawerType={device.platform === 'ios' ? 'slide' : 'front'}
       initialRouteName="AppStack"
