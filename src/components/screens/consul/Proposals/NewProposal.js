@@ -19,7 +19,7 @@ import { Label } from '../../../Label';
 import { RegularText } from '../../../Text';
 import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
 
-const { URL_REGEX } = consts;
+const { IMAGE_SELECTOR_ERROR_TYPES, URL_REGEX } = consts;
 
 const TAG_CATEGORIES = [
   { name: 'Associations', id: 0, selected: false },
@@ -301,7 +301,7 @@ export const NewProposal = ({ navigation, data, query }) => {
                   <ImageSelector
                     {...{
                       control,
-                      errorType: 'consul',
+                      errorType: IMAGE_SELECTOR_ERROR_TYPES.CONSUL,
                       field,
                       item,
                       imageId: data?.imageId

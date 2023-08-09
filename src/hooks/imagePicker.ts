@@ -39,7 +39,7 @@ export const useSelectImage = (
 
     if (!result.canceled) {
       onChange ? onChange(setImageUri)(result.assets[0].uri) : setImageUri(result.assets[0].uri);
-      return { uri: result.assets[0].uri, type: result.assets[0].type };
+      return result.assets[0];
     }
   }, [onChange]);
 
