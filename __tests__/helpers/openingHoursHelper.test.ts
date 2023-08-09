@@ -1,4 +1,4 @@
-import { TMB_YEAR_TO_PARSE, dateWithCorrectYear, getReadableDay, isOpen } from '../../src/helpers';
+import { dateWithCorrectYear, getReadableDay, isOpen } from '../../src/helpers';
 import { OpeningHour } from '../../src/types';
 
 const FAKE_NOW_DATE = new Date();
@@ -14,15 +14,13 @@ const isOpenWithFakeTimeDateTime = (openingHours: OpeningHour[]) =>
 
 describe('testing correct year for date for TMB data', () => {
   it('not adjusted year for a date in 2022', () => {
-    expect(dateWithCorrectYear('2022-05-19')).toEqual(new Date('2022-05-19'));
+    expect(dateWithCorrectYear('2022-05-19', true)).toEqual(new Date('2022-05-19'));
   });
 
   it('adjusted year for a date in the year that should be parsed', () => {
     const currentYear = FAKE_NOW_DATE.getFullYear();
 
-    expect(dateWithCorrectYear(`${TMB_YEAR_TO_PARSE}-03-09`)).toEqual(
-      new Date(`${currentYear}-03-09`)
-    );
+    expect(dateWithCorrectYear('2020-03-09', false)).toEqual(new Date(`${currentYear}-03-09`));
   });
 });
 
