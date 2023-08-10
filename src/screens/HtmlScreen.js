@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView } from 'react-native';
 
-import { auth } from '../auth';
 import {
   EmptyMessage,
   HtmlView,
@@ -35,10 +34,6 @@ export const HtmlScreen = ({ navigation, route }) => {
     type: 'html',
     refreshTimeKey: `${query}-${queryVariables.name}`
   });
-
-  useEffect(() => {
-    isConnected && auth();
-  }, []);
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `title` dependency
   useEffect(() => {

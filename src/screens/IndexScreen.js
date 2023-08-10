@@ -7,7 +7,6 @@ import { Query, useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { auth } from '../auth';
 import {
   Button,
   Calendar,
@@ -267,10 +266,6 @@ export const IndexScreen = ({ navigation, route }) => {
   if (showMap || showCalendar || sortByDistance || filterByOpeningTimes) {
     delete queryVariables.limit;
   }
-
-  useEffect(() => {
-    isConnected && auth();
-  }, []);
 
   useEffect(() => {
     // we want to ensure when changing from one index screen to another, for example from

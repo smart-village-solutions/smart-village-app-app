@@ -1,11 +1,12 @@
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AppState, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Sentry from 'sentry-expo';
 
 import { MainApp } from './src';
+import { auth } from './src/auth';
 import { fontConfig, namespace, secrets } from './src/config';
 
 const sentryApi = secrets[namespace].sentryApi;
@@ -23,7 +24,23 @@ if (sentryApi?.dsn) {
 SplashScreen.preventAutoHideAsync();
 
 const App = () => {
+  const appState = useRef(AppState.currentState);
   const [isFontLoaded, setIsFontLoaded] = useState(false);
+
+  useEffect(() => {
+    // runs auth() if app returns from background or inactive to foreground
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (appState.current.match(/inactive|background/) && nextAppState === 'active') {
+        auth();
+      }
+
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   useEffect(() => {
     async function prepare() {
