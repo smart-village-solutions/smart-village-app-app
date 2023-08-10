@@ -5,10 +5,10 @@ import { StyleSheet } from 'react-native';
 
 import { Image } from './Image';
 import { ImagesCarousel } from './ImagesCarousel';
-import { WrapperWithOrientation } from './Wrapper';
 
 export const ImageSection = ({ mediaContents }) => {
   const images = [];
+
   !!mediaContents?.length &&
     _filter(
       mediaContents,
@@ -34,9 +34,7 @@ export const ImageSection = ({ mediaContents }) => {
       {images.length > 1 && <ImagesCarousel data={images} />}
 
       {images.length === 1 && (
-        <WrapperWithOrientation>
-          <Image source={images[0].picture} containerStyle={styles.imageContainer} />
-        </WrapperWithOrientation>
+        <Image source={images[0].picture} containerStyle={styles.imageContainer} />
       )}
     </>
   );

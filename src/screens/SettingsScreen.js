@@ -24,7 +24,12 @@ import {
 } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { ONBOARDING_STORE_KEY } from '../OnboardingManager';
-import { PushNotificationStorageKeys, setInAppPermission } from '../pushNotifications';
+import {
+  handleSystemPermissions,
+  PushNotificationStorageKeys,
+  setInAppPermission,
+  showSystemPermissionMissingDialog
+} from '../pushNotifications';
 import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
@@ -44,11 +49,35 @@ renderItem.propTypes = {
 };
 
 const onActivatePushNotifications = (revert) => {
-  setInAppPermission(true).then((success) => !success && revert());
+  handleSystemPermissions(false)
+    .then((hasPermission) => {
+      if (!hasPermission) {
+        showSystemPermissionMissingDialog();
+        revert();
+      } else {
+        setInAppPermission(true)
+          .then((success) => !success && revert())
+          .catch((error) => {
+            console.warn('An error occurred while activating push notifications:', error);
+            revert();
+          });
+      }
+    })
+    .catch((error) => {
+      console.warn(
+        'An error occurred while handling system permissions for activating push notifications:',
+        error
+      );
+    });
 };
 
 const onDeactivatePushNotifications = (revert) => {
-  setInAppPermission(false).then((success) => !success && revert());
+  setInAppPermission(false)
+    .then((success) => !success && revert())
+    .catch((error) => {
+      console.warn('An error occurred while deactivating push notifications:', error);
+      revert();
+    });
 };
 
 const TOP_FILTER = {

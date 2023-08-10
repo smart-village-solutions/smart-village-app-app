@@ -1,16 +1,14 @@
 jest.setTimeout(30000);
 import React from 'react';
-import { View } from 'react-native';
 import renderer from 'react-test-renderer';
 
 import {
+  InfoBox,
   Wrapper,
   WrapperHorizontal,
-  WrapperVertical,
   WrapperRow,
-  WrapperWrap,
-  InfoBox,
-  WrapperWithOrientation
+  WrapperVertical,
+  WrapperWrap
 } from '../../src/components';
 
 describe('testing Wrapper style component', () => {
@@ -59,14 +57,3 @@ describe('testing Wrapper style component', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('renders WrapperWithOrientation', async () => {
-    const tree = renderer
-      .create(
-        <WrapperWithOrientation needLandscapeWrapper>
-          <View></View>
-        </WrapperWithOrientation>
-      )
-      .toJSON();
-    expect(tree).toMatchSnapshot();
-  });
-});

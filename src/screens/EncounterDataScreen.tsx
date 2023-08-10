@@ -23,13 +23,12 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
-  WrapperRow,
-  WrapperWithOrientation
+  WrapperRow
 } from '../components';
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { Icon, colors, consts, normalize, texts } from '../config';
 import { updateUserAsync } from '../encounterApi';
 import { momentFormat } from '../helpers';
-import { useEncounterUser, useSelectImage, useEncounterSupportId } from '../hooks';
+import { useEncounterSupportId, useEncounterUser, useSelectImage } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
 
@@ -63,11 +62,12 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
   // wrapper for the setter functions to trigger an update to "hasChanges" on a change
   const onChange = useCallback(
     <T,>(
-      setter: React.Dispatch<React.SetStateAction<T>>
-    ): React.Dispatch<React.SetStateAction<T>> => (arg) => {
-      setHasChanges(true);
-      setter(arg);
-    },
+        setter: React.Dispatch<React.SetStateAction<T>>
+      ): React.Dispatch<React.SetStateAction<T>> =>
+      (arg) => {
+        setHasChanges(true);
+        setter(arg);
+      },
     []
   );
 
@@ -182,127 +182,125 @@ export const EncounterDataScreen = ({ navigation }: StackScreenProps<any>) => {
           keyboardShouldPersistTaps="handled"
           refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}
         >
-          <WrapperWithOrientation>
-            <SectionHeader title={texts.encounter.dataTitle} />
-            <Wrapper>
-              <Label>{texts.encounter.profilePhoto}</Label>
-              <TouchableOpacity
-                accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
-                onPress={selectImage}
-              >
-                <WrapperRow spaceBetween>
-                  {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
-                  <View style={styles.editIconContainer}>
-                    <Icon.EditSetting color={colors.transparent} />
-                  </View>
-                  <ImageWithBadge
-                    imageUri={imageUri}
-                    verified={user.verified}
-                    placeholder={user.imageUri}
-                  />
-                  <View style={styles.editIconContainer}>
-                    <Icon.EditSetting color={colors.placeholder} />
-                  </View>
-                </WrapperRow>
-              </TouchableOpacity>
-            </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.encounter.firstName}</Label>
-              <TextInput
-                accessibilityLabel={`${a11yLabels.firstName} ${a11yLabels.textInput}: ${firstName}`}
-                onChangeText={onChange(setFirstName)}
-                placeholder={texts.encounter.firstName}
-                style={styles.inputField}
-                value={firstName}
-              />
-            </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.encounter.lastName}</Label>
-              <TextInput
-                accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
-                onChangeText={onChange(setLastName)}
-                placeholder={texts.encounter.lastName}
-                style={styles.inputField}
-                value={lastName}
-              />
-            </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.encounter.birthDate}</Label>
-              <Pressable
-                accessibilityLabel={`${a11yLabels.birthDate} ${a11yLabels.textInput}: ${
-                  birthDate ? momentFormat(birthDate.toISOString()) : ''
-                }`}
-                accessibilityHint={a11yLabels.birthDateHint}
-                onPress={() => {
-                  // without setting it to false first, it sometimes did not properly show
-                  setIsDatePickerVisible(false);
-                  setIsDatePickerVisible(true);
-                }}
-                onStartShouldSetResponderCapture={() => true}
-              >
-                <TextInput
-                  editable={false}
-                  placeholder={texts.encounter.birthDate}
-                  style={styles.inputField}
-                  value={momentFormat(birthDate?.toISOString() ?? 0)}
+          <SectionHeader title={texts.encounter.dataTitle} />
+          <Wrapper>
+            <Label>{texts.encounter.profilePhoto}</Label>
+            <TouchableOpacity
+              accessibilityLabel={`${a11yLabels.image} ${a11yLabels.button}`}
+              onPress={selectImage}
+            >
+              <WrapperRow spaceBetween>
+                {/* This creates an identically sized view independent of the chosen icon to keep the image centered. */}
+                <View style={styles.editIconContainer}>
+                  <Icon.EditSetting color={colors.transparent} />
+                </View>
+                <ImageWithBadge
+                  imageUri={imageUri}
+                  verified={user.verified}
+                  placeholder={user.imageUri}
                 />
-              </Pressable>
-            </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
-              <Label>{texts.encounter.phone}</Label>
-              <TextInput
-                accessibilityLabel={`${a11yLabels.phoneNumber} ${a11yLabels.textInput}: ${phone}`}
-                keyboardType="phone-pad"
-                onChangeText={onChange(setPhone)}
-                placeholder={texts.encounter.phone}
-                style={styles.inputField}
-                value={phone}
-              />
-            </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
-              <WrapperRow style={styles.infoLabelContainer}>
-                <Label>{texts.encounter.status}</Label>
-                <TouchableOpacity
-                  accessibilityLabel={`${a11yLabels.verifiedInfo} ${a11yLabels.button}`}
-                  onPress={onPressInfoVerification}
-                >
-                  <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
-                </TouchableOpacity>
+                <View style={styles.editIconContainer}>
+                  <Icon.EditSetting color={colors.placeholder} />
+                </View>
               </WrapperRow>
+            </TouchableOpacity>
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.firstName}</Label>
+            <TextInput
+              accessibilityLabel={`${a11yLabels.firstName} ${a11yLabels.textInput}: ${firstName}`}
+              onChangeText={onChange(setFirstName)}
+              placeholder={texts.encounter.firstName}
+              style={styles.inputField}
+              value={firstName}
+            />
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.lastName}</Label>
+            <TextInput
+              accessibilityLabel={`${a11yLabels.lastName} ${a11yLabels.textInput}: ${lastName}`}
+              onChangeText={onChange(setLastName)}
+              placeholder={texts.encounter.lastName}
+              style={styles.inputField}
+              value={lastName}
+            />
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.birthDate}</Label>
+            <Pressable
+              accessibilityLabel={`${a11yLabels.birthDate} ${a11yLabels.textInput}: ${
+                birthDate ? momentFormat(birthDate.toISOString()) : ''
+              }`}
+              accessibilityHint={a11yLabels.birthDateHint}
+              onPress={() => {
+                // without setting it to false first, it sometimes did not properly show
+                setIsDatePickerVisible(false);
+                setIsDatePickerVisible(true);
+              }}
+              onStartShouldSetResponderCapture={() => true}
+            >
               <TextInput
-                accessibilityLabel={`${a11yLabels.verified} (${
-                  user.verified ? texts.encounter.verified : texts.encounter.notVerified
-                })`}
                 editable={false}
+                placeholder={texts.encounter.birthDate}
                 style={styles.inputField}
-                value={user.verified ? texts.encounter.verified : texts.encounter.notVerified}
+                value={momentFormat(birthDate?.toISOString() ?? 0)}
               />
-            </Wrapper>
-            <Wrapper style={styles.noPaddingTop}>
-              <WrapperRow style={styles.infoLabelContainer}>
-                <Label>{texts.encounter.supportId}</Label>
-                <TouchableOpacity
-                  accessibilityLabel={`${a11yLabels.encounterIdInfo} ${a11yLabels.button}`}
-                  onPress={onPressInfoId}
-                >
-                  <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
-                </TouchableOpacity>
-              </WrapperRow>
-              <View style={[styles.inputField, styles.supportIdContainer]}>
-                <RegularText big selectable>
-                  {supportId}
-                </RegularText>
-              </View>
-            </Wrapper>
-            <Wrapper>
-              <Button
-                onPress={onPressUpdate}
-                title={texts.encounter.saveChanges}
-                disabled={!(birthDate && firstName && lastName && phone && userId) || !hasChanges}
-              />
-            </Wrapper>
-            <EncounterList />
-          </WrapperWithOrientation>
+            </Pressable>
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <Label>{texts.encounter.phone}</Label>
+            <TextInput
+              accessibilityLabel={`${a11yLabels.phoneNumber} ${a11yLabels.textInput}: ${phone}`}
+              keyboardType="phone-pad"
+              onChangeText={onChange(setPhone)}
+              placeholder={texts.encounter.phone}
+              style={styles.inputField}
+              value={phone}
+            />
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <WrapperRow style={styles.infoLabelContainer}>
+              <Label>{texts.encounter.status}</Label>
+              <TouchableOpacity
+                accessibilityLabel={`${a11yLabels.verifiedInfo} ${a11yLabels.button}`}
+                onPress={onPressInfoVerification}
+              >
+                <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
+              </TouchableOpacity>
+            </WrapperRow>
+            <TextInput
+              accessibilityLabel={`${a11yLabels.verified} (${
+                user.verified ? texts.encounter.verified : texts.encounter.notVerified
+              })`}
+              editable={false}
+              style={styles.inputField}
+              value={user.verified ? texts.encounter.verified : texts.encounter.notVerified}
+            />
+          </Wrapper>
+          <Wrapper style={styles.noPaddingTop}>
+            <WrapperRow style={styles.infoLabelContainer}>
+              <Label>{texts.encounter.supportId}</Label>
+              <TouchableOpacity
+                accessibilityLabel={`${a11yLabels.encounterIdInfo} ${a11yLabels.button}`}
+                onPress={onPressInfoId}
+              >
+                <Icon.Info color={colors.darkText} size={INFO_ICON_SIZE} style={styles.icon} />
+              </TouchableOpacity>
+            </WrapperRow>
+            <View style={[styles.inputField, styles.supportIdContainer]}>
+              <RegularText big selectable>
+                {supportId}
+              </RegularText>
+            </View>
+          </Wrapper>
+          <Wrapper>
+            <Button
+              onPress={onPressUpdate}
+              title={texts.encounter.saveChanges}
+              disabled={!(birthDate && firstName && lastName && phone && userId) || !hasChanges}
+            />
+          </Wrapper>
+          <EncounterList />
           <DateTimePicker
             initialTime={birthDate}
             mode="date"

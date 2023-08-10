@@ -118,7 +118,7 @@ export const deleteReminderSetting = async (id: number) => {
         return true;
       })
       .catch((error) => {
-        console.warn('An error occured while deleting a reminder setting:', error);
+        console.warn('An error occurred while deleting a reminder setting:', error);
         return false;
       });
   }

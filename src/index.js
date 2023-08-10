@@ -7,7 +7,7 @@ import { setContext } from 'apollo-link-context';
 import { createHttpLink } from 'apollo-link-http';
 import * as SecureStore from 'expo-secure-store';
 import _isEmpty from 'lodash/isEmpty';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { ActivityIndicator } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -20,14 +20,13 @@ import { BookmarkProvider } from './BookmarkProvider';
 import { LoadingContainer } from './components';
 import { colors, consts, namespace, secrets } from './config';
 import {
-  graphqlFetchPolicy,
   geoLocationToLocationObject,
+  graphqlFetchPolicy,
   parsedImageAspectRatio,
   storageHelper
 } from './helpers';
 import { Navigator } from './navigation/Navigator';
-import NetInfo from './NetInfo';
-import { NetworkProvider } from './NetworkProvider';
+import { NetworkContext, NetworkProvider } from './NetworkProvider';
 import { OnboardingManager } from './OnboardingManager';
 import { OrientationProvider } from './OrientationProvider';
 import { PermanentFilterProvider } from './PermanentFilterProvider';
@@ -38,6 +37,7 @@ import { SettingsProvider } from './SettingsProvider';
 const { LIST_TYPES } = consts;
 
 const MainAppWithApolloProvider = () => {
+  const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [loading, setLoading] = useState(true);
   const [client, setClient] = useState();
   const [initialGlobalSettings, setInitialGlobalSettings] = useState({
@@ -49,14 +49,7 @@ const MainAppWithApolloProvider = () => {
   });
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
-
   const [authRetried, setAuthRetried] = useState(false);
-  const [netInfo, setNetInfo] = useState({
-    isConnected: null,
-    isMainserverUp: null,
-    netInfoCounter: 0
-  });
-  const { isConnected, isMainserverUp, netInfoCounter } = netInfo;
 
   const setupApolloClient = async () => {
     // https://www.apollographql.com/docs/react/recipes/authentication/#header
@@ -110,37 +103,18 @@ const MainAppWithApolloProvider = () => {
     });
 
     setClient(client);
+
+    return client;
   };
 
-  // we can provide an empty array as second argument to the effect hook to avoid activating
-  // it on component updates but only for the mounting of the component.
-  // this effect depend on no variables, so it is only triggered when the component mounts.
-  // if an effect depends on a variable (..., [variable]), it is triggered every time it changes.
-  // provide different effects for different contexts.
-  //
   // we wait for NetInfo to check for main server reachability, which is made when `isMainserverUp`
-  // becomes `true` or `false` and is not `null` anymore. with the `netInfoCounter` that gets
-  // updated every time the main server was not checked for reachability, we trigger the the
-  // effect again until NetInfo has finished.
+  // becomes `true` or `false` and is not `null` anymore.
   useEffect(() => {
-    const updateNetInfo = async () => {
-      const updatedNetInfo = await NetInfo.fetch();
-
-      setNetInfo({
-        isConnected: updatedNetInfo.isConnected,
-        isMainserverUp: updatedNetInfo.isInternetReachable,
-        netInfoCounter: updatedNetInfo.isInternetReachable === null && netInfoCounter + 1
-      });
-    };
-
-    // re-run NetInfo
-    isMainserverUp === null && updateNetInfo();
-
     // setup the apollo client if NetInfo finished and if there is no client existing already
     isMainserverUp !== null && !client && auth(setupApolloClient);
-  }, [netInfoCounter]);
+  }, [isMainserverUp]);
 
-  const setupInitialGlobalSettings = async () => {
+  const setupInitialGlobalSettings = async ({ client }) => {
     const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
     // rehydrate data from the async storage to the global state
@@ -198,19 +172,29 @@ const MainAppWithApolloProvider = () => {
     setInitialLocationSettings(locationSettings);
     setInitialListTypesSettings(listTypesSettings);
     setInitialGlobalSettings(globalSettings);
+
+    // this is currently the last point where something was done, so the app startup is done
+    setLoading(false);
   };
 
-  // setup global settings if apollo client setup finished
+  // setup the apollo client and setup global settings after apollo client setup finished
   useEffect(() => {
-    client && setupInitialGlobalSettings();
-  }, [client]);
+    async function prepare() {
+      try {
+        await auth();
 
-  useEffect(() => {
-    // this is currently the last point where something was done, so the app startup is done
-    initialGlobalSettings && client && setLoading(false);
-  }, [initialGlobalSettings]);
+        const client = await setupApolloClient();
 
-  if (loading) {
+        setupInitialGlobalSettings({ client });
+      } catch (error) {
+        console.warn(error);
+      }
+    }
+
+    !!isMainserverUp && prepare();
+  }, [isMainserverUp]);
+
+  if (loading || !client) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />

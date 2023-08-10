@@ -12,22 +12,29 @@ export const NetworkContext = createContext({
 });
 
 export const NetworkProvider = ({ children }) => {
-  const [connected, setConnected] = useState(defaultIsConnected);
-  const [internetReachable, setInternetReachable] = useState(defaultIsMainserverUp);
+  const [isConnected, setIsConnected] = useState(defaultIsConnected);
+  const [isMainserverUp, setIsMainserverUp] = useState(defaultIsMainserverUp);
 
   useEffect(() => {
     // https://github.com/react-native-community/react-native-netinfo#netinfostate
     const unsubscribe = NetInfo.addEventListener((state) => {
-      setConnected(state.isConnected);
-      setInternetReachable(state.isInternetReachable);
+      setIsConnected(state.isConnected);
+      // NOTE: Somehow on iOS there is always `null` for `state.isInternetReachable` but we need it
+      // to be `true` to not fallback to cached data. If there is a connection, we assume the main
+      // server is also reachable, so we fallback to `state.isConnected` here.
+      // With cached data on the initial app load, we cannot show anything and get stuck on the
+      // splash screen.
+      setIsMainserverUp(state.isInternetReachable || state.isConnected);
     });
 
-    // returned function will be called when component unmounts
-    return () => unsubscribe();
+    return () => {
+      // Unsubscribe to network state updates when component unmounts
+      unsubscribe();
+    };
   }, []);
 
   return (
-    <NetworkContext.Provider value={{ isConnected: connected, isMainserverUp: internetReachable }}>
+    <NetworkContext.Provider value={{ isConnected, isMainserverUp }}>
       {children}
     </NetworkContext.Provider>
   );

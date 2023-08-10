@@ -142,7 +142,13 @@ export const WasteReminderSettings = ({
     async (street: string) => {
       setLoading(true);
       setError(false);
-      const storedSettings = await getReminderSettings();
+
+      // replace null values with empty strings for city and zip in storedSettings to prevent validation issues
+      const storedSettings = (await getReminderSettings()).map((setting: ReminderSettingJson) => ({
+        ...setting,
+        city: setting.city ?? '',
+        zip: setting.zip ?? ''
+      }));
 
       if (!areValidReminderSettings(storedSettings)) {
         setError(true);

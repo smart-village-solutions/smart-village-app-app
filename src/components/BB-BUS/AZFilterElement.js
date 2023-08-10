@@ -32,4 +32,10 @@ export const AZFilterElement = styled.View`
     css`
       margin-right: ${normalize(14)}px;
     `};
+
+  ${(props) =>
+    props.backgroundContrast &&
+    css`
+      background-color: ${colors.overlayRgba};
+    `};
 `;

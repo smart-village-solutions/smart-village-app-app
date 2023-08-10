@@ -1,5 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import React, { useCallback, useState } from 'react';
 import { RefreshControl, StyleSheet } from 'react-native';
 
@@ -66,6 +67,15 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   useFocusEffect(
     useCallback(() => {
       refetch();
+    }, [])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS) {
+        // this is needed because the chat screen is locked to portrait mode
+        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
+      }
     }, [])
   );
 

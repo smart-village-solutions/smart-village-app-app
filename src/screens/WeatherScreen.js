@@ -12,8 +12,7 @@ import {
   TitleContainer,
   TitleShadow,
   WeatherAlert,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../components';
 import { colors, consts, device, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
@@ -98,7 +97,7 @@ export const WeatherScreen = () => {
     <SafeAreaViewFlex>
       <ScrollView refreshControl={refreshControl}>
         {!!alerts?.length && (
-          <WrapperWithOrientation>
+          <>
             <TitleContainer
               accessibilityLabel={`(${texts.weather.alertsHeadline}) ${consts.a11yLabel.heading}`}
             >
@@ -114,18 +113,16 @@ export const WeatherScreen = () => {
                 end={alert.end}
               />
             ))}
-          </WrapperWithOrientation>
+          </>
         )}
         {hasHourlyWeather(weatherMap) && (
           <View>
-            <WrapperWithOrientation>
-              <TitleContainer
-                accessibilityLabel={`(${texts.weather.currentHeadline}) ${consts.a11yLabel.heading}`}
-              >
-                <Title>{texts.weather.currentHeadline}</Title>
-              </TitleContainer>
-              {device.platform === 'ios' && <TitleShadow />}
-            </WrapperWithOrientation>
+            <TitleContainer
+              accessibilityLabel={`(${texts.weather.currentHeadline}) ${consts.a11yLabel.heading}`}
+            >
+              <Title>{texts.weather.currentHeadline}</Title>
+            </TitleContainer>
+            {device.platform === 'ios' && <TitleShadow />}
             <FlatList
               data={markNow(weatherMap.hourly)}
               horizontal
@@ -136,7 +133,7 @@ export const WeatherScreen = () => {
           </View>
         )}
         {hasDailyWeather(weatherMap) && (
-          <WrapperWithOrientation>
+          <>
             <TitleContainer
               accessibilityLabel={`(${texts.weather.nextDaysHeadline}) ${consts.a11yLabel.heading}`}
             >
@@ -152,7 +149,7 @@ export const WeatherScreen = () => {
                 date={day.dt}
               />
             ))}
-          </WrapperWithOrientation>
+          </>
         )}
       </ScrollView>
     </SafeAreaViewFlex>

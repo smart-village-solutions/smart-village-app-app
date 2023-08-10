@@ -2,14 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { FlatList, ListRenderItem, StyleSheet } from 'react-native';
 
-import {
-  Button,
-  HtmlView,
-  LoadingSpinner,
-  SafeAreaViewFlex,
-  Wrapper,
-  WrapperWithOrientation
-} from '../components';
+import { Button, HtmlView, LoadingSpinner, SafeAreaViewFlex, Wrapper } from '../components';
 import { usePullToRefetch, useStaticContent } from '../hooks';
 
 type EntryData = {
@@ -29,7 +22,7 @@ export const MultiButtonScreen = ({ navigation, route }: StackScreenProps<any>) 
   const RefreshControl = usePullToRefetch(refetch);
   const renderItem: ListRenderItem<EntryData> = useCallback(
     ({ item }) => (
-      <WrapperWithOrientation>
+      <>
         {!!item.text?.length && (
           <Wrapper style={styles.noPaddingBottom}>
             <HtmlView html={item.text} />
@@ -41,7 +34,7 @@ export const MultiButtonScreen = ({ navigation, route }: StackScreenProps<any>) 
             onPress={() => navigation.navigate(item.routeName, item.params)}
           />
         </Wrapper>
-      </WrapperWithOrientation>
+      </>
     ),
     [navigation]
   );

@@ -10,6 +10,10 @@ export const texts = {
       closed: 'geschlossen',
       open: 'geöffnet'
     },
+    menuItem: {
+      active: 'aktiviert',
+      inactive: 'nicht aktiviert'
+    },
     searchInputIcons: {
       delete: 'Suche löschen',
       search: 'Suche'
@@ -310,7 +314,8 @@ export const texts = {
     optional: 'Die folgenden Angaben sind freiwillig:',
     send: 'Senden',
     successScreen: {
-      entry: 'Wir prüfen Ihre Angaben.',
+      entry:
+        'Wir werden uns Ihrem Anliegen annehmen, den Sachverhalt prüfen und gegebenenfalls notwendige Maßnahmen einleiten.',
       header: 'Vielen Dank für Ihre Meldung'
     },
     wait: 'Bitte warten...'
@@ -414,7 +419,29 @@ export const texts = {
   },
   feedbackLink: 'Feedback',
   feedbackScreen: {
-    checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.'
+    alert: {
+      title: 'Feedback',
+      message: 'Vielen Dank für Ihr Feedback!',
+      ok: 'OK'
+    },
+    checkboxTitle: 'Ich bin mit dem Speichern meiner Daten einverstanden.',
+    inputsLabel: {
+      name: 'Name',
+      email: 'E-Mail',
+      phone: 'Telefon',
+      message: 'Ihre Mitteilung',
+      checkbox: 'Ich bin mit dem Speichern meiner Daten einverstanden.'
+    },
+    inputsErrorMessages: {
+      checkbox: 'Bitte bestätigen Sie, dass Sie mit dem Speichern Ihrer Daten einverstanden sind.',
+      email: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+      hint: 'Hinweis',
+      message: 'Bitte geben Sie eine Mitteilung ein.'
+    },
+    sendButton: {
+      disabled: 'Bitte warten...',
+      enabled: 'Senden'
+    }
   },
   homeButtons: {
     events: 'Alle Veranstaltungen anzeigen',
@@ -875,16 +902,16 @@ export const texts = {
     },
     commentSubmissionAlert: {
       de: 'Ihr Kommentar wird nun redaktionell geprüft und schnellstmöglich veröffentlicht.',
-      pl: 'Twój komentarz zostanie teraz sprawdzony redakcyjnie i opublikowany tak szybko, jak to możliwe.'
+      pl: 'Twój komentarz zostanie teraz zweryfikowany przez redakcję i opublikowany tak szybko, jak to możliwe.'
     },
     commentSubmissionAlertTitle: 'Ihr Kommentar wird nun redaktionell geprüft',
     dateEnd: {
       de: 'Abschluss der Umfrage:',
-      pl: 'Wypełnienie ankiety:'
+      pl: 'Zakończenie ankiety:'
     },
     dateStart: {
       de: 'Start der Umfrage:',
-      pl: 'Rozpocznij ankietę:'
+      pl: 'Rozpoczęcie ankiety:'
     },
     errors: {
       submissionBody:
@@ -897,7 +924,7 @@ export const texts = {
     },
     multiSelectPossible: {
       de: 'Mehrfachantwort möglich.',
-      pl: 'Możliwych jest wiele odpowiedzi.'
+      pl: 'Wybór wielokrotnych odpowiedzi jest możliwy.'
     },
     result: {
       de: 'Ergebnis',
@@ -910,6 +937,11 @@ export const texts = {
     submitComment: {
       de: 'Kommentar senden',
       pl: 'Wyślij komentarz'
+    },
+    submitSuccess: {
+      entry:
+        'Mit Ihren Ideen und Rückmeldungen helfen Sie uns dabei, den Service der Gemeinde weiter zu verbessern.',
+      header: 'Vielen Dank für die Teilnahme an unserer Umfrage.'
     }
   },
   tabBarLabel: {

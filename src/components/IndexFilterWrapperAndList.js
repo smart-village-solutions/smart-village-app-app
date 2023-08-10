@@ -21,7 +21,7 @@ export const IndexFilterWrapperAndList = ({ filter, setFilter }) => {
         data={filter}
         renderItem={({ item }) => (
           <Touchable
-            accessibilityLabel={`(${item.title}) ${a11yLabel.drop} (${
+            accessibilityLabel={`(${item.title}) ${a11yLabel.tabs} (${
               item.selected
                 ? texts.accessibilityLabels.tabs.active
                 : texts.accessibilityLabels.tabs.inactive

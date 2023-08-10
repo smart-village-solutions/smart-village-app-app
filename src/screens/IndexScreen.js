@@ -1,3 +1,4 @@
+import { useIsFocused } from '@react-navigation/native';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -119,6 +120,7 @@ export const IndexScreen = ({ navigation, route }) => {
     route.params?.filterByDailyEvents ?? false
   );
   const { state: excludeDataProviderIds } = usePermanentFilter();
+  const isFocused = useIsFocused();
 
   const query = route.params?.query ?? '';
 
@@ -427,6 +429,13 @@ export const IndexScreen = ({ navigation, route }) => {
               !hasFilterSelection(query, true)
                 ? dataVolunteerEvents
                 : undefined;
+
+            // we need to refetch in some cases to request and show the correct dates for recurring
+            // events
+            isFocused &&
+              query === QUERY_TYPES.EVENT_RECORDS &&
+              (!initialEventRecordsItemsFetch || !showCalendar) &&
+              refetch();
 
             return (
               <>

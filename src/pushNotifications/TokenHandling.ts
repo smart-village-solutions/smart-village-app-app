@@ -14,7 +14,7 @@ export enum PushNotificationStorageKeys {
 // if it is different it will remove the old one from the server, if there was one present
 // if it is different it will add the new one to the server if it is present
 // in theory the token should be persistent, so we should never have
-//  two defined values that are distinct.
+// two defined values that are distinct.
 export const handleIncomingToken = async (token?: string) => {
   const storedToken = await getPushTokenFromStorage();
 

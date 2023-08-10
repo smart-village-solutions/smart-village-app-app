@@ -5,6 +5,124 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.2.5]
+
+This update fixes some optimisation issues in the app and adds new features
+
+### Added
+
+- added the ability to click on whatsapp links in HTML pages on Android platform
+- added a new alert to inform users after answering the survey
+- added configurable zoom values for maps from main server
+
+### Changed
+
+- changed Polnish texts in the application
+- upgraded `@sentry/react-native` to version 4.13.0 to 4.15.2
+- upgraded `sentry-expo` to version 6.1.0 to 6.2.0
+- added `expo-clipboard` package which is missing package to make Augmented Reality feature working
+- changed the alert text that appears after users report a defect report
+
+### Fixed
+
+- optimised augmented reality feature for devices with less than 2gb RAM
+- fixed the problem of consul inputs overlapping
+- fixed a bug where images were repeated twice by TalkBack for Android
+- configured `expo-updates` package to prevent crashes on android platform
+- fixed the problem of POIs being open or not
+
+## [v3.2.4]
+
+This update includes some accessibility improvements and fixes some bugs in the waste calendar and event page
+
+### Added
+
+- added redirection from html page to whatsapp app in iOS version
+- increased contrast of survey answers according to accessibility settings
+
+### Changed
+
+- added extra space between event calendar and list
+- replaced accessibility labels with new text for better understanding
+
+### Fixed
+
+- improved a problem with the showing of series events
+- fixed an issue where the autocomplete list on the waste calendar screen would not close in some cases
+- fixed a bug that prevented the bbnavi feature from working
+
+## [v3.2.3]
+
+This update fixes some bugs and includes new features
+
+### Added
+
+- added automatic show of the list after pressing the street input in the waste calendar
+- added scrolling feature to the waste calendar list
+- added to list the events of the selected day under the event calendar
+- added the feature to change the number of dots shown in the event calendar
+- added the feature to darken the borders of inputs depending on accessibility features
+
+### Changed
+
+- upgraded Expo to version 48.0.15 to 48.0.18
+- upgraded react-native version 0.71.7 to 0.71.8
+- removed the requirement on some inputs of the form in `FeedbackScreen`
+
+### Fixed
+
+- fixed a problem that prevented links within the application from opening
+- fixed the problem with the checkbox in `FeedbackScreen` appearing above the input
+
+## [v3.2.2]
+
+This update includes bug fixes for waste calendar notifications
+
+### Fixed
+
+- fixed a bug that prevented users from re-creating notifications for the waste calendar
+
+## [v3.2.1]
+
+This update includes new accessibility features and some bug fixes for android
+
+### Added
+
+- Updated inputs in `FeedbackScreen` and added accessibility features
+- Added pause button to sliders
+- Added contrast to `AZFilter` based on `isReduceTransparencyEnabled`
+- Added contrast to inputs based on `isReduceTransparencyEnabled`
+- Added contrast to `FeedbackFooter` based on `isReduceTransparencyEnabled`
+- Added contrast to hourly weather section based on `isReduceTransparencyEnabled`
+
+### Changed
+
+- removed WrapperWithOrientation wrapper as it does not cause any change in appearance
+- upgraded Expo to version 48.0.11 to 48.0.15
+- upgraded react-native version 0.71.6 to 0.71.7
+
+### Fixed
+
+- Fixed app stuck in `SplashScreen` after new Android update
+- Fixed issue with not activating notifications for Android 13
+
+## [v3.2.0]
+
+Three major new Expo SDK versions 46, 47 and 48 and updated new packages
+
+### Changed
+
+- upgraded Expo to version 46: https://blog.expo.dev/expo-sdk-46-c2a1655f63f7
+- upgraded Expo to version 47: https://blog.expo.dev/expo-sdk-47-a0f6f5c038af
+- upgraded Expo to version 48: https://blog.expo.dev/expo-sdk-48-ccb8302e231
+- upgraded react-native-calendars to 1.1293.0
+- upgraded react-native-gifted-chat to 2.0.1
+
+### Fixed
+
+- fixed an issue due to a recent update of the `react-native-calendar` package
+- fixed a bug when the chat screen switches to landscape mode
+
 ## [v3.1.4]
 
 New features for accessibility have been added in this update

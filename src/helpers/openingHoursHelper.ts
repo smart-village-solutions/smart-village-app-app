@@ -47,12 +47,39 @@ const dateIsWithinInterval = (date: Date, start?: Date, end?: Date) => {
   return true;
 };
 
-const isOpeningTimeForDate = (info: OpeningHour, date: Date) =>
-  dateIsWithinInterval(
+export const TMB_YEAR_TO_PARSE = '1970';
+
+export const dateWithCorrectYear = (dateString?: string) => {
+  if (!dateString) {
+    return new Date();
+  }
+
+  if (dateString.startsWith(TMB_YEAR_TO_PARSE)) {
+    const currentYear = new Date().getFullYear();
+    const newDateString = dateString.replace(/^(\d{4})/, currentYear.toString());
+
+    return new Date(newDateString);
+  }
+
+  return new Date(dateString);
+};
+
+const isOpeningTimeForDate = (info: OpeningHour, date: Date) => {
+  const dateFrom = dateWithCorrectYear(info.dateFrom);
+  const dateTo = dateWithCorrectYear(info.dateTo);
+
+  // if `dateFrom` is after `dateTo`, increase the year of `dateTo` by one so that ranges
+  // like 01.10. - 01.04. result in 01.10.2021 - 01.04.2022 instead of 01.10.2021 - 01.04.2021
+  if (info.dateFrom && info.dateTo && dateFrom > dateTo) {
+    dateTo.setFullYear(dateTo.getFullYear() + 1);
+  }
+
+  return dateIsWithinInterval(
     date,
-    info.dateFrom ? moment(new Date(info.dateFrom)).startOf('day').toDate() : undefined,
-    info.dateTo ? moment(new Date(info.dateTo)).endOf('day').toDate() : undefined
+    info.dateFrom ? moment(dateFrom).startOf('day').toDate() : undefined,
+    info.dateTo ? moment(dateTo).endOf('day').toDate() : undefined
   );
+};
 
 const getTodayWithTime = (time: string) => {
   return moment(time, 'HH:mm').toDate();

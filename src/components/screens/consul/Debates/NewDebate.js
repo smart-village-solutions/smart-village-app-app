@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { Alert, StyleSheet } from 'react-native';
+import { Alert, Platform, StyleSheet } from 'react-native';
 
-import { namespace, secrets, texts } from '../../../../config';
+import { device, namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { QUERY_TYPES } from '../../../../queries';
 import { START_DEBATE, UPDATE_DEBATE } from '../../../../queries/consul';
@@ -162,42 +162,47 @@ NewDebate.propTypes = {
 
 const INPUTS = [
   {
-    name: 'title',
-    label: texts.consul.startNew.newDebateTitleLabel,
-    placeholder: texts.consul.startNew.newDebateTitleLabel,
-    keyboardType: 'default',
-    textContentType: 'none',
-    autoCompleteType: 'off',
     autoCapitalize: 'none',
+    autoCompleteType: 'off',
+    keyboardType: 'default',
+    label: texts.consul.startNew.newDebateTitleLabel,
+    name: 'title',
+    placeholder: texts.consul.startNew.newDebateTitleLabel,
     rules: {
       required: texts.consul.startNew.emptyError,
       minLength: { value: 4, message: 'ist zu kurz (minimum 4 Zeichen)' }
-    }
+    },
+    textContentType: 'none'
   },
   {
-    name: 'description',
-    multiline: true,
-    minHeight: 150,
-    label: texts.consul.startNew.newDebateDescriptionLabel,
-    placeholder: texts.consul.startNew.newDebateDescriptionLabel,
-    keyboardType: 'default',
-    textContentType: 'none',
-    autoCompleteType: 'off',
     autoCapitalize: 'none',
+    autoCompleteType: 'off',
+    containerStyle: {
+      marginBottom: Platform.select({ android: normalize(130), ios: normalize(85) })
+    },
+    keyboardType: 'default',
+    label: texts.consul.startNew.newDebateDescriptionLabel,
+    minHeight: 150,
+    multiline: true,
+    textAlignVertical: 'top',
+    name: 'description',
+    placeholder: texts.consul.startNew.newDebateDescriptionLabel,
     rules: {
       required: texts.consul.startNew.emptyError,
       minLength: { value: 10, message: 'ist zu kurz (minimum 10 Zeichen)' }
-    }
+    },
+    textContentType: 'none'
   },
   {
-    name: 'tagList',
-    multiline: true,
-    label: texts.consul.startNew.tags,
-    placeholder: texts.consul.startNew.newDebateTagLabel,
-    keyboardType: 'default',
-    textContentType: 'none',
-    autoCompleteType: 'off',
     autoCapitalize: 'none',
-    rules: { required: false }
+    autoCompleteType: 'off',
+    keyboardType: 'default',
+    label: texts.consul.startNew.tags,
+    maxHeight: 50,
+    multiline: true,
+    name: 'tagList',
+    placeholder: texts.consul.startNew.newDebateTagLabel,
+    rules: { required: false },
+    textContentType: 'none'
   }
 ];

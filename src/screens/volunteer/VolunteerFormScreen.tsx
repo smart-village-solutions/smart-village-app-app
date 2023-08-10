@@ -9,8 +9,7 @@ import {
   VolunteerFormCalendar,
   VolunteerFormConversation,
   VolunteerFormGroup,
-  VolunteerFormProfile,
-  WrapperWithOrientation
+  VolunteerFormProfile
 } from '../../components';
 import { QUERY_TYPES } from '../../queries';
 
@@ -36,22 +35,20 @@ export const VolunteerFormScreen = ({ navigation, route }: StackScreenProps<any>
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled" ref={scrollViewRef}>
-          <WrapperWithOrientation>
-            <Form
-              navigation={navigation}
-              route={route}
-              scrollToTop={() =>
-                scrollViewRef?.current?.scrollTo({
-                  x: 0,
-                  y: 0,
-                  animated: true
-                })
-              }
-              selectedUserIds={selectedUserIds}
-              groupId={groupId}
-              userData={userData}
-            />
-          </WrapperWithOrientation>
+          <Form
+            navigation={navigation}
+            route={route}
+            scrollToTop={() =>
+              scrollViewRef?.current?.scrollTo({
+                x: 0,
+                y: 0,
+                animated: true
+              })
+            }
+            selectedUserIds={selectedUserIds}
+            groupId={groupId}
+            userData={userData}
+          />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

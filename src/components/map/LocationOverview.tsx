@@ -15,7 +15,7 @@ import { LoadingContainer } from '../LoadingContainer';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
 import { PointOfInterest } from '../screens/PointOfInterest';
 import { RegularText } from '../Text';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 import { Map } from './Map';
 
@@ -113,30 +113,32 @@ export const LocationOverview = ({
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        <WrapperWithOrientation>
-          <Map locations={mapMarkers} onMarkerPress={setSelectedPointOfInterest} />
-          <View>
-            {!selectedPointOfInterest && (
-              <Wrapper>
-                <RegularText center>{texts.locationOverview.noSelection}</RegularText>
-              </Wrapper>
-            )}
-            {detailsLoading ? (
-              <LoadingContainer>
-                <ActivityIndicator color={colors.accent} />
-              </LoadingContainer>
-            ) : (
-              !!detailsData?.[QUERY_TYPES.POINT_OF_INTEREST] && (
-                <PointOfInterest
-                  data={detailsData[QUERY_TYPES.POINT_OF_INTEREST]}
-                  navigation={navigation}
-                  hideMap
-                  route={route}
-                />
-              )
-            )}
-          </View>
-        </WrapperWithOrientation>
+        <Map
+          locations={mapMarkers}
+          onMarkerPress={setSelectedPointOfInterest}
+          isMultipleMarkersMap
+        />
+        <View>
+          {!selectedPointOfInterest && (
+            <Wrapper>
+              <RegularText center>{texts.locationOverview.noSelection}</RegularText>
+            </Wrapper>
+          )}
+          {detailsLoading ? (
+            <LoadingContainer>
+              <ActivityIndicator color={colors.accent} />
+            </LoadingContainer>
+          ) : (
+            !!detailsData?.[QUERY_TYPES.POINT_OF_INTEREST] && (
+              <PointOfInterest
+                data={detailsData[QUERY_TYPES.POINT_OF_INTEREST]}
+                navigation={navigation}
+                hideMap
+                route={route}
+              />
+            )
+          )}
+        </View>
       </ScrollView>
     </SafeAreaViewFlex>
   );

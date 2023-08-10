@@ -1,4 +1,4 @@
-import { getReadableDay, isOpen } from '../../src/helpers';
+import { TMB_YEAR_TO_PARSE, dateWithCorrectYear, getReadableDay, isOpen } from '../../src/helpers';
 import { OpeningHour } from '../../src/types';
 
 const FAKE_NOW_DATE = new Date();
@@ -11,6 +11,20 @@ const weekday = getReadableDay(FAKE_NOW_DATE);
 
 const isOpenWithFakeTimeDateTime = (openingHours: OpeningHour[]) =>
   isOpen(openingHours, FAKE_NOW_DATE);
+
+describe('testing correct year for date for TMB data', () => {
+  it('not adjusted year for a date in 2022', () => {
+    expect(dateWithCorrectYear('2022-05-19')).toEqual(new Date('2022-05-19'));
+  });
+
+  it('adjusted year for a date in the year that should be parsed', () => {
+    const currentYear = FAKE_NOW_DATE.getFullYear();
+
+    expect(dateWithCorrectYear(`${TMB_YEAR_TO_PARSE}-03-09`)).toEqual(
+      new Date(`${currentYear}-03-09`)
+    );
+  });
+});
 
 describe('testing the opening times handling', () => {
   it('single opening intervals work as expected', () => {
@@ -83,7 +97,8 @@ describe('testing the opening times handling', () => {
     expect(
       isOpenWithFakeTimeDateTime([
         {
-          open: false
+          open: false,
+          weekday
         }
       ])
     ).toEqual({ open: false });
@@ -91,7 +106,8 @@ describe('testing the opening times handling', () => {
     expect(
       isOpenWithFakeTimeDateTime([
         {
-          open: true
+          open: true,
+          weekday
         }
       ])
     ).toEqual({ open: true });
@@ -236,7 +252,7 @@ describe('testing the opening times handling', () => {
     ).toEqual({ open: false, timeDiff: 120 });
   });
 
-  it.only('currently open, with random entry without time and weekday', () => {
+  it('currently open, with random entry without time and weekday', () => {
     expect(
       isOpenWithFakeTimeDateTime([
         {

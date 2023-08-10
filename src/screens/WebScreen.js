@@ -5,7 +5,7 @@ import { ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import appJson from '../../app.json';
-import { LoadingContainer, SafeAreaViewFlex, WrapperWithOrientation } from '../components';
+import { LoadingContainer, SafeAreaViewFlex } from '../components';
 import { colors, consts } from '../config';
 import { useTrackScreenViewAsync } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
@@ -28,24 +28,24 @@ export const WebScreen = ({ route }) => {
 
   return (
     <SafeAreaViewFlex>
-      <WrapperWithOrientation>
-        <WebView
-          source={{ uri: webUrl }}
-          startInLoadingState
-          mediaPlaybackRequiresUserAction
-          renderLoading={() => (
-            <LoadingContainer web>
-              <ActivityIndicator color={colors.accent} />
-            </LoadingContainer>
-          )}
-          injectedJavaScript={injectedJavaScript}
-          onMessage={noop} // needed for making `injectedJavaScript` work in some cases
-          // https://github.com/react-native-webview/react-native-webview/blob/19980d888d66554875f3ac64b3e8a35bd7ad998b/src/WebViewTypes.ts#L378-L389
-          decelerationRate="normal"
-          // https://github.com/react-native-webview/react-native-webview/blob/master/docs/Reference.md#applicationnameforuseragent
-          applicationNameForUserAgent={appJson.expo.scheme}
-        />
-      </WrapperWithOrientation>
+      <WebView
+        source={{ uri: webUrl }}
+        startInLoadingState
+        mediaPlaybackRequiresUserAction
+        renderLoading={() => (
+          <LoadingContainer web>
+            <ActivityIndicator color={colors.accent} />
+          </LoadingContainer>
+        )}
+        injectedJavaScript={injectedJavaScript}
+        onMessage={noop} // needed for making `injectedJavaScript` work in some cases
+        // https://github.com/react-native-webview/react-native-webview/blob/19980d888d66554875f3ac64b3e8a35bd7ad998b/src/WebViewTypes.ts#L378-L389
+        decelerationRate="normal"
+        // https://github.com/react-native-webview/react-native-webview/blob/master/docs/Reference.md#applicationnameforuseragent
+        applicationNameForUserAgent={
+          !webUrl.includes('bbnavi.de') ? appJson.expo.scheme : undefined
+        }
+      />
     </SafeAreaViewFlex>
   );
 };

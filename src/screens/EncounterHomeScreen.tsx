@@ -15,8 +15,7 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
-  WrapperRow,
-  WrapperWithOrientation
+  WrapperRow
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { colors, consts, device, Icon, normalize, texts } from '../config';
@@ -39,8 +38,7 @@ const a11yLabels = consts.a11yLabel;
 // eslint-disable-next-line complexity
 export const EncounterHomeScreen = ({ navigation, route }: any) => {
   // @ts-expect-error settings are not properly typed
-  const encounterCategoryId = useContext(SettingsContext).globalSettings?.settings?.encounter
-    ?.categoryId;
+  const categoryId = useContext(SettingsContext).globalSettings?.settings?.encounter?.categoryId;
   const {
     loading: loadingQr,
     qrValue: qrId,
@@ -83,13 +81,13 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
     navigation.navigate(ScreenName.Index, {
       query: QUERY_TYPES.POINTS_OF_INTEREST,
       queryVariables: {
-        categoryId: encounterCategoryId,
+        categoryId,
         limit: 15,
         order: 'name_ASC'
       },
       title: texts.screenTitles.encounterHome
     });
-  }, [encounterCategoryId, navigation]);
+  }, [categoryId, navigation]);
 
   const refresh = useCallback(() => {
     refreshQr();
@@ -106,7 +104,7 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
   if (!userId) {
     return (
       <EncounterWelcome
-        onPressToCategory={encounterCategoryId ? onPressToCategory : undefined}
+        onPressToCategory={categoryId ? onPressToCategory : undefined}
         navigation={navigation}
       />
     );
@@ -129,66 +127,64 @@ export const EncounterHomeScreen = ({ navigation, route }: any) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView refreshControl={<RefreshControl onRefresh={refresh} refreshing={refreshing} />}>
-        <WrapperWithOrientation>
-          <SectionHeader title={texts.encounter.homeTitle} />
-          <DiagonalGradient style={styles.gradient}>
-            <View style={styles.container}>
-              <CircularView size={device.width / 2} style={styles.circle}>
-                <QRCode value={qrValue} size={device.width / 3} quietZone={normalize(4)} />
-              </CircularView>
-              <BoldText big lightest>
-                {`${firstName} ${lastName}`.toUpperCase()}
-              </BoldText>
-            </View>
-
-            <Wrapper>
-              <WrapperRow spaceBetween>
-                <WrapperRow>
-                  <RegularText lightest small textAlign="bottom">
-                    {texts.encounter.status}
-                  </RegularText>
-                  <TouchableOpacity
-                    accessibilityLabel={`${a11yLabels.verifiedInfo} ${a11yLabels.button}`}
-                    onPress={onPressInfo}
-                  >
-                    <Icon.Info
-                      color={colors.lightestText}
-                      size={INFO_ICON_SIZE}
-                      style={styles.icon}
-                    />
-                  </TouchableOpacity>
-                </WrapperRow>
-                <RegularText lightest>
-                  {verified ? texts.encounter.verified : texts.encounter.notVerified}
-                </RegularText>
-              </WrapperRow>
-              <Divider style={styles.divider} />
-            </Wrapper>
-          </DiagonalGradient>
+        <SectionHeader title={texts.encounter.homeTitle} />
+        <DiagonalGradient style={styles.gradient}>
+          <View style={styles.container}>
+            <CircularView size={device.width / 2} style={styles.circle}>
+              <QRCode value={qrValue} size={device.width / 3} quietZone={normalize(4)} />
+            </CircularView>
+            <BoldText big lightest>
+              {`${firstName} ${lastName}`.toUpperCase()}
+            </BoldText>
+          </View>
 
           <Wrapper>
-            <Button
-              onPress={() => {
-                navigation.navigate(ScreenName.EncounterScanner);
-              }}
-              title={texts.encounter.newEncounter}
-            />
-            <Button
-              invert
-              onPress={() => {
-                navigation.navigate(ScreenName.EncounterData);
-              }}
-              title={texts.encounter.myData}
-            />
-            {!!encounterCategoryId && (
-              <Button invert title={texts.encounter.toCategory} onPress={onPressToCategory} />
-            )}
-            {!!additionalInfo?.length && (
-              // @ts-expect-error HtmlView memo is not typed in a way that the correct type can be inferred
-              <HtmlView html={additionalInfo} openWebScreen={openWebScreen} />
-            )}
+            <WrapperRow spaceBetween>
+              <WrapperRow>
+                <RegularText lightest small textAlign="bottom">
+                  {texts.encounter.status}
+                </RegularText>
+                <TouchableOpacity
+                  accessibilityLabel={`${a11yLabels.verifiedInfo} ${a11yLabels.button}`}
+                  onPress={onPressInfo}
+                >
+                  <Icon.Info
+                    color={colors.lightestText}
+                    size={INFO_ICON_SIZE}
+                    style={styles.icon}
+                  />
+                </TouchableOpacity>
+              </WrapperRow>
+              <RegularText lightest>
+                {verified ? texts.encounter.verified : texts.encounter.notVerified}
+              </RegularText>
+            </WrapperRow>
+            <Divider style={styles.divider} />
           </Wrapper>
-        </WrapperWithOrientation>
+        </DiagonalGradient>
+
+        <Wrapper>
+          <Button
+            onPress={() => {
+              navigation.navigate(ScreenName.EncounterScanner);
+            }}
+            title={texts.encounter.newEncounter}
+          />
+          <Button
+            invert
+            onPress={() => {
+              navigation.navigate(ScreenName.EncounterData);
+            }}
+            title={texts.encounter.myData}
+          />
+          {!!categoryId && (
+            <Button invert title={texts.encounter.toCategory} onPress={onPressToCategory} />
+          )}
+          {!!additionalInfo?.length && (
+            // @ts-expect-error HtmlView memo is not typed in a way that the correct type can be inferred
+            <HtmlView html={additionalInfo} openWebScreen={openWebScreen} />
+          )}
+        </Wrapper>
       </ScrollView>
     </SafeAreaViewFlex>
   );

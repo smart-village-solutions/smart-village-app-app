@@ -17,7 +17,7 @@ import { UrlSection } from '../infoCard/UrlSection';
 import { Logo } from '../Logo';
 import { BoldText, RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 const { a11yLabel, ROOT_ROUTE_NAMES } = consts;
 
@@ -106,7 +106,7 @@ export const VolunteerUser = ({
   );
 
   return (
-    <WrapperWithOrientation>
+    <>
       <ImageSection mediaContents={mediaContents} />
 
       {!!logo && <Logo source={{ uri: logo }} containerStyle={styles.logoContainer} />}
@@ -148,7 +148,7 @@ export const VolunteerUser = ({
           />
         </Wrapper>
       )}
-    </WrapperWithOrientation>
+    </>
   );
 };
 

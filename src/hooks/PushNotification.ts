@@ -1,13 +1,12 @@
+import { Subscription } from '@unimodules/react-native-adapter';
+import * as Notifications from 'expo-notifications';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, AppStateStatus } from 'react-native';
-import * as Notifications from 'expo-notifications';
-import { Subscription } from '@unimodules/react-native-adapter';
 
 import { readFromStore } from '../helpers';
 import {
-  getPushTokenFromStorage,
-  initializePushPermissions,
   PushNotificationStorageKeys,
+  getPushTokenFromStorage,
   updatePushToken
 } from '../pushNotifications';
 
@@ -41,17 +40,24 @@ export const usePushNotifications = (
         const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
         const token = await getPushTokenFromStorage();
 
-        if (nextState === 'active') {
-          inAppPermission && !token && updatePushToken();
+        if (nextState === 'active' && inAppPermission && !token) {
+          updatePushToken();
         }
       }, 3000);
     }
   }, []); // empty dependencies because it will only used once in the "mountEffect" below
 
   useEffect(() => {
-    initializePushPermissions();
+    Notifications.setNotificationHandler({
+      handleNotification: async () =>
+        behavior ?? {
+          shouldShowAlert: true,
+          shouldPlaySound: false,
+          shouldSetBadge: false
+        }
+    });
 
-    AppState.addEventListener('change', onGetActive);
+    const subscription = AppState.addEventListener('change', onGetActive);
 
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current =
@@ -68,21 +74,13 @@ export const usePushNotifications = (
         interactionHandler(response);
       });
 
-    Notifications.setNotificationHandler({
-      handleNotification: async () =>
-        behavior ?? {
-          shouldShowAlert: true,
-          shouldPlaySound: false,
-          shouldSetBadge: false
-        }
-    });
-
     return () => {
       notificationListener.current &&
         Notifications.removeNotificationSubscription(notificationListener.current);
       responseListener.current &&
         Notifications.removeNotificationSubscription(responseListener.current);
-      AppState.removeEventListener('change', onGetActive);
+
+      subscription.remove();
     };
   }, []);
 };

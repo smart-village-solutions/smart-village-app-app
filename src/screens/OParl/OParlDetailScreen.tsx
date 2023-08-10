@@ -3,13 +3,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import { ActivityIndicator, ScrollView } from 'react-native';
 
-import {
-  LoadingContainer,
-  RegularText,
-  SafeAreaViewFlex,
-  Wrapper,
-  WrapperWithOrientation
-} from '../../components';
+import { LoadingContainer, RegularText, SafeAreaViewFlex, Wrapper } from '../../components';
 import { OParlComponent } from '../../components/oParl';
 import { colors, texts } from '../../config';
 import { useOParlQuery } from '../../hooks';
@@ -26,7 +20,11 @@ export const OParlDetailScreen = ({ navigation, route }: Props) => {
 
   const [query, queryName] = getOParlQuery(oParlType);
 
-  const { data: queryData, loading, error } = useOParlQuery(query, {
+  const {
+    data: queryData,
+    loading,
+    error
+  } = useOParlQuery(query, {
     variables: { id }
   });
 
@@ -42,19 +40,15 @@ export const OParlDetailScreen = ({ navigation, route }: Props) => {
 
   if (error || !data)
     return (
-      <WrapperWithOrientation>
-        <Wrapper>
-          <RegularText center>{texts.errors.noData}</RegularText>
-        </Wrapper>
-      </WrapperWithOrientation>
+      <Wrapper>
+        <RegularText center>{texts.errors.noData}</RegularText>
+      </Wrapper>
     );
 
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        <WrapperWithOrientation>
-          <OParlComponent data={data} navigation={navigation} />
-        </WrapperWithOrientation>
+        <OParlComponent data={data} navigation={navigation} />
       </ScrollView>
     </SafeAreaViewFlex>
   );

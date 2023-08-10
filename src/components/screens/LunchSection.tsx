@@ -10,7 +10,7 @@ import { QUERY_TYPES } from '../../queries';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
 import { BoldText, RegularText } from '../Text';
-import { InfoBox, Wrapper, WrapperWithOrientation } from '../Wrapper';
+import { InfoBox, Wrapper } from '../Wrapper';
 
 type WebUrl = {
   id: string;
@@ -138,39 +138,37 @@ export const LunchSection = ({ lunchOfferData, navigation }: Props) => {
   const logo = mediaContents?.find((item) => item.contentType === 'logo')?.sourceUrl?.url;
 
   return (
-    <WrapperWithOrientation>
-      <Wrapper>
-        {!!logo && <Logo source={{ uri: logo }} />}
+    <Wrapper>
+      {!!logo && <Logo source={{ uri: logo }} />}
 
-        <TouchableOpacity accessibilityLabel={consts.a11yLabel.infoProvider} onPress={onPress}>
-          <InfoBox style={styles.addressContainer}>
-            <Icon.Location style={styles.margin} />
-            <View style={styles.address}>
-              <BoldText primary>{name}</BoldText>
-              {!!address && <RegularText primary>{address}</RegularText>}
-            </View>
-          </InfoBox>
-        </TouchableOpacity>
+      <TouchableOpacity accessibilityLabel={consts.a11yLabel.infoProvider} onPress={onPress}>
+        <InfoBox style={styles.addressContainer}>
+          <Icon.Location style={styles.margin} />
+          <View style={styles.address}>
+            <BoldText primary>{name}</BoldText>
+            {!!address && <RegularText primary>{address}</RegularText>}
+          </View>
+        </InfoBox>
+      </TouchableOpacity>
 
-        <InfoCard
-          contact={filteredContact}
-          openWebScreen={openWebScreen}
-          webUrls={withWebUrls ? webUrls : undefined}
-        />
-        <RegularText />
-        {!!text && (
-          <>
-            <RegularText>{text}</RegularText>
-            <RegularText />
-          </>
-        )}
-        {!!lunchOffers &&
-          lunchOffers.map((item, index) => (
-            <LunchOffer key={index} name={item.name} price={item.price} />
-          ))}
-        <Divider style={styles.divider} />
-      </Wrapper>
-    </WrapperWithOrientation>
+      <InfoCard
+        contact={filteredContact}
+        openWebScreen={openWebScreen}
+        webUrls={withWebUrls ? webUrls : undefined}
+      />
+      <RegularText />
+      {!!text && (
+        <>
+          <RegularText>{text}</RegularText>
+          <RegularText />
+        </>
+      )}
+      {!!lunchOffers &&
+        lunchOffers.map((item, index) => (
+          <LunchOffer key={index} name={item.name} price={item.price} />
+        ))}
+      <Divider style={styles.divider} />
+    </Wrapper>
   );
 };
 

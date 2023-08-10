@@ -7,9 +7,9 @@
     "description": "An open source React Native app for smart villages merging regional offers and services in one place - in your pocket.",
     "githubUrl": "https://github.com/ikuseiGmbH/smart-village-app-app",
     "platforms": ["ios", "android"],
-    "version": "3.1.4",
+    "version": "3.2.5",
     "extra": { "eas": { "projectId": "84611212-b1ac-47b3-8f2d-065898fab1cb" } },
-    "runtimeVersion": "nativeVersion",
+    "runtimeVersion": { "policy": "nativeVersion" },
     "orientation": "portrait",
     "primaryColor": "#3F7193",
     "icon": "./assets/icon.png",
@@ -19,21 +19,23 @@
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "de.test.hb.meinquartier.smartvillage.app",
       "buildNumber": "2",
       "supportsTablet": true,
       "usesIcloudStorage": true,
+      "requireFullScreen": true,
       "infoPlist": {
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
         "NSLocationWhenInUseUsageDescription": "Diese App nutzt die Standortbestimmung um Ihre aktuelle Position auf der Karte darzustellen.",
         "CFBundleLocalizations": ["de"],
-        "CFBundleDevelopmentRegion": "de_DE"
+        "CFBundleDevelopmentRegion": "de_DE",
+        "LSApplicationQueriesSchemes": ["whatsapp"]
+      },
+      "config": {
+        "usesNonExemptEncryption": false
       }
     },
     "android": {
@@ -47,13 +49,13 @@
         "WRITE_EXTERNAL_STORAGE"
       ],
       "googleServicesFile": "./google-services.json",
-      "jsEngine": "hermes",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyC0P5I0NMEjQS2auZUfK3dzgWwPKGrkllc"
         }
       },
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "pan",
+      "allowBackup": false
     },
     "androidStatusBar": {
       "barStyle": "dark-content",
@@ -79,7 +81,14 @@
           "microphonePermission": false
         }
       ],
-      "sentry-expo"
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "PORTRAIT"
+        }
+      ],
+      "sentry-expo",
+      "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
     ]
   }
 }

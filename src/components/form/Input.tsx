@@ -1,10 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { useController, UseControllerOptions } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
 import { Input as RNEInput, InputProps } from 'react-native-elements';
 
 import { colors, consts, device, Icon, normalize } from '../../config';
 import { Label } from '../Label';
+import { BoldText } from '../Text';
+import { AccessibilityContext } from '../../AccessibilityProvider';
 
 const { a11yLabel } = consts;
 
@@ -14,6 +16,7 @@ type Props = InputProps &
     hidden?: boolean;
     row?: boolean;
     chat?: boolean;
+    boldLabel?: boolean;
   };
 
 /* eslint-disable complexity */
@@ -23,6 +26,7 @@ export const Input = ({
   name,
   rules,
   label,
+  boldLabel = false,
   validate = false,
   disabled = false,
   hidden = false,
@@ -31,8 +35,13 @@ export const Input = ({
   multiline = false,
   rightIcon,
   chat = false,
+  inputContainerStyle,
+  inputStyle,
+  containerStyle,
   ...furtherProps
 }: Props) => {
+  const { isReduceTransparencyEnabled } = useContext(AccessibilityContext);
+
   const { field } = useController({
     control,
     name,
@@ -79,15 +88,16 @@ export const Input = ({
   return (
     <RNEInput
       ref={inputRef}
-      label={<Label>{label}</Label>}
+      label={label && <Label bold={boldLabel}>{label}</Label>}
       value={field.value}
       onChangeText={field.onChange}
       onBlur={field.onBlur}
       disabled={disabled}
+      disableFullscreenUI
       multiline={multiline}
       {...furtherProps}
       errorMessage={!isValid ? errorMessage : ''}
-      scrollEnabled={multiline && false}
+      scrollEnabled={multiline}
       rightIcon={
         rightIcon ||
         (isValid ? (
@@ -100,20 +110,24 @@ export const Input = ({
         styles.container,
         row && styles.row,
         !errorMessage && styles.containerHeight,
-        hidden && !errorMessage && styles.containerHidden
+        hidden && !errorMessage && styles.containerHidden,
+        containerStyle
       ]}
       inputContainerStyle={[
         styles.inputContainer,
         disabled && styles.inputContainerDisabled,
         hidden && styles.inputContainerHidden,
         isValid && styles.inputContainerSuccess,
-        !isValid && !!errorMessage && styles.inputContainerError
+        !isValid && !!errorMessage && styles.inputContainerError,
+        isReduceTransparencyEnabled && styles.inputAccessibilityBorderContrast,
+        inputContainerStyle
       ]}
       rightIconContainerStyle={styles.rightIconContainer}
       inputStyle={[
         styles.input,
         multiline && device.platform === 'ios' && styles.multiline,
-        !isValid && !!errorMessage && styles.inputError
+        !isValid && !!errorMessage && styles.inputError,
+        inputStyle
       ]}
       errorStyle={[styles.inputError, !errorMessage && styles.inputErrorHeight]}
       placeholderTextColor={colors.placeholder}
@@ -136,6 +150,9 @@ const styles = StyleSheet.create({
   },
   row: {
     width: '47%'
+  },
+  inputAccessibilityBorderContrast: {
+    borderColor: colors.darkText
   },
   inputContainer: {
     borderBottomWidth: normalize(1),

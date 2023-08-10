@@ -1,6 +1,6 @@
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Sentry from 'sentry-expo';
@@ -9,6 +9,7 @@ import { MainApp } from './src';
 import { fontConfig, namespace, secrets } from './src/config';
 
 const sentryApi = secrets[namespace].sentryApi;
+
 if (sentryApi?.dsn) {
   Sentry.init({
     dsn: sentryApi.dsn,
@@ -18,26 +19,51 @@ if (sentryApi?.dsn) {
   });
 }
 
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
+
 const App = () => {
-  const [fontLoaded, setFontLoaded] = useState(false);
+  const [isFontLoaded, setIsFontLoaded] = useState(false);
 
   useEffect(() => {
-    SplashScreen.preventAutoHideAsync();
+    async function prepare() {
+      try {
+        // Pre-load fonts
+        await Font.loadAsync(fontConfig);
+      } catch (error) {
+        console.warn(error);
+      } finally {
+        setIsFontLoaded(true);
+      }
+    }
 
-    Font.loadAsync(fontConfig)
-      .catch((error) => console.warn('An error occurred with loading the fonts', error))
-      .finally(() => setFontLoaded(true));
+    prepare();
   }, []);
 
-  return fontLoaded ? (
-    <GestureHandlerRootView style={styles.flex}>
+  const onLayoutRootView = useCallback(async () => {
+    if (isFontLoaded) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `isFontLoaded`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      await SplashScreen.hideAsync();
+    }
+  }, [isFontLoaded]);
+
+  if (!isFontLoaded) return null;
+
+  return (
+    <GestureHandlerRootView style={styles.flex} onLayout={onLayoutRootView}>
       <MainApp />
     </GestureHandlerRootView>
-  ) : null;
+  );
 };
 
 export default App;
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 }
+  flex: {
+    flex: 1
+  }
 });

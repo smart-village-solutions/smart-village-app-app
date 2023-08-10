@@ -4,27 +4,24 @@
   },
   "build": {
     "production": {
-      "node": "14.20.0",
+      "node": "16.13.0",
       "yarn": "1.22.19",
-      "releaseChannel": "production",
-      "ios": {
-        "image": "macos-monterey-12.4-xcode-13.4"
-      }
+      "channel": "production"
     },
     "preview": {
       "extends": "production",
-      "releaseChannel": "preview",
+      "channel": "preview",
       "distribution": "internal"
     },
     "development": {
       "extends": "production",
-      "releaseChannel": "development",
+      "channel": "development",
       "distribution": "internal",
       "developmentClient": true
     },
     "development-simulator": {
       "extends": "production",
-      "releaseChannel": "development",
+      "channel": "development",
       "distribution": "internal",
       "developmentClient": true,
       "ios": {

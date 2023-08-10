@@ -23,8 +23,7 @@ import {
   renderArrow,
   SafeAreaViewFlex,
   WasteCalendarLegend,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../components';
 import { FeedbackFooter } from '../components/FeedbackFooter';
 import { colors, device, namespace, normalize, secrets, staticRestSuffix, texts } from '../config';
@@ -35,6 +34,7 @@ import { NetworkContext } from '../NetworkProvider';
 import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifications';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
+import { OrientationContext } from '../OrientationProvider';
 
 const dotSize = 6;
 
@@ -84,10 +84,12 @@ const getLocationData = (streetData) => {
 // eslint-disable-next-line complexity
 export const WasteCollectionScreen = ({ navigation }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { dimensions } = useContext(OrientationContext);
   const { globalSettings } = useContext(SettingsContext);
   const [inputValueCity, setInputValueCity] = useState('');
   const [inputValueCitySelected, setInputValueCitySelected] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const [isStreetInputFocused, setIsStreetInputFocused] = useState(false);
   const [selectedStreetId, setSelectedStreetId] = useState();
 
   const addressesRefreshTime = useRefreshTime('waste-addresses');
@@ -133,6 +135,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
     }
   );
 
+  const isInputAutoFocus = globalSettings?.settings?.wasteAddresses?.isInputAutoFocus;
   const wasteAddressesStreetCount = globalSettings?.settings?.wasteAddresses?.streetCount || 5;
   const wasteAddressesTwoStep = !!globalSettings?.settings?.wasteAddresses?.twoStep;
 
@@ -170,7 +173,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
   const filterStreets = useCallback(
     (currentInputValue, addressesData) => {
       if (wasteAddressesTwoStep && inputValueCity === '') return [];
-      if (currentInputValue === '') return [];
+      if (isInputAutoFocus && currentInputValue === '' && !isStreetInputFocused) return [];
 
       const streets = addressesData
         ?.filter((address) => {
@@ -183,9 +186,15 @@ export const WasteCollectionScreen = ({ navigation }) => {
         })
         ?.filter((address) => (wasteAddressesTwoStep ? address.city === inputValueCity : true));
 
-      return _sortBy(streets, 'street').slice(0, wasteAddressesStreetCount);
+      const sortedStreets = _sortBy(streets, 'street');
+
+      if (isInputAutoFocus) {
+        return sortedStreets;
+      }
+
+      return sortedStreets.slice(0, wasteAddressesStreetCount);
     },
-    [getStreetString, inputValueCity]
+    [getStreetString, inputValueCity, isStreetInputFocused]
   );
 
   const renderSuggestionCities = useCallback(
@@ -268,6 +277,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
       navigation.navigate('WasteReminder', { wasteTypes: usedTypes, locationData });
 
     const inAppPushPermission = await getInAppPermission();
+
     if (inAppPushPermission) {
       navigate();
     } else {
@@ -317,87 +327,98 @@ export const WasteCollectionScreen = ({ navigation }) => {
 
   const filteredCities = wasteAddressesTwoStep ? filterCities(inputValueCity, addressesData) : [];
   const filteredStreets = filterStreets(inputValue, addressesData, inputValueCity);
+  /**
+   * The variable `isStreetResultsHidden` indicates whether the street results should be hidden based
+   * on the focused state of the street input and the auto-focus configuration, considering the presence
+   * of input value; it is set to `true` if the conditions are met, indicating that the street results
+   * should be hidden.
+   */
+  const isStreetResultsHidden = !(
+    isStreetInputFocused &&
+    ((!isInputAutoFocus && inputValue) || isInputAutoFocus)
+  );
 
   return (
     <SafeAreaViewFlex>
       <ScrollView keyboardShouldPersistTaps="handled">
-        <WrapperWithOrientation>
-          {wasteAddressesTwoStep && (
-            <Autocomplete
-              containerStyle={styles.autoCompleteContainer}
-              data={filteredCities}
-              disableFullscreenUI
-              flatListProps={{
-                renderItem: inputValueCitySelected ? null : renderSuggestionCities
-              }}
-              inputContainerStyle={styles.autoCompleteInputContainer}
-              listStyle={styles.autoCompleteList}
-              onChangeText={(text) => {
-                setInputValueCitySelected(false);
-                setSelectedStreetId(undefined);
-                setInputValueCity(text);
-              }}
-              placeholder="Ortschaft"
-              style={styles.autoCompleteInput}
-              value={inputValueCity}
-            />
-          )}
-          {(!wasteAddressesTwoStep || (wasteAddressesTwoStep && inputValueCitySelected)) && (
-            <Autocomplete
-              containerStyle={[
-                styles.autoCompleteContainer,
-                !filteredStreets?.length && styles.noBorderBottom,
-                wasteAddressesTwoStep && styles.noBorderTop
-              ]}
-              data={filteredStreets}
-              disableFullscreenUI
-              flatListProps={{
-                renderItem: renderSuggestion
-              }}
-              inputContainerStyle={[
-                styles.autoCompleteInputContainer,
-                wasteAddressesTwoStep && styles.noBorderTop
-              ]}
-              listStyle={styles.autoCompleteList}
-              onChangeText={(text) => setInputValue(text)}
-              placeholder="Straße"
-              style={styles.autoCompleteInput}
-              value={inputValue}
-            />
-          )}
-          {selectedStreetId && (
-            <Calendar
-              dayComponent={NoTouchDay}
-              markedDates={getMarkedDates(typesData, streetData)}
-              markingType="multi-dot"
-              renderArrow={renderArrow}
-              theme={{
-                todayTextColor: colors.primary,
-                dotStyle: {
-                  borderRadius: dotSize / 2,
-                  height: dotSize,
-                  width: dotSize
-                }
-              }}
-            />
-          )}
-          <WasteCalendarLegend data={usedTypes} />
-          {!selectedStreetId && (
-            <Wrapper>
-              <RegularText center>
-                {wasteAddressesTwoStep
-                  ? texts.wasteCalendar.hintCityAndStreet
-                  : texts.wasteCalendar.hintStreet}
-              </RegularText>
-            </Wrapper>
-          )}
-          {!!streetData && !!usedTypes && (
-            <Wrapper>
-              <Button title={texts.wasteCalendar.configureReminder} onPress={goToReminder} />
-              <Button title={texts.wasteCalendar.exportCalendar} onPress={triggerExport} />
-            </Wrapper>
-          )}
-        </WrapperWithOrientation>
+        {wasteAddressesTwoStep && (
+          <Autocomplete
+            containerStyle={styles.autoCompleteContainer}
+            data={filteredCities}
+            disableFullscreenUI
+            flatListProps={{
+              height: inputValueCitySelected ? undefined : dimensions.height - normalize(170),
+              keyboardShouldPersistTaps: 'handled',
+              renderItem: inputValueCitySelected ? null : renderSuggestionCities
+            }}
+            hideResults={inputValueCitySelected}
+            listStyle={styles.autoCompleteList}
+            onChangeText={(text) => {
+              setInputValueCitySelected(false);
+              setSelectedStreetId(undefined);
+              setInputValueCity(text);
+            }}
+            onFocus={() => setIsStreetInputFocused(false)}
+            placeholder="Ortschaft"
+            style={styles.autoCompleteInput}
+            value={inputValueCity}
+          />
+        )}
+        {(!wasteAddressesTwoStep || (wasteAddressesTwoStep && inputValueCitySelected)) && (
+          <Autocomplete
+            containerStyle={[
+              styles.autoCompleteContainer,
+              wasteAddressesTwoStep && styles.noBorderTop
+            ]}
+            data={filteredStreets}
+            disableFullscreenUI
+            flatListProps={{
+              height: dimensions.height - normalize(220),
+              keyboardShouldPersistTaps: 'handled',
+              renderItem: renderSuggestion
+            }}
+            hideResults={isStreetResultsHidden}
+            listStyle={styles.autoCompleteList}
+            onChangeText={(text) => setInputValue(text)}
+            onBlur={() => setIsStreetInputFocused(false)}
+            onFocus={() => setIsStreetInputFocused(true)}
+            placeholder="Straße"
+            style={styles.autoCompleteInput}
+            value={inputValue}
+          />
+        )}
+        {selectedStreetId && (
+          <Calendar
+            dayComponent={NoTouchDay}
+            markedDates={getMarkedDates(typesData, streetData)}
+            markingType="multi-dot"
+            renderArrow={renderArrow}
+            theme={{
+              todayTextColor: colors.primary,
+              dotStyle: {
+                borderRadius: dotSize / 2,
+                height: dotSize,
+                width: dotSize
+              }
+            }}
+          />
+        )}
+        <WasteCalendarLegend data={usedTypes} />
+        {!selectedStreetId && (
+          <Wrapper>
+            <RegularText center>
+              {wasteAddressesTwoStep
+                ? texts.wasteCalendar.hintCityAndStreet
+                : texts.wasteCalendar.hintStreet}
+            </RegularText>
+          </Wrapper>
+        )}
+        {!!streetData && !!usedTypes && (
+          <Wrapper>
+            <Button title={texts.wasteCalendar.configureReminder} onPress={goToReminder} />
+            <Button title={texts.wasteCalendar.exportCalendar} onPress={triggerExport} />
+          </Wrapper>
+        )}
         <FeedbackFooter />
       </ScrollView>
     </SafeAreaViewFlex>

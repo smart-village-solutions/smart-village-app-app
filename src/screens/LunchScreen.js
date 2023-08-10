@@ -18,8 +18,7 @@ import {
   RegularText,
   SafeAreaViewFlex,
   Wrapper,
-  WrapperRow,
-  WrapperWithOrientation
+  WrapperRow
 } from '../components';
 import { colors, consts, Icon, normalize, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
@@ -76,36 +75,32 @@ export const LunchScreen = ({ navigation, route }) => {
         publicJsonFile="lunchCarousel"
         refreshTimeKey="publicJsonFile-lunchCarousel"
       />
-      <WrapperWithOrientation>
-        <Wrapper>
-          <WrapperRow>
-            <TouchableOpacity
-              hitSlop={{ bottom: 12, left: 12, right: 12, top: 12 }}
-              onPress={onPressPrevious}
-              style={styles.left}
-            >
-              <Icon.ArrowLeft />
-            </TouchableOpacity>
-            <BoldText big>{date.format('DD.MM.YYYY')}</BoldText>
-            <TouchableOpacity
-              hitSlop={{ bottom: 12, left: 12, right: 12, top: 12 }}
-              onPress={onPressNext}
-              style={styles.right}
-            >
-              <Icon.ArrowRight />
-            </TouchableOpacity>
-          </WrapperRow>
-        </Wrapper>
-      </WrapperWithOrientation>
+      <Wrapper>
+        <WrapperRow>
+          <TouchableOpacity
+            hitSlop={{ bottom: 12, left: 12, right: 12, top: 12 }}
+            onPress={onPressPrevious}
+            style={styles.left}
+          >
+            <Icon.ArrowLeft />
+          </TouchableOpacity>
+          <BoldText big>{date.format('DD.MM.YYYY')}</BoldText>
+          <TouchableOpacity
+            hitSlop={{ bottom: 12, left: 12, right: 12, top: 12 }}
+            onPress={onPressNext}
+            style={styles.right}
+          >
+            <Icon.ArrowRight />
+          </TouchableOpacity>
+        </WrapperRow>
+      </Wrapper>
     </>
   );
 
   const ListEmptyComponent = (
-    <WrapperWithOrientation>
-      <Wrapper>
-        <RegularText>{texts.lunch.noOffers}</RegularText>
-      </Wrapper>
-    </WrapperWithOrientation>
+    <Wrapper>
+      <RegularText>{texts.lunch.noOffers}</RegularText>
+    </Wrapper>
   );
 
   const ListFooterComponent = (

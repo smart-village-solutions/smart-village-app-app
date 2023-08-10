@@ -9,8 +9,7 @@ import {
   MultiButtonWithSubQuery,
   navigateWithSubQuery,
   SafeAreaViewFlex,
-  Wrapper,
-  WrapperWithOrientation
+  Wrapper
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { colors, consts, texts } from '../config';
@@ -73,18 +72,14 @@ export const HtmlScreen = ({ navigation, route }) => {
           />
         }
       >
-        <WrapperWithOrientation>
-          <Wrapper>
-            <HtmlView
-              html={trimNewLines(data)}
-              openWebScreen={(param) =>
-                navigateWithSubQuery({ params: param, navigation, subQuery })
-              }
-              navigation={navigation}
-            />
-            <MultiButtonWithSubQuery {...{ navigation, rootRouteName, subQuery, title }} />
-          </Wrapper>
-        </WrapperWithOrientation>
+        <Wrapper>
+          <HtmlView
+            html={trimNewLines(data)}
+            openWebScreen={(param) => navigateWithSubQuery({ params: param, navigation, subQuery })}
+            navigation={navigation}
+          />
+          <MultiButtonWithSubQuery {...{ navigation, rootRouteName, subQuery, title }} />
+        </Wrapper>
       </ScrollView>
     </SafeAreaViewFlex>
   );

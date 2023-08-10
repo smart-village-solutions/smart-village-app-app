@@ -7,11 +7,11 @@ import { useMutation } from 'react-query';
 
 import {
   colors,
+  styles as configStyles,
   consts,
   device,
   Icon,
   normalize,
-  styles as configStyles,
   texts
 } from '../../config';
 import { navigatorConfig } from '../../config/navigation';
@@ -28,7 +28,7 @@ import { InfoCard } from '../infoCard';
 import { RegularText } from '../Text';
 import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperHorizontal, WrapperWithOrientation } from '../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 import { VolunteerAppointmentsCard } from './VolunteerAppointmentsCard';
 import { VolunteerEventAttending } from './VolunteerEventAttending';
@@ -161,110 +161,106 @@ export const VolunteerEventRecord = ({
     <View>
       <ImageSection mediaContents={mediaContents} />
 
-      <WrapperWithOrientation>
-        {!!title && (
+      {!!title && (
+        <TitleContainer>
+          <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
+        </TitleContainer>
+      )}
+      {device.platform === 'ios' && <TitleShadow />}
+
+      {isAttendingEvent !== undefined && !!attending?.length && (
+        <VolunteerEventAttending
+          calendarEntryId={id}
+          data={attending}
+          navigation={navigation}
+          isAttendingEvent={isAttendingEvent}
+        />
+      )}
+
+      <Wrapper>
+        <InfoCard
+          category={category}
+          address={address}
+          webUrls={webUrls}
+          openWebScreen={openWebScreen}
+        />
+      </Wrapper>
+
+      {!!appointments?.length && (
+        <View>
           <TitleContainer>
-            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
+            <Title
+              accessibilityLabel={`(${texts.volunteer.eventRecord.appointments}) ${a11yText.heading}`}
+            >
+              {texts.volunteer.eventRecord.appointments}
+            </Title>
           </TitleContainer>
-        )}
-        {device.platform === 'ios' && <TitleShadow />}
+          {device.platform === 'ios' && <TitleShadow />}
+          <VolunteerAppointmentsCard appointments={appointments} />
+        </View>
+      )}
 
-        {isAttendingEvent !== undefined && !!attending?.length && (
-          <VolunteerEventAttending
-            calendarEntryId={id}
-            data={attending}
-            navigation={navigation}
-            isAttendingEvent={isAttendingEvent}
-          />
-        )}
+      {!!description && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${texts.volunteer.description}) ${a11yText.heading}`}>
+              {texts.volunteer.description}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Wrapper>
+            <Markdown
+              onLinkPress={(url) => {
+                openLink(url, openWebScreen);
+                return false;
+              }}
+              style={configStyles.markdown}
+            >
+              {description}
+            </Markdown>
+          </Wrapper>
+        </View>
+      )}
 
+      {!!documents?.length &&
+        documents.map((document) => (
+          <WrapperHorizontal key={document.guid}>
+            <Touchable onPress={() => openLink(document.url)}>
+              <View style={styles.volunteerUploadPreview}>
+                <Icon.Document color={colors.darkText} size={normalize(16)} />
+
+                <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
+                  {document.file_name}
+                </RegularText>
+              </View>
+            </Touchable>
+          </WrapperHorizontal>
+        ))}
+
+      {!!isAttendingEvent && !!participantInfo && (
+        <View>
+          <TitleContainer>
+            <Title accessibilityLabel={`(${texts.volunteer.participantInfo}) ${a11yText.heading}`}>
+              {texts.volunteer.participantInfo}
+            </Title>
+          </TitleContainer>
+          {device.platform === 'ios' && <TitleShadow />}
+          <Wrapper>
+            <HtmlView html={participantInfo} openWebScreen={openWebScreen} />
+          </Wrapper>
+        </View>
+      )}
+
+      {isAttendingEvent !== undefined && (
         <Wrapper>
-          <InfoCard
-            category={category}
-            address={address}
-            webUrls={webUrls}
-            openWebScreen={openWebScreen}
+          {!isAttendingEvent && <RegularText small>{texts.volunteer.attendInfo}</RegularText>}
+          <Button
+            title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
+            invert={isAttendingEvent}
+            onPress={attend}
           />
         </Wrapper>
-
-        {!!appointments?.length && (
-          <View>
-            <TitleContainer>
-              <Title
-                accessibilityLabel={`(${texts.volunteer.eventRecord.appointments}) ${a11yText.heading}`}
-              >
-                {texts.volunteer.eventRecord.appointments}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <VolunteerAppointmentsCard appointments={appointments} />
-          </View>
-        )}
-
-        {!!description && (
-          <View>
-            <TitleContainer>
-              <Title accessibilityLabel={`(${texts.volunteer.description}) ${a11yText.heading}`}>
-                {texts.volunteer.description}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>
-              <Markdown
-                onLinkPress={(url) => {
-                  openLink(url, openWebScreen);
-                  return false;
-                }}
-                style={configStyles.markdown}
-              >
-                {description}
-              </Markdown>
-            </Wrapper>
-          </View>
-        )}
-
-        {!!documents?.length &&
-          documents.map((document) => (
-            <WrapperHorizontal key={document.guid}>
-              <Touchable onPress={() => openLink(document.url)}>
-                <View style={styles.volunteerUploadPreview}>
-                  <Icon.Document color={colors.darkText} size={normalize(16)} />
-
-                  <RegularText style={styles.volunteerInfoText} numberOfLines={1} small>
-                    {document.file_name}
-                  </RegularText>
-                </View>
-              </Touchable>
-            </WrapperHorizontal>
-          ))}
-
-        {!!isAttendingEvent && !!participantInfo && (
-          <View>
-            <TitleContainer>
-              <Title
-                accessibilityLabel={`(${texts.volunteer.participantInfo}) ${a11yText.heading}`}
-              >
-                {texts.volunteer.participantInfo}
-              </Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
-            <Wrapper>
-              <HtmlView html={participantInfo} openWebScreen={openWebScreen} />
-            </Wrapper>
-          </View>
-        )}
-
-        {isAttendingEvent !== undefined && (
-          <Wrapper>
-            {!isAttendingEvent && <RegularText small>{texts.volunteer.attendInfo}</RegularText>}
-            <Button
-              title={isAttendingEvent ? texts.volunteer.notAttend : texts.volunteer.attend}
-              invert={isAttendingEvent}
-              onPress={attend}
-            />
-          </Wrapper>
-        )}
-      </WrapperWithOrientation>
+      )}
     </View>
   );
 };

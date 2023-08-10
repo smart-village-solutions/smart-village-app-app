@@ -1,4 +1,4 @@
-import Constants from 'expo-constants';
+import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { PermissionStatus } from 'expo-permissions';
 import { Alert } from 'react-native';
@@ -14,59 +14,44 @@ export const getInAppPermission = async (): Promise<boolean> => {
 };
 
 export const setInAppPermission = async (newValue: boolean) => {
+  let token = undefined;
   const oldValue = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
   if (newValue !== oldValue) {
-    addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
-
     if (newValue) {
-      const hasPermission = await handleSystemPermissions();
-
-      if (!hasPermission) {
-        showSystemPermissionMissingDialog();
-
-        return true;
-      } else {
-        const token = await registerForPushNotificationsAsync();
-        const successfullyHandled = await handleIncomingToken(token);
-
-        return successfullyHandled;
-      }
-    } else {
-      // remove token from store and notify server
-      const successfullyHandled = await handleIncomingToken();
-
-      return successfullyHandled;
+      // receive token
+      token = await registerForPushNotificationsAsync();
     }
-  } else {
-    return true;
-  }
-};
-
-export const initializePushPermissions = async () => {
-  const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
-
-  inAppPermission && updatePushToken();
-
-  // if inAppPermission is undefined (or null), set it depending on the system permission and trigger a token update
-  if (inAppPermission === undefined || inAppPermission === null) {
-    const newValue = await handleSystemPermissions();
 
     addToStore(PushNotificationStorageKeys.IN_APP_PERMISSION, newValue);
 
-    if (newValue) {
-      updatePushToken();
-    }
+    // add token to store and notify server or
+    // remove token from store and notify server
+    const successfullyHandled = await handleIncomingToken(token);
+
+    return successfullyHandled;
   }
+
+  return true;
 };
 
+// https://docs.expo.dev/versions/latest/sdk/notifications/#expopushtokenoptions
 const registerForPushNotificationsAsync = async () => {
-  const { data: token } = await Notifications.getExpoPushTokenAsync({
-    experienceId: `@${Constants.manifest?.owner || 'ikusei'}/${Constants.manifest?.slug}`
-  });
+  const { data: token } = await Notifications.getExpoPushTokenAsync();
+
+  return token;
+};
+
+export const handleSystemPermissions = async (
+  shouldSetInAppPermission = true
+): Promise<boolean> => {
+  // Push notifications do not work properly with simulators/emulators
+  if (!Device.isDevice) {
+    return false;
+  }
 
   if (device.platform === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
+    await Notifications.setNotificationChannelAsync('default', {
       name: 'default',
       importance: Notifications.AndroidImportance.DEFAULT,
       vibrationPattern: [0, 250, 250, 250],
@@ -74,27 +59,36 @@ const registerForPushNotificationsAsync = async () => {
     });
   }
 
-  return token;
-};
-
-export const handleSystemPermissions = async (): Promise<boolean> => {
-  // Push notifications do not work properly with simulators/emulators
-  if (!Constants.isDevice) return false;
-
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
-
   let finalStatus = existingStatus;
+  const inAppPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
+  // if in app permission is already set, do not request again
+  const hasInAppPermissionSet = inAppPermission !== undefined && inAppPermission !== null;
 
-  if (existingStatus === PermissionStatus.UNDETERMINED) {
-    const { status: askedStatus } = await Notifications.requestPermissionsAsync();
-    finalStatus = askedStatus;
+  if (!hasInAppPermissionSet && existingStatus !== PermissionStatus.GRANTED) {
+    const { status: requestedStatus } = await Notifications.requestPermissionsAsync();
+
+    finalStatus = requestedStatus;
   }
 
-  return finalStatus === PermissionStatus.GRANTED;
+  const isGranted = finalStatus === PermissionStatus.GRANTED;
+
+  if (shouldSetInAppPermission) {
+    try {
+      const successfullyHandledInAppPermission = await setInAppPermission(isGranted);
+
+      return successfullyHandledInAppPermission && isGranted;
+    } catch (error) {
+      console.warn('An error occurred while handling in app permissions:', error);
+      return false;
+    }
+  }
+
+  return isGranted;
 };
 
 export const updatePushToken = async () => {
-  await handleSystemPermissions()
+  await handleSystemPermissions(false)
     .then((hasPermission) => {
       if (hasPermission) return registerForPushNotificationsAsync();
     })
@@ -119,8 +113,14 @@ export const showPermissionRequiredAlert = (approveCallback: () => void) => {
     {
       text: approve,
       onPress: async () => {
-        await setInAppPermission(true);
-        approveCallback();
+        const hasPermission = await handleSystemPermissions(false);
+
+        if (!hasPermission) {
+          showSystemPermissionMissingDialog();
+        } else {
+          await setInAppPermission(true);
+          approveCallback();
+        }
       }
     }
   ]);
