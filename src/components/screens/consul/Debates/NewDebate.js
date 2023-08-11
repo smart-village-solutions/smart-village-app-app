@@ -177,7 +177,6 @@ const INPUTS = [
   {
     autoCapitalize: 'none',
     autoCompleteType: 'off',
-    containerStyle: { marginBottom: normalize(95) },
     keyboardType: 'default',
     label: texts.consul.startNew.newDebateDescriptionLabel,
     minHeight: normalize(150),
