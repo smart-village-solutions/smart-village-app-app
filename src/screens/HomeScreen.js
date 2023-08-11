@@ -29,6 +29,7 @@ const renderItem = ({ item }) => {
     buttonTitle,
     categoriesNews,
     fetchPolicy,
+    limit,
     navigate,
     navigation,
     query,
@@ -53,7 +54,7 @@ const renderItem = ({ item }) => {
       params: {
         title,
         query: QUERY_TYPES.EVENT_RECORDS,
-        queryVariables: { limit: 15, order: 'listDate_ASC' },
+        queryVariables: { limit, order: 'listDate_ASC' },
         rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
       }
     },
@@ -64,7 +65,7 @@ const renderItem = ({ item }) => {
       indexCategoryIds,
       rootRouteName = ROOT_ROUTE_NAMES.NEWS_ITEMS
     }) => {
-      const queryVariables = { limit: 15 };
+      const queryVariables = { limit };
 
       if (indexCategoryIds?.length) {
         queryVariables.categoryIds = indexCategoryIds;
@@ -167,7 +168,10 @@ export const HomeScreen = ({ navigation, route }) => {
     headlinePointsOfInterestAndTours = texts.homeTitles.pointsOfInterest,
     buttonPointsOfInterestAndTours = texts.homeButtons.pointsOfInterest,
     headlineEvents = texts.homeTitles.events,
-    buttonEvents = texts.homeButtons.events
+    buttonEvents = texts.homeButtons.events,
+    limitEvents = 15,
+    limitNews = 15,
+    limitPointsOfInterestAndTours = 15
   } = sections;
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
@@ -227,6 +231,7 @@ export const HomeScreen = ({ navigation, route }) => {
     {
       categoriesNews,
       fetchPolicy,
+      limit: limitNews,
       navigation,
       query: QUERY_TYPES.NEWS_ITEMS,
       queryVariables: { limit: 3, excludeDataProviderIds },
@@ -235,6 +240,7 @@ export const HomeScreen = ({ navigation, route }) => {
     {
       buttonTitle: buttonPointsOfInterestAndTours,
       fetchPolicy,
+      limit: limitPointsOfInterestAndTours,
       navigate: 'CATEGORIES_INDEX',
       navigation,
       query: QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS,
@@ -245,6 +251,7 @@ export const HomeScreen = ({ navigation, route }) => {
     {
       buttonTitle: buttonEvents,
       fetchPolicy,
+      limit: limitEvents,
       navigate: 'EVENT_RECORDS_INDEX',
       navigation,
       query: QUERY_TYPES.EVENT_RECORDS,
