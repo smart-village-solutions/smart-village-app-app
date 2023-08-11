@@ -171,7 +171,7 @@ export const HomeScreen = ({ navigation, route }) => {
     buttonEvents = texts.homeButtons.events,
     limitEvents = 15,
     limitNews = 15,
-    limitPOI = 15
+    limitPointsOfInterestAndTours = 15
   } = sections;
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
@@ -240,7 +240,7 @@ export const HomeScreen = ({ navigation, route }) => {
     {
       buttonTitle: buttonPointsOfInterestAndTours,
       fetchPolicy,
-      limit: limitPOI,
+      limit: limitPointsOfInterestAndTours,
       navigate: 'CATEGORIES_INDEX',
       navigation,
       query: QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS,

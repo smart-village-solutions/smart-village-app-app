@@ -1,12 +1,12 @@
 export type WidgetProps = {
-  text?: string;
   additionalProps?: {
     dataProviderId?: string;
     iconName?: string;
+    limit?: number;
     noCount?: boolean;
     noFilterByDailyEvents?: boolean;
     staticContentName?: string;
     staticContentTitle?: string;
-    limit?: number;
   };
+  text?: string;
 };
