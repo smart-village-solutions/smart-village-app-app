@@ -53,7 +53,7 @@ const renderItem = ({ item }) => {
       params: {
         title,
         query: QUERY_TYPES.EVENT_RECORDS,
-        queryVariables: { limit: 15, order: 'listDate_ASC' },
+        queryVariables: { order: 'listDate_ASC' },
         rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
       }
     },
