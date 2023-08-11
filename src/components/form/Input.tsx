@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { useController, UseControllerOptions } from 'react-hook-form';
 import { StyleSheet } from 'react-native';
-import { Input as RNEInput, InputProps } from 'react-native-elements';
+import { InputProps, Input as RNEInput } from 'react-native-elements';
 
+import { AccessibilityContext } from '../../AccessibilityProvider';
 import { colors, consts, device, Icon, normalize } from '../../config';
 import { Label } from '../Label';
-import { BoldText } from '../Text';
-import { AccessibilityContext } from '../../AccessibilityProvider';
 
 const { a11yLabel } = consts;
 
@@ -72,7 +71,7 @@ export const Input = ({
         multiline={multiline}
         {...furtherProps}
         containerStyle={[styles.container, styles.chatContainer]}
-        inputContainerStyle={[styles.inputContainer, styles.chatInputContainer]}
+        inputContainerStyle={styles.inputContainer}
         inputStyle={[
           styles.input,
           styles.chatInput,
@@ -109,7 +108,6 @@ export const Input = ({
       containerStyle={[
         styles.container,
         row && styles.row,
-        !errorMessage && styles.containerHeight,
         hidden && !errorMessage && styles.containerHidden,
         containerStyle
       ]}
@@ -141,9 +139,6 @@ export const Input = ({
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 0
-  },
-  containerHeight: {
-    height: normalize(75)
   },
   containerHidden: {
     height: 0

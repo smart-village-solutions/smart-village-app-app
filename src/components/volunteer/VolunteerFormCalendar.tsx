@@ -22,7 +22,7 @@ import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
-const { IMAGE_TYPE_REGEX, PDF_TYPE_REGEX, URL_REGEX } = consts;
+const { IMAGE_SELECTOR_ERROR_TYPES, IMAGE_TYPE_REGEX, PDF_TYPE_REGEX, URL_REGEX } = consts;
 
 const fileFilters = (fileRegex: RegExp, calendarData: Calendar) =>
   JSON.stringify(
@@ -408,8 +408,9 @@ export const VolunteerFormCalendar = ({
             <ImageSelector
               {...{
                 control,
+                errorType: IMAGE_SELECTOR_ERROR_TYPES.VOLUNTEER,
                 field,
-                isVolunteer: true,
+                isMultiImages: true,
                 item: {
                   name: 'images',
                   label: texts.volunteer.images,

@@ -1,8 +1,10 @@
+/* eslint-disable no-case-declarations */
 import * as FileSystem from 'expo-file-system';
 
-import { consts } from '../../config';
+import { consts, texts } from '../../config';
+import { formatSize } from '../fileSizeHelper';
 
-const { JPG_TYPE_REGEX, PDF_TYPE_REGEX } = consts;
+const { IMAGE_SELECTOR_ERROR_TYPES, JPG_TYPE_REGEX, PDF_TYPE_REGEX } = consts;
 
 export const documentErrorMessageGenerator = async (uri) => {
   const { size } = await FileSystem.getInfoAsync(uri);
@@ -38,4 +40,44 @@ export const imageErrorMessageGenerator = async (uri) => {
       : '';
 
   return errorMessage;
+};
+
+export const errorTextGenerator = async ({
+  errorType,
+  infoAndErrorText,
+  mimeType,
+  setInfoAndErrorText,
+  uri
+}) => {
+  const { size } = await FileSystem.getInfoAsync(uri);
+
+  switch (errorType) {
+    case IMAGE_SELECTOR_ERROR_TYPES.CONSUL:
+      const consulErrorText = await imageErrorMessageGenerator(uri);
+
+      setInfoAndErrorText([
+        ...infoAndErrorText,
+        {
+          errorText: texts.consul.startNew[consulErrorText],
+          infoText: `(${mimeType}, ${formatSize(size)})`
+        }
+      ]);
+      break;
+    case IMAGE_SELECTOR_ERROR_TYPES.VOLUNTEER:
+      /* variable to find the name of the image */
+      const uriSplitForImageName = uri.split('/');
+      const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
+
+      /* the server does not support files more than 10MB in size. */
+      setInfoAndErrorText([
+        ...infoAndErrorText,
+        {
+          errorText: size > 10485760 && texts.volunteer.imageGreater10MBError,
+          infoText: `${imageName}`
+        }
+      ]);
+      break;
+    default:
+      break;
+  }
 };

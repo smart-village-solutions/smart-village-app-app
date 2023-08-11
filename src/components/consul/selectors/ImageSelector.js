@@ -1,4 +1,3 @@
-import * as FileSystem from 'expo-file-system';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
@@ -6,12 +5,7 @@ import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
-import {
-  deleteArrayItem,
-  formatSize,
-  imageErrorMessageGenerator,
-  jsonParser
-} from '../../../helpers';
+import { deleteArrayItem, errorTextGenerator, jsonParser } from '../../../helpers';
 import { imageHeight, imageWidth } from '../../../helpers/imageHelper';
 import { useSelectImage } from '../../../hooks';
 import { DELETE_IMAGE } from '../../../queries/consul';
@@ -41,7 +35,7 @@ const deleteImageAlert = (onPress) =>
     ]
   );
 
-export const ImageSelector = ({ control, field, imageId, isConsul, isVolunteer, item }) => {
+export const ImageSelector = ({ control, errorType, field, imageId, isMultiImages, item }) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -64,20 +58,15 @@ export const ImageSelector = ({ control, field, imageId, isConsul, isVolunteer, 
   }, [imagesAttributes]);
 
   const onDeleteImage = async (index) => {
-    if (isConsul) {
-      if (imageId) {
-        try {
-          await deleteImage({ variables: { id: imageId } });
-        } catch (err) {
-          console.error(err);
-        }
+    if (imageId) {
+      try {
+        await deleteImage({ variables: { id: imageId } });
+      } catch (err) {
+        console.error(err);
       }
-
-      onChange('');
-      setInfoAndErrorText({});
     }
 
-    if (isVolunteer) {
+    if (isMultiImages) {
       const isURL = URL_REGEX.test(imagesAttributes[index].uri);
 
       if (isURL) {
@@ -99,81 +88,19 @@ export const ImageSelector = ({ control, field, imageId, isConsul, isVolunteer, 
 
   const imageSelect = async () => {
     const { uri, type } = await selectImage();
-    const { size } = await FileSystem.getInfoAsync(uri);
-
-    /* the server does not support files more than 10MB in size. */
-    const volunteerErrorText = size > 10485760 && texts.volunteer.imageGreater10MBError;
-    const consulErrorText = await imageErrorMessageGenerator(uri);
 
     /* used to specify the mimeType when uploading to the server */
     const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
+    const mimeType = `${type}/${imageType}`;
 
-    /* variable to find the name of the image */
-    const uriSplitForImageName = uri.split('/');
-    const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
+    errorTextGenerator({ errorType, infoAndErrorText, mimeType, setInfoAndErrorText, uri });
 
-    if (isConsul) {
-      setInfoAndErrorText({
-        errorText: texts.consul.startNew[consulErrorText],
-        infoText: `(${type}/${imageType}, ${formatSize(size)})`
-      });
-
-      onChange(uri);
-    } else if (isVolunteer) {
-      setInfoAndErrorText([
-        ...infoAndErrorText,
-        {
-          errorText: volunteerErrorText,
-          infoText: `${imageName}`
-        }
-      ]);
-
-      setImagesAttributes([...imagesAttributes, { uri, mimeType: `${type}/${imageType}` }]);
-    } else {
-      setImagesAttributes([...imagesAttributes, { uri, mimeType: `${type}/${imageType}` }]);
-    }
+    setImagesAttributes([...imagesAttributes, { uri, mimeType }]);
   };
-
-  if (isConsul) {
-    return (
-      <>
-        <Input
-          {...item}
-          control={control}
-          errorMessage={infoAndErrorText?.errorText}
-          hidden
-          validate
-          name={name}
-          value={value}
-        />
-        <RegularText smallest placeholder>
-          {infoText}
-        </RegularText>
-
-        {value ? (
-          <>
-            <WrapperRow center spaceBetween>
-              <Image source={{ uri: value }} style={styles.image} />
-
-              <TouchableOpacity onPress={() => deleteImageAlert(onDeleteImage)}>
-                <Icon.Trash color={colors.error} size={normalize(16)} />
-              </TouchableOpacity>
-            </WrapperRow>
-
-            {!!infoAndErrorText?.infoText && (
-              <RegularText smallest>{infoAndErrorText.infoText}</RegularText>
-            )}
-          </>
-        ) : (
-          <Button title={buttonTitle} invert onPress={imageSelect} />
-        )}
-      </>
-    );
-  }
 
   const values = jsonParser(value);
 
-  if (isVolunteer) {
+  if (isMultiImages) {
     return (
       <>
         <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
@@ -210,7 +137,14 @@ export const ImageSelector = ({ control, field, imageId, isConsul, isVolunteer, 
 
   return (
     <>
-      <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
+      <Input
+        {...item}
+        control={control}
+        errorMessage={infoAndErrorText?.[0]?.errorText}
+        hidden
+        name={name}
+        value={JSON.parse(value)}
+      />
       <RegularText smallest placeholder>
         {infoText}
       </RegularText>
@@ -224,6 +158,10 @@ export const ImageSelector = ({ control, field, imageId, isConsul, isVolunteer, 
               <Icon.Trash color={colors.error} size={normalize(16)} />
             </TouchableOpacity>
           </WrapperRow>
+
+          {!!infoAndErrorText[0]?.infoText && (
+            <RegularText smallest>{infoAndErrorText[0].infoText}</RegularText>
+          )}
         </>
       ) : (
         <Button title={buttonTitle} invert onPress={imageSelect} />
@@ -234,10 +172,10 @@ export const ImageSelector = ({ control, field, imageId, isConsul, isVolunteer, 
 
 ImageSelector.propTypes = {
   control: PropTypes.object,
+  errorType: PropTypes.string,
   field: PropTypes.object,
   imageId: PropTypes.string,
-  isConsul: PropTypes.bool,
-  isVolunteer: PropTypes.bool,
+  isMultiImages: PropTypes.bool,
   item: PropTypes.object
 };
 
