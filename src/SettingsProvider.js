@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 export const SettingsContext = createContext({
   globalSettings: {
     filter: {},
+    hdvt: {},
+    navigation: {},
     sections: {},
     settings: {},
     widgets: [],
-    hdvt: {}
   }
 });
 
