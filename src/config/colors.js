@@ -8,11 +8,11 @@ const gray80 = '#A2A2A2';
 export const colors = {
   lighterPrimaryRgba: 'rgba(163, 200, 225, 0.1)',
   lighterPrimary: '#A3C8E1',
-  primary: '#3F7193',
-  darkerPrimary: 'rgb(8, 51, 81)',
-  darkerPrimaryRgba: 'rgba(8, 51, 81, 0.6)', // darkerPrimary with 0.6 alpha
+  primary: '#0065F2',
+  darkerPrimary: 'rgb(0, 101, 242)',
+  darkerPrimaryRgba: 'rgb(0, 101, 242, 0.6)', // darkerPrimary with 0.6 alpha
   secondary: 'rgb(169, 206, 192)',
-  accent: 'rgb(8, 51, 81)',
+  accent: 'rgb(0, 101, 242)',
 
   error: 'rgb(174, 0, 29)',
 

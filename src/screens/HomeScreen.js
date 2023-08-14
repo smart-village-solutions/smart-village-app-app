@@ -263,6 +263,11 @@ export const HomeScreen = ({ navigation, route }) => {
         data={data}
         ListHeaderComponent={
           <>
+            <ServiceTiles
+              navigation={navigation}
+              staticJsonName="homeService"
+              title={headlineService}
+            />
             <ConnectedImagesCarousel
               alternateAspectRatio
               navigation={navigation}
@@ -275,11 +280,6 @@ export const HomeScreen = ({ navigation, route }) => {
         }
         ListFooterComponent={
           <>
-            <ServiceTiles
-              navigation={navigation}
-              staticJsonName="homeService"
-              title={headlineService}
-            />
             {route.params?.isDrawer && (
               <>
                 <HomeService />
