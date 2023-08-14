@@ -38,20 +38,25 @@ export const TitleContainer = styled.View`
   background-color: ${colors.surface};
   padding: ${normalize(7)}px ${normalize(14)}px;
 
-  ${() =>
-    device.platform === 'ios'
-      ? css`
-          shadow-color: ${colors.shadow};
-          shadow-offset: 0px 0px;
-          shadow-opacity: 0.7;
-          shadow-radius: 3px;
-        `
-      : css`
-          border-top-width: 2px;
-          border-top-color: ${colors.shadowRgba};
-          border-style: solid;
-          elevation: 2;
-        `};
+  ${(props) =>
+    !props.flat &&
+    device.platform === 'ios' &&
+    css`
+      shadow-color: ${colors.shadow};
+      shadow-offset: 0px 0px;
+      shadow-opacity: 0.7;
+      shadow-radius: 3px;
+    `};
+
+  ${(props) =>
+    !props.flat &&
+    device.platform === 'android' &&
+    css`
+      border-top-width: 2px;
+      border-top-color: ${colors.shadowRgba};
+      border-style: solid;
+      elevation: 2;
+    `};
 `;
 
 // dummy bottom shadow container for iOS
