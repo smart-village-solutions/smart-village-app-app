@@ -15,7 +15,7 @@ export class CategoryList extends React.PureComponent {
   renderSectionHeader = ({ section: { title, data } }) => {
     const { hasSectionHeader } = this.props;
 
-    if (!data?.length || !hasSectionHeader) return null;
+    if (!title || !data?.length || !hasSectionHeader) return null;
 
     return (
       <View>
@@ -29,6 +29,7 @@ export class CategoryList extends React.PureComponent {
 
   render() {
     const {
+      categoryTitles = {},
       data,
       navigation,
       noSubtitle,
@@ -36,6 +37,10 @@ export class CategoryList extends React.PureComponent {
       ListFooterComponent,
       ListHeaderComponent
     } = this.props;
+    const {
+      categoryTitlesPointsOfInterest = texts.categoryTitles.pointsOfInterest,
+      categoryTitlesTours = texts.categoryTitles.tours
+    } = categoryTitles;
 
     if (!data?.length) {
       return (
@@ -50,14 +55,14 @@ export class CategoryList extends React.PureComponent {
 
     const sectionedData = [
       {
-        title: texts.categoryTitles.pointsOfInterest,
+        title: categoryTitlesPointsOfInterest,
         data: _filter(
           data,
           (category) => category.pointsOfInterestTreeCount > 0 && !category.parent
         )
       },
       {
-        title: texts.categoryTitles.tours,
+        title: categoryTitlesTours,
         data: _filter(data, (category) => category.toursTreeCount > 0 && !category.parent)
       }
     ];
@@ -88,6 +93,7 @@ export class CategoryList extends React.PureComponent {
 
 CategoryList.propTypes = {
   navigation: PropTypes.object.isRequired,
+  categoryTitles: PropTypes.object,
   data: PropTypes.array,
   noSubtitle: PropTypes.bool,
   refreshControl: PropTypes.object,

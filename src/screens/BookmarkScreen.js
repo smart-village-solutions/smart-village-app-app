@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { ScrollView } from 'react-native';
 
+import { SettingsContext } from '../SettingsProvider';
 import { BookmarkSection, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
 import { consts, texts } from '../config';
 import { getKeyFromTypeAndSuffix } from '../helpers';
@@ -41,6 +42,13 @@ const getBookmarkCount = (bookmarks) => {
 export const BookmarkScreen = ({ navigation }) => {
   const bookmarks = useBookmarks();
   const categoriesNews = useNewsCategories();
+  const { globalSettings } = useContext(SettingsContext);
+  const { sections = {} } = globalSettings;
+  const { categoryTitles = {} } = sections;
+  const {
+    categoryTitlesPointsOfInterest = texts.categoryTitles.pointsOfInterest,
+    categoryTitlesTours = texts.categoryTitles.tours
+  } = categoryTitles;
   const [connectionState, setConnectionState] = useState(getInitialConnectionState(categoriesNews));
 
   const getSection = useCallback(
@@ -94,8 +102,8 @@ export const BookmarkScreen = ({ navigation }) => {
         {categoriesNews?.map(({ categoryId, categoryTitle, categoryTitleDetail }) =>
           getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, categoryId, categoryTitleDetail)
         )}
-        {getSection(QUERY_TYPES.POINTS_OF_INTEREST, texts.categoryTitles.pointsOfInterest)}
-        {getSection(QUERY_TYPES.TOURS, texts.categoryTitles.tours)}
+        {getSection(QUERY_TYPES.POINTS_OF_INTEREST, categoryTitlesPointsOfInterest)}
+        {getSection(QUERY_TYPES.TOURS, categoryTitlesTours)}
         {getSection(QUERY_TYPES.EVENT_RECORDS, texts.homeTitles.events)}
         {getSection(
           QUERY_TYPES.GENERIC_ITEMS,
