@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ActivityIndicator, SectionList, View } from 'react-native';
 
-import { colors, consts, device, texts } from '../config';
+import { colors, texts } from '../config';
 
 import { CategoryListItem } from './CategoryListItem';
 import { LoadingContainer } from './LoadingContainer';
-import { Title, TitleContainer, TitleShadow } from './Title';
+import { SectionHeader } from './SectionHeader';
 
 export class CategoryList extends React.PureComponent {
   keyExtractor = (item, index) => `index${index}-id${item.id}`;
@@ -19,10 +19,7 @@ export class CategoryList extends React.PureComponent {
 
     return (
       <View>
-        <TitleContainer>
-          <Title accessibilityLabel={`${title} ${consts.a11yLabel.heading}`}>{title}</Title>
-        </TitleContainer>
-        {device.platform === 'ios' && <TitleShadow />}
+        <SectionHeader title={title} />
       </View>
     );
   };

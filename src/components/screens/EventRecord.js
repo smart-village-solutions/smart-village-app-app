@@ -4,7 +4,7 @@ import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
-import { colors, consts, device, normalize, texts } from '../../config';
+import { colors, consts, normalize, texts } from '../../config';
 import { matomoTrackingString, openLink, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { Button } from '../Button';
@@ -14,8 +14,7 @@ import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { LoadingContainer } from '../LoadingContainer';
 import { Logo } from '../Logo';
-import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Touchable } from '../Touchable';
+import { SectionHeader } from '../SectionHeader';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 
@@ -103,27 +102,11 @@ export const EventRecord = ({ data, route }) => {
     });
 
   const businessAccount = dataProvider?.dataType === 'business_account';
-  const a11yText = consts.a11yLabel;
+
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
-
-      {!!title && !!link ? (
-        <TitleContainer>
-          <Touchable onPress={openWebScreen}>
-            <Title accessibilityLabel={`(${title}) ${a11yText.heading} ${a11yText.button}`}>
-              {title}
-            </Title>
-          </Touchable>
-        </TitleContainer>
-      ) : (
-        !!title && (
-          <TitleContainer>
-            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-          </TitleContainer>
-        )
-      )}
-      {device.platform === 'ios' && <TitleShadow />}
+      <SectionHeader title={title} onPress={link ? openWebScreen : undefined} />
       <Wrapper>
         {!!logo && <Logo source={{ uri: logo }} />}
 
@@ -138,12 +121,7 @@ export const EventRecord = ({ data, route }) => {
 
       {!!dates && !!dates.length && (
         <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${texts.eventRecord.appointments}) ${a11yText.heading}`}>
-              {texts.eventRecord.appointments}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.eventRecord.appointments} />
           <OpeningTimesCard openingHours={dates} />
         </View>
       )}
@@ -151,24 +129,14 @@ export const EventRecord = ({ data, route }) => {
       {/* temporary logic in order to show PriceCard just when description is present for the first index */}
       {!!priceInformations && !!priceInformations.length && !!priceInformations[0].description && (
         <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${texts.eventRecord.prices}) ${a11yText.heading}`}>
-              {texts.eventRecord.prices}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.eventRecord.prices} />
           <PriceCard prices={priceInformations} />
         </View>
       )}
 
       {!!description && (
         <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${texts.eventRecord.description}) ${a11yText.heading}`}>
-              {texts.eventRecord.description}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.eventRecord.description} />
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>

@@ -3,10 +3,10 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Icon as RNEIcon } from 'react-native-elements';
 
-import { colors, consts, device, Icon, normalize, texts } from '../../config';
+import { colors, Icon, normalize, texts } from '../../config';
 import { locationLink, locationString, openLink } from '../../helpers';
+import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
-import { Title, TitleContainer, TitleShadow } from '../Title';
 import { InfoBox, Wrapper } from '../Wrapper';
 
 const addressOnPress = (address) => {
@@ -20,12 +20,7 @@ const addressOnPress = (address) => {
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const TourCard = ({ lengthKm, tourAddresses }) => (
   <View>
-    <TitleContainer>
-      <Title accessibilityLabel={`(${texts.tour.tour}) ${consts.a11yLabel.heading}`}>
-        {texts.tour.tour}
-      </Title>
-    </TitleContainer>
-    {device.platform === 'ios' && <TitleShadow />}
+    <SectionHeader title={texts.tour.tour} />
     <Wrapper>
       {!!lengthKm && (
         <InfoBox>

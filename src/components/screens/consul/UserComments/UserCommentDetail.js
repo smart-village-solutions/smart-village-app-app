@@ -1,13 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-import { consts, device, texts } from '../../../../config';
 import { getConsulUser } from '../../../../helpers';
-import { ConsulCommentListItem } from '../../../consul';
-import { Title, TitleContainer, TitleShadow } from '../../../Title';
+import { SectionHeader } from '../../../SectionHeader';
 import { Wrapper } from '../../../Wrapper';
-
-const a11yText = consts.a11yLabel;
+import { ConsulCommentListItem } from '../../../consul';
 
 export const UserCommentDetail = ({ data, refetch, navigation }) => {
   const [userId, setUserId] = useState();
@@ -22,13 +19,7 @@ export const UserCommentDetail = ({ data, refetch, navigation }) => {
 
   return (
     <>
-      <TitleContainer>
-        <Title accessibilityLabel={`(${texts.consul.comments}) ${a11yText.heading}`}>
-          {commentableTitle}
-        </Title>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
-
+      <SectionHeader title={commentableTitle} />
       <Wrapper>
         <ConsulCommentListItem
           commentItem={data.comment}

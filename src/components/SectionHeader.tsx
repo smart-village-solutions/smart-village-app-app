@@ -7,20 +7,26 @@ import { Title, TitleContainer, TitleShadow } from './Title';
 import { Touchable } from './Touchable';
 
 type Props = {
-  title: string;
+  big?: boolean;
+  center?: boolean;
   onPress?: () => void;
+  title: string;
 };
 
-export const SectionHeader = ({ title, onPress }: Props) => {
+export const SectionHeader = ({ big = false, center = false, onPress, title }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { flat = false } = settings;
+
+  if (!title) return null;
 
   const innerComponent = (
     <Title
       accessibilityLabel={`(${title}) ${consts.a11yLabel.heading} ${
         onPress ? consts.a11yLabel.button : ''
       } `}
+      big={big}
+      center={center}
     >
       {title}
     </Title>

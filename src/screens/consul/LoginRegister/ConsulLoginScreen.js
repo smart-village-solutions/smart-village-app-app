@@ -14,13 +14,11 @@ import {
   LoadingModal,
   RegularText,
   SafeAreaViewFlex,
-  Title,
-  TitleContainer,
-  TitleShadow,
+  SectionHeader,
   Touchable,
   Wrapper
 } from '../../../components';
-import { consts, device, secrets, texts } from '../../../config';
+import { consts, secrets, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { setConsulAuthToken, setConsulUser } from '../../../helpers';
 import { CONSUL_LOGIN_USER } from '../../../queries/consul';
@@ -71,16 +69,7 @@ export const ConsulLoginScreen = ({ navigation }) => {
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <TitleContainer>
-            <Title
-              big
-              center
-              accessibilityLabel={`${texts.consul.loginTitle} ${a11yLabel.heading}`}
-            >
-              {texts.consul.loginTitle}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.consul.loginTitle} big center />
           <Wrapper style={styles.noPaddingTop}>
             <Input
               name="email"
