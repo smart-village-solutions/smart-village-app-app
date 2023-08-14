@@ -103,6 +103,8 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
     [navigation, fetchPolicy, aspectRatio]
   );
 
+  if (!data || data.length === 0) return null;
+
   // filter data for present items and items with active date/time periods
   const carouselData = data.filter((item) => item && isActive(item));
 
