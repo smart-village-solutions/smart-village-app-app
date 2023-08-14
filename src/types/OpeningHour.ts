@@ -4,5 +4,6 @@ export type OpeningHour = {
   open: boolean | null;
   timeFrom?: string;
   timeTo?: string;
+  useYear: boolean | null;
   weekday?: 'Sonntag' | 'Montag' | 'Dienstag' | 'Mittwoch' | 'Donnerstag' | 'Freitag' | 'Samstag';
 };

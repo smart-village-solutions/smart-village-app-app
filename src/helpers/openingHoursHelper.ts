@@ -47,26 +47,24 @@ const dateIsWithinInterval = (date: Date, start?: Date, end?: Date) => {
   return true;
 };
 
-export const TMB_YEAR_TO_PARSE = '1970';
-
-export const dateWithCorrectYear = (dateString?: string) => {
+export const dateWithCorrectYear = (dateString?: string, useYear?: boolean) => {
   if (!dateString) {
     return new Date();
   }
 
-  if (dateString.startsWith(TMB_YEAR_TO_PARSE)) {
-    const currentYear = new Date().getFullYear();
-    const newDateString = dateString.replace(/^(\d{4})/, currentYear.toString());
-
-    return new Date(newDateString);
+  if (useYear) {
+    return new Date(dateString);
   }
 
-  return new Date(dateString);
+  const currentYear = new Date().getFullYear();
+  const newDateString = dateString.replace(/^(\d{4})/, currentYear.toString());
+
+  return new Date(newDateString);
 };
 
 const isOpeningTimeForDate = (info: OpeningHour, date: Date) => {
-  const dateFrom = dateWithCorrectYear(info.dateFrom);
-  const dateTo = dateWithCorrectYear(info.dateTo);
+  const dateFrom = dateWithCorrectYear(info.dateFrom, info.useYear ?? false);
+  const dateTo = dateWithCorrectYear(info.dateTo, info.useYear ?? false);
 
   // if `dateFrom` is after `dateTo`, increase the year of `dateTo` by one so that ranges
   // like 01.10. - 01.04. result in 01.10.2021 - 01.04.2022 instead of 01.10.2021 - 01.04.2021

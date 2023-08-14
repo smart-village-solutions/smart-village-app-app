@@ -173,9 +173,6 @@ const styles = StyleSheet.create({
   checkboxContainerStyle: {
     marginTop: normalize(30)
   },
-  containerStyle: {
-    marginBottom: normalize(30)
-  },
   textArea: {
     height: normalize(100),
     padding: normalize(10)

@@ -109,6 +109,7 @@ export const IndexScreen = ({ navigation, route }) => {
   const {
     categoryListIntroText = texts.categoryList.intro,
     categoryListFooter,
+    categoryTitles,
     eventListIntro
   } = sections;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
@@ -511,6 +512,7 @@ export const IndexScreen = ({ navigation, route }) => {
                       {!!categories?.length && (
                         <CategoryList
                           navigation={navigation}
+                          categoryTitles={categoryTitles}
                           data={categories}
                           horizontal={false}
                           hasSectionHeader={false}

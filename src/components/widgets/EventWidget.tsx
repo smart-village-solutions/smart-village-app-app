@@ -27,8 +27,9 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
-  const queryVariables: { dateRange?: string[]; order: string } = {
+  const queryVariables: { dateRange?: string[]; limit?: number; order: string } = {
     dateRange: [currentDate, currentDate],
+    limit: additionalProps?.limit || 15,
     order: 'listDate_ASC'
   };
 

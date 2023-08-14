@@ -75,6 +75,7 @@ export const GET_POINTS_OF_INTEREST = gql`
         open
         dateFrom
         dateTo
+        useYear
       }
       webUrls {
         id
@@ -165,6 +166,7 @@ export const GET_POINT_OF_INTEREST = gql`
         dateFrom
         dateTo
         description
+        useYear
       }
       operatingCompany {
         id
