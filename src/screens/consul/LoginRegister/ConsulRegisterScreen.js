@@ -13,19 +13,17 @@ import {
   InputSecureTextIcon,
   LoadingModal,
   SafeAreaViewFlex,
-  Title,
-  TitleContainer,
-  TitleShadow,
+  SectionHeader,
   Touchable,
   Wrapper,
   WrapperHorizontal
 } from '../../../components';
-import { consts, device, namespace, secrets, texts } from '../../../config';
+import { consts, namespace, secrets, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { CONSUL_REGISTER_USER } from '../../../queries/consul';
 import { ScreenName } from '../../../types';
 
-const { a11yLabel, EMAIL_REGEX } = consts;
+const { EMAIL_REGEX } = consts;
 
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.consul.registrationFailedTitle, texts.consul.registrationFailedBody);
@@ -82,16 +80,7 @@ export const ConsulRegisterScreen = ({ navigation }) => {
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <TitleContainer>
-            <Title
-              big
-              center
-              accessibilityLabel={`${texts.consul.registrationTitle} ${a11yLabel.heading}`}
-            >
-              {texts.consul.registrationTitle}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.consul.registrationTitle} big center />
           <Wrapper style={styles.noPaddingTop}>
             <Input
               name="name"

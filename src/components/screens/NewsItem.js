@@ -2,16 +2,15 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
 
-import { consts, device } from '../../config';
+import { consts } from '../../config';
 import { matomoTrackingString, momentFormatUtcToLocal, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { DataProviderButton } from '../DataProviderButton';
 import { ImageSection } from '../ImageSection';
 import { Logo } from '../Logo';
+import { SectionHeader } from '../SectionHeader';
 import { StorySection } from '../StorySection';
 import { RegularText } from '../Text';
-import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
 const { MATOMO_TRACKING } = consts;
@@ -48,30 +47,11 @@ export const NewsItem = ({ data, route }) => {
 
   const businessAccount = dataProvider?.dataType === 'business_account';
 
-  const a11yText = consts.a11yLabel;
   return (
     <View>
       {/* the images from the first content block will be present in the main image carousel */}
       <ImageSection mediaContents={contentBlocks?.[0]?.mediaContents} />
-
-      {!!title && !!link ? (
-        <TitleContainer>
-          <Touchable onPress={openWebScreen}>
-            <Title accessibilityLabel={`${trimNewLines(title)} ${a11yText.heading}`}>
-              {trimNewLines(title)}
-            </Title>
-          </Touchable>
-        </TitleContainer>
-      ) : (
-        !!title && (
-          <TitleContainer>
-            <Title accessibilityLabel={`${trimNewLines(title)} ${a11yText.heading}`}>
-              {trimNewLines(title)}
-            </Title>
-          </TitleContainer>
-        )
-      )}
-      {device.platform === 'ios' && <TitleShadow />}
+      <SectionHeader title={trimNewLines(title)} onPress={link ? openWebScreen : undefined} />
       <Wrapper>
         {!!subtitle && <RegularText small>{subtitle}</RegularText>}
         {!!logo && <Logo source={{ uri: logo }} />}

@@ -1,17 +1,15 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { useMutation } from 'react-apollo';
+import { StyleSheet, View } from 'react-native';
 
-import { colors, consts, device, Icon, normalize, texts } from '../../../config';
+import { colors, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { CAST_VOTE_ON_DEBATE } from '../../../queries/consul';
+import { SectionHeader } from '../../SectionHeader';
 import { RegularText } from '../../Text';
-import { Title, TitleContainer, TitleShadow } from '../../Title';
 import { Touchable } from '../../Touchable';
 import { Wrapper, WrapperRow } from '../../Wrapper';
-
-const a11yText = consts.a11yLabel;
 
 export const ConsulVoting = ({ votesData, refetch, id }) => {
   const { cachedVotesDown, cachedVotesTotal, cachedVotesUp, votesFor } = votesData;
@@ -38,13 +36,7 @@ export const ConsulVoting = ({ votesData, refetch, id }) => {
 
   return (
     <>
-      <TitleContainer>
-        <Title accessibilityLabel={`(${texts.consul.supports}) ${a11yText.heading}`}>
-          {texts.consul.supports}
-        </Title>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
-
+      <SectionHeader title={texts.consul.supports} />
       <Wrapper>
         <WrapperRow spaceBetween>
           <WrapperRow>

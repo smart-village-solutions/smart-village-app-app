@@ -5,15 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
-import {
-  colors,
-  styles as configStyles,
-  consts,
-  device,
-  Icon,
-  normalize,
-  texts
-} from '../../config';
+import { colors, styles as configStyles, Icon, normalize, texts } from '../../config';
 import { navigatorConfig } from '../../config/navigation';
 import { isAttending, momentFormat, openLink, volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
@@ -25,15 +17,13 @@ import { HeaderRight } from '../HeaderRight';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
+import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
-import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 import { VolunteerAppointmentsCard } from './VolunteerAppointmentsCard';
 import { VolunteerEventAttending } from './VolunteerEventAttending';
-
-const a11yText = consts.a11yLabel;
 
 type File = {
   file_name: string;
@@ -160,14 +150,7 @@ export const VolunteerEventRecord = ({
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
-
-      {!!title && (
-        <TitleContainer>
-          <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-        </TitleContainer>
-      )}
-      {device.platform === 'ios' && <TitleShadow />}
-
+      <SectionHeader title={title} />
       {isAttendingEvent !== undefined && !!attending?.length && (
         <VolunteerEventAttending
           calendarEntryId={id}
@@ -188,26 +171,14 @@ export const VolunteerEventRecord = ({
 
       {!!appointments?.length && (
         <View>
-          <TitleContainer>
-            <Title
-              accessibilityLabel={`(${texts.volunteer.eventRecord.appointments}) ${a11yText.heading}`}
-            >
-              {texts.volunteer.eventRecord.appointments}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.volunteer.eventRecord.appointments} />
           <VolunteerAppointmentsCard appointments={appointments} />
         </View>
       )}
 
       {!!description && (
         <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${texts.volunteer.description}) ${a11yText.heading}`}>
-              {texts.volunteer.description}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.volunteer.description} />
           <Wrapper>
             <Markdown
               onLinkPress={(url) => {
@@ -239,12 +210,7 @@ export const VolunteerEventRecord = ({
 
       {!!isAttendingEvent && !!participantInfo && (
         <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${texts.volunteer.participantInfo}) ${a11yText.heading}`}>
-              {texts.volunteer.participantInfo}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.volunteer.participantInfo} />
           <Wrapper>
             <HtmlView html={participantInfo} openWebScreen={openWebScreen} />
           </Wrapper>

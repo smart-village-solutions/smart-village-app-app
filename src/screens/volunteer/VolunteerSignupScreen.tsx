@@ -11,18 +11,16 @@ import {
   LoadingModal,
   RegularText,
   SafeAreaViewFlex,
-  Title,
-  TitleContainer,
-  TitleShadow,
+  SectionHeader,
   Wrapper
 } from '../../components';
-import { consts, device, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { me, signup } from '../../queries/volunteer';
 import { ScreenName, VolunteerSignup } from '../../types';
 
-const { a11yLabel, EMAIL_REGEX } = consts;
+const { EMAIL_REGEX } = consts;
 
 const showSignupFailAlert = () =>
   Alert.alert(texts.volunteer.signupFailedTitle, texts.volunteer.signupFailedBody);
@@ -88,16 +86,7 @@ export const VolunteerSignupScreen = ({ navigation, route }: StackScreenProps<an
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <TitleContainer>
-            <Title
-              big
-              center
-              accessibilityLabel={`${texts.volunteer.registrationTitle} ${a11yLabel.heading}`}
-            >
-              {texts.volunteer.registrationTitle}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.volunteer.registrationTitle} big center />
           <Wrapper style={styles.noPaddingTop}>
             <Input
               name="email"

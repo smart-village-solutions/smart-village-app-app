@@ -13,13 +13,11 @@ import {
   LoadingModal,
   RegularText,
   SafeAreaViewFlex,
-  Title,
-  TitleContainer,
-  TitleShadow,
+  SectionHeader,
   Touchable,
   Wrapper
 } from '../../components';
-import { consts, device, secrets, texts } from '../../config';
+import { consts, secrets, texts } from '../../config';
 import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { logIn, me } from '../../queries/volunteer';
@@ -94,17 +92,7 @@ export const VolunteerLoginScreen = ({ navigation }: StackScreenProps<any>) => {
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <TitleContainer>
-            <Title
-              big
-              center
-              accessibilityLabel={`${texts.volunteer.loginTitle} ${a11yLabel.heading}`}
-            >
-              {texts.volunteer.loginTitle}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-
+          <SectionHeader title={texts.volunteer.loginTitle} big center />
           <Wrapper style={styles.noPaddingTop}>
             <Input
               name="username"

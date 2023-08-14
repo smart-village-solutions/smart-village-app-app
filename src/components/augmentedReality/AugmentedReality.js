@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { colors, consts, device, texts } from '../../config';
+import { colors, consts, texts } from '../../config';
 import { checkDownloadedData, navigationToArtworksDetailScreen } from '../../helpers';
 import { location, locationIconAnchor } from '../../icons';
 import { getQuery, QUERY_TYPES } from '../../queries';
@@ -13,8 +13,8 @@ import { Button } from '../Button';
 import { IndexFilterWrapperAndList } from '../IndexFilterWrapperAndList';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Map } from '../map';
-import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper } from '../Wrapper';
+import { SectionHeader } from '../SectionHeader';
 
 import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
@@ -112,13 +112,8 @@ export const AugmentedReality = ({
           title={texts.augmentedReality.loadingArtworks}
         />
       </Wrapper>
-      <TitleContainer>
-        <Title accessibilityLabel={`(${texts.augmentedReality.worksOfArt}) ${a11yText.heading}`}>
-          {texts.augmentedReality.worksOfArt}
-        </Title>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
 
+      <SectionHeader title={texts.augmentedReality.worksOfArt} />
       <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
 
       {selectedFilterId === TOP_FILTER.LIST_VIEW && (

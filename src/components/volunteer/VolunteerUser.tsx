@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { consts, device, normalize, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { navigatorConfig } from '../../config/navigation';
 import { volunteerBannerImage, volunteerProfileImage, volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
@@ -11,15 +11,15 @@ import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { HeaderRight } from '../HeaderRight';
 import { ImageSection } from '../ImageSection';
+import { Logo } from '../Logo';
+import { SectionHeader } from '../SectionHeader';
+import { BoldText, RegularText } from '../Text';
+import { Wrapper } from '../Wrapper';
 import { AddressSection } from '../infoCard/AddressSection';
 import { ContactSection } from '../infoCard/ContactSection';
 import { UrlSection } from '../infoCard/UrlSection';
-import { Logo } from '../Logo';
-import { BoldText, RegularText } from '../Text';
-import { Title, TitleContainer, TitleShadow } from '../Title';
-import { Wrapper } from '../Wrapper';
 
-const { a11yLabel, ROOT_ROUTE_NAMES } = consts;
+const { ROOT_ROUTE_NAMES } = consts;
 
 export const VolunteerUser = ({
   data,
@@ -111,13 +111,7 @@ export const VolunteerUser = ({
 
       {!!logo && <Logo source={{ uri: logo }} containerStyle={styles.logoContainer} />}
 
-      <TitleContainer>
-        <Title big accessibilityLabel={`${name} ${a11yLabel.heading}`}>
-          {name}
-        </Title>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
-
+      <SectionHeader title={name} />
       {!!about && (
         <Wrapper>
           <BoldText>{texts.volunteer.aboutMe}</BoldText>

@@ -3,15 +3,13 @@ import React from 'react';
 import { useMutation } from 'react-apollo';
 import { Alert, StyleSheet, View } from 'react-native';
 
-import { consts, device, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
+import { normalize, texts } from '../../../config';
 import { SUPPORT_PROPOSAL } from '../../../queries/consul';
 import { Button } from '../../Button';
+import { SectionHeader } from '../../SectionHeader';
 import { BoldText, RegularText } from '../../Text';
-import { Title, TitleContainer, TitleShadow } from '../../Title';
 import { Wrapper } from '../../Wrapper';
-
-const a11yText = consts.a11yLabel;
 
 export const ConsulSupporting = (votesData) => {
   const { cachedVotesUp, currentUserHasVoted, id, refetch } = votesData.votesData;
@@ -32,13 +30,7 @@ export const ConsulSupporting = (votesData) => {
 
   return (
     <>
-      <TitleContainer>
-        <Title accessibilityLabel={`(${texts.consul.supports}) ${a11yText.heading}`}>
-          {texts.consul.supports}
-        </Title>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
-
+      <SectionHeader title={texts.consul.supports} />
       <Wrapper>
         <BoldText center>
           {cachedVotesUp} {texts.consul.supports}

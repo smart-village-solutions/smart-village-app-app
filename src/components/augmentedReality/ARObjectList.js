@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Alert, FlatList } from 'react-native';
 
-import { consts, device, texts } from '../../config';
+import { texts } from '../../config';
 import { deleteAllData, downloadAllData, formatSizeForAugmentedReality } from '../../helpers';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
+import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
-import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
@@ -82,24 +82,11 @@ export const ARObjectList = ({
     await deleteAllData({ data, setData });
   };
 
-  const a11yText = consts.a11yLabel;
-
   if (isLoading || !data?.length) return <LoadingSpinner loading />;
 
   return (
     <>
-      {showTitle && (
-        <>
-          <TitleContainer>
-            <Title
-              accessibilityLabel={`(${texts.settingsTitles.arListLayouts.arListTitle}) ${a11yText.heading}`}
-            >
-              {texts.settingsTitles.arListLayouts.arListTitle}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </>
-      )}
+      {showTitle && <SectionHeader title={texts.settingsTitles.arListLayouts.arListTitle} />}
 
       <FlatList
         data={data}

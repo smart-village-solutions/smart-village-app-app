@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
 
-import { consts, device, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { AugmentedReality } from '../augmentedReality';
@@ -13,8 +13,8 @@ import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
-import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper } from '../Wrapper';
+import { SectionHeader } from '../SectionHeader';
 
 import { OperatingCompany } from './OperatingCompany';
 import { TourCard } from './TourCard';
@@ -66,20 +66,11 @@ export const Tour = ({ data, navigation, route }) => {
   );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
-  const a11yText = consts.a11yLabel;
+
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
-
-      {!!title && (
-        <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </View>
-      )}
-
+      <SectionHeader title={title} />
       <Wrapper>
         {!!logo && <Logo source={{ uri: logo }} />}
 
@@ -92,12 +83,7 @@ export const Tour = ({ data, navigation, route }) => {
 
       {!!description && (
         <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${texts.tour.description}) ${a11yText.heading}`}>
-              {texts.tour.description}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.tour.description} />
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>

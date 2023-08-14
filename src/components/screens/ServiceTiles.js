@@ -2,15 +2,15 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
-import { colors, consts, device, normalize } from '../../config';
+import { colors, normalize } from '../../config';
 import { useStaticContent, useVolunteerRefresh } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
-import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper } from '../Wrapper';
+import { SectionHeader } from '../SectionHeader';
 
 import { Service } from './Service';
 
@@ -55,13 +55,7 @@ export const ServiceTiles = ({
         />
       ) : (
         <>
-          {!!title && (
-            <TitleContainer>
-              <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>{title}</Title>
-            </TitleContainer>
-          )}
-          {!!title && device.platform === 'ios' && <TitleShadow />}
-
+          <SectionHeader title={title} />
           <ScrollView
             refreshControl={
               <RefreshControl
