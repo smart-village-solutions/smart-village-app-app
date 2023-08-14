@@ -59,7 +59,9 @@ export const ListComponent = ({
   sectionByDate,
   showBackToTop
 }) => {
-  const { listTypesSettings } = useContext(SettingsContext);
+  const { globalSettings, listTypesSettings } = useContext(SettingsContext);
+  const { sections = {} } = globalSettings;
+  const { categoryTitles } = sections;
 
   const Component = getComponent(
     query,
@@ -69,6 +71,7 @@ export const ListComponent = ({
 
   return (
     <Component
+      categoryTitles={categoryTitles}
       data={data}
       refetch={refetch}
       fetchMoreData={fetchMoreData}
