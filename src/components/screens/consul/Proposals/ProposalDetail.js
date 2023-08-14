@@ -4,7 +4,7 @@ import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
 import { Keyboard, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, consts, device, Icon, normalize, texts } from '../../../../config';
+import { colors, Icon, normalize, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
@@ -27,11 +27,9 @@ import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
 import { Image } from '../../../Image';
 import { Map } from '../../../map';
+import { SectionHeader } from '../../../SectionHeader';
 import { BoldText, RegularText } from '../../../Text';
-import { Title, TitleContainer, TitleShadow } from '../../../Title';
 import { Wrapper, WrapperRow } from '../../../Wrapper';
-
-const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -120,16 +118,7 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
           <Button title={texts.consul.publishProposalButton} onPress={() => proposalShare()} />
         </Wrapper>
       )}
-
-      {!!title && (
-        <>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </>
-      )}
-
+      <SectionHeader title={title} />
       {!!publicAuthor && (
         <Wrapper>
           <ConsulPublicAuthor
@@ -179,12 +168,7 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
 
       {!!latitude && !!longitude && (
         <>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${texts.consul.locationTitle}) ${a11yText.heading}`}>
-              {texts.consul.locationTitle}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.consul.locationTitle} />
           <Map
             locations={[
               {

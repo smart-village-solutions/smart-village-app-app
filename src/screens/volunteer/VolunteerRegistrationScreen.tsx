@@ -14,17 +14,15 @@ import {
   LoadingModal,
   RegularText,
   SafeAreaViewFlex,
-  Title,
-  TitleContainer,
-  TitleShadow,
+  SectionHeader,
   Wrapper,
   WrapperHorizontal
 } from '../../components';
-import { consts, device, secrets, texts } from '../../config';
+import { consts, secrets, texts } from '../../config';
 import { register } from '../../queries/volunteer';
 import { ScreenName, VolunteerRegistration } from '../../types';
 
-const { a11yLabel, EMAIL_REGEX } = consts;
+const { EMAIL_REGEX } = consts;
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const dataPrivacyLink = secrets[namespace]?.volunteer?.dataPrivacyLink;
 
@@ -93,16 +91,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <TitleContainer>
-            <Title
-              big
-              center
-              accessibilityLabel={`${texts.volunteer.registrationTitle} ${a11yLabel.heading}`}
-            >
-              {texts.volunteer.registrationTitle}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.volunteer.registrationTitle} big center />
           <Wrapper style={styles.noPaddingTop}>
             <Input
               name="username"

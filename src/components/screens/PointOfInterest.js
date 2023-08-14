@@ -2,21 +2,21 @@ import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { View } from 'react-native';
 
-import { colors, consts, device, texts } from '../../config';
+import { NetworkContext } from '../../NetworkProvider';
+import { colors, consts, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { location, locationIconAnchor } from '../../icons';
-import { NetworkContext } from '../../NetworkProvider';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
-import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
-import { Map } from '../map';
-import { Title, TitleContainer, TitleShadow } from '../Title';
+import { SectionHeader } from '../SectionHeader';
 import { Wrapper } from '../Wrapper';
+import { InfoCard } from '../infoCard';
+import { Map } from '../map';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
@@ -65,20 +65,11 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   );
 
   const businessAccount = dataProvider?.dataType === 'business_account';
-  const a11yText = consts.a11yLabel;
+
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
-
-      {!!title && (
-        <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </View>
-      )}
-
+      <SectionHeader title={title} />
       <Wrapper>
         {!!logo && <Logo source={{ uri: logo }} />}
 
@@ -94,40 +85,21 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
 
       {!!openingHours && !!openingHours.length && (
         <View>
-          <TitleContainer>
-            <Title
-              accessibilityLabel={`(${texts.pointOfInterest.openingTime}) ${a11yText.heading}`}
-            >
-              {texts.pointOfInterest.openingTime}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.pointOfInterest.openingTime} />
           <OpeningTimesCard openingHours={openingHours} />
         </View>
       )}
 
       {!!priceInformations && !!priceInformations.length && (
         <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${texts.pointOfInterest.prices}) ${a11yText.heading}`}>
-              {texts.pointOfInterest.prices}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.pointOfInterest.prices} />
           <PriceCard prices={priceInformations} />
         </View>
       )}
 
       {!!description && (
         <View>
-          <TitleContainer>
-            <Title
-              accessibilityLabel={`(${texts.pointOfInterest.description}) ${a11yText.heading}`}
-            >
-              {texts.pointOfInterest.description}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.pointOfInterest.description} />
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
@@ -156,12 +128,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
        */}
       {!hideMap && !!latitude && !!longitude && isConnected && isMainserverUp && (
         <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${texts.pointOfInterest.location}) ${a11yText.heading}`}>
-              {texts.pointOfInterest.location}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.pointOfInterest.location} />
           <Map
             locations={[
               {
@@ -171,7 +138,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
               }
             ]}
           />
-          {device.platform === 'ios' && <TitleShadow />}
         </View>
       )}
 

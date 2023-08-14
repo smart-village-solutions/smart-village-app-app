@@ -1,12 +1,11 @@
 import React from 'react';
 import { View } from 'react-native';
 
-import { device, consts } from '../../config';
 import { Address, Contact, WebUrl } from '../../types';
-import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
-import { Title, TitleContainer, TitleShadow } from '../Title';
+import { SectionHeader } from '../SectionHeader';
 import { Wrapper } from '../Wrapper';
+import { InfoCard } from '../infoCard';
 
 type Props = {
   title: string;
@@ -27,10 +26,7 @@ export const OperatingCompany = ({ title, logo, operatingCompany, openWebScreen 
 
   return (
     <View>
-      <TitleContainer>
-        <Title accessibilityLabel={`(${title}) ${consts.a11yLabel.heading}`}>{title}</Title>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
+      <SectionHeader title={title} />
       <Wrapper>
         {!!logo && <Logo source={{ uri: logo }} />}
 

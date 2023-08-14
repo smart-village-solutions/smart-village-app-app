@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { consts, device, normalize, texts } from '../config';
+import { normalize, texts } from '../config';
 import { useHomeRefresh, useStaticContent } from '../hooks';
 import { SettingsContext } from '../SettingsProvider';
 
 import { DiagonalGradient } from './DiagonalGradient';
 import { Service } from './screens/Service';
-import { Title, TitleContainer, TitleShadow } from './Title';
+import { SectionHeader } from './SectionHeader';
 
 export const HomeService = () => {
   const { globalSettings } = useContext(SettingsContext);
@@ -27,14 +27,7 @@ export const HomeService = () => {
 
   return (
     <View>
-      {!!headlineService && (
-        <TitleContainer>
-          <Title accessibilityLabel={`(${headlineService}) ${consts.a11yLabel.heading}`}>
-            {headlineService}
-          </Title>
-        </TitleContainer>
-      )}
-      {!!headlineService && device.platform === 'ios' && <TitleShadow />}
+      <SectionHeader title={headlineService} />
       <DiagonalGradient style={styles.padding}>
         <Service data={data} staticJsonName="homeService" hasDiagonalGradientBackground />
       </DiagonalGradient>
