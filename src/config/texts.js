@@ -450,11 +450,9 @@ export const texts = {
   },
   homeTitles: {
     about: 'Über die App',
-    company: 'Städtische Unternehmen',
     events: 'Veranstaltungen',
     pointsOfInterest: 'Orte und Touren',
-    service: 'Service',
-    profile: 'Profil'
+    service: 'Service'
   },
   homeCategoriesNews: {
     categoryTitle: 'Nachrichten',
@@ -786,11 +784,10 @@ export const texts = {
       home: 'Consul'
     },
     encounterHome: 'Mitfahrbank',
-    events: appJson.expo.name,
+    favorites: appJson.expo.name,
     feedback: 'Feedback',
     home: appJson.expo.name,
     mapView: 'Kartenansicht',
-    pointsOfInterest: appJson.expo.name,
     profile: appJson.expo.name,
     routePlanner: 'Routenplaner bbnavi',
     service: appJson.expo.name,
@@ -946,9 +943,8 @@ export const texts = {
   },
   tabBarLabel: {
     about: 'Mehr',
-    events: 'Kalender',
+    favorites: 'Favoriten',
     home: 'Start',
-    pointsOfInterest: 'Wegweiser',
     profile: 'Profil'
   },
   tour: {

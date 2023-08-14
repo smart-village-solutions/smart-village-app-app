@@ -13,9 +13,9 @@ import { VersionNumber } from '../VersionNumber';
 
 export const About = ({ navigation, withHomeRefresh, withSettings }) => {
   const { data, loading, refetch } = useStaticContent({
-    name: 'homeAbout',
+    name: 'about',
     type: 'json',
-    refreshTimeKey: 'publicJsonFile-homeAbout'
+    refreshTimeKey: 'publicJsonFile-about'
   });
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);

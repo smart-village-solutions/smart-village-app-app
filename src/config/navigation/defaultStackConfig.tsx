@@ -3,6 +3,7 @@ import React from 'react';
 
 import { HeaderLeft } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
+import { QUERY_TYPES } from '../../queries';
 import {
   AboutScreen,
   ARInfoScreen,
@@ -71,7 +72,6 @@ import {
 import { ScreenName, StackConfig } from '../../types';
 import { consts } from '../consts';
 import { texts } from '../texts';
-import { QUERY_TYPES } from '../../queries';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -121,7 +121,10 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Bookmarks,
       screenComponent: BookmarkScreen,
-      screenOptions: getScreenOptions({ withDrawer: isDrawer })
+      screenOptions: getScreenOptions({ withDrawer: isDrawer }),
+      inititalParams: {
+        title: texts.screenTitles.favorites
+      }
     },
     {
       routeName: ScreenName.Category,
@@ -158,17 +161,6 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.ConsulStartNewScreen,
       screenComponent: ConsulStartNewScreen
-    },
-    {
-      routeName: ScreenName.Company,
-      screenComponent: getTilesScreen({
-        matomoString: MATOMO_TRACKING.SCREEN_VIEW.COMPANY,
-        staticJsonName: 'homeCompanies',
-        titleFallback: texts.homeTitles.company,
-        titleKey: 'headlineCompany',
-        imageKey: 'headlineCompanyImage'
-      }),
-      screenOptions: { title: texts.screenTitles.company }
     },
     {
       routeName: ScreenName.ConstructionSiteDetail,
@@ -232,15 +224,6 @@ export const defaultStackConfig = ({
       })
     },
     {
-      routeName: ScreenName.Events,
-      screenComponent: IndexScreen,
-      inititalParams: {
-        title: texts.screenTitles.events,
-        query: QUERY_TYPES.EVENT_RECORDS,
-        queryVariables: { limit: 15, order: 'listDate_ASC' }
-      }
-    },
-    {
       routeName: ScreenName.Form,
       screenComponent: FeedbackScreen,
       screenOptions: { title: texts.screenTitles.feedback }
@@ -265,12 +248,7 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.Index,
-      screenComponent: IndexScreen,
-      // NOTE: is used as initial screen for the points of interest tab
-      inititalParams: {
-        title: texts.screenTitles.pointsOfInterest,
-        query: QUERY_TYPES.CATEGORIES
-      }
+      screenComponent: IndexScreen
     },
     {
       routeName: ScreenName.Lunch,
@@ -323,14 +301,15 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.Profile,
-      screenComponent: getTilesScreen({
-        matomoString: MATOMO_TRACKING.SCREEN_VIEW.COMPANY,
-        staticJsonName: 'homeProfile',
-        titleFallback: texts.homeTitles.profile,
-        titleKey: 'headlineProfile',
-        imageKey: 'headlineProfileImage'
-      }),
-      screenOptions: { title: texts.screenTitles.profile }
+      screenComponent: HtmlScreen,
+      inititalParams: {
+        title: texts.screenTitles.profile,
+        query: QUERY_TYPES.PUBLIC_HTML_FILE,
+        queryVariables: {
+          name: 'profile'
+        },
+        rootRouteName: ScreenName.Profile
+      }
     },
     {
       routeName: ScreenName.Service,

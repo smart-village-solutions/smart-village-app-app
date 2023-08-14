@@ -23,29 +23,10 @@ const homeTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.home,
-    tabBarIcon: ({ color }: TabBarIconProps) => (
+    tabBarIcon: ({ focused, color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={Icon.Home}
-        landscapeStyle={{ marginRight: -normalize(6) }}
-        size={normalize(28)}
-        style={{ marginTop: normalize(3) }}
-      />
-    )
-  }
-};
-
-const pointOfInterestTabConfig: TabConfig = {
-  stackConfig: defaultStackConfig({
-    initialRouteName: ScreenName.Index,
-    isDrawer: false
-  }),
-  tabOptions: {
-    tabBarLabel: texts.tabBarLabel.pointsOfInterest,
-    tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon
-        color={color}
-        Icon={Icon.PointOfInterest}
+        Icon={focused ? Icon.HomeActive : Icon.Home}
         landscapeStyle={{ marginRight: -normalize(6) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
@@ -61,10 +42,10 @@ const serviceTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.profile,
-    tabBarIcon: ({ color }: TabBarIconProps) => (
+    tabBarIcon: ({ focused, color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={Icon.Service}
+        Icon={focused ? Icon.ProfileActive : Icon.Profile}
         landscapeStyle={{ marginRight: -normalize(6) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
@@ -73,17 +54,17 @@ const serviceTabConfig: TabConfig = {
   }
 };
 
-const eventsTabConfig: TabConfig = {
+const bookmarksTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
-    initialRouteName: ScreenName.Events,
+    initialRouteName: ScreenName.Bookmarks,
     isDrawer: false
   }),
   tabOptions: {
-    tabBarLabel: texts.tabBarLabel.events,
-    tabBarIcon: ({ color }: TabBarIconProps) => (
+    tabBarLabel: texts.tabBarLabel.favorites,
+    tabBarIcon: ({ focused, color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={Icon.Event}
+        Icon={focused ? Icon.HeartFilled : Icon.HeartEmpty}
         landscapeStyle={{ marginRight: -normalize(6) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
@@ -116,11 +97,5 @@ export const tabNavigatorConfig: TabNavigatorConfig = {
   inactiveTintColor: colors.primary,
   activeBackgroundColor: colors.surface,
   inactiveBackgroundColor: colors.surface,
-  tabConfigs: [
-    homeTabConfig,
-    pointOfInterestTabConfig,
-    serviceTabConfig,
-    eventsTabConfig,
-    aboutTabConfig
-  ]
+  tabConfigs: [homeTabConfig, serviceTabConfig, bookmarksTabConfig, aboutTabConfig]
 };
