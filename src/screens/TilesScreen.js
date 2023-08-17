@@ -32,10 +32,6 @@ export const getTilesScreen = ({
     );
   };
 
-  TilesScreen.propTypes = {
-    navigation: PropTypes.object.isRequired
-  };
-
   return TilesScreen;
 };
 
@@ -45,4 +41,8 @@ export const TilesScreen = ({ route, navigation }) => {
   }, [navigation, route.params?.screenTitle]);
 
   return getTilesScreen(route.params)({ navigation });
+};
+
+TilesScreen.propTypes = {
+  navigation: PropTypes.object.isRequired
 };

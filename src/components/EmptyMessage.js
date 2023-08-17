@@ -27,6 +27,13 @@ export const EmptyMessage = ({ title, showIcon }) => {
   );
 };
 
+const styles = StyleSheet.create({
+  paddingContainer: {
+    alignItems: 'center',
+    paddingVertical: normalize(20)
+  }
+});
+
 EmptyMessage.propTypes = {
   title: PropTypes.string.isRequired,
   showIcon: PropTypes.bool
@@ -35,10 +42,3 @@ EmptyMessage.propTypes = {
 EmptyMessage.defaultProps = {
   showIcon: true
 };
-
-const styles = StyleSheet.create({
-  paddingContainer: {
-    alignItems: 'center',
-    paddingVertical: normalize(20)
-  }
-});

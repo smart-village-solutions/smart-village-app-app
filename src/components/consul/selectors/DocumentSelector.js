@@ -183,13 +183,6 @@ export const DocumentSelector = ({ control, field, isVolunteer, item }) => {
   );
 };
 
-DocumentSelector.propTypes = {
-  control: PropTypes.object,
-  field: PropTypes.object,
-  isVolunteer: PropTypes.bool,
-  item: PropTypes.object
-};
-
 const styles = StyleSheet.create({
   container: {
     marginVertical: normalize(10)
@@ -210,3 +203,10 @@ const styles = StyleSheet.create({
     paddingVertical: normalize(14)
   }
 });
+
+DocumentSelector.propTypes = {
+  control: PropTypes.object,
+  field: PropTypes.object,
+  isVolunteer: PropTypes.bool,
+  item: PropTypes.object
+};
