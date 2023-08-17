@@ -52,6 +52,7 @@ export * from './ImageSection';
 export * from './ImagesCarousel';
 export * from './ImagesCarouselItem';
 export * from './IndexFilterWrapperAndList';
+export * from './IndexMapSwitch';
 export * from './Label';
 export * from './Link';
 export * from './ListComponent';

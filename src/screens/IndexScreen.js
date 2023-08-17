@@ -16,6 +16,7 @@ import {
   EmptyMessage,
   HtmlView,
   IndexFilterWrapperAndList,
+  IndexMapSwitch,
   ListComponent,
   LoadingContainer,
   LocationOverview,
@@ -47,19 +48,24 @@ import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
-const TOP_FILTER = {
+const FILTER_TYPES = {
   LIST: 'list',
   MAP: 'map'
 };
 
-const INITIAL_TOP_FILTER = [
-  { id: TOP_FILTER.LIST, title: texts.locationOverview.list, selected: true },
-  { id: TOP_FILTER.MAP, title: texts.locationOverview.map, selected: false }
+export const SWITCH_BETWEEN_LIST_AND_MAP = {
+  TOP_FILTER: 'top-filter',
+  BOTTOM_FLOATING_BUTTON: 'bottom-floating-button'
+};
+
+const INITIAL_FILTER = [
+  { id: FILTER_TYPES.LIST, title: texts.locationOverview.list, selected: true },
+  { id: FILTER_TYPES.MAP, title: texts.locationOverview.map, selected: false }
 ];
 
 const isMapSelected = (query, topFilter) =>
   query === QUERY_TYPES.POINTS_OF_INTEREST &&
-  topFilter.find((entry) => entry.selected).id === TOP_FILTER.MAP;
+  topFilter.find((entry) => entry.selected).id === FILTER_TYPES.MAP;
 
 const keyForSelectedValueByQuery = (query, isLocationFilter) => {
   const QUERIES = {
@@ -96,7 +102,6 @@ const currentDate = moment().format('YYYY-MM-DD');
 // TODO: make a list component for POIs that already includes the mapswitchheader?
 // TODO: make a list component that already includes the news/events filter?
 export const IndexScreen = ({ navigation, route }) => {
-  const [topFilter, setTopFilter] = useState(INITIAL_TOP_FILTER);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
@@ -106,7 +111,11 @@ export const IndexScreen = ({ navigation, route }) => {
     eventLocations: showEventLocationsFilter = false
   } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
-  const { calendarToggle = false, showFilterByOpeningTimes = true } = settings;
+  const {
+    calendarToggle = false,
+    showFilterByOpeningTimes = true,
+    switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER
+  } = settings;
   const {
     categoryListIntroText = texts.categoryList.intro,
     categoryListFooter,
@@ -114,6 +123,7 @@ export const IndexScreen = ({ navigation, route }) => {
     eventListIntro,
     poiListIntro
   } = sections;
+  const [filterType, setFilterType] = useState(INITIAL_FILTER);
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [showCalendar, setShowCalendar] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -127,7 +137,7 @@ export const IndexScreen = ({ navigation, route }) => {
 
   const query = route.params?.query ?? '';
 
-  const showMap = isMapSelected(query, topFilter);
+  const showMap = isMapSelected(query, filterType);
 
   // we currently only require the position for POIs
   const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST;
@@ -360,7 +370,9 @@ export const IndexScreen = ({ navigation, route }) => {
     <SafeAreaViewFlex>
       {query === QUERY_TYPES.POINTS_OF_INTEREST && (
         <View>
-          <IndexFilterWrapperAndList filter={topFilter} setFilter={setTopFilter} />
+          {switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER && (
+            <IndexFilterWrapperAndList filter={filterType} setFilter={setFilterType} />
+          )}
           {showFilterByOpeningTimes && (
             <OptionToggle
               label={texts.pointOfInterest.filterByOpeningTime}
@@ -606,6 +618,10 @@ export const IndexScreen = ({ navigation, route }) => {
           }}
         </Query>
       )}
+      {query === QUERY_TYPES.POINTS_OF_INTEREST &&
+        switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON && (
+          <IndexMapSwitch filter={filterType} setFilter={setFilterType} />
+        )}
     </SafeAreaViewFlex>
   );
 };
