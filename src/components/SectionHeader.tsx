@@ -1,10 +1,12 @@
 import React, { useContext } from 'react';
+import { StyleSheet } from 'react-native';
 
-import { consts, device } from '../config';
+import { colors, consts, device, Icon, normalize } from '../config';
 import { SettingsContext } from '../SettingsProvider';
 
 import { Title, TitleContainer, TitleShadow } from './Title';
 import { Touchable } from './Touchable';
+import { WrapperRow } from './Wrapper';
 
 type Props = {
   big?: boolean;
@@ -16,20 +18,26 @@ type Props = {
 export const SectionHeader = ({ big = false, center = false, onPress, title }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
-  const { flat = false } = settings;
+  const { flat = false, uppercase = false } = settings;
 
   if (!title) return null;
 
   const innerComponent = (
-    <Title
-      accessibilityLabel={`(${title}) ${consts.a11yLabel.heading} ${
-        onPress ? consts.a11yLabel.button : ''
-      } `}
-      big={big}
-      center={center}
-    >
-      {title}
-    </Title>
+    <WrapperRow spaceBetween>
+      <Title
+        accessibilityLabel={`(${title}) ${consts.a11yLabel.heading} ${
+          onPress ? consts.a11yLabel.button : ''
+        } `}
+        big={big}
+        center={center}
+        uppercase={uppercase}
+      >
+        {title}
+      </Title>
+      {!!onPress && (
+        <Icon.ArrowRight color={colors.gray120} size={normalize(18)} style={styles.icon} />
+      )}
+    </WrapperRow>
   );
 
   return (
@@ -41,3 +49,9 @@ export const SectionHeader = ({ big = false, center = false, onPress, title }: P
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  icon: {
+    alignSelf: 'center'
+  }
+});

@@ -81,6 +81,7 @@ export const RegularText = styled(Text)`
     props.smallest &&
     css`
       font-size: ${normalize(12)};
+      line-height: ${normalize(16)};
     `};
 
   ${(props) =>
@@ -155,6 +156,12 @@ export const RegularText = styled(Text)`
     css`
       text-align: right;
     `};
+
+  ${(props) =>
+    props.uppercase &&
+    css`
+      text-transform: uppercase;
+    `};
 `;
 
 export const BoldText = styled(RegularText)`
@@ -164,5 +171,24 @@ export const BoldText = styled(RegularText)`
     props.italic &&
     css`
       font-family: bold-italic;
+    `};
+`;
+
+export const HeadlineText = styled(RegularText)`
+  font-family: condbold;
+  line-height: ${normalize(21)};
+
+  ${(props) =>
+    props.smallest &&
+    css`
+      font-size: ${normalize(12)};
+      letter-spacing: ${normalize(0.5)};
+      line-height: ${normalize(14)};
+    `};
+
+  ${(props) =>
+    props.italic &&
+    css`
+      font-family: condbold-italic;
     `};
 `;

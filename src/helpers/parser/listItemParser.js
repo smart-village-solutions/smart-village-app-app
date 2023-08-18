@@ -113,7 +113,8 @@ const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText) 
 const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
   return data?.map((newsItem, index) => ({
     id: newsItem.id,
-    subtitle: subtitle(momentFormatUtcToLocal(newsItem.publishedAt), newsItem.dataProvider?.name),
+    overtitle: newsItem.dataProvider?.name,
+    subtitle: momentFormatUtcToLocal(newsItem.publishedAt),
     title: newsItem.contentBlocks?.[0]?.title,
     picture: {
       url:

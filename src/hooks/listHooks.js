@@ -37,7 +37,9 @@ const getListType = (query, listTypesSettings) => {
  * @returns renderItem function
  */
 export const useRenderItem = (query, navigation, options = {}) => {
-  const { listTypesSettings } = useContext(SettingsContext);
+  const { globalSettings, listTypesSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { listsWithoutArrows = false } = settings;
 
   const listType = getListType(query, listTypesSettings);
 
@@ -101,7 +103,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
               ...item,
               bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
             }}
-            {...{ navigation, noSubtitle: options.noSubtitle }}
+            {...{ navigation, noSubtitle: options.noSubtitle, listsWithoutArrows }}
           />
         );
       };

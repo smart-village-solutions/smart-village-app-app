@@ -107,7 +107,6 @@ const renderItem = ({ item }) => {
         // eslint-disable-next-line react/jsx-key
         <HomeSection
           {...{
-            buttonTitle,
             categoryId,
             fetchPolicy,
             key: index,

@@ -2,7 +2,7 @@ import { StackHeaderLeftButtonProps } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { colors, consts, Icon, normalize } from '../config';
+import { colors, consts, device, Icon, normalize } from '../config';
 
 export const HeaderLeft = ({ onPress }: StackHeaderLeftButtonProps) =>
   onPress ? (
@@ -15,6 +15,8 @@ export const HeaderLeft = ({ onPress }: StackHeaderLeftButtonProps) =>
         <Icon.ArrowLeft color={colors.gray120} style={styles.icon} />
       </TouchableOpacity>
     </View>
+  ) : device.platform == 'android' ? (
+    <Icon.ArrowLeft color={colors.surface} />
   ) : null;
 
 const styles = StyleSheet.create({

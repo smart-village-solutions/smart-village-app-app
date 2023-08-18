@@ -256,7 +256,7 @@ export const SettingsScreen = () => {
 
   return (
     <SafeAreaViewFlex>
-      <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
+      {/* <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} /> */}
       {selectedFilterId === TOP_FILTER.GENERAL && (
         <SectionList
           keyExtractor={keyExtractor}

@@ -62,16 +62,11 @@ export const getScreenOptions =
 
 const styles = StyleSheet.create({
   headerTitleStyle: {
-    color: colors.primary,
+    color: colors.darkText,
     fontFamily: device.platform === 'ios' ? 'bold' : 'regular',
-    fontSize: normalize(20),
+    fontSize: normalize(16),
     fontWeight: '400',
-    lineHeight: normalize(29)
-  },
-  headerTitleContainerStyle: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start'
+    lineHeight: normalize(20)
   },
   icon: {
     paddingHorizontal: normalize(10)

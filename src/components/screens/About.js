@@ -50,21 +50,15 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
   const sectionData = [
     {
       title: headlineAbout,
-      data
-    }
-  ];
-
-  if (withSettings) {
-    sectionData.push({
-      title: texts.screenTitles.settings,
       data: [
-        {
+        ...data,
+        withSettings && {
           title: texts.screenTitles.appSettings,
           routeName: 'Settings'
         }
       ]
-    });
-  }
+    }
+  ];
 
   return (
     <SectionList
