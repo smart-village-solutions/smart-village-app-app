@@ -53,7 +53,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   if (loading && !listItems?.length)
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
 
@@ -71,8 +71,8 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
+            colors={[colors.refreshControl]}
+            tintColor={colors.refreshControl}
           />
         }
         ListHeaderComponent={

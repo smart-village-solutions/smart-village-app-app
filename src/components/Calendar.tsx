@@ -186,7 +186,7 @@ export const Calendar = ({ query, queryVariables, calendarData, isLoading, navig
           ListEmptyComponent={
             loading ? (
               <LoadingContainer>
-                <ActivityIndicator color={colors.accent} />
+                <ActivityIndicator color={colors.refreshControl} />
               </LoadingContainer>
             ) : (
               <EmptyMessage title={texts.empty.list} />

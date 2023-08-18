@@ -62,7 +62,7 @@ export const NoticeboardFormScreen = ({
   if (loadingHtml) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }
@@ -78,8 +78,8 @@ export const NoticeboardFormScreen = ({
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              colors={[colors.accent]}
-              tintColor={colors.accent}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
             />
           }
         >

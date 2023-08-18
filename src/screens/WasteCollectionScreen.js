@@ -320,7 +320,7 @@ export const WasteCollectionScreen = ({ navigation }) => {
   if (loading || typesLoading) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }

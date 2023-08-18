@@ -93,7 +93,7 @@ export const LocationOverview = ({
   if (loading) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }
@@ -126,7 +126,7 @@ export const LocationOverview = ({
           )}
           {detailsLoading ? (
             <LoadingContainer>
-              <ActivityIndicator color={colors.accent} />
+              <ActivityIndicator color={colors.refreshControl} />
             </LoadingContainer>
           ) : (
             !!detailsData?.[QUERY_TYPES.POINT_OF_INTEREST] && (

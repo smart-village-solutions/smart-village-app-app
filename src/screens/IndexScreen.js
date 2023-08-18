@@ -383,7 +383,7 @@ export const IndexScreen = ({ navigation, route }) => {
             if ((!data && loading) || loadingPosition || isLoadingVolunteerEvents) {
               return (
                 <LoadingContainer>
-                  <ActivityIndicator color={colors.accent} />
+                  <ActivityIndicator color={colors.refreshControl} />
                 </LoadingContainer>
               );
             }
@@ -528,7 +528,7 @@ export const IndexScreen = ({ navigation, route }) => {
                   ListEmptyComponent={
                     loading ? (
                       <LoadingContainer>
-                        <ActivityIndicator color={colors.accent} />
+                        <ActivityIndicator color={colors.refreshControl} />
                       </LoadingContainer>
                     ) : showCalendar ? (
                       <Calendar
@@ -581,8 +581,8 @@ export const IndexScreen = ({ navigation, route }) => {
                     <RefreshControl
                       refreshing={refreshing}
                       onRefresh={() => refresh(refetch)}
-                      colors={[colors.accent]}
-                      tintColor={colors.accent}
+                      colors={[colors.refreshControl]}
+                      tintColor={colors.refreshControl}
                     />
                   }
                   showBackToTop

@@ -102,7 +102,7 @@ export const DetailScreen = ({ navigation, route }) => {
   if (!refreshTime) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }
@@ -125,7 +125,7 @@ export const DetailScreen = ({ navigation, route }) => {
         if (loading) {
           return (
             <LoadingContainer>
-              <ActivityIndicator color={colors.accent} />
+              <ActivityIndicator color={colors.refreshControl} />
             </LoadingContainer>
           );
         }
@@ -145,8 +145,8 @@ export const DetailScreen = ({ navigation, route }) => {
                 <RefreshControl
                   refreshing={refreshing}
                   onRefresh={() => refresh(refetch)}
-                  colors={[colors.accent]}
-                  tintColor={colors.accent}
+                  colors={[colors.refreshControl]}
+                  tintColor={colors.refreshControl}
                 />
               }
             >

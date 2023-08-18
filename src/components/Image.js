@@ -155,7 +155,7 @@ Image.propTypes = {
 };
 
 Image.defaultProps = {
-  PlaceholderContent: <ActivityIndicator color={colors.accent} />,
+  PlaceholderContent: <ActivityIndicator color={colors.refreshControl} />,
   resizeMode: 'cover',
   borderRadius: 0
 };

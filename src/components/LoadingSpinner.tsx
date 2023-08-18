@@ -12,7 +12,7 @@ type Props = {
 export const LoadingSpinner = ({ loading }: Props) => {
   return loading ? (
     <LoadingContainer>
-      <ActivityIndicator color={colors.accent} />
+      <ActivityIndicator color={colors.refreshControl} />
     </LoadingContainer>
   ) : null;
 };

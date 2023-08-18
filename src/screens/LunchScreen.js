@@ -118,14 +118,18 @@ export const LunchScreen = ({ navigation, route }) => {
             // push the list down, whenever we change the date
             refreshing={false}
             onRefresh={() => refetch?.()}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
+            colors={[colors.refreshControl]}
+            tintColor={colors.refreshControl}
           />
         }
         data={!loading && lunchData}
         renderItem={renderItem}
         ListEmptyComponent={
-          loading || !refreshTime ? <ActivityIndicator color={colors.accent} /> : ListEmptyComponent
+          loading || !refreshTime ? (
+            <ActivityIndicator color={colors.refreshControl} />
+          ) : (
+            ListEmptyComponent
+          )
         }
         ListHeaderComponent={ListHeaderComponent}
         keyExtractor={(item) => item.id}

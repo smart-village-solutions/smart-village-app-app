@@ -56,7 +56,7 @@ export const IndexScreen = ({ navigation }) => {
   if (!refreshTime) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }
@@ -140,7 +140,7 @@ export const IndexScreen = ({ navigation }) => {
             if (loading) {
               return (
                 <LoadingContainer>
-                  <ActivityIndicator color={colors.accent} />
+                  <ActivityIndicator color={colors.refreshControl} />
                 </LoadingContainer>
               );
             }
@@ -163,7 +163,7 @@ export const IndexScreen = ({ navigation }) => {
                       <>
                         <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
                         <LoadingContainer>
-                          <ActivityIndicator color={colors.accent} />
+                          <ActivityIndicator color={colors.refreshControl} />
                         </LoadingContainer>
                       </>
                     );
@@ -196,14 +196,14 @@ export const IndexScreen = ({ navigation }) => {
                                   <RefreshControl
                                     refreshing={refreshing}
                                     onRefresh={refresh}
-                                    colors={[colors.accent]}
-                                    tintColor={colors.accent}
+                                    colors={[colors.refreshControl]}
+                                    tintColor={colors.refreshControl}
                                   />
                                 }
                               />
                             ) : (
                               <LoadingContainer>
-                                <ActivityIndicator color={colors.accent} />
+                                <ActivityIndicator color={colors.refreshControl} />
                               </LoadingContainer>
                             );
                           }
@@ -226,8 +226,8 @@ export const IndexScreen = ({ navigation }) => {
                                 <RefreshControl
                                   refreshing={refreshing}
                                   onRefresh={refresh}
-                                  colors={[colors.accent]}
-                                  tintColor={colors.accent}
+                                  colors={[colors.refreshControl]}
+                                  tintColor={colors.refreshControl}
                                 />
                               }
                             />

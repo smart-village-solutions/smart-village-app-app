@@ -34,7 +34,7 @@ export const WebScreen = ({ route }) => {
         mediaPlaybackRequiresUserAction
         renderLoading={() => (
           <LoadingContainer web>
-            <ActivityIndicator color={colors.accent} />
+            <ActivityIndicator color={colors.refreshControl} />
           </LoadingContainer>
         )}
         injectedJavaScript={injectedJavaScript}
