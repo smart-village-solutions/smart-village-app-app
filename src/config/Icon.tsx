@@ -25,6 +25,7 @@ import {
   link,
   list,
   location,
+  logo,
   lunch,
   mail,
   member,
@@ -35,6 +36,7 @@ import {
   oParlPeople,
   pen,
   phone,
+  profile,
   routePlanner,
   send,
   service,
@@ -101,9 +103,7 @@ const NamedIcon = ({
 };
 
 export const Icon = {
-  About: (props: IconProps) => (
-    <NamedIcon name={device.platform === 'ios' ? 'ios-menu' : 'md-menu'} {...props} />
-  ),
+  About: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
   AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
   ArrowDown: (props: IconProps) => <SvgIcon xml={arrowDown} {...props} />,
   ArrowDownCircle: (props: IconProps) => <NamedIcon name="arrow-down-circle" {...props} />,
@@ -127,8 +127,7 @@ export const Icon = {
   EditSetting: (props: IconProps) => <SvgIcon xml={editSetting} {...props} />,
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
   ExpandMap: (props: IconProps) => <NamedIcon name="expand" {...props} />,
-  Home: (props: IconProps) => <NamedIcon name="home-outline" {...props} />,
-  HomeActive: (props: IconProps) => <NamedIcon name="home" {...props} />,
+  Home: (props: IconProps) => <SvgIcon xml={home} {...props} />,
   NamedIcon,
   HeartEmpty: (props: IconProps) => <SvgIcon xml={heartEmpty} {...props} />,
   HeartFilled: (props: IconProps) => <SvgIcon xml={heartFilled} {...props} />,
@@ -137,6 +136,7 @@ export const Icon = {
   Like: (props: IconProps) => <SvgIcon xml={like} {...props} />,
   List: (props: IconProps) => <SvgIcon xml={list} {...props} />,
   Location: (props: IconProps) => <SvgIcon xml={location} {...props} />,
+  Logo: (props: IconProps) => <SvgIcon xml={logo} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
   Mail: (props: IconProps) => <SvgIcon xml={mail} {...props} />,
   Member: (props: IconProps) => <SvgIcon xml={member} {...props} />,
@@ -150,8 +150,7 @@ export const Icon = {
   Phone: (props: IconProps) => <SvgIcon xml={phone} {...props} />,
   Play: (props: IconProps) => <NamedIcon name="play" {...props} />,
   Plus: (props: IconProps) => <NamedIcon name="add" {...props} />,
-  Profile: (props: IconProps) => <NamedIcon name="person-outline" {...props} />,
-  ProfileActive: (props: IconProps) => <NamedIcon name="person" {...props} />,
+  Profile: (props: IconProps) => <SvgIcon xml={profile} {...props} />,
   RadioButtonEmpty: (props: IconProps) => (
     <NamedIcon
       name={device.platform === 'ios' ? 'ios-radio-button-off' : 'md-radio-button-off'}

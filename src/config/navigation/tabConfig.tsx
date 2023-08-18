@@ -23,10 +23,10 @@ const homeTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.home,
-    tabBarIcon: ({ focused, color }: TabBarIconProps) => (
+    tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={focused ? Icon.HomeActive : Icon.Home}
+        Icon={Icon.Home}
         landscapeStyle={{ marginRight: -normalize(6) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
@@ -42,10 +42,10 @@ const serviceTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.profile,
-    tabBarIcon: ({ focused, color }: TabBarIconProps) => (
+    tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={focused ? Icon.ProfileActive : Icon.Profile}
+        Icon={Icon.Profile}
         landscapeStyle={{ marginRight: -normalize(6) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
@@ -61,10 +61,10 @@ const bookmarksTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.favorites,
-    tabBarIcon: ({ focused, color }: TabBarIconProps) => (
+    tabBarIcon: ({ color }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={focused ? Icon.HeartFilled : Icon.HeartEmpty}
+        Icon={Icon.HeartEmpty}
         landscapeStyle={{ marginRight: -normalize(6) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}

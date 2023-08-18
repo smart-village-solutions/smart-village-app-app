@@ -774,7 +774,7 @@ export const texts = {
       'Diese Funktion benötigt die Berechtigung Ihnen Benachrichtigungen zu schicken.'
   },
   screenTitles: {
-    about: appJson.expo.name,
+    about: 'Menü',
     appSettings: 'App-Einstellungen',
     company: appJson.expo.name,
     constructionSite: 'Baustelle',
@@ -784,13 +784,13 @@ export const texts = {
       home: 'Consul'
     },
     encounterHome: 'Mitfahrbank',
-    favorites: appJson.expo.name,
+    favorites: 'Favoriten',
     feedback: 'Feedback',
-    home: appJson.expo.name,
+    home: 'Start',
     mapView: 'Kartenansicht',
-    profile: appJson.expo.name,
+    profile: 'Profil',
     routePlanner: 'Routenplaner bbnavi',
-    service: appJson.expo.name,
+    service: 'Service',
     settings: 'Einstellungen',
     survey: 'Umfrage',
     surveys: 'Umfragen',
