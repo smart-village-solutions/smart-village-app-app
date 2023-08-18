@@ -105,7 +105,10 @@ export const IndexScreen = ({ navigation, route }) => {
     eventLocations: showEventLocationsFilter = false
   } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
-  const { calendarToggle = false } = settings;
+  const {
+    calendarToggle = false,
+    showFilterByOpeningTimes = true
+  } = settings;
   const {
     categoryListIntroText = texts.categoryList.intro,
     categoryListFooter,
@@ -359,6 +362,13 @@ export const IndexScreen = ({ navigation, route }) => {
             onToggle={() => setFilterByOpeningTimes((value) => !value)}
             value={filterByOpeningTimes}
           />
+          {showFilterByOpeningTimes && (
+            <OptionToggle
+              label={texts.pointOfInterest.filterByOpeningTime}
+              onToggle={() => setFilterByOpeningTimes((value) => !value)}
+              value={filterByOpeningTimes}
+            />
+          )}
           <Divider />
         </View>
       )}
