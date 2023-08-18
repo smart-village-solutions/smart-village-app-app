@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React from 'react';
 
-import { device, normalize } from '../config';
+import { colors, device, normalize } from '../config';
 import { TabNavigatorConfig } from '../types';
 
 import { getStackNavigator } from './AppStackNavigator';
@@ -20,6 +20,7 @@ export const MainTabNavigator = ({
       activeBackgroundColor: tabNavigatorConfig.activeBackgroundColor,
       inactiveBackgroundColor: tabNavigatorConfig.inactiveBackgroundColor,
       tabStyle: { marginTop: normalize(0) },
+      style: { backgroundColor: colors.surface },
       keyboardHidesTabBar: device.platform === 'android'
     }}
   >
