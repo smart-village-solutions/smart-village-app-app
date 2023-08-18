@@ -43,5 +43,5 @@ export const colors = {
   gray160,
   gray180,
 
-  refreshControl: 'rgb(15, 70, 24)'
+  refreshControl: black
 };
