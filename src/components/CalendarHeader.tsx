@@ -34,7 +34,7 @@ export const CalendarHeader = ({ navigation, style }: Props) => {
       accessibilityLabel={a11yLabel.calendarIcon}
       accessibilityHint={a11yLabel.calendarHint}
     >
-      <Icon.Plus color={colors.primary} style={[style, styles.icon]} size={normalize(28)} />
+      <Icon.Plus color={colors.gray120} style={[style, styles.icon]} size={normalize(28)} />
     </TouchableOpacity>
   );
 };

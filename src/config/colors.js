@@ -28,7 +28,7 @@ export const colors = {
   shadowRgba: 'rgba(173, 172, 168, 0.4)', // gray60 with 0.4 alpha
   placeholder: gray80,
   backgroundRgba: 'rgba(148, 147, 144, 0.08)', // gray80 with 0.08 alpha
-  borderRgba: 'rgba(148, 147, 144, 0.75)', // gray80 with 0.75 alpha
+  borderRgba: 'rgba(222, 221, 216, 1)', // gray20 with 1 alpha
   overlayRgba: 'rgba(25, 24, 24, 0.7)', // lighter black with 0.7 alpha
 
   surface: '#F7F5F0',

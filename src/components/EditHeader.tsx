@@ -16,6 +16,6 @@ export const EditHeader = ({ onPress, style }: Props) => (
     accessibilityLabel={a11yLabel.editIcon}
     accessibilityHint={a11yLabel.editHint}
   >
-    <Icon.EditSetting color={colors.primary} style={style} size={normalize(22)} />
+    <Icon.EditSetting color={colors.gray120} style={style} size={normalize(22)} />
   </TouchableOpacity>
 );

@@ -1,8 +1,6 @@
 export const arrowDown = (color) => `
   <?xml version="1.0" encoding="UTF-8"?>
-  <svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-      <polygon points="17.333 8 11.999 13.999 6.665 8 4 8 11.999 17 19.999 8" fill="${color}"></polygon>
-    </g>
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M6 9L12 15L18 9" stroke="${color}" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
 `;

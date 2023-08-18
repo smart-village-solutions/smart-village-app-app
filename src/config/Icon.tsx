@@ -168,12 +168,7 @@ export const Icon = {
   Settings: (props: IconProps) => (
     <NamedIcon name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'} {...props} />
   ),
-  Share: (props: IconProps) =>
-    device.platform === 'ios' ? (
-      <NamedIcon name="ios-share" {...props} />
-    ) : (
-      <SvgIcon xml={share} {...props} />
-    ),
+  Share: (props: IconProps) => <SvgIcon xml={share} {...props} />,
   Send: (props: IconProps) => <SvgIcon xml={send} {...props} />,
   Surveys: (props: IconProps) => <NamedIcon name="stats-chart-outline" {...props} />,
   Trash: (props: IconProps) => <SvgIcon xml={trash} {...props} />,

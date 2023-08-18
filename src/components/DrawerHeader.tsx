@@ -18,7 +18,7 @@ export const DrawerHeader = ({ navigation, style }: Props) => {
       accessibilityLabel={a11yLabel.openMenuIcon}
       accessibilityHint={a11yLabel.openMenuHint}
     >
-      <Icon.DrawerMenu color={colors.primary} style={style} />
+      <Icon.DrawerMenu color={colors.gray120} style={style} />
     </TouchableOpacity>
   );
 };

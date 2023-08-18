@@ -3,7 +3,7 @@ import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigatio
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
-import { DiagonalGradient, FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
+import { FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
 import { colors, device, normalize } from '../config';
 
 type OptionProps = {
@@ -31,11 +31,13 @@ export const getScreenOptions =
   }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
   ({ navigation, route }) => {
     return {
-      // header gradient:
-      // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
-      headerBackground: () => <DiagonalGradient colors={[colors.surface, colors.surface]} />,
       headerTitleStyle: styles.headerTitleStyle,
-      headerTitleContainerStyle: styles.headerTitleContainerStyle,
+      headerTitleAlign: 'center',
+      headerStyle: {
+        backgroundColor: colors.surface,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.borderRgba
+      },
       headerRight: () => (
         <HeaderRight
           {...{
