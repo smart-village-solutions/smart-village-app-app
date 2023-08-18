@@ -139,7 +139,7 @@ export const Map = ({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: colors.lightestText,
+    backgroundColor: colors.surface,
     flex: 1,
     justifyContent: 'center'
   },

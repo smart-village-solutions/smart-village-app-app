@@ -93,8 +93,8 @@ const aboutTabConfig: TabConfig = {
 };
 
 export const tabNavigatorConfig: TabNavigatorConfig = {
-  activeTintColor: colors.accent,
-  inactiveTintColor: colors.primary,
+  activeTintColor: colors.darkText,
+  inactiveTintColor: colors.gray120,
   activeBackgroundColor: colors.surface,
   inactiveBackgroundColor: colors.surface,
   tabConfigs: [homeTabConfig, serviceTabConfig, bookmarksTabConfig, aboutTabConfig]
