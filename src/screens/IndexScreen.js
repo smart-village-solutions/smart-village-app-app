@@ -58,11 +58,6 @@ export const SWITCH_BETWEEN_LIST_AND_MAP = {
   BOTTOM_FLOATING_BUTTON: 'bottom-floating-button'
 };
 
-const INITIAL_FILTER = [
-  { id: FILTER_TYPES.LIST, title: texts.locationOverview.list, selected: true },
-  { id: FILTER_TYPES.MAP, title: texts.locationOverview.map, selected: false }
-];
-
 const isMapSelected = (query, topFilter) =>
   query === QUERY_TYPES.POINTS_OF_INTEREST &&
   topFilter.find((entry) => entry.selected).id === FILTER_TYPES.MAP;
@@ -123,6 +118,19 @@ export const IndexScreen = ({ navigation, route }) => {
     eventListIntro,
     poiListIntro
   } = sections;
+  const { initialFilter = FILTER_TYPES.LIST } = route.params?.queryVariables ?? {};
+  const INITIAL_FILTER = [
+    {
+      id: FILTER_TYPES.LIST,
+      title: texts.locationOverview.list,
+      selected: initialFilter == FILTER_TYPES.LIST
+    },
+    {
+      id: FILTER_TYPES.MAP,
+      title: texts.locationOverview.map,
+      selected: initialFilter == FILTER_TYPES.MAP
+    }
+  ];
   const [filterType, setFilterType] = useState(INITIAL_FILTER);
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [showCalendar, setShowCalendar] = useState(false);
