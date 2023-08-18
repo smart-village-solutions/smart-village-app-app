@@ -42,7 +42,7 @@ export class CategoryList extends React.PureComponent {
     if (!data?.length) {
       return (
         <LoadingContainer>
-          <ActivityIndicator color={colors.accent} />
+          <ActivityIndicator color={colors.refreshControl} />
         </LoadingContainer>
       );
     }

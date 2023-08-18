@@ -64,7 +64,7 @@ export const DataListSection = ({
         {!!sectionTitle && <SectionHeader onPress={navigate} title={sectionTitle} />}
 
         <LoadingContainer>
-          <ActivityIndicator color={colors.accent} />
+          <ActivityIndicator color={colors.refreshControl} />
         </LoadingContainer>
       </View>
     );

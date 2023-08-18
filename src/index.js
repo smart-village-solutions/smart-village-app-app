@@ -197,7 +197,7 @@ const MainAppWithApolloProvider = () => {
   if (loading || !client) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }

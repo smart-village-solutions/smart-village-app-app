@@ -69,8 +69,8 @@ export const VolunteerDetailScreen = ({ navigation, route }: StackScreenProps<an
             <RefreshControl
               refreshing={isLoading}
               onRefresh={refetch}
-              colors={[colors.accent]}
-              tintColor={colors.accent}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
             />
           }
           keyboardShouldPersistTaps="handled"

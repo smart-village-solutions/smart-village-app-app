@@ -45,7 +45,7 @@ export const BookmarkCategoryScreen = ({ navigation, route }) => {
   if (loading || !bookmarks) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }

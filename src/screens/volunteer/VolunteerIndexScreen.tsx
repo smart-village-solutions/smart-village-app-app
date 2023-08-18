@@ -125,8 +125,8 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
             <RefreshControl
               refreshing={false}
               onRefresh={refetch}
-              colors={[colors.accent]}
-              tintColor={colors.accent}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
             />
           }
           showBackToTop

@@ -52,7 +52,9 @@ export const VerticalList = ({
       ListFooterComponent={() => {
         if (data?.length >= MAX_INITIAL_NUM_TO_RENDER) {
           if (!listEndReached) {
-            return <ActivityIndicator color={colors.accent} style={{ margin: normalize(14) }} />;
+            return (
+              <ActivityIndicator color={colors.refreshControl} style={{ margin: normalize(14) }} />
+            );
           } else if (listEndReached && showBackToTop) {
             return (
               <BackToTop

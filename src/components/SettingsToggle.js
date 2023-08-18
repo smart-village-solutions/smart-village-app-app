@@ -49,7 +49,7 @@ export const SettingsToggle = ({ item }) => {
       <ListItem.Content>{title && <BoldText>{title}</BoldText>}</ListItem.Content>
 
       <WrapperRow>
-        {loading && <ActivityIndicator color={colors.accent} style={styles.marginRight} />}
+        {loading && <ActivityIndicator color={colors.refreshControl} style={styles.marginRight} />}
         <Switch switchValue={switchValue} toggleSwitch={toggleSwitch} />
       </WrapperRow>
     </ListItem>
