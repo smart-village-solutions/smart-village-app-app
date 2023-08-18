@@ -376,21 +376,23 @@ export const IndexScreen = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      {query === QUERY_TYPES.POINTS_OF_INTEREST && (
-        <View>
-          {switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER && (
-            <IndexFilterWrapperAndList filter={filterType} setFilter={setFilterType} />
-          )}
-          {showFilterByOpeningTimes && (
-            <OptionToggle
-              label={texts.pointOfInterest.filterByOpeningTime}
-              onToggle={() => setFilterByOpeningTimes((value) => !value)}
-              value={filterByOpeningTimes}
-            />
-          )}
-          <Divider />
-        </View>
-      )}
+      {query === QUERY_TYPES.POINTS_OF_INTEREST &&
+        (switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER ||
+          showFilterByOpeningTimes) && (
+          <View>
+            {switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER && (
+              <IndexFilterWrapperAndList filter={filterType} setFilter={setFilterType} />
+            )}
+            {showFilterByOpeningTimes && (
+              <OptionToggle
+                label={texts.pointOfInterest.filterByOpeningTime}
+                onToggle={() => setFilterByOpeningTimes((value) => !value)}
+                value={filterByOpeningTimes}
+              />
+            )}
+            <Divider />
+          </View>
+        )}
       {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
         <LocationOverview
           filterByOpeningTimes={filterByOpeningTimes}
