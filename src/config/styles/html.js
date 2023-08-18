@@ -22,7 +22,7 @@ export const html = {
   },
   h1: {
     color: colors.darkText,
-    fontFamily: 'bold',
+    fontFamily: 'condbold',
     fontSize: normalize(24),
     lineHeight: normalize(30),
     margin: 0,
@@ -30,16 +30,15 @@ export const html = {
   },
   h2: {
     color: colors.darkText,
-    fontFamily: 'regular',
+    fontFamily: 'condbold',
     fontSize: normalize(20),
-    fontWeight: '400',
     lineHeight: normalize(26),
     margin: 0,
     marginBottom: normalize(14)
   },
   h3: {
     color: colors.darkText,
-    fontFamily: 'bold',
+    fontFamily: 'condbold',
     fontSize: normalize(18),
     lineHeight: normalize(24),
     margin: 0
@@ -105,9 +104,6 @@ export const htmlBoldTextEnabled = {
     fontFamily: 'bold'
   },
   div: {
-    fontFamily: 'bold'
-  },
-  h2: {
     fontFamily: 'bold'
   },
   h4: {

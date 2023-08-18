@@ -17,22 +17,21 @@ export const markdown = {
   },
   heading1: {
     color: colors.darkText,
-    fontFamily: 'bold',
+    fontFamily: 'condbold',
     fontSize: normalize(24),
     lineHeight: normalize(30),
     marginBottom: normalize(24)
   },
   heading2: {
     color: colors.darkText,
-    fontFamily: 'regular',
+    fontFamily: 'condbold',
     fontSize: normalize(20),
-    fontWeight: '400',
     lineHeight: normalize(26),
     marginBottom: normalize(14)
   },
   heading3: {
     color: colors.darkText,
-    fontFamily: 'bold',
+    fontFamily: 'condbold',
     fontSize: normalize(18),
     lineHeight: normalize(24)
   },
