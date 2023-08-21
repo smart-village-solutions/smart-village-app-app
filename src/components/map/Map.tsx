@@ -26,7 +26,7 @@ const MARKER_ICON_SIZE = normalize(40);
 
 export const Map = ({
   geometryTourData,
-  isMaximizeButtonVisible,
+  isMaximizeButtonVisible = false,
   isMultipleMarkersMap = false,
   locations,
   mapCenterPosition,

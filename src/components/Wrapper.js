@@ -6,6 +6,12 @@ export const Wrapper = styled.View`
   padding: ${normalize(14)}px;
 
   ${(props) =>
+    props.small &&
+    css`
+      padding: ${normalize(7)}px;
+    `};
+
+  ${(props) =>
     props.shrink &&
     css`
       flex-shrink: 1;
