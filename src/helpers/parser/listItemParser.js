@@ -144,7 +144,7 @@ const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
 const parsePointOfInterest = (data, skipLastDivider) => {
   return data?.map((pointOfInterest, index) => ({
     id: pointOfInterest.id,
-    title: pointOfInterest.name,
+    title: pointOfInterest.title || pointOfInterest.name,
     subtitle: pointOfInterest.category?.name,
     picture: {
       url: mainImageOfMediaContents(pointOfInterest.mediaContents)
@@ -404,6 +404,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseGenericItems(data[query], skipLastDivider, consentForDataProcessingText);
     case QUERY_TYPES.NEWS_ITEMS:
       return parseNewsItems(data[query], skipLastDivider, titleDetail, bookmarkable);
+    case QUERY_TYPES.POINT_OF_INTEREST:
     case QUERY_TYPES.POINTS_OF_INTEREST:
       return parsePointOfInterest(data[query], skipLastDivider);
     case QUERY_TYPES.TOURS:
