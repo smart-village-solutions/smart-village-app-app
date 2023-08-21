@@ -357,11 +357,6 @@ export const IndexScreen = ({ navigation, route }) => {
       {query === QUERY_TYPES.POINTS_OF_INTEREST && (
         <View>
           <IndexFilterWrapperAndList filter={topFilter} setFilter={setTopFilter} />
-          <OptionToggle
-            label={texts.pointOfInterest.filterByOpeningTime}
-            onToggle={() => setFilterByOpeningTimes((value) => !value)}
-            value={filterByOpeningTimes}
-          />
           {showFilterByOpeningTimes && (
             <OptionToggle
               label={texts.pointOfInterest.filterByOpeningTime}
