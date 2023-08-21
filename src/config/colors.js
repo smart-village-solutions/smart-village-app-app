@@ -25,7 +25,7 @@ export const colors = {
   lightestText: white,
 
   shadow: gray60,
-  shadowRgba: 'rgba(173, 172, 168, 0.4)', // gray60 with 0.4 alpha
+  shadowRgba: 'rgba(0, 0, 0, 0.15)', // black with 0.15 alpha
   placeholder: gray80,
   backgroundRgba: 'rgba(148, 147, 144, 0.08)', // gray80 with 0.08 alpha
   borderRgba: 'rgba(222, 221, 216, 1)', // gray20 with 1 alpha

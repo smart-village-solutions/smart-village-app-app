@@ -8,7 +8,7 @@ import { colors, consts, Icon, normalize } from '../config';
 import { trimNewLines } from '../helpers';
 
 import { Image } from './Image';
-import { BoldText, HeadlineText, RegularText } from './Text';
+import { HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
@@ -92,7 +92,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
     <ListItem
       bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
       topDivider={topDivider !== undefined ? topDivider : false}
-      containerStyle={styles.container}
+      containerStyle={[styles.container, (bottomDivider || topDivider) && styles.containerBorder]}
       badge={badge}
       onPress={() => (onPress ? onPress(navigation) : navigate())}
       disabled={!navigation}
@@ -136,9 +136,11 @@ export const TextListItem: NamedExoticComponent<Props> & {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
-    borderBottomColor: colors.borderRgba,
-    borderBottomWidth: 1,
     paddingVertical: normalize(12)
+  },
+  containerBorder: {
+    borderBottomColor: colors.borderRgba,
+    borderBottomWidth: 1
   },
   overtitle: {
     marginBottom: normalize(4)
