@@ -29,10 +29,11 @@ export const Service = ({
   hasDiagonalGradientBackground?: boolean;
 }) => {
   const { globalSettings } = useContext(SettingsContext);
-  const isPersonalizable = globalSettings?.settings?.personalizedTiles || false;
+  const { settings = {} } = globalSettings;
+  const { personalizedTiles = false, tileSizeFactor = 1 } = settings;
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { isLoading, tiles, onDragEnd, onToggleVisibility } = usePersonalizedTiles(
-    isPersonalizable,
+    personalizedTiles,
     data,
     isEditMode,
     staticJsonName
@@ -54,17 +55,18 @@ export const Service = ({
   const renderItem = useCallback(
     (item: TServiceTile, index: number) => (
       <ServiceTile
-        key={index + (item.title || item.accessibilityLabel)}
-        item={item}
-        isEditMode={isEditMode}
         draggableId={item.title || item.accessibilityLabel}
-        onToggleVisibility={onToggleVisibility}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
+        isEditMode={isEditMode}
+        item={item}
+        key={index + (item.title || item.accessibilityLabel)}
+        onToggleVisibility={onToggleVisibility}
+        tileSizeFactor={tileSizeFactor}
       />
     ),
     [isEditMode, hasDiagonalGradientBackground]
   );
-  const toggler = globalSettings?.settings?.personalizedTiles && (
+  const toggler = personalizedTiles && (
     <View style={styles.toggler}>
       <TouchableOpacity onPress={onPress}>
         <RegularText lightest={hasDiagonalGradientBackground} center small underline>

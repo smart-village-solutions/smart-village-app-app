@@ -269,11 +269,7 @@ export const HomeScreen = ({ navigation, route }) => {
         data={data}
         ListHeaderComponent={
           <>
-            <ServiceTiles
-              navigation={navigation}
-              staticJsonName="homeService"
-              title={headlineService}
-            />
+            <ServiceTiles staticJsonName="homeService" title={headlineService} />
             <ConnectedImagesCarousel
               alternateAspectRatio
               navigation={navigation}
