@@ -15,7 +15,21 @@ export const navigateWithSubQuery = ({
 }: {
   navigation: StackNavigationProp<any, string>;
   title?: string;
-  params?: { routeName: string; webUrl: string } | string;
+  params?:
+    | {
+        routeName: string;
+        webUrl: string;
+        paramsForButton?: {
+          query: string;
+          queryVariables: { name: string };
+          rootRouteName: string;
+          routeName: string;
+          subQuery: SubQuery;
+          title: string;
+          webUrl?: string;
+        };
+      }
+    | string;
   rootRouteName?: string;
   subQuery: SubQuery;
 }) => {
@@ -31,8 +45,21 @@ export const navigateWithSubQuery = ({
     });
   }
 
-  // if the `params` is an object, it contains a `routeName` and a `webUrl`
   if (!!params && typeof params === 'object') {
+    // if `params` is an object and contains the `paramsForButton` object,
+    // the values here are added to the navigation
+    if (params.paramsForButton) {
+      return navigation.navigate({
+        name: params.routeName,
+        params: {
+          ...params.paramsForButton,
+          rootRouteName
+        }
+      });
+    }
+
+    // if `params` is an object and does not contain the `paramsForButton` object,
+    // it contains a `routeName` and a `webUrl`
     return navigation.navigate({
       name: params.routeName,
       params: {
