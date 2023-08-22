@@ -1,8 +1,8 @@
-import { Ionicons } from '@expo/vector-icons';
 import React, { ComponentProps } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
+import TablerIcon from '../components/tabler-icons';
 import {
   addImage,
   arrowDown,
@@ -49,7 +49,6 @@ import {
 } from '../icons';
 
 import { colors } from './colors';
-import { device } from './device';
 import { normalize } from './normalize';
 
 export type IconProps = {
@@ -59,7 +58,7 @@ export type IconProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-export const IconSet = Ionicons;
+export const IconSet = TablerIcon;
 
 const getHitSlops = (size: number) => {
   const hitSlop = (44 - size) / 2;
@@ -106,27 +105,25 @@ export const Icon = {
   About: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
   AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
   ArrowDown: (props: IconProps) => <SvgIcon xml={arrowDown} {...props} />,
-  ArrowDownCircle: (props: IconProps) => <NamedIcon name="arrow-down-circle" {...props} />,
+  ArrowDownCircle: (props: IconProps) => <NamedIcon name="circle-arrow-down-filled" {...props} />,
   ArrowLeft: (props: IconProps) => <SvgIcon xml={arrowLeft} {...props} />,
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
   Calendar: (props: IconProps) => <SvgIcon xml={calendar} {...props} />,
   CalendarToggle: (props: IconProps) => <SvgIcon xml={calendarToggle} {...props} />,
   Camera: (props: IconProps) => <NamedIcon name="camera" {...props} />,
-  Check: (props: IconProps) => <NamedIcon name="checkmark-circle" {...props} />,
+  Check: (props: IconProps) => <NamedIcon name="circle-check-filled" {...props} />,
   Clock: (props: IconProps) => <SvgIcon xml={clock} {...props} />,
   Close: (props: IconProps) => <SvgIcon xml={close} {...props} />,
-  CloseCircle: (props: IconProps) => <NamedIcon name="close-circle" {...props} />,
-  CloseCircleOutline: (props: IconProps) => <NamedIcon name="close-circle-outline" {...props} />,
-  Company: (props: IconProps) => (
-    <NamedIcon name={device.platform === 'ios' ? 'ios-briefcase' : 'md-briefcase'} {...props} />
-  ),
+  CloseCircle: (props: IconProps) => <NamedIcon name="circle-x-filled" {...props} />,
+  CloseCircleOutline: (props: IconProps) => <NamedIcon name="circle-x" {...props} />,
+  Company: (props: IconProps) => <NamedIcon name="briefcase" {...props} />,
   ConstructionSite: (props: IconProps) => <SvgIcon xml={constructionSite} {...props} />,
-  Document: (props: IconProps) => <NamedIcon name="md-document-text-outline" {...props} />,
+  Document: (props: IconProps) => <NamedIcon name="file-description" {...props} />,
   DrawerMenu: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
   EditSetting: (props: IconProps) => <SvgIcon xml={editSetting} {...props} />,
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
-  ExpandMap: (props: IconProps) => <NamedIcon name="expand" {...props} />,
+  ExpandMap: (props: IconProps) => <NamedIcon name="arrows-maximize" {...props} />,
   Home: (props: IconProps) => <SvgIcon xml={home} {...props} />,
   NamedIcon,
   HeartEmpty: (props: IconProps) => <SvgIcon xml={heartEmpty} {...props} />,
@@ -145,41 +142,25 @@ export const Icon = {
   OParlCalendar: (props: IconProps) => <SvgIcon xml={oParlCalendar} {...props} />,
   OParlOrganizations: (props: IconProps) => <SvgIcon xml={oParlOrganizations} {...props} />,
   OParlPeople: (props: IconProps) => <SvgIcon xml={oParlPeople} {...props} />,
-  Pause: (props: IconProps) => <NamedIcon name="pause" {...props} />,
+  Pause: (props: IconProps) => <NamedIcon name="player-pause-filled" {...props} />,
   Pen: (props: IconProps) => <SvgIcon xml={pen} {...props} />,
   Phone: (props: IconProps) => <SvgIcon xml={phone} {...props} />,
-  Play: (props: IconProps) => <NamedIcon name="play" {...props} />,
-  Plus: (props: IconProps) => <NamedIcon name="add" {...props} />,
+  Play: (props: IconProps) => <NamedIcon name="player-play-filled" {...props} />,
+  Plus: (props: IconProps) => <NamedIcon name="plus" {...props} />,
   Profile: (props: IconProps) => <SvgIcon xml={profile} {...props} />,
-  RadioButtonEmpty: (props: IconProps) => (
-    <NamedIcon
-      name={device.platform === 'ios' ? 'ios-radio-button-off' : 'md-radio-button-off'}
-      {...props}
-    />
-  ),
-  RadioButtonFilled: (props: IconProps) => (
-    <NamedIcon
-      name={device.platform === 'ios' ? 'ios-radio-button-on' : 'md-radio-button-on'}
-      {...props}
-    />
-  ),
+  RadioButtonEmpty: (props: IconProps) => <NamedIcon name="circle" {...props} />,
+  RadioButtonFilled: (props: IconProps) =>
+    <NamedIcon name="circle-filled" {...props} />,
   RoutePlanner: (props: IconProps) => <SvgIcon xml={routePlanner} {...props} />,
   Service: (props: IconProps) => <SvgIcon xml={service} {...props} />,
-  Settings: (props: IconProps) => (
-    <NamedIcon name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'} {...props} />
-  ),
+  Settings: (props: IconProps) => <NamedIcon name="settings" {...props} /> ,
   Share: (props: IconProps) => <SvgIcon xml={share} {...props} />,
   Send: (props: IconProps) => <SvgIcon xml={send} {...props} />,
-  Surveys: (props: IconProps) => <NamedIcon name="stats-chart-outline" {...props} />,
+  Surveys: (props: IconProps) => <NamedIcon name="chart-candle" {...props} />,
   Trash: (props: IconProps) => <SvgIcon xml={trash} {...props} />,
   Unvisible: (props: IconProps) => <SvgIcon xml={unvisible} {...props} />,
   Url: (props: IconProps) => <SvgIcon xml={url} {...props} />,
   VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />,
   Visible: (props: IconProps) => <SvgIcon xml={visible} {...props} />,
-  Volunteer: (props: IconProps) => (
-    <NamedIcon
-      name={device.platform === 'ios' ? 'ios-people-circle' : 'md-people-circle'}
-      {...props}
-    />
-  )
+  Volunteer: (props: IconProps) => <NamedIcon name="users" {...props} />
 };
