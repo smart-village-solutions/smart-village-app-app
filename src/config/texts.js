@@ -943,13 +943,13 @@ export const texts = {
     }
   },
   tabBarLabel: {
+    about: 'Mehr',
+    company: 'Unternehmen',
     events: 'Events',
     home: 'Übersicht',
     pointsOfInterest: 'POI',
     service: 'Service',
-    company: 'Unternehmen',
-    volunteer: 'Ehrenamt',
-    about: 'Mehr'
+    volunteer: 'Ehrenamt'
   },
   tour: {
     description: 'Beschreibung',
