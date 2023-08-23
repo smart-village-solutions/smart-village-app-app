@@ -42,25 +42,6 @@ const serviceTabConfig: TabConfig = {
   }
 };
 
-const companyTabConfig: TabConfig = {
-  stackConfig: defaultStackConfig({
-    initialRouteName: ScreenName.Company,
-    isDrawer: false
-  }),
-  tabOptions: {
-    tabBarLabel: texts.tabBarLabel.company,
-    tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon
-        color={color}
-        Icon={Icon.Company}
-        landscapeStyle={{ marginRight: -normalize(4), marginTop: 0 }}
-        size={normalize(26)}
-        style={{ marginTop: normalize(3) }}
-      />
-    )
-  }
-};
-
 const aboutTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.About,
@@ -85,5 +66,5 @@ export const tabNavigatorConfig: TabNavigatorConfig = {
   inactiveTintColor: colors.primary,
   activeBackgroundColor: colors.surface,
   inactiveBackgroundColor: colors.surface,
-  tabConfigs: [homeTabConfig, serviceTabConfig, companyTabConfig, aboutTabConfig]
+  tabConfigs: [homeTabConfig, serviceTabConfig, aboutTabConfig]
 };
