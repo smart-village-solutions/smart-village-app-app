@@ -1,9 +1,9 @@
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
-import { Query, useQuery } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
@@ -142,7 +142,6 @@ export const IndexScreen = ({ navigation, route }) => {
     route.params?.filterByDailyEvents ?? false
   );
   const { state: excludeDataProviderIds } = usePermanentFilter();
-  const isFocused = useIsFocused();
 
   const query = route.params?.query ?? '';
 
@@ -183,6 +182,16 @@ export const IndexScreen = ({ navigation, route }) => {
       ]);
     },
     [queryVariables]
+  );
+
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+
+  const { data, loading, fetchMore, refetch } = useQuery(
+    getQuery(query, { showNewsFilter, showEventsFilter }),
+    {
+      variables: queryVariables,
+      fetchPolicy
+    }
   );
 
   const { data: eventRecordsAddressesData, loading: eventRecordsAddressesLoading } = useQuery(
@@ -371,9 +380,70 @@ export const IndexScreen = ({ navigation, route }) => {
     [isConnected, setRefreshing]
   );
 
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        if (
+          query === QUERY_TYPES.EVENT_RECORDS &&
+          (!initialEventRecordsItemsFetch || !showCalendar)
+        ) {
+          await refetch();
+        }
+      };
+
+      fetchData();
+    }, [refetch])
+  );
+
   if (!query) return null;
 
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  if ((!data && loading) || loadingPosition || isLoadingVolunteerEvents) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
+
+  const fetchMoreData = () =>
+    fetchMore({
+      query: getFetchMoreQuery(query),
+      variables: {
+        ...queryVariables,
+        offset: data?.[query]?.length
+      },
+      updateQuery: (prevResult, { fetchMoreResult }) => {
+        if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
+
+        return {
+          ...prevResult,
+          [query]: [...prevResult[query], ...fetchMoreResult[query]]
+        };
+      }
+    });
+
+  const initialNewsItemsFetch =
+    query === QUERY_TYPES.NEWS_ITEMS &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
+
+  const initialEventRecordsItemsFetch =
+    query === QUERY_TYPES.EVENT_RECORDS &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'categoryId') &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'location') &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch') &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'dateRange') &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'refetchDate');
+
+  // apply additional data if volunteer events should be presented and
+  // no category selection is made, because the category has nothing to do with
+  // volunteer data
+  const additionalData =
+    isCalendarWithVolunteerEvents &&
+    !hasFilterSelection(query, false) &&
+    !hasFilterSelection(query, true)
+      ? dataVolunteerEvents
+      : undefined;
 
   useLayoutEffect(() => {
     if (
@@ -429,228 +499,155 @@ export const IndexScreen = ({ navigation, route }) => {
           }}
         />
       ) : (
-        <Query
-          query={getQuery(query, { showNewsFilter, showEventsFilter })}
-          variables={queryVariables}
-          fetchPolicy={fetchPolicy}
-        >
-          {({ data, loading, fetchMore, refetch }) => {
-            if ((!data && loading) || loadingPosition || isLoadingVolunteerEvents) {
-              return (
+        <>
+          {calendarToggle && isCalendar && !hasDailyFilterSelection && (
+            <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+          )}
+          <ListComponent
+            ListHeaderComponent={
+              <>
+                {query === QUERY_TYPES.EVENT_RECORDS && !!eventListIntro && (
+                  <>
+                    {!!eventListIntro.introText && (
+                      <Wrapper>
+                        <RegularText small>{eventListIntro.introText}</RegularText>
+                      </Wrapper>
+                    )}
+
+                    {!!eventListIntro.url && !!eventListIntro.buttonTitle && (
+                      <Wrapper>
+                        <Button
+                          onPress={() => openLink(eventListIntro.url, openWebScreen)}
+                          title={eventListIntro.buttonTitle}
+                        />
+                      </Wrapper>
+                    )}
+                    <Divider />
+                  </>
+                )}
+                {!!showFilter && (
+                  <>
+                    <DropdownHeader
+                      {...{
+                        data:
+                          (initialNewsItemsFetch || initialEventRecordsItemsFetch) && loading
+                            ? {}
+                            : data,
+                        query,
+                        queryVariables,
+                        updateListData: updateListDataByDropdown
+                      }}
+                    />
+
+                    {query === QUERY_TYPES.EVENT_RECORDS && !!eventRecordsAddressesData && (
+                      <DropdownHeader
+                        {...{
+                          data:
+                            (initialEventRecordsItemsFetch && loading) ||
+                            eventRecordsAddressesLoading
+                              ? {}
+                              : eventRecordsAddressesData,
+                          isLocationFilter: true,
+                          query,
+                          queryVariables,
+                          updateListData: updateListDataByDropdown
+                        }}
+                      />
+                    )}
+
+                    {query === QUERY_TYPES.EVENT_RECORDS && data?.categories?.length && (
+                      <View>
+                        <OptionToggle
+                          label={texts.eventRecord.filterByDailyEvents}
+                          onToggle={updateListDataByDailySwitch}
+                          value={filterByDailyEvents}
+                        />
+                      </View>
+                    )}
+                  </>
+                )}
+                {!!categories?.length && (
+                  <CategoryList
+                    navigation={navigation}
+                    categoryTitles={categoryTitles}
+                    data={categories}
+                    horizontal={false}
+                    hasSectionHeader={false}
+                  />
+                )}
+                {query === QUERY_TYPES.CATEGORIES && !!categoryListIntroText && (
+                  <Wrapper>
+                    <RegularText>{categoryListIntroText}</RegularText>
+                  </Wrapper>
+                )}
+                {!!htmlContent && (
+                  <Wrapper>
+                    <HtmlView html={htmlContent} />
+                  </Wrapper>
+                )}
+              </>
+            }
+            ListEmptyComponent={
+              loading ? (
                 <LoadingContainer>
                   <ActivityIndicator color={colors.refreshControl} />
                 </LoadingContainer>
-              );
-            }
-
-            const fetchMoreData = () =>
-              fetchMore({
-                query: getFetchMoreQuery(query),
-                variables: {
-                  ...queryVariables,
-                  offset: data?.[query]?.length
-                },
-                updateQuery: (prevResult, { fetchMoreResult }) => {
-                  if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
-
-                  return {
-                    ...prevResult,
-                    [query]: [...prevResult[query], ...fetchMoreResult[query]]
-                  };
-                }
-              });
-
-            // hack to force the query to refetch for the data provider filter when the user
-            // navigates from one index to another and also for rendering the correct data
-            // on first index screen load
-            const initialNewsItemsFetch =
-              query === QUERY_TYPES.NEWS_ITEMS &&
-              !Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') &&
-              !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
-
-            const initialEventRecordsItemsFetch =
-              query === QUERY_TYPES.EVENT_RECORDS &&
-              !Object.prototype.hasOwnProperty.call(queryVariables, 'categoryId') &&
-              !Object.prototype.hasOwnProperty.call(queryVariables, 'location') &&
-              !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch') &&
-              !Object.prototype.hasOwnProperty.call(queryVariables, 'dateRange') &&
-              !Object.prototype.hasOwnProperty.call(queryVariables, 'refetchDate');
-
-            // apply additional data if volunteer events should be presented and
-            // no category selection is made, because the category has nothing to do with
-            // volunteer data
-            const additionalData =
-              isCalendarWithVolunteerEvents &&
-              !hasFilterSelection(query, false) &&
-              !hasFilterSelection(query, true)
-                ? dataVolunteerEvents
-                : undefined;
-
-            // we need to refetch in some cases to request and show the correct dates for recurring
-            // events
-            isFocused &&
-              query === QUERY_TYPES.EVENT_RECORDS &&
-              (!initialEventRecordsItemsFetch || !showCalendar) &&
-              refetch();
-
-            return (
-              <>
-                {calendarToggle && isCalendar && !hasDailyFilterSelection && (
-                  <CalendarListToggle
-                    showCalendar={showCalendar}
-                    setShowCalendar={setShowCalendar}
-                  />
-                )}
-                <ListComponent
-                  ListHeaderComponent={
-                    <>
-                      {query === QUERY_TYPES.EVENT_RECORDS && !!eventListIntro && (
-                        <>
-                          {!!eventListIntro.introText && (
-                            <Wrapper>
-                              <RegularText small>{eventListIntro.introText}</RegularText>
-                            </Wrapper>
-                          )}
-
-                          {!!eventListIntro.url && !!eventListIntro.buttonTitle && (
-                            <Wrapper>
-                              <Button
-                                onPress={() => openLink(eventListIntro.url, openWebScreen)}
-                                title={eventListIntro.buttonTitle}
-                              />
-                            </Wrapper>
-                          )}
-                          <Divider />
-                        </>
-                      )}
-                      {!!showFilter && (
-                        <>
-                          <DropdownHeader
-                            {...{
-                              data:
-                                (initialNewsItemsFetch || initialEventRecordsItemsFetch) && loading
-                                  ? {}
-                                  : data,
-                              query,
-                              queryVariables,
-                              updateListData: updateListDataByDropdown
-                            }}
-                          />
-
-                          {query === QUERY_TYPES.EVENT_RECORDS && !!eventRecordsAddressesData && (
-                            <DropdownHeader
-                              {...{
-                                data:
-                                  (initialEventRecordsItemsFetch && loading) ||
-                                  eventRecordsAddressesLoading
-                                    ? {}
-                                    : eventRecordsAddressesData,
-                                isLocationFilter: true,
-                                query,
-                                queryVariables,
-                                updateListData: updateListDataByDropdown
-                              }}
-                            />
-                          )}
-
-                          {query === QUERY_TYPES.EVENT_RECORDS && data?.categories?.length && (
-                            <View>
-                              <OptionToggle
-                                label={texts.eventRecord.filterByDailyEvents}
-                                onToggle={updateListDataByDailySwitch}
-                                value={filterByDailyEvents}
-                              />
-                            </View>
-                          )}
-                        </>
-                      )}
-                      {!!categories?.length && (
-                        <CategoryList
-                          navigation={navigation}
-                          categoryTitles={categoryTitles}
-                          data={categories}
-                          horizontal={false}
-                          hasSectionHeader={false}
-                        />
-                      )}
-                      {query === QUERY_TYPES.CATEGORIES && !!categoryListIntroText && (
-                        <Wrapper>
-                          <RegularText>{categoryListIntroText}</RegularText>
-                        </Wrapper>
-                      )}
-                      {!!htmlContent && (
-                        <Wrapper>
-                          <HtmlView html={htmlContent} />
-                        </Wrapper>
-                      )}
-                    </>
-                  }
-                  ListEmptyComponent={
-                    loading ? (
-                      <LoadingContainer>
-                        <ActivityIndicator color={colors.refreshControl} />
-                      </LoadingContainer>
-                    ) : showCalendar ? (
-                      <Calendar
-                        query={query}
-                        queryVariables={queryVariables}
-                        calendarData={buildListItems(data, additionalData)}
-                        isLoading={loading}
-                        navigation={navigation}
-                      />
-                    ) : (
-                      <EmptyMessage
-                        title={categories?.length ? texts.empty.categoryList : texts.empty.list}
-                        showIcon={!categories?.length}
-                      />
-                    )
-                  }
-                  ListFooterComponent={
-                    <>
-                      {query === QUERY_TYPES.CATEGORIES && !!categoryListFooter && (
-                        <>
-                          {!!categoryListFooter.footerText && (
-                            <Wrapper>
-                              <RegularText small>{categoryListFooter.footerText}</RegularText>
-                            </Wrapper>
-                          )}
-                          {!!categoryListFooter.url && !!categoryListFooter.buttonTitle && (
-                            <Wrapper>
-                              <Button
-                                onPress={() => openLink(categoryListFooter.url, openWebScreen)}
-                                title={categoryListFooter.buttonTitle}
-                              />
-                            </Wrapper>
-                          )}
-                        </>
-                      )}
-                    </>
-                  }
-                  navigation={navigation}
-                  data={
-                    loading || (isCalendar && showCalendar)
-                      ? []
-                      : buildListItems(data, additionalData)
-                  }
-                  horizontal={false}
-                  sectionByDate={isCalendar ? !showCalendar : true}
+              ) : showCalendar ? (
+                <Calendar
                   query={query}
                   queryVariables={queryVariables}
-                  fetchMoreData={isConnected ? fetchMoreData : null}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={refreshing}
-                      onRefresh={() => refresh(refetch)}
-                      colors={[colors.refreshControl]}
-                      tintColor={colors.refreshControl}
-                    />
-                  }
-                  showBackToTop
+                  calendarData={buildListItems(data, additionalData)}
+                  isLoading={loading}
+                  navigation={navigation}
                 />
+              ) : (
+                <EmptyMessage
+                  title={categories?.length ? texts.empty.categoryList : texts.empty.list}
+                  showIcon={!categories?.length}
+                />
+              )
+            }
+            ListFooterComponent={
+              <>
+                {query === QUERY_TYPES.CATEGORIES && !!categoryListFooter && (
+                  <>
+                    {!!categoryListFooter.footerText && (
+                      <Wrapper>
+                        <RegularText small>{categoryListFooter.footerText}</RegularText>
+                      </Wrapper>
+                    )}
+                    {!!categoryListFooter.url && !!categoryListFooter.buttonTitle && (
+                      <Wrapper>
+                        <Button
+                          onPress={() => openLink(categoryListFooter.url, openWebScreen)}
+                          title={categoryListFooter.buttonTitle}
+                        />
+                      </Wrapper>
+                    )}
+                  </>
+                )}
               </>
-            );
-          }}
-        </Query>
+            }
+            navigation={navigation}
+            data={
+              loading || (isCalendar && showCalendar) ? [] : buildListItems(data, additionalData)
+            }
+            horizontal={false}
+            sectionByDate={isCalendar ? !showCalendar : true}
+            query={query}
+            queryVariables={queryVariables}
+            fetchMoreData={isConnected ? fetchMoreData : null}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => refresh(refetch)}
+                colors={[colors.accent]}
+                tintColor={colors.accent}
+              />
+            }
+            showBackToTop
+          />
+        </>
       )}
       {query === QUERY_TYPES.POINTS_OF_INTEREST &&
         switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON &&
