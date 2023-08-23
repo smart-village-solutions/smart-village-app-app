@@ -789,6 +789,7 @@ export const texts = {
     home: appJson.expo.name,
     mapView: 'Kartenansicht',
     routePlanner: 'Routenplaner bbnavi',
+    pointsOfInterest: 'Orte und Touren',
     service: appJson.expo.name,
     settings: 'Einstellungen',
     survey: 'Umfrage',
@@ -942,6 +943,7 @@ export const texts = {
   },
   tabBarLabel: {
     home: 'Übersicht',
+    pointsOfInterest: 'POI',
     service: 'Service',
     company: 'Unternehmen',
     volunteer: 'Ehrenamt',

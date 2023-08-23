@@ -42,6 +42,18 @@ const serviceTabConfig: TabConfig = {
   }
 };
 
+const pointOfInterestTabConfig: TabConfig = {
+  stackConfig: defaultStackConfig({
+    initialRouteName: ScreenName.Index,
+    isDrawer: false
+  }),
+  tabOptions: {
+    tabBarLabel: texts.tabBarLabel.pointsOfInterest,
+    tabBarIcon: ({ color }: TabBarIconProps) => (
+      <OrientationAwareIcon color={color} Icon={Icon.Location} size={normalize(30)} />
+    )
+  }
+};
 const aboutTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.About,
@@ -66,5 +78,5 @@ export const tabNavigatorConfig: TabNavigatorConfig = {
   inactiveTintColor: colors.primary,
   activeBackgroundColor: colors.surface,
   inactiveBackgroundColor: colors.surface,
-  tabConfigs: [homeTabConfig, serviceTabConfig, aboutTabConfig]
+  tabConfigs: [homeTabConfig, serviceTabConfig, pointOfInterestTabConfig, aboutTabConfig]
 };
