@@ -785,6 +785,7 @@ export const texts = {
       home: 'Consul'
     },
     encounterHome: 'Mitfahrbank',
+    events: 'Veranstaltungen',
     feedback: 'Feedback',
     home: appJson.expo.name,
     mapView: 'Kartenansicht',
@@ -942,6 +943,7 @@ export const texts = {
     }
   },
   tabBarLabel: {
+    events: 'Events',
     home: 'Übersicht',
     pointsOfInterest: 'POI',
     service: 'Service',

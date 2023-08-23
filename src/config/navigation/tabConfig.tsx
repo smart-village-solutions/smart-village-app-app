@@ -54,6 +54,20 @@ const pointOfInterestTabConfig: TabConfig = {
     )
   }
 };
+
+const eventsTabConfig: TabConfig = {
+  stackConfig: defaultStackConfig({
+    initialRouteName: ScreenName.Events,
+    isDrawer: false
+  }),
+  tabOptions: {
+    tabBarLabel: texts.tabBarLabel.events,
+    tabBarIcon: ({ color }: TabBarIconProps) => (
+      <OrientationAwareIcon color={color} Icon={Icon.Calendar} size={normalize(24)} />
+    )
+  }
+};
+
 const aboutTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
     initialRouteName: ScreenName.About,
@@ -78,5 +92,11 @@ export const tabNavigatorConfig: TabNavigatorConfig = {
   inactiveTintColor: colors.primary,
   activeBackgroundColor: colors.surface,
   inactiveBackgroundColor: colors.surface,
-  tabConfigs: [homeTabConfig, serviceTabConfig, pointOfInterestTabConfig, aboutTabConfig]
+  tabConfigs: [
+    homeTabConfig,
+    serviceTabConfig,
+    pointOfInterestTabConfig,
+    eventsTabConfig,
+    aboutTabConfig
+  ]
 };
