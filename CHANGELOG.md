@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.2.6]
+
+This update enhances functionality with new features and resolves key bugs for a smoother user experience
+
+### Added
+
+- enabled subcategory listing on the index screen
+- added a toggle for "Filter by Opening Times"
+- introduced server-controlled query variables for events. Default limit is 15
+- added a `useYear` flag for opening times, replacing the old 1970-hack
+
+### Changed
+
+- renamed `isVolunteer` prop to `isMultiImages`
+- moved `errorTextGenerator` to `dataErrorMessageGenerator`
+- added `IMAGE_SELECTOR_ERROR_TYPES` to `consts.js`
+- added error handling and messages for image selection
+
+### Fixed
+
+- fixed an issue where the "Open Only" switcher was being duplicated
+- fixed app crash on consul proposal screen by updating `expo-image-picker`
+- fixed issues with multiline inputs overlapping
+
 ## [v3.2.5]
 
 This update fixes some optimisation issues in the app and adds new features
