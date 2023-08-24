@@ -31,11 +31,12 @@ export class CategoryList extends React.PureComponent {
     const {
       categoryTitles = {},
       data,
+      ListFooterComponent,
+      ListHeaderComponent,
       navigation,
       noSubtitle,
-      refreshControl,
-      ListFooterComponent,
-      ListHeaderComponent
+      queryVariables,
+      refreshControl
     } = this.props;
     const {
       categoryTitlesPointsOfInterest = texts.categoryTitles.pointsOfInterest,
@@ -58,12 +59,16 @@ export class CategoryList extends React.PureComponent {
         title: categoryTitlesPointsOfInterest,
         data: _filter(
           data,
-          (category) => category.pointsOfInterestTreeCount > 0 && !category.parent
+          (category) =>
+            category.pointsOfInterestTreeCount > 0 && (!category.parent || queryVariables.ids)
         )
       },
       {
         title: categoryTitlesTours,
-        data: _filter(data, (category) => category.toursTreeCount > 0 && !category.parent)
+        data: _filter(
+          data,
+          (category) => category.toursTreeCount > 0 && (!category.parent || queryVariables.ids)
+        )
       }
     ];
 
@@ -92,14 +97,15 @@ export class CategoryList extends React.PureComponent {
 }
 
 CategoryList.propTypes = {
-  navigation: PropTypes.object.isRequired,
   categoryTitles: PropTypes.object,
   data: PropTypes.array,
-  noSubtitle: PropTypes.bool,
-  refreshControl: PropTypes.object,
   hasSectionHeader: PropTypes.bool,
   ListFooterComponent: PropTypes.object,
-  ListHeaderComponent: PropTypes.object
+  ListHeaderComponent: PropTypes.object,
+  navigation: PropTypes.object.isRequired,
+  noSubtitle: PropTypes.bool,
+  queryVariables: PropTypes.object,
+  refreshControl: PropTypes.object
 };
 
 CategoryList.defaultProps = {
