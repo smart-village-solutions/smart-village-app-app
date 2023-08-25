@@ -34,6 +34,7 @@ export * from './DataProviderButton';
 export * from './DateTimePicker';
 export * from './DefaultKeyboardAvoidingView';
 export * from './DiagonalGradient';
+export * from './Disturber';
 export * from './DrawerHeader';
 export * from './DropdownHeader';
 export * from './DropdownSelect';

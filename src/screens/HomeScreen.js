@@ -7,6 +7,7 @@ import { auth } from '../auth';
 import {
   About,
   ConnectedImagesCarousel,
+  Disturber,
   HomeSection,
   HomeService,
   NewsSectionPlaceholder,
@@ -155,6 +156,7 @@ export const HomeScreen = ({ navigation, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
   const {
+    disturber = {},
     showNews = true,
     showPointsOfInterestAndTours = true,
     showEvents = true,
@@ -173,6 +175,7 @@ export const HomeScreen = ({ navigation, route }) => {
     limitNews = 15,
     limitPointsOfInterestAndTours = 15
   } = sections;
+  const { show: showDisturber = false, content: disturberContent = 'Disturber' } = disturber;
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
   const { state: excludeDataProviderIds } = usePermanentFilter();
@@ -276,6 +279,8 @@ export const HomeScreen = ({ navigation, route }) => {
             />
 
             <Widgets widgetConfigs={widgetConfigs} />
+
+            {showDisturber && <Disturber navigation={navigation} name={disturberContent} />}
           </>
         }
         ListFooterComponent={
