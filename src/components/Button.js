@@ -9,7 +9,7 @@ import { OrientationContext } from '../OrientationProvider';
 import { DiagonalGradient } from './DiagonalGradient';
 
 /* eslint-disable complexity */
-export const Button = ({ disabled, invert, notFullWidth, onPress, title }) => {
+export const Button = ({ containerStyle, disabled, invert, notFullWidth, onPress, title }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeStyle =
     notFullWidth ||
@@ -55,7 +55,11 @@ export const Button = ({ disabled, invert, notFullWidth, onPress, title }) => {
         invert && styles.buttonStyleInvert,
         isDelete && styles.rejectStyle
       ]}
-      containerStyle={[styles.containerStyle, needLandscapeStyle && styles.containerStyleLandscape]}
+      containerStyle={[
+        styles.containerStyle,
+        needLandscapeStyle && styles.containerStyleLandscape,
+        containerStyle
+      ]}
       ViewComponent={invert || isDelete || disabled ? undefined : DiagonalGradient}
       useForeground={!invert}
       accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
@@ -101,6 +105,7 @@ const styles = StyleSheet.create({
 });
 
 Button.propTypes = {
+  containerStyle: PropTypes.object,
   disabled: PropTypes.bool,
   invert: PropTypes.bool,
   notFullWidth: PropTypes.bool,
