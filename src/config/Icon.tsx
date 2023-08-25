@@ -2,7 +2,7 @@ import React, { ComponentProps } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 
-import TablerIcon from '../components/tabler-icons';
+import Tabler from '../components/tabler-icons';
 import {
   addImage,
   arrowDown,
@@ -58,7 +58,7 @@ export type IconProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-export const IconSet = TablerIcon;
+export const IconSet = Tabler;
 
 const getHitSlops = (size: number) => {
   const hitSlop = (44 - size) / 2;
