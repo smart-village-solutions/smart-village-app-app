@@ -156,10 +156,10 @@ export const NoticeboardMessageForm = ({
 
         <Controller
           name="termsOfService"
-          render={({ onChange, value }) => (
+          render={({ field }) => (
             <Checkbox
-              checked={!!value}
-              onPress={() => onChange(!value)}
+              checked={!!field.value}
+              onPress={() => field.onChange(!field.value)}
               title={`${texts.noticeboard.inputCheckbox} *`}
               checkedColor={colors.accent}
               checkedIcon="check-square-o"

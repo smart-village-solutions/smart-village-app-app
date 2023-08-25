@@ -139,7 +139,7 @@ export const DefectReportCreateForm = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="categoryName"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DropdownInput
               {...{
                 errors,
@@ -152,7 +152,7 @@ export const DefectReportCreateForm = ({
                 label: `${texts.defectReport.categoryName} *`,
                 placeholder: texts.defectReport.categoryName,
                 control
-              }}
+              }}            
             />
           )}
           control={control}
@@ -257,10 +257,10 @@ export const DefectReportCreateForm = ({
 
         <Controller
           name="termsOfService"
-          render={({ onChange, value }) => (
+          render={({ field }) => (
             <Checkbox
-              checked={!!value}
-              onPress={() => onChange(!value)}
+              checked={!!field.value}
+              onPress={() => field.onChange(!field.value)}
               title={`${texts.defectReport.inputCheckbox} *`}
               checkedColor={colors.accent}
               checkedIcon="check-square-o"

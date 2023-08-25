@@ -155,13 +155,13 @@ export const NoticeboardCreateForm = ({
         <Controller
           name="noticeboardType"
           rules={{ required: texts.noticeboard.alerts.noticeboardType }}
-          render={({ onChange, value }) => (
+          render={({ field }) => (
             <>
               {NOTICEBOARD_TYPE_OPTIONS.map((noticeboardItem) => (
                 <Checkbox
                   key={noticeboardItem.title}
-                  checked={value === noticeboardItem.value}
-                  onPress={() => onChange(noticeboardItem.value)}
+                  checked={field.value === noticeboardItem.value}
+                  onPress={() => field.onChange(noticeboardItem.value)}
                   title={noticeboardItem.title}
                   checkedColor={colors.accent}
                   uncheckedColor={colors.darkText}
@@ -219,7 +219,7 @@ export const NoticeboardCreateForm = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="dateEnd"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
                 mode: 'date',
@@ -244,10 +244,10 @@ export const NoticeboardCreateForm = ({
 
         <Controller
           name="termsOfService"
-          render={({ onChange, value }) => (
+          render={({ field }) => (
             <Checkbox
-              checked={!!value}
-              onPress={() => onChange(!value)}
+              checked={!!field.value}
+              onPress={() => field.onChange(!field.value)}
               title={`${texts.noticeboard.inputCheckbox} *`}
               checkedColor={colors.accent}
               checkedIcon="check-square-o"
