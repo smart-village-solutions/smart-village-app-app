@@ -7,36 +7,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:604205394775:android:a50968776516a441c52c12",
-        "android_client_info": {
-          "package_name": "de.hb.meinquartier.smartvillage.app"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "604205394775-ub35m45th3k8oblk22b2cfpp7jqtvda6.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyC-_5RZ5BmH2gzNEcRtrUZH_2Q2XXRI5Hc"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "604205394775-ub35m45th3k8oblk22b2cfpp7jqtvda6.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:604205394775:android:16c9631e8139018fc52c12",
+        "mobilesdk_app_id": "1:604205394775:android:932bb931ced6cc21c52c12",
         "android_client_info": {
           "package_name": "de.test.hb.meinquartier.smartvillage.app"
         }
