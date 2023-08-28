@@ -1,5 +1,5 @@
-import React, { useContext, useRef } from 'react';
-import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { FlatList, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import MapView, { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 import { SvgXml } from 'react-native-svg';
 
@@ -7,6 +7,7 @@ import { colors, device, Icon, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
+import { POIMapView } from '../POIMapView';
 
 type Props = {
   geometryTourData?: LatLng[];
@@ -41,12 +42,16 @@ export const Map = ({
   const { settings = {} } = globalSettings;
   const { zoomLevelForMaps = {}, locationService = {} } = settings;
 
+  // state to keep track of the currently active marker
+  const [activeMarker, setActiveMarker] = useState(null);
+
   const showsUserLocation = otherProps.showsUserLocation ?? !!locationService;
   const zoom = isMultipleMarkersMap
     ? zoomLevelForMaps.multipleMarkers
     : zoomLevelForMaps.singleMarker;
 
   const refForMapView = useRef<MapView>(null);
+  const flatListRef = useRef<FlatList>(null);
   // LATITUDE_DELTA handles the zoom, see: https://github.com/react-native-maps/react-native-maps/issues/2129#issuecomment-457056572
   const LATITUDE_DELTA = zoom || 0.0922;
   // example for longitude delta: https://github.com/react-native-maps/react-native-maps/blob/0.30.x/example/examples/DisplayLatLng.js#L18
@@ -73,6 +78,37 @@ export const Map = ({
       longitude: locations[0].position.longitude
     };
   }
+
+  // ref function to handle changes in the viewable items of the FlatList
+  // it sets the activeMarker state to the ID of the first viewable item
+  const onViewableItemsChanged = useRef(({ viewableItems }) => {
+    const firstViewableItem = viewableItems[0]?.item;
+    if (firstViewableItem) {
+      setActiveMarker(firstViewableItem.id);
+    }
+  }).current;
+
+  // useEffect to handle changes in activeMarker
+  // it animates the map to focus on the coordinates of the active marker
+  useEffect(() => {
+    if (activeMarker && refForMapView.current) {
+      const marker = locations?.find((loc) => loc.id === activeMarker);
+
+      if (marker) {
+        const { latitude, longitude } = marker.position;
+
+        refForMapView.current.animateToRegion(
+          {
+            latitude,
+            longitude,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA
+          },
+          500
+        );
+      }
+    }
+  }, [activeMarker]);
 
   return (
     <View style={[styles.container, style]}>
@@ -120,6 +156,14 @@ export const Map = ({
             onPress={() => {
               if (onMarkerPress) {
                 onMarkerPress(marker.id);
+
+                // find the index of the clicked marker in the locations array
+                const index = locations?.findIndex((loc) => loc.id === marker.id);
+
+                // if the index is found and is valid, scroll the FlatList to that index
+                if (index && index !== -1) {
+                  flatListRef.current?.scrollToIndex({ index, animated: true });
+                }
               }
             }}
           >
@@ -127,11 +171,36 @@ export const Map = ({
           </Marker>
         ))}
       </MapView>
+
       {isMaximizeButtonVisible && (
         <TouchableOpacity style={styles.maximizeMapButton} onPress={onMaximizeButtonPress}>
           <Icon.ExpandMap size={normalize(18)} />
         </TouchableOpacity>
       )}
+
+      <FlatList
+        data={locations}
+        getItemLayout={(data, index) => ({
+          length: device.width,
+          offset: device.width * index,
+          index
+        })}
+        horizontal
+        keyExtractor={(item) => item.id}
+        onScrollToIndexFailed={(info) => {
+          const wait = new Promise((resolve) => setTimeout(resolve, 500));
+          wait.then(() => {
+            flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
+          });
+        }}
+        onViewableItemsChanged={onViewableItemsChanged}
+        pagingEnabled
+        ref={flatListRef}
+        renderItem={({ item }) => <POIMapView item={item} />}
+        showsHorizontalScrollIndicator={false}
+        snapToAlignment="center"
+        style={styles.poiList}
+      />
     </View>
   );
 };
@@ -155,6 +224,10 @@ const styles = StyleSheet.create({
     right: normalize(15),
     width: normalize(48),
     zIndex: 1
+  },
+  poiList: {
+    position: 'absolute',
+    bottom: 0
   }
 });
 

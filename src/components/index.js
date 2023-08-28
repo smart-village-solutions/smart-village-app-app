@@ -68,6 +68,7 @@ export * from './NewsSectionPlaceholder';
 export * from './Offer';
 export * from './OptionToggle';
 export * from './OrientationAwareIcon';
+export * from './POIMapView';
 export * from './PreviewSection';
 export * from './Radiobutton';
 export * from './Results';
