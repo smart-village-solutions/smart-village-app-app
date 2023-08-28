@@ -3,19 +3,20 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { LocationObject } from 'expo-location';
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, ScrollView, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, View, ViewStyle } from 'react-native';
 
-import { colors, texts } from '../../config';
+import { NetworkContext } from '../../NetworkProvider';
+import { SettingsContext } from '../../SettingsProvider';
+import { colors, device, normalize, texts } from '../../config';
 import { graphqlFetchPolicy, isOpen } from '../../helpers';
 import { location, locationIconAnchor } from '../../icons';
-import { NetworkContext } from '../../NetworkProvider';
-import { getQuery, QUERY_TYPES } from '../../queries';
+import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
-import { PointOfInterest } from '../screens/PointOfInterest';
 import { RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
+import { PointOfInterest } from '../screens/PointOfInterest';
 
 import { Map } from './Map';
 
@@ -49,10 +50,10 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
           icon: location(colors.primary),
           iconAnchor: locationIconAnchor,
           id: item.id,
-          position: {
-            latitude,
-            longitude
-          }
+          images: item.mediaContents,
+          position: { latitude, longitude },
+          title: item.name,
+          details: item
         };
       })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -69,6 +70,8 @@ export const LocationOverview = ({
 }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
+  const { globalSettings } = useContext(SettingsContext);
+  const { navigation: navigationType = 'drawer' } = globalSettings;
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime: undefined });
 
@@ -114,14 +117,16 @@ export const LocationOverview = ({
 
   return (
     <SafeAreaViewFlex>
-      <ScrollView>
+      <ScrollView scrollEnabled={!showPOIsFullScreenMap}>
         <Map
-          locations={mapMarkers}
-          onMarkerPress={setSelectedPointOfInterest}
           isMultipleMarkersMap
+          locations={mapMarkers}
+          mapStyle={showPOIsFullScreenMap && stylesWithProps({ navigationType }).mapHeight}
+          onMarkerPress={setSelectedPointOfInterest}
+          showPOIsFullScreenMap={showPOIsFullScreenMap}
         />
         <View>
-          {!selectedPointOfInterest && (
+          {!selectedPointOfInterest && !showPOIsFullScreenMap && (
             <Wrapper>
               <RegularText center>{texts.locationOverview.noSelection}</RegularText>
             </Wrapper>
@@ -144,4 +149,15 @@ export const LocationOverview = ({
       </ScrollView>
     </SafeAreaViewFlex>
   );
+};
+
+const stylesWithProps = ({ navigationType }: { navigationType: string }) => {
+  return StyleSheet.create({
+    mapHeight: {
+      height:
+        navigationType === 'drawer'
+          ? device.height - normalize(120)
+          : device.height - normalize(160)
+    }
+  });
 };
