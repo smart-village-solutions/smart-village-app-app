@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, Icon, normalize } from '../config';
 
-export const HeaderLeft = ({ onPress }: StackHeaderLeftButtonProps) =>
+export const HeaderLeft = ({ onPress, backImage }: StackHeaderLeftButtonProps) =>
   onPress ? (
     <View>
       <TouchableOpacity
@@ -12,7 +12,7 @@ export const HeaderLeft = ({ onPress }: StackHeaderLeftButtonProps) =>
         accessibilityLabel={consts.a11yLabel.backIcon}
         accessibilityHint={consts.a11yLabel.backIconHint}
       >
-        <Icon.ArrowLeft color={colors.lightestText} style={styles.icon} />
+        {backImage ? backImage : <Icon.ArrowLeft color={colors.lightestText} style={styles.icon} />}
       </TouchableOpacity>
     </View>
   ) : null;
