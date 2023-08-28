@@ -29,6 +29,7 @@ type Props = {
     dataProvider?: string;
   };
   route: RouteProp<any, never>;
+  showPOIsFullScreenMap?: boolean;
 };
 
 // FIXME: with our current setup the data that we receive from a query is not typed
@@ -63,7 +64,8 @@ export const LocationOverview = ({
   filterByOpeningTimes,
   navigation,
   queryVariables,
-  route
+  route,
+  showPOIsFullScreenMap
 }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();

@@ -2,7 +2,7 @@ import { useIsFocused } from '@react-navigation/native';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { Query, useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
@@ -15,6 +15,7 @@ import {
   CategoryList,
   DropdownHeader,
   EmptyMessage,
+  HeaderLeft,
   IndexFilterWrapperAndList,
   IndexMapSwitch,
   ListComponent,
@@ -25,7 +26,7 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../components';
-import { colors, consts, texts } from '../config';
+import { colors, consts, Icon, normalize, texts } from '../config';
 import {
   graphqlFetchPolicy,
   isOpen,
@@ -108,6 +109,7 @@ export const IndexScreen = ({ navigation, route }) => {
   const {
     calendarToggle = false,
     showFilterByOpeningTimes = true,
+    showPOIsFullScreenMap = false,
     switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER
   } = settings;
   const {
@@ -367,6 +369,40 @@ export const IndexScreen = ({ navigation, route }) => {
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
+  useLayoutEffect(() => {
+    if (query === QUERY_TYPES.POINTS_OF_INTEREST && showMap) {
+      navigation.setOptions({
+        headerLeft: () => (
+          <HeaderLeft
+            onPress={() => {
+              const selectedFilter = filterType.find((entry) => entry.selected);
+              const updatedFilter = filterType.map((entry) => {
+                if (entry.id !== selectedFilter.id) {
+                  entry.selected = true;
+                } else {
+                  entry.selected = false;
+                }
+                return entry;
+              });
+
+              setFilterType(updatedFilter);
+            }}
+            backImage={
+              <Icon.Close
+                color={colors.lightestText}
+                style={{ paddingHorizontal: normalize(14) }}
+              />
+            }
+          />
+        )
+      });
+    } else {
+      navigation.setOptions({
+        headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />
+      });
+    }
+  }, [query, showMap]);
+
   return (
     <SafeAreaViewFlex>
       {query === QUERY_TYPES.POINTS_OF_INTEREST &&
@@ -396,6 +432,7 @@ export const IndexScreen = ({ navigation, route }) => {
             ...queryVariables,
             limit: undefined
           }}
+          showPOIsFullScreenMap={showPOIsFullScreenMap}
         />
       ) : (
         <Query
@@ -616,9 +653,10 @@ export const IndexScreen = ({ navigation, route }) => {
           }}
         </Query>
       )}
-      {query === QUERY_TYPES.POINTS_OF_INTEREST && (
-        <IndexMapSwitch filter={filterType} setFilter={setFilterType} />
-      )}
+      {query === QUERY_TYPES.POINTS_OF_INTEREST &&
+        filterType.find((i) => i.selected && i.title === 'Listenansicht') && (
+          <IndexMapSwitch filter={filterType} setFilter={setFilterType} />
+        )}
     </SafeAreaViewFlex>
   );
 };
