@@ -12,13 +12,15 @@ import { DiagonalGradient } from './DiagonalGradient';
 export const Button = ({
   disabled,
   extraLarge,
+  iconName,
+  iconPosition,
   invert,
   large,
   medium,
   notFullWidth,
   onPress,
   small,
-  title,
+  title
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeStyle =
@@ -76,6 +78,14 @@ export const Button = ({
       useForeground={!invert}
       accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
       disabled={disabled}
+      icon={{
+        name: iconName,
+        type: IconSetName.toLowerCase(),
+        containerStyle: {},
+        color: invert ? colors.primary : colors.lightestText,
+        size: small ? normalize(16) : normalize(24)
+      }}
+      iconPosition={iconPosition}
     />
   );
 };
@@ -146,13 +156,15 @@ const styles = StyleSheet.create({
 Button.propTypes = {
   disabled: PropTypes.bool,
   extraLarge: PropTypes.bool,
+  iconName: PropTypes.object,
+  iconPosition: PropTypes.string,
   invert: PropTypes.bool,
   large: PropTypes.bool,
   medium: PropTypes.bool,
   notFullWidth: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
   small: PropTypes.bool,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired
 };
 
 Button.defaultProps = {

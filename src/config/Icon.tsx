@@ -58,6 +58,7 @@ export type IconProps = {
 };
 
 export const IconSet = Ionicons;
+export const IconSetName = 'ionicon';
 
 const getHitSlops = (size: number) => {
   const hitSlop = (44 - size) / 2;
