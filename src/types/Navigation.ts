@@ -48,6 +48,7 @@ export enum ScreenName {
   OParlOverview = 'OParlOverview',
   OParlPersons = 'OParlPersons',
   OParlSearch = 'OParlSearch',
+  SecretIcons = 'SecretIcons',
   Service = 'Service',
   Settings = 'Settings',
   SurveyDetail = 'SurveyDetail',

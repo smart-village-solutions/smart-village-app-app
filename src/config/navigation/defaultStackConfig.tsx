@@ -44,6 +44,7 @@ import {
   OParlOverviewScreen,
   OParlPersonsScreen,
   OParlSearchScreen,
+  SecretIconsScreen,
   SettingsScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
@@ -316,6 +317,10 @@ export const defaultStackConfig = ({
         imageKey: 'headlineServiceImage'
       }),
       screenOptions: { title: texts.screenTitles.service }
+    },
+    {
+      routeName: ScreenName.SecretIcons,
+      screenComponent: SecretIconsScreen
     },
     {
       routeName: ScreenName.Settings,
