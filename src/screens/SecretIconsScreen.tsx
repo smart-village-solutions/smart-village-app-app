@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
 
 import { RegularText } from '../components';
 import { colors, Icon, normalize } from '../config';
@@ -12,11 +12,10 @@ const iconNames = Object.keys(Icon);
 
 const IconItem = ({ iconName }: TIconItem) => {
   const SelectedIcon = Icon[iconName];
+
   return (
     <View style={styles.iconField}>
-      <Text>
-        <SelectedIcon size={normalize(35)} color={colors.secondary} />
-      </Text>
+      <SelectedIcon size={normalize(35)} color={colors.secondary} />
       <RegularText smallest>{iconName}</RegularText>
     </View>
   );
@@ -35,8 +34,8 @@ export const SecretIconsScreen = () => {
 
 const styles = StyleSheet.create({
   iconField: {
-    margin: 10,
+    alignItems: 'center',
     flex: 1,
-    alignItems: 'center'
+    margin: 10
   }
 });
