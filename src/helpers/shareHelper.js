@@ -1,6 +1,7 @@
 import { Share } from 'react-native';
 
 import appJson from '../../app.json';
+import { mergeWebUrls } from '../components';
 import { QUERY_TYPES } from '../queries';
 
 import { momentFormat } from './momentHelper';
@@ -38,20 +39,26 @@ export const openShare = async ({ message, title, url }) => {
 };
 
 export const shareMessage = (data, query) => {
+  const urls = mergeWebUrls({
+    webUrls: data.webUrls,
+    contact: data.contact,
+    contacts: data.contacts
+  })?.map(({ url }) => `\n${url}`);
+
   const buildMessage = (query) => {
     switch (query) {
       case QUERY_TYPES.EVENT_RECORD:
         return `${momentFormat(data.listDate)} | ${
           data.addresses?.[0]?.addition || data.addresses?.[0]?.city
-        }: ${data.title}`;
+        }: ${data.title}${`\n${urls}`}`;
       case QUERY_TYPES.NEWS_ITEM:
         return `${momentFormat(data.publishedAt)} | ${data.dataProvider?.name}: ${
           data.contentBlocks?.[0]?.title
-        }`;
+        }${`\n${urls}`}`;
       case QUERY_TYPES.POINT_OF_INTEREST:
-        return `${data.category?.name}: ${data.name}`;
+        return `${data.category?.name}: ${data.name}${`\n${urls}`}`;
       case QUERY_TYPES.TOUR:
-        return `${data.category?.name}: ${data.name}`;
+        return `${data.category?.name}: ${data.name}${`\n${urls}`}`;
       case QUERY_TYPES.VOLUNTEER.CALENDAR:
       case QUERY_TYPES.VOLUNTEER.GROUP:
         return data.subtitle ? `${data.subtitle}: ${data.title}` : data.title;

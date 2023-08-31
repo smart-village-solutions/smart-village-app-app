@@ -28,7 +28,7 @@ type Props = WebUrlProps & {
   openWebScreen: (link: string) => void;
 };
 
-const mergeWebUrls = ({ webUrls, contact, contacts }: WebUrlProps) => {
+export const mergeWebUrls = ({ webUrls, contact, contacts }: WebUrlProps) => {
   const mergedWebUrls = webUrls ? [...webUrls] : [];
 
   if (contact?.www) {
