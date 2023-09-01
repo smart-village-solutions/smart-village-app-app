@@ -35,13 +35,10 @@ export const navigateWithSubQuery = ({
 }) => {
   // if the `params` is a string, it is directly the web url to call
   if (!!params && typeof params === 'string') {
-    return navigation.navigate({
-      name: 'Web',
-      params: {
-        rootRouteName,
-        title,
-        webUrl: params
-      }
+    return navigation.push('Web', {
+      rootRouteName,
+      title,
+      webUrl: params
     });
   }
 
@@ -49,24 +46,18 @@ export const navigateWithSubQuery = ({
     // if `params` is an object and contains the `paramsForButton` object,
     // the values here are added to the navigation
     if (params.paramsForButton) {
-      return navigation.navigate({
-        name: params.routeName,
-        params: {
-          ...params.paramsForButton,
-          rootRouteName
-        }
+      return navigation.push(params.routeName, {
+        ...params.paramsForButton,
+        rootRouteName
       });
     }
 
     // if `params` is an object and does not contain the `paramsForButton` object,
     // it contains a `routeName` and a `webUrl`
-    return navigation.navigate({
-      name: params.routeName,
-      params: {
-        rootRouteName,
-        title,
-        webUrl: params.webUrl
-      }
+    return navigation.push(params.routeName, {
+      rootRouteName,
+      title,
+      webUrl: params.webUrl
     });
   }
 
@@ -75,14 +66,11 @@ export const navigateWithSubQuery = ({
   // if there is no `params`, use the main `subQuery` values for `routeName` and a `webUrl` or
   // `params` if the params contain a webUrl as well, the webUrl property of the subQuery
   // will be ignored
-  return navigation.navigate({
-    name: subQuery.routeName,
-    params: {
-      ...subParams,
-      rootRouteName,
-      title,
-      webUrl: subQuery.webUrl
-    }
+  return navigation.push(subQuery.routeName, {
+    ...subParams,
+    rootRouteName,
+    title,
+    webUrl: subQuery.webUrl
   });
 };
 
