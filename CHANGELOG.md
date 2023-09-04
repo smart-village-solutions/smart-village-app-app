@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.2.7]
+
+This update has minor improvements
+
+### Added
+
+- navigation from multi button screen to all screens has been added
+- html section added to show at the top of the survey list
+
 ## [v3.2.6]
 
 This update enhances functionality with new features and resolves key bugs for a smoother user experience
