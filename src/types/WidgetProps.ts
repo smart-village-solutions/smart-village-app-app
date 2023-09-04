@@ -1,6 +1,7 @@
 export type WidgetProps = {
   additionalProps?: {
     dataProviderId?: string;
+    htmlName?: string;
     iconName?: string;
     limit?: number;
     noCount?: boolean;
