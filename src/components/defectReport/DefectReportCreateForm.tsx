@@ -257,10 +257,10 @@ export const DefectReportCreateForm = ({
 
         <Controller
           name="termsOfService"
-          render={({ field }) => (
+          render={({ field: { onChange, value } }) => (
             <Checkbox
-              checked={!!field.value}
-              onPress={() => field.onChange(!field.value)}
+              checked={!!value}
+              onPress={() => onChange(!value)}
               title={`${texts.defectReport.inputCheckbox} *`}
               checkedColor={colors.accent}
               checkedIcon="check-square-o"

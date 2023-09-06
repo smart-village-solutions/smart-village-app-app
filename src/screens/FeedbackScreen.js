@@ -137,7 +137,7 @@ export const FeedbackScreen = () => {
 
             <Controller
               name="consent"
-              render={({ field }) => (
+              render={({ field: { onChange, value } }) => (
                 <Checkbox
                   boldTitle
                   containerStyle={styles.checkboxContainerStyle}
@@ -146,8 +146,8 @@ export const FeedbackScreen = () => {
                   checkedColor={colors.accent}
                   uncheckedIcon="square-o"
                   uncheckedColor={colors.darkText}
-                  checked={field.value}
-                  onPress={() => field.onChange(!field.value)}
+                  checked={value}
+                  onPress={() => onChange(!value)}
                 />
               )}
               control={control}

@@ -276,10 +276,10 @@ export const VolunteerFormProfile = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="birthdayHideYear"
-          render={({ field }) => (
+          render={({ field: { onChange, value } }) => (
             <Checkbox
-              checked={!!field.value}
-              onPress={() => field.onChange(!field.value)}
+              checked={!!value}
+              onPress={() => onChange(!value)}
               title="Jahr im Profil verbergen"
               checkedColor={colors.accent}
               checkedIcon="check-square-o"

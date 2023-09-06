@@ -135,14 +135,14 @@ export const VolunteerFormGroup = ({
         <Label>{texts.volunteer.visibility}</Label>
         <Controller
           name="visibility"
-          render={({ field }) => (
+          render={({ field: { onChange, value } }) => (
             <>
               {VISIBILITY_OPTIONS.map((visibilityItem) => (
                 <CheckBox
                   accessibilityRole="button"
                   key={visibilityItem.title}
-                  checked={field.value === visibilityItem.value}
-                  onPress={() => field.onChange(visibilityItem.value)}
+                  checked={value === visibilityItem.value}
+                  onPress={() => onChange(visibilityItem.value)}
                   title={visibilityItem.title}
                   checkedColor={colors.accent}
                   uncheckedColor={colors.darkText}
@@ -160,14 +160,14 @@ export const VolunteerFormGroup = ({
           <Label>{texts.volunteer.accessionDirective}</Label>
           <Controller
             name="joinPolicy"
-            render={({ field }) => (
+            render={({ field: { onChange, value } }) => (
               <>
                 {JOIN_POLICY_OPTIONS.map((joinPolicyItem) => (
                   <CheckBox
                     accessibilityRole="button"
                     key={joinPolicyItem.title}
-                    checked={field.value === joinPolicyItem.value}
-                    onPress={() => field.onChange(joinPolicyItem.value)}
+                    checked={value === joinPolicyItem.value}
+                    onPress={() => onChange(joinPolicyItem.value)}
                     title={joinPolicyItem.title}
                     checkedColor={colors.accent}
                     uncheckedColor={colors.darkText}

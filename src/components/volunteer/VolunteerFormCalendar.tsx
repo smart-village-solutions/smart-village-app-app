@@ -384,11 +384,11 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="isPublic"
-          render={({ field }) => (
+          render={({ field: { onChange, value } }) => (
             <CheckBox
               accessibilityRole="button"
-              checked={!!field.value}
-              onPress={() => field.onChange(!field.value)}
+              checked={!!value}
+              onPress={() => onChange(!value)}
               title="Öffentlich"
               checkedColor={colors.accent}
               checkedIcon="check-square-o"

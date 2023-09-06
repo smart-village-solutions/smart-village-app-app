@@ -155,13 +155,13 @@ export const NoticeboardCreateForm = ({
         <Controller
           name="noticeboardType"
           rules={{ required: texts.noticeboard.alerts.noticeboardType }}
-          render={({ field }) => (
+          render={({ field: { onChange, value } }) => (
             <>
               {NOTICEBOARD_TYPE_OPTIONS.map((noticeboardItem) => (
                 <Checkbox
                   key={noticeboardItem.title}
-                  checked={field.value === noticeboardItem.value}
-                  onPress={() => field.onChange(noticeboardItem.value)}
+                  checked={value === noticeboardItem.value}
+                  onPress={() => onChange(noticeboardItem.value)}
                   title={noticeboardItem.title}
                   checkedColor={colors.accent}
                   uncheckedColor={colors.darkText}
@@ -244,10 +244,10 @@ export const NoticeboardCreateForm = ({
 
         <Controller
           name="termsOfService"
-          render={({ field }) => (
+          render={({ field: { onChange, value } }) => (
             <Checkbox
-              checked={!!field.value}
-              onPress={() => field.onChange(!field.value)}
+              checked={!!value}
+              onPress={() => onChange(!value)}
               title={`${texts.noticeboard.inputCheckbox} *`}
               checkedColor={colors.accent}
               checkedIcon="check-square-o"
