@@ -1,9 +1,9 @@
 import { Share } from 'react-native';
 
 import appJson from '../../app.json';
-import { mergeWebUrls } from '../components';
 import { QUERY_TYPES } from '../queries';
 
+import { mergeWebUrls } from './linkHelper';
 import { momentFormat } from './momentHelper';
 
 // https://facebook.github.io/react-native/docs/share
@@ -43,22 +43,23 @@ export const shareMessage = (data, query) => {
     webUrls: data.webUrls,
     contact: data.contact,
     contacts: data.contacts
-  })?.map(({ url }) => `\n${url}`);
+  })?.map(({ url }) => `\nLink: ${url}`);
 
+  // eslint-disable-next-line complexity
   const buildMessage = (query) => {
     switch (query) {
       case QUERY_TYPES.EVENT_RECORD:
         return `${momentFormat(data.listDate)} | ${
           data.addresses?.[0]?.addition || data.addresses?.[0]?.city
-        }: ${data.title}${`\n${urls}`}`;
+        }: ${data.title}${urls && `\n${urls}`}`;
       case QUERY_TYPES.NEWS_ITEM:
         return `${momentFormat(data.publishedAt)} | ${data.dataProvider?.name}: ${
           data.contentBlocks?.[0]?.title
-        }${`\n${urls}`}`;
+        }${urls && `\n${urls}`}`;
       case QUERY_TYPES.POINT_OF_INTEREST:
-        return `${data.category?.name}: ${data.name}${`\n${urls}`}`;
+        return `${data.category?.name}: ${data.name}${urls && `\n${urls}`}`;
       case QUERY_TYPES.TOUR:
-        return `${data.category?.name}: ${data.name}${`\n${urls}`}`;
+        return `${data.category?.name}: ${data.name}${urls && `\n${urls}`}`;
       case QUERY_TYPES.VOLUNTEER.CALENDAR:
       case QUERY_TYPES.VOLUNTEER.GROUP:
         return data.subtitle ? `${data.subtitle}: ${data.title}` : data.title;

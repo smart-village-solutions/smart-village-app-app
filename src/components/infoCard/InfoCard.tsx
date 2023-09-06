@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { Icon as RNEIcon } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../../config';
+import { mergeWebUrls } from '../../helpers';
 import { Address, Contact, OpeningHour, WebUrl } from '../../types';
 import { RegularText } from '../Text';
 import { InfoBox } from '../Wrapper';
@@ -26,31 +27,6 @@ type Props = WebUrlProps & {
   name?: string;
   openingHours?: OpeningHour[];
   openWebScreen: (link: string) => void;
-};
-
-export const mergeWebUrls = ({ webUrls, contact, contacts }: WebUrlProps) => {
-  const mergedWebUrls = webUrls ? [...webUrls] : [];
-
-  if (contact?.www) {
-    mergedWebUrls.unshift({ url: contact.www });
-  }
-
-  // merge a `contact`s `webUrls` to `webUrls`
-  if (contact?.webUrls?.length) {
-    mergedWebUrls.push(...contact.webUrls);
-  }
-
-  // iterate all `contacts` and merge every `contact`s `webUrls` to `webUrls`
-  contacts?.forEach((contact) => {
-    if (contact?.www) {
-      mergedWebUrls.push({ url: contact.www });
-    }
-    if (contact?.webUrls?.length) {
-      mergedWebUrls.push(...contact.webUrls);
-    }
-  });
-
-  return mergedWebUrls;
 };
 
 /* TODO: add a logic to display info category and url that fit the screen even if long text
