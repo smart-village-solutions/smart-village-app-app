@@ -1,6 +1,5 @@
 appId: de.dev.smartvillage.app
 ---
-- runFlow: onboarding.yml
 - runFlow: weatherWidget.yml
 - runFlow: waterTemperatureWidget.yml
 - runFlow: eventWidget.yml
