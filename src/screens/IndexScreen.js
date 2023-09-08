@@ -2,7 +2,14 @@ import { useFocusEffect } from '@react-navigation/native';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState
+} from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
@@ -150,6 +157,9 @@ export const IndexScreen = ({ navigation, route }) => {
   // we currently only require the position for POIs
   const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST;
 
+  const isCalendar = query === QUERY_TYPES.EVENT_RECORDS;
+  const isCalendarWithVolunteerEvents = isCalendar && showVolunteerEvents;
+
   const { loading: loadingPosition, position } = usePosition(!sortByDistance);
 
   const title = route.params?.title ?? '';
@@ -164,13 +174,22 @@ export const IndexScreen = ({ navigation, route }) => {
     }[query];
   const htmlContentName =
     query === QUERY_TYPES.POINTS_OF_INTEREST && poiListIntro?.[queryVariables.category];
-
   const { data: htmlContent } = useStaticContent({
     name: htmlContentName,
     type: 'html',
     refreshTimeKey: `${query}-${queryVariables.category}`,
     skip: !htmlContentName
   });
+  const hasDailyFilterSelection = !!queryVariables.dateRange;
+
+  // if we show the map, calendar or want to sort by distance, we need to fetch all the entries at
+  // once. this is not a big issue if we want to sort by distance, because getting the location
+  // usually takes longer than fetching all entries. if we filter by opening times, we need to also
+  // remove the limit as otherwise we might not have any open POIs in the next batch that would
+  // result in the list not getting any new items and not reliably triggering another `fetchMore`
+  if (showMap || showCalendar || sortByDistance || filterByOpeningTimes) {
+    delete queryVariables.limit;
+  }
 
   const openWebScreenUrl = eventListIntro?.url || categoryListFooter?.url;
   const openWebScreen = useOpenWebScreen(title, openWebScreenUrl);
@@ -200,8 +219,6 @@ export const IndexScreen = ({ navigation, route }) => {
       skip: !showEventLocationsFilter
     }
   );
-
-  const hasDailyFilterSelection = !!queryVariables.dateRange;
 
   const buildListItems = useCallback(
     (data, additionalData) => {
@@ -299,15 +316,6 @@ export const IndexScreen = ({ navigation, route }) => {
     });
   }, [filterByDailyEvents, queryVariables]);
 
-  // if we show the map, calendar or want to sort by distance, we need to fetch all the entries at
-  // once this is not a big issue if we want to sort by distance, because getting the location
-  // usually takes longer than fetching all entries if we filter by opening times, we need to also
-  // remove the limit as otherwise we might not have any open POIs in the next batch that would
-  // result in the list not getting any new items and not reliably triggering another `fetchMore`
-  if (showMap || showCalendar || sortByDistance || filterByOpeningTimes) {
-    delete queryVariables.limit;
-  }
-
   useEffect(() => {
     // we want to ensure when changing from one index screen to another, for example from
     // news to events, that the query variables are taken freshly. otherwise the mounted screen can
@@ -347,17 +355,14 @@ export const IndexScreen = ({ navigation, route }) => {
         [QUERY_TYPES.CATEGORIES]: null
       }[query];
 
-      // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `query`
-      //       dependency
-      isConnected &&
+      // NOTE: we cannot use the `useMatomoTrackScreenView` hook, as we need the `query` dependency
+      if (isConnected) {
         trackScreenViewAsync(
           matomoTrackingString([MATOMO_TRACKING_SCREEN, MATOMO_TRACKING_CATEGORY])
         );
+      }
     }
   }, [isConnected, query]);
-
-  const isCalendar = query === QUERY_TYPES.EVENT_RECORDS;
-  const isCalendarWithVolunteerEvents = isCalendar && showVolunteerEvents;
 
   const {
     data: dataVolunteerEvents,
@@ -370,80 +375,33 @@ export const IndexScreen = ({ navigation, route }) => {
     isSectioned: true
   });
 
-  const refresh = useCallback(
-    async (refetch) => {
-      setRefreshing(true);
-      isConnected && (await refetch());
-      isCalendarWithVolunteerEvents && refetchVolunteerEvents();
-      setRefreshing(false);
-    },
-    [isConnected, setRefreshing]
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      const fetchData = async () => {
-        if (
-          query === QUERY_TYPES.EVENT_RECORDS &&
-          (!initialEventRecordsItemsFetch || !showCalendar)
-        ) {
-          await refetch();
-        }
-      };
-
-      fetchData();
-    }, [refetch])
-  );
-
-  if (!query) return null;
-
-  if ((!data && loading) || loadingPosition || isLoadingVolunteerEvents) {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
-      </LoadingContainer>
-    );
-  }
-
-  const fetchMoreData = () =>
-    fetchMore({
-      query: getFetchMoreQuery(query),
-      variables: {
-        ...queryVariables,
-        offset: data?.[query]?.length
-      },
-      updateQuery: (prevResult, { fetchMoreResult }) => {
-        if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
-
-        return {
-          ...prevResult,
-          [query]: [...prevResult[query], ...fetchMoreResult[query]]
-        };
-      }
-    });
-
-  const initialNewsItemsFetch =
-    query === QUERY_TYPES.NEWS_ITEMS &&
-    !Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') &&
-    !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
-
-  const initialEventRecordsItemsFetch =
-    query === QUERY_TYPES.EVENT_RECORDS &&
-    !Object.prototype.hasOwnProperty.call(queryVariables, 'categoryId') &&
-    !Object.prototype.hasOwnProperty.call(queryVariables, 'location') &&
-    !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch') &&
-    !Object.prototype.hasOwnProperty.call(queryVariables, 'dateRange') &&
-    !Object.prototype.hasOwnProperty.call(queryVariables, 'refetchDate');
-
-  // apply additional data if volunteer events should be presented and
-  // no category selection is made, because the category has nothing to do with
-  // volunteer data
-  const additionalData =
+  // apply additional data if volunteer events should be presented and no filter selection is made,
+  // because filtered data for category or location has nothing to do with volunteer data
+  let additionalData = useMemo(() => {
     isCalendarWithVolunteerEvents &&
     !hasFilterSelection(query, false) &&
     !hasFilterSelection(query, true)
       ? dataVolunteerEvents
       : undefined;
+  }, [isCalendarWithVolunteerEvents, hasFilterSelection, query, dataVolunteerEvents]);
+
+  const refresh = useCallback(async () => {
+    setRefreshing(true);
+    isConnected && (await refetch());
+    isCalendarWithVolunteerEvents && refetchVolunteerEvents();
+    setRefreshing(false);
+  }, [isConnected, setRefreshing]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (
+        query === QUERY_TYPES.EVENT_RECORDS &&
+        (!initialEventRecordsItemsFetch || !showCalendar)
+      ) {
+        refetch();
+      }
+    }, [])
+  );
 
   useLayoutEffect(() => {
     if (
@@ -467,6 +425,46 @@ export const IndexScreen = ({ navigation, route }) => {
       });
     }
   }, [query, showMap]);
+
+  const fetchMoreData = () =>
+    fetchMore({
+      query: getFetchMoreQuery(query),
+      variables: {
+        ...queryVariables,
+        offset: data?.[query]?.length
+      },
+      updateQuery: (prevResult, { fetchMoreResult }) => {
+        if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
+
+        return {
+          ...prevResult,
+          [query]: [...prevResult[query], ...fetchMoreResult[query]]
+        };
+      }
+    });
+
+  if (!query) return null;
+
+  if ((!data && loading) || loadingPosition || isLoadingVolunteerEvents) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.accent} />
+      </LoadingContainer>
+    );
+  }
+
+  const initialNewsItemsFetch =
+    query === QUERY_TYPES.NEWS_ITEMS &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'dataProvider') &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch');
+
+  const initialEventRecordsItemsFetch =
+    query === QUERY_TYPES.EVENT_RECORDS &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'categoryId') &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'location') &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'refetch') &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'dateRange') &&
+    !Object.prototype.hasOwnProperty.call(queryVariables, 'refetchDate');
 
   return (
     <SafeAreaViewFlex>
@@ -636,11 +634,11 @@ export const IndexScreen = ({ navigation, route }) => {
             sectionByDate={isCalendar ? !showCalendar : true}
             query={query}
             queryVariables={queryVariables}
-            fetchMoreData={isConnected ? fetchMoreData : null}
+            fetchMoreData={fetchMoreData}
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
-                onRefresh={() => refresh(refetch)}
+                onRefresh={refresh}
                 colors={[colors.accent]}
                 tintColor={colors.accent}
               />
