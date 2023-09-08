@@ -5,10 +5,10 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 import { colors, normalize } from '../config';
 import { useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
-import { SWITCH_BETWEEN_LIST_AND_MAP } from '../screens';
 import { SettingsContext } from '../SettingsProvider';
 
 import { BackToTop } from './BackToTop';
+import { SWITCH_BETWEEN_LIST_AND_MAP } from './screens';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
