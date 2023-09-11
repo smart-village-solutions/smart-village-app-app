@@ -76,10 +76,12 @@ const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText) 
 
   return filteredData?.map((genericItem, index) => ({
     id: genericItem.id,
-    subtitle: subtitle(
-      momentFormatUtcToLocal(genericItem.publicationDate ?? genericItem.createdAt),
-      getGenericItemSubtitle(genericItem)
-    ),
+    subtitle:
+      genericItem.genericType !== GenericType.Deadline &&
+      subtitle(
+        momentFormatUtcToLocal(genericItem.publicationDate ?? genericItem.createdAt),
+        getGenericItemSubtitle(genericItem)
+      ),
     title: genericItem.title,
     picture: {
       url:
