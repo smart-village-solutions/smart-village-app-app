@@ -2,6 +2,8 @@
 import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
 
+import { SettingsContext } from '../SettingsProvider';
+import { BigCardListItem } from '../components';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
@@ -9,7 +11,6 @@ import { VolunteerConversationListItem } from '../components/volunteer/Volunteer
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
 import { consts } from '../config';
 import { QUERY_TYPES } from '../queries';
-import { SettingsContext } from '../SettingsProvider';
 
 const { LIST_TYPES } = consts;
 
@@ -65,6 +66,13 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     case LIST_TYPES.TEXT_WITH_BIG_CARD_LIST: {
+      renderItem = ({ item, index }) => {
+        if (index === 0) {
+          return (
+            <BigCardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
+          );
+        }
+      };
       break;
     }
     default: {

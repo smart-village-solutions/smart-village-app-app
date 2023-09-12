@@ -15,6 +15,7 @@ export * from './weather';
 export * from './widgets';
 
 export * from './BackToTop';
+export * from './BigCardListItem';
 export * from './Button';
 export * from './calendarArrows';
 export * from './Calendar';
