@@ -71,6 +71,21 @@ export const useRenderItem = (query, navigation, options = {}) => {
           return (
             <BigCardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
           );
+        } else {
+          return (
+            <TextListItem
+              item={{
+                ...item,
+                bottomDivider: true
+              }}
+              {...{
+                navigation,
+                noSubtitle: options.noSubtitle,
+                rightImage: true,
+                textListItemWithBigCard: true
+              }}
+            />
+          );
         }
       };
       break;
