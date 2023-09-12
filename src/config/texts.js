@@ -871,7 +871,8 @@ export const texts = {
       newsItemsTitle: 'Nachrichten',
       pointsOfInterestAndToursTitle: 'Orte und Touren',
       sectionTitle: 'Listen-Layouts',
-      textList: 'Textliste'
+      textList: 'Textliste',
+      textWithBigCardList: 'Textliste beginnend mit großem Bild'
     },
     locationService: 'Ortungsdienste',
     onboarding: 'App-Einführung',

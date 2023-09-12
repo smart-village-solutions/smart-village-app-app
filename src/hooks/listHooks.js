@@ -64,6 +64,9 @@ export const useRenderItem = (query, navigation, options = {}) => {
       );
       break;
     }
+    case LIST_TYPES.TEXT_WITH_BIG_CARD_LIST: {
+      break;
+    }
     default: {
       renderItem = ({ item, index, section }) => {
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
