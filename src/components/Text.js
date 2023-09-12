@@ -166,3 +166,34 @@ export const BoldText = styled(RegularText)`
       font-family: bold-italic;
     `};
 `;
+
+export const HeadlineText = styled(RegularText)`
+  font-weight: 700;
+  font-family: bold;
+
+  ${(props) =>
+    props.medium &&
+    css`
+      font-size: ${normalize(18)};
+      line-height: ${normalize(23)};
+    `};
+
+  ${(props) =>
+    props.small &&
+    css`
+      font-size: ${normalize(16)};
+      line-height: ${normalize(21)};
+    `};
+`;
+
+export const CategoryText = styled(RegularText)`
+  font-weight: 700;
+  font-family: bold;
+
+  ${(props) =>
+    props.small &&
+    css`
+      font-size: ${normalize(12)};
+      line-height: ${normalize(14)};
+    `};
+`;
