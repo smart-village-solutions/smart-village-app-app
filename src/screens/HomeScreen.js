@@ -174,7 +174,7 @@ export const HomeScreen = ({ navigation, route }) => {
     limitNews = 15,
     limitPointsOfInterestAndTours = 15
   } = sections;
-  const { show: showDisturber = false, content: disturberContent = 'Disturber' } = disturber;
+  const { show: showDisturber = false, content } = disturber;
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
   const { state: excludeDataProviderIds } = usePermanentFilter();
@@ -275,7 +275,7 @@ export const HomeScreen = ({ navigation, route }) => {
 
             <Widgets widgetConfigs={widgetConfigs} />
 
-            {showDisturber && <Disturber navigation={navigation} name={disturberContent} />}
+            {showDisturber && <Disturber navigation={navigation} staticContentName={content} />}
           </>
         }
         ListFooterComponent={

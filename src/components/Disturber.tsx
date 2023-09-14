@@ -1,6 +1,6 @@
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { Icon, colors, normalize } from '../config';
 import { addToStore, findClosestItem, isActive, readFromStore } from '../helpers';
@@ -13,7 +13,7 @@ import { Wrapper, WrapperHorizontal } from './Wrapper';
 
 type Props = {
   navigation: DrawerNavigationProp<any>;
-  name: string;
+  staticContentName: string;
 };
 
 interface DateRange {
@@ -28,7 +28,7 @@ interface DataItem {
     params: { title?: string; webUrl: string };
     title?: string;
   };
-  category?: string;
+  headline?: string;
   dates: DateRange[];
   description: string;
   id: number;
@@ -37,43 +37,54 @@ interface DataItem {
 }
 
 // eslint-disable-next-line complexity
-export const Disturber = ({ navigation, name }: Props) => {
-  const [isVisible, setIsVisiblle] = useState(false);
-  const refreshTimeKey = `publicJsonFile-${name}`;
+export const Disturber = ({ navigation, staticContentName }: Props) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const refreshTimeKey = `publicJsonFile-${staticContentName}`;
 
   const { data, refetch } = useStaticContent<DataItem[]>({
     refreshTimeKey,
-    name,
+    name: staticContentName,
     type: 'json'
   });
 
   useHomeRefresh(refetch);
 
-  // filter data for present items and items with active date/time periods
-  const isActiveData = data?.filter((item) => item && isActive(item));
-
   // find the closest item to the current date/time
-  const closestItem: DataItem | null = findClosestItem(isActiveData || []);
+  const closestItem: DataItem | null = findClosestItem(
+    data?.filter((item) => item && isActive(item)) || []
+  );
 
-  const setDistruberComplete = () => {
-    setIsVisiblle((prev) => !prev);
-    addToStore(name, closestItem?.id.toString());
+  const setDisturberComplete = () => {
+    setIsVisible((prev) => !prev);
+    addToStore(staticContentName, closestItem?.id.toString());
   };
 
   useEffect(() => {
-    readFromStore(name).then((value) => {
-      if (closestItem?.id && value !== closestItem?.id.toString()) setIsVisiblle(true);
-    });
+    const disturberStatus = async () => {
+      try {
+        const disturberComplete = await readFromStore(staticContentName);
+
+        if (closestItem?.id && disturberComplete !== closestItem?.id.toString()) {
+          setIsVisible(true);
+        }
+      } catch (e) {
+        setIsVisible(false);
+
+        console.error(e);
+      }
+    };
+
+    disturberStatus();
   }, [closestItem]);
 
   if (!isVisible || !closestItem) return null;
 
   return (
-    <Wrapper style={{ padding: normalize(24) }}>
+    <Wrapper style={styles.wrapperPadding}>
       <View style={[styles.containerRadius, { backgroundColor: closestItem.backgroundColor }]}>
         {!!closestItem && (
           <>
-            <TouchableOpacity onPress={setDistruberComplete} style={styles.closeButton}>
+            <TouchableOpacity onPress={setDisturberComplete} style={styles.closeButton}>
               <Icon.Close color={colors.darkText} size={normalize(16)} />
             </TouchableOpacity>
 
@@ -82,15 +93,15 @@ export const Disturber = ({ navigation, name }: Props) => {
                 source={closestItem.picture}
                 borderRadius={normalize(8)}
                 aspectRatio={closestItem.picture.aspectRatio || { HEIGHT: 0.7, WIDTH: 1 }}
-                resizeMode={'cover'}
+                resizeMode="cover"
               />
             )}
 
             <Wrapper style={styles.noPaddingBottom}>
               <WrapperHorizontal>
-                {!!closestItem.category && (
-                  <BoldText center uppercase style={styles.categoryText}>
-                    {closestItem.category}
+                {!!closestItem.headline && (
+                  <BoldText center uppercase style={styles.headlineText}>
+                    {closestItem.headline}
                   </BoldText>
                 )}
               </WrapperHorizontal>
@@ -116,17 +127,19 @@ export const Disturber = ({ navigation, name }: Props) => {
 
             <Wrapper>
               <WrapperHorizontal>
-                {!!closestItem.button && (
+                {!!closestItem.button && closestItem.button.title && (
                   <Button
                     extraLarge
                     containerStyle={styles.containerRadius}
-                    title={closestItem.button.title || 'Mehr'}
-                    onPress={() =>
-                      navigation.navigate(
-                        closestItem.button.navigationTo,
-                        closestItem.button.params
-                      )
-                    }
+                    title={closestItem.button.title}
+                    onPress={() => {
+                      if (closestItem.button.navigationTo && closestItem.button.params) {
+                        navigation.navigate(
+                          closestItem.button.navigationTo,
+                          closestItem.button.params
+                        );
+                      }
+                    }}
                   />
                 )}
               </WrapperHorizontal>
@@ -139,12 +152,6 @@ export const Disturber = ({ navigation, name }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  categoryText: {
-    fontSize: normalize(14),
-    fontWeight: '700',
-    lineHeight: normalize(16),
-    textTransform: 'uppercase'
-  },
   closeButton: {
     alignItems: 'center',
     backgroundColor: colors.gray20,
@@ -161,10 +168,19 @@ const styles = StyleSheet.create({
   containerRadius: {
     borderRadius: normalize(8)
   },
+  headlineText: {
+    fontSize: normalize(14),
+    fontWeight: '700',
+    lineHeight: normalize(16),
+    textTransform: 'uppercase'
+  },
   noPaddingBottom: {
     paddingBottom: 0
   },
   noPaddingTop: {
     paddingTop: 0
+  },
+  wrapperPadding: {
+    padding: normalize(24)
   }
 });
