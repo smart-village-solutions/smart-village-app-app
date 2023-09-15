@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import MapView, { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 import { SvgXml } from 'react-native-svg';
@@ -18,6 +18,7 @@ type Props = {
   onMapPress?: () => void;
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
+  selectedMarker?: string;
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
 };
@@ -34,6 +35,7 @@ export const Map = ({
   onMapPress,
   onMarkerPress,
   onMaximizeButtonPress,
+  selectedMarker,
   style,
   ...otherProps
 }: Props) => {
@@ -123,7 +125,11 @@ export const Map = ({
               }
             }}
           >
-            <SvgXml xml={marker.icon} width={MARKER_ICON_SIZE} height={MARKER_ICON_SIZE} />
+            <SvgXml
+              xml={selectedMarker && marker.id === selectedMarker ? marker.activeIcon : marker.icon}
+              width={MARKER_ICON_SIZE}
+              height={MARKER_ICON_SIZE}
+            />
           </Marker>
         ))}
       </MapView>

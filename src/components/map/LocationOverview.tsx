@@ -47,6 +47,7 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
 
         return {
           icon: location(colors.primary),
+          activeIcon: location(colors.accent),
           iconAnchor: locationIconAnchor,
           id: item.id,
           position: {
@@ -128,6 +129,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
         locations={mapMarkers}
         mapStyle={styles.map}
         onMarkerPress={setSelectedPointOfInterest}
+        selectedMarker={selectedPointOfInterest}
       />
       {selectedPointOfInterest && !detailsLoading && (
         <Wrapper
