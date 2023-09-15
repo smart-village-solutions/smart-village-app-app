@@ -1,41 +1,39 @@
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
-import { RegularText } from '../components';
-import { colors, Icon, normalize } from '../config';
+import { RegularText } from '../../components';
+import { colors, Icon, normalize } from '../../config';
 
 type TIconItem = {
-  iconName: string;
+  iconName: keyof typeof Icon;
 };
-
-const iconNames = Object.keys(Icon);
 
 const IconItem = ({ iconName }: TIconItem) => {
   const SelectedIcon = Icon[iconName];
 
   return (
-    <View style={styles.iconField}>
+    <View style={styles.iconContainer}>
       <SelectedIcon size={normalize(35)} color={colors.secondary} />
       <RegularText smallest>{iconName}</RegularText>
     </View>
   );
 };
 
-export const SecretIconsScreen = () => {
+export const DocIconsScreen = () => {
   return (
     <FlatList
-      data={iconNames}
-      renderItem={({ item }) => <IconItem iconName={item} />}
-      keyExtractor={(item) => item}
+      data={Object.keys(Icon).filter((name) => name !== "NamedIcon")}
+      renderItem={({ item }) => <IconItem iconName={item as keyof typeof Icon} />}
+      keyExtractor={(keyExtractor) => keyExtractor}
       numColumns={3}
     />
   );
 };
 
 const styles = StyleSheet.create({
-  iconField: {
+  iconContainer: {
     alignItems: 'center',
     flex: 1,
-    margin: 10
+    margin: normalize(10)
   }
 });

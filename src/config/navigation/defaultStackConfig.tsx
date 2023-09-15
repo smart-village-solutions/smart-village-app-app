@@ -22,6 +22,7 @@ import {
   DataProviderScreen,
   DefectReportFormScreen,
   DetailScreen,
+  DocIconsScreen,
   EncounterDataScreen,
   EncounterHomeScreen,
   EncounterRegistrationScreen,
@@ -44,7 +45,6 @@ import {
   OParlOverviewScreen,
   OParlPersonsScreen,
   OParlSearchScreen,
-  SecretIconsScreen,
   SettingsScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
@@ -193,6 +193,10 @@ export const defaultStackConfig = ({
       screenOptions: getScreenOptions({ withDrawer: isDrawer, withBookmark: true, withShare: true })
     },
     {
+      routeName: ScreenName.DocIcons,
+      screenComponent: DocIconsScreen
+    },
+    {
       routeName: ScreenName.EncounterData,
       screenComponent: EncounterDataScreen,
       screenOptions: { title: texts.screenTitles.encounterHome }
@@ -317,10 +321,6 @@ export const defaultStackConfig = ({
         imageKey: 'headlineServiceImage'
       }),
       screenOptions: { title: texts.screenTitles.service }
-    },
-    {
-      routeName: ScreenName.SecretIcons,
-      screenComponent: SecretIconsScreen
     },
     {
       routeName: ScreenName.Settings,

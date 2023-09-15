@@ -1,6 +1,7 @@
 export * from './augmentedReality';
 export * from './consul';
 export * from './DefectReport';
+export * from './doc';
 export * from './Noticeboard';
 export * from './OParl';
 export * from './volunteer';
@@ -26,7 +27,6 @@ export * from './LunchScreen';
 export * from './MapViewScreen';
 export * from './MultiButtonScreen';
 export * from './NestedInfoScreen';
-export * from './SecretIconsScreen';
 export * from './SettingsScreen';
 export * from './SurveyDetailScreen';
 export * from './SurveyOverviewScreen';
