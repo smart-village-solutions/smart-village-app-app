@@ -36,7 +36,7 @@ export const OpeningTimesCard = ({ openingHours }) => (
           open,
           useYear = false
         } = item;
-        const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM';
+        const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM.';
 
         return (
           <View key={index} style={index !== openingHours.length - 1 ? styles.divider : null}>
