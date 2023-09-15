@@ -155,7 +155,6 @@ export const HomeScreen = ({ navigation, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
   const {
-    disturberContent,
     showNews = true,
     showPointsOfInterestAndTours = true,
     showEvents = true,
@@ -274,9 +273,7 @@ export const HomeScreen = ({ navigation, route }) => {
 
             <Widgets widgetConfigs={widgetConfigs} />
 
-            {!!disturberContent && (
-              <Disturber navigation={navigation} staticContentName={disturberContent} />
-            )}
+            <Disturber navigation={navigation} staticContentName="homeDisturber" />
           </>
         }
         ListFooterComponent={
