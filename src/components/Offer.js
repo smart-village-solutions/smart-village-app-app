@@ -118,7 +118,9 @@ export const Offer = ({ data, route }) => {
             </Title>
           </TitleContainer>
           {device.platform === 'ios' && <TitleShadow />}
-          <OpeningTimesCard openingHours={dates} />
+          <OpeningTimesCard
+            openingHours={dates.map((date) => ({ ...date, useYear: date?.useYear ?? true }))}
+          />
         </View>
       )}
 
