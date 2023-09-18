@@ -2,12 +2,10 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList } from 'react-native';
 
-import { consts, device, texts, normalize } from '../../../config';
-import { Title, TitleContainer, TitleShadow } from '../../Title';
+import { normalize, texts } from '../../../config';
+import { SectionHeader } from '../../SectionHeader';
 
 import { ConsulCommentListItem } from './ConsulCommentListItem';
-
-const a11yText = consts.a11yLabel;
 
 // Thanks to : https://stackoverflow.com/questions/58492213/make-object-as-child-according-to-the-parent-id-javascript
 const getThreadedComments = (data, pid = null, userId) => {
@@ -29,13 +27,11 @@ export const ConsulCommentList = ({ commentCount, commentsData, navigation, refe
 
   return (
     <>
-      <TitleContainer>
-        <Title accessibilityLabel={`(${texts.consul.comments}) ${a11yText.heading}`}>
-          {commentCount > 1 ? texts.consul.comments : texts.consul.comment} ({commentCount})
-        </Title>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
-
+      <SectionHeader
+        title={`${
+          commentCount > 1 ? texts.consul.comments : texts.consul.comment
+        } (${commentCount})`}
+      />
       <FlatList
         contentContainerStyle={{ padding: normalize(14) }}
         keyboardShouldPersistTaps="handled"

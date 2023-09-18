@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
 
-import { consts, device, texts } from '../config';
+import { texts } from '../config';
 import { getGenericItemMatomoName, matomoTrackingString, momentFormat } from '../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../hooks';
 import { GenericType } from '../types';
@@ -15,10 +15,7 @@ import { OpeningTimesCard, OperatingCompany } from './screens';
 import { SectionHeader } from './SectionHeader';
 import { StorySection } from './StorySection';
 import { BoldText, RegularText } from './Text';
-import { Title, TitleContainer, TitleShadow } from './Title';
 import { Wrapper, WrapperRow, WrapperWrap } from './Wrapper';
-
-const { a11yLabel: a11yText } = consts;
 
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
@@ -112,12 +109,7 @@ export const Offer = ({ data, route }) => {
 
       {!!dates && !!dates.length && (
         <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${texts.eventRecord.appointments}) ${a11yText.heading}`}>
-              {texts.eventRecord.appointments}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.eventRecord.appointments} />
           <OpeningTimesCard
             openingHours={dates.map((date) => ({ ...date, useYear: date?.useYear ?? true }))}
           />

@@ -8,13 +8,11 @@ import {
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
-  Title,
-  TitleContainer,
-  TitleShadow,
+  SectionHeader,
   WeatherAlert,
   Wrapper
 } from '../components';
-import { colors, consts, device, texts } from '../config';
+import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useMatomoTrackScreenView } from '../hooks';
 import { hasDailyWeather, hasHourlyWeather, parseValidAlerts } from '../jsonValidation';
@@ -98,12 +96,7 @@ export const WeatherScreen = () => {
       <ScrollView refreshControl={refreshControl}>
         {!!alerts?.length && (
           <>
-            <TitleContainer
-              accessibilityLabel={`(${texts.weather.alertsHeadline}) ${consts.a11yLabel.heading}`}
-            >
-              <Title>{texts.weather.alertsHeadline}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
+            <SectionHeader title={texts.weather.alertsHeadline} />
             {alerts.map((alert, index) => (
               <WeatherAlert
                 key={index}
@@ -117,12 +110,7 @@ export const WeatherScreen = () => {
         )}
         {hasHourlyWeather(weatherMap) && (
           <View>
-            <TitleContainer
-              accessibilityLabel={`(${texts.weather.currentHeadline}) ${consts.a11yLabel.heading}`}
-            >
-              <Title>{texts.weather.currentHeadline}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
+            <SectionHeader title={texts.weather.currentHeadline} />
             <FlatList
               data={markNow(weatherMap.hourly)}
               horizontal
@@ -134,12 +122,7 @@ export const WeatherScreen = () => {
         )}
         {hasDailyWeather(weatherMap) && (
           <>
-            <TitleContainer
-              accessibilityLabel={`(${texts.weather.nextDaysHeadline}) ${consts.a11yLabel.heading}`}
-            >
-              <Title>{texts.weather.nextDaysHeadline}</Title>
-            </TitleContainer>
-            {device.platform === 'ios' && <TitleShadow />}
+            <SectionHeader title={texts.weather.nextDaysHeadline} />
             {weatherMap.daily.map((day, index) => (
               <DailyWeather
                 description={day.weather[0].description}

@@ -11,18 +11,14 @@ import {
   NoticeboardMessageForm,
   RegularText,
   SafeAreaViewFlex,
-  Title,
-  TitleContainer,
-  TitleShadow,
+  SectionHeader,
   Wrapper,
   WrapperRow
 } from '../../components';
-import { colors, consts, device, texts } from '../../config';
+import { colors, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
-
-const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 export const NoticeboardFormScreen = ({
@@ -83,18 +79,7 @@ export const NoticeboardFormScreen = ({
             />
           }
         >
-          {!!details?.contentBlocks?.[0]?.title && (
-            <>
-              <TitleContainer>
-                <Title
-                  accessibilityLabel={`(${texts.noticeboard.noticeboard}) ${a11yText.heading}`}
-                >
-                  {details.contentBlocks[0].title}
-                </Title>
-              </TitleContainer>
-              {device.platform === 'ios' && <TitleShadow />}
-            </>
-          )}
+          <SectionHeader title={details?.contentBlocks?.[0]?.title} />
 
           {!!html && (
             <Wrapper>

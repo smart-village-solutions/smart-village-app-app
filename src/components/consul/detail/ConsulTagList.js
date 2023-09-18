@@ -2,24 +2,16 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { FlatList } from 'react-native';
 
-import { consts, device, texts } from '../../../config';
-import { Title, TitleContainer, TitleShadow } from '../../Title';
+import { texts } from '../../../config';
 import { Wrapper, WrapperRow } from '../../Wrapper';
+import { SectionHeader } from '../../SectionHeader';
 
 import { ConsulTagListItem } from './ConsulTagListItem';
-
-const a11yText = consts.a11yLabel;
 
 export const ConsulTagList = ({ tags, onPress }) => {
   return (
     <>
-      <TitleContainer>
-        <Title accessibilityLabel={`(${texts.consul.tags}) ${a11yText.heading}`}>
-          {texts.consul.tags}
-        </Title>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
-
+      <SectionHeader title={texts.consul.tags} />
       <Wrapper>
         <WrapperRow>
           <FlatList

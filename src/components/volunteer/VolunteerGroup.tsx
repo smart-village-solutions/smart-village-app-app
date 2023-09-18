@@ -5,7 +5,7 @@ import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
-import { colors, styles as configStyles, consts, device, normalize, texts } from '../../config';
+import { colors, styles as configStyles, consts, normalize, texts } from '../../config';
 import { navigatorConfig } from '../../config/navigation';
 import {
   isOwner,
@@ -15,9 +15,9 @@ import {
   volunteerUserData
 } from '../../helpers';
 import {
+  VOLUNTEER_GROUP_REFRESH_EVENT,
   useOpenWebScreen,
-  useVolunteerNavigation,
-  VOLUNTEER_GROUP_REFRESH_EVENT
+  useVolunteerNavigation
 } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import {
@@ -36,19 +36,17 @@ import {
 import { Button } from '../Button';
 import { HeaderRight } from '../HeaderRight';
 import { ImageSection } from '../ImageSection';
-import { InfoCard } from '../infoCard';
 import { Logo } from '../Logo';
+import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
-import { Title, TitleContainer, TitleShadow } from '../Title';
 import { Wrapper } from '../Wrapper';
+import { InfoCard } from '../infoCard';
 
 import { VolunteerGroupMembersAndApplicants } from './VolunteerGroupMembersAndApplicants';
 import { VolunteerHomeSection } from './VolunteerHomeSection';
 import { VolunteerPosts } from './VolunteerPosts';
 
 const { ROOT_ROUTE_NAMES } = consts;
-
-const a11yText = consts.a11yLabel;
 
 // eslint-disable-next-line complexity
 export const VolunteerGroup = ({
@@ -196,14 +194,7 @@ export const VolunteerGroup = ({
 
         {!!logo && <Logo source={{ uri: logo }} containerStyle={styles.logoContainer} />}
       </View>
-
-      {!!name && (
-        <TitleContainer>
-          <Title accessibilityLabel={`(${name}) ${a11yText.heading}`}>{name}</Title>
-        </TitleContainer>
-      )}
-      {!!name && device.platform === 'ios' && <TitleShadow />}
-
+      <SectionHeader title={name} />
       <VolunteerGroupMembersAndApplicants
         groupId={id}
         navigation={navigation}
@@ -239,12 +230,7 @@ export const VolunteerGroup = ({
 
       {!!description && (
         <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${texts.volunteer.description}) ${a11yText.heading}`}>
-              {texts.volunteer.description}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.volunteer.description} />
           <Wrapper>
             <RegularText>{description}</RegularText>
           </Wrapper>
@@ -253,12 +239,7 @@ export const VolunteerGroup = ({
 
       {!!about && (
         <View>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${texts.volunteer.about}) ${a11yText.heading}`}>
-              {texts.volunteer.about}
-            </Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
+          <SectionHeader title={texts.volunteer.about} />
           <Wrapper>
             <Markdown
               onLinkPress={(url) => {

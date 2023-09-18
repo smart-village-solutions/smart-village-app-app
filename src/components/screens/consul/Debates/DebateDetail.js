@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { StyleSheet, TouchableOpacity, Keyboard } from 'react-native';
+import { Keyboard, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { colors, consts, device, Icon, normalize, texts } from '../../../../config';
+import { colors, Icon, normalize, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
@@ -19,10 +19,8 @@ import {
 } from '../../../consul';
 import { Input } from '../../../form';
 import { HtmlView } from '../../../HtmlView';
-import { Title, TitleContainer, TitleShadow } from '../../../Title';
+import { SectionHeader } from '../../../SectionHeader';
 import { Wrapper, WrapperRow } from '../../../Wrapper';
-
-const a11yText = consts.a11yLabel;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
@@ -83,15 +81,7 @@ export const DebateDetail = ({ data, refetch, route, navigation }) => {
 
   return (
     <>
-      {!!title && (
-        <>
-          <TitleContainer>
-            <Title accessibilityLabel={`(${title}) ${a11yText.heading}`}>{title}</Title>
-          </TitleContainer>
-          {device.platform === 'ios' && <TitleShadow />}
-        </>
-      )}
-
+      <SectionHeader title={title} />
       {!!publicAuthor && (
         <Wrapper>
           <ConsulPublicAuthor

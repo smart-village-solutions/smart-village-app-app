@@ -9,14 +9,12 @@ import {
   Map,
   RegularText,
   SafeAreaViewFlex,
-  Title,
-  TitleContainer,
-  TitleShadow,
+  SectionHeader,
   Wrapper,
   WrapperWrap
 } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { colors, consts, device, normalize, texts } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useConstructionSites, useMatomoTrackScreenView } from '../hooks';
 import { location as locationIcon, locationIconAnchor } from '../icons';
@@ -95,10 +93,7 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
             containerStyle={styles.imageContainer}
           />
         )}
-        <TitleContainer>
-          <Title>{extendedTitle}</Title>
-        </TitleContainer>
-        {device.platform === 'ios' && <TitleShadow />}
+        <SectionHeader title={extendedTitle} />
         <Wrapper>
           <WrapperWrap>
             <BoldText>{endDate ? 'Gesamtzeitraum: ' : 'Datum: '}</BoldText>

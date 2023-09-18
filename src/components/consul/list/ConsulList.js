@@ -2,8 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { SectionList, View } from 'react-native';
 
-import { consts, device } from '../../../config';
-import { Title, TitleContainer, TitleShadow } from '../../Title';
+import { SectionHeader } from '../../SectionHeader';
 
 import { ConsulListItem } from './ConsulListItem';
 
@@ -12,10 +11,7 @@ const renderSectionHeader = ({ section: { title, data } }) => {
 
   return (
     <View>
-      <TitleContainer>
-        <Title accessibilityLabel={`${title} ${consts.a11yLabel.heading}`}>{title}</Title>
-      </TitleContainer>
-      {device.platform === 'ios' && <TitleShadow />}
+      <SectionHeader title={title} />
     </View>
   );
 };
