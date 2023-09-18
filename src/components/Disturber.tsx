@@ -127,21 +127,22 @@ export const Disturber = ({ navigation, staticContentName }: Props) => {
 
             <Wrapper>
               <WrapperHorizontal>
-                {!!closestItem.button && closestItem.button.title && (
-                  <Button
-                    extraLarge
-                    containerStyle={styles.containerRadius}
-                    title={closestItem.button.title}
-                    onPress={() => {
-                      if (closestItem.button.navigationTo && closestItem.button.params) {
+                {!!closestItem.button &&
+                  !!closestItem.button.title &&
+                  !!closestItem.button.navigationTo &&
+                  !!closestItem.button.params && (
+                    <Button
+                      extraLarge
+                      containerStyle={styles.containerRadius}
+                      title={closestItem.button.title}
+                      onPress={() => {
                         navigation.navigate(
                           closestItem.button.navigationTo,
                           closestItem.button.params
                         );
-                      }
-                    }}
-                  />
-                )}
+                      }}
+                    />
+                  )}
               </WrapperHorizontal>
             </Wrapper>
           </>
