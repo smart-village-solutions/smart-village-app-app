@@ -14,6 +14,7 @@ import {
   CategoryList,
   DropdownHeader,
   EmptyMessage,
+  HtmlView,
   IndexFilterWrapperAndList,
   ListComponent,
   LoadingContainer,
@@ -36,6 +37,7 @@ import {
   useOpenWebScreen,
   usePermanentFilter,
   usePosition,
+  useStaticContent,
   useTrackScreenViewAsync,
   useVolunteerData
 } from '../hooks';
@@ -104,15 +106,13 @@ export const IndexScreen = ({ navigation, route }) => {
     eventLocations: showEventLocationsFilter = false
   } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
-  const {
-    calendarToggle = false,
-    showFilterByOpeningTimes = true
-  } = settings;
+  const { calendarToggle = false, showFilterByOpeningTimes = true } = settings;
   const {
     categoryListIntroText = texts.categoryList.intro,
     categoryListFooter,
     categoryTitles,
-    eventListIntro
+    eventListIntro,
+    poiListIntro
   } = sections;
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [showCalendar, setShowCalendar] = useState(false);
@@ -144,6 +144,15 @@ export const IndexScreen = ({ navigation, route }) => {
       [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
       [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
     }[query];
+  const htmlContentName =
+    query === QUERY_TYPES.POINTS_OF_INTEREST && poiListIntro?.[queryVariables.category];
+
+  const { data: htmlContent } = useStaticContent({
+    name: htmlContentName,
+    type: 'html',
+    refreshTimeKey: `${query}-${queryVariables.category}`,
+    skip: !htmlContentName
+  });
 
   const openWebScreenUrl = eventListIntro?.url || categoryListFooter?.url;
   const openWebScreen = useOpenWebScreen(title, openWebScreenUrl);
@@ -521,6 +530,11 @@ export const IndexScreen = ({ navigation, route }) => {
                       {query === QUERY_TYPES.CATEGORIES && !!categoryListIntroText && (
                         <Wrapper>
                           <RegularText>{categoryListIntroText}</RegularText>
+                        </Wrapper>
+                      )}
+                      {!!htmlContent && (
+                        <Wrapper>
+                          <HtmlView html={htmlContent} />
                         </Wrapper>
                       )}
                     </>
