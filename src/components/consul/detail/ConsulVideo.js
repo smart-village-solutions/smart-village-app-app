@@ -24,10 +24,6 @@ export const ConsulVideo = ({ videoUrl }) => {
   );
 };
 
-ConsulVideo.propTypes = {
-  videoUrl: PropTypes.string
-};
-
 const styles = StyleSheet.create({
   videoView: {
     flex: 1,
@@ -35,3 +31,7 @@ const styles = StyleSheet.create({
     width: '100%'
   }
 });
+
+ConsulVideo.propTypes = {
+  videoUrl: PropTypes.string
+};

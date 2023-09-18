@@ -18,14 +18,14 @@ export const IndexFilterElement = ({ children, selected }) => (
   </WrapperVertical>
 );
 
-IndexFilterElement.propTypes = {
-  children: PropTypes.node.isRequired,
-  selected: PropTypes.bool.isRequired
-};
-
 const styles = StyleSheet.create({
   underline: {
     borderBottomColor: colors.primary,
     borderBottomWidth: 1
   }
 });
+
+IndexFilterElement.propTypes = {
+  children: PropTypes.node.isRequired,
+  selected: PropTypes.bool.isRequired
+};

@@ -38,13 +38,6 @@ export const DrawerNavigatorItem = ({ activeRoute, itemInfo, navigation, topDivi
   );
 };
 
-DrawerNavigatorItem.propTypes = {
-  activeRoute: PropTypes.object.isRequired,
-  itemInfo: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired,
-  topDivider: PropTypes.bool
-};
-
 const styles = StyleSheet.create({
   label: {
     fontFamily: 'regular',
@@ -59,3 +52,10 @@ const styles = StyleSheet.create({
     opacity: 0.3
   }
 });
+
+DrawerNavigatorItem.propTypes = {
+  activeRoute: PropTypes.object.isRequired,
+  itemInfo: PropTypes.object.isRequired,
+  navigation: PropTypes.object.isRequired,
+  topDivider: PropTypes.bool
+};

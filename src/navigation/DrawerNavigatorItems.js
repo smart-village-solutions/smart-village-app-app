@@ -70,6 +70,12 @@ const DrawerNavigatorItems = ({ drawerRoutes, navigation, state }) => {
   );
 };
 
+const styles = StyleSheet.create({
+  sectionTitleContainer: {
+    paddingBottom: normalize(8)
+  }
+});
+
 DrawerNavigatorItems.displayName = 'DrawerNavigatorItems';
 
 DrawerNavigatorItems.propTypes = {
@@ -84,11 +90,5 @@ DrawerNavigatorItems.defaultProps = {
   inactiveTintColor: colors.lightestText,
   inactiveBackgroundColor: 'transparent'
 };
-
-const styles = StyleSheet.create({
-  sectionTitleContainer: {
-    paddingBottom: normalize(8)
-  }
-});
 
 export default DrawerNavigatorItems;
