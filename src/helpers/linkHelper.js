@@ -1,5 +1,7 @@
 import * as Linking from 'expo-linking';
 
+import { device } from '../config';
+
 /**
  *
  * Linking only works with a protocol, otherwise the phone do not know how to handle a link.
@@ -75,5 +77,19 @@ export const mergeWebUrls = ({ webUrls, contact, contacts }) => {
     }
   });
 
-  return mergedWebUrls;
+  // filter out system unrelated web urls
+  return mergedWebUrls.filter((webUrl) => {
+    const { description, url } = webUrl;
+
+    if (device.platform === 'ios') {
+      return !(
+        description.toLowerCase().includes('android') ||
+        url.toLowerCase().includes('play.google.com')
+      );
+    } else {
+      return !(
+        description.toLowerCase().includes('ios') || url.toLowerCase().includes('apps.apple.com')
+      );
+    }
+  });
 };
