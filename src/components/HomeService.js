@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -9,12 +10,12 @@ import { DiagonalGradient } from './DiagonalGradient';
 import { Service } from './screens/Service';
 import { SectionHeader } from './SectionHeader';
 
-export const HomeService = () => {
+export const HomeService = ({ publicJsonFile }) => {
   const { globalSettings } = useContext(SettingsContext);
 
   const { data, loading, refetch } = useStaticContent({
-    refreshTimeKey: 'publicJsonFile-homeService',
-    name: 'homeService',
+    refreshTimeKey: `publicJsonFile-${publicJsonFile}`,
+    name: publicJsonFile,
     type: 'json'
   });
 
@@ -29,7 +30,7 @@ export const HomeService = () => {
     <View>
       <SectionHeader title={headlineService} />
       <DiagonalGradient style={styles.padding}>
-        <Service data={data} staticJsonName="homeService" hasDiagonalGradientBackground />
+        <Service data={data} staticJsonName={publicJsonFile} hasDiagonalGradientBackground />
       </DiagonalGradient>
     </View>
   );
@@ -40,3 +41,7 @@ const styles = StyleSheet.create({
     padding: normalize(14)
   }
 });
+
+HomeService.propTypes = {
+  publicJsonFile: PropTypes.string.isRequired
+};

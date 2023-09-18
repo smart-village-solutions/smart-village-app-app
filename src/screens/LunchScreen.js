@@ -70,11 +70,7 @@ export const LunchScreen = ({ navigation, route }) => {
 
   const ListHeaderComponent = (
     <>
-      <ConnectedImagesCarousel
-        navigation={navigation}
-        publicJsonFile="lunchCarousel"
-        refreshTimeKey="publicJsonFile-lunchCarousel"
-      />
+      <ConnectedImagesCarousel navigation={navigation} publicJsonFile="lunchCarousel" />
       <Wrapper>
         <WrapperRow>
           <TouchableOpacity

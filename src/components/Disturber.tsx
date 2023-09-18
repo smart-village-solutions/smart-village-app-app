@@ -13,7 +13,7 @@ import { Wrapper, WrapperHorizontal } from './Wrapper';
 
 type Props = {
   navigation: DrawerNavigationProp<any>;
-  staticContentName: string;
+  publicJsonFile: string;
 };
 
 interface DateRange {
@@ -37,13 +37,12 @@ interface DataItem {
 }
 
 // eslint-disable-next-line complexity
-export const Disturber = ({ navigation, staticContentName }: Props) => {
+export const Disturber = ({ navigation, publicJsonFile }: Props) => {
   const [isVisible, setIsVisible] = useState(false);
-  const refreshTimeKey = `publicJsonFile-${staticContentName}`;
 
   const { data, refetch } = useStaticContent<DataItem[]>({
-    refreshTimeKey,
-    name: staticContentName,
+    refreshTimeKey: `publicJsonFile-${publicJsonFile}`,
+    name: publicJsonFile,
     type: 'json'
   });
 
@@ -56,13 +55,13 @@ export const Disturber = ({ navigation, staticContentName }: Props) => {
 
   const setDisturberComplete = () => {
     setIsVisible((prev) => !prev);
-    addToStore(staticContentName, closestItem?.id.toString());
+    addToStore(publicJsonFile, closestItem?.id.toString());
   };
 
   useEffect(() => {
     const disturberStatus = async () => {
       try {
-        const disturberComplete = await readFromStore(staticContentName);
+        const disturberComplete = await readFromStore(publicJsonFile);
 
         if (closestItem?.id && disturberComplete !== closestItem?.id.toString()) {
           setIsVisible(true);

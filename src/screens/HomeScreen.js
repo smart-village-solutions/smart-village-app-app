@@ -273,13 +273,13 @@ export const HomeScreen = ({ navigation, route }) => {
 
             <Widgets widgetConfigs={widgetConfigs} />
 
-            <Disturber navigation={navigation} staticContentName="homeDisturber" />
+            <Disturber navigation={navigation} publicJsonFile="homeDisturber" />
           </>
         }
         ListFooterComponent={
           route.params?.isDrawer && (
             <>
-              <HomeService />
+              <HomeService publicJsonFile="homeService" />
               <About navigation={navigation} withHomeRefresh />
             </>
           )
