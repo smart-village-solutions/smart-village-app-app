@@ -99,7 +99,7 @@ export const consts = {
 
   DIMENSIONS: {
     // the max screen size we want to render full screen
-    FULL_SCREEN_MAX_WIDTH: 428
+    FULL_SCREEN_MAX_WIDTH: 504
   },
 
   // this section has been added to optimise AR on low RAM devices and to prevent some features of AR from being used
