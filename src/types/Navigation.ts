@@ -30,6 +30,7 @@ export enum ScreenName {
   EncounterRegistration = 'EncounterRegistration',
   EncounterScanner = 'EncounterScanner',
   EncounterUserDetail = 'EncounterUserDetail',
+  Events = 'Events',
   Feedback = 'Feedback',
   Form = 'Form',
   Home = 'Home',

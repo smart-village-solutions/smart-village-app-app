@@ -42,21 +42,28 @@ const serviceTabConfig: TabConfig = {
   }
 };
 
-const companyTabConfig: TabConfig = {
+const pointOfInterestTabConfig: TabConfig = {
   stackConfig: defaultStackConfig({
-    initialRouteName: ScreenName.Company,
+    initialRouteName: ScreenName.Index,
     isDrawer: false
   }),
   tabOptions: {
-    tabBarLabel: texts.tabBarLabel.company,
+    tabBarLabel: texts.tabBarLabel.pointsOfInterest,
     tabBarIcon: ({ color }: TabBarIconProps) => (
-      <OrientationAwareIcon
-        color={color}
-        Icon={Icon.Company}
-        landscapeStyle={{ marginRight: -normalize(4), marginTop: 0 }}
-        size={normalize(26)}
-        style={{ marginTop: normalize(3) }}
-      />
+      <OrientationAwareIcon color={color} Icon={Icon.Location} size={normalize(30)} />
+    )
+  }
+};
+
+const eventsTabConfig: TabConfig = {
+  stackConfig: defaultStackConfig({
+    initialRouteName: ScreenName.Events,
+    isDrawer: false
+  }),
+  tabOptions: {
+    tabBarLabel: texts.tabBarLabel.events,
+    tabBarIcon: ({ color }: TabBarIconProps) => (
+      <OrientationAwareIcon color={color} Icon={Icon.Calendar} size={normalize(24)} />
     )
   }
 };
@@ -85,5 +92,11 @@ export const tabNavigatorConfig: TabNavigatorConfig = {
   inactiveTintColor: colors.primary,
   activeBackgroundColor: colors.surface,
   inactiveBackgroundColor: colors.surface,
-  tabConfigs: [homeTabConfig, serviceTabConfig, companyTabConfig, aboutTabConfig]
+  tabConfigs: [
+    homeTabConfig,
+    serviceTabConfig,
+    pointOfInterestTabConfig,
+    eventsTabConfig,
+    aboutTabConfig
+  ]
 };

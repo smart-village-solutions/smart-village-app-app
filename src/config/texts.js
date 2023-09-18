@@ -785,10 +785,12 @@ export const texts = {
       home: 'Consul'
     },
     encounterHome: 'Mitfahrbank',
+    events: 'Veranstaltungen',
     feedback: 'Feedback',
     home: appJson.expo.name,
     mapView: 'Kartenansicht',
     routePlanner: 'Routenplaner bbnavi',
+    pointsOfInterest: 'Orte und Touren',
     service: appJson.expo.name,
     settings: 'Einstellungen',
     survey: 'Umfrage',
@@ -941,11 +943,13 @@ export const texts = {
     }
   },
   tabBarLabel: {
-    home: 'Übersicht',
-    service: 'Service',
+    about: 'Mehr',
     company: 'Unternehmen',
-    volunteer: 'Ehrenamt',
-    about: 'Mehr'
+    events: 'Events',
+    home: 'Übersicht',
+    pointsOfInterest: 'POI',
+    service: 'Service',
+    volunteer: 'Ehrenamt'
   },
   tour: {
     description: 'Beschreibung',
