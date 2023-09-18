@@ -92,7 +92,7 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
   if (loading && !data)
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
 
@@ -125,8 +125,8 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
+            colors={[colors.refreshControl]}
+            tintColor={colors.refreshControl}
           />
         }
         ListHeaderComponent={

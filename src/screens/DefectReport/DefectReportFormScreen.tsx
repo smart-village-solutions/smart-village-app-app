@@ -67,7 +67,7 @@ export const DefectReportFormScreen = ({
   if (loadingHtml || loadingCategories) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }
@@ -90,8 +90,8 @@ export const DefectReportFormScreen = ({
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              colors={[colors.accent]}
-              tintColor={colors.accent}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
             />
           }
         >

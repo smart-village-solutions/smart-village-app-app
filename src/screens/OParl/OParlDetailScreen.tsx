@@ -33,7 +33,7 @@ export const OParlDetailScreen = ({ navigation, route }: Props) => {
   if (loading) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }

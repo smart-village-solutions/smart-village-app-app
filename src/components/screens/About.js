@@ -38,7 +38,7 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
   if (loading)
     return withHomeRefresh ? null : (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
 
@@ -72,8 +72,8 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
         <RefreshControl
           refreshing={refreshing}
           onRefresh={() => refresh(refetch)}
-          colors={[colors.accent]}
-          tintColor={colors.accent}
+          colors={[colors.refreshControl]}
+          tintColor={colors.refreshControl}
         />
       }
       sections={sectionData}

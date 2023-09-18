@@ -20,7 +20,7 @@ export const IconForDownloadType = ({ isListView, downloadType, showOnDetailPage
 
       return <Icon.Check color={colors.primary} size={normalize(20)} />;
     default:
-      return <ActivityIndicator size="small" color={colors.accent} />;
+      return <ActivityIndicator size="small" color={colors.refreshControl} />;
   }
 };
 

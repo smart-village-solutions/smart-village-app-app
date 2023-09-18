@@ -55,7 +55,7 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
               if (loading) {
                 return (
                   <LoadingContainer>
-                    <ActivityIndicator color={colors.accent} />
+                    <ActivityIndicator color={colors.refreshControl} />
                   </LoadingContainer>
                 );
               }

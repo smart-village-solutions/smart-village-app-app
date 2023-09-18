@@ -60,7 +60,7 @@ export const WeatherScreen = () => {
   if (loading && !data?.weatherMap) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }
@@ -69,8 +69,8 @@ export const WeatherScreen = () => {
     <RefreshControl
       refreshing={loading}
       onRefresh={refetch}
-      colors={[colors.accent]}
-      tintColor={colors.accent}
+      colors={[colors.refreshControl]}
+      tintColor={colors.refreshControl}
     />
   );
 

@@ -30,5 +30,7 @@ export const colors = {
   transparent: 'transparent',
   gray20,
   gray40,
-  gray60
+  gray60,
+
+  refreshControl: 'rgb(15, 70, 24)'
 };

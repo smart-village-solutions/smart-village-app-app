@@ -249,7 +249,7 @@ export const SettingsScreen = () => {
   if (!sectionedData.length) {
     return (
       <LoadingContainer>
-        <ActivityIndicator color={colors.accent} />
+        <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
   }

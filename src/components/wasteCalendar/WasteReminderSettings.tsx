@@ -260,8 +260,8 @@ export const WasteReminderSettings = ({
         <RefreshControl
           refreshing={loading}
           onRefresh={() => loadStoredSettings(streetName)}
-          colors={[colors.accent]}
-          tintColor={colors.accent}
+          colors={[colors.refreshControl]}
+          tintColor={colors.refreshControl}
         />
       }
     >

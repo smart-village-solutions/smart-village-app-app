@@ -49,8 +49,8 @@ export const VolunteerPersonalScreen = ({ navigation }: StackScreenProps<any>) =
           <RefreshControl
             refreshing={false}
             onRefresh={refreshPersonal}
-            colors={[colors.accent]}
-            tintColor={colors.accent}
+            colors={[colors.refreshControl]}
+            tintColor={colors.refreshControl}
           />
         }
       >

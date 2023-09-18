@@ -45,7 +45,7 @@ export const MediaSection = ({ mediaContents }) => {
           startInLoadingState
           renderLoading={() => (
             <LoadingContainer web>
-              <ActivityIndicator color={colors.accent} />
+              <ActivityIndicator color={colors.refreshControl} />
             </LoadingContainer>
           )}
         />
