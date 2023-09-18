@@ -59,8 +59,10 @@ export const Button = ({
         styles.titleStyle,
         invert && styles.titleStyleInvert,
         needLandscapeStyle && styles.titleStyleLandscape,
-        (extraLarge || large || medium) && styles.spatialButtonTitle,
-        small && styles.smallButtonTitle
+        extraLarge && styles.extraLargeTitle,
+        large && styles.largeTitle,
+        medium && styles.mediumTitle,
+        small && styles.smallTitle
       ]}
       disabledStyle={styles.buttonStyleDisabled}
       disabledTitleStyle={styles.titleStyle}
@@ -115,13 +117,28 @@ const styles = StyleSheet.create({
     borderRadius: normalize(8),
     height: normalize(56)
   },
+  extraLargeTitle: {
+    fontSize: normalize(14),
+    fontWeight: '600',
+    lineHeight: normalize(18)
+  },
   large: {
     borderRadius: normalize(8),
     height: normalize(48)
   },
+  largeTitle: {
+    fontSize: normalize(14),
+    fontWeight: '600',
+    lineHeight: normalize(18)
+  },
   medium: {
     borderRadius: normalize(40),
     height: normalize(40)
+  },
+  mediumTitle: {
+    fontSize: normalize(14),
+    fontWeight: '600',
+    lineHeight: normalize(18)
   },
   rejectStyle: {
     backgroundColor: colors.error
@@ -130,15 +147,10 @@ const styles = StyleSheet.create({
     borderRadius: normalize(32),
     height: normalize(32)
   },
-  smallButtonTitle: {
+  smallTitle: {
     fontSize: normalize(12),
     fontWeight: '600',
     lineHeight: normalize(16)
-  },
-  spatialButtonTitle: {
-    fontSize: normalize(14),
-    fontWeight: '600',
-    lineHeight: normalize(18)
   },
   titleStyle: {
     color: colors.lightestText,
