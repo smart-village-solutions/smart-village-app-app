@@ -15,30 +15,33 @@ export type TServiceTile = {
   icon: string;
   iconName?: ComponentProps<typeof IconSet>['name'];
   image: string;
+  isVisible?: boolean;
   params?: any;
   routeName: string;
   tile?: string;
+  tileSizeFactor?: number;
   title: string;
-  isVisible?: boolean;
 };
 
 /* eslint-disable complexity */
 export const ServiceTile = ({
-  item,
-  isEditMode = false,
   draggableId,
+  hasDiagonalGradientBackground = false,
+  isEditMode = false,
+  item,
   onToggleVisibility,
-  hasDiagonalGradientBackground = false
+  tileSizeFactor = 1
 }: {
-  item: TServiceTile;
-  isEditMode?: boolean;
   draggableId: string;
+  hasDiagonalGradientBackground?: boolean;
+  isEditMode?: boolean;
+  item: TServiceTile;
   onToggleVisibility: (
     toggleableId: string,
     isVisible: boolean,
     setIsVisible: (isVisible: boolean) => void
   ) => void;
-  hasDiagonalGradientBackground?: boolean;
+  tileSizeFactor?: number;
 }) => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { orientation, dimensions } = useContext(OrientationContext);
@@ -83,7 +86,12 @@ export const ServiceTile = ({
               source={{ uri: item.icon || item.tile }}
               style={[
                 styles.serviceImage,
-                !!item.tile && stylesWithProps({ orientation, safeAreaInsets }).bigTile
+                !!item.tile &&
+                  stylesWithProps({
+                    tileSizeFactor,
+                    orientation,
+                    safeAreaInsets
+                  }).bigTile
               ]}
               PlaceholderContent={null}
               resizeMode="contain"
@@ -136,9 +144,11 @@ const styles = StyleSheet.create({
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
 const stylesWithProps = ({
+  tileSizeFactor = 1,
   orientation,
   safeAreaInsets
 }: {
+  tileSizeFactor?: number;
   orientation: string;
   safeAreaInsets: EdgeInsets;
 }) => {
@@ -153,7 +163,7 @@ const stylesWithProps = ({
 
   return StyleSheet.create({
     bigTile: {
-      height: tileSize,
+      height: tileSize * tileSizeFactor,
       marginBottom: 0,
       width: tileSize
     }
