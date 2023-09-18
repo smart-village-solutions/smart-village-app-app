@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 
-import { auth } from '../auth';
 import {
   EventRecord,
   LoadingContainer,
@@ -92,10 +91,6 @@ export const DetailScreen = ({ navigation, route }) => {
   if (!query || !queryVariables || !queryVariables.id) return null;
 
   const refreshTime = useRefreshTime(`${query}-${queryVariables.id}`, getRefreshInterval(query));
-
-  useEffect(() => {
-    isConnected && auth();
-  }, []);
 
   useRootRouteByCategory(details, navigation);
 
