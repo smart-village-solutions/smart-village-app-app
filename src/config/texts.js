@@ -755,6 +755,7 @@ export const texts = {
     homeSectionSubtitle: 'Hast Du alle Quellen abgewählt?'
   },
   pointOfInterest: {
+    departureTimes: 'Abfährtszeiten',
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
     location: 'Anfahrt',
@@ -764,6 +765,8 @@ export const texts = {
     prices: 'Preise',
     routePlanner: 'Zum Routenplaner bbnavi',
     showLunches: 'Zum aktuellen Gastro-Angebot',
+    station: 'Haltestelle',
+    today: 'Heute',
     yourPosition: 'Ihre Position'
   },
   pushNotifications: {

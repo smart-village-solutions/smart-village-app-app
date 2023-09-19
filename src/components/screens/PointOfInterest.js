@@ -21,6 +21,7 @@ import { Map } from '../map';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
+import { TimeTables } from './TimeTables';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -42,6 +43,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     operatingCompany,
     priceInformations,
     title,
+    travelTimes,
     webUrls
   } = data;
 
@@ -103,6 +105,12 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
+        </View>
+      )}
+
+      {!!travelTimes && !!travelTimes.length && (
+        <View>
+          <TimeTables travelTimes={travelTimes} />
         </View>
       )}
 
