@@ -755,7 +755,7 @@ export const texts = {
     homeSectionSubtitle: 'Hast Du alle Quellen abgewählt?'
   },
   pointOfInterest: {
-    departureTimes: 'Abfährtszeiten',
+    departureTimes: 'Abfahrtszeiten',
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
     location: 'Anfahrt',
@@ -764,6 +764,18 @@ export const texts = {
     priceFree: 'kostenlos',
     prices: 'Preise',
     routePlanner: 'Zum Routenplaner bbnavi',
+    routeTypes: {
+      bus: 'Bus',
+      cableCar: 'Kabelstraßenbahn',
+      ferry: 'Fähre',
+      funicular: 'Luftseilbahn',
+      metro: 'U-Bahn',
+      monoRail: 'Einschienenbahn',
+      railway: 'Bahn',
+      subway: 'Standseilbahn',
+      tram: 'Tram',
+      trolleyBus: 'Oberleitungsbus'
+    },
     showLunches: 'Zum aktuellen Gastro-Angebot',
     station: 'Haltestelle',
     today: 'Heute',
