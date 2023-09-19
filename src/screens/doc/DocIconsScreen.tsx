@@ -2,18 +2,17 @@ import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
 import { RegularText } from '../../components';
-import { colors, Icon, normalize } from '../../config';
+import { Icon, normalize } from '../../config';
 
 type TIconItem = {
   iconName: keyof typeof Icon;
 };
 
 const IconItem = ({ iconName }: TIconItem) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const SelectedIcon: any = Icon[iconName];
-
+  const SelectedIcon = Icon[iconName];
   return (
     <View style={styles.iconContainer}>
+      {/* @ts-expect-error could not find a solution for this type issue :/ */}
       <SelectedIcon />
       <RegularText smallest>{iconName}</RegularText>
     </View>
