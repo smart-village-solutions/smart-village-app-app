@@ -10,6 +10,7 @@ type TIconItem = {
 
 const IconItem = ({ iconName }: TIconItem) => {
   const SelectedIcon = Icon[iconName];
+
   return (
     <View style={styles.iconContainer}>
       {/* @ts-expect-error could not find a solution for this type issue :/ */}
