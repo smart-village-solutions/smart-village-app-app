@@ -756,6 +756,7 @@ export const texts = {
   },
   pointOfInterest: {
     availableBikes: 'Verfügbare Fahrräder',
+    availableCars: 'Verfügbare Fahrzeuge',
     bike: 'Fahrrad',
     departureTimes: 'Abfahrtszeiten',
     description: 'Beschreibung',

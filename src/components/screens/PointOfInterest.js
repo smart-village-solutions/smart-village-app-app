@@ -32,8 +32,9 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const {
     addresses,
-    category,
+    availableVehicles,
     categories,
+    category,
     contact,
     dataProvider,
     description,
@@ -42,7 +43,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     mediaContents,
     openingHours,
     operatingCompany,
-    availableVehicles,
     priceInformations,
     title,
     travelTimes,
@@ -118,7 +118,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
 
       {!!availableVehicles && !!availableVehicles.id && (
         <View>
-          <AvailableVehicles availableVehicles={availableVehicles} categoryName={category?.name} />
+          <AvailableVehicles availableVehicles={availableVehicles} category={category} />
         </View>
       )}
 

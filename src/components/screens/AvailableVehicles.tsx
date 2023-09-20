@@ -1,52 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ListItem } from 'react-native-elements';
 
-import { normalize, texts } from '../../config';
+import { Icon, colors, normalize, texts } from '../../config';
+import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { CategoryText, RegularText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
 
 type StationProps = {
-  freeBikeStatusUrl: string;
+  freeStatusUrl: string;
   id: string;
-  isVirtualStation: string;
-  regionId: string;
-  shortName: string;
 };
 
 type AvailableVehiclesProps = {
-  bikes: {
-    bike_id: string;
-    is_disabled: boolean;
-    is_reserved: boolean;
-    lat: number;
-    lon: number;
-    pricing_plan_id: string;
-    rental_uris: {
-      android: string;
-      ios: string;
-      web: string;
-    };
-    station_id: string;
-    vehicle_type_id: string;
-  }[];
-  is_installed: boolean;
-  is_renting: boolean;
-  is_returning: boolean;
-  last_reported: Date;
-  num_bikes_available: number;
-  num_docks_available: number;
-  station_id: string;
+  id: string;
+  name: string;
 };
 
 export const AvailableVehicles = ({
   availableVehicles,
-  categoryName
+  category
 }: {
   availableVehicles: StationProps;
-  categoryName?: string;
+  category: { name: string };
 }) => {
-  const [availableVehiclesData, setAvailableVehiclesData] = useState<AvailableVehiclesProps>();
+  const [availableVehiclesData, setAvailableVehiclesData] = useState<AvailableVehiclesProps[]>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,14 +34,14 @@ export const AvailableVehicles = ({
       };
 
       try {
-        const response = await fetch(availableVehicles.freeBikeStatusUrl, options);
+        const response = await fetch(availableVehicles.freeStatusUrl, options);
 
         const data = await response.json();
         const status = response.status;
         const ok = response.ok;
 
-        if (ok && status === 200 && typeof data?.station_id === 'string') {
-          setAvailableVehiclesData(data);
+        if (ok && status === 200 && !!data?.available) {
+          setAvailableVehiclesData(data.available);
         }
       } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
@@ -74,23 +53,34 @@ export const AvailableVehicles = ({
 
   return (
     <>
-      {!!categoryName && (
+      {!!category?.name && (
         <Wrapper>
-          <CategoryText large>{categoryName}</CategoryText>
+          <CategoryText large>{category.name}</CategoryText>
         </Wrapper>
       )}
 
-      <SectionHeader title={texts.pointOfInterest.availableBikes} />
+      <SectionHeader
+        title={
+          category?.name.includes('bike')
+            ? texts.pointOfInterest.availableBikes
+            : texts.pointOfInterest.availableCars
+        }
+      />
 
-      {!!availableVehiclesData && (
-        <Wrapper>
-          <WrapperRow spaceBetween>
-            <RegularText style={styles.vehicles}>{texts.pointOfInterest.bike}</RegularText>
-            <RegularText style={styles.vehicles}>
-              {availableVehiclesData.num_bikes_available}
-            </RegularText>
-          </WrapperRow>
-        </Wrapper>
+      {!!availableVehiclesData && !!availableVehiclesData.length ? (
+        availableVehiclesData.map((item: AvailableVehiclesProps) => (
+          <ListItem key={item.id} bottomDivider>
+            <ListItem.Content>
+              <WrapperRow spaceBetween>
+                <RegularText style={styles.vehicles}>{item.name}</RegularText>
+              </WrapperRow>
+            </ListItem.Content>
+          </ListItem>
+        ))
+      ) : (
+        <LoadingContainer>
+          <ActivityIndicator color={colors.refreshControl} />
+        </LoadingContainer>
       )}
     </>
   );
