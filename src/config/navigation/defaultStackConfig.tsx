@@ -22,6 +22,7 @@ import {
   DataProviderScreen,
   DefectReportFormScreen,
   DetailScreen,
+  DocIconsScreen,
   EncounterDataScreen,
   EncounterHomeScreen,
   EncounterRegistrationScreen,
@@ -191,6 +192,10 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Detail,
       screenComponent: DetailScreen,
       screenOptions: getScreenOptions({ withDrawer: isDrawer, withBookmark: true, withShare: true })
+    },
+    {
+      routeName: ScreenName.DocIcons,
+      screenComponent: DocIconsScreen
     },
     {
       routeName: ScreenName.EncounterData,

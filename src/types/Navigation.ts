@@ -25,6 +25,7 @@ export enum ScreenName {
   DefectReportForm = 'DefectReportForm',
   DataProvider = 'DataProvider',
   Detail = 'Detail',
+  DocIcons = 'DocIcons',
   EncounterData = 'EncounterData',
   EncounterHome = 'EncounterHome',
   EncounterRegistration = 'EncounterRegistration',
