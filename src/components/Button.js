@@ -3,23 +3,22 @@ import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { Button as RNEButton } from 'react-native-elements';
 
-import { colors, consts, IconSetName, normalize, texts } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import { OrientationContext } from '../OrientationProvider';
 
 import { DiagonalGradient } from './DiagonalGradient';
 
 /* eslint-disable complexity */
 export const Button = ({
+  big,
   disabled,
-  extraLarge,
-  iconName,
+  icon,
   iconPosition,
   invert,
-  large,
-  medium,
   notFullWidth,
   onPress,
   small,
+  smallest,
   title
 }) => {
   const { orientation, dimensions } = useContext(OrientationContext);
@@ -56,37 +55,30 @@ export const Button = ({
       onPress={onPress}
       title={title}
       titleStyle={[
-        styles.titleStyle,
+        styles.title,
         invert && styles.titleStyleInvert,
         needLandscapeStyle && styles.titleStyleLandscape,
-        extraLarge && styles.extraLargeTitle,
-        large && styles.largeTitle,
-        medium && styles.mediumTitle,
-        small && styles.smallTitle
+        big && styles.bigTitle,
+        small && styles.smallTitle,
+        smallest && styles.smallestTitle
       ]}
       disabledStyle={styles.buttonStyleDisabled}
       disabledTitleStyle={styles.titleStyle}
       buttonStyle={[
-        styles.buttonStyle,
+        styles.button,
+        styles.buttonRadius,
         invert && styles.buttonStyleInvert,
         isDelete && styles.rejectStyle,
-        extraLarge && styles.extraLarge,
-        large && styles.large,
-        medium && styles.medium,
-        small && styles.small
+        big && [styles.bigButton, styles.bigButtonRadius],
+        small && [styles.smallButton, styles.smallButtonRadius],
+        smallest && [styles.smallestButton, styles.smallestButtonRadius]
       ]}
       containerStyle={[styles.containerStyle, needLandscapeStyle && styles.containerStyleLandscape]}
       ViewComponent={invert || isDelete || disabled ? undefined : DiagonalGradient}
       useForeground={!invert}
       accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
       disabled={disabled}
-      icon={{
-        name: iconName,
-        type: IconSetName.toLowerCase(),
-        containerStyle: {},
-        color: invert ? colors.primary : colors.lightestText,
-        size: small ? normalize(16) : normalize(24)
-      }}
+      icon={icon}
       iconPosition={iconPosition}
     />
   );
@@ -97,7 +89,22 @@ const styles = StyleSheet.create({
   acceptStyle: {
     backgroundColor: colors.primary
   },
-  buttonStyle: {},
+  bigButton: {
+    height: normalize(56)
+  },
+  bigButtonRadius: {
+    borderRadius: normalize(8)
+  },
+  bigTitle: {
+    fontSize: normalize(16),
+    lineHeight: normalize(19)
+  },
+  buttonRadius: {
+    borderRadius: normalize(8)
+  },
+  button: {
+    height: normalize(48)
+  },
   buttonStyleDisabled: {
     backgroundColor: colors.placeholder
   },
@@ -113,48 +120,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  extraLarge: {
-    borderRadius: normalize(8),
-    height: normalize(56)
-  },
-  extraLargeTitle: {
-    fontSize: normalize(14),
-    fontWeight: '600',
-    lineHeight: normalize(18)
-  },
-  large: {
-    borderRadius: normalize(8),
-    height: normalize(48)
-  },
-  largeTitle: {
-    fontSize: normalize(14),
-    fontWeight: '600',
-    lineHeight: normalize(18)
-  },
-  medium: {
-    borderRadius: normalize(40),
-    height: normalize(40)
-  },
-  mediumTitle: {
-    fontSize: normalize(14),
-    fontWeight: '600',
-    lineHeight: normalize(18)
-  },
   rejectStyle: {
     backgroundColor: colors.error
   },
-  small: {
-    borderRadius: normalize(32),
+  smallButton: {
+    height: normalize(40)
+  },
+  smallButtonRadius: {
+    borderRadius: normalize(40)
+  },
+  smallestButton: {
     height: normalize(32)
+  },
+  smallestButtonRadius: {
+    borderRadius: normalize(32)
+  },
+  smallestTitle: {
+    fontSize: normalize(10),
+    fontWeight: '600',
+    lineHeight: normalize(13)
   },
   smallTitle: {
     fontSize: normalize(12),
-    fontWeight: '600',
-    lineHeight: normalize(16)
+    lineHeight: normalize(15)
   },
-  titleStyle: {
+  title: {
     color: colors.lightestText,
     fontFamily: 'bold',
+    fontSize: normalize(14),
+    fontWeight: '600',
+    lineHeight: normalize(17),
     paddingHorizontal: normalize(16)
   },
   titleStyleInvert: {
@@ -166,20 +161,20 @@ const styles = StyleSheet.create({
 });
 
 Button.propTypes = {
+  big: PropTypes.bool,
   disabled: PropTypes.bool,
-  extraLarge: PropTypes.bool,
-  iconName: PropTypes.object,
+  icon: PropTypes.node,
   iconPosition: PropTypes.string,
   invert: PropTypes.bool,
-  large: PropTypes.bool,
-  medium: PropTypes.bool,
   notFullWidth: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
   small: PropTypes.bool,
+  smallest: PropTypes.bool,
   title: PropTypes.string.isRequired
 };
 
 Button.defaultProps = {
+  iconPosition: 'right',
   invert: false,
   notFullWidth: false
 };
