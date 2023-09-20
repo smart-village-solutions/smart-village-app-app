@@ -786,7 +786,7 @@ export const texts = {
     encounterHome: 'Mitfahrbank',
     favorites: 'Favoriten',
     feedback: 'Feedback',
-    home: 'MeinQuertier',
+    home: 'MeinQuartier',
     mapView: 'Kartenansicht',
     profile: 'Profil',
     routePlanner: 'Routenplaner bbnavi',
