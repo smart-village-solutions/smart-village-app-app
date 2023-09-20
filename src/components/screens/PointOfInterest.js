@@ -18,6 +18,7 @@ import { Wrapper } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 import { Map } from '../map';
 
+import { AvailableVehicles } from './AvailableVehicles';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
@@ -41,6 +42,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     mediaContents,
     openingHours,
     operatingCompany,
+    availableVehicles,
     priceInformations,
     title,
     travelTimes,
@@ -111,6 +113,12 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
       {!!travelTimes && !!travelTimes.length && (
         <View>
           <TimeTables travelTimes={travelTimes} />
+        </View>
+      )}
+
+      {!!availableVehicles && !!availableVehicles.id && (
+        <View>
+          <AvailableVehicles availableVehicles={availableVehicles} categoryName={category?.name} />
         </View>
       )}
 
