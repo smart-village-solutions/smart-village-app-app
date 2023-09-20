@@ -81,37 +81,36 @@ export const isActive = (item) => {
  *
  * @param {DataItem[]} data an array of objects, each with a `dates` array
  *
- * @return {DataItem | null} the item with the closest date range to today, or null if no such item exists
+ * @return {DataItem | undefined} the item with the closest date range to today, or undefined if no such item exists
  */
 export const findClosestItem = (data) => {
-  // Check if data is null or undefined or not an array
+  // check if data is not an array
   if (!Array.isArray(data)) {
     return null;
   }
 
-  const today = new Date();
-
   return data.reduce(
     (closest, item) => {
-      // Check if item or item.dates is null or undefined or not an array
+      // check if item or item.dates is null or undefined or not an array
       if (!item || !Array.isArray(item.dates)) {
         return closest;
       }
 
-      // Calculate the minimum time difference between today and the date ranges in the current item.
+      // calculate the minimum time difference between today and the date ranges in the current item
       const minDifference = Math.min(
         ...item.dates.map((dateRange) => {
-          // Check if dateRange, dateStart, or dateEnd is null or undefined
+          // check if dateRange, dateStart, or dateEnd is null or undefined
           if (!dateRange || !dateRange.dateStart || !dateRange.dateEnd) {
             return Infinity;
           }
 
-          // Convert the start and end dates to time in milliseconds.
+          // convert the start and end dates to time in milliseconds.
           const dateStart = moment(dateRange.dateStart).valueOf();
           const dateEnd = moment(dateRange.dateEnd).valueOf();
+          const today = new Date();
 
-          // Calculate the absolute difference between today and both the start and end dates,
-          // and return the smaller of the two.
+          // calculate the absolute difference between today and both the start and end dates,
+          // and return the smaller of the two
           return Math.min(
             Math.abs(today.getTime() - dateStart),
             Math.abs(today.getTime() - dateEnd)
@@ -119,11 +118,10 @@ export const findClosestItem = (data) => {
         })
       );
 
-      // If the calculated minimum difference is smaller than the current smallest difference,
-      // update the closest object.
+      // if the calculated minimum difference is smaller than the current smallest difference,
+      // update the closest object
       return minDifference < closest.minDifference ? { minDifference, item } : closest;
     },
-    // Start with an initial closest object where minDifference is Infinity and item is null.
-    { minDifference: Infinity, item: null }
+    { minDifference: Infinity, item: undefined }
   ).item;
 };
