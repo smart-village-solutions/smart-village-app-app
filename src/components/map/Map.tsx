@@ -119,11 +119,8 @@ export const Map = ({
             identifier={marker.id}
             key={`${index}-${marker.id}`}
             coordinate={marker.position}
-            onPress={() => {
-              if (onMarkerPress) {
-                onMarkerPress(marker.id);
-              }
-            }}
+            onPress={() => onMarkerPress?.(marker.id)}
+            zIndex={selectedMarker && marker.id === selectedMarker ? 1010 : 1}
           >
             <SvgXml
               xml={selectedMarker && marker.id === selectedMarker ? marker.activeIcon : marker.icon}
