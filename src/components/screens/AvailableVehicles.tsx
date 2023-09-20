@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { Icon, colors, normalize, texts } from '../../config';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { CategoryText, RegularText } from '../Text';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { Wrapper } from '../Wrapper';
 
 type StationProps = {
   freeStatusUrl: string;
@@ -23,7 +23,7 @@ export const AvailableVehicles = ({
   category
 }: {
   availableVehicles: StationProps;
-  category: { name: string };
+  category: { name: string; iconName: keyof typeof Icon };
 }) => {
   const [availableVehiclesData, setAvailableVehiclesData] = useState<AvailableVehiclesProps[]>();
 
@@ -67,13 +67,14 @@ export const AvailableVehicles = ({
         }
       />
 
-      {!!availableVehiclesData && !!availableVehiclesData.length ? (
+      {!!availableVehiclesData && !!availableVehiclesData.length && category?.iconName ? (
         availableVehiclesData.map((item: AvailableVehiclesProps) => (
           <ListItem key={item.id} bottomDivider>
             <ListItem.Content>
-              <WrapperRow spaceBetween>
+              <View style={styles.vehiclesContainer}>
+                <CategoryIcon iconName={category.iconName} />
                 <RegularText style={styles.vehicles}>{item.name}</RegularText>
-              </WrapperRow>
+              </View>
             </ListItem.Content>
           </ListItem>
         ))
@@ -86,11 +87,31 @@ export const AvailableVehicles = ({
   );
 };
 
+const CategoryIcon: React.FC<{ iconName: keyof typeof Icon }> = ({
+  iconName
+}: {
+  iconName: keyof typeof Icon;
+}) => {
+  let SelectedIcon;
+  if (iconName) {
+    if (Object.keys(Icon).includes(iconName)) {
+      SelectedIcon = Icon[iconName];
+    }
+  }
+
+  /* @ts-expect-error could not find a solution for this type issue :/ */
+  return SelectedIcon ? <SelectedIcon size={normalize(24)} color={colors.darkText} /> : null;
+};
+
 const styles = StyleSheet.create({
   vehicles: {
     marginRight: normalize(8),
     fontWeight: '600',
     fontSize: normalize(14),
     lineHeight: normalize(20)
+  },
+  vehiclesContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
   }
 });

@@ -96,6 +96,7 @@ export const GET_POINT_OF_INTEREST = gql`
       category {
         id
         name
+        iconName
       }
       description
       mediaContents {
