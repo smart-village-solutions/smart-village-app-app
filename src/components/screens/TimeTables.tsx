@@ -53,15 +53,15 @@ export const TimeTables = ({
         };
 
         const routeColors: { [key: string]: string } = {
-          '0': colors.primary,
+          '0': '#D02E26',
           '1': colors.primary,
           '2': colors.primary,
-          '3': colors.primary
+          '3': '#265BA4'
         };
 
         return (
           <Fragment key={index}>
-            <ListItem style={styles.container}>
+            <ListItem style={styles.container} containerStyle={styles.container}>
               <ListItem.Content style={styles.itemRow}>
                 {!!departure_time && (
                   <RegularText style={styles.time}>
