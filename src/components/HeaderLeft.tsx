@@ -13,9 +13,9 @@ export const HeaderLeft = ({ onPress, backImage }: StackHeaderLeftButtonProps) =
         accessibilityHint={consts.a11yLabel.backIconHint}
       >
         {backImage ? (
-          backImage({ tintColor: colors.lightestText })
+          backImage({ tintColor: colors.darkText })
         ) : (
-          <Icon.ArrowLeft color={colors.lightestText} style={styles.icon} />
+          <Icon.ArrowLeft color={colors.darkText} style={styles.icon} />
         )}
       </TouchableOpacity>
     </View>
