@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button as RNEButton } from 'react-native-elements';
 
 import { colors, consts, normalize, texts } from '../config';
@@ -9,7 +9,18 @@ import { OrientationContext } from '../OrientationProvider';
 import { DiagonalGradient } from './DiagonalGradient';
 
 /* eslint-disable complexity */
-export const Button = ({ disabled, invert, notFullWidth, onPress, title }) => {
+export const Button = ({
+  big,
+  disabled,
+  icon,
+  iconPosition,
+  invert,
+  notFullWidth,
+  onPress,
+  small,
+  smallest,
+  title
+}) => {
   const { orientation, dimensions } = useContext(OrientationContext);
   const needLandscapeStyle =
     notFullWidth ||
@@ -23,13 +34,13 @@ export const Button = ({ disabled, invert, notFullWidth, onPress, title }) => {
       <RNEButton
         onPress={onPress}
         title={title}
-        titleStyle={[styles.titleStyle, needLandscapeStyle && styles.titleStyleLandscape]}
+        titleStyle={[styles.title, needLandscapeStyle && styles.titleLandscape]}
         buttonStyle={[
           styles.buttonStyle,
-          isAccept && styles.acceptStyle,
-          isReject && styles.rejectStyle
+          isAccept && styles.acceptButton,
+          isReject && styles.rejectButton
         ]}
-        containerStyle={[needLandscapeStyle && styles.containerStyleLandscape]}
+        containerStyle={[needLandscapeStyle && styles.containerLandscape]}
         useForeground
         accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
       />
@@ -44,71 +55,145 @@ export const Button = ({ disabled, invert, notFullWidth, onPress, title }) => {
       onPress={onPress}
       title={title}
       titleStyle={[
-        styles.titleStyle,
-        invert && styles.titleStyleInvert,
-        needLandscapeStyle && styles.titleStyleLandscape
+        styles.title,
+        invert && styles.titleInvert,
+        needLandscapeStyle && styles.titleLandscape,
+        big && styles.bigTitle,
+        small && styles.smallTitle,
+        smallest && styles.smallestTitle
       ]}
-      disabledStyle={styles.buttonStyleDisabled}
-      disabledTitleStyle={styles.titleStyle}
+      disabledStyle={styles.buttonDisabled}
+      disabledTitleStyle={styles.title}
       buttonStyle={[
-        styles.buttonStyle,
-        invert && styles.buttonStyleInvert,
-        isDelete && styles.rejectStyle
+        styles.button,
+        styles.buttonRadius,
+        invert && styles.buttonInvert,
+        isDelete && styles.rejectButton,
+        big && [styles.bigButton, styles.bigButtonRadius],
+        small && [styles.smallButton, styles.smallButtonRadius],
+        smallest && [styles.smallestButton, styles.smallestButtonRadius]
       ]}
-      containerStyle={[styles.containerStyle, needLandscapeStyle && styles.containerStyleLandscape]}
+      containerStyle={[styles.container, needLandscapeStyle && styles.containerLandscape]}
       ViewComponent={invert || isDelete || disabled ? undefined : DiagonalGradient}
       useForeground={!invert}
       accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
       disabled={disabled}
+      icon={
+        !!icon && (
+          <View
+            style={[
+              iconPosition === 'left' && styles.iconLeft,
+              iconPosition === 'right' && styles.iconRight,
+              needLandscapeStyle && iconPosition === 'left' && styles.landscapeIconLeft,
+              needLandscapeStyle && iconPosition === 'right' && styles.landscapeIconRight
+            ]}
+          >
+            {icon}
+          </View>
+        )
+      }
+      iconPosition={iconPosition}
     />
   );
 };
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  buttonStyle: {},
-  buttonStyleDisabled: {
+  acceptButton: {
+    backgroundColor: colors.primary
+  },
+  bigButton: {
+    height: normalize(56)
+  },
+  bigButtonRadius: {
+    borderRadius: normalize(3)
+  },
+  bigTitle: {
+    fontSize: normalize(20)
+  },
+  button: {
+    height: normalize(48)
+  },
+  buttonDisabled: {
     backgroundColor: colors.placeholder
   },
-  buttonStyleInvert: {
+  buttonInvert: {
     borderColor: colors.primary,
     borderStyle: 'solid',
     borderWidth: 2
   },
-  containerStyle: {
+  buttonRadius: {
+    borderRadius: normalize(3)
+  },
+  container: {
     marginBottom: normalize(21)
   },
-  containerStyleLandscape: {
+  containerLandscape: {
     alignItems: 'center',
     justifyContent: 'center'
   },
-  titleStyle: {
+  iconLeft: {
+    paddingRight: normalize(8)
+  },
+  iconRight: {
+    paddingLeft: normalize(8)
+  },
+  landscapeIconLeft: {
+    marginRight: normalize(-14),
+    paddingLeft: normalize(14)
+  },
+  landscapeIconRight: {
+    marginLeft: normalize(-14),
+    paddingRight: normalize(14)
+  },
+  rejectButton: {
+    backgroundColor: colors.error
+  },
+  smallButton: {
+    height: normalize(40)
+  },
+  smallButtonRadius: {
+    borderRadius: normalize(3)
+  },
+  smallestButton: {
+    height: normalize(32)
+  },
+  smallestButtonRadius: {
+    borderRadius: normalize(3)
+  },
+  smallestTitle: {
+    fontSize: normalize(10)
+  },
+  smallTitle: {
+    fontSize: normalize(12)
+  },
+  title: {
     color: colors.lightestText,
     fontFamily: 'bold'
   },
-  titleStyleInvert: {
+  titleInvert: {
     color: colors.primary
   },
-  titleStyleLandscape: {
+  titleLandscape: {
     paddingHorizontal: normalize(14)
-  },
-  acceptStyle: {
-    backgroundColor: colors.primary
-  },
-  rejectStyle: {
-    backgroundColor: colors.error
   }
 });
 
 Button.propTypes = {
+  big: PropTypes.bool,
   disabled: PropTypes.bool,
+  icon: PropTypes.node,
+  iconPosition: PropTypes.string,
   invert: PropTypes.bool,
   notFullWidth: PropTypes.bool,
   onPress: PropTypes.func.isRequired,
+  small: PropTypes.bool,
+  smallest: PropTypes.bool,
   title: PropTypes.string.isRequired
 };
 
 Button.defaultProps = {
+  iconPosition: 'right',
   invert: false,
   notFullWidth: false
 };
