@@ -83,12 +83,12 @@ export const mergeWebUrls = ({ webUrls, contact, contacts }) => {
 
     if (device.platform === 'ios') {
       return !(
-        description.toLowerCase().includes('android') ||
-        url.toLowerCase().includes('play.google.com')
+        description?.toLowerCase().includes('android') ||
+        url?.toLowerCase().includes('play.google.com')
       );
     } else {
       return !(
-        description.toLowerCase().includes('ios') || url.toLowerCase().includes('apps.apple.com')
+        description?.toLowerCase().includes('ios') || url?.toLowerCase().includes('apps.apple.com')
       );
     }
   });
