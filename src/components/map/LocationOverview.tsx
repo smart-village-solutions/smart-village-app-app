@@ -62,8 +62,8 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
         }
 
         return {
-          icon: icon(colors.primary),
-          activeIcon: icon(colors.accent),
+          icon: icon(colors.lighterPrimary),
+          activeIcon: icon(colors.primary),
           iconAnchor: locationIconAnchor,
           id: item.id,
           position: {
@@ -167,6 +167,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
               subtitle: undefined
             }}
             leftImage
+            listsWithoutArrows
             navigation={navigation}
           />
           <View style={styles.iconContainer}>
