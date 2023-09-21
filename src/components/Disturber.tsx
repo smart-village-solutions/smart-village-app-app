@@ -63,7 +63,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
       try {
         const disturberComplete = await readFromStore(publicJsonFile);
 
-        if (disturberComplete !== closestItem?.id?.toString()) {
+        if (closestItem?.id.toString() !== disturberComplete) {
           setIsVisible(true);
         }
       } catch (e) {
@@ -76,7 +76,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
     disturberStatus();
   }, [closestItem]);
 
-  if (!closestItem) return null;
+  if (!isVisible || !closestItem) return null;
 
   return (
     <Wrapper style={styles.wrapperPadding}>
