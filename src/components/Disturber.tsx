@@ -131,8 +131,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
                   !!closestItem.button.navigationTo &&
                   !!closestItem.button.params && (
                     <Button
-                      extraLarge
-                      containerStyle={styles.containerRadius}
+                      big
                       title={closestItem.button.title}
                       onPress={() => {
                         navigation.navigate(
