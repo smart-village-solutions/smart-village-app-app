@@ -106,10 +106,10 @@ const styles = StyleSheet.create({
     height: normalize(56)
   },
   bigButtonRadius: {
-    borderRadius: normalize(3)
+    borderRadius: normalize(8)
   },
   bigTitle: {
-    fontSize: normalize(20)
+    fontSize: normalize(14)
   },
   button: {
     height: normalize(48)
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     borderWidth: 2
   },
   buttonRadius: {
-    borderRadius: normalize(3)
+    borderRadius: normalize(8)
   },
   container: {
     marginBottom: normalize(21)
@@ -153,23 +153,25 @@ const styles = StyleSheet.create({
     height: normalize(40)
   },
   smallButtonRadius: {
-    borderRadius: normalize(3)
+    borderRadius: normalize(40)
   },
   smallestButton: {
     height: normalize(32)
   },
   smallestButtonRadius: {
-    borderRadius: normalize(3)
+    borderRadius: normalize(32)
   },
   smallestTitle: {
-    fontSize: normalize(10)
+    fontSize: normalize(12)
   },
   smallTitle: {
-    fontSize: normalize(12)
+    fontSize: normalize(14)
   },
   title: {
     color: colors.lightestText,
-    fontFamily: 'bold'
+    fontFamily: 'bold',
+    fontSize: normalize(14),
+    fontWeight: '600'
   },
   titleInvert: {
     color: colors.primary
