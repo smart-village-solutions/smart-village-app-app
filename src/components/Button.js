@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Button as RNEButton } from 'react-native-elements';
 
 import { colors, consts, normalize, texts } from '../config';
@@ -78,7 +78,20 @@ export const Button = ({
       useForeground={!invert}
       accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
       disabled={disabled}
-      icon={icon}
+      icon={
+        !!icon && (
+          <View
+            style={[
+              iconPosition === 'left' && styles.iconLeft,
+              iconPosition === 'right' && styles.iconRight,
+              needLandscapeStyle && iconPosition === 'left' && styles.landscapeIconLeft,
+              needLandscapeStyle && iconPosition === 'right' && styles.landscapeIconRight
+            ]}
+          >
+            {icon}
+          </View>
+        )
+      }
       iconPosition={iconPosition}
     />
   );
@@ -93,11 +106,10 @@ const styles = StyleSheet.create({
     height: normalize(56)
   },
   bigButtonRadius: {
-    borderRadius: normalize(8)
+    borderRadius: normalize(3)
   },
   bigTitle: {
-    fontSize: normalize(16),
-    lineHeight: normalize(19)
+    fontSize: normalize(20)
   },
   button: {
     height: normalize(48)
@@ -111,7 +123,7 @@ const styles = StyleSheet.create({
     borderWidth: 2
   },
   buttonRadius: {
-    borderRadius: normalize(8)
+    borderRadius: normalize(3)
   },
   container: {
     marginBottom: normalize(21)
@@ -120,6 +132,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  iconLeft: {
+    paddingRight: normalize(8)
+  },
+  iconRight: {
+    paddingLeft: normalize(8)
+  },
+  landscapeIconLeft: {
+    marginRight: normalize(-14),
+    paddingLeft: normalize(14)
+  },
+  landscapeIconRight: {
+    marginLeft: normalize(-14),
+    paddingRight: normalize(14)
+  },
   rejectButton: {
     backgroundColor: colors.error
   },
@@ -127,30 +153,23 @@ const styles = StyleSheet.create({
     height: normalize(40)
   },
   smallButtonRadius: {
-    borderRadius: normalize(40)
+    borderRadius: normalize(3)
   },
   smallestButton: {
     height: normalize(32)
   },
   smallestButtonRadius: {
-    borderRadius: normalize(32)
+    borderRadius: normalize(3)
   },
   smallestTitle: {
-    fontSize: normalize(10),
-    fontWeight: '600',
-    lineHeight: normalize(13)
+    fontSize: normalize(10)
   },
   smallTitle: {
-    fontSize: normalize(12),
-    lineHeight: normalize(15)
+    fontSize: normalize(12)
   },
   title: {
     color: colors.lightestText,
-    fontFamily: 'bold',
-    fontSize: normalize(14),
-    fontWeight: '600',
-    lineHeight: normalize(17),
-    paddingHorizontal: normalize(16)
+    fontFamily: 'bold'
   },
   titleInvert: {
     color: colors.primary
