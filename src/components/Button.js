@@ -34,13 +34,13 @@ export const Button = ({
       <RNEButton
         onPress={onPress}
         title={title}
-        titleStyle={[styles.titleStyle, needLandscapeStyle && styles.titleStyleLandscape]}
+        titleStyle={[styles.title, needLandscapeStyle && styles.titleLandscape]}
         buttonStyle={[
           styles.buttonStyle,
-          isAccept && styles.acceptStyle,
-          isReject && styles.rejectStyle
+          isAccept && styles.acceptButton,
+          isReject && styles.rejectButton
         ]}
-        containerStyle={[needLandscapeStyle && styles.containerStyleLandscape]}
+        containerStyle={[needLandscapeStyle && styles.containerLandscape]}
         useForeground
         accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
       />
@@ -56,24 +56,24 @@ export const Button = ({
       title={title}
       titleStyle={[
         styles.title,
-        invert && styles.titleStyleInvert,
-        needLandscapeStyle && styles.titleStyleLandscape,
+        invert && styles.titleInvert,
+        needLandscapeStyle && styles.titleLandscape,
         big && styles.bigTitle,
         small && styles.smallTitle,
         smallest && styles.smallestTitle
       ]}
-      disabledStyle={styles.buttonStyleDisabled}
-      disabledTitleStyle={styles.titleStyle}
+      disabledStyle={styles.buttonDisabled}
+      disabledTitleStyle={styles.title}
       buttonStyle={[
         styles.button,
         styles.buttonRadius,
-        invert && styles.buttonStyleInvert,
-        isDelete && styles.rejectStyle,
+        invert && styles.buttonInvert,
+        isDelete && styles.rejectButton,
         big && [styles.bigButton, styles.bigButtonRadius],
         small && [styles.smallButton, styles.smallButtonRadius],
         smallest && [styles.smallestButton, styles.smallestButtonRadius]
       ]}
-      containerStyle={[styles.containerStyle, needLandscapeStyle && styles.containerStyleLandscape]}
+      containerStyle={[styles.container, needLandscapeStyle && styles.containerLandscape]}
       ViewComponent={invert || isDelete || disabled ? undefined : DiagonalGradient}
       useForeground={!invert}
       accessibilityLabel={`${title} ${consts.a11yLabel.button}`}
@@ -86,7 +86,7 @@ export const Button = ({
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  acceptStyle: {
+  acceptButton: {
     backgroundColor: colors.primary
   },
   bigButton: {
@@ -99,28 +99,28 @@ const styles = StyleSheet.create({
     fontSize: normalize(16),
     lineHeight: normalize(19)
   },
-  buttonRadius: {
-    borderRadius: normalize(8)
-  },
   button: {
     height: normalize(48)
   },
-  buttonStyleDisabled: {
+  buttonDisabled: {
     backgroundColor: colors.placeholder
   },
-  buttonStyleInvert: {
+  buttonInvert: {
     borderColor: colors.primary,
     borderStyle: 'solid',
     borderWidth: 2
   },
-  containerStyle: {
+  buttonRadius: {
+    borderRadius: normalize(8)
+  },
+  container: {
     marginBottom: normalize(21)
   },
-  containerStyleLandscape: {
+  containerLandscape: {
     alignItems: 'center',
     justifyContent: 'center'
   },
-  rejectStyle: {
+  rejectButton: {
     backgroundColor: colors.error
   },
   smallButton: {
@@ -152,10 +152,10 @@ const styles = StyleSheet.create({
     lineHeight: normalize(17),
     paddingHorizontal: normalize(16)
   },
-  titleStyleInvert: {
+  titleInvert: {
     color: colors.primary
   },
-  titleStyleLandscape: {
+  titleLandscape: {
     paddingHorizontal: normalize(14)
   }
 });
