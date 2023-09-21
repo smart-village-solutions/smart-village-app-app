@@ -755,6 +755,7 @@ export const texts = {
     homeSectionSubtitle: 'Hast Du alle Quellen abgewählt?'
   },
   pointOfInterest: {
+    availableVehicles: 'Verfügbare Fahrzeuge',
     departureTimes: 'Abfahrtszeiten',
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',

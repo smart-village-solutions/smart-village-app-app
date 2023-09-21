@@ -18,6 +18,7 @@ import { Wrapper } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 import { Map } from '../map';
 
+import { AvailableVehicles } from './AvailableVehicles';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
@@ -31,8 +32,9 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const {
     addresses,
-    category,
+    payload,
     categories,
+    category,
     contact,
     dataProvider,
     description,
@@ -84,6 +86,10 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
           webUrls={webUrls}
         />
       </Wrapper>
+
+      {!!payload?.freeStatusUrl && (
+        <AvailableVehicles freeStatusUrl={payload.freeStatusUrl} iconName={category.iconName} />
+      )}
 
       {!!openingHours && !!openingHours.length && (
         <View>

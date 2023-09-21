@@ -1,6 +1,7 @@
 export * from './consul';
 
 export * from './About';
+export * from './AvailableVehicles';
 export * from './EventRecord';
 export * from './LunchSection';
 export * from './NewsItem';

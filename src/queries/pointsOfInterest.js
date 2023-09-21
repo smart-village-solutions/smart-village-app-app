@@ -92,9 +92,11 @@ export const GET_POINT_OF_INTEREST = gql`
       id
       title: name
       travelTimes(date: $date)
+      payload
       category {
         id
         name
+        iconName
       }
       description
       mediaContents {
