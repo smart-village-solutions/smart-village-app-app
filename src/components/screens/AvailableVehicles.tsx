@@ -58,7 +58,7 @@ export const AvailableVehicles = ({
 
       {availableVehiclesData.map((item: AvailableVehiclesProps, index: number) => (
         <Fragment key={item.id}>
-          <ListItem style={styles.container}>
+          <ListItem style={styles.container} containerStyle={styles.container}>
             {!!iconName && <CategoryIcon />}
             <ListItem.Content>
               <RegularText>{item.name}</RegularText>
