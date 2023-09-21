@@ -61,8 +61,8 @@ Text.propTypes = {
 export const RegularText = styled(Text)`
   color: ${colors.darkText};
   font-family: regular;
-  font-size: ${normalize(16)};
-  line-height: ${normalize(22)};
+  font-size: ${normalize(14)};
+  line-height: ${normalize(20)};
 
   ${(props) =>
     props.italic &&
@@ -73,22 +73,22 @@ export const RegularText = styled(Text)`
   ${(props) =>
     props.small &&
     css`
-      font-size: ${normalize(14)};
-      line-height: ${normalize(18)};
+      font-size: ${normalize(12)};
+      line-height: ${normalize(16)};
     `};
 
   ${(props) =>
     props.smallest &&
     css`
-      font-size: ${normalize(12)};
-      line-height: ${normalize(16)};
+      font-size: ${normalize(11)};
+      line-height: ${normalize(13)};
     `};
 
   ${(props) =>
     props.big &&
     css`
       font-size: ${normalize(20)};
-      line-height: ${normalize(26)};
+      line-height: ${normalize(24)};
     `};
 
   ${(props) =>
@@ -181,9 +181,8 @@ export const HeadlineText = styled(RegularText)`
   ${(props) =>
     props.smallest &&
     css`
-      font-size: ${normalize(12)};
-      letter-spacing: ${normalize(0.5)};
-      line-height: ${normalize(14)};
+      font-size: ${normalize(14)};
+      line-height: ${normalize(18)};
     `};
 
   ${(props) =>
