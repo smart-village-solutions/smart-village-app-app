@@ -18,9 +18,11 @@ import { Wrapper } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 import { Map } from '../map';
 
+import { AvailableVehicles } from './AvailableVehicles';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
+import { TimeTables } from './TimeTables';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -30,8 +32,9 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const {
     addresses,
-    category,
+    payload,
     categories,
+    category,
     contact,
     dataProvider,
     description,
@@ -42,6 +45,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     operatingCompany,
     priceInformations,
     title,
+    travelTimes,
     webUrls
   } = data;
 
@@ -83,14 +87,22 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         />
       </Wrapper>
 
-      {!!openingHours && !!openingHours.length && (
+      {!!payload?.freeStatusUrl && (
+        <AvailableVehicles freeStatusUrl={payload.freeStatusUrl} iconName={category?.iconName} />
+      )}
+
+      {!!travelTimes?.length && (
+        <TimeTables travelTimes={travelTimes} iconName={category?.iconName} />
+      )}
+
+      {!!openingHours?.length && (
         <View>
           <SectionHeader title={texts.pointOfInterest.openingTime} />
           <OpeningTimesCard openingHours={openingHours} />
         </View>
       )}
 
-      {!!priceInformations && !!priceInformations.length && (
+      {!!priceInformations?.length && (
         <View>
           <SectionHeader title={texts.pointOfInterest.prices} />
           <PriceCard prices={priceInformations} />
