@@ -2,7 +2,7 @@ import { useIsFocused } from '@react-navigation/native';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { Query, useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
@@ -14,8 +14,10 @@ import {
   CategoryList,
   DropdownHeader,
   EmptyMessage,
+  HeaderLeft,
   HtmlView,
   IndexFilterWrapperAndList,
+  IndexMapSwitch,
   ListComponent,
   LoadingContainer,
   LocationOverview,
@@ -24,7 +26,7 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../components';
-import { colors, consts, texts } from '../config';
+import { colors, consts, Icon, normalize, texts } from '../config';
 import {
   graphqlFetchPolicy,
   isOpen,
@@ -47,19 +49,19 @@ import { SettingsContext } from '../SettingsProvider';
 
 const { MATOMO_TRACKING } = consts;
 
-const TOP_FILTER = {
+const FILTER_TYPES = {
   LIST: 'list',
   MAP: 'map'
 };
 
-const INITIAL_TOP_FILTER = [
-  { id: TOP_FILTER.LIST, title: texts.locationOverview.list, selected: true },
-  { id: TOP_FILTER.MAP, title: texts.locationOverview.map, selected: false }
-];
+export const SWITCH_BETWEEN_LIST_AND_MAP = {
+  TOP_FILTER: 'top-filter',
+  BOTTOM_FLOATING_BUTTON: 'bottom-floating-button'
+};
 
 const isMapSelected = (query, topFilter) =>
   query === QUERY_TYPES.POINTS_OF_INTEREST &&
-  topFilter.find((entry) => entry.selected).id === TOP_FILTER.MAP;
+  topFilter.find((entry) => entry.selected).id === FILTER_TYPES.MAP;
 
 const keyForSelectedValueByQuery = (query, isLocationFilter) => {
   const QUERIES = {
@@ -96,7 +98,6 @@ const currentDate = moment().format('YYYY-MM-DD');
 // TODO: make a list component for POIs that already includes the mapswitchheader?
 // TODO: make a list component that already includes the news/events filter?
 export const IndexScreen = ({ navigation, route }) => {
-  const [topFilter, setTopFilter] = useState(INITIAL_TOP_FILTER);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { filter = {}, hdvt = {}, settings = {}, sections = {} } = globalSettings;
@@ -106,7 +107,11 @@ export const IndexScreen = ({ navigation, route }) => {
     eventLocations: showEventLocationsFilter = false
   } = filter;
   const { events: showVolunteerEvents = false } = hdvt;
-  const { calendarToggle = false, showFilterByOpeningTimes = true } = settings;
+  const {
+    calendarToggle = false,
+    showFilterByOpeningTimes = true,
+    switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER
+  } = settings;
   const {
     categoryListIntroText = texts.categoryList.intro,
     categoryListFooter,
@@ -114,6 +119,20 @@ export const IndexScreen = ({ navigation, route }) => {
     eventListIntro,
     poiListIntro
   } = sections;
+  const { initialFilter = FILTER_TYPES.LIST } = route.params?.queryVariables ?? {};
+  const INITIAL_FILTER = [
+    {
+      id: FILTER_TYPES.LIST,
+      title: texts.locationOverview.list,
+      selected: initialFilter == FILTER_TYPES.LIST
+    },
+    {
+      id: FILTER_TYPES.MAP,
+      title: texts.locationOverview.map,
+      selected: initialFilter == FILTER_TYPES.MAP
+    }
+  ];
+  const [filterType, setFilterType] = useState(INITIAL_FILTER);
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [showCalendar, setShowCalendar] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -127,7 +146,7 @@ export const IndexScreen = ({ navigation, route }) => {
 
   const query = route.params?.query ?? '';
 
-  const showMap = isMapSelected(query, topFilter);
+  const showMap = isMapSelected(query, filterType);
 
   // we currently only require the position for POIs
   const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST;
@@ -356,21 +375,44 @@ export const IndexScreen = ({ navigation, route }) => {
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
+  useLayoutEffect(() => {
+    if (query === QUERY_TYPES.POINTS_OF_INTEREST && showMap) {
+      navigation.setOptions({
+        headerLeft: () => (
+          <HeaderLeft
+            onPress={() => setFilterType(INITIAL_FILTER)}
+            backImage={({ tintColor }) => (
+              <Icon.Close color={tintColor} style={{ paddingHorizontal: normalize(14) }} />
+            )}
+          />
+        )
+      });
+    } else {
+      navigation.setOptions({
+        headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />
+      });
+    }
+  }, [query, showMap]);
+
   return (
     <SafeAreaViewFlex>
-      {query === QUERY_TYPES.POINTS_OF_INTEREST && (
-        <View>
-          <IndexFilterWrapperAndList filter={topFilter} setFilter={setTopFilter} />
-          {showFilterByOpeningTimes && (
-            <OptionToggle
-              label={texts.pointOfInterest.filterByOpeningTime}
-              onToggle={() => setFilterByOpeningTimes((value) => !value)}
-              value={filterByOpeningTimes}
-            />
-          )}
-          <Divider />
-        </View>
-      )}
+      {query === QUERY_TYPES.POINTS_OF_INTEREST &&
+        (switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER ||
+          showFilterByOpeningTimes) && (
+          <View>
+            {switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER && (
+              <IndexFilterWrapperAndList filter={filterType} setFilter={setFilterType} />
+            )}
+            {showFilterByOpeningTimes && (
+              <OptionToggle
+                label={texts.pointOfInterest.filterByOpeningTime}
+                onToggle={() => setFilterByOpeningTimes((value) => !value)}
+                value={filterByOpeningTimes}
+              />
+            )}
+            <Divider />
+          </View>
+        )}
       {query === QUERY_TYPES.POINTS_OF_INTEREST && showMap ? (
         <LocationOverview
           filterByOpeningTimes={filterByOpeningTimes}
@@ -606,6 +648,11 @@ export const IndexScreen = ({ navigation, route }) => {
           }}
         </Query>
       )}
+      {query === QUERY_TYPES.POINTS_OF_INTEREST &&
+        switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON &&
+        filterType.find((entry) => entry.title == texts.locationOverview.list)?.selected && (
+          <IndexMapSwitch filter={filterType} setFilter={setFilterType} />
+        )}
     </SafeAreaViewFlex>
   );
 };

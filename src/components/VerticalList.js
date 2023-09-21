@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useRef, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet } from 'react-native';
+import React, { useContext, useRef, useState } from 'react';
+import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
 
 import { colors, normalize } from '../config';
 import { useRenderItem } from '../hooks';
+import { QUERY_TYPES } from '../queries';
+import { SWITCH_BETWEEN_LIST_AND_MAP } from '../screens';
+import { SettingsContext } from '../SettingsProvider';
 
 import { BackToTop } from './BackToTop';
 
@@ -24,6 +27,9 @@ export const VerticalList = ({
   refreshControl,
   showBackToTop
 }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER } = settings;
   const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
 
@@ -57,17 +63,28 @@ export const VerticalList = ({
             );
           } else if (listEndReached && showBackToTop) {
             return (
-              <BackToTop
-                onPress={() =>
-                  flatListRef.current.scrollToIndex({
-                    index: 0,
-                    viewPosition: 1,
-                    animated: true
-                  })
-                }
-              />
+              <>
+                <BackToTop
+                  onPress={() =>
+                    flatListRef.current.scrollToIndex({
+                      index: 0,
+                      viewPosition: 1,
+                      animated: true
+                    })
+                  }
+                />
+                {query == QUERY_TYPES.POINTS_OF_INTEREST &&
+                  switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON && (
+                    <View style={styles.spacer} />
+                  )}
+              </>
             );
           }
+        } else if (
+          query == QUERY_TYPES.POINTS_OF_INTEREST &&
+          switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON
+        ) {
+          return <View style={styles.spacer} />;
         }
 
         return null;
@@ -87,6 +104,9 @@ export const VerticalList = ({
 const styles = StyleSheet.create({
   contentContainerStyle: {
     flexGrow: 1
+  },
+  spacer: {
+    height: normalize(70)
   }
 });
 

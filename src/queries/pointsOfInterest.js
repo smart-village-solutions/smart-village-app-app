@@ -30,6 +30,7 @@ export const GET_POINTS_OF_INTEREST = gql`
       category {
         id
         name
+        iconName
       }
       description
       mediaContents {
@@ -94,6 +95,7 @@ export const GET_POINT_OF_INTEREST = gql`
       category {
         id
         name
+        iconName
       }
       description
       mediaContents {

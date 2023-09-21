@@ -3,18 +3,20 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { LocationObject } from 'expo-location';
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, ScrollView, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
-import { colors, texts } from '../../config';
-import { graphqlFetchPolicy, isOpen } from '../../helpers';
-import { location, locationIconAnchor } from '../../icons';
 import { NetworkContext } from '../../NetworkProvider';
-import { getQuery, QUERY_TYPES } from '../../queries';
+import { SettingsContext } from '../../SettingsProvider';
+import { Icon, colors, normalize, texts } from '../../config';
+import { graphqlFetchPolicy, isOpen, parseListItemsFromQuery } from '../../helpers';
+import * as Icons from '../../icons';
+import { location, locationIconAnchor } from '../../icons';
+import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
-import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
-import { PointOfInterest } from '../screens/PointOfInterest';
 import { RegularText } from '../Text';
+import { TextListItem } from '../TextListItem';
+import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
 import { Map } from './Map';
@@ -44,8 +46,24 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
 
         if (!latitude || !longitude) return undefined;
 
+        let icon = location;
+
+        if (item.category?.iconName) {
+          // remove location and locationIconAnchor from Icons for proper type perspective to all
+          // the other icons
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { location: _l, locationIconAnchor: _lia, ...OtherIcons } = Icons;
+          const iconName = item.category.iconName as keyof typeof OtherIcons;
+
+          // only use the icon if it is available from our icons
+          if (Object.keys(OtherIcons).includes(iconName)) {
+            icon = OtherIcons[iconName] as (color: any) => string;
+          }
+        }
+
         return {
-          icon: location(colors.primary),
+          icon: icon(colors.primary),
+          activeIcon: icon(colors.accent),
           iconAnchor: locationIconAnchor,
           id: item.id,
           position: {
@@ -59,15 +77,11 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
   );
 };
 
-export const LocationOverview = ({
-  filterByOpeningTimes,
-  navigation,
-  queryVariables,
-  route
-}: Props) => {
+export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariables }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { globalSettings } = useContext(SettingsContext);
+  const { navigation: navigationType = 'drawer' } = globalSettings;
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
-
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime: undefined });
 
   const { data: overviewData, loading } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
@@ -110,36 +124,104 @@ export const LocationOverview = ({
     );
   }
 
+  const item = detailsData
+    ? parseListItemsFromQuery(
+        QUERY_TYPES.POINT_OF_INTEREST,
+        {
+          ...detailsData,
+          [QUERY_TYPES.POINT_OF_INTEREST]: [detailsData?.[QUERY_TYPES.POINT_OF_INTEREST]]
+        },
+        undefined,
+        {
+          queryVariables
+        }
+      )?.[0]
+    : undefined;
+
   return (
-    <SafeAreaViewFlex>
-      <ScrollView>
-        <Map
-          locations={mapMarkers}
-          onMarkerPress={setSelectedPointOfInterest}
-          isMultipleMarkersMap
-        />
-        <View>
-          {!selectedPointOfInterest && (
-            <Wrapper>
-              <RegularText center>{texts.locationOverview.noSelection}</RegularText>
-            </Wrapper>
-          )}
-          {detailsLoading ? (
-            <LoadingContainer>
-              <ActivityIndicator color={colors.refreshControl} />
-            </LoadingContainer>
-          ) : (
-            !!detailsData?.[QUERY_TYPES.POINT_OF_INTEREST] && (
-              <PointOfInterest
-                data={detailsData[QUERY_TYPES.POINT_OF_INTEREST]}
-                navigation={navigation}
-                hideMap
-                route={route}
-              />
-            )
-          )}
-        </View>
-      </ScrollView>
-    </SafeAreaViewFlex>
+    <>
+      <Map
+        isMultipleMarkersMap
+        locations={mapMarkers}
+        mapStyle={styles.map}
+        onMarkerPress={setSelectedPointOfInterest}
+        selectedMarker={selectedPointOfInterest}
+      />
+      {selectedPointOfInterest && !detailsLoading && (
+        <Wrapper
+          small
+          style={[
+            styles.listItemContainer,
+            stylesWithProps({ navigation: navigationType }).position
+          ]}
+        >
+          <TextListItem
+            item={{
+              ...item,
+              bottomDivider: false,
+              picture: item?.picture?.url
+                ? item.picture
+                : {
+                    url: 'https://fileserver.smart-village.app/hb-meinquartier/app-icon.png'
+                  },
+              subtitle: undefined
+            }}
+            leftImage
+            navigation={navigation}
+          />
+          <View style={styles.iconContainer}>
+            <Touchable onPress={() => setSelectedPointOfInterest(undefined)}>
+              <Icon.Close size={normalize(20)} />
+            </Touchable>
+          </View>
+        </Wrapper>
+      )}
+    </>
   );
 };
+
+const styles = StyleSheet.create({
+  iconContainer: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: normalize(16),
+    height: normalize(32),
+    justifyContent: 'center',
+    left: normalize(7),
+    position: 'absolute',
+    top: normalize(7),
+    width: normalize(32)
+  },
+  listItemContainer: {
+    backgroundColor: colors.surface,
+    borderRadius: normalize(12),
+    left: '4%',
+    position: 'absolute',
+    right: '4%',
+    width: '92%',
+    // shadow:
+    elevation: 2,
+    shadowColor: colors.shadowRgba,
+    shadowOffset: {
+      height: 5,
+      width: 0
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 3
+  },
+  map: {
+    height: '100%',
+    width: '100%'
+  }
+});
+
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
+const stylesWithProps = ({ navigation }: { navigation: string }) => {
+  return StyleSheet.create({
+    position: {
+      bottom: navigation === 'tab' ? '4%' : '8%'
+    }
+  });
+};
+/* eslint-enable react-native/no-unused-styles */

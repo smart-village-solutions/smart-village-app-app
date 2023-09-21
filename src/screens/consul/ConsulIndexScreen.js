@@ -27,7 +27,7 @@ const INITIAL_TOP_SORTING = [
   { id: NEWESTDATE, title: texts.consul.sorting.newest, selected: false }
 ];
 
-const INITIAL_TOP_FILTERING_FOR_POLLS = [
+const INITIAL_FILTERING_FOR_POLLS = [
   { id: CURRENT, title: texts.consul.filter.current, selected: true },
   { id: EXPIRED, title: texts.consul.filter.expired, selected: false }
 ];
@@ -53,7 +53,7 @@ const showRegistrationFailAlert = (navigation) =>
 
 /* eslint-disable complexity */
 export const ConsulIndexScreen = ({ navigation, route }) => {
-  const [filterType, setFilterType] = useState(INITIAL_TOP_FILTERING_FOR_POLLS);
+  const [filterType, setFilterType] = useState(INITIAL_FILTERING_FOR_POLLS);
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables ?? {});
   const [sortingType, setSortingType] = useState(INITIAL_TOP_SORTING);
   const bookmarkable = route.params?.bookmarkable;
