@@ -1,17 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import _upperFirst from 'lodash/upperFirst';
+import React, { Fragment, useEffect, useState } from 'react';
+import { ActivityIndicator, StyleSheet } from 'react-native';
+import { Divider, ListItem } from 'react-native-elements';
 
 import { Icon, colors, normalize, texts } from '../../config';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
-import { CategoryText, RegularText } from '../Text';
-import { Wrapper } from '../Wrapper';
-
-type StationProps = {
-  freeStatusUrl: string;
-  id: string;
-};
+import { RegularText } from '../Text';
 
 type AvailableVehiclesProps = {
   id: string;
@@ -19,22 +14,18 @@ type AvailableVehiclesProps = {
 };
 
 export const AvailableVehicles = ({
-  availableVehicles,
-  category
+  freeStatusUrl,
+  iconName
 }: {
-  availableVehicles: StationProps;
-  category: { name: string; iconName: keyof typeof Icon };
+  freeStatusUrl: string;
+  iconName: keyof typeof Icon;
 }) => {
   const [availableVehiclesData, setAvailableVehiclesData] = useState<AvailableVehiclesProps[]>();
 
   useEffect(() => {
     const fetchData = async () => {
-      const options = {
-        method: 'GET'
-      };
-
       try {
-        const response = await fetch(availableVehicles.freeStatusUrl, options);
+        const response = await fetch(freeStatusUrl);
 
         const data = await response.json();
         const status = response.status;
@@ -51,67 +42,41 @@ export const AvailableVehicles = ({
     fetchData();
   }, []);
 
+  if (!availableVehiclesData?.length) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.refreshControl} />
+      </LoadingContainer>
+    );
+  }
+
+  const CategoryIcon = Icon[_upperFirst(iconName)];
+
   return (
     <>
-      {!!category?.name && (
-        <Wrapper>
-          <CategoryText large>{category.name}</CategoryText>
-        </Wrapper>
-      )}
+      <SectionHeader title={texts.pointOfInterest.availableVehicles} />
 
-      <SectionHeader
-        title={
-          category?.name.includes('bike')
-            ? texts.pointOfInterest.availableBikes
-            : texts.pointOfInterest.availableCars
-        }
-      />
-
-      {!!availableVehiclesData && !!availableVehiclesData.length && category?.iconName ? (
-        availableVehiclesData.map((item: AvailableVehiclesProps) => (
-          <ListItem key={item.id} bottomDivider>
+      {availableVehiclesData.map((item: AvailableVehiclesProps, index: number) => (
+        <Fragment key={item.id}>
+          <ListItem style={styles.container}>
+            {!!iconName && <CategoryIcon />}
             <ListItem.Content>
-              <View style={styles.vehiclesContainer}>
-                <CategoryIcon iconName={category.iconName} />
-                <RegularText style={styles.vehicles}>{item.name}</RegularText>
-              </View>
+              <RegularText>{item.name}</RegularText>
             </ListItem.Content>
           </ListItem>
-        ))
-      ) : (
-        <LoadingContainer>
-          <ActivityIndicator color={colors.refreshControl} />
-        </LoadingContainer>
-      )}
+          {index !== availableVehiclesData.length - 1 && <Divider style={styles.divider} />}
+        </Fragment>
+      ))}
     </>
   );
 };
 
-const CategoryIcon: React.FC<{ iconName: keyof typeof Icon }> = ({
-  iconName
-}: {
-  iconName: keyof typeof Icon;
-}) => {
-  let SelectedIcon;
-  if (iconName) {
-    if (Object.keys(Icon).includes(iconName)) {
-      SelectedIcon = Icon[iconName];
-    }
-  }
-
-  /* @ts-expect-error could not find a solution for this type issue :/ */
-  return SelectedIcon ? <SelectedIcon size={normalize(24)} color={colors.darkText} /> : null;
-};
-
 const styles = StyleSheet.create({
-  vehicles: {
-    marginRight: normalize(8),
-    fontWeight: '600',
-    fontSize: normalize(14),
-    lineHeight: normalize(20)
+  container: {
+    backgroundColor: colors.transparent,
+    paddingVertical: normalize(12)
   },
-  vehiclesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center'
+  divider: {
+    backgroundColor: colors.placeholder
   }
 });

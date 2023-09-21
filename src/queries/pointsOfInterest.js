@@ -92,7 +92,7 @@ export const GET_POINT_OF_INTEREST = gql`
       id
       title: name
       travelTimes(date: $date)
-      availableVehicles: payload
+      payload
       category {
         id
         name
