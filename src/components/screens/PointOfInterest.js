@@ -88,17 +88,21 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
       </Wrapper>
 
       {!!payload?.freeStatusUrl && (
-        <AvailableVehicles freeStatusUrl={payload.freeStatusUrl} iconName={category.iconName} />
+        <AvailableVehicles freeStatusUrl={payload.freeStatusUrl} iconName={category?.iconName} />
       )}
 
-      {!!openingHours && !!openingHours.length && (
+      {!!travelTimes?.length && (
+        <TimeTables travelTimes={travelTimes} iconName={category?.iconName} />
+      )}
+
+      {!!openingHours?.length && (
         <View>
           <SectionHeader title={texts.pointOfInterest.openingTime} />
           <OpeningTimesCard openingHours={openingHours} />
         </View>
       )}
 
-      {!!priceInformations && !!priceInformations.length && (
+      {!!priceInformations?.length && (
         <View>
           <SectionHeader title={texts.pointOfInterest.prices} />
           <PriceCard prices={priceInformations} />
@@ -111,12 +115,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
           <Wrapper>
             <HtmlView html={description} openWebScreen={openWebScreen} />
           </Wrapper>
-        </View>
-      )}
-
-      {!!travelTimes && !!travelTimes.length && (
-        <View>
-          <TimeTables travelTimes={travelTimes} />
         </View>
       )}
 

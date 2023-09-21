@@ -778,7 +778,6 @@ export const texts = {
       trolleyBus: 'Oberleitungsbus'
     },
     showLunches: 'Zum aktuellen Gastro-Angebot',
-    station: 'Haltestelle',
     today: 'Heute',
     yourPosition: 'Ihre Position'
   },

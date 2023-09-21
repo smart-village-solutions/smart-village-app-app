@@ -166,27 +166,3 @@ export const BoldText = styled(RegularText)`
       font-family: bold-italic;
     `};
 `;
-
-export const HeadlineText = styled(RegularText)`
-  font-weight: 700;
-  font-family: bold;
-
-  ${(props) =>
-    props.extraSmall &&
-    css`
-      font-size: ${normalize(14)};
-      line-height: ${normalize(18)};
-    `};
-`;
-
-export const CategoryText = styled(RegularText)`
-  font-weight: 700;
-  font-family: bold;
-
-  ${(props) =>
-    props.large &&
-    css`
-      font-size: ${normalize(14)};
-      line-height: ${normalize(16)};
-    `};
-`;

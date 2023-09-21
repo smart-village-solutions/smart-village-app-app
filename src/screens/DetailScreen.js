@@ -118,7 +118,7 @@ export const DetailScreen = ({ navigation, route }) => {
   return (
     <Query
       query={getQuery(query)}
-      variables={{ id: queryVariables.id, date: date }}
+      variables={{ id: queryVariables.id, date }}
       fetchPolicy={fetchPolicy}
     >
       {({ data, loading, refetch }) => {

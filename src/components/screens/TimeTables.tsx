@@ -1,11 +1,12 @@
-import moment from 'moment';
-import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
-import { ListItem } from 'react-native-elements';
+import _upperFirst from 'lodash/upperFirst';
+import React, { Fragment } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Divider, ListItem } from 'react-native-elements';
 
 import { Icon, colors, normalize, texts } from '../../config';
+import { momentFormat } from '../../helpers';
 import { SectionHeader } from '../SectionHeader';
-import { CategoryText, HeadlineText, RegularText } from '../Text';
+import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 
 type TimeTableProps = {
@@ -19,101 +20,142 @@ type TimeTableProps = {
   trip: { trip_headsign: string };
 };
 
-const TimeTablesListItem = ({ item }: { item: TimeTableProps }) => {
-  const { departure_time, route, trip } = item;
-  const { route_color, route_short_name, route_text_color, route_type } = route;
-  const { trip_headsign } = trip;
+export const TimeTables = ({
+  travelTimes,
+  iconName
+}: {
+  travelTimes: TimeTableProps[];
+  iconName: keyof typeof Icon;
+}) => {
+  const CategoryIcon = Icon[_upperFirst(iconName)];
+  const today: string | number = new Date().toISOString();
 
-  const routeTypes: { [key: string]: string } = {
-    '0': texts.pointOfInterest.routeTypes.tram,
-    '1': texts.pointOfInterest.routeTypes.metro,
-    '2': texts.pointOfInterest.routeTypes.railway,
-    '3': texts.pointOfInterest.routeTypes.bus
-  };
-
-  return (
-    <ListItem bottomDivider containerStyle={styles.listItem}>
-      <ListItem.Content>
-        <View style={styles.itemRow}>
-          {!!departure_time && (
-            <RegularText style={styles.time}>
-              {moment(departure_time, 'HH:mm:ss').format('HH:mm')}
-            </RegularText>
-          )}
-
-          {!!route_short_name && !!route_type && (
-            <View style={[styles.typeView, { backgroundColor: `#${route_color}` }]}>
-              <RegularText style={(styles.typeText, [{ color: `#${route_text_color}` }])} center>
-                {`${routeTypes[route_type || '0']} ${route_short_name}`}
-              </RegularText>
-            </View>
-          )}
-          <Icon.ArrowRight size={normalize(16)} color={colors.darkText} style={styles.icon} />
-
-          {!!trip_headsign && (
-            <RegularText small style={styles.headSign}>
-              {trip_headsign}
-            </RegularText>
-          )}
-        </View>
-      </ListItem.Content>
-    </ListItem>
-  );
-};
-
-export const TimeTables = ({ travelTimes }: { travelTimes: TimeTableProps[] }) => {
   return (
     <>
-      <Wrapper>
-        <CategoryText large>{texts.pointOfInterest.station}</CategoryText>
-      </Wrapper>
-
       <SectionHeader title={texts.pointOfInterest.departureTimes} />
 
       <Wrapper style={styles.noPadding}>
-        <HeadlineText extraSmall>
-          {texts.pointOfInterest.today} {moment().format('ddd, DD.MM.YYYY')}
-        </HeadlineText>
+        <BoldText small>
+          {texts.pointOfInterest.today} {momentFormat(today, 'ddd, DD.MM.YYYY')}
+        </BoldText>
       </Wrapper>
 
-      <FlatList data={travelTimes} renderItem={({ item }) => <TimeTablesListItem item={item} />} />
+      {travelTimes.map((item, index) => {
+        const { departure_time, route, trip } = item;
+        const { route_short_name, route_type } = route;
+        const { trip_headsign } = trip;
+
+        const routeTypes: { [key: string]: string } = {
+          '0': texts.pointOfInterest.routeTypes.tram,
+          '1': texts.pointOfInterest.routeTypes.metro,
+          '2': texts.pointOfInterest.routeTypes.railway,
+          '3': texts.pointOfInterest.routeTypes.bus
+        };
+
+        const routeColors: { [key: string]: string } = {
+          '0': colors.primary,
+          '1': colors.primary,
+          '2': colors.primary,
+          '3': colors.primary
+        };
+
+        return (
+          <Fragment key={index}>
+            <ListItem style={styles.container}>
+              <ListItem.Content style={styles.itemRow}>
+                {!!departure_time && (
+                  <RegularText style={styles.time}>
+                    {momentFormat(departure_time, 'HH:mm', 'HH:mm:ss')}
+                  </RegularText>
+                )}
+
+                {!!route_short_name && !!route_type && (
+                  <View style={styles.typeDirection}>
+                    {!!iconName && (
+                      <View
+                        style={[
+                          styles.typeIconContainer,
+                          { backgroundColor: routeColors[route_type || '0'] }
+                        ]}
+                      >
+                        <CategoryIcon color={colors.lightestText} size={normalize(16)} />
+                      </View>
+                    )}
+                    <View
+                      style={[
+                        styles.typeView,
+                        { backgroundColor: `${routeColors[route_type || '0']}` }
+                      ]}
+                    >
+                      <RegularText lightest center>
+                        {`${routeTypes[route_type || '0']} ${route_short_name}`}
+                      </RegularText>
+                    </View>
+                  </View>
+                )}
+
+                <Icon.ArrowRight size={normalize(16)} color={colors.darkText} style={styles.icon} />
+
+                {!!trip_headsign && (
+                  <RegularText small style={styles.headSign}>
+                    {trip_headsign}
+                  </RegularText>
+                )}
+              </ListItem.Content>
+            </ListItem>
+            {index !== travelTimes.length - 1 && <Divider style={styles.divider} />}
+          </Fragment>
+        );
+      })}
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  listItem: {
-    height: normalize(73),
-    alignItems: 'center'
+  container: {
+    backgroundColor: colors.transparent,
+    paddingVertical: normalize(8)
   },
-  itemRow: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  time: {
-    marginRight: normalize(8),
-    fontWeight: '600',
-    fontSize: normalize(14),
-    lineHeight: normalize(20)
-  },
-  typeText: {
-    fontWeight: '600',
-    fontSize: normalize(12),
-    lineHeight: normalize(16)
-  },
-  typeView: {
-    alignItems: 'center',
-    borderRadius: normalize(4),
-    paddingHorizontal: normalize(4),
-    paddingVertical: normalize(3)
-  },
-  icon: {
-    marginHorizontal: normalize(8)
+  divider: {
+    backgroundColor: colors.placeholder
   },
   headSign: {
     flexShrink: 1
   },
+  icon: {
+    marginHorizontal: normalize(8)
+  },
+  itemRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start'
+  },
   noPadding: {
     paddingBottom: 0
+  },
+  time: {
+    fontSize: normalize(14),
+    fontWeight: '600',
+    lineHeight: normalize(20),
+    marginRight: normalize(8)
+  },
+  typeDirection: {
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  typeIconContainer: {
+    alignItems: 'center',
+    borderRadius: normalize(20),
+    height: normalize(27),
+    justifyContent: 'center',
+    marginRight: normalize(5),
+    width: normalize(27)
+  },
+  typeView: {
+    alignItems: 'center',
+    borderRadius: normalize(4),
+    height: normalize(27),
+    justifyContent: 'center',
+    paddingHorizontal: normalize(4)
   }
 });
