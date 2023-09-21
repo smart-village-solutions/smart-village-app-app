@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import MapView, { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 import { SvgXml } from 'react-native-svg';
@@ -18,6 +18,7 @@ type Props = {
   onMapPress?: () => void;
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
+  selectedMarker?: string;
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
 };
@@ -26,7 +27,7 @@ const MARKER_ICON_SIZE = normalize(40);
 
 export const Map = ({
   geometryTourData,
-  isMaximizeButtonVisible,
+  isMaximizeButtonVisible = false,
   isMultipleMarkersMap = false,
   locations,
   mapCenterPosition,
@@ -34,6 +35,7 @@ export const Map = ({
   onMapPress,
   onMarkerPress,
   onMaximizeButtonPress,
+  selectedMarker,
   style,
   ...otherProps
 }: Props) => {
@@ -117,13 +119,14 @@ export const Map = ({
             identifier={marker.id}
             key={`${index}-${marker.id}`}
             coordinate={marker.position}
-            onPress={() => {
-              if (onMarkerPress) {
-                onMarkerPress(marker.id);
-              }
-            }}
+            onPress={() => onMarkerPress?.(marker.id)}
+            zIndex={selectedMarker && marker.id === selectedMarker ? 1010 : 1}
           >
-            <SvgXml xml={marker.icon} width={MARKER_ICON_SIZE} height={MARKER_ICON_SIZE} />
+            <SvgXml
+              xml={selectedMarker && marker.id === selectedMarker ? marker.activeIcon : marker.icon}
+              width={MARKER_ICON_SIZE}
+              height={MARKER_ICON_SIZE}
+            />
           </Marker>
         ))}
       </MapView>

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { FlatList, RefreshControl } from 'react-native';
 
-import { auth } from '../auth';
 import {
   About,
   ConnectedImagesCarousel,
@@ -213,10 +212,6 @@ export const HomeScreen = ({ navigation, route }) => {
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
-  useEffect(() => {
-    isConnected && auth();
-  }, []);
-
   const refresh = () => {
     setRefreshing(true);
 
@@ -282,18 +277,16 @@ export const HomeScreen = ({ navigation, route }) => {
 
             <Widgets widgetConfigs={widgetConfigs} />
 
-            {showDisturber && <Disturber navigation={navigation} name={disturberContent} />}
+            <Disturber navigation={navigation} publicJsonFile="homeDisturber" />
           </>
         }
         ListFooterComponent={
-          <>
-            {route.params?.isDrawer && (
-              <>
-                <HomeService />
-                <About navigation={navigation} withHomeRefresh />
-              </>
-            )}
-          </>
+          route.params?.isDrawer && (
+            <>
+              <HomeService publicJsonFile="homeService" />
+              <About navigation={navigation} withHomeRefresh />
+            </>
+          )
         }
         refreshControl={
           <RefreshControl

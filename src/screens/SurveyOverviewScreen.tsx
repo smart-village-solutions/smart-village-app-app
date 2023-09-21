@@ -4,16 +4,30 @@ import React, { useCallback } from 'react';
 import { useQuery } from 'react-apollo';
 import { SectionList } from 'react-native';
 
-import { SafeAreaViewFlex, SectionHeader, TextListItem } from '../components';
+import { HtmlView, SafeAreaViewFlex, SectionHeader, TextListItem, Wrapper } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { texts } from '../config';
 import { combineLanguages } from '../helpers';
-import { usePullToRefetch, useSurveyLanguages } from '../hooks';
+import { usePullToRefetch, useStaticContent, useSurveyLanguages } from '../hooks';
 import { SURVEYS } from '../queries/survey';
 import { Survey } from '../types';
 
+type Props = {
+  route: {
+    params?: {
+      additionalProps?: {
+        htmlName?: string;
+      };
+    };
+  };
+};
+
 const useSurveySections = () => {
-  const { data: surveys, loading, refetch } = useQuery<{
+  const {
+    data: surveys,
+    loading,
+    refetch
+  } = useQuery<{
     ongoing: Survey[];
     archived: Survey[];
   }>(SURVEYS, { fetchPolicy: 'cache-and-network' });
@@ -58,11 +72,19 @@ const renderSectionHeader = ({
   return <SectionHeader title={title} />;
 };
 
-export const SurveyOverviewScreen = () => {
+export const SurveyOverviewScreen = ({ route }: Props) => {
   const { loading, refetch, surveySections } = useSurveySections();
   const RefreshControl = usePullToRefetch(refetch);
   const languages = useSurveyLanguages();
   const navigation = useNavigation<StackNavigationProp<any>>();
+  const { additionalProps } = route.params ?? {};
+
+  const { data } = useStaticContent({
+    name: additionalProps?.htmlName,
+    type: 'html',
+    refreshTimeKey: `publicHtmlFile-${additionalProps?.htmlName}`,
+    skip: !additionalProps?.htmlName
+  });
 
   const renderSurvey = useCallback(
     ({ item: survey }: { item: Survey }) => {
@@ -80,6 +102,13 @@ export const SurveyOverviewScreen = () => {
   return (
     <SafeAreaViewFlex>
       <SectionList
+        ListHeaderComponent={
+          !!data ? (
+            <Wrapper>
+              <HtmlView html={data} />
+            </Wrapper>
+          ) : null
+        }
         refreshControl={RefreshControl}
         renderItem={renderSurvey}
         renderSectionHeader={renderSectionHeader}

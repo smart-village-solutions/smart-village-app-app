@@ -30,6 +30,7 @@ export const GET_POINTS_OF_INTEREST = gql`
       category {
         id
         name
+        iconName
       }
       description
       mediaContents {
@@ -87,13 +88,16 @@ export const GET_POINTS_OF_INTEREST = gql`
 `;
 
 export const GET_POINT_OF_INTEREST = gql`
-  query PointOfInterest($id: ID!) {
+  query PointOfInterest($id: ID!, $date: String) {
     pointOfInterest(id: $id) {
       id
       title: name
+      travelTimes(date: $date)
+      payload
       category {
         id
         name
+        iconName
       }
       description
       mediaContents {

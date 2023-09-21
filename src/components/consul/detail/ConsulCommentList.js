@@ -7,6 +7,19 @@ import { SectionHeader } from '../../SectionHeader';
 
 import { ConsulCommentListItem } from './ConsulCommentListItem';
 
+// Thanks to : https://stackoverflow.com/questions/58492213/make-object-as-child-according-to-the-parent-id-javascript
+const getThreadedComments = (data, pid = null, userId) => {
+  return data.reduce((r, e) => {
+    if (e.parentId == pid) {
+      const obj = { ...e, userId };
+      const responses = getThreadedComments(data, e.id, userId);
+      if (responses.length) obj.responses = responses;
+      r.push(obj);
+    }
+    return r;
+  }, []);
+};
+
 export const ConsulCommentList = ({ commentCount, commentsData, navigation, refetch, userId }) => {
   commentsData.sort((a, b) => a.id - b.id);
 
@@ -37,17 +50,4 @@ ConsulCommentList.propTypes = {
   navigation: PropTypes.object.isRequired,
   refetch: PropTypes.func,
   userId: PropTypes.string
-};
-
-// Thanks to : https://stackoverflow.com/questions/58492213/make-object-as-child-according-to-the-parent-id-javascript
-const getThreadedComments = (data, pid = null, userId) => {
-  return data.reduce((r, e) => {
-    if (e.parentId == pid) {
-      const obj = { ...e, userId };
-      const responses = getThreadedComments(data, e.id, userId);
-      if (responses.length) obj.responses = responses;
-      r.push(obj);
-    }
-    return r;
-  }, []);
 };

@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
 
-import { normalize, colors } from '../../config';
+import { colors, normalize } from '../../config';
 import { momentFormat } from '../../helpers';
+import { HtmlView } from '../HtmlView';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
 
@@ -36,7 +37,7 @@ export const OpeningTimesCard = ({ openingHours }) => (
           open,
           useYear = false
         } = item;
-        const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM';
+        const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM.';
 
         return (
           <View key={index} style={index !== openingHours.length - 1 ? styles.divider : null}>
@@ -78,7 +79,7 @@ export const OpeningTimesCard = ({ openingHours }) => (
 
             {!!description && (
               <WrapperRow>
-                <RegularText>{description}</RegularText>
+                <HtmlView html={description} />
               </WrapperRow>
             )}
           </View>

@@ -91,7 +91,7 @@ export const VolunteerRegistrationScreen = ({ navigation }: StackScreenProps<any
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <SectionHeader title={texts.consul.registrationTitle} big center />
+          <SectionHeader title={texts.volunteer.registrationTitle} big center />
           <Wrapper style={styles.noPaddingTop}>
             <Input
               name="username"

@@ -15,10 +15,12 @@ type Props = {
   title: string;
 };
 
-export const SectionHeader = ({ big = true, center = false, onPress, title }: Props) => {
+export const SectionHeader = ({ big = false, center = false, onPress, title }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { flat = false, uppercase = false } = settings;
+
+  if (!title) return null;
 
   if (!title) return null;
 

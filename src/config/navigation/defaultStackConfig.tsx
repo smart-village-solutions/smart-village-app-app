@@ -23,6 +23,7 @@ import {
   DataProviderScreen,
   DefectReportFormScreen,
   DetailScreen,
+  DocIconsScreen,
   EncounterDataScreen,
   EncounterHomeScreen,
   EncounterRegistrationScreen,
@@ -185,6 +186,10 @@ export const defaultStackConfig = ({
       screenOptions: getScreenOptions({ withDrawer: isDrawer, withBookmark: true, withShare: true })
     },
     {
+      routeName: ScreenName.DocIcons,
+      screenComponent: DocIconsScreen
+    },
+    {
       routeName: ScreenName.EncounterData,
       screenComponent: EncounterDataScreen,
       screenOptions: { title: texts.screenTitles.encounterHome }
@@ -224,6 +229,15 @@ export const defaultStackConfig = ({
       })
     },
     {
+      routeName: ScreenName.Events,
+      screenComponent: IndexScreen,
+      inititalParams: {
+        title: texts.screenTitles.events,
+        query: QUERY_TYPES.EVENT_RECORDS,
+        queryVariables: { limit: 15, order: 'listDate_ASC' }
+      }
+    },
+    {
       routeName: ScreenName.Form,
       screenComponent: FeedbackScreen,
       screenOptions: { title: texts.screenTitles.feedback }
@@ -248,7 +262,12 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.Index,
-      screenComponent: IndexScreen
+      screenComponent: IndexScreen,
+      // NOTE: is used as initial screen for the points of interest tab
+      inititalParams: {
+        title: texts.screenTitles.pointsOfInterest,
+        query: QUERY_TYPES.CATEGORIES
+      }
     },
     {
       routeName: ScreenName.Lunch,

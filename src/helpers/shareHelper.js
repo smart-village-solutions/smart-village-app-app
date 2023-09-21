@@ -3,6 +3,7 @@ import { Share } from 'react-native';
 import appJson from '../../app.json';
 import { QUERY_TYPES } from '../queries';
 
+import { mergeWebUrls } from './linkHelper';
 import { momentFormat } from './momentHelper';
 
 // https://facebook.github.io/react-native/docs/share
@@ -38,26 +39,42 @@ export const openShare = async ({ message, title, url }) => {
 };
 
 export const shareMessage = (data, query) => {
+  const urls = mergeWebUrls({
+    webUrls: data.webUrls,
+    contact: data.contact,
+    contacts: data.contacts
+  })?.map(({ url }) => `Link: ${url}`);
+
+  const urlSection = urls.length ? urls.join('\n') : '';
+  const spacer = urlSection ? '\n' : '';
+
   const buildMessage = (query) => {
+    let message = data.title;
+
     switch (query) {
       case QUERY_TYPES.EVENT_RECORD:
-        return `${momentFormat(data.listDate)} | ${
+        message = `${momentFormat(data.listDate)} | ${
           data.addresses?.[0]?.addition || data.addresses?.[0]?.city
         }: ${data.title}`;
+        break;
       case QUERY_TYPES.NEWS_ITEM:
-        return `${momentFormat(data.publishedAt)} | ${data.dataProvider?.name}: ${
+        message = `${momentFormat(data.publishedAt)} | ${data.dataProvider?.name}: ${
           data.contentBlocks?.[0]?.title
         }`;
+        break;
       case QUERY_TYPES.POINT_OF_INTEREST:
-        return `${data.category?.name}: ${data.name}`;
+        message = `${data.category?.name}: ${data.name}`;
+        break;
       case QUERY_TYPES.TOUR:
-        return `${data.category?.name}: ${data.name}`;
+        message = `${data.category?.name}: ${data.name}`;
+        break;
       case QUERY_TYPES.VOLUNTEER.CALENDAR:
       case QUERY_TYPES.VOLUNTEER.GROUP:
-        return data.subtitle ? `${data.subtitle}: ${data.title}` : data.title;
-      default:
-        return data.title;
+        message = data.subtitle ? `${data.subtitle}: ${data.title}` : data.title;
+        break;
     }
+
+    return `${message}${spacer}${urlSection ? `\n${urlSection}` : ''}`;
   };
 
   return `${buildMessage(query)}\n\nQuelle: ${appJson.expo.name}`;

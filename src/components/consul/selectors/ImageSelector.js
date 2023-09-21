@@ -170,15 +170,6 @@ export const ImageSelector = ({ control, errorType, field, imageId, isMultiImage
   );
 };
 
-ImageSelector.propTypes = {
-  control: PropTypes.object,
-  errorType: PropTypes.string,
-  field: PropTypes.object,
-  imageId: PropTypes.string,
-  isMultiImages: PropTypes.bool,
-  item: PropTypes.object
-};
-
 const styles = StyleSheet.create({
   image: {
     height: imageHeight(imageWidth() * 0.6),
@@ -200,3 +191,12 @@ const styles = StyleSheet.create({
     paddingVertical: normalize(14)
   }
 });
+
+ImageSelector.propTypes = {
+  control: PropTypes.object,
+  errorType: PropTypes.string,
+  field: PropTypes.object,
+  imageId: PropTypes.string,
+  isMultiImages: PropTypes.bool,
+  item: PropTypes.object
+};

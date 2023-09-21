@@ -9,11 +9,11 @@ import { useHomeRefresh, useStaticContent } from '../hooks';
 import { Button } from './Button';
 import { Image } from './Image';
 import { BoldText, RegularText } from './Text';
-import { Wrapper } from './Wrapper';
+import { Wrapper, WrapperHorizontal } from './Wrapper';
 
 type Props = {
   navigation: DrawerNavigationProp<any>;
-  name: string;
+  publicJsonFile: string;
 };
 
 interface DateRange {
@@ -28,7 +28,7 @@ interface DataItem {
     params: { title?: string; webUrl: string };
     title?: string;
   };
-  category?: string;
+  headline?: string;
   dates: DateRange[];
   description: string;
   id: number;
@@ -37,44 +37,53 @@ interface DataItem {
 }
 
 // eslint-disable-next-line complexity
-export const Disturber = ({ navigation, name }: Props) => {
-  const [isVisible, setIsVisiblle] = useState(true);
-  const refreshTimeKey = `publicJsonFile-${name}`;
+export const Disturber = ({ navigation, publicJsonFile }: Props) => {
+  const [isVisible, setIsVisible] = useState(false);
 
   const { data, refetch } = useStaticContent<DataItem[]>({
-    refreshTimeKey,
-    name,
+    refreshTimeKey: `publicJsonFile-${publicJsonFile}`,
+    name: publicJsonFile,
     type: 'json'
   });
 
   useHomeRefresh(refetch);
 
-  // filter data for present items and items with active date/time periods
-  const isActiveData = data?.filter((item) => item && isActive(item));
-
   // find the closest item to the current date/time
-  const closestItem: DataItem | null = findClosestItem(isActiveData || []);
+  const closestItem: DataItem | null = findClosestItem(
+    data?.filter((item) => item && isActive(item)) || []
+  );
+
+  const setDisturberComplete = () => {
+    setIsVisible((prev) => !prev);
+    !!closestItem && addToStore(publicJsonFile, closestItem.id.toString());
+  };
 
   useEffect(() => {
-    readFromStore(name).then((value) => {
-      if (value === closestItem?.id.toString()) setIsVisiblle(false);
-    });
-  }, [isVisible]);
+    const disturberStatus = async () => {
+      try {
+        const disturberComplete = await readFromStore(publicJsonFile);
 
-  if (!isVisible || !closestItem) return null;
+        if (disturberComplete !== closestItem?.id?.toString()) {
+          setIsVisible(true);
+        }
+      } catch (e) {
+        setIsVisible(false);
+
+        console.error(e);
+      }
+    };
+
+    disturberStatus();
+  }, [closestItem]);
+
+  if (!closestItem) return null;
 
   return (
-    <Wrapper>
+    <Wrapper style={styles.wrapperPadding}>
       <View style={[styles.containerRadius, { backgroundColor: closestItem.backgroundColor }]}>
         {!!closestItem && (
           <>
-            <TouchableOpacity
-              onPress={() => {
-                setIsVisiblle((prev) => !prev);
-                addToStore(name, closestItem.id.toString());
-              }}
-              style={styles.closeButton}
-            >
+            <TouchableOpacity onPress={setDisturberComplete} style={styles.closeButton}>
               <Icon.Close color={colors.darkText} size={normalize(16)} />
             </TouchableOpacity>
 
@@ -83,36 +92,56 @@ export const Disturber = ({ navigation, name }: Props) => {
                 source={closestItem.picture}
                 borderRadius={normalize(8)}
                 aspectRatio={closestItem.picture.aspectRatio || { HEIGHT: 0.7, WIDTH: 1 }}
-                resizeMode={'cover'}
+                resizeMode="cover"
               />
             )}
 
-            <Wrapper>
-              {!!closestItem.category && (
-                <BoldText center smallest>
-                  {closestItem.category}
-                </BoldText>
-              )}
-
-              {!!closestItem.title && <BoldText center>{closestItem.title}</BoldText>}
+            <Wrapper style={styles.noPaddingBottom}>
+              <WrapperHorizontal>
+                {!!closestItem.headline && (
+                  <BoldText center uppercase style={styles.headlineText}>
+                    {closestItem.headline}
+                  </BoldText>
+                )}
+              </WrapperHorizontal>
             </Wrapper>
 
             <Wrapper style={styles.noPaddingTop}>
-              {!!closestItem.description && (
-                <RegularText center>{closestItem.description}</RegularText>
-              )}
+              <WrapperHorizontal>
+                {!!closestItem.title && (
+                  <BoldText center large>
+                    {closestItem.title}
+                  </BoldText>
+                )}
+              </WrapperHorizontal>
             </Wrapper>
 
-            <Wrapper style={styles.noPaddingBottom}>
-              {!!closestItem.button && (
-                <Button
-                  containerStyle={styles.containerRadius}
-                  title={closestItem.button.title || 'Mehr'}
-                  onPress={() =>
-                    navigation.navigate(closestItem.button.navigationTo, closestItem.button.params)
-                  }
-                />
-              )}
+            <Wrapper style={styles.noPaddingTop}>
+              <WrapperHorizontal>
+                {!!closestItem.description && (
+                  <RegularText center>{closestItem.description}</RegularText>
+                )}
+              </WrapperHorizontal>
+            </Wrapper>
+
+            <Wrapper>
+              <WrapperHorizontal>
+                {!!closestItem.button &&
+                  !!closestItem.button.title &&
+                  !!closestItem.button.navigationTo &&
+                  !!closestItem.button.params && (
+                    <Button
+                      big
+                      title={closestItem.button.title}
+                      onPress={() => {
+                        navigation.navigate(
+                          closestItem.button.navigationTo,
+                          closestItem.button.params
+                        );
+                      }}
+                    />
+                  )}
+              </WrapperHorizontal>
             </Wrapper>
           </>
         )}
@@ -138,10 +167,19 @@ const styles = StyleSheet.create({
   containerRadius: {
     borderRadius: normalize(8)
   },
+  headlineText: {
+    fontSize: normalize(14),
+    fontWeight: '700',
+    lineHeight: normalize(16),
+    textTransform: 'uppercase'
+  },
   noPaddingBottom: {
     paddingBottom: 0
   },
   noPaddingTop: {
     paddingTop: 0
+  },
+  wrapperPadding: {
+    padding: normalize(24)
   }
 });

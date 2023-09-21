@@ -31,10 +31,10 @@ import { graphqlFetchPolicy, openLink } from '../helpers';
 import { setupLocales } from '../helpers/calendarHelper';
 import { useRefreshTime, useStaticContent } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
+import { OrientationContext } from '../OrientationProvider';
 import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifications';
 import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
-import { OrientationContext } from '../OrientationProvider';
 
 const dotSize = 6;
 
@@ -432,10 +432,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     width: '100%'
   },
-  autoCompleteInputContainer: {
-    borderRadius: 0,
-    borderWidth: 0
-  },
   autoCompleteInput: {
     borderColor: colors.shadow,
     borderWidth: 1,
@@ -447,9 +443,6 @@ const styles = StyleSheet.create({
   },
   autoCompleteList: {
     margin: 0
-  },
-  noBorderBottom: {
-    borderBottomWidth: 0
   },
   noBorderTop: {
     borderTopWidth: 0,

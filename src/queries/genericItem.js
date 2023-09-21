@@ -5,6 +5,7 @@ export const GET_GENERIC_ITEMS = gql`
     $ids: [ID]
     $limit: Int
     $offset: Int
+    $order: GenericItemOrder
     $dataProvider: String
     $categoryId: ID
     $genericType: String
@@ -13,6 +14,7 @@ export const GET_GENERIC_ITEMS = gql`
       ids: $ids
       limit: $limit
       skip: $offset
+      order: $order
       dataProvider: $dataProvider
       categoryId: $categoryId
       genericType: $genericType

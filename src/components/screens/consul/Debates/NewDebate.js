@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { useForm } from 'react-hook-form';
-import { Alert, Platform, StyleSheet } from 'react-native';
+import { Alert, StyleSheet } from 'react-native';
 
-import { device, namespace, normalize, secrets, texts } from '../../../../config';
+import { namespace, normalize, secrets, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { QUERY_TYPES } from '../../../../queries';
 import { START_DEBATE, UPDATE_DEBATE } from '../../../../queries/consul';
@@ -18,6 +18,50 @@ import { Wrapper, WrapperHorizontal } from '../../../Wrapper';
 const showRegistrationFailAlert = () =>
   Alert.alert(texts.consul.privacyCheckRequireTitle, texts.consul.privacyCheckRequireBody);
 const graphqlErr = (err) => Alert.alert('Hinweis', err);
+
+const INPUTS = [
+  {
+    autoCapitalize: 'none',
+    autoCompleteType: 'off',
+    keyboardType: 'default',
+    label: texts.consul.startNew.newDebateTitleLabel,
+    name: 'title',
+    placeholder: texts.consul.startNew.newDebateTitleLabel,
+    rules: {
+      required: texts.consul.startNew.emptyError,
+      minLength: { value: 4, message: 'ist zu kurz (minimum 4 Zeichen)' }
+    },
+    textContentType: 'none'
+  },
+  {
+    autoCapitalize: 'none',
+    autoCompleteType: 'off',
+    keyboardType: 'default',
+    label: texts.consul.startNew.newDebateDescriptionLabel,
+    minHeight: normalize(150),
+    multiline: true,
+    textAlignVertical: 'top',
+    name: 'description',
+    placeholder: texts.consul.startNew.newDebateDescriptionLabel,
+    rules: {
+      required: texts.consul.startNew.emptyError,
+      minLength: { value: 10, message: 'ist zu kurz (minimum 10 Zeichen)' }
+    },
+    textContentType: 'none'
+  },
+  {
+    autoCapitalize: 'none',
+    autoCompleteType: 'off',
+    keyboardType: 'default',
+    label: texts.consul.startNew.tags,
+    maxHeight: normalize(50),
+    multiline: true,
+    name: 'tagList',
+    placeholder: texts.consul.startNew.newDebateTagLabel,
+    rules: { required: false },
+    textContentType: 'none'
+  }
+];
 
 export const NewDebate = ({ navigation, data, query }) => {
   const [hasAcceptedTermsOfService, setHasAcceptedTermsOfService] = useState(
@@ -159,47 +203,3 @@ NewDebate.propTypes = {
   navigation: PropTypes.object.isRequired,
   query: PropTypes.string
 };
-
-const INPUTS = [
-  {
-    autoCapitalize: 'none',
-    autoCompleteType: 'off',
-    keyboardType: 'default',
-    label: texts.consul.startNew.newDebateTitleLabel,
-    name: 'title',
-    placeholder: texts.consul.startNew.newDebateTitleLabel,
-    rules: {
-      required: texts.consul.startNew.emptyError,
-      minLength: { value: 4, message: 'ist zu kurz (minimum 4 Zeichen)' }
-    },
-    textContentType: 'none'
-  },
-  {
-    autoCapitalize: 'none',
-    autoCompleteType: 'off',
-    keyboardType: 'default',
-    label: texts.consul.startNew.newDebateDescriptionLabel,
-    minHeight: normalize(150),
-    multiline: true,
-    textAlignVertical: 'top',
-    name: 'description',
-    placeholder: texts.consul.startNew.newDebateDescriptionLabel,
-    rules: {
-      required: texts.consul.startNew.emptyError,
-      minLength: { value: 10, message: 'ist zu kurz (minimum 10 Zeichen)' }
-    },
-    textContentType: 'none'
-  },
-  {
-    autoCapitalize: 'none',
-    autoCompleteType: 'off',
-    keyboardType: 'default',
-    label: texts.consul.startNew.tags,
-    maxHeight: normalize(50),
-    multiline: true,
-    name: 'tagList',
-    placeholder: texts.consul.startNew.newDebateTagLabel,
-    rules: { required: false },
-    textContentType: 'none'
-  }
-];

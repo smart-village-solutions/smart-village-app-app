@@ -122,7 +122,9 @@ export const EventRecord = ({ data, route }) => {
       {!!dates && !!dates.length && (
         <View>
           <SectionHeader title={texts.eventRecord.appointments} />
-          <OpeningTimesCard openingHours={dates} />
+          <OpeningTimesCard
+            openingHours={dates.map((date) => ({ ...date, useYear: date?.useYear ?? true }))}
+          />
         </View>
       )}
 

@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
 
-import { consts, texts } from '../config';
+import { texts } from '../config';
 import { getGenericItemMatomoName, matomoTrackingString, momentFormat } from '../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../hooks';
 import { GenericType } from '../types';
@@ -16,8 +16,6 @@ import { SectionHeader } from './SectionHeader';
 import { StorySection } from './StorySection';
 import { BoldText, RegularText } from './Text';
 import { Wrapper, WrapperRow, WrapperWrap } from './Wrapper';
-
-const { a11yLabel: a11yText } = consts;
 
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
@@ -112,7 +110,9 @@ export const Offer = ({ data, route }) => {
       {!!dates && !!dates.length && (
         <View>
           <SectionHeader title={texts.eventRecord.appointments} />
-          <OpeningTimesCard openingHours={dates} />
+          <OpeningTimesCard
+            openingHours={dates.map((date) => ({ ...date, useYear: date?.useYear ?? true }))}
+          />
         </View>
       )}
 

@@ -754,6 +754,8 @@ export const texts = {
     homeSectionSubtitle: 'Hast Du alle Quellen abgewählt?'
   },
   pointOfInterest: {
+    availableVehicles: 'Verfügbare Fahrzeuge',
+    departureTimes: 'Abfahrtszeiten',
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
     location: 'Anfahrt',
@@ -762,7 +764,20 @@ export const texts = {
     priceFree: 'kostenlos',
     prices: 'Preise',
     routePlanner: 'Zum Routenplaner bbnavi',
+    routeTypes: {
+      bus: 'Bus',
+      cableCar: 'Kabelstraßenbahn',
+      ferry: 'Fähre',
+      funicular: 'Luftseilbahn',
+      metro: 'U-Bahn',
+      monoRail: 'Einschienenbahn',
+      railway: 'Bahn',
+      subway: 'Standseilbahn',
+      tram: 'Tram',
+      trolleyBus: 'Oberleitungsbus'
+    },
     showLunches: 'Zum aktuellen Gastro-Angebot',
+    today: 'Heute',
     yourPosition: 'Ihre Position'
   },
   pushNotifications: {
@@ -785,12 +800,15 @@ export const texts = {
     },
     encounterHome: 'Mitfahrbank',
     favorites: 'Favoriten',
+    events: 'Veranstaltungen',
     feedback: 'Feedback',
     home: 'MeinQuartier',
     mapView: 'Kartenansicht',
     profile: 'Profil',
     routePlanner: 'Routenplaner bbnavi',
     service: 'Service',
+    pointsOfInterest: 'Orte und Touren',
+    service: appJson.expo.name,
     settings: 'Einstellungen',
     survey: 'Umfrage',
     surveys: 'Umfragen',
@@ -945,7 +963,12 @@ export const texts = {
     about: 'Mehr',
     favorites: 'Favoriten',
     home: 'Start',
-    profile: 'Profil'
+    profile: 'Profil',
+    company: 'Unternehmen',
+    events: 'Events',
+    pointsOfInterest: 'POI',
+    service: 'Service',
+    volunteer: 'Ehrenamt'
   },
   tour: {
     description: 'Beschreibung',

@@ -6,6 +6,7 @@ export type MapMarker = {
     longitude: number;
   };
   icon: any;
+  activeIcon: any;
   iconAnchor?: Point;
   id?: string;
   title?: string;

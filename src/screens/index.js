@@ -1,6 +1,7 @@
 export * from './augmentedReality';
 export * from './consul';
 export * from './DefectReport';
+export * from './doc';
 export * from './Noticeboard';
 export * from './OParl';
 export * from './volunteer';

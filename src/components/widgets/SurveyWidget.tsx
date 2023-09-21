@@ -11,7 +11,7 @@ import { Survey, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
-export const SurveyWidget = ({ text }: WidgetProps) => {
+export const SurveyWidget = ({ text, additionalProps }: WidgetProps) => {
   const navigation = useNavigation();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const refreshTime = useRefreshTime('survey-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
@@ -23,7 +23,11 @@ export const SurveyWidget = ({ text }: WidgetProps) => {
   }>(SURVEYS, { fetchPolicy });
 
   const onPress = useCallback(
-    () => navigation.navigate('SurveyOverview', { title: text ?? texts.widgets.surveys }),
+    () =>
+      navigation.navigate('SurveyOverview', {
+        additionalProps,
+        title: text ?? texts.widgets.surveys
+      }),
     [navigation, text]
   );
 

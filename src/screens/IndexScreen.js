@@ -2,12 +2,11 @@ import { useIsFocused } from '@react-navigation/native';
 import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { Query, useQuery } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 
-import { auth } from '../auth';
 import {
   Button,
   Calendar,
@@ -15,6 +14,8 @@ import {
   CategoryList,
   DropdownHeader,
   EmptyMessage,
+  HeaderLeft,
+  HtmlView,
   IndexFilterWrapperAndList,
   IndexMapSwitch,
   ListComponent,
@@ -25,7 +26,7 @@ import {
   SafeAreaViewFlex,
   Wrapper
 } from '../components';
-import { colors, consts, texts } from '../config';
+import { colors, consts, Icon, normalize, texts } from '../config';
 import {
   graphqlFetchPolicy,
   isOpen,
@@ -38,6 +39,7 @@ import {
   useOpenWebScreen,
   usePermanentFilter,
   usePosition,
+  useStaticContent,
   useTrackScreenViewAsync,
   useVolunteerData
 } from '../hooks';
@@ -52,7 +54,7 @@ const FILTER_TYPES = {
   MAP: 'map'
 };
 
-const SWITCH_BETWEEN_LIST_AND_MAP = {
+export const SWITCH_BETWEEN_LIST_AND_MAP = {
   TOP_FILTER: 'top-filter',
   BOTTOM_FLOATING_BUTTON: 'bottom-floating-button'
 };
@@ -114,7 +116,8 @@ export const IndexScreen = ({ navigation, route }) => {
     categoryListIntroText = texts.categoryList.intro,
     categoryListFooter,
     categoryTitles,
-    eventListIntro
+    eventListIntro,
+    poiListIntro
   } = sections;
   const { initialFilter = FILTER_TYPES.LIST } = route.params?.queryVariables ?? {};
   const INITIAL_FILTER = [
@@ -160,6 +163,15 @@ export const IndexScreen = ({ navigation, route }) => {
       [QUERY_TYPES.EVENT_RECORDS]: showEventsFilter,
       [QUERY_TYPES.NEWS_ITEMS]: showNewsFilter
     }[query];
+  const htmlContentName =
+    query === QUERY_TYPES.POINTS_OF_INTEREST && poiListIntro?.[queryVariables.category];
+
+  const { data: htmlContent } = useStaticContent({
+    name: htmlContentName,
+    type: 'html',
+    refreshTimeKey: `${query}-${queryVariables.category}`,
+    skip: !htmlContentName
+  });
 
   const openWebScreenUrl = eventListIntro?.url || categoryListFooter?.url;
   const openWebScreen = useOpenWebScreen(title, openWebScreenUrl);
@@ -288,10 +300,6 @@ export const IndexScreen = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    isConnected && auth();
-  }, []);
-
-  useEffect(() => {
     // we want to ensure when changing from one index screen to another, for example from
     // news to events, that the query variables are taken freshly. otherwise the mounted screen can
     // have query variables from the previous screen, that does not work. this can result in an
@@ -366,6 +374,25 @@ export const IndexScreen = ({ navigation, route }) => {
   if (!query) return null;
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+
+  useLayoutEffect(() => {
+    if (query === QUERY_TYPES.POINTS_OF_INTEREST && showMap) {
+      navigation.setOptions({
+        headerLeft: () => (
+          <HeaderLeft
+            onPress={() => setFilterType(INITIAL_FILTER)}
+            backImage={({ tintColor }) => (
+              <Icon.Close color={tintColor} style={{ paddingHorizontal: normalize(14) }} />
+            )}
+          />
+        )
+      });
+    } else {
+      navigation.setOptions({
+        headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />
+      });
+    }
+  }, [query, showMap]);
 
   return (
     <SafeAreaViewFlex>
@@ -547,6 +574,11 @@ export const IndexScreen = ({ navigation, route }) => {
                           <RegularText>{categoryListIntroText}</RegularText>
                         </Wrapper>
                       )}
+                      {!!htmlContent && (
+                        <Wrapper>
+                          <HtmlView html={htmlContent} />
+                        </Wrapper>
+                      )}
                     </>
                   }
                   ListEmptyComponent={
@@ -616,9 +648,11 @@ export const IndexScreen = ({ navigation, route }) => {
           }}
         </Query>
       )}
-      {query === QUERY_TYPES.POINTS_OF_INTEREST && (
-        <IndexMapSwitch filter={filterType} setFilter={setFilterType} />
-      )}
+      {query === QUERY_TYPES.POINTS_OF_INTEREST &&
+        switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON &&
+        filterType.find((entry) => entry.title == texts.locationOverview.list)?.selected && (
+          <IndexMapSwitch filter={filterType} setFilter={setFilterType} />
+        )}
     </SafeAreaViewFlex>
   );
 };
