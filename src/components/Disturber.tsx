@@ -84,7 +84,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
         {!!closestItem && (
           <>
             <TouchableOpacity onPress={setDisturberComplete} style={styles.closeButton}>
-              <Icon.Close color={colors.darkText} size={normalize(16)} />
+              <Icon.Close color={colors.lighterPrimary} size={normalize(16)} />
             </TouchableOpacity>
 
             {!!closestItem.picture && (
@@ -153,11 +153,11 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
 const styles = StyleSheet.create({
   closeButton: {
     alignItems: 'center',
-    backgroundColor: colors.gray20,
+    backgroundColor: colors.darkText,
     borderRadius: 25,
     height: normalize(32),
     justifyContent: 'center',
-    opacity: 1,
+    opacity: 0.64,
     position: 'absolute',
     right: normalize(16),
     top: normalize(16),
