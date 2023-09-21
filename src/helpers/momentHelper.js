@@ -74,3 +74,54 @@ export const isActive = (item) => {
 
   return true;
 };
+
+/**
+ *
+ * Find the item with the closest date range to today.
+ *
+ * @param {DataItem[]} data an array of objects, each with a `dates` array
+ *
+ * @return {DataItem | undefined} the item with the closest date range to today, or undefined if no such item exists
+ */
+export const findClosestItem = (data) => {
+  // check if data is not an array
+  if (!Array.isArray(data)) {
+    return null;
+  }
+
+  return data.reduce(
+    (closest, item) => {
+      // check if item or item.dates is null or undefined or not an array
+      if (!item || !Array.isArray(item.dates)) {
+        return closest;
+      }
+
+      // calculate the minimum time difference between today and the date ranges in the current item
+      const minDifference = Math.min(
+        ...item.dates.map((dateRange) => {
+          // check if dateRange, dateStart, or dateEnd is null or undefined
+          if (!dateRange || !dateRange.dateStart || !dateRange.dateEnd) {
+            return Infinity;
+          }
+
+          // convert the start and end dates to time in milliseconds.
+          const dateStart = moment(dateRange.dateStart).valueOf();
+          const dateEnd = moment(dateRange.dateEnd).valueOf();
+          const today = new Date();
+
+          // calculate the absolute difference between today and both the start and end dates,
+          // and return the smaller of the two
+          return Math.min(
+            Math.abs(today.getTime() - dateStart),
+            Math.abs(today.getTime() - dateEnd)
+          );
+        })
+      );
+
+      // if the calculated minimum difference is smaller than the current smallest difference,
+      // update the closest object
+      return minDifference < closest.minDifference ? { minDifference, item } : closest;
+    },
+    { minDifference: Infinity, item: undefined }
+  ).item;
+};

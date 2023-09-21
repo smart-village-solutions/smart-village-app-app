@@ -6,6 +6,7 @@ import { FlatList, RefreshControl } from 'react-native';
 import {
   About,
   ConnectedImagesCarousel,
+  Disturber,
   HomeSection,
   HomeService,
   NewsSectionPlaceholder,
@@ -271,12 +272,14 @@ export const HomeScreen = ({ navigation, route }) => {
             />
 
             <Widgets widgetConfigs={widgetConfigs} />
+
+            <Disturber navigation={navigation} publicJsonFile="homeDisturber" />
           </>
         }
         ListFooterComponent={
           route.params?.isDrawer && (
             <>
-              <HomeService />
+              <HomeService publicJsonFile="homeService" />
               <About navigation={navigation} withHomeRefresh />
             </>
           )
