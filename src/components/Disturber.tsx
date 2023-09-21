@@ -55,7 +55,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
 
   const setDisturberComplete = () => {
     setIsVisible((prev) => !prev);
-    addToStore(publicJsonFile, closestItem?.id.toString());
+    !!closestItem && addToStore(publicJsonFile, closestItem.id.toString());
   };
 
   useEffect(() => {
@@ -63,7 +63,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
       try {
         const disturberComplete = await readFromStore(publicJsonFile);
 
-        if (closestItem?.id && disturberComplete !== closestItem?.id.toString()) {
+        if (disturberComplete !== closestItem?.id?.toString()) {
           setIsVisible(true);
         }
       } catch (e) {
@@ -76,7 +76,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
     disturberStatus();
   }, [closestItem]);
 
-  if (!isVisible || !closestItem) return null;
+  if (!closestItem) return null;
 
   return (
     <Wrapper style={styles.wrapperPadding}>
