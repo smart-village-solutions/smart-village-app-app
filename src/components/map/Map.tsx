@@ -27,14 +27,16 @@ const MARKER_ICON_SIZE = normalize(40);
 
 const MapIcon = ({
   iconColor,
-  iconName = 'location'
+  iconName = 'location',
+  iconSize = MARKER_ICON_SIZE
 }: {
   iconColor?: string;
   iconName?: string;
+  iconSize?: number;
 }) => {
   const MarkerIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
 
-  return <MarkerIcon color={iconColor} size={MARKER_ICON_SIZE} />;
+  return <MarkerIcon color={iconColor} size={iconSize} />;
 };
 
 export const Map = ({
@@ -126,21 +128,45 @@ export const Map = ({
             zIndex={1}
           />
         )}
-        {locations?.map((marker, index) => (
-          <Marker
-            centerOffset={marker.iconAnchor || { x: 0, y: -(MARKER_ICON_SIZE / 2) }}
-            coordinate={marker.position}
-            identifier={marker.id}
-            key={`${index}-${marker.id}`}
-            onPress={() => onMarkerPress?.(marker.id)}
-            zIndex={selectedMarker && marker.id === selectedMarker ? 1010 : 1}
-          >
-            <MapIcon
-              iconColor={selectedMarker && marker.id === selectedMarker ? colors.accent : undefined}
-              iconName={marker.iconName ? marker.iconName : undefined}
-            />
-          </Marker>
-        ))}
+        {locations?.map((marker, index) => {
+          const isActiveMarker = selectedMarker && marker.id === selectedMarker;
+
+          return (
+            <Marker
+              centerOffset={marker.iconAnchor || { x: 0, y: -(MARKER_ICON_SIZE / 2) }}
+              coordinate={marker.position}
+              identifier={marker.id}
+              key={`${index}-${marker.id}`}
+              onPress={() => onMarkerPress?.(marker.id)}
+              zIndex={isActiveMarker ? 1010 : 1}
+            >
+              {!!marker.iconName && marker.iconName != 'ownLocation' ? (
+                <>
+                  <MapIcon iconColor={isActiveMarker ? colors.accent : undefined} />
+                  <View
+                    style={[
+                      styles.mapIconOnLocationMarker,
+                      isActiveMarker ? styles.mapIconOnLocationMarkerActive : undefined
+                    ]}
+                  >
+                    <MapIcon
+                      iconColor={colors.surface}
+                      iconName={marker.iconName}
+                      iconSize={MARKER_ICON_SIZE / 3.25}
+                    />
+                  </View>
+                </>
+              ) : (
+                <MapIcon
+                  iconColor={
+                    selectedMarker && marker.id === selectedMarker ? colors.accent : undefined
+                  }
+                  iconName={marker.iconName ? marker.iconName : undefined}
+                />
+              )}
+            </Marker>
+          );
+        })}
       </MapView>
       {isMaximizeButtonVisible && (
         <TouchableOpacity style={styles.maximizeMapButton} onPress={onMaximizeButtonPress}>
@@ -157,6 +183,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     flex: 1,
     justifyContent: 'center'
+  },
+  mapIconOnLocationMarker: {
+    backgroundColor: colors.primary,
+    left: MARKER_ICON_SIZE / 2.9,
+    position: 'absolute',
+    top: MARKER_ICON_SIZE / 4.2
+  },
+  mapIconOnLocationMarkerActive: {
+    backgroundColor: colors.accent
   },
   maximizeMapButton: {
     alignItems: 'center',
