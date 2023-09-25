@@ -1,7 +1,7 @@
-import React, { useContext, useRef, useState } from 'react';
+import _upperFirst from 'lodash/upperFirst';
+import React, { useContext, useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import MapView, { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
-import { SvgXml } from 'react-native-svg';
 
 import { colors, device, Icon, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
@@ -15,7 +15,7 @@ type Props = {
   locations?: MapMarker[];
   mapCenterPosition?: { latitude: number; longitude: number };
   mapStyle?: StyleProp<ViewStyle>;
-  onMapPress?: () => void;
+  onMapPress?: ({ nativeEvent }: { nativeEvent?: any }) => void;
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
   selectedMarker?: string;
@@ -24,6 +24,18 @@ type Props = {
 };
 
 const MARKER_ICON_SIZE = normalize(40);
+
+const MapIcon = ({
+  iconColor,
+  iconName = 'location'
+}: {
+  iconColor?: string;
+  iconName?: string;
+}) => {
+  const MarkerIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
+
+  return <MarkerIcon color={iconColor} size={MARKER_ICON_SIZE} />;
+};
 
 export const Map = ({
   geometryTourData,
@@ -116,16 +128,16 @@ export const Map = ({
         )}
         {locations?.map((marker, index) => (
           <Marker
+            centerOffset={marker.iconAnchor || { x: 0, y: -(MARKER_ICON_SIZE / 2) }}
+            coordinate={marker.position}
             identifier={marker.id}
             key={`${index}-${marker.id}`}
-            coordinate={marker.position}
             onPress={() => onMarkerPress?.(marker.id)}
             zIndex={selectedMarker && marker.id === selectedMarker ? 1010 : 1}
           >
-            <SvgXml
-              xml={selectedMarker && marker.id === selectedMarker ? marker.activeIcon : marker.icon}
-              width={MARKER_ICON_SIZE}
-              height={MARKER_ICON_SIZE}
+            <MapIcon
+              iconColor={selectedMarker && marker.id === selectedMarker ? colors.accent : undefined}
+              iconName={marker.iconName ? marker.iconName : undefined}
             />
           </Marker>
         ))}

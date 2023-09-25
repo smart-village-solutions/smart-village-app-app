@@ -8,7 +8,6 @@ import { colors, Icon, normalize, texts } from '../../../../config';
 import { ConsulClient } from '../../../../ConsulClient';
 import { getConsulUser } from '../../../../helpers';
 import { useOpenWebScreen } from '../../../../hooks';
-import { location, locationIconAnchor } from '../../../../icons';
 import { QUERY_TYPES } from '../../../../queries';
 import { ADD_COMMENT_TO_PROPOSAL, PUBLISH_PROPOSAL } from '../../../../queries/consul';
 import { ScreenName } from '../../../../types';
@@ -172,8 +171,6 @@ export const ProposalDetail = ({ data, refetch, route, navigation }) => {
           <Map
             locations={[
               {
-                icon: location(colors.primary),
-                iconAnchor: locationIconAnchor,
                 position: { latitude, longitude }
               }
             ]}

@@ -27,7 +27,7 @@ export const TimeTables = ({
   travelTimes: TimeTableProps[];
   iconName: keyof typeof Icon;
 }) => {
-  const CategoryIcon = Icon[_upperFirst(iconName)];
+  const CategoryIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
   const today: string | number = new Date().toISOString();
 
   return (

@@ -3,10 +3,9 @@ import React, { useContext } from 'react';
 import { View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
-import { colors, consts, texts } from '../../config';
+import { consts, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
-import { location, locationIconAnchor } from '../../icons';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
@@ -144,8 +143,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
           <Map
             locations={[
               {
-                icon: location(colors.primary),
-                iconAnchor: locationIconAnchor,
                 position: { latitude, longitude }
               }
             ]}

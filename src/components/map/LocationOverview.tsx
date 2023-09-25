@@ -9,8 +9,6 @@ import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { Icon, colors, normalize, texts } from '../../config';
 import { graphqlFetchPolicy, isOpen, parseListItemsFromQuery } from '../../helpers';
-import * as Icons from '../../icons';
-import { location, locationIconAnchor } from '../../icons';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
@@ -46,25 +44,8 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
 
         if (!latitude || !longitude) return undefined;
 
-        let icon = location;
-
-        if (item.category?.iconName) {
-          // remove location and locationIconAnchor from Icons for proper type perspective to all
-          // the other icons
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { location: _l, locationIconAnchor: _lia, ...OtherIcons } = Icons;
-          const iconName = item.category.iconName as keyof typeof OtherIcons;
-
-          // only use the icon if it is available from our icons
-          if (Object.keys(OtherIcons).includes(iconName)) {
-            icon = OtherIcons[iconName] as (color: any) => string;
-          }
-        }
-
         return {
-          icon: icon(colors.primary),
-          activeIcon: icon(colors.accent),
-          iconAnchor: locationIconAnchor,
+          iconName: item.category.iconName,
           id: item.id,
           position: {
             latitude,
