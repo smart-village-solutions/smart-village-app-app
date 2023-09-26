@@ -11,7 +11,6 @@ import { Image } from './Image';
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
-import { OpenStatus } from './infoCard/OpenStatus';
 
 export type ItemData = {
   id: string;
@@ -38,6 +37,7 @@ type Props = {
   leftImage?: boolean | undefined;
   navigation: StackNavigationProp<Record<string, any>>;
   noSubtitle?: boolean | undefined;
+  showOpenStatus?: boolean;
   titleFirst?: boolean;
 };
 
@@ -55,6 +55,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
     leftImage,
     navigation,
     noSubtitle,
+    showOpenStatus,
     titleFirst
   }) => {
     const {
@@ -76,6 +77,12 @@ export const TextListItem: NamedExoticComponent<Props> & {
     let titleText = <BoldText>{trimNewLines(title)}</BoldText>;
 
     const textDirection: 'column' | 'column-reverse' = titleFirst ? 'column-reverse' : 'column';
+
+    let status = '';
+    if (showOpenStatus) {
+      const openStatus = isOpen(item?.params?.details?.openingHours);
+      status = openStatus?.open ? 'Jetzt geöffnet' : 'Geschlossen';
+    }
 
     if (teaserTitle) {
       titleText = (
@@ -127,6 +134,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
           ) : undefined)}
 
         <ListItem.Content style={{ flexDirection: textDirection }}>
+          {showOpenStatus && !!status && <RegularText small>{status}</RegularText>}
           {noSubtitle || !subtitle ? titleText : <RegularText small>{subtitle}</RegularText>}
           {noSubtitle || !subtitle ? undefined : titleText}
         </ListItem.Content>
@@ -165,6 +173,7 @@ TextListItem.propTypes = {
   leftImage: PropTypes.bool,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
+  showOpenStatus: PropTypes.bool,
   titleFirst: PropTypes.bool
 };
 
