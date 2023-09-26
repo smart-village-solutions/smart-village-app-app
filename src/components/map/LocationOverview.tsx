@@ -148,14 +148,16 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
         selectedMarker={selectedPointOfInterest}
       />
       {selectedPointOfInterest && !detailsLoading && (
-        <Wrapper
-          small
+        <View
           style={[
             styles.listItemContainer,
             stylesWithProps({ navigation: navigationType }).position
           ]}
         >
           <TextListItem
+            containerStyle={styles.textListItemContainer}
+            imageContainerStyle={styles.imageRadius}
+            imageStyle={styles.imageSize}
             item={{
               ...item,
               bottomDivider: false,
@@ -163,18 +165,19 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
                 ? item.picture
                 : {
                     url: 'https://fileserver.smart-village.app/hb-meinquartier/app-icon.png'
-                  },
-              subtitle: undefined
+                  }
             }}
             leftImage
             navigation={navigation}
+            showOpenStatus
+            titleFirst
           />
           <View style={styles.iconContainer}>
             <Touchable onPress={() => setSelectedPointOfInterest(undefined)}>
               <Icon.Close size={normalize(20)} />
             </Touchable>
           </View>
-        </Wrapper>
+        </View>
       )}
     </>
   );
@@ -191,6 +194,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: normalize(7),
     width: normalize(32)
+  },
+  imageSize: {
+    height: normalize(96),
+    width: normalize(96)
+  },
+  imageRadius: {
+    borderBottomLeftRadius: normalize(12),
+    borderTopLeftRadius: normalize(12)
   },
   listItemContainer: {
     backgroundColor: colors.surface,
@@ -212,6 +223,10 @@ const styles = StyleSheet.create({
   map: {
     height: '100%',
     width: '100%'
+  },
+  textListItemContainer: {
+    paddingVertical: 0,
+    padding: 0
   }
 });
 
