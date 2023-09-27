@@ -1156,6 +1156,7 @@ export const texts = {
     lunch: 'Gastro',
     surveys: 'Umfragen',
     water: 'Wasser',
-    weather: 'Wetter'
+    weather: 'Wetter',
+    web: 'Web'
   }
 };
