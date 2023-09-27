@@ -23,6 +23,7 @@ import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
 import { TimeTables } from './TimeTables';
+import { TravelTimes } from './TravelTimes';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -92,7 +93,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
       )}
 
       {!!travelTimes?.length && (
-        <TimeTables travelTimes={travelTimes} iconName={category?.iconName} />
+        <TravelTimes travelTimes={travelTimes} iconName={category?.iconName} />
       )}
 
       {!!openingHours?.length && (

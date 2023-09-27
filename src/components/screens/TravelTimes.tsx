@@ -20,7 +20,7 @@ type TimeTableProps = {
   trip: { trip_headsign: string };
 };
 
-export const TimeTables = ({
+export const TravelTimes = ({
   travelTimes,
   iconName
 }: {
