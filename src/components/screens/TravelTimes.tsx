@@ -1,10 +1,13 @@
 import _upperFirst from 'lodash/upperFirst';
 import React, { Fragment } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { useQuery } from 'react-apollo';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
 import { Icon, colors, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
+import { QUERY_TYPES, getQuery } from '../../queries';
+import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
@@ -21,14 +24,29 @@ type TimeTableProps = {
 };
 
 export const TravelTimes = ({
-  travelTimes,
+  dataProviderId,
+  externalId,
   iconName
 }: {
-  travelTimes: TimeTableProps[];
+  dataProviderId: string;
+  externalId: string;
   iconName: keyof typeof Icon;
 }) => {
   const CategoryIcon = Icon[_upperFirst(iconName)];
   const today: string | number = new Date().toISOString();
+  const queryVariables = { dataProviderId, externalId, date: '2023-09-27T09:00' };
+
+  const { data, loading } = useQuery(getQuery(QUERY_TYPES.TRAVEL_TIMES), {
+    variables: queryVariables
+  });
+
+  if (loading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.refreshControl} />
+      </LoadingContainer>
+    );
+  }
 
   return (
     <>

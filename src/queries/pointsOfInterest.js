@@ -92,7 +92,8 @@ export const GET_POINT_OF_INTEREST = gql`
     pointOfInterest(id: $id) {
       id
       title: name
-      travelTimes(date: $date)
+      hasTravelTimes(date: $date)
+      externalId
       payload
       category {
         id

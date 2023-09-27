@@ -33,12 +33,14 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const {
     addresses,
+    externalId,
     payload,
     categories,
     category,
     contact,
     dataProvider,
     description,
+    hasTravelTimes,
     id,
     lunches,
     mediaContents,
@@ -46,7 +48,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     operatingCompany,
     priceInformations,
     title,
-    travelTimes,
     webUrls
   } = data;
 
@@ -92,8 +93,12 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
         <AvailableVehicles freeStatusUrl={payload.freeStatusUrl} iconName={category?.iconName} />
       )}
 
-      {!!travelTimes?.length && (
-        <TravelTimes travelTimes={travelTimes} iconName={category?.iconName} />
+      {hasTravelTimes && (
+        <TravelTimes
+          externalId={externalId}
+          dataProviderId={dataProvider?.id}
+          iconName={category?.iconName}
+        />
       )}
 
       {!!openingHours?.length && (
