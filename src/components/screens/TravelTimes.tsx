@@ -7,10 +7,13 @@ import { Divider, ListItem } from 'react-native-elements';
 import { Icon, colors, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
+import { Button } from '../Button';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
+
+const MAX_INITIAL_NUM_TO_RENDER = 15;
 
 type TravelTimeProps = {
   departureTime: string;
@@ -33,6 +36,7 @@ export const TravelTimes = ({
   const CategoryIcon = Icon[_upperFirst(iconName)];
   const [today] = useState<string>(new Date().toISOString());
   const queryVariables = { dataProviderId, externalId, date: today };
+  const [moreData, setMoreData] = useState(1);
 
   const { data, loading } = useQuery(getQuery(QUERY_TYPES.TRAVEL_TIMES), {
     variables: queryVariables
@@ -46,6 +50,8 @@ export const TravelTimes = ({
     );
   }
 
+  const paginatedData = data?.travelTimes?.slice(0, moreData * MAX_INITIAL_NUM_TO_RENDER);
+
   return (
     <>
       <SectionHeader title={texts.pointOfInterest.departureTimes} />
@@ -56,78 +62,82 @@ export const TravelTimes = ({
         </BoldText>
       </Wrapper>
 
-      {!!data?.travelTimes?.length &&
-        data.travelTimes.map((item: TravelTimeProps, index: number) => {
-          const { departureTime, route, trip } = item;
-          const { routeShortName, routeType } = route;
-          const { tripHeadsign } = trip;
+      {paginatedData.map((item: TravelTimeProps, index: number) => {
+        const { departureTime, route, trip } = item;
+        const { routeShortName, routeType } = route;
+        const { tripHeadsign } = trip;
 
-          const routeTypes: { [key: string]: string } = {
-            '0': texts.pointOfInterest.routeTypes.tram,
-            '1': texts.pointOfInterest.routeTypes.metro,
-            '2': texts.pointOfInterest.routeTypes.railway,
-            '3': texts.pointOfInterest.routeTypes.bus
-          };
+        const routeTypes: { [key: string]: string } = {
+          '0': texts.pointOfInterest.routeTypes.tram,
+          '1': texts.pointOfInterest.routeTypes.metro,
+          '2': texts.pointOfInterest.routeTypes.railway,
+          '3': texts.pointOfInterest.routeTypes.bus
+        };
 
-          const routeColors: { [key: string]: string } = {
-            '0': colors.primary,
-            '1': colors.primary,
-            '2': colors.primary,
-            '3': colors.primary
-          };
+        const routeColors: { [key: string]: string } = {
+          '0': colors.primary,
+          '1': colors.primary,
+          '2': colors.primary,
+          '3': colors.primary
+        };
 
-          return (
-            <Fragment key={index}>
-              <ListItem style={styles.container}>
-                <ListItem.Content style={styles.itemRow}>
-                  {!!departureTime && (
-                    <RegularText style={styles.time}>
-                      {momentFormat(departureTime, 'HH:mm', 'HH:mm:ss')}
-                    </RegularText>
-                  )}
+        return (
+          <Fragment key={index}>
+            <ListItem style={styles.container}>
+              <ListItem.Content style={styles.itemRow}>
+                {!!departureTime && (
+                  <RegularText style={styles.time}>
+                    {momentFormat(departureTime, 'HH:mm', 'HH:mm:ss')}
+                  </RegularText>
+                )}
 
-                  {!!routeShortName && !!routeType && (
-                    <View style={styles.typeDirection}>
-                      {!!iconName && (
-                        <View
-                          style={[
-                            styles.typeIconContainer,
-                            { backgroundColor: routeColors[routeType || '0'] }
-                          ]}
-                        >
-                          <CategoryIcon color={colors.lightestText} size={normalize(16)} />
-                        </View>
-                      )}
+                {!!routeShortName && !!routeType && (
+                  <View style={styles.typeDirection}>
+                    {!!iconName && (
                       <View
                         style={[
-                          styles.typeView,
-                          { backgroundColor: `${routeColors[routeType || '0']}` }
+                          styles.typeIconContainer,
+                          { backgroundColor: routeColors[routeType || '0'] }
                         ]}
                       >
-                        <RegularText lightest center>
-                          {`${routeTypes[routeType || '0']} ${routeShortName}`}
-                        </RegularText>
+                        <CategoryIcon color={colors.lightestText} size={normalize(16)} />
                       </View>
+                    )}
+                    <View
+                      style={[
+                        styles.typeView,
+                        { backgroundColor: `${routeColors[routeType || '0']}` }
+                      ]}
+                    >
+                      <RegularText lightest center>
+                        {`${routeTypes[routeType || '0']} ${routeShortName}`}
+                      </RegularText>
                     </View>
-                  )}
+                  </View>
+                )}
 
-                  <Icon.ArrowRight
-                    size={normalize(16)}
-                    color={colors.darkText}
-                    style={styles.icon}
-                  />
+                <Icon.ArrowRight size={normalize(16)} color={colors.darkText} style={styles.icon} />
 
-                  {!!tripHeadsign && (
-                    <RegularText small style={styles.headSign}>
-                      {tripHeadsign}
-                    </RegularText>
-                  )}
-                </ListItem.Content>
-              </ListItem>
-              {index !== data.travelTimes.length - 1 && <Divider style={styles.divider} />}
-            </Fragment>
-          );
-        })}
+                {!!tripHeadsign && (
+                  <RegularText small style={styles.headSign}>
+                    {tripHeadsign}
+                  </RegularText>
+                )}
+              </ListItem.Content>
+            </ListItem>
+            {index !== paginatedData.length - 1 && <Divider style={styles.divider} />}
+          </Fragment>
+        );
+      })}
+      {paginatedData.length !== data?.travelTimes?.length && (
+        <Wrapper>
+          <Button
+            title={texts.pointOfInterest.departureTimesShowMoreButton}
+            onPress={() => setMoreData((prev) => prev + 1)}
+            notFullWidth
+          />
+        </Wrapper>
+      )}
     </>
   );
 };
