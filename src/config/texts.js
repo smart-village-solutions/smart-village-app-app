@@ -757,6 +757,7 @@ export const texts = {
   pointOfInterest: {
     availableVehicles: 'Verfügbare Fahrzeuge',
     departureTimes: 'Abfahrtszeiten',
+    departureTimesShowMoreButton: 'Mehr anzeigen',
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
     location: 'Anfahrt',
