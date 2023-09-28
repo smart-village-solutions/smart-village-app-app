@@ -89,7 +89,8 @@ export const EventList = ({
                         momentFormat(title, 'YYYY-MM-DD')
                       ]
                     },
-                    rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
+                    rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
+                    showFilterByDailyEvents: false
                   })
               : undefined
           }
