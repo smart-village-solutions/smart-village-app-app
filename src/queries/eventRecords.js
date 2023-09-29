@@ -287,6 +287,7 @@ export const GET_EVENT_RECORD = gql`
           webUrls {
             id
             url
+            description
           }
         }
       }
