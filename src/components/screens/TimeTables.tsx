@@ -1,4 +1,5 @@
 import _upperFirst from 'lodash/upperFirst';
+import moment from 'moment';
 import React, { Fragment } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
@@ -28,7 +29,7 @@ export const TimeTables = ({
   iconName: keyof typeof Icon;
 }) => {
   const CategoryIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
-  const today: string | number = new Date().toISOString();
+  const today: string = moment().format('ddd, DD.MM.YYY');
 
   return (
     <>
@@ -36,7 +37,7 @@ export const TimeTables = ({
 
       <Wrapper style={styles.noPadding}>
         <BoldText small>
-          {texts.pointOfInterest.today} {momentFormat(today, 'ddd, DD.MM.YYYY')}
+          {texts.pointOfInterest.today} {today}
         </BoldText>
       </Wrapper>
 
