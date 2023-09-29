@@ -69,7 +69,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
       renderItem = ({ item, index }) => {
         if (index === 0) {
           return (
-            <BigCardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
+            <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
           );
         } else {
           return (
