@@ -50,7 +50,7 @@ export const AvailableVehicles = ({
     );
   }
 
-  const CategoryIcon = Icon[_upperFirst(iconName)];
+  const CategoryIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
 
   return (
     <>

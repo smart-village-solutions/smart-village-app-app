@@ -17,7 +17,6 @@ import { LoadingSpinner } from '../components/LoadingSpinner';
 import { colors, consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useConstructionSites, useMatomoTrackScreenView } from '../hooks';
-import { location as locationIcon, locationIconAnchor } from '../icons';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -136,8 +135,6 @@ export const ConstructionSiteDetailScreen = ({ route }) => {
           <Map
             locations={[
               {
-                icon: locationIcon(colors.primary),
-                iconAnchor: locationIconAnchor,
                 position: {
                   latitude: location.lat,
                   longitude: location.lon

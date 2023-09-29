@@ -3,18 +3,17 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 
-import { colors, consts, texts } from '../../config';
-import { checkDownloadedData, navigationToArtworksDetailScreen } from '../../helpers';
-import { location, locationIconAnchor } from '../../icons';
-import { getQuery, QUERY_TYPES } from '../../queries';
 import { SettingsContext } from '../../SettingsProvider';
+import { consts, texts } from '../../config';
+import { checkDownloadedData, navigationToArtworksDetailScreen } from '../../helpers';
+import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName } from '../../types';
 import { Button } from '../Button';
 import { IndexFilterWrapperAndList } from '../IndexFilterWrapperAndList';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { Map } from '../map';
-import { Wrapper } from '../Wrapper';
 import { SectionHeader } from '../SectionHeader';
+import { Wrapper } from '../Wrapper';
+import { Map } from '../map';
 
 import { ARModal } from './ARModal';
 import { ARObjectList } from './ARObjectList';
@@ -173,8 +172,6 @@ const mapToMapMarkers = (data) =>
       if (!latitude || !longitude) return undefined;
 
       return {
-        icon: location(colors.primary),
-        iconAnchor: locationIconAnchor,
         id: item.id.toString(),
         position: {
           latitude,

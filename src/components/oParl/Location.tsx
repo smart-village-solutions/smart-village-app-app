@@ -2,8 +2,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { isString } from 'lodash';
 import React from 'react';
 
-import { colors, texts } from '../../config';
-import { location, locationIconAnchor } from '../../icons';
+import { texts } from '../../config';
 import { isFeature, isFeatureCollection, isMultiPoint, isPoint } from '../../jsonValidation';
 import { LocationData, MapMarker } from '../../types';
 import { Map } from '../map';
@@ -28,8 +27,6 @@ const getMapMarkers = (geoJson: unknown): MapMarker[] => {
   if (isPoint(geoJson) && geoJson.coordinates.length > 1) {
     return [
       {
-        icon: location(colors.primary),
-        iconAnchor: locationIconAnchor,
         position: {
           latitude: geoJson.coordinates[1],
           longitude: geoJson.coordinates[0]
@@ -42,8 +39,6 @@ const getMapMarkers = (geoJson: unknown): MapMarker[] => {
     return coordinates
       .filter((entry) => entry.length > 1)
       .map((entry) => ({
-        icon: location(colors.primary),
-        iconAnchor: locationIconAnchor,
         position: {
           latitude: entry[1],
           longitude: entry[0]

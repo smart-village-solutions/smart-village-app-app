@@ -34,6 +34,7 @@ import {
   oParlCalendar,
   oParlOrganizations,
   oParlPeople,
+  ownLocation,
   pen,
   phone,
   profile,
@@ -93,7 +94,7 @@ const NamedIcon = ({
   name,
   size = normalize(26),
   style
-}: IconProps & { name: ComponentProps<typeof IconSet>['name'] }) => {
+}: IconProps & { name?: ComponentProps<typeof IconSet>['name'] }) => {
   return (
     <View style={style} hitSlop={getHitSlops(size)}>
       <IconSet name={name} size={size} color={color} style={iconStyle} />
@@ -144,7 +145,8 @@ export const Icon = {
   OParlCalendar: (props: IconProps) => <SvgIcon xml={oParlCalendar} {...props} />,
   OParlOrganizations: (props: IconProps) => <SvgIcon xml={oParlOrganizations} {...props} />,
   OParlPeople: (props: IconProps) => <SvgIcon xml={oParlPeople} {...props} />,
-  Pause: (props: IconProps) => <NamedIcon name="player-pause-filled" {...props} />,
+  OwnLocation: (props: IconProps) => <SvgIcon xml={ownLocation} {...props} />,
+  Pause: (props: IconProps) => <NamedIcon name="pause" {...props} />,
   Pen: (props: IconProps) => <SvgIcon xml={pen} {...props} />,
   Phone: (props: IconProps) => <SvgIcon xml={phone} {...props} />,
   Play: (props: IconProps) => <NamedIcon name="player-play-filled" {...props} />,

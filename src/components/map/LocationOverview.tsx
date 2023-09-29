@@ -3,20 +3,17 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { LocationObject } from 'expo-location';
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { Icon, colors, normalize, texts } from '../../config';
+import { colors, normalize, texts } from '../../config';
 import { graphqlFetchPolicy, isOpen, parseListItemsFromQuery } from '../../helpers';
-import * as Icons from '../../icons';
-import { location, locationIconAnchor } from '../../icons';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
 import { RegularText } from '../Text';
 import { TextListItem } from '../TextListItem';
-import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
 import { Map } from './Map';
@@ -46,25 +43,8 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
 
         if (!latitude || !longitude) return undefined;
 
-        let icon = location;
-
-        if (item.category?.iconName) {
-          // remove location and locationIconAnchor from Icons for proper type perspective to all
-          // the other icons
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { location: _l, locationIconAnchor: _lia, ...OtherIcons } = Icons;
-          const iconName = item.category.iconName as keyof typeof OtherIcons;
-
-          // only use the icon if it is available from our icons
-          if (Object.keys(OtherIcons).includes(iconName)) {
-            icon = OtherIcons[iconName] as (color: any) => string;
-          }
-        }
-
         return {
-          icon: icon(colors.lighterPrimary),
-          activeIcon: icon(colors.primary),
-          iconAnchor: locationIconAnchor,
+          iconName: item.category.iconName,
           id: item.id,
           position: {
             latitude,
@@ -170,11 +150,6 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
             listsWithoutArrows
             navigation={navigation}
           />
-          <View style={styles.iconContainer}>
-            <Touchable onPress={() => setSelectedPointOfInterest(undefined)}>
-              <Icon.Close size={normalize(20)} />
-            </Touchable>
-          </View>
         </Wrapper>
       )}
     </>
@@ -182,17 +157,6 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
 };
 
 const styles = StyleSheet.create({
-  iconContainer: {
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: normalize(16),
-    height: normalize(32),
-    justifyContent: 'center',
-    left: normalize(7),
-    position: 'absolute',
-    top: normalize(7),
-    width: normalize(32)
-  },
   listItemContainer: {
     backgroundColor: colors.surface,
     borderRadius: normalize(12),

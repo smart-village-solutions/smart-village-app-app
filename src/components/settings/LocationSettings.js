@@ -3,10 +3,9 @@ import React, { useState } from 'react';
 import { Alert, StyleSheet, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
-import { colors, normalize, texts } from '../../config';
+import { normalize, texts } from '../../config';
 import { geoLocationToLocationObject } from '../../helpers';
 import { useLocationSettings, useSystemPermission } from '../../hooks';
-import { ownLocation, ownLocationIconAnchor } from '../../icons';
 import { Button } from '../Button';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { Map } from '../map';
@@ -16,8 +15,7 @@ import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
 export const baseLocationMarker = {
-  icon: ownLocation(colors.accent),
-  iconAnchor: ownLocationIconAnchor
+  iconName: 'ownLocation'
 };
 
 export const getLocationMarker = (locationObject) => ({

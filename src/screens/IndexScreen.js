@@ -376,7 +376,11 @@ export const IndexScreen = ({ navigation, route }) => {
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
   useLayoutEffect(() => {
-    if (query === QUERY_TYPES.POINTS_OF_INTEREST && showMap) {
+    if (
+      query === QUERY_TYPES.POINTS_OF_INTEREST &&
+      showMap &&
+      initialFilter === FILTER_TYPES.LIST
+    ) {
       navigation.setOptions({
         headerLeft: () => (
           <HeaderLeft
