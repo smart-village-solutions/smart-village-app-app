@@ -3,7 +3,7 @@ import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
 
 import { SettingsContext } from '../SettingsProvider';
-import { BigCardListItem } from '../components';
+import { CardTextListItem } from '../components';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
@@ -76,14 +76,14 @@ export const useRenderItem = (query, navigation, options = {}) => {
             <TextListItem
               item={{
                 ...item,
-                bottomDivider: true
+                bottomDivider:
+                  item.bottomDivider ??
+                  (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
               }}
-              {...{
-                navigation,
-                noSubtitle: options.noSubtitle,
-                rightImage: true,
-                textListItemWithBigCard: true
-              }}
+              navigation={navigation}
+              noSubtitle={options.noSubtitle}
+              leftImage
+              withCard
             />
           );
         }
