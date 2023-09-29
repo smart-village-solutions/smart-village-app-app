@@ -122,7 +122,7 @@ const MainAppWithApolloProvider = () => {
 
     // if there are no list type settings yet, set the defaults as fallback
     const listTypesSettings = (await storageHelper.listTypesSettings()) || {
-      [QUERY_TYPES.NEWS_ITEMS]: LIST_TYPES.TEXT_LIST,
+      [QUERY_TYPES.NEWS_ITEMS]: LIST_TYPES.CARD_TEXT_LIST,
       [QUERY_TYPES.EVENT_RECORDS]: LIST_TYPES.TEXT_LIST,
       [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: LIST_TYPES.CARD_LIST
     };
