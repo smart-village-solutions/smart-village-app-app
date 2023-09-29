@@ -759,6 +759,7 @@ export const texts = {
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
     location: 'Anfahrt',
+    noAvailableVehicles: 'Im Moment ist kein Fahrzeug verfügbar',
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
     priceFree: 'kostenlos',
