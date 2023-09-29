@@ -8,7 +8,7 @@ import { colors, consts, Icon, normalize } from '../config';
 import { trimNewLines } from '../helpers';
 
 import { Image } from './Image';
-import { BoldText, CategoryText, HeadlineText, RegularText } from './Text';
+import { BoldText, HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
@@ -120,17 +120,12 @@ export const TextListItem: NamedExoticComponent<Props> & {
 
         {textListItemWithBigCard ? (
           <ListItem.Content>
-            {noSubtitle || !subtitle ? (
-              titleText
-            ) : (
-              <CategoryText small>{subtitle.split('| ')[1]}</CategoryText>
-            )}
             {noSubtitle || !subtitle ? undefined : titleText}
             {noSubtitle || !subtitle ? (
               titleText
             ) : (
               <RegularText small style={{ marginTop: normalize(6) }}>
-                {subtitle.split(' |')[0]}
+                {subtitle}
               </RegularText>
             )}
           </ListItem.Content>
