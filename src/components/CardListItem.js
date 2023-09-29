@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
-import { Card } from 'react-native-elements';
 import { Platform, StyleSheet, View } from 'react-native';
+import { Card, Divider } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
-import { imageHeight, imageWidth } from '../helpers';
+import { imageHeight, imageWidth, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
-import { RegularText, BoldText } from './Text';
+import { HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
 export const CardListItem = memo(({ navigation, horizontal, item }) => {
-  const { routeName: name, params, picture, subtitle, title } = item;
+  const { routeName: name, params, picture, subtitle, title, overtitle } = item;
 
   // TODO: count articles logic could to be implemented
   return (
@@ -27,17 +27,26 @@ export const CardListItem = memo(({ navigation, horizontal, item }) => {
               source={{ uri: picture.url }}
               style={stylesWithProps({ horizontal }).image}
               containerStyle={styles.imageContainer}
-              borderRadius={5}
             />
           )}
-          {!!subtitle && <RegularText small>{subtitle}</RegularText>}
+          {!!overtitle && (
+            <HeadlineText smallest uppercase style={styles.overtitle}>
+              {trimNewLines(overtitle)}
+            </HeadlineText>
+          )}
           {!!title && (
-            <BoldText>
+            <HeadlineText>
               {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
-            </BoldText>
+            </HeadlineText>
+          )}
+          {!!subtitle && (
+            <RegularText smallest style={styles.subtitle}>
+              {subtitle}
+            </RegularText>
           )}
         </View>
       </Card>
+      <Divider />
     </Touchable>
   );
 });
@@ -57,8 +66,15 @@ const styles = StyleSheet.create({
       }
     })
   },
+  overtitle: {
+    marginBottom: normalize(4),
+    marginTop: normalize(16)
+  },
   imageContainer: {
     alignSelf: 'center'
+  },
+  subtitle: {
+    marginTop: normalize(6)
   }
 });
 
@@ -80,8 +96,8 @@ const stylesWithProps = ({ horizontal }) => {
     },
     image: {
       marginBottom: normalize(7),
-      height: imageHeight(maxWidth),
-      width: maxWidth
+      height: imageHeight(width),
+      width: width
     }
   });
 };
