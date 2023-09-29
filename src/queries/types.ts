@@ -51,6 +51,7 @@ export const QUERY_TYPES = {
   TOUR: 'tour',
   TOUR_STOPS: 'tourStops',
   TOURS: 'tours',
+  TRAVEL_TIMES: 'travelTimes',
   VOLUNTEER: {
     APPLICANTS: 'applicants',
     ADDITIONAL: 'additional',

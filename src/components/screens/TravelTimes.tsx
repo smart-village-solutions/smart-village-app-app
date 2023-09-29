@@ -1,35 +1,56 @@
 import _upperFirst from 'lodash/upperFirst';
-import moment from 'moment';
-import React, { Fragment } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { Fragment, useState } from 'react';
+import { useQuery } from 'react-apollo';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
 import { Icon, colors, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
+import { QUERY_TYPES, getQuery } from '../../queries';
+import { Button } from '../Button';
+import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 
-type TimeTableProps = {
-  departure_time: string;
+const MAX_INITIAL_NUM_TO_RENDER = 15;
+
+type TravelTimeProps = {
+  departureTime: string;
   route: {
-    route_color: string;
-    route_short_name: string;
-    route_text_color: string;
-    route_type: string;
+    routeShortName: string;
+    routeType: string;
   };
-  trip: { trip_headsign: string };
+  trip: { tripHeadsign: string };
 };
 
-export const TimeTables = ({
-  travelTimes,
+export const TravelTimes = ({
+  dataProviderId,
+  externalId,
   iconName
 }: {
-  travelTimes: TimeTableProps[];
+  dataProviderId: string;
+  externalId: string;
   iconName: keyof typeof Icon;
 }) => {
   const CategoryIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
-  const today: string = moment().format('ddd, DD.MM.YYY');
+  const [today] = useState<string>(new Date().toISOString());
+  const queryVariables = { dataProviderId, externalId, date: today };
+  const [moreData, setMoreData] = useState(1);
+
+  const { data, loading } = useQuery(getQuery(QUERY_TYPES.TRAVEL_TIMES), {
+    variables: queryVariables
+  });
+
+  if (loading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.refreshControl} />
+      </LoadingContainer>
+    );
+  }
+
+  const paginatedData = data?.travelTimes?.slice(0, moreData * MAX_INITIAL_NUM_TO_RENDER);
 
   return (
     <>
@@ -41,10 +62,10 @@ export const TimeTables = ({
         </BoldText>
       </Wrapper>
 
-      {travelTimes.map((item, index) => {
-        const { departure_time, route, trip } = item;
-        const { route_short_name, route_type } = route;
-        const { trip_headsign } = trip;
+      {paginatedData.map((item: TravelTimeProps, index: number) => {
+        const { departureTime, route, trip } = item;
+        const { routeShortName, routeType } = route;
+        const { tripHeadsign } = trip;
 
         const routeTypes: { [key: string]: string } = {
           '0': texts.pointOfInterest.routeTypes.tram,
@@ -64,19 +85,19 @@ export const TimeTables = ({
           <Fragment key={index}>
             <ListItem style={styles.container} containerStyle={styles.container}>
               <ListItem.Content style={styles.itemRow}>
-                {!!departure_time && (
+                {!!departureTime && (
                   <RegularText style={styles.time}>
-                    {momentFormat(departure_time, 'HH:mm', 'HH:mm:ss')}
+                    {momentFormat(departureTime, 'HH:mm', 'HH:mm:ss')}
                   </RegularText>
                 )}
 
-                {!!route_short_name && !!route_type && (
+                {!!routeShortName && !!routeType && (
                   <View style={styles.typeDirection}>
                     {!!iconName && (
                       <View
                         style={[
                           styles.typeIconContainer,
-                          { backgroundColor: routeColors[route_type || '0'] }
+                          { backgroundColor: routeColors[routeType || '0'] }
                         ]}
                       >
                         <CategoryIcon color={colors.lightestText} size={normalize(16)} />
@@ -85,11 +106,11 @@ export const TimeTables = ({
                     <View
                       style={[
                         styles.typeView,
-                        { backgroundColor: `${routeColors[route_type || '0']}` }
+                        { backgroundColor: `${routeColors[routeType || '0']}` }
                       ]}
                     >
                       <RegularText lightest center>
-                        {`${routeTypes[route_type || '0']} ${route_short_name}`}
+                        {`${routeTypes[routeType || '0']} ${routeShortName}`}
                       </RegularText>
                     </View>
                   </View>
@@ -97,17 +118,26 @@ export const TimeTables = ({
 
                 <Icon.ArrowRight size={normalize(16)} color={colors.darkText} style={styles.icon} />
 
-                {!!trip_headsign && (
+                {!!tripHeadsign && (
                   <RegularText small style={styles.headSign}>
-                    {trip_headsign}
+                    {tripHeadsign}
                   </RegularText>
                 )}
               </ListItem.Content>
             </ListItem>
-            {index !== travelTimes.length - 1 && <Divider style={styles.divider} />}
+            {index !== paginatedData.length - 1 && <Divider style={styles.divider} />}
           </Fragment>
         );
       })}
+      {paginatedData.length !== data?.travelTimes?.length && (
+        <Wrapper>
+          <Button
+            title={texts.pointOfInterest.departureTimesShowMoreButton}
+            onPress={() => setMoreData((prev) => prev + 1)}
+            notFullWidth
+          />
+        </Wrapper>
+      )}
     </>
   );
 };
