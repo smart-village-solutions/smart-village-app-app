@@ -3,11 +3,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { LocationObject } from 'expo-location';
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { Icon, colors, normalize, texts } from '../../config';
+import { colors, normalize, texts } from '../../config';
 import { graphqlFetchPolicy, isOpen, parseListItemsFromQuery } from '../../helpers';
 import * as Icons from '../../icons';
 import { location, locationIconAnchor } from '../../icons';
@@ -16,7 +16,6 @@ import { MapMarker } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
 import { RegularText } from '../Text';
 import { TextListItem } from '../TextListItem';
-import { Touchable } from '../Touchable';
 import { Wrapper } from '../Wrapper';
 
 import { Map } from './Map';
@@ -169,11 +168,6 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
             leftImage
             navigation={navigation}
           />
-          <View style={styles.iconContainer}>
-            <Touchable onPress={() => setSelectedPointOfInterest(undefined)}>
-              <Icon.Close size={normalize(20)} />
-            </Touchable>
-          </View>
         </Wrapper>
       )}
     </>
@@ -181,17 +175,6 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
 };
 
 const styles = StyleSheet.create({
-  iconContainer: {
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: normalize(16),
-    height: normalize(32),
-    justifyContent: 'center',
-    left: normalize(7),
-    position: 'absolute',
-    top: normalize(7),
-    width: normalize(32)
-  },
   listItemContainer: {
     backgroundColor: colors.surface,
     borderRadius: normalize(12),
