@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
@@ -142,7 +143,7 @@ export const Map = ({
             >
               {!!marker.iconName && marker.iconName != 'ownLocation' ? (
                 <>
-                  <MapIcon iconColor={isActiveMarker ? colors.accent : undefined} />
+                  <MapIcon iconColor={isActiveMarker ? colors.primary : colors.lighterPrimary} />
                   <View
                     style={[
                       styles.mapIconOnLocationMarker,
@@ -150,9 +151,9 @@ export const Map = ({
                     ]}
                   >
                     <MapIcon
-                      iconColor={colors.surface}
+                      iconColor={isActiveMarker ? colors.lighterPrimary : colors.primary}
                       iconName={marker.iconName}
-                      iconSize={MARKER_ICON_SIZE / 3.25}
+                      iconSize={MARKER_ICON_SIZE / 2.25}
                     />
                   </View>
                 </>
@@ -185,13 +186,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   mapIconOnLocationMarker: {
-    backgroundColor: colors.primary,
-    left: MARKER_ICON_SIZE / 2.9,
+    backgroundColor: colors.lighterPrimary,
+    left: MARKER_ICON_SIZE / 3.6,
     position: 'absolute',
     top: MARKER_ICON_SIZE / 4.2
   },
   mapIconOnLocationMarkerActive: {
-    backgroundColor: colors.accent
+    backgroundColor: colors.primary
   },
   maximizeMapButton: {
     alignItems: 'center',
