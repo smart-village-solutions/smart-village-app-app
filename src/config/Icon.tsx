@@ -134,7 +134,7 @@ export const Icon = {
   Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
   Like: (props: IconProps) => <SvgIcon xml={like} {...props} />,
   List: (props: IconProps) => <SvgIcon xml={list} {...props} />,
-  Location: (props: IconProps) => <NamedIcon name="location" {...props} />,
+  Location: (props: IconProps) => <NamedIcon name="map-pin-filled" {...props} />,
   Logo: (props: IconProps) => <SvgIcon xml={logo} {...props} />,
   Lunch: (props: IconProps) => <SvgIcon xml={lunch} {...props} />,
   Mail: (props: IconProps) => <SvgIcon xml={mail} {...props} />,
