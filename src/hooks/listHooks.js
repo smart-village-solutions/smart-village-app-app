@@ -2,6 +2,7 @@
 import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
 
+import { SettingsContext } from '../SettingsProvider';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
@@ -9,7 +10,6 @@ import { VolunteerConversationListItem } from '../components/volunteer/Volunteer
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
 import { consts } from '../config';
 import { QUERY_TYPES } from '../queries';
-import { SettingsContext } from '../SettingsProvider';
 
 const { LIST_TYPES } = consts;
 
@@ -64,6 +64,31 @@ export const useRenderItem = (query, navigation, options = {}) => {
           {...{ navigation, noSubtitle: options.noSubtitle, leftImage: true }}
         />
       );
+      break;
+    }
+    case LIST_TYPES.CARD_TEXT_LIST: {
+      renderItem = ({ item, index, section }) => {
+        if (index === 0) {
+          return (
+            <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
+          );
+        } else {
+          return (
+            <TextListItem
+              item={{
+                ...item,
+                bottomDivider:
+                  item.bottomDivider ??
+                  (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
+              }}
+              navigation={navigation}
+              noSubtitle={options.noSubtitle}
+              rightImage
+              withCard
+            />
+          );
+        }
+      };
       break;
     }
     default: {

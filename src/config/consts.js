@@ -155,7 +155,8 @@ export const consts = {
   LIST_TYPES: {
     CARD_LIST: 'cardList',
     IMAGE_TEXT_LIST: 'imageTextList',
-    TEXT_LIST: 'textList'
+    TEXT_LIST: 'textList',
+    CARD_TEXT_LIST: 'cardTextList'
   },
 
   ROOT_ROUTE_NAMES: {
