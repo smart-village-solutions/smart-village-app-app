@@ -85,7 +85,7 @@ export const DetailScreen = ({ navigation, route }) => {
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
   const details = route.params?.details ?? {};
-  const date = new Date().toISOString();
+  const [today] = useState(new Date().toISOString());
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -118,7 +118,7 @@ export const DetailScreen = ({ navigation, route }) => {
   return (
     <Query
       query={getQuery(query)}
-      variables={{ id: queryVariables.id, date }}
+      variables={{ id: queryVariables.id, date: today }}
       fetchPolicy={fetchPolicy}
     >
       {({ data, loading, refetch }) => {
