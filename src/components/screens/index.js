@@ -12,5 +12,5 @@ export * from './PriceCard';
 export * from './Service';
 export * from './ServiceTile';
 export * from './ServiceTiles';
-export * from './TimeTables';
 export * from './Tour';
+export * from './TravelTimes';

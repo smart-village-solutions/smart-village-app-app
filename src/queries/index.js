@@ -29,6 +29,7 @@ import { GET_POINTS_OF_INTEREST_AND_TOURS } from './pointsOfInterestAndTours';
 import { GET_PUBLIC_HTML_FILE } from './publicHtmlFiles';
 import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
 import { GET_TOUR, GET_TOURS, GET_TOUR_STOPS } from './tours';
+import { GET_TRAVEL_TIMES } from './travelTimes';
 import { QUERY_TYPES } from './types';
 import {
   calendar,
@@ -70,6 +71,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.TOUR]: GET_TOUR,
     [QUERY_TYPES.TOURS]: GET_TOURS,
     [QUERY_TYPES.TOUR_STOPS]: GET_TOUR_STOPS,
+    [QUERY_TYPES.TRAVEL_TIMES]: GET_TRAVEL_TIMES,
     [QUERY_TYPES.POINT_OF_INTEREST]: GET_POINT_OF_INTEREST,
     [QUERY_TYPES.POINTS_OF_INTEREST]: GET_POINTS_OF_INTEREST,
     [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: GET_POINTS_OF_INTEREST_AND_TOURS,
