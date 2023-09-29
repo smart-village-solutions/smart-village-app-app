@@ -156,7 +156,7 @@ export const consts = {
     CARD_LIST: 'cardList',
     IMAGE_TEXT_LIST: 'imageTextList',
     TEXT_LIST: 'textList',
-    TEXT_WITH_BIG_CARD_LIST: 'textWithBigCardList'
+    CARD_TEXT_LIST: 'cardTextList'
   },
 
   ROOT_ROUTE_NAMES: {

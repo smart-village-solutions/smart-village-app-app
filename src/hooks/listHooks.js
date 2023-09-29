@@ -65,7 +65,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
       );
       break;
     }
-    case LIST_TYPES.TEXT_WITH_BIG_CARD_LIST: {
+    case LIST_TYPES.CARD_TEXT_LIST: {
       renderItem = ({ item, index }) => {
         if (index === 0) {
           return (
