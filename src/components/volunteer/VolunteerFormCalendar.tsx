@@ -165,7 +165,7 @@ export const VolunteerFormCalendar = ({
       setTimeout(() => {
         filterGroupDropDownData();
       }, 300);
-  }, [isRefetchingGroupsMy]);
+  }, [isRefetchingGroupsMy, filterGroupDropDownData]);
 
   const isFocused = useIsFocused();
 
