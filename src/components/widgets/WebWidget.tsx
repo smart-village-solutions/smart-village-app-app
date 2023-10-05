@@ -19,19 +19,8 @@ export const WebWidget = ({ text = '', additionalProps }: WidgetProps) => {
 
   return (
     <DefaultWidget
-      Icon={() =>
-        additionalProps?.image ? (
-          <Image
-            source={{ url: additionalProps?.image.url }}
-            style={{
-              height: normalize(additionalProps?.image?.height ?? 26),
-              width: normalize(additionalProps?.image?.width ?? 33)
-            }}
-          />
-        ) : (
-          <Icon.Url size={normalize(26)} />
-        )
-      }
+      Icon={(props) => <Icon.Url {...props} size={normalize(26)} />}
+      image={additionalProps?.image}
       onPress={onPress}
       text={text}
     />

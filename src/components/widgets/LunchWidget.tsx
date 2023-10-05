@@ -12,7 +12,7 @@ import { WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
-export const LunchWidget = ({ text }: WidgetProps) => {
+export const LunchWidget = ({ text, additionalProps }: WidgetProps) => {
   const navigation = useNavigation();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const refreshTime = useRefreshTime('lunch-widget', consts.REFRESH_INTERVALS.ONCE_PER_HOUR);
@@ -41,6 +41,7 @@ export const LunchWidget = ({ text }: WidgetProps) => {
     <DefaultWidget
       count={data?.[QUERY_TYPES.LUNCHES]?.length}
       Icon={Icon.Lunch}
+      image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.lunch}
     />

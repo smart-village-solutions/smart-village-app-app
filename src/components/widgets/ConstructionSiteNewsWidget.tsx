@@ -45,6 +45,7 @@ export const ConstructionSiteNewsWidget = ({ text, additionalProps }: WidgetProp
     <DefaultWidget
       count={count}
       Icon={Icon.ConstructionSite}
+      image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.constructionSites}
     />

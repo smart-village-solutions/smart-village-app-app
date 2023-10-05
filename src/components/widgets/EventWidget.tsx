@@ -80,6 +80,7 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
     <DefaultWidget
       count={additionalProps?.noCount ? null : eventCount}
       Icon={Icon.Calendar}
+      image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.events}
     />
