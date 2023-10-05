@@ -15,7 +15,7 @@ export const SettingsToggle = ({ item }) => {
   const { title, bottomDivider, topDivider, value, onActivate, onDeactivate } = item;
 
   const [loading, setLoading] = useState(false);
-  const [switchValue, setSwitchValue] = useState(value);
+  const [switchValue, setSwitchValue] = useState(!!value);
 
   const toggleSwitch = (newSwitchValue) => {
     setLoading(true);
