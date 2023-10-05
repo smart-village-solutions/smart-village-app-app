@@ -12,8 +12,8 @@ export const WebWidget = ({ text, additionalProps }: WidgetProps) => {
 
   const onPress = useCallback(() => {
     navigation.navigate(ScreenName.Web, {
-      webUrl: additionalProps?.webUrl,
-      title: additionalProps?.staticContentTitle ?? texts.widgets.web
+      title: additionalProps?.staticContentTitle ?? texts.widgets.web,
+      webUrl: additionalProps?.webUrl
     });
   }, [navigation, text]);
 
