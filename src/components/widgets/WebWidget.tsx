@@ -1,18 +1,18 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useCallback } from 'react';
 
-import { Icon, normalize, texts } from '../../config';
+import { Icon, normalize } from '../../config';
 import { ScreenName, WidgetProps } from '../../types';
 import { Image } from '../Image';
 
 import { DefaultWidget } from './DefaultWidget';
 
-export const WebWidget = ({ text, additionalProps }: WidgetProps) => {
+export const WebWidget = ({ text = '', additionalProps }: WidgetProps) => {
   const navigation = useNavigation();
 
   const onPress = useCallback(() => {
     navigation.navigate(ScreenName.Web, {
-      title: additionalProps?.staticContentTitle ?? texts.widgets.web,
+      title: additionalProps?.staticContentTitle,
       webUrl: additionalProps?.webUrl
     });
   }, [navigation, text]);
@@ -33,7 +33,7 @@ export const WebWidget = ({ text, additionalProps }: WidgetProps) => {
         )
       }
       onPress={onPress}
-      text={text ?? texts.widgets.web}
+      text={text}
     />
   );
 };
