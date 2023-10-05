@@ -20,12 +20,12 @@ export const WebWidget = ({ text, additionalProps }: WidgetProps) => {
   return (
     <DefaultWidget
       Icon={() =>
-        additionalProps?.icon ? (
+        additionalProps?.image ? (
           <Image
-            source={{ url: additionalProps?.icon }}
+            source={{ url: additionalProps?.image.url }}
             style={{
-              height: normalize(additionalProps?.iconSize?.height ?? 26),
-              width: normalize(additionalProps?.iconSize?.width ?? 33)
+              height: normalize(additionalProps?.image?.height ?? 26),
+              width: normalize(additionalProps?.image?.width ?? 33)
             }}
           />
         ) : (

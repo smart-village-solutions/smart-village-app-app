@@ -2,11 +2,11 @@ export type WidgetProps = {
   additionalProps?: {
     dataProviderId?: string;
     htmlName?: string;
-    icon?: string;
     iconName?: string;
-    iconSize?: {
-      width?: number;
+    image?: {
       height?: number;
+      url: string;
+      width?: number;
     };
     limit?: number;
     noCount?: boolean;
