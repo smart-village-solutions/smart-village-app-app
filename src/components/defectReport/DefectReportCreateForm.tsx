@@ -152,7 +152,7 @@ export const DefectReportCreateForm = ({
                 label: `${texts.defectReport.categoryName} *`,
                 placeholder: texts.defectReport.categoryName,
                 control
-              }}            
+              }}
             />
           )}
           control={control}
