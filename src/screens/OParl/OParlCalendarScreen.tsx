@@ -3,24 +3,25 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { ScrollView } from 'react-native';
-import { Calendar, DateObject, MultiDotMarking } from 'react-native-calendars';
+import { Calendar as RNCalendar } from 'react-native-calendars';
 
 import { NoTouchDay, RegularText, renderArrow, SafeAreaViewFlex, Wrapper } from '../../components';
 import { OParlPreviewSection } from '../../components/oParl/sections';
-import { colors, texts } from '../../config';
+import { colors, consts, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { setupLocales } from '../../helpers/calendarHelper';
 import { useOParlQuery } from '../../hooks';
 import { meetingListQuery } from '../../queries/OParl/meeting';
 import { MeetingPreviewData } from '../../types';
 
+setupLocales();
+
+const { CALENDAR } = consts;
+const { DOT_SIZE } = CALENDAR;
+
 type Props = {
   navigation: StackNavigationProp<never>;
 };
-
-setupLocales();
-
-const dotSize = 6;
 
 const dot = { key: 'dot', color: colors.primary };
 
@@ -41,8 +42,7 @@ const getSectionsAndDots = (
   })[]
 ) => {
   const meetingsPerDate: Record<string, typeof sortedAndfilteredMeetings> = {};
-
-  const markedDates: { [date: string]: MultiDotMarking } = {};
+  const markedDates: { [date: string]: any } = {};
 
   sortedAndfilteredMeetings.forEach((meeting) => {
     const startDateString = momentFormat(meeting.start, 'DD.MM.YYYY', 'x');
@@ -60,7 +60,7 @@ const getSectionsAndDots = (
   return { markedDates };
 };
 
-const getMonthLimits = (date?: DateObject) => {
+const getMonthLimits = (date?: any) => {
   const now = moment(date?.timestamp ?? new Date());
 
   const startOfCurrentMonth = now.startOf('month');
@@ -98,18 +98,19 @@ export const OParlCalendarScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaViewFlex>
       <ScrollView>
-        <Calendar
+        <RNCalendar
           dayComponent={NoTouchDay}
           onMonthChange={updateMonth}
-          markingType="multi-dot"
           markedDates={markedDates}
+          markingType="multi-dot"
           renderArrow={renderArrow}
+          firstDay={1}
           theme={{
             todayTextColor: colors.primary,
             dotStyle: {
-              borderRadius: dotSize / 2,
-              height: dotSize,
-              width: dotSize
+              borderRadius: DOT_SIZE / 2,
+              height: DOT_SIZE,
+              width: DOT_SIZE
             }
           }}
         />

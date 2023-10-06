@@ -5,7 +5,6 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, View } from 'react-native';
 import { CalendarProps, Calendar as RNCalendar } from 'react-native-calendars';
-import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day/basic';
 import { DateData } from 'react-native-calendars/src/types';
 
 import { NetworkContext } from '../NetworkProvider';
@@ -16,6 +15,7 @@ import { setupLocales } from '../helpers/calendarHelper';
 import { QUERY_TYPES, getFetchMoreQuery, getQuery } from '../queries';
 import { ScreenName } from '../types';
 
+import { DayComponent } from './DayComponent';
 import { EmptyMessage } from './EmptyMessage';
 import { ListComponent } from './ListComponent';
 import { LoadingContainer } from './LoadingContainer';
@@ -23,15 +23,8 @@ import { renderArrow } from './calendarArrows';
 
 setupLocales();
 
-const { ROOT_ROUTE_NAMES } = consts;
-
-const DayComponent = (props: BasicDayProps & { date?: DateData }) => (
-  <BasicDay
-    {...props}
-    date={props?.date?.dateString}
-    marking={{ ...props.marking, disableTouchEvent: !props.marking?.marked }}
-  />
-);
+const { CALENDAR, ROOT_ROUTE_NAMES } = consts;
+const { DOT_SIZE, MAX_DOTS_PER_DAY } = CALENDAR;
 
 type Props = {
   isListRefreshing: boolean;
@@ -40,8 +33,6 @@ type Props = {
   navigation: StackNavigationProp<any>;
 };
 
-const DOT_SIZE = 6;
-const MAX_DOTS_PER_DAY = 5;
 const today = moment().format('YYYY-MM-DD');
 
 export const Calendar = ({ isListRefreshing, query, queryVariables, navigation }: Props) => {
