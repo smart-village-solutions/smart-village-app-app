@@ -1,8 +1,12 @@
+import { ComponentProps } from 'react';
+
+import { IconSet } from '../config';
+
 export type WidgetProps = {
   additionalProps?: {
     dataProviderId?: string;
     htmlName?: string;
-    iconName?: string;
+    iconName?: ComponentProps<typeof IconSet>['name'];
     image?: {
       height?: number;
       url: string;
