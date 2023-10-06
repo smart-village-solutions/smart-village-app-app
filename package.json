@@ -78,7 +78,7 @@
     "expo-secure-store": "~12.3.1",
     "expo-splash-screen": "~0.20.5",
     "expo-status-bar": "~1.6.0",
-    "expo-updates": "~0.18.15",
+    "expo-updates": "~0.18.16",
     "graphql": "14.7.0",
     "graphql-anywhere": "~4.2.4",
     "graphql-tag": "^2.12.6",
