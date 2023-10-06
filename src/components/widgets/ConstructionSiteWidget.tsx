@@ -7,7 +7,7 @@ import { WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
-export const ConstructionSiteWidget = ({ text }: WidgetProps) => {
+export const ConstructionSiteWidget = ({ text, additionalProps }: WidgetProps) => {
   const navigation = useNavigation();
   const { constructionSites, refresh } = useConstructionSites();
 
@@ -23,6 +23,7 @@ export const ConstructionSiteWidget = ({ text }: WidgetProps) => {
     <DefaultWidget
       count={constructionSites?.length ?? 0}
       Icon={Icon.ConstructionSite}
+      image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.constructionSites}
     />

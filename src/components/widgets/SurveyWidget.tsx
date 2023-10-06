@@ -37,6 +37,7 @@ export const SurveyWidget = ({ text, additionalProps }: WidgetProps) => {
     <DefaultWidget
       count={surveys?.ongoing.length}
       Icon={(props) => <Icon.Surveys {...props} size={normalize(22)} />}
+      image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.surveys}
     />
