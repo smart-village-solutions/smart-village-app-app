@@ -8,7 +8,7 @@ import {
   parseListItemsFromQuery,
   volunteerUserData
 } from '../../helpers';
-import { getQuery, QUERY_TYPES } from '../../queries';
+import { QUERY_TYPES, getQuery } from '../../queries';
 import { MEMBER_STATUS_TYPES, VolunteerQuery } from '../../types';
 
 /* eslint-disable complexity */
@@ -55,7 +55,7 @@ export const useVolunteerData = ({
 
     processedVolunteerData = parseListItemsFromQuery(query, processedVolunteerData, titleDetail, {
       bookmarkable,
-      withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS || (!isSectioned ?? isCalendar),
+      withDate: query === QUERY_TYPES.VOLUNTEER.CONVERSATIONS || (!isSectioned ?? !isCalendar),
       isSectioned: isSectioned ?? isCalendar,
       queryVariables: {
         currentUserId
@@ -68,7 +68,7 @@ export const useVolunteerData = ({
       if (queryVariables?.dateRange?.length) {
         // show only selected day appointments for calendar list view
         processedVolunteerData = processedVolunteerData?.filter(
-          (item: { listDate: string }) => item.listDate == queryVariables?.dateRange?.[0]
+          (item: { listDate: string }) => item.listDate == queryVariables.dateRange?.[0]
         );
       } else if (onlyUpcoming) {
         // show only upcoming dates for calendar views

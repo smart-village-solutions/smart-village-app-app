@@ -1,9 +1,10 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { RefreshControl, StyleSheet } from 'react-native';
 
+import { SettingsContext } from '../../SettingsProvider';
 import {
   Button,
   Calendar,
@@ -31,6 +32,9 @@ const { ROOT_ROUTE_NAMES } = consts;
 
 // eslint-disable-next-line complexity
 export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { calendarToggle = false } = settings;
   const [queryVariables] = useState(route.params?.queryVariables ?? {});
   const [showCalendar, setShowCalendar] = useState(false);
   const query = route.params?.query ?? '';
@@ -41,7 +45,6 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   const headerTitle = route.params?.title ?? '';
   const isGroupMember = route.params?.isGroupMember ?? false;
   const isAttendingEvent = route.params?.isAttendingEvent ?? false;
-  // const showFilter = false; // TODO: filter?
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const isPosts = query === QUERY_TYPES.VOLUNTEER.POSTS;
@@ -88,7 +91,7 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
-        {isCalendar && !hasDailyFilterSelection && (
+        {isCalendar && calendarToggle && !hasDailyFilterSelection && (
           <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
         )}
         <ListComponent
@@ -106,11 +109,11 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           ListEmptyComponent={
             showCalendar ? (
               <Calendar
+                isListRefreshing={isLoading}
                 query={query}
                 queryVariables={queryVariables}
-                calendarData={data}
-                isLoading={isLoading}
                 navigation={navigation}
+                additionalData={data}
               />
             ) : (
               <EmptyMessage title={texts.empty.list} />

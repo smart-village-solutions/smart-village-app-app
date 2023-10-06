@@ -68,8 +68,6 @@ export const EventRecords = ({ navigation, route }) => {
     route.params?.filterByDailyEvents ?? false
   );
   const title = route.params?.title ?? '';
-  const titleDetail = route.params?.titleDetail ?? '';
-  const bookmarkable = route.params?.bookmarkable;
   const showFilter = (route.params?.showFilter ?? true) && showEventsFilter;
   const showFilterByDailyEvents =
     (route.params?.showFilterByDailyEvents ?? showFilter) && !showCalendar;
@@ -77,10 +75,13 @@ export const EventRecords = ({ navigation, route }) => {
   const openWebScreen = useOpenWebScreen(title, eventListIntro?.url);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
-  const { data, loading, fetchMore, refetch } = useQuery(getQuery(query, { showEventsFilter }), {
-    fetchPolicy,
-    variables: queryVariables
-  });
+  const { data, loading, fetchMore, refetch } = useQuery(
+    getQuery(QUERY_TYPES.EVENT_RECORDS, { showEventsFilter }),
+    {
+      fetchPolicy,
+      variables: queryVariables
+    }
+  );
 
   const { data: eventRecordsAddressesData, loading: eventRecordsAddressesLoading } = useQuery(
     getQuery(QUERY_TYPES.EVENT_RECORDS_ADDRESSES),
@@ -95,7 +96,8 @@ export const EventRecords = ({ navigation, route }) => {
     refetch: refetchVolunteerEvents
   } = useVolunteerData({
     query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-    queryOptions: { enabled: showVolunteerEvents },
+    queryVariables,
+    queryOptions: { enabled: showVolunteerEvents && !loading },
     isCalendar: true,
     isSectioned: true
   });
@@ -153,19 +155,16 @@ export const EventRecords = ({ navigation, route }) => {
 
   // apply additional data if volunteer events should be presented and no filter selection is made,
   // because filtered data for category or location has nothing to do with volunteer data
-  const additionalData = useMemo(() => {
+  const additionalData =
     showVolunteerEvents &&
     !hasFilterSelection(false, queryVariables) &&
     !(showEventLocationsFilter && hasFilterSelection(true, queryVariables))
       ? dataVolunteerEvents
       : undefined;
-  }, [showVolunteerEvents, queryVariables, showEventLocationsFilter, dataVolunteerEvents]);
 
   const listItems = useMemo(() => {
-    let parsedListItems = parseListItemsFromQuery(query, data, titleDetail, {
-      bookmarkable,
-      withDate: false,
-      queryVariables
+    let parsedListItems = parseListItemsFromQuery(QUERY_TYPES.EVENT_RECORDS, data, undefined, {
+      withDate: false
     });
 
     if (additionalData?.length) {
@@ -183,15 +182,7 @@ export const EventRecords = ({ navigation, route }) => {
     }
 
     return parsedListItems;
-  }, [
-    query,
-    queryVariables,
-    data,
-    additionalData,
-    titleDetail,
-    bookmarkable,
-    hasDailyFilterSelection
-  ]);
+  }, [query, queryVariables, data, additionalData, hasDailyFilterSelection]);
 
   const refresh = useCallback(() => {
     setRefreshing(true);
@@ -200,7 +191,7 @@ export const EventRecords = ({ navigation, route }) => {
       showVolunteerEvents && refetchVolunteerEvents();
     }
     setRefreshing(false);
-  }, [isConnected, setRefreshing, showVolunteerEvents, refetch, refetchVolunteerEvents]);
+  }, [isConnected, setRefreshing, refetch, showVolunteerEvents, refetchVolunteerEvents]);
 
   useFocusEffect(
     useCallback(() => {
@@ -208,7 +199,7 @@ export const EventRecords = ({ navigation, route }) => {
         refetch();
         showVolunteerEvents && refetchVolunteerEvents();
       }
-    }, [isConnected, showCalendar, showVolunteerEvents, refetch, refetchVolunteerEvents])
+    }, [isConnected, showCalendar, refetch, showVolunteerEvents, refetchVolunteerEvents])
   );
 
   const fetchMoreData = () =>
@@ -313,6 +304,7 @@ export const EventRecords = ({ navigation, route }) => {
                 query={query}
                 queryVariables={queryVariables}
                 navigation={navigation}
+                additionalData={additionalData}
               />
             ) : (
               <EmptyMessage title={texts.empty.list} showIcon />

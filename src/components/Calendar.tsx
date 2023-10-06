@@ -29,13 +29,20 @@ const { DOT_SIZE, MAX_DOTS_PER_DAY } = CALENDAR;
 type Props = {
   isListRefreshing: boolean;
   query: string;
-  queryVariables?: { dateRange?: string[]; contentContainerId?: number };
+  queryVariables: { dateRange?: string[]; contentContainerId?: number };
   navigation: StackNavigationProp<any>;
+  additionalData?: any;
 };
 
 const today = moment().format('YYYY-MM-DD');
 
-export const Calendar = ({ isListRefreshing, query, queryVariables, navigation }: Props) => {
+export const Calendar = ({
+  isListRefreshing,
+  query,
+  queryVariables,
+  navigation,
+  additionalData
+}: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -45,15 +52,15 @@ export const Calendar = ({ isListRefreshing, query, queryVariables, navigation }
     ...queryVariables,
     dateRange: [today, today]
   });
-  const contentContainerId = queryVariables?.contentContainerId;
+  const contentContainerId = queryVariables.contentContainerId;
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
-  const { data, loading, refetch } = useQuery(getQuery(query), {
+  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
     fetchPolicy,
+    skip: query !== QUERY_TYPES.EVENT_RECORDS,
     variables: {
       ...queryVariables,
-      // if we show the calendar, we need to fetch all the entries at once and not
-      // a limited amount
+      // if we show the calendar, we need to fetch all the entries at once and not a limited amount
       limit: undefined
     }
   });
@@ -63,9 +70,9 @@ export const Calendar = ({ isListRefreshing, query, queryVariables, navigation }
     loading: loadingDateRange,
     refetch: refetchDateRange,
     fetchMore: fetchMoreDateRange
-  } = useQuery(getQuery(query), {
+  } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
     fetchPolicy,
-    skip: !subList,
+    skip: query !== QUERY_TYPES.EVENT_RECORDS || !subList,
     variables: queryVariablesWithDateRange
   });
 
@@ -133,14 +140,26 @@ export const Calendar = ({ isListRefreshing, query, queryVariables, navigation }
     return dates;
   }, [query, data, selectedDay, dotCount]);
 
-  const listItems = useMemo(
-    () =>
-      parseListItemsFromQuery(query, dataDateRange, '', {
-        queryVariables: queryVariablesWithDateRange,
+  const listItems = useMemo(() => {
+    if (!subList) return [];
+
+    const parsedListItems = parseListItemsFromQuery(
+      QUERY_TYPES.EVENT_RECORDS,
+      dataDateRange,
+      undefined,
+      {
         withDate: false
-      }),
-    [query, dataDateRange, queryVariablesWithDateRange]
-  );
+      }
+    );
+
+    if (additionalData?.length) {
+      const filteredAdditionalData = additionalData.filter((item) => item.listDate === selectedDay);
+
+      parsedListItems.push(...filteredAdditionalData);
+    }
+
+    return parsedListItems;
+  }, [subList, query, dataDateRange, additionalData]);
 
   useEffect(() => {
     if (isListRefreshing) {
@@ -150,7 +169,7 @@ export const Calendar = ({ isListRefreshing, query, queryVariables, navigation }
       });
       refetch();
     }
-  }, [isListRefreshing, queryVariables, refetch, refetchDateRange]);
+  }, [isListRefreshing, queryVariables, refetch]);
 
   useEffect(() => {
     refetchDateRange();

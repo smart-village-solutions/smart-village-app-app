@@ -1,7 +1,8 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import _isNumber from 'lodash/isNumber';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
+import { SettingsContext } from '../../SettingsProvider';
 import { isUpcomingDate } from '../../helpers';
 import { useVolunteerData, useVolunteerRefresh } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
@@ -22,7 +23,7 @@ type Props = {
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
   query: VolunteerQuery;
-  queryVariables?: { dateRange?: string[]; contentContainerId?: number };
+  queryVariables: { dateRange?: string[]; contentContainerId?: number };
   sectionTitle?: string;
   sectionTitleDetail?: string;
   showButton?: boolean;
@@ -47,6 +48,9 @@ export const VolunteerHomeSection = ({
   showButton = true,
   showLink = false
 }: Props) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { calendarToggle = false } = settings;
   const isCalendar =
     query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL || query === QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY;
   const [showCalendar, setShowCalendar] = useState(isCalendar);
@@ -85,14 +89,16 @@ export const VolunteerHomeSection = ({
             title={sectionTitle}
           />
         )}
-        <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+        {calendarToggle && (
+          <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+        )}
         {showCalendar ? (
           <Calendar
+            isListRefreshing={isLoading}
             query={query}
             queryVariables={queryVariables}
-            calendarData={sectionData}
-            isLoading={isLoading}
             navigation={navigation}
+            additionalData={sectionData}
           />
         ) : (
           <DataListSection
