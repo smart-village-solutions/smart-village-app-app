@@ -135,7 +135,7 @@ export const VolunteerFormGroup = ({
         <Label>{texts.volunteer.visibility}</Label>
         <Controller
           name="visibility"
-          render={({ onChange, value }) => (
+          render={({ field: { onChange, value } }) => (
             <>
               {VISIBILITY_OPTIONS.map((visibilityItem) => (
                 <CheckBox
@@ -160,7 +160,7 @@ export const VolunteerFormGroup = ({
           <Label>{texts.volunteer.accessionDirective}</Label>
           <Controller
             name="joinPolicy"
-            render={({ onChange, value }) => (
+            render={({ field: { onChange, value } }) => (
               <>
                 {JOIN_POLICY_OPTIONS.map((joinPolicyItem) => (
                   <CheckBox

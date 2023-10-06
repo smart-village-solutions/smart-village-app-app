@@ -176,7 +176,7 @@ export const VolunteerFormProfile = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="gender"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DropdownInput
               {...{
                 errors,
@@ -226,7 +226,7 @@ export const VolunteerFormProfile = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="country"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DropdownInput
               {...{
                 errors,
@@ -256,7 +256,7 @@ export const VolunteerFormProfile = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="birthday"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
                 mode: 'date',
@@ -276,7 +276,7 @@ export const VolunteerFormProfile = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="birthdayHideYear"
-          render={({ onChange, value }) => (
+          render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}
               onPress={() => onChange(!value)}

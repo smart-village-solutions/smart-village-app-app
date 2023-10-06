@@ -67,9 +67,10 @@ const styles = StyleSheet.create({
     lineHeight: normalize(29)
   },
   headerTitleContainerStyle: {
-    flex: 1,
+    flex: 500,
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    alignItems: 'center'
   },
   icon: {
     paddingHorizontal: normalize(10)

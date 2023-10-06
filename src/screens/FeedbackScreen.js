@@ -137,7 +137,7 @@ export const FeedbackScreen = () => {
 
             <Controller
               name="consent"
-              render={({ onChange, value }) => (
+              render={({ field: { onChange, value } }) => (
                 <Checkbox
                   boldTitle
                   containerStyle={styles.checkboxContainerStyle}

@@ -156,7 +156,7 @@ export const NoticeboardMessageForm = ({
 
         <Controller
           name="termsOfService"
-          render={({ onChange, value }) => (
+          render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}
               onPress={() => onChange(!value)}

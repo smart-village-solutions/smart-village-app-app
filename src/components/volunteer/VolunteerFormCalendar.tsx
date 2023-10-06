@@ -231,7 +231,7 @@ export const VolunteerFormCalendar = ({
           groupDropdownData?.length && (
             <Controller
               name="contentContainerId"
-              render={({ name, onChange, value }) => (
+              render={({ field: { name, onChange, value } }) => (
                 <DropdownInput
                   {...{
                     errors,
@@ -266,7 +266,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="startDate"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
                 mode: 'date',
@@ -287,7 +287,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="startTime"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
                 errors,
@@ -306,7 +306,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="endDate"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
                 mode: 'date',
@@ -327,7 +327,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="endTime"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
                 errors,
@@ -384,7 +384,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="isPublic"
-          render={({ onChange, value }) => (
+          render={({ field: { onChange, value } }) => (
             <CheckBox
               accessibilityRole="button"
               checked={!!value}
