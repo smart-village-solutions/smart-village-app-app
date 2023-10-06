@@ -56,12 +56,13 @@ const getBBNaviUrl = (baseUrl: string, address: Address, currentPosition?: Locat
 export const AddressSection = ({ address, addresses, openWebScreen }: Props) => {
   // @ts-expect-error global settings are not properly typed
   const bbNaviBaseUrl = useContext(SettingsContext).globalSettings?.settings?.['bbnavi'];
-  const { position } = usePosition();
-  const { position: lastKnownPosition } = useLastKnownPosition();
+  const isAddress = address || addresses?.length;
+  const { position } = usePosition(!isAddress);
+  const { position: lastKnownPosition } = useLastKnownPosition(!isAddress);
 
   const a11yText = consts.a11yLabel;
 
-  if (!address && !addresses?.length) {
+  if (!isAddress) {
     return null;
   }
 
@@ -73,20 +74,20 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
   return (
     <>
       {filteredAddresses.map((item, index) => {
-        const address = formatAddress(item);
+        const filteredAddress = formatAddress(item);
 
-        if (!address?.length) return null;
+        if (!filteredAddress?.length) return null;
 
         const isPressable = item.city?.length || item.street?.length || item.zip?.length;
 
         const innerComponent = (
           <RegularText
             primary
-            accessibilityLabel={`${a11yText.address} (${address})
+            accessibilityLabel={`${a11yText.address} (${filteredAddress})
             ${a11yText.button}
             ${a11yText.mapHint}`}
           >
-            {address}
+            {filteredAddress}
           </RegularText>
         );
 
@@ -95,7 +96,7 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
             <InfoBox>
               <Icon.Location style={styles.margin} />
               {isPressable ? (
-                <TouchableOpacity onPress={() => addressOnPress(address, item.geoLocation)}>
+                <TouchableOpacity onPress={() => addressOnPress(filteredAddress, item.geoLocation)}>
                   {innerComponent}
                 </TouchableOpacity>
               ) : (
