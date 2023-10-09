@@ -23,7 +23,7 @@ type Props = {
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
   query: VolunteerQuery;
-  queryVariables: { dateRange?: string[]; contentContainerId?: number };
+  queryVariables: { contentContainerId?: number; dateRange?: string[] };
   sectionTitle?: string;
   sectionTitleDetail?: string;
   showButton?: boolean;
@@ -94,11 +94,11 @@ export const VolunteerHomeSection = ({
         )}
         {showCalendar ? (
           <Calendar
+            additionalData={sectionData}
             isListRefreshing={isLoading}
+            navigation={navigation}
             query={query}
             queryVariables={queryVariables}
-            navigation={navigation}
-            additionalData={sectionData}
           />
         ) : (
           <DataListSection
@@ -110,19 +110,19 @@ export const VolunteerHomeSection = ({
           />
         )}
         <DataListSection
-          loading={isLoading}
           buttonTitle={buttonTitle}
-          linkTitle={linkTitle}
           limit={0}
+          linkTitle={linkTitle}
+          loading={isLoading}
           navigate={navigate}
+          navigateButton={navigateButton}
+          navigateLink={navigateLink}
           navigation={navigation}
           query={query}
           sectionData={sectionData}
           sectionTitle=""
           showButton={showButton}
           showLink={showAllLink}
-          navigateButton={navigateButton}
-          navigateLink={navigateLink}
         />
       </>
     );
@@ -130,11 +130,14 @@ export const VolunteerHomeSection = ({
 
   return (
     <DataListSection
-      loading={isLoading}
       buttonTitle={buttonTitle}
-      linkTitle={linkTitle}
+      isRandom={isRandom}
       limit={limit}
+      linkTitle={linkTitle}
+      loading={isLoading}
       navigate={navigate}
+      navigateButton={navigateButton}
+      navigateLink={navigateLink}
       navigation={navigation}
       placeholder={placeholder}
       query={query}
@@ -143,9 +146,6 @@ export const VolunteerHomeSection = ({
       sectionTitleDetail={sectionTitleDetail}
       showButton={showButton}
       showLink={showLink && !!sectionData?.length}
-      navigateButton={navigateButton}
-      navigateLink={navigateLink}
-      isRandom={isRandom}
     />
   );
 };

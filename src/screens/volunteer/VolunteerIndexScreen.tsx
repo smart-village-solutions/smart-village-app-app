@@ -109,11 +109,11 @@ export const VolunteerIndexScreen = ({ navigation, route }: StackScreenProps<any
           ListEmptyComponent={
             showCalendar ? (
               <Calendar
+                additionalData={data}
                 isListRefreshing={isLoading}
+                navigation={navigation}
                 query={query}
                 queryVariables={queryVariables}
-                navigation={navigation}
-                additionalData={data}
               />
             ) : (
               <EmptyMessage title={texts.empty.list} />

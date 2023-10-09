@@ -39,8 +39,8 @@ const { MATOMO_TRACKING } = consts;
 export const EventRecord = ({ data, route }) => {
   const {
     addresses,
-    category,
     categories,
+    category,
     contacts,
     dataProvider,
     dates,

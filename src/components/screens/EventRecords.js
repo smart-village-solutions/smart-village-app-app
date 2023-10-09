@@ -182,7 +182,7 @@ export const EventRecords = ({ navigation, route }) => {
     }
 
     return parsedListItems;
-  }, [query, queryVariables, data, additionalData, hasDailyFilterSelection]);
+  }, [additionalData, data, hasDailyFilterSelection, query, queryVariables]);
 
   const refresh = useCallback(() => {
     setRefreshing(true);
@@ -191,7 +191,7 @@ export const EventRecords = ({ navigation, route }) => {
       showVolunteerEvents && refetchVolunteerEvents();
     }
     setRefreshing(false);
-  }, [isConnected, setRefreshing, refetch, showVolunteerEvents, refetchVolunteerEvents]);
+  }, [isConnected, refetch, refetchVolunteerEvents, setRefreshing, showVolunteerEvents]);
 
   useFocusEffect(
     useCallback(() => {
@@ -199,7 +199,7 @@ export const EventRecords = ({ navigation, route }) => {
         refetch();
         showVolunteerEvents && refetchVolunteerEvents();
       }
-    }, [isConnected, showCalendar, refetch, showVolunteerEvents, refetchVolunteerEvents])
+    }, [isConnected, refetch, refetchVolunteerEvents, showCalendar, showVolunteerEvents])
   );
 
   const fetchMoreData = () =>

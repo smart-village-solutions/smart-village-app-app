@@ -27,21 +27,21 @@ const { CALENDAR, ROOT_ROUTE_NAMES } = consts;
 const { DOT_SIZE, MAX_DOTS_PER_DAY } = CALENDAR;
 
 type Props = {
-  isListRefreshing: boolean;
-  query: string;
-  queryVariables: { dateRange?: string[]; contentContainerId?: number };
-  navigation: StackNavigationProp<any>;
   additionalData?: any;
+  isListRefreshing: boolean;
+  navigation: StackNavigationProp<any>;
+  query: string;
+  queryVariables: { contentContainerId?: number; dateRange?: string[] };
 };
 
 const today = moment().format('YYYY-MM-DD');
 
 export const Calendar = ({
+  additionalData,
   isListRefreshing,
-  query,
-  queryVariables,
   navigation,
-  additionalData
+  query,
+  queryVariables
 }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
@@ -196,12 +196,12 @@ export const Calendar = ({
     <>
       <RNCalendar
         dayComponent={DayComponent}
-        onDayPress={onDayPress}
         displayLoadingIndicator={loading}
+        firstDay={1}
         markedDates={markedDates}
         markingType="multi-dot"
+        onDayPress={onDayPress}
         renderArrow={renderArrow}
-        firstDay={1}
         theme={{
           todayTextColor: colors.primary,
           indicatorColor: colors.primary,
