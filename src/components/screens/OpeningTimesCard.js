@@ -1,13 +1,16 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
 
-import { colors, normalize } from '../../config';
+import { colors, normalize, texts } from '../../config';
 import { isTodayOrLater, momentFormat } from '../../helpers';
 import { HtmlView } from '../HtmlView';
 import { BoldText, RegularText } from '../Text';
+import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow } from '../Wrapper';
+
+const MAX_INITIAL_NUM_TO_RENDER = 15;
 
 const TimeBox = styled.View`
   flex-direction: row;
@@ -23,16 +26,25 @@ const DateBox = styled(TimeBox)`
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const OpeningTimesCard = ({ openingHours }) => (
-  <Wrapper>
-    {!!openingHours &&
-      openingHours
-        .filter((item) => {
-          const { dateFrom, dateTo } = item;
+export const OpeningTimesCard = ({ openingHours }) => {
+  const [moreData, setMoreData] = useState(1);
 
-          return isTodayOrLater(dateTo || dateFrom);
-        })
-        .map((item, index) => {
+  const loadMoreItems = () => {
+    setMoreData((prev) => prev + 1);
+  };
+
+  const filteredOpeningHoursFromToday =
+    openingHours?.filter((item) => {
+      const { dateFrom, dateTo } = item;
+
+      return isTodayOrLater(dateTo || dateFrom);
+    }) || [];
+
+  return (
+    <Wrapper>
+      {filteredOpeningHoursFromToday
+        .slice(0, moreData * MAX_INITIAL_NUM_TO_RENDER)
+        .map((item, index, slicedArray) => {
           const {
             weekday,
             timeFrom,
@@ -46,7 +58,7 @@ export const OpeningTimesCard = ({ openingHours }) => (
           const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM.';
 
           return (
-            <View key={index} style={index !== openingHours.length - 1 ? styles.divider : null}>
+            <View key={index} style={index !== slicedArray.length - 1 ? styles.divider : null}>
               {!!weekday && <BoldText style={styles.marginBottom}>{weekday}</BoldText>}
 
               {(!!timeFrom || !!timeTo || !!dateFrom || !!dateTo) && (
@@ -91,8 +103,17 @@ export const OpeningTimesCard = ({ openingHours }) => (
             </View>
           );
         })}
-  </Wrapper>
-);
+
+      {moreData * MAX_INITIAL_NUM_TO_RENDER < filteredOpeningHoursFromToday.length && (
+        <Touchable onPress={loadMoreItems}>
+          <BoldText primary underline center>
+            {texts.eventRecord.appointmentsShowMoreButton}
+          </BoldText>
+        </Touchable>
+      )}
+    </Wrapper>
+  );
+};
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
