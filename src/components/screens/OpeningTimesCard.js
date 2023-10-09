@@ -1,13 +1,16 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
 
-import { colors, normalize } from '../../config';
+import { colors, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { HtmlView } from '../HtmlView';
 import { BoldText, RegularText } from '../Text';
+import { Touchable } from '../Touchable';
 import { Wrapper, WrapperRow } from '../Wrapper';
+
+const MAX_INITIAL_NUM_TO_RENDER = 15;
 
 const TimeBox = styled.View`
   flex-direction: row;
@@ -23,70 +26,87 @@ const DateBox = styled(TimeBox)`
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
-export const OpeningTimesCard = ({ openingHours }) => (
-  <Wrapper>
-    {!!openingHours &&
-      openingHours.map((item, index) => {
-        const {
-          weekday,
-          timeFrom,
-          timeTo,
-          dateFrom,
-          dateTo,
-          description,
-          open,
-          useYear = false
-        } = item;
-        const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM.';
+export const OpeningTimesCard = ({ openingHours }) => {
+  const [moreData, setMoreData] = useState(1);
 
-        return (
-          <View key={index} style={index !== openingHours.length - 1 ? styles.divider : null}>
-            {!!weekday && <BoldText style={styles.marginBottom}>{weekday}</BoldText>}
+  const loadMoreItems = () => {
+    setMoreData((prev) => prev + 1);
+  };
 
-            {(!!timeFrom || !!timeTo || !!dateFrom || !!dateTo) && (
-              <WrapperRow>
-                {(open === undefined || open === true) && (!!timeFrom || !!timeTo) && (
-                  <TimeBox>
-                    {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
-                    {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
-                    {!!timeTo && <RegularText> {timeTo}</RegularText>}
-                  </TimeBox>
-                )}
-                {open === false && (
-                  <TimeBox>
-                    <RegularText>geschlossen</RegularText>
-                  </TimeBox>
-                )}
-                {(!!dateFrom || !!dateTo) && (
-                  <DateBox>
-                    {!!dateFrom && (
-                      <RegularText>
-                        <RegularText small />
-                        {momentFormat(dateFrom, returnFormatDate)}
-                      </RegularText>
-                    )}
+  return (
+    <Wrapper>
+      {openingHours
+        .slice(0, moreData * MAX_INITIAL_NUM_TO_RENDER)
+        .map((item, index, slicedArray) => {
+          const {
+            weekday,
+            timeFrom,
+            timeTo,
+            dateFrom,
+            dateTo,
+            description,
+            open,
+            useYear = false
+          } = item;
+          const returnFormatDate = useYear ? 'DD.MM.YYYY' : 'DD.MM.';
 
-                    {!!dateTo && dateTo !== dateFrom && (
-                      <RegularText>
-                        <RegularText small>bis </RegularText>
-                        {momentFormat(dateTo, returnFormatDate)}
-                      </RegularText>
-                    )}
-                  </DateBox>
-                )}
-              </WrapperRow>
-            )}
+          return (
+            <View key={index} style={index !== slicedArray.length - 1 ? styles.divider : null}>
+              {!!weekday && <BoldText style={styles.marginBottom}>{weekday}</BoldText>}
 
-            {!!description && (
-              <WrapperRow>
-                <HtmlView html={description} />
-              </WrapperRow>
-            )}
-          </View>
-        );
-      })}
-  </Wrapper>
-);
+              {(!!timeFrom || !!timeTo || !!dateFrom || !!dateTo) && (
+                <WrapperRow>
+                  {(open === undefined || open === true) && (!!timeFrom || !!timeTo) && (
+                    <TimeBox>
+                      {!!timeFrom && <RegularText>{timeFrom}</RegularText>}
+                      {!!timeFrom && !!timeTo && <RegularText> -</RegularText>}
+                      {!!timeTo && <RegularText> {timeTo}</RegularText>}
+                    </TimeBox>
+                  )}
+                  {open === false && (
+                    <TimeBox>
+                      <RegularText>geschlossen</RegularText>
+                    </TimeBox>
+                  )}
+                  {(!!dateFrom || !!dateTo) && (
+                    <DateBox>
+                      {!!dateFrom && (
+                        <RegularText>
+                          <RegularText small />
+                          {momentFormat(dateFrom, returnFormatDate)}
+                        </RegularText>
+                      )}
+
+                      {!!dateTo && dateTo !== dateFrom && (
+                        <RegularText>
+                          <RegularText small>bis </RegularText>
+                          {momentFormat(dateTo, returnFormatDate)}
+                        </RegularText>
+                      )}
+                    </DateBox>
+                  )}
+                </WrapperRow>
+              )}
+
+              {!!description && (
+                <WrapperRow>
+                  <HtmlView html={description} />
+                </WrapperRow>
+              )}
+            </View>
+          );
+        })}
+
+      {moreData * MAX_INITIAL_NUM_TO_RENDER < openingHours.length && (
+        <Touchable onPress={loadMoreItems}>
+          <BoldText primary underline center>
+            {texts.eventRecord.appointmentsShowMoreButton}
+          </BoldText>
+        </Touchable>
+      )}
+    </Wrapper>
+  );
+};
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
