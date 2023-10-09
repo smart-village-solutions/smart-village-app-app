@@ -4,7 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
 
 import { colors, normalize, texts } from '../../config';
-import { isTodayOrLater, momentFormat } from '../../helpers';
+import { momentFormat } from '../../helpers';
 import { HtmlView } from '../HtmlView';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
@@ -33,16 +33,9 @@ export const OpeningTimesCard = ({ openingHours }) => {
     setMoreData((prev) => prev + 1);
   };
 
-  const filteredOpeningHoursFromToday =
-    openingHours?.filter((item) => {
-      const { dateFrom, dateTo } = item;
-
-      return isTodayOrLater(dateTo || dateFrom);
-    }) || [];
-
   return (
     <Wrapper>
-      {filteredOpeningHoursFromToday
+      {openingHours
         .slice(0, moreData * MAX_INITIAL_NUM_TO_RENDER)
         .map((item, index, slicedArray) => {
           const {
@@ -104,7 +97,7 @@ export const OpeningTimesCard = ({ openingHours }) => {
           );
         })}
 
-      {moreData * MAX_INITIAL_NUM_TO_RENDER < filteredOpeningHoursFromToday.length && (
+      {moreData * MAX_INITIAL_NUM_TO_RENDER < openingHours.length && (
         <Touchable onPress={loadMoreItems}>
           <BoldText primary underline center>
             {texts.eventRecord.appointmentsShowMoreButton}
