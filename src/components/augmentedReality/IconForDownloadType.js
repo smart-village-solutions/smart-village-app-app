@@ -7,7 +7,7 @@ import { DOWNLOAD_TYPE } from '../../helpers';
 
 export const IconForDownloadType = ({ isListView, downloadType, showOnDetailPage }) => {
   if (showOnDetailPage) {
-    return <Icon.ArrowRight size={normalize(20)} />;
+    return <Icon.ArrowRight color={colors.darkText} size={normalize(20)} />;
   }
 
   switch (downloadType) {

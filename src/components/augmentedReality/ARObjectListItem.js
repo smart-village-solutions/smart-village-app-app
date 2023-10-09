@@ -1,12 +1,13 @@
+/* eslint-disable react-native/no-inline-styles */
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Alert, StyleSheet } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { colors, consts, normalize, texts } from '../../config';
-import { deleteObject, downloadObject, DOWNLOAD_TYPE, progressSizeGenerator } from '../../helpers';
+import { DOWNLOAD_TYPE, deleteObject, downloadObject, progressSizeGenerator } from '../../helpers';
 import { ScreenName } from '../../types';
-import { RegularText } from '../Text';
+import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
 
 import { IconForDownloadType } from './IconForDownloadType';
@@ -55,8 +56,8 @@ export const ARObjectListItem = ({ data, index, item, navigation, setData, showO
       Component={Touchable}
       accessibilityLabel={`(${title}) ${consts.a11yLabel.button}`}
     >
-      <ListItem.Content>
-        <RegularText small>{title}</RegularText>
+      <ListItem.Content style={{ flexDirection: showOnDetailPage ? 'column-reverse' : 'column' }}>
+        <BoldText small>{title}</BoldText>
         <RegularText smallest>
           {showOnDetailPage ? locationInfo : progressSizeGenerator(progressSize, totalSize)}
         </RegularText>
