@@ -19,7 +19,7 @@ const screens = {
 const { globalSettings } = useContext(SettingsContext);
 
 if (globalSettings.navigation != 'drawer') {
-  const index = 2;
+  const index = 1; // HINT: needs to be the index of the tab config where encounters is present
 
   navigatorConfig = {
     type: 'tab',
