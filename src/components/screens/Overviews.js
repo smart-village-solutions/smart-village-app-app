@@ -248,7 +248,7 @@ export const Overviews = ({ navigation, route }) => {
           />
         )
       });
-    } else {
+    } else if (!route.params?.usedAsInitialScreen) {
       navigation.setOptions({
         headerLeft: () => <HeaderLeft onPress={() => navigation.goBack()} />
       });

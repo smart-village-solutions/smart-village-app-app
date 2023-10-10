@@ -274,7 +274,8 @@ export const defaultStackConfig = ({
       // NOTE: is used as initial screen for the points of interest tab
       initialParams: {
         title: texts.screenTitles.pointsOfInterest,
-        query: QUERY_TYPES.CATEGORIES
+        query: QUERY_TYPES.CATEGORIES,
+        usedAsInitialScreen: true
       }
     },
     {
