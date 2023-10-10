@@ -17,7 +17,7 @@ export const getStackNavigator = (stackConfig: StackConfig) => () =>
           name={screenConfig.routeName}
           component={screenConfig.screenComponent}
           options={screenConfig.screenOptions}
-          initialParams={screenConfig.inititalParams}
+          initialParams={screenConfig.initialParams}
         />
       ))}
     </Stack.Navigator>

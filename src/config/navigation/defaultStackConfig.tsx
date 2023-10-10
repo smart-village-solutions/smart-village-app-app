@@ -239,7 +239,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Events,
       screenComponent: IndexScreen,
-      inititalParams: {
+      initialParams: {
         title: texts.screenTitles.events,
         query: QUERY_TYPES.EVENT_RECORDS,
         queryVariables: { limit: 15, order: 'listDate_ASC' }
@@ -259,7 +259,7 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Home,
       screenComponent: HomeScreen,
       screenOptions: getScreenOptions({ withDrawer: isDrawer, withFavorites: true }),
-      inititalParams: {
+      initialParams: {
         isDrawer,
         title: texts.screenTitles.home
       }
@@ -272,7 +272,7 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Index,
       screenComponent: IndexScreen,
       // NOTE: is used as initial screen for the points of interest tab
-      inititalParams: {
+      initialParams: {
         title: texts.screenTitles.pointsOfInterest,
         query: QUERY_TYPES.CATEGORIES
       }
@@ -368,7 +368,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.VolunteerHome,
       screenComponent: VolunteerHomeScreen,
-      inititalParams: {
+      initialParams: {
         title: texts.screenTitles.volunteer.home
       }
     },
