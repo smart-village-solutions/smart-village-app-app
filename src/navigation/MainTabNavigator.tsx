@@ -15,13 +15,14 @@ export const MainTabNavigator = ({
 }) => (
   <Tab.Navigator
     screenOptions={{
-      tabBarActiveTintColor: tabNavigatorConfig.activeTintColor,
-      tabBarInactiveTintColor: tabNavigatorConfig.inactiveTintColor,
+      headerShown: false,
       tabBarActiveBackgroundColor: tabNavigatorConfig.activeBackgroundColor,
-      tabBarInactiveBackgroundColor: tabNavigatorConfig.inactiveBackgroundColor,
-      tabBarStyle: { backgroundColor: colors.surface, marginTop: normalize(0) },
+      tabBarActiveTintColor: tabNavigatorConfig.activeTintColor,
       tabBarHideOnKeyboard: device.platform === 'android',
-      headerShown: false
+      tabBarInactiveBackgroundColor: tabNavigatorConfig.inactiveBackgroundColor,
+      tabBarInactiveTintColor: tabNavigatorConfig.inactiveTintColor,
+      tabBarItemStyle: { marginTop: normalize(0) },
+      tabBarStyle: { backgroundColor: colors.surface }
     }}
   >
     {tabNavigatorConfig.tabConfigs.map((tabConfig, index) => (
