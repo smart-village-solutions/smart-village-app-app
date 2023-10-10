@@ -88,11 +88,10 @@ export const GET_POINTS_OF_INTEREST = gql`
 `;
 
 export const GET_POINT_OF_INTEREST = gql`
-  query PointOfInterest($id: ID!, $date: String) {
+  query PointOfInterest($id: ID!) {
     pointOfInterest(id: $id) {
       id
       title: name
-      travelTimes(date: $date)
       payload
       category {
         id

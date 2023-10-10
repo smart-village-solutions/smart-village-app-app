@@ -143,11 +143,6 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
             item={{
               ...item,
               bottomDivider: false,
-              picture: item?.picture?.url
-                ? item.picture
-                : {
-                    url: 'https://fileserver.smart-village.app/hb-meinquartier/app-icon.png'
-                  },
               subtitle: undefined
             }}
             leftImage
