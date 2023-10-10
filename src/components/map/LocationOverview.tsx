@@ -66,7 +66,11 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
 
   const { data: overviewData, loading } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
     fetchPolicy,
-    variables: queryVariables
+    variables: {
+      ...queryVariables,
+      // if we show the map, we need to fetch all the entries at once and not a limited amount
+      limit: undefined
+    }
   });
 
   let pointsOfInterest: any[] | undefined = overviewData?.[QUERY_TYPES.POINTS_OF_INTEREST];

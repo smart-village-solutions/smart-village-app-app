@@ -78,6 +78,11 @@ export const consts = {
     /^https?:\/\/(?:www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9()]{1,6}\b(?:[-a-z0-9()@:%_\+.~#?&\/=]*)$/i,
   VIDEO_TYPE_REGEX: /\.(swf|avi|flv|mpg|rm|mov|wav|asf|3gp|mkv|rmvb|mp4)$/i,
 
+  CALENDAR: {
+    DOT_SIZE: 6,
+    MAX_DOTS_PER_DAY: 5
+  },
+
   POLL_INTERVALS: {
     WEATHER: 3600000
   },

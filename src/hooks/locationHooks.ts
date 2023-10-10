@@ -1,5 +1,13 @@
-import * as Location from 'expo-location';
-import { LocationAccuracy, LocationPermissionResponse } from 'expo-location';
+import {
+  getCurrentPositionAsync,
+  getForegroundPermissionsAsync,
+  getLastKnownPositionAsync,
+  LocationAccuracy,
+  LocationObject,
+  LocationPermissionResponse,
+  PermissionStatus,
+  requestForegroundPermissionsAsync
+} from 'expo-location';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
@@ -9,25 +17,25 @@ import { LocationSettings } from '../types';
 
 type RequestPermissionAndFetchFunction = (
   setAndSyncLocationSettings: (arg: LocationSettings) => Promise<void>
-) => Promise<Location.LocationObject | undefined>;
+) => Promise<LocationObject | undefined>;
 
 const LOCATION_TIMEOUT = 6000;
 
 const requestAndFetchPosition: RequestPermissionAndFetchFunction = async (
   setAndSyncLocationSettings: (arg: LocationSettings) => Promise<void>
 ) => {
-  const { status } = await Location.requestForegroundPermissionsAsync();
+  const { status } = await requestForegroundPermissionsAsync();
 
   await setAndSyncLocationSettings({
-    locationService: status === Location.PermissionStatus.GRANTED
+    locationService: status === PermissionStatus.GRANTED
   });
 
-  if (status === Location.PermissionStatus.GRANTED) {
-    let location: Location.LocationObject | undefined;
+  if (status === PermissionStatus.GRANTED) {
+    let location: LocationObject | undefined;
     try {
       let done = false;
-      location = await Promise.race<Location.LocationObject | undefined>([
-        Location.getCurrentPositionAsync({
+      location = await Promise.race<LocationObject | undefined>([
+        getCurrentPositionAsync({
           accuracy: Platform.select({
             ios: LocationAccuracy.Balanced, // Balanced accuracy should result in ~100m accuracy
             default: undefined
@@ -55,15 +63,15 @@ const requestAndFetchPosition: RequestPermissionAndFetchFunction = async (
 const requestAndFetchLastKnownPosition: RequestPermissionAndFetchFunction = async (
   setAndSyncLocationSettings: (arg: LocationSettings) => Promise<void>
 ) => {
-  const { status } = await Location.requestForegroundPermissionsAsync();
+  const { status } = await requestForegroundPermissionsAsync();
 
   await setAndSyncLocationSettings({
-    locationService: status === Location.PermissionStatus.GRANTED
+    locationService: status === PermissionStatus.GRANTED
   });
 
-  if (status === Location.PermissionStatus.GRANTED) {
+  if (status === PermissionStatus.GRANTED) {
     try {
-      return (await Location.getLastKnownPositionAsync({})) ?? undefined;
+      return (await getLastKnownPositionAsync({})) ?? undefined;
     } catch (e) {
       console.warn(e);
     }
@@ -74,7 +82,7 @@ export const useSystemPermission = () => {
   const [systemPermission, setSystemPermission] = useState<LocationPermissionResponse>();
 
   useEffect(() => {
-    (async () => setSystemPermission(await Location.getForegroundPermissionsAsync()))();
+    (async () => setSystemPermission(await getForegroundPermissionsAsync()))();
   }, []);
 
   return systemPermission;
@@ -102,7 +110,7 @@ export const useLocationSettings = () => {
 
 const usePos = (func: RequestPermissionAndFetchFunction, skip?: boolean) => {
   const { locationSettings, setAndSyncLocationSettings } = useLocationSettings();
-  const [position, setPosition] = useState<Location.LocationObject>();
+  const [position, setPosition] = useState<LocationObject>();
   const [loading, setLoading] = useState(false);
 
   const shouldGetPosition = !skip && locationSettings.locationService !== false;

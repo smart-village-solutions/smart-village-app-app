@@ -119,10 +119,11 @@ export const DetailScreen = ({ navigation, route }) => {
     <Query
       query={getQuery(query)}
       variables={{ id: queryVariables.id, date: today }}
-      fetchPolicy={fetchPolicy}
+      fetchPolicy={query === QUERY_TYPES.EVENT_RECORD ? 'cache-and-network' : fetchPolicy}
     >
-      {({ data, loading, refetch }) => {
-        if (loading) {
+      {({ data, loading, refetch, networkStatus }) => {
+        // show loading indicator if loading but not if refetching (network status 4 means refetch)
+        if (loading && networkStatus !== 4) {
           return (
             <LoadingContainer>
               <ActivityIndicator color={colors.refreshControl} />

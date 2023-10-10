@@ -1,11 +1,10 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import 'moment/locale/de';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, View } from 'react-native';
 import { CalendarProps, Calendar as RNCalendar } from 'react-native-calendars';
-import BasicDay, { BasicDayProps } from 'react-native-calendars/src/calendar/day/basic';
 import { DateData } from 'react-native-calendars/src/types';
 
 import { NetworkContext } from '../NetworkProvider';
@@ -14,99 +13,183 @@ import { colors, consts, normalize, texts } from '../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../helpers';
 import { setupLocales } from '../helpers/calendarHelper';
 import { QUERY_TYPES, getFetchMoreQuery, getQuery } from '../queries';
-import { ScreenName, Calendar as TCalendar } from '../types';
+import { ScreenName } from '../types';
 
+import { DayComponent } from './DayComponent';
 import { EmptyMessage } from './EmptyMessage';
 import { ListComponent } from './ListComponent';
 import { LoadingContainer } from './LoadingContainer';
 import { renderArrow } from './calendarArrows';
 
-const { ROOT_ROUTE_NAMES } = consts;
-
-const DayComponent = (props: BasicDayProps & { date?: DateData }) => (
-  <BasicDay
-    {...props}
-    date={props?.date?.dateString}
-    marking={{ ...props.marking, disableTouchEvent: !props.marking?.marked }}
-  />
-);
-
-type Props = {
-  query: string;
-  queryVariables?: { dateRange?: string[]; contentContainerId?: number };
-  calendarData: TCalendar[];
-  isLoading: boolean;
-  navigation: StackNavigationProp<any>;
-};
-
-const DOT_SIZE = 6;
-const MAX_DOTS_PER_DAY = 5;
-
 setupLocales();
 
-const getMarkedDates = (data?: any[], dotCount: number = MAX_DOTS_PER_DAY, selectedDay: string) => {
-  const markedDates: CalendarProps['markedDates'] = {};
+const { CALENDAR, ROOT_ROUTE_NAMES } = consts;
+const { DOT_SIZE, MAX_DOTS_PER_DAY } = CALENDAR;
 
-  data?.forEach((item) => {
-    if (
-      !!item.listDate &&
-      (!markedDates?.[item?.listDate]?.dots ||
-        markedDates?.[item?.listDate]?.dots?.length < dotCount)
-    ) {
-      markedDates[item?.listDate] = {
-        marked: true,
-        dots: [
-          ...(markedDates[item?.listDate]?.dots ?? []),
-          { color: item.color || colors.primary }
-        ]
-      };
-    }
-  });
-
-  // highlight today
-  markedDates[selectedDay] = {
-    ...(markedDates[selectedDay] ?? {}),
-    selected: true,
-    selectedColor: colors.lighterPrimary
-  };
-
-  return markedDates;
+type Props = {
+  additionalData?: any;
+  isListRefreshing: boolean;
+  navigation: StackNavigationProp<any>;
+  query: string;
+  queryVariables: { contentContainerId?: number; dateRange?: string[] };
 };
 
-export const Calendar = ({ query, queryVariables, calendarData, isLoading, navigation }: Props) => {
-  const contentContainerId = queryVariables?.contentContainerId;
+const today = moment().format('YYYY-MM-DD');
+
+export const Calendar = ({
+  additionalData,
+  isListRefreshing,
+  navigation,
+  query,
+  queryVariables
+}: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const today = moment().format('YYYY-MM-DD');
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { eventCalendar = {} } = settings;
-  const { dotCount, subList = false } = eventCalendar;
-
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-
-  const [queryVariableWithDateRange, setQueryVariableWithDateRange] = useState<any>({
+  const { dotCount = MAX_DOTS_PER_DAY, subList = false } = eventCalendar;
+  const [queryVariablesWithDateRange, setQueryVariablesWithDateRange] = useState<any>({
     ...queryVariables,
     dateRange: [today, today]
   });
-  const [markedDates, setMarkedDates] = useState<CalendarProps['markedDates']>(
-    getMarkedDates(calendarData, dotCount, today)
-  );
+  const contentContainerId = queryVariables.contentContainerId;
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
-  const { data, loading, refetch, fetchMore } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
+  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
     fetchPolicy,
-    variables: queryVariableWithDateRange,
-    skip: !subList
+    skip: query !== QUERY_TYPES.EVENT_RECORDS,
+    variables: {
+      ...queryVariables,
+      // if we show the calendar, we need to fetch all the entries at once and not a limited amount
+      limit: undefined
+    }
   });
 
+  const {
+    data: dataDateRange,
+    loading: loadingDateRange,
+    refetch: refetchDateRange,
+    fetchMore: fetchMoreDateRange
+  } = useQuery(getQuery(QUERY_TYPES.EVENT_RECORDS), {
+    fetchPolicy,
+    skip: query !== QUERY_TYPES.EVENT_RECORDS || !subList,
+    variables: queryVariablesWithDateRange
+  });
+
+  const onDayPress = useCallback(
+    (day: DateData) => {
+      if (query === QUERY_TYPES.EVENT_RECORDS) {
+        if (subList) {
+          setQueryVariablesWithDateRange({
+            ...queryVariables,
+            dateRange: [day.dateString, day.dateString]
+          });
+        } else {
+          navigation.push(ScreenName.Index, {
+            title: texts.homeTitles.events,
+            query,
+            queryVariables: { ...queryVariables, dateRange: [day.dateString, day.dateString] },
+            rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
+          });
+        }
+      } else {
+        navigation.push(ScreenName.VolunteerIndex, {
+          title: texts.volunteer.events,
+          query,
+          queryVariables: { dateRange: [day.dateString], contentContainerId },
+          rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
+        });
+      }
+    },
+    [query, queryVariables, data, contentContainerId]
+  );
+
+  const selectedDay = useMemo(() => {
+    if (isListRefreshing || !queryVariablesWithDateRange?.dateRange?.length) {
+      return today;
+    }
+
+    return queryVariablesWithDateRange.dateRange[0];
+  }, [isListRefreshing, queryVariablesWithDateRange]);
+
+  const markedDates = useMemo(() => {
+    const dates: CalendarProps['markedDates'] = {};
+
+    const eventRecords = data?.[query] || [];
+
+    if (additionalData?.length) {
+      eventRecords?.push(...additionalData);
+    }
+
+    if (eventRecords?.length) {
+      eventRecords.forEach((item: { listDate: string; color: string }) => {
+        if (item.listDate) {
+          const dots = dates[item.listDate]?.dots || [];
+
+          if (!dots.length || dots.length < dotCount) {
+            dates[item.listDate] = {
+              marked: true,
+              dots: [...dots, { color: item.color || colors.primary }]
+            };
+          }
+        }
+      });
+    }
+
+    // highlight selected day
+    dates[selectedDay] = {
+      ...(dates[selectedDay] ?? {}),
+      selected: true,
+      selectedColor: colors.lighterPrimary
+    };
+
+    return dates;
+  }, [additionalData, data, dotCount, query, selectedDay]);
+
+  const listItems = useMemo(() => {
+    if (!subList) return [];
+
+    const parsedListItems = parseListItemsFromQuery(
+      QUERY_TYPES.EVENT_RECORDS,
+      dataDateRange,
+      undefined,
+      {
+        withDate: false
+      }
+    );
+
+    if (additionalData?.length) {
+      const filteredAdditionalData = additionalData.filter((item) => item.listDate === selectedDay);
+
+      parsedListItems.push(...filteredAdditionalData);
+    }
+
+    return parsedListItems;
+  }, [subList, query, dataDateRange, additionalData]);
+
+  useEffect(() => {
+    if (isListRefreshing) {
+      setQueryVariablesWithDateRange({
+        ...queryVariables,
+        dateRange: [today, today]
+      });
+      refetch();
+    }
+  }, [isListRefreshing, queryVariables, refetch]);
+
+  useEffect(() => {
+    refetchDateRange();
+  }, [selectedDay]);
+
   const fetchMoreData = () =>
-    fetchMore({
+    fetchMoreDateRange({
       query: getFetchMoreQuery(query),
       variables: {
-        ...queryVariableWithDateRange,
-        offset: data?.[query]?.length
+        ...queryVariablesWithDateRange,
+        offset: queryVariablesWithDateRange.limit
       },
       updateQuery: (prevResult, { fetchMoreResult }) => {
-        if (!fetchMoreResult || !fetchMoreResult[query].length) return prevResult;
+        if (!fetchMoreResult?.[query]?.length) return prevResult;
 
         return {
           ...prevResult,
@@ -115,58 +198,16 @@ export const Calendar = ({ query, queryVariables, calendarData, isLoading, navig
       }
     });
 
-  const onDayPress = useCallback(
-    async (day: DateData) => {
-      if (query === QUERY_TYPES.EVENT_RECORDS) {
-        if (subList) {
-          setQueryVariableWithDateRange({
-            ...queryVariables,
-            dateRange: [day.dateString, day.dateString]
-          });
-          setMarkedDates(getMarkedDates(calendarData, dotCount, day.dateString));
-
-          await refetch();
-
-          return;
-        }
-
-        return navigation.push(ScreenName.Index, {
-          title: texts.homeTitles.events,
-          query,
-          queryVariables: { ...queryVariables, dateRange: [day.dateString, day.dateString] },
-          rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS
-        });
-      }
-
-      navigation.push(ScreenName.VolunteerIndex, {
-        title: texts.volunteer.events,
-        query,
-        queryVariables: { dateRange: [day.dateString], contentContainerId },
-        rootRouteName: ROOT_ROUTE_NAMES.VOLUNTEER
-      });
-    },
-    [navigation, query, queryVariables, calendarData, contentContainerId]
-  );
-
-  const buildListItems = useCallback(
-    (data: DateData) =>
-      parseListItemsFromQuery(query, data, '', {
-        queryVariables: queryVariableWithDateRange,
-        withDate: false
-      }),
-    [query, queryVariableWithDateRange]
-  );
-
   return (
     <>
       <RNCalendar
         dayComponent={DayComponent}
-        onDayPress={onDayPress}
-        displayLoadingIndicator={isLoading}
+        displayLoadingIndicator={loading}
+        firstDay={1}
         markedDates={markedDates}
         markingType="multi-dot"
+        onDayPress={onDayPress}
         renderArrow={renderArrow}
-        firstDay={1}
         theme={{
           todayTextColor: colors.primary,
           indicatorColor: colors.primary,
@@ -176,15 +217,14 @@ export const Calendar = ({ query, queryVariables, calendarData, isLoading, navig
             width: DOT_SIZE
           }
         }}
-        enableSwipeMonths
       />
 
       {subList && (
         <ListComponent
-          data={loading ? [] : buildListItems(data)}
+          data={loadingDateRange ? [] : listItems}
           fetchMoreData={fetchMoreData}
           ListEmptyComponent={
-            loading ? (
+            loadingDateRange ? (
               <LoadingContainer>
                 <ActivityIndicator color={colors.refreshControl} />
               </LoadingContainer>

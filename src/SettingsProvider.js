@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useState } from 'react';
 
 export const SettingsContext = createContext({
   globalSettings: {
@@ -8,7 +8,7 @@ export const SettingsContext = createContext({
     navigation: {},
     sections: {},
     settings: {},
-    widgets: [],
+    widgets: []
   }
 });
 

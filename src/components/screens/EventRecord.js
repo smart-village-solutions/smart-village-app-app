@@ -5,7 +5,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 import { colors, consts, normalize, texts } from '../../config';
-import { matomoTrackingString, openLink, trimNewLines } from '../../helpers';
+import { isTodayOrLater, matomoTrackingString, openLink, trimNewLines } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
@@ -39,8 +39,8 @@ const { MATOMO_TRACKING } = consts;
 export const EventRecord = ({ data, route }) => {
   const {
     addresses,
-    category,
     categories,
+    category,
     contacts,
     dataProvider,
     dates,
@@ -103,6 +103,11 @@ export const EventRecord = ({ data, route }) => {
 
   const businessAccount = dataProvider?.dataType === 'business_account';
 
+  const openingHours =
+    dates
+      ?.filter((date) => isTodayOrLater(date?.dateTo || date?.dateFrom))
+      ?.map((date) => ({ ...date, useYear: date?.useYear ?? true })) || [];
+
   return (
     <View>
       <ImageSection mediaContents={mediaContents} />
@@ -119,12 +124,10 @@ export const EventRecord = ({ data, route }) => {
         />
       </Wrapper>
 
-      {!!dates && !!dates.length && (
+      {!!openingHours?.length && (
         <View>
           <SectionHeader title={texts.eventRecord.appointments} />
-          <OpeningTimesCard
-            openingHours={dates.map((date) => ({ ...date, useYear: date?.useYear ?? true }))}
-          />
+          <OpeningTimesCard openingHours={openingHours} />
         </View>
       )}
 
