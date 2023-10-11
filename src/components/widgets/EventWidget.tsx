@@ -26,7 +26,6 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
   const { events: showVolunteerEvents = false } = hdvt as { events?: boolean };
   const [queryVariables] = useState<{ dateRange?: string[]; limit?: number; order: string }>({
     dateRange: [today, today],
-    limit: additionalProps?.limit || 15,
     order: 'listDate_ASC'
   });
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
@@ -57,7 +56,10 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
     navigation.navigate(ScreenName.Index, {
       title: text ?? texts.homeTitles.events,
       query: QUERY_TYPES.EVENT_RECORDS,
-      queryVariables,
+      queryVariables: {
+        ...queryVariables,
+        limit: additionalProps?.limit || 15
+      },
       rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
       filterByDailyEvents: additionalProps?.noFilterByDailyEvents ? false : true
     });
