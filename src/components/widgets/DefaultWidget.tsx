@@ -12,7 +12,7 @@ type Props = {
   Icon: (props: IconProps) => JSX.Element;
   image?: {
     height?: number;
-    url: string;
+    uri: string;
     width?: number;
   };
   onPress: () => void;
@@ -24,9 +24,9 @@ export const DefaultWidget = ({ Icon, count, onPress, text, image }: Props) => {
     <TouchableOpacity onPress={onPress}>
       <WrapperVertical style={styles.container}>
         <WrapperRow center>
-          {image?.url ? (
+          {image?.uri ? (
             <Image
-              source={{ url: image.url }}
+              source={image}
               style={{
                 height: normalize(image?.height ?? 26),
                 width: normalize(image?.width ?? 33)

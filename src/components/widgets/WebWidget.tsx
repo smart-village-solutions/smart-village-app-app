@@ -3,7 +3,6 @@ import React, { useCallback } from 'react';
 
 import { Icon, normalize } from '../../config';
 import { ScreenName, WidgetProps } from '../../types';
-import { Image } from '../Image';
 
 import { DefaultWidget } from './DefaultWidget';
 

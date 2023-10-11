@@ -9,7 +9,7 @@ export type WidgetProps = {
     iconName?: ComponentProps<typeof IconSet>['name'];
     image?: {
       height?: number;
-      url: string;
+      uri: string;
       width?: number;
     };
     limit?: number;
