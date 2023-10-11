@@ -96,7 +96,7 @@ export const EventRecords = ({ navigation, route }) => {
     refetch: refetchVolunteerEvents
   } = useVolunteerData({
     query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
-    queryVariables,
+    queryVariables: route.params?.queryVariables,
     queryOptions: { enabled: showVolunteerEvents && !loading },
     isCalendar: true,
     isSectioned: true
