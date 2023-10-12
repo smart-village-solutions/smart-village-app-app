@@ -5,11 +5,13 @@ export const SettingsContext = createContext({
   globalSettings: {
     filter: {},
     hdvt: {},
-    navigation: {},
+    navigation: 'tab',
     sections: {},
     settings: {},
     widgets: []
-  }
+  },
+  listTypesSettings: {},
+  locationSettings: {}
 });
 
 export const SettingsProvider = ({
