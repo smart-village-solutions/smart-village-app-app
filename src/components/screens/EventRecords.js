@@ -79,7 +79,8 @@ export const EventRecords = ({ navigation, route }) => {
     getQuery(QUERY_TYPES.EVENT_RECORDS, { showEventsFilter }),
     {
       fetchPolicy,
-      variables: queryVariables
+      variables: queryVariables,
+      skip: showCalendar
     }
   );
 
@@ -198,8 +199,10 @@ export const EventRecords = ({ navigation, route }) => {
     }, [isConnected, refetch, refetchVolunteerEvents, showCalendar, showVolunteerEvents])
   );
 
-  const fetchMoreData = () =>
-    fetchMore({
+  const fetchMoreData = () => {
+    if (showCalendar) return { data: { [query]: [] } };
+
+    return fetchMore({
       query: getFetchMoreQuery(query),
       variables: {
         ...queryVariables,
@@ -214,6 +217,7 @@ export const EventRecords = ({ navigation, route }) => {
         };
       }
     });
+  };
 
   if (!query) return null;
 
