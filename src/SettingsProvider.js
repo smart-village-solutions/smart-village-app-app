@@ -18,7 +18,7 @@ export const SettingsProvider = ({
   initialLocationSettings,
   children
 }) => {
-  const [globalSettings, setGlobalSettings] = useState(initialGlobalSettings);
+  const [globalSettings] = useState(initialGlobalSettings);
   const [listTypesSettings, setListTypesSettings] = useState(initialListTypesSettings);
   const [locationSettings, setLocationSettings] = useState(initialLocationSettings);
 
@@ -26,7 +26,6 @@ export const SettingsProvider = ({
     <SettingsContext.Provider
       value={{
         globalSettings,
-        setGlobalSettings,
         listTypesSettings,
         setListTypesSettings,
         locationSettings,
