@@ -261,7 +261,7 @@ export const Overviews = ({ navigation, route }) => {
       query: getFetchMoreQuery(query),
       variables: {
         ...queryVariables,
-        offset: queryVariables.limit
+        offset: data?.[query]?.length
       },
       updateQuery: (prevResult, { fetchMoreResult }) => {
         if (!fetchMoreResult?.[query]?.length) return prevResult;
