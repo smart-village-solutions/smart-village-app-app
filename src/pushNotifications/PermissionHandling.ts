@@ -1,3 +1,4 @@
+import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { PermissionStatus } from 'expo-permissions';
@@ -37,7 +38,9 @@ export const setInAppPermission = async (newValue: boolean) => {
 
 // https://docs.expo.dev/versions/latest/sdk/notifications/#expopushtokenoptions
 const registerForPushNotificationsAsync = async () => {
-  const { data: token } = await Notifications.getExpoPushTokenAsync();
+  const { data: token } = await Notifications.getExpoPushTokenAsync({
+    projectId: Constants.expoConfig?.extra?.eas.projectId
+  });
 
   return token;
 };
