@@ -22,9 +22,6 @@ export const ListSettingsItem = ({ item }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const { listTypesSettings, setListTypesSettings } = useContext(SettingsContext);
   const listTypeForQuery = listTypesSettings[queryType];
-
-  useContext(SettingsContext);
-
   const onPressTitle = useCallback(() => setIsCollapsed((value) => !value), []);
   const getOnPressListType = (listType) => () =>
     setListTypesSettings((previousListTypes) => {
