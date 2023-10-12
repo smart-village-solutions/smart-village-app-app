@@ -217,7 +217,7 @@ const MainAppWithApolloProvider = () => {
         }}
       >
         <OnboardingManager>
-          <Navigator />
+          <Navigator navigationType={initialGlobalSettings.navigation} />
         </OnboardingManager>
       </SettingsProvider>
     </ApolloProvider>
