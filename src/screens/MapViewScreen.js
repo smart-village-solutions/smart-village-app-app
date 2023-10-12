@@ -18,7 +18,7 @@ export const MapViewScreen = ({ navigation, route }) => {
   } = route?.params;
 
   const { globalSettings } = useContext(SettingsContext);
-  const { navigation: navigationType = 'drawer' } = globalSettings;
+  const { navigation: navigationType } = globalSettings;
 
   /* the improvement in the next comment line has been added for augmented reality feature. */
   const { data } = route?.params?.augmentedRealityData ?? [];
@@ -47,10 +47,7 @@ export const MapViewScreen = ({ navigation, route }) => {
       {isAugmentedReality && modelData && (
         <Wrapper
           small
-          style={[
-            styles.listItemContainer,
-            stylesWithProps({ navigation: navigationType }).position
-          ]}
+          style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}
         >
           <TextListItem
             item={{
@@ -103,10 +100,10 @@ const styles = StyleSheet.create({
   }
 });
 
-const stylesWithProps = ({ navigation }) => {
+const stylesWithProps = ({ navigationType }) => {
   return StyleSheet.create({
     position: {
-      bottom: navigation === 'tab' ? '4%' : '8%'
+      bottom: navigationType === 'tab' ? '4%' : '8%'
     }
   });
 };

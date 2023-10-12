@@ -9,10 +9,10 @@ import { Button } from './Button';
 
 export const IndexMapSwitch = ({ filter, setFilter }) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { navigation = 'drawer' } = globalSettings;
+  const { navigation: navigationType } = globalSettings;
 
   return (
-    <View style={[styles.floatingButtonContainer, stylesWithProps({ navigation }).position]}>
+    <View style={[styles.floatingButtonContainer, stylesWithProps({ navigationType }).position]}>
       <Button
         onPress={() => {
           const selectedFilter = filter.find((entry) => entry.selected);
@@ -48,10 +48,10 @@ const styles = StyleSheet.create({
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ navigation }) => {
+const stylesWithProps = ({ navigationType }) => {
   return StyleSheet.create({
     position: {
-      bottom: navigation === 'tab' ? 0 : '5%'
+      bottom: navigationType === 'tab' ? 0 : '5%'
     }
   });
 };
