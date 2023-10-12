@@ -236,7 +236,8 @@ export const Overviews = ({ navigation, route }) => {
     if (
       query === QUERY_TYPES.POINTS_OF_INTEREST &&
       showMap &&
-      initialFilter === FILTER_TYPES.LIST
+      initialFilter === FILTER_TYPES.LIST &&
+      switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON
     ) {
       navigation.setOptions({
         headerLeft: () => (
