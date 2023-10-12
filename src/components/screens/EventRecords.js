@@ -90,11 +90,7 @@ export const EventRecords = ({ navigation, route }) => {
     }
   );
 
-  const {
-    data: dataVolunteerEvents,
-    isLoading: isLoadingVolunteerEvents = false,
-    refetch: refetchVolunteerEvents
-  } = useVolunteerData({
+  const { data: dataVolunteerEvents, refetch: refetchVolunteerEvents } = useVolunteerData({
     query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
     queryVariables: route.params?.queryVariables,
     queryOptions: { enabled: showVolunteerEvents && !loading },
@@ -221,7 +217,7 @@ export const EventRecords = ({ navigation, route }) => {
 
   if (!query) return null;
 
-  if ((!data && loading) || isLoadingVolunteerEvents || eventRecordsAddressesLoading) {
+  if ((!data && loading) || eventRecordsAddressesLoading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
