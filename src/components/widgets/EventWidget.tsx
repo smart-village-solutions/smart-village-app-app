@@ -40,11 +40,7 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
     skip: !refreshTime
   });
 
-  const {
-    data: dataVolunteerEvents,
-    isLoading: isLoadingVolunteerEvents = false,
-    refetch: refetchVolunteerEvents
-  } = useVolunteerData({
+  const { data: dataVolunteerEvents, refetch: refetchVolunteerEvents } = useVolunteerData({
     query: QUERY_TYPES.VOLUNTEER.CALENDAR_ALL,
     queryVariables,
     queryOptions: { enabled: showVolunteerEvents && !loading },
@@ -74,7 +70,7 @@ export const EventWidget = ({ text, additionalProps }: WidgetProps) => {
 
   return (
     <DefaultWidget
-      count={additionalProps?.noCount || loading || isLoadingVolunteerEvents ? undefined : count}
+      count={additionalProps?.noCount || loading ? undefined : count}
       Icon={Icon.Calendar}
       image={additionalProps?.image}
       onPress={onPress}
