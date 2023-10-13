@@ -1,5 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import _sortBy from 'lodash/sortBy';
+import _uniqBy from 'lodash/uniqBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
@@ -211,9 +212,11 @@ export const EventRecords = ({ navigation, route }) => {
       updateQuery: (prevResult, { fetchMoreResult }) => {
         if (!fetchMoreResult?.[query]?.length) return prevResult;
 
+        const uniqueData = _uniqBy([...prevResult[query], ...fetchMoreResult[query]], 'id');
+
         return {
           ...prevResult,
-          [query]: [...prevResult[query], ...fetchMoreResult[query]]
+          [query]: uniqueData
         };
       }
     });

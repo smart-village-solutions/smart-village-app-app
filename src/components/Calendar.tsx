@@ -1,5 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import _uniqBy from 'lodash/uniqBy';
 import moment from 'moment';
 import 'moment/locale/de';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
@@ -207,9 +208,11 @@ export const Calendar = ({
       updateQuery: (prevResult, { fetchMoreResult }) => {
         if (!fetchMoreResult?.[query]?.length) return prevResult;
 
+        const uniqueData = _uniqBy([...prevResult[query], ...fetchMoreResult[query]], 'id');
+
         return {
           ...prevResult,
-          [query]: [...prevResult[query], ...fetchMoreResult[query]]
+          [query]: uniqueData
         };
       }
     });
