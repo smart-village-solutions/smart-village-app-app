@@ -1,5 +1,6 @@
 import { useFocusEffect } from '@react-navigation/native';
 import _sortBy from 'lodash/sortBy';
+import _uniqBy from 'lodash/uniqBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
@@ -79,7 +80,8 @@ export const EventRecords = ({ navigation, route }) => {
     getQuery(QUERY_TYPES.EVENT_RECORDS, { showEventsFilter }),
     {
       fetchPolicy,
-      variables: queryVariables
+      variables: queryVariables,
+      skip: showCalendar
     }
   );
 
@@ -180,10 +182,10 @@ export const EventRecords = ({ navigation, route }) => {
     return parsedListItems;
   }, [additionalData, data, hasDailyFilterSelection, query, queryVariables]);
 
-  const refresh = useCallback(() => {
+  const refresh = useCallback(async () => {
     setRefreshing(true);
     if (isConnected) {
-      refetch();
+      await refetch();
       showVolunteerEvents && refetchVolunteerEvents();
     }
     setRefreshing(false);
@@ -198,22 +200,27 @@ export const EventRecords = ({ navigation, route }) => {
     }, [isConnected, refetch, refetchVolunteerEvents, showCalendar, showVolunteerEvents])
   );
 
-  const fetchMoreData = () =>
-    fetchMore({
+  const fetchMoreData = () => {
+    if (showCalendar) return { data: { [query]: [] } };
+
+    return fetchMore({
       query: getFetchMoreQuery(query),
       variables: {
         ...queryVariables,
-        offset: queryVariables.limit
+        offset: data?.[query]?.length
       },
       updateQuery: (prevResult, { fetchMoreResult }) => {
         if (!fetchMoreResult?.[query]?.length) return prevResult;
 
+        const uniqueData = _uniqBy([...prevResult[query], ...fetchMoreResult[query]], 'id');
+
         return {
           ...prevResult,
-          [query]: [...prevResult[query], ...fetchMoreResult[query]]
+          [query]: uniqueData
         };
       }
     });
+  };
 
   if (!query) return null;
 

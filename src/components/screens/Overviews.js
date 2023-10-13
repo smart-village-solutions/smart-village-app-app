@@ -1,3 +1,4 @@
+import _uniqBy from 'lodash/uniqBy';
 import PropTypes from 'prop-types';
 import React, {
   useCallback,
@@ -261,14 +262,16 @@ export const Overviews = ({ navigation, route }) => {
       query: getFetchMoreQuery(query),
       variables: {
         ...queryVariables,
-        offset: queryVariables.limit
+        offset: data?.[query]?.length
       },
       updateQuery: (prevResult, { fetchMoreResult }) => {
         if (!fetchMoreResult?.[query]?.length) return prevResult;
 
+        const uniqueData = _uniqBy([...prevResult[query], ...fetchMoreResult[query]], 'id');
+
         return {
           ...prevResult,
-          [query]: [...prevResult[query], ...fetchMoreResult[query]]
+          [query]: uniqueData
         };
       }
     });
