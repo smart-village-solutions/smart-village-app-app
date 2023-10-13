@@ -181,10 +181,10 @@ export const EventRecords = ({ navigation, route }) => {
     return parsedListItems;
   }, [additionalData, data, hasDailyFilterSelection, query, queryVariables]);
 
-  const refresh = useCallback(() => {
+  const refresh = useCallback(async () => {
     setRefreshing(true);
     if (isConnected) {
-      refetch();
+      await refetch();
       showVolunteerEvents && refetchVolunteerEvents();
     }
     setRefreshing(false);

@@ -1,3 +1,4 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import 'moment/locale/de';
@@ -52,6 +53,7 @@ export const Calendar = ({
     ...queryVariables,
     dateRange: [today, today]
   });
+  const [refreshing, setRefreshing] = useState(false);
   const contentContainerId = queryVariables.contentContainerId;
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
@@ -105,12 +107,12 @@ export const Calendar = ({
   );
 
   const selectedDay = useMemo(() => {
-    if (isListRefreshing || !queryVariablesWithDateRange?.dateRange?.length) {
+    if (!queryVariablesWithDateRange?.dateRange?.length) {
       return today;
     }
 
     return queryVariablesWithDateRange.dateRange[0];
-  }, [isListRefreshing, queryVariablesWithDateRange]);
+  }, [queryVariablesWithDateRange]);
 
   const markedDates = useMemo(() => {
     const dates: CalendarProps['markedDates'] = {};
@@ -165,21 +167,35 @@ export const Calendar = ({
     }
 
     return parsedListItems;
-  }, [subList, query, dataDateRange, additionalData]);
+  }, [additionalData, dataDateRange, query, selectedDay, subList]);
 
-  useEffect(() => {
-    if (isListRefreshing) {
-      setQueryVariablesWithDateRange({
-        ...queryVariables,
-        dateRange: [today, today]
-      });
-      refetch();
-    }
-  }, [isListRefreshing, queryVariables, refetch]);
+  const refresh = useCallback(
+    async (withCalendar = true) => {
+      setRefreshing(true);
+      if (isConnected) {
+        withCalendar && (await refetch());
+        await refetchDateRange();
+      }
+      setRefreshing(false);
+    },
+    [isConnected, refetch, refetchDateRange]
+  );
 
   useEffect(() => {
     refetchDateRange();
   }, [selectedDay]);
+
+  useEffect(() => {
+    if (isListRefreshing) {
+      refresh();
+    }
+  }, [isListRefreshing]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh(false);
+    }, [refresh])
+  );
 
   const fetchMoreData = () =>
     fetchMoreDateRange({
@@ -202,7 +218,7 @@ export const Calendar = ({
     <>
       <RNCalendar
         dayComponent={DayComponent}
-        displayLoadingIndicator={loading}
+        displayLoadingIndicator={loading || refreshing}
         firstDay={1}
         markedDates={markedDates}
         markingType="multi-dot"
@@ -221,10 +237,10 @@ export const Calendar = ({
 
       {subList && (
         <ListComponent
-          data={loadingDateRange ? [] : listItems}
+          data={loadingDateRange || refreshing ? [] : listItems}
           fetchMoreData={fetchMoreData}
           ListEmptyComponent={
-            loadingDateRange ? (
+            loadingDateRange || refreshing ? (
               <LoadingContainer>
                 <ActivityIndicator color={colors.refreshControl} />
               </LoadingContainer>
