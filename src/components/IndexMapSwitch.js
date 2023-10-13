@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 const stylesWithProps = ({ navigationType }) => {
   return StyleSheet.create({
     position: {
-      bottom: navigationType === 'tab' ? 0 : '5%'
+      bottom: navigationType === 'drawer' ? '5%' : 0
     }
   });
 };

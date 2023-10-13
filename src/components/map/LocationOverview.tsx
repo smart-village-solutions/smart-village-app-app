@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
 const stylesWithProps = ({ navigationType }: { navigationType: string }) => {
   return StyleSheet.create({
     position: {
-      bottom: navigationType === 'tab' ? '4%' : '8%'
+      bottom: navigationType === 'drawer' ? '8%' : '4%'
     }
   });
 };
