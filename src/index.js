@@ -42,10 +42,11 @@ const MainAppWithApolloProvider = () => {
   const [client, setClient] = useState();
   const [initialGlobalSettings, setInitialGlobalSettings] = useState({
     filter: {},
+    hdvt: {},
+    navigation: 'tab',
     sections: {},
     settings: {},
-    widgets: [],
-    hdvt: {}
+    widgets: []
   });
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
@@ -216,7 +217,7 @@ const MainAppWithApolloProvider = () => {
         }}
       >
         <OnboardingManager>
-          <Navigator />
+          <Navigator navigationType={initialGlobalSettings.navigation} />
         </OnboardingManager>
       </SettingsProvider>
     </ApolloProvider>

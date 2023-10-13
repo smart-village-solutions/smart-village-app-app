@@ -60,7 +60,7 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
 export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariables }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { navigation: navigationType = 'drawer' } = globalSettings;
+  const { navigation: navigationType } = globalSettings;
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime: undefined });
 
@@ -134,10 +134,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
       {selectedPointOfInterest && !detailsLoading && (
         <Wrapper
           small
-          style={[
-            styles.listItemContainer,
-            stylesWithProps({ navigation: navigationType }).position
-          ]}
+          style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}
         >
           <TextListItem
             item={{
@@ -180,10 +177,10 @@ const styles = StyleSheet.create({
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ navigation }: { navigation: string }) => {
+const stylesWithProps = ({ navigationType }: { navigationType: string }) => {
   return StyleSheet.create({
     position: {
-      bottom: navigation === 'tab' ? '4%' : '8%'
+      bottom: navigationType === 'drawer' ? '8%' : '4%'
     }
   });
 };

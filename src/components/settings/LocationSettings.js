@@ -53,8 +53,7 @@ export const LocationSettings = () => {
       Location.getForegroundPermissionsAsync().then((response) => {
         // if the system permission is granted, we can simply enable the sorting
         if (response.status === Location.PermissionStatus.GRANTED) {
-          const newSettings = { locationService: true };
-          setAndSyncLocationSettings(newSettings);
+          setAndSyncLocationSettings({ locationService: true });
           return;
         }
 
@@ -65,8 +64,7 @@ export const LocationSettings = () => {
               if (response.status !== Location.PermissionStatus.GRANTED) {
                 revert();
               } else {
-                const newSettings = { locationService: true };
-                setAndSyncLocationSettings(newSettings);
+                setAndSyncLocationSettings({ locationService: true });
                 return;
               }
             })
