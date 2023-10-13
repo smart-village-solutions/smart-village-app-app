@@ -39,8 +39,10 @@ export const openShare = async ({ message, title, url }) => {
 };
 
 export const shareMessage = (data, query) => {
+  const webUrls = data.sourceUrl ? (data.webUrls || []).concat(data.sourceUrl) : data.webUrls;
+
   const urls = mergeWebUrls({
-    webUrls: data.webUrls,
+    webUrls,
     contact: data.contact,
     contacts: data.contacts
   })?.map(({ url }) => `Link: ${url}`);
