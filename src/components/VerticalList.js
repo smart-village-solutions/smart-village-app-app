@@ -12,7 +12,7 @@ import { SWITCH_BETWEEN_LIST_AND_MAP } from './screens';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
-const MAX_INITIAL_NUM_TO_RENDER = 20;
+const MAX_INITIAL_NUM_TO_RENDER = 15;
 
 export const VerticalList = ({
   data,
@@ -38,7 +38,7 @@ export const VerticalList = ({
   const onEndReached = async () => {
     if (fetchMoreData) {
       // if there is a pagination, the end of the list is reached, when no more data is returned
-      // from partially fetching, so we need to check the the data to determine the lists end
+      // from partially fetching, so we need to check the data to determine the lists end
       const { data: moreData } = await fetchMoreData();
 
       setListEndReached(!moreData[query].length);
