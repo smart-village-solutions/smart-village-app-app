@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.3.1]
+
+This update includes bug fixes
+
+### Fixed
+
+- fixed a bug that caused the inability to return from POI map view#
+- fixed a bug where notifications in settings could not be activated
+- fixed a bug in the event list that caused the list layout to be broken when loading new data
+- fixed rerendering problem caused by navigation
+- fixed a bug that caused the daily activity filter to reload the screen
+
 ## [3.3.0] :rocket:
 
 Major new Expo SDK version 49 and updated packages plus bug fixes
