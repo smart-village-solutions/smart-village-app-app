@@ -100,6 +100,15 @@ export const html = {
   }
 };
 
+export const htmlReduceTransparencyEnabled = {
+  a: {
+    color: colors.lighterPrimary,
+    fontFamily: 'bold',
+    margin: 0,
+    textDecorationLine: 'none'
+  }
+};
+
 export const htmlBoldTextEnabled = {
   p: {
     fontFamily: 'bold'
