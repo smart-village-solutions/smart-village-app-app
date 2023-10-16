@@ -839,6 +839,12 @@ export const texts = {
         'Soll Matomo Analytics deaktiviert werden? Die Deaktivierung von Matomo Analytics wird mit dem nächsten Neustart der App wirksam.',
       yes: 'Ja'
     },
+    ar: {
+      setting: 'AR-Einstellungen'
+    },
+    list: {
+      setting: 'App-Aussehen'
+    },
     locationService: {
       abort: 'Abbrechen',
       alternativePositionHint:
@@ -848,7 +854,7 @@ export const texts = {
       onSystemPermissionMissing:
         'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
       save: 'Speichern',
-      sectionHeader: 'Standort'
+      setting: 'Standort'
     },
     onboarding: {
       onActivate: 'Beim nächsten Start wird die App-Einführung angezeigt.',
@@ -856,7 +862,7 @@ export const texts = {
       ok: 'Ok'
     },
     permanentFilter: {
-      sectionHeader: 'Datenquellen'
+      setting: 'Datenquellen'
     }
   },
   settingsScreen: {
@@ -893,12 +899,7 @@ export const texts = {
     },
     locationService: 'Ortungsdienste',
     onboarding: 'App-Einführung',
-    pushNotifications: 'Push-Benachrichtigungen',
-    tabs: {
-      arSettings: 'AR-Einstellungen',
-      general: 'Allgemein',
-      listTypes: 'App-Aussehen'
-    }
+    pushNotifications: 'Push-Benachrichtigungen'
   },
   survey: {
     archive: 'Umfrage-Archiv',
