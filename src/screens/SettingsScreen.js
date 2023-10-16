@@ -12,7 +12,12 @@ import {
   TextListItem,
   Wrapper
 } from '../components';
-import { ListSettings, LocationSettings, PermanentFilterSettings } from '../components/settings';
+import {
+  ListSettings,
+  LocationSettings,
+  MowasRegionSettings,
+  PermanentFilterSettings
+} from '../components/settings';
 import { colors, consts, texts } from '../config';
 import {
   addToStore,
@@ -58,6 +63,19 @@ const renderItem = ({ item, navigation }) => {
           params: { setting: item, title: texts.settingsContents.permanentFilter.setting },
           routeName: ScreenName.Settings,
           title: texts.settingsContents.permanentFilter.setting
+        }}
+        navigation={navigation}
+      />
+    );
+  }
+
+  if (item === 'mowasRegionSettings') {
+    return (
+      <TextListItem
+        item={{
+          params: { setting: item, title: texts.settingsContents.mowasRegion.setting },
+          routeName: ScreenName.Settings,
+          title: texts.settingsContents.mowasRegion.setting
         }}
         navigation={navigation}
       />
@@ -135,7 +153,7 @@ const onDeactivatePushNotifications = (revert) => {
 
 export const SettingsScreen = ({ navigation, route }) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { settings = {} } = globalSettings;
+  const { mowas, settings = {} } = globalSettings;
   const [data, setData] = useState([]);
   const { setting = '' } = route?.params || {};
 
@@ -257,6 +275,12 @@ export const SettingsScreen = ({ navigation, route }) => {
         data: ['permanentFilterSettings']
       });
 
+      if (mowas?.regionalKeys?.length) {
+        settingsList.push({
+          data: ['mowasRegionSettings']
+        });
+      }
+
       settingsList.push({
         data: ['listSettings']
       });
@@ -299,6 +323,9 @@ export const SettingsScreen = ({ navigation, route }) => {
       break;
     case 'permanentFilterSettings':
       Component = <PermanentFilterSettings />;
+      break;
+    case 'mowasRegionSettings':
+      Component = <MowasRegionSettings mowasRegionalKeys={mowas?.regionalKeys} />;
       break;
     case 'listSettings':
       Component = <ListSettings />;
