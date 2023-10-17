@@ -1,6 +1,6 @@
 {
   "name": "smart-village-app",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "scripts": {
     "android": "npx expo run:android",
     "ios": "npx expo run:ios",

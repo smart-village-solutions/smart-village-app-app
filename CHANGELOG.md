@@ -5,13 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.3.2]
+
+This update includes bug fixes
+
+### Added
+
+- added link sharing feature for news
+
+### Fixed
+
+- fixed `EventList` crashing the app on Android devices
+- fixed a navigation bug on the volunteer screen that caused the app to crash
+- fixed a bug that caused the application to crash on screen with image and document upload feature
+
 ## [v3.3.1]
 
 This update includes bug fixes
 
 ### Fixed
 
-- fixed a bug that caused the inability to return from POI map view#
+- fixed a bug that caused the inability to return from POI map view
 - fixed a bug where notifications in settings could not be activated
 - fixed a bug in the event list that caused the list layout to be broken when loading new data
 - fixed rerendering problem caused by navigation
