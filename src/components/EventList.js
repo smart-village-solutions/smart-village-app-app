@@ -69,6 +69,10 @@ export const EventList = ({
 
   const renderItem = useRenderItem(QUERY_TYPES.EVENT_RECORDS, navigation, { noSubtitle });
 
+  if (!sectionedData?.length) {
+    return null;
+  }
+
   return (
     <SectionList
       removeClippedSubviews
