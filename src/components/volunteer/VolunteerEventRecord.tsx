@@ -1,16 +1,16 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
 import { colors, styles as configStyles, Icon, normalize, texts } from '../../config';
-import { navigatorConfig } from '../../config/navigation';
 import { isAttending, momentFormat, openLink, volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { calendarAttend } from '../../queries/volunteer';
+import { SettingsContext } from '../../SettingsProvider';
 import { PARTICIPANT_TYPE, ScreenName } from '../../types';
 import { Button } from '../Button';
 import { HeaderRight } from '../HeaderRight';
@@ -54,6 +54,8 @@ export const VolunteerEventRecord = ({
     title,
     webUrls
   } = data;
+  const { globalSettings } = useContext(SettingsContext);
+  const { navigation: navigationType } = globalSettings;
 
   const { files, topics } = content || {};
   const mediaContents = files?.length
@@ -117,7 +119,7 @@ export const VolunteerEventRecord = ({
                   groupId: content?.metadata?.contentcontainer_id
                 }),
               route,
-              withDrawer: navigatorConfig.type === 'drawer',
+              withDrawer: navigationType === 'drawer',
               withEdit: true,
               withShare: true
             }}

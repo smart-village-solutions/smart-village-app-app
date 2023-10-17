@@ -1,12 +1,12 @@
 import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useLayoutEffect, useState } from 'react';
 import { DeviceEventEmitter, StyleSheet, View } from 'react-native';
 import Markdown from 'react-native-markdown-display';
 import { useMutation } from 'react-query';
 
+import { SettingsContext } from '../../SettingsProvider';
 import { colors, styles as configStyles, consts, normalize, texts } from '../../config';
-import { navigatorConfig } from '../../config/navigation';
 import {
   isOwner,
   openLink,
@@ -60,6 +60,9 @@ export const VolunteerGroup = ({
   refetch: () => void;
   isRefetching: boolean;
 } & StackScreenProps<any>) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { navigation: navigationType } = globalSettings;
+
   const {
     about,
     contentcontainer_id: contentContainerId,
@@ -161,7 +164,7 @@ export const VolunteerGroup = ({
                   groupId: data.id
                 }),
               route,
-              withDrawer: navigatorConfig.type === 'drawer',
+              withDrawer: navigationType === 'drawer',
               withEdit: true,
               withShare: true
             }}
