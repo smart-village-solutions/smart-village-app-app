@@ -404,7 +404,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="images"
-          render={(field) => (
+          render={({ field }) => (
             <ImageSelector
               {...{
                 control,
@@ -423,7 +423,7 @@ export const VolunteerFormCalendar = ({
         />
         <Controller
           name="documents"
-          render={(field) => (
+          render={({ field }) => (
             <DocumentSelector
               {...{
                 control,

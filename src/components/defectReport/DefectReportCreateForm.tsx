@@ -191,7 +191,7 @@ export const DefectReportCreateForm = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="images"
-          render={(field) => (
+          render={({ field }) => (
             <ImageSelector
               {...{
                 control,
