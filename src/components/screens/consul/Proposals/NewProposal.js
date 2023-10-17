@@ -402,7 +402,7 @@ export const NewProposal = ({ navigation, data, query }) => {
             <Controller
               name={item.name}
               control={control}
-              render={(field) =>
+              render={({ field }) =>
                 item.name === 'image' ? (
                   <ImageSelector
                     {...{
