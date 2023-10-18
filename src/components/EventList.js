@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { SectionList, StyleSheet } from 'react-native';
+import { ActivityIndicator, SectionList, StyleSheet } from 'react-native';
 
-import { consts, texts } from '../config';
+import { colors, consts, device, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { useRenderItem } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
 
+import { LoadingContainer } from './LoadingContainer';
 import { LoadingSpinner } from './LoadingSpinner';
 import { SectionHeader } from './SectionHeader';
 
@@ -69,8 +70,12 @@ export const EventList = ({
 
   const renderItem = useRenderItem(QUERY_TYPES.EVENT_RECORDS, navigation, { noSubtitle });
 
-  if (!sectionedData?.length) {
-    return null;
+  if (!sectionedData?.length && device.platform === 'android') {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.refreshControl} />
+      </LoadingContainer>
+    );
   }
 
   return (
