@@ -12,6 +12,8 @@ type MowasRegionalKeys = {
   rs: string;
 }[];
 
+const keyExtractor = (item: { rs: string }, index: number) => `index${index}-rs${item.rs}`;
+
 export const MowasRegionSettings = ({
   mowasRegionalKeys
 }: {
@@ -47,6 +49,7 @@ export const MowasRegionSettings = ({
   return (
     <FlatList
       data={mowasRegionalKeys}
+      keyExtractor={keyExtractor}
       renderItem={({ item }) => (
         <SettingsToggle
           item={{

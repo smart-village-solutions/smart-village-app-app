@@ -11,6 +11,8 @@ import { getQuery, QUERY_TYPES } from '../../queries';
 import { FilterAction } from '../../types';
 import { SettingsToggle } from '../SettingsToggle';
 
+const keyExtractor = (item: { id: number }, index: number) => `index${index}-id${item.id}`;
+
 export const PermanentFilterSettings = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
 
@@ -39,6 +41,7 @@ export const PermanentFilterSettings = () => {
   return (
     <FlatList
       data={data?.newsItemsDataProviders}
+      keyExtractor={keyExtractor}
       renderItem={({ item }) => (
         <SettingsToggle
           item={{

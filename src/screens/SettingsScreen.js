@@ -39,7 +39,7 @@ import { ScreenName } from '../types';
 
 const { MATOMO_TRACKING } = consts;
 
-const keyExtractor = (item, index) => `index${index}-id${item.id}`;
+const keyExtractor = (item, index) => `index${index}-item${item.title || item}`;
 
 const renderItem = ({ item, navigation }) => {
   if (item === 'locationSettings') {
