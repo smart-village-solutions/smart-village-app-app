@@ -76,8 +76,8 @@ export const EventRecords = ({ navigation, route }) => {
   const openWebScreen = useOpenWebScreen(title, eventListIntro?.url);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
-  const { data, loading, fetchMore, refetch } = useQuery(
-    getQuery(QUERY_TYPES.EVENT_RECORDS, { showEventsFilter }),
+  const { data, loading, fetchMore, refetch, networkStatus } = useQuery(
+    getQuery(QUERY_TYPES.EVENT_RECORDS),
     {
       fetchPolicy,
       variables: queryVariables,
@@ -85,14 +85,17 @@ export const EventRecords = ({ navigation, route }) => {
     }
   );
 
-  const { data: eventRecordsCategoriesData, loading: eventRecordsCategoriesLoading } = useQuery(
-    getQuery(QUERY_TYPES.EVENT_RECORDS_CATEGORIES)
-  );
-
   const { data: eventRecordsAddressesData, loading: eventRecordsAddressesLoading } = useQuery(
     getQuery(QUERY_TYPES.EVENT_RECORDS_ADDRESSES),
     {
       skip: !showEventLocationsFilter
+    }
+  );
+
+  const { data: eventRecordsCategoriesData, loading: eventRecordsCategoriesLoading } = useQuery(
+    getQuery(QUERY_TYPES.EVENT_RECORDS_AND_CATEGORIES),
+    {
+      skip: !showEventsFilter
     }
   );
 
@@ -228,7 +231,12 @@ export const EventRecords = ({ navigation, route }) => {
 
   if (!query) return null;
 
-  if ((!data && loading) || eventRecordsAddressesLoading || eventRecordsCategoriesLoading) {
+  if (
+    // show loading indicator if loading but not if refetching (network status 4 means refetch)
+    (!data && loading && networkStatus !== 4) ||
+    eventRecordsAddressesLoading ||
+    eventRecordsCategoriesLoading
+  ) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
@@ -238,103 +246,101 @@ export const EventRecords = ({ navigation, route }) => {
 
   return (
     <SafeAreaViewFlex>
-      <>
-        {calendarToggle && !hasDailyFilterSelection && (
-          <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
-        )}
-        <ListComponent
-          ListHeaderComponent={
-            <>
-              {!!eventListIntro && (
-                <>
-                  {!!eventListIntro.introText && (
-                    <Wrapper>
-                      <RegularText small>{eventListIntro.introText}</RegularText>
-                    </Wrapper>
-                  )}
+      {calendarToggle && !hasDailyFilterSelection && (
+        <CalendarListToggle showCalendar={showCalendar} setShowCalendar={setShowCalendar} />
+      )}
+      <ListComponent
+        ListHeaderComponent={
+          <>
+            {!!eventListIntro && (
+              <>
+                {!!eventListIntro.introText && (
+                  <Wrapper>
+                    <RegularText small>{eventListIntro.introText}</RegularText>
+                  </Wrapper>
+                )}
 
-                  {!!eventListIntro.url && !!eventListIntro.buttonTitle && (
-                    <Wrapper>
-                      <Button
-                        onPress={() => openLink(eventListIntro.url, openWebScreen)}
-                        title={eventListIntro.buttonTitle}
-                      />
-                    </Wrapper>
-                  )}
-                  <Divider />
-                </>
-              )}
-              {!!showFilter && (
-                <>
-                  {!!eventRecordsCategoriesData && (
-                    <DropdownHeader
-                      {...{
-                        data: eventRecordsCategoriesData,
-                        query,
-                        queryVariables,
-                        updateListData: updateListDataByDropdown
-                      }}
+                {!!eventListIntro.url && !!eventListIntro.buttonTitle && (
+                  <Wrapper>
+                    <Button
+                      onPress={() => openLink(eventListIntro.url, openWebScreen)}
+                      title={eventListIntro.buttonTitle}
                     />
-                  )}
+                  </Wrapper>
+                )}
+                <Divider />
+              </>
+            )}
+            {!!showFilter && (
+              <>
+                {!!eventRecordsCategoriesData && (
+                  <DropdownHeader
+                    {...{
+                      data: eventRecordsCategoriesData,
+                      query,
+                      queryVariables,
+                      updateListData: updateListDataByDropdown
+                    }}
+                  />
+                )}
 
-                  {showEventLocationsFilter && !!eventRecordsAddressesData && (
-                    <DropdownHeader
-                      {...{
-                        data: eventRecordsAddressesData,
-                        isLocationFilter: true,
-                        query,
-                        queryVariables,
-                        updateListData: updateListDataByDropdown
-                      }}
-                    />
-                  )}
+                {!!eventRecordsAddressesData && (
+                  <DropdownHeader
+                    {...{
+                      data: eventRecordsAddressesData,
+                      isLocationFilter: true,
+                      query,
+                      queryVariables,
+                      updateListData: updateListDataByDropdown
+                    }}
+                  />
+                )}
 
-                  {showFilterByDailyEvents && (
-                    <OptionToggle
-                      label={texts.eventRecord.filterByDailyEvents}
-                      onToggle={updateListDataByDailySwitch}
-                      value={filterByDailyEvents}
-                    />
-                  )}
-                </>
-              )}
-            </>
-          }
-          ListEmptyComponent={
-            loading ? (
-              <LoadingContainer>
-                <ActivityIndicator color={colors.accent} />
-              </LoadingContainer>
-            ) : showCalendar ? (
-              <Calendar
-                isListRefreshing={refreshing}
-                query={query}
-                queryVariables={queryVariables}
-                navigation={navigation}
-                additionalData={additionalData}
-              />
-            ) : (
-              <EmptyMessage title={texts.empty.list} showIcon />
-            )
-          }
-          navigation={navigation}
-          data={loading || showCalendar ? [] : listItems}
-          horizontal={false}
-          sectionByDate={!showCalendar}
-          query={query}
-          queryVariables={queryVariables}
-          fetchMoreData={fetchMoreData}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={refresh}
-              colors={[colors.accent]}
-              tintColor={colors.accent}
+                {showFilterByDailyEvents && (
+                  <OptionToggle
+                    label={texts.eventRecord.filterByDailyEvents}
+                    onToggle={updateListDataByDailySwitch}
+                    value={filterByDailyEvents}
+                  />
+                )}
+              </>
+            )}
+          </>
+        }
+        ListEmptyComponent={
+          loading ? (
+            <LoadingContainer>
+              <ActivityIndicator color={colors.accent} />
+            </LoadingContainer>
+          ) : showCalendar ? (
+            <Calendar
+              isListRefreshing={refreshing}
+              query={query}
+              queryVariables={queryVariables}
+              navigation={navigation}
+              additionalData={additionalData}
             />
-          }
-          showBackToTop
-        />
-      </>
+          ) : (
+            <EmptyMessage title={texts.empty.list} showIcon />
+          )
+        }
+        navigation={navigation}
+        data={loading || showCalendar ? [] : listItems}
+        horizontal={false}
+        sectionByDate={!showCalendar}
+        query={query}
+        queryVariables={queryVariables}
+        fetchMoreData={fetchMoreData}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={refresh}
+            colors={[colors.accent]}
+            tintColor={colors.accent}
+          />
+        }
+        showBackToTop
+      />
     </SafeAreaViewFlex>
   );
 };
