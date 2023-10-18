@@ -36,6 +36,7 @@ export const QUERY_TYPES = {
   },
   EVENT_RECORD: 'eventRecord',
   EVENT_RECORDS_ADDRESSES: 'eventRecordsAddresses',
+  EVENT_RECORDS_CATEGORIES: 'eventRecordsCategories',
   EVENT_RECORDS: 'eventRecords',
   GENERIC_ITEM: 'genericItem',
   GENERIC_ITEMS: 'genericItems',

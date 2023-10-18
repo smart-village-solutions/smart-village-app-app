@@ -85,6 +85,10 @@ export const EventRecords = ({ navigation, route }) => {
     }
   );
 
+  const { data: eventRecordsCategoriesData, loading: eventRecordsCategoriesLoading } = useQuery(
+    getQuery(QUERY_TYPES.EVENT_RECORDS_CATEGORIES)
+  );
+
   const { data: eventRecordsAddressesData, loading: eventRecordsAddressesLoading } = useQuery(
     getQuery(QUERY_TYPES.EVENT_RECORDS_ADDRESSES),
     {
@@ -224,7 +228,7 @@ export const EventRecords = ({ navigation, route }) => {
 
   if (!query) return null;
 
-  if ((!data && loading) || eventRecordsAddressesLoading) {
+  if ((!data && loading) || eventRecordsAddressesLoading || eventRecordsCategoriesLoading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.accent} />
@@ -262,10 +266,10 @@ export const EventRecords = ({ navigation, route }) => {
               )}
               {!!showFilter && (
                 <>
-                  {!!data && (
+                  {!!eventRecordsCategoriesData && (
                     <DropdownHeader
                       {...{
-                        data,
+                        data: eventRecordsCategoriesData,
                         query,
                         queryVariables,
                         updateListData: updateListDataByDropdown

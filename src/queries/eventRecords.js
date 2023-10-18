@@ -328,3 +328,16 @@ export const GET_EVENT_RECORDS_ADDRESSES = gql`
     }
   }
 `;
+
+export const GET_EVENT_RECORDS_CATEGORIES = gql`
+  query EventRecords {
+    eventRecords {
+      id
+    }
+    categories {
+      id
+      name
+      upcomingEventRecordsCount
+    }
+  }
+`;
