@@ -2,16 +2,19 @@
 import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
 
+import { SettingsContext } from '../SettingsProvider';
+import { SectionHeader } from '../components';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
 import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
-import { consts } from '../config';
+import { consts, texts } from '../config';
+import { momentFormat } from '../helpers';
 import { QUERY_TYPES } from '../queries';
-import { SettingsContext } from '../SettingsProvider';
+import { ScreenName } from '../types';
 
-const { LIST_TYPES } = consts;
+const { LIST_TYPES, ROOT_ROUTE_NAMES } = consts;
 
 const getListType = (query, listTypesSettings) => {
   switch (query) {
@@ -32,6 +35,7 @@ const getListType = (query, listTypesSettings) => {
  *          horizontal?: boolean;
  *          noSubtitle?: boolean;
  *          openWebScreen?: () => void;
+ *          queryVariables?: object
  *          refetch?: () => void
  *        }} options
  * @returns renderItem function
@@ -91,6 +95,27 @@ export const useRenderItem = (query, navigation, options = {}) => {
               }}
               refetch={options.refetch}
               navigation={navigation}
+            />
+          );
+        }
+
+        // `SectionHeader` list item for `EventList`
+        if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
+          return (
+            <SectionHeader
+              title={momentFormat(item, 'DD.MM.YYYY dddd')}
+              onPress={() =>
+                navigation.push(ScreenName.Index, {
+                  title: texts.homeTitles.events,
+                  query,
+                  queryVariables: {
+                    ...options.queryVariables,
+                    dateRange: [momentFormat(item, 'YYYY-MM-DD'), momentFormat(item, 'YYYY-MM-DD')]
+                  },
+                  rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
+                  showFilterByDailyEvents: false
+                })
+              }
             />
           );
         }
