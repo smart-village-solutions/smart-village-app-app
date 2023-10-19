@@ -1,38 +1,41 @@
+import { FlashList } from '@shopify/flash-list';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, SectionList, StyleSheet } from 'react-native';
 
-import { colors, consts, device, texts } from '../config';
-import { momentFormat } from '../helpers';
 import { useRenderItem } from '../hooks';
-import { QUERY_TYPES } from '../queries';
-import { ScreenName } from '../types';
 
-import { LoadingContainer } from './LoadingContainer';
+import { QUERY_TYPES } from '../queries';
 import { LoadingSpinner } from './LoadingSpinner';
-import { SectionHeader } from './SectionHeader';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
-const { ROOT_ROUTE_NAMES } = consts;
 
 const sectionData = (data) => {
-  return data?.reduce((previous, current) => {
-    const listDate = current?.params?.details?.listDate || current?.listDate;
-
-    // check current for same list date as previous and if it matches push it in that section
-    // otherwise create a new section
-    if (listDate) {
-      if (previous[previous?.length - 1]?.title === listDate) {
-        previous[previous.length - 1].data.push(current);
-      } else {
-        previous.push({ title: listDate, data: [current] });
+  const groupDataByDate = (data) => {
+    const grouped = {};
+    data.forEach((item) => {
+      if (item.listDate) {
+        if (!grouped[item.listDate]) {
+          grouped[item.listDate] = [];
+        }
+        grouped[item.listDate].push(item);
       }
-    }
+    });
+    return grouped;
+  };
 
-    return previous;
-  }, []);
+  const transformGroupedDataToArray = (groupedData) => {
+    const resultArray = [];
+    for (const date in groupedData) {
+      resultArray.push(date);
+      resultArray.push(...groupedData[date]);
+    }
+    return resultArray;
+  };
+
+  const groupedByDate = groupDataByDate(data);
+  return transformGroupedDataToArray(groupedByDate);
 };
 
 export const EventList = ({
@@ -42,7 +45,6 @@ export const EventList = ({
   ListHeaderComponent,
   navigation,
   noSubtitle,
-  query,
   queryVariables,
   refreshControl
 }) => {
@@ -68,21 +70,26 @@ export const EventList = ({
     }
   };
 
-  const renderItem = useRenderItem(QUERY_TYPES.EVENT_RECORDS, navigation, { noSubtitle });
+  const renderItem = useRenderItem(QUERY_TYPES.EVENT_RECORDS, navigation, {
+    noSubtitle,
+    queryVariables
+  });
 
-  if (!sectionedData?.length && device.platform === 'android') {
-    return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
-    );
-  }
+  const stickyHeaderIndices = sectionedData
+    .map((item, index) => {
+      if (typeof item === 'string') {
+        return index;
+      } else {
+        return null;
+      }
+    })
+    .filter((item) => item !== null);
 
   return (
-    <SectionList
-      removeClippedSubviews
+    <FlashList
+      data={sectionedData}
       refreshing={refreshing}
-      initialNumToRender={MAX_INITIAL_NUM_TO_RENDER}
+      estimatedItemSize={MAX_INITIAL_NUM_TO_RENDER}
       keyExtractor={keyExtractor}
       ListFooterComponent={() => {
         if (data?.length >= MAX_INITIAL_NUM_TO_RENDER) {
@@ -97,41 +104,10 @@ export const EventList = ({
       onEndReachedThreshold={0.5}
       refreshControl={refreshControl}
       renderItem={renderItem}
-      renderSectionHeader={({ section: { title } }) => (
-        <SectionHeader
-          title={momentFormat(title, 'DD.MM.YYYY dddd')}
-          onPress={
-            query === QUERY_TYPES.EVENT_RECORDS
-              ? () =>
-                  navigation.push(ScreenName.Index, {
-                    title: texts.homeTitles.events,
-                    query,
-                    queryVariables: {
-                      ...queryVariables,
-                      dateRange: [
-                        momentFormat(title, 'YYYY-MM-DD'),
-                        momentFormat(title, 'YYYY-MM-DD')
-                      ]
-                    },
-                    rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
-                    showFilterByDailyEvents: false
-                  })
-              : undefined
-          }
-        />
-      )}
-      sections={sectionedData}
-      stickySectionHeadersEnabled
-      contentContainerStyle={styles.contentContainerStyle}
+      stickyHeaderIndices={stickyHeaderIndices}
     />
   );
 };
-
-const styles = StyleSheet.create({
-  contentContainerStyle: {
-    flexGrow: 1
-  }
-});
 
 EventList.propTypes = {
   data: PropTypes.array,
