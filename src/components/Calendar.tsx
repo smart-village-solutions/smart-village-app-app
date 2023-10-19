@@ -192,6 +192,13 @@ export const Calendar = ({
     }
   }, [isListRefreshing]);
 
+  useEffect(() => {
+    setQueryVariablesWithDateRange({
+      ...queryVariables,
+      dateRange: queryVariablesWithDateRange.dateRange
+    });
+  }, [queryVariables]);
+
   useFocusEffect(
     useCallback(() => {
       refresh(false);

@@ -86,84 +86,9 @@ export const GET_EVENT_RECORDS = gql`
 `;
 
 export const GET_EVENT_RECORDS_AND_CATEGORIES = gql`
-  query EventRecords(
-    $limit: Int
-    $location: String
-    $offset: Int
-    $order: EventRecordsOrder
-    $categoryId: ID
-    $dateRange: [String]
-    $dataProvider: String
-    $dataProviderId: ID
-  ) {
-    eventRecords(
-      limit: $limit
-      location: $location
-      skip: $offset
-      order: $order
-      categoryId: $categoryId
-      dateRange: $dateRange
-      dataProvider: $dataProvider
-      dataProviderId: $dataProviderId
-    ) {
+  query EventRecordsAndCategories {
+    eventRecords {
       id
-      category {
-        id
-        name
-      }
-      dates {
-        id
-        weekday
-        dateFrom: dateStart
-        dateTo: dateEnd
-        timeFrom: timeStart
-        timeTo: timeEnd
-        description: timeDescription
-      }
-      listDate
-      title
-      description
-      mediaContents {
-        id
-        contentType
-        captionText
-        copyright
-        sourceUrl {
-          id
-          url
-        }
-      }
-      addresses {
-        id
-        city
-        street
-        zip
-        kind
-        addition
-      }
-      contacts {
-        id
-        firstName
-        lastName
-        phone
-        email
-        fax
-        webUrls {
-          id
-          url
-          description
-        }
-      }
-      webUrls: urls {
-        id
-        url
-        description
-      }
-      priceInformations {
-        id
-        name
-        amount
-      }
     }
     categories {
       id
