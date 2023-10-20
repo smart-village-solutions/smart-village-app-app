@@ -81,6 +81,7 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
                   message={item.message}
                   containerStyle={styles.imageContainer}
                   aspectRatio={aspectRatio}
+                  button={item.button}
                   refreshInterval={item.refreshInterval}
                 />
               );
@@ -96,6 +97,7 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
           message={item.message}
           containerStyle={styles.imageContainer}
           aspectRatio={aspectRatio}
+          button={item.button}
           refreshInterval={item.refreshInterval}
         />
       );

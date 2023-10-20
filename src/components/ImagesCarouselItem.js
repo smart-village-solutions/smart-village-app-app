@@ -13,7 +13,7 @@ import { Image } from './Image';
  * @return {ReactElement} `Image` or an `Image` wrapped in a `TouchableOpacity`
  */
 export const ImagesCarouselItem = memo(
-  ({ navigation, source, message, containerStyle, aspectRatio, refreshInterval }) => {
+  ({ aspectRatio, button, containerStyle, message, navigation, refreshInterval, source }) => {
     const { routeName: name, params } = source;
 
     if (name && params) {
@@ -25,12 +25,12 @@ export const ImagesCarouselItem = memo(
           onPress={() => navigation.navigate({ name, params })}
           activeOpacity={0.8}
         >
-          <Image {...{ source, message, containerStyle, aspectRatio }} />
+          <Image {...{ button, source, message, containerStyle, aspectRatio }} />
         </TouchableOpacity>
       );
     }
 
-    return <Image {...{ source, message, containerStyle, aspectRatio, refreshInterval }} />;
+    return <Image {...{ button, source, message, containerStyle, aspectRatio, refreshInterval }} />;
   }
 );
 
@@ -43,4 +43,5 @@ ImagesCarouselItem.propTypes = {
   containerStyle: PropTypes.object,
   aspectRatio: PropTypes.object,
   refreshInterval: PropTypes.number
+  button: PropTypes.object,
 };

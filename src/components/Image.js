@@ -9,6 +9,7 @@ import { imageHeight, imageWidth } from '../helpers';
 import { useInterval } from '../hooks/TimeHooks';
 import { SettingsContext } from '../SettingsProvider';
 
+import { ImageButton } from './ImageButton';
 import { ImageMessage } from './ImageMessage';
 import { ImageRights } from './ImageRights';
 
@@ -32,6 +33,7 @@ export const Image = ({
   aspectRatio,
   resizeMode,
   borderRadius,
+  button,
   refreshInterval,
   source: sourceProp
 }) => {
@@ -109,16 +111,23 @@ export const Image = ({
         resizeMode={resizeMode}
         borderRadius={borderRadius}
       >
-        {!!message && <ImageMessage message={message} />}
-        {!!globalSettings?.showImageRights && !!sourceProp?.copyright && (
-          <ImageRights imageRights={sourceProp.copyright} />
-        )}
+        <View style={styles.contentContainerStyle}>
+          {!!message && <ImageMessage message={message} />}
+          {!!button && <ImageButton button={button} />}
+          {!!globalSettings?.showImageRights && !!sourceProp?.copyright && (
+            <ImageRights imageRights={sourceProp.copyright} />
+          )}
+        </View>
       </RNEImage>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  contentContainerStyle: {
+    height: '100%',
+    justifyContent: 'flex-end'
+  },
   placeholderStyle: {
     backgroundColor: colors.transparent,
     flex: 1
@@ -145,6 +154,7 @@ const stylesForImage = (aspectRatio) => {
 Image.propTypes = {
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
   message: PropTypes.string,
+  button: PropTypes.object,
   containerStyle: PropTypes.object,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   PlaceholderContent: PropTypes.object,
