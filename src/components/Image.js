@@ -26,16 +26,16 @@ const addQueryParam = (url, param) => {
 const NO_IMAGE = { uri: 'NO_IMAGE' };
 
 export const Image = ({
-  message,
-  style,
-  containerStyle,
-  PlaceholderContent,
   aspectRatio,
-  resizeMode,
   borderRadius,
   button,
+  containerStyle,
+  message,
+  PlaceholderContent,
   refreshInterval,
-  source: sourceProp
+  resizeMode,
+  source: sourceProp,
+  style
 }) => {
   const [source, setSource] = useState(null);
   const { globalSettings } = useContext(SettingsContext);
@@ -152,20 +152,20 @@ const stylesForImage = (aspectRatio) => {
 /* eslint-enable react-native/no-unused-styles */
 
 Image.propTypes = {
-  source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
-  message: PropTypes.string,
+  aspectRatio: PropTypes.object,
+  borderRadius: PropTypes.number,
   button: PropTypes.object,
   containerStyle: PropTypes.object,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  message: PropTypes.string,
   PlaceholderContent: PropTypes.object,
-  aspectRatio: PropTypes.object,
+  refreshInterval: PropTypes.number,
   resizeMode: PropTypes.string,
-  borderRadius: PropTypes.number,
-  refreshInterval: PropTypes.number
+  source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Image.defaultProps = {
+  borderRadius: 0,
   PlaceholderContent: <ActivityIndicator color={colors.refreshControl} />,
-  resizeMode: 'cover',
-  borderRadius: 0
+  resizeMode: 'cover'
 };

@@ -37,11 +37,11 @@ export const ImagesCarouselItem = memo(
 ImagesCarouselItem.displayName = 'ImagesCarouselItem';
 
 ImagesCarouselItem.propTypes = {
-  navigation: PropTypes.object,
-  source: PropTypes.object.isRequired,
-  message: PropTypes.string,
-  containerStyle: PropTypes.object,
   aspectRatio: PropTypes.object,
-  refreshInterval: PropTypes.number
   button: PropTypes.object,
+  containerStyle: PropTypes.object,
+  message: PropTypes.string,
+  navigation: PropTypes.object,
+  refreshInterval: PropTypes.number,
+  source: PropTypes.object.isRequired
 };
