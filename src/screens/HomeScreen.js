@@ -1,6 +1,6 @@
 import { DeviceEventEmitter } from 'expo-modules-core';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { FlatList, RefreshControl } from 'react-native';
 
 import {
@@ -9,13 +9,22 @@ import {
   Disturber,
   HomeSection,
   HomeService,
+  ListComponent,
   NewsSectionPlaceholder,
+  RegularText,
   SafeAreaViewFlex,
-  Widgets
+  SectionHeader,
+  Widgets,
+  Wrapper
 } from '../components';
 import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy, rootRouteName } from '../helpers';
-import { useMatomoTrackScreenView, usePermanentFilter, usePushNotifications } from '../hooks';
+import {
+  useMatomoTrackScreenView,
+  usePermanentFilter,
+  usePushNotifications,
+  useStaticContent
+} from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
@@ -155,6 +164,7 @@ export const HomeScreen = ({ navigation, route }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
   const {
+    contentList = {},
     showNews = true,
     showPointsOfInterestAndTours = true,
     showEvents = true,
@@ -173,6 +183,13 @@ export const HomeScreen = ({ navigation, route }) => {
     limitNews = 15,
     limitPointsOfInterestAndTours = 15
   } = sections;
+  const {
+    contentName = 'homeContentList',
+    description: contentListDescription = texts.contentList.description,
+    horizontal = true,
+    showList: showContentList = true,
+    title: contentListTitle = texts.contentList.title
+  } = contentList;
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
   const { state: excludeDataProviderIds } = usePermanentFilter();
@@ -207,6 +224,13 @@ export const HomeScreen = ({ navigation, route }) => {
     globalSettings?.settings?.pushNotifications
   );
 
+  const { data: contentListData, refetch: contentListRefetch } = useStaticContent({
+    refreshTimeKey: `publicJsonFile-${contentName}`,
+    name: contentName,
+    type: 'json',
+    skip: !showContentList
+  });
+
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
   const refresh = () => {
@@ -215,6 +239,7 @@ export const HomeScreen = ({ navigation, route }) => {
     // this will trigger the onRefresh functions provided to the `useHomeRefresh` hook in other
     // components.
     DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
+    contentListRefetch();
 
     // we simulate state change of `refreshing` with setting it to `true` first and after
     // a timeout to `false` again, which will result in a re-rendering of the screen.
@@ -277,12 +302,31 @@ export const HomeScreen = ({ navigation, route }) => {
           </>
         }
         ListFooterComponent={
-          route.params?.isDrawer && (
-            <>
-              <HomeService publicJsonFile="homeService" />
-              <About navigation={navigation} withHomeRefresh />
-            </>
-          )
+          <>
+            {showContentList && !!contentListData?.length && (
+              <>
+                {!!contentListTitle && <SectionHeader title={contentListTitle} />}
+                {!!contentListDescription && (
+                  <Wrapper>
+                    <RegularText>{contentListDescription}</RegularText>
+                  </Wrapper>
+                )}
+
+                <ListComponent
+                  horizontal={horizontal}
+                  query={QUERY_TYPES.HOME_CONTENT_LIST}
+                  data={contentListData}
+                />
+              </>
+            )}
+
+            {route.params?.isDrawer && (
+              <>
+                <HomeService publicJsonFile="homeService" />
+                <About navigation={navigation} withHomeRefresh />
+              </>
+            )}
+          </>
         }
         refreshControl={
           <RefreshControl

@@ -40,6 +40,7 @@ export const QUERY_TYPES = {
   EVENT_RECORDS: 'eventRecords',
   GENERIC_ITEM: 'genericItem',
   GENERIC_ITEMS: 'genericItems',
+  HOME_CONTENT_LIST: 'homeContentList',
   LUNCHES: 'lunches',
   NEWS_ITEM: 'newsItem',
   NEWS_ITEMS: 'newsItems',
