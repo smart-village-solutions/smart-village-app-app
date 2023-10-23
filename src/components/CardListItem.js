@@ -1,17 +1,26 @@
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
-import { Card } from 'react-native-elements';
+import React, { Fragment, memo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
+import { Card } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 
 import { Image } from './Image';
-import { RegularText, BoldText } from './Text';
+import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
 export const CardListItem = memo(({ navigation, horizontal, item }) => {
-  const { routeName: name, params, picture, subtitle, title } = item;
+  const {
+    contentContainerStyle,
+    contentSequence,
+    params,
+    picture,
+    routeName: name,
+    subtitle,
+    title,
+    topTitle
+  } = item;
 
   // TODO: count articles logic could to be implemented
   return (
@@ -21,20 +30,59 @@ export const CardListItem = memo(({ navigation, horizontal, item }) => {
       disabled={!navigation}
     >
       <Card containerStyle={styles.container}>
-        <View style={stylesWithProps({ horizontal }).contentContainer}>
-          {!!picture && !!picture.url && (
-            <Image
-              source={{ uri: picture.url }}
-              style={stylesWithProps({ horizontal }).image}
-              containerStyle={styles.imageContainer}
-              borderRadius={5}
-            />
-          )}
-          {!!subtitle && <RegularText small>{subtitle}</RegularText>}
-          {!!title && (
-            <BoldText>
-              {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
-            </BoldText>
+        <View
+          style={[
+            stylesWithProps({ horizontal }).contentContainer,
+            !!contentContainerStyle && contentContainerStyle
+          ]}
+        >
+          {contentSequence?.length ? (
+            // eslint-disable-next-line complexity
+            contentSequence.map((item, index) => (
+              <Fragment key={index}>
+                {item === 'picture' && !!picture && !!picture.url && (
+                  <Image
+                    source={{ uri: picture.url }}
+                    style={stylesWithProps({ horizontal }).image}
+                    containerStyle={styles.imageContainer}
+                    borderRadius={contentContainerStyle.borderRadius || 5}
+                  />
+                )}
+                {item === 'topTitle' && !!topTitle && <RegularText small>{topTitle}</RegularText>}
+                {item === 'subtitle' && !!subtitle && <RegularText small>{subtitle}</RegularText>}
+                {item === 'title' && !!title && (
+                  <BoldText>
+                    {horizontal
+                      ? title.length > 60
+                        ? title.substring(0, 60) + '...'
+                        : title
+                      : title}
+                  </BoldText>
+                )}
+              </Fragment>
+            ))
+          ) : (
+            <>
+              {!!picture && !!picture.url && (
+                <Image
+                  source={{ uri: picture.url }}
+                  style={stylesWithProps({ horizontal }).image}
+                  containerStyle={styles.imageContainer}
+                  borderRadius={contentContainerStyle.borderRadius || 5}
+                />
+              )}
+              {!!topTitle && <RegularText small>{topTitle}</RegularText>}
+              {!!subtitle && <RegularText small>{subtitle}</RegularText>}
+              {!!title && (
+                <BoldText>
+                  {horizontal
+                    ? title.length > 60
+                      ? title.substring(0, 60) + '...'
+                      : title
+                    : title}
+                </BoldText>
+              )}
+            </>
           )}
         </View>
       </Card>
