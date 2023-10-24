@@ -1,5 +1,6 @@
 // IMPORT TYPES
 // IMPORT CREATE QUERIES
+import { priorities, requests, requestsWithServiceRequestId, services, statuses } from './SUE';
 import { CREATE_APP_USER_CONTENT } from './appUserContent';
 // IMPORT GET QUERIES
 import { GET_CATEGORIES } from './categories';
@@ -102,7 +103,14 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.VOLUNTEER.MEMBERS]: groupMembership,
     [QUERY_TYPES.VOLUNTEER.POSTS]: posts,
     [QUERY_TYPES.VOLUNTEER.PROFILE]: me,
-    [QUERY_TYPES.VOLUNTEER.USER]: user
+    [QUERY_TYPES.VOLUNTEER.USER]: user,
+
+    // SUE QUERIES
+    [QUERY_TYPES.SUE.PRIORITIES]: priorities,
+    [QUERY_TYPES.SUE.REQUESTS]: requests,
+    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID]: requestsWithServiceRequestId,
+    [QUERY_TYPES.SUE.SERVICES]: services,
+    [QUERY_TYPES.SUE.STATUSES]: statuses
   };
 
   return QUERIES[query];

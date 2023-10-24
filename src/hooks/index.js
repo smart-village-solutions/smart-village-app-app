@@ -1,5 +1,6 @@
 export * from './consul';
 export * from './encounter';
+export * from './SUE';
 export * from './volunteer';
 
 export * from './apollo';
