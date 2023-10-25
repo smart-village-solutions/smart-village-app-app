@@ -2,8 +2,8 @@ import { RouteProp } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
-
 import { useQuery } from 'react-query';
+
 import { SettingsContext } from '../../SettingsProvider';
 import { colors, normalize, texts } from '../../config';
 import { sueParser } from '../../helpers';

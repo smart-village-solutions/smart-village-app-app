@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 
 import { NetworkContext } from '../NetworkProvider';
-import { EventRecords, Overviews } from '../components';
+import { EventRecords, Overviews, SUEIndexScreen } from '../components';
 import { consts } from '../config';
 import { matomoTrackingString } from '../helpers';
 import { useTrackScreenViewAsync } from '../hooks';
@@ -12,6 +12,8 @@ const getComponent = (query) => {
   switch (query) {
     case QUERY_TYPES.EVENT_RECORDS:
       return EventRecords;
+    case QUERY_TYPES.SUE.REQUESTS:
+      return SUEIndexScreen;
     default:
       return Overviews;
   }
