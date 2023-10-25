@@ -173,6 +173,7 @@ export const consts = {
     NOTICEBOARD: 'Noticeboard',
     POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours',
     POINTS_OF_INTEREST: 'PointsOfInterest',
+    SUE: 'Sue',
     TOURS: 'Tours',
     VOLUNTEER: 'Volunteer',
     CONSOLE_HOME: 'ConsulHome'

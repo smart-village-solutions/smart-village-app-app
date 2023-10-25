@@ -809,6 +809,10 @@ export const texts = {
     pointsOfInterest: 'Orte und Touren',
     service: appJson.expo.name,
     settings: 'Einstellungen',
+    sue: {
+      mapView: 'Meldungskarte',
+      listView: 'Meldungsliste'
+    },
     survey: 'Umfrage',
     surveys: 'Umfragen',
     volunteer: {

@@ -344,6 +344,26 @@ export const defaultStackConfig = ({
       screenOptions: { title: texts.screenTitles.settings }
     },
     {
+      routeName: ScreenName.SUEList,
+      screenComponent: IndexScreen,
+      initialParams: {
+        title: texts.screenTitles.sue.listView,
+        query: QUERY_TYPES.SUE.REQUESTS,
+        screenType: 'list',
+        usedAsInitialScreen: true
+      }
+    },
+    {
+      routeName: ScreenName.SUEMap,
+      screenComponent: IndexScreen,
+      initialParams: {
+        title: texts.screenTitles.sue.mapView,
+        query: QUERY_TYPES.SUE.REQUESTS,
+        screenType: 'map',
+        usedAsInitialScreen: true
+      }
+    },
+    {
       routeName: ScreenName.SurveyDetail,
       screenComponent: SurveyDetailScreen,
       screenOptions: { title: texts.screenTitles.survey }
