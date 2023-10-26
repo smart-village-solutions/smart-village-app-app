@@ -1,8 +1,8 @@
 /* eslint-disable complexity */
 import React from 'react';
 
-import { SUEMapScreen } from './SUEMapScreen';
 import { SUEListScreen } from './SUEListScreen';
+import { SUEMapScreen } from './SUEMapScreen';
 
 const getComponent = (screen: 'map' | 'list') => {
   switch (screen) {
