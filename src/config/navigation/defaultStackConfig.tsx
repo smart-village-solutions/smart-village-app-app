@@ -1,12 +1,13 @@
 import { CardStyleInterpolators } from '@react-navigation/stack';
 import React from 'react';
 
-import { HeaderLeft } from '../../components';
+import { HeaderLeft, SUEListScreen, SUEMapScreen } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
+import { QUERY_TYPES } from '../../queries';
 import {
-  AboutScreen,
   ARInfoScreen,
   ARShowScreen,
+  AboutScreen,
   ArtworkDetailScreen,
   BookmarkCategoryScreen,
   BookmarkScreen,
@@ -16,8 +17,8 @@ import {
   ConsulHomeScreen,
   ConsulIndexScreen,
   ConsulLoginScreen,
-  ConsulRegisteredScreen,
   ConsulRegisterScreen,
+  ConsulRegisteredScreen,
   ConsulStartNewScreen,
   DataProviderScreen,
   DefectReportFormScreen,
@@ -29,7 +30,6 @@ import {
   EncounterScannerScreen,
   EncounterUserDetailScreen,
   FeedbackScreen,
-  getTilesScreen,
   HomeScreen,
   HtmlScreen,
   IndexScreen,
@@ -63,7 +63,8 @@ import {
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
-  WebScreen
+  WebScreen,
+  getTilesScreen
 } from '../../screens';
 import {
   DetailScreen as BBBUSDetailScreen,
@@ -72,7 +73,6 @@ import {
 import { ScreenName, StackConfig } from '../../types';
 import { consts } from '../consts';
 import { texts } from '../texts';
-import { QUERY_TYPES } from '../../queries';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -344,22 +344,20 @@ export const defaultStackConfig = ({
       screenOptions: { title: texts.screenTitles.settings }
     },
     {
-      routeName: ScreenName.SUEList,
-      screenComponent: IndexScreen,
+      routeName: ScreenName.SueList,
+      screenComponent: SUEListScreen,
       initialParams: {
         title: texts.screenTitles.sue.listView,
         query: QUERY_TYPES.SUE.REQUESTS,
-        screenType: 'list',
         usedAsInitialScreen: true
       }
     },
     {
-      routeName: ScreenName.SUEMap,
-      screenComponent: IndexScreen,
+      routeName: ScreenName.SueMap,
+      screenComponent: SUEMapScreen,
       initialParams: {
         title: texts.screenTitles.sue.mapView,
         query: QUERY_TYPES.SUE.REQUESTS,
-        screenType: 'map',
         usedAsInitialScreen: true
       }
     },

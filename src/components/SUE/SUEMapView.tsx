@@ -1,20 +1,20 @@
 import { RouteProp } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 
+import { useQuery } from 'react-query';
 import { SettingsContext } from '../../SettingsProvider';
 import { colors, normalize, texts } from '../../config';
-import { useSUEData } from '../../hooks';
+import { sueParser } from '../../helpers';
+import { useSueData } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
 import { RegularText } from '../Text';
+import { TextListItem } from '../TextListItem';
 import { Wrapper } from '../Wrapper';
 import { Map } from '../map';
-import { useQuery } from 'react-query';
-import { parseListItemsFromQuery } from '../../helpers';
-import { TextListItem } from '../TextListItem';
 
 type Props = {
   navigation: StackNavigationProp<never>;
@@ -47,7 +47,7 @@ export const SUEMapView = ({ navigation, queryVariables }: Props) => {
   const { navigation: navigationType } = globalSettings;
   const [selectedSUE, setSelectedSUE] = useState<string>();
 
-  const { data, isLoading } = useSUEData({ query: QUERY_TYPES.SUE.REQUESTS, queryVariables });
+  const { data, isLoading } = useSueData({ query: QUERY_TYPES.SUE.REQUESTS, queryVariables });
 
   const { data: detailsData } = useQuery(
     [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, selectedSUE],
@@ -76,7 +76,7 @@ export const SUEMapView = ({ navigation, queryVariables }: Props) => {
   }
 
   const item = detailsData
-    ? parseListItemsFromQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, [detailsData])?.[0]
+    ? sueParser(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, [detailsData])?.[0]
     : undefined;
 
   return (

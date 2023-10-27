@@ -1,5 +1,9 @@
+import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
+import { ScreenName } from '../../types';
 import { mainImageOfMediaContents } from '../imageHelper';
+
+const { ROOT_ROUTE_NAMES } = consts;
 
 const parseSuePriorities = (data) => {
   return data?.map((item) => ({
@@ -30,8 +34,15 @@ const parseSueRequests = (data) => {
       email: item?.email,
       firstName: item?.first_name,
       lastName: item?.last_name,
-      position: { longitude: item?.long, latitude: item?.lat },
+      params: {
+        details: { ...item },
+        query: QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
+        queryVariables: { id: item.service_request_id },
+        rootRouteName: ROOT_ROUTE_NAMES.SUE,
+        title: texts.detailTitles.pointOfInterest
+      },
       picture: { url: mainImageOfMediaContents(parsedMediaUrl) },
+      position: { longitude: item?.long, latitude: item?.lat },
       priorityCode: item?.priority_code,
       priorityName: item?.priority_name,
       requestedDateTime: item?.requested_datetime,
@@ -39,6 +50,7 @@ const parseSueRequests = (data) => {
       serviceName: item?.service_name,
       serviceRequestId: item.service_request_id,
       status: item?.status,
+      routeName: ScreenName.Detail,
       title: item?.title,
       updatedDateTime: item?.updated_datetime,
       zipcode: item?.zipcode
