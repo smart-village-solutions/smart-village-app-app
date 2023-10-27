@@ -314,8 +314,8 @@ export const HomeScreen = ({ navigation, route }) => {
 
                 <ListComponent
                   horizontal={horizontal}
-                  query={QUERY_TYPES.HOME_CONTENT_LIST}
                   data={contentListData}
+                  query={QUERY_TYPES.CONTENT_LIST}
                 />
               </>
             )}
