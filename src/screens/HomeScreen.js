@@ -237,14 +237,22 @@ export const HomeScreen = ({ navigation, route }) => {
   });
 
   // function to add customised styles from `globalSettings` to `contentList`
-  const staticContentListItem = useMemo(
-    () =>
-      staticContentListData?.map((item: any) => ({
+  const staticContentListItem = useMemo(() => {
+    if (!staticContentListData) {
+      return [];
+    }
+
+    let listItem = [...staticContentListData];
+
+    if (appDesignSystem?.staticContentList) {
+      listItem = listItem?.map((item: any) => ({
         ...item,
-        appDesignSystem: appDesignSystem?.staticContentList
-      })),
-    [staticContentListData]
-  );
+        appDesignSystem: appDesignSystem.staticContentList
+      }));
+    }
+
+    return listItem;
+  }, [staticContentListData]);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
