@@ -1,7 +1,7 @@
 export * from './augmentedReality';
 export * from './consul';
 export * from './parser';
-export * from './sueHelper';
+export * from './SUE';
 
 export * from './accessibilityListeners';
 export * from './addressHelper';
@@ -35,6 +35,7 @@ export * from './refreshIntervalHelper';
 export * from './searchHelper';
 export * from './shareHelper';
 export * from './storageHelper';
+export * from './sueHelper';
 export * from './surveyHelper';
 export * from './textHelper';
 export * from './volunteerHelper';

@@ -234,67 +234,6 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
-const parseSUEPriorities = (data) => {
-  return data?.map((item) => ({
-    priorityCode: item.priority_code,
-    priorityName: item.priority_name
-  }));
-};
-
-const parseSUERequests = (data) => {
-  return data?.map((item) => {
-    let parsedMediaUrl = [];
-    try {
-      const mediaArray = JSON.parse(item?.media_url);
-      parsedMediaUrl = mediaArray.map((mediaItem) => ({
-        id: mediaItem.id,
-        sourceUrl: { url: mediaItem.url },
-        visible: mediaItem.visible,
-        contentType: 'image'
-      }));
-    } catch (error) {
-      console.error('Error parsing media_url:', error);
-    }
-
-    return {
-      address: item?.address,
-      agencyResponsible: item?.agency_responsible,
-      description: item?.description,
-      email: item?.email,
-      firstName: item?.first_name,
-      lastName: item?.last_name,
-      position: { longitude: item?.long, latitude: item?.lat },
-      picture: { url: mainImageOfMediaContents(parsedMediaUrl) },
-      priorityCode: item?.priority_code,
-      priorityName: item?.priority_name,
-      requestedDate: item?.requested_datetime,
-      serviceCode: item?.service_code,
-      serviceName: item?.service_name,
-      serviceRequestId: item.service_request_id,
-      status: item?.status,
-      title: item?.title,
-      updatedDate: item?.updated_datetime,
-      zipcode: item?.zipcode
-    };
-  });
-};
-
-const parseSUEService = (data) => {
-  return data?.map((item) => ({
-    serviceCode: item?.service_code,
-    serviceName: item?.service_name,
-    metadata: item?.metadata,
-    type: item?.type
-  }));
-};
-
-const parseSUEStatuses = (data) => {
-  return data?.map((item) => ({
-    statusCode: item?.status_code,
-    statusName: item?.status_name
-  }));
-};
-
 /* eslint-disable complexity */
 const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned, currentUserId) => {
   return data?.map((volunteer, index) => {
@@ -510,15 +449,6 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.CONSUL.PUBLIC_PROPOSALS:
     case QUERY_TYPES.CONSUL.PUBLIC_COMMENTS:
       return parseConsulData(data[query], query, skipLastDivider);
-    case QUERY_TYPES.SUE.PRIORITIES:
-      return parseSUEPriorities(data);
-    case QUERY_TYPES.SUE.REQUESTS:
-    case QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID:
-      return parseSUERequests(data);
-    case QUERY_TYPES.SUE.SERVICES:
-      return parseSUEService(data);
-    case QUERY_TYPES.SUE.STATUSES:
-      return parseSUEStatuses(data);
     default:
       return data;
   }
