@@ -900,11 +900,6 @@ export const texts = {
       listTypes: 'App-Aussehen'
     }
   },
-  sue: {
-    homeCarousel: {
-      button: 'Jetzt Meldung machen'
-    }
-  },
   survey: {
     archive: 'Umfrage-Archiv',
     answerLabelPrefix: {
