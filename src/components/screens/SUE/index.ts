@@ -1,3 +1,3 @@
-export * from './SUEDetailScreen';
-export * from './SUEListScreen';
-export * from './SUEMapScreen';
+export * from './SueDetailScreen';
+export * from './SueListScreen';
+export * from './SueMapScreen';

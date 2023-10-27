@@ -42,7 +42,7 @@ const mapToMapMarkers = (sue: any): MapMarker[] | undefined => {
   });
 };
 
-export const SUEMapView = ({ navigation, queryVariables }: Props) => {
+export const SueMapView = ({ navigation, queryVariables }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const [selectedSUE, setSelectedSUE] = useState<string>();

@@ -1,1 +1,1 @@
-export * from './SUEMapView';
+export * from './SueMapView';

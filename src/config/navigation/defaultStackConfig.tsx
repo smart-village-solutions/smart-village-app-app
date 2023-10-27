@@ -1,7 +1,7 @@
 import { CardStyleInterpolators } from '@react-navigation/stack';
 import React from 'react';
 
-import { HeaderLeft, SUEListScreen, SUEMapScreen } from '../../components';
+import { HeaderLeft, SueListScreen, SueMapScreen } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
 import { QUERY_TYPES } from '../../queries';
 import {
@@ -345,7 +345,7 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.SueList,
-      screenComponent: SUEListScreen,
+      screenComponent: SueListScreen,
       initialParams: {
         title: texts.screenTitles.sue.listView,
         query: QUERY_TYPES.SUE.REQUESTS,
@@ -354,7 +354,7 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.SueMap,
-      screenComponent: SUEMapScreen,
+      screenComponent: SueMapScreen,
       initialParams: {
         title: texts.screenTitles.sue.mapView,
         query: QUERY_TYPES.SUE.REQUESTS,

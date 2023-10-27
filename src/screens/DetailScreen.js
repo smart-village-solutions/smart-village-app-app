@@ -11,7 +11,7 @@ import {
   Offer,
   PointOfInterest,
   SafeAreaViewFlex,
-  SUEDetailScreen,
+  SueDetailScreen,
   Tour
 } from '../components';
 import { FeedbackFooter } from '../components/FeedbackFooter';
@@ -46,7 +46,7 @@ const getComponent = (query, genericType) => {
     [QUERY_TYPES.GENERIC_ITEM]: getGenericComponent(genericType),
     [QUERY_TYPES.POINT_OF_INTEREST]: PointOfInterest,
     [QUERY_TYPES.TOUR]: Tour,
-    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID]: SUEDetailScreen
+    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID]: SueDetailScreen
   };
 
   return COMPONENTS[query];

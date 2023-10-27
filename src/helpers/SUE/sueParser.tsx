@@ -35,11 +35,11 @@ const parseSueRequests = (data) => {
       firstName: item?.first_name,
       lastName: item?.last_name,
       params: {
-        details: { ...item },
+        details: item,
         query: QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
         queryVariables: { id: item.service_request_id },
         rootRouteName: ROOT_ROUTE_NAMES.SUE,
-        title: texts.detailTitles.pointOfInterest
+        title: item?.title
       },
       picture: { url: mainImageOfMediaContents(parsedMediaUrl) },
       position: { longitude: item?.long, latitude: item?.lat },
