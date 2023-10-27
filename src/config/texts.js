@@ -275,11 +275,6 @@ export const texts = {
       expired: 'Abgelaufen'
     }
   },
-  contentList: {
-    title: 'Mach Meldung in drei Schritten',
-    description:
-      'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.'
-  },
   dataProvider: {
     more: 'Mehr von',
     partner: 'Partner',

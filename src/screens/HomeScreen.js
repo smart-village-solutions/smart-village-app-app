@@ -185,10 +185,10 @@ export const HomeScreen = ({ navigation, route }) => {
   } = sections;
   const {
     contentName = 'homeContentList',
-    description: contentListDescription = texts.contentList.description,
+    contentListDescription,
     horizontal = true,
-    showList: showContentList = true,
-    title: contentListTitle = texts.contentList.title
+    showContentList = true,
+    contentListTitle
   } = contentList;
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
@@ -239,6 +239,8 @@ export const HomeScreen = ({ navigation, route }) => {
     // this will trigger the onRefresh functions provided to the `useHomeRefresh` hook in other
     // components.
     DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
+
+    // function required to make `contentList` refresh when the screen is refreshed
     contentListRefetch();
 
     // we simulate state change of `refreshing` with setting it to `true` first and after
