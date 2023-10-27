@@ -1,5 +1,5 @@
 import React from 'react';
-import { ViewStyle } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 
 import { RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
@@ -51,25 +51,21 @@ export const SUEStatus = ({
   const backgroundColor = backgroundColors?.[status] || defaultBackgroundColors(status);
   const textColor = textColors?.[status] || defaultTextColors(status);
 
-  const containerStyles = {
-    alignItems: 'flex-end',
-    alignSelf: 'flex-end',
-    backgroundColor,
-    borderRadius: normalize(40),
-    justifyContent: 'center',
-    margin: normalize(10),
-    ...containerStyle
-  };
-
-  const textStyle = {
-    color: textColor
-  };
-
   return (
-    <Wrapper style={containerStyles}>
-      <RegularText style={textStyle} small>
+    <Wrapper style={[styles.container, !!containerStyle && containerStyle, { backgroundColor }]}>
+      <RegularText style={{ color: textColor }} small>
         {status}
       </RegularText>
     </Wrapper>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'flex-end',
+    alignSelf: 'flex-end',
+    borderRadius: normalize(40),
+    justifyContent: 'center',
+    margin: normalize(10)
+  }
+});
