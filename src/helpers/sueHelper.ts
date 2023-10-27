@@ -2,16 +2,16 @@ import * as appJson from '../../app.json';
 import { secrets } from '../config';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
-export const sueApiUrl = secrets[namespace]?.sue?.serverUrl;
-export const sueApiKey = secrets[namespace]?.sue?.apiKey;
-const mandantenId = secrets[namespace]?.sue?.mandantenId;
+export const serverUrl = secrets[namespace]?.sue?.serverUrl;
+export const apiKey = secrets[namespace]?.sue?.apiKey;
+const jurisdictionId = secrets[namespace]?.sue?.jurisdictionId;
 
 // GET
-export const sueServicesUrl = `${sueApiUrl}/services?jurisdiction_id=${mandantenId}`;
-export const sueStatusesUrl = `${sueApiUrl}/statuses?jurisdiction_id=${mandantenId}`;
-export const suePrioritiesUrl = `${sueApiUrl}/priorities?jurisdiction_id=${mandantenId}`;
-export const sueRequestsUrl = `${sueApiUrl}/requests?jurisdiction_id=${mandantenId}`;
+export const suePrioritiesUrl = `${serverUrl}/priorities?jurisdiction_id=${jurisdictionId}`;
+export const sueRequestsUrl = `${serverUrl}/requests?jurisdiction_id=${jurisdictionId}`;
+export const sueServicesUrl = `${serverUrl}/services?jurisdiction_id=${jurisdictionId}`;
+export const sueStatusesUrl = `${serverUrl}/statuses?jurisdiction_id=${jurisdictionId}`;
 
 // PUT
 export const sueRequestsUrlWithServiceId = (serviceRequestId: number) =>
-  `${sueApiUrl}/requests/${serviceRequestId}?jurisdiction_id=${mandantenId}`;
+  `${serverUrl}/requests/${serviceRequestId}?jurisdiction_id=${jurisdictionId}`;

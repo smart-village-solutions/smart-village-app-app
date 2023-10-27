@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 
-import { parseListItemsFromQuery } from '../../helpers';
+import { sueParser } from '../../helpers';
 import { getQuery } from '../../queries';
 
 /* eslint-disable complexity */
-export const useSUEData = ({
+export const useSueData = ({
   query,
   queryVariables,
   queryOptions
@@ -26,23 +26,21 @@ export const useSUEData = ({
   );
 
   const [isProcessing, setIsProcessing] = useState(true);
-  const [sueData, setSUEData] = useState<any[]>([]);
+  const [sueData, setSueData] = useState<any[]>([]);
 
-  const processUSEData = useCallback(async () => {
-    let processedUSEData = data as any[];
+  const processSueData = useCallback(async () => {
+    let processedSueData = data as any[];
 
-    processedUSEData = parseListItemsFromQuery(query, processedUSEData, undefined, {
-      queryVariables
-    });
+    processedSueData = sueParser(query, processedSueData);
     setIsProcessing(true);
 
-    setSUEData(processedUSEData);
+    setSueData(processedSueData);
     setIsProcessing(false);
   }, [query, queryVariables, data, refetch]);
 
   useEffect(() => {
-    processUSEData();
-  }, [processUSEData]);
+    processSueData();
+  }, [processSueData]);
 
   return { data: sueData, isLoading: isLoading || isProcessing, isRefetching, refetch };
 };

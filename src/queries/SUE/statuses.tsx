@@ -1,11 +1,11 @@
-import { sueApiKey, sueStatusesUrl } from '../../helpers';
+import { apiKey, sueStatusesUrl } from '../../helpers';
 
 export const statuses = async () => {
   const fetchObj = {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      api_key: sueApiKey
+      api_key: apiKey
     }
   };
 

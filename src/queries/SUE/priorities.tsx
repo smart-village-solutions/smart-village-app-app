@@ -1,11 +1,11 @@
-import { sueApiKey, suePrioritiesUrl } from '../../helpers';
+import { apiKey, suePrioritiesUrl } from '../../helpers';
 
 export const priorities = async () => {
   const fetchObj = {
     method: 'GET',
     headers: {
       accept: 'application/json',
-      api_key: sueApiKey
+      api_key: apiKey
     }
   };
 
