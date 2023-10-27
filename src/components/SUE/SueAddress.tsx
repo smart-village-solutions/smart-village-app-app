@@ -6,14 +6,14 @@ import { Wrapper } from '../Wrapper';
 
 export const SueAddress = ({ address }: { address: string }) => {
   return (
-    <Wrapper style={styles.noPadding}>
+    <Wrapper style={styles.noPaddingTop}>
       <RegularText small>{address}</RegularText>
     </Wrapper>
   );
 };
 
 const styles = StyleSheet.create({
-  noPadding: {
-    paddingBottom: 0
+  noPaddingTop: {
+    paddingTop: 0
   }
 });
