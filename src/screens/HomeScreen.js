@@ -1,6 +1,6 @@
 import { DeviceEventEmitter } from 'expo-modules-core';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { FlatList, RefreshControl } from 'react-native';
 
 import {
@@ -9,13 +9,22 @@ import {
   Disturber,
   HomeSection,
   HomeService,
+  ListComponent,
   NewsSectionPlaceholder,
+  RegularText,
   SafeAreaViewFlex,
-  Widgets
+  SectionHeader,
+  Widgets,
+  Wrapper
 } from '../components';
 import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy, rootRouteName } from '../helpers';
-import { useMatomoTrackScreenView, usePermanentFilter, usePushNotifications } from '../hooks';
+import {
+  useMatomoTrackScreenView,
+  usePermanentFilter,
+  usePushNotifications,
+  useStaticContent
+} from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
 import { NetworkContext } from '../NetworkProvider';
 import { getQueryType, QUERY_TYPES } from '../queries';
@@ -153,8 +162,14 @@ export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings } = useContext(SettingsContext);
-  const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
   const {
+    appDesignSystem = {},
+    sections = {},
+    widgets: widgetConfigs = [],
+    hdvt = {}
+  } = globalSettings;
+  const {
+    staticContentList = {},
     showNews = true,
     showPointsOfInterestAndTours = true,
     showEvents = true,
@@ -173,6 +188,13 @@ export const HomeScreen = ({ navigation, route }) => {
     limitNews = 15,
     limitPointsOfInterestAndTours = 15
   } = sections;
+  const {
+    staticContentName = 'staticContentList',
+    staticContentListDescription,
+    horizontal = true,
+    showStaticContentList = true,
+    staticContentListTitle
+  } = staticContentList;
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
   const { state: excludeDataProviderIds } = usePermanentFilter();
@@ -207,6 +229,31 @@ export const HomeScreen = ({ navigation, route }) => {
     globalSettings?.settings?.pushNotifications
   );
 
+  const { data: staticContentListData, refetch: staticContentListRefetch } = useStaticContent({
+    refreshTimeKey: `publicJsonFile-${staticContentName}`,
+    name: staticContentName,
+    type: 'json',
+    skip: !showStaticContentList
+  });
+
+  // function to add customised styles from `globalSettings` to `contentList`
+  const staticContentListItem = useMemo(() => {
+    if (!staticContentListData) {
+      return [];
+    }
+
+    let listItem = [...staticContentListData];
+
+    if (appDesignSystem?.staticContentList) {
+      listItem = listItem?.map((item: any) => ({
+        ...item,
+        appDesignSystem: appDesignSystem.staticContentList
+      }));
+    }
+
+    return listItem;
+  }, [staticContentListData]);
+
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
   const refresh = () => {
@@ -215,6 +262,9 @@ export const HomeScreen = ({ navigation, route }) => {
     // this will trigger the onRefresh functions provided to the `useHomeRefresh` hook in other
     // components.
     DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
+
+    // function required to make `contentList` refresh when the screen is refreshed
+    staticContentListRefetch();
 
     // we simulate state change of `refreshing` with setting it to `true` first and after
     // a timeout to `false` again, which will result in a re-rendering of the screen.
@@ -277,12 +327,31 @@ export const HomeScreen = ({ navigation, route }) => {
           </>
         }
         ListFooterComponent={
-          route.params?.isDrawer && (
-            <>
-              <HomeService publicJsonFile="homeService" />
-              <About navigation={navigation} withHomeRefresh />
-            </>
-          )
+          <>
+            {showStaticContentList && !!staticContentListItem?.length && (
+              <>
+                {!!staticContentListTitle && <SectionHeader title={staticContentListTitle} />}
+                {!!staticContentListDescription && (
+                  <Wrapper>
+                    <RegularText>{staticContentListDescription}</RegularText>
+                  </Wrapper>
+                )}
+
+                <ListComponent
+                  data={staticContentListItem}
+                  horizontal={horizontal}
+                  query={QUERY_TYPES.STATIC_CONTENT_LIST}
+                />
+              </>
+            )}
+
+            {route.params?.isDrawer && (
+              <>
+                <HomeService publicJsonFile="homeService" />
+                <About navigation={navigation} withHomeRefresh />
+              </>
+            )}
+          </>
         }
         refreshControl={
           <RefreshControl
