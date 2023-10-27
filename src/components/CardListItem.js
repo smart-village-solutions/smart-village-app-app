@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Fragment, memo } from 'react';
+import React, { memo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { Card } from 'react-native-elements';
 
@@ -10,17 +10,58 @@ import { Image } from './Image';
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
+const renderCardContent = (item, horizontal) => {
+  const { appDesignSystem = {}, picture, subtitle, title, topTitle } = item;
+  const { contentSequence, imageBorderRadius = 5, imageStyle, textsStyle = {} } = appDesignSystem;
+  const { generalStyle, subtitleStyle, titleStyle, topTitleStyle } = textsStyle;
+
+  const cardContent = [];
+
+  const sequenceMap = {
+    picture: () => (
+      <Image
+        source={{ uri: picture.url }}
+        style={stylesWithProps({ horizontal }).image}
+        containerStyle={[styles.imageContainer, !!imageStyle && imageStyle]}
+        borderRadius={imageBorderRadius}
+      />
+    ),
+    topTitle: () => (
+      <RegularText small style={[!!generalStyle && generalStyle, !!topTitleStyle && topTitleStyle]}>
+        {topTitle}
+      </RegularText>
+    ),
+    subtitle: () => (
+      <RegularText small style={[!!generalStyle && generalStyle, !!subtitleStyle && subtitleStyle]}>
+        {subtitle}
+      </RegularText>
+    ),
+    title: () => (
+      <BoldText style={[!!generalStyle && generalStyle, !!titleStyle && titleStyle]}>
+        {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
+      </BoldText>
+    )
+  };
+
+  if (contentSequence?.length) {
+    contentSequence.forEach((item) => {
+      if (sequenceMap[item]) {
+        cardContent.push(sequenceMap[item]());
+      }
+    });
+  } else {
+    cardContent.push(sequenceMap.picture());
+    cardContent.push(sequenceMap.topTitle());
+    cardContent.push(sequenceMap.subtitle());
+    cardContent.push(sequenceMap.title());
+  }
+
+  return cardContent;
+};
+
 export const CardListItem = memo(({ navigation, horizontal, item }) => {
-  const {
-    contentContainerStyle,
-    contentSequence,
-    params,
-    picture,
-    routeName: name,
-    subtitle,
-    title,
-    topTitle
-  } = item;
+  const { appDesignSystem = {}, params, routeName: name, subtitle, title } = item;
+  const { containerStyle, contentContainerStyle } = appDesignSystem;
 
   // TODO: count articles logic could to be implemented
   return (
@@ -29,61 +70,14 @@ export const CardListItem = memo(({ navigation, horizontal, item }) => {
       onPress={() => navigation && navigation.push(name, params)}
       disabled={!navigation}
     >
-      <Card containerStyle={styles.container}>
+      <Card containerStyle={[styles.container, !!containerStyle && containerStyle]}>
         <View
           style={[
             stylesWithProps({ horizontal }).contentContainer,
             !!contentContainerStyle && contentContainerStyle
           ]}
         >
-          {contentSequence?.length ? (
-            // eslint-disable-next-line complexity
-            contentSequence.map((item, index) => (
-              <Fragment key={index}>
-                {item === 'picture' && !!picture && !!picture.url && (
-                  <Image
-                    source={{ uri: picture.url }}
-                    style={stylesWithProps({ horizontal }).image}
-                    containerStyle={styles.imageContainer}
-                    borderRadius={contentContainerStyle.borderRadius || 5}
-                  />
-                )}
-                {item === 'topTitle' && !!topTitle && <RegularText small>{topTitle}</RegularText>}
-                {item === 'subtitle' && !!subtitle && <RegularText small>{subtitle}</RegularText>}
-                {item === 'title' && !!title && (
-                  <BoldText>
-                    {horizontal
-                      ? title.length > 60
-                        ? title.substring(0, 60) + '...'
-                        : title
-                      : title}
-                  </BoldText>
-                )}
-              </Fragment>
-            ))
-          ) : (
-            <>
-              {!!picture && !!picture.url && (
-                <Image
-                  source={{ uri: picture.url }}
-                  style={stylesWithProps({ horizontal }).image}
-                  containerStyle={styles.imageContainer}
-                  borderRadius={contentContainerStyle.borderRadius || 5}
-                />
-              )}
-              {!!topTitle && <RegularText small>{topTitle}</RegularText>}
-              {!!subtitle && <RegularText small>{subtitle}</RegularText>}
-              {!!title && (
-                <BoldText>
-                  {horizontal
-                    ? title.length > 60
-                      ? title.substring(0, 60) + '...'
-                      : title
-                    : title}
-                </BoldText>
-              )}
-            </>
-          )}
+          {renderCardContent(item, horizontal)}
         </View>
       </Card>
     </Touchable>

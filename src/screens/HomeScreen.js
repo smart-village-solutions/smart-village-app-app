@@ -1,6 +1,6 @@
 import { DeviceEventEmitter } from 'expo-modules-core';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { FlatList, RefreshControl } from 'react-native';
 
 import {
@@ -162,7 +162,12 @@ export const HomeScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { globalSettings } = useContext(SettingsContext);
-  const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
+  const {
+    appDesignSystem = {},
+    sections = {},
+    widgets: widgetConfigs = [],
+    hdvt = {}
+  } = globalSettings;
   const {
     contentList = {},
     showNews = true,
@@ -230,6 +235,16 @@ export const HomeScreen = ({ navigation, route }) => {
     type: 'json',
     skip: !showContentList
   });
+
+  // function to add customised styles from `globalSettings` to `contentList`
+  const contentListItem = useMemo(
+    () =>
+      contentListData?.map((item: any) => ({
+        ...item,
+        appDesignSystem: appDesignSystem?.contentList
+      })),
+    [contentListData]
+  );
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
@@ -315,8 +330,8 @@ export const HomeScreen = ({ navigation, route }) => {
                 )}
 
                 <ListComponent
+                  data={contentListItem}
                   horizontal={horizontal}
-                  data={contentListData}
                   query={QUERY_TYPES.CONTENT_LIST}
                 />
               </>
