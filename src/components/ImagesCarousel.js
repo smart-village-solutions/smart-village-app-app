@@ -76,12 +76,13 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
 
               return (
                 <ImagesCarouselItem
-                  navigation={navigation}
-                  source={item.picture}
-                  message={item.message}
-                  containerStyle={styles.imageContainer}
                   aspectRatio={aspectRatio}
+                  button={item.button}
+                  containerStyle={styles.imageContainer}
+                  message={item.message}
+                  navigation={navigation}
                   refreshInterval={item.refreshInterval}
+                  source={item.picture}
                 />
               );
             }}
@@ -91,12 +92,13 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
 
       return (
         <ImagesCarouselItem
-          navigation={navigation}
-          source={item.picture}
-          message={item.message}
-          containerStyle={styles.imageContainer}
           aspectRatio={aspectRatio}
+          button={item.button}
+          containerStyle={styles.imageContainer}
+          message={item.message}
+          navigation={navigation}
           refreshInterval={item.refreshInterval}
+          source={item.picture}
         />
       );
     },

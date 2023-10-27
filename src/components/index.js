@@ -48,6 +48,7 @@ export * from './HomeSection';
 export * from './HomeService';
 export * from './HtmlView';
 export * from './Image';
+export * from './ImageButton';
 export * from './ImageSection';
 export * from './ImagesCarousel';
 export * from './ImagesCarouselItem';

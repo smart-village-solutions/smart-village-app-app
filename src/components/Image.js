@@ -9,6 +9,7 @@ import { imageHeight, imageWidth } from '../helpers';
 import { useInterval } from '../hooks/TimeHooks';
 import { SettingsContext } from '../SettingsProvider';
 
+import { ImageButton } from './ImageButton';
 import { ImageMessage } from './ImageMessage';
 import { ImageRights } from './ImageRights';
 
@@ -24,16 +25,18 @@ const addQueryParam = (url, param) => {
 
 const NO_IMAGE = { uri: 'NO_IMAGE' };
 
+/* eslint-disable complexity */
 export const Image = ({
-  message,
-  style,
-  containerStyle,
-  PlaceholderContent,
   aspectRatio,
-  resizeMode,
   borderRadius,
+  button,
+  containerStyle,
+  message,
+  PlaceholderContent,
   refreshInterval,
-  source: sourceProp
+  resizeMode,
+  source: sourceProp,
+  style
 }) => {
   const [source, setSource] = useState(null);
   const { globalSettings } = useContext(SettingsContext);
@@ -94,6 +97,9 @@ export const Image = ({
 
   if (source?.uri === NO_IMAGE.uri) return null;
 
+  const showImageRights = !!globalSettings?.showImageRights && !!sourceProp?.copyright;
+  const showChildren = !!message || !!button || showImageRights;
+
   return (
     <View>
       <RNEImage
@@ -109,16 +115,24 @@ export const Image = ({
         resizeMode={resizeMode}
         borderRadius={borderRadius}
       >
-        {!!message && <ImageMessage message={message} />}
-        {!!globalSettings?.showImageRights && !!sourceProp?.copyright && (
-          <ImageRights imageRights={sourceProp.copyright} />
+        {showChildren && (
+          <View style={styles.contentContainerStyle}>
+            {!!message && <ImageMessage message={message} />}
+            {!!button && <ImageButton button={button} />}
+            {showImageRights && <ImageRights imageRights={sourceProp.copyright} />}
+          </View>
         )}
       </RNEImage>
     </View>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  contentContainerStyle: {
+    height: '100%',
+    justifyContent: 'flex-end'
+  },
   placeholderStyle: {
     backgroundColor: colors.transparent,
     flex: 1
@@ -143,19 +157,20 @@ const stylesForImage = (aspectRatio) => {
 /* eslint-enable react-native/no-unused-styles */
 
 Image.propTypes = {
-  source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
-  message: PropTypes.string,
-  containerStyle: PropTypes.object,
-  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  PlaceholderContent: PropTypes.object,
   aspectRatio: PropTypes.object,
-  resizeMode: PropTypes.string,
   borderRadius: PropTypes.number,
-  refreshInterval: PropTypes.number
+  button: PropTypes.object,
+  containerStyle: PropTypes.object,
+  message: PropTypes.string,
+  PlaceholderContent: PropTypes.object,
+  refreshInterval: PropTypes.number,
+  resizeMode: PropTypes.string,
+  source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
 };
 
 Image.defaultProps = {
+  borderRadius: 0,
   PlaceholderContent: <ActivityIndicator color={colors.refreshControl} />,
-  resizeMode: 'cover',
-  borderRadius: 0
+  resizeMode: 'cover'
 };
