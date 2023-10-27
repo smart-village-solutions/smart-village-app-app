@@ -169,7 +169,7 @@ export const HomeScreen = ({ navigation, route }) => {
     hdvt = {}
   } = globalSettings;
   const {
-    contentList = {},
+    staticContentList = {},
     showNews = true,
     showPointsOfInterestAndTours = true,
     showEvents = true,
@@ -189,12 +189,12 @@ export const HomeScreen = ({ navigation, route }) => {
     limitPointsOfInterestAndTours = 15
   } = sections;
   const {
-    contentName = 'homeContentList',
-    contentListDescription,
+    staticContentName = 'staticContentList',
+    staticContentListDescription,
     horizontal = true,
-    showContentList = true,
-    contentListTitle
-  } = contentList;
+    showStaticContentList = true,
+    staticContentListTitle
+  } = staticContentList;
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
   const { state: excludeDataProviderIds } = usePermanentFilter();
@@ -229,21 +229,21 @@ export const HomeScreen = ({ navigation, route }) => {
     globalSettings?.settings?.pushNotifications
   );
 
-  const { data: contentListData, refetch: contentListRefetch } = useStaticContent({
-    refreshTimeKey: `publicJsonFile-${contentName}`,
-    name: contentName,
+  const { data: staticContentListData, refetch: staticContentListRefetch } = useStaticContent({
+    refreshTimeKey: `publicJsonFile-${staticContentName}`,
+    name: staticContentName,
     type: 'json',
-    skip: !showContentList
+    skip: !showStaticContentList
   });
 
   // function to add customised styles from `globalSettings` to `contentList`
-  const contentListItem = useMemo(
+  const staticContentListItem = useMemo(
     () =>
-      contentListData?.map((item: any) => ({
+      staticContentListData?.map((item: any) => ({
         ...item,
-        appDesignSystem: appDesignSystem?.contentList
+        appDesignSystem: appDesignSystem?.staticContentList
       })),
-    [contentListData]
+    [staticContentListData]
   );
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
@@ -256,7 +256,7 @@ export const HomeScreen = ({ navigation, route }) => {
     DeviceEventEmitter.emit(HOME_REFRESH_EVENT);
 
     // function required to make `contentList` refresh when the screen is refreshed
-    contentListRefetch();
+    staticContentListRefetch();
 
     // we simulate state change of `refreshing` with setting it to `true` first and after
     // a timeout to `false` again, which will result in a re-rendering of the screen.
@@ -320,19 +320,19 @@ export const HomeScreen = ({ navigation, route }) => {
         }
         ListFooterComponent={
           <>
-            {showContentList && !!contentListData?.length && (
+            {showStaticContentList && !!staticContentListItem?.length && (
               <>
-                {!!contentListTitle && <SectionHeader title={contentListTitle} />}
-                {!!contentListDescription && (
+                {!!staticContentListTitle && <SectionHeader title={staticContentListTitle} />}
+                {!!staticContentListDescription && (
                   <Wrapper>
-                    <RegularText>{contentListDescription}</RegularText>
+                    <RegularText>{staticContentListDescription}</RegularText>
                   </Wrapper>
                 )}
 
                 <ListComponent
-                  data={contentListItem}
+                  data={staticContentListItem}
                   horizontal={horizontal}
-                  query={QUERY_TYPES.CONTENT_LIST}
+                  query={QUERY_TYPES.STATIC_CONTENT_LIST}
                 />
               </>
             )}

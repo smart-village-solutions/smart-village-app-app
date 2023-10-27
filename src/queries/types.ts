@@ -34,7 +34,6 @@ export const QUERY_TYPES = {
     USER_SETTINGS: 'userSettings',
     USER: 'consulUser'
   },
-  CONTENT_LIST: 'contentList',
   EVENT_RECORD: 'eventRecord',
   EVENT_RECORDS_ADDRESSES: 'eventRecordsAddresses',
   EVENT_RECORDS_AND_CATEGORIES: 'eventRecordsAndCategories',
@@ -50,6 +49,7 @@ export const QUERY_TYPES = {
   POINTS_OF_INTEREST_AND_TOURS: 'pointsOfInterestAndTours',
   PUBLIC_HTML_FILE: 'publicHtmlFile',
   PUBLIC_JSON_FILE: 'publicJsonFile',
+  STATIC_CONTENT_LIST: 'staticContentList',
   TOUR: 'tour',
   TOUR_STOPS: 'tourStops',
   TOURS: 'tours',
