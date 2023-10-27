@@ -43,10 +43,10 @@ export const SUEStatus = ({
   status,
   textColors
 }: {
-  backgroundColors: string;
-  containerStyle: ViewStyle;
+  backgroundColors?: StatusTypes;
+  containerStyle?: ViewStyle;
   status: string;
-  textColors: string;
+  textColors?: StatusTypes;
 }) => {
   const backgroundColor = backgroundColors?.[status] || defaultBackgroundColors(status);
   const textColor = textColors?.[status] || defaultTextColors(status);
