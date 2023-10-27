@@ -25,6 +25,7 @@ const addQueryParam = (url, param) => {
 
 const NO_IMAGE = { uri: 'NO_IMAGE' };
 
+/* eslint-disable complexity */
 export const Image = ({
   aspectRatio,
   borderRadius,
@@ -96,6 +97,9 @@ export const Image = ({
 
   if (source?.uri === NO_IMAGE.uri) return null;
 
+  const showImageRights = !!globalSettings?.showImageRights && !!sourceProp?.copyright;
+  const showChildren = !!message || !!button || showImageRights;
+
   return (
     <View>
       <RNEImage
@@ -111,17 +115,18 @@ export const Image = ({
         resizeMode={resizeMode}
         borderRadius={borderRadius}
       >
-        <View style={styles.contentContainerStyle}>
-          {!!message && <ImageMessage message={message} />}
-          {!!button && <ImageButton button={button} />}
-          {!!globalSettings?.showImageRights && !!sourceProp?.copyright && (
-            <ImageRights imageRights={sourceProp.copyright} />
-          )}
-        </View>
+        {showChildren && (
+          <View style={styles.contentContainerStyle}>
+            {!!message && <ImageMessage message={message} />}
+            {!!button && <ImageButton button={button} />}
+            {showImageRights && <ImageRights imageRights={sourceProp.copyright} />}
+          </View>
+        )}
       </RNEImage>
     </View>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   contentContainerStyle: {
