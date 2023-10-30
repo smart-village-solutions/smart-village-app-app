@@ -8,17 +8,17 @@ import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
 
 export const SueCategory = ({
   serviceName,
-  requestedDate
+  requestedDateTime
 }: {
   serviceName: string;
-  requestedDate: string;
+  requestedDateTime: string;
 }) => {
   return (
     <Wrapper style={styles.noPaddingTop}>
       <WrapperVertical>
         <WrapperRow spaceBetween>
           <BoldText small>{serviceName}</BoldText>
-          <RegularText small>{momentFormat(requestedDate)}</RegularText>
+          <RegularText small>{momentFormat(requestedDateTime)}</RegularText>
         </WrapperRow>
       </WrapperVertical>
       <Divider />
