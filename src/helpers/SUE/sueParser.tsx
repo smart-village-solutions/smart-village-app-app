@@ -16,7 +16,7 @@ const parseSueRequests = (data) => {
   return data?.map((item) => {
     let parsedMediaUrl = [];
     try {
-      const mediaArray = JSON.parse(item?.media_url);
+      const mediaArray = item?.mediaUrl || JSON.parse(item?.media_url);
       parsedMediaUrl = mediaArray.map((mediaItem) => ({
         id: mediaItem.id,
         sourceUrl: { url: mediaItem.url },
@@ -25,6 +25,22 @@ const parseSueRequests = (data) => {
       }));
     } catch (error) {
       console.error('Error parsing media_url:', error);
+    }
+
+    if (item?.mediaUrl?.length) {
+      return {
+        ...item,
+        routeName: ScreenName.Detail,
+        params: {
+          title: item.title,
+          query: QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
+          queryVariables: { id: item.serviceRequestId },
+          rootRouteName: ROOT_ROUTE_NAMES.SUE,
+          bookmarkable: false,
+          details: item
+        },
+        picture: { url: mainImageOfMediaContents(parsedMediaUrl) }
+      };
     }
 
     return {

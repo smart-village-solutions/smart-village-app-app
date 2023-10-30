@@ -2,23 +2,21 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import { RefreshControl, ScrollView, View } from 'react-native';
-import { useQuery } from 'react-query';
+import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 import { Divider } from 'react-native-elements';
+import { useQuery } from 'react-query';
 
 import { NetworkContext } from '../../../NetworkProvider';
 import { colors, texts } from '../../../config';
 import { QUERY_TYPES, getQuery } from '../../../queries';
 import { HtmlView } from '../../HtmlView';
 import { ImageSection } from '../../ImageSection';
-import { SUEAddress, SUECategory, SUEStatus } from '../../SUE';
-import { SUEDatetime } from '../../SUE/SUEDatetime';
 import { SafeAreaViewFlex } from '../../SafeAreaViewFlex';
-import { SectionHeader } from '../../SectionHeader';
 import { BoldText } from '../../Text';
-import { Wrapper, WrapperHorizontal, WrapperVertical } from '../../Wrapper';
+import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { Map } from '../../map';
-import { SUEStatuses } from '../../SUE/SUEStatuses';
+import { SueAddress, SueCategory, SueStatus } from '../../SUE';
+import { LoadingContainer } from '../../LoadingContainer';
 
 type Props = {
   navigation: StackNavigationProp<never>;
@@ -26,7 +24,7 @@ type Props = {
 };
 
 /* eslint-disable complexity */
-export const SUEDetailScreen = ({ navigation, route }: Props) => {
+export const SueDetailScreen = ({ navigation, route }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const queryVariables = route.params?.queryVariables ?? {};
   const [refreshing, setRefreshing] = useState(false);
@@ -78,7 +76,7 @@ export const SUEDetailScreen = ({ navigation, route }: Props) => {
         <ImageSection mediaContents={mediaContents} />
 
         {!!serviceName && !!requestedDatetime && (
-          <SUECategory serviceName={serviceName} requestedDate={requestedDatetime} />
+          <SueCategory serviceName={serviceName} requestedDateTime={requestedDatetime} />
         )}
 
         {!!title && (
@@ -87,7 +85,7 @@ export const SUEDetailScreen = ({ navigation, route }: Props) => {
           </WrapperHorizontal>
         )}
 
-        {!!status && <SUEStatus status={status} backgroundColors="" textColors="" />}
+        {!!status && <SueStatus status={status} />}
 
         <WrapperHorizontal>
           <Divider />
@@ -129,7 +127,7 @@ export const SUEDetailScreen = ({ navigation, route }: Props) => {
             />
           </Wrapper>
         )}
-        {!!address && <SUEAddress address={address} />}
+        {!!address && <SueAddress address={address} />}
 
         {((!!latitude && !!longitude) || !!address) && (
           <WrapperHorizontal>
@@ -137,16 +135,9 @@ export const SUEDetailScreen = ({ navigation, route }: Props) => {
           </WrapperHorizontal>
         )}
 
-        {!!requestedDatetime && <SUEDatetime requestedDatetime={requestedDatetime} />}
-
-        {!!status && <SUEStatuses status={status} />}
+        {!!status && <SueStatus status={status} />}
       </ScrollView>
     </SafeAreaViewFlex>
   );
 };
 /* eslint-enable complexity */
-
-SUEDetailScreen.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  route: PropTypes.object.isRequired
-};
