@@ -6,7 +6,7 @@ import { momentFormat } from '../../helpers';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
 
-export const SUECategory = ({
+export const SueCategory = ({
   serviceName,
   requestedDate
 }: {

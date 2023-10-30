@@ -1,4 +1,4 @@
-export * from './SUEAddress';
-export * from './SUECategory';
+export * from './SueAddress';
+export * from './SueCategory';
 export * from './SueMapView';
-export * from './SUEStatus';
+export * from './SueStatus';

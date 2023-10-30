@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 
-export const SUEAddress = ({ address }: { address: string }) => {
+export const SueAddress = ({ address }: { address: string }) => {
   return (
     <Wrapper style={styles.noPadding}>
       <RegularText small>{address}</RegularText>

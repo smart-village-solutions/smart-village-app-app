@@ -37,7 +37,7 @@ const defaultTextColors = (status: string) => {
   }
 };
 
-export const SUEStatus = ({
+export const SueStatus = ({
   backgroundColors,
   containerStyle,
   status,
