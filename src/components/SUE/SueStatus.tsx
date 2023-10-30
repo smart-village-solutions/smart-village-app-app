@@ -1,59 +1,31 @@
-import React from 'react';
-import { StyleSheet, ViewStyle } from 'react-native';
+import _camelCase from 'lodash/camelCase';
+import React, { useContext } from 'react';
+import { StyleSheet } from 'react-native';
 
+import { SettingsContext } from '../../SettingsProvider';
+import { normalize } from '../../config';
 import { RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
-import { normalize } from '../../config';
 
-enum StatusTypes {
-  InBearbeitung = 'In Bearbeitung',
-  Offen = 'Offen',
-  Unbearbeitet = 'Unbearbeitet'
-}
+export const SueStatus = ({ status }: { status: string }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { appDesignSystem = {} } = globalSettings;
+  const { sueStatus = {} } = appDesignSystem;
+  const {
+    containerStyle = {},
+    textStyle = {},
+    statusViewColors = {},
+    statusTextColors = {}
+  } = sueStatus;
 
-const defaultBackgroundColors = (status: string) => {
-  switch (status) {
-    case StatusTypes.InBearbeitung:
-      return '#FECDCA';
-    case StatusTypes.Offen:
-      return '#FEF0C7';
-    case StatusTypes.Unbearbeitet:
-      return '#D1FADF';
-    default:
-      return 'rgb(0, 0, 0)';
-  }
-};
+  const camelCaseStatus = _camelCase(status);
 
-const defaultTextColors = (status: string) => {
-  switch (status) {
-    case StatusTypes.InBearbeitung:
-      return '#B42318';
-    case StatusTypes.Offen:
-      return '#B54708';
-    case StatusTypes.Unbearbeitet:
-      return '#027A48';
-    default:
-      return 'rgb(0, 0, 0)';
-  }
-};
-
-export const SueStatus = ({
-  backgroundColors,
-  containerStyle,
-  status,
-  textColors
-}: {
-  backgroundColors?: StatusTypes;
-  containerStyle?: ViewStyle;
-  status: string;
-  textColors?: StatusTypes;
-}) => {
-  const backgroundColor = backgroundColors?.[status] || defaultBackgroundColors(status);
-  const textColor = textColors?.[status] || defaultTextColors(status);
+  const backgroundColor = statusViewColors?.[camelCaseStatus];
+  const textColor = statusTextColors?.[camelCaseStatus];
 
   return (
     <Wrapper style={[styles.container, !!containerStyle && containerStyle, { backgroundColor }]}>
-      <RegularText style={{ color: textColor }} small>
+      <RegularText style={[!!textStyle && textStyle, { color: textColor }]} smallest>
         {status}
       </RegularText>
     </Wrapper>
