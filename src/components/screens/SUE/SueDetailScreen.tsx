@@ -15,7 +15,7 @@ import { SafeAreaViewFlex } from '../../SafeAreaViewFlex';
 import { BoldText } from '../../Text';
 import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { Map } from '../../map';
-import { SueAddress, SueCategory, SueStatus } from '../../SUE';
+import { SueAddress, SueCategory, SueDatetime, SueStatus, SueStatuses } from '../../SUE';
 import { LoadingContainer } from '../../LoadingContainer';
 
 type Props = {
@@ -29,10 +29,18 @@ export const SueDetailScreen = ({ navigation, route }: Props) => {
   const queryVariables = route.params?.queryVariables ?? {};
   const [refreshing, setRefreshing] = useState(false);
 
-  const { data, refetch } = useQuery(
+  const { data, refetch, isLoading } = useQuery(
     [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, queryVariables?.id],
     () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(queryVariables?.id)
   );
+
+  if (isLoading) {
+    return (
+      <LoadingContainer>
+        <ActivityIndicator color={colors.refreshControl} />
+      </LoadingContainer>
+    );
+  }
 
   const {
     address,
@@ -135,7 +143,9 @@ export const SueDetailScreen = ({ navigation, route }: Props) => {
           </WrapperHorizontal>
         )}
 
-        {!!status && <SueStatus status={status} />}
+        {!!requestedDatetime && <SueDatetime requestedDatetime={requestedDatetime} />}
+
+        {!!status && <SueStatuses status={status} />}
       </ScrollView>
     </SafeAreaViewFlex>
   );

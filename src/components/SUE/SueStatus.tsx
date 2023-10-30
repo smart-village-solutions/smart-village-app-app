@@ -7,7 +7,7 @@ import { normalize } from '../../config';
 import { RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 
-export const SueStatus = ({ status }: { status: string }) => {
+export const SueStatus = ({ status, disabled }: { status: string; disabled?: boolean }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { appDesignSystem = {} } = globalSettings;
   const { sueStatus = {} } = appDesignSystem;
@@ -20,8 +20,12 @@ export const SueStatus = ({ status }: { status: string }) => {
 
   const camelCaseStatus = _camelCase(status);
 
-  const backgroundColor = statusViewColors?.[camelCaseStatus];
-  const textColor = statusTextColors?.[camelCaseStatus];
+  const backgroundColor = disabled
+    ? statusViewColors?.disabledColor
+    : statusViewColors?.[camelCaseStatus];
+  const textColor = disabled
+    ? statusTextColors?.disabledColor
+    : statusTextColors?.[camelCaseStatus];
 
   return (
     <Wrapper style={[styles.container, !!containerStyle && containerStyle, { backgroundColor }]}>

@@ -1,3 +1,4 @@
+import _camelCase from 'lodash/camelCase';
 import React, { Fragment, useContext } from 'react';
 import { StyleSheet } from 'react-native';
 
@@ -22,7 +23,11 @@ export const SueStatuses = ({ status }: { status: string }) => {
       <WrapperRow style={styles.wrapper}>
         {statuses?.map((item: string, index: number) => (
           <Fragment key={index}>
-            <SueStatus key={item} status={item} />
+            <SueStatus
+              key={item}
+              status={item}
+              disabled={_camelCase(item) !== _camelCase(status)}
+            />
             {index < statuses.length - 1 && <RegularText lighter>—</RegularText>}
           </Fragment>
         ))}
