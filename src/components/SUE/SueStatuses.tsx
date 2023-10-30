@@ -1,60 +1,37 @@
-import React from 'react';
+import React, { Fragment, useContext } from 'react';
 import { StyleSheet } from 'react-native';
 
-import { colors, normalize, texts } from '../../config';
+import { SettingsContext } from '../../SettingsProvider';
+import { normalize, texts } from '../../config';
 import { BoldText, RegularText } from '../Text';
 import { Wrapper, WrapperRow } from '../Wrapper';
 
-import { SUEStatus, StatusTypes } from './SUEStatus';
+import { SueStatus } from './SueStatus';
 
-export const SUEStatuses = ({ status }: { status: string }) => {
+export const SueStatuses = ({ status }: { status: string }) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { appDesignSystem = {} } = globalSettings;
+  const { sueStatus = {} } = appDesignSystem;
+  const { statuses } = sueStatus;
+
+  if (!statuses?.length) return null;
+
   return (
-    <>
-      <Wrapper>
-        <BoldText>{texts.sue.currentStatus}</BoldText>
-        <WrapperRow style={styles.wrapper}>
-          <SUEStatus
-            status={StatusTypes.InBearbeitung}
-            containerStyle={{
-              ...styles.status,
-              ...(status !== StatusTypes.InBearbeitung ? styles.statusNotCurrent : undefined)
-            }}
-            backgroundColors=""
-            textColors=""
-          />
-          <RegularText lighter>—</RegularText>
-          <SUEStatus
-            status={StatusTypes.Offen}
-            containerStyle={{
-              ...styles.status,
-              ...(status !== StatusTypes.Offen ? styles.statusNotCurrent : undefined)
-            }}
-            backgroundColors=""
-            textColors=""
-          />
-          <RegularText lighter>—</RegularText>
-          <SUEStatus
-            status={StatusTypes.Unbearbeitet}
-            containerStyle={{
-              ...styles.status,
-              ...(status !== StatusTypes.Unbearbeitet ? styles.statusNotCurrent : undefined)
-            }}
-            backgroundColors=""
-            textColors=""
-          />
-        </WrapperRow>
-      </Wrapper>
-    </>
+    <Wrapper>
+      <BoldText>{texts.sue.currentStatus}</BoldText>
+      <WrapperRow style={styles.wrapper}>
+        {statuses?.map((item: string, index: number) => (
+          <Fragment key={index}>
+            <SueStatus key={item} status={item} />
+            {index < statuses.length - 1 && <RegularText lighter>—</RegularText>}
+          </Fragment>
+        ))}
+      </WrapperRow>
+    </Wrapper>
   );
 };
 
 const styles = StyleSheet.create({
-  status: {
-    margin: 0
-  },
-  statusNotCurrent: {
-    backgroundColor: colors.gray20
-  },
   wrapper: {
     alignItems: 'center',
     marginTop: normalize(10)
