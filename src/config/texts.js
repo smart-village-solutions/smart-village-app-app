@@ -811,7 +811,8 @@ export const texts = {
     settings: 'Einstellungen',
     sue: {
       mapView: 'Meldungskarte',
-      listView: 'Meldungsliste'
+      listView: 'Meldungsliste',
+      reportView: 'Etwas melden'
     },
     survey: 'Umfrage',
     surveys: 'Umfragen',
@@ -908,7 +909,23 @@ export const texts = {
     currentStatus: 'Aktueller Status',
     datetime: 'Datum und Uhrzeit der Meldung',
     description: 'Beschreibung',
-    location: 'Ort'
+    location: 'Ort',
+    reportScreen: {
+      back: 'Zurück',
+      city: 'Ort',
+      description: 'Ausführliche Beschreibung',
+      email: 'E-Mail-Adresse',
+      errorText: 'muss ausgefüllt werden',
+      firstName: 'Vorname',
+      homeNumber: 'Hausnummer',
+      lastName: 'Nachname',
+      next: 'Weiter',
+      phone: 'Telefonnummer',
+      sendReport: 'Meldung senden',
+      street: 'Straße',
+      title: 'Kurze Beschreibung',
+      zipCode: 'Postleitzahl'
+    }
   },
   survey: {
     archive: 'Umfrage-Archiv',
