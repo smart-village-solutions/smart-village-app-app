@@ -11,6 +11,7 @@ import { Button } from '../../Button';
 import { LoadingContainer } from '../../LoadingContainer';
 import {
   SueReportCategory,
+  SueReportDescription,
   SueReportProgress,
 } from '../../SUE';
 import { Wrapper } from '../../Wrapper';
@@ -25,6 +26,8 @@ const Content = (
   switch (content) {
     case 'category':
       return <SueReportCategory serviceCode={serviceCode} setServiceCode={setServiceCode} />;
+    case 'description':
+      return <SueReportDescription control={control} errors={errors} />;
     default:
       return <SueReportCategory serviceCode={serviceCode} setServiceCode={setServiceCode} />;
   }
