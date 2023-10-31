@@ -14,6 +14,7 @@ import {
   SueReportDescription,
   SueReportLocation,
   SueReportProgress,
+  SueReportUser
 } from '../../SUE';
 import { Wrapper } from '../../Wrapper';
 
@@ -31,6 +32,8 @@ const Content = (
       return <SueReportDescription control={control} errors={errors} />;
     case 'location':
       return <SueReportLocation control={control} errors={errors} />;
+    case 'user':
+      return <SueReportUser control={control} errors={errors} />;
     default:
       return <SueReportCategory serviceCode={serviceCode} setServiceCode={setServiceCode} />;
   }
