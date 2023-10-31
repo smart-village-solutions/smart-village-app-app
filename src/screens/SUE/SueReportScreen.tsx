@@ -12,6 +12,7 @@ import { LoadingContainer } from '../../LoadingContainer';
 import {
   SueReportCategory,
   SueReportDescription,
+  SueReportLocation,
   SueReportProgress,
 } from '../../SUE';
 import { Wrapper } from '../../Wrapper';
@@ -28,6 +29,8 @@ const Content = (
       return <SueReportCategory serviceCode={serviceCode} setServiceCode={setServiceCode} />;
     case 'description':
       return <SueReportDescription control={control} errors={errors} />;
+    case 'location':
+      return <SueReportLocation control={control} errors={errors} />;
     default:
       return <SueReportCategory serviceCode={serviceCode} setServiceCode={setServiceCode} />;
   }
