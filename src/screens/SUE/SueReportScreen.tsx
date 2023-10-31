@@ -10,10 +10,25 @@ import { postRequests } from '../../../queries/SUE';
 import { Button } from '../../Button';
 import { LoadingContainer } from '../../LoadingContainer';
 import {
+  SueReportCategory,
   SueReportProgress,
 } from '../../SUE';
 import { Wrapper } from '../../Wrapper';
 
+const Content = (
+  content: 'category' | 'description' | 'location' | 'user',
+  serviceCode: string,
+  setServiceCode: any,
+  control: any,
+  errors: any
+) => {
+  switch (content) {
+    case 'category':
+      return <SueReportCategory serviceCode={serviceCode} setServiceCode={setServiceCode} />;
+    default:
+      return <SueReportCategory serviceCode={serviceCode} setServiceCode={setServiceCode} />;
+  }
+};
 
 type TReports = {
   category: string;
@@ -161,6 +176,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
         >
           {data?.map((item: TProgress, index: number) => (
             <View key={index} style={styles.contentContainer}>
+              {Content(item.content, serviceCode, setServiceCode, control, errors)}
             </View>
           ))}
         </ScrollView>
