@@ -1,3 +1,5 @@
+export * from './report';
+
 export * from './SueCategory';
 export * from './SueDateTime';
 export * from './SueImageFallback';

@@ -9,6 +9,9 @@ import { useStaticContent } from '../../../hooks';
 import { postRequests } from '../../../queries/SUE';
 import { Button } from '../../Button';
 import { LoadingContainer } from '../../LoadingContainer';
+import {
+  SueReportProgress,
+} from '../../SUE';
 import { Wrapper } from '../../Wrapper';
 
 
@@ -147,6 +150,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <>
+      <SueReportProgress progress={data} currentProgress={currentPage + 1} />
       <ScrollView>
         <ScrollView
           horizontal
