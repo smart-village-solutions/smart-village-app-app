@@ -66,7 +66,7 @@ const renderCardContent = (item, horizontal, sue) => {
     sue: {
       address: () => (
         <Wrapper>
-          <RegularText small>{address.replace('\r\n ', '\r\n')}</RegularText>
+          <RegularText small>{address}</RegularText>
         </Wrapper>
       ),
       category: () => (

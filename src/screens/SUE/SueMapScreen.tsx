@@ -1,19 +1,24 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext, useMemo, useState } from 'react';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
+import { ListItem } from 'react-native-elements';
 
 import { SettingsContext } from '../../SettingsProvider';
 import {
+  BoldText,
+  Image,
   LoadingContainer,
   Map,
   RegularText,
   SafeAreaViewFlex,
+  SueStatus,
   TextListItem,
+  Touchable,
   Wrapper
 } from '../../components';
-import { colors, normalize, texts } from '../../config';
+import { colors, consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
@@ -101,12 +106,31 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
         selectedMarker={selectedRequest}
       />
       {!!selectedRequest && !!item && (
-        <Wrapper
-          small
-          style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}
-        >
-          <TextListItem item={item} leftImage navigation={navigation} />
-        </Wrapper>
+        <View style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}>
+          <ListItem
+            accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
+            containerStyle={styles.listItem}
+            Component={Touchable}
+            delayPressIn={0}
+            onPress={() => navigation.push(item.routeName, item.params)}
+          >
+            {!!item.picture?.url && (
+              <Image
+                source={{ uri: item.picture.url }}
+                style={styles.image}
+                containerStyle={styles.imageContainer}
+              />
+            )}
+
+            <ListItem.Content>
+              <BoldText small>{item.title}</BoldText>
+              <View style={styles.padding}>
+                <RegularText smallest>{item.address}</RegularText>
+              </View>
+              <SueStatus iconName={item.iconName} status={item.status} small />
+            </ListItem.Content>
+          </ListItem>
+        </View>
       )}
     </SafeAreaViewFlex>
   );
@@ -115,7 +139,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
 const styles = StyleSheet.create({
   listItemContainer: {
     backgroundColor: colors.surface,
-    borderRadius: normalize(12),
+    borderRadius: normalize(8),
     left: '4%',
     position: 'absolute',
     right: '4%',
@@ -130,9 +154,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3
   },
+  listItem: {
+    borderRadius: normalize(8),
+    padding: 0,
+    paddingRight: 14
+  },
   map: {
     height: '100%',
     width: '100%'
+  },
+  image: {
+    height: normalize(120),
+    width: normalize(120)
+  },
+  imageContainer: {
+    alignSelf: 'flex-start',
+    borderBottomLeftRadius: normalize(8),
+    borderTopLeftRadius: normalize(8)
+  },
+  padding: {
+    paddingVertical: normalize(4)
   }
 });
 

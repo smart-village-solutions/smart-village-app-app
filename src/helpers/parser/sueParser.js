@@ -28,6 +28,7 @@ export const parseSueData = (data, appDesignSystem) => {
 
     return {
       ...item,
+      address: item.address.replace('\r\n ', '\r\n'),
       aspectRatio: parsedImageAspectRatio('361:203'),
       bottomDivider: false,
       iconName: matchedStatus.iconName,
