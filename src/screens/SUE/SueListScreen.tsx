@@ -5,12 +5,12 @@ import React, { useContext, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { NetworkContext } from '../../../NetworkProvider';
-import { SettingsContext } from '../../../SettingsProvider';
-import { colors } from '../../../config';
-import { sueParser } from '../../../helpers';
-import { getQuery } from '../../../queries';
-import { ListComponent } from '../../ListComponent';
+import { NetworkContext } from '../../NetworkProvider';
+import { SettingsContext } from '../../SettingsProvider';
+import { ListComponent, SafeAreaViewFlex } from '../../components';
+import { colors } from '../../config';
+import { sueParser } from '../../helpers';
+import { getQuery } from '../../queries';
 
 type Props = {
   navigation: StackNavigationProp<Record<string, any>>;
@@ -41,19 +41,21 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   };
 
   return (
-    <ListComponent
-      navigation={navigation}
-      query={query}
-      data={listItems}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={refresh}
-          colors={[colors.accent]}
-          tintColor={colors.accent}
-        />
-      }
-      showBackToTop
-    />
+    <SafeAreaViewFlex>
+      <ListComponent
+        navigation={navigation}
+        query={query}
+        data={listItems}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={refresh}
+            colors={[colors.accent]}
+            tintColor={colors.accent}
+          />
+        }
+        showBackToTop
+      />
+    </SafeAreaViewFlex>
   );
 };

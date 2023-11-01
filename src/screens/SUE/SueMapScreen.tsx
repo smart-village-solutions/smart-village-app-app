@@ -1,63 +1,68 @@
-import { RouteProp } from '@react-navigation/core';
+import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { SettingsContext } from '../../SettingsProvider';
+import {
+  LoadingContainer,
+  Map,
+  RegularText,
+  SafeAreaViewFlex,
+  TextListItem,
+  Wrapper
+} from '../../components';
 import { colors, normalize, texts } from '../../config';
 import { sueParser } from '../../helpers';
-import { useSueData } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
-import { LoadingContainer } from '../LoadingContainer';
-import { RegularText } from '../Text';
-import { TextListItem } from '../TextListItem';
-import { Wrapper } from '../Wrapper';
-import { Map } from '../map';
-
-type Props = {
-  navigation: StackNavigationProp<Record<string, any>>;
-  queryVariables: any;
-  route: RouteProp<any, never>;
-};
 
 type ItemProps = {
-  position: { latitude: number; longitude: number };
+  lat: number;
+  long: number;
   serviceRequestId: string;
   title: string;
 };
 
 const mapToMapMarkers = (items: ItemProps[]): MapMarker[] | undefined =>
   items
-    ?.filter((item) => item.position?.latitude && item.position?.longitude)
+    ?.filter((item) => item.lat && item.long)
     ?.map((item: ItemProps) => ({
       iconAnchor: undefined,
       iconName: undefined,
       id: item.serviceRequestId,
       position: {
-        latitude: item.position.latitude,
-        longitude: item.position.longitude
+        latitude: item.lat,
+        longitude: item.long
       },
       title: item.title
     }));
 
-export const SueMapView = ({ navigation, queryVariables }: Props) => {
+type Props = {
+  navigation: StackNavigationProp<Record<string, any>>;
+  route: RouteProp<any, never>;
+};
+
+export const SueMapScreen = ({ navigation, route }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
-  const [selectedService, setSelectedService] = useState<string>();
+  const queryVariables = route.params?.queryVariables ?? {};
+  const [selectedRequest, setSelectedRequest] = useState<string>();
 
-  const { data, isLoading } = useSueData({ query: QUERY_TYPES.SUE.REQUESTS, queryVariables });
-
-  const { data: detailsData } = useQuery(
-    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, selectedService],
-    () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(selectedService),
-    { enabled: !!selectedService }
+  const { data, isLoading } = useQuery([QUERY_TYPES.SUE.REQUESTS, queryVariables], () =>
+    getQuery(QUERY_TYPES.SUE.REQUESTS)(queryVariables)
   );
 
   const mapMarkers = useMemo(() => {
     return mapToMapMarkers(data);
   }, [data]);
+
+  const { data: detailsData } = useQuery(
+    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, selectedRequest],
+    () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(selectedRequest),
+    { enabled: !!selectedRequest }
+  );
 
   if (isLoading) {
     return (
@@ -82,15 +87,15 @@ export const SueMapView = ({ navigation, queryVariables }: Props) => {
     : undefined;
 
   return (
-    <>
+    <SafeAreaViewFlex>
       <Map
         isMultipleMarkersMap
         locations={mapMarkers}
         mapStyle={styles.map}
-        onMarkerPress={setSelectedService}
-        selectedMarker={selectedService}
+        onMarkerPress={setSelectedRequest}
+        selectedMarker={selectedRequest}
       />
-      {!!selectedService && !!item && (
+      {!!selectedRequest && !!item && (
         <Wrapper
           small
           style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}
@@ -98,7 +103,7 @@ export const SueMapView = ({ navigation, queryVariables }: Props) => {
           <TextListItem item={item} leftImage navigation={navigation} />
         </Wrapper>
       )}
-    </>
+    </SafeAreaViewFlex>
   );
 };
 

@@ -10,7 +10,6 @@ import {
   Offer,
   PointOfInterest,
   SafeAreaViewFlex,
-  SueDetailScreen,
   Tour
 } from '../components';
 import { FeedbackFooter } from '../components/FeedbackFooter';
@@ -24,6 +23,7 @@ import { GenericType } from '../types';
 
 import { DefectReportFormScreen } from './DefectReport';
 import { NoticeboardFormScreen } from './Noticeboard';
+import { SueDetailScreen } from './SUE';
 
 const getGenericComponent = (genericType) => {
   switch (genericType) {

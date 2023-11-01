@@ -4,18 +4,25 @@ import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet } from 'react
 import { Divider } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
-import { NetworkContext } from '../../../NetworkProvider';
-import { colors, device, normalize, texts } from '../../../config';
-import { QUERY_TYPES, getQuery } from '../../../queries';
-import { HtmlView } from '../../HtmlView';
-import { ImageSection } from '../../ImageSection';
-import { LoadingContainer } from '../../LoadingContainer';
-import { SueAddress, SueCategory, SueDatetime, SueStatus, SueStatuses } from '../../SUE';
-import { SafeAreaViewFlex } from '../../SafeAreaViewFlex';
-import { BoldText } from '../../Text';
-import { Wrapper, WrapperHorizontal } from '../../Wrapper';
-import { Map } from '../../map';
-import { SettingsContext } from '../../../SettingsProvider';
+import { NetworkContext } from '../../NetworkProvider';
+import { SettingsContext } from '../../SettingsProvider';
+import {
+  BoldText,
+  HtmlView,
+  ImageSection,
+  LoadingContainer,
+  Map,
+  SafeAreaViewFlex,
+  SueAddress,
+  SueCategory,
+  SueDatetime,
+  SueStatus,
+  SueStatuses,
+  Wrapper,
+  WrapperHorizontal
+} from '../../components';
+import { colors, device, normalize, texts } from '../../config';
+import { QUERY_TYPES, getQuery } from '../../queries';
 
 type Props = {
   route: RouteProp<any, never>;
