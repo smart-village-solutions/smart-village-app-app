@@ -904,6 +904,12 @@ export const texts = {
       listTypes: 'App-Aussehen'
     }
   },
+  sue: {
+    currentStatus: 'Aktueller Status',
+    datetime: 'Datum und Uhrzeit der Meldung',
+    description: 'Beschreibung',
+    location: 'Ort'
+  },
   survey: {
     archive: 'Umfrage-Archiv',
     answerLabelPrefix: {

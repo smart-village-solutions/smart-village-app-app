@@ -31,7 +31,8 @@ export const useSueData = ({
   const processSueData = useCallback(async () => {
     let processedSueData = data as any[];
 
-    processedSueData = sueParser(query, processedSueData);
+    processedSueData = sueParser(query, data);
+
     setIsProcessing(true);
 
     setSueData(processedSueData);

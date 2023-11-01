@@ -1,7 +1,7 @@
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
-import { mainImageOfMediaContents } from '../imageHelper';
+import { mainImageOfMediaContents, parsedImageAspectRatio } from '../imageHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -15,8 +15,9 @@ const parseSuePriorities = (data) => {
 const parseSueRequests = (data) => {
   return data?.map((item) => {
     let parsedMediaUrl = [];
+
     try {
-      const mediaArray = JSON.parse(item?.media_url);
+      const mediaArray = item?.mediaUrl || JSON.parse(item?.media_url);
       parsedMediaUrl = mediaArray.map((mediaItem) => ({
         id: mediaItem.id,
         sourceUrl: { url: mediaItem.url },
@@ -27,7 +28,26 @@ const parseSueRequests = (data) => {
       console.error('Error parsing media_url:', error);
     }
 
+    if (item?.mediaUrl?.length) {
+      return {
+        ...item,
+        bottomDivider: false,
+        params: {
+          title: item.title,
+          query: QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
+          queryVariables: { id: item.serviceRequestId },
+          rootRouteName: ROOT_ROUTE_NAMES.SUE,
+          bookmarkable: false,
+          details: item
+        },
+        picture: { url: mainImageOfMediaContents(parsedMediaUrl) },
+        routeName: ScreenName.Detail,
+        subtitle: undefined
+      };
+    }
+
     return {
+      aspectRatio: parsedImageAspectRatio('361:203'),
       address: item?.address,
       agencyResponsible: item?.agency_responsible,
       description: item?.description,

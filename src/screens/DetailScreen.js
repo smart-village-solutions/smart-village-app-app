@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
-import { useQuery } from 'react-query';
 
 import {
   EventRecord,
@@ -45,8 +44,7 @@ const getComponent = (query, genericType) => {
     [QUERY_TYPES.EVENT_RECORD]: EventRecord,
     [QUERY_TYPES.GENERIC_ITEM]: getGenericComponent(genericType),
     [QUERY_TYPES.POINT_OF_INTEREST]: PointOfInterest,
-    [QUERY_TYPES.TOUR]: Tour,
-    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID]: SueDetailScreen
+    [QUERY_TYPES.TOUR]: Tour
   };
 
   return COMPONENTS[query];
@@ -96,13 +94,12 @@ export const DetailScreen = ({ navigation, route }) => {
 
   const refreshTime = useRefreshTime(`${query}-${queryVariables.id}`, getRefreshInterval(query));
 
-  const { data: sueDetailsData } = useQuery(
-    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, queryVariables?.id],
-    () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(queryVariables?.id),
-    { enabled: query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID }
-  );
-
   useRootRouteByCategory(details, navigation);
+
+  // Render SUE detail screen without the need of processing the rest of the code here
+  if (query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID) {
+    return <SueDetailScreen navigation={navigation} route={route} />;
+  }
 
   if (!refreshTime) {
     return (
@@ -124,19 +121,6 @@ export const DetailScreen = ({ navigation, route }) => {
     refreshTime
   });
 
-  let Component = getComponent(query);
-
-  if (query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID) {
-    return (
-      <Component
-        data={sueDetailsData}
-        navigation={navigation}
-        fetchPolicy={fetchPolicy}
-        route={route}
-      />
-    );
-  }
-
   return (
     <Query
       query={getQuery(query)}
@@ -157,7 +141,7 @@ export const DetailScreen = ({ navigation, route }) => {
         // if there is no cached `data` or network fetched `data` we fallback to the `details`.
         if ((!data || !data[query]) && !details) return null;
 
-        Component = getComponent(query, data?.[query]?.genericType ?? details?.genericType);
+        const Component = getComponent(query, data?.[query]?.genericType ?? details?.genericType);
 
         if (!Component) return null;
 
