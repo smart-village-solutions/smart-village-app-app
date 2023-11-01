@@ -265,7 +265,6 @@ export const HomeScreen = ({ navigation, route }) => {
         ListHeaderComponent={
           <>
             <ConnectedImagesCarousel
-              alternateAspectRatio
               navigation={navigation}
               publicJsonFile="homeCarousel"
               refreshTimeKey="publicJsonFile-homeCarousel"

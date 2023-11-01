@@ -1,7 +1,7 @@
 import { consts, texts } from '../../config';
 import { QUERY_TYPES } from '../../queries';
 import { ScreenName } from '../../types';
-import { mainImageOfMediaContents } from '../imageHelper';
+import { mainImageOfMediaContents, parsedImageAspectRatio } from '../imageHelper';
 
 const { ROOT_ROUTE_NAMES } = consts;
 
@@ -15,6 +15,7 @@ const parseSuePriorities = (data) => {
 const parseSueRequests = (data) => {
   return data?.map((item) => {
     let parsedMediaUrl = [];
+
     try {
       const mediaArray = item?.mediaUrl || JSON.parse(item?.media_url);
       parsedMediaUrl = mediaArray.map((mediaItem) => ({
@@ -30,7 +31,7 @@ const parseSueRequests = (data) => {
     if (item?.mediaUrl?.length) {
       return {
         ...item,
-        routeName: ScreenName.Detail,
+        bottomDivider: false,
         params: {
           title: item.title,
           query: QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
@@ -39,11 +40,14 @@ const parseSueRequests = (data) => {
           bookmarkable: false,
           details: item
         },
-        picture: { url: mainImageOfMediaContents(parsedMediaUrl) }
+        picture: { url: mainImageOfMediaContents(parsedMediaUrl) },
+        routeName: ScreenName.Detail,
+        subtitle: undefined
       };
     }
 
     return {
+      aspectRatio: parsedImageAspectRatio('361:203'),
       address: item?.address,
       agencyResponsible: item?.agency_responsible,
       description: item?.description,

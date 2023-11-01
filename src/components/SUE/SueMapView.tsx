@@ -1,6 +1,6 @@
 import { RouteProp } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -17,43 +17,47 @@ import { Wrapper } from '../Wrapper';
 import { Map } from '../map';
 
 type Props = {
-  navigation: StackNavigationProp<never>;
+  navigation: StackNavigationProp<Record<string, any>>;
   queryVariables: any;
   route: RouteProp<any, never>;
 };
 
-// FIXME: with our current setup the data that we receive from a query is not typed
-// if we change that then we can fix this place
-const mapToMapMarkers = (sue: any): MapMarker[] | undefined => {
-  return sue?.map((item: any) => {
-    const latitude = item.position?.latitude;
-    const longitude = item.position?.longitude;
+type ItemProps = {
+  position: { latitude: number; longitude: number };
+  serviceRequestId: string;
+  title: string;
+};
 
-    if (!latitude || !longitude) return undefined;
-
-    return {
+const mapToMapMarkers = (items: ItemProps[]): MapMarker[] | undefined =>
+  items
+    ?.filter((item) => item.position?.latitude && item.position?.longitude)
+    ?.map((item: ItemProps) => ({
+      iconAnchor: undefined,
       iconName: undefined,
       id: item.serviceRequestId,
       position: {
-        latitude,
-        longitude
-      }
-    };
-  });
-};
+        latitude: item.position.latitude,
+        longitude: item.position.longitude
+      },
+      title: item.title
+    }));
 
 export const SueMapView = ({ navigation, queryVariables }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
-  const [selectedSUE, setSelectedSUE] = useState<string>();
+  const [selectedService, setSelectedService] = useState<string>();
 
   const { data, isLoading } = useSueData({ query: QUERY_TYPES.SUE.REQUESTS, queryVariables });
 
   const { data: detailsData } = useQuery(
-    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, selectedSUE],
-    () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(selectedSUE),
-    { enabled: !!selectedSUE }
+    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, selectedService],
+    () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(selectedService),
+    { enabled: !!selectedService }
   );
+
+  const mapMarkers = useMemo(() => {
+    return mapToMapMarkers(data);
+  }, [data]);
 
   if (isLoading) {
     return (
@@ -62,8 +66,6 @@ export const SueMapView = ({ navigation, queryVariables }: Props) => {
       </LoadingContainer>
     );
   }
-
-  const mapMarkers = mapToMapMarkers(data);
 
   if (!mapMarkers?.length) {
     return (
@@ -85,23 +87,15 @@ export const SueMapView = ({ navigation, queryVariables }: Props) => {
         isMultipleMarkersMap
         locations={mapMarkers}
         mapStyle={styles.map}
-        onMarkerPress={setSelectedSUE}
-        selectedMarker={selectedSUE}
+        onMarkerPress={setSelectedService}
+        selectedMarker={selectedService}
       />
-      {selectedSUE && (
+      {!!selectedService && !!item && (
         <Wrapper
           small
           style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}
         >
-          <TextListItem
-            item={{
-              ...item,
-              bottomDivider: false,
-              subtitle: undefined
-            }}
-            leftImage
-            navigation={navigation}
-          />
+          <TextListItem item={item} leftImage navigation={navigation} />
         </Wrapper>
       )}
     </>

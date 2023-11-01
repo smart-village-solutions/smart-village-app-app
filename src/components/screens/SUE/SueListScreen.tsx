@@ -1,19 +1,32 @@
 /* eslint-disable complexity */
-import React, { useContext, useMemo } from 'react';
-import { View } from 'react-native';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import React, { useContext, useMemo, useState } from 'react';
+import { RefreshControl } from 'react-native';
 import { useQuery } from 'react-query';
 
+import { NetworkContext } from '../../../NetworkProvider';
 import { SettingsContext } from '../../../SettingsProvider';
+import { colors } from '../../../config';
 import { sueParser } from '../../../helpers';
 import { getQuery } from '../../../queries';
 import { ListComponent } from '../../ListComponent';
 
-export const SueListScreen = ({ navigation, route }: { navigation: any; route: any }) => {
+type Props = {
+  navigation: StackNavigationProp<Record<string, any>>;
+  route: RouteProp<any, never>;
+};
+
+export const SueListScreen = ({ navigation, route }: Props) => {
+  const { isConnected } = useContext(NetworkContext);
+  const { globalSettings } = useContext(SettingsContext);
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
-  const { globalSettings } = useContext(SettingsContext);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const { data } = useQuery([query, queryVariables], () => getQuery(query)(queryVariables));
+  const { data, refetch } = useQuery([query, queryVariables], () =>
+    getQuery(query)(queryVariables)
+  );
 
   const listItems = useMemo(() => {
     const parserData = sueParser(query, data);
@@ -21,9 +34,26 @@ export const SueListScreen = ({ navigation, route }: { navigation: any; route: a
     return parserData;
   }, [data, query, queryVariables]);
 
+  const refresh = async () => {
+    setRefreshing(true);
+    isConnected && (await refetch());
+    setRefreshing(false);
+  };
+
   return (
-    <View>
-      <ListComponent data={listItems} query={query} navigation={navigation} />
-    </View>
+    <ListComponent
+      navigation={navigation}
+      query={query}
+      data={listItems}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={refresh}
+          colors={[colors.accent]}
+          tintColor={colors.accent}
+        />
+      }
+      showBackToTop
+    />
   );
 };

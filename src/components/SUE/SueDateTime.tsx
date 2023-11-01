@@ -11,9 +11,7 @@ export const SueDatetime = ({ requestedDatetime }: { requestedDatetime: string }
     <>
       <Wrapper>
         <BoldText>{texts.sue.datetime}</BoldText>
-        <RegularText small>
-          {momentFormat(requestedDatetime, 'DD.MM.YYYY[,] HH:mm [Uhr]')}
-        </RegularText>
+        <RegularText>{momentFormat(requestedDatetime, 'DD.MM.YYYY[,] HH:mm [Uhr]')}</RegularText>
       </Wrapper>
 
       <WrapperHorizontal>

@@ -7,7 +7,7 @@ import { Wrapper } from '../Wrapper';
 export const SueAddress = ({ address }: { address: string }) => {
   return (
     <Wrapper style={styles.noPaddingTop}>
-      <RegularText small>{address}</RegularText>
+      <RegularText>{address}</RegularText>
     </Wrapper>
   );
 };

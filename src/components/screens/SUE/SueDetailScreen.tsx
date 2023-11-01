@@ -1,31 +1,33 @@
 import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
+import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
 import { NetworkContext } from '../../../NetworkProvider';
-import { colors, texts } from '../../../config';
+import { colors, device, normalize, texts } from '../../../config';
 import { QUERY_TYPES, getQuery } from '../../../queries';
 import { HtmlView } from '../../HtmlView';
 import { ImageSection } from '../../ImageSection';
+import { LoadingContainer } from '../../LoadingContainer';
+import { SueAddress, SueCategory, SueDatetime, SueStatus, SueStatuses } from '../../SUE';
 import { SafeAreaViewFlex } from '../../SafeAreaViewFlex';
 import { BoldText } from '../../Text';
 import { Wrapper, WrapperHorizontal } from '../../Wrapper';
 import { Map } from '../../map';
-import { SueAddress, SueCategory, SueDatetime, SueStatus, SueStatuses } from '../../SUE';
-import { LoadingContainer } from '../../LoadingContainer';
+import { SettingsContext } from '../../../SettingsProvider';
 
 type Props = {
-  navigation: StackNavigationProp<never>;
   route: RouteProp<any, never>;
 };
 
 /* eslint-disable complexity */
-export const SueDetailScreen = ({ navigation, route }: Props) => {
+export const SueDetailScreen = ({ route }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { globalSettings } = useContext(SettingsContext);
+  const { appDesignSystem = {} } = globalSettings;
+  const { sueStatus = {} } = appDesignSystem;
+  const { statuses } = sueStatus;
   const queryVariables = route.params?.queryVariables ?? {};
   const [refreshing, setRefreshing] = useState(false);
 
@@ -69,6 +71,10 @@ export const SueDetailScreen = ({ navigation, route }: Props) => {
     })
   );
 
+  const matchedStatus = statuses?.find((item: { matchingStatuses: string[] }) =>
+    item.matchingStatuses.includes(status)
+  );
+
   return (
     <SafeAreaViewFlex>
       <ScrollView
@@ -93,7 +99,7 @@ export const SueDetailScreen = ({ navigation, route }: Props) => {
           </WrapperHorizontal>
         )}
 
-        {!!status && <SueStatus status={status} />}
+        {!!status && <SueStatus iconName={matchedStatus.iconName} status={matchedStatus?.status} />}
 
         <WrapperHorizontal>
           <Divider />
@@ -124,7 +130,7 @@ export const SueDetailScreen = ({ navigation, route }: Props) => {
          * connected to a network with no information of internet connectivity.
          */}
         {!!latitude && !!longitude && isConnected && isMainserverUp && (
-          <Wrapper>
+          <Wrapper style={styles.noPaddingBottom}>
             <BoldText>{texts.sue.location}</BoldText>
             <Map
               locations={[
@@ -132,6 +138,7 @@ export const SueDetailScreen = ({ navigation, route }: Props) => {
                   position: { latitude, longitude }
                 }
               ]}
+              mapStyle={styles.mapStyle}
             />
           </Wrapper>
         )}
@@ -151,3 +158,12 @@ export const SueDetailScreen = ({ navigation, route }: Props) => {
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  mapStyle: {
+    width: device.width - 2 * normalize(14)
+  },
+  noPaddingBottom: {
+    paddingBottom: 0
+  }
+});

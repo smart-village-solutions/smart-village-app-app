@@ -1,17 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
-import { Card } from 'react-native-elements';
 import { Platform, StyleSheet, View } from 'react-native';
+import { Card } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 
 import { Image } from './Image';
-import { RegularText, BoldText } from './Text';
+import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
 export const CardListItem = memo(({ navigation, horizontal, item }) => {
-  const { routeName: name, params, picture, subtitle, title } = item;
+  const { aspectRatio, routeName: name, params, picture, subtitle, title } = item;
 
   // TODO: count articles logic could to be implemented
   return (
@@ -24,10 +24,10 @@ export const CardListItem = memo(({ navigation, horizontal, item }) => {
         <View style={stylesWithProps({ horizontal }).contentContainer}>
           {!!picture && !!picture.url && (
             <Image
-              source={{ uri: picture.url }}
-              style={stylesWithProps({ horizontal }).image}
-              containerStyle={styles.imageContainer}
               borderRadius={5}
+              containerStyle={styles.imageContainer}
+              source={{ uri: picture.url }}
+              style={stylesWithProps({ aspectRatio, horizontal }).image}
             />
           )}
           {!!subtitle && <RegularText small>{subtitle}</RegularText>}
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ horizontal }) => {
+const stylesWithProps = ({ aspectRatio, horizontal }) => {
   let width = imageWidth();
 
   if (horizontal) {
@@ -80,7 +80,7 @@ const stylesWithProps = ({ horizontal }) => {
     },
     image: {
       marginBottom: normalize(7),
-      height: imageHeight(maxWidth),
+      height: imageHeight(maxWidth, aspectRatio),
       width: maxWidth
     }
   });
