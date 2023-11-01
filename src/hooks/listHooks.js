@@ -71,9 +71,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
     default: {
       renderItem = ({ item, index, section }) => {
         if (query === QUERY_TYPES.SUE.REQUESTS) {
-          return (
-            <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
-          );
+          return <CardListItem navigation={navigation} item={item} sue />;
         }
 
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {

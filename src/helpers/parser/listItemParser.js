@@ -245,7 +245,8 @@ const parsePointsOfInterestAndTours = (data) => {
  *    skipLastDivider?: boolean;
  *    withDate?: boolean,
  *    isSectioned?: boolean,
- *    queryVariables?: any
+ *    queryVariables?: any,
+ *    appDesignSystem?: any
  *  }} options
  * @returns
  */
@@ -258,7 +259,8 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     skipLastDivider = false,
     withDate = true,
     isSectioned = false,
-    queryVariables
+    queryVariables,
+    appDesignSystem
   } = options;
 
   switch (query) {
@@ -290,7 +292,7 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     // SUE
     case QUERY_TYPES.SUE.REQUESTS:
     case QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID:
-      return parseSueData(data);
+      return parseSueData(data, appDesignSystem);
 
     // VOLUNTEER
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL:

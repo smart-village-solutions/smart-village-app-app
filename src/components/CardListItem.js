@@ -2,18 +2,33 @@ import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { Card } from 'react-native-elements';
+import { Divider } from 'react-native-elements/dist/divider/Divider';
 
 import { colors, consts, normalize } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
 
 import { Image } from './Image';
+import { SueCategory, SueImageFallback, SueStatus } from './SUE';
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
+import { Wrapper, WrapperHorizontal } from './Wrapper';
 
-export const CardListItem = memo(({ navigation, horizontal, item }) => {
-  const { aspectRatio, routeName: name, params, picture, subtitle, title } = item;
+/* eslint-disable complexity */
+export const CardListItem = memo(({ navigation, horizontal, item, sue }) => {
+  const {
+    address,
+    aspectRatio,
+    iconName,
+    params,
+    picture,
+    requestedDatetime,
+    routeName: name,
+    serviceName,
+    status,
+    subtitle,
+    title
+  } = item;
 
-  // TODO: count articles logic could to be implemented
   return (
     <Touchable
       accessibilityLabel={`${subtitle} (${title}) ${consts.a11yLabel.button}`}
@@ -21,26 +36,68 @@ export const CardListItem = memo(({ navigation, horizontal, item }) => {
       disabled={!navigation}
     >
       <Card containerStyle={styles.container}>
-        <View style={stylesWithProps({ horizontal }).contentContainer}>
-          {!!picture && !!picture.url && (
+        <View
+          style={[
+            stylesWithProps({ horizontal }).contentContainer,
+            sue && styles.sueContentContainer
+          ]}
+        >
+          {!!picture?.url && (
             <Image
-              borderRadius={5}
-              containerStyle={styles.imageContainer}
+              borderRadius={sue ? 0 : 5}
+              containerStyle={[styles.imageContainer, sue && styles.sueImageContainer]}
               source={{ uri: picture.url }}
               style={stylesWithProps({ aspectRatio, horizontal }).image}
             />
           )}
           {!!subtitle && <RegularText small>{subtitle}</RegularText>}
-          {!!title && (
+          {!sue && !!title && (
             <BoldText>
               {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
             </BoldText>
+          )}
+
+          {sue && (
+            <>
+              {!picture?.url && (
+                <SueImageFallback
+                  style={[
+                    stylesWithProps({ aspectRatio, horizontal }).image,
+                    styles.sueImageContainer
+                  ]}
+                />
+              )}
+              {!!serviceName && !!requestedDatetime && (
+                <SueCategory serviceName={serviceName} requestedDatetime={requestedDatetime} />
+              )}
+              <Wrapper style={styles.noPaddingTop}>
+                <Divider />
+              </Wrapper>
+              {!!title && (
+                <WrapperHorizontal>
+                  <BoldText>
+                    {horizontal
+                      ? title.length > 60
+                        ? title.substring(0, 60) + '...'
+                        : title
+                      : title}
+                  </BoldText>
+                </WrapperHorizontal>
+              )}
+              {!!address && (
+                <Wrapper>
+                  <RegularText small>{address.replace('\r\n ', '\r\n')}</RegularText>
+                </Wrapper>
+              )}
+              {!!status && <SueStatus iconName={iconName} status={status} />}
+            </>
           )}
         </View>
       </Card>
     </Touchable>
   );
 });
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   container: {
@@ -59,6 +116,19 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     alignSelf: 'center'
+  },
+  noPaddingTop: {
+    paddingTop: 0
+  },
+  sueContentContainer: {
+    borderWidth: 1,
+    borderColor: colors.gray20,
+    borderRadius: normalize(8)
+  },
+  sueImageContainer: {
+    alignSelf: 'auto',
+    borderTopLeftRadius: normalize(8),
+    borderTopRightRadius: normalize(8)
   }
 });
 
@@ -92,9 +162,11 @@ CardListItem.displayName = 'CardListItem';
 CardListItem.propTypes = {
   navigation: PropTypes.object,
   item: PropTypes.object.isRequired,
-  horizontal: PropTypes.bool
+  horizontal: PropTypes.bool,
+  sue: PropTypes.bool
 };
 
 CardListItem.defaultProps = {
-  horizontal: false
+  horizontal: false,
+  sue: false
 };

@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 
 import { SettingsContext } from '../../SettingsProvider';
 import { Icon, normalize } from '../../config';
-import { BoldText, RegularText } from '../Text';
+import { BoldText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 
 export const SueStatus = ({

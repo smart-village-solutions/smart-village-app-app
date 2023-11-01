@@ -5,7 +5,10 @@ import { mainImageOfMediaContents, parsedImageAspectRatio } from '../imageHelper
 
 const { ROOT_ROUTE_NAMES } = consts;
 
-export const parseSueData = (data) => {
+export const parseSueData = (data, appDesignSystem) => {
+  const { sueStatus = {} } = appDesignSystem;
+  const { statuses } = sueStatus;
+
   return data?.map((item) => {
     let parsedMediaUrl = [];
 
@@ -21,10 +24,13 @@ export const parseSueData = (data) => {
       console.error('Error parsing media_url:', error);
     }
 
+    const matchedStatus = statuses?.find((status) => status.matchingStatuses.includes(item.status));
+
     return {
       ...item,
       aspectRatio: parsedImageAspectRatio('361:203'),
       bottomDivider: false,
+      iconName: matchedStatus.iconName,
       params: {
         title: item.title,
         query: QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
@@ -35,6 +41,7 @@ export const parseSueData = (data) => {
       },
       picture: { url: mainImageOfMediaContents(parsedMediaUrl) },
       routeName: ScreenName.Detail,
+      status: matchedStatus.status,
       subtitle: undefined
     };
   });

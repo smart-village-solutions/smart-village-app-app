@@ -53,6 +53,7 @@ import {
   verifiedBadge,
   visible
 } from '../icons';
+import { sueBroom } from '../icons/SUE/broom';
 
 import { colors } from './colors';
 import { device } from './device';
@@ -182,6 +183,7 @@ export const Icon = {
       <SvgIcon xml={share} {...props} />
     ),
   Send: (props: IconProps) => <SvgIcon xml={send} {...props} />,
+  SueBroom: (props: IconProps) => <SvgIcon xml={sueBroom} {...props} />,
   SueCheckSmall: (props: IconProps) => <SvgIcon xml={sueCheckSmall} {...props} />,
   SueClock: (props: IconProps) => <SvgIcon xml={sueClock} {...props} />,
   SueClockSmall: (props: IconProps) => <SvgIcon xml={sueClockSmall} {...props} />,

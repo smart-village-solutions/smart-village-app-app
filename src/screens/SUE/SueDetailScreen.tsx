@@ -12,10 +12,11 @@ import {
   ImageSection,
   LoadingContainer,
   Map,
+  RegularText,
   SafeAreaViewFlex,
-  SueAddress,
   SueCategory,
   SueDatetime,
+  SueImageFallback,
   SueStatus,
   SueStatuses,
   Wrapper,
@@ -95,9 +96,10 @@ export const SueDetailScreen = ({ route }: Props) => {
         }
       >
         <ImageSection mediaContents={mediaContents} />
+        {!mediaContents?.length && <SueImageFallback />}
 
         {!!serviceName && !!requestedDatetime && (
-          <SueCategory serviceName={serviceName} requestedDateTime={requestedDatetime} />
+          <SueCategory serviceName={serviceName} requestedDatetime={requestedDatetime} />
         )}
 
         {!!title && (
@@ -136,20 +138,26 @@ export const SueDetailScreen = ({ route }: Props) => {
          * we can also not check for isMainserverUp here, but then we would only verify that we are
          * connected to a network with no information of internet connectivity.
          */}
-        {!!latitude && !!longitude && isConnected && isMainserverUp && (
+        {((!!latitude && !!longitude) || !!address) && (
           <Wrapper style={styles.noPaddingBottom}>
             <BoldText>{texts.sue.location}</BoldText>
-            <Map
-              locations={[
-                {
-                  position: { latitude, longitude }
-                }
-              ]}
-              mapStyle={styles.mapStyle}
-            />
+            {!!latitude && !!longitude && isConnected && isMainserverUp && (
+              <Map
+                locations={[
+                  {
+                    position: { latitude, longitude }
+                  }
+                ]}
+                mapStyle={styles.mapStyle}
+              />
+            )}
           </Wrapper>
         )}
-        {!!address && <SueAddress address={address} />}
+        {!!address && (
+          <Wrapper style={styles.noPaddingTop}>
+            <RegularText>{address.replace('\r\n ', '\r\n')}</RegularText>
+          </Wrapper>
+        )}
 
         {((!!latitude && !!longitude) || !!address) && (
           <WrapperHorizontal>
@@ -172,5 +180,8 @@ const styles = StyleSheet.create({
   },
   noPaddingBottom: {
     paddingBottom: 0
+  },
+  noPaddingTop: {
+    paddingTop: 0
   }
 });

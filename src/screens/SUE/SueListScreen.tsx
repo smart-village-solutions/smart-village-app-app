@@ -20,6 +20,7 @@ type Props = {
 export const SueListScreen = ({ navigation, route }: Props) => {
   const { isConnected } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
+  const { appDesignSystem = {} } = globalSettings;
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
   const [refreshing, setRefreshing] = useState(false);
@@ -29,7 +30,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   );
 
   const listItems = useMemo(() => {
-    return parseListItemsFromQuery(query, data, undefined, undefined);
+    return parseListItemsFromQuery(query, data, undefined, { appDesignSystem });
   }, [data, query, queryVariables]);
 
   const refresh = async () => {

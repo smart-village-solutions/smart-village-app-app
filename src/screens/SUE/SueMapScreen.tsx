@@ -46,7 +46,7 @@ type Props = {
 
 export const SueMapScreen = ({ navigation, route }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { navigation: navigationType } = globalSettings;
+  const { appDesignSystem, navigation: navigationType } = globalSettings;
   const queryVariables = route.params?.queryVariables ?? {};
   const [selectedRequest, setSelectedRequest] = useState<string>();
 
@@ -87,7 +87,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
         QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
         [detailsData],
         undefined,
-        undefined
+        { appDesignSystem }
       )?.[0]
     : undefined;
 

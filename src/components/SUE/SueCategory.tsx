@@ -6,17 +6,17 @@ import { Wrapper, WrapperRow } from '../Wrapper';
 
 export const SueCategory = ({
   serviceName,
-  requestedDateTime
+  requestedDatetime
 }: {
   serviceName: string;
-  requestedDateTime: string;
+  requestedDatetime: string;
 }) => {
   return (
     <Wrapper>
       <WrapperRow spaceBetween>
         <BoldText smallest>{serviceName}</BoldText>
         <RegularText smallest placeholder>
-          {momentFormat(requestedDateTime)}
+          {momentFormat(requestedDatetime)}
         </RegularText>
       </WrapperRow>
     </Wrapper>
