@@ -145,7 +145,7 @@ const stylesForImage = (aspectRatio) => {
 Image.propTypes = {
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
   message: PropTypes.string,
-  containerStyle: PropTypes.object,
+  containerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   PlaceholderContent: PropTypes.object,
   aspectRatio: PropTypes.object,

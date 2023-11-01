@@ -90,6 +90,13 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.CONSUL.PUBLIC_COMMENT]: PUBLIC_COMMENT,
     [QUERY_TYPES.CONSUL.USER]: USER,
 
+    // SUE QUERIES
+    [QUERY_TYPES.SUE.PRIORITIES]: priorities,
+    [QUERY_TYPES.SUE.REQUESTS]: requests,
+    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID]: requestsWithServiceRequestId,
+    [QUERY_TYPES.SUE.SERVICES]: services,
+    [QUERY_TYPES.SUE.STATUSES]: statuses,
+
     // VOLUNTEER QUERIES
     [QUERY_TYPES.VOLUNTEER.APPLICANTS]: groupMembership,
     [QUERY_TYPES.VOLUNTEER.CALENDAR]: calendar,
@@ -103,14 +110,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.VOLUNTEER.MEMBERS]: groupMembership,
     [QUERY_TYPES.VOLUNTEER.POSTS]: posts,
     [QUERY_TYPES.VOLUNTEER.PROFILE]: me,
-    [QUERY_TYPES.VOLUNTEER.USER]: user,
-
-    // SUE QUERIES
-    [QUERY_TYPES.SUE.PRIORITIES]: priorities,
-    [QUERY_TYPES.SUE.REQUESTS]: requests,
-    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID]: requestsWithServiceRequestId,
-    [QUERY_TYPES.SUE.SERVICES]: services,
-    [QUERY_TYPES.SUE.STATUSES]: statuses
+    [QUERY_TYPES.VOLUNTEER.USER]: user
   };
 
   return QUERIES[query];

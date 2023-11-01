@@ -208,13 +208,14 @@ const styles = StyleSheet.create({
   }
 });
 
+/* eslint-disable react-native/no-unused-styles */
+/* this works properly, we do not want that warning */
 // the map should have the same aspect ratio as images in portrait and a full width on landscape.
 // we need to call the default styles in a method to ensure correct defaults for image aspect ratio,
 // which could be overwritten by server global settings. otherwise (as default prop) the style
 // would be set before the overwriting occurred.
 const stylesForMap = () => {
   return StyleSheet.create({
-    // eslint-disable-next-line react-native/no-unused-styles
     map: {
       alignSelf: 'center',
       height: imageHeight(imageWidth()),
