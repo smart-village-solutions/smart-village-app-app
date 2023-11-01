@@ -1,7 +1,7 @@
 import { CardStyleInterpolators } from '@react-navigation/stack';
 import React from 'react';
 
-import { HeaderLeft, SueListScreen, SueMapScreen } from '../../components';
+import { HeaderLeft } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
 import { QUERY_TYPES } from '../../queries';
 import {
@@ -70,6 +70,7 @@ import {
   DetailScreen as BBBUSDetailScreen,
   IndexScreen as BBBUSIndexScreen
 } from '../../screens/BB-BUS';
+import { SueListScreen, SueMapScreen } from '../../screens/SUE';
 import { ScreenName, StackConfig } from '../../types';
 import { consts } from '../consts';
 import { texts } from '../texts';

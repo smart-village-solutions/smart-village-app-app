@@ -1,58 +1,67 @@
-import { RouteProp } from '@react-navigation/core';
+import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
-
 import { useQuery } from 'react-query';
+
 import { SettingsContext } from '../../SettingsProvider';
+import {
+  LoadingContainer,
+  Map,
+  RegularText,
+  SafeAreaViewFlex,
+  TextListItem,
+  Wrapper
+} from '../../components';
 import { colors, normalize, texts } from '../../config';
-import { sueParser } from '../../helpers';
-import { useSueData } from '../../hooks';
+import { parseListItemsFromQuery } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
-import { LoadingContainer } from '../LoadingContainer';
-import { RegularText } from '../Text';
-import { TextListItem } from '../TextListItem';
-import { Wrapper } from '../Wrapper';
-import { Map } from '../map';
 
-type Props = {
-  navigation: StackNavigationProp<never>;
-  queryVariables: any;
-  route: RouteProp<any, never>;
+type ItemProps = {
+  lat: number;
+  long: number;
+  serviceRequestId: string;
+  title: string;
 };
 
-// FIXME: with our current setup the data that we receive from a query is not typed
-// if we change that then we can fix this place
-const mapToMapMarkers = (sue: any): MapMarker[] | undefined => {
-  return sue?.map((item: any) => {
-    const latitude = item.position?.latitude;
-    const longitude = item.position?.longitude;
-
-    if (!latitude || !longitude) return undefined;
-
-    return {
+const mapToMapMarkers = (items: ItemProps[]): MapMarker[] | undefined =>
+  items
+    ?.filter((item) => item.lat && item.long)
+    ?.map((item: ItemProps) => ({
+      iconAnchor: undefined,
       iconName: undefined,
       id: item.serviceRequestId,
       position: {
-        latitude,
-        longitude
-      }
-    };
-  });
+        latitude: item.lat,
+        longitude: item.long
+      },
+      title: item.title
+    }));
+
+type Props = {
+  navigation: StackNavigationProp<Record<string, any>>;
+  route: RouteProp<any, never>;
 };
 
-export const SueMapView = ({ navigation, queryVariables }: Props) => {
+export const SueMapScreen = ({ navigation, route }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { navigation: navigationType } = globalSettings;
-  const [selectedSUE, setSelectedSUE] = useState<string>();
+  const { appDesignSystem, navigation: navigationType } = globalSettings;
+  const queryVariables = route.params?.queryVariables ?? {};
+  const [selectedRequest, setSelectedRequest] = useState<string>();
 
-  const { data, isLoading } = useSueData({ query: QUERY_TYPES.SUE.REQUESTS, queryVariables });
+  const { data, isLoading } = useQuery([QUERY_TYPES.SUE.REQUESTS, queryVariables], () =>
+    getQuery(QUERY_TYPES.SUE.REQUESTS)(queryVariables)
+  );
+
+  const mapMarkers = useMemo(() => {
+    return mapToMapMarkers(data);
+  }, [data]);
 
   const { data: detailsData } = useQuery(
-    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, selectedSUE],
-    () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(selectedSUE),
-    { enabled: !!selectedSUE }
+    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, selectedRequest],
+    () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(selectedRequest),
+    { enabled: !!selectedRequest }
   );
 
   if (isLoading) {
@@ -62,8 +71,6 @@ export const SueMapView = ({ navigation, queryVariables }: Props) => {
       </LoadingContainer>
     );
   }
-
-  const mapMarkers = mapToMapMarkers(data);
 
   if (!mapMarkers?.length) {
     return (
@@ -76,35 +83,32 @@ export const SueMapView = ({ navigation, queryVariables }: Props) => {
   }
 
   const item = detailsData
-    ? sueParser(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, [detailsData])?.[0]
+    ? parseListItemsFromQuery(
+        QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
+        [detailsData],
+        undefined,
+        { appDesignSystem }
+      )?.[0]
     : undefined;
 
   return (
-    <>
+    <SafeAreaViewFlex>
       <Map
         isMultipleMarkersMap
         locations={mapMarkers}
         mapStyle={styles.map}
-        onMarkerPress={setSelectedSUE}
-        selectedMarker={selectedSUE}
+        onMarkerPress={setSelectedRequest}
+        selectedMarker={selectedRequest}
       />
-      {selectedSUE && (
+      {!!selectedRequest && !!item && (
         <Wrapper
           small
           style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}
         >
-          <TextListItem
-            item={{
-              ...item,
-              bottomDivider: false,
-              subtitle: undefined
-            }}
-            leftImage
-            navigation={navigation}
-          />
+          <TextListItem item={item} leftImage navigation={navigation} />
         </Wrapper>
       )}
-    </>
+    </SafeAreaViewFlex>
   );
 };
 
