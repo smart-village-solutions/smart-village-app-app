@@ -14,7 +14,7 @@ import {
   Wrapper
 } from '../../components';
 import { colors, normalize, texts } from '../../config';
-import { sueParser } from '../../helpers';
+import { parseListItemsFromQuery } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 
@@ -83,7 +83,12 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
   }
 
   const item = detailsData
-    ? sueParser(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, [detailsData])?.[0]
+    ? parseListItemsFromQuery(
+        QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
+        [detailsData],
+        undefined,
+        undefined
+      )?.[0]
     : undefined;
 
   return (

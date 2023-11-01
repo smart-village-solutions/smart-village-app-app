@@ -9,7 +9,7 @@ import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { ListComponent, SafeAreaViewFlex } from '../../components';
 import { colors } from '../../config';
-import { sueParser } from '../../helpers';
+import { parseListItemsFromQuery } from '../../helpers';
 import { getQuery } from '../../queries';
 
 type Props = {
@@ -29,9 +29,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   );
 
   const listItems = useMemo(() => {
-    const parserData = sueParser(query, data);
-
-    return parserData;
+    return parseListItemsFromQuery(query, data, undefined, undefined);
   }, [data, query, queryVariables]);
 
   const refresh = async () => {
