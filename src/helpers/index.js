@@ -34,6 +34,7 @@ export * from './refreshIntervalHelper';
 export * from './searchHelper';
 export * from './shareHelper';
 export * from './storageHelper';
+export * from './sueHelper';
 export * from './surveyHelper';
 export * from './textHelper';
 export * from './volunteerHelper';

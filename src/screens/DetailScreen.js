@@ -23,6 +23,7 @@ import { GenericType } from '../types';
 
 import { DefectReportFormScreen } from './DefectReport';
 import { NoticeboardFormScreen } from './Noticeboard';
+import { SueDetailScreen } from './SUE';
 
 const getGenericComponent = (genericType) => {
   switch (genericType) {
@@ -94,6 +95,11 @@ export const DetailScreen = ({ navigation, route }) => {
   const refreshTime = useRefreshTime(`${query}-${queryVariables.id}`, getRefreshInterval(query));
 
   useRootRouteByCategory(details, navigation);
+
+  // Render SUE detail screen without the need of processing the rest of the code here
+  if (query === QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID) {
+    return <SueDetailScreen navigation={navigation} route={route} />;
+  }
 
   if (!refreshTime) {
     return (

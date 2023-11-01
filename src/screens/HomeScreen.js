@@ -15,7 +15,8 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   Widgets,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal
 } from '../components';
 import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy, rootRouteName } from '../helpers';
@@ -236,13 +237,13 @@ export const HomeScreen = ({ navigation, route }) => {
     skip: !showStaticContentList
   });
 
-  // function to add customised styles from `globalSettings` to `contentList`
+  // function to add customized styles from `globalSettings` to the list items
   const staticContentListItem = useMemo(() => {
     if (!staticContentListData) {
       return [];
     }
 
-    let listItem = [...staticContentListData];
+    let listItem = staticContentListData;
 
     if (appDesignSystem?.staticContentList) {
       listItem = listItem?.map((item: any) => ({
@@ -252,7 +253,7 @@ export const HomeScreen = ({ navigation, route }) => {
     }
 
     return listItem;
-  }, [staticContentListData]);
+  }, [appDesignSystem, staticContentListData]);
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.HOME);
 
@@ -315,7 +316,6 @@ export const HomeScreen = ({ navigation, route }) => {
         ListHeaderComponent={
           <>
             <ConnectedImagesCarousel
-              alternateAspectRatio
               navigation={navigation}
               publicJsonFile="homeCarousel"
               refreshTimeKey="publicJsonFile-homeCarousel"
@@ -328,8 +328,13 @@ export const HomeScreen = ({ navigation, route }) => {
         }
         ListFooterComponent={
           <>
-            {showStaticContentList && !!staticContentListItem?.length && (
+            {!!staticContentListItem?.length && (
               <>
+                {!!staticContentListTitle && (
+                  <WrapperHorizontal>
+                    <RegularText></RegularText>
+                  </WrapperHorizontal>
+                )}
                 {!!staticContentListTitle && <SectionHeader title={staticContentListTitle} />}
                 {!!staticContentListDescription && (
                   <Wrapper>
@@ -340,6 +345,7 @@ export const HomeScreen = ({ navigation, route }) => {
                 <ListComponent
                   data={staticContentListItem}
                   horizontal={horizontal}
+                  navigation={navigation}
                   query={QUERY_TYPES.STATIC_CONTENT_LIST}
                 />
               </>

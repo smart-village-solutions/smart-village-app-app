@@ -51,6 +51,13 @@ export const QUERY_TYPES = {
   PUBLIC_JSON_FILE: 'publicJsonFile',
   STATIC_CONTENT_LIST: 'staticContentList',
   TOUR: 'tour',
+  SUE: {
+    PRIORITIES: 'priorities',
+    REQUESTS: 'requests',
+    REQUESTS_WITH_SERVICE_REQUEST_ID: 'requestsWithServiceRequestId',
+    SERVICES: 'services',
+    STATUSES: 'statuses'
+  },
   TOUR_STOPS: 'tourStops',
   TOURS: 'tours',
   VOLUNTEER: {

@@ -40,12 +40,20 @@ import {
   send,
   service,
   share,
+  sueCheckSmall,
+  sueClock,
+  sueClockSmall,
+  sueEye,
+  sueEyeSmall,
+  sueFace,
+  sueFaceSmall,
   trash,
   unvisible,
   url,
   verifiedBadge,
   visible
 } from '../icons';
+import { sueBroom } from '../icons/SUE/broom';
 
 import { colors } from './colors';
 import { device } from './device';
@@ -175,6 +183,14 @@ export const Icon = {
       <SvgIcon xml={share} {...props} />
     ),
   Send: (props: IconProps) => <SvgIcon xml={send} {...props} />,
+  SueBroom: (props: IconProps) => <SvgIcon xml={sueBroom} {...props} />,
+  SueCheckSmall: (props: IconProps) => <SvgIcon xml={sueCheckSmall} {...props} />,
+  SueClock: (props: IconProps) => <SvgIcon xml={sueClock} {...props} />,
+  SueClockSmall: (props: IconProps) => <SvgIcon xml={sueClockSmall} {...props} />,
+  SueEye: (props: IconProps) => <SvgIcon xml={sueEye} {...props} />,
+  SueEyeSmall: (props: IconProps) => <SvgIcon xml={sueEyeSmall} {...props} />,
+  SueFace: (props: IconProps) => <SvgIcon xml={sueFace} {...props} />,
+  SueFaceSmall: (props: IconProps) => <SvgIcon xml={sueFaceSmall} {...props} />,
   Surveys: (props: IconProps) => <NamedIcon name="stats-chart-outline" {...props} />,
   Trash: (props: IconProps) => <SvgIcon xml={trash} {...props} />,
   Unvisible: (props: IconProps) => <SvgIcon xml={unvisible} {...props} />,

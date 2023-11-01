@@ -809,6 +809,10 @@ export const texts = {
     pointsOfInterest: 'Orte und Touren',
     service: appJson.expo.name,
     settings: 'Einstellungen',
+    sue: {
+      mapView: 'Meldungskarte',
+      listView: 'Meldungsliste'
+    },
     survey: 'Umfrage',
     surveys: 'Umfragen',
     volunteer: {
@@ -899,6 +903,12 @@ export const texts = {
       general: 'Allgemein',
       listTypes: 'App-Aussehen'
     }
+  },
+  sue: {
+    currentStatus: 'Aktueller Status',
+    datetime: 'Datum und Uhrzeit der Meldung',
+    description: 'Beschreibung',
+    location: 'Ort'
   },
   survey: {
     archive: 'Umfrage-Archiv',

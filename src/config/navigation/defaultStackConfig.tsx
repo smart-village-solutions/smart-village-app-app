@@ -3,10 +3,11 @@ import React from 'react';
 
 import { HeaderLeft } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
+import { QUERY_TYPES } from '../../queries';
 import {
-  AboutScreen,
   ARInfoScreen,
   ARShowScreen,
+  AboutScreen,
   ArtworkDetailScreen,
   BookmarkCategoryScreen,
   BookmarkScreen,
@@ -16,8 +17,8 @@ import {
   ConsulHomeScreen,
   ConsulIndexScreen,
   ConsulLoginScreen,
-  ConsulRegisteredScreen,
   ConsulRegisterScreen,
+  ConsulRegisteredScreen,
   ConsulStartNewScreen,
   DataProviderScreen,
   DefectReportFormScreen,
@@ -29,7 +30,6 @@ import {
   EncounterScannerScreen,
   EncounterUserDetailScreen,
   FeedbackScreen,
-  getTilesScreen,
   HomeScreen,
   HtmlScreen,
   IndexScreen,
@@ -63,16 +63,17 @@ import {
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
-  WebScreen
+  WebScreen,
+  getTilesScreen
 } from '../../screens';
 import {
   DetailScreen as BBBUSDetailScreen,
   IndexScreen as BBBUSIndexScreen
 } from '../../screens/BB-BUS';
+import { SueListScreen, SueMapScreen } from '../../screens/SUE';
 import { ScreenName, StackConfig } from '../../types';
 import { consts } from '../consts';
 import { texts } from '../texts';
-import { QUERY_TYPES } from '../../queries';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -342,6 +343,24 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Settings,
       screenComponent: SettingsScreen,
       screenOptions: { title: texts.screenTitles.settings }
+    },
+    {
+      routeName: ScreenName.SueList,
+      screenComponent: SueListScreen,
+      initialParams: {
+        title: texts.screenTitles.sue.listView,
+        query: QUERY_TYPES.SUE.REQUESTS,
+        usedAsInitialScreen: true
+      }
+    },
+    {
+      routeName: ScreenName.SueMap,
+      screenComponent: SueMapScreen,
+      initialParams: {
+        title: texts.screenTitles.sue.mapView,
+        query: QUERY_TYPES.SUE.REQUESTS,
+        usedAsInitialScreen: true
+      }
     },
     {
       routeName: ScreenName.SurveyDetail,
