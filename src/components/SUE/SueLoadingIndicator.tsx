@@ -1,16 +1,15 @@
-import LottieView from 'lottie-react-native';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { colors, normalize } from '../../config';
+import { Image } from '../Image';
 
 export const SueLoadingIndicator = () => {
   return (
     <View style={styles.animationContainer}>
-      <LottieView
-        autoPlay
-        source={require('../../../assets/lottie/SUE/broom.json')}
-        style={styles.lottie}
+      <Image
+        source={require('../../../assets/lottie/SUE/broom.gif')}
+        containerStyle={styles.image}
       />
     </View>
   );
@@ -24,10 +23,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: normalize(14)
   },
-  lottie: {
-    // backgroundColor: colors.surface,
-    // backgroundColor: colors.error,
-    height: 200,
-    width: 200
+  image: {
+    height: normalize(40),
+    width: normalize(40)
   }
 });
