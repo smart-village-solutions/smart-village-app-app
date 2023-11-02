@@ -2,7 +2,7 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
-import { colors, texts } from '../../../config';
+import { colors, normalize, texts } from '../../../config';
 import { Checkbox } from '../../Checkbox';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
     fontWeight: 'normal'
   },
   container: {
+    paddingTop: normalize(14),
     width: '100%'
   },
   noPaddingTop: {

@@ -95,6 +95,7 @@ export const SueReportLocation = ({
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: normalize(14),
     width: '100%'
   },
   mapStyle: {

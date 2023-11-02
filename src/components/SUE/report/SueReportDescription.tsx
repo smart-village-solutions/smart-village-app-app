@@ -2,7 +2,7 @@ import React from 'react';
 import { Controller } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
-import { consts, texts } from '../../../config';
+import { consts, normalize, texts } from '../../../config';
 import { Wrapper } from '../../Wrapper';
 import { ImageSelector } from '../../consul';
 import { Input } from '../../form';
@@ -56,6 +56,7 @@ export const SueReportDescription = ({ control }: { control: any; errors: any })
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: normalize(14),
     width: '100%'
   },
   noPaddingTop: {

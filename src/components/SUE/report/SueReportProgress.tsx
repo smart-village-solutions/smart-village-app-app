@@ -26,7 +26,7 @@ export const SueReportProgress = ({
   const { subtitleStyle = {}, textContainer = {}, titleStyle = {} } = sueProgress;
 
   return (
-    <Wrapper>
+    <Wrapper style={styles.noPaddingBottom}>
       <WrapperRow spaceBetween>
         <CircularProgress
           value={(100 * currentProgress) / progress.length}
@@ -52,6 +52,7 @@ export const SueReportProgress = ({
             )
         )}
       </WrapperRow>
+
       <Divider style={styles.divider} />
     </Wrapper>
   );
@@ -59,7 +60,10 @@ export const SueReportProgress = ({
 
 const styles = StyleSheet.create({
   divider: {
-    marginVertical: normalize(14)
+    marginTop: normalize(14)
+  },
+  noPaddingBottom: {
+    paddingBottom: 0
   },
   textContainer: {
     width: '80%'

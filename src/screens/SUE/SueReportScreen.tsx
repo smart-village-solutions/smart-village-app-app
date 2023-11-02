@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useMutation } from 'react-query';
+import { Divider } from 'react-native-elements';
 
 import {
   Button,
@@ -13,7 +14,9 @@ import {
   SueReportProgress,
   SueReportServices,
   SueReportUser,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal,
+  WrapperRow
 } from '../../components';
 import { colors, device, texts } from '../../config';
 import { useStaticContent } from '../../hooks';
@@ -29,8 +32,6 @@ const Content = (
   setSelectedPosition: any
 ) => {
   switch (content) {
-    case 'category':
-      return <SueReportServices serviceCode={serviceCode} setServiceCode={setServiceCode} />;
     case 'description':
       return <SueReportDescription control={control} errors={errors} />;
     case 'location':
@@ -207,13 +208,23 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
         </ScrollView>
       </ScrollView>
 
-      <Wrapper>
+      <WrapperHorizontal>
+        <Divider />
+      </WrapperHorizontal>
+
+      <Wrapper style={[styles.buttonContainer, currentPage !== 0 && styles.buttonContainerRow]}>
         {currentPage !== 0 && (
-          <Button onPress={handlePrevPage} title={texts.sue.reportScreen.back} invert />
+          <Button
+            invert
+            notFullWidth
+            onPress={handlePrevPage}
+            title={texts.sue.reportScreen.back}
+          />
         )}
 
         <Button
           disabled={isLoading}
+          notFullWidth={currentPage !== 0}
           onPress={currentPage < data.length - 1 ? handleNextPage : handleSubmit(onSubmit)}
           title={
             currentPage === data.length - 1
@@ -227,6 +238,13 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 };
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    paddingBottom: 0
+  },
+  buttonContainerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
   contentContainer: {
     alignItems: 'center',
     width: device.width

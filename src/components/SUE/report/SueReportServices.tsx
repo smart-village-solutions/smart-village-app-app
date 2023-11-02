@@ -2,7 +2,8 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { colors, normalize } from '../../../config';
+import { colors, device, normalize } from '../../../config';
+import { imageHeight } from '../../../helpers';
 import { QUERY_TYPES, getQuery } from '../../../queries';
 import { BoldText } from '../../Text';
 
@@ -13,9 +14,7 @@ export const SueReportServices = ({
   serviceCode: string;
   setServiceCode: any;
 }) => {
-  const { data, isError } = useQuery([QUERY_TYPES.SUE.SERVICES], () =>
-    getQuery(QUERY_TYPES.SUE.SERVICES)()
-  );
+  const { data } = useQuery([QUERY_TYPES.SUE.SERVICES], () => getQuery(QUERY_TYPES.SUE.SERVICES)());
 
   return (
     <View style={styles.container}>
@@ -47,15 +46,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    padding: normalize(14)
   },
   tile: {
     alignItems: 'center',
     borderRadius: normalize(8),
     borderWidth: normalize(1),
-    height: normalize(114),
+    height: imageHeight(device.width / 2 - normalize(21), {
+      HEIGHT: 114,
+      WIDTH: 176
+    }),
     justifyContent: 'center',
-    marginVertical: 5,
-    width: normalize(176)
+    marginVertical: normalize(5),
+    padding: normalize(7),
+    width: device.width / 2 - normalize(21)
   }
 });
