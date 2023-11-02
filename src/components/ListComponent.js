@@ -50,6 +50,7 @@ export const ListComponent = ({
   horizontal,
   ListEmptyComponent,
   ListFooterComponent,
+  ListFooterLoadingIndicator,
   ListHeaderComponent,
   navigation,
   noSubtitle,
@@ -78,6 +79,7 @@ export const ListComponent = ({
       fetchMoreData={fetchMoreData}
       ListEmptyComponent={ListEmptyComponent}
       ListFooterComponent={ListFooterComponent}
+      ListFooterLoadingIndicator={ListFooterLoadingIndicator}
       ListHeaderComponent={ListHeaderComponent}
       navigation={navigation}
       noSubtitle={noSubtitle}
@@ -97,6 +99,7 @@ ListComponent.propTypes = {
   horizontal: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
   ListFooterComponent: PropTypes.object,
+  ListFooterLoadingIndicator: PropTypes.func,
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
