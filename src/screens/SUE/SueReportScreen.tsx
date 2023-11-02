@@ -143,6 +143,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
       ...sueReportData
     };
 
+    setIsLoading(true);
     mutateAsync(formData)
       .then(() => {
         navigation.goBack();
