@@ -35,7 +35,9 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   );
 
   const listItems = useMemo(() => {
-    return parseListItemsFromQuery(query, data, undefined, { appDesignSystem });
+    if (data?.length) {
+      return parseListItemsFromQuery(query, data.reverse(), undefined, { appDesignSystem });
+    }
   }, [data, query, queryVariables]);
 
   if (isLoading) {
