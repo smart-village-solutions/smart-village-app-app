@@ -1,4 +1,5 @@
 /* eslint-disable complexity */
+import * as Location from 'expo-location';
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
@@ -23,7 +24,9 @@ const Content = (
   serviceCode: string,
   setServiceCode: any,
   control: any,
-  errors: any
+  errors: any,
+  selectedPosition: Location.LocationObjectCoords | undefined,
+  setSelectedPosition: any
 ) => {
   switch (content) {
     case 'category':
@@ -31,7 +34,13 @@ const Content = (
     case 'description':
       return <SueReportDescription control={control} errors={errors} />;
     case 'location':
-      return <SueReportLocation control={control} errors={errors} />;
+      return (
+        <SueReportLocation
+          control={control}
+          selectedPosition={selectedPosition}
+          setSelectedPosition={setSelectedPosition}
+        />
+      );
     case 'user':
       return <SueReportUser control={control} errors={errors} />;
     default:
@@ -48,8 +57,6 @@ type TReports = {
   homeNumber: string;
   images: { uri: string; mimeType: string }[];
   lastName: string;
-  lat: string;
-  long: string;
   phone: string;
   street: string;
   title: string;
@@ -72,6 +79,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [serviceCode, setServiceCode] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
 
   const scrollViewRef = useRef(null);
 
@@ -89,8 +97,6 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
       homeNumber: '',
       images: '[]',
       lastName: '',
-      lat: '',
-      long: '',
       phone: '',
       street: '',
       termsOfService: false,
@@ -122,6 +128,8 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 
     const formData = {
       addressString,
+      lat: selectedPosition?.latitude,
+      long: selectedPosition?.longitude,
       serviceCode,
       ...sueReportData
     };
@@ -185,7 +193,15 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
         >
           {data?.map((item: TProgress, index: number) => (
             <View key={index} style={styles.contentContainer}>
-              {Content(item.content, serviceCode, setServiceCode, control, errors)}
+              {Content(
+                item.content,
+                serviceCode,
+                setServiceCode,
+                control,
+                errors,
+                selectedPosition,
+                setSelectedPosition
+              )}
             </View>
           ))}
         </ScrollView>
