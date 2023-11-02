@@ -34,6 +34,31 @@ export const postRequests = async (data: any) => {
   formData.append('phone', data?.phone);
   formData.append('service_code', data.serviceCode);
   formData.append('title', data?.title);
+  formData.append('media_file_1', {
+    uri: JSON.parse(data.images)[0]?.uri,
+    name: JSON.parse(data.images)[0]?.imageName,
+    type: JSON.parse(data.images)[0]?.mimeType
+  });
+  formData.append('media_file_2', {
+    uri: JSON.parse(data.images)[1]?.uri,
+    name: JSON.parse(data.images)[1]?.imageName,
+    type: JSON.parse(data.images)[1]?.mimeType
+  });
+  formData.append('media_file_3', {
+    uri: JSON.parse(data.images)[2]?.uri,
+    name: JSON.parse(data.images)[2]?.imageName,
+    type: JSON.parse(data.images)[2]?.mimeType
+  });
+  formData.append('media_file_4', {
+    uri: JSON.parse(data.images)[3]?.uri,
+    name: JSON.parse(data.images)[3]?.imageName,
+    type: JSON.parse(data.images)[3]?.mimeType
+  });
+  formData.append('media_file_5', {
+    uri: JSON.parse(data.images)[4]?.uri,
+    name: JSON.parse(data.images)[4]?.imageName,
+    type: JSON.parse(data.images)[4]?.mimeType
+  });
 
   const fetchObj = {
     method: 'POST',

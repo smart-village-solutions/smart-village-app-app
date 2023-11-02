@@ -1,9 +1,13 @@
 import React from 'react';
+import { Controller } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
-import { texts } from '../../../config';
+import { consts, texts } from '../../../config';
 import { Wrapper } from '../../Wrapper';
+import { ImageSelector } from '../../consul';
 import { Input } from '../../form';
+
+const { IMAGE_SELECTOR_TYPES } = consts;
 
 export const SueReportDescription = ({ control }: { control: any; errors: any }) => (
   <View style={styles.container}>
@@ -22,6 +26,28 @@ export const SueReportDescription = ({ control }: { control: any; errors: any })
         label={`${texts.sue.reportScreen.description} *`}
         placeholder={texts.sue.reportScreen.description}
         multiline
+        control={control}
+      />
+    </Wrapper>
+
+    <Wrapper style={styles.noPaddingTop}>
+      <Controller
+        name="images"
+        render={({ field }) => (
+          <ImageSelector
+            {...{
+              control,
+              field,
+              isMultiImages: true,
+              selectorType: IMAGE_SELECTOR_TYPES.SUE,
+              item: {
+                name: 'images',
+                label: texts.volunteer.images,
+                buttonTitle: texts.volunteer.addImage
+              }
+            }}
+          />
+        )}
         control={control}
       />
     </Wrapper>
