@@ -25,33 +25,35 @@ export const SueReportProgress = ({
   const { sueProgress = {} } = appDesignSystem;
   const { subtitleStyle = {}, textContainer = {}, titleStyle = {} } = sueProgress;
 
-  return progress?.map(
-    (item, index) =>
-      index === currentProgress - 1 && (
-        <Wrapper key={index}>
-          <WrapperRow spaceBetween>
-            <CircularProgress
-              value={(100 * currentProgress) / progress.length}
-              activeStrokeColor={colors.primary}
-              inActiveStrokeColor={colors.primary + '10'}
-              progressValueColor={colors.darkText}
-              radius={normalize(30)}
-              showProgressValue={false}
-              title={`${currentProgress} / ${progress.length}`}
-              titleColor={colors.darkText}
-              titleStyle={{ fontSize: normalize(12) }}
-            />
+  return (
+    <Wrapper>
+      <WrapperRow spaceBetween>
+        <CircularProgress
+          value={(100 * currentProgress) / progress.length}
+          activeStrokeColor={colors.primary}
+          inActiveStrokeColor={colors.primary + '10'}
+          progressValueColor={colors.darkText}
+          radius={normalize(30)}
+          showProgressValue={false}
+          title={`${currentProgress} / ${progress.length}`}
+          titleColor={colors.darkText}
+          titleStyle={{ fontSize: normalize(12) }}
+        />
 
-            <View style={[styles.textContainer, !!textContainer && textContainer]}>
-              <BoldText style={!!titleStyle && titleStyle}>{item.title}</BoldText>
-              <RegularText small style={!!subtitleStyle && subtitleStyle}>
-                {item.subtitle}
-              </RegularText>
-            </View>
-          </WrapperRow>
-          <Divider style={styles.divider} />
-        </Wrapper>
-      )
+        {progress?.map(
+          (item, index) =>
+            index === currentProgress - 1 && (
+              <View style={[styles.textContainer, !!textContainer && textContainer]}>
+                <BoldText style={!!titleStyle && titleStyle}>{item.title}</BoldText>
+                <RegularText small style={!!subtitleStyle && subtitleStyle}>
+                  {item.subtitle}
+                </RegularText>
+              </View>
+            )
+        )}
+      </WrapperRow>
+      <Divider style={styles.divider} />
+    </Wrapper>
   );
 };
 
