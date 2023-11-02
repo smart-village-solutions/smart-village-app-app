@@ -6,7 +6,7 @@ import { colors, normalize } from '../../../config';
 import { QUERY_TYPES, getQuery } from '../../../queries';
 import { BoldText } from '../../Text';
 
-export const SueReportCategory = ({
+export const SueReportServices = ({
   serviceCode,
   setServiceCode
 }: {

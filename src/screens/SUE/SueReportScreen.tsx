@@ -7,10 +7,10 @@ import { useMutation } from 'react-query';
 import {
   Button,
   LoadingContainer,
-  SueReportCategory,
   SueReportDescription,
   SueReportLocation,
   SueReportProgress,
+  SueReportServices,
   SueReportUser,
   Wrapper
 } from '../../components';
@@ -27,7 +27,7 @@ const Content = (
 ) => {
   switch (content) {
     case 'category':
-      return <SueReportCategory serviceCode={serviceCode} setServiceCode={setServiceCode} />;
+      return <SueReportServices serviceCode={serviceCode} setServiceCode={setServiceCode} />;
     case 'description':
       return <SueReportDescription control={control} errors={errors} />;
     case 'location':
@@ -35,7 +35,7 @@ const Content = (
     case 'user':
       return <SueReportUser control={control} errors={errors} />;
     default:
-      return <SueReportCategory serviceCode={serviceCode} setServiceCode={setServiceCode} />;
+      return <SueReportServices serviceCode={serviceCode} setServiceCode={setServiceCode} />;
   }
 };
 
