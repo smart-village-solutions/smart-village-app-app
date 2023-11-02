@@ -11,6 +11,7 @@ import {
   LoadingContainer,
   SafeAreaViewFlex,
   SueReportDescription,
+  SueReportDone,
   SueReportLocation,
   SueReportProgress,
   SueReportServices,
@@ -82,6 +83,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   const [serviceCode, setServiceCode] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
+  const [isDone, setIsDone] = useState(false);
 
   const scrollViewRef = useRef(null);
 
@@ -146,6 +148,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
     setIsLoading(true);
     mutateAsync(formData)
       .then(() => {
+        setIsDone(true);
         navigation.goBack();
         Alert.alert(
           texts.defectReport.successScreen.header,
@@ -188,6 +191,10 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
         <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
+  }
+
+  if (isDone) {
+    return <SueReportDone navigation={navigation} />;
   }
 
   return (
