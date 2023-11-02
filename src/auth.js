@@ -32,10 +32,13 @@ const isTokenValid = async () => {
 
 /**
  * Requests the server to authenticate the mobile app with the main server.
+ *
+ * @param {requestCallback} callback the callback that needs authentication
+ * @param {boolean} forceNewToken trigger to force request for new token, default `false`
  */
-export const auth = async () => {
-  // quit if the token is still valid
-  if (await isTokenValid()) return;
+export const auth = async (callback, forceNewToken = false) => {
+  // if the token is still valid, just run the callback, if one exist, and quit
+  if (!forceNewToken && (await isTokenValid())) return callback && callback();
 
   // otherwise fetch a new access token and expire time
   const fetchObj = {
