@@ -911,15 +911,23 @@ export const texts = {
     description: 'Beschreibung',
     location: 'Ort',
     reportScreen: {
+      alerts: {
+        hint: 'Hinweis',
+        email:
+          'Bitte geben Sie eine E-Mail-Adresse an. Ohne Ihre E-Mail-Adresse können wir nicht für eventuelle Rückfrage mit Ihnen Kontakt aufnehmen.',
+        termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.'
+      },
       back: 'Zurück',
       city: 'Ort',
       description: 'Ausführliche Beschreibung',
       email: 'E-Mail-Adresse',
+      emailHint:
+        'ⓘ Ohne Ihre E-Mail-Adresse können wir nicht für eventuelle Rückfrage mit Ihnen Kontakt aufnehmen.',
       errorText: 'muss ausgefüllt werden',
       firstName: 'Vorname',
       homeNumber: 'Hausnummer',
       lastName: 'Nachname',
-      map: 'ⓘ Für Geo-Koordinaten bitte die Position auf der Karte wählen',
+      mapHint: 'ⓘ Für Geo-Koordinaten bitte die Position auf der Karte wählen',
       next: 'Weiter',
       phone: 'Telefonnummer',
       sendReport: 'Meldung senden',

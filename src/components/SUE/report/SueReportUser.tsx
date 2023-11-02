@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 
 import { colors, normalize, texts } from '../../../config';
 import { Checkbox } from '../../Checkbox';
+import { RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
 
@@ -30,11 +31,13 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => (
     <Wrapper style={styles.noPaddingTop}>
       <Input
         name="email"
-        label={`${texts.sue.reportScreen.email}`}
+        label={`${texts.sue.reportScreen.email} *`}
         placeholder={texts.sue.reportScreen.email}
         keyboardType="email-address"
         control={control}
       />
+
+      <RegularText small>{texts.sue.reportScreen.emailHint}</RegularText>
     </Wrapper>
 
     <Wrapper style={styles.noPaddingTop}>

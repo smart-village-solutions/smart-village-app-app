@@ -3,8 +3,8 @@ import * as Location from 'expo-location';
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
-import { useMutation } from 'react-query';
 import { Divider } from 'react-native-elements';
+import { useMutation } from 'react-query';
 
 import {
   Button,
@@ -15,8 +15,7 @@ import {
   SueReportServices,
   SueReportUser,
   Wrapper,
-  WrapperHorizontal,
-  WrapperRow
+  WrapperHorizontal
 } from '../../components';
 import { colors, device, texts } from '../../config';
 import { useStaticContent } from '../../hooks';
@@ -61,6 +60,7 @@ type TReports = {
   phone: string;
   street: string;
   title: string;
+  termsOfService: string;
   zipCode: string;
 };
 
@@ -109,8 +109,15 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   const { mutateAsync } = useMutation(postRequests);
 
   const onSubmit = async (sueReportData: TReports) => {
+    if (!sueReportData.email) {
+      return Alert.alert(texts.sue.reportScreen.alerts.hint, texts.sue.reportScreen.alerts.email);
+    }
+
     if (!sueReportData.termsOfService) {
-      return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.termsOfService);
+      return Alert.alert(
+        texts.sue.reportScreen.alerts.hint,
+        texts.sue.reportScreen.alerts.termsOfService
+      );
     }
 
     if (
