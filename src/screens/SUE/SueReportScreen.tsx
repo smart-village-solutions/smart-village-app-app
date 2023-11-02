@@ -82,6 +82,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
 
+  const outerScrollViewRef = useRef(null);
   const scrollViewRef = useRef(null);
 
   const {
@@ -166,6 +167,11 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
         y: 0,
         animated: true
       });
+      outerScrollViewRef?.current?.scrollTo({
+        x: 0,
+        y: 0,
+        animated: false
+      });
     }
   };
 
@@ -176,6 +182,11 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
         x: device.width * (currentPage - 1),
         y: 0,
         animated: true
+      });
+      outerScrollViewRef?.current?.scrollTo({
+        x: 0,
+        y: 0,
+        animated: false
       });
     }
   };
@@ -191,7 +202,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   return (
     <>
       <SueReportProgress progress={data} currentProgress={currentPage + 1} />
-      <ScrollView>
+      <ScrollView ref={outerScrollViewRef}>
         <ScrollView
           horizontal
           pagingEnabled
