@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import CircularProgress from 'react-native-circular-progress-indicator';
 import { Divider, normalize } from 'react-native-elements';
 
 import { SettingsContext } from '../../../SettingsProvider';
+import { colors } from '../../../config';
 import { BoldText, RegularText } from '../../Text';
 import { Wrapper, WrapperRow } from '../../Wrapper';
-import { colors } from '../../../config';
 
 type TProgress = {
   title: string;
@@ -22,23 +23,25 @@ export const SueReportProgress = ({
   const { globalSettings } = useContext(SettingsContext);
   const { appDesignSystem = {} } = globalSettings;
   const { sueProgress = {} } = appDesignSystem;
-  const {
-    containerStyle = {},
-    subtitleStyle = {},
-    textContainer = {},
-    titleStyle = {}
-  } = sueProgress;
+  const { subtitleStyle = {}, textContainer = {}, titleStyle = {} } = sueProgress;
 
   return progress?.map(
     (item, index) =>
       index === currentProgress - 1 && (
         <Wrapper key={index}>
           <WrapperRow spaceBetween>
-            <View style={[styles.progressContainer, !!containerStyle && containerStyle]}>
-              <Text>
-                {currentProgress} / {progress.length}
-              </Text>
-            </View>
+            <CircularProgress
+              value={(100 * currentProgress) / progress.length}
+              activeStrokeColor={colors.primary}
+              inActiveStrokeColor={colors.primary + '10'}
+              progressValueColor={colors.darkText}
+              radius={normalize(30)}
+              showProgressValue={false}
+              title={`${currentProgress} / ${progress.length}`}
+              titleColor={colors.darkText}
+              titleStyle={{ fontSize: normalize(12) }}
+            />
+
             <View style={[styles.textContainer, !!textContainer && textContainer]}>
               <BoldText style={!!titleStyle && titleStyle}>{item.title}</BoldText>
               <RegularText small style={!!subtitleStyle && subtitleStyle}>
@@ -58,14 +61,5 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     width: '80%'
-  },
-  progressContainer: {
-    alignItems: 'center',
-    borderColor: colors.primary,
-    borderRadius: normalize(30),
-    borderWidth: normalize(6),
-    height: normalize(60),
-    justifyContent: 'center',
-    width: normalize(60)
   }
 });

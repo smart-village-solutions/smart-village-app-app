@@ -99,7 +99,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
     }
   });
 
-  const { mutateAsync, isError } = useMutation(postRequests);
+  const { mutateAsync } = useMutation(postRequests);
 
   const onSubmit = async (sueReportData: TReports) => {
     if (!sueReportData.termsOfService) {
