@@ -147,20 +147,14 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 
     setIsLoading(true);
     mutateAsync(formData)
-      .then(() => {
-        setIsDone(true);
-        navigation.goBack();
-        Alert.alert(
-          texts.defectReport.successScreen.header,
-          texts.defectReport.successScreen.entry
-        );
-      })
+      .then(() => setIsDone(true))
       .catch(() => {
         setIsLoading(false);
 
         Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
         return;
-      });
+      })
+      .finally(() => setIsLoading(false));
   };
 
   const handleNextPage = () => {
