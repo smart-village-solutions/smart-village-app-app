@@ -2,8 +2,8 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { useQuery } from 'react-query';
 import { ListItem } from 'react-native-elements';
+import { useQuery } from 'react-query';
 
 import { SettingsContext } from '../../SettingsProvider';
 import {
@@ -14,7 +14,6 @@ import {
   RegularText,
   SafeAreaViewFlex,
   SueStatus,
-  TextListItem,
   Touchable,
   Wrapper
 } from '../../components';

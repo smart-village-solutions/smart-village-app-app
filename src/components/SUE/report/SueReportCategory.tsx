@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useQuery } from 'react-query';
 
 import { colors, normalize } from '../../../config';
-import { useSueData } from '../../../hooks';
-import { QUERY_TYPES } from '../../../queries';
+import { QUERY_TYPES, getQuery } from '../../../queries';
 import { BoldText } from '../../Text';
 
 export const SueReportCategory = ({
@@ -13,7 +13,9 @@ export const SueReportCategory = ({
   serviceCode: string;
   setServiceCode: any;
 }) => {
-  const { data } = useSueData({ query: QUERY_TYPES.SUE.SERVICES });
+  const { data, isError } = useQuery([QUERY_TYPES.SUE.SERVICES], () =>
+    getQuery(QUERY_TYPES.SUE.SERVICES)()
+  );
 
   return (
     <View style={styles.container}>

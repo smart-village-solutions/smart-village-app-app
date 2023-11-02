@@ -31,7 +31,7 @@ export const parseSueData = (data, appDesignSystem) => {
       address: item.address.replace('\r\n ', '\r\n'),
       aspectRatio: parsedImageAspectRatio('361:203'),
       bottomDivider: false,
-      iconName: matchedStatus.iconName,
+      iconName: matchedStatus?.iconName,
       params: {
         title: item.title,
         query: QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
@@ -42,7 +42,7 @@ export const parseSueData = (data, appDesignSystem) => {
       },
       picture: { url: mainImageOfMediaContents(parsedMediaUrl) },
       routeName: ScreenName.Detail,
-      status: matchedStatus.status,
+      status: matchedStatus?.status,
       subtitle: undefined
     };
   });

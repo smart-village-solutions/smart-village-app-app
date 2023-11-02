@@ -4,19 +4,19 @@ import { useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useMutation } from 'react-query';
 
-import { colors, device, texts } from '../../../config';
-import { useStaticContent } from '../../../hooks';
-import { postRequests } from '../../../queries/SUE';
-import { Button } from '../../Button';
-import { LoadingContainer } from '../../LoadingContainer';
 import {
+  Button,
+  LoadingContainer,
   SueReportCategory,
   SueReportDescription,
   SueReportLocation,
   SueReportProgress,
-  SueReportUser
-} from '../../SUE';
-import { Wrapper } from '../../Wrapper';
+  SueReportUser,
+  Wrapper
+} from '../../components';
+import { colors, device, texts } from '../../config';
+import { useStaticContent } from '../../hooks';
+import { postRequests } from '../../queries/SUE';
 
 const Content = (
   content: 'category' | 'description' | 'location' | 'user',
