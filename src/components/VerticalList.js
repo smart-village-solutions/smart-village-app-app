@@ -19,6 +19,7 @@ export const VerticalList = ({
   refetch,
   fetchMoreData,
   ListEmptyComponent,
+  ListFooterLoadingIndicator,
   ListHeaderComponent,
   navigation,
   noSubtitle,
@@ -58,8 +59,12 @@ export const VerticalList = ({
       ListFooterComponent={() => {
         if (data?.length >= MAX_INITIAL_NUM_TO_RENDER) {
           if (!listEndReached) {
+            if (ListFooterLoadingIndicator) {
+              return <ListFooterLoadingIndicator />;
+            }
+
             return (
-              <ActivityIndicator color={colors.refreshControl} style={{ margin: normalize(14) }} />
+              <ActivityIndicator color={colors.refreshControl} style={styles.loadingIndicator} />
             );
           } else if (listEndReached && showBackToTop) {
             return (
@@ -105,6 +110,9 @@ const styles = StyleSheet.create({
   contentContainerStyle: {
     flexGrow: 1
   },
+  loadingIndicator: {
+    margin: normalize(14)
+  },
   spacer: {
     height: normalize(70)
   }
@@ -116,6 +124,7 @@ VerticalList.propTypes = {
   fetchMoreData: PropTypes.func,
   leftImage: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
+  ListFooterLoadingIndicator: PropTypes.func,
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,

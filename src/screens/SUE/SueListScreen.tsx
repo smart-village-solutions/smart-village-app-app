@@ -7,7 +7,12 @@ import { useQuery } from 'react-query';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { ListComponent, LoadingContainer, SafeAreaViewFlex } from '../../components';
+import {
+  ListComponent,
+  LoadingContainer,
+  SafeAreaViewFlex,
+  SueLoadingIndicator
+} from '../../components';
 import { colors } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { getQuery } from '../../queries';
@@ -53,6 +58,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         navigation={navigation}
         query={query}
         data={listItems}
+        ListFooterLoadingIndicator={SueLoadingIndicator}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
