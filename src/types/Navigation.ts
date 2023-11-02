@@ -54,6 +54,7 @@ export enum ScreenName {
   Settings = 'Settings',
   SueList = 'SueList',
   SueMap = 'SueMap',
+  SueReport = 'SueReport',
   SurveyDetail = 'SurveyDetail',
   SurveyOverview = 'SurveyOverview',
   TilesScreen = 'TilesScreen',

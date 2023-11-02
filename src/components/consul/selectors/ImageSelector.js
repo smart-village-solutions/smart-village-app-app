@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
-import { Alert, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
@@ -16,7 +16,7 @@ import { Image } from '../../Image';
 import { RegularText } from '../../Text';
 import { WrapperRow } from '../../Wrapper';
 
-const { IMAGE_TYPE_REGEX, URL_REGEX } = consts;
+const { IMAGE_SELECTOR_TYPES, IMAGE_TYPE_REGEX, URL_REGEX } = consts;
 
 const deleteImageAlert = (onPress) =>
   Alert.alert(
@@ -35,7 +35,15 @@ const deleteImageAlert = (onPress) =>
     ]
   );
 
-export const ImageSelector = ({ control, errorType, field, imageId, isMultiImages, item }) => {
+export const ImageSelector = ({
+  control,
+  errorType,
+  field,
+  imageId,
+  isMultiImages,
+  item,
+  selectorType
+}) => {
   const { buttonTitle, infoText } = item;
   const { name, onChange, value } = field;
 
@@ -92,15 +100,58 @@ export const ImageSelector = ({ control, errorType, field, imageId, isMultiImage
     /* used to specify the mimeType when uploading to the server */
     const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
     const mimeType = `${type}/${imageType}`;
+    const uriSplitForImageName = uri.split('/');
+    const imageName = uriSplitForImageName[uriSplitForImageName.length - 1];
 
     errorTextGenerator({ errorType, infoAndErrorText, mimeType, setInfoAndErrorText, uri });
 
-    setImagesAttributes([...imagesAttributes, { uri, mimeType }]);
+    setImagesAttributes([...imagesAttributes, { uri, mimeType, imageName }]);
   };
 
   const values = jsonParser(value);
 
   if (isMultiImages) {
+    if (selectorType === IMAGE_SELECTOR_TYPES.SUE) {
+      return (
+        <>
+          <Input
+            {...item}
+            control={control}
+            errorMessage={infoAndErrorText?.[0]?.errorText}
+            hidden
+            name={name}
+            value={JSON.parse(value)}
+          />
+          <RegularText smallest placeholder>
+            {infoText}
+          </RegularText>
+
+          {values?.length < 5 && <Button title={buttonTitle} invert onPress={imageSelect} />}
+
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <WrapperRow>
+              {values?.map((item, index) => (
+                <View key={`image-${index}`} style={{ marginRight: normalize(10) }}>
+                  <TouchableOpacity
+                    style={styles.sueDeleteImageButton}
+                    onPress={() => deleteImageAlert(() => onDeleteImage(index))}
+                  >
+                    <Icon.Close color={colors.lightestText} size={normalize(16)} />
+                  </TouchableOpacity>
+
+                  <Image
+                    source={{ uri: item.uri }}
+                    style={styles.sueImage}
+                    borderRadius={normalize(4)}
+                  />
+                </View>
+              ))}
+            </WrapperRow>
+          </ScrollView>
+        </>
+      );
+    }
+
     return (
       <>
         <Input {...item} control={control} hidden name={name} value={JSON.stringify(value)} />
@@ -175,6 +226,22 @@ const styles = StyleSheet.create({
     height: imageHeight(imageWidth() * 0.6),
     width: imageWidth() * 0.6
   },
+  sueDeleteImageButton: {
+    alignItems: 'center',
+    backgroundColor: colors.accent,
+    borderRadius: normalize(11),
+    height: normalize(22),
+    justifyContent: 'center',
+    left: normalize(10),
+    position: 'absolute',
+    top: normalize(10),
+    width: normalize(22),
+    zIndex: 5
+  },
+  sueImage: {
+    height: imageHeight(imageWidth() * 0.25),
+    width: imageWidth() * 0.3
+  },
   volunteerContainer: {
     marginBottom: normalize(8)
   },
@@ -198,5 +265,6 @@ ImageSelector.propTypes = {
   field: PropTypes.object,
   imageId: PropTypes.string,
   isMultiImages: PropTypes.bool,
-  item: PropTypes.object
+  item: PropTypes.object,
+  selectorType: PropTypes.string
 };

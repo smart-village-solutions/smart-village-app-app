@@ -811,7 +811,8 @@ export const texts = {
     settings: 'Einstellungen',
     sue: {
       mapView: 'Meldungskarte',
-      listView: 'Meldungsliste'
+      listView: 'Meldungsliste',
+      reportView: 'Etwas melden'
     },
     survey: 'Umfrage',
     surveys: 'Umfragen',
@@ -908,7 +909,32 @@ export const texts = {
     currentStatus: 'Aktueller Status',
     datetime: 'Datum und Uhrzeit der Meldung',
     description: 'Beschreibung',
-    location: 'Ort'
+    location: 'Ort',
+    reportScreen: {
+      alerts: {
+        hint: 'Hinweis',
+        email:
+          'Bitte geben Sie eine E-Mail-Adresse an. Ohne Ihre E-Mail-Adresse können wir nicht für eventuelle Rückfrage mit Ihnen Kontakt aufnehmen.',
+        termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.'
+      },
+      back: 'Zurück',
+      city: 'Ort',
+      description: 'Ausführliche Beschreibung',
+      email: 'E-Mail-Adresse',
+      emailHint:
+        'ⓘ Ohne Ihre E-Mail-Adresse können wir nicht für eventuelle Rückfrage mit Ihnen Kontakt aufnehmen.',
+      errorText: 'muss ausgefüllt werden',
+      firstName: 'Vorname',
+      homeNumber: 'Hausnummer',
+      lastName: 'Nachname',
+      mapHint: 'ⓘ Für Geo-Koordinaten bitte die Position auf der Karte wählen',
+      next: 'Weiter',
+      phone: 'Telefonnummer',
+      sendReport: 'Meldung senden',
+      street: 'Straße',
+      title: 'Kurze Beschreibung',
+      zipCode: 'Postleitzahl'
+    }
   },
   survey: {
     archive: 'Umfrage-Archiv',

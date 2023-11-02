@@ -46,6 +46,9 @@ import {
   OParlPersonsScreen,
   OParlSearchScreen,
   SettingsScreen,
+  SueListScreen,
+  SueMapScreen,
+  SueReportScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
   TilesScreen,
@@ -70,7 +73,6 @@ import {
   DetailScreen as BBBUSDetailScreen,
   IndexScreen as BBBUSIndexScreen
 } from '../../screens/BB-BUS';
-import { SueListScreen, SueMapScreen } from '../../screens/SUE';
 import { ScreenName, StackConfig } from '../../types';
 import { consts } from '../consts';
 import { texts } from '../texts';
@@ -358,6 +360,15 @@ export const defaultStackConfig = ({
       screenComponent: SueMapScreen,
       initialParams: {
         title: texts.screenTitles.sue.mapView,
+        query: QUERY_TYPES.SUE.REQUESTS,
+        usedAsInitialScreen: true
+      }
+    },
+    {
+      routeName: ScreenName.SueReport,
+      screenComponent: SueReportScreen,
+      initialParams: {
+        title: texts.screenTitles.sue.reportView,
         query: QUERY_TYPES.SUE.REQUESTS,
         usedAsInitialScreen: true
       }

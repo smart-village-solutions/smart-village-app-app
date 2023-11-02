@@ -28,21 +28,21 @@ export const parseSueData = (data, appDesignSystem) => {
 
     return {
       ...item,
-      address: item.address.replace('\r\n ', '\r\n'),
+      address: item.address?.replace('\r\n ', '\r\n'),
       aspectRatio: parsedImageAspectRatio('361:203'),
       bottomDivider: false,
-      iconName: matchedStatus.iconName,
+      iconName: matchedStatus?.iconName,
       params: {
-        title: item.title,
+        title: item?.title,
         query: QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
-        queryVariables: { id: item.serviceRequestId },
+        queryVariables: { id: item?.serviceRequestId },
         rootRouteName: ROOT_ROUTE_NAMES.SUE,
         bookmarkable: false,
         details: item
       },
       picture: { url: mainImageOfMediaContents(parsedMediaUrl) },
-      routeName: ScreenName.Detail,
-      status: matchedStatus.status,
+      routeName: ScreenName?.Detail,
+      status: matchedStatus?.status,
       subtitle: undefined
     };
   });

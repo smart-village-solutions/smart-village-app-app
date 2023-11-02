@@ -20,6 +20,7 @@ export const baseLocationMarker = {
 
 export const getLocationMarker = (locationObject) => ({
   ...baseLocationMarker,
+  ...locationObject,
   position: {
     ...locationObject.coords,
     latitude: locationObject?.coords?.latitude || locationObject?.coords?.lat,
