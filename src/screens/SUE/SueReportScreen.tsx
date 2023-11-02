@@ -2,13 +2,14 @@
 import * as Location from 'expo-location';
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useMutation } from 'react-query';
 
 import {
   Button,
   LoadingContainer,
+  SafeAreaViewFlex,
   SueReportDescription,
   SueReportLocation,
   SueReportProgress,
@@ -82,7 +83,6 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
 
-  const outerScrollViewRef = useRef(null);
   const scrollViewRef = useRef(null);
 
   const {
@@ -167,11 +167,6 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
         y: 0,
         animated: true
       });
-      outerScrollViewRef?.current?.scrollTo({
-        x: 0,
-        y: 0,
-        animated: false
-      });
     }
   };
 
@@ -182,11 +177,6 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
         x: device.width * (currentPage - 1),
         y: 0,
         animated: true
-      });
-      outerScrollViewRef?.current?.scrollTo({
-        x: 0,
-        y: 0,
-        animated: false
       });
     }
   };
@@ -202,7 +192,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   return (
     <>
       <SueReportProgress progress={data} currentProgress={currentPage + 1} />
-      <ScrollView ref={outerScrollViewRef}>
+      <SafeAreaViewFlex>
         <ScrollView
           horizontal
           pagingEnabled
@@ -211,7 +201,11 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
           showsHorizontalScrollIndicator={false}
         >
           {data?.map((item: TProgress, index: number) => (
-            <View key={index} style={styles.contentContainer}>
+            <ScrollView
+              key={index}
+              keyboardShouldPersistTaps="handled"
+              contentContainerStyle={styles.contentContainer}
+            >
               {Content(
                 item.content,
                 serviceCode,
@@ -221,10 +215,10 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
                 selectedPosition,
                 setSelectedPosition
               )}
-            </View>
+            </ScrollView>
           ))}
         </ScrollView>
-      </ScrollView>
+      </SafeAreaViewFlex>
 
       <WrapperHorizontal>
         <Divider />
@@ -264,7 +258,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   contentContainer: {
-    alignItems: 'center',
     width: device.width
   }
 });
