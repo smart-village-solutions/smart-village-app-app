@@ -9,7 +9,8 @@ import { LoadingSpinner } from '../../LoadingSpinner';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
 import { Map } from '../../map';
-import { baseLocationMarker, getLocationMarker } from '../../settings';
+import { getLocationMarker } from '../../settings';
+import { RegularText } from '../../Text';
 
 export const SueReportLocation = ({
   control,
@@ -28,15 +29,18 @@ export const SueReportLocation = ({
   }
 
   const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
+  const baseLocationMarker = {
+    iconName: 'location'
+  };
 
   let locations = [] as MapMarker[];
 
   if (selectedPosition) {
     locations = [{ ...baseLocationMarker, position: selectedPosition }];
   } else if (alternativePosition) {
-    locations = [getLocationMarker(alternativePosition)];
+    locations = [getLocationMarker({ ...baseLocationMarker, ...alternativePosition })];
   } else if (defaultAlternativePosition) {
-    locations = [getLocationMarker(defaultAlternativePosition)];
+    locations = [getLocationMarker({ ...baseLocationMarker, ...defaultAlternativePosition })];
   }
 
   return (
@@ -44,13 +48,17 @@ export const SueReportLocation = ({
       <Map
         locations={locations}
         mapCenterPosition={{ latitude: 51.1657, longitude: 10.4515 }} // center of Germany
+        mapStyle={styles.map}
         onMapPress={({ nativeEvent }) => {
           setSelectedPosition({
             ...nativeEvent.coordinate
           });
         }}
-        mapStyle={styles.mapStyle}
       />
+
+      <Wrapper>
+        <RegularText small>{texts.sue.reportScreen.map}</RegularText>
+      </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
@@ -98,7 +106,7 @@ const styles = StyleSheet.create({
     paddingTop: normalize(14),
     width: '100%'
   },
-  mapStyle: {
+  map: {
     width: device.width - 2 * normalize(14)
   },
   noPaddingTop: {

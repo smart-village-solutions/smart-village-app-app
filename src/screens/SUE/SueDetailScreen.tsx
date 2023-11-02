@@ -148,7 +148,7 @@ export const SueDetailScreen = ({ route }: Props) => {
                     position: { latitude, longitude }
                   }
                 ]}
-                mapStyle={styles.mapStyle}
+                mapStyle={styles.map}
               />
             )}
           </Wrapper>
@@ -175,7 +175,7 @@ export const SueDetailScreen = ({ route }: Props) => {
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  mapStyle: {
+  map: {
     width: device.width - 2 * normalize(14)
   },
   noPaddingBottom: {

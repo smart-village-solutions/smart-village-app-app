@@ -919,6 +919,7 @@ export const texts = {
       firstName: 'Vorname',
       homeNumber: 'Hausnummer',
       lastName: 'Nachname',
+      map: 'ⓘ Für Geo-Koordinaten bitte die Position auf der Karte wählen',
       next: 'Weiter',
       phone: 'Telefonnummer',
       sendReport: 'Meldung senden',
