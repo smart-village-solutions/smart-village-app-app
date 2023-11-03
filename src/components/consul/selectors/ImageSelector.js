@@ -122,11 +122,14 @@ export const ImageSelector = ({
             name={name}
             value={JSON.parse(value)}
           />
-          <RegularText smallest placeholder>
-            {infoText}
-          </RegularText>
 
-          <Button title={buttonTitle} invert onPress={imageSelect} disabled={values?.length >= 5} />
+          <Button disabled={values?.length >= 5} invert onPress={imageSelect} title={buttonTitle} />
+
+          {!!infoText && (
+            <RegularText small style={styles.sueInfoText}>
+              {infoText}
+            </RegularText>
+          )}
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <WrapperRow>
@@ -241,6 +244,10 @@ const styles = StyleSheet.create({
   sueImage: {
     height: normalize(55),
     width: normalize(88)
+  },
+  sueInfoText: {
+    marginTop: normalize(-7),
+    marginBottom: normalize(5)
   },
   volunteerContainer: {
     marginBottom: normalize(8)
