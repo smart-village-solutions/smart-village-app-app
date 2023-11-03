@@ -140,7 +140,9 @@ export const Map = ({
               onPress={() => onMarkerPress?.(marker.id)}
               zIndex={isActiveMarker ? 1010 : 1}
             >
-              {!!marker.iconName && marker.iconName != 'ownLocation' ? (
+              {!!marker.iconName &&
+              marker.iconName != 'ownLocation' &&
+              marker.iconName != 'location' ? (
                 <>
                   <MapIcon iconColor={isActiveMarker ? colors.accent : undefined} />
                   <View
@@ -161,7 +163,7 @@ export const Map = ({
                   iconColor={
                     selectedMarker && marker.id === selectedMarker ? colors.accent : undefined
                   }
-                  iconName={marker.iconName ? marker.iconName : undefined}
+                  iconName={marker.iconName}
                 />
               )}
             </Marker>
