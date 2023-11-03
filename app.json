@@ -70,14 +70,12 @@
         }
       ],
       [
-        "expo-localization"
-      ],
-      [
         "expo-screen-orientation",
         {
           "initialOrientation": "PORTRAIT"
         }
       ],
+      "expo-localization",
       "sentry-expo",
       "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
     ]
