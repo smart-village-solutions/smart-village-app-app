@@ -13,7 +13,7 @@ export const parseSueData = (data, appDesignSystem) => {
     let parsedMediaUrl = [];
 
     try {
-      const mediaArray = item?.mediaUrl || JSON.parse(item?.media_url);
+      const mediaArray = item.mediaUrl || JSON.parse(item.media_url);
       parsedMediaUrl = mediaArray.map((mediaItem) => ({
         id: mediaItem.id,
         sourceUrl: { url: mediaItem.url },
@@ -33,15 +33,15 @@ export const parseSueData = (data, appDesignSystem) => {
       bottomDivider: false,
       iconName: matchedStatus?.iconName,
       params: {
-        title: item?.title,
+        title: item.title,
         query: QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID,
-        queryVariables: { id: item?.serviceRequestId },
+        queryVariables: { id: item.serviceRequestId },
         rootRouteName: ROOT_ROUTE_NAMES.SUE,
         bookmarkable: false,
         details: item
       },
       picture: { url: mainImageOfMediaContents(parsedMediaUrl) },
-      routeName: ScreenName?.Detail,
+      routeName: ScreenName.Detail,
       status: matchedStatus?.status,
       subtitle: undefined
     };

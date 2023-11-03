@@ -57,14 +57,14 @@ export const SueReportLocation = ({
       />
 
       <Wrapper>
-        <RegularText small>{texts.sue.reportScreen.map}</RegularText>
+        <RegularText small>{texts.sue.report.mapHint}</RegularText>
       </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="street"
-          label={`${texts.sue.reportScreen.street}`}
-          placeholder={texts.sue.reportScreen.street}
+          label={`${texts.sue.report.street} *`}
+          placeholder={texts.sue.report.street}
           control={control}
         />
       </Wrapper>
@@ -72,8 +72,8 @@ export const SueReportLocation = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="homeNumber"
-          label={`${texts.sue.reportScreen.homeNumber}`}
-          placeholder={texts.sue.reportScreen.homeNumber}
+          label={`${texts.sue.report.homeNumber} *`}
+          placeholder={texts.sue.report.homeNumber}
           keyboardType="numeric"
           control={control}
         />
@@ -82,8 +82,8 @@ export const SueReportLocation = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="zipCode"
-          label={`${texts.sue.reportScreen.zipCode}`}
-          placeholder={texts.sue.reportScreen.zipCode}
+          label={`${texts.sue.report.zipCode} *`}
+          placeholder={texts.sue.report.zipCode}
           keyboardType="numeric"
           control={control}
         />
@@ -92,8 +92,8 @@ export const SueReportLocation = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="city"
-          label={`${texts.sue.reportScreen.city}`}
-          placeholder={texts.sue.reportScreen.city}
+          label={`${texts.sue.report.city} *`}
+          placeholder={texts.sue.report.city}
           control={control}
         />
       </Wrapper>

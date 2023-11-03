@@ -910,11 +910,13 @@ export const texts = {
     datetime: 'Datum und Uhrzeit der Meldung',
     description: 'Beschreibung',
     location: 'Ort',
-    reportScreen: {
+    report: {
       alerts: {
-        hint: 'Hinweis',
+        address: 'Bitte stellen Sie sicher, dass Sie Ihre Adressdaten korrekt eingeben',
+        contact: 'Bitte stellen Sie sicher, dass Sie Ihre Kontaktdaten korrekt eingeben.',
         email:
           'Bitte geben Sie eine E-Mail-Adresse an. Ohne Ihre E-Mail-Adresse können wir nicht für eventuelle Rückfrage mit Ihnen Kontakt aufnehmen.',
+        hint: 'Hinweis',
         termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.'
       },
       back: 'Zurück',
@@ -926,6 +928,7 @@ export const texts = {
       errorText: 'muss ausgefüllt werden',
       firstName: 'Vorname',
       homeNumber: 'Hausnummer',
+      imageHint: 'ⓘ Es können bis zu 5 Fotos hochgeladen werden',
       lastName: 'Nachname',
       mapHint: 'ⓘ Für Geo-Koordinaten bitte die Position auf der Karte wählen',
       next: 'Weiter',
