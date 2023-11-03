@@ -13,8 +13,8 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => (
     <Wrapper style={styles.noPaddingTop}>
       <Input
         name="firstName"
-        label={`${texts.sue.reportScreen.firstName}`}
-        placeholder={texts.sue.reportScreen.firstName}
+        label={`${texts.sue.report.firstName} *`}
+        placeholder={texts.sue.report.firstName}
         control={control}
       />
     </Wrapper>
@@ -22,8 +22,8 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => (
     <Wrapper style={styles.noPaddingTop}>
       <Input
         name="lastName"
-        label={`${texts.sue.reportScreen.lastName}`}
-        placeholder={texts.sue.reportScreen.lastName}
+        label={`${texts.sue.report.lastName} *`}
+        placeholder={texts.sue.report.lastName}
         control={control}
       />
     </Wrapper>
@@ -31,20 +31,20 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => (
     <Wrapper style={styles.noPaddingTop}>
       <Input
         name="email"
-        label={`${texts.sue.reportScreen.email} *`}
-        placeholder={texts.sue.reportScreen.email}
+        label={`${texts.sue.report.email} *`}
+        placeholder={texts.sue.report.email}
         keyboardType="email-address"
         control={control}
       />
 
-      <RegularText small>{texts.sue.reportScreen.emailHint}</RegularText>
+      <RegularText small>{texts.sue.report.emailHint}</RegularText>
     </Wrapper>
 
     <Wrapper style={styles.noPaddingTop}>
       <Input
         name="phone"
-        label={`${texts.sue.reportScreen.phone}`}
-        placeholder={texts.sue.reportScreen.phone}
+        label={`${texts.sue.report.phone}`}
+        placeholder={texts.sue.report.phone}
         keyboardType="phone-pad"
         control={control}
       />

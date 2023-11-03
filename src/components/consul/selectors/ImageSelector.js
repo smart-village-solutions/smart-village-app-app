@@ -122,11 +122,14 @@ export const ImageSelector = ({
             name={name}
             value={JSON.parse(value)}
           />
-          <RegularText smallest placeholder>
-            {infoText}
-          </RegularText>
 
-          {values?.length < 5 && <Button title={buttonTitle} invert onPress={imageSelect} />}
+          <Button disabled={values?.length >= 5} invert onPress={imageSelect} title={buttonTitle} />
+
+          {!!infoText && (
+            <RegularText small style={styles.sueInfoText}>
+              {infoText}
+            </RegularText>
+          )}
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <WrapperRow>
@@ -228,7 +231,7 @@ const styles = StyleSheet.create({
   },
   sueDeleteImageButton: {
     alignItems: 'center',
-    backgroundColor: colors.accent,
+    backgroundColor: colors.placeholder,
     borderRadius: normalize(11),
     height: normalize(22),
     justifyContent: 'center',
@@ -239,8 +242,12 @@ const styles = StyleSheet.create({
     zIndex: 5
   },
   sueImage: {
-    height: imageHeight(imageWidth() * 0.25),
-    width: imageWidth() * 0.3
+    height: normalize(55),
+    width: normalize(88)
+  },
+  sueInfoText: {
+    marginTop: normalize(-7),
+    marginBottom: normalize(5)
   },
   volunteerContainer: {
     marginBottom: normalize(8)

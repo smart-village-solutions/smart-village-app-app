@@ -14,8 +14,8 @@ export const SueReportDescription = ({ control }: { control: any; errors: any })
     <Wrapper style={styles.noPaddingTop}>
       <Input
         name="title"
-        label={`${texts.sue.reportScreen.title} *`}
-        placeholder={texts.sue.reportScreen.title}
+        label={`${texts.sue.report.title} *`}
+        placeholder={texts.sue.report.title}
         control={control}
       />
     </Wrapper>
@@ -23,8 +23,8 @@ export const SueReportDescription = ({ control }: { control: any; errors: any })
     <Wrapper style={styles.noPaddingTop}>
       <Input
         name="description"
-        label={`${texts.sue.reportScreen.description} *`}
-        placeholder={texts.sue.reportScreen.description}
+        label={`${texts.sue.report.description} *`}
+        placeholder={texts.sue.report.description}
         multiline
         control={control}
       />
@@ -42,6 +42,7 @@ export const SueReportDescription = ({ control }: { control: any; errors: any })
               selectorType: IMAGE_SELECTOR_TYPES.SUE,
               item: {
                 name: 'images',
+                infoText: texts.sue.report.imageHint,
                 label: texts.volunteer.images,
                 buttonTitle: texts.volunteer.addImage
               }

@@ -1,4 +1,3 @@
-/* eslint-disable complexity */
 import * as Location from 'expo-location';
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -8,6 +7,7 @@ import { useMutation } from 'react-query';
 
 import {
   Button,
+  DefaultKeyboardAvoidingView,
   LoadingContainer,
   SafeAreaViewFlex,
   SueReportDescription,
@@ -90,7 +90,8 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   const {
     control,
     formState: { errors },
-    handleSubmit
+    handleSubmit,
+    getValues
   } = useForm({
     mode: 'onBlur',
     defaultValues: {
@@ -113,14 +114,11 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 
   const onSubmit = async (sueReportData: TReports) => {
     if (!sueReportData.email) {
-      return Alert.alert(texts.sue.reportScreen.alerts.hint, texts.sue.reportScreen.alerts.email);
+      return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.email);
     }
 
     if (!sueReportData.termsOfService) {
-      return Alert.alert(
-        texts.sue.reportScreen.alerts.hint,
-        texts.sue.reportScreen.alerts.termsOfService
-      );
+      return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.termsOfService);
     }
 
     if (
@@ -129,13 +127,14 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
       !sueReportData.zipCode ||
       !sueReportData.city
     ) {
-      Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
-
-      setIsLoading(false);
-      return;
+      return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.address);
     }
 
     const addressString = `${sueReportData.street}; ${sueReportData.homeNumber}; ${sueReportData.zipCode}; ${sueReportData.city}`;
+
+    if (!sueReportData.firstName || !sueReportData.lastName || !sueReportData.email) {
+      return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.contact);
+    }
 
     const formData = {
       addressString,
@@ -151,8 +150,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
       .catch(() => {
         setIsLoading(false);
 
-        Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
-        return;
+        return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
       })
       .finally(() => setIsLoading(false));
   };
@@ -192,10 +190,12 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   }
 
   return (
-    <>
+    <SafeAreaViewFlex>
       <SueReportProgress progress={data} currentProgress={currentPage + 1} />
-      <SafeAreaViewFlex>
+
+      <DefaultKeyboardAvoidingView>
         <ScrollView
+          keyboardShouldPersistTaps="handled"
           horizontal
           pagingEnabled
           ref={scrollViewRef}
@@ -203,11 +203,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
           showsHorizontalScrollIndicator={false}
         >
           {data?.map((item: TProgress, index: number) => (
-            <ScrollView
-              key={index}
-              keyboardShouldPersistTaps="handled"
-              contentContainerStyle={styles.contentContainer}
-            >
+            <ScrollView key={index} contentContainerStyle={styles.contentContainer}>
               {Content(
                 item.content,
                 serviceCode,
@@ -220,7 +216,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
             </ScrollView>
           ))}
         </ScrollView>
-      </SafeAreaViewFlex>
+      </DefaultKeyboardAvoidingView>
 
       <WrapperHorizontal>
         <Divider />
@@ -229,10 +225,11 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
       <Wrapper style={[styles.buttonContainer, currentPage !== 0 && styles.buttonContainerRow]}>
         {currentPage !== 0 && (
           <Button
+            disabled={isLoading}
             invert
             notFullWidth
             onPress={handlePrevPage}
-            title={texts.sue.reportScreen.back}
+            title={texts.sue.report.back}
           />
         )}
 
@@ -241,13 +238,11 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
           notFullWidth={currentPage !== 0}
           onPress={currentPage < data.length - 1 ? handleNextPage : handleSubmit(onSubmit)}
           title={
-            currentPage === data.length - 1
-              ? texts.sue.reportScreen.sendReport
-              : texts.sue.reportScreen.next
+            currentPage === data.length - 1 ? texts.sue.report.sendReport : texts.sue.report.next
           }
         />
       </Wrapper>
-    </>
+    </SafeAreaViewFlex>
   );
 };
 
