@@ -13,6 +13,7 @@ import {
   Map,
   RegularText,
   SafeAreaViewFlex,
+  SueImageFallback,
   SueStatus,
   Touchable,
   Wrapper
@@ -113,12 +114,14 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
             delayPressIn={0}
             onPress={() => navigation.push(item.routeName, item.params)}
           >
-            {!!item.picture?.url && (
+            {!!item.picture?.url ? (
               <Image
                 source={{ uri: item.picture.url }}
                 style={styles.image}
                 containerStyle={styles.imageContainer}
               />
+            ) : (
+              <SueImageFallback style={styles.image} />
             )}
 
             <ListItem.Content>
