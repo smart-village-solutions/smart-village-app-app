@@ -224,7 +224,13 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 
       <Wrapper style={[styles.buttonContainer, currentPage !== 0 && styles.buttonContainerRow]}>
         {currentPage !== 0 && (
-          <Button invert notFullWidth onPress={handlePrevPage} title={texts.sue.report.back} />
+          <Button
+            disabled={isLoading}
+            invert
+            notFullWidth
+            onPress={handlePrevPage}
+            title={texts.sue.report.back}
+          />
         )}
 
         <Button
