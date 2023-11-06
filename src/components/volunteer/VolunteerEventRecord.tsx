@@ -115,7 +115,7 @@ export const VolunteerEventRecord = ({
               onPress: () =>
                 navigation.navigate(ScreenName.VolunteerForm, {
                   query: QUERY_TYPES.VOLUNTEER.CALENDAR,
-                  calendarData: data,
+                  calendarData: { ...data, isPublic: content?.metadata?.visibility },
                   groupId: content?.metadata?.contentcontainer_id
                 }),
               route,
