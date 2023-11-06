@@ -149,9 +149,12 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
           <Map
             locations={[
               {
-                position: { latitude, longitude }
+                position: { latitude, longitude },
+                iconName: category?.iconName,
+                id
               }
             ]}
+            selectedMarker={id}
           />
         </View>
       )}

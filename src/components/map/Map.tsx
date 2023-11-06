@@ -159,9 +159,7 @@ export const Map = ({
                 </>
               ) : (
                 <MapIcon
-                  iconColor={
-                    selectedMarker && marker.id === selectedMarker ? colors.accent : undefined
-                  }
+                  iconColor={isActiveMarker ? colors.lighterPrimary : colors.primary}
                   iconName={marker.iconName ? marker.iconName : undefined}
                 />
               )}
