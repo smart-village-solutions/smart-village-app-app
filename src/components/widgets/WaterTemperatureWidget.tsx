@@ -27,6 +27,7 @@ export const WaterTemperatureWidget = ({ text, additionalProps }: WidgetProps) =
     <DefaultWidget
       count={(temperature ?? '—') + '°C'}
       Icon={() => <Icon.NamedIcon name={additionalProps?.iconName} size={normalize(22)} />}
+      image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.water}
     />

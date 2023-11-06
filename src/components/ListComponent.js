@@ -27,6 +27,7 @@ const getComponent = (query, horizontal, sectionByDate) => {
   switch (query) {
     case QUERY_TYPES.CATEGORIES:
       return CategoryList;
+    case QUERY_TYPES.STATIC_CONTENT_LIST:
     case QUERY_TYPES.POINTS_OF_INTEREST:
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
     case QUERY_TYPES.TOURS:

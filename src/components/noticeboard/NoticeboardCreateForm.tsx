@@ -155,7 +155,7 @@ export const NoticeboardCreateForm = ({
         <Controller
           name="noticeboardType"
           rules={{ required: texts.noticeboard.alerts.noticeboardType }}
-          render={({ onChange, value }) => (
+          render={({ field: { onChange, value } }) => (
             <>
               {NOTICEBOARD_TYPE_OPTIONS.map((noticeboardItem) => (
                 <Checkbox
@@ -219,7 +219,7 @@ export const NoticeboardCreateForm = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="dateEnd"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
                 mode: 'date',
@@ -244,7 +244,7 @@ export const NoticeboardCreateForm = ({
 
         <Controller
           name="termsOfService"
-          render={({ onChange, value }) => (
+          render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}
               onPress={() => onChange(!value)}

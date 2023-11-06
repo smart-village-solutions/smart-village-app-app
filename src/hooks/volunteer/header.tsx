@@ -1,15 +1,18 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import { HeaderRight } from '../../components';
-import { navigatorConfig } from '../../config/navigation';
 import { QUERY_TYPES } from '../../queries';
+import { SettingsContext } from '../../SettingsProvider';
 
 export const useConversationsHeader = ({
   query,
   navigation,
   route
 }: { query: string } & StackScreenProps<any>) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { navigation: navigationType } = globalSettings;
+
   useEffect(() => {
     if (query !== QUERY_TYPES.VOLUNTEER.CONVERSATIONS) return;
 
@@ -20,7 +23,7 @@ export const useConversationsHeader = ({
             navigation,
             route,
             withChat: true,
-            withDrawer: navigatorConfig.type === 'drawer'
+            withDrawer: navigationType === 'drawer'
           }}
         />
       )
@@ -33,6 +36,9 @@ export const useCalendarsHeader = ({
   navigation,
   route
 }: { query: string } & StackScreenProps<any>) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { navigation: navigationType } = globalSettings;
+
   useEffect(() => {
     if (
       query !== QUERY_TYPES.VOLUNTEER.CALENDAR_ALL &&
@@ -48,7 +54,7 @@ export const useCalendarsHeader = ({
             navigation,
             route,
             withCalendar: true,
-            withDrawer: navigatorConfig.type === 'drawer'
+            withDrawer: navigationType === 'drawer'
           }}
         />
       )
@@ -61,6 +67,9 @@ export const useGroupsHeader = ({
   navigation,
   route
 }: { query: string } & StackScreenProps<any>) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { navigation: navigationType } = globalSettings;
+
   useEffect(() => {
     if (query !== QUERY_TYPES.VOLUNTEER.GROUPS && query !== QUERY_TYPES.VOLUNTEER.GROUPS_MY) return;
 
@@ -71,7 +80,7 @@ export const useGroupsHeader = ({
             navigation,
             route,
             withGroup: true,
-            withDrawer: navigatorConfig.type === 'drawer'
+            withDrawer: navigationType === 'drawer'
           }}
         />
       )

@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
 
-import { Map, RegularText, Touchable, Wrapper, WrapperRow } from '../components';
-import { colors, Icon, normalize } from '../config';
+import { Map, TextListItem, Wrapper } from '../components';
+import { colors, normalize } from '../config';
 import { navigationToArtworksDetailScreen } from '../helpers';
+import { SettingsContext } from '../SettingsProvider';
 
 export const MapViewScreen = ({ navigation, route }) => {
   const {
@@ -15,6 +16,9 @@ export const MapViewScreen = ({ navigation, route }) => {
     onMarkerPress,
     showsUserLocation
   } = route?.params;
+
+  const { globalSettings } = useContext(SettingsContext);
+  const { navigation: navigationType } = globalSettings;
 
   /* the improvement in the next comment line has been added for augmented reality feature. */
   const { data } = route?.params?.augmentedRealityData ?? [];
@@ -39,29 +43,27 @@ export const MapViewScreen = ({ navigation, route }) => {
           showsUserLocation
         }}
       />
-      {isAugmentedReality && modelData && (
-        <Wrapper>
-          <Touchable
-            onPress={() =>
-              navigationToArtworksDetailScreen({
-                data,
-                isNavigation: true,
-                modelId,
-                navigation
-              })
-            }
-          >
-            <WrapperRow spaceBetween>
-              <View style={styles.augmentedRealityInfoContainer}>
-                {!!modelData.title && <RegularText big>{modelData.title}</RegularText>}
-                {!!modelData.payload?.locationInfo && (
-                  <RegularText small>{modelData.payload.locationInfo}</RegularText>
-                )}
-              </View>
 
-              <Icon.ArrowRight size={normalize(30)} />
-            </WrapperRow>
-          </Touchable>
+      {isAugmentedReality && modelData && (
+        <Wrapper
+          small
+          style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}
+        >
+          <TextListItem
+            item={{
+              ...modelData,
+              bottomDivider: false,
+              subtitle: modelData.payload.locationInfo,
+              onPress: () =>
+                navigationToArtworksDetailScreen({
+                  data,
+                  isNavigation: true,
+                  modelId,
+                  navigation
+                })
+            }}
+            navigation={navigation}
+          />
         </Wrapper>
       )}
     </>
@@ -79,11 +81,32 @@ const styles = StyleSheet.create({
   marginTop: {
     marginTop: normalize(14)
   },
-  p: {
-    color: colors.placeholder,
-    marginBottom: normalize(16)
+  listItemContainer: {
+    backgroundColor: colors.surface,
+    borderRadius: normalize(12),
+    left: '4%',
+    position: 'absolute',
+    right: '4%',
+    width: '92%',
+    // shadow:
+    elevation: 2,
+    shadowColor: colors.shadowRgba,
+    shadowOffset: {
+      height: 5,
+      width: 0
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 3
   }
 });
+
+const stylesWithProps = ({ navigationType }) => {
+  return StyleSheet.create({
+    position: {
+      bottom: navigationType === 'drawer' ? '8%' : '4%'
+    }
+  });
+};
 
 MapViewScreen.propTypes = {
   navigation: PropTypes.object,

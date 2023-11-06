@@ -96,7 +96,7 @@ export type ScreenConfig = {
   screenComponent: (props: { navigation: any; route: any }) => JSX.Element | null;
   screenOptions?: ScreenOptions;
   // eslint-disable-next-line @typescript-eslint/ban-types
-  inititalParams?: Object;
+  initialParams?: Object;
 };
 
 export type StackConfig = {

@@ -21,7 +21,7 @@ import { Map } from './Map';
 type Props = {
   filterByOpeningTimes?: boolean;
   position?: LocationObject;
-  navigation: StackNavigationProp<never>;
+  navigation: StackNavigationProp<Record<string, any>>;
   queryVariables: {
     category?: string;
     categoryId?: string | number;
@@ -60,13 +60,17 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
 export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariables }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { navigation: navigationType = 'drawer' } = globalSettings;
+  const { navigation: navigationType } = globalSettings;
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime: undefined });
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
   const { data: overviewData, loading } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
     fetchPolicy,
-    variables: queryVariables
+    variables: {
+      ...queryVariables,
+      // if we show the map, we need to fetch all the entries at once and not a limited amount
+      limit: undefined
+    }
   });
 
   let pointsOfInterest: any[] | undefined = overviewData?.[QUERY_TYPES.POINTS_OF_INTEREST];
@@ -130,20 +134,12 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
       {selectedPointOfInterest && !detailsLoading && (
         <Wrapper
           small
-          style={[
-            styles.listItemContainer,
-            stylesWithProps({ navigation: navigationType }).position
-          ]}
+          style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}
         >
           <TextListItem
             item={{
               ...item,
               bottomDivider: false,
-              picture: item?.picture?.url
-                ? item.picture
-                : {
-                    url: 'https://fileserver.smart-village.app/hb-meinquartier/app-icon.png'
-                  },
               subtitle: undefined
             }}
             leftImage
@@ -182,10 +178,10 @@ const styles = StyleSheet.create({
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ navigation }: { navigation: string }) => {
+const stylesWithProps = ({ navigationType }: { navigationType: string }) => {
   return StyleSheet.create({
     position: {
-      bottom: navigation === 'tab' ? '4%' : '8%'
+      bottom: navigationType === 'drawer' ? '8%' : '4%'
     }
   });
 };

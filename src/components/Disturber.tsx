@@ -33,6 +33,7 @@ interface DataItem {
   description: string;
   id: number;
   picture?: { aspectRatio?: { HEIGHT: number; WIDTH: number }; uri: string };
+  showButtonToClose?: boolean;
   title: string;
 }
 
@@ -54,7 +55,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
   );
 
   const setDisturberComplete = () => {
-    setIsVisible((prev) => !prev);
+    setIsVisible(false);
     !!closestItem && addToStore(publicJsonFile, closestItem.id.toString());
   };
 
@@ -78,29 +79,43 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
 
   if (!isVisible || !closestItem) return null;
 
+  const {
+    backgroundColor,
+    button,
+    description,
+    headline,
+    picture,
+    showButtonToClose = true,
+    title
+  } = closestItem;
+
+  const showButton = !!button && !!button.title && !!button.navigationTo && !!button.params;
+
   return (
     <Wrapper style={styles.wrapperPadding}>
-      <View style={[styles.containerRadius, { backgroundColor: closestItem.backgroundColor }]}>
+      <View style={[styles.containerRadius, { backgroundColor }]}>
         {!!closestItem && (
           <>
-            <TouchableOpacity onPress={setDisturberComplete} style={styles.closeButton}>
-              <Icon.Close color={colors.lighterPrimary} size={normalize(16)} />
-            </TouchableOpacity>
+            {showButtonToClose && (
+              <TouchableOpacity onPress={setDisturberComplete} style={styles.closeButton}>
+                <Icon.Close color={colors.lighterPrimary} size={normalize(16)} />
+              </TouchableOpacity>
+            )}
 
-            {!!closestItem.picture && (
+            {!!picture && (
               <Image
-                source={closestItem.picture}
+                source={picture}
                 borderRadius={normalize(8)}
-                aspectRatio={closestItem.picture.aspectRatio || { HEIGHT: 0.7, WIDTH: 1 }}
+                aspectRatio={picture.aspectRatio || { HEIGHT: 0.7, WIDTH: 1 }}
                 resizeMode="cover"
               />
             )}
 
             <Wrapper style={styles.noPaddingBottom}>
               <WrapperHorizontal>
-                {!!closestItem.headline && (
+                {!!headline && (
                   <BoldText center uppercase style={styles.headlineText}>
-                    {closestItem.headline}
+                    {headline}
                   </BoldText>
                 )}
               </WrapperHorizontal>
@@ -108,9 +123,9 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
 
             <Wrapper style={styles.noPaddingTop}>
               <WrapperHorizontal>
-                {!!closestItem.title && (
+                {!!title && (
                   <BoldText center big>
-                    {closestItem.title}
+                    {title}
                   </BoldText>
                 )}
               </WrapperHorizontal>
@@ -118,29 +133,21 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
 
             <Wrapper style={styles.noPaddingTop}>
               <WrapperHorizontal>
-                {!!closestItem.description && (
-                  <RegularText center>{closestItem.description}</RegularText>
-                )}
+                {!!description && <RegularText center>{description}</RegularText>}
               </WrapperHorizontal>
             </Wrapper>
 
             <Wrapper>
               <WrapperHorizontal>
-                {!!closestItem.button &&
-                  !!closestItem.button.title &&
-                  !!closestItem.button.navigationTo &&
-                  !!closestItem.button.params && (
-                    <Button
-                      big
-                      title={closestItem.button.title}
-                      onPress={() => {
-                        navigation.navigate(
-                          closestItem.button.navigationTo,
-                          closestItem.button.params
-                        );
-                      }}
-                    />
-                  )}
+                {showButton && (
+                  <Button
+                    big
+                    title={button.title}
+                    onPress={() => {
+                      navigation.navigate(button.navigationTo, button.params);
+                    }}
+                  />
+                )}
               </WrapperHorizontal>
             </Wrapper>
           </>

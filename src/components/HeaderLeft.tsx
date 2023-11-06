@@ -1,10 +1,11 @@
-import { StackHeaderLeftButtonProps } from '@react-navigation/stack';
+import { HeaderBackButtonProps } from '@react-navigation/elements';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { colors, consts, device, Icon, normalize } from '../config';
 
-export const HeaderLeft = ({ onPress, backImage }: StackHeaderLeftButtonProps) =>
+// TODO: can this be exchanged with https://reactnavigation.org/docs/elements/#headerbackbutton?
+export const HeaderLeft = ({ onPress, backImage }: HeaderBackButtonProps) =>
   onPress ? (
     <View>
       <TouchableOpacity

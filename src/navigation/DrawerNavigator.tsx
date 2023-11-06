@@ -1,14 +1,14 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import _isEmpty from 'lodash/isEmpty';
 import _reduce from 'lodash/reduce';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { device, texts } from '../config';
 import { defaultStackConfig } from '../config/navigation';
 import { useStaticContent } from '../hooks';
 import { ScreenName } from '../types';
+import { OrientationContext } from '../OrientationProvider';
 
 import { getStackNavigator } from './AppStackNavigator';
 import { CustomDrawerContentComponent } from './CustomDrawerContentComponent';
@@ -83,6 +83,7 @@ const Drawer = createDrawerNavigator();
 
 export const DrawerNavigator = () => {
   const { loading, drawerRoutes } = useDrawerRoutes();
+  const { orientation } = useContext(OrientationContext);
 
   if (loading) return <LoadingSpinner loading />;
 
@@ -95,18 +96,16 @@ export const DrawerNavigator = () => {
           drawerRoutes={drawerRoutes}
         />
       )}
-      drawerPosition="right"
-      drawerStyle={styles.drawerContainer}
-      drawerType={device.platform === 'ios' ? 'slide' : 'front'}
+      screenOptions={{
+        drawerPosition: 'right',
+        drawerStyle: {
+          width: orientation === 'landscape' ? device.height * 0.8 : device.width * 0.8
+        },
+        headerShown: false
+      }}
       initialRouteName="AppStack"
     >
       <Drawer.Screen name="AppStack" component={AppStackNavigator} />
     </Drawer.Navigator>
   );
 };
-
-const styles = StyleSheet.create({
-  drawerContainer: {
-    width: device.width > device.height ? device.height * 0.8 : device.width * 0.8
-  }
-});

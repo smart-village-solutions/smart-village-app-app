@@ -10,6 +10,7 @@ import { LunchWidget } from './LunchWidget';
 import { SurveyWidget } from './SurveyWidget';
 import { WaterTemperatureWidget } from './WaterTemperatureWidget';
 import { WeatherWidget } from './WeatherWidget';
+import { WebWidget } from './WebWidget';
 
 type WidgetConfig =
   | ({
@@ -30,7 +31,8 @@ const EXISTING_WIDGETS: {
   lunch: LunchWidget,
   survey: SurveyWidget,
   water: WaterTemperatureWidget,
-  weather: WeatherWidget
+  weather: WeatherWidget,
+  web: WebWidget
 };
 
 export const Widgets = ({ widgetConfigs }: Props) => {

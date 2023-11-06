@@ -412,6 +412,7 @@ export const texts = {
   },
   eventRecord: {
     appointments: 'Termine',
+    appointmentsShowMoreButton: 'Mehr anzeigen',
     description: 'Beschreibung',
     filterByDailyEvents: 'Nur tagesaktuelle anzeigen',
     operatingCompany: 'Veranstalter',

@@ -7,7 +7,7 @@ import { graphqlFetchPolicy } from '../../helpers';
 import { useHomeRefresh, useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery, QUERY_TYPES } from '../../queries';
-import { WidgetProps } from '../../types';
+import { ScreenName, WidgetProps } from '../../types';
 
 import { DefaultWidget } from './DefaultWidget';
 
@@ -20,14 +20,14 @@ export const ConstructionSiteNewsWidget = ({ text, additionalProps }: WidgetProp
 
   const queryVariables = { dataProviderId: additionalProps?.dataProviderId };
 
-  const { data, refetch } = useQuery(getQuery(QUERY_TYPES.NEWS_ITEMS), {
+  const { data, loading, refetch } = useQuery(getQuery(QUERY_TYPES.NEWS_ITEMS), {
     fetchPolicy,
     variables: queryVariables,
     skip: !refreshTime
   });
 
   const onPress = useCallback(() => {
-    navigation.navigate('Index', {
+    navigation.navigate(ScreenName.Index, {
       title: text ?? texts.widgets.constructionSites,
       titleDetail: texts.screenTitles.constructionSite,
       query: QUERY_TYPES.NEWS_ITEMS,
@@ -39,12 +39,13 @@ export const ConstructionSiteNewsWidget = ({ text, additionalProps }: WidgetProp
 
   useHomeRefresh(refetch);
 
-  const count = data?.newsItems?.length;
+  const count = data?.newsItems?.length || 0;
 
   return (
     <DefaultWidget
-      count={count}
+      count={loading ? undefined : count}
       Icon={Icon.ConstructionSite}
+      image={additionalProps?.image}
       onPress={onPress}
       text={text ?? texts.widgets.constructionSites}
     />

@@ -1,9 +1,9 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
+import { SettingsContext } from '../../SettingsProvider';
 import { consts, normalize, texts } from '../../config';
-import { navigatorConfig } from '../../config/navigation';
 import { volunteerBannerImage, volunteerProfileImage, volunteerUserData } from '../../helpers';
 import { useOpenWebScreen } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
@@ -26,6 +26,9 @@ export const VolunteerUser = ({
   navigation,
   route
 }: { data: any } & StackScreenProps<any>) => {
+  const { globalSettings } = useContext(SettingsContext);
+  const { navigation: navigationType } = globalSettings;
+
   const [isMe, setIsMe] = useState<boolean>();
 
   const name = data?.display_name;
@@ -86,7 +89,7 @@ export const VolunteerUser = ({
                   title: data?.display_name
                 }),
               route,
-              withDrawer: navigatorConfig.type === 'drawer',
+              withDrawer: navigationType === 'drawer',
               withEdit: true,
               withShare: true
             }}

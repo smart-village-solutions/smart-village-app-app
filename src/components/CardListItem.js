@@ -10,8 +10,69 @@ import { Image } from './Image';
 import { HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
+const renderCardContent = (item, horizontal) => {
+  const { appDesignSystem = {}, picture, overtitle, subtitle, title } = item;
+  const { contentSequence, imageBorderRadius = 5, imageStyle, textsStyle = {} } = appDesignSystem;
+  const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
+
+  const cardContent = [];
+
+  const sequenceMap = {
+    picture: () => (
+      <Image
+        source={{ uri: picture.url }}
+        style={stylesWithProps({ horizontal }).image}
+        containerStyle={(styles.imageContainer, !!imageStyle && imageStyle)}
+        borderRadius={imageBorderRadius}
+      />
+    ),
+    overtitle: () => (
+      <HeadlineText
+        smallest
+        uppercase
+        style={[
+          styles.overtitle,
+          !!generalStyle && generalStyle,
+          !!overtitleStyle && overtitleStyle
+        ]}
+      >
+        {trimNewLines(overtitle)}
+      </HeadlineText>
+    ),
+    subtitle: () => (
+      <RegularText
+        smallest
+        style={[styles.subtitle, !!generalStyle && generalStyle, !!subtitleStyle && subtitleStyle]}
+      >
+        {subtitle}
+      </RegularText>
+    ),
+    title: () => (
+      <HeadlineText style={[!!generalStyle && generalStyle, !!titleStyle && titleStyle]}>
+        {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
+      </HeadlineText>
+    )
+  };
+
+  if (contentSequence?.length) {
+    contentSequence.forEach((item) => {
+      if (sequenceMap[item]) {
+        cardContent.push(sequenceMap[item]());
+      }
+    });
+  } else {
+    cardContent.push(sequenceMap.picture());
+    cardContent.push(sequenceMap.overtitle());
+    cardContent.push(sequenceMap.subtitle());
+    cardContent.push(sequenceMap.title());
+  }
+
+  return cardContent;
+};
+
 export const CardListItem = memo(({ navigation, horizontal, item }) => {
-  const { routeName: name, params, picture, subtitle, title, overtitle } = item;
+  const { appDesignSystem = {}, params, routeName: name, subtitle, title } = item;
+  const { containerStyle, contentContainerStyle } = appDesignSystem;
 
   // TODO: count articles logic could to be implemented
   return (
@@ -20,30 +81,14 @@ export const CardListItem = memo(({ navigation, horizontal, item }) => {
       onPress={() => navigation && navigation.push(name, params)}
       disabled={!navigation}
     >
-      <Card containerStyle={styles.container}>
-        <View style={stylesWithProps({ horizontal }).contentContainer}>
-          {!!picture && !!picture.url && (
-            <Image
-              source={{ uri: picture.url }}
-              style={stylesWithProps({ horizontal }).image}
-              containerStyle={styles.imageContainer}
-            />
-          )}
-          {!!overtitle && (
-            <HeadlineText smallest uppercase style={styles.overtitle}>
-              {trimNewLines(overtitle)}
-            </HeadlineText>
-          )}
-          {!!title && (
-            <HeadlineText>
-              {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
-            </HeadlineText>
-          )}
-          {!!subtitle && (
-            <RegularText smallest style={styles.subtitle}>
-              {subtitle}
-            </RegularText>
-          )}
+      <Card containerStyle={[styles.container, !!containerStyle && containerStyle]}>
+        <View
+          style={[
+            stylesWithProps({ horizontal }).contentContainer,
+            !!contentContainerStyle && contentContainerStyle
+          ]}
+        >
+          {renderCardContent(item, horizontal)}
         </View>
       </Card>
       <Divider />

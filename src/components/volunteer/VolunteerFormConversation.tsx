@@ -108,7 +108,7 @@ export const VolunteerFormConversation = ({
       <Wrapper>
         <Controller
           name="id"
-          render={({ name, onChange, value }) => {
+          render={({ field: { name, onChange, value } }) => {
             setSelectedUserDisplayName(
               // just prepend a display name to the title if one recipient is selected
               value.length === 1

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import { Icon, normalize, texts } from '../../config';
+import { Icon, colors, normalize, texts } from '../../config';
 import { ScreenName } from '../../types';
 import { RegularText } from '../Text';
 import { Touchable } from '../Touchable';
@@ -15,7 +15,7 @@ export const WhatIsARButton = ({ data, isLoading, navigation, refetch }) => {
       >
         <WrapperRow spaceBetween>
           <RegularText>{texts.augmentedReality.whatIsAugmentedReality}</RegularText>
-          <Icon.ArrowRight size={normalize(20)} />
+          <Icon.ArrowRight color={colors.darkText} size={normalize(20)} />
         </WrapperRow>
       </Touchable>
     </Wrapper>

@@ -15,7 +15,6 @@ export const ImageMessage = ({ message }) => (
 const styles = StyleSheet.create({
   containerStyle: {
     bottom: normalize(24),
-    position: 'absolute',
     left: normalize(14)
   }
 });

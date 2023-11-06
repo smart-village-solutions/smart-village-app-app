@@ -108,7 +108,7 @@ export const VolunteerFormCalendar = ({
   } = useForm<Calendar>({
     mode: 'onBlur',
     defaultValues: {
-      isPublic: 0,
+      isPublic: calendarData?.isPublic || 0,
       calendarId: calendarData?.id || '',
       contentContainerId: groupId || '',
       title: calendarData?.title || '',
@@ -165,7 +165,7 @@ export const VolunteerFormCalendar = ({
       setTimeout(() => {
         filterGroupDropDownData();
       }, 300);
-  }, [isRefetchingGroupsMy]);
+  }, [isRefetchingGroupsMy, filterGroupDropDownData]);
 
   const isFocused = useIsFocused();
 
@@ -231,7 +231,7 @@ export const VolunteerFormCalendar = ({
           groupDropdownData?.length && (
             <Controller
               name="contentContainerId"
-              render={({ name, onChange, value }) => (
+              render={({ field: { name, onChange, value } }) => (
                 <DropdownInput
                   {...{
                     errors,
@@ -266,7 +266,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="startDate"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
                 mode: 'date',
@@ -287,7 +287,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="startTime"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
                 errors,
@@ -306,7 +306,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="endDate"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
                 mode: 'date',
@@ -327,7 +327,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="endTime"
-          render={({ name, onChange, value }) => (
+          render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
                 errors,
@@ -384,7 +384,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="isPublic"
-          render={({ onChange, value }) => (
+          render={({ field: { onChange, value } }) => (
             <CheckBox
               accessibilityRole="button"
               checked={!!value}
@@ -404,7 +404,7 @@ export const VolunteerFormCalendar = ({
       <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="images"
-          render={(field) => (
+          render={({ field }) => (
             <ImageSelector
               {...{
                 control,
@@ -423,7 +423,7 @@ export const VolunteerFormCalendar = ({
         />
         <Controller
           name="documents"
-          render={(field) => (
+          render={({ field }) => (
             <DocumentSelector
               {...{
                 control,

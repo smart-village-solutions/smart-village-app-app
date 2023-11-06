@@ -42,10 +42,11 @@ const MainAppWithApolloProvider = () => {
   const [client, setClient] = useState();
   const [initialGlobalSettings, setInitialGlobalSettings] = useState({
     filter: {},
+    hdvt: {},
+    navigation: 'tab',
     sections: {},
     settings: {},
-    widgets: [],
-    hdvt: {}
+    widgets: []
   });
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
@@ -124,7 +125,8 @@ const MainAppWithApolloProvider = () => {
     const listTypesSettings = (await storageHelper.listTypesSettings()) || {
       [QUERY_TYPES.NEWS_ITEMS]: LIST_TYPES.CARD_TEXT_LIST,
       [QUERY_TYPES.EVENT_RECORDS]: LIST_TYPES.TEXT_LIST,
-      [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: LIST_TYPES.CARD_LIST
+      [QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS]: LIST_TYPES.CARD_LIST,
+      [QUERY_TYPES.STATIC_CONTENT_LIST]: LIST_TYPES.CARD_LIST
     };
 
     let globalSettingsData;
@@ -216,7 +218,7 @@ const MainAppWithApolloProvider = () => {
         }}
       >
         <OnboardingManager>
-          <Navigator />
+          <Navigator navigationType={initialGlobalSettings.navigation} />
         </OnboardingManager>
       </SettingsProvider>
     </ApolloProvider>

@@ -2,7 +2,7 @@ import _sortBy from 'lodash/sortBy';
 import _uniqBy from 'lodash/uniqBy';
 import moment from 'moment';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import {
   ActivityIndicator,
@@ -13,7 +13,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import Autocomplete from 'react-native-autocomplete-input';
-import { Calendar } from 'react-native-calendars';
+import { Calendar as RNCalendar } from 'react-native-calendars';
 
 import {
   Button,
@@ -26,7 +26,16 @@ import {
   Wrapper
 } from '../components';
 import { FeedbackFooter } from '../components/FeedbackFooter';
-import { colors, device, namespace, normalize, secrets, staticRestSuffix, texts } from '../config';
+import {
+  colors,
+  consts,
+  device,
+  namespace,
+  normalize,
+  secrets,
+  staticRestSuffix,
+  texts
+} from '../config';
 import { graphqlFetchPolicy, openLink } from '../helpers';
 import { setupLocales } from '../helpers/calendarHelper';
 import { useRefreshTime, useStaticContent } from '../hooks';
@@ -36,42 +45,12 @@ import { getInAppPermission, showPermissionRequiredAlert } from '../pushNotifica
 import { getQuery, QUERY_TYPES } from '../queries';
 import { SettingsContext } from '../SettingsProvider';
 
-const dotSize = 6;
-
 setupLocales();
 
-const getMarkedDates = (types, streetData) => {
-  let markedDates = {};
+const { CALENDAR } = consts;
+const { DOT_SIZE } = CALENDAR;
 
-  const wasteLocationTypes = streetData?.[QUERY_TYPES.WASTE_ADDRESSES]?.[0]?.wasteLocationTypes;
-
-  if (wasteLocationTypes && types) {
-    wasteLocationTypes.forEach((wasteLocationType) => {
-      // only add marked dates for known types
-      if (!types[wasteLocationType.wasteType]) {
-        return;
-      }
-
-      const { color, selected_color: selectedColor } = types[wasteLocationType.wasteType];
-      wasteLocationType?.listPickUpDates?.forEach((date) => {
-        markedDates[date] = {
-          dots: [...(markedDates[date]?.dots ?? []), { color, selectedColor }]
-        };
-      });
-    });
-  }
-
-  const today = moment().format('YYYY-MM-DD');
-
-  // highlight today
-  markedDates[today] = {
-    ...(markedDates[today] ?? {}),
-    selected: true,
-    selectedColor: colors.lighterPrimary
-  };
-
-  return markedDates;
-};
+const today = moment().format('YYYY-MM-DD');
 
 const getLocationData = (streetData) => {
   return {
@@ -285,6 +264,36 @@ export const WasteCollectionScreen = ({ navigation }) => {
     }
   }, [navigation, usedTypes, streetData]);
 
+  const markedDates = useMemo(() => {
+    let dates = {};
+    const wasteLocationTypes = streetData?.[QUERY_TYPES.WASTE_ADDRESSES]?.[0]?.wasteLocationTypes;
+
+    if (wasteLocationTypes && typesData) {
+      wasteLocationTypes.forEach((wasteLocationType) => {
+        // only add marked dates for known types
+        if (!typesData[wasteLocationType.wasteType]) {
+          return;
+        }
+
+        const { color, selected_color: selectedColor } = typesData[wasteLocationType.wasteType];
+        wasteLocationType?.listPickUpDates?.forEach((date) => {
+          dates[date] = {
+            dots: [...(dates[date]?.dots ?? []), { color, selectedColor }]
+          };
+        });
+      });
+    }
+
+    // highlight today
+    dates[today] = {
+      ...(dates[today] ?? {}),
+      selected: true,
+      selectedColor: colors.lighterPrimary
+    };
+
+    return dates;
+  }, [streetData, typesData, today]);
+
   useEffect(() => {
     if (!addressesData || !inputValue || (wasteAddressesTwoStep && !inputValueCity)) {
       setSelectedStreetId(undefined);
@@ -388,17 +397,18 @@ export const WasteCollectionScreen = ({ navigation }) => {
           />
         )}
         {selectedStreetId && (
-          <Calendar
+          <RNCalendar
             dayComponent={NoTouchDay}
-            markedDates={getMarkedDates(typesData, streetData)}
+            markedDates={markedDates}
             markingType="multi-dot"
             renderArrow={renderArrow}
+            firstDay={1}
             theme={{
               todayTextColor: colors.primary,
               dotStyle: {
-                borderRadius: dotSize / 2,
-                height: dotSize,
-                width: dotSize
+                borderRadius: DOT_SIZE / 2,
+                height: DOT_SIZE,
+                width: DOT_SIZE
               }
             }}
           />

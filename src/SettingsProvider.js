@@ -1,15 +1,18 @@
 import PropTypes from 'prop-types';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useState } from 'react';
 
 export const SettingsContext = createContext({
   globalSettings: {
+    appDesignSystem: {},
     filter: {},
     hdvt: {},
-    navigation: {},
+    navigation: 'tab',
     sections: {},
     settings: {},
-    widgets: [],
-  }
+    widgets: []
+  },
+  listTypesSettings: {},
+  locationSettings: {}
 });
 
 export const SettingsProvider = ({
@@ -18,7 +21,7 @@ export const SettingsProvider = ({
   initialLocationSettings,
   children
 }) => {
-  const [globalSettings, setGlobalSettings] = useState(initialGlobalSettings);
+  const [globalSettings] = useState(initialGlobalSettings);
   const [listTypesSettings, setListTypesSettings] = useState(initialListTypesSettings);
   const [locationSettings, setLocationSettings] = useState(initialLocationSettings);
 
@@ -26,7 +29,6 @@ export const SettingsProvider = ({
     <SettingsContext.Provider
       value={{
         globalSettings,
-        setGlobalSettings,
         listTypesSettings,
         setListTypesSettings,
         locationSettings,

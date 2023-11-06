@@ -5,6 +5,78 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.3.2]
+
+This update includes bug fixes
+
+### Added
+
+- added link sharing feature for news
+
+### Fixed
+
+- fixed `EventList` crashing the app on Android devices
+- fixed a navigation bug on the volunteer screen that caused the app to crash
+- fixed a bug that caused the application to crash on screen with image and document upload feature
+
+## [v3.3.1]
+
+This update includes bug fixes
+
+### Fixed
+
+- fixed a bug that caused the inability to return from POI map view
+- fixed a bug where notifications in settings could not be activated
+- fixed a bug in the event list that caused the list layout to be broken when loading new data
+- fixed rerendering problem caused by navigation
+- fixed a bug that caused the daily activity filter to reload the screen
+
+## [3.3.0] :rocket:
+
+Major new Expo SDK version 49 and updated packages plus bug fixes
+
+### Added
+
+- added `WebWidget` to the `HomeScreen`, which can be redirected to `WebScreen` and change the icon on the server side
+- added the ability to insert links to share content
+- added dynamic intro to poi list
+- added resize feature for tiles
+- added filtering on platform to exclude web urls for the foreign system
+- added support for different sizes and styles to the `Button` component
+- added new disturber module to `HomeScreen`
+- added poi preview on full screen map
+- added showing available vehicles in `DetailScreen` for specific POIs
+- added showing public transport departure times in `DetailScreen` for specific POIs
+- added full screen map in location overview
+- added floating button for switching between map and poi list
+- added the ability to switch between tab and drawer navigation via server configuration
+- added `refreshControl` color for `RefreshControl` and `ActivityIndicator`
+- added a second icon to the map marker according to the category icon
+- added a filter that shows appointment dates for series events from today
+- added pagination feature to the appointment dates of series events
+- added `SectionHeader` component for Title
+- added alphabetical sorting for `Deadline` list
+
+### Changed
+
+- upgraded Expo to version 49: https://blog.expo.dev/expo-sdk-49-c6d398cdf740
+- updated react-navigation from version 5.x to version 6.x
+- updated react-hook-form
+- refactored rendering of index screens with separation of event records as the first step
+
+### Fixed
+
+- adjusted max screen width to fit the style accordingly to all phone sizes
+- reduced authentication calls
+- fixed a bug where adding a link to the event organizer would show the link instead of the description text
+- fixed `DetailScreen` always refreshing bug
+- fixed issue with not creating volunteer events
+
+### Removed
+
+- removed dates in the `Deadline` list
+- removed hide button in map poi preview
+
 ## [v3.2.7]
 
 This update has minor improvements
