@@ -11,9 +11,9 @@ import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
 const renderCardContent = (item, horizontal) => {
-  const { appDesignSystem = {}, picture, subtitle, title, topTitle } = item;
+  const { appDesignSystem = {}, picture, overtitle, subtitle, title } = item;
   const { contentSequence, imageBorderRadius = 5, imageStyle, textsStyle = {} } = appDesignSystem;
-  const { generalStyle, subtitleStyle, titleStyle, topTitleStyle } = textsStyle;
+  const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
 
   const cardContent = [];
 
@@ -26,9 +26,12 @@ const renderCardContent = (item, horizontal) => {
         borderRadius={imageBorderRadius}
       />
     ),
-    topTitle: () => (
-      <RegularText small style={[!!generalStyle && generalStyle, !!topTitleStyle && topTitleStyle]}>
-        {topTitle}
+    overtitle: () => (
+      <RegularText
+        small
+        style={[!!generalStyle && generalStyle, !!overtitleStyle && overtitleStyle]}
+      >
+        {overtitle}
       </RegularText>
     ),
     subtitle: () => (
@@ -51,7 +54,7 @@ const renderCardContent = (item, horizontal) => {
     });
   } else {
     cardContent.push(sequenceMap.picture());
-    cardContent.push(sequenceMap.topTitle());
+    cardContent.push(sequenceMap.overtitle());
     cardContent.push(sequenceMap.subtitle());
     cardContent.push(sequenceMap.title());
   }
