@@ -8,7 +8,7 @@ import { useHomeRefresh, useStaticContent } from '../hooks';
 
 import { Button } from './Button';
 import { Image } from './Image';
-import { BoldText, RegularText } from './Text';
+import { BoldText, HeadlineText, RegularText } from './Text';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
 
 type Props = {
@@ -111,12 +111,12 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
               />
             )}
 
-            <Wrapper style={styles.noPaddingBottom}>
+            <Wrapper style={styles.smallPaddingBottom}>
               <WrapperHorizontal>
                 {!!headline && (
-                  <BoldText center uppercase style={styles.headlineText}>
+                  <HeadlineText center uppercase style={styles.headlineText}>
                     {headline}
-                  </BoldText>
+                  </HeadlineText>
                 )}
               </WrapperHorizontal>
             </Wrapper>
@@ -124,9 +124,9 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
             <Wrapper style={styles.noPaddingTop}>
               <WrapperHorizontal>
                 {!!title && (
-                  <BoldText center big>
+                  <HeadlineText center big>
                     {title}
-                  </BoldText>
+                  </HeadlineText>
                 )}
               </WrapperHorizontal>
             </Wrapper>
@@ -177,11 +177,10 @@ const styles = StyleSheet.create({
   headlineText: {
     fontSize: normalize(14),
     fontWeight: '700',
-    lineHeight: normalize(16),
-    textTransform: 'uppercase'
+    lineHeight: normalize(16)
   },
-  noPaddingBottom: {
-    paddingBottom: 0
+  smallPaddingBottom: {
+    paddingBottom: normalize(8)
   },
   noPaddingTop: {
     paddingTop: 0
