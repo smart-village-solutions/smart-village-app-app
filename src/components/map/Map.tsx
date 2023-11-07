@@ -143,7 +143,11 @@ export const Map = ({
             >
               {!!marker.iconName && marker.iconName != 'ownLocation' ? (
                 <>
-                  <MapIcon iconColor={isActiveMarker ? colors.primary : colors.lighterPrimary} />
+                  <MapIcon
+                    iconColor={isActiveMarker ? colors.primary : colors.lighterPrimary}
+                    iconName={isActiveMarker ? 'locationActive' : 'location'}
+                    iconSize={isActiveMarker ? MARKER_ICON_SIZE * normalize(1.2) : MARKER_ICON_SIZE}
+                  />
                   <View
                     style={[
                       styles.mapIconOnLocationMarker,
@@ -190,7 +194,9 @@ const styles = StyleSheet.create({
     top: MARKER_ICON_SIZE / 4.2
   },
   mapIconOnLocationMarkerActive: {
-    backgroundColor: colors.primary
+    backgroundColor: colors.primary,
+    left: (MARKER_ICON_SIZE * normalize(1.2)) / 3,
+    top: (MARKER_ICON_SIZE * normalize(1.2)) / 6.5
   },
   maximizeMapButton: {
     alignItems: 'center',
