@@ -63,8 +63,8 @@ const renderCardContent = (item, horizontal) => {
   } else {
     cardContent.push(sequenceMap.picture());
     cardContent.push(sequenceMap.overtitle());
-    cardContent.push(sequenceMap.subtitle());
     cardContent.push(sequenceMap.title());
+    cardContent.push(sequenceMap.subtitle());
   }
 
   return cardContent;
@@ -101,7 +101,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.transparent,
     borderWidth: 0,
     margin: 0,
-    padding: normalize(14),
+    paddingHorizontal: 0,
+    paddingVertical: normalize(12),
     ...Platform.select({
       android: {
         elevation: 0
@@ -112,8 +113,8 @@ const styles = StyleSheet.create({
     })
   },
   overtitle: {
-    marginBottom: normalize(4),
-    marginTop: normalize(16)
+    marginBottom: normalize(2),
+    marginTop: normalize(14)
   },
   imageContainer: {
     alignSelf: 'center'

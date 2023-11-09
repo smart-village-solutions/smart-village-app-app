@@ -805,7 +805,7 @@ export const texts = {
     favorites: 'Favoriten',
     events: 'Veranstaltungen',
     feedback: 'Feedback',
-    home: 'MeinQuartier',
+    home: 'Mein Quartier',
     mapView: 'Kartenansicht',
     profile: 'Profil',
     routePlanner: 'Routenplaner bbnavi',

@@ -176,7 +176,8 @@ export const BoldText = styled(RegularText)`
 
 export const HeadlineText = styled(RegularText)`
   font-family: condbold;
-  line-height: ${normalize(21)};
+  font-size: ${normalize(18)};
+  line-height: ${normalize(23)};
 
   ${(props) =>
     props.small &&

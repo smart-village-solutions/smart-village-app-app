@@ -67,11 +67,11 @@ export const TextListItem: NamedExoticComponent<Props> & {
     } = item;
     const navigate = () => navigation && navigation.push(name, params);
     let titleText = withCard ? (
-      <HeadlineText small style={{ marginTop: normalize(4) }}>
+      <HeadlineText small style={{ marginTop: normalize(2) }}>
         {trimNewLines(title)}
       </HeadlineText>
     ) : (
-      <HeadlineText>{trimNewLines(title)}</HeadlineText>
+      <HeadlineText small>{trimNewLines(title)}</HeadlineText>
     );
 
     if (teaserTitle) {
@@ -124,7 +124,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
         {withCard ? (
           <ListItem.Content>
             {!!overtitle && (
-              <HeadlineText smallest uppercase style={styles.overtitle}>
+              <HeadlineText smallest uppercase>
                 {trimNewLines(overtitle)}
               </HeadlineText>
             )}
@@ -140,7 +140,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
         ) : (
           <ListItem.Content>
             {!!overtitle && (
-              <HeadlineText smallest uppercase style={styles.overtitle}>
+              <HeadlineText smallest uppercase>
                 {trimNewLines(overtitle)}
               </HeadlineText>
             )}
@@ -177,14 +177,12 @@ export const TextListItem: NamedExoticComponent<Props> & {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
+    paddingHorizontal: 0,
     paddingVertical: normalize(12)
   },
   containerBorder: {
     borderBottomColor: colors.borderRgba,
     borderBottomWidth: 1
-  },
-  overtitle: {
-    marginBottom: normalize(4)
   },
   smallImage: {
     height: normalize(33),

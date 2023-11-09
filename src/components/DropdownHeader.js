@@ -9,7 +9,7 @@ import { usePermanentFilter } from '../hooks';
 import { QUERY_TYPES } from '../queries';
 
 import { DropdownSelect } from './DropdownSelect';
-import { Wrapper } from './Wrapper';
+import { WrapperVertical } from './Wrapper';
 
 const dropdownEntries = (query, queryVariables, data, excludedDataProviders, isLocationFilter) => {
   // check if there is something set in the certain `queryVariables`
@@ -128,9 +128,9 @@ export const DropdownHeader = ({
   if (dropdownData?.length <= 2) return null;
 
   return (
-    <Wrapper>
+    <WrapperVertical>
       <DropdownSelect data={dropdownData} setData={setDropdownData} label={dropdownLabel} />
-    </Wrapper>
+    </WrapperVertical>
   );
 };
 

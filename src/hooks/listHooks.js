@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
+import { View } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
 import { SectionHeader } from '../components';
@@ -9,7 +10,7 @@ import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
 import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
-import { consts, texts } from '../config';
+import { consts, normalize, texts } from '../config';
 import { momentFormat } from '../helpers';
 import { QUERY_TYPES } from '../queries';
 import { ScreenName } from '../types';
@@ -96,7 +97,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     default: {
-      renderItem = ({ item, index, section }) => {
+      renderItem = ({ item, index, section, target }) => {
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
           return (
             <VolunteerPostListItem
@@ -129,21 +130,14 @@ export const useRenderItem = (query, navigation, options = {}) => {
         // `SectionHeader` list item for `EventList`
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
           return (
-            <SectionHeader
-              title={momentFormat(item, 'DD.MM.YYYY dddd')}
-              onPress={() =>
-                navigation.push(ScreenName.Index, {
-                  title: texts.homeTitles.events,
-                  query,
-                  queryVariables: {
-                    ...options.queryVariables,
-                    dateRange: [momentFormat(item, 'YYYY-MM-DD'), momentFormat(item, 'YYYY-MM-DD')]
-                  },
-                  rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
-                  showFilterByDailyEvents: false
-                })
-              }
-            />
+            <View
+              style={{
+                marginLeft: target == 'StickyHeader' ? 0 : -normalize(14),
+                marginRight: target == 'StickyHeader' ? 0 : -normalize(14)
+              }}
+            >
+              <SectionHeader title={momentFormat(item, 'DD.MM.YYYY dddd')} />
+            </View>
           );
         }
 

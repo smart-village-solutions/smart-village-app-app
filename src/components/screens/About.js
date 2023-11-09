@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useState } from 'react';
-import { ActivityIndicator, RefreshControl, SectionList } from 'react-native';
+import { ActivityIndicator, RefreshControl, SectionList, StyleSheet } from 'react-native';
 
-import { colors, texts } from '../../config';
+import { colors, normalize, texts } from '../../config';
 import { useHomeRefresh, useRenderItem, useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { QUERY_TYPES } from '../../queries';
@@ -75,9 +75,16 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
       renderItem={renderItem}
       keyExtractor={(item) => item.title}
       ListFooterComponent={<VersionNumber />}
+      style={styles.container}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: normalize(14)
+  }
+});
 
 About.propTypes = {
   navigation: PropTypes.object.isRequired,

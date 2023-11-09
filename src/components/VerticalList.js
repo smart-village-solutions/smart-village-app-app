@@ -97,11 +97,15 @@ export const VerticalList = ({
       refreshControl={refreshControl}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.contentContainerStyle}
+      style={styles.container}
     />
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: normalize(14)
+  },
   contentContainerStyle: {
     flexGrow: 1
   },

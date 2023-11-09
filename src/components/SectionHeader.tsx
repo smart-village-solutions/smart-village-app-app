@@ -22,8 +22,6 @@ export const SectionHeader = ({ big = false, center = false, onPress, title }: P
 
   if (!title) return null;
 
-  if (!title) return null;
-
   const innerComponent = (
     <WrapperRow spaceBetween>
       <Title

@@ -1,10 +1,12 @@
 import { FlashList } from '@shopify/flash-list';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { StyleSheet } from 'react-native';
 
 import { useRenderItem } from '../hooks';
-
 import { QUERY_TYPES } from '../queries';
+import { normalize } from '../config';
+
 import { LoadingSpinner } from './LoadingSpinner';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;
@@ -90,6 +92,10 @@ export const EventList = ({
       data={sectionedData}
       refreshing={refreshing}
       estimatedItemSize={MAX_INITIAL_NUM_TO_RENDER}
+      getItemType={(item) => {
+        // To achieve better performance, specify the type based on the item
+        return typeof item === 'string' ? 'sectionHeader' : 'row';
+      }}
       keyExtractor={keyExtractor}
       ListFooterComponent={() => {
         if (data?.length >= MAX_INITIAL_NUM_TO_RENDER) {
@@ -105,9 +111,16 @@ export const EventList = ({
       refreshControl={refreshControl}
       renderItem={renderItem}
       stickyHeaderIndices={stickyHeaderIndices}
+      contentContainerStyle={styles.contentContainer}
     />
   );
 };
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    paddingHorizontal: normalize(14)
+  }
+});
 
 EventList.propTypes = {
   data: PropTypes.array,
