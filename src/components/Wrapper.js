@@ -70,4 +70,5 @@ export const WrapperWrap = styled(WrapperRow)`
 
 export const InfoBox = styled(WrapperRow)`
   margin-bottom: ${normalize(5)}px;
+  margin-top: ${normalize(5)}px;
 `;

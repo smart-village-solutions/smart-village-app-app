@@ -13,9 +13,10 @@ import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { Logo } from '../Logo';
 import { SectionHeader } from '../SectionHeader';
-import { Wrapper } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 import { Map } from '../map';
+import { HeadlineText } from '../Text';
 
 import { AvailableVehicles } from './AvailableVehicles';
 import { OpeningTimesCard } from './OpeningTimesCard';
@@ -56,7 +57,6 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   // action to open source urls
   const openWebScreen = useOpenWebScreen('Ort', undefined, route.params?.rootRouteName);
 
-  const logo = dataProvider && dataProvider.logo && dataProvider.logo.url;
   // the categories of a news item can be nested and we need the map of all names of all categories
   const categoryNames = categories && categories.map((category) => category.name).join(' / ');
 
@@ -72,14 +72,25 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const businessAccount = dataProvider?.dataType === 'business_account';
 
   return (
-    <View>
-      <ImageSection mediaContents={mediaContents} />
-      <SectionHeader title={title} />
-      <Wrapper>
-        {!!logo && <Logo source={{ uri: logo }} />}
+    <WrapperVertical>
+      {!!category?.name && (
+        <WrapperHorizontal>
+          <HeadlineText smallest uppercase>
+            {category.name}
+          </HeadlineText>
+        </WrapperHorizontal>
+      )}
+      <SectionHeader big title={title} />
 
+      <WrapperVertical>
+        <ImageSection mediaContents={mediaContents} />
+      </WrapperVertical>
+
+      {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
+        <SectionHeader title={texts.pointOfInterest.overview} />
+      )}
+      <Wrapper>
         <InfoCard
-          category={category}
           addresses={addresses}
           contact={contact}
           openingHours={openingHours}
@@ -101,26 +112,26 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
       )}
 
       {!!openingHours?.length && (
-        <View>
+        <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.openingTime} />
           <OpeningTimesCard openingHours={openingHours} />
-        </View>
+        </WrapperVertical>
       )}
 
       {!!priceInformations?.length && (
-        <View>
+        <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.prices} />
           <PriceCard prices={priceInformations} />
-        </View>
+        </WrapperVertical>
       )}
 
       {!!description && (
-        <View>
+        <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.description} />
-          <Wrapper>
+          <WrapperHorizontal>
             <HtmlView html={description} openWebScreen={openWebScreen} />
-          </Wrapper>
-        </View>
+          </WrapperHorizontal>
+        </WrapperVertical>
       )}
 
       {!!lunches?.length && (
@@ -144,7 +155,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
        * connected to a network with no information of internet connectivity.
        */}
       {!hideMap && !!latitude && !!longitude && isConnected && isMainserverUp && (
-        <View>
+        <WrapperVertical>
           <SectionHeader title={texts.pointOfInterest.location} />
           <Map
             locations={[
@@ -156,7 +167,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
             ]}
             selectedMarker={id}
           />
-        </View>
+        </WrapperVertical>
       )}
 
       <OperatingCompany
@@ -168,7 +179,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
       <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
 
       {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
-    </View>
+    </WrapperVertical>
   );
 };
 /* eslint-enable complexity */

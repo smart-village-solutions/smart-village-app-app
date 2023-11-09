@@ -36,14 +36,15 @@ type Props = {
   imageContainerStyle?: ViewStyle;
   imageStyle?: ImageStyle;
   item: ItemData;
-  leftImage?: boolean | undefined;
+  leftImage?: boolean;
   listsWithoutArrows?: boolean | undefined;
   navigation: StackNavigationProp<Record<string, any>>;
-  noSubtitle?: boolean | undefined;
-  rightImage?: boolean | undefined;
+  noSubtitle?: boolean;
+  noOvertitle?: boolean;
+  rightImage?: boolean;
   showOpenStatus?: boolean;
   titleFirst?: boolean;
-  withCard?: boolean | undefined;
+  withCard?: boolean;
 };
 
 /* eslint-disable complexity */
@@ -61,6 +62,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
     listsWithoutArrows,
     navigation,
     noSubtitle,
+    noOvertitle,
     rightImage,
     showOpenStatus,
     titleFirst,
@@ -147,7 +149,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
                 imageStyle && imageStyle,
                 withCard && styles.withBigCardStyle
               ]}
-              borderRadius={withCard && normalize(8)}
+              borderRadius={withCard ? normalize(8) : undefined}
               containerStyle={[
                 styles.smallImageContainer,
                 imageContainerStyle && imageContainerStyle
@@ -173,7 +175,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
           </ListItem.Content>
         ) : (
           <ListItem.Content>
-            {!!overtitle && (
+            {!noOvertitle && !!overtitle && (
               <HeadlineText smallest uppercase>
                 {trimNewLines(overtitle)}
               </HeadlineText>
@@ -195,7 +197,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
             <Image
               source={{ uri: picture.url }}
               style={[styles.smallImage, withCard && styles.withBigCardStyle]}
-              borderRadius={withCard && normalize(8)}
+              borderRadius={withCard ? normalize(8) : undefined}
               containerStyle={styles.smallImageContainer}
             />
           ) : undefined)}
@@ -249,6 +251,7 @@ TextListItem.propTypes = {
   listsWithoutArrows: PropTypes.bool,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
+  noOvertitle: PropTypes.bool,
   rightImage: PropTypes.bool,
   showOpenStatus: PropTypes.bool,
   titleFirst: PropTypes.bool,
@@ -259,6 +262,7 @@ TextListItem.defaultProps = {
   leftImage: false,
   listsWithoutArrows: false,
   noSubtitle: false,
+  noOvertitle: false,
   rightImage: false,
   withCard: false
 };

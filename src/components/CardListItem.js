@@ -10,7 +10,7 @@ import { Image } from './Image';
 import { HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
-const renderCardContent = (item, horizontal) => {
+const renderCardContent = (item, horizontal, noOvertitle, bigTitle) => {
   const { appDesignSystem = {}, picture, overtitle, subtitle, title } = item;
   const { contentSequence, imageBorderRadius = 5, imageStyle, textsStyle = {} } = appDesignSystem;
   const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
@@ -48,7 +48,10 @@ const renderCardContent = (item, horizontal) => {
       </RegularText>
     ),
     title: () => (
-      <HeadlineText style={[!!generalStyle && generalStyle, !!titleStyle && titleStyle]}>
+      <HeadlineText
+        small={!bigTitle}
+        style={[!!generalStyle && generalStyle, !!titleStyle && titleStyle]}
+      >
         {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
       </HeadlineText>
     )
@@ -61,16 +64,16 @@ const renderCardContent = (item, horizontal) => {
       }
     });
   } else {
-    cardContent.push(sequenceMap.picture());
-    cardContent.push(sequenceMap.overtitle());
-    cardContent.push(sequenceMap.title());
-    cardContent.push(sequenceMap.subtitle());
+    picture?.url && cardContent.push(sequenceMap.picture());
+    !noOvertitle && overtitle && cardContent.push(sequenceMap.overtitle());
+    title && cardContent.push(sequenceMap.title());
+    subtitle && cardContent.push(sequenceMap.subtitle());
   }
 
   return cardContent;
 };
 
-export const CardListItem = memo(({ navigation, horizontal, item }) => {
+export const CardListItem = memo(({ navigation, horizontal, noOvertitle, item, bigTitle }) => {
   const { appDesignSystem = {}, params, routeName: name, subtitle, title } = item;
   const { containerStyle, contentContainerStyle } = appDesignSystem;
 
@@ -88,7 +91,7 @@ export const CardListItem = memo(({ navigation, horizontal, item }) => {
             !!contentContainerStyle && contentContainerStyle
           ]}
         >
-          {renderCardContent(item, horizontal)}
+          {renderCardContent(item, horizontal, noOvertitle, bigTitle)}
         </View>
       </Card>
       <Divider />
@@ -154,9 +157,13 @@ CardListItem.displayName = 'CardListItem';
 CardListItem.propTypes = {
   navigation: PropTypes.object,
   item: PropTypes.object.isRequired,
-  horizontal: PropTypes.bool
+  horizontal: PropTypes.bool,
+  noOvertitle: PropTypes.bool,
+  bigTitle: PropTypes.bool
 };
 
 CardListItem.defaultProps = {
-  horizontal: false
+  horizontal: false,
+  noOvertitle: false,
+  bigTitle: false
 };

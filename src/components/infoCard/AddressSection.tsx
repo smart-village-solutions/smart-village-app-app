@@ -2,6 +2,7 @@ import { LocationObject } from 'expo-location';
 import _filter from 'lodash/filter';
 import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Divider } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize, texts } from '../../config';
 import {
@@ -15,7 +16,7 @@ import { useLastKnownPosition, usePosition } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { Address } from '../../types';
 import { RegularText } from '../Text';
-import { InfoBox } from '../Wrapper';
+import { InfoBox, WrapperRow, WrapperVertical } from '../Wrapper';
 
 type Props = {
   address?: Address;
@@ -93,33 +94,44 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
 
         return (
           <View key={index}>
-            <InfoBox>
-              <Icon.Location style={styles.margin} />
-              {isPressable ? (
-                <TouchableOpacity onPress={() => addressOnPress(filteredAddress, item.geoLocation)}>
-                  {innerComponent}
-                </TouchableOpacity>
-              ) : (
-                innerComponent
-              )}
-            </InfoBox>
+            <WrapperVertical>
+              <WrapperRow>
+                <Icon.Flag style={styles.margin} />
+                {isPressable ? (
+                  <TouchableOpacity
+                    onPress={() => addressOnPress(filteredAddress, item.geoLocation)}
+                  >
+                    {innerComponent}
+                  </TouchableOpacity>
+                ) : (
+                  innerComponent
+                )}
+              </WrapperRow>
+            </WrapperVertical>
+            <Divider style={styles.divider} />
+
             {!!openWebScreen &&
               bbNaviBaseUrl?.length &&
               item.geoLocation?.latitude &&
               item.geoLocation?.longitude && (
-                <InfoBox>
-                  <Icon.RoutePlanner color={colors.primary} style={styles.margin} />
-                  <TouchableOpacity
-                    onPress={() =>
-                      openWebScreen(
-                        getBBNaviUrl(bbNaviBaseUrl, item, position ?? lastKnownPosition),
-                        texts.screenTitles.routePlanner
-                      )
-                    }
-                  >
-                    <RegularText primary>{texts.pointOfInterest.routePlanner}</RegularText>
-                  </TouchableOpacity>
-                </InfoBox>
+                <>
+                  <WrapperVertical>
+                    <WrapperRow>
+                      <Icon.RoutePlanner color={colors.primary} style={styles.margin} />
+                      <TouchableOpacity
+                        onPress={() =>
+                          openWebScreen(
+                            getBBNaviUrl(bbNaviBaseUrl, item, position ?? lastKnownPosition),
+                            texts.screenTitles.routePlanner
+                          )
+                        }
+                      >
+                        <RegularText primary>{texts.pointOfInterest.routePlanner}</RegularText>
+                      </TouchableOpacity>
+                    </WrapperRow>
+                  </WrapperVertical>
+                  <Divider style={styles.divider} />
+                </>
               )}
           </View>
         );
@@ -129,7 +141,11 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
 };
 
 const styles = StyleSheet.create({
+  divider: {
+    backgroundColor: colors.placeholder
+  },
   margin: {
-    marginRight: normalize(12)
+    marginRight: normalize(10),
+    marginTop: normalize(-1)
   }
 });

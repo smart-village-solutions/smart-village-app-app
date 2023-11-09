@@ -148,7 +148,7 @@ const parsePointOfInterest = (data, skipLastDivider) => {
   return data?.map((pointOfInterest, index) => ({
     id: pointOfInterest.id,
     title: pointOfInterest.title || pointOfInterest.name,
-    subtitle: pointOfInterest.category?.name,
+    overtitle: pointOfInterest.category?.name,
     picture: {
       url: mainImageOfMediaContents(pointOfInterest.mediaContents)
     },

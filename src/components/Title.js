@@ -7,8 +7,8 @@ import { Text } from './Text';
 export const Title = styled(Text)`
   color: ${colors.primary};
   font-family: condbold;
-  font-size: ${normalize(16)};
-  line-height: ${normalize(20)};
+  font-size: ${normalize(21)};
+  line-height: ${normalize(27)};
 
   ${(props) =>
     props.uppercase &&
@@ -26,8 +26,8 @@ export const Title = styled(Text)`
   ${(props) =>
     props.big &&
     css`
-      font-size: ${normalize(23)};
-      line-height: ${normalize(27)};
+      font-size: ${normalize(24)};
+      line-height: ${normalize(29)};
     `};
 
   ${(props) =>

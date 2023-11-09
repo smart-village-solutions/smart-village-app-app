@@ -160,7 +160,7 @@ Image.propTypes = {
   aspectRatio: PropTypes.object,
   borderRadius: PropTypes.number,
   button: PropTypes.object,
-  containerStyle: PropTypes.object,
+  containerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   message: PropTypes.string,
   PlaceholderContent: PropTypes.object,
   refreshInterval: PropTypes.number,

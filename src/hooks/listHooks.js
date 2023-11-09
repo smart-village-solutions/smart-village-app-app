@@ -10,12 +10,11 @@ import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
 import { VolunteerConversationListItem } from '../components/volunteer/VolunteerConversationListItem';
 import { VolunteerPostListItem } from '../components/volunteer/VolunteerPostListItem';
-import { consts, normalize, texts } from '../config';
+import { consts, normalize } from '../config';
 import { momentFormat } from '../helpers';
 import { QUERY_TYPES } from '../queries';
-import { ScreenName } from '../types';
 
-const { LIST_TYPES, ROOT_ROUTE_NAMES } = consts;
+const { LIST_TYPES } = consts;
 
 const getListType = (query, listTypesSettings) => {
   switch (query) {
@@ -34,6 +33,7 @@ const getListType = (query, listTypesSettings) => {
  * @param {any} navigation
  * @param {{
  *          horizontal?: boolean;
+ *          noOvertitle?: boolean;
  *          noSubtitle?: boolean;
  *          openWebScreen?: () => void;
  *          queryVariables?: object
@@ -53,7 +53,12 @@ export const useRenderItem = (query, navigation, options = {}) => {
   switch (listType) {
     case LIST_TYPES.CARD_LIST: {
       renderItem = ({ item }) => (
-        <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
+        <CardListItem
+          navigation={navigation}
+          horizontal={options.horizontal}
+          noOvertitle={options.noOvertitle}
+          item={item}
+        />
       );
       break;
     }
@@ -66,7 +71,12 @@ export const useRenderItem = (query, navigation, options = {}) => {
               item.bottomDivider ??
               (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
           }}
-          {...{ navigation, noSubtitle: options.noSubtitle, leftImage: true }}
+          {...{
+            navigation,
+            noSubtitle: options.noSubtitle,
+            noOvertitle: options.noOvertitle,
+            leftImage: true
+          }}
         />
       );
       break;
@@ -75,7 +85,12 @@ export const useRenderItem = (query, navigation, options = {}) => {
       renderItem = ({ item, index, section }) => {
         if (index === 0) {
           return (
-            <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
+            <CardListItem
+              navigation={navigation}
+              horizontal={options.horizontal}
+              item={item}
+              bigTitle
+            />
           );
         } else {
           return (
@@ -88,6 +103,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
               }}
               navigation={navigation}
               noSubtitle={options.noSubtitle}
+              noOvertitle={options.noOvertitle}
               rightImage
               withCard
             />
@@ -147,7 +163,12 @@ export const useRenderItem = (query, navigation, options = {}) => {
               ...item,
               bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
             }}
-            {...{ navigation, noSubtitle: options.noSubtitle, listsWithoutArrows }}
+            {...{
+              navigation,
+              noSubtitle: options.noSubtitle,
+              noOvertitle: options.noOvertitle,
+              listsWithoutArrows
+            }}
           />
         );
       };

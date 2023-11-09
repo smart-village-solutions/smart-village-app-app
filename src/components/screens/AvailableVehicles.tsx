@@ -4,10 +4,10 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
 import { Icon, colors, normalize, texts } from '../../config';
-import { EmptyMessage } from '../EmptyMessage';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
+import { Wrapper, WrapperHorizontal } from '../Wrapper';
 
 type AvailableVehiclesProps = {
   id: string;
@@ -77,19 +77,31 @@ export const AvailableVehicles = ({
       {availableVehiclesData?.length ? (
         availableVehiclesData.map((item: AvailableVehiclesProps, index: number) => (
           <Fragment key={item.id}>
-            <ListItem style={styles.container} containerStyle={styles.container}>
+            <ListItem containerStyle={styles.container}>
               {!!iconName && <CategoryIcon />}
               <ListItem.Content style={styles.contentContainer}>
                 <RegularText>{item.name}</RegularText>
                 <RegularText>{item.count}</RegularText>
               </ListItem.Content>
             </ListItem>
-            {index !== availableVehiclesData.length - 1 && <Divider style={styles.divider} />}
+            {index !== availableVehiclesData.length - 1 && (
+              <WrapperHorizontal>
+                <Divider style={styles.divider} />
+              </WrapperHorizontal>
+            )}
           </Fragment>
         ))
       ) : (
-        <EmptyMessage title={texts.pointOfInterest.noAvailableVehicles} showIcon={false} />
+        <Wrapper>
+          <RegularText placeholder small>
+            {texts.pointOfInterest.noAvailableVehicles}
+          </RegularText>
+        </Wrapper>
       )}
+
+      <WrapperHorizontal>
+        <Divider />
+      </WrapperHorizontal>
     </>
   );
 };
@@ -97,7 +109,7 @@ export const AvailableVehicles = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
-    paddingVertical: normalize(12)
+    padding: normalize(14)
   },
   contentContainer: {
     flexDirection: 'row',
