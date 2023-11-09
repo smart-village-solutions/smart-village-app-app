@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
-import { View } from 'react-native';
+import { FlatList } from 'react-native';
 
 import { LoadingSpinner } from '..';
 import { graphqlFetchPolicy } from '../../helpers';
@@ -10,6 +10,8 @@ import { addDataProvidersToTokenOnServer } from '../../pushNotifications';
 import { getQuery, QUERY_TYPES } from '../../queries';
 import { FilterAction } from '../../types';
 import { SettingsToggle } from '../SettingsToggle';
+
+const keyExtractor = (item: { id: number }, index: number) => `index${index}-id${item.id}`;
 
 export const PermanentFilterSettings = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -37,22 +39,24 @@ export const PermanentFilterSettings = () => {
   }
 
   return (
-    <View>
-      {data?.newsItemsDataProviders?.map((item: { id: string; name: string }) => {
-        const options = {
-          title: item.name,
-          bottomDivider: true,
-          value: !excludedDataProviderIds.includes(item.id),
-          onActivate: () => {
-            dispatch({ type: FilterAction.RemoveDataProvider, payload: item.id });
-          },
-          onDeactivate: () => {
-            dispatch({ type: FilterAction.AddDataProvider, payload: item.id });
-          }
-        };
-
-        return <SettingsToggle key={item.id} item={options} />;
-      })}
-    </View>
+    <FlatList
+      data={data?.newsItemsDataProviders}
+      keyExtractor={keyExtractor}
+      renderItem={({ item }) => (
+        <SettingsToggle
+          item={{
+            title: item.name,
+            bottomDivider: true,
+            value: !excludedDataProviderIds.includes(item.id),
+            onActivate: () => {
+              dispatch({ type: FilterAction.RemoveDataProvider, payload: item.id });
+            },
+            onDeactivate: () => {
+              dispatch({ type: FilterAction.AddDataProvider, payload: item.id });
+            }
+          }}
+        />
+      )}
+    />
   );
 };
