@@ -1,11 +1,11 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import PropTypes from 'prop-types';
 import React, { memo, NamedExoticComponent, Validator } from 'react';
-import { StyleSheet } from 'react-native';
+import { ImageStyle, StyleSheet, ViewStyle } from 'react-native';
 import { ListItem } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize } from '../config';
-import { trimNewLines } from '../helpers';
+import { isOpen, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
 import { HeadlineText, RegularText } from './Text';
@@ -32,12 +32,17 @@ export type ItemData = {
 };
 
 type Props = {
+  containerStyle?: ViewStyle;
+  imageContainerStyle?: ViewStyle;
+  imageStyle?: ImageStyle;
   item: ItemData;
   leftImage?: boolean | undefined;
   listsWithoutArrows?: boolean | undefined;
   navigation: StackNavigationProp<Record<string, any>>;
   noSubtitle?: boolean | undefined;
   rightImage?: boolean | undefined;
+  showOpenStatus?: boolean;
+  titleFirst?: boolean;
   withCard?: boolean | undefined;
 };
 
@@ -47,7 +52,20 @@ export const TextListItem: NamedExoticComponent<Props> & {
 } & {
   defaultProps?: Partial<Props>;
 } = memo<Props>(
-  ({ item, leftImage, navigation, noSubtitle, listsWithoutArrows, rightImage, withCard }) => {
+  ({
+    containerStyle,
+    imageContainerStyle,
+    imageStyle,
+    item,
+    leftImage,
+    listsWithoutArrows,
+    navigation,
+    noSubtitle,
+    rightImage,
+    showOpenStatus,
+    titleFirst,
+    withCard
+  }) => {
     const {
       badge,
       bottomDivider,
@@ -73,6 +91,11 @@ export const TextListItem: NamedExoticComponent<Props> & {
     ) : (
       <HeadlineText small>{trimNewLines(title)}</HeadlineText>
     );
+
+    let status = '';
+    if (showOpenStatus) {
+      status = isOpen(params?.details?.openingHours)?.open ? 'Jetzt geöffnet' : 'Geschlossen';
+    }
 
     if (teaserTitle) {
       titleText = (
@@ -103,7 +126,11 @@ export const TextListItem: NamedExoticComponent<Props> & {
       <ListItem
         bottomDivider={bottomDivider !== undefined ? bottomDivider : true}
         topDivider={topDivider !== undefined ? topDivider : false}
-        containerStyle={[styles.container, (bottomDivider || topDivider) && styles.containerBorder]}
+        containerStyle={[
+          styles.container,
+          containerStyle && containerStyle,
+          (bottomDivider || topDivider) && styles.containerBorder
+        ]}
         badge={badge}
         onPress={() => (onPress ? onPress(navigation) : navigate())}
         disabled={!navigation}
@@ -115,9 +142,16 @@ export const TextListItem: NamedExoticComponent<Props> & {
           (leftImage && !!picture?.url ? (
             <Image
               source={{ uri: picture.url }}
-              style={[styles.smallImage, withCard && styles.withBigCardStyle]}
+              style={[
+                styles.smallImage,
+                imageStyle && imageStyle,
+                withCard && styles.withBigCardStyle
+              ]}
               borderRadius={withCard && normalize(8)}
-              containerStyle={styles.smallImageContainer}
+              containerStyle={[
+                styles.smallImageContainer,
+                imageContainerStyle && imageContainerStyle
+              ]}
             />
           ) : undefined)}
 
@@ -152,6 +186,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
                 {subtitle}
               </RegularText>
             )}
+            {!!status && <RegularText>{status}</RegularText>}
           </ListItem.Content>
         )}
 
@@ -206,12 +241,17 @@ const styles = StyleSheet.create({
 TextListItem.displayName = 'TextListItem';
 
 TextListItem.propTypes = {
+  containerStyle: PropTypes.object,
+  imageContainerStyle: PropTypes.object,
+  imageStyle: PropTypes.object,
   item: PropTypes.object.isRequired,
   leftImage: PropTypes.bool,
   listsWithoutArrows: PropTypes.bool,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
   rightImage: PropTypes.bool,
+  showOpenStatus: PropTypes.bool,
+  titleFirst: PropTypes.bool,
   withCard: PropTypes.bool
 };
 

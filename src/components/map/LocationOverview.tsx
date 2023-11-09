@@ -3,7 +3,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { LocationObject } from 'expo-location';
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
@@ -132,27 +132,44 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
         selectedMarker={selectedPointOfInterest}
       />
       {selectedPointOfInterest && !detailsLoading && (
-        <Wrapper
-          small
-          style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}
+        <View
+          style={[
+            styles.listItemContainer,
+            stylesWithProps({ navigation: navigationType }).position
+          ]}
         >
           <TextListItem
+            containerStyle={styles.textListItemContainer}
+            imageContainerStyle={styles.imageRadius}
+            imageStyle={styles.imageSize}
             item={{
               ...item,
               bottomDivider: false,
-              subtitle: undefined
+              picture: item?.picture?.url
+                ? item.picture
+                : {
+                    url: 'https://fileserver.smart-village.app/hb-meinquartier/app-icon.png'
+                  }
             }}
             leftImage
             listsWithoutArrows
             navigation={navigation}
           />
-        </Wrapper>
+        </View>
       )}
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  imageSize: {
+    height: normalize(96),
+    width: normalize(96)
+  },
+  imageRadius: {
+    borderBottomLeftRadius: normalize(12),
+    borderTopLeftRadius: normalize(12)
+  },
   listItemContainer: {
     backgroundColor: colors.surface,
     borderRadius: normalize(12),
@@ -173,6 +190,10 @@ const styles = StyleSheet.create({
   map: {
     height: '100%',
     width: '100%'
+  },
+  textListItemContainer: {
+    paddingVertical: 0,
+    padding: 0
   }
 });
 
