@@ -1,6 +1,20 @@
 import React, { ComponentProps } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
+import {
+  IconBike,
+  IconCar,
+  IconHeart,
+  IconHeartFilled,
+  IconHome2,
+  IconMaximize,
+  IconMenu2,
+  IconPlayerPauseFilled,
+  IconPlayerPlayFilled,
+  IconUser,
+  IconUserFilled,
+  TablerIconsProps
+} from 'tabler-icons-react-native';
 
 import Tabler from '../components/tabler-icons';
 import {
@@ -17,14 +31,10 @@ import {
   drawerMenu,
   editSetting,
   emptySection,
-  heartEmpty,
-  heartFilled,
-  home,
   info,
   like,
   link,
   list,
-  location,
   locationActive,
   logo,
   lunch,
@@ -38,7 +48,6 @@ import {
   ownLocation,
   pen,
   phone,
-  profile,
   routePlanner,
   send,
   service,
@@ -104,18 +113,18 @@ const NamedIcon = ({
 };
 
 export const Icon = {
-  About: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
+  About: (props: TablerIconsProps) => <IconMenu2 stroke={1} {...props} />,
   AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
   ArrowDown: (props: IconProps) => <SvgIcon xml={arrowDown} {...props} />,
   ArrowDownCircle: (props: IconProps) => <NamedIcon name="circle-arrow-down-filled" {...props} />,
   ArrowLeft: (props: IconProps) => <SvgIcon xml={arrowLeft} {...props} />,
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
-  Bike: (props: IconProps) => <NamedIcon name="bike" {...props} />,
+  Bike: (props: TablerIconsProps) => <IconBike stroke={1} {...props} />,
   Calendar: (props: IconProps) => <SvgIcon xml={calendar} {...props} />,
   CalendarToggle: (props: IconProps) => <SvgIcon xml={calendarToggle} {...props} />,
   Camera: (props: IconProps) => <NamedIcon name="camera" {...props} />,
-  Car: (props: IconProps) => <NamedIcon name="car" {...props} />,
+  Car: (props: TablerIconsProps) => <IconCar stroke={1} {...props} />,
   Check: (props: IconProps) => <NamedIcon name="circle-check-filled" {...props} />,
   Clock: (props: IconProps) => <SvgIcon xml={clock} {...props} />,
   Close: (props: IconProps) => <SvgIcon xml={close} {...props} />,
@@ -127,10 +136,10 @@ export const Icon = {
   DrawerMenu: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
   EditSetting: (props: IconProps) => <SvgIcon xml={editSetting} {...props} />,
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
-  ExpandMap: (props: IconProps) => <NamedIcon name="expand" {...props} />,
-  Home: (props: IconProps) => <SvgIcon xml={home} {...props} />,
-  HeartEmpty: (props: IconProps) => <SvgIcon xml={heartEmpty} {...props} />,
-  HeartFilled: (props: IconProps) => <SvgIcon xml={heartFilled} {...props} />,
+  ExpandMap: (props: TablerIconsProps) => <IconMaximize stroke={1} {...props} />,
+  Home: (props: TablerIconsProps) => <IconHome2 stroke={1} {...props} />,
+  HeartEmpty: (props: TablerIconsProps) => <IconHeart stroke={1} {...props} />,
+  HeartFilled: (props: TablerIconsProps) => <IconHeartFilled stroke={1} {...props} />,
   Info: (props: IconProps) => <SvgIcon xml={info} {...props} />,
   Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
   Like: (props: IconProps) => <SvgIcon xml={like} {...props} />,
@@ -148,12 +157,13 @@ export const Icon = {
   OParlOrganizations: (props: IconProps) => <SvgIcon xml={oParlOrganizations} {...props} />,
   OParlPeople: (props: IconProps) => <SvgIcon xml={oParlPeople} {...props} />,
   OwnLocation: (props: IconProps) => <SvgIcon xml={ownLocation} {...props} />,
-  Pause: (props: IconProps) => <NamedIcon name="pause" {...props} />,
+  Pause: (props: TablerIconsProps) => <IconPlayerPauseFilled stroke={1} {...props} />,
   Pen: (props: IconProps) => <SvgIcon xml={pen} {...props} />,
   Phone: (props: IconProps) => <SvgIcon xml={phone} {...props} />,
-  Play: (props: IconProps) => <NamedIcon name="player-play-filled" {...props} />,
+  Play: (props: TablerIconsProps) => <IconPlayerPlayFilled stroke={1} {...props} />,
   Plus: (props: IconProps) => <NamedIcon name="plus" {...props} />,
-  Profile: (props: IconProps) => <SvgIcon xml={profile} {...props} />,
+  Profile: (props: TablerIconsProps) => <IconUser stroke={1} {...props} />,
+  ProfileFilled: (props: TablerIconsProps) => <IconUserFilled stroke={1} {...props} />,
   RadioButtonEmpty: (props: IconProps) => <NamedIcon name="circle" {...props} />,
   RadioButtonFilled: (props: IconProps) => <NamedIcon name="circle-filled" {...props} />,
   RoutePlanner: (props: IconProps) => <SvgIcon xml={routePlanner} {...props} />,
@@ -167,5 +177,5 @@ export const Icon = {
   Url: (props: IconProps) => <SvgIcon xml={url} {...props} />,
   VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />,
   Visible: (props: IconProps) => <SvgIcon xml={visible} {...props} />,
-  Volunteer: (props: IconProps) => <NamedIcon name="users" {...props} />
+  Volunteer: (props: IconProps) => <NamedIcon name="users-group" {...props} />
 };

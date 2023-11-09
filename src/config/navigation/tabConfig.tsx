@@ -23,10 +23,11 @@ const homeTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.home,
-    tabBarIcon: ({ color }: TabBarIconProps) => (
+    tabBarIcon: ({ color, focused }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
         Icon={Icon.Home}
+        stroke={focused ? 2 : 1}
         landscapeStyle={{ marginRight: -normalize(6) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
@@ -42,10 +43,10 @@ const serviceTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.profile,
-    tabBarIcon: ({ color }: TabBarIconProps) => (
+    tabBarIcon: ({ color, focused }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={Icon.Profile}
+        Icon={focused ? Icon.ProfileFilled : Icon.Profile}
         landscapeStyle={{ marginRight: -normalize(6) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
@@ -61,10 +62,10 @@ const bookmarksTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.favorites,
-    tabBarIcon: ({ color }: TabBarIconProps) => (
+    tabBarIcon: ({ color, focused }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={Icon.HeartEmpty}
+        Icon={focused ? Icon.HeartFilled : Icon.HeartEmpty}
         landscapeStyle={{ marginRight: -normalize(6) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
@@ -80,10 +81,11 @@ const aboutTabConfig: TabConfig = {
   }),
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.about,
-    tabBarIcon: ({ color }: TabBarIconProps) => (
+    tabBarIcon: ({ color, focused }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
         Icon={Icon.About}
+        stroke={focused ? 2 : 1}
         landscapeStyle={{ marginRight: -normalize(6) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}

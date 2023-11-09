@@ -121,7 +121,8 @@
     "react-native-webview": "13.2.2",
     "react-query": "^3.34.14",
     "sentry-expo": "~7.0.0",
-    "styled-components": "~4.4.1"
+    "styled-components": "~4.4.1",
+    "tabler-icons-react-native": "^2.40.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
