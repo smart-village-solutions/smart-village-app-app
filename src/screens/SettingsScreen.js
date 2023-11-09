@@ -1,7 +1,7 @@
 import { isARSupportedOnDevice } from '@viro-community/react-viro';
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, SectionList } from 'react-native';
+import { ActivityIndicator, Alert, SectionList, StyleSheet } from 'react-native';
 
 import {
   AugmentedReality,
@@ -18,7 +18,7 @@ import {
   MowasRegionSettings,
   PermanentFilterSettings
 } from '../components/settings';
-import { colors, consts, texts } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import {
   addToStore,
   createMatomoUserId,
@@ -281,9 +281,9 @@ export const SettingsScreen = ({ navigation, route }) => {
         });
       }
 
-      settingsList.push({
-        data: ['listSettings']
-      });
+      // settingsList.push({
+      //   data: ['listSettings']
+      // });
 
       if (settings.ar) {
         try {
@@ -346,6 +346,7 @@ export const SettingsScreen = ({ navigation, route }) => {
               </Wrapper>
             )
           }
+          style={styles.container}
         />
       );
       break;
@@ -353,6 +354,12 @@ export const SettingsScreen = ({ navigation, route }) => {
 
   return <SafeAreaViewFlex>{Component}</SafeAreaViewFlex>;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: normalize(14)
+  }
+});
 
 SettingsScreen.propTypes = {
   navigation: PropTypes.object.isRequired,

@@ -59,6 +59,7 @@ export const SettingsToggle = ({ item }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
+    paddingHorizontal: 0,
     paddingVertical: device.platform === 'ios' ? normalize(12) : normalize(3.85)
   },
   marginRight: {
