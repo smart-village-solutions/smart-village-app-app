@@ -28,7 +28,7 @@ const homeTabConfig: TabConfig = {
         color={color}
         Icon={Icon.Home}
         stroke={focused ? 2 : 1}
-        landscapeStyle={{ marginRight: -normalize(6) }}
+        landscapeStyle={{ marginRight: -normalize(6), marginTop: -normalize(2) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
       />
@@ -47,7 +47,7 @@ const serviceTabConfig: TabConfig = {
       <OrientationAwareIcon
         color={color}
         Icon={focused ? Icon.ProfileFilled : Icon.Profile}
-        landscapeStyle={{ marginRight: -normalize(6) }}
+        landscapeStyle={{ marginRight: -normalize(6), marginTop: -normalize(2) }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
       />
@@ -66,7 +66,7 @@ const bookmarksTabConfig: TabConfig = {
       <OrientationAwareIcon
         color={color}
         Icon={focused ? Icon.HeartFilled : Icon.HeartEmpty}
-        landscapeStyle={{ marginRight: -normalize(6) }}
+        landscapeStyle={{ marginRight: -normalize(6), marginTop: 0 }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
       />
@@ -86,7 +86,7 @@ const aboutTabConfig: TabConfig = {
         color={color}
         Icon={Icon.About}
         stroke={focused ? 2 : 1}
-        landscapeStyle={{ marginRight: -normalize(6) }}
+        landscapeStyle={{ marginRight: -normalize(6), marginTop: 0 }}
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
       />
