@@ -62,9 +62,13 @@ export const AvailableVehicles = ({
 
   if (loading) {
     return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
+      <>
+        <SectionHeader title={texts.pointOfInterest.availableVehicles} />
+
+        <LoadingContainer>
+          <ActivityIndicator color={colors.refreshControl} />
+        </LoadingContainer>
+      </>
     );
   }
 
