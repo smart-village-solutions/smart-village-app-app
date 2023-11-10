@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     backgroundColor: colors.transparent,
-    marginTop: normalize(-5)
+    flex: 1
   },
   badgeText: {
     color: colors.darkText,

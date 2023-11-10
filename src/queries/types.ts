@@ -45,6 +45,7 @@ export const QUERY_TYPES = {
   NEWS_ITEMS: 'newsItems',
   NEWS_ITEMS_DATA_PROVIDER: 'newsItemsDataProvider',
   POINT_OF_INTEREST: 'pointOfInterest',
+  POINT_OF_INTEREST_TRAVEL_TIMES: 'pointOfInterestTravelTimes',
   POINTS_OF_INTEREST: 'pointsOfInterest',
   POINTS_OF_INTEREST_AND_TOURS: 'pointsOfInterestAndTours',
   PUBLIC_HTML_FILE: 'publicHtmlFile',
@@ -53,7 +54,6 @@ export const QUERY_TYPES = {
   TOUR: 'tour',
   TOUR_STOPS: 'tourStops',
   TOURS: 'tours',
-  TRAVEL_TIMES: 'travelTimes',
   VOLUNTEER: {
     APPLICANTS: 'applicants',
     ADDITIONAL: 'additional',

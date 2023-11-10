@@ -200,6 +200,25 @@ export const GET_POINT_OF_INTEREST = gql`
       lunches {
         id
       }
+      hasTravelTimes
+    }
+  }
+`;
+
+export const GET_POINT_OF_INTEREST_TRAVEL_TIMES = gql`
+  query PointOfInterestTravelTimes($id: ID!, $date: String!) {
+    pointOfInterest(id: $id) {
+      id
+      travelTimes(date: $date) {
+        departureTime
+        route {
+          routeShortName
+          routeType
+        }
+        trip {
+          tripHeadsign
+        }
+      }
     }
   }
 `;

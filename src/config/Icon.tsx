@@ -2,6 +2,7 @@ import React, { ComponentProps } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import {
+  IconArrowNarrowRight,
   IconBike,
   IconCar,
   IconClock,
@@ -124,6 +125,7 @@ export const Icon = {
   ArrowDownCircle: (props: IconProps) => <NamedIcon name="circle-arrow-down-filled" {...props} />,
   ArrowLeft: (props: IconProps) => <SvgIcon xml={arrowLeft} {...props} />,
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
+  ArrowRight2: (props: TablerIconsProps) => <IconArrowNarrowRight stroke={1} {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
   Bike: (props: TablerIconsProps) => <IconBike stroke={1} {...props} />,
   Calendar: (props: IconProps) => <SvgIcon xml={calendar} {...props} />,

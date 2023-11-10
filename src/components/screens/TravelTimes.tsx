@@ -1,4 +1,5 @@
 import _upperFirst from 'lodash/upperFirst';
+import moment from 'moment';
 import React, { Fragment, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -10,7 +11,7 @@ import { QUERY_TYPES, getQuery } from '../../queries';
 import { Button } from '../Button';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
-import { BoldText, RegularText } from '../Text';
+import { HeadlineText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
@@ -24,45 +25,43 @@ type TravelTimeProps = {
   trip: { tripHeadsign: string };
 };
 
-export const TravelTimes = ({
-  dataProviderId,
-  externalId,
-  iconName
-}: {
-  dataProviderId: string;
-  externalId: string;
-  iconName: keyof typeof Icon;
-}) => {
+export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof typeof Icon }) => {
   const CategoryIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
-  const [today] = useState<string>(new Date().toISOString());
-  const queryVariables = { dataProviderId, externalId, date: today };
+  const [today] = useState<string>(moment().format('YYYY-MM-DDTHH:mm'));
   const [moreData, setMoreData] = useState(1);
 
-  const { data, loading } = useQuery(getQuery(QUERY_TYPES.TRAVEL_TIMES), {
-    variables: queryVariables
+  const { data, loading } = useQuery(getQuery(QUERY_TYPES.POINT_OF_INTEREST_TRAVEL_TIMES), {
+    variables: { id, date: today }
   });
 
   if (loading) {
     return (
-      <LoadingContainer>
-        <ActivityIndicator color={colors.refreshControl} />
-      </LoadingContainer>
+      <>
+        <SectionHeader title={texts.pointOfInterest.departureTimes} />
+
+        <LoadingContainer>
+          <ActivityIndicator color={colors.refreshControl} />
+        </LoadingContainer>
+      </>
     );
   }
 
-  const paginatedData = data?.travelTimes?.slice(0, moreData * MAX_INITIAL_NUM_TO_RENDER);
+  const paginatedData = data?.pointOfInterest?.travelTimes?.slice(
+    0,
+    moreData * MAX_INITIAL_NUM_TO_RENDER
+  );
 
   return (
     <>
       <SectionHeader title={texts.pointOfInterest.departureTimes} />
 
-      <Wrapper style={styles.noPadding}>
-        <BoldText small>
-          {texts.pointOfInterest.today} {today}
-        </BoldText>
+      <Wrapper style={styles.noPaddingBottom}>
+        <HeadlineText small>
+          {texts.pointOfInterest.today} {momentFormat(today, 'dd, DD.MM.YYYY')}
+        </HeadlineText>
       </Wrapper>
 
-      {paginatedData.map((item: TravelTimeProps, index: number) => {
+      {paginatedData?.map((item: TravelTimeProps, index: number) => {
         const { departureTime, route, trip } = item;
         const { routeShortName, routeType } = route;
         const { tripHeadsign } = trip;
@@ -116,7 +115,11 @@ export const TravelTimes = ({
                   </View>
                 )}
 
-                <Icon.ArrowRight size={normalize(16)} color={colors.darkText} style={styles.icon} />
+                <Icon.ArrowRight2
+                  size={normalize(16)}
+                  color={colors.darkText}
+                  style={styles.icon}
+                />
 
                 {!!tripHeadsign && (
                   <RegularText small style={styles.headSign}>
@@ -125,11 +128,11 @@ export const TravelTimes = ({
                 )}
               </ListItem.Content>
             </ListItem>
-            {index !== paginatedData.length - 1 && <Divider style={styles.divider} />}
+            {index !== paginatedData?.length - 1 && <Divider style={styles.divider} />}
           </Fragment>
         );
       })}
-      {paginatedData.length !== data?.travelTimes?.length && (
+      {paginatedData?.length !== data?.pointOfInterest?.travelTimes?.length && (
         <Wrapper>
           <Button
             title={texts.pointOfInterest.departureTimesShowMoreButton}
@@ -161,7 +164,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start'
   },
-  noPadding: {
+  noPaddingBottom: {
     paddingBottom: 0
   },
   time: {
