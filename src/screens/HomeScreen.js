@@ -112,12 +112,11 @@ const renderItem = ({ item }) => {
         },
         index
       ) => (
-        // eslint-disable-next-line react/jsx-key
         <HomeSection
+          key={`${categoryId}-${index}`}
           {...{
             categoryId,
             fetchPolicy,
-            key: index,
             navigation,
             navigate: () =>
               navigation.navigate(

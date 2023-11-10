@@ -22,7 +22,7 @@ const renderCardContent = (item, horizontal, noOvertitle, bigTitle) => {
       <Image
         source={{ uri: picture.url }}
         style={stylesWithProps({ horizontal }).image}
-        containerStyle={(styles.imageContainer, !!imageStyle && imageStyle)}
+        containerStyle={[styles.imageContainer, !!imageStyle && imageStyle]}
         borderRadius={imageBorderRadius}
       />
     ),
@@ -84,17 +84,19 @@ export const CardListItem = memo(({ navigation, horizontal, noOvertitle, item, b
       onPress={() => navigation && navigation.push(name, params)}
       disabled={!navigation}
     >
-      <Card containerStyle={[styles.container, !!containerStyle && containerStyle]}>
-        <View
-          style={[
-            stylesWithProps({ horizontal }).contentContainer,
-            !!contentContainerStyle && contentContainerStyle
-          ]}
-        >
-          {renderCardContent(item, horizontal, noOvertitle, bigTitle)}
-        </View>
-      </Card>
-      <Divider />
+      <View>
+        <Card containerStyle={[styles.container, !!containerStyle && containerStyle]}>
+          <View
+            style={[
+              stylesWithProps({ horizontal }).contentContainer,
+              !!contentContainerStyle && contentContainerStyle
+            ]}
+          >
+            {renderCardContent(item, horizontal, noOvertitle, bigTitle)}
+          </View>
+        </Card>
+        <Divider />
+      </View>
     </Touchable>
   );
 });
