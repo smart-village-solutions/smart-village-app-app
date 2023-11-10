@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import { View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { consts, texts } from '../../config';
@@ -11,18 +10,16 @@ import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
-import { Logo } from '../Logo';
 import { SectionHeader } from '../SectionHeader';
+import { HeadlineText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 import { Map } from '../map';
-import { HeadlineText } from '../Text';
 
 import { AvailableVehicles } from './AvailableVehicles';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
 import { PriceCard } from './PriceCard';
-import { TimeTables } from './TimeTables';
 import { TravelTimes } from './TravelTimes';
 
 const { MATOMO_TRACKING } = consts;

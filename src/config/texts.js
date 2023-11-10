@@ -414,6 +414,7 @@ export const texts = {
     appointments: 'Termine',
     appointmentsShowMoreButton: 'Mehr anzeigen',
     description: 'Beschreibung',
+    details: 'Details',
     filterByDailyEvents: 'Nur tagesaktuelle anzeigen',
     operatingCompany: 'Veranstalter',
     prices: 'Preise'
@@ -795,7 +796,6 @@ export const texts = {
   screenTitles: {
     about: 'Menü',
     appSettings: 'App-Einstellungen',
-    company: appJson.expo.name,
     constructionSite: 'Baustelle',
     consul: {
       login: 'Anmelden',
@@ -810,9 +810,8 @@ export const texts = {
     mapView: 'Kartenansicht',
     profile: 'Profil',
     routePlanner: 'Routenplaner bbnavi',
-    service: 'Service',
     pointsOfInterest: 'Orte und Touren',
-    service: appJson.expo.name,
+    service: 'Service',
     settings: 'Einstellungen',
     survey: 'Umfrage',
     surveys: 'Umfragen',

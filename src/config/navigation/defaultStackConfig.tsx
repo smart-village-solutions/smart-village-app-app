@@ -123,7 +123,7 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Bookmarks,
       screenComponent: BookmarkScreen,
       screenOptions: getScreenOptions({ withDrawer: isDrawer }),
-      inititalParams: {
+      initialParams: {
         title: texts.screenTitles.favorites
       }
     },
@@ -322,7 +322,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Profile,
       screenComponent: HtmlScreen,
-      inititalParams: {
+      initialParams: {
         title: texts.screenTitles.profile,
         query: QUERY_TYPES.PUBLIC_HTML_FILE,
         queryVariables: {

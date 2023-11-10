@@ -6,7 +6,7 @@ import { colors, consts, Icon, normalize } from '../../config';
 import { openLink } from '../../helpers';
 import { Contact } from '../../types';
 import { RegularText } from '../Text';
-import { InfoBox, WrapperRow, WrapperVertical } from '../Wrapper';
+import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 const ContactView = ({ contact }: { contact?: Contact }) => {
   const a11yText = consts.a11yLabel;
@@ -20,7 +20,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
       {(!!contact.lastName || !!contact.firstName) && (
         <>
           <WrapperVertical>
-            <WrapperRow>
+            <WrapperRow style={styles.wrap}>
               <RNEIcon
                 name="person"
                 type="material"
@@ -38,7 +38,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
       {!!contact.phone && (
         <>
           <WrapperVertical>
-            <WrapperRow>
+            <WrapperRow style={styles.wrap}>
               <Icon.Phone style={styles.margin} />
               <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
                 <RegularText
@@ -58,7 +58,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
       {!!contact.email && (
         <>
           <WrapperVertical>
-            <WrapperRow>
+            <WrapperRow style={styles.wrap}>
               <Icon.Mail style={styles.margin} />
               <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
                 <RegularText
@@ -79,7 +79,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
       {!!contact.fax && (
         <>
           <WrapperVertical>
-            <WrapperRow>
+            <WrapperRow style={styles.wrap}>
               <RNEIcon
                 name="print"
                 type="material"
@@ -122,5 +122,8 @@ const styles = StyleSheet.create({
   },
   margin: {
     marginRight: normalize(12)
+  },
+  wrap: {
+    width: '90%'
   }
 });

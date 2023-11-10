@@ -8,7 +8,7 @@ import { momentFormat } from '../../helpers';
 import { HtmlView } from '../HtmlView';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperRow } from '../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
 
@@ -34,7 +34,7 @@ export const OpeningTimesCard = ({ openingHours }) => {
   };
 
   return (
-    <Wrapper>
+    <WrapperHorizontal>
       {openingHours
         .slice(0, moreData * MAX_INITIAL_NUM_TO_RENDER)
         .map((item, index, slicedArray) => {
@@ -104,7 +104,7 @@ export const OpeningTimesCard = ({ openingHours }) => {
           </BoldText>
         </Touchable>
       )}
-    </Wrapper>
+    </WrapperHorizontal>
   );
 };
 /* eslint-enable complexity */

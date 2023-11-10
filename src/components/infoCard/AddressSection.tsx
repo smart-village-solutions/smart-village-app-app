@@ -95,7 +95,7 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
         return (
           <View key={index}>
             <WrapperVertical>
-              <WrapperRow>
+              <WrapperRow style={styles.wrap}>
                 <Icon.Flag style={styles.margin} />
                 {isPressable ? (
                   <TouchableOpacity
@@ -147,5 +147,8 @@ const styles = StyleSheet.create({
   margin: {
     marginRight: normalize(10),
     marginTop: normalize(-1)
+  },
+  wrap: {
+    width: '90%'
   }
 });
