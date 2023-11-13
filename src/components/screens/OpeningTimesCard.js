@@ -8,7 +8,7 @@ import { momentFormat } from '../../helpers';
 import { HtmlView } from '../HtmlView';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperHorizontal, WrapperRow } from '../Wrapper';
+import { WrapperHorizontal, WrapperRow } from '../Wrapper';
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
 
@@ -89,7 +89,7 @@ export const OpeningTimesCard = ({ openingHours }) => {
               )}
 
               {!!description && (
-                <WrapperRow>
+                <WrapperRow style={styles.marginBottom}>
                   <HtmlView html={description} />
                 </WrapperRow>
               )}
@@ -111,10 +111,10 @@ export const OpeningTimesCard = ({ openingHours }) => {
 
 const styles = StyleSheet.create({
   divider: {
-    borderBottomColor: colors.primary,
+    borderBottomColor: colors.borderRgba,
     borderBottomWidth: 1,
     flex: 1,
-    marginBottom: normalize(5)
+    marginTop: normalize(5)
   },
   marginBottom: {
     marginBottom: normalize(3)

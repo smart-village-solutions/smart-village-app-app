@@ -11,7 +11,7 @@ import { QUERY_TYPES, getQuery } from '../../queries';
 import { Button } from '../Button';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
-import { HeadlineText, RegularText } from '../Text';
+import { BoldText, HeadlineText, RegularText } from '../Text';
 import { Wrapper } from '../Wrapper';
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
@@ -56,7 +56,7 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
       <SectionHeader title={texts.pointOfInterest.departureTimes} />
 
       <Wrapper style={styles.noPaddingBottom}>
-        <HeadlineText small>
+        <HeadlineText>
           {texts.pointOfInterest.today} {momentFormat(today, 'dd, DD.MM.YYYY')}
         </HeadlineText>
       </Wrapper>
@@ -75,10 +75,19 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
 
         const routeColors: { [key: string]: string } = {
           '0': '#D02E26',
-          '1': colors.primary,
-          '2': colors.primary,
+          '1': '#FFCC14',
+          '2': '#52267D',
           '3': '#265BA4'
         };
+
+        const routeIcons: { [key: string]: string } = {
+          '0': 'Tram',
+          '1': 'Metro',
+          '2': 'Railway',
+          '3': 'Bus'
+        };
+
+        const RouteIcon = Icon[routeIcons[routeType] as keyof typeof Icon] || CategoryIcon;
 
         return (
           <Fragment key={index}>
@@ -92,25 +101,23 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
 
                 {!!routeShortName && !!routeType && (
                   <View style={styles.typeDirection}>
-                    {!!iconName && (
-                      <View
-                        style={[
-                          styles.typeIconContainer,
-                          { backgroundColor: routeColors[routeType || '0'] }
-                        ]}
-                      >
-                        <CategoryIcon color={colors.lightestText} size={normalize(16)} />
-                      </View>
-                    )}
+                    <View
+                      style={[
+                        styles.typeIconContainer,
+                        { backgroundColor: routeColors[routeType || '0'] }
+                      ]}
+                    >
+                      <RouteIcon color={colors.lightestText} size={normalize(16)} />
+                    </View>
                     <View
                       style={[
                         styles.typeView,
                         { backgroundColor: `${routeColors[routeType || '0']}` }
                       ]}
                     >
-                      <RegularText lightest center>
+                      <BoldText lightest small center>
                         {`${routeTypes[routeType || '0']} ${routeShortName}`}
-                      </RegularText>
+                      </BoldText>
                     </View>
                   </View>
                 )}
@@ -122,9 +129,7 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
                 />
 
                 {!!tripHeadsign && (
-                  <RegularText small style={styles.headSign}>
-                    {tripHeadsign}
-                  </RegularText>
+                  <RegularText style={styles.headSign}>{tripHeadsign}</RegularText>
                 )}
               </ListItem.Content>
             </ListItem>
