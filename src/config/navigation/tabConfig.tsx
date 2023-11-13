@@ -47,7 +47,11 @@ const serviceTabConfig: TabConfig = {
       <OrientationAwareIcon
         color={color}
         Icon={focused ? Icon.ProfileFilled : Icon.Profile}
-        landscapeStyle={{ marginRight: -normalize(6), marginTop: -normalize(2) }}
+        landscapeStyle={
+          focused
+            ? { marginRight: -normalize(16), marginTop: -normalize(2) }
+            : { marginRight: -normalize(6), marginTop: -normalize(2) }
+        }
         size={normalize(28)}
         style={{ marginTop: normalize(3) }}
       />

@@ -32,5 +32,6 @@ export * from './service';
 export * from './share';
 export * from './trash';
 export * from './unvisible';
+export * from './userFilled';
 export * from './verifiedBadge';
 export * from './visible';
