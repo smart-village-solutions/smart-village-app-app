@@ -133,7 +133,7 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
                 )}
               </ListItem.Content>
             </ListItem>
-            {index !== paginatedData?.length - 1 && <Divider style={styles.divider} />}
+            <Divider style={styles.divider} />
           </Fragment>
         );
       })}
