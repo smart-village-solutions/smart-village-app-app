@@ -7,6 +7,7 @@ import { SettingsContext } from '../../SettingsProvider';
 import { ListSettingsItem } from '../ListSettingsItem';
 
 const renderItem = ({ item }) => <ListSettingsItem item={item} />;
+const keyExtractor = (item) => item.queryType;
 
 export const ListSettings = () => {
   const categoriesNews = useContext(SettingsContext).globalSettings?.sections?.categoriesNews ?? [
@@ -29,5 +30,5 @@ export const ListSettings = () => {
     }
   ];
 
-  return <FlatList data={data} renderItem={renderItem} keyExtractor={(item) => item.queryType} />;
+  return <FlatList data={data} keyExtractor={keyExtractor} renderItem={renderItem} />;
 };

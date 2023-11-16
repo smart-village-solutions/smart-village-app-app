@@ -33,6 +33,7 @@ const getListType = (query, listTypesSettings) => {
  * @param {any} navigation
  * @param {{
  *          horizontal?: boolean;
+ *          noOvertitle?: boolean;
  *          noSubtitle?: boolean;
  *          openWebScreen?: () => void;
  *          queryVariables?: object
@@ -41,7 +42,9 @@ const getListType = (query, listTypesSettings) => {
  * @returns renderItem function
  */
 export const useRenderItem = (query, navigation, options = {}) => {
-  const { listTypesSettings } = useContext(SettingsContext);
+  const { globalSettings, listTypesSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { listsWithoutArrows = false } = settings;
 
   const listType = getListType(query, listTypesSettings);
 
@@ -50,7 +53,12 @@ export const useRenderItem = (query, navigation, options = {}) => {
   switch (listType) {
     case LIST_TYPES.CARD_LIST: {
       renderItem = ({ item }) => (
-        <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
+        <CardListItem
+          navigation={navigation}
+          horizontal={options.horizontal}
+          noOvertitle={options.noOvertitle}
+          item={item}
+        />
       );
       break;
     }
@@ -63,13 +71,18 @@ export const useRenderItem = (query, navigation, options = {}) => {
               item.bottomDivider ??
               (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
           }}
-          {...{ navigation, noSubtitle: options.noSubtitle, leftImage: true }}
+          {...{
+            navigation,
+            noSubtitle: options.noSubtitle,
+            noOvertitle: options.noOvertitle,
+            leftImage: true
+          }}
         />
       );
       break;
     }
     default: {
-      renderItem = ({ item, index, section }) => {
+      renderItem = ({ item, index, section, target }) => {
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
           return (
             <VolunteerPostListItem
@@ -126,12 +139,15 @@ export const useRenderItem = (query, navigation, options = {}) => {
               ...item,
               bottomDivider: isArray(section?.data) ? section.data.length - 1 !== index : undefined
             }}
-            {...{ navigation, noSubtitle: options.noSubtitle }}
+            {...{
+              navigation,
+              noSubtitle: options.noSubtitle,
+              noOvertitle: options.noOvertitle,
+              listsWithoutArrows
+            }}
           />
         );
       };
-
-      break;
     }
   }
 

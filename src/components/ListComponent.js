@@ -53,6 +53,7 @@ export const ListComponent = ({
   ListHeaderComponent,
   navigation,
   noSubtitle,
+  noOvertitle,
   openWebScreen,
   query,
   queryVariables,
@@ -81,6 +82,7 @@ export const ListComponent = ({
       ListHeaderComponent={ListHeaderComponent}
       navigation={navigation}
       noSubtitle={noSubtitle}
+      noOvertitle={noOvertitle}
       openWebScreen={openWebScreen}
       query={query}
       queryVariables={queryVariables}
@@ -100,6 +102,7 @@ ListComponent.propTypes = {
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
+  noOvertitle: PropTypes.bool,
   openWebScreen: PropTypes.func,
   query: PropTypes.string.isRequired,
   queryVariables: PropTypes.object,

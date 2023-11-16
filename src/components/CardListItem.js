@@ -4,16 +4,16 @@ import { Platform, StyleSheet, View } from 'react-native';
 import { Card } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
-import { imageHeight, imageWidth } from '../helpers';
+import { imageHeight, imageWidth, trimNewLines } from '../helpers';
 
 import { Image } from './Image';
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 
-const renderCardContent = (item, horizontal) => {
-  const { appDesignSystem = {}, picture, subtitle, title, topTitle } = item;
+const renderCardContent = (item, horizontal, noOvertitle) => {
+  const { appDesignSystem = {}, picture, overtitle, subtitle, title } = item;
   const { contentSequence, imageBorderRadius = 5, imageStyle, textsStyle = {} } = appDesignSystem;
-  const { generalStyle, subtitleStyle, titleStyle, topTitleStyle } = textsStyle;
+  const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
 
   const cardContent = [];
 
@@ -22,17 +22,23 @@ const renderCardContent = (item, horizontal) => {
       <Image
         source={{ uri: picture.url }}
         style={stylesWithProps({ horizontal }).image}
-        containerStyle={(styles.imageContainer, !!imageStyle && imageStyle)}
+        containerStyle={[styles.imageContainer, !!imageStyle && imageStyle]}
         borderRadius={imageBorderRadius}
       />
     ),
-    topTitle: () => (
-      <RegularText small style={[!!generalStyle && generalStyle, !!topTitleStyle && topTitleStyle]}>
-        {topTitle}
+    overtitle: () => (
+      <RegularText
+        smallest
+        style={[!!generalStyle && generalStyle, !!overtitleStyle && overtitleStyle]}
+      >
+        {trimNewLines(overtitle)}
       </RegularText>
     ),
     subtitle: () => (
-      <RegularText small style={[!!generalStyle && generalStyle, !!subtitleStyle && subtitleStyle]}>
+      <RegularText
+        smallest
+        style={[!!generalStyle && generalStyle, !!subtitleStyle && subtitleStyle]}
+      >
         {subtitle}
       </RegularText>
     ),
@@ -50,16 +56,16 @@ const renderCardContent = (item, horizontal) => {
       }
     });
   } else {
-    cardContent.push(sequenceMap.picture());
-    cardContent.push(sequenceMap.topTitle());
-    cardContent.push(sequenceMap.subtitle());
-    cardContent.push(sequenceMap.title());
+    picture?.url && cardContent.push(sequenceMap.picture());
+    !noOvertitle && overtitle && cardContent.push(sequenceMap.overtitle());
+    title && cardContent.push(sequenceMap.title());
+    subtitle && cardContent.push(sequenceMap.subtitle());
   }
 
   return cardContent;
 };
 
-export const CardListItem = memo(({ navigation, horizontal, item }) => {
+export const CardListItem = memo(({ navigation, horizontal, noOvertitle, item }) => {
   const { appDesignSystem = {}, params, routeName: name, subtitle, title } = item;
   const { containerStyle, contentContainerStyle } = appDesignSystem;
 
@@ -77,7 +83,7 @@ export const CardListItem = memo(({ navigation, horizontal, item }) => {
             !!contentContainerStyle && contentContainerStyle
           ]}
         >
-          {renderCardContent(item, horizontal)}
+          {renderCardContent(item, horizontal, noOvertitle)}
         </View>
       </Card>
     </Touchable>
@@ -134,9 +140,11 @@ CardListItem.displayName = 'CardListItem';
 CardListItem.propTypes = {
   navigation: PropTypes.object,
   item: PropTypes.object.isRequired,
-  horizontal: PropTypes.bool
+  horizontal: PropTypes.bool,
+  noOvertitle: PropTypes.bool
 };
 
 CardListItem.defaultProps = {
-  horizontal: false
+  horizontal: false,
+  noOvertitle: false
 };

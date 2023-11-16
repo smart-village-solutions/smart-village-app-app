@@ -89,7 +89,7 @@ export const OpeningTimesCard = ({ openingHours }) => {
               )}
 
               {!!description && (
-                <WrapperRow>
+                <WrapperRow style={styles.marginBottom}>
                   <HtmlView html={description} />
                 </WrapperRow>
               )}
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.primary,
     borderBottomWidth: 1,
     flex: 1,
-    marginBottom: normalize(5)
+    marginTop: normalize(5)
   },
   marginBottom: {
     marginBottom: normalize(3)

@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 
 import { SettingsContext } from '../../SettingsProvider';
-import { consts, texts } from '../../config';
+import { texts } from '../../config';
 import { checkDownloadedData, navigationToArtworksDetailScreen } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName } from '../../types';
@@ -98,7 +98,6 @@ export const AugmentedReality = ({
   }
 
   const mapMarkers = mapToMapMarkers(data);
-  const a11yText = consts.a11yLabel;
 
   return (
     <>
