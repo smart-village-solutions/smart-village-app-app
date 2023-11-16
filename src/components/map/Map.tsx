@@ -131,6 +131,7 @@ export const Map = ({
             zIndex={1}
           />
         )}
+        {/* eslint-disable complexity */}
         {locations?.map((marker, index) => {
           const isActiveMarker = selectedMarker && marker.id === selectedMarker;
 
@@ -153,7 +154,7 @@ export const Map = ({
                     ]}
                   >
                     <MapIcon
-                      iconColor={colors.surface}
+                      iconColor={isActiveMarker ? undefined : colors.accent}
                       iconName={marker.iconName}
                       iconSize={MARKER_ICON_SIZE / 3.25}
                     />
@@ -161,7 +162,13 @@ export const Map = ({
                 </>
               ) : (
                 <MapIcon
-                  iconColor={isActiveMarker ? colors.accent : undefined}
+                  iconColor={
+                    marker.iconName == 'ownLocation'
+                      ? undefined
+                      : isActiveMarker
+                      ? colors.accent
+                      : undefined
+                  }
                   iconName={marker.iconName ? marker.iconName : undefined}
                 />
               )}
@@ -169,6 +176,7 @@ export const Map = ({
           );
         })}
       </MapView>
+      {/* eslint-enable complexity */}
       {isMaximizeButtonVisible && (
         <TouchableOpacity style={styles.maximizeMapButton} onPress={onMaximizeButtonPress}>
           <Icon.ExpandMap size={normalize(18)} />

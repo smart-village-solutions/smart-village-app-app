@@ -91,6 +91,10 @@ export const EventList = ({
       data={sectionedData}
       refreshing={refreshing}
       estimatedItemSize={MAX_INITIAL_NUM_TO_RENDER}
+      getItemType={(item) => {
+        // To achieve better performance, specify the type based on the item
+        return typeof item === 'string' ? 'sectionHeader' : 'row';
+      }}
       keyExtractor={keyExtractor}
       ListFooterComponent={() => {
         if (data?.length >= MAX_INITIAL_NUM_TO_RENDER) {

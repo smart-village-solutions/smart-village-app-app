@@ -73,7 +73,6 @@ export class CategoryList extends React.PureComponent {
       <SectionList
         keyExtractor={this.keyExtractor}
         sections={sectionedData}
-        initialNumToRender={data.length > 1 ? data.length : 2}
         renderItem={({ item, index, section }) => (
           <CategoryListItem
             navigation={navigation}

@@ -103,7 +103,7 @@ const renderItem = ({ item }) => {
     return categoriesNews.map(
       (
         {
-          categoryButton: buttonTitle,
+          categoryButton,
           categoryId,
           categoryTitle: title,
           categoryTitleDetail: titleDetail,
@@ -112,13 +112,12 @@ const renderItem = ({ item }) => {
         },
         index
       ) => (
-        // eslint-disable-next-line react/jsx-key
         <HomeSection
+          key={`${categoryId}-${index}`}
           {...{
-            buttonTitle,
+            buttonTitle: categoryButton,
             categoryId,
             fetchPolicy,
-            key: index,
             navigation,
             navigate: () =>
               navigation.navigate(

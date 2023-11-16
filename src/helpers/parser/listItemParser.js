@@ -46,7 +46,7 @@ const filterGenericItems = (item) => {
 const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
   return data?.map((eventRecord, index) => ({
     id: eventRecord.id,
-    subtitle: subtitle(
+    overtitle: subtitle(
       withDate ? eventDate(eventRecord.listDate) : undefined,
       eventRecord.addresses?.[0]?.addition || eventRecord.addresses?.[0]?.city,
       withTime ? eventRecord?.dates?.[0]?.timeFrom : undefined
@@ -77,7 +77,7 @@ const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText) 
 
   return filteredData?.map((genericItem, index) => ({
     id: genericItem.id,
-    subtitle:
+    overtitle:
       genericItem.genericType !== GenericType.Deadline &&
       subtitle(
         momentFormatUtcToLocal(genericItem.publicationDate ?? genericItem.createdAt),
@@ -116,7 +116,7 @@ const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText) 
 const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
   return data?.map((newsItem, index) => ({
     id: newsItem.id,
-    subtitle: subtitle(momentFormatUtcToLocal(newsItem.publishedAt), newsItem.dataProvider?.name),
+    overtitle: subtitle(momentFormatUtcToLocal(newsItem.publishedAt), newsItem.dataProvider?.name),
     title: newsItem.contentBlocks?.[0]?.title,
     picture: {
       url:
@@ -148,7 +148,7 @@ const parsePointOfInterest = (data, skipLastDivider) => {
   return data?.map((pointOfInterest, index) => ({
     id: pointOfInterest.id,
     title: pointOfInterest.title || pointOfInterest.name,
-    subtitle: pointOfInterest.category?.name,
+    overtitle: pointOfInterest.category?.name,
     picture: {
       url: mainImageOfMediaContents(pointOfInterest.mediaContents)
     },
@@ -174,7 +174,7 @@ const parseTours = (data, skipLastDivider) => {
   return data?.map((tour, index) => ({
     id: tour.id,
     title: tour.name,
-    subtitle: tour.category?.name,
+    overtitle: tour.category?.name,
     picture: {
       url: mainImageOfMediaContents(tour.mediaContents)
     },
