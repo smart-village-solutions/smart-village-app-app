@@ -62,7 +62,7 @@ export const RegularText = styled(Text)`
   color: ${colors.darkText};
   font-family: regular;
   font-size: ${normalize(16)};
-  line-height: ${normalize(22)};
+  line-height: ${normalize(20)};
 
   ${(props) =>
     props.italic &&
@@ -154,6 +154,12 @@ export const RegularText = styled(Text)`
     props.right &&
     css`
       text-align: right;
+    `};
+
+  ${(props) =>
+    props.uppercase &&
+    css`
+      text-transform: uppercase;
     `};
 `;
 

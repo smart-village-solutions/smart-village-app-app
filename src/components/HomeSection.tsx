@@ -38,7 +38,11 @@ export const HomeSection = ({
   queryVariables,
   showVolunteerEvents = false
 }: Props) => {
-  const { data, loading: isLoading, refetch } = useQuery(getQuery(query), {
+  const {
+    data,
+    loading: isLoading,
+    refetch
+  } = useQuery(getQuery(query), {
     variables: queryVariables,
     fetchPolicy
   });

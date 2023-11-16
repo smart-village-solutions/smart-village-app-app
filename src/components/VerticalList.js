@@ -22,6 +22,7 @@ export const VerticalList = ({
   ListHeaderComponent,
   navigation,
   noSubtitle,
+  noOvertitle,
   openWebScreen,
   query,
   refreshControl,
@@ -33,7 +34,12 @@ export const VerticalList = ({
   const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
 
-  const renderItem = useRenderItem(query, navigation, { noSubtitle, openWebScreen, refetch });
+  const renderItem = useRenderItem(query, navigation, {
+    noSubtitle,
+    noOvertitle,
+    openWebScreen,
+    refetch
+  });
 
   const onEndReached = async () => {
     if (fetchMoreData) {
@@ -119,6 +125,7 @@ VerticalList.propTypes = {
   ListHeaderComponent: PropTypes.object,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
+  noOvertitle: PropTypes.bool,
   openWebScreen: PropTypes.func,
   query: PropTypes.string,
   refreshControl: PropTypes.object,
@@ -127,5 +134,6 @@ VerticalList.propTypes = {
 
 VerticalList.defaultProps = {
   noSubtitle: false,
+  noOvertitle: false,
   leftImage: false
 };
