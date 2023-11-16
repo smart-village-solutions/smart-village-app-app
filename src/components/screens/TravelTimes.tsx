@@ -7,6 +7,7 @@ import { Divider, ListItem } from 'react-native-elements';
 
 import { Icon, colors, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
+import { useDetailRefresh } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { Button } from '../Button';
 import { LoadingContainer } from '../LoadingContainer';
@@ -27,11 +28,19 @@ type TravelTimeProps = {
 
 export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof typeof Icon }) => {
   const CategoryIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
-  const [today] = useState<string>(moment().format('YYYY-MM-DDTHH:mm'));
+  const [today, setToday] = useState<string>(moment().format('YYYY-MM-DDTHH:mm'));
   const [moreData, setMoreData] = useState(1);
 
-  const { data, loading } = useQuery(getQuery(QUERY_TYPES.POINT_OF_INTEREST_TRAVEL_TIMES), {
-    variables: { id, date: today }
+  const { data, loading, refetch } = useQuery(
+    getQuery(QUERY_TYPES.POINT_OF_INTEREST_TRAVEL_TIMES),
+    {
+      variables: { id, date: today }
+    }
+  );
+
+  useDetailRefresh(() => {
+    setToday(moment().format('YYYY-MM-DDTHH:mm'));
+    refetch();
   });
 
   if (loading) {
