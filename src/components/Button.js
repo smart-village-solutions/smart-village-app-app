@@ -120,13 +120,13 @@ const styles = StyleSheet.create({
   buttonInvert: {
     borderColor: colors.primary,
     borderStyle: 'solid',
-    borderWidth: 2
+    borderWidth: 1
   },
   buttonRadius: {
     borderRadius: normalize(8)
   },
   container: {
-    marginBottom: normalize(21)
+    marginBottom: normalize(8)
   },
   containerLandscape: {
     alignItems: 'center',

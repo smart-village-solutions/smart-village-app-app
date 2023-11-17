@@ -46,6 +46,7 @@ import {
   OParlOverviewScreen,
   OParlPersonsScreen,
   OParlSearchScreen,
+  ProfileHomeScreen,
   SettingsScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
@@ -321,10 +322,10 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.Profile,
-      screenComponent: HtmlScreen,
+      screenComponent: ProfileHomeScreen,
       initialParams: {
         title: texts.screenTitles.profile,
-        query: QUERY_TYPES.PUBLIC_HTML_FILE,
+        query: QUERY_TYPES.PUBLIC_JSON_FILE,
         queryVariables: {
           name: 'profile'
         },
