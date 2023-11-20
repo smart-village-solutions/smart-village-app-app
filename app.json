@@ -75,6 +75,14 @@
           "initialOrientation": "PORTRAIT"
         }
       ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ],
       "expo-localization",
       "sentry-expo",
       "./config-plugins/withAndroidMailQueriesAndWhatsappPackage"
