@@ -15,7 +15,14 @@ import { SettingsContext } from '../SettingsProvider';
 import { ImagesCarouselItem } from './ImagesCarouselItem';
 import { LoadingContainer } from './LoadingContainer';
 
-export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }) => {
+export const ImagesCarousel = ({
+  aspectRatio,
+  autoplayInterval,
+  data,
+  isDisturber,
+  navigation,
+  refreshTimeKey
+}) => {
   const { dimensions } = useContext(OrientationContext);
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings } = useContext(SettingsContext);
@@ -133,13 +140,14 @@ export const ImagesCarousel = ({ data, navigation, refreshTimeKey, aspectRatio }
           autoplay
           loop
           autoplayDelay={0}
-          autoplayInterval={4000}
+          autoplayInterval={autoplayInterval || 4000}
           containerCustomStyle={styles.center}
           onScrollIndexChanged={setCarouselImageIndex}
         />
       )}
 
       {showSliderPauseButton &&
+        !isDisturber &&
         pauseButton(
           horizontalPosition,
           isCopyrighted,
@@ -194,9 +202,11 @@ const styles = StyleSheet.create({
 });
 
 ImagesCarousel.propTypes = {
-  data: PropTypes.array.isRequired,
-  navigation: PropTypes.object,
-  refreshTimeKey: PropTypes.string,
   aspectRatio: PropTypes.object,
-  autoplay: PropTypes.bool
+  autoplay: PropTypes.bool,
+  autoplayInterval: PropTypes.number,
+  data: PropTypes.array.isRequired,
+  isDisturber: PropTypes.bool,
+  navigation: PropTypes.object,
+  refreshTimeKey: PropTypes.string
 };
