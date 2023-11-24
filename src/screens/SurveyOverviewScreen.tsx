@@ -2,11 +2,11 @@ import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 import { useQuery } from 'react-apollo';
-import { SectionList } from 'react-native';
+import { SectionList, StyleSheet } from 'react-native';
 
 import { HtmlView, SafeAreaViewFlex, SectionHeader, TextListItem, Wrapper } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
-import { texts } from '../config';
+import { normalize, texts } from '../config';
 import { combineLanguages } from '../helpers';
 import { usePullToRefetch, useStaticContent, useSurveyLanguages } from '../hooks';
 import { SURVEYS } from '../queries/survey';
@@ -103,7 +103,7 @@ export const SurveyOverviewScreen = ({ route }: Props) => {
     <SafeAreaViewFlex>
       <SectionList
         ListHeaderComponent={
-          !!data ? (
+          data ? (
             <Wrapper>
               <HtmlView html={data} />
             </Wrapper>
@@ -113,7 +113,14 @@ export const SurveyOverviewScreen = ({ route }: Props) => {
         renderItem={renderSurvey}
         renderSectionHeader={renderSectionHeader}
         sections={surveySections}
+        style={styles.container}
       />
     </SafeAreaViewFlex>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: normalize(14)
+  }
+});
