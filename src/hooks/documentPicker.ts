@@ -7,8 +7,8 @@ export const useSelectDocument = () => {
   const selectDocument = useCallback(async () => {
     const result = await DocumentPicker.getDocumentAsync({ type: DOCUMENT_TYPE_PDF });
 
-    if (result?.type !== 'cancel') {
-      return result;
+    if (!result?.canceled) {
+      return result?.assets[0];
     }
 
     return {};
