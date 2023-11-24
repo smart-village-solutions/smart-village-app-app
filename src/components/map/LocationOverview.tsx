@@ -1,6 +1,4 @@
-import { RouteProp } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { LocationObject } from 'expo-location';
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
@@ -20,14 +18,12 @@ import { Map } from './Map';
 
 type Props = {
   filterByOpeningTimes?: boolean;
-  position?: LocationObject;
   navigation: StackNavigationProp<Record<string, any>>;
   queryVariables: {
     category?: string;
     categoryId?: string | number;
     dataProvider?: string;
   };
-  route: RouteProp<any, never>;
 };
 
 // FIXME: with our current setup the data that we receive from a query is not typed
@@ -59,10 +55,11 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
 
 export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariables }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
-  const { globalSettings } = useContext(SettingsContext);
+  const { globalSettings, locationSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
+  const { defaultAlternativePosition } = locationSettings || {};
 
   const { data: overviewData, loading } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
     fetchPolicy,
@@ -127,6 +124,14 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
       <Map
         isMultipleMarkersMap
         locations={mapMarkers}
+        mapCenterPosition={
+          defaultAlternativePosition?.coords
+            ? {
+                latitude: defaultAlternativePosition.coords.lat,
+                longitude: defaultAlternativePosition.coords.lng
+              }
+            : undefined
+        }
         mapStyle={styles.map}
         onMarkerPress={setSelectedPointOfInterest}
         selectedMarker={selectedPointOfInterest}

@@ -76,18 +76,18 @@ export const Map = ({
     longitudeDelta: LONGITUDE_DELTA
   };
 
-  if (mapCenterPosition) {
-    initialRegion = {
-      ...initialRegion,
-      ...mapCenterPosition
-    };
-  }
-
   if (locations?.[0]?.position?.latitude && locations[0]?.position?.longitude) {
     initialRegion = {
       ...initialRegion,
       latitude: locations[0].position.latitude,
       longitude: locations[0].position.longitude
+    };
+  }
+
+  if (mapCenterPosition) {
+    initialRegion = {
+      ...initialRegion,
+      ...mapCenterPosition
     };
   }
 
