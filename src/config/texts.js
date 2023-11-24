@@ -968,7 +968,7 @@ export const texts = {
     }
   },
   tabBarLabel: {
-    about: 'Mehr',
+    about: 'Menü',
     favorites: 'Favoriten',
     home: 'Start',
     profile: 'Profil',
