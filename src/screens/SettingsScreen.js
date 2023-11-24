@@ -236,7 +236,7 @@ export const SettingsScreen = () => {
               {
                 id: TOP_FILTER.AR_DOWNLOAD_LIST,
                 title: texts.settingsTitles.tabs.arSettings,
-                selected: false
+                selected: !selectedFilterId ? true : false
               }
             ])
         );
