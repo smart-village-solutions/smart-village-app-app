@@ -289,18 +289,21 @@ export const SettingsScreen = ({ navigation, route }) => {
         try {
           isARSupportedOnDevice(
             () => null,
-            () =>
+            () => {
               settingsList.push({
                 data: ['augmentedRealitySettings']
-              })
+              });
+
+              setData(settingsList);
+            }
           );
         } catch (error) {
           // if Viro is not integrated, we need to catch the error for `isARSupportedOnDevice of null`
           console.warn(error);
         }
+      } else {
+        setData(settingsList);
       }
-
-      setData(settingsList);
     };
 
     setting == '' && updateData();
