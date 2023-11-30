@@ -38,6 +38,8 @@ export const ImagesCarousel = ({
   const [isPaused, setIsPaused] = useState(false);
   const [carouselImageIndex, setCarouselImageIndex] = useState(0);
 
+  const shouldShowPauseButton = showSliderPauseButton && !isDisturber;
+
   const fetchPolicy = graphqlFetchPolicy({
     isConnected,
     isMainserverUp,
@@ -146,8 +148,7 @@ export const ImagesCarousel = ({
         />
       )}
 
-      {showSliderPauseButton &&
-        !isDisturber &&
+      {shouldShowPauseButton &&
         pauseButton(
           horizontalPosition,
           isCopyrighted,
