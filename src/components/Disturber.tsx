@@ -1,17 +1,15 @@
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import React, { useEffect, useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { Icon, colors, device, normalize } from '../config';
-import { addToStore, findClosestItem, imageWidth, isActive, readFromStore } from '../helpers';
+import { Icon, colors, normalize } from '../config';
+import { addToStore, findClosestItem, isActive, readFromStore } from '../helpers';
 import { useHomeRefresh, useStaticContent } from '../hooks';
 
 import { Button } from './Button';
-import { Image } from './Image';
+import { ImagesCarousel } from './ImagesCarousel';
 import { BoldText, RegularText } from './Text';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
-import { ImagesCarousel } from './ImagesCarousel';
-import Carousel from 'react-native-snap-carousel';
 
 type Props = {
   navigation: DrawerNavigationProp<any>;
@@ -112,7 +110,7 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
               </TouchableOpacity>
             )}
 
-            {!!pictures?.length && (
+            {pictures?.length ? (
               <View style={styles.carouselContainer}>
                 <ImagesCarousel
                   aspectRatio={aspectRatio || { HEIGHT: 0.7, WIDTH: 1 }}
@@ -123,6 +121,8 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
                   refreshTimeKey={`publicJsonFile-${publicJsonFile}`}
                 />
               </View>
+            ) : (
+              <View style={styles.withoutImageMarginTop} />
             )}
 
             <Wrapper style={styles.noPaddingBottom}>
@@ -198,6 +198,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: normalize(16),
     textTransform: 'uppercase'
+  },
+  withoutImageMarginTop: {
+    marginTop: normalize(21)
   },
   noPaddingBottom: {
     paddingBottom: 0
