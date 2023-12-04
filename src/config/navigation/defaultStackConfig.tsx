@@ -47,6 +47,10 @@ import {
   OParlPersonsScreen,
   OParlSearchScreen,
   ProfileHomeScreen,
+  ProfileLoginScreen,
+  ProfileRegistrationScreen,
+  ProfileResetPasswordScreen,
+  ProfileSignupScreen,
   SettingsScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
@@ -324,13 +328,33 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Profile,
       screenComponent: ProfileHomeScreen,
       initialParams: {
-        title: texts.screenTitles.profile,
+        title: texts.screenTitles.profile.home,
         query: QUERY_TYPES.PUBLIC_JSON_FILE,
         queryVariables: {
           name: 'profile'
         },
         rootRouteName: ScreenName.Profile
       }
+    },
+    {
+      routeName: ScreenName.ProfileLogin,
+      screenComponent: ProfileLoginScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
+    },
+    {
+      routeName: ScreenName.ProfileRegistration,
+      screenComponent: ProfileRegistrationScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
+    },
+    {
+      routeName: ScreenName.ProfileResetPassword,
+      screenComponent: ProfileResetPasswordScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
+    },
+    {
+      routeName: ScreenName.ProfileSignup,
+      screenComponent: ProfileSignupScreen,
+      screenOptions: { title: texts.screenTitles.profile.home }
     },
     {
       routeName: ScreenName.Service,

@@ -16,6 +16,7 @@ import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { colors, consts, normalize, texts } from '../../config';
 import { useStaticContent, useTrackScreenViewAsync } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
+import { ScreenName } from '../../types';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -107,7 +108,10 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
         <Wrapper style={styles.noPaddingTop}>
           <WrapperHorizontal>
             <RegularText center>
-              Sind Sie schon registriert? <RegularText underline>Einloggen</RegularText>
+              Sind Sie schon registriert?{' '}
+              <RegularText underline onPress={() => navigation.navigate(ScreenName.ProfileLogin)}>
+                Einloggen
+              </RegularText>
             </RegularText>
           </WrapperHorizontal>
         </Wrapper>
