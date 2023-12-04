@@ -26,6 +26,24 @@ const getListType = (query, listTypesSettings) => {
   }
 };
 
+const EventSectionHeader = ({ item, navigation, options, query }) => (
+  <SectionHeader
+    title={momentFormat(item, 'DD.MM.YYYY dddd')}
+    onPress={() =>
+      navigation.push(ScreenName.Index, {
+        title: texts.homeTitles.events,
+        query,
+        queryVariables: {
+          ...options.queryVariables,
+          dateRange: [momentFormat(item, 'YYYY-MM-DD'), momentFormat(item, 'YYYY-MM-DD')]
+        },
+        rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
+        showFilterByDailyEvents: false
+      })
+    }
+  />
+);
+
 /**
  * this hook creates a render item function wrapped in a useCallback depending on the given options,
  * as well as on the listTypesSettings of the SettingsContext
@@ -49,23 +67,33 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
   switch (listType) {
     case LIST_TYPES.CARD_LIST: {
-      renderItem = ({ item }) => (
-        <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
-      );
+      renderItem = ({ item }) => {
+        if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
+          return <EventSectionHeader {...{ item, navigation, options, query }} />;
+        }
+
+        return <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />;
+      };
       break;
     }
     case LIST_TYPES.IMAGE_TEXT_LIST: {
-      renderItem = ({ item, index, section }) => (
-        <TextListItem
-          item={{
-            ...item,
-            bottomDivider:
-              item.bottomDivider ??
-              (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
-          }}
-          {...{ navigation, noSubtitle: options.noSubtitle, leftImage: true }}
-        />
-      );
+      renderItem = ({ item, index, section }) => {
+        if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
+          return <EventSectionHeader {...{ item, navigation, options, query }} />;
+        }
+
+        return (
+          <TextListItem
+            item={{
+              ...item,
+              bottomDivider:
+                item.bottomDivider ??
+                (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
+            }}
+            {...{ navigation, noSubtitle: options.noSubtitle, leftImage: true }}
+          />
+        );
+      };
       break;
     }
     default: {
@@ -101,23 +129,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
         // `SectionHeader` list item for `EventList`
         if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
-          return (
-            <SectionHeader
-              title={momentFormat(item, 'DD.MM.YYYY dddd')}
-              onPress={() =>
-                navigation.push(ScreenName.Index, {
-                  title: texts.homeTitles.events,
-                  query,
-                  queryVariables: {
-                    ...options.queryVariables,
-                    dateRange: [momentFormat(item, 'YYYY-MM-DD'), momentFormat(item, 'YYYY-MM-DD')]
-                  },
-                  rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
-                  showFilterByDailyEvents: false
-                })
-              }
-            />
-          );
+          return <EventSectionHeader {...{ item, navigation, options, query }} />;
         }
 
         return (
