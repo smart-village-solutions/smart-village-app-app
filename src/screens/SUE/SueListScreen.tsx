@@ -36,7 +36,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
   const listItems = useMemo(() => {
     if (data?.length) {
-      return parseListItemsFromQuery(query, data.reverse(), undefined, { appDesignSystem });
+      return parseListItemsFromQuery(query, data, undefined, { appDesignSystem });
     }
   }, [data, query, queryVariables]);
 
@@ -59,7 +59,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       <ListComponent
         navigation={navigation}
         query={query}
-        data={listItems}
+        data={listItems.reverse()}
         ListFooterLoadingIndicator={SueLoadingIndicator}
         refreshControl={
           <RefreshControl
