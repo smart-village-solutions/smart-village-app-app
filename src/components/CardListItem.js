@@ -18,29 +18,39 @@ const renderCardContent = (item, horizontal) => {
   const cardContent = [];
 
   const sequenceMap = {
-    picture: () => (
-      <Image
-        source={{ uri: picture.url }}
-        style={stylesWithProps({ horizontal }).image}
-        containerStyle={(styles.imageContainer, !!imageStyle && imageStyle)}
-        borderRadius={imageBorderRadius}
-      />
-    ),
-    topTitle: () => (
-      <RegularText small style={[!!generalStyle && generalStyle, !!topTitleStyle && topTitleStyle]}>
-        {topTitle}
-      </RegularText>
-    ),
-    subtitle: () => (
-      <RegularText small style={[!!generalStyle && generalStyle, !!subtitleStyle && subtitleStyle]}>
-        {subtitle}
-      </RegularText>
-    ),
-    title: () => (
-      <BoldText style={[!!generalStyle && generalStyle, !!titleStyle && titleStyle]}>
-        {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
-      </BoldText>
-    )
+    picture: () =>
+      !!picture?.url && (
+        <Image
+          source={{ uri: picture.url }}
+          style={stylesWithProps({ horizontal }).image}
+          containerStyle={(styles.imageContainer, !!imageStyle && imageStyle)}
+          borderRadius={imageBorderRadius}
+        />
+      ),
+    topTitle: () =>
+      !!topTitle && (
+        <RegularText
+          small
+          style={[!!generalStyle && generalStyle, !!topTitleStyle && topTitleStyle]}
+        >
+          {topTitle}
+        </RegularText>
+      ),
+    subtitle: () =>
+      !!subtitle && (
+        <RegularText
+          small
+          style={[!!generalStyle && generalStyle, !!subtitleStyle && subtitleStyle]}
+        >
+          {subtitle}
+        </RegularText>
+      ),
+    title: () =>
+      !!title && (
+        <BoldText style={[!!generalStyle && generalStyle, !!titleStyle && titleStyle]}>
+          {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
+        </BoldText>
+      )
   };
 
   if (contentSequence?.length) {
