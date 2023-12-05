@@ -19,8 +19,7 @@ const renderCardContent = (item, horizontal) => {
 
   const sequenceMap = {
     picture: () =>
-      !!picture &&
-      !!picture.url && (
+      !!picture?.url && (
         <Image
           source={{ uri: picture.url }}
           style={stylesWithProps({ horizontal }).image}
