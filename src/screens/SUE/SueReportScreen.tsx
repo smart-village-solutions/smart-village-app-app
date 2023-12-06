@@ -1,6 +1,6 @@
 import * as Location from 'expo-location';
 import React, { useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { UseFormSetValue, useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useMutation } from 'react-query';
@@ -30,7 +30,21 @@ const Content = (
   control: any,
   errors: any,
   selectedPosition: Location.LocationObjectCoords | undefined,
-  setSelectedPosition: any
+  setSelectedPosition: any,
+  setValue: UseFormSetValue<{
+    city: string;
+    description: string;
+    email: string;
+    firstName: string;
+    houseNumber: string;
+    images: string;
+    lastName: string;
+    phone: string;
+    street: string;
+    termsOfService: boolean;
+    title: string;
+    zipCode: string;
+  }>
 ) => {
   switch (content) {
     case 'description':
@@ -41,6 +55,7 @@ const Content = (
           control={control}
           selectedPosition={selectedPosition}
           setSelectedPosition={setSelectedPosition}
+          setValue={setValue}
         />
       );
     case 'user':
@@ -56,7 +71,7 @@ type TReports = {
   description: string;
   email: string;
   firstName: string;
-  homeNumber: string;
+  houseNumber: string;
   images: { uri: string; mimeType: string }[];
   lastName: string;
   phone: string;
@@ -80,7 +95,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   });
 
   const [currentPage, setCurrentPage] = useState(0);
-  const [serviceCode, setServiceCode] = useState<string>();
+  const [serviceCode, setServiceCode] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
@@ -91,7 +106,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
     control,
     formState: { errors },
     handleSubmit,
-    getValues
+    setValue
   } = useForm({
     mode: 'onBlur',
     defaultValues: {
@@ -99,7 +114,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
       description: '',
       email: '',
       firstName: '',
-      homeNumber: '',
+      houseNumber: '',
       images: '[]',
       lastName: '',
       phone: '',
@@ -123,14 +138,14 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 
     if (
       !sueReportData.street ||
-      !sueReportData.homeNumber ||
+      !sueReportData.houseNumber ||
       !sueReportData.zipCode ||
       !sueReportData.city
     ) {
       return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.address);
     }
 
-    const addressString = `${sueReportData.street}; ${sueReportData.homeNumber}; ${sueReportData.zipCode}; ${sueReportData.city}`;
+    const addressString = `${sueReportData.street}; ${sueReportData.houseNumber}; ${sueReportData.zipCode}; ${sueReportData.city}`;
 
     if (!sueReportData.firstName || !sueReportData.lastName || !sueReportData.email) {
       return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.contact);
@@ -211,7 +226,8 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
                 control,
                 errors,
                 selectedPosition,
-                setSelectedPosition
+                setSelectedPosition,
+                setValue
               )}
             </ScrollView>
           ))}

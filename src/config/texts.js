@@ -927,7 +927,7 @@ export const texts = {
         'ⓘ Ohne Ihre E-Mail-Adresse können wir nicht für eventuelle Rückfrage mit Ihnen Kontakt aufnehmen.',
       errorText: 'muss ausgefüllt werden',
       firstName: 'Vorname',
-      homeNumber: 'Hausnummer',
+      houseNumber: 'Hausnummer',
       imageHint: 'ⓘ Es können bis zu 5 Fotos hochgeladen werden',
       lastName: 'Nachname',
       mapHint: 'ⓘ Für Geo-Koordinaten bitte die Position auf der Karte wählen',
