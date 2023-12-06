@@ -918,6 +918,7 @@ export const texts = {
           'Bitte geben Sie eine E-Mail-Adresse an. Ohne Ihre E-Mail-Adresse können wir nicht für eventuelle Rückfrage mit Ihnen Kontakt aufnehmen.',
         hint: 'Hinweis',
         termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.'
+        imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
       },
       back: 'Zurück',
       city: 'Ort',

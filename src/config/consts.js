@@ -116,6 +116,7 @@ export const consts = {
 
   IMAGE_SELECTOR_ERROR_TYPES: {
     CONSUL: 'Consul',
+    SUE: 'Sue',
     VOLUNTEER: 'Volunteer'
   },
 

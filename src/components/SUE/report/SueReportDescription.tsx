@@ -7,7 +7,7 @@ import { Wrapper } from '../../Wrapper';
 import { ImageSelector } from '../../consul';
 import { Input } from '../../form';
 
-const { IMAGE_SELECTOR_TYPES } = consts;
+const { IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES } = consts;
 
 export const SueReportDescription = ({ control }: { control: any; errors: any }) => (
   <View style={styles.container}>
@@ -40,6 +40,7 @@ export const SueReportDescription = ({ control }: { control: any; errors: any })
               field,
               isMultiImages: true,
               selectorType: IMAGE_SELECTOR_TYPES.SUE,
+              errorType: IMAGE_SELECTOR_ERROR_TYPES.SUE,
               item: {
                 name: 'images',
                 infoText: texts.sue.report.imageHint,

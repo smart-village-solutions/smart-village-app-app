@@ -114,14 +114,7 @@ export const ImageSelector = ({
     if (selectorType === IMAGE_SELECTOR_TYPES.SUE) {
       return (
         <>
-          <Input
-            {...item}
-            control={control}
-            errorMessage={infoAndErrorText?.[0]?.errorText}
-            hidden
-            name={name}
-            value={JSON.parse(value)}
-          />
+          <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
 
           <Button disabled={values?.length >= 5} invert onPress={imageSelect} title={buttonTitle} />
 
@@ -129,6 +122,15 @@ export const ImageSelector = ({
             <RegularText small style={styles.sueInfoText}>
               {infoText}
             </RegularText>
+          )}
+
+          {values?.map(
+            (item, index) =>
+              !!infoAndErrorText[index]?.errorText && (
+                <RegularText smallest error>
+                  {infoAndErrorText[index].errorText}
+                </RegularText>
+              )
           )}
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
