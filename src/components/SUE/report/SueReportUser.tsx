@@ -13,7 +13,7 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => (
     <Wrapper style={styles.noPaddingTop}>
       <Input
         name="firstName"
-        label={`${texts.sue.report.firstName} *`}
+        label={texts.sue.report.firstName}
         placeholder={texts.sue.report.firstName}
         control={control}
       />
@@ -22,7 +22,7 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => (
     <Wrapper style={styles.noPaddingTop}>
       <Input
         name="lastName"
-        label={`${texts.sue.report.lastName} *`}
+        label={texts.sue.report.lastName}
         placeholder={texts.sue.report.lastName}
         control={control}
       />
@@ -31,7 +31,7 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => (
     <Wrapper style={styles.noPaddingTop}>
       <Input
         name="email"
-        label={`${texts.sue.report.email} *`}
+        label={texts.sue.report.email}
         placeholder={texts.sue.report.email}
         keyboardType="email-address"
         control={control}

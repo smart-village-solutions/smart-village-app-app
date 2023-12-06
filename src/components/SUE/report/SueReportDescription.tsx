@@ -23,7 +23,7 @@ export const SueReportDescription = ({ control }: { control: any; errors: any })
     <Wrapper style={styles.noPaddingTop}>
       <Input
         name="description"
-        label={`${texts.sue.report.description} *`}
+        label={texts.sue.report.description}
         placeholder={texts.sue.report.description}
         multiline
         control={control}

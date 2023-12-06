@@ -113,10 +113,6 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   const { mutateAsync } = useMutation(postRequests);
 
   const onSubmit = async (sueReportData: TReports) => {
-    if (!sueReportData.email) {
-      return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.email);
-    }
-
     if (!sueReportData.termsOfService) {
       return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.termsOfService);
     }
@@ -131,10 +127,6 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
     }
 
     const addressString = `${sueReportData.street}; ${sueReportData.homeNumber}; ${sueReportData.zipCode}; ${sueReportData.city}`;
-
-    if (!sueReportData.firstName || !sueReportData.lastName || !sueReportData.email) {
-      return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.contact);
-    }
 
     const formData = {
       addressString,
