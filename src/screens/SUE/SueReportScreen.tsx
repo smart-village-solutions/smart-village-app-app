@@ -117,15 +117,6 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
       return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.termsOfService);
     }
 
-    if (
-      !sueReportData.street ||
-      !sueReportData.homeNumber ||
-      !sueReportData.zipCode ||
-      !sueReportData.city
-    ) {
-      return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.address);
-    }
-
     const addressString = `${sueReportData.street}; ${sueReportData.homeNumber}; ${sueReportData.zipCode}; ${sueReportData.city}`;
 
     const formData = {
@@ -147,7 +138,54 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
       .finally(() => setIsLoading(false));
   };
 
+  /* eslint-disable complexity */
+  const alertTextGeneratorForMissingData = () => {
+    switch (currentPage) {
+      case 0:
+        if (!serviceCode) {
+          return texts.sue.report.alerts.serviceCode;
+        }
+        break;
+      case 1:
+        if (!getValues().title) {
+          return texts.sue.report.alerts.title;
+        } else if (getValues().images) {
+          const images = JSON.parse(getValues().images);
+
+          let totalSize = 0;
+          images.map(async ({ size }: { size: number }) => {
+            totalSize += size;
+          });
+
+          /* the server does not support files more than 30MB in size. */
+          if (totalSize >= 31457280) {
+            return texts.sue.report.alerts.imagesGreater30MBError;
+          }
+        }
+        break;
+      case 2:
+        if (!selectedPosition) {
+          return texts.sue.report.alerts.location;
+        } else if (
+          !getValues().street ||
+          !getValues().homeNumber ||
+          !getValues().zipCode ||
+          !getValues().city
+        ) {
+          return texts.sue.report.alerts.address;
+        }
+        break;
+      default:
+        break;
+    }
+  };
+  /* eslint-enable complexity */
+
   const handleNextPage = () => {
+    if (alertTextGeneratorForMissingData()) {
+      return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
+    }
+
     if (currentPage < data.length - 1) {
       setCurrentPage(currentPage + 1);
       scrollViewRef?.current?.scrollTo({

@@ -1,3 +1,4 @@
+import * as FileSystem from 'expo-file-system';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
@@ -96,6 +97,7 @@ export const ImageSelector = ({
 
   const imageSelect = async () => {
     const { uri, type } = await selectImage();
+    const { size } = await FileSystem.getInfoAsync(uri);
 
     /* used to specify the mimeType when uploading to the server */
     const imageType = IMAGE_TYPE_REGEX.exec(uri)[1];
@@ -105,7 +107,7 @@ export const ImageSelector = ({
 
     errorTextGenerator({ errorType, infoAndErrorText, mimeType, setInfoAndErrorText, uri });
 
-    setImagesAttributes([...imagesAttributes, { uri, mimeType, imageName }]);
+    setImagesAttributes([...imagesAttributes, { uri, mimeType, imageName, size }]);
   };
 
   const values = jsonParser(value);
