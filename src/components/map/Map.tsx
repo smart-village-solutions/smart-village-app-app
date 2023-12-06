@@ -128,6 +128,7 @@ export const Map = ({
             zIndex={1}
           />
         )}
+        {/* eslint-disable complexity */}
         {locations?.map((marker, index) => {
           const isActiveMarker = selectedMarker && marker.id === selectedMarker;
 
@@ -144,15 +145,36 @@ export const Map = ({
               marker.iconName != 'ownLocation' &&
               marker.iconName != 'location' ? (
                 <>
-                  <MapIcon iconColor={isActiveMarker ? colors.accent : undefined} />
+                  <MapIcon
+                    iconColor={
+                      marker.iconBackgroundColor
+                        ? isActiveMarker
+                          ? marker.iconColor
+                          : marker.iconBackgroundColor
+                        : isActiveMarker
+                        ? colors.accent
+                        : undefined
+                    }
+                  />
                   <View
                     style={[
                       styles.mapIconOnLocationMarker,
-                      isActiveMarker ? styles.mapIconOnLocationMarkerActive : undefined
+                      isActiveMarker ? styles.mapIconOnLocationMarkerActive : undefined,
+                      !!marker.iconBackgroundColor && {
+                        backgroundColor: isActiveMarker
+                          ? marker.iconColor
+                          : marker.iconBackgroundColor
+                      }
                     ]}
                   >
                     <MapIcon
-                      iconColor={colors.surface}
+                      iconColor={
+                        marker.iconColor
+                          ? isActiveMarker
+                            ? colors.surface
+                            : marker.iconColor
+                          : colors.surface
+                      }
                       iconName={marker.iconName}
                       iconSize={MARKER_ICON_SIZE / 3.25}
                     />
@@ -169,6 +191,7 @@ export const Map = ({
             </Marker>
           );
         })}
+        {/* eslint-enable complexity */}
       </MapView>
       {isMaximizeButtonVisible && (
         <TouchableOpacity style={styles.maximizeMapButton} onPress={onMaximizeButtonPress}>
@@ -194,6 +217,9 @@ const styles = StyleSheet.create({
   },
   mapIconOnLocationMarkerActive: {
     backgroundColor: colors.accent
+  },
+  mapIconOnLocationMarkerWithoutBackground: {
+    backgroundColor: colors.transparent
   },
   maximizeMapButton: {
     alignItems: 'center',

@@ -1,5 +1,6 @@
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useMemo, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
@@ -24,18 +25,26 @@ import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 
 type ItemProps = {
+  iconName: string;
   lat: number;
   long: number;
   serviceRequestId: string;
+  status: string;
   title: string;
 };
 
-const mapToMapMarkers = (items: ItemProps[]): MapMarker[] | undefined =>
+const mapToMapMarkers = (
+  items: ItemProps[],
+  statusViewColors: Record<string, string | undefined>,
+  statusTextColors: Record<string, string | undefined>
+): MapMarker[] | undefined =>
   items
     ?.filter((item) => item.lat && item.long)
     ?.map((item: ItemProps) => ({
-      iconAnchor: undefined,
-      iconName: undefined,
+      ...item,
+      iconBackgroundColor: statusViewColors?.[item.status],
+      iconColor: statusTextColors?.[item.status],
+      iconName: `Sue${_upperFirst(item.iconName)}`,
       id: item.serviceRequestId,
       position: {
         latitude: item.lat,
@@ -52,6 +61,8 @@ type Props = {
 export const SueMapScreen = ({ navigation, route }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { appDesignSystem, navigation: navigationType } = globalSettings;
+  const { sueStatus = {} } = appDesignSystem;
+  const { statusViewColors = {}, statusTextColors = {} } = sueStatus;
   const queryVariables = route.params?.queryVariables ?? {};
   const [selectedRequest, setSelectedRequest] = useState<string>();
 
@@ -59,9 +70,17 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
     getQuery(QUERY_TYPES.SUE.REQUESTS)(queryVariables)
   );
 
-  const mapMarkers = useMemo(() => {
-    return mapToMapMarkers(data);
-  }, [data]);
+  const mapMarkers = useMemo(
+    () =>
+      mapToMapMarkers(
+        parseListItemsFromQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, data, undefined, {
+          appDesignSystem
+        }),
+        statusViewColors,
+        statusTextColors
+      ),
+    [data]
+  );
 
   const { data: detailsData } = useQuery(
     [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, selectedRequest],
