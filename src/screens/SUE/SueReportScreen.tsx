@@ -79,7 +79,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
     type: 'json'
   });
 
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentProgress, setCurrentProgress] = useState(0);
   const [serviceCode, setServiceCode] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
@@ -140,7 +140,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 
   /* eslint-disable complexity */
   const alertTextGeneratorForMissingData = () => {
-    switch (currentPage) {
+    switch (currentProgress) {
       case 0:
         if (!serviceCode) {
           return texts.sue.report.alerts.serviceCode;
@@ -188,10 +188,10 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
       return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
     }
 
-    if (currentPage < data.length - 1) {
-      setCurrentPage(currentPage + 1);
+    if (currentProgress < data.length - 1) {
+      setCurrentProgress(currentProgress + 1);
       scrollViewRef?.current?.scrollTo({
-        x: device.width * (currentPage + 1),
+        x: device.width * (currentProgress + 1),
         y: 0,
         animated: true
       });
@@ -199,10 +199,10 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   };
 
   const handlePrevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
+    if (currentProgress > 0) {
+      setCurrentProgress(currentProgress - 1);
       scrollViewRef?.current?.scrollTo({
-        x: device.width * (currentPage - 1),
+        x: device.width * (currentProgress - 1),
         y: 0,
         animated: true
       });
@@ -223,7 +223,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <SafeAreaViewFlex>
-      <SueReportProgress progress={data} currentProgress={currentPage + 1} />
+      <SueReportProgress progress={data} currentProgress={currentProgress + 1} />
 
       <DefaultKeyboardAvoidingView>
         <ScrollView
@@ -254,8 +254,8 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
         <Divider />
       </WrapperHorizontal>
 
-      <Wrapper style={[styles.buttonContainer, currentPage !== 0 && styles.buttonContainerRow]}>
-        {currentPage !== 0 && (
+      <Wrapper style={[styles.buttonContainer, currentProgress !== 0 && styles.buttonContainerRow]}>
+        {currentProgress !== 0 && (
           <Button
             disabled={isLoading}
             invert
@@ -267,10 +267,12 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 
         <Button
           disabled={isLoading}
-          notFullWidth={currentPage !== 0}
-          onPress={currentPage < data.length - 1 ? handleNextPage : handleSubmit(onSubmit)}
+          notFullWidth={currentProgress !== 0}
+          onPress={currentProgress < data.length - 1 ? handleNextPage : handleSubmit(onSubmit)}
           title={
-            currentPage === data.length - 1 ? texts.sue.report.sendReport : texts.sue.report.next
+            currentProgress === data.length - 1
+              ? texts.sue.report.sendReport
+              : texts.sue.report.next
           }
         />
       </Wrapper>
