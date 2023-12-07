@@ -94,8 +94,8 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
     type: 'json'
   });
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const [serviceCode, setServiceCode] = useState<string>('');
+  const [currentProgress, setCurrentProgress] = useState(0);
+  const [serviceCode, setServiceCode] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
@@ -106,6 +106,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
     control,
     formState: { errors },
     handleSubmit,
+    getValues,
     setValue
   } = useForm({
     mode: 'onBlur',
@@ -128,28 +129,11 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   const { mutateAsync } = useMutation(postRequests);
 
   const onSubmit = async (sueReportData: TReports) => {
-    if (!sueReportData.email) {
-      return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.email);
-    }
-
     if (!sueReportData.termsOfService) {
       return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.termsOfService);
     }
 
-    if (
-      !sueReportData.street ||
-      !sueReportData.houseNumber ||
-      !sueReportData.zipCode ||
-      !sueReportData.city
-    ) {
-      return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.address);
-    }
-
     const addressString = `${sueReportData.street}; ${sueReportData.houseNumber}; ${sueReportData.zipCode}; ${sueReportData.city}`;
-
-    if (!sueReportData.firstName || !sueReportData.lastName || !sueReportData.email) {
-      return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.contact);
-    }
 
     const formData = {
       addressString,
@@ -170,11 +154,60 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
       .finally(() => setIsLoading(false));
   };
 
+  /* eslint-disable complexity */
+  const alertTextGeneratorForMissingData = () => {
+    switch (currentProgress) {
+      case 0:
+        if (!serviceCode) {
+          return texts.sue.report.alerts.serviceCode;
+        }
+        break;
+      case 1:
+        if (!getValues().title) {
+          return texts.sue.report.alerts.title;
+        } else if (getValues().images) {
+          const images = JSON.parse(getValues().images);
+
+          let totalSize = 0;
+          images.map(async ({ size }: { size: number }) => {
+            totalSize += size;
+          });
+
+          /* the server does not support files more than 30MB in size. */
+          if (totalSize >= 31457280) {
+            return texts.sue.report.alerts.imagesGreater30MBError;
+          }
+        }
+        break;
+      case 2:
+        if (!selectedPosition) {
+          return texts.sue.report.alerts.location;
+        } else if (
+          !getValues().street ||
+          !getValues().houseNumber ||
+          !getValues().zipCode ||
+          !getValues().city
+        ) {
+          return texts.sue.report.alerts.address;
+        } else if (getValues().zipCode.length !== 5) {
+          return texts.sue.report.alerts.zipCodeLength;
+        }
+        break;
+      default:
+        break;
+    }
+  };
+  /* eslint-enable complexity */
+
   const handleNextPage = () => {
-    if (currentPage < data.length - 1) {
-      setCurrentPage(currentPage + 1);
+    if (alertTextGeneratorForMissingData()) {
+      return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
+    }
+
+    if (currentProgress < data.length - 1) {
+      setCurrentProgress(currentProgress + 1);
       scrollViewRef?.current?.scrollTo({
-        x: device.width * (currentPage + 1),
+        x: device.width * (currentProgress + 1),
         y: 0,
         animated: true
       });
@@ -182,10 +215,10 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   };
 
   const handlePrevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
+    if (currentProgress > 0) {
+      setCurrentProgress(currentProgress - 1);
       scrollViewRef?.current?.scrollTo({
-        x: device.width * (currentPage - 1),
+        x: device.width * (currentProgress - 1),
         y: 0,
         animated: true
       });
@@ -206,7 +239,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 
   return (
     <SafeAreaViewFlex>
-      <SueReportProgress progress={data} currentProgress={currentPage + 1} />
+      <SueReportProgress progress={data} currentProgress={currentProgress + 1} />
 
       <DefaultKeyboardAvoidingView>
         <ScrollView
@@ -238,8 +271,8 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
         <Divider />
       </WrapperHorizontal>
 
-      <Wrapper style={[styles.buttonContainer, currentPage !== 0 && styles.buttonContainerRow]}>
-        {currentPage !== 0 && (
+      <Wrapper style={[styles.buttonContainer, currentProgress !== 0 && styles.buttonContainerRow]}>
+        {currentProgress !== 0 && (
           <Button
             disabled={isLoading}
             invert
@@ -251,10 +284,12 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 
         <Button
           disabled={isLoading}
-          notFullWidth={currentPage !== 0}
-          onPress={currentPage < data.length - 1 ? handleNextPage : handleSubmit(onSubmit)}
+          notFullWidth={currentProgress !== 0}
+          onPress={currentProgress < data.length - 1 ? handleNextPage : handleSubmit(onSubmit)}
           title={
-            currentPage === data.length - 1 ? texts.sue.report.sendReport : texts.sue.report.next
+            currentProgress === data.length - 1
+              ? texts.sue.report.sendReport
+              : texts.sue.report.next
           }
         />
       </Wrapper>

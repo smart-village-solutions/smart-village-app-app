@@ -914,10 +914,15 @@ export const texts = {
       alerts: {
         address: 'Bitte stellen Sie sicher, dass Sie Ihre Adressdaten korrekt eingeben',
         contact: 'Bitte stellen Sie sicher, dass Sie Ihre Kontaktdaten korrekt eingeben.',
-        email:
-          'Bitte geben Sie eine E-Mail-Adresse an. Ohne Ihre E-Mail-Adresse können wir nicht für eventuelle Rückfrage mit Ihnen Kontakt aufnehmen.',
         hint: 'Hinweis',
-        termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.'
+        imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
+        imagesGreater30MBError:
+          'Die ausgewählten Bilder dürfen insgesamt nicht größer als 30 MB sein.',
+        location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
+        serviceCode: 'Bitte wählen Sie aus, um welches Thema es in dem Bericht geht.',
+        termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.',
+        title: 'Bitte kurz beschreiben, worum es geht.',
+        zipCodeLength: 'Postleitzahl muss 5-stellig sein.'
       },
       back: 'Zurück',
       city: 'Ort',
