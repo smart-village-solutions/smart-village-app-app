@@ -74,7 +74,6 @@ export const SueReportLocation = ({
           name="homeNumber"
           label={`${texts.sue.report.homeNumber} *`}
           placeholder={texts.sue.report.homeNumber}
-          keyboardType="numeric"
           control={control}
         />
       </Wrapper>
@@ -84,6 +83,7 @@ export const SueReportLocation = ({
           name="zipCode"
           label={`${texts.sue.report.zipCode} *`}
           placeholder={texts.sue.report.zipCode}
+          maxLength={5}
           keyboardType="numeric"
           control={control}
         />

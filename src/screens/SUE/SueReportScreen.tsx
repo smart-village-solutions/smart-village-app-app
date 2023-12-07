@@ -173,6 +173,8 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
           !getValues().city
         ) {
           return texts.sue.report.alerts.address;
+        } else if (getValues().zipCode.length !== 5) {
+          return texts.sue.report.alerts.zipCodeLength;
         }
         break;
       default:

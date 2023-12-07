@@ -34,6 +34,7 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => (
         label={texts.sue.report.email}
         placeholder={texts.sue.report.email}
         keyboardType="email-address"
+        autoCapitalize="none"
         control={control}
       />
 

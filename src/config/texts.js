@@ -921,7 +921,8 @@ export const texts = {
         location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
         serviceCode: 'Bitte wählen Sie aus, um welches Thema es in dem Bericht geht.',
         termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.',
-        title: 'Bitte kurz beschreiben, worum es geht.'
+        title: 'Bitte kurz beschreiben, worum es geht.',
+        zipCodeLength: 'Postleitzahl muss 5-stellig sein.'
       },
       back: 'Zurück',
       city: 'Ort',
