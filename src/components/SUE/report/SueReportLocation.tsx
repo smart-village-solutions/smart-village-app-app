@@ -1,28 +1,68 @@
 import * as Location from 'expo-location';
-import React from 'react';
+import React, { useCallback } from 'react';
+import { UseFormSetValue } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
 import { device, normalize, texts } from '../../../config';
 import { useLocationSettings, useSystemPermission } from '../../../hooks';
 import { MapMarker } from '../../../types';
 import { LoadingSpinner } from '../../LoadingSpinner';
+import { RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
 import { Map } from '../../map';
 import { getLocationMarker } from '../../settings';
-import { RegularText } from '../../Text';
 
 export const SueReportLocation = ({
   control,
   selectedPosition,
-  setSelectedPosition
+  setSelectedPosition,
+  setValue
 }: {
   control: any;
   selectedPosition: Location.LocationObjectCoords | undefined;
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
+  setValue: UseFormSetValue<{
+    city: string;
+    description: string;
+    email: string;
+    firstName: string;
+    houseNumber: string;
+    images: string;
+    lastName: string;
+    phone: string;
+    street: string;
+    termsOfService: boolean;
+    title: string;
+    zipCode: string;
+  }>;
 }) => {
   const { locationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
+
+  // create useCallback method for reverseGeocode
+  const reverseGeocode = useCallback(async (position: Location.LocationObjectCoords) => {
+    const { latitude, longitude } = position;
+
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`
+      );
+
+      const data = await response.json();
+      const street = data?.address?.road || '';
+      const houseNumber = data?.address?.house_number || '';
+      const zipCode = data?.address?.postcode || '';
+      const city = data?.address?.city || '';
+
+      setValue('street', street);
+      setValue('houseNumber', houseNumber);
+      setValue('zipCode', zipCode);
+      setValue('city', city);
+    } catch (error) {
+      console.error('Reverse Geocoding Error:', error);
+    }
+  }, []);
 
   if (!systemPermission) {
     return <LoadingSpinner loading />;
@@ -34,25 +74,30 @@ export const SueReportLocation = ({
   };
 
   let locations = [] as MapMarker[];
+  let mapCenterPosition = {} as { latitude: number; longitude: number };
 
   if (selectedPosition) {
     locations = [{ ...baseLocationMarker, position: selectedPosition }];
-  } else if (alternativePosition) {
-    locations = [getLocationMarker({ ...baseLocationMarker, ...alternativePosition })];
+  }
+
+  if (alternativePosition) {
+    mapCenterPosition = getLocationMarker(alternativePosition).position;
   } else if (defaultAlternativePosition) {
-    locations = [getLocationMarker({ ...baseLocationMarker, ...defaultAlternativePosition })];
+    mapCenterPosition = getLocationMarker(defaultAlternativePosition).position;
   }
 
   return (
     <View style={styles.container}>
       <Map
         locations={locations}
-        mapCenterPosition={{ latitude: 51.1657, longitude: 10.4515 }} // center of Germany
+        mapCenterPosition={mapCenterPosition}
         mapStyle={styles.map}
         onMapPress={({ nativeEvent }) => {
           setSelectedPosition({
             ...nativeEvent.coordinate
           });
+
+          reverseGeocode(nativeEvent.coordinate);
         }}
       />
 
@@ -71,9 +116,9 @@ export const SueReportLocation = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="homeNumber"
-          label={`${texts.sue.report.homeNumber} *`}
-          placeholder={texts.sue.report.homeNumber}
+          name="houseNumber"
+          label={`${texts.sue.report.houseNumber} *`}
+          placeholder={texts.sue.report.houseNumber}
           keyboardType="numeric"
           control={control}
         />
