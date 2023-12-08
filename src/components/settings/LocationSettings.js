@@ -1,6 +1,6 @@
 import * as Location from 'expo-location';
 import React, { useState } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 
 import { normalize, texts } from '../../config';
@@ -94,7 +94,7 @@ export const LocationSettings = () => {
   }
 
   return (
-    <View>
+    <ScrollView>
       <SettingsToggle item={locationServiceSwitchData} />
       <Wrapper>
         <RegularText>{texts.settingsContents.locationService.alternativePositionHint}</RegularText>
@@ -143,7 +143,7 @@ export const LocationSettings = () => {
           />
         </Wrapper>
       </Collapsible>
-    </View>
+    </ScrollView>
   );
 };
 

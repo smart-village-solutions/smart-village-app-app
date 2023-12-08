@@ -5,15 +5,19 @@ import { ActivityIndicator, Alert, SectionList } from 'react-native';
 
 import {
   AugmentedReality,
-  IndexFilterWrapperAndList,
   LoadingContainer,
   RegularText,
   SafeAreaViewFlex,
-  SectionHeader,
   SettingsToggle,
+  TextListItem,
   Wrapper
 } from '../components';
-import { ListSettings, LocationSettings, PermanentFilterSettings } from '../components/settings';
+import {
+  ListSettings,
+  LocationSettings,
+  MowasRegionSettings,
+  PermanentFilterSettings
+} from '../components/settings';
 import { colors, consts, texts } from '../config';
 import {
   addToStore,
@@ -31,14 +35,81 @@ import {
   showSystemPermissionMissingDialog
 } from '../pushNotifications';
 import { SettingsContext } from '../SettingsProvider';
+import { ScreenName } from '../types';
 
 const { MATOMO_TRACKING } = consts;
 
-const keyExtractor = (item, index) => `index${index}-id${item.id}`;
+const keyExtractor = (item, index) => `index${index}-item${item.title || item}`;
 
-const renderSectionHeader = ({ section: { title } }) => !!title && <SectionHeader title={title} />;
+const renderItem = ({ item, navigation }) => {
+  if (item === 'locationSettings') {
+    return (
+      <TextListItem
+        item={{
+          params: { setting: item, title: texts.settingsContents.locationService.setting },
+          routeName: ScreenName.Settings,
+          title: texts.settingsContents.locationService.setting,
+          topDivider: true
+        }}
+        navigation={navigation}
+      />
+    );
+  }
 
-const renderItem = ({ item, index, section }) => <SettingsToggle {...{ item, index, section }} />;
+  if (item === 'permanentFilterSettings') {
+    return (
+      <TextListItem
+        item={{
+          params: { setting: item, title: texts.settingsContents.permanentFilter.setting },
+          routeName: ScreenName.Settings,
+          title: texts.settingsContents.permanentFilter.setting
+        }}
+        navigation={navigation}
+      />
+    );
+  }
+
+  if (item === 'mowasRegionSettings') {
+    return (
+      <TextListItem
+        item={{
+          params: { setting: item, title: texts.settingsContents.mowasRegion.setting },
+          routeName: ScreenName.Settings,
+          title: texts.settingsContents.mowasRegion.setting
+        }}
+        navigation={navigation}
+      />
+    );
+  }
+
+  if (item === 'listSettings') {
+    return (
+      <TextListItem
+        item={{
+          params: { setting: item, title: texts.settingsContents.list.setting },
+          routeName: ScreenName.Settings,
+          title: texts.settingsContents.list.setting
+        }}
+        navigation={navigation}
+      />
+    );
+  }
+
+  if (item === 'augmentedRealitySettings') {
+    return (
+      <TextListItem
+        item={{
+          params: { setting: item, title: texts.settingsContents.ar.setting },
+          routeName: ScreenName.Settings,
+          title: texts.settingsContents.ar.setting
+        }}
+        navigation={navigation}
+      />
+    );
+  }
+
+  return <SettingsToggle item={item} />;
+};
 
 renderItem.propTypes = {
   item: PropTypes.object.isRequired,
@@ -80,35 +151,23 @@ const onDeactivatePushNotifications = (revert) => {
     });
 };
 
-const TOP_FILTER = {
-  AR_DOWNLOAD_LIST: 'arDownloadList',
-  GENERAL: 'general',
-  LIST_TYPES: 'listTypes'
-};
-
-const INITIAL_FILTER = [
-  { id: TOP_FILTER.GENERAL, title: texts.settingsTitles.tabs.general, selected: true },
-  { id: TOP_FILTER.LIST_TYPES, title: texts.settingsTitles.tabs.listTypes, selected: false }
-];
-
-export const SettingsScreen = () => {
+export const SettingsScreen = ({ navigation, route }) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { settings = {} } = globalSettings;
-  const [sectionedData, setSectionedData] = useState([]);
-  const [filter, setFilter] = useState(INITIAL_FILTER);
-  const selectedFilterId = filter.find((entry) => entry.selected)?.id;
+  const { mowas, settings = {} } = globalSettings;
+  const [data, setData] = useState([]);
+  const { setting = '' } = route?.params || {};
 
   useMatomoTrackScreenView(MATOMO_TRACKING.SCREEN_VIEW.SETTINGS);
 
   useEffect(() => {
-    const updateSectionedData = async () => {
-      const additionalSectionedData = [];
+    const updateData = async () => {
+      const settingsList = [];
 
       // add push notification option if they are enabled
       if (settings.pushNotifications !== false) {
         const pushPermission = await readFromStore(PushNotificationStorageKeys.IN_APP_PERMISSION);
 
-        additionalSectionedData.push({
+        settingsList.push({
           data: [
             {
               title: texts.settingsTitles.pushNotifications,
@@ -125,7 +184,7 @@ export const SettingsScreen = () => {
       if (settings.matomo) {
         const { consent: matomoValue } = await matomoSettings();
 
-        additionalSectionedData.push({
+        settingsList.push({
           data: [
             {
               title: texts.settingsTitles.analytics,
@@ -173,7 +232,7 @@ export const SettingsScreen = () => {
       if (settings.onboarding) {
         const onboarding = await readFromStore(ONBOARDING_STORE_KEY);
 
-        additionalSectionedData.push({
+        settingsList.push({
           data: [
             {
               title: texts.settingsTitles.onboarding,
@@ -207,46 +266,50 @@ export const SettingsScreen = () => {
       }
 
       if (settings.locationService) {
-        additionalSectionedData.push({
-          data: ['locationSettings'],
-          title: texts.settingsContents.locationService.sectionHeader,
-          renderItem: () => <LocationSettings />
+        settingsList.push({
+          data: ['locationSettings']
         });
       }
 
-      additionalSectionedData.push({
-        data: ['permanentFilters'],
-        title: texts.settingsContents.permanentFilter.sectionHeader,
-        renderItem: () => <PermanentFilterSettings />
+      settingsList.push({
+        data: ['permanentFilterSettings']
       });
-      setSectionedData(additionalSectionedData);
+
+      if (mowas?.regionalKeys?.length) {
+        settingsList.push({
+          data: ['mowasRegionSettings']
+        });
+      }
+
+      settingsList.push({
+        data: ['listSettings']
+      });
+
+      if (settings.ar) {
+        try {
+          isARSupportedOnDevice(
+            () => null,
+            () => {
+              settingsList.push({
+                data: ['augmentedRealitySettings']
+              });
+
+              setData(settingsList);
+            }
+          );
+        } catch (error) {
+          // if Viro is not integrated, we need to catch the error for `isARSupportedOnDevice of null`
+          console.warn(error);
+        }
+      } else {
+        setData(settingsList);
+      }
     };
 
-    updateSectionedData();
-  }, [selectedFilterId]);
+    setting == '' && updateData();
+  }, [setting]);
 
-  useEffect(() => {
-    try {
-      !!settings.ar &&
-        isARSupportedOnDevice(
-          () => null,
-          () =>
-            setFilter([
-              ...filter,
-              {
-                id: TOP_FILTER.AR_DOWNLOAD_LIST,
-                title: texts.settingsTitles.tabs.arSettings,
-                selected: !selectedFilterId ? true : false
-              }
-            ])
-        );
-    } catch (error) {
-      // if Viro is not integrated, we need to catch the error for `isARSupportedOnDevice of null`
-      console.warn(error);
-    }
-  }, []);
-
-  if (!sectionedData.length) {
+  if (setting == '' && !data.length) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -254,15 +317,31 @@ export const SettingsScreen = () => {
     );
   }
 
-  return (
-    <SafeAreaViewFlex>
-      <IndexFilterWrapperAndList filter={filter} setFilter={setFilter} />
-      {selectedFilterId === TOP_FILTER.GENERAL && (
+  // switch to have a condition on `setting` to decide which component to render
+  let Component;
+
+  switch (setting) {
+    case 'locationSettings':
+      Component = <LocationSettings />;
+      break;
+    case 'permanentFilterSettings':
+      Component = <PermanentFilterSettings />;
+      break;
+    case 'mowasRegionSettings':
+      Component = <MowasRegionSettings mowasRegionalKeys={mowas?.regionalKeys} />;
+      break;
+    case 'listSettings':
+      Component = <ListSettings />;
+      break;
+    case 'augmentedRealitySettings':
+      Component = <AugmentedReality id={settings.ar.tourId} onSettingsScreen />;
+      break;
+    default:
+      Component = (
         <SectionList
           keyExtractor={keyExtractor}
-          sections={sectionedData}
-          renderItem={({ item, index, section }) => renderItem({ item, index, section })}
-          renderSectionHeader={renderSectionHeader}
+          sections={data}
+          renderItem={({ item }) => renderItem({ item, navigation })}
           ListHeaderComponent={
             !!texts.settingsScreen.intro && (
               <Wrapper>
@@ -270,13 +349,15 @@ export const SettingsScreen = () => {
               </Wrapper>
             )
           }
-          stickySectionHeadersEnabled
         />
-      )}
-      {selectedFilterId === TOP_FILTER.LIST_TYPES && <ListSettings />}
-      {selectedFilterId === TOP_FILTER.AR_DOWNLOAD_LIST && (
-        <AugmentedReality id={settings.ar.tourId} onSettingsScreen />
-      )}
-    </SafeAreaViewFlex>
-  );
+      );
+      break;
+  }
+
+  return <SafeAreaViewFlex>{Component}</SafeAreaViewFlex>;
+};
+
+SettingsScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  route: PropTypes.object.isRequired
 };
