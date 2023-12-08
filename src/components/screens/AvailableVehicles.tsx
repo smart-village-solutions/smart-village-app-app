@@ -4,6 +4,7 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
 import { Icon, colors, normalize, texts } from '../../config';
+import { EmptyMessage } from '../EmptyMessage';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
@@ -21,6 +22,7 @@ export const AvailableVehicles = ({
   iconName: keyof typeof Icon;
 }) => {
   const [availableVehiclesData, setAvailableVehiclesData] = useState<AvailableVehiclesProps[]>();
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,13 +38,15 @@ export const AvailableVehicles = ({
         }
       } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
-  if (!availableVehiclesData?.length) {
+  if (loading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -56,17 +60,21 @@ export const AvailableVehicles = ({
     <>
       <SectionHeader title={texts.pointOfInterest.availableVehicles} />
 
-      {availableVehiclesData.map((item: AvailableVehiclesProps, index: number) => (
-        <Fragment key={item.id}>
-          <ListItem style={styles.container}>
-            {!!iconName && <CategoryIcon />}
-            <ListItem.Content>
-              <RegularText>{item.name}</RegularText>
-            </ListItem.Content>
-          </ListItem>
-          {index !== availableVehiclesData.length - 1 && <Divider style={styles.divider} />}
-        </Fragment>
-      ))}
+      {availableVehiclesData?.length ? (
+        availableVehiclesData.map((item: AvailableVehiclesProps, index: number) => (
+          <Fragment key={item.id}>
+            <ListItem style={styles.container}>
+              {!!iconName && <CategoryIcon />}
+              <ListItem.Content>
+                <RegularText>{item.name}</RegularText>
+              </ListItem.Content>
+            </ListItem>
+            {index !== availableVehiclesData.length - 1 && <Divider style={styles.divider} />}
+          </Fragment>
+        ))
+      ) : (
+        <EmptyMessage title={texts.pointOfInterest.noAvailableVehicles} showIcon={false} />
+      )}
     </>
   );
 };
