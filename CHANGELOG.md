@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.3.3]
+
+This version includes a new list option and fixes some bugs
+
+### Added
+
+- added a new list view option with a large image as the first item
+- added multiple images for disturber
+- added the ability to click on images in disturber and navigate within the app
+- added new settings screen appearance that can be set via the server
+- added a new list that can be added to `HomeScreen` and updated via the server
+- added option to add button to `Carousel` in `HomeScreen`
+
+### Fixed
+
+- fixed a bug that did not allow http pages to be open
+- fixed the problem of not selecting the document
+- fixed the error of sections in the event list in different list types not showing the date
+- fixed a bug in the settings screen that caused the app to crash
+
 ## [v3.3.2]
 
 This update includes bug fixes
