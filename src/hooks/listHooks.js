@@ -96,6 +96,31 @@ export const useRenderItem = (query, navigation, options = {}) => {
       };
       break;
     }
+    case LIST_TYPES.CARD_TEXT_LIST: {
+      renderItem = ({ item, index, section }) => {
+        if (index === 0) {
+          return (
+            <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
+          );
+        } else {
+          return (
+            <TextListItem
+              item={{
+                ...item,
+                bottomDivider:
+                  item.bottomDivider ??
+                  (isArray(section?.data) ? section.data.length - 1 !== index : undefined)
+              }}
+              navigation={navigation}
+              noSubtitle={options.noSubtitle}
+              leftImage
+              withCard
+            />
+          );
+        }
+      };
+      break;
+    }
     default: {
       renderItem = ({ item, index, section }) => {
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {

@@ -894,6 +894,7 @@ export const texts = {
     },
     listLayouts: {
       cardList: 'Liste mit großen Bildern',
+      cardTextList: 'Textliste beginnend mit großem Bild',
       eventRecordsTitle: 'Veranstaltungen',
       imageTextList: 'Liste mit kleinen Bildern',
       newsItemsTitle: 'Nachrichten',
