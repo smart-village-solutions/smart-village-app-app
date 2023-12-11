@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     fontSize: normalize(14)
   },
   title: {
-    color: colors.lightestText,
+    color: colors.lighterPrimary,
     fontFamily: 'bold',
     fontSize: normalize(14),
     fontWeight: '600'

@@ -14,7 +14,7 @@ export const IndexMapSwitch = ({ filter, setFilter }) => {
   return (
     <View style={[styles.floatingButtonContainer, stylesWithProps({ navigationType }).position]}>
       <Button
-        icon={<Icon.NamedIcon name="map" color={colors.surface} />}
+        icon={<Icon.NamedIcon name="map" color={colors.lighterPrimary} />}
         iconPosition="left"
         onPress={() => {
           const selectedFilter = filter.find((entry) => entry.selected);
