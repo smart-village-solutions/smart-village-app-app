@@ -1,5 +1,6 @@
 const white = '#FFFFFF';
 const black = '#000000';
+const gray10 = '#E6E5E2'; // Neutral 75
 const gray20 = '#DEDDD8'; // Neutral 100
 const gray40 = '#C6C4C0'; // Neutral 200
 const gray60 = '#ADACA8'; // Neutral 300
@@ -33,6 +34,7 @@ export const colors = {
 
   surface: '#F7F5F0',
   transparent: 'transparent',
+  gray10,
   gray20,
   gray40,
   gray60,

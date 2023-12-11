@@ -146,6 +146,7 @@ const parseNewsItems = (data, skipLastDivider, titleDetail, bookmarkable) => {
 
 const parsePointOfInterest = (data, skipLastDivider) => {
   return data?.map((pointOfInterest, index) => ({
+    iconName: pointOfInterest.category?.iconName,
     id: pointOfInterest.id,
     title: pointOfInterest.title || pointOfInterest.name,
     overtitle: pointOfInterest.category?.name,
