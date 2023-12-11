@@ -63,3 +63,13 @@ export const GET_CATEGORIES = gql`
     }
   }
 `;
+
+export const GET_CATEGORIES_FILTER = gql`
+  query Categories($ids: [ID!]) {
+    categories(ids: $ids) {
+      id
+      iconName
+      name
+    }
+  }
+`;

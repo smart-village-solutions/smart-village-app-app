@@ -4,6 +4,7 @@ export const QUERY_TYPES = {
   APP_USER_CONTENT: 'appUserContent',
   AR_DOWNLOAD_LIST: 'arDownloadList',
   CATEGORIES: 'categories',
+  CATEGORIES_FILTER: 'categoriesFilter',
   CONSTRUCTION_SITES: 'constructionSites',
   CONSUL: {
     COMMENTS: 'comments',

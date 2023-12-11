@@ -2,7 +2,7 @@
 // IMPORT CREATE QUERIES
 import { CREATE_APP_USER_CONTENT } from './appUserContent';
 // IMPORT GET QUERIES
-import { GET_CATEGORIES } from './categories';
+import { GET_CATEGORIES, GET_CATEGORIES_FILTER } from './categories';
 import { GET_CONSTRUCTION_SITES } from './constructionSite';
 import {
   GET_DEBATE,
@@ -57,6 +57,7 @@ export * from './types';
 export const getQuery = (query, filterOptions = {}) => {
   const QUERIES = {
     [QUERY_TYPES.CATEGORIES]: GET_CATEGORIES,
+    [QUERY_TYPES.CATEGORIES_FILTER]: GET_CATEGORIES_FILTER,
     [QUERY_TYPES.CONSTRUCTION_SITES]: GET_CONSTRUCTION_SITES,
     [QUERY_TYPES.EVENT_RECORD]: GET_EVENT_RECORD,
     [QUERY_TYPES.EVENT_RECORDS_ADDRESSES]: GET_EVENT_RECORDS_ADDRESSES,
