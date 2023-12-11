@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0
   },
   time: {
+    fontFamily: 'bold',
     fontSize: normalize(14),
     fontWeight: '600',
     lineHeight: normalize(20),
