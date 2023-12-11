@@ -14,6 +14,7 @@ import { RegularText } from '../Text';
 import { TextListItem } from '../TextListItem';
 import { Wrapper } from '../Wrapper';
 
+import { Filter } from './Filter';
 import { Map, MapIcon } from './Map';
 
 type Props = {
@@ -130,6 +131,8 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
 
   return (
     <>
+      <Filter pointsOfInterest={pointsOfInterest} />
+
       <Map
         isMultipleMarkersMap
         locations={mapMarkers}
