@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     borderRadius: normalize(8)
   },
   container: {
-    marginBottom: normalize(21)
+    marginBottom: normalize(16)
   },
   containerLandscape: {
     alignItems: 'center',

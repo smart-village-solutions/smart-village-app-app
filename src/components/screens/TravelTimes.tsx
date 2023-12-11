@@ -149,9 +149,10 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
       {paginatedData?.length !== data?.pointOfInterest?.travelTimes?.length && (
         <Wrapper>
           <Button
-            title={texts.pointOfInterest.departureTimesShowMoreButton}
-            onPress={() => setMoreData((prev) => prev + 1)}
+            invert
             notFullWidth
+            onPress={() => setMoreData((prev) => prev + 1)}
+            title={texts.pointOfInterest.departureTimesShowMoreButton}
           />
         </Wrapper>
       )}
@@ -194,15 +195,15 @@ const styles = StyleSheet.create({
   typeIconContainer: {
     alignItems: 'center',
     borderRadius: normalize(20),
-    height: normalize(27),
+    height: normalize(22),
     justifyContent: 'center',
     marginRight: normalize(5),
-    width: normalize(27)
+    width: normalize(22)
   },
   typeView: {
     alignItems: 'center',
     borderRadius: normalize(4),
-    height: normalize(27),
+    height: normalize(22),
     justifyContent: 'center',
     paddingHorizontal: normalize(4)
   }

@@ -16,6 +16,7 @@ import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 import { Map } from '../map';
 
+import { normalize } from 'react-native-elements';
 import { AvailableVehicles } from './AvailableVehicles';
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
@@ -85,17 +86,20 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
       )}
 
       {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
-        <SectionHeader title={texts.pointOfInterest.overview} />
+        <Wrapper>
+          <HeadlineText style={{ marginBottom: normalize(6) }}>
+            {texts.pointOfInterest.overview}
+          </HeadlineText>
+
+          <InfoCard
+            addresses={addresses}
+            contact={contact}
+            openingHours={openingHours}
+            openWebScreen={openWebScreen}
+            webUrls={webUrls}
+          />
+        </Wrapper>
       )}
-      <Wrapper>
-        <InfoCard
-          addresses={addresses}
-          contact={contact}
-          openingHours={openingHours}
-          openWebScreen={openWebScreen}
-          webUrls={webUrls}
-        />
-      </Wrapper>
 
       {!!payload?.freeStatusUrl && (
         <AvailableVehicles freeStatusUrl={payload.freeStatusUrl} iconName={category?.iconName} />

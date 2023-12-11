@@ -65,7 +65,7 @@ export const NewsItem = ({ data, route }) => {
       {!!momentFormatUtcToLocal(publishedAt) && (
         <Wrapper center>
           <WrapperRow center>
-            <RegularText small>{momentFormatUtcToLocal(publishedAt)}</RegularText>
+            <RegularText>{momentFormatUtcToLocal(publishedAt)}</RegularText>
           </WrapperRow>
         </Wrapper>
       )}

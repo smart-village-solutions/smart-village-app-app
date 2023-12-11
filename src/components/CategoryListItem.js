@@ -46,7 +46,7 @@ export class CategoryListItem extends React.PureComponent {
 
         <Badge value={count} badgeStyle={styles.badge} textStyle={styles.badgeText} />
 
-        <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
+        <Icon.ArrowRight color={colors.darkText} size={normalize(24)} />
       </ListItem>
     );
   }
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
     paddingHorizontal: 0,
-    paddingVertical: normalize(12)
+    paddingVertical: normalize(15.8)
   },
   badge: {
     backgroundColor: colors.transparent,
@@ -65,8 +65,9 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     color: colors.darkText,
-    fontSize: normalize(14),
     fontFamily: 'bold',
+    fontSize: normalize(14),
+    fontWeight: '400',
     lineHeight: normalize(20)
   }
 });
