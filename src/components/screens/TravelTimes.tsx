@@ -70,6 +70,8 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
         </HeadlineText>
       </Wrapper>
 
+      <Divider style={[styles.divider, { marginTop: normalize(12) }]} />
+
       {paginatedData?.map((item: TravelTimeProps, index: number) => {
         const { departureTime, route, trip } = item;
         const { routeShortName, routeType } = route;
