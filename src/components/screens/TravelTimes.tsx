@@ -187,7 +187,6 @@ const styles = StyleSheet.create({
   time: {
     fontFamily: 'bold',
     fontSize: normalize(14),
-    fontWeight: '600',
     lineHeight: normalize(20),
     marginRight: normalize(8)
   },
