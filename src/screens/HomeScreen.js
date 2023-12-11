@@ -279,7 +279,7 @@ export const HomeScreen = ({ navigation, route }) => {
       limit: limitNews,
       navigation,
       query: QUERY_TYPES.NEWS_ITEMS,
-      queryVariables: { limit: 3, excludeDataProviderIds },
+      queryVariables: { limit: 5, excludeDataProviderIds },
       showData: showNews
     },
     {

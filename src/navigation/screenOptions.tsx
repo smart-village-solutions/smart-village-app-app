@@ -36,7 +36,8 @@ export const getScreenOptions =
       headerStyle: {
         backgroundColor: colors.surface,
         borderBottomWidth: 1,
-        borderBottomColor: colors.borderRgba
+        borderBottomColor: colors.borderRgba,
+        height: normalize(116)
       },
       headerRight: () => (
         <HeaderRight

@@ -41,7 +41,7 @@ const renderCardContent = (item, horizontal, noOvertitle, bigTitle) => {
     ),
     subtitle: () => (
       <RegularText
-        smallest
+        small
         style={[styles.subtitle, !!generalStyle && generalStyle, !!subtitleStyle && subtitleStyle]}
       >
         {subtitle}

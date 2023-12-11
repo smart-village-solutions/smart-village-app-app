@@ -25,7 +25,14 @@ export const MainTabNavigator = ({
       tabBarStyle: {
         backgroundColor: colors.surface,
         borderTopColor: colors.gray20,
-        borderTopWidth: 1
+        borderTopWidth: 1,
+        height: normalize(88)
+      },
+      tabBarLabelStyle: {
+        fontSize: normalize(11),
+        lineHeight: normalize(14),
+        marginBottom: normalize(12),
+        marginTop: normalize(2)
       }
     }}
   >
