@@ -26,7 +26,7 @@ type Props = {
 
 const MARKER_ICON_SIZE = normalize(40);
 
-const MapIcon = ({
+export const MapIcon = ({
   iconColor,
   iconName = 'location',
   iconSize = MARKER_ICON_SIZE
@@ -228,8 +228,8 @@ const stylesForMap = () => {
     // eslint-disable-next-line react-native/no-unused-styles
     map: {
       alignSelf: 'center',
-      height: imageHeight(imageWidth()),
-      width: device.width
+      height: imageHeight(imageWidth(), { HEIGHT: 272, WIDTH: 362 }),
+      width: device.width - 2 * normalize(16)
     }
   });
 };

@@ -245,7 +245,11 @@ export const Overviews = ({ navigation, route }) => {
           <HeaderLeft
             onPress={() => setFilterType(INITIAL_FILTER)}
             backImage={({ tintColor }) => (
-              <Icon.Close color={tintColor} style={{ paddingHorizontal: normalize(14) }} />
+              <Icon.Close
+                color={tintColor}
+                size={normalize(22)}
+                style={{ paddingHorizontal: normalize(14) }}
+              />
             )}
           />
         )

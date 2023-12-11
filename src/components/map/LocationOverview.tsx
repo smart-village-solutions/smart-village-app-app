@@ -14,7 +14,7 @@ import { RegularText } from '../Text';
 import { TextListItem } from '../TextListItem';
 import { Wrapper } from '../Wrapper';
 
-import { Map } from './Map';
+import { Map, MapIcon } from './Map';
 
 type Props = {
   filterByOpeningTimes?: boolean;
@@ -53,6 +53,7 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
   );
 };
 
+/* eslint-disable complexity */
 export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariables }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { globalSettings, locationSettings } = useContext(SettingsContext);
@@ -119,6 +120,14 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
       )?.[0]
     : undefined;
 
+  if (item && !item.picture?.url) {
+    item.leftIcon = (
+      <View style={[styles.iconContainer, styles.imageSize]}>
+        <MapIcon iconColor={colors.primary} iconName={item.iconName} iconSize={normalize(24)} />
+      </View>
+    );
+  }
+
   return (
     <>
       <Map
@@ -137,12 +146,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
         selectedMarker={selectedPointOfInterest}
       />
       {selectedPointOfInterest && !detailsLoading && (
-        <View
-          style={[
-            styles.listItemContainer,
-            stylesWithProps({ navigation: navigationType }).position
-          ]}
-        >
+        <View style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}>
           <TextListItem
             containerStyle={styles.textListItemContainer}
             imageContainerStyle={styles.imageRadius}
@@ -150,13 +154,10 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
             item={{
               ...item,
               bottomDivider: false,
-              picture: item?.picture?.url
-                ? item.picture
-                : {
-                    url: 'https://fileserver.smart-village.app/hb-meinquartier/app-icon.png'
-                  }
+              picture: item?.picture?.url ? item.picture : undefined
             }}
-            leftImage
+            leftImage={!!item?.picture?.url}
+            listItemStyle={styles.listItem}
             listsWithoutArrows
             navigation={navigation}
           />
@@ -165,8 +166,16 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  iconContainer: {
+    alignItems: 'center',
+    backgroundColor: colors.gray10,
+    borderBottomLeftRadius: normalize(8),
+    borderTopLeftRadius: normalize(8),
+    justifyContent: 'center'
+  },
   imageSize: {
     height: normalize(96),
     width: normalize(96)
@@ -177,7 +186,7 @@ const styles = StyleSheet.create({
   },
   listItemContainer: {
     backgroundColor: colors.surface,
-    borderRadius: normalize(12),
+    borderRadius: normalize(8),
     left: '4%',
     position: 'absolute',
     right: '4%',
@@ -192,11 +201,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 3
   },
+  listItem: {
+    marginTop: normalize(16)
+  },
   map: {
     height: '100%',
     width: '100%'
   },
   textListItemContainer: {
+    alignItems: 'flex-start',
     paddingVertical: 0,
     padding: 0
   }

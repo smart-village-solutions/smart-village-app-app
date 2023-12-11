@@ -37,6 +37,7 @@ type Props = {
   imageStyle?: ImageStyle;
   item: ItemData;
   leftImage?: boolean;
+  listItemStyle?: ViewStyle;
   listsWithoutArrows?: boolean | undefined;
   navigation: StackNavigationProp<Record<string, any>>;
   noSubtitle?: boolean;
@@ -59,6 +60,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
     imageStyle,
     item,
     leftImage,
+    listItemStyle,
     listsWithoutArrows,
     navigation,
     noSubtitle,
@@ -130,7 +132,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
         topDivider={topDivider !== undefined ? topDivider : false}
         containerStyle={[
           styles.container,
-          containerStyle && containerStyle,
+          containerStyle,
           (bottomDivider || topDivider) && styles.containerBorder
         ]}
         badge={badge}
@@ -150,10 +152,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
                 withCard && styles.withBigCardStyle
               ]}
               borderRadius={withCard ? normalize(8) : undefined}
-              containerStyle={[
-                styles.smallImageContainer,
-                imageContainerStyle && imageContainerStyle
-              ]}
+              containerStyle={[styles.smallImageContainer, imageContainerStyle]}
             />
           ) : undefined)}
 
@@ -174,7 +173,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
             )}
           </ListItem.Content>
         ) : (
-          <ListItem.Content>
+          <ListItem.Content style={listItemStyle}>
             {!noOvertitle && !!overtitle && (
               <HeadlineText smallest uppercase>
                 {trimNewLines(overtitle)}
@@ -248,6 +247,7 @@ TextListItem.propTypes = {
   imageStyle: PropTypes.object,
   item: PropTypes.object.isRequired,
   leftImage: PropTypes.bool,
+  listItemStyle: PropTypes.object,
   listsWithoutArrows: PropTypes.bool,
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
