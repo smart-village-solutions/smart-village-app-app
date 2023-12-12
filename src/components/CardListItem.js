@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     margin: 0,
     paddingHorizontal: 0,
-    paddingVertical: normalize(12),
+    paddingVertical: normalize(16),
     ...Platform.select({
       android: {
         elevation: 0
@@ -139,7 +139,7 @@ const stylesWithProps = ({ horizontal }) => {
     width = width * 0.7;
   }
 
-  const maxWidth = width - 2 * normalize(14); // width of an image minus paddings
+  const maxWidth = width - 2 * normalize(16); // width of an image minus paddings
 
   return StyleSheet.create({
     contentContainer: {

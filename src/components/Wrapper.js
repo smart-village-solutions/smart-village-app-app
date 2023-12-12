@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components/native';
 import { normalize } from '../config';
 
 export const Wrapper = styled.View`
-  padding: ${normalize(14)}px;
+  padding: ${normalize(16)}px;
 
   ${(props) =>
     props.small &&
@@ -19,8 +19,8 @@ export const Wrapper = styled.View`
 `;
 
 export const WrapperHorizontal = styled.View`
-  padding-left: ${normalize(14)}px;
-  padding-right: ${normalize(14)}px;
+  padding-left: ${normalize(16)}px;
+  padding-right: ${normalize(16)}px;
 
   ${(props) =>
     props.big &&
@@ -31,8 +31,8 @@ export const WrapperHorizontal = styled.View`
 `;
 
 export const WrapperVertical = styled.View`
-  padding-bottom: ${normalize(14)}px;
-  padding-top: ${normalize(14)}px;
+  padding-bottom: ${normalize(16)}px;
+  padding-top: ${normalize(16)}px;
 `;
 
 export const WrapperRow = styled.View`

@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.transparent,
     paddingHorizontal: 0,
-    paddingVertical: normalize(12)
+    paddingVertical: normalize(16)
   },
   containerBorder: {
     borderBottomColor: colors.borderRgba,

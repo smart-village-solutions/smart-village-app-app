@@ -118,7 +118,7 @@ export const EventList = ({
 
 const styles = StyleSheet.create({
   contentContainer: {
-    paddingHorizontal: normalize(14)
+    paddingHorizontal: normalize(16)
   }
 });
 
