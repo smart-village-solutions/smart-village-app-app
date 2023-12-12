@@ -98,6 +98,10 @@ export const useRenderItem = (query, navigation, options = {}) => {
     }
     case LIST_TYPES.CARD_TEXT_LIST: {
       renderItem = ({ item, index, section }) => {
+        if (query === QUERY_TYPES.EVENT_RECORDS && typeof item === 'string') {
+          return <EventSectionHeader {...{ item, navigation, options, query }} />;
+        }
+
         if (index === 0) {
           return (
             <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
