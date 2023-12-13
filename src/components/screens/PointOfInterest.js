@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
+import { StyleSheet } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
-import { consts, texts } from '../../config';
+import { consts, normalize, texts } from '../../config';
 import { matomoTrackingString } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
 import { Button } from '../Button';
@@ -158,6 +159,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
               }
             ]}
             selectedMarker={id}
+            mapStyle={styles.mapStyle}
           />
         </WrapperVertical>
       )}
@@ -175,6 +177,12 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  mapStyle: {
+    borderRadius: normalize(8)
+  }
+});
 
 PointOfInterest.propTypes = {
   data: PropTypes.object.isRequired,

@@ -23,6 +23,7 @@ type Props = {
     category?: string;
     categoryId?: string | number;
     dataProvider?: string;
+    initialFilter?: 'map' | 'list';
   };
 };
 
@@ -123,7 +124,9 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
   if (item && !item.picture?.url) {
     item.leftIcon = (
       <View style={[styles.iconContainer, styles.imageSize]}>
-        <MapIcon iconColor={colors.primary} iconName={item.iconName} iconSize={normalize(24)} />
+        {!!item.iconName && (
+          <MapIcon iconColor={colors.primary} iconName={item.iconName} iconSize={normalize(24)} />
+        )}
       </View>
     );
   }
@@ -134,7 +137,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
         isMultipleMarkersMap
         locations={mapMarkers}
         mapCenterPosition={
-          defaultAlternativePosition?.coords
+          queryVariables?.initialFilter === 'map' && defaultAlternativePosition?.coords
             ? {
                 latitude: defaultAlternativePosition.coords.lat,
                 longitude: defaultAlternativePosition.coords.lng
