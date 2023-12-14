@@ -91,7 +91,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   padding: {
-    padding: normalize(14)
+    padding: normalize(16),
+    paddingBottom: normalize(8)
   }
 });
 
