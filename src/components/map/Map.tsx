@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useRef } from 'react';
-import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { PixelRatio, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import MapView, { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 
 import { colors, device, Icon, normalize } from '../../config';
@@ -24,7 +24,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
 };
 
-const MARKER_ICON_SIZE = normalize(40);
+const MARKER_ICON_SIZE = PixelRatio.get() === 2 ? normalize(50) : normalize(40);
 
 export const MapIcon = ({
   iconColor,
@@ -134,7 +134,12 @@ export const Map = ({
 
           return (
             <Marker
-              centerOffset={marker.iconAnchor || { x: 0, y: -(MARKER_ICON_SIZE / 2) }}
+              centerOffset={
+                marker.iconAnchor || {
+                  x: 0,
+                  y: -(MARKER_ICON_SIZE / (isActiveMarker && PixelRatio.get() > 2 ? 1.75 : 2))
+                }
+              }
               coordinate={marker.position}
               identifier={marker.id}
               key={`${index}-${marker.id}`}
@@ -146,7 +151,7 @@ export const Map = ({
                   <MapIcon
                     iconColor={isActiveMarker ? colors.primary : colors.lighterPrimary}
                     iconName={isActiveMarker ? 'locationActive' : 'location'}
-                    iconSize={isActiveMarker ? MARKER_ICON_SIZE * normalize(1.2) : MARKER_ICON_SIZE}
+                    iconSize={isActiveMarker ? MARKER_ICON_SIZE * normalize(1.4) : MARKER_ICON_SIZE}
                   />
                   <View
                     style={[
@@ -157,7 +162,10 @@ export const Map = ({
                     <MapIcon
                       iconColor={isActiveMarker ? colors.lighterPrimary : colors.primary}
                       iconName={marker.iconName}
-                      iconSize={MARKER_ICON_SIZE / 2.25}
+                      iconSize={
+                        MARKER_ICON_SIZE /
+                        (PixelRatio.get() === 2 ? normalize(2.95) : normalize(2.5))
+                      }
                     />
                   </View>
                 </>
@@ -201,8 +209,8 @@ const styles = StyleSheet.create({
   },
   mapIconOnLocationMarkerActive: {
     backgroundColor: colors.primary,
-    left: (MARKER_ICON_SIZE * normalize(1.2)) / 2.85,
-    top: (MARKER_ICON_SIZE * normalize(1.2)) / 6.5
+    left: (MARKER_ICON_SIZE * 1.4) / (PixelRatio.get() === 2 ? 3.9 : 2.75),
+    top: (MARKER_ICON_SIZE * 1.4) / (PixelRatio.get() === 2 ? 8.75 : 5.75)
   },
   maximizeMapButton: {
     alignItems: 'center',
