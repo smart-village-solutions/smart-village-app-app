@@ -4,13 +4,15 @@ import React, { useCallback } from 'react';
 import { useQuery } from 'react-apollo';
 import { SectionList, StyleSheet } from 'react-native';
 
-import { HtmlView, SafeAreaViewFlex, SectionHeader, TextListItem, Wrapper } from '../components';
+import { SafeAreaViewFlex, SectionHeader, TextListItem } from '../components';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { normalize, texts } from '../config';
 import { combineLanguages } from '../helpers';
 import { usePullToRefetch, useStaticContent, useSurveyLanguages } from '../hooks';
 import { SURVEYS } from '../queries/survey';
 import { Survey } from '../types';
+
+import { ListHeaderComponent } from './NestedInfoScreen';
 
 type Props = {
   route: {
@@ -79,7 +81,7 @@ export const SurveyOverviewScreen = ({ route }: Props) => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const { additionalProps } = route.params ?? {};
 
-  const { data } = useStaticContent({
+  const { data, htmlLoading } = useStaticContent({
     name: additionalProps?.htmlName,
     type: 'html',
     refreshTimeKey: `publicHtmlFile-${additionalProps?.htmlName}`,
@@ -104,9 +106,12 @@ export const SurveyOverviewScreen = ({ route }: Props) => {
       <SectionList
         ListHeaderComponent={
           data ? (
-            <Wrapper>
-              <HtmlView html={data} />
-            </Wrapper>
+            <ListHeaderComponent
+              html={data}
+              loading={htmlLoading}
+              navigation={navigation}
+              navigationTitle=""
+            />
           ) : null
         }
         refreshControl={RefreshControl}
