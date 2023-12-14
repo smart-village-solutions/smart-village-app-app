@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   buttonInvert: {
     borderColor: colors.primary,
     borderStyle: 'solid',
-    borderWidth: 2
+    borderWidth: normalize(1)
   },
   buttonRadius: {
     borderRadius: normalize(8)
