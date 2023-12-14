@@ -10,6 +10,7 @@ export * from './constructionSite';
 export * from './drawerMenu';
 export * from './editSetting';
 export * from './emptySection';
+export * from './homeFilled';
 export * from './info';
 export * from './like';
 export * from './link';

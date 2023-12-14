@@ -26,7 +26,7 @@ const homeTabConfig: TabConfig = {
     tabBarIcon: ({ color, focused }: TabBarIconProps) => (
       <OrientationAwareIcon
         color={color}
-        Icon={Icon.Home}
+        Icon={focused ? Icon.HomeFilled : Icon.Home}
         stroke={focused ? 2 : 1}
         landscapeStyle={{ marginRight: -normalize(6), marginTop: -normalize(5) }}
         size={normalize(24)}
