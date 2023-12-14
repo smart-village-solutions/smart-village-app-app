@@ -187,10 +187,17 @@ export const HeadlineText = styled(RegularText)`
     `};
 
   ${(props) =>
-    props.smallest &&
+    props.smaller &&
     css`
       font-size: ${normalize(14)};
-      line-height: ${normalize(18)};
+      line-height: ${normalize(16)};
+    `};
+
+  ${(props) =>
+    props.smallest &&
+    css`
+      font-size: ${normalize(12)};
+      line-height: ${normalize(14)};
     `};
 
   ${(props) =>

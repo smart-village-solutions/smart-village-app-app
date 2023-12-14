@@ -117,7 +117,7 @@ export const EventRecord = ({ data, route }) => {
 
       {!!category?.name && (
         <WrapperHorizontal>
-          <HeadlineText smallest uppercase>
+          <HeadlineText smaller uppercase>
             {category.name}
           </HeadlineText>
         </WrapperHorizontal>

@@ -72,7 +72,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     <WrapperVertical>
       {!!category?.name && (
         <WrapperHorizontal>
-          <HeadlineText smallest uppercase>
+          <HeadlineText smaller uppercase>
             {category.name}
           </HeadlineText>
         </WrapperHorizontal>

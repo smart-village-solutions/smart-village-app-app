@@ -51,7 +51,7 @@ export const NewsItem = ({ data, route }) => {
       {!!subtitle && (
         <WrapperVertical style={styles.noPaddingBottom}>
           <WrapperRow center>
-            <HeadlineText smallest uppercase>
+            <HeadlineText smaller uppercase>
               {subtitle}
             </HeadlineText>
           </WrapperRow>
