@@ -5,15 +5,14 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { colors, normalize, texts } from '../../config';
+import { colors, normalize } from '../../config';
 import { graphqlFetchPolicy, isOpen, parseListItemsFromQuery } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
-import { RegularText } from '../Text';
 import { TextListItem } from '../TextListItem';
-import { Wrapper } from '../Wrapper';
 
+import { Filter } from './Filter';
 import { Map, MapIcon } from './Map';
 
 type Props = {
@@ -22,6 +21,7 @@ type Props = {
   queryVariables: {
     category?: string;
     categoryId?: string | number;
+    categoryIds?: string[] | number[];
     dataProvider?: string;
     initialFilter?: 'map' | 'list';
   };
@@ -63,7 +63,11 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { defaultAlternativePosition } = locationSettings || {};
 
-  const { data: overviewData, loading } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
+  const {
+    data: overviewData,
+    loading,
+    refetch
+  } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
     fetchPolicy,
     variables: {
       ...queryVariables,
@@ -97,16 +101,6 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
 
   const mapMarkers = mapToMapMarkers(pointsOfInterest);
 
-  if (!mapMarkers?.length) {
-    return (
-      <Wrapper>
-        <RegularText placeholder small center>
-          {texts.map.noGeoLocations}
-        </RegularText>
-      </Wrapper>
-    );
-  }
-
   const item = detailsData
     ? parseListItemsFromQuery(
         QUERY_TYPES.POINT_OF_INTEREST,
@@ -133,6 +127,10 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
 
   return (
     <>
+      {(queryVariables?.categoryIds?.length || 0) > 1 && (
+        <Filter queryVariables={queryVariables} refetch={refetch} />
+      )}
+
       <Map
         isMultipleMarkersMap
         locations={mapMarkers}
