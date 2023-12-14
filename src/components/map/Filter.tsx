@@ -2,13 +2,12 @@ import { ApolloQueryResult } from 'apollo-client';
 import _sortBy from 'lodash/sortBy';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
 import { colors, normalize } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { BoldText } from '../Text';
-import { Touchable } from '../Touchable';
 
 import { MapIcon } from './Map';
 
@@ -77,7 +76,7 @@ export const Filter = ({ queryVariables, refetch }: Props) => {
           const isActive = categoryIds.includes(item.id.toString());
 
           return (
-            <Touchable onPress={() => onPress(item, isActive)} activeOpacity={0.8}>
+            <TouchableOpacity onPress={() => onPress(item, isActive)} activeOpacity={0.8}>
               <View
                 style={[
                   styles.chip,
@@ -96,7 +95,7 @@ export const Filter = ({ queryVariables, refetch }: Props) => {
                   {item.name}
                 </BoldText>
               </View>
-            </Touchable>
+            </TouchableOpacity>
           );
         }}
         showsHorizontalScrollIndicator={false}
