@@ -2,10 +2,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NetworkContext } from '../../NetworkProvider';
+import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { colors, normalize } from '../../config';
+import { colors, device, normalize } from '../../config';
 import { graphqlFetchPolicy, isOpen, parseListItemsFromQuery } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
@@ -57,6 +59,8 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
 /* eslint-disable complexity */
 export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariables }: Props) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { orientation } = useContext(OrientationContext);
+  const safeAreaInsets = useSafeAreaInsets();
   const { globalSettings, locationSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
@@ -147,7 +151,17 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
         selectedMarker={selectedPointOfInterest}
       />
       {selectedPointOfInterest && !detailsLoading && (
-        <View style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}>
+        <View
+          style={[
+            styles.listItemContainer,
+            stylesWithProps({
+              navigationType,
+              orientation,
+              safeAreaInsets,
+              deviceHeight: device.height
+            }).position
+          ]}
+        >
           <TextListItem
             containerStyle={styles.textListItemContainer}
             imageContainerStyle={styles.imageRadius}
@@ -218,10 +232,22 @@ const styles = StyleSheet.create({
 
 /* eslint-disable react-native/no-unused-styles */
 /* this works properly, we do not want that warning */
-const stylesWithProps = ({ navigationType }: { navigationType: string }) => {
+const stylesWithProps = ({
+  navigationType,
+  orientation,
+  safeAreaInsets,
+  deviceHeight
+}: {
+  navigationType: string;
+  orientation: string;
+  safeAreaInsets: { left: number; right: number };
+  deviceHeight: number;
+}) => {
   return StyleSheet.create({
     position: {
-      bottom: navigationType === 'drawer' ? '8%' : '4%'
+      bottom: navigationType === 'drawer' ? '8%' : '4%',
+      left: orientation === 'landscape' ? safeAreaInsets.left + deviceHeight * 0.04 : '4%',
+      right: orientation === 'landscape' ? safeAreaInsets.right + deviceHeight * 0.04 : '4%'
     }
   });
 };
