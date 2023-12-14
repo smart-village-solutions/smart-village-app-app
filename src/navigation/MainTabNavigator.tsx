@@ -1,5 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useContext } from 'react';
+import { PixelRatio } from 'react-native';
 
 import { OrientationContext } from '../OrientationProvider';
 import { colors, device, normalize } from '../config';
@@ -16,6 +17,15 @@ export const MainTabNavigator = ({
 }) => {
   const { orientation } = useContext(OrientationContext);
 
+  const tabbarHeight =
+    orientation === 'portrait' && PixelRatio.get() === 2
+      ? normalize(62)
+      : orientation === 'portrait' && PixelRatio.get() > 2
+      ? normalize(88)
+      : orientation === 'landscape' && PixelRatio.get() === 2
+      ? normalize(35)
+      : normalize(50);
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -30,7 +40,7 @@ export const MainTabNavigator = ({
           backgroundColor: colors.surface,
           borderTopColor: colors.gray20,
           borderTopWidth: 1,
-          height: orientation === 'portrait' ? normalize(88) : normalize(50)
+          height: tabbarHeight
         },
         tabBarLabelStyle: {
           fontSize: normalize(11),

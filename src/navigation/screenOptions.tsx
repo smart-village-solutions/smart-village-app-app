@@ -1,7 +1,7 @@
 import { RouteProp } from '@react-navigation/core';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
 import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import { PixelRatio, StyleSheet } from 'react-native';
 
 import { OrientationContext } from '../OrientationProvider';
 import { FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
@@ -34,6 +34,15 @@ export const getScreenOptions =
   ({ navigation, route }) => {
     const { orientation } = useContext(OrientationContext);
 
+    const headerHeight =
+      orientation === 'portrait' && PixelRatio.get() === 2
+        ? normalize(80)
+        : orientation === 'portrait' && PixelRatio.get() > 2
+        ? normalize(116)
+        : orientation === 'landscape' && PixelRatio.get() === 2
+        ? getHeaderHeight('landscape')
+        : getHeaderHeight('landscape');
+
     return {
       headerTitleStyle: styles.headerTitleStyle,
       headerTitleAlign: 'center',
@@ -41,7 +50,7 @@ export const getScreenOptions =
         backgroundColor: colors.surface,
         borderBottomWidth: 1,
         borderBottomColor: colors.borderRgba,
-        height: orientation === 'portrait' ? normalize(116) : getHeaderHeight('landscape')
+        height: headerHeight
       },
       headerRight: () => (
         <HeaderRight
