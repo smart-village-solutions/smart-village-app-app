@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     borderRadius: normalize(8)
   },
   container: {
-    marginBottom: normalize(21)
+    marginBottom: normalize(16)
   },
   containerLandscape: {
     alignItems: 'center',
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     fontSize: normalize(14)
   },
   title: {
-    color: colors.lightestText,
+    color: colors.lighterPrimary,
     fontFamily: 'bold',
     fontSize: normalize(14),
     fontWeight: '600'

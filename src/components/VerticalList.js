@@ -110,7 +110,7 @@ export const VerticalList = ({
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: normalize(14)
+    paddingHorizontal: normalize(16)
   },
   contentContainerStyle: {
     flexGrow: 1

@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.placeholder
   },
   margin: {
-    marginRight: normalize(12),
+    marginRight: normalize(16),
     marginTop: normalize(-2)
   }
 });

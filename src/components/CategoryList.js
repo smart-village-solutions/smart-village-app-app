@@ -95,7 +95,7 @@ export class CategoryList extends React.PureComponent {
 
 const styles = StyleSheet.create({
   contentContainer: {
-    paddingHorizontal: normalize(14)
+    paddingHorizontal: normalize(16)
   }
 });
 
