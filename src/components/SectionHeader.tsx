@@ -35,7 +35,7 @@ export const SectionHeader = ({ big = false, center = false, onPress, title }: P
         {title}
       </Title>
       {!!onPress && (
-        <Icon.ArrowRight color={colors.gray120} size={normalize(18)} style={styles.icon} />
+        <Icon.ArrowRight color={colors.gray120} size={normalize(24)} style={styles.icon} />
       )}
     </WrapperRow>
   );

@@ -1,10 +1,12 @@
 import { RouteProp } from '@react-navigation/core';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 
+import { OrientationContext } from '../OrientationProvider';
 import { FavoritesHeader, HeaderLeft, HeaderRight } from '../components';
 import { colors, device, normalize } from '../config';
+import { getHeaderHeight } from '../helpers';
 
 type OptionProps = {
   route: RouteProp<Record<string, any | undefined>, string>;
@@ -30,13 +32,16 @@ export const getScreenOptions =
     cardStyleInterpolator
   }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
   ({ navigation, route }) => {
+    const { orientation } = useContext(OrientationContext);
+
     return {
       headerTitleStyle: styles.headerTitleStyle,
       headerTitleAlign: 'center',
       headerStyle: {
         backgroundColor: colors.surface,
         borderBottomWidth: 1,
-        borderBottomColor: colors.borderRgba
+        borderBottomColor: colors.borderRgba,
+        height: orientation === 'portrait' ? normalize(116) : getHeaderHeight('landscape')
       },
       headerRight: () => (
         <HeaderRight

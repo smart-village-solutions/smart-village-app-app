@@ -87,7 +87,7 @@ export const RegularText = styled(Text)`
   ${(props) =>
     props.big &&
     css`
-      font-size: ${normalize(20)};
+      font-size: ${normalize(16)};
       line-height: ${normalize(24)};
     `};
 
@@ -191,6 +191,13 @@ export const HeadlineText = styled(RegularText)`
     css`
       font-size: ${normalize(14)};
       line-height: ${normalize(18)};
+    `};
+
+  ${(props) =>
+    props.big &&
+    css`
+      font-size: ${normalize(21)};
+      line-height: ${normalize(27)};
     `};
 
   ${(props) =>

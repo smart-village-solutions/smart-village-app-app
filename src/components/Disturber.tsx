@@ -133,7 +133,11 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
 
             <Wrapper style={styles.noPaddingTop}>
               <WrapperHorizontal>
-                {!!description && <RegularText center>{description}</RegularText>}
+                {!!description && (
+                  <RegularText center big>
+                    {description}
+                  </RegularText>
+                )}
               </WrapperHorizontal>
             </Wrapper>
 

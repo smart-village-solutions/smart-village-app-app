@@ -167,7 +167,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
             {noSubtitle || !subtitle ? (
               titleText
             ) : (
-              <RegularText smallest style={styles.subtitle}>
+              <RegularText small style={styles.subtitle}>
                 {subtitle}
               </RegularText>
             )}
@@ -183,7 +183,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
             {noSubtitle || !subtitle ? (
               titleText
             ) : (
-              <RegularText smallest style={styles.subtitle}>
+              <RegularText small style={styles.subtitle}>
                 {subtitle}
               </RegularText>
             )}
