@@ -19,6 +19,7 @@ import { device } from './device';
 const pixelRatio = PixelRatio.get();
 const deviceHeight = device.height;
 const deviceWidth = device.width;
+const isTablet = device.isTablet;
 
 // The Ultimate Guide To iPhone Resolutions
 // https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions
@@ -37,7 +38,7 @@ const deviceWidth = device.width;
 export const normalize = (size) => {
   // the base for our calculations are iPhone 14 Pro, iPhone 15, iPhone 15 Pro (393 x 852)
   // see https://www.ricsantos.net/2021/01/21/ios-device-resolution-guide
-  const ratio = deviceWidth / 393;
+  const ratio = deviceWidth / 393 / (isTablet ? 1.35 : 1);
 
   if (pixelRatio === 2) {
     return size * ratio * 0.84;
