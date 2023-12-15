@@ -23,31 +23,25 @@ const renderCardContent = (item, horizontal) => {
         <Image
           source={{ uri: picture.url }}
           style={stylesWithProps({ horizontal }).image}
-          containerStyle={(styles.imageContainer, !!imageStyle && imageStyle)}
+          containerStyle={[styles.imageContainer, imageStyle]}
           borderRadius={imageBorderRadius}
         />
       ),
     overtitle: () =>
       !!overtitle && (
-        <RegularText
-          small
-          style={[!!generalStyle && generalStyle, !!overtitleStyle && overtitleStyle]}
-        >
+        <RegularText small style={[generalStyle, overtitleStyle]}>
           {overtitle}
         </RegularText>
       ),
     subtitle: () =>
       !!subtitle && (
-        <RegularText
-          small
-          style={[!!generalStyle && generalStyle, !!subtitleStyle && subtitleStyle]}
-        >
+        <RegularText small style={[generalStyle, subtitleStyle]}>
           {subtitle}
         </RegularText>
       ),
     title: () =>
       !!title && (
-        <BoldText style={[!!generalStyle && generalStyle, !!titleStyle && titleStyle]}>
+        <BoldText style={[generalStyle, titleStyle]}>
           {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
         </BoldText>
       )
