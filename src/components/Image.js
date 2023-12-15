@@ -106,6 +106,7 @@ export const Image = ({
         source={source}
         childrenContainerStyle={style || stylesForImage(aspectRatio).defaultStyle}
         containerStyle={containerStyle}
+        style={style}
         PlaceholderContent={PlaceholderContent}
         placeholderStyle={styles.placeholderStyle}
         accessible={!!sourceProp?.captionText}
@@ -160,7 +161,7 @@ Image.propTypes = {
   aspectRatio: PropTypes.object,
   borderRadius: PropTypes.number,
   button: PropTypes.object,
-  containerStyle: PropTypes.object,
+  containerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   message: PropTypes.string,
   PlaceholderContent: PropTypes.object,
   refreshInterval: PropTypes.number,

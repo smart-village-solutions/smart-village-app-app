@@ -159,18 +159,14 @@ const styles = StyleSheet.create({
     paddingVertical: normalize(12)
   },
   smallImage: {
-    height: normalize(33),
-    width: normalize(66)
+    height: normalize(72),
+    width: normalize(96)
   },
   smallImageContainer: {
     alignSelf: 'flex-start'
   },
   statustitleWrapper: {
     marginTop: normalize(7)
-  },
-  withBigCardStyle: {
-    height: normalize(72),
-    width: normalize(96)
   }
 });
 

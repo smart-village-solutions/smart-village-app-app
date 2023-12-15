@@ -102,7 +102,18 @@ export const useRenderItem = (query, navigation, options = {}) => {
           return <EventSectionHeader {...{ item, navigation, options, query }} />;
         }
 
-        if (index === 0) {
+        if (index === 0 || (query === QUERY_TYPES.EVENT_RECORDS && index === 1)) {
+          if (!item?.picture?.url) {
+            return (
+              <TextListItem
+                item={{ ...item, bottomDivider: true }}
+                navigation={navigation}
+                noSubtitle={options.noSubtitle}
+                withCard
+              />
+            );
+          }
+
           return (
             <CardListItem navigation={navigation} horizontal={options.horizontal} item={item} />
           );
