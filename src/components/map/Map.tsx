@@ -24,7 +24,10 @@ type Props = {
   style?: StyleProp<ViewStyle>;
 };
 
-const MARKER_ICON_SIZE = PixelRatio.get() === 2 ? normalize(50) : normalize(40);
+const isSmallerPixelRatio = PixelRatio.get() <= 2;
+const MARKER_ICON_SIZE = isSmallerPixelRatio ? normalize(50) : normalize(40);
+const isBiggerPhoneWithSmallerPixelRatio = device.width === 414 && isSmallerPixelRatio;
+const isSmallerPhoneWithLargerPixelRatio = device.width < 400 && !isSmallerPixelRatio;
 
 export const MapIcon = ({
   iconColor,
@@ -163,8 +166,7 @@ export const Map = ({
                       iconColor={isActiveMarker ? colors.lighterPrimary : colors.primary}
                       iconName={marker.iconName}
                       iconSize={
-                        MARKER_ICON_SIZE /
-                        (PixelRatio.get() === 2 ? normalize(2.95) : normalize(2.5))
+                        MARKER_ICON_SIZE / (isSmallerPixelRatio ? normalize(2.95) : normalize(2.5))
                       }
                     />
                   </View>
@@ -203,14 +205,28 @@ const styles = StyleSheet.create({
   },
   mapIconOnLocationMarker: {
     backgroundColor: colors.lighterPrimary,
-    left: MARKER_ICON_SIZE / 3.25,
+    left: MARKER_ICON_SIZE / (isBiggerPhoneWithSmallerPixelRatio ? 3 : 3.25),
     position: 'absolute',
-    top: MARKER_ICON_SIZE / 4.2
+    top: MARKER_ICON_SIZE / (isBiggerPhoneWithSmallerPixelRatio ? 4 : 4.2)
   },
   mapIconOnLocationMarkerActive: {
     backgroundColor: colors.primary,
-    left: (MARKER_ICON_SIZE * 1.4) / (PixelRatio.get() === 2 ? 3.9 : 2.75),
-    top: (MARKER_ICON_SIZE * 1.4) / (PixelRatio.get() === 2 ? 8.75 : 5.75)
+    left:
+      (MARKER_ICON_SIZE * 1.4) /
+      (isBiggerPhoneWithSmallerPixelRatio
+        ? 3.2
+        : isSmallerPhoneWithLargerPixelRatio
+        ? 2.85
+        : isSmallerPixelRatio
+        ? 3.9
+        : 2.45),
+    top:
+      (MARKER_ICON_SIZE * 1.4) /
+      (isBiggerPhoneWithSmallerPixelRatio || isSmallerPhoneWithLargerPixelRatio
+        ? 7
+        : isSmallerPixelRatio
+        ? 9.75
+        : 5.75)
   },
   maximizeMapButton: {
     alignItems: 'center',
