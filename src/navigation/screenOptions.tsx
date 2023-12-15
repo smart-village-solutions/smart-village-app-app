@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { RouteProp } from '@react-navigation/core';
 import { CardStyleInterpolators, StackNavigationOptions } from '@react-navigation/stack';
 import React, { useContext } from 'react';
@@ -34,14 +35,17 @@ export const getScreenOptions =
   ({ navigation, route }) => {
     const { orientation } = useContext(OrientationContext);
 
-    const headerHeight =
-      orientation === 'portrait' && PixelRatio.get() === 2
-        ? normalize(80)
-        : orientation === 'portrait' && PixelRatio.get() > 2
-        ? normalize(116)
-        : orientation === 'landscape' && PixelRatio.get() === 2
-        ? getHeaderHeight('landscape')
-        : getHeaderHeight('landscape');
+    const isPortrait = orientation === 'portrait';
+    const isSmallerPixelRatio = PixelRatio.get() <= 2;
+    const isBiggerPhone = device.width === 414; // for iPhone 11 or iPhone XR
+    const isNotBiggerPhoneWithSmallerPixelRatio = !isBiggerPhone && isSmallerPixelRatio;
+    const isBiggerPhoneOrBiggerPixelRatio = isBiggerPhone || !isSmallerPixelRatio;
+
+    const headerHeight = !isPortrait
+      ? getHeaderHeight('landscape')
+      : isPortrait && isBiggerPhoneOrBiggerPixelRatio
+      ? normalize(116)
+      : isPortrait && isNotBiggerPhoneWithSmallerPixelRatio && normalize(80);
 
     return {
       headerTitleStyle: styles.headerTitleStyle,
@@ -73,6 +77,8 @@ export const getScreenOptions =
       cardStyleInterpolator: cardStyleInterpolator ?? CardStyleInterpolators.forHorizontalIOS
     };
   };
+
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   headerTitleStyle: {

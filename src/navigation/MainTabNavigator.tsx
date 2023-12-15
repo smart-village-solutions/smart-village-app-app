@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useContext } from 'react';
 import { PixelRatio } from 'react-native';
@@ -17,12 +18,18 @@ export const MainTabNavigator = ({
 }) => {
   const { orientation } = useContext(OrientationContext);
 
+  const isPortrait = orientation === 'portrait';
+  const isSmallerPixelRatio = PixelRatio.get() <= 2;
+  const isBiggerPhone = device.width === 414; // for iPhone 11 or iPhone XR
+  const isNotBiggerPhoneWithSmallerPixelRatio = !isBiggerPhone && isSmallerPixelRatio;
+  const isBiggerPhoneOrBiggerPixelRatio = isBiggerPhone || !isSmallerPixelRatio;
+
   const tabbarHeight =
-    orientation === 'portrait' && PixelRatio.get() === 2
+    isPortrait && isNotBiggerPhoneWithSmallerPixelRatio
       ? normalize(62)
-      : orientation === 'portrait' && PixelRatio.get() > 2
+      : isPortrait && isBiggerPhoneOrBiggerPixelRatio
       ? normalize(88)
-      : orientation === 'landscape' && PixelRatio.get() === 2
+      : !isPortrait && isNotBiggerPhoneWithSmallerPixelRatio
       ? normalize(35)
       : normalize(50);
 
@@ -61,3 +68,4 @@ export const MainTabNavigator = ({
     </Tab.Navigator>
   );
 };
+/* eslint-enable complexity */
