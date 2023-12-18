@@ -111,8 +111,8 @@ export const TextListItem: NamedExoticComponent<Props> & {
         (leftImage && !!picture?.url ? (
           <Image
             source={{ uri: picture.url }}
-            style={[styles.smallImage, withCard && styles.withBigCardStyle]}
-            borderRadius={withCard ? normalize(8) : undefined}
+            style={styles.smallImage}
+            borderRadius={normalize(8)}
             containerStyle={styles.smallImageContainer}
           />
         ) : undefined)}
@@ -139,8 +139,8 @@ export const TextListItem: NamedExoticComponent<Props> & {
         (rightImage && !!picture?.url ? (
           <Image
             source={{ uri: picture.url }}
-            style={[styles.smallImage, withCard && styles.withBigCardStyle]}
-            borderRadius={withCard && normalize(8)}
+            style={styles.smallImage}
+            borderRadius={normalize(8)}
             containerStyle={styles.smallImageContainer}
           />
         ) : undefined)}
