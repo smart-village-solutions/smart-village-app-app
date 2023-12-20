@@ -940,6 +940,7 @@ export const texts = {
       phone: 'Telefonnummer',
       sendReport: 'Meldung senden',
       street: 'Straße',
+      termsOfService: 'Datenschutzbestimmungen',
       title: 'Kurze Beschreibung',
       zipCode: 'Postleitzahl'
     }

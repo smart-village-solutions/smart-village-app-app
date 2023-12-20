@@ -58,6 +58,8 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => (
           <Checkbox
             checked={!!value}
             onPress={() => onChange(!value)}
+            link="https://smart-village.app/datenschutzerklaerung/"
+            linkDescription={texts.sue.report.termsOfService}
             title={`${texts.defectReport.inputCheckbox} *`}
             checkedColor={colors.accent}
             checkedIcon="check-square-o"
