@@ -914,6 +914,13 @@ export const texts = {
       alerts: {
         address: 'Bitte stellen Sie sicher, dass Sie Ihre Adressdaten korrekt eingeben',
         contact: 'Bitte stellen Sie sicher, dass Sie Ihre Kontaktdaten korrekt eingeben.',
+        dataDeleteAlert: {
+          cancel: 'Nein',
+          deleteButton: 'Löschen',
+          message: 'Sind Sie sicher, dass Sie die Daten löschen wollen?',
+          ok: 'Ja',
+          title: 'Daten löschen'
+        },
         hint: 'Hinweis',
         imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
         imagesGreater30MBError:
