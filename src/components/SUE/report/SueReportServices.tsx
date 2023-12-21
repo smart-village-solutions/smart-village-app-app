@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useQuery } from 'react-query';
 
 import { colors, device, normalize } from '../../../config';
 import { imageHeight } from '../../../helpers';
 import { QUERY_TYPES, getQuery } from '../../../queries';
+import { LoadingSpinner } from '../../LoadingSpinner';
 import { BoldText } from '../../Text';
 
 export const SueReportServices = ({
@@ -14,7 +15,24 @@ export const SueReportServices = ({
   serviceCode: string;
   setServiceCode: any;
 }) => {
-  const { data } = useQuery([QUERY_TYPES.SUE.SERVICES], () => getQuery(QUERY_TYPES.SUE.SERVICES)());
+  const [loading, setLoading] = useState(true);
+
+  const { data, isLoading, refetch } = useQuery([QUERY_TYPES.SUE.SERVICES], () =>
+    getQuery(QUERY_TYPES.SUE.SERVICES)()
+  );
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  const refresh = async () => {
+    await refetch();
+    setLoading(false);
+  };
+
+  if (isLoading || loading) {
+    return <LoadingSpinner loading />;
+  }
 
   return (
     <View style={styles.container}>
