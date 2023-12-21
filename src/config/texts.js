@@ -917,9 +917,9 @@ export const texts = {
         dataDeleteAlert: {
           cancel: 'Nein',
           deleteButton: 'Löschen',
-          message: 'Sind Sie sicher, dass Sie die Daten löschen wollen?',
+          message: 'Sind Sie sicher, dass Sie Ihre eingegebenen Meldungsdaten löschen möchten?',
           ok: 'Ja',
-          title: 'Daten löschen'
+          title: 'Eingabe löschen'
         },
         hint: 'Hinweis',
         imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
