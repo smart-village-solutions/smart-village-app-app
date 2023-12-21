@@ -33,6 +33,7 @@ export * from './CrossData';
 export * from './DataListSection';
 export * from './DataProviderButton';
 export * from './DateTimePicker';
+export * from './DeleteHeader';
 export * from './DefaultKeyboardAvoidingView';
 export * from './DiagonalGradient';
 export * from './Disturber';

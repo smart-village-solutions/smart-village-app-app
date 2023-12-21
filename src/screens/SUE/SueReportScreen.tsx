@@ -1,5 +1,7 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StackScreenProps } from '@react-navigation/stack';
 import * as Location from 'expo-location';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { UseFormSetValue, useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
@@ -8,6 +10,7 @@ import { useMutation } from 'react-query';
 import {
   Button,
   DefaultKeyboardAvoidingView,
+  HeaderRight,
   LoadingContainer,
   SafeAreaViewFlex,
   SueReportDescription,
@@ -20,6 +23,7 @@ import {
   WrapperHorizontal
 } from '../../components';
 import { colors, device, texts } from '../../config';
+import { addToStore, readFromStore } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { postRequests } from '../../queries/SUE';
 
@@ -87,7 +91,10 @@ type TProgress = {
   serviceCode: string;
 };
 
-export const SueReportScreen = ({ navigation }: { navigation: any }) => {
+export const SueReportScreen = ({
+  navigation,
+  route
+}: { navigation: any } & StackScreenProps<any>) => {
   const { data, loading } = useStaticContent({
     refreshTimeKey: 'publicJsonFile-sueReportProgress',
     name: 'sueReportProgress',
@@ -99,6 +106,7 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
+  const [storedValues, setStoredValues] = useState<TReports>();
 
   const scrollViewRef = useRef(null);
 
@@ -107,7 +115,8 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
     formState: { errors },
     handleSubmit,
     getValues,
-    setValue
+    setValue,
+    reset
   } = useForm({
     mode: 'onBlur',
     defaultValues: {
@@ -129,6 +138,8 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   const { mutateAsync } = useMutation(postRequests);
 
   const onSubmit = async (sueReportData: TReports) => {
+    storeReportValues();
+
     if (!sueReportData.termsOfService) {
       return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.termsOfService);
     }
@@ -145,7 +156,10 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
 
     setIsLoading(true);
     mutateAsync(formData)
-      .then(() => setIsDone(true))
+      .then(() => {
+        setIsDone(true);
+        resetStoredValues();
+      })
       .catch(() => {
         setIsLoading(false);
 
@@ -199,10 +213,56 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
   };
   /* eslint-enable complexity */
 
-  const handleNextPage = () => {
+  useEffect(() => {
+    readReportValuesFromStore();
+  }, []);
+
+  const storeReportValues = async () => {
+    await addToStore('sueReportValues', { selectedPosition, serviceCode, ...getValues() });
+  };
+
+  const readReportValuesFromStore = async () => {
+    const storedValues = await readFromStore('sueReportValues');
+
+    if (storedValues) {
+      setStoredValues(storedValues);
+      setServiceCode(storedValues.serviceCode);
+      setSelectedPosition(storedValues.selectedPosition);
+      setValue('city', storedValues.city);
+      setValue('description', storedValues.description);
+      setValue('email', storedValues.email);
+      setValue('firstName', storedValues.firstName);
+      setValue('houseNumber', storedValues.houseNumber);
+      setValue('images', storedValues.images);
+      setValue('lastName', storedValues.lastName);
+      setValue('phone', storedValues.phone);
+      setValue('street', storedValues.street);
+      setValue('termsOfService', storedValues.termsOfService);
+      setValue('title', storedValues.title);
+      setValue('zipCode', storedValues.zipCode);
+    }
+  };
+
+  const resetStoredValues = async () => {
+    await AsyncStorage.removeItem('sueReportValues');
+    setStoredValues(undefined);
+    setServiceCode(undefined);
+    setSelectedPosition(undefined);
+    reset();
+    scrollViewRef?.current?.scrollTo({
+      x: 0,
+      y: 0,
+      animated: true
+    });
+    setCurrentProgress(0);
+  };
+
+  const handleNextPage = async () => {
     if (alertTextGeneratorForMissingData()) {
       return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
     }
+
+    storeReportValues();
 
     if (currentProgress < data.length - 1) {
       setCurrentProgress(currentProgress + 1);
@@ -224,6 +284,39 @@ export const SueReportScreen = ({ navigation }: { navigation: any }) => {
       });
     }
   };
+
+  useLayoutEffect(() => {
+    if (storedValues) {
+      navigation.setOptions({
+        headerRight: () => (
+          <HeaderRight
+            {...{
+              onPress: () =>
+                Alert.alert(
+                  texts.sue.report.alerts.dataDeleteAlert.title,
+                  texts.sue.report.alerts.dataDeleteAlert.message,
+                  [
+                    { text: texts.sue.report.alerts.dataDeleteAlert.cancel },
+                    {
+                      text: texts.sue.report.alerts.dataDeleteAlert.ok,
+                      onPress: resetStoredValues,
+                      style: 'destructive'
+                    }
+                  ]
+                ),
+              navigation,
+              route,
+              withDelete: true
+            }}
+          />
+        )
+      });
+    } else {
+      navigation.setOptions({
+        headerRight: () => null
+      });
+    }
+  }, [storedValues, serviceCode, selectedPosition]);
 
   if (loading) {
     return (
