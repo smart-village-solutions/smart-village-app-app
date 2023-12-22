@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 
-import { colors, consts, Icon, normalize } from '../config';
+import { colors, consts, Icon } from '../config';
 
 const { a11yLabel } = consts;
 
@@ -16,6 +16,6 @@ export const DeleteHeader = ({ onPress, style }: Props) => (
     accessibilityLabel={a11yLabel.editIcon}
     accessibilityHint={a11yLabel.editHint}
   >
-    <Icon.Trash color={colors.lightestText} style={style} size={normalize(22)} />
+    <Icon.Trash color={colors.lightestText} style={style} />
   </TouchableOpacity>
 );

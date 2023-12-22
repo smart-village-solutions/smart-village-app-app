@@ -13,6 +13,7 @@ type OptionProps = {
 
 type OptionConfig = {
   withBookmark?: boolean;
+  withDelete?: boolean;
   withDrawer?: boolean;
   withFavorites?: boolean;
   withShare?: boolean;
@@ -23,6 +24,7 @@ type OptionConfig = {
 export const getScreenOptions =
   ({
     withBookmark,
+    withDelete,
     withDrawer,
     withFavorites,
     withShare,
@@ -35,6 +37,7 @@ export const getScreenOptions =
       // https://stackoverflow.com/questions/44924323/react-navigation-gradient-color-for-header
       headerBackground: () => <DiagonalGradient />,
       headerTitleStyle: styles.headerTitleStyle,
+      headerTitleAlign: 'center',
       headerTitleContainerStyle: styles.headerTitleContainerStyle,
       headerRight: () => (
         <HeaderRight
@@ -43,6 +46,7 @@ export const getScreenOptions =
             route,
             shareContent: route.params?.shareContent,
             withBookmark,
+            withDelete,
             withDrawer,
             withShare
           }}
@@ -67,7 +71,6 @@ const styles = StyleSheet.create({
     lineHeight: normalize(29)
   },
   headerTitleContainerStyle: {
-    flex: 500,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center'
