@@ -25,7 +25,7 @@
       "infoPlist": {
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
-        "NSLocationWhenInUseUsageDescription": "Diese App nutzt die Standortbestimmung um Ihre aktuelle Position auf der Karte darzustellen.",
+        "NSLocationWhenInUseUsageDescription": "Diese App kann die Standortbestimmung nutzen, um Ihre aktuelle Position auf der Karte darzustellen und Inhalte nach Entfernung zu sortieren.",
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE",
         "LSApplicationQueriesSchemes": ["whatsapp"]
