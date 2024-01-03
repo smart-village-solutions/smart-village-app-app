@@ -60,6 +60,7 @@ import {
   VolunteerRegisteredScreen,
   VolunteerRegistrationScreen,
   VolunteerSignupScreen,
+  VoucherHome,
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
@@ -414,6 +415,11 @@ export const defaultStackConfig = ({
       routeName: ScreenName.VolunteerSignup,
       screenComponent: VolunteerSignupScreen,
       screenOptions: { title: texts.screenTitles.volunteer.home }
+    },
+    {
+      routeName: ScreenName.VoucherHome,
+      screenComponent: VoucherHome,
+      screenOptions: { title: texts.screenTitles.voucher.home }
     },
     {
       routeName: ScreenName.WasteCollection,

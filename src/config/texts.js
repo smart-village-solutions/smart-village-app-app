@@ -822,6 +822,9 @@ export const texts = {
       personal: 'Mein Bereich',
       tasks: 'Meine Aufgaben'
     },
+    voucher: {
+      home: 'Treue Club'
+    },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
   },
