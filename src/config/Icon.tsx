@@ -44,7 +44,8 @@ import {
   unvisible,
   url,
   verifiedBadge,
-  visible
+  visible,
+  voucher
 } from '../icons';
 
 import { colors } from './colors';
@@ -186,5 +187,6 @@ export const Icon = {
       name={device.platform === 'ios' ? 'ios-people-circle' : 'md-people-circle'}
       {...props}
     />
-  )
+  ),
+  Voucher: (props: IconProps) => <SvgIcon xml={voucher} {...props} />
 };
