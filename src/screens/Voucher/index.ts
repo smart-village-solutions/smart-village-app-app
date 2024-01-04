@@ -1,1 +1,2 @@
-export * from './VoucherHome';
+export * from './VoucherHomeScreen';
+export * from './VoucherIndexScreen';

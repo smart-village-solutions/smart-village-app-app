@@ -823,7 +823,8 @@ export const texts = {
       tasks: 'Meine Aufgaben'
     },
     voucher: {
-      home: 'Treue Club'
+      home: 'Treue Club',
+      index: 'Neue Angebote'
     },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
