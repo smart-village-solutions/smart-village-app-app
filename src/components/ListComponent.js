@@ -9,6 +9,7 @@ import { CategoryList } from './CategoryList';
 import { EventList } from './EventList';
 import { HorizontalList } from './HorizontalList';
 import { VerticalList } from './VerticalList';
+import { VouchersList } from './vouchers';
 
 const { LIST_TYPES } = consts;
 
@@ -36,6 +37,8 @@ const getComponent = (query, horizontal, sectionByDate) => {
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL:
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY:
       return sectionByDate ? EventList : VerticalList;
+    case QUERY_TYPES.VOUCHERS:
+      return VouchersList;
     default:
       return VerticalList;
   }

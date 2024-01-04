@@ -105,6 +105,7 @@ export const BookmarkScreen = ({ navigation }) => {
         {getSection(QUERY_TYPES.POINTS_OF_INTEREST, categoryTitlesPointsOfInterest)}
         {getSection(QUERY_TYPES.TOURS, categoryTitlesTours)}
         {getSection(QUERY_TYPES.EVENT_RECORDS, texts.homeTitles.events)}
+        {getSection(QUERY_TYPES.VOUCHERS, '')}
         {getSection(
           QUERY_TYPES.GENERIC_ITEMS,
           getGenericItemSectionTitle(GenericType.Commercial),

@@ -1,5 +1,6 @@
 export * from './encounter';
 export * from './volunteer';
+export * from './voucher';
 
 export * from './Accessibility';
 export * from './Address';

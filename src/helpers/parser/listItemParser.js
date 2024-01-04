@@ -316,6 +316,23 @@ const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned, cu
 };
 /* eslint-enable complexity */
 
+const parseVouchers = (data, skipLastDivider, withDate) => {
+  return data?.map((voucher, index) => ({
+    routeName: ScreenName.Detail,
+    params: {
+      query: QUERY_TYPES.VOUCHER,
+      queryVariables: { id: `${voucher.id}` },
+      title: voucher.title,
+      rootRouteName: ROOT_ROUTE_NAMES.VOUCHER,
+      details: voucher
+    },
+    // TODO: update subtitle
+    subtitle: 'Test',
+    ...voucher,
+    bottomDivider: !skipLastDivider || index !== data.length - 1
+  }));
+};
+
 const querySwitcherForDetail = (query) => {
   switch (query) {
     case QUERY_TYPES.CONSUL.DEBATES:
@@ -442,6 +459,8 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       );
     case QUERY_TYPES.VOLUNTEER.PROFILE:
       return parseVolunteers(data, query, skipLastDivider);
+    case QUERY_TYPES.VOUCHERS:
+      return parseVouchers(data[query], skipLastDivider, withDate);
     case QUERY_TYPES.CONSUL.DEBATES:
     case QUERY_TYPES.CONSUL.PROPOSALS:
     case QUERY_TYPES.CONSUL.POLLS:
