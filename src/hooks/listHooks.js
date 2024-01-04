@@ -3,7 +3,7 @@ import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
 
 import { SettingsContext } from '../SettingsProvider';
-import { SectionHeader } from '../components';
+import { SectionHeader, VoucherListItem } from '../components';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
@@ -39,6 +39,23 @@ const EventSectionHeader = ({ item, navigation, options, query }) => (
         },
         rootRouteName: ROOT_ROUTE_NAMES.EVENT_RECORDS,
         showFilterByDailyEvents: false
+      })
+    }
+  />
+);
+
+const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
+  <SectionHeader
+    title={item}
+    onPress={() =>
+      navigation.push(ScreenName.VoucherIndex, {
+        title: texts.homeTitles.events,
+        query,
+        queryVariables: {
+          ...options.queryVariables,
+          category: item
+        },
+        rootRouteName: ROOT_ROUTE_NAMES.VOUCHER
       })
     }
   />
@@ -167,6 +184,14 @@ export const useRenderItem = (query, navigation, options = {}) => {
               navigation={navigation}
             />
           );
+        }
+
+        if (query === QUERY_TYPES.VOUCHERS) {
+          if (typeof item === 'string') {
+            return <VoucherCategoryHeader {...{ item, navigation, options, query }} />;
+          }
+
+          return <VoucherListItem navigation={navigation} item={item} />;
         }
 
         // `SectionHeader` list item for `EventList`
