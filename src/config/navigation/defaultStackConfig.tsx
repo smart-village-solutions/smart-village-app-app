@@ -60,6 +60,7 @@ import {
   VolunteerRegisteredScreen,
   VolunteerRegistrationScreen,
   VolunteerSignupScreen,
+  VoucherDetailScreen,
   VoucherHomeScreen,
   VoucherIndexScreen,
   WasteCollectionScreen,
@@ -416,6 +417,11 @@ export const defaultStackConfig = ({
       routeName: ScreenName.VolunteerSignup,
       screenComponent: VolunteerSignupScreen,
       screenOptions: { title: texts.screenTitles.volunteer.home }
+    },
+    {
+      routeName: ScreenName.VoucherDetail,
+      screenComponent: VoucherDetailScreen,
+      screenOptions: getScreenOptions({ withBookmark: false })
     },
     {
       routeName: ScreenName.VoucherHome,
