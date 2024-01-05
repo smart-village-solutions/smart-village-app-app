@@ -1130,6 +1130,16 @@ export const texts = {
     xmpp: 'xmpp',
     youtube: 'Youtube'
   },
+  voucher: {
+    detailScreen: {
+      daily: 'pro Taeglich',
+      monthly: 'pro Monatlich',
+      once: 'einmalig',
+      quarterly: 'pro Quartalsweise',
+      weekly: 'pro Wöchentlich',
+      yearly: 'pro Jährlich'
+    }
+  },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',
     errorOnUpdateBody: 'Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.',

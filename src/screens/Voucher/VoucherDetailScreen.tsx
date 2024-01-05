@@ -12,11 +12,10 @@ import {
   VoucherRedeem,
   Wrapper
 } from '../../components';
-import { colors } from '../../config';
+import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { TVoucherContentBlock } from '../../types';
-
 
 export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -44,6 +43,7 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
   }
 
   const { contentBlocks, discountType, quota } = data[query];
+  const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota;
 
   return (
     <ScrollView
@@ -57,6 +57,17 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
       }
     >
       <Wrapper>
+        {!!quota &&
+          (maxQuantity ? (
+            <BoldText small primary>
+              Limitiert: {availableQuantity}/{maxQuantity} verfügbar
+            </BoldText>
+          ) : (
+            <BoldText small primary>
+              {maxPerPerson}x pro Person {texts.voucher.detailScreen[frequency]} einlösbar
+            </BoldText>
+          ))}
+
         {!!discountType && (
           <Discount discount={discountType} query={QUERY_TYPES.VOUCHERS} id={queryVariables.id} />
         )}
