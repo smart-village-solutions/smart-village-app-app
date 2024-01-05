@@ -25,9 +25,11 @@ export const VoucherWidget = ({ text }: WidgetProps) => {
     skip: !refreshTime
   });
 
-  // TODO: add redirection to Voucher IndexScreen
   const onPress = useCallback(() => {
-    navigation.navigate(ScreenName.VoucherHome);
+    navigation.navigate(ScreenName.VoucherIndex, {
+      query: QUERY_TYPES.VOUCHERS,
+      title: texts.screenTitles.voucher.index
+    });
   }, [navigation, text]);
 
   const count = data?.vouchers?.length || 0;
