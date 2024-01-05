@@ -66,11 +66,17 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
       query={query}
       data={listItems}
       fetchMoreData={fetchMoreData}
-      // TODO: replace with dropdown filter here
+      // TODO: replace with dropdown filter & login component here
       ListHeaderComponent={
-        <Wrapper>
-          <RegularText>Add dropdown Filter Here</RegularText>
-        </Wrapper>
+        <>
+          <Wrapper>
+            <RegularText>Add dropdown Filter Here</RegularText>
+          </Wrapper>
+
+          <Wrapper>
+            <RegularText>Add dropdown login component here</RegularText>
+          </Wrapper>
+        </>
       }
       ListEmptyComponent={
         loading ? (
