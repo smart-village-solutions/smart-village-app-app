@@ -72,6 +72,15 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
           <Discount discount={discountType} query={QUERY_TYPES.VOUCHERS} id={queryVariables.id} />
         )}
       </Wrapper>
+
+      {!!contentBlocks?.length &&
+        contentBlocks.map((item: TVoucherContentBlock, index: number) => (
+          <Wrapper key={index}>
+            {!!item.title && <BoldText>{item.title}</BoldText>}
+
+            {!!item.body && <HtmlView html={item.body} />}
+          </Wrapper>
+        ))}
     </ScrollView>
   );
 };
