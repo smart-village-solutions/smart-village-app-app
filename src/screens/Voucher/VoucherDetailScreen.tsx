@@ -81,6 +81,10 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
             {!!item.body && <HtmlView html={item.body} />}
           </Wrapper>
         ))}
+
+      <Wrapper>
+        <VoucherRedeem quota={quota} />
+      </Wrapper>
     </ScrollView>
   );
 };

@@ -1132,10 +1132,25 @@ export const texts = {
   },
   voucher: {
     detailScreen: {
+      cancel: 'Abbrechen',
+      checkboxLabel: 'Ja, ich habe die Konditionen verstanden.',
+      close: 'Schließen',
       daily: 'pro Taeglich',
+      desiredQuantity: 'Gewünschte Anzahl',
       monthly: 'pro Monatlich',
       once: 'einmalig',
+      progressSubtitle: 'Minuten',
+      progressTitle: 'Der Coupon läuft ab in',
       quarterly: 'pro Quartalsweise',
+      redeem: 'Gutschein einlösen',
+      redeemDescription: 'Bitte zeigen Sie den Coupon beim Bezahlen vor.',
+      redeemErrorDescription: 'Dieser Coupon ist nur einmal einlösbar',
+      redeemErrorTitle: 'Fehler beim Einlösen',
+      redeemNow: 'Jetzt einlösen',
+      redeemTitle: 'Sie können den Gutschein nun verwenden',
+      sheetDescription:
+        'Sie haben nach Bestätigung 15 Minuten Zeit den automatisch erzeugten Coupon beimBezahlen vorzuzeigen. Nach 15 Minuten läuft der Coupon ab. Sie brauchen keinenInternetempfang um einen Coupon zu erstellen.',
+      sheetTitle: 'Möchten Sie de Gutschein einlösen?',
       weekly: 'pro Wöchentlich',
       yearly: 'pro Jährlich'
     }
