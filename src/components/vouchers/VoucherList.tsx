@@ -29,6 +29,7 @@ const sectionData = (data: TVoucherItem[]) => {
 
   const transformGroupedDataToArray = (groupedData) => {
     const resultArray = [];
+
     for (const category in groupedData) {
       resultArray.push(category);
       resultArray.push(...groupedData[category]);
