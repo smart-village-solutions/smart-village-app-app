@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 
 // TODO: memberId: 1 will be updated later. 1 will be replaced by the id of the logged in user
 export const GET_VOUCHERS = gql`
-  query Vouchers {
-    vouchers {
+  query Vouchers($limit: Int, $order: GenericItemOrder) {
+    vouchers(limit: $limit, order: $order) {
       id
       title
       categories {

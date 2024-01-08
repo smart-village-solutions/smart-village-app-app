@@ -175,6 +175,7 @@ export const consts = {
     POINTS_OF_INTEREST_AND_TOURS: 'PointsOfInterestAndTours',
     POINTS_OF_INTEREST: 'PointsOfInterest',
     TOURS: 'Tours',
+    VOUCHER: 'Voucher',
     VOLUNTEER: 'Volunteer',
     CONSOLE_HOME: 'ConsulHome'
   }

@@ -3,7 +3,6 @@ import React, { useCallback } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import {
-  Button,
   HtmlView,
   Image,
   LoadingSpinner,
@@ -14,7 +13,7 @@ import {
 import { colors } from '../../config';
 import { useStaticContent } from '../../hooks';
 
-export const VoucherHome = ({ route }: StackScreenProps<any>) => {
+export const VoucherHomeScreen = ({ route }: StackScreenProps<any>) => {
   const imageUri = route?.params?.headerImage;
 
   const {
