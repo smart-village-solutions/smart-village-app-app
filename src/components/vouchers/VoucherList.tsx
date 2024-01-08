@@ -12,8 +12,9 @@ const keyExtractor = (item: TVoucherItem, index: number) => `index${index}-id${i
 const MAX_INITIAL_NUM_TO_RENDER = 15;
 
 const sectionData = (data: TVoucherItem[]) => {
-  const groupDataByCategory = (data) => {
+  const groupDataByCategory = (data: TVoucherItem[]) => {
     const grouped = {};
+
     data.forEach((item: TVoucherItem) => {
       if (item.categories?.length) {
         if (!grouped[item.categories[0].name]) {
@@ -22,6 +23,7 @@ const sectionData = (data: TVoucherItem[]) => {
         grouped[item.categories[0].name].push(item);
       }
     });
+
     return grouped;
   };
 
@@ -31,14 +33,16 @@ const sectionData = (data: TVoucherItem[]) => {
       resultArray.push(category);
       resultArray.push(...groupedData[category]);
     }
+
     return resultArray;
   };
 
   const groupedByCategory = groupDataByCategory(data);
+
   return transformGroupedDataToArray(groupedByCategory);
 };
 
-export const VouchersList = ({
+export const VoucherList = ({
   data,
   fetchMoreData,
   ListEmptyComponent,
