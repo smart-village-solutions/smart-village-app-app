@@ -10,6 +10,7 @@ import { TVoucherItem } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
+import { WrapperRow } from '../Wrapper';
 
 import { Discount } from './Discount';
 
@@ -43,7 +44,7 @@ export const VoucherListItem = memo(
               source={{ uri: image.uri }}
               style={stylesWithProps({ horizontal }).image}
               containerStyle={styles.imageContainer}
-              borderRadius={5}
+              borderRadius={normalize(5)}
             />
           )}
 
@@ -51,17 +52,15 @@ export const VoucherListItem = memo(
             <Discount discount={discountType} query={QUERY_TYPES.VOUCHERS} id={id} />
           )}
 
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-          >
+          <WrapperRow spaceBetween style={styles.centeredItems}>
             <View>
               {!!title && <BoldText small>{title}</BoldText>}
 
               {!!subtitle && <RegularText small>{subtitle}</RegularText>}
             </View>
 
-            <Icon.ArrowRight color={colors.darkText} size={normalize(24)} />
-          </View>
+            <Icon.ArrowRight color={colors.darkText} />
+          </WrapperRow>
         </Card>
       </Touchable>
     );
@@ -69,6 +68,9 @@ export const VoucherListItem = memo(
 );
 
 const styles = StyleSheet.create({
+  centeredItems: {
+    alignItems: 'center'
+  },
   container: {
     backgroundColor: colors.transparent,
     borderWidth: 0,

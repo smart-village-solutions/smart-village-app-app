@@ -43,7 +43,7 @@ export const Discount = ({
         <RegularText lineThrough lighter>
           {originalPrice} €
         </RegularText>
-        <RegularText primary> - {discountAmount} €</RegularText>
+        <RegularText primary> -{discountAmount} €</RegularText>
       </View>
 
       <TouchableOpacity

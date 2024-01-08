@@ -49,7 +49,7 @@ const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
     title={item}
     onPress={() =>
       navigation.push(ScreenName.VoucherIndex, {
-        title: texts.homeTitles.events,
+        title: texts.screenTitles.voucher.index,
         query,
         queryVariables: {
           ...options.queryVariables,
