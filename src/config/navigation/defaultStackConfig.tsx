@@ -62,6 +62,7 @@ import {
   VolunteerSignupScreen,
   VoucherHomeScreen,
   VoucherIndexScreen,
+  VoucherLoginScreen,
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
@@ -425,6 +426,11 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.VoucherIndex,
       screenComponent: VoucherIndexScreen
+    },
+    {
+      routeName: ScreenName.VoucherLogin,
+      screenComponent: VoucherLoginScreen,
+      screenOptions: { title: texts.screenTitles.voucher.home }
     },
     {
       routeName: ScreenName.WasteCollection,

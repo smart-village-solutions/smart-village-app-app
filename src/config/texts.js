@@ -1130,6 +1130,15 @@ export const texts = {
     xmpp: 'xmpp',
     youtube: 'Youtube'
   },
+  voucher: {
+    abort: 'Abbrechen',
+    key: 'Nachname',
+    login: 'Anmelden',
+    loginFailedTitle: 'Fehler bei der Anmeldung',
+    loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    loginTitle: 'Anmelden',
+    secret: 'Kundennummer'
+  },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',
     errorOnUpdateBody: 'Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.',

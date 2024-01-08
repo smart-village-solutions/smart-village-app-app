@@ -21,3 +21,4 @@ export * from './TimeHooks';
 export * from './staticContent';
 export * from './surveyHooks';
 export * from './waterTemperature';
+export * from './voucherHooks';
