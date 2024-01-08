@@ -40,3 +40,4 @@ export * from './unvisible';
 export * from './url';
 export * from './verifiedBadge';
 export * from './visible';
+export * from './voucher';
