@@ -9,6 +9,7 @@ import {
   Discount,
   HtmlView,
   LoadingSpinner,
+  RegularText,
   VoucherRedeem,
   Wrapper
 } from '../../components';
@@ -58,7 +59,16 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     >
       <Wrapper>
         {!!quota &&
-          (maxQuantity ? (
+          (maxQuantity && frequency ? (
+            <>
+              <BoldText small primary>
+                Limitiert: {availableQuantity}/{maxQuantity} verfügbar
+              </BoldText>
+              <RegularText small primary>
+                {maxPerPerson}x pro Person {texts.voucher.detailScreen[frequency]} einlösbar
+              </RegularText>
+            </>
+          ) : maxQuantity ? (
             <BoldText small primary>
               Limitiert: {availableQuantity}/{maxQuantity} verfügbar
             </BoldText>
