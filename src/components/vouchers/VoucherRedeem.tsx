@@ -174,7 +174,7 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
                             }
                           }}
                         >
-                          <BoldText lightest>-</BoldText>
+                          <BoldText lightest>－</BoldText>
                         </TouchableOpacity>
                         <BoldText lightest>{quantity}</BoldText>
                         <TouchableOpacity
@@ -185,7 +185,7 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
                             }
                           }}
                         >
-                          <BoldText lightest>+</BoldText>
+                          <BoldText lightest>＋</BoldText>
                         </TouchableOpacity>
                       </View>
                     </WrapperRow>
