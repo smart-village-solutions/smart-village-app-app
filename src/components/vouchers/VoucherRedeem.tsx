@@ -3,12 +3,12 @@ import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
 import { Icon, colors, normalize, texts } from '../../config';
+import { TQuota } from '../../types';
 import { Button } from '../Button';
+import { Checkbox } from '../Checkbox';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { Wrapper, WrapperRow } from '../Wrapper';
-import { Checkbox } from '../Checkbox';
-import { TQuota } from '../../types';
+import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
 
 const defaultTime = 15 * 60; // 15 * 60 sec.
 
@@ -49,11 +49,16 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
       {/* TODO: button availability will be adjusted according to voucher availability */}
       <Button title={texts.voucher.detailScreen.redeem} onPress={() => setIsVisible(true)} />
 
-      <Modal animationType="slide" transparent visible={isVisible}>
+      <Modal
+        animationType="slide"
+        transparent
+        visible={isVisible}
+        supportedOrientations={['landscape', 'portrait']}
+      >
         <View style={styles.sheetBackgroundContainer}>
           <View style={styles.sheetContainer}>
             {isExpiredVoucher ? (
-              <>
+              <WrapperVertical>
                 <Wrapper>
                   <BoldText lightest>{texts.voucher.detailScreen.redeemErrorTitle}</BoldText>
                 </Wrapper>
@@ -65,7 +70,7 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
                   </RegularText>
                 </Wrapper>
 
-                <Wrapper>
+                <Wrapper style={styles.noPaddingBottom}>
                   <Touchable
                     onPress={() => {
                       setIsVisible(false);
@@ -79,9 +84,9 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
                     </BoldText>
                   </Touchable>
                 </Wrapper>
-              </>
+              </WrapperVertical>
             ) : isRedeemVoucher ? (
-              <>
+              <WrapperVertical>
                 <Wrapper>
                   <BoldText lightest>{texts.voucher.detailScreen.redeemTitle}</BoldText>
                 </Wrapper>
@@ -115,7 +120,7 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
                   />
                 </Wrapper>
 
-                <Wrapper>
+                <Wrapper style={styles.noPaddingBottom}>
                   <Touchable
                     onPress={() => {
                       setIsVisible(false);
@@ -128,9 +133,9 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
                     </BoldText>
                   </Touchable>
                 </Wrapper>
-              </>
+              </WrapperVertical>
             ) : (
-              <>
+              <WrapperVertical>
                 <Wrapper>
                   <BoldText lightest>{texts.voucher.detailScreen.sheetTitle}</BoldText>
                 </Wrapper>
@@ -155,7 +160,7 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
 
                 {!!maxPerPerson && maxPerPerson > 1 && (
                   <Wrapper style={styles.noPaddingTop}>
-                    <View style={styles.quantityContainer}>
+                    <WrapperRow style={styles.quantityContainer}>
                       <RegularText lightest small>
                         {texts.voucher.detailScreen.desiredQuantity}:
                       </RegularText>
@@ -183,11 +188,11 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
                           <BoldText lightest>+</BoldText>
                         </TouchableOpacity>
                       </View>
-                    </View>
+                    </WrapperRow>
                   </Wrapper>
                 )}
 
-                <Wrapper>
+                <Wrapper style={styles.noPaddingBottom}>
                   <TouchableOpacity
                     disabled={!isChecked}
                     style={[styles.button, !isChecked && styles.buttonDisabled]}
@@ -206,7 +211,7 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
                     <BoldText lightest>{texts.voucher.detailScreen.cancel}</BoldText>
                   </TouchableOpacity>
                 </Wrapper>
-              </>
+              </WrapperVertical>
             )}
           </View>
         </View>
@@ -216,9 +221,6 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
   button: {
     alignItems: 'center',
     backgroundColor: colors.primary,
@@ -245,6 +247,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: normalize(45),
     paddingTop: 0
+  },
+  noPaddingBottom: {
+    paddingBottom: 0
   },
   noPaddingTop: {
     paddingTop: 0
@@ -279,8 +284,7 @@ const styles = StyleSheet.create({
     width: normalize(93)
   },
   quantityContainer: {
-    alignItems: 'center',
-    flexDirection: 'row'
+    alignItems: 'center'
   },
   sheetBackgroundContainer: {
     backgroundColor: colors.shadowRgba,
