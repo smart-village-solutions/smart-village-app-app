@@ -23,8 +23,12 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   const [refreshing, setRefreshing] = useState(false);
 
   const query = route.params?.query ?? '';
+  const queryVariables = route.params?.queryVariables ?? {};
 
-  const { data, loading, fetchMore, refetch } = useQuery(getQuery(query), { fetchPolicy });
+  const { data, loading, fetchMore, refetch } = useQuery(getQuery(query), {
+    fetchPolicy,
+    variables: { limit: 20, order: 'createdAt_ASC', ...queryVariables }
+  });
 
   const listItems = useMemo(() => {
     return parseListItemsFromQuery(QUERY_TYPES.VOUCHERS, data, undefined, {

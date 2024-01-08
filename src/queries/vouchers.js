@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const GET_VOUCHERS = gql`
-  query Vouchers {
-    vouchers {
+  query Vouchers($limit: Int, $order: GenericItemOrder) {
+    vouchers(limit: $limit, order: $order) {
       id
       title
       categories {
