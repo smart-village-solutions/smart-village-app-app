@@ -62,19 +62,19 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
           (maxQuantity && frequency ? (
             <>
               <BoldText small primary>
-                Limitiert: {availableQuantity}/{maxQuantity} verfügbar
+                {texts.voucher.detailScreen.limit(availableQuantity, maxQuantity)}
               </BoldText>
               <RegularText small primary>
-                {maxPerPerson}x pro Person {texts.voucher.detailScreen[frequency]} einlösbar
+                {texts.voucher.detailScreen.frequency(maxPerPerson, frequency)}
               </RegularText>
             </>
           ) : maxQuantity ? (
             <BoldText small primary>
-              Limitiert: {availableQuantity}/{maxQuantity} verfügbar
+              {texts.voucher.detailScreen.limit(availableQuantity, maxQuantity)}
             </BoldText>
           ) : (
             <BoldText small primary>
-              {maxPerPerson}x pro Person {texts.voucher.detailScreen[frequency]} einlösbar
+              {texts.voucher.detailScreen.frequency(maxPerPerson, frequency)}
             </BoldText>
           ))}
 

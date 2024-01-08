@@ -50,7 +50,7 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
       <Button title={texts.voucher.detailScreen.redeem} onPress={() => setIsVisible(true)} />
 
       <Modal
-        animationType="slide"
+        animationType="none"
         transparent
         visible={isVisible}
         supportedOrientations={['landscape', 'portrait']}
