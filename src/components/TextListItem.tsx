@@ -16,6 +16,7 @@ export type ItemData = {
   id: string;
   badge?: { value: string; textStyle: { color: string } };
   bottomDivider?: boolean;
+  count?: number;
   leftIcon?: React.ReactElement;
   onPress?: (navigation: any) => void;
   params: Record<string, unknown>;
@@ -48,6 +49,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
   const {
     badge,
     bottomDivider,
+    count,
     leftIcon,
     onPress,
     params,
@@ -144,6 +146,8 @@ export const TextListItem: NamedExoticComponent<Props> & {
             containerStyle={styles.smallImageContainer}
           />
         ) : undefined)}
+
+      {!!count && <BoldText>{count}</BoldText>}
 
       {!!navigation && !withCard && (
         <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
