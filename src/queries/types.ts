@@ -75,6 +75,7 @@ export const QUERY_TYPES = {
     USERS: 'volunteerUsers'
   } as const,
   VOUCHERS: 'vouchers',
+  VOUCHERS_CATEGORIES: 'vouchersCategories',
   VOUCHER: 'voucher',
   WASTE_ADDRESSES: 'wasteAddresses',
   WASTE_STREET: 'wasteStreet',
