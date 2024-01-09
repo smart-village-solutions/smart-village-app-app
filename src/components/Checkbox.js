@@ -16,6 +16,7 @@ export const Checkbox = ({
   checked,
   checkedIcon,
   containerStyle,
+  lightest = false,
   link = undefined,
   linkDescription = undefined,
   onPress,
@@ -43,9 +44,13 @@ export const Checkbox = ({
       title={
         <WrapperHorizontal>
           {boldTitle ? (
-            <BoldText small>{title}</BoldText>
+            <BoldText small lightest={lightest}>
+              {title}
+            </BoldText>
           ) : (
-            <RegularText small>{title}</RegularText>
+            <RegularText small lightest={lightest}>
+              {title}
+            </RegularText>
           )}
           {link && (
             <RegularText small primary onPress={openWebScreen}>
@@ -94,6 +99,7 @@ Checkbox.propTypes = {
   checkedIcon: PropTypes.string,
   containerStyle: PropTypes.object,
   disabled: PropTypes.bool,
+  lightest: PropTypes.bool,
   link: PropTypes.string,
   linkDescription: PropTypes.string,
   onPress: PropTypes.func.isRequired,

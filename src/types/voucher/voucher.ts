@@ -35,7 +35,7 @@ type TVoucherDates = {
   timeStart: string;
 };
 
-type TVoucherContentBlock = {
+export type TVoucherContentBlock = {
   body: string;
   intro: string;
   title: string;

@@ -1,3 +1,4 @@
 export * from './Discount';
-export * from './VoucherListItem';
 export * from './VoucherList';
+export * from './VoucherListItem';
+export * from './VoucherRedeem';

@@ -1130,6 +1130,35 @@ export const texts = {
     xmpp: 'xmpp',
     youtube: 'Youtube'
   },
+  voucher: {
+    detailScreen: {
+      cancel: 'Abbrechen',
+      checkboxLabel: 'Ja, ich habe die Konditionen verstanden.',
+      close: 'Schließen',
+      daily: 'pro Tag',
+      desiredQuantity: 'Gewünschte Anzahl',
+      frequency: (maxPerPerson, frequency) =>
+        `${maxPerPerson}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
+      limit: (availableQuantity, maxQuantity) =>
+        `Limitiert: ${availableQuantity}/${maxQuantity} verfügbar`,
+      monthly: 'pro Monat',
+      once: 'einmalig',
+      progressSubtitle: 'Minuten',
+      progressTitle: 'Der Coupon läuft ab in',
+      quarterly: 'pro Quartal',
+      redeem: 'Gutschein einlösen',
+      redeemDescription: 'Bitte zeigen Sie den Coupon beim Bezahlen vor.',
+      redeemErrorDescription: 'Dieser Coupon ist nur einmal einlösbar',
+      redeemErrorTitle: 'Fehler beim Einlösen',
+      redeemNow: 'Jetzt einlösen',
+      redeemTitle: 'Sie können den Gutschein nun verwenden',
+      sheetDescription:
+        'Sie haben nach Bestätigung 15 Minuten Zeit den automatisch erzeugten Coupon beim Bezahlen vorzuzeigen. Nach 15 Minuten läuft der Coupon ab. Sie brauchen keinen Internetempfang um einen Coupon zu erstellen.',
+      sheetTitle: 'Möchten Sie den Gutschein einlösen?',
+      weekly: 'pro Woche',
+      yearly: 'pro Jahr'
+    }
+  },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',
     errorOnUpdateBody: 'Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.',

@@ -318,7 +318,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned, cu
 
 const parseVouchers = (data, skipLastDivider, withDate) => {
   return data?.map((voucher, index) => ({
-    routeName: ScreenName.Detail,
+    routeName: ScreenName.VoucherDetail,
     params: {
       query: QUERY_TYPES.VOUCHER,
       queryVariables: { id: `${voucher.id}` },
