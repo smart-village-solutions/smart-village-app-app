@@ -1157,7 +1157,8 @@ export const texts = {
       sheetTitle: 'Möchten Sie den Gutschein einlösen?',
       weekly: 'pro Woche',
       yearly: 'pro Jahr'
-    }
+    },
+    offersCategories: 'Angebote Kategorien'
   },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',
