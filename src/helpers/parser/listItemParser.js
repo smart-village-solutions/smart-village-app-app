@@ -316,7 +316,7 @@ const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned, cu
 };
 /* eslint-enable complexity */
 
-const parseVouchers = (data, skipLastDivider, withDate) => {
+const parseVouchers = (data, skipLastDivider) => {
   return data?.map((voucher, index) => ({
     routeName: ScreenName.VoucherDetail,
     params: {
@@ -329,6 +329,40 @@ const parseVouchers = (data, skipLastDivider, withDate) => {
     // TODO: update subtitle
     subtitle: 'Test',
     ...voucher,
+    bottomDivider: !skipLastDivider || index !== data.length - 1
+  }));
+};
+
+const parseVouchersCategories = (data, skipLastDivider) => {
+  const categoryCounts = {};
+
+  data.forEach((category) => {
+    category.categories.forEach((subCategory) => {
+      const categoryId = subCategory.id;
+      const categoryName = subCategory.name;
+
+      if (!categoryCounts[categoryId]) {
+        categoryCounts[categoryId] = {
+          name: categoryName,
+          count: 1
+        };
+      } else {
+        categoryCounts[categoryId].count += 1;
+      }
+    });
+  });
+
+  return Object.keys(categoryCounts).map((categoryId, index) => ({
+    id: categoryId,
+    title: categoryCounts[categoryId].name,
+    count: categoryCounts[categoryId].count,
+    routeName: ScreenName.VoucherIndex,
+    params: {
+      title: categoryCounts[categoryId].name,
+      query: QUERY_TYPES.VOUCHERS,
+      queryVariables: {},
+      rootRouteName: ROOT_ROUTE_NAMES.VOUCHER
+    },
     bottomDivider: !skipLastDivider || index !== data.length - 1
   }));
 };
@@ -460,7 +494,9 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.VOLUNTEER.PROFILE:
       return parseVolunteers(data, query, skipLastDivider);
     case QUERY_TYPES.VOUCHERS:
-      return parseVouchers(data[query], skipLastDivider, withDate);
+      return parseVouchers(data[query], skipLastDivider);
+    case QUERY_TYPES.VOUCHERS_CATEGORIES:
+      return parseVouchersCategories(data[QUERY_TYPES.VOUCHERS], skipLastDivider);
     case QUERY_TYPES.CONSUL.DEBATES:
     case QUERY_TYPES.CONSUL.PROPOSALS:
     case QUERY_TYPES.CONSUL.POLLS:

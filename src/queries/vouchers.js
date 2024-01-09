@@ -78,3 +78,14 @@ export const GET_VOUCHER = gql`
     }
   }
 `;
+
+export const GET_VOUCHERS_CATEGORIES = gql`
+  query Vouchers {
+    vouchers {
+      categories {
+        name
+        id
+      }
+    }
+  }
+`;

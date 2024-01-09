@@ -43,7 +43,7 @@ import {
   posts,
   user
 } from './volunteer';
-import { GET_VOUCHER, GET_VOUCHERS } from './vouchers';
+import { GET_VOUCHER, GET_VOUCHERS, GET_VOUCHERS_CATEGORIES } from './vouchers';
 import { WASTE_ADDRESSES, WASTE_STREET } from './waste';
 import { GET_WEATHER, GET_WEATHER_CURRENT } from './weather';
 
@@ -78,6 +78,7 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.WASTE_ADDRESSES]: WASTE_ADDRESSES,
     [QUERY_TYPES.WASTE_STREET]: WASTE_STREET,
     [QUERY_TYPES.VOUCHER]: GET_VOUCHER,
+    [QUERY_TYPES.VOUCHERS_CATEGORIES]: GET_VOUCHERS_CATEGORIES,
     [QUERY_TYPES.VOUCHERS]: GET_VOUCHERS,
     [QUERY_TYPES.WEATHER_MAP]: GET_WEATHER,
     [QUERY_TYPES.WEATHER_MAP_CURRENT]: GET_WEATHER_CURRENT,

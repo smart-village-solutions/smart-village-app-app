@@ -31,7 +31,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   });
 
   const listItems = useMemo(() => {
-    return parseListItemsFromQuery(QUERY_TYPES.VOUCHERS, data, undefined, {
+    return parseListItemsFromQuery(query, data, undefined, {
       withDate: false
     });
   }, [data, query]);
@@ -73,13 +73,17 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
       // TODO: replace with dropdown filter & login component here
       ListHeaderComponent={
         <>
-          <Wrapper>
-            <RegularText>Add dropdown Filter Here</RegularText>
-          </Wrapper>
+          {query === QUERY_TYPES.VOUCHERS && (
+            <>
+              <Wrapper>
+                <RegularText>Add dropdown Filter Here</RegularText>
+              </Wrapper>
 
-          <Wrapper>
-            <RegularText>Add dropdown login component here</RegularText>
-          </Wrapper>
+              <Wrapper>
+                <RegularText>Add dropdown login component here</RegularText>
+              </Wrapper>
+            </>
+          )}
         </>
       }
       ListEmptyComponent={
