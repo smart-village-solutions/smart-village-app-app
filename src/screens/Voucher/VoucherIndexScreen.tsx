@@ -24,6 +24,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
 
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
+  const showFilter = route.params?.showFilter ?? true;
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
@@ -68,6 +69,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     <ListComponent
       navigation={navigation}
       query={query}
+      queryVariables={queryVariables}
       data={listItems}
       fetchMoreData={fetchMoreData}
       // TODO: replace with dropdown filter & login component here
@@ -75,12 +77,14 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
         <>
           {query === QUERY_TYPES.VOUCHERS && (
             <>
-              <Wrapper>
-                <RegularText>Add dropdown Filter Here</RegularText>
-              </Wrapper>
+              {!!showFilter && (
+                <Wrapper>
+                  <RegularText>Add dropdown Filter Here</RegularText>
+                </Wrapper>
+              )}
 
               <Wrapper>
-                <RegularText>Add dropdown login component here</RegularText>
+                <RegularText>Add login component here</RegularText>
               </Wrapper>
             </>
           )}

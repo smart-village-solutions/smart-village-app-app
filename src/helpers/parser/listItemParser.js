@@ -358,10 +358,11 @@ const parseVouchersCategories = (data, skipLastDivider) => {
     count: categoryCounts[categoryId].count,
     routeName: ScreenName.VoucherIndex,
     params: {
-      title: categoryCounts[categoryId].name,
+      title: texts.voucher.offersCategories,
       query: QUERY_TYPES.VOUCHERS,
-      queryVariables: {},
-      rootRouteName: ROOT_ROUTE_NAMES.VOUCHER
+      queryVariables: { categoryId },
+      rootRouteName: ROOT_ROUTE_NAMES.VOUCHER,
+      showFilter: false
     },
     bottomDivider: !skipLastDivider || index !== data.length - 1
   }));
