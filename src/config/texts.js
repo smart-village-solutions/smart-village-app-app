@@ -1131,6 +1131,7 @@ export const texts = {
     youtube: 'Youtube'
   },
   voucher: {
+    abort: 'Abbrechen',
     detailScreen: {
       cancel: 'Abbrechen',
       checkboxLabel: 'Ja, ich habe die Konditionen verstanden.',
@@ -1158,7 +1159,14 @@ export const texts = {
       weekly: 'pro Woche',
       yearly: 'pro Jahr'
     },
-    offersCategories: 'Angebote Kategorien'
+
+    key: 'Nachname',
+    login: 'Anmelden',
+    loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    loginFailedTitle: 'Fehler bei der Anmeldung',
+    loginTitle: 'Anmelden',
+    offersCategories: 'Angebote Kategorien',
+    secret: 'Kundennummer'
   },
   wasteCalendar: {
     configureReminder: 'Erinnerungen einstellen',

@@ -1,8 +1,9 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import {
+  Button,
   HtmlView,
   Image,
   LoadingSpinner,
@@ -11,9 +12,12 @@ import {
   Wrapper
 } from '../../components';
 import { colors } from '../../config';
-import { useStaticContent } from '../../hooks';
+import { useStaticContent, useVoucher } from '../../hooks';
+import { ScreenName } from '../../types';
 
-export const VoucherHomeScreen = ({ route }: StackScreenProps<any>) => {
+export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { refresh, isLoggedIn } = useVoucher();
+
   const imageUri = route?.params?.headerImage;
 
   const {
@@ -25,6 +29,13 @@ export const VoucherHomeScreen = ({ route }: StackScreenProps<any>) => {
     name: 'voucherHomeText',
     type: 'html'
   });
+
+  const refreshAuth = useCallback(() => {
+    refresh();
+  }, [refresh]);
+
+  // refresh if the refreshAuth param changed, which happens after login
+  useEffect(refreshAuth, [route.params?.refreshAuth]);
 
   const refreshHome = useCallback(async () => {
     await refetchHomeText();
@@ -56,7 +67,14 @@ export const VoucherHomeScreen = ({ route }: StackScreenProps<any>) => {
           </Wrapper>
         )}
 
-        {/* TODO: add login button here */}
+        {!isLoggedIn && (
+          <Wrapper>
+            <Button
+              title="Zum Login"
+              onPress={() => navigation.navigate(ScreenName.VoucherLogin)}
+            />
+          </Wrapper>
+        )}
 
         <ServiceTiles staticJsonName="voucherHome" />
       </ScrollView>
@@ -67,8 +85,5 @@ export const VoucherHomeScreen = ({ route }: StackScreenProps<any>) => {
 const styles = StyleSheet.create({
   imageContainerStyle: {
     alignSelf: 'center'
-  },
-  noPaddingBottom: {
-    paddingBottom: 0
   }
 });
