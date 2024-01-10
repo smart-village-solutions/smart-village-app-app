@@ -4,6 +4,7 @@ import { namespace, secrets } from '../config';
 import { VoucherLogin } from '../types';
 
 // TODO: memberId: 1 will be updated later. 1 will be replaced by the id of the logged in user
+//       which we can receive via `readFromStore(VOUCHER_MEMBER_ID)`
 export const GET_VOUCHERS = gql`
   query GenericItems(
     $ids: [ID]

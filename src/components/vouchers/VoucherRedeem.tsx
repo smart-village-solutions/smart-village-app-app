@@ -4,7 +4,8 @@ import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
 import { Icon, colors, normalize, texts } from '../../config';
-import { voucherAuthToken } from '../../helpers/voucherHelper';
+import { addToStore, readFromStore } from '../../helpers';
+import { VOUCHER_MEMBER_ID, VOUCHER_TRANSACTIONS } from '../../helpers/voucherHelper';
 import { useVoucher } from '../../hooks';
 import { REDEEM_QUOTA_OF_VOUCHER } from '../../queries/vouchers';
 import { TQuota } from '../../types';
@@ -18,10 +19,9 @@ const defaultTime = 15 * 60; // 15 * 60 sec.
 
 export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: string }) => {
   const { isLoggedIn } = useVoucher();
-
   const [isVisible, setIsVisible] = useState(false);
   const [remainingTime, setRemainingTime] = useState(defaultTime);
-  const [isRedeemVoucher, setIsRedeemVoucher] = useState(false);
+  const [isRedeemingVoucher, setIsRedeemingVoucher] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
@@ -33,7 +33,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
   const [redeemQuotaOfVoucher] = useMutation(REDEEM_QUOTA_OF_VOUCHER);
 
   useEffect(() => {
-    if (isRedeemVoucher) {
+    if (isRedeemingVoucher) {
       const interval = setInterval(() => {
         if (remainingTime > 0) {
           setRemainingTime(remainingTime - 1);
@@ -47,26 +47,34 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
     } else {
       setRemainingTime(defaultTime);
     }
-  }, [remainingTime, isRedeemVoucher]);
+  }, [remainingTime, isRedeemingVoucher]);
 
   const minutes = Math.floor(remainingTime / 60);
   const seconds = remainingTime % 60;
 
   const redeemVoucher = async () => {
     try {
-      const storedVoucherAuthToken = await voucherAuthToken();
+      const storedVoucherMemberId = await readFromStore(VOUCHER_MEMBER_ID);
 
-      // TODO: change deviceToken
-      await redeemQuotaOfVoucher({
+      redeemQuotaOfVoucher({
         variables: {
-          voucherId,
-          memberId: storedVoucherAuthToken,
           quantity,
-          deviceToken: 'Test'
+          voucherId,
+          memberId: storedVoucherMemberId
         }
       });
 
-      setIsRedeemVoucher(true);
+      const voucherTransactions = (await readFromStore(VOUCHER_TRANSACTIONS)) || [];
+      const voucherTransaction = {
+        quantity,
+        voucherId,
+        memberId: storedVoucherMemberId,
+        createdAt: new Date().toISOString()
+      };
+
+      addToStore(VOUCHER_TRANSACTIONS, [...voucherTransactions, voucherTransaction]);
+
+      setIsRedeemingVoucher(true);
     } catch (error) {
       console.error(error);
     }
@@ -106,7 +114,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
                   <Touchable
                     onPress={() => {
                       setIsVisible(false);
-                      setIsRedeemVoucher(false);
+                      setIsRedeemingVoucher(false);
                       setIsExpiredVoucher(false);
                       setIsChecked(false);
                     }}
@@ -117,7 +125,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
                   </Touchable>
                 </Wrapper>
               </WrapperVertical>
-            ) : isRedeemVoucher ? (
+            ) : isRedeemingVoucher ? (
               <WrapperVertical>
                 <Wrapper>
                   <BoldText lightest>{texts.voucher.detailScreen.redeemTitle}</BoldText>
@@ -156,7 +164,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
                   <Touchable
                     onPress={() => {
                       setIsVisible(false);
-                      setIsRedeemVoucher(false);
+                      setIsRedeemingVoucher(false);
                       setIsChecked(false);
                     }}
                   >
