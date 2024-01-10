@@ -32,7 +32,7 @@ export const VoucherWidget = ({ text }: WidgetProps) => {
     });
   }, [navigation, text]);
 
-  const count = data?.vouchers?.length || 0;
+  const count = data?.genericItems?.length || 0;
 
   return (
     <DefaultWidget
