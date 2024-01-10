@@ -3,5 +3,6 @@ export enum GenericType {
   Deadline = 'Deadline',
   DefectReport = 'DefectReport',
   Job = 'Job',
-  Noticeboard = 'Noticeboard'
+  Noticeboard = 'Noticeboard',
+  Voucher = 'Voucher'
 }
