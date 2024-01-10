@@ -116,6 +116,26 @@ export const GET_VOUCHERS_CATEGORIES = gql`
   }
 `;
 
+export const REDEEM_QUOTA_OF_VOUCHER = gql`
+  mutation redeemQuotaOfVoucher(
+    $deviceToken: String!
+    $memberId: ID!
+    $quantity: Int!
+    $voucherId: ID!
+  ) {
+    redeemQuotaOfVoucher(
+      deviceToken: $deviceToken
+      memberId: $memberId
+      quantity: $quantity
+      voucherId: $voucherId
+    ) {
+      id
+      status
+      statusCode
+    }
+  }
+`;
+
 export const logIn = async ({ key, secret }: VoucherLogin) => {
   const fetchObj = {
     method: 'POST',

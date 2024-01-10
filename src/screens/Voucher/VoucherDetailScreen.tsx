@@ -43,7 +43,7 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     return <LoadingSpinner loading />;
   }
 
-  const { contentBlocks, discountType, quota } = data[QUERY_TYPES.GENERIC_ITEM];
+  const { contentBlocks, discountType, quota, id } = data[QUERY_TYPES.GENERIC_ITEM];
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota;
 
   return (
@@ -93,7 +93,7 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
         ))}
 
       <Wrapper>
-        <VoucherRedeem quota={quota} />
+        <VoucherRedeem quota={quota} voucherId={id} />
       </Wrapper>
     </ScrollView>
   );
