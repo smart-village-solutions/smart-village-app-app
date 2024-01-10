@@ -78,6 +78,9 @@ export const GET_POINTS_OF_INTEREST = gql`
         dateTo
         useYear
       }
+      vouchers {
+        id
+      }
       webUrls {
         id
         url
