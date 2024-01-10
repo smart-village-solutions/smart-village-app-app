@@ -1160,7 +1160,7 @@ export const texts = {
       yearly: 'pro Jahr'
     },
 
-    key: 'Nachname',
+    key: 'Nachname Vertragspartner',
     login: 'Anmelden',
     loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     loginFailedTitle: 'Fehler bei der Anmeldung',

@@ -1,12 +1,13 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, RefreshControl, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
   Button,
   DefaultKeyboardAvoidingView,
+  HtmlView,
   Input,
   LoadingModal,
   RegularText,
@@ -14,8 +15,9 @@ import {
   SectionHeader,
   Wrapper
 } from '../../components';
-import { texts } from '../../config';
+import { colors, texts } from '../../config';
 import { storeVoucherAuthToken } from '../../helpers/voucherHelper';
+import { useStaticContent } from '../../hooks';
 import { logIn } from '../../queries/vouchers';
 import { ScreenName, VoucherLogin } from '../../types';
 
@@ -36,6 +38,12 @@ export const VoucherLoginScreen = ({ navigation }: StackScreenProps<any>) => {
   });
 
   const { mutate: mutateLogIn, isLoading, isError, isSuccess, data, reset } = useMutation(logIn);
+
+  const { data: dataLoginText, refetch: refetchLoginText } = useStaticContent({
+    refreshTimeKey: 'publicHtmlFile-voucherLoginText',
+    name: 'voucherLoginText',
+    type: 'html'
+  });
 
   const onSubmit = (loginData: VoucherLogin) =>
     mutateLogIn(loginData, {
@@ -60,8 +68,24 @@ export const VoucherLoginScreen = ({ navigation }: StackScreenProps<any>) => {
   return (
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
-        <ScrollView keyboardShouldPersistTaps="handled">
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              onRefresh={refetchLoginText}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
+            />
+          }
+        >
           <SectionHeader title={texts.voucher.loginTitle} big />
+
+          {!!dataLoginText && (
+            <Wrapper style={styles.noPaddingBottom}>
+              <HtmlView html={dataLoginText} />
+            </Wrapper>
+          )}
 
           <Wrapper style={styles.noPaddingTop}>
             <Input
@@ -109,6 +133,9 @@ export const VoucherLoginScreen = ({ navigation }: StackScreenProps<any>) => {
 };
 
 const styles = StyleSheet.create({
+  noPaddingBottom: {
+    paddingBottom: 0
+  },
   noPaddingTop: {
     paddingTop: 0
   }
