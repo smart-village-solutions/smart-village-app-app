@@ -1,7 +1,5 @@
 export type TVoucherItem = {
-  categories: {
-    name: string;
-  }[];
+  categories: TCategory[];
   params: any;
   contentBlocks: TVoucherContentBlock[];
   dates: TVoucherDates[];
@@ -39,4 +37,9 @@ export type TVoucherContentBlock = {
   body: string;
   intro: string;
   title: string;
+};
+
+export type TCategory = {
+  name: string;
+  id: string;
 };

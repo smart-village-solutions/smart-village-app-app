@@ -8,6 +8,7 @@ import { NetworkContext } from '../../NetworkProvider';
 import {
   BoldText,
   Button,
+  DropdownHeader,
   EmptyMessage,
   ListComponent,
   LoadingSpinner,
@@ -21,6 +22,20 @@ import { useVoucher } from '../../hooks';
 import { QUERY_TYPES, getFetchMoreQuery, getQuery } from '../../queries';
 import { ScreenName } from '../../types';
 
+const getAdditionalQueryVariables = (selectedValue: string) => {
+  const additionalQueryVariables = {};
+
+  if (selectedValue) {
+    additionalQueryVariables['categoryId'] = selectedValue;
+  }
+
+  return additionalQueryVariables;
+};
+
+const hasFilterSelection = (queryVariables: any) => {
+  return !!Object.prototype.hasOwnProperty.call(queryVariables, 'categoryId');
+};
+
 /* eslint-disable complexity */
 export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { isLoggedIn } = useVoucher();
@@ -28,14 +43,19 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
   const [refreshing, setRefreshing] = useState(false);
+  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
 
   const query = route.params?.query ?? '';
-  const queryVariables = route.params?.queryVariables ?? {};
   const showFilter = route.params?.showFilter ?? true;
 
   const { data, loading, fetchMore, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
     variables: { limit: 20, order: 'createdAt_ASC', ...queryVariables }
+  });
+
+  const { data: vouchersCategories } = useQuery(getQuery(QUERY_TYPES.VOUCHERS_CATEGORIES), {
+    fetchPolicy,
+    skip: query !== QUERY_TYPES.VOUCHERS || !showFilter
   });
 
   const listItems = useMemo(() => {
@@ -68,6 +88,32 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     });
   };
 
+  const updateListDataByDropdown = useCallback(
+    (selectedValue: string) => {
+      if (selectedValue) {
+        setQueryVariables((prevQueryVariables: any) => {
+          // remove a refetch key if present, which was necessary for the "- Alle -" selection
+          delete prevQueryVariables.refetch;
+
+          return {
+            ...prevQueryVariables,
+            ...getAdditionalQueryVariables(selectedValue)
+          };
+        });
+      } else {
+        if (hasFilterSelection(queryVariables)) {
+          setQueryVariables((prevQueryVariables: any) => {
+            // remove the filter key for the specific query if present, when selecting "- Alle -"
+            delete prevQueryVariables['categoryId'];
+
+            return { ...prevQueryVariables, refetch: true };
+          });
+        }
+      }
+    },
+    [query, queryVariables]
+  );
+
   if (loading) {
     return <LoadingSpinner loading />;
   }
@@ -87,9 +133,14 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
           {query === QUERY_TYPES.VOUCHERS && (
             <>
               {!!showFilter && (
-                <Wrapper>
-                  <RegularText>Add dropdown Filter Here</RegularText>
-                </Wrapper>
+                <DropdownHeader
+                  {...{
+                    data: vouchersCategories?.[QUERY_TYPES.GENERIC_ITEMS],
+                    query,
+                    queryVariables,
+                    updateListData: updateListDataByDropdown
+                  }}
+                />
               )}
 
               {!isLoggedIn && (
@@ -109,7 +160,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
                 </Wrapper>
               )}
 
-              {count > 0 && !queryVariables.categoryId && (
+              {count > 0 && showFilter && (
                 <Wrapper style={styles.noPaddingTop}>
                   <BoldText>
                     {count} {count === 1 ? texts.voucher.result : texts.voucher.results}
