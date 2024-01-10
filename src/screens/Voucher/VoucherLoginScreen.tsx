@@ -15,9 +15,10 @@ import {
   Wrapper
 } from '../../components';
 import { texts } from '../../config';
-import { storeVoucherAuthToken } from '../../helpers/voucherHelper';
+import { VOUCHER_MEMBER_ID, storeVoucherAuthToken } from '../../helpers/voucherHelper';
 import { logIn } from '../../queries/vouchers';
 import { ScreenName, VoucherLogin } from '../../types';
+import { addToStore } from '../../helpers';
 
 const showLoginFailAlert = () =>
   Alert.alert(texts.voucher.loginFailedTitle, texts.voucher.loginFailedBody);
@@ -44,8 +45,9 @@ export const VoucherLoginScreen = ({ navigation }: StackScreenProps<any>) => {
           return;
         }
 
-        // save auth token to global state
+        // save auth token and member id to global state
         storeVoucherAuthToken(responseData.member.authentication_token);
+        addToStore(VOUCHER_MEMBER_ID, responseData.member.id);
 
         // refreshAuth param causes the home screen to update and no longer show the login button
         navigation.navigate(ScreenName.VoucherHome, { refreshAuth: new Date().valueOf() });
