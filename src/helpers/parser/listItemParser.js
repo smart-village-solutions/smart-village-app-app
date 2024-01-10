@@ -495,9 +495,9 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     case QUERY_TYPES.VOLUNTEER.PROFILE:
       return parseVolunteers(data, query, skipLastDivider);
     case QUERY_TYPES.VOUCHERS:
-      return parseVouchers(data[query], skipLastDivider);
+      return parseVouchers(data[QUERY_TYPES.GENERIC_ITEMS], skipLastDivider);
     case QUERY_TYPES.VOUCHERS_CATEGORIES:
-      return parseVouchersCategories(data[QUERY_TYPES.VOUCHERS], skipLastDivider);
+      return parseVouchersCategories(data[QUERY_TYPES.GENERIC_ITEMS], skipLastDivider);
     case QUERY_TYPES.CONSUL.DEBATES:
     case QUERY_TYPES.CONSUL.PROPOSALS:
     case QUERY_TYPES.CONSUL.POLLS:
