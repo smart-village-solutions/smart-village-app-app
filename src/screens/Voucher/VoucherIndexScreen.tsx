@@ -2,21 +2,28 @@ import { StackScreenProps } from '@react-navigation/stack';
 import _uniqBy from 'lodash/uniqBy';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { RefreshControl } from 'react-native';
+import { RefreshControl, StyleSheet } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import {
+  BoldText,
+  Button,
   EmptyMessage,
   ListComponent,
   LoadingSpinner,
   RegularText,
-  Wrapper
+  Wrapper,
+  WrapperVertical
 } from '../../components';
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
+import { useVoucher } from '../../hooks';
 import { QUERY_TYPES, getFetchMoreQuery, getQuery } from '../../queries';
+import { ScreenName } from '../../types';
 
+/* eslint-disable complexity */
 export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { isLoggedIn } = useVoucher();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
@@ -65,6 +72,8 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     return <LoadingSpinner loading />;
   }
 
+  const count = listItems?.length;
+
   return (
     <ListComponent
       navigation={navigation}
@@ -72,7 +81,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
       queryVariables={queryVariables}
       data={listItems}
       fetchMoreData={fetchMoreData}
-      // TODO: replace with dropdown filter & login component here
+      // TODO: replace with dropdown filter component here
       ListHeaderComponent={
         <>
           {query === QUERY_TYPES.VOUCHERS && (
@@ -83,9 +92,30 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
                 </Wrapper>
               )}
 
-              <Wrapper>
-                <RegularText>Add login component here</RegularText>
-              </Wrapper>
+              {!isLoggedIn && (
+                <Wrapper>
+                  <WrapperVertical>
+                    <BoldText>{texts.voucher.indexLoginTitle}</BoldText>
+                  </WrapperVertical>
+
+                  <WrapperVertical style={styles.noPaddingTop}>
+                    <RegularText>{texts.voucher.indexLoginDescription}</RegularText>
+                  </WrapperVertical>
+
+                  <Button
+                    title={texts.voucher.loginButton}
+                    onPress={() => navigation.navigate(ScreenName.VoucherLogin)}
+                  />
+                </Wrapper>
+              )}
+
+              {count > 0 && !queryVariables.categoryId && (
+                <Wrapper style={styles.noPaddingTop}>
+                  <BoldText>
+                    {count} {count === 1 ? texts.voucher.result : texts.voucher.results}
+                  </BoldText>
+                </Wrapper>
+              )}
             </>
           )}
         </>
@@ -109,3 +139,10 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     />
   );
 };
+/* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  noPaddingTop: {
+    paddingTop: 0
+  }
+});

@@ -11,7 +11,7 @@ import {
   ServiceTiles,
   Wrapper
 } from '../../components';
-import { colors } from '../../config';
+import { colors, texts } from '../../config';
 import { useStaticContent, useVoucher } from '../../hooks';
 import { ScreenName } from '../../types';
 
@@ -70,7 +70,7 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
         {!isLoggedIn && (
           <Wrapper>
             <Button
-              title="Zum Login"
+              title={texts.voucher.loginButton}
               onPress={() => navigation.navigate(ScreenName.VoucherLogin)}
             />
           </Wrapper>

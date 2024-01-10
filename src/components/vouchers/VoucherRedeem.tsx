@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useMutation } from 'react-apollo';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
 import { Icon, colors, normalize, texts } from '../../config';
+import { voucherAuthToken } from '../../helpers/voucherHelper';
+import { useVoucher } from '../../hooks';
+import { REDEEM_QUOTA_OF_VOUCHER } from '../../queries/vouchers';
 import { TQuota } from '../../types';
 import { Button } from '../Button';
 import { Checkbox } from '../Checkbox';
@@ -12,7 +16,9 @@ import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
 
 const defaultTime = 15 * 60; // 15 * 60 sec.
 
-export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
+export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: string }) => {
+  const { isLoggedIn } = useVoucher();
+
   const [isVisible, setIsVisible] = useState(false);
   const [remainingTime, setRemainingTime] = useState(defaultTime);
   const [isRedeemVoucher, setIsRedeemVoucher] = useState(false);
@@ -23,6 +29,8 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
   const [isExpiredVoucher, setIsExpiredVoucher] = useState(false);
 
   const { maxPerPerson } = quota;
+
+  const [redeemQuotaOfVoucher] = useMutation(REDEEM_QUOTA_OF_VOUCHER);
 
   useEffect(() => {
     if (isRedeemVoucher) {
@@ -44,10 +52,34 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
   const minutes = Math.floor(remainingTime / 60);
   const seconds = remainingTime % 60;
 
+  const redeemVoucher = async () => {
+    try {
+      const storedVoucherAuthToken = await voucherAuthToken();
+
+      // TODO: change deviceToken
+      await redeemQuotaOfVoucher({
+        variables: {
+          voucherId,
+          memberId: storedVoucherAuthToken,
+          quantity,
+          deviceToken: 'Test'
+        }
+      });
+
+      setIsRedeemVoucher(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       {/* TODO: button availability will be adjusted according to voucher availability */}
-      <Button title={texts.voucher.detailScreen.redeem} onPress={() => setIsVisible(true)} />
+      <Button
+        disabled={!isLoggedIn}
+        title={texts.voucher.detailScreen.redeem}
+        onPress={() => setIsVisible(true)}
+      />
 
       <Modal
         animationType="none"
@@ -196,7 +228,7 @@ export const VoucherRedeem = ({ quota }: { quota: TQuota }) => {
                   <TouchableOpacity
                     disabled={!isChecked}
                     style={[styles.button, !isChecked && styles.buttonDisabled]}
-                    onPress={() => setIsRedeemVoucher(true)}
+                    onPress={redeemVoucher}
                   >
                     <BoldText lightest>{texts.voucher.detailScreen.redeemNow}</BoldText>
                   </TouchableOpacity>

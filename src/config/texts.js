@@ -1159,13 +1159,18 @@ export const texts = {
       weekly: 'pro Woche',
       yearly: 'pro Jahr'
     },
-
+    indexLoginDescription:
+      'Um die Angebote einlösen zu können, melden Sie sich bitte in Ihrem Kundenkonto an. Voraussetzung ist ein aktiver Stromvertrag bei den Stadtwerken Detmold.',
+    indexLoginTitle: 'Bitte einloggen',
     key: 'Nachname',
     login: 'Anmelden',
+    loginButton: 'Zum Login',
     loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     loginFailedTitle: 'Fehler bei der Anmeldung',
     loginTitle: 'Anmelden',
     offersCategories: 'Angebote Kategorien',
+    result: 'Ergebnis',
+    results: 'Ergebnisse',
     secret: 'Kundennummer'
   },
   wasteCalendar: {
