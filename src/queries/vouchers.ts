@@ -5,12 +5,34 @@ import { VoucherLogin } from '../types';
 
 // TODO: memberId: 1 will be updated later. 1 will be replaced by the id of the logged in user
 export const GET_VOUCHERS = gql`
-  query Vouchers($limit: Int, $order: GenericItemOrder) {
-    vouchers(limit: $limit, order: $order) {
+  query GenericItems(
+    $ids: [ID]
+    $limit: Int
+    $offset: Int
+    $order: GenericItemOrder
+    $dataProvider: String
+    $categoryId: ID
+    $genericType: String
+  ) {
+    genericItems(
+      ids: $ids
+      limit: $limit
+      skip: $offset
+      order: $order
+      dataProvider: $dataProvider
+      categoryId: $categoryId
+      genericType: $genericType
+    ) {
+      id
+      updatedAt
+      createdAt
+      publishedAt
+      genericType
       id
       title
       categories {
         name
+        id
       }
       discountType {
         originalPrice
@@ -31,6 +53,8 @@ export const GET_VOUCHERS = gql`
         title
         intro
         body
+        updatedAt
+        createdAt
       }
       dates {
         id
@@ -44,8 +68,8 @@ export const GET_VOUCHERS = gql`
 `;
 
 export const GET_VOUCHER = gql`
-  query Voucher($id: ID!) {
-    voucher(id: $id) {
+  query GenericItem($id: ID!) {
+    genericItem(id: $id) {
       id
       title
       categories {
@@ -83,8 +107,8 @@ export const GET_VOUCHER = gql`
 `;
 
 export const GET_VOUCHERS_CATEGORIES = gql`
-  query Vouchers {
-    vouchers {
+  query GenericItems($genericType: String) {
+    genericItems(genericType: $genericType) {
       categories {
         name
         id

@@ -43,7 +43,7 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     return <LoadingSpinner loading />;
   }
 
-  const { contentBlocks, discountType, quota } = data[query];
+  const { contentBlocks, discountType, quota } = data[QUERY_TYPES.GENERIC_ITEM];
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota;
 
   return (

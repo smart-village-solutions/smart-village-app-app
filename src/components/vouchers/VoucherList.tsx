@@ -15,7 +15,7 @@ const sectionData = (data: TVoucherItem[]) => {
   const groupDataByCategory = (data: TVoucherItem[]) => {
     const grouped = {};
 
-    data.forEach((item: TVoucherItem) => {
+    data?.forEach((item: TVoucherItem) => {
       if (item.categories?.length) {
         if (!grouped[item.categories[0].name]) {
           grouped[item.categories[0].name] = [];
