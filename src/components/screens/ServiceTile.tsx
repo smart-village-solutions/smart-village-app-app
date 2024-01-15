@@ -84,7 +84,7 @@ export const ServiceTile = ({
           ) : (
             <Image
               source={{ uri: item.icon || item.tile }}
-              style={[
+              containerStyle={[
                 styles.serviceImage,
                 !!item.tile &&
                   stylesWithProps({
