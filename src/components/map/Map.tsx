@@ -117,6 +117,7 @@ export const Map = ({
         }}
       >
         <UrlTile
+          doubleTileSize={device.platform === 'android'}
           urlTemplate="https://tile-server.sva-services.customer.planetary-quantum.net/tile/{z}/{x}/{y}.png"
           shouldReplaceMapContent={device.platform === 'ios'}
         />
