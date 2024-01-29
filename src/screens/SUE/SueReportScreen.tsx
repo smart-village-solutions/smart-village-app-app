@@ -194,16 +194,7 @@ export const SueReportScreen = ({
         }
         break;
       case 2:
-        if (!selectedPosition) {
-          return texts.sue.report.alerts.location;
-        } else if (
-          !getValues().street ||
-          !getValues().houseNumber ||
-          !getValues().zipCode ||
-          !getValues().city
-        ) {
-          return texts.sue.report.alerts.address;
-        } else if (getValues().zipCode.length !== 5) {
+        if (getValues().zipCode?.length && getValues().zipCode.length !== 5) {
           return texts.sue.report.alerts.zipCodeLength;
         }
         break;
