@@ -1,6 +1,6 @@
 import * as Location from 'expo-location';
 import React, { useCallback, useState } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
+import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { device, normalize, texts } from '../../../config';
@@ -22,12 +22,27 @@ export const SueReportLocation = ({
   control,
   selectedPosition,
   setSelectedPosition,
-  setValue
+  setValue,
+  getValues
 }: {
   control: any;
   selectedPosition: Location.LocationObjectCoords | undefined;
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
   setValue: UseFormSetValue<{
+    city: string;
+    description: string;
+    email: string;
+    firstName: string;
+    houseNumber: string;
+    images: string;
+    lastName: string;
+    phone: string;
+    street: string;
+    termsOfService: boolean;
+    title: string;
+    zipCode: string;
+  }>;
+  getValues: UseFormGetValues<{
     city: string;
     description: string;
     email: string;
@@ -50,7 +65,31 @@ export const SueReportLocation = ({
   );
   const [updatedRegion, setUpdatedRegion] = useState(false);
 
-  // create useCallback method for reverseGeocode
+  const geocode = useCallback(async () => {
+    const { street, houseNumber, zipCode, city } = getValues();
+
+    if (!street || !zipCode || !city) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=jsonv2&street=${street}+${houseNumber}&city=${city}&country=germany&postalcode=${zipCode}`
+      );
+
+      const data = await response.json();
+      const latitude = data?.[0]?.lat;
+      const longitude = data?.[0]?.lon;
+
+      if (latitude && longitude) {
+        setUpdatedRegion(true);
+        setSelectedPosition({ latitude: Number(latitude), longitude: Number(longitude) });
+      }
+    } catch (error) {
+      console.error('Geocoding Error:', error);
+    }
+  }, []);
+
   const reverseGeocode = useCallback(async (position: Location.LocationObjectCoords) => {
     const { latitude, longitude } = position;
 
@@ -145,6 +184,7 @@ export const SueReportLocation = ({
           label={texts.sue.report.street}
           placeholder={texts.sue.report.street}
           control={control}
+          onChange={geocode}
         />
       </Wrapper>
 
@@ -154,6 +194,7 @@ export const SueReportLocation = ({
           label={texts.sue.report.houseNumber}
           placeholder={texts.sue.report.houseNumber}
           control={control}
+          onChange={geocode}
         />
       </Wrapper>
 
@@ -165,6 +206,7 @@ export const SueReportLocation = ({
           maxLength={5}
           keyboardType="numeric"
           control={control}
+          onChange={geocode}
         />
       </Wrapper>
 
@@ -174,6 +216,7 @@ export const SueReportLocation = ({
           label={texts.sue.report.city}
           placeholder={texts.sue.report.city}
           control={control}
+          onChange={geocode}
         />
       </Wrapper>
     </View>

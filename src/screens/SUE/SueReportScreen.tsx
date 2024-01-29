@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackScreenProps } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { UseFormSetValue, useForm } from 'react-hook-form';
+import { UseFormGetValues, UseFormSetValue, useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useMutation } from 'react-query';
@@ -48,6 +48,20 @@ const Content = (
     termsOfService: boolean;
     title: string;
     zipCode: string;
+  }>,
+  getValues: UseFormGetValues<{
+    city: string;
+    description: string;
+    email: string;
+    firstName: string;
+    houseNumber: string;
+    images: string;
+    lastName: string;
+    phone: string;
+    street: string;
+    termsOfService: boolean;
+    title: string;
+    zipCode: string;
   }>
 ) => {
   switch (content) {
@@ -60,6 +74,7 @@ const Content = (
           selectedPosition={selectedPosition}
           setSelectedPosition={setSelectedPosition}
           setValue={setValue}
+          getValues={getValues}
         />
       );
     case 'user':
@@ -344,7 +359,8 @@ export const SueReportScreen = ({
                 errors,
                 selectedPosition,
                 setSelectedPosition,
-                setValue
+                setValue,
+                getValues
               )}
             </ScrollView>
           ))}
