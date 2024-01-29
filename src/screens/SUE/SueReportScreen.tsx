@@ -104,6 +104,7 @@ export const SueReportScreen = ({
   const [currentProgress, setCurrentProgress] = useState(0);
   const [serviceCode, setServiceCode] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingStoredData, setIsLoadingStoredData] = useState<boolean>(true);
   const [selectedPosition, setSelectedPosition] = useState<Location.LocationObjectCoords>();
   const [isDone, setIsDone] = useState(false);
   const [storedValues, setStoredValues] = useState<TReports>();
@@ -241,6 +242,8 @@ export const SueReportScreen = ({
       setValue('title', storedValues.title);
       setValue('zipCode', storedValues.zipCode);
     }
+
+    setIsLoadingStoredData(false);
   };
 
   const resetStoredValues = async () => {
@@ -318,7 +321,7 @@ export const SueReportScreen = ({
     }
   }, [storedValues, serviceCode, selectedPosition]);
 
-  if (loading) {
+  if (loading || isLoadingStoredData) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
