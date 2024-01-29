@@ -12,15 +12,18 @@ type Props = {
   geometryTourData?: LatLng[];
   isMaximizeButtonVisible?: boolean;
   isMultipleMarkersMap?: boolean;
+  isMyLocationButtonVisible?: boolean;
   locations?: MapMarker[];
   mapCenterPosition?: { latitude: number; longitude: number };
   mapStyle?: StyleProp<ViewStyle>;
   onMapPress?: ({ nativeEvent }: { nativeEvent?: any }) => void;
   onMarkerPress?: (arg0?: string) => void;
   onMaximizeButtonPress?: () => void;
+  onMyLocationButtonPress?: () => void;
   selectedMarker?: string;
   showsUserLocation?: boolean;
   style?: StyleProp<ViewStyle>;
+  updatedRegion?: Region;
 };
 
 const MARKER_ICON_SIZE = normalize(40);
@@ -43,21 +46,22 @@ export const Map = ({
   geometryTourData,
   isMaximizeButtonVisible = false,
   isMultipleMarkersMap = false,
+  isMyLocationButtonVisible = false,
   locations,
   mapCenterPosition,
   mapStyle,
   onMapPress,
   onMarkerPress,
   onMaximizeButtonPress,
+  onMyLocationButtonPress,
   selectedMarker,
+  showsUserLocation,
   style,
-  ...otherProps
+  updatedRegion
 }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { zoomLevelForMaps = {}, locationService = {} } = settings;
-
-  const showsUserLocation = otherProps.showsUserLocation ?? !!locationService;
   const zoom = isMultipleMarkersMap
     ? zoomLevelForMaps.multipleMarkers
     : zoomLevelForMaps.singleMarker;
@@ -94,11 +98,12 @@ export const Map = ({
     <View style={[styles.container, style]}>
       <MapView
         initialRegion={initialRegion}
+        region={updatedRegion}
         mapType={device.platform === 'android' ? MAP_TYPES.NONE : MAP_TYPES.STANDARD}
         onPress={onMapPress}
         ref={refForMapView}
         rotateEnabled={false}
-        showsUserLocation={showsUserLocation}
+        showsUserLocation={showsUserLocation ?? !!locationService}
         showsMyLocationButton={false}
         toolbarEnabled={false}
         style={[stylesForMap().map, mapStyle]}
@@ -199,6 +204,11 @@ export const Map = ({
           <Icon.ExpandMap size={normalize(18)} />
         </TouchableOpacity>
       )}
+      {isMyLocationButtonVisible && (
+        <TouchableOpacity style={styles.myLocationButton} onPress={onMyLocationButtonPress}>
+          <Icon.GPS size={normalize(18)} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -219,9 +229,6 @@ const styles = StyleSheet.create({
   mapIconOnLocationMarkerActive: {
     backgroundColor: colors.accent
   },
-  mapIconOnLocationMarkerWithoutBackground: {
-    backgroundColor: colors.transparent
-  },
   maximizeMapButton: {
     alignItems: 'center',
     backgroundColor: colors.surface,
@@ -232,6 +239,19 @@ const styles = StyleSheet.create({
     opacity: 0.6,
     position: 'absolute',
     right: normalize(15),
+    width: normalize(48),
+    zIndex: 1
+  },
+  myLocationButton: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: 50,
+    top: normalize(15),
+    height: normalize(48),
+    justifyContent: 'center',
+    opacity: 0.6,
+    position: 'absolute',
+    right: normalize(30),
     width: normalize(48),
     zIndex: 1
   }
