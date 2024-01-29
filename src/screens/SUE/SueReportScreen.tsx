@@ -229,18 +229,7 @@ export const SueReportScreen = ({
       setStoredValues(storedValues);
       setServiceCode(storedValues.serviceCode);
       setSelectedPosition(storedValues.selectedPosition);
-      setValue('city', storedValues.city);
-      setValue('description', storedValues.description);
-      setValue('email', storedValues.email);
-      setValue('firstName', storedValues.firstName);
-      setValue('houseNumber', storedValues.houseNumber);
-      setValue('images', storedValues.images);
-      setValue('lastName', storedValues.lastName);
-      setValue('phone', storedValues.phone);
-      setValue('street', storedValues.street);
-      setValue('termsOfService', storedValues.termsOfService);
-      setValue('title', storedValues.title);
-      setValue('zipCode', storedValues.zipCode);
+      Object.entries(storedValues).map(([key, value]) => setValue(key, value));
     }
 
     setIsLoadingStoredData(false);
