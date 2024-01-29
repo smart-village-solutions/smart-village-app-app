@@ -106,7 +106,7 @@ export const Map = ({
         mapPadding={{
           top: 0,
           right: 0,
-          bottom: -normalize(30),
+          bottom: normalize(device.height * 2),
           left: 0
         }}
         legalLabelInsets={{
