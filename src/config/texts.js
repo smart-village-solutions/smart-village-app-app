@@ -945,7 +945,7 @@ export const texts = {
       houseNumber: 'Hausnummer',
       imageHint: 'ⓘ Es können bis zu 5 Fotos hochgeladen werden',
       lastName: 'Nachname',
-      mapHint: 'ⓘ Für Geo-Koordinaten bitte die Position auf der Karte wählen',
+      mapHint: 'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen verwenden.',
       next: 'Weiter',
       phone: 'Telefonnummer',
       sendReport: 'Meldung senden',

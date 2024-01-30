@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackScreenProps } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { UseFormSetValue, useForm } from 'react-hook-form';
+import { UseFormGetValues, UseFormSetValue, useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useMutation } from 'react-query';
@@ -27,6 +27,21 @@ import { addToStore, readFromStore } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { postRequests } from '../../queries/SUE';
 
+export type TValues = {
+  city: string;
+  description: string;
+  email: string;
+  firstName: string;
+  houseNumber: string;
+  images: string;
+  lastName: string;
+  phone: string;
+  street: string;
+  termsOfService: boolean;
+  title: string;
+  zipCode: string;
+};
+
 const Content = (
   content: 'category' | 'description' | 'location' | 'user',
   serviceCode: string,
@@ -35,20 +50,8 @@ const Content = (
   errors: any,
   selectedPosition: Location.LocationObjectCoords | undefined,
   setSelectedPosition: any,
-  setValue: UseFormSetValue<{
-    city: string;
-    description: string;
-    email: string;
-    firstName: string;
-    houseNumber: string;
-    images: string;
-    lastName: string;
-    phone: string;
-    street: string;
-    termsOfService: boolean;
-    title: string;
-    zipCode: string;
-  }>
+  setValue: UseFormSetValue<TValues>,
+  getValues: UseFormGetValues<TValues>
 ) => {
   switch (content) {
     case 'description':
@@ -60,6 +63,7 @@ const Content = (
           selectedPosition={selectedPosition}
           setSelectedPosition={setSelectedPosition}
           setValue={setValue}
+          getValues={getValues}
         />
       );
     case 'user':
@@ -344,7 +348,8 @@ export const SueReportScreen = ({
                 errors,
                 selectedPosition,
                 setSelectedPosition,
-                setValue
+                setValue,
+                getValues
               )}
             </ScrollView>
           ))}
