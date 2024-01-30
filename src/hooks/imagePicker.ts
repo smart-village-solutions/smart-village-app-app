@@ -34,8 +34,8 @@ export const useSelectImage = (
     // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
     const result = await launchImageLibraryAsync({
       mediaTypes: mediaTypes ?? MediaTypeOptions.Images,
-      allowsEditing: allowsEditing ?? true,
-      aspect: aspect ?? [1, 1],
+      allowsEditing: allowsEditing ?? false,
+      aspect,
       quality: quality ?? 1
     });
 
@@ -71,8 +71,8 @@ export const useCaptureImage = (
     // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
     const result = await launchCameraAsync({
       mediaTypes: mediaTypes ?? MediaTypeOptions.Images,
-      allowsEditing: allowsEditing ?? true,
-      aspect: aspect ?? [1, 1],
+      allowsEditing: allowsEditing ?? false,
+      aspect,
       quality: quality ?? 1
     });
 

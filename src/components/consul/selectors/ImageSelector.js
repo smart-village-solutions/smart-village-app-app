@@ -77,15 +77,15 @@ export const ImageSelector = ({
 
   const { selectImage } = useSelectImage(
     undefined, // onChange
-    false, // allowsEditing,
-    undefined, // aspect,
+    false, // allowsEditing
+    selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1], // aspect
     undefined // quality
   );
 
   const { captureImage } = useCaptureImage(
     undefined, // onChange
-    false, // allowsEditing,
-    undefined, // aspect,
+    false, // allowsEditing
+    selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1], // aspect
     undefined // quality
   );
 
