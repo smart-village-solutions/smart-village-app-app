@@ -926,9 +926,12 @@ export const texts = {
         imagesGreater30MBError:
           'Die ausgewählten Bilder dürfen insgesamt nicht größer als 30 MB sein.',
         location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
+        no: 'Nein',
+        myLocation: 'Möchten Sie Ihren aktuellen Standort verwenden?',
         serviceCode: 'Bitte wählen Sie aus, um welches Thema es in dem Bericht geht.',
         termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.',
         title: 'Bitte kurz beschreiben, worum es geht.',
+        yes: 'Ja',
         zipCodeLength: 'Postleitzahl muss 5-stellig sein.'
       },
       back: 'Zurück',
@@ -942,7 +945,7 @@ export const texts = {
       houseNumber: 'Hausnummer',
       imageHint: 'ⓘ Es können bis zu 5 Fotos hochgeladen werden',
       lastName: 'Nachname',
-      mapHint: 'ⓘ Für Geo-Koordinaten bitte die Position auf der Karte wählen',
+      mapHint: 'ⓘ Sie können einen Standort auf der Karte wählen oder Ihren aktuellen verwenden.',
       next: 'Weiter',
       phone: 'Telefonnummer',
       sendReport: 'Meldung senden',

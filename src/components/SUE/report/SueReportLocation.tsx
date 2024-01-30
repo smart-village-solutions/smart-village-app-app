@@ -1,10 +1,16 @@
 import * as Location from 'expo-location';
-import React, { useCallback } from 'react';
-import { UseFormSetValue } from 'react-hook-form';
-import { StyleSheet, View } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
+import { Alert, StyleSheet, View } from 'react-native';
 
 import { device, normalize, texts } from '../../../config';
-import { useLocationSettings, useSystemPermission } from '../../../hooks';
+import {
+  useLastKnownPosition,
+  useLocationSettings,
+  usePosition,
+  useSystemPermission
+} from '../../../hooks';
+import { TValues } from '../../../screens';
 import { MapMarker } from '../../../types';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
@@ -17,30 +23,48 @@ export const SueReportLocation = ({
   control,
   selectedPosition,
   setSelectedPosition,
-  setValue
+  setValue,
+  getValues
 }: {
   control: any;
   selectedPosition: Location.LocationObjectCoords | undefined;
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
-  setValue: UseFormSetValue<{
-    city: string;
-    description: string;
-    email: string;
-    firstName: string;
-    houseNumber: string;
-    images: string;
-    lastName: string;
-    phone: string;
-    street: string;
-    termsOfService: boolean;
-    title: string;
-    zipCode: string;
-  }>;
+  setValue: UseFormSetValue<TValues>;
+  getValues: UseFormGetValues<TValues>;
 }) => {
   const { locationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
+  const { position } = usePosition(systemPermission?.status !== Location.PermissionStatus.GRANTED);
+  const { position: lastKnownPosition } = useLastKnownPosition(
+    systemPermission?.status !== Location.PermissionStatus.GRANTED
+  );
+  const [updatedRegion, setUpdatedRegion] = useState(false);
 
-  // create useCallback method for reverseGeocode
+  const geocode = useCallback(async () => {
+    const { street, houseNumber, zipCode, city } = getValues();
+
+    if (!street || !zipCode || !city) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=jsonv2&street=${street}+${houseNumber}&city=${city}&country=germany&postalcode=${zipCode}`
+      );
+
+      const data = await response.json();
+      const latitude = data?.[0]?.lat;
+      const longitude = data?.[0]?.lon;
+
+      if (latitude && longitude) {
+        setUpdatedRegion(true);
+        setSelectedPosition({ latitude: Number(latitude), longitude: Number(longitude) });
+      }
+    } catch (error) {
+      console.error('Geocoding Error:', error);
+    }
+  }, []);
+
   const reverseGeocode = useCallback(async (position: Location.LocationObjectCoords) => {
     const { latitude, longitude } = position;
 
@@ -92,13 +116,32 @@ export const SueReportLocation = ({
         locations={locations}
         mapCenterPosition={mapCenterPosition}
         mapStyle={styles.map}
-        onMapPress={({ nativeEvent }) => {
-          setSelectedPosition({
-            ...nativeEvent.coordinate
-          });
+        isMyLocationButtonVisible
+        onMyLocationButtonPress={() =>
+          Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
+            {
+              text: texts.sue.report.alerts.no
+            },
+            {
+              text: texts.sue.report.alerts.yes,
+              onPress: () => {
+                const location = position || lastKnownPosition;
 
+                if (location) {
+                  setUpdatedRegion(true);
+                  setSelectedPosition(location.coords);
+                  reverseGeocode(location.coords);
+                }
+              }
+            }
+          ])
+        }
+        onMapPress={({ nativeEvent }) => {
+          setUpdatedRegion(true);
+          setSelectedPosition(nativeEvent.coordinate);
           reverseGeocode(nativeEvent.coordinate);
         }}
+        updatedRegion={selectedPosition && updatedRegion ? { ...selectedPosition } : undefined}
       />
 
       <Wrapper>
@@ -111,6 +154,7 @@ export const SueReportLocation = ({
           label={texts.sue.report.street}
           placeholder={texts.sue.report.street}
           control={control}
+          onChange={geocode}
         />
       </Wrapper>
 
@@ -120,6 +164,7 @@ export const SueReportLocation = ({
           label={texts.sue.report.houseNumber}
           placeholder={texts.sue.report.houseNumber}
           control={control}
+          onChange={geocode}
         />
       </Wrapper>
 
@@ -131,6 +176,7 @@ export const SueReportLocation = ({
           maxLength={5}
           keyboardType="numeric"
           control={control}
+          onChange={geocode}
         />
       </Wrapper>
 
@@ -140,6 +186,7 @@ export const SueReportLocation = ({
           label={texts.sue.report.city}
           placeholder={texts.sue.report.city}
           control={control}
+          onChange={geocode}
         />
       </Wrapper>
     </View>

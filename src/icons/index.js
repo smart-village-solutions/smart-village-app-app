@@ -13,6 +13,7 @@ export * from './constructionSite';
 export * from './drawerMenu';
 export * from './editSetting';
 export * from './emptySection';
+export * from './gps';
 export * from './heartEmpty';
 export * from './heartFilled';
 export * from './home';
