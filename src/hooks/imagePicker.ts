@@ -1,7 +1,9 @@
 import {
+  launchCameraAsync,
   launchImageLibraryAsync,
   MediaTypeOptions,
   PermissionStatus,
+  requestCameraPermissionsAsync,
   requestMediaLibraryPermissionsAsync
 } from 'expo-image-picker';
 import { useCallback, useState } from 'react';
@@ -32,8 +34,8 @@ export const useSelectImage = (
     // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
     const result = await launchImageLibraryAsync({
       mediaTypes: mediaTypes ?? MediaTypeOptions.Images,
-      allowsEditing: allowsEditing ?? true,
-      aspect: aspect ?? [1, 1],
+      allowsEditing: allowsEditing ?? false,
+      aspect,
       quality: quality ?? 1
     });
 
@@ -44,4 +46,41 @@ export const useSelectImage = (
   }, [onChange]);
 
   return { imageUri, selectImage };
+};
+
+export const useCaptureImage = (
+  onChange?: <T>(
+    setter: React.Dispatch<React.SetStateAction<T>>
+  ) => React.Dispatch<React.SetStateAction<T>>,
+  allowsEditing?: boolean,
+  aspect?: [number, number],
+  quality?: number,
+  mediaTypes?: MediaTypeOptions
+) => {
+  const [imageUri, setImageUri] = useState<string>();
+
+  const captureImage = useCallback(async () => {
+    const { status } = await requestCameraPermissionsAsync();
+
+    if (status !== PermissionStatus.GRANTED) {
+      Alert.alert(texts.errors.image.title, texts.errors.image.body);
+      return;
+    }
+
+    // this allows for proper selecting and cropping to 1:1 images (and not videos)
+    // for more details about options see: https://docs.expo.dev/versions/latest/sdk/imagepicker/#imagepickermediatypeoptions
+    const result = await launchCameraAsync({
+      mediaTypes: mediaTypes ?? MediaTypeOptions.Images,
+      allowsEditing: allowsEditing ?? false,
+      aspect,
+      quality: quality ?? 1
+    });
+
+    if (!result.canceled) {
+      onChange ? onChange(setImageUri)(result.assets[0].uri) : setImageUri(result.assets[0].uri);
+      return result.assets[0];
+    }
+  }, [onChange]);
+
+  return { imageUri, captureImage };
 };

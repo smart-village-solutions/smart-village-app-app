@@ -8,7 +8,7 @@ import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { deleteArrayItem, errorTextGenerator, jsonParser } from '../../../helpers';
 import { imageHeight, imageWidth } from '../../../helpers/imageHelper';
-import { useSelectImage } from '../../../hooks';
+import { useCaptureImage, useSelectImage } from '../../../hooks';
 import { DELETE_IMAGE } from '../../../queries/consul';
 import { calendarDeleteFile } from '../../../queries/volunteer';
 import { Button } from '../../Button';
@@ -36,6 +36,26 @@ const deleteImageAlert = (onPress) =>
     ]
   );
 
+const selectImageSourceAlert = (imageSelect, imageCapture) =>
+  Alert.alert(
+    texts.sue.report.alerts.imageSelectAlert.title,
+    texts.sue.report.alerts.imageSelectAlert.description,
+    [
+      {
+        text: texts.sue.report.alerts.imageSelectAlert.cancel,
+        style: 'cancel'
+      },
+      {
+        text: texts.sue.report.alerts.imageSelectAlert.gallery,
+        onPress: imageSelect
+      },
+      {
+        text: texts.sue.report.alerts.imageSelectAlert.camera,
+        onPress: imageCapture
+      }
+    ]
+  );
+
 export const ImageSelector = ({
   control,
   errorType,
@@ -57,8 +77,15 @@ export const ImageSelector = ({
 
   const { selectImage } = useSelectImage(
     undefined, // onChange
-    false, // allowsEditing,
-    undefined, // aspect,
+    false, // allowsEditing
+    selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1], // aspect
+    undefined // quality
+  );
+
+  const { captureImage } = useCaptureImage(
+    undefined, // onChange
+    false, // allowsEditing
+    selectorType === IMAGE_SELECTOR_TYPES.SUE ? undefined : [1, 1], // aspect
     undefined // quality
   );
 
@@ -95,8 +122,8 @@ export const ImageSelector = ({
     setInfoAndErrorText(deleteArrayItem(infoAndErrorText, index));
   };
 
-  const imageSelect = async () => {
-    const { uri, type } = await selectImage();
+  const imageSelect = async (imageFunction = selectImage) => {
+    const { uri, type } = await imageFunction();
     const { size } = await FileSystem.getInfoAsync(uri);
 
     /* used to specify the mimeType when uploading to the server */
@@ -118,7 +145,12 @@ export const ImageSelector = ({
         <>
           <Input {...item} control={control} hidden name={name} value={JSON.parse(value)} />
 
-          <Button disabled={values?.length >= 5} invert onPress={imageSelect} title={buttonTitle} />
+          <Button
+            disabled={values?.length >= 5}
+            invert
+            onPress={() => selectImageSourceAlert(imageSelect, () => imageSelect(captureImage))}
+            title={buttonTitle}
+          />
 
           {!!infoText && (
             <RegularText small style={styles.sueInfoText}>

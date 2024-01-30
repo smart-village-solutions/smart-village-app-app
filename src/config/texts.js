@@ -925,6 +925,14 @@ export const texts = {
         imageGreater10MBError: 'Das ausgewählte Bild darf maximal 10 MB groß sein.',
         imagesGreater30MBError:
           'Die ausgewählten Bilder dürfen insgesamt nicht größer als 30 MB sein.',
+        imageSelectAlert: {
+          camera: 'Kamera',
+          cancel: 'Abbrechen',
+          description:
+            'Möchten Sie ein Bild mit der Kamera aufnehmen oder aus der Galerie auswählen?',
+          gallery: 'Galerie',
+          title: 'Bildquelle auswählen'
+        },
         location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
         no: 'Nein',
         myLocation: 'Möchten Sie Ihren aktuellen Standort verwenden?',
