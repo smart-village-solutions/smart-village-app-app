@@ -105,9 +105,7 @@ export const Image = ({
     <View>
       <RNEImage
         source={source}
-        childrenContainerStyle={
-          childrenContainerStyle || style || stylesForImage(aspectRatio).defaultStyle
-        }
+        childrenContainerStyle={childrenContainerStyle || stylesForImage(aspectRatio).defaultStyle}
         containerStyle={containerStyle}
         style={style}
         PlaceholderContent={PlaceholderContent}

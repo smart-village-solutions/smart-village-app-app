@@ -27,7 +27,7 @@ export const DefaultWidget = ({ Icon, count, onPress, text, image }: Props) => {
           {image?.uri ? (
             <Image
               source={image}
-              style={{
+              childrenContainerStyle={{
                 height: normalize(image?.height ?? 26),
                 width: normalize(image?.width ?? 33)
               }}
