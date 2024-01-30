@@ -10,6 +10,7 @@ import {
   usePosition,
   useSystemPermission
 } from '../../../hooks';
+import { TValues } from '../../../screens';
 import { MapMarker } from '../../../types';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
@@ -28,34 +29,8 @@ export const SueReportLocation = ({
   control: any;
   selectedPosition: Location.LocationObjectCoords | undefined;
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
-  setValue: UseFormSetValue<{
-    city: string;
-    description: string;
-    email: string;
-    firstName: string;
-    houseNumber: string;
-    images: string;
-    lastName: string;
-    phone: string;
-    street: string;
-    termsOfService: boolean;
-    title: string;
-    zipCode: string;
-  }>;
-  getValues: UseFormGetValues<{
-    city: string;
-    description: string;
-    email: string;
-    firstName: string;
-    houseNumber: string;
-    images: string;
-    lastName: string;
-    phone: string;
-    street: string;
-    termsOfService: boolean;
-    title: string;
-    zipCode: string;
-  }>;
+  setValue: UseFormSetValue<TValues>;
+  getValues: UseFormGetValues<TValues>;
 }) => {
   const { locationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();

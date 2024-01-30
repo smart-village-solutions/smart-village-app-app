@@ -27,6 +27,21 @@ import { addToStore, readFromStore } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { postRequests } from '../../queries/SUE';
 
+export type TValues = {
+  city: string;
+  description: string;
+  email: string;
+  firstName: string;
+  houseNumber: string;
+  images: string;
+  lastName: string;
+  phone: string;
+  street: string;
+  termsOfService: boolean;
+  title: string;
+  zipCode: string;
+};
+
 const Content = (
   content: 'category' | 'description' | 'location' | 'user',
   serviceCode: string,
@@ -35,34 +50,8 @@ const Content = (
   errors: any,
   selectedPosition: Location.LocationObjectCoords | undefined,
   setSelectedPosition: any,
-  setValue: UseFormSetValue<{
-    city: string;
-    description: string;
-    email: string;
-    firstName: string;
-    houseNumber: string;
-    images: string;
-    lastName: string;
-    phone: string;
-    street: string;
-    termsOfService: boolean;
-    title: string;
-    zipCode: string;
-  }>,
-  getValues: UseFormGetValues<{
-    city: string;
-    description: string;
-    email: string;
-    firstName: string;
-    houseNumber: string;
-    images: string;
-    lastName: string;
-    phone: string;
-    street: string;
-    termsOfService: boolean;
-    title: string;
-    zipCode: string;
-  }>
+  setValue: UseFormSetValue<TValues>,
+  getValues: UseFormGetValues<TValues>
 ) => {
   switch (content) {
     case 'description':
