@@ -84,7 +84,7 @@ export const ImageSelector = ({
 
   const { captureImage } = useCaptureImage(
     undefined, // onChange
-    true, // allowsEditing,
+    false, // allowsEditing,
     undefined, // aspect,
     undefined // quality
   );
