@@ -106,8 +106,7 @@ export const SueReportLocation = ({
         onMyLocationButtonPress={() =>
           Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.myLocation, [
             {
-              text: texts.sue.report.alerts.no,
-              onPress: () => null
+              text: texts.sue.report.alerts.no
             },
             {
               text: texts.sue.report.alerts.yes,
@@ -128,11 +127,7 @@ export const SueReportLocation = ({
           setSelectedPosition(nativeEvent.coordinate);
           reverseGeocode(nativeEvent.coordinate);
         }}
-        updatedRegion={
-          selectedPosition && updatedRegion
-            ? { ...selectedPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }
-            : undefined
-        }
+        updatedRegion={selectedPosition && updatedRegion ? { ...selectedPosition } : undefined}
       />
 
       <Wrapper>
