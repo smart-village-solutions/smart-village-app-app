@@ -30,6 +30,7 @@ export const Image = ({
   aspectRatio,
   borderRadius,
   button,
+  childrenContainerStyle,
   containerStyle,
   message,
   PlaceholderContent,
@@ -104,7 +105,7 @@ export const Image = ({
     <View>
       <RNEImage
         source={source}
-        childrenContainerStyle={style || stylesForImage(aspectRatio).defaultStyle}
+        childrenContainerStyle={childrenContainerStyle || stylesForImage(aspectRatio).defaultStyle}
         containerStyle={containerStyle}
         style={style}
         PlaceholderContent={PlaceholderContent}
@@ -161,6 +162,7 @@ Image.propTypes = {
   aspectRatio: PropTypes.object,
   borderRadius: PropTypes.number,
   button: PropTypes.object,
+  childrenContainerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   containerStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   message: PropTypes.string,
   PlaceholderContent: PropTypes.object,

@@ -250,7 +250,7 @@ const renderFooter = (medias, setMedias) => (
               borderRadius={normalize(4)}
               resizeMode="cover"
               source={{ uri }}
-              style={styles.mediaPreview}
+              childrenContainerStyle={styles.mediaPreview}
             />
           )}
           {type === 'video' && (

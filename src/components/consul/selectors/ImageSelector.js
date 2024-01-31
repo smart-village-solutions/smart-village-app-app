@@ -152,7 +152,7 @@ export const ImageSelector = ({ control, errorType, field, imageId, isMultiImage
       {values.length ? (
         <>
           <WrapperRow center spaceBetween>
-            <Image source={{ uri: values[0].uri }} style={styles.image} />
+            <Image source={{ uri: values[0].uri }} childrenContainerStyle={styles.image} />
 
             <TouchableOpacity onPress={() => deleteImageAlert(() => onDeleteImage(0))}>
               <Icon.Trash color={colors.error} size={normalize(16)} />

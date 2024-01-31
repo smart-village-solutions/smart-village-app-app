@@ -22,7 +22,7 @@ const renderCardContent = (item, horizontal) => {
       !!picture?.url && (
         <Image
           source={{ uri: picture.url }}
-          style={stylesWithProps({ horizontal }).image}
+          childrenContainerStyle={stylesWithProps({ horizontal }).image}
           containerStyle={[styles.imageContainer, imageStyle]}
           borderRadius={imageBorderRadius}
         />
