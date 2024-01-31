@@ -234,8 +234,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     left: normalize(13),
     position: 'absolute',
-    width: normalize(90),
-    zIndex: 1
+    width: normalize(100)
   },
   mapIconOnLocationMarker: {
     backgroundColor: colors.primary,
