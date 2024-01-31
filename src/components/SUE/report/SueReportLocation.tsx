@@ -137,7 +137,7 @@ export const SueReportLocation = ({
           ])
         }
         onMapPress={({ nativeEvent }) => {
-          setUpdatedRegion(true);
+          setUpdatedRegion(false);
           setSelectedPosition(nativeEvent.coordinate);
           reverseGeocode(nativeEvent.coordinate);
         }}
