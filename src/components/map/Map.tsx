@@ -7,6 +7,7 @@ import { colors, device, Icon, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
+import { RegularText } from '../Text';
 
 type Props = {
   geometryTourData?: LatLng[];
@@ -42,6 +43,7 @@ const MapIcon = ({
   return <MarkerIcon color={iconColor} size={iconSize} />;
 };
 
+/* eslint-disable complexity */
 export const Map = ({
   geometryTourData,
   isMaximizeButtonVisible = false,
@@ -111,7 +113,7 @@ export const Map = ({
         mapPadding={{
           top: 0,
           right: 0,
-          bottom: normalize(device.height * 2),
+          bottom: -normalize(30),
           left: 0
         }}
         legalLabelInsets={{
@@ -134,7 +136,6 @@ export const Map = ({
             zIndex={1}
           />
         )}
-        {/* eslint-disable complexity */}
         {locations?.map((marker, index) => {
           const isActiveMarker = selectedMarker && marker.id === selectedMarker;
 
@@ -197,7 +198,6 @@ export const Map = ({
             </Marker>
           );
         })}
-        {/* eslint-enable complexity */}
       </MapView>
       {isMaximizeButtonVisible && (
         <TouchableOpacity style={styles.maximizeMapButton} onPress={onMaximizeButtonPress}>
@@ -209,9 +209,15 @@ export const Map = ({
           <Icon.GPS size={normalize(18)} />
         </TouchableOpacity>
       )}
+      {device.platform === 'android' && (
+        <View style={styles.logoContainer}>
+          <RegularText smallest>© OpenStreetMap</RegularText>
+        </View>
+      )}
     </View>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   container: {
@@ -219,6 +225,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     flex: 1,
     justifyContent: 'center'
+  },
+  logoContainer: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    bottom: 0,
+    height: normalize(30),
+    justifyContent: 'center',
+    left: normalize(13),
+    position: 'absolute',
+    width: normalize(90),
+    zIndex: 1
   },
   mapIconOnLocationMarker: {
     backgroundColor: colors.primary,

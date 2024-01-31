@@ -141,7 +141,11 @@ export const SueReportLocation = ({
           setSelectedPosition(nativeEvent.coordinate);
           reverseGeocode(nativeEvent.coordinate);
         }}
-        updatedRegion={selectedPosition && updatedRegion ? { ...selectedPosition } : undefined}
+        updatedRegion={
+          !!selectedPosition && updatedRegion
+            ? { ...selectedPosition, latitudeDelta: 0.01, longitudeDelta: 0.01 }
+            : undefined
+        }
       />
 
       <Wrapper>
