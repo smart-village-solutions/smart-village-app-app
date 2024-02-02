@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Alert, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
 import { useMutation } from 'react-query';
 
 import {
@@ -15,12 +15,11 @@ import {
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
-  WrapperHorizontal,
   WrapperRow
 } from '../../components';
 import { Icon, colors, consts, texts } from '../../config';
-import { register } from '../../queries/volunteer';
-import { ScreenName, VolunteerRegistration } from '../../types';
+import { profileRegister } from '../../queries/profile';
+import { ProfileRegistration, ScreenName } from '../../types';
 
 const { EMAIL_REGEX } = consts;
 
@@ -42,9 +41,8 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
     formState: { errors },
     handleSubmit,
     watch
-  } = useForm<VolunteerRegistration>({
+  } = useForm<ProfileRegistration>({
     defaultValues: {
-      username: '',
       email: '',
       password: '',
       passwordConfirmation: '',
@@ -53,38 +51,29 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
   });
   const password = watch('password');
 
-  const {
-    mutate: mutateRegister,
-    isLoading,
-    isError,
-    isSuccess,
-    data,
-    reset
-  } = useMutation(register);
+  const { mutate: mutateRegister, isLoading, reset } = useMutation(profileRegister);
 
-  const onSubmit = (registerData: VolunteerRegistration) => {
+  const onSubmit = (registerData: ProfileRegistration) => {
     if (!hasAcceptedDataPrivacy) return showPrivacyCheckedAlert();
 
     mutateRegister(
       { ...registerData, dataPrivacyCheck: hasAcceptedDataPrivacy },
       {
         onSuccess: (responseData) => {
-          if (responseData?.code !== 200) {
+          if (!responseData?.status || responseData?.errorMessage) {
+            showRegistrationFailAlert();
+            reset();
             return;
           }
 
-          navigation.navigate(ScreenName.ProfileSignup, {
-            email: registerData.email
+          navigation.navigate(ScreenName.ProfileLogin, {
+            email: registerData.email,
+            password: registerData.password
           });
         }
       }
     );
   };
-
-  if (isError || (isSuccess && data?.code !== 200)) {
-    showRegistrationFailAlert();
-    reset();
-  }
 
   return (
     <SafeAreaViewFlex>
@@ -93,53 +82,6 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
           <WrapperRow center>
             <SectionHeader big center title={texts.profile.registrationTitle} />
           </WrapperRow>
-
-          <Wrapper>
-            <Input
-              name="username"
-              label={texts.profile.username}
-              placeholder={texts.profile.username}
-              textContentType="username"
-              autoCapitalize="none"
-              validate
-              rules={{
-                required: texts.profile.usernameError,
-                minLength: { value: 4, message: texts.profile.usernameErrorLengthError }
-              }}
-              errorMessage={errors.username && errors.username.message}
-              control={control}
-            />
-          </Wrapper>
-
-          <Wrapper style={styles.noPaddingTop}>
-            <Input
-              name="firstname"
-              label={texts.profile.firstname}
-              placeholder={texts.profile.firstname}
-              textContentType="firstname"
-              control={control}
-            />
-          </Wrapper>
-
-          <Wrapper style={styles.noPaddingTop}>
-            <Input
-              name="lastname"
-              label={texts.profile.lastname}
-              placeholder={texts.profile.lastname}
-              textContentType="lastname"
-              control={control}
-            />
-          </Wrapper>
-
-          <Wrapper style={styles.noPaddingTop}>
-            <Input
-              name="dayOfBirth"
-              label={texts.profile.dayOfBirth}
-              placeholder={texts.profile.dayOfBirth}
-              textContentType="dayOfBirth"
-              control={control}
-            />
-          </Wrapper>
 
           <Wrapper style={styles.noPaddingTop}>
             <Input
@@ -202,7 +144,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
               rules={{
                 required: texts.profile.passwordError,
                 minLength: { value: 5, message: texts.profile.passwordLengthError },
-                validate: (value) => value === password || texts.profile.passwordDoNotMatch
+                validate: (value: string) => value === password || texts.profile.passwordDoNotMatch
               }}
               errorMessage={errors.passwordConfirmation && errors.passwordConfirmation.message}
               control={control}
@@ -211,14 +153,16 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
 
           <Wrapper style={styles.noPaddingTop}>
             <Checkbox
-              linkDescription={texts.profile.privacyCheckLink}
-              link={dataPrivacyLink}
-              title={texts.profile.privacyChecked}
-              checkedIcon={<Icon.SquareCheckFilled />}
-              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
-              checked={hasAcceptedDataPrivacy}
+              boldTitle={undefined}
               center={false}
+              checked={hasAcceptedDataPrivacy}
+              checkedIcon={<Icon.SquareCheckFilled />}
+              containerStyle={undefined}
+              link={dataPrivacyLink}
+              linkDescription={texts.profile.privacyCheckLink}
               onPress={() => setHasAcceptedDataPrivacy(!hasAcceptedDataPrivacy)}
+              title={texts.profile.privacyChecked}
+              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
             />
           </Wrapper>
 
@@ -228,14 +172,6 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
               title={texts.profile.register}
               disabled={isLoading}
             />
-
-            <RegularText />
-
-            <TouchableOpacity onPress={() => navigation.navigate(ScreenName.ProfileSignup)}>
-              <RegularText primary center underline>
-                {texts.profile.enterCode}
-              </RegularText>
-            </TouchableOpacity>
 
             <RegularText />
 
