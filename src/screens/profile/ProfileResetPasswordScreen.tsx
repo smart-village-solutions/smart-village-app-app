@@ -16,48 +16,41 @@ import {
   WrapperRow
 } from '../../components';
 import { consts, texts } from '../../config';
-import { storeVolunteerAuthToken } from '../../helpers';
-import { signup } from '../../queries/volunteer';
-import { VolunteerSignup } from '../../types';
+import { profileResetPassword } from '../../queries/profile';
+import { ProfileResetPassword, ScreenName } from '../../types';
 
 const { EMAIL_REGEX } = consts;
 
-const showSignupFailAlert = () =>
-  Alert.alert(texts.profile.signupFailedTitle, texts.profile.signupFailedBody);
-
 // eslint-disable-next-line complexity
-export const ProfileResetPasswordScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const email = route.params?.email ?? '';
+export const ProfileResetPasswordScreen = ({ navigation }: StackScreenProps<any>) => {
   const {
     control,
     formState: { errors },
     handleSubmit
-  } = useForm<VolunteerSignup>({
+  } = useForm<ProfileResetPassword>({
     defaultValues: {
-      email,
-      token: ''
+      email: ''
     }
   });
 
-  const { mutate: mutateSignup, isLoading, isError, isSuccess, data, reset } = useMutation(signup);
+  const { mutate: mutateSignup, isLoading } = useMutation(profileResetPassword);
 
-  const onSubmit = (signupData: VolunteerSignup) => {
-    mutateSignup(signupData, {
-      onSuccess: (responseData) => {
-        if (!responseData?.auth_token) {
-          return;
-        }
-
-        // wait for saving auth token to global state
-        return storeVolunteerAuthToken(responseData.auth_token);
+  const onSubmit = (resetPasswordData: ProfileResetPassword) => {
+    mutateSignup(resetPasswordData, {
+      onSuccess: () => {
+        Alert.alert(
+          texts.profile.resetPasswordAlertTitle,
+          texts.profile.resetPasswordAlertMessage,
+          [
+            {
+              text: texts.profile.ok,
+              onPress: () => navigation.navigate(ScreenName.ProfileLogin)
+            }
+          ]
+        );
       }
     });
   };
-
-  if (isError || (isSuccess && data?.code !== 200)) {
-    showSignupFailAlert();
-    reset();
-  }
 
   return (
     <SafeAreaViewFlex>
@@ -70,6 +63,7 @@ export const ProfileResetPasswordScreen = ({ navigation, route }: StackScreenPro
           <Wrapper>
             <Input
               name="email"
+              label={texts.profile.resetPasswordLabel}
               placeholder={texts.profile.email}
               keyboardType="email-address"
               textContentType="emailAddress"

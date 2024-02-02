@@ -30,3 +30,7 @@ export type ProfileLogin = {
   email: string;
   password: string;
 };
+
+export type ProfileResetPassword = {
+  email: string;
+};
