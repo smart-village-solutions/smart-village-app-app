@@ -2,6 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
+import { NetworkContext } from '../../NetworkProvider';
 import {
   EmptyMessage,
   HeadlineText,
@@ -15,12 +16,15 @@ import {
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { colors, consts, normalize, texts } from '../../config';
 import { useStaticContent, useTrackScreenViewAsync } from '../../hooks';
-import { NetworkContext } from '../../NetworkProvider';
+import { useProfileUser } from '../../hooks/profile';
 import { ScreenName } from '../../types';
 
 const { MATOMO_TRACKING } = consts;
 
+/* eslint-disable complexity */
 export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
+  const { refresh, isLoading, isLoggedIn } = useProfileUser();
+
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
@@ -41,13 +45,20 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
       trackScreenViewAsync(`${MATOMO_TRACKING.SCREEN_VIEW.HTML} / ${screenTitle}`);
   }, [screenTitle]);
 
-  const refresh = useCallback(async () => {
+  const refreshUser = useCallback(() => {
+    refresh();
+  }, [refresh]);
+
+  // refresh if the refreshUser param changed, which happens after login
+  useEffect(refreshUser, [route.params?.refreshUser]);
+
+  const refreshHome = useCallback(async () => {
     setRefreshing(true);
     isConnected && (await refetch());
     setRefreshing(false);
   }, [isConnected, refetch]);
 
-  if (loading) {
+  if (loading || isLoading) {
     return <LoadingSpinner loading />;
   }
 
@@ -61,7 +72,7 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={refresh}
+            onRefresh={refreshHome}
             colors={[colors.refreshControl]}
             tintColor={colors.refreshControl}
           />
@@ -119,6 +130,7 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   headlineText: {

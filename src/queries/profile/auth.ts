@@ -1,5 +1,6 @@
 import * as appJson from '../../../app.json';
 import { secrets } from '../../config';
+import { profileAuthToken } from '../../helpers';
 import { ProfileRegistration } from '../../types';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
@@ -48,4 +49,19 @@ export const profileRegister = async ({
   };
 
   return (await fetch(`${serverUrl}/members.json`, fetchObj)).json();
+};
+
+export const member = async () => {
+  const authToken = await profileAuthToken();
+
+  const fetchObj = {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
+    }
+  };
+
+  return (await fetch(`${serverUrl}/member.json`, fetchObj)).json();
 };
