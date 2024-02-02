@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.3.4]
+
+This version includes a new list option and fixes some bugs
+
+## Breaking
+
+icon names need to be updated due to a failure to display icons caused by updating the icon package
+
+### Fixed
+
+- fixed the error of dates not appearing in the event list
+- fixed prop error in Image component that caused images not to display correctly
+
 ## [v3.3.3]
 
 This version includes a new list option and fixes some bugs
