@@ -2,7 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert, ScrollView, StyleSheet } from 'react-native';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation } from 'react-query';
 
 import {
   BoldText,
@@ -19,10 +19,9 @@ import {
   WrapperRow
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
-import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
-import { QUERY_TYPES } from '../../queries';
-import { logIn, me } from '../../queries/volunteer';
-import { ScreenName, VolunteerLogin } from '../../types';
+import { storeProfileAuthToken } from '../../helpers';
+import { profileLogIn } from '../../queries/profile';
+import { ProfileLogin, ScreenName } from '../../types';
 
 const { a11yLabel } = consts;
 
@@ -30,62 +29,39 @@ const showLoginFailAlert = () =>
   Alert.alert(texts.profile.loginFailedTitle, texts.profile.loginFailedBody);
 
 // eslint-disable-next-line complexity
-export const ProfileLoginScreen = ({ navigation }: StackScreenProps<any>) => {
+export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
+  const email = route.params?.email ?? '';
+  const password = route.params?.password ?? '';
 
   const {
     control,
     formState: { errors },
     handleSubmit
-  } = useForm<VolunteerLogin>({
+  } = useForm<ProfileLogin>({
     defaultValues: {
-      username: '',
-      password: ''
+      email,
+      password
     }
   });
 
-  const { mutate: mutateLogIn, isLoading, isError, isSuccess, data, reset } = useMutation(logIn);
-  const {
-    isLoading: isLoadingMe,
-    isError: isErrorMe,
-    isSuccess: isSuccessMe,
-    data: dataMe
-  } = useQuery(QUERY_TYPES.VOLUNTEER.ME, me, {
-    enabled: !!data?.auth_token, // the query will not execute until the auth token exists
-    onSuccess: (responseData) => {
-      if (!responseData?.account) {
-        return;
-      }
+  const { mutate: mutateLogIn, isLoading, reset } = useMutation(profileLogIn);
 
-      // save user data to global state
-      storeVolunteerUserData(responseData.account);
-
-      // refreshUser param causes the home screen to update and no longer show the welcome component
-      navigation.navigate(ScreenName.VolunteerHome, { refreshUser: new Date().valueOf() });
-    }
-  });
-
-  const onSubmit = (loginData: VolunteerLogin) =>
+  const onSubmit = (loginData: ProfileLogin) =>
     mutateLogIn(loginData, {
       onSuccess: (responseData) => {
-        if (!responseData?.auth_token) {
+        if (!responseData?.member?.keycloak_access_token) {
+          showLoginFailAlert();
+          reset();
           return;
         }
 
+        alert('Login erfolgreich!');
+
         // wait for saving auth token to global state
-        return storeVolunteerAuthToken(responseData.auth_token);
+        return storeProfileAuthToken(responseData.member.keycloak_access_token);
       }
     });
-
-  if (
-    isError ||
-    isErrorMe ||
-    (isSuccess && data?.code !== 200) ||
-    (isSuccessMe && dataMe?.status && dataMe?.status !== 200)
-  ) {
-    showLoginFailAlert();
-    reset();
-  }
 
   return (
     <SafeAreaViewFlex>
@@ -97,7 +73,7 @@ export const ProfileLoginScreen = ({ navigation }: StackScreenProps<any>) => {
 
           <Wrapper>
             <Input
-              name="username"
+              name="email"
               placeholder={texts.profile.usernameOrEmail}
               keyboardType="email-address"
               textContentType="emailAddress"
@@ -106,7 +82,7 @@ export const ProfileLoginScreen = ({ navigation }: StackScreenProps<any>) => {
               validate
               rules={{ required: true }}
               errorMessage={
-                errors.username && `${texts.profile.usernameOrEmail} muss ausgefüllt werden`
+                errors.email && `${texts.profile.usernameOrEmail} muss ausgefüllt werden`
               }
               control={control}
             />
@@ -147,7 +123,7 @@ export const ProfileLoginScreen = ({ navigation }: StackScreenProps<any>) => {
             <Button
               onPress={handleSubmit(onSubmit)}
               title={texts.profile.login}
-              disabled={isLoading || isLoadingMe}
+              disabled={isLoading}
             />
 
             <RegularText />
@@ -164,7 +140,7 @@ export const ProfileLoginScreen = ({ navigation }: StackScreenProps<any>) => {
             </RegularText>
           </Wrapper>
 
-          <LoadingModal loading={isLoading || isLoadingMe} />
+          <LoadingModal loading={isLoading} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>

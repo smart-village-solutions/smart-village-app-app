@@ -4,3 +4,8 @@ export type ProfileRegistration = {
   passwordConfirmation: string;
   dataPrivacyCheck: boolean;
 };
+
+export type ProfileLogin = {
+  email: string;
+  password: string;
+};
