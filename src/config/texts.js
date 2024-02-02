@@ -813,11 +813,11 @@ export const texts = {
     passwordError: 'Passwort muss ausgefüllt werden',
     passwordForgotten: 'Passwort vergessen?',
     passwordLengthError: 'Das Passwort sollte mindestens 5 Zeichen lang sein',
-    resetPasswordLabel:
-      'Geben Sie Ihre registrierte E-Mail-Adresse ein, um den Prozess zum Zurücksetzen Ihres Passworts zu starten.',
     resetPasswordAlertMessage:
       'Falls die eingegebene E-Mail-Adresse in unserem System existiert, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen.',
     resetPasswordAlertTitle: 'Passwort zurücksetzen',
+    resetPasswordLabel:
+      'Geben Sie Ihre registrierte E-Mail-Adresse ein, um den Prozess zum Zurücksetzen Ihres Passworts zu starten.',
     privacyChecked: 'Mit der Registrierung akzeptieren Sie die',
     privacyCheckLink: 'Datenschutzbestimmungen',
     privacyCheckRequireBody: 'Bitte bestätigen Sie die Datenschutzbestimmungen.',

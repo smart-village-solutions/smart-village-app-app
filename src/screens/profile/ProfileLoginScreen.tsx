@@ -78,7 +78,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
 
   const onSubmit = (loginData: ProfileLogin) =>
     mutateLogIn(loginData, {
-      onSuccess: (responseData) => {
+      onSuccess: (responseData: ProfileMember) => {
         if (!responseData?.member?.authentication_token) {
           return;
         }
