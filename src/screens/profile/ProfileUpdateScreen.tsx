@@ -80,6 +80,28 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
             <SectionHeader big center title={texts.profile.update} />
           </WrapperRow>
 
+          <Wrapper>
+            <Controller
+              name="gender"
+              render={({ field: { name, onChange, value } }) => (
+                <DropdownInput
+                  {...{
+                    control,
+                    data: genderData,
+                    errors,
+                    label: texts.profile.gender,
+                    name,
+                    onChange,
+                    showSearch: false,
+                    value,
+                    valueKey: 'gender'
+                  }}
+                />
+              )}
+              control={control}
+            />
+          </Wrapper>
+
           <Wrapper style={styles.noPaddingTop}>
             <Input
               autoCapitalize="none"
@@ -116,28 +138,6 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
                     onChange,
                     placeholder: texts.profile.birthday,
                     value
-                  }}
-                />
-              )}
-              control={control}
-            />
-          </Wrapper>
-
-          <Wrapper>
-            <Controller
-              name="gender"
-              render={({ field: { name, onChange, value } }) => (
-                <DropdownInput
-                  {...{
-                    control,
-                    data: genderData,
-                    errors,
-                    label: texts.profile.gender,
-                    name,
-                    onChange,
-                    showSearch: false,
-                    value,
-                    valueKey: 'gender'
                   }}
                 />
               )}
