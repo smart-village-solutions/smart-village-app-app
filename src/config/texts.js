@@ -797,6 +797,7 @@ export const texts = {
     firstName: 'Vorname',
     firstname: 'Vorname',
     firstnameError: 'Vorname muss ausgefüllt werden',
+    gender: 'Geschlecht',
     invalidMail: '-Addresse ist keine gültige E-Mail-Adresse.',
     invalidUrl: '-URL ist keine gültige URL',
     lastName: 'Nachname',

@@ -21,7 +21,7 @@ export type DropdownInputProps = {
   ];
   multipleSelect?: boolean;
   value: number | number[];
-  valueKey: 'contentcontainer_id' | 'guid';
+  valueKey: 'contentcontainer_id' | 'guid' | 'gender';
   onChange: (...event: any[]) => void;
   name: string;
   label: string;

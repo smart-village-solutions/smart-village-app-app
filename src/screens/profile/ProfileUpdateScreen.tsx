@@ -24,6 +24,12 @@ import { ProfileUpdate, ScreenName } from '../../types';
 const showUpdateFailAlert = () =>
   Alert.alert(texts.profile.updateProfileFailedTitle, texts.profile.updateProfileFailedBody);
 
+const genderData = [
+  { value: 'Frau', gender: 'frau' },
+  { value: 'Mann', gender: 'mann' },
+  { value: 'divers', gender: 'divers' }
+];
+
 export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
   const {
     control,
@@ -32,6 +38,7 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
   } = useForm<ProfileUpdate>({
     defaultValues: {
       firstName: '',
+      gender: genderData || '',
       lastName: ''
     }
   });
@@ -91,6 +98,28 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
               name="lastName"
               placeholder={texts.profile.lastName}
               validate
+            />
+          </Wrapper>
+
+          <Wrapper>
+            <Controller
+              name="gender"
+              render={({ field: { name, onChange, value } }) => (
+                <DropdownInput
+                  {...{
+                    control,
+                    data: genderData,
+                    errors,
+                    label: texts.profile.gender,
+                    name,
+                    onChange,
+                    showSearch: false,
+                    value,
+                    valueKey: 'gender'
+                  }}
+                />
+              )}
+              control={control}
             />
           </Wrapper>
 

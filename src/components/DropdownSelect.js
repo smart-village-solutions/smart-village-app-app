@@ -142,8 +142,9 @@ export const DropdownSelect = ({
 
 const styles = StyleSheet.create({
   dropdownTextWrapper: {
-    borderColor: colors.borderRgba,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.gray40,
+    borderRadius: normalize(8),
+    borderWidth: normalize(1),
     justifyContent: 'space-between',
     padding: normalize(14)
   },
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface
   },
   dropdownSeparator: {
-    backgroundColor: colors.borderRgba,
+    backgroundColor: colors.gray40,
     height: StyleSheet.hairlineWidth
   },
   selectedValueText: { width: '90%' }
