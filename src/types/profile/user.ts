@@ -36,6 +36,7 @@ export type ProfileResetPassword = {
 };
 
 export type ProfileUpdate = {
+  birthday: string;
   firstName: string;
   gender: string;
   lastName: string;

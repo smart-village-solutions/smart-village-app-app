@@ -789,6 +789,7 @@ export const texts = {
     abort: 'Abbrechen',
     alreadyRegistered: 'Sie sind schon registriert? ',
     back: 'Zurück',
+    birthday: 'Geburtsdatum',
     dayOfBirth: 'Geburtsdatum',
     email: 'E-Mail-Adresse',
     emailError: 'E-Mail-Adresse muss korrekt ausgefüllt werden',

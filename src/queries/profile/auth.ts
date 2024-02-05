@@ -56,6 +56,7 @@ export const profileUpdate = async ({ birthday, firstName, gender, lastName }: P
 
   const formData = {
     member: {
+      birthday,
       firstName,
       gender,
       lastName

@@ -37,6 +37,7 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
     handleSubmit
   } = useForm<ProfileUpdate>({
     defaultValues: {
+      birthday: undefined,
       firstName: '',
       gender: genderData || '',
       lastName: ''
@@ -98,6 +99,27 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
               name="lastName"
               placeholder={texts.profile.lastName}
               validate
+            />
+          </Wrapper>
+
+          <Wrapper style={styles.noPaddingTop}>
+            <Controller
+              name="birthday"
+              render={({ field: { name, onChange, value } }) => (
+                <DateTimeInput
+                  {...{
+                    control,
+                    errors,
+                    label: texts.profile.birthday,
+                    mode: 'date',
+                    name,
+                    onChange,
+                    placeholder: texts.profile.birthday,
+                    value
+                  }}
+                />
+              )}
+              control={control}
             />
           </Wrapper>
 
