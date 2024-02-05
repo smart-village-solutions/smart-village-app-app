@@ -794,10 +794,12 @@ export const texts = {
     emailError: 'E-Mail-Adresse muss korrekt ausgefüllt werden',
     emailInvalid: 'E-Mail-Adresse ungültig',
     enterCode: 'Code eingeben',
+    firstName: 'Vorname',
     firstname: 'Vorname',
     firstnameError: 'Vorname muss ausgefüllt werden',
-    invalidUrl: '-URL ist keine gültige URL',
     invalidMail: '-Addresse ist keine gültige E-Mail-Adresse.',
+    invalidUrl: '-URL ist keine gültige URL',
+    lastName: 'Nachname',
     lastname: 'Nachname',
     lastnameError: 'Nachname muss ausgefüllt werden',
     login: 'Anmelden',
@@ -813,11 +815,6 @@ export const texts = {
     passwordError: 'Passwort muss ausgefüllt werden',
     passwordForgotten: 'Passwort vergessen?',
     passwordLengthError: 'Das Passwort sollte mindestens 5 Zeichen lang sein',
-    resetPasswordAlertMessage:
-      'Falls die eingegebene E-Mail-Adresse in unserem System existiert, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen.',
-    resetPasswordAlertTitle: 'Passwort zurücksetzen',
-    resetPasswordLabel:
-      'Geben Sie Ihre registrierte E-Mail-Adresse ein, um den Prozess zum Zurücksetzen Ihres Passworts zu starten.',
     privacyChecked: 'Mit der Registrierung akzeptieren Sie die',
     privacyCheckLink: 'Datenschutzbestimmungen',
     privacyCheckRequireBody: 'Bitte bestätigen Sie die Datenschutzbestimmungen.',
@@ -832,12 +829,20 @@ export const texts = {
     registrationPrivacyText:
       'Ich bin damit einverstanden, dass meine Angaben gespeichert werden. Weitere Informationen unter:',
     registrationTitle: 'Registrieren',
+    resetPasswordAlertMessage:
+      'Falls die eingegebene E-Mail-Adresse in unserem System existiert, erhalten Sie in Kürze eine E-Mail mit weiteren Anweisungen.',
+    resetPasswordAlertTitle: 'Passwort zurücksetzen',
+    resetPasswordLabel:
+      'Geben Sie Ihre registrierte E-Mail-Adresse ein, um den Prozess zum Zurücksetzen Ihres Passworts zu starten.',
     resetPasswordTitle: 'Passwort zurücksetzen',
     send: 'Absenden',
     signupFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     signupFailedTitle: 'Fehler bei der Registrierung',
     token: 'Code',
-    tokenError: 'Code muss ausgefüllt werden'
+    tokenError: 'Code muss ausgefüllt werden',
+    update: 'Profil aktualisieren',
+    updateProfileFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
+    updateProfileFailedTitle: 'Profil konnte nicht aktualisiert werden'
   },
   pushNotifications: {
     abort: 'Abbrechen',

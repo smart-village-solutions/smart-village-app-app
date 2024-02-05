@@ -1,7 +1,7 @@
 import * as appJson from '../../../app.json';
 import { secrets } from '../../config';
 import { profileAuthToken } from '../../helpers';
-import { ProfileRegistration, ProfileResetPassword } from '../../types';
+import { ProfileRegistration, ProfileResetPassword, ProfileUpdate } from '../../types';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const serverUrl = secrets[namespace]?.serverUrl;
@@ -44,6 +44,29 @@ export const profileRegister = async ({
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  };
+
+  return (await fetch(`${serverUrl}/members.json`, fetchObj)).json();
+};
+
+export const profileUpdate = async ({ birthday, firstName, gender, lastName }: ProfileUpdate) => {
+  const authToken = await profileAuthToken();
+
+  const formData = {
+    member: {
+      firstName,
+      lastName
+    }
+  };
+
+  const fetchObj = {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: authToken ? `Bearer ${authToken}` : ''
     },
     body: JSON.stringify(formData)
   };

@@ -34,3 +34,8 @@ export type ProfileLogin = {
 export type ProfileResetPassword = {
   email: string;
 };
+
+export type ProfileUpdate = {
+  firstName: string;
+  lastName: string;
+};

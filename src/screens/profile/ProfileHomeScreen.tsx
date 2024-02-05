@@ -59,7 +59,6 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
   if (loading || isLoading) {
     return <LoadingSpinner loading />;
   }
-  console.warn('ProfileHomeScreen.tsx: 180: data: ', data);
 
   if (!data) {
     return (
@@ -99,7 +98,7 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
       </SafeAreaViewFlex>
     );
 
-  const { description, headline, picture, subQuery, title } = data;
+  const { description, headline, picture, subQuery, title, webUrl } = data;
 
   return (
     <SafeAreaViewFlex>
@@ -155,7 +154,10 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
           <WrapperHorizontal>
             <RegularText center>
               {texts.profile.alreadyRegistered}
-              <RegularText underline onPress={() => navigation.navigate(ScreenName.ProfileLogin)}>
+              <RegularText
+                underline
+                onPress={() => navigation.navigate(ScreenName.ProfileLogin, { webUrl })}
+              >
                 {texts.profile.login}
               </RegularText>
             </RegularText>
