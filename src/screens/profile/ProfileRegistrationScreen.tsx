@@ -18,6 +18,7 @@ import {
   WrapperRow
 } from '../../components';
 import { Icon, colors, consts, normalize, texts } from '../../config';
+import { storeFirstLogin } from '../../helpers';
 import { profileRegister } from '../../queries/profile';
 import { ProfileRegistration, ScreenName } from '../../types';
 
@@ -65,6 +66,8 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
             reset();
             return;
           }
+
+          storeFirstLogin(true);
 
           navigation.navigate(ScreenName.ProfileSignup, {
             email: registerData.email,
