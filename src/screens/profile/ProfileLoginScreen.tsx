@@ -138,6 +138,8 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
               rules={{ required: true }}
               errorMessage={errors.password && `${texts.profile.password} muss ausgefüllt werden`}
               control={control}
+              inputStyle={isSecureTextEntry && styles.passwordInput}
+              inputContainerStyle={styles.passwordInputContainer}
             />
           </Wrapper>
 
@@ -188,5 +190,11 @@ const styles = StyleSheet.create({
   },
   lineHeightAdjustment: {
     lineHeight: normalize(15)
+  },
+  passwordInput: {
+    lineHeight: normalize(17)
+  },
+  passwordInputContainer: {
+    height: normalize(45)
   }
 });

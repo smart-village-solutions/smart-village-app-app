@@ -17,7 +17,7 @@ import {
   Wrapper,
   WrapperRow
 } from '../../components';
-import { Icon, colors, consts, texts } from '../../config';
+import { Icon, colors, consts, normalize, texts } from '../../config';
 import { profileRegister } from '../../queries/profile';
 import { ProfileRegistration, ScreenName } from '../../types';
 
@@ -123,6 +123,8 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
               }}
               errorMessage={errors.password && errors.password.message}
               control={control}
+              inputStyle={isSecureTextEntry && styles.passwordInput}
+              inputContainerStyle={styles.passwordInputContainer}
             />
           </Wrapper>
 
@@ -148,6 +150,8 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
               }}
               errorMessage={errors.passwordConfirmation && errors.passwordConfirmation.message}
               control={control}
+              inputStyle={isSecureTextEntryConfirmation && styles.passwordInput}
+              inputContainerStyle={styles.passwordInputContainer}
             />
           </Wrapper>
 
@@ -199,5 +203,11 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
 const styles = StyleSheet.create({
   noPaddingTop: {
     paddingTop: 0
+  },
+  passwordInput: {
+    lineHeight: normalize(17)
+  },
+  passwordInputContainer: {
+    height: normalize(45)
   }
 });
