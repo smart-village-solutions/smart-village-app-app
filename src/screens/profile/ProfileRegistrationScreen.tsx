@@ -66,9 +66,10 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
             return;
           }
 
-          navigation.navigate(ScreenName.ProfileLogin, {
+          navigation.navigate(ScreenName.ProfileSignup, {
             email: registerData.email,
-            password: registerData.password
+            password: registerData.password,
+            webUrl: dataPrivacyLink
           });
         }
       }
