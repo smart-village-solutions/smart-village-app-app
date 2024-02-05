@@ -18,6 +18,8 @@ import { colors, consts, normalize, texts } from '../../config';
 import { useProfileUser, useStaticContent, useTrackScreenViewAsync } from '../../hooks';
 import { ScreenName } from '../../types';
 
+import { ProfileScreen } from './ProfileScreen';
+
 const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
@@ -60,6 +62,10 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
     return <LoadingSpinner loading />;
   }
 
+  if (isLoggedIn) {
+    return <ProfileScreen navigation={navigation} route={route} />;
+  }
+
   if (!data) {
     return (
       <SafeAreaViewFlex>
@@ -78,25 +84,6 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
       </SafeAreaViewFlex>
     );
   }
-
-  if (isLoggedIn)
-    return (
-      <SafeAreaViewFlex>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={refreshHome}
-              colors={[colors.refreshControl]}
-              tintColor={colors.refreshControl}
-            />
-          }
-        >
-          {/* TODO: Profile Home Sections */}
-          <EmptyMessage title={texts.empty.content} />
-        </ScrollView>
-      </SafeAreaViewFlex>
-    );
 
   const { description, headline, picture, subQuery, title, webUrl } = data;
 

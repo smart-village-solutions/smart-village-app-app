@@ -26,7 +26,7 @@ export const VolunteerAvatar = ({
     ?.map((part) => part[0])
     ?.join('');
 
-  const uri = volunteerProfileImage(guid);
+  const uri = !!guid && volunteerProfileImage(guid);
 
   if (totalCount > MAX_AVATARS_COUNT && index == MAX_AVATARS_COUNT) {
     return (

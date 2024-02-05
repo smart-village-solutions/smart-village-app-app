@@ -60,7 +60,8 @@ export const profileUpdate = async ({ birthday, firstName, gender, lastName }: P
       firstName,
       gender,
       lastName
-    }
+    },
+    auth_token: authToken // TODO: remove this when the backend is updated
   };
 
   const fetchObj = {
