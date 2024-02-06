@@ -104,7 +104,8 @@ const styles = StyleSheet.create({
     })
   },
   imageContainer: {
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginBottom: normalize(7)
   }
 });
 
@@ -125,7 +126,6 @@ const stylesWithProps = ({ horizontal }) => {
       width: maxWidth
     },
     image: {
-      marginBottom: normalize(7),
       height: imageHeight(maxWidth),
       width: maxWidth
     }
