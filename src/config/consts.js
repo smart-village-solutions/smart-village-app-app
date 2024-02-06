@@ -102,6 +102,14 @@ export const consts = {
     TOURS: ONCE_A_DAY
   },
 
+  FILTER_TYPES: {
+    DATE: 'date',
+    DROPDOWN: 'dropdown',
+    SUE: {
+      STATUS: 'status'
+    }
+  },
+
   DIMENSIONS: {
     // the max screen size we want to render full screen
     FULL_SCREEN_MAX_WIDTH: 504

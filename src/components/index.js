@@ -3,6 +3,7 @@ export * from './bookmarks';
 export * from './consul';
 export * from './defectReport';
 export * from './encounter';
+export * from './filter';
 export * from './form';
 export * from './infoCard';
 export * from './map';
