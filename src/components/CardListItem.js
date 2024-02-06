@@ -38,9 +38,9 @@ const renderCardContent = (item, horizontal, sue) => {
       !!picture?.url && (
         <Image
           borderRadius={sue ? 0 : imageBorderRadius}
+          childrenContainerStyle={stylesWithProps({ aspectRatio, horizontal }).image}
           containerStyle={[styles.imageContainer, styles.sueImageContainer, imageStyle]}
           source={{ uri: picture.url }}
-          style={stylesWithProps({ aspectRatio, horizontal }).image}
         />
       ),
     subtitle: () =>
@@ -150,7 +150,8 @@ const styles = StyleSheet.create({
     })
   },
   imageContainer: {
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginBottom: normalize(7)
   },
   noPaddingTop: {
     paddingTop: 0
@@ -184,7 +185,6 @@ const stylesWithProps = ({ aspectRatio, horizontal }) => {
       width: maxWidth
     },
     image: {
-      marginBottom: normalize(7),
       height: imageHeight(maxWidth, aspectRatio),
       width: maxWidth
     }
