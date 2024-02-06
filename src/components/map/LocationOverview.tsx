@@ -21,7 +21,7 @@ import { Map } from './Map';
 type Props = {
   filterByOpeningTimes?: boolean;
   position?: LocationObject;
-  navigation: StackNavigationProp<never>;
+  navigation: StackNavigationProp<Record<string, any>>;
   queryVariables: {
     category?: string;
     categoryId?: string | number;
@@ -62,7 +62,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
   const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
-  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime: undefined });
+  const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
 
   const { data: overviewData, loading } = useQuery(getQuery(QUERY_TYPES.POINTS_OF_INTEREST), {
     fetchPolicy,

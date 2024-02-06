@@ -7,7 +7,7 @@ import { addToStore, findClosestItem, isActive, readFromStore } from '../helpers
 import { useHomeRefresh, useStaticContent } from '../hooks';
 
 import { Button } from './Button';
-import { Image } from './Image';
+import { ImagesCarousel } from './ImagesCarousel';
 import { BoldText, RegularText } from './Text';
 import { Wrapper, WrapperHorizontal } from './Wrapper';
 
@@ -22,6 +22,8 @@ interface DateRange {
 }
 
 interface DataItem {
+  aspectRatio?: { HEIGHT: number; WIDTH: number };
+  autoplayInterval?: number;
   backgroundColor?: string;
   button: {
     navigationTo: string;
@@ -32,7 +34,11 @@ interface DataItem {
   dates: DateRange[];
   description: string;
   id: number;
-  picture?: { aspectRatio?: { HEIGHT: number; WIDTH: number }; uri: string };
+  pictures?: {
+    navigationTo: string;
+    params: { title?: string; webUrl: string };
+    uri: string;
+  }[];
   showButtonToClose?: boolean;
   title: string;
 }
@@ -80,11 +86,13 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
   if (!isVisible || !closestItem) return null;
 
   const {
+    aspectRatio,
+    autoplayInterval,
     backgroundColor,
     button,
     description,
     headline,
-    picture,
+    pictures,
     showButtonToClose = true,
     title
   } = closestItem;
@@ -102,13 +110,19 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
               </TouchableOpacity>
             )}
 
-            {!!picture && (
-              <Image
-                source={picture}
-                borderRadius={normalize(8)}
-                aspectRatio={picture.aspectRatio || { HEIGHT: 0.7, WIDTH: 1 }}
-                resizeMode="cover"
-              />
+            {pictures?.length ? (
+              <View style={styles.carouselContainer}>
+                <ImagesCarousel
+                  aspectRatio={aspectRatio || { HEIGHT: 0.7, WIDTH: 1 }}
+                  autoplayInterval={autoplayInterval}
+                  data={pictures}
+                  isDisturber
+                  navigation={navigation}
+                  refreshTimeKey={`publicJsonFile-${publicJsonFile}`}
+                />
+              </View>
+            ) : (
+              <View style={styles.withoutImageMarginTop} />
             )}
 
             <Wrapper style={styles.noPaddingBottom}>
@@ -158,6 +172,11 @@ export const Disturber = ({ navigation, publicJsonFile }: Props) => {
 };
 
 const styles = StyleSheet.create({
+  carouselContainer: {
+    borderTopLeftRadius: normalize(8),
+    borderTopRightRadius: normalize(8),
+    overflow: 'hidden'
+  },
   closeButton: {
     alignItems: 'center',
     backgroundColor: colors.gray20,
@@ -179,6 +198,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: normalize(16),
     textTransform: 'uppercase'
+  },
+  withoutImageMarginTop: {
+    marginTop: normalize(21)
   },
   noPaddingBottom: {
     paddingBottom: 0

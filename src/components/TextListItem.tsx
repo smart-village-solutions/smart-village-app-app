@@ -8,7 +8,7 @@ import { colors, consts, Icon, normalize } from '../config';
 import { trimNewLines } from '../helpers';
 
 import { Image } from './Image';
-import { BoldText, RegularText } from './Text';
+import { BoldText, HeadlineText, RegularText } from './Text';
 import { Touchable } from './Touchable';
 import { WrapperRow } from './Wrapper';
 
@@ -20,6 +20,7 @@ export type ItemData = {
   onPress?: (navigation: any) => void;
   params: Record<string, unknown>;
   picture?: { url: string };
+  rightIcon?: React.ReactElement;
   routeName: string;
   statustitle?: string;
   statustitleIcon?: React.ReactElement;
@@ -34,6 +35,8 @@ type Props = {
   leftImage?: boolean | undefined;
   navigation: StackNavigationProp<Record<string, any>>;
   noSubtitle?: boolean | undefined;
+  rightImage?: boolean | undefined;
+  withCard?: boolean | undefined;
 };
 
 /* eslint-disable complexity */
@@ -41,7 +44,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
   propTypes?: Record<string, Validator<any>>;
 } & {
   defaultProps?: Partial<Props>;
-} = memo<Props>(({ item, leftImage, navigation, noSubtitle }) => {
+} = memo<Props>(({ item, leftImage, navigation, noSubtitle, rightImage, withCard }) => {
   const {
     badge,
     bottomDivider,
@@ -49,6 +52,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
     onPress,
     params,
     picture,
+    rightIcon,
     routeName: name,
     statustitle,
     statustitleIcon,
@@ -58,7 +62,13 @@ export const TextListItem: NamedExoticComponent<Props> & {
     topDivider
   } = item;
   const navigate = () => navigation && navigation.push(name, params);
-  let titleText = <BoldText>{trimNewLines(title)}</BoldText>;
+  let titleText = withCard ? (
+    <HeadlineText small style={{ marginTop: normalize(4) }}>
+      {trimNewLines(title)}
+    </HeadlineText>
+  ) : (
+    <BoldText>{trimNewLines(title)}</BoldText>
+  );
 
   if (teaserTitle) {
     titleText = (
@@ -101,17 +111,43 @@ export const TextListItem: NamedExoticComponent<Props> & {
         (leftImage && !!picture?.url ? (
           <Image
             source={{ uri: picture.url }}
-            style={styles.smallImage}
+            childrenContainerStyle={styles.smallImage}
+            borderRadius={normalize(8)}
             containerStyle={styles.smallImageContainer}
           />
         ) : undefined)}
 
-      <ListItem.Content>
-        {noSubtitle || !subtitle ? titleText : <RegularText small>{subtitle}</RegularText>}
-        {noSubtitle || !subtitle ? undefined : titleText}
-      </ListItem.Content>
+      {withCard ? (
+        <ListItem.Content>
+          {noSubtitle || !subtitle ? undefined : titleText}
+          {noSubtitle || !subtitle ? (
+            titleText
+          ) : (
+            <RegularText small style={{ marginTop: normalize(6) }}>
+              {subtitle}
+            </RegularText>
+          )}
+        </ListItem.Content>
+      ) : (
+        <ListItem.Content>
+          {noSubtitle || !subtitle ? undefined : titleText}
+          {noSubtitle || !subtitle ? titleText : <RegularText small>{subtitle}</RegularText>}
+        </ListItem.Content>
+      )}
 
-      {!!navigation && <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />}
+      {rightIcon ||
+        (rightImage && !!picture?.url ? (
+          <Image
+            source={{ uri: picture.url }}
+            childrenContainerStyle={styles.smallImage}
+            borderRadius={normalize(8)}
+            containerStyle={styles.smallImageContainer}
+          />
+        ) : undefined)}
+
+      {!!navigation && !withCard && (
+        <Icon.ArrowRight color={colors.darkText} size={normalize(18)} />
+      )}
     </ListItem>
   );
 });
@@ -123,8 +159,8 @@ const styles = StyleSheet.create({
     paddingVertical: normalize(12)
   },
   smallImage: {
-    height: normalize(33),
-    width: normalize(66)
+    height: normalize(72),
+    width: normalize(96)
   },
   smallImageContainer: {
     alignSelf: 'flex-start'
@@ -140,10 +176,14 @@ TextListItem.propTypes = {
   item: PropTypes.object.isRequired,
   leftImage: PropTypes.bool,
   navigation: PropTypes.object,
-  noSubtitle: PropTypes.bool
+  noSubtitle: PropTypes.bool,
+  rightImage: PropTypes.bool,
+  withCard: PropTypes.bool
 };
 
 TextListItem.defaultProps = {
   leftImage: false,
-  noSubtitle: false
+  noSubtitle: false,
+  rightImage: false,
+  withCard: false
 };

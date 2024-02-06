@@ -29,33 +29,32 @@ const renderCardContent = (item, horizontal, sue) => {
     topTitle
   } = item;
   const { contentSequence, imageBorderRadius = 5, imageStyle, textsStyle = {} } = appDesignSystem;
-  const { subtitleStyle, titleStyle, topTitleStyle } = textsStyle;
+  const { generalStyle, subtitleStyle, titleStyle, topTitleStyle } = textsStyle;
 
   const cardContent = [];
 
   const sequenceMap = {
-    picture: () => (
-      <Image
-        borderRadius={sue ? 0 : imageBorderRadius}
-        containerStyle={[
-          styles.imageContainer,
-          styles.sueImageContainer,
-          !!imageStyle && imageStyle
-        ]}
-        source={{ uri: picture.url }}
-        style={stylesWithProps({ aspectRatio, horizontal }).image}
-      />
-    ),
-    subtitle: () => (
-      <RegularText small style={[!!subtitleStyle && subtitleStyle]}>
-        {subtitle}
-      </RegularText>
-    ),
-    title: () => (
-      <BoldText style={[!!titleStyle && titleStyle]}>
-        {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
-      </BoldText>
-    ),
+    picture: () =>
+      !!picture?.url && (
+        <Image
+          borderRadius={sue ? 0 : imageBorderRadius}
+          containerStyle={[styles.imageContainer, styles.sueImageContainer, imageStyle]}
+          source={{ uri: picture.url }}
+          style={stylesWithProps({ aspectRatio, horizontal }).image}
+        />
+      ),
+    subtitle: () =>
+      !!subtitle && (
+        <RegularText small style={[generalStyle, subtitleStyle]}>
+          {subtitle}
+        </RegularText>
+      ),
+    title: () =>
+      !!title && (
+        <BoldText style={[generalStyle, titleStyle]}>
+          {horizontal ? (title.length > 60 ? title.substring(0, 60) + '...' : title) : title}
+        </BoldText>
+      ),
     topTitle: () => (
       <RegularText small style={[!!topTitleStyle && topTitleStyle]}>
         {topTitle}

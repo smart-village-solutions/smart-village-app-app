@@ -344,7 +344,8 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Settings,
       screenComponent: SettingsScreen,
-      screenOptions: { title: texts.screenTitles.settings }
+      screenOptions: getScreenOptions({ withDrawer: isDrawer }),
+      initialParams: { title: texts.screenTitles.settings }
     },
     {
       routeName: ScreenName.SueList,

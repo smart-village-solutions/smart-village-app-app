@@ -761,6 +761,7 @@ export const texts = {
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
     location: 'Anfahrt',
+    noAvailableVehicles: 'Im Moment ist kein Fahrzeug verfügbar',
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
     priceFree: 'kostenlos',
@@ -844,6 +845,12 @@ export const texts = {
         'Soll Matomo Analytics deaktiviert werden? Die Deaktivierung von Matomo Analytics wird mit dem nächsten Neustart der App wirksam.',
       yes: 'Ja'
     },
+    ar: {
+      setting: 'AR-Einstellungen'
+    },
+    list: {
+      setting: 'App-Aussehen'
+    },
     locationService: {
       abort: 'Abbrechen',
       alternativePositionHint:
@@ -853,7 +860,10 @@ export const texts = {
       onSystemPermissionMissing:
         'Um diese Einstellung zu aktivieren muss zunächst die Berechtigung für Ortungsdienste in den Systemeinstellungen erteilt werden.',
       save: 'Speichern',
-      sectionHeader: 'Standort'
+      setting: 'Standort'
+    },
+    mowasRegion: {
+      setting: 'MoWaS-Regionen'
     },
     onboarding: {
       onActivate: 'Beim nächsten Start wird die App-Einführung angezeigt.',
@@ -861,7 +871,7 @@ export const texts = {
       ok: 'Ok'
     },
     permanentFilter: {
-      sectionHeader: 'Datenquellen'
+      setting: 'Datenquellen'
     }
   },
   settingsScreen: {
@@ -889,6 +899,7 @@ export const texts = {
     },
     listLayouts: {
       cardList: 'Liste mit großen Bildern',
+      cardTextList: 'Textliste beginnend mit großem Bild',
       eventRecordsTitle: 'Veranstaltungen',
       imageTextList: 'Liste mit kleinen Bildern',
       newsItemsTitle: 'Nachrichten',
@@ -898,12 +909,7 @@ export const texts = {
     },
     locationService: 'Ortungsdienste',
     onboarding: 'App-Einführung',
-    pushNotifications: 'Push-Benachrichtigungen',
-    tabs: {
-      arSettings: 'AR-Einstellungen',
-      general: 'Allgemein',
-      listTypes: 'App-Aussehen'
-    }
+    pushNotifications: 'Push-Benachrichtigungen'
   },
   sue: {
     currentStatus: 'Aktueller Status',

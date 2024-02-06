@@ -111,9 +111,7 @@ const NamedIcon = ({
 };
 
 export const Icon = {
-  About: (props: IconProps) => (
-    <NamedIcon name={device.platform === 'ios' ? 'ios-menu' : 'md-menu'} {...props} />
-  ),
+  About: (props: IconProps) => <NamedIcon name="menu" {...props} />,
   AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
   ArrowDown: (props: IconProps) => <SvgIcon xml={arrowDown} {...props} />,
   ArrowDownCircle: (props: IconProps) => <NamedIcon name="arrow-down-circle" {...props} />,
@@ -128,11 +126,9 @@ export const Icon = {
   Close: (props: IconProps) => <SvgIcon xml={close} {...props} />,
   CloseCircle: (props: IconProps) => <NamedIcon name="close-circle" {...props} />,
   CloseCircleOutline: (props: IconProps) => <NamedIcon name="close-circle-outline" {...props} />,
-  Company: (props: IconProps) => (
-    <NamedIcon name={device.platform === 'ios' ? 'ios-briefcase' : 'md-briefcase'} {...props} />
-  ),
+  Company: (props: IconProps) => <NamedIcon name="briefcase" {...props} />,
   ConstructionSite: (props: IconProps) => <SvgIcon xml={constructionSite} {...props} />,
-  Document: (props: IconProps) => <NamedIcon name="md-document-text-outline" {...props} />,
+  Document: (props: IconProps) => <NamedIcon name="document-text-outline" {...props} />,
   DrawerMenu: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
   EditSetting: (props: IconProps) => <SvgIcon xml={editSetting} {...props} />,
   EmptySection: (props: IconProps) => <SvgIcon xml={emptySection} {...props} />,
@@ -161,26 +157,14 @@ export const Icon = {
   Phone: (props: IconProps) => <SvgIcon xml={phone} {...props} />,
   Play: (props: IconProps) => <NamedIcon name="play" {...props} />,
   Plus: (props: IconProps) => <NamedIcon name="add" {...props} />,
-  RadioButtonEmpty: (props: IconProps) => (
-    <NamedIcon
-      name={device.platform === 'ios' ? 'ios-radio-button-off' : 'md-radio-button-off'}
-      {...props}
-    />
-  ),
-  RadioButtonFilled: (props: IconProps) => (
-    <NamedIcon
-      name={device.platform === 'ios' ? 'ios-radio-button-on' : 'md-radio-button-on'}
-      {...props}
-    />
-  ),
+  RadioButtonEmpty: (props: IconProps) => <NamedIcon name="radio-button-off" {...props} />,
+  RadioButtonFilled: (props: IconProps) => <NamedIcon name="radio-button-on" {...props} />,
   RoutePlanner: (props: IconProps) => <SvgIcon xml={routePlanner} {...props} />,
   Service: (props: IconProps) => <SvgIcon xml={service} {...props} />,
-  Settings: (props: IconProps) => (
-    <NamedIcon name={device.platform === 'ios' ? 'ios-settings' : 'md-settings'} {...props} />
-  ),
+  Settings: (props: IconProps) => <NamedIcon name="settings" {...props} />,
   Share: (props: IconProps) =>
     device.platform === 'ios' ? (
-      <NamedIcon name="ios-share" {...props} />
+      <NamedIcon name="share" {...props} />
     ) : (
       <SvgIcon xml={share} {...props} />
     ),
@@ -199,10 +183,5 @@ export const Icon = {
   Url: (props: IconProps) => <SvgIcon xml={url} {...props} />,
   VerifiedBadge: (props: IconProps) => <SvgIcon xml={verifiedBadge} {...props} />,
   Visible: (props: IconProps) => <SvgIcon xml={visible} {...props} />,
-  Volunteer: (props: IconProps) => (
-    <NamedIcon
-      name={device.platform === 'ios' ? 'ios-people-circle' : 'md-people-circle'}
-      {...props}
-    />
-  )
+  Volunteer: (props: IconProps) => <NamedIcon name="people-circle" {...props} />
 };

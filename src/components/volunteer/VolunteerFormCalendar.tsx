@@ -108,7 +108,7 @@ export const VolunteerFormCalendar = ({
   } = useForm<Calendar>({
     mode: 'onBlur',
     defaultValues: {
-      isPublic: 0,
+      isPublic: calendarData?.isPublic || 0,
       calendarId: calendarData?.id || '',
       contentContainerId: groupId || '',
       title: calendarData?.title || '',

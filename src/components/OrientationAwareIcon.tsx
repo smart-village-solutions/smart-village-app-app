@@ -6,6 +6,7 @@ import { OrientationContext } from '../OrientationProvider';
 
 type Props = IconProps & {
   Icon: (props: IconProps) => JSX.Element;
+  landscapeIconStyle?: StyleProp<ViewStyle>;
   landscapeStyle?: StyleProp<ViewStyle>;
   size?: number;
 };
@@ -14,7 +15,14 @@ const LANDSCAPE_ADJUSTMENT_FACTOR = 0.75;
 
 export const OrientationAwareIcon = (props: Props) => {
   const { orientation, dimensions } = useContext(OrientationContext);
-  const { Icon, iconStyle, landscapeStyle, size = normalize(24), style } = props;
+  const {
+    Icon,
+    iconStyle,
+    landscapeIconStyle,
+    landscapeStyle,
+    size = normalize(24),
+    style
+  } = props;
 
   const needLandscapeStyle =
     orientation === 'landscape' || dimensions.width > consts.DIMENSIONS.FULL_SCREEN_MAX_WIDTH;
@@ -26,12 +34,11 @@ export const OrientationAwareIcon = (props: Props) => {
   }
 
   const adjustedSize = size * LANDSCAPE_ADJUSTMENT_FACTOR;
-  const landscapeIconStyle = { width: adjustedSize };
 
   return (
     <Icon
       {...props}
-      iconStyle={[iconStyle, styles.marginIcon, landscapeIconStyle]}
+      iconStyle={[iconStyle, styles.marginIcon, { width: adjustedSize }, landscapeIconStyle]}
       size={adjustedSize}
       style={[style, landscapeStyle]}
     />

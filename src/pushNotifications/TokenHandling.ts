@@ -1,11 +1,12 @@
 import * as SecureStore from 'expo-secure-store';
 
-import { device, secrets } from '../config';
 import * as appJson from '../../app.json';
+import { device, secrets } from '../config';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 
 export enum PushNotificationStorageKeys {
+  ACCESS_TOKEN = 'ACCESS_TOKEN',
   PUSH_TOKEN = 'PUSH_TOKEN',
   IN_APP_PERMISSION = 'IN_APP_PERMISSION'
 }
@@ -36,7 +37,7 @@ export const handleIncomingToken = async (token?: string) => {
 };
 
 const removeTokenFromServer = async (token: string) => {
-  const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesDelete;
   const fetchObj = {
     method: 'DELETE',
@@ -62,7 +63,7 @@ const removeTokenFromServer = async (token: string) => {
 };
 
 const addTokenToServer = async (token: string) => {
-  const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesRegister;
   const os =
     device.platform === 'ios' || device.platform === 'android' ? device.platform : 'undefined';
@@ -102,7 +103,7 @@ export const getPushTokenFromStorage = () =>
 
 export const addDataProvidersToTokenOnServer = async (excludeDataProviderIds: number[]) => {
   const storedToken = await getPushTokenFromStorage();
-  const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
   const requestPath =
     secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesDataProviders;
 
@@ -124,6 +125,30 @@ export const addDataProvidersToTokenOnServer = async (excludeDataProviderIds: nu
 
   return false;
 };
+export const addMowasRegionalKeysToTokenOnServer = async (mowasRegionalKeys: number[]) => {
+  const storedToken = await getPushTokenFromStorage();
+  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
+  const requestPath =
+    secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesDataProviders;
+
+  const fetchObj = {
+    method: 'PUT',
+    headers: {
+      Accept: 'application/json',
+      Authorization: 'Bearer ' + accessToken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      notification_device: { token: storedToken, exclude_mowas_regional_keys: mowasRegionalKeys }
+    })
+  };
+
+  if (storedToken && accessToken) {
+    return fetch(requestPath, fetchObj).then((response) => response.status === 200);
+  }
+
+  return false;
+};
 
 export const togglePushDeviceAssignment = async (
   notificationPushableId: string,
@@ -131,7 +156,7 @@ export const togglePushDeviceAssignment = async (
   method: 'POST' | 'DELETE' = 'POST'
 ) => {
   const storedToken = await getPushTokenFromStorage();
-  const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+  const accessToken = await SecureStore.getItemAsync(PushNotificationStorageKeys.ACCESS_TOKEN);
   let requestPath = secrets[namespace].serverUrl + secrets[namespace].rest.pushDevicesAddAssignment;
 
   if (method === 'DELETE') {
