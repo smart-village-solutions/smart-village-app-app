@@ -59,7 +59,11 @@ export const DropdownFilter = ({
 
             return (
               <>
-                <DropdownSelect data={dropdownData} setData={setDropdownData} />
+                <DropdownSelect
+                  data={dropdownData}
+                  setData={setDropdownData}
+                  placeholder={placeholder}
+                />
                 <Input
                   name={name}
                   validate
