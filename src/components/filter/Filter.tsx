@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider } from 'react-native-elements';
 
@@ -24,33 +24,35 @@ type FilterProps = {
 };
 
 type FilterTypesProps = {
-  data: { selected: boolean; value: string }[];
+  data:
+    | { id: number; index: number; selected: boolean; value: string }[]
+    | { name: string; placeholder: string }[]
+    | {
+        status: string;
+        matchingStatuses: string[];
+        iconName: string;
+      }[];
   label?: string;
   name: string;
   placeholder?: string;
   type: string;
   value?: string;
-  valueKey: string;
-  displayKey?: string;
-  startDate: {
+  startDate?: {
     name: string;
     placeholder: string;
   };
-  endDate: {
+  endDate?: {
     name: string;
     placeholder: string;
   };
 };
 
 type Props = {
-  filterData?: FilterProps;
   filterTypes?: FilterTypesProps[];
-  onPress?: () => void;
   setQueryVariables: (data: FilterProps) => void;
-  style?: StyleProp<ViewStyle>;
 };
 
-export const Filter = ({ setQueryVariables, filterTypes }: Props) => {
+export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   const {
@@ -98,24 +100,23 @@ export const Filter = ({ setQueryVariables, filterTypes }: Props) => {
               <WrapperVertical style={styles.noPaddingBottom}>
                 <DateFilter
                   containerStyle={{ width: device.width / normalize(2) }}
-                  item={item}
                   control={control}
                   errors={errors}
+                  {...item}
+                  data={item.data as { name: string; placeholder: string }[]}
                 />
               </WrapperVertical>
             )}
 
-            {item.type === FILTER_TYPES.DROPDOWN && (
+            {item.type === FILTER_TYPES.DROPDOWN && item.data?.length && (
               <WrapperVertical style={styles.noPaddingBottom}>
                 <DropdownFilter
                   control={control}
-                  data={item.data}
                   errors={errors}
-                  label={item.label}
-                  name={item.name}
-                  placeholder={item.placeholder}
-                  valueKey={item.valueKey}
-                  displayKey={item.displayKey}
+                  {...item}
+                  data={
+                    item.data as { id: number; index: number; selected: boolean; value: string }[]
+                  }
                 />
               </WrapperVertical>
             )}
@@ -123,11 +124,11 @@ export const Filter = ({ setQueryVariables, filterTypes }: Props) => {
             {item.type === FILTER_TYPES.SUE.STATUS && (
               <WrapperVertical style={styles.noPaddingBottom}>
                 <StatusFilter
-                  name={item.name}
                   control={control}
-                  errors={errors}
-                  data={item.value}
-                  label={item.label}
+                  {...item}
+                  data={
+                    item.data as { status: string; matchingStatuses: string[]; iconName: string }[]
+                  }
                 />
               </WrapperVertical>
             )}

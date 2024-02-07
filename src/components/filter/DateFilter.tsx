@@ -22,110 +22,7 @@ type Props = {
   control: any;
   errors: any;
   required?: boolean;
-  item: {
-    type: string;
-    startDate: { name: string; placeholder: string };
-    endDate: { name: string; placeholder: string };
-  };
-};
-
-export const DateFilter = ({ containerStyle, control, errors, required, item }: Props) => {
-  const [isStartDateCollapsed, setIsStartDateCollapsed] = useState(false);
-  const [isEndDateCollapsed, setIsEndDateCollapsed] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-
-  const {
-    startDate: { name: startDateName, placeholder: startDatePlaceholder },
-    endDate: { name: endDateName, placeholder: endDatePlaceholder }
-  } = item;
-
-  return (
-    <>
-      <Label>{texts.filter.date}</Label>
-      <WrapperRow spaceBetween>
-        <View style={(styles.container, containerStyle)}>
-          <Controller
-            name={startDateName}
-            render={({ field: { name, onChange, value } }) => {
-              useEffect(() => {
-                onChange(startDate);
-              }, [startDate]);
-
-              return (
-                <>
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => {
-                      setIsStartDateCollapsed(!isStartDateCollapsed);
-                      setIsEndDateCollapsed(false);
-                    }}
-                  >
-                    <RegularText style={styles.buttonText} placeholder={!value}>
-                      {value ? value : startDatePlaceholder}
-                    </RegularText>
-
-                    <Icon.Calendar style={styles.icon} />
-                  </TouchableOpacity>
-                  <Input
-                    name={startDateName}
-                    validate
-                    hidden
-                    rules={{ required }}
-                    errorMessage={errors[name] && `${name} muss ausgewählt werden`}
-                    control={control}
-                  />
-                </>
-              );
-            }}
-            control={control}
-          />
-        </View>
-
-        <View style={(styles.container, containerStyle)}>
-          <Controller
-            name={endDateName}
-            render={({ field: { name, onChange, value } }) => {
-              useEffect(() => {
-                onChange(endDate);
-              }, [endDate]);
-
-              return (
-                <>
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => {
-                      setIsEndDateCollapsed(!isEndDateCollapsed);
-                      setIsStartDateCollapsed(false);
-                    }}
-                  >
-                    <RegularText style={styles.buttonText} placeholder={!value}>
-                      {value ? value : endDatePlaceholder}
-                    </RegularText>
-
-                    <Icon.Calendar style={styles.icon} />
-                  </TouchableOpacity>
-                  <Input
-                    name={endDateName}
-                    hidden
-                    validate
-                    rules={{ required }}
-                    errorMessage={errors[name] && `${name} muss ausgewählt werden`}
-                    control={control}
-                  />
-                </>
-              );
-            }}
-            control={control}
-          />
-        </View>
-      </WrapperRow>
-
-      <CalendarView date={startDate} setDate={setStartDate} isCollapsed={isStartDateCollapsed} />
-
-      <CalendarView date={endDate} setDate={setEndDate} isCollapsed={isEndDateCollapsed} />
-    </>
-  );
+  data: { name: string; placeholder: string }[];
 };
 
 const CalendarView = ({
@@ -151,7 +48,7 @@ const CalendarView = ({
   }, [date]);
 
   return (
-    <Collapsible collapsed={!isCollapsed}>
+    <Collapsible collapsed={isCollapsed}>
       <Calendar
         renderArrow={renderArrow}
         firstDay={1}
@@ -172,6 +69,83 @@ const CalendarView = ({
         }}
       />
     </Collapsible>
+  );
+};
+
+export const DateFilter = ({ containerStyle, control, errors, required, data }: Props) => {
+  const [isCollapsed, setIsCollapsed] = useState<{ [key: string]: boolean }>(
+    data.reduce((acc: { [key: string]: boolean }, item) => {
+      acc[item.name] = true;
+      return acc;
+    }, {})
+  );
+  const [selectedDate, setSelectedDate] = useState<{ [key: string]: string }>(
+    data.reduce((acc: { [key: string]: string }, item) => {
+      acc[item.name] = '';
+      return acc;
+    }, {})
+  );
+
+  if (!data.length) return null;
+
+  return (
+    <>
+      <Label>{texts.filter.date}</Label>
+      <WrapperRow spaceBetween>
+        {data.map((item) => (
+          <View key={item.name} style={(styles.container, containerStyle)}>
+            <Controller
+              name={item.name}
+              render={({ field: { name, onChange, value } }) => {
+                useEffect(() => {
+                  onChange(selectedDate[item.name]);
+                }, [selectedDate[item.name]]);
+
+                return (
+                  <>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => {
+                        setIsCollapsed((prev) =>
+                          Object.keys(prev).reduce((acc: { [key: string]: boolean }, key) => {
+                            acc[key] = key === item.name ? !prev[key] : true;
+                            return acc;
+                          }, {})
+                        );
+                      }}
+                    >
+                      <RegularText style={styles.buttonText} placeholder={!value}>
+                        {value ? momentFormat(value, 'DD.MM.YYYY') : item.placeholder}
+                      </RegularText>
+
+                      <Icon.Calendar style={styles.icon} />
+                    </TouchableOpacity>
+                    <Input
+                      name={item.name}
+                      validate
+                      hidden
+                      rules={{ required }}
+                      errorMessage={errors[name] && `${name} muss ausgewählt werden`}
+                      control={control}
+                    />
+                  </>
+                );
+              }}
+              control={control}
+            />
+          </View>
+        ))}
+      </WrapperRow>
+
+      {data.map((item) => (
+        <CalendarView
+          key={`calendar-${item.name}`}
+          date={selectedDate[item.name]}
+          setDate={(date) => setSelectedDate((prev) => ({ ...prev, [item.name]: date }))}
+          isCollapsed={isCollapsed[item.name]}
+        />
+      ))}
+    </>
   );
 };
 

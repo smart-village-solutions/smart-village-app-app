@@ -6,16 +6,14 @@ import { Label } from '../../Label';
 import { SueStatus } from '../../SUE';
 import { WrapperRow } from '../../Wrapper';
 
-type TData = {
-  status: string;
-  matchingStatuses: string[];
-  iconName: string;
-};
-
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
   control: any;
-  data: TData[];
+  data: {
+    status: string;
+    matchingStatuses: string[];
+    iconName: string;
+  }[];
   name: string;
   label?: string;
 };

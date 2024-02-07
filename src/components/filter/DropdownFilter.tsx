@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
+import { normalize } from '../../config';
 import { DropdownSelect } from '../DropdownSelect';
 import { Label } from '../Label';
-import { normalize } from '../../config';
 
 import { Input } from './../form';
 
@@ -12,35 +12,32 @@ type Props = {
   containerStyle?: StyleProp<ViewStyle>;
   control: any;
   data: {
+    id: number;
+    index: number;
     selected: boolean;
     value: string;
   }[];
-  displayKey?: string;
   errors: any;
   label?: string;
   name: string;
   placeholder?: string;
   required?: boolean;
-  valueKey: string;
 };
 
 export const DropdownFilter = ({
   containerStyle,
   control,
   data,
-  displayKey = 'value',
   errors,
   label,
   name,
   placeholder,
-  required,
-  valueKey = 'value'
+  required
 }: Props) => {
-  const dropdownEntries = [{ selected: true, [displayKey]: placeholder }, ...data];
-
-  const [dropdownData, setDropdownData] = useState(
-    dropdownEntries.map((item) => ({ ...item, value: item[displayKey] }))
-  );
+  const [dropdownData, setDropdownData] = useState([
+    { id: 0, value: placeholder, selected: true },
+    ...data
+  ]);
 
   return (
     <>
@@ -51,9 +48,7 @@ export const DropdownFilter = ({
           render={({ field: { name, onChange } }) => {
             useEffect(() => {
               onChange(
-                dropdownData?.find((entry) => (entry.selected ? entry[valueKey] : undefined))?.[
-                  valueKey
-                ]
+                dropdownData?.find((entry) => (entry.selected ? entry.value : undefined))?.value
               );
             }, [dropdownData]);
 
