@@ -17,7 +17,7 @@ type Props = {
   control: any;
   data: TData[];
   name: string;
-  label: string;
+  label?: string;
 };
 
 export const StatusFilter = ({ containerStyle, control, data, name, label }: Props) => {

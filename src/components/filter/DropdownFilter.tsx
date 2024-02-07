@@ -4,9 +4,9 @@ import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { DropdownSelect } from '../DropdownSelect';
 import { Label } from '../Label';
+import { normalize } from '../../config';
 
 import { Input } from './../form';
-import { normalize } from '../../config';
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
@@ -44,7 +44,7 @@ export const DropdownFilter = ({
 
   return (
     <>
-      <Label style={{ marginBottom: normalize(-10) }}>{label}</Label>
+      {!!label && <Label style={styles.label}>{label}</Label>}
       <View style={(styles.container, containerStyle)}>
         <Controller
           name={name}
@@ -79,5 +79,8 @@ export const DropdownFilter = ({
 };
 
 const styles = StyleSheet.create({
-  container: {}
+  container: {},
+  label: {
+    marginBottom: normalize(-10)
+  }
 });

@@ -24,7 +24,7 @@ type FilterProps = {
 };
 
 type FilterTypesProps = {
-  data: { value: string }[];
+  data: { selected: boolean; value: string }[];
   label?: string;
   name: string;
   placeholder?: string;
@@ -43,11 +43,11 @@ type FilterTypesProps = {
 };
 
 type Props = {
-  filterData: FilterProps;
-  filterTypes: FilterTypesProps[];
+  filterData?: FilterProps;
+  filterTypes?: FilterTypesProps[];
   onPress?: () => void;
   setQueryVariables: (data: FilterProps) => void;
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
 };
 
 export const Filter = ({ setQueryVariables, filterTypes }: Props) => {
@@ -67,6 +67,10 @@ export const Filter = ({ setQueryVariables, filterTypes }: Props) => {
       sort: ''
     }
   });
+
+  if (!filterTypes?.length) {
+    return null;
+  }
 
   const onFilter = async (filterData: FilterProps) => {
     setQueryVariables(filterData);
