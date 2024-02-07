@@ -51,6 +51,7 @@ const EventSectionHeader = ({ item, navigation, options, query }) => (
  * @param {any} navigation
  * @param {{
  *          horizontal?: boolean;
+ *          isHomeScreen?: boolean
  *          noSubtitle?: boolean;
  *          openWebScreen?: () => void;
  *          queryVariables?: object
@@ -104,7 +105,11 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
         // this logic was added because the 0th index of the `EventList` is `SectionHeader` and
         // the first content is the 1st index
-        if (index === 0 || (query === QUERY_TYPES.EVENT_RECORDS && index === 1)) {
+        // Also added `isHomeScreen` control to show a large image in the event list in `HomeScreen`
+        if (
+          index === 0 ||
+          (query === QUERY_TYPES.EVENT_RECORDS && index === 1 && !options.isHomeScreen)
+        ) {
           if (!item?.picture?.url) {
             return (
               <TextListItem

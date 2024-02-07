@@ -147,6 +147,7 @@ const renderItem = ({ item }) => {
       {...{
         buttonTitle,
         fetchPolicy,
+        isHomeScreen: query === QUERY_TYPES.EVENT_RECORDS,
         navigate: () => navigation.navigate(NAVIGATION[navigate]),
         navigation,
         query,

@@ -19,6 +19,7 @@ import { Wrapper } from './Wrapper';
 type Props = {
   buttonTitle?: string;
   horizontal?: boolean;
+  isHomeScreen?: boolean;
   isRandom?: boolean;
   limit?: number;
   linkTitle?: string;
@@ -41,6 +42,7 @@ type Props = {
 export const DataListSection = ({
   buttonTitle,
   horizontal,
+  isHomeScreen,
   isRandom = false,
   limit = 3,
   linkTitle,
@@ -94,6 +96,7 @@ export const DataListSection = ({
           horizontal={horizontal}
           navigation={navigation}
           query={query}
+          isHomeScreen={isHomeScreen}
         />
 
         {!!linkTitle && !!navigateLink && showLink && (

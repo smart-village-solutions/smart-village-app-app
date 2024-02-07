@@ -18,6 +18,7 @@ export const VerticalList = ({
   data,
   refetch,
   fetchMoreData,
+  isHomeScreen,
   ListEmptyComponent,
   ListHeaderComponent,
   navigation,
@@ -33,7 +34,12 @@ export const VerticalList = ({
   const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
 
-  const renderItem = useRenderItem(query, navigation, { noSubtitle, openWebScreen, refetch });
+  const renderItem = useRenderItem(query, navigation, {
+    isHomeScreen,
+    noSubtitle,
+    openWebScreen,
+    refetch
+  });
 
   const onEndReached = async () => {
     if (fetchMoreData) {
@@ -114,6 +120,7 @@ VerticalList.propTypes = {
   data: PropTypes.array,
   refetch: PropTypes.func,
   fetchMoreData: PropTypes.func,
+  isHomeScreen: PropTypes.bool,
   leftImage: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
   ListHeaderComponent: PropTypes.object,
@@ -127,5 +134,6 @@ VerticalList.propTypes = {
 
 VerticalList.defaultProps = {
   noSubtitle: false,
-  leftImage: false
+  leftImage: false,
+  isHomeScreen: false
 };
