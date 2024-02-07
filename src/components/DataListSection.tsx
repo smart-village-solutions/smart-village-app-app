@@ -17,6 +17,7 @@ import { Touchable } from './Touchable';
 import { Wrapper } from './Wrapper';
 
 type Props = {
+  additionalData?: unknown[];
   buttonTitle?: string;
   horizontal?: boolean;
   isHomeScreen?: boolean;
@@ -31,7 +32,6 @@ type Props = {
   placeholder?: React.ReactElement;
   query: string;
   sectionData?: unknown[];
-  additionalData?: unknown[];
   sectionTitle?: string;
   sectionTitleDetail?: string;
   showButton?: boolean;
@@ -40,6 +40,7 @@ type Props = {
 
 // eslint-disable-next-line complexity
 export const DataListSection = ({
+  additionalData,
   buttonTitle,
   horizontal,
   isHomeScreen,
@@ -54,7 +55,6 @@ export const DataListSection = ({
   placeholder,
   query,
   sectionData,
-  additionalData,
   sectionTitle = getTitleForQuery(query),
   sectionTitleDetail,
   showButton,

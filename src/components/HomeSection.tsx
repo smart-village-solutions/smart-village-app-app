@@ -8,8 +8,6 @@ import { getQuery, QUERY_TYPES } from '../queries';
 import { DataListSection } from './DataListSection';
 
 type Props = {
-  title: string;
-  titleDetail?: string;
   buttonTitle: string;
   fetchPolicy:
     | 'cache-first'
@@ -25,12 +23,12 @@ type Props = {
   query: string;
   queryVariables: { limit?: number };
   showVolunteerEvents?: boolean;
+  title: string;
+  titleDetail?: string;
 };
 
 export const HomeSection = ({
   buttonTitle,
-  title,
-  titleDetail,
   fetchPolicy,
   isHomeScreen = false,
   navigate,
@@ -38,9 +36,15 @@ export const HomeSection = ({
   placeholder,
   query,
   queryVariables,
-  showVolunteerEvents = false
+  showVolunteerEvents = false,
+  title,
+  titleDetail
 }: Props) => {
-  const { data, loading: isLoading, refetch } = useQuery(getQuery(query), {
+  const {
+    data,
+    loading: isLoading,
+    refetch
+  } = useQuery(getQuery(query), {
     variables: queryVariables,
     fetchPolicy
   });
@@ -75,6 +79,7 @@ export const HomeSection = ({
 
   return (
     <DataListSection
+      additionalData={additionalData}
       buttonTitle={buttonTitle}
       isHomeScreen={isHomeScreen}
       limit={queryVariables?.limit}
@@ -85,7 +90,6 @@ export const HomeSection = ({
       placeholder={placeholder}
       query={query}
       sectionData={data}
-      additionalData={additionalData}
       sectionTitle={title}
       sectionTitleDetail={titleDetail}
       showButton={showButton}
