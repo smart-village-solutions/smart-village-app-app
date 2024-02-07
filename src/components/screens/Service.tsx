@@ -15,7 +15,25 @@ import { WrapperWrap } from '../Wrapper';
 import { DraggableGrid } from './DraggableGrid';
 import { ServiceTile, TServiceTile } from './ServiceTile';
 
-const { MATOMO_TRACKING } = consts;
+const { MATOMO_TRACKING, UMLAUT_REGEX } = consts;
+
+const umlautSwitcher = (text: string) => {
+  if (!text) return;
+
+  const umlautReplacements = {
+    ü: 'ue',
+    ä: 'ae',
+    ö: 'oe',
+    Ü: 'UE',
+    Ä: 'AE',
+    Ö: 'OE',
+    ß: 'ss'
+  };
+
+  const replacedText = text.replace(UMLAUT_REGEX, (match: string) => umlautReplacements[match]);
+
+  return replacedText;
+};
 
 export const Service = ({
   data,
@@ -55,7 +73,7 @@ export const Service = ({
   const renderItem = useCallback(
     (item: TServiceTile, index: number) => (
       <ServiceTile
-        draggableId={item.title || item.accessibilityLabel}
+        draggableId={umlautSwitcher(item.title) || umlautSwitcher(item.accessibilityLabel)}
         hasDiagonalGradientBackground={hasDiagonalGradientBackground}
         isEditMode={isEditMode}
         item={item}

@@ -77,6 +77,7 @@ export const consts = {
   URL_REGEX:
     /^https?:\/\/(?:www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9()]{1,6}\b(?:[-a-z0-9()@:%_\+.~#?&\/=]*)$/i,
   VIDEO_TYPE_REGEX: /\.(swf|avi|flv|mpg|rm|mov|wav|asf|3gp|mkv|rmvb|mp4)$/i,
+  UMLAUT_REGEX: /[üäöÜÄÖß]/g,
 
   CALENDAR: {
     DOT_SIZE: 6,
