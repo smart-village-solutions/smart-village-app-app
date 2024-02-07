@@ -63,8 +63,8 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
   const { appDesignSystem, navigation: navigationType } = globalSettings;
   const { sueStatus = {} } = appDesignSystem;
   const { statusViewColors = {}, statusTextColors = {} } = sueStatus;
-  const queryVariables = route.params?.queryVariables ?? {};
-  const [selectedRequest, setSelectedRequest] = useState<string>();
+  const queryVariables = route.params?.queryVariables ?? { offset: 0, limit: 10000 };
+  const [selectedRequestId, setSelectedRequestId] = useState<string>();
 
   const { data, isLoading } = useQuery([QUERY_TYPES.SUE.REQUESTS, queryVariables], () =>
     getQuery(QUERY_TYPES.SUE.REQUESTS)(queryVariables)
@@ -82,10 +82,10 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
     [data]
   );
 
-  const { data: detailsData } = useQuery(
-    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, selectedRequest],
-    () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(selectedRequest),
-    { enabled: !!selectedRequest }
+  const { data: detailsData, isLoading: detailsLoading } = useQuery(
+    [QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, selectedRequestId],
+    () => getQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID)(selectedRequestId),
+    { enabled: !!selectedRequestId }
   );
 
   if (isLoading) {
@@ -121,10 +121,17 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
         isMultipleMarkersMap
         locations={mapMarkers}
         mapStyle={styles.map}
-        onMarkerPress={setSelectedRequest}
-        selectedMarker={selectedRequest}
+        onMarkerPress={(id) => {
+          // reset selected request id to undefined to avoid rendering bug with images in overlay
+          setSelectedRequestId(undefined);
+
+          setTimeout(() => {
+            setSelectedRequestId(id);
+          }, 100);
+        }}
+        selectedMarker={selectedRequestId}
       />
-      {!!selectedRequest && !!item && (
+      {!detailsLoading && !!selectedRequestId && !!item && (
         <View style={[styles.listItemContainer, stylesWithProps({ navigationType }).position]}>
           <ListItem
             accessibilityLabel={`(${item.title}) ${consts.a11yLabel.button}`}
@@ -133,10 +140,10 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
             delayPressIn={0}
             onPress={() => navigation.push(item.routeName, item.params)}
           >
-            {!!item.picture?.url ? (
+            {item.picture?.url ? (
               <Image
                 source={{ uri: item.picture.url }}
-                style={styles.image}
+                childrenContainerStyle={styles.image}
                 containerStyle={styles.imageContainer}
               />
             ) : (

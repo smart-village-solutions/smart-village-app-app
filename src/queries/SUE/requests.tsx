@@ -3,8 +3,11 @@ import _mapKeys from 'lodash/mapKeys';
 
 import { apiKey, jurisdictionId, sueFetchObj, suePostRequest, sueRequestsUrl } from '../../helpers';
 
-export const requests = async () => {
-  const response = await (await fetch(`${sueRequestsUrl}`, sueFetchObj)).json();
+export const requests = async (queryVariables) => {
+  const queryParams = new URLSearchParams(queryVariables);
+  const response = await (
+    await fetch(`${sueRequestsUrl}&${queryParams.toString()}`, sueFetchObj)
+  ).json();
 
   return new Promise((resolve) => {
     // return with converted keys to camelCase for being accessible per JavaScript convention
