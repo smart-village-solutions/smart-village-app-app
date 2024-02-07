@@ -51,7 +51,7 @@ const EventSectionHeader = ({ item, navigation, options, query }) => (
  * @param {any} navigation
  * @param {{
  *          horizontal?: boolean;
- *          isHomeScreen?: boolean
+ *          isIndexStartingAt1?: boolean
  *          noSubtitle?: boolean;
  *          openWebScreen?: () => void;
  *          queryVariables?: object
@@ -103,12 +103,11 @@ export const useRenderItem = (query, navigation, options = {}) => {
           return <EventSectionHeader {...{ item, navigation, options, query }} />;
         }
 
-        // this logic was added because the 0th index of the `EventList` is `SectionHeader` and
-        // the first content is the 1st index
-        // Also added `isHomeScreen` control to show a large image in the event list in `HomeScreen`
+        // in special lists such as `EventList`, since the data starts from the 1st index,
+        // `isIndexStartingAt1` and `index` control has been added
         if (
-          index === 0 ||
-          (query === QUERY_TYPES.EVENT_RECORDS && index === 1 && !options.isHomeScreen)
+          (index === 0 && !options.isIndexStartingAt1) ||
+          (index === 1 && options.isIndexStartingAt1)
         ) {
           if (!item?.picture?.url) {
             return (

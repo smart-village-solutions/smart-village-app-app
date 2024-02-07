@@ -72,7 +72,8 @@ export const EventList = ({
 
   const renderItem = useRenderItem(QUERY_TYPES.EVENT_RECORDS, navigation, {
     noSubtitle,
-    queryVariables
+    queryVariables,
+    isIndexStartingAt1: true
   });
 
   const stickyHeaderIndices = sectionedData

@@ -17,7 +17,7 @@ const MAX_INITIAL_NUM_TO_RENDER = 15;
 export const VerticalList = ({
   data,
   fetchMoreData,
-  isHomeScreen,
+  isIndexStartingAt1,
   ListEmptyComponent,
   ListHeaderComponent,
   navigation,
@@ -35,7 +35,7 @@ export const VerticalList = ({
   const [listEndReached, setListEndReached] = useState(false);
 
   const renderItem = useRenderItem(query, navigation, {
-    isHomeScreen,
+    isIndexStartingAt1,
     noSubtitle,
     openWebScreen,
     refetch
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
 VerticalList.propTypes = {
   data: PropTypes.array,
   fetchMoreData: PropTypes.func,
-  isHomeScreen: PropTypes.bool,
+  isIndexStartingAt1: PropTypes.bool,
   leftImage: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
   ListHeaderComponent: PropTypes.object,
@@ -135,5 +135,5 @@ VerticalList.propTypes = {
 VerticalList.defaultProps = {
   noSubtitle: false,
   leftImage: false,
-  isHomeScreen: false
+  isIndexStartingAt1: false
 };

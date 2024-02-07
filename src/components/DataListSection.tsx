@@ -20,7 +20,7 @@ type Props = {
   additionalData?: unknown[];
   buttonTitle?: string;
   horizontal?: boolean;
-  isHomeScreen?: boolean;
+  isIndexStartingAt1?: boolean;
   isRandom?: boolean;
   limit?: number;
   linkTitle?: string;
@@ -43,7 +43,7 @@ export const DataListSection = ({
   additionalData,
   buttonTitle,
   horizontal,
-  isHomeScreen,
+  isIndexStartingAt1,
   isRandom = false,
   limit = 3,
   linkTitle,
@@ -96,7 +96,7 @@ export const DataListSection = ({
           horizontal={horizontal}
           navigation={navigation}
           query={query}
-          isHomeScreen={isHomeScreen}
+          isIndexStartingAt1={isIndexStartingAt1}
         />
 
         {!!linkTitle && !!navigateLink && showLink && (

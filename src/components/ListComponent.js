@@ -47,7 +47,7 @@ export const ListComponent = ({
   data,
   fetchMoreData,
   horizontal,
-  isHomeScreen,
+  isIndexStartingAt1,
   ListEmptyComponent,
   ListFooterComponent,
   ListHeaderComponent,
@@ -85,7 +85,7 @@ export const ListComponent = ({
       openWebScreen={openWebScreen}
       query={query}
       queryVariables={queryVariables}
-      isHomeScreen={isHomeScreen}
+      isIndexStartingAt1={isIndexStartingAt1}
       refreshControl={refreshControl}
       showBackToTop={showBackToTop}
     />
@@ -96,7 +96,7 @@ ListComponent.propTypes = {
   data: PropTypes.array,
   fetchMoreData: PropTypes.func,
   horizontal: PropTypes.bool,
-  isHomeScreen: PropTypes.bool,
+  isIndexStartingAt1: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
   ListFooterComponent: PropTypes.object,
   ListHeaderComponent: PropTypes.object,

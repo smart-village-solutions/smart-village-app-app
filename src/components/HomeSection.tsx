@@ -16,7 +16,7 @@ type Props = {
     | 'no-cache'
     | 'standby'
     | 'cache-and-network';
-  isHomeScreen: boolean;
+  isIndexStartingAt1: boolean;
   navigate: () => void;
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
@@ -30,7 +30,7 @@ type Props = {
 export const HomeSection = ({
   buttonTitle,
   fetchPolicy,
-  isHomeScreen = false,
+  isIndexStartingAt1 = false,
   navigate,
   navigation,
   placeholder,
@@ -81,7 +81,7 @@ export const HomeSection = ({
     <DataListSection
       additionalData={additionalData}
       buttonTitle={buttonTitle}
-      isHomeScreen={isHomeScreen}
+      isIndexStartingAt1={isIndexStartingAt1}
       limit={queryVariables?.limit}
       loading={loading}
       navigate={navigate}
