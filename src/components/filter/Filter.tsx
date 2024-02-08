@@ -58,8 +58,8 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
   const {
     control,
     formState: { errors },
-    handleSubmit,
-    reset
+    reset,
+    watch
   } = useForm<FilterProps>({
     defaultValues: {
       status: undefined,
@@ -70,14 +70,13 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
     }
   });
 
+  const isButtonDisabled = !Object.keys(watch() as Record<string, string>).some((key: string) =>
+    watch(key)
+  );
+
   if (!filterTypes?.length) {
     return null;
   }
-
-  const onFilter = async (filterData: FilterProps) => {
-    setQueryVariables(filterData);
-    reset();
-  };
 
   return (
     <>
@@ -136,7 +135,11 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
         ))}
 
         <WrapperVertical style={styles.noPaddingBottom}>
-          <Button title={texts.filter.resetFilter} onPress={handleSubmit(onFilter)} />
+          <Button
+            disabled={isButtonDisabled}
+            title={texts.filter.resetFilter}
+            onPress={() => reset()}
+          />
         </WrapperVertical>
         <Divider />
       </Collapsible>
