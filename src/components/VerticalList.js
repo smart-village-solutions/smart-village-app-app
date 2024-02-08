@@ -16,14 +16,15 @@ const MAX_INITIAL_NUM_TO_RENDER = 15;
 
 export const VerticalList = ({
   data,
-  refetch,
   fetchMoreData,
+  isIndexStartingAt1,
   ListEmptyComponent,
   ListHeaderComponent,
   navigation,
   noSubtitle,
   openWebScreen,
   query,
+  refetch,
   refreshControl,
   showBackToTop
 }) => {
@@ -33,7 +34,12 @@ export const VerticalList = ({
   const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
 
-  const renderItem = useRenderItem(query, navigation, { noSubtitle, openWebScreen, refetch });
+  const renderItem = useRenderItem(query, navigation, {
+    isIndexStartingAt1,
+    noSubtitle,
+    openWebScreen,
+    refetch
+  });
 
   const onEndReached = async () => {
     if (fetchMoreData) {
@@ -112,8 +118,8 @@ const styles = StyleSheet.create({
 
 VerticalList.propTypes = {
   data: PropTypes.array,
-  refetch: PropTypes.func,
   fetchMoreData: PropTypes.func,
+  isIndexStartingAt1: PropTypes.bool,
   leftImage: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
   ListHeaderComponent: PropTypes.object,
@@ -121,11 +127,13 @@ VerticalList.propTypes = {
   noSubtitle: PropTypes.bool,
   openWebScreen: PropTypes.func,
   query: PropTypes.string,
+  refetch: PropTypes.func,
   refreshControl: PropTypes.object,
   showBackToTop: PropTypes.bool
 };
 
 VerticalList.defaultProps = {
   noSubtitle: false,
-  leftImage: false
+  leftImage: false,
+  isIndexStartingAt1: false
 };

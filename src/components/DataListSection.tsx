@@ -17,8 +17,10 @@ import { Touchable } from './Touchable';
 import { Wrapper } from './Wrapper';
 
 type Props = {
+  additionalData?: unknown[];
   buttonTitle?: string;
   horizontal?: boolean;
+  isIndexStartingAt1?: boolean;
   isRandom?: boolean;
   limit?: number;
   linkTitle?: string;
@@ -30,7 +32,6 @@ type Props = {
   placeholder?: React.ReactElement;
   query: string;
   sectionData?: unknown[];
-  additionalData?: unknown[];
   sectionTitle?: string;
   sectionTitleDetail?: string;
   showButton?: boolean;
@@ -39,8 +40,10 @@ type Props = {
 
 // eslint-disable-next-line complexity
 export const DataListSection = ({
+  additionalData,
   buttonTitle,
   horizontal,
+  isIndexStartingAt1,
   isRandom = false,
   limit = 3,
   linkTitle,
@@ -52,7 +55,6 @@ export const DataListSection = ({
   placeholder,
   query,
   sectionData,
-  additionalData,
   sectionTitle = getTitleForQuery(query),
   sectionTitleDetail,
   showButton,
@@ -94,6 +96,7 @@ export const DataListSection = ({
           horizontal={horizontal}
           navigation={navigation}
           query={query}
+          isIndexStartingAt1={isIndexStartingAt1}
         />
 
         {!!linkTitle && !!navigateLink && showLink && (

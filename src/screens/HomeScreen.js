@@ -147,6 +147,7 @@ const renderItem = ({ item }) => {
       {...{
         buttonTitle,
         fetchPolicy,
+        isIndexStartingAt1: false,
         navigate: () => navigation.navigate(NAVIGATION[navigate]),
         navigation,
         query,

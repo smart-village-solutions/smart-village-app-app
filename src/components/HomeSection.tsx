@@ -8,8 +8,6 @@ import { getQuery, QUERY_TYPES } from '../queries';
 import { DataListSection } from './DataListSection';
 
 type Props = {
-  title: string;
-  titleDetail?: string;
   buttonTitle: string;
   fetchPolicy:
     | 'cache-first'
@@ -18,27 +16,35 @@ type Props = {
     | 'no-cache'
     | 'standby'
     | 'cache-and-network';
+  isIndexStartingAt1: boolean;
   navigate: () => void;
   navigation: StackNavigationProp<any>;
   placeholder?: React.ReactElement;
   query: string;
   queryVariables: { limit?: number };
   showVolunteerEvents?: boolean;
+  title: string;
+  titleDetail?: string;
 };
 
 export const HomeSection = ({
   buttonTitle,
-  title,
-  titleDetail,
   fetchPolicy,
+  isIndexStartingAt1 = false,
   navigate,
   navigation,
   placeholder,
   query,
   queryVariables,
-  showVolunteerEvents = false
+  showVolunteerEvents = false,
+  title,
+  titleDetail
 }: Props) => {
-  const { data, loading: isLoading, refetch } = useQuery(getQuery(query), {
+  const {
+    data,
+    loading: isLoading,
+    refetch
+  } = useQuery(getQuery(query), {
     variables: queryVariables,
     fetchPolicy
   });
@@ -73,7 +79,9 @@ export const HomeSection = ({
 
   return (
     <DataListSection
+      additionalData={additionalData}
       buttonTitle={buttonTitle}
+      isIndexStartingAt1={isIndexStartingAt1}
       limit={queryVariables?.limit}
       loading={loading}
       navigate={navigate}
@@ -82,7 +90,6 @@ export const HomeSection = ({
       placeholder={placeholder}
       query={query}
       sectionData={data}
-      additionalData={additionalData}
       sectionTitle={title}
       sectionTitleDetail={titleDetail}
       showButton={showButton}

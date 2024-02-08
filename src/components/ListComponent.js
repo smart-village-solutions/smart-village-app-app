@@ -45,9 +45,9 @@ const getComponent = (query, horizontal, sectionByDate) => {
 // which can be overwritten by passing in the horizontal prop
 export const ListComponent = ({
   data,
-  refetch,
   fetchMoreData,
   horizontal,
+  isIndexStartingAt1,
   ListEmptyComponent,
   ListFooterComponent,
   ListHeaderComponent,
@@ -56,6 +56,7 @@ export const ListComponent = ({
   openWebScreen,
   query,
   queryVariables,
+  refetch,
   refreshControl,
   sectionByDate,
   showBackToTop
@@ -84,6 +85,7 @@ export const ListComponent = ({
       openWebScreen={openWebScreen}
       query={query}
       queryVariables={queryVariables}
+      isIndexStartingAt1={isIndexStartingAt1}
       refreshControl={refreshControl}
       showBackToTop={showBackToTop}
     />
@@ -92,9 +94,9 @@ export const ListComponent = ({
 
 ListComponent.propTypes = {
   data: PropTypes.array,
-  refetch: PropTypes.func,
   fetchMoreData: PropTypes.func,
   horizontal: PropTypes.bool,
+  isIndexStartingAt1: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
   ListFooterComponent: PropTypes.object,
   ListHeaderComponent: PropTypes.object,
@@ -103,6 +105,7 @@ ListComponent.propTypes = {
   openWebScreen: PropTypes.func,
   query: PropTypes.string.isRequired,
   queryVariables: PropTypes.object,
+  refetch: PropTypes.func,
   refreshControl: PropTypes.object,
   sectionByDate: PropTypes.bool,
   showBackToTop: PropTypes.bool
