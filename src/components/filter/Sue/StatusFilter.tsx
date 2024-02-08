@@ -32,7 +32,17 @@ export const StatusFilter = ({ containerStyle, control, data, name, label }: Pro
                   item: { status: string; matchingStatuses: string[]; iconName: string },
                   index: number
                 ) => (
-                  <TouchableOpacity onPress={() => onChange(item.status)} key={index}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (value === item.status) {
+                        onChange(undefined);
+                        return;
+                      }
+
+                      onChange(item.status);
+                    }}
+                    key={index}
+                  >
                     <SueStatus
                       disabled={value !== item.status}
                       iconName={item.iconName}
