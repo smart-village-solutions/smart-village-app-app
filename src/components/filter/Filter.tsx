@@ -93,10 +93,10 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
       </TouchableOpacity>
 
       <Collapsible collapsed={isCollapsed}>
-        {filterTypes.map((item) => (
-          <>
-            {item.type === FILTER_TYPES.DATE && (
-              <WrapperVertical style={styles.noPaddingBottom}>
+        <WrapperVertical style={styles.noPaddingTop}>
+          {filterTypes.map((item) => (
+            <WrapperVertical key={item.name} style={styles.noPaddingBottom}>
+              {item.type === FILTER_TYPES.DATE && (
                 <DateFilter
                   containerStyle={{ width: device.width / normalize(2) }}
                   control={control}
@@ -104,11 +104,9 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
                   {...item}
                   data={item.data as { name: string; placeholder: string }[]}
                 />
-              </WrapperVertical>
-            )}
+              )}
 
-            {item.type === FILTER_TYPES.DROPDOWN && item.data?.length && (
-              <WrapperVertical style={styles.noPaddingBottom}>
+              {item.type === FILTER_TYPES.DROPDOWN && item.data?.length && (
                 <DropdownFilter
                   control={control}
                   errors={errors}
@@ -117,11 +115,9 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
                     item.data as { id: number; index: number; selected: boolean; value: string }[]
                   }
                 />
-              </WrapperVertical>
-            )}
+              )}
 
-            {item.type === FILTER_TYPES.SUE.STATUS && (
-              <WrapperVertical style={styles.noPaddingBottom}>
+              {item.type === FILTER_TYPES.SUE.STATUS && (
                 <StatusFilter
                   control={control}
                   {...item}
@@ -129,10 +125,10 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
                     item.data as { status: string; matchingStatuses: string[]; iconName: string }[]
                   }
                 />
-              </WrapperVertical>
-            )}
-          </>
-        ))}
+              )}
+            </WrapperVertical>
+          ))}
+        </WrapperVertical>
 
         <WrapperVertical style={styles.noPaddingBottom}>
           <Button
@@ -158,5 +154,8 @@ const styles = StyleSheet.create({
   },
   noPaddingBottom: {
     paddingBottom: 0
+  },
+  noPaddingTop: {
+    paddingTop: 0
   }
 });
