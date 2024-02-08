@@ -45,13 +45,22 @@ export const DropdownFilter = ({
       <View style={(styles.container, containerStyle)}>
         <Controller
           name={name}
-          render={({ field: { name, onChange } }) => {
+          render={({ field: { name, onChange, value } }) => {
             useEffect(() => {
               onChange(
-                dropdownData?.find((entry) => (entry.selected ? entry.value : undefined))?.value
+                dropdownData?.find(
+                  (entry) =>
+                    entry.value !== placeholder && (entry.selected ? entry.value : undefined)
+                )?.value
               );
             }, [dropdownData]);
 
+            // added to make the placeholder data appear in the dropdown after resetting the filter
+            useEffect(() => {
+              if (!value) {
+                setDropdownData([{ id: 0, value: placeholder, selected: true }, ...data]);
+              }
+            }, [value]);
             return (
               <>
                 <DropdownSelect
