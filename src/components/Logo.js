@@ -8,12 +8,12 @@ export const Logo = (props) => <Image {...props} />;
 Logo.propTypes = {
   containerStyle: PropTypes.object,
   source: PropTypes.oneOfType([PropTypes.object, PropTypes.number]).isRequired,
-  style: PropTypes.object,
+  childrenContainerStyle: PropTypes.object,
   resizeMode: PropTypes.string
 };
 
 Logo.defaultProps = {
-  style: {
+  childrenContainerStyle: {
     height: 80,
     width: 'auto'
   },
