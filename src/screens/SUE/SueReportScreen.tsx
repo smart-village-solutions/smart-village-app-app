@@ -27,6 +27,8 @@ import { addToStore, readFromStore } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { postRequests } from '../../queries/SUE';
 
+export const SUE_REPORT_VALUES = 'sueReportValues';
+
 export type TValues = {
   city: string;
   description: string;
@@ -214,11 +216,11 @@ export const SueReportScreen = ({
   }, []);
 
   const storeReportValues = async () => {
-    await addToStore('sueReportValues', { selectedPosition, serviceCode, ...getValues() });
+    await addToStore(SUE_REPORT_VALUES, { selectedPosition, serviceCode, ...getValues() });
   };
 
   const readReportValuesFromStore = async () => {
-    const storedValues = await readFromStore('sueReportValues');
+    const storedValues = await readFromStore(SUE_REPORT_VALUES);
 
     if (storedValues) {
       setStoredValues(storedValues);
@@ -231,7 +233,7 @@ export const SueReportScreen = ({
   };
 
   const resetStoredValues = async () => {
-    await AsyncStorage.removeItem('sueReportValues');
+    await AsyncStorage.removeItem(SUE_REPORT_VALUES);
     setStoredValues(undefined);
     setServiceCode(undefined);
     setSelectedPosition(undefined);

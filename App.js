@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -8,6 +9,7 @@ import * as Sentry from 'sentry-expo';
 import { MainApp } from './src';
 import { auth } from './src/auth';
 import { fontConfig, namespace, secrets } from './src/config';
+import { SUE_REPORT_VALUES } from './src/screens';
 
 const sentryApi = secrets[namespace].sentryApi;
 
@@ -59,6 +61,9 @@ const App = () => {
 
   const onLayoutRootView = useCallback(async () => {
     if (isFontLoaded) {
+      // when the application is closed and reopened, the saved data in the sue report form is deleted
+      await AsyncStorage.removeItem(SUE_REPORT_VALUES);
+
       // This tells the splash screen to hide immediately! If we call this after
       // `isFontLoaded`, then we may see a blank screen while the app is
       // loading its initial state and rendering its first pixels. So instead,
