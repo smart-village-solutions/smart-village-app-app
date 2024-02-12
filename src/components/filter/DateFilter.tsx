@@ -1,17 +1,14 @@
 import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import { Controller } from 'react-hook-form';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import { Calendar, CalendarProps } from 'react-native-calendars';
 import Collapsible from 'react-native-collapsible';
 
 import { Icon, colors, consts, device, normalize, texts } from '../../config';
-import { momentFormat } from '../../helpers';
+import { filterObject, momentFormat, updateFilter } from '../../helpers';
 import { Label } from '../Label';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 import { renderArrow } from '../calendarArrows';
-
-import { Input } from './../form';
 
 const {
   CALENDAR: { DOT_SIZE }
@@ -19,10 +16,9 @@ const {
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
-  control: any;
-  errors: any;
-  required?: boolean;
   data: { name: string; placeholder: string }[];
+  filter: { [key: string]: string | undefined };
+  setFilter: (variables: { [key: string]: string | undefined }) => void;
 };
 
 const CalendarView = ({
@@ -72,7 +68,7 @@ const CalendarView = ({
   );
 };
 
-export const DateFilter = ({ containerStyle, control, errors, required, data }: Props) => {
+export const DateFilter = ({ containerStyle, data, filter, setFilter }: Props) => {
   const [isCollapsed, setIsCollapsed] = useState<{ [key: string]: boolean }>(
     data.reduce((acc: { [key: string]: boolean }, item) => {
       acc[item.name] = true;
@@ -92,56 +88,53 @@ export const DateFilter = ({ containerStyle, control, errors, required, data }: 
     <>
       <Label>{texts.filter.date}</Label>
       <WrapperRow spaceBetween>
-        {data.map((item) => (
-          <View key={item.name} style={(styles.container, containerStyle)}>
-            <Controller
-              name={item.name}
-              render={({ field: { name, onChange, value } }) => {
-                useEffect(() => {
-                  onChange(selectedDate[item.name]);
-                }, [selectedDate[item.name]]);
+        {data.map((item) => {
+          useEffect(() => {
+            setFilter(
+              updateFilter({
+                condition: !selectedDate[item.name],
+                currentFilter: filter,
+                name: item.name,
+                value: selectedDate[item.name]
+              })
+            );
+          }, [selectedDate[item.name]]);
 
-                return (
-                  <>
-                    <TouchableOpacity
-                      style={styles.button}
-                      onPress={() => {
-                        setIsCollapsed((prev) =>
-                          Object.keys(prev).reduce((acc: { [key: string]: boolean }, key) => {
-                            acc[key] = key === item.name ? !prev[key] : true;
-                            return acc;
-                          }, {})
-                        );
-                      }}
-                    >
-                      <RegularText style={styles.buttonText} placeholder={!value}>
-                        {value ? momentFormat(value, 'DD.MM.YYYY') : item.placeholder}
-                      </RegularText>
+          return (
+            <View key={item.name} style={(styles.container, containerStyle)}>
+              <>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => {
+                    setIsCollapsed((prev) =>
+                      Object.keys(prev).reduce((acc: { [key: string]: boolean }, key) => {
+                        acc[key] = key === item.name ? !prev[key] : true;
+                        return acc;
+                      }, {})
+                    );
+                  }}
+                >
+                  <RegularText style={styles.buttonText} placeholder={!filter[item.name]}>
+                    {filter[item.name]
+                      ? momentFormat(filter[item.name], 'DD.MM.YYYY')
+                      : item.placeholder}
+                  </RegularText>
 
-                      <Icon.Calendar style={styles.icon} />
-                    </TouchableOpacity>
-                    <Input
-                      name={item.name}
-                      validate
-                      hidden
-                      rules={{ required }}
-                      errorMessage={errors[name] && `${name} muss ausgewählt werden`}
-                      control={control}
-                    />
-                  </>
-                );
-              }}
-              control={control}
-            />
-          </View>
-        ))}
+                  <Icon.Calendar style={styles.icon} />
+                </TouchableOpacity>
+              </>
+            </View>
+          );
+        })}
       </WrapperRow>
 
       {data.map((item) => (
         <CalendarView
           key={`calendar-${item.name}`}
           date={selectedDate[item.name]}
-          setDate={(date) => setSelectedDate((prev) => ({ ...prev, [item.name]: date }))}
+          setDate={(date: { dateString: string }) =>
+            setSelectedDate((prev) => ({ ...prev, [item.name]: date }))
+          }
           isCollapsed={isCollapsed[item.name]}
         />
       ))}

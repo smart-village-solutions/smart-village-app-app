@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider } from 'react-native-elements';
@@ -53,26 +52,10 @@ type Props = {
 };
 
 export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
+  const [filters, setFilters] = useState({});
   const [isCollapsed, setIsCollapsed] = useState(true);
 
-  const {
-    control,
-    formState: { errors },
-    reset,
-    watch
-  } = useForm<FilterProps>({
-    defaultValues: {
-      status: undefined,
-      startDate: undefined,
-      endDate: undefined,
-      serviceCode: '',
-      sort: ''
-    }
-  });
-
-  const isButtonDisabled = !Object.keys(watch() as Record<string, string>).some((key: string) =>
-    watch(key)
-  );
+  useEffect(() => setQueryVariables(filters), [filters]);
 
   if (!filterTypes?.length) {
     return null;
@@ -98,9 +81,9 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
             <WrapperVertical key={item.name} style={styles.noPaddingBottom}>
               {item.type === FILTER_TYPES.DATE && (
                 <DateFilter
+                  filter={filters}
+                  setFilter={setFilters}
                   containerStyle={{ width: device.width / normalize(2) }}
-                  control={control}
-                  errors={errors}
                   {...item}
                   data={item.data as { name: string; placeholder: string }[]}
                 />
@@ -108,8 +91,8 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
 
               {item.type === FILTER_TYPES.DROPDOWN && item.data?.length && (
                 <DropdownFilter
-                  control={control}
-                  errors={errors}
+                  filter={filters}
+                  setFilter={setFilters}
                   {...item}
                   data={
                     item.data as { id: number; index: number; selected: boolean; value: string }[]
@@ -119,7 +102,8 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
 
               {item.type === FILTER_TYPES.SUE.STATUS && (
                 <StatusFilter
-                  control={control}
+                  filter={filters}
+                  setFilter={setFilters}
                   {...item}
                   data={
                     item.data as { status: string; matchingStatuses: string[]; iconName: string }[]
@@ -132,9 +116,9 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
 
         <WrapperVertical style={styles.noPaddingBottom}>
           <Button
-            disabled={isButtonDisabled}
+            disabled={!Object.keys(filters).length}
             title={texts.filter.resetFilter}
-            onPress={() => reset()}
+            onPress={() => setFilters({})}
           />
         </WrapperVertical>
         <Divider />
