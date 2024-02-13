@@ -158,7 +158,8 @@ export const SueReportScreen = ({
       lat: selectedPosition?.latitude,
       long: selectedPosition?.longitude,
       serviceCode,
-      ...sueReportData
+      ...sueReportData,
+      description: sueReportData.description || '-'
     };
 
     setIsLoading(true);
