@@ -14,9 +14,9 @@ import {
   LoadingContainer,
   SafeAreaViewFlex,
   SueReportDescription,
-  SueReportDone,
   SueReportLocation,
   SueReportProgress,
+  SueReportSend,
   SueReportServices,
   SueReportUser,
   Wrapper,
@@ -316,7 +316,7 @@ export const SueReportScreen = ({
   }
 
   if (isDone || isMutationLoading) {
-    return <SueReportDone navigation={navigation} isDone={isDone} isLoading={isMutationLoading} />;
+    return <SueReportSend navigation={navigation} isDone={isDone} isLoading={isMutationLoading} />;
   }
 
   return (

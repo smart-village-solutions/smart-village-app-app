@@ -10,7 +10,7 @@ import { BoldText, RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 import { Button } from '../../Button';
 
-export const SueReportDone = ({
+export const SueReportSend = ({
   isDone,
   isLoading,
   navigation
