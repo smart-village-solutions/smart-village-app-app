@@ -2,7 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useMemo, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
@@ -19,10 +19,16 @@ import {
   Touchable,
   Wrapper
 } from '../../components';
-import { colors, consts, normalize, texts } from '../../config';
+import { Icon, colors, consts, normalize, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
+
+const CloseButton = ({ onPress }: { onPress: () => void }) => (
+  <TouchableOpacity onPress={onPress} style={styles.closeButton}>
+    <Icon.Close size={normalize(16)} color={colors.surface} />
+  </TouchableOpacity>
+);
 
 type ItemProps = {
   iconName: string;
@@ -141,13 +147,19 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
             onPress={() => navigation.push(item.routeName, item.params)}
           >
             {item.picture?.url ? (
-              <Image
-                source={{ uri: item.picture.url }}
-                childrenContainerStyle={styles.image}
-                containerStyle={styles.imageContainer}
-              />
+              <>
+                <Image
+                  source={{ uri: item.picture.url }}
+                  childrenContainerStyle={styles.image}
+                  containerStyle={styles.imageContainer}
+                />
+                <CloseButton onPress={() => setSelectedRequestId(undefined)} />
+              </>
             ) : (
-              <SueImageFallback style={styles.image} />
+              <>
+                <SueImageFallback style={styles.image} />
+                <CloseButton onPress={() => setSelectedRequestId(undefined)} />
+              </>
             )}
 
             <ListItem.Content>
@@ -165,6 +177,17 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
 };
 
 const styles = StyleSheet.create({
+  closeButton: {
+    alignItems: 'center',
+    backgroundColor: colors.overlayRgba,
+    borderRadius: normalize(12),
+    height: normalize(22),
+    justifyContent: 'center',
+    left: normalize(12),
+    position: 'absolute',
+    top: normalize(12),
+    width: normalize(22)
+  },
   listItemContainer: {
     backgroundColor: colors.surface,
     borderRadius: normalize(8),
