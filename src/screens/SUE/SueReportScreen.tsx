@@ -142,7 +142,7 @@ export const SueReportScreen = ({
     }
   });
 
-  const { mutateAsync } = useMutation(postRequests);
+  const { mutateAsync, isLoading: isMutationLoading } = useMutation(postRequests);
 
   const onSubmit = async (sueReportData: TReports) => {
     storeReportValues();
@@ -315,8 +315,8 @@ export const SueReportScreen = ({
     );
   }
 
-  if (isDone) {
-    return <SueReportDone navigation={navigation} />;
+  if (isDone || isMutationLoading) {
+    return <SueReportDone navigation={navigation} isDone={isDone} isLoading={isMutationLoading} />;
   }
 
   return (
