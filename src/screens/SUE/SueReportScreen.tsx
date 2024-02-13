@@ -142,7 +142,7 @@ export const SueReportScreen = ({
     }
   });
 
-  const { mutateAsync, isLoading: isMutationLoading } = useMutation(postRequests);
+  const { mutateAsync } = useMutation(postRequests);
 
   const onSubmit = async (sueReportData: TReports) => {
     storeReportValues();
@@ -164,15 +164,21 @@ export const SueReportScreen = ({
     setIsLoading(true);
     mutateAsync(formData)
       .then(() => {
-        setIsDone(true);
-        resetStoredValues();
+        setTimeout(() => {
+          setIsDone(true);
+          resetStoredValues();
+        }, 1500);
       })
       .catch(() => {
         setIsLoading(false);
 
         return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1500);
+      });
   };
 
   /* eslint-disable complexity */
@@ -315,8 +321,8 @@ export const SueReportScreen = ({
     );
   }
 
-  if (isDone || isMutationLoading) {
-    return <SueReportSend navigation={navigation} isDone={isDone} isLoading={isMutationLoading} />;
+  if (isDone || isLoading) {
+    return <SueReportSend navigation={navigation} isDone={isDone} isLoading={isLoading} />;
   }
 
   return (
