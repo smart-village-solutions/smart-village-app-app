@@ -3,7 +3,7 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useContext, useMemo, useState } from 'react';
 import { ActivityIndicator, RefreshControl } from 'react-native';
-import { useInfiniteQuery } from 'react-query';
+import { useQuery } from 'react-query';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
@@ -27,29 +27,20 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { appDesignSystem = {} } = globalSettings;
   const query = route.params?.query ?? '';
-  const queryVariables = route.params?.queryVariables ?? { offset: 0, limit: 10000 };
+  const queryVariables = route.params?.queryVariables ?? {
+    start_date: '2020-01-01T00:00:00+01:00'
+  };
   const [refreshing, setRefreshing] = useState(false);
 
-  const { data, fetchNextPage, hasNextPage, isLoading, refetch } = useInfiniteQuery(
-    [query, queryVariables],
-    ({ pageParam }) => getQuery(query)({ ...queryVariables, offset: pageParam || 0 }),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage?.length === 0) return; // no more pages
-
-        // increment offset for the next page
-        return (allPages?.length || 1) * queryVariables.limit;
-      }
-    }
+  const { data, isLoading, refetch } = useQuery([query, queryVariables], () =>
+    getQuery(query)(queryVariables)
   );
 
-  const dataPages = data?.pages?.flat() || [];
-
   const listItems = useMemo(() => {
-    if (!dataPages?.length) return [];
+    if (!data?.length) return [];
 
-    return parseListItemsFromQuery(query, dataPages, undefined, { appDesignSystem }).reverse();
-  }, [dataPages, query, queryVariables]);
+    return parseListItemsFromQuery(query, data, undefined, { appDesignSystem }).reverse();
+  }, [data, query, queryVariables]);
 
   if (isLoading) {
     return (
@@ -71,7 +62,6 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         navigation={navigation}
         query={query}
         data={listItems}
-        fetchMoreData={hasNextPage ? fetchNextPage : undefined}
         ListFooterLoadingIndicator={SueLoadingIndicator}
         refreshControl={
           <RefreshControl
