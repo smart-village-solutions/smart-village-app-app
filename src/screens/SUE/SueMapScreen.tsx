@@ -69,7 +69,9 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
   const { appDesignSystem, navigation: navigationType } = globalSettings;
   const { sueStatus = {} } = appDesignSystem;
   const { statusViewColors = {}, statusTextColors = {} } = sueStatus;
-  const queryVariables = route.params?.queryVariables ?? {};
+  const queryVariables = route.params?.queryVariables ?? {
+    start_date: '2020-01-01T00:00:00+01:00'
+  };
   const [selectedRequestId, setSelectedRequestId] = useState<string>();
 
   const { data, isLoading } = useQuery([QUERY_TYPES.SUE.REQUESTS, queryVariables], () =>
