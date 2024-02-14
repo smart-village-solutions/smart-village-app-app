@@ -234,6 +234,7 @@ export const SueReportScreen = ({
   };
 
   const resetStoredValues = async () => {
+    setIsLoadingStoredData(true);
     await AsyncStorage.removeItem(SUE_REPORT_VALUES);
     setStoredValues(undefined);
     setServiceCode(undefined);
@@ -245,6 +246,7 @@ export const SueReportScreen = ({
       animated: true
     });
     setCurrentProgress(0);
+    setIsLoadingStoredData(false);
   };
 
   const handleNextPage = async () => {
@@ -308,7 +310,7 @@ export const SueReportScreen = ({
     }
   }, [storedValues, serviceCode, selectedPosition]);
 
-  if (loading || isLoadingStoredData) {
+  if (loading) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -335,16 +337,22 @@ export const SueReportScreen = ({
         >
           {data?.map((item: TProgress, index: number) => (
             <ScrollView key={index} contentContainerStyle={styles.contentContainer}>
-              {Content(
-                item.content,
-                serviceCode,
-                setServiceCode,
-                control,
-                errors,
-                selectedPosition,
-                setSelectedPosition,
-                setValue,
-                getValues
+              {isLoadingStoredData ? (
+                <LoadingContainer>
+                  <ActivityIndicator color={colors.refreshControl} />
+                </LoadingContainer>
+              ) : (
+                Content(
+                  item.content,
+                  serviceCode,
+                  setServiceCode,
+                  control,
+                  errors,
+                  selectedPosition,
+                  setSelectedPosition,
+                  setValue,
+                  getValues
+                )
               )}
             </ScrollView>
           ))}
