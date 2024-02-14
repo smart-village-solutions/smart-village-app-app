@@ -17,7 +17,9 @@ import {
 } from '../../components';
 import { colors, consts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
-import { getQuery } from '../../queries';
+import { QUERY_TYPES, getQuery } from '../../queries';
+
+const { FILTER_TYPES } = consts;
 
 type Props = {
   navigation: StackNavigationProp<Record<string, any>>;
@@ -53,6 +55,22 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       })
   );
 
+  const { data: servicesData } = useQuery([QUERY_TYPES.SUE.SERVICES, {}], () =>
+    getQuery(QUERY_TYPES.SUE.SERVICES)({})
+  );
+
+  const servicesFilterData = useMemo(() => {
+    if (!servicesData?.length) return;
+
+    return servicesData.map((item: any, index: number) => ({
+      selected: false,
+      value: item.serviceName,
+      filterValue: item.serviceCode,
+      id: index,
+      index
+    }));
+  }, [servicesData]);
+
   // there is some peformance issue with rendering the screen so we return null first
   useEffect(() => {
     setTimeout(() => {
@@ -86,7 +104,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
             <Filter
               filterTypes={[
                 {
-                  type: consts.FILTER_TYPES.DATE,
+                  type: FILTER_TYPES.DATE,
                   name: 'date',
                   data: [
                     { name: 'start_date', placeholder: 'Erstellt von' },
@@ -94,29 +112,14 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                   ]
                 },
                 {
-                  type: consts.FILTER_TYPES.DROPDOWN,
+                  type: FILTER_TYPES.DROPDOWN,
                   label: 'Kategorie',
                   name: 'service_code',
-                  data: [
-                    {
-                      id: 1,
-                      index: 1,
-                      value: 'Falschparker',
-                      filterValue: 'TICKET_TYPE_FALSCHPARKER',
-                      selected: false
-                    },
-                    {
-                      id: 2,
-                      index: 2,
-                      value: 'Wilder Müll',
-                      filterValue: 'TICKET_TYPE_WILDER_MUELL',
-                      selected: false
-                    }
-                  ],
+                  data: servicesFilterData,
                   placeholder: 'Kategorie auswählen'
                 },
                 {
-                  type: consts.FILTER_TYPES.SUE.STATUS,
+                  type: FILTER_TYPES.SUE.STATUS,
                   label: 'Status',
                   name: 'status',
                   data: statuses
