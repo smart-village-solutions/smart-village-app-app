@@ -10,11 +10,24 @@ import { BoldText, RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 import { Button } from '../../Button';
 
-export const SueReportDone = ({ navigation }: { navigation: any }) => {
+export const SueReportSend = ({
+  isDone,
+  isLoading,
+  navigation
+}: {
+  isDone: boolean;
+  isLoading: boolean;
+  navigation: any;
+}) => {
   const { globalSettings } = useContext(SettingsContext);
-  const { sections = {} } = globalSettings;
-  const { reportEndScreen = {} } = sections;
-  const { title = '', subTitle = '' } = reportEndScreen;
+  const { appDesignSystem = {} } = globalSettings;
+  const { sueReportScreen = {} } = appDesignSystem;
+  const { reportSendDone = {}, reportSendLoading = {} } = sueReportScreen;
+  const { title: loadingTitle = '', subtitle: loadingSubtitle = '' } = reportSendLoading;
+  const { title: doneTitle = '', subtitle: doneSubtitle = '' } = reportSendDone;
+
+  const title = isDone ? doneTitle : loadingTitle;
+  const subtitle = isDone ? doneSubtitle : loadingSubtitle;
 
   return (
     <>
@@ -22,7 +35,7 @@ export const SueReportDone = ({ navigation }: { navigation: any }) => {
         <BoldText center>{title}</BoldText>
       </Wrapper>
       <Wrapper>
-        <RegularText center>{subTitle}</RegularText>
+        <RegularText center>{subtitle}</RegularText>
       </Wrapper>
 
       <Wrapper>
@@ -32,14 +45,16 @@ export const SueReportDone = ({ navigation }: { navigation: any }) => {
         />
       </Wrapper>
 
-      <Wrapper>
-        <Button
-          title="Zur Meldungsliste"
-          invert
-          notFullWidth
-          onPress={() => navigation.navigate(ScreenName.SueList)}
-        />
-      </Wrapper>
+      {!isLoading && isDone && (
+        <Wrapper>
+          <Button
+            title="Zur Meldungsliste"
+            invert
+            notFullWidth
+            onPress={() => navigation.navigate(ScreenName.SueList)}
+          />
+        </Wrapper>
+      )}
     </>
   );
 };

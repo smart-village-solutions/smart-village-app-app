@@ -14,9 +14,9 @@ import {
   LoadingContainer,
   SafeAreaViewFlex,
   SueReportDescription,
-  SueReportDone,
   SueReportLocation,
   SueReportProgress,
+  SueReportSend,
   SueReportServices,
   SueReportUser,
   Wrapper,
@@ -165,15 +165,17 @@ export const SueReportScreen = ({
     setIsLoading(true);
     mutateAsync(formData)
       .then(() => {
-        setIsDone(true);
-        resetStoredValues();
+        setTimeout(() => {
+          setIsDone(true);
+          resetStoredValues();
+          setIsLoading(false);
+        }, 1500);
       })
       .catch(() => {
         setIsLoading(false);
 
         return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
-      })
-      .finally(() => setIsLoading(false));
+      });
   };
 
   /* eslint-disable complexity */
@@ -318,8 +320,8 @@ export const SueReportScreen = ({
     );
   }
 
-  if (isDone) {
-    return <SueReportDone navigation={navigation} />;
+  if (isDone || isLoading) {
+    return <SueReportSend navigation={navigation} isDone={isDone} isLoading={isLoading} />;
   }
 
   return (
