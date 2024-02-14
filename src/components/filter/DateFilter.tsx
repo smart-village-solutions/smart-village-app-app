@@ -4,11 +4,13 @@ import { Calendar, CalendarProps } from 'react-native-calendars';
 import Collapsible from 'react-native-collapsible';
 
 import { Icon, colors, consts, device, normalize, texts } from '../../config';
-import { filterObject, momentFormat, updateFilter } from '../../helpers';
+import { momentFormat, updateFilters } from '../../helpers';
 import { Label } from '../Label';
 import { RegularText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 import { renderArrow } from '../calendarArrows';
+
+import { FilterProps } from './Filter';
 
 const {
   CALENDAR: { DOT_SIZE }
@@ -16,9 +18,9 @@ const {
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
-  data: { name: string; placeholder: string }[];
-  filter: { [key: string]: string | undefined };
-  setFilter: (variables: { [key: string]: string | undefined }) => void;
+  data: { name: keyof FilterProps; placeholder: string }[];
+  filters: FilterProps;
+  setFilters: React.Dispatch<FilterProps>;
 };
 
 const CalendarView = ({
@@ -68,7 +70,7 @@ const CalendarView = ({
   );
 };
 
-export const DateFilter = ({ containerStyle, data, filter, setFilter }: Props) => {
+export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props) => {
   const [isCollapsed, setIsCollapsed] = useState<{ [key: string]: boolean }>(
     data.reduce((acc: { [key: string]: boolean }, item) => {
       acc[item.name] = true;
@@ -81,6 +83,7 @@ export const DateFilter = ({ containerStyle, data, filter, setFilter }: Props) =
       return acc;
     }, {})
   );
+  const isInitialStartDate = filters.isInitialStartDate ?? false;
 
   if (!data.length) return null;
 
@@ -90,12 +93,15 @@ export const DateFilter = ({ containerStyle, data, filter, setFilter }: Props) =
       <WrapperRow spaceBetween>
         {data.map((item) => {
           useEffect(() => {
-            setFilter(
-              updateFilter({
-                condition: !selectedDate[item.name],
-                currentFilter: filter,
-                name: item.name,
-                value: selectedDate[item.name]
+            setFilters(
+              updateFilters({
+                currentFilters: {
+                  ...filters,
+                  isInitialStartDate: item.name === 'start_date' && false
+                },
+                name: item.name as keyof FilterProps,
+                removeFromFilter: !selectedDate[item.name],
+                value: `${selectedDate[item.name]}T00:00:00+01:00`
               })
             );
           }, [selectedDate[item.name]]);
@@ -114,9 +120,12 @@ export const DateFilter = ({ containerStyle, data, filter, setFilter }: Props) =
                     );
                   }}
                 >
-                  <RegularText style={styles.buttonText} placeholder={!filter[item.name]}>
-                    {filter[item.name]
-                      ? momentFormat(filter[item.name], 'DD.MM.YYYY')
+                  <RegularText
+                    style={styles.buttonText}
+                    placeholder={isInitialStartDate || !filters[item.name]}
+                  >
+                    {!isInitialStartDate && filters[item.name]
+                      ? momentFormat(filters[item.name], 'DD.MM.YYYY')
                       : item.placeholder}
                   </RegularText>
 
@@ -132,9 +141,7 @@ export const DateFilter = ({ containerStyle, data, filter, setFilter }: Props) =
         <CalendarView
           key={`calendar-${item.name}`}
           date={selectedDate[item.name]}
-          setDate={(date: { dateString: string }) =>
-            setSelectedDate((prev) => ({ ...prev, [item.name]: date }))
-          }
+          setDate={(date: string) => setSelectedDate((prev) => ({ ...prev, [item.name]: date }))}
           isCollapsed={isCollapsed[item.name]}
         />
       ))}

@@ -1,18 +1,20 @@
+import { FilterProps } from '../components';
+
 type TFilter = {
-  condition: boolean;
-  currentFilter: { [key: string]: string | undefined };
-  name: string;
+  currentFilters: FilterProps;
+  name: keyof FilterProps;
+  removeFromFilter: boolean;
   value: string;
 };
 
-export const updateFilter = ({ condition, currentFilter, name, value }: TFilter) => {
-  const updatedFilter = { ...currentFilter };
+export const updateFilters = ({ currentFilters, name, removeFromFilter, value }: TFilter) => {
+  const updatedFilters = { ...currentFilters };
 
-  if (condition) {
-    delete updatedFilter[name];
+  if (removeFromFilter) {
+    delete updatedFilters[name];
   } else {
-    updatedFilter[name] = value;
+    updatedFilters[name] = value;
   }
 
-  return updatedFilter;
+  return updatedFilters;
 };

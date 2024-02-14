@@ -2,58 +2,58 @@ import React, { useEffect, useState } from 'react';
 import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { normalize } from '../../config';
+import { updateFilters } from '../../helpers';
 import { DropdownSelect } from '../DropdownSelect';
 import { Label } from '../Label';
-import { filterObject, updateFilter } from '../../helpers';
+
+import { DropdownProps, FilterProps } from './Filter';
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
-  data: {
-    id: number;
-    index: number;
-    selected: boolean;
-    value: string;
-  }[];
-  filter: { [key: string]: string | undefined };
+  data: DropdownProps[];
+  filters: FilterProps;
   label?: string;
-  name: string;
+  name: keyof FilterProps;
   placeholder?: string;
-  setFilter: (variables: { [key: string]: string | undefined }) => void;
+  setFilters: React.Dispatch<FilterProps>;
 };
 
 export const DropdownFilter = ({
   containerStyle,
   data,
-  filter,
+  filters,
   label,
   name,
   placeholder,
-  setFilter
+  setFilters
 }: Props) => {
-  const [dropdownData, setDropdownData] = useState([
-    { id: 0, value: placeholder, selected: true },
+  const initiallySelectedItem = { id: 0, index: 0, value: placeholder || '', selected: true };
+  const [dropdownData, setDropdownData] = useState<DropdownProps[]>([
+    initiallySelectedItem,
     ...data
   ]);
 
   useEffect(() => {
-    setFilter(
-      updateFilter({
-        condition: dropdownData[0].selected,
-        currentFilter: filter,
+    const selectedItem = dropdownData?.find(
+      (item: { selected: string; value: string }) => item.selected && item.value
+    );
+
+    setFilters(
+      updateFilters({
+        currentFilters: filters,
         name,
-        value: dropdownData?.find(
-          (entry: { selected: string; value: string }) => entry.selected && entry.value
-        )?.value
+        removeFromFilter: dropdownData[0].selected,
+        value: selectedItem?.filterValue || selectedItem?.value || ''
       })
     );
   }, [dropdownData]);
 
   // added to make the placeholder data appear in the dropdown after resetting the filter
   useEffect(() => {
-    if (!filter[name] && !dropdownData[0].selected) {
-      setDropdownData([{ id: 0, value: placeholder, selected: true }, ...data]);
+    if (!filters[name] && !dropdownData[0].selected) {
+      setDropdownData([initiallySelectedItem, ...data]);
     }
-  }, [filter]);
+  }, [filters]);
 
   return (
     <>

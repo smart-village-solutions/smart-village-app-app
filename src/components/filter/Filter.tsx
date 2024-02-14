@@ -1,3 +1,4 @@
+import _omit from 'lodash/omit';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import Collapsible from 'react-native-collapsible';
@@ -14,45 +15,48 @@ import { StatusFilter } from './Sue';
 
 const { FILTER_TYPES, a11yLabel } = consts;
 
-type FilterProps = {
-  endDate: string;
-  serviceCode: string;
+export type FilterProps = {
+  date: string;
+  end_date: string;
+  service_code: string;
   sort: string;
-  startDate: string;
+  start_date: string;
+  isInitialStartDate: boolean;
   status: string;
 };
 
+export type DropdownProps = {
+  id: number;
+  index: number;
+  selected: boolean;
+  value: string;
+  filterValue?: string;
+};
+
+export type StatusProps = {
+  status: string;
+  matchingStatuses: string[];
+  codesForFilter: string;
+  iconName: string;
+};
+
 type FilterTypesProps = {
-  data:
-    | { id: number; index: number; selected: boolean; value: string }[]
-    | { name: string; placeholder: string }[]
-    | {
-        status: string;
-        matchingStatuses: string[];
-        iconName: string;
-      }[];
+  data: DropdownProps[] | { name: keyof FilterProps; placeholder: string }[] | StatusProps[];
   label?: string;
-  name: string;
+  name: keyof FilterProps;
   placeholder?: string;
   type: string;
   value?: string;
-  startDate?: {
-    name: string;
-    placeholder: string;
-  };
-  endDate?: {
-    name: string;
-    placeholder: string;
-  };
 };
 
 type Props = {
   filterTypes?: FilterTypesProps[];
-  setQueryVariables: (data: FilterProps) => void;
+  initialFilters: FilterProps;
+  setQueryVariables: React.Dispatch<FilterProps>;
 };
 
-export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
-  const [filters, setFilters] = useState({});
+export const Filter = ({ filterTypes, initialFilters, setQueryVariables }: Props) => {
+  const [filters, setFilters] = useState(initialFilters);
   const [isCollapsed, setIsCollapsed] = useState(true);
 
   useEffect(() => setQueryVariables(filters), [filters]);
@@ -60,6 +64,9 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
   if (!filterTypes?.length) {
     return null;
   }
+
+  const isNoFilterSet =
+    filters.isInitialStartDate && !Object.keys(_omit(filters, Object.keys(initialFilters))).length;
 
   return (
     <>
@@ -81,33 +88,29 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
             <WrapperVertical key={item.name} style={styles.noPaddingBottom}>
               {item.type === FILTER_TYPES.DATE && (
                 <DateFilter
-                  filter={filters}
-                  setFilter={setFilters}
+                  filters={filters}
+                  setFilters={setFilters}
                   containerStyle={{ width: device.width / normalize(2) }}
                   {...item}
-                  data={item.data as { name: string; placeholder: string }[]}
+                  data={item.data as { name: keyof FilterProps; placeholder: string }[]}
                 />
               )}
 
               {item.type === FILTER_TYPES.DROPDOWN && item.data?.length && (
                 <DropdownFilter
-                  filter={filters}
-                  setFilter={setFilters}
+                  filters={filters}
+                  setFilters={setFilters}
                   {...item}
-                  data={
-                    item.data as { id: number; index: number; selected: boolean; value: string }[]
-                  }
+                  data={item.data as DropdownProps[]}
                 />
               )}
 
               {item.type === FILTER_TYPES.SUE.STATUS && (
                 <StatusFilter
-                  filter={filters}
-                  setFilter={setFilters}
+                  filters={filters}
+                  setFilters={setFilters}
                   {...item}
-                  data={
-                    item.data as { status: string; matchingStatuses: string[]; iconName: string }[]
-                  }
+                  data={item.data as StatusProps[]}
                 />
               )}
             </WrapperVertical>
@@ -116,9 +119,9 @@ export const Filter = ({ filterTypes, setQueryVariables }: Props) => {
 
         <WrapperVertical style={styles.noPaddingBottom}>
           <Button
-            disabled={!Object.keys(filters).length}
+            disabled={isNoFilterSet}
             title={texts.filter.resetFilter}
-            onPress={() => setFilters({})}
+            onPress={() => setFilters(initialFilters)}
           />
         </WrapperVertical>
         <Divider />

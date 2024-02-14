@@ -1,52 +1,47 @@
 import React from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 
+import { updateFilters } from '../../../helpers';
 import { Label } from '../../Label';
 import { SueStatus } from '../../SUE';
 import { WrapperRow } from '../../Wrapper';
-import { filterObject, updateFilter } from '../../../helpers';
+import { FilterProps, StatusProps } from '../Filter';
 
 type Props = {
   containerStyle?: StyleProp<ViewStyle>;
-  data: {
-    status: string;
-    matchingStatuses: string[];
-    iconName: string;
-  }[];
-  filter: { [key: string]: string };
+  data: StatusProps[];
+  filters: FilterProps;
   label?: string;
-  name: string;
-  setFilter: (variables: { [key: string]: string | undefined }) => void;
+  name: keyof FilterProps;
+  setFilters: React.Dispatch<FilterProps>;
 };
 
-export const StatusFilter = ({ containerStyle, data, filter, label, name, setFilter }: Props) => (
+export const StatusFilter = ({ containerStyle, data, filters, label, name, setFilters }: Props) => (
   <View style={(styles.container, containerStyle)}>
     <Label>{label}</Label>
     <WrapperRow spaceBetween>
-      {data?.map(
-        (item: { status: string; matchingStatuses: string[]; iconName: string }, index: number) => (
-          <TouchableOpacity
-            onPress={() =>
-              setFilter(
-                updateFilter({
-                  condition: filter[name] === item.status,
-                  currentFilter: filter,
-                  name,
-                  value: item.status
-                })
-              )
-            }
-            key={index}
-          >
-            <SueStatus
-              disabled={filter[name] !== item.status}
-              iconName={item.iconName}
-              small
-              status={item.status}
-            />
-          </TouchableOpacity>
-        )
-      )}
+      {data?.map((item: StatusProps, index: number) => (
+        <TouchableOpacity
+          onPress={() =>
+            setFilters(
+              updateFilters({
+                currentFilters: filters,
+                name,
+                removeFromFilter: filters[name] === item.codesForFilter,
+                value: item.codesForFilter
+              })
+            )
+          }
+          key={`${item.status}-${index}`}
+        >
+          <SueStatus
+            disabled={filters[name] !== item.codesForFilter}
+            iconName={item.iconName}
+            small
+            status={item.status}
+          />
+        </TouchableOpacity>
+      ))}
     </WrapperRow>
   </View>
 );
