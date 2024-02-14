@@ -21,6 +21,32 @@ import { QUERY_TYPES, getQuery } from '../../queries';
 
 const { FILTER_TYPES } = consts;
 
+const SORT_BY = {
+  REQUESTED_DATE_TIME: 'requestedDatetime',
+  STATUS: 'status',
+  TITLE: 'title',
+  UPDATED_DATE_TIME: 'updatedDatetime'
+};
+
+const SORT_OPTIONS = [
+  {
+    value: 'Erstelldatum',
+    selected: false,
+    filterValue: SORT_BY.REQUESTED_DATE_TIME,
+    index: 0,
+    id: 0
+  },
+  {
+    value: 'Ändernugsdatum',
+    selected: false,
+    filterValue: SORT_BY.UPDATED_DATE_TIME,
+    index: 1,
+    id: 1
+  },
+  { value: 'Betreff', selected: false, filterValue: SORT_BY.TITLE, index: 2, id: 2 },
+  { value: 'Status', selected: false, filterValue: SORT_BY.STATUS, index: 3, id: 3 }
+];
+
 type Props = {
   navigation: StackNavigationProp<Record<string, any>>;
   route: RouteProp<any, never>;
@@ -81,7 +107,23 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const listItems = useMemo(() => {
     if (!data?.length) return [];
 
-    return parseListItemsFromQuery(query, data, undefined, { appDesignSystem }).reverse();
+    let parsedListItem = parseListItemsFromQuery(query, data, undefined, {
+      appDesignSystem
+    }).reverse();
+
+    if (queryVariables.sortBy) {
+      const { sortBy } = queryVariables;
+
+      parsedListItem = parsedListItem.sort((a, b) => {
+        if (sortBy === SORT_BY.REQUESTED_DATE_TIME || sortBy === SORT_BY.UPDATED_DATE_TIME) {
+          return new Date(b[sortBy]) - new Date(a[sortBy]);
+        }
+
+        return a[sortBy].localeCompare(b[sortBy]);
+      });
+    }
+
+    return parsedListItem;
   }, [data, query, queryVariables]);
 
   const refresh = async () => {
@@ -123,6 +165,13 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                   label: 'Status',
                   name: 'status',
                   data: statuses
+                },
+                {
+                  type: FILTER_TYPES.DROPDOWN,
+                  label: 'Sortieren nach',
+                  name: 'sortBy',
+                  data: SORT_OPTIONS,
+                  placeholder: 'Art auswählen'
                 }
               ]}
               initialFilters={initialQueryVariables}
