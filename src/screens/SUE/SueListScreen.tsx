@@ -32,14 +32,24 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const { statuses }: { statuses: StatusProps[] } = sueStatus;
   const query = route.params?.query ?? '';
   const initialQueryVariables = route.params?.queryVariables ?? {
-    start_date: '2020-01-01T00:00:00+01:00',
-    isInitialStartDate: true
+    initial_start_date: '2020-01-01T00:00:00+01:00'
   };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
   const [refreshing, setRefreshing] = useState(false);
 
-  const { data, isLoading, refetch } = useQuery([query, queryVariables], () =>
-    getQuery(query)(queryVariables)
+  const { data, isLoading, refetch } = useQuery(
+    [
+      query,
+      {
+        ...queryVariables,
+        start_date: queryVariables.start_date || queryVariables.initial_start_date
+      }
+    ],
+    () =>
+      getQuery(query)({
+        ...queryVariables,
+        start_date: queryVariables.start_date || queryVariables.initial_start_date
+      })
   );
 
   const listItems = useMemo(() => {

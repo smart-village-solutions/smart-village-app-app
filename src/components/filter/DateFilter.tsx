@@ -83,7 +83,6 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
       return acc;
     }, {})
   );
-  const isInitialStartDate = filters.isInitialStartDate ?? false;
 
   if (!data.length) return null;
 
@@ -95,10 +94,7 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
           useEffect(() => {
             setFilters(
               updateFilters({
-                currentFilters: {
-                  ...filters,
-                  isInitialStartDate: item.name === 'start_date' && false
-                },
+                currentFilters: filters,
                 name: item.name as keyof FilterProps,
                 removeFromFilter: !selectedDate[item.name],
                 value: `${selectedDate[item.name]}T00:00:00+01:00`
@@ -122,9 +118,11 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
                 >
                   <RegularText
                     style={styles.buttonText}
-                    placeholder={isInitialStartDate || !filters[item.name]}
+                    placeholder={
+                      !filters[item.name] || filters.start_date === filters.initial_start_date
+                    }
                   >
-                    {!isInitialStartDate && filters[item.name]
+                    {filters[item.name] && filters.start_date !== filters.initial_start_date
                       ? momentFormat(filters[item.name], 'DD.MM.YYYY')
                       : item.placeholder}
                   </RegularText>

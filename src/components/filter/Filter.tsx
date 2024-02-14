@@ -21,7 +21,7 @@ export type FilterProps = {
   service_code: string;
   sort: string;
   start_date: string;
-  isInitialStartDate: boolean;
+  initial_start_date: string;
   status: string;
 };
 
