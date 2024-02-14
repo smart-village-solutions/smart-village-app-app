@@ -1,7 +1,7 @@
 /* eslint-disable complexity */
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useQuery } from 'react-query';
 
@@ -36,6 +36,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
   const [refreshing, setRefreshing] = useState(false);
+  const [isOpening, setIsOpening] = useState(true);
 
   const { data, isLoading, refetch } = useQuery(
     [
@@ -52,6 +53,13 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       })
   );
 
+  // there is some peformance issue with rendering the screen so we return null first
+  useEffect(() => {
+    setTimeout(() => {
+      setIsOpening(false);
+    }, 50);
+  }, []);
+
   const listItems = useMemo(() => {
     if (!data?.length) return [];
 
@@ -63,6 +71,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
     isConnected && (await refetch());
     setRefreshing(false);
   };
+
+  if (isOpening) return null;
 
   return (
     <SafeAreaViewFlex>
