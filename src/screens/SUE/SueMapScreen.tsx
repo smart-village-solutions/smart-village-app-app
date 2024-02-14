@@ -181,7 +181,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
 const styles = StyleSheet.create({
   closeButton: {
     alignItems: 'center',
-    backgroundColor: colors.overlayRgba,
+    backgroundColor: colors.placeholder,
     borderRadius: normalize(12),
     height: normalize(22),
     justifyContent: 'center',
