@@ -167,17 +167,13 @@ export const SueReportScreen = ({
         setTimeout(() => {
           setIsDone(true);
           resetStoredValues();
+          setIsLoading(false);
         }, 1500);
       })
       .catch(() => {
         setIsLoading(false);
 
         return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
-      })
-      .finally(() => {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1500);
       });
   };
 
