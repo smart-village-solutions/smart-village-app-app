@@ -1,6 +1,8 @@
 /* eslint-disable complexity */
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import _reverse from 'lodash/reverse';
+import _sortBy from 'lodash/sortBy';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useQuery } from 'react-query';
@@ -121,18 +123,20 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
     let parsedListItem = parseListItemsFromQuery(query, data, undefined, {
       appDesignSystem
-    }).reverse();
+    });
 
     if (queryVariables.sortBy) {
       const { sortBy } = queryVariables;
 
-      parsedListItem = parsedListItem.sort((a, b) => {
-        if (sortBy === SORT_BY.REQUESTED_DATE_TIME || sortBy === SORT_BY.UPDATED_DATE_TIME) {
-          return new Date(b[sortBy]) - new Date(a[sortBy]);
-        }
+      if (sortBy === SORT_BY.REQUESTED_DATE_TIME || sortBy === SORT_BY.UPDATED_DATE_TIME) {
+        parsedListItem = _sortBy(parsedListItem, (item) => new Date(item[sortBy]));
+      } else {
+        parsedListItem = _sortBy(parsedListItem, sortBy);
+      }
+    }
 
-        return a[sortBy].localeCompare(b[sortBy]);
-      });
+    if (!queryVariables.sortBy || queryVariables.sortBy !== SORT_BY.TITLE) {
+      parsedListItem = _reverse(parsedListItem);
     }
 
     return parsedListItem;
