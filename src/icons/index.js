@@ -24,6 +24,7 @@ export * from './link';
 export * from './list';
 export * from './location';
 export * from './lunch';
+export * from './lupe';
 export * from './mail';
 export * from './member';
 export * from './notVerifiedBadge';

@@ -77,6 +77,7 @@ export * from './PreviewSection';
 export * from './Radiobutton';
 export * from './Results';
 export * from './SafeAreaViewFlex';
+export * from './Search';
 export * from './SectionHeader';
 export * from './ServiceBox';
 export * from './SettingsToggle';
