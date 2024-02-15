@@ -29,7 +29,7 @@ export const DefaultKeyboardAvoidingView = ({ children }: { children: React.Reac
   return (
     <KeyboardAvoidingView
       enabled={device.platform === 'ios'}
-      behavior={device.platform === 'ios' ? 'padding' : undefined}
+      behavior={device.platform === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={
         device.platform === 'ios'
           ? getHeaderHeight(orientation) + statusBarHeight(orientation)
