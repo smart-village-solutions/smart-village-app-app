@@ -1,5 +1,5 @@
 import * as Location from 'expo-location';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { Alert, StyleSheet, View } from 'react-native';
 
@@ -39,6 +39,11 @@ export const SueReportLocation = ({
     systemPermission?.status !== Location.PermissionStatus.GRANTED
   );
   const [updatedRegion, setUpdatedRegion] = useState(false);
+
+  const streetInputRef = useRef();
+  const houseNumberInputRef = useRef();
+  const zipCodeInputRef = useRef();
+  const cityInputRef = useRef();
 
   const geocode = useCallback(async () => {
     const { street, houseNumber, zipCode, city } = getValues();
@@ -159,6 +164,8 @@ export const SueReportLocation = ({
           placeholder={texts.sue.report.street}
           control={control}
           onChange={geocode}
+          ref={streetInputRef}
+          onSubmitEditing={() => houseNumberInputRef.current?.focus()}
         />
       </Wrapper>
 
@@ -169,6 +176,8 @@ export const SueReportLocation = ({
           placeholder={texts.sue.report.houseNumber}
           control={control}
           onChange={geocode}
+          ref={houseNumberInputRef}
+          onSubmitEditing={() => zipCodeInputRef.current?.focus()}
         />
       </Wrapper>
 
@@ -181,6 +190,8 @@ export const SueReportLocation = ({
           keyboardType="numeric"
           control={control}
           onChange={geocode}
+          ref={zipCodeInputRef}
+          onSubmitEditing={() => cityInputRef.current?.focus()}
         />
       </Wrapper>
 
@@ -191,6 +202,7 @@ export const SueReportLocation = ({
           placeholder={texts.sue.report.city}
           control={control}
           onChange={geocode}
+          ref={cityInputRef}
         />
       </Wrapper>
     </View>
