@@ -449,6 +449,7 @@ export const texts = {
     hideFilter: 'Filter ausblenden',
     resetFilter: 'Filter zurücksetzen',
     showFilter: 'Filter anzeigen',
+    search: 'Was suchst du?',
     sorting: {
       changeDate: 'Änderungsdatum',
       creationDate: 'Erstelldatum',

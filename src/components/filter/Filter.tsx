@@ -60,14 +60,17 @@ export const Filter = ({ filterTypes, initialFilters, setQueryVariables }: Props
   const [filters, setFilters] = useState(initialFilters);
   const [isCollapsed, setIsCollapsed] = useState(true);
 
-  useEffect(() => setQueryVariables(filters), [filters]);
+  useEffect(
+    () => setQueryVariables((prev) => ({ search: prev.search || '', ...filters })),
+    [filters]
+  );
 
   if (!filterTypes?.length) {
     return null;
   }
 
   const isNoFilterSet =
-    filters.isInitialStartDate && !Object.keys(_omit(filters, Object.keys(initialFilters))).length;
+    filters.initial_start_date && !Object.keys(_omit(filters, Object.keys(initialFilters))).length;
 
   return (
     <>
