@@ -15,7 +15,7 @@ import {
   SueLoadingIndicator,
   Wrapper
 } from '../../components';
-import { colors, consts } from '../../config';
+import { colors, consts, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 
@@ -30,21 +30,33 @@ const SORT_BY = {
 
 const SORT_OPTIONS = [
   {
-    value: 'Erstelldatum',
+    value: texts.filter.sorting.creationDate,
     selected: false,
     filterValue: SORT_BY.REQUESTED_DATE_TIME,
     index: 0,
     id: 0
   },
   {
-    value: 'Ändernugsdatum',
+    value: texts.filter.sorting.changeDate,
     selected: false,
     filterValue: SORT_BY.UPDATED_DATE_TIME,
     index: 1,
     id: 1
   },
-  { value: 'Betreff', selected: false, filterValue: SORT_BY.TITLE, index: 2, id: 2 },
-  { value: 'Status', selected: false, filterValue: SORT_BY.STATUS, index: 3, id: 3 }
+  {
+    value: texts.filter.sorting.title,
+    selected: false,
+    filterValue: SORT_BY.TITLE,
+    index: 2,
+    id: 2
+  },
+  {
+    value: texts.filter.sorting.status,
+    selected: false,
+    filterValue: SORT_BY.STATUS,
+    index: 3,
+    id: 3
+  }
 ];
 
 type Props = {

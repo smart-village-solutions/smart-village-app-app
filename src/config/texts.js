@@ -448,7 +448,13 @@ export const texts = {
     date: 'Datum',
     hideFilter: 'Filter ausblenden',
     resetFilter: 'Filter zurücksetzen',
-    showFilter: 'Filter anzeigen'
+    showFilter: 'Filter anzeigen',
+    sorting: {
+      changeDate: 'Änderungsdatum',
+      creationDate: 'Erstelldatum',
+      status: 'Status',
+      title: 'Betreff'
+    }
   },
   homeButtons: {
     events: 'Alle Veranstaltungen anzeigen',
