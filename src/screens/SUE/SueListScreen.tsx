@@ -55,19 +55,19 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       })
   );
 
-  const { data: servicesData } = useQuery([QUERY_TYPES.SUE.SERVICES, {}], () =>
-    getQuery(QUERY_TYPES.SUE.SERVICES)({})
+  const { data: servicesData } = useQuery([QUERY_TYPES.SUE.SERVICES], () =>
+    getQuery(QUERY_TYPES.SUE.SERVICES)()
   );
 
-  const servicesFilterData = useMemo(() => {
+  const services = useMemo(() => {
     if (!servicesData?.length) return;
 
     return servicesData.map((item: any, index: number) => ({
-      selected: false,
-      value: item.serviceName,
       filterValue: item.serviceCode,
       id: index,
-      index
+      index,
+      selected: false,
+      value: item.serviceName
     }));
   }, [servicesData]);
 
@@ -115,7 +115,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                   type: FILTER_TYPES.DROPDOWN,
                   label: 'Kategorie',
                   name: 'service_code',
-                  data: servicesFilterData,
+                  data: services,
                   placeholder: 'Kategorie auswählen'
                 },
                 {
