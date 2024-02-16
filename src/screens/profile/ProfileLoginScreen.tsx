@@ -22,7 +22,7 @@ import { consts, normalize, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { member, profileLogIn } from '../../queries/profile';
-import { ProfileLogin, ScreenName, TMember } from '../../types';
+import { ProfileLogin, ProfileMember, ScreenName } from '../../types';
 
 const { a11yLabel } = consts;
 
@@ -63,11 +63,10 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
     data: dataMember
   } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     enabled: !!data?.member?.authentication_token, // the query will not execute until the auth token exists
-    onSuccess: (responseData: TMember) => {
+    onSuccess: (responseData: ProfileMember) => {
       if (!responseData?.member) {
         return;
       }
-      alert('Login erfolgreich!');
 
       // save user data to global state
       storeProfileUserData(responseData.member);
@@ -80,20 +79,20 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
   const onSubmit = (loginData: ProfileLogin) =>
     mutateLogIn(loginData, {
       onSuccess: (responseData) => {
-        if (!responseData?.member?.keycloak_access_token) {
+        if (!responseData?.member?.authentication_token) {
           return;
         }
 
         // wait for saving auth token to global state
-        return storeProfileAuthToken(responseData.member.keycloak_access_token);
+        return storeProfileAuthToken(responseData.member.authentication_token);
       }
     });
 
   if (
     isError ||
     isErrorMember ||
-    (isSuccess && !data?.member) ||
-    (isSuccessMember && !dataMember?.member)
+    (isSuccess && !data?.success) ||
+    (isSuccessMember && !dataMember?.success)
   ) {
     showLoginFailAlert();
     reset();
@@ -110,16 +109,14 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
           <Wrapper>
             <Input
               name="email"
-              placeholder={texts.profile.usernameOrEmail}
+              placeholder={texts.profile.email}
               keyboardType="email-address"
               textContentType="emailAddress"
               autoCompleteType="email"
               autoCapitalize="none"
               validate
               rules={{ required: true }}
-              errorMessage={
-                errors.email && `${texts.profile.usernameOrEmail} muss ausgefüllt werden`
-              }
+              errorMessage={errors.email && `${texts.profile.email} muss ausgefüllt werden`}
               control={control}
             />
           </Wrapper>

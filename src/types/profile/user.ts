@@ -1,4 +1,4 @@
-export type TMember = {
+export type ProfileMember = {
   member: {
     authentication_token_created_at: string;
     authentication_token: string;
@@ -11,6 +11,9 @@ export type TMember = {
     keycloak_refresh_token_expires_at: string;
     keycloak_refresh_token: string;
     municipality_id: number;
+    preferences: {
+      [key: string]: string;
+    };
     updated_at: string;
   };
   success: boolean;
