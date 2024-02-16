@@ -3,18 +3,21 @@ import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { SettingsContext } from '../../SettingsProvider';
-import { Icon, normalize } from '../../config';
+import { Icon, colors, device, normalize } from '../../config';
 import { BoldText } from '../Text';
 import { WrapperRow } from '../Wrapper';
 
+/* eslint-disable complexity */
 export const SueStatus = ({
   disabled,
   iconName,
+  isFilter,
   small = false,
   status
 }: {
   disabled?: boolean;
   iconName?: string;
+  isFilter?: boolean;
   small?: boolean;
   status: string;
 }) => {
@@ -23,13 +26,29 @@ export const SueStatus = ({
   const { sueStatus = {} } = appDesignSystem;
   const {
     containerStyle = {},
-    textStyle = {},
+    statusTextColors = {},
+    statusTextColorsFilter = {},
     statusViewColors = {},
-    statusTextColors = {}
+    statusViewColorsFilter = {},
+    textStyle = {}
   } = sueStatus;
 
-  const backgroundColor = disabled ? statusViewColors?.disabled : statusViewColors?.[status];
-  const textColor = disabled ? statusTextColors?.disabled : statusTextColors?.[status];
+  const backgroundColor =
+    isFilter && disabled
+      ? statusViewColorsFilter?.disabled
+      : isFilter
+      ? statusViewColorsFilter?.enabled
+      : statusViewColors?.[status] || statusViewColors?.disabled;
+
+  const borderColor = isFilter && disabled ? colors.placeholder : colors.primary;
+
+  const textColor =
+    isFilter && disabled
+      ? statusTextColorsFilter?.disabled
+      : isFilter
+      ? statusTextColorsFilter?.enabled
+      : statusTextColors?.[status] || statusTextColors?.disabled;
+
   const statusIconName = `Sue${_upperFirst(iconName)}${small ? 'Small' : ''}`;
   const StatusIcon = Icon[statusIconName as keyof typeof Icon];
 
@@ -39,7 +58,8 @@ export const SueStatus = ({
         styles.container,
         !!containerStyle && containerStyle,
         small && styles.smallContainer,
-        { backgroundColor }
+        { backgroundColor, borderColor },
+        isFilter && styles.filterContainer
       ]}
     >
       {!!iconName && (
@@ -58,6 +78,7 @@ export const SueStatus = ({
     </WrapperRow>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   container: {
@@ -70,6 +91,12 @@ const styles = StyleSheet.create({
     marginTop: normalize(7),
     paddingHorizontal: normalize(14),
     paddingVertical: normalize(4)
+  },
+  filterContainer: {
+    borderRadius: normalize(8),
+    borderWidth: normalize(1),
+    height: normalize(32),
+    width: device.width * 0.3
   },
   smallContainer: {
     borderRadius: normalize(28),

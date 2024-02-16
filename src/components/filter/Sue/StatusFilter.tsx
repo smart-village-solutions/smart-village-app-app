@@ -37,6 +37,7 @@ export const StatusFilter = ({ containerStyle, data, filters, label, name, setFi
           <SueStatus
             disabled={filters[name] !== item.codesForFilter}
             iconName={item.iconName}
+            isFilter
             small
             status={item.status}
           />
