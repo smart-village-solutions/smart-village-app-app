@@ -123,6 +123,7 @@ export const Filter = ({ filterTypes, initialFilters, setQueryVariables }: Props
 
         <WrapperVertical style={styles.noPaddingBottom}>
           <Button
+            invert
             disabled={isNoFilterSet}
             title={texts.filter.resetFilter}
             onPress={() => {

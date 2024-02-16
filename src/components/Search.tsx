@@ -42,7 +42,7 @@ export const Search = ({
         placeholder={placeholder}
       />
       <TouchableOpacity onPress={handleSubmit(onSearch)} style={[styles.searchButton, buttonStyle]}>
-        <Icon.Lupe color={colors.surface} size={normalize(16)} />
+        <Icon.Lupe color={colors.surface} size={normalize(24)} />
       </TouchableOpacity>
     </WrapperRow>
   );
@@ -54,13 +54,15 @@ const styles = StyleSheet.create({
     height: normalize(42),
     marginRight: normalize(8)
   },
-  inputContainer: {},
+  inputContainer: {
+    height: normalize(52)
+  },
   searchButton: {
     alignItems: 'center',
     backgroundColor: colors.primary,
     borderRadius: normalize(3),
-    height: normalize(42),
+    height: normalize(52),
     justifyContent: 'center',
-    width: normalize(42)
+    width: normalize(52)
   }
 });
