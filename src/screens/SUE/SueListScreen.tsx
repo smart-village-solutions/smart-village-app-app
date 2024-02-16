@@ -1,6 +1,7 @@
 /* eslint-disable complexity */
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import _filter from 'lodash/filter';
 import _reverse from 'lodash/reverse';
 import _sortBy from 'lodash/sortBy';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -13,6 +14,7 @@ import {
   Filter,
   ListComponent,
   SafeAreaViewFlex,
+  Search,
   StatusProps,
   SueLoadingIndicator,
   Wrapper
@@ -139,6 +141,15 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       parsedListItem = _reverse(parsedListItem);
     }
 
+    if (queryVariables.search) {
+      parsedListItem = _filter(
+        parsedListItem,
+        (item) =>
+          item.title?.includes(queryVariables.search) ||
+          item.description?.includes(queryVariables.search)
+      );
+    }
+
     return parsedListItem;
   }, [data, query, queryVariables]);
 
@@ -158,42 +169,48 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         data={listItems}
         isLoading={isLoading}
         ListHeaderComponent={
-          <Wrapper>
-            <Filter
-              filterTypes={[
-                {
-                  type: FILTER_TYPES.DATE,
-                  name: 'date',
-                  data: [
-                    { name: 'start_date', placeholder: 'Erstellt von' },
-                    { name: 'end_date', placeholder: 'Erstellt bis' }
-                  ]
-                },
-                {
-                  type: FILTER_TYPES.DROPDOWN,
-                  label: 'Kategorie',
-                  name: 'service_code',
-                  data: services,
-                  placeholder: 'Kategorie auswählen'
-                },
-                {
-                  type: FILTER_TYPES.SUE.STATUS,
-                  label: 'Status',
-                  name: 'status',
-                  data: statuses
-                },
-                {
-                  type: FILTER_TYPES.DROPDOWN,
-                  label: 'Sortieren nach',
-                  name: 'sortBy',
-                  data: SORT_OPTIONS,
-                  placeholder: 'Art auswählen'
-                }
-              ]}
-              initialFilters={initialQueryVariables}
-              setQueryVariables={setQueryVariables}
-            />
-          </Wrapper>
+          <>
+            <Wrapper>
+              <Search setQueryVariables={setQueryVariables} placeholder={texts.filter.search} />
+            </Wrapper>
+
+            <Wrapper>
+              <Filter
+                filterTypes={[
+                  {
+                    type: FILTER_TYPES.DATE,
+                    name: 'date',
+                    data: [
+                      { name: 'start_date', placeholder: 'Erstellt von' },
+                      { name: 'end_date', placeholder: 'Erstellt bis' }
+                    ]
+                  },
+                  {
+                    type: FILTER_TYPES.DROPDOWN,
+                    label: 'Kategorie',
+                    name: 'service_code',
+                    data: services,
+                    placeholder: 'Kategorie auswählen'
+                  },
+                  {
+                    type: FILTER_TYPES.SUE.STATUS,
+                    label: 'Status',
+                    name: 'status',
+                    data: statuses
+                  },
+                  {
+                    type: FILTER_TYPES.DROPDOWN,
+                    label: 'Sortieren nach',
+                    name: 'sortBy',
+                    data: SORT_OPTIONS,
+                    placeholder: 'Art auswählen'
+                  }
+                ]}
+                initialFilters={initialQueryVariables}
+                setQueryVariables={setQueryVariables}
+              />
+            </Wrapper>
+          </>
         }
         ListFooterLoadingIndicator={SueLoadingIndicator}
         refreshControl={
