@@ -1,7 +1,7 @@
 import * as appJson from '../../../app.json';
 import { secrets } from '../../config';
 import { profileAuthToken } from '../../helpers';
-import { ProfileRegistration } from '../../types';
+import { ProfileRegistration, ProfileResetPassword } from '../../types';
 
 const namespace = appJson.expo.slug as keyof typeof secrets;
 const serverUrl = secrets[namespace]?.serverUrl;
@@ -49,6 +49,25 @@ export const profileRegister = async ({
   };
 
   return (await fetch(`${serverUrl}/members.json`, fetchObj)).json();
+};
+
+export const profileResetPassword = async ({ email }: ProfileResetPassword) => {
+  const formData = {
+    member: {
+      email
+    }
+  };
+
+  const fetchObj = {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  };
+
+  return (await fetch(`${serverUrl}/members/password_reset.json`, fetchObj)).json();
 };
 
 export const member = async () => {
