@@ -33,8 +33,7 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
   const { data, loading, refetch } = useStaticContent({
     name: queryVariables.name,
     type: 'json',
-    refreshTimeKey: `${query}-${queryVariables.name}`,
-    skip: isLoggedIn
+    refreshTimeKey: `${query}-${queryVariables.name}`
   });
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `title` dependency
@@ -60,8 +59,28 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
   if (loading || isLoading) {
     return <LoadingSpinner loading />;
   }
+  console.warn('ProfileHomeScreen.tsx: 180: data: ', data);
 
-  if (!data)
+  if (!data) {
+    return (
+      <SafeAreaViewFlex>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={refreshHome}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
+            />
+          }
+        >
+          <EmptyMessage title={texts.empty.content} />
+        </ScrollView>
+      </SafeAreaViewFlex>
+    );
+  }
+
+  if (isLoggedIn)
     return (
       <SafeAreaViewFlex>
         <ScrollView

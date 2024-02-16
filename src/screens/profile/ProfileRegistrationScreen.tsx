@@ -60,7 +60,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
       { ...registerData, dataPrivacyCheck: hasAcceptedDataPrivacy },
       {
         onSuccess: (responseData) => {
-          if (!responseData?.status || responseData?.errorMessage) {
+          if (!responseData?.success || responseData?.errorMessage) {
             showRegistrationFailAlert();
             reset();
             return;

@@ -14,7 +14,7 @@ export const ProfileSignupScreen = ({ navigation, route }: StackScreenProps<any>
   const dataPrivacyLink = route.params?.webUrl ?? '';
 
   const { data, loading, refetch } = useStaticContent({
-    refreshTimeKey: 'publicHtmlFile-ProfileSignup',
+    refreshTimeKey: 'publicHtmlFile-profileSignup',
     name: 'profileSignup',
     type: 'html'
   });
