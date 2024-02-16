@@ -48,6 +48,9 @@ export const QUERY_TYPES = {
   POINT_OF_INTEREST_TRAVEL_TIMES: 'pointOfInterestTravelTimes',
   POINTS_OF_INTEREST: 'pointsOfInterest',
   POINTS_OF_INTEREST_AND_TOURS: 'pointsOfInterestAndTours',
+  PROFILE: {
+    MEMBER: 'member'
+  },
   PUBLIC_HTML_FILE: 'publicHtmlFile',
   PUBLIC_JSON_FILE: 'publicJsonFile',
   STATIC_CONTENT_LIST: 'staticContentList',

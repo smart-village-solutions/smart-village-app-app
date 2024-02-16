@@ -2,6 +2,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
+import { NetworkContext } from '../../NetworkProvider';
 import {
   EmptyMessage,
   HeadlineText,
@@ -14,13 +15,14 @@ import {
 } from '../../components';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { colors, consts, normalize, texts } from '../../config';
-import { useStaticContent, useTrackScreenViewAsync } from '../../hooks';
-import { NetworkContext } from '../../NetworkProvider';
+import { useProfileUser, useStaticContent, useTrackScreenViewAsync } from '../../hooks';
 import { ScreenName } from '../../types';
 
 const { MATOMO_TRACKING } = consts;
 
+/* eslint-disable complexity */
 export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
+  const { refresh, isLoading, isLoggedIn } = useProfileUser();
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
@@ -31,7 +33,8 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
   const { data, loading, refetch } = useStaticContent({
     name: queryVariables.name,
     type: 'json',
-    refreshTimeKey: `${query}-${queryVariables.name}`
+    refreshTimeKey: `${query}-${queryVariables.name}`,
+    skip: isLoggedIn
   });
 
   // NOTE: we cannot use the `useMatomoTrackScreenView` hook here, as we need the `title` dependency
@@ -41,17 +44,41 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
       trackScreenViewAsync(`${MATOMO_TRACKING.SCREEN_VIEW.HTML} / ${screenTitle}`);
   }, [screenTitle]);
 
-  const refresh = useCallback(async () => {
+  const refreshUser = useCallback(() => {
+    refresh();
+  }, [refresh]);
+
+  // refresh if the refreshUser param changed, which happens after login
+  useEffect(refreshUser, [route.params?.refreshUser]);
+
+  const refreshHome = useCallback(async () => {
     setRefreshing(true);
     isConnected && (await refetch());
     setRefreshing(false);
   }, [isConnected, refetch]);
 
-  if (loading) {
+  if (loading || isLoading) {
     return <LoadingSpinner loading />;
   }
 
-  if (!data) return null;
+  if (!data)
+    return (
+      <SafeAreaViewFlex>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={refreshHome}
+              colors={[colors.refreshControl]}
+              tintColor={colors.refreshControl}
+            />
+          }
+        >
+          {/* TODO: Profile Home Sections */}
+          <EmptyMessage title={texts.empty.content} />
+        </ScrollView>
+      </SafeAreaViewFlex>
+    );
 
   const { description, headline, picture, subQuery, title } = data;
 
@@ -61,7 +88,7 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={refresh}
+            onRefresh={refreshHome}
             colors={[colors.refreshControl]}
             tintColor={colors.refreshControl}
           />
@@ -108,9 +135,9 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
         <Wrapper style={styles.noPaddingTop}>
           <WrapperHorizontal>
             <RegularText center>
-              Sind Sie schon registriert?{' '}
+              {texts.profile.alreadyRegistered}
               <RegularText underline onPress={() => navigation.navigate(ScreenName.ProfileLogin)}>
-                Einloggen
+                {texts.profile.login}
               </RegularText>
             </RegularText>
           </WrapperHorizontal>
@@ -119,6 +146,7 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   headlineText: {

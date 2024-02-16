@@ -50,7 +50,6 @@ import {
   ProfileLoginScreen,
   ProfileRegistrationScreen,
   ProfileResetPasswordScreen,
-  ProfileSignupScreen,
   SettingsScreen,
   SurveyDetailScreen,
   SurveyOverviewScreen,
@@ -349,11 +348,6 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.ProfileResetPassword,
       screenComponent: ProfileResetPasswordScreen,
-      screenOptions: { title: texts.screenTitles.profile.home }
-    },
-    {
-      routeName: ScreenName.ProfileSignup,
-      screenComponent: ProfileSignupScreen,
       screenOptions: { title: texts.screenTitles.profile.home }
     },
     {

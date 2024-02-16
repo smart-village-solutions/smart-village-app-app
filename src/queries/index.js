@@ -30,6 +30,7 @@ import {
   GET_POINT_OF_INTEREST_TRAVEL_TIMES
 } from './pointsOfInterest';
 import { GET_POINTS_OF_INTEREST_AND_TOURS } from './pointsOfInterestAndTours';
+import { member } from './profile';
 import { GET_PUBLIC_HTML_FILE } from './publicHtmlFiles';
 import { GET_PUBLIC_JSON_FILE } from './publicJsonFiles';
 import { GET_TOUR, GET_TOURS, GET_TOUR_STOPS } from './tours';
@@ -93,6 +94,9 @@ export const getQuery = (query, filterOptions = {}) => {
     [QUERY_TYPES.CONSUL.PROPOSALS]: GET_PROPOSALS,
     [QUERY_TYPES.CONSUL.PUBLIC_COMMENT]: PUBLIC_COMMENT,
     [QUERY_TYPES.CONSUL.USER]: USER,
+
+    // PROFILE QUERIES
+    [QUERY_TYPES.PROFILE.MEMBER]: member,
 
     // VOLUNTEER QUERIES
     [QUERY_TYPES.VOLUNTEER.APPLICANTS]: groupMembership,
