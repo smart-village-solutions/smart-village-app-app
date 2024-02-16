@@ -14,10 +14,12 @@ const keyExtractor = (item, index) => `index${index}-id${item.id}`;
 
 const MAX_INITIAL_NUM_TO_RENDER = 15;
 
+/* eslint-disable complexity */
 export const VerticalList = ({
   data,
   refetch,
   fetchMoreData,
+  isLoading,
   ListEmptyComponent,
   ListFooterLoadingIndicator,
   ListHeaderComponent,
@@ -85,6 +87,14 @@ export const VerticalList = ({
               </>
             );
           }
+        } else if (isLoading) {
+          if (ListFooterLoadingIndicator) {
+            return <ListFooterLoadingIndicator />;
+          }
+
+          return (
+            <ActivityIndicator color={colors.refreshControl} style={styles.loadingIndicator} />
+          );
         } else if (
           query == QUERY_TYPES.POINTS_OF_INTEREST &&
           switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON
@@ -105,6 +115,7 @@ export const VerticalList = ({
     />
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   contentContainerStyle: {
@@ -122,6 +133,7 @@ VerticalList.propTypes = {
   data: PropTypes.array,
   refetch: PropTypes.func,
   fetchMoreData: PropTypes.func,
+  isLoading: PropTypes.bool,
   leftImage: PropTypes.bool,
   ListEmptyComponent: PropTypes.object,
   ListFooterLoadingIndicator: PropTypes.func,
@@ -135,6 +147,7 @@ VerticalList.propTypes = {
 };
 
 VerticalList.defaultProps = {
+  isLoading: false,
   noSubtitle: false,
   leftImage: false
 };

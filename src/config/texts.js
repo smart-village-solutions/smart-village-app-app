@@ -444,6 +444,12 @@ export const texts = {
       enabled: 'Senden'
     }
   },
+  filter: {
+    date: 'Datum',
+    hideFilter: 'Filter ausblenden',
+    resetFilter: 'Filter zurücksetzen',
+    showFilter: 'Filter anzeigen'
+  },
   homeButtons: {
     events: 'Alle Veranstaltungen anzeigen',
     news: 'Alle Nachrichten anzeigen',
