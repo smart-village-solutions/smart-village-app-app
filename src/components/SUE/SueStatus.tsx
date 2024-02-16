@@ -26,25 +26,27 @@ export const SueStatus = ({
   const { sueStatus = {} } = appDesignSystem;
   const {
     containerStyle = {},
-    textStyle = {},
+    statusTextColors = {},
+    statusTextColorsFilter = {},
     statusViewColors = {},
-    statusTextColors = {}
+    statusViewColorsFilter = {},
+    textStyle = {}
   } = sueStatus;
 
   const backgroundColor =
     isFilter && disabled
-      ? colors.surface
+      ? statusViewColorsFilter?.disabled
       : isFilter
-      ? colors.lighterPrimaryRgba
+      ? statusViewColorsFilter?.enabled
       : statusViewColors?.[status] || statusViewColors?.disabled;
 
   const borderColor = isFilter && disabled ? colors.placeholder : colors.primary;
 
   const textColor =
     isFilter && disabled
-      ? colors.placeholder
+      ? statusTextColorsFilter?.disabled
       : isFilter
-      ? colors.darkText
+      ? statusTextColorsFilter?.enabled
       : statusTextColors?.[status] || statusTextColors?.disabled;
 
   const statusIconName = `Sue${_upperFirst(iconName)}${small ? 'Small' : ''}`;
