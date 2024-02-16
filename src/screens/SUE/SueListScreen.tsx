@@ -32,32 +32,32 @@ const SORT_BY = {
 
 const SORT_OPTIONS = [
   {
-    value: texts.filter.sorting.creationDate,
+    value: texts.filter.sorting.requestedDatetime,
     selected: false,
     filterValue: SORT_BY.REQUESTED_DATE_TIME,
-    index: 0,
-    id: 0
-  },
-  {
-    value: texts.filter.sorting.changeDate,
-    selected: false,
-    filterValue: SORT_BY.UPDATED_DATE_TIME,
     index: 1,
     id: 1
+  },
+  {
+    value: texts.filter.sorting.updatedDatetime,
+    selected: false,
+    filterValue: SORT_BY.UPDATED_DATE_TIME,
+    index: 2,
+    id: 2
   },
   {
     value: texts.filter.sorting.title,
     selected: false,
     filterValue: SORT_BY.TITLE,
-    index: 2,
-    id: 2
+    index: 3,
+    id: 3
   },
   {
     value: texts.filter.sorting.status,
     selected: false,
     filterValue: SORT_BY.STATUS,
-    index: 3,
-    id: 3
+    index: 4,
+    id: 4
   }
 ];
 
@@ -106,8 +106,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
       selected: false,
       value: item.serviceName,
       filterValue: item.serviceCode,
-      id: index,
-      index
+      id: index + 1,
+      index: index + 1
     }));
   }, [servicesData]);
 

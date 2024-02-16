@@ -450,8 +450,8 @@ export const texts = {
     resetFilter: 'Filter zurücksetzen',
     showFilter: 'Filter anzeigen',
     sorting: {
-      changeDate: 'Änderungsdatum',
-      creationDate: 'Erstelldatum',
+      updatedDatetime: 'Änderungsdatum',
+      requestedDatetime: 'Erstelldatum',
       status: 'Status',
       title: 'Betreff'
     }
