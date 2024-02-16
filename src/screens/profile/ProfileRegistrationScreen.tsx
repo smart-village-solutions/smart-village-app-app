@@ -180,7 +180,9 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
               <RegularText
                 primary
                 underline
-                onPress={() => navigation.navigate(ScreenName.ProfileLogin)}
+                onPress={() =>
+                  navigation.navigate(ScreenName.ProfileLogin, { webUrl: dataPrivacyLink })
+                }
               >
                 {texts.profile.login}
               </RegularText>

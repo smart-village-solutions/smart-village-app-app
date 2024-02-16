@@ -19,10 +19,10 @@ import {
   WrapperRow
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
-import { storeVolunteerAuthToken, storeVolunteerUserData } from '../../helpers';
+import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
-import { logIn, me } from '../../queries/volunteer';
-import { ScreenName, VolunteerLogin } from '../../types';
+import { member, profileLogIn } from '../../queries/profile';
+import { ProfileLogin, ProfileMember, ScreenName } from '../../types';
 
 const { a11yLabel } = consts;
 
@@ -30,58 +30,69 @@ const showLoginFailAlert = () =>
   Alert.alert(texts.profile.loginFailedTitle, texts.profile.loginFailedBody);
 
 // eslint-disable-next-line complexity
-export const ProfileLoginScreen = ({ navigation }: StackScreenProps<any>) => {
+export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
+  const email = route.params?.email ?? '';
+  const password = route.params?.password ?? '';
+  const dataPrivacyLink = route.params?.webUrl ?? '';
 
   const {
     control,
     formState: { errors },
     handleSubmit
-  } = useForm<VolunteerLogin>({
+  } = useForm<ProfileLogin>({
     defaultValues: {
-      username: '',
-      password: ''
+      email,
+      password
     }
   });
 
-  const { mutate: mutateLogIn, isLoading, isError, isSuccess, data, reset } = useMutation(logIn);
   const {
-    isLoading: isLoadingMe,
-    isError: isErrorMe,
-    isSuccess: isSuccessMe,
-    data: dataMe
-  } = useQuery(QUERY_TYPES.VOLUNTEER.ME, me, {
-    enabled: !!data?.auth_token, // the query will not execute until the auth token exists
-    onSuccess: (responseData) => {
-      if (!responseData?.account) {
+    mutate: mutateLogIn,
+    isError,
+    isLoading,
+    isSuccess,
+    reset,
+    data
+  } = useMutation(profileLogIn);
+
+  const {
+    isLoading: isLoadingMember,
+    isError: isErrorMember,
+    isSuccess: isSuccessMember,
+    data: dataMember
+  } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
+    enabled: !!data?.member?.authentication_token, // the query will not execute until the auth token exists
+    onSuccess: (responseData: ProfileMember) => {
+      if (!responseData?.member) {
         return;
       }
 
       // save user data to global state
-      storeVolunteerUserData(responseData.account);
+      storeProfileUserData(responseData.member);
 
       // refreshUser param causes the home screen to update and no longer show the welcome component
-      navigation.navigate(ScreenName.VolunteerHome, { refreshUser: new Date().valueOf() });
+      navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
     }
   });
 
-  const onSubmit = (loginData: VolunteerLogin) =>
+  const onSubmit = (loginData: ProfileLogin) =>
     mutateLogIn(loginData, {
       onSuccess: (responseData) => {
-        if (!responseData?.auth_token) {
+        if (!responseData?.member?.authentication_token) {
           return;
         }
 
         // wait for saving auth token to global state
-        return storeVolunteerAuthToken(responseData.auth_token);
+        return storeProfileAuthToken(responseData.member.authentication_token);
       }
     });
 
   if (
     isError ||
-    isErrorMe ||
-    (isSuccess && data?.code !== 200) ||
-    (isSuccessMe && dataMe?.status && dataMe?.status !== 200)
+    isErrorMember ||
+    (isSuccess && !data?.success) ||
+    (isSuccessMember && !dataMember?.success)
   ) {
     showLoginFailAlert();
     reset();
@@ -97,17 +108,15 @@ export const ProfileLoginScreen = ({ navigation }: StackScreenProps<any>) => {
 
           <Wrapper>
             <Input
-              name="username"
-              placeholder={texts.profile.usernameOrEmail}
+              name="email"
+              placeholder={texts.profile.email}
               keyboardType="email-address"
               textContentType="emailAddress"
               autoCompleteType="email"
               autoCapitalize="none"
               validate
               rules={{ required: true }}
-              errorMessage={
-                errors.username && `${texts.profile.usernameOrEmail} muss ausgefüllt werden`
-              }
+              errorMessage={errors.email && `${texts.profile.email} muss ausgefüllt werden`}
               control={control}
             />
           </Wrapper>
@@ -147,7 +156,7 @@ export const ProfileLoginScreen = ({ navigation }: StackScreenProps<any>) => {
             <Button
               onPress={handleSubmit(onSubmit)}
               title={texts.profile.login}
-              disabled={isLoading || isLoadingMe}
+              disabled={isLoading || isLoadingMember}
             />
 
             <RegularText />
@@ -157,14 +166,16 @@ export const ProfileLoginScreen = ({ navigation }: StackScreenProps<any>) => {
               <RegularText
                 primary
                 underline
-                onPress={() => navigation.navigate(ScreenName.ProfileRegistration)}
+                onPress={() =>
+                  navigation.navigate(ScreenName.ProfileRegistration, { webUrl: dataPrivacyLink })
+                }
               >
                 {texts.profile.register}
               </RegularText>
             </RegularText>
           </Wrapper>
 
-          <LoadingModal loading={isLoading || isLoadingMe} />
+          <LoadingModal loading={isLoading || isLoadingMember} />
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
