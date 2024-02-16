@@ -20,6 +20,7 @@ export type FilterProps = {
   end_date: string;
   service_code: string;
   sort: string;
+  sortBy: string;
   start_date: string;
   initial_start_date: string;
   status: string;
@@ -121,7 +122,13 @@ export const Filter = ({ filterTypes, initialFilters, setQueryVariables }: Props
           <Button
             disabled={isNoFilterSet}
             title={texts.filter.resetFilter}
-            onPress={() => setFilters(initialFilters)}
+            onPress={() => {
+              setIsCollapsed(true);
+
+              setTimeout(() => {
+                setFilters(initialFilters);
+              }, 500);
+            }}
           />
         </WrapperVertical>
         <Divider />

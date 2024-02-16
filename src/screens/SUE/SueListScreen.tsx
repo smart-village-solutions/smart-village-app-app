@@ -1,6 +1,8 @@
 /* eslint-disable complexity */
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import _reverse from 'lodash/reverse';
+import _sortBy from 'lodash/sortBy';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useQuery } from 'react-query';
@@ -15,11 +17,49 @@ import {
   SueLoadingIndicator,
   Wrapper
 } from '../../components';
-import { colors, consts } from '../../config';
+import { colors, consts, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 
 const { FILTER_TYPES } = consts;
+
+const SORT_BY = {
+  REQUESTED_DATE_TIME: 'requestedDatetime',
+  STATUS: 'status',
+  TITLE: 'title',
+  UPDATED_DATE_TIME: 'updatedDatetime'
+};
+
+const SORT_OPTIONS = [
+  {
+    value: texts.filter.sorting.requestedDatetime,
+    selected: false,
+    filterValue: SORT_BY.REQUESTED_DATE_TIME,
+    index: 1,
+    id: 1
+  },
+  {
+    value: texts.filter.sorting.updatedDatetime,
+    selected: false,
+    filterValue: SORT_BY.UPDATED_DATE_TIME,
+    index: 2,
+    id: 2
+  },
+  {
+    value: texts.filter.sorting.title,
+    selected: false,
+    filterValue: SORT_BY.TITLE,
+    index: 3,
+    id: 3
+  },
+  {
+    value: texts.filter.sorting.status,
+    selected: false,
+    filterValue: SORT_BY.STATUS,
+    index: 4,
+    id: 4
+  }
+];
 
 type Props = {
   navigation: StackNavigationProp<Record<string, any>>;
@@ -64,8 +104,8 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
     return servicesData.map((item: any, index: number) => ({
       filterValue: item.serviceCode,
-      id: index,
-      index,
+      id: index + 1,
+      index: index + 1,
       selected: false,
       value: item.serviceName
     }));
@@ -81,7 +121,25 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const listItems = useMemo(() => {
     if (!data?.length) return [];
 
-    return parseListItemsFromQuery(query, data, undefined, { appDesignSystem }).reverse();
+    let parsedListItem = parseListItemsFromQuery(query, data, undefined, {
+      appDesignSystem
+    });
+
+    if (queryVariables.sortBy) {
+      const { sortBy } = queryVariables;
+
+      if (sortBy === SORT_BY.REQUESTED_DATE_TIME || sortBy === SORT_BY.UPDATED_DATE_TIME) {
+        parsedListItem = _sortBy(parsedListItem, (item) => new Date(item[sortBy]));
+      } else {
+        parsedListItem = _sortBy(parsedListItem, sortBy);
+      }
+    }
+
+    if (!queryVariables.sortBy || queryVariables.sortBy !== SORT_BY.TITLE) {
+      parsedListItem = _reverse(parsedListItem);
+    }
+
+    return parsedListItem;
   }, [data, query, queryVariables]);
 
   const refresh = async () => {
@@ -123,6 +181,13 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                   label: 'Status',
                   name: 'status',
                   data: statuses
+                },
+                {
+                  type: FILTER_TYPES.DROPDOWN,
+                  label: 'Sortieren nach',
+                  name: 'sortBy',
+                  data: SORT_OPTIONS,
+                  placeholder: 'Art auswählen'
                 }
               ]}
               initialFilters={initialQueryVariables}
