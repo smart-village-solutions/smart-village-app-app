@@ -54,6 +54,7 @@ export enum ScreenName {
   ProfileLogin = 'ProfileLogin',
   ProfileRegistration = 'ProfileRegistration',
   ProfileResetPassword = 'ProfileResetPassword',
+  ProfileSignup = 'ProfileSignup',
   Service = 'Service',
   Settings = 'Settings',
   SurveyDetail = 'SurveyDetail',

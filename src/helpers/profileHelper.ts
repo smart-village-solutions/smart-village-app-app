@@ -14,7 +14,6 @@ export const storeProfileAuthToken = (authToken?: string) => {
 export const profileAuthToken = async () => {
   let authToken = null;
 
-  SecureStore.deleteItemAsync(PROFILE_AUTH_TOKEN);
   // The reason for the problem of staying in SplashScreen that occurs after the application is
   // updated on the Android side is the inability to obtain the token here.
   // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.

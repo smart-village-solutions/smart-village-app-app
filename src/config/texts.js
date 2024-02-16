@@ -837,11 +837,7 @@ export const texts = {
     signupFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     signupFailedTitle: 'Fehler bei der Registrierung',
     token: 'Code',
-    tokenError: 'Code muss ausgefüllt werden',
-    username: 'Benutzername *',
-    usernameError: 'Benutzername muss ausgefüllt werden',
-    usernameErrorLengthError: 'Der Benutzername sollte mindestens 4 Zeichen lang sein',
-    usernameOrEmail: 'E-Mail-Adresse oder Benutzername'
+    tokenError: 'Code muss ausgefüllt werden'
   },
   pushNotifications: {
     abort: 'Abbrechen',

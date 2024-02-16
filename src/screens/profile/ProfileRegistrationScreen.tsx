@@ -60,15 +60,16 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
       { ...registerData, dataPrivacyCheck: hasAcceptedDataPrivacy },
       {
         onSuccess: (responseData) => {
-          if (!responseData?.status || responseData?.errorMessage) {
+          if (!responseData?.success || responseData?.errorMessage) {
             showRegistrationFailAlert();
             reset();
             return;
           }
 
-          navigation.navigate(ScreenName.ProfileLogin, {
+          navigation.navigate(ScreenName.ProfileSignup, {
             email: registerData.email,
-            password: registerData.password
+            password: registerData.password,
+            webUrl: dataPrivacyLink
           });
         }
       }
