@@ -39,7 +39,7 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
     defaultValues: {
       birthday: undefined,
       firstName: '',
-      gender: genderData || '',
+      gender: '',
       lastName: ''
     }
   });
