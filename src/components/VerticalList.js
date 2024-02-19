@@ -88,10 +88,6 @@ export const VerticalList = ({
             );
           }
         } else if (isLoading) {
-          if (ListFooterLoadingIndicator) {
-            return <ListFooterLoadingIndicator />;
-          }
-
           return (
             <ActivityIndicator color={colors.refreshControl} style={styles.loadingIndicator} />
           );

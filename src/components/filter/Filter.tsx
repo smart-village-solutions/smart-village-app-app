@@ -94,7 +94,7 @@ export const Filter = ({ filterTypes, initialFilters, setQueryVariables }: Props
                 <DateFilter
                   filters={filters}
                   setFilters={setFilters}
-                  containerStyle={{ width: device.width / normalize(2) }}
+                  containerStyle={{ width: device.width * 0.45 }}
                   {...item}
                   data={item.data as { name: keyof FilterProps; placeholder: string }[]}
                 />

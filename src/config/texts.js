@@ -980,7 +980,9 @@ export const texts = {
       termsOfService: 'Datenschutzbestimmungen',
       title: 'Kurze Beschreibung',
       zipCode: 'Postleitzahl'
-    }
+    },
+    result: 'Ergebnis',
+    results: 'Ergebnisse'
   },
   survey: {
     archive: 'Umfrage-Archiv',

@@ -35,6 +35,7 @@ export const Search = ({
   return (
     <WrapperRow>
       <Input
+        clearButtonMode="while-editing"
         containerStyle={[styles.container, containerStyle]}
         control={control}
         inputContainerStyle={[styles.inputContainer, inputContainerStyle]}

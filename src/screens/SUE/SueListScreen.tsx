@@ -11,13 +11,16 @@ import { useQuery } from 'react-query';
 import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import {
+  BoldText,
+  EmptyMessage,
   Filter,
   ListComponent,
   SafeAreaViewFlex,
   Search,
   StatusProps,
   SueLoadingIndicator,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal
 } from '../../components';
 import { colors, consts, texts } from '../../config';
 import { parseListItemsFromQuery } from '../../helpers';
@@ -167,7 +170,9 @@ export const SueListScreen = ({ navigation, route }: Props) => {
         navigation={navigation}
         query={query}
         data={listItems}
-        isLoading={isLoading}
+        ListEmptyComponent={
+          isLoading ? <SueLoadingIndicator /> : <EmptyMessage title={texts.empty.list} />
+        }
         ListHeaderComponent={
           <>
             <Wrapper>
@@ -210,6 +215,14 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                 setQueryVariables={setQueryVariables}
               />
             </Wrapper>
+
+            {!!listItems?.length && (
+              <WrapperHorizontal>
+                <BoldText smallest>
+                  {listItems.length} {listItems.length === 1 ? texts.sue.result : texts.sue.results}
+                </BoldText>
+              </WrapperHorizontal>
+            )}
           </>
         }
         ListFooterLoadingIndicator={SueLoadingIndicator}
