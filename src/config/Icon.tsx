@@ -123,19 +123,19 @@ const NamedIcon = ({
 
 const IconUrl = ({
   color = colors.primary,
+  iconName,
   iconStyle,
   size = normalize(24),
   style,
-  url,
-  name
-}: IconProps & { xml: (color: string) => string; name: string }) => {
+  url
+}: IconProps & { xml: (color: string) => string; iconName: string }) => {
   const [svgContent, setSvgContent] = useState('');
 
   useEffect(() => {
     const fetchSVG = async () => {
       try {
         const response = await fetch(
-          url || `https://fileserver.smart-village.app/hb-meinquartier/tabler-icons/${name}.svg`
+          url || `https://fileserver.smart-village.app/hb-meinquartier/tabler-icons/${iconName}.svg`
         );
         const svgText = await response.text();
 
@@ -148,7 +148,7 @@ const IconUrl = ({
     fetchSVG();
   }, [url]);
 
-  if (!svgContent || svgContent.match(/Error/) || (!url && !name)) return null;
+  if (!svgContent || svgContent.match(/Error/) || (!url && !iconName)) return null;
 
   if (svgContent.match(/style/)) {
     return (
