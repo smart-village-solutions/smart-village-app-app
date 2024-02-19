@@ -38,7 +38,9 @@ export const SueStatus = ({
       ? statusViewColorsFilter?.disabled
       : isFilter
       ? statusViewColorsFilter?.enabled
-      : statusViewColors?.[status] || statusViewColors?.disabled;
+      : disabled
+      ? statusViewColors?.disabled
+      : statusViewColors?.[status];
 
   const borderColor = isFilter && disabled ? colors.placeholder : colors.primary;
 
@@ -47,7 +49,9 @@ export const SueStatus = ({
       ? statusTextColorsFilter?.disabled
       : isFilter
       ? statusTextColorsFilter?.enabled
-      : statusTextColors?.[status] || statusTextColors?.disabled;
+      : disabled
+      ? statusTextColors?.disabled
+      : statusTextColors?.[status];
 
   const statusIconName = `Sue${_upperFirst(iconName)}${small ? 'Small' : ''}`;
   const StatusIcon = Icon[statusIconName as keyof typeof Icon];
