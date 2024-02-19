@@ -1,6 +1,6 @@
-import React, { ComponentProps } from 'react';
+import React, { ComponentProps, useEffect, useState } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
-import { SvgXml } from 'react-native-svg';
+import { SvgCssUri, SvgUri, SvgXml } from 'react-native-svg';
 import {
   IconAerialLift,
   IconArrowNarrowRight,
@@ -75,6 +75,7 @@ export type IconProps = {
   iconStyle?: StyleProp<ViewStyle>;
   size?: number;
   style?: StyleProp<ViewStyle>;
+  url?: string;
 };
 
 export const IconSet = Tabler;
@@ -120,6 +121,62 @@ const NamedIcon = ({
   );
 };
 
+const IconUrl = ({
+  color = colors.primary,
+  iconStyle,
+  size = normalize(24),
+  style,
+  url,
+  name
+}: IconProps & { xml: (color: string) => string; name: string }) => {
+  const [svgContent, setSvgContent] = useState('');
+
+  useEffect(() => {
+    const fetchSVG = async () => {
+      try {
+        const response = await fetch(
+          url || `https://fileserver.smart-village.app/hb-meinquartier/tabler-icons/${name}.svg`
+        );
+        const svgText = await response.text();
+
+        setSvgContent(svgText);
+      } catch (error) {
+        console.error('Error fetching SVG:', error);
+      }
+    };
+
+    fetchSVG();
+  }, [url]);
+
+  if (!svgContent || svgContent.match(/Error/) || (!url && !name)) return null;
+
+  if (svgContent.match(/style/)) {
+    return (
+      <View style={style} hitSlop={getHitSlops(size)}>
+        <SvgCssUri
+          color={color}
+          height={size}
+          style={iconStyle}
+          uri={`data:image/svg+xml,${encodeURIComponent(svgContent)}`}
+          width={size}
+        />
+      </View>
+    );
+  }
+
+  return (
+    <View style={style} hitSlop={getHitSlops(size)}>
+      <SvgUri
+        color={color}
+        height={size}
+        style={iconStyle}
+        uri={`data:image/svg+xml,${encodeURIComponent(svgContent)}`}
+        width={size}
+      />
+    </View>
+  );
+};
+
 export const Icon = {
   About: (props: TablerIconsProps) => <IconMenu2 stroke={1} {...props} />,
   AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
@@ -152,6 +209,7 @@ export const Icon = {
   HomeFilled: (props: IconProps) => <SvgIcon xml={homeFilled} {...props} />,
   HeartEmpty: (props: TablerIconsProps) => <IconHeart stroke={1} {...props} />,
   HeartFilled: (props: TablerIconsProps) => <IconHeartFilled stroke={1} {...props} />,
+  IconUrl,
   Info: (props: IconProps) => <SvgIcon xml={info} {...props} />,
   Link: (props: IconProps) => <SvgIcon xml={link} {...props} />,
   Like: (props: IconProps) => <SvgIcon xml={like} {...props} />,
