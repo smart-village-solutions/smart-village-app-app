@@ -219,7 +219,12 @@ export const SueReportScreen = ({
   }, []);
 
   const storeReportValues = async () => {
-    await addToStore(SUE_REPORT_VALUES, { selectedPosition, serviceCode, ...getValues() });
+    await addToStore(SUE_REPORT_VALUES, {
+      currentProgress: currentProgress + 1,
+      selectedPosition,
+      serviceCode,
+      ...getValues()
+    });
   };
 
   const readReportValuesFromStore = async () => {
@@ -227,6 +232,12 @@ export const SueReportScreen = ({
 
     if (storedValues) {
       setStoredValues(storedValues);
+      setCurrentProgress(storedValues.currentProgress);
+      scrollViewRef?.current?.scrollTo({
+        x: device.width * storedValues.currentProgress,
+        y: 0,
+        animated: true
+      });
       setServiceCode(storedValues.serviceCode);
       setSelectedPosition(storedValues.selectedPosition);
       Object.entries(storedValues).map(([key, value]) => setValue(key, value));
