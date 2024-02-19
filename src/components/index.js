@@ -47,6 +47,7 @@ export * from './HeaderRight';
 export * from './HomeSection';
 export * from './HomeService';
 export * from './HtmlView';
+export * from './IconUrl';
 export * from './Image';
 export * from './ImageButton';
 export * from './ImageSection';
