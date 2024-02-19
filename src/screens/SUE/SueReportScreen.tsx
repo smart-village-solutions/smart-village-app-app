@@ -116,6 +116,7 @@ export const SueReportScreen = ({
   const [storedValues, setStoredValues] = useState<TReports>();
 
   const scrollViewRef = useRef(null);
+  const scrollViewContentRef = useRef(null);
 
   const {
     control,
@@ -148,6 +149,12 @@ export const SueReportScreen = ({
     storeReportValues();
 
     if (!sueReportData.termsOfService) {
+      scrollViewContentRef.current?.scrollTo({
+        x: 0,
+        y: device.height,
+        animated: true
+      });
+
       return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.termsOfService);
     }
 
@@ -349,7 +356,11 @@ export const SueReportScreen = ({
           showsHorizontalScrollIndicator={false}
         >
           {data?.map((item: TProgress, index: number) => (
-            <ScrollView key={index} contentContainerStyle={styles.contentContainer}>
+            <ScrollView
+              key={index}
+              contentContainerStyle={styles.contentContainer}
+              ref={scrollViewContentRef}
+            >
               {isLoadingStoredData ? (
                 <LoadingContainer>
                   <ActivityIndicator color={colors.refreshControl} />
