@@ -819,6 +819,7 @@ export const texts = {
     passwordForgotten: 'Passwort vergessen?',
     passwordLengthError: 'Das Passwort sollte mindestens 5 Zeichen lang sein',
     postcode: 'Postleitzahl',
+    postcodeMinLength: 'Postleitzahl muss mindestens 5 Zeichen lang sein',
     privacyChecked: 'Mit der Registrierung akzeptieren Sie die',
     privacyCheckLink: 'Datenschutzbestimmungen',
     privacyCheckRequireBody: 'Bitte bestätigen Sie die Datenschutzbestimmungen.',

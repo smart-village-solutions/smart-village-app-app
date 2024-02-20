@@ -175,11 +175,16 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
               autoCapitalize="none"
               control={control}
               label={texts.profile.postcode}
+              maxLength={5}
               name="postcode"
+              keyboardType="numeric"
               placeholder={texts.profile.postcode}
               validate
-              rules={{ required: true }}
-              errorMessage={errors.postcode && `${texts.profile.postcode} muss ausgefüllt werden`}
+              rules={{
+                required: `${texts.profile.postcode} muss ausgefüllt werden`,
+                minLength: { value: 5, message: texts.profile.postcodeMinLength }
+              }}
+              errorMessage={errors.postcode && errors.postcode.message}
             />
           </Wrapper>
 
