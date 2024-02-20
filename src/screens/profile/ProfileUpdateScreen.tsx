@@ -10,7 +10,9 @@ import {
   DefaultKeyboardAvoidingView,
   DropdownInput,
   Input,
+  Label,
   LoadingModal,
+  RegularText,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
@@ -38,9 +40,12 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
   } = useForm<ProfileUpdate>({
     defaultValues: {
       birthday: undefined,
+      city: '',
       firstName: '',
       gender: '',
-      lastName: ''
+      lastName: '',
+      postcode: '',
+      street: ''
     }
   });
 
@@ -142,6 +147,50 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
                 />
               )}
               control={control}
+            />
+          </Wrapper>
+
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              autoCapitalize="none"
+              control={control}
+              label={texts.profile.streetAndHouseNumber}
+              name="street"
+              placeholder={texts.profile.streetAndHouseNumber}
+              validate
+              rules={{ required: true }}
+              errorMessage={
+                errors.street && `${texts.profile.streetAndHouseNumber} muss ausgefüllt werden`
+              }
+            />
+            <RegularText small placeholder>
+              Die Arbeitsadresse ist auch möglich
+            </RegularText>
+          </Wrapper>
+
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              autoCapitalize="none"
+              control={control}
+              label={texts.profile.postcode}
+              name="postcode"
+              placeholder={texts.profile.postcode}
+              validate
+              rules={{ required: true }}
+              errorMessage={errors.postcode && `${texts.profile.postcode} muss ausgefüllt werden`}
+            />
+          </Wrapper>
+
+          <Wrapper style={styles.noPaddingTop}>
+            <Input
+              autoCapitalize="none"
+              control={control}
+              label={texts.profile.city}
+              name="city"
+              placeholder={texts.profile.city}
+              validate
+              rules={{ required: true }}
+              errorMessage={errors.city && `${texts.profile.city} muss ausgefüllt werden`}
             />
           </Wrapper>
 

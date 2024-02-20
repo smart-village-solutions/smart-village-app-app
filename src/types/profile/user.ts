@@ -37,7 +37,10 @@ export type ProfileResetPassword = {
 
 export type ProfileUpdate = {
   birthday: string;
+  city: string;
   firstName: string;
   gender: string;
   lastName: string;
+  postcode: string;
+  street: string;
 };

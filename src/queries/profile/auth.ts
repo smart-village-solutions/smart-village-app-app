@@ -51,15 +51,26 @@ export const profileRegister = async ({
   return (await fetch(`${serverUrl}/members.json`, fetchObj)).json();
 };
 
-export const profileUpdate = async ({ birthday, firstName, gender, lastName }: ProfileUpdate) => {
+export const profileUpdate = async ({
+  birthday,
+  city,
+  firstName,
+  gender,
+  lastName,
+  postcode,
+  street
+}: ProfileUpdate) => {
   const authToken = await profileAuthToken();
 
   const formData = {
     member: {
       birthday,
+      city,
       firstName,
       gender,
-      lastName
+      lastName,
+      postcode,
+      street
     },
     auth_token: authToken // TODO: remove this when the backend is updated
   };
