@@ -33,6 +33,8 @@ export const IconUrl = ({
 
   if (!svgContent || svgContent.match(/Error/) || (!url && !iconName)) return null;
 
+  const colorizedSvg = svgContent.replace(/stroke:#000000/g, `stroke:${color}`);
+
   if (svgContent.match(/style/)) {
     return (
       <View style={style} hitSlop={getHitSlops(size)}>
@@ -40,7 +42,7 @@ export const IconUrl = ({
           color={color}
           height={size}
           style={iconStyle}
-          uri={`data:image/svg+xml,${encodeURIComponent(svgContent)}`}
+          uri={`data:image/svg+xml,${encodeURIComponent(colorizedSvg)}`}
           width={size}
         />
       </View>
@@ -53,7 +55,7 @@ export const IconUrl = ({
         color={color}
         height={size}
         style={iconStyle}
-        uri={`data:image/svg+xml,${encodeURIComponent(svgContent)}`}
+        uri={`data:image/svg+xml,${encodeURIComponent(colorizedSvg)}`}
         width={size}
       />
     </View>
