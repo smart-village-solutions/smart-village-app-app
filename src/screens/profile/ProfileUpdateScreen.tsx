@@ -91,6 +91,7 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
               render={({ field: { name, onChange, value } }) => (
                 <DropdownInput
                   {...{
+                    boldLabel: true,
                     control,
                     data: genderData,
                     errors,
@@ -135,6 +136,7 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
               render={({ field: { name, onChange, value } }) => (
                 <DateTimeInput
                   {...{
+                    boldLabel: true,
                     control,
                     errors,
                     label: texts.profile.birthday,

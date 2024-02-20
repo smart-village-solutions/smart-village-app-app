@@ -7,6 +7,7 @@ import { DropdownSelect } from '../DropdownSelect';
 import { Input } from './Input';
 
 export type DropdownInputProps = {
+  boldLabel?: boolean;
   errors: any;
   required?: boolean;
   data: [
@@ -31,6 +32,7 @@ export type DropdownInputProps = {
 };
 
 export const DropdownInput = ({
+  boldLabel = false,
   errors,
   required = false,
   data,
@@ -71,6 +73,7 @@ export const DropdownInput = ({
         data={dropdownData}
         multipleSelect={multipleSelect}
         setData={setDropdownData}
+        boldLabel={boldLabel}
         label={label}
         labelWrapperStyle={styles.labelWrapper}
         showSearch={showSearch}
