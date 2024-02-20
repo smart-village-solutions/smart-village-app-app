@@ -3,6 +3,7 @@ export * from './consts';
 export * from './device';
 export * from './fonts';
 export * from './Icon';
+export * from './IconUrl';
 export * from './namespace';
 export * from './normalize';
 export * from './secrets';
