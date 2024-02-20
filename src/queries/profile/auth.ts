@@ -66,9 +66,9 @@ export const profileUpdate = async ({
     member: {
       birthday,
       city,
-      firstName,
+      first_name: firstName,
       gender,
-      lastName,
+      last_name: lastName,
       postcode,
       street
     },
