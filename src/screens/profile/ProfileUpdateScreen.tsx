@@ -165,9 +165,6 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
                 errors.street && `${texts.profile.streetAndHouseNumber} muss ausgefüllt werden`
               }
             />
-            <RegularText small placeholder>
-              Die Arbeitsadresse ist auch möglich
-            </RegularText>
           </Wrapper>
 
           <Wrapper style={styles.noPaddingTop}>
