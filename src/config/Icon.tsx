@@ -170,7 +170,6 @@ export const Icon = {
   Plus: (props: IconProps) => <NamedIcon name="plus" {...props} />,
   Profile: (props: TablerIconsProps) => <IconUser stroke={1} {...props} />,
   ProfileFilled: (props: IconProps) => <SvgIcon xml={userFilled} {...props} />,
-  Publics: (props: TablerIconsProps) => <IconBusStop stroke={1} {...props} />,
   RadioButtonEmpty: (props: IconProps) => <NamedIcon name="circle" {...props} />,
   RadioButtonFilled: (props: IconProps) => <NamedIcon name="circle-filled" {...props} />,
   RoutePlanner: (props: IconProps) => <SvgIcon xml={routePlanner} {...props} />,

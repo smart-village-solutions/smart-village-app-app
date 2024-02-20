@@ -3,7 +3,7 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
-import { Icon, colors, normalize, texts } from '../../config';
+import { Icon, IconUrl, colors, normalize, texts } from '../../config';
 import { LoadingContainer } from '../LoadingContainer';
 import { SectionHeader } from '../SectionHeader';
 import { RegularText } from '../Text';
@@ -20,7 +20,7 @@ export const AvailableVehicles = ({
   iconName
 }: {
   freeStatusUrl: string;
-  iconName: keyof typeof Icon;
+  iconName: string;
 }) => {
   const [availableVehiclesData, setAvailableVehiclesData] = useState<AvailableVehiclesProps[]>();
   const [loading, setLoading] = useState<boolean>(true);
@@ -72,8 +72,6 @@ export const AvailableVehicles = ({
     );
   }
 
-  const CategoryIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
-
   return (
     <>
       <SectionHeader title={texts.pointOfInterest.availableVehicles} />
@@ -82,7 +80,7 @@ export const AvailableVehicles = ({
         availableVehiclesData.map((item: AvailableVehiclesProps, index: number) => (
           <Fragment key={item.id}>
             <ListItem containerStyle={styles.container}>
-              {!!iconName && <CategoryIcon />}
+              {!!iconName && <IconUrl iconName={iconName} />}
               <ListItem.Content style={styles.contentContainer}>
                 <RegularText>{item.name}</RegularText>
                 <RegularText>{item.count}</RegularText>
