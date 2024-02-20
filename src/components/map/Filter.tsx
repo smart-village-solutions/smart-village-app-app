@@ -9,8 +9,6 @@ import { IconUrl, colors, normalize } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { BoldText } from '../Text';
 
-import { MapIcon } from './Map';
-
 type Props = {
   pointsOfInterest?: { category: { id: string | number; iconName: string; name: string } }[];
   queryVariables: {

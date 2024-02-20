@@ -11,7 +11,7 @@ export const IconUrl = ({
   size = normalize(24),
   style,
   url
-}: IconProps & { xml: (color: string) => string; iconName: string }) => {
+}: IconProps & { iconName: string }) => {
   const [svgContent, setSvgContent] = useState('');
 
   useEffect(() => {

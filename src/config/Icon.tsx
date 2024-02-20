@@ -3,7 +3,6 @@ import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import {
   IconArrowNarrowRight,
-  IconBusStop,
   IconClock,
   IconFlag2,
   IconHeart,
