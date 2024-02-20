@@ -69,7 +69,6 @@ export type IconProps = {
   iconStyle?: StyleProp<ViewStyle>;
   size?: number;
   style?: StyleProp<ViewStyle>;
-  url?: string;
 };
 
 export const IconSet = Tabler;

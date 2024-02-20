@@ -83,11 +83,7 @@ export const Filter = ({ queryVariables, refetch }: Props) => {
                 ]}
               >
                 {!!item.iconName && (
-                  <IconUrl
-                    color={isActive ? colors.surface : undefined}
-                    iconName={item.iconName}
-                    size={normalize(24)}
-                  />
+                  <IconUrl color={isActive ? colors.surface : undefined} iconName={item.iconName} />
                 )}
                 <BoldText small style={styles.category} lightest={isActive}>
                   {item.name}

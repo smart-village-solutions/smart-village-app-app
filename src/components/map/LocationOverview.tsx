@@ -122,9 +122,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
   if (item && !item.picture?.url) {
     item.leftIcon = (
       <View style={[styles.iconContainer, styles.imageSize]}>
-        {!!item.iconName && (
-          <IconUrl color={colors.primary} iconName={item.iconName} size={normalize(24)} />
-        )}
+        {!!item.iconName && <IconUrl color={colors.primary} iconName={item.iconName} />}
       </View>
     );
   }
