@@ -234,7 +234,6 @@ export const SueListScreen = ({ navigation, route }: Props) => {
             tintColor={colors.accent}
           />
         }
-        showBackToTop
       />
     </SafeAreaViewFlex>
   );
