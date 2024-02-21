@@ -135,6 +135,7 @@ export const Filter = ({ filterTypes, initialFilters, setQueryVariables }: Props
             }}
           />
         </WrapperVertical>
+
         <Divider />
       </Collapsible>
     </>
