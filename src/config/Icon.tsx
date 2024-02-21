@@ -2,12 +2,7 @@ import React, { ComponentProps } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import {
-  IconAerialLift,
   IconArrowNarrowRight,
-  IconBike,
-  IconBus,
-  IconBusStop,
-  IconCar,
   IconClock,
   IconFlag2,
   IconHeart,
@@ -21,7 +16,6 @@ import {
   IconPhone,
   IconPlayerPauseFilled,
   IconPlayerPlayFilled,
-  IconTrain,
   IconUser,
   TablerIconsProps
 } from 'tabler-icons-react-native';
@@ -79,7 +73,7 @@ export type IconProps = {
 
 export const IconSet = Tabler;
 
-const getHitSlops = (size: number) => {
+export const getHitSlops = (size: number) => {
   const hitSlop = (44 - size) / 2;
 
   return hitSlop > 0
@@ -129,12 +123,9 @@ export const Icon = {
   ArrowRight: (props: IconProps) => <SvgIcon xml={arrowRight} {...props} />,
   ArrowRight2: (props: TablerIconsProps) => <IconArrowNarrowRight stroke={1} {...props} />,
   ArrowUp: (props: IconProps) => <SvgIcon xml={arrowUp} {...props} />,
-  Bike: (props: TablerIconsProps) => <IconBike stroke={1} {...props} />,
-  Bus: (props: TablerIconsProps) => <IconBus stroke={1.2} {...props} />,
   Calendar: (props: IconProps) => <SvgIcon xml={calendar} {...props} />,
   CalendarToggle: (props: IconProps) => <SvgIcon xml={calendarToggle} {...props} />,
   Camera: (props: IconProps) => <NamedIcon name="camera" {...props} />,
-  Car: (props: TablerIconsProps) => <IconCar stroke={1} {...props} />,
   Check: (props: IconProps) => <NamedIcon name="circle-check-filled" {...props} />,
   Clock: (props: TablerIconsProps) => <IconClock stroke={1} {...props} />,
   Close: (props: IconProps) => <SvgIcon xml={close} {...props} />,
@@ -163,7 +154,6 @@ export const Icon = {
   Mail: (props: TablerIconsProps) => <IconMail stroke={1} {...props} />,
   Map: (props: TablerIconsProps) => <IconMap stroke={1} {...props} />,
   Member: (props: IconProps) => <SvgIcon xml={member} {...props} />,
-  Metro: (props: TablerIconsProps) => <IconTrain stroke={1.2} {...props} />,
   NamedIcon,
   NotVerifiedBadge: (props: IconProps) => <SvgIcon xml={notVerifiedBadge} {...props} />,
   Ok: (props: IconProps) => <SvgIcon xml={ok} {...props} />,
@@ -178,17 +168,14 @@ export const Icon = {
   Plus: (props: IconProps) => <NamedIcon name="plus" {...props} />,
   Profile: (props: TablerIconsProps) => <IconUser stroke={1} {...props} />,
   ProfileFilled: (props: IconProps) => <SvgIcon xml={userFilled} {...props} />,
-  Publics: (props: TablerIconsProps) => <IconBusStop stroke={1} {...props} />,
   RadioButtonEmpty: (props: IconProps) => <NamedIcon name="circle" {...props} />,
   RadioButtonFilled: (props: IconProps) => <NamedIcon name="circle-filled" {...props} />,
-  Railway: (props: TablerIconsProps) => <IconTrain stroke={1.2} {...props} />,
   RoutePlanner: (props: IconProps) => <SvgIcon xml={routePlanner} {...props} />,
   Service: (props: IconProps) => <SvgIcon xml={service} {...props} />,
   Settings: (props: IconProps) => <NamedIcon name="settings" {...props} />,
   Share: (props: IconProps) => <SvgIcon xml={share} {...props} />,
   Send: (props: IconProps) => <SvgIcon xml={send} {...props} />,
   Surveys: (props: IconProps) => <NamedIcon name="chart-candle" {...props} />,
-  Tram: (props: TablerIconsProps) => <IconAerialLift stroke={1.2} {...props} />,
   Trash: (props: IconProps) => <SvgIcon xml={trash} {...props} />,
   Unvisible: (props: IconProps) => <SvgIcon xml={unvisible} {...props} />,
   Url: (props: TablerIconsProps) => <IconLink stroke={1} {...props} />,

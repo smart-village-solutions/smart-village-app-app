@@ -5,7 +5,7 @@ import { useQuery } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
-import { Icon, colors, normalize, texts } from '../../config';
+import { Icon, IconUrl, colors, normalize, texts } from '../../config';
 import { momentFormat } from '../../helpers';
 import { useDetailRefresh } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
@@ -27,7 +27,6 @@ type TravelTimeProps = {
 };
 
 export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof typeof Icon }) => {
-  const CategoryIcon = Icon[_upperFirst(iconName) as keyof typeof Icon];
   const [today, setToday] = useState<string>(moment().format('YYYY-MM-DDTHH:mm'));
   const [moreData, setMoreData] = useState(1);
 
@@ -98,8 +97,6 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
           '3': 'Bus'
         };
 
-        const RouteIcon = Icon[routeIcons[routeType] as keyof typeof Icon] || CategoryIcon;
-
         return (
           <Fragment key={index}>
             <ListItem style={styles.container} containerStyle={styles.container}>
@@ -118,7 +115,11 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
                         { backgroundColor: routeColors[routeType || '0'] }
                       ]}
                     >
-                      <RouteIcon color={colors.lightestText} size={normalize(16)} />
+                      <IconUrl
+                        iconName={iconName}
+                        color={colors.lightestText}
+                        size={normalize(16)}
+                      />
                     </View>
                     <View
                       style={[

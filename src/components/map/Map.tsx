@@ -4,7 +4,7 @@ import React, { useContext, useRef } from 'react';
 import { PixelRatio, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import MapView, { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 
-import { colors, device, Icon, normalize } from '../../config';
+import { colors, device, Icon, IconUrl, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
@@ -162,10 +162,10 @@ export const Map = ({
                       isActiveMarker ? styles.mapIconOnLocationMarkerActive : undefined
                     ]}
                   >
-                    <MapIcon
-                      iconColor={isActiveMarker ? colors.lighterPrimary : colors.primary}
+                    <IconUrl
+                      color={isActiveMarker ? colors.lighterPrimary : colors.primary}
                       iconName={marker.iconName}
-                      iconSize={
+                      size={
                         MARKER_ICON_SIZE / (isSmallerPixelRatio ? normalize(2.95) : normalize(2.5))
                       }
                     />

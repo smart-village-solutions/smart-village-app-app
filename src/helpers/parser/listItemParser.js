@@ -200,6 +200,7 @@ const parseTours = (data, skipLastDivider) => {
 const parseCategories = (data, skipLastDivider, routeName, queryVariables) => {
   return data?.map((category, index) => ({
     id: category.id,
+    iconName: category.iconName,
     title: category.name,
     pointsOfInterestCount: category.pointsOfInterestCount,
     pointsOfInterestTreeCount: category.pointsOfInterestTreeCount,

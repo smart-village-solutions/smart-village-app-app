@@ -7,7 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NetworkContext } from '../../NetworkProvider';
 import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
-import { colors, device, normalize } from '../../config';
+import { IconUrl, colors, device, normalize } from '../../config';
 import { graphqlFetchPolicy, isOpen, parseListItemsFromQuery } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
@@ -122,9 +122,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
   if (item && !item.picture?.url) {
     item.leftIcon = (
       <View style={[styles.iconContainer, styles.imageSize]}>
-        {!!item.iconName && (
-          <MapIcon iconColor={colors.primary} iconName={item.iconName} iconSize={normalize(24)} />
-        )}
+        {!!item.iconName && <IconUrl color={colors.primary} iconName={item.iconName} />}
       </View>
     );
   }

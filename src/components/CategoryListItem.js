@@ -3,7 +3,7 @@ import React from 'react';
 import { Badge, ListItem } from 'react-native-elements';
 import { StyleSheet } from 'react-native';
 
-import { colors, consts, Icon, normalize } from '../config';
+import { colors, consts, Icon, IconUrl, normalize } from '../config';
 
 import { BoldText, RegularText } from './Text';
 import { Touchable } from './Touchable';
@@ -12,6 +12,7 @@ export class CategoryListItem extends React.PureComponent {
   render() {
     const { navigation, noSubtitle, item, index, section } = this.props;
     const {
+      iconName,
       routeName: name,
       params,
       subtitle,
@@ -21,8 +22,8 @@ export class CategoryListItem extends React.PureComponent {
       bottomDivider,
       topDivider
     } = item;
-
     const count = pointsOfInterestTreeCount > 0 ? pointsOfInterestTreeCount : toursTreeCount;
+
     return (
       <ListItem
         bottomDivider={
@@ -39,6 +40,8 @@ export class CategoryListItem extends React.PureComponent {
         Component={Touchable}
         accessibilityLabel={`(${title}) ${consts.a11yLabel.poiCount} ${count} ${consts.a11yLabel.button}`}
       >
+        {!!iconName && <IconUrl iconName={iconName} />}
+
         <ListItem.Content>
           {noSubtitle || !subtitle ? null : <RegularText small>{subtitle}</RegularText>}
           <BoldText noSubtitle={noSubtitle}>{title}</BoldText>

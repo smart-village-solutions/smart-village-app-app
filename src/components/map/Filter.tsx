@@ -5,11 +5,9 @@ import { useQuery } from 'react-apollo';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 
-import { colors, normalize } from '../../config';
+import { IconUrl, colors, normalize } from '../../config';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { BoldText } from '../Text';
-
-import { MapIcon } from './Map';
 
 type Props = {
   pointsOfInterest?: { category: { id: string | number; iconName: string; name: string } }[];
@@ -85,11 +83,7 @@ export const Filter = ({ queryVariables, refetch }: Props) => {
                 ]}
               >
                 {!!item.iconName && (
-                  <MapIcon
-                    iconColor={isActive ? colors.surface : undefined}
-                    iconName={item.iconName}
-                    iconSize={normalize(24)}
-                  />
+                  <IconUrl color={isActive ? colors.surface : undefined} iconName={item.iconName} />
                 )}
                 <BoldText small style={styles.category} lightest={isActive}>
                   {item.name}
