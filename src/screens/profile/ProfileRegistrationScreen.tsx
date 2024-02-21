@@ -19,6 +19,7 @@ import {
 } from '../../components';
 import { Icon, colors, consts, normalize, texts } from '../../config';
 import { storeFirstLogin } from '../../helpers';
+import { QUERY_TYPES } from '../../queries';
 import { profileRegister } from '../../queries/profile';
 import { ProfileRegistration, ScreenName } from '../../types';
 
@@ -166,7 +167,13 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
               checked={hasAcceptedDataPrivacy}
               checkedIcon={<Icon.SquareCheckFilled />}
               containerStyle={undefined}
-              link={dataPrivacyLink}
+              navigate={() =>
+                navigation.navigate(ScreenName.Html, {
+                  title: texts.profile.privacyCheckLink,
+                  query: QUERY_TYPES.PUBLIC_HTML_FILE,
+                  queryVariables: { name: 'datenschutzProfile' }
+                })
+              }
               linkDescription={texts.profile.privacyCheckLink}
               onPress={() => setHasAcceptedDataPrivacy(!hasAcceptedDataPrivacy)}
               title={texts.profile.privacyChecked}
