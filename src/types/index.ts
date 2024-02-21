@@ -1,5 +1,6 @@
 export * from './encounter';
 export * from './volunteer';
+export * from './whistleblow';
 
 export * from './Accessibility';
 export * from './Address';

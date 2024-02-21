@@ -128,3 +128,6 @@ export const createQuery = (query) => {
 
   return QUERIES[query];
 };
+
+// WHISTLEBLOW
+export * from './whistleblow';
