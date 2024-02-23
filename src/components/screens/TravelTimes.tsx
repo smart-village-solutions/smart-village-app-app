@@ -1,4 +1,4 @@
-import _upperFirst from 'lodash/upperFirst';
+import _sortBy from 'lodash/sortBy';
 import moment from 'moment';
 import React, { Fragment, useState } from 'react';
 import { useQuery } from 'react-apollo';
@@ -54,10 +54,11 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
     );
   }
 
-  const paginatedData = data?.pointOfInterest?.travelTimes?.slice(
-    0,
-    moreData * MAX_INITIAL_NUM_TO_RENDER
+  const sortedData = _sortBy(data?.pointOfInterest?.travelTimes, (item) =>
+    momentFormat(item.departureTime, 'HH:mm', 'HH:mm:ss')
   );
+
+  const paginatedData = sortedData.slice(0, moreData * MAX_INITIAL_NUM_TO_RENDER);
 
   return (
     <>
