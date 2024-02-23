@@ -74,7 +74,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
       storeProfileUserData(responseData.member);
 
       if (isFirstLogin) {
-        return navigation.navigate(ScreenName.ProfileUpdate);
+        return navigation.navigate(ScreenName.ProfileUpdate, { email, password });
       }
 
       // refreshUser param causes the home screen to update and no longer show the welcome component
@@ -94,12 +94,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
       }
     });
 
-  if (
-    isError ||
-    isErrorMember ||
-    (isSuccess && !data?.success) ||
-    (isSuccessMember && !dataMember?.success)
-  ) {
+  if (isError || (isSuccess && !data?.success)) {
     showLoginFailAlert();
     reset();
   }

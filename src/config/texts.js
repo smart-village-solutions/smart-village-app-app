@@ -848,7 +848,10 @@ export const texts = {
     tokenError: 'Code muss ausgefüllt werden',
     update: 'Profil aktualisieren',
     updateProfileFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
-    updateProfileFailedTitle: 'Profil konnte nicht aktualisiert werden'
+    updateProfileFailedTitle: 'Profil konnte nicht aktualisiert werden',
+    updateProfileLoginAgainBody:
+      'Ihr Profil wurde erfolgreich aktualisiert. Da Sie Ihr Profil aktualisiert haben, müssen Sie sich erneut anmelden.',
+    updateProfileLoginAgainTitle: 'Erfolg',
   },
   pushNotifications: {
     abort: 'Abbrechen',

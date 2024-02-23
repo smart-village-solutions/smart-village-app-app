@@ -10,21 +10,31 @@ import {
   DefaultKeyboardAvoidingView,
   DropdownInput,
   Input,
-  Label,
   LoadingModal,
-  RegularText,
   SafeAreaViewFlex,
   SectionHeader,
   Wrapper,
   WrapperRow
 } from '../../components';
 import { texts } from '../../config';
-import { storeFirstLogin } from '../../helpers';
+import { momentFormat, storeFirstLogin } from '../../helpers';
 import { profileUpdate } from '../../queries/profile';
 import { ProfileUpdate, ScreenName } from '../../types';
 
 const showUpdateFailAlert = () =>
   Alert.alert(texts.profile.updateProfileFailedTitle, texts.profile.updateProfileFailedBody);
+
+const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
+  Alert.alert(
+    texts.profile.updateProfileLoginAgainTitle,
+    texts.profile.updateProfileLoginAgainBody,
+    [
+      {
+        text: texts.profile.ok,
+        onPress
+      }
+    ]
+  );
 
 const genderData = [
   { value: 'Frau', gender: 'frau' },
@@ -32,20 +42,27 @@ const genderData = [
   { value: 'divers', gender: 'divers' }
 ];
 
-export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
+/* eslint-disable complexity */
+export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const email = route.params?.email ?? '';
+  const password = route.params?.password ?? '';
+  const member = route.params?.member ?? {};
+  const { preferences = {}, email: memberEmail, first_name, last_name } = member;
+  const { city, street, postal_code, birthday, gender } = preferences;
+
   const {
     control,
     formState: { errors },
     handleSubmit
   } = useForm<ProfileUpdate>({
     defaultValues: {
-      birthday: undefined,
-      city: '',
-      firstName: '',
-      gender: '',
-      lastName: '',
-      postcode: '',
-      street: ''
+      birthday: birthday ? new Date(momentFormat(birthday, 'YYYY-MM-DD')) : undefined,
+      city: city || '',
+      firstName: first_name || '',
+      gender: gender || '',
+      lastName: last_name || '',
+      postcode: postal_code || '',
+      street: street || ''
     }
   });
 
@@ -61,14 +78,16 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
   const onSubmit = (updateData: ProfileUpdate) =>
     mutateUpdate(updateData, {
       onSuccess: (responseData) => {
-        if (!responseData?.member?.authentication_token) {
+        if (!responseData?.member) {
           return;
         }
 
         storeFirstLogin(false);
 
-        // refreshUser param causes the home screen to update and no longer show the welcome component
-        navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
+        showLoginAgainAlert({
+          onPress: () =>
+            navigation.push(ScreenName.ProfileLogin, { email: email || memberEmail, password })
+        });
       }
     });
 
@@ -212,6 +231,7 @@ export const ProfileUpdateScreen = ({ navigation }: StackScreenProps<any>) => {
     </SafeAreaViewFlex>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   noPaddingTop: {

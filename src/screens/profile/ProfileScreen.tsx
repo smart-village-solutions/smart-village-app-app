@@ -72,10 +72,10 @@ export const ProfileScreen = ({ navigation }: StackScreenProps<any, string>) => 
               bottomDivider: false,
               leftIcon: <VolunteerAvatar item={{ user: { display_name: email } }} />,
               routeName: ScreenName.ProfileUpdate,
+              onPress: () => navigation.navigate(ScreenName.ProfileUpdate, { member: data.member }),
               title: email
             }}
             navigation={navigation}
-            navigate={() => navigation.navigate(ScreenName.ProfileUpdate)}
           />
         </Wrapper>
 
