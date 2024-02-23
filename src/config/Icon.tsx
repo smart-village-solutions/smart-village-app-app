@@ -2,6 +2,7 @@ import React, { ComponentProps } from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import { SvgXml } from 'react-native-svg';
 import {
+  IconAlertHexagonFilled,
   IconArrowNarrowRight,
   IconClock,
   IconFlag2,
@@ -16,6 +17,8 @@ import {
   IconPhone,
   IconPlayerPauseFilled,
   IconPlayerPlayFilled,
+  IconSquare,
+  IconSquareCheckFilled,
   IconUser,
   TablerIconsProps
 } from 'tabler-icons-react-native';
@@ -117,6 +120,7 @@ const NamedIcon = ({
 export const Icon = {
   About: (props: TablerIconsProps) => <IconMenu2 stroke={1} {...props} />,
   AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
+  AlertHexagonFilled: (props: TablerIconsProps) => <IconAlertHexagonFilled stroke={1} {...props} />,
   ArrowDown: (props: IconProps) => <SvgIcon xml={arrowDown} {...props} />,
   ArrowDownCircle: (props: IconProps) => <NamedIcon name="circle-arrow-down-filled" {...props} />,
   ArrowLeft: (props: IconProps) => <SvgIcon xml={arrowLeft} {...props} />,
@@ -175,6 +179,8 @@ export const Icon = {
   Settings: (props: IconProps) => <NamedIcon name="settings" {...props} />,
   Share: (props: IconProps) => <SvgIcon xml={share} {...props} />,
   Send: (props: IconProps) => <SvgIcon xml={send} {...props} />,
+  Square: (props: TablerIconsProps) => <IconSquare stroke={1} {...props} />,
+  SquareCheckFilled: (props: TablerIconsProps) => <IconSquareCheckFilled stroke={1} {...props} />,
   Surveys: (props: IconProps) => <NamedIcon name="chart-candle" {...props} />,
   Trash: (props: IconProps) => <SvgIcon xml={trash} {...props} />,
   Unvisible: (props: IconProps) => <SvgIcon xml={unvisible} {...props} />,

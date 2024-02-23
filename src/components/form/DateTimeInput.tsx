@@ -100,6 +100,7 @@ const DateTimePicker = ({
 };
 
 type DateTimeInputProps = {
+  boldLabel?: boolean;
   mode?: (IOSNativeProps | AndroidNativeProps)['mode'];
   errors: any;
   required?: boolean;
@@ -112,6 +113,7 @@ type DateTimeInputProps = {
 };
 
 export const DateTimeInput = ({
+  boldLabel = false,
   mode = 'time',
   errors,
   required = false,
@@ -129,7 +131,7 @@ export const DateTimeInput = ({
 
   return (
     <>
-      <Label>{label}</Label>
+      <Label bold={boldLabel}>{label}</Label>
       <PickerInput
         value={pickerInput}
         onPress={() => {

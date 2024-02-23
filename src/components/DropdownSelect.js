@@ -15,6 +15,7 @@ import { Wrapper, WrapperHorizontal, WrapperRow } from './Wrapper';
 const { a11yLabel } = consts;
 
 export const DropdownSelect = ({
+  boldLabel = false,
   data,
   multipleSelect,
   setData,
@@ -80,7 +81,7 @@ export const DropdownSelect = ({
       accessible
     >
       <WrapperHorizontal style={labelWrapperStyle}>
-        <Label>{label}</Label>
+        <Label bold={boldLabel}>{label}</Label>
       </WrapperHorizontal>
       <Dropdown
         accessible={false}
@@ -142,8 +143,9 @@ export const DropdownSelect = ({
 
 const styles = StyleSheet.create({
   dropdownTextWrapper: {
-    borderColor: colors.borderRgba,
-    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.gray40,
+    borderRadius: normalize(8),
+    borderWidth: normalize(1),
     justifyContent: 'space-between',
     padding: normalize(14)
   },
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface
   },
   dropdownSeparator: {
-    backgroundColor: colors.borderRgba,
+    backgroundColor: colors.gray40,
     height: StyleSheet.hairlineWidth
   },
   selectedValueText: { width: '90%' }
@@ -171,6 +173,7 @@ const styles = StyleSheet.create({
 
 DropdownSelect.displayName = 'DropdownSelect';
 DropdownSelect.propTypes = {
+  boldLabel: PropTypes.bool,
   data: PropTypes.array,
   multipleSelect: PropTypes.bool,
   setData: PropTypes.func,

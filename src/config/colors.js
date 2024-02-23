@@ -20,7 +20,7 @@ export const colors = {
   secondary: 'rgb(66, 100, 73)',
   accent: 'rgb(168, 58, 137)',
 
-  error: 'rgb(202, 46, 85)',
+  error: 'rgb(174, 30, 42)',
 
   darkText: black,
   lightestText: white,

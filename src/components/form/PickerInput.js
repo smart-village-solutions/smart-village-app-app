@@ -37,20 +37,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: normalize(1),
     borderColor: colors.gray40,
+    borderRadius: normalize(8),
     borderLeftWidth: normalize(1),
     borderRightWidth: normalize(1),
     borderTopWidth: normalize(1),
     flexDirection: 'row',
-    height: normalize(50),
+    height: normalize(45),
     justifyContent: 'space-between',
     paddingHorizontal: normalize(12)
   },
   pickerInputSuccess: {
     borderColor: colors.primary
   },
-  pickerText: {
-    marginTop: normalize(4)
-  },
+  pickerText: {},
   pickerInputPressed: {
     // like TouchableOpacity: https://reactnative.dev/docs/next/touchableopacity#activeopacity
     opacity: 0.2

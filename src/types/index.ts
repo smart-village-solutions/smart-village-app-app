@@ -1,4 +1,5 @@
 export * from './encounter';
+export * from './profile';
 export * from './volunteer';
 
 export * from './Accessibility';
