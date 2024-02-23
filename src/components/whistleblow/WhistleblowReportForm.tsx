@@ -28,7 +28,7 @@ export const WhistleblowReportForm = ({
   const { whistleblow = {} } = globalSettings;
   const { globaleaks: globaleaksConfig = {} } = whistleblow;
   const { endpoint, form: formConfig = {} } = globaleaksConfig;
-  const { contextId, answers = {}, receivers, identityProvided, score } = formConfig;
+  const { contextId, answers: answersConfig = {}, receivers, identityProvided, score } = formConfig;
 
   const [isLoading, setIsLoading] = useState(false);
   const {
@@ -45,8 +45,6 @@ export const WhistleblowReportForm = ({
   });
   const globaleaks = new Globaleaks(endpoint);
 
-  // const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
-
   const onSubmit = async (whistleblowReportData: WhistleblowReportData) => {
     setIsLoading(true);
     Keyboard.dismiss();
@@ -55,21 +53,21 @@ export const WhistleblowReportForm = ({
       const body = {
         context_id: contextId,
         answers: {
-          [answers.email.id]: [
+          [answersConfig.email.id]: [
             {
-              required_status: answers.email.reportStatus,
+              required_status: answersConfig.email.reportStatus,
               value: whistleblowReportData.email
             }
           ],
-          [answers.title.id]: [
+          [answersConfig.title.id]: [
             {
-              required_status: answers.title.reportStatus,
+              required_status: answersConfig.title.reportStatus,
               value: whistleblowReportData.title
             }
           ],
-          [answers.body.id]: [
+          [answersConfig.body.id]: [
             {
-              required_status: answers.body.reportStatus,
+              required_status: answersConfig.body.reportStatus,
               value: whistleblowReportData.body
             }
           ]

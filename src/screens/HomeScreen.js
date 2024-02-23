@@ -5,6 +5,7 @@ import { FlatList, RefreshControl } from 'react-native';
 
 import {
   About,
+  Button,
   ConnectedImagesCarousel,
   Disturber,
   HomeSection,
@@ -167,7 +168,8 @@ export const HomeScreen = ({ navigation, route }) => {
     appDesignSystem = {},
     sections = {},
     widgets: widgetConfigs = [],
-    hdvt = {}
+    hdvt = {},
+    whistleblow = {}
   } = globalSettings;
   const {
     staticContentList = {},
@@ -197,6 +199,7 @@ export const HomeScreen = ({ navigation, route }) => {
     staticContentListTitle
   } = staticContentList;
   const { events: showVolunteerEvents = false } = hdvt;
+  const { staticContentName: whistleblowStaticContentName, title: whistleblowTitle } = whistleblow;
   const [refreshing, setRefreshing] = useState(false);
   const { state: excludeDataProviderIds } = usePermanentFilter();
 
