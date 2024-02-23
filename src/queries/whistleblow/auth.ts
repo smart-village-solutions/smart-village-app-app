@@ -11,7 +11,7 @@ export const token = async (endpoint: string) => {
   return json?.id;
 };
 
-export const receiptauth = async (endpoint: string, id: string) => {
+export const receiptauth = async (endpoint: string, id: string, reportCode = '') => {
   const answer = await proofOfWork(id);
 
   const fetchObj = {
@@ -20,7 +20,7 @@ export const receiptauth = async (endpoint: string, id: string) => {
       'Content-Type': 'application/json',
       'X-Token': `${id}:${answer}`
     },
-    body: JSON.stringify({ receipt: '' })
+    body: JSON.stringify({ receipt: reportCode })
   };
 
   const response = await fetch(`${endpoint}/auth/receiptauth`, fetchObj);

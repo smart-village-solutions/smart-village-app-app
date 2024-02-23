@@ -9,6 +9,7 @@ import { NetworkContext } from '../NetworkProvider';
 import { SettingsContext } from '../SettingsProvider';
 import {
   About,
+  Button,
   ConnectedImagesCarousel,
   Disturber,
   HomeSection,
@@ -173,7 +174,12 @@ export const HomeScreen = ({ navigation, route }) => {
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const { appDesignSystem = {} } = useContext(ConfigurationsContext);
   const { globalSettings } = useContext(SettingsContext);
-  const { sections = {}, widgets: widgetConfigs = [], hdvt = {} } = globalSettings;
+  const {
+    sections = {},
+    widgets: widgetConfigs = [],
+    hdvt = {},
+    whistleblow = {}
+  } = globalSettings;
   const {
     staticContentList = {},
     showNews = true,
@@ -202,6 +208,7 @@ export const HomeScreen = ({ navigation, route }) => {
     staticContentListTitle
   } = staticContentList;
   const { events: showVolunteerEvents = false } = hdvt;
+  const { staticContentName: whistleblowStaticContentName, title: whistleblowTitle } = whistleblow;
   const [refreshing, setRefreshing] = useState(false);
   const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
 

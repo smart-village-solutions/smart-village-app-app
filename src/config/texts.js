@@ -1370,13 +1370,15 @@ export const texts = {
   },
   whistleblow: {
     abort: 'Abbrechen',
+    inputCode: 'Zugangscode',
     inputDescription: 'Inhalt',
     inputErrorText: 'muss ausgefüllt werden',
     inputFile: 'Anhang',
     inputMail: 'E-Mail',
     inputTitle: 'Betreff',
     invalidMail: '-Adresse ist nicht gültig.',
-    send: 'Hinweis senden'
+    send: 'Hinweis senden',
+    sendCode: 'Bericht anzeigen'
   },
   widgets: {
     constructionSites: 'Baustellen',

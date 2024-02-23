@@ -15,3 +15,17 @@ export const submission = async (endpoint: string, id: string, body: GlobaleaksS
 
   return json?.receipt;
 };
+
+export const wbtip = async (endpoint: string, id: string) => {
+  const fetchObj = {
+    method: 'GET',
+    headers: {
+      'X-Session': id
+    }
+  };
+
+  const response = await fetch(`${endpoint}/whistleblower/wbtip`, fetchObj);
+  const json = await response.json();
+
+  return json;
+};
