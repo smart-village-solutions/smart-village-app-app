@@ -11,11 +11,18 @@ import { WrapperRow } from './Wrapper';
 type Props = {
   big?: boolean;
   center?: boolean;
+  containerStyle?: any;
   onPress?: () => void;
   title: string;
 };
 
-export const SectionHeader = ({ big = false, center = false, onPress, title }: Props) => {
+export const SectionHeader = ({
+  big = false,
+  center = false,
+  containerStyle,
+  onPress,
+  title
+}: Props) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { flat = false, uppercase = false } = settings;
@@ -23,7 +30,7 @@ export const SectionHeader = ({ big = false, center = false, onPress, title }: P
   if (!title) return null;
 
   const innerComponent = (
-    <WrapperRow spaceBetween>
+    <WrapperRow>
       <Title
         accessibilityLabel={`(${title}) ${consts.a11yLabel.heading} ${
           onPress ? consts.a11yLabel.button : ''
@@ -42,7 +49,7 @@ export const SectionHeader = ({ big = false, center = false, onPress, title }: P
 
   return (
     <>
-      <TitleContainer flat={flat}>
+      <TitleContainer flat={flat} style={containerStyle}>
         {onPress ? <Touchable onPress={onPress}>{innerComponent}</Touchable> : innerComponent}
       </TitleContainer>
       {!flat && device.platform === 'ios' && <TitleShadow />}

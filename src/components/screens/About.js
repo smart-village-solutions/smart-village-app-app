@@ -71,7 +71,9 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
         />
       }
       sections={sectionData}
-      renderSectionHeader={({ section: { title } }) => !!title && <SectionHeader title={title} />}
+      renderSectionHeader={({ section: { title } }) =>
+        !!title && <SectionHeader title={title} containerStyle={styles.sectionHeader} />
+      }
       renderItem={renderItem}
       keyExtractor={(item) => item.title}
       ListFooterComponent={<VersionNumber />}
@@ -83,6 +85,10 @@ export const About = ({ navigation, withHomeRefresh, withSettings }) => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: normalize(14)
+  },
+  sectionHeader: {
+    paddingLeft: 0,
+    paddingRight: 0
   }
 });
 
