@@ -18,11 +18,12 @@ export type DropdownInputProps = {
       contentcontainer_id?: number;
       guid?: string;
       display_name?: string;
+      gender?: string;
     }
   ];
   multipleSelect?: boolean;
   value: number | number[];
-  valueKey: 'contentcontainer_id' | 'guid' | 'gender';
+  valueKey: 'contentcontainer_id' | 'guid' | 'id' | 'gender';
   onChange: (...event: any[]) => void;
   name: string;
   label: string;
@@ -38,7 +39,7 @@ export const DropdownInput = ({
   data,
   multipleSelect = false,
   value,
-  valueKey,
+  valueKey = 'id',
   onChange,
   name,
   label,
@@ -48,8 +49,8 @@ export const DropdownInput = ({
   const [dropdownData, setDropdownData] = useState(
     data.map((item) =>
       multipleSelect
-        ? { ...item, selected: (value as number[]).includes(item.id) }
-        : { ...item, selected: item.id == value }
+        ? { ...item, selected: (value as any[]).includes(item[valueKey]) }
+        : { ...item, selected: item[valueKey] == value }
     )
   );
 
