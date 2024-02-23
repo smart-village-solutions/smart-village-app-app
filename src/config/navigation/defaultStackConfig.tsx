@@ -3,6 +3,7 @@ import React from 'react';
 
 import { HeaderLeft } from '../../components';
 import { getScreenOptions } from '../../navigation/screenOptions';
+import { QUERY_TYPES } from '../../queries';
 import {
   AboutScreen,
   ARInfoScreen,
@@ -63,7 +64,8 @@ import {
   WasteCollectionScreen,
   WasteReminderScreen,
   WeatherScreen,
-  WebScreen
+  WebScreen,
+  WhistleblowFormScreen
 } from '../../screens';
 import {
   DetailScreen as BBBUSDetailScreen,
@@ -72,7 +74,6 @@ import {
 import { ScreenName, StackConfig } from '../../types';
 import { consts } from '../consts';
 import { texts } from '../texts';
-import { QUERY_TYPES } from '../../queries';
 
 const { MATOMO_TRACKING } = consts;
 
@@ -433,6 +434,10 @@ export const defaultStackConfig = ({
       routeName: ScreenName.Web,
       screenComponent: WebScreen,
       screenOptions: getScreenOptions({ withDrawer: isDrawer, withShare: true })
+    },
+    {
+      routeName: ScreenName.WhistleblowForm,
+      screenComponent: WhistleblowFormScreen
     }
   ]
 });

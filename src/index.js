@@ -32,7 +32,7 @@ import { OrientationProvider } from './OrientationProvider';
 import { PermanentFilterProvider } from './PermanentFilterProvider';
 import { getQuery, QUERY_TYPES } from './queries';
 import { ReactQueryProvider } from './ReactQueryProvider';
-import { SettingsProvider } from './SettingsProvider';
+import { initialContext, SettingsProvider } from './SettingsProvider';
 
 const { LIST_TYPES } = consts;
 
@@ -40,14 +40,7 @@ const MainAppWithApolloProvider = () => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [loading, setLoading] = useState(true);
   const [client, setClient] = useState();
-  const [initialGlobalSettings, setInitialGlobalSettings] = useState({
-    filter: {},
-    hdvt: {},
-    navigation: 'tab',
-    sections: {},
-    settings: {},
-    widgets: []
-  });
+  const [initialGlobalSettings, setInitialGlobalSettings] = useState(initialContext.globalSettings);
   const [initialListTypesSettings, setInitialListTypesSettings] = useState({});
   const [initialLocationSettings, setInitialLocationSettings] = useState({});
   const [authRetried, setAuthRetried] = useState(false);

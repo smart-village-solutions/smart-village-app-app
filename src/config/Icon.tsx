@@ -119,6 +119,7 @@ export const Icon = {
   CloseCircleOutline: (props: IconProps) => <NamedIcon name="close-circle-outline" {...props} />,
   Company: (props: IconProps) => <NamedIcon name="briefcase" {...props} />,
   ConstructionSite: (props: IconProps) => <SvgIcon xml={constructionSite} {...props} />,
+  Copy: (props: IconProps) => <NamedIcon name="copy-outline" {...props} />,
   Document: (props: IconProps) => <NamedIcon name="document-text-outline" {...props} />,
   DrawerMenu: (props: IconProps) => <SvgIcon xml={drawerMenu} {...props} />,
   EditSetting: (props: IconProps) => <SvgIcon xml={editSetting} {...props} />,

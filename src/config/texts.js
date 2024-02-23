@@ -1157,6 +1157,16 @@ export const texts = {
     noData:
       'Beim Abrufen der Daten ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.'
   },
+  whistleblow: {
+    abort: 'Abbrechen',
+    inputDescription: 'Inhalt',
+    inputErrorText: 'muss ausgefüllt werden',
+    inputFile: 'Anhang',
+    inputMail: 'E-Mail',
+    inputTitle: 'Betreff',
+    invalidMail: '-Adresse ist nicht gültig.',
+    send: 'Hinweis senden'
+  },
   widgets: {
     constructionSites: 'Baustellen',
     events: 'Events',

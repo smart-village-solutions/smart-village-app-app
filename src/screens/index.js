@@ -5,6 +5,7 @@ export * from './doc';
 export * from './Noticeboard';
 export * from './OParl';
 export * from './volunteer';
+export * from './whistleblow';
 
 export * from './AppIntroScreen';
 export * from './AboutScreen';
