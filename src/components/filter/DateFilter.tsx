@@ -139,7 +139,10 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
         <CalendarView
           key={`calendar-${item.name}`}
           date={selectedDate[item.name]}
-          setDate={(date: string) => setSelectedDate((prev) => ({ ...prev, [item.name]: date }))}
+          setDate={(date: string) => {
+            setIsCollapsed((prev) => ({ ...prev, [item.name]: true }));
+            setSelectedDate((prev) => ({ ...prev, [item.name]: date }));
+          }}
           isCollapsed={isCollapsed[item.name]}
         />
       ))}

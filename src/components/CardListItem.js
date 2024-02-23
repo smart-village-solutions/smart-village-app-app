@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { memo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
-import { Card } from 'react-native-elements';
-import { Divider } from 'react-native-elements/dist/divider/Divider';
+import { Card, Divider } from 'react-native-elements';
 
 import { colors, consts, normalize } from '../config';
 import { imageHeight, imageWidth } from '../helpers';
