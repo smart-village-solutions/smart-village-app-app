@@ -23,7 +23,7 @@ export const profileLogIn = async ({ email, password }: { email: string; passwor
     body: JSON.stringify(formData)
   };
 
-  return (await fetch(`${serverUrl}/members/sign_in.json`, fetchObj)).json();
+  return (await fetch(`${serverUrl}/members/sign_in`, fetchObj)).json();
 };
 
 export const profileRegister = async ({
@@ -48,7 +48,7 @@ export const profileRegister = async ({
     body: JSON.stringify(formData)
   };
 
-  return (await fetch(`${serverUrl}/members.json`, fetchObj)).json();
+  return (await fetch(`${serverUrl}/members`, fetchObj)).json();
 };
 
 export const profileUpdate = async ({
@@ -69,10 +69,9 @@ export const profileUpdate = async ({
       first_name: firstName,
       gender,
       last_name: lastName,
-      postcode,
+      postal_code: postcode,
       street
-    },
-    auth_token: authToken // TODO: remove this when the backend is updated
+    }
   };
 
   const fetchObj = {
@@ -85,7 +84,7 @@ export const profileUpdate = async ({
     body: JSON.stringify(formData)
   };
 
-  return (await fetch(`${serverUrl}/members.json`, fetchObj)).json();
+  return (await fetch(`${serverUrl}/members`, fetchObj)).json();
 };
 
 export const profileResetPassword = async ({ email }: ProfileResetPassword) => {
@@ -104,7 +103,7 @@ export const profileResetPassword = async ({ email }: ProfileResetPassword) => {
     body: JSON.stringify(formData)
   };
 
-  return (await fetch(`${serverUrl}/members/password_reset.json`, fetchObj)).json();
+  return (await fetch(`${serverUrl}/members/password`, fetchObj)).json();
 };
 
 export const member = async () => {
@@ -119,5 +118,5 @@ export const member = async () => {
     }
   };
 
-  return (await fetch(`${serverUrl}/member.json`, fetchObj)).json();
+  return (await fetch(`${serverUrl}/member`, fetchObj)).json();
 };
