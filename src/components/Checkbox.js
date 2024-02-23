@@ -16,8 +16,9 @@ export const Checkbox = ({
   checked,
   checkedIcon,
   containerStyle,
-  link,
+  link = '',
   linkDescription,
+  navigate,
   onPress,
   title,
   uncheckedIcon,
@@ -47,8 +48,8 @@ export const Checkbox = ({
           ) : (
             <RegularText small>{title}</RegularText>
           )}
-          {!!link && (
-            <RegularText small primary underline onPress={openWebScreen}>
+          {(!!link || !!navigate) && (
+            <RegularText small primary underline onPress={link ? openWebScreen : navigate}>
               {linkDescription}
             </RegularText>
           )}
@@ -97,6 +98,7 @@ Checkbox.propTypes = {
   disabled: PropTypes.bool,
   link: PropTypes.string,
   linkDescription: PropTypes.string,
+  navigate: PropTypes.func,
   onPress: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   uncheckedIcon: PropTypes.oneOfType([PropTypes.string, PropTypes.object])
