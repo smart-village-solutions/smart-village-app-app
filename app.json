@@ -41,7 +41,7 @@
     },
     "android": {
       "package": "de.test.hb.meinquartier.smartvillage.app",
-      "versionCode": 17,
+      "versionCode": 18,
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
