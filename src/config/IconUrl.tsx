@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
-import { SvgCssUri, SvgUri } from 'react-native-svg';
+import { SvgCss, SvgUri } from 'react-native-svg';
 
 import { IconProps, colors, getHitSlops, normalize } from '../config';
 
@@ -51,12 +51,7 @@ export const IconUrl = ({
 
     return (
       <View style={style} hitSlop={getHitSlops(size)}>
-        <SvgCssUri
-          height={size}
-          style={iconStyle}
-          uri={`data:image/svg+xml,${encodeURIComponent(colorizedSvg)}`}
-          width={size}
-        />
+        <SvgCss xml={colorizedSvg} height={size} style={iconStyle} width={size} />
       </View>
     );
   }
