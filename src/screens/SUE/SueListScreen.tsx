@@ -79,7 +79,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
   const { statuses }: { statuses: StatusProps[] } = sueStatus;
   const query = route.params?.query ?? '';
   const initialQueryVariables = route.params?.queryVariables ?? {
-    initial_start_date: '2020-01-01T00:00:00+01:00'
+    initial_start_date: '1900-01-01T00:00:00+01:00'
   };
   const [queryVariables, setQueryVariables] = useState(initialQueryVariables);
   const [refreshing, setRefreshing] = useState(false);
