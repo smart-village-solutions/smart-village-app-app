@@ -930,8 +930,10 @@ export const texts = {
     description: 'Beschreibung',
     location: 'Ort',
     report: {
+      addImage: 'Bilder hinzufügen',
       alerts: {
         address: 'Bitte stellen Sie sicher, dass Sie Ihre Adressdaten korrekt eingeben',
+        close: 'Schließen',
         contact: 'Bitte stellen Sie sicher, dass Sie Ihre Kontaktdaten korrekt eingeben.',
         dataDeleteAlert: {
           cancel: 'Nein',
@@ -945,11 +947,11 @@ export const texts = {
         imagesGreater30MBError:
           'Die ausgewählten Bilder dürfen insgesamt nicht größer als 30 MB sein.',
         imageSelectAlert: {
-          camera: 'Kamera',
+          camera: 'Bild aufnehmen',
           cancel: 'Abbrechen',
           description:
             'Möchten Sie ein Bild mit der Kamera aufnehmen oder aus der Galerie auswählen?',
-          gallery: 'Galerie',
+          gallery: 'Galerie öffnen',
           title: 'Bildquelle auswählen'
         },
         location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
