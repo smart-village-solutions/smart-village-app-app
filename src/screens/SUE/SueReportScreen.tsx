@@ -211,8 +211,20 @@ export const SueReportScreen = ({
         }
         break;
       case 2:
-        if (getValues().zipCode?.length && getValues().zipCode.length !== 5) {
+        if (getValues().houseNumber && !getValues().street) {
+          return texts.sue.report.alerts.street;
+        }
+
+        if (!getValues().zipCode) {
+          return texts.sue.report.alerts.zipCode;
+        }
+
+        if (getValues().zipCode.length !== 5) {
           return texts.sue.report.alerts.zipCodeLength;
+        }
+
+        if (!getValues().city) {
+          return texts.sue.report.alerts.city;
         }
         break;
       default:

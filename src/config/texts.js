@@ -935,6 +935,7 @@ export const texts = {
         address: 'Bitte stellen Sie sicher, dass Sie Ihre Adressdaten korrekt eingeben',
         close: 'Schließen',
         contact: 'Bitte stellen Sie sicher, dass Sie Ihre Kontaktdaten korrekt eingeben.',
+        city: 'Bitte geben Sie den Ort an',
         dataDeleteAlert: {
           cancel: 'Nein',
           deleteButton: 'Löschen',
@@ -958,9 +959,11 @@ export const texts = {
         no: 'Nein',
         myLocation: 'Möchten Sie Ihren aktuellen Standort verwenden?',
         serviceCode: 'Bitte wählen Sie aus, um welches Thema es in dem Bericht geht.',
+        street: 'Bitte geben Sie die Straße an',
         termsOfService: 'Bitte akzeptieren Sie die Datenschutzbestimmungen.',
         title: 'Bitte kurz beschreiben, worum es geht.',
         yes: 'Ja',
+        zipCode: 'Bitte geben Sie die Postleitzahl an',
         zipCodeLength: 'Postleitzahl muss 5-stellig sein.'
       },
       back: 'Zurück',
