@@ -115,6 +115,7 @@ const NamedIcon = ({
 export const Icon = {
   About: (props: IconProps) => <NamedIcon name="menu" {...props} />,
   AddImage: (props: IconProps) => <SvgIcon xml={addImage} {...props} />,
+  Albums: (props: IconProps) => <NamedIcon name="albums" {...props} />,
   ArrowDown: (props: IconProps) => <SvgIcon xml={arrowDown} {...props} />,
   ArrowDownCircle: (props: IconProps) => <NamedIcon name="arrow-down-circle" {...props} />,
   ArrowLeft: (props: IconProps) => <SvgIcon xml={arrowLeft} {...props} />,

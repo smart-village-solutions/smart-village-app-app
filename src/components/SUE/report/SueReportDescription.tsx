@@ -51,8 +51,7 @@ export const SueReportDescription = ({ control }: { control: any; errors: any })
                 item: {
                   name: 'images',
                   infoText: texts.sue.report.imageHint,
-                  label: texts.volunteer.images,
-                  buttonTitle: texts.volunteer.addImage
+                  buttonTitle: texts.sue.report.addImage
                 }
               }}
             />

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Alert, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Divider } from 'react-native-elements';
 
 import { colors, consts, Icon, normalize, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
@@ -14,8 +15,10 @@ import { calendarDeleteFile } from '../../../queries/volunteer';
 import { Button } from '../../Button';
 import { Input } from '../../form';
 import { Image } from '../../Image';
-import { RegularText } from '../../Text';
-import { WrapperRow } from '../../Wrapper';
+import { Modal } from '../../Modal';
+import { BoldText, RegularText } from '../../Text';
+import { Touchable } from '../../Touchable';
+import { WrapperRow, WrapperVertical } from '../../Wrapper';
 
 const { IMAGE_SELECTOR_TYPES, IMAGE_TYPE_REGEX, URL_REGEX } = consts;
 
@@ -36,26 +39,6 @@ const deleteImageAlert = (onPress) =>
     ]
   );
 
-const selectImageSourceAlert = (imageSelect, imageCapture) =>
-  Alert.alert(
-    texts.sue.report.alerts.imageSelectAlert.title,
-    texts.sue.report.alerts.imageSelectAlert.description,
-    [
-      {
-        text: texts.sue.report.alerts.imageSelectAlert.cancel,
-        style: 'cancel'
-      },
-      {
-        text: texts.sue.report.alerts.imageSelectAlert.gallery,
-        onPress: imageSelect
-      },
-      {
-        text: texts.sue.report.alerts.imageSelectAlert.camera,
-        onPress: imageCapture
-      }
-    ]
-  );
-
 export const ImageSelector = ({
   control,
   errorType,
@@ -70,6 +53,7 @@ export const ImageSelector = ({
 
   const [infoAndErrorText, setInfoAndErrorText] = useState(JSON.parse(value));
   const [imagesAttributes, setImagesAttributes] = useState(JSON.parse(value));
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [deleteImage] = useMutation(DELETE_IMAGE, {
     client: ConsulClient
@@ -135,6 +119,7 @@ export const ImageSelector = ({
     errorTextGenerator({ errorType, infoAndErrorText, mimeType, setInfoAndErrorText, uri });
 
     setImagesAttributes([...imagesAttributes, { uri, mimeType, imageName, size }]);
+    setIsModalVisible(!isModalVisible);
   };
 
   const values = jsonParser(value);
@@ -147,8 +132,10 @@ export const ImageSelector = ({
 
           <Button
             disabled={values?.length >= 5}
+            icon={<Icon.Camera size={normalize(16)} />}
+            iconPosition="left"
             invert
-            onPress={() => selectImageSourceAlert(imageSelect, () => imageSelect(captureImage))}
+            onPress={() => setIsModalVisible(!isModalVisible)}
             title={buttonTitle}
           />
 
@@ -187,6 +174,51 @@ export const ImageSelector = ({
               ))}
             </WrapperRow>
           </ScrollView>
+
+          <Modal
+            isBackdropPress
+            isVisible={isModalVisible}
+            onModalVisible={() => setIsModalVisible(false)}
+            closeButton={
+              <TouchableOpacity
+                onPress={() => setIsModalVisible(false)}
+                style={styles.overlayCloseButton}
+              >
+                <>
+                  <BoldText small style={styles.overlayCloseButtonText}>
+                    {texts.sue.report.alerts.close}
+                  </BoldText>
+                  <Icon.Close size={normalize(16)} color={colors.darkText} />
+                </>
+              </TouchableOpacity>
+            }
+            overlayStyle={styles.overlay}
+          >
+            <WrapperVertical style={styles.noPaddingTop}>
+              <BoldText>{texts.sue.report.addImage}</BoldText>
+            </WrapperVertical>
+
+            <WrapperVertical style={styles.noPaddingTop}>
+              <Divider />
+            </WrapperVertical>
+
+            <WrapperVertical>
+              <Button
+                icon={<Icon.Camera size={normalize(16)} />}
+                iconPosition="left"
+                invert
+                onPress={() => imageSelect(captureImage)}
+                title={texts.sue.report.alerts.imageSelectAlert.camera}
+              />
+              <Button
+                icon={<Icon.Albums size={normalize(16)} />}
+                iconPosition="left"
+                invert
+                onPress={() => imageSelect(selectImage)}
+                title={texts.sue.report.alerts.imageSelectAlert.gallery}
+              />
+            </WrapperVertical>
+          </Modal>
         </>
       );
     }
@@ -264,6 +296,26 @@ const styles = StyleSheet.create({
   image: {
     height: imageHeight(imageWidth() * 0.6),
     width: imageWidth() * 0.6
+  },
+  noPaddingTop: {
+    paddingTop: 0
+  },
+  overlay: {
+    bottom: 0,
+    paddingBottom: normalize(56),
+    paddingHorizontal: normalize(16),
+    paddingTop: normalize(24),
+    position: 'absolute',
+    width: '100%'
+  },
+  overlayCloseButton: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center'
+  },
+  overlayCloseButtonText: {
+    paddingRight: normalize(10),
+    paddingTop: normalize(3)
   },
   sueDeleteImageButton: {
     alignItems: 'center',

@@ -10,12 +10,14 @@ import { Touchable } from './Touchable';
 
 export const Modal = ({
   children,
+  closeButton,
   height,
   isBackdropPress,
   isListView,
   isVisible,
   modalHiddenButtonName,
-  onModalVisible
+  onModalVisible,
+  overlayStyle
 }) => {
   return (
     <Overlay
@@ -23,17 +25,19 @@ export const Modal = ({
       isVisible={isVisible}
       onBackdropPress={isBackdropPress ? onModalVisible : undefined}
       windowBackgroundColor={colors.overlayRgba}
-      overlayStyle={[!isListView && styles.overlay, styles.overlayWidth, { height }]}
+      overlayStyle={[!isListView && styles.overlay, styles.overlayWidth, { height }, overlayStyle]}
       supportedOrientations={['portrait', 'landscape']}
     >
       <>
         {children}
 
-        <Touchable onPress={onModalVisible}>
-          <BoldText center underline primary>
-            {modalHiddenButtonName}
-          </BoldText>
-        </Touchable>
+        {closeButton || (
+          <Touchable onPress={onModalVisible}>
+            <BoldText center underline primary>
+              {modalHiddenButtonName}
+            </BoldText>
+          </Touchable>
+        )}
       </>
     </Overlay>
   );
@@ -51,12 +55,14 @@ const styles = StyleSheet.create({
 
 Modal.propTypes = {
   children: PropTypes.node.isRequired,
+  closeButton: PropTypes.node,
   height: PropTypes.string,
   isBackdropPress: PropTypes.bool,
   isListView: PropTypes.bool,
   isVisible: PropTypes.bool.isRequired,
   modalHiddenButtonName: PropTypes.string,
-  onModalVisible: PropTypes.func.isRequired
+  onModalVisible: PropTypes.func.isRequired,
+  overlayStyle: PropTypes.object
 };
 
 Modal.defaultProps = {
