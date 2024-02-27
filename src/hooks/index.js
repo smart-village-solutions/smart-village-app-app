@@ -8,6 +8,7 @@ export * from './constructionSites';
 export * from './documentPicker';
 export * from './HomeRefresh';
 export * from './imagePicker';
+export * from './keyboardHeight';
 export * from './listHooks';
 export * from './locationHooks';
 export * from './matomoHooks';

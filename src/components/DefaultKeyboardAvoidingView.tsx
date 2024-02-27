@@ -1,27 +1,9 @@
-import React from 'react';
-import { useContext } from 'react';
-import { KeyboardAvoidingView, Platform, PlatformIOSStatic, StyleSheet } from 'react-native';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
+import React, { useContext } from 'react';
+import { KeyboardAvoidingView, StyleSheet } from 'react-native';
 
-import { device } from '../config';
 import { OrientationContext } from '../OrientationProvider';
-
-const getHeaderHeight = (orientation: string) =>
-  // Android always 56
-  // iOS:
-  //   portrait: 44
-  //   landscape: tablet 66 / phone 32
-  Platform.select({
-    ios: orientation === 'landscape' ? (!(Platform as PlatformIOSStatic).isPad ? 32 : 66) : 44,
-    default: 56
-  });
-
-const statusBarHeight = (orientation: string) =>
-  device.platform === 'android'
-    ? getStatusBarHeight()
-    : orientation === 'portrait'
-    ? getStatusBarHeight()
-    : 0;
+import { device } from '../config';
+import { getHeaderHeight, statusBarHeight } from '../helpers';
 
 export const DefaultKeyboardAvoidingView = ({ children }: { children: React.ReactNode }) => {
   const { orientation } = useContext(OrientationContext);
