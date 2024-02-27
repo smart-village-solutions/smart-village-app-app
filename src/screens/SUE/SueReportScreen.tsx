@@ -3,7 +3,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue, useForm } from 'react-hook-form';
-import { ActivityIndicator, Alert, ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useMutation } from 'react-query';
 
@@ -22,9 +22,9 @@ import {
   Wrapper,
   WrapperHorizontal
 } from '../../components';
-import { colors, device, texts } from '../../config';
+import { colors, device, normalize, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
-import { useStaticContent } from '../../hooks';
+import { useKeyboardHeight, useStaticContent } from '../../hooks';
 import { postRequests } from '../../queries/SUE';
 
 export const SUE_REPORT_VALUES = 'sueReportValues';
@@ -118,6 +118,8 @@ export const SueReportScreen = ({
   const scrollViewRef = useRef(null);
   const scrollViewContentRef = useRef(null);
 
+  const keyboardHeight = useKeyboardHeight();
+
   const {
     control,
     formState: { errors },
@@ -146,6 +148,7 @@ export const SueReportScreen = ({
   const { mutateAsync } = useMutation(postRequests);
 
   const onSubmit = async (sueReportData: TReports) => {
+    Keyboard.dismiss();
     storeReportValues();
 
     if (!sueReportData.termsOfService) {
@@ -271,6 +274,7 @@ export const SueReportScreen = ({
   };
 
   const handleNextPage = async () => {
+    Keyboard.dismiss();
     if (alertTextGeneratorForMissingData()) {
       return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
     }
@@ -288,6 +292,7 @@ export const SueReportScreen = ({
   };
 
   const handlePrevPage = () => {
+    Keyboard.dismiss();
     if (currentProgress > 0) {
       setCurrentProgress(currentProgress - 1);
       scrollViewRef?.current?.scrollTo({
@@ -379,37 +384,42 @@ export const SueReportScreen = ({
                   getValues
                 )
               )}
+              {device.platform === 'android' && (
+                <View style={{ height: normalize(keyboardHeight) * 0.5 }} />
+              )}
             </ScrollView>
           ))}
         </ScrollView>
-      </DefaultKeyboardAvoidingView>
 
-      <WrapperHorizontal>
-        <Divider />
-      </WrapperHorizontal>
+        <WrapperHorizontal>
+          <Divider />
+        </WrapperHorizontal>
 
-      <Wrapper style={[styles.buttonContainer, currentProgress !== 0 && styles.buttonContainerRow]}>
-        {currentProgress !== 0 && (
+        <Wrapper
+          style={[styles.buttonContainer, currentProgress !== 0 && styles.buttonContainerRow]}
+        >
+          {currentProgress !== 0 && (
+            <Button
+              disabled={isLoading}
+              invert
+              notFullWidth
+              onPress={handlePrevPage}
+              title={texts.sue.report.back}
+            />
+          )}
+
           <Button
             disabled={isLoading}
-            invert
-            notFullWidth
-            onPress={handlePrevPage}
-            title={texts.sue.report.back}
+            notFullWidth={currentProgress !== 0}
+            onPress={currentProgress < data.length - 1 ? handleNextPage : handleSubmit(onSubmit)}
+            title={
+              currentProgress === data.length - 1
+                ? texts.sue.report.sendReport
+                : texts.sue.report.next
+            }
           />
-        )}
-
-        <Button
-          disabled={isLoading}
-          notFullWidth={currentProgress !== 0}
-          onPress={currentProgress < data.length - 1 ? handleNextPage : handleSubmit(onSubmit)}
-          title={
-            currentProgress === data.length - 1
-              ? texts.sue.report.sendReport
-              : texts.sue.report.next
-          }
-        />
-      </Wrapper>
+        </Wrapper>
+      </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
   );
 };
