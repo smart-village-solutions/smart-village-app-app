@@ -26,9 +26,8 @@ type Props = {
 };
 
 const isSmallerPixelRatio = PixelRatio.get() <= 2;
+const isTablet = device.isTablet;
 const MARKER_ICON_SIZE = isSmallerPixelRatio ? normalize(50) : normalize(40);
-const isBiggerPhoneWithSmallerPixelRatio = device.width === 414 && isSmallerPixelRatio;
-const isSmallerPhoneWithLargerPixelRatio = device.width < 400 && !isSmallerPixelRatio;
 
 export const MapIcon = ({
   iconColor,
@@ -155,21 +154,32 @@ export const Map = ({
                   <MapIcon
                     iconColor={isActiveMarker ? colors.primary : colors.lighterPrimary}
                     iconName={isActiveMarker ? 'locationActive' : 'location'}
-                    iconSize={isActiveMarker ? MARKER_ICON_SIZE * normalize(1.4) : MARKER_ICON_SIZE}
+                    iconSize={isActiveMarker ? MARKER_ICON_SIZE * 1.4 : MARKER_ICON_SIZE}
                   />
                   <View
                     style={[
-                      styles.mapIconOnLocationMarker,
-                      isActiveMarker ? styles.mapIconOnLocationMarkerActive : undefined
+                      styles.mapIconOnLocationMarkerContainer,
+                      isActiveMarker ? styles.mapIconOnLocationMarkerContainerActive : undefined
                     ]}
                   >
-                    <IconUrl
-                      color={isActiveMarker ? colors.lighterPrimary : colors.primary}
-                      iconName={marker.iconName}
-                      size={
-                        MARKER_ICON_SIZE / (isSmallerPixelRatio ? normalize(2.95) : normalize(2.5))
-                      }
-                    />
+                    <View
+                      style={[
+                        styles.mapIconOnLocationMarker,
+                        isActiveMarker ? styles.mapIconOnLocationMarkerActive : undefined
+                      ]}
+                    >
+                      <IconUrl
+                        color={isActiveMarker ? colors.lighterPrimary : colors.primary}
+                        iconName={marker.iconName}
+                        size={
+                          (MARKER_ICON_SIZE /
+                            (!isTablet && isSmallerPixelRatio
+                              ? normalize(1.95)
+                              : normalize(2.35))) *
+                          (isActiveMarker ? normalize(1.05) : normalize(0.9))
+                        }
+                      />
+                    </View>
                   </View>
                 </>
               ) : (
@@ -221,29 +231,21 @@ const styles = StyleSheet.create({
     zIndex: 1
   },
   mapIconOnLocationMarker: {
-    backgroundColor: colors.lighterPrimary,
-    left: MARKER_ICON_SIZE / (isBiggerPhoneWithSmallerPixelRatio ? 3 : 3.25),
-    position: 'absolute',
-    top: MARKER_ICON_SIZE / (isBiggerPhoneWithSmallerPixelRatio ? 4 : 4.2)
+    alignSelf: 'center',
+    backgroundColor: colors.lighterPrimary
   },
   mapIconOnLocationMarkerActive: {
-    backgroundColor: colors.primary,
-    left:
-      (MARKER_ICON_SIZE * 1.4) /
-      (isBiggerPhoneWithSmallerPixelRatio
-        ? 3.2
-        : isSmallerPhoneWithLargerPixelRatio
-        ? 2.85
-        : isSmallerPixelRatio
-        ? 3.9
-        : 2.45),
-    top:
-      (MARKER_ICON_SIZE * 1.4) /
-      (isBiggerPhoneWithSmallerPixelRatio || isSmallerPhoneWithLargerPixelRatio
-        ? 7
-        : isSmallerPixelRatio
-        ? 9.75
-        : 5.75)
+    backgroundColor: colors.primary
+  },
+  mapIconOnLocationMarkerContainer: {
+    height: '100%',
+    width: '100%',
+    position: 'absolute',
+    top: isSmallerPixelRatio ? normalize(13) : normalize(11),
+    backgroundColor: colors.transparent
+  },
+  mapIconOnLocationMarkerContainerActive: {
+    top: isSmallerPixelRatio ? normalize(11) : normalize(10)
   },
   maximizeMapButton: {
     alignItems: 'center',
