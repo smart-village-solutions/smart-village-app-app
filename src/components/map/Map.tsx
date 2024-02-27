@@ -8,6 +8,7 @@ import { colors, device, Icon, IconUrl, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
+import { RegularText } from '../Text';
 
 type Props = {
   geometryTourData?: LatLng[];
@@ -192,6 +193,11 @@ export const Map = ({
           <Icon.ExpandMap size={normalize(18)} />
         </TouchableOpacity>
       )}
+      {device.platform === 'android' && (
+        <View style={styles.logoContainer}>
+          <RegularText smallest>© OpenStreetMap</RegularText>
+        </View>
+      )}
     </View>
   );
 };
@@ -202,6 +208,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     flex: 1,
     justifyContent: 'center'
+  },
+  logoContainer: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    bottom: 0,
+    height: normalize(30),
+    justifyContent: 'center',
+    left: 0,
+    position: 'absolute',
+    width: normalize(100),
+    zIndex: 1
   },
   mapIconOnLocationMarker: {
     backgroundColor: colors.lighterPrimary,
