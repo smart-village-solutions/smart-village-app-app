@@ -24,7 +24,7 @@ export const MainTabNavigator = ({
   const isNotBiggerPhoneWithSmallerPixelRatio = !isBiggerPhone && isSmallerPixelRatio;
   const isBiggerPhoneOrBiggerPixelRatio = isBiggerPhone || !isSmallerPixelRatio;
 
-  const tabbarHeight =
+  const tabBarHeight =
     isPortrait && isNotBiggerPhoneWithSmallerPixelRatio
       ? normalize(62)
       : isPortrait && isBiggerPhoneOrBiggerPixelRatio
@@ -47,14 +47,15 @@ export const MainTabNavigator = ({
           backgroundColor: colors.surface,
           borderTopColor: colors.gray20,
           borderTopWidth: 1,
-          height: tabbarHeight
+          height: tabBarHeight
         },
         tabBarLabelStyle: {
           fontSize: normalize(11),
           lineHeight: normalize(14),
           marginBottom: orientation === 'portrait' ? normalize(10) : undefined,
           marginTop: orientation === 'portrait' ? normalize(4) : undefined
-        }
+        },
+        tabBarLabelPosition: isPortrait ? 'below-icon' : 'beside-icon'
       }}
     >
       {tabNavigatorConfig.tabConfigs.map((tabConfig, index) => (
