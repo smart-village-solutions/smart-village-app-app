@@ -4,12 +4,14 @@ export type ProfileMember = {
     authentication_token: string;
     created_at: string;
     email: string;
+    first_name: string;
     id: number;
     keycloak_access_token_expires_at: string;
     keycloak_access_token: string;
     keycloak_id: string;
     keycloak_refresh_token_expires_at: string;
     keycloak_refresh_token: string;
+    last_name: string;
     municipality_id: number;
     preferences: {
       [key: string]: string;
