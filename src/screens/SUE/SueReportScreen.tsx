@@ -175,11 +175,14 @@ export const SueReportScreen = ({
     setIsLoading(true);
     mutateAsync(formData)
       .then(() => {
-        setTimeout(() => {
-          setIsDone(true);
-          resetStoredValues();
-          setIsLoading(false);
-        }, 1500);
+        setTimeout(
+          () => {
+            setIsDone(true);
+            resetStoredValues();
+            setIsLoading(false);
+          },
+          JSON.parse(sueReportData?.images).length ? 0 : 3000
+        );
       })
       .catch(() => {
         setIsLoading(false);

@@ -62,7 +62,7 @@ export const SueReportSend = ({
 const styles = StyleSheet.create({
   image: {
     height: normalize(50),
-    width: device.width,
+    width: '100%',
     alignSelf: 'center'
   }
 });
