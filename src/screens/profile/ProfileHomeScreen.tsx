@@ -19,13 +19,12 @@ import { useProfileUser, useStaticContent, useTrackScreenViewAsync } from '../..
 import { ScreenName } from '../../types';
 
 import { ProfileScreen } from './ProfileScreen';
-import { ProfileUpdateScreen } from './ProfileUpdateScreen';
 
 const { MATOMO_TRACKING } = consts;
 
 /* eslint-disable complexity */
 export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
-  const { refresh, isLoading, isLoggedIn, isFirstLogin } = useProfileUser();
+  const { refresh, isLoading, isLoggedIn } = useProfileUser();
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
   const trackScreenViewAsync = useTrackScreenViewAsync();
@@ -61,10 +60,6 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
 
   if (loading || isLoading) {
     return <LoadingSpinner loading />;
-  }
-
-  if (isFirstLogin) {
-    return <ProfileUpdateScreen navigation={navigation} route={route} />;
   }
 
   if (isLoggedIn) {

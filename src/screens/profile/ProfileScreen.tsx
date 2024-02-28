@@ -18,7 +18,9 @@ import { QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
 import { ProfileMember, ScreenName } from '../../types';
 
-export const ProfileScreen = ({ navigation }: StackScreenProps<any, string>) => {
+import { ProfileUpdateScreen } from './ProfileUpdateScreen';
+
+export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
   const [refreshing, setRefreshing] = useState(false);
   const { isConnected } = useContext(NetworkContext);
 
@@ -49,6 +51,10 @@ export const ProfileScreen = ({ navigation }: StackScreenProps<any, string>) => 
   }
 
   if (!data?.member) return null;
+
+  if (!Object.keys(data.member.preferences).length) {
+    return <ProfileUpdateScreen navigation={navigation} route={route} />;
+  }
 
   const {
     member: { email = '' }
