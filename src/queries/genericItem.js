@@ -9,6 +9,7 @@ export const GET_GENERIC_ITEMS = gql`
     $dataProvider: String
     $categoryId: ID
     $genericType: String
+    $currentMember: Boolean
   ) {
     genericItems(
       ids: $ids
@@ -18,6 +19,7 @@ export const GET_GENERIC_ITEMS = gql`
       dataProvider: $dataProvider
       categoryId: $categoryId
       genericType: $genericType
+      currentMember: $currentMember
     ) {
       id
       createdAt
