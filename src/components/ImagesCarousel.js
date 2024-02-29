@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Query } from 'react-apollo';
 import { ActivityIndicator, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
@@ -37,6 +37,12 @@ export const ImagesCarousel = ({
   const refreshTime = useRefreshTime(refreshTimeKey);
   const [isPaused, setIsPaused] = useState(false);
   const [carouselImageIndex, setCarouselImageIndex] = useState(0);
+
+  const carouselRef = useRef();
+
+  useEffect(() => {
+    isPaused ? carouselRef.current?.stopAutoplay() : carouselRef.current?.startAutoplay();
+  }, [isPaused]);
 
   const shouldShowPauseButton = showSliderPauseButton && !isDisturber;
 
@@ -130,23 +136,20 @@ export const ImagesCarousel = ({
 
   return (
     <View>
-      {isPaused ? (
-        renderItem({ item: carouselData[carouselImageIndex] })
-      ) : (
-        <Carousel
-          data={carouselData}
-          renderItem={renderItem}
-          sliderWidth={dimensions.width}
-          itemWidth={itemWidth}
-          inactiveSlideScale={1}
-          autoplay
-          loop
-          autoplayDelay={0}
-          autoplayInterval={autoplayInterval || 4000}
-          containerCustomStyle={styles.center}
-          onScrollIndexChanged={setCarouselImageIndex}
-        />
-      )}
+      <Carousel
+        data={carouselData}
+        ref={carouselRef}
+        renderItem={renderItem}
+        sliderWidth={dimensions.width}
+        itemWidth={itemWidth}
+        inactiveSlideScale={1}
+        autoplay
+        loop
+        autoplayDelay={0}
+        autoplayInterval={autoplayInterval || 4000}
+        containerCustomStyle={styles.center}
+        onScrollIndexChanged={setCarouselImageIndex}
+      />
 
       {shouldShowPauseButton &&
         pauseButton(
