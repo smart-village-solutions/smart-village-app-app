@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 
-const PROFILE_AUTH_TOKEN = 'PROFILE_AUTH_TOKEN';
+export const PROFILE_AUTH_TOKEN = 'PROFILE_AUTH_TOKEN';
 const PROFILE_CURRENT_USER_ID = 'PROFILE_CURRENT_USER_ID';
 const PROFILE_FIRST_LOGIN = 'PROFILE_FIRST_LOGIN';
 

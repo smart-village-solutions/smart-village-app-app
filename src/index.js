@@ -23,6 +23,7 @@ import {
   geoLocationToLocationObject,
   graphqlFetchPolicy,
   parsedImageAspectRatio,
+  PROFILE_AUTH_TOKEN,
   storageHelper
 } from './helpers';
 import { Navigator } from './navigation/Navigator';
@@ -60,12 +61,14 @@ const MainAppWithApolloProvider = () => {
     const authLink = setContext(async (_, { headers }) => {
       // get the authentication token from local SecureStore if it exists
       const accessToken = await SecureStore.getItemAsync('ACCESS_TOKEN');
+      const authToken = await SecureStore.getItemAsync(PROFILE_AUTH_TOKEN);
 
       // return the headers to the context so httpLink can read them
       return {
         headers: {
           ...headers,
-          authorization: accessToken ? `Bearer ${accessToken}` : ''
+          authorization: accessToken ? `Bearer ${accessToken}` : '',
+          'X-Authorization': authToken || ''
         }
       };
     });
