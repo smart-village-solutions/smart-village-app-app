@@ -2,7 +2,6 @@ import * as SecureStore from 'expo-secure-store';
 
 export const PROFILE_AUTH_TOKEN = 'PROFILE_AUTH_TOKEN';
 const PROFILE_CURRENT_USER_ID = 'PROFILE_CURRENT_USER_ID';
-const PROFILE_FIRST_LOGIN = 'PROFILE_FIRST_LOGIN';
 
 export const storeProfileAuthToken = (authToken?: string) => {
   if (authToken) {
@@ -52,28 +51,4 @@ export const profileUserData = async (): Promise<{
   }
 
   return { currentUserId };
-};
-
-export const storeFirstLogin = (isFirstLogin?: boolean) => {
-  if (isFirstLogin) {
-    SecureStore.setItemAsync(PROFILE_FIRST_LOGIN, isFirstLogin.toString());
-  } else {
-    SecureStore.deleteItemAsync(PROFILE_FIRST_LOGIN);
-  }
-};
-
-export const profileFirstLogin = async () => {
-  let isFirstLogin = null;
-
-  // The reason for the problem of staying in SplashScreen that occurs after the application is
-  // updated on the Android side is the inability to obtain the token here.
-  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
-  try {
-    isFirstLogin = await SecureStore.getItemAsync(PROFILE_FIRST_LOGIN);
-  } catch {
-    // Token deleted here so that it can be recreated
-    SecureStore.deleteItemAsync(PROFILE_FIRST_LOGIN);
-  }
-
-  return { isFirstLogin };
 };

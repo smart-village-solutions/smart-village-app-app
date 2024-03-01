@@ -17,24 +17,20 @@ import {
   WrapperRow
 } from '../../components';
 import { texts } from '../../config';
-import { momentFormat, storeFirstLogin } from '../../helpers';
+import { momentFormat } from '../../helpers';
 import { profileUpdate } from '../../queries/profile';
 import { ProfileUpdate, ScreenName } from '../../types';
 
 const showUpdateFailAlert = () =>
   Alert.alert(texts.profile.updateProfileFailedTitle, texts.profile.updateProfileFailedBody);
 
-const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
-  Alert.alert(
-    texts.profile.updateProfileLoginAgainTitle,
-    texts.profile.updateProfileLoginAgainBody,
-    [
-      {
-        text: texts.profile.ok,
-        onPress
-      }
-    ]
-  );
+const showUpdateSuccessAlert = ({ onPress }: { onPress: () => void }) =>
+  Alert.alert(texts.profile.showUpdateSuccessAlertTitle, texts.profile.showUpdateSuccessAlertBody, [
+    {
+      text: texts.profile.ok,
+      onPress
+    }
+  ]);
 
 const genderData = [
   { value: 'Frau', gender: 'frau' },
@@ -44,10 +40,8 @@ const genderData = [
 
 /* eslint-disable complexity */
 export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const email = route.params?.email ?? '';
-  const password = route.params?.password ?? '';
   const member = route.params?.member ?? {};
-  const { preferences = {}, email: memberEmail, first_name, last_name } = member;
+  const { preferences = {}, first_name, last_name } = member;
   const { city, street, postal_code, birthday, gender } = preferences;
 
   const {
@@ -82,11 +76,9 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
           return;
         }
 
-        storeFirstLogin(false);
-
-        showLoginAgainAlert({
+        showUpdateSuccessAlert({
           onPress: () =>
-            navigation.push(ScreenName.ProfileLogin, { email: email || memberEmail, password })
+            navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() })
         });
       }
     });

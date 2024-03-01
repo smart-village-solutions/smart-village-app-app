@@ -20,7 +20,6 @@ import {
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
-import { useProfileUser } from '../../hooks/profile';
 import { QUERY_TYPES } from '../../queries';
 import { member, profileLogIn } from '../../queries/profile';
 import { ProfileLogin, ProfileMember, ScreenName } from '../../types';
@@ -32,7 +31,6 @@ const showLoginFailAlert = () =>
 
 // eslint-disable-next-line complexity
 export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { isFirstLogin } = useProfileUser();
   const [isSecureTextEntry, setIsSecureTextEntry] = useState(true);
   const email = route.params?.email ?? '';
   const password = route.params?.password ?? '';
@@ -58,12 +56,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
     data
   } = useMutation(profileLogIn);
 
-  const {
-    isLoading: isLoadingMember,
-    isError: isErrorMember,
-    isSuccess: isSuccessMember,
-    data: dataMember
-  } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
+  const { isLoading: isLoadingMember } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     enabled: !!data?.member?.authentication_token, // the query will not execute until the auth token exists
     onSuccess: (responseData: ProfileMember) => {
       if (!responseData?.member) {
@@ -73,8 +66,8 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
       // save user data to global state
       storeProfileUserData(responseData.member);
 
-      if (isFirstLogin) {
-        return navigation.navigate(ScreenName.ProfileUpdate, { email, password });
+      if (!Object.keys(responseData.member?.preferences).length) {
+        return navigation.navigate(ScreenName.ProfileUpdate);
       }
 
       // refreshUser param causes the home screen to update and no longer show the welcome component

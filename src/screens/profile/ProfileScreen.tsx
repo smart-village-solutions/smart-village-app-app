@@ -1,5 +1,5 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Alert, RefreshControl, ScrollView } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useQuery } from 'react-query';
@@ -18,7 +18,17 @@ import { QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
 import { ProfileMember, ScreenName } from '../../types';
 
-export const ProfileScreen = ({ navigation }: StackScreenProps<any, string>) => {
+import { ProfileUpdateScreen } from './ProfileUpdateScreen';
+
+const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
+  Alert.alert(texts.profile.signInAgainTitle, texts.profile.signInAgainBody, [
+    {
+      text: texts.profile.ok,
+      onPress
+    }
+  ]);
+
+export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
   const [refreshing, setRefreshing] = useState(false);
   const { isConnected } = useContext(NetworkContext);
 
@@ -26,17 +36,23 @@ export const ProfileScreen = ({ navigation }: StackScreenProps<any, string>) => 
     onSuccess: (responseData: ProfileMember) => {
       if (!responseData?.member) {
         storeProfileAuthToken();
-        Alert.alert(texts.profile.signInAgainTitle, texts.profile.signInAgainBody, [
-          {
-            text: texts.profile.ok,
-            onPress: () =>
-              navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() })
-          }
-        ]);
+
+        showLoginAgainAlert({
+          onPress: () =>
+            navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() })
+        });
+
         return;
       }
     }
   });
+
+  const refreshUser = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
+  // refresh if the refreshUser param changed, which happens after login
+  useEffect(refreshUser, [route.params?.refreshUser]);
 
   const refreshHome = useCallback(async () => {
     setRefreshing(true);
@@ -50,9 +66,15 @@ export const ProfileScreen = ({ navigation }: StackScreenProps<any, string>) => 
 
   if (!data?.member) return null;
 
+  if (!Object.keys(data.member.preferences).length) {
+    return <ProfileUpdateScreen navigation={navigation} route={route} />;
+  }
+
   const {
-    member: { email = '' }
+    member: { email = '', first_name: firstName = '', last_name: lastName = '' }
   } = data;
+
+  const displayName = !!firstName && !!lastName ? `${firstName} ${lastName}` : email;
 
   return (
     <SafeAreaViewFlex>
@@ -70,10 +92,10 @@ export const ProfileScreen = ({ navigation }: StackScreenProps<any, string>) => 
           <TextListItem
             item={{
               bottomDivider: false,
-              leftIcon: <VolunteerAvatar item={{ user: { display_name: email } }} />,
+              leftIcon: <VolunteerAvatar item={{ user: { display_name: displayName } }} />,
               routeName: ScreenName.ProfileUpdate,
               onPress: () => navigation.navigate(ScreenName.ProfileUpdate, { member: data.member }),
-              title: email
+              title: displayName
             }}
             navigation={navigation}
           />

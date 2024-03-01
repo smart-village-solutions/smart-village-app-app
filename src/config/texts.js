@@ -849,9 +849,8 @@ export const texts = {
     update: 'Profil aktualisieren',
     updateProfileFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     updateProfileFailedTitle: 'Profil konnte nicht aktualisiert werden',
-    updateProfileLoginAgainBody:
-      'Ihr Profil wurde erfolgreich aktualisiert. Da Sie Ihr Profil aktualisiert haben, müssen Sie sich erneut anmelden.',
-    updateProfileLoginAgainTitle: 'Erfolg',
+    showUpdateSuccessAlertBody: 'Ihr Profil wurde erfolgreich aktualisiert.',
+    showUpdateSuccessAlertTitle: 'Erfolg'
   },
   pushNotifications: {
     abort: 'Abbrechen',
