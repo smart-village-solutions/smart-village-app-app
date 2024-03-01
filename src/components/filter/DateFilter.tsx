@@ -92,12 +92,14 @@ export const DateFilter = ({ containerStyle, data, filters, setFilters }: Props)
       <WrapperRow spaceBetween>
         {data.map((item) => {
           useEffect(() => {
+            const endTimeOfDay = item.name === 'start_date' ? 'T00:00:00+01:00' : 'T22:59:59+01:00';
+
             setFilters(
               updateFilters({
                 currentFilters: filters,
                 name: item.name as keyof FilterProps,
                 removeFromFilter: !selectedDate[item.name],
-                value: `${selectedDate[item.name]}T00:00:00+01:00`
+                value: `${selectedDate[item.name]}${endTimeOfDay}`
               })
             );
           }, [selectedDate[item.name]]);
