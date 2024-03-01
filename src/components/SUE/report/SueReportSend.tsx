@@ -42,6 +42,7 @@ export const SueReportSend = ({
         <Image
           source={require('../../../../assets/lottie/SUE/cleaning.gif')}
           containerStyle={styles.image}
+          resizeMode="contain"
         />
       </Wrapper>
 
@@ -61,8 +62,8 @@ export const SueReportSend = ({
 
 const styles = StyleSheet.create({
   image: {
+    alignSelf: 'center',
     height: normalize(50),
-    width: '100%',
-    alignSelf: 'center'
+    width: '100%'
   }
 });
