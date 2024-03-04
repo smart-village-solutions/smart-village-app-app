@@ -156,14 +156,16 @@ const styles = StyleSheet.create({
     paddingTop: 0
   },
   sueContentContainer: {
-    borderWidth: 1,
     borderColor: colors.gray20,
-    borderRadius: normalize(8)
+    borderRadius: normalize(8),
+    borderWidth: 1,
+    width: '100%'
   },
   sueImageContainer: {
     alignSelf: 'auto',
     borderTopLeftRadius: normalize(8),
-    borderTopRightRadius: normalize(8)
+    borderTopRightRadius: normalize(8),
+    width: '100%'
   }
 });
 

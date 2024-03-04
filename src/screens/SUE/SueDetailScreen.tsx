@@ -96,7 +96,7 @@ export const SueDetailScreen = ({ route }: Props) => {
         }
       >
         <ImageSection mediaContents={mediaContents} />
-        {!mediaContents?.length && <SueImageFallback />}
+        {!mediaContents?.length && <SueImageFallback style={styles.sueImageContainer} />}
 
         {!!serviceName && !!requestedDatetime && (
           <SueCategory serviceName={serviceName} requestedDatetime={requestedDatetime} />
@@ -183,5 +183,8 @@ const styles = StyleSheet.create({
   },
   noPaddingTop: {
     paddingTop: 0
+  },
+  sueImageContainer: {
+    width: '100%'
   }
 });
