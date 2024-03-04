@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { ListRenderItem, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
 import { BoldText, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
-import { colors, normalize, texts } from '../config';
+import { colors, device, normalize, texts } from '../config';
 import { useStaticContent } from '../hooks';
 import { parseIntroSlides } from '../jsonValidation';
 import { AppIntroSlide } from '../types';
@@ -43,7 +44,11 @@ const renderSlide: ListRenderItem<AppIntroSlide> = ({ item }) => {
 };
 
 export const AppIntroScreen = ({ setOnboardingComplete }: Props) => {
-  const { data: slides, error, loading } = useStaticContent({
+  const {
+    data: slides,
+    error,
+    loading
+  } = useStaticContent({
     name: 'appIntroSlides',
     type: 'json',
     parseFromJson: parseIntroSlides,
@@ -77,6 +82,7 @@ export const AppIntroScreen = ({ setOnboardingComplete }: Props) => {
         activeDotStyle={styles.activeDot}
         dotClickEnabled={false}
         scrollEnabled={false}
+        style={device.platform === 'android' && { paddingTop: getStatusBarHeight() }}
       />
     </SafeAreaViewFlex>
   );
