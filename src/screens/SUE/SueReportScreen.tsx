@@ -149,16 +149,11 @@ export const SueReportScreen = ({
 
   const onSubmit = async (sueReportData: TReports) => {
     Keyboard.dismiss();
+
     storeReportValues();
 
-    if (!sueReportData.termsOfService) {
-      scrollViewContentRef.current?.scrollTo({
-        x: 0,
-        y: device.height,
-        animated: true
-      });
-
-      return Alert.alert(texts.sue.report.alerts.hint, texts.sue.report.alerts.termsOfService);
+    if (alertTextGeneratorForMissingData()) {
+      return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
     }
 
     const addressString = `${sueReportData.street}; ${sueReportData.houseNumber}; ${sueReportData.zipCode}; ${sueReportData.city}`;
@@ -173,8 +168,21 @@ export const SueReportScreen = ({
     };
 
     setIsLoading(true);
-    mutateAsync(formData)
-      .then(() => {
+    await mutateAsync(formData, {
+      onError: () => {
+        setIsLoading(false);
+        setCurrentProgress(0);
+
+        return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
+      },
+      onSuccess: (data) => {
+        if (data?.status && data.status !== 200) {
+          setIsLoading(false);
+          setCurrentProgress(0);
+
+          return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
+        }
+
         setTimeout(
           () => {
             setIsDone(true);
@@ -183,12 +191,8 @@ export const SueReportScreen = ({
           },
           JSON.parse(sueReportData?.images).length ? 0 : 3000
         );
-      })
-      .catch(() => {
-        setIsLoading(false);
-
-        return Alert.alert(texts.defectReport.alerts.hint, texts.defectReport.alerts.error);
-      });
+      }
+    });
   };
 
   /* eslint-disable complexity */
@@ -231,6 +235,17 @@ export const SueReportScreen = ({
 
         if (!getValues().city) {
           return texts.sue.report.alerts.city;
+        }
+        break;
+      case 3:
+        if (!getValues().termsOfService) {
+          scrollViewContentRef.current?.scrollTo({
+            x: 0,
+            y: device.height,
+            animated: true
+          });
+
+          return texts.sue.report.alerts.termsOfService;
         }
         break;
       default:
