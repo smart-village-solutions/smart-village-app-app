@@ -225,19 +225,25 @@ export const SueReportScreen = ({
           return texts.sue.report.alerts.street;
         }
 
-        if (!getValues().zipCode) {
+        if (getValues().city && !getValues().zipCode) {
           return texts.sue.report.alerts.zipCode;
         }
 
-        if (getValues().zipCode.length !== 5) {
-          return texts.sue.report.alerts.zipCodeLength;
-        }
+        if (getValues().zipCode) {
+          if (getValues().zipCode.length !== 5) {
+            return texts.sue.report.alerts.zipCodeLength;
+          }
 
-        if (!getValues().city) {
-          return texts.sue.report.alerts.city;
+          if (!getValues().city) {
+            return texts.sue.report.alerts.city;
+          }
         }
         break;
       case 3:
+        if (!getValues().firstName && !getValues().lastName && !getValues().email) {
+          return texts.sue.report.alerts.contact;
+        }
+
         if (!getValues().termsOfService) {
           scrollViewContentRef.current?.scrollTo({
             x: 0,

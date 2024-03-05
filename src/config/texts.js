@@ -934,7 +934,7 @@ export const texts = {
       alerts: {
         address: 'Bitte stellen Sie sicher, dass Sie Ihre Adressdaten korrekt eingeben',
         close: 'Schließen',
-        contact: 'Bitte stellen Sie sicher, dass Sie Ihre Kontaktdaten korrekt eingeben.',
+        contact: 'Bitte geben Sie mindestens eine Kontaktinformation ein',
         city: 'Bitte geben Sie den Ort an',
         dataDeleteAlert: {
           cancel: 'Nein',
@@ -955,6 +955,7 @@ export const texts = {
           gallery: 'Galerie öffnen',
           title: 'Bildquelle auswählen'
         },
+        invalidMail: 'Die eingegebene E-Mail-Adresse ist nicht gültig.',
         location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
         no: 'Nein',
         myLocation: 'Möchten Sie Ihren aktuellen Standort verwenden?',
