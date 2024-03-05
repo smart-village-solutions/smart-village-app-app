@@ -11,10 +11,10 @@ import { useQuery } from 'react-query';
 import { NetworkContext } from '../../NetworkProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import {
-  BoldText,
   EmptyMessage,
   Filter,
   ListComponent,
+  RegularText,
   SafeAreaViewFlex,
   Search,
   StatusProps,
@@ -218,9 +218,9 @@ export const SueListScreen = ({ navigation, route }: Props) => {
 
             {!!listItems?.length && (
               <WrapperHorizontal>
-                <BoldText smallest>
+                <RegularText small>
                   {listItems.length} {listItems.length === 1 ? texts.sue.result : texts.sue.results}
-                </BoldText>
+                </RegularText>
               </WrapperHorizontal>
             )}
           </>
