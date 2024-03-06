@@ -7,6 +7,7 @@ export * from './form';
 export * from './infoCard';
 export * from './map';
 export * from './noticeboard';
+export * from './profile';
 export * from './screens';
 export * from './survey';
 export * from './volunteer';
