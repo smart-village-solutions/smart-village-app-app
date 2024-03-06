@@ -8,6 +8,7 @@ import { NetworkContext } from '../../NetworkProvider';
 import {
   LoadingSpinner,
   SafeAreaViewFlex,
+  ServiceTiles,
   TextListItem,
   VolunteerAvatar,
   Wrapper
@@ -20,7 +21,7 @@ import { ProfileMember, ScreenName } from '../../types';
 
 import { ProfileUpdateScreen } from './ProfileUpdateScreen';
 
-const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
+export const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
   Alert.alert(texts.profile.signInAgainTitle, texts.profile.signInAgainBody, [
     {
       text: texts.profile.ok,
@@ -102,6 +103,8 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
         </Wrapper>
 
         <Divider />
+
+        <ServiceTiles staticJsonName="profileService" />
       </ScrollView>
     </SafeAreaViewFlex>
   );

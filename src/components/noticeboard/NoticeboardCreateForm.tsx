@@ -5,6 +5,7 @@ import React from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, StyleSheet } from 'react-native';
+import { useQuery } from 'react-query';
 
 import {
   Button,
@@ -17,9 +18,12 @@ import {
   Wrapper
 } from '../../components';
 import { colors, consts, texts } from '../../config';
-import { momentFormat } from '../../helpers';
+import { momentFormat, storeProfileAuthToken } from '../../helpers';
+import { QUERY_TYPES } from '../../queries';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
-import { NOTICEBOARD_TYPES } from '../../types';
+import { member } from '../../queries/profile';
+import { showLoginAgainAlert } from '../../screens/profile/ProfileScreen';
+import { NOTICEBOARD_TYPES, ProfileMember, ScreenName } from '../../types';
 
 const { EMAIL_REGEX } = consts;
 const extendedMoment = extendMoment(moment);
@@ -55,6 +59,21 @@ export const NoticeboardCreateForm = ({
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
 
+  const { data: memberData } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
+    onSuccess: (responseData: ProfileMember) => {
+      if (!responseData?.member) {
+        storeProfileAuthToken();
+
+        showLoginAgainAlert({
+          onPress: () =>
+            navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() })
+        });
+
+        return;
+      }
+    }
+  });
+
   const {
     control,
     formState: { errors },
@@ -64,8 +83,8 @@ export const NoticeboardCreateForm = ({
       body: '',
       dateEnd: new Date(),
       dateStart: new Date(),
-      email: '',
-      name: '',
+      email: memberData?.member?.email ?? '',
+      name: `${memberData?.member?.first_name} ${memberData?.member?.last_name}` ?? '',
       noticeboardType: '',
       termsOfService: false,
       title: ''

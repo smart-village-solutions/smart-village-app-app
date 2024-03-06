@@ -12,6 +12,7 @@ export const ProfileSignupScreen = ({ navigation, route }: StackScreenProps<any>
   const email = route.params?.email ?? '';
   const password = route.params?.password ?? '';
   const dataPrivacyLink = route.params?.webUrl ?? '';
+  const from = route.params?.from ?? '';
 
   const { data, loading, refetch } = useStaticContent({
     refreshTimeKey: 'publicHtmlFile-profileSignup',
@@ -24,6 +25,7 @@ export const ProfileSignupScreen = ({ navigation, route }: StackScreenProps<any>
   const onPressLogin = useCallback(() => {
     navigation.navigate(ScreenName.ProfileLogin, {
       email,
+      from,
       password,
       webUrl: dataPrivacyLink
     });

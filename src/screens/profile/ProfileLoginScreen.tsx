@@ -35,6 +35,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
   const email = route.params?.email ?? '';
   const password = route.params?.password ?? '';
   const dataPrivacyLink = route.params?.webUrl ?? '';
+  const from = route.params?.from ?? '';
 
   const {
     control,
@@ -68,6 +69,10 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
 
       if (!Object.keys(responseData.member?.preferences).length) {
         return navigation.navigate(ScreenName.ProfileUpdate);
+      }
+
+      if (from === 'loginModal') {
+        return navigation.popToTop();
       }
 
       // refreshUser param causes the home screen to update and no longer show the welcome component
@@ -112,6 +117,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
               rules={{ required: true }}
               errorMessage={errors.email && `${texts.profile.email} muss ausgefüllt werden`}
               control={control}
+              inputContainerStyle={styles.inputContainer}
             />
           </Wrapper>
 
@@ -133,7 +139,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
               errorMessage={errors.password && `${texts.profile.password} muss ausgefüllt werden`}
               control={control}
               inputStyle={isSecureTextEntry && styles.passwordInput}
-              inputContainerStyle={styles.passwordInputContainer}
+              inputContainerStyle={styles.inputContainer}
             />
           </Wrapper>
 
@@ -188,7 +194,7 @@ const styles = StyleSheet.create({
   passwordInput: {
     lineHeight: normalize(17)
   },
-  passwordInputContainer: {
+  inputContainer: {
     height: normalize(45)
   }
 });
