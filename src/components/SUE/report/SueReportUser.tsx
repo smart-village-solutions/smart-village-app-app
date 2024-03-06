@@ -2,13 +2,15 @@ import React, { useRef } from 'react';
 import { Controller } from 'react-hook-form';
 import { StyleSheet, View } from 'react-native';
 
-import { colors, normalize, texts } from '../../../config';
+import { colors, consts, normalize, texts } from '../../../config';
 import { Checkbox } from '../../Checkbox';
 import { RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
 
-export const SueReportUser = ({ control }: { control: any; errors: any }) => {
+const { EMAIL_REGEX } = consts;
+
+export const SueReportUser = ({ control, errors }: { control: any; errors: any }) => {
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const emailRef = useRef();
@@ -50,6 +52,14 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => {
           textContentType="emailAddress"
           control={control}
           ref={emailRef}
+          rules={{
+            required: false,
+            pattern: {
+              value: EMAIL_REGEX,
+              message: texts.sue.report.alerts.invalidMail
+            }
+          }}
+          errorMessage={errors.email && errors.email.message}
           onSubmitEditing={() => phoneRef.current?.focus()}
         />
 

@@ -186,7 +186,7 @@ export const SueReportLocation = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="zipCode"
-          label={`${texts.sue.report.zipCode} *`}
+          label={texts.sue.report.zipCode}
           placeholder={texts.sue.report.zipCode}
           maxLength={5}
           keyboardType="numeric"
@@ -201,7 +201,7 @@ export const SueReportLocation = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="city"
-          label={`${texts.sue.report.city} *`}
+          label={texts.sue.report.city}
           placeholder={texts.sue.report.city}
           control={control}
           textContentType="addressCity"
