@@ -80,7 +80,7 @@ export const Filter = ({ filterTypes, initialFilters, setQueryVariables }: Props
         accessibilityHint={a11yLabel.editHint}
         style={styles.button}
       >
-        <BoldText smallest primary>
+        <BoldText smal primary>
           {isCollapsed ? texts.filter.showFilter : texts.filter.hideFilter}
         </BoldText>
         <Icon.Filter size={normalize(24)} style={styles.icon} />
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end'
   },
   icon: {
-    paddingLeft: normalize(12)
+    paddingLeft: normalize(8)
   },
   noPaddingBottom: {
     paddingBottom: 0
