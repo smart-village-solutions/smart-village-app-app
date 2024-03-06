@@ -49,7 +49,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
     });
 
     return unsubscribe;
-  }, [navigation]);
+  }, [navigation, isLoading]);
 
   if (isLoading || contentLoading) {
     return null;
