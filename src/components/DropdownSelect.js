@@ -147,7 +147,8 @@ const styles = StyleSheet.create({
     borderRadius: normalize(8),
     borderWidth: normalize(1),
     justifyContent: 'space-between',
-    padding: normalize(14)
+    padding: normalize(14),
+    paddingVertical: normalize(8)
   },
   dropdownDropdown: {
     backgroundColor: colors.surface,

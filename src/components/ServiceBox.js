@@ -3,8 +3,9 @@ import styled, { css } from 'styled-components/native';
 import { normalize } from '../config';
 
 const flexBasis = (props) => {
-  const { orientation, bigTile } = props;
-  const numberOfTiles = orientation === 'landscape' ? 5 : 3;
+  const { orientation, bigTile, numberOfTiles: tilesConfig = {} } = props;
+  const { landscape = 5, portrait = 3 } = tilesConfig;
+  const numberOfTiles = orientation === 'landscape' ? landscape : portrait;
   const tileFactor = bigTile ? (orientation === 'landscape' ? 1.2 : 0.7) : 1;
 
   return 100 / (numberOfTiles + 0.3 * tileFactor);

@@ -3,6 +3,7 @@ import React from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, StyleSheet } from 'react-native';
+import { useQuery } from 'react-query';
 
 import {
   Button,
@@ -14,7 +15,12 @@ import {
   Wrapper
 } from '../../components';
 import { colors, consts, texts } from '../../config';
+import { storeProfileAuthToken } from '../../helpers';
+import { QUERY_TYPES } from '../../queries';
 import { CREATE_GENERIC_ITEM_MESSAGE } from '../../queries/genericItem';
+import { member } from '../../queries/profile';
+import { showLoginAgainAlert } from '../../screens/profile/ProfileScreen';
+import { ProfileMember, ScreenName } from '../../types';
 
 const { EMAIL_REGEX } = consts;
 
@@ -42,6 +48,21 @@ export const NoticeboardMessageForm = ({
   const consentForDataProcessingTex = route?.params?.consentForDataProcessingText ?? '';
   const genericItemId = data?.id ?? '';
 
+  const { data: memberData } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
+    onSuccess: (responseData: ProfileMember) => {
+      if (!responseData?.member) {
+        storeProfileAuthToken();
+
+        showLoginAgainAlert({
+          onPress: () =>
+            navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() })
+        });
+
+        return;
+      }
+    }
+  });
+
   const {
     control,
     formState: { errors },
@@ -49,9 +70,9 @@ export const NoticeboardMessageForm = ({
     reset: resetForm
   } = useForm({
     defaultValues: {
-      email: '',
+      email: memberData?.member?.email ?? '',
       message: '',
-      name: '',
+      name: `${memberData?.member?.first_name} ${memberData?.member?.last_name}` ?? '',
       phoneNumber: '',
       termsOfService: false
     }
