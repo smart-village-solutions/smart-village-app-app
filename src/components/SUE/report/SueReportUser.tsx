@@ -21,6 +21,7 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => {
           name="firstName"
           label={texts.sue.report.firstName}
           placeholder={texts.sue.report.firstName}
+          textContentType="givenName"
           control={control}
           ref={firstNameRef}
           onSubmitEditing={() => lastNameRef.current?.focus()}
@@ -32,6 +33,7 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => {
           name="lastName"
           label={texts.sue.report.lastName}
           placeholder={texts.sue.report.lastName}
+          textContentType="familyName"
           control={control}
           ref={lastNameRef}
           onSubmitEditing={() => emailRef.current?.focus()}
@@ -45,6 +47,7 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => {
           placeholder={texts.sue.report.email}
           keyboardType="email-address"
           autoCapitalize="none"
+          textContentType="emailAddress"
           control={control}
           ref={emailRef}
           onSubmitEditing={() => phoneRef.current?.focus()}
@@ -59,6 +62,7 @@ export const SueReportUser = ({ control }: { control: any; errors: any }) => {
           label={`${texts.sue.report.phone}`}
           placeholder={texts.sue.report.phone}
           keyboardType="phone-pad"
+          textContentType="telephoneNumber"
           control={control}
           ref={phoneRef}
         />
