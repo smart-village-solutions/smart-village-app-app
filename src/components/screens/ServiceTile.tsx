@@ -16,6 +16,7 @@ export type TServiceTile = {
   iconName?: ComponentProps<typeof IconSet>['name'];
   image: string;
   isVisible?: boolean;
+  numberOfTiles?: number;
   params?: any;
   routeName: string;
   tile?: string;
@@ -57,7 +58,12 @@ export const ServiceTile = ({
   const ToggleVisibilityIcon = isVisible ? Icon.Visible : Icon.Unvisible;
 
   return (
-    <ServiceBox orientation={orientation} dimensions={dimensions} bigTile={!!item.tile}>
+    <ServiceBox
+      orientation={orientation}
+      dimensions={dimensions}
+      bigTile={!!item.tile}
+      numberOfTiles={item?.numberOfTiles}
+    >
       <TouchableOpacity
         onPress={onPress}
         accessibilityLabel={

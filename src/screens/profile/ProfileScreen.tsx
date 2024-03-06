@@ -8,6 +8,7 @@ import { NetworkContext } from '../../NetworkProvider';
 import {
   LoadingSpinner,
   SafeAreaViewFlex,
+  ServiceTiles,
   TextListItem,
   VolunteerAvatar,
   Wrapper
@@ -102,6 +103,8 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
         </Wrapper>
 
         <Divider />
+
+        <ServiceTiles staticJsonName="profileService" />
       </ScrollView>
     </SafeAreaViewFlex>
   );
