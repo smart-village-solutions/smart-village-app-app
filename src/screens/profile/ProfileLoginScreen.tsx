@@ -35,6 +35,7 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
   const email = route.params?.email ?? '';
   const password = route.params?.password ?? '';
   const dataPrivacyLink = route.params?.webUrl ?? '';
+  const from = route.params?.from ?? '';
 
   const {
     control,
@@ -68,6 +69,10 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
 
       if (!Object.keys(responseData.member?.preferences).length) {
         return navigation.navigate(ScreenName.ProfileUpdate);
+      }
+
+      if (from === 'loginModal') {
+        return navigation.popToTop();
       }
 
       // refreshUser param causes the home screen to update and no longer show the welcome component

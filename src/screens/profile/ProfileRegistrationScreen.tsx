@@ -36,6 +36,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
   const [isSecureTextEntryConfirmation, setIsSecureTextEntryConfirmation] = useState(true);
   const [hasAcceptedDataPrivacy, setHasAcceptedDataPrivacy] = useState(false);
   const dataPrivacyLink = route.params?.webUrl ?? '';
+  const from = route.params?.from ?? '';
 
   const {
     control,
@@ -69,6 +70,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
 
           navigation.navigate(ScreenName.ProfileSignup, {
             email: registerData.email,
+            from,
             password: registerData.password,
             webUrl: dataPrivacyLink
           });
