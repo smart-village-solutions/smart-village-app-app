@@ -103,6 +103,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
               }}
               errorMessage={errors.email && errors.email.message}
               control={control}
+              inputContainerStyle={styles.inputContainer}
             />
           </Wrapper>
 
@@ -128,7 +129,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
               errorMessage={errors.password && errors.password.message}
               control={control}
               inputStyle={isSecureTextEntry && styles.passwordInput}
-              inputContainerStyle={styles.passwordInputContainer}
+              inputContainerStyle={styles.inputContainer}
             />
           </Wrapper>
 
@@ -155,7 +156,7 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
               errorMessage={errors.passwordConfirmation && errors.passwordConfirmation.message}
               control={control}
               inputStyle={isSecureTextEntryConfirmation && styles.passwordInput}
-              inputContainerStyle={styles.passwordInputContainer}
+              inputContainerStyle={styles.inputContainer}
             />
           </Wrapper>
 
@@ -217,7 +218,7 @@ const styles = StyleSheet.create({
   passwordInput: {
     lineHeight: normalize(17)
   },
-  passwordInputContainer: {
+  inputContainer: {
     height: normalize(45)
   }
 });
