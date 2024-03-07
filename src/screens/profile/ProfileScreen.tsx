@@ -6,6 +6,7 @@ import { useQuery } from 'react-query';
 
 import { NetworkContext } from '../../NetworkProvider';
 import {
+  Button,
   LoadingSpinner,
   SafeAreaViewFlex,
   ServiceTiles,
@@ -105,6 +106,15 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
         <Divider />
 
         <ServiceTiles staticJsonName="profileService" />
+        <Wrapper>
+          <Button
+            title="Abmelden"
+            onPress={() => {
+              storeProfileAuthToken();
+              navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });
+            }}
+          />
+        </Wrapper>
       </ScrollView>
     </SafeAreaViewFlex>
   );
