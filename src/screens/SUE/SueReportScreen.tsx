@@ -210,11 +210,17 @@ export const SueReportScreen = ({
           const images = JSON.parse(getValues().images);
 
           let totalSize = 0;
-          images.map(async ({ size }: { size: number }) => {
+          const sizeOfImage = images.some(({ size }: { size: number }) => {
             totalSize += size;
+            return size >= 10485760;
           });
 
-          /* the server does not support files more than 30MB in size. */
+          /* the server does not support files more than 10MB in size. */
+          if (sizeOfImage) {
+            return texts.sue.report.alerts.imageGreater10MBError;
+          }
+
+          /* the server does not support files larger than 30 MB in total of all files. */
           if (totalSize >= 31457280) {
             return texts.sue.report.alerts.imagesGreater30MBError;
           }
