@@ -84,7 +84,7 @@ export const Filter = ({ filterTypes, initialFilters, setQueryVariables }: Props
           {isCollapsed ? texts.filter.showFilter : texts.filter.hideFilter}
         </BoldText>
         <Icon.Filter
-          size={normalize(24)}
+          size={normalize(16)}
           style={styles.icon}
           color={!isCollapsed ? colors.primary : colors.darkText}
         />
