@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackScreenProps } from '@react-navigation/stack';
 import * as Location from 'expo-location';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue, useForm } from 'react-hook-form';
 import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
@@ -119,6 +120,20 @@ export const SueReportScreen = ({
   const scrollViewContentRef = useRef(null);
 
   const keyboardHeight = useKeyboardHeight();
+
+  useEffect(() => {
+    // this screen is set to portrait mode because half of the screen is visible in landscape
+    // mode when viewing pictures in large screen mode
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('blur', () => {
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.DEFAULT);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const {
     control,
