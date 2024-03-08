@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackScreenProps } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { UseFormGetValues, UseFormSetValue, useForm } from 'react-hook-form';
+import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useForm, UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useMutation } from 'react-query';
@@ -27,6 +27,7 @@ import { colors, device, normalize, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
 import { useKeyboardHeight, useStaticContent } from '../../hooks';
 import { postRequests } from '../../queries/SUE';
+import { SettingsContext } from '../../SettingsProvider';
 
 export const SUE_REPORT_VALUES = 'sueReportValues';
 
@@ -47,6 +48,7 @@ export type TValues = {
 
 const Content = (
   content: 'category' | 'description' | 'location' | 'user',
+  requiredInputs: string[],
   serviceCode: string,
   setServiceCode: any,
   control: any,
@@ -58,7 +60,7 @@ const Content = (
 ) => {
   switch (content) {
     case 'description':
-      return <SueReportDescription control={control} errors={errors} />;
+      return <SueReportDescription control={control} requiredInputs={requiredInputs} />;
     case 'location':
       return (
         <SueReportLocation
@@ -67,10 +69,11 @@ const Content = (
           setSelectedPosition={setSelectedPosition}
           setValue={setValue}
           getValues={getValues}
+          requiredInputs={requiredInputs}
         />
       );
     case 'user':
-      return <SueReportUser control={control} errors={errors} />;
+      return <SueReportUser control={control} errors={errors} requiredInputs={requiredInputs} />;
     default:
       return <SueReportServices serviceCode={serviceCode} setServiceCode={setServiceCode} />;
   }
@@ -87,15 +90,16 @@ type TReports = {
   lastName: string;
   phone: string;
   street: string;
-  title: string;
   termsOfService: string;
+  title: string;
   zipCode: string;
 };
 
 type TProgress = {
-  title: string;
   content: 'category' | 'description' | 'location' | 'user';
+  requiredInputs: keyof TReports[];
   serviceCode: string;
+  title: string;
 };
 
 export const SueReportScreen = ({
@@ -107,6 +111,15 @@ export const SueReportScreen = ({
     name: 'sueReportProgress',
     type: 'json'
   });
+
+  const { globalSettings } = useContext(SettingsContext);
+  const { settings = {} } = globalSettings;
+  const { limitOfArea = {} } = settings;
+  const {
+    city: limitOfCity = '',
+    zipCodes: limitOfZipCodes = [],
+    errorMessage = texts.sue.report.alerts.limitOfArea(limitOfArea.city || '')
+  } = limitOfArea;
 
   const [currentProgress, setCurrentProgress] = useState(0);
   const [serviceCode, setServiceCode] = useState<string>();
@@ -246,8 +259,17 @@ export const SueReportScreen = ({
           return texts.sue.report.alerts.street;
         }
 
-        if (getValues().city && !getValues().zipCode) {
-          return texts.sue.report.alerts.zipCode;
+        if (getValues().city) {
+          if (!getValues().zipCode) {
+            return texts.sue.report.alerts.zipCode;
+          }
+
+          if (
+            !!limitOfCity &&
+            limitOfCity.toLocaleLowerCase() !== getValues().city.toLocaleLowerCase()
+          ) {
+            return errorMessage;
+          }
         }
 
         if (getValues().zipCode) {
@@ -257,6 +279,10 @@ export const SueReportScreen = ({
 
           if (!getValues().city) {
             return texts.sue.report.alerts.city;
+          }
+
+          if (!!limitOfZipCodes.length && !limitOfZipCodes.includes(getValues().zipCode)) {
+            return errorMessage;
           }
         }
         break;
@@ -277,6 +303,14 @@ export const SueReportScreen = ({
         break;
       default:
         break;
+    }
+
+    const isAnyInputMissing = data?.[currentProgress]?.requiredInputs?.some(
+      (inputKey: keyof TValues) => !getValues()[inputKey]
+    );
+
+    if (isAnyInputMissing) {
+      return texts.sue.report.alerts.missingAnyInput;
     }
   };
   /* eslint-enable complexity */
@@ -419,6 +453,7 @@ export const SueReportScreen = ({
               ) : (
                 Content(
                   item.content,
+                  item.requiredInputs,
                   serviceCode,
                   setServiceCode,
                   control,

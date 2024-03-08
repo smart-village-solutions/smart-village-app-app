@@ -10,7 +10,15 @@ import { Input } from '../../form';
 
 const { EMAIL_REGEX } = consts;
 
-export const SueReportUser = ({ control, errors }: { control: any; errors: any }) => {
+export const SueReportUser = ({
+  control,
+  errors,
+  requiredInputs
+}: {
+  control: any;
+  errors: any;
+  requiredInputs: string[];
+}) => {
   const firstNameRef = useRef();
   const lastNameRef = useRef();
   const emailRef = useRef();
@@ -21,7 +29,9 @@ export const SueReportUser = ({ control, errors }: { control: any; errors: any }
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="firstName"
-          label={texts.sue.report.firstName}
+          label={`${texts.sue.report.firstName} ${
+            requiredInputs?.includes('firstName') ? '*' : ''
+          }`}
           placeholder={texts.sue.report.firstName}
           textContentType="givenName"
           control={control}
@@ -33,7 +43,7 @@ export const SueReportUser = ({ control, errors }: { control: any; errors: any }
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="lastName"
-          label={texts.sue.report.lastName}
+          label={`${texts.sue.report.lastName} ${requiredInputs?.includes('lastName') ? '*' : ''}`}
           placeholder={texts.sue.report.lastName}
           textContentType="familyName"
           control={control}
@@ -45,7 +55,7 @@ export const SueReportUser = ({ control, errors }: { control: any; errors: any }
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="email"
-          label={texts.sue.report.email}
+          label={`${texts.sue.report.email} ${requiredInputs?.includes('email') ? '*' : ''}`}
           placeholder={texts.sue.report.email}
           keyboardType="email-address"
           autoCapitalize="none"
@@ -69,7 +79,7 @@ export const SueReportUser = ({ control, errors }: { control: any; errors: any }
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="phone"
-          label={`${texts.sue.report.phone}`}
+          label={`${texts.sue.report.phone} ${requiredInputs?.includes('phone') ? '*' : ''}`}
           placeholder={texts.sue.report.phone}
           keyboardType="phone-pad"
           textContentType="telephoneNumber"
