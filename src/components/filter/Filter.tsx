@@ -4,7 +4,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import { Divider } from 'react-native-elements';
 
-import { Icon, consts, device, normalize, texts } from '../../config';
+import { Icon, colors, consts, device, normalize, texts } from '../../config';
 
 import { Button } from './../Button';
 import { BoldText } from './../Text';
@@ -80,10 +80,14 @@ export const Filter = ({ filterTypes, initialFilters, setQueryVariables }: Props
         accessibilityHint={a11yLabel.editHint}
         style={styles.button}
       >
-        <BoldText smal primary>
+        <BoldText small primary={!isCollapsed}>
           {isCollapsed ? texts.filter.showFilter : texts.filter.hideFilter}
         </BoldText>
-        <Icon.Filter size={normalize(24)} style={styles.icon} />
+        <Icon.Filter
+          size={normalize(24)}
+          style={styles.icon}
+          color={!isCollapsed ? colors.primary : colors.darkText}
+        />
       </TouchableOpacity>
 
       <Collapsible collapsed={isCollapsed}>
