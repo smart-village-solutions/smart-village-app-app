@@ -47,6 +47,7 @@ export type TValues = {
 
 const Content = (
   content: 'category' | 'description' | 'location' | 'user',
+  requiredInputs: string[],
   serviceCode: string,
   setServiceCode: any,
   control: any,
@@ -58,7 +59,9 @@ const Content = (
 ) => {
   switch (content) {
     case 'description':
-      return <SueReportDescription control={control} errors={errors} />;
+      return (
+        <SueReportDescription control={control} errors={errors} requiredInputs={requiredInputs} />
+      );
     case 'location':
       return (
         <SueReportLocation
@@ -67,10 +70,11 @@ const Content = (
           setSelectedPosition={setSelectedPosition}
           setValue={setValue}
           getValues={getValues}
+          requiredInputs={requiredInputs}
         />
       );
     case 'user':
-      return <SueReportUser control={control} errors={errors} />;
+      return <SueReportUser control={control} errors={errors} requiredInputs={requiredInputs} />;
     default:
       return <SueReportServices serviceCode={serviceCode} setServiceCode={setServiceCode} />;
   }
@@ -87,15 +91,16 @@ type TReports = {
   lastName: string;
   phone: string;
   street: string;
-  title: string;
   termsOfService: string;
+  title: string;
   zipCode: string;
 };
 
 type TProgress = {
-  title: string;
   content: 'category' | 'description' | 'location' | 'user';
+  requiredInputs: TValues[];
   serviceCode: string;
+  title: string;
 };
 
 export const SueReportScreen = ({
@@ -280,6 +285,14 @@ export const SueReportScreen = ({
       default:
         break;
     }
+
+    const isAnyInputMissing = data?.[currentProgress]?.requiredInputs?.some(
+      (inputKey) => !getValues()[inputKey]
+    );
+
+    if (isAnyInputMissing) {
+      return texts.sue.report.alerts.missingAnyInput;
+    }
   };
   /* eslint-enable complexity */
 
@@ -421,6 +434,7 @@ export const SueReportScreen = ({
               ) : (
                 Content(
                   item.content,
+                  item.requiredInputs,
                   serviceCode,
                   setServiceCode,
                   control,

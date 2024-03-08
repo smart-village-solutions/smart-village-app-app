@@ -9,7 +9,13 @@ import { Input } from '../../form';
 
 const { IMAGE_SELECTOR_TYPES, IMAGE_SELECTOR_ERROR_TYPES } = consts;
 
-export const SueReportDescription = ({ control }: { control: any; errors: any }) => {
+export const SueReportDescription = ({
+  control,
+  requiredInputs
+}: {
+  control: any;
+  requiredInputs: string[];
+}) => {
   const titleRef = useRef();
   const descriptionRef = useRef();
 
@@ -18,7 +24,7 @@ export const SueReportDescription = ({ control }: { control: any; errors: any })
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="title"
-          label={`${texts.sue.report.title} *`}
+          label={`${texts.sue.report.title} ${requiredInputs?.includes('title') ? '*' : ''}`}
           placeholder={texts.sue.report.title}
           control={control}
           ref={titleRef}
@@ -29,7 +35,9 @@ export const SueReportDescription = ({ control }: { control: any; errors: any })
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="description"
-          label={texts.sue.report.description}
+          label={`${texts.sue.report.description} ${
+            requiredInputs?.includes('description') ? '*' : ''
+          }`}
           placeholder={texts.sue.report.description}
           multiline
           control={control}

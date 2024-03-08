@@ -959,6 +959,7 @@ export const texts = {
         limitOfArea: (city) =>
           `Leider kann die Sag's uns Einfach nur Standorte der ${city} nutzen.`,
         location: 'Bitte wählen Sie einen Ort auf der Karte aus.',
+        missingAnyInput: 'Bitte füllen Sie alle Pflichtfelder aus',
         no: 'Nein',
         myLocation: 'Möchten Sie Ihren aktuellen Standort verwenden?',
         serviceCode: 'Bitte wählen Sie aus, um welches Thema es in dem Bericht geht.',
