@@ -19,18 +19,21 @@ import { Input } from '../../form';
 import { Map } from '../../map';
 import { getLocationMarker } from '../../settings';
 
+/* eslint-disable complexity */
 export const SueReportLocation = ({
   control,
+  getValues,
+  requiredInputs,
   selectedPosition,
   setSelectedPosition,
-  setValue,
-  getValues
+  setValue
 }: {
   control: any;
+  getValues: UseFormGetValues<TValues>;
+  requiredInputs: string[];
   selectedPosition: Location.LocationObjectCoords | undefined;
   setSelectedPosition: (position: Location.LocationObjectCoords | undefined) => void;
   setValue: UseFormSetValue<TValues>;
-  getValues: UseFormGetValues<TValues>;
 }) => {
   const { locationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
@@ -160,7 +163,7 @@ export const SueReportLocation = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="street"
-          label={texts.sue.report.street}
+          label={`${texts.sue.report.street} ${requiredInputs?.includes('street') ? '*' : ''}`}
           placeholder={texts.sue.report.street}
           textContentType="streetAddressLine1"
           control={control}
@@ -173,7 +176,9 @@ export const SueReportLocation = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="houseNumber"
-          label={texts.sue.report.houseNumber}
+          label={`${texts.sue.report.houseNumber} ${
+            requiredInputs?.includes('houseNumber') ? '*' : ''
+          }`}
           placeholder={texts.sue.report.houseNumber}
           textContentType="off"
           control={control}
@@ -186,7 +191,7 @@ export const SueReportLocation = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="zipCode"
-          label={texts.sue.report.zipCode}
+          label={`${texts.sue.report.zipCode} ${requiredInputs?.includes('zipCode') ? '*' : ''}`}
           placeholder={texts.sue.report.zipCode}
           maxLength={5}
           keyboardType="numeric"
@@ -201,7 +206,7 @@ export const SueReportLocation = ({
       <Wrapper style={styles.noPaddingTop}>
         <Input
           name="city"
-          label={texts.sue.report.city}
+          label={`${texts.sue.report.city} ${requiredInputs?.includes('city') ? '*' : ''}`}
           placeholder={texts.sue.report.city}
           control={control}
           textContentType="addressCity"
@@ -212,6 +217,7 @@ export const SueReportLocation = ({
     </View>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   container: {
