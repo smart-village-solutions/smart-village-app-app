@@ -192,10 +192,10 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                   },
                   {
                     type: FILTER_TYPES.DROPDOWN,
-                    label: 'Kategorie',
+                    label: 'Kategorie auswählen',
                     name: 'service_code',
                     data: services,
-                    placeholder: 'Kategorie auswählen'
+                    placeholder: 'Alle Kategorien'
                   },
                   {
                     type: FILTER_TYPES.SUE.STATUS,
@@ -208,7 +208,7 @@ export const SueListScreen = ({ navigation, route }: Props) => {
                     label: 'Sortieren nach',
                     name: 'sortBy',
                     data: SORT_OPTIONS,
-                    placeholder: 'Art auswählen'
+                    placeholder: 'Alle Sortierarten'
                   }
                 ]}
                 initialFilters={initialQueryVariables}
