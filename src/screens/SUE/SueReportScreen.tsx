@@ -184,7 +184,15 @@ export const SueReportScreen = ({
       return Alert.alert(texts.sue.report.alerts.hint, alertTextGeneratorForMissingData());
     }
 
-    const addressString = `${sueReportData.street}; ${sueReportData.houseNumber}; ${sueReportData.zipCode}; ${sueReportData.city}`;
+    let addressString;
+    if (
+      !!sueReportData.street ||
+      !!sueReportData.houseNumber ||
+      !!sueReportData.zipCode ||
+      !!sueReportData.city
+    ) {
+      addressString = `${sueReportData.street}; ${sueReportData.houseNumber}; ${sueReportData.zipCode}; ${sueReportData.city}`;
+    }
 
     const formData = {
       addressString,
