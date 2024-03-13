@@ -127,6 +127,7 @@ export const SueMapScreen = ({ navigation, route }: Props) => {
     <SafeAreaViewFlex>
       <Map
         isMultipleMarkersMap
+        clusteringEnabled={true}
         locations={mapMarkers}
         mapStyle={styles.map}
         onMarkerPress={(id) => {
