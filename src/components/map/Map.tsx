@@ -1,7 +1,8 @@
 import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
-import MapView, { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
+import MapView from 'react-native-map-clustering';
+import { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 
 import { colors, device, Icon, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
@@ -10,6 +11,7 @@ import { MapMarker } from '../../types';
 import { RegularText } from '../Text';
 
 type Props = {
+  clusteringEnabled?: boolean;
   geometryTourData?: LatLng[];
   isMaximizeButtonVisible?: boolean;
   isMultipleMarkersMap?: boolean;
@@ -28,6 +30,7 @@ type Props = {
 };
 
 const MARKER_ICON_SIZE = normalize(40);
+const CIRCLE_SIZES = [60, 50, 40, 30];
 
 const MapIcon = ({
   iconColor,
@@ -43,8 +46,54 @@ const MapIcon = ({
   return <MarkerIcon color={iconColor} size={iconSize} />;
 };
 
+type TCluster = {
+  clusterColor: string;
+  geometry: { coordinates: [number, number] };
+  id: string;
+  onPress: () => void;
+  properties: { point_count: number };
+};
+
+const renderCluster = (cluster: TCluster) => {
+  const { clusterColor: backgroundColor, geometry, id, onPress, properties = {} } = cluster;
+  const { point_count: points } = properties;
+
+  return (
+    <Marker
+      key={`cluster-${id}`}
+      coordinate={{
+        longitude: geometry.coordinates[0],
+        latitude: geometry.coordinates[1]
+      }}
+      style={styles.clusterMarker}
+      onPress={onPress}
+    >
+      {CIRCLE_SIZES.map((size, index) => (
+        <View
+          key={`circle-${index}`}
+          style={[
+            styles.clusterCircle,
+            {
+              backgroundColor,
+              borderRadius: normalize(size / 2),
+              height: normalize(size),
+              opacity: 0.2 * (index + 1),
+              width: normalize(size)
+            }
+          ]}
+        >
+          <RegularText lightest center smallest>
+            {points}
+          </RegularText>
+        </View>
+      ))}
+    </Marker>
+  );
+};
+
 /* eslint-disable complexity */
 export const Map = ({
+  clusteringEnabled = false,
   geometryTourData,
   isMaximizeButtonVisible = false,
   isMultipleMarkersMap = false,
@@ -99,6 +148,10 @@ export const Map = ({
   return (
     <View style={[styles.container, style]}>
       <MapView
+        clusterColor={colors.primary}
+        clusterFontFamily="regular"
+        clusteringEnabled={clusteringEnabled}
+        renderCluster={renderCluster}
         initialRegion={initialRegion}
         region={updatedRegion}
         mapType={device.platform === 'android' ? MAP_TYPES.NONE : MAP_TYPES.STANDARD}
@@ -218,6 +271,17 @@ export const Map = ({
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  clusterCircle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute'
+  },
+  clusterMarker: {
+    alignItems: 'center',
+    height: normalize(60),
+    justifyContent: 'center',
+    width: normalize(60)
+  },
   container: {
     alignItems: 'center',
     backgroundColor: colors.surface,
