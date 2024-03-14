@@ -119,6 +119,7 @@
     "react-native-snap-carousel": "4.0.0-beta.6",
     "react-native-svg": "13.9.0",
     "react-native-tab-view": "^3.5.2",
+    "react-native-version-check-expo": "^3.4.7",
     "react-native-web": "~0.19.6",
     "react-native-webview": "13.2.2",
     "react-query": "^3.34.14",

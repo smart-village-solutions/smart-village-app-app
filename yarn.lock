@@ -1399,7 +1399,7 @@
     node-forge "^1.2.1"
     nullthrows "^1.1.1"
 
-"@expo/config-plugins@7.2.5", "@expo/config-plugins@^4.0.16", "@expo/config-plugins@~7.2.0", "@expo/config-plugins@~7.2.2":
+"@expo/config-plugins@7.2.5", "@expo/config-plugins@^4.0.16", "@expo/config-plugins@~7.2.0", "@expo/config-plugins@~7.2.2", "@expo/config-plugins@~7.3.0":
   version "7.2.5"
   resolved "https://registry.yarnpkg.com/@expo/config-plugins/-/config-plugins-7.2.5.tgz#b15f22878975fdc4ddcfa8cdc971937ddc4c0249"
   integrity sha512-w+5ccu1IxBHgyQk9CPFKLZOk8yZQEyTjbJwOzESK1eR7QwosbcsLkN1c1WWUZYiCXwORu3UTwJYll4+X2xxJhQ==
@@ -1432,6 +1432,23 @@
   dependencies:
     "@babel/code-frame" "~7.10.4"
     "@expo/config-plugins" "~7.2.0"
+    "@expo/config-types" "^49.0.0-alpha.1"
+    "@expo/json-file" "^8.2.37"
+    getenv "^1.0.0"
+    glob "7.1.6"
+    require-from-string "^2.0.2"
+    resolve-from "^5.0.0"
+    semver "7.5.3"
+    slugify "^1.3.4"
+    sucrase "^3.20.0"
+
+"@expo/config@~8.2.0":
+  version "8.2.1"
+  resolved "https://registry.yarnpkg.com/@expo/config/-/config-8.2.1.tgz#ca84025f8869add12c13a1eb0615cc59b66523a2"
+  integrity sha512-15XjV0WrSb5hChRM5pAEK5uyh55njfgFOEZpov3YKYBeMd9D6QT/azWWqnaFuuCWKzgzyxD9HaYgGo5VbnOU1g==
+  dependencies:
+    "@babel/code-frame" "~7.10.4"
+    "@expo/config-plugins" "~7.3.0"
     "@expo/config-types" "^49.0.0-alpha.1"
     "@expo/json-file" "^8.2.37"
     getenv "^1.0.0"
@@ -5309,6 +5326,14 @@ expo-clipboard@~4.3.0:
   resolved "https://registry.yarnpkg.com/expo-clipboard/-/expo-clipboard-4.3.1.tgz#ce6ed35ae31c7fc1aeadb005b8eb9b39a8bb9b40"
   integrity sha512-WIsjvAsr2+/NZRa84mKxjui1EdPpdKbQIC2LN/KMBNuT7g4GQYL3oo9WO9G/C7doKQ7f7pnfdvO3N6fUnoRoJw==
 
+expo-constants@^14.0.2:
+  version "14.5.1"
+  resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-14.5.1.tgz#2b996604dc5ec642d29fc16380daa0a61a66472d"
+  integrity sha512-06OKXQmKI0vuje++6lm7w1kO3rKsZAHio/4d9hwQuVAtExJ6RM92BnpzkDAV16ZheVN/FHKzNyY1BYLqXfujMw==
+  dependencies:
+    "@expo/config" "~8.2.0"
+    uuid "^3.3.2"
+
 expo-constants@~14.4.2:
   version "14.4.2"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-14.4.2.tgz#cac5e8b524069545739b8d8595ce96cc5be6578c"
@@ -5418,6 +5443,13 @@ expo-linking@~5.0.2:
     invariant "^2.2.4"
     qs "^6.11.0"
     url-parse "^1.5.9"
+
+expo-localization@^14.0.0:
+  version "14.8.3"
+  resolved "https://registry.yarnpkg.com/expo-localization/-/expo-localization-14.8.3.tgz#c1efa8a314b6bfe38425bbc6bcce9cf9b84a802d"
+  integrity sha512-leg1e+7ocUgfNWa7Men/g16waXtdSpBMR9tCdv3CG4wztmFU8C+87VAnnVkvHi4CCUkTLzhP3y0FcE6KIWTwdw==
+  dependencies:
+    rtl-detect "^1.0.2"
 
 expo-localization@~14.3.0:
   version "14.3.0"
@@ -7740,10 +7772,25 @@ lodash.isequal@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
   integrity sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==
 
+lodash.isfunction@^3.0.9:
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/lodash.isfunction/-/lodash.isfunction-3.0.9.tgz#06de25df4db327ac931981d1bdb067e5af68d051"
+  integrity sha512-AirXNj15uRIMMPihnkInB4i3NHeb4iBtNg9WRWuK2o31S+ePwwNmDPaTL3o7dTJ+VXNZim7rFs4rxN4YU1oUJw==
+
+lodash.isnil@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/lodash.isnil/-/lodash.isnil-4.0.0.tgz#49e28cd559013458c814c5479d3c663a21bfaa6c"
+  integrity sha512-up2Mzq3545mwVnMhTDMdfoG1OurpA/s5t88JmQX809eH3C8491iu2sfKhTfhQtKY78oPNhiaHJUpT/dUDAAtng==
+
 lodash.merge@^4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
+
+lodash.pick@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/lodash.pick/-/lodash.pick-4.4.0.tgz#52f05610fff9ded422611441ed1fc123a03001b3"
+  integrity sha512-hXt6Ul/5yWjfklSGvLQl8vM//l3FtyHZeuelpzK6mm99pNvN9yTDruNZPEJZD1oWrqo+izBmB7oUfWgcCX7s4Q==
 
 lodash.throttle@^4.1.1:
   version "4.1.1"
@@ -9590,6 +9637,25 @@ react-native-typing-animation@0.1.7:
   resolved "https://registry.yarnpkg.com/react-native-typing-animation/-/react-native-typing-animation-0.1.7.tgz#8f2cf08d9400ae543a110292eb7d71523dda5528"
   integrity sha512-4H3rF9M+I2yAZpYJcY0Mb29TXkn98QK12rrKSY6LZj1BQD9NNmRZuNXzwX4XHapsIz+N/J8M3p27FOQPbfzqeg==
 
+react-native-version-check-expo@^3.4.7:
+  version "3.4.7"
+  resolved "https://registry.yarnpkg.com/react-native-version-check-expo/-/react-native-version-check-expo-3.4.7.tgz#17964865248957abcdaf620b0e11e1ff4bce11dd"
+  integrity sha512-JK2NmEVTrXz3mg9gBDrw51C1hfZCH1d1d1gUM3zs04gy6PY0WtFh9/mqYChUhxuwbR1i+a5bB783hmBQsoqCww==
+  dependencies:
+    expo-constants "^14.0.2"
+    expo-localization "^14.0.0"
+    react-native-version-check "^3.4.7"
+
+react-native-version-check@^3.4.7:
+  version "3.4.7"
+  resolved "https://registry.yarnpkg.com/react-native-version-check/-/react-native-version-check-3.4.7.tgz#199d819b95050e874c24f044df79ee2b6bfd83ae"
+  integrity sha512-fkUFaKTiT9DcQSigyTTFcRpClehQlo7MBF1odmX617oFr7zOceUGx6A3bm2GjnfECBsQZoX3WyEBbtdRQlqi2Q==
+  dependencies:
+    lodash.isfunction "^3.0.9"
+    lodash.isnil "^4.0.0"
+    lodash.pick "^4.4.0"
+    semver "^6.1.1"
+
 react-native-web@~0.19.6:
   version "0.19.7"
   resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.19.7.tgz#feac895c1390c91072cbfb53272f3bb92227ca3c"
@@ -10112,7 +10178,7 @@ semver@^5.5.0, semver@^5.6.0:
   resolved "https://registry.yarnpkg.com/semver/-/semver-5.7.2.tgz#48d55db737c3287cd4835e17fa13feace1c41ef8"
   integrity sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==
 
-semver@^6.0.0, semver@^6.3.0, semver@^6.3.1:
+semver@^6.0.0, semver@^6.1.1, semver@^6.3.0, semver@^6.3.1:
   version "6.3.1"
   resolved "https://registry.yarnpkg.com/semver/-/semver-6.3.1.tgz#556d2ef8689146e46dcea4bfdd095f3434dffcb4"
   integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
