@@ -24,7 +24,8 @@ import {
   useMatomoTrackScreenView,
   usePermanentFilter,
   usePushNotifications,
-  useStaticContent
+  useStaticContent,
+  useVersionCheck
 } from '../hooks';
 import { HOME_REFRESH_EVENT } from '../hooks/HomeRefresh';
 import { NetworkContext } from '../NetworkProvider';
@@ -229,6 +230,8 @@ export const HomeScreen = ({ navigation, route }) => {
     undefined,
     globalSettings?.settings?.pushNotifications
   );
+
+  useVersionCheck();
 
   const { data: staticContentListData, refetch: staticContentListRefetch } = useStaticContent({
     refreshTimeKey: `publicJsonFile-${staticContentName}`,
