@@ -8,7 +8,7 @@ import { RegularText } from '../../Text';
 import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
 
-const { EMAIL_REGEX } = consts;
+const { EMAIL_REGEX, PHONE_NUMBER_REGEX } = consts;
 
 export const SueReportUser = ({
   control,
@@ -85,6 +85,14 @@ export const SueReportUser = ({
           textContentType="telephoneNumber"
           control={control}
           ref={phoneRef}
+          rules={{
+            required: false,
+            pattern: {
+              value: PHONE_NUMBER_REGEX,
+              message: texts.sue.report.alerts.invalidPhone
+            }
+          }}
+          errorMessage={errors.phone && errors.phone.message}
         />
       </Wrapper>
 

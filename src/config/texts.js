@@ -956,6 +956,7 @@ export const texts = {
           title: 'Bildquelle auswählen'
         },
         invalidMail: 'Die eingegebene E-Mail-Adresse ist nicht gültig.',
+        invalidPhone: 'Die eingegebene Telefonnummer ist nicht gültig.',
         limitOfArea: (city) =>
           `Leider kann die Sag's uns Einfach nur Standorte der ${city} nutzen.`,
         location: 'Bitte wählen Sie einen Ort auf der Karte aus.',

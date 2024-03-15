@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StackScreenProps } from '@react-navigation/stack';
 import * as Location from 'expo-location';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import parsePhoneNumber from 'libphonenumber-js';
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useForm, UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
@@ -200,6 +201,7 @@ export const SueReportScreen = ({
       long: selectedPosition?.longitude,
       serviceCode,
       ...sueReportData,
+      phone: parsePhoneNumber(sueReportData.phone, 'DE')?.formatInternational(),
       description: sueReportData.description || '-'
     };
 
