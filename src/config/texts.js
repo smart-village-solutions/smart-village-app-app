@@ -1068,6 +1068,12 @@ export const texts = {
     start: 'Tourbeginn',
     tour: 'Tourverlauf'
   },
+  updateAlert: {
+    updateNow: 'Jetzt aktualisieren',
+    updateRequiredMessage:
+      'Hey! Wir haben eine neue Version der App veröffentlicht. Aktualisieren Sie jetzt, um von den neuesten Verbesserungen zu profitieren.',
+    updateRequiredTitle: 'Aktualisierung erforderlich'
+  },
   volunteer: {
     abort: 'Abbrechen',
     about: 'Über',
