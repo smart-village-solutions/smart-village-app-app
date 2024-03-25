@@ -1,12 +1,14 @@
 import _camelCase from 'lodash/camelCase';
 import _mapKeys from 'lodash/mapKeys';
 
-import { sueFetchObj, sueRequestsUrlWithServiceId } from '../../helpers';
+import { fetchSueEndpoints } from '../../helpers';
 
 export const requestsWithServiceRequestId = async (serviceRequestId: number) => {
-  const response = await (
-    await fetch(`${sueRequestsUrlWithServiceId(serviceRequestId)}`, sueFetchObj)
-  ).json();
+  const { sueFetchObj = {}, sueRequestsUrlWithServiceId = '' } = await fetchSueEndpoints(
+    serviceRequestId
+  );
+
+  const response = await (await fetch(`${sueRequestsUrlWithServiceId}`, sueFetchObj)).json();
 
   // convert media_url to JSON, as it is returned as a string by the API
   if (response?.media_url) {

@@ -1,10 +1,12 @@
 import _camelCase from 'lodash/camelCase';
 import _mapKeys from 'lodash/mapKeys';
 
-import { apiKey, jurisdictionId, sueFetchObj, suePostRequest, sueRequestsUrl } from '../../helpers';
+import { fetchSueEndpoints } from '../../helpers';
 
 export const requests = async (queryVariables) => {
   const queryParams = new URLSearchParams(queryVariables);
+  const { sueFetchObj = {}, sueRequestsUrl = '' } = await fetchSueEndpoints();
+
   const response = await (
     await fetch(`${sueRequestsUrl}&${queryParams.toString()}`, sueFetchObj)
   ).json();
@@ -26,7 +28,9 @@ export const requests = async (queryVariables) => {
 
 /* eslint-disable complexity */
 export const postRequests = async (data: any) => {
+  const { apiKey = '', jurisdictionId = '', suePostRequest = '' } = await fetchSueEndpoints();
   const formData = new FormData();
+
   data?.addressString && formData.append('address_string', data.addressString);
   data?.description && formData.append('description', data.description);
   data?.email && formData.append('email', data.email);

@@ -1,24 +1,35 @@
-import * as appJson from '../../app.json';
-import { secrets } from '../config';
+import { storageHelper } from './storageHelper';
 
-const namespace = appJson.expo.slug as keyof typeof secrets;
-export const serverUrl = secrets[namespace]?.sue?.serverUrl;
-export const apiKey = secrets[namespace]?.sue?.apiKey;
-export const jurisdictionId = secrets[namespace]?.sue?.jurisdictionId;
+export const fetchSueEndpoints = async (serviceRequestId?: number) => {
+  const globalSettings = await storageHelper.globalSettings();
+  const { apiConfig = {} } = globalSettings?.settings?.sue || {};
 
-export const sueFetchObj = {
-  method: 'GET',
-  headers: {
-    accept: 'application/json',
-    api_key: apiKey
-  }
+  const { apiKey, jurisdictionId, serverUrl } = apiConfig[apiConfig?.whichApi] || apiConfig;
+
+  const sueFetchObj = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      api_key: apiKey
+    }
+  };
+
+  const suePostRequest = `${serverUrl}/requests`;
+  const suePrioritiesUrl = `${serverUrl}/priorities?jurisdiction_id=${jurisdictionId}`;
+  const sueRequestsUrl = `${serverUrl}/requests?jurisdiction_id=${jurisdictionId}`;
+  const sueRequestsUrlWithServiceId = `${serverUrl}/requests/${serviceRequestId}?jurisdiction_id=${jurisdictionId}`;
+  const sueServicesUrl = `${serverUrl}/services?jurisdiction_id=${jurisdictionId}`;
+  const sueStatusesUrl = `${serverUrl}/statuses?jurisdiction_id=${jurisdictionId}`;
+
+  return {
+    apiKey,
+    jurisdictionId,
+    sueFetchObj,
+    suePostRequest,
+    suePrioritiesUrl,
+    sueRequestsUrl,
+    sueRequestsUrlWithServiceId,
+    sueServicesUrl,
+    sueStatusesUrl
+  };
 };
-
-export const suePrioritiesUrl = `${serverUrl}/priorities?jurisdiction_id=${jurisdictionId}`;
-export const sueRequestsUrl = `${serverUrl}/requests?jurisdiction_id=${jurisdictionId}`;
-export const sueRequestsUrlWithServiceId = (serviceRequestId: number) =>
-  `${serverUrl}/requests/${serviceRequestId}?jurisdiction_id=${jurisdictionId}`;
-export const sueServicesUrl = `${serverUrl}/services?jurisdiction_id=${jurisdictionId}`;
-export const sueStatusesUrl = `${serverUrl}/statuses?jurisdiction_id=${jurisdictionId}`;
-
-export const suePostRequest = `${serverUrl}/requests`;
