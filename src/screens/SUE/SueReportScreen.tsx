@@ -115,7 +115,7 @@ export const SueReportScreen = ({
 
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
-  const { limitOfArea = {} } = settings;
+  const { limitOfArea = {} } = settings?.sue;
   const {
     city: limitOfCity = '',
     zipCodes: limitOfZipCodes = [],

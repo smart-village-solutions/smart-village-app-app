@@ -1,9 +1,11 @@
 import _camelCase from 'lodash/camelCase';
 import _mapKeys from 'lodash/mapKeys';
 
-import { sueFetchObj, suePrioritiesUrl } from '../../helpers';
+import { fetchSueEndpoints } from '../../helpers';
 
 export const priorities = async () => {
+  const { sueFetchObj = {}, suePrioritiesUrl = '' } = await fetchSueEndpoints();
+
   const response = await (await fetch(`${suePrioritiesUrl}`, sueFetchObj)).json();
 
   return new Promise((resolve) => {
