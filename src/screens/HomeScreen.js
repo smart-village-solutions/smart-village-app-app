@@ -198,7 +198,7 @@ export const HomeScreen = ({ navigation, route }) => {
   } = staticContentList;
   const { events: showVolunteerEvents = false } = hdvt;
   const [refreshing, setRefreshing] = useState(false);
-  const { state: excludeDataProviderIds } = usePermanentFilter();
+  const { excludeDataProviderIds, excludeMowasRegionalKeys } = usePermanentFilter();
 
   const interactionHandler = useCallback(
     (response) => {
@@ -281,7 +281,7 @@ export const HomeScreen = ({ navigation, route }) => {
       limit: limitNews,
       navigation,
       query: QUERY_TYPES.NEWS_ITEMS,
-      queryVariables: { limit: 3, excludeDataProviderIds },
+      queryVariables: { limit: 3, excludeDataProviderIds, excludeMowasRegionalKeys },
       showData: showNews
     },
     {
