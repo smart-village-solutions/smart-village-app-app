@@ -23,6 +23,16 @@ import { Input } from '../../form';
 import { Map } from '../../map';
 import { getLocationMarker } from '../../settings';
 
+enum SueStatus {
+  CLOSED = 'TICKET_STATUS_CLOSED',
+  IN_PROCESS = 'TICKET_STATUS_IN_PROCESS',
+  INVALID = 'TICKET_STATUS_INVALID',
+  OPEN = 'TICKET_STATUS_OPEN',
+  UNPROCESSED = 'TICKET_STATUS_UNPROCESSED',
+  WAIT_REQUESTOR = 'TICKET_STATUS_WAIT_REQUESTOR',
+  WAIT_THIRDPARTY = 'TICKET_STATUS_WAIT_THIRDPARTY'
+}
+
 /* eslint-disable complexity */
 export const SueReportLocation = ({
   control,
@@ -58,18 +68,22 @@ export const SueReportLocation = ({
   const cityInputRef = useRef();
 
   const queryVariables = {
-    status:
-      'TICKET_STATUS_UNPROCESSED,TICKET_STATUS_OPEN,TICKET_STATUS_IN_PROCESS,TICKET_STATUS_WAIT_REQUESTOR,TICKET_STATUS_WAIT_THIRDPARTY'
+    start_date: '1900-01-01T00:00:00+01:00',
+    status: `${SueStatus.UNPROCESSED},${SueStatus.OPEN},${SueStatus.IN_PROCESS},${SueStatus.WAIT_REQUESTOR},${SueStatus.WAIT_THIRDPARTY}`
   };
 
-  const { data, isLoading } = useQuery([QUERY_TYPES.SUE.REQUESTS, queryVariables], () =>
-    getQuery(QUERY_TYPES.SUE.REQUESTS)(queryVariables)
+  const { data, isLoading } = useQuery(
+    [QUERY_TYPES.SUE.REQUESTS, queryVariables],
+    () => getQuery(QUERY_TYPES.SUE.REQUESTS)(queryVariables),
+    {
+      cacheTime: 1000 * 60 * 60 * 24 // 24 hours
+    }
   );
 
   const mapMarkers = useMemo(
     () =>
       mapToMapMarkers(
-        parseListItemsFromQuery(QUERY_TYPES.SUE.REQUESTS, data, undefined, {
+        parseListItemsFromQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, data, undefined, {
           appDesignSystem
         }),
         statusViewColors,
