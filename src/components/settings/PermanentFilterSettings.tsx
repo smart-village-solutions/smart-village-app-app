@@ -20,7 +20,8 @@ export const PermanentFilterSettings = () => {
 
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp, refreshTime });
 
-  const { state: excludedDataProviderIds, dispatch } = usePermanentFilter();
+  const { excludeDataProviderIds: excludedDataProviderIds, dataProviderDispatch: dispatch } =
+    usePermanentFilter();
 
   const { data, loading } = useQuery(getQuery(QUERY_TYPES.NEWS_ITEMS_DATA_PROVIDER), {
     fetchPolicy
