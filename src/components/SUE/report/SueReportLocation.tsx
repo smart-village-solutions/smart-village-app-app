@@ -25,11 +25,9 @@ import { Map } from '../../map';
 import { getLocationMarker } from '../../settings';
 
 enum SueStatus {
-  CLOSED = 'TICKET_STATUS_CLOSED',
   IN_PROCESS = 'TICKET_STATUS_IN_PROCESS',
   INVALID = 'TICKET_STATUS_INVALID',
   OPEN = 'TICKET_STATUS_OPEN',
-  UNPROCESSED = 'TICKET_STATUS_UNPROCESSED',
   WAIT_REQUESTOR = 'TICKET_STATUS_WAIT_REQUESTOR',
   WAIT_THIRDPARTY = 'TICKET_STATUS_WAIT_THIRDPARTY'
 }
@@ -71,7 +69,7 @@ export const SueReportLocation = ({
 
   const queryVariables = {
     start_date: '1900-01-01T00:00:00+01:00',
-    status: `${SueStatus.UNPROCESSED},${SueStatus.OPEN},${SueStatus.IN_PROCESS},${SueStatus.WAIT_REQUESTOR},${SueStatus.WAIT_THIRDPARTY}`
+    status: Object.values(SueStatus).map((status) => status)
   };
 
   const { data, isLoading } = useQuery(
