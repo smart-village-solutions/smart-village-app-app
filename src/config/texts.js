@@ -824,7 +824,9 @@ export const texts = {
     },
     voucher: {
       home: 'TreueClub',
-      index: 'Neue Angebote'
+      index: 'Neue Angebote',
+      partner: 'Kooperationspartner',
+      qr: 'Code scannen'
     },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
