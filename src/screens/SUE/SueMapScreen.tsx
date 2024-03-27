@@ -39,7 +39,7 @@ type ItemProps = {
   title: string;
 };
 
-const mapToMapMarkers = (
+export const mapToMapMarkers = (
   items: ItemProps[],
   statusViewColors: Record<string, string | undefined>,
   statusTextColors: Record<string, string | undefined>
