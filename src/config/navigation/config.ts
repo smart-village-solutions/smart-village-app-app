@@ -12,6 +12,7 @@ export const navigationConfig = (navigationType: 'drawer' | 'tab') => {
   };
   const screens = {
     [ScreenName.EncounterUserDetail]: 'encounter',
+    [ScreenName.Detail]: 'detail',
     [ScreenName.Home]: '*'
   };
 

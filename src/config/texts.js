@@ -824,7 +824,9 @@ export const texts = {
     },
     voucher: {
       home: 'TreueClub',
-      index: 'Neue Angebote'
+      index: 'Neue Angebote',
+      partner: 'Kooperationspartner',
+      qr: 'Code scannen'
     },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
@@ -1171,6 +1173,12 @@ export const texts = {
     offersCategories: 'Angebote Kategorien',
     result: 'Ergebnis',
     results: 'Ergebnisse',
+    scannerScreen: {
+      errorBody:
+        'Beim Scannen des Codes ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      errorButton: 'Erneut versuchen',
+      errorTitle: 'Fehler'
+    },
     secret: 'Kundennummer'
   },
   wasteCalendar: {
