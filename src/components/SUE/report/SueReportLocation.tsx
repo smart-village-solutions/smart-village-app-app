@@ -1,4 +1,5 @@
 import * as Location from 'expo-location';
+import moment from 'moment';
 import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { Alert, StyleSheet, View } from 'react-native';
@@ -55,6 +56,7 @@ export const SueReportLocation = ({
   const { appDesignSystem } = globalSettings;
   const { sueStatus = {} } = appDesignSystem;
   const { statusViewColors = {}, statusTextColors = {} } = sueStatus;
+  const now = moment();
 
   const { position } = usePosition(systemPermission?.status !== Location.PermissionStatus.GRANTED);
   const { position: lastKnownPosition } = useLastKnownPosition(
@@ -76,7 +78,7 @@ export const SueReportLocation = ({
     [QUERY_TYPES.SUE.REQUESTS, queryVariables],
     () => getQuery(QUERY_TYPES.SUE.REQUESTS)(queryVariables),
     {
-      cacheTime: 1000 * 60 * 60 * 24 // 24 hours
+      cacheTime: moment().endOf('day').diff(now) // end of day
     }
   );
 
