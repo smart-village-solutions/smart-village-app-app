@@ -15,7 +15,7 @@ import {
   Wrapper
 } from '../../components';
 import { colors, texts } from '../../config';
-import { storeProfileAuthToken } from '../../helpers';
+import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
 import { ProfileMember, ScreenName } from '../../types';
@@ -46,6 +46,8 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
 
         return;
       }
+
+      storeProfileUserData(responseData);
     }
   });
 

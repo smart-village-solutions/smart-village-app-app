@@ -1,7 +1,9 @@
 import * as SecureStore from 'expo-secure-store';
 
+import { ProfileMember } from '../types';
+
 export const PROFILE_AUTH_TOKEN = 'PROFILE_AUTH_TOKEN';
-const PROFILE_CURRENT_USER_ID = 'PROFILE_CURRENT_USER_ID';
+const PROFILE_CURRENT_USER = 'PROFILE_CURRENT_USER';
 
 export const storeProfileAuthToken = (authToken?: string) => {
   if (authToken) {
@@ -27,28 +29,29 @@ export const profileAuthToken = async () => {
   return authToken;
 };
 
-export const storeProfileUserData = (userData?: { id: number }) => {
+export const storeProfileUserData = (userData?: ProfileMember) => {
   if (userData) {
-    SecureStore.setItemAsync(PROFILE_CURRENT_USER_ID, `${userData.id}`);
+    SecureStore.setItemAsync(PROFILE_CURRENT_USER, JSON.stringify(userData));
   } else {
-    SecureStore.deleteItemAsync(PROFILE_CURRENT_USER_ID);
+    SecureStore.deleteItemAsync(PROFILE_CURRENT_USER);
   }
 };
 
 export const profileUserData = async (): Promise<{
-  currentUserId: string | null;
+  currentUserData: ProfileMember | null;
 }> => {
-  let currentUserId = null;
+  let currentUserData = null;
 
   // The reason for the problem of staying in SplashScreen that occurs after the application is
   // updated on the Android side is the inability to obtain the token here.
   // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
   try {
-    currentUserId = await SecureStore.getItemAsync(PROFILE_CURRENT_USER_ID);
+    currentUserData = await SecureStore.getItemAsync(PROFILE_CURRENT_USER);
+    currentUserData = JSON.parse(currentUserData as string);
   } catch {
     // Token deleted here so that it can be recreated
-    await SecureStore.deleteItemAsync(PROFILE_CURRENT_USER_ID);
+    await SecureStore.deleteItemAsync(PROFILE_CURRENT_USER);
   }
 
-  return { currentUserId };
+  return { currentUserData };
 };

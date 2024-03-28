@@ -3,20 +3,20 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { profileAuthToken, profileUserData } from '../../helpers';
-import { ScreenName } from '../../types';
+import { ProfileMember, ScreenName } from '../../types';
 
 export const useProfileUser = (): {
   refresh: () => Promise<void>;
   isLoading: boolean;
   isError: boolean;
   isLoggedIn: boolean;
-  currentUserId: string | null;
+  currentUserData: ProfileMember | null;
 } => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUserData, setCurrentUserData] = useState<ProfileMember | null>(null);
 
   const logInCallback = useCallback(async () => {
     setIsLoading(true);
@@ -24,10 +24,10 @@ export const useProfileUser = (): {
 
     try {
       const storedProfileAuthToken = await profileAuthToken();
-      const { currentUserId: userId } = await profileUserData();
+      const { currentUserData } = await profileUserData();
 
       setIsLoggedIn(!!storedProfileAuthToken);
-      setCurrentUserId(userId);
+      setCurrentUserData(currentUserData);
     } catch (e) {
       console.warn(e);
       setIsError(true);
@@ -50,7 +50,7 @@ export const useProfileUser = (): {
     isLoading,
     isError,
     isLoggedIn,
-    currentUserId
+    currentUserData
   };
 };
 

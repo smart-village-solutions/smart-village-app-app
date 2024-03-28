@@ -10,6 +10,7 @@ import {
   DefaultKeyboardAvoidingView,
   DropdownInput,
   Input,
+  LOGIN_MODAL,
   LoadingModal,
   SafeAreaViewFlex,
   SectionHeader,
@@ -41,6 +42,7 @@ const genderData = [
 /* eslint-disable complexity */
 export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const member = route.params?.member ?? {};
+  const from = route.params?.from ?? '';
   const { preferences = {}, first_name, last_name } = member;
   const { city, street, postal_code, birthday, gender } = preferences;
 
@@ -78,7 +80,9 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
 
         showUpdateSuccessAlert({
           onPress: () =>
-            navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() })
+            from === LOGIN_MODAL
+              ? navigation.popToTop()
+              : navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() })
         });
       }
     });

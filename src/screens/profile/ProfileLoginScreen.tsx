@@ -10,6 +10,7 @@ import {
   DefaultKeyboardAvoidingView,
   Input,
   InputSecureTextIcon,
+  LOGIN_MODAL,
   LoadingModal,
   RegularText,
   SafeAreaViewFlex,
@@ -65,13 +66,13 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
       }
 
       // save user data to global state
-      storeProfileUserData(responseData.member);
+      storeProfileUserData(responseData);
 
       if (!Object.keys(responseData.member?.preferences).length) {
         return navigation.navigate(ScreenName.ProfileUpdate);
       }
 
-      if (from === 'loginModal') {
+      if (from === LOGIN_MODAL) {
         return navigation.popToTop();
       }
 

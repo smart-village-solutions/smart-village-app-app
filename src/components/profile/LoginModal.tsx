@@ -2,14 +2,20 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Overlay } from 'react-native-elements';
+import { useQuery } from 'react-query';
 
 import { Icon, colors, normalize, texts } from '../../config';
+import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
 import { useProfileUser, useStaticContent } from '../../hooks';
-import { ScreenName } from '../../types';
+import { QUERY_TYPES } from '../../queries';
+import { member } from '../../queries/profile';
+import { ProfileMember, ScreenName } from '../../types';
 import { Button } from '../Button';
 import { Image } from '../Image';
 import { HeadlineText, RegularText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
+
+export const LOGIN_MODAL = 'loginModal';
 
 type TLoginModal = {
   navigation: StackNavigationProp<any>;
@@ -24,6 +30,7 @@ interface DataItem {
   title: string;
 }
 
+/* eslint-disable complexity */
 export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
   const { isLoading, isLoggedIn } = useProfileUser();
 
@@ -35,21 +42,46 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
     type: 'json'
   });
 
+  const {
+    isLoading: memberLoading,
+    data: memberData,
+    refetch: memberRefetch
+  } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
+    onSuccess: (responseData: ProfileMember) => {
+      if (!responseData?.member) {
+        storeProfileAuthToken();
+
+        return;
+      }
+
+      storeProfileUserData(responseData);
+    }
+  });
+
   useEffect(() => {
-    if (!isLoading && !isLoggedIn && !isVisible) {
+    memberRefetch();
+  }, []);
+
+  const isProfileUpdated =
+    !!memberData?.member?.preferences &&
+    !!memberData?.member?.first_name &&
+    !!memberData?.member?.last_name;
+
+  useEffect(() => {
+    if (!isLoading && !memberLoading && (!isLoggedIn || !isProfileUpdated) && !isVisible) {
       setIsVisible(true);
     }
-  }, [isLoading]);
+  }, [isLoading, memberLoading]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      if (!isLoggedIn) {
+      if (!isLoggedIn || !isProfileUpdated) {
         setIsVisible(true);
       }
     });
 
     return unsubscribe;
-  }, [navigation, isLoading]);
+  }, [navigation, isLoading, memberLoading]);
 
   if (isLoading || contentLoading) {
     return null;
@@ -115,39 +147,59 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
             </Wrapper>
           )}
 
-          <Wrapper>
-            <WrapperHorizontal>
-              <Button
-                big
-                title={texts.profile.register}
-                onPress={() => {
-                  setIsVisible(false);
-                  navigation.push(ScreenName.ProfileRegistration, { from: 'loginModal' });
-                }}
-              />
-            </WrapperHorizontal>
+          {!isLoggedIn && isUpdated ? (
+            <Wrapper>
+              <WrapperHorizontal>
+                <Button
+                  big
+                  title={texts.profile.register}
+                  onPress={() => {
+                    setIsVisible(false);
+                    navigation.push(ScreenName.ProfileRegistration, { from: LOGIN_MODAL });
+                  }}
+                />
+              </WrapperHorizontal>
 
-            <WrapperVertical style={styles.noPaddingTop}>
-              <RegularText center>oder</RegularText>
-            </WrapperVertical>
+              <WrapperVertical style={styles.noPaddingTop}>
+                <RegularText center>oder</RegularText>
+              </WrapperVertical>
 
-            <WrapperHorizontal>
-              <Button
-                big
-                invert
-                title={texts.profile.login}
-                onPress={() => {
-                  setIsVisible(false);
-                  navigation.navigate(ScreenName.ProfileLogin, { from: 'loginModal' });
-                }}
-              />
-            </WrapperHorizontal>
-          </Wrapper>
+              <WrapperHorizontal>
+                <Button
+                  big
+                  invert
+                  title={texts.profile.login}
+                  onPress={() => {
+                    setIsVisible(false);
+                    navigation.navigate(ScreenName.ProfileLogin, { from: LOGIN_MODAL });
+                  }}
+                />
+              </WrapperHorizontal>
+            </Wrapper>
+          ) : (
+            <Wrapper>
+              <WrapperHorizontal>
+                <Button
+                  big
+                  invert
+                  title={texts.profile.update}
+                  onPress={() => {
+                    setIsVisible(false);
+                    navigation.navigate(ScreenName.ProfileUpdate, {
+                      from: LOGIN_MODAL,
+                      member: memberData?.member
+                    });
+                  }}
+                />
+              </WrapperHorizontal>
+            </Wrapper>
+          )}
         </>
       </ScrollView>
     </Overlay>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   closeButton: {
