@@ -12,7 +12,12 @@ import { Touchable } from './Touchable';
 
 const renderCardContent = (item, horizontal, noOvertitle, bigTitle) => {
   const { appDesignSystem = {}, picture, overtitle, subtitle, title } = item;
-  const { contentSequence, imageBorderRadius = 5, imageStyle, textsStyle = {} } = appDesignSystem;
+  const {
+    contentSequence,
+    imageBorderRadius = normalize(8),
+    imageStyle,
+    textsStyle = {}
+  } = appDesignSystem;
   const { generalStyle, subtitleStyle, titleStyle, overtitleStyle } = textsStyle;
 
   const cardContent = [];
@@ -121,9 +126,7 @@ const styles = StyleSheet.create({
     marginBottom: normalize(2),
     marginTop: normalize(14)
   },
-  imageContainer: {
-    alignSelf: 'center'
-  },
+  imageContainer: {},
   subtitle: {
     marginTop: normalize(6)
   }

@@ -34,7 +34,7 @@ const showUpdateSuccessAlert = ({ onPress }: { onPress: () => void }) =>
 
 const genderData = [
   { value: 'Frau', gender: 'frau' },
-  { value: 'Mann', gender: 'mann' },
+  { value: 'Herr', gender: 'herr' },
   { value: 'divers', gender: 'divers' }
 ];
 

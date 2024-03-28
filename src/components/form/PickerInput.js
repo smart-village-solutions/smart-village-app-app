@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: normalize(12)
   },
   pickerInputSuccess: {
-    borderColor: colors.primary
+    borderColor: colors.gray40
   },
   pickerText: {},
   pickerInputPressed: {

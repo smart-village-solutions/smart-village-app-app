@@ -92,10 +92,10 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
         };
 
         const routeIcons: { [key: string]: string } = {
-          '0': 'Tram',
-          '1': 'Metro',
-          '2': 'Railway',
-          '3': 'Bus'
+          '0': 'tram',
+          '1': 'metro',
+          '2': 'railway',
+          '3': 'bus'
         };
 
         return (
@@ -117,7 +117,7 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
                       ]}
                     >
                       <IconUrl
-                        iconName={iconName}
+                        iconName={routeIcons[routeType || '0']}
                         color={colors.lightestText}
                         size={normalize(16)}
                       />

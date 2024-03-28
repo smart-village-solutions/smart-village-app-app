@@ -41,11 +41,7 @@ type TNoticeboardCreateData = {
 
 const NOTICEBOARD_TYPE_OPTIONS = [
   { value: NOTICEBOARD_TYPES.OFFER, title: texts.noticeboard.categoryNames.offer },
-  { value: NOTICEBOARD_TYPES.SEARCH, title: texts.noticeboard.categoryNames.search },
-  {
-    value: NOTICEBOARD_TYPES.NEIGHBOURLY_HELP,
-    title: texts.noticeboard.categoryNames.neighbourlyHelp
-  }
+  { value: NOTICEBOARD_TYPES.SEARCH, title: texts.noticeboard.categoryNames.search }
 ];
 
 export const NoticeboardCreateForm = ({
