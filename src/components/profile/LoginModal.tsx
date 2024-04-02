@@ -147,7 +147,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
             </Wrapper>
           )}
 
-          {!isLoggedIn && isUpdated ? (
+          {!isLoggedIn && isProfileUpdated ? (
             <Wrapper>
               <WrapperHorizontal>
                 <Button
