@@ -13,10 +13,10 @@ import {
 import { FilterAction, FilterReducerAction } from './types';
 
 type PermanentFilterProviderValues = {
-  dataProviderState: string[];
   dataProviderDispatch: React.Dispatch<FilterReducerAction>;
-  mowasRegionalKeysState: string[];
+  dataProviderState: string[];
   mowasRegionalKeysDispatch: React.Dispatch<MowasFilterReducerAction>;
+  mowasRegionalKeysState: string[];
 };
 
 export const PermanentFilterContext = createContext<PermanentFilterProviderValues>({
@@ -51,10 +51,10 @@ export const PermanentFilterProvider = ({ children }: { children?: React.ReactNo
   return (
     <PermanentFilterContext.Provider
       value={{
-        dataProviderState,
         dataProviderDispatch,
-        mowasRegionalKeysState,
-        mowasRegionalKeysDispatch
+        dataProviderState,
+        mowasRegionalKeysDispatch,
+        mowasRegionalKeysState
       }}
     >
       {children}
