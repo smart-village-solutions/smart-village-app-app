@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import { StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+import { Keyboard, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 
 import { Icon, colors, normalize } from '../config';
 
@@ -29,6 +29,8 @@ export const Search = ({
   });
 
   const onSearch = async ({ search }: { search: string }) => {
+    Keyboard.dismiss();
+
     setQueryVariables((prev) => ({ ...prev, search }));
   };
 
@@ -40,6 +42,7 @@ export const Search = ({
         control={control}
         inputContainerStyle={[styles.inputContainer, inputContainerStyle]}
         name="search"
+        onSubmitEditing={handleSubmit(onSearch)}
         placeholder={placeholder}
       />
       <TouchableOpacity onPress={handleSubmit(onSearch)} style={[styles.searchButton, buttonStyle]}>
