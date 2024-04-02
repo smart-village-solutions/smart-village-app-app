@@ -6,7 +6,7 @@ import { colors, device, normalize } from '../../../config';
 import { imageHeight } from '../../../helpers';
 import { QUERY_TYPES, getQuery } from '../../../queries';
 import { LoadingSpinner } from '../../LoadingSpinner';
-import { BoldText } from '../../Text';
+import { BoldText, RegularText } from '../../Text';
 
 export const SueReportServices = ({
   serviceCode,
@@ -52,6 +52,12 @@ export const SueReportServices = ({
             ]}
           >
             <BoldText center>{item.serviceName}</BoldText>
+
+            {!!item.description && (
+              <RegularText center smallest numberOfLines={3}>
+                {item.description}
+              </RegularText>
+            )}
           </TouchableOpacity>
         );
       })}
