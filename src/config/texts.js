@@ -925,6 +925,7 @@ export const texts = {
     pushNotifications: 'Push-Benachrichtigungen'
   },
   sue: {
+    answer: 'Antworten',
     currentStatus: 'Aktueller Status',
     datetime: 'Datum und Uhrzeit der Meldung',
     description: 'Beschreibung',

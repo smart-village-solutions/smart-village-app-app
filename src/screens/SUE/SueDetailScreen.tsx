@@ -60,6 +60,7 @@ export const SueDetailScreen = ({ route }: Props) => {
     mediaUrl,
     requestedDatetime,
     serviceName,
+    serviceNotice,
     status,
     title
   } = data;
@@ -168,6 +169,19 @@ export const SueDetailScreen = ({ route }: Props) => {
         {!!requestedDatetime && <SueDatetime requestedDatetime={requestedDatetime} />}
 
         {!!status && <SueStatuses status={status} />}
+
+        {!!serviceNotice && (
+          <>
+            <WrapperHorizontal>
+              <Divider />
+            </WrapperHorizontal>
+
+            <Wrapper>
+              <BoldText>{texts.sue.answer}</BoldText>
+              <HtmlView html={serviceNotice} />
+            </Wrapper>
+          </>
+        )}
       </ScrollView>
     </SafeAreaViewFlex>
   );
