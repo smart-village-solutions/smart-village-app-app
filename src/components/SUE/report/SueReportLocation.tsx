@@ -1,16 +1,21 @@
 import * as Location from 'expo-location';
-import React, { useCallback, useRef, useState } from 'react';
+import moment from 'moment';
+import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { Alert, StyleSheet, View } from 'react-native';
+import { useQuery } from 'react-query';
 
+import { SettingsContext } from '../../../SettingsProvider';
 import { device, normalize, texts } from '../../../config';
+import { parseListItemsFromQuery } from '../../../helpers';
 import {
   useLastKnownPosition,
   useLocationSettings,
   usePosition,
   useSystemPermission
 } from '../../../hooks';
-import { TValues } from '../../../screens';
+import { QUERY_TYPES, getQuery } from '../../../queries';
+import { TValues, mapToMapMarkers } from '../../../screens';
 import { MapMarker } from '../../../types';
 import { LoadingSpinner } from '../../LoadingSpinner';
 import { RegularText } from '../../Text';
@@ -18,6 +23,14 @@ import { Wrapper } from '../../Wrapper';
 import { Input } from '../../form';
 import { Map } from '../../map';
 import { getLocationMarker } from '../../settings';
+
+enum SueStatus {
+  IN_PROCESS = 'TICKET_STATUS_IN_PROCESS',
+  INVALID = 'TICKET_STATUS_INVALID',
+  OPEN = 'TICKET_STATUS_OPEN',
+  WAIT_REQUESTOR = 'TICKET_STATUS_WAIT_REQUESTOR',
+  WAIT_THIRDPARTY = 'TICKET_STATUS_WAIT_THIRDPARTY'
+}
 
 /* eslint-disable complexity */
 export const SueReportLocation = ({
@@ -37,6 +50,12 @@ export const SueReportLocation = ({
 }) => {
   const { locationSettings } = useLocationSettings();
   const systemPermission = useSystemPermission();
+  const { globalSettings } = useContext(SettingsContext);
+  const { appDesignSystem } = globalSettings;
+  const { sueStatus = {} } = appDesignSystem;
+  const { statusViewColors = {}, statusTextColors = {} } = sueStatus;
+  const now = moment();
+
   const { position } = usePosition(systemPermission?.status !== Location.PermissionStatus.GRANTED);
   const { position: lastKnownPosition } = useLastKnownPosition(
     systemPermission?.status !== Location.PermissionStatus.GRANTED
@@ -47,6 +66,31 @@ export const SueReportLocation = ({
   const houseNumberInputRef = useRef();
   const zipCodeInputRef = useRef();
   const cityInputRef = useRef();
+
+  const queryVariables = {
+    start_date: '1900-01-01T00:00:00+01:00',
+    status: Object.values(SueStatus).map((status) => status)
+  };
+
+  const { data, isLoading } = useQuery(
+    [QUERY_TYPES.SUE.REQUESTS, queryVariables],
+    () => getQuery(QUERY_TYPES.SUE.REQUESTS)(queryVariables),
+    {
+      cacheTime: moment().endOf('day').diff(now) // end of day
+    }
+  );
+
+  const mapMarkers = useMemo(
+    () =>
+      mapToMapMarkers(
+        parseListItemsFromQuery(QUERY_TYPES.SUE.REQUESTS_WITH_SERVICE_REQUEST_ID, data, undefined, {
+          appDesignSystem
+        }),
+        statusViewColors,
+        statusTextColors
+      ) || [],
+    [data]
+  );
 
   const geocode = useCallback(async () => {
     const { street, houseNumber, zipCode, city } = getValues();
@@ -105,17 +149,21 @@ export const SueReportLocation = ({
     iconName: 'location'
   };
 
-  let locations = [] as MapMarker[];
+  let locations = mapMarkers as MapMarker[];
   let mapCenterPosition = {} as { latitude: number; longitude: number };
 
   if (selectedPosition) {
-    locations = [{ ...baseLocationMarker, position: selectedPosition }];
+    locations = [...mapMarkers, { ...baseLocationMarker, position: selectedPosition }];
   }
 
   if (alternativePosition) {
     mapCenterPosition = getLocationMarker(alternativePosition).position;
   } else if (defaultAlternativePosition) {
     mapCenterPosition = getLocationMarker(defaultAlternativePosition).position;
+  }
+
+  if (isLoading) {
+    return <LoadingSpinner loading />;
   }
 
   return (
