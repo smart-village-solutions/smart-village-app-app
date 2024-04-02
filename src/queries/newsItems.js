@@ -8,7 +8,7 @@ export const GET_NEWS_ITEMS = gql`
     $dataProvider: String
     $dataProviderId: ID
     $excludeDataProviderIds: [ID]
-    $excludeMowasRegionalKeys: [ID]
+    $excludeMowasRegionalKeys: [String]
     $categoryId: ID
     $categoryIds: [ID]
   ) {

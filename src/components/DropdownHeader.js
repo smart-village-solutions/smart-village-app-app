@@ -11,7 +11,7 @@ import { QUERY_TYPES } from '../queries';
 import { DropdownSelect } from './DropdownSelect';
 import { Wrapper } from './Wrapper';
 
-const dropdownEntries = (query, queryVariables, data, excludedDataProviders, isLocationFilter) => {
+const dropdownEntries = (query, queryVariables, data, excludeDataProviderIds, isLocationFilter) => {
   // check if there is something set in the certain `queryVariables`
   // if not, - Alle - will be selected in the `dropdownData`
   const selected = {
@@ -55,7 +55,7 @@ const dropdownEntries = (query, queryVariables, data, excludedDataProviders, isL
     }
   } else if (query === QUERY_TYPES.NEWS_ITEMS) {
     const filteredDataProviders = data?.dataProviders?.filter(
-      (dataProvider) => !excludedDataProviders.includes(dataProvider.id)
+      (dataProvider) => !excludeDataProviderIds.includes(dataProvider.id)
     );
 
     if (filteredDataProviders?.length) {
@@ -89,10 +89,10 @@ export const DropdownHeader = ({
     [QUERY_TYPES.NEWS_ITEMS]: 'value'
   }[query];
 
-  const { state: excludedDataProviders } = usePermanentFilter();
+  const { excludeDataProviderIds } = usePermanentFilter();
 
   const [dropdownData, setDropdownData] = useState(
-    dropdownEntries(query, queryVariables, data, excludedDataProviders, isLocationFilter)
+    dropdownEntries(query, queryVariables, data, excludeDataProviderIds, isLocationFilter)
   );
 
   const selectedDropdownData = dropdownData?.find((entry) => entry.selected) || {};
@@ -102,7 +102,7 @@ export const DropdownHeader = ({
 
   useEffect(() => {
     setDropdownData(
-      dropdownEntries(query, queryVariables, data, excludedDataProviders, isLocationFilter)
+      dropdownEntries(query, queryVariables, data, excludeDataProviderIds, isLocationFilter)
     );
   }, [data]);
 
