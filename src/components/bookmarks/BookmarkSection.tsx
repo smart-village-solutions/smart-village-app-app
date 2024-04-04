@@ -17,6 +17,7 @@ type Props = {
   ids: string[];
   bookmarkKey: string;
   navigation: StackNavigationProp<any>;
+  listType: string;
   query: string;
   sectionTitle?: string;
   setConnectionState: React.Dispatch<React.SetStateAction<{ [key: string]: boolean }>>;
@@ -28,6 +29,7 @@ export const BookmarkSection = ({
   ids,
   bookmarkKey,
   navigation,
+  listType,
   query,
   sectionTitle,
   setConnectionState
@@ -70,6 +72,7 @@ export const BookmarkSection = ({
       loading={loading}
       navigate={onPressShowMore}
       navigation={navigation}
+      listType={listType}
       query={query}
       sectionData={data}
       sectionTitle={sectionTitle}
