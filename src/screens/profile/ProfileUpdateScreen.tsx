@@ -160,6 +160,7 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
                     boldLabel: true,
                     control,
                     errors,
+                    required: true,
                     label: texts.profile.birthday,
                     mode: 'date',
                     name,

@@ -27,7 +27,7 @@ export const PickerInput = ({ value, onPress, isPlaceholder }) => (
         borderless: true
       }}
     >
-      <Icon.ArrowDown />
+      <Icon.Calendar />
     </Pressable>
   </Pressable>
 );
