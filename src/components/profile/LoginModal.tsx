@@ -32,7 +32,7 @@ interface DataItem {
 
 /* eslint-disable complexity */
 export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
-  const { isLoading, isLoggedIn } = useProfileUser();
+  const { isLoading, isLoggedIn, isProfileUpdated } = useProfileUser();
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -42,36 +42,31 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
     type: 'json'
   });
 
-  const {
-    isLoading: memberLoading,
-    data: memberData,
-    refetch: memberRefetch
-  } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
-    onSuccess: (responseData: ProfileMember) => {
-      if (!responseData?.member) {
-        storeProfileAuthToken();
+  const { data: memberData, refetch: memberRefetch } = useQuery(
+    QUERY_TYPES.PROFILE.MEMBER,
+    member,
+    {
+      onSuccess: (responseData: ProfileMember) => {
+        if (!responseData?.member) {
+          storeProfileAuthToken();
 
-        return;
+          return;
+        }
+
+        storeProfileUserData(responseData);
       }
-
-      storeProfileUserData(responseData);
     }
-  });
+  );
 
   useEffect(() => {
     memberRefetch();
   }, []);
 
-  const isProfileUpdated =
-    !!memberData?.member?.preferences &&
-    !!memberData?.member?.first_name &&
-    !!memberData?.member?.last_name;
-
   useEffect(() => {
-    if (!isLoading && !memberLoading && (!isLoggedIn || !isProfileUpdated) && !isVisible) {
+    if (!isLoading && (!isLoggedIn || !isProfileUpdated)) {
       setIsVisible(true);
     }
-  }, [isLoading, memberLoading]);
+  }, [isLoading]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -81,7 +76,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
     });
 
     return unsubscribe;
-  }, [navigation, isLoading, memberLoading]);
+  }, [navigation, isLoading]);
 
   if (isLoading || contentLoading) {
     return null;

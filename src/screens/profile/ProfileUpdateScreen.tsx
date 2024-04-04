@@ -18,7 +18,7 @@ import {
   WrapperRow
 } from '../../components';
 import { texts } from '../../config';
-import { momentFormat } from '../../helpers';
+import { momentFormat, storeProfileUpdated } from '../../helpers';
 import { profileUpdate } from '../../queries/profile';
 import { ProfileUpdate, ScreenName } from '../../types';
 
@@ -77,6 +77,8 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
         if (!responseData?.member) {
           return;
         }
+
+        storeProfileUpdated(true);
 
         showUpdateSuccessAlert({
           onPress: () =>

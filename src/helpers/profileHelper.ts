@@ -7,6 +7,7 @@ import { addToStore, readFromStore } from './storageHelper';
 
 export const PROFILE_AUTH_TOKEN = 'PROFILE_AUTH_TOKEN';
 const PROFILE_CURRENT_USER = 'PROFILE_CURRENT_USER';
+const PROFILE_UPDATED = 'PROFILE_UPDATED';
 
 export const storeProfileAuthToken = (authToken?: string) => {
   if (authToken) {
@@ -56,4 +57,27 @@ export const profileUserData = async (): Promise<{
   }
 
   return { currentUserData };
+};
+
+export const storeProfileUpdated = (isUpdated?: boolean) => {
+  if (isUpdated) {
+    addToStore(PROFILE_UPDATED, isUpdated);
+  } else {
+    AsyncStorage.removeItem(PROFILE_UPDATED);
+  }
+};
+
+export const isUpdatedProfile = async (): Promise<{
+  isUpdated: boolean;
+}> => {
+  let isUpdated = false;
+
+  try {
+    isUpdated = await readFromStore(PROFILE_UPDATED);
+  } catch {
+    // Token deleted here so that it can be recreated
+    await AsyncStorage.removeItem(PROFILE_UPDATED);
+  }
+
+  return { isUpdated };
 };
