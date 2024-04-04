@@ -512,7 +512,7 @@ export const texts = {
     successScreen: {
       application: 'Ihre Nachricht wurde gesendet.',
       entry:
-        'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Sie erhalten eine E-Mail, wenn der Eintrag freigeschaltet wurde.',
+        'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Ihr Eintrag wird in Kürze veröffentlicht.',
       header: 'Vielen Dank'
     }
   },
