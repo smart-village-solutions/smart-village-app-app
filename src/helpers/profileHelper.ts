@@ -3,6 +3,8 @@ import * as SecureStore from 'expo-secure-store';
 
 import { ProfileMember } from '../types';
 
+import { addToStore, readFromStore } from './storageHelper';
+
 export const PROFILE_AUTH_TOKEN = 'PROFILE_AUTH_TOKEN';
 const PROFILE_CURRENT_USER = 'PROFILE_CURRENT_USER';
 
@@ -32,7 +34,7 @@ export const profileAuthToken = async () => {
 
 export const storeProfileUserData = (userData?: ProfileMember) => {
   if (userData) {
-    AsyncStorage.setItem(PROFILE_CURRENT_USER, JSON.stringify(userData));
+    addToStore(PROFILE_CURRENT_USER, userData);
   } else {
     AsyncStorage.removeItem(PROFILE_CURRENT_USER);
   }
@@ -47,8 +49,7 @@ export const profileUserData = async (): Promise<{
   // updated on the Android side is the inability to obtain the token here.
   // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
   try {
-    currentUserData = await AsyncStorage.getItem(PROFILE_CURRENT_USER);
-    currentUserData = JSON.parse(currentUserData as string);
+    currentUserData = await readFromStore(PROFILE_CURRENT_USER);
   } catch {
     // Token deleted here so that it can be recreated
     await AsyncStorage.removeItem(PROFILE_CURRENT_USER);
