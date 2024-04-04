@@ -11,7 +11,7 @@ import { useBookmarks, useMatomoTrackScreenView, useNewsCategories } from '../ho
 import { QUERY_TYPES } from '../queries';
 import { GenericType } from '../types';
 
-const { MATOMO_TRACKING } = consts;
+const { LIST_TYPES, MATOMO_TRACKING } = consts;
 
 const getInitialConnectionState = (categoriesNews) => {
   let initialState = {};
@@ -46,8 +46,8 @@ export const BookmarkScreen = ({ navigation }) => {
   const { sections = {} } = globalSettings;
   const { categoryTitles = {} } = sections;
   const {
-    categoryTitlesPointsOfInterest = texts.categoryTitles.pointsOfInterest,
-    categoryTitlesTours = texts.categoryTitles.tours
+    bookmarkCategoryTitlesPointsOfInterest = texts.categoryTitles.pointsOfInterest,
+    bookmarkCategoryTitlesTours = texts.categoryTitles.tours
   } = categoryTitles;
   const [connectionState, setConnectionState] = useState(getInitialConnectionState(categoriesNews));
 
@@ -64,6 +64,7 @@ export const BookmarkScreen = ({ navigation }) => {
           categoryTitleDetail={categoryTitleDetail}
           ids={bookmarks[bookmarkKey]}
           key={bookmarkKey}
+          listType={LIST_TYPES.TEXT_LIST}
           navigation={navigation}
           query={itemType}
           sectionTitle={categoryTitle}
@@ -102,8 +103,8 @@ export const BookmarkScreen = ({ navigation }) => {
         {categoriesNews?.map(({ categoryId, categoryTitle, categoryTitleDetail }) =>
           getSection(QUERY_TYPES.NEWS_ITEMS, categoryTitle, categoryId, categoryTitleDetail)
         )}
-        {getSection(QUERY_TYPES.POINTS_OF_INTEREST, categoryTitlesPointsOfInterest)}
-        {getSection(QUERY_TYPES.TOURS, categoryTitlesTours)}
+        {getSection(QUERY_TYPES.POINTS_OF_INTEREST, bookmarkCategoryTitlesPointsOfInterest)}
+        {getSection(QUERY_TYPES.TOURS, bookmarkCategoryTitlesTours)}
         {getSection(QUERY_TYPES.EVENT_RECORDS, texts.homeTitles.events)}
         {getSection(
           QUERY_TYPES.GENERIC_ITEMS,

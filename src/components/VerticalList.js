@@ -23,6 +23,7 @@ export const VerticalList = ({
   navigation,
   noSubtitle,
   noOvertitle,
+  listType,
   openWebScreen,
   query,
   refreshControl,
@@ -38,7 +39,8 @@ export const VerticalList = ({
     noSubtitle,
     noOvertitle,
     openWebScreen,
-    refetch
+    refetch,
+    listType
   });
 
   const onEndReached = async () => {
@@ -130,6 +132,7 @@ VerticalList.propTypes = {
   navigation: PropTypes.object,
   noSubtitle: PropTypes.bool,
   noOvertitle: PropTypes.bool,
+  listType: PropTypes.string,
   openWebScreen: PropTypes.func,
   query: PropTypes.string,
   refreshControl: PropTypes.object,

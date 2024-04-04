@@ -35,6 +35,7 @@ const getListType = (query, listTypesSettings) => {
  *          horizontal?: boolean;
  *          noOvertitle?: boolean;
  *          noSubtitle?: boolean;
+ *          listType?: boolean
  *          openWebScreen?: () => void;
  *          queryVariables?: object
  *          refetch?: () => void
@@ -50,7 +51,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
 
   let renderItem;
 
-  switch (listType) {
+  switch (options.listType || listType) {
     case LIST_TYPES.CARD_LIST: {
       renderItem = ({ item }) => (
         <CardListItem
