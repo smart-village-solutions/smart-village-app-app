@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 
 import { ProfileMember } from '../types';
@@ -31,9 +32,9 @@ export const profileAuthToken = async () => {
 
 export const storeProfileUserData = (userData?: ProfileMember) => {
   if (userData) {
-    SecureStore.setItemAsync(PROFILE_CURRENT_USER, JSON.stringify(userData));
+    AsyncStorage.setItem(PROFILE_CURRENT_USER, JSON.stringify(userData));
   } else {
-    SecureStore.deleteItemAsync(PROFILE_CURRENT_USER);
+    AsyncStorage.removeItem(PROFILE_CURRENT_USER);
   }
 };
 
@@ -46,11 +47,11 @@ export const profileUserData = async (): Promise<{
   // updated on the Android side is the inability to obtain the token here.
   // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
   try {
-    currentUserData = await SecureStore.getItemAsync(PROFILE_CURRENT_USER);
+    currentUserData = await AsyncStorage.getItem(PROFILE_CURRENT_USER);
     currentUserData = JSON.parse(currentUserData as string);
   } catch {
     // Token deleted here so that it can be recreated
-    await SecureStore.deleteItemAsync(PROFILE_CURRENT_USER);
+    await AsyncStorage.removeItem(PROFILE_CURRENT_USER);
   }
 
   return { currentUserData };
