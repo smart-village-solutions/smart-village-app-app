@@ -131,6 +131,8 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
               name="firstName"
               placeholder={texts.profile.firstName}
               validate
+              rules={{ required: true }}
+              errorMessage={errors.firstName && `${texts.profile.firstName} muss ausgefüllt werden`}
             />
           </Wrapper>
 
@@ -142,6 +144,8 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
               name="lastName"
               placeholder={texts.profile.lastName}
               validate
+              rules={{ required: true }}
+              errorMessage={errors.lastName && `${texts.profile.lastName} muss ausgefüllt werden`}
             />
           </Wrapper>
 
