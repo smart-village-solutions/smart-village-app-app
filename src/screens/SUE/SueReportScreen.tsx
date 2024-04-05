@@ -107,7 +107,7 @@ export const SueReportScreen = ({
   navigation,
   route
 }: { navigation: any } & StackScreenProps<any>) => {
-  const { data, loading } = useStaticContent({
+  const { data, loading } = useStaticContent<TProgress[]>({
     refreshTimeKey: 'publicJsonFile-sueReportProgress',
     name: 'sueReportProgress',
     type: 'json'
@@ -235,6 +235,11 @@ export const SueReportScreen = ({
 
   /* eslint-disable complexity */
   const alertTextGeneratorForMissingData = () => {
+    const requiredInputs = data?.[currentProgress]?.requiredInputs;
+    const isAnyInputMissing = requiredInputs?.some(
+      (inputKey: keyof TValues) => !getValues()[inputKey]
+    );
+
     switch (currentProgress) {
       case 0:
         if (!serviceCode) {
@@ -297,6 +302,10 @@ export const SueReportScreen = ({
         }
         break;
       case 3:
+        if (isAnyInputMissing) {
+          return texts.sue.report.alerts.missingAnyInput;
+        }
+
         if (!getValues().firstName && !getValues().lastName && !getValues().email) {
           return texts.sue.report.alerts.contact;
         }
@@ -313,14 +322,6 @@ export const SueReportScreen = ({
         break;
       default:
         break;
-    }
-
-    const isAnyInputMissing = data?.[currentProgress]?.requiredInputs?.some(
-      (inputKey: keyof TValues) => !getValues()[inputKey]
-    );
-
-    if (isAnyInputMissing) {
-      return texts.sue.report.alerts.missingAnyInput;
     }
   };
   /* eslint-enable complexity */
