@@ -72,9 +72,10 @@ export const Map = ({
   // example for longitude delta: https://github.com/react-native-maps/react-native-maps/blob/0.30.x/example/examples/DisplayLatLng.js#L18
   const LONGITUDE_DELTA = LATITUDE_DELTA * (device.width / (device.height / 2));
 
+  // center of Germany
   let initialRegion: Region = {
-    latitude: 0,
-    longitude: 0,
+    latitude: 51.1657,
+    longitude: 10.4515,
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA
   };
