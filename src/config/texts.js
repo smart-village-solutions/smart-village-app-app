@@ -761,7 +761,7 @@ export const texts = {
     departureTimesShowMoreButton: 'Mehr anzeigen',
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
-    location: 'Anfahrt',
+    location: 'Karte',
     noAvailableVehicles: 'Im Moment ist kein Fahrzeug verfügbar',
     openingTime: 'Öffnungszeiten',
     operatingCompany: 'Anbieter',
