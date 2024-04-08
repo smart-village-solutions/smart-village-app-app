@@ -6,7 +6,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Divider, ListItem } from 'react-native-elements';
 
 import { Icon, IconUrl, colors, normalize, texts } from '../../config';
-import { momentFormat } from '../../helpers';
+import { momentFormat, normalizeTime } from '../../helpers';
 import { useDetailRefresh } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { Button } from '../Button';
@@ -26,7 +26,7 @@ type TravelTimeProps = {
   trip: { tripHeadsign: string };
 };
 
-export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof typeof Icon }) => {
+export const TravelTimes = ({ id }: { id: string }) => {
   const [today, setToday] = useState<string>(moment().format('YYYY-MM-DDTHH:mm'));
   const [moreData, setMoreData] = useState(1);
 
@@ -73,7 +73,8 @@ export const TravelTimes = ({ id, iconName }: { id: string; iconName: keyof type
       <Divider style={[styles.divider, { marginTop: normalize(12) }]} />
 
       {paginatedData?.map((item: TravelTimeProps, index: number) => {
-        const { departureTime, route, trip } = item;
+        const { route, trip } = item;
+        const departureTime = normalizeTime(item.departureTime);
         const { routeShortName, routeType } = route;
         const { tripHeadsign } = trip;
 

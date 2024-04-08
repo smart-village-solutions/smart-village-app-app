@@ -28,3 +28,17 @@ export const isBeforeEndOfToday = (date: string) => {
 export const isTodayOrLater = (date: string) => {
   return moment().isBefore(moment(date, 'YYYY-MM-DD').endOf('day'));
 };
+
+// if time is after 23:59:59, it means that the time is for the next day
+// so we need to reduce the hours by 24 and make a new time format from it to return
+// 00 for 24, 01 for 25, 02 for 26, etc.
+export const normalizeTime = (time: string) => {
+  let hour = Number(time.split(':')[0]);
+
+  if (hour > 23) {
+    hour -= 24;
+    time = `${hour}:${time.split(':')[1]}`;
+  }
+
+  return time;
+};
