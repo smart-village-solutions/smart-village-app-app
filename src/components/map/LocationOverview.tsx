@@ -137,7 +137,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
         isMultipleMarkersMap
         locations={mapMarkers}
         mapCenterPosition={
-          queryVariables?.initialFilter === 'map' && defaultAlternativePosition?.coords
+          defaultAlternativePosition?.coords
             ? {
                 latitude: defaultAlternativePosition.coords.lat,
                 longitude: defaultAlternativePosition.coords.lng
