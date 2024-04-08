@@ -86,11 +86,7 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
       )}
 
       {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
-        <Wrapper>
-          <HeadlineText style={{ marginBottom: normalize(6) }}>
-            {texts.pointOfInterest.overview}
-          </HeadlineText>
-
+        <Wrapper style={styles.noPaddingTop}>
           <InfoCard
             addresses={addresses}
             contact={contact}
@@ -184,6 +180,9 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
 const styles = StyleSheet.create({
   mapStyle: {
     borderRadius: normalize(8)
+  },
+  noPaddingTop: {
+    paddingTop: 0
   }
 });
 

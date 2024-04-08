@@ -104,7 +104,6 @@ export const LocationSettings = () => {
       <Collapsible collapsed={!showMap}>
         <Map
           locations={locations}
-          mapCenterPosition={{ latitude: 51.1657, longitude: 10.4515 }} // center of Germany
           onMapPress={({ nativeEvent }) => {
             setSelectedPosition({
               ...nativeEvent.coordinate
