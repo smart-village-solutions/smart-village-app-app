@@ -44,7 +44,6 @@ type Props = {
   noOvertitle?: boolean;
   rightImage?: boolean;
   showOpenStatus?: boolean;
-  titleFirst?: boolean;
   withCard?: boolean;
 };
 
@@ -67,7 +66,6 @@ export const TextListItem: NamedExoticComponent<Props> & {
     noOvertitle,
     rightImage,
     showOpenStatus,
-    titleFirst,
     withCard
   }) => {
     const {
@@ -88,13 +86,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
       topDivider
     } = item;
     const navigate = () => navigation && navigation.push(name, params);
-    let titleText = withCard ? (
-      <HeadlineText small style={{ marginTop: normalize(2) }}>
-        {trimNewLines(title)}
-      </HeadlineText>
-    ) : (
-      <HeadlineText small>{trimNewLines(title)}</HeadlineText>
-    );
+    let titleText = <HeadlineText small>{trimNewLines(title)}</HeadlineText>;
 
     let status = '';
     if (showOpenStatus) {
@@ -159,7 +151,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
         {withCard ? (
           <ListItem.Content>
             {!!overtitle && (
-              <HeadlineText smallest uppercase>
+              <HeadlineText smallest uppercase style={styles.overtitleMarginBottom}>
                 {trimNewLines(overtitle)}
               </HeadlineText>
             )}
@@ -175,7 +167,7 @@ export const TextListItem: NamedExoticComponent<Props> & {
         ) : (
           <ListItem.Content style={listItemStyle}>
             {!noOvertitle && !!overtitle && (
-              <HeadlineText smallest uppercase>
+              <HeadlineText smallest uppercase style={styles.overtitleMarginBottom}>
                 {trimNewLines(overtitle)}
               </HeadlineText>
             )}
@@ -220,6 +212,9 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.borderRgba,
     borderBottomWidth: 1
   },
+  overtitleMarginBottom: {
+    marginBottom: normalize(4)
+  },
   smallImage: {
     height: normalize(33),
     width: normalize(66)
@@ -254,7 +249,6 @@ TextListItem.propTypes = {
   noOvertitle: PropTypes.bool,
   rightImage: PropTypes.bool,
   showOpenStatus: PropTypes.bool,
-  titleFirst: PropTypes.bool,
   withCard: PropTypes.bool
 };
 

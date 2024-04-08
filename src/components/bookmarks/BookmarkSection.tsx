@@ -8,6 +8,7 @@ import { useRefreshTime } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery } from '../../queries';
 import { DataListSection } from '../DataListSection';
+import { WrapperVertical } from '../Wrapper';
 
 const { REFRESH_INTERVALS } = consts;
 
@@ -52,7 +53,8 @@ export const BookmarkSection = ({
         suffix,
         query,
         title: sectionTitle,
-        categoryTitleDetail
+        categoryTitleDetail,
+        listType
       }),
     [navigation, suffix]
   );
@@ -67,17 +69,19 @@ export const BookmarkSection = ({
   }, [data, bookmarkKey, loading, setConnectionState]);
 
   return (
-    <DataListSection
-      buttonTitle={texts.bookmarks.showAll}
-      loading={loading}
-      navigate={onPressShowMore}
-      navigation={navigation}
-      listType={listType}
-      query={query}
-      sectionData={data}
-      sectionTitle={sectionTitle}
-      sectionTitleDetail={categoryTitleDetail}
-      showButton={ids.length > 3}
-    />
+    <WrapperVertical>
+      <DataListSection
+        buttonTitle={texts.bookmarks.showAll}
+        loading={loading}
+        navigate={onPressShowMore}
+        navigation={navigation}
+        listType={listType}
+        query={query}
+        sectionData={data}
+        sectionTitle={sectionTitle}
+        sectionTitleDetail={categoryTitleDetail}
+        showButton={ids.length > 3}
+      />
+    </WrapperVertical>
   );
 };

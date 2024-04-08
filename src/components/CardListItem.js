@@ -36,7 +36,8 @@ const renderCardContent = (item, horizontal, noOvertitle, bigTitle) => {
         smallest
         uppercase
         style={[
-          styles.overtitle,
+          picture?.url && styles.overtitleMarginTop,
+          styles.overtitleMarginBottom,
           !!generalStyle && generalStyle,
           !!overtitleStyle && overtitleStyle
         ]}
@@ -122,8 +123,10 @@ const styles = StyleSheet.create({
       }
     })
   },
-  overtitle: {
-    marginBottom: normalize(2),
+  overtitleMarginBottom: {
+    marginBottom: normalize(4)
+  },
+  overtitleMarginTop: {
     marginTop: normalize(14)
   },
   imageContainer: {},
