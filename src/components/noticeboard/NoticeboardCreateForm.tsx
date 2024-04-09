@@ -80,7 +80,9 @@ export const NoticeboardCreateForm = ({
       dateEnd: new Date(),
       dateStart: new Date(),
       email: memberData?.member?.email ?? '',
-      name: `${memberData?.member?.first_name ?? ''} ${memberData?.member?.last_name ?? ''}`.trim(),
+      name: `${memberData?.member?.first_name ?? ''} ${
+        memberData?.member?.last_name[0] ?? ''
+      }`.trim(),
       noticeboardType: '',
       termsOfService: false,
       title: ''
