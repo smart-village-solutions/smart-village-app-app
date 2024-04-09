@@ -55,7 +55,7 @@ export const ConversationListItem = ({ item, navigation }: TConversation) => {
     <ListItem
       bottomDivider={bottomDivider}
       containerStyle={styles.container}
-      onPress={() => navigation.push(name, { ...params, displayName })}
+      onPress={() => navigation.push(name, { ...params, displayName, title })}
       delayPressIn={0}
       Component={Touchable}
     >
