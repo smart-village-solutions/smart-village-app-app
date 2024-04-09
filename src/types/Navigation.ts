@@ -52,6 +52,7 @@ export enum ScreenName {
   OParlPersons = 'OParlPersons',
   OParlSearch = 'OParlSearch',
   Profile = 'Profile',
+  ProfileConversations = 'ProfileConversations',
   ProfileLogin = 'ProfileLogin',
   ProfileRegistration = 'ProfileRegistration',
   ProfileResetPassword = 'ProfileResetPassword',

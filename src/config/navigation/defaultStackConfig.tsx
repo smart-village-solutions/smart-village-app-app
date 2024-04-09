@@ -47,6 +47,7 @@ import {
   OParlOverviewScreen,
   OParlPersonsScreen,
   OParlSearchScreen,
+  ProfileConversationsScreen,
   ProfileHomeScreen,
   ProfileLoginScreen,
   ProfileRegistrationScreen,
@@ -345,6 +346,10 @@ export const defaultStackConfig = ({
         },
         rootRouteName: ScreenName.Profile
       }
+    },
+    {
+      routeName: ScreenName.ProfileConversations,
+      screenComponent: ProfileConversationsScreen
     },
     {
       routeName: ScreenName.ProfileLogin,

@@ -1,4 +1,5 @@
 export * from './ProfileHomeScreen';
+export * from './ProfileConversationsScreen';
 export * from './ProfileLoginScreen';
 export * from './ProfileRegistrationScreen';
 export * from './ProfileResetPasswordScreen';
