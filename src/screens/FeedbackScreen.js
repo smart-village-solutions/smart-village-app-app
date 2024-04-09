@@ -9,7 +9,9 @@ import {
   Checkbox,
   DefaultKeyboardAvoidingView,
   Input,
-  SafeAreaViewFlex
+  SafeAreaViewFlex,
+  Wrapper,
+  WrapperVertical
 } from '../components';
 import { colors, consts, normalize, texts } from '../config';
 import { useMatomoTrackScreenView } from '../hooks';
@@ -82,7 +84,7 @@ export const FeedbackScreen = () => {
     <SafeAreaViewFlex>
       <DefaultKeyboardAvoidingView>
         <ScrollView keyboardShouldPersistTaps="handled">
-          <View style={{ padding: normalize(14) }}>
+          <Wrapper>
             <Input
               name="name"
               label={texts.feedbackScreen.inputsLabel.name}
@@ -91,7 +93,9 @@ export const FeedbackScreen = () => {
               control={control}
               containerStyle={styles.containerStyle}
             />
+          </Wrapper>
 
+          <Wrapper style={styles.noPaddingTop}>
             <Input
               name="email"
               label={texts.feedbackScreen.inputsLabel.email}
@@ -109,7 +113,9 @@ export const FeedbackScreen = () => {
               control={control}
               containerStyle={styles.containerStyle}
             />
+          </Wrapper>
 
+          <Wrapper style={styles.noPaddingTop}>
             <Input
               name="phone"
               label={texts.feedbackScreen.inputsLabel.phone}
@@ -119,7 +125,9 @@ export const FeedbackScreen = () => {
               control={control}
               containerStyle={styles.containerStyle}
             />
+          </Wrapper>
 
+          <Wrapper style={[styles.noPaddingBottom, styles.noPaddingTop]}>
             <Input
               name="message"
               label={texts.feedbackScreen.inputsLabel.message + ' *'}
@@ -134,7 +142,9 @@ export const FeedbackScreen = () => {
               containerStyle={styles.containerStyle}
               inputStyle={styles.textArea}
             />
+          </Wrapper>
 
+          <Wrapper style={styles.noPaddingTop}>
             <Controller
               name="consent"
               render={({ field: { onChange, value } }) => (
@@ -152,7 +162,9 @@ export const FeedbackScreen = () => {
               )}
               control={control}
             />
+          </Wrapper>
 
+          <Wrapper style={styles.noPaddingTop}>
             <Button
               onPress={handleSubmit(onSubmit)}
               title={
@@ -162,7 +174,7 @@ export const FeedbackScreen = () => {
               }
               disabled={loading}
             />
-          </View>
+          </Wrapper>
         </ScrollView>
       </DefaultKeyboardAvoidingView>
     </SafeAreaViewFlex>
@@ -172,6 +184,12 @@ export const FeedbackScreen = () => {
 const styles = StyleSheet.create({
   checkboxContainerStyle: {
     marginTop: normalize(30)
+  },
+  noPaddingBottom: {
+    paddingBottom: 0
+  },
+  noPaddingTop: {
+    paddingTop: 0
   },
   textArea: {
     height: normalize(100),

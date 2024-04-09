@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     borderRightWidth: normalize(1),
     borderTopWidth: normalize(1),
     flexDirection: 'row',
-    height: normalize(45),
+    height: normalize(42),
     justifyContent: 'space-between',
     paddingHorizontal: normalize(12)
   },

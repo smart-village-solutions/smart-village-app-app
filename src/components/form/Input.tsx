@@ -73,7 +73,7 @@ export const Input = ({
         multiline={multiline}
         {...furtherProps}
         containerStyle={[styles.container, styles.chatContainer]}
-        inputContainerStyle={styles.inputContainer}
+        inputContainerStyle={[styles.inputContainer, multiline && styles.inputContainerMultiline]}
         inputStyle={[
           styles.input,
           styles.chatInput,
@@ -121,6 +121,7 @@ export const Input = ({
         styles.inputContainer,
         disabled && styles.inputContainerDisabled,
         hidden && styles.inputContainerHidden,
+        multiline && styles.inputContainerMultiline,
         isActive && styles.inputContainerSuccess,
         !isValid && !!errorMessage && styles.inputContainerError,
         isReduceTransparencyEnabled && styles.inputAccessibilityBorderContrast,
@@ -160,7 +161,8 @@ const styles = StyleSheet.create({
     borderLeftWidth: normalize(1),
     borderRadius: normalize(8),
     borderRightWidth: normalize(1),
-    borderTopWidth: normalize(1)
+    borderTopWidth: normalize(1),
+    height: normalize(42)
   },
   inputContainerDisabled: {
     backgroundColor: colors.gray20,
@@ -172,6 +174,9 @@ const styles = StyleSheet.create({
     borderRightWidth: 0,
     borderTopWidth: 0,
     display: 'none'
+  },
+  inputContainerMultiline: {
+    height: 'auto'
   },
   inputContainerSuccess: {
     borderColor: colors.primary
