@@ -500,17 +500,17 @@ export const texts = {
     inputDate: (requestedDateDifference) => `Laufzeit (max. ${requestedDateDifference} Monate)`,
     inputDescription: 'Beschreibung',
     inputErrorText: 'muss ausgefüllt werden',
-    inputMail: 'Ihre E-Mail',
-    inputMessage: 'Ihre Nachricht',
-    inputName: 'Ihr Name',
-    inputPhoneNumber: 'Ihre Telefonnummer',
+    inputMail: 'E-Mail',
+    inputMessage: 'Nachricht',
+    inputName: 'Angezeigter Name',
+    inputPhoneNumber: 'Telefonnummer',
     inputTitle: 'Titel',
     invalidMail: '-Adresse ist nicht gültig.',
     noticeboard: 'Schwarzes Brett',
     publicationDate: 'Erscheinungsdatum',
     send: 'Senden',
     successScreen: {
-      application: 'Ihre Nachricht wurde gesendet.',
+      application: 'Die Nachricht wurde gesendet.',
       entry:
         'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Ihr Eintrag wird in Kürze veröffentlicht.',
       header: 'Vielen Dank'
