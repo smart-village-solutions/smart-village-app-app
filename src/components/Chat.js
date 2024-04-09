@@ -291,6 +291,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.gray20
   },
   inputToolbarContainer: {
+    backgroundColor: colors.surface,
     paddingVertical: normalize(24)
   },
   inputToolbarPrimary: {

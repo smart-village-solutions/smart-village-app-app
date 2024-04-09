@@ -54,6 +54,7 @@ export enum ScreenName {
   Profile = 'Profile',
   ProfileConversations = 'ProfileConversations',
   ProfileLogin = 'ProfileLogin',
+  ProfileMessaging = 'ProfileMessaging',
   ProfileRegistration = 'ProfileRegistration',
   ProfileResetPassword = 'ProfileResetPassword',
   ProfileSignup = 'ProfileSignup',
