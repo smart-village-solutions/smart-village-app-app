@@ -50,6 +50,8 @@ export const QUERY_TYPES = {
   POINTS_OF_INTEREST: 'pointsOfInterest',
   POINTS_OF_INTEREST_AND_TOURS: 'pointsOfInterestAndTours',
   PROFILE: {
+    GET_CONVERSATIONS: 'getConversations',
+    GET_MESSAGES: 'getMessages',
     MEMBER: 'member'
   },
   PUBLIC_HTML_FILE: 'publicHtmlFile',
