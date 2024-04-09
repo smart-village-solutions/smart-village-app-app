@@ -17,6 +17,7 @@ const { a11yLabel } = consts;
 export const DropdownSelect = ({
   boldLabel = false,
   data,
+  errorMessage,
   multipleSelect,
   setData,
   label,
@@ -130,7 +131,9 @@ export const DropdownSelect = ({
         searchPlaceholder={searchPlaceholder}
         keyboardShouldPersistTaps="handled"
       >
-        <WrapperRow style={styles.dropdownTextWrapper}>
+        <WrapperRow
+          style={[styles.dropdownTextWrapper, !errorMessage && { marginBottom: normalize(8) }]}
+        >
           <RegularText style={styles.selectedValueText}>
             {multipleSelect ? selectedMultipleValues : selectedValue}
           </RegularText>
@@ -176,6 +179,7 @@ DropdownSelect.displayName = 'DropdownSelect';
 DropdownSelect.propTypes = {
   boldLabel: PropTypes.bool,
   data: PropTypes.array,
+  errorMessage: PropTypes.string,
   multipleSelect: PropTypes.bool,
   setData: PropTypes.func,
   label: PropTypes.string,
