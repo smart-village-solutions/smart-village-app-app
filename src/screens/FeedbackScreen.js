@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Keyboard, ScrollView, StyleSheet } from 'react-native';
 
 import {
   Button,
@@ -10,13 +10,12 @@ import {
   DefaultKeyboardAvoidingView,
   Input,
   SafeAreaViewFlex,
-  Wrapper,
-  WrapperVertical
+  Wrapper
 } from '../components';
-import { colors, consts, normalize, texts } from '../config';
+import { Icon, colors, consts, normalize, texts } from '../config';
 import { useMatomoTrackScreenView } from '../hooks';
 import { useAppInfo } from '../hooks/appInfo';
-import { createQuery, QUERY_TYPES } from '../queries';
+import { QUERY_TYPES, createQuery } from '../queries';
 
 const { MATOMO_TRACKING, EMAIL_REGEX } = consts;
 
@@ -149,15 +148,11 @@ export const FeedbackScreen = () => {
               name="consent"
               render={({ field: { onChange, value } }) => (
                 <Checkbox
-                  boldTitle
-                  containerStyle={styles.checkboxContainerStyle}
-                  title={texts.feedbackScreen.inputsLabel.checkbox + ' *'}
-                  checkedIcon="check-square-o"
-                  checkedColor={colors.accent}
-                  uncheckedIcon="square-o"
-                  uncheckedColor={colors.darkText}
                   checked={value}
+                  checkedIcon={<Icon.SquareCheckFilled />}
                   onPress={() => onChange(!value)}
+                  title={texts.feedbackScreen.inputsLabel.checkbox + ' *'}
+                  uncheckedIcon={<Icon.Square color={colors.placeholder} />}
                 />
               )}
               control={control}
@@ -182,12 +177,6 @@ export const FeedbackScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  checkboxContainerStyle: {
-    marginTop: normalize(30)
-  },
-  noPaddingBottom: {
-    paddingBottom: 0
-  },
   noPaddingTop: {
     paddingTop: 0
   },

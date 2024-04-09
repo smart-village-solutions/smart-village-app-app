@@ -18,7 +18,7 @@ import {
   Wrapper,
   WrapperHorizontal
 } from '../../../components';
-import { consts, namespace, secrets, texts } from '../../../config';
+import { colors, consts, Icon, namespace, secrets, texts } from '../../../config';
 import { ConsulClient } from '../../../ConsulClient';
 import { CONSUL_REGISTER_USER } from '../../../queries/consul';
 import { ScreenName } from '../../../types';
@@ -164,14 +164,14 @@ export const ConsulRegisterScreen = ({ navigation }) => {
 
           <WrapperHorizontal>
             <Checkbox
-              linkDescription={texts.consul.privacyCheckLink}
-              link={`${secrets[namespace]?.consul?.serverUrl}${secrets[namespace]?.consul?.termsOfService}`}
-              title={texts.consul.privacyChecked}
-              checkedIcon="check-square-o"
-              uncheckedIcon="square-o"
-              checked={hasAcceptedTermsOfService}
               center={false}
+              checked={hasAcceptedTermsOfService}
+              checkedIcon={<Icon.SquareCheckFilled />}
+              link={`${secrets[namespace]?.consul?.serverUrl}${secrets[namespace]?.consul?.termsOfService}`}
+              linkDescription={texts.consul.privacyCheckLink}
               onPress={() => setHasAcceptedTermsOfService(!hasAcceptedTermsOfService)}
+              title={texts.consul.privacyChecked}
+              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
             />
           </WrapperHorizontal>
 
