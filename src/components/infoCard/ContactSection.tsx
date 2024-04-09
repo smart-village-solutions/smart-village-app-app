@@ -20,7 +20,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
       {(!!contact.lastName || !!contact.firstName) && (
         <>
           <WrapperVertical>
-            <WrapperRow style={styles.wrap}>
+            <WrapperRow centerVertical style={styles.wrap}>
               <RNEIcon
                 name="person"
                 type="material"
@@ -37,10 +37,10 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
 
       {!!contact.phone && (
         <>
-          <WrapperVertical>
-            <WrapperRow style={styles.wrap}>
-              <Icon.Phone style={styles.margin} />
-              <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
+          <TouchableOpacity onPress={() => openLink(`tel:${contact.phone}`)}>
+            <WrapperVertical>
+              <WrapperRow centerVertical style={styles.wrap}>
+                <Icon.Phone style={styles.margin} />
                 <RegularText
                   primary
                   accessibilityLabel={`${consts.a11yLabel.phoneNumber} (${contact.phone})
@@ -48,19 +48,20 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
                 >
                   {contact.phone}
                 </RegularText>
-              </TouchableOpacity>
-            </WrapperRow>
-          </WrapperVertical>
+              </WrapperRow>
+            </WrapperVertical>
+          </TouchableOpacity>
+
           <Divider style={styles.divider} />
         </>
       )}
 
       {!!contact.email && (
         <>
-          <WrapperVertical>
-            <WrapperRow style={styles.wrap}>
-              <Icon.Mail style={styles.margin} />
-              <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
+          <TouchableOpacity onPress={() => openLink(`mailto:${contact.email}`)}>
+            <WrapperVertical>
+              <WrapperRow centerVertical style={styles.wrap}>
+                <Icon.Mail style={styles.margin} />
                 <RegularText
                   primary
                   accessibilityLabel={`
@@ -69,9 +70,10 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
                 >
                   {contact.email}
                 </RegularText>
-              </TouchableOpacity>
-            </WrapperRow>
-          </WrapperVertical>
+              </WrapperRow>
+            </WrapperVertical>
+          </TouchableOpacity>
+
           <Divider style={styles.divider} />
         </>
       )}
@@ -79,7 +81,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
       {!!contact.fax && (
         <>
           <WrapperVertical>
-            <WrapperRow style={styles.wrap}>
+            <WrapperRow centerVertical style={styles.wrap}>
               <RNEIcon
                 name="print"
                 type="material"
@@ -91,6 +93,7 @@ const ContactView = ({ contact }: { contact?: Contact }) => {
               </RegularText>
             </WrapperRow>
           </WrapperVertical>
+
           <Divider style={styles.divider} />
         </>
       )}

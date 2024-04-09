@@ -6,14 +6,14 @@ import { colors, consts, Icon, normalize } from '../../config';
 import { openLink } from '../../helpers';
 import { WebUrl } from '../../types';
 import { RegularText } from '../Text';
-import { InfoBox, Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
+import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 type Props = {
   openWebScreen: (link: string) => void;
   webUrls: WebUrl[];
 };
 
-export const UrlSection = ({ openWebScreen, webUrls }: Props) => (
+export const UrlSection = ({ webUrls }: Props) => (
   <>
     {webUrls.map((item, index) => {
       const { url, description } = item;
@@ -25,23 +25,24 @@ export const UrlSection = ({ openWebScreen, webUrls }: Props) => (
 
       return (
         <Fragment key={index}>
-          <WrapperVertical>
-            <WrapperRow>
-              <Icon.Url style={styles.margin} />
-              <TouchableOpacity
-                accessibilityLabel={`
+          <TouchableOpacity
+            accessibilityLabel={`
               ${a11yText.website} (${description || url}) ${a11yText.button} ${a11yText.webViewHint}
             `}
-                onPress={() => openLink(url)}
-              >
+            onPress={() => openLink(url)}
+          >
+            <WrapperVertical>
+              <WrapperRow centerVertical>
+                <Icon.Url style={styles.margin} />
                 {!description || !!description?.startsWith('url') ? (
                   <RegularText primary>{url}</RegularText>
                 ) : (
                   <RegularText primary>{description}</RegularText>
                 )}
-              </TouchableOpacity>
-            </WrapperRow>
-          </WrapperVertical>
+              </WrapperRow>
+            </WrapperVertical>
+          </TouchableOpacity>
+
           <Divider style={styles.divider} />
         </Fragment>
       );
@@ -54,7 +55,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.placeholder
   },
   margin: {
-    marginRight: normalize(16),
-    marginTop: normalize(-2)
+    marginRight: normalize(12),
+    marginTop: normalize(-1)
   }
 });
