@@ -1,11 +1,20 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useEffect, useState } from 'react';
-import { useQuery } from 'react-apollo';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'react-apollo';
 
 import { Chat, LoadingSpinner } from '../../components';
+import { colors, normalize } from '../../config';
 import { useProfileUser } from '../../hooks';
 import { getQuery } from '../../queries';
-import { colors, normalize } from '../../config';
+import { CREATE_MESSAGE } from '../../queries/profile';
+
+type TMessage = {
+  conversationableId: number;
+  conversationableType: string;
+  conversationId: number;
+  messageText: string;
+};
 
 export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
   const query = route.params?.query;
@@ -14,6 +23,7 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
   const { currentUserData } = useProfileUser();
   const currentUserId = currentUserData?.member?.id;
   const displayName = route.params?.displayName;
+  const { conversationableId, conversationableType, id: conversationId } = route.params?.details;
 
   const { data: messages, loading } = useQuery(getQuery(query), { variables: queryVariables });
 
@@ -44,7 +54,13 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
     }
   }, [messages]);
 
-  if (loading && !currentUserId) {
+  const [sendMessage] = useMutation(CREATE_MESSAGE);
+
+  const onSend = async (newMessageData: TMessage) => {
+    sendMessage({ variables: newMessageData });
+  };
+
+  if (loading || !currentUserId || !messageData.length) {
     return <LoadingSpinner loading />;
   }
 
@@ -52,6 +68,14 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
     <Chat
       data={messageData}
       userId={currentUserId}
+      onSendButton={(message) =>
+        onSend({
+          conversationableId,
+          conversationableType,
+          conversationId: parseInt(conversationId),
+          messageText: message.text
+        }).then(async () => await refetch())
+      }
       bubbleWrapperStyleRight={{ backgroundColor: colors.primary, padding: normalize(12) }}
       bubbleWrapperStyleLeft={{ backgroundColor: colors.gray10, padding: normalize(12) }}
       messageTextStyleRight={{ color: colors.lighterPrimary }}
