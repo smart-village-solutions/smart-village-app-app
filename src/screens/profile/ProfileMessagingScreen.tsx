@@ -67,7 +67,7 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
   const [markMessagesAsRead] = useMutation(MARK_MESSAGES_AS_READ);
 
   useEffect(() => {
-    if (messages[query].length && !loading) {
+    if (messages?.[query]?.length && !loading && !!conversationId) {
       markMessagesAsRead({
         variables: { conversationId: parseInt(conversationId), updateAllMessages: true }
       });
