@@ -35,6 +35,7 @@ type TNoticeboardCreateData = {
   email: string;
   name: string;
   noticeboardType: NOTICEBOARD_TYPES;
+  price: string;
   termsOfService: boolean;
   title: string;
 };
@@ -44,6 +45,7 @@ const NOTICEBOARD_TYPE_OPTIONS = [
   { value: NOTICEBOARD_TYPES.SEARCH, title: texts.noticeboard.categoryNames.search }
 ];
 
+/* eslint-disable complexity */
 export const NoticeboardCreateForm = ({
   navigation,
   route
@@ -84,6 +86,7 @@ export const NoticeboardCreateForm = ({
         memberData?.member?.last_name[0] ?? ''
       }`.trim(),
       noticeboardType: '',
+      price: '',
       termsOfService: false,
       title: ''
     }
@@ -120,7 +123,8 @@ export const NoticeboardCreateForm = ({
               dateEnd: momentFormat(noticeboardNewData.dateEnd),
               dateStart: momentFormat(noticeboardNewData.dateStart)
             }
-          ]
+          ],
+          priceInformations: [{ description: noticeboardNewData.price }]
         }
       });
 
@@ -229,6 +233,17 @@ export const NoticeboardCreateForm = ({
       </Wrapper>
 
       <Wrapper style={styles.noPaddingTop}>
+        <Input
+          name="price"
+          label={texts.noticeboard.inputPrice}
+          placeholder={texts.noticeboard.inputPrice}
+          validate
+          errorMessage={errors.price && errors.price.message}
+          control={control}
+        />
+      </Wrapper>
+
+      <Wrapper style={styles.noPaddingTop}>
         <Controller
           name="dateEnd"
           render={({ field: { name, onChange, value } }) => (
@@ -287,6 +302,7 @@ export const NoticeboardCreateForm = ({
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   noPaddingTop: {

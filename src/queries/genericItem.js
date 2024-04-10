@@ -223,6 +223,7 @@ export const CREATE_GENERIC_ITEM = gql`
     $dates: [DateInput!]
     $genericType: String
     $mediaContents: [MediaContentInput!]
+    $priceInformations: [PriceInput!]
     $publishedAt: String
     $title: String
     $forceCreate: Boolean = false
@@ -235,6 +236,7 @@ export const CREATE_GENERIC_ITEM = gql`
       dates: $dates
       genericType: $genericType
       mediaContents: $mediaContents
+      priceInformations: $priceInformations
       publishedAt: $publishedAt
       title: $title
       forceCreate: $forceCreate

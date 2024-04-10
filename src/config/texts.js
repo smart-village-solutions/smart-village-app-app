@@ -504,6 +504,7 @@ export const texts = {
     inputMessage: 'Nachricht',
     inputName: 'Angezeigter Name',
     inputPhoneNumber: 'Telefonnummer',
+    inputPrice: 'Preis',
     inputTitle: 'Titel',
     invalidMail: '-Adresse ist nicht gültig.',
     noticeboard: 'Schwarzes Brett',
