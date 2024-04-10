@@ -16,7 +16,7 @@ import { useLastKnownPosition, usePosition } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { Address } from '../../types';
 import { RegularText } from '../Text';
-import { InfoBox, WrapperRow, WrapperVertical } from '../Wrapper';
+import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 type Props = {
   address?: Address;
@@ -82,32 +82,28 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
         const isPressable = item.city?.length || item.street?.length || item.zip?.length;
 
         const innerComponent = (
-          <RegularText
-            primary
-            accessibilityLabel={`${a11yText.address} (${filteredAddress})
-            ${a11yText.button}
-            ${a11yText.mapHint}`}
-          >
-            {filteredAddress}
-          </RegularText>
+          <WrapperVertical>
+            <WrapperRow centerVertical style={styles.wrap}>
+              <Icon.Flag style={styles.margin} />
+              <RegularText
+                accessibilityLabel={`${a11yText.address} (${filteredAddress}) ${a11yText.button} ${a11yText.mapHint}`}
+              >
+                {filteredAddress}
+              </RegularText>
+            </WrapperRow>
+          </WrapperVertical>
         );
 
         return (
           <View key={index}>
-            <WrapperVertical>
-              <WrapperRow style={styles.wrap}>
-                <Icon.Flag style={styles.margin} />
-                {isPressable ? (
-                  <TouchableOpacity
-                    onPress={() => addressOnPress(filteredAddress, item.geoLocation)}
-                  >
-                    {innerComponent}
-                  </TouchableOpacity>
-                ) : (
-                  innerComponent
-                )}
-              </WrapperRow>
-            </WrapperVertical>
+            {isPressable ? (
+              <TouchableOpacity onPress={() => addressOnPress(filteredAddress, item.geoLocation)}>
+                {innerComponent}
+              </TouchableOpacity>
+            ) : (
+              innerComponent
+            )}
+
             <Divider style={styles.divider} />
 
             {!!openWebScreen &&
@@ -116,7 +112,7 @@ export const AddressSection = ({ address, addresses, openWebScreen }: Props) => 
               item.geoLocation?.longitude && (
                 <>
                   <WrapperVertical>
-                    <WrapperRow>
+                    <WrapperRow centerVertical style={styles.wrap}>
                       <Icon.RoutePlanner color={colors.primary} style={styles.margin} />
                       <TouchableOpacity
                         onPress={() =>

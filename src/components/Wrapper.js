@@ -61,6 +61,12 @@ export const WrapperRow = styled.View`
     css`
       justify-content: space-between;
     `};
+
+  ${(props) =>
+    props.centerVertical &&
+    css`
+      align-items: center;
+    `};
 `;
 
 export const WrapperWrap = styled(WrapperRow)`
