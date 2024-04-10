@@ -145,6 +145,7 @@ export const NoticeboardCreateForm = ({
           label={`${texts.noticeboard.inputName} *`}
           placeholder={texts.noticeboard.inputName}
           validate
+          disabled
           rules={{
             required: `${texts.noticeboard.inputName} ${texts.noticeboard.inputErrorText}`
           }}
