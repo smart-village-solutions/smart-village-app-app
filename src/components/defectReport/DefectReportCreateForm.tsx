@@ -16,7 +16,7 @@ import {
   Touchable,
   Wrapper
 } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { Icon, colors, consts, texts } from '../../config';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
 import { uploadMediaContent } from '../../queries/mediaContent';
 import { GenericType } from '../../types';
@@ -260,14 +260,12 @@ export const DefectReportCreateForm = ({
           render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}
-              onPress={() => onChange(!value)}
-              title={`${texts.defectReport.inputCheckbox} *`}
-              checkedColor={colors.accent}
-              checkedIcon="check-square-o"
-              uncheckedColor={colors.darkText}
-              uncheckedIcon="square-o"
+              checkedIcon={<Icon.SquareCheckFilled />}
               containerStyle={styles.checkboxContainerStyle}
+              onPress={() => onChange(!value)}
               textStyle={styles.checkboxTextStyle}
+              title={`${texts.defectReport.inputCheckbox} *`}
+              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
             />
           )}
           control={control}

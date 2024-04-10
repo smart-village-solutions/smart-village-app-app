@@ -14,7 +14,7 @@ import {
   Touchable,
   Wrapper
 } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { Icon, colors, consts, texts } from '../../config';
 import { storeProfileAuthToken } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { CREATE_GENERIC_ITEM_MESSAGE } from '../../queries/genericItem';
@@ -180,14 +180,12 @@ export const NoticeboardMessageForm = ({
           render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}
-              onPress={() => onChange(!value)}
-              title={`${texts.noticeboard.inputCheckbox} *`}
-              checkedColor={colors.accent}
-              checkedIcon="check-square-o"
-              uncheckedColor={colors.darkText}
-              uncheckedIcon="square-o"
+              checkedIcon={<Icon.SquareCheckFilled />}
               containerStyle={styles.checkboxContainerStyle}
+              onPress={() => onChange(!value)}
               textStyle={styles.checkboxTextStyle}
+              title={`${texts.noticeboard.inputCheckbox} *`}
+              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
             />
           )}
           control={control}

@@ -11,16 +11,16 @@ import { BoldText, RegularText } from './Text';
 import { WrapperHorizontal } from './Wrapper';
 
 export const Checkbox = ({
-  boldTitle,
-  center,
-  checked,
+  boldTitle = false,
+  center = false,
+  checked = false,
   checkedIcon,
-  containerStyle,
+  containerStyle = {},
   link = '',
-  linkDescription,
+  linkDescription = '',
   navigate,
   onPress,
-  title,
+  title = '',
   uncheckedIcon,
   ...props
 }) => {
@@ -48,7 +48,7 @@ export const Checkbox = ({
           ) : (
             <RegularText small>{title}</RegularText>
           )}
-          {(!!link || !!navigate) && (
+          {(!!link || !!navigate) && !!linkDescription && (
             <RegularText small primary underline onPress={link ? openWebScreen : navigate}>
               {linkDescription}
             </RegularText>

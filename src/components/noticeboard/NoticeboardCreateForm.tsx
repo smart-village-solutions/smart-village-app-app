@@ -17,7 +17,7 @@ import {
   Touchable,
   Wrapper
 } from '../../components';
-import { colors, consts, texts } from '../../config';
+import { Icon, colors, consts, normalize, texts } from '../../config';
 import { momentFormat, storeProfileAuthToken } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { CREATE_GENERIC_ITEM } from '../../queries/genericItem';
@@ -180,11 +180,6 @@ export const NoticeboardCreateForm = ({
                   title={noticeboardItem.title}
                   checkedColor={colors.accent}
                   uncheckedColor={colors.darkText}
-                  containerStyle={styles.checkboxContainerStyle}
-                  textStyle={styles.checkboxTextStyle}
-                  link={undefined}
-                  center={undefined}
-                  linkDescription={undefined}
                   checkedIcon={undefined}
                   uncheckedIcon={undefined}
                 />
@@ -262,14 +257,11 @@ export const NoticeboardCreateForm = ({
           render={({ field: { onChange, value } }) => (
             <Checkbox
               checked={!!value}
+              checkedIcon={<Icon.SquareCheckFilled />}
+              containerStyle={styles.paddingTop}
               onPress={() => onChange(!value)}
               title={`${texts.noticeboard.inputCheckbox} *`}
-              checkedColor={colors.accent}
-              checkedIcon="check-square-o"
-              uncheckedColor={colors.darkText}
-              uncheckedIcon="square-o"
-              containerStyle={styles.checkboxContainerStyle}
-              textStyle={styles.checkboxTextStyle}
+              uncheckedIcon={<Icon.Square color={colors.placeholder} />}
             />
           )}
           control={control}
@@ -297,14 +289,11 @@ const styles = StyleSheet.create({
   noPaddingTop: {
     paddingTop: 0
   },
-  checkboxContainerStyle: {
-    backgroundColor: colors.surface,
-    borderWidth: 0,
-    marginLeft: 0,
-    marginRight: 0
+  paddingTop: {
+    paddingTop: normalize(16)
   },
-  checkboxTextStyle: {
-    color: colors.darkText,
-    fontWeight: 'normal'
+  textArea: {
+    height: normalize(100),
+    padding: normalize(10)
   }
 });

@@ -162,11 +162,10 @@ export const ProfileRegistrationScreen = ({ navigation, route }: StackScreenProp
 
           <Wrapper style={styles.noPaddingTop}>
             <Checkbox
-              boldTitle={undefined}
+              boldTitle={false}
               center={false}
               checked={hasAcceptedDataPrivacy}
               checkedIcon={<Icon.SquareCheckFilled />}
-              containerStyle={undefined}
               navigate={() =>
                 navigation.navigate(ScreenName.Html, {
                   title: texts.profile.privacyCheckLink,
