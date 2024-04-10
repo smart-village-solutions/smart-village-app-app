@@ -13,11 +13,10 @@ import { DataProviderNotice } from '../DataProviderNotice';
 import { HtmlView } from '../HtmlView';
 import { ImageSection } from '../ImageSection';
 import { LoadingContainer } from '../LoadingContainer';
-import { Logo } from '../Logo';
 import { SectionHeader } from '../SectionHeader';
+import { HeadlineText } from '../Text';
 import { Wrapper, WrapperHorizontal, WrapperVertical } from '../Wrapper';
 import { InfoCard } from '../infoCard';
-import { HeadlineText } from '../Text';
 
 import { OpeningTimesCard } from './OpeningTimesCard';
 import { OperatingCompany } from './OperatingCompany';
@@ -122,11 +121,13 @@ export const EventRecord = ({ data, route }) => {
           </HeadlineText>
         </WrapperHorizontal>
       )}
-      <SectionHeader big title={title} />
+
+      {!!title && <SectionHeader big title={title} />}
 
       {(!!addresses?.length || !!contacts?.length || !!webUrls?.length) && (
         <SectionHeader title={texts.eventRecord.details} />
       )}
+
       <Wrapper>
         <InfoCard
           addresses={addresses}
@@ -144,7 +145,7 @@ export const EventRecord = ({ data, route }) => {
       )}
 
       {/* temporary logic in order to show PriceCard just when description is present for the first index */}
-      {!!priceInformations && !!priceInformations.length && !!priceInformations[0].description && (
+      {!!priceInformations?.length && !!priceInformations[0].description && (
         <WrapperVertical>
           <SectionHeader title={texts.eventRecord.prices} />
           <PriceCard prices={priceInformations} />

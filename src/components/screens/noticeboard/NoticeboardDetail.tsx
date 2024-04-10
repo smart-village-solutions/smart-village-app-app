@@ -1,20 +1,16 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { texts } from '../../../config';
-import { getGenericItemMatomoName, matomoTrackingString, momentFormat } from '../../../helpers';
+import { getGenericItemMatomoName, matomoTrackingString } from '../../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../../hooks';
-import { GenericType } from '../../../types';
-import { DataProviderButton } from '../../DataProviderButton';
 import { ImageSection } from '../../ImageSection';
-import { InfoCard } from '../../infoCard';
-import { Logo } from '../../Logo';
-import { OpeningTimesCard, OperatingCompany } from '../../screens';
 import { SectionHeader } from '../../SectionHeader';
 import { StorySection } from '../../StorySection';
-import { BoldText, RegularText } from '../../Text';
-import { Wrapper, WrapperRow, WrapperWrap } from '../../Wrapper';
+import { BoldText, HeadlineText } from '../../Text';
+import { Wrapper, WrapperHorizontal, WrapperVertical } from '../../Wrapper';
+import { InfoCard } from '../../infoCard';
 
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
@@ -22,15 +18,12 @@ const isImage = (mediaContent) => mediaContent.contentType === 'image';
 export const NoticeboardDetail = ({ data, route }) => {
   const {
     categories,
-    companies,
-    contacts,
     contentBlocks,
     dataProvider,
     dates,
     genericType,
     mediaContents,
-    payload,
-    publicationDate,
+    priceInformations,
     sourceUrl,
     title
   } = data;
@@ -46,54 +39,43 @@ export const NoticeboardDetail = ({ data, route }) => {
   const link = sourceUrl?.url;
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
-  const dataProviderLogo = dataProvider?.logo?.url;
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
 
-  const logo = mediaContents?.find((mediaContent) => mediaContent.contentType === 'logo')?.sourceUrl
-    ?.url;
-
-  const operatingCompany = companies?.[0];
-  const contact = contacts?.[0];
-
-  const businessAccount = dataProvider?.dataType === 'business_account';
-
   return (
     <View>
-      {/* the images from the first content block will be present in the main image carousel */}
-      <ImageSection mediaContents={mediaContents?.filter(isImage)} />
+      <WrapperVertical style={styles.noPaddingTop}>
+        <ImageSection mediaContents={mediaContents?.filter(isImage)} />
+      </WrapperVertical>
 
-      {!!title && <SectionHeader title={title} onPress={link ? openWebScreen : undefined} />}
-      {!!dataProviderLogo && (
-        <Wrapper>
-          <Logo source={{ uri: dataProviderLogo }} />
+      {!!categories?.length && !!categories[0].name && (
+        <WrapperHorizontal>
+          <HeadlineText smaller uppercase>
+            {categories[0].name}
+          </HeadlineText>
+        </WrapperHorizontal>
+      )}
+
+      {!!title && <SectionHeader big title={title} />}
+
+      {!!priceInformations?.length && (
+        <Wrapper style={styles.noPaddingTop}>
+          <BoldText>{priceInformations[0].description}</BoldText>
         </Wrapper>
       )}
 
-      {!!categories?.length && (
+      {(!!dates?.length || !!contentBlocks?.length) && (
+        <SectionHeader title={texts.noticeboard.details} />
+      )}
+
+      {!!dates?.length && (
         <Wrapper>
-          <InfoCard category={categories[0]} openWebScreen={openWebScreen} />
+          <InfoCard dates={dates} />
         </Wrapper>
       )}
 
-      {typeof payload?.employmentType === 'string' && payload?.employmentType?.length && (
-        <Wrapper>
-          <WrapperWrap>
-            <BoldText>{texts.job.employmentType}</BoldText>
-            <RegularText>{payload.employmentType}</RegularText>
-          </WrapperWrap>
-        </Wrapper>
-      )}
-
-      {!!publicationDate && genericType !== GenericType.Deadline && (
-        <Wrapper>
-          <WrapperRow>
-            <BoldText>{texts.job.publishedAt}</BoldText>
-            <RegularText>{momentFormat(publicationDate)}</RegularText>
-          </WrapperRow>
-        </Wrapper>
-      )}
+      {!!contentBlocks?.length && <SectionHeader title={texts.noticeboard.description} />}
 
       {contentBlocks?.map((contentBlock, index) => {
         return (
@@ -105,32 +87,15 @@ export const NoticeboardDetail = ({ data, route }) => {
           />
         );
       })}
-
-      {!!dates && !!dates.length && (
-        <View>
-          <SectionHeader title={texts.eventRecord.appointments} />
-          <OpeningTimesCard
-            openingHours={dates.map((date) => ({ ...date, useYear: date?.useYear ?? true }))}
-          />
-        </View>
-      )}
-
-      {!!contact && (
-        <Wrapper>
-          <InfoCard contact={contact} openWebScreen={openWebScreen} />
-        </Wrapper>
-      )}
-
-      <OperatingCompany
-        title={texts.pointOfInterest.operatingCompany}
-        logo={logo}
-        operatingCompany={operatingCompany}
-        openWebScreen={openWebScreen}
-      />
-      {!!businessAccount && <DataProviderButton dataProvider={dataProvider} />}
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  noPaddingTop: {
+    paddingTop: 0
+  }
+});
 
 NoticeboardDetail.propTypes = {
   data: PropTypes.object.isRequired,

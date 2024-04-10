@@ -494,6 +494,8 @@ export const texts = {
       offer: 'Angebot',
       search: 'Gesuch'
     },
+    description: 'Beschreibung',
+    details: 'Details',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',

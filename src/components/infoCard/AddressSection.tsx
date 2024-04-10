@@ -21,7 +21,7 @@ import { WrapperRow, WrapperVertical } from '../Wrapper';
 type Props = {
   address?: Address;
   addresses?: Address[];
-  openWebScreen: (link: string, specificTitle?: string) => void;
+  openWebScreen?: (link: string, specificTitle?: string) => void;
 };
 
 const addressOnPress = (

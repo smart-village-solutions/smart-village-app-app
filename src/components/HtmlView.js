@@ -82,7 +82,7 @@ export const HtmlView = memo(({ html, tagsStyles, openWebScreen, width }) => {
   const maxWidth = calculatedWidth - 2 * normalize(14); // width of an image minus paddings
 
   if (!html.match(HTML_REGEX)) {
-    return <RegularText>{html}</RegularText>;
+    return <RegularText big>{html}</RegularText>;
   }
 
   return (
