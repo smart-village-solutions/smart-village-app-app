@@ -1,5 +1,6 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useQuery } from 'react-apollo';
 import { RefreshControl } from 'react-native';
 
@@ -12,11 +13,21 @@ import { QUERY_TYPES, getQuery } from '../../queries';
 export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>) => {
   const query = QUERY_TYPES.PROFILE.GET_CONVERSATIONS;
 
-  const { data: conversationData, loading, refetch } = useQuery(getQuery(query));
+  const {
+    data: conversationData,
+    loading,
+    refetch
+  } = useQuery(getQuery(query), { pollInterval: 1000 });
 
   const listItems = useMemo(
     () => parseListItemsFromQuery(query, conversationData, undefined),
     [query, conversationData]
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
   );
 
   if (loading) {

@@ -25,7 +25,11 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
   const displayName = route.params?.displayName;
   const { conversationableId, conversationableType, id: conversationId } = route.params?.details;
 
-  const { data: messages, loading } = useQuery(getQuery(query), { variables: queryVariables });
+  const {
+    data: messages,
+    loading,
+    refetch
+  } = useQuery(getQuery(query), { variables: queryVariables, pollInterval: 1000 });
 
   useEffect(() => {
     const messageArray: {
@@ -59,6 +63,12 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
   const onSend = async (newMessageData: TMessage) => {
     sendMessage({ variables: newMessageData });
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   if (loading || !currentUserId || !messageData.length) {
     return <LoadingSpinner loading />;
