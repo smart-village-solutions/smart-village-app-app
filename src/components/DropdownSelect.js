@@ -134,7 +134,7 @@ export const DropdownSelect = ({
         <WrapperRow
           style={[styles.dropdownTextWrapper, !errorMessage && { marginBottom: normalize(8) }]}
         >
-          <RegularText style={styles.selectedValueText}>
+          <RegularText style={styles.selectedValueText} numberOfLines={1}>
             {multipleSelect ? selectedMultipleValues : selectedValue}
           </RegularText>
           {arrow === 'down' ? <Icon.ArrowDown /> : <Icon.ArrowUp />}
@@ -146,12 +146,17 @@ export const DropdownSelect = ({
 
 const styles = StyleSheet.create({
   dropdownTextWrapper: {
+    alignItems: 'center',
+    borderBottomWidth: normalize(1),
     borderColor: colors.gray40,
     borderRadius: normalize(8),
-    borderWidth: normalize(1),
+    borderLeftWidth: normalize(1),
+    borderRightWidth: normalize(1),
+    borderTopWidth: normalize(1),
+    flexDirection: 'row',
+    minHeight: normalize(42),
     justifyContent: 'space-between',
-    padding: normalize(14),
-    paddingVertical: normalize(8)
+    paddingHorizontal: normalize(12)
   },
   dropdownDropdown: {
     backgroundColor: colors.surface,
@@ -159,6 +164,8 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     borderWidth: StyleSheet.hairlineWidth,
     elevation: 2,
+    height: 'auto',
+    maxHeight: normalize(320),
     shadowColor: colors.shadow,
     shadowOffset: { height: 5, width: 0 },
     shadowOpacity: 0.5,
