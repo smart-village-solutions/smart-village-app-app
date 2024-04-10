@@ -139,6 +139,7 @@ export const DateTimeInput = ({
           Keyboard.dismiss();
         }}
         isPlaceholder={!value}
+        errorMessage={errors[name] && `${label} muss ausgewählt werden`}
       />
       <Input
         name={name}

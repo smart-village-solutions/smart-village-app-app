@@ -80,6 +80,7 @@ export const DropdownInput = ({
         showSearch={showSearch}
         searchInputStyle={styles.searchInput}
         searchPlaceholder={texts.volunteer.search}
+        errorMessage={errors[name] && `${label} muss ausgewählt werden`}
       />
       <Input
         name={name}
