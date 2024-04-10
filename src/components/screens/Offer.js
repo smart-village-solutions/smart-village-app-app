@@ -2,20 +2,21 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { View } from 'react-native';
 
-import { texts } from '../config';
-import { getGenericItemMatomoName, matomoTrackingString, momentFormat } from '../helpers';
-import { useMatomoTrackScreenView, useOpenWebScreen } from '../hooks';
-import { GenericType } from '../types';
+import { texts } from '../../config';
+import { getGenericItemMatomoName, matomoTrackingString, momentFormat } from '../../helpers';
+import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { GenericType } from '../../types';
+import { DataProviderButton } from '../DataProviderButton';
+import { ImageSection } from '../ImageSection';
+import { InfoCard } from '../infoCard';
+import { Logo } from '../Logo';
+import { SectionHeader } from '../SectionHeader';
+import { StorySection } from '../StorySection';
+import { BoldText, RegularText } from '../Text';
+import { Wrapper, WrapperRow, WrapperWrap } from '../Wrapper';
 
-import { DataProviderButton } from './DataProviderButton';
-import { ImageSection } from './ImageSection';
-import { InfoCard } from './infoCard';
-import { Logo } from './Logo';
-import { OpeningTimesCard, OperatingCompany } from './screens';
-import { SectionHeader } from './SectionHeader';
-import { StorySection } from './StorySection';
-import { BoldText, RegularText } from './Text';
-import { Wrapper, WrapperRow, WrapperWrap } from './Wrapper';
+import { OpeningTimesCard } from './OpeningTimesCard';
+import { OperatingCompany } from './OperatingCompany';
 
 const isImage = (mediaContent) => mediaContent.contentType === 'image';
 
