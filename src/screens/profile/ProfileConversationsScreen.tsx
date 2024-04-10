@@ -17,7 +17,7 @@ export const ProfileConversationsScreen = ({ navigation }: StackScreenProps<any>
     data: conversationData,
     loading,
     refetch
-  } = useQuery(getQuery(query), { pollInterval: 1000 });
+  } = useQuery(getQuery(query), { pollInterval: 10000 });
 
   const listItems = useMemo(
     () => parseListItemsFromQuery(query, conversationData, undefined),

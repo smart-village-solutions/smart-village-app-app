@@ -7,7 +7,7 @@ import { Chat, LoadingSpinner } from '../../components';
 import { colors, normalize } from '../../config';
 import { useProfileUser } from '../../hooks';
 import { getQuery } from '../../queries';
-import { CREATE_MESSAGE } from '../../queries/profile';
+import { CREATE_MESSAGE, MARK_MESSAGES_AS_READ } from '../../queries/profile';
 
 type TMessage = {
   conversationableId: number;
@@ -29,7 +29,7 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
     data: messages,
     loading,
     refetch
-  } = useQuery(getQuery(query), { variables: queryVariables, pollInterval: 1000 });
+  } = useQuery(getQuery(query), { variables: queryVariables, pollInterval: 10000 });
 
   useEffect(() => {
     const messageArray: {
@@ -63,6 +63,16 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
   const onSend = async (newMessageData: TMessage) => {
     sendMessage({ variables: newMessageData });
   };
+
+  const [markMessagesAsRead] = useMutation(MARK_MESSAGES_AS_READ);
+
+  useEffect(() => {
+    if (messages[query].length && !loading) {
+      markMessagesAsRead({
+        variables: { conversationId: parseInt(conversationId), updateAllMessages: true }
+      });
+    }
+  }, [messages, loading]);
 
   useFocusEffect(
     useCallback(() => {

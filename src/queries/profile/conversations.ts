@@ -49,3 +49,17 @@ export const CREATE_MESSAGE = gql`
     }
   }
 `;
+
+export const MARK_MESSAGES_AS_READ = gql`
+  mutation MarkMessagesAsRead($messageId: ID, $updateAllMessages: Boolean, $conversationId: ID) {
+    markMessagesAsRead(
+      messageId: $messageId
+      updateAllMessages: $updateAllMessages
+      conversationId: $conversationId
+    ) {
+      id
+      status
+      statusCode
+    }
+  }
+`;
