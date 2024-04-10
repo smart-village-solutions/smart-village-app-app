@@ -253,13 +253,13 @@ export const SueReportScreen = ({
           const images = JSON.parse(getValues().images);
 
           let totalSize = 0;
-          const sizeOfImage = images.some(({ size }: { size: number }) => {
+          const isImageGreater10MB = images.some(({ size }: { size: number }) => {
             totalSize += size;
             return size >= 10485760;
           });
 
           /* the server does not support files more than 10MB in size. */
-          if (sizeOfImage) {
+          if (isImageGreater10MB) {
             return texts.sue.report.alerts.imageGreater10MBError;
           }
 
