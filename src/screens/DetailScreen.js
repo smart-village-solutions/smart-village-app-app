@@ -7,6 +7,7 @@ import {
   EventRecord,
   LoadingContainer,
   NewsItem,
+  NoticeboardDetail,
   Offer,
   PointOfInterest,
   SafeAreaViewFlex,
@@ -23,7 +24,6 @@ import { GenericType } from '../types';
 import { DETAIL_REFRESH_EVENT } from '../hooks/DetailRefresh';
 
 import { DefectReportFormScreen } from './DefectReport';
-import { NoticeboardFormScreen } from './Noticeboard';
 
 const getGenericComponent = (genericType) => {
   switch (genericType) {
@@ -34,7 +34,7 @@ const getGenericComponent = (genericType) => {
     case GenericType.DefectReport:
       return DefectReportFormScreen;
     case GenericType.Noticeboard:
-      return NoticeboardFormScreen;
+      return NoticeboardDetail;
   }
 };
 
