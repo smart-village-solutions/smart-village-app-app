@@ -213,16 +213,18 @@ export const NoticeboardCreateForm = ({
 
       <Wrapper style={styles.noPaddingTop}>
         <Input
-          name="body"
+          control={control}
+          errorMessage={errors.body && errors.body.message}
+          inputStyle={styles.textArea}
           label={`${texts.noticeboard.inputDescription} *`}
-          placeholder={texts.noticeboard.inputDescription}
-          validate
           multiline
+          name="body"
+          placeholder={texts.noticeboard.inputDescription}
           rules={{
             required: `${texts.noticeboard.inputDescription} ${texts.noticeboard.inputErrorText}`
           }}
-          errorMessage={errors.body && errors.body.message}
-          control={control}
+          textAlignVertical="top"
+          validate
         />
       </Wrapper>
 
@@ -232,15 +234,16 @@ export const NoticeboardCreateForm = ({
           render={({ field: { name, onChange, value } }) => (
             <DateTimeInput
               {...{
-                mode: 'date',
+                boldLabel: true,
+                control,
                 errors,
-                required: true,
-                value,
-                onChange,
-                name,
                 label: texts.noticeboard.inputDate(requestedDateDifference),
+                mode: 'date',
+                name,
+                onChange,
                 placeholder: texts.noticeboard.inputDate(requestedDateDifference),
-                control
+                required: true,
+                value
               }}
             />
           )}

@@ -90,7 +90,6 @@ export const FeedbackScreen = () => {
               boldLabel
               placeholder={texts.feedbackScreen.inputsLabel.name}
               control={control}
-              containerStyle={styles.containerStyle}
             />
           </Wrapper>
 
@@ -110,7 +109,6 @@ export const FeedbackScreen = () => {
               }}
               errorMessage={errors.email && errors.email.message}
               control={control}
-              containerStyle={styles.containerStyle}
             />
           </Wrapper>
 
@@ -122,24 +120,21 @@ export const FeedbackScreen = () => {
               placeholder={texts.feedbackScreen.inputsLabel.phone}
               keyboardType="phone-pad"
               control={control}
-              containerStyle={styles.containerStyle}
             />
           </Wrapper>
 
-          <Wrapper style={[styles.noPaddingBottom, styles.noPaddingTop]}>
+          <Wrapper style={styles.noPaddingTop}>
             <Input
-              name="message"
+              control={control}
+              errorMessage={errors.message && errors.message.message}
+              inputStyle={styles.textArea}
               label={texts.feedbackScreen.inputsLabel.message + ' *'}
-              boldLabel
-              placeholder={texts.feedbackScreen.inputsLabel.message}
               multiline
+              name="message"
+              placeholder={texts.feedbackScreen.inputsLabel.message}
+              rules={{ required: texts.feedbackScreen.inputsErrorMessages.message }}
               textAlignVertical="top"
               validate
-              rules={{ required: texts.feedbackScreen.inputsErrorMessages.message }}
-              errorMessage={errors.message && errors.message.message}
-              control={control}
-              containerStyle={styles.containerStyle}
-              inputStyle={styles.textArea}
             />
           </Wrapper>
 
