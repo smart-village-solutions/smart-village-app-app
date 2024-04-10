@@ -174,14 +174,12 @@ export const NoticeboardCreateForm = ({
             <>
               {NOTICEBOARD_TYPE_OPTIONS.map((noticeboardItem) => (
                 <Checkbox
-                  key={noticeboardItem.title}
                   checked={value === noticeboardItem.value}
+                  checkedIcon={<Icon.CircleCheckFilled />}
+                  key={noticeboardItem.title}
                   onPress={() => onChange(noticeboardItem.value)}
                   title={noticeboardItem.title}
-                  checkedColor={colors.accent}
-                  uncheckedColor={colors.darkText}
-                  checkedIcon={undefined}
-                  uncheckedIcon={undefined}
+                  uncheckedIcon={<Icon.Circle color={colors.placeholder} />}
                 />
               ))}
               <Input

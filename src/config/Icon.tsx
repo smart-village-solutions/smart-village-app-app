@@ -4,6 +4,8 @@ import { SvgXml } from 'react-native-svg';
 import {
   IconAlertHexagonFilled,
   IconArrowNarrowRight,
+  IconCircle,
+  IconCircleCheckFilled,
   IconClock,
   IconFlag2,
   IconHeart,
@@ -131,6 +133,8 @@ export const Icon = {
   CalendarToggle: (props: IconProps) => <SvgIcon xml={calendarToggle} {...props} />,
   Camera: (props: IconProps) => <NamedIcon name="camera" {...props} />,
   Check: (props: IconProps) => <NamedIcon name="circle-check-filled" {...props} />,
+  Circle: (props: TablerIconsProps) => <IconCircle stroke={1} {...props} />,
+  CircleCheckFilled: (props: TablerIconsProps) => <IconCircleCheckFilled stroke={1} {...props} />,
   Clock: (props: TablerIconsProps) => <IconClock stroke={1} {...props} />,
   Close: (props: IconProps) => <SvgIcon xml={close} {...props} />,
   CloseCircle: (props: IconProps) => <NamedIcon name="circle-x-filled" {...props} />,
