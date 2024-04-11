@@ -3,8 +3,6 @@ import gql from 'graphql-tag';
 import { namespace, secrets } from '../config';
 import { VoucherLogin } from '../types';
 
-// TODO: memberId: 1 will be updated later. 1 will be replaced by the id of the logged in user
-//       which we can receive via `readFromStore(VOUCHER_MEMBER_ID)`
 export const GET_VOUCHERS = gql`
   query GenericItems(
     $ids: [ID]
@@ -13,6 +11,7 @@ export const GET_VOUCHERS = gql`
     $order: GenericItemOrder
     $dataProvider: String
     $categoryId: ID
+    $memberId: Int!
   ) {
     genericItems(
       ids: $ids
@@ -46,7 +45,6 @@ export const GET_VOUCHERS = gql`
         maxQuantity
         maxPerPerson
         availableQuantity
-        availableQuantityForMember(memberId: 1)
       }
       contentBlocks {
         id
@@ -62,13 +60,14 @@ export const GET_VOUCHERS = gql`
         timeStart
         dateEnd
         timeEnd
+        availableQuantityForMember(memberId: $memberId)
       }
     }
   }
 `;
 
 export const GET_VOUCHER = gql`
-  query GenericItem($id: ID!) {
+  query GenericItem($id: ID!, $memberId: Int!) {
     genericItem(id: $id) {
       id
       title
@@ -87,7 +86,7 @@ export const GET_VOUCHER = gql`
         maxQuantity
         maxPerPerson
         availableQuantity
-        availableQuantityForMember(memberId: 1)
+        availableQuantityForMember(memberId: $memberId)
       }
       contentBlocks {
         id
