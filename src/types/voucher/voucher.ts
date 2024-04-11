@@ -6,6 +6,9 @@ export type TVoucherItem = {
   discountType: TDiscount;
   id: string;
   quota: TQuota;
+  picture: {
+    url: string;
+  };
   routeName: string;
   subtitle: string;
   title: string;

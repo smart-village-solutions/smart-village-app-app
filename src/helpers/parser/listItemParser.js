@@ -328,6 +328,9 @@ const parseVouchers = (data, skipLastDivider) => {
     },
     // TODO: update subtitle
     subtitle: 'Test',
+    picture: {
+      url: mainImageOfMediaContents(voucher.mediaContents)
+    },
     ...voucher,
     bottomDivider: !skipLastDivider || index !== data.length - 1
   }));

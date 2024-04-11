@@ -8,6 +8,7 @@ import {
   BoldText,
   Discount,
   HtmlView,
+  ImageSection,
   LoadingSpinner,
   RegularText,
   VoucherRedeem,
@@ -43,7 +44,7 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     return <LoadingSpinner loading />;
   }
 
-  const { contentBlocks, discountType, quota, id } = data[QUERY_TYPES.GENERIC_ITEM];
+  const { contentBlocks, discountType, id, mediaContents, quota } = data[QUERY_TYPES.GENERIC_ITEM];
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota;
 
   return (
@@ -57,6 +58,8 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
         />
       }
     >
+      <ImageSection mediaContents={mediaContents} />
+
       <Wrapper>
         {!!quota &&
           (maxQuantity && frequency ? (

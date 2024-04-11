@@ -24,24 +24,14 @@ export const VoucherListItem = memo(
     horizontal: boolean;
     item: TVoucherItem;
   }) => {
-    const {
-      discountType,
-      id,
-      // TODO: update this code when the image is added on the server
-      image = { uri: 'https://picsum.photos/500/300' },
-      params,
-      quota,
-      routeName: name,
-      subtitle,
-      title
-    } = item;
+    const { discountType, id, picture, params, routeName: name, subtitle, title } = item;
 
     return (
       <Touchable onPress={() => navigation && navigation.push(name, params)} disabled={!navigation}>
         <Card containerStyle={styles.container}>
-          {!!image?.uri && (
+          {!!picture?.url && (
             <Image
-              source={{ uri: image.uri }}
+              source={{ uri: picture.url }}
               style={stylesWithProps({ horizontal }).image}
               containerStyle={styles.imageContainer}
               borderRadius={normalize(5)}
