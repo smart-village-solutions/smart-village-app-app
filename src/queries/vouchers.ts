@@ -30,6 +30,7 @@ export const GET_VOUCHERS = gql`
       genericType
       id
       title
+      teaser
       categories {
         name
         id
