@@ -1138,6 +1138,8 @@ export const texts = {
       close: 'Schließen',
       daily: 'pro Tag',
       desiredQuantity: 'Gewünschte Anzahl',
+      emptyMessage:
+        'Es tut uns leid. Etwas ist schief gelaufen. Bitte versuchen Sie es später noch einmal.',
       frequency: (maxPerPerson, frequency) =>
         `${maxPerPerson}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
       limit: (availableQuantity, maxQuantity) =>

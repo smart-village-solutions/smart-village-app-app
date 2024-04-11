@@ -7,6 +7,7 @@ import { NetworkContext } from '../../NetworkProvider';
 import {
   BoldText,
   Discount,
+  EmptyMessage,
   HtmlView,
   LoadingSpinner,
   RegularText,
@@ -18,6 +19,7 @@ import { graphqlFetchPolicy } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { TVoucherContentBlock } from '../../types';
 
+/* eslint-disable complexity */
 export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -43,7 +45,12 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     return <LoadingSpinner loading />;
   }
 
-  const { contentBlocks, discountType, quota, id } = data[QUERY_TYPES.GENERIC_ITEM];
+  const { contentBlocks, discountType, quota, id } = data[QUERY_TYPES.GENERIC_ITEM] || data;
+
+  if (!quota) {
+    return <EmptyMessage title={texts.voucher.detailScreen.emptyMessage} />;
+  }
+
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota;
 
   return (
@@ -98,3 +105,4 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     </ScrollView>
   );
 };
+/* eslint-enable complexity */
