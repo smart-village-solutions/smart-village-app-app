@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { RefreshControl, ScrollView } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import {
@@ -11,13 +11,16 @@ import {
   LoadingSpinner,
   RegularText,
   VoucherRedeem,
-  Wrapper
+  Wrapper,
+  WrapperHorizontal,
+  WrapperVertical
 } from '../../components';
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { TVoucherContentBlock } from '../../types';
 
+/* eslint-disable complexity */
 export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -43,7 +46,8 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     return <LoadingSpinner loading />;
   }
 
-  const { contentBlocks, discountType, quota, id } = data[QUERY_TYPES.GENERIC_ITEM];
+  const { contentBlocks, discountType, quota, id, title, subtitle } =
+    data[QUERY_TYPES.GENERIC_ITEM];
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota;
 
   return (
@@ -83,6 +87,18 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
         )}
       </Wrapper>
 
+      {!!title && (
+        <Wrapper style={styles.noPaddingTop}>
+          <BoldText>{title}</BoldText>
+        </Wrapper>
+      )}
+
+      {!!subtitle && (
+        <Wrapper style={styles.noPaddingTop}>
+          <RegularText>{subtitle}</RegularText>
+        </Wrapper>
+      )}
+
       {!!contentBlocks?.length &&
         contentBlocks.map((item: TVoucherContentBlock, index: number) => (
           <Wrapper key={index}>
@@ -92,9 +108,16 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
           </Wrapper>
         ))}
 
-      <Wrapper>
+      <Wrapper style={styles.noPaddingTop}>
         <VoucherRedeem quota={quota} voucherId={id} />
       </Wrapper>
     </ScrollView>
   );
 };
+/* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  noPaddingTop: {
+    paddingTop: 0
+  }
+});
