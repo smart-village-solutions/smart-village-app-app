@@ -75,14 +75,21 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
   const fetchMoreData = () => {
     return fetchMore({
       query: getFetchMoreQuery(query),
+      variables: {
+        ...queryVariables,
+        offset: data?.[QUERY_TYPES.GENERIC_ITEMS]?.length
+      },
       updateQuery: (prevResult, { fetchMoreResult }) => {
-        if (!fetchMoreResult?.[query]?.length) return prevResult;
+        if (!fetchMoreResult?.[QUERY_TYPES.GENERIC_ITEMS]?.length) return prevResult;
 
-        const uniqueData = _uniqBy([...prevResult[query], ...fetchMoreResult[query]], 'id');
+        const uniqueData = _uniqBy(
+          [...prevResult[QUERY_TYPES.GENERIC_ITEMS], ...fetchMoreResult[QUERY_TYPES.GENERIC_ITEMS]],
+          'id'
+        );
 
         return {
           ...prevResult,
-          [query]: uniqueData
+          [QUERY_TYPES.GENERIC_ITEMS]: uniqueData
         };
       }
     });
@@ -118,7 +125,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     return <LoadingSpinner loading />;
   }
 
-  const count = listItems?.length;
+  const count = listItems.filter(({ categories }) => !!categories.length)?.length;
 
   return (
     <ListComponent
@@ -127,7 +134,6 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
       queryVariables={queryVariables}
       data={listItems}
       fetchMoreData={fetchMoreData}
-      // TODO: replace with dropdown filter component here
       ListHeaderComponent={
         <>
           {query === QUERY_TYPES.VOUCHERS && (
