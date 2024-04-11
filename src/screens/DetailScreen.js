@@ -83,7 +83,8 @@ const useRootRouteByCategory = (details, navigation) => {
 export const DetailScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = route.params?.query ?? '';
-  const queryVariables = route.params?.queryVariables ?? {};
+  const detailId = route.params?.id ?? undefined;
+  const queryVariables = route.params?.queryVariables || detailId ? { id: detailId } : {};
   const details = route.params?.details ?? {};
   const [today] = useState(new Date().toISOString());
 
