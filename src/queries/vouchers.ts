@@ -30,7 +30,7 @@ export const GET_VOUCHERS = gql`
       genericType
       id
       title
-      teaser
+      subtitle: teaser
       categories {
         name
         id
@@ -73,6 +73,7 @@ export const GET_VOUCHER = gql`
     genericItem(id: $id) {
       id
       title
+      subtitle: teaser
       categories {
         name
       }

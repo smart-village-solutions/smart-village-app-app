@@ -326,7 +326,6 @@ const parseVouchers = (data, skipLastDivider) => {
       rootRouteName: ROOT_ROUTE_NAMES.VOUCHER,
       details: voucher
     },
-    subtitle: voucher.teaser,
     ...voucher,
     bottomDivider: !skipLastDivider || index !== data.length - 1
   }));

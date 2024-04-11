@@ -53,10 +53,18 @@ export const VoucherListItem = memo(
           )}
 
           <WrapperRow spaceBetween style={styles.centeredItems}>
-            <View>
-              {!!title && <BoldText small>{title}</BoldText>}
+            <View style={styles.textContainer}>
+              {!!title && (
+                <BoldText small numberOfLines={2}>
+                  {title}
+                </BoldText>
+              )}
 
-              {!!subtitle && <RegularText small>{subtitle}</RegularText>}
+              {!!subtitle && (
+                <RegularText small numberOfLines={1}>
+                  {subtitle}
+                </RegularText>
+              )}
             </View>
 
             <Icon.ArrowRight color={colors.darkText} />
@@ -87,6 +95,9 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     alignSelf: 'center'
+  },
+  textContainer: {
+    width: '90%'
   }
 });
 
