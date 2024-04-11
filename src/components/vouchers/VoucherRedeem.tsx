@@ -5,7 +5,7 @@ import CircularProgress from 'react-native-circular-progress-indicator';
 
 import { Icon, colors, normalize, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
-import { VOUCHER_MEMBER_ID, VOUCHER_TRANSACTIONS } from '../../helpers/voucherHelper';
+import { VOUCHER_TRANSACTIONS } from '../../helpers/voucherHelper';
 import { useVoucher } from '../../hooks';
 import { REDEEM_QUOTA_OF_VOUCHER } from '../../queries/vouchers';
 import { TQuota } from '../../types';
@@ -18,7 +18,7 @@ import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
 const defaultTime = 15 * 60; // 15 * 60 sec.
 
 export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: string }) => {
-  const { isLoggedIn } = useVoucher();
+  const { isLoggedIn, memberId } = useVoucher();
   const [isVisible, setIsVisible] = useState(false);
   const [remainingTime, setRemainingTime] = useState(defaultTime);
   const [isRedeemingVoucher, setIsRedeemingVoucher] = useState(false);
@@ -54,13 +54,11 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
 
   const redeemVoucher = async () => {
     try {
-      const storedVoucherMemberId = await readFromStore(VOUCHER_MEMBER_ID);
-
       redeemQuotaOfVoucher({
         variables: {
           quantity,
           voucherId,
-          memberId: storedVoucherMemberId
+          memberId
         }
       });
 
@@ -68,7 +66,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
       const voucherTransaction = {
         quantity,
         voucherId,
-        memberId: storedVoucherMemberId,
+        memberId,
         createdAt: new Date().toISOString()
       };
 
