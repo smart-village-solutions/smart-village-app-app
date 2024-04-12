@@ -9,13 +9,15 @@ import { OrientationContext } from '../../OrientationProvider';
 import { SettingsContext } from '../../SettingsProvider';
 import { IconUrl, colors, device, normalize } from '../../config';
 import { graphqlFetchPolicy, isOpen, parseListItemsFromQuery } from '../../helpers';
+import { useLocationSettings } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { MapMarker } from '../../types';
 import { LoadingContainer } from '../LoadingContainer';
 import { TextListItem } from '../TextListItem';
+import { getLocationMarker } from '../settings';
 
 import { Filter } from './Filter';
-import { Map, MapIcon } from './Map';
+import { Map } from './Map';
 
 type Props = {
   filterByOpeningTimes?: boolean;
@@ -32,28 +34,35 @@ type Props = {
 // FIXME: with our current setup the data that we receive from a query is not typed
 // if we change that then we can fix this place
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
-  return (
-    pointsOfInterest
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ?.map((item: any) => {
-        const latitude = item.addresses?.[0]?.geoLocation?.latitude;
-        const longitude = item.addresses?.[0]?.geoLocation?.longitude;
+const mapToMapMarkers = (
+  pointsOfInterest: any,
+  alternativePosition: any
+): MapMarker[] | undefined => {
+  const markers = pointsOfInterest
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ?.map((item: any) => {
+      const latitude = item.addresses?.[0]?.geoLocation?.latitude;
+      const longitude = item.addresses?.[0]?.geoLocation?.longitude;
 
-        if (!latitude || !longitude) return undefined;
+      if (!latitude || !longitude) return undefined;
 
-        return {
-          iconName: item.category.iconName,
-          id: item.id,
-          position: {
-            latitude,
-            longitude
-          }
-        };
-      })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .filter((item: any) => item !== undefined)
-  );
+      return {
+        iconName: item.category.iconName,
+        id: item.id,
+        position: {
+          latitude,
+          longitude
+        }
+      };
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .filter((item: any) => item !== undefined);
+
+  if (alternativePosition) {
+    markers.push(getLocationMarker(alternativePosition));
+  }
+
+  return markers;
 };
 
 /* eslint-disable complexity */
@@ -61,11 +70,12 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const { orientation } = useContext(OrientationContext);
   const safeAreaInsets = useSafeAreaInsets();
-  const { globalSettings, locationSettings } = useContext(SettingsContext);
+  const { globalSettings } = useContext(SettingsContext);
   const { navigation: navigationType } = globalSettings;
+  const { locationSettings } = useLocationSettings();
+  const { alternativePosition, defaultAlternativePosition } = locationSettings || {};
   const [selectedPointOfInterest, setSelectedPointOfInterest] = useState<string>();
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
-  const { defaultAlternativePosition } = locationSettings || {};
 
   const {
     data: overviewData,
@@ -103,7 +113,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
     );
   }
 
-  const mapMarkers = mapToMapMarkers(pointsOfInterest);
+  const mapMarkers = mapToMapMarkers(pointsOfInterest, alternativePosition);
 
   const item = detailsData
     ? parseListItemsFromQuery(
