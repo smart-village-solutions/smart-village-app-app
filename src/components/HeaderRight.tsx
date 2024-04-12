@@ -14,6 +14,7 @@ import { EditHeader } from './EditHeader';
 import { GroupHeader } from './GroupHeader';
 import { ShareHeader } from './ShareHeader';
 import { WrapperRow } from './Wrapper';
+import { InfoHeader } from './InfoHeader';
 
 type Props = {
   navigation: StackNavigationProp<any> & DrawerNavigationProp<any>;
@@ -27,6 +28,7 @@ type Props = {
   withDrawer?: boolean;
   withEdit?: boolean;
   withShare?: boolean;
+  withInfo?: boolean;
 };
 
 export const HeaderRight = ({
@@ -40,7 +42,8 @@ export const HeaderRight = ({
   withGroup = false,
   withDrawer = false,
   withEdit = false,
-  withShare = false
+  withShare = false,
+  withInfo = false
 }: Props) => (
   <WrapperRow style={styles.headerRight}>
     {withBookmark && <BookmarkHeader route={route} style={styles.icon} />}
@@ -50,6 +53,7 @@ export const HeaderRight = ({
     {withEdit && <EditHeader onPress={onPress} style={styles.icon} />}
     {withShare && <ShareHeader shareContent={shareContent} style={styles.icon} />}
     {withDrawer && <DrawerHeader navigation={navigation} style={styles.icon} />}
+    {withInfo && <InfoHeader route={route} style={styles.icon} />}
   </WrapperRow>
 );
 
