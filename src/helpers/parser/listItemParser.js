@@ -92,10 +92,7 @@ const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText) 
             mediaContent.contentType === 'image' || mediaContent.contentType === 'thumbnail'
         )[0]?.sourceUrl?.url
     },
-    routeName:
-      genericItem.genericType === GenericType.Noticeboard
-        ? ScreenName.NoticeboardForm
-        : ScreenName.Detail,
+    routeName: ScreenName.Detail,
     params: {
       title: getGenericItemDetailTitle(genericItem.genericType),
       consentForDataProcessingText,

@@ -9,7 +9,6 @@ import { RegularText } from '../Text';
 import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 type Props = {
-  openWebScreen: (link: string) => void;
   webUrls: WebUrl[];
 };
 

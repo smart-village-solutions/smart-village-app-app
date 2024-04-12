@@ -1,4 +1,5 @@
 export * from './consul';
+export * from './noticeboard';
 
 export * from './About';
 export * from './AvailableVehicles';
@@ -6,6 +7,7 @@ export * from './EventRecord';
 export * from './EventRecords';
 export * from './LunchSection';
 export * from './NewsItem';
+export * from './Offer';
 export * from './OpeningTimesCard';
 export * from './OperatingCompany';
 export * from './Overviews';

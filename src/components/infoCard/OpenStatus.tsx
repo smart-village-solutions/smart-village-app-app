@@ -43,6 +43,7 @@ export const OpenStatus = ({ openingHours }: Props) => {
           <RegularText>{status + additionalInfo}</RegularText>
         </WrapperRow>
       </WrapperVertical>
+
       <Divider style={styles.divider} />
     </>
   );

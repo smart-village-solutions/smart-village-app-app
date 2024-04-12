@@ -210,6 +210,9 @@ export const GET_GENERIC_ITEM = gql`
       }
       publicationDate
       payload
+      priceInformations {
+        description
+      }
     }
   }
 `;
