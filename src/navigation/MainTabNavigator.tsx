@@ -39,7 +39,6 @@ export const MainTabNavigator = ({
         headerShown: false,
         tabBarActiveBackgroundColor: tabNavigatorConfig.activeBackgroundColor,
         tabBarActiveTintColor: tabNavigatorConfig.activeTintColor,
-        tabBarHideOnKeyboard: device.platform === 'android',
         tabBarInactiveBackgroundColor: tabNavigatorConfig.inactiveBackgroundColor,
         tabBarInactiveTintColor: tabNavigatorConfig.inactiveTintColor,
         tabBarItemStyle: { marginTop: normalize(0) },

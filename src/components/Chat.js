@@ -18,7 +18,7 @@ import {
   Send
 } from 'react-native-gifted-chat';
 
-import { colors, consts, Icon, normalize, texts } from '../config';
+import { colors, consts, device, Icon, normalize, texts } from '../config';
 import { deleteArrayItem, momentFormat, openLink } from '../helpers';
 import { useSelectDocument, useSelectImage } from '../hooks';
 
@@ -105,6 +105,7 @@ export const Chat = ({
   return (
     <GiftedChat
       alwaysShowSend
+      bottomOffset={device.platform === 'ios' && normalize(96)}
       messages={messages}
       minInputToolbarHeight={normalize(96)}
       placeholder={placeholder}
