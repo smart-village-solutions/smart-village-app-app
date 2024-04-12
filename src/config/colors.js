@@ -14,10 +14,11 @@ const gray180 = '#191818'; // Neutral 900
 export const colors = {
   lighterPrimaryRgba: 'rgba(247, 245, 240, 0.1)',
   lighterPrimary: '#F7F5F0',
+  lighterSecondary: 'rgb(239, 204, 164)',
   primary: black,
   darkerPrimary: 'rgb(0, 0, 0)',
   darkerPrimaryRgba: 'rgba(0, 0, 0, 0.6)', // darkerPrimary with 0.6 alpha
-  secondary: 'rgb(66, 100, 73)',
+  secondary: 'rgb(222, 113, 54)',
   accent: 'rgb(168, 58, 137)',
 
   error: 'rgb(174, 30, 42)',
