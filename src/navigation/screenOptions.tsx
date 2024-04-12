@@ -19,6 +19,7 @@ type OptionConfig = {
   withDrawer?: boolean;
   withFavorites?: boolean;
   withShare?: boolean;
+  withInfo?: boolean;
   noHeaderLeft?: boolean;
   cardStyleInterpolator?: StackNavigationOptions['cardStyleInterpolator'];
 };
@@ -29,6 +30,7 @@ export const getScreenOptions =
     withDrawer,
     withFavorites,
     withShare,
+    withInfo,
     noHeaderLeft = false,
     cardStyleInterpolator
   }: OptionConfig): ((props: OptionProps) => StackNavigationOptions) =>
@@ -64,7 +66,8 @@ export const getScreenOptions =
             shareContent: route.params?.shareContent,
             withBookmark,
             withDrawer,
-            withShare
+            withShare,
+            withInfo
           }}
         />
       ),

@@ -42,6 +42,8 @@ export const consts = {
     mail: '(E-Mail-Adresse)',
     mailHint: '(Wechselt zur E-Mail-App)',
     mapHint: '(Wechselt zur Karten-App)',
+    informationIcon: 'Informationen (Taste)',
+    informationHint: 'Zu den Informationen wechseln',
     openMenuHint: 'Navigiert zum Menü',
     openMenuIcon: 'Menü (Taste)',
     phoneNumber: '(Telefonnummer)',

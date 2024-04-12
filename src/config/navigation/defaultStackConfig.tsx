@@ -269,6 +269,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Index,
       screenComponent: IndexScreen,
+      screenOptions: getScreenOptions({ withInfo: true }),
       // NOTE: is used as initial screen for the points of interest tab
       initialParams: {
         title: texts.screenTitles.pointsOfInterest,
@@ -291,7 +292,8 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.NestedInfo,
-      screenComponent: NestedInfoScreen
+      screenComponent: NestedInfoScreen,
+      screenOptions: getScreenOptions({ withInfo: true })
     },
     {
       routeName: ScreenName.NoticeboardForm,
@@ -328,6 +330,7 @@ export const defaultStackConfig = ({
     {
       routeName: ScreenName.Profile,
       screenComponent: ProfileHomeScreen,
+      screenOptions: getScreenOptions({ withInfo: true }),
       initialParams: {
         title: texts.screenTitles.profile.home,
         query: QUERY_TYPES.PUBLIC_JSON_FILE,
@@ -391,7 +394,8 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.TilesScreen,
-      screenComponent: TilesScreen
+      screenComponent: TilesScreen,
+      screenOptions: getScreenOptions({ withInfo: true })
     },
     {
       routeName: ScreenName.VolunteerDetail,
