@@ -157,7 +157,7 @@ export const IndexFilter = ({
       const searchResults = search({
         results,
         previousResults: listItems,
-        location: !!locationFilterData && locationFilterData.find((item) => item.selected).value,
+        location: !!locationFilterData && locationFilterData.find((item) => item.selected)?.value,
         keyword: serviceSearchData
       });
 
