@@ -94,7 +94,8 @@ export const Overviews = ({ navigation, route }) => {
   const { news: showNewsFilter = false } = filter;
   const {
     showFilterByOpeningTimes = true,
-    switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER
+    switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER,
+    locationService = {}
   } = settings;
   const {
     categoryListIntroText = texts.categoryList.intro,
@@ -120,7 +121,8 @@ export const Overviews = ({ navigation, route }) => {
   const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
   const [refreshing, setRefreshing] = useState(false);
   const showMap = isMapSelected(query, filterType);
-  const sortByDistance = query === QUERY_TYPES.POINTS_OF_INTEREST;
+  const sortByDistance =
+    query === QUERY_TYPES.POINTS_OF_INTEREST && (locationService.sortByDistance ?? true);
   const [filterByOpeningTimes, setFilterByOpeningTimes] = useState(false);
   const { state: excludeDataProviderIds } = usePermanentFilter();
   const { loading: loadingPosition, position } = usePosition(!sortByDistance);
