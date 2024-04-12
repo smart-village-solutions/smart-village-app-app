@@ -82,10 +82,8 @@ export const Filter = ({ queryVariables, refetch }: Props) => {
                   index === filter?.length - 1 && styles.lastChip
                 ]}
               >
-                {!!item.iconName && (
-                  <IconUrl color={isActive ? colors.surface : undefined} iconName={item.iconName} />
-                )}
-                <BoldText small style={styles.category} lightest={isActive}>
+                {!!item.iconName && <IconUrl iconName={item.iconName} />}
+                <BoldText small style={styles.category}>
                   {item.name}
                 </BoldText>
               </View>
@@ -123,7 +121,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3
   },
   chipActive: {
-    backgroundColor: colors.primary
+    backgroundColor: colors.secondary
   },
   filterContainer: {
     position: 'absolute',

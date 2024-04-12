@@ -20,7 +20,7 @@ DiagonalGradient.propTypes = {
 };
 
 DiagonalGradient.defaultProps = {
-  colors: [colors.primary, colors.primary],
+  colors: [colors.secondary, colors.secondary],
   start: { x: 0, y: 0 },
   end: { x: 1, y: 1 },
   style: { flex: 1 }

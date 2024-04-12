@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.placeholder
   },
   buttonInvert: {
+    backgroundColor: colors.transparent,
     borderColor: colors.primary,
     borderStyle: 'solid',
     borderWidth: normalize(1)
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     fontSize: normalize(14)
   },
   title: {
-    color: colors.lighterPrimary,
+    color: colors.primary,
     fontFamily: 'bold',
     fontSize: normalize(14),
     fontWeight: '600'

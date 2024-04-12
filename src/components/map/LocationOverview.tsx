@@ -194,7 +194,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
 const styles = StyleSheet.create({
   iconContainer: {
     alignItems: 'center',
-    backgroundColor: colors.gray10,
+    backgroundColor: colors.lighterSecondary,
     borderBottomLeftRadius: normalize(8),
     borderTopLeftRadius: normalize(8),
     justifyContent: 'center'

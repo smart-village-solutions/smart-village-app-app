@@ -153,7 +153,7 @@ export const Map = ({
               {!!marker.iconName && marker.iconName != 'ownLocation' ? (
                 <>
                   <MapIcon
-                    iconColor={isActiveMarker ? colors.primary : colors.lighterPrimary}
+                    iconColor={isActiveMarker ? colors.secondary : colors.lighterPrimary}
                     iconName={isActiveMarker ? 'locationActive' : 'location'}
                     iconSize={isActiveMarker ? MARKER_ICON_SIZE * 1.4 : MARKER_ICON_SIZE}
                   />
@@ -170,7 +170,7 @@ export const Map = ({
                       ]}
                     >
                       <IconUrl
-                        color={isActiveMarker ? colors.lighterPrimary : colors.primary}
+                        color={colors.primary}
                         iconName={marker.iconName}
                         size={
                           (MARKER_ICON_SIZE /
@@ -187,9 +187,9 @@ export const Map = ({
                 <MapIcon
                   iconColor={
                     marker.iconName == 'ownLocation'
-                      ? colors.primary
+                      ? colors.secondary
                       : isActiveMarker
-                      ? colors.primary
+                      ? colors.secondary
                       : colors.lighterPrimary
                   }
                   iconName={marker.iconName ? marker.iconName : undefined}
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lighterPrimary
   },
   mapIconOnLocationMarkerActive: {
-    backgroundColor: colors.primary
+    backgroundColor: colors.secondary
   },
   mapIconOnLocationMarkerContainer: {
     height: '100%',
