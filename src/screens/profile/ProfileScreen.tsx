@@ -51,13 +51,6 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
     }
   });
 
-  const refreshUser = useCallback(() => {
-    refetch();
-  }, [refetch]);
-
-  // refresh if the refreshUser param changed, which happens after login
-  useEffect(refreshUser, [route.params?.refreshUser]);
-
   const refreshHome = useCallback(async () => {
     setRefreshing(true);
     isConnected && (await refetch());

@@ -54,8 +54,7 @@ const serviceTabConfig: TabConfig = {
         size={normalize(24)}
         style={{ marginTop: normalize(10) }}
       />
-    ),
-    unmountOnBlur: true
+    )
   }
 };
 
