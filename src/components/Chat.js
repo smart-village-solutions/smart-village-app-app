@@ -39,6 +39,7 @@ const { IMAGE_TYPE_REGEX, VIDEO_TYPE_REGEX } = consts;
  * @param {object} messageTextStyleRight   style of chat text on the right
  * @param {func}   onSendButton            function returning message text
  * @param {string} placeholder             placeholder text of `textInput`
+ * @param {bool}   showActionButton           prop to render the action buttons
  * @param {object} textInputProps          props to customise text input
  * @param {number} userId      prop to recognise whether the message is the owner
  *                                         or another user
@@ -51,6 +52,7 @@ export const Chat = ({
   messageTextStyleRight,
   onSendButton,
   placeholder = '',
+  showActionButton = false,
   textInputProps,
   userId
 }) => {
@@ -138,6 +140,8 @@ export const Chat = ({
           },
           Abbrechen: () => null
         };
+
+        if (!showActionButton) return null;
 
         return (
           <Actions
@@ -378,6 +382,7 @@ Chat.propTypes = {
   messageTextStyleRight: PropTypes.object,
   onSendButton: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
+  showActionButton: PropTypes.bool,
   textInputProps: PropTypes.object,
   userId: PropTypes.string || PropTypes.number
 };
