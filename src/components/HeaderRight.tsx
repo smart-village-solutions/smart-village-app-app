@@ -6,15 +6,15 @@ import { ShareContent, StyleSheet } from 'react-native';
 
 import { normalize } from '../config';
 
-import { BookmarkHeader } from './bookmarks';
 import { CalendarHeader } from './CalendarHeader';
 import { ChatHeader } from './ChatHeader';
 import { DrawerHeader } from './DrawerHeader';
 import { EditHeader } from './EditHeader';
 import { GroupHeader } from './GroupHeader';
+import { InfoHeader } from './InfoHeader';
 import { ShareHeader } from './ShareHeader';
 import { WrapperRow } from './Wrapper';
-import { InfoHeader } from './InfoHeader';
+import { BookmarkHeader } from './bookmarks';
 
 type Props = {
   navigation: StackNavigationProp<any> & DrawerNavigationProp<any>;
