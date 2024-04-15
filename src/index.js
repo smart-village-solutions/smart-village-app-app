@@ -34,6 +34,7 @@ import { PermanentFilterProvider } from './PermanentFilterProvider';
 import { getQuery, QUERY_TYPES } from './queries';
 import { ReactQueryProvider } from './ReactQueryProvider';
 import { SettingsProvider } from './SettingsProvider';
+import { UnreadMessagesProvider } from './UnreadMessagesProvider';
 
 const { LIST_TYPES } = consts;
 
@@ -220,9 +221,11 @@ const MainAppWithApolloProvider = () => {
           initialLocationSettings
         }}
       >
-        <OnboardingManager>
-          <Navigator navigationType={initialGlobalSettings.navigation} />
-        </OnboardingManager>
+        <UnreadMessagesProvider>
+          <OnboardingManager>
+            <Navigator navigationType={initialGlobalSettings.navigation} />
+          </OnboardingManager>
+        </UnreadMessagesProvider>
       </SettingsProvider>
     </ApolloProvider>
   );
