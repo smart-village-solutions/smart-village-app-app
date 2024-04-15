@@ -1,7 +1,7 @@
 import { DeviceEventEmitter } from 'expo-modules-core';
 import PropTypes from 'prop-types';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { FlatList, RefreshControl } from 'react-native';
+import React, { useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react';
+import { FlatList, RefreshControl, StyleSheet } from 'react-native';
 
 import {
   About,
@@ -9,6 +9,7 @@ import {
   Disturber,
   HomeSection,
   HomeService,
+  Image,
   ListComponent,
   NewsSectionPlaceholder,
   RegularText,
@@ -18,7 +19,7 @@ import {
   Widgets,
   Wrapper
 } from '../components';
-import { colors, consts, texts } from '../config';
+import { colors, consts, normalize, texts } from '../config';
 import { graphqlFetchPolicy, rootRouteName } from '../helpers';
 import {
   useMatomoTrackScreenView,
@@ -221,6 +222,14 @@ export const HomeScreen = ({ navigation, route }) => {
     [navigation]
   );
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <Image source={require('../../assets/MQ_logo.png')} containerStyle={styles.logo} />
+      )
+    });
+  }, []);
+
   usePushNotifications(
     undefined,
     interactionHandler,
@@ -367,6 +376,13 @@ export const HomeScreen = ({ navigation, route }) => {
   );
 };
 /* eslint-enable complexity */
+
+const styles = StyleSheet.create({
+  logo: {
+    height: normalize(43),
+    width: normalize(70)
+  }
+});
 
 HomeScreen.propTypes = {
   navigation: PropTypes.object.isRequired,
