@@ -2,8 +2,11 @@ import { LinkingOptions } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
 
 import { NavigatorConfig, ScreenName } from '../../types';
+import { consts } from '../consts';
 
 import { tabNavigatorConfig } from './tabConfig';
+
+const { HOST_NAMES } = consts;
 
 export const navigationConfig = (navigationType: 'drawer' | 'tab') => {
   let navigatorConfig: NavigatorConfig;
@@ -11,7 +14,8 @@ export const navigationConfig = (navigationType: 'drawer' | 'tab') => {
     prefixes: [Linking.createURL('/')]
   };
   const screens = {
-    [ScreenName.EncounterUserDetail]: 'encounter',
+    [ScreenName.EncounterUserDetail]: HOST_NAMES.ENCOUNTER,
+    [ScreenName.Detail]: HOST_NAMES.DETAIL,
     [ScreenName.Home]: '*'
   };
 

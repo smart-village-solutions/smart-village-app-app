@@ -824,7 +824,9 @@ export const texts = {
     },
     voucher: {
       home: 'TreueClub',
-      index: 'Neue Angebote'
+      index: 'Neue Angebote',
+      partner: 'Kooperationspartner',
+      qr: 'Code scannen'
     },
     wasteCollection: 'Abfallkalender',
     weather: 'Wetter'
@@ -1138,6 +1140,8 @@ export const texts = {
       close: 'Schließen',
       daily: 'pro Tag',
       desiredQuantity: 'Gewünschte Anzahl',
+      emptyMessage:
+        'Der Inhalt kann nicht geladen werden. Bitte überprüfen Sie Ihre Internetverbindung.',
       frequency: (maxPerPerson, frequency) =>
         `${maxPerPerson}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
       limit: (availableQuantity, maxQuantity) =>
@@ -1171,6 +1175,11 @@ export const texts = {
     offersCategories: 'Angebote Kategorien',
     result: 'Ergebnis',
     results: 'Ergebnisse',
+    scannerScreen: {
+      errorBody: 'Beim Scannen des Codes ist ein Fehler aufgetreten. Bitte erneut versuchen.',
+      errorButton: 'Erneut versuchen',
+      errorTitle: 'Fehler'
+    },
     secret: 'Kundennummer'
   },
   wasteCalendar: {
