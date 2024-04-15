@@ -1,16 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { ComponentProps, useCallback, useContext, useState } from 'react';
-import { useQuery } from 'react-apollo';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Badge as RNBadge } from 'react-native-elements';
 import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, consts, device, Icon, IconSet, normalize } from '../../config';
 import { OrientationContext } from '../../OrientationProvider';
-import { getQuery } from '../../queries';
+import { Badge } from '../Badge';
 import { Image } from '../Image';
-import { LoadingSpinner } from '../LoadingSpinner';
 import { ServiceBox } from '../ServiceBox';
 import { BoldText } from '../Text';
 
@@ -27,37 +24,6 @@ export type TServiceTile = {
   tile?: string;
   tileSizeFactor?: number;
   title: string;
-};
-
-const Badge = ({ query }: { query: string }) => {
-  const { data: conversationData, loading } = useQuery(getQuery(query), { pollInterval: 10000 });
-
-  const count = useCallback(() => {
-    let unreadMessageCount = 0;
-
-    for (let i = 0; i < conversationData[query].length; i++) {
-      const { unreadMessagesCount } = conversationData[query][i];
-      unreadMessageCount += unreadMessagesCount;
-    }
-
-    return unreadMessageCount;
-  }, [conversationData]);
-
-  if (loading) {
-    return <LoadingSpinner loading />;
-  }
-
-  if (count() === 0) {
-    return null;
-  }
-
-  return (
-    <RNBadge
-      value={count()}
-      badgeStyle={styles.badgeStyle}
-      containerStyle={styles.badgeContainer}
-    />
-  );
 };
 
 /* eslint-disable complexity */
@@ -140,7 +106,7 @@ export const ServiceTile = ({
             />
           )}
 
-          {!!item?.query && <Badge query={item.query} />}
+          {!!item?.query && <Badge />}
 
           {!!item.title && (
             <BoldText
@@ -161,14 +127,6 @@ export const ServiceTile = ({
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
-  badgeContainer: {
-    position: 'absolute',
-    right: normalize(60),
-    top: normalize(17)
-  },
-  badgeStyle: {
-    backgroundColor: colors.error
-  },
   serviceIcon: {
     alignSelf: 'center',
     paddingVertical: normalize(7.5)
