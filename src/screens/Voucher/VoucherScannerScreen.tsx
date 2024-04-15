@@ -6,16 +6,18 @@ import { Alert, StyleSheet } from 'react-native';
 
 import appJson from '../../../app.json';
 import { SafeAreaViewFlex } from '../../components';
-import { texts } from '../../config';
+import { consts, texts } from '../../config';
 import { ScreenName } from '../../types';
 import { QUERY_TYPES } from '../../queries';
+
+const { HOST_NAMES } = consts;
 
 const parseQrCode = (
   data: string
 ): { query: string; queryVariables: { id: number | undefined } } => {
   const result = Linking.parse(data);
 
-  if (result.scheme === appJson.expo.scheme && result.hostname === 'detail') {
+  if (result.scheme === appJson.expo.scheme && result.hostname === HOST_NAMES.DETAIL) {
     const id = result.queryParams?.id as number | undefined;
     const query = result.queryParams?.query?.toString() || '';
 
@@ -33,6 +35,7 @@ export const VoucherScannerScreen = ({ navigation }: StackScreenProps<any>) => {
 
     if (!queryVariables?.id) {
       setIsScanning(false);
+
       return Alert.alert(
         texts.voucher.scannerScreen.errorTitle,
         texts.voucher.scannerScreen.errorBody,
