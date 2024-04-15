@@ -53,9 +53,7 @@ export const getScreenOptions =
       headerTitleStyle: styles.headerTitleStyle,
       headerTitleAlign: 'center',
       headerStyle: {
-        backgroundColor: colors.surface,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.borderRgba,
+        backgroundColor: colors.secondary,
         height: headerHeight
       },
       headerRight: () => (
