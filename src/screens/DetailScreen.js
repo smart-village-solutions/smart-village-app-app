@@ -4,6 +4,7 @@ import { Query } from 'react-apollo';
 import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 
 import {
+  EmptyMessage,
   EventRecord,
   LoadingContainer,
   NewsItem,
@@ -13,7 +14,7 @@ import {
   Tour
 } from '../components';
 import { FeedbackFooter } from '../components/FeedbackFooter';
-import { colors, consts } from '../config';
+import { colors, consts, texts } from '../config';
 import { graphqlFetchPolicy } from '../helpers';
 import { useRefreshTime } from '../hooks';
 import { NetworkContext } from '../NetworkProvider';
@@ -83,8 +84,8 @@ const useRootRouteByCategory = (details, navigation) => {
 export const DetailScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = route.params?.query ?? '';
-  const detailId = route.params?.id ?? undefined;
-  const queryVariables = route.params?.queryVariables || detailId ? { id: detailId } : {};
+  const id = route.params?.id;
+  const queryVariables = route.params?.queryVariables || id ? { id } : {};
   const details = route.params?.details ?? {};
   const [today] = useState(new Date().toISOString());
 
@@ -134,7 +135,8 @@ export const DetailScreen = ({ navigation, route }) => {
 
         // we can have `data` from GraphQL or `details` from the previous list view.
         // if there is no cached `data` or network fetched `data` we fallback to the `details`.
-        if ((!data || !data[query]) && !details) return null;
+        if ((!data || !data[query]) && !details)
+          return <EmptyMessage title={texts.voucher.detailScreen.emptyMessage} />;
 
         const Component = getComponent(query, data?.[query]?.genericType ?? details?.genericType);
 

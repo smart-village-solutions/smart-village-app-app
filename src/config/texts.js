@@ -1140,6 +1140,8 @@ export const texts = {
       close: 'Schließen',
       daily: 'pro Tag',
       desiredQuantity: 'Gewünschte Anzahl',
+      emptyMessage:
+        'Der Inhalt kann nicht geladen werden. Bitte überprüfen Sie Ihre Internetverbindung.',
       frequency: (maxPerPerson, frequency) =>
         `${maxPerPerson}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
       limit: (availableQuantity, maxQuantity) =>
@@ -1174,8 +1176,7 @@ export const texts = {
     result: 'Ergebnis',
     results: 'Ergebnisse',
     scannerScreen: {
-      errorBody:
-        'Beim Scannen des Codes ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.',
+      errorBody: 'Beim Scannen des Codes ist ein Fehler aufgetreten. Bitte erneut versuchen.',
       errorButton: 'Erneut versuchen',
       errorTitle: 'Fehler'
     },
