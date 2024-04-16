@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
 import { Badge } from 'react-native-elements';
@@ -57,7 +57,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
 
   const { currentUserData } = useProfileUser();
   const currentUserMemberId = currentUserData?.member?.id;
-  const isCurrentUser = !!currentUserMemberId && !!memberId && currentUserMemberId === memberId;
+  const isCurrentUser = !!currentUserMemberId && !!memberId && currentUserMemberId == memberId;
 
   const { data: dataMemberIndex, refetch: refetchMemberIndex } = useQuery(
     getQuery(QUERY_TYPES.GENERIC_ITEMS),
@@ -76,6 +76,13 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
   useEffect(() => {
     refetchMemberIndex();
   }, [data]);
+
+  useLayoutEffect(() => {
+    isCurrentUser &&
+      navigation.setOptions({
+        headerTitle: () => <HeadlineText>{texts.noticeboard.myNoticeboard}</HeadlineText>
+      });
+  }, []);
 
   return (
     <View>
@@ -112,7 +119,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
 
       {!!contacts?.length && (
         <>
-          <SectionHeader title={texts.noticeboard.contact} containerStyle={styles.paddingTop} />
+          <SectionHeader title={texts.noticeboard.member} containerStyle={styles.paddingTop} />
           <WrapperHorizontal>
             <TextListItem
               item={{
@@ -131,9 +138,10 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
                 onPress: () =>
                   navigation.push(ScreenName.NoticeboardMemberIndex, {
                     data: dataMemberIndex,
+                    isCurrentUser,
                     memberName: contacts[0].firstName,
                     query: QUERY_TYPES.GENERIC_ITEMS,
-                    title: headerTitle
+                    title: texts.noticeboard.member
                   }),
                 title: contacts[0].firstName
               }}
@@ -189,6 +197,7 @@ const styles = StyleSheet.create({
 
 NoticeboardDetail.propTypes = {
   data: PropTypes.object.isRequired,
+  fetchPolicy: PropTypes.string.isRequired,
   navigation: PropTypes.object.isRequired,
   route: PropTypes.object.isRequired
 };

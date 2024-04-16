@@ -84,7 +84,7 @@ export const getScreenOptions =
 const styles = StyleSheet.create({
   headerTitleStyle: {
     color: colors.darkText,
-    fontFamily: device.platform === 'ios' ? 'condbold' : 'regular',
+    fontFamily: 'condbold',
     fontSize: normalize(18),
     lineHeight: normalize(23)
   },

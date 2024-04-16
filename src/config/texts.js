@@ -495,7 +495,6 @@ export const texts = {
       offer: 'Angebot',
       search: 'Gesuch'
     },
-    contact: 'Anbieter',
     description: 'Beschreibung',
     details: 'Details',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
@@ -511,7 +510,9 @@ export const texts = {
     inputPrice: 'Preis',
     inputTitle: 'Titel',
     invalidMail: '-Adresse ist nicht gültig.',
-    noticeboard: 'Schwarzes Brett',
+    member: 'Anbieter',
+    myNoticeboard: 'Meine Anzeige',
+    noticeboard: 'Anzeige',
     publicationDate: 'Erscheinungsdatum',
     send: 'Senden',
     successScreen: {
