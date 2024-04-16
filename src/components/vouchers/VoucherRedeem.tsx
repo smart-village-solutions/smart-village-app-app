@@ -28,7 +28,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
   // TODO: set voucher availability
   const [isExpiredVoucher, setIsExpiredVoucher] = useState(false);
 
-  const { maxPerPerson } = quota;
+  const { availableQuantityForMember, availableQuantity } = quota;
 
   const [redeemQuotaOfVoucher] = useMutation(REDEEM_QUOTA_OF_VOUCHER);
 
@@ -196,7 +196,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
                   />
                 </Wrapper>
 
-                {!!maxPerPerson && maxPerPerson > 1 && (
+                {!!availableQuantityForMember && availableQuantityForMember > 1 && (
                   <Wrapper style={styles.noPaddingTop}>
                     <WrapperRow style={styles.quantityContainer}>
                       <RegularText lightest small>
@@ -218,7 +218,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
                         <TouchableOpacity
                           style={styles.quantityButton}
                           onPress={() => {
-                            if (quantity < maxPerPerson) {
+                            if (quantity < availableQuantityForMember) {
                               setQuantity(quantity + 1);
                             }
                           }}
