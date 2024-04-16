@@ -17,6 +17,7 @@ import { Wrapper, WrapperRow, WrapperVertical } from '../Wrapper';
 
 const defaultTime = 15 * 60; // 15 * 60 sec.
 
+/* eslint-disable complexity */
 export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: string }) => {
   const { isLoggedIn, memberId } = useVoucher();
   const [isVisible, setIsVisible] = useState(false);
@@ -25,10 +26,22 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
   const [isChecked, setIsChecked] = useState(false);
   const [quantity, setQuantity] = useState(1);
 
-  // TODO: set voucher availability
+  const [isRedeemedVoucher, setIsRedeemedVoucher] = useState(false);
+  const [isAvailableVoucher, setIsAvailableVoucher] = useState(false);
   const [isExpiredVoucher, setIsExpiredVoucher] = useState(false);
 
-  const { availableQuantityForMember, availableQuantity } = quota;
+  const { availableQuantityForMember = 0, availableQuantity = 0 } = quota;
+
+  useEffect(() => {
+    const hasAvailableQuantity = availableQuantity !== 0;
+    const hasNoAvailableQuantityForMember = availableQuantityForMember === 0;
+
+    setIsAvailableVoucher(hasAvailableQuantity);
+
+    if (hasNoAvailableQuantityForMember) {
+      setIsRedeemedVoucher(true);
+    }
+  }, [availableQuantity, availableQuantityForMember]);
 
   const [redeemQuotaOfVoucher] = useMutation(REDEEM_QUOTA_OF_VOUCHER);
 
@@ -72,20 +85,25 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
 
       addToStore(VOUCHER_TRANSACTIONS, [...voucherTransactions, voucherTransaction]);
 
+      setIsRedeemedVoucher(true);
       setIsRedeemingVoucher(true);
     } catch (error) {
       console.error(error);
     }
   };
 
+  const isButtonDisabled =
+    !isLoggedIn || !isAvailableVoucher || isExpiredVoucher || isRedeemedVoucher;
+  const buttonTitle =
+    isExpiredVoucher || !isAvailableVoucher
+      ? texts.voucher.detailScreen.isNotAvailable
+      : isRedeemedVoucher
+      ? texts.voucher.detailScreen.redeemed
+      : texts.voucher.detailScreen.redeem;
+
   return (
     <>
-      {/* TODO: button availability will be adjusted according to voucher availability */}
-      <Button
-        disabled={!isLoggedIn}
-        title={texts.voucher.detailScreen.redeem}
-        onPress={() => setIsVisible(true)}
-      />
+      <Button disabled={isButtonDisabled} title={buttonTitle} onPress={() => setIsVisible(true)} />
 
       <Modal
         animationType="none"
@@ -257,6 +275,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
     </>
   );
 };
+/* eslint-enable complexity */
 
 const styles = StyleSheet.create({
   button: {
