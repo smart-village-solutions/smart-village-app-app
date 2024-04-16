@@ -38,6 +38,7 @@ const getComponent = (query, horizontal, sectionByDate) => {
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY:
       return sectionByDate ? EventList : VerticalList;
     case QUERY_TYPES.VOUCHERS:
+    case QUERY_TYPES.VOUCHERS_REDEEMED:
       return VoucherList;
     default:
       return VerticalList;

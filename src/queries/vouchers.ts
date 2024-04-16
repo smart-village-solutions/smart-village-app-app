@@ -116,6 +116,52 @@ export const GET_VOUCHERS_CATEGORIES = gql`
   }
 `;
 
+export const GET_VOUCHERS_REDEEMED = gql`
+  query Vouchers($memberId: ID) {
+    vouchers(memberId: $memberId) {
+      id
+      updatedAt
+      createdAt
+      publishedAt
+      genericType
+      id
+      title
+      categories {
+        name
+        id
+      }
+      discountType {
+        originalPrice
+        discountedPrice
+        discountPercentage
+        discountAmount
+      }
+      quota {
+        id
+        frequency
+        maxQuantity
+        maxPerPerson
+        availableQuantity
+      }
+      contentBlocks {
+        id
+        title
+        intro
+        body
+        updatedAt
+        createdAt
+      }
+      dates {
+        id
+        dateStart
+        timeStart
+        dateEnd
+        timeEnd
+      }
+    }
+  }
+`;
+
 export const REDEEM_QUOTA_OF_VOUCHER = gql`
   mutation redeemQuotaOfVoucher(
     $deviceToken: String!
