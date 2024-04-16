@@ -327,9 +327,9 @@ export const texts = {
       poll: 'Abstimmung',
       proposal: 'Vorschlag'
     },
-    eventRecord: 'Veranstaltung',
+    eventRecord: 'Termin',
     newsItem: 'Nachricht',
-    pointOfInterest: 'Ort',
+    pointOfInterest: 'A bis Z',
     volunteer: {
       additional: 'Ganz praktisch',
       conversation: 'Unterhaltung',
@@ -452,8 +452,8 @@ export const texts = {
   },
   homeTitles: {
     about: 'Über die App',
-    events: 'Veranstaltungen',
-    pointsOfInterest: 'Orte und Touren',
+    events: 'Termine',
+    pointsOfInterest: 'A bis Z',
     service: 'Service'
   },
   homeCategoriesNews: {
@@ -874,7 +874,7 @@ export const texts = {
     },
     encounterHome: 'Mitfahrbank',
     favorites: 'Favoriten',
-    events: 'Veranstaltungen',
+    events: 'Termine',
     feedback: 'Feedback',
     home: 'Mein Quartier',
     mapView: 'Kartenansicht',
