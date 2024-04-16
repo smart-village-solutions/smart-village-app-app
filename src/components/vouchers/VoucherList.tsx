@@ -54,7 +54,7 @@ export const VoucherList = ({
   refreshControl
 }: {
   data: TVoucherItem[];
-  fetchMoreData: () => void;
+  fetchMoreData: () => Promise<any>;
   ListEmptyComponent: React.ReactElement;
   ListHeaderComponent: React.ReactElement;
   navigation: StackScreenProps<any>;
@@ -78,7 +78,7 @@ export const VoucherList = ({
       // from partially fetching, so we need to check the data to determine the lists end
       const { data: moreData } = await fetchMoreData();
 
-      setListEndReached(!moreData[QUERY_TYPES.VOUCHERS].length);
+      setListEndReached(!moreData[QUERY_TYPES.GENERIC_ITEMS].length);
     } else {
       setListEndReached(true);
     }
