@@ -19,8 +19,8 @@ export const Title = styled(Text)`
   ${(props) =>
     props.small &&
     css`
-      font-size: ${normalize(16)};
-      line-height: ${normalize(19)};
+      font-size: ${normalize(18)};
+      line-height: ${normalize(23)};
     `};
 
   ${(props) =>
