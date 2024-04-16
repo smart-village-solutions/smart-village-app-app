@@ -91,9 +91,7 @@ export const InfoHeader = ({ route, style }: Props) => {
             {!!description && (
               <Wrapper style={styles.noPaddingTop}>
                 <WrapperHorizontal>
-                  <RegularText center big>
-                    {description}
-                  </RegularText>
+                  <RegularText big>{description}</RegularText>
                 </WrapperHorizontal>
               </Wrapper>
             )}
@@ -125,6 +123,7 @@ const styles = StyleSheet.create({
   overlayWidth: {
     borderRadius: normalize(8),
     height: 'auto',
+    maxHeight: '90%',
     padding: 0,
     width: '95%'
   },
