@@ -6,7 +6,10 @@
     "production": {
       "node": "16.13.0",
       "yarn": "1.22.19",
-      "channel": "production"
+      "channel": "production",
+      "ios": {
+        "image": "latest"
+      }
     },
     "preview": {
       "extends": "production",
