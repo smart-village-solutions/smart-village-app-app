@@ -6,6 +6,7 @@ import { addToStore, readFromStore } from './storageHelper';
 const VOUCHER_AUTH_TOKEN = 'VOUCHER_AUTH_TOKEN';
 export const VOUCHER_MEMBER_ID = 'VOUCHER_MEMBER_ID';
 export const VOUCHER_TRANSACTIONS = 'VOUCHER_TRANSACTIONS';
+export const VOUCHER_DEVICE_TOKEN = 'VOUCHER_DEVICE_TOKEN';
 
 export const storeVoucherAuthToken = (authToken?: string) => {
   if (authToken) {

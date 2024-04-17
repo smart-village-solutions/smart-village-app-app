@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useMutation } from 'react-apollo';
 import { Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
+import { v4 as uuid } from 'uuid';
 
 import { Icon, colors, normalize, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
-import { VOUCHER_TRANSACTIONS } from '../../helpers/voucherHelper';
+import { VOUCHER_DEVICE_TOKEN, VOUCHER_TRANSACTIONS } from '../../helpers/voucherHelper';
 import { useVoucher } from '../../hooks';
 import { REDEEM_QUOTA_OF_VOUCHER } from '../../queries/vouchers';
 import { TQuota } from '../../types';
@@ -54,8 +55,16 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
 
   const redeemVoucher = async () => {
     try {
+      let deviceToken = await readFromStore(VOUCHER_DEVICE_TOKEN);
+
+      if (!deviceToken) {
+        deviceToken = uuid();
+        addToStore(VOUCHER_DEVICE_TOKEN, deviceToken);
+      }
+
       redeemQuotaOfVoucher({
         variables: {
+          deviceToken,
           quantity,
           voucherId,
           memberId
@@ -64,6 +73,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
 
       const voucherTransactions = (await readFromStore(VOUCHER_TRANSACTIONS)) || [];
       const voucherTransaction = {
+        deviceToken,
         quantity,
         voucherId,
         memberId,
