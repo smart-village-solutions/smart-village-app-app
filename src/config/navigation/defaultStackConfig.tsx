@@ -38,6 +38,7 @@ import {
   MapViewScreen,
   MultiButtonScreen,
   NestedInfoScreen,
+  NoticeboardMemberIndexScreen,
   NoticeboardFormScreen,
   NoticeboardIndexScreen,
   OParlCalendarScreen,
@@ -294,6 +295,10 @@ export const defaultStackConfig = ({
       routeName: ScreenName.NestedInfo,
       screenComponent: NestedInfoScreen,
       screenOptions: getScreenOptions({ withInfo: true })
+    },
+    {
+      routeName: ScreenName.NoticeboardMemberIndex,
+      screenComponent: NoticeboardMemberIndexScreen
     },
     {
       routeName: ScreenName.NoticeboardForm,

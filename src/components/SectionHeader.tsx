@@ -12,6 +12,7 @@ type Props = {
   big?: boolean;
   center?: boolean;
   containerStyle?: any;
+  small?: boolean;
   onPress?: () => void;
   title: string;
 };
@@ -21,6 +22,7 @@ export const SectionHeader = ({
   center = false,
   containerStyle,
   onPress,
+  small = false,
   title
 }: Props) => {
   const { globalSettings } = useContext(SettingsContext);
@@ -37,6 +39,7 @@ export const SectionHeader = ({
         } `}
         big={big}
         center={center}
+        small={small}
         uppercase={uppercase}
       >
         {title}

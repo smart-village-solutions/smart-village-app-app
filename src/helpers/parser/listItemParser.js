@@ -29,7 +29,7 @@ const GENERIC_TYPES_WITH_DATES = [
   GenericType.Noticeboard
 ];
 
-const filterGenericItems = (item) => {
+export const filterGenericItems = (item) => {
   if (GENERIC_TYPES_WITH_DATES.includes(item?.genericType)) {
     const dateEnd = item?.dates?.[0]?.dateEnd;
     const hasNotEnded = dateEnd ? isTodayOrLater(dateEnd) : true;

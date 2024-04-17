@@ -42,6 +42,7 @@ export enum ScreenName {
   MultiButton = 'MultiButton',
   NestedInfo = 'NestedInfo',
   Noticeboard = 'Noticeboard',
+  NoticeboardMemberIndex = 'NoticeboardMemberIndex',
   NoticeboardForm = 'NoticeboardForm',
   NoticeboardSuccess = 'NoticeboardSuccess',
   OParlCalendar = 'OParlCalendar',

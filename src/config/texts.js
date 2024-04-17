@@ -489,11 +489,13 @@ export const texts = {
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
       termsOfService: 'Bitte stimmen Sie der Verarbeitung Ihrer Daten zu.'
     },
+    all: 'Alles',
     categoryNames: {
       neighbourlyHelp: 'Nachbarschaftshilfe',
       offer: 'Angebot',
       search: 'Gesuch'
     },
+    contact: 'Anbieter',
     description: 'Beschreibung',
     details: 'Details',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
