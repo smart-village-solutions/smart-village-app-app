@@ -1,7 +1,7 @@
 import { StackNavigationProp } from '@react-navigation/stack';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useMutation } from 'react-apollo';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, Keyboard, StyleSheet } from 'react-native';
@@ -75,22 +75,29 @@ export const NoticeboardCreateForm = ({
   const {
     control,
     formState: { errors },
-    handleSubmit
+    handleSubmit,
+    setValue
   } = useForm({
     defaultValues: {
       body: '',
       dateEnd: new Date(),
       dateStart: new Date(),
-      email: memberData?.member?.email ?? '',
-      name: `${memberData?.member?.first_name ?? ''} ${
-        memberData?.member?.last_name[0] ?? ''
-      }`.trim(),
+      email: '',
+      name: '',
       noticeboardType: '',
       price: '',
       termsOfService: false,
       title: ''
     }
   });
+
+  useEffect(() => {
+    setValue('email', memberData?.member?.email ?? '');
+    setValue(
+      'name',
+      `${memberData?.member?.first_name ?? ''} ${memberData?.member?.last_name ?? ''}`.trim()
+    );
+  }, [memberData]);
 
   const [createGenericItem, { loading }] = useMutation(CREATE_GENERIC_ITEM);
 

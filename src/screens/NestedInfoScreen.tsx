@@ -40,8 +40,8 @@ export const ListHeaderComponent = ({
   html?: string;
   loading: boolean;
   navigation: StackNavigationProp<any>;
-  navigationTitle: string;
-  subQuery: SubQuery;
+  navigationTitle?: string;
+  subQuery?: SubQuery;
 }) => {
   if (loading) {
     return <LoadingSpinner loading />;

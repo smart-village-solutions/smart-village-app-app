@@ -114,6 +114,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
     default: {
+      /* eslint-disable complexity */
       renderItem = ({ item, index, section, target }) => {
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
           return (
@@ -158,6 +159,11 @@ export const useRenderItem = (query, navigation, options = {}) => {
           );
         }
 
+        // `SectionHeader` list item for `Noticeboard`
+        if (query === QUERY_TYPES.GENERIC_ITEMS && !!item.component) {
+          return item.component;
+        }
+
         return (
           <TextListItem
             item={{
@@ -173,6 +179,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
           />
         );
       };
+      /* eslint-enable complexity */
 
       break;
     }

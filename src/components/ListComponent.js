@@ -60,7 +60,8 @@ export const ListComponent = ({
   queryVariables,
   refreshControl,
   sectionByDate,
-  showBackToTop
+  showBackToTop,
+  stickyHeaderIndices
 }) => {
   const { globalSettings, listTypesSettings } = useContext(SettingsContext);
   const { sections = {} } = globalSettings;
@@ -90,6 +91,7 @@ export const ListComponent = ({
       queryVariables={queryVariables}
       refreshControl={refreshControl}
       showBackToTop={showBackToTop}
+      stickyHeaderIndices={stickyHeaderIndices}
     />
   );
 };
@@ -111,5 +113,6 @@ ListComponent.propTypes = {
   queryVariables: PropTypes.object,
   refreshControl: PropTypes.object,
   sectionByDate: PropTypes.bool,
-  showBackToTop: PropTypes.bool
+  showBackToTop: PropTypes.bool,
+  stickyHeaderIndices: PropTypes.array
 };

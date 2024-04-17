@@ -27,7 +27,8 @@ export const VerticalList = ({
   openWebScreen,
   query,
   refreshControl,
-  showBackToTop
+  showBackToTop,
+  stickyHeaderIndices
 }) => {
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
@@ -105,6 +106,7 @@ export const VerticalList = ({
       refreshControl={refreshControl}
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={styles.contentContainerStyle}
+      stickyHeaderIndices={stickyHeaderIndices}
       style={styles.container}
     />
   );
@@ -136,7 +138,8 @@ VerticalList.propTypes = {
   openWebScreen: PropTypes.func,
   query: PropTypes.string,
   refreshControl: PropTypes.object,
-  showBackToTop: PropTypes.bool
+  showBackToTop: PropTypes.bool,
+  stickyHeaderIndices: PropTypes.array
 };
 
 VerticalList.defaultProps = {

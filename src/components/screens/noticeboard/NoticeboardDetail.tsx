@@ -82,7 +82,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
       navigation.setOptions({
         headerTitle: () => <HeadlineText>{texts.noticeboard.myNoticeboard}</HeadlineText>
       });
-  }, []);
+  }, [isCurrentUser]);
 
   return (
     <View>
