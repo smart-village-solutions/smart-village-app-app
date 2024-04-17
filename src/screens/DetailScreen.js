@@ -84,7 +84,8 @@ const useRootRouteByCategory = (details, navigation) => {
 export const DetailScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = route.params?.query ?? '';
-  const queryVariables = route.params?.queryVariables ?? {};
+  const id = route.params?.id;
+  const queryVariables = route.params?.queryVariables || (id ? { id } : {});
   const details = route.params?.details ?? {};
 
   const [refreshing, setRefreshing] = useState(false);
