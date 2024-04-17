@@ -82,7 +82,7 @@ const renderCluster = (cluster: TCluster) => {
             }
           ]}
         >
-          <RegularText lightest center smallest>
+          <RegularText center smallest>
             {points}
           </RegularText>
         </View>
@@ -147,7 +147,7 @@ export const Map = ({
   return (
     <View style={[styles.container, style]}>
       <MapView
-        clusterColor={colors.primary}
+        clusterColor={colors.surface}
         clusterFontFamily="regular"
         clusteringEnabled={clusteringEnabled}
         renderCluster={renderCluster}
