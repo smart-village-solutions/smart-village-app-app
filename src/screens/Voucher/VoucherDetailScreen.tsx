@@ -8,12 +8,11 @@ import {
   BoldText,
   Discount,
   HtmlView,
+  ImageSection,
   LoadingSpinner,
   RegularText,
   VoucherRedeem,
-  Wrapper,
-  WrapperHorizontal,
-  WrapperVertical
+  Wrapper
 } from '../../components';
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
@@ -48,7 +47,7 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     return <LoadingSpinner loading />;
   }
 
-  const { contentBlocks, discountType, quota, id, title, subtitle } =
+  const { quota, contentBlocks, discountType, id, mediaContents, subtitle, title } =
     data[QUERY_TYPES.GENERIC_ITEM];
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota;
 
@@ -63,6 +62,8 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
         />
       }
     >
+      <ImageSection mediaContents={mediaContents} />
+
       <Wrapper>
         {!!quota &&
           (maxQuantity && frequency ? (

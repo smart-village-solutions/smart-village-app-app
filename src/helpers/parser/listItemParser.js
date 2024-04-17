@@ -326,6 +326,9 @@ const parseVouchers = (data, skipLastDivider) => {
       rootRouteName: ROOT_ROUTE_NAMES.VOUCHER,
       details: voucher
     },
+    picture: {
+      url: mainImageOfMediaContents(voucher.mediaContents)
+    },
     ...voucher,
     bottomDivider: !skipLastDivider || index !== data.length - 1
   }));

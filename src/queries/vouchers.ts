@@ -63,6 +63,16 @@ export const GET_VOUCHERS = gql`
         timeEnd
         availableQuantityForMember(memberId: $memberId)
       }
+      mediaContents {
+        id
+        contentType
+        captionText
+        copyright
+        sourceUrl {
+          id
+          url
+        }
+      }
     }
   }
 `;
@@ -102,6 +112,16 @@ export const GET_VOUCHER = gql`
         timeStart
         dateEnd
         timeEnd
+      }
+      mediaContents {
+        id
+        contentType
+        captionText
+        copyright
+        sourceUrl {
+          id
+          url
+        }
       }
     }
   }
