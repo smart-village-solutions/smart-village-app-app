@@ -1,5 +1,6 @@
+import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
-import { ListRenderItem, ScrollView, StatusBar, StyleSheet, View } from 'react-native';
+import { ListRenderItem, ScrollView, StyleSheet, View } from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 
 import { BoldText, Image, RegularText, SafeAreaViewFlex, Wrapper } from '../components';
@@ -62,7 +63,7 @@ export const AppIntroScreen = ({ setOnboardingComplete }: Props) => {
 
   return (
     <SafeAreaViewFlex>
-      <StatusBar barStyle="dark-content" backgroundColor="transparent" />
+      <StatusBar style="dark" translucent backgroundColor="transparent" />
       <AppIntroSlider<AppIntroSlide>
         renderItem={renderSlide}
         data={slides}
