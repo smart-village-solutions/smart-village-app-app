@@ -14,7 +14,7 @@
     "orientation": "portrait",
     "primaryColor": "#3F7193",
     "icon": "./assets/icon.png",
-    "scheme": "smart-village-app",
+    "scheme": "mq",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",
