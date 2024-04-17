@@ -1,5 +1,6 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { Alert, RefreshControl, ScrollView } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { useQuery } from 'react-query';
@@ -16,6 +17,7 @@ import {
 } from '../../components';
 import { colors, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
+import { useProfileUser } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
 import { ProfileMember, ScreenName } from '../../types';
@@ -31,8 +33,13 @@ export const showLoginAgainAlert = ({ onPress }: { onPress: () => void }) =>
   ]);
 
 export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, string>) => {
+  const { currentUserData } = useProfileUser();
   const [refreshing, setRefreshing] = useState(false);
   const { isConnected } = useContext(NetworkContext);
+  const isProfileUpdated =
+    !!Object.keys(currentUserData?.member?.preferences || {}).length &&
+    !!currentUserData?.member?.last_name &&
+    !!currentUserData?.member?.first_name;
 
   const { isLoading, data, refetch } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     onSuccess: (responseData: ProfileMember) => {
@@ -56,6 +63,14 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
     isConnected && (await refetch());
     setRefreshing(false);
   }, [isConnected, refetch]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!isProfileUpdated) {
+        refetch();
+      }
+    }, [isConnected, refetch, route.params?.refreshUser])
+  );
 
   if (isLoading) {
     return <LoadingSpinner loading />;

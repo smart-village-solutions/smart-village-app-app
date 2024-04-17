@@ -18,9 +18,10 @@ import {
   WrapperRow
 } from '../../components';
 import { texts } from '../../config';
-import { momentFormat, storeProfileUpdated } from '../../helpers';
+import { momentFormat, storeProfileUpdated, storeProfileUserData } from '../../helpers';
 import { profileUpdate } from '../../queries/profile';
 import { ProfileUpdate, ScreenName } from '../../types';
+import { useProfileUser } from '../../hooks';
 
 const showUpdateFailAlert = () =>
   Alert.alert(texts.profile.updateProfileFailedTitle, texts.profile.updateProfileFailedBody);
@@ -41,6 +42,7 @@ const genderData = [
 
 /* eslint-disable complexity */
 export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const { currentUserData } = useProfileUser();
   const member = route.params?.member ?? {};
   const from = route.params?.from ?? '';
   const { preferences = {}, first_name, last_name } = member;
@@ -78,7 +80,20 @@ export const ProfileUpdateScreen = ({ navigation, route }: StackScreenProps<any>
           return;
         }
 
-        storeProfileUpdated(true);
+        storeProfileUserData({
+          member: {
+            ...currentUserData?.member,
+            first_name: updateData.firstName,
+            last_name: updateData.lastName,
+            preferences: {
+              gender: updateData.gender,
+              birthday: updateData.birthday,
+              city: updateData.city,
+              street: updateData.street,
+              postal_code: updateData.postcode
+            }
+          }
+        });
 
         showUpdateSuccessAlert({
           onPress: () =>

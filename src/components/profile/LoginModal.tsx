@@ -5,7 +5,7 @@ import { Overlay } from 'react-native-elements';
 import { useQuery } from 'react-query';
 
 import { Icon, colors, normalize, texts } from '../../config';
-import { storeProfileAuthToken, storeProfileUpdated, storeProfileUserData } from '../../helpers';
+import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
 import { useProfileUser, useStaticContent } from '../../hooks';
 import { QUERY_TYPES } from '../../queries';
 import { member } from '../../queries/profile';
@@ -32,9 +32,12 @@ interface DataItem {
 
 /* eslint-disable complexity */
 export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
-  const { isLoading, isLoggedIn, isProfileUpdated } = useProfileUser();
-
+  const { isLoading, isLoggedIn, currentUserData } = useProfileUser();
   const [isVisible, setIsVisible] = useState(false);
+  const isProfileUpdated =
+    !!Object.keys(currentUserData?.member?.preferences || {}).length &&
+    !!currentUserData?.member?.last_name &&
+    !!currentUserData?.member?.first_name;
 
   const { data: contentData, loading: contentLoading } = useStaticContent<DataItem[]>({
     refreshTimeKey: `publicJsonFile-${publicJsonFile}`,
@@ -51,14 +54,6 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
           storeProfileAuthToken();
 
           return;
-        }
-
-        if (
-          Object.keys(responseData.member?.preferences).length &&
-          responseData.member?.first_name &&
-          responseData.member?.last_name
-        ) {
-          storeProfileUpdated(true);
         }
 
         storeProfileUserData(responseData);
@@ -158,7 +153,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
                   title={texts.profile.register}
                   onPress={() => {
                     setIsVisible(false);
-                    navigation.push(ScreenName.ProfileRegistration, { from: LOGIN_MODAL });
+                    navigation.navigate(ScreenName.ProfileRegistration, { from: LOGIN_MODAL });
                   }}
                 />
               </WrapperHorizontal>
