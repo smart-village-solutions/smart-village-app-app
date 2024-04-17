@@ -20,7 +20,10 @@ export const getGenericItemSectionTitle = (genericType: GenericType): string => 
   }
 };
 
-export const getGenericItemDetailTitle = (genericType: GenericType): string => {
+export const getGenericItemDetailTitle = (
+  genericType: GenericType,
+  queryVariables: any
+): string => {
   switch (genericType) {
     case GenericType.Commercial:
       return texts.commercial.commercial;
@@ -30,8 +33,13 @@ export const getGenericItemDetailTitle = (genericType: GenericType): string => {
       return texts.defectReport.defectReport;
     case GenericType.Job:
       return texts.job.job;
-    case GenericType.Noticeboard:
+    case GenericType.Noticeboard: {
+      if (queryVariables?.isCurrentUser) {
+        return texts.noticeboard.myNoticeboard;
+      }
+
       return texts.noticeboard.noticeboard;
+    }
     default:
       return '';
   }

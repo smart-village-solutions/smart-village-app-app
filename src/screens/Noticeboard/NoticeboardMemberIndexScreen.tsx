@@ -15,9 +15,9 @@ import { parseListItemsFromQuery } from '../../helpers';
 
 // eslint-disable-next-line complexity
 export const NoticeboardMemberIndexScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { data, memberName, query } = route.params;
+  const { data, isCurrentUser, memberName, query } = route.params;
 
-  const listItems = parseListItemsFromQuery(query, data, '');
+  const listItems = parseListItemsFromQuery(query, data, '', { queryVariables: { isCurrentUser } });
 
   return (
     <SafeAreaViewFlex>
