@@ -83,12 +83,12 @@ export const MultiButtonWithSubQuery = ({
 }: {
   navigation: StackNavigationProp<any, string>;
   rootRouteName?: string;
-  subQuery: SubQuery;
+  subQuery?: SubQuery;
   title: string;
 }) => {
   return (
     <>
-      {!!subQuery && !!subQuery.routeName && (!!subQuery.webUrl || subQuery.params) && (
+      {!!subQuery && !!subQuery.routeName && (!!subQuery.webUrl || !!subQuery.params) && (
         <Button
           title={subQuery.buttonTitle || `${title} öffnen`}
           onPress={() => navigateWithSubQuery({ navigation, subQuery, rootRouteName, title })}

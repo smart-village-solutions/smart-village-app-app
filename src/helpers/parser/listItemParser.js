@@ -76,6 +76,7 @@ const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText, 
 
   return filteredData?.map((genericItem, index) => ({
     id: genericItem.id,
+    categories: genericItem.categories,
     subtitle:
       genericItem.genericType !== GenericType.Deadline &&
       subtitle(

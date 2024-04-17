@@ -75,6 +75,7 @@ export const Filter = ({ queryVariables, refetch }: Props) => {
 
           return (
             <TouchableOpacity onPress={() => onPress(item, isActive)} activeOpacity={0.8}>
+              {/* TODO: Chip from RNE? https://reactnativeelements.com/docs/3.4.2/chip */}
               <View
                 style={[
                   styles.chip,

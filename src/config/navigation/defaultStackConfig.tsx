@@ -297,16 +297,16 @@ export const defaultStackConfig = ({
       screenOptions: getScreenOptions({ withInfo: true })
     },
     {
-      routeName: ScreenName.NoticeboardMemberIndex,
-      screenComponent: NoticeboardMemberIndexScreen
+      routeName: ScreenName.Noticeboard,
+      screenComponent: NoticeboardIndexScreen
     },
     {
       routeName: ScreenName.NoticeboardForm,
       screenComponent: NoticeboardFormScreen
     },
     {
-      routeName: ScreenName.Noticeboard,
-      screenComponent: NoticeboardIndexScreen
+      routeName: ScreenName.NoticeboardMemberIndex,
+      screenComponent: NoticeboardMemberIndexScreen
     },
     {
       routeName: ScreenName.OParlCalendar,
