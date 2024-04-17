@@ -17,11 +17,13 @@ import {
 } from '../../components';
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
+import { useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { TVoucherContentBlock } from '../../types';
 
 /* eslint-disable complexity */
 export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
+  const { memberId } = useVoucher();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [refreshing, setRefreshing] = useState(false);
@@ -30,7 +32,7 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
   const queryVariables = route.params?.queryVariables ?? {};
 
   const { data, loading, refetch } = useQuery(getQuery(query), {
-    variables: queryVariables,
+    variables: { memberId, ...queryVariables },
     fetchPolicy
   });
 

@@ -1,4 +1,7 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
+
+import { addToStore, readFromStore } from './storageHelper';
 
 const VOUCHER_AUTH_TOKEN = 'VOUCHER_AUTH_TOKEN';
 export const VOUCHER_MEMBER_ID = 'VOUCHER_MEMBER_ID';
@@ -26,4 +29,28 @@ export const voucherAuthToken = async () => {
   }
 
   return authToken;
+};
+
+export const storeVoucherMemberId = (memberId?: string) => {
+  if (memberId) {
+    addToStore(VOUCHER_MEMBER_ID, memberId);
+  } else {
+    addToStore(VOUCHER_MEMBER_ID);
+  }
+};
+
+export const voucherMemberId = async () => {
+  let memberId = null;
+
+  // The reason for the problem of staying in SplashScreen that occurs after the application is
+  // updated on the Android side is the inability to obtain the token here.
+  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
+  try {
+    memberId = await readFromStore(VOUCHER_MEMBER_ID);
+  } catch {
+    // Token deleted here so that it can be recreated
+    AsyncStorage.removeItem(VOUCHER_MEMBER_ID);
+  }
+
+  return memberId;
 };
