@@ -74,9 +74,14 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   );
 
   const voucherListItems = useMemo(() => {
-    return parseListItemsFromQuery(QUERY_TYPES.VOUCHERS, vouchers, undefined, {
-      withDate: false
-    });
+    return parseListItemsFromQuery(
+      QUERY_TYPES.VOUCHERS,
+      { [QUERY_TYPES.GENERIC_ITEMS]: vouchers },
+      undefined,
+      {
+        withDate: false
+      }
+    );
   }, [vouchers]);
 
   const businessAccount = dataProvider?.dataType === 'business_account';

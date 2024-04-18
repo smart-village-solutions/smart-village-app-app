@@ -45,7 +45,7 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     return <LoadingSpinner loading />;
   }
 
-  const { contentBlocks, discountType, quota, id } = data[QUERY_TYPES.GENERIC_ITEM] || data;
+  const { contentBlocks, discountType, quota, id } = data[QUERY_TYPES.GENERIC_ITEM];
 
   if (!quota) {
     return <EmptyMessage title={texts.voucher.detailScreen.emptyMessage} />;
