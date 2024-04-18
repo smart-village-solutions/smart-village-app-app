@@ -125,7 +125,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     return <LoadingSpinner loading />;
   }
 
-  const count = listItems.filter(({ categories }) => !!categories.length)?.length;
+  const count = listItems.filter(({ categories }) => !!categories?.length)?.length;
 
   return (
     <ListComponent
@@ -149,7 +149,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
                 />
               )}
 
-              {!isLoggedIn && (
+              {(!isLoggedIn || !memberId) && (
                 <Wrapper>
                   <WrapperVertical>
                     <BoldText>{texts.voucher.indexLoginTitle}</BoldText>
