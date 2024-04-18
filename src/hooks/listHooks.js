@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable react/prop-types */
 import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
@@ -46,14 +47,14 @@ const EventSectionHeader = ({ item, navigation, options, query }) => (
 
 const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
   <SectionHeader
-    title={item}
+    title={item.name}
     onPress={() =>
-      navigation.push(ScreenName.VoucherIndex, {
+      navigation.push(options.queryVariables?.screenName || ScreenName.BookmarkCategory, {
         title: texts.screenTitles.voucher.index,
         query,
         queryVariables: {
           ...options.queryVariables,
-          category: item
+          categoryId: item.id
         },
         rootRouteName: ROOT_ROUTE_NAMES.VOUCHER
       })
@@ -187,7 +188,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
         }
 
         if (query === QUERY_TYPES.VOUCHERS) {
-          if (typeof item === 'string') {
+          if (typeof item === 'object' && Object.keys(item).length === 2) {
             return <VoucherCategoryHeader {...{ item, navigation, options, query }} />;
           }
 
@@ -213,6 +214,7 @@ export const useRenderItem = (query, navigation, options = {}) => {
       break;
     }
   }
+  /* eslint-enable complexity */
 
   return useCallback(renderItem, [
     query,

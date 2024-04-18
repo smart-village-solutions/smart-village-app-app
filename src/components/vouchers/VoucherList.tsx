@@ -31,7 +31,7 @@ const sectionData = (data: TVoucherItem[]) => {
     const resultArray = [];
 
     for (const category in groupedData) {
-      resultArray.push(category);
+      resultArray.push({ name: category, id: groupedData?.[category]?.[0]?.categories?.[0]?.id });
       resultArray.push(...groupedData[category]);
     }
 
