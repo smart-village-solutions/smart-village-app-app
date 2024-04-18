@@ -484,6 +484,7 @@ export const texts = {
     abort: 'Abbrechen',
     alerts: {
       dateDifference: 'Bitte wählen Sie eine maximale Laufzeit von drei Monaten.',
+      delete: 'Willst Du diesen Eintrag wirklich löschen?',
       error: 'Bitte versuchen Sie es erneut.',
       hint: 'Hinweis',
       noticeboardType: 'Bitte wählen Sie den Typ Ihres Eintrags aus.',
@@ -495,8 +496,10 @@ export const texts = {
       offer: 'Angebot',
       search: 'Gesuch'
     },
+    delete: 'Löschen',
     description: 'Beschreibung',
     details: 'Details',
+    edit: 'Bearbeiten',
     emptyTitle: 'Im Moment gibt es nichts zu sehen. Bitte versuchen Sie es später noch einmal.',
     expiryDate: 'Ablaufdatum',
     inputCheckbox: 'Einverständnis zur Datenverarbeitung',

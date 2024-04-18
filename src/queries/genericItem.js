@@ -274,3 +274,13 @@ export const CREATE_GENERIC_ITEM_MESSAGE = gql`
     }
   }
 `;
+
+export const DELETE_GENERIC_ITEM = gql`
+  mutation deleteGenericItem($id: ID!) {
+    destroyRecord(id: $id, recordType: "GenericItem") {
+      id
+      status
+      statusCode
+    }
+  }
+`;

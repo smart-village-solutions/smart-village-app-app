@@ -3,20 +3,15 @@ import React, { useCallback, useContext, useState } from 'react';
 import { ActivityIndicator, RefreshControl, ScrollView } from 'react-native';
 
 import {
-  BoldText,
   DefaultKeyboardAvoidingView,
   HtmlView,
   LoadingContainer,
   NoticeboardCreateForm,
   NoticeboardMessageForm,
-  RegularText,
   SafeAreaViewFlex,
-  SectionHeader,
-  Wrapper,
-  WrapperRow
+  Wrapper
 } from '../../components';
-import { colors, texts } from '../../config';
-import { momentFormat } from '../../helpers';
+import { colors } from '../../config';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 
@@ -79,29 +74,10 @@ export const NoticeboardFormScreen = ({
             />
           }
         >
-          <SectionHeader title={details?.contentBlocks?.[0]?.title} />
-
           {!!html && (
             <Wrapper>
               {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
               <HtmlView html={html} />
-            </Wrapper>
-          )}
-
-          {!!details?.dates?.[0] && (
-            <Wrapper>
-              {!!details?.dates?.[0]?.dateStart && (
-                <WrapperRow>
-                  <BoldText>{texts.noticeboard.publicationDate}: </BoldText>
-                  <RegularText>{momentFormat(details.dates[0].dateStart)}</RegularText>
-                </WrapperRow>
-              )}
-              {!!details?.dates?.[0]?.dateEnd && (
-                <WrapperRow>
-                  <BoldText>{texts.noticeboard.expiryDate}: </BoldText>
-                  <RegularText>{momentFormat(details.dates[0].dateEnd)}</RegularText>
-                </WrapperRow>
-              )}
             </Wrapper>
           )}
 

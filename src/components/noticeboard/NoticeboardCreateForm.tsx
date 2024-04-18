@@ -1,4 +1,5 @@
 import { StackNavigationProp } from '@react-navigation/stack';
+import _findKey from 'lodash/findKey';
 import moment from 'moment';
 import { extendMoment } from 'moment-range';
 import React, { useEffect } from 'react';
@@ -29,6 +30,7 @@ const { EMAIL_REGEX } = consts;
 const extendedMoment = extendMoment(moment);
 
 type TNoticeboardCreateData = {
+  id: string;
   body: string;
   dateEnd: string;
   dateStart: string;
@@ -47,13 +49,19 @@ const NOTICEBOARD_TYPE_OPTIONS = [
 
 /* eslint-disable complexity */
 export const NoticeboardCreateForm = ({
+  data,
   navigation,
   route
 }: {
+  data: any;
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
-  const consentForDataProcessingText = route?.params?.consentForDataProcessingText ?? '';
+  const subQuery = route.params?.subQuery ?? {};
+  const consentForDataProcessingText =
+    subQuery?.params?.consentForDataProcessingText ??
+    route?.params?.consentForDataProcessingText ??
+    '';
   const genericType = route?.params?.genericType ?? '';
   const requestedDateDifference = route?.params?.requestedDateDifference ?? 3;
 
@@ -79,15 +87,20 @@ export const NoticeboardCreateForm = ({
     setValue
   } = useForm({
     defaultValues: {
-      body: '',
-      dateEnd: new Date(),
-      dateStart: new Date(),
-      email: '',
-      name: '',
-      noticeboardType: '',
-      price: '',
+      id: data?.id ?? '',
+      body: data?.contentBlocks?.[0]?.body ?? '',
+      dateEnd: data?.dates?.[0]?.dateEnd ? new Date(data?.dates?.[0]?.dateEnd) : new Date(),
+      dateStart: data?.dates?.[0]?.dateStart ? new Date(data?.dates?.[0]?.dateStart) : new Date(),
+      email: data?.contacts?.[0]?.email ?? '',
+      name: data?.contacts?.[0]?.firstName ?? '',
+      noticeboardType:
+        _findKey(
+          texts.noticeboard.categoryNames,
+          (value) => value === data?.categories?.[0]?.name
+        ) || '',
+      price: data?.priceInformations?.[0]?.description ?? '',
       termsOfService: false,
-      title: ''
+      title: data?.title ?? ''
     }
   });
 
@@ -119,6 +132,7 @@ export const NoticeboardCreateForm = ({
     try {
       await createGenericItem({
         variables: {
+          id: noticeboardNewData.id,
           categoryName: texts.noticeboard.categoryNames[noticeboardNewData.noticeboardType],
           genericType,
           publishedAt: momentFormat(noticeboardNewData.dateStart),

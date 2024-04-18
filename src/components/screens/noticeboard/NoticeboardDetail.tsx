@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useLayoutEffect } from 'react';
-import { useQuery } from 'react-apollo';
-import { StyleSheet, View } from 'react-native';
+import { useMutation, useQuery } from 'react-apollo';
+import { Alert, StyleSheet, View } from 'react-native';
 import { Badge } from 'react-native-elements';
 
-import { colors, normalize, texts } from '../../../config';
+import { Icon, colors, normalize, texts } from '../../../config';
 import {
   filterGenericItems,
   getGenericItemMatomoName,
@@ -12,13 +12,15 @@ import {
 } from '../../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen, useProfileUser } from '../../../hooks';
 import { QUERY_TYPES, getQuery } from '../../../queries';
+import { DELETE_GENERIC_ITEM } from '../../../queries/genericItem';
 import { ScreenName } from '../../../types';
+import { Button } from '../../Button';
 import { ImageSection } from '../../ImageSection';
 import { SectionHeader } from '../../SectionHeader';
 import { StorySection } from '../../StorySection';
 import { BoldText, HeadlineText } from '../../Text';
 import { TextListItem } from '../../TextListItem';
-import { Wrapper, WrapperHorizontal, WrapperVertical } from '../../Wrapper';
+import { Wrapper, WrapperHorizontal, WrapperRow, WrapperVertical } from '../../Wrapper';
 import { InfoCard } from '../../infoCard';
 import { VolunteerAvatar } from '../../volunteer';
 
@@ -27,6 +29,7 @@ const isImage = (mediaContent) => mediaContent.contentType === 'image';
 // eslint-disable-next-line complexity
 export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
   const {
+    id,
     categories,
     contacts,
     contentBlocks,
@@ -51,6 +54,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
   const link = sourceUrl?.url;
   const rootRouteName = route.params?.rootRouteName ?? '';
   const headerTitle = route.params?.title ?? '';
+  const subQuery = route.params?.subQuery ?? {};
 
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
@@ -58,6 +62,11 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
   const { currentUserData } = useProfileUser();
   const currentUserMemberId = currentUserData?.member?.id;
   const isCurrentUser = !!currentUserMemberId && !!memberId && currentUserMemberId == memberId;
+
+  const [deleteEntry] = useMutation(DELETE_GENERIC_ITEM, {
+    variables: { id },
+    onCompleted: () => navigation.goBack()
+  });
 
   const { data: dataMemberIndex, refetch: refetchMemberIndex } = useQuery(
     getQuery(QUERY_TYPES.GENERIC_ITEMS),
@@ -90,7 +99,49 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
         <ImageSection mediaContents={mediaContents?.filter(isImage)} />
       </WrapperVertical>
 
-      {/* TODO: show buttons to edit and delete if isCurrentUser */}
+      {isCurrentUser && (
+        <Wrapper>
+          <WrapperRow spaceAround>
+            <Button
+              icon={<Icon.Pencil size={normalize(24)} />}
+              iconPosition="left"
+              notFullWidth
+              title={texts.noticeboard.edit}
+              onPress={() =>
+                navigation.push(ScreenName.NoticeboardForm, {
+                  consentForDataProcessingText: subQuery?.params?.consentForDataProcessingText,
+                  details: data,
+                  genericType,
+                  isNewEntryForm: true,
+                  name: subQuery?.params?.editName,
+                  requestedDateDifference: subQuery?.params?.requestedDateDifference
+                })
+              }
+            />
+            <Button
+              icon={<Icon.Trash size={normalize(24)} />}
+              iconPosition="left"
+              invert
+              notFullWidth
+              title={texts.noticeboard.delete}
+              onPress={() =>
+                Alert.alert(texts.noticeboard.alerts.hint, texts.noticeboard.alerts.delete, [
+                  {
+                    text: texts.noticeboard.abort,
+                    onPress: () => null,
+                    style: 'cancel'
+                  },
+                  {
+                    text: texts.noticeboard.delete,
+                    onPress: () => deleteEntry(),
+                    style: 'destructive'
+                  }
+                ])
+              }
+            />
+          </WrapperRow>
+        </Wrapper>
+      )}
 
       {!!categories?.length && !!categories[0].name && (
         <WrapperHorizontal>
@@ -127,13 +178,13 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
                 leftIcon: (
                   <VolunteerAvatar item={{ user: { display_name: contacts[0].firstName } }} />
                 ),
-                rightIcon: !!memberEntries && (
+                rightIcon: memberEntries ? (
                   <Badge
                     value={memberEntries}
                     badgeStyle={styles.badge}
                     textStyle={styles.badgeText}
                   />
-                ),
+                ) : undefined,
                 routeName: ScreenName.ProfileUpdate,
                 onPress: () =>
                   navigation.push(ScreenName.NoticeboardMemberIndex, {
@@ -145,7 +196,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
                   }),
                 title: contacts[0].firstName
               }}
-              navigation={!!memberEntries && navigation}
+              navigation={memberEntries ? navigation : undefined}
             />
           </WrapperHorizontal>
         </>

@@ -45,7 +45,8 @@ export const NoticeboardMessageForm = ({
   navigation: StackNavigationProp<any>;
   route: any;
 }) => {
-  const consentForDataProcessingTex = route?.params?.consentForDataProcessingText ?? '';
+  const subQuery = route.params?.subQuery ?? {};
+  const consentForDataProcessingText = subQuery?.params?.consentForDataProcessingText ?? '';
   const genericItemId = data?.id ?? '';
 
   const { data: memberData } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
@@ -173,7 +174,7 @@ export const NoticeboardMessageForm = ({
 
       <Wrapper style={styles.noPaddingTop}>
         {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
-        <HtmlView html={consentForDataProcessingTex} />
+        <HtmlView html={consentForDataProcessingText} />
 
         <Controller
           name="termsOfService"
