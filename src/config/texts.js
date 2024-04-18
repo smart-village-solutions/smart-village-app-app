@@ -1144,6 +1144,7 @@ export const texts = {
         'Der Inhalt kann nicht geladen werden. Bitte überprüfen Sie Ihre Internetverbindung.',
       frequency: (maxPerPerson, frequency) =>
         `${maxPerPerson}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
+      isNotAvailable: 'Dieser Gutschein ist nicht verfügbar',
       limit: (availableQuantity, maxQuantity) =>
         `Limitiert: ${availableQuantity}/${maxQuantity} verfügbar`,
       monthly: 'pro Monat',
@@ -1153,6 +1154,7 @@ export const texts = {
       quarterly: 'pro Quartal',
       redeem: 'Gutschein einlösen',
       redeemDescription: 'Bitte zeigen Sie den Coupon beim Bezahlen vor.',
+      redeemed: 'Gutschein eingelöst',
       redeemErrorDescription: 'Dieser Coupon ist nur einmal einlösbar',
       redeemErrorTitle: 'Fehler beim Einlösen',
       redeemNow: 'Jetzt einlösen',

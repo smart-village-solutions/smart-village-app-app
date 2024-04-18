@@ -11,7 +11,7 @@ export const GET_VOUCHERS = gql`
     $order: GenericItemOrder
     $dataProvider: String
     $categoryId: ID
-    $memberId: Int!
+    $memberId: ID
   ) {
     genericItems(
       ids: $ids
@@ -46,6 +46,7 @@ export const GET_VOUCHERS = gql`
         maxQuantity
         maxPerPerson
         availableQuantity
+        availableQuantityForMember(memberId: $memberId)
       }
       contentBlocks {
         id
@@ -61,7 +62,6 @@ export const GET_VOUCHERS = gql`
         timeStart
         dateEnd
         timeEnd
-        availableQuantityForMember(memberId: $memberId)
       }
       mediaContents {
         id
@@ -78,7 +78,7 @@ export const GET_VOUCHERS = gql`
 `;
 
 export const GET_VOUCHER = gql`
-  query GenericItem($id: ID!, $memberId: Int!) {
+  query GenericItem($id: ID!, $memberId: ID) {
     genericItem(id: $id) {
       id
       title
@@ -164,6 +164,7 @@ export const GET_VOUCHERS_REDEEMED = gql`
         maxQuantity
         maxPerPerson
         availableQuantity
+        availableQuantityForMember(memberId: $memberId)
       }
       contentBlocks {
         id
@@ -186,7 +187,7 @@ export const GET_VOUCHERS_REDEEMED = gql`
 
 export const REDEEM_QUOTA_OF_VOUCHER = gql`
   mutation redeemQuotaOfVoucher(
-    $deviceToken: String!
+    $deviceToken: String
     $memberId: ID!
     $quantity: Int!
     $voucherId: ID!
