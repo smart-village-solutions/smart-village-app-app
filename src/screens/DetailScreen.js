@@ -85,7 +85,7 @@ export const DetailScreen = ({ navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const query = route.params?.query ?? '';
   const id = route.params?.id;
-  const queryVariables = route.params?.queryVariables || id ? { id } : {};
+  const queryVariables = route.params?.queryVariables || (id ? { id } : {});
   const details = route.params?.details ?? {};
   const [today] = useState(new Date().toISOString());
 

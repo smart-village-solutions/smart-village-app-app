@@ -16,7 +16,7 @@ import { useStaticContent, useVoucher } from '../../hooks';
 import { ScreenName } from '../../types';
 
 export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
-  const { refresh, isLoggedIn } = useVoucher();
+  const { refresh, isLoggedIn, memberId } = useVoucher();
 
   const imageUri = route?.params?.headerImage;
 
@@ -67,7 +67,7 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
           </Wrapper>
         )}
 
-        {!isLoggedIn && (
+        {(!isLoggedIn || !memberId) && (
           <Wrapper>
             <Button
               title={texts.voucher.loginButton}

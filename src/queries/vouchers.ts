@@ -181,6 +181,12 @@ export const GET_VOUCHERS_REDEEMED = gql`
         dateEnd
         timeEnd
       }
+      mediaContents {
+        contentType
+        sourceUrl {
+          url
+        }
+      }
     }
   }
 `;
