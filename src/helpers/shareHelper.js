@@ -1,10 +1,13 @@
 import { Share } from 'react-native';
 
 import appJson from '../../app.json';
+import { consts } from '../config';
 import { QUERY_TYPES } from '../queries';
 
 import { mergeWebUrls } from './linkHelper';
 import { momentFormat } from './momentHelper';
+
+const { HOST_NAMES } = consts;
 
 // https://facebook.github.io/react-native/docs/share
 /**
@@ -79,5 +82,9 @@ export const shareMessage = (data, query) => {
     return `${message}${spacer}${urlSection ? `\n${urlSection}` : ''}`;
   };
 
-  return `${buildMessage(query)}\n\nQuelle: ${appJson.expo.name}`;
+  const buildSource = (query) => {
+    return `Quelle: ${appJson.expo.scheme}://${HOST_NAMES.DETAIL}?query=${query}&id=${data.id}`;
+  };
+
+  return `${buildMessage(query)}\n\n${buildSource(query)}`;
 };

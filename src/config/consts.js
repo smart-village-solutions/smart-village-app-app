@@ -159,6 +159,11 @@ export const consts = {
     }
   },
 
+  HOST_NAMES: {
+    DETAIL: 'detail',
+    ENCOUNTER: 'encounter'
+  },
+
   LIST_TYPES: {
     CARD_LIST: 'cardList',
     IMAGE_TEXT_LIST: 'imageTextList',
