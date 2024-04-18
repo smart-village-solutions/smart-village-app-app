@@ -48,7 +48,7 @@ const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
   <SectionHeader
     title={item}
     onPress={() =>
-      navigation.push(ScreenName.VoucherIndex, {
+      navigation.push(options.queryVariables?.screenName || ScreenName.BookmarkCategory, {
         title: texts.screenTitles.voucher.index,
         query,
         queryVariables: {

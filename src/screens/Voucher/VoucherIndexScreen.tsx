@@ -124,7 +124,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     <ListComponent
       navigation={navigation}
       query={query}
-      queryVariables={queryVariables}
+      queryVariables={{ ...queryVariables, screenName: ScreenName.VoucherIndex }}
       data={listItems}
       fetchMoreData={fetchMoreData}
       // TODO: replace with dropdown filter component here

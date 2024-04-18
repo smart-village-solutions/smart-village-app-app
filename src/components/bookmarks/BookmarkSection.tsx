@@ -2,11 +2,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useQuery } from 'react-apollo';
 
+import { NetworkContext } from '../../NetworkProvider';
 import { consts, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useRefreshTime } from '../../hooks';
-import { NetworkContext } from '../../NetworkProvider';
 import { getQuery } from '../../queries';
+import { ScreenName } from '../../types';
 import { DataListSection } from '../DataListSection';
 
 const { REFRESH_INTERVALS } = consts;
@@ -46,7 +47,7 @@ export const BookmarkSection = ({
 
   const onPressShowMore = useCallback(
     () =>
-      navigation.navigate('BookmarkCategory', {
+      navigation.navigate(ScreenName.BookmarkCategory, {
         suffix,
         query,
         title: sectionTitle,
