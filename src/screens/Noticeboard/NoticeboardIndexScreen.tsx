@@ -41,7 +41,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const categoryIds = queryVariables?.categoryIds ?? [];
   const currentMember = queryVariables?.currentMember ?? false;
 
-  const [selectedCategory, setSelectedCategory] = useState(categoryIds[0]);
+  const [selectedCategory, setSelectedCategory] = useState();
 
   const { data, loading, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
@@ -53,6 +53,11 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     subQuery
   });
 
+  // create new object of list items filtered by selected category
+  const filteredListItems = listItems?.filter((item: { categories: { id: string }[] }) =>
+    item.categories.some((category: { id: string }) => category.id == selectedCategory)
+  );
+
   // get all category names from list items
   const categoryNames = listItems?.reduce((acc, item) => {
     if (item.categories.length) {
@@ -61,6 +66,9 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
 
     return acc;
   }, {});
+
+  // filter out the category ids that have no category names
+  const categoryIdsTabs = categoryIds?.filter((categoryId: number) => !!categoryNames[categoryId]);
 
   const {
     data: dataHtml,
@@ -87,47 +95,83 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     }, [])
   );
 
-  if (loading && !listItems?.length)
+  useFocusEffect(
+    useCallback(() => {
+      // if there are no filtered list items for the selected category, select the other category
+      if (!loading && !filteredListItems?.filter((item: any) => !item.component)?.length) {
+        setSelectedCategory(
+          categoryIdsTabs.find((categoryId: number) => categoryId != selectedCategory)
+        );
+      }
+    }, [loading, filteredListItems, selectedCategory, categoryIdsTabs])
+  );
+
+  // add the section header component to the beginning of the list items, that will be at index 1,
+  // that we want to stick to the top of the screen when scrolling
+  !!categoryIdsTabs?.length &&
+    filteredListItems?.unshift({
+      component: (
+        <View style={styles.tabsContainer}>
+          <Tab
+            indicatorStyle={styles.tabsIndicator}
+            onChange={(index) => setSelectedCategory(categoryIdsTabs[index])}
+            value={categoryIdsTabs.indexOf(selectedCategory)}
+          >
+            {categoryIdsTabs?.map((categoryId: number) => (
+              <Tab.Item
+                key={categoryId}
+                title={categoryNames[categoryId]}
+                style={styles.tabsTab}
+                titleStyle={styles.tabsTitle}
+                TouchableComponent={TouchableHighlight}
+                underlayColor={colors.surface}
+              />
+            ))}
+          </Tab>
+          <Divider style={styles.divider} />
+        </View>
+      )
+    });
+
+  if (loading && !listItems?.length) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
       </LoadingContainer>
     );
+  }
 
   if (!listItems?.length) {
     return <EmptyMessage title={texts.noticeboard.emptyTitle} />;
   }
 
-  // create new object of list items filtered by selected category
-  const filteredListItems = listItems.filter((item: { categories: { id: string }[] }) =>
-    item.categories.some((category: { id: string }) => category.id == selectedCategory)
-  );
-
-  // add the section header component to the beginning of the list items, that will be at index 1,
-  // that we want to stick to the top of the screen when scrolling
-  filteredListItems?.unshift({
-    component: (
-      <View style={styles.tabsContainer}>
-        <Tab
-          indicatorStyle={styles.tabsIndicator}
-          onChange={(index) => setSelectedCategory(categoryIds[index])}
-          value={categoryIds.indexOf(selectedCategory)}
-        >
-          {categoryIds.map((categoryId: number) => (
-            <Tab.Item
-              key={categoryId}
-              title={categoryNames[categoryId]}
-              style={styles.tabsTab}
-              titleStyle={styles.tabsTitle}
-              TouchableComponent={TouchableHighlight}
-              underlayColor={colors.surface}
-            />
-          ))}
-        </Tab>
-        <Divider style={styles.divider} />
-      </View>
-    )
-  });
+  if (!categoryIdsTabs?.length) {
+    return (
+      <>
+        <EmptyMessage title={texts.noticeboard.emptyTitle} />
+        {!!subQuery && !!subQuery.routeName && !!subQuery.params && (
+          <>
+            <Divider style={styles.divider} />
+            <Wrapper style={styles.noPaddingBotton}>
+              <Button
+                icon={<Icon.PencilPlus size={normalize(24)} />}
+                iconPosition="left"
+                title={subQuery.buttonTitle}
+                onPress={() =>
+                  navigateWithSubQuery({
+                    navigation,
+                    subQuery,
+                    rootRouteName,
+                    title: subQuery?.buttonTitle
+                  })
+                }
+              />
+            </Wrapper>
+          </>
+        )}
+      </>
+    );
+  }
 
   return (
     <SafeAreaViewFlex>

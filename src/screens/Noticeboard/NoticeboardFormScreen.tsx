@@ -40,8 +40,6 @@ export const NoticeboardFormScreen = ({
     skip: !name
   });
 
-  const html = dataHtml || details?.contentBlocks?.[0]?.body;
-
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     if (isConnected) {
@@ -74,12 +72,7 @@ export const NoticeboardFormScreen = ({
             />
           }
         >
-          {!!html && (
-            <Wrapper>
-              {/* @ts-expect-error HtmlView uses memo in js, which is not inferred correctly */}
-              <HtmlView html={html} />
-            </Wrapper>
-          )}
+          <Wrapper>{!!dataHtml && <HtmlView html={dataHtml} />}</Wrapper>
 
           <Component {...{ data: details, navigation, route }} />
         </ScrollView>

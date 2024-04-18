@@ -114,7 +114,8 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
                   genericType,
                   isNewEntryForm: true,
                   name: subQuery?.params?.editName,
-                  requestedDateDifference: subQuery?.params?.requestedDateDifference
+                  requestedDateDifference: subQuery?.params?.requestedDateDifference,
+                  title: subQuery?.params?.editTitle
                 })
               }
             />
