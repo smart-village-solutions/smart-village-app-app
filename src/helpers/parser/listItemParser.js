@@ -70,7 +70,7 @@ const parseEventRecords = (data, skipLastDivider, withDate) => {
   }));
 };
 
-const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText, queryVariables) => {
+const parseGenericItems = (data, skipLastDivider, queryVariables, subQuery) => {
   // this likely needs a rework in the future, but for now this is the place to filter items.
   const filteredData = data?.filter(filterGenericItems);
 
@@ -96,7 +96,7 @@ const parseGenericItems = (data, skipLastDivider, consentForDataProcessingText, 
     routeName: ScreenName.Detail,
     params: {
       title: getGenericItemDetailTitle(genericItem.genericType, queryVariables),
-      consentForDataProcessingText,
+      subQuery,
       suffix: genericItem.genericType,
       query: QUERY_TYPES.GENERIC_ITEM,
       queryVariables: { id: `${genericItem.id}` },
@@ -379,11 +379,11 @@ const parseConsulData = (data, query, skipLastDivider) => {
  * @param {string | undefined} titleDetail
  * @param {{
  *    bookmarkable?: boolean;
- *    consentForDataProcessingText?: string;
  *    skipLastDivider?: boolean;
  *    withDate?: boolean,
  *    isSectioned?: boolean,
- *    queryVariables?: any
+ *    queryVariables?: any,
+ *    subQuery?: any
  *  }} options
  * @returns
  */
@@ -393,23 +393,18 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
 
   const {
     bookmarkable = true,
-    consentForDataProcessingText,
     skipLastDivider = false,
     withDate = true,
     isSectioned = false,
-    queryVariables
+    queryVariables,
+    subQuery
   } = options;
 
   switch (query) {
     case QUERY_TYPES.EVENT_RECORDS:
       return parseEventRecords(data[query], skipLastDivider, withDate);
     case QUERY_TYPES.GENERIC_ITEMS:
-      return parseGenericItems(
-        data[query],
-        skipLastDivider,
-        consentForDataProcessingText,
-        queryVariables
-      );
+      return parseGenericItems(data[query], skipLastDivider, queryVariables, subQuery);
     case QUERY_TYPES.NEWS_ITEMS:
       return parseNewsItems(data[query], skipLastDivider, titleDetail, bookmarkable);
     case QUERY_TYPES.POINT_OF_INTEREST:

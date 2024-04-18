@@ -36,7 +36,7 @@ export const Button = ({
         title={title}
         titleStyle={[styles.title, needLandscapeStyle && styles.titleLandscape]}
         buttonStyle={[
-          styles.buttonStyle,
+          styles.button,
           isAccept && styles.acceptButton,
           isReject && styles.rejectButton
         ]}
@@ -68,7 +68,7 @@ export const Button = ({
         styles.button,
         styles.buttonRadius,
         invert && styles.buttonInvert,
-        isDelete && styles.rejectButton,
+        !invert && isDelete && styles.rejectButton,
         big && [styles.bigButton, styles.bigButtonRadius],
         small && [styles.smallButton, styles.smallButtonRadius],
         smallest && [styles.smallestButton, styles.smallestButtonRadius]
