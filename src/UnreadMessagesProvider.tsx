@@ -18,19 +18,21 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
     pollInterval: defaultPollInterval
   });
 
-  const count = () => {
-    let unreadMessageCount = 0;
-
-    for (let i = 0; i < conversationData[query].length; i++) {
-      const { unreadMessagesCount } = conversationData[query][i];
-      unreadMessageCount += unreadMessagesCount;
+  const getUnreadMessagesCount = () => {
+    // return 0 if data is missing or not loaded yet
+    if (!conversationData || !conversationData[query]) {
+      return 0;
     }
 
-    return unreadMessageCount;
+    return conversationData[query].reduce((total, conversation) => {
+      return total + (conversation.unreadMessagesCount || 0);
+    }, 0);
   };
 
   useEffect(() => {
-    setUnreadMessagesCount(count());
+    const unreadMessagesCount = getUnreadMessagesCount();
+
+    setUnreadMessagesCount(unreadMessagesCount);
   }, [conversationData]);
 
   return (
