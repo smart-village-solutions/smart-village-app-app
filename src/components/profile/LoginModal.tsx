@@ -32,9 +32,12 @@ interface DataItem {
 
 /* eslint-disable complexity */
 export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
-  const { isLoading, isLoggedIn, isProfileUpdated } = useProfileUser();
-
+  const { isLoading, isLoggedIn, currentUserData } = useProfileUser();
   const [isVisible, setIsVisible] = useState(false);
+  const isProfileUpdated =
+    !!Object.keys(currentUserData?.member?.preferences || {}).length &&
+    !!currentUserData?.member?.last_name &&
+    !!currentUserData?.member?.first_name;
 
   const { data: contentData, loading: contentLoading } = useStaticContent<DataItem[]>({
     refreshTimeKey: `publicJsonFile-${publicJsonFile}`,
@@ -150,7 +153,7 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
                   title={texts.profile.register}
                   onPress={() => {
                     setIsVisible(false);
-                    navigation.push(ScreenName.ProfileRegistration, { from: LOGIN_MODAL });
+                    navigation.navigate(ScreenName.ProfileRegistration, { from: LOGIN_MODAL });
                   }}
                 />
               </WrapperHorizontal>

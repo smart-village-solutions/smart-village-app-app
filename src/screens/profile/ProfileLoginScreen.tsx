@@ -20,7 +20,7 @@ import {
   WrapperRow
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
-import { storeProfileAuthToken, storeProfileUpdated, storeProfileUserData } from '../../helpers';
+import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
 import { QUERY_TYPES } from '../../queries';
 import { member, profileLogIn } from '../../queries/profile';
 import { ProfileLogin, ProfileMember, ScreenName } from '../../types';
@@ -69,8 +69,6 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
       storeProfileUserData(responseData);
 
       if (!Object.keys(responseData.member?.preferences).length) {
-        storeProfileUpdated(false);
-
         return navigation.navigate(ScreenName.ProfileUpdate);
       }
 

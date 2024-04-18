@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useCallback, useContext, useEffect, useState } from 'react';
 
 import { NetworkContext } from '../../NetworkProvider';
-import { isUpdatedProfile, profileAuthToken, profileUserData } from '../../helpers';
+import { profileAuthToken, profileUserData } from '../../helpers';
 import { ProfileMember, ScreenName } from '../../types';
 
 export const useProfileUser = (): {
@@ -10,7 +10,6 @@ export const useProfileUser = (): {
   isError: boolean;
   isLoading: boolean;
   isLoggedIn: boolean;
-  isProfileUpdated: boolean;
   refresh: () => Promise<void>;
 } => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
@@ -18,7 +17,6 @@ export const useProfileUser = (): {
   const [isError, setIsError] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUserData, setCurrentUserData] = useState<ProfileMember | null>(null);
-  const [isProfileUpdated, setIsProfileUpdated] = useState<boolean>(false);
 
   const logInCallback = useCallback(async () => {
     setIsLoading(true);
@@ -27,11 +25,9 @@ export const useProfileUser = (): {
     try {
       const storedProfileAuthToken = await profileAuthToken();
       const { currentUserData } = await profileUserData();
-      const { isUpdated } = await isUpdatedProfile();
 
       setIsLoggedIn(!!storedProfileAuthToken);
       setCurrentUserData(currentUserData);
-      setIsProfileUpdated(isUpdated);
     } catch (e) {
       console.warn(e);
       setIsError(true);
@@ -54,7 +50,6 @@ export const useProfileUser = (): {
     isError,
     isLoading,
     isLoggedIn,
-    isProfileUpdated,
     refresh: logInCallback
   };
 };
