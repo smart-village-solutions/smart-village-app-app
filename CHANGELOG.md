@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [v3.3.5]
+
+This version fixes minor known issues and adds a new tab to the settings screen for mowas keys
+
+### Added
+
+- added the ability to set the usability of keys for mowas on the settings screen
+- added the ability to create builds in the latest version of Xcode with eas
+
+### Fixed
+
+- fixed a bug that caused the app to crash in editable tile
+- fixed bugs with different list views in `HomeScreen`
+- fixed a bug with a gap under the logo in `DetailScreen`
+- fixed the problem of opening links from external browsers in BBBus
+- fixed the application crashes if the location data in BBBus is undefined
+- fixed an issue where the Carousel would reset after pausing
+- fixed the problem that images on the onboarding screen appear above the status bar
+
 ## [v3.3.4]
 
 This version includes a new list option and fixes some bugs
