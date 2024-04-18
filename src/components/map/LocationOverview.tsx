@@ -144,6 +144,7 @@ export const LocationOverview = ({ filterByOpeningTimes, navigation, queryVariab
       )}
 
       <Map
+        clusteringEnabled
         isMultipleMarkersMap
         locations={mapMarkers}
         mapCenterPosition={
