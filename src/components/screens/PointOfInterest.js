@@ -1,11 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
-import { View } from 'react-native';
+import React, { useContext, useMemo, useState } from 'react';
+import { FlatList, View } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import { consts, texts } from '../../config';
-import { matomoTrackingString } from '../../helpers';
+import { matomoTrackingString, parseListItemsFromQuery } from '../../helpers';
 import { useMatomoTrackScreenView, useOpenWebScreen } from '../../hooks';
+import { QUERY_TYPES } from '../../queries';
 import { Button } from '../Button';
 import { DataProviderButton } from '../DataProviderButton';
 import { DataProviderNotice } from '../DataProviderNotice';
@@ -16,6 +17,7 @@ import { SectionHeader } from '../SectionHeader';
 import { Wrapper } from '../Wrapper';
 import { InfoCard } from '../infoCard';
 import { Map } from '../map';
+import { VoucherListItem } from '../vouchers';
 
 import { AvailableVehicles } from './AvailableVehicles';
 import { OpeningTimesCard } from './OpeningTimesCard';
@@ -24,14 +26,16 @@ import { PriceCard } from './PriceCard';
 import { TimeTables } from './TimeTables';
 
 const { MATOMO_TRACKING } = consts;
+const INITIAL_VOUCHER_COUNT = 2;
+const INCREMENT_VOUCHER_COUNT = 5;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
 export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
   const {
     addresses,
-    payload,
     categories,
     category,
     contact,
@@ -42,9 +46,11 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     mediaContents,
     openingHours,
     operatingCompany,
+    payload,
     priceInformations,
     title,
     travelTimes,
+    vouchers,
     webUrls
   } = data;
 
@@ -67,6 +73,17 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
     ])
   );
 
+  const voucherListItems = useMemo(() => {
+    return parseListItemsFromQuery(
+      QUERY_TYPES.VOUCHERS,
+      { [QUERY_TYPES.GENERIC_ITEMS]: vouchers },
+      undefined,
+      {
+        withDate: false
+      }
+    );
+  }, [vouchers]);
+
   const businessAccount = dataProvider?.dataType === 'business_account';
 
   return (
@@ -85,6 +102,28 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
           webUrls={webUrls}
         />
       </Wrapper>
+
+      {!!vouchers?.length && (
+        <View>
+          <SectionHeader title={texts.pointOfInterest.vouchers} />
+          <FlatList
+            data={voucherListItems.slice(0, loadedVoucherDataCount)}
+            renderItem={({ item }) => <VoucherListItem item={item} navigation={navigation} />}
+            ListFooterComponent={() =>
+              voucherListItems.length > loadedVoucherDataCount && (
+                <Wrapper>
+                  <Button
+                    title={texts.pointOfInterest.loadMoreVouchers}
+                    onPress={() =>
+                      setLoadedVoucherDataCount((prev) => prev + INCREMENT_VOUCHER_COUNT)
+                    }
+                  />
+                </Wrapper>
+              )
+            }
+          />
+        </View>
+      )}
 
       {!!payload?.freeStatusUrl && (
         <AvailableVehicles freeStatusUrl={payload.freeStatusUrl} iconName={category?.iconName} />

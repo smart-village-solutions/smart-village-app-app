@@ -202,6 +202,47 @@ export const GET_POINT_OF_INTEREST = gql`
       lunches {
         id
       }
+      vouchers {
+        id
+        updatedAt
+        createdAt
+        publishedAt
+        genericType
+        title
+        categories {
+          name
+          id
+        }
+        discountType {
+          originalPrice
+          discountedPrice
+          discountPercentage
+          discountAmount
+        }
+        quota {
+          id
+          frequency
+          maxQuantity
+          maxPerPerson
+          availableQuantity
+          availableQuantityForMember(memberId: 1)
+        }
+        contentBlocks {
+          id
+          title
+          intro
+          body
+          updatedAt
+          createdAt
+        }
+        dates {
+          id
+          dateStart
+          timeStart
+          dateEnd
+          timeEnd
+        }
+      }
     }
   }
 `;

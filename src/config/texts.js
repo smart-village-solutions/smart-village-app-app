@@ -760,6 +760,7 @@ export const texts = {
     departureTimes: 'Abfahrtszeiten',
     description: 'Beschreibung',
     filterByOpeningTime: 'Nur aktuell geöffnete anzeigen',
+    loadMoreVouchers: 'Mehr anzeigen',
     location: 'Anfahrt',
     noAvailableVehicles: 'Im Moment ist kein Fahrzeug verfügbar',
     openingTime: 'Öffnungszeiten',
@@ -781,6 +782,7 @@ export const texts = {
     },
     showLunches: 'Zum aktuellen Gastro-Angebot',
     today: 'Heute',
+    vouchers: 'Aktuelle Angebote',
     yourPosition: 'Ihre Position'
   },
   pushNotifications: {

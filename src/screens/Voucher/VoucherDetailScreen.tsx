@@ -7,6 +7,7 @@ import { NetworkContext } from '../../NetworkProvider';
 import {
   BoldText,
   Discount,
+  EmptyMessage,
   HtmlView,
   ImageSection,
   LoadingSpinner,
@@ -47,8 +48,13 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     return <LoadingSpinner loading />;
   }
 
-  const { quota, contentBlocks, discountType, id, mediaContents, subtitle, title } =
+  const { contentBlocks, discountType, id, mediaContents, quota, subtitle, title } =
     data[QUERY_TYPES.GENERIC_ITEM];
+
+  if (!quota) {
+    return <EmptyMessage title={texts.voucher.detailScreen.emptyMessage} />;
+  }
+
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota;
 
   return (
