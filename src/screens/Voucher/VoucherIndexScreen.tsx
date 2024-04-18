@@ -127,12 +127,11 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
       queryVariables={{ ...queryVariables, screenName: ScreenName.VoucherIndex }}
       data={listItems}
       fetchMoreData={fetchMoreData}
-      // TODO: replace with dropdown filter component here
       ListHeaderComponent={
         <>
           {query === QUERY_TYPES.VOUCHERS && (
             <>
-              {!!showFilter && (
+              {!!showFilter && !queryVariables.categoryId && (
                 <DropdownHeader
                   {...{
                     data: vouchersCategories?.[QUERY_TYPES.GENERIC_ITEMS],
@@ -161,7 +160,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
               )}
 
               {count > 0 && showFilter && (
-                <Wrapper style={styles.noPaddingTop}>
+                <Wrapper style={!queryVariables.categoryId && styles.noPaddingTop}>
                   <BoldText>
                     {count} {count === 1 ? texts.voucher.result : texts.voucher.results}
                   </BoldText>
