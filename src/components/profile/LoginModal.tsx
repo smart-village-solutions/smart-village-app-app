@@ -36,8 +36,8 @@ export const LoginModal = ({ navigation, publicJsonFile }: TLoginModal) => {
   const [isVisible, setIsVisible] = useState(false);
   const isProfileUpdated =
     !!Object.keys(currentUserData?.member?.preferences || {}).length &&
-    !!currentUserData?.member?.last_name &&
-    !!currentUserData?.member?.first_name;
+    !!currentUserData?.member?.first_name &&
+    !!currentUserData?.member?.last_name;
 
   const { data: contentData, loading: contentLoading } = useStaticContent<DataItem[]>({
     refreshTimeKey: `publicJsonFile-${publicJsonFile}`,

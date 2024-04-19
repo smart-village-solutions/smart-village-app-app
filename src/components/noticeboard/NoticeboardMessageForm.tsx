@@ -73,7 +73,9 @@ export const NoticeboardMessageForm = ({
     defaultValues: {
       email: memberData?.member?.email ?? '',
       message: '',
-      name: `${memberData?.member?.first_name ?? ''} ${memberData?.member?.last_name ?? ''}`.trim(),
+      name: `${memberData?.member?.first_name ?? ''} ${
+        memberData?.member?.last_name?.[0] ?? ''
+      }`.trim(),
       phoneNumber: '',
       termsOfService: false
     }

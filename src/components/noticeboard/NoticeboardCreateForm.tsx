@@ -108,7 +108,7 @@ export const NoticeboardCreateForm = ({
     setValue('email', memberData?.member?.email ?? '');
     setValue(
       'name',
-      `${memberData?.member?.first_name ?? ''} ${memberData?.member?.last_name ?? ''}`.trim()
+      `${memberData?.member?.first_name ?? ''} ${memberData?.member?.last_name?.[0] ?? ''}`.trim()
     );
   }, [memberData]);
 

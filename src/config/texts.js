@@ -493,8 +493,8 @@ export const texts = {
     all: 'Alles',
     categoryNames: {
       neighbourlyHelp: 'Nachbarschaftshilfe',
-      offer: 'Angebot',
-      search: 'Gesuch'
+      offer: 'Angebote',
+      search: 'Gesuche'
     },
     delete: 'Löschen',
     description: 'Beschreibung',

@@ -38,8 +38,8 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
   const { isConnected } = useContext(NetworkContext);
   const isProfileUpdated =
     !!Object.keys(currentUserData?.member?.preferences || {}).length &&
-    !!currentUserData?.member?.last_name &&
-    !!currentUserData?.member?.first_name;
+    !!currentUserData?.member?.first_name &&
+    !!currentUserData?.member?.last_name;
 
   const { isLoading, data, refetch } = useQuery(QUERY_TYPES.PROFILE.MEMBER, member, {
     onSuccess: (responseData: ProfileMember) => {
