@@ -16,12 +16,13 @@ import {
   EmptyMessage,
   ListComponent,
   LoadingContainer,
+  LoginModal,
   navigateWithSubQuery,
   SafeAreaViewFlex,
   Wrapper
 } from '../../components';
 import { colors, Icon, normalize, texts } from '../../config';
-import { graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
+import { graphqlFetchPolicy, parseListItemsFromQuery, profileAuthToken } from '../../helpers';
 import { useStaticContent } from '../../hooks';
 import { NetworkContext } from '../../NetworkProvider';
 import { getQuery } from '../../queries';
@@ -32,7 +33,9 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [refreshing, setRefreshing] = useState(false);
+  const [isProfileLoggedIn, setIsProfileLoggedIn] = useState(false);
 
+  const isLoginRequired = route.params?.isLoginRequired || false;
   const content = route.params?.content ?? '';
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
@@ -88,6 +91,18 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     }
     setRefreshing(false);
   }, [isConnected, refetch]);
+
+  useFocusEffect(
+    useCallback(() => {
+      const getLoginStatus = async () => {
+        const storedProfileAuthToken = await profileAuthToken();
+
+        setIsProfileLoggedIn(!!storedProfileAuthToken);
+      };
+
+      getLoginStatus();
+    }, [])
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -215,6 +230,9 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
             />
           </Wrapper>
         </>
+      )}
+      {isLoginRequired && !isProfileLoggedIn && (
+        <LoginModal publicJsonFile="loginModal" navigation={navigation} />
       )}
     </SafeAreaViewFlex>
   );

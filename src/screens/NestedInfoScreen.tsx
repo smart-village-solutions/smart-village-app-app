@@ -6,7 +6,6 @@ import {
   HtmlView,
   LoadingContainer,
   LoadingSpinner,
-  LoginModal,
   MultiButtonWithSubQuery,
   SafeAreaViewFlex,
   SectionHeader,
@@ -68,7 +67,6 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
   const rootRouteName = route.params?.rootRouteName;
   const subQuery = route.params?.subQuery ?? undefined;
   const navigationTitle = route.params?.title;
-  const isLoginRequired = route.params?.isLoginRequired || false;
 
   const { data, loading, refetch } = useStaticContent<NestedInfo>({ name, type: 'json' });
   const {
@@ -149,8 +147,6 @@ export const NestedInfoScreen = ({ navigation, route }: StackScreenProps<any>) =
         keyExtractor={(item) => item.title}
         style={styles.container}
       />
-
-      {isLoginRequired && <LoginModal publicJsonFile="loginModal" navigation={navigation} />}
     </SafeAreaViewFlex>
   );
 };

@@ -1,3 +1,4 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
@@ -15,6 +16,7 @@ import {
 } from '../../components';
 import { LoadingSpinner } from '../../components/LoadingSpinner';
 import { colors, consts, normalize, texts } from '../../config';
+import { profileAuthToken } from '../../helpers';
 import { useProfileUser, useStaticContent, useTrackScreenViewAsync } from '../../hooks';
 import { ScreenName } from '../../types';
 
@@ -27,10 +29,9 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
   const { refresh, isLoading, isLoggedIn } = useProfileUser();
   const { isConnected } = useContext(NetworkContext);
   const [refreshing, setRefreshing] = useState(false);
+  const [isProfileLoggedIn, setIsProfileLoggedIn] = useState(isLoggedIn);
   const trackScreenViewAsync = useTrackScreenViewAsync();
   const { query, queryVariables = {}, rootRouteName, title: screenTitle } = route.params || {};
-
-  if (!query || !queryVariables?.name) return <EmptyMessage title={texts.empty.content} />;
 
   const { data, loading, refetch } = useStaticContent({
     name: queryVariables.name,
@@ -58,11 +59,25 @@ export const ProfileHomeScreen = ({ navigation, route }: StackScreenProps<any, s
     setRefreshing(false);
   }, [isConnected, refetch]);
 
+  useFocusEffect(
+    useCallback(() => {
+      const getLoginStatus = async () => {
+        const storedProfileAuthToken = await profileAuthToken();
+
+        setIsProfileLoggedIn(!!storedProfileAuthToken);
+      };
+
+      getLoginStatus();
+    }, [route.params?.refreshUser])
+  );
+
+  if (!query || !queryVariables?.name) return <EmptyMessage title={texts.empty.content} />;
+
   if (loading || isLoading) {
     return <LoadingSpinner loading />;
   }
 
-  if (isLoggedIn) {
+  if (isProfileLoggedIn || isLoggedIn) {
     return <ProfileScreen navigation={navigation} route={route} />;
   }
 
