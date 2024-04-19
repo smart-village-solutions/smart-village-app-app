@@ -44,7 +44,7 @@ const mapToMapMarkers = (pointsOfInterest: any): MapMarker[] | undefined => {
         if (!latitude || !longitude) return undefined;
 
         return {
-          iconName: item.category.iconName,
+          iconName: item.category?.iconName,
           id: item.id,
           position: {
             latitude,
