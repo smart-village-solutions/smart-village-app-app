@@ -1182,7 +1182,10 @@ export const texts = {
     scannerScreen: {
       errorBody: 'Beim Scannen des Codes ist ein Fehler aufgetreten. Bitte erneut versuchen.',
       errorButton: 'Erneut versuchen',
-      errorTitle: 'Fehler'
+      errorTitle: 'Fehler',
+      cameraPermissionMissing:
+        'Zum Scannen eines QR-Codes wird die Berechtigung benötigt, die Kamera zu nutzen.',
+      scannerTitle: 'QR-Code scannen'
     },
     secret: 'Kundennummer'
   },

@@ -1,14 +1,20 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import { BarCodeScanningResult, Camera } from 'expo-camera';
 import * as Linking from 'expo-linking';
-import React, { useState } from 'react';
-import { Alert, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Alert, ScrollView, StyleSheet } from 'react-native';
 
 import appJson from '../../../app.json';
-import { SafeAreaViewFlex } from '../../components';
+import {
+  LoadingSpinner,
+  RegularText,
+  SafeAreaViewFlex,
+  SectionHeader,
+  Wrapper
+} from '../../components';
 import { consts, texts } from '../../config';
-import { ScreenName } from '../../types';
 import { QUERY_TYPES } from '../../queries';
+import { ScreenName } from '../../types';
 
 const { HOST_NAMES } = consts;
 
@@ -29,6 +35,7 @@ const parseQrCode = (
 
 export const VoucherScannerScreen = ({ navigation }: StackScreenProps<any>) => {
   const [isScanning, setIsScanning] = useState(true);
+  const [hasPermission, setHasPermission] = useState<boolean>();
 
   const handleBarCodeScanned = ({ data }: BarCodeScanningResult) => {
     const { query, queryVariables } = parseQrCode(data);
@@ -54,6 +61,33 @@ export const VoucherScannerScreen = ({ navigation }: StackScreenProps<any>) => {
       title: texts.screenTitles.voucher.partner
     });
   };
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  if (hasPermission === undefined) {
+    return (
+      <ScrollView>
+        <SectionHeader title={texts.voucher.scannerScreen.scannerTitle} />
+        <LoadingSpinner loading />
+      </ScrollView>
+    );
+  }
+
+  if (!hasPermission) {
+    return (
+      <ScrollView>
+        <SectionHeader title={texts.voucher.scannerScreen.scannerTitle} />
+        <Wrapper>
+          <RegularText>{texts.voucher.scannerScreen.cameraPermissionMissing}</RegularText>
+        </Wrapper>
+      </ScrollView>
+    );
+  }
 
   return (
     <SafeAreaViewFlex>
