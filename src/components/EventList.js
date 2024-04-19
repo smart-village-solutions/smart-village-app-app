@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import { useRenderItem } from '../hooks';
-
 import { QUERY_TYPES } from '../queries';
+
 import { LoadingSpinner } from './LoadingSpinner';
 
 const keyExtractor = (item, index) => `index${index}-id${item.id}`;

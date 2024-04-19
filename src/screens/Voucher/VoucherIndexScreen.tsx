@@ -58,6 +58,13 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     skip: query !== QUERY_TYPES.VOUCHERS || !showFilter
   });
 
+  // added this query with variables to calculate the listed content count
+  const { data: vouchersCount } = useQuery(getQuery(QUERY_TYPES.VOUCHERS_CATEGORIES), {
+    fetchPolicy,
+    skip: query !== QUERY_TYPES.VOUCHERS,
+    variables: { categoryId: queryVariables?.categoryId }
+  });
+
   const listItems = useMemo(() => {
     return parseListItemsFromQuery(query, data, undefined, {
       withDate: false
@@ -121,7 +128,9 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     [query, queryVariables]
   );
 
-  const count = listItems.filter(({ categories }) => !!categories?.length)?.length;
+  const count = vouchersCount?.[QUERY_TYPES.GENERIC_ITEMS]?.filter(
+    ({ categories }: { categories: { id: number; name: string }[] }) => !!categories?.length
+  )?.length;
 
   return (
     <ListComponent
@@ -162,8 +171,8 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
                 </Wrapper>
               )}
 
-              {count > 0 && showFilter && (
-                <Wrapper style={!queryVariables.category && styles.noPaddingTop}>
+              {count > 0 && (
+                <Wrapper style={!queryVariables.category && showFilter && styles.noPaddingTop}>
                   <BoldText>
                     {count} {count === 1 ? texts.voucher.result : texts.voucher.results}
                   </BoldText>
