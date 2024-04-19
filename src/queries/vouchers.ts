@@ -128,8 +128,8 @@ export const GET_VOUCHER = gql`
 `;
 
 export const GET_VOUCHERS_CATEGORIES = gql`
-  query GenericItems {
-    genericItems(genericType: "Voucher") {
+  query GenericItems($categoryId: ID) {
+    genericItems(categoryId: $categoryId, genericType: "Voucher") {
       categories {
         name
         id
