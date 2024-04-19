@@ -71,7 +71,7 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
           <Wrapper>
             <Button
               title={texts.voucher.loginButton}
-              onPress={() => navigation.navigate(ScreenName.VoucherLogin)}
+              onPress={() => navigation.navigate(ScreenName.VoucherLogin, { imageUri })}
             />
           </Wrapper>
         )}
