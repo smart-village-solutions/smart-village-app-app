@@ -16,12 +16,7 @@ import {
   Wrapper
 } from '../../components';
 import { colors, texts } from '../../config';
-import { addToStore } from '../../helpers';
-import {
-  VOUCHER_MEMBER_ID,
-  storeVoucherAuthToken,
-  storeVoucherMemberId
-} from '../../helpers/voucherHelper';
+import { storeVoucherAuthToken, storeVoucherMemberId } from '../../helpers/voucherHelper';
 import { useStaticContent } from '../../hooks';
 import { logIn } from '../../queries/vouchers';
 import { ScreenName, VoucherLogin } from '../../types';
@@ -30,7 +25,9 @@ const showLoginFailAlert = () =>
   Alert.alert(texts.voucher.loginFailedTitle, texts.voucher.loginFailedBody);
 
 // eslint-disable-next-line complexity
-export const VoucherLoginScreen = ({ navigation }: StackScreenProps<any>) => {
+export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>) => {
+  const imageUri = route?.params?.imageUri;
+
   const {
     control,
     formState: { errors },
@@ -62,7 +59,10 @@ export const VoucherLoginScreen = ({ navigation }: StackScreenProps<any>) => {
         storeVoucherMemberId(responseData.member.id);
 
         // refreshAuth param causes the home screen to update and no longer show the login button
-        navigation.navigate(ScreenName.VoucherHome, { refreshAuth: new Date().valueOf() });
+        navigation.navigate(ScreenName.VoucherHome, {
+          refreshAuth: new Date().valueOf(),
+          headerImage: imageUri
+        });
       }
     });
 
