@@ -121,10 +121,6 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
     [query, queryVariables]
   );
 
-  if (loading) {
-    return <LoadingSpinner loading />;
-  }
-
   const count = listItems.filter(({ categories }) => !!categories?.length)?.length;
 
   return (
@@ -138,7 +134,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
         <>
           {query === QUERY_TYPES.VOUCHERS && (
             <>
-              {!!showFilter && !queryVariables.categoryId && (
+              {!!showFilter && !queryVariables.category && (
                 <DropdownHeader
                   {...{
                     data: vouchersCategories?.[QUERY_TYPES.GENERIC_ITEMS],
@@ -167,7 +163,7 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
               )}
 
               {count > 0 && showFilter && (
-                <Wrapper style={!queryVariables.categoryId && styles.noPaddingTop}>
+                <Wrapper style={!queryVariables.category && styles.noPaddingTop}>
                   <BoldText>
                     {count} {count === 1 ? texts.voucher.result : texts.voucher.results}
                   </BoldText>
