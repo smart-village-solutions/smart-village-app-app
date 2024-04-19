@@ -53,6 +53,7 @@ export const shareMessage = (data, query) => {
   const urlSection = urls.length ? urls.join('\n') : '';
   const spacer = urlSection ? '\n' : '';
 
+  /* eslint-disable complexity */
   const buildMessage = (query) => {
     let message = data.title;
 
@@ -68,10 +69,8 @@ export const shareMessage = (data, query) => {
         }`;
         break;
       case QUERY_TYPES.POINT_OF_INTEREST:
-        message = `${data.category?.name}: ${data.name}`;
-        break;
       case QUERY_TYPES.TOUR:
-        message = `${data.category?.name}: ${data.name}`;
+        message = `${data.category?.name}: ${data.name || data.title}`;
         break;
       case QUERY_TYPES.VOLUNTEER.CALENDAR:
       case QUERY_TYPES.VOLUNTEER.GROUP:
@@ -81,6 +80,7 @@ export const shareMessage = (data, query) => {
 
     return `${message}${spacer}${urlSection ? `\n${urlSection}` : ''}`;
   };
+  /* eslint-enable complexity */
 
   const buildSource = (query) => {
     return `Quelle: ${appJson.expo.scheme}://${HOST_NAMES.DETAIL}?query=${query}&id=${data.id}`;
