@@ -298,7 +298,8 @@ export const defaultStackConfig = ({
     },
     {
       routeName: ScreenName.Noticeboard,
-      screenComponent: NoticeboardIndexScreen
+      screenComponent: NoticeboardIndexScreen,
+      screenOptions: getScreenOptions({ withInfo: true })
     },
     {
       routeName: ScreenName.NoticeboardForm,
