@@ -86,7 +86,11 @@ export const PointOfInterest = ({ data, hideMap, navigation, route }) => {
       )}
 
       {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
-        <Wrapper style={styles.noPaddingTop}>
+        <SectionHeader title={texts.pointOfInterest.overview} />
+      )}
+
+      {(!!addresses?.length || !!contact || !!openingHours?.length || !!webUrls?.length) && (
+        <Wrapper>
           <InfoCard
             addresses={addresses}
             contact={contact}
