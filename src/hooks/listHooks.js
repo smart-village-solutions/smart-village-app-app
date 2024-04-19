@@ -54,7 +54,8 @@ const VoucherCategoryHeader = ({ item, navigation, options, query }) => (
         query,
         queryVariables: {
           ...options.queryVariables,
-          categoryId: item.id
+          categoryId: item.id,
+          category: item.name
         },
         rootRouteName: ROOT_ROUTE_NAMES.VOUCHER
       })
