@@ -26,6 +26,7 @@ export const VerticalList = ({
   listType,
   openWebScreen,
   query,
+  queryVariables,
   refreshControl,
   showBackToTop,
   stickyHeaderIndices
@@ -33,6 +34,7 @@ export const VerticalList = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { switchBetweenListAndMap = SWITCH_BETWEEN_LIST_AND_MAP.TOP_FILTER } = settings;
+  const isPartOfIndexScreen = !!query && !!queryVariables;
   const flatListRef = useRef();
   const [listEndReached, setListEndReached] = useState(false);
 
@@ -82,7 +84,8 @@ export const VerticalList = ({
                     })
                   }
                 />
-                {query == QUERY_TYPES.POINTS_OF_INTEREST &&
+                {isPartOfIndexScreen &&
+                  query == QUERY_TYPES.POINTS_OF_INTEREST &&
                   switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON && (
                     <View style={styles.spacer} />
                   )}
@@ -90,6 +93,7 @@ export const VerticalList = ({
             );
           }
         } else if (
+          isPartOfIndexScreen &&
           query == QUERY_TYPES.POINTS_OF_INTEREST &&
           switchBetweenListAndMap == SWITCH_BETWEEN_LIST_AND_MAP.BOTTOM_FLOATING_BUTTON
         ) {
@@ -137,6 +141,7 @@ VerticalList.propTypes = {
   listType: PropTypes.string,
   openWebScreen: PropTypes.func,
   query: PropTypes.string,
+  queryVariables: PropTypes.object,
   refreshControl: PropTypes.object,
   showBackToTop: PropTypes.bool,
   stickyHeaderIndices: PropTypes.array
