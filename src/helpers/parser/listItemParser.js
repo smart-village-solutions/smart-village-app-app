@@ -353,20 +353,22 @@ const parseVouchersCategories = (data, skipLastDivider) => {
     });
   });
 
-  return Object.keys(categoryCounts).map((categoryId, index) => ({
-    id: categoryId,
-    title: categoryCounts[categoryId].name,
-    count: categoryCounts[categoryId].count,
-    routeName: ScreenName.VoucherIndex,
-    params: {
-      title: texts.voucher.offersCategories,
-      query: QUERY_TYPES.VOUCHERS,
-      queryVariables: { categoryId },
-      rootRouteName: ROOT_ROUTE_NAMES.VOUCHER,
-      showFilter: false
-    },
-    bottomDivider: !skipLastDivider || index !== data.length - 1
-  }));
+  return Object.keys(categoryCounts)
+    .map((categoryId, index) => ({
+      id: categoryId,
+      title: categoryCounts[categoryId].name,
+      count: categoryCounts[categoryId].count,
+      routeName: ScreenName.VoucherIndex,
+      params: {
+        title: texts.voucher.offersCategories,
+        query: QUERY_TYPES.VOUCHERS,
+        queryVariables: { categoryId },
+        rootRouteName: ROOT_ROUTE_NAMES.VOUCHER,
+        showFilter: false
+      },
+      bottomDivider: !skipLastDivider || index !== data.length - 1
+    }))
+    .sort((a, b) => a.title.localeCompare(b.title));
 };
 
 const querySwitcherForDetail = (query) => {
