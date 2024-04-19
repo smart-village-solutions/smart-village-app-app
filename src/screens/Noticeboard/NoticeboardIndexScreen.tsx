@@ -2,14 +2,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { useCallback, useContext, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import {
-  ActivityIndicator,
-  RefreshControl,
-  StyleSheet,
-  TouchableHighlight,
-  View
-} from 'react-native';
-import { Divider, Tab } from 'react-native-elements';
+import { ActivityIndicator, RefreshControl, StyleSheet, View } from 'react-native';
+import { Divider } from 'react-native-elements';
 
 import {
   Button,
@@ -18,6 +12,7 @@ import {
   LoadingContainer,
   LoginModal,
   navigateWithSubQuery,
+  NoticeboardCategoryTabs,
   SafeAreaViewFlex,
   Wrapper
 } from '../../components';
@@ -44,7 +39,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   const categoryIds = queryVariables?.categoryIds ?? [];
   const currentMember = queryVariables?.currentMember ?? false;
 
-  const [selectedCategory, setSelectedCategory] = useState();
+  const [selectedCategory, setSelectedCategory] = useState<number>();
 
   const { data, loading, refetch } = useQuery(getQuery(query), {
     fetchPolicy,
@@ -70,7 +65,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     return acc;
   }, {});
 
-  // filter out the category ids that have no category names
+  // filter out the category ids
   const categoryIdsTabs = categoryIds?.filter((categoryId: number) => !!categoryNames[categoryId]);
 
   const {
@@ -113,7 +108,11 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   useFocusEffect(
     useCallback(() => {
       // if there are no filtered list items for the selected category, select the other category
-      if (!loading && !filteredListItems?.filter((item: any) => !item.component)?.length) {
+      if (
+        !loading &&
+        !filteredListItems?.filter((item: any) => !item.component)?.length &&
+        !!categoryIdsTabs?.length
+      ) {
         setSelectedCategory(
           categoryIdsTabs.find((categoryId: number) => categoryId != selectedCategory)
         );
@@ -126,29 +125,16 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
   !!categoryIdsTabs?.length &&
     filteredListItems?.unshift({
       component: (
-        <View style={styles.tabsContainer}>
-          <Tab
-            indicatorStyle={styles.tabsIndicator}
-            onChange={(index) => setSelectedCategory(categoryIdsTabs[index])}
-            value={categoryIdsTabs.indexOf(selectedCategory)}
-          >
-            {categoryIdsTabs?.map((categoryId: number) => (
-              <Tab.Item
-                key={categoryId}
-                title={categoryNames[categoryId]}
-                style={styles.tabsTab}
-                titleStyle={styles.tabsTitle}
-                TouchableComponent={TouchableHighlight}
-                underlayColor={colors.surface}
-              />
-            ))}
-          </Tab>
-          <Divider style={styles.divider} />
-        </View>
+        <NoticeboardCategoryTabs
+          categoryIdsTabs={categoryIdsTabs}
+          categoryNames={categoryNames}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
       )
     });
 
-  if (loading && !listItems?.length) {
+  if (loading && !filteredListItems?.length) {
     return (
       <LoadingContainer>
         <ActivityIndicator color={colors.refreshControl} />
@@ -156,7 +142,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
     );
   }
 
-  if (!listItems?.length) {
+  if (!filteredListItems?.length) {
     return <EmptyMessage title={texts.noticeboard.emptyTitle} />;
   }
 
@@ -245,22 +231,5 @@ const styles = StyleSheet.create({
   },
   noPaddingBotton: {
     paddingBottom: 0
-  },
-  tabsContainer: {
-    backgroundColor: colors.surface
-  },
-  tabsIndicator: {
-    backgroundColor: colors.secondary
-  },
-  tabsTab: {
-    backgroundColor: colors.surface,
-    borderBottomWidth: 0
-  },
-  tabsTitle: {
-    color: colors.primary,
-    fontFamily: 'regular',
-    fontSize: normalize(12),
-    lineHeight: normalize(16),
-    textTransform: 'none'
   }
 });
