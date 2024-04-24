@@ -202,7 +202,7 @@ export const NoticeboardIndexScreen = ({ navigation, route }: StackScreenProps<a
           <Divider style={styles.divider} />
           <Wrapper style={styles.noPaddingBotton}>
             <Button
-              icon={<Icon.PencilPlus size={normalize(24)} />}
+              icon={<Icon.PencilPlus />}
               iconPosition="left"
               title={subQuery.buttonTitle}
               onPress={() =>

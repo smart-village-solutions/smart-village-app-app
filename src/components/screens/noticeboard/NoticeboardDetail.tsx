@@ -113,7 +113,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
   }, [isCurrentUser]);
 
   return (
-    <View>
+    <View style={styles.minHeight}>
       <WrapperVertical style={styles.noPaddingTop}>
         <ImageSection mediaContents={mediaContents?.filter(isImage)} />
       </WrapperVertical>
@@ -240,27 +240,29 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
         </>
       )}
 
-      <Divider style={styles.divider} />
-      <Wrapper style={styles.noPaddingBotton}>
-        <Button
-          icon={<Icon.Mail />}
-          iconPosition="left"
-          title={texts.noticeboard.writeMessage}
-          onPress={() =>
-            navigation.navigate(ScreenName.ProfileMessaging, {
-              details: {
-                id: conversations?.[0]?.id,
-                conversationableId: id,
-                conversationableType: 'GenericItem'
-              },
-              query: QUERY_TYPES.PROFILE.GET_MESSAGES,
-              queryVariables: { conversationId: conversations?.[0]?.id },
-              displayName: 'ab c',
-              title: texts.detailTitles.conversation
-            })
-          }
-        />
-      </Wrapper>
+      <View style={styles.buttonContainer}>
+        <Divider style={styles.divider} />
+        <Wrapper style={styles.noPaddingBotton}>
+          <Button
+            icon={<Icon.Mail />}
+            iconPosition="left"
+            title={texts.noticeboard.writeMessage}
+            onPress={() =>
+              navigation.navigate(ScreenName.ProfileMessaging, {
+                details: {
+                  id: conversations?.[0]?.id,
+                  conversationableId: id,
+                  conversationableType: 'GenericItem'
+                },
+                query: QUERY_TYPES.PROFILE.GET_MESSAGES,
+                queryVariables: { conversationId: conversations?.[0]?.id },
+                displayName: 'ab c',
+                title: texts.detailTitles.conversation
+              })
+            }
+          />
+        </Wrapper>
+      </View>
     </View>
   );
 };
@@ -278,8 +280,16 @@ const styles = StyleSheet.create({
     fontSize: normalize(11),
     lineHeight: normalize(13)
   },
+  buttonContainer: {
+    bottom: 0,
+    position: 'absolute',
+    width: '100%'
+  },
   divider: {
     backgroundColor: colors.placeholder
+  },
+  minHeight: {
+    minHeight: '100%'
   },
   noPaddingBotton: {
     paddingBottom: 0

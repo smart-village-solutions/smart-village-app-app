@@ -108,9 +108,9 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
           messageText: message.text
         }).then(refetch)
       }
-      bubbleWrapperStyleRight={{ backgroundColor: colors.primary, padding: normalize(12) }}
-      bubbleWrapperStyleLeft={{ backgroundColor: colors.gray10, padding: normalize(12) }}
-      messageTextStyleRight={{ color: colors.lighterPrimary }}
+      bubbleWrapperStyleRight={{ backgroundColor: colors.lighterSecondary, padding: normalize(12) }}
+      bubbleWrapperStyleLeft={{ backgroundColor: colors.lightestText, padding: normalize(12) }}
+      messageTextStyleRight={{ color: colors.darkText }}
       messageTextStyleLeft={{ color: colors.darkText }}
       userId={currentUserId}
     />

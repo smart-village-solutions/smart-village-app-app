@@ -231,14 +231,12 @@ export const Chat = ({
           containerStyle={styles.sendButtonContainer}
           sendButtonProps={{ ...sendButtonProps, onPress: () => onSendMessages(text, onSend) }}
         >
-          <Icon.Send color={colors.lightestText} size={normalize(20)} />
+          <Icon.Send color={colors.darkText} size={normalize(20)} />
         </Send>
       )}
       renderTime={(props) => (
         <View style={styles.spacingTime}>
-          <RegularText smallest placeholder>
-            {momentFormat(props?.currentMessage?.createdAt, 'HH:mm')}
-          </RegularText>
+          <RegularText small>{momentFormat(props?.currentMessage?.createdAt, 'HH:mm')}</RegularText>
         </View>
       )}
     />
@@ -333,7 +331,7 @@ const styles = StyleSheet.create({
   },
   sendButtonContainer: {
     alignItems: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
     borderRadius: normalize(4),
     height: normalize(48),
     justifyContent: 'center',
@@ -385,5 +383,5 @@ Chat.propTypes = {
   placeholder: PropTypes.string,
   showActionButton: PropTypes.bool,
   textInputProps: PropTypes.object,
-  userId: PropTypes.string || PropTypes.number
+  userId: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };

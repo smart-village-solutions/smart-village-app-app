@@ -88,9 +88,7 @@ const styles = StyleSheet.create({
   },
   badgeStyle: {
     backgroundColor: colors.secondary,
-    borderRadius: normalize(8),
-    height: normalize(8),
-    width: normalize(8)
+    paddingHorizontal: normalize(4)
   },
   container: {
     backgroundColor: colors.transparent,
