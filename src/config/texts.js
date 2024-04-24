@@ -327,6 +327,7 @@ export const texts = {
       poll: 'Abstimmung',
       proposal: 'Vorschlag'
     },
+    conversation: 'Nachrichten',
     eventRecord: 'Termin',
     newsItem: 'Nachricht',
     pointOfInterest: 'A bis Z',
@@ -523,7 +524,8 @@ export const texts = {
       entry:
         'Vielen Dank für Ihren Eintrag. \n \nWir prüfen Ihre Angaben. Ihr Eintrag wird in Kürze veröffentlicht.',
       header: 'Vielen Dank'
-    }
+    },
+    writeMessage: 'Nachricht schreiben'
   },
   oparl: {
     agendaItem: {

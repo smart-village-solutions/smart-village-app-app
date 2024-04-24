@@ -9,17 +9,24 @@ import { useProfileUser } from '../../hooks';
 import { getQuery } from '../../queries';
 import { CREATE_MESSAGE, MARK_MESSAGES_AS_READ } from '../../queries/profile';
 
-type TMessage = {
-  conversationableId: number;
-  conversationableType: string;
-  conversationId: number;
+type Message = {
+  createdAt: string;
+  id: number;
+  senderId: string;
   messageText: string;
 };
 
+type Messages = {
+  createdAt: string;
+  _id: number;
+  text: string;
+  user?: { _id: number; display_name: string };
+}[];
+
 export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
   const query = route.params?.query;
-  const queryVariables = route.params?.queryVariables;
-  const [messageData, setMessageData] = useState([]);
+  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables);
+  const [messageData, setMessageData] = useState<Messages>([]);
   const { currentUserData } = useProfileUser();
   const currentUserId = currentUserData?.member?.id;
   const displayName = route.params?.displayName;
@@ -29,39 +36,45 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
     data: messages,
     loading,
     refetch
-  } = useQuery(getQuery(query), { variables: queryVariables, pollInterval: 10000 });
+  } = useQuery(getQuery(query), {
+    variables: queryVariables,
+    pollInterval: 10000,
+    skip: !queryVariables?.conversationId
+  });
 
   useEffect(() => {
-    const messageArray: {
-      _id: number;
-      text: string;
-      createdAt: string;
-      user?: { _id: number; display_name: string };
-    }[] = [];
+    const newMessageData: Messages = [];
 
-    if (messages?.[query].length) {
-      messages[query].forEach((message) => {
-        const { id: _id, senderId, messageText: content, createdAt } = message || {};
+    messages?.[query]?.forEach((message: Message) => {
+      const { createdAt, id: _id, senderId, messageText: text } = message || {};
 
-        messageArray.push({
-          _id,
-          text: content,
-          createdAt,
-          user: {
-            _id: parseInt(senderId),
-            display_name: displayName
-          }
-        });
+      newMessageData.push({
+        _id,
+        text,
+        createdAt,
+        user: {
+          _id: parseInt(senderId),
+          display_name: displayName
+        }
       });
+    });
 
-      setMessageData(messageArray);
+    if (newMessageData?.length) {
+      setMessageData(newMessageData);
     }
   }, [messages]);
 
   const [sendMessage] = useMutation(CREATE_MESSAGE);
 
-  const onSend = async (newMessageData: TMessage) => {
-    sendMessage({ variables: newMessageData });
+  const onSend = async (newMessageData: {
+    conversationableId: number;
+    conversationableType: string;
+    conversationId: number;
+    messageText: string;
+  }) => {
+    const { data } = await sendMessage({ variables: newMessageData });
+
+    data?.createMessage?.id && setQueryVariables({ conversationId: data.createMessage.id });
   };
 
   const [markMessagesAsRead] = useMutation(MARK_MESSAGES_AS_READ);
@@ -80,26 +93,26 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
     }, [])
   );
 
-  if (loading || !currentUserId || !messageData.length) {
+  if (loading || !currentUserId) {
     return <LoadingSpinner loading />;
   }
 
   return (
     <Chat
       data={messageData}
-      userId={currentUserId}
       onSendButton={(message) =>
         onSend({
           conversationableId,
           conversationableType,
-          conversationId: parseInt(conversationId),
+          conversationId: parseInt(conversationId || queryVariables?.conversationId),
           messageText: message.text
-        }).then(async () => await refetch())
+        }).then(refetch)
       }
       bubbleWrapperStyleRight={{ backgroundColor: colors.primary, padding: normalize(12) }}
       bubbleWrapperStyleLeft={{ backgroundColor: colors.gray10, padding: normalize(12) }}
       messageTextStyleRight={{ color: colors.lighterPrimary }}
       messageTextStyleLeft={{ color: colors.darkText }}
+      userId={currentUserId}
     />
   );
 };

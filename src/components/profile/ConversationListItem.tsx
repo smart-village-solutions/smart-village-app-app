@@ -1,5 +1,5 @@
-import React from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
+import React from 'react';
 import { useQuery } from 'react-apollo';
 import { StyleSheet, View } from 'react-native';
 import { Badge, ListItem } from 'react-native-elements';
@@ -9,16 +9,18 @@ import { momentFormat } from '../../helpers';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { BoldText, RegularText } from '../Text';
-import { VolunteerAvatar } from '../volunteer';
 import { Touchable } from '../Touchable';
+import { VolunteerAvatar } from '../volunteer';
 
 type TConversation = {
   item: {
+    bottomDivider: boolean;
+    createdAt: string;
     genericItemId: string;
-    conversationableType: string;
     id: string;
-    latestMessage: { id: string; messageText: string };
-    totalMessagesCount: number;
+    params: any;
+    routeName: string;
+    subtitle: string;
     unreadMessagesCount: number;
   };
   navigation: StackNavigationProp<any>;
@@ -26,29 +28,26 @@ type TConversation = {
 
 export const ConversationListItem = ({ item, navigation }: TConversation) => {
   const query = QUERY_TYPES.GENERIC_ITEM;
-  const queryVariables = { id: item.genericItemId };
 
-  const { data: genericItem, loading } = useQuery(getQuery(query), { variables: queryVariables });
+  const { data, loading } = useQuery(getQuery(query), { variables: { id: item.genericItemId } });
 
   if (loading) {
     return <LoadingSpinner loading />;
   }
 
-  const message = { ...item, ...genericItem[query] };
+  const message = item;
+  const genericItem = data[query];
 
   const {
-    createdAt,
-    contacts,
     bottomDivider = true,
-    title,
+    createdAt,
     subtitle,
     unreadMessagesCount,
-    routeName: name,
-    params
+    params,
+    routeName: name
   } = message;
-
+  const { contacts, title } = genericItem;
   const { firstName, email } = contacts[0];
-
   const displayName = firstName ? firstName : email;
 
   return (

@@ -1,8 +1,11 @@
 import gql from 'graphql-tag';
 
 export const GET_CONVERSATIONS = gql`
-  query {
-    getConversations {
+  query GetConversations($conversationableId: ID, $conversationableType: String) {
+    getConversations(
+      conversationableId: $conversationableId
+      conversationableType: $conversationableType
+    ) {
       conversationableId
       conversationableType
       id

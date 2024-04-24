@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Alert, StyleSheet, View } from 'react-native';
-import { Badge } from 'react-native-elements';
+import { Badge, Divider } from 'react-native-elements';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { Icon, colors, normalize, texts } from '../../../config';
 import {
@@ -82,9 +83,27 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
   const memberEntries =
     dataMemberIndex?.[QUERY_TYPES.GENERIC_ITEMS]?.filter(filterGenericItems)?.length;
 
+  const { data: conversationsData, refetch: conversationsRefetch } = useQuery(
+    getQuery(QUERY_TYPES.PROFILE.GET_CONVERSATIONS),
+    {
+      variables: {
+        conversationableId: id,
+        conversationableType: 'GenericItem'
+      }
+    }
+  );
+
+  const conversations = conversationsData?.[QUERY_TYPES.PROFILE.GET_CONVERSATIONS];
+
   useEffect(() => {
     refetchMemberIndex();
   }, [data]);
+
+  useFocusEffect(
+    useCallback(() => {
+      conversationsRefetch();
+    }, [])
+  );
 
   useLayoutEffect(() => {
     isCurrentUser &&
@@ -221,7 +240,27 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
         </>
       )}
 
-      {/* TODO: show button to message if !isCurrentUser */}
+      <Divider style={styles.divider} />
+      <Wrapper style={styles.noPaddingBotton}>
+        <Button
+          icon={<Icon.Mail />}
+          iconPosition="left"
+          title={texts.noticeboard.writeMessage}
+          onPress={() =>
+            navigation.navigate(ScreenName.ProfileMessaging, {
+              details: {
+                id: conversations?.[0]?.id,
+                conversationableId: id,
+                conversationableType: 'GenericItem'
+              },
+              query: QUERY_TYPES.PROFILE.GET_MESSAGES,
+              queryVariables: { conversationId: conversations?.[0]?.id },
+              displayName: 'ab c',
+              title: texts.detailTitles.conversation
+            })
+          }
+        />
+      </Wrapper>
     </View>
   );
 };
@@ -238,6 +277,12 @@ const styles = StyleSheet.create({
     fontFamily: 'regular',
     fontSize: normalize(11),
     lineHeight: normalize(13)
+  },
+  divider: {
+    backgroundColor: colors.placeholder
+  },
+  noPaddingBotton: {
+    paddingBottom: 0
   },
   noPaddingTop: {
     paddingTop: 0
