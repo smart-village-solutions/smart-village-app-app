@@ -235,6 +235,24 @@ const parsePointsOfInterestAndTours = (data) => {
   return _shuffle([...(pointsOfInterest || []), ...(tours || [])]);
 };
 
+const parseConversations = (data) =>
+  data?.map((conversation, index) => ({
+    ...conversation,
+    bottomDivider: index !== data.length - 1,
+    createdAt: conversation.latestMessage?.createdAt,
+    genericItemId: conversation.conversationableId,
+    id: conversation.id,
+    params: {
+      details: conversation,
+      query: QUERY_TYPES.PROFILE.GET_MESSAGES,
+      queryVariables: { conversationId: conversation.id },
+      rootRouteName: ROOT_ROUTE_NAMES.CONVERSATIONS,
+      title: texts.detailTitles.conversation
+    },
+    routeName: ScreenName.ProfileMessaging,
+    subtitle: conversation.latestMessage?.messageText
+  }));
+
 /* eslint-disable complexity */
 const parseVolunteers = (data, query, skipLastDivider, withDate, isSectioned, currentUserId) => {
   return data?.map((volunteer, index) => {
@@ -416,6 +434,8 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
       return parseCategories(data[query], skipLastDivider, ScreenName.Category, queryVariables);
     case QUERY_TYPES.POINTS_OF_INTEREST_AND_TOURS:
       return parsePointsOfInterestAndTours(data);
+    case QUERY_TYPES.PROFILE.GET_CONVERSATIONS:
+      return parseConversations(data[query]);
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL:
     case QUERY_TYPES.VOLUNTEER.CALENDAR_ALL_MY:
       return parseVolunteers(

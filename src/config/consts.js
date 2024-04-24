@@ -173,6 +173,7 @@ export const consts = {
 
   ROOT_ROUTE_NAMES: {
     COMMERCIALS: 'Commercials',
+    CONVERSATIONS: 'Conversations',
     DEADLINES: 'Deadlines',
     DEFECT_REPORT: 'DefectReport',
     EVENT_RECORDS: 'EventRecords',

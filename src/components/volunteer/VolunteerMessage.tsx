@@ -152,6 +152,7 @@ export const VolunteerMessage = ({
           title: ''
         }).then(refetch)
       }
+      showActionButton
       userId={currentUserId}
     />
   );

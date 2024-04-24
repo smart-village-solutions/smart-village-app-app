@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { OrientationAwareIcon } from '../../components';
+import { Badge, OrientationAwareIcon } from '../../components';
 import { ScreenName, TabConfig, TabNavigatorConfig } from '../../types';
-import { colors } from '../colors';
 import { Icon } from '../Icon';
+import { colors } from '../colors';
 import { normalize } from '../normalize';
 import { texts } from '../texts';
 
@@ -43,17 +43,20 @@ const serviceTabConfig: TabConfig = {
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.profile,
     tabBarIcon: ({ color, focused }: TabBarIconProps) => (
-      <OrientationAwareIcon
-        color={color}
-        Icon={focused ? Icon.ProfileFilled : Icon.Profile}
-        landscapeStyle={
-          focused
-            ? { marginRight: -normalize(16), marginTop: -normalize(4) }
-            : { marginRight: -normalize(6), marginTop: -normalize(4) }
-        }
-        size={normalize(24)}
-        style={{ marginTop: normalize(10) }}
-      />
+      <>
+        <Badge containerStyle={{ right: normalize(30), top: normalize(5) }} />
+        <OrientationAwareIcon
+          color={color}
+          Icon={focused ? Icon.ProfileFilled : Icon.Profile}
+          landscapeStyle={
+            focused
+              ? { marginRight: -normalize(16), marginTop: -normalize(4) }
+              : { marginRight: -normalize(6), marginTop: -normalize(4) }
+          }
+          size={normalize(24)}
+          style={{ marginTop: normalize(10) }}
+        />
+      </>
     )
   }
 };

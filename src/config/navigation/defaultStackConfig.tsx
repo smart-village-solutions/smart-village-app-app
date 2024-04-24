@@ -47,8 +47,10 @@ import {
   OParlOverviewScreen,
   OParlPersonsScreen,
   OParlSearchScreen,
+  ProfileConversationsScreen,
   ProfileHomeScreen,
   ProfileLoginScreen,
+  ProfileMessagingScreen,
   ProfileRegistrationScreen,
   ProfileResetPasswordScreen,
   ProfileSignupScreen,
@@ -347,9 +349,17 @@ export const defaultStackConfig = ({
       }
     },
     {
+      routeName: ScreenName.ProfileConversations,
+      screenComponent: ProfileConversationsScreen
+    },
+    {
       routeName: ScreenName.ProfileLogin,
       screenComponent: ProfileLoginScreen,
       screenOptions: { title: texts.screenTitles.profile.home }
+    },
+    {
+      routeName: ScreenName.ProfileMessaging,
+      screenComponent: ProfileMessagingScreen
     },
     {
       routeName: ScreenName.ProfileRegistration,

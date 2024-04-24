@@ -1,10 +1,11 @@
+/* eslint-disable complexity */
 /* eslint-disable react/prop-types */
 import { isArray } from 'lodash';
 import React, { useCallback, useContext } from 'react';
 import { View } from 'react-native';
 
 import { SettingsContext } from '../SettingsProvider';
-import { SectionHeader } from '../components';
+import { ConversationListItem, SectionHeader } from '../components';
 import { CardListItem } from '../components/CardListItem';
 import { TextListItem } from '../components/TextListItem';
 import { VolunteerApplicantListItem } from '../components/volunteer/VolunteerApplicantListItem';
@@ -116,6 +117,10 @@ export const useRenderItem = (query, navigation, options = {}) => {
     default: {
       /* eslint-disable complexity */
       renderItem = ({ item, index, section, target }) => {
+        if (query === QUERY_TYPES.PROFILE.GET_CONVERSATIONS) {
+          return <ConversationListItem item={item} navigation={navigation} />;
+        }
+
         if (query === QUERY_TYPES.VOLUNTEER.POSTS) {
           return (
             <VolunteerPostListItem
