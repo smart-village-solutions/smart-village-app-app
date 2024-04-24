@@ -60,9 +60,9 @@ export const HeaderRight = ({
 const styles = StyleSheet.create({
   headerRight: {
     alignItems: 'center',
-    paddingRight: normalize(7)
+    paddingRight: normalize(8)
   },
   icon: {
-    paddingHorizontal: normalize(10)
+    paddingHorizontal: normalize(6)
   }
 });
