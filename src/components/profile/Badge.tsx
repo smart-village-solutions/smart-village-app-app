@@ -2,10 +2,9 @@ import React from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
 import { Badge as RNBadge } from 'react-native-elements';
 
-import { colors, normalize } from '../config';
-import { useMessagesContext } from '../UnreadMessagesProvider';
-
-import { LoadingSpinner } from './LoadingSpinner';
+import { colors, normalize } from '../../config';
+import { useMessagesContext } from '../../UnreadMessagesProvider';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 export const Badge = ({
   badgeStyle,

@@ -6,8 +6,8 @@ import { EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { colors, consts, device, Icon, IconSet, normalize } from '../../config';
 import { OrientationContext } from '../../OrientationProvider';
-import { Badge } from '../Badge';
 import { Image } from '../Image';
+import { Badge } from '../profile';
 import { ServiceBox } from '../ServiceBox';
 import { BoldText } from '../Text';
 

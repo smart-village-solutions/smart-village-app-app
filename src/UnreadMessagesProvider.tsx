@@ -1,6 +1,6 @@
 // MessageContext.js
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { useQuery } from 'react-apollo';
 
 import { QUERY_TYPES, getQuery } from './queries';
@@ -15,10 +15,13 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
   const query = QUERY_TYPES.PROFILE.GET_CONVERSATIONS;
 
   const { data: conversationData, loading } = useQuery(getQuery(query), {
-    pollInterval: defaultPollInterval
+    pollInterval: defaultPollInterval,
+    variables: {
+      conversationableType: 'GenericItem'
+    }
   });
 
-  const getUnreadMessagesCount = () => {
+  const getUnreadMessagesCount = useCallback(() => {
     // return 0 if data is missing or not loaded yet
     if (!conversationData || !conversationData[query]) {
       return 0;
@@ -27,7 +30,7 @@ export const UnreadMessagesProvider = ({ children }: { children?: React.ReactNod
     return conversationData[query].reduce((total, conversation) => {
       return total + (conversation.unreadMessagesCount || 0);
     }, 0);
-  };
+  }, [conversationData]);
 
   useEffect(() => {
     const unreadMessagesCount = getUnreadMessagesCount();

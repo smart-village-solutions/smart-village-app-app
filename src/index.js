@@ -221,11 +221,11 @@ const MainAppWithApolloProvider = () => {
           initialLocationSettings
         }}
       >
-        <UnreadMessagesProvider>
-          <OnboardingManager>
+        <OnboardingManager>
+          <UnreadMessagesProvider>
             <Navigator navigationType={initialGlobalSettings.navigation} />
-          </OnboardingManager>
-        </UnreadMessagesProvider>
+          </UnreadMessagesProvider>
+        </OnboardingManager>
       </SettingsProvider>
     </ApolloProvider>
   );

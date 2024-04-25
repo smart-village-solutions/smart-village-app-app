@@ -16,7 +16,6 @@ export * from './weather';
 export * from './widgets';
 
 export * from './BackToTop';
-export * from './Badge';
 export * from './Button';
 export * from './calendarArrows';
 export * from './Calendar';
