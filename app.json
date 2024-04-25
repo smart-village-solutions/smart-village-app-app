@@ -31,6 +31,16 @@
         "NSCameraUsageDescription": "Diese App nutzt die Kamera um QR-Codes zu scannen.",
         "NSPhotoLibraryUsageDescription": "Diese App nutzt die Medienbibliothek für die Auswahl eines Profilbildes.",
         "NSLocationWhenInUseUsageDescription": "Diese App nutzt die Standortbestimmung um Ihre aktuelle Position auf der Karte darzustellen.",
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPICategory": "NSPrivacyAccessedAPICategoryDiskSpace",
+            "NSPrivacyAccessedAPIReason": "Die App benötigt Informationen über den verfügbaren Speicherplatz, um sicherzustellen, dass genügend Platz für die Ausführung von Download- und Speicheroperationen vorhanden ist."
+          },
+          {
+            "NSPrivacyAccessedAPICategory": "NSPrivacyAccessedAPICategoryFileTimestamp",
+            "NSPrivacyAccessedAPIReason": "Die App verwendet Dateizeitstempel, um die Synchronisierung von Dateien zu verwalten und sicherzustellen, dass der Nutzer immer die neuesten Dateiversionen hat."
+          }
+        ],
         "CFBundleLocalizations": ["de"],
         "CFBundleDevelopmentRegion": "de_DE",
         "LSApplicationQueriesSchemes": ["whatsapp"]
