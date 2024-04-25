@@ -10,6 +10,7 @@ import { imageHeight, imageWidth } from '../../helpers';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
 import { RegularText } from '../Text';
+import { useLocationSettings } from '../../hooks';
 
 type Props = {
   clusteringEnabled?: boolean;
@@ -109,8 +110,10 @@ export const Map = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { zoomLevelForMaps = {}, locationService = {} } = settings;
+  const { locationSettings } = useLocationSettings();
 
-  const showsUserLocation = otherProps.showsUserLocation ?? !!locationService;
+  const showsUserLocation =
+    locationSettings?.locationService ?? otherProps.showsUserLocation ?? !!locationService;
   const zoom = isMultipleMarkersMap
     ? zoomLevelForMaps.multipleMarkers
     : zoomLevelForMaps.singleMarker;
