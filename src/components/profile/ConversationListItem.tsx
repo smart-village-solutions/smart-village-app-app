@@ -102,8 +102,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   badgeStyle: {
-    backgroundColor: colors.secondary,
-    paddingHorizontal: normalize(4)
+    backgroundColor: colors.secondary
   },
   container: {
     backgroundColor: colors.transparent,

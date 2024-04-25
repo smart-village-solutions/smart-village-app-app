@@ -1,4 +1,5 @@
 import React from 'react';
+import { View } from 'react-native';
 
 import { Badge, OrientationAwareIcon } from '../../components';
 import { ScreenName, TabConfig, TabNavigatorConfig } from '../../types';
@@ -43,8 +44,7 @@ const serviceTabConfig: TabConfig = {
   tabOptions: {
     tabBarLabel: texts.tabBarLabel.profile,
     tabBarIcon: ({ color, focused }: TabBarIconProps) => (
-      <>
-        <Badge containerStyle={{ right: normalize(30), top: normalize(5) }} />
+      <View>
         <OrientationAwareIcon
           color={color}
           Icon={focused ? Icon.ProfileFilled : Icon.Profile}
@@ -56,7 +56,8 @@ const serviceTabConfig: TabConfig = {
           size={normalize(24)}
           style={{ marginTop: normalize(10) }}
         />
-      </>
+        <Badge containerStyle={{ right: normalize(-10), top: normalize(5) }} />
+      </View>
     )
   }
 };
