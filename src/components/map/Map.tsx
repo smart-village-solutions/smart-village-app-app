@@ -5,6 +5,7 @@ import MapView, { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'r
 
 import { colors, device, Icon, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
+import { useLocationSettings } from '../../hooks';
 import { SettingsContext } from '../../SettingsProvider';
 import { MapMarker } from '../../types';
 
@@ -56,8 +57,10 @@ export const Map = ({
   const { globalSettings } = useContext(SettingsContext);
   const { settings = {} } = globalSettings;
   const { zoomLevelForMaps = {}, locationService = {} } = settings;
+  const { locationSettings } = useLocationSettings();
 
-  const showsUserLocation = otherProps.showsUserLocation ?? !!locationService;
+  const showsUserLocation =
+    locationSettings?.locationService ?? otherProps.showsUserLocation ?? !!locationService;
   const zoom = isMultipleMarkersMap
     ? zoomLevelForMaps.multipleMarkers
     : zoomLevelForMaps.singleMarker;
