@@ -16,6 +16,8 @@ export const GET_CONVERSATIONS = gql`
         createdAt
         id
         messageText
+        senderId
+        senderName
       }
     }
   }
@@ -29,6 +31,7 @@ export const GET_MESSAGES = gql`
       id
       messageText
       senderId
+      senderName
     }
   }
 `;

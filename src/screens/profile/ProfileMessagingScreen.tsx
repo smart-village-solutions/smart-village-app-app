@@ -12,8 +12,9 @@ import { CREATE_MESSAGE, MARK_MESSAGES_AS_READ } from '../../queries/profile';
 type Message = {
   createdAt: string;
   id: number;
-  senderId: string;
   messageText: string;
+  senderId: string;
+  senderName: string;
 };
 
 type Messages = {
@@ -46,15 +47,15 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
     const newMessageData: Messages = [];
 
     messages?.[query]?.forEach((message: Message) => {
-      const { createdAt, id: _id, senderId, messageText: text } = message || {};
+      const { createdAt, id: _id, messageText: text, senderId, senderName } = message || {};
 
       newMessageData.push({
         _id,
-        text,
         createdAt,
+        text,
         user: {
           _id: parseInt(senderId),
-          display_name: displayName
+          display_name: senderName || displayName
         }
       });
     });

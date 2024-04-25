@@ -6,6 +6,7 @@ import { Badge, ListItem } from 'react-native-elements';
 
 import { colors, normalize } from '../../config';
 import { momentFormat } from '../../helpers';
+import { useProfileUser } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { BoldText, RegularText } from '../Text';
@@ -20,6 +21,10 @@ type TConversation = {
     id: string;
     params: any;
     routeName: string;
+    latestMessage: {
+      senderId: string;
+      senderName: string;
+    };
     subtitle: string;
     unreadMessagesCount: number;
   };
@@ -30,6 +35,9 @@ export const ConversationListItem = ({ item, navigation }: TConversation) => {
   const query = QUERY_TYPES.GENERIC_ITEM;
 
   const { data, loading } = useQuery(getQuery(query), { variables: { id: item.genericItemId } });
+
+  const { currentUserData } = useProfileUser();
+  const currentUserId = currentUserData?.member?.id;
 
   if (loading) {
     return <LoadingSpinner loading />;
@@ -44,11 +52,18 @@ export const ConversationListItem = ({ item, navigation }: TConversation) => {
     subtitle,
     unreadMessagesCount,
     params,
-    routeName: name
+    routeName: name,
+    latestMessage
   } = message;
   const { contacts, title } = genericItem;
   const { firstName, email } = contacts[0];
-  const displayName = firstName ? firstName : email;
+
+  const displayName =
+    latestMessage?.senderId != currentUserId
+      ? latestMessage?.senderName
+      : firstName
+      ? firstName
+      : email;
 
   return (
     <ListItem

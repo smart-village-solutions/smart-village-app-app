@@ -241,7 +241,6 @@ const parseConversations = (data) =>
     bottomDivider: index !== data.length - 1,
     createdAt: conversation.latestMessage?.createdAt,
     genericItemId: conversation.conversationableId,
-    id: conversation.id,
     params: {
       details: conversation,
       query: QUERY_TYPES.PROFILE.GET_MESSAGES,

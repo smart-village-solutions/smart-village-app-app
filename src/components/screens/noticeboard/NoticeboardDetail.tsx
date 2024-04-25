@@ -1,9 +1,9 @@
+import { useFocusEffect } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useMutation, useQuery } from 'react-apollo';
 import { Alert, StyleSheet, View } from 'react-native';
-import { Badge, Divider } from 'react-native-elements';
-import { useFocusEffect } from '@react-navigation/native';
+import { Badge } from 'react-native-elements';
 
 import { Icon, colors, normalize, texts } from '../../../config';
 import {
@@ -17,6 +17,7 @@ import { DELETE_GENERIC_ITEM } from '../../../queries/genericItem';
 import { ScreenName } from '../../../types';
 import { Button } from '../../Button';
 import { ImageSection } from '../../ImageSection';
+import { LoadingSpinner } from '../../LoadingSpinner';
 import { SectionHeader } from '../../SectionHeader';
 import { StorySection } from '../../StorySection';
 import { BoldText, HeadlineText } from '../../Text';
@@ -60,7 +61,7 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
   // action to open source urls
   const openWebScreen = useOpenWebScreen(headerTitle, link, rootRouteName);
 
-  const { currentUserData } = useProfileUser();
+  const { currentUserData, isLoading } = useProfileUser();
   const currentUserMemberId = currentUserData?.member?.id;
   const isCurrentUser = !!currentUserMemberId && !!memberId && currentUserMemberId == memberId;
 
@@ -112,13 +113,17 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
       });
   }, [isCurrentUser]);
 
+  if (isLoading) {
+    return <LoadingSpinner loading />;
+  }
+
   return (
-    <View style={styles.minHeight}>
+    <View>
       <WrapperVertical style={styles.noPaddingTop}>
         <ImageSection mediaContents={mediaContents?.filter(isImage)} />
       </WrapperVertical>
 
-      {isCurrentUser && (
+      {isCurrentUser ? (
         <Wrapper>
           <WrapperRow spaceAround>
             <Button
@@ -160,6 +165,27 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
               }
             />
           </WrapperRow>
+        </Wrapper>
+      ) : (
+        <Wrapper>
+          <Button
+            icon={<Icon.Mail />}
+            iconPosition="left"
+            title={texts.noticeboard.writeMessage}
+            onPress={() =>
+              navigation.navigate(ScreenName.ProfileMessaging, {
+                details: {
+                  id: conversations?.[0]?.id,
+                  conversationableId: id,
+                  conversationableType: 'GenericItem'
+                },
+                query: QUERY_TYPES.PROFILE.GET_MESSAGES,
+                queryVariables: { conversationId: conversations?.[0]?.id },
+                displayName: contacts?.[0]?.firstName,
+                title: texts.detailTitles.conversation
+              })
+            }
+          />
         </Wrapper>
       )}
 
@@ -239,30 +265,6 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
           </WrapperVertical>
         </>
       )}
-
-      <View style={styles.buttonContainer}>
-        <Divider style={styles.divider} />
-        <Wrapper style={styles.noPaddingBotton}>
-          <Button
-            icon={<Icon.Mail />}
-            iconPosition="left"
-            title={texts.noticeboard.writeMessage}
-            onPress={() =>
-              navigation.navigate(ScreenName.ProfileMessaging, {
-                details: {
-                  id: conversations?.[0]?.id,
-                  conversationableId: id,
-                  conversationableType: 'GenericItem'
-                },
-                query: QUERY_TYPES.PROFILE.GET_MESSAGES,
-                queryVariables: { conversationId: conversations?.[0]?.id },
-                displayName: 'ab c',
-                title: texts.detailTitles.conversation
-              })
-            }
-          />
-        </Wrapper>
-      </View>
     </View>
   );
 };
@@ -279,20 +281,6 @@ const styles = StyleSheet.create({
     fontFamily: 'regular',
     fontSize: normalize(11),
     lineHeight: normalize(13)
-  },
-  buttonContainer: {
-    bottom: 0,
-    position: 'absolute',
-    width: '100%'
-  },
-  divider: {
-    backgroundColor: colors.placeholder
-  },
-  minHeight: {
-    minHeight: '100%'
-  },
-  noPaddingBotton: {
-    paddingBottom: 0
   },
   noPaddingTop: {
     paddingTop: 0
