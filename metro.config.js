@@ -1,14 +1,28 @@
 // Learn more https://docs.expo.io/guides/customizing-metro
-const { getDefaultConfig } = require('expo/metro-config');
+const { getDefaultConfig } = require('@expo/metro-config');
 
-const config = getDefaultConfig(__dirname);
+module.exports = (async () => {
+  const config = await getDefaultConfig(__dirname);
+  const {
+    transformer,
+    resolver: { assetExts, sourceExts },
+  } = config;
 
-config.resolver.assetExts.push('mtl', 'obj', 'vrx', 'svg');
-config.transformer.getTransformOptions = async () => ({
-  transform: {
-    experimentalImportSupport: false,
-    inlineRequires: true
-  }
-});
+  config.transformer = {
+    ...transformer,
+    babelTransformerPath: require.resolve('react-native-svg-transformer'),
+    getTransformOptions: async () => ({
+      transform: {
+        experimentalImportSupport: false,
+        inlineRequires: true,
+      },
+    }),
+  };
 
-module.exports = config;
+  config.resolver = {
+    assetExts: assetExts.filter(ext => ext !== 'svg').concat('mtl', 'obj', 'vrx'),
+    sourceExts: [...sourceExts, 'svg'],
+  };
+
+  return config;
+})();
