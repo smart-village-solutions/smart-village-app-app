@@ -7,7 +7,6 @@ import { NetworkContext } from '../../NetworkProvider';
 import {
   BoldText,
   Discount,
-  EmptyMessage,
   HtmlView,
   ImageSection,
   LoadingSpinner,
@@ -48,14 +47,10 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     return <LoadingSpinner loading />;
   }
 
-  const { contentBlocks, discountType, id, mediaContents, quota, subtitle, title } =
+  const { contentBlocks, discountType, id, mediaContents, payload, quota, subtitle, title } =
     data[QUERY_TYPES.GENERIC_ITEM];
 
-  if (!quota) {
-    return <EmptyMessage title={texts.voucher.detailScreen.emptyMessage} />;
-  }
-
-  const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota;
+  const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota || {};
 
   return (
     <ScrollView
@@ -92,7 +87,12 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
           ))}
 
         {!!discountType && (
-          <Discount discount={discountType} query={QUERY_TYPES.VOUCHERS} id={queryVariables.id} />
+          <Discount
+            discount={discountType}
+            id={id}
+            payloadId={payload.id}
+            query={QUERY_TYPES.VOUCHERS}
+          />
         )}
       </Wrapper>
 
@@ -112,14 +112,15 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
         contentBlocks.map((item: TVoucherContentBlock, index: number) => (
           <Wrapper key={index}>
             {!!item.title && <BoldText>{item.title}</BoldText>}
-
             {!!item.body && <HtmlView html={item.body} />}
           </Wrapper>
         ))}
 
-      <Wrapper style={styles.noPaddingTop}>
-        <VoucherRedeem quota={quota} voucherId={id} />
-      </Wrapper>
+      {!!quota && (
+        <Wrapper style={styles.noPaddingTop}>
+          <VoucherRedeem quota={quota} voucherId={id} />
+        </Wrapper>
+      )}
     </ScrollView>
   );
 };

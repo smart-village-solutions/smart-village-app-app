@@ -1142,8 +1142,7 @@ export const texts = {
       close: 'Schließen',
       daily: 'pro Tag',
       desiredQuantity: 'Gewünschte Anzahl',
-      emptyMessage:
-        'Der Inhalt kann nicht geladen werden. Bitte überprüfen Sie Ihre Internetverbindung.',
+      emptyMessage: 'Der Inhalt kann nicht geladen werden. Bitte versuchen Sie es später erneut.',
       frequency: (maxPerPerson, frequency) =>
         `${maxPerPerson}x pro Person ${texts.voucher.detailScreen[frequency]} einlösbar`,
       isNotAvailable: 'Dieser Gutschein ist nicht verfügbar',

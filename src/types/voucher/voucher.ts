@@ -5,10 +5,13 @@ export type TVoucherItem = {
   dates: TVoucherDates[];
   discountType: TDiscount;
   id: string;
-  quota: TQuota;
+  payload: {
+    id: string;
+  };
   picture: {
     url: string;
   };
+  quota: TQuota;
   routeName: string;
   subtitle: string;
   title: string;

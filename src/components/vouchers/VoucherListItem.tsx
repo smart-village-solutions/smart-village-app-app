@@ -24,7 +24,7 @@ export const VoucherListItem = memo(
     horizontal: boolean;
     item: TVoucherItem;
   }) => {
-    const { discountType, id, picture, params, routeName: name, subtitle, title } = item;
+    const { discountType, id, picture, params, payload, routeName: name, subtitle, title } = item;
 
     return (
       <Touchable onPress={() => navigation && navigation.push(name, params)} disabled={!navigation}>
@@ -39,7 +39,12 @@ export const VoucherListItem = memo(
           )}
 
           {!!discountType && (
-            <Discount discount={discountType} query={QUERY_TYPES.VOUCHERS} id={id} />
+            <Discount
+              discount={discountType}
+              id={id}
+              payloadId={payload.id}
+              query={QUERY_TYPES.VOUCHERS}
+            />
           )}
 
           <WrapperRow spaceBetween style={styles.centeredItems}>

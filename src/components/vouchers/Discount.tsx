@@ -4,7 +4,6 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { BookmarkContext } from '../../BookmarkProvider';
 import { Icon, colors, consts, normalize } from '../../config';
 import { useBookmarkedStatus } from '../../hooks';
-import { togglePushDeviceAssignment } from '../../pushNotifications';
 import { TDiscount } from '../../types';
 import { BoldText, RegularText } from '../Text';
 
@@ -12,12 +11,14 @@ const a11yLabel = consts.a11yLabel;
 
 export const Discount = ({
   discount,
-  query,
-  id
+  id,
+  payloadId,
+  query
 }: {
   discount: TDiscount;
-  query: string;
   id: string;
+  payloadId: string;
+  query: string;
 }) => {
   const { toggleBookmark } = useContext(BookmarkContext);
   const { discountAmount, discountedPrice, originalPrice } = discount;
@@ -25,25 +26,25 @@ export const Discount = ({
   const isBookmarked = useBookmarkedStatus(query, id);
 
   const onPress = useCallback(() => {
-    toggleBookmark(query, id);
-    togglePushDeviceAssignment(
-      id,
-      query.charAt(0).toUpperCase() + query.slice(1), // convert first character to uppercase
-      isBookmarked ? 'DELETE' : 'POST'
-    );
-  }, [id, query]);
+    toggleBookmark(query, payloadId);
+  }, [payloadId, query]);
 
   return (
     <View style={styles.container}>
       <View style={styles.container}>
-        <View style={styles.discountedPriceContainer}>
-          <BoldText lightest>{discountedPrice} €</BoldText>
-        </View>
+        {!!discountedPrice && (
+          <View style={styles.discountedPriceContainer}>
+            <BoldText lightest>{discountedPrice} €</BoldText>
+          </View>
+        )}
 
-        <RegularText lineThrough lighter>
-          {originalPrice} €
-        </RegularText>
-        <RegularText primary> -{discountAmount} €</RegularText>
+        {!!originalPrice && (
+          <RegularText lineThrough lighter>
+            {originalPrice} €
+          </RegularText>
+        )}
+
+        {!!discountAmount && <RegularText primary> -{discountAmount} €</RegularText>}
       </View>
 
       <TouchableOpacity

@@ -135,8 +135,9 @@ export const DetailScreen = ({ navigation, route }) => {
 
         // we can have `data` from GraphQL or `details` from the previous list view.
         // if there is no cached `data` or network fetched `data` we fallback to the `details`.
-        if ((!data || !data[query]) && !details)
-          return <EmptyMessage title={texts.voucher.detailScreen.emptyMessage} />;
+        if ((!data || !data[query]) && !details) {
+          return <EmptyMessage title={texts.empty.content} />;
+        }
 
         const Component = getComponent(query, data?.[query]?.genericType ?? details?.genericType);
 

@@ -73,6 +73,7 @@ export const GET_VOUCHERS = gql`
           url
         }
       }
+      payload
     }
   }
 `;
@@ -123,6 +124,7 @@ export const GET_VOUCHER = gql`
           url
         }
       }
+      payload
     }
   }
 `;
@@ -187,6 +189,7 @@ export const GET_VOUCHERS_REDEEMED = gql`
           url
         }
       }
+      payload
     }
   }
 `;
