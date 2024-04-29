@@ -167,8 +167,8 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
                   </RegularText>
 
                   <CircularProgress
-                    activeStrokeColor={colors.primary}
-                    inActiveStrokeColor={colors.lighterPrimary}
+                    activeStrokeColor={colors.lighterPrimary}
+                    inActiveStrokeColor={colors.primary}
                     maxValue={100}
                     radius={120}
                     showProgressValue={false}
