@@ -87,6 +87,37 @@ export const GET_VOUCHER = gql`
       categories {
         name
       }
+      dataProvider {
+        id
+        logo {
+          id
+          url
+        }
+        name
+        dataType
+        notice
+        address {
+          id
+          kind
+          addition
+          street
+          zip
+          city
+        }
+        contact {
+          id
+          firstName
+          lastName
+          phone
+          email
+          fax
+          webUrls {
+            id
+            url
+            description
+          }
+        }
+      }
       discountType {
         originalPrice
         discountedPrice

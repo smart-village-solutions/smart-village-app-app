@@ -6,17 +6,20 @@ import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { NetworkContext } from '../../NetworkProvider';
 import {
   BoldText,
+  DataProviderButton,
   Discount,
   HtmlView,
   ImageSection,
   LoadingSpinner,
+  OperatingCompany,
   RegularText,
   VoucherRedeem,
   Wrapper
 } from '../../components';
+import { DataProviderNotice } from '../../components/DataProviderNotice';
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
-import { useVoucher } from '../../hooks';
+import { useOpenWebScreen, useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { TVoucherContentBlock } from '../../types';
 
@@ -29,6 +32,9 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
 
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
+
+  // action to open source urls
+  const openWebScreen = useOpenWebScreen('Anbieter', undefined, route.params?.rootRouteName);
 
   const { data, loading, refetch } = useQuery(getQuery(query), {
     variables: { memberId, ...queryVariables },
@@ -47,9 +53,19 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     return <LoadingSpinner loading />;
   }
 
-  const { contentBlocks, discountType, id, mediaContents, payload, quota, subtitle, title } =
-    data[QUERY_TYPES.GENERIC_ITEM];
+  const {
+    contentBlocks,
+    dataProvider,
+    discountType,
+    id,
+    mediaContents,
+    payload,
+    quota,
+    subtitle,
+    title
+  } = data[QUERY_TYPES.GENERIC_ITEM];
 
+  const dataProviderLogo = dataProvider?.logo?.url;
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota || {};
 
   return (
@@ -121,6 +137,16 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
           <VoucherRedeem quota={quota} voucherId={id} />
         </Wrapper>
       )}
+
+      <OperatingCompany
+        openWebScreen={openWebScreen}
+        operatingCompany={dataProvider}
+        title={texts.pointOfInterest.operatingCompany}
+      />
+
+      <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
+
+      <DataProviderButton dataProvider={dataProvider} />
     </ScrollView>
   );
 };
