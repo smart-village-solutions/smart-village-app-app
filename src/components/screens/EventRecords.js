@@ -169,7 +169,8 @@ export const EventRecords = ({ navigation, route }) => {
 
   const listItems = useMemo(() => {
     let parsedListItems = parseListItemsFromQuery(QUERY_TYPES.EVENT_RECORDS, data, undefined, {
-      withDate: false
+      withDate: false,
+      withTime: true
     });
 
     if (additionalData?.length) {

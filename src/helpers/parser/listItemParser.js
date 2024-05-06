@@ -43,12 +43,13 @@ const filterGenericItems = (item) => {
   return true;
 };
 
-const parseEventRecords = (data, skipLastDivider, withDate) => {
+const parseEventRecords = (data, skipLastDivider, withDate, withTime) => {
   return data?.map((eventRecord, index) => ({
     id: eventRecord.id,
     subtitle: subtitle(
       withDate ? eventDate(eventRecord.listDate) : undefined,
-      eventRecord.addresses?.[0]?.addition || eventRecord.addresses?.[0]?.city
+      eventRecord.addresses?.[0]?.addition || eventRecord.addresses?.[0]?.city,
+      withTime ? eventRecord?.dates?.[0]?.timeFrom : undefined
     ),
     title: eventRecord.title,
     picture: {
@@ -381,6 +382,7 @@ const parseConsulData = (data, query, skipLastDivider) => {
  *    consentForDataProcessingText?: string;
  *    skipLastDivider?: boolean;
  *    withDate?: boolean,
+ *    withTime?: boolean,
  *    isSectioned?: boolean,
  *    queryVariables?: any
  *  }} options
@@ -395,13 +397,14 @@ export const parseListItemsFromQuery = (query, data, titleDetail, options = {}) 
     consentForDataProcessingText,
     skipLastDivider = false,
     withDate = true,
+    withTime = false,
     isSectioned = false,
     queryVariables
   } = options;
 
   switch (query) {
     case QUERY_TYPES.EVENT_RECORDS:
-      return parseEventRecords(data[query], skipLastDivider, withDate);
+      return parseEventRecords(data[query], skipLastDivider, withDate, withTime);
     case QUERY_TYPES.GENERIC_ITEMS:
       return parseGenericItems(data[query], skipLastDivider, consentForDataProcessingText);
     case QUERY_TYPES.NEWS_ITEMS:
