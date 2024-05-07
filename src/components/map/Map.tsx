@@ -151,7 +151,6 @@ export const Map = ({
     <View style={[styles.container, style]}>
       <MapView
         clusterColor={colors.surface}
-        clusterFontFamily="regular"
         clusteringEnabled={clusteringEnabled}
         renderCluster={renderCluster}
         initialRegion={initialRegion}
