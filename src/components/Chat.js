@@ -1,3 +1,4 @@
+import 'dayjs/locale/de';
 import { Video } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { MediaTypeOptions } from 'expo-image-picker';
@@ -106,6 +107,7 @@ export const Chat = ({
     <GiftedChat
       alwaysShowSend
       bottomOffset={device.platform === 'ios' && normalize(96)}
+      locale="de"
       messages={messages}
       minInputToolbarHeight={normalize(96)}
       placeholder={placeholder}
