@@ -5,6 +5,7 @@ import { addToStore, readFromStore } from './storageHelper';
 
 const VOUCHER_AUTH_TOKEN = 'VOUCHER_AUTH_TOKEN';
 export const VOUCHER_MEMBER_ID = 'VOUCHER_MEMBER_ID';
+export const VOUCHER_MEMBER_LOGIN_INFO = 'VOUCHER_MEMBER_LOGIN_INFO';
 export const VOUCHER_TRANSACTIONS = 'VOUCHER_TRANSACTIONS';
 export const VOUCHER_DEVICE_TOKEN = 'VOUCHER_DEVICE_TOKEN';
 
@@ -54,4 +55,28 @@ export const voucherMemberId = async () => {
   }
 
   return memberId;
+};
+
+export const storeVoucherMemberLoginInfo = (memberLoginInfo?: string) => {
+  if (memberLoginInfo) {
+    addToStore(VOUCHER_MEMBER_LOGIN_INFO, memberLoginInfo);
+  } else {
+    addToStore(VOUCHER_MEMBER_LOGIN_INFO);
+  }
+};
+
+export const voucherMemberLoginInfo = async () => {
+  let memberLoginInfo = {};
+
+  // The reason for the problem of staying in SplashScreen that occurs after the application is
+  // updated on the Android side is the inability to obtain the token here.
+  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
+  try {
+    memberLoginInfo = await readFromStore(VOUCHER_MEMBER_LOGIN_INFO);
+  } catch {
+    // Token deleted here so that it can be recreated
+    AsyncStorage.removeItem(VOUCHER_MEMBER_LOGIN_INFO);
+  }
+
+  return memberLoginInfo;
 };
