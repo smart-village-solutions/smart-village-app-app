@@ -171,6 +171,7 @@ export const SueReportLocation = ({
       <Map
         locations={locations}
         mapCenterPosition={mapCenterPosition}
+        calloutTextEnabled
         mapStyle={styles.map}
         isMyLocationButtonVisible
         onMyLocationButtonPress={() =>
@@ -193,9 +194,11 @@ export const SueReportLocation = ({
           ])
         }
         onMapPress={({ nativeEvent }) => {
-          setUpdatedRegion(false);
-          setSelectedPosition(nativeEvent.coordinate);
-          reverseGeocode(nativeEvent.coordinate);
+          if (nativeEvent.action !== 'marker-press') {
+            setUpdatedRegion(false);
+            setSelectedPosition(nativeEvent.coordinate);
+            reverseGeocode(nativeEvent.coordinate);
+          }
         }}
         updatedRegion={
           !!selectedPosition && updatedRegion

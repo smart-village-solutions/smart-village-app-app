@@ -2,7 +2,7 @@ import _upperFirst from 'lodash/upperFirst';
 import React, { useContext, useRef } from 'react';
 import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 import MapView from 'react-native-map-clustering';
-import { LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
+import { Callout, LatLng, MAP_TYPES, Marker, Polyline, Region, UrlTile } from 'react-native-maps';
 
 import { colors, device, Icon, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
@@ -11,6 +11,7 @@ import { MapMarker } from '../../types';
 import { RegularText } from '../Text';
 
 type Props = {
+  calloutTextEnabled?: boolean;
   clusteringEnabled?: boolean;
   geometryTourData?: LatLng[];
   isMaximizeButtonVisible?: boolean;
@@ -93,6 +94,7 @@ const renderCluster = (cluster: TCluster) => {
 
 /* eslint-disable complexity */
 export const Map = ({
+  calloutTextEnabled = false,
   clusteringEnabled = false,
   geometryTourData,
   isMaximizeButtonVisible = false,
@@ -191,6 +193,7 @@ export const Map = ({
         )}
         {locations?.map((marker, index) => {
           const isActiveMarker = selectedMarker && marker.id === selectedMarker;
+          const calloutText = marker.title;
 
           return (
             <Marker
@@ -246,6 +249,14 @@ export const Map = ({
                   iconName={marker.iconName ? marker.iconName : undefined}
                 />
               )}
+
+              {calloutTextEnabled && (
+                <Callout style={styles.callout}>
+                  <RegularText smallest center>
+                    {calloutText}
+                  </RegularText>
+                </Callout>
+              )}
             </Marker>
           );
         })}
@@ -271,6 +282,9 @@ export const Map = ({
 /* eslint-enable complexity */
 
 const styles = StyleSheet.create({
+  callout: {
+    width: normalize(120)
+  },
   clusterCircle: {
     alignItems: 'center',
     justifyContent: 'center',
