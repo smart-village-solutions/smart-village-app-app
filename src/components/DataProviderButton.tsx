@@ -3,6 +3,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback } from 'react';
 
 import { texts } from '../config';
+import { ScreenName } from '../types';
 
 import { Button } from './Button';
 import { Wrapper } from './Wrapper';
@@ -18,7 +19,7 @@ export const DataProviderButton = ({ dataProvider }: Props) => {
   const navigation = useNavigation<StackNavigationProp<any>>();
   const navigateToDataProvider = useCallback(
     () =>
-      navigation.push('DataProvider', {
+      navigation.push(ScreenName.DataProvider, {
         dataProviderName: dataProvider.name,
         logo: dataProvider?.logo?.url,
         title: dataProvider.name

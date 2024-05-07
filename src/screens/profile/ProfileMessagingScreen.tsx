@@ -26,21 +26,21 @@ type Messages = {
 
 export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
   const query = route.params?.query;
-  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables);
+  const [queryVariables, setQueryVariables] = useState(route.params?.queryVariables || {});
   const [messageData, setMessageData] = useState<Messages>([]);
   const { currentUserData } = useProfileUser();
   const currentUserId = currentUserData?.member?.id;
   const displayName = route.params?.displayName;
-  const { conversationableId, conversationableType, id: conversationId } = route.params?.details;
+  const { conversationableId, conversationableType, id } = queryVariables;
 
   const {
     data: messages,
     loading,
     refetch
   } = useQuery(getQuery(query), {
-    variables: queryVariables,
+    variables: { conversationId: queryVariables.id },
     pollInterval: 10000,
-    skip: !queryVariables?.conversationId
+    skip: !queryVariables.id
   });
 
   useEffect(() => {
@@ -70,20 +70,20 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
   const onSend = async (newMessageData: {
     conversationableId: number;
     conversationableType: string;
-    conversationId: number;
+    id: number;
     messageText: string;
   }) => {
     const { data } = await sendMessage({ variables: newMessageData });
 
-    data?.createMessage?.id && setQueryVariables({ conversationId: data.createMessage.id });
+    data?.createMessage?.id && setQueryVariables({ id: data.createMessage.id });
   };
 
   const [markMessagesAsRead] = useMutation(MARK_MESSAGES_AS_READ);
 
   useEffect(() => {
-    if (messages?.[query]?.length && !loading && !!conversationId) {
+    if (messages?.[query]?.length && !loading && !!id) {
       markMessagesAsRead({
-        variables: { conversationId: parseInt(conversationId), updateAllMessages: true }
+        variables: { id: parseInt(id), updateAllMessages: true }
       });
     }
   }, [messages, loading]);
@@ -105,7 +105,7 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
         onSend({
           conversationableId,
           conversationableType,
-          conversationId: parseInt(conversationId || queryVariables?.conversationId),
+          id: parseInt(id),
           messageText: message.text
         }).then(refetch)
       }
