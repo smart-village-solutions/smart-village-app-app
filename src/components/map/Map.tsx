@@ -205,6 +205,7 @@ export const Map = ({
               key={`${index}-${marker.id}`}
               onPress={() => onMarkerPress?.(marker.id)}
               zIndex={isActiveMarker ? 1010 : 1}
+              cluster={marker.iconName != 'ownLocation'}
             >
               {!!marker.iconName && marker.iconName != 'ownLocation' ? (
                 <>
