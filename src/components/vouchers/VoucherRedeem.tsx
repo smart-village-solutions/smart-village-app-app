@@ -42,7 +42,21 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
     if (hasNoAvailableQuantityForMember) {
       setIsRedeemedVoucher(true);
     }
-  }, [availableQuantity, availableQuantityForMember]);
+
+    localRedeemedVoucherCheck();
+  }, [availableQuantity, availableQuantityForMember, memberId]);
+
+  const localRedeemedVoucherCheck = async () => {
+    const voucherTransactions = (await readFromStore(VOUCHER_TRANSACTIONS)) || [];
+
+    if (voucherTransactions.length) {
+      const isRedeemed = voucherTransactions.some(
+        (transaction) => transaction.voucherId === voucherId && transaction.memberId === memberId
+      );
+
+      setIsRedeemedVoucher(isRedeemed);
+    }
+  };
 
   const [redeemQuotaOfVoucher] = useMutation(REDEEM_QUOTA_OF_VOUCHER);
 
