@@ -36,7 +36,7 @@ export const storeVoucherMemberId = (memberId?: string) => {
   if (memberId) {
     addToStore(VOUCHER_MEMBER_ID, memberId);
   } else {
-    addToStore(VOUCHER_MEMBER_ID);
+    AsyncStorage.removeItem(VOUCHER_MEMBER_ID);
   }
 };
 

@@ -35,12 +35,7 @@ export const useVoucher = (): {
   }, []);
 
   useEffect(() => {
-    if (isConnected && isMainserverUp && !isLoggedIn) {
-      logInCallback();
-    } else {
-      setIsLoading(false);
-      setIsError(true);
-    }
+    logInCallback();
   }, [isConnected, isMainserverUp, logInCallback]);
 
   return {
