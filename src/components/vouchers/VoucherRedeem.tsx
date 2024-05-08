@@ -81,15 +81,15 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
   const seconds = remainingTime % 60;
 
   const redeemVoucher = async () => {
+    let deviceToken = await readFromStore(VOUCHER_DEVICE_TOKEN);
+
+    if (!deviceToken) {
+      deviceToken = uuid();
+      addToStore(VOUCHER_DEVICE_TOKEN, deviceToken);
+    }
+
     try {
-      let deviceToken = await readFromStore(VOUCHER_DEVICE_TOKEN);
-
-      if (!deviceToken) {
-        deviceToken = uuid();
-        addToStore(VOUCHER_DEVICE_TOKEN, deviceToken);
-      }
-
-      redeemQuotaOfVoucher({
+      await redeemQuotaOfVoucher({
         variables: {
           deviceToken,
           quantity,
@@ -98,6 +98,9 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
         }
       });
 
+      setIsRedeemedVoucher(true);
+      setIsRedeemingVoucher(true);
+    } catch (error) {
       const voucherTransactions = (await readFromStore(VOUCHER_TRANSACTIONS)) || [];
       const voucherTransaction = {
         deviceToken,
@@ -111,7 +114,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
 
       setIsRedeemedVoucher(true);
       setIsRedeemingVoucher(true);
-    } catch (error) {
+
       console.error(error);
     }
   };
