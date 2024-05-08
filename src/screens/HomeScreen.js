@@ -20,7 +20,12 @@ import {
   Wrapper
 } from '../components';
 import { colors, consts, normalize, texts } from '../config';
-import { graphqlFetchPolicy, rootRouteName } from '../helpers';
+import {
+  graphqlFetchPolicy,
+  queryVariablesFromQuery,
+  rootRouteName,
+  routeNameFromQuery
+} from '../helpers';
 import {
   useMatomoTrackScreenView,
   usePermanentFilter,
@@ -201,20 +206,23 @@ export const HomeScreen = ({ navigation, route }) => {
 
   const interactionHandler = useCallback(
     (response) => {
-      const data = response?.notification?.request?.content?.data;
-      const queryType = data?.query_type ? getQueryType(data.query_type) : undefined;
+      const data = response?.notification?.request?.content?.data || {};
+      const { id, query_type: queryType, title } = data;
+      const query = queryType ? getQueryType(queryType) : undefined;
+      const name = routeNameFromQuery(query);
+      const queryVariables = queryVariablesFromQuery(query, data);
 
-      if (data?.id && queryType) {
+      if (id && name && query) {
         // navigate to the referenced item
         navigation.navigate({
-          name: 'Detail',
+          name,
           params: {
-            title: texts.detailTitles[queryType],
-            query: queryType,
-            queryVariables: { id: data.id },
-            rootRouteName: rootRouteName(queryType),
+            details: null,
+            query,
+            queryVariables,
+            rootRouteName: rootRouteName(query),
             shareContent: null,
-            details: null
+            title: title || texts.detailTitles[query]
           }
         });
       }

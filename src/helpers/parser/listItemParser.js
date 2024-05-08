@@ -242,9 +242,8 @@ const parseConversations = (data) =>
     createdAt: conversation.latestMessage?.createdAt,
     genericItemId: conversation.conversationableId,
     params: {
-      details: conversation,
       query: QUERY_TYPES.PROFILE.GET_MESSAGES,
-      queryVariables: { conversationId: conversation.id },
+      queryVariables: conversation,
       rootRouteName: ROOT_ROUTE_NAMES.CONVERSATIONS,
       title: texts.detailTitles.conversation
     },
