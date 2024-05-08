@@ -820,6 +820,7 @@ export const texts = {
     loginFailedBody: 'Bitte Eingaben überprüfen und erneut versuchen.',
     loginFailedTitle: 'Fehler bei der Anmeldung',
     loginTitle: 'Login',
+    logout: 'Abmelden',
     next: 'Weiter',
     notYetRegistered: 'Sind Sie noch nicht registriert? ',
     ok: 'OK',

@@ -174,13 +174,12 @@ export const NoticeboardDetail = ({ data, navigation, fetchPolicy, route }) => {
             title={texts.noticeboard.writeMessage}
             onPress={() =>
               navigation.navigate(ScreenName.ProfileMessaging, {
-                details: {
+                query: QUERY_TYPES.PROFILE.GET_MESSAGES,
+                queryVariables: {
                   id: conversations?.[0]?.id,
                   conversationableId: id,
                   conversationableType: 'GenericItem'
                 },
-                query: QUERY_TYPES.PROFILE.GET_MESSAGES,
-                queryVariables: { conversationId: conversations?.[0]?.id },
                 displayName: contacts?.[0]?.firstName,
                 title: texts.detailTitles.conversation
               })

@@ -118,7 +118,7 @@ export const ProfileScreen = ({ navigation, route }: StackScreenProps<any, strin
         <ServiceTiles staticJsonName="profileService" />
         <Wrapper>
           <Button
-            title="Abmelden"
+            title={texts.profile.logout}
             onPress={() => {
               storeProfileAuthToken();
               navigation.navigate(ScreenName.Profile, { refreshUser: new Date().valueOf() });

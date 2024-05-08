@@ -99,5 +99,11 @@ export const getQueryType = (input: string) => {
     QUERY_TYPES.NEWS_ITEM,
     QUERY_TYPES.EVENT_RECORD
   ];
+
+  // special condition used for push notifications coming from messaging
+  if (camelCaseInput === 'messagingConversation') {
+    return QUERY_TYPES.PROFILE.GET_MESSAGES;
+  }
+
   return availableTypes.find((type) => type === camelCaseInput);
 };

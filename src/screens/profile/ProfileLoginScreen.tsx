@@ -21,6 +21,7 @@ import {
 } from '../../components';
 import { consts, normalize, texts } from '../../config';
 import { storeProfileAuthToken, storeProfileUserData } from '../../helpers';
+import { addMemberIdToTokenOnServer } from '../../pushNotifications';
 import { QUERY_TYPES } from '../../queries';
 import { member, profileLogIn } from '../../queries/profile';
 import { ProfileLogin, ProfileMember, ScreenName } from '../../types';
@@ -87,6 +88,9 @@ export const ProfileLoginScreen = ({ navigation, route }: StackScreenProps<any>)
         if (!responseData?.member?.authentication_token) {
           return;
         }
+
+        // update push notification device token on server with current member id
+        addMemberIdToTokenOnServer(responseData.member.id);
 
         // wait for saving auth token to global state
         return storeProfileAuthToken(responseData.member.authentication_token);
