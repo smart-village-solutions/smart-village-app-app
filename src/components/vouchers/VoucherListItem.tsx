@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import React, { memo } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
-import { Card } from 'react-native-elements';
+import { Card, Divider } from 'react-native-elements';
 
 import { Icon, colors, normalize } from '../../config';
 import { imageHeight, imageWidth } from '../../helpers';
@@ -10,7 +10,7 @@ import { TVoucherItem } from '../../types';
 import { Image } from '../Image';
 import { BoldText, RegularText } from '../Text';
 import { Touchable } from '../Touchable';
-import { WrapperRow } from '../Wrapper';
+import { WrapperRow, WrapperVertical } from '../Wrapper';
 
 import { Discount } from './Discount';
 
@@ -39,12 +39,14 @@ export const VoucherListItem = memo(
           )}
 
           {!!discountType && (
-            <Discount
-              discount={discountType}
-              id={id}
-              payloadId={payload.id}
-              query={QUERY_TYPES.VOUCHERS}
-            />
+            <WrapperVertical>
+              <Discount
+                discount={discountType}
+                id={id}
+                payloadId={payload.id}
+                query={QUERY_TYPES.VOUCHERS}
+              />
+            </WrapperVertical>
           )}
 
           <WrapperRow spaceBetween style={styles.centeredItems}>
@@ -65,6 +67,8 @@ export const VoucherListItem = memo(
             <Icon.ArrowRight color={colors.darkText} />
           </WrapperRow>
         </Card>
+
+        <Divider />
       </Touchable>
     );
   }
@@ -113,7 +117,6 @@ const stylesWithProps = ({ horizontal }: { horizontal: boolean }) => {
       width: maxWidth
     },
     image: {
-      marginBottom: normalize(7),
       height: imageHeight(maxWidth),
       width: maxWidth
     }
