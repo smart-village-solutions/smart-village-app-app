@@ -44,7 +44,9 @@ export const ConversationListItem = ({ item, navigation }: TConversation) => {
   }
 
   const message = item;
-  const genericItem = data[query];
+  const genericItem = data?.[query];
+
+  if (!genericItem) return null;
 
   const {
     bottomDivider = true,
