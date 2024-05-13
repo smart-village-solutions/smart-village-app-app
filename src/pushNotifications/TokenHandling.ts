@@ -165,7 +165,7 @@ export const addMemberIdToTokenOnServer = async (memberId?: number) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      notification_device: { token: storedToken, memberId }
+      notification_device: { token: storedToken, member_id: memberId }
     })
   };
 
