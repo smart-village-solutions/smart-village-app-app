@@ -70,12 +70,16 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
   const onSend = async (newMessageData: {
     conversationableId: number;
     conversationableType: string;
-    id: number;
+    conversationId?: number;
     messageText: string;
   }) => {
-    const { data } = await sendMessage({ variables: newMessageData });
+    try {
+      const { data } = await sendMessage({ variables: newMessageData });
 
-    data?.createMessage?.id && setQueryVariables({ id: data.createMessage.id });
+      data?.createMessage?.id && setQueryVariables({ id: data.createMessage.id });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const [markMessagesAsRead] = useMutation(MARK_MESSAGES_AS_READ);
@@ -83,7 +87,7 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
   useEffect(() => {
     if (messages?.[query]?.length && !loading && !!id) {
       markMessagesAsRead({
-        variables: { id: parseInt(id), updateAllMessages: true }
+        variables: { conversationId: parseInt(id), updateAllMessages: true }
       });
     }
   }, [messages, loading]);
@@ -105,7 +109,7 @@ export const ProfileMessagingScreen = ({ route }: StackScreenProps<any>) => {
         onSend({
           conversationableId,
           conversationableType,
-          id: parseInt(id),
+          conversationId: parseInt(id) || undefined,
           messageText: message.text
         }).then(refetch)
       }
