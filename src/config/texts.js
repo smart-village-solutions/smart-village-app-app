@@ -1163,6 +1163,7 @@ export const texts = {
       sheetDescription:
         'Sie haben nach Bestätigung 15 Minuten Zeit den automatisch erzeugten Coupon beim Bezahlen vorzuzeigen. Nach 15 Minuten läuft der Coupon ab. Sie brauchen keinen Internetempfang um einen Coupon zu erstellen.',
       sheetTitle: 'Möchten Sie den Gutschein einlösen?',
+      toPartnerButton: 'Zum Kooperationspartner',
       weekly: 'pro Woche',
       yearly: 'pro Jahr'
     },
