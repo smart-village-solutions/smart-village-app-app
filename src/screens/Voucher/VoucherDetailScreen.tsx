@@ -101,16 +101,18 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
               {texts.voucher.detailScreen.frequency(maxPerPerson, frequency)}
             </BoldText>
           ))}
+      </Wrapper>
 
-        {!!discountType && (
+      {!!discountType && (
+        <Wrapper style={styles.noPaddingTop}>
           <Discount
             discount={discountType}
             id={id}
             payloadId={payload.id}
             query={QUERY_TYPES.VOUCHERS}
           />
-        )}
-      </Wrapper>
+        </Wrapper>
+      )}
 
       {!!title && (
         <Wrapper style={styles.noPaddingTop}>
