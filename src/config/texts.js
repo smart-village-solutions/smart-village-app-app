@@ -1137,6 +1137,9 @@ export const texts = {
   voucher: {
     abort: 'Abbrechen',
     detailScreen: {
+      available: 'Verfügbar',
+      availableFrom: 'Verfügbar ab',
+      availableTo: 'Verfügbar bis',
       cancel: 'Abbrechen',
       checkboxLabel: 'Ja, ich habe die Konditionen verstanden.',
       close: 'Schließen',
