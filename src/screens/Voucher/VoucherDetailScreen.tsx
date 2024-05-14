@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { useQuery } from 'react-apollo';
-import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
+import { FlatList, RefreshControl, ScrollView, StyleSheet } from 'react-native';
 
 import { NetworkContext } from '../../NetworkProvider';
 import {
@@ -9,18 +9,22 @@ import {
   Button,
   Discount,
   HtmlView,
+  INCREMENT_VOUCHER_COUNT,
+  INITIAL_VOUCHER_COUNT,
   ImageSection,
   LoadingSpinner,
   OperatingCompany,
   RegularText,
+  SectionHeader,
+  VoucherListItem,
   VoucherRedeem,
   Wrapper
 } from '../../components';
 import { colors, texts } from '../../config';
-import { graphqlFetchPolicy } from '../../helpers';
+import { graphqlFetchPolicy, parseListItemsFromQuery } from '../../helpers';
 import { useOpenWebScreen, useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
-import { ScreenName, TVoucherContentBlock } from '../../types';
+import { ScreenName, TVoucherContentBlock, TVoucherItem } from '../../types';
 
 /* eslint-disable complexity */
 export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
@@ -28,6 +32,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
   const [refreshing, setRefreshing] = useState(false);
+  const [loadedVoucherDataCount, setLoadedVoucherDataCount] = useState(INITIAL_VOUCHER_COUNT);
 
   const query = route.params?.query ?? '';
   const queryVariables = route.params?.queryVariables ?? {};
@@ -40,18 +45,6 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
     fetchPolicy
   });
 
-  const refresh = useCallback(async () => {
-    setRefreshing(true);
-    if (isConnected) {
-      await refetch();
-    }
-    setRefreshing(false);
-  }, [isConnected, refetch, setRefreshing]);
-
-  if (!data || loading) {
-    return <LoadingSpinner loading />;
-  }
-
   const {
     contentBlocks,
     dataProvider,
@@ -63,7 +56,39 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
     quota,
     subtitle,
     title
-  } = data[QUERY_TYPES.GENERIC_ITEM];
+  } = data?.[QUERY_TYPES.GENERIC_ITEM] ?? {};
+
+  const ids = pointOfInterest?.vouchers
+    .map((voucher: TVoucherItem) => voucher.id)
+    .filter((id: string) => id !== queryVariables?.id);
+
+  const { data: actualVouchersData, refetch: actualVouchersRefetch } = useQuery(
+    getQuery(QUERY_TYPES.VOUCHERS),
+    {
+      variables: { ids },
+      skip: !ids?.length,
+      fetchPolicy
+    }
+  );
+
+  const voucherListItems = useMemo(() => {
+    return parseListItemsFromQuery(QUERY_TYPES.VOUCHERS, actualVouchersData, undefined, {
+      withDate: false
+    });
+  }, [actualVouchersData]);
+
+  const refresh = useCallback(async () => {
+    setRefreshing(true);
+    if (isConnected) {
+      await refetch();
+      await actualVouchersRefetch();
+    }
+    setRefreshing(false);
+  }, [isConnected, refetch, setRefreshing]);
+
+  if (!data || loading) {
+    return <LoadingSpinner loading />;
+  }
 
   const dataProviderLogo = dataProvider?.logo?.url;
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota || {};
@@ -162,6 +187,28 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
               invert
             />
           </Wrapper>
+        </>
+      )}
+
+      {!!voucherListItems?.length && (
+        <>
+          <SectionHeader title={texts.pointOfInterest.vouchers} />
+          <FlatList
+            data={voucherListItems.slice(0, loadedVoucherDataCount)}
+            renderItem={({ item }) => <VoucherListItem item={item} navigation={navigation} />}
+            ListFooterComponent={() =>
+              voucherListItems.length > loadedVoucherDataCount && (
+                <Wrapper>
+                  <Button
+                    title={texts.pointOfInterest.loadMoreVouchers}
+                    onPress={() =>
+                      setLoadedVoucherDataCount((prev) => prev + INCREMENT_VOUCHER_COUNT)
+                    }
+                  />
+                </Wrapper>
+              )
+            }
+          />
         </>
       )}
     </ScrollView>

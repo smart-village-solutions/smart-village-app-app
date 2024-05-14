@@ -184,6 +184,9 @@ export const GET_VOUCHER = gql`
             }
           }
         }
+        vouchers {
+          id
+        }
       }
       payload
     }
