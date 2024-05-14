@@ -6,7 +6,7 @@ import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { NetworkContext } from '../../NetworkProvider';
 import {
   BoldText,
-  DataProviderButton,
+  Button,
   Discount,
   HtmlView,
   ImageSection,
@@ -16,15 +16,14 @@ import {
   VoucherRedeem,
   Wrapper
 } from '../../components';
-import { DataProviderNotice } from '../../components/DataProviderNotice';
 import { colors, texts } from '../../config';
 import { graphqlFetchPolicy } from '../../helpers';
 import { useOpenWebScreen, useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
-import { TVoucherContentBlock } from '../../types';
+import { ScreenName, TVoucherContentBlock } from '../../types';
 
 /* eslint-disable complexity */
-export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
+export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { memberId } = useVoucher();
   const { isConnected, isMainserverUp } = useContext(NetworkContext);
   const fetchPolicy = graphqlFetchPolicy({ isConnected, isMainserverUp });
@@ -60,6 +59,7 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     id,
     mediaContents,
     payload,
+    pointOfInterest,
     quota,
     subtitle,
     title
@@ -138,15 +138,32 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
         </Wrapper>
       )}
 
-      <OperatingCompany
-        openWebScreen={openWebScreen}
-        operatingCompany={dataProvider}
-        title={texts.pointOfInterest.operatingCompany}
-      />
+      {!!pointOfInterest?.operatingCompany && (
+        <>
+          <OperatingCompany
+            logo={dataProviderLogo}
+            openWebScreen={openWebScreen}
+            operatingCompany={pointOfInterest.operatingCompany}
+            title={texts.pointOfInterest.operatingCompany}
+          />
 
-      <DataProviderNotice dataProvider={dataProvider} openWebScreen={openWebScreen} />
-
-      <DataProviderButton dataProvider={dataProvider} />
+          <Wrapper>
+            <Button
+              title={texts.voucher.detailScreen.toPartnerButton}
+              onPress={() =>
+                navigation.push(ScreenName.Detail, {
+                  query: QUERY_TYPES.POINT_OF_INTEREST,
+                  title: texts.detailTitles.pointOfInterest,
+                  queryVariables: {
+                    id: pointOfInterest.id
+                  }
+                })
+              }
+              invert
+            />
+          </Wrapper>
+        </>
+      )}
     </ScrollView>
   );
 };
