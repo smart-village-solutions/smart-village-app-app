@@ -18,7 +18,7 @@ import {
 } from '../../components';
 import { DataProviderNotice } from '../../components/DataProviderNotice';
 import { colors, texts } from '../../config';
-import { graphqlFetchPolicy, momentFormat } from '../../helpers';
+import { dateOfAvailabilityText, graphqlFetchPolicy, momentFormat } from '../../helpers';
 import { useOpenWebScreen, useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { TVoucherContentBlock } from '../../types';
@@ -66,22 +66,7 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
     title
   } = data[QUERY_TYPES.GENERIC_ITEM];
 
-  const dateOfAvailabilityText = () => {
-    const dateStart = dates?.[0]?.dateStart && momentFormat(dates[0].dateStart);
-    const dateEnd = dates?.[0]?.dateEnd && momentFormat(dates[0].dateEnd);
-
-    if (!dateStart && !dateEnd) {
-      return;
-    }
-
-    if (dateStart && dateEnd) {
-      return `${texts.voucher.detailScreen.available}: ${dateStart}-${dateEnd}`;
-    } else if (dateStart) {
-      return `${texts.voucher.detailScreen.availableFrom}: ${dateStart}`;
-    } else if (dateEnd) {
-      return `${texts.voucher.detailScreen.availableTo}: ${dateEnd}`;
-    }
-  };
+  const availabilityText = dateOfAvailabilityText(dates?.[0]?.dateStart, dates?.[0]?.dateEnd);
   const dataProviderLogo = dataProvider?.logo?.url;
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota || {};
 
@@ -120,9 +105,9 @@ export const VoucherDetailScreen = ({ route }: StackScreenProps<any>) => {
               </BoldText>
             )}
 
-            {!!dateOfAvailabilityText() && (
+            {!!availabilityText && (
               <RegularText small primary={availableQuantity} placeholder={!availableQuantity}>
-                {dateOfAvailabilityText()}
+                {availabilityText}
               </RegularText>
             )}
           </>
