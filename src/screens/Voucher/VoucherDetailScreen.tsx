@@ -192,7 +192,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
 
       {!!voucherListItems?.length && (
         <>
-          <SectionHeader title={texts.pointOfInterest.vouchers} />
+          <SectionHeader title={texts.pointOfInterest.vouchersMore} />
           <FlatList
             data={voucherListItems.slice(0, loadedVoucherDataCount)}
             renderItem={({ item }) => <VoucherListItem item={item} navigation={navigation} />}

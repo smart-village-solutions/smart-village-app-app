@@ -783,6 +783,7 @@ export const texts = {
     showLunches: 'Zum aktuellen Gastro-Angebot',
     today: 'Heute',
     vouchers: 'Aktuelle Angebote',
+    vouchersMore: 'Weitere Angebote',
     yourPosition: 'Ihre Position'
   },
   pushNotifications: {
