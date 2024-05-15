@@ -155,6 +155,36 @@ export const GET_VOUCHER = gql`
           url
         }
       }
+      pointOfInterest {
+        name
+        payload
+        id
+        operatingCompany {
+          id
+          name
+          address {
+            id
+            kind
+            addition
+            street
+            zip
+            city
+          }
+          contact {
+            id
+            firstName
+            lastName
+            phone
+            email
+            fax
+            webUrls {
+              id
+              url
+              description
+            }
+          }
+        }
+      }
       payload
     }
   }
