@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const addToStore = async (key, value) =>
   await AsyncStorage.setItem(key, JSON.stringify(value));
 export const readFromStore = async (key) => JSON.parse(await AsyncStorage.getItem(key));
+export const removeFromStore = async (key) => await AsyncStorage.removeItem(key);
 export const resetStore = async () => await AsyncStorage.clear();
 
 export const storageHelper = {
