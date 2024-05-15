@@ -33,6 +33,18 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
 
   const { availableQuantityForMember = 0, availableQuantity = 0 } = quota;
 
+  const localRedeemedVoucherCheck = async () => {
+    const voucherTransactions = (await readFromStore(VOUCHER_TRANSACTIONS)) || [];
+
+    if (voucherTransactions.length) {
+      const isRedeemed = voucherTransactions.some(
+        (transaction) => transaction.voucherId === voucherId && transaction.memberId === memberId
+      );
+
+      setIsRedeemedVoucher(isRedeemed);
+    }
+  };
+
   useEffect(() => {
     const hasAvailableQuantity = availableQuantity !== 0;
     const hasNoAvailableQuantityForMember = availableQuantityForMember === 0;
@@ -42,7 +54,9 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
     if (hasNoAvailableQuantityForMember) {
       setIsRedeemedVoucher(true);
     }
-  }, [availableQuantity, availableQuantityForMember]);
+
+    localRedeemedVoucherCheck();
+  }, [availableQuantity, availableQuantityForMember, memberId]);
 
   const [redeemQuotaOfVoucher] = useMutation(REDEEM_QUOTA_OF_VOUCHER);
 
@@ -67,14 +81,14 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
   const seconds = remainingTime % 60;
 
   const redeemVoucher = async () => {
+    let deviceToken = await readFromStore(VOUCHER_DEVICE_TOKEN);
+
+    if (!deviceToken) {
+      deviceToken = uuid();
+      addToStore(VOUCHER_DEVICE_TOKEN, deviceToken);
+    }
+
     try {
-      let deviceToken = await readFromStore(VOUCHER_DEVICE_TOKEN);
-
-      if (!deviceToken) {
-        deviceToken = uuid();
-        addToStore(VOUCHER_DEVICE_TOKEN, deviceToken);
-      }
-
       redeemQuotaOfVoucher({
         variables: {
           deviceToken,
@@ -83,7 +97,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
           memberId
         }
       });
-
+    } catch (error) {
       const voucherTransactions = (await readFromStore(VOUCHER_TRANSACTIONS)) || [];
       const voucherTransaction = {
         deviceToken,
@@ -95,10 +109,10 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
 
       addToStore(VOUCHER_TRANSACTIONS, [...voucherTransactions, voucherTransaction]);
 
+      console.error(error);
+    } finally {
       setIsRedeemedVoucher(true);
       setIsRedeemingVoucher(true);
-    } catch (error) {
-      console.error(error);
     }
   };
 

@@ -1,6 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useMutation as useApolloMutation } from 'react-apollo';
 import { RefreshControl, ScrollView, StyleSheet } from 'react-native';
 import { useMutation } from 'react-query';
 
@@ -16,13 +17,14 @@ import {
 import { colors, texts } from '../../config';
 import { addToStore, readFromStore } from '../../helpers';
 import {
+  VOUCHER_TRANSACTIONS,
   storeVoucherAuthToken,
   storeVoucherMemberId,
   storeVoucherMemberLoginInfo,
   voucherMemberLoginInfo
 } from '../../helpers/voucherHelper';
 import { useStaticContent, useVoucher } from '../../hooks';
-import { logIn } from '../../queries/vouchers';
+import { REDEEM_QUOTA_OF_VOUCHER, logIn } from '../../queries/vouchers';
 import { ScreenName, VoucherLogin } from '../../types';
 
 const SAVED_DATE_OF_LAST_ACCOUNT_CHECK = 'savedDateOfLastAccountCheck';
@@ -77,6 +79,40 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
     };
 
     accountCheck();
+  }, []);
+
+  const [redeemQuotaOfVoucher] = useApolloMutation(REDEEM_QUOTA_OF_VOUCHER);
+
+  useEffect(() => {
+    const redeemLocalVouchers = async () => {
+      const voucherTransactions = (await readFromStore(VOUCHER_TRANSACTIONS)) || [];
+      let error = false;
+
+      if (voucherTransactions.length) {
+        for (const { voucherId, memberId, quantity, deviceToken } of voucherTransactions) {
+          try {
+            await redeemQuotaOfVoucher({
+              variables: {
+                deviceToken,
+                quantity,
+                voucherId,
+                memberId
+              }
+            });
+          } catch (e) {
+            console.error(e);
+            error = true;
+            break;
+          }
+        }
+
+        if (!error) {
+          await addToStore(VOUCHER_TRANSACTIONS, []);
+        }
+      }
+    };
+
+    redeemLocalVouchers();
   }, []);
 
   const refreshHome = useCallback(async () => {
