@@ -58,9 +58,13 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
     title
   } = data?.[QUERY_TYPES.GENERIC_ITEM] ?? {};
 
-  const ids = pointOfInterest?.vouchers
-    .map((voucher: TVoucherItem) => voucher.id)
-    .filter((id: string) => id !== queryVariables?.id);
+  const ids = pointOfInterest?.vouchers?.reduce((acc: string[], voucher: TVoucherItem) => {
+    if (voucher.id !== queryVariables?.id) {
+      acc.push(voucher.id);
+    }
+
+    return acc;
+  }, []);
 
   const { data: actualVouchersData, refetch: actualVouchersRefetch } = useQuery(
     getQuery(QUERY_TYPES.VOUCHERS),
