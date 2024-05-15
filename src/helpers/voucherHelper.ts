@@ -20,9 +20,6 @@ export const storeVoucherAuthToken = (authToken?: string) => {
 export const voucherAuthToken = async () => {
   let authToken = null;
 
-  // The reason for the problem of staying in SplashScreen that occurs after the application is
-  // updated on the Android side is the inability to obtain the token here.
-  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
   try {
     authToken = await SecureStore.getItemAsync(VOUCHER_AUTH_TOKEN);
   } catch {
@@ -44,9 +41,6 @@ export const storeVoucherMemberId = (memberId?: string) => {
 export const voucherMemberId = async () => {
   let memberId = null;
 
-  // The reason for the problem of staying in SplashScreen that occurs after the application is
-  // updated on the Android side is the inability to obtain the token here.
-  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
   try {
     memberId = await readFromStore(VOUCHER_MEMBER_ID);
   } catch {
@@ -68,9 +62,6 @@ export const storeVoucherMemberLoginInfo = (memberLoginInfo?: string) => {
 export const voucherMemberLoginInfo = async () => {
   let memberLoginInfo = {};
 
-  // The reason for the problem of staying in SplashScreen that occurs after the application is
-  // updated on the Android side is the inability to obtain the token here.
-  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
   try {
     memberLoginInfo = await readFromStore(VOUCHER_MEMBER_LOGIN_INFO);
   } catch {

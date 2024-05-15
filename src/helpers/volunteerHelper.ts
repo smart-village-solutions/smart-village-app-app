@@ -31,9 +31,6 @@ export const storeVolunteerAuthToken = (authToken?: string) => {
 export const volunteerAuthToken = async () => {
   let authToken = null;
 
-  // The reason for the problem of staying in SplashScreen that occurs after the application is
-  // updated on the Android side is the inability to obtain the token here.
-  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
   try {
     authToken = await SecureStore.getItemAsync(VOLUNTEER_AUTH_TOKEN);
   } catch {
@@ -72,9 +69,6 @@ export const volunteerUserData = async (): Promise<{
   let currentUserGuId = null;
   let currentUserContentContainerId = null;
 
-  // The reason for the problem of staying in SplashScreen that occurs after the application is
-  // updated on the Android side is the inability to obtain the token here.
-  // For this reason, try/catch is used here and the problem of getting stuck in SplashScreen is solved.
   try {
     currentUserId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_ID);
     currentUserGuId = await SecureStore.getItemAsync(VOLUNTEER_CURRENT_USER_GUID);

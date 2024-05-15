@@ -61,9 +61,7 @@ export const VoucherLoginScreen = ({ navigation, route }: StackScreenProps<any>)
         // save auth token and member id to global state
         storeVoucherAuthToken(responseData.member.authentication_token);
         storeVoucherMemberId(responseData.member.id);
-        storeVoucherMemberLoginInfo(
-          JSON.stringify({ key: loginData.key, secret: loginData.secret })
-        );
+        storeVoucherMemberLoginInfo(JSON.stringify(loginData));
 
         // refreshAuth param causes the home screen to update and no longer show the login button
         navigation.navigate(ScreenName.VoucherHome, {

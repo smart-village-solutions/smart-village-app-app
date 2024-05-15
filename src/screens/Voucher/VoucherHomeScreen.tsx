@@ -25,11 +25,11 @@ import { useStaticContent, useVoucher } from '../../hooks';
 import { logIn } from '../../queries/vouchers';
 import { ScreenName, VoucherLogin } from '../../types';
 
-const SAVED_DATE = 'savedDate';
+const SAVED_DATE_OF_LAST_ACCOUNT_CHECK = 'savedDateOfLastAccountCheck';
 
 export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) => {
   const { refresh, isLoggedIn, memberId } = useVoucher();
-  const [accountCheckLoading, setAccountCheckLoading] = useState(true);
+  const [loadingAccountCheck, setLoadingAccountCheck] = useState(true);
 
   const imageUri = route?.params?.headerImage;
 
@@ -54,11 +54,12 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
 
   useEffect(() => {
     const accountCheck = async () => {
-      const loginData = await voucherMemberLoginInfo();
-      const savedDate = (await readFromStore(SAVED_DATE)) || moment().format('YYYY-MM-DD');
+      const loginInfo = await voucherMemberLoginInfo();
+      const savedDate =
+        (await readFromStore(SAVED_DATE_OF_LAST_ACCOUNT_CHECK)) || moment().format('YYYY-MM-DD');
 
-      if (loginData && !moment().isSame(savedDate, 'day')) {
-        mutateLogIn(JSON.parse(loginData as string) as VoucherLogin, {
+      if (loginInfo && !moment().isSame(savedDate, 'day')) {
+        mutateLogIn(JSON.parse(loginInfo as string) as VoucherLogin, {
           onSuccess: (responseData) => {
             if (!responseData?.member) {
               storeVoucherAuthToken();
@@ -69,11 +70,10 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
           }
         });
 
-        addToStore(SAVED_DATE, moment().format('YYYY-MM-DD'));
-        setAccountCheckLoading(false);
-      } else {
-        setAccountCheckLoading(false);
+        addToStore(SAVED_DATE_OF_LAST_ACCOUNT_CHECK, moment().format('YYYY-MM-DD'));
       }
+
+      setLoadingAccountCheck(false);
     };
 
     accountCheck();
@@ -83,7 +83,7 @@ export const VoucherHomeScreen = ({ navigation, route }: StackScreenProps<any>) 
     await refetchHomeText();
   }, []);
 
-  if (loadingHomeText || accountCheckLoading) {
+  if (loadingHomeText || loadingAccountCheck) {
     return <LoadingSpinner />;
   }
 
