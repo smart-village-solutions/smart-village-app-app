@@ -2,15 +2,15 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useContext, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 
+import { NetworkContext } from '../../NetworkProvider';
 import { colors, normalize } from '../../config';
 import { useStaticContent, useVolunteerRefresh } from '../../hooks';
-import { NetworkContext } from '../../NetworkProvider';
 import { HtmlView } from '../HtmlView';
 import { Image } from '../Image';
 import { LoadingSpinner } from '../LoadingSpinner';
 import { SafeAreaViewFlex } from '../SafeAreaViewFlex';
-import { Wrapper } from '../Wrapper';
 import { SectionHeader } from '../SectionHeader';
+import { Wrapper } from '../Wrapper';
 
 import { Service } from './Service';
 
@@ -32,17 +32,31 @@ export const ServiceTiles = ({
     type: 'json'
   });
 
+  const {
+    data: htmlContent,
+    loading: htmlLoading,
+    refetch: htmlRefetch
+  } = useStaticContent({
+    refreshTimeKey: `publicJsonFile-${staticJsonName}Content`,
+    name: `${staticJsonName}Content`,
+    type: 'json'
+  });
+
   const refresh = useCallback(async () => {
     setRefreshing(true);
     isConnected && (await refetch?.());
+    isConnected && (await htmlRefetch?.());
     setRefreshing(false);
   }, [isConnected, refetch]);
 
   useVolunteerRefresh(refetch, query);
 
-  if (loading) {
+  if (loading || htmlLoading) {
     return <LoadingSpinner loading />;
   }
+
+  const contentForAbove = html || htmlContent?.forAbove;
+  const contentForBelow = htmlContent?.forBelow;
 
   return (
     <SafeAreaViewFlex>
@@ -70,15 +84,21 @@ export const ServiceTiles = ({
               <Image source={{ uri: image }} containerStyle={styles.imageContainerStyle} />
             )}
 
-            {!!html && (
+            {!!contentForAbove && (
               <Wrapper>
-                <HtmlView html={html} />
+                <HtmlView html={contentForAbove} />
               </Wrapper>
             )}
 
             <View style={styles.padding}>
               {!error && <Service data={data} staticJsonName={staticJsonName} />}
             </View>
+
+            {!!contentForBelow && (
+              <Wrapper>
+                <HtmlView html={contentForBelow} />
+              </Wrapper>
+            )}
           </ScrollView>
         </>
       )}
