@@ -17,7 +17,7 @@ import {
   Wrapper
 } from '../../components';
 import { colors, texts } from '../../config';
-import { graphqlFetchPolicy } from '../../helpers';
+import { dateOfAvailabilityText, graphqlFetchPolicy, momentFormat } from '../../helpers';
 import { useOpenWebScreen, useVoucher } from '../../hooks';
 import { QUERY_TYPES, getQuery } from '../../queries';
 import { ScreenName, TVoucherContentBlock } from '../../types';
@@ -55,6 +55,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
   const {
     contentBlocks,
     dataProvider,
+    dates,
     discountType,
     id,
     mediaContents,
@@ -65,6 +66,7 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
     title
   } = data[QUERY_TYPES.GENERIC_ITEM];
 
+  const availabilityText = dateOfAvailabilityText(dates?.[0]?.dateStart, dates?.[0]?.dateEnd);
   const dataProviderLogo = dataProvider?.logo?.url;
   const { availableQuantity, frequency, maxPerPerson, maxQuantity } = quota || {};
 
@@ -82,25 +84,34 @@ export const VoucherDetailScreen = ({ navigation, route }: StackScreenProps<any>
       <ImageSection mediaContents={mediaContents} />
 
       <Wrapper>
-        {!!quota &&
-          (maxQuantity && frequency ? (
-            <>
-              <BoldText small primary>
+        {!!quota && (
+          <>
+            {maxQuantity && frequency ? (
+              <>
+                <BoldText small primary={availableQuantity} placeholder={!availableQuantity}>
+                  {texts.voucher.detailScreen.limit(availableQuantity, maxQuantity)}
+                </BoldText>
+                <RegularText small primary={availableQuantity} placeholder={!availableQuantity}>
+                  {texts.voucher.detailScreen.frequency(maxPerPerson, frequency)}
+                </RegularText>
+              </>
+            ) : maxQuantity ? (
+              <BoldText small primary={availableQuantity} placeholder={!availableQuantity}>
                 {texts.voucher.detailScreen.limit(availableQuantity, maxQuantity)}
               </BoldText>
-              <RegularText small primary>
+            ) : (
+              <BoldText small primary={availableQuantity} placeholder={!availableQuantity}>
                 {texts.voucher.detailScreen.frequency(maxPerPerson, frequency)}
+              </BoldText>
+            )}
+
+            {!!availabilityText && (
+              <RegularText small primary={availableQuantity} placeholder={!availableQuantity}>
+                {availabilityText}
               </RegularText>
-            </>
-          ) : maxQuantity ? (
-            <BoldText small primary>
-              {texts.voucher.detailScreen.limit(availableQuantity, maxQuantity)}
-            </BoldText>
-          ) : (
-            <BoldText small primary>
-              {texts.voucher.detailScreen.frequency(maxPerPerson, frequency)}
-            </BoldText>
-          ))}
+            )}
+          </>
+        )}
       </Wrapper>
 
       {!!discountType && (
