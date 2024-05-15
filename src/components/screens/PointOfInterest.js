@@ -26,8 +26,8 @@ import { PriceCard } from './PriceCard';
 import { TimeTables } from './TimeTables';
 
 const { MATOMO_TRACKING } = consts;
-const INITIAL_VOUCHER_COUNT = 3;
-const INCREMENT_VOUCHER_COUNT = 5;
+export const INITIAL_VOUCHER_COUNT = 3;
+export const INCREMENT_VOUCHER_COUNT = 5;
 
 /* eslint-disable complexity */
 /* NOTE: we need to check a lot for presence, so this is that complex */
