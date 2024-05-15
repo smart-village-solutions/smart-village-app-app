@@ -322,7 +322,7 @@ const parseVouchers = (data, skipLastDivider) => {
     params: {
       query: QUERY_TYPES.VOUCHER,
       queryVariables: { id: `${voucher.id}` },
-      title: voucher.title,
+      title: texts.detailTitles.voucher,
       rootRouteName: ROOT_ROUTE_NAMES.VOUCHER,
       details: voucher
     },

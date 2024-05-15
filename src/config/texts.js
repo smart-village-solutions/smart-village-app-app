@@ -339,6 +339,7 @@ export const texts = {
       task: 'Aufgabe',
       user: 'Profil'
     },
+    voucher: 'Gutschein',
     tour: 'Tour'
   },
   dropdownFilter: {
