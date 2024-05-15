@@ -1,7 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as SecureStore from 'expo-secure-store';
 
-import { addToStore, readFromStore } from './storageHelper';
+import { addToStore, readFromStore, removeFromStore } from './storageHelper';
 
 const VOUCHER_AUTH_TOKEN = 'VOUCHER_AUTH_TOKEN';
 export const VOUCHER_MEMBER_ID = 'VOUCHER_MEMBER_ID';
@@ -34,7 +33,7 @@ export const storeVoucherMemberId = (memberId?: string) => {
   if (memberId) {
     addToStore(VOUCHER_MEMBER_ID, memberId);
   } else {
-    addToStore(VOUCHER_MEMBER_ID);
+    removeFromStore(VOUCHER_MEMBER_ID);
   }
 };
 
@@ -45,7 +44,7 @@ export const voucherMemberId = async () => {
     memberId = await readFromStore(VOUCHER_MEMBER_ID);
   } catch {
     // Token deleted here so that it can be recreated
-    AsyncStorage.removeItem(VOUCHER_MEMBER_ID);
+    removeFromStore(VOUCHER_MEMBER_ID);
   }
 
   return memberId;

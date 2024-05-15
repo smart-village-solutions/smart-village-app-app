@@ -10,7 +10,7 @@ export const useVoucher = (): {
   isLoggedIn: boolean;
   memberId: string | undefined;
 } => {
-  const { isConnected, isMainserverUp } = useContext(NetworkContext);
+  const { isConnected } = useContext(NetworkContext);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -35,13 +35,8 @@ export const useVoucher = (): {
   }, []);
 
   useEffect(() => {
-    if (isConnected && isMainserverUp && !isLoggedIn) {
-      logInCallback();
-    } else {
-      setIsLoading(false);
-      setIsError(true);
-    }
-  }, [isConnected, isMainserverUp, logInCallback]);
+    logInCallback();
+  }, [isConnected, logInCallback]);
 
   return {
     refresh: logInCallback,
