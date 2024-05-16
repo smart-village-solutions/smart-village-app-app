@@ -94,11 +94,23 @@ export const VoucherIndexScreen = ({ navigation, route }: StackScreenProps<any>)
       updateQuery: (prevResult, { fetchMoreResult }) => {
         if (!fetchMoreResult?.[queryKey]?.length) return prevResult;
 
-        const uniqueData = _uniqBy([...prevResult[queryKey], ...fetchMoreResult[queryKey]], 'id');
+        let mergedData;
+
+        if (query === QUERY_TYPES.VOUCHERS_REDEEMED) {
+          // to avoid duplication of data and to be able to list all vouchers redeemed
+          const existingIds = prevResult[queryKey].map((item) => item.id);
+          const newData = fetchMoreResult[queryKey].filter(
+            (item) => !existingIds.includes(item.id)
+          );
+
+          mergedData = [...prevResult[queryKey], ...newData];
+        } else {
+          mergedData = _uniqBy([...prevResult[queryKey], ...fetchMoreResult[queryKey]], 'id');
+        }
 
         return {
           ...prevResult,
-          [queryKey]: uniqueData
+          [queryKey]: mergedData
         };
       }
     });
