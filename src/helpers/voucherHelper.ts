@@ -65,7 +65,7 @@ export const voucherMemberLoginInfo = async () => {
     memberLoginInfo = await readFromStore(VOUCHER_MEMBER_LOGIN_INFO);
   } catch {
     // Token deleted here so that it can be recreated
-    AsyncStorage.removeItem(VOUCHER_MEMBER_LOGIN_INFO);
+    removeFromStore(VOUCHER_MEMBER_LOGIN_INFO);
   }
 
   return memberLoginInfo;

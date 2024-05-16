@@ -117,7 +117,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
   };
 
   const isButtonDisabled =
-    !isLoggedIn || !isAvailableVoucher || isExpiredVoucher || isRedeemedVoucher;
+    !isLoggedIn || !memberId || !isAvailableVoucher || isExpiredVoucher || isRedeemedVoucher;
   const buttonTitle =
     isExpiredVoucher || !isAvailableVoucher
       ? texts.voucher.detailScreen.isNotAvailable
