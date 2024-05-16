@@ -89,7 +89,7 @@ export const VoucherRedeem = ({ quota, voucherId }: { quota: TQuota; voucherId: 
     }
 
     try {
-      redeemQuotaOfVoucher({
+      await redeemQuotaOfVoucher({
         variables: {
           deviceToken,
           quantity,
