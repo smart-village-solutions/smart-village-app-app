@@ -8,6 +8,7 @@ import { TDiscount } from '../../types';
 import { BoldText, RegularText } from '../Text';
 
 const a11yLabel = consts.a11yLabel;
+const localeString = 'de';
 
 export const Discount = ({
   discount,
@@ -34,17 +35,19 @@ export const Discount = ({
       <View style={styles.container}>
         {!!discountedPrice && (
           <View style={styles.discountedPriceContainer}>
-            <BoldText lightest>{discountedPrice} €</BoldText>
+            <BoldText lightest>{discountedPrice.toLocaleString(localeString)} €</BoldText>
           </View>
         )}
 
         {!!originalPrice && (
           <RegularText lineThrough lighter>
-            {originalPrice} €
+            {originalPrice.toLocaleString(localeString)} €
           </RegularText>
         )}
 
-        {!!discountAmount && <RegularText primary> -{discountAmount} €</RegularText>}
+        {!!discountAmount && (
+          <RegularText primary> -{discountAmount.toLocaleString(localeString)} €</RegularText>
+        )}
       </View>
 
       <TouchableOpacity
